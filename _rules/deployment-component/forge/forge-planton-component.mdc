@@ -37,6 +37,14 @@ The bar for every component:
   before this philosophy and is an unreliable proxy for "complete." Matching a shallow sibling
   propagates and compounds shallowness. When a sibling is visibly thin, design to the
   world-class bar instead, and note the gap.
+- **Every provider stands on its own merit — never cross-reference providers for design.**
+  Users do not choose Planton for multi-cloud breadth; they choose it for a world-class
+  self-service experience of the *one* cloud they care about. So a component's design — what
+  it models, its fields, decomposition, and depth — is derived only from the target provider's
+  own authoritative API, never from how another provider's Planton component modeled a similar
+  concept. Every provider is being rebuilt to this same bar concurrently, so a sibling
+  *provider*'s component is an outdated, incomplete reference that only drags quality down.
+  (Structure is the sole cross-provider constant — see the STRUCTURE-not-DEPTH bullet above.)
 - **Docs are part of the experience, not polish.** Dense intent-explaining field comments,
   empathetic CEL messages, richly-commented Terraform and Pulumi module code (explaining
   *why*/trade-offs/provider quirks/non-obvious ordering, not narration -- the module-comment

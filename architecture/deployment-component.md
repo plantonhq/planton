@@ -123,6 +123,8 @@ Advanced fields like certificate scope, location, and labels are exposed with se
 
 A deployment component reaches 90/10 by covering the provider's real surface **with** the same rigor -- every field researched, documented, validated, and exercised in both engines. Breadth never excuses a hastily-added, undocumented, or untested field: quality is the constant, and coverage is raised to the floor on top of it.
 
+Each provider's surface is designed **from that provider's own authoritative API and stands on its own merit.** Because every provider is brought to this bar concurrently, another provider's component is never a design reference: mirror the structural *shape* across providers, but derive what a component models -- its resources, fields, decomposition, and depth -- only from the target provider's own API. Users adopt Planton for a world-class experience of the specific cloud they care about, not for multi-cloud breadth, so a design averaged toward a cross-provider lowest common denominator fails the bar.
+
 **Completeness Indicators:**
 - ✅ Research document explains landscape and rationale
 - ✅ Proto schema is validated with real-world constraints
