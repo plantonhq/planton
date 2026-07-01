@@ -37,14 +37,14 @@ export const CatalogProviderGrid: FC<CatalogProviderGridProps> = ({ providers })
         <Link
           key={provider.name}
           href={`/docs/${provider.path}`}
-          className="flex items-center gap-3 p-4 rounded-lg border border-purple-900/30 bg-slate-900/30 hover:bg-slate-800/50 transition-colors"
+          className="flex items-center gap-3 p-4 rounded-lg border border-border bg-card hover:bg-secondary transition-colors"
         >
           <ProviderIcon provider={provider.name} size={32} />
           <div>
-            <div className="font-semibold text-white">
+            <div className="font-semibold text-foreground">
               {provider.title}
             </div>
-            <div className="text-sm text-slate-400">
+            <div className="text-sm text-muted-foreground">
               {provider.componentCount} component{provider.componentCount !== 1 ? 's' : ''}
             </div>
           </div>

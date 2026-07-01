@@ -85,7 +85,7 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
       {/* Back navigation */}
       <Link
         href={catalogPath}
-        className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-purple-400 transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         {componentTitle}
@@ -93,14 +93,14 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           {componentTitle} Presets
         </h1>
-        <p className="text-gray-400">
+        <p className="text-muted-foreground">
           Ready-to-deploy configuration presets for {componentTitle}. Each preset
           is a complete manifest you can copy, customize, and deploy.
         </p>
-        <span className="inline-block mt-3 px-3 py-1 rounded-full text-xs font-medium bg-purple-900/30 text-purple-300 border border-purple-700/30">
+        <span className="inline-block mt-3 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-muted-foreground border border-border">
           {presets.length} {presets.length === 1 ? 'preset' : 'presets'}
         </span>
       </div>
@@ -116,13 +116,13 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
               {/* Clickable header */}
               <div
                 onClick={() => toggleEntry(preset.slug)}
-                className="relative py-5 px-5 -mx-5 rounded-lg hover:bg-white/[0.02] transition-all duration-200 cursor-pointer group"
+                className="relative py-5 px-5 -mx-5 rounded-lg hover:bg-secondary/40 transition-all duration-200 cursor-pointer group"
               >
                 {/* Row 1: rank + title + action icons */}
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <PresetRankBadge rank={preset.rank} />
-                    <h3 className="text-lg font-semibold text-white group-hover:text-purple-400 transition-colors truncate">
+                    <h3 className="text-lg font-semibold text-foreground group-hover:text-foreground transition-colors truncate">
                       {preset.title}
                     </h3>
                   </div>
@@ -131,24 +131,24 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
                   <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                     <button
                       onClick={(e) => copyLink(preset.slug, e)}
-                      className="p-1.5 rounded-md hover:bg-purple-500/10 text-gray-400 hover:text-purple-400 transition-colors"
+                      className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                       title="Copy link"
                     >
                       {isCopied ? (
-                        <Check className="w-4 h-4 text-green-400" />
+                        <Check className="w-4 h-4 text-success" />
                       ) : (
                         <LinkIcon className="w-4 h-4" />
                       )}
                     </button>
                     <button
                       onClick={(e) => openInNewPage(preset.slug, e)}
-                      className="p-1.5 rounded-md hover:bg-purple-500/10 text-gray-400 hover:text-purple-400 transition-colors"
+                      className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                       title="Open in new page"
                     >
                       <ExternalLink className="w-4 h-4" />
                     </button>
                     <div
-                      className={`p-1.5 text-gray-400 transition-transform duration-200 ${
+                      className={`p-1.5 text-muted-foreground transition-transform duration-200 ${
                         isExpanded ? 'rotate-180' : ''
                       }`}
                     >
@@ -159,7 +159,7 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
 
                 {/* Row 2: excerpt (only when collapsed) */}
                 {!isExpanded && (
-                  <p className="text-gray-400 text-sm leading-relaxed mt-2 ml-11">
+                  <p className="text-muted-foreground text-sm leading-relaxed mt-2 ml-11">
                     {preset.excerpt}
                   </p>
                 )}
@@ -180,30 +180,30 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
                         // Strip the H1 since the title is already in the header
                         h1: () => null,
                         p: ({ children }) => (
-                          <p className="text-gray-300 mb-4 leading-relaxed">
+                          <p className="text-muted-foreground mb-4 leading-relaxed">
                             {children}
                           </p>
                         ),
                         h2: ({ children }) => (
-                          <h2 className="text-lg font-bold text-white mt-6 mb-2">
+                          <h2 className="text-lg font-bold text-foreground mt-6 mb-2">
                             {children}
                           </h2>
                         ),
                         h3: ({ children }) => (
-                          <h3 className="text-base font-bold text-white mt-4 mb-2">
+                          <h3 className="text-base font-bold text-foreground mt-4 mb-2">
                             {children}
                           </h3>
                         ),
                         ul: ({ children }) => (
-                          <ul className="list-disc list-inside text-gray-300 mb-4 space-y-1">
+                          <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-1">
                             {children}
                           </ul>
                         ),
                         li: ({ children }) => (
-                          <li className="text-gray-300">{children}</li>
+                          <li className="text-muted-foreground">{children}</li>
                         ),
                         strong: ({ children }) => (
-                          <strong className="text-white font-semibold">
+                          <strong className="text-foreground font-semibold">
                             {children}
                           </strong>
                         ),
@@ -211,7 +211,7 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
                           const isInline = !className;
                           if (isInline) {
                             return (
-                              <code className="bg-slate-800/60 text-sky-300 px-1.5 py-0.5 rounded text-sm">
+                              <code className="bg-secondary text-foreground px-1.5 py-0.5 rounded text-sm">
                                 {children}
                               </code>
                             );
@@ -220,27 +220,27 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
                         },
                         table: ({ children }) => (
                           <div className="overflow-x-auto my-4">
-                            <table className="min-w-full bg-slate-900 border border-purple-900/30 rounded-lg text-sm">
+                            <table className="min-w-full bg-card border border-border rounded-lg text-sm">
                               {children}
                             </table>
                           </div>
                         ),
                         thead: ({ children }) => (
-                          <thead className="bg-purple-900/20">{children}</thead>
+                          <thead className="bg-secondary">{children}</thead>
                         ),
                         tbody: ({ children }) => <tbody>{children}</tbody>,
                         tr: ({ children }) => (
-                          <tr className="border-b border-purple-900/30">
+                          <tr className="border-b border-border">
                             {children}
                           </tr>
                         ),
                         th: ({ children }) => (
-                          <th className="px-3 py-2 text-left text-white font-semibold">
+                          <th className="px-3 py-2 text-left text-foreground font-semibold">
                             {children}
                           </th>
                         ),
                         td: ({ children }) => (
-                          <td className="px-3 py-2 text-gray-300">
+                          <td className="px-3 py-2 text-muted-foreground">
                             {children}
                           </td>
                         ),
@@ -253,7 +253,7 @@ export const PresetListPage: React.FC<PresetListPageProps> = ({
                   {/* Link to full detail page */}
                   <Link
                     href={`${basePath}/${preset.slug}`}
-                    className="inline-flex items-center gap-1.5 mt-4 text-sm text-purple-400 hover:text-purple-300 transition-colors"
+                    className="inline-flex items-center gap-1.5 mt-4 text-sm text-foreground hover:text-muted-foreground transition-colors"
                   >
                     Open full page
                     <ExternalLink className="w-3.5 h-3.5" />

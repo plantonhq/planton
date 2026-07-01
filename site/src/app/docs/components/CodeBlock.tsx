@@ -41,17 +41,17 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ children }) => {
 
   return (
     <div className="relative group mb-4">
-      <pre className="bg-slate-900 rounded-lg p-4 overflow-x-auto border border-purple-900/30" style={{ fontFamily: 'var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}>
+      <pre className="bg-card rounded-lg p-4 overflow-x-auto border border-border" style={{ fontFamily: 'var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}>
         {children}
       </pre>
       <button
         onClick={handleCopy}
-        className="absolute top-2 right-2 p-1.5 rounded-md bg-slate-800/80 border border-slate-700/50 text-gray-400 hover:text-white hover:bg-slate-700 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+        className="absolute top-2 right-2 p-1.5 rounded-md bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
         aria-label={copied ? 'Copied' : 'Copy code'}
         title={copied ? 'Copied!' : 'Copy to clipboard'}
       >
         {copied ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-success">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         ) : (

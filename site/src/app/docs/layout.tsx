@@ -1,65 +1,61 @@
 'use client';
 
 import React, { useState } from 'react';
-import { IconButton, Drawer, Stack } from '@mui/material';
-import { DocsSidebar } from '@/app/docs/components/DocsSidebar';
-import { DocsHeader } from '@/app/docs/components/DocsHeader';
-import { Close as CloseIcon } from '@mui/icons-material';
-import Image from 'next/image';
 import Link from 'next/link';
+import { IconButton, Drawer, Stack } from '@mui/material';
+import { Menu as MenuIcon, Close as CloseIcon } from '@mui/icons-material';
+import { SiteHeader } from '@/components/chrome';
+import { PlantonMark, Wordmark } from '@/components/brand';
+import { DocsSidebar } from '@/app/docs/components/DocsSidebar';
+import { SearchBar } from '@/app/docs/components/SearchBar';
 
+/**
+ * Docs route layout: the shared SiteHeader (with a search slot + mobile menu),
+ * a sticky left sidebar, and the page content. Monochrome, token-driven.
+ */
 export default function DocsPageLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const handleSidebarToggle = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  const toggle = () => setSidebarOpen((v) => !v);
 
   return (
-    <div className="min-h-screen font-sans antialiased bg-slate-950">
-      {/* Header */}
-      <DocsHeader onMenuToggle={handleSidebarToggle} />
+    <div className="min-h-screen bg-background">
+      <SiteHeader
+        leading={
+          <IconButton onClick={toggle} size="small" className="md:hidden" sx={{ color: 'text.primary' }}>
+            <MenuIcon />
+          </IconButton>
+        }
+        slot={<div className="hidden md:block"><SearchBar /></div>}
+      />
 
       <div className="flex pt-16">
-        {/* Left Sidebar - Sticky, independently scrollable */}
+        {/* Left sidebar — sticky, independently scrollable */}
         <div className="hidden md:block sticky top-16 h-[calc(100vh-4rem)] w-80 flex-shrink-0">
-          <div className="h-full overflow-y-auto bg-slate-950 border-r border-purple-900/30">
+          <div className="h-full overflow-y-auto border-r border-border">
             <DocsSidebar />
           </div>
         </div>
 
-        {/* Mobile Sidebar */}
+        {/* Mobile sidebar */}
         <Drawer
           anchor="left"
           open={sidebarOpen}
-          onClose={handleSidebarToggle}
+          onClose={toggle}
           className="md:hidden"
-          PaperProps={{
-            className: 'w-80 bg-slate-950',
-          }}
+          PaperProps={{ className: 'w-80 bg-background' }}
         >
-          <Stack
-            direction="row"
-            className="items-center justify-between p-4 border-b border-purple-900/30"
-          >
-            <Link href="/" className="flex items-center gap-2">
-              <Image
-                src="/icon.png"
-                alt="Planton logo"
-                width={32}
-                height={32}
-                className="h-8 w-auto object-contain"
-              />
-              <Image src="/text-logo.svg" alt="Planton" width={136} height={28} className="h-7 w-auto object-contain" />
+          <Stack direction="row" className="items-center justify-between p-4 border-b border-border">
+            <Link href="/" className="flex items-center gap-2.5 text-foreground">
+              <PlantonMark size={22} />
+              <Wordmark />
             </Link>
-            <IconButton onClick={handleSidebarToggle} className="text-white">
+            <IconButton onClick={toggle} sx={{ color: 'text.primary' }}>
               <CloseIcon />
             </IconButton>
           </Stack>
           <DocsSidebar onNavigate={() => setSidebarOpen(false)} />
         </Drawer>
 
-        {/* Content + Right Sidebar rendered by page.tsx */}
         {children}
       </div>
     </div>

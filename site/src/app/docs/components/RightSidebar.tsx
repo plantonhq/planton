@@ -98,7 +98,7 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content, prese
       {/* Table of Contents */}
       {headings.length > 0 && (
         <Box className="mb-6">
-          <Typography variant="subtitle2" className="text-gray-400 font-semibold mb-3 uppercase text-xs">
+          <Typography variant="subtitle2" className="text-muted-foreground font-semibold mb-3 uppercase text-xs">
             On This Page
           </Typography>
           <nav>
@@ -110,10 +110,10 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content, prese
                 >
                   <button
                     onClick={() => scrollToHeading(heading.id)}
-                    className={`text-sm text-left w-full hover:text-purple-400 transition-colors ${
+                    className={`text-sm text-left w-full hover:text-foreground transition-colors ${
                       activeId === heading.id
-                        ? 'text-purple-400 font-medium'
-                        : 'text-gray-400'
+                        ? 'text-foreground font-medium'
+                        : 'text-muted-foreground'
                     }`}
                   >
                     {heading.text}
@@ -127,15 +127,15 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content, prese
 
       {/* Presets link */}
       {presetsLink && (
-        <Box className="border-t border-purple-900/30 pt-5 mb-5">
-          <Typography variant="subtitle2" className="text-gray-400 font-semibold mb-3 uppercase text-xs">
+        <Box className="border-t border-border pt-5 mb-5">
+          <Typography variant="subtitle2" className="text-muted-foreground font-semibold mb-3 uppercase text-xs">
             Presets
           </Typography>
           <Link
             href={presetsLink.path}
-            className="group flex items-start gap-3 p-3 -mx-1 rounded-lg hover:bg-purple-900/10 transition-colors"
+            className="group flex items-start gap-3 p-3 -mx-1 rounded-lg hover:bg-secondary transition-colors"
           >
-            <span className="flex-shrink-0 mt-0.5 text-purple-400">
+            <span className="flex-shrink-0 mt-0.5 text-foreground">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="6" width="20" height="12" rx="2" />
                 <path d="M12 12h.01" />
@@ -144,10 +144,10 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content, prese
               </svg>
             </span>
             <span className="flex-1 min-w-0">
-              <span className="block text-sm font-medium text-gray-300 group-hover:text-purple-400 transition-colors">
+              <span className="block text-sm font-medium text-foreground transition-colors">
                 {presetsLink.count} ready-to-deploy {presetsLink.count === 1 ? 'configuration' : 'configurations'}
               </span>
-              <span className="block text-xs text-gray-500 mt-0.5">
+              <span className="block text-xs text-muted-foreground mt-0.5">
                 View presets &rarr;
               </span>
             </span>
@@ -157,8 +157,8 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content, prese
 
       {/* Author Information */}
       {author && author.length > 0 && (
-        <Box className="border-t border-purple-900/30 pt-6">
-          <Typography variant="subtitle2" className="text-gray-400 font-semibold mb-3 uppercase text-xs">
+        <Box className="border-t border-border pt-6">
+          <Typography variant="subtitle2" className="text-muted-foreground font-semibold mb-3 uppercase text-xs">
             Author{author.length > 1 ? 's' : ''}
           </Typography>
           <div className="space-y-3">
@@ -173,11 +173,11 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ author = [], content, prese
                   />
                 )}
                 <div className="flex-1">
-                  <Typography className="text-white text-sm font-medium">
+                  <Typography className="text-foreground text-sm font-medium">
                     {a.name}
                   </Typography>
                   {a.role && (
-                    <Typography className="text-gray-400 text-xs">
+                    <Typography className="text-muted-foreground text-xs">
                       {a.role}
                     </Typography>
                   )}

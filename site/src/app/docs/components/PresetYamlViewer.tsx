@@ -31,21 +31,21 @@ export const PresetYamlViewer: React.FC<PresetYamlViewerProps> = ({
   return (
     <div className="relative group mb-6">
       {/* Header bar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-slate-800 rounded-t-lg border border-b-0 border-purple-900/30">
-        <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+      <div className="flex items-center justify-between px-4 py-2 bg-secondary rounded-t-lg border border-b-0 border-border">
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           {label}
         </span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-700/60 border border-slate-600/50 text-gray-300 hover:text-white hover:bg-slate-600 transition-all"
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
           aria-label={copied ? 'Copied' : 'Copy YAML'}
         >
           {copied ? (
             <>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-success">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
-              <span className="text-green-400">Copied</span>
+              <span className="text-success">Copied</span>
             </>
           ) : (
             <>
@@ -60,8 +60,8 @@ export const PresetYamlViewer: React.FC<PresetYamlViewerProps> = ({
       </div>
 
       {/* Code block */}
-      <pre className="bg-slate-900 rounded-b-lg p-4 overflow-x-auto border border-t-0 border-purple-900/30 text-sm leading-relaxed">
-        <code className="language-yaml text-gray-300">{yamlContent}</code>
+      <pre className="bg-card rounded-b-lg p-4 overflow-x-auto border border-t-0 border-border text-sm leading-relaxed">
+        <code className="language-yaml text-muted-foreground">{yamlContent}</code>
       </pre>
     </div>
   );

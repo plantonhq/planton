@@ -245,10 +245,10 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
           width: '100%',
           maxWidth: 640,
           mx: 2,
-          bgcolor: 'rgb(15, 23, 42)',
-          border: '1px solid rgba(168, 85, 247, 0.25)',
+          bgcolor: '#0a0a0a',
+          border: '1px solid #242424',
           borderRadius: '12px',
-          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5)',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.6)',
           overflow: 'hidden',
         },
         '& .MuiBackdrop-root': {
@@ -259,10 +259,10 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
     >
       {/* ── Search input ─────────────────────────────────────────────── */}
       <div
-        className="flex items-center gap-3 px-4 py-3 border-b border-purple-500/20"
+        className="flex items-center gap-3 px-4 py-3 border-b border-border"
         onKeyDown={handleKeyDown}
       >
-        <SearchIcon sx={{ fontSize: 20, color: 'rgba(156, 163, 175, 1)', flexShrink: 0 }} />
+        <SearchIcon sx={{ fontSize: 20, color: '#a1a1a1', flexShrink: 0 }} />
         <input
           ref={inputRef}
           type="text"
@@ -276,8 +276,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
           className="
             flex-1
             bg-transparent
-            text-white text-base
-            placeholder:text-white/40
+            text-foreground text-base
+            placeholder:text-muted-foreground
             outline-none
             border-none
             p-0
@@ -288,8 +288,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
             hidden sm:inline-flex items-center
             px-1.5 py-0.5
             text-[11px] font-mono leading-none
-            text-white/30
-            border border-white/10 rounded
+            text-muted-foreground
+            border border-border rounded
           "
         >
           ESC
@@ -308,11 +308,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
             <div className="flex gap-2 items-start p-4">
               <InfoIcon sx={{ color: 'error.main', fontSize: 20, mt: 0.5 }} />
               <div>
-                <p className="text-red-400 font-semibold text-sm mb-1">
+                <p className="text-destructive font-semibold text-sm mb-1">
                   Failed to load search index
                 </p>
                 {typeof error === 'string' ? (
-                  <p className="text-white/60 text-sm">{error}</p>
+                  <p className="text-muted-foreground text-sm">{error}</p>
                 ) : (
                   error
                 )}
@@ -321,13 +321,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
           ) : isLoading ? (
             /* Loading state */
             <div className="flex items-center justify-center gap-2 p-6">
-              <div className="w-4 h-4 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-              <span className="text-white/50 text-sm">Searching...</span>
+              <div className="w-4 h-4 border-2 border-border border-t-foreground rounded-full animate-spin" />
+              <span className="text-muted-foreground text-sm">Searching...</span>
             </div>
           ) : showEmpty ? (
             /* Empty state */
             <div className="p-6 text-center">
-              <p className="text-white/50 text-sm">
+              <p className="text-muted-foreground text-sm">
                 No results found for &ldquo;{deferredQuery}&rdquo;
               </p>
             </div>
@@ -340,7 +340,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
                     key={`header-${result.url}`}
                     className="px-4 pt-3 pb-1.5"
                   >
-                    <span className="text-white/40 text-[11px] font-semibold uppercase tracking-wider">
+                    <span className="text-muted-foreground text-[11px] font-semibold uppercase tracking-wider">
                       {result.meta.title}
                     </span>
                   </div>
@@ -363,20 +363,20 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
                         cursor-pointer
                         transition-colors duration-100
                         ${isActive
-                          ? 'bg-purple-500/15'
-                          : 'bg-transparent hover:bg-purple-500/10'
+                          ? 'bg-secondary'
+                          : 'bg-transparent hover:bg-secondary'
                         }
                       `}
                     >
                       <span
                         className={`text-sm font-medium ${
-                          isActive ? 'text-purple-300' : 'text-white/90'
+                          isActive ? 'text-foreground' : 'text-muted-foreground'
                         }`}
                       >
                         {sub.title}
                       </span>
                       <span
-                        className="text-xs text-white/50 line-clamp-2 [&_mark]:bg-purple-500/30 [&_mark]:text-purple-300 [&_mark]:font-semibold [&_mark]:px-0.5 [&_mark]:rounded-sm"
+                        className="text-xs text-muted-foreground line-clamp-2 [&_mark]:bg-accent [&_mark]:text-foreground [&_mark]:font-semibold [&_mark]:px-0.5 [&_mark]:rounded-sm"
                         dangerouslySetInnerHTML={{ __html: sub.excerpt }}
                       />
                     </button>
@@ -397,7 +397,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
 
       {/* ── Footer with keyboard hints ───────────────────────────────── */}
       {hasQuery && (
-        <div className="flex items-center gap-4 px-4 py-2 border-t border-purple-500/10 bg-slate-950/50">
+        <div className="flex items-center gap-4 px-4 py-2 border-t border-border bg-background/50">
           <FooterHint label="to select" glyph="↵" />
           <FooterHint label="to navigate" glyph="↑↓" />
           <FooterHint label="to close" glyph="esc" />
@@ -413,8 +413,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ open, onClose }) => {
 
 function FooterHint({ glyph, label }: { glyph: string; label: string }) {
   return (
-    <span className="flex items-center gap-1.5 text-[11px] text-white/30">
-      <kbd className="inline-flex items-center px-1 py-0.5 font-mono text-[10px] border border-white/10 rounded leading-none">
+    <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+      <kbd className="inline-flex items-center px-1 py-0.5 font-mono text-[10px] border border-border rounded leading-none">
         {glyph}
       </kbd>
       {label}

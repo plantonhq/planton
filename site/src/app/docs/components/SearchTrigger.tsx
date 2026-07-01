@@ -28,16 +28,16 @@ export const SearchTrigger: React.FC<SearchTriggerProps> = ({ onClick }) => {
         flex items-center gap-2 w-64
         px-3 py-1.5
         rounded-md
-        border border-purple-500/30
-        bg-transparent
-        text-white/50 text-sm
+        border border-border
+        bg-secondary/50
+        text-muted-foreground text-sm
         cursor-pointer
         transition-colors duration-200
-        hover:border-purple-500/50
-        focus-visible:outline-none focus-visible:border-purple-500/80
+        hover:border-ring
+        focus-visible:outline-none focus-visible:border-ring
       "
     >
-      <SearchIcon sx={{ fontSize: 20, color: 'rgba(156, 163, 175, 1)' }} />
+      <SearchIcon sx={{ fontSize: 20, color: 'currentColor' }} />
       <span className="flex-1 text-left">Search documentation...</span>
       <kbd
         className="
@@ -45,8 +45,8 @@ export const SearchTrigger: React.FC<SearchTriggerProps> = ({ onClick }) => {
           items-center
           px-1.5 py-0.5
           text-[11px] font-mono leading-none
-          text-white/40
-          border border-purple-500/30 rounded
+          text-muted-foreground
+          border border-border rounded
         "
       >
         {isMac ? '⌘K' : 'Ctrl K'}

@@ -59,7 +59,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
       if (iconError) {
         const label = (item.title || item.name || '?').charAt(0).toUpperCase();
         return (
-          <span className="w-5 h-5 flex items-center justify-center rounded bg-slate-700 text-[10px] font-bold text-gray-300 flex-shrink-0">
+          <span className="w-5 h-5 flex items-center justify-center rounded bg-secondary text-[10px] font-bold text-muted-foreground flex-shrink-0">
             {label}
           </span>
         );
@@ -94,31 +94,21 @@ const SidebarItem: FC<SidebarItemProps> = ({
     }
 
     if (item.type === 'directory') {
-      return <FolderIcon className="text-purple-400" fontSize="small" />;
+      return <FolderIcon className="text-foreground" fontSize="small" />;
     }
 
-    return <FileIcon className="text-gray-400" fontSize="small" />;
+    return <FileIcon className="text-muted-foreground" fontSize="small" />;
   };
 
   // Render badge if present
   const renderBadge = () => {
     if (!item.badge) return null;
 
-    const badgeColors: Record<string, string> = {
-      'Popular': 'bg-green-100 text-green-800',
-      'Beta': 'bg-blue-100 text-blue-800',
-      'New': 'bg-purple-100 text-purple-800',
-      'Deprecated': 'bg-red-100 text-red-800',
-      'Experimental': 'bg-yellow-100 text-yellow-800'
-    };
-
-    const colorClass = badgeColors[item.badge] || 'bg-gray-100 text-gray-800';
-
     return (
       <Chip
         label={item.badge}
         size="small"
-        className={`ml-2 text-xs ${colorClass}`}
+        className="ml-2 text-xs bg-secondary text-muted-foreground"
       />
     );
   };
@@ -133,7 +123,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
     return (
       <Box>
         <Box
-          className="flex items-center justify-between px-4 py-2 hover:bg-purple-900/20 cursor-pointer"
+          className="flex items-center justify-between px-4 py-2 hover:bg-secondary cursor-pointer"
         >
           <Box className="flex items-center gap-2 flex-1">
             {renderIcon()}
@@ -143,12 +133,12 @@ const SidebarItem: FC<SidebarItemProps> = ({
                 onClick={handleNavigate}
                 className="flex-1"
               >
-                <Typography className="text-gray-300 text-sm font-medium hover:text-purple-400">
+                <Typography className="text-muted-foreground text-sm font-medium hover:text-foreground transition-colors">
                   {item.title || formatName(item.name)}
                 </Typography>
               </Link>
             ) : (
-              <Typography className="text-gray-300 text-sm font-medium">
+              <Typography className="text-muted-foreground text-sm font-medium">
                 {item.title || formatName(item.name)}
               </Typography>
             )}
@@ -159,7 +149,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
             aria-label={isExpanded ? 'Collapse section' : 'Expand section'}
             aria-expanded={isExpanded}
             onClick={() => onToggle(item.path)}
-            className="text-gray-300"
+            className="text-muted-foreground"
           >
             {isExpanded ? <ExpandIcon fontSize="small" /> : <CollapseIcon fontSize="small" />}
           </IconButton>
@@ -191,12 +181,12 @@ const SidebarItem: FC<SidebarItemProps> = ({
         rel="noopener noreferrer"
         className="block"
       >
-        <Box className="flex items-center gap-2 px-4 py-2 hover:bg-purple-900/20 cursor-pointer text-gray-300">
+        <Box className="flex items-center gap-2 px-4 py-2 hover:bg-secondary cursor-pointer text-muted-foreground">
           {renderIcon()}
           <Typography className="text-sm flex-1">
             {item.title || formatName(item.name)}
           </Typography>
-          <ExternalLinkIcon className="text-gray-400" fontSize="small" />
+          <ExternalLinkIcon className="text-muted-foreground" fontSize="small" />
           {renderBadge()}
         </Box>
       </a>
@@ -207,8 +197,8 @@ const SidebarItem: FC<SidebarItemProps> = ({
     <Link href={`/docs/${item.path}`} onClick={handleNavigate}>
       <Box
         data-active={isActive || undefined}
-        className={`flex items-center gap-2 px-4 py-2 hover:bg-purple-900/20 cursor-pointer ${
-          isActive ? 'bg-purple-600 text-white' : 'text-gray-300'
+        className={`flex items-center gap-2 px-4 py-2 hover:bg-secondary cursor-pointer ${
+          isActive ? 'bg-secondary text-foreground' : 'text-muted-foreground'
         }`}
       >
         {renderIcon()}
@@ -319,7 +309,7 @@ export const DocsSidebar: FC<DocsSidebarProps> = ({ onNavigate }) => {
   if (loading) {
     return (
       <Box className="p-4">
-        <Typography className="text-gray-400">Loading...</Typography>
+        <Typography className="text-muted-foreground">Loading...</Typography>
       </Box>
     );
   }

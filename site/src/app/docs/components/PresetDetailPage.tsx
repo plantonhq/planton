@@ -48,7 +48,7 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
       {/* Back navigation */}
       <Link
         href={basePath}
-        className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-purple-400 transition-colors mb-6"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
         {componentTitle} Presets
@@ -58,7 +58,7 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-start gap-4 mb-8">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <PresetRankBadge rank={rank} />
-          <h1 className="text-2xl font-bold text-white truncate">{title}</h1>
+          <h1 className="text-2xl font-bold text-foreground truncate">{title}</h1>
         </div>
 
         {/* Action buttons */}
@@ -67,7 +67,7 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
             href={rawYamlUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-slate-800 border border-slate-700/50 text-gray-300 hover:text-white hover:bg-slate-700 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
           >
             <FileCode className="w-3.5 h-3.5" />
             Raw YAML
@@ -76,7 +76,7 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
             href={rawMdUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-slate-800 border border-slate-700/50 text-gray-300 hover:text-white hover:bg-slate-700 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-secondary border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
           >
             <FileText className="w-3.5 h-3.5" />
             Raw Markdown
@@ -96,7 +96,7 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
             // Strip the H1 since we already show the title above
             h1: () => null,
             p: ({ children }) => (
-              <p className="text-gray-300 mb-4 leading-relaxed">{children}</p>
+              <p className="text-muted-foreground mb-4 leading-relaxed">{children}</p>
             ),
             h2: ({ children }) => {
               const id = children
@@ -105,7 +105,7 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
                 .replace(/[^a-z0-9\s-]/g, '')
                 .replace(/\s+/g, '-');
               return (
-                <h2 id={id} className="text-xl font-bold text-white mt-8 mb-3">
+                <h2 id={id} className="text-xl font-bold text-foreground mt-8 mb-3">
                   {children}
                 </h2>
               );
@@ -117,26 +117,26 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
                 .replace(/[^a-z0-9\s-]/g, '')
                 .replace(/\s+/g, '-');
               return (
-                <h3 id={id} className="text-lg font-bold text-white mt-5 mb-2">
+                <h3 id={id} className="text-lg font-bold text-foreground mt-5 mb-2">
                   {children}
                 </h3>
               );
             },
             ul: ({ children }) => (
-              <ul className="list-disc list-inside text-gray-300 mb-4 space-y-2">{children}</ul>
+              <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-2">{children}</ul>
             ),
             ol: ({ children }) => (
-              <ol className="list-decimal list-inside text-gray-300 mb-4 space-y-2">{children}</ol>
+              <ol className="list-decimal list-inside text-muted-foreground mb-4 space-y-2">{children}</ol>
             ),
-            li: ({ children }) => <li className="text-gray-300">{children}</li>,
+            li: ({ children }) => <li className="text-muted-foreground">{children}</li>,
             strong: ({ children }) => (
-              <strong className="text-white font-semibold">{children}</strong>
+              <strong className="text-foreground font-semibold">{children}</strong>
             ),
             code: ({ children, className }) => {
               const isInline = !className;
               if (isInline) {
                 return (
-                  <code className="bg-slate-800/60 text-sky-300 px-1.5 py-0.5 rounded text-sm">
+                  <code className="bg-secondary text-foreground px-1.5 py-0.5 rounded text-sm">
                     {children}
                   </code>
                 );
@@ -146,7 +146,7 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
             a: ({ href, children }) => (
               <a
                 href={href}
-                className="text-purple-400 hover:text-purple-300 underline"
+                className="text-foreground underline underline-offset-2 hover:text-muted-foreground"
                 target={href?.startsWith('http') ? '_blank' : undefined}
                 rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
               >
@@ -155,19 +155,19 @@ export const PresetDetailPage: React.FC<PresetDetailPageProps> = ({
             ),
             table: ({ children }) => (
               <div className="overflow-x-auto my-6">
-                <table className="min-w-full bg-slate-900 border border-purple-900/30 rounded-lg">
+                <table className="min-w-full bg-card border border-border rounded-lg">
                   {children}
                 </table>
               </div>
             ),
-            thead: ({ children }) => <thead className="bg-purple-900/20">{children}</thead>,
+            thead: ({ children }) => <thead className="bg-secondary">{children}</thead>,
             tbody: ({ children }) => <tbody>{children}</tbody>,
-            tr: ({ children }) => <tr className="border-b border-purple-900/30">{children}</tr>,
+            tr: ({ children }) => <tr className="border-b border-border">{children}</tr>,
             th: ({ children }) => (
-              <th className="px-4 py-3 text-left text-white font-semibold">{children}</th>
+              <th className="px-4 py-3 text-left text-foreground font-semibold">{children}</th>
             ),
-            td: ({ children }) => <td className="px-4 py-3 text-gray-300">{children}</td>,
-            hr: () => <hr className="my-8 border-purple-900/30" />,
+            td: ({ children }) => <td className="px-4 py-3 text-muted-foreground">{children}</td>,
+            hr: () => <hr className="my-8 border-border" />,
           }}
         >
           {mdContent}

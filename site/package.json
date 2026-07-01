@@ -7,9 +7,12 @@
     "dev": "next dev --turbopack",
     "copy-docs": "tsx scripts/copy-component-docs.ts",
     "generate-structure": "tsx scripts/generate-docs-structure.ts",
-    "build": "yarn copy-docs && yarn generate-structure && next build --turbopack && pagefind --site out --output-path out/_pagefind --exclude-selectors 'pre,code'",
+    "generate-stats": "tsx scripts/generate-stats.ts",
+    "build": "yarn copy-docs && yarn generate-structure && yarn generate-stats && next build --turbopack && pagefind --site out --output-path out/_pagefind --exclude-selectors 'pre,code'",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -35,6 +38,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

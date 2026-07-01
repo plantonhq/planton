@@ -78,7 +78,7 @@ const MarkdownImage: React.FC<
     const letter = (alt || '?').charAt(0).toUpperCase();
     return (
       <span
-        className="inline-flex items-center justify-center rounded bg-slate-700 text-sm font-bold text-gray-300 flex-shrink-0 w-8 h-8"
+        className="inline-flex items-center justify-center rounded bg-secondary text-sm font-bold text-muted-foreground flex-shrink-0 w-8 h-8"
         aria-label={alt || 'icon'}
       >
         {letter}
@@ -114,18 +114,18 @@ const NextArticle: React.FC<NextArticleProps> = ({ nextArticle }) => {
   if (!nextArticle) return null;
 
   return (
-    <div className="mt-12 p-6 rounded-lg bg-purple-900/20 border border-purple-900/30">
+    <div className="mt-12 p-6 rounded-lg bg-secondary border border-border">
       <div className="max-w-none">
-        <p className="text-lg text-gray-400 m-0 font-bold">Next article</p>
-        <h3 className="text-xl font-bold text-white m-0 my-2">{nextArticle.title}</h3>
+        <p className="text-lg text-muted-foreground m-0 font-bold">Next article</p>
+        <h3 className="text-xl font-bold text-foreground m-0 my-2">{nextArticle.title}</h3>
         {nextArticle.excerpt && (
           <div className="relative mb-4 min-h-24">
-            <div className="text-gray-300 leading-6">{nextArticle.excerpt}</div>
+            <div className="text-muted-foreground leading-6">{nextArticle.excerpt}</div>
           </div>
         )}
         <Link
           href={nextArticle.slug}
-          className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-md transition-colors duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
+          className="inline-flex items-center px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md transition-colors duration-200 hover:translate-y-[-1px] active:translate-y-[1px]"
         >
           Read next article
         </Link>
@@ -149,7 +149,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
         <header className="mb-8">
           {/* Date and Author */}
           {(metadata.date || metadata.author) && (
-            <div className="flex items-center gap-4 text-gray-300 mb-6">
+            <div className="flex items-center gap-4 text-muted-foreground mb-6">
               {metadata.date && <time dateTime={metadata.date}>{formatDate(metadata.date)}</time>}
               {metadata.author && (
                 <>
@@ -172,7 +172,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
               {metadata.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-purple-900/30 text-purple-200 text-sm font-medium rounded-full border border-purple-700/30"
+                  className="px-3 py-1 bg-secondary text-muted-foreground text-sm font-medium rounded-full border border-border"
                 >
                   {tag}
                 </span>
@@ -204,7 +204,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
             rehypePlugins={[rehypeRaw, [rehypeHighlight, { detect: false }]]}
             components={{
               p: ({ children }) => (
-                <p className="text-gray-300 mb-4 leading-relaxed">{children}</p>
+                <p className="text-muted-foreground mb-4 leading-relaxed">{children}</p>
               ),
               h1: ({ children }) => {
                 const id = children
@@ -214,7 +214,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   .replace(/\s+/g, '-');
 
                 return (
-                  <h1 id={id} className="text-3xl font-bold text-white mt-8 mb-4">
+                  <h1 id={id} className="text-3xl font-bold text-foreground mt-8 mb-4">
                     {children}
                   </h1>
                 );
@@ -227,7 +227,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   .replace(/\s+/g, '-');
 
                 return (
-                  <h2 id={id} className="text-2xl font-bold text-white mt-6 mb-3">
+                  <h2 id={id} className="text-2xl font-bold text-foreground mt-6 mb-3">
                     {children}
                   </h2>
                 );
@@ -240,7 +240,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   .replace(/\s+/g, '-');
 
                 return (
-                  <h3 id={id} className="text-xl font-bold text-white mt-5 mb-2">
+                  <h3 id={id} className="text-xl font-bold text-foreground mt-5 mb-2">
                     {children}
                   </h3>
                 );
@@ -253,7 +253,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   .replace(/\s+/g, '-');
 
                 return (
-                  <h4 id={id} className="text-lg font-bold text-white mt-4 mb-2">
+                  <h4 id={id} className="text-lg font-bold text-foreground mt-4 mb-2">
                     {children}
                   </h4>
                 );
@@ -266,7 +266,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   .replace(/\s+/g, '-');
 
                 return (
-                  <h5 id={id} className="text-base font-bold text-white mt-3 mb-2">
+                  <h5 id={id} className="text-base font-bold text-foreground mt-3 mb-2">
                     {children}
                   </h5>
                 );
@@ -279,22 +279,22 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   .replace(/\s+/g, '-');
 
                 return (
-                  <h6 id={id} className="text-sm font-bold text-white mt-2 mb-1">
+                  <h6 id={id} className="text-sm font-bold text-foreground mt-2 mb-1">
                     {children}
                   </h6>
                 );
               },
               ul: ({ children }) => (
-                <ul className="list-disc list-inside text-gray-300 mb-4 space-y-2">{children}</ul>
+                <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-2">{children}</ul>
               ),
               ol: ({ children }) => (
-                <ol className="list-decimal list-inside text-gray-300 mb-4 space-y-2">
+                <ol className="list-decimal list-inside text-muted-foreground mb-4 space-y-2">
                   {children}
                 </ol>
               ),
-              li: ({ children }) => <li className="text-gray-300">{children}</li>,
+              li: ({ children }) => <li className="text-muted-foreground">{children}</li>,
               blockquote: ({ children }) => (
-                <blockquote className="border-l-4 border-purple-500 pl-4 py-2 my-4 bg-purple-900/20 rounded-r text-gray-300 italic">
+                <blockquote className="border-l-4 border-border pl-4 py-2 my-4 bg-secondary rounded-r text-muted-foreground italic">
                   {children}
                 </blockquote>
               ),
@@ -302,7 +302,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                 const isInline = !className;
                 if (isInline) {
                   return (
-                    <code className="bg-slate-800/60 text-sky-300 px-1.5 py-0.5 rounded text-sm">
+                    <code className="bg-secondary text-foreground px-1.5 py-0.5 rounded text-sm">
                       {children}
                     </code>
                   );
@@ -326,7 +326,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   return (
                     <Link
                       href={href}
-                      className="text-purple-400 hover:text-purple-300 underline"
+                      className="text-foreground underline underline-offset-2 hover:text-muted-foreground"
                     >
                       {children}
                     </Link>
@@ -335,7 +335,7 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                 return (
                   <a
                     href={href}
-                    className="text-purple-400 hover:text-purple-300 underline"
+                    className="text-foreground underline underline-offset-2 hover:text-muted-foreground"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -346,19 +346,19 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
               img: MarkdownImage,
               table: ({ children }) => (
                 <div className="overflow-x-auto my-6">
-                  <table className="min-w-full bg-slate-900 border border-purple-900/30 rounded-lg">
+                  <table className="min-w-full bg-card border border-border rounded-lg">
                     {children}
                   </table>
                 </div>
               ),
-              thead: ({ children }) => <thead className="bg-purple-900/20">{children}</thead>,
+              thead: ({ children }) => <thead className="bg-secondary">{children}</thead>,
               tbody: ({ children }) => <tbody>{children}</tbody>,
-              tr: ({ children }) => <tr className="border-b border-purple-900/30">{children}</tr>,
+              tr: ({ children }) => <tr className="border-b border-border">{children}</tr>,
               th: ({ children }) => (
-                <th className="px-4 py-3 text-left text-white font-semibold">{children}</th>
+                <th className="px-4 py-3 text-left text-foreground font-semibold">{children}</th>
               ),
-              td: ({ children }) => <td className="px-4 py-3 text-gray-300">{children}</td>,
-              hr: () => <hr className="my-8 border-purple-900/30" />,
+              td: ({ children }) => <td className="px-4 py-3 text-muted-foreground">{children}</td>,
+              hr: () => <hr className="my-8 border-border" />,
             }}
           >
             {content}

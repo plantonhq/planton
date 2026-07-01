@@ -168,7 +168,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
 
       return (
         <>
-          <div className="flex-1 min-h-screen overflow-x-hidden">
+          <div className="flex-1 min-h-screen min-w-0">
             <div className="px-4 sm:px-6 lg:px-12 py-8 max-w-full">
               <PresetListPage
                 componentTitle={data.componentTitle as string}
@@ -183,7 +183,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
 
           {/* Right Sidebar */}
           <div className="hidden xl:block sticky top-16 h-[calc(100vh-4rem)] w-80 flex-shrink-0">
-            <div className="h-full overflow-y-auto bg-slate-950 border-l border-purple-900/30">
+            <div className="h-full overflow-y-auto border-l border-border">
               <RightSidebar content={content} />
             </div>
           </div>
@@ -206,7 +206,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
 
       return (
         <>
-          <div className="flex-1 min-h-screen overflow-x-hidden">
+          <div className="flex-1 min-h-screen min-w-0">
             <div className="px-4 sm:px-6 lg:px-12 py-8 max-w-full">
               <PresetDetailPage
                 title={data.title as string}
@@ -224,7 +224,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
 
           {/* Right Sidebar */}
           <div className="hidden xl:block sticky top-16 h-[calc(100vh-4rem)] w-80 flex-shrink-0">
-            <div className="h-full overflow-y-auto bg-slate-950 border-l border-purple-900/30">
+            <div className="h-full overflow-y-auto border-l border-border">
               <RightSidebar content={content} />
             </div>
           </div>
@@ -254,7 +254,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
     return (
       <>
         {/* Main Content Area */}
-        <div className="flex-1 min-h-screen overflow-x-hidden">
+        <div className="flex-1 min-h-screen min-w-0">
           <div className={`px-4 sm:px-6 lg:px-12 py-8 max-w-full ${author.length > 0 ? 'max-w-4xl mx-auto' : ''}`}>
             <MDXRenderer
               mdxContent={mdxContent}
@@ -274,7 +274,7 @@ export default async function DocsPage({ params }: { params: DocsParams }) {
 
         {/* Right Sidebar - Table of contents */}
         <div className="hidden xl:block sticky top-16 h-[calc(100vh-4rem)] w-80 flex-shrink-0">
-          <div className="h-full overflow-y-auto bg-slate-950 border-l border-purple-900/30">
+          <div className="h-full overflow-y-auto border-l border-border">
             <RightSidebar author={author} content={content} presetsLink={presetsLink} />
           </div>
         </div>

@@ -21,22 +21,22 @@ export const MermaidBlock: React.FC<MermaidBlockProps> = ({ chart }) => {
         theme: 'dark',
         themeVariables: {
           darkMode: true,
-          background: '#0f172a',
-          primaryColor: '#7c3aed',
-          primaryTextColor: '#e2e8f0',
-          primaryBorderColor: '#6d28d9',
-          secondaryColor: '#1e293b',
-          secondaryTextColor: '#cbd5e1',
-          secondaryBorderColor: '#475569',
-          tertiaryColor: '#1e1b4b',
-          lineColor: '#94a3b8',
-          textColor: '#e2e8f0',
-          mainBkg: '#1e293b',
-          nodeBorder: '#6d28d9',
-          clusterBkg: '#1e1b4b',
-          clusterBorder: '#6d28d9',
-          titleColor: '#e2e8f0',
-          edgeLabelBackground: '#1e293b',
+          background: '#0a0a0a',
+          primaryColor: '#1a1a1a',
+          primaryTextColor: '#ededed',
+          primaryBorderColor: '#333333',
+          secondaryColor: '#111111',
+          secondaryTextColor: '#a1a1a1',
+          secondaryBorderColor: '#333333',
+          tertiaryColor: '#111111',
+          lineColor: '#a1a1a1',
+          textColor: '#ededed',
+          mainBkg: '#1a1a1a',
+          nodeBorder: '#333333',
+          clusterBkg: '#111111',
+          clusterBorder: '#333333',
+          titleColor: '#ededed',
+          edgeLabelBackground: '#111111',
         },
         flowchart: { curve: 'basis', htmlLabels: true },
         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
@@ -63,7 +63,7 @@ export const MermaidBlock: React.FC<MermaidBlockProps> = ({ chart }) => {
   return (
     <div
       ref={containerRef}
-      className="my-6 flex justify-center overflow-x-auto rounded-lg border border-purple-900/30 bg-slate-900 p-4"
+      className="my-6 flex justify-center overflow-x-auto rounded-lg border border-border bg-card p-4"
     />
   );
 };

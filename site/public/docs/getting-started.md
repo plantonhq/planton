@@ -1,37 +1,44 @@
 ---
 title: "Getting Started"
-description: "Install Planton and deploy your first resource to a local Kubernetes cluster"
+description: "Download Planton, open it, and deploy real infrastructure to your own cloud — from the app or the CLI"
 icon: "rocket"
 order: 2
 ---
 
 # Getting Started
 
-By the end of this page, you will have installed the Planton CLI, deployed a PostgreSQL database to a local Kubernetes cluster, verified it is running, and torn it down. The entire process takes about 10 minutes.
+Planton is a free desktop app and CLI for your cloud infrastructure. You download it, open it, and deploy to your own cloud — with clean, auditable infrastructure-as-code running underneath. No account, no sign-up, no ceremony.
 
-<!-- AI-AGENT NOTE: The deployment component count below MUST be verified against the authoritative source:
-     apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto
-     Count only non-test, non-unspecified enum values in the CloudResourceKind enum. -->
+This page gets you from zero to a first deployment two ways: the **desktop app** (click to deploy) and the **CLI** (`planton apply -f`). Pick whichever fits how you work — they run the same proven modules underneath.
 
-You will use KubernetesPostgres — one of Planton's 360+ deployment components — as your first resource. It runs on a local Kind cluster, so you do not need cloud provider credentials or a paid account to get started.
+## Deploy with the desktop app
 
-## What You'll Need
+The fastest way to see Planton work.
 
-Install these tools before proceeding:
+1. **Download Planton** for your platform from [planton.dev/download](/download), and open it. On first launch, Planton starts a local instance on your machine — a local control plane that runs entirely on your own hardware. There is nothing to sign up for.
+2. **It finds the cloud you're already signed into.** Planton detects your existing local credentials (for example, the AWS profile you already use) — no connection to configure.
+3. **Pick a stack and fill a short form.** Choose a ready-made stack or a single component, fill in only what's truly required (smart defaults handle the rest), and review a plain summary plus the exact manifest that will be applied.
+4. **Click deploy, and watch it come online.** See the architecture before you deploy, then watch each resource light up as it is created — real infrastructure-as-code, stored and versioned, every change a diff.
 
-| Tool | Purpose | Install |
-|------|---------|---------|
-| [Git](https://git-scm.com/) | Module resolution (clones IaC modules) | `brew install git` |
-| [Kind](https://kind.sigs.k8s.io/) | Local Kubernetes cluster | `brew install kind` |
-| [kubectl](https://kubernetes.io/docs/tasks/tools/) | Cluster verification | `brew install kubectl` |
-| [Pulumi CLI](https://www.pulumi.com/docs/install/) | IaC engine (executes deployments) | `brew install pulumi` |
+The desktop app deploys to **AWS, GCP, Azure, and Kubernetes**.
 
-This guide uses Pulumi as the IaC engine. If you prefer OpenTofu or Terraform, see [Dual IaC Engines](/docs/concepts/dual-iac-engines) for setup instructions.
+## Deploy with the CLI
 
-## Install Planton
+Planton mirrors the two gestures Kubernetes made great — and frees them for every cloud. There are two commands, and they are never interchangeable:
+
+- **`planton apply -f <manifest>`** applies a **single** component from one manifest — the `kubectl apply -f` parallel.
+- **`planton chart install <chart> …`** installs a **whole environment** from a chart — the `helm install` parallel.
+
+### Install the CLI
 
 ```bash
 brew install plantonhq/tap/planton
+```
+
+Or, with Go:
+
+```bash
+go install github.com/plantonhq/planton@latest
 ```
 
 Verify the installation:
@@ -40,152 +47,44 @@ Verify the installation:
 planton version
 ```
 
-## Create a Local Cluster
+### Apply a single manifest
 
-Create a Kubernetes cluster using Kind:
-
-```bash
-kind create cluster --name planton-quickstart
-```
-
-Confirm the cluster is running:
-
-```bash
-kubectl cluster-info --context kind-planton-quickstart
-```
-
-## Write Your Manifest
-
-Create a file named `postgres.yaml`:
+Every Planton manifest follows the Kubernetes Resource Model (KRM) — the same `apiVersion`, `kind`, `metadata`, `spec` shape you already know, extended to every cloud. Create a file named `bucket.yaml`:
 
 ```yaml
-apiVersion: kubernetes.planton.dev/v1
-kind: KubernetesPostgres
+apiVersion: aws.planton.dev/v1
+kind: AwsS3Bucket
 metadata:
-  name: my-first-postgres
-  labels:
-    planton.dev/provisioner: pulumi
-    pulumi.planton.dev/organization: organization
-    pulumi.planton.dev/project: getting-started
-    pulumi.planton.dev/stack.name: dev
+  name: my-first-bucket
 spec:
-  namespace:
-    value: my-first-postgres
-  createNamespace: true
-  container:
-    replicas: 1
-    resources:
-      requests:
-        cpu: 50m
-        memory: 100Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-    diskSize: 1Gi
+  awsRegion: us-east-1
 ```
 
-Every Planton manifest follows the Kubernetes Resource Model (KRM) — the same `apiVersion`, `kind`, `metadata`, `spec` structure used by Kubernetes itself. Here is what each section does:
-
-- **`apiVersion` and `kind`** identify this as a KubernetesPostgres resource. Planton has [360+ component kinds](/docs/concepts/cloud-resource-kinds) across 17 cloud providers, each with its own apiVersion and kind.
-- **`metadata.name`** names this resource. The name is used in state tracking, logging, and resource identification.
-- **`metadata.labels`** control how Planton processes the manifest:
-  - `planton.dev/provisioner: pulumi` tells the CLI to route this deployment through the Pulumi engine. The alternative is `tofu` for OpenTofu/Terraform.
-  - The three `pulumi.planton.dev/*` labels configure the Pulumi stack identity — where deployment state is stored. For local development, any values work.
-- **`spec`** defines the desired state of the resource. Each component kind has its own spec fields, defined by Protocol Buffer schemas with built-in validation.
-
-For a deeper explanation of the manifest model, see [Manifests](/docs/concepts/manifests).
-
-## Validate the Manifest
+Deploy it:
 
 ```bash
-planton validate -f postgres.yaml
+planton apply -f bucket.yaml
 ```
 
-Validation checks the manifest against the KubernetesPostgres Protocol Buffer schema. It catches structural errors — missing required fields, invalid field types, values outside allowed ranges — before you attempt a deployment.
+The CLI resolves the proven, pre-built module for `AwsS3Bucket`, runs it locally, and **streams the live output to your terminal** as the resource is created — genuinely live, not fire-and-forget.
 
-If validation passes, the CLI prints a confirmation. If it fails, the error message identifies the exact field and constraint that was violated.
+### Install a whole environment
 
-## Prepare for Deployment
-
-Two setup steps before deploying:
-
-**Configure a local Pulumi backend.** Pulumi needs a backend to store deployment state. For local development, use file-based storage:
+A chart installs a whole environment in one command — many resources, wired together:
 
 ```bash
-pulumi login --local
+planton chart install aws-ecs --name api --env dev --values values.yaml
 ```
 
-This stores state in `~/.pulumi/` on your machine. For team or production use, Planton supports Pulumi Cloud, S3, GCS, and Azure Blob backends. See [State Management](/docs/concepts/state-management) for details.
+You'll watch every resource in the environment come up, live, as it happens.
 
-**Initialize the stack.** A Pulumi stack is a unit of deployment state — it tracks what resources exist and their current configuration. Create one for this deployment:
+## What's running underneath
 
-```bash
-planton init -f postgres.yaml
-```
+Whichever path you take, Planton **runs proven, pre-built infrastructure-as-code modules** for you — it does not ask you to write them. Each module is backed by Terraform or Pulumi, with secure, cost-aware, well-architected defaults baked in. Your configuration is stored and versioned, every change is a diff, and you can export it and run it yourself at any time. Nothing locks you in.
 
-This reads the stack labels from the manifest (`local/getting-started/dev`) and registers the stack with your configured backend. The command is idempotent — running it again on an existing stack is safe.
+## Next steps
 
-## Deploy
-
-```bash
-planton apply -f postgres.yaml
-```
-
-The CLI loads the manifest, resolves the Pulumi module for KubernetesPostgres from the Planton repository, and executes the deployment. You will see Pulumi's output as it creates Kubernetes resources — a StatefulSet, Service, PersistentVolumeClaim, and supporting objects.
-
-The first run takes longer because the CLI clones the IaC module from GitHub. Subsequent runs use the cached module at `~/.planton/modules/`.
-
-## Verify
-
-Check that the PostgreSQL pod is running:
-
-```bash
-kubectl get pods -n my-first-postgres
-```
-
-You should see a pod named `my-first-postgres-postgresql-0` with status `Running`. It may take a minute for the pod to pull the PostgreSQL image and start.
-
-Check the service:
-
-```bash
-kubectl get svc -n my-first-postgres
-```
-
-## Clean Up
-
-Destroy the deployed resources:
-
-```bash
-planton destroy -f postgres.yaml
-```
-
-This removes all Kubernetes resources that were created by the deployment.
-
-Optionally, delete the Kind cluster:
-
-```bash
-kind delete cluster --name planton-quickstart
-```
-
-## What Just Happened
-
-When you ran `planton apply`, the CLI executed this pipeline:
-
-1. **Loaded** the manifest from `postgres.yaml` and applied Protocol Buffer validation
-2. **Read** the `planton.dev/provisioner: pulumi` label and routed execution to the Pulumi engine
-3. **Resolved** the Pulumi module for KubernetesPostgres — a Go program that translates the spec into Kubernetes resources
-4. **Built** a stack input from the manifest and passed it to the Pulumi program as configuration
-5. **Executed** `pulumi up`, which created a StatefulSet, Service, PersistentVolumeClaim, and associated resources in your cluster
-
-This is the same workflow for every deployment component in Planton. Whether you deploy an AWS S3 bucket, a GCP Cloud SQL instance, or a Cloudflare Worker, the pattern is identical: write a manifest, validate, init, apply. The manifest fields change; the workflow does not.
-
-## Next Steps
-
-You have deployed your first resource with Planton. Here is where to go next:
-
-- **Understand the model.** Read [Core Concepts](/docs/concepts) to learn how deployment components, manifests, validation, and the dual IaC engine system work together.
-- **Deploy to a cloud provider.** Follow the [AWS S3 Bucket tutorial](/docs/tutorials/first-aws-resource) or the [Multi-Provider tutorial](/docs/tutorials/multi-provider) to deploy real cloud infrastructure.
-- **Go deeper with Kubernetes.** The [Kubernetes Postgres tutorial](/docs/tutorials/first-kubernetes-resource) builds on this guide with custom databases, named users, resource tuning, and runtime overrides.
-- **Set up cloud credentials.** Configure [AWS](/docs/guides/aws-provider-setup), [GCP](/docs/guides/gcp-provider-setup), or [Azure](/docs/guides/azure-provider-setup) for production deployments.
-- **Explore the catalog.** Browse all [360+ deployment components](/docs/catalog) across 17 cloud providers.
-- **Troubleshoot issues.** Check the [Troubleshooting Guide](/docs/troubleshooting) if you run into problems.
+- **Understand the model.** Read [Desktop App and CLI](/docs/concepts/desktop-and-cli) for how the two commands map to Kubernetes, and [Core Concepts](/docs/concepts) for the resource model.
+- **Browse the catalog.** Explore the [components](/docs/catalog) across 17 cloud providers, each with a guided form and ready-made presets.
+- **Go deeper.** See [Manifests](/docs/concepts/manifests), [Dual IaC Engines](/docs/concepts/dual-iac-engines), and [State Management](/docs/concepts/state-management).
+- **Troubleshoot.** Check the [Troubleshooting Guide](/docs/troubleshooting) if you run into problems.

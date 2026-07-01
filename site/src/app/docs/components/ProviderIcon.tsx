@@ -36,7 +36,7 @@ export const ProviderIcon: FC<ProviderIconProps> = ({
   if (error) {
     return (
       <span
-        className={`flex items-center justify-center rounded bg-slate-700 font-bold text-gray-300 flex-shrink-0 ${className ?? ''}`}
+        className={`flex items-center justify-center rounded bg-secondary font-bold text-muted-foreground flex-shrink-0 ${className ?? ''}`}
         style={{ width: size, height: size, fontSize: Math.round(size * 0.45) }}
         aria-label={provider.toUpperCase()}
       >
