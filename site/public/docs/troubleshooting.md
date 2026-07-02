@@ -30,7 +30,7 @@ Solutions to common problems you might encounter using Planton.
 # Right: AwsS3Bucket
 
 # 2. Verify kind exists in catalog
-# Browse: https://planton.dev/docs/catalog
+# Browse: /docs/catalog
 
 # 3. Check available kinds in your CLI version
 # (List is shown in error message)

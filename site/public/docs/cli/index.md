@@ -7,19 +7,17 @@ order: 20
 
 # CLI
 
-The `planton` CLI is a single binary that handles the full deployment lifecycle: manifest loading, validation, module resolution, provisioner execution, and state management across Pulumi, OpenTofu, and Terraform.
+The `planton` CLI is the desktop app's companion for the terminal — it drives the same engine and handles the full deployment lifecycle: manifest loading, validation, module resolution, provisioner execution, and state management across Pulumi, OpenTofu, and Terraform.
 
 ## Installation
 
 ```bash
-# macOS (Homebrew)
+# Homebrew
 brew install plantonhq/tap/planton
 
 # Verify
 planton version
 ```
-
-For other platforms, download the binary from [GitHub Releases](https://github.com/plantonhq/planton/releases).
 
 You also need at least one IaC engine installed:
 
@@ -95,7 +93,7 @@ You can let the CLI detect the provisioner automatically from the manifest's `pl
 
 - **[Terraform Commands](./terraform-commands)** — Terraform-specific subcommands: `init`, `plan`, `apply`, `destroy`, `refresh`. Shares the same HCL modules and execution engine as OpenTofu.
 
-- **[Module Management](./module-management)** — Module resolution chain, the staging area, version pinning with `checkout` and `pull`, and CLI version management with `upgrade` and `downgrade`.
+- **[Module Management](./module-management)** — Module resolution chain, the staging area, version pinning with `checkout` and `pull`, and keeping the CLI up to date.
 
 - **[Configuration & Utilities](./configuration)** — CLI configuration (`config set/get/list`), manifest validation (`validate`), manifest loading (`load`), and version checking.
 
