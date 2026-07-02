@@ -1,0 +1,43 @@
+# =============================================================================
+# Infra Chart Structure Guard
+# =============================================================================
+# Fails the PR if any infra chart under charts/<provider>/<name>/ is structurally
+# incomplete: missing Chart.yaml, values.yaml (with a params block), or a
+# non-empty templates/ directory, or a Chart.yaml missing the InfraChart identity.
+#
+# This enforces the chart project contract (Chart.yaml + values.yaml + templates/)
+# that downstream discovery, loading, and the released catalog bundle depend on,
+# catching a structurally broken chart at PR time. Deep render/validation is the
+# authoritative Platform build's job and is intentionally not duplicated here.
+# See hack/guards/ensure_chart_structure.sh.
+# =============================================================================
+
+name: lint.charts
+
+on:
+  pull_request:
+    paths:
+      - 'charts/**'
+      - 'hack/guards/ensure_chart_structure.sh'
+      - '.github/workflows/lint.charts.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/**'
+      - 'hack/guards/ensure_chart_structure.sh'
+      - '.github/workflows/lint.charts.yaml'
+
+permissions:
+  contents: read
+
+jobs:
+  chart-structure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify chart structure
+        run: bash ./hack/guards/ensure_chart_structure.sh
