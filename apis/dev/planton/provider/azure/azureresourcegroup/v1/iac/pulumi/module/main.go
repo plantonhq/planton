@@ -3,24 +3,17 @@ package module
 import (
 	"github.com/pkg/errors"
 	azureresourcegroupv1 "github.com/plantonhq/planton/apis/dev/planton/provider/azure/azureresourcegroup/v1"
-	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/pulumiazureprovider"
 	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure/core"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func Resources(ctx *pulumi.Context, stackInput *azureresourcegroupv1.AzureResourceGroupStackInput) error {
 	locals := initializeLocals(ctx, stackInput)
-	azureProviderConfig := stackInput.ProviderConfig
 
-	// Create azure provider using the credentials from the input
-	azureProvider, err := azure.NewProvider(ctx,
-		"azure",
-		&azure.ProviderArgs{
-			ClientId:       pulumi.String(azureProviderConfig.ClientId),
-			ClientSecret:   pulumi.String(azureProviderConfig.ClientSecret),
-			SubscriptionId: pulumi.String(azureProviderConfig.SubscriptionId),
-			TenantId:       pulumi.String(azureProviderConfig.TenantId),
-		})
+	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
+	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

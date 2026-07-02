@@ -12,8 +12,8 @@ go_library(
     deps = [
         "//apis/dev/planton/provider/azure/azureresourcegroup/v1:azureresourcegroup",
         "//apis/dev/planton/shared/cloudresourcekind",
+        "//pkg/iac/pulumi/pulumimodule/provider/azure/pulumiazureprovider",
         "@com_github_pkg_errors//:errors",
-        "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure",
         "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure/core",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],

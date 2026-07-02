@@ -25,15 +25,20 @@ const (
 // AzureProviderConfig message represents the specification required to connect an Azure account.
 // This message consolidates all necessary input parameters to establish a connection with an Azure account,
 // ensuring accurate configuration and validation of credentials.
-// Fields include client ID, client secret, tenant ID, and subscription ID, providing a complete set of information
-// for securely connecting to Azure.
+// The identity coordinates (client ID, tenant ID, subscription ID) are always required; the credential is
+// supplied by exactly one of {client_secret, web_identity}. If neither is set, providers fall back to the
+// ambient Azure credential chain (e.g. a self-hosted runner's managed identity or `az` CLI login).
 type AzureProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The Azure Client ID, which is used to identify the application making requests to Azure services.
-	// This is a required field, and it must be a valid non-empty string.
+	// The Azure Client ID, which identifies the application (service principal) making requests to
+	// Azure services. Required in every auth mode: static-secret auth authenticates this application
+	// with client_secret, and keyless web-identity auth exchanges the OIDC token for this same
+	// application via its federated identity credential.
 	ClientId string `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	// The Azure Client Secret, which is used to authenticate the application with Azure services.
-	// This is a required field, and it must be a valid non-empty string.
+	// Required for static-credential auth; left empty for keyless web-identity auth (see web_identity
+	// below). The requirement is skipped when the field is empty (IGNORE_IF_ZERO_VALUE) so keyless
+	// configs validate.
 	ClientSecret string `protobuf:"bytes,2,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
 	// The Azure Tenant ID, which uniquely identifies the Azure Active Directory (AAD) tenant.
 	// This is a required field, and it must be a valid non-empty string.
@@ -41,8 +46,13 @@ type AzureProviderConfig struct {
 	// The Azure Subscription ID, which uniquely identifies the Azure subscription.
 	// This is a required field, and it must be a valid non-empty string.
 	SubscriptionId string `protobuf:"bytes,4,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Keyless web-identity (OIDC) authentication. When set, the provider authenticates via Azure
+	// Workload Identity Federation instead of a static client secret -- so client_secret is left
+	// empty in this mode. Exactly one of {client_secret, web_identity} is populated; if neither is
+	// set the provider falls back to the ambient credential chain.
+	WebIdentity   *AzureWebIdentityProviderConfig `protobuf:"bytes,5,opt,name=web_identity,json=webIdentity,proto3" json:"web_identity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureProviderConfig) Reset() {
@@ -103,16 +113,91 @@ func (x *AzureProviderConfig) GetSubscriptionId() string {
 	return ""
 }
 
+func (x *AzureProviderConfig) GetWebIdentity() *AzureWebIdentityProviderConfig {
+	if x != nil {
+		return x.WebIdentity
+	}
+	return nil
+}
+
+// AzureWebIdentityProviderConfig holds the input for keyless OIDC federation: the caller mints a
+// short-lived OIDC JWT from an issuer it controls, and Azure exchanges it for an AAD access token
+// via the OAuth client-assertion flow, matched against a federated identity credential (an exact
+// issuer + subject + audience triple) on the target application. The token is opaque to Planton,
+// which is agnostic to the issuer (a platform-owned issuer, GitHub Actions, GitLab CI, etc.).
+//
+// The token is carried in memory (web_identity_token) and never written to disk: each pulumi
+// operation re-mints a fresh JWT before it runs, so a stack job's runtime is never bound by a
+// single token's TTL and no file-based provider refresh is needed.
+//
+// These provider-config fields are constructed by the caller (e.g. the Planton runner) at deploy
+// time, not supplied as user input in a resource spec, so they are intentionally outside the spec
+// secret-coverage surface and carry no `sensitive` annotation.
+//
+// Exchange site: both pulumi Azure SDKs (azure "classic" and azure-native) consume the inline
+// token natively via their provider-level UseOidc + OidcToken fields and perform the AAD
+// client-assertion exchange inside the provider plugin -- no exchange happens in Planton's
+// process, unlike the AWS builders which were forced into a builder-side STS exchange by an
+// upstream provider bug.
+type AzureWebIdentityProviderConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The minted OIDC JWT presented to Azure AD as the client assertion, supplied inline (in
+	// memory). Maps to the pulumi Azure providers' OidcToken field.
+	WebIdentityToken string `protobuf:"bytes,1,opt,name=web_identity_token,json=webIdentityToken,proto3" json:"web_identity_token,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *AzureWebIdentityProviderConfig) Reset() {
+	*x = AzureWebIdentityProviderConfig{}
+	mi := &file_dev_planton_provider_azure_provider_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AzureWebIdentityProviderConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AzureWebIdentityProviderConfig) ProtoMessage() {}
+
+func (x *AzureWebIdentityProviderConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_dev_planton_provider_azure_provider_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AzureWebIdentityProviderConfig.ProtoReflect.Descriptor instead.
+func (*AzureWebIdentityProviderConfig) Descriptor() ([]byte, []int) {
+	return file_dev_planton_provider_azure_provider_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *AzureWebIdentityProviderConfig) GetWebIdentityToken() string {
+	if x != nil {
+		return x.WebIdentityToken
+	}
+	return ""
+}
+
 var File_dev_planton_provider_azure_provider_proto protoreflect.FileDescriptor
 
 const file_dev_planton_provider_azure_provider_proto_rawDesc = "" +
 	"\n" +
-	")dev/planton/provider/azure/provider.proto\x12\x1adev.planton.provider.azure\x1a\x1bbuf/validate/validate.proto\"\xbd\x01\n" +
+	")dev/planton/provider/azure/provider.proto\x12\x1adev.planton.provider.azure\x1a\x1bbuf/validate/validate.proto\"\x9c\x02\n" +
 	"\x13AzureProviderConfig\x12#\n" +
 	"\tclient_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bclientId\x12+\n" +
-	"\rclient_secret\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\fclientSecret\x12#\n" +
+	"\rclient_secret\x18\x02 \x01(\tB\x06\xbaH\x03\xd8\x01\x01R\fclientSecret\x12#\n" +
 	"\ttenant_id\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\btenantId\x12/\n" +
-	"\x0fsubscription_id\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0esubscriptionIdB\xf9\x01\n" +
+	"\x0fsubscription_id\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0esubscriptionId\x12]\n" +
+	"\fweb_identity\x18\x05 \x01(\v2:.dev.planton.provider.azure.AzureWebIdentityProviderConfigR\vwebIdentity\"V\n" +
+	"\x1eAzureWebIdentityProviderConfig\x124\n" +
+	"\x12web_identity_token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x10webIdentityTokenB\xf9\x01\n" +
 	"\x1ecom.dev.planton.provider.azureB\rProviderProtoP\x01Z<github.com/plantonhq/planton/apis/dev/planton/provider/azure\xa2\x02\x04DPPA\xaa\x02\x1aDev.Planton.Provider.Azure\xca\x02\x1aDev\\Planton\\Provider\\Azure\xe2\x02&Dev\\Planton\\Provider\\Azure\\GPBMetadata\xea\x02\x1dDev::Planton::Provider::Azureb\x06proto3"
 
 var (
@@ -127,16 +212,18 @@ func file_dev_planton_provider_azure_provider_proto_rawDescGZIP() []byte {
 	return file_dev_planton_provider_azure_provider_proto_rawDescData
 }
 
-var file_dev_planton_provider_azure_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_dev_planton_provider_azure_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dev_planton_provider_azure_provider_proto_goTypes = []any{
-	(*AzureProviderConfig)(nil), // 0: dev.planton.provider.azure.AzureProviderConfig
+	(*AzureProviderConfig)(nil),            // 0: dev.planton.provider.azure.AzureProviderConfig
+	(*AzureWebIdentityProviderConfig)(nil), // 1: dev.planton.provider.azure.AzureWebIdentityProviderConfig
 }
 var file_dev_planton_provider_azure_provider_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.provider.azure.AzureProviderConfig.web_identity:type_name -> dev.planton.provider.azure.AzureWebIdentityProviderConfig
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_dev_planton_provider_azure_provider_proto_init() }
@@ -150,7 +237,7 @@ func file_dev_planton_provider_azure_provider_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dev_planton_provider_azure_provider_proto_rawDesc), len(file_dev_planton_provider_azure_provider_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
