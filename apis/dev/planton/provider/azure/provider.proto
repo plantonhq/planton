@@ -7,16 +7,21 @@ import "buf/validate/validate.proto";
 // AzureProviderConfig message represents the specification required to connect an Azure account.
 // This message consolidates all necessary input parameters to establish a connection with an Azure account,
 // ensuring accurate configuration and validation of credentials.
-// Fields include client ID, client secret, tenant ID, and subscription ID, providing a complete set of information
-// for securely connecting to Azure.
+// The identity coordinates (client ID, tenant ID, subscription ID) are always required; the credential is
+// supplied by exactly one of {client_secret, web_identity}. If neither is set, providers fall back to the
+// ambient Azure credential chain (e.g. a self-hosted runner's managed identity or `az` CLI login).
 message AzureProviderConfig {
-  // The Azure Client ID, which is used to identify the application making requests to Azure services.
-  // This is a required field, and it must be a valid non-empty string.
+  // The Azure Client ID, which identifies the application (service principal) making requests to
+  // Azure services. Required in every auth mode: static-secret auth authenticates this application
+  // with client_secret, and keyless web-identity auth exchanges the OIDC token for this same
+  // application via its federated identity credential.
   string client_id = 1 [(buf.validate.field).required = true];
 
   // The Azure Client Secret, which is used to authenticate the application with Azure services.
-  // This is a required field, and it must be a valid non-empty string.
-  string client_secret = 2 [(buf.validate.field).required = true];
+  // Required for static-credential auth; left empty for keyless web-identity auth (see web_identity
+  // below). The requirement is skipped when the field is empty (IGNORE_IF_ZERO_VALUE) so keyless
+  // configs validate.
+  string client_secret = 2 [(buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE];
 
   // The Azure Tenant ID, which uniquely identifies the Azure Active Directory (AAD) tenant.
   // This is a required field, and it must be a valid non-empty string.
@@ -25,4 +30,35 @@ message AzureProviderConfig {
   // The Azure Subscription ID, which uniquely identifies the Azure subscription.
   // This is a required field, and it must be a valid non-empty string.
   string subscription_id = 4 [(buf.validate.field).required = true];
+
+  // Keyless web-identity (OIDC) authentication. When set, the provider authenticates via Azure
+  // Workload Identity Federation instead of a static client secret -- so client_secret is left
+  // empty in this mode. Exactly one of {client_secret, web_identity} is populated; if neither is
+  // set the provider falls back to the ambient credential chain.
+  AzureWebIdentityProviderConfig web_identity = 5;
+}
+
+// AzureWebIdentityProviderConfig holds the input for keyless OIDC federation: the caller mints a
+// short-lived OIDC JWT from an issuer it controls, and Azure exchanges it for an AAD access token
+// via the OAuth client-assertion flow, matched against a federated identity credential (an exact
+// issuer + subject + audience triple) on the target application. The token is opaque to Planton,
+// which is agnostic to the issuer (a platform-owned issuer, GitHub Actions, GitLab CI, etc.).
+//
+// The token is carried in memory (web_identity_token) and never written to disk: each pulumi
+// operation re-mints a fresh JWT before it runs, so a stack job's runtime is never bound by a
+// single token's TTL and no file-based provider refresh is needed.
+//
+// These provider-config fields are constructed by the caller (e.g. the Planton runner) at deploy
+// time, not supplied as user input in a resource spec, so they are intentionally outside the spec
+// secret-coverage surface and carry no `sensitive` annotation.
+//
+// Exchange site: both pulumi Azure SDKs (azure "classic" and azure-native) consume the inline
+// token natively via their provider-level UseOidc + OidcToken fields and perform the AAD
+// client-assertion exchange inside the provider plugin -- no exchange happens in Planton's
+// process, unlike the AWS builders which were forced into a builder-side STS exchange by an
+// upstream provider bug.
+message AzureWebIdentityProviderConfig {
+  // The minted OIDC JWT presented to Azure AD as the client assertion, supplied inline (in
+  // memory). Maps to the pulumi Azure providers' OidcToken field.
+  string web_identity_token = 1 [(buf.validate.field).required = true];
 }
