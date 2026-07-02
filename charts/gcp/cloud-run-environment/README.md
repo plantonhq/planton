@@ -297,4 +297,4 @@ When `dockerRepoEnabled: true`, an Artifact Registry Docker repository is create
 
 ---
 
-© 2025 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).

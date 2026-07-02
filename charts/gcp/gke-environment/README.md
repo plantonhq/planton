@@ -123,4 +123,4 @@ Booleans are shown as **unquoted YAML booleans** (`true`/`false`) to avoid strin
 
 ---
 
-© 2025 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).

@@ -13,4 +13,4 @@ This chart provisions a **complete, production‑ready Kubernetes environment on
 
 Edit **values.yaml** to tailor the deployment; each `*Enabled` boolean cleanly removes its add‑on.
 
-© 2025 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).

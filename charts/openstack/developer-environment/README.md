@@ -105,4 +105,4 @@ and Subnet, the Instance waits for the Port and Keypair, and so on.
 
 ---
 
-(c) 2026 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).

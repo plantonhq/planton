@@ -148,4 +148,4 @@ Kubernetes cluster, enabling pods to connect to databases over private IPs.
 
 ---
 
-(c) 2025 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).

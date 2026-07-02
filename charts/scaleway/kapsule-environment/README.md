@@ -139,4 +139,4 @@ Setting a flag to `false` omits the corresponding manifest from the final render
 
 ---
 
-(c) 2025 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).

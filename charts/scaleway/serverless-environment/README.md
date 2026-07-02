@@ -120,4 +120,4 @@ to the container's native Scaleway endpoint.
 
 ---
 
-(c) 2025 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).
