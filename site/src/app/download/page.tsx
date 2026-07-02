@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/chrome";
 import { Button } from "@/components/ui/button";
-import { OPERATING_SYSTEMS, RELEASES_URL } from "@/site";
+import { DOWNLOADS, LINUX_DEB_URL, RELEASES_URL } from "@/site";
 
 export const metadata: Metadata = {
   title: "Download",
@@ -30,22 +30,50 @@ export default function DownloadPage() {
             Desktop App
           </h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            {OPERATING_SYSTEMS.map((os) => (
+            {DOWNLOADS.map(({ os, href, note }) => (
               <Button
                 key={os}
                 asChild
                 variant="secondary"
-                className="h-auto justify-start gap-2 rounded-lg border border-border py-3"
+                className="h-auto flex-col items-start gap-1 rounded-lg border border-border px-4 py-3"
               >
-                <Link href={RELEASES_URL} target="_blank" rel="noreferrer">
-                  <Download className="size-4" />
-                  <span>Download for {os}</span>
-                </Link>
+                <a href={href}>
+                  <span className="flex items-center gap-2">
+                    <Download className="size-4" />
+                    <span>Download for {os}</span>
+                  </span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {note}
+                  </span>
+                </a>
               </Button>
             ))}
           </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            On Debian or Ubuntu, you can also install the{" "}
+            <a href={LINUX_DEB_URL} className="underline underline-offset-4">
+              .deb package
+            </a>
+            . On macOS, if you see a warning on first open, right-click the app
+            and choose Open.
+          </p>
         </section>
 
+        <section className="mt-12">
+          <p className="text-sm text-muted-foreground">
+            Looking for the open building blocks — components, charts, and the
+            CLI source? They live on{" "}
+            <Link
+              href={RELEASES_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-4"
+            >
+              GitHub Releases
+            </Link>
+            .
+          </p>
+        </section>
       </main>
       <SiteFooter />
     </>

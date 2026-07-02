@@ -1,7 +1,11 @@
 /**
  * Download configuration — the single source for the primary CTA target and the
- * platforms the desktop app targets. Wiring the target to a real artifact/CDN is
- * a tracked "make it real" follow-up.
+ * direct installer downloads.
+ *
+ * The installer URLs point at the `latest` channel aliases on the Planton
+ * downloads CDN. The desktop release pipeline republishes these aliases on
+ * every stable release, so the URLs are version-free and always serve the
+ * current installer.
  *
  * Note: the marketing surface intentionally does NOT teach CLI install — the
  * desktop launch experience owns CLI setup. So there are no CLI install commands
@@ -13,3 +17,28 @@ export const DOWNLOAD_HREF = "/download";
 
 /** Platforms the desktop app targets, shown next to the download CTA. */
 export const OPERATING_SYSTEMS = ["macOS", "Linux", "Windows"] as const;
+
+/** Base URL of the stable-channel installer aliases on the downloads CDN. */
+export const DOWNLOADS_BASE = "https://downloads.planton.app/desktop/latest";
+
+/** Direct installer downloads, one per platform. */
+export const DOWNLOADS = [
+  {
+    os: "macOS",
+    href: `${DOWNLOADS_BASE}/planton-desktop-universal-macos.dmg`,
+    note: "Universal — Apple Silicon + Intel",
+  },
+  {
+    os: "Linux",
+    href: `${DOWNLOADS_BASE}/planton-desktop-linux-amd64.AppImage`,
+    note: "AppImage — x86_64",
+  },
+  {
+    os: "Windows",
+    href: `${DOWNLOADS_BASE}/planton-desktop-windows-x64-setup.exe`,
+    note: "Installer — x64",
+  },
+] as const;
+
+/** Debian/Ubuntu package, offered as a secondary Linux option. */
+export const LINUX_DEB_URL = `${DOWNLOADS_BASE}/planton-desktop-linux-amd64.deb`;
