@@ -1,21 +1,21 @@
 ---
 title: "Documentation"
-description: "Comprehensive guides for Planton - the open-source multi-cloud infrastructure framework"
+description: "Comprehensive guides for Planton - the free desktop app and CLI for your cloud infrastructure"
 icon: "book"
 order: 1
 ---
 
 # Welcome to Planton Documentation
 
-Planton is an open-source multi-cloud infrastructure framework that lets you author KRM-style YAML manifests once, validate them with Protobuf + Buf, and deploy with Pulumi or OpenTofu.
+Planton is a free desktop app and CLI for your cloud infrastructure. You download it, open it, and deploy to your own cloud — with clean, auditable infrastructure-as-code running underneath. Manifests follow the Kubernetes Resource Model, are validated with Protobuf + Buf, and deploy through proven Pulumi or OpenTofu modules.
 
 ## Getting Started
 
-New to Planton? Start here:
+New to Planton? Start with the **[Getting Started guide](/docs/getting-started)**:
 
-- Install the CLI via Homebrew
-- Validate your first manifest
-- Deploy to your cloud provider or Kubernetes cluster
+- Download the desktop app and deploy from a short form
+- Or install the companion CLI via Homebrew
+- Validate a manifest and deploy to your cloud provider or Kubernetes cluster
 
 ## CLI Reference
 
@@ -153,7 +153,7 @@ Browse deployment components by cloud provider in the [Catalog](/docs/catalog):
 - **One Model, Many Clouds**: Single API structure across AWS, GCP, Azure, and Kubernetes
 - **Validation First**: Buf ProtoValidate catches errors before deployment
 - **Battle-Tested Modules**: Curated Pulumi and OpenTofu modules
-- **CLI-First Workflow**: Developer-grade CLI for all operations
+- **App and Terminal, One Engine**: Deploy from the desktop app's forms or the companion CLI — both drive the same engine
 - **Security & Governance**: Provider credentials as stack inputs, consistent labeling
 
 ## Quick Example

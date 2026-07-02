@@ -133,7 +133,7 @@ planton -v
 planton --version
 ```
 
-The command prints the current version, fetches the latest available version from GitHub releases, and indicates whether an update is available. If a newer version exists, it suggests running `planton upgrade`.
+The command prints the current version, checks for the latest available version, and indicates whether an update is available. If a newer version exists, it suggests running `planton upgrade`.
 
 ## What's Next
 

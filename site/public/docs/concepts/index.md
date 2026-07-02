@@ -1,15 +1,15 @@
 ---
 title: "Concepts"
-description: "The core ideas behind Planton: how a multi-cloud deployment framework brings Kubernetes-style consistency to infrastructure across 17 cloud providers"
+description: "The core ideas behind Planton: how Kubernetes-style consistency extends to infrastructure across 17 cloud providers"
 icon: "lightbulb"
 order: 10
 ---
 
 # Concepts
 
-Planton is a multi-cloud deployment framework that brings Kubernetes-style consistency to infrastructure provisioning across any cloud provider. It is built on three foundational ideas: Protocol Buffer APIs define the resource model, dual IaC engines (Pulumi and OpenTofu/Terraform) implement the deployments, and a Go CLI orchestrates the entire workflow.
+Planton brings Kubernetes-style consistency to infrastructure provisioning across any cloud provider. Whether you deploy from the desktop app or the CLI, the same engine runs underneath — built on three foundational ideas: Protocol Buffer APIs define the resource model, dual IaC engines (Pulumi and OpenTofu/Terraform) implement the deployments, and the engine orchestrates the entire workflow.
 
-This section explains the core concepts that make the framework work.
+This section explains the core concepts that make Planton work.
 
 ## The Problem
 
@@ -23,7 +23,7 @@ Planton takes a different path: consistency of structure and workflow, not abstr
 
 Every resource across every provider follows the same manifest format (the Kubernetes Resource Model), uses the same validation framework (Protocol Buffers with buf-validate), is deployed with the same CLI commands, and is managed through the same module and state systems. But the spec -- the actual configuration surface -- is provider-specific. An `AwsS3Bucket` exposes the full S3 feature set. A `GcpGcsBucket` exposes the full GCS feature set. Neither pretends to be the other.
 
-The result: you learn one set of tools and one workflow pattern, then apply it to 360+ deployment components across 17 cloud providers. The learning curve is the framework itself, not each provider's toolchain.
+The result: you learn one set of tools and one workflow pattern, then apply it to 400+ deployment components across 17 cloud providers. The learning curve is one workflow, not each provider's toolchain.
 
 ## Key Concepts
 

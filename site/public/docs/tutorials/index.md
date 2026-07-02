@@ -13,7 +13,7 @@ If you are looking for focused reference material on a specific topic (credentia
 
 ## Before You Start
 
-All tutorials assume you have the Planton CLI installed. If you have not set it up yet, start with [Getting Started](../getting-started).
+All tutorials use the Planton CLI; everything shown can also be done from the desktop app. If you have not set either up yet, start with [Getting Started](../getting-started).
 
 ## Tutorials
 

@@ -97,9 +97,9 @@ planton tofu apply --manifest database.yaml --module-version main
 
 This is useful for testing a specific module version without permanently switching the staging area.
 
-## CLI Version Management
+## Keeping the CLI Up to Date
 
-These commands manage the `planton` CLI binary itself, not the IaC modules.
+These commands manage the `planton` CLI binary itself, not the IaC modules. If you installed via Homebrew, `brew upgrade planton` works too — `planton upgrade` is the built-in equivalent that works everywhere.
 
 ### upgrade
 
@@ -107,7 +107,6 @@ Upgrade the CLI to the latest available version or to a specific version.
 
 ```bash
 planton upgrade
-planton upgrade v0.3.10-cli.20260110.0
 planton upgrade --check
 planton upgrade --force
 ```
@@ -117,22 +116,20 @@ planton upgrade --force
 | `--check` | `-c` | Check for updates without installing |
 | `--force` | `-f` | Force upgrade even if already on the latest or specified version |
 
-The binary is downloaded directly from GitHub releases and replaces the currently running executable.
-
 ### downgrade
 
 Install a specific previous version of the CLI.
 
 ```bash
-planton downgrade v0.3.5-cli.20260108.0
-planton downgrade v0.3.5-cli.20260108.0 --force
+planton downgrade v0.3.1
+planton downgrade v0.3.1 --force
 ```
 
 | Flag | Short | Description |
 |------|-------|-------------|
 | `--force` | `-f` | Force install even if already on the specified version |
 
-The version argument is required. The binary is downloaded directly from GitHub releases.
+The version argument is required.
 
 ## Workspace Isolation
 
