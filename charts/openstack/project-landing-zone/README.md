@@ -101,4 +101,4 @@ openstack user list        # find the user ID
 
 ---
 
-(c) 2026 Planton. All rights reserved.
+© Planton. Licensed under [Apache-2.0](../../../LICENSE).
