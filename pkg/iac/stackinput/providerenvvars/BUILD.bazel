@@ -55,11 +55,13 @@ go_test(
     srcs = [
         "aws_test.go",
         "awsprovidertf_guard_test.go",
+        "gcp_test.go",
         "kubernetes_test.go",
     ],
     embed = [":providerenvvars"],
     deps = [
         "//apis/dev/planton/provider/aws",
+        "//apis/dev/planton/provider/gcp",
         "//pkg/iac/provider/aws/awswebidentity",
         "@com_github_aws_aws_sdk_go_v2//aws",
         "@com_github_stretchr_testify//assert",

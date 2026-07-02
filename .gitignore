@@ -24,11 +24,11 @@ site/!.yarn/cache
 *.tfstate.*
 terraform.tfplan
 *.tfplan
-bazel-planton-clone
-bazel-bin
-bazel-out
-bazel-testlogs
-bazel-planton
+# Bazel output symlinks. Bazel names the convenience symlink after the workspace
+# directory (bazel-<dirname>), so a per-clone-name list can never be complete --
+# the glob covers every clone name. The tracked wrapper `bazelw` has no hyphen and
+# is not matched.
+bazel-*
 Pulumi.*.yaml
 !Pulumi.yaml
 test-*.log
@@ -59,12 +59,6 @@ web-app/src/gen/
 _aacursor/
 backend.tf
 /pulumi
-bazel-planton-oracle-cloud
-bazel-planton-oracle-cloud/
-bazel-planton-alibaba-cloud
-bazel-planton-alibaba-cloud/
-bazel-planton-hetzner-cloud
-bazel-planton-hetzner-cloud/
 
 # E2E test artifacts (generated during pulumi runs)
 **/iac/pulumi/stack-input.yaml

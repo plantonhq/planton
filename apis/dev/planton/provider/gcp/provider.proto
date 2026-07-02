@@ -8,6 +8,9 @@ import "buf/validate/validate.proto";
 //
 // Used as the provider_config in stack inputs for all GCP-based IaC modules. The runner or
 // IaC module uses this to configure the Pulumi/Terraform GCP provider.
+// The credential is supplied by exactly one of {service_account_key, web_identity}. If neither
+// is set, providers fall back to the ambient Google Application Default Credentials chain
+// (e.g. a self-hosted runner's attached service account or `gcloud auth application-default`).
 message GcpProviderConfig {
   // JSON content of a Google Service Account key file.
   //
@@ -15,6 +18,58 @@ message GcpProviderConfig {
   // `gcloud iam service-accounts keys create`. It contains fields such as
   // type, project_id, private_key_id, private_key, client_email, etc.
   //
+  // Required for static-credential auth; left empty for keyless web-identity auth (see
+  // web_identity below). The requirement is skipped when the field is empty
+  // (IGNORE_IF_ZERO_VALUE) so keyless configs validate.
+  //
   // For more information: https://cloud.google.com/iam/docs/keys-create-delete
-  string service_account_key = 1 [(buf.validate.field).required = true];
+  string service_account_key = 1 [(buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE];
+
+  // Keyless web-identity (OIDC) authentication. When set, the provider authenticates via GCP
+  // Workload Identity Federation instead of a static service-account key -- so
+  // service_account_key is left empty in this mode. Exactly one of {service_account_key,
+  // web_identity} is populated; if neither is set the provider falls back to the ambient
+  // Application Default Credentials chain.
+  GcpWebIdentityProviderConfig web_identity = 2;
+}
+
+// GcpWebIdentityProviderConfig holds the input for keyless OIDC federation: the caller mints a
+// short-lived OIDC JWT from an issuer it controls, and GCP exchanges it for cloud credentials
+// via Workload Identity Federation -- an STS token exchange against the workload identity pool
+// provider named in `audience`, followed by service-account impersonation. The token is opaque
+// to Planton, which is agnostic to the issuer (a platform-owned issuer, GitHub Actions,
+// GitLab CI, etc.).
+//
+// The token is carried in memory (web_identity_token) and never written to disk: each pulumi
+// operation re-mints a fresh JWT before it runs, so a stack job's runtime is never bound by a
+// single token's TTL and no file-based credential refresh is needed.
+//
+// These provider-config fields are constructed by the caller (e.g. the Planton runner) at deploy
+// time, not supplied as user input in a resource spec, so they are intentionally outside the spec
+// secret-coverage surface and carry no `sensitive` annotation.
+//
+// Exchange site: the pulumi-gcp provider consumes the inline token natively via its
+// provider-level external_credentials block and performs the STS exchange + service-account
+// impersonation inside the provider plugin -- no exchange happens in Planton's process, unlike
+// the AWS builders which were forced into a builder-side STS exchange by an upstream provider
+// bug.
+message GcpWebIdentityProviderConfig {
+  // The minted OIDC JWT presented to GCP STS as the federated subject token, supplied inline
+  // (in memory). Maps to the pulumi-gcp provider's external_credentials.identity_token field.
+  string web_identity_token = 1 [(buf.validate.field).required = true];
+
+  // The audience the token was minted for: the FULL canonical resource name of the customer's
+  // workload identity pool provider, in the form
+  // `//iam.googleapis.com/projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>`
+  // (leading `//`, no `https://`). This exact value must also be the minted token's `aud` claim
+  // and appear in the pool provider's allowed audiences -- GCP rejects a mismatched or
+  // differently-formatted audience (e.g. a bare `projects/...` form) with an opaque access
+  // denial, so callers must never re-derive or reformat it.
+  string audience = 2 [(buf.validate.field).required = true];
+
+  // Email of the service account to impersonate after the federated exchange; the pool
+  // provider grants it `roles/iam.workloadIdentityUser` for the federated principal. Required
+  // only because the provider-native external_credentials block requires it (the exchange is
+  // impersonation-only); a future direct-federation arm relaxes this to optional.
+  string service_account_email = 3 [(buf.validate.field).required = true];
 }

@@ -26,6 +26,9 @@ const (
 //
 // Used as the provider_config in stack inputs for all GCP-based IaC modules. The runner or
 // IaC module uses this to configure the Pulumi/Terraform GCP provider.
+// The credential is supplied by exactly one of {service_account_key, web_identity}. If neither
+// is set, providers fall back to the ambient Google Application Default Credentials chain
+// (e.g. a self-hosted runner's attached service account or `gcloud auth application-default`).
 type GcpProviderConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// JSON content of a Google Service Account key file.
@@ -34,10 +37,20 @@ type GcpProviderConfig struct {
 	// `gcloud iam service-accounts keys create`. It contains fields such as
 	// type, project_id, private_key_id, private_key, client_email, etc.
 	//
+	// Required for static-credential auth; left empty for keyless web-identity auth (see
+	// web_identity below). The requirement is skipped when the field is empty
+	// (IGNORE_IF_ZERO_VALUE) so keyless configs validate.
+	//
 	// For more information: https://cloud.google.com/iam/docs/keys-create-delete
 	ServiceAccountKey string `protobuf:"bytes,1,opt,name=service_account_key,json=serviceAccountKey,proto3" json:"service_account_key,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// Keyless web-identity (OIDC) authentication. When set, the provider authenticates via GCP
+	// Workload Identity Federation instead of a static service-account key -- so
+	// service_account_key is left empty in this mode. Exactly one of {service_account_key,
+	// web_identity} is populated; if neither is set the provider falls back to the ambient
+	// Application Default Credentials chain.
+	WebIdentity   *GcpWebIdentityProviderConfig `protobuf:"bytes,2,opt,name=web_identity,json=webIdentity,proto3" json:"web_identity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpProviderConfig) Reset() {
@@ -77,13 +90,118 @@ func (x *GcpProviderConfig) GetServiceAccountKey() string {
 	return ""
 }
 
+func (x *GcpProviderConfig) GetWebIdentity() *GcpWebIdentityProviderConfig {
+	if x != nil {
+		return x.WebIdentity
+	}
+	return nil
+}
+
+// GcpWebIdentityProviderConfig holds the input for keyless OIDC federation: the caller mints a
+// short-lived OIDC JWT from an issuer it controls, and GCP exchanges it for cloud credentials
+// via Workload Identity Federation -- an STS token exchange against the workload identity pool
+// provider named in `audience`, followed by service-account impersonation. The token is opaque
+// to Planton, which is agnostic to the issuer (a platform-owned issuer, GitHub Actions,
+// GitLab CI, etc.).
+//
+// The token is carried in memory (web_identity_token) and never written to disk: each pulumi
+// operation re-mints a fresh JWT before it runs, so a stack job's runtime is never bound by a
+// single token's TTL and no file-based credential refresh is needed.
+//
+// These provider-config fields are constructed by the caller (e.g. the Planton runner) at deploy
+// time, not supplied as user input in a resource spec, so they are intentionally outside the spec
+// secret-coverage surface and carry no `sensitive` annotation.
+//
+// Exchange site: the pulumi-gcp provider consumes the inline token natively via its
+// provider-level external_credentials block and performs the STS exchange + service-account
+// impersonation inside the provider plugin -- no exchange happens in Planton's process, unlike
+// the AWS builders which were forced into a builder-side STS exchange by an upstream provider
+// bug.
+type GcpWebIdentityProviderConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The minted OIDC JWT presented to GCP STS as the federated subject token, supplied inline
+	// (in memory). Maps to the pulumi-gcp provider's external_credentials.identity_token field.
+	WebIdentityToken string `protobuf:"bytes,1,opt,name=web_identity_token,json=webIdentityToken,proto3" json:"web_identity_token,omitempty"`
+	// The audience the token was minted for: the FULL canonical resource name of the customer's
+	// workload identity pool provider, in the form
+	// `//iam.googleapis.com/projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>`
+	// (leading `//`, no `https://`). This exact value must also be the minted token's `aud` claim
+	// and appear in the pool provider's allowed audiences -- GCP rejects a mismatched or
+	// differently-formatted audience (e.g. a bare `projects/...` form) with an opaque access
+	// denial, so callers must never re-derive or reformat it.
+	Audience string `protobuf:"bytes,2,opt,name=audience,proto3" json:"audience,omitempty"`
+	// Email of the service account to impersonate after the federated exchange; the pool
+	// provider grants it `roles/iam.workloadIdentityUser` for the federated principal. Required
+	// only because the provider-native external_credentials block requires it (the exchange is
+	// impersonation-only); a future direct-federation arm relaxes this to optional.
+	ServiceAccountEmail string `protobuf:"bytes,3,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *GcpWebIdentityProviderConfig) Reset() {
+	*x = GcpWebIdentityProviderConfig{}
+	mi := &file_dev_planton_provider_gcp_provider_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpWebIdentityProviderConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpWebIdentityProviderConfig) ProtoMessage() {}
+
+func (x *GcpWebIdentityProviderConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_dev_planton_provider_gcp_provider_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpWebIdentityProviderConfig.ProtoReflect.Descriptor instead.
+func (*GcpWebIdentityProviderConfig) Descriptor() ([]byte, []int) {
+	return file_dev_planton_provider_gcp_provider_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GcpWebIdentityProviderConfig) GetWebIdentityToken() string {
+	if x != nil {
+		return x.WebIdentityToken
+	}
+	return ""
+}
+
+func (x *GcpWebIdentityProviderConfig) GetAudience() string {
+	if x != nil {
+		return x.Audience
+	}
+	return ""
+}
+
+func (x *GcpWebIdentityProviderConfig) GetServiceAccountEmail() string {
+	if x != nil {
+		return x.ServiceAccountEmail
+	}
+	return ""
+}
+
 var File_dev_planton_provider_gcp_provider_proto protoreflect.FileDescriptor
 
 const file_dev_planton_provider_gcp_provider_proto_rawDesc = "" +
 	"\n" +
-	"'dev/planton/provider/gcp/provider.proto\x12\x18dev.planton.provider.gcp\x1a\x1bbuf/validate/validate.proto\"K\n" +
+	"'dev/planton/provider/gcp/provider.proto\x12\x18dev.planton.provider.gcp\x1a\x1bbuf/validate/validate.proto\"\xa6\x01\n" +
 	"\x11GcpProviderConfig\x126\n" +
-	"\x13service_account_key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x11serviceAccountKeyB\xed\x01\n" +
+	"\x13service_account_key\x18\x01 \x01(\tB\x06\xbaH\x03\xd8\x01\x01R\x11serviceAccountKey\x12Y\n" +
+	"\fweb_identity\x18\x02 \x01(\v26.dev.planton.provider.gcp.GcpWebIdentityProviderConfigR\vwebIdentity\"\xb4\x01\n" +
+	"\x1cGcpWebIdentityProviderConfig\x124\n" +
+	"\x12web_identity_token\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x10webIdentityToken\x12\"\n" +
+	"\baudience\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\baudience\x12:\n" +
+	"\x15service_account_email\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x13serviceAccountEmailB\xed\x01\n" +
 	"\x1ccom.dev.planton.provider.gcpB\rProviderProtoP\x01Z:github.com/plantonhq/planton/apis/dev/planton/provider/gcp\xa2\x02\x04DPPG\xaa\x02\x18Dev.Planton.Provider.Gcp\xca\x02\x18Dev\\Planton\\Provider\\Gcp\xe2\x02$Dev\\Planton\\Provider\\Gcp\\GPBMetadata\xea\x02\x1bDev::Planton::Provider::Gcpb\x06proto3"
 
 var (
@@ -98,16 +216,18 @@ func file_dev_planton_provider_gcp_provider_proto_rawDescGZIP() []byte {
 	return file_dev_planton_provider_gcp_provider_proto_rawDescData
 }
 
-var file_dev_planton_provider_gcp_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_dev_planton_provider_gcp_provider_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dev_planton_provider_gcp_provider_proto_goTypes = []any{
-	(*GcpProviderConfig)(nil), // 0: dev.planton.provider.gcp.GcpProviderConfig
+	(*GcpProviderConfig)(nil),            // 0: dev.planton.provider.gcp.GcpProviderConfig
+	(*GcpWebIdentityProviderConfig)(nil), // 1: dev.planton.provider.gcp.GcpWebIdentityProviderConfig
 }
 var file_dev_planton_provider_gcp_provider_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.provider.gcp.GcpProviderConfig.web_identity:type_name -> dev.planton.provider.gcp.GcpWebIdentityProviderConfig
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_dev_planton_provider_gcp_provider_proto_init() }
@@ -121,7 +241,7 @@ func file_dev_planton_provider_gcp_provider_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dev_planton_provider_gcp_provider_proto_rawDesc), len(file_dev_planton_provider_gcp_provider_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
