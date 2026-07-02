@@ -51,6 +51,12 @@ The bar for every component:
   bar defined in `architecture/deployment-component.md` §4.1), and teaching presets are how a
   coding agent (the primary consumer) and a human learn the component. A bare field set -- or a
   working but uncommented module -- is not world-class even if it is complete.
+- **Improve this workflow as you use it.** If forging a component required knowledge this rule
+  or its flow rules did not give you — an undocumented mechanism you had to reverse-engineer, a
+  wrong or misleading implication, a missing step, or a stale path — amend this rule, the
+  relevant flow rule, or `architecture/deployment-component.md` in the same session, as
+  timeless guidance (never naming a project or a task), so the next agent forging the next
+  component never has to re-learn it. The workflow is expected to get sharper with every use.
 
 This philosophy governs every flow rule below; the per-rule steps are how it is executed, not
 a substitute for it.

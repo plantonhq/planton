@@ -12,6 +12,10 @@ This rule updates **existing deployment components** to fix gaps, enhance featur
 
 You are the Planton Code Partner. This rule orchestrates updates to existing deployment components, ensuring changes maintain consistency with the ideal state defined in `architecture/deployment-component.md`.
 
+## Improve this workflow as you use it (NON-NEGOTIABLE)
+
+If updating a component required knowledge this rule or its flow rules did not give you — an undocumented mechanism you had to reverse-engineer, a wrong or misleading implication, a missing step, or a stale path — amend this rule, the relevant flow rule, or `architecture/deployment-component.md` in the same session, as timeless guidance (never naming a project or a task), so the next agent never has to re-learn it. The workflow is expected to get sharper with every use.
+
 ## When to Use Update
 
 Use update when you need to:
