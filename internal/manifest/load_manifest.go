@@ -176,9 +176,7 @@ func formatUnsupportedResourceError(kindName string) error {
 	msg.WriteString("   • Misspelled resource name (e.g., 'AwsEks" + bold("Clster") + "')\n\n")
 
 	msg.WriteString(yellow("2. If the kind is correct, update your CLI to the latest version:\n\n"))
-	msg.WriteString("   " + green("brew update && brew upgrade planton") + "\n\n")
-	msg.WriteString("   Or if you haven't installed via Homebrew:\n\n")
-	msg.WriteString("   " + green("brew install plantonhq/tap/planton") + "\n\n")
+	msg.WriteString("   " + green("planton upgrade") + "\n\n")
 	msg.WriteString("   Then verify:\n\n")
 	msg.WriteString("   " + green("planton version") + "\n\n")
 

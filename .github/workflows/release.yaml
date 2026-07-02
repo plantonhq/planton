@@ -45,8 +45,6 @@ jobs:
   # ============================================================================
   cli:
     uses: ./.github/workflows/release.cli.yaml
-    secrets:
-      HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
 
   # ============================================================================
   # Website Release - Runs in parallel

@@ -36,18 +36,14 @@ When you run `make release`, here's what happens:
 │  │   ├── darwin-amd64, darwin-arm64                                         │
 │  │   ├── linux-amd64, linux-arm64                                           │
 │  │   └── windows-amd64, windows-arm64                                       │
-│  ├── Create GitHub Release with auto-generated notes                        │
-│  └── Update Homebrew Cask (planton/homebrew-tap)                    │
+│  └── Create GitHub Release with auto-generated notes                        │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## CLI Distribution
 
-### Install via Homebrew (macOS)
-
-```bash
-brew install --cask plantonhq/tap/planton
-```
+CLI binaries are distributed as GitHub Release assets. Go users can also build
+from source with `go install github.com/plantonhq/planton@latest`.
 
 ### Install via Direct Download
 
@@ -96,20 +92,8 @@ The script:
 
 ## Required GitHub Secrets
 
-The release workflow requires these secrets to be configured in the repository:
-
-| Secret | Description |
-|--------|-------------|
-| `HOMEBREW_TAP_GITHUB_TOKEN` | GitHub PAT with `repo` scope for pushing to homebrew-tap |
-
-Note: `GITHUB_TOKEN` is automatically provided by GitHub Actions.
-
-### Setting Up Homebrew Tap Token
-
-1. Go to GitHub → Settings → Developer Settings → Personal Access Tokens
-2. Create a new token (classic) with `repo` scope
-3. The token needs write access to `planton/homebrew-tap`
-4. Add it as a repository secret named `HOMEBREW_TAP_GITHUB_TOKEN`
+The CLI release workflow needs no repository secrets: `GITHUB_TOKEN` is
+automatically provided by GitHub Actions.
 
 ## Troubleshooting
 
@@ -117,10 +101,6 @@ Note: `GITHUB_TOKEN` is automatically provided by GitHub Actions.
 
 Check the GitHub Actions logs at:
 https://github.com/plantonhq/planton/actions
-
-Common issues:
-- Missing or expired `HOMEBREW_TAP_GITHUB_TOKEN` secret
-- Homebrew tap push permissions
 
 ### Version not incrementing correctly
 

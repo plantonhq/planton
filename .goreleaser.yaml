@@ -51,19 +51,6 @@ release:
 
     ## CLI Installation
 
-    ### macOS (Homebrew)
-
-    ```bash
-    brew tap plantonhq/tap
-    brew install planton
-    ```
-
-    To upgrade:
-
-    ```bash
-    brew upgrade planton
-    ```
-
     ### macOS (Manual)
 
     ```bash
@@ -192,34 +179,3 @@ changelog:
       - '^chore:'
       - Merge pull request
       - Merge branch
-
-homebrew_casks:
-  - name: planton
-    repository:
-      owner: plantonhq
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    homepage: https://github.com/plantonhq/planton
-    description: "Planton CLI - Infrastructure as Code made simple"
-    binaries:
-      - planton
-    hooks:
-      post:
-        install: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/planton"]
-          end
-    caveats: |
-      Installation Complete!
-
-      Planton CLI helps you manage infrastructure deployments.
-
-      Quick Start
-
-      1. Check the version:
-         planton version
-
-      2. Get help:
-         planton --help
-
-      Documentation: https://github.com/plantonhq/planton

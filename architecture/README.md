@@ -383,7 +383,7 @@ YAML Manifest → Parse → Unmarshal to Proto → Validate Rules → Deploy or 
 
 **Implementation:**
 - **Language:** Go
-- **Binary Distribution:** Homebrew (`brew install plantonhq/tap/planton`)
+- **Binary Distribution:** GitHub Release assets (self-updating via `planton upgrade`)
 - **Configuration:** Environment variables and flags
 - **Module Caching:** `~/.planton/modules/` (Git-based)
 
