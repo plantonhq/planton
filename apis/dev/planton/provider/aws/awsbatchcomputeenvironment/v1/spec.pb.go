@@ -201,8 +201,10 @@ type AwsBatchComputeResources struct {
 	// BEST_FIT_PROGRESSIVE.
 	AllocationStrategy string `protobuf:"bytes,8,opt,name=allocation_strategy,json=allocationStrategy,proto3" json:"allocation_strategy,omitempty"`
 	// instance_role is the ARN of the IAM instance profile for EC2 instances.
-	// Required for EC2 and SPOT types. The instance profile grants the ECS agent
-	// on each instance permission to communicate with AWS Batch and ECS.
+	// Required for EC2 and SPOT types. Reference an AwsIamInstanceProfile's
+	// instance_profile_arn output (the profile wraps the role that grants the
+	// ECS agent on each instance permission to communicate with AWS Batch and
+	// ECS), or pass a literal ARN.
 	InstanceRole *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=instance_role,json=instanceRole,proto3" json:"instance_role,omitempty"`
 	// ec2_key_pair is the name of an EC2 key pair for SSH access to instances.
 	// Only applicable for EC2 and SPOT types. Optional — omit if SSH access
@@ -863,7 +865,7 @@ const file_dev_planton_provider_aws_awsbatchcomputeenvironment_v1_spec_proto_raw
 	"\x12security_group_ids\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12%\n" +
 	"\x0einstance_types\x18\a \x03(\tR\rinstanceTypes\x12\x87\x01\n" +
 	"\x13allocation_strategy\x18\b \x01(\tBV\xbaHS\xd8\x01\x01rNR\x14BEST_FIT_PROGRESSIVER\x17SPOT_CAPACITY_OPTIMIZEDR\x1dSPOT_PRICE_CAPACITY_OPTIMIZEDR\x12allocationStrategy\x12\x85\x01\n" +
-	"\rinstance_role\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xd0\x01\x92\xd4a#status.outputs.instance_profile_arnR\finstanceRole\x12 \n" +
+	"\rinstance_role\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xe7\x01\x92\xd4a#status.outputs.instance_profile_arnR\finstanceRole\x12 \n" +
 	"\fec2_key_pair\x18\n" +
 	" \x01(\tR\n" +
 	"ec2KeyPair\x125\n" +

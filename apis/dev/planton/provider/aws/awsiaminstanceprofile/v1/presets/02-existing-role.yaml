@@ -1,0 +1,9 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsIamInstanceProfile
+metadata:
+  name: legacy-app
+spec:
+  region: <aws-region>
+  path: /compute/
+  role:
+    value: <existing-role-name>

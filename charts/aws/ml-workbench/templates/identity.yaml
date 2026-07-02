@@ -16,5 +16,5 @@ spec:
           Service: sagemaker.amazonaws.com
         Action: sts:AssumeRole
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
-    - arn:aws:iam::aws:policy/AmazonS3FullAccess
+    - value: arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+    - value: arn:aws:iam::aws:policy/AmazonS3FullAccess

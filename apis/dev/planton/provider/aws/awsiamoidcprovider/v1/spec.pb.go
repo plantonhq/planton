@@ -67,6 +67,10 @@ type AwsIamOidcProviderSpec struct {
 	// (EKS, GitHub Actions, Google, etc.): AWS secures the TLS connection using its
 	// trusted CA store and derives the thumbprint for you. Supply thumbprints only
 	// for issuers whose CA is not publicly trusted. Duplicates are not allowed.
+	//
+	// AWS quirk: once thumbprints are set they cannot be cleared in place -- the
+	// update API rejects an empty list. Going from explicit thumbprints back to
+	// "let AWS derive them" requires replacing the provider (delete + recreate).
 	ThumbprintList []string `protobuf:"bytes,4,rep,name=thumbprint_list,json=thumbprintList,proto3" json:"thumbprint_list,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache

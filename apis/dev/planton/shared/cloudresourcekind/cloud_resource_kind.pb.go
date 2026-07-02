@@ -82,35 +82,40 @@ const (
 	CloudResourceKind_AtlasMongodb      CloudResourceKind = 51
 	CloudResourceKind_SnowflakeDatabase CloudResourceKind = 52
 	// 200–399: AWS resources
-	CloudResourceKind_AwsAlb                   CloudResourceKind = 200
-	CloudResourceKind_AwsCertManagerCert       CloudResourceKind = 201
-	CloudResourceKind_AwsCloudFront            CloudResourceKind = 202
-	CloudResourceKind_AwsDynamodb              CloudResourceKind = 203
-	CloudResourceKind_AwsEcrRepo               CloudResourceKind = 204
-	CloudResourceKind_AwsEcsCluster            CloudResourceKind = 205
-	CloudResourceKind_AwsEcsService            CloudResourceKind = 206
-	CloudResourceKind_AwsEksCluster            CloudResourceKind = 207
-	CloudResourceKind_AwsIamRole               CloudResourceKind = 208
-	CloudResourceKind_AwsLambda                CloudResourceKind = 209
-	CloudResourceKind_AwsRdsCluster            CloudResourceKind = 210
-	CloudResourceKind_AwsRdsInstance           CloudResourceKind = 211
-	CloudResourceKind_AwsRoute53Zone           CloudResourceKind = 212
-	CloudResourceKind_AwsS3Bucket              CloudResourceKind = 213
-	CloudResourceKind_AwsSecurityGroup         CloudResourceKind = 215
-	CloudResourceKind_AwsVpc                   CloudResourceKind = 216
-	CloudResourceKind_AwsEksNodeGroup          CloudResourceKind = 217
-	CloudResourceKind_AwsIamUser               CloudResourceKind = 218
-	CloudResourceKind_AwsKmsKey                CloudResourceKind = 219
-	CloudResourceKind_AwsEc2Instance           CloudResourceKind = 220
-	CloudResourceKind_AwsClientVpn             CloudResourceKind = 221
-	CloudResourceKind_AwsDocumentDb            CloudResourceKind = 222
-	CloudResourceKind_AwsRoute53DnsRecord      CloudResourceKind = 223
-	CloudResourceKind_AwsS3ObjectSet           CloudResourceKind = 224
-	CloudResourceKind_AwsSqsQueue              CloudResourceKind = 225
-	CloudResourceKind_AwsSnsTopic              CloudResourceKind = 226
-	CloudResourceKind_AwsEventBridgeBus        CloudResourceKind = 227
-	CloudResourceKind_AwsEventBridgeRule       CloudResourceKind = 228
-	CloudResourceKind_AwsIamOidcProvider       CloudResourceKind = 229
+	CloudResourceKind_AwsAlb              CloudResourceKind = 200
+	CloudResourceKind_AwsCertManagerCert  CloudResourceKind = 201
+	CloudResourceKind_AwsCloudFront       CloudResourceKind = 202
+	CloudResourceKind_AwsDynamodb         CloudResourceKind = 203
+	CloudResourceKind_AwsEcrRepo          CloudResourceKind = 204
+	CloudResourceKind_AwsEcsCluster       CloudResourceKind = 205
+	CloudResourceKind_AwsEcsService       CloudResourceKind = 206
+	CloudResourceKind_AwsEksCluster       CloudResourceKind = 207
+	CloudResourceKind_AwsIamRole          CloudResourceKind = 208
+	CloudResourceKind_AwsLambda           CloudResourceKind = 209
+	CloudResourceKind_AwsRdsCluster       CloudResourceKind = 210
+	CloudResourceKind_AwsRdsInstance      CloudResourceKind = 211
+	CloudResourceKind_AwsRoute53Zone      CloudResourceKind = 212
+	CloudResourceKind_AwsS3Bucket         CloudResourceKind = 213
+	CloudResourceKind_AwsSecurityGroup    CloudResourceKind = 215
+	CloudResourceKind_AwsVpc              CloudResourceKind = 216
+	CloudResourceKind_AwsEksNodeGroup     CloudResourceKind = 217
+	CloudResourceKind_AwsIamUser          CloudResourceKind = 218
+	CloudResourceKind_AwsKmsKey           CloudResourceKind = 219
+	CloudResourceKind_AwsEc2Instance      CloudResourceKind = 220
+	CloudResourceKind_AwsClientVpn        CloudResourceKind = 221
+	CloudResourceKind_AwsDocumentDb       CloudResourceKind = 222
+	CloudResourceKind_AwsRoute53DnsRecord CloudResourceKind = 223
+	CloudResourceKind_AwsS3ObjectSet      CloudResourceKind = 224
+	CloudResourceKind_AwsSqsQueue         CloudResourceKind = 225
+	CloudResourceKind_AwsSnsTopic         CloudResourceKind = 226
+	CloudResourceKind_AwsEventBridgeBus   CloudResourceKind = 227
+	CloudResourceKind_AwsEventBridgeRule  CloudResourceKind = 228
+	CloudResourceKind_AwsIamOidcProvider  CloudResourceKind = 229
+	CloudResourceKind_AwsIamPolicy        CloudResourceKind = 230
+	// AwsIamRole is a prerequisite because an instance profile is a wrapper that
+	// must contain a role to be useful -- the profile's spec requires a role
+	// reference, so the role must be deployed first.
+	CloudResourceKind_AwsIamInstanceProfile    CloudResourceKind = 231
 	CloudResourceKind_AwsHttpApiGateway        CloudResourceKind = 240
 	CloudResourceKind_AwsStepFunction          CloudResourceKind = 241
 	CloudResourceKind_AwsRedisElasticache      CloudResourceKind = 250
@@ -550,6 +555,8 @@ var (
 		227:  "AwsEventBridgeBus",
 		228:  "AwsEventBridgeRule",
 		229:  "AwsIamOidcProvider",
+		230:  "AwsIamPolicy",
+		231:  "AwsIamInstanceProfile",
 		240:  "AwsHttpApiGateway",
 		241:  "AwsStepFunction",
 		250:  "AwsRedisElasticache",
@@ -961,6 +968,8 @@ var (
 		"AwsEventBridgeBus":                       227,
 		"AwsEventBridgeRule":                      228,
 		"AwsIamOidcProvider":                      229,
+		"AwsIamPolicy":                            230,
+		"AwsIamInstanceProfile":                   231,
 		"AwsHttpApiGateway":                       240,
 		"AwsStepFunction":                         241,
 		"AwsRedisElasticache":                     250,
@@ -1588,7 +1597,7 @@ const file_dev_planton_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*\x9d\x91\x01\n" +
+	"\x02v1\x10\x01*\xf3\x91\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1630,7 +1639,9 @@ const file_dev_planton_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\vAwsSnsTopic\x10\xe2\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssns\x12'\n" +
 	"\x11AwsEventBridgeBus\x10\xe3\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awseb\x12)\n" +
 	"\x12AwsEventBridgeRule\x10\xe4\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awsebr\x12(\n" +
-	"\x12AwsIamOidcProvider\x10\xe5\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05oidcp\x12.\n" +
+	"\x12AwsIamOidcProvider\x10\xe5\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05oidcp\x12#\n" +
+	"\fAwsIamPolicy\x10\xe6\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06iampol\x12/\n" +
+	"\x15AwsIamInstanceProfile\x10\xe7\x01\x1a\x13\xa2\xf7\x04\x0f\b\f\x10\x01\"\x05iamip:\x02\xd0\x01\x12.\n" +
 	"\x11AwsHttpApiGateway\x10\xf0\x01\x1a\x16\xa2\xf7\x04\x12\b\f\x10\x01\"\fawshttpapigw\x12&\n" +
 	"\x0fAwsStepFunction\x10\xf1\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06awssfn\x12,\n" +
 	"\x13AwsRedisElasticache\x10\xfa\x01\x1a\x12\xa2\xf7\x04\x0e\b\f\x10\x01\"\bawsredis\x12)\n" +

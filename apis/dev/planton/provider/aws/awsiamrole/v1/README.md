@@ -1,17 +1,21 @@
 # AwsIamRole
 
-AWS IAM roles enable secure delegation of permissions to AWS services, applications, or users through temporary credentials without embedding long-lived access keys. This resource defines an IAM role with its trust policy (who can assume it), managed policy attachments, and inline policies, providing a production-ready abstraction for role-based access control.
+AWS IAM roles enable secure delegation of permissions to AWS services, applications, or users through temporary credentials without embedding long-lived access keys. This resource defines an IAM role with its trust policy (who can assume it), managed policy references, inline policies, session-duration ceiling, and optional permissions boundary, providing a production-ready abstraction for role-based access control.
 
 ## Spec fields (summary)
-- description: Optional human-readable description of the role's purpose
-- path: IAM path for organizational grouping (defaults to "/")
+- description: Optional human-readable description of the role's purpose (updatable in place)
+- path: IAM path for organizational grouping (defaults to "/"; immutable)
 - trust_policy: JSON document defining who can assume this role (principals, actions, conditions)
-- managed_policy_arns: List of ARNs for AWS-managed or customer-managed policies to attach
-- inline_policies: Map of policy name to JSON document for role-specific permissions embedded directly in the role
+- managed_policy_arns: Managed policies to attach — references to AwsIamPolicy resources or literal ARNs (how AWS-managed policies attach)
+- inline_policies: Map of policy name to JSON document for permissions unique to this role
+- max_session_duration: Ceiling for assumed-session duration in seconds (3600–43200; AWS defaults to 3600)
+- permissions_boundary: Managed policy (reference or literal ARN) capping the role's maximum permissions
+- force_detach_policies: Force-detach remaining attachments on deletion instead of failing
 
 ## Stack outputs
 - role_arn: Amazon Resource Name (ARN) of the created IAM role
-- role_name: Name of the IAM role in AWS
+- role_name: Name of the IAM role in AWS (what an AwsIamInstanceProfile references)
+- role_id: Stable unique ID AWS assigns to the role
 
 ## How it works
 This resource is orchestrated by the Planton CLI as part of a stack-update. The CLI validates your manifest, generates stack inputs, and invokes IaC backends in this repo:
@@ -23,7 +27,7 @@ The trust policy controls **who** can assume the role, while permissions policie
 ## Common use cases
 - **Lambda execution roles**: Allow Lambda functions to access AWS services (S3, DynamoDB, etc.)
 - **ECS task roles**: Grant containerized applications permissions to AWS resources
-- **EC2 instance roles**: Enable EC2 instances to securely access AWS APIs
+- **EC2 instance roles**: Enable EC2 instances to securely access AWS APIs (wrap the role in an AwsIamInstanceProfile — EC2 can only carry a role through a profile)
 - **Cross-account access**: Allow principals from another AWS account to access resources
 - **Service-to-service delegation**: Let one AWS service act on behalf of another
 
@@ -41,4 +45,3 @@ The trust policy controls **who** can assume the role, while permissions policie
 - Policy evaluation logic: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html
 - Confused deputy problem: https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html
 - Research documentation: [docs/README.md](docs/README.md)
-- Examples: [examples.md](examples.md)

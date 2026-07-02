@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiampolicy.v1;
+
+// AwsIamPolicyStackOutputs captures the observable outputs of a provisioned
+// customer-managed IAM policy, for roles/users (managed_policy_arns,
+// permissions_boundary) and IAM permission statements to reference.
+message AwsIamPolicyStackOutputs {
+  // The ARN of the managed policy (e.g.
+  // "arn:aws:iam::123456789012:policy/s3-read-only"). The primary handle other
+  // resources reference via status.outputs.policy_arn -- attachments and
+  // permissions boundaries both take this value.
+  string policy_arn = 1;
+
+  // The stable unique ID AWS assigns to the policy (e.g. "ANPA..."). Unlike
+  // the ARN it never encodes the name or path, so it survives as a stable
+  // identifier in audit trails.
+  string policy_id = 2;
+
+  // The friendly name of the policy (mirrors metadata.name), for building IAM
+  // console URLs and CLI commands.
+  string policy_name = 3;
+}

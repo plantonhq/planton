@@ -3,10 +3,13 @@
 AWS IAM users provide long-lived programmatic credentials for CI/CD pipelines, third-party integrations, and service accounts that require AWS API access. This resource creates an IAM user with managed or inline policies and optional access keys, following modern security best practices by focusing on service account use cases rather than human console access.
 
 ## Spec fields (summary)
-- user_name: IAM username (1-64 characters, alphanumeric plus `+=,.@_-`)
-- managed_policy_arns: List of ARNs for AWS-managed or customer-managed policies to attach
+- user_name: IAM username (1-64 characters, alphanumeric plus `+=,.@_-`; renamable in place)
+- path: IAM path for organizational grouping (defaults to "/")
+- managed_policy_arns: Managed policies to attach — references to AwsIamPolicy resources or literal ARNs (how AWS-managed policies attach)
 - inline_policies: Map of policy name to JSON document for user-specific permissions
+- permissions_boundary: Managed policy (reference or literal ARN) capping the user's maximum permissions — valuable on long-lived credentials
 - disable_access_keys: Set to true to create user without access keys (default: false, creates access keys)
+- force_destroy: Delete out-of-band credentials (login profile, extra keys, MFA devices) on teardown instead of failing
 
 ## Stack outputs
 - user_arn: Amazon Resource Name (ARN) of the created IAM user

@@ -2,19 +2,24 @@ syntax = "proto3";
 
 package dev.planton.provider.aws.awsiamrole.v1;
 
-// AwsIamRoleStackOutputs describes values returned by Pulumi/Terraform for an IAM role deployment.
+// AwsIamRoleStackOutputs captures the observable outputs of a provisioned IAM
+// role, for downstream resources (Lambda functions, ECS services, instance
+// profiles, trust relationships, ...) to reference.
 message AwsIamRoleStackOutputs {
-  // role_arn is the Amazon Resource Name (ARN) of the created IAM role.
+  // The ARN of the IAM role (e.g. "arn:aws:iam::123456789012:role/my-role").
+  // What most service integrations reference via status.outputs.role_arn --
+  // Lambda's role, an ECS task role, a Step Functions execution role, and so
+  // on. To deliver this role to EC2 instances, wrap it in an
+  // AwsIamInstanceProfile instead of referencing the role directly.
   string role_arn = 1;
 
-  // role_name is the name of the IAM role in AWS.
+  // The friendly name of the IAM role (mirrors metadata.name). What an
+  // AwsIamInstanceProfile's role field references, and what the AWS CLI and
+  // console use.
   string role_name = 2;
 
-  // instance_profile_arn is the ARN of the IAM instance profile that wraps this
-  // role. EC2 requires an instance profile (not a bare role) to assume a role,
-  // so this is what an AwsEc2Instance.iam_instance_profile_arn should reference.
-  string instance_profile_arn = 3;
-
-  // instance_profile_name is the name of the IAM instance profile wrapping this role.
-  string instance_profile_name = 4;
+  // The stable unique ID AWS assigns to the role (e.g. "AROA..."). Unlike the
+  // ARN it never encodes the name or path, so it is what appears in policy
+  // aws:userid conditions and audit trails.
+  string role_id = 3;
 }

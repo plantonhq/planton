@@ -83,7 +83,9 @@ import (
 	awsglobalacceleratorv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsglobalaccelerator/v1"
 	awsgluecatalogdatabasev1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsgluecatalogdatabase/v1"
 	awshttpapigatewayv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awshttpapigateway/v1"
+	awsiaminstanceprofilev1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiaminstanceprofile/v1"
 	awsiamoidcproviderv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiamoidcprovider/v1"
+	awsiampolicyv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiampolicy/v1"
 	awsiamrolev1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiamrole/v1"
 	awsiamuserv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiamuser/v1"
 	awsinternetgatewayv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsinternetgateway/v1"
@@ -518,7 +520,9 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsGlobalAccelerator:             &awsglobalacceleratorv1.AwsGlobalAccelerator{},
 	cloudresourcekind.CloudResourceKind_AwsGlueCatalogDatabase:           &awsgluecatalogdatabasev1.AwsGlueCatalogDatabase{},
 	cloudresourcekind.CloudResourceKind_AwsHttpApiGateway:                &awshttpapigatewayv1.AwsHttpApiGateway{},
+	cloudresourcekind.CloudResourceKind_AwsIamInstanceProfile:            &awsiaminstanceprofilev1.AwsIamInstanceProfile{},
 	cloudresourcekind.CloudResourceKind_AwsIamOidcProvider:               &awsiamoidcproviderv1.AwsIamOidcProvider{},
+	cloudresourcekind.CloudResourceKind_AwsIamPolicy:                     &awsiampolicyv1.AwsIamPolicy{},
 	cloudresourcekind.CloudResourceKind_AwsIamRole:                       &awsiamrolev1.AwsIamRole{},
 	cloudresourcekind.CloudResourceKind_AwsIamUser:                       &awsiamuserv1.AwsIamUser{},
 	cloudresourcekind.CloudResourceKind_AwsInternetGateway:               &awsinternetgatewayv1.AwsInternetGateway{},

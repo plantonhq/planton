@@ -16,7 +16,7 @@ spec:
           Service: ecs-tasks.amazonaws.com
         Action: sts:AssumeRole
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+    - value: arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
   inlinePolicies:
     extraLoggingPermissions:
       Version: "2012-10-17"

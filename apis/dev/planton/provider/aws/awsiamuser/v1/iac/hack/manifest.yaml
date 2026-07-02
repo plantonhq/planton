@@ -6,7 +6,9 @@ spec:
   region: us-west-2
   userName: "cicd-demo-user"
   managedPolicyArns:
-    - "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+    # Literal ARN (AWS-managed policy). Planton-defined policies attach via a
+    # valueFrom reference to an AwsIamPolicy's policy_arn output.
+    - value: "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
   inlinePolicies:
     customAccess:
       Version: "2012-10-17"

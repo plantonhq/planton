@@ -1,0 +1,24 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsIamPolicy
+metadata:
+  name: s3-read-only-demo
+spec:
+  region: us-west-2
+  description: "Demo managed policy granting read-only access to one bucket"
+  path: "/service-policies/"
+  # A multi-statement document with heterogeneous statement shapes (one carries
+  # a Sid, one does not; different Action arities). policy_document is free-form
+  # JSON (google.protobuf.Struct), so the fixture deliberately exercises the
+  # shape that would fail if the TF variable were typed map(any) instead of any.
+  policyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Sid: "ListBucket"
+        Effect: "Allow"
+        Action: "s3:ListBucket"
+        Resource: "arn:aws:s3:::demo-bucket"
+      - Effect: "Allow"
+        Action:
+          - "s3:GetObject"
+          - "s3:GetObjectVersion"
+        Resource: "arn:aws:s3:::demo-bucket/*"

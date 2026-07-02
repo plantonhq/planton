@@ -56,9 +56,12 @@ This creates an IAM user named `my-ci-user` with one active access key pair and 
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
-| `managedPolicyArns` | `string[]` | `[]` | ARNs of AWS-managed or customer-managed IAM policies to attach. Must be unique. Each ARN must match `^arn:aws:iam::`. |
+| `path` | `string` | `"/"` | IAM path for organizing and wildcard-matching users (e.g. `/ci/`). |
+| `managedPolicyArns` | `StringValueOrRef[]` | `[]` | Managed policies to attach — `valueFrom` references to `AwsIamPolicy` resources, or literal ARNs for AWS-managed policies. |
 | `inlinePolicies` | `map<string, object>` | `{}` | Map of inline policy names to IAM policy documents. Keys are policy names (max 128 characters); values are `google.protobuf.Struct` policy documents. |
+| `permissionsBoundary` | `StringValueOrRef` | — | Managed policy whose grants cap this user's maximum permissions (intersection semantics). Especially valuable on long-lived credentials. |
 | `disableAccessKeys` | `bool` | `false` | When `true`, prevents creation of access keys for this user. When `false`, one active access key pair is created. |
+| `forceDestroy` | `bool` | `false` | Delete credentials created outside this resource (login profile, extra keys, MFA devices) on teardown instead of failing. |
 
 ## Examples
 
@@ -80,7 +83,7 @@ spec:
   region: us-east-1
   userName: ci-deploy-user
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/AmazonS3FullAccess
+    - value: arn:aws:iam::aws:policy/AmazonS3FullAccess
 ```
 
 ### Service Account with Inline Policy
@@ -131,7 +134,7 @@ spec:
   userName: audit-viewer
   disableAccessKeys: true
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/ReadOnlyAccess
+    - value: arn:aws:iam::aws:policy/ReadOnlyAccess
 ```
 
 ### Full-Featured User with Multiple Policies
@@ -152,7 +155,7 @@ spec:
   region: us-east-1
   userName: worker-service
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+    - value: arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
   inlinePolicies:
     sqs-consumer:
       Version: "2012-10-17"

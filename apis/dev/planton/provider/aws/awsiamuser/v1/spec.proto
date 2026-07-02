@@ -3,37 +3,95 @@ syntax = "proto3";
 package dev.planton.provider.aws.awsiamuser.v1;
 
 import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
 import "google/protobuf/struct.proto";
 
-// AwsIamUserSpec defines the configuration for a long-lived AWS IAM user (for CI/CD use).
+// AwsIamUserSpec defines an IAM user: a long-lived identity with permanent
+// credentials, for the narrow set of cases temporary role credentials cannot
+// cover (external CI systems without OIDC federation, legacy tooling, break-
+// glass access).
+//
+// Prefer roles wherever possible -- a role's credentials expire in hours,
+// while a user's access key works until rotated. When a user is genuinely
+// needed, this component keeps it disciplined: reusable permissions attach as
+// managed-policy references (see AwsIamPolicy), a permissions boundary can cap
+// what the user can ever do, and access-key creation is explicit.
 message AwsIamUserSpec {
-  // The AWS region where the resource will be created.
-  // Example: "us-west-2", "eu-west-1"
+  // The AWS region used by the provider while managing this user.
+  // IAM is a global service -- the user exists in every region -- but every
+  // AWS API call is still made against a regional endpoint, so a region is
+  // required.
+  // Example: "us-west-2", "eu-west-1".
   string region = 1 [(buf.validate.field).string.min_len = 1];
 
-  // user_name is the IAM user name. Must be 1-64 characters and match the regex
-  // pattern "^[a-zA-Z0-9+=,.@_-]{1,64}$" (letters, digits, and +=,.@_-).
+  // The IAM user name. Unlike most identifiers this is mutable -- AWS renames
+  // the user in place. 1-64 characters: letters, digits, and +=,.@_- .
   string user_name = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.pattern = "^[a-zA-Z0-9+=,.@_-]{1,64}$"
   ];
 
-  // managed_policy_arns is a list of IAM managed policy ARNs to attach to the user.
-  // Each ARN must start with "arn:aws:iam::". The list must be unique.
-  repeated string managed_policy_arns = 3 [(buf.validate.field).repeated = {
-    unique: true
-    items: {
-      string: {pattern: "^arn:aws:iam::"}
-    }
-  }];
+  // The IAM path for the user, used to organize and match users in IAM
+  // policies (e.g. scope a permission to "arn:aws:iam::<acct>:user/ci/*").
+  // Must begin and end with "/" (e.g. "/ci/"). Defaults to "/" when omitted.
+  // Updatable in place (users, unlike roles and policies, can move paths).
+  string path = 3 [(dev.planton.shared.options.recommended_default) = "/"];
 
-  // inline_policies is a map of inline policy documents to attach to the user.
-  // Keys are policy names (max 128 characters); values are the IAM policy JSON (as a Struct).
-  map<string, google.protobuf.Struct> inline_policies = 4 [(buf.validate.field).map.keys = {
+  // Managed policies to attach, each a reference to an AwsIamPolicy's
+  // policy_arn output or a literal ARN (literals are how AWS-managed policies
+  // like arn:aws:iam::aws:policy/ReadOnlyAccess attach). Attachments are
+  // reconciled in place: adding or removing an entry attaches or detaches
+  // without touching the user.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef managed_policy_arns = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamPolicy,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_arn"
+  ];
+
+  // Inline policies embedded in this user: a map of policy name to a
+  // free-form JSON permission document. An inline policy lives and dies with
+  // the user; anything reused across principals belongs in a first-class
+  // AwsIamPolicy attached via managed_policy_arns.
+  map<string, google.protobuf.Struct> inline_policies = 5 [(buf.validate.field).map.keys = {
     string: {max_len: 128}
   }];
 
-  // disable_access_keys, if true, prevents creation of access keys for this user.
-  // If false (default), one active access key will be created for the user.
-  bool disable_access_keys = 5;
+  // An optional permissions boundary: a managed policy whose grants cap the
+  // maximum permissions this user can ever have -- effective permissions are
+  // the INTERSECTION of the boundary and the user's permission policies.
+  // Especially valuable on users, whose credentials are long-lived. Reference
+  // an AwsIamPolicy's policy_arn output or pass a literal policy ARN.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef permissions_boundary = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamPolicy,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_arn"
+  ];
+
+  // If true, no access key is created for this user. By default one active
+  // access key is created and its id/secret are exported as (sensitive) stack
+  // outputs -- the usual reason a user exists. Disable for console-only or
+  // externally-keyed users.
+  bool disable_access_keys = 7;
+
+  // Whether deleting the user also deletes credentials and artifacts created
+  // OUTSIDE this resource -- console login profiles, extra access keys, MFA
+  // devices, SSH keys, signing certificates. Off by default: deletion fails
+  // if such artifacts exist, surfacing them instead of silently destroying
+  // credentials someone may depend on. Turn on for ephemeral or CI-owned
+  // users where teardown must always succeed.
+  bool force_destroy = 8;
+
+  // path, when set, must be "/" or a "/"-delimited sequence of non-empty
+  // segments that begins and ends with "/" (this also rules out "//").
+  option (buf.validate.message).cel = {
+    id: "path_format"
+    message: "path must begin and end with '/' and contain no empty segments, e.g. '/' or '/ci/'"
+    expression: "this.path == '' || this.path == '/' || this.path.matches('^/([A-Za-z0-9\\\\.,\\\\+@=_-]+/)+$')"
+  };
+
+  // AWS limits the path to 512 characters.
+  option (buf.validate.message).cel = {
+    id: "path_length"
+    message: "path must be at most 512 characters"
+    expression: "size(this.path) <= 512"
+  };
 }

@@ -14,4 +14,6 @@ spec:
           Service: ecs-tasks.amazonaws.com
         Action: sts:AssumeRole
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+    # AWS-managed policies attach by literal ARN; reference an AwsIamPolicy's
+    # policy_arn output via valueFrom for policies defined in Planton.
+    - value: arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy

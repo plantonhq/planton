@@ -8,6 +8,8 @@ package awsiamuserv1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/apis/dev/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -23,26 +25,63 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamUserSpec defines the configuration for a long-lived AWS IAM user (for CI/CD use).
+// AwsIamUserSpec defines an IAM user: a long-lived identity with permanent
+// credentials, for the narrow set of cases temporary role credentials cannot
+// cover (external CI systems without OIDC federation, legacy tooling, break-
+// glass access).
+//
+// Prefer roles wherever possible -- a role's credentials expire in hours,
+// while a user's access key works until rotated. When a user is genuinely
+// needed, this component keeps it disciplined: reusable permissions attach as
+// managed-policy references (see AwsIamPolicy), a permissions boundary can cap
+// what the user can ever do, and access-key creation is explicit.
 type AwsIamUserSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The AWS region where the resource will be created.
-	// Example: "us-west-2", "eu-west-1"
+	// The AWS region used by the provider while managing this user.
+	// IAM is a global service -- the user exists in every region -- but every
+	// AWS API call is still made against a regional endpoint, so a region is
+	// required.
+	// Example: "us-west-2", "eu-west-1".
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// user_name is the IAM user name. Must be 1-64 characters and match the regex
-	// pattern "^[a-zA-Z0-9+=,.@_-]{1,64}$" (letters, digits, and +=,.@_-).
+	// The IAM user name. Unlike most identifiers this is mutable -- AWS renames
+	// the user in place. 1-64 characters: letters, digits, and +=,.@_- .
 	UserName string `protobuf:"bytes,2,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
-	// managed_policy_arns is a list of IAM managed policy ARNs to attach to the user.
-	// Each ARN must start with "arn:aws:iam::". The list must be unique.
-	ManagedPolicyArns []string `protobuf:"bytes,3,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
-	// inline_policies is a map of inline policy documents to attach to the user.
-	// Keys are policy names (max 128 characters); values are the IAM policy JSON (as a Struct).
-	InlinePolicies map[string]*structpb.Struct `protobuf:"bytes,4,rep,name=inline_policies,json=inlinePolicies,proto3" json:"inline_policies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// disable_access_keys, if true, prevents creation of access keys for this user.
-	// If false (default), one active access key will be created for the user.
-	DisableAccessKeys bool `protobuf:"varint,5,opt,name=disable_access_keys,json=disableAccessKeys,proto3" json:"disable_access_keys,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// The IAM path for the user, used to organize and match users in IAM
+	// policies (e.g. scope a permission to "arn:aws:iam::<acct>:user/ci/*").
+	// Must begin and end with "/" (e.g. "/ci/"). Defaults to "/" when omitted.
+	// Updatable in place (users, unlike roles and policies, can move paths).
+	Path string `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
+	// Managed policies to attach, each a reference to an AwsIamPolicy's
+	// policy_arn output or a literal ARN (literals are how AWS-managed policies
+	// like arn:aws:iam::aws:policy/ReadOnlyAccess attach). Attachments are
+	// reconciled in place: adding or removing an entry attaches or detaches
+	// without touching the user.
+	ManagedPolicyArns []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
+	// Inline policies embedded in this user: a map of policy name to a
+	// free-form JSON permission document. An inline policy lives and dies with
+	// the user; anything reused across principals belongs in a first-class
+	// AwsIamPolicy attached via managed_policy_arns.
+	InlinePolicies map[string]*structpb.Struct `protobuf:"bytes,5,rep,name=inline_policies,json=inlinePolicies,proto3" json:"inline_policies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// An optional permissions boundary: a managed policy whose grants cap the
+	// maximum permissions this user can ever have -- effective permissions are
+	// the INTERSECTION of the boundary and the user's permission policies.
+	// Especially valuable on users, whose credentials are long-lived. Reference
+	// an AwsIamPolicy's policy_arn output or pass a literal policy ARN.
+	PermissionsBoundary *v1.StringValueOrRef `protobuf:"bytes,6,opt,name=permissions_boundary,json=permissionsBoundary,proto3" json:"permissions_boundary,omitempty"`
+	// If true, no access key is created for this user. By default one active
+	// access key is created and its id/secret are exported as (sensitive) stack
+	// outputs -- the usual reason a user exists. Disable for console-only or
+	// externally-keyed users.
+	DisableAccessKeys bool `protobuf:"varint,7,opt,name=disable_access_keys,json=disableAccessKeys,proto3" json:"disable_access_keys,omitempty"`
+	// Whether deleting the user also deletes credentials and artifacts created
+	// OUTSIDE this resource -- console login profiles, extra access keys, MFA
+	// devices, SSH keys, signing certificates. Off by default: deletion fails
+	// if such artifacts exist, surfacing them instead of silently destroying
+	// credentials someone may depend on. Turn on for ephemeral or CI-owned
+	// users where teardown must always succeed.
+	ForceDestroy  bool `protobuf:"varint,8,opt,name=force_destroy,json=forceDestroy,proto3" json:"force_destroy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AwsIamUserSpec) Reset() {
@@ -89,7 +128,14 @@ func (x *AwsIamUserSpec) GetUserName() string {
 	return ""
 }
 
-func (x *AwsIamUserSpec) GetManagedPolicyArns() []string {
+func (x *AwsIamUserSpec) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *AwsIamUserSpec) GetManagedPolicyArns() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.ManagedPolicyArns
 	}
@@ -103,9 +149,23 @@ func (x *AwsIamUserSpec) GetInlinePolicies() map[string]*structpb.Struct {
 	return nil
 }
 
+func (x *AwsIamUserSpec) GetPermissionsBoundary() *v1.StringValueOrRef {
+	if x != nil {
+		return x.PermissionsBoundary
+	}
+	return nil
+}
+
 func (x *AwsIamUserSpec) GetDisableAccessKeys() bool {
 	if x != nil {
 		return x.DisableAccessKeys
+	}
+	return false
+}
+
+func (x *AwsIamUserSpec) GetForceDestroy() bool {
+	if x != nil {
+		return x.ForceDestroy
 	}
 	return false
 }
@@ -114,17 +174,22 @@ var File_dev_planton_provider_aws_awsiamuser_v1_spec_proto protoreflect.FileDesc
 
 const file_dev_planton_provider_aws_awsiamuser_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1dev/planton/provider/aws/awsiamuser/v1/spec.proto\x12&dev.planton.provider.aws.awsiamuser.v1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xd3\x03\n" +
+	"1dev/planton/provider/aws/awsiamuser/v1/spec.proto\x12&dev.planton.provider.aws.awsiamuser.v1\x1a\x1bbuf/validate/validate.proto\x1a2dev/planton/shared/foreignkey/v1/foreign_key.proto\x1a(dev/planton/shared/options/options.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xed\a\n" +
 	"\x0eAwsIamUserSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12A\n" +
-	"\tuser_name\x18\x02 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[a-zA-Z0-9+=,.@_-]{1,64}$R\buserName\x12L\n" +
-	"\x13managed_policy_arns\x18\x03 \x03(\tB\x1c\xbaH\x19\x92\x01\x16\x18\x01\"\x12r\x102\x0e^arn:aws:iam::R\x11managedPolicyArns\x12\x82\x01\n" +
-	"\x0finline_policies\x18\x04 \x03(\v2J.dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntryB\r\xbaH\n" +
-	"\x9a\x01\a\"\x05r\x03\x18\x80\x01R\x0einlinePolicies\x12.\n" +
-	"\x13disable_access_keys\x18\x05 \x01(\bR\x11disableAccessKeys\x1aZ\n" +
+	"\tuser_name\x18\x02 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[a-zA-Z0-9+=,.@_-]{1,64}$R\buserName\x12\x19\n" +
+	"\x04path\x18\x03 \x01(\tB\x05\x92\xa6\x1d\x01/R\x04path\x12\x86\x01\n" +
+	"\x13managed_policy_arns\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xe6\x01\x92\xd4a\x19status.outputs.policy_arnR\x11managedPolicyArns\x12\x82\x01\n" +
+	"\x0finline_policies\x18\x05 \x03(\v2J.dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntryB\r\xbaH\n" +
+	"\x9a\x01\a\"\x05r\x03\x18\x80\x01R\x0einlinePolicies\x12\x89\x01\n" +
+	"\x14permissions_boundary\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xe6\x01\x92\xd4a\x19status.outputs.policy_arnR\x13permissionsBoundary\x12.\n" +
+	"\x13disable_access_keys\x18\a \x01(\bR\x11disableAccessKeys\x12#\n" +
+	"\rforce_destroy\x18\b \x01(\bR\fforceDestroy\x1aZ\n" +
 	"\x13InlinePoliciesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12-\n" +
-	"\x05value\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x05value:\x028\x01B\xcd\x02\n" +
+	"\x05value\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x05value:\x028\x01:\x90\x02\xbaH\x8c\x02\x1a\xbd\x01\n" +
+	"\vpath_format\x12Rpath must begin and end with '/' and contain no empty segments, e.g. '/' or '/ci/'\x1aZthis.path == '' || this.path == '/' || this.path.matches('^/([A-Za-z0-9\\\\.,\\\\+@=_-]+/)+$')\x1aJ\n" +
+	"\vpath_length\x12#path must be at most 512 characters\x1a\x16size(this.path) <= 512B\xcd\x02\n" +
 	"*com.dev.planton.provider.aws.awsiamuser.v1B\tSpecProtoP\x01ZUgithub.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiamuser/v1;awsiamuserv1\xa2\x02\x05DPPAA\xaa\x02&Dev.Planton.Provider.Aws.Awsiamuser.V1\xca\x02&Dev\\Planton\\Provider\\Aws\\Awsiamuser\\V1\xe2\x022Dev\\Planton\\Provider\\Aws\\Awsiamuser\\V1\\GPBMetadata\xea\x02+Dev::Planton::Provider::Aws::Awsiamuser::V1b\x06proto3"
 
 var (
@@ -141,18 +206,21 @@ func file_dev_planton_provider_aws_awsiamuser_v1_spec_proto_rawDescGZIP() []byte
 
 var file_dev_planton_provider_aws_awsiamuser_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dev_planton_provider_aws_awsiamuser_v1_spec_proto_goTypes = []any{
-	(*AwsIamUserSpec)(nil),  // 0: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec
-	nil,                     // 1: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntry
-	(*structpb.Struct)(nil), // 2: google.protobuf.Struct
+	(*AwsIamUserSpec)(nil),      // 0: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec
+	nil,                         // 1: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntry
+	(*v1.StringValueOrRef)(nil), // 2: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*structpb.Struct)(nil),     // 3: google.protobuf.Struct
 }
 var file_dev_planton_provider_aws_awsiamuser_v1_spec_proto_depIdxs = []int32{
-	1, // 0: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.inline_policies:type_name -> dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntry
-	2, // 1: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntry.value:type_name -> google.protobuf.Struct
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.managed_policy_arns:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1, // 1: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.inline_policies:type_name -> dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntry
+	2, // 2: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.permissions_boundary:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3, // 3: dev.planton.provider.aws.awsiamuser.v1.AwsIamUserSpec.InlinePoliciesEntry.value:type_name -> google.protobuf.Struct
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_dev_planton_provider_aws_awsiamuser_v1_spec_proto_init() }

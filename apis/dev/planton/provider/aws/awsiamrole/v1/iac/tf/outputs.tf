@@ -1,22 +1,14 @@
 output "role_arn" {
-  description = "The ARN of the IAM role."
+  description = "The ARN of the IAM role (what service integrations reference)."
   value       = aws_iam_role.this.arn
 }
 
 output "role_name" {
-  description = "The name of the IAM role."
+  description = "The name of the IAM role (what an AwsIamInstanceProfile's role field references)."
   value       = aws_iam_role.this.name
 }
 
-output "instance_profile_arn" {
-  description = "The ARN of the IAM instance profile wrapping this role (attach to EC2 instances)."
-  value       = aws_iam_instance_profile.this.arn
+output "role_id" {
+  description = "The stable unique ID AWS assigns to the role (AROA...)."
+  value       = aws_iam_role.this.unique_id
 }
-
-output "instance_profile_name" {
-  description = "The name of the IAM instance profile wrapping this role."
-  value       = aws_iam_instance_profile.this.name
-}
-
-
-

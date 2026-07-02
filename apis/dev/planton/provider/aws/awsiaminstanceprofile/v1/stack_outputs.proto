@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiaminstanceprofile.v1;
+
+// AwsIamInstanceProfileStackOutputs captures the observable outputs of a
+// provisioned IAM instance profile, for EC2-shaped resources (instances,
+// launch templates, Auto Scaling groups) to reference.
+message AwsIamInstanceProfileStackOutputs {
+  // The ARN of the instance profile (e.g.
+  // "arn:aws:iam::123456789012:instance-profile/web-server"). What an EC2
+  // instance's iam_instance_profile_arn references via
+  // status.outputs.instance_profile_arn.
+  string instance_profile_arn = 1;
+
+  // The friendly name of the instance profile (mirrors metadata.name). Launch
+  // templates and some APIs take the profile by name rather than ARN.
+  string instance_profile_name = 2;
+
+  // The stable unique ID AWS assigns to the profile (e.g. "AIPA...").
+  string instance_profile_id = 3;
+
+  // The name of the IAM role the profile carries, resolved from spec.role --
+  // exported for convenience so downstream consumers can see the effective
+  // role without dereferencing the AwsIamRole resource.
+  string role_name = 4;
+}

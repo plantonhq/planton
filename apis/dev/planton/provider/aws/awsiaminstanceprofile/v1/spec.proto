@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiaminstanceprofile.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
+import "dev/planton/shared/options/options.proto";
+
+// AwsIamInstanceProfileSpec defines an IAM instance profile: the container
+// that delivers an IAM role to EC2 instances.
+//
+// EC2 cannot assume a role directly -- it can only be launched with an
+// instance profile, which holds exactly one role. The instance metadata
+// service then vends the role's temporary credentials to whatever runs on the
+// instance. Everything EC2-shaped (an instance's iam_instance_profile_arn, a
+// launch template, an Auto Scaling group) references the profile, while
+// everything else on AWS (Lambda, ECS, EKS, ...) assumes the role directly.
+// Modeling the profile as its own component keeps that boundary honest: roles
+// serve every service, and the profile exists only where EC2 needs it.
+//
+// The profile name comes from metadata.name. Name and path are create-only
+// (changing them replaces the profile); the role can be swapped in place.
+message AwsIamInstanceProfileSpec {
+  // The AWS region used by the provider while managing this profile.
+  // IAM is a global service -- the profile is usable in every region -- but
+  // every AWS API call is still made against a regional endpoint, so a region
+  // is required.
+  // Example: "us-west-2", "eu-west-1".
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The IAM role the profile carries, by NAME (not ARN) -- that is what the
+  // AWS API takes when adding a role to a profile. Reference an AwsIamRole's
+  // role_name output, or pass a literal role name for a role that exists
+  // outside Planton. AWS allows at most one role per profile, and the role can
+  // be swapped without replacing the profile (the old role is removed and the
+  // new one added).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef role = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.role_name"
+  ];
+
+  // The IAM path for the profile, used to organize and match profiles in IAM
+  // policies. Must begin and end with "/" (e.g. "/compute/"). Defaults to "/"
+  // when omitted. Immutable: changing the path replaces the profile.
+  string path = 3 [(dev.planton.shared.options.recommended_default) = "/"];
+
+  // path, when set, must be "/" or a "/"-delimited sequence of non-empty
+  // segments that begins and ends with "/" (this also rules out "//").
+  option (buf.validate.message).cel = {
+    id: "path_format"
+    message: "path must begin and end with '/' and contain no empty segments, e.g. '/' or '/compute/'"
+    expression: "this.path == '' || this.path == '/' || this.path.matches('^/([A-Za-z0-9\\\\.,\\\\+@=_-]+/)+$')"
+  };
+
+  // AWS limits the path to 512 characters.
+  option (buf.validate.message).cel = {
+    id: "path_length"
+    message: "path must be at most 512 characters"
+    expression: "size(this.path) <= 512"
+  };
+}

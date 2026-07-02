@@ -1,0 +1,11 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsIamInstanceProfile
+metadata:
+  name: web-server-profile-demo
+spec:
+  region: us-west-2
+  path: "/compute/"
+  # A literal role name (a role that already exists). In composed topologies
+  # this is a valueFrom reference to an AwsIamRole's role_name output.
+  role:
+    value: "web-server-role-demo"

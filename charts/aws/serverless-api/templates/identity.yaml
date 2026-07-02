@@ -15,7 +15,7 @@ spec:
           Service: lambda.amazonaws.com
         Action: sts:AssumeRole
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    - value: arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
   inlinePolicies:
 {% if values.databaseEnabled | bool %}
     dynamodbAccess:

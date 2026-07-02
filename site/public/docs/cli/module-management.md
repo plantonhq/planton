@@ -117,7 +117,7 @@ planton upgrade --force
 | `--check` | `-c` | Check for updates without installing |
 | `--force` | `-f` | Force upgrade even if already on the latest or specified version |
 
-On macOS with Homebrew, `upgrade` without a version argument uses `brew upgrade --cask`. When a specific version is provided, or on other platforms, the binary is downloaded directly from GitHub releases.
+The binary is downloaded directly from GitHub releases and replaces the currently running executable.
 
 ### downgrade
 

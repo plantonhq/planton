@@ -1,0 +1,18 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsIamPolicy
+metadata:
+  name: s3-read-only
+spec:
+  region: <aws-region>
+  description: Read-only access to one S3 bucket
+  policyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Action:
+          - s3:GetObject
+          - s3:GetObjectVersion
+          - s3:ListBucket
+        Resource:
+          - arn:aws:s3:::<bucket-name>
+          - arn:aws:s3:::<bucket-name>/*

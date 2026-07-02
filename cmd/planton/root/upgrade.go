@@ -10,13 +10,8 @@ var Upgrade = &cobra.Command{
 	Short: "upgrade the planton CLI to the latest or specified version",
 	Long: `Upgrade the planton CLI to the latest available version, or to a specific version if provided.
 
-On macOS, if planton was installed via Homebrew, this command uses 'brew upgrade --cask'.
-On all other platforms (or if Homebrew is not available), it downloads the latest
-binary directly from GitHub releases.
-
-When a specific VERSION is provided, the CLI is downloaded directly from GitHub releases,
-bypassing Homebrew. If Homebrew manages the current installation, you will be
-prompted to uninstall via Homebrew first to avoid conflicts.
+The CLI binary is downloaded directly from GitHub releases and replaces the
+currently running executable.
 
 Arguments:
   VERSION   Optional. Specific version to install (e.g., v0.3.10-cli.20260110.0).

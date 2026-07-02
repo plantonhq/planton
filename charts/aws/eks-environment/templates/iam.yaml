@@ -7,7 +7,7 @@ spec:
   region: "{{ values.aws_region }}"
   description: IAM role for EKS control plane
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+    - value: arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
   trustPolicy:
     Statement:
       - Effect: Allow
@@ -24,9 +24,9 @@ spec:
   region: "{{ values.aws_region }}"
   description: IAM role for EKS worker nodes
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
-    - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
-    - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+    - value: arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+    - value: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+    - value: arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
   trustPolicy:
     Statement:
       - Effect: Allow

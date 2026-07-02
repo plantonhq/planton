@@ -13,6 +13,7 @@ go_library(
     deps = [
         "//apis/dev/planton/provider/aws/awsiamuser/v1:awsiamuser",
         "//apis/dev/planton/shared/cloudresourcekind",
+        "//internal/valuefrom",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
         "@com_github_pkg_errors//:errors",

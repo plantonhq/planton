@@ -1,17 +1,17 @@
 locals {
-  resource_name = coalesce(try(var.metadata.name, null), "aws-iam-role")
-  tags = merge({
-    "Name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
-  description = try(var.spec.description, null)
-  path        = try(var.spec.path, "/")
+  # Resource-identity tags, matching the Pulumi module key-for-key.
+  aws_tags = {
+    "Name"                     = var.metadata.name
+    "planton.ai/resource"      = "true"
+    "planton.ai/organization"  = var.metadata.org
+    "planton.ai/environment"   = var.metadata.env
+    "planton.ai/resource-kind" = "AwsIamRole"
+    "planton.ai/resource-id"   = var.metadata.id
+  }
 
   # trust_policy is a free-form JSON object (google.protobuf.Struct); aws_iam_role
   # wants assume_role_policy as a JSON string, so encode the object here.
-  trust_policy_json = try(jsonencode(var.spec.trust_policy), null)
-
-  managed_policy_arns = try(var.spec.managed_policy_arns, [])
+  trust_policy_json = jsonencode(var.spec.trust_policy)
 
   # inline_policies is free-form JSON (map<string, google.protobuf.Struct>), typed `any` in
   # variables.tf because its entries have heterogeneous shapes. Encode each policy document to a
@@ -19,9 +19,6 @@ locals {
   # accepts a map/set, and converting a heterogeneous object to a map would otherwise fail with
   # "all map elements must have the same type".
   inline_policies_json = {
-    for k, v in try(var.spec.inline_policies, {}) : k => jsonencode(v)
+    for k, v in var.spec.inline_policies : k => jsonencode(v)
   }
 }
-
-
-

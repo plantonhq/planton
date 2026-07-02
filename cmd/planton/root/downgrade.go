@@ -10,9 +10,8 @@ var Downgrade = &cobra.Command{
 	Short: "install a previous version of the planton CLI",
 	Long: `Install a specific previous version of the planton CLI.
 
-This command downloads the specified version directly from GitHub releases.
-If Homebrew manages the current installation, you will be prompted to uninstall
-via Homebrew first to avoid conflicts.
+This command downloads the specified version directly from GitHub releases and
+replaces the currently running executable.
 
 Arguments:
   VERSION   Required. The version to install (e.g., v0.3.5-cli.20260108.0).

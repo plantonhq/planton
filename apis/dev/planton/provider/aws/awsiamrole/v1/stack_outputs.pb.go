@@ -21,21 +21,27 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamRoleStackOutputs describes values returned by Pulumi/Terraform for an IAM role deployment.
+// AwsIamRoleStackOutputs captures the observable outputs of a provisioned IAM
+// role, for downstream resources (Lambda functions, ECS services, instance
+// profiles, trust relationships, ...) to reference.
 type AwsIamRoleStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// role_arn is the Amazon Resource Name (ARN) of the created IAM role.
+	// The ARN of the IAM role (e.g. "arn:aws:iam::123456789012:role/my-role").
+	// What most service integrations reference via status.outputs.role_arn --
+	// Lambda's role, an ECS task role, a Step Functions execution role, and so
+	// on. To deliver this role to EC2 instances, wrap it in an
+	// AwsIamInstanceProfile instead of referencing the role directly.
 	RoleArn string `protobuf:"bytes,1,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
-	// role_name is the name of the IAM role in AWS.
+	// The friendly name of the IAM role (mirrors metadata.name). What an
+	// AwsIamInstanceProfile's role field references, and what the AWS CLI and
+	// console use.
 	RoleName string `protobuf:"bytes,2,opt,name=role_name,json=roleName,proto3" json:"role_name,omitempty"`
-	// instance_profile_arn is the ARN of the IAM instance profile that wraps this
-	// role. EC2 requires an instance profile (not a bare role) to assume a role,
-	// so this is what an AwsEc2Instance.iam_instance_profile_arn should reference.
-	InstanceProfileArn string `protobuf:"bytes,3,opt,name=instance_profile_arn,json=instanceProfileArn,proto3" json:"instance_profile_arn,omitempty"`
-	// instance_profile_name is the name of the IAM instance profile wrapping this role.
-	InstanceProfileName string `protobuf:"bytes,4,opt,name=instance_profile_name,json=instanceProfileName,proto3" json:"instance_profile_name,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// The stable unique ID AWS assigns to the role (e.g. "AROA..."). Unlike the
+	// ARN it never encodes the name or path, so it is what appears in policy
+	// aws:userid conditions and audit trails.
+	RoleId        string `protobuf:"bytes,3,opt,name=role_id,json=roleId,proto3" json:"role_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AwsIamRoleStackOutputs) Reset() {
@@ -82,16 +88,9 @@ func (x *AwsIamRoleStackOutputs) GetRoleName() string {
 	return ""
 }
 
-func (x *AwsIamRoleStackOutputs) GetInstanceProfileArn() string {
+func (x *AwsIamRoleStackOutputs) GetRoleId() string {
 	if x != nil {
-		return x.InstanceProfileArn
-	}
-	return ""
-}
-
-func (x *AwsIamRoleStackOutputs) GetInstanceProfileName() string {
-	if x != nil {
-		return x.InstanceProfileName
+		return x.RoleId
 	}
 	return ""
 }
@@ -100,12 +99,11 @@ var File_dev_planton_provider_aws_awsiamrole_v1_stack_outputs_proto protoreflect
 
 const file_dev_planton_provider_aws_awsiamrole_v1_stack_outputs_proto_rawDesc = "" +
 	"\n" +
-	":dev/planton/provider/aws/awsiamrole/v1/stack_outputs.proto\x12&dev.planton.provider.aws.awsiamrole.v1\"\xb6\x01\n" +
+	":dev/planton/provider/aws/awsiamrole/v1/stack_outputs.proto\x12&dev.planton.provider.aws.awsiamrole.v1\"i\n" +
 	"\x16AwsIamRoleStackOutputs\x12\x19\n" +
 	"\brole_arn\x18\x01 \x01(\tR\aroleArn\x12\x1b\n" +
-	"\trole_name\x18\x02 \x01(\tR\broleName\x120\n" +
-	"\x14instance_profile_arn\x18\x03 \x01(\tR\x12instanceProfileArn\x122\n" +
-	"\x15instance_profile_name\x18\x04 \x01(\tR\x13instanceProfileNameB\xd5\x02\n" +
+	"\trole_name\x18\x02 \x01(\tR\broleName\x12\x17\n" +
+	"\arole_id\x18\x03 \x01(\tR\x06roleIdB\xd5\x02\n" +
 	"*com.dev.planton.provider.aws.awsiamrole.v1B\x11StackOutputsProtoP\x01ZUgithub.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiamrole/v1;awsiamrolev1\xa2\x02\x05DPPAA\xaa\x02&Dev.Planton.Provider.Aws.Awsiamrole.V1\xca\x02&Dev\\Planton\\Provider\\Aws\\Awsiamrole\\V1\xe2\x022Dev\\Planton\\Provider\\Aws\\Awsiamrole\\V1\\GPBMetadata\xea\x02+Dev::Planton::Provider::Aws::Awsiamrole::V1b\x06proto3"
 
 var (

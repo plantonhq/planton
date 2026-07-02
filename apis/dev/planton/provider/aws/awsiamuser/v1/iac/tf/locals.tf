@@ -1,14 +1,20 @@
 locals {
-  resource_name = coalesce(try(var.spec.user_name, null), try(var.metadata.name, null), "aws-iam-user")
-  tags          = merge({
-    "Name" = local.resource_name
-  }, try(var.metadata.labels, {}))
+  # Resource-identity tags, matching the Pulumi module key-for-key.
+  aws_tags = {
+    "Name"                     = var.spec.user_name
+    "planton.ai/resource"      = "true"
+    "planton.ai/organization"  = var.metadata.org
+    "planton.ai/environment"   = var.metadata.env
+    "planton.ai/resource-kind" = "AwsIamUser"
+    "planton.ai/resource-id"   = var.metadata.id
+  }
 
-  managed_policy_arns = try(var.spec.managed_policy_arns, [])
-  inline_policies_map = try(var.spec.inline_policies, {})
-
-  disable_access_keys = try(var.spec.disable_access_keys, false)
+  # inline_policies is free-form JSON (map<string, google.protobuf.Struct>), typed `any` in
+  # variables.tf because its entries have heterogeneous shapes. Encode each policy document to a
+  # JSON string here so the result is a homogeneous map(string): aws_iam_user_policy.for_each
+  # accepts a map/set, and converting a heterogeneous object to a map would otherwise fail with
+  # "all map elements must have the same type".
+  inline_policies_json = {
+    for k, v in var.spec.inline_policies : k => jsonencode(v)
+  }
 }
-
-
-

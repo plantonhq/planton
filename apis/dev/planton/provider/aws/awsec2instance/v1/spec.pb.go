@@ -117,7 +117,9 @@ type AwsEc2InstanceSpec struct {
 	// - INSTANCE_CONNECT: Use AWS EC2 Instance Connect (temporary key injection, also requires a key_name).
 	ConnectionMethod *AwsEc2InstanceConnectionMethod `protobuf:"varint,7,opt,name=connection_method,json=connectionMethod,proto3,enum=dev.planton.provider.aws.awsec2instance.v1.AwsEc2InstanceConnectionMethod,oneof" json:"connection_method,omitempty"`
 	// The ARN of an IAM instance profile to attach to the EC2 instance.
-	// This profile should include an IAM role with necessary permissions (for example, SSM Session Manager access if using SSM).
+	// Reference an AwsIamInstanceProfile's instance_profile_arn output (the
+	// profile wraps the IAM role whose permissions the instance receives -- for
+	// example, SSM Session Manager access if using SSM), or pass a literal ARN.
 	// **Required if** connection_method is SSM; optional otherwise.
 	IamInstanceProfileArn *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=iam_instance_profile_arn,json=iamInstanceProfileArn,proto3" json:"iam_instance_profile_arn,omitempty"`
 	// The name of an EC2 Key Pair to associate with the instance for SSH access.
@@ -288,7 +290,7 @@ const file_dev_planton_provider_aws_awsec2instance_v1_spec_proto_rawDesc = "" +
 	"\tsubnet_id\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\x9c\x02\x92\xd4a\x18status.outputs.subnet_idR\bsubnetId\x12\x96\x01\n" +
 	"\x12security_group_ids\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB4\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xd7\x01\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\x8d\x01\n" +
 	"\x11connection_method\x18\a \x01(\x0e2J.dev.planton.provider.aws.awsec2instance.v1.AwsEc2InstanceConnectionMethodB\x0f\xbaH\x05\x82\x01\x02\x10\x01\x8a\xa6\x1d\x03SSMH\x00R\x10connectionMethod\x88\x01\x01\x12\x99\x01\n" +
-	"\x18iam_instance_profile_arn\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xd0\x01\x92\xd4a#status.outputs.instance_profile_arnR\x15iamInstanceProfileArn\x12\x19\n" +
+	"\x18iam_instance_profile_arn\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xe7\x01\x92\xd4a#status.outputs.instance_profile_arnR\x15iamInstanceProfileArn\x12\x19\n" +
 	"\bkey_name\x18\t \x01(\tR\akeyName\x12A\n" +
 	"\x13root_volume_size_gb\x18\n" +
 	" \x01(\x05B\r\xbaH\x04\x1a\x02 \x00\x8a\xa6\x1d\x0230H\x01R\x10rootVolumeSizeGb\x88\x01\x01\x12\\\n" +

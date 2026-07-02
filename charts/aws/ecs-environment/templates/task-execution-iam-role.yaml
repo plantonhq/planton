@@ -7,7 +7,7 @@ spec:
   region: "{{ values.aws_region }}"
   description: IAM role for ECS tasks to pull images and write logs
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+    - value: arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
   path: /service-role/
   trustPolicy:
     Statement:

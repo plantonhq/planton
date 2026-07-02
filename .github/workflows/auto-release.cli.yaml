@@ -2,7 +2,7 @@
 # CLI Auto-Release
 # =============================================================================
 # Builds and releases the planton CLI using GoReleaser for auto-releases.
-# Updates Homebrew tap so users can get the latest CLI via `brew upgrade`.
+# CLI binaries are published as GitHub Release assets.
 #
 # Tag Format: v{semver}-cli.{YYYYMMDD}.{N}
 # Example: v0.3.5-cli.20260108.0
@@ -47,7 +47,6 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: ${{ inputs.tag }}
 
       - name: Summary
@@ -61,12 +60,11 @@ jobs:
           echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- CLI binaries (darwin/linux/windows, amd64/arm64)" >> $GITHUB_STEP_SUMMARY
-          echo "- Homebrew cask updated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Install/Upgrade" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "brew upgrade planton" >> $GITHUB_STEP_SUMMARY
+          echo "planton upgrade" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/${TAG})" >> $GITHUB_STEP_SUMMARY

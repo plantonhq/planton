@@ -5,46 +5,82 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws"
+	"github.com/plantonhq/planton/internal/valuefrom"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/iam"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 	structpb "google.golang.org/protobuf/types/known/structpb"
 )
 
-func iamRole(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error {
+// iamRole provisions the role and its policy wiring. An IAM role is an
+// assumable identity: the trust policy controls WHO can assume it, the
+// attached/inline policies control WHAT it can do once assumed, and an
+// optional permissions boundary caps the maximum it can ever do. Name and
+// path are create-only (changing them replaces the role); everything else
+// updates in place.
+func iamRole(ctx *pulumi.Context, locals *Locals, provider pulumi.ProviderResource) error {
 	roleName := locals.AwsIamRole.Metadata.Name
 	spec := locals.AwsIamRole.Spec
 
+	// trust_policy is a free-form JSON object (google.protobuf.Struct);
+	// iam.Role wants assume_role_policy as a JSON string, so encode it here.
 	trustPolicyString, err := structToJSONString(spec.TrustPolicy)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal trust policy JSON")
 	}
 
-	// Create the core IAM role
-	iamRole, err := iam.NewRole(ctx, roleName, &iam.RoleArgs{
+	roleArgs := &iam.RoleArgs{
 		Name:             pulumi.String(roleName),
 		AssumeRolePolicy: pulumi.String(trustPolicyString),
-		Description:      pulumi.String(spec.Description),
-		Path:             pulumi.String(spec.Path),
 		Tags:             pulumi.ToStringMap(locals.AwsTags),
-	}, pulumi.Provider(provider))
+	}
+
+	if spec.Description != "" {
+		roleArgs.Description = pulumi.StringPtr(spec.Description)
+	}
+	if spec.Path != "" {
+		roleArgs.Path = pulumi.StringPtr(spec.Path)
+	}
+	// 0 means "unset" (proto3 zero value); AWS then applies its 3600s default.
+	if spec.MaxSessionDuration != 0 {
+		roleArgs.MaxSessionDuration = pulumi.IntPtr(int(spec.MaxSessionDuration))
+	}
+	// The boundary is a ceiling, not a grant: effective permissions are the
+	// intersection of this policy and the role's permission policies. A
+	// valueFrom reference is resolved to the AwsIamPolicy's policy_arn before
+	// the module runs.
+	if spec.PermissionsBoundary.GetValue() != "" {
+		roleArgs.PermissionsBoundary = pulumi.StringPtr(spec.PermissionsBoundary.GetValue())
+	}
+	// When enabled, deletion force-detaches policies still attached to the
+	// role (including attachments made outside this resource) instead of
+	// failing.
+	if spec.ForceDetachPolicies {
+		roleArgs.ForceDetachPolicies = pulumi.BoolPtr(true)
+	}
+
+	createdRole, err := iam.NewRole(ctx, roleName, roleArgs, pulumi.Provider(provider))
 	if err != nil {
 		return errors.Wrap(err, "failed to create IAM role")
 	}
 
-	// Attach managed policy ARNs
-	for idx, policyArn := range spec.ManagedPolicyArns {
+	// Each managed-policy attachment is its own resource (not the deprecated
+	// exclusive managed_policy_arns role argument) so attachments reconcile
+	// individually: adding or removing an entry attaches or detaches just that
+	// policy, and attachments made outside this resource are left alone.
+	// valueFrom references were resolved to policy ARNs before the module ran.
+	for idx, policyArn := range valuefrom.ToStringArray(spec.ManagedPolicyArns) {
 		attachName := fmt.Sprintf("%s-attach-%d", roleName, idx)
 		_, err := iam.NewRolePolicyAttachment(ctx, attachName, &iam.RolePolicyAttachmentArgs{
-			Role:      iamRole.Name,
+			Role:      createdRole.Name,
 			PolicyArn: pulumi.String(policyArn),
-		}, pulumi.Provider(provider))
+		}, pulumi.Provider(provider), pulumi.Parent(createdRole))
 		if err != nil {
 			return errors.Wrapf(err, "failed to attach policy ARN %s", policyArn)
 		}
 	}
 
-	// Inline policies
+	// Inline policies live and die with the role -- permissions unique to this
+	// role that would be noise as standalone AwsIamPolicy resources.
 	for policyName, inlineStruct := range spec.InlinePolicies {
 		inlinePolicyString, err := structToJSONString(inlineStruct)
 		if err != nil {
@@ -53,32 +89,18 @@ func iamRole(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 
 		inlineName := fmt.Sprintf("%s-inline-%s", roleName, policyName)
 		_, err = iam.NewRolePolicy(ctx, inlineName, &iam.RolePolicyArgs{
-			Role:   iamRole.Name,
+			Name:   pulumi.String(policyName),
+			Role:   createdRole.Name,
 			Policy: pulumi.String(inlinePolicyString),
-		}, pulumi.Provider(provider))
+		}, pulumi.Provider(provider), pulumi.Parent(createdRole))
 		if err != nil {
 			return errors.Wrapf(err, "failed to create inline policy %s", policyName)
 		}
 	}
 
-	// Always create an instance profile that wraps this role. Instance profiles
-	// are free and idempotent in AWS, and EC2 requires one (not a bare role) to
-	// assume a role. Exporting its ARN lets an EC2 instance reference the role via
-	// iam_instance_profile_arn -> AwsIamRole/status.outputs.instance_profile_arn.
-	instanceProfile, err := iam.NewInstanceProfile(ctx, roleName, &iam.InstanceProfileArgs{
-		Name: pulumi.String(roleName),
-		Role: iamRole.Name,
-		Tags: pulumi.ToStringMap(locals.AwsTags),
-	}, pulumi.Provider(provider))
-	if err != nil {
-		return errors.Wrap(err, "failed to create IAM instance profile")
-	}
-
-	// Export final outputs
-	ctx.Export(OpRoleArn, iamRole.Arn)
-	ctx.Export(OpRoleName, iamRole.Name)
-	ctx.Export(OpInstanceProfileArn, instanceProfile.Arn)
-	ctx.Export(OpInstanceProfileName, instanceProfile.Name)
+	ctx.Export(OpRoleArn, createdRole.Arn)
+	ctx.Export(OpRoleName, createdRole.Name)
+	ctx.Export(OpRoleId, createdRole.UniqueId)
 
 	return nil
 }
@@ -88,8 +110,7 @@ func structToJSONString(s *structpb.Struct) (string, error) {
 	if s == nil {
 		return "{}", nil
 	}
-	m := s.AsMap()
-	bytes, err := json.Marshal(m)
+	bytes, err := json.Marshal(s.AsMap())
 	if err != nil {
 		return "", err
 	}

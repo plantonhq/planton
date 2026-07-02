@@ -8,6 +8,7 @@ package awsiamrolev1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/planton/apis/dev/planton/shared/foreignkey/v1"
 	_ "github.com/plantonhq/planton/apis/dev/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -24,28 +25,89 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// AwsIamRoleSpec defines the minimal fields needed to create an AWS IAM Role.
-// It includes the trust policy JSON, managed policies, inline policies, and more.
+// AwsIamRoleSpec defines an IAM role: an assumable identity with temporary
+// credentials, the backbone of every service-to-service permission on AWS.
+//
+// A role is two documents and a set of attachments. The trust policy answers
+// "who may assume this role" (a service principal like lambda.amazonaws.com,
+// another account, a federated identity). The permission side answers "what
+// can the role do once assumed": reusable managed policies attached by ARN
+// (see AwsIamPolicy), plus inline policies for permissions unique to this one
+// role. An optional permissions boundary caps the maximum permissions the
+// role can ever have, regardless of what its policies grant.
+//
+// The role name comes from metadata.name. Name and path are create-only
+// (changing them replaces the role); the trust policy, description, session
+// duration, boundary, and policy attachments are all updatable in place.
+//
+// Note that a role is assumed directly by most AWS services -- only EC2 needs
+// the AwsIamInstanceProfile wrapper to deliver a role to instances.
 type AwsIamRoleSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The AWS region where the resource will be created.
-	// Example: "us-west-2", "eu-west-1"
+	// The AWS region used by the provider while managing this role.
+	// IAM is a global service -- the role is assumable in every region -- but
+	// every AWS API call is still made against a regional endpoint, so a region
+	// is required.
+	// Example: "us-west-2", "eu-west-1".
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// description is an optional description of the IAM role.
+	// An optional human-readable description of the role's purpose, shown in
+	// the IAM console. Updatable in place. Maximum 1000 characters; AWS rejects
+	// typographic ("curly") quotes here, so stick to plain ASCII quoting.
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	// path is the IAM path for the role. Defaults to "/" if omitted.
+	// The IAM path for the role, used to organize and match roles in IAM
+	// policies (e.g. grant iam:PassRole only for
+	// "arn:aws:iam::<acct>:role/service-roles/*"). Must begin and end with "/"
+	// (e.g. "/service-roles/"). Defaults to "/" when omitted. Immutable:
+	// changing the path replaces the role.
 	Path string `protobuf:"bytes,3,opt,name=path,proto3" json:"path,omitempty"`
-	// trust_policy_json is the JSON string describing the trust relationship for the role.
-	// Example: a trust policy allowing ECS tasks to assume this role.
+	// The trust policy as free-form JSON: the statement of WHO may assume this
+	// role (service principals, AWS accounts, federated identities) and under
+	// what conditions. This is the security-critical half of the role -- prefer
+	// exact principals and add conditions (aws:SourceAccount, aws:SourceArn,
+	// sts:ExternalId) to prevent confused-deputy access. Updatable in place.
+	// Example:
+	//
+	//	Version: "2012-10-17"
+	//	Statement:
+	//	  - Effect: Allow
+	//	    Principal: { Service: lambda.amazonaws.com }
+	//	    Action: sts:AssumeRole
 	TrustPolicy *structpb.Struct `protobuf:"bytes,4,opt,name=trust_policy,json=trustPolicy,proto3" json:"trust_policy,omitempty"`
-	// managed_policy_arns is a list of ARNs for AWS-managed or customer-managed IAM policies
-	// you want to attach to this role.
-	ManagedPolicyArns []string `protobuf:"bytes,5,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
-	// inline_policy_jsons is a map of inline policy names to a JSON policy doc.
-	// Key is policy name. Value is the raw JSON for that policy.
+	// Managed policies to attach, each a reference to an AwsIamPolicy's
+	// policy_arn output or a literal ARN (literals are how AWS-managed policies
+	// like arn:aws:iam::aws:policy/ReadOnlyAccess attach). Attachments are
+	// reconciled in place: adding or removing an entry attaches or detaches
+	// without touching the role. Permissions unique to this role belong in
+	// inline_policies instead.
+	ManagedPolicyArns []*v1.StringValueOrRef `protobuf:"bytes,5,rep,name=managed_policy_arns,json=managedPolicyArns,proto3" json:"managed_policy_arns,omitempty"`
+	// Inline policies embedded in this role: a map of policy name to a
+	// free-form JSON permission document. An inline policy lives and dies with
+	// the role, so use it for permissions that make no sense anywhere else
+	// (e.g. access to this service's own queue); anything reused across
+	// principals belongs in a first-class AwsIamPolicy attached via
+	// managed_policy_arns.
 	InlinePolicies map[string]*structpb.Struct `protobuf:"bytes,6,rep,name=inline_policies,json=inlinePolicies,proto3" json:"inline_policies,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The maximum duration, in seconds, of sessions assumed on this role
+	// (the ceiling for the AssumeRole DurationSeconds parameter). Between 3600
+	// (1 hour, the AWS default when unset) and 43200 (12 hours). Raise it for
+	// long-running human or CI sessions; keep the default for service roles.
+	// Updatable in place.
+	MaxSessionDuration int32 `protobuf:"varint,7,opt,name=max_session_duration,json=maxSessionDuration,proto3" json:"max_session_duration,omitempty"`
+	// An optional permissions boundary: a managed policy whose grants cap the
+	// maximum permissions this role can ever have -- effective permissions are
+	// the INTERSECTION of the boundary and the role's permission policies.
+	// Reference an AwsIamPolicy's policy_arn output or pass a literal policy
+	// ARN. Setting or changing the boundary is in-place; clearing it removes
+	// the ceiling.
+	PermissionsBoundary *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=permissions_boundary,json=permissionsBoundary,proto3" json:"permissions_boundary,omitempty"`
+	// Whether deleting the role force-detaches any policies still attached to
+	// it (including attachments made outside this resource). Off by default:
+	// deletion fails if out-of-band attachments exist, surfacing them instead
+	// of silently severing another owner's wiring. Turn on for ephemeral or
+	// CI-owned roles where teardown must always succeed.
+	ForceDetachPolicies bool `protobuf:"varint,9,opt,name=force_detach_policies,json=forceDetachPolicies,proto3" json:"force_detach_policies,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *AwsIamRoleSpec) Reset() {
@@ -106,7 +168,7 @@ func (x *AwsIamRoleSpec) GetTrustPolicy() *structpb.Struct {
 	return nil
 }
 
-func (x *AwsIamRoleSpec) GetManagedPolicyArns() []string {
+func (x *AwsIamRoleSpec) GetManagedPolicyArns() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.ManagedPolicyArns
 	}
@@ -120,21 +182,50 @@ func (x *AwsIamRoleSpec) GetInlinePolicies() map[string]*structpb.Struct {
 	return nil
 }
 
+func (x *AwsIamRoleSpec) GetMaxSessionDuration() int32 {
+	if x != nil {
+		return x.MaxSessionDuration
+	}
+	return 0
+}
+
+func (x *AwsIamRoleSpec) GetPermissionsBoundary() *v1.StringValueOrRef {
+	if x != nil {
+		return x.PermissionsBoundary
+	}
+	return nil
+}
+
+func (x *AwsIamRoleSpec) GetForceDetachPolicies() bool {
+	if x != nil {
+		return x.ForceDetachPolicies
+	}
+	return false
+}
+
 var File_dev_planton_provider_aws_awsiamrole_v1_spec_proto protoreflect.FileDescriptor
 
 const file_dev_planton_provider_aws_awsiamrole_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1dev/planton/provider/aws/awsiamrole/v1/spec.proto\x12&dev.planton.provider.aws.awsiamrole.v1\x1a\x1bbuf/validate/validate.proto\x1a(dev/planton/shared/options/options.proto\x1a\x1cgoogle/protobuf/struct.proto\"\xbd\x03\n" +
+	"1dev/planton/provider/aws/awsiamrole/v1/spec.proto\x12&dev.planton.provider.aws.awsiamrole.v1\x1a\x1bbuf/validate/validate.proto\x1a2dev/planton/shared/foreignkey/v1/foreign_key.proto\x1a(dev/planton/shared/options/options.proto\x1a\x1cgoogle/protobuf/struct.proto\"\x94\n" +
+	"\n" +
 	"\x0eAwsIamRoleSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x19\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12*\n" +
+	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\vdescription\x12\x19\n" +
 	"\x04path\x18\x03 \x01(\tB\x05\x92\xa6\x1d\x01/R\x04path\x12B\n" +
-	"\ftrust_policy\x18\x04 \x01(\v2\x17.google.protobuf.StructB\x06\xbaH\x03\xc8\x01\x01R\vtrustPolicy\x128\n" +
-	"\x13managed_policy_arns\x18\x05 \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x11managedPolicyArns\x12s\n" +
-	"\x0finline_policies\x18\x06 \x03(\v2J.dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntryR\x0einlinePolicies\x1aZ\n" +
+	"\ftrust_policy\x18\x04 \x01(\v2\x17.google.protobuf.StructB\x06\xbaH\x03\xc8\x01\x01R\vtrustPolicy\x12\x86\x01\n" +
+	"\x13managed_policy_arns\x18\x05 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xe6\x01\x92\xd4a\x19status.outputs.policy_arnR\x11managedPolicyArns\x12\x82\x01\n" +
+	"\x0finline_policies\x18\x06 \x03(\v2J.dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntryB\r\xbaH\n" +
+	"\x9a\x01\a\"\x05r\x03\x18\x80\x01R\x0einlinePolicies\x12:\n" +
+	"\x14max_session_duration\x18\a \x01(\x05B\b\x92\xa6\x1d\x043600R\x12maxSessionDuration\x12\x89\x01\n" +
+	"\x14permissions_boundary\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xe6\x01\x92\xd4a\x19status.outputs.policy_arnR\x13permissionsBoundary\x122\n" +
+	"\x15force_detach_policies\x18\t \x01(\bR\x13forceDetachPolicies\x1aZ\n" +
 	"\x13InlinePoliciesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12-\n" +
-	"\x05value\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x05value:\x028\x01B\xcd\x02\n" +
+	"\x05value\x18\x02 \x01(\v2\x17.google.protobuf.StructR\x05value:\x028\x01:\xef\x03\xbaH\xeb\x03\x1a\xc8\x01\n" +
+	"\vpath_format\x12]path must begin and end with '/' and contain no empty segments, e.g. '/' or '/service-roles/'\x1aZthis.path == '' || this.path == '/' || this.path.matches('^/([A-Za-z0-9\\\\.,\\\\+@=_-]+/)+$')\x1aJ\n" +
+	"\vpath_length\x12#path must be at most 512 characters\x1a\x16size(this.path) <= 512\x1a\xd1\x01\n" +
+	"\x1amax_session_duration_range\x12Fmax_session_duration must be between 3600 (1h) and 43200 (12h) seconds\x1akthis.max_session_duration == 0 || (this.max_session_duration >= 3600 && this.max_session_duration <= 43200)B\xcd\x02\n" +
 	"*com.dev.planton.provider.aws.awsiamrole.v1B\tSpecProtoP\x01ZUgithub.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiamrole/v1;awsiamrolev1\xa2\x02\x05DPPAA\xaa\x02&Dev.Planton.Provider.Aws.Awsiamrole.V1\xca\x02&Dev\\Planton\\Provider\\Aws\\Awsiamrole\\V1\xe2\x022Dev\\Planton\\Provider\\Aws\\Awsiamrole\\V1\\GPBMetadata\xea\x02+Dev::Planton::Provider::Aws::Awsiamrole::V1b\x06proto3"
 
 var (
@@ -151,19 +242,22 @@ func file_dev_planton_provider_aws_awsiamrole_v1_spec_proto_rawDescGZIP() []byte
 
 var file_dev_planton_provider_aws_awsiamrole_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dev_planton_provider_aws_awsiamrole_v1_spec_proto_goTypes = []any{
-	(*AwsIamRoleSpec)(nil),  // 0: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec
-	nil,                     // 1: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntry
-	(*structpb.Struct)(nil), // 2: google.protobuf.Struct
+	(*AwsIamRoleSpec)(nil),      // 0: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec
+	nil,                         // 1: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntry
+	(*structpb.Struct)(nil),     // 2: google.protobuf.Struct
+	(*v1.StringValueOrRef)(nil), // 3: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_dev_planton_provider_aws_awsiamrole_v1_spec_proto_depIdxs = []int32{
 	2, // 0: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.trust_policy:type_name -> google.protobuf.Struct
-	1, // 1: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.inline_policies:type_name -> dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntry
-	2, // 2: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntry.value:type_name -> google.protobuf.Struct
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	3, // 1: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.managed_policy_arns:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1, // 2: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.inline_policies:type_name -> dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntry
+	3, // 3: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.permissions_boundary:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2, // 4: dev.planton.provider.aws.awsiamrole.v1.AwsIamRoleSpec.InlinePoliciesEntry.value:type_name -> google.protobuf.Struct
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_dev_planton_provider_aws_awsiamrole_v1_spec_proto_init() }

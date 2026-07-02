@@ -70,10 +70,12 @@ message AwsEc2InstanceSpec {
   ];
 
   // The ARN of an IAM instance profile to attach to the EC2 instance.
-  // This profile should include an IAM role with necessary permissions (for example, SSM Session Manager access if using SSM).
+  // Reference an AwsIamInstanceProfile's instance_profile_arn output (the
+  // profile wraps the IAM role whose permissions the instance receives -- for
+  // example, SSM Session Manager access if using SSM), or pass a literal ARN.
   // **Required if** connection_method is SSM; optional otherwise.
   dev.planton.shared.foreignkey.v1.StringValueOrRef iam_instance_profile_arn = 8 [
-    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamRole,
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamInstanceProfile,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.instance_profile_arn"
   ];
 

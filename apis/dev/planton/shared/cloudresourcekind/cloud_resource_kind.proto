@@ -255,6 +255,20 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "oidcp"
   }];
+  AwsIamPolicy = 230 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "iampol"
+  }];
+  // AwsIamRole is a prerequisite because an instance profile is a wrapper that
+  // must contain a role to be useful -- the profile's spec requires a role
+  // reference, so the role must be deployed first.
+  AwsIamInstanceProfile = 231 [(kind_meta) = {
+    provider: aws
+    version: v1
+    id_prefix: "iamip"
+    prerequisites: [AwsIamRole]
+  }];
   AwsHttpApiGateway = 240 [(kind_meta) = {
     provider: aws
     version: v1

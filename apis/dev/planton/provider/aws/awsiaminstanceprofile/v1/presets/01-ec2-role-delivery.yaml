@@ -1,0 +1,11 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsIamInstanceProfile
+metadata:
+  name: web-server
+spec:
+  region: <aws-region>
+  role:
+    valueFrom:
+      kind: AwsIamRole
+      name: <role-resource-name>
+      fieldPath: status.outputs.role_name

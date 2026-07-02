@@ -6,8 +6,10 @@ spec:
   region: <aws-region>
   userName: <ci-cd-user-name>
   managedPolicyArns:
-    - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
-    - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+    # AWS-managed policies attach by literal ARN; reference an AwsIamPolicy's
+    # policy_arn output via valueFrom for policies defined in Planton.
+    - value: arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
+    - value: arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
   inlinePolicies:
     deployAccess:
       Version: "2012-10-17"

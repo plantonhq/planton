@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package dev.planton.provider.aws.awsiampolicy.v1;
+
+import "buf/validate/validate.proto";
+import "dev/planton/shared/options/options.proto";
+import "google/protobuf/struct.proto";
+
+// AwsIamPolicySpec defines a customer-managed IAM policy: a standalone,
+// versioned permission document that can be attached to many roles, users, and
+// groups at once.
+//
+// A managed policy is the reusable unit of AWS permissions. Unlike an inline
+// policy (which lives and dies with a single role or user), a managed policy
+// has its own lifecycle and its own ARN, so one definition -- "read-only access
+// to the analytics bucket", "the permissions boundary for CI jobs" -- can be
+// referenced everywhere it is needed and updated in exactly one place. Roles
+// and users attach it by ARN through their managed_policy_arns fields, and a
+// permissions_boundary field also takes a policy ARN, which makes this kind a
+// leaf that much of an AWS architecture composes onto.
+//
+// The policy name comes from metadata.name. AWS treats the name, path, and
+// description as create-only (changing any of them replaces the policy);
+// only the document itself is updatable, and AWS stores each update as a new
+// policy version.
+message AwsIamPolicySpec {
+  // The AWS region used by the provider while managing this policy.
+  // IAM is a global service -- the policy is visible and attachable in every
+  // region -- but every AWS API call is still made against a regional
+  // endpoint, so a region is required.
+  // Example: "us-west-2", "eu-west-1".
+  string region = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The permission document as free-form JSON (an IAM policy document with
+  // Version and Statement). This is the only part of a managed policy that can
+  // change after creation: each update creates a new policy version and marks
+  // it default. AWS keeps at most 5 versions, so both IaC engines prune the
+  // oldest non-default version before saving a new one -- updates keep working
+  // indefinitely without manual version cleanup.
+  // Example:
+  //   Version: "2012-10-17"
+  //   Statement:
+  //     - Effect: Allow
+  //       Action: ["s3:GetObject"]
+  //       Resource: "arn:aws:s3:::my-bucket/*"
+  google.protobuf.Struct policy_document = 2 [(buf.validate.field).required = true];
+
+  // An optional human-readable description of what the policy grants and why.
+  // Shown in the IAM console next to the policy. Immutable: AWS has no
+  // update-description API for managed policies, so changing it replaces the
+  // policy (attachments are re-created by the IaC engine). Maximum 1000
+  // characters.
+  string description = 3 [(buf.validate.field).string.max_len = 1000];
+
+  // The IAM path for the policy, used to organize and match policies in other
+  // IAM policies (e.g. grant iam:AttachRolePolicy only for
+  // "arn:aws:iam::<acct>:policy/service-boundaries/*"). Must begin and end
+  // with "/" (e.g. "/service-boundaries/"). Defaults to "/" when omitted.
+  // Immutable: changing the path replaces the policy.
+  string path = 4 [(dev.planton.shared.options.recommended_default) = "/"];
+
+  // path, when set, must be "/" or a "/"-delimited sequence of non-empty
+  // segments that begins and ends with "/" (this also rules out "//").
+  option (buf.validate.message).cel = {
+    id: "path_format"
+    message: "path must begin and end with '/' and contain no empty segments, e.g. '/' or '/service-boundaries/'"
+    expression: "this.path == '' || this.path == '/' || this.path.matches('^/([A-Za-z0-9\\\\.,\\\\+@=_-]+/)+$')"
+  };
+
+  // AWS limits the path to 512 characters.
+  option (buf.validate.message).cel = {
+    id: "path_length"
+    message: "path must be at most 512 characters"
+    expression: "size(this.path) <= 512"
+  };
+}

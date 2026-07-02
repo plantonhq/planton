@@ -3,26 +3,125 @@ syntax = "proto3";
 package dev.planton.provider.aws.awsiamrole.v1;
 
 import "buf/validate/validate.proto";
+import "dev/planton/shared/foreignkey/v1/foreign_key.proto";
 import "dev/planton/shared/options/options.proto";
 import "google/protobuf/struct.proto";
 
-// AwsIamRoleSpec defines the minimal fields needed to create an AWS IAM Role.
-// It includes the trust policy JSON, managed policies, inline policies, and more.
+// AwsIamRoleSpec defines an IAM role: an assumable identity with temporary
+// credentials, the backbone of every service-to-service permission on AWS.
+//
+// A role is two documents and a set of attachments. The trust policy answers
+// "who may assume this role" (a service principal like lambda.amazonaws.com,
+// another account, a federated identity). The permission side answers "what
+// can the role do once assumed": reusable managed policies attached by ARN
+// (see AwsIamPolicy), plus inline policies for permissions unique to this one
+// role. An optional permissions boundary caps the maximum permissions the
+// role can ever have, regardless of what its policies grant.
+//
+// The role name comes from metadata.name. Name and path are create-only
+// (changing them replaces the role); the trust policy, description, session
+// duration, boundary, and policy attachments are all updatable in place.
+//
+// Note that a role is assumed directly by most AWS services -- only EC2 needs
+// the AwsIamInstanceProfile wrapper to deliver a role to instances.
 message AwsIamRoleSpec {
-  // The AWS region where the resource will be created.
-  // Example: "us-west-2", "eu-west-1"
+  // The AWS region used by the provider while managing this role.
+  // IAM is a global service -- the role is assumable in every region -- but
+  // every AWS API call is still made against a regional endpoint, so a region
+  // is required.
+  // Example: "us-west-2", "eu-west-1".
   string region = 1 [(buf.validate.field).string.min_len = 1];
-  // description is an optional description of the IAM role.
-  string description = 2;
-  // path is the IAM path for the role. Defaults to "/" if omitted.
+
+  // An optional human-readable description of the role's purpose, shown in
+  // the IAM console. Updatable in place. Maximum 1000 characters; AWS rejects
+  // typographic ("curly") quotes here, so stick to plain ASCII quoting.
+  string description = 2 [(buf.validate.field).string.max_len = 1000];
+
+  // The IAM path for the role, used to organize and match roles in IAM
+  // policies (e.g. grant iam:PassRole only for
+  // "arn:aws:iam::<acct>:role/service-roles/*"). Must begin and end with "/"
+  // (e.g. "/service-roles/"). Defaults to "/" when omitted. Immutable:
+  // changing the path replaces the role.
   string path = 3 [(dev.planton.shared.options.recommended_default) = "/"];
-  // trust_policy_json is the JSON string describing the trust relationship for the role.
-  // Example: a trust policy allowing ECS tasks to assume this role.
+
+  // The trust policy as free-form JSON: the statement of WHO may assume this
+  // role (service principals, AWS accounts, federated identities) and under
+  // what conditions. This is the security-critical half of the role -- prefer
+  // exact principals and add conditions (aws:SourceAccount, aws:SourceArn,
+  // sts:ExternalId) to prevent confused-deputy access. Updatable in place.
+  // Example:
+  //   Version: "2012-10-17"
+  //   Statement:
+  //     - Effect: Allow
+  //       Principal: { Service: lambda.amazonaws.com }
+  //       Action: sts:AssumeRole
   google.protobuf.Struct trust_policy = 4 [(buf.validate.field).required = true];
-  // managed_policy_arns is a list of ARNs for AWS-managed or customer-managed IAM policies
-  // you want to attach to this role.
-  repeated string managed_policy_arns = 5 [(buf.validate.field).repeated = {unique: true}];
-  // inline_policy_jsons is a map of inline policy names to a JSON policy doc.
-  // Key is policy name. Value is the raw JSON for that policy.
-  map<string, google.protobuf.Struct> inline_policies = 6;
+
+  // Managed policies to attach, each a reference to an AwsIamPolicy's
+  // policy_arn output or a literal ARN (literals are how AWS-managed policies
+  // like arn:aws:iam::aws:policy/ReadOnlyAccess attach). Attachments are
+  // reconciled in place: adding or removing an entry attaches or detaches
+  // without touching the role. Permissions unique to this role belong in
+  // inline_policies instead.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef managed_policy_arns = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamPolicy,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_arn"
+  ];
+
+  // Inline policies embedded in this role: a map of policy name to a
+  // free-form JSON permission document. An inline policy lives and dies with
+  // the role, so use it for permissions that make no sense anywhere else
+  // (e.g. access to this service's own queue); anything reused across
+  // principals belongs in a first-class AwsIamPolicy attached via
+  // managed_policy_arns.
+  map<string, google.protobuf.Struct> inline_policies = 6 [(buf.validate.field).map.keys = {
+    string: {max_len: 128}
+  }];
+
+  // The maximum duration, in seconds, of sessions assumed on this role
+  // (the ceiling for the AssumeRole DurationSeconds parameter). Between 3600
+  // (1 hour, the AWS default when unset) and 43200 (12 hours). Raise it for
+  // long-running human or CI sessions; keep the default for service roles.
+  // Updatable in place.
+  int32 max_session_duration = 7 [(dev.planton.shared.options.recommended_default) = "3600"];
+
+  // An optional permissions boundary: a managed policy whose grants cap the
+  // maximum permissions this role can ever have -- effective permissions are
+  // the INTERSECTION of the boundary and the role's permission policies.
+  // Reference an AwsIamPolicy's policy_arn output or pass a literal policy
+  // ARN. Setting or changing the boundary is in-place; clearing it removes
+  // the ceiling.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef permissions_boundary = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsIamPolicy,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_arn"
+  ];
+
+  // Whether deleting the role force-detaches any policies still attached to
+  // it (including attachments made outside this resource). Off by default:
+  // deletion fails if out-of-band attachments exist, surfacing them instead
+  // of silently severing another owner's wiring. Turn on for ephemeral or
+  // CI-owned roles where teardown must always succeed.
+  bool force_detach_policies = 9;
+
+  // path, when set, must be "/" or a "/"-delimited sequence of non-empty
+  // segments that begins and ends with "/" (this also rules out "//").
+  option (buf.validate.message).cel = {
+    id: "path_format"
+    message: "path must begin and end with '/' and contain no empty segments, e.g. '/' or '/service-roles/'"
+    expression: "this.path == '' || this.path == '/' || this.path.matches('^/([A-Za-z0-9\\\\.,\\\\+@=_-]+/)+$')"
+  };
+
+  // AWS limits the path to 512 characters.
+  option (buf.validate.message).cel = {
+    id: "path_length"
+    message: "path must be at most 512 characters"
+    expression: "size(this.path) <= 512"
+  };
+
+  // max_session_duration, when set, must be within the AWS-enforced window.
+  option (buf.validate.message).cel = {
+    id: "max_session_duration_range"
+    message: "max_session_duration must be between 3600 (1h) and 43200 (12h) seconds"
+    expression: "this.max_session_duration == 0 || (this.max_session_duration >= 3600 && this.max_session_duration <= 43200)"
+  };
 }

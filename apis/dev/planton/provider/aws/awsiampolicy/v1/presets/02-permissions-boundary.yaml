@@ -1,0 +1,28 @@
+apiVersion: aws.planton.dev/v1
+kind: AwsIamPolicy
+metadata:
+  name: workload-permissions-boundary
+spec:
+  region: <aws-region>
+  description: Maximum permissions any workload principal can hold
+  path: /boundaries/
+  policyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Sid: AllowWorkloadServices
+        Effect: Allow
+        Action:
+          - s3:*
+          - dynamodb:*
+          - sqs:*
+          - sns:*
+          - logs:*
+          - cloudwatch:*
+        Resource: "*"
+      - Sid: DenyIdentityEscalation
+        Effect: Deny
+        Action:
+          - iam:*
+          - organizations:*
+          - account:*
+        Resource: "*"

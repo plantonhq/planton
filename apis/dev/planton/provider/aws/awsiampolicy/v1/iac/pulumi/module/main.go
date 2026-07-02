@@ -1,0 +1,26 @@
+package module
+
+import (
+	"github.com/pkg/errors"
+	awsiampolicyv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsiampolicy/v1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+)
+
+func Resources(ctx *pulumi.Context, stackInput *awsiampolicyv1.AwsIamPolicyStackInput) error {
+	locals := initializeLocals(ctx, stackInput)
+
+	// Build the AWS provider from the stack input via the shared builder, which
+	// resolves the right credential mechanism (static keys, keyless web identity,
+	// or ambient chain).
+	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsIamPolicy.Spec.Region)
+	if err != nil {
+		return errors.Wrap(err, "failed to create AWS provider")
+	}
+
+	if err := iamPolicy(ctx, locals, provider); err != nil {
+		return errors.Wrap(err, "failed to create iam policy")
+	}
+
+	return nil
+}
