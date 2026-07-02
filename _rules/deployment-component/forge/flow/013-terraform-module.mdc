@@ -114,6 +114,16 @@ SUCCESS CRITERIA
 
 NOTES
 - Generate variables once up-front; derive convenience in `locals.tf`.
+- **The variable contract is only proven by a live run, never by `terraform
+  validate`.** `validate` checks the module against itself; it cannot detect a
+  `variables.tf` whose types the tfvars pipeline can never satisfy (e.g. labels/
+  annotations typed as `{key,value}` objects instead of `map(string)`, or a
+  `StringValueOrRef` field typed as a strict object instead of the pre-resolved
+  `string` the orchestrator delivers). The current contract: metadata uses
+  `optional(...)` attributes with `map(string)` labels/annotations; every
+  `StringValueOrRef` spec field arrives pre-resolved as `string` (repeated ones
+  as `list(string)`). When updating an older module, conform its `variables.tf`
+  to this shape before anything else -- the E2E Terraform run is the proof.
 
 HANDLING OPTIONAL FIELDS WITH DEFAULTS
 - Fields with `(dev.planton.shared.options.default)` are `optional` in the proto schema

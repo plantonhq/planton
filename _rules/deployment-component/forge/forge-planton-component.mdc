@@ -299,8 +299,25 @@ Only the CI runner can read them.)
 
 A new kind is only exercised once it is registered in the provider harness:
 
-- `aa_e2e/verify/verifier.go` — add `"<component>": &apiPathVerifier{component: "<component>", pathFormat: "<api-path>/%s"}` (the Management/API path that fetches the resource by id, e.g. `roles/%s`).
+- `aa_e2e/verify/verifier.go` — add a verifier keyed on the component dir name.
+  SaaS providers use the `apiPathVerifier` pattern (`&apiPathVerifier{component:
+  "<component>", pathFormat: "<api-path>/%s"}`); cloud-SDK providers (e.g. AWS)
+  implement the three-method `Verifier` interface against the provider SDK,
+  keyed on the API's own identifier for the resource and treating the provider's
+  typed not-found error as the absent signal.
 - `e2e/<provider>/<provider>_test.go` — add `Test<Kind>_Pulumi` / `Test<Kind>_Terraform` entrypoints. Scenarios are auto-discovered; the entry funcs are not.
+
+**Composed scenarios are registry-driven.** The harness resolves a component's
+E2E dependencies from the kind registry's `kind_meta.prerequisites` annotation
+(transitively), NOT from the presence of an `e2e/prerequisite.yaml` file — that
+file is merely the install manifest used once the registry declares the
+dependency (falling back to the dependency's `scenarios/minimal.yaml`). So: for
+a scenario's `valueFrom` reference to resolve, the referenced kind must be a
+registry prerequisite of the kind under test. Declare a prerequisite only when
+the dependency is genuinely required for the kind to function (a required ref);
+optional refs are exercised through a composed kind that does require them, or
+with literals. Singular AND repeated `StringValueOrRef` fields both resolve, and
+a repeated list can mix literals with references.
 
 ### Tier 1 — Local run (preferred: fast on-machine loop)
 
