@@ -62,7 +62,7 @@ SEQUENTIAL STEPS
    - Check for uniqueness against existing id_prefix values
    - Examples:
      * GcpCertManagerCert → "gcpcert"
-     * AwsSecretsManager → "awssm"
+     * AwsSecurityGroup → "awssg"
      * AzureKeyVault → "azkv"
 
 4) Insert Enum Entry:

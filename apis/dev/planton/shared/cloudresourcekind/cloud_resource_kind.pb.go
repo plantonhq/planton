@@ -96,7 +96,6 @@ const (
 	CloudResourceKind_AwsRdsInstance           CloudResourceKind = 211
 	CloudResourceKind_AwsRoute53Zone           CloudResourceKind = 212
 	CloudResourceKind_AwsS3Bucket              CloudResourceKind = 213
-	CloudResourceKind_AwsSecretsManager        CloudResourceKind = 214
 	CloudResourceKind_AwsSecurityGroup         CloudResourceKind = 215
 	CloudResourceKind_AwsVpc                   CloudResourceKind = 216
 	CloudResourceKind_AwsEksNodeGroup          CloudResourceKind = 217
@@ -536,7 +535,6 @@ var (
 		211:  "AwsRdsInstance",
 		212:  "AwsRoute53Zone",
 		213:  "AwsS3Bucket",
-		214:  "AwsSecretsManager",
 		215:  "AwsSecurityGroup",
 		216:  "AwsVpc",
 		217:  "AwsEksNodeGroup",
@@ -948,7 +946,6 @@ var (
 		"AwsRdsInstance":                          211,
 		"AwsRoute53Zone":                          212,
 		"AwsS3Bucket":                             213,
-		"AwsSecretsManager":                       214,
 		"AwsSecurityGroup":                        215,
 		"AwsVpc":                                  216,
 		"AwsEksNodeGroup":                         217,
@@ -1591,7 +1588,7 @@ const file_dev_planton_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x04kind\x18\x02 \x01(\tR\x04kind*O\n" +
 	"\x18CloudResourceKindVersion\x12+\n" +
 	"'cloud_resource_kind_version_unspecified\x10\x00\x12\x06\n" +
-	"\x02v1\x10\x01*Ƒ\x01\n" +
+	"\x02v1\x10\x01*\x9d\x91\x01\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12,\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1a\x0e\xa2\xf7\x04\n" +
@@ -1617,8 +1614,7 @@ const file_dev_planton_shared_cloudresourcekind_cloud_resource_kind_proto_rawDes
 	"\x0eAwsRdsInstance\x10\xd3\x01\x1a\x10\xa2\xf7\x04\f\b\f\x10\x01\"\x06rdsins\x12#\n" +
 	"\x0eAwsRoute53Zone\x10\xd4\x01\x1a\x0e\xa2\xf7\x04\n" +
 	"\b\f\x10\x01\"\x04r53z\x12!\n" +
-	"\vAwsS3Bucket\x10\xd5\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05s3bkt\x12'\n" +
-	"\x11AwsSecretsManager\x10\xd6\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awssm\x12&\n" +
+	"\vAwsS3Bucket\x10\xd5\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05s3bkt\x12&\n" +
 	"\x10AwsSecurityGroup\x10\xd7\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05awssg\x12\x1f\n" +
 	"\x06AwsVpc\x10\xd8\x01\x1a\x12\xa2\xf7\x04\x0e\b\f\x10\x01\"\x06awsvpc0\x01\x12%\n" +
 	"\x0fAwsEksNodeGroup\x10\xd9\x01\x1a\x0f\xa2\xf7\x04\v\b\f\x10\x01\"\x05eksng\x12\"\n" +

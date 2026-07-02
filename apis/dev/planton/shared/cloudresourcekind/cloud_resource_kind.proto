@@ -179,11 +179,6 @@ enum CloudResourceKind {
     version: v1
     id_prefix: "s3bkt"
   }];
-  AwsSecretsManager = 214 [(kind_meta) = {
-    provider: aws
-    version: v1
-    id_prefix: "awssm"
-  }];
   AwsSecurityGroup = 215 [(kind_meta) = {
     provider: aws
     version: v1

@@ -191,5 +191,4 @@ After deployment, the following outputs are available in `status.outputs`:
 
 - [AwsS3Bucket](/docs/catalog/aws/s3-bucket) — can use the KMS key ARN for server-side encryption of bucket objects
 - [AwsRdsInstance](/docs/catalog/aws/rds-instance) — can use the KMS key ARN for encrypting database storage
-- [AwsSecretsManager](/docs/catalog/aws/secrets-manager) — can use the KMS key ARN to encrypt stored secrets
 - [AwsEksCluster](/docs/catalog/aws/eks-cluster) — can use the KMS key ARN for envelope encryption of Kubernetes secrets

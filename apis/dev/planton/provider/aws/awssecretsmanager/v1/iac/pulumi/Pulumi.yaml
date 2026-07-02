@@ -1,5 +1,0 @@
-name: awssecretsmanager-pulumi-project
-runtime:
-  name: go
-# options:
-#   binary: ./debug.sh

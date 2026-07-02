@@ -70,7 +70,6 @@ The following AWS resources can be deployed using Planton:
 - [S3 Bucket](/docs/catalog/aws/s3-bucket)
 - [S3 Object Set](/docs/catalog/aws/s3-object-set)
 - [SageMaker Domain](/docs/catalog/aws/sagemaker-domain)
-- [Secrets Manager](/docs/catalog/aws/secrets-manager)
 - [Security Group](/docs/catalog/aws/security-group)
 - [Serverless ElastiCache](/docs/catalog/aws/serverless-elasticache)
 - [SNS Topic](/docs/catalog/aws/sns-topic)

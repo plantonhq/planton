@@ -109,7 +109,6 @@ import (
 	awss3bucketv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awss3bucket/v1"
 	awss3objectsetv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awss3objectset/v1"
 	awssagemakerdomainv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awssagemakerdomain/v1"
-	awssecretsmanagerv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awssecretsmanager/v1"
 	awssecuritygroupv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awssecuritygroup/v1"
 	awsserverlesselasticachev1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awsserverlesselasticache/v1"
 	awssnstopicv1 "github.com/plantonhq/planton/apis/dev/planton/provider/aws/awssnstopic/v1"
@@ -545,7 +544,6 @@ var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_AwsS3Bucket:                      &awss3bucketv1.AwsS3Bucket{},
 	cloudresourcekind.CloudResourceKind_AwsS3ObjectSet:                   &awss3objectsetv1.AwsS3ObjectSet{},
 	cloudresourcekind.CloudResourceKind_AwsSagemakerDomain:               &awssagemakerdomainv1.AwsSagemakerDomain{},
-	cloudresourcekind.CloudResourceKind_AwsSecretsManager:                &awssecretsmanagerv1.AwsSecretsManager{},
 	cloudresourcekind.CloudResourceKind_AwsSecurityGroup:                 &awssecuritygroupv1.AwsSecurityGroup{},
 	cloudresourcekind.CloudResourceKind_AwsServerlessElasticache:         &awsserverlesselasticachev1.AwsServerlessElasticache{},
 	cloudresourcekind.CloudResourceKind_AwsSnsTopic:                      &awssnstopicv1.AwsSnsTopic{},
