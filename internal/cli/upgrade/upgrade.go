@@ -1,12 +1,10 @@
 package upgrade
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"os"
 	"runtime"
-	"strings"
 
 	"github.com/fatih/color"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
@@ -86,35 +84,21 @@ func runUpgradeToLatest(currentVersion string, checkOnly bool, force bool) {
 		cliprint.PrintStep("Forcing upgrade...")
 	}
 
-	// Step 3: Detect upgrade method
-	method := DetectUpgradeMethod()
-
+	// Step 3: Download and install directly from GitHub releases
 	fmt.Println()
-	cliprint.PrintStep(fmt.Sprintf("Upgrade method: %s", method.String()))
+	cliprint.PrintStep("Upgrade method: Direct Download")
 
-	// Step 4: Perform upgrade
-	var upgradeErr error
-	switch method {
-	case MethodHomebrew:
-		upgradeErr = UpgradeViaHomebrew()
-	case MethodDirectDownload:
-		upgradeErr = UpgradeViaDirect(latestVersion)
-	}
-
-	if upgradeErr != nil {
-		handleUpgradeError(upgradeErr, latestVersion)
+	if err := UpgradeViaDirect(latestVersion); err != nil {
+		handleUpgradeError(err, latestVersion)
 		os.Exit(1)
 	}
 
-	// Step 5: Success message
+	// Step 4: Success message
 	fmt.Println()
 	cliprint.PrintSuccess(fmt.Sprintf("Successfully upgraded to %s", latestVersion))
 
-	// Show platform-specific notes
-	if method == MethodDirectDownload {
-		fmt.Println()
-		cliprint.PrintStep("Note: You may need to restart your terminal for changes to take effect.")
-	}
+	fmt.Println()
+	cliprint.PrintStep("Note: You may need to restart your terminal for changes to take effect.")
 }
 
 // runWithTargetVersion handles installing a specific version
@@ -150,27 +134,7 @@ func runWithTargetVersion(currentVersion, targetVersion string, force bool) {
 		cliprint.PrintStep("Forcing reinstall...")
 	}
 
-	// Step 4: Check if Homebrew manages the installation
-	method := DetectUpgradeMethod()
-	if method == MethodHomebrew {
-		// Homebrew doesn't support specific versions, need to transition
-		if !confirmHomebrewTransition(normalizedVersion) {
-			fmt.Println()
-			cliprint.PrintStep("Aborted. No changes made.")
-			return
-		}
-
-		// Uninstall via Homebrew first
-		if err := UninstallHomebrew(); err != nil {
-			cliprint.PrintError(fmt.Sprintf("Failed to uninstall via Homebrew: %v", err))
-			fmt.Println()
-			fmt.Println("You can manually uninstall via Homebrew:")
-			fmt.Println("  brew uninstall --cask planton")
-			os.Exit(1)
-		}
-	}
-
-	// Step 5: Direct download and install
+	// Step 4: Direct download and install
 	fmt.Println()
 	cliprint.PrintStep("Upgrade method: Direct Download")
 
@@ -179,37 +143,12 @@ func runWithTargetVersion(currentVersion, targetVersion string, force bool) {
 		os.Exit(1)
 	}
 
-	// Step 6: Success message
+	// Step 5: Success message
 	fmt.Println()
 	cliprint.PrintSuccess(fmt.Sprintf("Successfully installed %s", normalizedVersion))
 
 	fmt.Println()
 	cliprint.PrintStep("Note: You may need to restart your terminal for changes to take effect.")
-}
-
-// confirmHomebrewTransition prompts the user to confirm transitioning from Homebrew to direct download
-func confirmHomebrewTransition(targetVersion string) bool {
-	yellow := color.New(color.FgYellow, color.Bold).SprintFunc()
-	cyan := color.New(color.FgCyan).SprintFunc()
-
-	fmt.Println()
-	fmt.Printf("%s Homebrew manages this installation.\n", yellow("⚠"))
-	fmt.Println()
-	fmt.Println("Installing a specific version requires switching to direct-download management.")
-	fmt.Println()
-	fmt.Println("This will:")
-	fmt.Printf("  1. Run: %s\n", cyan("brew uninstall --cask planton"))
-	fmt.Printf("  2. Download and install %s\n", cyan(targetVersion))
-	fmt.Println()
-	fmt.Println("Future 'planton upgrade' commands will use direct download.")
-	fmt.Println()
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Proceed? [y/N] ")
-	response, _ := reader.ReadString('\n')
-	response = strings.TrimSpace(strings.ToLower(response))
-
-	return response == "y" || response == "yes"
 }
 
 // handleUpgradeError handles and displays upgrade errors with helpful suggestions

@@ -34,7 +34,6 @@ jobs:
     uses: ./.github/workflows/release/cli.yaml
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
 
   # ============================================================================
   # Docker App Release - Runs in parallel

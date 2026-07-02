@@ -4,7 +4,6 @@ go_library(
     name = "upgrade",
     srcs = [
         "direct.go",
-        "homebrew.go",
         "platform.go",
         "upgrade.go",
         "version.go",

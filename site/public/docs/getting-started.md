@@ -34,7 +34,7 @@ It mirrors the two gestures Kubernetes made great — and frees them for every c
 ### Install the CLI
 
 ```bash
-go install github.com/plantonhq/planton@latest
+brew install plantonhq/tap/planton
 ```
 
 Verify the installation:
