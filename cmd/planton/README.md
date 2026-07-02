@@ -83,6 +83,39 @@ cmd/planton/
 
 ---
 
+## Embedding Contract
+
+The engine command set is exported through a single seam in `cmd/planton/root`:
+
+```go
+root.RegisterCommands(parent *cobra.Command, opts root.Options)
+```
+
+The standalone `planton` binary and any host binary that embeds the engine as a
+Go module (such as the Planton Platform CLI) both register commands through this
+function, so the two surfaces cannot drift. The seam:
+
+- registers every user-facing engine command (`apply`, `plan`, `destroy`,
+  `refresh`, `init`, `pulumi`, `tofu`, `terraform`, `kustomize`,
+  `load-manifest`, `validate-manifest`, `validate-refs`, `validate-outputs`,
+  `secret-coverage`, `checkout`, `pull`, `modules-version`);
+- registers the persistent flags those commands resolve through cobra flag
+  inheritance (`--local-module`, `--planton-git-repo`);
+- accepts `Options.ModulesVersion` so a host can pin module artifact downloads
+  to the engine version it compiled against (the standalone binary is stamped
+  via ldflags instead and leaves it empty).
+
+Binary self-management commands (`version`, `upgrade`, `downgrade`) and
+developer tools (`e2e`) are deliberately outside the engine set -- a binary owns
+its own lifecycle. The standalone binary adds them separately in
+`cmd/planton/root.go`.
+
+When adding a new user-facing engine command, register it in
+`root.RegisterCommands` (and its contract test in `register_test.go`), not on
+the standalone root directly -- otherwise embedding hosts silently lose it.
+
+---
+
 ## Command Implementation Pattern
 
 ### Standard Handler Pattern

@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "root",
@@ -16,6 +16,7 @@ go_library(
         "pull.go",
         "pulumi.go",
         "refresh.go",
+        "register.go",
         "secret_coverage.go",
         "terraform.go",
         "tofu.go",
@@ -64,5 +65,15 @@ go_library(
         "@com_github_sirupsen_logrus//:logrus",
         "@com_github_spf13_cobra//:cobra",
         "@org_golang_google_protobuf//proto",
+    ],
+)
+
+go_test(
+    name = "root_test",
+    srcs = ["register_test.go"],
+    embed = [":root"],
+    deps = [
+        "//internal/cli/version",
+        "@com_github_spf13_cobra//:cobra",
     ],
 )
