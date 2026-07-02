@@ -1,0 +1,16 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: awsiamrole
+spec:
+  # An IAM role under live E2E: the harness runs deploy -> GetRole verify ->
+  # destroy -> verify-destroyed on both provisioners against the AWS test
+  # account via keyless SSO/OIDC credentials. The scenario attaches an
+  # AWS-managed policy by literal ARN and an inline policy, exercising the
+  # attachment reconciliation on both engines. IAM is global and free.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 10

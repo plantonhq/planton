@@ -30,9 +30,10 @@ const stringValueOrRefFullName = "dev.planton.shared.foreignkey.v1.StringValueOr
 // original is left untouched. When there is nothing to resolve, the original path
 // is returned unchanged.
 //
-// Scope: singular StringValueOrRef fields directly on the spec (the single-value
-// case, e.g. a subnet's vpc_id). Repeated ([*]) expansion is intentionally not
-// handled yet -- it lands with the slice that first needs it.
+// Scope: singular and repeated StringValueOrRef fields directly on the spec
+// (e.g. a subnet's vpc_id, a role's managed_policy_arns). Each element of a
+// repeated field resolves independently, so a list can mix literals (say, an
+// AWS-managed policy ARN) with references to deployed prerequisites.
 func ResolveManifestRefs(manifestPath string, depOutputs map[cloudresourcekind.CloudResourceKind]map[string]interface{}) (string, error) {
 	if len(depOutputs) == 0 {
 		return manifestPath, nil
@@ -88,20 +89,49 @@ func ResolveManifestRefs(manifestPath string, depOutputs map[cloudresourcekind.C
 	return tmpFile.Name(), nil
 }
 
-// resolveRefsInMessage replaces value_from arms on the message's singular
-// StringValueOrRef fields with literals from the matching prerequisite's outputs.
-// Returns whether any field was resolved.
+// resolveRefsInMessage replaces value_from arms on the message's singular and
+// repeated StringValueOrRef fields with literals from the matching
+// prerequisite's outputs. Returns whether any field was resolved.
 func resolveRefsInMessage(msg protoreflect.Message, flattened map[cloudresourcekind.CloudResourceKind]map[string]string) (bool, error) {
 	resolvedAny := false
 	fields := msg.Descriptor().Fields()
 	for i := 0; i < fields.Len(); i++ {
 		fd := fields.Get(i)
-		if fd.Kind() != protoreflect.MessageKind || fd.IsList() || fd.IsMap() {
+		if fd.Kind() != protoreflect.MessageKind || fd.IsMap() {
 			continue
 		}
 		if string(fd.Message().FullName()) != stringValueOrRefFullName {
 			continue
 		}
+
+		if fd.IsList() {
+			// Repeated refs (e.g. a role's managed_policy_arns): each element
+			// resolves independently, so literals and references can mix in one
+			// list.
+			if !msg.Has(fd) {
+				continue
+			}
+			list := msg.Mutable(fd).List()
+			for j := 0; j < list.Len(); j++ {
+				ref, ok := list.Get(j).Message().Interface().(*foreignkeyv1.StringValueOrRef)
+				if !ok || ref.GetValueFrom() == nil {
+					continue
+				}
+				val, resolved, err := lookupRefValue(fd, flattened)
+				if err != nil {
+					return false, err
+				}
+				if !resolved {
+					break // no prerequisite of this kind was deployed; leave the list untouched
+				}
+				list.Set(j, protoreflect.ValueOfMessage((&foreignkeyv1.StringValueOrRef{
+					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: val},
+				}).ProtoReflect()))
+				resolvedAny = true
+			}
+			continue
+		}
+
 		if !msg.Has(fd) {
 			continue
 		}
@@ -109,32 +139,45 @@ func resolveRefsInMessage(msg protoreflect.Message, flattened map[cloudresourcek
 		if !ok || ref.GetValueFrom() == nil {
 			continue
 		}
-
-		opts := fd.Options()
-		if opts == nil {
+		val, resolved, err := lookupRefValue(fd, flattened)
+		if err != nil {
+			return false, err
+		}
+		if !resolved {
 			continue
 		}
-		kind, _ := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
-			continue
-		}
-		outs, ok := flattened[kind]
-		if !ok {
-			// No prerequisite of this kind was deployed; leave the ref untouched.
-			continue
-		}
-		path, _ := proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
-		key := strings.TrimPrefix(path, "status.outputs.")
-		val, ok := outs[key]
-		if !ok {
-			return false, errors.Errorf("prerequisite %s has no output %q to resolve field %q", kind, key, fd.Name())
-		}
-
-		resolved := &foreignkeyv1.StringValueOrRef{
+		msg.Set(fd, protoreflect.ValueOfMessage((&foreignkeyv1.StringValueOrRef{
 			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: val},
-		}
-		msg.Set(fd, protoreflect.ValueOfMessage(resolved.ProtoReflect()))
+		}).ProtoReflect()))
 		resolvedAny = true
 	}
 	return resolvedAny, nil
+}
+
+// lookupRefValue resolves a field's default_kind annotation against the deployed
+// prerequisites' flattened outputs. Returns (value, true, nil) on success and
+// (_, false, nil) when the field has no default_kind or no prerequisite of that
+// kind was deployed -- in which case the ref is left untouched. A deployed
+// prerequisite that is missing the annotated output is an error, so a
+// misdeclared field path fails loudly rather than silently skipping.
+func lookupRefValue(fd protoreflect.FieldDescriptor, flattened map[cloudresourcekind.CloudResourceKind]map[string]string) (string, bool, error) {
+	opts := fd.Options()
+	if opts == nil {
+		return "", false, nil
+	}
+	kind, _ := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
+	if kind == cloudresourcekind.CloudResourceKind_unspecified {
+		return "", false, nil
+	}
+	outs, ok := flattened[kind]
+	if !ok {
+		return "", false, nil
+	}
+	path, _ := proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
+	key := strings.TrimPrefix(path, "status.outputs.")
+	val, ok := outs[key]
+	if !ok {
+		return "", false, errors.Errorf("prerequisite %s has no output %q to resolve field %q", kind, key, fd.Name())
+	}
+	return val, true, nil
 }

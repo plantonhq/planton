@@ -34,6 +34,11 @@ var verifiers = map[string]Verifier{
 	"awsegressonlyinternetgateway": &egressOnlyInternetGatewayVerifier{},
 	"awsnatgateway":                &natGatewayVerifier{},
 	"awselasticip":                 &elasticIpVerifier{},
+	"awsiampolicy":                 &iamPolicyVerifier{},
+	"awsiamrole":                   &iamRoleVerifier{},
+	"awsiaminstanceprofile":        &iamInstanceProfileVerifier{},
+	"awsiamuser":                   &iamUserVerifier{},
+	"awsiamoidcprovider":           &iamOidcProviderVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

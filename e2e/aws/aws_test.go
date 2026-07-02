@@ -112,6 +112,39 @@ func TestAwsEgressOnlyInternetGateway_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "awsegressonlyinternetgateway", "terraform")
 }
 
+// --- AWS IAM Policy (leaf of the identity graph: a standalone managed policy) ---
+
+func TestAwsIamPolicy_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awsiampolicy", "pulumi") }
+func TestAwsIamPolicy_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awsiampolicy", "terraform") }
+
+// --- AWS IAM Role (trust policy + attachments + inline policies) ---
+
+func TestAwsIamRole_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awsiamrole", "pulumi") }
+func TestAwsIamRole_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awsiamrole", "terraform") }
+
+// --- AWS IAM Instance Profile (composed identity chain: deploys an AwsIamRole prerequisite) ---
+
+func TestAwsIamInstanceProfile_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "awsiaminstanceprofile", "pulumi")
+}
+func TestAwsIamInstanceProfile_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "awsiaminstanceprofile", "terraform")
+}
+
+// --- AWS IAM User (long-lived identity with access key + force-destroy teardown) ---
+
+func TestAwsIamUser_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "awsiamuser", "pulumi") }
+func TestAwsIamUser_Terraform(t *testing.T) { runAllScenariosForComponent(t, "awsiamuser", "terraform") }
+
+// --- AWS IAM OIDC Provider (keyless-federation trust anchor; synthetic issuer) ---
+
+func TestAwsIamOidcProvider_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "awsiamoidcprovider", "pulumi")
+}
+func TestAwsIamOidcProvider_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "awsiamoidcprovider", "terraform")
+}
+
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an AWS component.
 func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	t.Helper()

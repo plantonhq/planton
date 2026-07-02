@@ -157,6 +157,72 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// AwsIamPolicy: flat scalar outputs from both engines (policy arn/id/name)
+			// must each land on the StackOutputs proto -- policy_arn is what role/user
+			// attachments and permissions boundaries reference.
+			name: "AwsIamPolicy",
+			kind: cloudresourcekind.CloudResourceKind_AwsIamPolicy,
+			rawOutputs: map[string]interface{}{
+				"policy_arn":  "arn:aws:iam::123456789012:policy/s3-read-only",
+				"policy_id":   "ANPAEXAMPLEID12345678",
+				"policy_name": "s3-read-only",
+			},
+			mustPopulate: []string{"policy_arn", "policy_id", "policy_name"},
+		},
+		{
+			// AwsIamInstanceProfile: flat scalar outputs from both engines (profile
+			// arn/name/id and the carried role's name) must each land on the
+			// StackOutputs proto -- instance_profile_arn is what EC2-shaped resources
+			// reference.
+			name: "AwsIamInstanceProfile",
+			kind: cloudresourcekind.CloudResourceKind_AwsIamInstanceProfile,
+			rawOutputs: map[string]interface{}{
+				"instance_profile_arn":  "arn:aws:iam::123456789012:instance-profile/web-server",
+				"instance_profile_name": "web-server",
+				"instance_profile_id":   "AIPAEXAMPLEID12345678",
+				"role_name":             "web-server-role",
+			},
+			mustPopulate: []string{
+				"instance_profile_arn", "instance_profile_name",
+				"instance_profile_id", "role_name",
+			},
+		},
+		{
+			// AwsIamRole: flat scalar outputs from both engines (role arn/name/id)
+			// must each land on the StackOutputs proto. Guards the removal of the
+			// role's former instance-profile outputs: EC2 delivery now composes
+			// through AwsIamInstanceProfile, so the role emits only role-shaped
+			// outputs.
+			name: "AwsIamRole",
+			kind: cloudresourcekind.CloudResourceKind_AwsIamRole,
+			rawOutputs: map[string]interface{}{
+				"role_arn":  "arn:aws:iam::123456789012:role/lambda-exec",
+				"role_name": "lambda-exec",
+				"role_id":   "AROAEXAMPLEID12345678",
+			},
+			mustPopulate: []string{"role_arn", "role_name", "role_id"},
+		},
+		{
+			// AwsIamUser: flat scalar outputs from both engines (user arn/name/id,
+			// access key id + base64 secret, console url) must each land on the
+			// StackOutputs proto. The secret is base64-encoded by BOTH engines so the
+			// emitted values are byte-identical.
+			name: "AwsIamUser",
+			kind: cloudresourcekind.CloudResourceKind_AwsIamUser,
+			rawOutputs: map[string]interface{}{
+				"user_arn":          "arn:aws:iam::123456789012:user/ci-deploy",
+				"user_name":         "ci-deploy",
+				"user_id":           "AIDAEXAMPLEID12345678",
+				"access_key_id":     "AKIAEXAMPLEID1234567",
+				"secret_access_key": "c2VjcmV0LWtleS1tYXRlcmlhbA==",
+				"console_url":       "https://signin.aws.amazon.com/console",
+			},
+			mustPopulate: []string{
+				"user_arn", "user_name", "user_id",
+				"access_key_id", "secret_access_key", "console_url",
+			},
+		},
+		{
 			// Guards the externaldns tofu module's output rename to solver_sa: the
 			// module previously emitted "service_account_name", which does not flatten
 			// onto the KubernetesExternalDnsStackOutputs.solver_sa proto field (the

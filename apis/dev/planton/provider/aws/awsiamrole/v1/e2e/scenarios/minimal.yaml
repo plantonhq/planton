@@ -1,0 +1,44 @@
+# Minimal standalone AwsIamRole scenario: a Lambda trust policy, one
+# AWS-managed policy attached by literal ARN, one inline policy, and a raised
+# session ceiling -- exercising the trust document encoding, per-attachment
+# reconciliation, inline-policy wiring, and max_session_duration on both
+# engines. AwsIamRole has no registry prerequisites (managed-policy references
+# are optional), so the harness applies this directly; the composed
+# role-reference path is exercised live by the AwsIamInstanceProfile scenario,
+# which deploys this kind's prerequisite manifest first. Full metadata is
+# supplied for tagging/orphan cleanup.
+apiVersion: aws.planton.dev/v1
+kind: AwsIamRole
+metadata:
+  name: planton-oss-e2e-awsiamrole-smoke
+  id: planton-oss-e2e-awsiamrole-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awsiamrole
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  description: Planton E2E smoke role for Lambda execution
+  path: /planton-e2e/
+  maxSessionDuration: 7200
+  trustPolicy:
+    Version: "2012-10-17"
+    Statement:
+      - Effect: Allow
+        Principal:
+          Service: lambda.amazonaws.com
+        Action: sts:AssumeRole
+  managedPolicyArns:
+    - value: arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+  inlinePolicies:
+    e2eScopedAccess:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: Allow
+          Action: s3:ListBucket
+          Resource: arn:aws:s3:::planton-e2e-nonexistent-bucket

@@ -1,0 +1,17 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: awsiamoidcprovider
+spec:
+  # An IAM OIDC provider under live E2E: the harness runs deploy ->
+  # GetOpenIDConnectProvider verify -> destroy -> verify-destroyed on both
+  # provisioners. The scenario registers a synthetic issuer URL with an
+  # explicit thumbprint so the test never collides with a real provider (AWS
+  # allows one provider per unique URL per account) and never depends on an
+  # external issuer being reachable. IAM is global and free.
+  tier: 1
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
+  timeout_minutes: 10

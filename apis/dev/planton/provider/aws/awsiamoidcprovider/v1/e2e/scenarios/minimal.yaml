@@ -1,0 +1,30 @@
+# Minimal standalone AwsIamOidcProvider scenario. The issuer URL is synthetic
+# (a domain we control) so the test never collides with a real provider in the
+# account -- AWS allows one OIDC provider per unique URL per account, so using
+# a real issuer like GitHub Actions would conflict wherever one already
+# exists. An explicit (dummy) thumbprint is supplied because AWS cannot derive
+# one for an issuer that is not backed by a publicly-trusted CA it recognizes;
+# IAM stores the registration without contacting the URL. Full metadata is
+# supplied for tagging/orphan cleanup.
+apiVersion: aws.planton.dev/v1
+kind: AwsIamOidcProvider
+metadata:
+  name: planton-oss-e2e-awsiamoidcprovider-smoke
+  id: planton-oss-e2e-awsiamoidcprovider-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awsiamoidcprovider
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  url:
+    value: https://e2e-oidc.planton.dev
+  clientIdList:
+    - sts.amazonaws.com
+  thumbprintList:
+    - 9e99a48a9960b14926bb7f3b02e22da2b0ab7280

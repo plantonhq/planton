@@ -45,6 +45,7 @@ go_test(
     embed = [":runner"],
     deps = [
         "//apis/dev/planton/provider/auth0/auth0resourceserver/v1:auth0resourceserver",
+        "//apis/dev/planton/provider/aws/awsiamrole/v1:awsiamrole",
         "//apis/dev/planton/provider/aws/awssubnet/v1:awssubnet",
         "//apis/dev/planton/shared/cloudresourcekind",
         "//internal/manifest",

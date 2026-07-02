@@ -1,0 +1,35 @@
+# Minimal standalone AwsIamPolicy scenario: a multi-statement permission
+# document with a path and description, exercising the create-only fields and
+# the free-form document encoding. AwsIamPolicy has no prerequisites, so the
+# harness applies this directly. Full metadata is supplied for tagging/orphan
+# cleanup.
+apiVersion: aws.planton.dev/v1
+kind: AwsIamPolicy
+metadata:
+  name: planton-oss-e2e-awsiampolicy-smoke
+  id: planton-oss-e2e-awsiampolicy-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awsiampolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  description: Planton E2E smoke policy - read-only access to a nonexistent bucket
+  path: /planton-e2e/
+  policyDocument:
+    Version: "2012-10-17"
+    Statement:
+      - Sid: ListBucket
+        Effect: Allow
+        Action: s3:ListBucket
+        Resource: arn:aws:s3:::planton-e2e-nonexistent-bucket
+      - Effect: Allow
+        Action:
+          - s3:GetObject
+          - s3:GetObjectVersion
+        Resource: arn:aws:s3:::planton-e2e-nonexistent-bucket/*

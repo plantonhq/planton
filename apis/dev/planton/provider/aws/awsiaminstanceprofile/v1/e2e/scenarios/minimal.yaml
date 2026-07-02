@@ -1,0 +1,27 @@
+# Minimal AwsIamInstanceProfile scenario. role is a value_from reference to
+# the AwsIamRole prerequisite (declared via prerequisites: [AwsIamRole] in the
+# kind registry); the E2E harness deploys that role first and resolves this
+# reference to the created role's name before the profile is applied. Full
+# metadata is supplied for tagging/orphan cleanup.
+apiVersion: aws.planton.dev/v1
+kind: AwsIamInstanceProfile
+metadata:
+  name: planton-oss-e2e-awsiaminstanceprofile-smoke
+  id: planton-oss-e2e-awsiaminstanceprofile-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: awsiaminstanceprofile
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  region: us-west-2
+  path: /planton-e2e/
+  role:
+    valueFrom:
+      kind: AwsIamRole
+      name: planton-oss-e2e-awsiamrole-prereq
+      fieldPath: status.outputs.role_name
