@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "pulumigoogleprovider",
@@ -11,5 +11,18 @@ go_library(
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "pulumigoogleprovider_test",
+    srcs = ["provider_test.go"],
+    embed = [":pulumigoogleprovider"],
+    deps = [
+        "//apis/dev/planton/provider/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
     ],
 )

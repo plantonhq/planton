@@ -41,7 +41,7 @@ func TestAwsProviderTfConvergence(t *testing.T) {
 	require.NoError(t, err)
 
 	// Sized assertion: a new AWS tofu kind must adopt the canonical block (bump this with intent).
-	assert.Len(t, matches, 66, "unexpected number of AWS tofu provider.tf files")
+	assert.Len(t, matches, 71, "unexpected number of AWS tofu provider.tf files")
 
 	forbidden := []string{
 		"region =", "access_key", "secret_key", "session_token", "var.provider_config",
