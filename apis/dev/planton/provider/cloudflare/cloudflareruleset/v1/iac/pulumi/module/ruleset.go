@@ -177,10 +177,17 @@ func buildActionParameters(ap *cloudflarerulesetv1.CloudflareRulesetActionParame
 			PreserveQueryString: pulumi.Bool(ap.FromValue.PreserveQueryString),
 		}
 		if ap.FromValue.TargetUrl != nil {
-			fv.TargetUrl = &cloudflare.RulesetRuleActionParametersFromValueTargetUrlArgs{
-				Value:      pulumi.String(ap.FromValue.TargetUrl.Value),
-				Expression: pulumi.String(ap.FromValue.TargetUrl.Expression),
+			// The provider requires exactly one of value/expression; sending the
+			// unused one as an empty string fails validation, so set only the
+			// populated field.
+			targetUrl := &cloudflare.RulesetRuleActionParametersFromValueTargetUrlArgs{}
+			if ap.FromValue.TargetUrl.Value != "" {
+				targetUrl.Value = pulumi.String(ap.FromValue.TargetUrl.Value)
 			}
+			if ap.FromValue.TargetUrl.Expression != "" {
+				targetUrl.Expression = pulumi.String(ap.FromValue.TargetUrl.Expression)
+			}
+			fv.TargetUrl = targetUrl
 		}
 		args.FromValue = fv
 	}
