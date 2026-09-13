@@ -146,6 +146,11 @@ type DigitalOceanFirewallInboundRule struct {
 	SourceDropletIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=source_droplet_ids,json=sourceDropletIds,proto3" json:"source_droplet_ids,omitempty"`
 	// Kubernetes cluster IDs traffic is allowed from, as literal UUIDs or
 	// references to DigitalOceanKubernetesCluster resources.
+	//
+	// Containment-exempt: a firewall is an account-level rule set applied to
+	// Droplets; a cluster named here is a TRUSTED SOURCE of traffic, never the
+	// place the firewall lives. On a diagram the firewall stands beside the
+	// Droplets it protects, with a line to the cluster whose traffic it admits.
 	SourceKubernetesIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=source_kubernetes_ids,json=sourceKubernetesIds,proto3" json:"source_kubernetes_ids,omitempty"`
 	// Load balancer UIDs traffic is allowed from, as literal UUIDs or
 	// references to DigitalOceanLoadBalancer resources.
@@ -254,6 +259,10 @@ type DigitalOceanFirewallOutboundRule struct {
 	DestinationDropletIds []*v1.StringValueOrRef `protobuf:"bytes,8,rep,name=destination_droplet_ids,json=destinationDropletIds,proto3" json:"destination_droplet_ids,omitempty"`
 	// Kubernetes cluster IDs traffic is allowed to, as literal UUIDs or
 	// references to DigitalOceanKubernetesCluster resources.
+	//
+	// Containment-exempt: a cluster named here is a permitted DESTINATION of
+	// the protected Droplets' traffic, never the place the firewall lives (see
+	// the inbound rule's source_kubernetes_ids).
 	DestinationKubernetesIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=destination_kubernetes_ids,json=destinationKubernetesIds,proto3" json:"destination_kubernetes_ids,omitempty"`
 	// Load balancer UIDs traffic is allowed to, as literal UUIDs or references
 	// to DigitalOceanLoadBalancer resources.
@@ -354,7 +363,7 @@ const file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_spec_proto_rawDesc
 	"\x04tags\x18\x05 \x03(\tB$\xbaH!\x92\x01\x1e\"\x1cr\x1a2\x18^[a-zA-Z0-9:\\-_]{1,255}$R\x04tags\x12w\n" +
 	"\vdroplet_ids\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\n" +
 	"dropletIds:\x9c\x01\xbaH\x98\x01\x1a\x95\x01\n" +
-	"\x16spec.at_least_one_rule\x12<at least one inbound_rule or outbound_rule must be specified\x1a=size(this.inbound_rules) > 0 || size(this.outbound_rules) > 0J\x04\b\x04\x10\x05\"\xc8\x06\n" +
+	"\x16spec.at_least_one_rule\x12<at least one inbound_rule or outbound_rule must be specified\x1a=size(this.inbound_rules) > 0 || size(this.outbound_rules) > 0J\x04\b\x04\x10\x05\"\xcc\x06\n" +
 	"\x1fDigitalOceanFirewallInboundRule\x124\n" +
 	"\bprotocol\x18\x01 \x01(\tB\x18\xbaH\x15\xc8\x01\x01r\x10R\x03tcpR\x03udpR\x04icmpR\bprotocol\x12\x1d\n" +
 	"\n" +
@@ -362,19 +371,19 @@ const file_catalog_digitalocean_digitaloceanfirewall_v1alpha1_spec_proto_rawDesc
 	"\x10source_addresses\x18\x03 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x0fsourceAddresses\x12E\n" +
 	"\vsource_tags\x18\x05 \x03(\tB$\xbaH!\x92\x01\x1e\"\x1cr\x1a2\x18^[a-zA-Z0-9:\\-_]{1,255}$R\n" +
 	"sourceTags\x12\x84\x01\n" +
-	"\x12source_droplet_ids\x18\b \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\x10sourceDropletIds\x12\x8a\x01\n" +
-	"\x15source_kubernetes_ids\x18\t \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_idR\x13sourceKubernetesIds\x12\x97\x01\n" +
+	"\x12source_droplet_ids\x18\b \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\x10sourceDropletIds\x12\x8e\x01\n" +
+	"\x15source_kubernetes_ids\x18\t \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\x13sourceKubernetesIds\x12\x97\x01\n" +
 	"\x19source_load_balancer_uids\x18\n" +
 	" \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\x92'\x92\xd4a\x1fstatus.outputs.load_balancer_idR\x16sourceLoadBalancerUids:\x8f\x01\xbaH\x8b\x01\x1a\x88\x01\n" +
-	" inbound_rule.port_range_required\x122port_range is required when protocol is tcp or udp\x1a0this.protocol == 'icmp' || this.port_range != ''J\x04\b\x04\x10\x05J\x04\b\x06\x10\aJ\x04\b\a\x10\b\"\xfc\x06\n" +
+	" inbound_rule.port_range_required\x122port_range is required when protocol is tcp or udp\x1a0this.protocol == 'icmp' || this.port_range != ''J\x04\b\x04\x10\x05J\x04\b\x06\x10\aJ\x04\b\a\x10\b\"\x80\a\n" +
 	" DigitalOceanFirewallOutboundRule\x124\n" +
 	"\bprotocol\x18\x01 \x01(\tB\x18\xbaH\x15\xc8\x01\x01r\x10R\x03tcpR\x03udpR\x04icmpR\bprotocol\x12\x1d\n" +
 	"\n" +
 	"port_range\x18\x02 \x01(\tR\tportRange\x12A\n" +
 	"\x15destination_addresses\x18\x03 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x14destinationAddresses\x12O\n" +
 	"\x10destination_tags\x18\x05 \x03(\tB$\xbaH!\x92\x01\x1e\"\x1cr\x1a2\x18^[a-zA-Z0-9:\\-_]{1,255}$R\x0fdestinationTags\x12\x8e\x01\n" +
-	"\x17destination_droplet_ids\x18\b \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\x15destinationDropletIds\x12\x94\x01\n" +
-	"\x1adestination_kubernetes_ids\x18\t \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_idR\x18destinationKubernetesIds\x12\xa1\x01\n" +
+	"\x17destination_droplet_ids\x18\b \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\x15destinationDropletIds\x12\x98\x01\n" +
+	"\x1adestination_kubernetes_ids\x18\t \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\x18destinationKubernetesIds\x12\xa1\x01\n" +
 	"\x1edestination_load_balancer_uids\x18\n" +
 	" \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\x92'\x92\xd4a\x1fstatus.outputs.load_balancer_idR\x1bdestinationLoadBalancerUids:\x90\x01\xbaH\x8c\x01\x1a\x89\x01\n" +
 	"!outbound_rule.port_range_required\x122port_range is required when protocol is tcp or udp\x1a0this.protocol == 'icmp' || this.port_range != ''J\x04\b\x04\x10\x05J\x04\b\x06\x10\aJ\x04\b\a\x10\bB\xb2\x03\n" +

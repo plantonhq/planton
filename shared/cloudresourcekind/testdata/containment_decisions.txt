@@ -372,13 +372,10 @@ contained dev.planton.cloudflare.cloudflarezonesettings.v1alpha1.CloudflareZoneS
 contained dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsSpec.zone_id -> CloudflareDnsZone
 contained dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.vpc -> DigitalOceanVpc
 contained dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec.vpc -> DigitalOceanVpc
-contained dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1.DigitalOceanDatabaseFirewallSpec.kubernetes_cluster_ids -> DigitalOceanKubernetesCluster
 contained dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1.DigitalOceanDatabaseReplicaSpec.vpc -> DigitalOceanVpc
 contained dev.planton.digitalocean.digitaloceandnsrecord.v1alpha1.DigitalOceanDnsRecordSpec.domain -> DigitalOceanDnsZone
 contained dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec.vpc -> DigitalOceanVpc
 contained dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1.DigitalOceanDropletAutoscalePoolTemplate.vpc -> DigitalOceanVpc
-contained dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallInboundRule.source_kubernetes_ids -> DigitalOceanKubernetesCluster
-contained dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallOutboundRule.destination_kubernetes_ids -> DigitalOceanKubernetesCluster
 contained dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1.DigitalOceanKubernetesClusterSpec.vpc -> DigitalOceanVpc
 contained dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1.DigitalOceanKubernetesNodePoolSpec.cluster -> DigitalOceanKubernetesCluster
 contained dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.vpc -> DigitalOceanVpc
@@ -736,6 +733,9 @@ exempt    dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerCusto
 exempt    dev.planton.cloudflare.cloudflareworker.v1alpha1.CloudflareWorkerRoute.zone_id -> CloudflareDnsZone
 exempt    dev.planton.cloudflare.cloudflarezerotrustdevicedefaultprofile.v1alpha1.CloudflareZeroTrustDeviceDefaultProfileZoneCertificates.zone_id -> CloudflareDnsZone
 exempt    dev.planton.digitalocean.DigitalOceanAppDomain.zone -> DigitalOceanDnsZone
+exempt    dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1.DigitalOceanDatabaseFirewallSpec.kubernetes_cluster_ids -> DigitalOceanKubernetesCluster
+exempt    dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallInboundRule.source_kubernetes_ids -> DigitalOceanKubernetesCluster
+exempt    dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFirewallOutboundRule.destination_kubernetes_ids -> DigitalOceanKubernetesCluster
 exempt    dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterRestoreContinuousBackupSource.cluster -> GcpAlloydbCluster
 exempt    dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterSpec.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.network -> GcpVpcNetwork
