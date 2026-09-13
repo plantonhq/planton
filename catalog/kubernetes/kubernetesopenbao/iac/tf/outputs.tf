@@ -48,3 +48,32 @@ output "port_forward_command" {
   description = "Copy-paste command for reaching the API from a workstation."
   value       = "kubectl port-forward -n ${local.namespace} svc/${local.release_name} ${local.api_port}:${local.api_port}"
 }
+
+# The backup handles: one name (`<name>-backup`) serves as the job's
+# ServiceAccount, its OpenBao policy, and the CronJob, so the login recipe
+# an operator copies from these outputs is one noun. Empty when `backup`
+# is not declared.
+output "backup_service_account_name" {
+  description = "The backup job's ServiceAccount — bind the store's cloud IAM to it, and name it in the login recipe's bound_service_account_names."
+  value       = local.backup_enabled ? local.backup_name : ""
+}
+
+output "backup_policy_name" {
+  description = "The OpenBao policy the login recipe writes (read on sys/storage/raft/snapshot)."
+  value       = local.backup_enabled ? local.backup_name : ""
+}
+
+output "backup_auth_role" {
+  description = "The Kubernetes-auth role the backup job logs in with."
+  value       = local.backup_enabled ? local.backup_auth_role : ""
+}
+
+output "backup_cron_job_name" {
+  description = "The backup CronJob — `kubectl create job --from=cronjob/<this>` triggers a snapshot on demand."
+  value       = local.backup_enabled ? local.backup_name : ""
+}
+
+output "restore_job_name" {
+  description = "The restore Job (`<name>-restore-<8 hex>`) when `restore` is declared; its log is where the restore explains itself."
+  value       = local.restore_job_name
+}

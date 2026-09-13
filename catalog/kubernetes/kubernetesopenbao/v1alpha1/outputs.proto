@@ -65,4 +65,41 @@ message KubernetesOpenBaoStackOutputs {
    * Copy-paste command for reaching the API from a workstation.
    */
   string port_forward_command = 9;
+
+  /**
+   * The backup job's ServiceAccount (`<name>-backup`) — the identity to
+   * bind the object store's cloud IAM to (a GcpGkeWorkloadIdentityBinding's
+   * `ksa_name`, an IRSA trust policy's subject) and the
+   * `bound_service_account_names` of the login recipe. Empty when
+   * `backup` is not declared.
+   */
+  string backup_service_account_name = 10;
+
+  /**
+   * The OpenBao policy the login recipe writes for the backup job
+   * (`<name>-backup`; read on `sys/storage/raft/snapshot`). Empty when
+   * `backup` is not declared.
+   */
+  string backup_policy_name = 11;
+
+  /**
+   * The Kubernetes-auth role the backup job logs in with (`<name>-backup`
+   * unless `backup.auth.role` names another). Empty when `backup` is not
+   * declared.
+   */
+  string backup_auth_role = 12;
+
+  /**
+   * The backup CronJob (`<name>-backup`) — `kubectl create job
+   * --from=cronjob/<this> <run-name>` triggers a snapshot on demand.
+   * Empty when `backup` is not declared.
+   */
+  string backup_cron_job_name = 13;
+
+  /**
+   * The restore Job (`<name>-restore-<8 hex>`, the hex hashing the
+   * declaration) when `restore` is declared — `kubectl logs job/<this>`
+   * is where the restore explains itself. Empty otherwise.
+   */
+  string restore_job_name = 14;
 }

@@ -67,8 +67,35 @@ type KubernetesOpenBaoStackOutputs struct {
 	// *
 	// Copy-paste command for reaching the API from a workstation.
 	PortForwardCommand string `protobuf:"bytes,9,opt,name=port_forward_command,json=portForwardCommand,proto3" json:"port_forward_command,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// *
+	// The backup job's ServiceAccount (`<name>-backup`) — the identity to
+	// bind the object store's cloud IAM to (a GcpGkeWorkloadIdentityBinding's
+	// `ksa_name`, an IRSA trust policy's subject) and the
+	// `bound_service_account_names` of the login recipe. Empty when
+	// `backup` is not declared.
+	BackupServiceAccountName string `protobuf:"bytes,10,opt,name=backup_service_account_name,json=backupServiceAccountName,proto3" json:"backup_service_account_name,omitempty"`
+	// *
+	// The OpenBao policy the login recipe writes for the backup job
+	// (`<name>-backup`; read on `sys/storage/raft/snapshot`). Empty when
+	// `backup` is not declared.
+	BackupPolicyName string `protobuf:"bytes,11,opt,name=backup_policy_name,json=backupPolicyName,proto3" json:"backup_policy_name,omitempty"`
+	// *
+	// The Kubernetes-auth role the backup job logs in with (`<name>-backup`
+	// unless `backup.auth.role` names another). Empty when `backup` is not
+	// declared.
+	BackupAuthRole string `protobuf:"bytes,12,opt,name=backup_auth_role,json=backupAuthRole,proto3" json:"backup_auth_role,omitempty"`
+	// *
+	// The backup CronJob (`<name>-backup`) — `kubectl create job
+	// --from=cronjob/<this> <run-name>` triggers a snapshot on demand.
+	// Empty when `backup` is not declared.
+	BackupCronJobName string `protobuf:"bytes,13,opt,name=backup_cron_job_name,json=backupCronJobName,proto3" json:"backup_cron_job_name,omitempty"`
+	// *
+	// The restore Job (`<name>-restore-<8 hex>`, the hex hashing the
+	// declaration) when `restore` is declared — `kubectl logs job/<this>`
+	// is where the restore explains itself. Empty otherwise.
+	RestoreJobName string `protobuf:"bytes,14,opt,name=restore_job_name,json=restoreJobName,proto3" json:"restore_job_name,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *KubernetesOpenBaoStackOutputs) Reset() {
@@ -164,11 +191,46 @@ func (x *KubernetesOpenBaoStackOutputs) GetPortForwardCommand() string {
 	return ""
 }
 
+func (x *KubernetesOpenBaoStackOutputs) GetBackupServiceAccountName() string {
+	if x != nil {
+		return x.BackupServiceAccountName
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoStackOutputs) GetBackupPolicyName() string {
+	if x != nil {
+		return x.BackupPolicyName
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoStackOutputs) GetBackupAuthRole() string {
+	if x != nil {
+		return x.BackupAuthRole
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoStackOutputs) GetBackupCronJobName() string {
+	if x != nil {
+		return x.BackupCronJobName
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoStackOutputs) GetRestoreJobName() string {
+	if x != nil {
+		return x.RestoreJobName
+	}
+	return ""
+}
+
 var File_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesopenbao/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\"\xe3\x02\n" +
+	";catalog/kubernetes/kubernetesopenbao/v1alpha1/outputs.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\"\xd5\x04\n" +
 	"\x1dKubernetesOpenBaoStackOutputs\x12\x1c\n" +
 	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aservice\x12)\n" +
@@ -179,7 +241,13 @@ const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_outputs_proto_rawDesc =
 	"\fapi_endpoint\x18\x06 \x01(\tR\vapiEndpoint\x12\x12\n" +
 	"\x04port\x18\a \x01(\tR\x04port\x120\n" +
 	"\x14service_account_name\x18\b \x01(\tR\x12serviceAccountName\x120\n" +
-	"\x14port_forward_command\x18\t \x01(\tR\x12portForwardCommandB\x94\x03\n" +
+	"\x14port_forward_command\x18\t \x01(\tR\x12portForwardCommand\x12=\n" +
+	"\x1bbackup_service_account_name\x18\n" +
+	" \x01(\tR\x18backupServiceAccountName\x12,\n" +
+	"\x12backup_policy_name\x18\v \x01(\tR\x10backupPolicyName\x12(\n" +
+	"\x10backup_auth_role\x18\f \x01(\tR\x0ebackupAuthRole\x12/\n" +
+	"\x14backup_cron_job_name\x18\r \x01(\tR\x11backupCronJobName\x12(\n" +
+	"\x10restore_job_name\x18\x0e \x01(\tR\x0erestoreJobNameB\x94\x03\n" +
 	"5com.dev.planton.kubernetes.kubernetesopenbao.v1alpha1B\fOutputsProtoP\x01Zdgithub.com/plantonhq/planton/catalog/kubernetes/kubernetesopenbao/v1alpha1;kubernetesopenbaov1alpha1\xa2\x02\x04DPKK\xaa\x021Dev.Planton.Kubernetes.Kubernetesopenbao.V1alpha1\xca\x021Dev\\Planton\\Kubernetes\\Kubernetesopenbao\\V1alpha1\xe2\x02=Dev\\Planton\\Kubernetes\\Kubernetesopenbao\\V1alpha1\\GPBMetadata\xea\x025Dev::Planton::Kubernetes::Kubernetesopenbao::V1alpha1b\x06proto3"
 
 var (

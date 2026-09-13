@@ -1614,6 +1614,11 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesOpenBa
 | `status.outputs.port` | `string` | API port (8200). |
 | `status.outputs.service_account_name` | `string` | The server ServiceAccount name — the identity to bind cloud IAM (auto-unseal KMS access) and OpenBao Kubernetes-auth trust to. |
 | `status.outputs.port_forward_command` | `string` | Copy-paste command for reaching the API from a workstation. |
+| `status.outputs.backup_service_account_name` | `string` | The backup job's ServiceAccount (`<name>-backup`) — the identity to bind the object store's cloud IAM to (a GcpGkeWorkloadIdentityBinding's `ksa_name`, an IRSA trust policy's subject) and the `bound_service_account_names` of the login recipe. Empty when `backup` is not declared. |
+| `status.outputs.backup_policy_name` | `string` | The OpenBao policy the login recipe writes for the backup job (`<name>-backup`; read on `sys/storage/raft/snapshot`). Empty when `backup` is not declared. |
+| `status.outputs.backup_auth_role` | `string` | The Kubernetes-auth role the backup job logs in with (`<name>-backup` unless `backup.auth.role` names another). Empty when `backup` is not declared. |
+| `status.outputs.backup_cron_job_name` | `string` | The backup CronJob (`<name>-backup`) — `kubectl create job --from=cronjob/<this> <run-name>` triggers a snapshot on demand. Empty when `backup` is not declared. |
+| `status.outputs.restore_job_name` | `string` | The restore Job (`<name>-restore-<8 hex>`, the hex hashing the declaration) when `restore` is declared — `kubectl logs job/<this>` is where the restore explains itself. Empty otherwise. |
 
 ## References
 

@@ -36,7 +36,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Covers kubernetes_secret_v1.seal_credentials (Terraform) and seal_secret.go (Pulumi) -- rendered only when a declared-credential auto-unseal arm carries material; the chart wires each key to the server as environment variables. Helm's own release-state Secrets in the target namespace also live here.
+        notes: Covers kubernetes_secret_v1.seal_credentials (Terraform) and seal_secret.go (Pulumi) -- rendered only when a declared-credential auto-unseal arm carries material; the chart wires each key to the server as environment variables -- and kubernetes_secret_v1.backup_credentials (backup.go), rendered only when spec.backup's store arm declares keys, delivered to the backup and restore jobs as environment variables. Helm's own release-state Secrets in the target namespace also live here.
       - api_groups:
           - ""
         resources:
@@ -52,7 +52,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Chart-rendered inside helm_release.openbao (main.tf; main.go in Pulumi) -- the internal, active, standby, and UI Services (publishNotReadyAddresses so sealed pods stay addressable), the server-config ConfigMap synthesized from typed fields, and the server ServiceAccount (annotated from spec.service_account).
+        notes: Chart-rendered inside helm_release.openbao (main.tf; main.go in Pulumi) -- the internal, active, standby, and UI Services (publishNotReadyAddresses so sealed pods stay addressable), the server-config ConfigMap synthesized from typed fields, and the server ServiceAccount (annotated from spec.service_account). Module-owned when spec.backup is declared -- kubernetes_service_account_v1.backup (the job's identity, annotated from spec.backup.workload_identity) and kubernetes_config_map_v1.backup_scripts (backup.tf; backup.go in Pulumi).
       - api_groups:
           - apps
         resources:
@@ -127,3 +127,18 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Rendered only when spec.metrics.service_monitor_enabled is true (CEL requires metrics.enabled alongside) -- requires the Prometheus operator CRDs on the cluster. The spec.helm_values escape hatch can widen the chart's object surface beyond this profile; overlay users own the extra permissions.
+      - api_groups:
+          - batch
+        resources:
+          - cronjobs
+          - jobs
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Module-owned -- kubernetes_cron_job_v1.backup (backup.tf; backup.go in Pulumi) rendered when spec.backup is declared, the scheduled Raft snapshot to the declared object store; kubernetes_job_v1.restore (backup.tf; restore.go) rendered when spec.restore is declared, the one-shot install of a snapshot into a fresh cluster. The Jobs a CronJob creates are the controller's, not the runner's.

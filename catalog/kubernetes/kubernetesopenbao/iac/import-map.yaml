@@ -5,12 +5,16 @@ metadata:
 spec:
   # OpenBao installs as one Helm release NAMED AFTER metadata.name (the
   # module pins fullnameOverride to the same), plus the optional anchor
-  # namespace, plus ONE conditionally module-owned Secret: the
-  # `<name>-seal-credentials` Secret exists only when a declared-
-  # credential auto-unseal arm carries static credentials (the keyless
-  # workload-identity postures create no Secret). Chart-created objects
-  # (the StatefulSet, Services, injector, config ConfigMap) travel with
-  # the release import.
+  # namespace, plus the conditionally module-owned satellites: the
+  # `<name>-seal-credentials` Secret (only when a declared-credential
+  # auto-unseal arm carries static credentials), and — when `backup` is
+  # declared — the job ServiceAccount, scripts ConfigMap, and CronJob all
+  # named `<name>-backup`/`<name>-backup-scripts`, the
+  # `<name>-backup-credentials` Secret (only when the store arm declares
+  # keys), and — when `restore` is declared — the one-shot Job whose name
+  # hashes the declaration and so rides in as a stack output. Chart-created
+  # objects (the StatefulSet, Services, injector, config ConfigMap) travel
+  # with the release import.
   values:
     - name: release_name
       derivations:
@@ -47,6 +51,87 @@ spec:
         <namespace>`.
     - name: secret_namespace
       tofu_resource_name: seal_credentials
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    # ── the backup satellites (when spec.backup is declared) ───────────
+    - name: service_account_name
+      tofu_resource_name: backup
+      derivations:
+        - from_stack_output: backup_service_account_name
+        - from_metadata_name_suffix: "-backup"
+      where_to_find: >-
+        Always "<resource-name>-backup" when backup is declared — the
+        `backup_service_account_name` output, or `kubectl get sa -n
+        <namespace>`.
+    - name: service_account_namespace
+      tofu_resource_name: backup
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    - name: config_map_name
+      tofu_resource_name: backup_scripts
+      derivations:
+        - from_metadata_name_suffix: "-backup-scripts"
+      where_to_find: >-
+        Always "<resource-name>-backup-scripts" when backup is declared —
+        `kubectl get configmap -n <namespace>`.
+    - name: config_map_namespace
+      tofu_resource_name: backup_scripts
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    # Exists only when the store arm declares keys (s3 access_keys, a gcs
+    # service_account_key, an azure_blob storage_key or connection_string,
+    # or the r2 credentials); the keyless postures create no Secret.
+    - name: secret_name
+      tofu_resource_name: backup_credentials
+      derivations:
+        - from_metadata_name_suffix: "-backup-credentials"
+      where_to_find: >-
+        Always "<resource-name>-backup-credentials" when the backup store
+        declares keys — `kubectl get secrets -n <namespace>`.
+    - name: secret_namespace
+      tofu_resource_name: backup_credentials
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    - name: cron_job_name
+      tofu_resource_name: backup
+      derivations:
+        - from_stack_output: backup_cron_job_name
+        - from_metadata_name_suffix: "-backup"
+      where_to_find: >-
+        Always "<resource-name>-backup" when backup is declared — the
+        `backup_cron_job_name` output, or `kubectl get cronjob -n
+        <namespace>`.
+    - name: cron_job_namespace
+      tofu_resource_name: backup
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the installation.
+    # ── the restore Job (when spec.restore is declared) ─────────────────
+    # Its name hashes the declaration, so it rides in as a stack output
+    # rather than a derivation the recipe could recompute.
+    - name: job_name
+      tofu_resource_name: restore
+      derivations:
+        - from_stack_output: restore_job_name
+      where_to_find: >-
+        The Job's metadata.name (`<resource-name>-restore-<8 hex>`) — the
+        `restore_job_name` output, or `kubectl get jobs -n <namespace>`.
+    - name: job_namespace
+      tofu_resource_name: restore
       derivations:
         - from_stack_output: namespace
         - from_spec_field: namespace.value

@@ -33,17 +33,22 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesopenbaov1alpha1.Kubern
 	// NAME BUDGET (chart truth at 0.28.6): the chart truncates its
 	// fullname at 63 then APPENDS Service suffixes — `-internal` (9)
 	// always, `-agent-injector-svc` (19) with the injector. Service
-	// names cap at 63, so the budget depends on the injector arm.
-	// The Terraform twin enforces the same budget via preconditions.
+	// names cap at 63, so the budget depends on the injector arm. With
+	// `backup` declared the CronJob `<name>-backup` must fit Kubernetes'
+	// 52-character CronJob cap, which is tighter still. The Terraform
+	// twin enforces the same budgets via preconditions.
 	maxLen := vars.MaxNameLength
 	if locals.Spec.GetInjector().GetEnabled() {
 		maxLen = vars.MaxNameLengthWithInjector
 	}
+	if locals.BackupEnabled && vars.MaxNameLengthWithBackup < maxLen {
+		maxLen = vars.MaxNameLengthWithBackup
+	}
 	if len(locals.ReleaseName) > maxLen {
 		return errors.Errorf(
 			"metadata.name %q is %d characters; the OpenBao chart derives Service names by suffixing "+
-				"(up to 19 characters with the injector enabled) onto it and Kubernetes caps Service names "+
-				"at 63 — use a name of at most %d characters",
+				"(up to 19 characters with the injector enabled) onto it, Kubernetes caps Service names "+
+				"at 63 and CronJob names at 52 (the backup CronJob is <name>-backup) — use a name of at most %d characters",
 			locals.ReleaseName, len(locals.ReleaseName), maxLen)
 	}
 
@@ -126,6 +131,30 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesopenbaov1alpha1.Kubern
 	_, err = helmv3.NewRelease(ctx, locals.ReleaseName, releaseArgs, opts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to install openbao helm release")
+	}
+
+	// ------------------------- backup and restore --------------------------
+	// Module-owned, beside the release (never inside it): the chart's own
+	// snapshot agent is S3-only, static-keys-only, and cannot restore, so
+	// the module renders its own CronJob and Job on the official openbao
+	// and rclone images (backup.go, restore.go). The release does not
+	// wait on them and they do not wait on the release: a CronJob whose
+	// first run fails its login until the operator runs the recipe is the
+	// designed day-1 shape, taught by the run's own log.
+	if locals.BackupEnabled {
+		var backupDeps []pulumi.Resource
+		if createdNamespace != nil {
+			backupDeps = append(backupDeps, createdNamespace)
+		}
+		jobDeps, err := backupResources(ctx, locals, kubernetesProvider, backupDeps)
+		if err != nil {
+			return err
+		}
+		if locals.RestoreDeclared {
+			if err := restoreJob(ctx, locals, kubernetesProvider, jobDeps); err != nil {
+				return err
+			}
+		}
 	}
 
 	exportOutputs(ctx, locals)
