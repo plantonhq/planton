@@ -27,6 +27,72 @@ resource "kubernetes_namespace_v1" "planton_platform" {
   }
 }
 
+# The credentials the database's backup and recovery stores declare,
+# materialized as the Secrets the operator's preflight reads
+# (`<platform>-postgres-backup-creds` / `-recovery-creds`; keys per backend,
+# see locals.object_store_creds_data). A keyless posture creates none and
+# the CR names none. Created before the CR so the database is born
+# archiving; deleted with the resource. Twin of the Pulumi module's
+# createObjectStoreSecrets.
+resource "kubernetes_secret_v1" "backup_credentials" {
+  count = lookup(local.object_store_creds_data, "backup", null) != null ? 1 : 0
+
+  metadata {
+    name      = local.backup_creds_secret_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.object_store_creds_data["backup"]
+
+  depends_on = [kubernetes_namespace_v1.planton_platform]
+}
+
+resource "kubernetes_secret_v1" "recovery_credentials" {
+  count = lookup(local.object_store_creds_data, "recovery", null) != null ? 1 : 0
+
+  metadata {
+    name      = local.recovery_creds_secret_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.object_store_creds_data["recovery"]
+
+  depends_on = [kubernetes_namespace_v1.planton_platform]
+}
+
+# The CA bundle a private S3-compatible endpoint chains to, under the one
+# key the CR's endpointCASecretRef names. Only an s3 arm with
+# endpoint_ca_pem has one.
+resource "kubernetes_secret_v1" "backup_endpoint_ca" {
+  count = lookup(local.object_store_ca_data, "backup", null) != null ? 1 : 0
+
+  metadata {
+    name      = local.backup_endpoint_ca_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.object_store_ca_data["backup"]
+
+  depends_on = [kubernetes_namespace_v1.planton_platform]
+}
+
+resource "kubernetes_secret_v1" "recovery_endpoint_ca" {
+  count = lookup(local.object_store_ca_data, "recovery", null) != null ? 1 : 0
+
+  metadata {
+    name      = local.recovery_endpoint_ca_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.object_store_ca_data["recovery"]
+
+  depends_on = [kubernetes_namespace_v1.planton_platform]
+}
+
 # The PlantonPlatform declaration.
 resource "kubectl_manifest" "planton_platform" {
   yaml_body = yamlencode({
@@ -49,5 +115,11 @@ resource "kubectl_manifest" "planton_platform" {
     delete = "15m"
   }
 
-  depends_on = [kubernetes_namespace_v1.planton_platform]
+  depends_on = [
+    kubernetes_namespace_v1.planton_platform,
+    kubernetes_secret_v1.backup_credentials,
+    kubernetes_secret_v1.recovery_credentials,
+    kubernetes_secret_v1.backup_endpoint_ca,
+    kubernetes_secret_v1.recovery_endpoint_ca,
+  ]
 }

@@ -66,11 +66,19 @@ spec:
       status: not_applicable
       notes: No monitoring seam is modeled on this spec — the operator publishes per-component health in the CR's status (phase, per-component messages, the Ready condition), which cluster monitoring can watch; metrics endpoints are a product surface versioned with spec.version.
     - control_id: backup-recovery
-      status: not_applicable
-      notes: Not modeled on this spec yet — the platform's PostgreSQL is CloudNativePG-managed, whose object-store backup path exists upstream, but the PlantonPlatform schema carries no backup block at this catalog release. Until it does, backups are the cluster owner's volume-snapshot posture. The honest reinstall guidance — credentials and database volumes share one lifecycle and die together — is taught in the GUIDE.
+      status: configurable
+      field_path: database.postgresql.backup
+      evidence:
+        type: spec_default
+        reference: Unset means no backup — the platform's database lives on one volume in the cluster and nothing copies it anywhere (the BACKUP column reads NotConfigured). Declaring database.postgresql.backup.object_store turns on continuous WAL archiving plus scheduled base backups (the first one immediately) into an S3, GCS, Azure Blob, or Cloudflare R2 bucket you own, with the credential declared by reference and materialized as a Secret by the module; database.postgresql.recover_from declares a new platform restored from such an archive, honored when its database is first created.
+      notes: Only the platform's PostgreSQL is covered — every record the control plane keeps and the identity realm. The secrets manager (OpenBAO) keeps its data on its own volume outside this archive, so a restored platform runs with an empty secrets manager until connection credentials are re-entered; the GUIDE names the boundary. The 06-backups-to-r2 preset backs up nightly with 30d retention; the other presets deliberately have none.
     - control_id: backup-retention-policy
-      status: not_applicable
-      notes: No backups exist on this spec (see backup-recovery), so no retention policy applies.
+      status: configurable
+      field_path: database.postgresql.backup.retention_policy
+      evidence:
+        type: spec_default
+        reference: 30d by default; retention_policy ("30d", "8w", "6m") is how long the store keeps base backups and the WAL that goes with them, enforced by the backup plugin after each backup.
+      notes: The 06-backups-to-r2 preset keeps 30 days.
     - control_id: multi-zone-ha
       status: configurable
       field_path: database.postgresql.replicas

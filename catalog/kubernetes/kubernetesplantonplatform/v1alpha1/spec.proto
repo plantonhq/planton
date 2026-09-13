@@ -549,6 +549,465 @@ message KubernetesPlantonPlatformPostgresql {
    * StorageClass override for the database volumes.
    */
   string storage_class_name = 3;
+
+  /**
+   * Where the platform's own database is backed up, and how. Declaring it
+   * turns on continuous WAL archiving to the store, a base backup on the
+   * schedule (the first one the moment backups are declared — WAL alone
+   * restores nothing), and a retention the store enforces; the operator
+   * installs the Barman Cloud plugin, CloudNativePG's backup engine, if
+   * the cluster does not have it yet (see prerequisites.postgres_backup_plugin).
+   *
+   * Absent means no backup: the database lives on one volume in this
+   * cluster and nothing copies it anywhere. The `BACKUP` column of
+   * `kubectl get plantonplatform` says which — `NotConfigured`,
+   * `Deploying`, `Healthy`, `Failing` (in the plugin's own words), or
+   * `Unavailable` — and `status.backup` carries the archive's server name,
+   * the first recoverability point, and the last successful base backup.
+   * A failing backup never takes a working platform out of Ready.
+   *
+   * The module creates the credential Secret this store needs BEFORE the
+   * platform resource, in the same apply, so the database is born
+   * archiving whichever order the declaration's parts are read in.
+   */
+  KubernetesPlantonPlatformPostgresqlBackup backup = 4;
+
+  /**
+   * Restore this platform's database from another platform's archive
+   * instead of creating it empty. Honored only when the database is first
+   * created — a running platform keeps its database as it is and the
+   * status names the procedure (delete the platform, declare it again
+   * with recover_from). Nothing here ever destroys data to honor a
+   * declaration.
+   *
+   * A restored platform archives its OWN backups under a new server name
+   * (every platform files its archive under its name plus a unique
+   * suffix), so it never writes over the source it restored from; declare
+   * `backup` beside `recover_from` and the two can share one bucket and
+   * one path.
+   *
+   * WHAT COMES BACK: every record the control plane keeps — organizations,
+   * environments, connections, projects, pipeline history, members, and
+   * the identity realm with its users, so existing passwords sign in.
+   * WHAT DOES NOT: the secrets manager's contents (OpenBAO keeps its data
+   * on its own volume, outside this archive), so every secret value the
+   * source held — the credentials behind connections above all — is
+   * re-entered after a restore.
+   */
+  KubernetesPlantonPlatformPostgresqlRecoverFrom recover_from = 5;
+}
+
+/**
+ * Continuous backup of the platform's database through the Barman Cloud
+ * plugin: WAL archiving plus scheduled base backups into one object store.
+ */
+message KubernetesPlantonPlatformPostgresqlBackup {
+  /**
+   * The object store the backups go to and how the database's pods
+   * authenticate to it. WAL archiving into it starts as soon as the
+   * database is healthy; the schedule adds the base backups a
+   * point-in-time recovery replays WAL onto.
+   */
+  KubernetesPlantonPlatformObjectStore object_store = 1 [(buf.validate.field).required = true];
+
+  /**
+   * How long the store keeps base backups and the WAL that goes with
+   * them, as `<n>d|w|m` (days, weeks, months). Enforced by the plugin
+   * after each backup.
+   */
+  optional string retention_policy = 2 [
+    (dev.planton.shared.options.default) = "30d",
+    (buf.validate.field).cel = {
+      id: "postgresql.backup.retention_format"
+      message: "retention_policy must be a positive number of days, weeks, or months — e.g. '30d', '8w', or '6m'"
+      expression: "this == '' || this.matches('^[1-9][0-9]*[dwm]$')"
+    }
+  ];
+
+  /**
+   * When base backups run: a cron expression WITH SECONDS — six fields,
+   * not the five Kubernetes CronJobs use ("0 0 2 * * *" is daily at
+   * 02:00 UTC, the default). The first base backup always runs the moment
+   * backups are declared, whatever this says.
+   */
+  optional string schedule = 3 [
+    (dev.planton.shared.options.default) = "0 0 2 * * *",
+    (buf.validate.field).cel = {
+      id: "postgresql.backup.schedule_cron_six_fields"
+      message: "schedule is a SIX-field cron expression (seconds first) — e.g. '0 0 2 * * *' for daily at 02:00; the five-field Kubernetes form is missing the seconds field"
+      expression: "this == '' || this.matches('^ *[^ ]+( +[^ ]+){5} *$')"
+    }
+  ];
+
+  /**
+   * Annotations for the ServiceAccount the database's own pods run as
+   * (CloudNativePG names it after the database: `<platform>-postgres`).
+   * This is where a keyless posture binds a cloud identity: EKS IRSA
+   * (`eks.amazonaws.com/role-arn`), GKE Workload Identity
+   * (`iam.gke.io/gcp-service-account`), AKS Workload Identity
+   * (`azure.workload.identity/client-id`). Distinct from
+   * runner.service_account_annotations — the runner deploys infrastructure
+   * with its identity; the database's identity only writes backups. R2 has
+   * no keyless posture and never needs this.
+   */
+  map<string, string> service_account_annotations = 4;
+}
+
+/**
+ * The source archive a platform's database is restored from.
+ */
+message KubernetesPlantonPlatformPostgresqlRecoverFrom {
+  /**
+   * The store the source platform archived to. Recovery only READS from
+   * it; this platform's own backups go to `backup`. The same bucket and
+   * path as the source's `backup` are fine — server names keep the two
+   * archives apart.
+   */
+  KubernetesPlantonPlatformObjectStore object_store = 1 [(buf.validate.field).required = true];
+
+  /**
+   * The name the source's archive is filed under: `status.backup.serverName`
+   * on the source platform, or the folder name in the bucket's own listing
+   * under the destination path when the source is gone. Every platform
+   * archives under its own name plus a unique suffix, so this names one
+   * archive exactly.
+   */
+  string server_name = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Recover to a point in time, as an RFC 3339 timestamp
+   * ("2026-09-13T20:30:00Z"). Empty recovers to the end of the archive —
+   * every WAL segment the source shipped.
+   */
+  string target_time = 3 [(buf.validate.field).cel = {
+    id: "postgresql.recover_from.target_time_rfc3339"
+    message: "target_time is an RFC 3339 timestamp — e.g. '2026-09-13T20:30:00Z' or '2026-09-13T20:30:00+05:30'"
+    expression: "this == '' || this.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$')"
+  }];
+}
+
+/**
+ * A bucket and the way the database's pods authenticate to it. Exactly one
+ * backend, and the destination path carries that backend's scheme — the
+ * same vocabulary the catalog's KubernetesPostgres kind speaks, so a
+ * platform's backup and a database's backup read alike.
+ */
+message KubernetesPlantonPlatformObjectStore {
+  /**
+   * Where in the store the archive lives — the backend's native URI form:
+   * `s3://bucket/path` for S3, Cloudflare R2, and every S3-compatible
+   * store, `gs://bucket/path` for GCS, and
+   * `https://<account>.blob.core.windows.net/<container>/<path>` for
+   * Azure Blob. Base backups and WAL are filed beneath it under this
+   * platform's server name, so several platforms can share one path
+   * without ever touching each other's archive.
+   */
+  string destination_path = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Object-store backend. Exactly one arm; the arm's credential posture is
+   * keyless (the database pods' own cloud identity, bound through
+   * backup.service_account_annotations) or a declared credential —
+   * declared credentials materialize as a Kubernetes Secret the operator
+   * hands to the plugin, never plaintext in the rendered resource.
+   */
+  oneof backend {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * AWS S3 — or ANY S3-compatible store (MinIO, Ceph RGW, DigitalOcean
+     * Spaces, ...) via the endpoint_url override. Cloudflare R2 has its own
+     * arm (`r2`) that composes the catalog's Cloudflare kinds.
+     */
+    KubernetesPlantonPlatformS3ObjectStore s3 = 2;
+
+    /**
+     * Google Cloud Storage.
+     */
+    KubernetesPlantonPlatformGcsObjectStore gcs = 3;
+
+    /**
+     * Azure Blob Storage.
+     */
+    KubernetesPlantonPlatformAzureBlobObjectStore azure_blob = 4;
+
+    /**
+     * Cloudflare R2, in R2's own vocabulary: the owning account, the
+     * bucket's jurisdiction, and a Cloudflare credential — each a reference
+     * onto the catalog's CloudflareR2Bucket and CloudflareAccountApiToken by
+     * default. The operator performs the S3 translation R2 needs (the
+     * jurisdiction's endpoint host, region `auto`); nothing S3-shaped is
+     * typed here.
+     */
+    KubernetesPlantonPlatformR2ObjectStore r2 = 5;
+  }
+
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.s3_path_scheme"
+    message: "the s3 backend stores at an s3:// destination path (also for S3-compatible stores like MinIO)"
+    expression: "!has(this.s3) || this.destination_path.startsWith('s3://')"
+  };
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.gcs_path_scheme"
+    message: "the gcs backend stores at a gs:// destination path"
+    expression: "!has(this.gcs) || this.destination_path.startsWith('gs://')"
+  };
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.azure_path_scheme"
+    message: "the azure_blob backend stores at an https:// destination path (https://<account>.blob.core.windows.net/<container>/<path>)"
+    expression: "!has(this.azure_blob) || this.destination_path.startsWith('https://')"
+  };
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.r2_path_scheme"
+    message: "the r2 backend stores at an s3:// destination path (s3://<bucket>/<path> — R2 is addressed through its S3 API; the bucket name is the CloudflareR2Bucket's bucket_name)"
+    expression: "!has(this.r2) || this.destination_path.startsWith('s3://')"
+  };
+}
+
+/**
+ * S3 / S3-compatible object-store backend.
+ */
+message KubernetesPlantonPlatformS3ObjectStore {
+  /**
+   * AWS region of the bucket. Required for real S3; for S3-compatible
+   * stores use the store's expected value (MinIO accepts any).
+   */
+  string region = 1;
+
+  /**
+   * S3-COMPATIBLE ARM: endpoint URL of the store (e.g.
+   * http://minio.minio-system.svc:9000 for in-cluster MinIO). Empty = real
+   * AWS S3. For Cloudflare R2 prefer the `r2` arm, which composes the
+   * endpoint from the bucket's account and jurisdiction.
+   */
+  string endpoint_url = 2 [(buf.validate.field).cel = {
+    id: "postgresql.object_store.s3.endpoint_format"
+    message: "endpoint_url must be an http(s) URL (e.g. http://minio.minio-system.svc:9000)"
+    expression: "this == '' || this.startsWith('http://') || this.startsWith('https://')"
+  }];
+
+  /**
+   * PEM CA bundle for verifying a self-signed endpoint_url TLS certificate
+   * (materialized as a Secret the plugin reads).
+   */
+  string endpoint_ca_pem = 3;
+
+  /**
+   * Keyless posture: the database pods' AWS identity (IRSA through
+   * backup.service_account_annotations, EKS Pod Identity, or the node's
+   * instance profile) authenticates to S3 — no stored keys. Mutually
+   * exclusive with access_keys.
+   */
+  bool keyless = 4;
+
+  /**
+   * Static access keys, materialized as a Kubernetes Secret the plugin
+   * reads. The declared-credential arm — for S3-compatible stores and
+   * clusters without IRSA.
+   */
+  KubernetesPlantonPlatformS3AccessKeys access_keys = 5;
+
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.s3.keyless_xor_keys"
+    message: "keyless and access_keys are alternative credential postures — set exactly one"
+    expression: "(this.keyless && !has(this.access_keys)) || (!this.keyless && has(this.access_keys))"
+  };
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.s3.compatible_needs_keys"
+    message: "an S3-compatible endpoint (endpoint_url) authenticates with access_keys — the keyless posture only mints AWS credentials"
+    expression: "this.endpoint_url == '' || !this.keyless"
+  };
+}
+
+/**
+ * Static S3 access keys.
+ */
+message KubernetesPlantonPlatformS3AccessKeys {
+  /**
+   * Access key ID — the public identifier of the key pair, not a secret;
+   * only the paired secret access key is a credential. For MinIO this is
+   * the access key / username.
+   */
+  string access_key_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Secret access key (for MinIO: the secret key / password).
+   */
+  string secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+/**
+ * Google Cloud Storage backend.
+ */
+message KubernetesPlantonPlatformGcsObjectStore {
+  /**
+   * Keyless posture: the database pods' GCP identity (GKE Workload
+   * Identity through backup.service_account_annotations) authenticates to
+   * GCS — no stored key. Mutually exclusive with service_account_key_json.
+   *
+   * THE IDENTITY NEEDS TWO ROLES ON THE BUCKET, not one: Barman Cloud
+   * verifies the archive destination with a bucket-level read
+   * (`storage.buckets.get`) before every WAL archive, and
+   * `roles/storage.objectAdmin` does not carry it — an identity granted
+   * objectAdmin alone fails every archive with "does not have
+   * storage.buckets.get access" while the database reports healthy. Grant
+   * `roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (a
+   * GcpGcsBucket's `iam_members`, one entry each).
+   */
+  bool keyless = 1;
+
+  /**
+   * GCP service-account key (the JSON key file's content), materialized as
+   * a Kubernetes Secret the plugin reads. The declared-credential arm for
+   * non-GKE clusters backing up to GCS.
+   */
+  string service_account_key_json = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.gcs.keyless_xor_key"
+    message: "keyless and service_account_key_json are alternative credential postures — set exactly one"
+    expression: "(this.keyless && this.service_account_key_json == '') || (!this.keyless && this.service_account_key_json != '')"
+  };
+}
+
+/**
+ * Azure Blob Storage backend. Two postures — a storage-account connection
+ * string, or the database pods' Azure identity — the two the operator
+ * honors.
+ */
+message KubernetesPlantonPlatformAzureBlobObjectStore {
+  /**
+   * Storage-account name. Always required: it identifies the storage
+   * endpoint under either posture.
+   */
+  string storage_account = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Keyless posture: the database pods' Azure identity (AKS Workload
+   * Identity through backup.service_account_annotations, or a managed
+   * identity) authenticates to Blob Storage — no stored secret. Mutually
+   * exclusive with connection_string.
+   */
+  bool keyless = 2;
+
+  /**
+   * Storage-account connection string — the all-in-one declared
+   * credential, materialized as a Kubernetes Secret the plugin reads.
+   */
+  string connection_string = 3 [(dev.planton.shared.options.sensitive) = true];
+
+  option (buf.validate.message).cel = {
+    id: "postgresql.object_store.azure.keyless_xor_connection_string"
+    message: "keyless and connection_string are alternative credential postures — set exactly one"
+    expression: "(this.keyless && this.connection_string == '') || (!this.keyless && this.connection_string != '')"
+  };
+}
+
+/**
+ * Cloudflare R2 backend, composed from the catalog's Cloudflare kinds.
+ *
+ * R2 speaks S3, so Barman Cloud reaches it through its S3 code path — but
+ * nothing S3-shaped is declared here. The operator composes the endpoint
+ * from the account and the bucket's jurisdiction
+ * (`https://<account>.r2.cloudflarestorage.com`, or
+ * `https://<account>.<jurisdiction>.r2.cloudflarestorage.com` for an eu,
+ * fedramp, or us bucket — a jurisdictional bucket is served ONLY through its
+ * own host; the default host fails rather than redirects) and pins the
+ * region to `auto` (the only region R2 accepts). There is NO keyless posture
+ * for R2 from any cluster: R2 has no equivalent of IRSA or Workload
+ * Identity, so a credential is always declared — by reference to a
+ * CloudflareAccountApiToken by default, and the module materializes it as
+ * the Secret the operator hands to the plugin.
+ *
+ * The bucket itself is named in `destination_path` (`s3://<bucket>/<path>`),
+ * exactly as the gcs and azure_blob arms name theirs. Emptying the bucket
+ * is not the module's job — R2 refuses to delete a non-empty bucket, so a
+ * CloudflareR2Bucket that has ever held an archive must be emptied over the
+ * S3 API before it can be destroyed.
+ */
+message KubernetesPlantonPlatformR2ObjectStore {
+  /**
+   * The Cloudflare account that owns the bucket (32 hex characters). By
+   * reference to the bucket resource's `account_id` output, so the arm
+   * follows the bucket; a literal names an account outside the catalog.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef account_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.account_id",
+    (buf.validate.field).cel = {
+      id: "postgresql.object_store.r2.account_id_format"
+      message: "account_id is the 32-hex-character Cloudflare account id"
+      expression: "!has(this.value) || this.value.matches('^[0-9a-fA-F]{32}$')"
+    }
+  ];
+
+  /**
+   * The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+   * `fedramp`, or `us`. It selects the S3 host the operator composes — a
+   * bucket created in a jurisdiction is unreachable through any other
+   * host — so it must match the bucket exactly; by reference to the bucket
+   * resource's `jurisdiction` output it cannot drift.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef jurisdiction = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.jurisdiction",
+    (buf.validate.field).cel = {
+      id: "postgresql.object_store.r2.jurisdiction_valid"
+      message: "jurisdiction must be one of \"default\", \"eu\", \"fedramp\", \"us\" (or empty for default)"
+      expression: "!has(this.value) || this.value == '' || this.value in ['default', 'eu', 'fedramp', 'us']"
+    }
+  ];
+
+  /**
+   * The Cloudflare credential, as the S3 key pair R2's S3 API
+   * authenticates. Materialized as a Kubernetes Secret the plugin reads;
+   * never plaintext in the rendered resource.
+   */
+  KubernetesPlantonPlatformR2Credentials credentials = 3 [(buf.validate.field).required = true];
+}
+
+/**
+ * The S3 key pair for Cloudflare R2. Cloudflare defines it from an account
+ * API token: the access key id is the token's id and the secret access key
+ * is the SHA-256 of the token's value — the two values a
+ * CloudflareAccountApiToken exports as `r2_access_key_id` and
+ * `r2_secret_access_key`, and the two the dashboard shows as "Access Key
+ * ID" / "Secret Access Key" when the same token is created there.
+ * Reference the catalog token (the default kind) or paste a
+ * dashboard-minted pair as literals; both are the same shape.
+ *
+ * The token needs an R2 permission group: `Workers R2 Storage Bucket Item
+ * Write` scoped to this bucket (least privilege — read, write, list
+ * objects) or `Workers R2 Storage Write` on the account. A token without
+ * one authenticates and then fails every archive with AccessDenied.
+ */
+message KubernetesPlantonPlatformR2Credentials {
+  /**
+   * The S3 access key id: the API token's id. By reference to the token
+   * resource's `r2_access_key_id` output.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef access_key_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_access_key_id"
+  ];
+
+  /**
+   * The S3 secret access key: the SHA-256 of the API token's value. By
+   * reference to the token resource's `r2_secret_access_key` output.
+   * Rotates with the token: a rotated token is a new key pair, and the
+   * Secret this arm materializes follows the reference on the next apply.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_secret_access_key"
+  ];
 }
 
 /**
@@ -1111,6 +1570,27 @@ message KubernetesPlantonPlatformPrerequisites {
    * even on "skip".
    */
   optional string tekton_pipelines = 3 [
+    (dev.planton.shared.options.default) = "auto",
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "auto",
+        "skip"
+      ]
+    }
+  ];
+
+  /**
+   * The Barman Cloud plugin, CloudNativePG's backup engine, which serves
+   * every PostgreSQL on the cluster — the platform's own database and any
+   * database deployed through Planton. "auto" installs it whenever the
+   * operator installed CloudNativePG itself and cert-manager is on the
+   * cluster (the plugin needs it for the TLS between operator and plugin),
+   * or whenever database.postgresql.backup is declared; a plugin installed
+   * by any other means is detected and respected. "skip" declares it
+   * externally managed (or unwanted) and installs nothing.
+   */
+  optional string postgres_backup_plugin = 4 [
     (dev.planton.shared.options.default) = "auto",
     (buf.validate.field).string = {
       in: [

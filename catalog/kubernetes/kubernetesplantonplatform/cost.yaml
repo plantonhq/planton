@@ -26,5 +26,6 @@ spec:
   estimate_exclusions:
     - the platform is a whole product stack (a dozen workloads at defaults) — its footprint depends on the version deployed and the operator's per-component sizing, which this catalog reads as defaults, not guarantees
     - the infrastructure the platform DEPLOYS (through its runner, to your cloud accounts) is billed by your cloud providers and is unbounded by anything in this spec
+    - the object store a declared backup (database.postgresql.backup) archives to is billed by ITS provider on the bucket resource (storage for base backups and WAL under the retention policy, plus the provider's request and egress charges — none on Cloudflare R2 egress), not on this component
     - the price of reserved CPU, memory, and volumes is the target cluster's node and storage economics, which this catalog cannot know
   notes: "This component creates no cloud SKU of its own — its cost is the share of the cluster the platform's workloads and volumes reserve, realized on the cluster's bill. A defaults-shaped platform wants roughly 4 CPU / 8Gi of schedulable capacity plus ~20Gi of volumes; treat that as the floor, not the estimate."

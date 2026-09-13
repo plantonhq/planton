@@ -61,6 +61,8 @@ resource's outputs.
 | `gateway.local_port` | no | `8080` | The port-forward door's port — baked into sign-in at first boot |
 | `storage` | no | cluster default | Platform-wide class + size; every component can override |
 | `database.postgresql.replicas` | no | `1` | 2+ = streaming replication with automatic failover, live |
+| `database.postgresql.backup` | no | no backup | Continuous WAL archiving plus scheduled base backups of the platform's own database into an object store you own — `s3`, `gcs`, `azure_blob`, or `r2` (composed by reference from a CloudflareR2Bucket and a bucket-scoped CloudflareAccountApiToken; nothing typed); `retention_policy` (`30d`) and a six-field cron `schedule`; the module materializes the credential Secret before the platform. The `BACKUP` column reads `NotConfigured` without it. PostgreSQL only — the secrets manager's data is outside the archive |
+| `database.postgresql.recover_from` | no | — | Restore this platform's database from another platform's archive (the store plus the source's `status.backup.serverName`); honored when the database is first created, and the restored platform archives under a new name |
 | `identity.admin_email` | no | setup-code flow | Pre-seed a known admin instead of first-visitor setup |
 | `email` | no | no email | Outbound email through your own provider — `smtp` (any relay; `security` `starttls`/`tls`/`none`; a basic-auth Secret, OAuth2, or no credential; an optional private-CA bundle) XOR `resend`; `from.address` is the sending identity both the control plane and the identity server use; credentials are Secret names and references, never values. Absent, invitations are shared as links and the sign-in page has no "Forgot password?" |
 | `bootstrap` | no | sane seeds | First org/env, extra admins, IaC provisioner (`tofu`/`terraform`), secret backend (`platform`/`awsSecretsManager`) |
@@ -105,7 +107,10 @@ Deleting the resource deletes the platform — databases included. Every
 operator-created object is owner-referenced to the declaration and
 garbage-collected by Kubernetes, so teardown completes even when the
 operator itself is already gone; the database layer removes its volumes
-and credentials together. Build caches and workflow volumes can survive
+and credentials together. With `database.postgresql.backup` declared, the
+archive in the object store survives the teardown, and declaring the
+platform again with `database.postgresql.recover_from` brings it back as
+itself. Build caches and workflow volumes can survive
 in the namespace (its deletion — automatic with `create_namespace: true`
 — sweeps them), and the platform's namespace-qualified token-review
 ClusterRole/Binding lingers inert until an operator release adds the

@@ -70,12 +70,142 @@ locals {
     } : k => v if v != null
   }
 
+  # ---- database: the backup and recovery object stores ------------------------
+  # The spec declares credential VALUES (references already resolved); the
+  # operator reads Secret NAMES. This module materializes the Secrets and the
+  # CR names them — created before the CR so the database is born archiving.
+  # Named after the operator's database ("<platform>-postgres"), so they read
+  # as the database's own beside the ObjectStore and settings Secret the
+  # operator creates under that name. Twin of the Pulumi module's
+  # object_store_secrets.go and its vars.
+  postgres_cluster_name      = "${local.platform_name}-postgres"
+  backup_creds_secret_name   = "${local.postgres_cluster_name}-backup-creds"
+  recovery_creds_secret_name = "${local.postgres_cluster_name}-recovery-creds"
+  backup_endpoint_ca_name    = "${local.postgres_cluster_name}-backup-endpoint-ca"
+  recovery_endpoint_ca_name  = "${local.postgres_cluster_name}-recovery-endpoint-ca"
+  endpoint_ca_secret_key     = "ca.crt"
+
+  postgresql_backup   = try(var.spec.database.postgresql.backup, null)
+  postgresql_recovery = try(var.spec.database.postgresql.recover_from, null)
+
+  # One rendering context per declared store, so backup and recovery share
+  # every line below and differ only in which Secrets they name.
+  object_store_contexts = merge(
+    local.postgresql_backup != null ? {
+      backup = {
+        object_store      = local.postgresql_backup.object_store
+        creds_secret_name = local.backup_creds_secret_name
+        ca_secret_name    = local.backup_endpoint_ca_name
+      }
+    } : {},
+    local.postgresql_recovery != null ? {
+      recovery = {
+        object_store      = local.postgresql_recovery.object_store
+        creds_secret_name = local.recovery_creds_secret_name
+        ca_secret_name    = local.recovery_endpoint_ca_name
+      }
+    } : {}
+  )
+
+  # The credentials Secret's data per store, under the keys the operator's
+  # preflight reads for each backend, or null for a keyless posture (no
+  # Secret exists; the CR names none; the operator reads the pods' own cloud
+  # identity). R2 always has one — R2 has no keyless posture. All values are
+  # strings, so the chained ternary unifies safely to map(string).
+  object_store_creds_data = {
+    for key, ctx in local.object_store_contexts : key => (
+      try(ctx.object_store.s3.access_keys, null) != null ? {
+        ACCESS_KEY_ID     = ctx.object_store.s3.access_keys.access_key_id
+        SECRET_ACCESS_KEY = ctx.object_store.s3.access_keys.secret_access_key
+        } : try(ctx.object_store.r2, null) != null ? {
+        ACCESS_KEY_ID     = ctx.object_store.r2.credentials.access_key_id
+        SECRET_ACCESS_KEY = ctx.object_store.r2.credentials.secret_access_key
+        } : try(ctx.object_store.gcs.service_account_key_json, "") != "" ? {
+        APPLICATION_CREDENTIALS = ctx.object_store.gcs.service_account_key_json
+        } : try(ctx.object_store.azure_blob.connection_string, "") != "" ? {
+        AZURE_STORAGE_CONNECTION_STRING = ctx.object_store.azure_blob.connection_string
+      } : null
+    )
+  }
+
+  # The endpoint-CA Secret's data per store: only an S3-compatible endpoint
+  # with a private CA has one.
+  object_store_ca_data = {
+    for key, ctx in local.object_store_contexts : key => (
+      try(ctx.object_store.s3.endpoint_ca_pem, "") != "" ? {
+        (local.endpoint_ca_secret_key) = ctx.object_store.s3.endpoint_ca_pem
+      } : null
+    )
+  }
+
+  # The CR's objectStore per store: the destination path and exactly one
+  # backend arm in the operator's vocabulary. credentialsSecretName renders
+  # only when a Secret exists; endpointCASecretRef likewise. The r2 arm
+  # passes account and jurisdiction through — composing the S3 endpoint is
+  # the operator's job, so there is exactly one host table in the product.
+  # An arm with nothing to say (keyless gcs) still renders as an empty
+  # object: its presence is what selects the backend.
+  object_store_body = {
+    for key, ctx in local.object_store_contexts : key => {
+      for k, v in {
+        destinationPath = ctx.object_store.destination_path
+        s3 = try(ctx.object_store.s3, null) == null ? null : {
+          for k2, v2 in {
+            endpointURL           = try(ctx.object_store.s3.endpoint_url, "") != "" ? ctx.object_store.s3.endpoint_url : null
+            region                = try(ctx.object_store.s3.region, "") != "" ? ctx.object_store.s3.region : null
+            credentialsSecretName = try(ctx.object_store.s3.access_keys, null) != null ? ctx.creds_secret_name : null
+            endpointCASecretRef = local.object_store_ca_data[key] == null ? null : {
+              name = ctx.ca_secret_name
+              key  = local.endpoint_ca_secret_key
+            }
+          } : k2 => v2 if v2 != null
+        }
+        gcs = try(ctx.object_store.gcs, null) == null ? null : {
+          for k2, v2 in {
+            credentialsSecretName = try(ctx.object_store.gcs.service_account_key_json, "") != "" ? ctx.creds_secret_name : null
+          } : k2 => v2 if v2 != null
+        }
+        azureBlob = try(ctx.object_store.azure_blob, null) == null ? null : {
+          for k2, v2 in {
+            storageAccount        = ctx.object_store.azure_blob.storage_account
+            credentialsSecretName = try(ctx.object_store.azure_blob.connection_string, "") != "" ? ctx.creds_secret_name : null
+          } : k2 => v2 if v2 != null
+        }
+        r2 = try(ctx.object_store.r2, null) == null ? null : {
+          for k2, v2 in {
+            accountId             = ctx.object_store.r2.account_id
+            jurisdiction          = try(ctx.object_store.r2.jurisdiction, "") != "" ? ctx.object_store.r2.jurisdiction : null
+            credentialsSecretName = ctx.creds_secret_name
+          } : k2 => v2 if v2 != null
+        }
+      } : k => v if v != null
+    }
+  }
+
+  postgresql_backup_body = local.postgresql_backup == null ? null : {
+    for k, v in {
+      objectStore               = lookup(local.object_store_body, "backup", null)
+      retentionPolicy           = try(local.postgresql_backup.retention_policy, "") != "" ? local.postgresql_backup.retention_policy : null
+      schedule                  = try(local.postgresql_backup.schedule, "") != "" ? local.postgresql_backup.schedule : null
+      serviceAccountAnnotations = length(try(local.postgresql_backup.service_account_annotations, {})) > 0 ? local.postgresql_backup.service_account_annotations : null
+    } : k => v if v != null
+  }
+  postgresql_recover_from_body = local.postgresql_recovery == null ? null : {
+    for k, v in {
+      objectStore = lookup(local.object_store_body, "recovery", null)
+      serverName  = local.postgresql_recovery.server_name
+      targetTime  = try(local.postgresql_recovery.target_time, "") != "" ? local.postgresql_recovery.target_time : null
+    } : k => v if v != null
+  }
+
   # ---- database --------------------------------------------------------------
   postgresql_body = {
     for k, v in {
       replicas         = try(var.spec.database.postgresql.replicas, null)
       storageSize      = try(var.spec.database.postgresql.storage_size, "") != "" ? var.spec.database.postgresql.storage_size : null
       storageClassName = try(var.spec.database.postgresql.storage_class_name, "") != "" ? var.spec.database.postgresql.storage_class_name : null
+      backup           = local.postgresql_backup_body
+      recoverFrom      = local.postgresql_recover_from_body
     } : k => v if v != null
   }
   redis_body = {
@@ -269,8 +399,9 @@ locals {
   # ---- prerequisites ---------------------------------------------------------
   prerequisites_body = {
     for k, v in {
-      postgresOperator = try(var.spec.prerequisites.postgres_operator, "") != "" ? var.spec.prerequisites.postgres_operator : null
-      tektonPipelines  = try(var.spec.prerequisites.tekton_pipelines, "") != "" ? var.spec.prerequisites.tekton_pipelines : null
+      postgresOperator     = try(var.spec.prerequisites.postgres_operator, "") != "" ? var.spec.prerequisites.postgres_operator : null
+      tektonPipelines      = try(var.spec.prerequisites.tekton_pipelines, "") != "" ? var.spec.prerequisites.tekton_pipelines : null
+      postgresBackupPlugin = try(var.spec.prerequisites.postgres_backup_plugin, "") != "" ? var.spec.prerequisites.postgres_backup_plugin : null
     } : k => v if v != null
   }
 
