@@ -16,14 +16,18 @@ spec:
   # fallback, which would hang every fresh install by design).
   #
   # The backup and restore surface (scheduled Raft snapshots to an object
-  # store, declared restore into a fresh cluster) is authored and offline-
-  # proven; its lanes -- a keyed S3 backup onto an in-cluster store, and a
-  # restore through the transit seal -- have not yet run live, so the
+  # store, declared restore into a fresh cluster) is authored, offline-
+  # proven, and its lanes are written -- the backup proof onto an
+  # in-cluster S3 store, the restore proof through the transit seal, and
+  # the GKE lanes on GCS and R2 -- but none has run live yet, so the
   # profile waits on that proof.
   status: pending_proof
   validated_provisioners:
     - pulumi
     - terraform
   # First boot pulls the image and provisions per-replica PVCs; the
-  # behavioral-raft lane adds a pod replacement + re-unseal cycle.
-  timeout_minutes: 25
+  # behavioral-raft lane adds a pod replacement + re-unseal cycle; the
+  # restore lanes chain four fixtures (namespace, key holder, store,
+  # source) plus a seeding phase that initializes the source, runs the
+  # login recipe, and waits for a snapshot run before the target deploys.
+  timeout_minutes: 40

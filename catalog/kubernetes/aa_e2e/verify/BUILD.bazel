@@ -57,6 +57,7 @@ go_library(
         "objectstorehelpers.go",
         "observabilityhelpers.go",
         "openbao.go",
+        "openbao_backup.go",
         "openfga.go",
         "opensearchcluster.go",
         "opensearchoperator.go",
@@ -120,6 +121,10 @@ go_library(
 
 go_test(
     name = "verify_test",
-    srcs = ["plantonplatform_test.go"],
+    srcs = [
+        "openbao_test.go",
+        "plantonplatform_test.go",
+    ],
     embed = [":verify"],
+    deps = ["@in_gopkg_yaml_v3//:yaml_v3"],
 )

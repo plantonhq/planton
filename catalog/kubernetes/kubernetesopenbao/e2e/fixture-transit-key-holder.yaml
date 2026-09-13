@@ -1,0 +1,20 @@
+# The transit key holder of the kind restore lane: a dev-mode OpenBao (auto-
+# initialized, auto-unsealed, root token "root") standing in for the central
+# instance a `transit` auto-unseal satellite wraps its master key with — the
+# only auto-unseal a kind cluster can run, and the seal a declared restore
+# requires (same key on source and target). The verifier makes this fixture
+# a key holder as part of proving it deployed: it enables the `transit/`
+# engine and creates the wrapping key, because the satellite that follows
+# it in the chain test-encrypts against that key at STARTUP and refuses to
+# start ("Error configuring seal") until the engine exists.
+#
+# JOINS the lane namespace.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: e2e-bao-kms
+spec:
+  namespace:
+    value: e2e-bao-lab
+  server:
+    dev: {}

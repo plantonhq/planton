@@ -3,7 +3,8 @@
 # bootstrap.sh created, in reverse dependency order, from the set lane's own
 # per-node workspaces (module copy + tfvars + local state under
 # ~/.planton/setdeploy) — and only that. The GKE cluster is not this batch's
-# to delete. Run audit.sh after.
+# to delete. Run audit.sh after (it knows which residue GCP leaves by
+# design: the KMS key ring and the destroyed key's shell).
 set -euo pipefail
 
 # Either the bootstrap-time variables or the env.sh the bootstrap wrote.
@@ -44,11 +45,24 @@ destroy_node() {
 # Reverse of the apply order. Cloudflare side: the token (scoped to the
 # bucket) then the emptied bucket. GCP side: the bucket (whose IAM grants
 # reference the identities) first, then the bindings, then the identities.
+# The OpenBao seal set: the key's IAM grant, then the key (DELETE schedules
+# every version for destruction; the key shell and its name stay in the
+# ring forever), then the ring — which GCP cannot delete: its destroy only
+# abandons it, and audit.sh expects it to survive.
 destroy_node cloudflareaccountapitoken planton-e2e-gke-backups-writer
 destroy_node cloudflarer2bucket planton-e2e-gke-backups-r2
 destroy_node gcpgcsbucket planton-e2e-gke-backups
+destroy_node gcpkmskeyiammember planton-e2e-gke-openbao-unseal
+destroy_node gcpkmskey planton-e2e-gke-openbao-unseal
+destroy_node gcpkmskeyring planton-e2e-gke-openbao-unseal
+destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-openbao-tgt-wi
+destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-openbao-src-wi
+destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-openbao-tgt-backup-wi
+destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-openbao-src-backup-wi
 destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-pg-dr-wi
 destroy_node gcpgkeworkloadidentitybinding planton-e2e-gke-pg-src-wi
+destroy_node gcpserviceaccount planton-e2e-gke-openbao-unseal
+destroy_node gcpserviceaccount planton-e2e-gke-openbao-backup
 destroy_node gcpserviceaccount planton-e2e-gke-mongo-backup
 destroy_node gcpserviceaccount planton-e2e-gke-pg-backup
 

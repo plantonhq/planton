@@ -70,13 +70,14 @@ that the resource set the guides document composes.
 
 | Asset | Purpose |
 |---|---|
-| `manifests/01-backup-identities.yaml` | Two `GcpServiceAccount`s: the keyless identity the Postgres pods assume, the keyed one PBM presents for MongoDB (`user_managed_key`) |
-| `manifests/02-workload-identity.yaml` | `GcpGkeWorkloadIdentityBinding`s for the Postgres source and recovery clusters (KSA = cluster name) |
-| `manifests/03-backup-bucket.yaml` | The GCS `GcpGcsBucket`, both identities granted `objectAdmin` AND `legacyBucketReader` |
-| `manifests/04-r2-backup-store.yaml` | The Cloudflare R2 side: a `CloudflareR2Bucket` and a `CloudflareAccountApiToken` scoped to it with `Workers R2 Storage Bucket Item Write` — the databases' `r2` arms archive here |
-| `bootstrap.sh` | Renders the placeholders, applies the set, reads the Mongo key and the R2 token's S3 pair from the set lane's node state, writes the kubeconfig and `env.sh` (mode 600) |
-| `teardown.sh` | Empties the R2 bucket over the S3 API (R2 refuses to delete a non-empty bucket), then destroys every node in reverse order from its set-lane workspace |
-| `audit.sh` | Enumerates the GCP and Cloudflare resource classes; fails on any survivor |
+| `manifests/01-backup-identities.yaml` | Three `GcpServiceAccount`s: the keyless identities the Postgres pods and the OpenBao backup job assume, the keyed one PBM presents for MongoDB (`user_managed_key`) |
+| `manifests/02-workload-identity.yaml` | `GcpGkeWorkloadIdentityBinding`s for the Postgres source and recovery clusters (KSA = cluster name) and for the OpenBao source and target backup jobs (KSA = `<vault>-backup`) |
+| `manifests/03-backup-bucket.yaml` | The GCS `GcpGcsBucket`, every backup identity granted `objectAdmin` AND `legacyBucketReader` |
+| `manifests/04-r2-backup-store.yaml` | The Cloudflare R2 side: a `CloudflareR2Bucket` and a `CloudflareAccountApiToken` scoped to it with `Workers R2 Storage Bucket Item Write` — the `r2` arms archive here |
+| `manifests/05-openbao-unseal.yaml` | The OpenBao seal set: the server identity `GcpServiceAccount`, its bindings on both vaults' ServiceAccounts (KSA = vault name), a `GcpKmsKeyRing` (permanent by GCP design, fixed name), a `GcpKmsKey` named by the bootstrap's batch id (a destroyed key's name is never reusable), and the `GcpKmsKeyIamMember` granting `cryptoKeyEncrypterDecrypter` |
+| `bootstrap.sh` | Renders the placeholders (plus the per-bootstrap `PLANTON_E2E_GKE_BATCH_ID`, reused on re-runs), applies the set, reads the Mongo key and the R2 token's S3 pair from the set lane's node state, writes the kubeconfig and `env.sh` (mode 600) |
+| `teardown.sh` | Empties the R2 bucket over the S3 API (R2 refuses to delete a non-empty bucket), then destroys every node in reverse order from its set-lane workspace — the KMS ring's destroy is an abandon by GCP design |
+| `audit.sh` | Enumerates the GCP and Cloudflare resource classes; fails on any survivor, and asserts the KMS residue GCP leaves by design is in its expected shape (ring present, no enabled version left on this batch's key) |
 
 Inputs: `GCP_PROJECT_ID`, `GCP_REGION`, `KUBE_CONTEXT`, `CLOUDFLARE_API_TOKEN`
 (with `Workers R2 Storage Write` and `Account API Tokens Write`), and
@@ -90,12 +91,15 @@ env -u KUBECONFIG ./gcp-gke/bootstrap.sh
 source ~/.planton-e2e/planton-e2e-gke/env.sh
 go test -tags=e2e -timeout=60m -v -count=1 -run 'TestKubernetesPostgres_' ./e2e/
 go test -tags=e2e -timeout=60m -v -count=1 -run 'TestKubernetesMongodb_' ./e2e/
+go test -tags=e2e -timeout=90m -v -count=1 -run 'TestKubernetesOpenBao_' ./e2e/
 ./gcp-gke/teardown.sh && ./gcp-gke/audit.sh
 ```
 
-The env file publishes `PLANTON_E2E_GKE_*`: the GCS bucket, both identities'
-emails, the Mongo key, and the R2 side (`_R2_ACCOUNT_ID`, `_R2_BUCKET`,
-`_R2_JURISDICTION`, `_R2_ACCESS_KEY_ID`, `_R2_SECRET_ACCESS_KEY`). The set lane
+The env file publishes `PLANTON_E2E_GKE_*`: the GCS bucket, the backup
+identities' emails, the Mongo key, the R2 side (`_R2_ACCOUNT_ID`, `_R2_BUCKET`,
+`_R2_JURISDICTION`, `_R2_ACCESS_KEY_ID`, `_R2_SECRET_ACCESS_KEY`), and the
+OpenBao seal set (`_OPENBAO_BACKUP_GSA`, `_OPENBAO_UNSEAL_GSA`,
+`_OPENBAO_KEY_RING`, `_OPENBAO_CRYPTO_KEY`, `_BATCH_ID`). The set lane
 deploys the Cloudflare nodes from the PUBLISHED module, so `bootstrap.sh`
 derives the token's S3 pair itself (Cloudflare's rule: the token id, and the
 SHA-256 of the token value) — the same pair the token kind exports as

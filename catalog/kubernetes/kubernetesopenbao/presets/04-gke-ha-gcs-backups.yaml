@@ -1,0 +1,81 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: openbao
+spec:
+  namespace:
+    value: openbao
+  createNamespace: true
+  server:
+    ha:
+      replicas: 3
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    dataStorage:
+      size: 10Gi
+    auditStorage:
+      size: 10Gi
+  # The seal is what makes a declared restore a single call: a fresh vault
+  # on the SAME key installs a snapshot and unseals itself. Every reference
+  # here follows the catalog's KMS trio and the server's identity; the seal
+  # is checked at server START, so declare the key and its grant before this
+  # resource in the same set.
+  autoUnseal:
+    gcpKms:
+      project:
+        value: my-gcp-project
+      region: asia-south1
+      keyRing:
+        valueFrom:
+          kind: GcpKmsKeyRing
+          name: openbao-unseal
+          fieldPath: status.outputs.key_ring_name
+      cryptoKey:
+        valueFrom:
+          kind: GcpKmsKey
+          name: openbao-unseal
+          fieldPath: status.outputs.key_name
+      workloadIdentityServiceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: openbao-unseal
+          fieldPath: status.outputs.email
+  backup:
+    # Hourly snapshots, two weeks of them: the schedule is the recovery-point
+    # objective, retention is object age under the prefix.
+    schedule: "0 * * * *"
+    retentionDays: 14
+    objectStore:
+      # One prefix per live vault, forever: retention prunes under it, and a
+      # restore target declares this same prefix to read the snapshots back.
+      prefix: openbao/openbao
+      gcs:
+        bucket:
+          valueFrom:
+            kind: GcpGcsBucket
+            name: openbao-snapshots
+            fieldPath: status.outputs.bucket_name
+        # KEYLESS: the backup job's ServiceAccount (`openbao-backup`) presents
+        # its GKE Workload Identity (workloadIdentity below). The identity
+        # needs TWO bucket roles — roles/storage.objectAdmin AND
+        # roles/storage.legacyBucketReader (rclone reads the bucket before it
+        # writes).
+        keyless: true
+    # The JOB's identity — distinct from the server's seal identity above;
+    # a GcpGkeWorkloadIdentityBinding must bind the ServiceAccount named
+    # `openbao-backup` in namespace `openbao` to this account.
+    workloadIdentity:
+      gke:
+        serviceAccountEmail:
+          valueFrom:
+            kind: GcpServiceAccount
+            name: openbao-backup
+            fieldPath: status.outputs.email
+  uiEnabled: true
+  metrics:
+    enabled: true

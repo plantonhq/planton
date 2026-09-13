@@ -9,8 +9,11 @@ package module
 // root cause per message, with the names this module rendered.
 //
 // PARITY: the Terraform module carries this exact content in its locals
-// (`backup_scripts` in locals.tf), with `${` written as `$${` for HCL —
-// keep the rendered text byte-identical across engines.
+// (`backup_scripts` in scripts.tf), with `${` written as `$${` for HCL —
+// keep the rendered text byte-identical across engines; each heredoc there
+// carries a `# parity:` marker naming its constant here, and the
+// repository's cross-engine script parity guard diffs the pair on every
+// change.
 //
 // Environment contract (set by the module on each container):
 //   snapshot: BAO_ADDR, BAO_CACERT (TLS only), BAO_CLIENT_TIMEOUT,

@@ -1,0 +1,30 @@
+# The in-cluster S3 store the kind lanes back up to — the catalog's own
+# object store, wired exactly as a customer composes it: the vault's `s3`
+# arm points its `endpointUrl` at this resource's `s3_endpoint` output by
+# reference, and the snapshots land in the bucket declared here at install.
+#
+# The admin credential pair is FIXED through the chart's own
+# `s3.credentials.admin` values (the kind's `helmValues` escape hatch): the
+# chart then renders its `<name>-s3-secret` with these keys instead of
+# generating random ones, so the vault fixtures — which deploy BEFORE any
+# seed script runs and can carry only literal keys — declare the same pair
+# and the two agree by construction. Nothing here is a real secret; the
+# store lives and dies with the lane.
+#
+# JOINS the lane namespace (the KubernetesNamespace prerequisite owns it).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesSeaweedFs
+metadata:
+  name: e2e-bao-s3
+spec:
+  namespace:
+    value: e2e-bao-lab
+  s3:
+    buckets:
+      - name: openbao-snapshots
+  helmValues: |
+    s3:
+      credentials:
+        admin:
+          accessKey: e2e-bao-snapshots-admin
+          secretKey: e2e-bao-snapshots-admin-secret-not-a-real-secret

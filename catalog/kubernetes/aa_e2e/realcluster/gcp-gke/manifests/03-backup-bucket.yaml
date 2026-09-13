@@ -1,6 +1,6 @@
-# The batch's backup bucket — one bucket, one prefix per database, both
-# backup identities granted TWO roles through the bucket's own additive IAM
-# (the member handles flow in by reference, so the grant IS the ordering
+# The batch's backup bucket — one bucket, one prefix per stateful engine,
+# every backup identity granted TWO roles through the bucket's own additive
+# IAM (the member handles flow in by reference, so the grant IS the ordering
 # edge: the bucket binds after the accounts exist):
 #
 #   - roles/storage.objectAdmin       read/write/delete the backup objects
@@ -9,7 +9,8 @@
 #     before every WAL archive, and objectAdmin alone does not carry it
 #     (live-caught: ContinuousArchivingFailing, "does not have
 #     storage.buckets.get access"). PBM's Google client reads bucket
-#     attributes the same way.
+#     attributes the same way, and so does rclone (the OpenBao snapshot
+#     transport) before it writes.
 #
 # Versioning off and force_destroy on: a lane's backups are disposable
 # evidence, and the teardown must be able to delete a non-empty bucket.
@@ -51,4 +52,16 @@ spec:
         valueFrom:
           kind: GcpServiceAccount
           name: planton-e2e-gke-mongo-backup
+          fieldPath: status.outputs.member
+    - role: roles/storage.objectAdmin
+      member:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: planton-e2e-gke-openbao-backup
+          fieldPath: status.outputs.member
+    - role: roles/storage.legacyBucketReader
+      member:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: planton-e2e-gke-openbao-backup
           fieldPath: status.outputs.member

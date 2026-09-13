@@ -5,16 +5,18 @@
 # between the manifests exactly as an infra chart would), then the env file
 # the lanes source.
 #
-# What it creates (manifests/): two backup identities (a keyless one the
-# Postgres pods assume via Workload Identity, a keyed one PBM presents for
-# MongoDB), the Workload Identity bindings for the Postgres source and
-# recovery clusters, the GCS backup bucket granting both identities
-# object-admin, and the Cloudflare R2 side the databases' `r2` arms archive
-# to (a bucket and an account API token scoped to it) — one cross-provider
-# set, dependency-ordered by the set lane. The GKE cluster itself is NOT
-# created here — this batch runs against a cluster the operator already owns
-# (Workload Identity must be enabled on it), which is the adopter's real
-# shape.
+# What it creates (manifests/): three backup identities (keyless ones the
+# Postgres pods and the OpenBao backup job assume via Workload Identity, a
+# keyed one PBM presents for MongoDB), the Workload Identity bindings for the
+# Postgres source and recovery clusters and the OpenBao source and target
+# backup jobs, the GCS backup bucket granting every identity object-admin,
+# the Cloudflare R2 side the `r2` arms archive to (a bucket and an account
+# API token scoped to it), and the OpenBao seal node set (a server identity
+# with bindings on both vaults' ServiceAccounts, a Cloud KMS key ring, the
+# wrapping key, its IAM grant) — one cross-provider set, dependency-ordered
+# by the set lane. The GKE cluster itself is NOT created here — this batch
+# runs against a cluster the operator already owns (Workload Identity must
+# be enabled on it), which is the adopter's real shape.
 #
 # Inputs (environment):
 #   GCP_PROJECT_ID          project the cluster and the batch resources live in (required)
@@ -25,6 +27,12 @@
 #   CLOUDFLARE_ACCOUNT_ID   the Cloudflare account the R2 side lives in (required)
 #   PLANTON_BIN             the planton CLI to use (default: planton on PATH; point it
 #                           at a tree build when the lanes exercise unreleased specs)
+#
+#   PLANTON_E2E_GKE_BATCH_ID  optional; the id the KMS key's name carries. A
+#                           re-run reuses the id from the existing env.sh so
+#                           it converges onto the same key; a fresh bootstrap
+#                           after a teardown gets a new one (a destroyed KMS
+#                           key's name can never be reused in its ring).
 #
 # Idempotent: re-running converges the same set (pulumi up on the same local
 # backend) and rewrites the env file.
@@ -50,12 +58,22 @@ export GOOGLE_PROJECT="${GCP_PROJECT_ID}"
 gcloud auth application-default print-access-token >/dev/null 2>&1 \
   || { echo "no Application Default Credentials: run 'gcloud auth application-default login'" >&2; exit 1; }
 
+# The batch id names this bootstrap's KMS key (05-openbao-unseal.yaml): a
+# destroyed key's name is never reusable inside its ring, so every fresh
+# bootstrap mints a new key, while a re-run converges onto the id the
+# previous run wrote into env.sh.
+if [ -z "${PLANTON_E2E_GKE_BATCH_ID:-}" ] && [ -f "${state_dir}/env.sh" ]; then
+  PLANTON_E2E_GKE_BATCH_ID="$(sed -n 's/^export PLANTON_E2E_GKE_BATCH_ID="\(.*\)"$/\1/p' "${state_dir}/env.sh")"
+fi
+PLANTON_E2E_GKE_BATCH_ID="${PLANTON_E2E_GKE_BATCH_ID:-$(date -u +%Y%m%d%H%M%S)}"
+
 # The manifests carry ${GCP_PROJECT_ID}/${GCP_REGION}/${CLOUDFLARE_ACCOUNT_ID}
-# placeholders so the committed set names no one test account's identifiers;
-# render them into the state dir and hand the directory to the set lane.
+# placeholders so the committed set names no one test account's identifiers
+# (and ${PLANTON_E2E_GKE_BATCH_ID} for the per-bootstrap key name); render
+# them into the state dir and hand the directory to the set lane.
 for f in "${here}"/manifests/*.yaml; do
-  GCP_PROJECT_ID="${GCP_PROJECT_ID}" GCP_REGION="${GCP_REGION}" CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID}" \
-    envsubst '${GCP_PROJECT_ID} ${GCP_REGION} ${CLOUDFLARE_ACCOUNT_ID}' < "${f}" > "${state_dir}/rendered/$(basename "${f}")"
+  GCP_PROJECT_ID="${GCP_PROJECT_ID}" GCP_REGION="${GCP_REGION}" CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID}" PLANTON_E2E_GKE_BATCH_ID="${PLANTON_E2E_GKE_BATCH_ID}" \
+    envsubst '${GCP_PROJECT_ID} ${GCP_REGION} ${CLOUDFLARE_ACCOUNT_ID} ${PLANTON_E2E_GKE_BATCH_ID}' < "${f}" > "${state_dir}/rendered/$(basename "${f}")"
 done
 
 # The set lane resolves each node's module from a PUBLISHED release (it
@@ -78,7 +96,14 @@ echo "==> applying the gcp-gke batch set from the catalog (project ${GCP_PROJECT
 # the env file is mode 600 and lives outside the repo).
 mongo_gsa="planton-e2e-gke-mongo-backup@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 pg_gsa="planton-e2e-gke-pg-backup@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
+openbao_backup_gsa="planton-e2e-gke-openbao-backup@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
+openbao_unseal_gsa="planton-e2e-gke-openbao-unseal@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 bucket="planton-e2e-gke-backups-${GCP_PROJECT_ID}"
+# The seal's key ring and key are named by the manifest (the ring fixed and
+# permanent, the key by this bootstrap's id); the OpenBao seal wants the
+# BARE names, in the ring's location — which is the bucket's region.
+openbao_key_ring="planton-e2e-gke-openbao-unseal"
+openbao_crypto_key="planton-e2e-gke-openbao-unseal-${PLANTON_E2E_GKE_BATCH_ID}"
 
 mongo_state="${setdeploy_root}/gcpserviceaccount/planton-e2e-gke-mongo-backup/terraform.tfstate"
 [ -f "${mongo_state}" ] || { echo "set-lane state for the mongo backup identity not found at ${mongo_state}" >&2; exit 1; }
@@ -121,6 +146,11 @@ export PLANTON_E2E_GKE_R2_BUCKET="${r2_bucket}"
 export PLANTON_E2E_GKE_R2_JURISDICTION="${r2_jurisdiction}"
 export PLANTON_E2E_GKE_R2_ACCESS_KEY_ID="${r2_access_key_id}"
 export PLANTON_E2E_GKE_R2_SECRET_ACCESS_KEY="${r2_secret_access_key}"
+export PLANTON_E2E_GKE_BATCH_ID="${PLANTON_E2E_GKE_BATCH_ID}"
+export PLANTON_E2E_GKE_OPENBAO_BACKUP_GSA="${openbao_backup_gsa}"
+export PLANTON_E2E_GKE_OPENBAO_UNSEAL_GSA="${openbao_unseal_gsa}"
+export PLANTON_E2E_GKE_OPENBAO_KEY_RING="${openbao_key_ring}"
+export PLANTON_E2E_GKE_OPENBAO_CRYPTO_KEY="${openbao_crypto_key}"
 EOF
 chmod 600 "${state_dir}/env.sh"
 
@@ -128,3 +158,4 @@ echo "==> batch ready. Next:"
 echo "    source ${state_dir}/env.sh"
 echo "    go test -tags=e2e -timeout=60m -v -count=1 -run 'TestKubernetesPostgres_' ./e2e/"
 echo "    go test -tags=e2e -timeout=60m -v -count=1 -run 'TestKubernetesMongodb_' ./e2e/"
+echo "    go test -tags=e2e -timeout=90m -v -count=1 -run 'TestKubernetesOpenBao_' ./e2e/"

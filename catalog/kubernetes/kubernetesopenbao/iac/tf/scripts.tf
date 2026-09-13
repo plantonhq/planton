@@ -2,7 +2,9 @@
 # through the module-owned `<name>-backup-scripts` ConfigMap. PARITY: the
 # Pulumi module carries this exact content as Go constants (scripts.go);
 # the ONLY difference is HCL's escaping of `${` as `$${` -- the rendered
-# ConfigMap must stay byte-identical across engines. Every failure names
+# ConfigMap must stay byte-identical across engines, and the `# parity:`
+# marker above each heredoc lets the repository's cross-engine script
+# parity guard prove it on every change. Every failure names
 # what happened and the exact next step with the names the module rendered.
 # Plain (non-indented) heredocs on purpose: the scripts carry their own
 # shell heredocs whose terminators must stay at column 0.
@@ -10,6 +12,7 @@
 # Environment contract: see scripts.go.
 locals {
   backup_scripts = {
+    # parity: scripts.go snapshotScript
     "snapshot.sh" = <<EOT
 #!/bin/sh
 # Takes a Raft snapshot of the OpenBao cluster into the shared scratch
@@ -81,7 +84,8 @@ save_out=$(bao operator raft snapshot save "$file" 2>&1) || {
 echo "$(basename "$file")" > "$SNAPSHOT_DIR/.latest"
 echo "Snapshot written: $file ($(wc -c < "$file") bytes)"
 EOT
-    "upload.sh"   = <<EOT
+    # parity: scripts.go uploadScript
+    "upload.sh" = <<EOT
 #!/bin/sh
 # Ships the snapshot the previous container wrote to the declared object
 # store and prunes objects under the prefix older than RETENTION_DAYS.
@@ -124,7 +128,8 @@ else
   echo "Retention is 0: keeping every snapshot (the bucket's own lifecycle rules decide)."
 fi
 EOT
-    "fetch.sh"    = <<EOT
+    # parity: scripts.go fetchScript
+    "fetch.sh" = <<EOT
 #!/bin/sh
 # Fetches the declared snapshot (or the newest under the prefix) from the
 # store into the shared scratch volume.
@@ -158,7 +163,8 @@ if ! out=$(rclone copyto "$src" "$SNAPSHOT_DIR/restore.snap" 2>&1); then
 fi
 echo "Fetched $src ($(wc -c < "$SNAPSHOT_DIR/restore.snap") bytes)"
 EOT
-    "restore.sh"  = <<EOT
+    # parity: scripts.go restoreScript
+    "restore.sh" = <<EOT
 #!/bin/sh
 # Installs the fetched snapshot into this cluster with the initial root
 # token the operator placed in a Secret after 'bao operator init'.

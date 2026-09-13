@@ -443,6 +443,15 @@ message KubernetesOpenBaoTls {
  * follow the keyless-first doctrine: on EKS/GKE/AKS prefer the
  * ambient workload identity (annotate the ServiceAccount via
  * service_account.annotations) and leave the credential fields empty.
+ *
+ * THE SEAL IS CHECKED AT SERVER START, NOT AT INIT: every seal backend
+ * reaches for its key while the server configures itself (the KMS seals
+ * describe the key, the transit seal test-encrypts through it), and a key
+ * that is missing, unreachable, or not readable by the server's identity
+ * makes the server exit with "Error configuring seal" — the pod
+ * crash-loops until it is fixed. Create the key (or the transit engine
+ * and key) and grant the identity BEFORE this resource, in the same
+ * dependency-ordered set; the pods never reach Running otherwise.
  */
 message KubernetesOpenBaoAutoUnseal {
   oneof seal {
@@ -586,12 +595,19 @@ message KubernetesOpenBaoTransitSeal {
   string address = 1 [(buf.validate.field).string.min_len = 1];
 
   /**
-   * Transit key name used to wrap the master key.
+   * Transit key name used to wrap the master key. The key need not exist
+   * beforehand: the transit engine creates a key on its first encrypt
+   * (the server's own startup test-encrypt does it) — the ENGINE must
+   * exist, the key may be born there.
    */
   string key_name = 2 [(buf.validate.field).string.min_len = 1];
 
   /**
-   * Transit engine mount path.
+   * Transit engine mount path. The engine must be enabled on the central
+   * instance before this satellite starts (`bao secrets enable
+   * -path=transit transit` there); a satellite whose seal finds no engine
+   * exits at startup with "Error configuring seal" and crash-loops until
+   * the engine exists.
    */
   optional string mount_path = 3 [(dev.planton.shared.options.default) = "transit/"];
 

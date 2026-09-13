@@ -1,5 +1,5 @@
-# The two backup identities — one per database engine, because the two
-# engines authenticate to GCS differently and the identity shape follows:
+# The backup identities — one per stateful engine, because the engines
+# authenticate to GCS differently and the identity shape follows:
 #
 #   - Postgres (CloudNativePG + the Barman Cloud plugin) is KEYLESS: the
 #     instance pods present their GKE Workload Identity, so the account has
@@ -10,8 +10,16 @@
 #     account exports a user-managed key and the KubernetesMongodb manifest
 #     wires it in by reference (`credentials.service_account_key` <-
 #     `status.outputs.key_base64`).
+#   - OpenBao's backup job (the module-owned CronJob that snapshots the vault
+#     and ships it with rclone) is KEYLESS: rclone resolves Application
+#     Default Credentials, which on GKE is the metadata server's token for
+#     the bound account, so the trust is a binding per backup ServiceAccount
+#     (`<name>-backup`, 02-workload-identity.yaml). This is the JOB's
+#     identity; the SERVER's identity for its Cloud KMS seal is a separate
+#     account (05-openbao-unseal.yaml) — two identities, two blast radii.
 #
-# Both get object-admin on the batch bucket (03-backup-bucket.yaml).
+# All get object-admin (and the bucket-read role) on the batch bucket
+# (03-backup-bucket.yaml).
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpServiceAccount
 metadata:
@@ -37,3 +45,14 @@ spec:
   # as `key_base64` — a live, long-lived credential the lane hands to the
   # KubernetesMongodb manifests through the env-file contract.
   userManagedKey: {}
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccount
+metadata:
+  name: planton-e2e-gke-openbao-backup
+spec:
+  serviceAccountId: planton-e2e-gke-openbao-backup
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  displayName: Planton E2E (gcp-gke) - OpenBao snapshots via Workload Identity
+  description: Keyless identity the OpenBao backup job's ServiceAccount assumes through GKE Workload Identity to write and prune Raft snapshots in the batch bucket

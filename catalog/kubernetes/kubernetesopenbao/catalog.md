@@ -40,7 +40,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Console
 
-Open the deployment store, find **OpenBao**, and click **Deploy**. The creation wizard walks you through preset selection, environment and connection configuration, and spec fields. Start from the **Dev-mode preset** for evaluation, the **Production HA (integrated Raft) preset** for a Raft cluster with manual unsealing, or the **Production HA + GCP Cloud KMS auto-unseal preset** for the restart-toil-free shape, in the [Presets](#presets) tab.
+Open the deployment store, find **OpenBao**, and click **Deploy**. The creation wizard walks you through preset selection, environment and connection configuration, and spec fields. Start from the **Dev-mode preset** for evaluation, the **Production HA (integrated Raft) preset** for a Raft cluster with manual unsealing, the **Production HA + GCP Cloud KMS auto-unseal preset** for the restart-toil-free shape, the **GKE production HA with Cloud KMS auto-unseal and GCS backups preset** for the vault with disaster recovery built in, or the **Production HA with Cloudflare R2 backups preset** for snapshots outside the cloud that runs it, in the [Presets](#presets) tab.
 
 ### CLI
 
@@ -190,6 +190,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 **Production HA (Raft)** -- Three servers with integrated Raft storage, per-replica data PVCs, an audit volume, and metrics on. Initialization and unsealing are yours; after every pod restart the affected server waits sealed. Start from the **Production HA (integrated Raft) preset**.
 
 **Production HA + GCP auto-unseal** -- The HA shape with the restart toil removed: the master key wrapped by a Cloud KMS crypto key via GKE Workload Identity -- no static credential anywhere. Start from the **Production HA + GCP Cloud KMS auto-unseal preset**.
+
+**GKE production HA with backups to GCS** -- The auto-unseal shape plus disaster recovery: hourly Raft snapshots landing keylessly in a Google Cloud Storage bucket, with the seal key, the bucket, and both identities (the server's and the backup job's) by reference to the catalog's GCP kinds. A fresh vault on the same KMS key with a `restore` block brings every secret back by declaration. Start from the **GKE production HA with Cloud KMS auto-unseal and GCS backups preset**; the full resource set is in the component guide.
+
+**Production HA with backups to Cloudflare R2** -- Snapshots outside the cloud that runs the vault: the R2 bucket, its account and jurisdiction, and the writer token all by reference, the module doing the S3 translation. Runs on any cluster; pair it with an `autoUnseal` arm to make the restore declarative, or restore by hand on Shamir with the guide's runbook. Start from the **Production HA with Cloudflare R2 backups preset**.
 
 ## Works With
 

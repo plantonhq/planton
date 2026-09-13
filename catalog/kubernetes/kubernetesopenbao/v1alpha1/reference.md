@@ -42,7 +42,10 @@ to pick up config).
 # so the offline plan/preview proofs cover what the kind-cluster lanes
 # exclude (HA Raft with synthesized retry_join, TLS listener wiring, a
 # declared-credential auto-unseal seal, the injector, metrics +
-# ServiceMonitor, audit storage, a keyed S3 backup store).
+# ServiceMonitor, audit storage, the KEYLESS S3 backup arm through EKS
+# IRSA — the one store posture no lane can prove: the kind lanes back up
+# with declared keys to an in-cluster store and the GKE lanes prove GCS
+# and R2, so the IRSA arm's rendering lives here).
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesOpenBao
 metadata:
@@ -109,9 +112,11 @@ spec:
       s3:
         bucket: bao-dev-snapshots
         region: us-west-2
-        accessKeys:
-          accessKeyId: AKIAEXAMPLEDEVONLY
-          secretAccessKey: dev-only-placeholder-secret-key
+        keyless: true
+    workloadIdentity:
+      eks:
+        roleArn:
+          value: arn:aws:iam::111122223333:role/bao-dev-backup
     auth:
       mountPath: kubernetes
   serviceAccount:
@@ -748,7 +753,10 @@ and unsealed at every startup.
 
 `string` · required
 
-Transit key name used to wrap the master key.
+Transit key name used to wrap the master key. The key need not exist
+beforehand: the transit engine creates a key on its first encrypt
+(the server's own startup test-encrypt does it) — the ENGINE must
+exist, the key may be born there.
 
 - rule: {"string":{"minLen":"1"}}
 
@@ -756,7 +764,11 @@ Transit key name used to wrap the master key.
 
 `string` · optional (explicit presence)
 
-Transit engine mount path.
+Transit engine mount path. The engine must be enabled on the central
+instance before this satellite starts (`bao secrets enable
+-path=transit transit` there); a satellite whose seal finds no engine
+exits at startup with "Error configuring seal" and crash-loops until
+the engine exists.
 
 - default: `transit/`
 

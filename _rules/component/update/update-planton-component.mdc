@@ -990,6 +990,38 @@ Based on scenario:
   exact `metadata.name` -- same manifest, two physical names. Compiles
   clean, validates clean; only a live cross-engine comparison or code
   review catches it.
+- **A spec comment that names Secret keys, environment variables, or file
+  paths ANOTHER component consumes is verified against the TEMPLATE that
+  consumes them**: the chart template, the operator's controller, the script
+  -- never the values file, the README, or the consuming project's own docs.
+  The template is the contract; everything else is prose about it. A comment
+  authored from the docs told operators to create a Secret under keys the
+  chart never read; a pod built from that comment fails on every run, and no
+  offline gate can see it. When a spec field is a BYO Secret, quote the
+  consuming template's exact key names in the comment and cite where they
+  were read.
+- **A module-owned Job that waits for a HUMAN step is never awaited by the
+  deploy and never carries a finished-Job TTL**: Pulumi awaits Jobs to
+  completion by default and Terraform's `kubernetes_job_v1` defaults
+  `wait_for_completion = true`, so a Job whose success depends on an
+  operator's action (a Secret they create after `bao operator init`, a
+  token they mint) hangs the deploy until timeout and reports failure.
+  Annotate `pulumi.com/skipAwait: "true"` and set `wait_for_completion =
+  false`, in both engines, with the module comment saying why. Never set
+  `ttlSecondsAfterFinished` on a one-shot Job whose re-run would REPEAT its
+  effect (a restore installing the snapshot again over live data): the next
+  apply sees the finished Job gone, recreates it, and it runs again. Name it
+  by a hash of its declaration so a changed declaration is a new Job and an
+  unchanged one is a no-op. Bound the Job's work inside its script (a
+  preflight poll) and leave the wait for the human unbounded on purpose.
+- **Script text a kind ships through BOTH engines is a Go raw-string
+  constant and an HCL heredoc kept byte-identical, marked for the parity
+  guard**: a module is its directory (release packaging zips each engine
+  alone), so the text lives twice on purpose -- the ONLY difference is HCL's
+  `$${` / `%%{` escaping. Put `# parity: <go-file> <const>` on the line
+  above each Terraform heredoc opener (plain `<<`, never `<<-`) and
+  `hack/guards/ensure_cross_engine_script_parity.sh` diffs the pair on every
+  change; a heredoc without the marker is a drift nobody will catch.
 - Plan update and test sequence
 
 **Fix Issue:**
