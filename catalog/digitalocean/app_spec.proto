@@ -504,7 +504,13 @@ message DigitalOceanAppDatabase {
   bool production = 4;
   // Existing cluster name. Required by the API when production is true.
   // Literal cluster name, or a reference to a DigitalOceanDatabaseCluster.
+  //
+  // Containment-exempt: an app ATTACHES an existing managed cluster as a
+  // dependency it connects to; the app is not created inside the cluster.
+  // On a diagram the app stays where its VPC places it, with a line to the
+  // cluster it attaches.
   dev.planton.shared.foreignkey.v1.StringValueOrRef cluster_name = 5 [
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanDatabaseCluster,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "spec.cluster_name",
     (dev.planton.shared.options.diagram_label) = "database cluster"

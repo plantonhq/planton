@@ -150,7 +150,12 @@ message DigitalOceanMonitorAlertSpec {
   // (Optional) Managed database clusters the policy watches, as literal
   // UUIDs or references to DigitalOceanDatabaseCluster resources. Valid
   // only with database metrics.
+  //
+  // Containment-exempt: an alert policy WATCHES the clusters it names and
+  // never lives in one. On a diagram the alert stays with the watching
+  // layer, with a line to each cluster it watches.
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef database_cluster_ids = 9 [
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanDatabaseCluster,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.cluster_id"
   ];

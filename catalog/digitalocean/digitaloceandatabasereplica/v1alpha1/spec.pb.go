@@ -41,6 +41,11 @@ type DigitalOceanDatabaseReplicaSpec struct {
 	// The database cluster to replicate (the primary). Use a literal cluster
 	// UUID or a reference to a DigitalOceanDatabaseCluster resource.
 	// Changing it replaces the replica.
+	//
+	// Containment-exempt: a read replica is a single-node cluster of its own
+	// that FOLLOWS the primary, in the primary's region or another; it is not
+	// created inside it. On a diagram the replica stands as its own store
+	// with a line to the primary, never inside the primary's room.
 	Cluster *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=cluster,proto3" json:"cluster,omitempty"`
 	// Name of the read replica. Unique within the cluster; the name IS the
 	// replica's API identity for reads and deletes (DigitalOcean also mints
@@ -162,9 +167,9 @@ var File_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_spec_proto pr
 
 const file_catalog_digitalocean_digitaloceandatabasereplica_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/digitalocean/digitaloceandatabasereplica/v1alpha1/spec.proto\x12=dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xfc\x03\n" +
-	"\x1fDigitalOceanDatabaseReplicaSpec\x12v\n" +
-	"\acluster\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x8b'\x92\xd4a\x19status.outputs.cluster_idR\acluster\x12-\n" +
+	"Dcatalog/digitalocean/digitaloceandatabasereplica/v1alpha1/spec.proto\x12=dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x80\x04\n" +
+	"\x1fDigitalOceanDatabaseReplicaSpec\x12z\n" +
+	"\acluster\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\x8b'\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\acluster\x12-\n" +
 	"\freplica_name\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vreplicaName\x12L\n" +
 	"\x06region\x18\x03 \x01(\x0e2,.dev.planton.digitalocean.DigitalOceanRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12\x1a\n" +
