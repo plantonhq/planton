@@ -92,8 +92,10 @@ func backupPluginSkipped(planton *v1.PlantonPlatform) bool {
 // after it is applied (refreshBackupStatus).
 type backupPlan struct {
 	// holdCluster asks Reconcile not to create the Cluster yet: a fresh
-	// install with a backup declared waits for the plugin so the database is
-	// born archiving instead of restarting to attach it. Never set once a
+	// install with a backup declared waits for the plugin and for its
+	// credentials Secret so the database is born archiving instead of
+	// restarting to attach it, and a recovery waits for its source Secret so
+	// no empty database is created in the archive's place. Never set once a
 	// Cluster exists.
 	holdCluster bool
 	// waiting is the component's not-ready sentence while holdCluster is set.
@@ -263,6 +265,18 @@ func (p *PostgreSQL) planDeclaredBackup(ctx context.Context, c client.Client, pl
 	if msg, err := p.preflightObjectStoreSecret(ctx, c, planton.Namespace, store, backupFieldPath); err != nil {
 		return plan, err
 	} else if msg != "" {
+		if existing == nil {
+			// The same hold the plugin gets: a database created now would be
+			// born without archiving, and attaching the archive once the
+			// credential lands costs it a restart. The Secret is expected
+			// (a module that materializes it in the same apply, a person
+			// creating it next), so this is Deploying, not Failing.
+			plan.holdCluster = true
+			plan.waiting = "Waiting for the backup credentials before creating the database, so it is born archiving: " + msg
+			plan.status.State = v1.BackupStateDeploying
+			plan.status.Message = plan.waiting
+			return plan, nil
+		}
 		plan.status.State = v1.BackupStateFailing
 		plan.status.Message = msg
 		return plan, nil
@@ -448,6 +462,30 @@ func clusterBootstrappedFromRecovery(cluster *unstructured.Unstructured) bool {
 	return found
 }
 
+// clusterRecoverySource is the server name a recovered Cluster was restored
+// from: the plugin parameter on the externalClusters entry its bootstrap
+// names (rendered by resources.NewPostgreSQLCluster, kept for the Cluster's
+// life by keepLiveBootstrap). Empty for a Cluster created empty.
+func clusterRecoverySource(cluster *unstructured.Unstructured) string {
+	if !clusterBootstrappedFromRecovery(cluster) {
+		return ""
+	}
+	source, _, _ := unstructured.NestedString(cluster.Object, "spec", "bootstrap", "recovery", "source")
+	externals, _, _ := unstructured.NestedSlice(cluster.Object, "spec", "externalClusters")
+	for _, e := range externals {
+		external, ok := e.(map[string]any)
+		if !ok {
+			continue
+		}
+		if name, _, _ := unstructured.NestedString(external, "name"); source != "" && name != source {
+			continue
+		}
+		serverName, _, _ := unstructured.NestedString(external, "plugin", "parameters", "serverName")
+		return serverName
+	}
+	return ""
+}
+
 // keepLiveBootstrap copies a live Cluster's bootstrap and externalClusters
 // onto the desired object. How a cluster's data came to exist is decided
 // once, by CloudNativePG, at creation; re-rendering a different answer every
@@ -473,7 +511,13 @@ func keepLiveBootstrap(desired, existing *unstructured.Unstructured) {
 // carry the plugin yet, the provisional status stands.
 func (p *PostgreSQL) refreshBackupStatus(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, cluster *unstructured.Unstructured, provisional v1.BackupStatus) v1.BackupStatus {
 	status := provisional
-	if cluster == nil || !clusterCarriesPlugin(cluster) {
+	if cluster == nil {
+		return status
+	}
+	// Read before the plugin gate: a database restored from an archive is a
+	// fact about the database whether or not it archives itself.
+	status.RestoredFrom = clusterRecoverySource(cluster)
+	if !clusterCarriesPlugin(cluster) {
 		return status
 	}
 	status.FirstRecoverabilityPoint = timeField(cluster, "status", "firstRecoverabilityPoint")

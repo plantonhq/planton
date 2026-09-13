@@ -220,10 +220,11 @@ func TestPlanBackup_RunningDatabaseAttachesLiveAndNamesTheRestart(t *testing.T) 
 	}
 }
 
-func TestPlanBackup_MissingCredentialsIsFailingInWordsAndRendersNoStore(t *testing.T) {
+func TestPlanBackup_MissingCredentialsOnARunningDatabaseIsFailingInWordsAndRendersNoStore(t *testing.T) {
 	p := &PostgreSQL{}
+	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
 	c := fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(true), keysSecret(resources.ObjectStoreKeyAccessKeyID))
-	plan, err := p.planBackup(context.Background(), c, backupPlatform(true, ""), nil)
+	plan, err := p.planBackup(context.Background(), c, backupPlatform(true, ""), existing)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -231,16 +232,85 @@ func TestPlanBackup_MissingCredentialsIsFailingInWordsAndRendersNoStore(t *testi
 		t.Errorf("want Failing naming the missing key, got %+v", plan.status)
 	}
 	if plan.backup != nil || len(plan.before) != 0 || plan.holdCluster {
-		t.Error("nothing renders around a credential the plugin could not read; the database still runs")
+		t.Error("nothing renders around a credential the plugin could not read; the running database is never held")
 	}
 
 	c = fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(true))
-	plan, err = p.planBackup(context.Background(), c, backupPlatform(true, ""), nil)
+	plan, err = p.planBackup(context.Background(), c, backupPlatform(true, ""), existing)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if plan.status.State != v1.BackupStateFailing || !strings.Contains(plan.status.Message, `"backup-keys"`) || !strings.Contains(plan.status.Message, "not found") {
 		t.Errorf("a missing Secret is named: %+v", plan.status)
+	}
+	if plan.holdCluster {
+		t.Error("a running database is never held")
+	}
+}
+
+func TestPlanBackup_FreshInstallWaitsForItsCredentials(t *testing.T) {
+	p := &PostgreSQL{}
+	// Plugin serving, Secret absent: the same hold the plugin gets, so the
+	// database is born archiving instead of restarting to attach it later.
+	c := fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(true))
+	plan, err := p.planBackup(context.Background(), c, backupPlatform(true, ""), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !plan.holdCluster {
+		t.Fatal("a fresh install with a backup must wait for its credentials so the database is born archiving")
+	}
+	if plan.status.State != v1.BackupStateDeploying {
+		t.Errorf("the wait is Deploying, not Failing -- the Secret is expected: %+v", plan.status)
+	}
+	if !strings.Contains(plan.waiting, "born archiving") || !strings.Contains(plan.waiting, `"backup-keys"`) || !strings.Contains(plan.waiting, "not found") {
+		t.Errorf("the hold names the Secret and the reason: %q", plan.waiting)
+	}
+	if plan.status.Message != plan.waiting {
+		t.Errorf("the Backup column carries the same sentence as the component: %q vs %q", plan.status.Message, plan.waiting)
+	}
+	if plan.backup != nil || len(plan.before) != 0 || len(plan.after) != 0 {
+		t.Error("nothing renders around a credential that does not exist yet")
+	}
+
+	// Secret present but missing a key: the same hold, naming the key.
+	c = fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(true), keysSecret(resources.ObjectStoreKeyAccessKeyID))
+	plan, err = p.planBackup(context.Background(), c, backupPlatform(true, ""), nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !plan.holdCluster || plan.status.State != v1.BackupStateDeploying || !strings.Contains(plan.waiting, resources.ObjectStoreKeySecretAccessKey) {
+		t.Errorf("a Secret missing a key holds and names the key: %+v", plan)
+	}
+}
+
+func TestPlanBackup_RecoveryWhoseSourceSecretIsMissingHolds(t *testing.T) {
+	p := &PostgreSQL{}
+	planton := backupPlatform(true, "")
+	planton.Spec.Database.PostgreSQL.RecoverFrom = &v1.PostgreSQLRecoverFromSpec{
+		ObjectStore: v1.ObjectStoreSpec{
+			DestinationPath: "s3://bucket/platform",
+			S3:              &v1.S3ObjectStoreSpec{Region: "us-east-1", CredentialsSecretName: "source-keys"},
+		},
+		ServerName: "planton-postgres-deadbeef",
+	}
+	// The platform's own backup credential exists; the recovery source's does not.
+	c := fakeCluster(t, cnpgOurs, certManager, certIssuers, pluginOursCRD, pluginDeployment(true), keysSecret(resources.ObjectStoreKeyAccessKeyID, resources.ObjectStoreKeySecretAccessKey))
+	plan, err := p.planBackup(context.Background(), c, planton, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !plan.holdCluster {
+		t.Fatal("a recovery that cannot read its source must not create an empty database in its place")
+	}
+	if plan.status.State != v1.BackupStateFailing || !strings.Contains(plan.waiting, `"source-keys"`) || !strings.Contains(plan.waiting, recoverFromFieldPath) {
+		t.Errorf("the hold names the source Secret and the recovery field: %+v", plan)
+	}
+	if plan.status.Message != plan.waiting {
+		t.Errorf("the Backup column carries the same sentence as the component: %q vs %q", plan.status.Message, plan.waiting)
+	}
+	if plan.recovery != nil {
+		t.Error("no recovery wiring until the source can be read")
 	}
 }
 
@@ -337,6 +407,23 @@ func TestRefreshBackupStatus(t *testing.T) {
 		got := p.refreshBackupStatus(context.Background(), fakeCluster(t), planton, plain, provisional)
 		if got != provisional {
 			t.Errorf("got %+v", got)
+		}
+	})
+	t.Run("a restored database names its source, plugin or not", func(t *testing.T) {
+		restored := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{
+			CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi",
+			Recovery: &resources.PostgreSQLClusterRecovery{ObjectStoreName: "planton-postgres-recovery-source", ServerName: "planton-postgres-deadbeef"},
+		})
+		got := p.refreshBackupStatus(context.Background(), fakeCluster(t), planton, restored, provisional)
+		if got.RestoredFrom != "planton-postgres-deadbeef" {
+			t.Errorf("restoredFrom = %q, want the source server name", got.RestoredFrom)
+		}
+		if got.State != provisional.State || got.Message != provisional.Message {
+			t.Errorf("a recovery-only database still carries the provisional backup status: %+v", got)
+		}
+		plain := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+		if got := p.refreshBackupStatus(context.Background(), fakeCluster(t), planton, plain, provisional); got.RestoredFrom != "" {
+			t.Errorf("a database created empty was restored from nothing: %q", got.RestoredFrom)
 		}
 	})
 	t.Run("archiving but no base backup yet: Deploying", func(t *testing.T) {

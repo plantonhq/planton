@@ -202,6 +202,23 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 		cfg.ImageTag = planton.Spec.Identity.Image.Tag
 	}
 
+	// A realm restored from an archive carries its source's master admin
+	// password; Keycloak's recovery command repairs that only while no
+	// server node runs, so the recovery admin is created BEFORE the
+	// Deployment exists and the real admin is reset once the server answers
+	// (identity_recovery.go). Exactly once per platform lifetime.
+	recovering, err := id.identityRecoveryPending(ctx, c, planton)
+	if err != nil {
+		return Result{}, err
+	}
+	if recovering {
+		if res, err := id.recoverAdminBeforeServer(ctx, c, planton, cfg, ownerRef); err != nil {
+			return Result{}, err
+		} else if res != nil {
+			return *res, nil
+		}
+	}
+
 	if err := id.ApplyTypedObject(ctx, c, resources.IdentityDeployment(cfg)); err != nil {
 		return Result{}, fmt.Errorf("applying Identity Deployment: %w", err)
 	}
@@ -231,6 +248,13 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 	// as the OpenFGA bootstrap.
 	serverRoot := resources.IdentityInternalServerRootURL(planton.Name, planton.Namespace)
 	adminPassword := bootstrapAdmin[resources.IdentityBootstrapAdminPasswordKey]
+	if recovering {
+		if res, err := id.recoverAdminAfterServer(ctx, c, planton, serverRoot, adminPassword, &http.Client{Timeout: httpClientTimeout}); err != nil {
+			return Result{}, err
+		} else if res != nil {
+			return *res, nil
+		}
+	}
 	report, err := keycloak.Converge(ctx, keycloak.ConvergeInput{
 		OwnedRealmInput: keycloak.OwnedRealmInput{
 			Realm:               identityRealm(planton),

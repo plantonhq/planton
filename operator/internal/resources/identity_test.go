@@ -108,6 +108,63 @@ func TestIdentityDeployment_Database(t *testing.T) {
 	}
 }
 
+func TestIdentityRecoveryAdminJob(t *testing.T) {
+	cfg := testIdentityConfig()
+	cfg.ImageRepository = "example.com/keycloak"
+	cfg.ImageTag = "custom"
+	job := IdentityRecoveryAdminJob(cfg)
+	deploy := IdentityDeployment(cfg)
+
+	if job.Name != "planton-identity-recovery-admin" || job.Namespace != "default" {
+		t.Errorf("job named after the platform: %s/%s", job.Namespace, job.Name)
+	}
+	pod := job.Spec.Template.Spec
+	if len(pod.Containers) != 1 || len(pod.InitContainers) != 0 {
+		t.Fatalf("one container and no ensure-database step (the restored database exists): %+v", pod)
+	}
+	c := pod.Containers[0]
+
+	// The same image as the server, so the command speaks the same
+	// schema version the restored database carries.
+	if c.Image != deploy.Spec.Template.Spec.Containers[0].Image {
+		t.Errorf("job image %q must be the identity server's %q", c.Image, deploy.Spec.Template.Spec.Containers[0].Image)
+	}
+
+	// Keycloak's recovery command, the recovery username, the password
+	// read from the environment (the command accepts no literal).
+	wantArgs := []string{"bootstrap-admin", "user", "--username", "planton-recovery", "--password:env", "KC_BOOTSTRAP_ADMIN_PASSWORD"}
+	if strings.Join(c.Args, " ") != strings.Join(wantArgs, " ") {
+		t.Errorf("args = %v, want %v", c.Args, wantArgs)
+	}
+
+	// The database env is byte-identical to the Deployment's: the Job and
+	// the server can never disagree about which database the realm is in.
+	jobEnv := envVarMap(c.Env)
+	deployEnv := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
+	for _, key := range []string{"KC_DB", "KC_DB_URL_HOST", "KC_DB_URL_PORT", "KC_DB_URL_DATABASE", "KC_DB_USERNAME", "KC_DB_PASSWORD"} {
+		if jobEnv[key] != deployEnv[key] {
+			t.Errorf("%s: job %q, deployment %q", key, jobEnv[key], deployEnv[key])
+		}
+	}
+	if jobEnv["KC_BOOTSTRAP_ADMIN_PASSWORD"] != fromSecretRef {
+		t.Error("the recovery password comes from the recovery Secret, never a literal")
+	}
+	for _, env := range c.Env {
+		if env.Name == "KC_BOOTSTRAP_ADMIN_PASSWORD" && env.ValueFrom.SecretKeyRef.Name != "planton-identity-recovery-admin" {
+			t.Errorf("the recovery password Secret is the job's own: %q", env.ValueFrom.SecretKeyRef.Name)
+		}
+	}
+	if _, present := jobEnv["KC_BOOTSTRAP_ADMIN_USERNAME"]; present {
+		t.Error("the username is the command's --username flag, not the startup env the server reads")
+	}
+
+	if pod.RestartPolicy != "Never" || job.Spec.BackoffLimit == nil || *job.Spec.BackoffLimit != 2 ||
+		job.Spec.ActiveDeadlineSeconds == nil || *job.Spec.ActiveDeadlineSeconds != 600 {
+		t.Errorf("one-shot shape: restartPolicy %q, backoffLimit %v, activeDeadline %v",
+			pod.RestartPolicy, job.Spec.BackoffLimit, job.Spec.ActiveDeadlineSeconds)
+	}
+}
+
 func TestIdentityDeployment_RealmImportMountAndRestartHash(t *testing.T) {
 	deploy := IdentityDeployment(testIdentityConfig())
 

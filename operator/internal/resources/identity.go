@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	appsv1 "k8s.io/api/apps/v1"
+	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -147,8 +148,24 @@ const (
 	IdentityBootstrapAdminUsername = "admin"
 
 	// IdentityBootstrapAdminPasswordKey is the data key in the bootstrap
-	// admin Secret (IdentityBootstrapAdminSecretName).
+	// admin Secret (IdentityBootstrapAdminSecretName) and in the recovery
+	// admin Secret (IdentityRecoveryAdminName).
 	IdentityBootstrapAdminPasswordKey = "password"
+
+	// IdentityRecoveryAdminUsername is the master-realm login of the
+	// TEMPORARY admin the operator creates on a restored realm through
+	// Keycloak's own recovery command, uses once to give
+	// IdentityBootstrapAdminUsername the password this install generated,
+	// and deletes. Keycloak flags it temporary (a banner in the admin
+	// console, a line in the logs); a name that says who made it and why
+	// beats the command's default "temp-admin" there. Never "admin": the
+	// recovery command creates a NEW user and refuses an existing name.
+	IdentityRecoveryAdminUsername = "planton-recovery"
+
+	// IdentityRecoveryMarkerKey is the one key of the recovery marker
+	// ConfigMap (IdentityRecoveryMarkerName): when the master admin was
+	// re-established, RFC 3339.
+	IdentityRecoveryMarkerKey = "adminReestablished"
 
 	// IdentityDBName is Keycloak's database in the platform PostgreSQL. The
 	// control plane self-provisions only its own databases, so the identity
@@ -397,6 +414,21 @@ func IdentityServiceName(crName string) string {
 // realm) admin password: "{crName}-identity-bootstrap-admin".
 func IdentityBootstrapAdminSecretName(crName string) string {
 	return fmt.Sprintf("%s-identity-bootstrap-admin", crName)
+}
+
+// IdentityRecoveryAdminName names the three artifacts of re-establishing the
+// master admin on a restored realm -- the recovery credential Secret, the
+// Job that creates the recovery admin, and the recovery admin's master-realm
+// username: "{crName}-identity-recovery-admin".
+func IdentityRecoveryAdminName(crName string) string {
+	return fmt.Sprintf("%s-identity-recovery-admin", crName)
+}
+
+// IdentityRecoveryMarkerName is the ConfigMap that records the master admin
+// was re-established on this platform's restored realm, so the recovery runs
+// exactly once per platform lifetime: "{crName}-identity-recovery".
+func IdentityRecoveryMarkerName(crName string) string {
+	return fmt.Sprintf("%s-identity-recovery", crName)
 }
 
 // IdentityAdminUserSecretName holds the seeded Planton admin user's login and
@@ -900,15 +932,6 @@ func IdentityRealmImport(cfg IdentityRealmImportConfig) ([]byte, error) {
 // entirely by environment (no admin-UI setup), importing the generated realm
 // at startup.
 func IdentityDeployment(cfg IdentityConfig) *appsv1.Deployment {
-	imageRepo := cfg.ImageRepository
-	if imageRepo == "" {
-		imageRepo = IdentityDefaultImageRepo
-	}
-	imageTag := cfg.ImageTag
-	if imageTag == "" {
-		imageTag = IdentityDefaultImageTag
-	}
-
 	labels := map[string]string{
 		"app.kubernetes.io/name":       "identity",
 		"app.kubernetes.io/instance":   cfg.CRName,
@@ -927,46 +950,41 @@ func IdentityDeployment(cfg IdentityConfig) *appsv1.Deployment {
 		cfg.PostgreSQL.Host, cfg.PostgreSQL.Port, cfg.PostgreSQL.User, IdentityDBName,
 	)
 
-	envVars := []corev1.EnvVar{
-		// Database.
-		{Name: "KC_DB", Value: "postgres"},
-		{Name: "KC_DB_URL_HOST", Value: cfg.PostgreSQL.Host},
-		{Name: "KC_DB_URL_PORT", Value: fmt.Sprintf("%d", cfg.PostgreSQL.Port)},
-		{Name: "KC_DB_URL_DATABASE", Value: IdentityDBName},
-		{Name: "KC_DB_USERNAME", Value: cfg.PostgreSQL.User},
-		secretEnv("KC_DB_PASSWORD", cfg.PostgreSQL.SecretName, cfg.PostgreSQL.PassKey),
-
+	envVars := append(identityDatabaseEnv(cfg),
 		// Master-realm bootstrap admin (operator-generated Secret). Distinct
 		// from the seeded Planton admin USER in the platform realm. The same
 		// credential authenticates the realm reconciler (internal/keycloak).
-		{Name: "KC_BOOTSTRAP_ADMIN_USERNAME", Value: IdentityBootstrapAdminUsername},
+		// Keycloak reads it into an EMPTY master realm only -- a database
+		// restored from an archive keeps the admin password its source had,
+		// which is what IdentityRecoveryAdminJob exists to repair.
+		corev1.EnvVar{Name: "KC_BOOTSTRAP_ADMIN_USERNAME", Value: IdentityBootstrapAdminUsername},
 		secretEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", IdentityBootstrapAdminSecretName(cfg.CRName), IdentityBootstrapAdminPasswordKey),
 
 		// Serving: plain HTTP in-cluster (the front door terminates TLS when
 		// there is any), under the shared hostname's path prefix. KC_HOSTNAME
 		// carries the full advertised URL so issuer/redirects are correct
 		// behind the proxy.
-		{Name: "KC_HTTP_ENABLED", Value: "true"},
-		{Name: "KC_HTTP_PORT", Value: fmt.Sprintf("%d", identityHTTPPort)},
-		{Name: "KC_HTTP_RELATIVE_PATH", Value: IdentityPathPrefix},
-		{Name: "KC_HOSTNAME", Value: cfg.PublicURL + IdentityPathPrefix},
+		corev1.EnvVar{Name: "KC_HTTP_ENABLED", Value: "true"},
+		corev1.EnvVar{Name: "KC_HTTP_PORT", Value: fmt.Sprintf("%d", identityHTTPPort)},
+		corev1.EnvVar{Name: "KC_HTTP_RELATIVE_PATH", Value: IdentityPathPrefix},
+		corev1.EnvVar{Name: "KC_HOSTNAME", Value: cfg.PublicURL + IdentityPathPrefix},
 		// Split horizon: browser-facing (frontchannel) URLs stay pinned to
 		// KC_HOSTNAME above, while backchannel requests -- discovery, JWKS,
 		// token, userinfo fetched by in-cluster callers over the identity
 		// Service -- get URLs derived from the request address. Tokens keep
 		// the advertised issuer either way, so in-cluster callers validate
 		// the advertised issuer while never dialing the public hostname.
-		{Name: "KC_HOSTNAME_BACKCHANNEL_DYNAMIC", Value: "true"},
-		{Name: "KC_PROXY_HEADERS", Value: "xforwarded"},
+		corev1.EnvVar{Name: "KC_HOSTNAME_BACKCHANNEL_DYNAMIC", Value: "true"},
+		corev1.EnvVar{Name: "KC_PROXY_HEADERS", Value: "xforwarded"},
 
 		// Health endpoints on the management port; pinned to "/" so probe
 		// paths do not move with the serving path prefix above.
-		{Name: "KC_HEALTH_ENABLED", Value: "true"},
-		{Name: "KC_HTTP_MANAGEMENT_RELATIVE_PATH", Value: "/"},
+		corev1.EnvVar{Name: "KC_HEALTH_ENABLED", Value: "true"},
+		corev1.EnvVar{Name: "KC_HTTP_MANAGEMENT_RELATIVE_PATH", Value: "/"},
 
 		// Single replica: skip cluster cache discovery entirely.
-		{Name: "KC_CACHE", Value: "local"},
-	}
+		corev1.EnvVar{Name: "KC_CACHE", Value: "local"},
+	)
 
 	// Private CAs the server must trust: the directory's (a bound identity
 	// manifest) and the mail relay's (spec.email). Each rides its own
@@ -1067,7 +1085,7 @@ func IdentityDeployment(cfg IdentityConfig) *appsv1.Deployment {
 					}},
 					Containers: []corev1.Container{{
 						Name:  "keycloak",
-						Image: fmt.Sprintf("%s:%s", imageRepo, imageTag),
+						Image: identityImage(cfg),
 						// --spi-theme--default makes the Planton theme the
 						// server-wide fallback, so realms that predate the
 						// theme (the realm import is create-only) get it
@@ -1145,6 +1163,106 @@ func IdentityDeployment(cfg IdentityConfig) *appsv1.Deployment {
 	}
 
 	return deploy
+}
+
+// identityImage is the Keycloak image the Deployment and the recovery Job
+// both run: the declared override, else the pinned default.
+func identityImage(cfg IdentityConfig) string {
+	imageRepo := cfg.ImageRepository
+	if imageRepo == "" {
+		imageRepo = IdentityDefaultImageRepo
+	}
+	imageTag := cfg.ImageTag
+	if imageTag == "" {
+		imageTag = IdentityDefaultImageTag
+	}
+	return fmt.Sprintf("%s:%s", imageRepo, imageTag)
+}
+
+// identityDatabaseEnv is how Keycloak reaches the platform database, shared
+// by the Deployment and the recovery Job so the two can never disagree about
+// which database the realm lives in.
+func identityDatabaseEnv(cfg IdentityConfig) []corev1.EnvVar {
+	return []corev1.EnvVar{
+		{Name: "KC_DB", Value: "postgres"},
+		{Name: "KC_DB_URL_HOST", Value: cfg.PostgreSQL.Host},
+		{Name: "KC_DB_URL_PORT", Value: fmt.Sprintf("%d", cfg.PostgreSQL.Port)},
+		{Name: "KC_DB_URL_DATABASE", Value: IdentityDBName},
+		{Name: "KC_DB_USERNAME", Value: cfg.PostgreSQL.User},
+		secretEnv("KC_DB_PASSWORD", cfg.PostgreSQL.SecretName, cfg.PostgreSQL.PassKey),
+	}
+}
+
+// IdentityRecoveryAdminJob builds the one-shot Job that creates a temporary
+// master-realm admin on a RESTORED realm through Keycloak's own recovery
+// command (`kc.sh bootstrap-admin user`). A restored database carries the
+// admin password its source platform had, and Keycloak reads
+// KC_BOOTSTRAP_ADMIN_* into an empty master realm only, so the freshly
+// generated bootstrap admin Secret matches nothing until the operator signs
+// in as this recovery admin and resets the real one.
+//
+// Keycloak requires every server node to be STOPPED while the command runs:
+// the identity component applies this Job only while the identity
+// Deployment does not exist, and creates the Deployment only after the Job
+// succeeds. The Job reaches the database exactly as the Deployment does
+// (identityDatabaseEnv); no ensure-database step, the restored database
+// exists. The recovery password rides the recovery Secret under the same key
+// the bootstrap admin uses, read by the command through --password:env.
+func IdentityRecoveryAdminJob(cfg IdentityConfig) *batchv1.Job {
+	name := IdentityRecoveryAdminName(cfg.CRName)
+	labels := map[string]string{
+		"app.kubernetes.io/name":       "identity-recovery-admin",
+		"app.kubernetes.io/instance":   cfg.CRName,
+		"app.kubernetes.io/managed-by": ManagedByLabel,
+		"app.kubernetes.io/component":  "application",
+	}
+	// Two attempts, ten minutes: the command augments the server on first
+	// run (a minute) and then writes one user; anything longer is a
+	// database it cannot reach, which the Job's log says.
+	backoffLimit := int32(2)
+	activeDeadline := int64(600)
+
+	job := &batchv1.Job{
+		TypeMeta: metav1.TypeMeta{APIVersion: "batch/v1", Kind: "Job"},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: cfg.Namespace,
+			Labels:    labels,
+		},
+		Spec: batchv1.JobSpec{
+			BackoffLimit:          &backoffLimit,
+			ActiveDeadlineSeconds: &activeDeadline,
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{Labels: labels},
+				Spec: corev1.PodSpec{
+					RestartPolicy: corev1.RestartPolicyNever,
+					Containers: []corev1.Container{{
+						Name:  "bootstrap-admin",
+						Image: identityImage(cfg),
+						Args: []string{"bootstrap-admin", "user",
+							"--username", IdentityRecoveryAdminUsername,
+							"--password:env", "KC_BOOTSTRAP_ADMIN_PASSWORD"},
+						Env: append(identityDatabaseEnv(cfg),
+							secretEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", name, IdentityBootstrapAdminPasswordKey)),
+						Resources: corev1.ResourceRequirements{
+							Requests: corev1.ResourceList{
+								corev1.ResourceCPU:    resource.MustParse("250m"),
+								corev1.ResourceMemory: resource.MustParse("512Mi"),
+							},
+							Limits: corev1.ResourceList{
+								corev1.ResourceMemory: resource.MustParse("1536Mi"),
+							},
+						},
+					}},
+				},
+			},
+		},
+	}
+
+	if cfg.OwnerRef != nil {
+		job.OwnerReferences = []metav1.OwnerReference{*cfg.OwnerRef}
+	}
+	return job
 }
 
 // IdentityService builds the ClusterIP Service exposing the identity server
