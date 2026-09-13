@@ -237,6 +237,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesCertManager | `spec.workloadIdentity.aks.clientId` | `status.outputs.client_id` |
 | KubernetesExternalDns | `spec.workloadIdentity.aks.clientId` | `status.outputs.client_id` |
 | KubernetesExternalSecretsOperator | `spec.workloadIdentity.aks.clientId` | `status.outputs.client_id` |
+| KubernetesOpenBao | `spec.backup.workloadIdentity.aks.clientId` | `status.outputs.client_id` |
 | KubernetesPostgres | `spec.workloadIdentity.aks.clientId` | `status.outputs.client_id` |
 | KubernetesServiceAccount | `spec.workloadIdentity.aks.clientId` | `status.outputs.client_id` |
 | KubernetesVelero | `spec.backupStorage.azureBlob.workloadIdentityClientId` | `status.outputs.client_id` |

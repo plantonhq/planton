@@ -1,7 +1,6 @@
 package module
 
 import (
-	"fmt"
 	"sort"
 
 	"github.com/pkg/errors"
@@ -186,38 +185,6 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	if spec.GetMetrics().GetServiceMonitorEnabled() {
 		values["serverTelemetry"] = map[string]interface{}{
 			"serviceMonitor": map[string]interface{}{"enabled": true},
-		}
-	}
-
-	if snap := spec.GetSnapshotAgent(); snap.GetEnabled() {
-		schedule := "*/15 * * * *"
-		if snap.Schedule != nil && snap.GetSchedule() != "" {
-			schedule = snap.GetSchedule()
-		}
-		expireDays := 14
-		if snap.S3ExpireDays != nil {
-			expireDays = int(snap.GetS3ExpireDays())
-		}
-		baoRole := "snapshot"
-		if snap.BaoRole != nil && snap.GetBaoRole() != "" {
-			baoRole = snap.GetBaoRole()
-		}
-		baoAuthPath := "kubernetes"
-		if snap.BaoAuthPath != nil && snap.GetBaoAuthPath() != "" {
-			baoAuthPath = snap.GetBaoAuthPath()
-		}
-		values["snapshotAgent"] = map[string]interface{}{
-			"enabled":             true,
-			"schedule":            schedule,
-			"s3CredentialsSecret": snap.GetS3CredentialsSecretName(),
-			"config": map[string]interface{}{
-				"s3Host":       snap.GetS3Host().GetValue(),
-				"s3Bucket":     snap.GetS3Bucket(),
-				"s3Uri":        fmt.Sprintf("s3://%s", snap.GetS3Bucket()),
-				"s3ExpireDays": fmt.Sprintf("%d", expireDays),
-				"baoRole":      baoRole,
-				"baoAuthPath":  baoAuthPath,
-			},
 		}
 	}
 

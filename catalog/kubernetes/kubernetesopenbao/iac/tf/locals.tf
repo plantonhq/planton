@@ -317,20 +317,6 @@ locals {
 
   server_block = { for k, v in local.server_block_raw : k => v if v != null }
 
-  snapshot_agent_block = try(var.spec.snapshot_agent.enabled, false) ? {
-    enabled             = true
-    schedule            = try(coalesce(var.spec.snapshot_agent.schedule), "") != "" ? var.spec.snapshot_agent.schedule : "*/15 * * * *"
-    s3CredentialsSecret = var.spec.snapshot_agent.s3_credentials_secret_name
-    config = {
-      s3Host       = var.spec.snapshot_agent.s3_host
-      s3Bucket     = var.spec.snapshot_agent.s3_bucket
-      s3Uri        = "s3://${var.spec.snapshot_agent.s3_bucket}"
-      s3ExpireDays = tostring(coalesce(try(var.spec.snapshot_agent.s3_expire_days, null), 14))
-      baoRole      = try(coalesce(var.spec.snapshot_agent.bao_role), "") != "" ? var.spec.snapshot_agent.bao_role : "snapshot"
-      baoAuthPath  = try(coalesce(var.spec.snapshot_agent.bao_auth_path), "") != "" ? var.spec.snapshot_agent.bao_auth_path : "kubernetes"
-    }
-  } : null
-
   # THE INJECTOR IS OPT-IN — a deliberate divergence from the chart
   # default (which installs a cluster-wide mutating webhook on every
   # install); rendered explicitly either way.
@@ -376,7 +362,6 @@ locals {
     serverTelemetry = try(var.spec.metrics.service_monitor_enabled, false) ? {
       serviceMonitor = { enabled = true }
     } : null
-    snapshotAgent = local.snapshot_agent_block
   }
 
   typed_helm_values = { for k, v in local.typed_helm_values_raw : k => v if v != null }

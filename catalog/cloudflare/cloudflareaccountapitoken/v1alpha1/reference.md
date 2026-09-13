@@ -225,6 +225,8 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | KubernetesMongodb | `spec.backup.storages[].r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
 | KubernetesMongodb | `spec.backup.storages[].r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
+| KubernetesOpenBao | `spec.backup.objectStore.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
+| KubernetesOpenBao | `spec.backup.objectStore.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 | KubernetesPlantonPlatform | `spec.database.postgresql.backup.objectStore.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |
 | KubernetesPlantonPlatform | `spec.database.postgresql.backup.objectStore.r2.credentials.secretAccessKey` | `status.outputs.r2_secret_access_key` |
 | KubernetesPlantonPlatform | `spec.database.postgresql.recoverFrom.objectStore.r2.credentials.accessKeyId` | `status.outputs.r2_access_key_id` |

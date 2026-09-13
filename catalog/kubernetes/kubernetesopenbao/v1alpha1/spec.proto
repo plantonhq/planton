@@ -5,6 +5,7 @@ package dev.planton.kubernetes.kubernetesopenbao.v1alpha1;
 import "buf/validate/validate.proto";
 import "catalog/kubernetes/kubernetes.proto";
 import "catalog/kubernetes/options.proto";
+import "catalog/kubernetes/workload_identity.proto";
 import "catalog/kubernetes/workload_pod.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
 import "shared/options/options.proto";
@@ -136,20 +137,10 @@ message KubernetesOpenBaoSpec {
    */
   KubernetesOpenBaoMetrics metrics = 10;
 
-  /**
-   * Scheduled Raft snapshots shipped to an S3-compatible object store
-   * (a CronJob running the openbao-snapshot-agent). This is the
-   * disaster-recovery story for Raft-mode servers: snapshot files in
-   * the bucket outlive the cluster and restore with
-   * `bao operator raft snapshot restore`.
-   *
-   * PREREQUISITE the module cannot create: the agent authenticates to
-   * OpenBao through the Kubernetes auth method using `bao_role` —
-   * that auth method and role are RUNTIME configuration you create
-   * inside OpenBao after initialization (the docs carry the exact
-   * recipe). Until the role exists the CronJob pods fail their login.
-   */
-  KubernetesOpenBaoSnapshotAgent snapshot_agent = 11;
+  // Field 11 carried the chart's snapshot-agent block; `backup` is its
+  // home now.
+  reserved 11;
+  reserved "snapshot_agent";
 
   /**
    * Server ServiceAccount identity: cloud workload-identity
@@ -167,6 +158,92 @@ message KubernetesOpenBaoSpec {
    * a string.
    */
   string helm_values = 13;
+
+  /**
+   * Scheduled Raft snapshots to an object store — the disaster-recovery
+   * story for this vault. Omitted = no backups (a deliberate choice to
+   * make, not a default to forget). Declaring it renders a CronJob that
+   * takes a snapshot through OpenBao's own API and ships it with rclone
+   * to S3, Google Cloud Storage, Azure Blob, or Cloudflare R2, in that
+   * store's own vocabulary, wired by reference to the catalog's bucket,
+   * identity, and token kinds; retention prunes older objects.
+   *
+   * RAFT ONLY: snapshots exist only for integrated Raft storage
+   * (`server.ha`; a single replica is a legal Raft cluster of one).
+   * Standalone file storage and dev mode have no snapshot API, and the
+   * server refuses the call ("raft storage is not in use").
+   *
+   * ONE STEP THE MODULE CANNOT TAKE: the job logs in through OpenBao's
+   * Kubernetes auth method, and the policy, auth mount, and role it
+   * needs live INSIDE OpenBao, which is sealed and uninitialized at
+   * deploy time. After initialization, run the four-command recipe on
+   * the `auth` field once; until then every backup run fails its login
+   * and its log prints the same four commands with the real names.
+   */
+  KubernetesOpenBaoBackup backup = 14;
+
+  /**
+   * Restore this cluster from a snapshot in the declared backup store —
+   * the "bad day" declaration: a FRESH cluster with the same `backup`
+   * block as the source (same store, same prefix) and the same seal key,
+   * plus this block. The module renders a one-shot Job that fetches the
+   * named snapshot (or the newest under the prefix) and installs it with
+   * `bao operator raft snapshot restore`; every secret, policy, auth
+   * mount, and token in the snapshot comes back.
+   *
+   * REQUIRES AUTO-UNSEAL, SAME KEY: a snapshot is protected by the seal
+   * key of the cluster that took it. With `auto_unseal` on both sides
+   * pointing at the same key, a restore is a single call and the
+   * restored cluster unseals itself. A Shamir cluster restores only by
+   * hand (the snapshot's key shares must be present) — that runbook is
+   * in the component guide, not here.
+   *
+   * ONE STEP THE MODULE CANNOT TAKE: the Job authenticates with the
+   * TARGET's initial root token — run `bao operator init` on the fresh
+   * cluster as always, put the returned root token in the Secret
+   * `root_token` names, and the waiting Job proceeds. The token ceases
+   * to exist the moment the source's state lands; delete the Secret
+   * afterwards.
+   *
+   * RESTORE MODE: while this block is declared, the backup schedule is
+   * rendered suspended. A fresh target's own hourly backup would
+   * otherwise write snapshots of an EMPTY vault into the shared prefix
+   * while the Job waits for the token, and its retention would prune
+   * the source's snapshots — `latest` would then find the target's own
+   * empty snapshot. After the Job completes, remove this block and apply
+   * again: the finished Job is deleted and the schedule resumes.
+   *
+   * ONE-SHOT: every distinct declaration renders a distinctly named Job,
+   * so a restore runs exactly once per declaration and again only when
+   * the declaration changes. The Job is never expired (a vanished Job
+   * would be recreated on the next apply and restore AGAIN over live
+   * data). After a restore the cluster carries the SOURCE's backup login
+   * role, bound to the source's ServiceAccount name and namespace: a
+   * target with the same name and namespace resumes backups untouched;
+   * a renamed one re-runs the login recipe.
+   */
+  KubernetesOpenBaoRestore restore = 15;
+
+  option (buf.validate.message).cel = {
+    id: "spec.backup.requires_raft"
+    message: "Backups snapshot Raft storage: set server.ha (a single replica is a legal Raft cluster) — dev mode and standalone file storage have no snapshot API."
+    expression: "!has(this.backup) || (has(this.server) && has(this.server.ha))"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.backup.requires_auth_delegator"
+    message: "The backup job logs in through OpenBao's Kubernetes auth method, which verifies its token with a TokenReview — leave service_account.auth_delegator_enabled on (the default) when backup is declared."
+    expression: "!has(this.backup) || !has(this.service_account) || !has(this.service_account.auth_delegator_enabled) || this.service_account.auth_delegator_enabled"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.restore.requires_backup"
+    message: "A restore reads from the store declared on backup (bucket, prefix, credentials, identity) — declare backup with the same store the snapshot was written to."
+    expression: "!has(this.restore) || has(this.backup)"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.restore.requires_auto_unseal"
+    message: "A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide."
+    expression: "!has(this.restore) || (has(this.auto_unseal) && (has(this.auto_unseal.aws_kms) || has(this.auto_unseal.gcp_kms) || has(this.auto_unseal.azure_key_vault) || has(this.auto_unseal.transit)))"
+  };
 }
 
 /**
@@ -595,61 +672,591 @@ message KubernetesOpenBaoMetrics {
   };
 }
 
-/** Scheduled Raft snapshots to an S3-compatible object store. */
-message KubernetesOpenBaoSnapshotAgent {
+/**
+ * Scheduled Raft snapshots to an object store.
+ *
+ * WHAT RUNS: a CronJob in the install namespace with its own
+ * ServiceAccount `<name>-backup`. Each run logs in to OpenBao through
+ * the Kubernetes auth method with the pod's projected token, streams a
+ * snapshot from `sys/storage/raft/snapshot` with the `bao` CLI (the
+ * server's own image and tag, so the CLI never drifts from the server),
+ * then ships the file with rclone to the declared store as
+ * `<prefix>/<name>-<UTC timestamp>.snap` and deletes objects under the
+ * prefix older than `retention_days`. Credentials the arms declare are
+ * materialized into the Secret `<name>-backup-credentials` and reach
+ * rclone as environment variables; nothing credential-bearing lands in
+ * a ConfigMap or a rendered manifest. Snapshots are encrypted with the
+ * cluster's seal key before they leave the server — the bucket holds
+ * ciphertext.
+ *
+ * THE LOGIN RECIPE (run once, after `bao operator init` and unseal; the
+ * failing job prints it with the names it was rendered with):
+ *
+ *   bao policy write <name>-backup - <<'EOF'
+ *   path "sys/storage/raft/snapshot" { capabilities = ["read"] }
+ *   EOF
+ *   bao auth enable -path=<auth.mount_path> kubernetes
+ *   bao write auth/<auth.mount_path>/config kubernetes_host="https://kubernetes.default.svc:443"
+ *   bao write auth/<auth.mount_path>/role/<auth.role> \
+ *     bound_service_account_names=<name>-backup \
+ *     bound_service_account_namespaces=<namespace> \
+ *     token_policies=<name>-backup token_ttl=1h
+ *
+ * The policy is exactly `read` on the snapshot path — taking a snapshot
+ * is not a sudo operation (verified in the server's root-path list at
+ * v2.6.1). The kind exports `backup_service_account_name`,
+ * `backup_policy_name`, and `backup_auth_role` so the recipe is
+ * copy-paste from the outputs.
+ */
+message KubernetesOpenBaoBackup {
   /**
-   * Enable the snapshot CronJob. Meaningful only for Raft (HA) mode —
-   * the agent calls `bao operator raft snapshot`.
+   * When to snapshot, as a standard 5-field cron expression (minute
+   * hour day-of-month month day-of-week). Default hourly. A Raft
+   * snapshot is a full copy of the state, so the schedule is a trade
+   * between recovery-point objective and object-store churn; hourly
+   * suits most vaults, every 15 minutes a busy one.
    */
-  bool enabled = 1;
-
-  /**
-   * Cron schedule.
-   */
-  optional string schedule = 2 [(dev.planton.shared.options.default) = "*/15 * * * *"];
-
-  /**
-   * S3(-compatible) endpoint HOST (e.g. "s3.us-east-1.amazonaws.com",
-   * or an in-cluster KubernetesSeaweedFs S3 endpoint host).
-   */
-  dev.planton.shared.foreignkey.v1.StringValueOrRef s3_host = 3 [
-    (buf.validate.field).required = true,
-    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSeaweedFs,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.s3_endpoint"
+  optional string schedule = 1 [
+    (dev.planton.shared.options.default) = "0 * * * *",
+    (buf.validate.field).cel = {
+      id: "spec.backup.schedule.cron_five_fields"
+      message: "Schedule must be a standard 5-field cron expression: minute hour day-of-month month day-of-week (e.g. \"0 * * * *\" for hourly, \"*/15 * * * *\" for every 15 minutes)"
+      expression: "this.matches('^\\\\S+\\\\s+\\\\S+\\\\s+\\\\S+\\\\s+\\\\S+\\\\s+\\\\S+$')"
+    }
   ];
 
   /**
-   * Bucket name to write snapshots into.
+   * Delete snapshot objects under the prefix older than this many days
+   * after each run (object age, not object count). Default 14. Zero
+   * keeps every snapshot forever — the bucket's own lifecycle rules then
+   * decide. Pruning runs under the prefix, so two live clusters must
+   * never share one prefix; a restore target deliberately does share the
+   * source's (see `restore`).
    */
-  string s3_bucket = 4 [(buf.validate.field).string.min_len = 1];
-
-  /**
-   * Days after which snapshots in the bucket expire (agent-side
-   * cleanup).
-   */
-  optional int32 s3_expire_days = 5 [
+  optional int32 retention_days = 2 [
     (dev.planton.shared.options.default) = "14",
-    (buf.validate.field).int32.gte = 1
+    (buf.validate.field).int32.gte = 0
   ];
 
   /**
-   * Name of an existing Secret with the s3cmd-style credentials the
-   * agent image expects (keys access_key / secret_key). Required —
-   * snapshot pods crash-loop without it.
+   * Where the snapshots go. Exactly one store, in that store's own
+   * vocabulary.
    */
-  string s3_credentials_secret_name = 6 [(buf.validate.field).string.min_len = 1];
+  KubernetesOpenBaoBackupObjectStore object_store = 3 [(buf.validate.field).required = true];
 
   /**
-   * The OpenBao Kubernetes-auth ROLE the agent logs in with
-   * (runtime configuration — create it inside OpenBao; see the
-   * component docs for the recipe).
+   * Keyless cloud identity for the backup job's ServiceAccount
+   * (`<name>-backup`, in `namespace`) — annotates it so rclone reaches
+   * S3 (EKS IRSA), Google Cloud Storage (GKE Workload Identity), or
+   * Azure Blob (AKS Workload Identity) without stored keys. Pair with
+   * the store's `keyless: true`. The cloud-side binding names exactly
+   * that ServiceAccount: on GKE a GcpGkeWorkloadIdentityBinding with
+   * `ksa_name` = `<name>-backup` and `ksa_namespace` = this namespace,
+   * one per OpenBao (a restore target is another OpenBao and needs its
+   * own). This is the JOB's identity; the server's identity for KMS
+   * auto-unseal is declared on `auto_unseal` and `service_account`.
    */
-  optional string bao_role = 7 [(dev.planton.shared.options.default) = "snapshot"];
+  dev.planton.kubernetes.KubernetesWorkloadIdentity workload_identity = 4;
 
   /**
-   * Kubernetes auth method mount path inside OpenBao.
+   * How the job authenticates to OpenBao: the Kubernetes auth mount and
+   * role from the login recipe above. Defaults name the recipe exactly
+   * as printed; change them only to match an auth mount that already
+   * exists on this cluster.
    */
-  optional string bao_auth_path = 8 [(dev.planton.shared.options.default) = "kubernetes"];
+  KubernetesOpenBaoBackupAuth auth = 5;
+
+  /**
+   * Image overrides for the two containers each run uses, for mirrors
+   * and air-gapped registries. Unset = the server's own `openbao` image
+   * at the chart's pinned tag, and the official `rclone/rclone` image at
+   * the module's pinned tag.
+   */
+  KubernetesOpenBaoBackupImages images = 6;
+
+  /**
+   * CPU and memory for the job's containers. A snapshot streams to a
+   * scratch volume, so memory does not scale with vault size; these
+   * laboratory defaults suit vaults up to a few hundred megabytes.
+   */
+  dev.planton.kubernetes.ContainerResources resources = 7 [(dev.planton.kubernetes.default_container_resources) = {
+    limits: {
+      cpu: "500m"
+      memory: "512Mi"
+    }
+    requests: {
+      cpu: "50m"
+      memory: "64Mi"
+    }
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "spec.backup.keyless_needs_identity"
+    message: "A keyless store authenticates with the backup job's cloud identity — declare backup.workload_identity (the GCP service account email, AWS IAM role ARN, or Azure client id the job's ServiceAccount federates with), or declare the store's keys instead."
+    expression: "!((has(this.object_store.s3) && this.object_store.s3.keyless) || (has(this.object_store.gcs) && this.object_store.gcs.keyless) || (has(this.object_store.azure_blob) && this.object_store.azure_blob.keyless)) || has(this.workload_identity)"
+  };
+}
+
+/**
+ * The object store snapshots are written to and restored from.
+ */
+message KubernetesOpenBaoBackupObjectStore {
+  /**
+   * Key prefix inside the bucket or container (a folder for this
+   * vault's snapshots). One prefix per live cluster: retention prunes
+   * under it, and a restore target declares this same prefix to read the
+   * snapshots back — so two live vaults must never share one, while the
+   * source and its restore target deliberately do. Empty = the bucket
+   * root.
+   */
+  string prefix = 1;
+
+  /**
+   * Store backend. Exactly one arm; the arm's credential posture is
+   * keyless (workload identity) or declared keys — declared keys
+   * materialize as a Kubernetes Secret the job reads, never plaintext in
+   * the rendered resource.
+   */
+  oneof backend {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * AWS S3 — or ANY S3-compatible store (SeaweedFS, MinIO, Ceph RGW,
+     * ...) via the endpoint_url override. Cloudflare R2 has its own arm
+     * (`r2`) that composes the catalog's Cloudflare kinds; this arm still
+     * reaches R2 for a hand-carried endpoint and key pair.
+     */
+    KubernetesOpenBaoS3ObjectStore s3 = 2;
+
+    /**
+     * Google Cloud Storage.
+     */
+    KubernetesOpenBaoGcsObjectStore gcs = 3;
+
+    /**
+     * Azure Blob Storage.
+     */
+    KubernetesOpenBaoAzureBlobObjectStore azure_blob = 4;
+
+    /**
+     * Cloudflare R2, in R2's own vocabulary: the bucket, the owning
+     * account, the bucket's jurisdiction, and a Cloudflare credential —
+     * each a reference onto the catalog's CloudflareR2Bucket and
+     * CloudflareAccountApiToken by default. The module performs the S3
+     * translation R2 needs (the jurisdiction's endpoint host, region
+     * `auto`, path-style addressing, the token as an S3 key pair);
+     * nothing S3-shaped is typed here.
+     */
+    KubernetesOpenBaoR2ObjectStore r2 = 5;
+  }
+}
+
+/**
+ * S3 / S3-compatible object-store backend.
+ */
+message KubernetesOpenBaoS3ObjectStore {
+  /**
+   * Bucket name.
+   */
+  string bucket = 1 [(buf.validate.field).required = true];
+
+  /**
+   * AWS region of the bucket. Required for real S3; for S3-compatible
+   * stores use the store's expected value (SeaweedFS and MinIO accept
+   * any; the `r2` arm pins Cloudflare R2's `auto` itself).
+   */
+  string region = 2;
+
+  /**
+   * S3-COMPATIBLE ARM: endpoint URL of the store (e.g.
+   * http://main-s3.object-store.svc.cluster.local:8333 for an
+   * in-cluster KubernetesSeaweedFs — its `s3_endpoint` output, the
+   * default reference). Empty = real AWS S3. For Cloudflare R2 prefer
+   * the `r2` arm, which composes the endpoint from the bucket's account
+   * and jurisdiction.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef endpoint_url = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesSeaweedFs,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.s3_endpoint",
+    (buf.validate.field).cel = {
+      id: "spec.backup.s3.endpoint_format"
+      message: "endpoint_url must be an http(s) URL (e.g. http://main-s3.object-store.svc.cluster.local:8333)"
+      expression: "!has(this.value) || this.value == '' || this.value.startsWith('http://') || this.value.startsWith('https://')"
+    }
+  ];
+
+  /**
+   * Address the bucket as a path (`<endpoint>/<bucket>/...`) instead of
+   * a virtual host (`<bucket>.<endpoint>/...`). Most S3-compatible
+   * stores want this; real AWS S3 does not.
+   */
+  bool force_path_style = 4;
+
+  /**
+   * PEM CA bundle for verifying a self-signed endpoint_url TLS
+   * certificate (materialized as a Secret the job reads). Public
+   * material, not a credential.
+   */
+  string ca_pem = 5;
+
+  /**
+   * Keyless posture: the backup job's AWS identity (EKS IRSA through
+   * `backup.workload_identity`) authenticates to S3 — no stored keys.
+   * rclone resolves it through the AWS SDK's default chain, which reads
+   * the web-identity token IRSA projects into the pod. Mutually
+   * exclusive with access_keys; requires `backup.workload_identity`.
+   */
+  bool keyless = 6;
+
+  /**
+   * Static access keys, materialized as a Kubernetes Secret the job
+   * reads. The declared-credential arm — for S3-compatible stores and
+   * clusters without IRSA.
+   */
+  KubernetesOpenBaoS3AccessKeys access_keys = 7;
+
+  option (buf.validate.message).cel = {
+    id: "spec.backup.s3.keyless_xor_keys"
+    message: "keyless and access_keys are alternative credential postures — set exactly one"
+    expression: "(this.keyless && !has(this.access_keys)) || (!this.keyless && has(this.access_keys))"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.backup.s3.compatible_needs_keys"
+    message: "an S3-compatible endpoint (endpoint_url) authenticates with access_keys — the keyless posture only mints AWS credentials"
+    expression: "!this.keyless || !has(this.endpoint_url) || (has(this.endpoint_url.value) && this.endpoint_url.value == '')"
+  };
+}
+
+/**
+ * Static S3 access keys.
+ */
+message KubernetesOpenBaoS3AccessKeys {
+  /**
+   * Access key ID — the public identifier of the key pair, not a
+   * secret; only the paired secret access key is a credential. For
+   * SeaweedFS or MinIO this is the access key / username.
+   */
+  string access_key_id = 1 [(buf.validate.field).required = true];
+
+  /**
+   * Secret access key (for SeaweedFS or MinIO: the secret key /
+   * password).
+   */
+  string secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+/**
+ * Google Cloud Storage backend.
+ */
+message KubernetesOpenBaoGcsObjectStore {
+  /**
+   * Bucket name. By reference to the bucket resource's `bucket_name`
+   * output, so the store follows the bucket; a literal names a bucket
+   * outside the catalog.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  /**
+   * Keyless posture: the backup job's GCP identity (GKE Workload
+   * Identity through `backup.workload_identity`) authenticates to GCS —
+   * no stored key. rclone resolves it through Application Default
+   * Credentials, which on GKE is the metadata server's token for the
+   * bound service account. Mutually exclusive with service_account_key;
+   * requires `backup.workload_identity`.
+   *
+   * THE IDENTITY NEEDS TWO ROLES ON THE BUCKET: rclone reads the
+   * bucket's attributes before writing, and `roles/storage.objectAdmin`
+   * does not carry `storage.buckets.get`. Grant
+   * `roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader`
+   * (a GcpGcsBucket's `iam_members`, one entry each).
+   */
+  bool keyless = 2;
+
+  /**
+   * A GCP service-account key (the JSON key file's content, raw or
+   * base64-encoded — the shape a GcpServiceAccount resource exports as
+   * `key_base64` when declared with a `user_managed_key`), materialized
+   * as a Kubernetes Secret the job reads. The declared-credential arm
+   * for clusters outside GKE backing up to GCS. The same two bucket
+   * roles apply to this account.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account_key = 3 [
+    (dev.planton.shared.options.sensitive) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_base64"
+  ];
+
+  option (buf.validate.message).cel = {
+    id: "spec.backup.gcs.keyless_xor_key"
+    message: "keyless and service_account_key are alternative credential postures — set exactly one"
+    expression: "(this.keyless && !has(this.service_account_key)) || (!this.keyless && has(this.service_account_key))"
+  };
+}
+
+/**
+ * Azure Blob Storage backend.
+ */
+message KubernetesOpenBaoAzureBlobObjectStore {
+  /**
+   * Storage-account name. Required with storage_key and with keyless
+   * (it identifies the storage endpoint); a connection_string carries
+   * its own.
+   */
+  string storage_account = 1;
+
+  /**
+   * Blob container name.
+   */
+  string container = 2 [(buf.validate.field).required = true];
+
+  /**
+   * Keyless posture: the backup job's Azure identity (AKS Workload
+   * Identity through `backup.workload_identity`) authenticates to Blob
+   * Storage — no stored secret. rclone resolves it through the Azure
+   * SDK's default credential chain, whose workload-identity step needs
+   * BOTH halves: the ServiceAccount annotation the identity field
+   * renders and the `azure.workload.identity/use: "true"` pod label,
+   * which the module sets on the job. Mutually exclusive with the
+   * declared-credential fields; requires `backup.workload_identity`.
+   */
+  bool keyless = 3;
+
+  /**
+   * Storage-account access key, paired with storage_account.
+   */
+  string storage_key = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  /**
+   * Storage-account connection string — the all-in-one declared
+   * credential. Mutually exclusive with storage_key.
+   */
+  string connection_string = 5 [(dev.planton.shared.options.sensitive) = true];
+
+  option (buf.validate.message).cel = {
+    id: "spec.backup.azure.single_posture"
+    message: "set exactly one Azure credential posture: keyless, connection_string, or storage_account + storage_key"
+    expression: "[this.keyless, this.connection_string != '', this.storage_key != ''].filter(x, x).size() == 1"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.backup.azure.key_needs_account"
+    message: "storage_key authenticates a specific account — set storage_account with it"
+    expression: "this.storage_key == '' || this.storage_account != ''"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.backup.azure.keyless_needs_account"
+    message: "the keyless posture still needs storage_account — it identifies the storage endpoint"
+    expression: "!this.keyless || this.storage_account != ''"
+  };
+}
+
+/**
+ * Cloudflare R2 backend, composed from the catalog's Cloudflare kinds.
+ *
+ * R2 speaks S3, so rclone reaches it through its S3 backend — but nothing
+ * S3-shaped is declared here. The module composes the endpoint from the
+ * account and the bucket's jurisdiction
+ * (`https://<account>.r2.cloudflarestorage.com`, or
+ * `https://<account>.<jurisdiction>.r2.cloudflarestorage.com` for an eu,
+ * fedramp, or us bucket — a jurisdictional bucket is served ONLY through
+ * its own host; the default host fails rather than redirects), pins the
+ * region to `auto` (the only region R2 accepts) and path-style
+ * addressing, and hands rclone the credential as an S3 key pair. There
+ * is NO keyless posture for R2 from any cluster: R2 has no equivalent of
+ * IRSA or Workload Identity, so a credential is always declared — by
+ * reference to a CloudflareAccountApiToken by default.
+ *
+ * A token scoped to the single bucket (`Workers R2 Storage Bucket Item
+ * Write`) is enough; no account-level Cloudflare permission is needed.
+ * Emptying the bucket is not the module's job — R2 refuses to delete a
+ * non-empty bucket, so a CloudflareR2Bucket that has ever held a
+ * snapshot must be emptied over the S3 API before it can be destroyed.
+ */
+message KubernetesOpenBaoR2ObjectStore {
+  /**
+   * Bucket name. By reference to the bucket resource's `bucket_name`
+   * output, so the store follows the bucket; a literal names a bucket
+   * outside the catalog.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  /**
+   * The Cloudflare account that owns the bucket (32 hex characters). By
+   * reference to the bucket resource's `account_id` output.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef account_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.account_id",
+    (buf.validate.field).cel = {
+      id: "spec.backup.r2.account_id_format"
+      message: "account_id is the 32-hex-character Cloudflare account id"
+      expression: "!has(this.value) || this.value.matches('^[0-9a-fA-F]{32}$')"
+    }
+  ];
+
+  /**
+   * The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+   * `fedramp`, or `us`. It selects the S3 host the module composes — a
+   * bucket created in a jurisdiction is unreachable through any other
+   * host — so it must match the bucket exactly; by reference to the
+   * bucket resource's `jurisdiction` output it cannot drift.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef jurisdiction = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareR2Bucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.jurisdiction",
+    (buf.validate.field).cel = {
+      id: "spec.backup.r2.jurisdiction_valid"
+      message: "jurisdiction must be one of \"default\", \"eu\", \"fedramp\", \"us\" (or empty for default)"
+      expression: "!has(this.value) || this.value == '' || this.value in ['default', 'eu', 'fedramp', 'us']"
+    }
+  ];
+
+  /**
+   * The Cloudflare credential, as the S3 key pair R2's S3 API
+   * authenticates. Materialized as the `<name>-backup-credentials`
+   * Secret the job reads; never plaintext in the rendered resource.
+   */
+  KubernetesOpenBaoR2Credentials credentials = 4 [(buf.validate.field).required = true];
+}
+
+/**
+ * The S3 key pair for Cloudflare R2. Cloudflare defines it from an account
+ * API token: the access key id is the token's id and the secret access key
+ * is the SHA-256 of the token's value — the two values a CloudflareAccountApiToken
+ * exports as `r2_access_key_id` and `r2_secret_access_key`, and the two the
+ * dashboard shows as "Access Key ID" / "Secret Access Key" when the same
+ * token is created there. Reference the catalog token (the default kind)
+ * or paste a dashboard-minted pair as literals; both are the same shape.
+ *
+ * The token needs an R2 permission group: `Workers R2 Storage Bucket Item
+ * Write` scoped to this bucket (least privilege — read, write, list objects)
+ * or `Workers R2 Storage Write` on the account. A token without one
+ * authenticates and then fails every upload with AccessDenied.
+ */
+message KubernetesOpenBaoR2Credentials {
+  /**
+   * The S3 access key id: the API token's id. By reference to the token
+   * resource's `r2_access_key_id` output.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef access_key_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_access_key_id"
+  ];
+
+  /**
+   * The S3 secret access key: the SHA-256 of the API token's value. By
+   * reference to the token resource's `r2_secret_access_key` output. Rotates
+   * with the token: a rotated token is a new key pair, and the Secret the
+   * module materializes follows the reference on the next apply.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_access_key = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = CloudflareAccountApiToken,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.r2_secret_access_key"
+  ];
+}
+
+/**
+ * How the backup job logs in to OpenBao: the Kubernetes auth method's
+ * mount and role, created once by the login recipe on `backup`.
+ */
+message KubernetesOpenBaoBackupAuth {
+  /**
+   * Mount path of the Kubernetes auth method inside OpenBao (the
+   * `-path` of `bao auth enable`). Default `kubernetes`.
+   */
+  optional string mount_path = 1 [(dev.planton.shared.options.default) = "kubernetes"];
+
+  /**
+   * The role under that mount the job logs in with. Empty = the module
+   * derives `<name>-backup`, the name the recipe and the exported
+   * `backup_auth_role` output print; set it only to reuse a role that
+   * already exists.
+   */
+  string role = 2;
+}
+
+/**
+ * Image overrides for the backup and restore jobs.
+ */
+message KubernetesOpenBaoBackupImages {
+  /**
+   * The `bao` CLI container (takes and installs snapshots). Unset = the
+   * server's own image at the chart's pinned tag; override only for a
+   * mirror, and keep the tag equal to the server's.
+   */
+  dev.planton.kubernetes.ContainerImage openbao = 1;
+
+  /**
+   * The rclone container (moves snapshots to and from the store). Unset
+   * = the official `rclone/rclone` image at the module's pinned tag.
+   */
+  dev.planton.kubernetes.ContainerImage rclone = 2;
+}
+
+/**
+ * Restore this cluster from a snapshot in the declared backup store —
+ * the mechanics are on the `restore` field of the spec.
+ */
+message KubernetesOpenBaoRestore {
+  /**
+   * Which snapshot. Exactly one.
+   */
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    /**
+     * The object key of the snapshot inside the store, relative to the
+     * bucket or container: `<prefix>/<name>-<UTC timestamp>.snap`, as
+     * written by the source's backup job. Read it from the store's
+     * listing.
+     */
+    string snapshot_key = 1 [(buf.validate.field).cel = {
+      id: "spec.restore.snapshot_key.named"
+      message: "snapshot_key is the snapshot's object key inside the store (e.g. openbao/prod/prod-20260101T020000Z.snap) — name one, or set latest: true"
+      expression: "this != ''"
+    }];
+
+    /**
+     * Restore the newest snapshot under the declared prefix. Safe
+     * because a cluster in restore mode takes no snapshots of its own
+     * (see the `restore` field).
+     */
+    bool latest = 2 [(buf.validate.field).cel = {
+      id: "spec.restore.latest.marker"
+      message: "latest is a marker — set it to true to restore the newest snapshot, or name a snapshot_key instead"
+      expression: "this"
+    }];
+  }
+
+  /**
+   * The Secret holding the TARGET's initial root token — the one
+   * `bao operator init` prints on the fresh cluster. Create it after
+   * init (`kubectl create secret generic <name> --from-literal=<key>=<token>`);
+   * the Job waits until it exists. Delete it once the restore completes:
+   * the token stops existing when the source's state lands.
+   */
+  dev.planton.kubernetes.KubernetesSecretKey root_token = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.restore.root_token.name_and_key"
+      message: "root_token names a Secret and the key inside it that holds the fresh cluster's initial root token — set both name and key"
+      expression: "this.name != '' && this.key != ''"
+    }
+  ];
 }
 
 /** Server ServiceAccount identity. */

@@ -1065,6 +1065,7 @@ Fields on other kinds that can point at this resource:
 | GcpLoggingSink | `spec.destination.gcsBucket` | `status.outputs.bucket_id` |
 | GcpPubSubSubscription | `spec.cloudStorageConfig.bucket` | `status.outputs.bucket_id` |
 | GcpPubSubTopic | `spec.ingestionDataSourceSettings.cloudStorage.bucket` | `status.outputs.bucket_id` |
+| KubernetesOpenBao | `spec.backup.objectStore.gcs.bucket` | `status.outputs.bucket_name` |
 
 ## See Also
 

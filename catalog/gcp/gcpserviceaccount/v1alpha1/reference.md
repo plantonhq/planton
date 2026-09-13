@@ -346,6 +346,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesExternalSecretsOperator | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesMongodb | `spec.backup.storages[].gcs.credentials.serviceAccountKey` | `status.outputs.key_base64` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.workloadIdentityServiceAccount` | `status.outputs.email` |
+| KubernetesOpenBao | `spec.backup.objectStore.gcs.serviceAccountKey` | `status.outputs.key_base64` |
+| KubernetesOpenBao | `spec.backup.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesPostgres | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesServiceAccount | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesVelero | `spec.backupStorage.gcs.workloadIdentityServiceAccountEmail` | `status.outputs.email` |

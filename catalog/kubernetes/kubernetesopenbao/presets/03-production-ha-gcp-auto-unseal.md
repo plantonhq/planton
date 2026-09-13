@@ -24,7 +24,7 @@ the chart pin crosses that line.
 Change first: the GCP project/key-ring/crypto-key references and the
 service-account email (a `GcpKmsKey` resource reference composes
 naturally), then everything the production-ha preset says about
-replicas, storage and snapshots.
+replicas, storage and backups.
 
 See [03-production-ha-gcp-auto-unseal.yaml](./03-production-ha-gcp-auto-unseal.yaml)
 for the manifest.

@@ -63,19 +63,24 @@ listener cert/key files, the certificate Secret mount, and every
 derived URL and probe switch together. A `KubernetesCertificate` is
 the natural issuer for `cert_secret_name`.
 
-## Injector, metrics, snapshots
+## Injector, metrics, backups
 
 The Agent Injector is OFF by default — a deliberate divergence from
 the chart: it is a CLUSTER-WIDE mutating webhook on pod creation,
 fail-open by default (downtime skips injection rather than blocking
 pods). Metrics, when enabled, make /v1/sys/metrics UNAUTHENTICATED on
-the listener — that is how Prometheus scrapes. The snapshot agent is
-the Raft disaster-recovery story: a CronJob shipping
-`bao operator raft snapshot` to an S3-compatible bucket, with one
-runtime prerequisite — the Kubernetes-auth role it logs in with is
-created inside OpenBao after initialization. `helm_values` merges
-last for chart surfaces deliberately not modeled;
-`fullnameOverride` is re-pinned after the merge.
+the listener — that is how Prometheus scrapes. `backup` is the Raft
+disaster-recovery story: scheduled snapshots taken through OpenBao's
+own API and shipped to S3, Google Cloud Storage, Azure Blob, or
+Cloudflare R2 — each in its own vocabulary, by reference to the
+catalog's bucket, identity, and token kinds, keyless where the cloud
+offers it — with one runtime prerequisite: the job's Kubernetes-auth
+login inside OpenBao is a four-command recipe run after initialization
+(the spec prints it; so does a failing job). `restore` declares a fresh
+cluster's recovery from that store, offered when a seal arm is set so
+the same key unseals what comes back. `helm_values` merges last for
+chart surfaces deliberately not modeled; `fullnameOverride` is
+re-pinned after the merge.
 
 ---
 

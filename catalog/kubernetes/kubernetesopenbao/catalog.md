@@ -17,7 +17,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **Optional audit volume** -- a second PVC at `/openbao/audit` when `server.auditStorage` is declared; auditing itself is enabled at runtime (`bao audit enable file ...`) after initialization
 - **Seal credentials Secret** -- created only when an auto-unseal arm declares static credentials; delivered as environment variables, never written into the config ConfigMap
 - **Agent Injector** -- created only when `injector.enabled` is `true` (OFF by default here -- a deliberate divergence from the chart's cluster-wide-webhook default); a mutating webhook that injects agent sidecars into annotated pods
-- **Snapshot CronJob** -- created only when `snapshotAgent.enabled` is `true`; ships `bao operator raft snapshot` output to an S3-compatible bucket on a schedule
+- **Backup CronJob** -- created only when `backup` is declared; takes a Raft snapshot through OpenBao's API and ships it to S3, Google Cloud Storage, Azure Blob, or Cloudflare R2 on a schedule, with its own ServiceAccount, a scripts ConfigMap, and a credentials Secret for declared keys
+- **Restore Job** -- created only when `restore` is declared; fetches the named (or newest) snapshot from the backup store and installs it into a fresh cluster with the same seal key
 - **ServiceMonitor** -- created only when `metrics.serviceMonitorEnabled` is `true`; requires the Prometheus Operator CRDs on the cluster
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking
 
@@ -133,7 +134,7 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 
 **Agent Injector** -- OFF by default here, a deliberate divergence from the chart (whose default installs the MutatingWebhookConfiguration for every pod create/update cluster-wide). When on, `injector.failurePolicy` chooses `Ignore` (fail open -- injector downtime skips injection; the default) or `Fail`; above 1 replica, leader election creates the hard-coded `openbao-injector-certs` Secret -- one multi-replica injector per namespace.
 
-**Raft snapshots** -- `snapshotAgent` runs a CronJob (default `*/15 * * * *`) shipping `bao operator raft snapshot` to an S3-compatible bucket (an in-cluster KubernetesSeaweedFs endpoint composes naturally); `s3ExpireDays` (default 14) prunes old snapshots agent-side. PREREQUISITE the module cannot create: the Kubernetes auth method and the `baoRole` it logs in with are runtime configuration inside OpenBao -- until they exist, snapshot pods fail their login. `s3CredentialsSecretName` names an existing Secret with s3cmd-style `access_key` / `secret_key` -- pods crash-loop without it.
+**Backups and restore** -- `backup` runs a CronJob (default hourly) that takes a Raft snapshot through OpenBao's own API and ships it with rclone to the declared store: `s3` (real S3 or any S3-compatible endpoint -- an in-cluster KubernetesSeaweedFs composes naturally), `gcs`, `azureBlob`, or `r2` (Cloudflare R2 in its own vocabulary, by reference to the catalog's bucket and token kinds). Each cloud arm is keyless through `backup.workloadIdentity` or carries declared keys the module materializes as a Secret; `retentionDays` (default 14) prunes older snapshots. Raft only (`server.ha`). PREREQUISITE the module cannot create: the job's login inside OpenBao is a four-command Kubernetes-auth recipe run once after initialization -- the spec prints it, and so does a failing job, with the real names. `restore` on a fresh cluster with the same seal key fetches a named or the newest snapshot and installs it; the Job waits for the operator to hand it the fresh cluster's initial root token through a Secret, and the backup schedule stays suspended until the `restore` block is removed.
 
 **Metrics are unauthenticated when enabled** -- `metrics.enabled` renders the telemetry stanza AND opens `/v1/sys/metrics` without a token; anything that can reach the Service can read operational telemetry. `metrics.serviceMonitorEnabled` additionally requires the Prometheus Operator CRDs, and in HA scrapes only the active node.
 
@@ -154,7 +155,13 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 | **GcpKmsKeyRing** (optional) | `autoUnseal.gcpKms.keyRing` | `status.outputs.key_ring_name` |
 | **GcpKmsKey** (optional) | `autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |
 | **GcpServiceAccount** (optional) | `autoUnseal.gcpKms.workloadIdentityServiceAccount` | `status.outputs.email` |
-| **KubernetesSeaweedFs** (optional) | `snapshotAgent.s3Host` | `status.outputs.s3_endpoint` |
+| **KubernetesSeaweedFs** (optional) | `backup.objectStore.s3.endpointUrl` | `status.outputs.s3_endpoint` |
+| **GcpGcsBucket** (optional) | `backup.objectStore.gcs.bucket` | `status.outputs.bucket_name` |
+| **GcpServiceAccount** (optional) | `backup.workloadIdentity.gke.serviceAccountEmail` / `backup.objectStore.gcs.serviceAccountKey` | `status.outputs.email` / `status.outputs.key_base64` |
+| **AwsIamRole** (optional) | `backup.workloadIdentity.eks.roleArn` | `status.outputs.role_arn` |
+| **AzureUserAssignedIdentity** (optional) | `backup.workloadIdentity.aks.clientId` | `status.outputs.client_id` |
+| **CloudflareR2Bucket** (optional) | `backup.objectStore.r2.bucket` / `accountId` / `jurisdiction` | `status.outputs.bucket_name` / `account_id` / `jurisdiction` |
+| **CloudflareAccountApiToken** (optional) | `backup.objectStore.r2.credentials.accessKeyId` / `secretAccessKey` | `status.outputs.r2_access_key_id` / `r2_secret_access_key` |
 
 ### What This Component Provides
 
@@ -191,5 +198,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- issues the server TLS certificate Secret
 - [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- wraps the master key for GCP Cloud KMS auto-unseal
 - [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the workload identity for keyless KMS access
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) -- an in-cluster S3 endpoint for Raft snapshots
+- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) -- an in-cluster S3 endpoint for Raft snapshot backups
+- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) and [**Cloudflare Account API Token**](/cloud-catalog/cloudflare-account-api-token) -- the R2 backup store and its credential, by reference
 - [**External Secrets Operator**](/cloud-catalog/kubernetes-external-secrets-operator) -- consumes the `api_endpoint` output as a ClusterSecretStore backend

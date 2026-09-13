@@ -126,18 +126,4 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Rendered only when spec.metrics.service_monitor_enabled is true (CEL requires metrics.enabled alongside) -- requires the Prometheus operator CRDs on the cluster.
-      - api_groups:
-          - batch
-        resources:
-          - cronjobs
-        verbs:
-          - get
-          - list
-          - create
-          - update
-          - patch
-          - delete
-        cluster_scoped: false
-        provenance: derived
-        notes: Rendered only when spec.snapshot_agent.enabled is true -- the chart's snapshot-agent CronJob shipping Raft snapshots to the configured S3-compatible bucket. The spec.helm_values escape hatch can widen the chart's object surface beyond this profile; overlay users own the extra permissions.
+        notes: Rendered only when spec.metrics.service_monitor_enabled is true (CEL requires metrics.enabled alongside) -- requires the Prometheus operator CRDs on the cluster. The spec.helm_values escape hatch can widen the chart's object surface beyond this profile; overlay users own the extra permissions.

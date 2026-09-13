@@ -107,20 +107,96 @@ variable "spec" {
       enabled                 = optional(bool, false)
       service_monitor_enabled = optional(bool, false)
     }))
-    snapshot_agent = optional(object({
-      enabled                    = optional(bool, false)
-      schedule                   = optional(string)
-      s3_host                    = string
-      s3_bucket                  = string
-      s3_expire_days             = optional(number)
-      s3_credentials_secret_name = string
-      bao_role                   = optional(string)
-      bao_auth_path              = optional(string)
-    }))
     service_account = optional(object({
       annotations            = optional(map(string), {})
       auth_delegator_enabled = optional(bool)
     }))
     helm_values = optional(string, "")
+    backup = optional(object({
+      schedule       = optional(string)
+      retention_days = optional(number)
+      object_store = object({
+        prefix = optional(string, "")
+        s3 = optional(object({
+          bucket           = string
+          region           = optional(string, "")
+          endpoint_url     = optional(string, "")
+          force_path_style = optional(bool, false)
+          ca_pem           = optional(string, "")
+          keyless          = optional(bool, false)
+          access_keys = optional(object({
+            access_key_id     = string
+            secret_access_key = string
+          }))
+        }))
+        gcs = optional(object({
+          bucket              = string
+          keyless             = optional(bool, false)
+          service_account_key = optional(string, "")
+        }))
+        azure_blob = optional(object({
+          storage_account   = optional(string, "")
+          container         = string
+          keyless           = optional(bool, false)
+          storage_key       = optional(string, "")
+          connection_string = optional(string, "")
+        }))
+        r2 = optional(object({
+          bucket       = string
+          account_id   = string
+          jurisdiction = optional(string, "")
+          credentials = object({
+            access_key_id     = string
+            secret_access_key = string
+          })
+        }))
+      })
+      workload_identity = optional(object({
+        gke = optional(object({
+          service_account_email = string
+        }))
+        eks = optional(object({
+          role_arn = string
+        }))
+        aks = optional(object({
+          client_id = string
+          tenant_id = optional(string)
+        }))
+      }))
+      auth = optional(object({
+        mount_path = optional(string)
+        role       = optional(string, "")
+      }))
+      images = optional(object({
+        openbao = optional(object({
+          repo             = optional(string, "")
+          tag              = optional(string, "")
+          pull_secret_name = optional(string, "")
+        }))
+        rclone = optional(object({
+          repo             = optional(string, "")
+          tag              = optional(string, "")
+          pull_secret_name = optional(string, "")
+        }))
+      }))
+      resources = optional(object({
+        limits = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+        requests = optional(object({
+          cpu    = optional(string, "")
+          memory = optional(string, "")
+        }))
+      }))
+    }))
+    restore = optional(object({
+      snapshot_key = optional(string, "")
+      latest       = optional(bool, false)
+      root_token = object({
+        name = optional(string, "")
+        key  = optional(string, "")
+      })
+    }))
   })
 }

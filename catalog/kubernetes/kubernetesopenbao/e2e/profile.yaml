@@ -14,7 +14,13 @@ spec:
   # asserted NotReady-by-design, a real init/unseal bootstrap flipping
   # readiness, then a KV round-trip (never the generic readiness-waiting
   # fallback, which would hang every fresh install by design).
-  status: green
+  #
+  # The backup and restore surface (scheduled Raft snapshots to an object
+  # store, declared restore into a fresh cluster) is authored and offline-
+  # proven; its lanes -- a keyed S3 backup onto an in-cluster store, and a
+  # restore through the transit seal -- have not yet run live, so the
+  # profile waits on that proof.
+  status: pending_proof
   validated_provisioners:
     - pulumi
     - terraform

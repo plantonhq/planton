@@ -157,8 +157,9 @@ OpenBao waits only for the namespace — it has no database seam.
   the backup path (CloudNativePG's Barman Cloud plugin) requires
   cert-manager. Once present, declare a `KubernetesCnpgBarmanCloudPlugin`
   referencing the operator's namespace and a `backup` block on the
-  KubernetesPostgres resource. For OpenBao, enable its snapshot-agent arm (S3-compatible
-  target) after creating the snapshot auth role inside OpenBao.
+  KubernetesPostgres resource. For OpenBao, declare its `backup` block (S3, GCS,
+  Azure Blob, or Cloudflare R2 by reference) and run the four-command login recipe
+  the spec prints once the vault is initialized.
 - **Scaling OpenFGA:** the servers are stateless — raise `replicas` on
   the deployed resource; the database is the shared truth. Its `3`
   default already rides one Service.
