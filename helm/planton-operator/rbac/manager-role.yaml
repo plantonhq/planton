@@ -161,6 +161,7 @@ rules:
   - cert-manager.io
   resources:
   - certificates
+  - issuers
   verbs:
   - create
   - delete
@@ -169,14 +170,6 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - cert-manager.io
-  resources:
-  - issuers
-  verbs:
-  - delete
-  - get
-  - list
 - apiGroups:
   - gateway.networking.k8s.io
   resources:

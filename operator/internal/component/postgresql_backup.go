@@ -49,6 +49,13 @@ const (
 	recoverFromFieldPath = "spec.database.postgresql.recoverFrom"
 )
 
+// The plugin chart mints the operator-to-plugin TLS pair through cert-manager:
+// two Certificates and the self-signed Issuer they reference. Without the
+// verbs on issuers the install applies eleven objects and is refused on the
+// twelfth, the Certificates never become ready, and the plugin pod waits on a
+// Secret nobody will mint.
+// +kubebuilder:rbac:groups=cert-manager.io,resources=issuers,verbs=get;list;watch;create;update;patch;delete
+
 // BarmanCloudPluginSubOperator is the one definition of the Barman Cloud
 // plugin install this operator manages -- what detects it, what installs it,
 // what proves it serving -- read by the install gate and by the janitor, the
@@ -218,13 +225,25 @@ func (p *PostgreSQL) planBackup(ctx context.Context, c client.Client, planton *v
 
 	pluginReady, err := p.EnsureSubOperator(ctx, c, BarmanCloudPluginSubOperator())
 	if err != nil {
-		// A plugin that cannot be installed must never take the database
-		// with it: the Cluster is applied without it, and the Backup column
-		// carries the reason. The gate retries on the next pass.
-		if spec != nil {
-			plan.status.State = v1.BackupStateUnavailable
-			plan.status.Message = fmt.Sprintf("the backup plugin could not be installed: %v; the database runs without backups until it can", err)
+		if spec == nil {
+			return plan, nil
 		}
+		plan.status.State = v1.BackupStateUnavailable
+		// A plugin that cannot be installed must never take a RUNNING
+		// database with it: the Cluster is applied without it, and the
+		// Backup column carries the reason. A database that does not exist
+		// yet is the opposite case -- creating it now would make it empty,
+		// and with a recovery declared that empty database would stand where
+		// the archive's restore was expected, looking like data loss. So a
+		// fresh install holds until the plugin can be installed, and says so.
+		// The gate retries on the next pass either way.
+		if existing == nil {
+			plan.holdCluster = true
+			plan.waiting = fmt.Sprintf("the backup plugin could not be installed: %v; holding the database so it is not created empty (a declared backup or restore needs the plugin from the first start)", err)
+			plan.status.Message = plan.waiting
+			return plan, nil
+		}
+		plan.status.Message = fmt.Sprintf("the backup plugin could not be installed: %v; the database runs without backups until it can", err)
 		return plan, nil
 	}
 	if spec == nil {
@@ -291,13 +310,23 @@ func (p *PostgreSQL) planDeclaredBackup(ctx context.Context, c client.Client, pl
 		ServerName:      plan.status.ServerName,
 	}
 	plan.serviceAccountAnnotations = spec.ServiceAccountAnnotations
-	plan.after = append(plan.after, resources.NewScheduledBackup(resources.ScheduledBackupOptions{
-		CRName:          planton.Name,
-		Namespace:       planton.Namespace,
-		Schedule:        spec.Schedule,
-		ObjectStoreName: storeName,
-		OwnerRef:        owner,
-	}))
+	// The schedule fires its first base backup the moment it exists. On a
+	// database that is only now being handed the plugin (created this pass,
+	// or restarting to attach the sidecar), that first run reaches a
+	// PostgreSQL whose archiving sidecar is not up yet and fails with "plugin
+	// not available" -- and nothing retries it before the next scheduled
+	// hour. So the schedule is rendered only once the database operator
+	// itself reports the plugin loaded on this Cluster; the pass after that,
+	// the immediate backup lands against a live sidecar.
+	if clusterReportsPlugin(existing) {
+		plan.after = append(plan.after, resources.NewScheduledBackup(resources.ScheduledBackupOptions{
+			CRName:          planton.Name,
+			Namespace:       planton.Namespace,
+			Schedule:        spec.Schedule,
+			ObjectStoreName: storeName,
+			OwnerRef:        owner,
+		}))
+	}
 
 	plan.status.State = v1.BackupStateDeploying
 	switch {
@@ -455,6 +484,23 @@ func clusterCarriesPlugin(cluster *unstructured.Unstructured) bool {
 	return false
 }
 
+// clusterReportsPlugin reports whether the database operator has loaded the
+// backup plugin on a live Cluster (status.pluginStatus names it) -- the
+// moment the archiving sidecar is actually reachable, as opposed to merely
+// declared on the spec.
+func clusterReportsPlugin(cluster *unstructured.Unstructured) bool {
+	if cluster == nil {
+		return false
+	}
+	plugins, _, _ := unstructured.NestedSlice(cluster.Object, "status", "pluginStatus")
+	for _, p := range plugins {
+		if m, ok := p.(map[string]any); ok && m["name"] == resources.BarmanCloudPluginName {
+			return true
+		}
+	}
+	return false
+}
+
 // clusterBootstrappedFromRecovery reports whether a live Cluster was created
 // from an archive.
 func clusterBootstrappedFromRecovery(cluster *unstructured.Unstructured) bool {
@@ -520,8 +566,20 @@ func (p *PostgreSQL) refreshBackupStatus(ctx context.Context, c client.Client, p
 	if !clusterCarriesPlugin(cluster) {
 		return status
 	}
-	status.FirstRecoverabilityPoint = timeField(cluster, "status", "firstRecoverabilityPoint")
-	status.LastSuccessfulBackup = timeField(cluster, "status", "lastSuccessfulBackup")
+	// For a plugin-driven backup the database operator leaves its own
+	// firstRecoverabilityPoint and lastSuccessfulBackup empty; the archive's
+	// record is kept by the plugin on the ObjectStore, per server name. Read
+	// that first and fall back to the Cluster's fields, so a store the plugin
+	// has not reported on yet still reads whatever the Cluster knows.
+	first, last := p.recoveryWindow(ctx, c, planton.Namespace, resources.PostgreSQLBackupObjectStoreName(planton.Name), status.ServerName)
+	if first == nil {
+		first = timeField(cluster, "status", "firstRecoverabilityPoint")
+	}
+	if last == nil {
+		last = timeField(cluster, "status", "lastSuccessfulBackup")
+	}
+	status.FirstRecoverabilityPoint = first
+	status.LastSuccessfulBackup = last
 	status.LastFailedBackup = timeField(cluster, "status", "lastFailedBackup")
 
 	archiving, archivingMessage := conditionStatus(cluster, cnpgContinuousArchivingConditionType)
@@ -548,6 +606,23 @@ func (p *PostgreSQL) refreshBackupStatus(ctx context.Context, c client.Client, p
 		status.Message = fmt.Sprintf("WAL archiving is continuous; last base backup %s", status.LastSuccessfulBackup.UTC().Format(time.RFC3339))
 	}
 	return status
+}
+
+// recoveryWindow reads the plugin's record of the archive for one server --
+// status.serverRecoveryWindow[serverName] on the ObjectStore: the first point
+// a restore can reach and the last base backup that completed. Nil, nil when
+// the store is absent or has not reported on that server yet.
+func (p *PostgreSQL) recoveryWindow(ctx context.Context, c client.Client, namespace, storeName, serverName string) (first, last *metav1.Time) {
+	if serverName == "" {
+		return nil, nil
+	}
+	store := &unstructured.Unstructured{}
+	store.SetGroupVersionKind(resources.ObjectStoreGVK)
+	if err := c.Get(ctx, types.NamespacedName{Name: storeName, Namespace: namespace}, store); err != nil {
+		return nil, nil
+	}
+	return timeField(store, "status", "serverRecoveryWindow", serverName, "firstRecoverabilityPoint"),
+		timeField(store, "status", "serverRecoveryWindow", serverName, "lastSuccessfulBackupTime")
 }
 
 // lastBackupError reads the failed Backup object's own error for the

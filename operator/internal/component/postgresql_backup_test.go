@@ -8,6 +8,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -15,6 +16,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
+	"sigs.k8s.io/controller-runtime/pkg/client/interceptor"
 
 	v1 "github.com/plantonhq/planton/operator/api/v1"
 	"github.com/plantonhq/planton/operator/internal/resources"
@@ -215,8 +217,67 @@ func TestPlanBackup_RunningDatabaseAttachesLiveAndNamesTheRestart(t *testing.T) 
 	if kinds["ObjectStore"] != 1 || kinds["Secret"] != 1 {
 		t.Errorf("before the Cluster: one store and its settings Secret, got %v", kinds)
 	}
+	if len(plan.after) != 0 {
+		t.Errorf("the schedule waits until the database operator reports the plugin loaded; a Cluster that does not report it yet gets none, got %v", plan.after)
+	}
+
+	// The database operator reports the plugin loaded: now the schedule,
+	// whose immediate first run will meet a live archiving sidecar.
+	existing.Object["status"] = map[string]any{"pluginStatus": []any{map[string]any{"name": resources.BarmanCloudPluginName}}}
+	plan, err = p.planBackup(context.Background(), c, backupPlatform(true, ""), existing)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if len(plan.after) != 1 || plan.after[0].GetKind() != "ScheduledBackup" {
-		t.Errorf("after the Cluster: the schedule, got %v", plan.after)
+		t.Errorf("after the Cluster, once the plugin is reported: the schedule, got %v", plan.after)
+	}
+}
+
+// The plugin install itself failing (a refused apply, a webhook down) must
+// not turn a declared restore into an empty database: with no Cluster yet the
+// arm holds and says why; a running database keeps running without backups.
+func TestPlanBackup_PluginInstallErrorHoldsAFreshInstallAndSparesARunningDatabase(t *testing.T) {
+	p := &PostgreSQL{}
+	planton := backupPlatform(true, "")
+	planton.Spec.Database.PostgreSQL.RecoverFrom = &v1.PostgreSQLRecoverFromSpec{
+		ObjectStore: v1.ObjectStoreSpec{DestinationPath: "s3://bucket/platform", S3: &v1.S3ObjectStoreSpec{}},
+		ServerName:  "planton-postgres-deadbeef",
+	}
+	// Our CRD without its Deployment sends the gate down the resume arm, which
+	// applies the real plugin chart object by object; the cluster refuses the
+	// Issuer, the way a ClusterRole missing the verb did live.
+	refusesIssuers := interceptor.Funcs{Patch: func(ctx context.Context, cl client.WithWatch, obj client.Object, patch client.Patch, opts ...client.PatchOption) error {
+		if obj.GetObjectKind().GroupVersionKind().Kind == "Issuer" {
+			return apierrors.NewForbidden(schema.GroupResource{Group: "cert-manager.io", Resource: "issuers"}, obj.GetName(), nil)
+		}
+		return cl.Patch(ctx, obj, patch, opts...)
+	}}
+	refusingCluster := func() client.Client {
+		return fake.NewClientBuilder().WithScheme(backupScheme(t)).WithInterceptorFuncs(refusesIssuers).
+			WithObjects(cnpgOurs, certManager, certIssuers, pluginOursCRD, keysSecret(resources.ObjectStoreKeyAccessKeyID, resources.ObjectStoreKeySecretAccessKey)).Build()
+	}
+
+	plan, err := p.planBackup(context.Background(), refusingCluster(), planton, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !plan.holdCluster || plan.recovery != nil || plan.backup != nil {
+		t.Fatalf("a fresh install whose plugin cannot be installed is held, never created empty: %+v", plan)
+	}
+	if plan.status.State != v1.BackupStateUnavailable || !strings.Contains(plan.waiting, "could not be installed") || !strings.Contains(plan.waiting, "not created empty") {
+		t.Errorf("the hold explains itself: state=%s waiting=%q", plan.status.State, plan.waiting)
+	}
+
+	// A fresh fake: the first attempt applied the objects before the Issuer,
+	// and a cluster that already carries the Deployment takes the readiness
+	// arm instead of the install arm.
+	existing := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{CRName: "planton", Namespace: "planton", Instances: 1, StorageSize: "1Gi"})
+	plan, err = p.planBackup(context.Background(), refusingCluster(), planton, existing)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if plan.holdCluster || plan.status.State != v1.BackupStateUnavailable || !strings.Contains(plan.status.Message, "runs without backups") {
+		t.Errorf("a running database is never held for the plugin: %+v", plan)
 	}
 }
 
@@ -437,6 +498,26 @@ func TestRefreshBackupStatus(t *testing.T) {
 			clusterWithStatus(archivingTrue, map[string]any{"lastSuccessfulBackup": "2026-09-10T02:00:00Z", "firstRecoverabilityPoint": "2026-09-01T02:00:00Z"}), provisional)
 		if got.State != v1.BackupStateHealthy || got.LastSuccessfulBackup == nil || got.FirstRecoverabilityPoint == nil || !strings.Contains(got.Message, "2026-09-10T02:00:00Z") {
 			t.Errorf("got %+v", got)
+		}
+	})
+	t.Run("a plugin-driven backup: the archive's own record on the ObjectStore wins over empty Cluster fields", func(t *testing.T) {
+		store := &unstructured.Unstructured{}
+		store.SetGroupVersionKind(resources.ObjectStoreGVK)
+		store.SetName("planton-postgres")
+		store.SetNamespace("planton")
+		store.Object["status"] = map[string]any{"serverRecoveryWindow": map[string]any{
+			"planton-postgres-1a2b3c4d": map[string]any{"firstRecoverabilityPoint": "2026-09-14T13:57:10Z", "lastSuccessfulBackupTime": "2026-09-14T13:57:10Z"},
+			"planton-postgres-00000000": map[string]any{"firstRecoverabilityPoint": "2026-01-01T00:00:00Z", "lastSuccessfulBackupTime": "2026-01-01T00:00:00Z"},
+		}}
+		// The Cluster knows only of a failed run that raced the sidecar; the
+		// store knows the base backup that completed after it.
+		got := p.refreshBackupStatus(context.Background(), fakeCluster(t, store), planton,
+			clusterWithStatus(archivingTrue, map[string]any{"lastFailedBackup": "2026-09-14T13:51:04Z"}), provisional)
+		if got.State != v1.BackupStateHealthy || got.LastSuccessfulBackup == nil || got.FirstRecoverabilityPoint == nil || !strings.Contains(got.Message, "2026-09-14T13:57:10Z") {
+			t.Errorf("got %+v", got)
+		}
+		if !got.FirstRecoverabilityPoint.Time.Equal(got.LastSuccessfulBackup.Time) {
+			t.Errorf("the window is read for THIS server, not another server in the same store: %+v", got)
 		}
 	})
 	t.Run("archiving failing: Failing in the plugin's words, whatever the backups say", func(t *testing.T) {
