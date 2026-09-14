@@ -56,6 +56,39 @@ func TestCollectSpecPaths_HermeticFixture(t *testing.T) {
 	}
 }
 
+// TestCollectSpecCensus_ManifestOnlyLeafIsRecorded proves the walk records a
+// field carrying (dev.planton.shared.options.manifest_only) in both outputs:
+// it is authored surface (so it stays a spec leaf and counts) and it is a
+// word no engine forwards (so the reverse check reads it as excluded by the
+// schema). Its unmarked siblings appear in the first output only.
+func TestCollectSpecCensus_ManifestOnlyLeafIsRecorded(t *testing.T) {
+	msg, err := crkreflect.NewInstance(cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes)
+	if err != nil {
+		t.Fatalf("new instance: %v", err)
+	}
+	specField := msg.ProtoReflect().Descriptor().Fields().ByName("spec")
+	if specField == nil {
+		t.Fatal("fixture has no spec field")
+	}
+
+	paths, manifestOnly := CollectSpecCensus(specField.Message(), "spec")
+	if !reflect.DeepEqual(manifestOnly, []string{"spec.select_all"}) {
+		t.Errorf("manifest-only leaves = %v, want [spec.select_all]", manifestOnly)
+	}
+	hasSelectAll, hasSibling := false, false
+	for _, p := range paths {
+		switch p {
+		case "spec.select_all":
+			hasSelectAll = true
+		case "spec.create_namespace":
+			hasSibling = true
+		}
+	}
+	if !hasSelectAll || !hasSibling {
+		t.Errorf("spec paths must carry both the marked leaf and its sibling; got %v", paths)
+	}
+}
+
 // TestCollectSpecPaths_RecursiveReentryIsOneLeaf proves the recursive
 // re-entry rule against a live recursive spec (AwsWafWebAcl's statement
 // tree): a field whose message type is an ancestor on the walk path counts

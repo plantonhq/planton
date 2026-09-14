@@ -10,6 +10,7 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -180,7 +181,10 @@ func (x *KubernetesAuthorizationPolicySpec) GetProvider() *KubernetesAuthorizati
 // KubernetesAuthorizationPolicyRule matches requests from a set of sources (`from`)
 // performing a set of operations (`to`) subject to a set of conditions (`when`). A
 // request matches the rule when at least one `from`, at least one `to`, and ALL
-// `when` conditions match. An empty rule matches every request. Faithful to the
+// `when` conditions match. A rule says what it matches: `from`, `to`, and `when`
+// narrow it, and `match_all: true` matches every request (the empty rule on the
+// Istio wire); a rule that names neither is refused, so "match every request" is
+// always a written choice and never an accident of an empty row. Faithful to the
 // upstream istio.io/api AuthorizationPolicy.Rule message.
 type KubernetesAuthorizationPolicyRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -189,7 +193,13 @@ type KubernetesAuthorizationPolicyRule struct {
 	// Operations of the request. If empty, any operation matches.
 	To []*KubernetesAuthorizationPolicyRuleTo `protobuf:"bytes,2,rep,name=to,proto3" json:"to,omitempty"`
 	// Additional conditions of the request. If empty, any condition matches.
-	When          []*KubernetesAuthorizationPolicyCondition `protobuf:"bytes,3,rep,name=when,proto3" json:"when,omitempty"`
+	When []*KubernetesAuthorizationPolicyCondition `protobuf:"bytes,3,rep,name=when,proto3" json:"when,omitempty"`
+	// Match every request. The manifest's word for the empty rule on the Istio
+	// wire -- it never reaches the cluster; the rule it describes is emitted with
+	// no matchers. Cannot be combined with from, to, or when. With ALLOW this
+	// admits every request to the selected workloads; with DENY it is a total
+	// lockout.
+	MatchAll      *bool `protobuf:"varint,4,opt,name=match_all,json=matchAll,proto3,oneof" json:"match_all,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -243,6 +253,13 @@ func (x *KubernetesAuthorizationPolicyRule) GetWhen() []*KubernetesAuthorization
 		return x.When
 	}
 	return nil
+}
+
+func (x *KubernetesAuthorizationPolicyRule) GetMatchAll() bool {
+	if x != nil && x.MatchAll != nil {
+		return *x.MatchAll
+	}
+	return false
 }
 
 // KubernetesAuthorizationPolicyRuleFrom wraps a single request source. The wrapper
@@ -762,7 +779,7 @@ var File_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_spec_proto pr
 
 const file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/spec.proto\x12=dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\"catalog/kubernetes/istio_api.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xcf\x06\n" +
+	"Dcatalog/kubernetes/kubernetesauthorizationpolicy/v1alpha1/spec.proto\x12=dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\"catalog/kubernetes/istio_api.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xcf\x06\n" +
 	"!KubernetesAuthorizationPolicySpec\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12V\n" +
 	"\bselector\x18\x03 \x01(\v2:.dev.planton.kubernetes.KubernetesIstioApiWorkloadSelectorR\bselector\x12j\n" +
@@ -772,11 +789,16 @@ const file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_spec_proto_
 	"\x06action\x18\x06 \x01(\tB!\xbaH\x1er\x1cR\x05ALLOWR\x04DENYR\x05AUDITR\x06CUSTOMH\x00R\x06action\x88\x01\x01\x12\x89\x01\n" +
 	"\bprovider\x18\a \x01(\v2m.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyExtensionProviderR\bprovider:\x9e\x01\xbaH\x9a\x01\x1a\x97\x01\n" +
 	"-authorization_policy.selector_xor_target_refs\x121at most one of selector or target_refs may be set\x1a3!(has(this.selector) && size(this.target_refs) > 0)B\t\n" +
-	"\a_action\"\x98\x03\n" +
+	"\a_action\"\xc9\a\n" +
 	"!KubernetesAuthorizationPolicyRule\x12\x83\x01\n" +
 	"\x04from\x18\x01 \x03(\v2d.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyRuleFromB\t\xbaH\x06\x92\x01\x03\x10\x80\x04R\x04from\x12r\n" +
 	"\x02to\x18\x02 \x03(\v2b.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyRuleToR\x02to\x12y\n" +
-	"\x04when\x18\x03 \x03(\v2e.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyConditionR\x04when\"\xa3\x01\n" +
+	"\x04when\x18\x03 \x03(\v2e.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicyConditionR\x04when\x12&\n" +
+	"\tmatch_all\x18\x04 \x01(\bB\x04Ȧ\x1d\x01H\x00R\bmatchAll\x88\x01\x01:\xf8\x03\xbaH\xf4\x03\x1a\xf9\x01\n" +
+	"\x1bmatch_all_excludes_matchers\x12ematch_all: true matches every request — drop from, to, and when, or drop match_all to match by them\x1as!(has(this.match_all) && this.match_all) || (this.from.size() == 0 && this.to.size() == 0 && this.when.size() == 0)\x1a\xf5\x01\n" +
+	"\x19rule_says_what_it_matches\x12ia rule must say what it matches — set match_all: true to match every request, or name from, to, or when\x1am(has(this.match_all) && this.match_all) || this.from.size() > 0 || this.to.size() > 0 || this.when.size() > 0B\f\n" +
+	"\n" +
+	"_match_all\"\xa3\x01\n" +
 	"%KubernetesAuthorizationPolicyRuleFrom\x12z\n" +
 	"\x06source\x18\x01 \x01(\v2b.dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1.KubernetesAuthorizationPolicySourceR\x06source\"\xab\x01\n" +
 	"#KubernetesAuthorizationPolicyRuleTo\x12\x83\x01\n" +
@@ -872,6 +894,7 @@ func file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_spec_proto_i
 		return
 	}
 	file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesauthorizationpolicy_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

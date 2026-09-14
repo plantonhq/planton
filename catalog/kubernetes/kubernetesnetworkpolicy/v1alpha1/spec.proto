@@ -4,6 +4,7 @@ package dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 /**
  * **KubernetesNetworkPolicySpec** declares which network traffic is allowed to and
@@ -368,10 +369,12 @@ message KubernetesNetworkPolicyLabelSelector {
 
   /**
    * Select everything: every pod in scope for a pod selector, every namespace
-   * for a namespace selector. Renders as the empty selector on the wire.
-   * Cannot be combined with match_labels or match_expressions.
+   * for a namespace selector. The manifest's word for the empty selector on
+   * the Kubernetes wire -- it never reaches the cluster; the selector it
+   * describes is emitted with no criteria. Cannot be combined with
+   * match_labels or match_expressions.
    */
-  optional bool match_all = 3;
+  optional bool match_all = 3 [(dev.planton.shared.options.manifest_only) = true];
 }
 
 /**

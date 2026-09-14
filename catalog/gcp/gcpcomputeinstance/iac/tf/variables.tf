@@ -105,10 +105,11 @@ variable "spec" {
       network_attachment = optional(string, "")
       # Static internal IP (resolved GcpAddress or literal IP).
       network_ip = optional(string, "")
-      # At most one; a config grants a static nat_ip or an ephemeral address
-      # (ephemeral is the manifest's word for it and never reaches GCP).
+      # At most one; a config grants a static nat_ip, or an ephemeral address
+      # when the manifest says `ephemeral: true` (a manifest-only word: the
+      # converter never sends it, and a config without a nat_ip is the ephemeral
+      # request on the wire).
       access_configs = optional(list(object({
-        ephemeral              = optional(bool)
         nat_ip                 = optional(string, "")
         network_tier           = optional(string, "")
         public_ptr_domain_name = optional(string, "")

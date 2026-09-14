@@ -108,6 +108,13 @@ func variableDescription(resourceMD protoreflect.MessageDescriptor, fieldName st
 // The visited set is the path-scoped cycle guard threaded through the whole
 // descriptor walk (see msgDescToTFObject).
 func fieldToTFType(fd protoreflect.FieldDescriptor, parentMD protoreflect.MessageDescriptor, rules map[string]TypeRule, visited map[protoreflect.FullName]bool) (TFType, error) {
+	// A manifest-only word gets no variable: the tfvars converter never sends
+	// it, so a declared attribute would be dead on every module. Callers read
+	// a nil type as "skipped", the same way a Skip type rule is read.
+	if isManifestOnlyField(fd) {
+		return nil, nil
+	}
+
 	// Handle map fields first (before IsList, since maps are also "repeated" in proto).
 	if fd.IsMap() {
 		return mapFieldToTFType(fd, rules, visited)

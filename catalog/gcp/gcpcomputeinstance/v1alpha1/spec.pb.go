@@ -1173,8 +1173,8 @@ type GcpComputeInstanceAccessConfig struct {
 	// Domain name for the public PTR (reverse DNS) record of this IP.
 	PublicPtrDomainName string `protobuf:"bytes,3,opt,name=public_ptr_domain_name,json=publicPtrDomainName,proto3" json:"public_ptr_domain_name,omitempty"`
 	// Let GCP assign an ephemeral external IPv4 to this interface. Alternative
-	// to a static nat_ip. Never reaches GCP itself: an access config without a
-	// nat_ip IS the ephemeral request on the wire.
+	// to a static nat_ip. The manifest's word for it -- never reaches GCP: an
+	// access config without a nat_ip IS the ephemeral request on the wire.
 	Ephemeral     *bool `protobuf:"varint,4,opt,name=ephemeral,proto3,oneof" json:"ephemeral,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2360,12 +2360,12 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"+network_interface_attachment_point_required\x12\xb3\x01each network interface needs an attachment point: a network (auto-mode VPC), a subnetwork (custom-mode VPC), or a network_attachment (Private Service Connect) — set at least one\x1a\xce\x01(has(this.network) && (has(this.network.value) || has(this.network.value_from))) || (has(this.subnetwork) && (has(this.subnetwork.value) || has(this.subnetwork.value_from))) || this.network_attachment != ''B\x0e\n" +
 	"\f_queue_countB\a\n" +
 	"\x05_vlanB\x1e\n" +
-	"\x1c_internal_ipv6_prefix_length\"\x8a\x04\n" +
+	"\x1c_internal_ipv6_prefix_length\"\x90\x04\n" +
 	"\x1eGcpComputeInstanceAccessConfig\x12j\n" +
 	"\x06nat_ip\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xaa\x18\x92\xd4a\x16status.outputs.addressR\x05natIp\x12>\n" +
 	"\fnetwork_tier\x18\x02 \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\aPREMIUMR\bSTANDARDR\vnetworkTier\x123\n" +
-	"\x16public_ptr_domain_name\x18\x03 \x01(\tR\x13publicPtrDomainName\x12!\n" +
-	"\tephemeral\x18\x04 \x01(\bH\x00R\tephemeral\x88\x01\x01:\xd5\x01\xbaH\xd1\x01\x1a\xce\x01\n" +
+	"\x16public_ptr_domain_name\x18\x03 \x01(\tR\x13publicPtrDomainName\x12'\n" +
+	"\tephemeral\x18\x04 \x01(\bB\x04Ȧ\x1d\x01H\x00R\tephemeral\x88\x01\x01:\xd5\x01\xbaH\xd1\x01\x1a\xce\x01\n" +
 	" access_config_says_which_address\x12man access config grants either a static nat_ip or an ephemeral address — set nat_ip, or set ephemeral: true\x1a;has(this.nat_ip) != (has(this.ephemeral) && this.ephemeral)B\f\n" +
 	"\n" +
 	"_ephemeral\"\x87\x02\n" +

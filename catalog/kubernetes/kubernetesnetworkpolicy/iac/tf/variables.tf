@@ -21,8 +21,11 @@ variable "spec" {
     labels      = optional(map(string), {})
     annotations = optional(map(string), {})
 
-    # Selects the governed pods; absent/empty selects ALL pods in the
-    # namespace (the default-deny building block).
+    # Selects the governed pods; absent, or declared with no criteria, selects
+    # ALL pods in the namespace (the default-deny building block). The
+    # manifest spells that choice as `match_all: true`, a manifest-only word
+    # the converter never sends here: every selector below arrives as its
+    # criteria alone, and no criteria IS the empty selector on the wire.
     pod_selector = optional(object({
       match_labels = optional(map(string), {})
       match_expressions = optional(list(object({
@@ -30,8 +33,6 @@ variable "spec" {
         operator = string
         values   = optional(list(string), [])
       })), [])
-      # Selects everything; renders as the empty selector. Alternative to labels.
-      match_all = optional(bool)
     }))
 
     # Governed directions: "ingress" / "egress". Empty defers to the API
@@ -47,8 +48,6 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
-          # Selects everything; renders as the empty selector. Alternative to labels.
-          match_all = optional(bool)
         }))
         namespace_selector = optional(object({
           match_labels = optional(map(string), {})
@@ -57,8 +56,6 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
-          # Selects everything; renders as the empty selector. Alternative to labels.
-          match_all = optional(bool)
         }))
         ip_block = optional(object({
           cidr   = string
@@ -82,8 +79,6 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
-          # Selects everything; renders as the empty selector. Alternative to labels.
-          match_all = optional(bool)
         }))
         namespace_selector = optional(object({
           match_labels = optional(map(string), {})
@@ -92,8 +87,6 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
-          # Selects everything; renders as the empty selector. Alternative to labels.
-          match_all = optional(bool)
         }))
         ip_block = optional(object({
           cidr   = string

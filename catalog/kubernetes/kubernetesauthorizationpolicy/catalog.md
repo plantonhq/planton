@@ -88,7 +88,7 @@ These are the most important decisions when configuring an authorization policy.
 
 **Scope: selector XOR target references.** At most one of a workload `selector` (pod labels) and `targetRefs` (Gateway, Service, ServiceEntry -- up to 16) may be set; both omitted means namespace-wide, or mesh-wide when the policy lives in the Istio root namespace. Waypoint proxies IGNORE label-selector policies -- attaching to a waypoint requires `targetRefs`.
 
-**Rule matching is any-source, any-operation, ALL conditions.** A request matches the policy if it matches any rule; within a rule it must match at least one `from` source, at least one `to` operation, and every `when` condition. An empty rule matches every request -- with DENY that is a total lockout of the selected workloads.
+**Rule matching is any-source, any-operation, ALL conditions.** A request matches the policy if it matches any rule; within a rule it must match at least one `from` source, at least one `to` operation, and every `when` condition. A rule that should match every request says `matchAll: true` (the empty rule on the Istio wire) -- with DENY that is a total lockout of the selected workloads; a rule that names neither a matcher nor `matchAll` is refused, so matching everything is always a written choice.
 
 **CUSTOM needs a provider that already exists.** The CUSTOM action delegates to an extension provider named in the mesh's MeshConfig (`provider.name`). istiod enforces the CUSTOM-provider coupling at runtime, not at admission -- a typo in the provider name surfaces as failing requests, not a rejected manifest.
 

@@ -262,8 +262,10 @@ func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCe
 	sort.Strings(schemaNames)
 
 	specPaths := map[string][]string{}
+	manifestOnly := map[string][]string{}
 	for _, k := range spec {
 		specPaths[k.Kind] = k.SpecFieldPaths
+		manifestOnly[k.Kind] = k.ManifestOnlyPaths
 	}
 
 	acc := Accounting{
@@ -291,7 +293,7 @@ func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCe
 		if manifest == nil {
 			manifest = &Manifest{}
 		}
-		ka := accountKind(m, specPaths[m.Kind], schemas, schemaNames, manifests[m.Kind] != nil, manifest)
+		ka := accountKind(m, specPaths[m.Kind], manifestOnly[m.Kind], schemas, schemaNames, manifests[m.Kind] != nil, manifest)
 		acc.Kinds = append(acc.Kinds, ka)
 		key := "kind:" + m.Kind
 		for _, arg := range ka.UnaccountedArgs {
@@ -449,8 +451,10 @@ func (m argMatcher) derive(argPath string) ([]string, bool) {
 	return []string{m.specRoot + "." + argPath}, false
 }
 
-// accountKind runs both accounting directions for one kind.
-func accountKind(m ModuleCensus, kindSpecPaths []string, schemas map[string]*Schema, schemaNames []string, hasManifest bool, manifest *Manifest) KindAccounting {
+// accountKind runs both accounting directions for one kind. manifestOnlyPaths
+// are the spec leaves the proto marks (dev.planton.shared.options.manifest_only);
+// the reverse direction reads each as an exclusion the schema itself declares.
+func accountKind(m ModuleCensus, kindSpecPaths, manifestOnlyPaths []string, schemas map[string]*Schema, schemaNames []string, hasManifest bool, manifest *Manifest) KindAccounting {
 	ka := KindAccounting{Kind: m.Kind, HasManifest: hasManifest}
 	specSet := map[string]bool{}
 	for _, p := range kindSpecPaths {
@@ -602,7 +606,19 @@ func accountKind(m ModuleCensus, kindSpecPaths []string, schemas map[string]*Sch
 	// resources keeps the walk: its schema-side fields still must reach
 	// provider surface, and external-fed fields need specExclusions naming
 	// the external resource.
+	//
+	// A leaf the proto marks manifest_only is excluded by the schema itself:
+	// the field exists so the manifest can say what the wire spells by the
+	// absence of its siblings, and no engine forwards it. The manifest never
+	// repeats that fact -- a specExclusions entry for such a leaf is stale.
+	manifestOnly := map[string]bool{}
+	for _, p := range manifestOnlyPaths {
+		manifestOnly[p] = true
+	}
 	specExcluded := func(path string) bool {
+		if manifestOnly[path] {
+			return true
+		}
 		for _, ex := range manifest.SpecExclusions {
 			if path == ex.Field || strings.HasPrefix(path, ex.Field+".") {
 				return true
@@ -618,9 +634,13 @@ func accountKind(m ModuleCensus, kindSpecPaths []string, schemas map[string]*Sch
 		}
 	}
 	for _, ex := range manifest.SpecExclusions {
-		if !underPath(kindSpecPaths, ex.Field) {
+		switch {
+		case !underPath(kindSpecPaths, ex.Field):
 			ka.ManifestStale = append(ka.ManifestStale,
 				fmt.Sprintf("specExclusions: %s matches no spec field", ex.Field))
+		case manifestOnly[ex.Field]:
+			ka.ManifestStale = append(ka.ManifestStale,
+				fmt.Sprintf("specExclusions: %s is manifest_only in the proto, which already excludes it -- remove the entry", ex.Field))
 		}
 	}
 

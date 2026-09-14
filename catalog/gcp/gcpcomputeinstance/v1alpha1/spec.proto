@@ -692,9 +692,9 @@ message GcpComputeInstanceAccessConfig {
   string public_ptr_domain_name = 3;
 
   // Let GCP assign an ephemeral external IPv4 to this interface. Alternative
-  // to a static nat_ip. Never reaches GCP itself: an access config without a
-  // nat_ip IS the ephemeral request on the wire.
-  optional bool ephemeral = 4;
+  // to a static nat_ip. The manifest's word for it -- never reaches GCP: an
+  // access config without a nat_ip IS the ephemeral request on the wire.
+  optional bool ephemeral = 4 [(dev.planton.shared.options.manifest_only) = true];
 }
 
 // GcpComputeInstanceIpv6AccessConfig grants the interface external IPv6

@@ -1,6 +1,29 @@
 package generators
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/plantonhq/planton/shared/options"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
+)
+
+// isManifestOnlyField reports whether a field is a word the manifest carries
+// and no engine forwards -- `(dev.planton.shared.options.manifest_only)`. Such a
+// field exists so an empty block can say what it means (a selector's
+// `match_all`, an access config's `ephemeral`); the wire spells the same fact
+// by the absence of the field's siblings. Both generators consult this per
+// field, so a Terraform module never receives the key in tfvars and never has
+// a variable declared for it -- the marker is honored once, here, never per
+// module.
+func isManifestOnlyField(fd protoreflect.FieldDescriptor) bool {
+	opts := fd.Options()
+	if opts == nil {
+		return false
+	}
+	v, ok := proto.GetExtension(opts, options.E_ManifestOnly).(bool)
+	return ok && v
+}
 
 // TypeRule defines how a specific proto message type should be treated when
 // generating Terraform artifacts. Rules are registered once and consulted by

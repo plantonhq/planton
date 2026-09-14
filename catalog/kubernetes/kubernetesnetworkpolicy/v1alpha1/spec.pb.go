@@ -9,6 +9,7 @@ package kubernetesnetworkpolicyv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -658,8 +659,10 @@ type KubernetesNetworkPolicyLabelSelector struct {
 	MatchExpressions []*KubernetesNetworkPolicyLabelSelectorRequirement `protobuf:"bytes,2,rep,name=match_expressions,json=matchExpressions,proto3" json:"match_expressions,omitempty"`
 	// *
 	// Select everything: every pod in scope for a pod selector, every namespace
-	// for a namespace selector. Renders as the empty selector on the wire.
-	// Cannot be combined with match_labels or match_expressions.
+	// for a namespace selector. The manifest's word for the empty selector on
+	// the Kubernetes wire -- it never reaches the cluster; the selector it
+	// describes is emitted with no criteria. Cannot be combined with
+	// match_labels or match_expressions.
 	MatchAll      *bool `protobuf:"varint,3,opt,name=match_all,json=matchAll,proto3,oneof" json:"match_all,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -792,7 +795,7 @@ var File_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto protoref
 
 const file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesnetworkpolicy/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf7\x0f\n" +
+	">catalog/kubernetes/kubernetesnetworkpolicy/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf7\x0f\n" +
 	"\x1bKubernetesNetworkPolicySpec\x12d\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x12\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12\xe5\x01\n" +
 	"\x04name\x18\x02 \x01(\tB\xd0\x01\xbaH\xcc\x01\xba\x01\xc1\x01\n" +
@@ -849,11 +852,11 @@ const file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_rawDes
 	"\x12port.numeric_range\x12+a numeric port must be in the range 1-65535\x1aethis.port == '' || !this.port.matches('^[0-9]+$') || (int(this.port) >= 1 && int(this.port) <= 65535)\x1a\xae\x01\n" +
 	"\x1eend_port.requires_numeric_port\x12Wend_port requires port to be set to a NUMERIC port (a named port cannot anchor a range)\x1a3this.end_port == 0 || this.port.matches('^[0-9]+$')\x1a\x9c\x01\n" +
 	"\x11end_port.gte_port\x12.end_port must be greater than or equal to port\x1aWthis.end_port == 0 || !this.port.matches('^[0-9]+$') || this.end_port >= int(this.port)B\v\n" +
-	"\t_protocol\"\xed\a\n" +
+	"\t_protocol\"\xf3\a\n" +
 	"$KubernetesNetworkPolicyLabelSelector\x12\x91\x01\n" +
 	"\fmatch_labels\x18\x01 \x03(\v2n.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.MatchLabelsEntryR\vmatchLabels\x12\x95\x01\n" +
-	"\x11match_expressions\x18\x02 \x03(\v2h.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelectorRequirementR\x10matchExpressions\x12 \n" +
-	"\tmatch_all\x18\x03 \x01(\bH\x00R\bmatchAll\x88\x01\x01\x1a>\n" +
+	"\x11match_expressions\x18\x02 \x03(\v2h.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelectorRequirementR\x10matchExpressions\x12&\n" +
+	"\tmatch_all\x18\x03 \x01(\bB\x04Ȧ\x1d\x01H\x00R\bmatchAll\x88\x01\x01\x1a>\n" +
 	"\x10MatchLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xa8\x04\xbaH\xa4\x04\x1a\x86\x02\n" +

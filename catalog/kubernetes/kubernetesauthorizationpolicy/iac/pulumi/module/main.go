@@ -107,7 +107,10 @@ func createAuthorizationPolicy(
 }
 
 // buildRuleArgs maps one Planton rule to the typed SDK args, attaching the from/to/
-// when blocks only when present so empty lists are omitted from the CR.
+// when blocks only when present so empty lists are omitted from the CR. A rule
+// that says `match_all: true` has no matchers by validation and renders as the
+// empty upstream rule -- "match every request" in Istio's own spelling; the
+// field itself is the manifest's word and never reaches the cluster.
 func buildRuleArgs(r *kubernetesauthorizationpolicyv1alpha1.KubernetesAuthorizationPolicyRule) istiosecurityv1.AuthorizationPolicySpecRulesArgs {
 	args := istiosecurityv1.AuthorizationPolicySpecRulesArgs{}
 

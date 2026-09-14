@@ -47,8 +47,12 @@ type TestCloudResourceKubernetesSpec struct {
 	RefMap          map[string]*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=ref_map,json=refMap,proto3" json:"ref_map,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	Command         []string                        `protobuf:"bytes,7,rep,name=command,proto3" json:"command,omitempty"`
 	Schedule        *string                         `protobuf:"bytes,8,opt,name=schedule,proto3,oneof" json:"schedule,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// A word the manifest carries so an empty block can say what it means; the
+	// wire spells it by the absence of other fields. The generators must drop it
+	// from tfvars and declare no variable for it.
+	SelectAll     *bool `protobuf:"varint,9,opt,name=select_all,json=selectAll,proto3,oneof" json:"select_all,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *TestCloudResourceKubernetesSpec) Reset() {
@@ -130,11 +134,18 @@ func (x *TestCloudResourceKubernetesSpec) GetSchedule() string {
 	return ""
 }
 
+func (x *TestCloudResourceKubernetesSpec) GetSelectAll() bool {
+	if x != nil && x.SelectAll != nil {
+		return *x.SelectAll
+	}
+	return false
+}
+
 var File_catalog__test_testcloudresourcekubernetes_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog__test_testcloudresourcekubernetes_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/_test/testcloudresourcekubernetes/v1alpha1/spec.proto\x126dev.planton._test.testcloudresourcekubernetes.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&catalog/kubernetes/container_env.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa1\x05\n" +
+	"=catalog/_test/testcloudresourcekubernetes/v1alpha1/spec.proto\x126dev.planton._test.testcloudresourcekubernetes.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&catalog/kubernetes/container_env.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xda\x05\n" +
 	"\x1fTestCloudResourceKubernetesSpec\x12j\n" +
 	"\tnamespace\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x03 \x01(\bR\x0fcreateNamespace\x12k\n" +
@@ -145,11 +156,14 @@ const file_catalog__test_testcloudresourcekubernetes_v1alpha1_spec_proto_rawDesc
 	"\x03env\x18\x05 \x01(\v2$.dev.planton.kubernetes.ContainerEnvR\x03env\x12|\n" +
 	"\aref_map\x18\x06 \x03(\v2c.dev.planton._test.testcloudresourcekubernetes.v1alpha1.TestCloudResourceKubernetesSpec.RefMapEntryR\x06refMap\x12\x18\n" +
 	"\acommand\x18\a \x03(\tR\acommand\x12.\n" +
-	"\bschedule\x18\b \x01(\tB\r\x8a\xa6\x1d\t0 0 * * *H\x00R\bschedule\x88\x01\x01\x1am\n" +
+	"\bschedule\x18\b \x01(\tB\r\x8a\xa6\x1d\t0 0 * * *H\x00R\bschedule\x88\x01\x01\x12(\n" +
+	"\n" +
+	"select_all\x18\t \x01(\bB\x04Ȧ\x1d\x01H\x01R\tselectAll\x88\x01\x01\x1am\n" +
 	"\vRefMapEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12H\n" +
 	"\x05value\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x05value:\x028\x01B\v\n" +
-	"\t_scheduleB\xb5\x03\n" +
+	"\t_scheduleB\r\n" +
+	"\v_select_allB\xb5\x03\n" +
 	":com.dev.planton._test.testcloudresourcekubernetes.v1alpha1B\tSpecProtoP\x01Zsgithub.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1;testcloudresourcekubernetesv1alpha1\xa2\x02\x04DP_T\xaa\x025Dev.Planton.Test.Testcloudresourcekubernetes.V1alpha1\xca\x025Dev\\Planton\\Test\\Testcloudresourcekubernetes\\V1alpha1\xe2\x02ADev\\Planton\\Test\\Testcloudresourcekubernetes\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Test::Testcloudresourcekubernetes::V1alpha1b\x06proto3"
 
 var (

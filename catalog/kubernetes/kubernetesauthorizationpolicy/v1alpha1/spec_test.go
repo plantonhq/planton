@@ -397,12 +397,59 @@ var _ = ginkgo.Describe("KubernetesAuthorizationPolicy Validation Tests", func()
 
 	ginkgo.Describe("When too many rules are provided", func() {
 		ginkgo.It("should reject more than 512 entries", func() {
+			// Each entry is a valid rule on its own (match_all), so the only
+			// thing this policy gets wrong is the count.
 			rules := make([]*KubernetesAuthorizationPolicyRule, 0, 513)
 			for i := 0; i < 513; i++ {
-				rules = append(rules, &KubernetesAuthorizationPolicyRule{})
+				rules = append(rules, &KubernetesAuthorizationPolicyRule{MatchAll: ptr(true)})
 			}
 			input.Spec.Rules = rules
-			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(strings.Contains(err.Error(), "512")).To(gomega.BeTrue())
+		})
+	})
+
+	ginkgo.Describe("When a rule says what it matches", func() {
+		ginkgo.Context("with match_all: true and no matchers (match every request)", func() {
+			ginkgo.It("should not return a validation error", func() {
+				input.Spec.Rules = []*KubernetesAuthorizationPolicyRule{{MatchAll: ptr(true)}}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("with matchers and no match_all", func() {
+			ginkgo.It("should not return a validation error", func() {
+				input.Spec.Rules = []*KubernetesAuthorizationPolicyRule{rule()}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("with an empty rule that names neither match_all nor a matcher", func() {
+			ginkgo.It("should return a validation error naming the choice", func() {
+				input.Spec.Rules = []*KubernetesAuthorizationPolicyRule{{}}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+				gomega.Expect(strings.Contains(err.Error(), "a rule must say what it matches")).To(gomega.BeTrue())
+			})
+		})
+
+		ginkgo.Context("with match_all: true beside a matcher", func() {
+			ginkgo.It("should return a validation error naming the contradiction", func() {
+				r := rule()
+				r.MatchAll = ptr(true)
+				input.Spec.Rules = []*KubernetesAuthorizationPolicyRule{r}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+				gomega.Expect(strings.Contains(err.Error(), "match_all: true matches every request")).To(gomega.BeTrue())
+			})
+		})
+
+		ginkgo.Context("with match_all: false and no matchers", func() {
+			ginkgo.It("should return a validation error (a stated false is not a matcher)", func() {
+				input.Spec.Rules = []*KubernetesAuthorizationPolicyRule{{MatchAll: ptr(false)}}
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			})
 		})
 	})
 
