@@ -22,8 +22,9 @@ func featureStatus(enabled bool) pulumi.String {
 //   - each arm renders ONLY when its spec message is present (an
 //     omitted arm leaves the account's current setting untouched --
 //     that omission is meaningful and deliberate);
-//   - an EMPTY suppression reasons list is a real posture: it turns
-//     account-level auto-suppression OFF;
+//   - suppression switched off (enabled: false) is a real posture: it
+//     writes the EMPTY reason list, which turns account-level
+//     auto-suppression OFF;
 //   - destroy semantics DIFFER per arm: suppression PERSISTS after
 //     destroy (the provider's delete is a no-op; the last-applied
 //     reasons stay), while the VDM resource's delete resets VDM to
@@ -35,9 +36,14 @@ func accountSettings(ctx *pulumi.Context, locals *Locals, provider *aws.Provider
 	spec := locals.Spec
 
 	if spec.Suppression != nil {
+		// Suppression that is switched off is written as the empty reason
+		// list (SES's spelling of "no auto-suppression"); the API already
+		// refuses a switched-on arm with no events.
 		reasons := pulumi.StringArray{}
-		for _, reason := range spec.Suppression.Reasons {
-			reasons = append(reasons, pulumi.String(reason))
+		if spec.Suppression.GetEnabled() {
+			for _, reason := range spec.Suppression.Reasons {
+				reasons = append(reasons, pulumi.String(reason))
+			}
 		}
 		if _, err := sesv2.NewAccountSuppressionAttributes(ctx, "suppression-attributes",
 			&sesv2.AccountSuppressionAttributesArgs{
@@ -49,7 +55,7 @@ func accountSettings(ctx *pulumi.Context, locals *Locals, provider *aws.Provider
 
 	if spec.Vdm != nil {
 		args := &sesv2.AccountVdmAttributesArgs{
-			VdmEnabled: featureStatus(spec.Vdm.Enabled),
+			VdmEnabled: featureStatus(spec.Vdm.GetEnabled()),
 		}
 		if spec.Vdm.EngagementMetrics != nil {
 			args.DashboardAttributes = &sesv2.AccountVdmAttributesDashboardAttributesArgs{

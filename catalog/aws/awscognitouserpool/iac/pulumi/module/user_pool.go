@@ -104,7 +104,7 @@ func userPool(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*cog
 		}
 	}
 
-	if spec.EmailMfa != nil {
+	if spec.EmailMfa != nil && spec.EmailMfa.GetEnabled() {
 		emailMfa := &cognito.UserPoolEmailMfaConfigurationArgs{}
 		if spec.EmailMfa.Message != "" {
 			emailMfa.Message = pulumi.StringPtr(spec.EmailMfa.Message)
@@ -262,8 +262,8 @@ func userPool(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*cog
 
 	if spec.DeviceConfiguration != nil {
 		args.DeviceConfiguration = &cognito.UserPoolDeviceConfigurationArgs{
-			ChallengeRequiredOnNewDevice:     pulumi.BoolPtr(spec.DeviceConfiguration.ChallengeRequiredOnNewDevice),
-			DeviceOnlyRememberedOnUserPrompt: pulumi.BoolPtr(spec.DeviceConfiguration.DeviceOnlyRememberedOnUserPrompt),
+			ChallengeRequiredOnNewDevice:     pulumi.BoolPtr(spec.DeviceConfiguration.GetChallengeRequiredOnNewDevice()),
+			DeviceOnlyRememberedOnUserPrompt: pulumi.BoolPtr(spec.DeviceConfiguration.GetDeviceOnlyRememberedOnUserPrompt()),
 		}
 	}
 

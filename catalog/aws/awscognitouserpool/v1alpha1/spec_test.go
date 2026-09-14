@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAwsCognitoUserPoolSpec(t *testing.T) {
@@ -90,6 +91,18 @@ var _ = ginkgo.Describe("AwsCognitoUserPoolSpec validations", func() {
 			Subject: "Sign-in code",
 		}
 		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+	})
+
+	ginkgo.It("accepts email MFA declared and switched off while mfa_configuration is OFF", func() {
+		spec.MfaConfiguration = "OFF"
+		spec.EmailMfa = &AwsCognitoUserPoolEmailMfaConfig{Enabled: proto.Bool(false), Subject: "Sign-in code"}
+		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+	})
+
+	ginkgo.It("accepts device configuration that states one dial and leaves the other unset", func() {
+		spec.DeviceConfiguration = &AwsCognitoUserPoolDeviceConfig{ChallengeRequiredOnNewDevice: proto.Bool(true)}
+		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		gomega.Expect(spec.DeviceConfiguration.DeviceOnlyRememberedOnUserPrompt).To(gomega.BeNil(), "the unset dial stays unset at the schema layer; the platform fills its declared default before the module reads it")
 	})
 
 	ginkgo.It("accepts a PLUS-tier pool with enforced threat protection and auth-event logging", func() {

@@ -8,6 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAwsAthenaWorkgroupSpec(t *testing.T) {
@@ -292,6 +293,21 @@ var _ = ginkgo.Describe("AwsAthenaWorkgroupSpec validations", func() {
 		spec.ManagedQueryResults = &AwsAthenaWorkgroupManagedQueryResults{}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).To(gomega.BeNil())
+	})
+
+	ginkgo.It("accepts managed_query_results declared and switched off beside an S3 output_location", func() {
+		spec.ManagedQueryResults = &AwsAthenaWorkgroupManagedQueryResults{Enabled: proto.Bool(false)}
+		spec.ResultConfiguration = &AwsAthenaWorkgroupResultConfig{OutputLocation: "s3://my-results/"}
+		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+	})
+
+	ginkgo.It("accepts every monitoring destination declared and switched off", func() {
+		spec.Monitoring = &AwsAthenaWorkgroupMonitoringConfig{
+			CloudWatchLogging: &AwsAthenaWorkgroupCloudWatchLoggingConfig{Enabled: proto.Bool(false), LogGroup: "/athena/quiet"},
+			ManagedLogging:    &AwsAthenaWorkgroupManagedLoggingConfig{Enabled: proto.Bool(false)},
+			S3Logging:         &AwsAthenaWorkgroupS3LoggingConfig{Enabled: proto.Bool(false), LogLocation: "s3://logs/athena/"},
+		}
+		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 	})
 
 	ginkgo.It("accepts managed_query_results with a customer KMS key", func() {

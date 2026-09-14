@@ -17,9 +17,12 @@ variable "spec" {
     region = string
     suppression = optional(object({
       reasons = optional(list(string), [])
+      enabled = optional(bool)
     }))
     vdm = optional(object({
-      enabled                   = optional(bool, false)
+      # Required by the API inside the block; no literal default so an unset
+      # value can never be mistaken for an explicit false.
+      enabled                   = optional(bool)
       engagement_metrics        = optional(bool)
       optimized_shared_delivery = optional(bool)
     }))

@@ -33,7 +33,9 @@ func rule(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error {
 	name := locals.Target.Metadata.Name
 
 	ctx.Export(OpRuleName, pulumi.String(name))
-	if spec.Organization == nil {
+	// The organization block's switch (on by default once the block is
+	// declared, filled by the platform before this runs) decides the scope.
+	if spec.Organization == nil || !spec.Organization.GetEnabled() {
 		return accountRule(ctx, locals, provider, name)
 	}
 	return organizationRule(ctx, locals, provider, name)

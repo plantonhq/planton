@@ -115,10 +115,14 @@ func workgroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) erro
 	}
 
 	// AWS-managed result storage: no bucket to own, 24-hour retention,
-	// results retrievable through Athena APIs only.
+	// results retrievable through Athena APIs only. Each of these blocks
+	// carries its own enable switch (on by default once the block is
+	// declared, filled by the platform before this runs); the switch is
+	// forwarded as the provider's own `enabled`, which treats a disabled
+	// block and an absent one as the same state.
 	if mqr := spec.ManagedQueryResults; mqr != nil {
 		managedArgs := &athena.WorkgroupConfigurationManagedQueryResultsConfigurationArgs{
-			Enabled: pulumi.BoolPtr(true),
+			Enabled: pulumi.BoolPtr(mqr.GetEnabled()),
 		}
 		if mqr.KmsKey.GetValue() != "" {
 			managedArgs.EncryptionConfiguration = &athena.WorkgroupConfigurationManagedQueryResultsConfigurationEncryptionConfigurationArgs{
@@ -165,7 +169,7 @@ func workgroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) erro
 
 		if cw := mon.CloudWatchLogging; cw != nil {
 			cwArgs := &athena.WorkgroupConfigurationMonitoringConfigurationCloudWatchLoggingConfigurationArgs{
-				Enabled: pulumi.Bool(true),
+				Enabled: pulumi.Bool(cw.GetEnabled()),
 			}
 			if cw.LogGroup != "" {
 				cwArgs.LogGroup = pulumi.StringPtr(cw.LogGroup)
@@ -191,7 +195,7 @@ func workgroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) erro
 
 		if ml := mon.ManagedLogging; ml != nil {
 			mlArgs := &athena.WorkgroupConfigurationMonitoringConfigurationManagedLoggingConfigurationArgs{
-				Enabled: pulumi.Bool(true),
+				Enabled: pulumi.Bool(ml.GetEnabled()),
 			}
 			if ml.KmsKey.GetValue() != "" {
 				mlArgs.KmsKey = pulumi.StringPtr(ml.KmsKey.GetValue())
@@ -201,7 +205,7 @@ func workgroup(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) erro
 
 		if s3l := mon.S3Logging; s3l != nil {
 			s3Args := &athena.WorkgroupConfigurationMonitoringConfigurationS3LoggingConfigurationArgs{
-				Enabled: pulumi.Bool(true),
+				Enabled: pulumi.Bool(s3l.GetEnabled()),
 			}
 			if s3l.LogLocation != "" {
 				s3Args.LogLocation = pulumi.StringPtr(s3l.LogLocation)

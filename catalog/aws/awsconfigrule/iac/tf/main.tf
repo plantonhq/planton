@@ -18,7 +18,9 @@
 #     at 128); metadata.name carries the rule name on both engines.
 
 locals {
-  is_org = var.spec.organization != null
+  # The organization block's switch (on by default once declared) decides
+  # the scope; a null switch reads as on.
+  is_org = var.spec.organization != null && coalesce(var.spec.organization.enabled, true)
 
   # The account-scoped rule's source mapping.
   source_owner = var.spec.managed != null ? "AWS" : (var.spec.custom_lambda != null ? "CUSTOM_LAMBDA" : "CUSTOM_POLICY")

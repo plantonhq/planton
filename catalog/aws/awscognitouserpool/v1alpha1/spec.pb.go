@@ -557,8 +557,10 @@ func (x *AwsCognitoUserPoolPasswordPolicy) GetTemporaryPasswordValidityDays() in
 	return 0
 }
 
-// AwsCognitoUserPoolEmailMfaConfig customizes the email message Cognito sends
-// when email is used as the second authentication factor.
+// AwsCognitoUserPoolEmailMfaConfig turns on email as a second authentication
+// factor and customizes the message Cognito sends. Declaring the block turns
+// email MFA on (with AWS's default message when none is given); `enabled:
+// false` keeps the message settings in the manifest while switching it off.
 type AwsCognitoUserPoolEmailMfaConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The email body for MFA codes. Must contain the "{####}" placeholder where
@@ -567,7 +569,11 @@ type AwsCognitoUserPoolEmailMfaConfig struct {
 	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
 	// The email subject for MFA codes. 1-140 characters. When omitted, AWS uses
 	// its default subject.
-	Subject       string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	// Whether email MFA is on. Unset means on: declaring the block has always
+	// meant enabling it, and this switch lets a manifest say the opposite out
+	// loud.
+	Enabled       *bool `protobuf:"varint,3,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -614,6 +620,13 @@ func (x *AwsCognitoUserPoolEmailMfaConfig) GetSubject() string {
 		return x.Subject
 	}
 	return ""
+}
+
+func (x *AwsCognitoUserPoolEmailMfaConfig) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // AwsCognitoUserPoolWebAuthnConfig pins the WebAuthn relying party for
@@ -1072,15 +1085,19 @@ func (x *AwsCognitoUserPoolInviteMessageTemplate) GetSmsMessage() string {
 	return ""
 }
 
-// AwsCognitoUserPoolDeviceConfig controls remembered-device behavior.
+// AwsCognitoUserPoolDeviceConfig controls remembered-device behavior. Declaring
+// the block writes both dials to Cognito: a dial set to `false` is the
+// statement, and a dial left unset is false as well, so a block that names
+// only one dial says exactly what Cognito will hold for the other.
 type AwsCognitoUserPoolDeviceConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// When true, a remembered device still requires a challenge (MFA) the first
 	// time it is seen -- remembering only suppresses challenges afterwards.
-	ChallengeRequiredOnNewDevice bool `protobuf:"varint,1,opt,name=challenge_required_on_new_device,json=challengeRequiredOnNewDevice,proto3" json:"challenge_required_on_new_device,omitempty"`
+	// Unset is false.
+	ChallengeRequiredOnNewDevice *bool `protobuf:"varint,1,opt,name=challenge_required_on_new_device,json=challengeRequiredOnNewDevice,proto3,oneof" json:"challenge_required_on_new_device,omitempty"`
 	// When true, devices are remembered only after the user opts in when
-	// prompted. When false, every device is remembered automatically.
-	DeviceOnlyRememberedOnUserPrompt bool `protobuf:"varint,2,opt,name=device_only_remembered_on_user_prompt,json=deviceOnlyRememberedOnUserPrompt,proto3" json:"device_only_remembered_on_user_prompt,omitempty"`
+	// prompted. When false (or unset), every device is remembered automatically.
+	DeviceOnlyRememberedOnUserPrompt *bool `protobuf:"varint,2,opt,name=device_only_remembered_on_user_prompt,json=deviceOnlyRememberedOnUserPrompt,proto3,oneof" json:"device_only_remembered_on_user_prompt,omitempty"`
 	unknownFields                    protoimpl.UnknownFields
 	sizeCache                        protoimpl.SizeCache
 }
@@ -1116,15 +1133,15 @@ func (*AwsCognitoUserPoolDeviceConfig) Descriptor() ([]byte, []int) {
 }
 
 func (x *AwsCognitoUserPoolDeviceConfig) GetChallengeRequiredOnNewDevice() bool {
-	if x != nil {
-		return x.ChallengeRequiredOnNewDevice
+	if x != nil && x.ChallengeRequiredOnNewDevice != nil {
+		return *x.ChallengeRequiredOnNewDevice
 	}
 	return false
 }
 
 func (x *AwsCognitoUserPoolDeviceConfig) GetDeviceOnlyRememberedOnUserPrompt() bool {
-	if x != nil {
-		return x.DeviceOnlyRememberedOnUserPrompt
+	if x != nil && x.DeviceOnlyRememberedOnUserPrompt != nil {
+		return *x.DeviceOnlyRememberedOnUserPrompt
 	}
 	return false
 }
@@ -2367,7 +2384,7 @@ var File_catalog_aws_awscognitouserpool_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awscognitouserpool/v1alpha1/spec.proto\x12+dev.planton.aws.awscognitouserpool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xec3\n" +
+	"2catalog/aws/awscognitouserpool/v1alpha1/spec.proto\x12+dev.planton.aws.awscognitouserpool.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xab4\n" +
 	"\x16AwsCognitoUserPoolSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12/\n" +
 	"\x13username_attributes\x18\x02 \x03(\tR\x12usernameAttributes\x12)\n" +
@@ -2399,7 +2416,7 @@ const file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12log_configurations\x18\x1a \x03(\v2O.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolLogConfigurationR\x11logConfigurations\x12c\n" +
 	"\x06domain\x18\x1b \x01(\v2K.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolDomainConfigR\x06domain\x12i\n" +
 	"\vuser_groups\x18\x1d \x03(\v2H.dev.planton.aws.awscognitouserpool.v1alpha1.AwsCognitoUserPoolUserGroupR\n" +
-	"userGroups:\xcb\x1e\xbaH\xc7\x1e\x1am\n" +
+	"userGroups:\x8a\x1f\xbaH\x86\x1f\x1am\n" +
 	"\x17user_group_names_unique\x12(user_groups must have unique name values\x1a(this.user_groups.map(g, g.name).unique()\x1a\x9c\x02\n" +
 	"-risk_configuration_requires_threat_protection\x12`risk_configuration requires user_pool_add_ons.advanced_security_mode to be 'AUDIT' or 'ENFORCED'\x1a\x88\x01!has(this.risk_configuration) || (has(this.user_pool_add_ons) && this.user_pool_add_ons.advanced_security_mode in ['AUDIT', 'ENFORCED'])\x1a\xc8\x01\n" +
 	"\x1cusername_or_alias_attributes\x12]username_attributes and alias_attributes are mutually exclusive; set one or neither, not both\x1aIthis.username_attributes.size() == 0 || this.alias_attributes.size() == 0\x1a\xa1\x01\n" +
@@ -2410,8 +2427,8 @@ const file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1eauto_verified_attributes_valid\x12Hauto_verified_attributes must contain only 'email' and/or 'phone_number'\x1aDthis.auto_verified_attributes.all(a, a in ['email', 'phone_number'])\x1a\xe1\x01\n" +
 	"%attributes_require_verification_valid\x12]attributes_require_verification_before_update must contain only 'email' and/or 'phone_number'\x1aYthis.attributes_require_verification_before_update.all(a, a in ['email', 'phone_number'])\x1a\xad\x01\n" +
 	"\x17mfa_configuration_valid\x12=mfa_configuration must be 'OFF', 'OPTIONAL', or 'ON' when set\x1aSthis.mfa_configuration == '' || this.mfa_configuration in ['OFF', 'OPTIONAL', 'ON']\x1a\xc3\x01\n" +
-	"\x1fsoftware_token_mfa_requires_mfa\x12Nsoftware_token_mfa_enabled requires mfa_configuration to be 'OPTIONAL' or 'ON'\x1aP!this.software_token_mfa_enabled || this.mfa_configuration in ['OPTIONAL', 'ON']\x1a\x9d\x01\n" +
-	"\x16email_mfa_requires_mfa\x12=email_mfa requires mfa_configuration to be 'OPTIONAL' or 'ON'\x1aD!has(this.email_mfa) || this.mfa_configuration in ['OPTIONAL', 'ON']\x1a\xe6\x01\n" +
+	"\x1fsoftware_token_mfa_requires_mfa\x12Nsoftware_token_mfa_enabled requires mfa_configuration to be 'OPTIONAL' or 'ON'\x1aP!this.software_token_mfa_enabled || this.mfa_configuration in ['OPTIONAL', 'ON']\x1a\xdc\x01\n" +
+	"\x16email_mfa_requires_mfa\x12=email_mfa requires mfa_configuration to be 'OPTIONAL' or 'ON'\x1a\x82\x01!(has(this.email_mfa) && (!has(this.email_mfa.enabled) || this.email_mfa.enabled)) || this.mfa_configuration in ['OPTIONAL', 'ON']\x1a\xe6\x01\n" +
 	"\"sms_otp_requires_sms_configuration\x12eallowing 'SMS_OTP' as a first auth factor requires sms_configuration so Cognito can deliver the codes\x1aY!this.allowed_first_auth_factors.exists(f, f == 'SMS_OTP') || has(this.sms_configuration)\x1a\xe6\x01\n" +
 	"&sms_authentication_message_placeholder\x12_sms_authentication_message must contain the '{####}' placeholder where Cognito injects the code\x1a[this.sms_authentication_message == '' || this.sms_authentication_message.contains('{####}')\x1a\xf0\x01\n" +
 	"\x1baccount_recovery_name_valid\x12caccount_recovery_mechanisms name must be 'verified_email', 'verified_phone_number', or 'admin_only'\x1althis.account_recovery_mechanisms.all(m, m.name in ['verified_email', 'verified_phone_number', 'admin_only'])\x1a\xa3\x01\n" +
@@ -2427,11 +2444,14 @@ const file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0frequire_symbols\x18\x05 \x01(\bR\x0erequireSymbols\x12=\n" +
 	"\x15password_history_size\x18\x06 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x18(\x00R\x13passwordHistorySize\x12S\n" +
 	" temporary_password_validity_days\x18\a \x01(\x05B\n" +
-	"\xbaH\a\x1a\x05\x18\xed\x02(\x00R\x1dtemporaryPasswordValidityDays\"\x98\x02\n" +
+	"\xbaH\a\x1a\x05\x18\xed\x02(\x00R\x1dtemporaryPasswordValidityDays\"\xcd\x02\n" +
 	" AwsCognitoUserPoolEmailMfaConfig\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\x12\"\n" +
-	"\asubject\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x8c\x01R\asubject:\xb5\x01\xbaH\xb1\x01\x1a\xae\x01\n" +
-	"\x1demail_mfa_message_placeholder\x12Vemail_mfa message must contain the '{####}' placeholder where Cognito injects the code\x1a5this.message == '' || this.message.contains('{####}')\"\xc3\x02\n" +
+	"\asubject\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x8c\x01R\asubject\x12'\n" +
+	"\aenabled\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01:\xb5\x01\xbaH\xb1\x01\x1a\xae\x01\n" +
+	"\x1demail_mfa_message_placeholder\x12Vemail_mfa message must contain the '{####}' placeholder where Cognito injects the code\x1a5this.message == '' || this.message.contains('{####}')B\n" +
+	"\n" +
+	"\b_enabled\"\xc3\x02\n" +
 	" AwsCognitoUserPoolWebAuthnConfig\x12(\n" +
 	"\x10relying_party_id\x18\x01 \x01(\tR\x0erelyingPartyId\x12+\n" +
 	"\x11user_verification\x18\x02 \x01(\tR\x10userVerification:\xc7\x01\xbaH\xc3\x01\x1a\xc0\x01\n" +
@@ -2472,10 +2492,12 @@ const file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\vsms_message\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x8c\x01R\n" +
 	"smsMessage:\xb8\x03\xbaH\xb4\x03\x1a\xdc\x01\n" +
 	"\x19invite_email_placeholders\x12Minvite email_message must contain both '{username}' and '{####}' placeholders\x1apthis.email_message == '' || (this.email_message.contains('{username}') && this.email_message.contains('{####}'))\x1a\xd2\x01\n" +
-	"\x17invite_sms_placeholders\x12Kinvite sms_message must contain both '{username}' and '{####}' placeholders\x1ajthis.sms_message == '' || (this.sms_message.contains('{username}') && this.sms_message.contains('{####}'))\"\xb9\x01\n" +
-	"\x1eAwsCognitoUserPoolDeviceConfig\x12F\n" +
-	" challenge_required_on_new_device\x18\x01 \x01(\bR\x1cchallengeRequiredOnNewDevice\x12O\n" +
-	"%device_only_remembered_on_user_prompt\x18\x02 \x01(\bR deviceOnlyRememberedOnUserPrompt\"\xce\x04\n" +
+	"\x17invite_sms_placeholders\x12Kinvite sms_message must contain both '{username}' and '{####}' placeholders\x1ajthis.sms_message == '' || (this.sms_message.contains('{username}') && this.sms_message.contains('{####}'))\"\xa8\x02\n" +
+	"\x1eAwsCognitoUserPoolDeviceConfig\x12V\n" +
+	" challenge_required_on_new_device\x18\x01 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\x1cchallengeRequiredOnNewDevice\x88\x01\x01\x12_\n" +
+	"%device_only_remembered_on_user_prompt\x18\x02 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x01R deviceOnlyRememberedOnUserPrompt\x88\x01\x01B#\n" +
+	"!_challenge_required_on_new_deviceB(\n" +
+	"&_device_only_remembered_on_user_prompt\"\xce\x04\n" +
 	"!AwsCognitoUserPoolSchemaAttribute\x12\x1d\n" +
 	"\x04name\x18\x01 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18\x14R\x04name\x126\n" +
 	"\x13attribute_data_type\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x11attributeDataType\x12\x18\n" +
@@ -2693,6 +2715,8 @@ func file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awscognitouserpool_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
 	file_catalog_aws_awscognitouserpool_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

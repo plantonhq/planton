@@ -9,6 +9,7 @@ package awsconfigrulev1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -76,9 +77,11 @@ type AwsConfigRuleSpec struct {
 	// Account-scoped rules only - AWS has no proactive organization
 	// rules.
 	EvaluationModes []string `protobuf:"bytes,9,rep,name=evaluation_modes,json=evaluationModes,proto3" json:"evaluation_modes,omitempty"`
-	// Deploy the rule organization-wide. Presence of this message makes
-	// it an ORGANIZATION rule (name cap drops to 64 characters; run
-	// from the management or delegated-admin account).
+	// Deploy the rule organization-wide. Declaring this message (with its
+	// switch on, the default) makes it an ORGANIZATION rule (name cap drops
+	// to 64 characters; run from the management or delegated-admin account);
+	// `organization.enabled: false` keeps the organization settings in the
+	// manifest while the rule deploys account-scoped.
 	Organization *AwsConfigRuleOrganization `protobuf:"bytes,10,opt,name=organization,proto3" json:"organization,omitempty"`
 	// Auto-remediation: the SSM document AWS Config runs against
 	// non-compliant resources. Account-scoped rules only.
@@ -506,7 +509,9 @@ func (x *AwsConfigRuleScope) GetTagValue() string {
 // AwsConfigRuleOrganization deploys the rule across the AWS
 // Organization. Run from the management account or the Config
 // delegated administrator; member accounts get the rule
-// automatically.
+// automatically. Declaring the block makes the rule organization-scoped;
+// `enabled: false` records the decision to deploy it account-scoped while
+// keeping these settings in place.
 type AwsConfigRuleOrganization struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Member accounts to EXCLUDE from the rule.
@@ -517,8 +522,12 @@ type AwsConfigRuleOrganization struct {
 	// Accounts allowed to receive Guard debug logs (custom_policy rules
 	// only).
 	DebugLogDeliveryAccounts []string `protobuf:"bytes,3,rep,name=debug_log_delivery_accounts,json=debugLogDeliveryAccounts,proto3" json:"debug_log_delivery_accounts,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	// Whether the rule deploys organization-wide. Unset means yes: declaring
+	// the block has always meant an organization rule, and this switch lets
+	// a manifest say the opposite out loud.
+	Enabled       *bool `protobuf:"varint,4,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AwsConfigRuleOrganization) Reset() {
@@ -570,6 +579,13 @@ func (x *AwsConfigRuleOrganization) GetDebugLogDeliveryAccounts() []string {
 		return x.DebugLogDeliveryAccounts
 	}
 	return nil
+}
+
+func (x *AwsConfigRuleOrganization) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // AwsConfigRuleRemediation runs an SSM document against resources the
@@ -781,7 +797,7 @@ var File_catalog_aws_awsconfigrule_v1alpha1_spec_proto protoreflect.FileDescript
 
 const file_catalog_aws_awsconfigrule_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/aws/awsconfigrule/v1alpha1/spec.proto\x12&dev.planton.aws.awsconfigrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x9d\x13\n" +
+	"-catalog/aws/awsconfigrule/v1alpha1/spec.proto\x12&dev.planton.aws.awsconfigrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xb8\x16\n" +
 	"\x11AwsConfigRuleSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12*\n" +
 	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\vdescription\x123\n" +
@@ -794,14 +810,14 @@ const file_catalog_aws_awsconfigrule_v1alpha1_spec_proto_rawDesc = "" +
 	"\x10evaluation_modes\x18\t \x03(\tB\"\xbaH\x1f\x92\x01\x1c\x18\x01\"\x18r\x16R\tDETECTIVER\tPROACTIVER\x0fevaluationModes\x12e\n" +
 	"\forganization\x18\n" +
 	" \x01(\v2A.dev.planton.aws.awsconfigrule.v1alpha1.AwsConfigRuleOrganizationR\forganization\x12b\n" +
-	"\vremediation\x18\v \x01(\v2@.dev.planton.aws.awsconfigrule.v1alpha1.AwsConfigRuleRemediationR\vremediation:\xd3\v\xbaH\xcf\v\x1a\xae\x01\n" +
-	"\x12exactly_one_source\x128set exactly one of managed, custom_lambda, custom_policy\x1a^[has(this.managed), has(this.custom_lambda), has(this.custom_policy)].filter(x, x).size() == 1\x1a\xa5\x02\n" +
-	"\x1borg_trigger_types_by_source\x12|organization.trigger_types is required for custom_lambda/custom_policy organization rules and must be empty for managed ones\x1a\x87\x01!has(this.organization) || (has(this.managed) ? size(this.organization.trigger_types) == 0 : size(this.organization.trigger_types) > 0)\x1a\xf0\x01\n" +
-	"&org_custom_policy_no_scheduled_trigger\x12Porganization custom_policy rules do not accept the ScheduledNotification trigger\x1at!has(this.organization) || !has(this.custom_policy) || !('ScheduledNotification' in this.organization.trigger_types)\x1a\xe1\x01\n" +
-	"!debug_accounts_custom_policy_only\x12Lorganization.debug_log_delivery_accounts applies only to custom_policy rules\x1an!has(this.organization) || size(this.organization.debug_log_delivery_accounts) == 0 || has(this.custom_policy)\x1a\xf8\x01\n" +
-	"\x1dorg_lambda_uses_trigger_types\x12rorganization custom_lambda rules declare triggers via organization.trigger_types, not custom_lambda.source_details\x1ac!has(this.organization) || !has(this.custom_lambda) || size(this.custom_lambda.source_details) == 0\x1a\x87\x01\n" +
-	"\x1eremediation_account_scope_only\x122remediation is not supported on organization rules\x1a1!has(this.remediation) || !has(this.organization)\x1a\x97\x01\n" +
-	"#evaluation_modes_account_scope_only\x123evaluation_modes apply only to account-scoped rules\x1a;size(this.evaluation_modes) == 0 || !has(this.organization)\"Q\n" +
+	"\vremediation\x18\v \x01(\v2@.dev.planton.aws.awsconfigrule.v1alpha1.AwsConfigRuleRemediationR\vremediation:\xee\x0e\xbaH\xea\x0e\x1a\xae\x01\n" +
+	"\x12exactly_one_source\x128set exactly one of managed, custom_lambda, custom_policy\x1a^[has(this.managed), has(this.custom_lambda), has(this.custom_policy)].filter(x, x).size() == 1\x1a\xe9\x02\n" +
+	"\x1borg_trigger_types_by_source\x12|organization.trigger_types is required for custom_lambda/custom_policy organization rules and must be empty for managed ones\x1a\xcb\x01!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || (has(this.managed) ? size(this.organization.trigger_types) == 0 : size(this.organization.trigger_types) > 0)\x1a\xb5\x02\n" +
+	"&org_custom_policy_no_scheduled_trigger\x12Porganization custom_policy rules do not accept the ScheduledNotification trigger\x1a\xb8\x01!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || !has(this.custom_policy) || !('ScheduledNotification' in this.organization.trigger_types)\x1a\xa6\x02\n" +
+	"!debug_accounts_custom_policy_only\x12Lorganization.debug_log_delivery_accounts applies only to custom_policy rules\x1a\xb2\x01!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || size(this.organization.debug_log_delivery_accounts) == 0 || has(this.custom_policy)\x1a\xbd\x02\n" +
+	"\x1dorg_lambda_uses_trigger_types\x12rorganization custom_lambda rules declare triggers via organization.trigger_types, not custom_lambda.source_details\x1a\xa7\x01!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || !has(this.custom_lambda) || size(this.custom_lambda.source_details) == 0\x1a\xcb\x01\n" +
+	"\x1eremediation_account_scope_only\x122remediation is not supported on organization rules\x1au!has(this.remediation) || !(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled))\x1a\xdb\x01\n" +
+	"#evaluation_modes_account_scope_only\x123evaluation_modes apply only to account-scoped rules\x1a\x7fsize(this.evaluation_modes) == 0 || !(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled))\"Q\n" +
 	"\x1aAwsConfigRuleManagedSource\x123\n" +
 	"\x0frule_identifier\x18\x01 \x01(\tB\n" +
 	"\xbaH\ar\x05\x10\x01\x18\x80\x02R\x0eruleIdentifier\"\x99\x02\n" +
@@ -824,11 +840,14 @@ const file_catalog_aws_awsconfigrule_v1alpha1_spec_proto_rawDesc = "" +
 	"\atag_key\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x01R\x06tagKey\x12%\n" +
 	"\ttag_value\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\btagValue:\x9f\x02\xbaH\x9b\x02\x1a\xb9\x01\n" +
 	"\x1aresource_id_needs_one_type\x12Kcompliance_resource_id requires exactly one compliance_resource_types entry\x1aNthis.compliance_resource_id == '' || size(this.compliance_resource_types) == 1\x1a]\n" +
-	"\x13tag_value_needs_key\x12\x1atag_value requires tag_key\x1a*this.tag_value == '' || this.tag_key != ''\"\xe3\x02\n" +
+	"\x13tag_value_needs_key\x12\x1atag_value requires tag_key\x1a*this.tag_value == '' || this.tag_key != ''\"\x98\x03\n" +
 	"\x19AwsConfigRuleOrganization\x12I\n" +
 	"\x11excluded_accounts\x18\x01 \x03(\tB\x1c\xbaH\x19\x92\x01\x16\x10\xe8\a\x18\x01\"\x0fr\r2\v^[0-9]{12}$R\x10excludedAccounts\x12\x9d\x01\n" +
 	"\rtrigger_types\x18\x02 \x03(\tBx\xbaHu\x92\x01r\x10\x03\x18\x01\"lrjR#ConfigurationItemChangeNotificationR,OversizedConfigurationItemChangeNotificationR\x15ScheduledNotificationR\ftriggerTypes\x12[\n" +
-	"\x1bdebug_log_delivery_accounts\x18\x03 \x03(\tB\x1c\xbaH\x19\x92\x01\x16\x10\xe8\a\x18\x01\"\x0fr\r2\v^[0-9]{12}$R\x18debugLogDeliveryAccounts\"\xa6\x06\n" +
+	"\x1bdebug_log_delivery_accounts\x18\x03 \x03(\tB\x1c\xbaH\x19\x92\x01\x16\x10\xe8\a\x18\x01\"\x0fr\r2\v^[0-9]{12}$R\x18debugLogDeliveryAccounts\x12'\n" +
+	"\aenabled\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xa6\x06\n" +
 	"\x18AwsConfigRuleRemediation\x12\x1c\n" +
 	"\tautomatic\x18\x01 \x01(\bR\tautomatic\x12'\n" +
 	"\ttarget_id\x18\x02 \x01(\tB\n" +
@@ -898,6 +917,7 @@ func file_catalog_aws_awsconfigrule_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awsconfigrule_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_aws_awsconfigrule_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

@@ -30,7 +30,7 @@ that has progressed.
 | Provider schema (parity baseline) | `aws@6.58.0` |
 | Kinds in the catalog | 205 |
 | Distinct provider resources consumed | 524 |
-| Spec fields authored across all kinds | 7462 |
+| Spec fields authored across all kinds | 7469 |
 | Module pins on `aws` | `~> 6.58` × 205 |
 | Module pins on `time` | `~> 0.13` × 1 |
 
@@ -71,7 +71,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | AwsAppRunnerService | 55 | 6 | 38 | 11 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsAppRunnerVpcConnector | 6 | 1 | 2 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsAppSyncApi | 168 | 13 | 131 | 24 | 0 | ✅ | ✅ pulumi, terraform |
-| AwsAthenaWorkgroup | 37 | 4 | 26 | 7 | 0 | ✅ | ✅ pulumi, terraform |
+| AwsAthenaWorkgroup | 37 | 4 | 30 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsAuroraDsql | 11 | 5 | 3 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsAutoScalingGroup | 217 | 54 | 146 | 17 | 0 | ✅ | ✅ pulumi, terraform |
 | AwsBackupFramework | 11 | 1 | 8 | 2 | 0 | ✅ | ✅ pulumi, terraform |

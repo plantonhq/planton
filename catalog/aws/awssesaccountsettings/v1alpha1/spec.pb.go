@@ -8,6 +8,7 @@ package awssesaccountsettingsv1alpha1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -46,8 +47,8 @@ type AwsSesAccountSettingsSpec struct {
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The account-level suppression list configuration. Omit the arm to
 	// leave the account's suppression settings untouched; set it with
-	// an empty reasons list to explicitly turn account-level
-	// auto-suppression OFF.
+	// `enabled: false` to explicitly turn account-level auto-suppression
+	// OFF.
 	Suppression *AwsSesAccountSettingsSuppression `protobuf:"bytes,2,opt,name=suppression,proto3" json:"suppression,omitempty"`
 	// The Virtual Deliverability Manager (VDM) posture - SES's
 	// deliverability analytics suite. Omit the arm to leave the
@@ -111,22 +112,27 @@ func (x *AwsSesAccountSettingsSpec) GetVdm() *AwsSesAccountSettingsVdm {
 // AwsSesAccountSettingsSuppression configures which bounce/complaint
 // events automatically add recipient addresses to the account-level
 // suppression list (suppressed addresses are skipped on every send
-// from the account).
+// from the account). The arm says which way it manages the list:
+// `enabled: true` (the default) with the events that suppress, or
+// `enabled: false` to turn account-level auto-suppression OFF out loud.
 type AwsSesAccountSettingsSuppression struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Which events auto-suppress a recipient:
 	//   - "BOUNCE": hard bounces add the address to the list.
 	//   - "COMPLAINT": spam complaints add the address to the list.
 	//
-	// Both together is the recommended reputation posture. An EMPTY
-	// list is meaningful: it explicitly disables account-level
-	// auto-suppression (configuration sets can still enable their own).
+	// Both together is the recommended reputation posture.
 	//
 	// Applying this arm overwrites whatever was previously set - and
 	// the setting PERSISTS after this component is destroyed (SES has
 	// no delete for it; the last-applied reasons stay in effect). To
-	// stop suppressing, apply an empty list before destroying.
-	Reasons       []string `protobuf:"bytes,1,rep,name=reasons,proto3" json:"reasons,omitempty"`
+	// stop suppressing, apply `enabled: false` before destroying.
+	Reasons []string `protobuf:"bytes,1,rep,name=reasons,proto3" json:"reasons,omitempty"`
+	// Whether account-level auto-suppression is on. Unset means on:
+	// declaring the arm with events has always meant suppressing on them,
+	// and `enabled: false` is the explicit OFF (SES then holds an empty
+	// reason list).
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -168,15 +174,24 @@ func (x *AwsSesAccountSettingsSuppression) GetReasons() []string {
 	return nil
 }
 
+func (x *AwsSesAccountSettingsSuppression) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
+}
+
 // AwsSesAccountSettingsVdm configures the Virtual Deliverability
 // Manager: engagement dashboards and Guardian delivery optimization.
 type AwsSesAccountSettingsVdm struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Master switch for VDM on the account. Destroying this component
-	// resets VDM to disabled (unlike the suppression arm, this one IS
-	// reverted on destroy). VDM carries its own AWS pricing - enabling
-	// it is a billing decision, not just a feature flag.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Master switch for VDM on the account. Required inside vdm: declaring
+	// the arm takes VDM under management, and the switch says which way.
+	// Destroying this component resets VDM to disabled (unlike the
+	// suppression arm, this one IS reverted on destroy). VDM carries its own
+	// AWS pricing - enabling it is a billing decision, not just a feature
+	// flag.
+	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// Track open/click engagement metrics in the VDM dashboard. Unset
 	// leaves AWS's default for the account; only meaningful while
 	// enabled is true.
@@ -220,8 +235,8 @@ func (*AwsSesAccountSettingsVdm) Descriptor() ([]byte, []int) {
 }
 
 func (x *AwsSesAccountSettingsVdm) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -244,18 +259,25 @@ var File_catalog_aws_awssesaccountsettings_v1alpha1_spec_proto protoreflect.File
 
 const file_catalog_aws_awssesaccountsettings_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/aws/awssesaccountsettings/v1alpha1/spec.proto\x12.dev.planton.aws.awssesaccountsettings.v1alpha1\x1a\x1bbuf/validate/validate.proto\"\xb7\x03\n" +
+	"5catalog/aws/awssesaccountsettings/v1alpha1/spec.proto\x12.dev.planton.aws.awssesaccountsettings.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cshared/options/options.proto\"\xb7\x03\n" +
 	"\x19AwsSesAccountSettingsSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12r\n" +
 	"\vsuppression\x18\x02 \x01(\v2P.dev.planton.aws.awssesaccountsettings.v1alpha1.AwsSesAccountSettingsSuppressionR\vsuppression\x12Z\n" +
 	"\x03vdm\x18\x03 \x01(\v2H.dev.planton.aws.awssesaccountsettings.v1alpha1.AwsSesAccountSettingsVdmR\x03vdm:\xa8\x01\xbaH\xa4\x01\x1a\xa1\x01\n" +
-	"\x15spec.at_least_one_arm\x12`configure at least one of suppression / vdm - an instance managing neither is dead configuration\x1a&has(this.suppression) || has(this.vdm)\"]\n" +
+	"\x15spec.at_least_one_arm\x12`configure at least one of suppression / vdm - an instance managing neither is dead configuration\x1a&has(this.suppression) || has(this.vdm)\"\xdd\x04\n" +
 	" AwsSesAccountSettingsSuppression\x129\n" +
-	"\areasons\x18\x01 \x03(\tB\x1f\xbaH\x1c\x92\x01\x19\x18\x01\"\x15r\x13R\x06BOUNCER\tCOMPLAINTR\areasons\"\xde\x01\n" +
-	"\x18AwsSesAccountSettingsVdm\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x122\n" +
-	"\x12engagement_metrics\x18\x02 \x01(\bH\x00R\x11engagementMetrics\x88\x01\x01\x12?\n" +
-	"\x19optimized_shared_delivery\x18\x03 \x01(\bH\x01R\x17optimizedSharedDelivery\x88\x01\x01B\x15\n" +
+	"\areasons\x18\x01 \x03(\tB\x1f\xbaH\x1c\x92\x01\x19\x18\x01\"\x15r\x13R\x06BOUNCER\tCOMPLAINTR\areasons\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01:\xc8\x03\xbaH\xc4\x03\x1a\xf6\x01\n" +
+	"\x1fsuppression_on_names_its_events\x12\x91\x01suppression is on but names no events - list BOUNCE and/or COMPLAINT in reasons, or set enabled: false to turn account-level auto-suppression off\x1a?(has(this.enabled) && !this.enabled) || this.reasons.size() > 0\x1a\xc8\x01\n" +
+	"\x1fsuppression_off_names_no_events\x12bsuppression is off but still names events - drop reasons, or set enabled: true to suppress on them\x1aA!(has(this.enabled) && !this.enabled) || this.reasons.size() == 0B\n" +
+	"\n" +
+	"\b_enabled\"\xf7\x01\n" +
+	"\x18AwsSesAccountSettingsVdm\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x122\n" +
+	"\x12engagement_metrics\x18\x02 \x01(\bH\x01R\x11engagementMetrics\x88\x01\x01\x12?\n" +
+	"\x19optimized_shared_delivery\x18\x03 \x01(\bH\x02R\x17optimizedSharedDelivery\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabledB\x15\n" +
 	"\x13_engagement_metricsB\x1c\n" +
 	"\x1a_optimized_shared_deliveryB\x83\x03\n" +
 	"2com.dev.planton.aws.awssesaccountsettings.v1alpha1B\tSpecProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awssesaccountsettings/v1alpha1;awssesaccountsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awssesaccountsettings.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awssesaccountsettings\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awssesaccountsettings\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awssesaccountsettings::V1alpha1b\x06proto3"
@@ -293,6 +315,7 @@ func file_catalog_aws_awssesaccountsettings_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awssesaccountsettings_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_aws_awssesaccountsettings_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_catalog_aws_awssesaccountsettings_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

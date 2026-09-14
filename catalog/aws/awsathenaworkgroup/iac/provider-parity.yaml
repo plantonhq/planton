@@ -44,8 +44,10 @@ resources:
         arg: configuration.result_configuration.encryption_configuration.kms_key_arn
       - spec: spec.result_configuration.s3_acl_option
         arg: configuration.result_configuration.acl_configuration.s3_acl_option
-      # Result storage in AWS-managed storage (presence = enabled; see the
-      # enabled exclusions below).
+      # Result storage in AWS-managed storage; the block's own switch is the
+      # provider's enabled flag.
+      - spec: spec.managed_query_results.enabled
+        arg: configuration.managed_query_results_configuration.enabled
       - spec: spec.managed_query_results.kms_key
         arg: configuration.managed_query_results_configuration.encryption_configuration.kms_key
       # Identity Center integration.
@@ -61,7 +63,14 @@ resources:
       - spec: spec.s3_access_grants.create_user_level_prefix
         arg: configuration.query_results_s3_access_grants_configuration.create_user_level_prefix
       # The three monitoring/logging arms (the spec names them for what
-      # they configure; the provider suffixes "_configuration").
+      # they configure; the provider suffixes "_configuration"). Each arm's
+      # own switch is the provider's enabled flag.
+      - spec: spec.monitoring.cloud_watch_logging.enabled
+        arg: configuration.monitoring_configuration.cloud_watch_logging_configuration.enabled
+      - spec: spec.monitoring.managed_logging.enabled
+        arg: configuration.monitoring_configuration.managed_logging_configuration.enabled
+      - spec: spec.monitoring.s3_logging.enabled
+        arg: configuration.monitoring_configuration.s3_logging_configuration.enabled
       - spec: spec.monitoring.cloud_watch_logging.log_group
         arg: configuration.monitoring_configuration.cloud_watch_logging_configuration.log_group
       - spec: spec.monitoring.cloud_watch_logging.log_stream_name_prefix
@@ -77,19 +86,6 @@ resources:
       - spec: spec.monitoring.s3_logging.kms_key
         arg: configuration.monitoring_configuration.s3_logging_configuration.kms_key
     exclusions:
-      # The four presence-as-enable flags: each block's presence in the
-      # spec IS the enable switch, and both modules hardcode true inside a
-      # rendered block. The provider's own diff suppression treats an
-      # absent block and enabled=false as the same state, so a separate
-      # spec flag would model a distinction AWS does not keep.
-      - arg: configuration.managed_query_results_configuration.enabled
-        reason: block presence is the enable switch (spec.managed_query_results); both modules hardcode true -- the provider suppresses absent-vs-disabled diffs
-      - arg: configuration.monitoring_configuration.cloud_watch_logging_configuration.enabled
-        reason: block presence is the enable switch (spec.monitoring.cloud_watch_logging); both modules hardcode true -- the provider suppresses absent-vs-disabled diffs
-      - arg: configuration.monitoring_configuration.managed_logging_configuration.enabled
-        reason: block presence is the enable switch (spec.monitoring.managed_logging); both modules hardcode true -- the provider suppresses absent-vs-disabled diffs
-      - arg: configuration.monitoring_configuration.s3_logging_configuration.enabled
-        reason: block presence is the enable switch (spec.monitoring.s3_logging); both modules hardcode true -- the provider suppresses absent-vs-disabled diffs
       # Identity is the kind's own contract.
       - arg: name
         reason: derived from metadata.name (1-128 chars of [0-9A-Za-z_.-], create-time-immutable) -- never free-form user surface

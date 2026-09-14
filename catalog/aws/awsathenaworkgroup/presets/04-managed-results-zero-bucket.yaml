@@ -5,7 +5,8 @@ metadata:
 spec:
   region: us-west-2
   description: BI query workgroup on AWS-managed result storage
-  managedQueryResults: {}
+  managedQueryResults:
+    enabled: true
   bytesScannedCutoffPerQuery: 10737418240
   enforceWorkgroupConfiguration: true
   publishCloudwatchMetricsEnabled: true

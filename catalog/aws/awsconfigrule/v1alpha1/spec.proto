@@ -4,6 +4,7 @@ package dev.planton.aws.awsconfigrule.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // AwsConfigRuleSpec defines the desired configuration for one AWS
 // Config rule - a compliance check evaluated against recorded
@@ -85,9 +86,11 @@ message AwsConfigRuleSpec {
     }
   }];
 
-  // Deploy the rule organization-wide. Presence of this message makes
-  // it an ORGANIZATION rule (name cap drops to 64 characters; run
-  // from the management or delegated-admin account).
+  // Deploy the rule organization-wide. Declaring this message (with its
+  // switch on, the default) makes it an ORGANIZATION rule (name cap drops
+  // to 64 characters; run from the management or delegated-admin account);
+  // `organization.enabled: false` keeps the organization settings in the
+  // manifest while the rule deploys account-scoped.
   AwsConfigRuleOrganization organization = 10;
 
   // Auto-remediation: the SSM document AWS Config runs against
@@ -106,7 +109,7 @@ message AwsConfigRuleSpec {
   option (buf.validate.message).cel = {
     id: "org_trigger_types_by_source"
     message: "organization.trigger_types is required for custom_lambda/custom_policy organization rules and must be empty for managed ones"
-    expression: "!has(this.organization) || (has(this.managed) ? size(this.organization.trigger_types) == 0 : size(this.organization.trigger_types) > 0)"
+    expression: "!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || (has(this.managed) ? size(this.organization.trigger_types) == 0 : size(this.organization.trigger_types) > 0)"
   };
 
   // The Guard engine evaluates on configuration changes only - AWS
@@ -115,14 +118,14 @@ message AwsConfigRuleSpec {
   option (buf.validate.message).cel = {
     id: "org_custom_policy_no_scheduled_trigger"
     message: "organization custom_policy rules do not accept the ScheduledNotification trigger"
-    expression: "!has(this.organization) || !has(this.custom_policy) || !('ScheduledNotification' in this.organization.trigger_types)"
+    expression: "!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || !has(this.custom_policy) || !('ScheduledNotification' in this.organization.trigger_types)"
   };
 
   // Debug log delivery is a Guard-engine feature.
   option (buf.validate.message).cel = {
     id: "debug_accounts_custom_policy_only"
     message: "organization.debug_log_delivery_accounts applies only to custom_policy rules"
-    expression: "!has(this.organization) || size(this.organization.debug_log_delivery_accounts) == 0 || has(this.custom_policy)"
+    expression: "!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || size(this.organization.debug_log_delivery_accounts) == 0 || has(this.custom_policy)"
   };
 
   // Organization custom rules declare triggers on the organization
@@ -130,7 +133,7 @@ message AwsConfigRuleSpec {
   option (buf.validate.message).cel = {
     id: "org_lambda_uses_trigger_types"
     message: "organization custom_lambda rules declare triggers via organization.trigger_types, not custom_lambda.source_details"
-    expression: "!has(this.organization) || !has(this.custom_lambda) || size(this.custom_lambda.source_details) == 0"
+    expression: "!(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled)) || !has(this.custom_lambda) || size(this.custom_lambda.source_details) == 0"
   };
 
   // AWS remediation configurations attach to account-scoped rules by
@@ -138,14 +141,14 @@ message AwsConfigRuleSpec {
   option (buf.validate.message).cel = {
     id: "remediation_account_scope_only"
     message: "remediation is not supported on organization rules"
-    expression: "!has(this.remediation) || !has(this.organization)"
+    expression: "!has(this.remediation) || !(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled))"
   };
 
   // Proactive evaluation exists only for account-scoped rules.
   option (buf.validate.message).cel = {
     id: "evaluation_modes_account_scope_only"
     message: "evaluation_modes apply only to account-scoped rules"
-    expression: "size(this.evaluation_modes) == 0 || !has(this.organization)"
+    expression: "size(this.evaluation_modes) == 0 || !(has(this.organization) && (!has(this.organization.enabled) || this.organization.enabled))"
   };
 }
 
@@ -262,7 +265,9 @@ message AwsConfigRuleScope {
 // AwsConfigRuleOrganization deploys the rule across the AWS
 // Organization. Run from the management account or the Config
 // delegated administrator; member accounts get the rule
-// automatically.
+// automatically. Declaring the block makes the rule organization-scoped;
+// `enabled: false` records the decision to deploy it account-scoped while
+// keeping these settings in place.
 message AwsConfigRuleOrganization {
   // Member accounts to EXCLUDE from the rule.
   repeated string excluded_accounts = 1 [(buf.validate.field).repeated = {
@@ -298,6 +303,11 @@ message AwsConfigRuleOrganization {
       string: {pattern: "^[0-9]{12}$"}
     }
   }];
+
+  // Whether the rule deploys organization-wide. Unset means yes: declaring
+  // the block has always meant an organization rule, and this switch lets
+  // a manifest say the opposite out loud.
+  optional bool enabled = 4 [(dev.planton.shared.options.default) = "true"];
 }
 
 // AwsConfigRuleRemediation runs an SSM document against resources the

@@ -26,6 +26,7 @@ variable "spec" {
     }))
     managed_query_results = optional(object({
       kms_key = optional(string, "")
+      enabled = optional(bool)
     }))
     bytes_scanned_cutoff_per_query = optional(number, 0)
     enforce_workgroup_configuration = optional(bool)
@@ -52,13 +53,16 @@ variable "spec" {
           key = string
           values = list(string)
         })), [])
+        enabled = optional(bool)
       }))
       managed_logging = optional(object({
         kms_key = optional(string, "")
+        enabled = optional(bool)
       }))
       s3_logging = optional(object({
         log_location = optional(string, "")
         kms_key = optional(string, "")
+        enabled = optional(bool)
       }))
     }))
     force_destroy = optional(bool, false)

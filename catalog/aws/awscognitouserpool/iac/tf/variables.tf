@@ -35,6 +35,7 @@ variable "spec" {
     email_mfa = optional(object({
       message = optional(string, "")
       subject = optional(string, "")
+      enabled = optional(bool)
     }))
     web_authn = optional(object({
       relying_party_id = optional(string, "")
@@ -74,8 +75,8 @@ variable "spec" {
       sms_message = optional(string, "")
     }))
     device_configuration = optional(object({
-      challenge_required_on_new_device = optional(bool, false)
-      device_only_remembered_on_user_prompt = optional(bool, false)
+      challenge_required_on_new_device = optional(bool)
+      device_only_remembered_on_user_prompt = optional(bool)
     }))
     custom_attributes = optional(list(object({
       name = string
