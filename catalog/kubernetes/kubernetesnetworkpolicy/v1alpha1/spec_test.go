@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestKubernetesNetworkPolicySpec(t *testing.T) {
@@ -24,6 +25,19 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 
 		ginkgo.It("accepts a minimal spec (all pods, inferred types)", func() {
 			spec := &KubernetesNetworkPolicySpec{Name: "isolate"}
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts match_all selectors at the policy and in a peer (the default-deny and same-namespace shapes)", func() {
+			spec := &KubernetesNetworkPolicySpec{
+				Name:        "same-namespace",
+				PodSelector: &KubernetesNetworkPolicyLabelSelector{MatchAll: proto.Bool(true)},
+				IngressRules: []*KubernetesNetworkPolicyIngressRule{{
+					From: []*KubernetesNetworkPolicyPeer{{
+						PodSelector: &KubernetesNetworkPolicyLabelSelector{MatchAll: proto.Bool(true)},
+					}},
+				}},
+			}
 			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 		})
 
@@ -184,6 +198,29 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 				}},
 			}
 			gomega.Expect(protovalidate.Validate(spec)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a selector that names neither match_all nor a label criterion", func() {
+			spec := &KubernetesNetworkPolicySpec{
+				Name:        "bad",
+				PodSelector: &KubernetesNetworkPolicyLabelSelector{},
+			}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("must say what it selects"))
+		})
+
+		ginkgo.It("rejects match_all combined with labels", func() {
+			spec := &KubernetesNetworkPolicySpec{
+				Name: "bad",
+				PodSelector: &KubernetesNetworkPolicyLabelSelector{
+					MatchAll:    proto.Bool(true),
+					MatchLabels: map[string]string{"app": "x"},
+				},
+			}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("match_all: true selects everything"))
 		})
 
 		ginkgo.It("rejects an empty peer", func() {

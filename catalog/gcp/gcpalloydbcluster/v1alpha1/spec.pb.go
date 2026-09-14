@@ -539,7 +539,9 @@ func (x *GcpAlloydbClusterPscConfig) GetPscEnabled() bool {
 type GcpAlloydbClusterDataplexConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether Dataplex integration is enabled for the cluster. Mutable.
-	Enabled       bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Required inside dataplex_config: declaring the block takes the
+	// integration under management, and the switch says which way.
+	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -575,8 +577,8 @@ func (*GcpAlloydbClusterDataplexConfig) Descriptor() ([]byte, []int) {
 }
 
 func (x *GcpAlloydbClusterDataplexConfig) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1799,9 +1801,11 @@ const file_catalog_gcp_gcpalloydbcluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15record_client_address\x18\x04 \x01(\bR\x13recordClientAddress\"=\n" +
 	"\x1aGcpAlloydbClusterPscConfig\x12\x1f\n" +
 	"\vpsc_enabled\x18\x01 \x01(\bR\n" +
-	"pscEnabled\";\n" +
-	"\x1fGcpAlloydbClusterDataplexConfig\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\"O\n" +
+	"pscEnabled\"T\n" +
+	"\x1fGcpAlloydbClusterDataplexConfig\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"O\n" +
 	"$GcpAlloydbClusterRestoreBackupSource\x12'\n" +
 	"\vbackup_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"backupName\"\xd8\x01\n" +
@@ -2006,6 +2010,7 @@ func file_catalog_gcp_gcpalloydbcluster_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcpalloydbcluster_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_gcp_gcpalloydbcluster_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
 	file_catalog_gcp_gcpalloydbcluster_v1alpha1_spec_proto_msgTypes[19].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

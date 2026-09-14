@@ -63,7 +63,7 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) (*a
 	// or out explicitly.
 	if spec.DataplexConfig != nil {
 		args.DataplexConfig = &alloydb.ClusterDataplexConfigArgs{
-			Enabled: pulumi.Bool(spec.DataplexConfig.Enabled),
+			Enabled: pulumi.Bool(spec.DataplexConfig.GetEnabled()),
 		}
 	}
 

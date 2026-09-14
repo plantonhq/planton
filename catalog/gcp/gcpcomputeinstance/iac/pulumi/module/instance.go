@@ -247,9 +247,10 @@ func computeInstance(
 			niArgs.InternalIpv6PrefixLength = pulumi.IntPtr(int(ni.GetInternalIpv6PrefixLength()))
 		}
 
-		// Presence of an access config grants an ephemeral or static
-		// external IPv4; absence keeps the VM private (pair with Cloud
-		// NAT for egress).
+		// An access config grants a static (nat_ip) or ephemeral external
+		// IPv4 -- the manifest's `ephemeral: true` is the request for the
+		// latter and renders as a config with no nat_ip; absence keeps the
+		// VM private (pair with Cloud NAT for egress).
 		if len(ni.AccessConfigs) > 0 {
 			accessConfigs := compute.InstanceNetworkInterfaceAccessConfigArray{}
 			for _, ac := range ni.AccessConfigs {

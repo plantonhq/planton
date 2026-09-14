@@ -146,8 +146,11 @@ locals {
     http_cookie       = try(var.spec.consistent_hash.http_cookie, null)
   }
 
-  # Strong-affinity cookie: pass through; "" name/path -> null.
-  strong_session_affinity_cookie = var.spec.strong_session_affinity_cookie == null ? null : {
+  # Strong-affinity cookie: GCP requires a cookie configuration with
+  # STRONG_COOKIE_AFFINITY; the mode is the statement and the spec block only
+  # customizes it, so the block is rendered (GCP-defaulted when the spec has
+  # none) whenever that mode is chosen. "" name/path -> null.
+  strong_session_affinity_cookie = var.spec.strong_session_affinity_cookie == null && var.spec.session_affinity != "STRONG_COOKIE_AFFINITY" ? null : {
     name = try(var.spec.strong_session_affinity_cookie.name, "") != "" ? var.spec.strong_session_affinity_cookie.name : null
     path = try(var.spec.strong_session_affinity_cookie.path, "") != "" ? var.spec.strong_session_affinity_cookie.path : null
     ttl  = try(var.spec.strong_session_affinity_cookie.ttl, null)

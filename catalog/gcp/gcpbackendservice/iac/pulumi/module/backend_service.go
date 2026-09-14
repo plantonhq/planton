@@ -344,15 +344,19 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 		args.LogConfig = logConfig
 	}
 
-	if spec.StrongSessionAffinityCookie != nil {
+	// GCP requires a cookie configuration with STRONG_COOKIE_AFFINITY; the
+	// affinity mode is the statement and the block only customizes it, so the
+	// module sends the (possibly empty, GCP-defaulted) configuration whenever
+	// that mode is chosen.
+	if spec.GetSessionAffinity() == "STRONG_COOKIE_AFFINITY" || spec.StrongSessionAffinityCookie != nil {
 		strongSessionAffinityCookie := &compute.BackendServiceStrongSessionAffinityCookieArgs{}
-		if spec.StrongSessionAffinityCookie.Name != "" {
-			strongSessionAffinityCookie.Name = pulumi.String(spec.StrongSessionAffinityCookie.Name)
+		if spec.StrongSessionAffinityCookie.GetName() != "" {
+			strongSessionAffinityCookie.Name = pulumi.String(spec.StrongSessionAffinityCookie.GetName())
 		}
-		if spec.StrongSessionAffinityCookie.Path != "" {
-			strongSessionAffinityCookie.Path = pulumi.String(spec.StrongSessionAffinityCookie.Path)
+		if spec.StrongSessionAffinityCookie.GetPath() != "" {
+			strongSessionAffinityCookie.Path = pulumi.String(spec.StrongSessionAffinityCookie.GetPath())
 		}
-		if spec.StrongSessionAffinityCookie.Ttl != nil {
+		if spec.StrongSessionAffinityCookie.GetTtl() != nil {
 			ttl := &compute.BackendServiceStrongSessionAffinityCookieTtlArgs{
 				Seconds: pulumi.Int(int(spec.StrongSessionAffinityCookie.Ttl.Seconds)),
 			}

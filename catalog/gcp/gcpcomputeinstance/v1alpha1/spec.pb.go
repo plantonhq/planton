@@ -1157,20 +1157,27 @@ func (x *GcpComputeInstanceNetworkInterface) GetInternalIpv6PrefixLength() int32
 	return 0
 }
 
-// GcpComputeInstanceAccessConfig grants the interface an external IPv4.
+// GcpComputeInstanceAccessConfig grants the interface an external IPv4. A
+// config says which address it grants: a static `nat_ip`, or `ephemeral:
+// true` for an address GCP assigns; a config that names neither is refused,
+// so "give this interface an ephemeral external IP" is always a written
+// choice and never an accident of an empty row.
 type GcpComputeInstanceAccessConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Static external IP, as a literal or a reference to a reserved
-	// EXTERNAL GcpAddress. When omitted, GCP assigns an ephemeral external
-	// IP.
+	// EXTERNAL GcpAddress. Alternative to ephemeral: true.
 	NatIp *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=nat_ip,json=natIp,proto3" json:"nat_ip,omitempty"`
 	// Network service tier for this IP: "PREMIUM" (default; Google's global
 	// backbone) or "STANDARD" (regional, cheaper).
 	NetworkTier string `protobuf:"bytes,2,opt,name=network_tier,json=networkTier,proto3" json:"network_tier,omitempty"`
 	// Domain name for the public PTR (reverse DNS) record of this IP.
 	PublicPtrDomainName string `protobuf:"bytes,3,opt,name=public_ptr_domain_name,json=publicPtrDomainName,proto3" json:"public_ptr_domain_name,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// Let GCP assign an ephemeral external IPv4 to this interface. Alternative
+	// to a static nat_ip. Never reaches GCP itself: an access config without a
+	// nat_ip IS the ephemeral request on the wire.
+	Ephemeral     *bool `protobuf:"varint,4,opt,name=ephemeral,proto3,oneof" json:"ephemeral,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpComputeInstanceAccessConfig) Reset() {
@@ -1222,6 +1229,13 @@ func (x *GcpComputeInstanceAccessConfig) GetPublicPtrDomainName() string {
 		return x.PublicPtrDomainName
 	}
 	return ""
+}
+
+func (x *GcpComputeInstanceAccessConfig) GetEphemeral() bool {
+	if x != nil && x.Ephemeral != nil {
+		return *x.Ephemeral
+	}
+	return false
 }
 
 // GcpComputeInstanceIpv6AccessConfig grants the interface external IPv6
@@ -2346,11 +2360,15 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"+network_interface_attachment_point_required\x12\xb3\x01each network interface needs an attachment point: a network (auto-mode VPC), a subnetwork (custom-mode VPC), or a network_attachment (Private Service Connect) — set at least one\x1a\xce\x01(has(this.network) && (has(this.network.value) || has(this.network.value_from))) || (has(this.subnetwork) && (has(this.subnetwork.value) || has(this.subnetwork.value_from))) || this.network_attachment != ''B\x0e\n" +
 	"\f_queue_countB\a\n" +
 	"\x05_vlanB\x1e\n" +
-	"\x1c_internal_ipv6_prefix_length\"\x81\x02\n" +
+	"\x1c_internal_ipv6_prefix_length\"\x8a\x04\n" +
 	"\x1eGcpComputeInstanceAccessConfig\x12j\n" +
 	"\x06nat_ip\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xaa\x18\x92\xd4a\x16status.outputs.addressR\x05natIp\x12>\n" +
 	"\fnetwork_tier\x18\x02 \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\aPREMIUMR\bSTANDARDR\vnetworkTier\x123\n" +
-	"\x16public_ptr_domain_name\x18\x03 \x01(\tR\x13publicPtrDomainName\"\x87\x02\n" +
+	"\x16public_ptr_domain_name\x18\x03 \x01(\tR\x13publicPtrDomainName\x12!\n" +
+	"\tephemeral\x18\x04 \x01(\bH\x00R\tephemeral\x88\x01\x01:\xd5\x01\xbaH\xd1\x01\x1a\xce\x01\n" +
+	" access_config_says_which_address\x12man access config grants either a static nat_ip or an ephemeral address — set nat_ip, or set ephemeral: true\x1a;has(this.nat_ip) != (has(this.ephemeral) && this.ephemeral)B\f\n" +
+	"\n" +
+	"_ephemeral\"\x87\x02\n" +
 	"\"GcpComputeInstanceIpv6AccessConfig\x124\n" +
 	"\fnetwork_tier\x18\x01 \x01(\tB\x11\xbaH\x0e\xc8\x01\x01r\tR\aPREMIUMR\vnetworkTier\x123\n" +
 	"\x16public_ptr_domain_name\x18\x02 \x01(\tR\x13publicPtrDomainName\x12#\n" +
@@ -2523,6 +2541,7 @@ func file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_init() {
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}

@@ -790,9 +790,17 @@ var _ = ginkgo.Describe("GcpAlloydbClusterSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
+	ginkgo.It("should reject a dataplex block that does not say on or off", func() {
+		msg := minimal()
+		msg.Spec.DataplexConfig = &GcpAlloydbClusterDataplexConfig{}
+		err := protovalidate.Validate(msg)
+		gomega.Expect(err).ToNot(gomega.BeNil())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("dataplex_config.enabled"))
+	})
+
 	ginkgo.It("should accept dataplex, user labels, and backup labels", func() {
 		msg := minimal()
-		msg.Spec.DataplexConfig = &GcpAlloydbClusterDataplexConfig{Enabled: false}
+		msg.Spec.DataplexConfig = &GcpAlloydbClusterDataplexConfig{Enabled: proto.Bool(false)}
 		msg.Spec.Labels = map[string]string{"team": "data", "env": "prod"}
 		msg.Spec.AutomatedBackupPolicy = &GcpAlloydbClusterAutomatedBackupPolicy{
 			Enabled: true,

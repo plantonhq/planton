@@ -6,9 +6,9 @@ spec:
   name: allow-same-namespace
   namespace:
     value: "<your-namespace>"
-  pod_selector: {}
+  pod_selector: { match_all: true }
   policy_types:
     - ingress
   ingress_rules:
     - from:
-        - pod_selector: {}
+        - pod_selector: { match_all: true }

@@ -179,3 +179,10 @@ resources:
       API enablement plumbing -- the module enables compute.googleapis.com
       with fixed arguments (disable_on_destroy false so destroying one VM
       never disables the API project-wide); not spec surface.
+
+specExclusions:
+  # The manifest's word for "let GCP assign an external address": an access
+  # config without a nat_ip IS the ephemeral request on the wire, so the
+  # provider has no argument for it.
+  - field: spec.network_interfaces.access_configs.ephemeral
+    reason: a written choice the wire expresses by the absence of nat_ip; never sent to GCP

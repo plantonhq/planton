@@ -30,7 +30,7 @@ that has progressed.
 | Provider schema (parity baseline) | `google@7.43.0` |
 | Kinds in the catalog | 99 |
 | Distinct provider resources consumed | 153 |
-| Spec fields authored across all kinds | 3687 |
+| Spec fields authored across all kinds | 3693 |
 | Module pins on `google` | `~> 7.43` × 99 |
 
 The GA provider is the parity baseline. Capability that exists only in a

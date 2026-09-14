@@ -7,6 +7,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestGcpComputeInstanceSpec(t *testing.T) {
@@ -457,7 +458,7 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 
 		It("rejects two access configs on one interface", func() {
 			spec := makeValidSpec()
-			spec.NetworkInterfaces[0].AccessConfigs = []*GcpComputeInstanceAccessConfig{{}, {}}
+			spec.NetworkInterfaces[0].AccessConfigs = []*GcpComputeInstanceAccessConfig{{Ephemeral: proto.Bool(true)}, {Ephemeral: proto.Bool(true)}}
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})
 
@@ -525,10 +526,36 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 			Expect(protovalidate.Validate(spec)).To(BeNil())
 		})
 
+		It("accepts an ephemeral external IP stated out loud", func() {
+			spec := makeValidSpec()
+			spec.NetworkInterfaces[0].AccessConfigs = []*GcpComputeInstanceAccessConfig{
+				{Ephemeral: proto.Bool(true), NetworkTier: "PREMIUM"},
+			}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects an access config that names neither a static nat_ip nor ephemeral", func() {
+			spec := makeValidSpec()
+			spec.NetworkInterfaces[0].AccessConfigs = []*GcpComputeInstanceAccessConfig{
+				{NetworkTier: "PREMIUM"},
+			}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+			Expect(err.Error()).To(ContainSubstring("set nat_ip, or set ephemeral: true"))
+		})
+
+		It("rejects an access config that names both a static nat_ip and ephemeral", func() {
+			spec := makeValidSpec()
+			spec.NetworkInterfaces[0].AccessConfigs = []*GcpComputeInstanceAccessConfig{
+				{NatIp: refVal("static-ip", "status.outputs.address"), Ephemeral: proto.Bool(true)},
+			}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+
 		It("rejects an invalid network tier", func() {
 			spec := makeValidSpec()
 			spec.NetworkInterfaces[0].AccessConfigs = []*GcpComputeInstanceAccessConfig{
-				{NetworkTier: "BASIC"},
+				{Ephemeral: proto.Bool(true), NetworkTier: "BASIC"},
 			}
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
 		})

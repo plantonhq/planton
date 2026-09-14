@@ -163,8 +163,11 @@ message GcpBackendServiceSpec {
 
   // The cookie GCP uses for STRONG_COOKIE_AFFINITY — stronger stickiness
   // than GENERATED_COOKIE because the cookie encodes the exact backend
-  // endpoint. Required with (and only valid with) session_affinity
-  // STRONG_COOKIE_AFFINITY.
+  // endpoint. Only valid with session_affinity STRONG_COOKIE_AFFINITY, and
+  // optional there: choosing that mode is the whole statement, and the
+  // modules send GCP the cookie configuration it requires (GCP's generated
+  // cookie name, whole-site path, session lifetime) when this block is
+  // absent. Declare it only to customize the cookie.
   GcpBackendServiceStrongSessionAffinityCookie strong_session_affinity_cookie = 13;
 
   // The load balancing algorithm used within each backend group once the
@@ -392,8 +395,8 @@ message GcpBackendServiceSpec {
 
   option (buf.validate.message).cel = {
     id: "strong_cookie_affinity_coherence"
-    message: "strong_session_affinity_cookie is required with session_affinity STRONG_COOKIE_AFFINITY and not valid with any other affinity mode"
-    expression: "has(this.strong_session_affinity_cookie) == (this.session_affinity == 'STRONG_COOKIE_AFFINITY')"
+    message: "strong_session_affinity_cookie customizes the cookie of session_affinity STRONG_COOKIE_AFFINITY and is not valid with any other affinity mode"
+    expression: "!has(this.strong_session_affinity_cookie) || this.session_affinity == 'STRONG_COOKIE_AFFINITY'"
   };
 
   option (buf.validate.message).cel = {

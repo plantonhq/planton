@@ -162,8 +162,10 @@ resource "google_compute_instance" "this" {
       ipv6_address                = network_interface.value.ipv6_address != "" ? network_interface.value.ipv6_address : null
       internal_ipv6_prefix_length = network_interface.value.internal_ipv6_prefix_length
 
-      # Presence of an access_config grants an ephemeral or static
-      # external IPv4; absence keeps the VM private (pair with Cloud NAT).
+      # An access_config grants a static (nat_ip) or ephemeral external
+      # IPv4 -- the manifest's `ephemeral: true` is the request for the
+      # latter and renders as a config with no nat_ip; absence keeps the VM
+      # private (pair with Cloud NAT).
       dynamic "access_config" {
         for_each = network_interface.value.access_configs
         content {

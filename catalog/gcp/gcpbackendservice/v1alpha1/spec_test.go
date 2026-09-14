@@ -487,11 +487,10 @@ var _ = ginkgo.Describe("GcpBackendServiceSpec", func() {
 		gomega.Expect(strings.Contains(err.Error(), "STRONG_COOKIE_AFFINITY")).To(gomega.BeTrue())
 	})
 
-	ginkgo.It("should reject STRONG_COOKIE_AFFINITY without its cookie", func() {
+	ginkgo.It("should accept STRONG_COOKIE_AFFINITY without a cookie block (GCP's default cookie)", func() {
 		target := minimal()
 		target.Spec.SessionAffinity = str("STRONG_COOKIE_AFFINITY")
-		err := validator.Validate(target)
-		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should reject an affinity cookie TTL without GENERATED_COOKIE", func() {

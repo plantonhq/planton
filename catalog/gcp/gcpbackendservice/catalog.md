@@ -90,7 +90,7 @@ These are the most important decisions when configuring a backend service. Explo
 
 **Backends** -- Each row names a group (a NEG by reference, or an instance-group self-link) with a balancing mode and its capacity targets: RATE requires a rate dial, CONNECTION a connection dial, CUSTOM_METRICS at least one ORCA metric. One service never mixes instance groups with NEGs. The `capacityScaler` is the drain/blue-green lever (0 drains without removing). Mutable — adding, removing, and re-weighing backends is the normal day-2 life.
 
-**Session affinity** -- Default NONE. `strongSessionAffinityCookie` exists exactly with STRONG_COOKIE_AFFINITY; `affinityCookieTtlSec` only with GENERATED_COOKIE; no affinity applies with the UDP protocol. Best-effort, never a guarantee.
+**Session affinity** -- Default NONE. `strongSessionAffinityCookie` customizes STRONG_COOKIE_AFFINITY only (omit it for GCP's default cookie); `affinityCookieTtlSec` only with GENERATED_COOKIE; no affinity applies with the UDP protocol. Best-effort, never a guarantee.
 
 **Cloud CDN** -- `enableCdn` plus `cdnPolicy`: the cache mode, TTLs, negative caching, request coalescing, the rich cache-key policy (host/protocol/query toggles, whitelist/blacklist, headers, named cookies), and up to 3 signed-URL keys (each value handled as a secret) for serving private content from the edge.
 

@@ -1,6 +1,6 @@
 # Allow Same Namespace
 
-This preset isolates a namespace from the rest of the cluster while keeping it open internally: all pods in the namespace accept inbound traffic from all other pods in the SAME namespace, and nothing else. It is the default-deny-ingress shape (empty `pod_selector`, ingress governed) plus exactly one allow — a peer whose empty `pod_selector` means "every pod in this namespace".
+This preset isolates a namespace from the rest of the cluster while keeping it open internally: all pods in the namespace accept inbound traffic from all other pods in the SAME namespace, and nothing else. It is the default-deny-ingress shape (`pod_selector: { match_all: true }`, ingress governed) plus exactly one allow — a peer whose `pod_selector: { match_all: true }` means "every pod in this namespace".
 
 ## When to Use
 
@@ -10,8 +10,8 @@ This preset isolates a namespace from the rest of the cluster while keeping it o
 
 ## Key Configuration Choices
 
-- **Empty top-level `pod_selector` (`{}`)** — the policy governs ALL pods in the namespace
-- **Peer `pod_selector: {}` with no `namespace_selector`** — a pod selector alone always scopes to the policy's OWN namespace, so the empty selector here means "all pods in this namespace" (not "all pods in the cluster")
+- **Top-level `pod_selector: { match_all: true }`** — the policy governs ALL pods in the namespace
+- **Peer `pod_selector: { match_all: true }` with no `namespace_selector`** — a pod selector alone always scopes to the policy's OWN namespace, so selecting every pod here means "all pods in this namespace" (not "all pods in the cluster")
 - **No `ports`** — traffic from allowed sources is permitted on all ports; add a `ports` list to narrow
 - **`policy_types: [ingress]`** — egress is untouched; pods can still initiate outbound traffic anywhere. Add the default-deny + DNS presets to govern egress too
 - **Additive with other policies** — cross-namespace callers can be granted later with separate policies (e.g. 03-allow-from-namespace) without editing this one

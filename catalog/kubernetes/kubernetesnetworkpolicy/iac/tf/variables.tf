@@ -30,6 +30,8 @@ variable "spec" {
         operator = string
         values   = optional(list(string), [])
       })), [])
+      # Selects everything; renders as the empty selector. Alternative to labels.
+      match_all = optional(bool)
     }))
 
     # Governed directions: "ingress" / "egress". Empty defers to the API
@@ -45,6 +47,8 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
+          # Selects everything; renders as the empty selector. Alternative to labels.
+          match_all = optional(bool)
         }))
         namespace_selector = optional(object({
           match_labels = optional(map(string), {})
@@ -53,6 +57,8 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
+          # Selects everything; renders as the empty selector. Alternative to labels.
+          match_all = optional(bool)
         }))
         ip_block = optional(object({
           cidr   = string
@@ -76,6 +82,8 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
+          # Selects everything; renders as the empty selector. Alternative to labels.
+          match_all = optional(bool)
         }))
         namespace_selector = optional(object({
           match_labels = optional(map(string), {})
@@ -84,6 +92,8 @@ variable "spec" {
             operator = string
             values   = optional(list(string), [])
           })), [])
+          # Selects everything; renders as the empty selector. Alternative to labels.
+          match_all = optional(bool)
         }))
         ip_block = optional(object({
           cidr   = string

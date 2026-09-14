@@ -124,9 +124,10 @@ func buildPorts(ports []*kubernetesnetworkpolicyv1alpha1.KubernetesNetworkPolicy
 }
 
 // buildLabelSelector converts the proto label selector into Pulumi args. A nil
-// or empty selector renders as the EMPTY selector — "match everything" — which
-// is load-bearing for default-deny policies (empty pod_selector selects all
-// pods in the namespace).
+// selector, or one that says match_all, renders as the EMPTY selector — "match
+// everything" — which is load-bearing for default-deny policies (a pod_selector
+// selecting every pod in the namespace). match_all itself never reaches the
+// wire: the empty selector IS its Kubernetes spelling.
 func buildLabelSelector(s *kubernetesnetworkpolicyv1alpha1.KubernetesNetworkPolicyLabelSelector) *metav1.LabelSelectorArgs {
 	selectorArgs := &metav1.LabelSelectorArgs{}
 	if s == nil {
