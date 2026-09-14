@@ -847,7 +847,7 @@ Not permitted when the route targets a redirect.
 
 ### spec.defaultRouteAction.timeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -855,7 +855,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.timeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -900,7 +900,7 @@ every attempt.
 
 ### spec.defaultRouteAction.retryPolicy.perTryTimeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -908,7 +908,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.retryPolicy.perTryTimeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1056,7 +1056,7 @@ How long delayed requests are held before forwarding.
 
 ### spec.defaultRouteAction.faultInjectionPolicy.delay.fixedDelay.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1064,7 +1064,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.faultInjectionPolicy.delay.fixedDelay.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1094,7 +1094,7 @@ external application load balancers.
 
 ### spec.defaultRouteAction.maxStreamDuration.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1102,7 +1102,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.maxStreamDuration.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1229,7 +1229,7 @@ clients see). Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.defaultRouteAction.cachePolicy.clientTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1237,7 +1237,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.cachePolicy.clientTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1253,7 +1253,7 @@ Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.defaultRouteAction.cachePolicy.defaultTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1261,7 +1261,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.cachePolicy.defaultTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1278,7 +1278,7 @@ FORCE_CACHE_ALL.
 
 ### spec.defaultRouteAction.cachePolicy.maxTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1286,7 +1286,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.cachePolicy.maxTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1302,7 +1302,7 @@ background (up to 1 day).
 
 ### spec.defaultRouteAction.cachePolicy.serveWhileStale.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1310,7 +1310,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.cachePolicy.serveWhileStale.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1341,7 +1341,7 @@ How long responses with this status are cached.
 
 ### spec.defaultRouteAction.cachePolicy.negativeCachingPolicy[].ttl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1349,7 +1349,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.defaultRouteAction.cachePolicy.negativeCachingPolicy[].ttl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1777,7 +1777,7 @@ Not permitted when the route targets a redirect.
 
 ### spec.pathMatchers[].defaultRouteAction.timeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1785,7 +1785,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.timeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1830,7 +1830,7 @@ every attempt.
 
 ### spec.pathMatchers[].defaultRouteAction.retryPolicy.perTryTimeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1838,7 +1838,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.retryPolicy.perTryTimeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -1986,7 +1986,7 @@ How long delayed requests are held before forwarding.
 
 ### spec.pathMatchers[].defaultRouteAction.faultInjectionPolicy.delay.fixedDelay.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -1994,7 +1994,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.faultInjectionPolicy.delay.fixedDelay.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2024,7 +2024,7 @@ external application load balancers.
 
 ### spec.pathMatchers[].defaultRouteAction.maxStreamDuration.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2032,7 +2032,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.maxStreamDuration.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2159,7 +2159,7 @@ clients see). Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.clientTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2167,7 +2167,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.clientTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2183,7 +2183,7 @@ Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.defaultTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2191,7 +2191,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.defaultTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2208,7 +2208,7 @@ FORCE_CACHE_ALL.
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.maxTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2216,7 +2216,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.maxTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2232,7 +2232,7 @@ background (up to 1 day).
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.serveWhileStale.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2240,7 +2240,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.serveWhileStale.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2271,7 +2271,7 @@ How long responses with this status are cached.
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.negativeCachingPolicy[].ttl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2279,7 +2279,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].defaultRouteAction.cachePolicy.negativeCachingPolicy[].ttl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2621,7 +2621,7 @@ Not permitted when the route targets a redirect.
 
 ### spec.pathMatchers[].pathRules[].routeAction.timeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2629,7 +2629,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.timeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2674,7 +2674,7 @@ every attempt.
 
 ### spec.pathMatchers[].pathRules[].routeAction.retryPolicy.perTryTimeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2682,7 +2682,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.retryPolicy.perTryTimeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2830,7 +2830,7 @@ How long delayed requests are held before forwarding.
 
 ### spec.pathMatchers[].pathRules[].routeAction.faultInjectionPolicy.delay.fixedDelay.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2838,7 +2838,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.faultInjectionPolicy.delay.fixedDelay.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -2868,7 +2868,7 @@ external application load balancers.
 
 ### spec.pathMatchers[].pathRules[].routeAction.maxStreamDuration.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -2876,7 +2876,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.maxStreamDuration.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3003,7 +3003,7 @@ clients see). Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.clientTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3011,7 +3011,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.clientTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3027,7 +3027,7 @@ Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.defaultTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3035,7 +3035,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.defaultTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3052,7 +3052,7 @@ FORCE_CACHE_ALL.
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.maxTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3060,7 +3060,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.maxTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3076,7 +3076,7 @@ background (up to 1 day).
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.serveWhileStale.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3084,7 +3084,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.serveWhileStale.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3115,7 +3115,7 @@ How long responses with this status are cached.
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.negativeCachingPolicy[].ttl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3123,7 +3123,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].pathRules[].routeAction.cachePolicy.negativeCachingPolicy[].ttl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3632,7 +3632,7 @@ Not permitted when the route targets a redirect.
 
 ### spec.pathMatchers[].routeRules[].routeAction.timeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3640,7 +3640,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.timeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3685,7 +3685,7 @@ every attempt.
 
 ### spec.pathMatchers[].routeRules[].routeAction.retryPolicy.perTryTimeout.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3693,7 +3693,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.retryPolicy.perTryTimeout.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3841,7 +3841,7 @@ How long delayed requests are held before forwarding.
 
 ### spec.pathMatchers[].routeRules[].routeAction.faultInjectionPolicy.delay.fixedDelay.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3849,7 +3849,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.faultInjectionPolicy.delay.fixedDelay.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -3879,7 +3879,7 @@ external application load balancers.
 
 ### spec.pathMatchers[].routeRules[].routeAction.maxStreamDuration.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -3887,7 +3887,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.maxStreamDuration.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -4014,7 +4014,7 @@ clients see). Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.clientTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -4022,7 +4022,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.clientTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -4038,7 +4038,7 @@ Not respected with cache_mode USE_ORIGIN_HEADERS.
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.defaultTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -4046,7 +4046,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.defaultTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -4063,7 +4063,7 @@ FORCE_CACHE_ALL.
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.maxTtl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -4071,7 +4071,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.maxTtl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -4087,7 +4087,7 @@ background (up to 1 day).
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.serveWhileStale.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -4095,7 +4095,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.serveWhileStale.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.
@@ -4126,7 +4126,7 @@ How long responses with this status are cached.
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.negativeCachingPolicy[].ttl.seconds
 
-`int64`
+`int64` · optional (explicit presence)
 
 Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
@@ -4134,7 +4134,7 @@ Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
 
 ### spec.pathMatchers[].routeRules[].routeAction.cachePolicy.negativeCachingPolicy[].ttl.nanos
 
-`int32`
+`int32` · optional (explicit presence)
 
 Fraction of a second at nanosecond resolution (0 to 999,999,999).
 Durations under one second use seconds = 0 and a positive nanos.

@@ -67,8 +67,8 @@ spec:
 | `spec.region` | `string` | yes |  |  |
 | `spec.fileSystemId` | `string \| valueFrom` | yes |  | AwsElasticFileSystem (`status.outputs.file_system_id`) |
 | `spec.posixUser` | `AwsEfsAccessPointPosixUser` |  |  |  |
-| `spec.posixUser.uid` | `int64` |  |  |  |
-| `spec.posixUser.gid` | `int64` |  |  |  |
+| `spec.posixUser.uid` | `int64` | yes |  |  |
+| `spec.posixUser.gid` | `int64` | yes |  |  |
 | `spec.posixUser.secondaryGids` | `[]int64` |  |  |  |
 | `spec.rootDirectory` | `AwsEfsAccessPointRootDirectory` |  |  |  |
 | `spec.rootDirectory.path` | `string` | yes |  |  |
@@ -113,21 +113,23 @@ identity is most of the point of an access point).
 
 ### spec.posixUser.uid
 
-`int64`
+`int64` · required · optional (explicit presence)
 
 POSIX user ID (0–4294967295). All file system operations through this
-access point use this UID as the file owner.
+access point use this UID as the file owner. Required inside posix_user;
+0 is root.
 
-- rule: {"int64":{"lte":"4294967295","gte":"0"}}
+- rule: {"required":true,"int64":{"lte":"4294967295","gte":"0"}}
 
 ### spec.posixUser.gid
 
-`int64`
+`int64` · required · optional (explicit presence)
 
 POSIX primary group ID (0–4294967295). All file system operations through
-this access point use this GID as the file group.
+this access point use this GID as the file group. Required inside
+posix_user; 0 is root.
 
-- rule: {"int64":{"lte":"4294967295","gte":"0"}}
+- rule: {"required":true,"int64":{"lte":"4294967295","gte":"0"}}
 
 ### spec.posixUser.secondaryGids
 
