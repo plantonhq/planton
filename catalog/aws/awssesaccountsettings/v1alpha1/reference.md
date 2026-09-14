@@ -56,8 +56,9 @@ spec:
 | `spec.region` | `string` | yes |  |  |
 | `spec.suppression` | `AwsSesAccountSettingsSuppression` |  |  |  |
 | `spec.suppression.reasons` | `[]string` |  |  |  |
+| `spec.suppression.enabled` | `bool` |  | `true` |  |
 | `spec.vdm` | `AwsSesAccountSettingsVdm` |  |  |  |
-| `spec.vdm.enabled` | `bool` |  |  |  |
+| `spec.vdm.enabled` | `bool` | yes |  |  |
 | `spec.vdm.engagementMetrics` | `bool` |  |  |  |
 | `spec.vdm.optimizedSharedDelivery` | `bool` |  |  |  |
 
@@ -79,8 +80,11 @@ Example: "us-west-2", "eu-west-1"
 
 The account-level suppression list configuration. Omit the arm to
 leave the account's suppression settings untouched; set it with
-an empty reasons list to explicitly turn account-level
-auto-suppression OFF.
+`enabled: false` to explicitly turn account-level auto-suppression
+OFF.
+
+- rule: suppression is on but names no events - list BOUNCE and/or COMPLAINT in reasons, or set enabled: false to turn account-level auto-suppression off
+- rule: suppression is off but still names events - drop reasons, or set enabled: true to suppress on them
 
 ### spec.suppression.reasons
 
@@ -89,16 +93,25 @@ auto-suppression OFF.
 Which events auto-suppress a recipient:
   - "BOUNCE": hard bounces add the address to the list.
   - "COMPLAINT": spam complaints add the address to the list.
-Both together is the recommended reputation posture. An EMPTY
-list is meaningful: it explicitly disables account-level
-auto-suppression (configuration sets can still enable their own).
+Both together is the recommended reputation posture.
 
 Applying this arm overwrites whatever was previously set - and
 the setting PERSISTS after this component is destroyed (SES has
 no delete for it; the last-applied reasons stay in effect). To
-stop suppressing, apply an empty list before destroying.
+stop suppressing, apply `enabled: false` before destroying.
 
 - rule: {"repeated":{"unique":true,"items":{"string":{"in":["BOUNCE","COMPLAINT"]}}}}
+
+### spec.suppression.enabled
+
+`bool` · optional (explicit presence)
+
+Whether account-level auto-suppression is on. Unset means on:
+declaring the arm with events has always meant suppressing on them,
+and `enabled: false` is the explicit OFF (SES then holds an empty
+reason list).
+
+- default: `true`
 
 ### spec.vdm
 
@@ -110,12 +123,16 @@ account's VDM state untouched.
 
 ### spec.vdm.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Master switch for VDM on the account. Destroying this component
-resets VDM to disabled (unlike the suppression arm, this one IS
-reverted on destroy). VDM carries its own AWS pricing - enabling
-it is a billing decision, not just a feature flag.
+Master switch for VDM on the account. Required inside vdm: declaring
+the arm takes VDM under management, and the switch says which way.
+Destroying this component resets VDM to disabled (unlike the
+suppression arm, this one IS reverted on destroy). VDM carries its own
+AWS pricing - enabling it is a billing decision, not just a feature
+flag.
+
+- rule: {"required":true}
 
 ### spec.vdm.engagementMetrics
 
