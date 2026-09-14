@@ -148,7 +148,7 @@ spec:
 | `spec.skipAwaitMajorVersionUpgrade` | `bool` |  |  |  |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.dataplexConfig` | `GcpAlloydbClusterDataplexConfig` |  |  |  |
-| `spec.dataplexConfig.enabled` | `bool` |  |  |  |
+| `spec.dataplexConfig.enabled` | `bool` | yes |  |  |
 | `spec.restoreBackupSource` | `GcpAlloydbClusterRestoreBackupSource` |  |  |  |
 | `spec.restoreBackupSource.backupName` | `string` | yes |  |  |
 | `spec.restoreContinuousBackupSource` | `GcpAlloydbClusterRestoreContinuousBackupSource` |  |  |  |
@@ -768,9 +768,13 @@ enabled: false to opt out explicitly.
 
 ### spec.dataplexConfig.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
 Whether Dataplex integration is enabled for the cluster. Mutable.
+Required inside dataplex_config: declaring the block takes the
+integration under management, and the switch says which way.
+
+- rule: {"required":true}
 
 ### spec.restoreBackupSource
 

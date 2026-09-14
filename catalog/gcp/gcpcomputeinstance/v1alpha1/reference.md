@@ -66,7 +66,8 @@ spec:
     - network:
         value: default
       accessConfigs:
-        - networkTier: PREMIUM
+        - ephemeral: true
+          networkTier: PREMIUM
   scheduling:
     provisioningModel: SPOT
     onHostMaintenance: TERMINATE
@@ -143,6 +144,7 @@ spec:
 | `spec.networkInterfaces[].accessConfigs[].natIp` | `string \| valueFrom` |  |  | GcpAddress (`status.outputs.address`) |
 | `spec.networkInterfaces[].accessConfigs[].networkTier` | `string` |  |  |  |
 | `spec.networkInterfaces[].accessConfigs[].publicPtrDomainName` | `string` |  |  |  |
+| `spec.networkInterfaces[].accessConfigs[].ephemeral` | `bool` |  |  |  |
 | `spec.networkInterfaces[].ipv6AccessConfigs` | `[]GcpComputeInstanceIpv6AccessConfig` |  |  |  |
 | `spec.networkInterfaces[].ipv6AccessConfigs[].networkTier` | `string` | yes |  |  |
 | `spec.networkInterfaces[].ipv6AccessConfigs[].publicPtrDomainName` | `string` |  |  |  |
@@ -714,14 +716,14 @@ VM — pair with Cloud NAT for egress). GCP supports at most one
 access config per interface.
 
 - rule: {"repeated":{"maxItems":"1"}}
+- rule: an access config grants either a static nat_ip or an ephemeral address — set nat_ip, or set ephemeral: true
 
 ### spec.networkInterfaces[].accessConfigs[].natIp
 
 `string | valueFrom`
 
 Static external IP, as a literal or a reference to a reserved
-EXTERNAL GcpAddress. When omitted, GCP assigns an ephemeral external
-IP.
+EXTERNAL GcpAddress. Alternative to ephemeral: true.
 
 - references: GcpAddress (`status.outputs.address`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpAddress, name: <that resource's name>, fieldPath: status.outputs.address}} -- a bare string does not parse
@@ -740,6 +742,14 @@ backbone) or "STANDARD" (regional, cheaper).
 `string`
 
 Domain name for the public PTR (reverse DNS) record of this IP.
+
+### spec.networkInterfaces[].accessConfigs[].ephemeral
+
+`bool` · optional (explicit presence)
+
+Let GCP assign an ephemeral external IPv4 to this interface. Alternative
+to a static nat_ip. Never reaches GCP itself: an access config without a
+nat_ip IS the ephemeral request on the wire.
 
 ### spec.networkInterfaces[].ipv6AccessConfigs
 

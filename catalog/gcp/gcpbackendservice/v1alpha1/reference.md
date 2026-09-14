@@ -580,8 +580,11 @@ Mutable.
 
 The cookie GCP uses for STRONG_COOKIE_AFFINITY — stronger stickiness
 than GENERATED_COOKIE because the cookie encodes the exact backend
-endpoint. Required with (and only valid with) session_affinity
-STRONG_COOKIE_AFFINITY.
+endpoint. Only valid with session_affinity STRONG_COOKIE_AFFINITY, and
+optional there: choosing that mode is the whole statement, and the
+modules send GCP the cookie configuration it requires (GCP's generated
+cookie name, whole-site path, session lifetime) when this block is
+absent. Declare it only to customize the cookie.
 
 ### spec.strongSessionAffinityCookie.name
 
@@ -1624,7 +1627,7 @@ switch governs both objects this kind manages:
 - `max_stream_duration_scheme`: max_stream_duration only applies to Traffic Director backend services — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove it
 - `outlier_detection_scheme`: outlier_detection only applies with load_balancing_scheme INTERNAL_SELF_MANAGED or EXTERNAL_MANAGED
 - `consistent_hash_coherence`: consistent_hash requires load_balancing_scheme INTERNAL_SELF_MANAGED and locality_lb_policy MAGLEV or RING_HASH
-- `strong_cookie_affinity_coherence`: strong_session_affinity_cookie is required with session_affinity STRONG_COOKIE_AFFINITY and not valid with any other affinity mode
+- `strong_cookie_affinity_coherence`: strong_session_affinity_cookie customizes the cookie of session_affinity STRONG_COOKIE_AFFINITY and is not valid with any other affinity mode
 - `affinity_cookie_ttl_requires_generated_cookie`: affinity_cookie_ttl_sec only applies with session_affinity GENERATED_COOKIE
 - `udp_forbids_session_affinity`: session affinity is not applicable when protocol is UDP
 - `tls_settings_protocol`: tls_settings only applies when protocol is SSL, HTTPS, or HTTP2 — the load balancer must speak TLS to the backends
