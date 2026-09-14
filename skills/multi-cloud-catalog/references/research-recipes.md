@@ -101,6 +101,35 @@ cat aws/awsalb/iac/permissions.yaml         # least-privilege runner manifest
 rg -l 'kind: ComponentCostProfile' -g 'cost.yaml' .
 ```
 
+## "Can I back this up, and get it back?" (stateful kinds)
+
+A stateful kind's backup story is a COMPOSITION, never one field, and the
+pack answers it in three reads:
+
+```
+rg -n "^## Spec Fields" -A 80 <page> | rg -i "backup|restore|recover|bootstrap"   # the kind's own blocks
+rg -n "^## References" -A 30 <page>                                              # the store, identity, and token kinds it wires to
+rg -n "^## (Backups|Disaster recovery|Restore)" -A 40 <kind-dir>/GUIDE.md        # the judgment
+```
+
+- The kind's backup block names the store in that store's OWN vocabulary
+  (S3, GCS, Azure Blob, or Cloudflare R2), each arm a `StringValueOrRef`
+  onto the catalog's bucket, identity, and token kinds -- read the
+  `References` column, never invent an endpoint or a region for R2.
+- The credential posture is per arm and exactly one: keyless where the
+  cluster's cloud allows it (an identity kind, referenced) or declared keys
+  (a key exported by a catalog kind, referenced). R2 has NO keyless posture
+  anywhere; its credential is a `CloudflareAccountApiToken`, referenced as
+  the S3 key pair.
+- The restore is a SECOND declared instance against the same store, and each
+  kind names the one step that stays with the operator (a seal key held on
+  both sides and an init token for the vault; the source's credential Secret
+  for the databases). `_patterns/stateful-kind-disaster-recovery.md` is the
+  cross-kind judgment; the kind's `GUIDE.md` carries its resource-set tables
+  and runbooks; the kind's `presets/` carry the validated starting manifests.
+- Never claim a keyless posture the client does not support: the pack
+  states it per arm in the field's own doc block (`### spec.backup...keyless`).
+
 ## Where judgment has been written
 
 A page that has authored wisdom links it in its head:

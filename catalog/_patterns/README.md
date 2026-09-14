@@ -17,6 +17,7 @@ architecture diagram the platform renders.
 | [namespace-ownership.md](namespace-ownership.md) | Who owns a namespace: a dedicated KubernetesNamespace component vs the `createNamespace` flag — including the sole-tenant infra case where the flag is the normal shape |
 | [operator-prerequisite.md](operator-prerequisite.md) | Custom-resource kinds need their controller watching their namespace; the dependency is registry metadata, draws no diagram edge, and operators disagree on default watch scope |
 | [observability-stack.md](observability-stack.md) | "Give me observability": the assembled stack (collector, Loki, Tempo, kube-prometheus-stack, Grafana) vs the all-in-one (Signoz + composed ClickHouse), with the fully wired example |
+| [stateful-kind-disaster-recovery.md](stateful-kind-disaster-recovery.md) | "Can I get it back?" for the PostgreSQL database, the MongoDB replica set, and the OpenBao vault: the store by reference, keyless where the cloud allows and a token pair on R2 (never keyless), one path per live instance, the restore as a second declared instance, and the one step that stays with the operator |
 
 ## Reading a pattern
 

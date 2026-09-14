@@ -58,7 +58,7 @@ renders and what it asks of the operator:
   Every run logs in to OpenBao with its own ServiceAccount (`<name>-backup`)
   through the Kubernetes auth method, streams a snapshot with the `bao` CLI,
   ships it to `<prefix>/<name>-<UTC timestamp>.snap`, and prunes objects
-  under the prefix older than `retention_days`. Snapshots exist only for
+  under the prefix older than `retentionDays`. Snapshots exist only for
   integrated Raft storage — `backup` requires `server.ha` (single-node Raft
   is `ha.replicas: 1`).
 - **One prefix per live vault.** Retention prunes under the prefix, so two
@@ -89,8 +89,8 @@ renders and what it asks of the operator:
   the vault, in the same dependency-ordered set.
 
 Keyless where the cloud allows: `gcs.keyless` on GKE (Workload Identity),
-`s3.keyless` on EKS (IRSA), `azure_blob.keyless` on AKS — each paired with
-`backup.workload_identity`, the shared identity seam that annotates the job's
+`s3.keyless` on EKS (IRSA), `azureBlob.keyless` on AKS — each paired with
+`backup.workloadIdentity`, the shared identity seam that annotates the job's
 ServiceAccount. R2 has no keyless posture from any cluster; its credential
 is a `CloudflareAccountApiToken`, referenced.
 
@@ -116,7 +116,7 @@ bao write auth/kubernetes/role/<name>-backup \
 Taking a snapshot is a plain `read` on `sys/storage/raft/snapshot` — not a
 sudo operation — so that one path is the whole policy. The Kubernetes auth
 method validates the job's token through TokenReview, which is why `backup`
-requires `service_account.auth_delegator_enabled` (the default). To take a
+requires `serviceAccount.authDelegatorEnabled` (the default). To take a
 snapshot now rather than at the next schedule:
 `kubectl create job --from=cronjob/<name>-backup -n <namespace> <name>-backup-now`.
 
@@ -136,12 +136,12 @@ side together — every one a kind in this catalog, wired by reference. The
 | 1 | `GcpServiceAccount` (e.g. `bao-unseal`) | The SERVER's identity: wraps and unwraps the master key — KEYLESS | — |
 | 2 | `GcpServiceAccount` (e.g. `bao-backup`) | The BACKUP JOB's identity: writes and prunes snapshots — KEYLESS. Two identities on purpose: the seal key and the snapshot bucket are different blast radii | — |
 | 3 | `GcpKmsKeyRing` | Holds the unseal key. Permanent by GCP design — it can never be deleted and its name is occupied forever | `location` = the region the vault runs in |
-| 4 | `GcpKmsKey` | The unseal key. A declared restore needs the SAME key on source and target | `key_ring_id` by reference to #3; `deletion_policy: PREVENT` in production — destroying the key destroys every vault sealed by it |
-| 5 | `GcpKmsKeyIamMember` | Lets the server use the key | `crypto_key_id` by reference to #4's `key_id`, `role: roles/cloudkms.cryptoKeyEncrypterDecrypter`, `member` by reference to #1's `member` |
-| 6 | `GcpGcsBucket` | The snapshot store | `iam_members`: **two** roles for #2 — `roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (rclone reads the bucket's attributes before writing; objectAdmin alone does not carry `storage.buckets.get`) — `member` by reference to #2's `member` |
-| 7 | `GcpGkeWorkloadIdentityBinding` (two per vault) | Lets the KSAs act as the identities | for the server: `ksa_name` = the vault's `metadata.name` (the chart names the ServiceAccount after the release) bound to #1; for the job: `ksa_name` = `<name>-backup` bound to #2; `ksa_namespace` = the vault's namespace. A restore target is another vault and needs its own pair |
-| 8 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, `auto_unseal.gcp_kms` with `key_ring` and `crypto_key` by reference to #3/#4 (bare names) and `workload_identity_service_account` by reference to #1, `backup.object_store.gcs.bucket` by reference to #6 with `keyless: true`, `backup.workload_identity.gke.service_account_email` by reference to #2, a `prefix` of its own |
-| 9 | `KubernetesOpenBao` (the restore target, on the bad day) | Restore | the same `auto_unseal` (the same key), the same `backup` block INCLUDING the source's `prefix`, `restore.latest: true` (or a `snapshot_key`), `restore.root_token` naming the Secret you will create after init; its own #7 pair |
+| 4 | `GcpKmsKey` | The unseal key. A declared restore needs the SAME key on source and target | `keyRingId` by reference to #3; `deletionPolicy: PREVENT` in production — destroying the key destroys every vault sealed by it |
+| 5 | `GcpKmsKeyIamMember` | Lets the server use the key | `cryptoKeyId` by reference to #4's `key_id`, `role: roles/cloudkms.cryptoKeyEncrypterDecrypter`, `member` by reference to #1's `member` |
+| 6 | `GcpGcsBucket` | The snapshot store | `iamMembers`: **two** roles for #2 — `roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (rclone reads the bucket's attributes before writing; objectAdmin alone does not carry `storage.buckets.get`) — `member` by reference to #2's `member` |
+| 7 | `GcpGkeWorkloadIdentityBinding` (two per vault) | Lets the KSAs act as the identities | for the server: `ksaName` = the vault's `metadata.name` (the chart names the ServiceAccount after the release) bound to #1; for the job: `ksaName` = `<name>-backup` bound to #2; `ksaNamespace` = the vault's namespace. A restore target is another vault and needs its own pair |
+| 8 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, `autoUnseal.gcpKms` with `keyRing` and `cryptoKey` by reference to #3/#4 (bare names) and `workloadIdentityServiceAccount` by reference to #1, `backup.objectStore.gcs.bucket` by reference to #6 with `keyless: true`, `backup.workloadIdentity.gke.serviceAccountEmail` by reference to #2, a `prefix` of its own |
+| 9 | `KubernetesOpenBao` (the restore target, on the bad day) | Restore | the same `autoUnseal` (the same key), the same `backup` block INCLUDING the source's `prefix`, `restore.latest: true` (or a `snapshotKey`), `restore.rootToken` naming the Secret you will create after init; its own #7 pair |
 
 The validated manifests for this set are the `gcp-gke` lane's own:
 `e2e/fixture-gke-gcs-source.yaml` (#8), `e2e/scenarios/gke-gcs-backup-restore.yaml`
@@ -163,8 +163,8 @@ the GCS one.
 |---|---|---|---|
 | 1 | `CloudflareR2Bucket` | The snapshot store | `jurisdiction` fixed at creation (`default`, `eu`, `fedramp`, `us`) — it decides which host serves the bucket; exports `bucket_name`, `account_id`, `jurisdiction` |
 | 2 | `CloudflareAccountApiToken` (e.g. `bao-snapshots-writer`) | The credential — R2 has NO keyless posture from any cluster | one policy: permission group `Workers R2 Storage Bucket Item Write` on resource `com.cloudflare.edge.r2.bucket.<account>_<jurisdiction>_<bucket>` (least privilege: objects in this bucket only); exports the token as the S3 key pair, `r2_access_key_id` + `r2_secret_access_key` |
-| 3 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, an `auto_unseal` arm, `backup.object_store.r2` with `bucket`, `account_id`, `jurisdiction` by reference to #1 and `credentials` by reference to #2, a `prefix` of its own. No `backup.workload_identity` — nothing on the cluster side identifies the job to R2 |
-| 4 | `KubernetesOpenBao` (the restore target) | Restore | the same `auto_unseal` (the same key), the same `r2` store and `prefix`, `restore.snapshot_key` (or `latest`), `restore.root_token` |
+| 3 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, an `autoUnseal` arm, `backup.objectStore.r2` with `bucket`, `accountId`, `jurisdiction` by reference to #1 and `credentials` by reference to #2, a `prefix` of its own. No `backup.workloadIdentity` — nothing on the cluster side identifies the job to R2 |
+| 4 | `KubernetesOpenBao` (the restore target) | Restore | the same `autoUnseal` (the same key), the same `r2` store and `prefix`, `restore.snapshotKey` (or `latest`), `restore.rootToken` |
 
 Three R2 facts join the rules above:
 
@@ -190,9 +190,9 @@ The validated manifests for this set are the `gcp-gke` lane's own:
 ## Restore on the bad day
 
 The original is gone; the snapshots are in the store; the seal key still
-exists. Declare a fresh `KubernetesOpenBao` with the same `auto_unseal`
+exists. Declare a fresh `KubernetesOpenBao` with the same `autoUnseal`
 key, the source's `backup` block (same store, same `prefix`), and a
-`restore` block — `latest: true`, or the exact `snapshot_key` from the
+`restore` block — `latest: true`, or the exact `snapshotKey` from the
 store's listing — naming the Secret the root token will live in:
 
 ```yaml
@@ -255,7 +255,12 @@ sole-tenant case.
 OpenBao renders in the shared-cluster layer; the cluster store's backend
 points at it and ExternalSecrets draw "reads from" edges into the store
 — the whole path from application credential back to the vault is
-visible, hop by hop.
+visible, hop by hop. A declared `backup` draws the recovery path too: edges
+from the vault to the bucket, the token, and the job identity it
+references, and the node wears a `backup` fact (`restoring` while a
+`restore` is declared). A store declared by pasted literals draws nothing
+— which is the diagram's way of saying the credential lives nowhere the
+platform can see.
 
 ## Pairs well with
 
@@ -268,3 +273,6 @@ visible, hop by hop.
   GcpServiceAccount + GcpGkeWorkloadIdentityBinding for the keyless job
   identity; the GcpKmsKeyRing / GcpKmsKey / GcpKmsKeyIamMember trio for the
   seal a declared restore depends on (the resource sets above).
+- The [stateful-kind disaster-recovery pattern](../../_patterns/stateful-kind-disaster-recovery.md)
+  — the store, identity, and restore shape this vault shares with the
+  PostgreSQL and MongoDB kinds, stated once.

@@ -16,12 +16,12 @@ spec:
   # fallback, which would hang every fresh install by design).
   #
   # The backup and restore surface (scheduled Raft snapshots to an object
-  # store, declared restore into a fresh cluster) is authored, offline-
-  # proven, and its lanes are written -- the backup proof onto an
-  # in-cluster S3 store, the restore proof through the transit seal, and
-  # the GKE lanes on GCS and R2 -- but none has run live yet, so the
-  # profile waits on that proof.
-  status: pending_proof
+  # store, declared restore into a fresh cluster) runs live on the kind
+  # lanes: the backup proof onto the catalog's own in-cluster S3 store and
+  # the restore proof through the transit seal, both engines. The GKE
+  # lanes (keyless GCS and R2 under a Cloud KMS seal) are authored and
+  # gated on their cluster profile.
+  status: green
   validated_provisioners:
     - pulumi
     - terraform
