@@ -255,8 +255,10 @@ In/NotIn; must be empty for Exists/DoesNotExist.
 `bool` · optional (explicit presence)
 
 Select everything: every pod in scope for a pod selector, every namespace
-for a namespace selector. Renders as the empty selector on the wire.
-Cannot be combined with match_labels or match_expressions.
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.policyTypes
 
@@ -354,8 +356,10 @@ In/NotIn; must be empty for Exists/DoesNotExist.
 `bool` · optional (explicit presence)
 
 Select everything: every pod in scope for a pod selector, every namespace
-for a namespace selector. Renders as the empty selector on the wire.
-Cannot be combined with match_labels or match_expressions.
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.ingressRules[].from[].namespaceSelector
 
@@ -415,8 +419,10 @@ In/NotIn; must be empty for Exists/DoesNotExist.
 `bool` · optional (explicit presence)
 
 Select everything: every pod in scope for a pod selector, every namespace
-for a namespace selector. Renders as the empty selector on the wire.
-Cannot be combined with match_labels or match_expressions.
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.ingressRules[].from[].ipBlock
 
@@ -571,8 +577,10 @@ In/NotIn; must be empty for Exists/DoesNotExist.
 `bool` · optional (explicit presence)
 
 Select everything: every pod in scope for a pod selector, every namespace
-for a namespace selector. Renders as the empty selector on the wire.
-Cannot be combined with match_labels or match_expressions.
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.egressRules[].to[].namespaceSelector
 
@@ -632,8 +640,10 @@ In/NotIn; must be empty for Exists/DoesNotExist.
 `bool` · optional (explicit presence)
 
 Select everything: every pod in scope for a pod selector, every namespace
-for a namespace selector. Renders as the empty selector on the wire.
-Cannot be combined with match_labels or match_expressions.
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.egressRules[].to[].ipBlock
 

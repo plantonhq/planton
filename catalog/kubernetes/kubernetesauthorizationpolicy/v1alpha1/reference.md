@@ -102,6 +102,7 @@ spec:
 | `spec.rules[].when[].key` | `string` | yes |  |  |
 | `spec.rules[].when[].values` | `[]string` |  |  |  |
 | `spec.rules[].when[].notValues` | `[]string` |  |  |  |
+| `spec.rules[].matchAll` | `bool` |  |  |  |
 | `spec.action` | `string` |  |  |  |
 | `spec.provider` | `KubernetesAuthorizationPolicyExtensionProvider` |  |  |  |
 | `spec.provider.name` | `string` | yes |  |  |
@@ -227,6 +228,8 @@ ALLOW action this denies all requests to the selected workloads; with DENY it
 is a no-op. Upstream allows up to 512.
 
 - rule: {"repeated":{"maxItems":"512"}}
+- rule: match_all: true matches every request — drop from, to, and when, or drop match_all to match by them
+- rule: a rule must say what it matches — set match_all: true to match every request, or name from, to, or when
 
 ### spec.rules[].from
 
@@ -439,6 +442,16 @@ validation, so it is not enforced here (match the validated surface).
 `[]string`
 
 Negated values for the attribute.
+
+### spec.rules[].matchAll
+
+`bool` · optional (explicit presence)
+
+Match every request. The manifest's word for the empty rule on the Istio
+wire -- it never reaches the cluster; the rule it describes is emitted with
+no matchers. Cannot be combined with from, to, or when. With ALLOW this
+admits every request to the selected workloads; with DENY it is a total
+lockout.
 
 ### spec.action
 

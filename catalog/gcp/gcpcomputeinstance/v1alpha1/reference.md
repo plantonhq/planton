@@ -748,8 +748,8 @@ Domain name for the public PTR (reverse DNS) record of this IP.
 `bool` · optional (explicit presence)
 
 Let GCP assign an ephemeral external IPv4 to this interface. Alternative
-to a static nat_ip. Never reaches GCP itself: an access config without a
-nat_ip IS the ephemeral request on the wire.
+to a static nat_ip. The manifest's word for it -- never reaches GCP: an
+access config without a nat_ip IS the ephemeral request on the wire.
 
 ### spec.networkInterfaces[].ipv6AccessConfigs
 
