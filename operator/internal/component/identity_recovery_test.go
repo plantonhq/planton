@@ -142,6 +142,24 @@ func TestRecoverAdminBeforeServer_SucceededJobLetsTheServerStart(t *testing.T) {
 	}
 }
 
+// The pass after the Job succeeds starts the server; the pass after that
+// runs this half again with the server up. It must leave the server alone,
+// or the server is started and stopped every pass and the second half never
+// finds it answering (seen live: a restored platform whose identity pods
+// were replaced every seven seconds for ten minutes).
+func TestRecoverAdminBeforeServer_SucceededJobNeverStopsTheServerAgain(t *testing.T) {
+	id := &Identity{}
+	c := recoveryFakeClient(t, recoveryJob(batchv1.JobStatus{Succeeded: 1}), identityDeployment())
+	planton := restoredPlatform()
+	res, err := id.recoverAdminBeforeServer(context.Background(), c, planton, recoveryConfig(), id.OwnerReferenceFor(planton))
+	if err != nil || res != nil {
+		t.Fatalf("a succeeded job hands over to the server even when the server is already up: %+v %v", res, err)
+	}
+	if !objectExists(t, c, &appsv1.Deployment{}, resources.IdentityDeploymentName("planton")) {
+		t.Error("the server started after the job succeeded is never stopped again")
+	}
+}
+
 func TestRecoverAdminBeforeServer_ARunningServerIsStoppedFirst(t *testing.T) {
 	id := &Identity{}
 	c := recoveryFakeClient(t, identityDeployment())

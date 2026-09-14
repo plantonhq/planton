@@ -66,8 +66,23 @@ func (id *Identity) identityRecoveryPending(ctx context.Context, c client.Client
 func (id *Identity) recoverAdminBeforeServer(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, cfg resources.IdentityConfig, ownerRef *metav1.OwnerReference) (*Result, error) {
 	log := logf.FromContext(ctx).WithValues("component", id.Name(), "step", "recover-admin")
 
+	// The Job's state is read before anything is stopped. This half runs on
+	// every reconcile until the second half writes the marker, and the pass
+	// after the Job succeeds is exactly the one that starts the server: a
+	// server stopped again here would be started and killed every pass, and
+	// the second half -- which needs it answering -- would never run.
+	name := resources.IdentityRecoveryAdminName(planton.Name)
+	var job batchv1.Job
+	err := c.Get(ctx, types.NamespacedName{Name: name, Namespace: planton.Namespace}, &job)
+	if err != nil && !apierrors.IsNotFound(err) {
+		return nil, fmt.Errorf("reading the identity recovery admin Job: %w", err)
+	}
+	if err == nil && job.Status.Succeeded > 0 {
+		return nil, nil
+	}
+
 	var deploy appsv1.Deployment
-	err := c.Get(ctx, types.NamespacedName{Name: resources.IdentityDeploymentName(planton.Name), Namespace: planton.Namespace}, &deploy)
+	err = c.Get(ctx, types.NamespacedName{Name: resources.IdentityDeploymentName(planton.Name), Namespace: planton.Namespace}, &deploy)
 	switch {
 	case err == nil:
 		log.Info("Stopping the identity server so the recovery command can run against the restored realm")
@@ -80,13 +95,11 @@ func (id *Identity) recoverAdminBeforeServer(ctx context.Context, c client.Clien
 		return nil, fmt.Errorf("checking the identity server before admin recovery: %w", err)
 	}
 
-	name := resources.IdentityRecoveryAdminName(planton.Name)
 	if _, err := id.EnsureAndReadCredential(ctx, c, name, planton.Namespace,
 		map[string]string{resources.IdentityBootstrapAdminPasswordKey: ""}, ownerRef); err != nil {
 		return nil, fmt.Errorf("ensuring the identity recovery admin Secret: %w", err)
 	}
 
-	var job batchv1.Job
 	err = c.Get(ctx, types.NamespacedName{Name: name, Namespace: planton.Namespace}, &job)
 	if apierrors.IsNotFound(err) {
 		log.Info("Creating the recovery admin on the restored realm", "job", name)
