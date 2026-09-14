@@ -92,6 +92,7 @@ spec:
 | `spec.privateServiceConnectConfig.pscAutomationConfigs` | `[]GcpVertexAiEndpointPscAutomationConfig` |  |  |  |
 | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `string \| valueFrom` | yes |  | GcpVpcNetwork (`status.outputs.network_self_link`) |
 | `spec.privateServiceConnectConfig.pscAutomationConfigs[].projectId` | `string \| valueFrom` | yes |  | GcpProject (`status.outputs.project_id`) |
+| `spec.privateServiceConnectConfig.enabled` | `bool` |  | `true` |  |
 | `spec.endpointName` | `string` |  |  |  |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.requestResponseLoggingConfig` | `GcpVertexAiEndpointRequestResponseLoggingConfig` |  |  |  |
@@ -222,6 +223,18 @@ project ID; a GcpProject reference resolves to it.
 - references: GcpProject (`status.outputs.project_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
+
+### spec.privateServiceConnectConfig.enabled
+
+`bool` · optional (explicit presence)
+
+Whether Private Service Connect is on. Unset means on: declaring the
+block has always meant enabling PSC, and this switch lets a manifest say
+the opposite out loud while keeping the allowlist and automation
+settings in place (the modules then render no PSC block, since the API
+rejects the block with its flag off).
+
+- default: `true`
 
 ### spec.endpointName
 

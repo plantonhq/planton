@@ -395,8 +395,6 @@ Accepts a literal email or a reference to a GcpServiceAccount resource.
 
 Ingest from Google Cloud Storage.
 
-- rule: choose exactly one input format for Cloud Storage ingestion: avro_format, pubsub_avro_format, or text_format
-
 ### spec.ingestionDataSourceSettings.cloudStorage.bucket
 
 `string | valueFrom` · required
@@ -429,7 +427,6 @@ If unset, all objects are eligible for ingestion regardless of creation time.
 
 Read Cloud Storage data in Avro binary format. The bytes of each object
 are set to the data field of a Pub/Sub message.
-Set this field (as an empty message) to select Avro format.
 
 ### spec.ingestionDataSourceSettings.cloudStorage.pubsubAvroFormat
 
@@ -437,7 +434,6 @@ Set this field (as an empty message) to select Avro format.
 
 Read Cloud Storage data written via Cloud Storage subscriptions.
 Restores the data and attributes of the originally exported Pub/Sub messages.
-Set this field (as an empty message) to select Pub/Sub Avro format.
 
 ### spec.ingestionDataSourceSettings.cloudStorage.textFormat
 

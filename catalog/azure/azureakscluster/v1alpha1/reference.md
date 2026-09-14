@@ -294,12 +294,14 @@ spec:
 | `spec.keyVaultSecretsProvider` | `AzureAksClusterKeyVaultSecretsProvider` |  |  |  |
 | `spec.keyVaultSecretsProvider.secretRotationEnabled` | `bool` |  |  |  |
 | `spec.keyVaultSecretsProvider.secretRotationInterval` | `string` |  |  |  |
+| `spec.keyVaultSecretsProvider.enabled` | `bool` |  | `true` |  |
 | `spec.azurePolicyEnabled` | `bool` |  |  |  |
 | `spec.microsoftDefender` | `AzureAksClusterMicrosoftDefender` |  |  |  |
 | `spec.microsoftDefender.logAnalyticsWorkspaceId` | `string \| valueFrom` | yes |  | AzureLogAnalyticsWorkspace (`status.outputs.workspace_id`) |
 | `spec.monitorMetrics` | `AzureAksClusterMonitorMetrics` |  |  |  |
 | `spec.monitorMetrics.annotationsAllowed` | `string` |  |  |  |
 | `spec.monitorMetrics.labelsAllowed` | `string` |  |  |  |
+| `spec.monitorMetrics.enabled` | `bool` |  | `true` |  |
 | `spec.ingressApplicationGateway` | `AzureAksClusterIngressApplicationGateway` |  |  |  |
 | `spec.ingressApplicationGateway.gatewayId` | `string \| valueFrom` |  |  | AzureApplicationGateway (`status.outputs.application_gateway_id`) |
 | `spec.ingressApplicationGateway.gatewayName` | `string` |  |  |  |
@@ -309,6 +311,7 @@ spec:
 | `spec.aciConnectorLinux.subnetName` | `string` | yes |  |  |
 | `spec.confidentialComputing` | `AzureAksClusterConfidentialComputing` |  |  |  |
 | `spec.confidentialComputing.sgxQuoteHelperEnabled` | `bool` |  |  |  |
+| `spec.confidentialComputing.enabled` | `bool` |  | `true` |  |
 | `spec.webAppRouting` | `AzureAksClusterWebAppRouting` |  |  |  |
 | `spec.webAppRouting.dnsZoneIds` | `[]string \| valueFrom` |  |  | AzureDnsZone (`status.outputs.zone_id`) |
 | `spec.webAppRouting.defaultNginxController` | `enum` |  |  |  |
@@ -2398,6 +2401,16 @@ Without rotation, pods see updated secrets only on restart.
 Poll interval for rotation, e.g. "2m" (Azure's default). Only
 meaningful with secret_rotation_enabled.
 
+### spec.keyVaultSecretsProvider.enabled
+
+`bool` · optional (explicit presence)
+
+Whether the add-on is on. Unset means on: declaring the block has always
+meant enabling it, and this switch lets a manifest say the opposite out
+loud while keeping the add-on's settings in place.
+
+- default: `true`
+
 ### spec.azurePolicyEnabled
 
 `bool`
@@ -2442,6 +2455,16 @@ Comma-separated Kubernetes ANNOTATION keys exported as metric labels.
 `string`
 
 Comma-separated Kubernetes LABEL keys exported as metric labels.
+
+### spec.monitorMetrics.enabled
+
+`bool` · optional (explicit presence)
+
+Whether the add-on is on. Unset means on: declaring the block has always
+meant enabling it, and this switch lets a manifest say the opposite out
+loud while keeping the add-on's settings in place.
+
+- default: `true`
 
 ### spec.ingressApplicationGateway
 
@@ -2520,6 +2543,16 @@ workloads on DC-series node pools.
 
 Whether the SGX quote-helper sidecar runs for out-of-proc enclave
 attestation.
+
+### spec.confidentialComputing.enabled
+
+`bool` · optional (explicit presence)
+
+Whether the add-on is on. Unset means on: declaring the block has always
+meant enabling it, and this switch lets a manifest say the opposite out
+loud while keeping the add-on's settings in place.
+
+- default: `true`
 
 ### spec.webAppRouting
 
