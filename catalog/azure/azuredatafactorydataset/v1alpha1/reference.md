@@ -348,7 +348,7 @@ behavior. Omit for the factory root.
 `AzureDataFactoryDatasetAzureBlob`
 
 Azure Blob Storage files addressed by a flat path + filename
-pair. Set exactly one variant block on this spec.
+pair.
 
 ### spec.azureBlob.path
 
@@ -412,8 +412,7 @@ A human-readable description of the column.
 `AzureDataFactoryDatasetAzureSqlTable`
 
 An Azure SQL Database table. The one variant that references its
-linked service by ARM ID (same factory enforced). Set exactly one
-variant block on this spec.
+linked service by ARM ID (same factory enforced).
 
 ### spec.azureSqlTable.linkedServiceId
 
@@ -476,8 +475,7 @@ A human-readable description of the column.
 
 `AzureDataFactoryDatasetBinary`
 
-Opaque binary files (no column structure). Set exactly one
-variant block on this spec.
+Opaque binary files (no column structure).
 
 - rule: Set exactly one of http_server_location, azure_blob_storage_location, or sftp_server_location
 - rule: http_server_location requires both path and filename for the binary format
@@ -632,8 +630,7 @@ ZipDeflate codecs. Omit for the service default.
 
 `AzureDataFactoryDatasetCosmosdbSqlapi`
 
-An Azure Cosmos DB (SQL API) collection. Set exactly one variant
-block on this spec.
+An Azure Cosmos DB (SQL API) collection.
 
 ### spec.cosmosdbSqlapi.collectionName
 
@@ -678,8 +675,7 @@ A human-readable description of the column.
 
 Any other dataset type, as raw type-properties JSON -- the escape
 hatch for the many Data Factory dataset types azurerm has no
-first-class resource for. Set exactly one variant block on this
-spec.
+first-class resource for.
 
 ### spec.custom.linkedService
 
@@ -742,8 +738,7 @@ schema undeclared.
 
 `AzureDataFactoryDatasetDelimitedText`
 
-Delimited text (CSV) files. Set exactly one variant block on this
-spec.
+Delimited text (CSV) files.
 
 - rule: Set exactly one of http_server_location, azure_blob_storage_location, or azure_blob_fs_location
 - rule: http_server_location requires both path and filename for the delimited text format
@@ -980,7 +975,6 @@ A human-readable description of the column.
 `AzureDataFactoryDatasetHttp`
 
 A file served by an HTTP endpoint (through a web linked service).
-Set exactly one variant block on this spec.
 
 ### spec.http.relativeUrl
 
@@ -1034,7 +1028,7 @@ A human-readable description of the column.
 
 `AzureDataFactoryDatasetJson`
 
-JSON files. Set exactly one variant block on this spec.
+JSON files.
 
 - rule: Set exactly one of http_server_location or azure_blob_storage_location
 - rule: http_server_location requires both path and filename for the JSON format
@@ -1171,7 +1165,7 @@ A human-readable description of the column.
 
 `AzureDataFactoryDatasetMysql`
 
-A MySQL table. Set exactly one variant block on this spec.
+A MySQL table.
 
 ### spec.mysql.tableName
 
@@ -1214,7 +1208,7 @@ A human-readable description of the column.
 
 `AzureDataFactoryDatasetParquet`
 
-Parquet files. Set exactly one variant block on this spec.
+Parquet files.
 
 - rule: Set exactly one of http_server_location, azure_blob_storage_location, or azure_blob_fs_location
 - rule: http_server_location requires filename for the Parquet format
@@ -1395,7 +1389,7 @@ A human-readable description of the column.
 
 `AzureDataFactoryDatasetPostgresql`
 
-A PostgreSQL table. Set exactly one variant block on this spec.
+A PostgreSQL table.
 
 ### spec.postgresql.tableName
 
@@ -1438,7 +1432,7 @@ A human-readable description of the column.
 
 `AzureDataFactoryDatasetSnowflake`
 
-A Snowflake table. Set exactly one variant block on this spec.
+A Snowflake table.
 
 ### spec.snowflake.tableName
 
@@ -1498,7 +1492,7 @@ The number of digits after the decimal point, for numeric types.
 
 `AzureDataFactoryDatasetSqlServerTable`
 
-A SQL Server table. Set exactly one variant block on this spec.
+A SQL Server table.
 
 ### spec.sqlServerTable.tableName
 
@@ -1539,7 +1533,6 @@ A human-readable description of the column.
 
 ## Validation Rules
 
-- `azure_data_factory_dataset_exactly_one_variant`: Set exactly one dataset variant block -- the variant determines the dataset type
 - `azure_data_factory_dataset_linked_service_name_required`: linked_service_name is required for every variant except azure_sql_table and custom
 - `azure_data_factory_dataset_linked_service_name_conflicts`: azure_sql_table and custom carry their own linked service reference -- do not also set linked_service_name
 

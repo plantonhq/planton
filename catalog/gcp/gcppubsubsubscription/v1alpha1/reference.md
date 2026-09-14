@@ -81,6 +81,7 @@ spec:
 | `spec.pushConfig.oidcToken.audience` | `string` |  |  |  |
 | `spec.pushConfig.noWrapper` | `GcpPubSubSubscriptionPushConfigNoWrapper` |  |  |  |
 | `spec.pushConfig.noWrapper.writeMetadata` | `bool` |  |  |  |
+| `spec.pushConfig.pubsubWrapper` | `GcpPubSubSubscriptionPushConfigPubsubWrapper` |  |  |  |
 | `spec.bigqueryConfig` | `GcpPubSubSubscriptionBigQueryConfig` |  |  |  |
 | `spec.bigqueryConfig.table` | `string \| valueFrom` | yes |  | GcpBigQueryTable (`status.outputs.qualified_name`) |
 | `spec.bigqueryConfig.useTopicSchema` | `bool` |  |  |  |
@@ -99,6 +100,7 @@ spec:
 | `spec.cloudStorageConfig.avroConfig` | `GcpPubSubSubscriptionCloudStorageConfigAvroConfig` |  |  |  |
 | `spec.cloudStorageConfig.avroConfig.useTopicSchema` | `bool` |  |  |  |
 | `spec.cloudStorageConfig.avroConfig.writeMetadata` | `bool` |  |  |  |
+| `spec.cloudStorageConfig.textConfig` | `GcpPubSubSubscriptionCloudStorageConfigTextConfig` |  |  |  |
 | `spec.cloudStorageConfig.serviceAccountEmail` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
 | `spec.labels` | `map<string, string>` |  |  |  |
 | `spec.messageTransforms` | `[]GcpPubSubSubscriptionMessageTransform` |  |  |  |
@@ -332,7 +334,7 @@ Defaults to the push endpoint URL if not specified.
 
 `GcpPubSubSubscriptionPushConfigNoWrapper`
 
-When set, the message payload is sent unwrapped (no Pub/Sub envelope).
+The message payload is sent unwrapped (no Pub/Sub envelope).
 
 ### spec.pushConfig.noWrapper.writeMetadata
 
@@ -340,6 +342,12 @@ When set, the message payload is sent unwrapped (no Pub/Sub envelope).
 
 When true, Pub/Sub message metadata is written as HTTP headers
 (x-goog-pubsub-<key>:<value>) and message attributes as plain headers.
+
+### spec.pushConfig.pubsubWrapper
+
+`GcpPubSubSubscriptionPushConfigPubsubWrapper`
+
+The message is wrapped in the standard Pub/Sub envelope.
 
 ### spec.bigqueryConfig
 
@@ -465,8 +473,8 @@ Maximum number of messages per Cloud Storage file. Minimum: 1000.
 
 `GcpPubSubSubscriptionCloudStorageConfigAvroConfig`
 
-Avro format configuration. When set, messages are written in Avro format.
-If not set, messages are written in their raw format.
+Messages are written as Avro records, optionally using the topic schema
+and carrying message metadata.
 
 ### spec.cloudStorageConfig.avroConfig.useTopicSchema
 
@@ -480,6 +488,12 @@ When true, serialize output using the topic schema.
 
 When true, include subscription name, messageId, publishTime, attributes,
 and orderingKey as additional fields in the Avro output.
+
+### spec.cloudStorageConfig.textConfig
+
+`GcpPubSubSubscriptionCloudStorageConfigTextConfig`
+
+Messages are written as raw text.
 
 ### spec.cloudStorageConfig.serviceAccountEmail
 

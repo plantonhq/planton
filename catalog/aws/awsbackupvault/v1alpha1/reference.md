@@ -139,6 +139,7 @@ point in the vault. Omit to leave the vault unlocked. A lock is
 all-or-replace: every lock field forces replacement of the lock
 configuration.
 
+- rule: a vault lock must set at least one of changeable_for_days, min_retention_days, or max_retention_days - a lock with none of them enforces nothing
 - rule: max_retention_days must be greater than or equal to min_retention_days
 
 ### spec.standard.lock.changeableForDays
@@ -247,10 +248,6 @@ key.
 
 - references: AwsKmsKey (`status.outputs.key_arn`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_arn}} -- a bare string does not parse
-
-## Validation Rules
-
-- `spec.exactly_one_vault_type`: configure exactly one of standard / air_gapped - a vault is one AWS vault type
 
 ## Outputs
 
