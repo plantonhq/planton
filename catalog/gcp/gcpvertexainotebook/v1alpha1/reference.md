@@ -128,6 +128,7 @@ spec:
 | `spec.shieldedInstanceConfig.enableIntegrityMonitoring` | `bool` |  |  |  |
 | `spec.confidentialInstanceConfig` | `GcpVertexAiNotebookConfidentialInstanceConfig` |  |  |  |
 | `spec.confidentialInstanceConfig.confidentialInstanceType` | `string` |  |  |  |
+| `spec.confidentialInstanceConfig.enabled` | `bool` |  | `true` |  |
 | `spec.reservationAffinity` | `GcpVertexAiNotebookReservationAffinity` |  |  |  |
 | `spec.reservationAffinity.consumeReservationType` | `string` |  |  |  |
 | `spec.reservationAffinity.key` | `string` |  |  |  |
@@ -509,7 +510,7 @@ Secure Boot, vTPM, and integrity monitoring.
 
 ### spec.shieldedInstanceConfig.enableSecureBoot
 
-`bool`
+`bool` · optional (explicit presence)
 
 Enable Secure Boot. Ensures only verified boot software runs.
 Disabled by default because some ML libraries may not have signed
@@ -517,19 +518,19 @@ boot loaders.
 
 ### spec.shieldedInstanceConfig.enableVtpm
 
-`bool`
+`bool` · optional (explicit presence)
 
 Enable vTPM (Virtual Trusted Platform Module).
 Provides measured boot integrity and key generation.
-Enabled by default.
+Enabled by default; an explicit false turns it off.
 
 ### spec.shieldedInstanceConfig.enableIntegrityMonitoring
 
-`bool`
+`bool` · optional (explicit presence)
 
 Enable integrity monitoring. Compares boot measurements against
 a trusted baseline.
-Enabled by default.
+Enabled by default; an explicit false turns it off.
 
 ### spec.confidentialInstanceConfig
 
@@ -549,6 +550,16 @@ The only supported value is SEV (AMD Secure Encrypted Virtualization).
 If not specified, defaults to SEV.
 
 - rule: confidential_instance_type must be SEV (the only supported confidential technology)
+
+### spec.confidentialInstanceConfig.enabled
+
+`bool` · optional (explicit presence)
+
+Whether Confidential Computing is on. Unset means on: declaring the
+block has always meant enabling it, and this switch lets a manifest say
+the opposite out loud.
+
+- default: `true`
 
 ### spec.reservationAffinity
 

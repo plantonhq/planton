@@ -107,6 +107,7 @@ spec:
 | `spec.logConfig.metadata` | `string` |  | `INCLUDE_ALL_METADATA` |  |
 | `spec.logConfig.metadataFields` | `[]string` |  |  |  |
 | `spec.logConfig.filterExpr` | `string` |  |  |  |
+| `spec.logConfig.enabled` | `bool` |  | `true` |  |
 | `spec.reservedInternalRange` | `string` |  |  |  |
 | `spec.internalIpv6Prefix` | `string` |  |  |  |
 | `spec.ipCollection` | `string` |  |  |  |
@@ -383,6 +384,16 @@ all sampled flows), e.g. restricting to one port:
 connection.dest_port == 443.
 
 - rule: {"string":{"maxLen":"2048"}}
+
+### spec.logConfig.enabled
+
+`bool` · optional (explicit presence)
+
+Whether flow logs are on. Unset means on: declaring the block has always
+meant enabling them, and this switch lets a manifest say the opposite
+out loud.
+
+- default: `true`
 
 ### spec.reservedInternalRange
 
