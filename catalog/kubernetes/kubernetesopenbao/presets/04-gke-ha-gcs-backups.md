@@ -12,9 +12,11 @@ restore half is a second `KubernetesOpenBao` on the SAME key with a
 Two identities on purpose: the server's (wraps the master key with the KMS
 key) and the backup job's (writes and prunes snapshots). The seal key and
 the snapshot bucket are different blast radii, and each identity gets
-exactly the grant its job needs — `cloudkms.cryptoKeyEncrypterDecrypter` on
-the key, `storage.objectAdmin` plus `storage.legacyBucketReader` on the
-bucket. Each needs a `GcpGkeWorkloadIdentityBinding`: the server's on the
+exactly the grants its job needs — `cloudkms.cryptoKeyEncrypterDecrypter`
+plus `cloudkms.viewer` on the key (the server reads the key's metadata
+when it configures the seal at start; the encrypter-decrypter role alone
+crash-loops the pod on "Error configuring seal"), `storage.objectAdmin`
+plus `storage.legacyBucketReader` on the bucket. Each needs a `GcpGkeWorkloadIdentityBinding`: the server's on the
 ServiceAccount named after the vault, the job's on `<name>-backup`.
 
 Initialization is still yours, once (`bao operator init` returns RECOVERY

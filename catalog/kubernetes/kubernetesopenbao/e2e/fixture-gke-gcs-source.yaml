@@ -38,6 +38,14 @@ spec:
         value: ${E2E_ENV:PLANTON_E2E_GKE_OPENBAO_UNSEAL_GSA}
   backup:
     retentionDays: 1
+    # The bad-day premise is a source that is GONE. A live source on the
+    # default hourly schedule would snapshot on its own mid-lane and make
+    # `restore.latest` pick a run the proof did not stage (a moment after
+    # marker B). The CronJob controller refuses a cron that can never fire
+    # (an impossible date is an "invalid schedule"), so the fixture takes
+    # the rarest real moment -- midnight UTC on New Year's Day -- and every
+    # snapshot in the lane is one the seed script triggers by hand.
+    schedule: "0 0 1 1 *"
     objectStore:
       prefix: openbao/${E2E_RUN_ID}/e2e-bao-src
       gcs:

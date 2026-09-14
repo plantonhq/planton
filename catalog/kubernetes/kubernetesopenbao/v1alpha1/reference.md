@@ -668,8 +668,15 @@ access, never placement.
 `string | valueFrom` · required
 
 Crypto key (symmetric encrypt/decrypt) used to wrap the master
-key. The identity running OpenBao needs
-roles/cloudkms.cryptoKeyEncrypterDecrypter on it.
+key. The identity running OpenBao needs TWO roles on it:
+roles/cloudkms.cryptoKeyEncrypterDecrypter to wrap on init and
+unwrap on every unseal, AND roles/cloudkms.viewer — the server reads
+the key's metadata when it configures the seal at start (a
+key-existence check), and the encrypter-decrypter role does not
+carry cloudkms.cryptoKeys.get. With only the first role the pod
+crash-loops with "Error configuring seal \"gcpckms\": ... Permission
+'cloudkms.cryptoKeys.get' denied" and init never opens. Two
+GcpKmsKeyIamMember resources, one per role, scoped to the key.
 
 - references: GcpKmsKey (`status.outputs.key_name`)
 - rule: {"required":true}
@@ -1573,9 +1580,13 @@ listing.
 
 `bool`
 
-Restore the newest snapshot under the declared prefix. Safe
-because a cluster in restore mode takes no snapshots of its own
-(see the `restore` field).
+Restore the newest snapshot under the declared prefix. Safe on the
+bad day because a cluster in restore mode takes no snapshots of its
+own (see the `restore` field) — but the SOURCE's schedule is not
+suspended by anything: while the source is still alive, "newest" is
+whatever its CronJob wrote last, which may be later than the moment
+you meant. Restoring beside a live source (a clone, a migration
+rehearsal) names a `snapshot_key` from the store's listing instead.
 
 - rule: latest is a marker — set it to true to restore the newest snapshot, or name a snapshot_key instead
 

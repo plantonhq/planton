@@ -99,9 +99,34 @@ spec:
       kind: GcpKmsKey
       name: planton-e2e-gke-openbao-unseal
       fieldPath: status.outputs.key_id
-  # The one role a seal needs: encrypt on init, decrypt on every unseal.
+  # Encrypt on init, decrypt on every unseal — the role the seal USES the key with.
   role:
     value: roles/cloudkms.cryptoKeyEncrypterDecrypter
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.member
+---
+# The second grant a seal needs: the server READS the key's metadata when it
+# configures its seal at start (the wrapper's key-existence check), and
+# cryptoKeyEncrypterDecrypter carries only the encrypt/decrypt permissions.
+# Without cloudkms.cryptoKeys.get the server exits with "Error configuring
+# seal ... Permission 'cloudkms.cryptoKeys.get' denied" before init can open.
+# roles/cloudkms.viewer is the predefined role that carries it, scoped to the
+# key.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyIamMember
+metadata:
+  name: planton-e2e-gke-openbao-unseal-viewer
+spec:
+  cryptoKeyId:
+    valueFrom:
+      kind: GcpKmsKey
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.key_id
+  role:
+    value: roles/cloudkms.viewer
   member:
     valueFrom:
       kind: GcpServiceAccount

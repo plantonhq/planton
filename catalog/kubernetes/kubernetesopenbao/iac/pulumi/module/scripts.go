@@ -82,6 +82,22 @@ EOF
 }
 
 jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+# In HA mode BAO_ADDR is the active-leader Service, which has no endpoints
+# until a server is initialized and unsealed -- and a fresh unseal, a
+# rolling restart, or a leader election empties it for a few seconds. A run
+# that starts inside that window must wait, not spend the Job's backoff
+# limit in seconds: poll for a reachable, unsealed server (bao status exits
+# 0 only then) for up to five minutes before the login below explains a
+# failure.
+tries=0
+until status_out=$(bao status 2>&1); do
+  tries=$((tries + 1))
+  if [ "$tries" -ge 60 ]; then
+    echo "OpenBao at $BAO_ADDR did not answer 'bao status' as an unsealed server within 5 minutes: $status_out"
+    break
+  fi
+  sleep 5
+done
 login_out=$(bao write -field=token "auth/$BAO_AUTH_PATH/login" role="$BAO_ROLE" jwt="$jwt" 2>&1) || {
   echo "Login to OpenBao at $BAO_ADDR failed: $login_out"
   case "$login_out" in

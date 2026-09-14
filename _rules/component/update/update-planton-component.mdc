@@ -1022,6 +1022,30 @@ Based on scenario:
   above each Terraform heredoc opener (plain `<<`, never `<<-`) and
   `hack/guards/ensure_cross_engine_script_parity.sh` diffs the pair on every
   change; a heredoc without the marker is a drift nobody will catch.
+- **An IAM grant a spec comment or guide names is verified against the
+  CLIENT's first call in its SDK source, never against the role's name**: a
+  cloud role's name says what it is FOR, not which permissions it carries,
+  and the first thing many clients do is READ the resource they were
+  granted use of. A KMS seal wrapper fetches the key's metadata when the
+  server configures itself (a key-existence check); the encrypter-decrypter
+  role carries only the use permissions, so a vault documented with that one
+  role crash-loops on "Permission denied" before it can initialize, and no
+  offline gate can see it. Read the client's startup path in the pinned
+  clone, list every permission it exercises, and name every predefined role
+  the identity needs -- with the failure the missing one produces -- on the
+  field, in the guide's resource-set table, in the preset explainers, and in
+  the real-cluster batch that proves the set.
+- **A module-owned satellite that reaches its own server waits, bounded, for
+  the server to answer before it acts**: a backup job that fires inside an
+  unseal window, a rolling restart, or a leader election finds the active
+  Service with no endpoints and dies on "connection refused" in under a
+  second; with `restartPolicy: OnFailure` and a small backoff limit the Job
+  spends its retries in fifteen seconds and deletes its pod, taking every
+  log line with it. Poll the server's own readiness call (`bao status`
+  exits 0 only for an unsealed, initialized server) for a bounded window
+  before the first request, then let the failure text explain itself as
+  before. Prove it in the lane by creating the run right after init, not
+  after the server has been Ready for a minute.
 - Plan update and test sequence
 
 **Fix Issue:**

@@ -127,7 +127,7 @@ namespace resumes backups untouched; a renamed one runs the recipe again.
 ## Disaster recovery on GKE: the resource set
 
 "Sealed by a key no human holds, backed up keylessly, restorable by
-declaration" is eight catalog resources on the GCP side and the Kubernetes
+declaration" is nine catalog resources on the GCP side and the Kubernetes
 side together — every one a kind in this catalog, wired by reference. The
 `gcp-gke` lane deploys exactly this set.
 
@@ -137,7 +137,7 @@ side together — every one a kind in this catalog, wired by reference. The
 | 2 | `GcpServiceAccount` (e.g. `bao-backup`) | The BACKUP JOB's identity: writes and prunes snapshots — KEYLESS. Two identities on purpose: the seal key and the snapshot bucket are different blast radii | — |
 | 3 | `GcpKmsKeyRing` | Holds the unseal key. Permanent by GCP design — it can never be deleted and its name is occupied forever | `location` = the region the vault runs in |
 | 4 | `GcpKmsKey` | The unseal key. A declared restore needs the SAME key on source and target | `keyRingId` by reference to #3; `deletionPolicy: PREVENT` in production — destroying the key destroys every vault sealed by it |
-| 5 | `GcpKmsKeyIamMember` | Lets the server use the key | `cryptoKeyId` by reference to #4's `key_id`, `role: roles/cloudkms.cryptoKeyEncrypterDecrypter`, `member` by reference to #1's `member` |
+| 5 | `GcpKmsKeyIamMember` (two per key) | Lets the server use the key AND read it | `cryptoKeyId` by reference to #4's `key_id`, `member` by reference to #1's `member`; one with `role: roles/cloudkms.cryptoKeyEncrypterDecrypter` (wrap on init, unwrap on every unseal) and one with `role: roles/cloudkms.viewer` — the server checks the key exists when it configures its seal at START, and the encrypter-decrypter role does not carry `cloudkms.cryptoKeys.get`; with only the first role the pod crash-loops on "Error configuring seal" before init can open |
 | 6 | `GcpGcsBucket` | The snapshot store | `iamMembers`: **two** roles for #2 — `roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (rclone reads the bucket's attributes before writing; objectAdmin alone does not carry `storage.buckets.get`) — `member` by reference to #2's `member` |
 | 7 | `GcpGkeWorkloadIdentityBinding` (two per vault) | Lets the KSAs act as the identities | for the server: `ksaName` = the vault's `metadata.name` (the chart names the ServiceAccount after the release) bound to #1; for the job: `ksaName` = `<name>-backup` bound to #2; `ksaNamespace` = the vault's namespace. A restore target is another vault and needs its own pair |
 | 8 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, `autoUnseal.gcpKms` with `keyRing` and `cryptoKey` by reference to #3/#4 (bare names) and `workloadIdentityServiceAccount` by reference to #1, `backup.objectStore.gcs.bucket` by reference to #6 with `keyless: true`, `backup.workloadIdentity.gke.serviceAccountEmail` by reference to #2, a `prefix` of its own |
@@ -202,6 +202,13 @@ store's listing — naming the Secret the root token will live in:
       name: bao-init-root
       key: token
 ```
+
+`latest` is the newest object under the prefix at the moment the restore Job
+fetches it. On the bad day that is the last snapshot the lost vault wrote. If
+the source is still alive — a clone, a migration rehearsal — its CronJob
+keeps writing, and "newest" moves under you; name the `snapshotKey` you mean
+(the `gke-gcs-backup-restore` lane learned this by restoring a snapshot the
+live source had just taken on its hourly schedule).
 
 Then the one manual step every OpenBao has: initialize the fresh cluster.
 With auto-unseal, init returns recovery keys and a root token, and the

@@ -5,8 +5,11 @@ is wrapped by a Cloud KMS crypto key, so every server unseals ITSELF
 at startup — pod restarts, node replacements and scale events need no
 human with key shares. Credentials follow the keyless-first doctrine:
 the server ServiceAccount is annotated for GKE Workload Identity and
-the GCP service account needs
-`roles/cloudkms.cryptoKeyEncrypterDecrypter` on the crypto key; no
+the GCP service account needs two roles on the crypto key —
+`roles/cloudkms.cryptoKeyEncrypterDecrypter` to wrap and unwrap, and
+`roles/cloudkms.viewer` because the server reads the key's metadata when
+it configures the seal at start (with only the first role the pod
+crash-loops on "Error configuring seal" before init can open); no
 static credential exists anywhere. (On EKS or AKS, switch the seal arm
 to `awsKms` / `azureKeyVault` and the annotation to the matching
 workload-identity seam.)

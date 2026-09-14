@@ -840,6 +840,15 @@ func (x *KubernetesOpenBaoTls) GetCertSecretName() *v1.StringValueOrRef {
 // follow the keyless-first doctrine: on EKS/GKE/AKS prefer the
 // ambient workload identity (annotate the ServiceAccount via
 // service_account.annotations) and leave the credential fields empty.
+//
+// THE SEAL IS CHECKED AT SERVER START, NOT AT INIT: every seal backend
+// reaches for its key while the server configures itself (the KMS seals
+// describe the key, the transit seal test-encrypts through it), and a key
+// that is missing, unreachable, or not readable by the server's identity
+// makes the server exit with "Error configuring seal" — the pod
+// crash-loops until it is fixed. Create the key (or the transit engine
+// and key) and grant the identity BEFORE this resource, in the same
+// dependency-ordered set; the pods never reach Running otherwise.
 type KubernetesOpenBaoAutoUnseal struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Seal:
@@ -1058,8 +1067,15 @@ type KubernetesOpenBaoGcpKmsSeal struct {
 	KeyRing *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=key_ring,json=keyRing,proto3" json:"key_ring,omitempty"`
 	// *
 	// Crypto key (symmetric encrypt/decrypt) used to wrap the master
-	// key. The identity running OpenBao needs
-	// roles/cloudkms.cryptoKeyEncrypterDecrypter on it.
+	// key. The identity running OpenBao needs TWO roles on it:
+	// roles/cloudkms.cryptoKeyEncrypterDecrypter to wrap on init and
+	// unwrap on every unseal, AND roles/cloudkms.viewer — the server reads
+	// the key's metadata when it configures the seal at start (a
+	// key-existence check), and the encrypter-decrypter role does not
+	// carry cloudkms.cryptoKeys.get. With only the first role the pod
+	// crash-loops with "Error configuring seal \"gcpckms\": ... Permission
+	// 'cloudkms.cryptoKeys.get' denied" and init never opens. Two
+	// GcpKmsKeyIamMember resources, one per role, scoped to the key.
 	CryptoKey *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=crypto_key,json=cryptoKey,proto3" json:"crypto_key,omitempty"`
 	// *
 	// GKE Workload Identity: the GCP service account email to annotate
@@ -1236,10 +1252,17 @@ type KubernetesOpenBaoTransitSeal struct {
 	// and unsealed at every startup.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	// *
-	// Transit key name used to wrap the master key.
+	// Transit key name used to wrap the master key. The key need not exist
+	// beforehand: the transit engine creates a key on its first encrypt
+	// (the server's own startup test-encrypt does it) — the ENGINE must
+	// exist, the key may be born there.
 	KeyName string `protobuf:"bytes,2,opt,name=key_name,json=keyName,proto3" json:"key_name,omitempty"`
 	// *
-	// Transit engine mount path.
+	// Transit engine mount path. The engine must be enabled on the central
+	// instance before this satellite starts (`bao secrets enable
+	// -path=transit transit` there); a satellite whose seal finds no engine
+	// exits at startup with "Error configuring seal" and crash-loops until
+	// the engine exists.
 	MountPath *string `protobuf:"bytes,3,opt,name=mount_path,json=mountPath,proto3,oneof" json:"mount_path,omitempty"`
 	// *
 	// Token authorized for encrypt/decrypt on the transit key.
@@ -2552,9 +2575,13 @@ type KubernetesOpenBaoRestore_SnapshotKey struct {
 
 type KubernetesOpenBaoRestore_Latest struct {
 	// *
-	// Restore the newest snapshot under the declared prefix. Safe
-	// because a cluster in restore mode takes no snapshots of its own
-	// (see the `restore` field).
+	// Restore the newest snapshot under the declared prefix. Safe on the
+	// bad day because a cluster in restore mode takes no snapshots of its
+	// own (see the `restore` field) — but the SOURCE's schedule is not
+	// suspended by anything: while the source is still alive, "newest" is
+	// whatever its CronJob wrote last, which may be later than the moment
+	// you meant. Restoring beside a live source (a clone, a migration
+	// rehearsal) names a `snapshot_key` from the store's listing instead.
 	Latest bool `protobuf:"varint,2,opt,name=latest,proto3,oneof"`
 }
 
