@@ -200,8 +200,7 @@ first port in the producer's advertised port range. Immutable.
 
 `GcpRegionNetworkEndpointGroupCloudRun`
 
-Front a Cloud Run service. One of the three serverless targets — set
-exactly one when network_endpoint_type is SERVERLESS.
+Front a Cloud Run service.
 
 - rule: a cloud_run block must set service or url_mask (or both)
 
@@ -239,8 +238,7 @@ request URL — for host/path-based fan-out to many services from one NEG
 
 `GcpRegionNetworkEndpointGroupCloudFunction`
 
-Front a Cloud Functions (Gen 2) function. One of the three serverless
-targets — set exactly one when network_endpoint_type is SERVERLESS.
+Front a Cloud Functions (Gen 2) function.
 
 - rule: a cloud_function block must set function or url_mask (or both)
 
@@ -268,9 +266,8 @@ routing many functions from one NEG. Immutable.
 
 `GcpRegionNetworkEndpointGroupAppEngine`
 
-Front an App Engine service. One of the three serverless targets — set
-exactly one when network_endpoint_type is SERVERLESS. The block may be
-empty to route to the default App Engine application.
+Front an App Engine service. The block may be empty to route to the
+default App Engine application.
 
 ### spec.appEngine.service
 

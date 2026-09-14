@@ -190,7 +190,7 @@ spec:
           s3:
             uri: s3://my-schema-bucket/models/inventory.smithy
       credentials:
-        jwtPassthrough: true
+        jwtPassthrough: {}
 ```
 
 ## Spec Fields
@@ -393,7 +393,7 @@ spec:
 | `spec.targets[].credentials.gatewayIamRole` | `AwsBedrockAgentCoreGatewaySigv4Credentials` |  |  |  |
 | `spec.targets[].credentials.gatewayIamRole.service` | `string` |  |  |  |
 | `spec.targets[].credentials.gatewayIamRole.region` | `string` |  |  |  |
-| `spec.targets[].credentials.jwtPassthrough` | `bool` |  |  |  |
+| `spec.targets[].credentials.jwtPassthrough` | `AwsBedrockAgentCoreGatewayJwtPassthroughCredentials` |  |  |  |
 | `spec.targets[].credentials.oauth` | `AwsBedrockAgentCoreGatewayOauthCredentials` |  |  |  |
 | `spec.targets[].credentials.oauth.providerArn` | `string \| valueFrom` | yes |  |  |
 | `spec.targets[].credentials.oauth.scopes` | `[]string` | yes |  |  |
@@ -404,6 +404,7 @@ spec:
 | `spec.targets[].metadata.allowedQueryParameters` | `[]string` |  |  |  |
 | `spec.targets[].metadata.allowedRequestHeaders` | `[]string` |  |  |  |
 | `spec.targets[].metadata.allowedResponseHeaders` | `[]string` |  |  |  |
+| `spec.targets[].metadata.enabled` | `bool` |  | `true` |  |
 | `spec.targets[].privateEndpoint` | `AwsBedrockAgentCoreGatewayPrivateEndpoint` |  |  |  |
 | `spec.targets[].privateEndpoint.managedVpc` | `AwsBedrockAgentCoreGatewayManagedVpcEndpoint` |  |  |  |
 | `spec.targets[].privateEndpoint.managedVpc.vpcId` | `string \| valueFrom` | yes |  | AwsVpc (`status.outputs.vpc_id`) |
@@ -1843,8 +1844,6 @@ Expected bucket-owner account ID (cross-account safety check).
 How the GATEWAY authenticates to this backend (outbound credentials).
 Omitted = the gateway's own IAM role without SigV4 service signing.
 
-- rule: set at most one of api_key, caller_iam_credentials, gateway_iam_role, jwt_passthrough, or oauth
-
 ### spec.targets[].credentials.apiKey
 
 `AwsBedrockAgentCoreGatewayApiKeyCredentials`
@@ -1933,7 +1932,7 @@ meaningful when `service` is set.
 
 ### spec.targets[].credentials.jwtPassthrough
 
-`bool`
+`AwsBedrockAgentCoreGatewayJwtPassthroughCredentials`
 
 Pass the caller's inbound JWT straight through to the backend.
 
@@ -2017,6 +2016,16 @@ HTTP headers propagated from the caller to the backend.
 HTTP headers propagated from the backend response to the caller.
 
 - rule: {"repeated":{"maxItems":"10","items":{"string":{"minLen":"1"}}}}
+
+### spec.targets[].metadata.enabled
+
+`bool` · optional (explicit presence)
+
+Whether metadata propagation is on. Unset means on: declaring the block
+has always meant propagating, and this switch lets a manifest say the
+opposite out loud.
+
+- default: `true`
 
 ### spec.targets[].privateEndpoint
 

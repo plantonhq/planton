@@ -1208,8 +1208,6 @@ connector (S3 bucket, website crawl, Confluence, Salesforce,
 SharePoint, or an AWS-managed connector) with its own chunking and
 parsing configuration.
 
-- rule: exactly one of s3, web, confluence, salesforce, sharepoint, or managed_connector must be configured
-
 ### spec.dataSources[].name
 
 `string` · required
@@ -1794,7 +1792,6 @@ only step AWS defines; the modules send the constant).
 
 ## Validation Rules
 
-- `kb_type_exactly_one`: exactly one of vector, managed, kendra, or sql must be configured
 - `storage_iff_vector`: storage is required with the vector type and forbidden with managed/kendra/sql (AWS manages or delegates their storage)
 - `data_source_names_unique`: data_sources entries must have unique names
 

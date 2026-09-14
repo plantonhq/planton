@@ -1327,9 +1327,7 @@ Data format conversion from JSON to columnar formats (Parquet or ORC)
 using an AWS Glue Data Catalog schema. Dramatically improves query
 performance and reduces storage cost for analytics workloads.
 
-- rule: at most one deserializer arm may be set: open_x_json or hive_json
 - rule: a deserializer arm (open_x_json or hive_json) is required when data format conversion is enabled
-- rule: at most one serializer arm may be set: parquet or orc
 - rule: a serializer arm (parquet or orc) is required when data format conversion is enabled
 - rule: schema is required when data format conversion is enabled
 
@@ -1337,9 +1335,8 @@ performance and reduces storage cost for analytics workloads.
 
 `bool`
 
-Enable data format conversion. When true, exactly one deserializer arm
-(open_x_json or hive_json), exactly one serializer arm (parquet or orc),
-and schema are required. When false with arms configured, the
+Enable data format conversion. When true, a deserializer arm, a
+serializer arm, and schema are required. When false with arms configured, the
 conversion settings are retained but inactive (AWS permits disabling
 conversion without discarding its configuration).
 
@@ -1348,9 +1345,7 @@ conversion without discarding its configuration).
 `AwsKinesisFirehoseOpenXJsonDeserializer`
 
 OpenX JSON deserializer arm. Handles most JSON formats including nested
-objects -- the right choice for general use. Exactly one of open_x_json
-or hive_json must be set when conversion is enabled; set it empty
-("openXJson: {}") to accept the deserializer defaults.
+objects -- the right choice for general use.
 
 ### spec.extendedS3.dataFormatConversion.openXJson.caseInsensitive
 
@@ -1387,8 +1382,7 @@ Default: false.
 
 Apache Hive JSON deserializer arm. Use for Hive-compatible JSON when
 records carry non-standard timestamp encodings that need explicit
-parsing patterns. Exactly one of open_x_json or hive_json must be set
-when conversion is enabled.
+parsing patterns.
 
 ### spec.extendedS3.dataFormatConversion.hiveJson.timestampFormats
 
@@ -1405,9 +1399,7 @@ Firehose uses java.sql.Timestamp::valueOf.
 
 Apache Parquet serializer arm. Best for read-heavy analytical workloads
 (Athena, Spark, Presto): excellent compression, predicate pushdown, and
-columnar pruning. Exactly one of parquet or orc must be set when
-conversion is enabled; set it empty ("parquet: {}") to accept the
-serializer defaults (SNAPPY compression).
+columnar pruning.
 
 - rule: compression must be 'SNAPPY', 'GZIP', or 'UNCOMPRESSED' when set
 - rule: block_size_bytes must be at least 67108864 (64 MiB) when set
@@ -1468,8 +1460,7 @@ support before switching. Valid values: "V1", "V2".
 `AwsKinesisFirehoseOrcSerializer`
 
 Apache ORC serializer arm. Best for Hive workloads: ACID support, bloom
-filters, and built-in indexing. Exactly one of parquet or orc must be
-set when conversion is enabled.
+filters, and built-in indexing.
 
 - rule: compression must be 'SNAPPY', 'ZLIB', or 'NONE' when set
 - rule: block_size_bytes must be at least 67108864 (64 MiB) when set
