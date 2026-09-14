@@ -90,7 +90,14 @@ SEQUENTIAL STEPS
    ref field must be typed `string` in variables.tf — some older modules carry a
    stale `object({ value = string })` shape that fails at plan time with
    "attribute ...: object required". The generator emits the correct shape;
-   trust it over any hand-written sibling. Prepare a files JSON manifest for non-generated files. Comment the HCL to the module-comment bar (`architecture/component.md` §4.1 Code Quality): explain *why*, trade-offs, provider quirks, and non-obvious ordering -- not line-by-line narration. These modules render on the public catalog, so their comments are part of the deliverable.
+   trust it over any hand-written sibling. The same converter DROPS every spec
+   field marked `(dev.planton.shared.options.manifest_only)` before the module
+   runs (a manifest word such as a selector's `match_all` or an access config's
+   `ephemeral`, whose wire spelling is the absence of its siblings), and the
+   generator declares no variable for it -- so a module never declares, reads,
+   or forwards such a field; it renders the shape the field's validation rules
+   already guarantee (a selector with no criteria, a config with no static
+   address). Prepare a files JSON manifest for non-generated files. Comment the HCL to the module-comment bar (`architecture/component.md` §4.1 Code Quality): explain *why*, trade-offs, provider quirks, and non-obvious ordering -- not line-by-line narration. These modules render on the public catalog, so their comments are part of the deliverable.
 4) Write and validate:
    - `cat <<'JSON' | python3 _rules/component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --validate | cat`
      { "files": [ {"name": "provider.tf", "content": "..."}, {"name": "locals.tf", "content": "..."}, {"name": "outputs.tf", "content": "..."} ] }
