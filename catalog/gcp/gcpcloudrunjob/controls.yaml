@@ -73,7 +73,7 @@ spec:
       evidence:
         type: spec_default
         reference: False (the default) keeps GPU tasks zonally redundant; true opts a GPU job into single-zone capacity, trading zonal-failure tolerance for cheaper GPUs. Non-GPU tasks run on Cloud Run's regional infrastructure with no placement choice exposed.
-      notes: The 03-gpu-batch-inference preset disables zonal redundancy deliberately -- a stated pre-production trade-off, acceptable for restartable batch work.
+      notes: The 03-gpu-batch-inference preset disables zonal redundancy deliberately -- a stated preproduction trade-off, acceptable for restartable batch work.
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_protection

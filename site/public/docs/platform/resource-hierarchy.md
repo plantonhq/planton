@@ -216,7 +216,7 @@ acme-corp/
 ├── test/
 │   └── (automated testing resources)
 ├── staging/
-│   └── (pre-production validation)
+│   └── (preproduction validation)
 └── prod/
     └── (production resources)
 ```

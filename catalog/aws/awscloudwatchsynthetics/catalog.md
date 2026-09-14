@@ -114,7 +114,7 @@ These are the most important decisions when configuring a Synthetics deployment.
 
 **The zip layout is the runtime's contract** — Node.js runtimes require `nodejs/node_modules/<fileName>.js` inside the zip with `handler` set to `<fileName>.handler`; Python runtimes use `python/<fileName>.py`. A wrong layout creates a canary that lands in CREATE_FAILED — and AWS's only repair is delete-and-recreate, which the provider performs automatically.
 
-**startCanary is the cost lever** — a READY canary costs nothing; runs are what bill, so cost scales linearly with schedule frequency. Keep `startCanary: false` in pre-production manifests and flip it in place when monitoring should begin — the provider calls StartCanary and StopCanary around updates.
+**startCanary is the cost lever** — a READY canary costs nothing; runs are what bill, so cost scales linearly with schedule frequency. Keep `startCanary: false` in preproduction manifests and flip it in place when monitoring should begin — the provider calls StartCanary and StopCanary around updates.
 
 **Never put secrets in environment variables** — `runConfig.environmentVariables` land in the Synthetics-managed Lambda, AWS never returns them on reads (write-only), and they surface in the Lambda console. Scripts that need credentials should read Secrets Manager or Parameter Store at run time under the execution role.
 

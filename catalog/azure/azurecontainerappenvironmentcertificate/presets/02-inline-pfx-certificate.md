@@ -5,7 +5,7 @@ Upload a certificate directly as a base64-encoded PKCS#12 bundle -- for certific
 ## When to Use
 
 - CA-issued certificate files not managed in Key Vault
-- Quick pre-production TLS (Container Apps accepts self-signed uploads; browsers still reject them)
+- Quick preproduction TLS (Container Apps accepts self-signed uploads; browsers still reject them)
 
 ## Key Configuration Choices
 
