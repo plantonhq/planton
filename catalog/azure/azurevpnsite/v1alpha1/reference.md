@@ -86,9 +86,9 @@ spec:
 | `spec.links[].bgp.peeringAddress` | `string` | yes |  |  |
 | `spec.o365Policy` | `AzureVpnSiteO365Policy` |  |  |  |
 | `spec.o365Policy.trafficCategory` | `AzureVpnSiteO365TrafficCategory` |  |  |  |
-| `spec.o365Policy.trafficCategory.allowEndpointEnabled` | `bool` |  |  |  |
-| `spec.o365Policy.trafficCategory.defaultEndpointEnabled` | `bool` |  |  |  |
-| `spec.o365Policy.trafficCategory.optimizeEndpointEnabled` | `bool` |  |  |  |
+| `spec.o365Policy.trafficCategory.allowEndpointEnabled` | `bool` |  | `false` |  |
+| `spec.o365Policy.trafficCategory.defaultEndpointEnabled` | `bool` |  | `false` |  |
+| `spec.o365Policy.trafficCategory.optimizeEndpointEnabled` | `bool` |  | `false` |  |
 | `spec.tags` | `map<string, string>` |  |  |  |
 
 ## Field Details
@@ -266,24 +266,30 @@ The per-category breakout switches.
 
 ### spec.o365Policy.trafficCategory.allowEndpointEnabled
 
-`bool`
+`bool` · optional (explicit presence)
 
 Break out the "Allow" category (required O365 endpoints tolerant
-of local egress) at the branch.
+of local egress) at the branch. Unset keeps it on the tunnel.
+
+- default: `false`
 
 ### spec.o365Policy.trafficCategory.defaultEndpointEnabled
 
-`bool`
+`bool` · optional (explicit presence)
 
 Break out the "Default" category (everything else O365) at the
-branch.
+branch. Unset keeps it on the tunnel.
+
+- default: `false`
 
 ### spec.o365Policy.trafficCategory.optimizeEndpointEnabled
 
-`bool`
+`bool` · optional (explicit presence)
 
 Break out the "Optimize" category (the latency-critical endpoints:
-Teams media, Exchange) at the branch.
+Teams media, Exchange) at the branch. Unset keeps it on the tunnel.
+
+- default: `false`
 
 ### spec.tags
 

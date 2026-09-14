@@ -422,7 +422,7 @@ pins patching to the declared day and start time.
 
 ### spec.maintenanceWindow.dayOfWeek
 
-`int32`
+`int32` · optional (explicit presence)
 
 Day of the week: 0 (Sunday) through 6 (Saturday).
 
@@ -430,7 +430,7 @@ Day of the week: 0 (Sunday) through 6 (Saturday).
 
 ### spec.maintenanceWindow.startHour
 
-`int32`
+`int32` · optional (explicit presence)
 
 The window's start hour, 0-23 (server-local UTC).
 
@@ -438,7 +438,7 @@ The window's start hour, 0-23 (server-local UTC).
 
 ### spec.maintenanceWindow.startMinute
 
-`int32`
+`int32` · optional (explicit presence)
 
 The window's start minute, 0-59.
 

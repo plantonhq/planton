@@ -71,7 +71,7 @@ spec:
 | `spec.publicAccessPrevention` | `string` |  |  |  |
 | `spec.versioningEnabled` | `bool` |  |  |  |
 | `spec.autoclass` | `GcpGcsBucketAutoclass` |  |  |  |
-| `spec.autoclass.enabled` | `bool` |  |  |  |
+| `spec.autoclass.enabled` | `bool` | yes |  |  |
 | `spec.autoclass.terminalStorageClass` | `string` |  |  |  |
 | `spec.lifecycleRules` | `[]GcpGcsBucketLifecycleRule` |  |  |  |
 | `spec.lifecycleRules[].action` | `GcpGcsBucketLifecycleAction` | yes |  |  |
@@ -254,14 +254,17 @@ alternative to hand-written SetStorageClass lifecycle rules.
 
 ### spec.autoclass.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
 Enable autoclass. Objects start in STANDARD and transition to colder
 classes as they go unread; a read promotes the object back to
 STANDARD. Toggling autoclass is allowed but restricted by GCP to
-once per 24 hours. An explicit false is expressible (it records the
-deliberate decision and lets a previously enabled bucket turn the
-feature off), so the field is deliberately not annotated required.
+once per 24 hours. Required inside autoclass: declaring the block takes
+the feature under management, and the switch says which way. An explicit
+false is a real statement (it turns a previously enabled bucket's
+autoclass off), which is why the switch carries presence.
+
+- rule: {"required":true}
 
 ### spec.autoclass.terminalStorageClass
 

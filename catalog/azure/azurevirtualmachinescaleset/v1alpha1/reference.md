@@ -130,7 +130,8 @@ spec:
 
   overprovision: false
 
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
 
   zones: ["1"]
 
@@ -291,6 +292,7 @@ spec:
 | `spec.extensionsTimeBudget` | `string` |  |  |  |
 | `spec.bootDiagnostics` | `AzureVirtualMachineScaleSetBootDiagnostics` |  |  |  |
 | `spec.bootDiagnostics.storageAccountUri` | `string` |  |  |  |
+| `spec.bootDiagnostics.enabled` | `bool` |  | `true` |  |
 | `spec.zones` | `[]string` |  |  |  |
 | `spec.zoneBalance` | `bool` |  | `false` |  |
 | `spec.platformFaultDomainCount` | `int32` |  |  |  |
@@ -1757,6 +1759,16 @@ storage account.
 The storage account to write console logs/screenshots to, by blob
 endpoint URI. Empty uses Azure's MANAGED storage -- the right
 default (no storage account to operate).
+
+### spec.bootDiagnostics.enabled
+
+`bool` · optional (explicit presence)
+
+Whether boot diagnostics are on. Unset means on: declaring the block
+has always meant enabling it, and this switch lets a manifest say the
+opposite out loud.
+
+- default: `true`
 
 ### spec.zones
 

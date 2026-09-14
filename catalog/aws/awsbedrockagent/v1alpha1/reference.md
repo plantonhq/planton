@@ -122,6 +122,7 @@ spec:
 | `spec.guardrail.guardrailId` | `string \| valueFrom` | yes |  | AwsBedrockGuardrail (`status.outputs.guardrail_id`) |
 | `spec.guardrail.version` | `string` | yes |  |  |
 | `spec.memory` | `AwsBedrockAgentMemory` |  |  |  |
+| `spec.memory.enabled` | `bool` |  | `true` |  |
 | `spec.memory.storageDays` | `int32` |  |  |  |
 | `spec.memory.maxRecentSessions` | `int32` |  |  |  |
 | `spec.promptOverride` | `AwsBedrockAgentPromptOverride` |  |  |  |
@@ -295,6 +296,16 @@ guardrail draft edits never change live behavior.
 
 Enable conversation memory - AWS summarizes each session and carries
 the summaries into later sessions with the same memory id.
+
+### spec.memory.enabled
+
+`bool` · optional (explicit presence)
+
+Whether session-summary memory is on. Unset means on: declaring the
+block has always meant enabling memory, and this switch lets a manifest
+say the opposite out loud.
+
+- default: `true`
 
 ### spec.memory.storageDays
 

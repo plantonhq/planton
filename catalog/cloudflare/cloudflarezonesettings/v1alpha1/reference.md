@@ -104,7 +104,7 @@ spec:
 | `spec.alwaysUseHttps` | `bool` |  |  |  |
 | `spec.automaticHttpsRewrites` | `bool` |  |  |  |
 | `spec.automaticPlatformOptimization` | `CloudflareZoneSettingsAutomaticPlatformOptimization` |  |  |  |
-| `spec.automaticPlatformOptimization.enabled` | `bool` |  |  |  |
+| `spec.automaticPlatformOptimization.enabled` | `bool` | yes |  |  |
 | `spec.automaticPlatformOptimization.cacheByDeviceType` | `bool` |  |  |  |
 | `spec.automaticPlatformOptimization.cf` | `bool` |  |  |  |
 | `spec.automaticPlatformOptimization.hostnames` | `[]string` | yes |  |  |
@@ -133,7 +133,7 @@ spec:
 | `spec.minTlsVersion` | `string` |  |  |  |
 | `spec.mirage` | `bool` |  |  |  |
 | `spec.nel` | `CloudflareZoneSettingsNel` |  |  |  |
-| `spec.nel.enabled` | `bool` |  |  |  |
+| `spec.nel.enabled` | `bool` | yes |  |  |
 | `spec.opportunisticEncryption` | `bool` |  |  |  |
 | `spec.opportunisticOnion` | `bool` |  |  |  |
 | `spec.orangeToOrange` | `bool` |  |  |  |
@@ -151,7 +151,7 @@ spec:
 | `spec.rocketLoader` | `bool` |  |  |  |
 | `spec.searchForAgents` | `bool` |  |  |  |
 | `spec.securityHeader` | `CloudflareZoneSettingsSecurityHeader` |  |  |  |
-| `spec.securityHeader.enabled` | `bool` |  |  |  |
+| `spec.securityHeader.enabled` | `bool` | yes |  |  |
 | `spec.securityHeader.includeSubdomains` | `bool` |  |  |  |
 | `spec.securityHeader.maxAge` | `int64` |  |  |  |
 | `spec.securityHeader.nosniff` | `bool` |  |  |  |
@@ -372,9 +372,13 @@ The API requires every field of this object on writes.
 
 ### spec.automaticPlatformOptimization.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Whether APO serves this zone from the edge cache.
+Whether APO serves this zone from the edge cache. Required inside
+automatic_platform_optimization, as every member of this object is on
+writes.
+
+- rule: {"required":true}
 
 ### spec.automaticPlatformOptimization.cacheByDeviceType
 
@@ -599,9 +603,12 @@ zone to Cloudflare.
 
 ### spec.nel.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
 Whether browsers report network errors for this zone to Cloudflare.
+Required inside nel.
+
+- rule: {"required":true}
 
 ### spec.opportunisticEncryption
 
@@ -734,9 +741,13 @@ HTTP Strict Transport Security and related security headers for the zone.
 
 ### spec.securityHeader.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Whether Strict-Transport-Security is emitted.
+Whether Strict-Transport-Security is emitted. Required inside
+security_header: the block is written to Cloudflare whole, so it must say
+whether HSTS is on before the other dials mean anything.
+
+- rule: {"required":true}
 
 ### spec.securityHeader.includeSubdomains
 

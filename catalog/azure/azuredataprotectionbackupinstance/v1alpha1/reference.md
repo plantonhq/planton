@@ -99,8 +99,8 @@ spec:
 | `spec.kubernetesCluster.backupDatasourceParameters.includedResourceTypes` | `[]string` |  |  |  |
 | `spec.kubernetesCluster.backupDatasourceParameters.excludedResourceTypes` | `[]string` |  |  |  |
 | `spec.kubernetesCluster.backupDatasourceParameters.labelSelectors` | `[]string` |  |  |  |
-| `spec.kubernetesCluster.backupDatasourceParameters.clusterScopedResourcesEnabled` | `bool` |  |  |  |
-| `spec.kubernetesCluster.backupDatasourceParameters.volumeSnapshotEnabled` | `bool` |  |  |  |
+| `spec.kubernetesCluster.backupDatasourceParameters.clusterScopedResourcesEnabled` | `bool` |  | `false` |  |
+| `spec.kubernetesCluster.backupDatasourceParameters.volumeSnapshotEnabled` | `bool` |  | `false` |  |
 | `spec.mysqlFlexibleServer` | `AzureDataProtectionBackupInstanceMysqlFlexibleServer` |  |  |  |
 | `spec.mysqlFlexibleServer.serverId` | `string \| valueFrom` | yes |  | AzureMysqlFlexibleServer (`status.outputs.server_id`) |
 | `spec.postgresqlFlexibleServer` | `AzureDataProtectionBackupInstancePostgresqlFlexibleServer` |  |  |  |
@@ -308,17 +308,23 @@ backed up (e.g. "app=commerce").
 
 ### spec.kubernetesCluster.backupDatasourceParameters.clusterScopedResourcesEnabled
 
-`bool`
+`bool` · optional (explicit presence)
 
 Whether cluster-scoped resources (CRDs, cluster roles, ...) join
-the backup. Azure's default is false (namespaced resources only).
+the backup. Azure's default is false (namespaced resources only), and a
+switch left unset states that default; `false` says it out loud.
+
+- default: `false`
 
 ### spec.kubernetesCluster.backupDatasourceParameters.volumeSnapshotEnabled
 
-`bool`
+`bool` · optional (explicit presence)
 
 Whether persistent-volume snapshots are taken with each backup.
-Azure's default is false (configuration only, no volume data).
+Azure's default is false (configuration only, no volume data), and a
+switch left unset states that default; `false` says it out loud.
+
+- default: `false`
 
 ### spec.mysqlFlexibleServer
 
