@@ -32,9 +32,10 @@ your evidence).
 | What you learned | Where it goes | How it travels |
 |---|---|---|
 | Judgment about one component | That kind's `GUIDE.md`, beside its `reference.md` | This workflow -- the chat-friendly lane |
-| Multi-component composition wisdom | A pattern under `patterns/` | This workflow |
+| Multi-component composition wisdom | A pattern under `_patterns/` | This workflow |
 | Catalog-wide wisdom (alternatives, conventions) | The catalog root `GUIDE.md` | This workflow |
 | A wrong or thin FACT (field docs, defaults, validation) | The proto comment or rule it derives from -- generated pages are never hand-edited | Needs the repo toolchain; without one, file it as a GitHub issue with the full evidence instead |
+| An operational truth the module enforces or prints (a name budget, the pod state a waiting job shows, a recovery loop, a TLS name a job needs) | The proto comment of the field it belongs to -- it is a fact about what the component does, and only `reference.md`, `GUIDE.md`, and `_patterns/` reach an installed agent (see `pack-layout.md`, "What the pack does not carry") | Same as a fact: repo toolchain or a GitHub issue |
 
 One boundary is mechanical, so learn it once: **editing an existing guide
 or pattern changes no generated file** -- CI passes as-is. **Adding a NEW

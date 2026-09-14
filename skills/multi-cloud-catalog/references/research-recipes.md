@@ -125,10 +125,41 @@ rg -n "^## (Backups|Disaster recovery|Restore)" -A 40 <kind-dir>/GUIDE.md       
   kind names the one step that stays with the operator (a seal key held on
   both sides and an init token for the vault; the source's credential Secret
   for the databases). `_patterns/stateful-kind-disaster-recovery.md` is the
-  cross-kind judgment; the kind's `GUIDE.md` carries its resource-set tables
-  and runbooks; the kind's `presets/` carry the validated starting manifests.
+  cross-kind judgment and embeds validated manifests; the kind's `GUIDE.md`
+  carries its resource-set tables, runbooks, and day-2 operations. Presets
+  are named there by slug but do not travel in the pack
+  (`pack-layout.md`, "What the pack does not carry").
 - Never claim a keyless posture the client does not support: the pack
   states it per arm in the field's own doc block (`### spec.backup...keyless`).
+- Read the operational truths the module enforces or prints from the
+  reference page before promising anything: the `KubernetesOpenBao` page
+  states the name budget that applies once `backup` is declared (in the
+  spec's own header), the pod state a restore Job shows while it waits for
+  the operator's token (`### spec.restore.rootToken`), what happens when an
+  install fails part-way and how to recover (`### spec.restore`), the TLS
+  name the jobs need (`### spec.tls.certSecretName`), and the two KMS roles a
+  Cloud KMS seal identity needs (`### spec.autoUnseal.gcpKms`).
+
+Before writing a `restore` for the vault, run this checklist against the
+manifest -- every line is a rule the pack states, and a restore that
+violates one fails on the bad day, not at validation:
+
+1. Same seal key on source and target (`autoUnseal` points at the same KMS
+   key or the same transit key on the same key holder); a Shamir vault
+   restores only by the guide's manual runbook.
+2. The target declares the SOURCE's `backup` block -- same store, same
+   `objectStore.prefix` -- so it can read the snapshots; `restore` without
+   `backup` is refused.
+3. `latest: true` only when the source is gone; beside a live source (a
+   clone, a rehearsal) name the `snapshotKey`, and give the clone its own
+   prefix in the same apply that removes `restore`.
+4. Backups are suspended while `restore` is declared; the closing step is to
+   remove the block and apply again, then delete the token Secret.
+5. The restored state carries the source's login role bound to the source's
+   ServiceAccount name and namespace; a target under a different name or
+   namespace re-runs the four-command recipe.
+6. Never delete the finished restore Job to tidy up -- a changed
+   declaration is how a restore runs again.
 
 ## Where judgment has been written
 

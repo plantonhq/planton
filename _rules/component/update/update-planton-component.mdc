@@ -1046,6 +1046,21 @@ Based on scenario:
   before the first request, then let the failure text explain itself as
   before. Prove it in the lane by creating the run right after init, not
   after the server has been Ready for a minute.
+- **An operational truth the module enforces or prints is a spec FACT, and
+  it lives in the proto comment of the field it belongs to -- never only in
+  the module**: a name budget a precondition enforces, the pod state a
+  waiting Job shows (`CreateContainerConfigError` until an operator's Secret
+  exists), the recovery loop a script prints when an install fails, the DNS
+  name a job needs in a TLS certificate. The module's own comments and the
+  preset explainers do not reach an agent composing a manifest: the
+  packaged skill ships `reference.md` (generated from the proto comments),
+  `GUIDE.md`, and `_patterns/` -- not `iac/`, not `presets/`, not
+  `README.md`. Four such truths once lived only in a kind's `vars.go`,
+  `scripts.go`, and `restore.go`; every gate was green and no agent could
+  have warned a user about any of them. Write the fact on the field (the
+  Two-Layer Law of `_rules/docs/write-planton-component-guide.mdc`), quote
+  the module's exact wording so the reference page and the job log tell one
+  story, regenerate, and give the guide only the judgment around it.
 - Plan update and test sequence
 
 **Fix Issue:**

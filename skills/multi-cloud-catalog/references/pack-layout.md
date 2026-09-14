@@ -54,6 +54,22 @@ resolves the pack from where you are working.
             └── reference.md      # the component's complete reference page
 ```
 
+## What the pack does not carry
+
+The tree above is selected by filename, so a component's `presets/`
+(validated starting manifests and their explainers), its `README.md` and
+`catalog.md`, its IaC modules (other than `iac/permissions.yaml`), and its
+`e2e/` tree are NOT in the pack. A guide may name a preset by slug -- that
+is a pointer, not a file you can open here. Presets ship whole in the
+release's `content/presets.zip` beside the reference pack, and in a repo
+checkout under `catalog/<provider>/<kind>/presets/`; when an answer needs
+the manifest itself, use one of those or the validated manifests a
+pattern embeds. The consequence for authors is the flip side: an
+operational truth an agent must know (a name budget, an expected pod
+state, a recovery loop) reaches an installed agent only through the proto
+comment that renders into `reference.md`, a `GUIDE.md`, or a pattern --
+never through a preset explainer or the module's own comments.
+
 ## Finding the pack, in order
 
 Every probe below stays inside the filesystem your session already grants

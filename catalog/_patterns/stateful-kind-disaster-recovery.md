@@ -193,6 +193,21 @@ readable, and each guide names the one step that stays with the operator:
   references the source's `<name>-secrets` Secret, and the restore waits for
   the replica set to form before the Restore object exists.
 
+Two consequences follow. First, a declared restore that is waiting is in a
+designed state, not a failed one — the vault's restore pod sits in
+`CreateContainerConfigError` until the token Secret exists; MongoDB's Restore
+object is not even created until the new replica set reports ready — and the
+kind's field doc names the state, so read it before calling the deploy stuck.
+Second, "restore again" means different things per kind, and deleting the
+wrong object is how a restore runs over live data. OpenBao's restore Job and
+MongoDB's Restore object are each named by a hash of the declaration: a
+changed declaration is a new restore, and a deleted object is recreated on
+the next apply and restores AGAIN over whatever the instance has written
+since — change the declaration to restore deliberately; never delete the
+object to "clean up". PostgreSQL's recovery is the cluster's bootstrap: it
+runs once, when the cluster is first created, and a second recovery is a
+second cluster.
+
 ## When not to use this
 
 - A store inside the same cluster (an in-cluster `KubernetesSeaweedFs`

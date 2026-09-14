@@ -52,6 +52,15 @@ const (
 // The server always runs as a StatefulSet with an OnDelete update
 // strategy (config changes never roll pods automatically; delete pods
 // to pick up config).
+//
+// NAME BUDGET: `metadata.name` is the Helm release name, and the chart
+// derives every Service name by suffixing it (`-internal` always,
+// `-agent-injector-svc` with the injector), while the module names the
+// backup CronJob `<name>-backup`. Kubernetes caps Service names at 63
+// characters and CronJob names at 52, so the longest name that fits is
+// 54 characters, 44 with `injector.enabled`, and 45 with `backup`
+// declared (the tightest wins when both apply). A longer name fails the
+// deploy before anything is created, with a message naming the budget.
 type KubernetesOpenBaoSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
@@ -195,12 +204,19 @@ type KubernetesOpenBaoSpec struct {
 	//
 	// ONE-SHOT: every distinct declaration renders a distinctly named Job,
 	// so a restore runs exactly once per declaration and again only when
-	// the declaration changes. The Job is never expired (a vanished Job
-	// would be recreated on the next apply and restore AGAIN over live
-	// data). After a restore the cluster carries the SOURCE's backup login
-	// role, bound to the source's ServiceAccount name and namespace: a
-	// target with the same name and namespace resumes backups untouched;
-	// a renamed one re-runs the login recipe.
+	// the declaration changes. The Job is never expired, and a finished
+	// Job must never be deleted by hand: a vanished Job is recreated on
+	// the next apply and restores AGAIN over live data. After a restore
+	// the cluster carries the SOURCE's backup login role, bound to the
+	// source's ServiceAccount name and namespace: a target with the same
+	// name and namespace resumes backups untouched; a renamed one re-runs
+	// the login recipe.
+	//
+	// IF THE INSTALL FAILS PART-WAY (a snapshot taken under a different
+	// seal key, a token that is not this cluster's initial root token),
+	// OpenBao seals itself. The Job's log names the cause and the way
+	// out: delete the server pods so they restart and auto-unseal, fix
+	// the cause, then change or re-declare this block to run again.
 	Restore       *KubernetesOpenBaoRestore `protobuf:"bytes,15,opt,name=restore,proto3" json:"restore,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -785,7 +801,11 @@ type KubernetesOpenBaoTls struct {
 	// KubernetesCertificate resource (cert-manager) — the natural
 	// issuer: point the certificate's dnsNames at
 	// `<name>.<namespace>.svc` and this component's derived DNS names.
-	// Required when enabled.
+	// With `backup` declared the dnsNames must also include the
+	// active-leader Service, `<name>-active.<namespace>.svc`: the backup
+	// and restore jobs address the leader through it, and a certificate
+	// without that name fails every run with an x509 error whose log line
+	// names the Service to add. Required when enabled.
 	CertSecretName *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=cert_secret_name,json=certSecretName,proto3" json:"cert_secret_name,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -2491,8 +2511,11 @@ type KubernetesOpenBaoRestore struct {
 	// The Secret holding the TARGET's initial root token — the one
 	// `bao operator init` prints on the fresh cluster. Create it after
 	// init (`kubectl create secret generic <name> --from-literal=<key>=<token>`);
-	// the Job waits until it exists. Delete it once the restore completes:
-	// the token stops existing when the source's state lands.
+	// the Job waits until it exists — its pod shows
+	// `CreateContainerConfigError` until then, which is the designed
+	// wait for your one step, not a failure. Delete the Secret once the
+	// restore completes: the token stops existing when the source's
+	// state lands.
 	RootToken     *kubernetes.KubernetesSecretKey `protobuf:"bytes,3,opt,name=root_token,json=rootToken,proto3" json:"root_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

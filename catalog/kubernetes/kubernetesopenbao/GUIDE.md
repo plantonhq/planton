@@ -94,6 +94,43 @@ Keyless where the cloud allows: `gcs.keyless` on GKE (Workload Identity),
 ServiceAccount. R2 has no keyless posture from any cluster; its credential
 is a `CloudflareAccountApiToken`, referenced.
 
+What is proven live, and what is not: the S3 arm with keys (against the
+catalog's own SeaweedFS) and the restore through the transit seal run on
+every kind lane; the keyless GCS arm and the R2 arm, each with a restore on
+the same Cloud KMS key, run on GKE. The Azure Blob arm and the keyless S3
+arm (IRSA) render and validate on both engines but have no live lane until
+an AKS or EKS cluster joins the proof batch — declare them, and expect to be
+the first to run them.
+
+## Day-2 operations
+
+- **Confirm a snapshot landed from the run's own log**, not from your
+  laptop's view of the bucket. A run ends with `Uploaded <store>/<prefix>/<name>-<UTC>.snap`
+  followed by the `Pruned N snapshot(s) …` line; a listing made with your
+  own credentials proves that YOU can read the bucket, not that the job's
+  identity can write it (the catalog's own proof lists the store from
+  inside the cluster, through the job's ServiceAccount, for exactly this
+  reason). `kubectl create job --from=cronjob/<name>-backup -n <namespace> <name>-backup-now`
+  then `kubectl logs -n <namespace> job/<name>-backup-now` is the
+  two-command check after any change to the store, the identity, or the
+  vault's login.
+- **Rehearse a restore beside the live source with its own prefix.** A
+  clone or a migration rehearsal is a second `KubernetesOpenBao` with a
+  different name, `restore.snapshotKey` (never `latest` — the source keeps
+  writing), and the source's `backup` block so it can read the source's
+  prefix. The moment you remove `restore` to finish, the clone's schedule
+  resumes INTO that shared prefix and its retention starts pruning the
+  source's snapshots — so change `backup.objectStore.prefix` to the
+  clone's own in the same apply that removes `restore`. The bad-day
+  restore has no such step: the source is gone, and the target inherits
+  its prefix on purpose.
+- **"Restore again" is a changed declaration, never a deleted Job.** The
+  restore Job is named by a hash of the declaration; naming a different
+  `snapshotKey` (or switching to `latest`) is a new Job and a new restore.
+  Deleting the finished Job by hand does the same thing without the
+  intent: the next apply recreates it and installs the snapshot over
+  whatever the cluster has written since.
+
 ## The login recipe
 
 Run once, after `bao operator init`, with a token that can manage auth
