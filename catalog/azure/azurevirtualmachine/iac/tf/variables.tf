@@ -147,6 +147,7 @@ variable "spec" {
     # Boot diagnostics: presence enables; empty URI = managed storage.
     boot_diagnostics = optional(object({
       storage_account_uri = optional(string)
+      enabled             = optional(bool)
     }))
 
     # VM Applications installed at deployment.

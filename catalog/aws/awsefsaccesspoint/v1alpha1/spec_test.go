@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAwsEfsAccessPointSpec(t *testing.T) {
@@ -43,8 +44,8 @@ var _ = ginkgo.Describe("AwsEfsAccessPointSpec validations", func() {
 
 	ginkgo.It("accepts a POSIX user with secondary GIDs", func() {
 		spec.PosixUser = &AwsEfsAccessPointPosixUser{
-			Uid:           1000,
-			Gid:           1000,
+			Uid:           proto.Int64(1000),
+			Gid:           proto.Int64(1000),
 			SecondaryGids: []int64{1001, 1002},
 		}
 		err := protovalidate.Validate(spec)
@@ -52,13 +53,20 @@ var _ = ginkgo.Describe("AwsEfsAccessPointSpec validations", func() {
 	})
 
 	ginkgo.It("accepts uid/gid 0 (root)", func() {
-		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: 0, Gid: 0}
+		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: proto.Int64(0), Gid: proto.Int64(0)}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).To(gomega.BeNil())
 	})
 
+	ginkgo.It("rejects a POSIX user that names only one of uid and gid", func() {
+		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: proto.Int64(1000)}
+		err := protovalidate.Validate(spec)
+		gomega.Expect(err).ToNot(gomega.BeNil())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("posix_user.gid"))
+	})
+
 	ginkgo.It("accepts a root directory with creation info", func() {
-		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: 1000, Gid: 1000}
+		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: proto.Int64(1000), Gid: proto.Int64(1000)}
 		spec.RootDirectory = &AwsEfsAccessPointRootDirectory{
 			Path: "/app/data",
 			CreationInfo: &AwsEfsAccessPointCreationInfo{
@@ -107,13 +115,13 @@ var _ = ginkgo.Describe("AwsEfsAccessPointSpec validations", func() {
 	})
 
 	ginkgo.It("fails when uid is out of range", func() {
-		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: 4294967296, Gid: 1000}
+		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: proto.Int64(4294967296), Gid: proto.Int64(1000)}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).NotTo(gomega.BeNil())
 	})
 
 	ginkgo.It("fails when uid is negative", func() {
-		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: -1, Gid: 1000}
+		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: proto.Int64(-1), Gid: proto.Int64(1000)}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).NotTo(gomega.BeNil())
 	})
@@ -123,7 +131,7 @@ var _ = ginkgo.Describe("AwsEfsAccessPointSpec validations", func() {
 		for i := range gids {
 			gids[i] = int64(2000 + i)
 		}
-		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: 1000, Gid: 1000, SecondaryGids: gids}
+		spec.PosixUser = &AwsEfsAccessPointPosixUser{Uid: proto.Int64(1000), Gid: proto.Int64(1000), SecondaryGids: gids}
 		err := protovalidate.Validate(spec)
 		gomega.Expect(err).NotTo(gomega.BeNil())
 	})

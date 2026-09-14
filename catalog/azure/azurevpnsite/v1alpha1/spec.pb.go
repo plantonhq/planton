@@ -9,6 +9,7 @@ package azurevpnsitev1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -401,18 +402,21 @@ func (x *AzureVpnSiteO365Policy) GetTrafficCategory() *AzureVpnSiteO365TrafficCa
 
 // The O365 traffic categories, per Microsoft's classification.
 // Microsoft's guidance: break out OPTIMIZE (and usually ALLOW)
-// locally; keep DEFAULT on the tunnel.
+// locally; keep DEFAULT on the tunnel. Declaring the block writes all three
+// switches to Azure: a switch set to `false` keeps that category on the
+// tunnel, and a switch left unset does the same, so a policy that names
+// only one category says exactly what Azure will hold for the others.
 type AzureVpnSiteO365TrafficCategory struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Break out the "Allow" category (required O365 endpoints tolerant
-	// of local egress) at the branch.
-	AllowEndpointEnabled bool `protobuf:"varint,1,opt,name=allow_endpoint_enabled,json=allowEndpointEnabled,proto3" json:"allow_endpoint_enabled,omitempty"`
+	// of local egress) at the branch. Unset keeps it on the tunnel.
+	AllowEndpointEnabled *bool `protobuf:"varint,1,opt,name=allow_endpoint_enabled,json=allowEndpointEnabled,proto3,oneof" json:"allow_endpoint_enabled,omitempty"`
 	// Break out the "Default" category (everything else O365) at the
-	// branch.
-	DefaultEndpointEnabled bool `protobuf:"varint,2,opt,name=default_endpoint_enabled,json=defaultEndpointEnabled,proto3" json:"default_endpoint_enabled,omitempty"`
+	// branch. Unset keeps it on the tunnel.
+	DefaultEndpointEnabled *bool `protobuf:"varint,2,opt,name=default_endpoint_enabled,json=defaultEndpointEnabled,proto3,oneof" json:"default_endpoint_enabled,omitempty"`
 	// Break out the "Optimize" category (the latency-critical endpoints:
-	// Teams media, Exchange) at the branch.
-	OptimizeEndpointEnabled bool `protobuf:"varint,3,opt,name=optimize_endpoint_enabled,json=optimizeEndpointEnabled,proto3" json:"optimize_endpoint_enabled,omitempty"`
+	// Teams media, Exchange) at the branch. Unset keeps it on the tunnel.
+	OptimizeEndpointEnabled *bool `protobuf:"varint,3,opt,name=optimize_endpoint_enabled,json=optimizeEndpointEnabled,proto3,oneof" json:"optimize_endpoint_enabled,omitempty"`
 	unknownFields           protoimpl.UnknownFields
 	sizeCache               protoimpl.SizeCache
 }
@@ -448,22 +452,22 @@ func (*AzureVpnSiteO365TrafficCategory) Descriptor() ([]byte, []int) {
 }
 
 func (x *AzureVpnSiteO365TrafficCategory) GetAllowEndpointEnabled() bool {
-	if x != nil {
-		return x.AllowEndpointEnabled
+	if x != nil && x.AllowEndpointEnabled != nil {
+		return *x.AllowEndpointEnabled
 	}
 	return false
 }
 
 func (x *AzureVpnSiteO365TrafficCategory) GetDefaultEndpointEnabled() bool {
-	if x != nil {
-		return x.DefaultEndpointEnabled
+	if x != nil && x.DefaultEndpointEnabled != nil {
+		return *x.DefaultEndpointEnabled
 	}
 	return false
 }
 
 func (x *AzureVpnSiteO365TrafficCategory) GetOptimizeEndpointEnabled() bool {
-	if x != nil {
-		return x.OptimizeEndpointEnabled
+	if x != nil && x.OptimizeEndpointEnabled != nil {
+		return *x.OptimizeEndpointEnabled
 	}
 	return false
 }
@@ -472,7 +476,7 @@ var File_catalog_azure_azurevpnsite_v1alpha1_spec_proto protoreflect.FileDescrip
 
 const file_catalog_azure_azurevpnsite_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	".catalog/azure/azurevpnsite/v1alpha1/spec.proto\x12'dev.planton.azure.azurevpnsite.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x83\b\n" +
+	".catalog/azure/azurevpnsite/v1alpha1/spec.proto\x12'dev.planton.azure.azurevpnsite.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x83\b\n" +
 	"\x10AzureVpnSiteSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
@@ -507,11 +511,14 @@ const file_catalog_azure_azurevpnsite_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fpeering_address\x18\x02 \x01(\tBX\xbaHU\xba\x01O\n" +
 	"\x19bgp_peering_address_is_ip\x12%peering_address must be an IP address\x1a\vthis.isIp()\xc8\x01\x01R\x0epeeringAddress\"\x8d\x01\n" +
 	"\x16AzureVpnSiteO365Policy\x12s\n" +
-	"\x10traffic_category\x18\x01 \x01(\v2H.dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteO365TrafficCategoryR\x0ftrafficCategory\"\xcd\x01\n" +
-	"\x1fAzureVpnSiteO365TrafficCategory\x124\n" +
-	"\x16allow_endpoint_enabled\x18\x01 \x01(\bR\x14allowEndpointEnabled\x128\n" +
-	"\x18default_endpoint_enabled\x18\x02 \x01(\bR\x16defaultEndpointEnabled\x12:\n" +
-	"\x19optimize_endpoint_enabled\x18\x03 \x01(\bR\x17optimizeEndpointEnabledB\xd0\x02\n" +
+	"\x10traffic_category\x18\x01 \x01(\v2H.dev.planton.azure.azurevpnsite.v1alpha1.AzureVpnSiteO365TrafficCategoryR\x0ftrafficCategory\"\xd3\x02\n" +
+	"\x1fAzureVpnSiteO365TrafficCategory\x12D\n" +
+	"\x16allow_endpoint_enabled\x18\x01 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\x14allowEndpointEnabled\x88\x01\x01\x12H\n" +
+	"\x18default_endpoint_enabled\x18\x02 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x01R\x16defaultEndpointEnabled\x88\x01\x01\x12J\n" +
+	"\x19optimize_endpoint_enabled\x18\x03 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x02R\x17optimizeEndpointEnabled\x88\x01\x01B\x19\n" +
+	"\x17_allow_endpoint_enabledB\x1b\n" +
+	"\x19_default_endpoint_enabledB\x1c\n" +
+	"\x1a_optimize_endpoint_enabledB\xd0\x02\n" +
 	"+com.dev.planton.azure.azurevpnsite.v1alpha1B\tSpecProtoP\x01ZUgithub.com/plantonhq/planton/catalog/azure/azurevpnsite/v1alpha1;azurevpnsitev1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Azure.Azurevpnsite.V1alpha1\xca\x02'Dev\\Planton\\Azure\\Azurevpnsite\\V1alpha1\xe2\x023Dev\\Planton\\Azure\\Azurevpnsite\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Azure::Azurevpnsite::V1alpha1b\x06proto3"
 
 var (
@@ -556,6 +563,7 @@ func file_catalog_azure_azurevpnsite_v1alpha1_spec_proto_init() {
 	if File_catalog_azure_azurevpnsite_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_azure_azurevpnsite_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

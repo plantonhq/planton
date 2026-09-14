@@ -75,7 +75,7 @@ func buildRules(protoRules []*cloudflarerulesetv1alpha1.CloudflareRulesetRule) c
 		}
 		if pr.Logging != nil {
 			rule.Logging = &cloudflare.RulesetRuleLoggingArgs{
-				Enabled: pulumi.Bool(pr.Logging.Enabled),
+				Enabled: pulumi.Bool(pr.Logging.GetEnabled()),
 			}
 		}
 		if pr.ExposedCredentialCheck != nil {

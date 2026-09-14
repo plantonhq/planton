@@ -100,13 +100,16 @@ func bucket(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*s3.Bu
 
 	// --- Public access block (always managed) ------------------------------
 	// ABSENCE of the spec block means fully private (all four guards on); the
-	// spec block only exists to relax specific guards.
+	// spec block only exists to relax specific guards. Inside the block each
+	// guard is presence-tracked with a declared default of ON, so a guard the
+	// manifest left unset arrives here already true and only an explicit
+	// false relaxes it.
 	blockPublicAcls, blockPublicPolicy, ignorePublicAcls, restrictPublicBuckets := true, true, true, true
 	if spec.PublicAccessBlock != nil {
-		blockPublicAcls = spec.PublicAccessBlock.BlockPublicAcls
-		blockPublicPolicy = spec.PublicAccessBlock.BlockPublicPolicy
-		ignorePublicAcls = spec.PublicAccessBlock.IgnorePublicAcls
-		restrictPublicBuckets = spec.PublicAccessBlock.RestrictPublicBuckets
+		blockPublicAcls = spec.PublicAccessBlock.GetBlockPublicAcls()
+		blockPublicPolicy = spec.PublicAccessBlock.GetBlockPublicPolicy()
+		ignorePublicAcls = spec.PublicAccessBlock.GetIgnorePublicAcls()
+		restrictPublicBuckets = spec.PublicAccessBlock.GetRestrictPublicBuckets()
 	}
 	publicAccessBlock, err := s3.NewBucketPublicAccessBlock(ctx, "public-access-block", &s3.BucketPublicAccessBlockArgs{
 		Bucket:                createdBucket.ID(),

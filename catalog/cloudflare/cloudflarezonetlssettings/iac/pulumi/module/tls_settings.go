@@ -53,7 +53,7 @@ func tlsSettings(
 	if spec.TotalTls != nil {
 		totalTlsArgs := &cloudflare.TotalTlsArgs{
 			ZoneId:  zoneId,
-			Enabled: pulumi.Bool(spec.TotalTls.Enabled),
+			Enabled: pulumi.Bool(spec.TotalTls.GetEnabled()),
 		}
 		if spec.TotalTls.CertificateAuthority != nil {
 			totalTlsArgs.CertificateAuthority = pulumi.StringPtr(*spec.TotalTls.CertificateAuthority)

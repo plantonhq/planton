@@ -388,22 +388,26 @@ message AzureMysqlFlexibleServerHighAvailability {
   }];
 }
 
-// The weekly maintenance window for Azure-managed patching.
+// The weekly maintenance window for Azure-managed patching. Each dial carries
+// presence because zero is a real value here: Sunday at 00:00 is spelled
+// `day_of_week: 0, start_hour: 0, start_minute: 0`, and a dial left unset
+// means the same zero Azure would take; the two differ only in that the first
+// records the author's intent.
 message AzureMysqlFlexibleServerMaintenanceWindow {
   // Day of the week: 0 (Sunday) through 6 (Saturday).
-  int32 day_of_week = 1 [(buf.validate.field).int32 = {
+  optional int32 day_of_week = 1 [(buf.validate.field).int32 = {
     gte: 0
     lte: 6
   }];
 
   // The window's start hour, 0-23 (UTC).
-  int32 start_hour = 2 [(buf.validate.field).int32 = {
+  optional int32 start_hour = 2 [(buf.validate.field).int32 = {
     gte: 0
     lte: 23
   }];
 
   // The window's start minute, 0-59.
-  int32 start_minute = 3 [(buf.validate.field).int32 = {
+  optional int32 start_minute = 3 [(buf.validate.field).int32 = {
     gte: 0
     lte: 59
   }];

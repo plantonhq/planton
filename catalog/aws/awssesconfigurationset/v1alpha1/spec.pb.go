@@ -320,18 +320,21 @@ func (x *AwsSesConfigurationSetTrackingOptions) GetHttpsPolicy() string {
 
 // AwsSesConfigurationSetVdmOptions overrides the account-level Virtual
 // Deliverability Manager configuration for this set. Both dials map to
-// AWS's ENABLED/DISABLED feature switches.
+// AWS's ENABLED/DISABLED feature switches, and declaring the block writes
+// both: a dial set to `false` is the DISABLED statement, and a dial left
+// unset is DISABLED as well, so an override that names only one dial says
+// exactly what AWS will hold for the other.
 type AwsSesConfigurationSetVdmOptions struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether VDM engagement metrics (opens/clicks broken down by ISP,
 	// subject line, and sending identity in the VDM dashboard) are
-	// collected for mail sent under this set.
-	EngagementMetricsEnabled bool `protobuf:"varint,1,opt,name=engagement_metrics_enabled,json=engagementMetricsEnabled,proto3" json:"engagement_metrics_enabled,omitempty"`
+	// collected for mail sent under this set. Unset is DISABLED.
+	EngagementMetricsEnabled *bool `protobuf:"varint,1,opt,name=engagement_metrics_enabled,json=engagementMetricsEnabled,proto3,oneof" json:"engagement_metrics_enabled,omitempty"`
 	// Whether VDM optimized shared delivery is used: SES picks the shared
 	// IP with the best standing for each receiving ISP instead of rotating
 	// blindly. Only meaningful when sending from the shared IP space (not a
-	// dedicated pool).
-	OptimizedSharedDeliveryEnabled bool `protobuf:"varint,2,opt,name=optimized_shared_delivery_enabled,json=optimizedSharedDeliveryEnabled,proto3" json:"optimized_shared_delivery_enabled,omitempty"`
+	// dedicated pool). Unset is DISABLED.
+	OptimizedSharedDeliveryEnabled *bool `protobuf:"varint,2,opt,name=optimized_shared_delivery_enabled,json=optimizedSharedDeliveryEnabled,proto3,oneof" json:"optimized_shared_delivery_enabled,omitempty"`
 	unknownFields                  protoimpl.UnknownFields
 	sizeCache                      protoimpl.SizeCache
 }
@@ -367,15 +370,15 @@ func (*AwsSesConfigurationSetVdmOptions) Descriptor() ([]byte, []int) {
 }
 
 func (x *AwsSesConfigurationSetVdmOptions) GetEngagementMetricsEnabled() bool {
-	if x != nil {
-		return x.EngagementMetricsEnabled
+	if x != nil && x.EngagementMetricsEnabled != nil {
+		return *x.EngagementMetricsEnabled
 	}
 	return false
 }
 
 func (x *AwsSesConfigurationSetVdmOptions) GetOptimizedSharedDeliveryEnabled() bool {
-	if x != nil {
-		return x.OptimizedSharedDeliveryEnabled
+	if x != nil && x.OptimizedSharedDeliveryEnabled != nil {
+		return *x.OptimizedSharedDeliveryEnabled
 	}
 	return false
 }
@@ -730,10 +733,12 @@ const file_catalog_aws_awssesconfigurationset_v1alpha1_spec_proto_rawDesc = "" +
 	"%AwsSesConfigurationSetTrackingOptions\x12A\n" +
 	"\x16custom_redirect_domain\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x18\xfd\x01R\x14customRedirectDomain\x12_\n" +
 	"\fhttps_policy\x18\x02 \x01(\tB7\xbaH(r&R\aREQUIRER\x11REQUIRE_OPEN_ONLYR\bOPTIONAL\x8a\xa6\x1d\bOPTIONALH\x00R\vhttpsPolicy\x88\x01\x01B\x0f\n" +
-	"\r_https_policy\"\xab\x01\n" +
-	" AwsSesConfigurationSetVdmOptions\x12<\n" +
-	"\x1aengagement_metrics_enabled\x18\x01 \x01(\bR\x18engagementMetricsEnabled\x12I\n" +
-	"!optimized_shared_delivery_enabled\x18\x02 \x01(\bR\x1eoptimizedSharedDeliveryEnabled\"\x8b\t\n" +
+	"\r_https_policy\"\x90\x02\n" +
+	" AwsSesConfigurationSetVdmOptions\x12L\n" +
+	"\x1aengagement_metrics_enabled\x18\x01 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\x18engagementMetricsEnabled\x88\x01\x01\x12Y\n" +
+	"!optimized_shared_delivery_enabled\x18\x02 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x01R\x1eoptimizedSharedDeliveryEnabled\x88\x01\x01B\x1d\n" +
+	"\x1b_engagement_metrics_enabledB$\n" +
+	"\"_optimized_shared_delivery_enabled\"\x8b\t\n" +
 	"&AwsSesConfigurationSetEventDestination\x122\n" +
 	"\x04name\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x16\x10\x01\x18@2\x10^[a-zA-Z0-9_-]+$R\x04name\x12'\n" +
 	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12\xa9\x01\n" +
@@ -813,6 +818,7 @@ func file_catalog_aws_awssesconfigurationset_v1alpha1_spec_proto_init() {
 	file_catalog_aws_awssesconfigurationset_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_aws_awssesconfigurationset_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_catalog_aws_awssesconfigurationset_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_catalog_aws_awssesconfigurationset_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
 	file_catalog_aws_awssesconfigurationset_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

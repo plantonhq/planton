@@ -116,7 +116,7 @@ locals {
       view_id  = var.spec.rule_settings.resolve_dns_internally.view_id != "" ? var.spec.rule_settings.resolve_dns_internally.view_id : null
     }, null)
     resolve_dns_through_cloudflare = try(var.spec.rule_settings.resolve_dns_through_cloudflare, null)
-    set_headers = try(length(var.spec.rule_settings.set_headers) > 0 ? { for header, wrapped in var.spec.rule_settings.set_headers : header => wrapped.values } : null, null)
+    set_headers                    = try(length(var.spec.rule_settings.set_headers) > 0 ? { for header, wrapped in var.spec.rule_settings.set_headers : header => wrapped.values } : null, null)
     untrusted_cert = try(var.spec.rule_settings.untrusted_cert == null ? null : {
       action = var.spec.rule_settings.untrusted_cert.action != "" ? var.spec.rule_settings.untrusted_cert.action : null
     }, null)

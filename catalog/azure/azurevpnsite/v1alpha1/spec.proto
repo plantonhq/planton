@@ -4,6 +4,7 @@ package dev.planton.azure.azurevpnsite.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // **AzureVpnSiteSpec** defines a VPN site -- the Virtual WAN world's
 // DESCRIPTION of one branch location: its internet links (each with a
@@ -174,17 +175,20 @@ message AzureVpnSiteO365Policy {
 
 // The O365 traffic categories, per Microsoft's classification.
 // Microsoft's guidance: break out OPTIMIZE (and usually ALLOW)
-// locally; keep DEFAULT on the tunnel.
+// locally; keep DEFAULT on the tunnel. Declaring the block writes all three
+// switches to Azure: a switch set to `false` keeps that category on the
+// tunnel, and a switch left unset does the same, so a policy that names
+// only one category says exactly what Azure will hold for the others.
 message AzureVpnSiteO365TrafficCategory {
   // Break out the "Allow" category (required O365 endpoints tolerant
-  // of local egress) at the branch.
-  bool allow_endpoint_enabled = 1;
+  // of local egress) at the branch. Unset keeps it on the tunnel.
+  optional bool allow_endpoint_enabled = 1 [(dev.planton.shared.options.default) = "false"];
 
   // Break out the "Default" category (everything else O365) at the
-  // branch.
-  bool default_endpoint_enabled = 2;
+  // branch. Unset keeps it on the tunnel.
+  optional bool default_endpoint_enabled = 2 [(dev.planton.shared.options.default) = "false"];
 
   // Break out the "Optimize" category (the latency-critical endpoints:
-  // Teams media, Exchange) at the branch.
-  bool optimize_endpoint_enabled = 3;
+  // Teams media, Exchange) at the branch. Unset keeps it on the tunnel.
+  optional bool optimize_endpoint_enabled = 3 [(dev.planton.shared.options.default) = "false"];
 }

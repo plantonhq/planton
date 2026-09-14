@@ -311,17 +311,21 @@ message GcpUrlMapUrlRewrite {
 }
 
 // A span of time at nanosecond resolution — GCP's Duration shape, used for
-// route timeouts, retry budgets, stream limits, and CDN cache lifetimes.
+// route timeouts, retry budgets, stream limits, and CDN cache lifetimes. Both
+// components carry presence because zero is a real value here: a duration of
+// `0s` (a TTL of zero, an immediate delay) is spelled `seconds: 0`, and a
+// component left unset means zero as well; the two differ only in that the
+// first records the author's intent.
 message GcpUrlMapDuration {
   // Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
-  int64 seconds = 1 [
+  optional int64 seconds = 1 [
     (buf.validate.field).int64.gte = 0,
     (buf.validate.field).int64.lte = 315576000000
   ];
 
   // Fraction of a second at nanosecond resolution (0 to 999,999,999).
   // Durations under one second use seconds = 0 and a positive nanos.
-  int32 nanos = 2 [
+  optional int32 nanos = 2 [
     (buf.validate.field).int32.gte = 0,
     (buf.validate.field).int32.lte = 999999999
   ];

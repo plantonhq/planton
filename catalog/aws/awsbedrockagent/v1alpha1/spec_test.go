@@ -197,6 +197,12 @@ var _ = ginkgo.Describe("AwsBedrockAgentSpec validations", func() {
 			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept memory declared and switched off", func() {
+			spec := minimalAgent()
+			spec.Memory = &AwsBedrockAgentMemory{Enabled: boolPtr(false), StorageDays: 30}
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should reject memory storage days out of range", func() {
 			spec := minimalAgent()
 			spec.Memory = &AwsBedrockAgentMemory{StorageDays: 366}
@@ -427,6 +433,10 @@ var _ = ginkgo.Describe("AwsBedrockAgentSpec validations", func() {
 })
 
 func int32Ptr(v int32) *int32 {
+	return &v
+}
+
+func boolPtr(v bool) *bool {
 	return &v
 }
 

@@ -16,6 +16,8 @@ resource "aws_efs_access_point" "this" {
   dynamic "posix_user" {
     for_each = var.spec.posix_user != null ? [var.spec.posix_user] : []
     content {
+      # Both IDs are required by the API inside the block, so neither is null
+      # here; 0 is root and passes through as 0.
       uid            = posix_user.value.uid
       gid            = posix_user.value.gid
       secondary_gids = length(posix_user.value.secondary_gids) > 0 ? posix_user.value.secondary_gids : null

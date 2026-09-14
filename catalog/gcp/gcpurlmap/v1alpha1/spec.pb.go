@@ -749,14 +749,18 @@ func (x *GcpUrlMapUrlRewrite) GetPathTemplateRewrite() string {
 }
 
 // A span of time at nanosecond resolution — GCP's Duration shape, used for
-// route timeouts, retry budgets, stream limits, and CDN cache lifetimes.
+// route timeouts, retry budgets, stream limits, and CDN cache lifetimes. Both
+// components carry presence because zero is a real value here: a duration of
+// `0s` (a TTL of zero, an immediate delay) is spelled `seconds: 0`, and a
+// component left unset means zero as well; the two differ only in that the
+// first records the author's intent.
 type GcpUrlMapDuration struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
-	Seconds int64 `protobuf:"varint,1,opt,name=seconds,proto3" json:"seconds,omitempty"`
+	Seconds *int64 `protobuf:"varint,1,opt,name=seconds,proto3,oneof" json:"seconds,omitempty"`
 	// Fraction of a second at nanosecond resolution (0 to 999,999,999).
 	// Durations under one second use seconds = 0 and a positive nanos.
-	Nanos         int32 `protobuf:"varint,2,opt,name=nanos,proto3" json:"nanos,omitempty"`
+	Nanos         *int32 `protobuf:"varint,2,opt,name=nanos,proto3,oneof" json:"nanos,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -792,15 +796,15 @@ func (*GcpUrlMapDuration) Descriptor() ([]byte, []int) {
 }
 
 func (x *GcpUrlMapDuration) GetSeconds() int64 {
-	if x != nil {
-		return x.Seconds
+	if x != nil && x.Seconds != nil {
+		return *x.Seconds
 	}
 	return 0
 }
 
 func (x *GcpUrlMapDuration) GetNanos() int32 {
-	if x != nil {
-		return x.Nanos
+	if x != nil && x.Nanos != nil {
+		return *x.Nanos
 	}
 	return 0
 }
@@ -2715,11 +2719,14 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\fhost_rewrite\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\vhostRewrite\x128\n" +
 	"\x13path_prefix_rewrite\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\x11pathPrefixRewrite\x12<\n" +
 	"\x15path_template_rewrite\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\x13pathTemplateRewrite:\xcb\x01\xbaH\xc7\x01\x1a\xc4\x01\n" +
-	"$rewrite_prefix_or_template_exclusive\x12Xpath_prefix_rewrite and path_template_rewrite are mutually exclusive — set at most one\x1aBthis.path_prefix_rewrite == '' || this.path_template_rewrite == ''\"b\n" +
-	"\x11GcpUrlMapDuration\x12(\n" +
-	"\aseconds\x18\x01 \x01(\x03B\x0e\xbaH\v\"\t\x18\x80\xbc\xaeΗ\t(\x00R\aseconds\x12#\n" +
+	"$rewrite_prefix_or_template_exclusive\x12Xpath_prefix_rewrite and path_template_rewrite are mutually exclusive — set at most one\x1aBthis.path_prefix_rewrite == '' || this.path_template_rewrite == ''\"\x82\x01\n" +
+	"\x11GcpUrlMapDuration\x12-\n" +
+	"\aseconds\x18\x01 \x01(\x03B\x0e\xbaH\v\"\t\x18\x80\xbc\xaeΗ\t(\x00H\x00R\aseconds\x88\x01\x01\x12(\n" +
 	"\x05nanos\x18\x02 \x01(\x05B\r\xbaH\n" +
-	"\x1a\b\x18\xff\x93\xeb\xdc\x03(\x00R\x05nanos\"\xc1\x04\n" +
+	"\x1a\b\x18\xff\x93\xeb\xdc\x03(\x00H\x01R\x05nanos\x88\x01\x01B\n" +
+	"\n" +
+	"\b_secondsB\b\n" +
+	"\x06_nanos\"\xc1\x04\n" +
 	"\x14GcpUrlMapRetryPolicy\x12(\n" +
 	"\vnum_retries\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\n" +
 	"numRetries\x12\x9f\x03\n" +
@@ -3019,6 +3026,7 @@ func file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcpurlmap_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

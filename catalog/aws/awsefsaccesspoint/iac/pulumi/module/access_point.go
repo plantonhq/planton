@@ -28,8 +28,8 @@ func accessPoint(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*
 	// — the core least-privilege mechanism of access points.
 	if spec.PosixUser != nil {
 		posixUser := &efs.AccessPointPosixUserArgs{
-			Uid: pulumi.Int(int(spec.PosixUser.Uid)),
-			Gid: pulumi.Int(int(spec.PosixUser.Gid)),
+			Uid: pulumi.Int(int(spec.PosixUser.GetUid())),
+			Gid: pulumi.Int(int(spec.PosixUser.GetGid())),
 		}
 		if len(spec.PosixUser.SecondaryGids) > 0 {
 			var secondaryGids pulumi.IntArray

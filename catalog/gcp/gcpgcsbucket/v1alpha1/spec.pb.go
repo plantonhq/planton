@@ -567,10 +567,11 @@ type GcpGcsBucketAutoclass struct {
 	// Enable autoclass. Objects start in STANDARD and transition to colder
 	// classes as they go unread; a read promotes the object back to
 	// STANDARD. Toggling autoclass is allowed but restricted by GCP to
-	// once per 24 hours. An explicit false is expressible (it records the
-	// deliberate decision and lets a previously enabled bucket turn the
-	// feature off), so the field is deliberately not annotated required.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// once per 24 hours. Required inside autoclass: declaring the block takes
+	// the feature under management, and the switch says which way. An explicit
+	// false is a real statement (it turns a previously enabled bucket's
+	// autoclass off), which is why the switch carries presence.
+	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// The coldest class autoclass may transition objects into:
 	//
 	//	""         -- GCP default ("NEARLINE")
@@ -613,8 +614,8 @@ func (*GcpGcsBucketAutoclass) Descriptor() ([]byte, []int) {
 }
 
 func (x *GcpGcsBucketAutoclass) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1895,11 +1896,13 @@ const file_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto_rawDesc = "" +
 	"!customer_managed_restriction_mode\x18\x02 \x01(\tB\xb3\x01\xbaH\xaf\x01\xba\x01\xab\x01\n" +
 	"\x1bvalid_cmek_restriction_mode\x12Pcustomer_managed_restriction_mode must be one of: NotRestricted, FullyRestricted\x1a:this == '' || this in ['NotRestricted', 'FullyRestricted']R\x1ecustomerManagedRestrictionMode\x12\x82\x02\n" +
 	"\"customer_supplied_restriction_mode\x18\x03 \x01(\tB\xb4\x01\xbaH\xb0\x01\xba\x01\xac\x01\n" +
-	"\x1bvalid_csek_restriction_mode\x12Qcustomer_supplied_restriction_mode must be one of: NotRestricted, FullyRestricted\x1a:this == '' || this in ['NotRestricted', 'FullyRestricted']R\x1fcustomerSuppliedRestrictionMode\"\xfa\x01\n" +
-	"\x15GcpGcsBucketAutoclass\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\xc6\x01\n" +
+	"\x1bvalid_csek_restriction_mode\x12Qcustomer_supplied_restriction_mode must be one of: NotRestricted, FullyRestricted\x1a:this == '' || this in ['NotRestricted', 'FullyRestricted']R\x1fcustomerSuppliedRestrictionMode\"\x93\x02\n" +
+	"\x15GcpGcsBucketAutoclass\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x12\xc6\x01\n" +
 	"\x16terminal_storage_class\x18\x02 \x01(\tB\x8f\x01\xbaH\x8b\x01\xba\x01\x87\x01\n" +
-	"\x1cvalid_terminal_storage_class\x128terminal_storage_class must be one of: NEARLINE, ARCHIVE\x1a-this == '' || this in ['NEARLINE', 'ARCHIVE']R\x14terminalStorageClass\"\xec\x01\n" +
+	"\x1cvalid_terminal_storage_class\x128terminal_storage_class must be one of: NEARLINE, ARCHIVE\x1a-this == '' || this in ['NEARLINE', 'ARCHIVE']R\x14terminalStorageClassB\n" +
+	"\n" +
+	"\b_enabled\"\xec\x01\n" +
 	"\x19GcpGcsBucketLifecycleRule\x12b\n" +
 	"\x06action\x18\x01 \x01(\v2B.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketLifecycleActionB\x06\xbaH\x03\xc8\x01\x01R\x06action\x12k\n" +
 	"\tcondition\x18\x02 \x01(\v2E.dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketLifecycleConditionB\x06\xbaH\x03\xc8\x01\x01R\tcondition\"\xd5\x04\n" +
@@ -2076,6 +2079,7 @@ func file_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	file_catalog_gcp_gcpgcsbucket_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}

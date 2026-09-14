@@ -50,7 +50,8 @@ spec:
           subnetId:
             valueFrom:
               name: planton-oss-e2e-azure-fixture-subnet
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
   tags:
     e2e-suite: azure
     purpose: flexible-smoke

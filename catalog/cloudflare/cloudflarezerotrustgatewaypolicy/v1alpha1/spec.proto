@@ -309,9 +309,12 @@ message CloudflareZeroTrustGatewayPolicyStringList {
 }
 
 // CloudflareZeroTrustGatewayPolicyAuditSsh configures the Audit SSH action.
+// Declaring the block takes command logging under management, and the switch
+// says which way; it is required inside the block because a block that does
+// not say on or off manages nothing.
 message CloudflareZeroTrustGatewayPolicyAuditSsh {
-  // Log the SSH commands executed in the session.
-  bool command_logging = 1;
+  // Log the SSH commands executed in the session. Required inside audit_ssh.
+  optional bool command_logging = 1 [(buf.validate.field).required = true];
 }
 
 // CloudflareZeroTrustGatewayPolicyBisoAdminControls tunes what users can do
@@ -501,10 +504,12 @@ message CloudflareZeroTrustGatewayPolicyEgress {
 }
 
 // CloudflareZeroTrustGatewayPolicyForensicCopy sends a copy of the matched HTTP
-// request to storage.
+// request to storage. Declaring the block takes the copy under management, and
+// the switch says which way; it is required inside the block because a block
+// that does not say on or off manages nothing.
 message CloudflareZeroTrustGatewayPolicyForensicCopy {
-  // Enable sending the copy to storage.
-  bool enabled = 1;
+  // Enable sending the copy to storage. Required inside forensic_copy.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 }
 
 // CloudflareZeroTrustGatewayPolicyL4Override redirects matched network traffic
@@ -537,9 +542,12 @@ message CloudflareZeroTrustGatewayPolicyNotificationSettings {
 }
 
 // CloudflareZeroTrustGatewayPolicyPayloadLog configures DLP payload logging.
+// Declaring the block takes payload logging under management, and the switch
+// says which way; it is required inside the block because a block that does
+// not say on or off manages nothing.
 message CloudflareZeroTrustGatewayPolicyPayloadLog {
-  // Enable DLP payload logging for this rule.
-  bool enabled = 1;
+  // Enable DLP payload logging for this rule. Required inside payload_log.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 }
 
 // CloudflareZeroTrustGatewayPolicyQuarantine sandboxes matched file downloads.

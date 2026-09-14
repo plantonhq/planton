@@ -30,7 +30,7 @@ that has progressed.
 | Provider schema (parity baseline) | `aws@6.58.0` |
 | Kinds in the catalog | 205 |
 | Distinct provider resources consumed | 524 |
-| Spec fields authored across all kinds | 7461 |
+| Spec fields authored across all kinds | 7462 |
 | Module pins on `aws` | `~> 6.58` × 205 |
 | Module pins on `time` | `~> 0.13` × 1 |
 

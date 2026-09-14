@@ -83,9 +83,9 @@ variable "spec" {
 
     # The weekly maintenance window; omit for a system-managed window.
     maintenance_window = optional(object({
-      day_of_week  = optional(number, 0)
-      start_hour   = optional(number, 0)
-      start_minute = optional(number, 0)
+      day_of_week  = optional(number)
+      start_hour   = optional(number)
+      start_minute = optional(number)
     }))
 
     # Backup retention days, 7-35 (Azure's default is 7).

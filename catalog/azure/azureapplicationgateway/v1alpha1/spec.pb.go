@@ -1119,13 +1119,15 @@ func (x *AzureApplicationGatewaySpec) GetTags() map[string]string {
 	return nil
 }
 
-// Autoscale bounds.
+// Autoscale bounds. The floor carries presence and is required inside the
+// block: 0 is a real floor (scale to zero at idle), so the schema must be able
+// to tell "floor 0" from "floor not given".
 type AzureApplicationGatewayAutoscale struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The floor the gateway never scales below. 0-100; 0 lets the gateway
 	// scale to zero capacity units at idle (billing floor, not
-	// availability -- keep >= 2 for production).
-	MinCapacity int32 `protobuf:"varint,1,opt,name=min_capacity,json=minCapacity,proto3" json:"min_capacity,omitempty"`
+	// availability -- keep >= 2 for production). Required inside autoscale.
+	MinCapacity *int32 `protobuf:"varint,1,opt,name=min_capacity,json=minCapacity,proto3,oneof" json:"min_capacity,omitempty"`
 	// The ceiling the gateway never scales above. 2-125; omit for the
 	// subscription-level maximum.
 	MaxCapacity   *int32 `protobuf:"varint,2,opt,name=max_capacity,json=maxCapacity,proto3,oneof" json:"max_capacity,omitempty"`
@@ -1164,8 +1166,8 @@ func (*AzureApplicationGatewayAutoscale) Descriptor() ([]byte, []int) {
 }
 
 func (x *AzureApplicationGatewayAutoscale) GetMinCapacity() int32 {
-	if x != nil {
-		return x.MinCapacity
+	if x != nil && x.MinCapacity != nil {
+		return *x.MinCapacity
 	}
 	return 0
 }
@@ -3786,10 +3788,11 @@ const file_catalog_azure_azureapplicationgateway_v1alpha1_spec_proto_rawDesc = "
 	"#appgw_at_least_one_backend_settings\x12Fdeclare at least one backend_http_settings (L7) or backends (L4) entry\x1aAthis.backend_http_settings.size() > 0 || this.backends.size() > 0\x1a\xb6\x01\n" +
 	"\x1fappgw_at_least_one_routing_rule\x12Kdeclare at least one request_routing_rules (L7) or routing_rules (L4) entry\x1aFthis.request_routing_rules.size() > 0 || this.routing_rules.size() > 0B\v\n" +
 	"\t_capacityB\x10\n" +
-	"\x0e_http2_enabled\"\x94\x01\n" +
-	" AzureApplicationGatewayAutoscale\x12,\n" +
-	"\fmin_capacity\x18\x01 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x00R\vminCapacity\x121\n" +
-	"\fmax_capacity\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18}(\x02H\x00R\vmaxCapacity\x88\x01\x01B\x0f\n" +
+	"\x0e_http2_enabled\"\xad\x01\n" +
+	" AzureApplicationGatewayAutoscale\x124\n" +
+	"\fmin_capacity\x18\x01 \x01(\x05B\f\xbaH\t\xc8\x01\x01\x1a\x04\x18d(\x00H\x00R\vminCapacity\x88\x01\x01\x121\n" +
+	"\fmax_capacity\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18}(\x02H\x01R\vmaxCapacity\x88\x01\x01B\x0f\n" +
+	"\r_min_capacityB\x0f\n" +
 	"\r_max_capacity\"\x8d\x04\n" +
 	"\x1fAzureApplicationGatewayIdentity\x12s\n" +
 	"\x04type\x18\x01 \x01(\x0e2W.dev.planton.azure.azureapplicationgateway.v1alpha1.AzureApplicationGatewayIdentityTypeB\x06\xbaH\x03\xc8\x01\x01R\x04type\x12z\n" +

@@ -133,15 +133,19 @@ func (x *AwsEfsAccessPointSpec) GetRootDirectory() *AwsEfsAccessPointRootDirecto
 }
 
 // AwsEfsAccessPointPosixUser defines the POSIX identity enforced for all file
-// operations through an access point.
+// operations through an access point. Both IDs carry presence and are required
+// inside the block: `0` is root, a real identity, so the schema must be able
+// to tell "uid 0" from "uid not given".
 type AwsEfsAccessPointPosixUser struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// POSIX user ID (0–4294967295). All file system operations through this
-	// access point use this UID as the file owner.
-	Uid int64 `protobuf:"varint,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	// access point use this UID as the file owner. Required inside posix_user;
+	// 0 is root.
+	Uid *int64 `protobuf:"varint,1,opt,name=uid,proto3,oneof" json:"uid,omitempty"`
 	// POSIX primary group ID (0–4294967295). All file system operations through
-	// this access point use this GID as the file group.
-	Gid int64 `protobuf:"varint,2,opt,name=gid,proto3" json:"gid,omitempty"`
+	// this access point use this GID as the file group. Required inside
+	// posix_user; 0 is root.
+	Gid *int64 `protobuf:"varint,2,opt,name=gid,proto3,oneof" json:"gid,omitempty"`
 	// Secondary POSIX group IDs supplementing the primary GID for group
 	// permission checks. Maximum 16 (the NFS AUTH_SYS group limit).
 	SecondaryGids []int64 `protobuf:"varint,3,rep,packed,name=secondary_gids,json=secondaryGids,proto3" json:"secondary_gids,omitempty"`
@@ -180,15 +184,15 @@ func (*AwsEfsAccessPointPosixUser) Descriptor() ([]byte, []int) {
 }
 
 func (x *AwsEfsAccessPointPosixUser) GetUid() int64 {
-	if x != nil {
-		return x.Uid
+	if x != nil && x.Uid != nil {
+		return *x.Uid
 	}
 	return 0
 }
 
 func (x *AwsEfsAccessPointPosixUser) GetGid() int64 {
-	if x != nil {
-		return x.Gid
+	if x != nil && x.Gid != nil {
+		return *x.Gid
 	}
 	return 0
 }
@@ -340,14 +344,14 @@ const file_catalog_aws_awsefsaccesspoint_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0efile_system_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\b\x92\xd4a\x1dstatus.outputs.file_system_idR\ffileSystemId\x12e\n" +
 	"\n" +
 	"posix_user\x18\x03 \x01(\v2F.dev.planton.aws.awsefsaccesspoint.v1alpha1.AwsEfsAccessPointPosixUserR\tposixUser\x12q\n" +
-	"\x0eroot_directory\x18\x04 \x01(\v2J.dev.planton.aws.awsefsaccesspoint.v1alpha1.AwsEfsAccessPointRootDirectoryR\rrootDirectory\"\x9b\x01\n" +
-	"\x1aAwsEfsAccessPointPosixUser\x12\x1f\n" +
-	"\x03uid\x18\x01 \x01(\x03B\r\xbaH\n" +
-	"\"\b\x18\xff\xff\xff\xff\x0f(\x00R\x03uid\x12\x1f\n" +
-	"\x03gid\x18\x02 \x01(\x03B\r\xbaH\n" +
-	"\"\b\x18\xff\xff\xff\xff\x0f(\x00R\x03gid\x12;\n" +
+	"\x0eroot_directory\x18\x04 \x01(\v2J.dev.planton.aws.awsefsaccesspoint.v1alpha1.AwsEfsAccessPointRootDirectoryR\rrootDirectory\"\xbb\x01\n" +
+	"\x1aAwsEfsAccessPointPosixUser\x12'\n" +
+	"\x03uid\x18\x01 \x01(\x03B\x10\xbaH\r\xc8\x01\x01\"\b\x18\xff\xff\xff\xff\x0f(\x00H\x00R\x03uid\x88\x01\x01\x12'\n" +
+	"\x03gid\x18\x02 \x01(\x03B\x10\xbaH\r\xc8\x01\x01\"\b\x18\xff\xff\xff\xff\x0f(\x00H\x01R\x03gid\x88\x01\x01\x12;\n" +
 	"\x0esecondary_gids\x18\x03 \x03(\x03B\x14\xbaH\x11\x92\x01\x0e\x10\x10\"\n" +
-	"\"\b\x18\xff\xff\xff\xff\x0f(\x00R\rsecondaryGids\"\xb3\x01\n" +
+	"\"\b\x18\xff\xff\xff\xff\x0f(\x00R\rsecondaryGidsB\x06\n" +
+	"\x04_uidB\x06\n" +
+	"\x04_gid\"\xb3\x01\n" +
 	"\x1eAwsEfsAccessPointRootDirectory\x12!\n" +
 	"\x04path\x18\x01 \x01(\tB\r\xbaH\n" +
 	"r\b\x10\x01\x18d2\x02^/R\x04path\x12n\n" +
@@ -397,6 +401,7 @@ func file_catalog_aws_awsefsaccesspoint_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awsefsaccesspoint_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_aws_awsefsaccesspoint_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

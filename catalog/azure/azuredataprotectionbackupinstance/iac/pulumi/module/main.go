@@ -143,8 +143,8 @@ func kubernetesClusterInstance(ctx *pulumi.Context, locals *Locals, azureProvide
 
 	if params := variant.BackupDatasourceParameters; params != nil {
 		paramsArgs := &dataprotection.BackupInstanceKubernetesClusterBackupDatasourceParametersArgs{
-			ClusterScopedResourcesEnabled: pulumi.Bool(params.ClusterScopedResourcesEnabled),
-			VolumeSnapshotEnabled:         pulumi.Bool(params.VolumeSnapshotEnabled),
+			ClusterScopedResourcesEnabled: pulumi.Bool(params.GetClusterScopedResourcesEnabled()),
+			VolumeSnapshotEnabled:         pulumi.Bool(params.GetVolumeSnapshotEnabled()),
 		}
 		if len(params.IncludedNamespaces) > 0 {
 			paramsArgs.IncludedNamespaces = pulumi.ToStringArray(params.IncludedNamespaces)

@@ -20,6 +20,8 @@ resources:
       - arg: guardrail_configuration
         spec: spec.guardrail.version
       - arg: memory_configuration
+        spec: spec.memory.enabled
+      - arg: memory_configuration
         spec: spec.memory.storage_days
       - arg: memory_configuration
         spec: spec.memory.max_recent_sessions
@@ -55,8 +57,8 @@ resources:
       # Inside the attribute containers above, two members are module
       # constants (the schema carries no per-member argument to exclude):
       # memory_configuration's enabled_memory_types (SESSION_SUMMARY is
-      # the only memory type AWS defines -- presence of spec.memory IS the
-      # enablement) and prompt_configurations' prompt_creation_mode
+      # the only memory type AWS defines -- spec.memory.enabled decides
+      # whether it is sent) and prompt_configurations' prompt_creation_mode
       # (always OVERRIDDEN -- authoring an entry IS the override; the
       # provider strips non-overridden defaults from state, so DEFAULT
       # would drift forever).

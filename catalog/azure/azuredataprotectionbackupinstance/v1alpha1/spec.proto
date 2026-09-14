@@ -4,6 +4,7 @@ package dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // **AzureDataProtectionBackupInstanceSpec** defines a Data Protection
 // backup instance (ARM: Microsoft.DataProtection/backupVaults/{vault}/
@@ -208,12 +209,14 @@ message AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParameters {
   repeated string label_selectors = 5;
 
   // Whether cluster-scoped resources (CRDs, cluster roles, ...) join
-  // the backup. Azure's default is false (namespaced resources only).
-  bool cluster_scoped_resources_enabled = 6;
+  // the backup. Azure's default is false (namespaced resources only), and a
+  // switch left unset states that default; `false` says it out loud.
+  optional bool cluster_scoped_resources_enabled = 6 [(dev.planton.shared.options.default) = "false"];
 
   // Whether persistent-volume snapshots are taken with each backup.
-  // Azure's default is false (configuration only, no volume data).
-  bool volume_snapshot_enabled = 7;
+  // Azure's default is false (configuration only, no volume data), and a
+  // switch left unset states that default; `false` says it out loud.
+  optional bool volume_snapshot_enabled = 7 [(dev.planton.shared.options.default) = "false"];
 }
 
 // The MySQL flexible-server variant: binds one MySQL flexible server

@@ -171,8 +171,10 @@ func (x *CloudflareZoneTlsSettingsSpec) GetCaHostnameAssociations() []*Cloudflar
 // Total TLS configuration.
 type CloudflareZoneTlsSettingsTotalTls struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whether Total TLS issues per-hostname certificates for the zone.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Whether Total TLS issues per-hostname certificates for the zone. Required
+	// inside total_tls: declaring the block takes Total TLS under management,
+	// and the switch says which way.
+	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// The certificate authority issuing Total TLS certificates. Unset lets
 	// Cloudflare choose. The certificates' validity period is fixed by Cloudflare
 	// (90 days) and is not configurable.
@@ -212,8 +214,8 @@ func (*CloudflareZoneTlsSettingsTotalTls) Descriptor() ([]byte, []int) {
 }
 
 func (x *CloudflareZoneTlsSettingsTotalTls) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -377,10 +379,12 @@ const file_catalog_cloudflare_cloudflarezonetlssettings_v1alpha1_spec_proto_rawD
 	"\x18ca_hostname_associations\x18\a \x03(\v2i.dev.planton.cloudflare.cloudflarezonetlssettings.v1alpha1.CloudflareZoneTlsSettingsCaHostnameAssociationR\x16caHostnameAssociations:\xf2\x02\xbaH\xee\x02\x1a\xeb\x02\n" +
 	"\x19spec.at_least_one_setting\x12tconfigure at least one TLS setting -- a CloudflareZoneTlsSettings resource that manages nothing would deploy nothing\x1a\xd7\x01has(this.universal_ssl_enabled) || has(this.total_tls) || has(this.auto_origin_tls_kex) || this.origin_tls_compliance_modes.size() > 0 || this.hostname_settings.size() > 0 || this.ca_hostname_associations.size() > 0B\x18\n" +
 	"\x16_universal_ssl_enabledB\x16\n" +
-	"\x14_auto_origin_tls_kex\"\xb7\x01\n" +
-	"!CloudflareZoneTlsSettingsTotalTls\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12^\n" +
-	"\x15certificate_authority\x18\x02 \x01(\tB$\xbaH!r\x1fR\x06googleR\flets_encryptR\assl_comH\x00R\x14certificateAuthority\x88\x01\x01B\x18\n" +
+	"\x14_auto_origin_tls_kex\"\xd0\x01\n" +
+	"!CloudflareZoneTlsSettingsTotalTls\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x12^\n" +
+	"\x15certificate_authority\x18\x02 \x01(\tB$\xbaH!r\x1fR\x06googleR\flets_encryptR\assl_comH\x01R\x14certificateAuthority\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabledB\x18\n" +
 	"\x16_certificate_authority\"\xe0\x03\n" +
 	"(CloudflareZoneTlsSettingsHostnameSetting\x12\"\n" +
 	"\bhostname\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bhostname\x12F\n" +

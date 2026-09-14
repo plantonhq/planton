@@ -701,11 +701,15 @@ func (x *CloudflareRulesetRatelimit) GetScoreResponseHeaderName() string {
 	return ""
 }
 
-// CloudflareRulesetLogging configures per-rule logging.
+// CloudflareRulesetLogging configures per-rule logging. Declaring the block
+// takes the rule's logging under management, and the switch says which way:
+// `enabled: false` stops request logging for this rule, `enabled: true` turns
+// it on. The switch is required inside the block because a block that does not
+// say on or off manages nothing.
 type CloudflareRulesetLogging struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whether request logging is enabled for this rule.
-	Enabled       bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Whether request logging is enabled for this rule. Required inside logging.
+	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -741,8 +745,8 @@ func (*CloudflareRulesetLogging) Descriptor() ([]byte, []int) {
 }
 
 func (x *CloudflareRulesetLogging) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -3926,9 +3930,11 @@ const file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_rawDesc = ""
 	"\x13requests_per_period\x18\x05 \x01(\x03B\a\xbaH\x04\"\x02(\x00R\x11requestsPerPeriod\x12,\n" +
 	"\x12requests_to_origin\x18\x06 \x01(\bR\x10requestsToOrigin\x121\n" +
 	"\x10score_per_period\x18\a \x01(\x03B\a\xbaH\x04\"\x02(\x00R\x0escorePerPeriod\x12;\n" +
-	"\x1ascore_response_header_name\x18\b \x01(\tR\x17scoreResponseHeaderName\"4\n" +
-	"\x18CloudflareRulesetLogging\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\"\x9c\x02\n" +
+	"\x1ascore_response_header_name\x18\b \x01(\tR\x17scoreResponseHeaderName\"M\n" +
+	"\x18CloudflareRulesetLogging\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\x9c\x02\n" +
 	"'CloudflareRulesetExposedCredentialCheck\x128\n" +
 	"\x13username_expression\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x12usernameExpression\x12\xb6\x01\n" +
 	"\x13password_expression\x18\x02 \x01(\tB\x84\x01\xbaH\x04r\x02\x10\x01\xaa\xa6\x1dya wirefilter expression locating the password field in the request (e.g. http.request.body.form[...]), not a secret valueR\x12passwordExpression\"\xfc@\n" +
@@ -4396,6 +4402,7 @@ func file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
+	file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflareruleset_v1alpha1_spec_proto_msgTypes[26].OneofWrappers = []any{}

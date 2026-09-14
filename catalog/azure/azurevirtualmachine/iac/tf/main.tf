@@ -129,7 +129,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   # Presence enables boot diagnostics; an empty URI uses Azure's managed
   # storage (the right default).
   dynamic "boot_diagnostics" {
-    for_each = var.spec.boot_diagnostics != null ? [var.spec.boot_diagnostics] : []
+    for_each = var.spec.boot_diagnostics != null && coalesce(var.spec.boot_diagnostics.enabled, true) ? [var.spec.boot_diagnostics] : []
     content {
       storage_account_uri = boot_diagnostics.value.storage_account_uri
     }
@@ -312,7 +312,7 @@ resource "azurerm_windows_virtual_machine" "main" {
   license_type = local.windows_license_type
 
   dynamic "boot_diagnostics" {
-    for_each = var.spec.boot_diagnostics != null ? [var.spec.boot_diagnostics] : []
+    for_each = var.spec.boot_diagnostics != null && coalesce(var.spec.boot_diagnostics.enabled, true) ? [var.spec.boot_diagnostics] : []
     content {
       storage_account_uri = boot_diagnostics.value.storage_account_uri
     }

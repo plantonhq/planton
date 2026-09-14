@@ -494,8 +494,10 @@ message CloudflareZoneSettingsAegis {
 // "automatic_platform_optimization"). The API requires EVERY field of this object
 // on writes -- there are no server-side defaults for omitted members.
 message CloudflareZoneSettingsAutomaticPlatformOptimization {
-  // Whether APO serves this zone from the edge cache.
-  bool enabled = 1;
+  // Whether APO serves this zone from the edge cache. Required inside
+  // automatic_platform_optimization, as every member of this object is on
+  // writes.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 
   // Cache separately by device type (mobile, tablet, desktop).
   bool cache_by_device_type = 2;
@@ -516,17 +518,23 @@ message CloudflareZoneSettingsAutomaticPlatformOptimization {
   bool wp_plugin = 6;
 }
 
-// Network Error Logging configuration (setting_id "nel").
+// Network Error Logging configuration (setting_id "nel"). Declaring the block
+// takes the setting under management, and the switch says which way; it is
+// required inside the block because a block that does not say on or off
+// manages nothing.
 message CloudflareZoneSettingsNel {
   // Whether browsers report network errors for this zone to Cloudflare.
-  bool enabled = 1;
+  // Required inside nel.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 }
 
 // Security header (HSTS) configuration (setting_id "security_header"). The module
 // nests these fields under the API's strict_transport_security object.
 message CloudflareZoneSettingsSecurityHeader {
-  // Whether Strict-Transport-Security is emitted.
-  bool enabled = 1;
+  // Whether Strict-Transport-Security is emitted. Required inside
+  // security_header: the block is written to Cloudflare whole, so it must say
+  // whether HSTS is on before the other dials mean anything.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 
   // Apply HSTS to all subdomains. Only enable when every subdomain serves HTTPS --
   // browsers will refuse plain http on all of them for max_age seconds.

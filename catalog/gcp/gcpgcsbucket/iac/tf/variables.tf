@@ -43,8 +43,10 @@ variable "spec" {
     versioning_enabled = optional(bool, false)
 
     # Automatic per-object storage-class management.
+    # The API requires the switch inside the block; no literal default, so an
+    # unset value can never be mistaken for an explicit false.
     autoclass = optional(object({
-      enabled = bool
+      enabled = optional(bool)
       # "" (GCP default NEARLINE) / "NEARLINE" / "ARCHIVE".
       terminal_storage_class = optional(string, "")
     }), null)

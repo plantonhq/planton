@@ -1308,12 +1308,19 @@ message AzureVirtualMachineScaleSetExtensionProtectedSettingsFromKeyVault {
   ];
 }
 
-// Boot diagnostics. Presence enables it.
+// Boot diagnostics. Declaring the block turns it on (the switch defaults to
+// on), and `enabled: false` records the decision to keep it off while the
+// storage choice stays in the manifest.
 message AzureVirtualMachineScaleSetBootDiagnostics {
   // The storage account to write console logs/screenshots to, by blob
   // endpoint URI. Empty uses Azure's MANAGED storage -- the right
   // default (no storage account to operate).
   string storage_account_uri = 1;
+
+  // Whether boot diagnostics are on. Unset means on: declaring the block
+  // has always meant enabling it, and this switch lets a manifest say the
+  // opposite out loud.
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
 }
 
 // Placement constraints.

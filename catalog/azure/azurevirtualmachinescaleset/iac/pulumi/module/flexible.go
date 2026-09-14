@@ -397,7 +397,7 @@ func createFlexible(ctx *pulumi.Context, locals *Locals, azureProvider pulumi.Pr
 		}
 	}
 
-	if diagnostics := spec.BootDiagnostics; diagnostics != nil {
+	if diagnostics := spec.BootDiagnostics; diagnostics != nil && diagnostics.GetEnabled() {
 		diagArgs := compute.OrchestratedVirtualMachineScaleSetBootDiagnosticsArgs{}
 		if diagnostics.StorageAccountUri != "" {
 			diagArgs.StorageAccountUri = pulumi.StringPtr(diagnostics.StorageAccountUri)

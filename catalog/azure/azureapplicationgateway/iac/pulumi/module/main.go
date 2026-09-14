@@ -55,7 +55,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureapplicationgatewayv1alpha1.
 	}
 	if spec.Autoscale != nil {
 		autoscaleArgs := &network.ApplicationGatewayAutoscaleConfigurationArgs{
-			MinCapacity: pulumi.Int(int(spec.Autoscale.MinCapacity)),
+			MinCapacity: pulumi.Int(int(spec.Autoscale.GetMinCapacity())),
 		}
 		if spec.Autoscale.MaxCapacity != nil {
 			autoscaleArgs.MaxCapacity = pulumi.Int(int(spec.Autoscale.GetMaxCapacity()))

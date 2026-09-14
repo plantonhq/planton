@@ -83,9 +83,9 @@ func Resources(ctx *pulumi.Context, stackInput *azurevpnsitev1alpha1.AzureVpnSit
 		o365PolicyArgs := &network.VpnSiteO365PolicyArgs{}
 		if spec.O365Policy.TrafficCategory != nil {
 			o365PolicyArgs.TrafficCategory = &network.VpnSiteO365PolicyTrafficCategoryArgs{
-				AllowEndpointEnabled:    pulumi.Bool(spec.O365Policy.TrafficCategory.AllowEndpointEnabled),
-				DefaultEndpointEnabled:  pulumi.Bool(spec.O365Policy.TrafficCategory.DefaultEndpointEnabled),
-				OptimizeEndpointEnabled: pulumi.Bool(spec.O365Policy.TrafficCategory.OptimizeEndpointEnabled),
+				AllowEndpointEnabled:    pulumi.Bool(spec.O365Policy.TrafficCategory.GetAllowEndpointEnabled()),
+				DefaultEndpointEnabled:  pulumi.Bool(spec.O365Policy.TrafficCategory.GetDefaultEndpointEnabled()),
+				OptimizeEndpointEnabled: pulumi.Bool(spec.O365Policy.TrafficCategory.GetOptimizeEndpointEnabled()),
 			}
 		}
 		siteArgs.O365Policy = o365PolicyArgs

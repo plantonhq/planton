@@ -761,10 +761,13 @@ func (x *CloudflareZeroTrustGatewayPolicyStringList) GetValues() []string {
 }
 
 // CloudflareZeroTrustGatewayPolicyAuditSsh configures the Audit SSH action.
+// Declaring the block takes command logging under management, and the switch
+// says which way; it is required inside the block because a block that does
+// not say on or off manages nothing.
 type CloudflareZeroTrustGatewayPolicyAuditSsh struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Log the SSH commands executed in the session.
-	CommandLogging bool `protobuf:"varint,1,opt,name=command_logging,json=commandLogging,proto3" json:"command_logging,omitempty"`
+	// Log the SSH commands executed in the session. Required inside audit_ssh.
+	CommandLogging *bool `protobuf:"varint,1,opt,name=command_logging,json=commandLogging,proto3,oneof" json:"command_logging,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -800,8 +803,8 @@ func (*CloudflareZeroTrustGatewayPolicyAuditSsh) Descriptor() ([]byte, []int) {
 }
 
 func (x *CloudflareZeroTrustGatewayPolicyAuditSsh) GetCommandLogging() bool {
-	if x != nil {
-		return x.CommandLogging
+	if x != nil && x.CommandLogging != nil {
+		return *x.CommandLogging
 	}
 	return false
 }
@@ -1357,11 +1360,13 @@ func (x *CloudflareZeroTrustGatewayPolicyEgress) GetIpv6() string {
 }
 
 // CloudflareZeroTrustGatewayPolicyForensicCopy sends a copy of the matched HTTP
-// request to storage.
+// request to storage. Declaring the block takes the copy under management, and
+// the switch says which way; it is required inside the block because a block
+// that does not say on or off manages nothing.
 type CloudflareZeroTrustGatewayPolicyForensicCopy struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Enable sending the copy to storage.
-	Enabled       bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Enable sending the copy to storage. Required inside forensic_copy.
+	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1397,8 +1402,8 @@ func (*CloudflareZeroTrustGatewayPolicyForensicCopy) Descriptor() ([]byte, []int
 }
 
 func (x *CloudflareZeroTrustGatewayPolicyForensicCopy) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1534,10 +1539,13 @@ func (x *CloudflareZeroTrustGatewayPolicyNotificationSettings) GetSupportUrl() s
 }
 
 // CloudflareZeroTrustGatewayPolicyPayloadLog configures DLP payload logging.
+// Declaring the block takes payload logging under management, and the switch
+// says which way; it is required inside the block because a block that does
+// not say on or off manages nothing.
 type CloudflareZeroTrustGatewayPolicyPayloadLog struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Enable DLP payload logging for this rule.
-	Enabled       bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Enable DLP payload logging for this rule. Required inside payload_log.
+	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1573,8 +1581,8 @@ func (*CloudflareZeroTrustGatewayPolicyPayloadLog) Descriptor() ([]byte, []int) 
 }
 
 func (x *CloudflareZeroTrustGatewayPolicyPayloadLog) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1894,9 +1902,10 @@ const file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_pro
 	"\x13_ip_indicator_feedsB!\n" +
 	"\x1f_resolve_dns_through_cloudflare\"N\n" +
 	"*CloudflareZeroTrustGatewayPolicyStringList\x12 \n" +
-	"\x06values\x18\x01 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06values\"S\n" +
-	"(CloudflareZeroTrustGatewayPolicyAuditSsh\x12'\n" +
-	"\x0fcommand_logging\x18\x01 \x01(\bR\x0ecommandLogging\"\xd9\t\n" +
+	"\x06values\x18\x01 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06values\"t\n" +
+	"(CloudflareZeroTrustGatewayPolicyAuditSsh\x124\n" +
+	"\x0fcommand_logging\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\x0ecommandLogging\x88\x01\x01B\x12\n" +
+	"\x10_command_logging\"\xd9\t\n" +
 	"1CloudflareZeroTrustGatewayPolicyBisoAdminControls\x12q\n" +
 	"\aversion\x18\x01 \x01(\tBW\xbaHT\xba\x01Q\n" +
 	"\x11biso.version_enum\x12\x18version must be v1 or v2\x1a\"this == '' || this in ['v1', 'v2']R\aversion\x12\x9a\x01\n" +
@@ -1951,9 +1960,11 @@ const file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_pro
 	"&CloudflareZeroTrustGatewayPolicyEgress\x12\x12\n" +
 	"\x04ipv4\x18\x01 \x01(\tR\x04ipv4\x12#\n" +
 	"\ripv4_fallback\x18\x02 \x01(\tR\fipv4Fallback\x12\x12\n" +
-	"\x04ipv6\x18\x03 \x01(\tR\x04ipv6\"H\n" +
-	",CloudflareZeroTrustGatewayPolicyForensicCopy\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\"k\n" +
+	"\x04ipv6\x18\x03 \x01(\tR\x04ipv6\"a\n" +
+	",CloudflareZeroTrustGatewayPolicyForensicCopy\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"k\n" +
 	"*CloudflareZeroTrustGatewayPolicyL4Override\x12\x0e\n" +
 	"\x02ip\x18\x01 \x01(\tR\x02ip\x12$\n" +
 	"\x04port\x18\x02 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01H\x00R\x04port\x88\x01\x01B\a\n" +
@@ -1963,9 +1974,11 @@ const file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_pro
 	"\x0finclude_context\x18\x02 \x01(\bR\x0eincludeContext\x12\x10\n" +
 	"\x03msg\x18\x03 \x01(\tR\x03msg\x12\x1f\n" +
 	"\vsupport_url\x18\x04 \x01(\tR\n" +
-	"supportUrl\"F\n" +
-	"*CloudflareZeroTrustGatewayPolicyPayloadLog\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\"\x9d\x01\n" +
+	"supportUrl\"_\n" +
+	"*CloudflareZeroTrustGatewayPolicyPayloadLog\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\x9d\x01\n" +
 	"*CloudflareZeroTrustGatewayPolicyQuarantine\x12o\n" +
 	"\n" +
 	"file_types\x18\x01 \x03(\tBP\xbaHM\x92\x01J\"HrFR\x03exeR\x03pdfR\x03docR\x04docmR\x04docxR\x03rtfR\x03pptR\x04pptxR\x03xlsR\x04xlsmR\x04xlsxR\x03zipR\x03rarR\tfileTypes\"\xb1\x01\n" +
@@ -2063,10 +2076,13 @@ func file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_prot
 	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
+	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
+	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
+	file_catalog_cloudflare_cloudflarezerotrustgatewaypolicy_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

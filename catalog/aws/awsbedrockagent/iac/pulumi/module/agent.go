@@ -66,9 +66,11 @@ func agent(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error {
 	}
 
 	// Session-summary memory -- SESSION_SUMMARY is the only memory type
-	// AWS defines; presence of spec.memory enables it and the module owns
+	// AWS defines; the block's switch (on by default once the block is
+	// declared, filled by the platform before this runs) enables it and the
+	// module owns
 	// the constant.
-	if spec.Memory != nil {
+	if spec.Memory != nil && spec.Memory.GetEnabled() {
 		memory := &bedrock.AgentAgentMemoryConfigurationArgs{
 			EnabledMemoryTypes: pulumi.StringArray{pulumi.String("SESSION_SUMMARY")},
 		}

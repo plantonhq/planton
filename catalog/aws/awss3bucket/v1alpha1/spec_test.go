@@ -139,9 +139,10 @@ var _ = ginkgo.Describe("AwsS3BucketSpec validations", func() {
 
 	ginkgo.It("accepts a public website posture (guards relaxed + policy)", func() {
 		spec.PublicAccessBlock = &AwsS3BucketPublicAccessBlock{
-			BlockPublicAcls:  true,
-			IgnorePublicAcls: true,
-			// block_public_policy and restrict_public_buckets deliberately false
+			BlockPublicAcls:       proto.Bool(true),
+			IgnorePublicAcls:      proto.Bool(true),
+			BlockPublicPolicy:     proto.Bool(false),
+			RestrictPublicBuckets: proto.Bool(false),
 		}
 		spec.Policy = mustStruct(map[string]interface{}{
 			"Version": "2012-10-17",
@@ -151,6 +152,14 @@ var _ = ginkgo.Describe("AwsS3BucketSpec validations", func() {
 			}},
 		})
 		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+	})
+
+	ginkgo.It("accepts relaxing one guard while leaving the others unset (they stay on)", func() {
+		spec.PublicAccessBlock = &AwsS3BucketPublicAccessBlock{
+			BlockPublicPolicy: proto.Bool(false),
+		}
+		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		gomega.Expect(spec.PublicAccessBlock.BlockPublicAcls).To(gomega.BeNil(), "an unset guard stays unset at the schema layer; the platform fills the declared default before the module reads it")
 	})
 
 	// -------------------------------------------------------------------------

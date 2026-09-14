@@ -14,9 +14,11 @@ locals {
     "planton.ai/resource-id"   = var.metadata.id
   }
 
-  # Optional single-entry list attributes render only when declared.
+  # Optional single-entry list attributes render only when declared. Memory
+  # also carries its own switch, on by default once the block is declared, so
+  # a null switch reads as on and only an explicit false keeps memory off.
   has_guardrail       = var.spec.guardrail != null
-  has_memory          = var.spec.memory != null
+  has_memory          = var.spec.memory != null && coalesce(try(var.spec.memory.enabled, null), true)
   has_prompt_override = var.spec.prompt_override != null
 
   # Satellites keyed by their stable entry names (the for_each keys both

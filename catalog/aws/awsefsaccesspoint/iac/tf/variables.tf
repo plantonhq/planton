@@ -17,8 +17,8 @@ variable "spec" {
     region = string
     file_system_id = string
     posix_user = optional(object({
-      uid = optional(number, 0)
-      gid = optional(number, 0)
+      uid = number
+      gid = number
       secondary_gids = optional(list(number), [])
     }))
     root_directory = optional(object({

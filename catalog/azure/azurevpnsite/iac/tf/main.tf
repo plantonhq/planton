@@ -51,9 +51,9 @@ resource "azurerm_vpn_site" "main" {
       dynamic "traffic_category" {
         for_each = o365_policy.value.traffic_category != null ? [o365_policy.value.traffic_category] : []
         content {
-          allow_endpoint_enabled    = traffic_category.value.allow_endpoint_enabled
-          default_endpoint_enabled  = traffic_category.value.default_endpoint_enabled
-          optimize_endpoint_enabled = traffic_category.value.optimize_endpoint_enabled
+          allow_endpoint_enabled    = coalesce(traffic_category.value.allow_endpoint_enabled, false)
+          default_endpoint_enabled  = coalesce(traffic_category.value.default_endpoint_enabled, false)
+          optimize_endpoint_enabled = coalesce(traffic_category.value.optimize_endpoint_enabled, false)
         }
       }
     }

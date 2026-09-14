@@ -10,6 +10,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAzureDataProtectionBackupInstanceSpec(t *testing.T) {
@@ -117,12 +118,26 @@ var _ = ginkgo.Describe("AzureDataProtectionBackupInstanceSpec Validation Tests"
 						IncludedResourceTypes:         []string{"deployments.apps"},
 						ExcludedResourceTypes:         []string{"events"},
 						LabelSelectors:                []string{"backup=true"},
-						ClusterScopedResourcesEnabled: true,
-						VolumeSnapshotEnabled:         true,
+						ClusterScopedResourcesEnabled: proto.Bool(true),
+						VolumeSnapshotEnabled:         proto.Bool(true),
 					},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should accept datasource parameters that state one switch off and leave the other unset", func() {
+				input := validResource()
+				input.Spec.Disk = nil
+				input.Spec.KubernetesCluster = &AzureDataProtectionBackupInstanceKubernetesCluster{
+					KubernetesClusterId:       literal(testAksId),
+					SnapshotResourceGroupName: literal("backup-rg"),
+					BackupDatasourceParameters: &AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParameters{
+						VolumeSnapshotEnabled: proto.Bool(false),
+					},
+				}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+				gomega.Expect(input.Spec.KubernetesCluster.BackupDatasourceParameters.ClusterScopedResourcesEnabled).To(gomega.BeNil(), "the unset switch stays unset at the schema layer; the platform fills its declared default before the module reads it")
 			})
 
 			ginkgo.It("should accept a mysql flexible-server instance", func() {

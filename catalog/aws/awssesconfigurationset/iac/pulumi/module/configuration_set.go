@@ -80,10 +80,10 @@ func configurationSet(
 	if spec.VdmOptions != nil {
 		args.VdmOptions = &sesv2.ConfigurationSetVdmOptionsArgs{
 			DashboardOptions: &sesv2.ConfigurationSetVdmOptionsDashboardOptionsArgs{
-				EngagementMetrics: engagementMetricsString(spec.VdmOptions.EngagementMetricsEnabled),
+				EngagementMetrics: engagementMetricsString(spec.VdmOptions.GetEngagementMetricsEnabled()),
 			},
 			GuardianOptions: &sesv2.ConfigurationSetVdmOptionsGuardianOptionsArgs{
-				OptimizedSharedDelivery: optimizedSharedDeliveryString(spec.VdmOptions.OptimizedSharedDeliveryEnabled),
+				OptimizedSharedDelivery: optimizedSharedDeliveryString(spec.VdmOptions.GetOptimizedSharedDeliveryEnabled()),
 			},
 		}
 	}

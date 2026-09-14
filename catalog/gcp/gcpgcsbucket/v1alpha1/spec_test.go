@@ -131,7 +131,7 @@ var _ = ginkgo.Describe("GcpGcsBucketSpec", func() {
 	ginkgo.It("should accept autoclass with a terminal storage class", func() {
 		msg := minimal()
 		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{
-			Enabled:              true,
+			Enabled:              proto.Bool(true),
 			TerminalStorageClass: "ARCHIVE",
 		}
 		err := validator.Validate(msg)
@@ -377,10 +377,24 @@ var _ = ginkgo.Describe("GcpGcsBucketSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should accept autoclass switched off", func() {
+		msg := minimal()
+		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{Enabled: proto.Bool(false)}
+		gomega.Expect(protovalidate.Validate(msg)).To(gomega.BeNil())
+	})
+
+	ginkgo.It("should reject an autoclass block that does not say on or off", func() {
+		msg := minimal()
+		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{TerminalStorageClass: "ARCHIVE"}
+		err := protovalidate.Validate(msg)
+		gomega.Expect(err).ToNot(gomega.BeNil())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("autoclass.enabled"))
+	})
+
 	ginkgo.It("should reject autoclass with an invalid terminal storage class", func() {
 		msg := minimal()
 		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{
-			Enabled:              true,
+			Enabled:              proto.Bool(true),
 			TerminalStorageClass: "COLDLINE",
 		}
 		err := validator.Validate(msg)
@@ -389,7 +403,7 @@ var _ = ginkgo.Describe("GcpGcsBucketSpec", func() {
 
 	ginkgo.It("should reject enabled autoclass combined with a SetStorageClass lifecycle rule", func() {
 		msg := minimal()
-		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{Enabled: true}
+		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{Enabled: proto.Bool(true)}
 		msg.Spec.LifecycleRules = []*GcpGcsBucketLifecycleRule{{
 			Action: &GcpGcsBucketLifecycleAction{
 				Type:         "SetStorageClass",
@@ -404,7 +418,7 @@ var _ = ginkgo.Describe("GcpGcsBucketSpec", func() {
 
 	ginkgo.It("should accept disabled autoclass alongside a SetStorageClass rule", func() {
 		msg := minimal()
-		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{Enabled: false}
+		msg.Spec.Autoclass = &GcpGcsBucketAutoclass{Enabled: proto.Bool(false)}
 		msg.Spec.LifecycleRules = []*GcpGcsBucketLifecycleRule{{
 			Action: &GcpGcsBucketLifecycleAction{
 				Type:         "SetStorageClass",

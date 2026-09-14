@@ -9,6 +9,7 @@ package awss3bucketv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
@@ -509,20 +510,24 @@ func (x *AwsS3BucketEncryption) GetBlockedEncryptionTypes() []string {
 }
 
 // Public access guard rails for the bucket. Absence of this block means all
-// four guards are ON (fully private) — each field here flips a specific guard.
+// four guards are ON (fully private). Inside the block each guard is its own
+// statement: `false` relaxes that guard, `true` keeps it, and a guard left
+// unset stays ON, so relaxing one guard never silently relaxes the others.
 type AwsS3BucketPublicAccessBlock struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Reject new ACLs that grant public access (PUT requests carrying public
-	// ACLs fail).
-	BlockPublicAcls bool `protobuf:"varint,1,opt,name=block_public_acls,json=blockPublicAcls,proto3" json:"block_public_acls,omitempty"`
+	// ACLs fail). Unset keeps the guard on.
+	BlockPublicAcls *bool `protobuf:"varint,1,opt,name=block_public_acls,json=blockPublicAcls,proto3,oneof" json:"block_public_acls,omitempty"`
 	// Reject bucket policies that grant public access (the policy PUT fails).
-	BlockPublicPolicy bool `protobuf:"varint,2,opt,name=block_public_policy,json=blockPublicPolicy,proto3" json:"block_public_policy,omitempty"`
-	// Ignore all existing public ACLs when evaluating access.
-	IgnorePublicAcls bool `protobuf:"varint,3,opt,name=ignore_public_acls,json=ignorePublicAcls,proto3" json:"ignore_public_acls,omitempty"`
+	// Unset keeps the guard on.
+	BlockPublicPolicy *bool `protobuf:"varint,2,opt,name=block_public_policy,json=blockPublicPolicy,proto3,oneof" json:"block_public_policy,omitempty"`
+	// Ignore all existing public ACLs when evaluating access. Unset keeps the
+	// guard on.
+	IgnorePublicAcls *bool `protobuf:"varint,3,opt,name=ignore_public_acls,json=ignorePublicAcls,proto3,oneof" json:"ignore_public_acls,omitempty"`
 	// Restrict access to this bucket to AWS service principals and authorized
 	// users within the bucket owner's account, even if a policy grants public
-	// access.
-	RestrictPublicBuckets bool `protobuf:"varint,4,opt,name=restrict_public_buckets,json=restrictPublicBuckets,proto3" json:"restrict_public_buckets,omitempty"`
+	// access. Unset keeps the guard on.
+	RestrictPublicBuckets *bool `protobuf:"varint,4,opt,name=restrict_public_buckets,json=restrictPublicBuckets,proto3,oneof" json:"restrict_public_buckets,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -558,29 +563,29 @@ func (*AwsS3BucketPublicAccessBlock) Descriptor() ([]byte, []int) {
 }
 
 func (x *AwsS3BucketPublicAccessBlock) GetBlockPublicAcls() bool {
-	if x != nil {
-		return x.BlockPublicAcls
+	if x != nil && x.BlockPublicAcls != nil {
+		return *x.BlockPublicAcls
 	}
 	return false
 }
 
 func (x *AwsS3BucketPublicAccessBlock) GetBlockPublicPolicy() bool {
-	if x != nil {
-		return x.BlockPublicPolicy
+	if x != nil && x.BlockPublicPolicy != nil {
+		return *x.BlockPublicPolicy
 	}
 	return false
 }
 
 func (x *AwsS3BucketPublicAccessBlock) GetIgnorePublicAcls() bool {
-	if x != nil {
-		return x.IgnorePublicAcls
+	if x != nil && x.IgnorePublicAcls != nil {
+		return *x.IgnorePublicAcls
 	}
 	return false
 }
 
 func (x *AwsS3BucketPublicAccessBlock) GetRestrictPublicBuckets() bool {
-	if x != nil {
-		return x.RestrictPublicBuckets
+	if x != nil && x.RestrictPublicBuckets != nil {
+		return *x.RestrictPublicBuckets
 	}
 	return false
 }
@@ -3023,7 +3028,7 @@ var File_catalog_aws_awss3bucket_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_aws_awss3bucket_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/aws/awss3bucket/v1alpha1/spec.proto\x12$dev.planton.aws.awss3bucket.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x96$\n" +
+	"+catalog/aws/awss3bucket/v1alpha1/spec.proto\x12$dev.planton.aws.awss3bucket.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x96$\n" +
 	"\x0fAwsS3BucketSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12#\n" +
 	"\rforce_destroy\x18\x02 \x01(\bR\fforceDestroy\x12.\n" +
@@ -3076,12 +3081,16 @@ const file_catalog_aws_awss3bucket_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12bucket_key_enabled\x18\x03 \x01(\bR\x10bucketKeyEnabled\x12\xca\x01\n" +
 	"\x18blocked_encryption_types\x18\x04 \x03(\tB\x8f\x01\xbaH\x8b\x01\x92\x01\x87\x01\"\x84\x01\xba\x01\x80\x01\n" +
 	"\x1dblocked_encryption_type_valid\x12<blocked_encryption_types entries must be one of: NONE, SSE-C\x1a!this == 'NONE' || this == 'SSE-C'R\x16blockedEncryptionTypes:\xd2\x01\xbaH\xce\x01\x1a\xcb\x01\n" +
-	"\x1ekms_key_requires_kms_algorithm\x12Ekms_key_id is only used when sse_algorithm is aws:kms or aws:kms:dsse\x1ab!has(this.kms_key_id) || (this.sse_algorithm == 'aws:kms' || this.sse_algorithm == 'aws:kms:dsse')\"\xe0\x01\n" +
-	"\x1cAwsS3BucketPublicAccessBlock\x12*\n" +
-	"\x11block_public_acls\x18\x01 \x01(\bR\x0fblockPublicAcls\x12.\n" +
-	"\x13block_public_policy\x18\x02 \x01(\bR\x11blockPublicPolicy\x12,\n" +
-	"\x12ignore_public_acls\x18\x03 \x01(\bR\x10ignorePublicAcls\x126\n" +
-	"\x17restrict_public_buckets\x18\x04 \x01(\bR\x15restrictPublicBuckets\"\x87\r\n" +
+	"\x1ekms_key_requires_kms_algorithm\x12Ekms_key_id is only used when sse_algorithm is aws:kms or aws:kms:dsse\x1ab!has(this.kms_key_id) || (this.sse_algorithm == 'aws:kms' || this.sse_algorithm == 'aws:kms:dsse')\"\xfd\x02\n" +
+	"\x1cAwsS3BucketPublicAccessBlock\x129\n" +
+	"\x11block_public_acls\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x0fblockPublicAcls\x88\x01\x01\x12=\n" +
+	"\x13block_public_policy\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x11blockPublicPolicy\x88\x01\x01\x12;\n" +
+	"\x12ignore_public_acls\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x02R\x10ignorePublicAcls\x88\x01\x01\x12E\n" +
+	"\x17restrict_public_buckets\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\x15restrictPublicBuckets\x88\x01\x01B\x14\n" +
+	"\x12_block_public_aclsB\x16\n" +
+	"\x14_block_public_policyB\x15\n" +
+	"\x13_ignore_public_aclsB\x1a\n" +
+	"\x18_restrict_public_buckets\"\x87\r\n" +
 	"\x18AwsS3BucketLifecycleRule\x12\x1a\n" +
 	"\x02id\x18\x01 \x01(\tB\n" +
 	"\xbaH\ar\x05\x10\x01\x18\xff\x01R\x02id\x12\x9e\x01\n" +
@@ -3428,6 +3437,7 @@ func file_catalog_aws_awss3bucket_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awss3bucket_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_aws_awss3bucket_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_aws_awss3bucket_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

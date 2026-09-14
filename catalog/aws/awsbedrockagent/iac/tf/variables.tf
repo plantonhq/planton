@@ -27,6 +27,7 @@ variable "spec" {
       version = string
     }))
     memory = optional(object({
+      enabled = optional(bool)
       storage_days = optional(number, 0)
       max_recent_sessions = optional(number, 0)
     }))

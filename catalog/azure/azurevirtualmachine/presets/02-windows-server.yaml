@@ -32,4 +32,5 @@ spec:
   security:
     secureBootEnabled: true  # trusted launch on a Gen2 image
     vtpmEnabled: true
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true

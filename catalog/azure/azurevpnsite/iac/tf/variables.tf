@@ -34,9 +34,9 @@ variable "spec" {
     })), [])
     o365_policy = optional(object({
       traffic_category = optional(object({
-        allow_endpoint_enabled    = optional(bool, false)
-        default_endpoint_enabled  = optional(bool, false)
-        optimize_endpoint_enabled = optional(bool, false)
+        allow_endpoint_enabled    = optional(bool)
+        default_endpoint_enabled  = optional(bool)
+        optimize_endpoint_enabled = optional(bool)
       }))
     }))
     tags = optional(map(string), {})

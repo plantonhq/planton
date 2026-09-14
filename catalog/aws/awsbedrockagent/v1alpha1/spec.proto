@@ -4,6 +4,7 @@ package dev.planton.aws.awsbedrockagent.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // AwsBedrockAgentSpec defines the desired configuration for an Amazon
 // Bedrock agent - a foundation-model-powered assistant that reasons over a
@@ -189,10 +190,17 @@ message AwsBedrockAgentGuardrail {
   string version = 2 [(buf.validate.field).string.min_len = 1];
 }
 
-// AwsBedrockAgentMemory enables session-summary memory. AWS supports one
-// memory type (SESSION_SUMMARY) - the modules send that constant; presence
-// of this message is the enablement.
+// AwsBedrockAgentMemory configures session-summary memory. AWS supports one
+// memory type (SESSION_SUMMARY) - the modules send that constant. The block
+// carries its own switch: `enabled: true` (the default when the block is
+// declared) turns memory on with the dials below, `enabled: false` records
+// the decision to keep it off while keeping the dials in the manifest.
 message AwsBedrockAgentMemory {
+  // Whether session-summary memory is on. Unset means on: declaring the
+  // block has always meant enabling memory, and this switch lets a manifest
+  // say the opposite out loud.
+  optional bool enabled = 3 [(dev.planton.shared.options.default) = "true"];
+
   // How many days AWS retains session summaries (AWS documents 0-365;
   // omitted = AWS default, 30).
   int32 storage_days = 1 [

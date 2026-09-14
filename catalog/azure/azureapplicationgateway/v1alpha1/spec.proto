@@ -273,15 +273,20 @@ message AzureApplicationGatewaySpec {
   };
 }
 
-// Autoscale bounds.
+// Autoscale bounds. The floor carries presence and is required inside the
+// block: 0 is a real floor (scale to zero at idle), so the schema must be able
+// to tell "floor 0" from "floor not given".
 message AzureApplicationGatewayAutoscale {
   // The floor the gateway never scales below. 0-100; 0 lets the gateway
   // scale to zero capacity units at idle (billing floor, not
-  // availability -- keep >= 2 for production).
-  int32 min_capacity = 1 [(buf.validate.field).int32 = {
-    gte: 0
-    lte: 100
-  }];
+  // availability -- keep >= 2 for production). Required inside autoscale.
+  optional int32 min_capacity = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 100
+    }
+  ];
 
   // The ceiling the gateway never scales above. 2-125; omit for the
   // subscription-level maximum.

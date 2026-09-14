@@ -112,6 +112,12 @@ var _ = ginkgo.Describe("AzureVirtualMachineScaleSetSpec Validation Tests", func
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept boot diagnostics declared and switched off", func() {
+			input := flexibleLinux()
+			input.Spec.BootDiagnostics = &AzureVirtualMachineScaleSetBootDiagnostics{Enabled: boolPtr(false)}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept a minimal UNIFORM Linux scale set", func() {
 			err := protovalidate.Validate(uniformLinux())
 			gomega.Expect(err).To(gomega.BeNil())
