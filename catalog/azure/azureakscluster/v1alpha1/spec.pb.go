@@ -5276,7 +5276,9 @@ func (x *AzureAksClusterOmsAgent) GetMsiAuthForMonitoringEnabled() bool {
 	return false
 }
 
-// Azure Key Vault provider for the Secrets Store CSI driver.
+// Azure Key Vault provider for the Secrets Store CSI driver. Declaring the
+// block turns the add-on on; `enabled: false` keeps its settings while
+// switching it off.
 type AzureAksClusterKeyVaultSecretsProvider struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether mounted secrets re-sync from Key Vault on an interval.
@@ -5285,8 +5287,12 @@ type AzureAksClusterKeyVaultSecretsProvider struct {
 	// Poll interval for rotation, e.g. "2m" (Azure's default). Only
 	// meaningful with secret_rotation_enabled.
 	SecretRotationInterval string `protobuf:"bytes,2,opt,name=secret_rotation_interval,json=secretRotationInterval,proto3" json:"secret_rotation_interval,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	// Whether the add-on is on. Unset means on: declaring the block has always
+	// meant enabling it, and this switch lets a manifest say the opposite out
+	// loud while keeping the add-on's settings in place.
+	Enabled       *bool `protobuf:"varint,3,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureAksClusterKeyVaultSecretsProvider) Reset() {
@@ -5331,6 +5337,13 @@ func (x *AzureAksClusterKeyVaultSecretsProvider) GetSecretRotationInterval() str
 		return x.SecretRotationInterval
 	}
 	return ""
+}
+
+func (x *AzureAksClusterKeyVaultSecretsProvider) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // Microsoft Defender for Containers.
@@ -5379,13 +5392,18 @@ func (x *AzureAksClusterMicrosoftDefender) GetLogAnalyticsWorkspaceId() *v1.Stri
 	return nil
 }
 
-// Azure Monitor managed Prometheus metrics.
+// Azure Monitor managed Prometheus metrics. Declaring the block turns the
+// add-on on; `enabled: false` keeps its settings while switching it off.
 type AzureAksClusterMonitorMetrics struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Comma-separated Kubernetes ANNOTATION keys exported as metric labels.
 	AnnotationsAllowed string `protobuf:"bytes,1,opt,name=annotations_allowed,json=annotationsAllowed,proto3" json:"annotations_allowed,omitempty"`
 	// Comma-separated Kubernetes LABEL keys exported as metric labels.
 	LabelsAllowed string `protobuf:"bytes,2,opt,name=labels_allowed,json=labelsAllowed,proto3" json:"labels_allowed,omitempty"`
+	// Whether the add-on is on. Unset means on: declaring the block has always
+	// meant enabling it, and this switch lets a manifest say the opposite out
+	// loud while keeping the add-on's settings in place.
+	Enabled       *bool `protobuf:"varint,3,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -5432,6 +5450,13 @@ func (x *AzureAksClusterMonitorMetrics) GetLabelsAllowed() string {
 		return x.LabelsAllowed
 	}
 	return ""
+}
+
+func (x *AzureAksClusterMonitorMetrics) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // Application Gateway Ingress Controller add-on. Anchor it with exactly
@@ -5561,14 +5586,19 @@ func (x *AzureAksClusterAciConnectorLinux) GetSubnetName() string {
 	return ""
 }
 
-// Confidential computing (Intel SGX) add-on.
+// Confidential computing (Intel SGX) add-on. Declaring the block turns the
+// add-on on; `enabled: false` keeps its settings while switching it off.
 type AzureAksClusterConfidentialComputing struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether the SGX quote-helper sidecar runs for out-of-proc enclave
 	// attestation.
 	SgxQuoteHelperEnabled bool `protobuf:"varint,1,opt,name=sgx_quote_helper_enabled,json=sgxQuoteHelperEnabled,proto3" json:"sgx_quote_helper_enabled,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+	// Whether the add-on is on. Unset means on: declaring the block has always
+	// meant enabling it, and this switch lets a manifest say the opposite out
+	// loud while keeping the add-on's settings in place.
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureAksClusterConfidentialComputing) Reset() {
@@ -5604,6 +5634,13 @@ func (*AzureAksClusterConfidentialComputing) Descriptor() ([]byte, []int) {
 func (x *AzureAksClusterConfidentialComputing) GetSgxQuoteHelperEnabled() bool {
 	if x != nil {
 		return x.SgxQuoteHelperEnabled
+	}
+	return false
+}
+
+func (x *AzureAksClusterConfidentialComputing) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -6826,15 +6863,21 @@ const file_catalog_azure_azureakscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"notAllowed\"\xfd\x01\n" +
 	"\x17AzureAksClusterOmsAgent\x12\x9b\x01\n" +
 	"\x1alog_analytics_workspace_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\x82\x10\x92\xd4a\x1bstatus.outputs.workspace_idR\x17logAnalyticsWorkspaceId\x12D\n" +
-	"\x1fmsi_auth_for_monitoring_enabled\x18\x02 \x01(\bR\x1bmsiAuthForMonitoringEnabled\"\xec\x01\n" +
+	"\x1fmsi_auth_for_monitoring_enabled\x18\x02 \x01(\bR\x1bmsiAuthForMonitoringEnabled\"\xa1\x02\n" +
 	"&AzureAksClusterKeyVaultSecretsProvider\x126\n" +
 	"\x17secret_rotation_enabled\x18\x01 \x01(\bR\x15secretRotationEnabled\x12\x89\x01\n" +
-	"\x18secret_rotation_interval\x18\x02 \x01(\tBO\xaa\xa6\x1dKRotation poll interval (e.g. 2m) -- operational timing, not secret materialR\x16secretRotationInterval\"\xc0\x01\n" +
+	"\x18secret_rotation_interval\x18\x02 \x01(\tBO\xaa\xa6\x1dKRotation poll interval (e.g. 2m) -- operational timing, not secret materialR\x16secretRotationInterval\x12'\n" +
+	"\aenabled\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xc0\x01\n" +
 	" AzureAksClusterMicrosoftDefender\x12\x9b\x01\n" +
-	"\x1alog_analytics_workspace_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\x82\x10\x92\xd4a\x1bstatus.outputs.workspace_idR\x17logAnalyticsWorkspaceId\"w\n" +
+	"\x1alog_analytics_workspace_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\x82\x10\x92\xd4a\x1bstatus.outputs.workspace_idR\x17logAnalyticsWorkspaceId\"\xac\x01\n" +
 	"\x1dAzureAksClusterMonitorMetrics\x12/\n" +
 	"\x13annotations_allowed\x18\x01 \x01(\tR\x12annotationsAllowed\x12%\n" +
-	"\x0elabels_allowed\x18\x02 \x01(\tR\rlabelsAllowed\"\xd1\x04\n" +
+	"\x0elabels_allowed\x18\x02 \x01(\tR\rlabelsAllowed\x12'\n" +
+	"\aenabled\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xd1\x04\n" +
 	"(AzureAksClusterIngressApplicationGateway\x12\x81\x01\n" +
 	"\n" +
 	"gateway_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\x88\xd4a\xe0\x0f\x92\xd4a%status.outputs.application_gateway_idR\tgatewayId\x12!\n" +
@@ -6845,9 +6888,12 @@ const file_catalog_azure_azureakscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1baks_agic_exactly_one_anchor\x12ZSet exactly one of gateway_id, subnet_cidr, or subnet_id to anchor the Application Gateway\x1af(has(this.gateway_id) ? 1 : 0) + (this.subnet_cidr != '' ? 1 : 0) + (has(this.subnet_id) ? 1 : 0) == 1\"K\n" +
 	" AzureAksClusterAciConnectorLinux\x12'\n" +
 	"\vsubnet_name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
-	"subnetName\"_\n" +
+	"subnetName\"\x94\x01\n" +
 	"$AzureAksClusterConfidentialComputing\x127\n" +
-	"\x18sgx_quote_helper_enabled\x18\x01 \x01(\bR\x15sgxQuoteHelperEnabled\"\xa7\x02\n" +
+	"\x18sgx_quote_helper_enabled\x18\x01 \x01(\bR\x15sgxQuoteHelperEnabled\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xa7\x02\n" +
 	"\x1cAzureAksClusterWebAppRouting\x12y\n" +
 	"\fdns_zone_ids\x18\x01 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xd4\x0f\x92\xd4a\x16status.outputs.zone_id\x98\xd4a\x01R\n" +
 	"dnsZoneIds\x12\x8b\x01\n" +
@@ -7330,6 +7376,9 @@ func file_catalog_azure_azureakscluster_v1alpha1_spec_proto_init() {
 	file_catalog_azure_azureakscluster_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_azure_azureakscluster_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_azure_azureakscluster_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
+	file_catalog_azure_azureakscluster_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}
+	file_catalog_azure_azureakscluster_v1alpha1_spec_proto_msgTypes[24].OneofWrappers = []any{}
+	file_catalog_azure_azureakscluster_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{}
 	file_catalog_azure_azureakscluster_v1alpha1_spec_proto_msgTypes[31].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

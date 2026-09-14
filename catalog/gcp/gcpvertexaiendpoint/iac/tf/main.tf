@@ -48,7 +48,9 @@ resource "google_vertex_ai_endpoint" "this" {
   # offered: the GA provider does not expose it, and GA is the catalog's
   # parity baseline.
   dynamic "private_service_connect_config" {
-    for_each = var.spec.private_service_connect_config != null ? [var.spec.private_service_connect_config] : []
+    # The block's own switch (on by default once declared) decides whether the
+    # PSC block renders at all: the API rejects the block with its flag off.
+    for_each = var.spec.private_service_connect_config != null && coalesce(var.spec.private_service_connect_config.enabled, true) ? [var.spec.private_service_connect_config] : []
     content {
       enable_private_service_connect = true
       project_allowlist              = length(private_service_connect_config.value.project_allowlist) > 0 ? private_service_connect_config.value.project_allowlist : null

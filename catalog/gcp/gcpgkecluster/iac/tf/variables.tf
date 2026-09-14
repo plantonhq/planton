@@ -283,6 +283,7 @@ variable "spec" {
 
     # Cloud Logging components; null leaves GKE defaults.
     logging = optional(object({
+      enabled    = optional(bool)
       components = optional(list(string), [])
     }), null)
 

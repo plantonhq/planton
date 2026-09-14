@@ -44,6 +44,7 @@ variable "spec" {
     # private_key_type / public_key_type (generate flow) — enforced by the
     # spec's CEL rules before the module runs.
     user_managed_key = optional(object({
+      enabled          = optional(bool)
       algorithm        = optional(string)
       private_key_type = optional(string)
       public_key_type  = optional(string)

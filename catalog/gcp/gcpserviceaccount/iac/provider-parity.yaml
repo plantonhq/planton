@@ -60,3 +60,10 @@ resources:
         reason: org-scope conditioned grants have no first-class kind today; see condition.title
       - arg: condition.description
         reason: org-scope conditioned grants have no first-class kind today; see condition.title
+
+specExclusions:
+  # The key block's own switch: the provider models a key by the presence of
+  # google_service_account_key; the module creates it only while this switch
+  # is on.
+  - field: spec.user_managed_key.enabled
+    reason: an explicit switch the module honors by creating or omitting the key resource -- the provider has no enabled flag on a key

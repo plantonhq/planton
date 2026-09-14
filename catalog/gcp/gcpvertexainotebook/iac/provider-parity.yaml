@@ -93,3 +93,10 @@ resources:
       notebooks.googleapis.com and compute.googleapis.com with fixed
       arguments (disable_on_destroy false so destroying one notebook
       never disables the APIs project-wide); not spec surface.
+
+specExclusions:
+  # The confidential block's own switch: the provider models Confidential
+  # Computing by the presence of confidential_instance_config; the module
+  # renders the block only while this switch is on.
+  - field: spec.confidential_instance_config.enabled
+    reason: an explicit switch the module honors by rendering or omitting confidential_instance_config -- the provider has no enabled flag on that block

@@ -408,7 +408,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 
   dynamic "key_vault_secrets_provider" {
-    for_each = var.spec.key_vault_secrets_provider != null ? [var.spec.key_vault_secrets_provider] : []
+    for_each = var.spec.key_vault_secrets_provider != null && coalesce(var.spec.key_vault_secrets_provider.enabled, true) ? [var.spec.key_vault_secrets_provider] : []
     content {
       secret_rotation_enabled  = key_vault_secrets_provider.value.secret_rotation_enabled
       secret_rotation_interval = key_vault_secrets_provider.value.secret_rotation_interval
@@ -423,7 +423,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 
   dynamic "monitor_metrics" {
-    for_each = var.spec.monitor_metrics != null ? [var.spec.monitor_metrics] : []
+    for_each = var.spec.monitor_metrics != null && coalesce(var.spec.monitor_metrics.enabled, true) ? [var.spec.monitor_metrics] : []
     content {
       annotations_allowed = monitor_metrics.value.annotations_allowed
       labels_allowed      = monitor_metrics.value.labels_allowed
@@ -448,7 +448,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 
   dynamic "confidential_computing" {
-    for_each = var.spec.confidential_computing != null ? [var.spec.confidential_computing] : []
+    for_each = var.spec.confidential_computing != null && coalesce(var.spec.confidential_computing.enabled, true) ? [var.spec.confidential_computing] : []
     content {
       sgx_quote_helper_enabled = confidential_computing.value.sgx_quote_helper_enabled
     }

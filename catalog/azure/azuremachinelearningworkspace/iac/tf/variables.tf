@@ -26,6 +26,7 @@ variable "spec" {
     })
     kind = optional(string, "")
     feature_store = optional(object({
+      enabled                        = optional(bool)
       computer_spark_runtime_version = optional(string, "")
       offline_connection_name        = optional(string, "")
       online_connection_name         = optional(string, "")

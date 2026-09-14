@@ -9,6 +9,7 @@ package gcpvertexainotebookv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -335,15 +336,21 @@ func (x *GcpVertexAiNotebookNetworkInterface) GetExternalIp() *v1.StringValueOrR
 // Computing for the notebook VM: guest memory is encrypted in use with
 // AMD SEV (Secure Encrypted Virtualization), protecting data even from
 // the host hypervisor. Requires an AMD-based machine type that supports
-// SEV (e.g., the n2d family). Immutable after creation.
+// SEV (e.g., the n2d family). Immutable after creation. Declaring the block
+// turns it on; `enabled: false` keeps the setting in the manifest while
+// switching it off.
 type GcpVertexAiNotebookConfidentialInstanceConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Confidential computing technology for the instance.
 	// The only supported value is SEV (AMD Secure Encrypted Virtualization).
 	// If not specified, defaults to SEV.
 	ConfidentialInstanceType string `protobuf:"bytes,1,opt,name=confidential_instance_type,json=confidentialInstanceType,proto3" json:"confidential_instance_type,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	// Whether Confidential Computing is on. Unset means on: declaring the
+	// block has always meant enabling it, and this switch lets a manifest say
+	// the opposite out loud.
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpVertexAiNotebookConfidentialInstanceConfig) Reset() {
@@ -381,6 +388,13 @@ func (x *GcpVertexAiNotebookConfidentialInstanceConfig) GetConfidentialInstanceT
 		return x.ConfidentialInstanceType
 	}
 	return ""
+}
+
+func (x *GcpVertexAiNotebookConfidentialInstanceConfig) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // GcpVertexAiNotebookReservationAffinity controls which Compute Engine
@@ -601,21 +615,24 @@ func (x *GcpVertexAiNotebookContainerImage) GetTag() string {
 
 // GcpVertexAiNotebookShieldedInstanceConfig defines Shielded VM settings
 // for the notebook instance. Shielded VMs provide verifiable integrity
-// to protect against rootkits and bootkits.
+// to protect against rootkits and bootkits. Each switch carries presence: a
+// switch left unset leaves GCP's default for it, and an explicit `false`
+// actively turns that protection off (vTPM and integrity monitoring are on
+// by default, so `false` on them is a real, deliberate statement).
 type GcpVertexAiNotebookShieldedInstanceConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Enable Secure Boot. Ensures only verified boot software runs.
 	// Disabled by default because some ML libraries may not have signed
 	// boot loaders.
-	EnableSecureBoot bool `protobuf:"varint,1,opt,name=enable_secure_boot,json=enableSecureBoot,proto3" json:"enable_secure_boot,omitempty"`
+	EnableSecureBoot *bool `protobuf:"varint,1,opt,name=enable_secure_boot,json=enableSecureBoot,proto3,oneof" json:"enable_secure_boot,omitempty"`
 	// Enable vTPM (Virtual Trusted Platform Module).
 	// Provides measured boot integrity and key generation.
-	// Enabled by default.
-	EnableVtpm bool `protobuf:"varint,2,opt,name=enable_vtpm,json=enableVtpm,proto3" json:"enable_vtpm,omitempty"`
+	// Enabled by default; an explicit false turns it off.
+	EnableVtpm *bool `protobuf:"varint,2,opt,name=enable_vtpm,json=enableVtpm,proto3,oneof" json:"enable_vtpm,omitempty"`
 	// Enable integrity monitoring. Compares boot measurements against
 	// a trusted baseline.
-	// Enabled by default.
-	EnableIntegrityMonitoring bool `protobuf:"varint,3,opt,name=enable_integrity_monitoring,json=enableIntegrityMonitoring,proto3" json:"enable_integrity_monitoring,omitempty"`
+	// Enabled by default; an explicit false turns it off.
+	EnableIntegrityMonitoring *bool `protobuf:"varint,3,opt,name=enable_integrity_monitoring,json=enableIntegrityMonitoring,proto3,oneof" json:"enable_integrity_monitoring,omitempty"`
 	unknownFields             protoimpl.UnknownFields
 	sizeCache                 protoimpl.SizeCache
 }
@@ -651,22 +668,22 @@ func (*GcpVertexAiNotebookShieldedInstanceConfig) Descriptor() ([]byte, []int) {
 }
 
 func (x *GcpVertexAiNotebookShieldedInstanceConfig) GetEnableSecureBoot() bool {
-	if x != nil {
-		return x.EnableSecureBoot
+	if x != nil && x.EnableSecureBoot != nil {
+		return *x.EnableSecureBoot
 	}
 	return false
 }
 
 func (x *GcpVertexAiNotebookShieldedInstanceConfig) GetEnableVtpm() bool {
-	if x != nil {
-		return x.EnableVtpm
+	if x != nil && x.EnableVtpm != nil {
+		return *x.EnableVtpm
 	}
 	return false
 }
 
 func (x *GcpVertexAiNotebookShieldedInstanceConfig) GetEnableIntegrityMonitoring() bool {
-	if x != nil {
-		return x.EnableIntegrityMonitoring
+	if x != nil && x.EnableIntegrityMonitoring != nil {
+		return *x.EnableIntegrityMonitoring
 	}
 	return false
 }
@@ -1030,7 +1047,7 @@ var File_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpvertexainotebook/v1alpha1/spec.proto\x12,dev.planton.gcp.gcpvertexainotebook.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xb2\x05\n" +
+	"3catalog/gcp/gcpvertexainotebook/v1alpha1/spec.proto\x12,dev.planton.gcp.gcpvertexainotebook.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xb2\x05\n" +
 	"\x1bGcpVertexAiNotebookBootDisk\x12\xea\x02\n" +
 	"\tdisk_type\x18\x01 \x01(\tB\xcc\x02\xbaH\xc8\x02\xba\x01\xc4\x02\n" +
 	"\x14valid_boot_disk_type\x12\x8e\x01disk_type must be one of: PD_STANDARD, PD_SSD, PD_BALANCED, PD_EXTREME, HYPERDISK_BALANCED, HYPERDISK_BALANCED_HIGH_AVAILABILITY, HYPERDISK_ML\x1a\x9a\x01this == '' || this in ['PD_STANDARD', 'PD_SSD', 'PD_BALANCED', 'PD_EXTREME', 'HYPERDISK_BALANCED', 'HYPERDISK_BALANCED_HIGH_AVAILABILITY', 'HYPERDISK_ML']R\bdiskType\x12\xb8\x01\n" +
@@ -1057,10 +1074,13 @@ const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
 	"\bnic_type\x18\x03 \x01(\tBq\xbaHn\xba\x01k\n" +
 	"\x0evalid_nic_type\x12*nic_type must be one of: VIRTIO_NET, GVNIC\x1a-this == '' || this in ['VIRTIO_NET', 'GVNIC']R\anicType\x12t\n" +
 	"\vexternal_ip\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xaa\x18\x92\xd4a\x16status.outputs.addressR\n" +
-	"externalIp\"\x8d\x02\n" +
+	"externalIp\"\xc2\x02\n" +
 	"-GcpVertexAiNotebookConfidentialInstanceConfig\x12\xdb\x01\n" +
 	"\x1aconfidential_instance_type\x18\x01 \x01(\tB\x9c\x01\xbaH\x98\x01\xba\x01\x94\x01\n" +
-	" valid_confidential_instance_type\x12Sconfidential_instance_type must be SEV (the only supported confidential technology)\x1a\x1bthis == '' || this == 'SEV'R\x18confidentialInstanceType\"\xe3\x04\n" +
+	" valid_confidential_instance_type\x12Sconfidential_instance_type must be SEV (the only supported confidential technology)\x1a\x1bthis == '' || this == 'SEV'R\x18confidentialInstanceType\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xe3\x04\n" +
 	"&GcpVertexAiNotebookReservationAffinity\x12\x9c\x02\n" +
 	"\x18consume_reservation_type\x18\x01 \x01(\tB\xe1\x01\xbaH\xdd\x01\xba\x01\xd9\x01\n" +
 	"\x1evalid_consume_reservation_type\x12`consume_reservation_type must be one of: RESERVATION_NONE, RESERVATION_ANY, RESERVATION_SPECIFIC\x1aUthis == '' || this in ['RESERVATION_NONE', 'RESERVATION_ANY', 'RESERVATION_SPECIFIC']R\x16consumeReservationType\x12\x10\n" +
@@ -1075,12 +1095,15 @@ const file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"repository\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"repository\x12\x10\n" +
-	"\x03tag\x18\x02 \x01(\tR\x03tag\"\xba\x01\n" +
-	")GcpVertexAiNotebookShieldedInstanceConfig\x12,\n" +
-	"\x12enable_secure_boot\x18\x01 \x01(\bR\x10enableSecureBoot\x12\x1f\n" +
-	"\venable_vtpm\x18\x02 \x01(\bR\n" +
-	"enableVtpm\x12>\n" +
-	"\x1benable_integrity_monitoring\x18\x03 \x01(\bR\x19enableIntegrityMonitoring\"\xd9\x18\n" +
+	"\x03tag\x18\x02 \x01(\tR\x03tag\"\x90\x02\n" +
+	")GcpVertexAiNotebookShieldedInstanceConfig\x121\n" +
+	"\x12enable_secure_boot\x18\x01 \x01(\bH\x00R\x10enableSecureBoot\x88\x01\x01\x12$\n" +
+	"\venable_vtpm\x18\x02 \x01(\bH\x01R\n" +
+	"enableVtpm\x88\x01\x01\x12C\n" +
+	"\x1benable_integrity_monitoring\x18\x03 \x01(\bH\x02R\x19enableIntegrityMonitoring\x88\x01\x01B\x15\n" +
+	"\x13_enable_secure_bootB\x0e\n" +
+	"\f_enable_vtpmB\x1e\n" +
+	"\x1c_enable_integrity_monitoring\"\xd9\x18\n" +
 	"\x17GcpVertexAiNotebookSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12A\n" +
@@ -1182,6 +1205,8 @@ func file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
+	file_catalog_gcp_gcpvertexainotebook_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

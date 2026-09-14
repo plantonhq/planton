@@ -568,17 +568,17 @@ type GcpPubSubTopicIngestionCloudStorage struct {
 	// Format: RFC 3339 (e.g., "2024-01-01T00:00:00Z").
 	// If unset, all objects are eligible for ingestion regardless of creation time.
 	MinimumObjectCreateTime string `protobuf:"bytes,3,opt,name=minimum_object_create_time,json=minimumObjectCreateTime,proto3" json:"minimum_object_create_time,omitempty"`
-	// Read Cloud Storage data in Avro binary format. The bytes of each object
-	// are set to the data field of a Pub/Sub message.
-	// Set this field (as an empty message) to select Avro format.
-	AvroFormat *GcpPubSubTopicIngestionCloudStorageAvroFormat `protobuf:"bytes,4,opt,name=avro_format,json=avroFormat,proto3" json:"avro_format,omitempty"`
-	// Read Cloud Storage data written via Cloud Storage subscriptions.
-	// Restores the data and attributes of the originally exported Pub/Sub messages.
-	// Set this field (as an empty message) to select Pub/Sub Avro format.
-	PubsubAvroFormat *GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat `protobuf:"bytes,5,opt,name=pubsub_avro_format,json=pubsubAvroFormat,proto3" json:"pubsub_avro_format,omitempty"`
-	// Read Cloud Storage data in text format. Each line of text (as defined by
-	// the delimiter) becomes the data field of a Pub/Sub message.
-	TextFormat    *GcpPubSubTopicIngestionCloudStorageTextFormat `protobuf:"bytes,6,opt,name=text_format,json=textFormat,proto3" json:"text_format,omitempty"`
+	// The input format: exactly one of the arms below. Choosing an arm is the
+	// whole statement for the two Avro formats and for text at the default
+	// newline delimiter, so an arm with nothing inside is a valid, complete
+	// choice.
+	//
+	// Types that are valid to be assigned to InputFormat:
+	//
+	//	*GcpPubSubTopicIngestionCloudStorage_AvroFormat
+	//	*GcpPubSubTopicIngestionCloudStorage_PubsubAvroFormat
+	//	*GcpPubSubTopicIngestionCloudStorage_TextFormat
+	InputFormat   isGcpPubSubTopicIngestionCloudStorage_InputFormat `protobuf_oneof:"input_format"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -634,25 +634,69 @@ func (x *GcpPubSubTopicIngestionCloudStorage) GetMinimumObjectCreateTime() strin
 	return ""
 }
 
+func (x *GcpPubSubTopicIngestionCloudStorage) GetInputFormat() isGcpPubSubTopicIngestionCloudStorage_InputFormat {
+	if x != nil {
+		return x.InputFormat
+	}
+	return nil
+}
+
 func (x *GcpPubSubTopicIngestionCloudStorage) GetAvroFormat() *GcpPubSubTopicIngestionCloudStorageAvroFormat {
 	if x != nil {
-		return x.AvroFormat
+		if x, ok := x.InputFormat.(*GcpPubSubTopicIngestionCloudStorage_AvroFormat); ok {
+			return x.AvroFormat
+		}
 	}
 	return nil
 }
 
 func (x *GcpPubSubTopicIngestionCloudStorage) GetPubsubAvroFormat() *GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat {
 	if x != nil {
-		return x.PubsubAvroFormat
+		if x, ok := x.InputFormat.(*GcpPubSubTopicIngestionCloudStorage_PubsubAvroFormat); ok {
+			return x.PubsubAvroFormat
+		}
 	}
 	return nil
 }
 
 func (x *GcpPubSubTopicIngestionCloudStorage) GetTextFormat() *GcpPubSubTopicIngestionCloudStorageTextFormat {
 	if x != nil {
-		return x.TextFormat
+		if x, ok := x.InputFormat.(*GcpPubSubTopicIngestionCloudStorage_TextFormat); ok {
+			return x.TextFormat
+		}
 	}
 	return nil
+}
+
+type isGcpPubSubTopicIngestionCloudStorage_InputFormat interface {
+	isGcpPubSubTopicIngestionCloudStorage_InputFormat()
+}
+
+type GcpPubSubTopicIngestionCloudStorage_AvroFormat struct {
+	// Read Cloud Storage data in Avro binary format. The bytes of each object
+	// are set to the data field of a Pub/Sub message.
+	AvroFormat *GcpPubSubTopicIngestionCloudStorageAvroFormat `protobuf:"bytes,4,opt,name=avro_format,json=avroFormat,proto3,oneof"`
+}
+
+type GcpPubSubTopicIngestionCloudStorage_PubsubAvroFormat struct {
+	// Read Cloud Storage data written via Cloud Storage subscriptions.
+	// Restores the data and attributes of the originally exported Pub/Sub messages.
+	PubsubAvroFormat *GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat `protobuf:"bytes,5,opt,name=pubsub_avro_format,json=pubsubAvroFormat,proto3,oneof"`
+}
+
+type GcpPubSubTopicIngestionCloudStorage_TextFormat struct {
+	// Read Cloud Storage data in text format. Each line of text (as defined by
+	// the delimiter) becomes the data field of a Pub/Sub message.
+	TextFormat *GcpPubSubTopicIngestionCloudStorageTextFormat `protobuf:"bytes,6,opt,name=text_format,json=textFormat,proto3,oneof"`
+}
+
+func (*GcpPubSubTopicIngestionCloudStorage_AvroFormat) isGcpPubSubTopicIngestionCloudStorage_InputFormat() {
+}
+
+func (*GcpPubSubTopicIngestionCloudStorage_PubsubAvroFormat) isGcpPubSubTopicIngestionCloudStorage_InputFormat() {
+}
+
+func (*GcpPubSubTopicIngestionCloudStorage_TextFormat) isGcpPubSubTopicIngestionCloudStorage_InputFormat() {
 }
 
 // GcpPubSubTopicIngestionConfluentCloud defines settings for ingesting data from
@@ -1381,18 +1425,18 @@ const file_catalog_gcp_gcppubsubtopic_v1alpha1_spec_proto_rawDesc = "" +
 	"-GcpPubSubTopicIngestionCloudStorageTextFormat\x12\x1c\n" +
 	"\tdelimiter\x18\x01 \x01(\tR\tdelimiter\"/\n" +
 	"-GcpPubSubTopicIngestionCloudStorageAvroFormat\"5\n" +
-	"3GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat\"\xf8\x06\n" +
+	"3GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat\"\x92\x05\n" +
 	"#GcpPubSubTopicIngestionCloudStorage\x12s\n" +
 	"\x06bucket\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xbe\x17\x92\xd4a\x18status.outputs.bucket_idR\x06bucket\x12\x1d\n" +
 	"\n" +
 	"match_glob\x18\x02 \x01(\tR\tmatchGlob\x12;\n" +
-	"\x1aminimum_object_create_time\x18\x03 \x01(\tR\x17minimumObjectCreateTime\x12w\n" +
-	"\vavro_format\x18\x04 \x01(\v2V.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicIngestionCloudStorageAvroFormatR\n" +
-	"avroFormat\x12\x8a\x01\n" +
-	"\x12pubsub_avro_format\x18\x05 \x01(\v2\\.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicIngestionCloudStoragePubsubAvroFormatR\x10pubsubAvroFormat\x12w\n" +
-	"\vtext_format\x18\x06 \x01(\v2V.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicIngestionCloudStorageTextFormatR\n" +
-	"textFormat:\x80\x02\xbaH\xfc\x01\x1a\xf9\x01\n" +
-	"\x18exactly_one_input_format\x12lchoose exactly one input format for Cloud Storage ingestion: avro_format, pubsub_avro_format, or text_format\x1ao(has(this.avro_format) ? 1 : 0) + (has(this.pubsub_avro_format) ? 1 : 0) + (has(this.text_format) ? 1 : 0) == 1\"\xd3\x02\n" +
+	"\x1aminimum_object_create_time\x18\x03 \x01(\tR\x17minimumObjectCreateTime\x12y\n" +
+	"\vavro_format\x18\x04 \x01(\v2V.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicIngestionCloudStorageAvroFormatH\x00R\n" +
+	"avroFormat\x12\x8c\x01\n" +
+	"\x12pubsub_avro_format\x18\x05 \x01(\v2\\.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicIngestionCloudStoragePubsubAvroFormatH\x00R\x10pubsubAvroFormat\x12y\n" +
+	"\vtext_format\x18\x06 \x01(\v2V.dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicIngestionCloudStorageTextFormatH\x00R\n" +
+	"textFormatB\x15\n" +
+	"\finput_format\x12\x05\xbaH\x02\b\x01\"\xd3\x02\n" +
 	"%GcpPubSubTopicIngestionConfluentCloud\x121\n" +
 	"\x10bootstrap_server\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fbootstrapServer\x12\x1c\n" +
 	"\x05topic\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05topic\x120\n" +
@@ -1535,6 +1579,11 @@ func init() { file_catalog_gcp_gcppubsubtopic_v1alpha1_spec_proto_init() }
 func file_catalog_gcp_gcppubsubtopic_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcppubsubtopic_v1alpha1_spec_proto != nil {
 		return
+	}
+	file_catalog_gcp_gcppubsubtopic_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{
+		(*GcpPubSubTopicIngestionCloudStorage_AvroFormat)(nil),
+		(*GcpPubSubTopicIngestionCloudStorage_PubsubAvroFormat)(nil),
+		(*GcpPubSubTopicIngestionCloudStorage_TextFormat)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

@@ -7,9 +7,9 @@ access control and IAM-authorized connections, without VPC peering.
 
 An endpoint named `Partner Inference` in `us-central1`, reachable only
 through PSC forwarding rules created from the two allowlisted consumer
-projects. Secure PSC adds IAM authorization on top of network
-reachability, and the endpoint is CMEK-encrypted under the referenced
-`GcpKmsKey` (`inference-key`).
+projects, and CMEK-encrypted under the referenced `GcpKmsKey`
+(`inference-key`). Secure PSC (IAM authorization on top of network
+reachability) is not offered here: the GA provider does not expose it.
 
 ## When to use
 
@@ -27,7 +27,5 @@ reachability, and the endpoint is CMEK-encrypted under the referenced
 
 ## Remix ideas
 
-- Drop `enableSecurePrivateServiceConnect` when network-level allowlist
-  control is sufficient and minimum latency matters.
 - Leave `projectAllowlist` empty to allow any project in the same
   organization to connect.

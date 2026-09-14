@@ -40,7 +40,7 @@ locals {
   # Flow-log defaults mirror the GCP API's own (5s aggregation, 50% sampling,
   # all metadata, no filter) so an empty log_config object turns logging on
   # with sane behavior — identical to the Pulumi module.
-  log_config = var.spec.log_config == null ? null : {
+  log_config = var.spec.log_config == null || !coalesce(var.spec.log_config.enabled, true) ? null : {
     aggregation_interval = coalesce(var.spec.log_config.aggregation_interval, "INTERVAL_5_SEC")
     flow_sampling        = coalesce(var.spec.log_config.flow_sampling, 0.5)
     metadata             = coalesce(var.spec.log_config.metadata, "INCLUDE_ALL_METADATA")

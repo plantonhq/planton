@@ -136,24 +136,24 @@ resource "google_workbench_instance" "this" {
       }
     }
 
-    # Shielded VM posture (rootkit/bootkit protection). False values are
-    # sent as null (omitted) rather than explicit false: the API enables
-    # vTPM and integrity monitoring by default, and an explicit false would
-    # actively disable them — the Pulumi module omits false the same way,
-    # so both engines leave server defaults intact for unset flags.
+    # Shielded VM posture (rootkit/bootkit protection). Each switch is
+    # presence-tracked: an unset switch arrives null and is omitted so the
+    # API's default holds (vTPM and integrity monitoring on), and an explicit
+    # value -- true or false -- is sent as authored.
     dynamic "shielded_instance_config" {
       for_each = var.spec.shielded_instance_config != null ? [var.spec.shielded_instance_config] : []
       content {
-        enable_secure_boot          = shielded_instance_config.value.enable_secure_boot ? true : null
-        enable_vtpm                 = shielded_instance_config.value.enable_vtpm ? true : null
-        enable_integrity_monitoring = shielded_instance_config.value.enable_integrity_monitoring ? true : null
+        enable_secure_boot          = shielded_instance_config.value.enable_secure_boot
+        enable_vtpm                 = shielded_instance_config.value.enable_vtpm
+        enable_integrity_monitoring = shielded_instance_config.value.enable_integrity_monitoring
       }
     }
 
     # Confidential Computing (AMD SEV): guest memory encrypted in use.
-    # Requires an SEV-capable machine type (n2d family).
+    # Requires an SEV-capable machine type (n2d family). The block's own
+    # switch (on by default once declared) decides whether it renders.
     dynamic "confidential_instance_config" {
-      for_each = var.spec.confidential_instance_config != null ? [var.spec.confidential_instance_config] : []
+      for_each = var.spec.confidential_instance_config != null && coalesce(var.spec.confidential_instance_config.enabled, true) ? [var.spec.confidential_instance_config] : []
       content {
         confidential_instance_type = confidential_instance_config.value.confidential_instance_type != "" ? confidential_instance_config.value.confidential_instance_type : null
       }

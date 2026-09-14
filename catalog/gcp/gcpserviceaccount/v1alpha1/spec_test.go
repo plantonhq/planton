@@ -9,6 +9,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestSuite(t *testing.T) {
@@ -71,6 +72,12 @@ var _ = ginkgo.Describe("GcpServiceAccountSpec", func() {
 		msg.Spec.DeletionPolicy = "PREVENT"
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
+	})
+
+	ginkgo.It("should accept a user_managed_key declared and switched off", func() {
+		msg := minimal()
+		msg.Spec.UserManagedKey = &GcpServiceAccountUserManagedKey{Enabled: proto.Bool(false), Algorithm: "KEY_ALG_RSA_2048"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.HaveOccurred())
 	})
 
 	ginkgo.It("should accept an empty user_managed_key (GCP defaults: 2048-bit RSA JSON key)", func() {

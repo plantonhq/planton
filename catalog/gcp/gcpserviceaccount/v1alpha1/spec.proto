@@ -111,10 +111,12 @@ message GcpServiceAccountSpec {
   };
 }
 
-// Configuration of a user-managed service account key. The message's
-// presence is the decision to create a key; every field is optional and
-// defaults to GCP's own defaults, so `user_managed_key: {}` creates the
-// classic 2048-bit RSA JSON key.
+// Configuration of a user-managed service account key. Declaring the
+// message is the decision to create a key; every field is optional and
+// defaults to GCP's own defaults, so `user_managed_key: { enabled: true }`
+// (or the bare block) creates the classic 2048-bit RSA JSON key, and
+// `enabled: false` keeps the key's settings in the manifest while no key
+// exists.
 message GcpServiceAccountUserManagedKey {
   // Two mutually exclusive key flows exist:
   //   - GENERATE (default): GCP generates the key pair and returns the
@@ -185,4 +187,9 @@ message GcpServiceAccountUserManagedKey {
     expression: "this == '' || this in ['DELETE', 'PREVENT']"
     message: "deletion_policy must be one of: DELETE, PREVENT"
   }];
+
+  // Whether the key exists. Unset means yes: declaring the block has always
+  // meant creating a key, and this switch lets a manifest say the opposite
+  // out loud (the key is destroyed when it flips to false).
+  optional bool enabled = 7 [(dev.planton.shared.options.default) = "true"];
 }

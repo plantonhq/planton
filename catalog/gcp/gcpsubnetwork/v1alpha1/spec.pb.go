@@ -442,9 +442,11 @@ func (x *GcpSubnetworkSecondaryRange) GetReservedInternalRange() string {
 	return ""
 }
 
-// VPC Flow Logs configuration. Presence of this message enables flow logs;
-// every field has a sensible GCP default, so an empty block turns on
-// logging with 5-second aggregation at 50% sampling with all metadata.
+// VPC Flow Logs configuration. Declaring this message turns flow logs on;
+// every field has a sensible GCP default, so a block with only `enabled:
+// true` (or nothing) turns on logging with 5-second aggregation at 50%
+// sampling with all metadata, and `enabled: false` keeps the settings in the
+// manifest while switching the logs off.
 type GcpSubnetworkLogConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// How long flows are aggregated before a log entry is emitted. Longer
@@ -464,7 +466,11 @@ type GcpSubnetworkLogConfig struct {
 	// CEL expression selecting which flows are logged (GCP default "true" =
 	// all sampled flows), e.g. restricting to one port:
 	// connection.dest_port == 443.
-	FilterExpr    string `protobuf:"bytes,5,opt,name=filter_expr,json=filterExpr,proto3" json:"filter_expr,omitempty"`
+	FilterExpr string `protobuf:"bytes,5,opt,name=filter_expr,json=filterExpr,proto3" json:"filter_expr,omitempty"`
+	// Whether flow logs are on. Unset means on: declaring the block has always
+	// meant enabling them, and this switch lets a manifest say the opposite
+	// out loud.
+	Enabled       *bool `protobuf:"varint,6,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -534,6 +540,13 @@ func (x *GcpSubnetworkLogConfig) GetFilterExpr() string {
 	return ""
 }
 
+func (x *GcpSubnetworkLogConfig) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
+}
+
 var File_catalog_gcp_gcpsubnetwork_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpsubnetwork_v1alpha1_spec_proto_rawDesc = "" +
@@ -595,7 +608,7 @@ const file_catalog_gcp_gcpsubnetwork_v1alpha1_spec_proto_rawDesc = "" +
 	"\rip_cidr_range\x18\x02 \x01(\tB\x9d\x01\xbaH\x99\x01\xba\x01\x95\x01\n" +
 	"\x1dvalid_secondary_ip_cidr_range\x124ip_cidr_range must be an IPv4 CIDR like 10.16.0.0/14\x1a>this == '' || this.matches('^\\\\d+\\\\.\\\\d+\\\\.\\\\d+\\\\.\\\\d+/\\\\d+$')R\vipCidrRange\x126\n" +
 	"\x17reserved_internal_range\x18\x03 \x01(\tR\x15reservedInternalRange:\xc9\x01\xbaH\xc5\x01\x1a\xc2\x01\n" +
-	"\x1bsecondary_range_cidr_source\x12_each secondary range needs exactly one CIDR source — ip_cidr_range or reserved_internal_range\x1aB(this.ip_cidr_range != '') != (this.reserved_internal_range != '')\"\x9f\b\n" +
+	"\x1bsecondary_range_cidr_source\x12_each secondary range needs exactly one CIDR source — ip_cidr_range or reserved_internal_range\x1aB(this.ip_cidr_range != '') != (this.reserved_internal_range != '')\"\xd4\b\n" +
 	"\x16GcpSubnetworkLogConfig\x12\xf3\x02\n" +
 	"\x14aggregation_interval\x18\x01 \x01(\tB\xba\x02\xbaH\xa4\x02\xba\x01\xa0\x02\n" +
 	"\x1avalid_aggregation_interval\x12\x88\x01aggregation_interval must be one of INTERVAL_5_SEC, INTERVAL_30_SEC, INTERVAL_1_MIN, INTERVAL_5_MIN, INTERVAL_10_MIN, or INTERVAL_15_MIN\x1awthis in ['INTERVAL_5_SEC', 'INTERVAL_30_SEC', 'INTERVAL_1_MIN', 'INTERVAL_5_MIN', 'INTERVAL_10_MIN', 'INTERVAL_15_MIN']\x8a\xa6\x1d\x0eINTERVAL_5_SECH\x00R\x13aggregationInterval\x88\x01\x01\x12H\n" +
@@ -604,11 +617,14 @@ const file_catalog_gcp_gcpsubnetwork_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0evalid_metadata\x12Ometadata must be EXCLUDE_ALL_METADATA, INCLUDE_ALL_METADATA, or CUSTOM_METADATA\x1aKthis in ['EXCLUDE_ALL_METADATA', 'INCLUDE_ALL_METADATA', 'CUSTOM_METADATA']\x8a\xa6\x1d\x14INCLUDE_ALL_METADATAH\x02R\bmetadata\x88\x01\x01\x12'\n" +
 	"\x0fmetadata_fields\x18\x04 \x03(\tR\x0emetadataFields\x12)\n" +
 	"\vfilter_expr\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\n" +
-	"filterExpr:\xc5\x01\xbaH\xc1\x01\x1a\xbe\x01\n" +
+	"filterExpr\x12'\n" +
+	"\aenabled\x18\x06 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x03R\aenabled\x88\x01\x01:\xc5\x01\xbaH\xc1\x01\x1a\xbe\x01\n" +
 	"\x1emetadata_fields_require_custom\x12=metadata_fields only applies when metadata is CUSTOM_METADATA\x1a]size(this.metadata_fields) == 0 || (has(this.metadata) && this.metadata == 'CUSTOM_METADATA')B\x17\n" +
 	"\x15_aggregation_intervalB\x10\n" +
 	"\x0e_flow_samplingB\v\n" +
-	"\t_metadataB\xcb\x02\n" +
+	"\t_metadataB\n" +
+	"\n" +
+	"\b_enabledB\xcb\x02\n" +
 	"*com.dev.planton.gcp.gcpsubnetwork.v1alpha1B\tSpecProtoP\x01ZUgithub.com/plantonhq/planton/catalog/gcp/gcpsubnetwork/v1alpha1;gcpsubnetworkv1alpha1\xa2\x02\x04DPGG\xaa\x02&Dev.Planton.Gcp.Gcpsubnetwork.V1alpha1\xca\x02&Dev\\Planton\\Gcp\\Gcpsubnetwork\\V1alpha1\xe2\x022Dev\\Planton\\Gcp\\Gcpsubnetwork\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Gcp::Gcpsubnetwork::V1alpha1b\x06proto3"
 
 var (

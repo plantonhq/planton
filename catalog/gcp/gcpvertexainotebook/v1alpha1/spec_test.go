@@ -8,6 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestSuite(t *testing.T) {
@@ -224,12 +225,19 @@ var _ = ginkgo.Describe("GcpVertexAiNotebookSpec", func() {
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should accept shielded switches stated off and confidential computing declared and switched off", func() {
+		msg := minimal()
+		msg.Spec.ShieldedInstanceConfig = &GcpVertexAiNotebookShieldedInstanceConfig{EnableVtpm: proto.Bool(false)}
+		msg.Spec.ConfidentialInstanceConfig = &GcpVertexAiNotebookConfidentialInstanceConfig{Enabled: proto.Bool(false), ConfidentialInstanceType: "SEV"}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.HaveOccurred())
+	})
+
 	ginkgo.It("should accept spec with shielded_instance_config", func() {
 		msg := minimal()
 		msg.Spec.ShieldedInstanceConfig = &GcpVertexAiNotebookShieldedInstanceConfig{
-			EnableSecureBoot:          true,
-			EnableVtpm:                true,
-			EnableIntegrityMonitoring: true,
+			EnableSecureBoot:          proto.Bool(true),
+			EnableVtpm:                proto.Bool(true),
+			EnableIntegrityMonitoring: proto.Bool(true),
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
@@ -293,9 +301,9 @@ var _ = ginkgo.Describe("GcpVertexAiNotebookSpec", func() {
 			Family:  "workbench-instances",
 		}
 		msg.Spec.ShieldedInstanceConfig = &GcpVertexAiNotebookShieldedInstanceConfig{
-			EnableSecureBoot:          true,
-			EnableVtpm:                true,
-			EnableIntegrityMonitoring: true,
+			EnableSecureBoot:          proto.Bool(true),
+			EnableVtpm:                proto.Bool(true),
+			EnableIntegrityMonitoring: proto.Bool(true),
 		}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())

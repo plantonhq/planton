@@ -230,13 +230,13 @@ message AzureMachineLearningWorkspaceSpec {
   // apply time; front-loaded here so the error lands in seconds.
   option (buf.validate.message).cel = {
     id: "feature_store_block_only_for_feature_store_kind"
-    message: "feature_store can only be set when kind is FEATURE_STORE"
-    expression: "!has(this.feature_store) || this.kind == 2"
+    message: "feature_store can only be on when kind is FEATURE_STORE -- set enabled: false or drop the block"
+    expression: "!(has(this.feature_store) && (!has(this.feature_store.enabled) || this.feature_store.enabled)) || this.kind == 2"
   };
   option (buf.validate.message).cel = {
     id: "feature_store_kind_requires_block"
-    message: "kind FEATURE_STORE requires the feature_store block"
-    expression: "this.kind != 2 || has(this.feature_store)"
+    message: "kind FEATURE_STORE requires the feature_store block with its switch on"
+    expression: "this.kind != 2 || (has(this.feature_store) && (!has(this.feature_store.enabled) || this.feature_store.enabled))"
   };
   option (buf.validate.message).cel = {
     id: "service_side_encryption_requires_encryption"
@@ -311,7 +311,9 @@ enum AzureMachineLearningWorkspaceKind {
   FEATURE_STORE = 2;
 }
 
-// Feature-store settings (kind FEATURE_STORE only).
+// Feature-store settings (kind FEATURE_STORE only). Declaring the block with
+// its switch on (the default) is the feature store; `enabled: false` keeps
+// the settings in the manifest for a workspace of another kind.
 message AzureMachineLearningWorkspaceFeatureStore {
   // The Spark runtime version of the feature store's materialization
   // compute. Leave unset for the service default.
@@ -324,6 +326,11 @@ message AzureMachineLearningWorkspaceFeatureStore {
   // The name of the workspace connection pointing at the ONLINE
   // store (the low-latency serving data).
   string online_connection_name = 3;
+
+  // Whether the feature store is on. Unset means on: declaring the block has
+  // always meant a feature store, and this switch lets a manifest say the
+  // opposite out loud (a FEATURE_STORE workspace still requires it on).
+  optional bool enabled = 4 [(dev.planton.shared.options.default) = "true"];
 }
 
 // Customer-managed-key encryption for the workspace's data at rest.

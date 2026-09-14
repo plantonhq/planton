@@ -1984,7 +1984,9 @@ message AzureAksClusterOmsAgent {
   bool msi_auth_for_monitoring_enabled = 2;
 }
 
-// Azure Key Vault provider for the Secrets Store CSI driver.
+// Azure Key Vault provider for the Secrets Store CSI driver. Declaring the
+// block turns the add-on on; `enabled: false` keeps its settings while
+// switching it off.
 message AzureAksClusterKeyVaultSecretsProvider {
   // Whether mounted secrets re-sync from Key Vault on an interval.
   // Without rotation, pods see updated secrets only on restart.
@@ -1993,6 +1995,11 @@ message AzureAksClusterKeyVaultSecretsProvider {
   // Poll interval for rotation, e.g. "2m" (Azure's default). Only
   // meaningful with secret_rotation_enabled.
   string secret_rotation_interval = 2 [(dev.planton.shared.options.sensitive_exempt_reason) = "Rotation poll interval (e.g. 2m) -- operational timing, not secret material"];
+
+  // Whether the add-on is on. Unset means on: declaring the block has always
+  // meant enabling it, and this switch lets a manifest say the opposite out
+  // loud while keeping the add-on's settings in place.
+  optional bool enabled = 3 [(dev.planton.shared.options.default) = "true"];
 }
 
 // Microsoft Defender for Containers.
@@ -2005,13 +2012,19 @@ message AzureAksClusterMicrosoftDefender {
   ];
 }
 
-// Azure Monitor managed Prometheus metrics.
+// Azure Monitor managed Prometheus metrics. Declaring the block turns the
+// add-on on; `enabled: false` keeps its settings while switching it off.
 message AzureAksClusterMonitorMetrics {
   // Comma-separated Kubernetes ANNOTATION keys exported as metric labels.
   string annotations_allowed = 1;
 
   // Comma-separated Kubernetes LABEL keys exported as metric labels.
   string labels_allowed = 2;
+
+  // Whether the add-on is on. Unset means on: declaring the block has always
+  // meant enabling it, and this switch lets a manifest say the opposite out
+  // loud while keeping the add-on's settings in place.
+  optional bool enabled = 3 [(dev.planton.shared.options.default) = "true"];
 }
 
 // Application Gateway Ingress Controller add-on. Anchor it with exactly
@@ -2055,11 +2068,17 @@ message AzureAksClusterAciConnectorLinux {
   string subnet_name = 1 [(buf.validate.field).required = true];
 }
 
-// Confidential computing (Intel SGX) add-on.
+// Confidential computing (Intel SGX) add-on. Declaring the block turns the
+// add-on on; `enabled: false` keeps its settings while switching it off.
 message AzureAksClusterConfidentialComputing {
   // Whether the SGX quote-helper sidecar runs for out-of-proc enclave
   // attestation.
   bool sgx_quote_helper_enabled = 1;
+
+  // Whether the add-on is on. Unset means on: declaring the block has always
+  // meant enabling it, and this switch lets a manifest say the opposite out
+  // loud while keeping the add-on's settings in place.
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
 }
 
 // Managed NGINX ingress ("application routing") add-on.

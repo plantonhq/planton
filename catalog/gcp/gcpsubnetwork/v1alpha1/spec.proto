@@ -307,9 +307,11 @@ message GcpSubnetworkSecondaryRange {
   string reserved_internal_range = 3;
 }
 
-// VPC Flow Logs configuration. Presence of this message enables flow logs;
-// every field has a sensible GCP default, so an empty block turns on
-// logging with 5-second aggregation at 50% sampling with all metadata.
+// VPC Flow Logs configuration. Declaring this message turns flow logs on;
+// every field has a sensible GCP default, so a block with only `enabled:
+// true` (or nothing) turns on logging with 5-second aggregation at 50%
+// sampling with all metadata, and `enabled: false` keeps the settings in the
+// manifest while switching the logs off.
 message GcpSubnetworkLogConfig {
   // How long flows are aggregated before a log entry is emitted. Longer
   // intervals mean fewer, larger entries (lower cost, coarser timing).
@@ -357,4 +359,9 @@ message GcpSubnetworkLogConfig {
     message: "metadata_fields only applies when metadata is CUSTOM_METADATA"
     expression: "size(this.metadata_fields) == 0 || (has(this.metadata) && this.metadata == 'CUSTOM_METADATA')"
   };
+
+  // Whether flow logs are on. Unset means on: declaring the block has always
+  // meant enabling them, and this switch lets a manifest say the opposite
+  // out loud.
+  optional bool enabled = 6 [(dev.planton.shared.options.default) = "true"];
 }

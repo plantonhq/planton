@@ -230,16 +230,16 @@ func ingestionDataSourceSettings(ids *gcppubsubtopicv1alpha1.GcpPubSubTopicInges
 			csArgs.MinimumObjectCreateTime = pulumi.StringPtr(ids.CloudStorage.MinimumObjectCreateTime)
 		}
 
-		// Format selection: exactly one should be set.
-		if ids.CloudStorage.TextFormat != nil {
+		// Format selection: the input_format oneof carries exactly one arm.
+		if ids.CloudStorage.GetTextFormat() != nil {
 			tfArgs := &pubsub.TopicIngestionDataSourceSettingsCloudStorageTextFormatArgs{}
-			if ids.CloudStorage.TextFormat.Delimiter != "" {
-				tfArgs.Delimiter = pulumi.StringPtr(ids.CloudStorage.TextFormat.Delimiter)
+			if ids.CloudStorage.GetTextFormat().Delimiter != "" {
+				tfArgs.Delimiter = pulumi.StringPtr(ids.CloudStorage.GetTextFormat().Delimiter)
 			}
 			csArgs.TextFormat = tfArgs
-		} else if ids.CloudStorage.AvroFormat != nil {
+		} else if ids.CloudStorage.GetAvroFormat() != nil {
 			csArgs.AvroFormat = &pubsub.TopicIngestionDataSourceSettingsCloudStorageAvroFormatArgs{}
-		} else if ids.CloudStorage.PubsubAvroFormat != nil {
+		} else if ids.CloudStorage.GetPubsubAvroFormat() != nil {
 			csArgs.PubsubAvroFormat = &pubsub.TopicIngestionDataSourceSettingsCloudStoragePubsubAvroFormatArgs{}
 		}
 

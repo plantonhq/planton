@@ -338,9 +338,10 @@ func (x *GcpIdentityPlatformConfigSignIn) GetAllowDuplicateEmails() bool {
 // Email/password sign-in settings.
 type GcpIdentityPlatformConfigSignInEmail struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whether email sign-in is enabled. Sent explicitly, so setting this
-	// arm with enabled=false actively disables the method.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Whether email sign-in is enabled. Required inside the arm: declaring
+	// the arm takes the method under management, and the switch says which
+	// way (false actively disables it).
+	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// Whether a password is required for email accounts. When false,
 	// users can sign in via email link alone.
 	PasswordRequired bool `protobuf:"varint,2,opt,name=password_required,json=passwordRequired,proto3" json:"password_required,omitempty"`
@@ -379,8 +380,8 @@ func (*GcpIdentityPlatformConfigSignInEmail) Descriptor() ([]byte, []int) {
 }
 
 func (x *GcpIdentityPlatformConfigSignInEmail) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -395,9 +396,10 @@ func (x *GcpIdentityPlatformConfigSignInEmail) GetPasswordRequired() bool {
 // Phone-number sign-in settings.
 type GcpIdentityPlatformConfigSignInPhone struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whether phone sign-in is enabled. Sent explicitly, so setting this
-	// arm with enabled=false actively disables the method.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Whether phone sign-in is enabled. Required inside the arm: declaring
+	// the arm takes the method under management, and the switch says which
+	// way (false actively disables it).
+	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// Test phone numbers mapped to fixed verification codes (e.g.
 	// "+15555550100" -> "123456") — lets CI and reviewers exercise the
 	// phone flow without receiving real SMS. Never ship real numbers here.
@@ -437,8 +439,8 @@ func (*GcpIdentityPlatformConfigSignInPhone) Descriptor() ([]byte, []int) {
 }
 
 func (x *GcpIdentityPlatformConfigSignInPhone) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -453,9 +455,10 @@ func (x *GcpIdentityPlatformConfigSignInPhone) GetTestPhoneNumbers() map[string]
 // Anonymous sign-in settings.
 type GcpIdentityPlatformConfigSignInAnonymous struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whether anonymous (guest) sign-in is enabled. Sent explicitly, so
-	// setting this arm with enabled=false actively disables the method.
-	Enabled       bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Whether anonymous (guest) sign-in is enabled. Required inside the arm:
+	// declaring the arm takes the method under management, and the switch
+	// says which way (false actively disables it).
+	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -491,8 +494,8 @@ func (*GcpIdentityPlatformConfigSignInAnonymous) Descriptor() ([]byte, []int) {
 }
 
 func (x *GcpIdentityPlatformConfigSignInAnonymous) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1717,18 +1720,24 @@ const file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_rawDesc = "
 	"\x05email\x18\x01 \x01(\v2X.dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigSignInEmailR\x05email\x12{\n" +
 	"\fphone_number\x18\x02 \x01(\v2X.dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigSignInPhoneR\vphoneNumber\x12z\n" +
 	"\tanonymous\x18\x03 \x01(\v2\\.dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigSignInAnonymousR\tanonymous\x124\n" +
-	"\x16allow_duplicate_emails\x18\x04 \x01(\bR\x14allowDuplicateEmails\"m\n" +
-	"$GcpIdentityPlatformConfigSignInEmail\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12+\n" +
-	"\x11password_required\x18\x02 \x01(\bR\x10passwordRequired\"\xa4\x02\n" +
-	"$GcpIdentityPlatformConfigSignInPhone\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x9c\x01\n" +
+	"\x16allow_duplicate_emails\x18\x04 \x01(\bR\x14allowDuplicateEmails\"\x86\x01\n" +
+	"$GcpIdentityPlatformConfigSignInEmail\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x12+\n" +
+	"\x11password_required\x18\x02 \x01(\bR\x10passwordRequiredB\n" +
+	"\n" +
+	"\b_enabled\"\xbd\x02\n" +
+	"$GcpIdentityPlatformConfigSignInPhone\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x12\x9c\x01\n" +
 	"\x12test_phone_numbers\x18\x02 \x03(\v2n.dev.planton.gcp.gcpidentityplatformconfig.v1alpha1.GcpIdentityPlatformConfigSignInPhone.TestPhoneNumbersEntryR\x10testPhoneNumbers\x1aC\n" +
 	"\x15TestPhoneNumbersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"D\n" +
-	"(GcpIdentityPlatformConfigSignInAnonymous\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\"\x95\x04\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\n" +
+	"\n" +
+	"\b_enabled\"]\n" +
+	"(GcpIdentityPlatformConfigSignInAnonymous\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\x95\x04\n" +
 	"\x1cGcpIdentityPlatformConfigMfa\x12\xa4\x01\n" +
 	"\x05state\x18\x01 \x01(\tB\x8d\x01\xbaH\x89\x01\xba\x01\x85\x01\n" +
 	"\x0fvalid_mfa_state\x126mfa.state must be one of: DISABLED, ENABLED, MANDATORY\x1a:this == '' || this in ['DISABLED', 'ENABLED', 'MANDATORY']R\x05state\x12\xc1\x01\n" +
@@ -1905,6 +1914,9 @@ func file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
+	file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{}
 	file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_msgTypes[18].OneofWrappers = []any{}
 	file_catalog_gcp_gcpidentityplatformconfig_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{}

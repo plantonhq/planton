@@ -80,7 +80,9 @@ func serviceAccount(
 	// the engine; in the upload flow (public_key_data set) GCP never sees a
 	// private key at all.
 	var createdKey *serviceaccount.Key
-	if spec.UserManagedKey != nil {
+	// The block's switch (on by default once declared, filled by the platform
+	// before this runs) decides whether a key exists.
+	if spec.UserManagedKey != nil && spec.UserManagedKey.GetEnabled() {
 		keyArgs := &serviceaccount.KeyArgs{
 			ServiceAccountId: createdServiceAccount.Name,
 		}

@@ -168,6 +168,14 @@ var _ = ginkgo.Describe("AzureAksClusterSpec Validation Tests", func() {
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept add-on blocks declared and switched off", func() {
+			input := validResource()
+			input.Spec.KeyVaultSecretsProvider = &AzureAksClusterKeyVaultSecretsProvider{Enabled: proto.Bool(false), SecretRotationEnabled: true}
+			input.Spec.MonitorMetrics = &AzureAksClusterMonitorMetrics{Enabled: proto.Bool(false)}
+			input.Spec.ConfidentialComputing = &AzureAksClusterConfidentialComputing{Enabled: proto.Bool(false)}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept maintenance windows with schedules", func() {
 			input := validResource()
 			input.Spec.MaintenanceWindow = &AzureAksClusterMaintenanceWindow{

@@ -39,7 +39,7 @@ resource "azurerm_machine_learning_workspace" "main" {
   kind = lookup(local.kind_wire, var.spec.kind, null)
 
   dynamic "feature_store" {
-    for_each = var.spec.feature_store != null ? [var.spec.feature_store] : []
+    for_each = var.spec.feature_store != null && coalesce(var.spec.feature_store.enabled, true) ? [var.spec.feature_store] : []
     content {
       computer_spark_runtime_version = feature_store.value.computer_spark_runtime_version != "" ? feature_store.value.computer_spark_runtime_version : null
       offline_connection_name        = feature_store.value.offline_connection_name != "" ? feature_store.value.offline_connection_name : null

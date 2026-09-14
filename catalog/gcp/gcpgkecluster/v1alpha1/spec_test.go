@@ -6,6 +6,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 
 	"buf.build/go/protovalidate"
 	"github.com/plantonhq/planton/shared"
@@ -58,6 +59,17 @@ var _ = ginkgo.Describe("GcpGkeClusterSpec Custom Validation Tests", func() {
 		ginkgo.It("accepts a minimal regional cluster", func() {
 			err := protovalidate.Validate(newCluster(minimalSpec()))
 			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts logging switched off and refuses a logging block that names nothing", func() {
+			spec := minimalSpec()
+			spec.Logging = &GcpGkeClusterLogging{Enabled: proto.Bool(false)}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+
+			spec.Logging = &GcpGkeClusterLogging{}
+			err := protovalidate.Validate(newCluster(spec))
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("enabled: false"))
 		})
 
 		ginkgo.It("accepts a zonal location", func() {

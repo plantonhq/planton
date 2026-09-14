@@ -213,10 +213,12 @@ func (x *GcpServiceAccountSpec) GetDeletionPolicy() string {
 	return ""
 }
 
-// Configuration of a user-managed service account key. The message's
-// presence is the decision to create a key; every field is optional and
-// defaults to GCP's own defaults, so `user_managed_key: {}` creates the
-// classic 2048-bit RSA JSON key.
+// Configuration of a user-managed service account key. Declaring the
+// message is the decision to create a key; every field is optional and
+// defaults to GCP's own defaults, so `user_managed_key: { enabled: true }`
+// (or the bare block) creates the classic 2048-bit RSA JSON key, and
+// `enabled: false` keeps the key's settings in the manifest while no key
+// exists.
 type GcpServiceAccountUserManagedKey struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Algorithm used to generate the key:
@@ -259,8 +261,12 @@ type GcpServiceAccountUserManagedKey struct {
 	//	"DELETE"  -- the key is deleted on destroy
 	//	"PREVENT" -- destroy FAILS while this key exists
 	DeletionPolicy string `protobuf:"bytes,6,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Whether the key exists. Unset means yes: declaring the block has always
+	// meant creating a key, and this switch lets a manifest say the opposite
+	// out loud (the key is destroyed when it flips to false).
+	Enabled       *bool `protobuf:"varint,7,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpServiceAccountUserManagedKey) Reset() {
@@ -335,6 +341,13 @@ func (x *GcpServiceAccountUserManagedKey) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpServiceAccountUserManagedKey) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
+}
+
 var File_catalog_gcp_gcpserviceaccount_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpserviceaccount_v1alpha1_spec_proto_rawDesc = "" +
@@ -356,7 +369,7 @@ const file_catalog_gcp_gcpserviceaccount_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fdeletion_policy\x18\v \x01(\tB{\xbaHx\xba\x01u\n" +
 	"\x15valid_deletion_policy\x12/deletion_policy must be one of: DELETE, PREVENT\x1a+this == '' || this in ['DELETE', 'PREVENT']R\x0edeletionPolicy:\x81\x01\xbaH~\x1a|\n" +
 	"\x18org_roles_require_org_id\x12,org_id is required when org_iam_roles is set\x1a2size(this.org_iam_roles) == 0 || this.org_id != ''B\v\n" +
-	"\t_disabled\"\xb7\n" +
+	"\t_disabled\"\xec\n" +
 	"\n" +
 	"\x1fGcpServiceAccountUserManagedKey\x12\xba\x01\n" +
 	"\talgorithm\x18\x01 \x01(\tB\x9b\x01\xbaH\x97\x01\xba\x01\x93\x01\n" +
@@ -368,11 +381,14 @@ const file_catalog_gcp_gcpserviceaccount_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fpublic_key_data\x18\x04 \x01(\tR\rpublicKeyData\x12r\n" +
 	"\akeepers\x18\x05 \x03(\v2X.dev.planton.gcp.gcpserviceaccount.v1alpha1.GcpServiceAccountUserManagedKey.KeepersEntryR\akeepers\x12\xa8\x01\n" +
 	"\x0fdeletion_policy\x18\x06 \x01(\tB\x7f\xbaH|\xba\x01y\n" +
-	"\x19valid_key_deletion_policy\x12/deletion_policy must be one of: DELETE, PREVENT\x1a+this == '' || this in ['DELETE', 'PREVENT']R\x0edeletionPolicy\x1a:\n" +
+	"\x19valid_key_deletion_policy\x12/deletion_policy must be one of: DELETE, PREVENT\x1a+this == '' || this in ['DELETE', 'PREVENT']R\x0edeletionPolicy\x12'\n" +
+	"\aenabled\x18\a \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x1a:\n" +
 	"\fKeepersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xf7\x01\xbaH\xf3\x01\x1a\xf0\x01\n" +
-	"(public_key_data_conflicts_with_key_types\x12ipublic_key_data (upload flow) cannot be combined with private_key_type or public_key_type (generate flow)\x1aYthis.public_key_data == '' || (this.private_key_type == '' && this.public_key_type == '')B\xe7\x02\n" +
+	"(public_key_data_conflicts_with_key_types\x12ipublic_key_data (upload flow) cannot be combined with private_key_type or public_key_type (generate flow)\x1aYthis.public_key_data == '' || (this.private_key_type == '' && this.public_key_type == '')B\n" +
+	"\n" +
+	"\b_enabledB\xe7\x02\n" +
 	".com.dev.planton.gcp.gcpserviceaccount.v1alpha1B\tSpecProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpserviceaccount/v1alpha1;gcpserviceaccountv1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpserviceaccount.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpserviceaccount\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpserviceaccount\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpserviceaccount::V1alpha1b\x06proto3"
 
 var (
@@ -411,6 +427,7 @@ func file_catalog_gcp_gcpserviceaccount_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_gcp_gcpserviceaccount_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_gcp_gcpserviceaccount_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

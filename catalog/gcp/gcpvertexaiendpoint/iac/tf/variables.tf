@@ -42,6 +42,7 @@ variable "spec" {
     dedicated_endpoint_enabled = optional(bool, false)
 
     private_service_connect_config = optional(object({
+      enabled           = optional(bool)
       project_allowlist = optional(list(string), [])
       # PSC endpoints Vertex AI creates automatically in consumer
       # projects/networks. network arrives as a self-link from a

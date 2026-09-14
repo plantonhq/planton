@@ -9,6 +9,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestSuite(t *testing.T) {
@@ -54,6 +55,12 @@ var _ = ginkgo.Describe("GcpSubnetworkSpec", func() {
 
 	ginkgo.It("should accept a minimal valid spec", func() {
 		gomega.Expect(validator.Validate(minimal())).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept flow logs declared and switched off", func() {
+		target := minimal()
+		target.Spec.LogConfig = &GcpSubnetworkLogConfig{Enabled: proto.Bool(false), AggregationInterval: strPtr("INTERVAL_1_MIN")}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should accept a GKE-shaped subnet with secondary ranges and flow logs", func() {

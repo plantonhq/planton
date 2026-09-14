@@ -69,14 +69,14 @@ func identityPlatformConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gc
 		// caught, live-verified). The anonymous arm is NOT echoed when unset
 		// and is set only when the spec sets it.
 		emailArgs := &identityplatform.ConfigSignInEmailArgs{
-			Enabled: pulumi.Bool(spec.SignIn.Email != nil && spec.SignIn.Email.Enabled),
+			Enabled: pulumi.Bool(spec.SignIn.Email != nil && spec.SignIn.Email.GetEnabled()),
 		}
 		if spec.SignIn.Email != nil {
 			emailArgs.PasswordRequired = pulumi.BoolPtr(spec.SignIn.Email.PasswordRequired)
 		}
 		signInArgs.Email = emailArgs
 		phoneArgs := &identityplatform.ConfigSignInPhoneNumberArgs{
-			Enabled: pulumi.Bool(spec.SignIn.PhoneNumber != nil && spec.SignIn.PhoneNumber.Enabled),
+			Enabled: pulumi.Bool(spec.SignIn.PhoneNumber != nil && spec.SignIn.PhoneNumber.GetEnabled()),
 		}
 		if spec.SignIn.PhoneNumber != nil && len(spec.SignIn.PhoneNumber.TestPhoneNumbers) > 0 {
 			phoneArgs.TestPhoneNumbers = pulumi.ToStringMap(spec.SignIn.PhoneNumber.TestPhoneNumbers)
@@ -85,7 +85,7 @@ func identityPlatformConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gc
 		if spec.SignIn.Anonymous != nil {
 			signInArgs.Anonymous = &identityplatform.ConfigSignInAnonymousArgs{
 				// Explicit send — see the function comment.
-				Enabled: pulumi.Bool(spec.SignIn.Anonymous.Enabled),
+				Enabled: pulumi.Bool(spec.SignIn.Anonymous.GetEnabled()),
 			}
 		}
 		args.SignIn = signInArgs

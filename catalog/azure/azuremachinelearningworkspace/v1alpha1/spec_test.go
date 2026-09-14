@@ -76,6 +76,17 @@ var _ = ginkgo.Describe("AzureMachineLearningWorkspaceSpec Validation Tests", fu
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
+			ginkgo.It("should accept a feature_store block switched off on a DEFAULT workspace and refuse it on FEATURE_STORE", func() {
+				input := validResource()
+				input.Spec.FeatureStore = &AzureMachineLearningWorkspaceFeatureStore{Enabled: proto.Bool(false), ComputerSparkRuntimeVersion: "3.4"}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+
+				input.Spec.Kind = AzureMachineLearningWorkspaceKind_FEATURE_STORE
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("switch on"))
+			})
+
 			ginkgo.It("should accept CMK encryption with service-side encryption enabled", func() {
 				input := validResource()
 				input.Spec.Encryption = &AzureMachineLearningWorkspaceEncryption{

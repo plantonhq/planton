@@ -218,24 +218,28 @@ func workbenchInstance(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pro
 		gceSetup.ContainerImage = containerImageArgs
 	}
 
-	// Shielded VM posture (rootkit/bootkit protection).
-	if spec.ShieldedInstanceConfig != nil {
+	// Shielded VM posture (rootkit/bootkit protection). Each switch is
+	// presence-tracked: an unset switch is omitted so GCP's default holds,
+	// and an explicit value (true or false) is sent as authored.
+	if shielded := spec.ShieldedInstanceConfig; shielded != nil {
 		shieldedArgs := &workbench.InstanceGceSetupShieldedInstanceConfigArgs{}
-		if spec.ShieldedInstanceConfig.EnableSecureBoot {
-			shieldedArgs.EnableSecureBoot = pulumi.BoolPtr(true)
+		if shielded.EnableSecureBoot != nil {
+			shieldedArgs.EnableSecureBoot = pulumi.BoolPtr(shielded.GetEnableSecureBoot())
 		}
-		if spec.ShieldedInstanceConfig.EnableVtpm {
-			shieldedArgs.EnableVtpm = pulumi.BoolPtr(true)
+		if shielded.EnableVtpm != nil {
+			shieldedArgs.EnableVtpm = pulumi.BoolPtr(shielded.GetEnableVtpm())
 		}
-		if spec.ShieldedInstanceConfig.EnableIntegrityMonitoring {
-			shieldedArgs.EnableIntegrityMonitoring = pulumi.BoolPtr(true)
+		if shielded.EnableIntegrityMonitoring != nil {
+			shieldedArgs.EnableIntegrityMonitoring = pulumi.BoolPtr(shielded.GetEnableIntegrityMonitoring())
 		}
 		gceSetup.ShieldedInstanceConfig = shieldedArgs
 	}
 
 	// Confidential Computing (AMD SEV): guest memory encrypted in use.
-	// Requires an SEV-capable machine type (n2d family).
-	if spec.ConfidentialInstanceConfig != nil {
+	// Requires an SEV-capable machine type (n2d family). The block's switch
+	// (on by default once declared, filled by the platform before this runs)
+	// decides whether it renders.
+	if spec.ConfidentialInstanceConfig != nil && spec.ConfidentialInstanceConfig.GetEnabled() {
 		confidentialArgs := &workbench.InstanceGceSetupConfidentialInstanceConfigArgs{}
 		if spec.ConfidentialInstanceConfig.ConfidentialInstanceType != "" {
 			confidentialArgs.ConfidentialInstanceType = pulumi.StringPtr(spec.ConfidentialInstanceConfig.ConfidentialInstanceType)

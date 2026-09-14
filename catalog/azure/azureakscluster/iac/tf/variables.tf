@@ -279,6 +279,7 @@ variable "spec" {
       msi_auth_for_monitoring_enabled = optional(bool, false)
     }))
     key_vault_secrets_provider = optional(object({
+      enabled                  = optional(bool)
       secret_rotation_enabled  = optional(bool, false)
       secret_rotation_interval = optional(string)
     }))
@@ -287,6 +288,7 @@ variable "spec" {
       log_analytics_workspace_id = string
     }))
     monitor_metrics = optional(object({
+      enabled             = optional(bool)
       annotations_allowed = optional(string)
       labels_allowed      = optional(string)
     }))
@@ -300,6 +302,7 @@ variable "spec" {
       subnet_name = string
     }))
     confidential_computing = optional(object({
+      enabled                  = optional(bool)
       sgx_quote_helper_enabled = optional(bool, false)
     }))
     web_app_routing = optional(object({
