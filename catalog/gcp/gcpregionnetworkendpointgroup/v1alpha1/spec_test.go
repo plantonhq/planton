@@ -43,8 +43,10 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 			},
 			Spec: &GcpRegionNetworkEndpointGroupSpec{
 				Region: "us-central1",
-				CloudRun: &GcpRegionNetworkEndpointGroupCloudRun{
-					Service: litRef("my-service"),
+				ServerlessTarget: &GcpRegionNetworkEndpointGroupSpec_CloudRun{
+					CloudRun: &GcpRegionNetworkEndpointGroupCloudRun{
+						Service: litRef("my-service"),
+					},
 				},
 			},
 		}
@@ -58,25 +60,25 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 
 	ginkgo.It("should accept a Cloud Run NEG using url_mask instead of service", func() {
 		target := minimal()
-		target.Spec.CloudRun = &GcpRegionNetworkEndpointGroupCloudRun{
+		target.Spec.ServerlessTarget = &GcpRegionNetworkEndpointGroupSpec_CloudRun{CloudRun: &GcpRegionNetworkEndpointGroupCloudRun{
 			UrlMask: "<service>.example.com",
-		}
+		}}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should accept a Cloud Functions NEG", func() {
 		target := minimal()
-		target.Spec.CloudRun = nil
-		target.Spec.CloudFunction = &GcpRegionNetworkEndpointGroupCloudFunction{
+		target.Spec.ServerlessTarget = nil
+		target.Spec.ServerlessTarget = &GcpRegionNetworkEndpointGroupSpec_CloudFunction{CloudFunction: &GcpRegionNetworkEndpointGroupCloudFunction{
 			Function: litRef("my-func"),
-		}
+		}}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should accept an empty App Engine block (default app)", func() {
 		target := minimal()
-		target.Spec.CloudRun = nil
-		target.Spec.AppEngine = &GcpRegionNetworkEndpointGroupAppEngine{}
+		target.Spec.ServerlessTarget = nil
+		target.Spec.ServerlessTarget = &GcpRegionNetworkEndpointGroupSpec_AppEngine{AppEngine: &GcpRegionNetworkEndpointGroupAppEngine{}}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
@@ -90,7 +92,7 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 
 	ginkgo.It("should accept a PSC NEG with target service, network, and subnetwork", func() {
 		target := minimal()
-		target.Spec.CloudRun = nil
+		target.Spec.ServerlessTarget = nil
 		target.Spec.NetworkEndpointType = strPtr("PRIVATE_SERVICE_CONNECT")
 		target.Spec.PscTargetService = "asia-northeast3-cloudkms.googleapis.com"
 		target.Spec.Network = litRef("projects/p/global/networks/default")
@@ -101,7 +103,7 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 
 	ginkgo.It("should accept an INTERNET_FQDN_PORT NEG with network", func() {
 		target := minimal()
-		target.Spec.CloudRun = nil
+		target.Spec.ServerlessTarget = nil
 		target.Spec.NetworkEndpointType = strPtr("INTERNET_FQDN_PORT")
 		target.Spec.Network = litRef("projects/p/global/networks/default")
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
@@ -140,18 +142,18 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 
 	ginkgo.It("should reject a SERVERLESS NEG with no serverless block", func() {
 		target := minimal()
-		target.Spec.CloudRun = nil
+		target.Spec.ServerlessTarget = nil
 		err := validator.Validate(target)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 		gomega.Expect(strings.Contains(err.Error(), "exactly one")).To(gomega.BeTrue())
 	})
 
-	ginkgo.It("should reject a SERVERLESS NEG with two serverless blocks", func() {
+	ginkgo.It("carries exactly one serverless target by construction (setting a second arm replaces the first)", func() {
 		target := minimal()
-		target.Spec.AppEngine = &GcpRegionNetworkEndpointGroupAppEngine{}
-		err := validator.Validate(target)
-		gomega.Expect(err).To(gomega.HaveOccurred())
-		gomega.Expect(strings.Contains(err.Error(), "exactly one")).To(gomega.BeTrue())
+		target.Spec.ServerlessTarget = &GcpRegionNetworkEndpointGroupSpec_AppEngine{AppEngine: &GcpRegionNetworkEndpointGroupAppEngine{}}
+		gomega.Expect(target.Spec.GetCloudRun()).To(gomega.BeNil())
+		gomega.Expect(target.Spec.GetAppEngine()).ToNot(gomega.BeNil())
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should reject a serverless block on a PSC NEG", func() {
@@ -165,7 +167,7 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 
 	ginkgo.It("should reject a PSC NEG without psc_target_service", func() {
 		target := minimal()
-		target.Spec.CloudRun = nil
+		target.Spec.ServerlessTarget = nil
 		target.Spec.NetworkEndpointType = strPtr("PRIVATE_SERVICE_CONNECT")
 		err := validator.Validate(target)
 		gomega.Expect(err).To(gomega.HaveOccurred())
@@ -174,7 +176,7 @@ var _ = ginkgo.Describe("GcpRegionNetworkEndpointGroupSpec", func() {
 
 	ginkgo.It("should reject a cloud_run block with neither service nor url_mask", func() {
 		target := minimal()
-		target.Spec.CloudRun = &GcpRegionNetworkEndpointGroupCloudRun{}
+		target.Spec.ServerlessTarget = &GcpRegionNetworkEndpointGroupSpec_CloudRun{CloudRun: &GcpRegionNetworkEndpointGroupCloudRun{}}
 		err := validator.Validate(target)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 		gomega.Expect(strings.Contains(err.Error(), "service or url_mask")).To(gomega.BeTrue())

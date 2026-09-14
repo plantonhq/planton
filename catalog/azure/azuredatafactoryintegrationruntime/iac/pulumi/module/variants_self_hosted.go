@@ -15,7 +15,7 @@ func createSelfHosted(
 	spec *azuredatafactoryintegrationruntimev1alpha1.AzureDataFactoryIntegrationRuntimeSpec,
 	azureProvider pulumi.ProviderResource,
 ) (*runtimeOutputs, error) {
-	selfHosted := spec.SelfHosted
+	selfHosted := spec.GetSelfHosted()
 
 	args := &datafactory.IntegrationRuntimeSelfHostedArgs{
 		Name:                                     pulumi.String(spec.Name),

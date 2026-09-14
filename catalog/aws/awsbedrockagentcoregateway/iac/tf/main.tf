@@ -493,9 +493,9 @@ resource "aws_bedrockagentcore_gateway_target" "this" {
     }
   }
 
-  # How the GATEWAY authenticates to this backend (at most one arm,
-  # spec-validated). jwt_passthrough is an empty block at the provider --
-  # presence IS the configuration.
+  # How the GATEWAY authenticates to this backend: the credentials oneof
+  # carries at most one arm by construction. jwt_passthrough is an empty
+  # block at the provider -- choosing the arm IS the configuration.
   dynamic "credential_provider_configuration" {
     for_each = try(each.value.credentials, null) != null ? [each.value.credentials] : []
     content {
@@ -523,7 +523,7 @@ resource "aws_bedrockagentcore_gateway_target" "this" {
         }
       }
       dynamic "jwt_passthrough" {
-        for_each = try(credential_provider_configuration.value.jwt_passthrough, false) ? [true] : []
+        for_each = try(credential_provider_configuration.value.jwt_passthrough, null) != null ? [true] : []
         content {}
       }
       dynamic "oauth" {
@@ -539,9 +539,10 @@ resource "aws_bedrockagentcore_gateway_target" "this" {
     }
   }
 
-  # Caller metadata propagation (max 10 entries each).
+  # Caller metadata propagation (max 10 entries each); the block's own
+  # switch (on by default once declared) decides whether it renders.
   dynamic "metadata_configuration" {
-    for_each = try(each.value.metadata, null) != null ? [each.value.metadata] : []
+    for_each = try(each.value.metadata, null) != null && coalesce(try(each.value.metadata.enabled, null), true) ? [each.value.metadata] : []
     content {
       allowed_query_parameters = length(try(metadata_configuration.value.allowed_query_parameters, [])) > 0 ? metadata_configuration.value.allowed_query_parameters : null
       allowed_request_headers  = length(try(metadata_configuration.value.allowed_request_headers, [])) > 0 ? metadata_configuration.value.allowed_request_headers : null

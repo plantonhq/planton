@@ -87,60 +87,57 @@ message AzureDataFactoryDatasetSpec {
   // behavior. Omit for the factory root.
   string folder = 8;
 
-  // Azure Blob Storage files addressed by a flat path + filename
-  // pair. Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetAzureBlob azure_blob = 9;
+  // The dataset's variant: exactly one of the arms below, and the arm
+  // determines the dataset type. Choosing an arm is the whole statement for
+  // the variants whose settings are all optional (an HTTP file, a Cosmos DB
+  // collection with its default name, a MySQL or PostgreSQL table named
+  // elsewhere), so a variant with nothing inside is a valid, complete choice.
+  oneof variant {
+    option (buf.validate.oneof).required = true;
 
-  // An Azure SQL Database table. The one variant that references its
-  // linked service by ARM ID (same factory enforced). Set exactly one
-  // variant block on this spec.
-  AzureDataFactoryDatasetAzureSqlTable azure_sql_table = 10;
+    // Azure Blob Storage files addressed by a flat path + filename
+    // pair.
+    AzureDataFactoryDatasetAzureBlob azure_blob = 9;
 
-  // Opaque binary files (no column structure). Set exactly one
-  // variant block on this spec.
-  AzureDataFactoryDatasetBinary binary = 11;
+    // An Azure SQL Database table. The one variant that references its
+    // linked service by ARM ID (same factory enforced).
+    AzureDataFactoryDatasetAzureSqlTable azure_sql_table = 10;
 
-  // An Azure Cosmos DB (SQL API) collection. Set exactly one variant
-  // block on this spec.
-  AzureDataFactoryDatasetCosmosdbSqlapi cosmosdb_sqlapi = 12;
+    // Opaque binary files (no column structure).
+    AzureDataFactoryDatasetBinary binary = 11;
 
-  // Any other dataset type, as raw type-properties JSON -- the escape
-  // hatch for the many Data Factory dataset types azurerm has no
-  // first-class resource for. Set exactly one variant block on this
-  // spec.
-  AzureDataFactoryDatasetCustom custom = 13;
+    // An Azure Cosmos DB (SQL API) collection.
+    AzureDataFactoryDatasetCosmosdbSqlapi cosmosdb_sqlapi = 12;
 
-  // Delimited text (CSV) files. Set exactly one variant block on this
-  // spec.
-  AzureDataFactoryDatasetDelimitedText delimited_text = 14;
+    // Any other dataset type, as raw type-properties JSON -- the escape
+    // hatch for the many Data Factory dataset types azurerm has no
+    // first-class resource for.
+    AzureDataFactoryDatasetCustom custom = 13;
 
-  // A file served by an HTTP endpoint (through a web linked service).
-  // Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetHttp http = 15;
+    // Delimited text (CSV) files.
+    AzureDataFactoryDatasetDelimitedText delimited_text = 14;
 
-  // JSON files. Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetJson json = 16;
+    // A file served by an HTTP endpoint (through a web linked service).
+    AzureDataFactoryDatasetHttp http = 15;
 
-  // A MySQL table. Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetMysql mysql = 17;
+    // JSON files.
+    AzureDataFactoryDatasetJson json = 16;
 
-  // Parquet files. Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetParquet parquet = 18;
+    // A MySQL table.
+    AzureDataFactoryDatasetMysql mysql = 17;
 
-  // A PostgreSQL table. Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetPostgresql postgresql = 19;
+    // Parquet files.
+    AzureDataFactoryDatasetParquet parquet = 18;
 
-  // A Snowflake table. Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetSnowflake snowflake = 20;
+    // A PostgreSQL table.
+    AzureDataFactoryDatasetPostgresql postgresql = 19;
 
-  // A SQL Server table. Set exactly one variant block on this spec.
-  AzureDataFactoryDatasetSqlServerTable sql_server_table = 21;
+    // A Snowflake table.
+    AzureDataFactoryDatasetSnowflake snowflake = 20;
 
-  option (buf.validate.message).cel = {
-    id: "azure_data_factory_dataset_exactly_one_variant"
-    message: "Set exactly one dataset variant block -- the variant determines the dataset type"
-    expression: "(has(this.azure_blob) ? 1 : 0) + (has(this.azure_sql_table) ? 1 : 0) + (has(this.binary) ? 1 : 0) + (has(this.cosmosdb_sqlapi) ? 1 : 0) + (has(this.custom) ? 1 : 0) + (has(this.delimited_text) ? 1 : 0) + (has(this.http) ? 1 : 0) + (has(this.json) ? 1 : 0) + (has(this.mysql) ? 1 : 0) + (has(this.parquet) ? 1 : 0) + (has(this.postgresql) ? 1 : 0) + (has(this.snowflake) ? 1 : 0) + (has(this.sql_server_table) ? 1 : 0) == 1"
-  };
+    // A SQL Server table.
+    AzureDataFactoryDatasetSqlServerTable sql_server_table = 21;
+  }
 
   // Eleven variants wire their linked service through the shared
   // name field; the other two carry their own reference.

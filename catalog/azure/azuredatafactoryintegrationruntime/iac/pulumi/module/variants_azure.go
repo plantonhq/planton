@@ -15,7 +15,7 @@ func createAzure(
 	spec *azuredatafactoryintegrationruntimev1alpha1.AzureDataFactoryIntegrationRuntimeSpec,
 	azureProvider pulumi.ProviderResource,
 ) (*runtimeOutputs, error) {
-	azure := spec.Azure
+	azure := spec.GetAzure()
 
 	// cleanup_enabled platform-defaults to TRUE (tear the cluster down
 	// after every run) -- sent explicitly so the manifest's intent is

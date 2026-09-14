@@ -83,44 +83,45 @@ func regionNetworkEndpointGroup(ctx *pulumi.Context, locals *Locals, gcpProvider
 		}
 	}
 
-	// Exactly one serverless block is set for a SERVERLESS NEG (enforced by the
-	// spec's CEL). cloud_run.service is a resolved string (reference or literal
-	// Cloud Run service name).
-	if spec.CloudRun != nil {
+	// The serverless target is a oneof, so at most one arm is set by
+	// construction and a SERVERLESS NEG carries exactly one (the spec's CEL).
+	// cloud_run.service is a resolved string (reference or literal Cloud Run
+	// service name).
+	if spec.GetCloudRun() != nil {
 		cloudRun := &compute.RegionNetworkEndpointGroupCloudRunArgs{}
-		if spec.CloudRun.Service.GetValue() != "" {
-			cloudRun.Service = pulumi.String(spec.CloudRun.Service.GetValue())
+		if spec.GetCloudRun().Service.GetValue() != "" {
+			cloudRun.Service = pulumi.String(spec.GetCloudRun().Service.GetValue())
 		}
-		if spec.CloudRun.Tag != "" {
-			cloudRun.Tag = pulumi.String(spec.CloudRun.Tag)
+		if spec.GetCloudRun().Tag != "" {
+			cloudRun.Tag = pulumi.String(spec.GetCloudRun().Tag)
 		}
-		if spec.CloudRun.UrlMask != "" {
-			cloudRun.UrlMask = pulumi.String(spec.CloudRun.UrlMask)
+		if spec.GetCloudRun().UrlMask != "" {
+			cloudRun.UrlMask = pulumi.String(spec.GetCloudRun().UrlMask)
 		}
 		args.CloudRun = cloudRun
 	}
-	if spec.CloudFunction != nil {
+	if spec.GetCloudFunction() != nil {
 		cloudFunction := &compute.RegionNetworkEndpointGroupCloudFunctionArgs{}
-		if spec.CloudFunction.Function.GetValue() != "" {
-			cloudFunction.Function = pulumi.String(spec.CloudFunction.Function.GetValue())
+		if spec.GetCloudFunction().Function.GetValue() != "" {
+			cloudFunction.Function = pulumi.String(spec.GetCloudFunction().Function.GetValue())
 		}
-		if spec.CloudFunction.UrlMask != "" {
-			cloudFunction.UrlMask = pulumi.String(spec.CloudFunction.UrlMask)
+		if spec.GetCloudFunction().UrlMask != "" {
+			cloudFunction.UrlMask = pulumi.String(spec.GetCloudFunction().UrlMask)
 		}
 		args.CloudFunction = cloudFunction
 	}
-	if spec.AppEngine != nil {
+	if spec.GetAppEngine() != nil {
 		// The App Engine block may be empty (routes to the default app), so it
 		// is always emitted when present even with all sub-fields unset.
 		appEngine := &compute.RegionNetworkEndpointGroupAppEngineArgs{}
-		if spec.AppEngine.Service != "" {
-			appEngine.Service = pulumi.String(spec.AppEngine.Service)
+		if spec.GetAppEngine().Service != "" {
+			appEngine.Service = pulumi.String(spec.GetAppEngine().Service)
 		}
-		if spec.AppEngine.Version != "" {
-			appEngine.Version = pulumi.String(spec.AppEngine.Version)
+		if spec.GetAppEngine().Version != "" {
+			appEngine.Version = pulumi.String(spec.GetAppEngine().Version)
 		}
-		if spec.AppEngine.UrlMask != "" {
-			appEngine.UrlMask = pulumi.String(spec.AppEngine.UrlMask)
+		if spec.GetAppEngine().UrlMask != "" {
+			appEngine.UrlMask = pulumi.String(spec.GetAppEngine().UrlMask)
 		}
 		args.AppEngine = appEngine
 	}

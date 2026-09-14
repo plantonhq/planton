@@ -2090,22 +2090,22 @@ func (x *AwsBedrockAgentCoreGatewaySchemaS3) GetBucketOwnerAccountId() string {
 }
 
 // AwsBedrockAgentCoreGatewayTargetCredentials is how the gateway
-// authenticates to the backend - at most one arm (AWS's five credential
-// provider types).
+// authenticates to the backend: one of AWS's five credential provider
+// types, or none at all (omit the block for the gateway's own IAM role
+// without SigV4 service signing). Choosing an arm is the whole statement
+// for the arms that carry no settings (the caller's or the gateway's IAM
+// identity without a signing service, and the JWT pass-through), so an arm
+// with nothing inside is a valid, complete choice.
 type AwsBedrockAgentCoreGatewayTargetCredentials struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Send an API key from an AgentCore Identity api-key credential
-	// provider.
-	ApiKey *AwsBedrockAgentCoreGatewayApiKeyCredentials `protobuf:"bytes,1,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
-	// Forward the CALLER's own IAM credentials to the backend (SigV4).
-	CallerIamCredentials *AwsBedrockAgentCoreGatewaySigv4Credentials `protobuf:"bytes,2,opt,name=caller_iam_credentials,json=callerIamCredentials,proto3" json:"caller_iam_credentials,omitempty"`
-	// Sign requests with the GATEWAY's IAM role (SigV4).
-	GatewayIamRole *AwsBedrockAgentCoreGatewaySigv4Credentials `protobuf:"bytes,3,opt,name=gateway_iam_role,json=gatewayIamRole,proto3" json:"gateway_iam_role,omitempty"`
-	// Pass the caller's inbound JWT straight through to the backend.
-	JwtPassthrough bool `protobuf:"varint,4,opt,name=jwt_passthrough,json=jwtPassthrough,proto3" json:"jwt_passthrough,omitempty"`
-	// Obtain an OAuth token from an AgentCore Identity oauth2 credential
-	// provider.
-	Oauth         *AwsBedrockAgentCoreGatewayOauthCredentials `protobuf:"bytes,5,opt,name=oauth,proto3" json:"oauth,omitempty"`
+	// Types that are valid to be assigned to Provider:
+	//
+	//	*AwsBedrockAgentCoreGatewayTargetCredentials_ApiKey
+	//	*AwsBedrockAgentCoreGatewayTargetCredentials_CallerIamCredentials
+	//	*AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole
+	//	*AwsBedrockAgentCoreGatewayTargetCredentials_JwtPassthrough
+	//	*AwsBedrockAgentCoreGatewayTargetCredentials_Oauth
+	Provider      isAwsBedrockAgentCoreGatewayTargetCredentials_Provider `protobuf_oneof:"provider"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2140,39 +2140,141 @@ func (*AwsBedrockAgentCoreGatewayTargetCredentials) Descriptor() ([]byte, []int)
 	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
+func (x *AwsBedrockAgentCoreGatewayTargetCredentials) GetProvider() isAwsBedrockAgentCoreGatewayTargetCredentials_Provider {
+	if x != nil {
+		return x.Provider
+	}
+	return nil
+}
+
 func (x *AwsBedrockAgentCoreGatewayTargetCredentials) GetApiKey() *AwsBedrockAgentCoreGatewayApiKeyCredentials {
 	if x != nil {
-		return x.ApiKey
+		if x, ok := x.Provider.(*AwsBedrockAgentCoreGatewayTargetCredentials_ApiKey); ok {
+			return x.ApiKey
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockAgentCoreGatewayTargetCredentials) GetCallerIamCredentials() *AwsBedrockAgentCoreGatewaySigv4Credentials {
 	if x != nil {
-		return x.CallerIamCredentials
+		if x, ok := x.Provider.(*AwsBedrockAgentCoreGatewayTargetCredentials_CallerIamCredentials); ok {
+			return x.CallerIamCredentials
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockAgentCoreGatewayTargetCredentials) GetGatewayIamRole() *AwsBedrockAgentCoreGatewaySigv4Credentials {
 	if x != nil {
-		return x.GatewayIamRole
+		if x, ok := x.Provider.(*AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole); ok {
+			return x.GatewayIamRole
+		}
 	}
 	return nil
 }
 
-func (x *AwsBedrockAgentCoreGatewayTargetCredentials) GetJwtPassthrough() bool {
+func (x *AwsBedrockAgentCoreGatewayTargetCredentials) GetJwtPassthrough() *AwsBedrockAgentCoreGatewayJwtPassthroughCredentials {
 	if x != nil {
-		return x.JwtPassthrough
+		if x, ok := x.Provider.(*AwsBedrockAgentCoreGatewayTargetCredentials_JwtPassthrough); ok {
+			return x.JwtPassthrough
+		}
 	}
-	return false
+	return nil
 }
 
 func (x *AwsBedrockAgentCoreGatewayTargetCredentials) GetOauth() *AwsBedrockAgentCoreGatewayOauthCredentials {
 	if x != nil {
-		return x.Oauth
+		if x, ok := x.Provider.(*AwsBedrockAgentCoreGatewayTargetCredentials_Oauth); ok {
+			return x.Oauth
+		}
 	}
 	return nil
+}
+
+type isAwsBedrockAgentCoreGatewayTargetCredentials_Provider interface {
+	isAwsBedrockAgentCoreGatewayTargetCredentials_Provider()
+}
+
+type AwsBedrockAgentCoreGatewayTargetCredentials_ApiKey struct {
+	// Send an API key from an AgentCore Identity api-key credential
+	// provider.
+	ApiKey *AwsBedrockAgentCoreGatewayApiKeyCredentials `protobuf:"bytes,1,opt,name=api_key,json=apiKey,proto3,oneof"`
+}
+
+type AwsBedrockAgentCoreGatewayTargetCredentials_CallerIamCredentials struct {
+	// Forward the CALLER's own IAM credentials to the backend (SigV4).
+	CallerIamCredentials *AwsBedrockAgentCoreGatewaySigv4Credentials `protobuf:"bytes,2,opt,name=caller_iam_credentials,json=callerIamCredentials,proto3,oneof"`
+}
+
+type AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole struct {
+	// Sign requests with the GATEWAY's IAM role (SigV4).
+	GatewayIamRole *AwsBedrockAgentCoreGatewaySigv4Credentials `protobuf:"bytes,3,opt,name=gateway_iam_role,json=gatewayIamRole,proto3,oneof"`
+}
+
+type AwsBedrockAgentCoreGatewayTargetCredentials_JwtPassthrough struct {
+	// Pass the caller's inbound JWT straight through to the backend.
+	JwtPassthrough *AwsBedrockAgentCoreGatewayJwtPassthroughCredentials `protobuf:"bytes,4,opt,name=jwt_passthrough,json=jwtPassthrough,proto3,oneof"`
+}
+
+type AwsBedrockAgentCoreGatewayTargetCredentials_Oauth struct {
+	// Obtain an OAuth token from an AgentCore Identity oauth2 credential
+	// provider.
+	Oauth *AwsBedrockAgentCoreGatewayOauthCredentials `protobuf:"bytes,5,opt,name=oauth,proto3,oneof"`
+}
+
+func (*AwsBedrockAgentCoreGatewayTargetCredentials_ApiKey) isAwsBedrockAgentCoreGatewayTargetCredentials_Provider() {
+}
+
+func (*AwsBedrockAgentCoreGatewayTargetCredentials_CallerIamCredentials) isAwsBedrockAgentCoreGatewayTargetCredentials_Provider() {
+}
+
+func (*AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole) isAwsBedrockAgentCoreGatewayTargetCredentials_Provider() {
+}
+
+func (*AwsBedrockAgentCoreGatewayTargetCredentials_JwtPassthrough) isAwsBedrockAgentCoreGatewayTargetCredentials_Provider() {
+}
+
+func (*AwsBedrockAgentCoreGatewayTargetCredentials_Oauth) isAwsBedrockAgentCoreGatewayTargetCredentials_Provider() {
+}
+
+// AwsBedrockAgentCoreGatewayJwtPassthroughCredentials passes the caller's
+// inbound JWT straight through to the backend. It carries no settings;
+// choosing it is the configuration, as it is at the provider.
+type AwsBedrockAgentCoreGatewayJwtPassthroughCredentials struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AwsBedrockAgentCoreGatewayJwtPassthroughCredentials) Reset() {
+	*x = AwsBedrockAgentCoreGatewayJwtPassthroughCredentials{}
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AwsBedrockAgentCoreGatewayJwtPassthroughCredentials) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AwsBedrockAgentCoreGatewayJwtPassthroughCredentials) ProtoMessage() {}
+
+func (x *AwsBedrockAgentCoreGatewayJwtPassthroughCredentials) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AwsBedrockAgentCoreGatewayJwtPassthroughCredentials.ProtoReflect.Descriptor instead.
+func (*AwsBedrockAgentCoreGatewayJwtPassthroughCredentials) Descriptor() ([]byte, []int) {
+	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
 }
 
 // AwsBedrockAgentCoreGatewayApiKeyCredentials sends an API key with each
@@ -2195,7 +2297,7 @@ type AwsBedrockAgentCoreGatewayApiKeyCredentials struct {
 
 func (x *AwsBedrockAgentCoreGatewayApiKeyCredentials) Reset() {
 	*x = AwsBedrockAgentCoreGatewayApiKeyCredentials{}
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2207,7 +2309,7 @@ func (x *AwsBedrockAgentCoreGatewayApiKeyCredentials) String() string {
 func (*AwsBedrockAgentCoreGatewayApiKeyCredentials) ProtoMessage() {}
 
 func (x *AwsBedrockAgentCoreGatewayApiKeyCredentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2220,7 +2322,7 @@ func (x *AwsBedrockAgentCoreGatewayApiKeyCredentials) ProtoReflect() protoreflec
 
 // Deprecated: Use AwsBedrockAgentCoreGatewayApiKeyCredentials.ProtoReflect.Descriptor instead.
 func (*AwsBedrockAgentCoreGatewayApiKeyCredentials) Descriptor() ([]byte, []int) {
-	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
+	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *AwsBedrockAgentCoreGatewayApiKeyCredentials) GetProviderArn() *v1.StringValueOrRef {
@@ -2269,7 +2371,7 @@ type AwsBedrockAgentCoreGatewaySigv4Credentials struct {
 
 func (x *AwsBedrockAgentCoreGatewaySigv4Credentials) Reset() {
 	*x = AwsBedrockAgentCoreGatewaySigv4Credentials{}
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2281,7 +2383,7 @@ func (x *AwsBedrockAgentCoreGatewaySigv4Credentials) String() string {
 func (*AwsBedrockAgentCoreGatewaySigv4Credentials) ProtoMessage() {}
 
 func (x *AwsBedrockAgentCoreGatewaySigv4Credentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2294,7 +2396,7 @@ func (x *AwsBedrockAgentCoreGatewaySigv4Credentials) ProtoReflect() protoreflect
 
 // Deprecated: Use AwsBedrockAgentCoreGatewaySigv4Credentials.ProtoReflect.Descriptor instead.
 func (*AwsBedrockAgentCoreGatewaySigv4Credentials) Descriptor() ([]byte, []int) {
-	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
+	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *AwsBedrockAgentCoreGatewaySigv4Credentials) GetService() string {
@@ -2335,7 +2437,7 @@ type AwsBedrockAgentCoreGatewayOauthCredentials struct {
 
 func (x *AwsBedrockAgentCoreGatewayOauthCredentials) Reset() {
 	*x = AwsBedrockAgentCoreGatewayOauthCredentials{}
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2347,7 +2449,7 @@ func (x *AwsBedrockAgentCoreGatewayOauthCredentials) String() string {
 func (*AwsBedrockAgentCoreGatewayOauthCredentials) ProtoMessage() {}
 
 func (x *AwsBedrockAgentCoreGatewayOauthCredentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2360,7 +2462,7 @@ func (x *AwsBedrockAgentCoreGatewayOauthCredentials) ProtoReflect() protoreflect
 
 // Deprecated: Use AwsBedrockAgentCoreGatewayOauthCredentials.ProtoReflect.Descriptor instead.
 func (*AwsBedrockAgentCoreGatewayOauthCredentials) Descriptor() ([]byte, []int) {
-	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
+	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *AwsBedrockAgentCoreGatewayOauthCredentials) GetProviderArn() *v1.StringValueOrRef {
@@ -2400,6 +2502,8 @@ func (x *AwsBedrockAgentCoreGatewayOauthCredentials) GetCustomParameters() map[s
 
 // AwsBedrockAgentCoreGatewayTargetMetadata controls which caller
 // metadata propagates to the backend and back (max 10 entries each).
+// Declaring the block turns propagation on for the listed entries;
+// `enabled: false` keeps the lists in the manifest while switching it off.
 type AwsBedrockAgentCoreGatewayTargetMetadata struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// URL query parameters propagated from the caller to the backend.
@@ -2408,13 +2512,17 @@ type AwsBedrockAgentCoreGatewayTargetMetadata struct {
 	AllowedRequestHeaders []string `protobuf:"bytes,2,rep,name=allowed_request_headers,json=allowedRequestHeaders,proto3" json:"allowed_request_headers,omitempty"`
 	// HTTP headers propagated from the backend response to the caller.
 	AllowedResponseHeaders []string `protobuf:"bytes,3,rep,name=allowed_response_headers,json=allowedResponseHeaders,proto3" json:"allowed_response_headers,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	// Whether metadata propagation is on. Unset means on: declaring the block
+	// has always meant propagating, and this switch lets a manifest say the
+	// opposite out loud.
+	Enabled       *bool `protobuf:"varint,4,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AwsBedrockAgentCoreGatewayTargetMetadata) Reset() {
 	*x = AwsBedrockAgentCoreGatewayTargetMetadata{}
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2426,7 +2534,7 @@ func (x *AwsBedrockAgentCoreGatewayTargetMetadata) String() string {
 func (*AwsBedrockAgentCoreGatewayTargetMetadata) ProtoMessage() {}
 
 func (x *AwsBedrockAgentCoreGatewayTargetMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2439,7 +2547,7 @@ func (x *AwsBedrockAgentCoreGatewayTargetMetadata) ProtoReflect() protoreflect.M
 
 // Deprecated: Use AwsBedrockAgentCoreGatewayTargetMetadata.ProtoReflect.Descriptor instead.
 func (*AwsBedrockAgentCoreGatewayTargetMetadata) Descriptor() ([]byte, []int) {
-	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
+	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *AwsBedrockAgentCoreGatewayTargetMetadata) GetAllowedQueryParameters() []string {
@@ -2461,6 +2569,13 @@ func (x *AwsBedrockAgentCoreGatewayTargetMetadata) GetAllowedResponseHeaders() [
 		return x.AllowedResponseHeaders
 	}
 	return nil
+}
+
+func (x *AwsBedrockAgentCoreGatewayTargetMetadata) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 var File_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto protoreflect.FileDescriptor
@@ -2647,14 +2762,16 @@ const file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDesc = 
 	"\x19schema_source_exactly_one\x12'set exactly one of inline_payload or s3\x1a+(this.inline_payload != '') != has(this.s3)\"\x8d\x01\n" +
 	"\"AwsBedrockAgentCoreGatewaySchemaS3\x12\x19\n" +
 	"\x03uri\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03uri\x12L\n" +
-	"\x17bucket_owner_account_id\x18\x02 \x01(\tB\x15\xbaH\x12\xd8\x01\x01r\r2\v^[0-9]{12}$R\x14bucketOwnerAccountId\"\xa4\a\n" +
-	"+AwsBedrockAgentCoreGatewayTargetCredentials\x12y\n" +
-	"\aapi_key\x18\x01 \x01(\v2`.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentialsR\x06apiKey\x12\x95\x01\n" +
-	"\x16caller_iam_credentials\x18\x02 \x01(\v2_.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4CredentialsR\x14callerIamCredentials\x12\x89\x01\n" +
-	"\x10gateway_iam_role\x18\x03 \x01(\v2_.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4CredentialsR\x0egatewayIamRole\x12'\n" +
-	"\x0fjwt_passthrough\x18\x04 \x01(\bR\x0ejwtPassthrough\x12u\n" +
-	"\x05oauth\x18\x05 \x01(\v2_.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentialsR\x05oauth:\xb5\x02\xbaH\xb1\x02\x1a\xae\x02\n" +
-	"\x17credentials_at_most_one\x12_set at most one of api_key, caller_iam_credentials, gateway_iam_role, jwt_passthrough, or oauth\x1a\xb1\x01(has(this.api_key) ? 1 : 0) + (has(this.caller_iam_credentials) ? 1 : 0) + (has(this.gateway_iam_role) ? 1 : 0) + (this.jwt_passthrough ? 1 : 0) + (has(this.oauth) ? 1 : 0) <= 1\"\xe6\x03\n" +
+	"\x17bucket_owner_account_id\x18\x02 \x01(\tB\x15\xbaH\x12\xd8\x01\x01r\r2\v^[0-9]{12}$R\x14bucketOwnerAccountId\"\xed\x05\n" +
+	"+AwsBedrockAgentCoreGatewayTargetCredentials\x12{\n" +
+	"\aapi_key\x18\x01 \x01(\v2`.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentialsH\x00R\x06apiKey\x12\x97\x01\n" +
+	"\x16caller_iam_credentials\x18\x02 \x01(\v2_.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4CredentialsH\x00R\x14callerIamCredentials\x12\x8b\x01\n" +
+	"\x10gateway_iam_role\x18\x03 \x01(\v2_.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4CredentialsH\x00R\x0egatewayIamRole\x12\x93\x01\n" +
+	"\x0fjwt_passthrough\x18\x04 \x01(\v2h.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayJwtPassthroughCredentialsH\x00R\x0ejwtPassthrough\x12w\n" +
+	"\x05oauth\x18\x05 \x01(\v2_.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentialsH\x00R\x05oauthB\n" +
+	"\n" +
+	"\bprovider\"5\n" +
+	"3AwsBedrockAgentCoreGatewayJwtPassthroughCredentials\"\xe6\x03\n" +
 	"+AwsBedrockAgentCoreGatewayApiKeyCredentials\x12]\n" +
 	"\fprovider_arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\vproviderArn\x12\xee\x01\n" +
 	"\x13credential_location\x18\x02 \x01(\tB\xbc\x01\xbaH\x1e\xd8\x01\x01r\x19R\x06HEADERR\x0fQUERY_PARAMETER\xaa\xa6\x1d\x96\x01a transport-position enum (HEADER or QUERY_PARAMETER), never credential material -- the key itself lives in the referenced AgentCore Identity providerR\x12credentialLocation\x12:\n" +
@@ -2674,14 +2791,17 @@ const file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDesc = 
 	"\x15CustomParametersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xbf\x01\xbaH\xbb\x01\x1a\xb8\x01\n" +
-	"&authorization_code_requires_return_url\x12Ddefault_return_url is required when grant_type is AUTHORIZATION_CODE\x1aHthis.grant_type != 'AUTHORIZATION_CODE' || this.default_return_url != ''\"\x86\x02\n" +
+	"&authorization_code_requires_return_url\x12Ddefault_return_url is required when grant_type is AUTHORIZATION_CODE\x1aHthis.grant_type != 'AUTHORIZATION_CODE' || this.default_return_url != ''\"\xbb\x02\n" +
 	"(AwsBedrockAgentCoreGatewayTargetMetadata\x12H\n" +
 	"\x18allowed_query_parameters\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\x10\n" +
 	"\"\x04r\x02\x10\x01R\x16allowedQueryParameters\x12F\n" +
 	"\x17allowed_request_headers\x18\x02 \x03(\tB\x0e\xbaH\v\x92\x01\b\x10\n" +
 	"\"\x04r\x02\x10\x01R\x15allowedRequestHeaders\x12H\n" +
 	"\x18allowed_response_headers\x18\x03 \x03(\tB\x0e\xbaH\v\x92\x01\b\x10\n" +
-	"\"\x04r\x02\x10\x01R\x16allowedResponseHeadersB\xa6\x03\n" +
+	"\"\x04r\x02\x10\x01R\x16allowedResponseHeaders\x12'\n" +
+	"\aenabled\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabledB\xa6\x03\n" +
 	"7com.dev.planton.aws.awsbedrockagentcoregateway.v1alpha1B\tSpecProtoP\x01Zogithub.com/plantonhq/planton/catalog/aws/awsbedrockagentcoregateway/v1alpha1;awsbedrockagentcoregatewayv1alpha1\xa2\x02\x04DPAA\xaa\x023Dev.Planton.Aws.Awsbedrockagentcoregateway.V1alpha1\xca\x023Dev\\Planton\\Aws\\Awsbedrockagentcoregateway\\V1alpha1\xe2\x02?Dev\\Planton\\Aws\\Awsbedrockagentcoregateway\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Aws::Awsbedrockagentcoregateway::V1alpha1b\x06proto3"
 
 var (
@@ -2696,49 +2816,50 @@ func file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescGZIP
 	return file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
+var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
 var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_goTypes = []any{
-	(*AwsBedrockAgentCoreGatewaySpec)(nil),                    // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec
-	(*AwsBedrockAgentCoreGatewayJwtAuthorizer)(nil),           // 1: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayJwtAuthorizer
-	(*AwsBedrockAgentCoreGatewayAllowedWorkloads)(nil),        // 2: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayAllowedWorkloads
-	(*AwsBedrockAgentCoreGatewayCustomClaim)(nil),             // 3: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayCustomClaim
-	(*AwsBedrockAgentCoreGatewayPrivateEndpoint)(nil),         // 4: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpoint
-	(*AwsBedrockAgentCoreGatewayManagedVpcEndpoint)(nil),      // 5: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint
-	(*AwsBedrockAgentCoreGatewayLatticeEndpoint)(nil),         // 6: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLatticeEndpoint
-	(*AwsBedrockAgentCoreGatewayPrivateEndpointOverride)(nil), // 7: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpointOverride
-	(*AwsBedrockAgentCoreGatewayMcp)(nil),                     // 8: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayMcp
-	(*AwsBedrockAgentCoreGatewayInterceptor)(nil),             // 9: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayInterceptor
-	(*AwsBedrockAgentCoreGatewayPolicyEngine)(nil),            // 10: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPolicyEngine
-	(*AwsBedrockAgentCoreGatewayTarget)(nil),                  // 11: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTarget
-	(*AwsBedrockAgentCoreGatewayTargetBackend)(nil),           // 12: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend
-	(*AwsBedrockAgentCoreGatewayRuntimeTarget)(nil),           // 13: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayRuntimeTarget
-	(*AwsBedrockAgentCoreGatewayApiGatewayTarget)(nil),        // 14: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayTarget
-	(*AwsBedrockAgentCoreGatewayApiGatewayToolFilter)(nil),    // 15: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayToolFilter
-	(*AwsBedrockAgentCoreGatewayApiGatewayToolOverride)(nil),  // 16: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayToolOverride
-	(*AwsBedrockAgentCoreGatewayLambdaTarget)(nil),            // 17: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLambdaTarget
-	(*AwsBedrockAgentCoreGatewayToolDefinition)(nil),          // 18: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayToolDefinition
-	(*AwsBedrockAgentCoreGatewaySchemaDefinition)(nil),        // 19: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaDefinition
-	(*AwsBedrockAgentCoreGatewaySchemaProperty)(nil),          // 20: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaProperty
-	(*AwsBedrockAgentCoreGatewaySchemaItems)(nil),             // 21: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItems
-	(*AwsBedrockAgentCoreGatewaySchemaItemsLeaf)(nil),         // 22: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItemsLeaf
-	(*AwsBedrockAgentCoreGatewaySchemaPropertyLeaf)(nil),      // 23: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf
-	(*AwsBedrockAgentCoreGatewayMcpServerTarget)(nil),         // 24: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayMcpServerTarget
-	(*AwsBedrockAgentCoreGatewaySchemaTarget)(nil),            // 25: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaTarget
-	(*AwsBedrockAgentCoreGatewaySchemaS3)(nil),                // 26: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaS3
-	(*AwsBedrockAgentCoreGatewayTargetCredentials)(nil),       // 27: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials
-	(*AwsBedrockAgentCoreGatewayApiKeyCredentials)(nil),       // 28: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentials
-	(*AwsBedrockAgentCoreGatewaySigv4Credentials)(nil),        // 29: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4Credentials
-	(*AwsBedrockAgentCoreGatewayOauthCredentials)(nil),        // 30: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials
-	(*AwsBedrockAgentCoreGatewayTargetMetadata)(nil),          // 31: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetMetadata
-	nil,                         // 32: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.TagsEntry
-	nil,                         // 33: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.CustomParametersEntry
-	(*v1.StringValueOrRef)(nil), // 34: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*structpb.Struct)(nil),     // 35: google.protobuf.Struct
+	(*AwsBedrockAgentCoreGatewaySpec)(nil),                      // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec
+	(*AwsBedrockAgentCoreGatewayJwtAuthorizer)(nil),             // 1: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayJwtAuthorizer
+	(*AwsBedrockAgentCoreGatewayAllowedWorkloads)(nil),          // 2: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayAllowedWorkloads
+	(*AwsBedrockAgentCoreGatewayCustomClaim)(nil),               // 3: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayCustomClaim
+	(*AwsBedrockAgentCoreGatewayPrivateEndpoint)(nil),           // 4: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpoint
+	(*AwsBedrockAgentCoreGatewayManagedVpcEndpoint)(nil),        // 5: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint
+	(*AwsBedrockAgentCoreGatewayLatticeEndpoint)(nil),           // 6: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLatticeEndpoint
+	(*AwsBedrockAgentCoreGatewayPrivateEndpointOverride)(nil),   // 7: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpointOverride
+	(*AwsBedrockAgentCoreGatewayMcp)(nil),                       // 8: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayMcp
+	(*AwsBedrockAgentCoreGatewayInterceptor)(nil),               // 9: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayInterceptor
+	(*AwsBedrockAgentCoreGatewayPolicyEngine)(nil),              // 10: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPolicyEngine
+	(*AwsBedrockAgentCoreGatewayTarget)(nil),                    // 11: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTarget
+	(*AwsBedrockAgentCoreGatewayTargetBackend)(nil),             // 12: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend
+	(*AwsBedrockAgentCoreGatewayRuntimeTarget)(nil),             // 13: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayRuntimeTarget
+	(*AwsBedrockAgentCoreGatewayApiGatewayTarget)(nil),          // 14: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayTarget
+	(*AwsBedrockAgentCoreGatewayApiGatewayToolFilter)(nil),      // 15: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayToolFilter
+	(*AwsBedrockAgentCoreGatewayApiGatewayToolOverride)(nil),    // 16: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayToolOverride
+	(*AwsBedrockAgentCoreGatewayLambdaTarget)(nil),              // 17: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLambdaTarget
+	(*AwsBedrockAgentCoreGatewayToolDefinition)(nil),            // 18: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayToolDefinition
+	(*AwsBedrockAgentCoreGatewaySchemaDefinition)(nil),          // 19: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaDefinition
+	(*AwsBedrockAgentCoreGatewaySchemaProperty)(nil),            // 20: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaProperty
+	(*AwsBedrockAgentCoreGatewaySchemaItems)(nil),               // 21: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItems
+	(*AwsBedrockAgentCoreGatewaySchemaItemsLeaf)(nil),           // 22: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItemsLeaf
+	(*AwsBedrockAgentCoreGatewaySchemaPropertyLeaf)(nil),        // 23: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf
+	(*AwsBedrockAgentCoreGatewayMcpServerTarget)(nil),           // 24: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayMcpServerTarget
+	(*AwsBedrockAgentCoreGatewaySchemaTarget)(nil),              // 25: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaTarget
+	(*AwsBedrockAgentCoreGatewaySchemaS3)(nil),                  // 26: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaS3
+	(*AwsBedrockAgentCoreGatewayTargetCredentials)(nil),         // 27: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials
+	(*AwsBedrockAgentCoreGatewayJwtPassthroughCredentials)(nil), // 28: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayJwtPassthroughCredentials
+	(*AwsBedrockAgentCoreGatewayApiKeyCredentials)(nil),         // 29: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentials
+	(*AwsBedrockAgentCoreGatewaySigv4Credentials)(nil),          // 30: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4Credentials
+	(*AwsBedrockAgentCoreGatewayOauthCredentials)(nil),          // 31: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials
+	(*AwsBedrockAgentCoreGatewayTargetMetadata)(nil),            // 32: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetMetadata
+	nil,                         // 33: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.TagsEntry
+	nil,                         // 34: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.CustomParametersEntry
+	(*v1.StringValueOrRef)(nil), // 35: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*structpb.Struct)(nil),     // 36: google.protobuf.Struct
 }
 var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_depIdxs = []int32{
-	34, // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 0: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 1: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.custom_jwt_authorizer:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayJwtAuthorizer
-	34, // 2: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.kms_key_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 2: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.kms_key_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	8,  // 3: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.mcp:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayMcp
 	9,  // 4: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.interceptors:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayInterceptor
 	10, // 5: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySpec.policy_engine:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPolicyEngine
@@ -2749,16 +2870,16 @@ var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_depIdxs = []
 	7,  // 10: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayJwtAuthorizer.private_endpoint_overrides:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpointOverride
 	5,  // 11: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpoint.managed_vpc:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint
 	6,  // 12: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpoint.self_managed_lattice:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLatticeEndpoint
-	34, // 13: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.vpc_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	34, // 14: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	34, // 15: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	32, // 16: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.tags:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.TagsEntry
+	35, // 13: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.vpc_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 14: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 15: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 16: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.tags:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayManagedVpcEndpoint.TagsEntry
 	4,  // 17: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpointOverride.private_endpoint:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpoint
-	34, // 18: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayInterceptor.lambda_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	34, // 19: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPolicyEngine.policy_engine_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 18: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayInterceptor.lambda_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 19: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPolicyEngine.policy_engine_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	12, // 20: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTarget.backend:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend
 	27, // 21: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTarget.credentials:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials
-	31, // 22: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTarget.metadata:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetMetadata
+	32, // 22: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTarget.metadata:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetMetadata
 	4,  // 23: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTarget.private_endpoint:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayPrivateEndpoint
 	13, // 24: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend.agentcore_runtime:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayRuntimeTarget
 	14, // 25: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend.api_gateway:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayTarget
@@ -2766,10 +2887,10 @@ var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_depIdxs = []
 	24, // 27: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend.mcp_server:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayMcpServerTarget
 	25, // 28: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend.open_api_schema:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaTarget
 	25, // 29: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetBackend.smithy_model:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaTarget
-	34, // 30: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayRuntimeTarget.agent_runtime_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 30: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayRuntimeTarget.agent_runtime_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	15, // 31: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayTarget.tool_filters:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayToolFilter
 	16, // 32: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayTarget.tool_overrides:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiGatewayToolOverride
-	34, // 33: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLambdaTarget.lambda_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 33: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLambdaTarget.lambda_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	18, // 34: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLambdaTarget.tools:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayToolDefinition
 	26, // 35: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayLambdaTarget.tools_s3:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaS3
 	19, // 36: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayToolDefinition.input_schema:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaDefinition
@@ -2780,23 +2901,24 @@ var file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_depIdxs = []
 	23, // 41: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaProperty.properties:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf
 	22, // 42: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItems.items:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItemsLeaf
 	23, // 43: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItems.properties:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf
-	35, // 44: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItemsLeaf.items_json:type_name -> google.protobuf.Struct
-	35, // 45: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItemsLeaf.properties_json:type_name -> google.protobuf.Struct
-	35, // 46: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf.items_json:type_name -> google.protobuf.Struct
-	35, // 47: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf.properties_json:type_name -> google.protobuf.Struct
+	36, // 44: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItemsLeaf.items_json:type_name -> google.protobuf.Struct
+	36, // 45: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaItemsLeaf.properties_json:type_name -> google.protobuf.Struct
+	36, // 46: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf.items_json:type_name -> google.protobuf.Struct
+	36, // 47: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaPropertyLeaf.properties_json:type_name -> google.protobuf.Struct
 	26, // 48: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaTarget.s3:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySchemaS3
-	28, // 49: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.api_key:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentials
-	29, // 50: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.caller_iam_credentials:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4Credentials
-	29, // 51: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.gateway_iam_role:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4Credentials
-	30, // 52: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.oauth:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials
-	34, // 53: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentials.provider_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	34, // 54: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.provider_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 55: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.custom_parameters:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.CustomParametersEntry
-	56, // [56:56] is the sub-list for method output_type
-	56, // [56:56] is the sub-list for method input_type
-	56, // [56:56] is the sub-list for extension type_name
-	56, // [56:56] is the sub-list for extension extendee
-	0,  // [0:56] is the sub-list for field type_name
+	29, // 49: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.api_key:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentials
+	30, // 50: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.caller_iam_credentials:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4Credentials
+	30, // 51: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.gateway_iam_role:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewaySigv4Credentials
+	28, // 52: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.jwt_passthrough:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayJwtPassthroughCredentials
+	31, // 53: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayTargetCredentials.oauth:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials
+	35, // 54: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayApiKeyCredentials.provider_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	35, // 55: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.provider_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	34, // 56: dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.custom_parameters:type_name -> dev.planton.aws.awsbedrockagentcoregateway.v1alpha1.AwsBedrockAgentCoreGatewayOauthCredentials.CustomParametersEntry
+	57, // [57:57] is the sub-list for method output_type
+	57, // [57:57] is the sub-list for method input_type
+	57, // [57:57] is the sub-list for extension type_name
+	57, // [57:57] is the sub-list for extension extendee
+	0,  // [0:57] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_init() }
@@ -2805,13 +2927,21 @@ func file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
+	file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{
+		(*AwsBedrockAgentCoreGatewayTargetCredentials_ApiKey)(nil),
+		(*AwsBedrockAgentCoreGatewayTargetCredentials_CallerIamCredentials)(nil),
+		(*AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole)(nil),
+		(*AwsBedrockAgentCoreGatewayTargetCredentials_JwtPassthrough)(nil),
+		(*AwsBedrockAgentCoreGatewayTargetCredentials_Oauth)(nil),
+	}
+	file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_msgTypes[32].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDesc), len(file_catalog_aws_awsbedrockagentcoregateway_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   34,
+			NumMessages:   35,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

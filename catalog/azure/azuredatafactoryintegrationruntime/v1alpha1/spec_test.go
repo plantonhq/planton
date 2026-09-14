@@ -44,8 +44,10 @@ func validResource() *AzureDataFactoryIntegrationRuntime {
 		Spec: &AzureDataFactoryIntegrationRuntimeSpec{
 			DataFactoryId: literal(testFactoryId),
 			Name:          "dataflow-compute",
-			Azure: &AzureDataFactoryIntegrationRuntimeAzure{
-				Region: "eastus",
+			Variant: &AzureDataFactoryIntegrationRuntimeSpec_Azure{
+				Azure: &AzureDataFactoryIntegrationRuntimeAzure{
+					Region: "eastus",
+				},
 			},
 		},
 	}
@@ -55,7 +57,7 @@ func validResource() *AzureDataFactoryIntegrationRuntime {
 // install a different one.
 func withoutVariant() *AzureDataFactoryIntegrationRuntime {
 	input := validResource()
-	input.Spec.Azure = nil
+	input.Spec.Variant = nil
 	return input
 }
 
@@ -79,13 +81,13 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 
 			ginkgo.It("should accept a minimal azure_ssis runtime", func() {
 				input := withoutVariant()
-				input.Spec.AzureSsis = minimalSsis()
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: minimalSsis()}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a self_hosted registration as an empty block", func() {
 				input := withoutVariant()
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{}
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 		})
@@ -94,14 +96,14 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 
 			ginkgo.It("should accept the AutoResolve region", func() {
 				input := validResource()
-				input.Spec.Azure.Region = "AutoResolve"
+				input.Spec.GetAzure().Region = "AutoResolve"
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a fully configured data-flow compute", func() {
 				input := validResource()
 				cleanup := false
-				input.Spec.Azure = &AzureDataFactoryIntegrationRuntimeAzure{
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_Azure{Azure: &AzureDataFactoryIntegrationRuntimeAzure{
 					Region:                                  "eastus",
 					CleanupEnabled:                          &cleanup,
 					ComputeType:                             "MemoryOptimized",
@@ -109,7 +111,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					TimeToLiveMin:                           15,
 					VirtualNetworkEnabled:                   true,
 					InteractiveAuthoringTimeToLiveInMinutes: 30,
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 		})
@@ -124,7 +126,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.Edition = "Enterprise"
 				ssis.LicenseType = "BasePrice"
 				ssis.CredentialName = "deploy-identity"
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -137,7 +139,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					AdministratorPassword: "correct-horse-battery-staple",
 					PricingTier:           "S1",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -148,7 +150,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					ServerEndpoint:  "catalog-sql.database.windows.net",
 					ElasticPoolName: "ssis-pool",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -159,7 +161,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					BlobContainerUri: "https://setupsa.blob.core.windows.net/ssis-setup",
 					SasToken:         "sv=2024-01-01&sig=redacted",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -169,7 +171,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.ExpressCustomSetup = &AzureDataFactoryIntegrationRuntimeSsisExpressCustomSetup{
 					PowershellVersion: "7.2.1",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -183,7 +185,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 						Password:   "correct-horse-battery-staple",
 					}},
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -200,7 +202,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 						},
 					}},
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -218,7 +220,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 						},
 					}},
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -228,7 +230,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.ExpressVnetIntegration = &AzureDataFactoryIntegrationRuntimeSsisExpressVnetIntegration{
 					SubnetId: literal(testSubnetId),
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -238,7 +240,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.VnetIntegration = &AzureDataFactoryIntegrationRuntimeSsisVnetIntegration{
 					SubnetId: literal(testSubnetId),
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -253,7 +255,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 						literal(testPublicIp2),
 					},
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -264,7 +266,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					Name:              "shared-packages",
 					LinkedServiceName: literal("fileshare-conn"),
 				}}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -280,7 +282,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					NumberOfPipelineNodes: 3,
 					TimeToLive:            5,
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -292,7 +294,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					StagingStorageLinkedServiceName:  literal("staging-blob"),
 					Path:                             "ssis-staging",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 		})
@@ -302,26 +304,26 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 			ginkgo.It("should accept a linked registration through RBAC authorization", func() {
 				input := withoutVariant()
 				input.Spec.Name = "shared-bridge"
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{
 					RbacAuthorization: &AzureDataFactoryIntegrationRuntimeSelfHostedRbacAuthorization{
 						ResourceId: literal(testRuntimeId),
 					},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept self-contained interactive authoring", func() {
 				input := withoutVariant()
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{
 					SelfContainedInteractiveAuthoringEnabled: true,
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a single-character self-hosted name (looser than the managed rule)", func() {
 				input := withoutVariant()
 				input.Spec.Name = "a"
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{}
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 		})
@@ -336,17 +338,12 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
-			ginkgo.It("should reject a spec with two variant blocks", func() {
+			ginkgo.It("carries exactly one variant by construction (setting a second arm replaces the first)", func() {
 				input := validResource()
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{}
-				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
-			})
-
-			ginkgo.It("should reject a spec with all three variant blocks", func() {
-				input := validResource()
-				input.Spec.AzureSsis = minimalSsis()
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{}
-				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{}}
+				gomega.Expect(input.Spec.GetAzure()).To(gomega.BeNil())
+				gomega.Expect(input.Spec.GetSelfHosted()).ToNot(gomega.BeNil())
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a missing data_factory_id", func() {
@@ -376,14 +373,14 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 			ginkgo.It("should reject a self-hosted name with consecutive dashes", func() {
 				input := withoutVariant()
 				input.Spec.Name = "onprem--bridge"
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{}
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{}}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a self-hosted name with a trailing dash", func() {
 				input := withoutVariant()
 				input.Spec.Name = "onprem-bridge-"
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{}
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{}}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 		})
@@ -392,32 +389,32 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 
 			ginkgo.It("should reject a missing region", func() {
 				input := validResource()
-				input.Spec.Azure.Region = ""
+				input.Spec.GetAzure().Region = ""
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a core count outside Azure's menu", func() {
 				input := validResource()
-				input.Spec.Azure.CoreCount = 12
+				input.Spec.GetAzure().CoreCount = 12
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject an unknown compute type", func() {
 				input := validResource()
-				input.Spec.Azure.ComputeType = "GpuOptimized"
+				input.Spec.GetAzure().ComputeType = "GpuOptimized"
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject an interactive authoring TTL outside Azure's menu", func() {
 				input := validResource()
-				input.Spec.Azure.VirtualNetworkEnabled = true
-				input.Spec.Azure.InteractiveAuthoringTimeToLiveInMinutes = 45
+				input.Spec.GetAzure().VirtualNetworkEnabled = true
+				input.Spec.GetAzure().InteractiveAuthoringTimeToLiveInMinutes = 45
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject interactive authoring without the managed virtual network", func() {
 				input := validResource()
-				input.Spec.Azure.InteractiveAuthoringTimeToLiveInMinutes = 30
+				input.Spec.GetAzure().InteractiveAuthoringTimeToLiveInMinutes = 30
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 		})
@@ -428,7 +425,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				input := withoutVariant()
 				ssis := minimalSsis()
 				ssis.NodeSize = ""
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -436,7 +433,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				input := withoutVariant()
 				ssis := minimalSsis()
 				ssis.NodeSize = "Standard_B2s"
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -444,7 +441,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				input := withoutVariant()
 				ssis := minimalSsis()
 				ssis.NumberOfNodes = 11
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -452,7 +449,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				input := withoutVariant()
 				ssis := minimalSsis()
 				ssis.MaxParallelExecutionsPerNode = 17
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -460,7 +457,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				input := withoutVariant()
 				ssis := minimalSsis()
 				ssis.Edition = "Developer"
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -470,7 +467,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.CatalogInfo = &AzureDataFactoryIntegrationRuntimeSsisCatalogInfo{
 					PricingTier: "Basic",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -482,7 +479,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					PricingTier:     "S1",
 					ElasticPoolName: "ssis-pool",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -493,7 +490,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					ServerEndpoint: "catalog-sql.database.windows.net",
 					PricingTier:    "S99",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -503,7 +500,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.CustomSetupScript = &AzureDataFactoryIntegrationRuntimeSsisCustomSetupScript{
 					BlobContainerUri: "https://setupsa.blob.core.windows.net/ssis-setup",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -511,7 +508,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				input := withoutVariant()
 				ssis := minimalSsis()
 				ssis.ExpressCustomSetup = &AzureDataFactoryIntegrationRuntimeSsisExpressCustomSetup{}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -524,7 +521,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 						Password: "correct-horse-battery-staple",
 					}},
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -539,7 +536,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 						},
 					}},
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -551,7 +548,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					SubnetId:   literal(testSubnetId),
 					SubnetName: "ssis-subnet",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -559,7 +556,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				input := withoutVariant()
 				ssis := minimalSsis()
 				ssis.VnetIntegration = &AzureDataFactoryIntegrationRuntimeSsisVnetIntegration{}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -569,7 +566,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.VnetIntegration = &AzureDataFactoryIntegrationRuntimeSsisVnetIntegration{
 					VnetId: literal(testVnetId),
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -580,7 +577,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					SubnetId:   literal(testSubnetId),
 					SubnetName: "ssis-subnet",
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -592,7 +589,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 					SubnetName: "ssis-subnet",
 					PublicIps:  []*foreignkeyv1.StringValueOrRef{literal(testPublicIp1)},
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -602,7 +599,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.CopyComputeScale = &AzureDataFactoryIntegrationRuntimeSsisCopyComputeScale{
 					DataIntegrationUnit: 10,
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -612,7 +609,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.CopyComputeScale = &AzureDataFactoryIntegrationRuntimeSsisCopyComputeScale{
 					TimeToLive: 3,
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -622,7 +619,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.PipelineExternalComputeScale = &AzureDataFactoryIntegrationRuntimeSsisPipelineExternalComputeScale{
 					NumberOfExternalNodes: 11,
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -632,7 +629,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.PackageStore = []*AzureDataFactoryIntegrationRuntimeSsisPackageStore{{
 					Name: "shared-packages",
 				}}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 
@@ -642,7 +639,7 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 				ssis.Proxy = &AzureDataFactoryIntegrationRuntimeSsisProxy{
 					SelfHostedIntegrationRuntimeName: literal("onprem-bridge"),
 				}
-				input.Spec.AzureSsis = ssis
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_AzureSsis{AzureSsis: ssis}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 		})
@@ -651,9 +648,9 @@ var _ = ginkgo.Describe("AzureDataFactoryIntegrationRuntimeSpec Validation Tests
 
 			ginkgo.It("should reject an RBAC authorization without its resource ID", func() {
 				input := withoutVariant()
-				input.Spec.SelfHosted = &AzureDataFactoryIntegrationRuntimeSelfHosted{
+				input.Spec.Variant = &AzureDataFactoryIntegrationRuntimeSpec_SelfHosted{SelfHosted: &AzureDataFactoryIntegrationRuntimeSelfHosted{
 					RbacAuthorization: &AzureDataFactoryIntegrationRuntimeSelfHostedRbacAuthorization{},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 			})
 		})

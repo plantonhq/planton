@@ -26,28 +26,30 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // out by retention, so destroy an air-gapped vault only after its
 // points expire).
 message AwsBackupVaultSpec {
-  option (buf.validate.message).cel = {
-    id: "spec.exactly_one_vault_type"
-    message: "configure exactly one of standard / air_gapped - a vault is one AWS vault type"
-    expression: "has(this.standard) != has(this.air_gapped)"
-  };
-
   // The AWS region the vault lives in.
   // Example: "us-west-2", "eu-west-1"
   string region = 1 [(buf.validate.field).string.min_len = 1];
 
-  // The standard backup vault arm: the everyday vault type that
-  // backup plans target by name, with optional KMS encryption, vault
-  // lock, access policy, and event notifications.
-  AwsBackupVaultStandard standard = 2;
+  // The vault type: exactly one of the arms below. Choosing the standard
+  // arm is the whole statement for an everyday vault at AWS defaults (its
+  // block may be empty), so a type with nothing inside is a valid, complete
+  // choice.
+  oneof vault_type {
+    option (buf.validate.oneof).required = true;
 
-  // The logically air-gapped vault arm: a hardened vault whose
-  // recovery points cannot be deleted or re-encrypted - retention is
-  // locked in at creation and EVERY field forces replacement.
-  // Recovery points reach it via a backup plan rule's
-  // target_logically_air_gapped_backup_vault_arn (rules always need a
-  // standard target vault too).
-  AwsBackupVaultAirGapped air_gapped = 3;
+    // The standard backup vault arm: the everyday vault type that
+    // backup plans target by name, with optional KMS encryption, vault
+    // lock, access policy, and event notifications.
+    AwsBackupVaultStandard standard = 2;
+
+    // The logically air-gapped vault arm: a hardened vault whose
+    // recovery points cannot be deleted or re-encrypted - retention is
+    // locked in at creation and EVERY field forces replacement.
+    // Recovery points reach it via a backup plan rule's
+    // target_logically_air_gapped_backup_vault_arn (rules always need a
+    // standard target vault too).
+    AwsBackupVaultAirGapped air_gapped = 3;
+  }
 }
 
 // AwsBackupVaultStandard configures a standard backup vault and its
@@ -109,6 +111,15 @@ message AwsBackupVaultLock {
   // Maximum retention (days) the vault enforces on recovery points.
   // Unset = no maximum.
   optional int32 max_retention_days = 3 [(buf.validate.field).int32.gte = 1];
+
+  // A lock constrains something: the compliance window, a floor, or a
+  // ceiling. A lock block naming none of them would lock nothing, so it is
+  // refused rather than read as an accident of an empty block.
+  option (buf.validate.message).cel = {
+    id: "lock.constrains_something"
+    message: "a vault lock must set at least one of changeable_for_days, min_retention_days, or max_retention_days - a lock with none of them enforces nothing"
+    expression: "has(this.changeable_for_days) || has(this.min_retention_days) || has(this.max_retention_days)"
+  };
 
   // AWS rejects a lock whose maximum retention is below its minimum.
   option (buf.validate.message).cel = {

@@ -128,7 +128,7 @@ func buildDataFormatConversion(dfc *awskinesisfirehose.AwsKinesisFirehoseDataFor
 	}
 
 	// Input format (deserializer)
-	if hj := dfc.HiveJson; hj != nil {
+	if hj := dfc.GetHiveJson(); hj != nil {
 		hjArgs := &kinesis.FirehoseDeliveryStreamExtendedS3ConfigurationDataFormatConversionConfigurationInputFormatConfigurationDeserializerHiveJsonSerDeArgs{}
 		if len(hj.TimestampFormats) > 0 {
 			hjArgs.TimestampFormats = pulumi.ToStringArray(hj.TimestampFormats)
@@ -138,7 +138,7 @@ func buildDataFormatConversion(dfc *awskinesisfirehose.AwsKinesisFirehoseDataFor
 				HiveJsonSerDe: hjArgs,
 			},
 		}
-	} else if oxj := dfc.OpenXJson; oxj != nil {
+	} else if oxj := dfc.GetOpenXJson(); oxj != nil {
 		oxjArgs := &kinesis.FirehoseDeliveryStreamExtendedS3ConfigurationDataFormatConversionConfigurationInputFormatConfigurationDeserializerOpenXJsonSerDeArgs{}
 		// AWS defaults case_insensitive to true; only an explicit choice is
 		// sent (the spec field carries presence).
@@ -159,7 +159,7 @@ func buildDataFormatConversion(dfc *awskinesisfirehose.AwsKinesisFirehoseDataFor
 	}
 
 	// Output format (serializer)
-	if orc := dfc.Orc; orc != nil {
+	if orc := dfc.GetOrc(); orc != nil {
 		orcArgs := &kinesis.FirehoseDeliveryStreamExtendedS3ConfigurationDataFormatConversionConfigurationOutputFormatConfigurationSerializerOrcSerDeArgs{}
 		if orc.Compression != "" {
 			orcArgs.Compression = pulumi.StringPtr(orc.Compression)
@@ -198,7 +198,7 @@ func buildDataFormatConversion(dfc *awskinesisfirehose.AwsKinesisFirehoseDataFor
 				OrcSerDe: orcArgs,
 			},
 		}
-	} else if pq := dfc.Parquet; pq != nil {
+	} else if pq := dfc.GetParquet(); pq != nil {
 		parquetArgs := &kinesis.FirehoseDeliveryStreamExtendedS3ConfigurationDataFormatConversionConfigurationOutputFormatConfigurationSerializerParquetSerDeArgs{}
 		if pq.Compression != "" {
 			parquetArgs.Compression = pulumi.StringPtr(pq.Compression)

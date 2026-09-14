@@ -30,20 +30,20 @@ import (
 func vault(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error {
 	spec := locals.Spec
 
-	if spec.AirGapped != nil {
+	if spec.GetAirGapped() != nil {
 		args := &backup.LogicallyAirGappedVaultArgs{
 			// metadata.name is the vault name on both engines.
 			Name: pulumi.String(locals.Target.Metadata.Name),
 			// Both retention bounds are REQUIRED by AWS on this vault
 			// type (min floor 7 days) and both force replacement.
-			MinRetentionDays: pulumi.Int(int(spec.AirGapped.MinRetentionDays)),
-			MaxRetentionDays: pulumi.Int(int(spec.AirGapped.MaxRetentionDays)),
+			MinRetentionDays: pulumi.Int(int(spec.GetAirGapped().MinRetentionDays)),
+			MaxRetentionDays: pulumi.Int(int(spec.GetAirGapped().MaxRetentionDays)),
 			Tags:             pulumi.ToStringMap(locals.AwsTags),
 		}
 		// Rendered only on an explicit choice so the module never
 		// fights the provider default (the AWS-owned key).
-		if spec.AirGapped.EncryptionKeyArn.GetValue() != "" {
-			args.EncryptionKeyArn = pulumi.String(spec.AirGapped.EncryptionKeyArn.GetValue())
+		if spec.GetAirGapped().EncryptionKeyArn.GetValue() != "" {
+			args.EncryptionKeyArn = pulumi.String(spec.GetAirGapped().EncryptionKeyArn.GetValue())
 		}
 
 		createdVault, err := backup.NewLogicallyAirGappedVault(ctx, "air-gapped-vault", args, pulumi.Provider(provider))
@@ -56,7 +56,7 @@ func vault(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error {
 		return nil
 	}
 
-	standard := spec.Standard
+	standard := spec.GetStandard()
 
 	args := &backup.VaultArgs{
 		// metadata.name is the vault name on both engines.

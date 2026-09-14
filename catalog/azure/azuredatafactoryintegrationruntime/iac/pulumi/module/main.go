@@ -34,14 +34,14 @@ func Resources(ctx *pulumi.Context, stackInput *azuredatafactoryintegrationrunti
 	var outputs *runtimeOutputs
 
 	switch {
-	case spec.Azure != nil:
+	case spec.GetAzure() != nil:
 		outputs, err = createAzure(ctx, resourceName, spec, azureProvider)
-	case spec.AzureSsis != nil:
+	case spec.GetAzureSsis() != nil:
 		outputs, err = createAzureSsis(ctx, resourceName, spec, azureProvider)
-	case spec.SelfHosted != nil:
+	case spec.GetSelfHosted() != nil:
 		outputs, err = createSelfHosted(ctx, resourceName, spec, azureProvider)
 	default:
-		// The spec's exactly-one CEL makes this unreachable; the guard
+		// The variant oneof is required, so this is unreachable; the guard
 		// keeps a broken input loud instead of silently exporting nothing.
 		return errors.New("exactly one integration runtime variant block must be set")
 	}

@@ -74,9 +74,13 @@ variable "spec" {
         service_account_email = string
         audience              = optional(string, "")
       }), null)
+      # The wrapper choice: no_wrapper renders the provider block; the
+      # pubsub_wrapper arm is the provider's default envelope and is consumed
+      # here, never forwarded.
       no_wrapper = optional(object({
         write_metadata = optional(bool, false)
       }), null)
+      pubsub_wrapper = optional(object({}), null)
     }), null)
 
     bigquery_config = optional(object({
@@ -100,10 +104,14 @@ variable "spec" {
       max_bytes                = optional(number, 0)
       max_duration             = optional(string, "")
       max_messages             = optional(number, 0)
+      # The output format: avro_config renders the provider block; the
+      # text_config arm is the provider's default text output and is consumed
+      # here, never forwarded.
       avro_config = optional(object({
         use_topic_schema = optional(bool, false)
         write_metadata   = optional(bool, false)
       }), null)
+      text_config = optional(object({}), null)
       # Resolved from a GcpServiceAccount reference to a literal email.
       service_account_email = optional(string, "")
     }), null)

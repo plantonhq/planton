@@ -186,12 +186,30 @@ var _ = ginkgo.Describe("GcpPubSubSubscriptionSpec", func() {
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should accept the explicit default arms (pubsub_wrapper and text_config)", func() {
+		msg := minimal()
+		msg.Spec.PushConfig = &GcpPubSubSubscriptionPushConfig{
+			PushEndpoint: svr("https://example.com/webhook"),
+			Wrapper:      &GcpPubSubSubscriptionPushConfig_PubsubWrapper{PubsubWrapper: &GcpPubSubSubscriptionPushConfigPubsubWrapper{}},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+
+		msg = minimal()
+		msg.Spec.CloudStorageConfig = &GcpPubSubSubscriptionCloudStorageConfig{
+			Bucket:       svr("my-text-bucket"),
+			OutputFormat: &GcpPubSubSubscriptionCloudStorageConfig_TextConfig{TextConfig: &GcpPubSubSubscriptionCloudStorageConfigTextConfig{}},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
 	ginkgo.It("should accept spec with push_config and no_wrapper", func() {
 		msg := minimal()
 		msg.Spec.PushConfig = &GcpPubSubSubscriptionPushConfig{
 			PushEndpoint: svr("https://example.com/webhook"),
-			NoWrapper: &GcpPubSubSubscriptionPushConfigNoWrapper{
-				WriteMetadata: true,
+			Wrapper: &GcpPubSubSubscriptionPushConfig_NoWrapper{
+				NoWrapper: &GcpPubSubSubscriptionPushConfigNoWrapper{
+					WriteMetadata: true,
+				},
 			},
 		}
 		err := validator.Validate(msg)
@@ -245,9 +263,11 @@ var _ = ginkgo.Describe("GcpPubSubSubscriptionSpec", func() {
 					Value: "my-avro-bucket",
 				},
 			},
-			AvroConfig: &GcpPubSubSubscriptionCloudStorageConfigAvroConfig{
-				UseTopicSchema: true,
-				WriteMetadata:  true,
+			OutputFormat: &GcpPubSubSubscriptionCloudStorageConfig_AvroConfig{
+				AvroConfig: &GcpPubSubSubscriptionCloudStorageConfigAvroConfig{
+					UseTopicSchema: true,
+					WriteMetadata:  true,
+				},
 			},
 		}
 		err := validator.Validate(msg)
