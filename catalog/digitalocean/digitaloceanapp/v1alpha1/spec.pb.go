@@ -112,9 +112,11 @@ type DigitalOceanAppSpec struct {
 	DisableEdgeCache             bool     `protobuf:"varint,17,opt,name=disable_edge_cache,json=disableEdgeCache,proto3" json:"disable_edge_cache,omitempty"`
 	DisableEmailObfuscation      bool     `protobuf:"varint,18,opt,name=disable_email_obfuscation,json=disableEmailObfuscation,proto3" json:"disable_email_obfuscation,omitempty"`
 	EnhancedThreatControlEnabled bool     `protobuf:"varint,19,opt,name=enhanced_threat_control_enabled,json=enhancedThreatControlEnabled,proto3" json:"enhanced_threat_control_enabled,omitempty"`
-	// DigitalOcean project to put the app in. Literal project UUID. A typed
-	// reference will land when the Project kind is forged.
-	ProjectId     string `protobuf:"bytes,20,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	// (Optional) The project the app is created in. Reference a
+	// DigitalOceanProject resource (the default wiring resolves its
+	// project_id output) or pass a literal project UUID. When unset, the app
+	// lands in the account's default project.
+	ProjectId     *v1.StringValueOrRef `protobuf:"bytes,21,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -282,11 +284,11 @@ func (x *DigitalOceanAppSpec) GetEnhancedThreatControlEnabled() bool {
 	return false
 }
 
-func (x *DigitalOceanAppSpec) GetProjectId() string {
+func (x *DigitalOceanAppSpec) GetProjectId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ProjectId
 	}
-	return ""
+	return nil
 }
 
 // HTTP service that receives external or internal traffic.
@@ -1151,7 +1153,7 @@ var File_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/digitalocean/digitaloceanapp/v1alpha1/spec.proto\x121dev.planton.digitalocean.digitaloceanapp.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa8\x0e\n" +
+	"8catalog/digitalocean/digitaloceanapp/v1alpha1/spec.proto\x121dev.planton.digitalocean.digitaloceanapp.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x86\x0f\n" +
 	"\x13DigitalOceanAppSpec\x12H\n" +
 	"\bapp_name\x18\x01 \x01(\tB-\xbaH*\xc8\x01\x01r%\x10\x02\x18 2\x1f^[a-z0-9]([a-z0-9-]*[a-z0-9])?$R\aappName\x12L\n" +
 	"\x06region\x18\x02 \x01(\x0e2,.dev.planton.digitalocean.DigitalOceanRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12e\n" +
@@ -1172,10 +1174,10 @@ const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = ""
 	"\bfeatures\x18\x10 \x03(\tR\bfeatures\x12,\n" +
 	"\x12disable_edge_cache\x18\x11 \x01(\bR\x10disableEdgeCache\x12:\n" +
 	"\x19disable_email_obfuscation\x18\x12 \x01(\bR\x17disableEmailObfuscation\x12E\n" +
-	"\x1fenhanced_threat_control_enabled\x18\x13 \x01(\bR\x1cenhancedThreatControlEnabled\x12\x1d\n" +
+	"\x1fenhanced_threat_control_enabled\x18\x13 \x01(\bR\x1cenhancedThreatControlEnabled\x12u\n" +
 	"\n" +
-	"project_id\x18\x14 \x01(\tR\tprojectId:\xf8\x01\xbaH\xf4\x01\x1a\xf1\x01\n" +
-	"\x13app_has_a_component\x12iadd at least one component: a service, worker, job, static site, or function - an empty app cannot deploy\x1aosize(this.services) + size(this.workers) + size(this.jobs) + size(this.static_sites) + size(this.functions) > 0\"\x81\x0f\n" +
+	"project_id\x18\x15 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xa6'\x92\xd4a\x19status.outputs.project_idR\tprojectId:\xf8\x01\xbaH\xf4\x01\x1a\xf1\x01\n" +
+	"\x13app_has_a_component\x12iadd at least one component: a service, worker, job, static site, or function - an empty app cannot deploy\x1aosize(this.services) + size(this.workers) + size(this.jobs) + size(this.static_sites) + size(this.functions) > 0J\x04\b\x14\x10\x15\"\x81\x0f\n" +
 	"\x16DigitalOceanAppService\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x1d\n" +
@@ -1357,56 +1359,57 @@ var file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_depIdxs = []in
 	13, // 11: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.egress:type_name -> dev.planton.digitalocean.DigitalOceanAppEgressType
 	14, // 12: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.maintenance:type_name -> dev.planton.digitalocean.DigitalOceanAppMaintenance
 	15, // 13: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.vpc:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	16, // 14: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
-	17, // 15: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
-	18, // 16: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
-	19, // 17: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
-	20, // 18: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.image:type_name -> dev.planton.digitalocean.DigitalOceanAppImageSource
-	21, // 19: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.health_check:type_name -> dev.planton.digitalocean.DigitalOceanAppHealthCheck
-	21, // 20: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.liveness_health_check:type_name -> dev.planton.digitalocean.DigitalOceanAppHealthCheck
-	22, // 21: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.autoscaling:type_name -> dev.planton.digitalocean.DigitalOceanAppAutoscaling
-	23, // 22: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.termination:type_name -> dev.planton.digitalocean.DigitalOceanAppTermination
-	10, // 23: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
-	24, // 24: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
-	25, // 25: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
-	16, // 26: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
-	17, // 27: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
-	18, // 28: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
-	19, // 29: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
-	20, // 30: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.image:type_name -> dev.planton.digitalocean.DigitalOceanAppImageSource
-	21, // 31: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.liveness_health_check:type_name -> dev.planton.digitalocean.DigitalOceanAppHealthCheck
-	22, // 32: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.autoscaling:type_name -> dev.planton.digitalocean.DigitalOceanAppAutoscaling
-	23, // 33: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.termination:type_name -> dev.planton.digitalocean.DigitalOceanAppTermination
-	10, // 34: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
-	24, // 35: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
-	25, // 36: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
-	16, // 37: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
-	17, // 38: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
-	18, // 39: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
-	19, // 40: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
-	20, // 41: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.image:type_name -> dev.planton.digitalocean.DigitalOceanAppImageSource
-	0,  // 42: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.kind:type_name -> dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJobKind
-	23, // 43: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.termination:type_name -> dev.planton.digitalocean.DigitalOceanAppTermination
-	10, // 44: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
-	24, // 45: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
-	25, // 46: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
-	16, // 47: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
-	17, // 48: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
-	18, // 49: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
-	19, // 50: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
-	10, // 51: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
-	16, // 52: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
-	17, // 53: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
-	18, // 54: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
-	19, // 55: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
-	10, // 56: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
-	24, // 57: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
-	25, // 58: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
-	59, // [59:59] is the sub-list for method output_type
-	59, // [59:59] is the sub-list for method input_type
-	59, // [59:59] is the sub-list for extension type_name
-	59, // [59:59] is the sub-list for extension extendee
-	0,  // [0:59] is the sub-list for field type_name
+	15, // 14: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 15: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
+	17, // 16: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
+	18, // 17: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
+	19, // 18: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
+	20, // 19: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.image:type_name -> dev.planton.digitalocean.DigitalOceanAppImageSource
+	21, // 20: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.health_check:type_name -> dev.planton.digitalocean.DigitalOceanAppHealthCheck
+	21, // 21: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.liveness_health_check:type_name -> dev.planton.digitalocean.DigitalOceanAppHealthCheck
+	22, // 22: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.autoscaling:type_name -> dev.planton.digitalocean.DigitalOceanAppAutoscaling
+	23, // 23: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.termination:type_name -> dev.planton.digitalocean.DigitalOceanAppTermination
+	10, // 24: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
+	24, // 25: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
+	25, // 26: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
+	16, // 27: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
+	17, // 28: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
+	18, // 29: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
+	19, // 30: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
+	20, // 31: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.image:type_name -> dev.planton.digitalocean.DigitalOceanAppImageSource
+	21, // 32: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.liveness_health_check:type_name -> dev.planton.digitalocean.DigitalOceanAppHealthCheck
+	22, // 33: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.autoscaling:type_name -> dev.planton.digitalocean.DigitalOceanAppAutoscaling
+	23, // 34: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.termination:type_name -> dev.planton.digitalocean.DigitalOceanAppTermination
+	10, // 35: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
+	24, // 36: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
+	25, // 37: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
+	16, // 38: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
+	17, // 39: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
+	18, // 40: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
+	19, // 41: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
+	20, // 42: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.image:type_name -> dev.planton.digitalocean.DigitalOceanAppImageSource
+	0,  // 43: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.kind:type_name -> dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJobKind
+	23, // 44: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.termination:type_name -> dev.planton.digitalocean.DigitalOceanAppTermination
+	10, // 45: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
+	24, // 46: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
+	25, // 47: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
+	16, // 48: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
+	17, // 49: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
+	18, // 50: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
+	19, // 51: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
+	10, // 52: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
+	16, // 53: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.git:type_name -> dev.planton.digitalocean.DigitalOceanAppGitSource
+	17, // 54: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.github:type_name -> dev.planton.digitalocean.DigitalOceanAppGithubSource
+	18, // 55: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.gitlab:type_name -> dev.planton.digitalocean.DigitalOceanAppGitlabSource
+	19, // 56: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.bitbucket:type_name -> dev.planton.digitalocean.DigitalOceanAppBitbucketSource
+	10, // 57: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
+	24, // 58: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
+	25, // 59: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
+	60, // [60:60] is the sub-list for method output_type
+	60, // [60:60] is the sub-list for method input_type
+	60, // [60:60] is the sub-list for extension type_name
+	60, // [60:60] is the sub-list for extension extendee
+	0,  // [0:60] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_init() }

@@ -65,8 +65,8 @@ func cluster(
 	}
 
 	// Optional DigitalOcean project placement (create-only).
-	if spec.ProjectId != "" {
-		clusterArgs.ProjectId = pulumi.StringPtr(spec.ProjectId)
+	if projectId := spec.GetProjectId().GetValue(); projectId != "" {
+		clusterArgs.ProjectId = pulumi.StringPtr(projectId)
 	}
 
 	// Weekly maintenance window. The SDK models a list; a cluster has

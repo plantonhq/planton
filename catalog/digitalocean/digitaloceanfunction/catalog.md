@@ -57,6 +57,19 @@ planton apply -f do-function.yaml
 
 This clones the public hello-world sample and deploys it as an HTTP function; no GitHub connection is required. A Stack Job tracks the provisioning in real time.
 
+### InfraChart
+
+When the functions app belongs in a project Planton manages, use ValueFromRef to reference the project deployed in the same InfraPipeline:
+
+```yaml
+spec:
+  projectId:
+    valueFrom:
+      kind: DigitalOceanProject
+      name: platform
+      fieldPath: status.outputs.project_id
+```
+
 ## Key Configuration
 
 These are the most important decisions when configuring a functions app. Explore the full field reference in the [API Explorer](#api-explorer) tab.
@@ -75,7 +88,11 @@ These are the most important decisions when configuring a functions app. Explore
 
 ### What This Component Consumes
 
-This component has no foreign key dependencies -- the spec carries no typed references. Sources are Git coordinates, and `projectId` is a literal UUID until the Project kind is forged.
+| Dependency | Field | ValueFromRef Path |
+|------------|-------|-------------------|
+| **DigitalOceanProject** (optional) | `projectId` | `status.outputs.project_id` |
+
+Sources are Git coordinates, not references; the project is the one Planton-managed resource a functions app names.
 
 ### What This Component Provides
 

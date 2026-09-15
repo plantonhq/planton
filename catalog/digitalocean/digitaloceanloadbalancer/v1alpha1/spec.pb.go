@@ -177,10 +177,11 @@ type DigitalOceanLoadBalancerSpec struct {
 	// IPv4+IPv6. Cannot be changed after creation. Never reported back by
 	// the API, so drift on it is invisible.
 	NetworkStack string `protobuf:"bytes,20,opt,name=network_stack,json=networkStack,proto3" json:"network_stack,omitempty"`
-	// (Optional) DigitalOcean project UUID to put the balancer in. Literal; a
-	// typed reference lands when the Project kind is forged. When unset, the
+	// (Optional) The project the balancer is created in. Reference a
+	// DigitalOceanProject resource (the default wiring resolves its
+	// project_id output) or pass a literal project UUID. When unset, the
 	// account's default project is used.
-	ProjectId string `protobuf:"bytes,21,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ProjectId *v1.StringValueOrRef `protobuf:"bytes,28,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// (Optional) UUID of the DigitalOcean-managed VPC subnet to place the
 	// balancer in. Literal only: subnets are DigitalOcean-assigned network
 	// slices, not a Planton-managed kind. Requires vpc; cannot be changed
@@ -371,11 +372,11 @@ func (x *DigitalOceanLoadBalancerSpec) GetNetworkStack() string {
 	return ""
 }
 
-func (x *DigitalOceanLoadBalancerSpec) GetProjectId() string {
+func (x *DigitalOceanLoadBalancerSpec) GetProjectId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ProjectId
 	}
-	return ""
+	return nil
 }
 
 func (x *DigitalOceanLoadBalancerSpec) GetSubnetUuid() string {
@@ -962,7 +963,7 @@ var File_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_spec_proto proto
 
 const file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/digitalocean/digitaloceanloadbalancer/v1alpha1/spec.proto\x12:dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x8b\x16\n" +
+	"Acatalog/digitalocean/digitaloceanloadbalancer/v1alpha1/spec.proto\x12:dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe9\x16\n" +
 	"\x1cDigitalOceanLoadBalancerSpec\x12H\n" +
 	"\x12load_balancer_name\x18\x01 \x01(\tB\x1a\xbaH\x17\xc8\x01\x01r\x12\x10\x01\x18@2\f^[a-z0-9-]+$R\x10loadBalancerName\x12D\n" +
 	"\x06region\x18\x02 \x01(\x0e2,.dev.planton.digitalocean.DigitalOceanRegionR\x06region\x12d\n" +
@@ -986,9 +987,9 @@ const file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_spec_proto_raw
 	"\x19http_idle_timeout_seconds\x18\x11 \x01(\rR\x16httpIdleTimeoutSeconds\x12E\n" +
 	"\x11tls_cipher_policy\x18\x12 \x01(\tB\x19\xbaH\x16\xd8\x01\x01r\x11R\aDEFAULTR\x06STRONGR\x0ftlsCipherPolicy\x126\n" +
 	"\anetwork\x18\x13 \x01(\tB\x1c\xbaH\x19\xd8\x01\x01r\x14R\bEXTERNALR\bINTERNALR\anetwork\x12>\n" +
-	"\rnetwork_stack\x18\x14 \x01(\tB\x19\xbaH\x16\xd8\x01\x01r\x11R\x04IPV4R\tDUALSTACKR\fnetworkStack\x12\x1d\n" +
+	"\rnetwork_stack\x18\x14 \x01(\tB\x19\xbaH\x16\xd8\x01\x01r\x11R\x04IPV4R\tDUALSTACKR\fnetworkStack\x12u\n" +
 	"\n" +
-	"project_id\x18\x15 \x01(\tR\tprojectId\x12\x1f\n" +
+	"project_id\x18\x1c \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xa6'\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x1f\n" +
 	"\vsubnet_uuid\x18\x16 \x01(\tR\n" +
 	"subnetUuid\x12\x1a\n" +
 	"\x02ip\x18\x17 \x01(\tB\n" +
@@ -1001,7 +1002,7 @@ const file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_spec_proto_raw
 	"!forwarding_rules_xor_glb_settings\x12;exactly one of forwarding_rules or glb_settings must be set\x1a<(this.forwarding_rules.size() > 0) != has(this.glb_settings)\x1a\x94\x01\n" +
 	"\x0eregion_by_type\x12Eregion must be empty for GLOBAL balancers and set for all other types\x1a;this.type == 'GLOBAL' ? this.region == 0 : this.region != 0\x1ab\n" +
 	"\x13subnet_requires_vpc\x12\"subnet_uuid requires vpc to be set\x1a'this.subnet_uuid == '' || has(this.vpc)\x1ak\n" +
-	"\x12size_xor_size_unit\x12)size and size_unit are mutually exclusive\x1a*!(this.size != '' && this.size_unit != 0u)J\x04\b\b\x10\tR\x16enable_sticky_sessions\"\xc3\x05\n" +
+	"\x12size_xor_size_unit\x12)size and size_unit are mutually exclusive\x1a*!(this.size != '' && this.size_unit != 0u)J\x04\b\b\x10\tJ\x04\b\x15\x10\x16R\x16enable_sticky_sessions\"\xc3\x05\n" +
 	"&DigitalOceanLoadBalancerForwardingRule\x12-\n" +
 	"\n" +
 	"entry_port\x18\x01 \x01(\rB\x0e\xbaH\v\xc8\x01\x01*\x06\x18\xff\xff\x03(\x01R\tentryPort\x12\x8b\x01\n" +
@@ -1103,22 +1104,23 @@ var file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_spec_proto_depId
 	3,  // 3: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.health_check:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerHealthCheck
 	11, // 4: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.droplet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	4,  // 5: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.sticky_sessions:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerStickySessions
-	11, // 6: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.target_load_balancer_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 7: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.firewall:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerFirewall
-	6,  // 8: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.domains:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerDomain
-	7,  // 9: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.glb_settings:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings
-	0,  // 10: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerForwardingRule.entry_protocol:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerProtocol
-	0,  // 11: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerForwardingRule.target_protocol:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerProtocol
-	11, // 12: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerForwardingRule.certificate_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 13: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerHealthCheck.protocol:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerProtocol
-	11, // 14: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerDomain.certificate_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 15: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings.region_priorities:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings.RegionPrioritiesEntry
-	8,  // 16: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings.cdn:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbCdn
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	11, // 6: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 7: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.target_load_balancer_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 8: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.firewall:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerFirewall
+	6,  // 9: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.domains:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerDomain
+	7,  // 10: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerSpec.glb_settings:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings
+	0,  // 11: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerForwardingRule.entry_protocol:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerProtocol
+	0,  // 12: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerForwardingRule.target_protocol:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerProtocol
+	11, // 13: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerForwardingRule.certificate_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 14: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerHealthCheck.protocol:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerProtocol
+	11, // 15: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerDomain.certificate_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9,  // 16: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings.region_priorities:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings.RegionPrioritiesEntry
+	8,  // 17: dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbSettings.cdn:type_name -> dev.planton.digitalocean.digitaloceanloadbalancer.v1alpha1.DigitalOceanLoadBalancerGlbCdn
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceanloadbalancer_v1alpha1_spec_proto_init() }

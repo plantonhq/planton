@@ -222,10 +222,20 @@ message DigitalOceanLoadBalancerSpec {
     }
   ];
 
-  // (Optional) DigitalOcean project UUID to put the balancer in. Literal; a
-  // typed reference lands when the Project kind is forged. When unset, the
+  // Retired field. project_id was a literal project UUID written before the
+  // Project kind existed. Its number must never be reused with a different
+  // meaning; the field returns below as a typed reference that also accepts
+  // a literal UUID.
+  reserved 21;
+
+  // (Optional) The project the balancer is created in. Reference a
+  // DigitalOceanProject resource (the default wiring resolves its
+  // project_id output) or pass a literal project UUID. When unset, the
   // account's default project is used.
-  string project_id = 21;
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 28 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
 
   // (Optional) UUID of the DigitalOcean-managed VPC subnet to place the
   // balancer in. Literal only: subnets are DigitalOcean-assigned network

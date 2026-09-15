@@ -155,10 +155,11 @@ type DigitalOceanDatabaseClusterSpec struct {
 	// (Optional) Comma-separated SQL modes for MySQL clusters, for example
 	// "ANSI,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION".
 	SqlMode string `protobuf:"bytes,13,opt,name=sql_mode,json=sqlMode,proto3" json:"sql_mode,omitempty"`
-	// (Optional) DigitalOcean project UUID to put the cluster in. Literal; a
-	// typed reference lands when the Project kind is forged. Cannot be
-	// changed after creation.
-	ProjectId string `protobuf:"bytes,14,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	// (Optional) The project the cluster is created in. Reference a
+	// DigitalOceanProject resource (the default wiring resolves its
+	// project_id output) or pass a literal project UUID. Cannot be changed
+	// after creation.
+	ProjectId *v1.StringValueOrRef `protobuf:"bytes,16,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// (Optional) Tags applied to the cluster in DigitalOcean, in addition to
 	// the standard Planton labels both provisioners always apply.
 	Tags          []string `protobuf:"bytes,15,rep,name=tags,proto3" json:"tags,omitempty"`
@@ -287,11 +288,11 @@ func (x *DigitalOceanDatabaseClusterSpec) GetSqlMode() string {
 	return ""
 }
 
-func (x *DigitalOceanDatabaseClusterSpec) GetProjectId() string {
+func (x *DigitalOceanDatabaseClusterSpec) GetProjectId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ProjectId
 	}
-	return ""
+	return nil
 }
 
 func (x *DigitalOceanDatabaseClusterSpec) GetTags() []string {
@@ -490,7 +491,7 @@ var File_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_spec_proto pr
 
 const file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/spec.proto\x12=dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xaa\v\n" +
+	"Dcatalog/digitalocean/digitaloceandatabasecluster/v1alpha1/spec.proto\x12=dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x88\f\n" +
 	"\x1fDigitalOceanDatabaseClusterSpec\x12-\n" +
 	"\fcluster_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x18@R\vclusterName\x12y\n" +
@@ -509,12 +510,12 @@ const file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_spec_proto_
 	" \x01(\v2g.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterBackupRestoreR\rbackupRestore\x12\x97\x01\n" +
 	"\x11storage_autoscale\x18\v \x01(\v2j.dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStorageAutoscaleR\x10storageAutoscale\x12'\n" +
 	"\x0feviction_policy\x18\f \x01(\tR\x0eevictionPolicy\x12\x19\n" +
-	"\bsql_mode\x18\r \x01(\tR\asqlMode\x12\x1d\n" +
+	"\bsql_mode\x18\r \x01(\tR\asqlMode\x12u\n" +
 	"\n" +
-	"project_id\x18\x0e \x01(\tR\tprojectId\x128\n" +
+	"project_id\x18\x10 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xa6'\x92\xd4a\x19status.outputs.project_idR\tprojectId\x128\n" +
 	"\x04tags\x18\x0f \x03(\tB$\xbaH!\x92\x01\x1e\"\x1cr\x1a2\x18^[a-zA-Z0-9:\\-_]{1,255}$R\x04tags:\x8c\x02\xbaH\x88\x02\x1ag\n" +
 	"\x13sql_mode_mysql_only\x12'sql_mode applies only to MySQL clusters\x1a'this.sql_mode == '' || this.engine == 2\x1a\x9c\x01\n" +
-	"\x1ceviction_policy_caching_only\x128eviction_policy applies only to Redis or Valkey clusters\x1aBthis.eviction_policy == '' || this.engine == 3 || this.engine == 7\"\xcb\x01\n" +
+	"\x1ceviction_policy_caching_only\x128eviction_policy applies only to Redis or Valkey clusters\x1aBthis.eviction_policy == '' || this.engine == 3 || this.engine == 7J\x04\b\x0e\x10\x0f\"\xcb\x01\n" +
 	",DigitalOceanDatabaseClusterMaintenanceWindow\x12\\\n" +
 	"\x03day\x18\x01 \x01(\tBJ\xbaHG\xc8\x01\x01rB2@^(?i)(monday|tuesday|wednesday|thursday|friday|saturday|sunday)$R\x03day\x12=\n" +
 	"\x04hour\x18\x02 \x01(\tB)\xbaH&\xc8\x01\x01r!2\x1f^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$R\x04hour\"\x87\x01\n" +
@@ -571,11 +572,12 @@ var file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_spec_proto_de
 	2, // 3: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec.maintenance_window:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterMaintenanceWindow
 	3, // 4: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec.backup_restore:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterBackupRestore
 	4, // 5: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec.storage_autoscale:type_name -> dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterStorageAutoscale
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	6, // 6: dev.planton.digitalocean.digitaloceandatabasecluster.v1alpha1.DigitalOceanDatabaseClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceandatabasecluster_v1alpha1_spec_proto_init() }

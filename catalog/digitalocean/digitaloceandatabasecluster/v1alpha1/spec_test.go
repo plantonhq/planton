@@ -422,7 +422,9 @@ var _ = ginkgo.Describe("DigitalOceanDatabaseClusterSpec validations", func() {
 
 		ginkgo.It("accepts spec with project_id", func() {
 			spec := makeValidPostgresSpec()
-			spec.ProjectId = "12345678-1234-1234-1234-123456789012"
+			spec.ProjectId = &fk.StringValueOrRef{
+				LiteralOrRef: &fk.StringValueOrRef_Value{Value: "12345678-1234-1234-1234-123456789012"},
+			}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).To(gomega.BeNil())
 		})

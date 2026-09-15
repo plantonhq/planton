@@ -119,8 +119,8 @@ func app(
 	}
 
 	args := &digitalocean.AppArgs{Spec: appSpec}
-	if spec.GetProjectId() != "" {
-		args.ProjectId = pulumi.String(spec.GetProjectId())
+	if projectId := spec.GetProjectId().GetValue(); projectId != "" {
+		args.ProjectId = pulumi.String(projectId)
 	}
 
 	created, err := digitalocean.NewApp(ctx, "app", args, pulumi.Provider(digitalOceanProvider))

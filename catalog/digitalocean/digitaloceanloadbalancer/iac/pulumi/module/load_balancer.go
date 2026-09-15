@@ -62,8 +62,8 @@ func loadBalancer(
 	if spec.NetworkStack != "" {
 		args.NetworkStack = pulumi.StringPtr(spec.NetworkStack)
 	}
-	if spec.ProjectId != "" {
-		args.ProjectId = pulumi.StringPtr(spec.ProjectId)
+	if projectId := spec.GetProjectId().GetValue(); projectId != "" {
+		args.ProjectId = pulumi.StringPtr(projectId)
 	}
 	if spec.DropletTag != "" {
 		args.DropletTag = pulumi.StringPtr(spec.DropletTag)
