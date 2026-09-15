@@ -1361,11 +1361,11 @@ const file_catalog_kubernetes_kubernetesnats_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15KubernetesNatsCluster\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12/\n" +
 	"\breplicas\x18\x02 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\t(\x02\x8a\xa6\x1d\x013H\x00R\breplicas\x88\x01\x01B\v\n" +
-	"\t_replicas\"\xaf\x04\n" +
+	"\t_replicas\"\xc4\x04\n" +
 	"\x17KubernetesNatsJetStream\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12`\n" +
-	"\tdisk_size\x18\x02 \x01(\tB>\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x0410GiH\x01R\bdiskSize\x88\x01\x01\x12o\n" +
-	"\rstorage_class\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClass\x12a\n" +
+	"\tdisk_size\x18\x02 \x01(\tB>\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x0410GiH\x01R\bdiskSize\x88\x01\x01\x12\x83\x01\n" +
+	"\rstorage_class\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClass\x12a\n" +
 	"\x0emax_file_store\x18\x04 \x01(\tB6\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$H\x02R\fmaxFileStore\x88\x01\x01\x12n\n" +
 	"\x15memory_store_max_size\x18\x05 \x01(\tB6\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$H\x03R\x12memoryStoreMaxSize\x88\x01\x01B\n" +
 	"\n" +
