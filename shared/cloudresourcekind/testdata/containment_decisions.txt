@@ -8,7 +8,6 @@
 #
 contained dev.planton._test.testcloudresourcekubernetes.v1alpha1.TestCloudResourceKubernetesSpec.namespace -> KubernetesNamespace
 contained dev.planton.aws.awsalb.v1alpha1.AwsAlbSpec.subnets -> AwsSubnet
-contained dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceVpcIngressConnection.vpc_id -> AwsVpc
 contained dev.planton.aws.awsapprunnervpcconnector.v1alpha1.AwsAppRunnerVpcConnectorSpec.subnet_ids -> AwsSubnet
 contained dev.planton.aws.awsautoscalinggroup.v1alpha1.AwsAutoScalingGroupSpec.subnets -> AwsSubnet
 contained dev.planton.aws.awsbatchcomputeenvironment.v1alpha1.AwsBatchComputeResources.subnet_ids -> AwsSubnet
@@ -36,9 +35,7 @@ contained dev.planton.aws.awseksaccessentry.v1alpha1.AwsEksAccessEntrySpec.clust
 contained dev.planton.aws.awseksaddon.v1alpha1.AwsEksAddonSpec.cluster_name -> AwsEksCluster
 contained dev.planton.aws.awsekscluster.v1alpha1.AwsEksClusterSpec.subnet_ids -> AwsSubnet
 contained dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSpec.cluster_name -> AwsEksCluster
-contained dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSpec.subnet_ids -> AwsSubnet
 contained dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupSpec.cluster_name -> AwsEksCluster
-contained dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupSpec.subnet_ids -> AwsSubnet
 contained dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemMountTarget.subnet_id -> AwsSubnet
 contained dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeRuleSpec.event_bus_name -> AwsEventBridgeBus
 contained dev.planton.aws.awsfsxdatarepositoryassociation.v1alpha1.AwsFsxDataRepositoryAssociationSpec.file_system_id -> AwsFsxLustreFileSystem
@@ -651,6 +648,7 @@ contained dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthoriz
 contained dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleSpec.store_id -> OpenFgaStore
 exempt    dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.kindless_access_ref -> *
 exempt    dev.planton.aws.awsalb.v1alpha1.AwsAlbDns.route53_zone_id -> AwsRoute53Zone
+exempt    dev.planton.aws.awsapprunnerservice.v1alpha1.AwsAppRunnerServiceVpcIngressConnection.vpc_id -> AwsVpc
 exempt    dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncCognitoUserPoolAuth.user_pool_id -> AwsCognitoUserPool
 exempt    dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncDatasourceEventbridge.event_bus_arn -> AwsEventBridgeBus
 exempt    dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncEventsCognitoAuth.user_pool_id -> AwsCognitoUserPool
@@ -666,6 +664,8 @@ exempt    dev.planton.aws.awsclientvpn.v1alpha1.AwsClientVpnRoute.target_subnet_
 exempt    dev.planton.aws.awsecscluster.v1alpha1.AwsEcsClusterManagedInstancesNetworkConfiguration.subnets -> AwsSubnet
 exempt    dev.planton.aws.awsecsservice.v1alpha1.AwsEcsServiceNetwork.subnets -> AwsSubnet
 exempt    dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsVolume.file_system_id -> AwsElasticFileSystem
+exempt    dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSpec.subnet_ids -> AwsSubnet
+exempt    dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupSpec.subnet_ids -> AwsSubnet
 exempt    dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemReplication.destination_file_system_id -> AwsElasticFileSystem
 exempt    dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeEcsNetworkConfiguration.subnets -> AwsSubnet
 exempt    dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeSelfManagedKafkaVpc.subnets -> AwsSubnet

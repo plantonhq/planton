@@ -65,7 +65,11 @@ type AwsEksFargateProfileSpec struct {
 	// only -- AWS rejects subnets whose route table carries an internet
 	// gateway route; give the pods outbound internet through a NAT
 	// gateway. Reference AwsSubnet subnet_id outputs or pass literal
-	// subnet IDs. Create-only in AWS.
+	// subnet IDs. Create-only in AWS. A Fargate profile is a member of
+	// its cluster and lives there on a diagram; the subnets are where its
+	// pods land, so the reference is access, not placement -- otherwise a
+	// profile on subnets its cluster does not name would be drawn outside
+	// the cluster it belongs to.
 	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Which pods run on Fargate: a pod matches the profile when it matches
 	// ANY selector (namespace, plus every label when labels are given).
@@ -205,13 +209,13 @@ var File_catalog_aws_awseksfargateprofile_v1alpha1_spec_proto protoreflect.FileD
 
 const file_catalog_aws_awseksfargateprofile_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awseksfargateprofile/v1alpha1/spec.proto\x12-dev.planton.aws.awseksfargateprofile.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc3\x04\n" +
+	"4catalog/aws/awseksfargateprofile/v1alpha1/spec.proto\x12-dev.planton.aws.awseksfargateprofile.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xc8\x04\n" +
 	"\x18AwsEksFargateProfileSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12y\n" +
 	"\fcluster_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\xef\a\x92\xd4a\x13status.outputs.nameR\vclusterName\x12\x8f\x01\n" +
-	"\x16pod_execution_role_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\x13podExecutionRoleArn\x12\x7f\n" +
+	"\x16pod_execution_role_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\x13podExecutionRoleArn\x12\x83\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12x\n" +
+	"subnet_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB0\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_id\x98\xd4a\x01R\tsubnetIds\x12x\n" +
 	"\tselectors\x18\x05 \x03(\v2K.dev.planton.aws.awseksfargateprofile.v1alpha1.AwsEksFargateProfileSelectorB\r\xbaH\n" +
 	"\xc8\x01\x01\x92\x01\x04\b\x01\x10\x05R\tselectors\"\x8d\x02\n" +
 	"\x1cAwsEksFargateProfileSelector\x12*\n" +

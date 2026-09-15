@@ -756,6 +756,13 @@ type AwsAppRunnerServiceVpcIngressConnection struct {
 	// characters.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// The VPC to publish the service into.
+	//
+	// Containment-exempt: the connection lets clients INSIDE this VPC
+	// reach the service over PrivateLink; the service itself runs on
+	// App Runner's managed infrastructure and is never deployed into the
+	// VPC (a VPC connector, not an ingress connection, is what places a
+	// service's egress in a VPC). On a diagram the service stands outside
+	// the VPC with a line to the network it is published into.
 	VpcId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=vpc_id,json=vpcId,proto3" json:"vpc_id,omitempty"`
 	// The interface VPC endpoint in that VPC that carries the traffic. AWS
 	// requires both members -- an ingress connection cannot exist without its
@@ -902,10 +909,10 @@ const file_catalog_aws_awsapprunnerservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\xbaH\ar\x05\x10\x01\x18\xff\x01R\n" +
 	"domainName\x12?\n" +
 	"\x14enable_www_subdomain\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x12enableWwwSubdomain\x88\x01\x01B\x17\n" +
-	"\x15_enable_www_subdomain\"\xc5\x02\n" +
+	"\x15_enable_www_subdomain\"\xc9\x02\n" +
 	"'AwsAppRunnerServiceVpcIngressConnection\x12\x1d\n" +
-	"\x04name\x18\x01 \x01(\tB\t\xbaH\x06r\x04\x10\x04\x18(R\x04name\x12o\n" +
-	"\x06vpc_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\xbaH\x03\xc8\x01\x01\x88\xd4a\xf8\a\x92\xd4a\x15status.outputs.vpc_idR\x05vpcId\x12\x89\x01\n" +
+	"\x04name\x18\x01 \x01(\tB\t\xbaH\x06r\x04\x10\x04\x18(R\x04name\x12s\n" +
+	"\x06vpc_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xf8\a\x92\xd4a\x15status.outputs.vpc_id\x98\xd4a\x01R\x05vpcId\x12\x89\x01\n" +
 	"\x0fvpc_endpoint_id\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x92\b\x92\xd4a\x1estatus.outputs.vpc_endpoint_idR\rvpcEndpointIdB\xf5\x02\n" +
 	"0com.dev.planton.aws.awsapprunnerservice.v1alpha1B\tSpecProtoP\x01Zagithub.com/plantonhq/planton/catalog/aws/awsapprunnerservice/v1alpha1;awsapprunnerservicev1alpha1\xa2\x02\x04DPAA\xaa\x02,Dev.Planton.Aws.Awsapprunnerservice.V1alpha1\xca\x02,Dev\\Planton\\Aws\\Awsapprunnerservice\\V1alpha1\xe2\x028Dev\\Planton\\Aws\\Awsapprunnerservice\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Aws::Awsapprunnerservice::V1alpha1b\x06proto3"
 
