@@ -10,8 +10,10 @@ import (
 //
 // Attachment to Droplets is a property of the Droplet (its volume_ids list),
 // never of the volume. Size can only be EXPANDED after creation -- the
-// provider rejects a shrink at plan time. Every other argument is create-only
-// and replaces the volume when changed.
+// provider rejects a shrink at plan time. name, region, and description are
+// create-only and replace the volume when changed; the three initialization
+// arguments are create-only too but IGNORED after creation (see the
+// IgnoreChanges option below).
 func volume(
 	ctx *pulumi.Context,
 	locals *Locals,
@@ -73,6 +75,16 @@ func volume(
 		"volume",
 		volumeArgs,
 		pulumi.Provider(digitalOceanProvider),
+		// The three initialization arguments are ForceNew at the provider and
+		// the API never returns them, so without this option any later edit --
+		// or an adoption (import) whose manifest still describes how the
+		// volume was formatted -- plans as a destroy-and-recreate of a volume
+		// holding data. They have no meaning after creation (the volume is
+		// already formatted, or already cloned from its snapshot), so ignoring
+		// them loses nothing and makes import-then-apply a no-op. Mirrors the
+		// Terraform module's lifecycle.ignore_changes; the spec field comments
+		// tell manifest authors the same.
+		pulumi.IgnoreChanges([]string{"initialFilesystemType", "initialFilesystemLabel", "snapshotId"}),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create digitalocean volume")

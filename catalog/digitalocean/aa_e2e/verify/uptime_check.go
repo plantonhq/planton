@@ -37,5 +37,5 @@ func (*uptimeCheckVerifier) VerifyAbsent(ctx context.Context, client *godo.Clien
 		}
 		return pkgerrors.Wrap(err, "digitaloceanuptimecheck verify-absent failed")
 	}
-	return pkgerrors.Errorf("digitaloceanuptimecheck %q still exists after destroy", id)
+	return &StillExistsError{Component: "digitaloceanuptimecheck", ID: id}
 }

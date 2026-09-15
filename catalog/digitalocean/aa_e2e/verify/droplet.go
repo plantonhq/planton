@@ -37,7 +37,7 @@ func (*dropletVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, i
 		}
 		return pkgerrors.Wrapf(err, "digitaloceandroplet verify-absent failed for %q", id)
 	}
-	return pkgerrors.Errorf("digitaloceandroplet %q still exists after destroy", id)
+	return &StillExistsError{Component: "digitaloceandroplet", ID: id}
 }
 
 func (v *dropletVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {

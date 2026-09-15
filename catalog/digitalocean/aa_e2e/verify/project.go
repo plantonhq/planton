@@ -37,5 +37,5 @@ func (*projectVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, i
 		}
 		return pkgerrors.Wrap(err, "digitaloceanproject verify-absent failed")
 	}
-	return pkgerrors.Errorf("digitaloceanproject %q still exists after destroy", id)
+	return &StillExistsError{Component: "digitaloceanproject", ID: id}
 }

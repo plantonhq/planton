@@ -68,7 +68,7 @@ func (v *databaseReplicaVerifier) VerifyAbsentFromOutputs(ctx context.Context, c
 		return pkgerrors.Wrap(err, "digitaloceandatabasereplica verify-absent failed")
 	}
 	if replica != nil {
-		return pkgerrors.Errorf("digitaloceandatabasereplica %q still exists after destroy", replica.Name)
+		return &StillExistsError{Component: "digitaloceandatabasereplica", ID: replica.Name}
 	}
 	return nil
 }

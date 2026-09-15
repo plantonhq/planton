@@ -133,7 +133,12 @@ spec:
       pulumi_type: digitalocean:index/volume:Volume
       id_format: "{volume_id}"
       # Create-only initialization arguments; the API surfaces the resulting
-      # filesystem through separate computed attributes.
+      # filesystem through separate computed attributes. They are ForceNew at
+      # the provider, so a tolerance alone could never make a blind import
+      # plan clean (the oracle refuses replaces); the kind's modules
+      # ignore_changes them in both engines, which is what makes an adopted
+      # volume's first apply a no-op. Declared here for the raw-resource
+      # adopter and as the record of why the modules ignore them.
       config_only_attributes:
         - snapshot_id
         - initial_filesystem_type
@@ -316,17 +321,20 @@ spec:
       id_format: "{registry_name}"
     - terraform_type: digitalocean_container_registry_docker_credentials
       pulumi_type: digitalocean:index/containerRegistryDockerCredentials:ContainerRegistryDockerCredentials
-      id_format: "{registry_name}"
-      notes: >-
-        Import is DEFECTIVE at the provider pin: the resource declares a
-        passthrough importer, but its Read requires registry_name from state
-        (which passthrough never sets) before it can even look the registry
-        up, and the provider docs carry no Import section for it. The kind
-        that wires this resource must prove or exclude it in its own import
-        map when its depth wave runs the live round-trip.
-      # Pure config inputs; docker_credentials itself is re-minted by the
-      # provider whenever the stored token is missing or expired.
-      config_only_attributes: [write, expiry_seconds]
+      # A prose "excluded" is not machine-honored: the round-trip runner skips
+      # a type ONLY when it declares not_importable_upstream_reason (mutually
+      # exclusive with id_format). The importer is DEFECTIVE at the provider
+      # pin: the resource declares a passthrough importer, but its Read
+      # requires registry_name from state (which passthrough never sets)
+      # before it can even look the registry up, and the provider docs carry
+      # no Import section for it. Even a fixed importer could not recover
+      # write/expiry_seconds (the API never returns them). The create path is
+      # upsert-convergent -- it mints a fresh credential from configuration --
+      # so an adopter's first apply re-puts it, which is the honest reconcile.
+      not_importable_upstream_reason: >-
+        Passthrough importer whose Read requires registry_name from prior
+        state at v2.99.1 -- import always fails; the resource re-mints from
+        configuration on the adopter's first apply.
 
     # --- App Platform ----------------------------------------------------------
     - terraform_type: digitalocean_app

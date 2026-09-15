@@ -11,6 +11,11 @@ import (
 // The IP range is immutable: DigitalOcean assigns one when ip_range is unset
 // (the assigned range is reported through the ip_range output), and a change
 // to a set range REPLACES the VPC.
+//
+// Destroy caveat the module cannot fix: in a region with no VPC yet, the
+// first VPC created becomes the region's DEFAULT, and the API refuses to
+// delete default VPCs (403). The `default` attribute is computed and cannot
+// be steered from here; the kind's GUIDE carries the account-level recovery.
 func vpc(
 	ctx *pulumi.Context,
 	locals *Locals,

@@ -84,6 +84,40 @@ var verifiers = map[string]Verifier{
 	"digitaloceanvpcpeering":             &vpcPeeringVerifier{},
 }
 
+// StillExistsError is the ONE error a VerifyAbsent returns when the API still
+// answers for a destroyed resource. It is a type, not a string, so the
+// harness can tell "not gone yet" from every other failure (auth, rate
+// limit, a broken lookup) and poll only the former: DigitalOcean's
+// read-after-delete is eventually consistent -- a GET issued a second after
+// a successful DELETE can still answer 200 (measured live on volumes:
+// destroy returned in ~2s, the probe 1s later saw the volume, and it read
+// 404 seconds after that) -- while a genuine API error must fail the phase
+// immediately rather than be retried into a timeout.
+type StillExistsError struct {
+	// Component is the catalog slug of the kind whose resource lingers.
+	Component string
+	// ID is the identifier the probe used (a UUID, a name, or a composite).
+	ID string
+	// Detail optionally replaces the default "still exists after destroy"
+	// clause for verifiers whose absence is a state, not a 404 (a firewall
+	// whose rule set must be empty).
+	Detail string
+}
+
+func (e *StillExistsError) Error() string {
+	if e.Detail != "" {
+		return fmt.Sprintf("%s %q %s", e.Component, e.ID, e.Detail)
+	}
+	return fmt.Sprintf("%s %q still exists after destroy", e.Component, e.ID)
+}
+
+// IsStillExists reports whether err (anywhere in its chain) is a
+// StillExistsError -- the harness's signal to keep polling.
+func IsStillExists(err error) bool {
+	var target *StillExistsError
+	return errors.As(err, &target)
+}
+
 // GetVerifier returns the verifier for a component, or an error if none is registered.
 func GetVerifier(component string) (Verifier, error) {
 	v, ok := verifiers[component]

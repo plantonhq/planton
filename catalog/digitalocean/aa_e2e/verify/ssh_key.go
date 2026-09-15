@@ -47,5 +47,5 @@ func (v *sshKeyVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, 
 		}
 		return pkgerrors.Wrap(err, "digitaloceansshkey verify-absent failed")
 	}
-	return pkgerrors.Errorf("digitaloceansshkey %q still exists after destroy", id)
+	return &StillExistsError{Component: "digitaloceansshkey", ID: id}
 }

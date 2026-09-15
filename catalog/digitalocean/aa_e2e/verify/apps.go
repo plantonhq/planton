@@ -38,7 +38,7 @@ func (v *appVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, id 
 		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.component, id)
 	}
 	if exists {
-		return pkgerrors.Errorf("%s %q still exists after destroy", v.component, id)
+		return &StillExistsError{Component: v.component, ID: id}
 	}
 	return nil
 }

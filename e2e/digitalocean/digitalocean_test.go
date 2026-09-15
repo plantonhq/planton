@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -403,6 +404,20 @@ func runAllScenariosForComponent(t *testing.T, component, engine string) {
 
 func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
 	t.Helper()
+
+	// Scenarios needing owner-arranged external context (the
+	// e2e-required-env annotation -- for DigitalOcean, typically a domain
+	// delegated to the account's DNS, injected as
+	// ${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN} for the Let's
+	// Encrypt certificate arm) skip honestly where the environment does not
+	// carry the arrangement -- unset tokens would otherwise fail expansion
+	// loudly, turning a recorded deferral into a false failure.
+	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
+		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
+	} else if len(missing) > 0 {
+		t.Skipf("scenario %s/%s needs owner-arranged environment variables that are unset: %s (per %s)",
+			component, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
+	}
 
 	tc := &provider.ComponentTestContext{
 		Component: component,

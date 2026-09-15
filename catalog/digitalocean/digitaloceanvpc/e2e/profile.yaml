@@ -3,20 +3,30 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanvpc
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map re-verified, presets, README/catalog/GUIDE). Live dual-engine
-  # proof has not yet run. TWO scenarios: `minimal` (region only -- proves
-  # the DigitalOcean-assigned-range path and the ip_range output read-back)
+  # Live-proven on BOTH engines, both scenarios, full lifecycle plus the blind
+  # import round-trip (Terraform lane): `minimal` (region only -- the
+  # DigitalOcean-assigned range landed in the ip_range output and the
+  # re-imported plan showed no diff, proving the Optional+Computed read-back)
   # and `full` (description + explicit /24). VPCs are free API objects
-  # creating in seconds. NOTE: this kind's e2e/prerequisite.yaml is the
-  # install fixture other kinds' lanes deploy (region nyc3, 10.60.0.0/24) --
-  # it is deliberately separate from these scenarios and must keep its shape.
-  # The provider serializes VPC creation per region internally, so parallel
-  # lanes in one region queue up rather than fail. Watch on first live run:
-  # minimal's DigitalOcean-assigned range must land in the ip_range output
-  # with no plan diff (Optional+Computed read-back).
+  # creating in seconds. Scenario names carry ${E2E_RUN_ID} because VPC names
+  # are unique per account and a leftover would collide with the next run.
+  #
+  # ACCOUNT PRECONDITION the first live run taught: a region with NO VPC yet
+  # makes the first VPC created there the region's DEFAULT, and default VPCs
+  # cannot be deleted (DELETE answers 403 "Can not delete default VPCs"), so
+  # the lane's destroy fails and the VPC is stranded. Every region a lane
+  # touches must already hold a default VPC before the first lane runs -- the
+  # provider harness docs (e2e/README.md, DigitalOcean section) carry the
+  # one-time seeding and the recovery (create a replacement, PATCH it
+  # default, delete the stranded one). The kind's GUIDE teaches the same to
+  # customers whose first VPC in a region goes through Planton.
+  #
+  # NOTE: this kind's e2e/prerequisite.yaml is the install fixture other
+  # kinds' lanes deploy (region nyc3, 10.60.0.0/24) -- it is deliberately
+  # separate from these scenarios and must keep its shape. The provider
+  # serializes VPC creation per region internally, so parallel lanes in one
+  # region queue up rather than fail.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

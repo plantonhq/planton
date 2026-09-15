@@ -3102,6 +3102,112 @@ buckets so Dataproc recreates them fresh under the current identity, then
 rerun. (The `roles/dataproc.worker` role already carries the full
 `storage.buckets.get` + `storage.objects.*` set a custom VM identity needs.)
 
+## DigitalOcean E2E
+
+DigitalOcean tests live under `e2e/digitalocean/` and use the
+`catalog/digitalocean/aa_e2e` harness with real REST-API verification
+(godo). Credentials are the provider's own environment names, read by the
+harness and BOTH engines alike: `DIGITALOCEAN_TOKEN` (a full-access API
+token), plus `SPACES_ACCESS_KEY_ID` / `SPACES_SECRET_ACCESS_KEY` for the
+Spaces bucket lanes only. No region variable — region is a property of each
+manifest's spec.
+
+```bash
+go test -tags=e2e -timeout=30m -v -count=1 -run 'TestDigitalOceanVpc_Pulumi$' ./e2e/digitalocean
+PLANTON_E2E_IMPORT_ROUNDTRIP=1 go test -tags=e2e -timeout=30m -v -count=1 -run 'TestDigitalOceanVpc_Terraform$' ./e2e/digitalocean
+```
+
+Anchor the `-run` pattern with `$`: `TestDigitalOceanVpc` is a prefix of
+`TestDigitalOceanVpcPeering`, and the same holds for every kind whose name
+prefixes another's.
+
+**Seed every lane region's default VPC before the first lane — a fresh
+account has none, and the first VPC created in a region becomes the
+undeletable default.** DigitalOcean does not pre-create default VPCs; the
+first VPC created in a region with none becomes that region's default, and
+`DELETE /v2/vpcs/{id}` on a default answers `403 Can not delete default
+VPCs`. Measured on the very first live lane of a new account: the Vpc
+kind's `full` scenario deployed, verified, and then its destroy failed and
+stranded the VPC as nyc3's default (the `minimal` scenario, created
+second, destroyed cleanly). Preparation is a one-time account step: for
+every region the lanes use (`rg -o 'region: \w+' catalog/digitalocean/*/e2e`),
+`POST /v2/vpcs` a plain `default-<region>` (DigitalOcean's own naming; let
+it assign the range) and `PATCH /v2/vpcs/{id}` with `{"default": true}` —
+the flag is computed for IaC but the API does accept that one write.
+Recovery from a stranded default is the same sequence followed by deleting
+the stranded VPC. The harness `Setup` deliberately stays read-only, so this
+lives in the account-setup runbook, not in code.
+
+**Read-after-delete is eventually consistent — the harness polls absence,
+verifiers stay single-probe.** A GET a second after a successful volume
+DELETE still answered 200; it read 404 a few seconds later. The DigitalOcean
+harness handles the class once, in `VerifyDestroyed`: a verifier returns the
+typed `verify.StillExistsError` when the API still answers, and only that
+error is re-probed (2s apart, 60s budget); credentials, rate limits, and
+broken lookups still fail the phase on the first probe. New verifiers
+return `&StillExistsError{Component, ID}` for "not gone yet" and wrap
+everything else as a genuine error — never a bare `Errorf` for the lingering
+case, or the poll cannot see it.
+
+**A Terraform credential variable with no default breaks every
+environment-authenticated run.** The DigitalOcean tofu modules take the
+token as `var.digitalocean_token`; declared required, the first Terraform
+lane failed at apply with "No value for required variable" because the
+E2E stack input carries no provider config (both engines are meant to read
+the ambient environment). The contract is now `default = null`: a null
+token makes the provider fall back to its own `DIGITALOCEAN_TOKEN` /
+`DIGITALOCEAN_ACCESS_TOKEN` defaults, exactly as the Pulumi bridge does, so
+the platform's `TF_VAR_digitalocean_token` path and a developer shell both
+work. The Spaces pair already followed this shape; a new token-taking
+provider module should start there.
+
+**The pin floats within its minor: record the resolved provider version
+per session.** The modules pin `~> 2.99`; the first live session resolved
+`digitalocean/digitalocean v2.100.0` at `tofu init` while the design floor
+and every schema reading are v2.99.1. Nothing diverged, but "proven at the
+pin" means proven at whatever the constraint resolved to on that day — the
+session record names it.
+
+**Import round-trip classes met on the first kinds.** (1) Create-only
+initialization arguments that are `ForceNew` and never read back
+(`digitalocean_volume`'s `initial_filesystem_type` / `_label` /
+`snapshot_id`) can NOT be made round-trip-clean by a `config_only_attributes`
+tolerance — the oracle refuses the replace the provider plans. The volume
+modules `ignore_changes` the trio in both engines instead (post-create they
+mean nothing, and ignoring them is what keeps an adopted data volume from
+being destroyed on its first apply); the round-trip then passes on the
+formatted scenario as live proof. (2) Write-only secret material that is
+`ForceNew` (`digitalocean_certificate`'s PEM trio) keeps the reason-carrying
+`planton.dev/e2e-import-roundtrip-skip` annotation — rotating it is
+supposed to replace. (3) A resource type whose upstream importer is
+defective (`digitalocean_container_registry_docker_credentials`) is excluded
+ONLY by `not_importable_upstream_reason` in the provider import catalog;
+a prose "excluded" beside an `id_format` is not machine-honored and the
+runner will try the import. The round-trip then skips it and tolerates its
+re-create through the reconcile-apply (the credential is re-minted).
+
+**Names that are unique per account or per region carry `${E2E_RUN_ID}`.**
+VPC names (account), volume names (region), certificate names (account),
+and registry names (globally) all do now; the runner appends an
+engine-scoped suffix (`-p` / `-t`) so the two engines' lanes never
+collide either. `planton validate-manifest` on a raw scenario file fails
+for exactly these fields (the token is not a valid name until expanded) —
+the runner's VALIDATE phase is the gate that matters.
+
+**Environmental gates use `planton.dev/e2e-required-env` — and the
+provider test file must enforce it.** The certificate kind's Let's Encrypt
+arm needs a domain delegated to the account's DNS, declared as
+`PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN` and referenced through
+`${E2E_ENV:...}`; unset, both lanes report the skip with the variable
+named. The check that makes the annotation real is the
+`runner.ScenarioMissingRequiredEnv` block in `e2e/digitalocean/digitalocean_test.go`
+(the same block GCP and Cloudflare carry) — without it the scenario runs
+live and fails at the API.
+
+**One container registry per account.** `GET /v2/registry` must answer 404
+before a registry lane starts; the two scenarios and the two engines run
+strictly one at a time.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

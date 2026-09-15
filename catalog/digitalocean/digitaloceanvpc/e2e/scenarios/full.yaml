@@ -4,8 +4,8 @@
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanVpc
 metadata:
-  name: planton-oss-e2e-digitaloceanvpc-full
-  id: planton-oss-e2e-digitaloceanvpc-full
+  name: planton-oss-e2e-digitaloceanvpc-full-${E2E_RUN_ID}
+  id: planton-oss-e2e-digitaloceanvpc-full-${E2E_RUN_ID}
   org: planton-oss
   env: e2e
   labels:

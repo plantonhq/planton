@@ -33,7 +33,7 @@ func (*spacesKeyVerifier) VerifyAbsent(ctx context.Context, client *godo.Client,
 		return pkgerrors.Wrapf(err, "digitaloceanspaceskey verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceanspaceskey %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceanspaceskey", ID: id}
 	}
 	return nil
 }

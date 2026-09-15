@@ -32,7 +32,7 @@ func (*kubernetesClusterVerifier) VerifyAbsent(ctx context.Context, client *godo
 		}
 		return pkgerrors.Wrapf(err, "digitaloceankubernetescluster verify-absent failed for %q", id)
 	}
-	return pkgerrors.Errorf("digitaloceankubernetescluster %q still exists after destroy", id)
+	return &StillExistsError{Component: "digitaloceankubernetescluster", ID: id}
 }
 
 func (v *kubernetesClusterVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {
@@ -109,7 +109,7 @@ func (*kubernetesNodePoolVerifier) VerifyAbsent(ctx context.Context, client *god
 		return pkgerrors.Wrapf(err, "digitaloceankubernetesnodepool verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceankubernetesnodepool %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceankubernetesnodepool", ID: id}
 	}
 	return nil
 }
@@ -158,7 +158,7 @@ func (v *kubernetesNodePoolVerifier) VerifyAbsentFromOutputs(ctx context.Context
 		}
 		return pkgerrors.Wrapf(err, "digitaloceankubernetesnodepool verify-absent failed for %q", poolID)
 	}
-	return pkgerrors.Errorf("digitaloceankubernetesnodepool %q still exists after destroy", poolID)
+	return &StillExistsError{Component: "digitaloceankubernetesnodepool", ID: poolID}
 }
 
 func kubernetesNodePoolExists(ctx context.Context, client *godo.Client, poolID string) (bool, error) {

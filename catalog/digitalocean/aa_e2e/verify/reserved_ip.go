@@ -37,7 +37,7 @@ func (*reservedIpVerifier) VerifyAbsent(ctx context.Context, client *godo.Client
 		return pkgerrors.Wrapf(err, "digitaloceanreservedip verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceanreservedip %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceanreservedip", ID: id}
 	}
 	return nil
 }

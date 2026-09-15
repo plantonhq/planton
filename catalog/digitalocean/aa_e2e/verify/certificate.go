@@ -34,7 +34,7 @@ func (*certificateVerifier) VerifyAbsent(ctx context.Context, client *godo.Clien
 		return pkgerrors.Wrapf(err, "digitaloceancertificate verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceancertificate %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceancertificate", ID: id}
 	}
 	return nil
 }

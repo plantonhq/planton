@@ -14,6 +14,13 @@ spec:
   # again the provider's own env names -- because Spaces buckets are only
   # reachable over the S3-compatible API, not the DigitalOcean REST API.
   # Lanes for every other kind run on the API token alone.
+  #
+  # ACCOUNT PRECONDITION (one-time, per region the lanes use): a default VPC
+  # must already exist in every such region. A fresh account has none, the
+  # first VPC created in a region becomes its default, and default VPCs
+  # cannot be deleted -- the very first live lane stranded a Vpc scenario
+  # that way. Setup stays read-only by design, so seeding lives in the
+  # account runbook (see e2e/README.md, "DigitalOcean E2E").
   credential_approach: api_token
   test_substrate: real_cloud
   default_cost_class: paid_ephemeral

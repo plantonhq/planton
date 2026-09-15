@@ -42,7 +42,7 @@ func (v *kafkaTopicVerifier) VerifyAbsentFromOutputs(ctx context.Context, client
 		return pkgerrors.Wrap(err, "digitaloceandatabasekafkatopic verify-absent failed")
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceandatabasekafkatopic %q still exists after destroy", StringOutput(outputs, "topic_name"))
+		return &StillExistsError{Component: "digitaloceandatabasekafkatopic", ID: StringOutput(outputs, "topic_name")}
 	}
 	return nil
 }

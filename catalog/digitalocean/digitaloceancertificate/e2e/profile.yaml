@@ -3,22 +3,32 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceancertificate
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` uploads a CUSTOM certificate from a
-  # throwaway self-signed pair embedded in the scenario (no domain needed --
-  # fully live-provable, and the reserved `minimal` name doubles as the
-  # fixture install profile for future certificate consumers); `lets-encrypt`
-  # proves the Let's Encrypt branch offline (plan-only) -- its LIVE arm is an
-  # ENVIRONMENTAL-GATE DEFERRAL: issuance requires every domain to be
-  # DigitalOcean-DNS-managed in the test account (a delegated domain), which
-  # does not exist yet. Unblock condition: a domain delegated to the test
-  # account's DigitalOcean DNS. Certificates are free API objects creating in
-  # seconds. Watch on first live run: the blind import round-trip addresses
-  # the certificate by NAME (the catalog's first name-addressed import), and
-  # the PEM trio stays empty on import (config-only tolerances).
+  # Live-proven on BOTH engines: `minimal` uploads a CUSTOM certificate from
+  # the throwaway self-signed pair embedded in the scenario (no domain
+  # needed), full lifecycle, verified by NAME through ListByName -- the
+  # reserved `minimal` name doubles as the fixture install profile for kinds
+  # that compose a certificate. Certificates are free API objects creating in
+  # seconds (the API took 17-33s to accept the upload live). Certificate
+  # names are unique per account, so scenario names carry ${E2E_RUN_ID}.
+  #
+  # IMPORT ROUND-TRIP: `minimal` opts out by annotation, with the reason in
+  # the lane log. The PEM trio is write-only AND ForceNew, so a blind import
+  # leaves it empty, the config re-supplies it, and the only plan is a
+  # replace -- which the oracle rightly refuses and which must never be
+  # papered over (rotating certificate material is SUPPOSED to replace the
+  # certificate). The kind's import map therefore stays offline-validated
+  # until a PEM-free scenario proves it live; the GUIDE teaches adopters the
+  # one-time replacement on their first apply after import.
+  #
+  # ENVIRONMENTAL GATE (recorded deferral): `lets-encrypt` needs a domain
+  # delegated to the account's DigitalOcean DNS. The scenario declares
+  # e2e-required-env PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN and skips
+  # honestly while it is unset (proven: both lanes report the skip with the
+  # variable named). Unblock condition: export that variable with a delegated
+  # apex and the arm runs unchanged, which also gives the import map its
+  # PEM-free live proof. Until then the branch's wiring is proven by the
+  # offline plan only.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

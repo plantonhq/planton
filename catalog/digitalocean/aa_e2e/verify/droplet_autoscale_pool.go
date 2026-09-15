@@ -36,7 +36,7 @@ func (*dropletAutoscalePoolVerifier) VerifyAbsent(ctx context.Context, client *g
 		return pkgerrors.Wrapf(err, "digitaloceandropletautoscalepool verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceandropletautoscalepool %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceandropletautoscalepool", ID: id}
 	}
 	return nil
 }

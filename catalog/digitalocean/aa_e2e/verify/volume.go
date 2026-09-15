@@ -29,7 +29,7 @@ func (*volumeVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, id
 		return pkgerrors.Wrapf(err, "digitaloceanvolume verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceanvolume %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceanvolume", ID: id}
 	}
 	return nil
 }
