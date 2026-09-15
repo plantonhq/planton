@@ -51,7 +51,9 @@ Deploy with either provisioner; both produce identical resources and outputs.
 - **Metric families gate the targets.** Droplet metrics accept droplet references and/or tags; load-balancer and database metrics accept only their own reference lists -- validation enforces the pairing before DigitalOcean ever sees the request.
 - **Everything updates in place.** No field on this resource forces a replacement.
 - **The provider's `uuid` attribute is dead at the pin** (declared but never populated); the `alert_id` output carries the policy UUID from the resource id.
-- **Slack webhook URLs are credentials.** DigitalOcean does not mark them sensitive; this spec does, and both provisioners keep them out of plain-text state rendering.
+- **Slack webhook URLs are credentials.** DigitalOcean does not mark them sensitive; this spec does -- the platform accepts only `$secret/<name>` references, and the Pulumi module encrypts the value in stack state (Terraform state stores every value in plain text; protect the backend).
+- **Alert email goes only to verified team members.** DigitalOcean rejects any other address at create time (`email is not verified`); invite and verify the recipient first.
+- **A targeted tag need not exist.** The policy stores tags as selectors and neither checks nor creates them -- declare the alert before the fleet if you like. Firewalls behave the opposite way.
 - **Metric names are DigitalOcean's own API paths**, inconsistencies included: droplet CPU is bare `cpu`, and the database family lives under `v1/dbaas/alerts/` with `_alerts` suffixes. They are never "corrected" here.
 
 ## Module layout

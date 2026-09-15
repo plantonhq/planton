@@ -3298,9 +3298,71 @@ lanes created. (2) A Droplet created with no region lands wherever
 DigitalOcean has capacity, and if that region had no default VPC yet,
 DigitalOcean creates one on the fly (`default-tor1`, `default-blr1`,
 `default-lon1`, and `default-sfo2` appeared this way across one session's
-droplet lanes) — undeletable, free, and DigitalOcean's own naming, so the
+droplet lanes; `default-nyc2`, `default-sgp1`, and `default-sfo3` across the
+next's) — undeletable, free, and DigitalOcean's own naming, so the
 seeded-defaults list simply grows; record the new regions rather than
 fighting them.
+
+**Alert email goes only to verified team members — the recipient is an
+environment variable, never a committed address.** Both alerting APIs
+(`POST /v2/monitoring/alerts` and `POST /v2/uptime/checks/{id}/alerts`)
+reject any email that is not a verified member of the team owning the
+account — `email is not verified` / `invalid email` — so a scenario cannot
+carry a made-up address, and it must not carry a person's real one either.
+The alert scenarios read `${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL}`
+behind `planton.dev/e2e-required-env` (the certificate's delegated-domain
+shape): each operator exports their own verified address next to the
+token, and the lanes skip honestly on a machine that has not. The
+provider's own acceptance test dodges the same rule by reading the account
+data source's email.
+
+**Alert policies store tags as selectors; firewalls demand them.** A
+`digitalocean_monitor_alert` naming a tag no resource carries is accepted
+(HTTP 200) and creates nothing in `/v2/tags` — the policy simply watches
+nothing until a Droplet wears the tag — while a firewall naming the same
+tag fails `422 tag ... does not exist`. Two DigitalOcean APIs, two rules;
+the kind docs on each side say which. The alert's tag-only scenario
+therefore runs fixture-free with a run-scoped tag on purpose.
+
+**Probe required-ness and forced values against the API before the lane —
+the provider's schema is not the contract.** `digitalocean_uptime_alert`
+marks `period`, `threshold`, and `comparison` Optional; the API requires
+`period` on every type (`missing required field 'period'`), FORCES
+`threshold: 1, comparison: less_than` on `down` / `down_global` whatever
+was sent (an explicit `3 / greater_than` reads back `1 / less_than`), and
+forces `less_than` on `ssl_expiry`. None of that is visible offline: plans
+render, validate passes, presets ship — and the first apply either fails
+or re-plans forever. The fix landed at the spec (required `period`; the
+forced fields forbidden on the types that force them) and in both modules
+(send the API's own values), so the round trip is lossless with zero
+tolerances. Five API calls before the lane found all of it; make them.
+
+**The Uptime API's "gone" is 403, not 404.** `GET /v2/uptime/checks/{id}`
+(and its alerts) answer `403 you are not authorized to access this
+resource` for any check the account does not own — deleted seconds ago or
+never created — while every other DigitalOcean API in the catalog 404s.
+The uptime verifier reads 403 as absence, scoped to that API only, and it
+is safe because the lane created the very id it probes (a bad token would
+have failed DEPLOY). The provider handles only 404, so a check deleted out
+of band errors every subsequent plan until removed from state by hand —
+recorded in the kind's GUIDE as the customer-facing consequence.
+
+**SSH key material is the account-level identity — a fixture and a
+scenario must not share a key body.** `POST /v2/account/keys` deduplicates
+on the public key (`SSH Key is already in use on your account`), and
+`${E2E_RUN_ID}` cannot rescue it because material is not a name. The
+SshKey kind ships `e2e/prerequisite.yaml` with a distinct throwaway pair
+for its consumers (the autoscale pool), separate from `scenarios/minimal.yaml`;
+a new key-bearing fixture generates its own material, never copies.
+
+**A kind's headline promise belongs in its verifier, read from outputs.**
+Where a scenario's whole point is a behavior — "destroy relocates members,
+never destroys them", "one alert object per row" — the outputs carry the
+claim (`resource_urns`, the keyed `alert_ids` map) and an `OutputsVerifier`
+asserts it against the API at deploy AND at destroy (dependency fixtures
+are torn down only after VERIFY-CLN, so relocated members are still there
+to be found). `StringSliceOutput` / `StringMapOutput` beside `StringOutput`
+coerce the list and map output shapes with the same numeric care.
 
 ## Build Tag Isolation
 

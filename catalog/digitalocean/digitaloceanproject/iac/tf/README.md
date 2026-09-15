@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanProjectSpec` proto: `project_n
 
 ## Outputs
 
-Exactly the `DigitalOceanProjectStackOutputs` contract: `project_id`, `owner_uuid`, `owner_id` (stringified from the provider's number).
+Exactly the `DigitalOceanProjectStackOutputs` contract: `project_id`, `owner_uuid`, `owner_id` (stringified from the provider's number), and `resource_urns` (the provider's read-back of membership, sorted from its unordered set so both engines export the same list).
 
 ## Behavior notes
 

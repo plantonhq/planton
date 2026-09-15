@@ -135,6 +135,25 @@ func (x *DigitalOceanUptimeCheckSpec) GetAlerts() []*DigitalOceanUptimeCheckAler
 }
 
 // One alert rule on an uptime check.
+//
+// What threshold and comparison mean depends on the type, and DigitalOcean's
+// API decides more of them than the provider's schema admits (every rule
+// below was measured against the live API, not read from the provider):
+//   - latency: threshold (milliseconds) and comparison are both honored, so
+//     both are required here -- a latency alert without a bar or a direction
+//     is ambiguous, and DigitalOcean would silently pick one.
+//   - ssl_expiry: threshold (days before expiry) is honored and required here
+//     because DigitalOcean accepts 0 -- an alert that fires the day the
+//     certificate expires, a post-mortem rather than a warning. comparison is
+//     FORCED to less_than by the API whatever is sent, so it is rejected here
+//     and the modules send the API's own value.
+//   - down / down_global: threshold and comparison are FORCED to 1 / less_than
+//     by the API (an explicit 3 / greater_than reads back as 1 / less_than),
+//     so both are rejected here and the modules send the API's own pair -- the
+//     only shape a manifest and DigitalOcean agree on at every apply.
+//
+// A value the API is going to overwrite is never accepted as input: a rule
+// that reads back different from what was written would re-plan forever.
 type DigitalOceanUptimeCheckAlert struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Human-friendly name of the alert rule.
@@ -145,16 +164,23 @@ type DigitalOceanUptimeCheckAlert struct {
 	// regions; ssl_expiry fires when the certificate is within threshold
 	// DAYS of expiring.
 	Type string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	// (Optional) The threshold the alert compares against: milliseconds for
-	// latency, days before expiry for ssl_expiry. down and down_global carry
-	// no threshold.
+	// The threshold the alert compares against: milliseconds for latency
+	// (required), days before expiry for ssl_expiry (required). Must be left
+	// unset for down and down_global -- DigitalOcean fixes theirs at 1 and
+	// the modules send that value.
 	Threshold *int32 `protobuf:"varint,3,opt,name=threshold,proto3,oneof" json:"threshold,omitempty"`
-	// (Optional) How the measured value is compared against the threshold.
-	// snake_case is this API's spelling; monitor alerts spell the same
-	// concept CamelCase (GreaterThan) -- the two are different DigitalOcean
-	// APIs and are deliberately not unified.
+	// How the measured value is compared against the threshold. Required for
+	// latency (the only type where DigitalOcean honors it); must be left
+	// unset for ssl_expiry, down, and down_global, where DigitalOcean always
+	// evaluates less_than and the modules send that value. snake_case is
+	// this API's spelling; monitor alerts spell the same concept CamelCase
+	// (GreaterThan) -- the two are different DigitalOcean APIs and are
+	// deliberately not unified.
 	Comparison string `protobuf:"bytes,4,opt,name=comparison,proto3" json:"comparison,omitempty"`
-	// (Optional) How long the condition must hold before the alert fires.
+	// How long the condition must hold before the alert fires. Required for
+	// every alert type: the provider's schema calls it optional, but
+	// DigitalOcean's API rejects any alert without it ("missing required
+	// field 'period'"), so the omission is rejected here rather than at apply.
 	Period string `protobuf:"bytes,5,opt,name=period,proto3" json:"period,omitempty"`
 	// Where this alert's notifications are delivered. At least one channel
 	// is required -- DigitalOcean rejects an alert that notifies nobody.
@@ -238,9 +264,11 @@ func (x *DigitalOceanUptimeCheckAlert) GetNotifications() *DigitalOceanUptimeChe
 // Notification channels for an uptime alert rule.
 type DigitalOceanUptimeCheckNotifications struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// (Optional) Email addresses notifications are sent to. DigitalOcean may
-	// require addresses to belong to verified account members -- it rejects
-	// unknown addresses at request time.
+	// (Optional) Email addresses notifications are sent to. Every address
+	// MUST belong to a verified member of the DigitalOcean team that owns the
+	// check: the API rejects any other address at create time ("invalid
+	// email"), so a shared inbox or an external on-call address has to be
+	// invited to the team first. Monitor alerts enforce the same rule.
 	Emails []string `protobuf:"bytes,1,rep,name=emails,proto3" json:"emails,omitempty"`
 	// (Optional) Slack channels notifications are posted to.
 	Slack         []*DigitalOceanUptimeCheckSlack `protobuf:"bytes,2,rep,name=slack,proto3" json:"slack,omitempty"`
@@ -298,8 +326,11 @@ type DigitalOceanUptimeCheckSlack struct {
 	// The Slack channel to post to (for example "#alerts").
 	Channel string `protobuf:"bytes,1,opt,name=channel,proto3" json:"channel,omitempty"`
 	// The Slack incoming-webhook URL. A credential: DigitalOcean's API does
-	// not mark it sensitive, so it is marked sensitive here and both
-	// provisioners keep it out of plain-text state rendering.
+	// not mark it sensitive, so it is marked sensitive here -- the platform
+	// accepts only a managed-secret reference ($secret/<name>) for it, never
+	// a literal URL, and the Pulumi module additionally encrypts it in stack
+	// state. Terraform state stores every value in plain text, so on that
+	// engine the protection is the state backend's own encryption.
 	Url           string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -365,7 +396,8 @@ const file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_spec_proto_rawD
 	"\aenabled\x18\x05 \x01(\bB\b\x92\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12o\n" +
 	"\x06alerts\x18\x06 \x03(\v2W.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckAlertR\x06alertsB\n" +
 	"\n" +
-	"\b_enabled\"\x84\x05\n" +
+	"\b_enabled\"\xf9\n" +
+	"\n" +
 	"\x1cDigitalOceanUptimeCheckAlert\x12)\n" +
 	"\n" +
 	"alert_name\x18\x01 \x01(\tB\n" +
@@ -376,9 +408,12 @@ const file_catalog_digitalocean_digitaloceanuptimecheck_v1alpha1_spec_proto_rawD
 	"\n" +
 	"comparison\x18\x04 \x01(\tB!\xbaH\x1e\xd8\x01\x01r\x19R\fgreater_thanR\tless_thanR\n" +
 	"comparison\x12?\n" +
-	"\x06period\x18\x05 \x01(\tB'\xbaH$\xd8\x01\x01r\x1fR\x022mR\x023mR\x025mR\x0310mR\x0315mR\x0330mR\x021hR\x06period\x12\x8d\x01\n" +
-	"\rnotifications\x18\x06 \x01(\v2_.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckNotificationsB\x06\xbaH\x03\xc8\x01\x01R\rnotifications:\xa4\x01\xbaH\xa0\x01\x1a\x9d\x01\n" +
-	" alert.latency_requires_threshold\x12Ja latency alert requires threshold (the response-time bar in milliseconds)\x1a-this.type != 'latency' || has(this.threshold)B\f\n" +
+	"\x06period\x18\x05 \x01(\tB'\xbaH$\xc8\x01\x01r\x1fR\x022mR\x023mR\x025mR\x0310mR\x0315mR\x0330mR\x021hR\x06period\x12\x8d\x01\n" +
+	"\rnotifications\x18\x06 \x01(\v2_.dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1.DigitalOceanUptimeCheckNotificationsB\x06\xbaH\x03\xc8\x01\x01R\rnotifications:\x99\a\xbaH\x95\a\x1a\xf2\x01\n" +
+	"/alert.latency_requires_threshold_and_comparison\x12ua latency alert requires threshold (the response-time bar in milliseconds) and comparison (greater_than or less_than)\x1aHthis.type != 'latency' || (has(this.threshold) && this.comparison != '')\x1a\xe6\x01\n" +
+	"#alert.ssl_expiry_requires_threshold\x12\x8c\x01an ssl_expiry alert requires threshold (days before the certificate expires; DigitalOcean accepts 0, which fires only on the day it expires)\x1a0this.type != 'ssl_expiry' || has(this.threshold)\x1a\xb8\x01\n" +
+	"$alert.ssl_expiry_comparison_is_fixed\x12\\an ssl_expiry alert must not set comparison -- DigitalOcean always evaluates it as less_than\x1a2this.type != 'ssl_expiry' || this.comparison == ''\x1a\xf9\x01\n" +
+	"-alert.down_carries_no_threshold_or_comparison\x12ldown and down_global alerts must not set threshold or comparison -- DigitalOcean fixes them at 1 / less_than\x1aZ!(this.type in ['down', 'down_global']) || (!has(this.threshold) && this.comparison == '')B\f\n" +
 	"\n" +
 	"_threshold\"\xdf\x02\n" +
 	"$DigitalOceanUptimeCheckNotifications\x12$\n" +

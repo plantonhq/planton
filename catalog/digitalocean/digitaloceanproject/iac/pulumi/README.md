@@ -15,3 +15,4 @@ Provisions a DigitalOcean project -- the complete `digitalocean_project` resourc
 - Optional strings are set only when non-empty so the provider's defaults apply (purpose defaults to "Web Application" upstream).
 - Membership references are resolved to literal URNs before the module runs; an empty list stays unset (membership unmanaged).
 - `owner_id` is exported as a string (the SDK surfaces an integer; the outputs contract is engine-identical).
+- `resource_urns` is the SDK's read-back of membership, sorted before export so both engines emit the same list from the API's unordered set.

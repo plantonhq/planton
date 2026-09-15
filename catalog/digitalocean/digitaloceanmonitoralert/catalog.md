@@ -6,7 +6,7 @@ Deploys an alert policy on DigitalOcean's built-in metrics -- droplet CPU, memor
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
-- **Monitor alert policy** -- one `digitalocean_monitor_alert` resource carrying the metric, comparison, threshold, sampling window, targets, and notification channels. The typed reference lists (`dropletIds`, `loadBalancerIds`, `databaseClusterIds`) merge back into the provider's single entities argument; a tag-targeted policy sends only `tags`, and DigitalOcean resolves membership from the tag. Slack webhook URLs are wrapped as secrets on both engines, so the credential never renders in plain-text state.
+- **Monitor alert policy** -- one `digitalocean_monitor_alert` resource carrying the metric, comparison, threshold, sampling window, targets, and notification channels. The typed reference lists (`dropletIds`, `loadBalancerIds`, `databaseClusterIds`) merge back into the provider's single entities argument; a tag-targeted policy sends only `tags`, and DigitalOcean resolves membership from the tag. Slack webhook URLs are accepted only as managed-secret references and encrypted in Pulumi stack state.
 
 ## Before You Deploy
 
@@ -18,7 +18,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### DigitalOcean Account
 
 - **Slack incoming webhook** (only for Slack delivery) -- the webhook URL is a credential; store it as a managed secret and reference it as `$secret/<name>` in the manifest.
-- **Verified alert recipients** -- DigitalOcean may require email addresses to belong to the team's verified members; it rejects unknown addresses at request time.
+- **Verified alert recipients** -- every email address in `alerts.emails` must belong to a verified member of the DigitalOcean team; the API rejects any other address at create time (`email is not verified`). Invite and verify shared inboxes or pager bridges before naming them.
 
 ## Deploy
 
@@ -88,13 +88,13 @@ These are the most important decisions when configuring a monitor alert. Explore
 
 **Metric names are DigitalOcean's raw API paths** -- their inconsistencies are deliberate facts of that API, never "corrected" here: droplet CPU is bare `v1/insights/droplet/cpu` (no `_utilization_percent` suffix, unlike memory and disk), and the database family carries `_alerts` suffixes. Validation holds the exact 28-value list, so a typo fails at validation -- read the error's list rather than guessing the spelling.
 
-**Tags versus id lists** -- an id-targeted policy watches exactly the droplets listed; replacements and autoscaled additions are not covered until the manifest changes. A tag-targeted policy tracks membership automatically: every droplet carrying the tag is watched the moment it exists. Use id references for singular pets, tags for fleets.
+**Tags versus id lists** -- an id-targeted policy watches exactly the droplets listed; replacements and autoscaled additions are not covered until the manifest changes. A tag-targeted policy tracks membership automatically: every droplet carrying the tag is watched the moment it exists. Use id references for singular pets, tags for fleets. The tag need not exist when the policy is created -- DigitalOcean stores it as a selector and neither checks nor creates it, so the alert can be declared before the fleet (firewalls behave the opposite way and reject a tag no resource carries).
 
 **One policy per symptom, not per target** -- policies accept many targets, so a CPU policy covering the whole web fleet beats ten identical per-droplet policies. Split policies when the threshold differs -- databases at 80 percent, batch workers at 95 -- not per target.
 
 **Threshold precision and units** -- `value`'s units follow the metric: percent for utilization metrics, load units for `load_*`, bytes per second for bandwidth and disk I/O. DigitalOcean stores the threshold as a 32-bit float, so more than 7 significant digits silently truncate -- 99.999999 becomes 100 by the time it evaluates. The `window` (5m to 1h) sets how long the metric aggregates before comparison: 10m ignores boot spikes; tighten to 5m for latency-sensitive services.
 
-**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, and both provisioners keep it out of plain-text state rendering. In manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL.
+**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, so in manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL; the Pulumi module additionally encrypts it in stack state. Terraform state stores every value in plain text -- on that engine the protection is the state backend's own encryption.
 
 **Disabling beats deleting** -- `enabled: false` keeps the policy defined but silent, ideal for maintenance windows or pre-staging alerts before a service carries traffic. Unset defaults to enabled, and the policy starts evaluating the moment it provisions. Deleting loses nothing but the policy's UUID -- the manifest is the source of truth and recreating is cheap.
 

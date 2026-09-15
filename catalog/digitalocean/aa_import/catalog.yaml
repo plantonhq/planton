@@ -356,7 +356,10 @@ spec:
       id_format: "{project_id}"
       # The API returns the environment capitalized ("Production"); authored
       # manifests declare it lowercase and the provider only diff-suppresses,
-      # so a blind import reads back the capitalized form.
+      # so a blind import reads back the capitalized form. Not a tolerance
+      # but a warning: the account's DEFAULT project reads back
+      # is_default=true against a manifest that leaves the flag unset, so
+      # adopting it plans to un-default it -- never import that project.
       write_normalized_attributes: [environment]
     - terraform_type: digitalocean_project_resources
       pulumi_type: digitalocean:index/projectResources:ProjectResources
@@ -387,7 +390,10 @@ spec:
     - terraform_type: digitalocean_uptime_alert
       pulumi_type: digitalocean:index/uptimeAlert:UptimeAlert
       id_format: "{check_id},{alert_id}"
-      # down/down_global alerts carry no threshold in config, but create
-      # sends the zero and the read writes it back -- an authored null
-      # imports as 0.
-      write_normalized_attributes: [threshold]
+      # Lossless. DigitalOcean fixes threshold/comparison at 1/less_than for
+      # down and down_global and comparison at less_than for ssl_expiry no
+      # matter what is sent; the DigitalOceanUptimeCheck modules send exactly
+      # those values (the spec forbids authoring them), so read-back equals
+      # config and no tolerance is needed. Sending nothing, as the provider's
+      # own schema permits, would read back 1/less_than against a null and
+      # re-plan forever.

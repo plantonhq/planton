@@ -1,6 +1,7 @@
 package module
 
 import (
+	"sort"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -74,6 +75,14 @@ func project(
 	ctx.Export(OpOwnerId, createdProject.OwnerId.ApplyT(func(id int) string {
 		return strconv.Itoa(id)
 	}).(pulumi.StringOutput))
+	// Membership as DigitalOcean reports it after apply (the provider reads
+	// the set back whether or not the spec manages it); sorted so both
+	// provisioners export identical lists from the API's unordered set.
+	ctx.Export(OpResourceUrns, createdProject.Resources.ApplyT(func(urns []string) []string {
+		sorted := append([]string(nil), urns...)
+		sort.Strings(sorted)
+		return sorted
+	}).(pulumi.StringArrayOutput))
 
 	return createdProject, nil
 }

@@ -16,7 +16,7 @@ An empty `resources` list means "do not manage membership": resources assigned f
 
 ## The purpose field round-trips -- with one trap
 
-Any free-text purpose works: DigitalOcean stores it as `Other: <your text>` and strips the prefix when reading back, so manifests converge. The one value that can never converge is text that itself starts with `Other:` -- the API would double-prefix it -- and validation rejects it up front.
+Any free-text purpose works: DigitalOcean stores it as `Other: <your text>` and the provider strips the prefix when reading back, so manifests converge. The one value that can never converge is text that itself starts with `Other:` -- DigitalOcean keeps exactly one prefix and re-capitalizes the rest (`Other: probe` is stored as `Other: Probe`), the provider then strips the prefix, and the read-back (`Probe`) can never equal what you wrote -- so validation rejects it up front.
 
 ## is_default: almost always leave it alone
 

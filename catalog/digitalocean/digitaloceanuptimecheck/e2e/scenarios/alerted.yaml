@@ -1,7 +1,14 @@
 # Alerted DigitalOceanUptimeCheck: the composed-alert-rows arm -- a down
 # alert and a latency alert on one check, email delivery. Proves the
-# one-alert-resource-per-row fan-out both provisioners implement and the
+# one-alert-resource-per-row fan-out both provisioners implement, the
+# alert_ids keyed output (the blind {check_id},{alert_id} import), and the
 # alerts' destroy-with-the-check semantics.
+#
+# DigitalOcean delivers alert email only to VERIFIED members of the team
+# that owns the check and rejects any other address at create time, so the
+# recipient is the account-specific PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL
+# (the operator's own verified address); the lane skips honestly when it
+# is unset.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanUptimeCheck
 metadata:
@@ -14,6 +21,7 @@ metadata:
     e2e-component: digitaloceanuptimecheck
   annotations:
     planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL
   tags:
     - planton-e2e
 spec:
@@ -28,7 +36,7 @@ spec:
       period: 2m
       notifications:
         emails:
-          - e2e@planton.cloud
+          - ${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL}
     - alertName: e2e-slow
       type: latency
       threshold: 1000
@@ -36,4 +44,4 @@ spec:
       period: 5m
       notifications:
         emails:
-          - e2e@planton.cloud
+          - ${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL}

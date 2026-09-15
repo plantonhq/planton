@@ -37,12 +37,14 @@ Deploy with either provisioner; both produce identical resources and outputs.
 | `project_id` | UUID of the project (the API identity, and the import id) |
 | `owner_uuid` | UUID of the owning account or team |
 | `owner_id` | Numeric id of the owning account or team |
+| `resource_urns` | Sorted URNs of the members DigitalOcean reports after apply -- the managed membership when `resources` is set, whatever the account assigned out of band when it is not |
 
 ## Behavior worth knowing
 
 - **Destroy evacuates, never destroys.** Deleting the project relocates every member resource to the account's default project and retries while the asynchronous moves settle. Nothing inside is ever destroyed.
 - **Membership moves resources.** A resource belongs to exactly one project: listing it here moves it from wherever it was; removing it from the list moves it to the default project. An empty list means membership is not managed at all.
-- **The `Other:` purpose trap is unrepresentable.** DigitalOcean prefixes non-standard purposes with `Other: ` and strips it on read; a user-supplied value already carrying the prefix would drift forever, so validation rejects it.
+- **The `Other:` purpose trap is unrepresentable.** DigitalOcean prefixes non-standard purposes with `Other: ` (keeping exactly one prefix and re-capitalizing the rest) and the provider strips it on read; a user-supplied value already carrying the prefix would drift forever, so validation rejects it.
+- **Never adopt the account's default project.** It reads back `is_default: true` against a manifest that leaves the flag unset, so the first apply would try to un-default it.
 - **The account's default project cannot be deleted**, and DigitalOcean documents that a managed project should not be MADE the default (see the GUIDE).
 
 ## Module layout

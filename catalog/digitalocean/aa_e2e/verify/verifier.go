@@ -152,6 +152,49 @@ func StringOutput(outputs map[string]interface{}, key string) string {
 	if !ok {
 		return ""
 	}
+	return scalarString(v)
+}
+
+// StringSliceOutput reads a list-valued stack output (a `repeated string`
+// in the outputs contract) as []string, tolerating a missing or empty list
+// and applying StringOutput's scalar care to every element. Order is the
+// engine's; callers that compare sets must not rely on it.
+func StringSliceOutput(outputs map[string]interface{}, key string) []string {
+	if outputs == nil {
+		return nil
+	}
+	raw, ok := outputs[key].([]interface{})
+	if !ok {
+		return nil
+	}
+	out := make([]string, 0, len(raw))
+	for _, v := range raw {
+		out = append(out, scalarString(v))
+	}
+	return out
+}
+
+// StringMapOutput reads a map-valued stack output (a `map<string, string>`
+// in the outputs contract -- the per-instance id maps that keyed blind
+// imports derive from) as map[string]string, tolerating a missing or empty
+// map and applying StringOutput's scalar care to every value.
+func StringMapOutput(outputs map[string]interface{}, key string) map[string]string {
+	out := map[string]string{}
+	if outputs == nil {
+		return out
+	}
+	raw, ok := outputs[key].(map[string]interface{})
+	if !ok {
+		return out
+	}
+	for k, v := range raw {
+		out[k] = scalarString(v)
+	}
+	return out
+}
+
+// scalarString renders one decoded JSON scalar the way StringOutput does.
+func scalarString(v interface{}) string {
 	switch n := v.(type) {
 	case string:
 		return n

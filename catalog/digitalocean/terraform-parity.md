@@ -59,7 +59,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**31 of 31 kinds are at total accounting; 8 proven live.**
+**31 of 31 kinds are at total accounting; 12 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -85,12 +85,12 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | DigitalOceanKubernetesCluster | 47 | 31 | 15 | 1 | 0 | ✅ | — |
 | DigitalOceanKubernetesNodePool | 13 | 8 | 5 | 0 | 0 | ✅ | — |
 | DigitalOceanLoadBalancer | 46 | 31 | 15 | 0 | 0 | ✅ | — |
-| DigitalOceanMonitorAlert | 11 | 8 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanProject | 6 | 5 | 1 | 0 | 0 | ✅ | — |
+| DigitalOceanMonitorAlert | 11 | 8 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanProject | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanReservedIp | 8 | 1 | 3 | 4 | 0 | ✅ | — |
 | DigitalOceanSpacesKey | 3 | 0 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanSshKey | 2 | 1 | 1 | 0 | 0 | ✅ | — |
-| DigitalOceanUptimeCheck | 14 | 10 | 3 | 1 | 0 | ✅ | — |
+| DigitalOceanSshKey | 2 | 1 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanUptimeCheck | 14 | 10 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanVolume | 8 | 5 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanVpc | 4 | 2 | 1 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanVpcPeering | 2 | 0 | 2 | 0 | 0 | ✅ | — |
@@ -207,7 +207,7 @@ rather than trusted.
 | `digitalocean_gradientai_openai_api_key` | credential row for a deferred family -- the GradientAI family is deferred wholesale on documented provider immaturity |
 | `digitalocean_nfs_snapshot` | point-in-time capture, action-style -- same reasoning as droplet and volume snapshots; gated on an action/snapshot-policy surface |
 | `digitalocean_spaces_bucket_object` | uploading object content is data-plane work, not infrastructure; a declarative kind for file contents is marginal and invites abuse as a deployment mechanism |
-| `digitalocean_tag` | Droplets and volumes create tags implicitly when they declare them, so a tagged fleet needs no standalone kind; but tag CONSUMERS do not -- a firewall naming a tag no Droplet carries yet is rejected by the API (422 'tag does not exist', live-verified), so a tag-first workflow (firewall before its first Droplet) has no handle today and must target a tag some Droplet already carries. Revisit as a re-tier if that ordering constraint proves too costly for charts |
+| `digitalocean_tag` | Droplets and volumes create tags implicitly when they declare them, so a tagged fleet needs no standalone kind; tag CONSUMERS differ per API (both live-verified) -- a firewall naming a tag no Droplet carries yet is rejected (422 'tag does not exist'), while a monitor alert policy accepts it as a selector and creates nothing. So only the firewall-before-its-first-Droplet ordering has no handle today and must target a tag some Droplet already carries. Revisit as a re-tier if that ordering constraint proves too costly for charts |
 | `digitalocean_volume_snapshot` | point-in-time capture, action-style -- gated with droplet_snapshot on an action/snapshot-policy surface |
 | `digitalocean_vpc_nat_gateway` | the provider docs mark it currently in Private Preview -- gated on GA; product value is high, promote to P1 the moment the gate lifts |
 

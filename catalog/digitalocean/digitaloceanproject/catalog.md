@@ -80,7 +80,7 @@ These are the most important decisions when configuring a project. Explore the f
 
 **Destroy relocates, never deletes** -- DigitalOcean requires a project to be empty before deletion, so both provisioners relocate every member to the account's default project first and retry the delete while the asynchronous moves settle. In an environment teardown, destroy the member resources first -- otherwise they keep running, and billing, from the default project.
 
-**purpose round-trips -- with one trap** -- DigitalOcean recognizes standard purposes ("Web Application", "Website or blog", "Service or API") and stores anything else prefixed as `Other: <text>`, stripping the prefix on read, so free text converges cleanly. The one value that can never converge is text that itself starts with `Other:` -- the API would double-prefix it -- and validation rejects it up front.
+**purpose round-trips -- with one trap** -- DigitalOcean recognizes standard purposes ("Web Application", "Website or blog", "Service or API") and stores anything else prefixed as `Other: <text>`, stripping the prefix on read, so free text converges cleanly. The one value that can never converge is text that itself starts with `Other:` -- DigitalOcean keeps exactly one prefix and re-capitalizes the rest (`Other: probe` is stored as `Other: Probe`), the provider strips the prefix on read, and the result can never equal what you wrote -- so validation rejects it up front.
 
 **environment is lowercase** -- declare `development`, `staging`, or `production`; DigitalOcean reports the value back capitalized and the provisioners absorb the difference. Do not "fix" it by writing the capitalized form -- validation rejects it to keep one canonical spelling.
 
@@ -104,7 +104,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 |--------|-------------|----------------------|
 | `project_id` | UUID of the project -- the API identity and the import id | `projectId` on droplet autoscale pools, so pool members land in this project |
 
-The remaining outputs, `owner_uuid` and `owner_id`, identify the account or team that owns the project -- account facts with no downstream ValueFromRef story.
+The remaining outputs: `owner_uuid` and `owner_id` identify the account or team that owns the project (account facts with no downstream ValueFromRef story), and `resource_urns` lists, sorted, the members DigitalOcean reports after apply -- the managed membership when `resources` is set, or whatever the account has assigned out of band when it is not.
 
 ## Common Patterns
 

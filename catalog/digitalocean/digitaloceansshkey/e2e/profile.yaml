@@ -3,17 +3,26 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceansshkey
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. ONE scenario: `minimal` IS the kind's total surface (two
-  # arguments) -- it registers a throwaway ed25519 key and proves the
-  # lifecycle plus the numeric-id/fingerprint outputs, including the
-  # numeric-id-only blind import (fingerprints do not import). Deliberately
-  # not in the live lanes: in-place rename (the runner has no update
-  # phase; a rename arm is a proof-lane watch item, exercised when the
-  # runner grows one). Keys are free API objects, seconds-fast.
+  # Live-proven on BOTH engines, full lifecycle under the idempotency gate,
+  # plus the blind import round-trip (Terraform lane): `minimal` IS the
+  # kind's total surface (two arguments) -- it registers a throwaway ed25519
+  # key and proves the lifecycle, the numeric-id output the verifier
+  # addresses the key with, and the fingerprint output asserted against the
+  # live key (DigitalOcean computes it from the material, so a match proves
+  # the key that landed is the key that was sent). The numeric-id-only blind
+  # import re-planned as a no-op with zero tolerances -- every argument reads
+  # back byte-identical. Keys are free API objects, seconds-fast (~30s per
+  # lane end to end).
+  #
+  # This kind is also a FIXTURE for the autoscale-pool kind, installed from
+  # e2e/prerequisite.yaml -- a separate manifest with DIFFERENT key material
+  # from this scenario's, because DigitalOcean deduplicates SSH keys on the
+  # public key itself ("SSH Key is already in use on your account") and a
+  # run id cannot make key material unique.
+  #
+  # Deliberately NOT in the live lanes: in-place rename (the runner has no
+  # update phase; a rename arm is exercised when the runner grows one).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

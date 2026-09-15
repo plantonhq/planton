@@ -3,20 +3,33 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanproject
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is a bare project proving the
-  # lifecycle and the provider's purpose default; `full` adds description/
-  # purpose/environment and membership by REFERENCE to a Droplet fixture's
-  # urn output (annotation-composed; ~1 min create, ~$0.009/hour), whose
-  # destroy proves the relocate-then-delete path -- the droplet must
-  # survive in the account's default project, and the zero-orphan sweep
-  # must look for it THERE. Deliberately not in the live lanes: is_default
-  # (flipping the shared test account's default project mutates state
-  # every other lane inherits -- the shared-live-state deferral class).
-  # Projects are free API objects; the droplet fixture dominates lane time.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trips (Terraform lane):
+  # `minimal` (a bare project -- the provider's "Web Application" purpose
+  # default, no members) and `full` (description / purpose / environment
+  # plus membership by REFERENCE to the Droplet fixture's urn output via the
+  # e2e-prerequisites annotation). The `full` lane asserts the kind's
+  # headline promise directly: after deploy the verifier reads the project's
+  # member list and requires the droplet URN in it; after destroy it
+  # requires the project gone AND the droplet URN present in the account's
+  # DEFAULT project -- relocate-then-delete, proven by API read-back, not
+  # inferred (the fixture is torn down only after that probe). The
+  # `staging` environment read back as `Staging` and the provider's
+  # diff-suppress held on both engines (no idempotency or import diff); both
+  # blind imports re-planned as no-ops with zero tolerances used. Projects
+  # are free API objects (~3-10s); the droplet fixture (~40s, ~$0.009/hour)
+  # dominates lane time.
+  #
+  # Deliberately NOT in the live lanes:
+  # - is_default: flipping the shared test account's default project mutates
+  #   state every other lane inherits (the shared-live-state deferral
+  #   class); unblock = a dedicated account. Never import the account's
+  #   default project either -- it reads back is_default=true against an
+  #   unset flag.
+  # - purpose starting with "Other:": unrepresentable by spec (live-probed:
+  #   DigitalOcean keeps one prefix and re-capitalizes, the provider strips
+  #   it, the read-back never matches). Nothing to run.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

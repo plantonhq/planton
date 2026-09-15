@@ -251,3 +251,17 @@ PROACTIVE CREATE-TIME-REQUIRED IDENTIFICATION (MANDATORY STEP)
   explainable from the spec alone.
 - The goal: a manifest that AWS would reject at deploy time must already fail
   `validate-manifest` in seconds, with a message naming the missing field.
+- The same blindness runs the other way: plain `Optional` (not Computed)
+  fields the API REQUIRES, and fields the API silently OVERWRITES with a fixed
+  value for some variants of the resource (an uptime alert of type `down`
+  reads back `threshold: 1, comparison: less_than` whatever was sent). The
+  provider's acceptance tests usually exercise one happy shape, so neither
+  class shows in its source. When a resource has typed variants, look for
+  per-variant required and forced fields in the API's own reference (or a
+  live probe if one is available) and model them as the manifest grammar
+  already can: required-per-variant CELs for what the API demands, and
+  FORBIDDEN-per-variant CELs for what it overwrites -- with the module
+  sending the API's fixed value for that variant. A forced value accepted as
+  input reads back different from what was written and re-plans forever;
+  making it unrepresentable is the only shape a manifest and the cloud agree
+  on at every apply.

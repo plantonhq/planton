@@ -25,8 +25,16 @@ spec:
   # wherever DigitalOcean has capacity and, if that region had no default
   # VPC yet, DigitalOcean creates one on the fly -- so the seeded list grows
   # by itself (default-tor1, -blr1, -lon1, -sfo2 appeared this way in one
-  # session); record, do not fight. Tags are the other residue class: every tag a lane's droplet or
+  # session; -nyc2, -sgp1, -sfo3 in the next); record, do not fight. Tags are the other residue class: every tag a lane's droplet or
   # volume declares outlives it, so the session-end sweep deletes them.
+  #
+  # OPERATOR PRECONDITION (per machine): the alert lanes (monitor alerts,
+  # uptime alert rows) read their email recipient from
+  # PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL, because DigitalOcean delivers alert
+  # email only to VERIFIED members of the team and rejects any other address
+  # at create time. Each operator exports their own verified address beside
+  # the token; the lanes skip honestly (planton.dev/e2e-required-env) when
+  # it is unset rather than committing anyone's address to a scenario.
   credential_approach: api_token
   test_substrate: real_cloud
   default_cost_class: paid_ephemeral

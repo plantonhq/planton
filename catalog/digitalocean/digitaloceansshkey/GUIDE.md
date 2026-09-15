@@ -22,6 +22,10 @@ DigitalOcean accepts any OpenSSH key type and enforces no algorithm floor. Use `
 
 The provider trims leading/trailing whitespace before comparing (so `file("~/.ssh/id_ed25519.pub")` with its trailing newline converges), but internal differences are real changes. Paste the key as one exact line.
 
+## One key body per account -- the material is the identity, not the name
+
+DigitalOcean deduplicates SSH keys on the public key itself: registering the same material a second time, under any name, fails with `SSH Key is already in use on your account`. Two manifests that embed one key body cannot coexist on one account, and no naming scheme rescues that, because key material is not a name. Generate a distinct pair per key resource; if two teams genuinely share a key, register it once and reference that one resource from every consumer.
+
 ## What is deliberately NOT here
 
 Private keys (never accepted, never stored); per-droplet key management (droplets declare their own `sshKeys` lists); and fingerprint-based import (the provider's read requires the numeric id -- the import map says exactly where to find it).
