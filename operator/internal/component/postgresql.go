@@ -92,7 +92,7 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 	if err != nil {
 		return Result{}, err
 	}
-	planton.Status.Backup = &plan.status
+	planton.Status.Backup = withVaultCoverage(planton, plan.status)
 	if plan.holdCluster {
 		return Result{Ready: false, Reason: v1.ComponentReasonDeploying, Message: plan.waiting}, nil
 	}
@@ -100,6 +100,17 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 		if err := p.ApplyManifests(ctx, c, planton, plan.before); err != nil {
 			return Result{}, fmt.Errorf("applying PostgreSQL backup store: %w", err)
 		}
+	}
+
+	// The consumers that must not connect as the superuser get their own
+	// role and database, declared to CloudNativePG here -- the database
+	// component answers "which consumers cannot create their own" for every
+	// consumer (OpenFGA's database is born with the cluster below for the
+	// same reason). The role's credential Secret exists before the Cluster
+	// names it, so CloudNativePG never reports a role it cannot reconcile.
+	managedRoles, databases, err := p.consumerRolesAndDatabases(ctx, c, planton)
+	if err != nil {
+		return Result{}, err
 	}
 
 	cluster := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{
@@ -112,6 +123,7 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 		Backup:                    plan.backup,
 		Recovery:                  plan.recovery,
 		ServiceAccountAnnotations: plan.serviceAccountAnnotations,
+		ManagedRoles:              managedRoles,
 	})
 	// How the data came to exist was decided once, at creation; a live
 	// Cluster's bootstrap is kept as it is (recovery declared later is
@@ -140,13 +152,21 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 			return Result{}, fmt.Errorf("applying PostgreSQL backup schedule: %w", err)
 		}
 	}
+	// The consumers' Database objects ride after the Cluster: CloudNativePG
+	// waits for the Cluster and the owner role to exist and says so in each
+	// object's status.message, which the consumer relays while it waits.
+	if len(databases) > 0 {
+		if err := p.ApplyManifests(ctx, c, planton, databases); err != nil {
+			return Result{}, fmt.Errorf("applying PostgreSQL databases: %w", err)
+		}
+	}
 
 	live, err := p.liveCluster(ctx, c, clusterName, planton.Namespace)
 	if err != nil {
 		return Result{}, err
 	}
 	backupStatus := p.refreshBackupStatus(ctx, c, planton, live, plan.status)
-	planton.Status.Backup = &backupStatus
+	planton.Status.Backup = withVaultCoverage(planton, backupStatus)
 
 	ready, statusMsg := clusterReadiness(live, instances)
 	if !ready {
@@ -246,6 +266,45 @@ func (p *PostgreSQL) superuserSecretExists(ctx context.Context, c client.Client,
 	return true, nil
 }
 
+// withVaultCoverage attaches the archive's answer about the vault to a backup
+// status, so status.backup says on every pass whether the archive carries the
+// secrets manager and what opens the restored vault (openbao_backup_status.go).
+func withVaultCoverage(planton *v1.PlantonPlatform, status v1.BackupStatus) *v1.BackupStatus {
+	status.Vault = vaultBackupStatus(planton, status.State)
+	return &status
+}
+
+// consumerRolesAndDatabases is the least-privilege set the Cluster carries
+// for the consumers that connect as their own role: today the bundled vault,
+// when it is deployed. Each role's basic-auth Secret is ensured (create-once,
+// owner-referenced) before the Cluster names it; each database is a
+// CloudNativePG Database object owned by that role. Nothing when every
+// consumer rides the superuser.
+func (p *PostgreSQL) consumerRolesAndDatabases(ctx context.Context, c client.Client, planton *v1.PlantonPlatform) ([]resources.PostgreSQLManagedRole, []*unstructured.Unstructured, error) {
+	if !isVaultEnabled(planton) {
+		return nil, nil, nil
+	}
+	roleSecret := resources.PostgreSQLVaultRoleSecretName(planton.Name)
+	if err := p.EnsureBasicAuthSecret(ctx, c, roleSecret, planton.Namespace, resources.PostgreSQLVaultRole, p.OwnerReferenceFor(planton)); err != nil {
+		return nil, nil, fmt.Errorf("ensuring the vault's database role credential: %w", err)
+	}
+	roles := []resources.PostgreSQLManagedRole{{
+		Name:               resources.PostgreSQLVaultRole,
+		PasswordSecretName: roleSecret,
+	}}
+	databases := []*unstructured.Unstructured{
+		resources.NewPostgreSQLDatabase(resources.PostgreSQLDatabaseOptions{
+			CRName:     planton.Name,
+			Namespace:  planton.Namespace,
+			ObjectName: resources.PostgreSQLVaultDatabaseObjectName(planton.Name),
+			Name:       resources.DBOpenBAO,
+			Owner:      resources.PostgreSQLVaultRole,
+			OwnerRef:   p.OwnerReferenceFor(planton),
+		}),
+	}
+	return roles, databases, nil
+}
+
 func postgresqlStorage(planton *v1.PlantonPlatform) (size, class string) {
 	var componentSize resource.Quantity
 	var componentClass string
@@ -262,6 +321,7 @@ func postgresqlStorage(planton *v1.PlantonPlatform) (size, class string) {
 // Backup objects the schedule creates for the state it reports.
 // +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=clusters,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=clusters/status,verbs=get
+// +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=databases,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=scheduledbackups,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=backups,verbs=get;list;watch
 // +kubebuilder:rbac:groups=barmancloud.cnpg.io,resources=objectstores,verbs=get;list;watch;create;update;patch;delete

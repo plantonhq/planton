@@ -18,7 +18,9 @@ A self-hosted Planton is, at bottom, one PostgreSQL database. Organizations, env
 
 **In it:** everything the platform's database holds. After a restore, the organizations are there, the environments and their cloud resources are there, the deployment history is there, and people sign in with the passwords they had, because the identity realm is in the same database.
 
-**Not in it:** the secrets manager. OpenBAO keeps its data on its own volume, outside this backup. Every record that points at a secret comes back; the value behind it does not. After a restore, the credentials behind your cloud connections and any config secrets are re-entered. Also outside: the cache (rebuilt on start), the state files of the infrastructure you deployed (they live in your state backend, not in Planton's database), and running workloads on other clusters (untouched; they reconnect).
+**Also in it:** the secrets manager. The bundled vault stores its data in that same database, so the credentials behind your cloud connections, your config secrets, and the platform's signing keys come back with the records, to the same instant. What the backup cannot carry is the key that opens the vault, so a backup requires one of two things you declare with it: a key in your cloud (`vault.autoUnseal` -- the restored vault opens itself) or a Secret you own for the vault's keys (`vault.initSecretName` -- keep a copy outside the cluster and recreate it before you restore). `status.backup.vault` on the platform says which applies and names the Secret to keep.
+
+**Not in it:** the cache (rebuilt on start), the state files of the infrastructure you deployed (they live in your state backend, not in Planton's database), and running workloads on other clusters (untouched; they reconnect).
 
 ## Declare the backup
 

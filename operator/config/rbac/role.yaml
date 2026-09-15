@@ -280,6 +280,7 @@ rules:
   - postgresql.cnpg.io
   resources:
   - clusters
+  - databases
   - scheduledbackups
   verbs:
   - create

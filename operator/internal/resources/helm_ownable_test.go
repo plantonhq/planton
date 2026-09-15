@@ -22,7 +22,7 @@ func TestEveryShippedChartRendersOnlyOwnableObjects(t *testing.T) {
 	}{
 		{"valkey", LoadValkeyChart(), ValkeyHelmValues(crName, "1Gi", "")},
 		{"temporal", LoadTemporalChart(), TemporalHelmValues(crName, namespace)},
-		{"openbao", LoadOpenBAOChart(), OpenBAOHelmValues(crName, "2Gi", "")},
+		{"openbao", LoadOpenBAOChart(), OpenBAOHelmValues(crName, crName+"-openbao-storage")},
 		{"neo4j", LoadNeo4jChart(), Neo4jHelmValues(crName, "10Gi", "")},
 		{"openfga", LoadOpenFGAChart(), OpenFGAHelmValues(crName, namespace)},
 	}

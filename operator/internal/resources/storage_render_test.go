@@ -78,14 +78,26 @@ func TestStorageRender_Valkey(t *testing.T) {
 	assertAllClaims(t, unpinned, "", "1Gi")
 }
 
-func TestStorageRender_OpenBAO(t *testing.T) {
-	pinned := renderedVolumeClaims(t, LoadOpenBAOChart(), "test-openbao",
-		OpenBAOHelmValues("test", "800Gi", "trident"))
-	assertAllClaims(t, pinned, "trident", "800Gi")
-
-	unpinned := renderedVolumeClaims(t, LoadOpenBAOChart(), "test-openbao",
-		OpenBAOHelmValues("test", "10Gi", ""))
-	assertAllClaims(t, unpinned, "", "10Gi")
+// The vault has no volume: its storage is the platform's database. The chart
+// guards its claim template on one switch, and the operator turns it off, so
+// the rendered StatefulSet must carry no claim at all -- a claim here would
+// be a volume the archive does not cover.
+func TestStorageRender_OpenBAO_NoVolume(t *testing.T) {
+	objs, err := RenderHelmChart(LoadOpenBAOChart(), "test-openbao", "default",
+		OpenBAOHelmValues("test", "test-openbao-storage"))
+	if err != nil {
+		t.Fatalf("failed to render chart: %v", err)
+	}
+	for _, obj := range objs {
+		switch obj.GetKind() {
+		case "StatefulSet":
+			if vcts, found, _ := unstructured.NestedSlice(obj.Object, "spec", "volumeClaimTemplates"); found && len(vcts) > 0 {
+				t.Errorf("the vault must render no volume claim template; got %v", vcts)
+			}
+		case "PersistentVolumeClaim":
+			t.Errorf("the vault must render no PersistentVolumeClaim; got %s", obj.GetName())
+		}
+	}
 }
 
 // Neo4j is the chart whose values contract already burned us once (the inert

@@ -352,6 +352,36 @@ func (b *Base) EnsureCredentialSecret(ctx context.Context, c client.Client, name
 	return nil
 }
 
+// EnsureBasicAuthSecret creates a kubernetes.io/basic-auth Secret for the
+// given username with a generated password if it does not already exist.
+// Existing Secrets are left untouched (create-once: a password never rotates
+// under the consumer that read it at start).
+func (b *Base) EnsureBasicAuthSecret(ctx context.Context, c client.Client, name, namespace, username string, ownerRef *metav1.OwnerReference) error {
+	log := logf.FromContext(ctx)
+
+	var existing corev1.Secret
+	err := c.Get(ctx, types.NamespacedName{Name: name, Namespace: namespace}, &existing)
+	if err == nil {
+		return nil
+	}
+	if !apierrors.IsNotFound(err) {
+		return fmt.Errorf("getting secret %s: %w", name, err)
+	}
+
+	password, err := resources.GeneratePassword()
+	if err != nil {
+		return fmt.Errorf("generating password for %s: %w", name, err)
+	}
+
+	secret := resources.NewBasicAuthSecret(name, namespace, username, password, ownerRef)
+	if err := c.Create(ctx, secret); err != nil && !apierrors.IsAlreadyExists(err) {
+		return fmt.Errorf("creating secret %s: %w", name, err)
+	}
+
+	log.Info("Created basic-auth credential secret", "name", name, "username", username)
+	return nil
+}
+
 // EnsureAndReadCredential creates a credential Secret if it does not exist,
 // then returns the value of the specified data key. This is needed for
 // components like Identity where the literal credential must appear in the

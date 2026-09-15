@@ -8,7 +8,6 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -20,25 +19,30 @@ import (
 	"github.com/plantonhq/planton/operator/internal/resources"
 )
 
-// defaultOpenBAOStorageSize sizes the vault's data volume. Its contents are
-// KV secret payloads and Transit key material -- kilobytes each; 2Gi is
-// headroom, not bulk. spec.storage.size overrides.
-const defaultOpenBAOStorageSize = "2Gi"
-
 // OpenBAO deploys and monitors OpenBAO (open-source Vault fork), the bundled
 // secrets manager. Deployed by default (spec.vault): it backs the credential
 // store for pasted connection secrets, the default envelope-encryption key,
 // and the OIDC issuer's signing key -- integral the way the database is.
 // spec.vault.enabled: false is the deliberate opt-out.
 //
-// The component initializes OpenBAO through its HTTP API once the pod is
-// running, stores the unseal keys and root token in a Kubernetes Secret, and
+// The vault keeps its data in the platform's PostgreSQL -- its own database,
+// its own least-privilege role, both declared by the database component --
+// so it has no volume, the platform's one archive carries every secret with
+// the records, and a restored database brings back a vault that finds itself
+// initialized. The component waits for that role and database to exist
+// before the server is rendered (the backend gives up after one failed
+// connect), initializes OpenBAO through its HTTP API once the pod is running,
+// stores the unseal keys and root token in a Kubernetes Secret, and
 // re-unseals on pod restart. There is exactly one initialization path -- the
 // platform's database is not initialized by hand either.
 type OpenBAO struct{ Base }
 
-func (o *OpenBAO) Name() string                                { return "openbao" }
-func (o *OpenBAO) Dependencies(_ *v1.PlantonPlatform) []string { return nil }
+func (o *OpenBAO) Name() string { return "openbao" }
+
+// Dependencies: the vault's storage IS the platform's database, so it waits
+// for the database component to report Ready (the Cluster up, its credentials
+// present) before it renders at all.
+func (o *OpenBAO) Dependencies(_ *v1.PlantonPlatform) []string { return []string{"postgresql"} }
 
 // IsEnabled defaults to true: absence of spec.vault means deploy the bundled
 // secrets manager. Must agree with isVaultEnabled (control_plane.go) and
@@ -52,14 +56,33 @@ func (o *OpenBAO) IsEnabled(planton *v1.PlantonPlatform) bool {
 func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Scheme, planton *v1.PlantonPlatform) (Result, error) {
 	log := logf.FromContext(ctx).WithValues("component", o.Name())
 
-	// The vault carries no per-component volume override: its data belongs
-	// in the platform's database, and the volume it still mounts today
-	// follows the platform-wide storage dial alone.
-	storageSize := effectiveStorageSize(planton, resource.Quantity{}, defaultOpenBAOStorageSize)
-	storageClass := effectiveStorageClass(planton, "")
+	// The vault's role and database are the database component's to declare
+	// and CloudNativePG's to reconcile; this component starts the server only
+	// once both exist, because the storage backend gives up after one failed
+	// connect and a crash-looping pod would hide the real wait behind a log.
+	ready, waiting, err := o.vaultDatabaseReady(ctx, c, planton)
+	if err != nil {
+		return Result{}, err
+	}
+	if !ready {
+		return Result{
+			Ready:   false,
+			Reason:  v1.ComponentReasonDeploying,
+			Object:  &v1.ComponentObjectReference{Kind: "Database", Name: resources.PostgreSQLVaultDatabaseObjectName(planton.Name)},
+			Message: waiting,
+		}, nil
+	}
+
+	// The connection URL is derived from the role's credential Secret every
+	// pass, so it can never drift from it, and applied as the Secret the chart
+	// projects into the process as BAO_PG_CONNECTION_URL.
+	storageSecretName := resources.OpenBAOStorageSecretName(planton.Name)
+	if err := o.ensureStorageSecret(ctx, c, planton, storageSecretName); err != nil {
+		return Result{}, err
+	}
 
 	chartData := resources.LoadOpenBAOChart()
-	values := resources.OpenBAOHelmValues(planton.Name, storageSize, storageClass)
+	values := resources.OpenBAOHelmValues(planton.Name, storageSecretName)
 
 	rendered, err := resources.RenderHelmChart(
 		chartData,
@@ -181,7 +204,12 @@ func (o *OpenBAO) ensureAutoInit(ctx context.Context, c client.Client, planton *
 		return Result{Ready: true, Message: "OpenBAO healthy (auto-init)"}, nil
 	}
 
-	// Initialized but sealed: read keys from Secret and unseal.
+	// Initialized but sealed: read keys from Secret and unseal. A vault that
+	// is initialized while the operator holds no keys is the restored case
+	// above all -- the data came back from the archive, the keys did not --
+	// and the declaration names a Secret that does not exist, so it is
+	// refused the way a missing named Secret is refused everywhere else, with
+	// the Secret as the object and the two ways out in the sentence.
 	var initSecret corev1.Secret
 	if err := c.Get(ctx, types.NamespacedName{
 		Name: initSecretName, Namespace: planton.Namespace,
@@ -189,7 +217,9 @@ func (o *OpenBAO) ensureAutoInit(ctx context.Context, c client.Client, planton *
 		if apierrors.IsNotFound(err) {
 			return Result{
 				Ready:   false,
-				Message: "OpenBAO is initialized and sealed but init secret is missing; manual unseal required",
+				Reason:  v1.ComponentReasonConfigurationRefused,
+				Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: initSecretName},
+				Message: sealedWithoutKeysMessage(planton, initSecretName),
 			}, nil
 		}
 		return Result{}, fmt.Errorf("reading OpenBAO init secret: %w", err)
@@ -213,9 +243,10 @@ func (o *OpenBAO) ensureAutoInit(ctx context.Context, c client.Client, planton *
 }
 
 // ensureMountsFromInitSecret runs the idempotent engine-mount ensure using the
-// root token from the init Secret. Manual-init installs (no init Secret) own
-// their mounts; the platform's expected engines are documented in the manual
-// path's status message instead.
+// root token from the init Secret -- the KV v2 engine at secret/ and the
+// Transit engine at transit/ the control plane expects. On a restored vault
+// the mounts are already in the storage that came back; the ensure finds them
+// and does nothing.
 func (o *OpenBAO) ensureMountsFromInitSecret(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, apiAddr, initSecretName string) error {
 	var initSecret corev1.Secret
 	if err := c.Get(ctx, types.NamespacedName{

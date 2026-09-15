@@ -26,7 +26,7 @@ var temporalChartData []byte
 //go:embed manifests/valkey-chart/valkey-3.0.31.tgz
 var valkeyChartData []byte
 
-//go:embed manifests/openbao-chart/openbao-0.25.6.tgz
+//go:embed manifests/openbao-chart/openbao-0.28.6.tgz
 var openbaoChartData []byte
 
 //go:embed manifests/neo4j-chart/neo4j-2026.1.4.tgz

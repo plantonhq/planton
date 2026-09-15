@@ -339,7 +339,7 @@ VALKEY_CHART_DIR := internal/resources/manifests/valkey-chart
 
 
 
-OPENBAO_HELM_CHART_VERSION ?= 0.25.6
+OPENBAO_HELM_CHART_VERSION ?= 0.28.6
 OPENBAO_HELM_CHART_REPO_NAME := openbao
 OPENBAO_HELM_CHART_REPO_URL := https://openbao.github.io/openbao-helm
 OPENBAO_CHART_DIR := internal/resources/manifests/openbao-chart

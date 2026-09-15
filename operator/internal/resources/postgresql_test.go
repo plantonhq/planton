@@ -226,3 +226,69 @@ func TestPostgreSQLHost(t *testing.T) {
 		t.Errorf("expected %s, got %s", want, got)
 	}
 }
+
+// The vault connects as its own least-privilege role: a login role with no
+// cluster-wide privilege, its password in a basic-auth Secret CloudNativePG
+// reconciles onto the instance. No role, no managed block at all.
+func TestNewPostgreSQLCluster_ManagedRoles(t *testing.T) {
+	plain := NewPostgreSQLCluster(PostgreSQLClusterOptions{CRName: "test", Namespace: "default", Instances: 1, StorageSize: "10Gi"})
+	if _, found, _ := unstructured.NestedMap(plain.Object, "spec", "managed"); found {
+		t.Error("a cluster with no consumer roles must carry no managed block")
+	}
+
+	obj := NewPostgreSQLCluster(PostgreSQLClusterOptions{
+		CRName: "test", Namespace: "default", Instances: 1, StorageSize: "10Gi",
+		ManagedRoles: []PostgreSQLManagedRole{{Name: PostgreSQLVaultRole, PasswordSecretName: "test-postgres-openbao"}},
+	})
+	roles, found, _ := unstructured.NestedSlice(obj.Object, "spec", "managed", "roles")
+	if !found || len(roles) != 1 {
+		t.Fatalf("expected one managed role, got %v", roles)
+	}
+	role := roles[0].(map[string]any)
+	if role["name"] != "openbao" || role["login"] != true || role["ensure"] != "present" {
+		t.Errorf("role rendered %v; want a present login role named openbao", role)
+	}
+	if secret := role["passwordSecret"].(map[string]any); secret["name"] != "test-postgres-openbao" {
+		t.Errorf("passwordSecret = %v; want the role's basic-auth Secret", secret)
+	}
+	for _, privilege := range []string{"superuser", "createdb", "createrole"} {
+		if _, set := role[privilege]; set {
+			t.Errorf("a consumer role must not carry %s", privilege)
+		}
+	}
+}
+
+// The vault's database is a declared object, not a CREATE statement: present
+// is idempotent on a restored cluster that already holds it, and retain means
+// the data lives and dies with the Cluster, never with the declaration.
+func TestNewPostgreSQLDatabase(t *testing.T) {
+	obj := NewPostgreSQLDatabase(PostgreSQLDatabaseOptions{
+		CRName: "test", Namespace: "default",
+		ObjectName: PostgreSQLVaultDatabaseObjectName("test"),
+		Name:       DBOpenBAO, Owner: PostgreSQLVaultRole,
+	})
+	if obj.GetKind() != "Database" || obj.GetAPIVersion() != "postgresql.cnpg.io/v1" {
+		t.Errorf("GVK = %s %s", obj.GetAPIVersion(), obj.GetKind())
+	}
+	if obj.GetName() != "test-postgres-openbao" || obj.GetNamespace() != "default" {
+		t.Errorf("name/namespace = %s/%s", obj.GetNamespace(), obj.GetName())
+	}
+	spec := obj.Object["spec"].(map[string]any)
+	if cluster := spec["cluster"].(map[string]any); cluster["name"] != "test-postgres" {
+		t.Errorf("cluster = %v; want the platform's cluster", cluster)
+	}
+	for key, want := range map[string]any{"name": "openbao", "owner": "openbao", "ensure": "present", "databaseReclaimPolicy": "retain"} {
+		if spec[key] != want {
+			t.Errorf("spec.%s = %v, want %v", key, spec[key], want)
+		}
+	}
+}
+
+func TestPostgreSQLVaultNames(t *testing.T) {
+	if got := PostgreSQLVaultRoleSecretName("my-planton"); got != "my-planton-postgres-openbao" {
+		t.Errorf("role Secret = %s", got)
+	}
+	if got := PostgreSQLVaultDatabaseObjectName("my-planton"); got != "my-planton-postgres-openbao" {
+		t.Errorf("Database object = %s", got)
+	}
+}

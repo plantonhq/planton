@@ -11,13 +11,16 @@ import (
 const (
 	PostgreSQLPort = 5432
 
-	// PostgreSQLSuperuser is the user every platform service connects as.
+	// PostgreSQLSuperuser is the user most platform services connect as.
 	// One cluster, one superuser, self-provisioned databases is the
-	// platform-wide contract: the control-plane fat-jar creates its own
-	// databases at boot, Temporal's schema job creates its two, and the
-	// identity server's init container ensures its one. Splitting consumers
-	// onto least-privilege roles is a deliberate future hardening, not an
-	// accident of this shape.
+	// platform-wide contract for the control plane, Temporal, and the
+	// identity server: the control-plane fat-jar creates its own databases
+	// at boot, Temporal's schema job creates its two, and the identity
+	// server's init container ensures its one. The bundled vault is the
+	// exception and the shape the rest will converge on: it holds the most
+	// sensitive data on the platform, so it connects as its own
+	// least-privilege role (PostgreSQLVaultRole) to its own database
+	// (DBOpenBAO), both declared to CloudNativePG and reconciled by it.
 	PostgreSQLSuperuser = "postgres"
 
 	// postgresqlImage pins the exact PostgreSQL build CloudNativePG runs.
@@ -56,14 +59,32 @@ const (
 	// its database waiting -- OpenFGA's own migrate job cannot create it.
 	DBOpenFGA = "openfga"
 
+	// DBOpenBAO is the bundled secrets manager's database: the vault's
+	// storage backend keeps every secret, key, and policy in it as
+	// barrier-encrypted rows, so the platform's one archive carries the
+	// vault with the records. Declared as a CloudNativePG Database object
+	// (not postInitSQL) so a restored cluster that already holds it
+	// converges instead of failing a CREATE, and owned by the vault's own
+	// role.
+	DBOpenBAO = "openbao"
+
+	// PostgreSQLVaultRole is the login role the vault connects as -- owner
+	// of DBOpenBAO and nothing else. Declared through the Cluster's
+	// managed roles with its password in a Secret CloudNativePG reconciles
+	// onto the instance, on a fresh cluster and on a restored one alike, so
+	// the vault's credential follows the operator-owned Secret through a
+	// restore with nothing carried by hand.
+	PostgreSQLVaultRole = "openbao"
+
 	// PostgreSQLClusterKind mirrors CloudNativePG's Cluster naming contract:
 	// every object it creates derives from the Cluster name -- instance pods
 	// ("{name}-1", ...), the traffic Services ("{name}-rw" primary
 	// read-write, "{name}-ro", "{name}-r"), and the credential Secrets
 	// ("{name}-app", "{name}-superuser").
-	postgresqlAPIGroup   = "postgresql.cnpg.io"
-	postgresqlAPIVersion = "v1"
-	postgresqlKind       = "Cluster"
+	postgresqlAPIGroup     = "postgresql.cnpg.io"
+	postgresqlAPIVersion   = "v1"
+	postgresqlKind         = "Cluster"
+	postgresqlDatabaseKind = "Database"
 )
 
 // PostgreSQLClusterGVK is the GroupVersionKind for CloudNativePG Cluster CRs.
@@ -71,6 +92,32 @@ var PostgreSQLClusterGVK = schema.GroupVersionKind{
 	Group:   postgresqlAPIGroup,
 	Version: postgresqlAPIVersion,
 	Kind:    postgresqlKind,
+}
+
+// PostgreSQLDatabaseGVK is the GroupVersionKind for CloudNativePG Database
+// CRs -- a declarative database inside a Cluster, reconciled by the
+// database operator against the live instance.
+var PostgreSQLDatabaseGVK = schema.GroupVersionKind{
+	Group:   postgresqlAPIGroup,
+	Version: postgresqlAPIVersion,
+	Kind:    postgresqlDatabaseKind,
+}
+
+// PostgreSQLVaultRoleSecretName returns the vault role's credential Secret,
+// named the way CloudNativePG names the credentials it generates itself
+// ("{cluster}-superuser", "{cluster}-app"): "{cluster}-openbao". Basic-auth
+// shape (username, password); operator-owned; create-once, so the password
+// never rotates under a running vault.
+func PostgreSQLVaultRoleSecretName(crName string) string {
+	return fmt.Sprintf("%s-%s", PostgreSQLClusterName(crName), PostgreSQLVaultRole)
+}
+
+// PostgreSQLVaultDatabaseObjectName returns the name of the Database CR that
+// declares the vault's database: "{cluster}-openbao", the same name as the
+// role's Secret -- one name for the vault's presence on the cluster, in the
+// two kinds that carry it.
+func PostgreSQLVaultDatabaseObjectName(crName string) string {
+	return fmt.Sprintf("%s-%s", PostgreSQLClusterName(crName), DBOpenBAO)
 }
 
 // PostgreSQLClusterName returns the CloudNativePG Cluster name for a
@@ -141,6 +188,22 @@ type PostgreSQLClusterOptions struct {
 	// component keeps a live Cluster's bootstrap as it is and explains that
 	// in status rather than re-rendering a decision that cannot change.
 	Recovery *PostgreSQLClusterRecovery
+
+	// ManagedRoles are the login roles CloudNativePG declares and reconciles
+	// on the instance -- the least-privilege seam for a consumer that must
+	// not connect as the superuser. Each role's password lives in a
+	// basic-auth Secret CloudNativePG reads; on a restored cluster the role
+	// already exists with the SOURCE's password and CloudNativePG resets it
+	// to this Secret's, so consumers keep reading the Secret they always
+	// read (the superuser Secret's own behaviour, applied to every role).
+	ManagedRoles []PostgreSQLManagedRole
+}
+
+// PostgreSQLManagedRole is one login role the Cluster carries under
+// spec.managed.roles.
+type PostgreSQLManagedRole struct {
+	Name               string
+	PasswordSecretName string
 }
 
 // PostgreSQLClusterBackup names the store and server a cluster archives to.
@@ -239,8 +302,72 @@ func NewPostgreSQLCluster(opts PostgreSQLClusterOptions) *unstructured.Unstructu
 		}
 	}
 
+	if len(opts.ManagedRoles) > 0 {
+		roles := make([]any, 0, len(opts.ManagedRoles))
+		for _, role := range opts.ManagedRoles {
+			roles = append(roles, map[string]any{
+				"name":   role.Name,
+				"ensure": "present",
+				// A login role with no cluster-wide privilege: it owns its
+				// database (the Database object names it owner) and
+				// nothing else. Superuser, createdb, and createrole stay
+				// at CloudNativePG's false.
+				"login":          true,
+				"passwordSecret": map[string]any{"name": role.PasswordSecretName},
+			})
+		}
+		spec["managed"] = map[string]any{"roles": roles}
+	}
+
 	obj.Object["spec"] = spec
 
+	return obj
+}
+
+// PostgreSQLDatabaseOptions declares one database inside the platform's
+// Cluster through CloudNativePG's Database object.
+type PostgreSQLDatabaseOptions struct {
+	// CRName is the PlantonPlatform CR name the Cluster derives its name from.
+	CRName string
+
+	// Namespace is the Kubernetes namespace of the Cluster.
+	Namespace string
+
+	// ObjectName is the Database CR's own name; Name is the database's name
+	// inside PostgreSQL; Owner is the role that owns it.
+	ObjectName string
+	Name       string
+	Owner      string
+
+	// OwnerRef ties the object to the PlantonPlatform CR for garbage
+	// collection.
+	OwnerRef *metav1.OwnerReference
+}
+
+// NewPostgreSQLDatabase builds a postgresql.cnpg.io/v1 Database as an
+// unstructured object: `ensure: present` is idempotent, so a restored
+// cluster that already holds the database converges instead of failing a
+// CREATE; `databaseReclaimPolicy: retain` means deleting the object never drops the
+// data -- the database lives and dies with the Cluster, not with this
+// declaration (a platform that later opts the consumer out leaves the
+// database standing, deliberately). CloudNativePG waits for the Cluster and
+// the owner role to exist and reports its progress in status.applied and
+// status.message.
+func NewPostgreSQLDatabase(opts PostgreSQLDatabaseOptions) *unstructured.Unstructured {
+	obj := &unstructured.Unstructured{}
+	obj.SetGroupVersionKind(PostgreSQLDatabaseGVK)
+	obj.SetName(opts.ObjectName)
+	obj.SetNamespace(opts.Namespace)
+	if opts.OwnerRef != nil {
+		obj.SetOwnerReferences([]metav1.OwnerReference{*opts.OwnerRef})
+	}
+	obj.Object["spec"] = map[string]any{
+		"cluster":               map[string]any{"name": PostgreSQLClusterName(opts.CRName)},
+		"name":                  opts.Name,
+		"owner":                 opts.Owner,
+		"ensure":                "present",
+		"databaseReclaimPolicy": "retain",
+	}
 	return obj
 }
 
