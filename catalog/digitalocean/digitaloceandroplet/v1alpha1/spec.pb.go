@@ -76,10 +76,13 @@ type DigitalOceanDropletSpec struct {
 	// changed after creation.
 	Monitoring bool `protobuf:"varint,14,opt,name=monitoring,proto3" json:"monitoring,omitempty"`
 	// (Optional) SSH keys to inject at creation — the standard access path to
-	// a droplet. Each entry is the ID or fingerprint of an SSH key already
-	// registered on the DigitalOcean account. Keys cannot be added or removed
-	// after creation: any change forces the droplet to be recreated.
-	SshKeys []string `protobuf:"bytes,15,rep,name=ssh_keys,json=sshKeys,proto3" json:"ssh_keys,omitempty"`
+	// a droplet. Each entry is a reference to a DigitalOceanSshKey resource
+	// (the default wiring resolves its numeric ssh_key_id; the fingerprint
+	// output works too -- droplets accept either) or a literal ID or
+	// fingerprint of a key already registered on the account. Keys cannot be
+	// added or removed after creation: any change forces the droplet to be
+	// recreated.
+	SshKeys []*v1.StringValueOrRef `protobuf:"bytes,22,rep,name=ssh_keys,json=sshKeys,proto3" json:"ssh_keys,omitempty"`
 	// (Optional) When and how often automated backups run. Requires
 	// enable_backups; omitted with backups enabled, DigitalOcean defaults to
 	// a daily plan in a window it picks.
@@ -220,7 +223,7 @@ func (x *DigitalOceanDropletSpec) GetMonitoring() bool {
 	return false
 }
 
-func (x *DigitalOceanDropletSpec) GetSshKeys() []string {
+func (x *DigitalOceanDropletSpec) GetSshKeys() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.SshKeys
 	}
@@ -342,7 +345,7 @@ var File_catalog_digitalocean_digitaloceandroplet_v1alpha1_spec_proto protorefle
 
 const file_catalog_digitalocean_digitaloceandroplet_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/digitalocean/digitaloceandroplet/v1alpha1/spec.proto\x125dev.planton.digitalocean.digitaloceandroplet.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9e\v\n" +
+	"<catalog/digitalocean/digitaloceandroplet/v1alpha1/spec.proto\x125dev.planton.digitalocean.digitaloceandroplet.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x91\r\n" +
 	"\x17DigitalOceanDropletSpec\x12Y\n" +
 	"\fdroplet_name\x18\x01 \x01(\tB6\xbaH3\xc8\x01\x01r.\x18\xff\x012)^[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?$R\vdropletName\x12D\n" +
 	"\x06region\x18\x02 \x01(\x0e2,.dev.planton.digitalocean.DigitalOceanRegionR\x06region\x126\n" +
@@ -359,8 +362,9 @@ const file_catalog_digitalocean_digitaloceandroplet_v1alpha1_spec_proto_rawDesc 
 	"\tuser_data\x18\f \x01(\tB\t\xbaH\x06r\x04(\x80\x80\x02R\buserData\x12\x1e\n" +
 	"\n" +
 	"monitoring\x18\x0e \x01(\bR\n" +
-	"monitoring\x12)\n" +
-	"\bssh_keys\x18\x0f \x03(\tB\x0e\xbaH\v\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\asshKeys\x12{\n" +
+	"monitoring\x12\x95\x02\n" +
+	"\bssh_keys\x18\x16 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xc5\x01\xbaH\x9f\x01\xba\x01\x9b\x01\n" +
+	"\x0fssh_keys_unique\x12Qeach SSH key may be listed once -- DigitalOcean rejects a duplicate key on create\x1a5this.filter(k, has(k.value)).map(k, k.value).unique()\x88\xd4a\xa7'\x92\xd4a\x19status.outputs.ssh_key_idR\asshKeys\x12{\n" +
 	"\rbackup_policy\x18\x10 \x01(\v2V.dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletBackupPolicyR\fbackupPolicy\x12(\n" +
 	"\rdroplet_agent\x18\x11 \x01(\bH\x00R\fdropletAgent\x88\x01\x01\x12+\n" +
 	"\x11graceful_shutdown\x18\x12 \x01(\bR\x10gracefulShutdown\x12.\n" +
@@ -372,7 +376,7 @@ const file_catalog_digitalocean_digitaloceandroplet_v1alpha1_spec_proto_rawDesc 
 	"\x0e_droplet_agentB\x0e\n" +
 	"\f_resize_diskB\x14\n" +
 	"\x12_public_networkingJ\x04\b\t\x10\n" +
-	"J\x04\b\r\x10\x0eR\x12disable_monitoringR\btimezone\"\xb4\x01\n" +
+	"J\x04\b\r\x10\x0eJ\x04\b\x0f\x10\x10R\x12disable_monitoringR\btimezone\"\xb4\x01\n" +
 	"\x1fDigitalOceanDropletBackupPolicy\x12+\n" +
 	"\x04plan\x18\x01 \x01(\tB\x17\xbaH\x14\xd8\x01\x01r\x0fR\x05dailyR\x06weeklyR\x04plan\x12E\n" +
 	"\aweekday\x18\x02 \x01(\tB+\xbaH(\xd8\x01\x01r#R\x03SUNR\x03MONR\x03TUER\x03WEDR\x03THUR\x03FRIR\x03SATR\aweekday\x12\x1d\n" +
@@ -402,12 +406,13 @@ var file_catalog_digitalocean_digitaloceandroplet_v1alpha1_spec_proto_depIdxs = 
 	2, // 0: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec.region:type_name -> dev.planton.digitalocean.DigitalOceanRegion
 	3, // 1: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec.vpc:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	3, // 2: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec.volume_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1, // 3: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec.backup_policy:type_name -> dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletBackupPolicy
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	3, // 3: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec.ssh_keys:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1, // 4: dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletSpec.backup_policy:type_name -> dev.planton.digitalocean.digitaloceandroplet.v1alpha1.DigitalOceanDropletBackupPolicy
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceandroplet_v1alpha1_spec_proto_init() }

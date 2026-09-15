@@ -51,7 +51,7 @@ spec:
   size: s-2vcpu-4gb
   image: ubuntu-24-04-x64
   sshKeys:
-    - "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
+    - value: "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
   vpc:
     value: "abc12345-6789-def0-1234-567890abcdef"
 ```
@@ -81,7 +81,7 @@ The InfraPipeline resolves the dependency graph, deploys the VPC first, then pro
 
 These are the most important decisions when configuring a Droplet. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**SSH keys** -- `sshKeys` takes IDs or fingerprints of keys already registered on the account and is create-only: changing it recreates the Droplet. A Droplet without keys falls back to a root password email.
+**SSH keys** -- each `sshKeys` entry references a `DigitalOceanSshKey` (its `ssh_key_id` output) or carries a literal ID or fingerprint of a key already registered on the account; the list is create-only: changing it recreates the Droplet. A Droplet without keys falls back to a root password email.
 
 **Sizing** -- The `size` field sets the Droplet's CPU and memory (e.g., `"s-1vcpu-1gb"` for development, `"s-2vcpu-4gb"` for production web servers, `"c-4vcpu-8gb"` for CPU-intensive workloads). Resizing powers the Droplet off briefly; whether the disk also grows (permanently) is governed by `resizeDisk`, which defaults ON.
 
@@ -101,6 +101,7 @@ These are the most important decisions when configuring a Droplet. Explore the f
 |------------|-------|-------------------|
 | **DigitalOceanVpc** (optional) | `vpc` | `status.outputs.vpc_id` |
 | **DigitalOceanVolume** (optional) | `volumeIds` | `status.outputs.volume_id` |
+| **DigitalOceanSshKey** (optional) | `sshKeys` | `status.outputs.ssh_key_id` |
 
 ### What This Component Provides
 

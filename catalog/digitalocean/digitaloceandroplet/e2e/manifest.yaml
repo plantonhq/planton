@@ -29,8 +29,8 @@ spec:
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   sshKeys:
-    - "12345678"
-    - "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
+    - value: "12345678"
+    - value: "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
   enableIpv6: true
   enableBackups: true
   backupPolicy:

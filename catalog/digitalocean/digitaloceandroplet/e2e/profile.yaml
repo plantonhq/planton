@@ -13,9 +13,9 @@ spec:
   # OPTIONAL, so the fixture is never a registry edge) plus weekly backups
   # with a policy window, monitoring and web-console agents, IPv6, tags,
   # cloud-init user data, graceful shutdown, and an explicit resize_disk.
-  # Deliberately not in the live lanes: ssh_keys (needs an SSH key already
-  # registered on the account -- no SSH-key kind exists yet to compose as a
-  # fixture), volume_ids (needs a DigitalOceanVolume fixture -- rides that
+  # Deliberately not in the live lanes: ssh_keys (a DigitalOceanSshKey
+  # fixture can be composed through the typed reference; the scenario has
+  # not yet been grown to carry one), volume_ids (needs a DigitalOceanVolume fixture -- rides that
   # kind's wave), gpu_partition_mode (GPU sizes are the expensive class AND
   # a Pulumi SDK v4.49.0 gap), and public_networking=false (Pulumi SDK gap;
   # it would also blind the verifier's public-IPv4 assertion). Droplets
