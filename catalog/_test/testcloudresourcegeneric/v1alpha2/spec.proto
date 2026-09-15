@@ -74,9 +74,7 @@ message TestCloudResourceGenericSpec {
   // registry's "-> *" form and for every consumer that must skip such an
   // edge when it resolves nesting, so the contract holds even when no
   // production kind happens to carry the shape.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef kindless_access_ref = 19 [
-    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
-  ];
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kindless_access_ref = 19 [(dev.planton.shared.foreignkey.v1.containment_exempt) = true];
 }
 
 // TestGenericStep is the structured replacement for v1alpha1's plain command

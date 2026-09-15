@@ -70,9 +70,7 @@ message AwsEventBridgePipeSpec {
   // batch before delivery. Unset skips enrichment. References here
   // carry no default kind: state the kind explicitly in valueFrom.
   // Access, not placement, like `source`.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef enrichment = 5 [
-    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
-  ];
+  dev.planton.shared.foreignkey.v1.StringValueOrRef enrichment = 5 [(dev.planton.shared.foreignkey.v1.containment_exempt) = true];
 
   // HTTP shaping (for API-destination enrichment) and the input
   // template applied before the enrichment call.

@@ -126,9 +126,7 @@ message AzurePrivateEndpointServiceConnection {
   // Vault, a Cosmos account, a SQL server); without the exemption an
   // endpoint would be drawn inside the service it merely connects to,
   // torn out of the subnet that is its real home.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef private_connection_resource_id = 1 [
-    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
-  ];
+  dev.planton.shared.foreignkey.v1.StringValueOrRef private_connection_resource_id = 1 [(dev.planton.shared.foreignkey.v1.containment_exempt) = true];
 
   // The Private Link Service ALIAS to connect to, when the target is
   // exposed through an alias rather than a resource ID (typically a
