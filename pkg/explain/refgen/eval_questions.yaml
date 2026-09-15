@@ -353,7 +353,9 @@ questions:
       have run live?
     answer: >
       With backup declared the name fits 45 characters (CronJob names cap
-      at 52); backups need Raft (server.ha) and the auth delegator; the
+      at 52); backups need Raft storage (server.raft, the default engine --
+      a vault on PostgreSQL storage is backed up by its database and
+      refuses the block) and the auth delegator; the
       in-vault policy, auth mount, and role are a four-command recipe the
       module cannot run (every failed run prints it with the real names);
       a TLS certificate must include <name>-active.<namespace>.svc; GCS on
@@ -371,6 +373,9 @@ questions:
       - kind: KubernetesOpenBao
         file: GUIDE.md
         pattern: 'sys/storage/raft/snapshot'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: '`backup` requires `server\.raft`'
       - kind: KubernetesOpenBao
         file: GUIDE.md
         pattern: 'R2 has no keyless posture'

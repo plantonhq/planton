@@ -303,8 +303,10 @@ second cluster.
   reached by its S3 endpoint) protects against pod loss, not cluster loss.
   It is the right lab shape and the wrong disaster-recovery shape; say so in
   the proposal.
-- Dev-mode or file-storage instances (OpenBao's `dev` and `standalone`
-  modes) have nothing to snapshot; the kinds refuse a backup block on them.
+- An OpenBao in `dev` has nothing to snapshot, and an OpenBao on
+  PostgreSQL storage is backed up by its database -- its disaster recovery
+  is the database's, and the kind refuses a backup block on both, with the
+  reason. Snapshots exist only for integrated Raft.
 - A restore is never an edit to a running instance: it is a new instance
   declared with the restore member set. Editing a live instance's restore
   block changes nothing on PostgreSQL and MongoDB, and on OpenBao it only

@@ -6,15 +6,15 @@
 # Secret. Both handles flow into the consumers BY REFERENCE, so the wiring
 # can never drift.
 #
-# TWO DATABASES, ONE OWNER ROLE — the one-owner shape is load-bearing, not
-# a shortcut: the operator maintains exactly ONE application credential
-# Secret (`<name>-app`, for the bootstrap owner), and BOTH consumers read
-# their credentials from it by reference. A role per database would leave
-# the second role without a maintained Secret. initdb creates `keycloak`
-# owned by the `identity` role, and one line of post_init_sql (run once as
-# superuser, right after initdb) creates `openfga` under the same owner —
-# ownership gives both servers' schema migrations everything they need
-# with NO create-database grant.
+# ONE OWNER ROLE FOR EVERY DATABASE — the one-owner shape is load-bearing,
+# not a shortcut: the operator maintains exactly ONE application credential
+# Secret (`<name>-app`, for the bootstrap owner), and EVERY consumer reads
+# its credentials from it by reference. A role per database would leave
+# the other roles without a maintained Secret. initdb creates `keycloak`
+# owned by the `identity` role, and post_init_sql (run once as superuser,
+# right after initdb) creates `openfga` under the same owner — and, when
+# the vault stores here, `openbao` too. Ownership gives every server's
+# schema work everything it needs with NO create-database grant.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesPostgres
 metadata:
@@ -60,3 +60,8 @@ spec:
         # session, which is why this rides post_init_sql (superuser,
         # against `postgres`) and not post_init_application_sql.
         - CREATE DATABASE openfga OWNER identity;
+{% if values.openbao_storage == "postgresql" %}
+        # The secrets store — OpenBao's KV and HA lock tables, created by
+        # the server itself on first start; ownership covers them.
+        - CREATE DATABASE openbao OWNER identity;
+{% endif %}

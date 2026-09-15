@@ -7,21 +7,23 @@ answers "who is this?" (OIDC single sign-on, user federation, the admin
 console); OpenFGA answers "may they do this?" (Zanzibar-style relationship
 tuples, for every application that outgrows role checks); OpenBao answers
 "what may they know?" (KV secrets, dynamic credentials, PKI). Underneath:
-one CloudNativePG-managed PostgreSQL bootstrapped with both databases
+one CloudNativePG-managed PostgreSQL bootstrapped with every database
 under one least-privilege owner role, credentials flowing by reference
 through the operator-maintained Secret, and the OpenFGA API shipping with
-its keys enabled on day one. The self-hosted alternative to an
-Auth0-plus-Vault bill, owned end to end.
+its keys enabled on day one. The vault keeps its data on integrated Raft
+by default, or — one value — inside that same PostgreSQL, so one database
+backup covers identity, authorization, and secrets together. The
+self-hosted alternative to an Auth0-plus-Vault bill, owned end to end.
 
 | Resource | Kind | Purpose | Conditional on |
 |---|---|---|---|
 | `<env>-identity-ns` | KubernetesNamespace | The platform's shared home — owned once, joined by every tenant | always |
 | `<env>-cnpg-operator` | KubernetesCloudNativePgOperator | The PostgreSQL engine (one per cluster) in `cnpg-system` | `install_cnpg_operator` |
 | `<env>-keycloak-operator` | KubernetesKeycloakOperator | The Keycloak engine, namespaced watch, beside its declaration | `install_keycloak_operator` |
-| `<env>-identity-db` | KubernetesPostgres | HA PostgreSQL bootstrapped with `keycloak` + `openfga` under owner `identity` | always |
+| `<env>-identity-db` | KubernetesPostgres | HA PostgreSQL bootstrapped with `keycloak` + `openfga` (+ `openbao` when the vault stores here) under owner `identity` | always |
 | `<env>-keycloak` | KubernetesKeycloak | The identity provider — SSO, federation, admin console | always |
 | `<env>-openfga` | KubernetesOpenFga | The authorization engine — relationship-tuple checks over the shared database | always |
-| `<env>-openbao` | KubernetesOpenBao | The secrets manager — initialized and unsealed by you after deploy | always |
+| `<env>-openbao` | KubernetesOpenBao | The secrets manager on integrated Raft or in the shared database (`openbao_storage`) — initialized and unsealed by you after deploy | always |
 
 **Prerequisite when `install_cnpg_operator` is false:** the cluster must
 already run the CloudNativePG operator (any cluster provisioned by a
@@ -38,12 +40,12 @@ graph TB
   end
   subgraph ns [namespace: identity]
     KOP[Keycloak operator<br/>namespaced watch]
-    DB[(PostgreSQL cluster<br/>keycloak + openfga)]
+    DB[(PostgreSQL cluster<br/>keycloak + openfga<br/>+ openbao when stored here)]
     SECRET[app credential Secret<br/>operator-maintained]
     KC[Keycloak<br/>SSO / admin console]
     FGA[OpenFGA<br/>authorization checks]
     BAO[OpenBao<br/>secrets / PKI]
-    RAFT[(data volume)]
+    RAFT[(Raft data volume<br/>openbao_storage: raft)]
   end
   OP -->|reconciles| DB
   KOP -->|reconciles| KC
@@ -53,6 +55,8 @@ graph TB
   FGA -->|"-rw Service (by reference)"| DB
   FGA -->|secretKeyRef| SECRET
   BAO --- RAFT
+  BAO -.->|"-rw Service (by reference)<br/>openbao_storage: postgresql"| DB
+  BAO -.->|PGPASSWORD from the Secret| SECRET
   APPS[Your applications] -->|OIDC| KC
   APPS -->|"check(user, relation, object)"| FGA
   APPS -->|Kubernetes auth| BAO
@@ -62,8 +66,10 @@ Deployment layers: the namespace and (when installed) both operators
 deploy first; the database waits for the CNPG operator (an explicit
 dependency edge) and the namespace (by reference); Keycloak waits for its
 operator (explicit edge) and the database (its host and credential
-references are the ordering); OpenFGA waits for the database the same way;
-OpenBao waits only for the namespace — it has no database seam.
+references are the ordering); OpenFGA waits for the database the same way.
+On Raft, OpenBao waits only for the namespace — its data is its own
+volume; on PostgreSQL storage it waits for the database exactly as OpenFGA
+does, its host and password references being the ordering.
 
 ## Parameters
 
@@ -78,8 +84,9 @@ OpenBao waits only for the namespace — it has no database seam.
 | `keycloak_hostname` | Public base URL tokens are minted for (full URL) | `https://auth.example.com` | **MUST change** — the placeholder deploys but mints tokens for a domain you do not own |
 | `keycloak_instances` | Keycloak replicas (auto-clustering) | `1` | `2+` for HA once the platform is critical-path |
 | `openfga_preshared_api_key` | The API key OpenFGA clients present | `change-me` | **MUST change** — the placeholder is not a credential |
-| `openbao_replicas` | OpenBao server replicas on integrated Raft storage (odd numbers only make sense above 1) | `1` | `3` once the cluster has the nodes and secrets are critical-path; `5` to survive two member losses |
-| `openbao_disk_size` | OpenBao Raft data volume (per replica) | `10Gi` | Aggressive audit/snapshot schedules |
+| `openbao_storage` | Where the vault keeps its data: `raft` (its own volume, Raft snapshots for backup) or `postgresql` (this chart's database — no volume, one database backup covers the whole triad, no snapshots) | `raft` | The database is the platform's backed-up truth and the vault belongs inside that boundary |
+| `openbao_replicas` | OpenBao server replicas (on Raft, odd numbers only make sense above 1; on PostgreSQL any second replica is a warm standby) | `1` | `3` once the cluster has the nodes and secrets are critical-path; on Raft `5` survives two member losses |
+| `openbao_disk_size` | OpenBao Raft data volume (per replica; unused on `postgresql`) | `10Gi` | Aggressive audit/snapshot schedules |
 
 ## After deployment
 
@@ -95,8 +102,9 @@ OpenBao waits only for the namespace — it has no database seam.
 
    Store the five unseal key shares and the root token OUTSIDE the
    cluster — they are produced only once, and this chart deliberately
-   never knows them. Above one replica, unseal every replica; peers join
-   the Raft cluster on their own.
+   never knows them. Above one replica, unseal every replica; Raft peers
+   join the cluster on their own, and PostgreSQL-stored standbys wait for
+   the HA lock.
 
 2. **Log in to Keycloak.** The operator generated the bootstrap admin:
 
@@ -143,7 +151,12 @@ OpenBao waits only for the namespace — it has no database seam.
   change); the one-time initialization stays yours either way.
 - **Safe to change in place:** `postgres_disk_size` (grows only),
   `postgres_instances`, `keycloak_instances` (instances cluster
-  automatically), `openbao_disk_size`.
+  automatically), `openbao_disk_size`, `openbao_replicas`.
+- **`openbao_storage` is a day-one decision.** Switching engines on a
+  deployed vault does not move its data: the new engine starts empty and
+  the server reports uninitialized. Decide it before the first `bao
+  operator init`; afterwards, moving means a Raft snapshot restored into a
+  fresh vault (Raft to Raft only) or a re-seed.
 - **`keycloak_hostname` is operationally sticky:** changing it re-mints
   issuer URLs, which invalidates existing tokens and breaks OIDC clients
   configured against the old issuer — coordinate with every relying
@@ -156,12 +169,14 @@ OpenBao waits only for the namespace — it has no database seam.
   the backup path (CloudNativePG's Barman Cloud plugin) requires
   cert-manager. Once present, declare a `KubernetesCnpgBarmanCloudPlugin`
   referencing the operator's namespace and a `backup` block on the
-  KubernetesPostgres resource. For OpenBao, declare its `backup` block (S3, GCS,
-  Azure Blob, or Cloudflare R2 by reference) and run the four-command login recipe
-  the spec prints once the vault is initialized. Snapshots exist only for Raft
-  storage, which this chart's vault runs at every `openbao_replicas` count (a
-  single-node Raft cluster is the honest start on a small cluster); a declared
-  restore additionally needs an `auto_unseal` arm, and the component
+  KubernetesPostgres resource — and with `openbao_storage: postgresql` that one
+  backup carries the vault too, because its data lives in the same database;
+  the kind refuses a `backup` block on that engine, with the reason. On Raft
+  (the default, at every `openbao_replicas` count — a single-node Raft cluster
+  is the honest start on a small cluster), declare the vault's own `backup`
+  block (S3, GCS, Azure Blob, or Cloudflare R2 by reference) and run the
+  four-command login recipe the spec prints once the vault is initialized; a
+  declared restore additionally needs an `auto_unseal` arm, and the component
   guide's runbook covers the rest.
 - **Scaling OpenFGA:** the servers are stateless — raise `replicas` on
   the deployed resource; the database is the shared truth. Its `3`

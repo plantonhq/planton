@@ -1,0 +1,42 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: openbao
+spec:
+  namespace:
+    value: openbao
+  createNamespace: true
+  server:
+    # PostgreSQL storage BY REFERENCE to a KubernetesPostgres in the same
+    # namespace: the host resolves to its -rw Service and the password to
+    # its operator-maintained credential Secret (key `password`), so no
+    # credential is ever written here. The referenced cluster must
+    # bootstrap the `openbao` database owned by the `openbao` role
+    # (`bootstrap.initdb`); OpenBao creates its two tables on first start.
+    postgresql:
+      host:
+        valueFrom:
+          name: my-postgres
+      database: openbao
+      username: openbao
+      passwordSecret:
+        secretName:
+          valueFrom:
+            name: my-postgres
+      # Each server's connection ceiling. OpenBao's default is 128 per
+      # server; a default PostgreSQL allows 100 in total. Bound it when the
+      # database is shared or the replica count grows.
+      maxParallel: 32
+    replicas: 1
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    auditStorage:
+      size: 10Gi
+  uiEnabled: true
+  metrics:
+    enabled: true

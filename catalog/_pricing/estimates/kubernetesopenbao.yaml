@@ -70,3 +70,15 @@ spec:
       exclusions:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - the chart's default required anti-affinity places each replica on a distinct node -- the cluster needs at least as many schedulable nodes as replicas
+    - preset: 06-production-postgresql-storage
+      capacity_footprint:
+        cpu_requests: 250m
+        memory_requests: 512Mi
+        cpu_limits: "1"
+        memory_limits: 1Gi
+        persistent_storage: 10Gi
+        basis: 1 server replica x (250m CPU / 512Mi memory requests, 1 CPU / 1Gi limits) + 1 x 10Gi audit volume
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node and storage-class economics
+        - the vault stores in a PostgreSQL database this manifest only references -- no data volume is provisioned here, and the database's own capacity and backups bill with the database
+        - the chart's default required anti-affinity places each replica on a distinct node -- the cluster needs at least as many schedulable nodes as replicas

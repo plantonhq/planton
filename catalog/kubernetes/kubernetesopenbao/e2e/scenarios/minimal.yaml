@@ -1,9 +1,12 @@
-# Component defaults end to end: no mode declared = standalone (the
-# chart default) — one instance, file storage on the data PVC, plain
-# HTTP in-cluster, UI on. The verifier performs the REAL bootstrap
-# every operator faces: asserts the fresh pod is NotReady-by-design
-# (sealed), initializes with one key share, unseals, asserts readiness
-# FLIPS, then proves a KV v2 write/read round-trip.
+# Component defaults end to end: the default storage engine (integrated
+# Raft — a one-node Raft cluster is the spec's meaning of a server that
+# declares nothing) at the default count of one, its data on the Raft
+# volume, plain HTTP in-cluster, UI on. Only the volume size is written,
+# to keep the lab cluster's disk small. The verifier performs the REAL
+# bootstrap every operator faces: asserts the fresh pod is
+# NotReady-by-design (sealed), initializes with one key share, unseals,
+# asserts readiness FLIPS, then proves a KV v2 write/read round-trip
+# through the `-active` Service every server on a storage engine exports.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesOpenBao
 metadata:

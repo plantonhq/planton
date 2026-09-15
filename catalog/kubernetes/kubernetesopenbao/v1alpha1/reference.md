@@ -58,12 +58,15 @@ deploy before anything is created, with a message naming the budget.
 ```yaml
 # Full-surface development manifest — exercises every module-rendered arm
 # so the offline plan/preview proofs cover what the kind-cluster lanes
-# exclude (HA Raft with synthesized retry_join, TLS listener wiring, a
-# declared-credential auto-unseal seal, the injector, metrics +
+# exclude (three Raft replicas with synthesized retry_join, TLS listener
+# wiring, a declared-credential auto-unseal seal, the injector, metrics +
 # ServiceMonitor, audit storage, the KEYLESS S3 backup arm through EKS
 # IRSA — the one store posture no lane can prove: the kind lanes back up
 # with declared keys to an in-cluster store and the GKE lanes prove GCS
-# and R2, so the IRSA arm's rendering lives here).
+# and R2, so the IRSA arm's rendering lives here). The storage engine is
+# a oneof, so this manifest carries Raft; the PostgreSQL engine's
+# rendering is proven by the module's own render tests and live by the
+# behavioral-postgresql lane.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesOpenBao
 metadata:

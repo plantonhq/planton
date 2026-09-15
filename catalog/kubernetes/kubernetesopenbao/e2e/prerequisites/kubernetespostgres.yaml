@@ -1,0 +1,30 @@
+# Consumer-scoped PostgreSQL fixture for the KubernetesOpenBao lanes — the
+# database the PostgreSQL-storage scenario stores its vault in:
+# - SHARED NAMESPACE (e2e-bao-pg): the scenario co-locates with this
+#   fixture because the vault reads its database password through the
+#   chart's secret-environment seam (a secretKeyRef), and a secretKeyRef
+#   can only read Secrets in the workload's own namespace.
+# - `initdb` creates the `openbao` database owned by the `openbao` role —
+#   ownership covers the two tables OpenBao creates on first start (the
+#   KV store and the HA lock table); no CREATE grant is needed.
+# - The operator maintains the `e2e-bao-pg-app` credential Secret (keys
+#   username/password) across failovers — where the scenario's
+#   `passwordSecret.secretName` resolves BY REFERENCE, so the password
+#   never appears in any manifest.
+# The CloudNativePG operator arrives through KubernetesPostgres's own
+# registry prerequisite edge; nothing here declares it.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPostgres
+metadata:
+  name: e2e-bao-pg
+spec:
+  namespace:
+    value: e2e-bao-pg
+  create_namespace: true
+  instances: 1
+  storage:
+    size: 2Gi
+  bootstrap:
+    initdb:
+      database: openbao
+      owner: openbao

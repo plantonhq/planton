@@ -1,0 +1,49 @@
+# THE DURABILITY PROOF on PostgreSQL storage: the vault stores in a
+# KubernetesPostgres composed beside it BY REFERENCE (host from the
+# database's -rw Service, password from its operator-maintained Secret —
+# never a credential in a manifest or in the server's configuration),
+# and the engine's promise is proven from three witnesses before a
+# secret is written: NO data volume is claimed (the chart runs its HA
+# mode with Raft off), the server reports HA on through `sys/leader`
+# (the lock table is live — the fact the `-active` Service depends on),
+# and the vault's two tables sit in the DECLARED database, read with
+# psql on the CloudNativePG primary (the PG* environment landed where
+# the manifest said). Then the same durability arm as behavioral-raft:
+# initialize + unseal, write a marker, DELETE pod 0, the replacement
+# comes back SEALED (the Shamir restart truth), re-unseal it, and the
+# marker is still there — read through `-active` once the replacement
+# re-acquires the HA lock after the dead holder's lease expires. On Raft
+# the data came back from the replica's own volume; here there is no
+# volume, and it came back from the database.
+#
+# One replica is the honest shape for a one-node lab cluster: the chart
+# ships a REQUIRED hostname anti-affinity, so more replicas need as many
+# nodes (the multi-replica lock handover is rendered and asserted
+# offline; a multi-node cluster proves it live). A `backup` block on
+# this engine is refused by the spec — snapshots exist only for Raft;
+# this vault is backed up by its database — so no backup arm rides here.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: e2e-bao-pg-vault
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesPostgres"
+spec:
+  # JOINS the fixture-owned namespace (the database fixture deploys first
+  # with create_namespace and owns e2e-bao-pg); the scenario must NOT also
+  # claim createNamespace — two owners of one namespace fail the second
+  # create. Same convention as every fixture-sharing scenario.
+  namespace:
+    value: e2e-bao-pg
+  server:
+    postgresql:
+      host:
+        valueFrom:
+          name: e2e-bao-pg
+      database: openbao
+      username: openbao
+      passwordSecret:
+        secretName:
+          valueFrom:
+            name: e2e-bao-pg
+    replicas: 1

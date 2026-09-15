@@ -4,30 +4,41 @@ metadata:
   name: kubernetesopenbao
 spec:
   tier: 2
-  # Rebuilt onto the official openbao chart 0.28.6 (OpenBao v2.6.1) with
-  # the typed mode oneof (dev/standalone/ha-Raft), module-synthesized
-  # server HCL (listener, storage, retry_join, seal, telemetry) and the
-  # seal-credential Secret indirection. The old deferred posture
-  # ("sealed state on kind — needs dev_mode spec field") died with the
-  # rebuild: dev mode is a first-class arm now, and the DEDICATED
-  # verifier owns the seal lifecycle on the real modes — sealed pods
-  # asserted NotReady-by-design, a real init/unseal bootstrap flipping
-  # readiness, then a KV round-trip (never the generic readiness-waiting
-  # fallback, which would hang every fresh install by design).
+  # Built onto the official openbao chart 0.28.6 (OpenBao v2.6.1). The
+  # server declares what OpenBao has — dev as the lab posture, or a
+  # storage engine (integrated Raft with its volume, or PostgreSQL by
+  # reference to a KubernetesPostgres) and a replica count — and the
+  # modules synthesize the server HCL (listener, the engine's storage
+  # stanza, retry_join, seal, telemetry) and drive the chart's own mode
+  # from the engine. The DEDICATED verifier owns the seal lifecycle on
+  # every server that is not dev — sealed pods asserted
+  # NotReady-by-design, a real init/unseal bootstrap flipping readiness,
+  # then a KV round-trip through the `-active` Service (never the generic
+  # readiness-waiting fallback, which would hang every fresh install by
+  # design). Dev is a first-class arm: auto-initialized, auto-unsealed,
+  # the round-trip on the built-in mount.
   #
-  # The backup and restore surface (scheduled Raft snapshots to an object
-  # store, declared restore into a fresh cluster) runs live on the kind
-  # lanes: the backup proof onto the catalog's own in-cluster S3 store and
-  # the restore proof through the transit seal, both engines. The GKE
-  # lanes (keyless GCS and R2 under a Cloud KMS seal) are authored and
-  # gated on their cluster profile.
+  # Both engines run live on the kind lanes: Raft on minimal,
+  # full-surface, behavioral-raft, and the backup and restore lanes;
+  # PostgreSQL on behavioral-postgresql, which composes a
+  # KubernetesPostgres beside the vault and proves the engine's promise
+  # (no data volume, the HA lock table live, the tables in the declared
+  # database, the marker surviving pod loss with nothing on disk). The
+  # backup and restore surface (scheduled Raft snapshots to an object
+  # store, declared restore into a fresh cluster) runs live too: the
+  # backup proof onto the catalog's own in-cluster S3 store and the
+  # restore proof through the transit seal, both engines. The GKE lanes
+  # (keyless GCS and R2 under a Cloud KMS seal) are authored and gated on
+  # their cluster profile.
   status: green
   validated_provisioners:
     - pulumi
     - terraform
   # First boot pulls the image and provisions per-replica PVCs; the
-  # behavioral-raft lane adds a pod replacement + re-unseal cycle; the
-  # restore lanes chain four fixtures (namespace, key holder, store,
-  # source) plus a seeding phase that initializes the source, runs the
-  # login recipe, and waits for a snapshot run before the target deploys.
+  # behavioral lanes add a pod replacement + re-unseal cycle; the
+  # PostgreSQL lane chains the CloudNativePG operator and a database
+  # before the vault; the restore lanes chain four fixtures (namespace,
+  # key holder, store, source) plus a seeding phase that initializes the
+  # source, runs the login recipe, and waits for a snapshot run before
+  # the target deploys.
   timeout_minutes: 40
