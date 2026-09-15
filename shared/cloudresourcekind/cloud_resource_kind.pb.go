@@ -2062,8 +2062,18 @@ const (
 	CloudResourceKind_DigitalOceanApp               CloudResourceKind = 5000
 	CloudResourceKind_DigitalOceanBucket            CloudResourceKind = 5001
 	CloudResourceKind_DigitalOceanContainerRegistry CloudResourceKind = 5002
-	CloudResourceKind_DigitalOceanDatabaseCluster   CloudResourceKind = 5003
-	CloudResourceKind_DigitalOceanDnsZone           CloudResourceKind = 5004
+	// A DigitalOcean managed database cluster -- the cluster every other
+	// managed-database resource is created on: users, logical databases,
+	// connection pools, the firewall rule set, Kafka topics, and Kafka
+	// schema subjects are all API-addressed under a cluster's id and cannot
+	// exist before it. A container kind for exactly that reason: those six
+	// kinds are children of the cluster, so on a diagram the cluster is the
+	// room they stand in. A read replica also names its primary but is a
+	// cluster of its own, a monitor alert names the clusters it watches, and
+	// an App Platform app names a cluster it attaches; those three references
+	// are containment-exempt on their specs.
+	CloudResourceKind_DigitalOceanDatabaseCluster CloudResourceKind = 5003
+	CloudResourceKind_DigitalOceanDnsZone         CloudResourceKind = 5004
 	// No VPC prerequisite: the droplet spec's vpc reference is optional —
 	// an omitted vpc places the droplet in the region's default VPC.
 	CloudResourceKind_DigitalOceanDroplet  CloudResourceKind = 5005
@@ -4205,7 +4215,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xdf\xdb\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xe1\xdb\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4899,8 +4909,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x19KubernetesPlantonPlatform\x10\xcf \x1a \xa2\xf7\x04\x1c\b\x13\x12\bv1alpha1\"\ak8spltn:\x02\xce P\x92\x03\x120\n" +
 	"\x0fDigitalOceanApp\x10\x88'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05doappP\xf6\x03\x123\n" +
 	"\x12DigitalOceanBucket\x10\x89'\x1a\x1a\xa2\xf7\x04\x16\b\x11\x12\bv1alpha1\"\x05dobktP\xf8\x03\x12=\n" +
-	"\x1dDigitalOceanContainerRegistry\x10\x8a'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04docrP\xfa\x03\x12;\n" +
-	"\x1bDigitalOceanDatabaseCluster\x10\x8b'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04dodbP\xf7\x03\x126\n" +
+	"\x1dDigitalOceanContainerRegistry\x10\x8a'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04docrP\xfa\x03\x12=\n" +
+	"\x1bDigitalOceanDatabaseCluster\x10\x8b'\x1a\x1b\xa2\xf7\x04\x17\b\x11\x12\bv1alpha1\"\x04dodb0\x01P\xf7\x03\x126\n" +
 	"\x13DigitalOceanDnsZone\x10\x8c'\x1a\x1c\xa2\xf7\x04\x18\b\x11\x12\bv1alpha1\"\x05dodns0\x01P\xf9\x03\x125\n" +
 	"\x13DigitalOceanDroplet\x10\x8d'\x1a\x1b\xa2\xf7\x04\x17\b\x11\x12\bv1alpha1\"\x06dodropP\xf4\x03\x124\n" +
 	"\x14DigitalOceanFirewall\x10\x8e'\x1a\x19\xa2\xf7\x04\x15\b\x11\x12\bv1alpha1\"\x04dofwP\xf9\x03\x124\n" +

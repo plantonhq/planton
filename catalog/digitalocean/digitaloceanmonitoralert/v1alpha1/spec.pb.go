@@ -77,6 +77,10 @@ type DigitalOceanMonitorAlertSpec struct {
 	// (Optional) Managed database clusters the policy watches, as literal
 	// UUIDs or references to DigitalOceanDatabaseCluster resources. Valid
 	// only with database metrics.
+	//
+	// Containment-exempt: an alert policy WATCHES the clusters it names and
+	// never lives in one. On a diagram the alert stays with the watching
+	// layer, with a line to each cluster it watches.
 	DatabaseClusterIds []*v1.StringValueOrRef `protobuf:"bytes,9,rep,name=database_cluster_ids,json=databaseClusterIds,proto3" json:"database_cluster_ids,omitempty"`
 	// (Optional) Droplet tags the policy watches: every Droplet carrying a
 	// listed tag is covered, and membership tracks the tag automatically --
@@ -315,7 +319,7 @@ var File_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_spec_proto proto
 
 const file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/digitalocean/digitaloceanmonitoralert/v1alpha1/spec.proto\x12:dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf9\x17\n" +
+	"Acatalog/digitalocean/digitaloceanmonitoralert/v1alpha1/spec.proto\x12:dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfd\x17\n" +
 	"\x1cDigitalOceanMonitorAlertSpec\x12,\n" +
 	"\vdescription\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vdescription\x12\x8e\n" +
@@ -328,8 +332,8 @@ const file_catalog_digitalocean_digitaloceanmonitoralert_v1alpha1_spec_proto_raw
 	"\aenabled\x18\x06 \x01(\bB\b\x92\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12w\n" +
 	"\vdroplet_ids\x18\a \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\n" +
 	"dropletIds\x12\x88\x01\n" +
-	"\x11load_balancer_ids\x18\b \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\x92'\x92\xd4a\x1fstatus.outputs.load_balancer_idR\x0floadBalancerIds\x12\x88\x01\n" +
-	"\x14database_cluster_ids\x18\t \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8b'\x92\xd4a\x19status.outputs.cluster_idR\x12databaseClusterIds\x128\n" +
+	"\x11load_balancer_ids\x18\b \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\x92'\x92\xd4a\x1fstatus.outputs.load_balancer_idR\x0floadBalancerIds\x12\x8c\x01\n" +
+	"\x14database_cluster_ids\x18\t \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\x8b'\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\x12databaseClusterIds\x128\n" +
 	"\x04tags\x18\n" +
 	" \x03(\tB$\xbaH!\x92\x01\x1e\"\x1cr\x1a2\x18^[a-zA-Z0-9:\\-_]{1,255}$R\x04tags\x12\x81\x01\n" +
 	"\x06alerts\x18\v \x01(\v2a.dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1.DigitalOceanMonitorAlertNotificationsB\x06\xbaH\x03\xc8\x01\x01R\x06alerts:\xff\x06\xbaH\xfb\x06\x1a\x9e\x02\n" +

@@ -55,6 +55,11 @@ type DigitalOceanDatabaseFirewallSpec struct {
 	// (Optional) Kubernetes clusters trusted to reach the cluster, as
 	// literal cluster UUIDs or references to DigitalOceanKubernetesCluster
 	// resources.
+	//
+	// Containment-exempt: this is the database cluster's inbound trusted-
+	// sources list; a Kubernetes cluster named here is a client the database
+	// ADMITS, never the place the rule set lives. On a diagram the rule set
+	// stays with its database cluster, with a line to each trusted cluster.
 	KubernetesClusterIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=kubernetes_cluster_ids,json=kubernetesClusterIds,proto3" json:"kubernetes_cluster_ids,omitempty"`
 	// (Optional) App Platform apps trusted to reach the cluster, as literal
 	// app UUIDs or references to DigitalOceanApp resources.
@@ -143,15 +148,15 @@ var File_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_spec_proto p
 
 const file_catalog_digitalocean_digitaloceandatabasefirewall_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Ecatalog/digitalocean/digitaloceandatabasefirewall/v1alpha1/spec.proto\x12>dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xe9\a\n" +
+	"Ecatalog/digitalocean/digitaloceandatabasefirewall/v1alpha1/spec.proto\x12>dev.planton.digitalocean.digitaloceandatabasefirewall.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xed\a\n" +
 	" DigitalOceanDatabaseFirewallSpec\x12v\n" +
 	"\acluster\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x8b'\x92\xd4a\x19status.outputs.cluster_idR\acluster\x12y\n" +
 	"\bip_rules\x18\x02 \x03(\tB^\xbaH[\x92\x01X\"V\xba\x01S\n" +
 	"\n" +
 	"ip_or_cidr\x12#must be an IP address or CIDR block\x1a this.isIp() || this.isIpPrefix()R\aipRules\x12w\n" +
 	"\vdroplet_ids\x18\x03 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x8d'\x92\xd4a\x19status.outputs.droplet_idR\n" +
-	"dropletIds\x12\x8c\x01\n" +
-	"\x16kubernetes_cluster_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_idR\x14kubernetesClusterIds\x12k\n" +
+	"dropletIds\x12\x90\x01\n" +
+	"\x16kubernetes_cluster_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\x88\xd4a\x90'\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\x14kubernetesClusterIds\x12k\n" +
 	"\aapp_ids\x18\x05 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x88'\x92\xd4a\x15status.outputs.app_idR\x06appIds\x128\n" +
 	"\x04tags\x18\x06 \x03(\tB$\xbaH!\x92\x01\x1e\"\x1cr\x1a2\x18^[a-zA-Z0-9:\\-_]{1,255}$R\x04tags:\xa2\x02\xbaH\x9e\x02\x1a\x9b\x02\n" +
 	"\x16spec.at_least_one_rule\x12oat least one trusted source (ip_rules, droplet_ids, kubernetes_cluster_ids, app_ids, or tags) must be specified\x1a\x8f\x01size(this.ip_rules) > 0 || size(this.droplet_ids) > 0 || size(this.kubernetes_cluster_ids) > 0 || size(this.app_ids) > 0 || size(this.tags) > 0B\xea\x03\n" +

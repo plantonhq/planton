@@ -6280,10 +6280,21 @@ enum CloudResourceKind {
     id_prefix: "docr"
     service_group: digital_ocean_container_registry
   }];
+  // A DigitalOcean managed database cluster -- the cluster every other
+  // managed-database resource is created on: users, logical databases,
+  // connection pools, the firewall rule set, Kafka topics, and Kafka
+  // schema subjects are all API-addressed under a cluster's id and cannot
+  // exist before it. A container kind for exactly that reason: those six
+  // kinds are children of the cluster, so on a diagram the cluster is the
+  // room they stand in. A read replica also names its primary but is a
+  // cluster of its own, a monitor alert names the clusters it watches, and
+  // an App Platform app names a cluster it attaches; those three references
+  // are containment-exempt on their specs.
   DigitalOceanDatabaseCluster = 5003 [(kind_meta) = {
     provider: digital_ocean
     version: "v1alpha1"
     id_prefix: "dodb"
+    container_kind: true
     service_group: digital_ocean_databases
   }];
   DigitalOceanDnsZone = 5004 [(kind_meta) = {
