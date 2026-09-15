@@ -10,4 +10,9 @@ const (
 	OpNameServers = "name_servers"
 	// OpUrn is the uniform resource name of the domain.
 	OpUrn = "urn"
+	// OpRecordIds is the map of inline record ids keyed identically to the
+	// Terraform module's for_each key (<record name>-<record index>-<value
+	// index>) -- the import recipes resolve per-record ids through these
+	// keys, so the two engines must agree on them.
+	OpRecordIds = "record_ids"
 )

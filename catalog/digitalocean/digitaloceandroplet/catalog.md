@@ -81,13 +81,13 @@ The InfraPipeline resolves the dependency graph, deploys the VPC first, then pro
 
 These are the most important decisions when configuring a Droplet. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**SSH keys** -- `sshKeys` takes IDs or fingerprints of keys already registered on the account and is create-only: changing it recreates the Droplet. A Droplet without keys falls back to a root password email.
+**SSH keys** -- `sshKeys` takes IDs or fingerprints of keys already registered on the account and is applied at creation only: the API never reports the injected keys back, and later edits to the list are ignored rather than recreating the Droplet. A Droplet without keys falls back to a root password email.
 
 **Sizing** -- The `size` field sets the Droplet's CPU and memory (e.g., `"s-1vcpu-1gb"` for development, `"s-2vcpu-4gb"` for production web servers, `"c-4vcpu-8gb"` for CPU-intensive workloads). Resizing powers the Droplet off briefly; whether the disk also grows (permanently) is governed by `resizeDisk`, which defaults ON.
 
-**Backups** -- Set `enableBackups: true` for automated snapshots, and pin the window with `backupPolicy` (`daily`, or `weekly` with `weekday` and an `hour` on the 0/4/8/12/16/20 grid). A policy without the toggle is rejected.
+**Backups** -- Set `enableBackups: true` for automated snapshots, and pin the window with `backupPolicy` (`daily`, or `weekly` with `weekday` and an `hour` on the 0/4/8/12/16/20 grid). A policy without the toggle is rejected. Known provider defect at the pinned version: backups are enabled and the policy applied, but every plan re-proposes `backups: false -> true` because the provider reads the state from a `features` list DigitalOcean no longer populates -- harmless noise, tracked upstream ([#1525](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1525)).
 
-**Cloud-init user data** -- The `userData` field accepts a cloud-init script (up to 32 KiB) for bootstrapping the Droplet on first boot. Create-only; DigitalOcean stores only a hash.
+**Cloud-init user data** -- The `userData` field accepts a cloud-init script (up to 32 KiB) for bootstrapping the Droplet on first boot. Applied at creation only: DigitalOcean stores only a hash, and later edits are ignored rather than recreating the Droplet (to run new user data, replace the Droplet deliberately). Adopting an existing Droplet whose manifest carries `userData`, `sshKeys`, or `dropletAgent` is therefore safe -- the first apply plans no replacement.
 
 **Volume attachments** -- `volumeIds` attaches existing block storage volumes (UUIDs or ValueFromRef references) and updates in place: moving a volume between Droplets is an edit to the Droplets' manifests, never a volume recreation. Volumes must live in the same region as the Droplet.
 

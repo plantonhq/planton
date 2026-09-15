@@ -60,6 +60,14 @@ type DigitalOceanDropletSpec struct {
 	// Enable automated backups. Toggling updates in place. The backup window
 	// is configured via backup_policy; without one, DigitalOcean defaults to
 	// a daily plan.
+	// KNOWN PROVIDER DEFECT at the pinned version (~> 2.99): the provider
+	// decides whether backups are on by looking for "backups" in the droplet's
+	// `features` list, and DigitalOcean's current backup system no longer
+	// reports it there (the truth lives at GET /v2/droplets/{id}/backups/policy,
+	// which shows backup_enabled: true). Backups ARE enabled and the policy IS
+	// applied, but every apply re-plans enable_backups false -> true and sends
+	// an idempotent enable action. Harmless, noisy, and upstream:
+	// digitalocean/terraform-provider-digitalocean#1525.
 	EnableBackups bool `protobuf:"varint,8,opt,name=enable_backups,json=enableBackups,proto3" json:"enable_backups,omitempty"`
 	// Block storage volumes to attach, referencing DigitalOceanVolume
 	// resources in the same region. Attachment changes update in place.
@@ -69,7 +77,10 @@ type DigitalOceanDropletSpec struct {
 	// how firewalls and load balancers target droplet groups.
 	Tags []string `protobuf:"bytes,11,rep,name=tags,proto3" json:"tags,omitempty"`
 	// (Optional) Cloud-init user data executed on first boot (<= 32 KiB).
-	// Cannot be changed after creation; DigitalOcean stores only a hash of it.
+	// Applied at creation ONLY; later edits are ignored (both provisioners
+	// skip changes to it, because the only alternative the provider offers is
+	// recreating the droplet). DigitalOcean stores only a hash of it and never
+	// reports it back. To run new user data, replace the droplet deliberately.
 	UserData string `protobuf:"bytes,12,opt,name=user_data,json=userData,proto3" json:"user_data,omitempty"`
 	// Install the DigitalOcean monitoring agent for enhanced graphs and
 	// monitor alert policies. Defaults OFF, matching the provider. Cannot be
@@ -77,8 +88,11 @@ type DigitalOceanDropletSpec struct {
 	Monitoring bool `protobuf:"varint,14,opt,name=monitoring,proto3" json:"monitoring,omitempty"`
 	// (Optional) SSH keys to inject at creation — the standard access path to
 	// a droplet. Each entry is the ID or fingerprint of an SSH key already
-	// registered on the DigitalOcean account. Keys cannot be added or removed
-	// after creation: any change forces the droplet to be recreated.
+	// registered on the DigitalOcean account. Applied at creation ONLY; later
+	// edits are ignored (both provisioners skip changes to the list, because
+	// the only alternative the provider offers is recreating the droplet), and
+	// the API never reports the injected keys back. Rotate access inside the
+	// OS (authorized_keys) or replace the droplet deliberately.
 	SshKeys []string `protobuf:"bytes,15,rep,name=ssh_keys,json=sshKeys,proto3" json:"ssh_keys,omitempty"`
 	// (Optional) When and how often automated backups run. Requires
 	// enable_backups; omitted with backups enabled, DigitalOcean defaults to
@@ -88,7 +102,9 @@ type DigitalOceanDropletSpec struct {
 	// in the control panel. Unset, DigitalOcean installs it where the image
 	// supports it and silently skips otherwise; explicit true makes an
 	// installation failure fatal; explicit false prevents installation.
-	// Cannot be changed after creation.
+	// Applied at creation ONLY; later edits are ignored (both provisioners
+	// skip changes to it, because the only alternative the provider offers is
+	// recreating the droplet), and the API never reports it back.
 	DropletAgent *bool `protobuf:"varint,17,opt,name=droplet_agent,json=dropletAgent,proto3,oneof" json:"droplet_agent,omitempty"`
 	// Gracefully shut the droplet down (ACPI power-off, letting the OS flush
 	// and stop services) before it is destroyed, instead of the default

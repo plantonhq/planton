@@ -141,13 +141,16 @@ The value/target of the DNS record, as a literal or a reference to
 another resource's output. Format depends on record type:
   - A: IPv4 address (e.g., "192.0.2.1")
   - AAAA: IPv6 address (e.g., "2001:db8::1")
-  - CNAME/MX/NS/SRV: target hostname (e.g., "target.example.com")
+  - CNAME/MX/NS/SRV: target hostname (e.g., "target.example.com.")
   - TXT: text value (e.g., "v=spf1 include:_spf.google.com ~all")
-  - CAA: CA domain (e.g., "letsencrypt.org")
-Read-back normalization: for CNAME, MX, NS, SRV, and CAA (except
-tag=iodef), the provider appends a trailing dot to the stored value —
-"mail.example.com" reads back as "mail.example.com.". Imports tolerate
-this as a recorded write-normalization.
+  - CAA: CA domain (e.g., "letsencrypt.org.")
+Hostname values (CNAME, MX, NS, SRV, and CAA except tag=iodef) must be
+written either fully qualified WITH a trailing dot
+("mail.example.com.", "letsencrypt.org.") or relative to the zone
+("mail"). DigitalOcean reports every such value back fully qualified
+with a trailing dot, and the provider forgives only those two spellings
+— a bare fully-qualified name without the dot ("letsencrypt.org") is
+re-applied on every run, forever.
 
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse

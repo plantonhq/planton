@@ -180,6 +180,14 @@ in place; disabling it forces the droplet to be recreated.
 Enable automated backups. Toggling updates in place. The backup window
 is configured via backup_policy; without one, DigitalOcean defaults to
 a daily plan.
+KNOWN PROVIDER DEFECT at the pinned version (~> 2.99): the provider
+decides whether backups are on by looking for "backups" in the droplet's
+`features` list, and DigitalOcean's current backup system no longer
+reports it there (the truth lives at GET /v2/droplets/{id}/backups/policy,
+which shows backup_enabled: true). Backups ARE enabled and the policy IS
+applied, but every apply re-plans enable_backups false -> true and sends
+an idempotent enable action. Harmless, noisy, and upstream:
+digitalocean/terraform-provider-digitalocean#1525.
 
 ### spec.volumeIds
 
@@ -206,7 +214,10 @@ how firewalls and load balancers target droplet groups.
 `string`
 
 (Optional) Cloud-init user data executed on first boot (<= 32 KiB).
-Cannot be changed after creation; DigitalOcean stores only a hash of it.
+Applied at creation ONLY; later edits are ignored (both provisioners
+skip changes to it, because the only alternative the provider offers is
+recreating the droplet). DigitalOcean stores only a hash of it and never
+reports it back. To run new user data, replace the droplet deliberately.
 
 - rule: {"string":{"maxBytes":"32768"}}
 
@@ -224,8 +235,11 @@ changed after creation.
 
 (Optional) SSH keys to inject at creation — the standard access path to
 a droplet. Each entry is the ID or fingerprint of an SSH key already
-registered on the DigitalOcean account. Keys cannot be added or removed
-after creation: any change forces the droplet to be recreated.
+registered on the DigitalOcean account. Applied at creation ONLY; later
+edits are ignored (both provisioners skip changes to the list, because
+the only alternative the provider offers is recreating the droplet), and
+the API never reports the injected keys back. Rotate access inside the
+OS (authorized_keys) or replace the droplet deliberately.
 
 - rule: {"repeated":{"unique":true,"items":{"string":{"minLen":"1"}}}}
 
@@ -272,7 +286,9 @@ provider's own bounds). The API schedules windows on a four-hour grid:
 in the control panel. Unset, DigitalOcean installs it where the image
 supports it and silently skips otherwise; explicit true makes an
 installation failure fatal; explicit false prevents installation.
-Cannot be changed after creation.
+Applied at creation ONLY; later edits are ignored (both provisioners
+skip changes to it, because the only alternative the provider offers is
+recreating the droplet), and the API never reports it back.
 
 ### spec.gracefulShutdown
 

@@ -19,4 +19,13 @@ message DigitalOceanDnsZoneStackOutputs {
 
   // The uniform resource name of the domain (e.g. "do:domain:example.com").
   string urn = 4;
+
+  // Numeric ids of the inline `records`, one entry per record value, keyed
+  // by "<record name>-<record index>-<value index>" (the index positions in
+  // the manifest's `records` list and that entry's `values` list, both from
+  // 0 — e.g. "@-0-0", "www-1-0"). DigitalOcean addresses a record as
+  // /v2/domains/{domain}/records/{id}, and state import takes
+  // "{domain},{record_id}"; this map is where the second half comes from.
+  // Empty for a zone with no inline records.
+  map<string, string> record_ids = 5;
 }

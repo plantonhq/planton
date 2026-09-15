@@ -2,7 +2,10 @@
 # per-type surface the SRV scenario does not touch) on the zone registry
 # prerequisite. flags=0 is the standard non-critical value; the provider
 # drops an explicit 0 from the create request and the API defaults it to 0,
-# so the round-trip must agree.
+# so the round-trip must agree. The value is fully qualified WITH the
+# trailing dot -- the one spelling DigitalOcean reports back unchanged for
+# CAA issue/issuewild records; a bare "letsencrypt.org" would re-apply on
+# every run.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDnsRecord
 metadata:
@@ -26,6 +29,6 @@ spec:
   name: "@"
   type: CAA
   value:
-    value: letsencrypt.org
+    value: letsencrypt.org.
   flags: 0
   tag: issue

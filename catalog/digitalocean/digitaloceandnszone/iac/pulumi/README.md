@@ -12,9 +12,10 @@ Deploys a `digitalocean:index/domain:Domain` plus one `digitalocean:index/dnsRec
 
 ## Behavior notes
 
-- Each record value becomes its own record resource named `name-index-valueIndex` — identical fan-out to the Terraform module.
+- Each record value becomes its own record resource named `name-index-valueIndex` — identical fan-out to the Terraform module — and the records are chained with `DependsOn` so they are created (and destroyed) ONE AT A TIME: DigitalOcean's DNS API deadlocks on concurrent record writes to one domain (`422 Error 1213 Deadlock found`).
+- `ip_address` is ForceNew and never read back by the API, so the domain carries `IgnoreChanges("ipAddress")` — adopting an existing zone whose manifest carries it never plans a zone replace (the Terraform module does the same).
 - `priority`/`weight`/`port`/`flags` are set only when present; `ttl_seconds` 0/unset leaves the ttl Computed (DigitalOcean's 1800-second default); `ip_address` is sent only when non-empty.
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `zone_name`, `zone_id`, `name_servers`, `urn`.
+Exactly the kind's stack-output contract, identical to the Terraform module: `zone_name`, `zone_id`, `name_servers`, `urn`, and `record_ids` (the inline records' numeric ids keyed by the resource name `name-index-valueIndex` — the second half of each record's `{domain},{record_id}` import id).

@@ -94,7 +94,10 @@ spec:
       id_format: "{domain_name}"
       # ip_address is a create-only convenience (it seeds an initial A
       # record); the provider's Read never returns it, so import cannot
-      # carry it.
+      # carry it. It is also ForceNew, so this tolerance alone could never
+      # pass a round-trip (the oracle refuses replaces): the DigitalOceanDnsZone
+      # modules ignore changes to it after creation, and this declaration
+      # serves the raw-resource adopter.
       config_only_attributes: [ip_address]
     - terraform_type: digitalocean_record
       pulumi_type: digitalocean:index/dnsRecord:DnsRecord
@@ -117,7 +120,11 @@ spec:
         never re-reads image (slugs drift to newer image ids upstream).
       # ssh_keys and user_data are write-only at create (user_data is stored
       # hashed). droplet_agent, graceful_shutdown, and backup_policy have no
-      # readable API counterpart -- Read never sets them.
+      # readable API counterpart -- Read never sets them. ssh_keys, user_data,
+      # and droplet_agent are also ForceNew, so a config-only tolerance alone
+      # could never pass a round-trip (the oracle refuses replaces); the
+      # DigitalOceanDroplet modules ignore changes to those three after
+      # creation, and this declaration serves the raw-resource adopter.
       config_only_attributes:
         - ssh_keys
         - user_data

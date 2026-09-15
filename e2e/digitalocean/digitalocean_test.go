@@ -31,6 +31,12 @@ var (
 	repoRoot         string
 	runID            string
 	pulumiBackendURL string
+	// assertApplyIdempotency mirrors the provider profile's
+	// assert_apply_idempotency switch into every scenario's test context. The
+	// profile is the single place the gate is armed; a test file that does
+	// not read it leaves the switch inert, and every lane silently skips the
+	// IDEMPOTENCY phase while the profile claims it runs.
+	assertApplyIdempotency bool
 )
 
 func TestMain(m *testing.M) {
@@ -55,6 +61,13 @@ func TestMain(m *testing.M) {
 		fmt.Fprintf(os.Stderr, "failed to login to pulumi backend: %v\n", err)
 		os.Exit(1)
 	}
+
+	providerProfile, err := profilepkg.LoadProviderProfile(repoRoot, "digitalocean")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to load DigitalOcean provider E2E profile: %v\n", err)
+		os.Exit(1)
+	}
+	assertApplyIdempotency = providerProfile.GetSpec().GetAssertApplyIdempotency()
 
 	testHarness = digitaloceane2e.NewHarness()
 	ctx := context.Background()
@@ -436,7 +449,8 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 		// Leaving it empty makes the dependency stacks fall back to the
 		// machine's ambient `pulumi login` backend, coupling the run to
 		// stale developer state.
-		BackendURL: pulumiBackendURL,
+		BackendURL:             pulumiBackendURL,
+		AssertApplyIdempotency: assertApplyIdempotency,
 	}
 
 	if engine == "pulumi" {

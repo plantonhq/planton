@@ -59,15 +59,15 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**31 of 31 kinds are at total accounting; 0 proven live.**
+**31 of 31 kinds are at total accounting; 8 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
 | DigitalOceanApp | 292 | 0 | 282 | 10 | 0 | ✅ | — |
 | DigitalOceanBucket | 28 | 6 | 19 | 3 | 0 | ✅ | — |
 | DigitalOceanCdn | 4 | 2 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanCertificate | 6 | 0 | 5 | 1 | 0 | ✅ | — |
-| DigitalOceanContainerRegistry | 6 | 2 | 3 | 1 | 0 | ✅ | — |
+| DigitalOceanCertificate | 6 | 0 | 5 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanContainerRegistry | 6 | 2 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanDatabaseCluster | 19 | 14 | 5 | 0 | 0 | ✅ | — |
 | DigitalOceanDatabaseConnectionPool | 6 | 4 | 2 | 0 | 0 | ✅ | — |
 | DigitalOceanDatabaseDb | 2 | 0 | 2 | 0 | 0 | ✅ | — |
@@ -76,11 +76,11 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | DigitalOceanDatabaseKafkaTopic | 27 | 25 | 2 | 0 | 0 | ✅ | — |
 | DigitalOceanDatabaseReplica | 7 | 4 | 3 | 0 | 0 | ✅ | — |
 | DigitalOceanDatabaseUser | 7 | 1 | 6 | 0 | 0 | ✅ | — |
-| DigitalOceanDnsRecord | 10 | 9 | 1 | 0 | 0 | ✅ | — |
-| DigitalOceanDnsZone | 12 | 8 | 3 | 1 | 0 | ✅ | — |
-| DigitalOceanDroplet | 21 | 16 | 4 | 1 | 0 | ✅ | — |
+| DigitalOceanDnsRecord | 10 | 9 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDnsZone | 12 | 8 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDroplet | 21 | 16 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanDropletAutoscalePool | 18 | 9 | 8 | 1 | 0 | ✅ | — |
-| DigitalOceanFirewall | 17 | 2 | 15 | 0 | 0 | ✅ | — |
+| DigitalOceanFirewall | 17 | 2 | 15 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanFunction | 292 | 0 | 36 | 256 | 0 | ✅ | — |
 | DigitalOceanKubernetesCluster | 47 | 31 | 15 | 1 | 0 | ✅ | — |
 | DigitalOceanKubernetesNodePool | 13 | 8 | 5 | 0 | 0 | ✅ | — |
@@ -91,8 +91,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | DigitalOceanSpacesKey | 3 | 0 | 3 | 0 | 0 | ✅ | — |
 | DigitalOceanSshKey | 2 | 1 | 1 | 0 | 0 | ✅ | — |
 | DigitalOceanUptimeCheck | 14 | 10 | 3 | 1 | 0 | ✅ | — |
-| DigitalOceanVolume | 8 | 5 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanVpc | 4 | 2 | 1 | 1 | 0 | ✅ | — |
+| DigitalOceanVolume | 8 | 5 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanVpc | 4 | 2 | 1 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanVpcPeering | 2 | 0 | 2 | 0 | 0 | ✅ | — |
 
 ## Breadth: every GA resource, one disposition
@@ -207,7 +207,7 @@ rather than trusted.
 | `digitalocean_gradientai_openai_api_key` | credential row for a deferred family -- the GradientAI family is deferred wholesale on documented provider immaturity |
 | `digitalocean_nfs_snapshot` | point-in-time capture, action-style -- same reasoning as droplet and volume snapshots; gated on an action/snapshot-policy surface |
 | `digitalocean_spaces_bucket_object` | uploading object content is data-plane work, not infrastructure; a declarative kind for file contents is marginal and invites abuse as a deployment mechanism |
-| `digitalocean_tag` | DigitalOcean creates tags implicitly when any resource declares them; a standalone name-reservation kind is marginal -- revisit if tag-targeted references (firewalls, load balancers, monitor alerts) prove to need a first-class handle |
+| `digitalocean_tag` | Droplets and volumes create tags implicitly when they declare them, so a tagged fleet needs no standalone kind; but tag CONSUMERS do not -- a firewall naming a tag no Droplet carries yet is rejected by the API (422 'tag does not exist', live-verified), so a tag-first workflow (firewall before its first Droplet) has no handle today and must target a tag some Droplet already carries. Revisit as a re-tier if that ordering constraint proves too costly for charts |
 | `digitalocean_volume_snapshot` | point-in-time capture, action-style -- gated with droplet_snapshot on an action/snapshot-policy surface |
 | `digitalocean_vpc_nat_gateway` | the provider docs mark it currently in Private Preview -- gated on GA; product value is high, promote to P1 the moment the gate lifts |
 

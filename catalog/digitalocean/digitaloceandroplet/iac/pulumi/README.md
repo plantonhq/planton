@@ -25,5 +25,6 @@ Re-evaluate each when the SDK exposes it.
 
 - `region` is sent only when set (the zero enum value never becomes a slug); unset lets DigitalOcean choose.
 - `droplet_agent` and `resize_disk` are forwarded only when present, so unset never flips a provider default.
+- `sshKeys`, `userData`, and `dropletAgent` carry `IgnoreChanges`: all three are ForceNew and never read back by the API, so without the guard a manifest edit — or adopting an existing droplet whose manifest carries them — would plan a destroy-and-recreate of a running machine. They mean nothing after first boot; the Terraform module ignores the same trio.
 - Tags are `spec.tags` plus the standard Planton labels rendered as `key:value` — the exact set the Terraform module applies.
 - See the kind [GUIDE](../../GUIDE.md).

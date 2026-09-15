@@ -79,7 +79,7 @@ These are the most important decisions when configuring a DNS record. Explore th
 
 **Type-specific fields** -- MX records require `priority` (lower values = higher priority). SRV records require `priority`, `weight`, and `port`. CAA records require `flags` and `tag` (`issue`, `issuewild`, or `iodef`). The protobuf schema enforces these cross-field constraints at validation time. One provider quirk: an explicit 0 in `priority`, `weight`, or `port` is dropped from the create request and the API default applies -- use positive values when exactness matters (CAA `flags: 0` is safe; the API default is 0).
 
-**Hostname values carry a trailing dot on read-back** -- CNAME, MX, NS, SRV, and CAA targets are stored fully qualified (`mail.example.com.`); author the trailing dot to avoid a permanent diff.
+**Hostname values carry a trailing dot on read-back** -- CNAME, MX, NS, SRV, and CAA targets are stored fully qualified (`mail.example.com.`, `letsencrypt.org.`); author the trailing dot, or a zone-relative name (`mail`). A bare `letsencrypt.org` is re-applied on every run, forever.
 
 **Value references** -- The `value` field supports ValueFromRef, allowing you to reference outputs from other Cloud Resources (e.g., a Droplet's IP address or a Load Balancer's hostname) instead of hardcoding values.
 

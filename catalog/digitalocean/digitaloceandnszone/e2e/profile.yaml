@@ -3,22 +3,33 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandnszone
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is a bare zone (it doubles as the
-  # DigitalOceanDnsRecord kind's install fixture -- the harness falls back
-  # to a kind's minimal scenario when no prerequisite.yaml exists); `full`
-  # proves the inline record fan-out across every per-type argument class
-  # (MX priority, SRV trio, CAA flags/tag), multi-value flattening, and the
-  # create-only ip_address. Both scenarios carry ${E2E_RUN_ID} in the
-  # domain name: DigitalOcean domain names are unique across ALL accounts,
-  # so fixed names would eventually collide with someone's zone. Zones and
-  # records are free API objects that create in seconds -- the whole
-  # dual-engine sweep costs nothing. Watch on first live run: the blind
-  # import round-trip imports the domain by NAME, and ip_address never
-  # reads back (recorded config-only tolerance).
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip (Terraform lane):
+  # `minimal` (a bare zone -- it doubles as the DigitalOceanDnsRecord kind's
+  # install fixture; the harness falls back to a kind's minimal scenario
+  # when no prerequisite.yaml exists) and `full` (the inline record fan-out
+  # across A/CNAME/MX/TXT/SRV/CAA with multi-value flattening, a custom TTL,
+  # and the create-only ip_address seed). The `full` round-trip re-imported
+  # NINE resources blind -- the domain by NAME and all eight records as
+  # {domain},{record_id}, the record ids derived per instance from the
+  # record_ids map output -- with a clean plan, which is also the live proof
+  # that ip_address is IGNORED after creation in both engines (ForceNew and
+  # never read back: without the guard the first post-import plan was a zone
+  # REPLACE). Zones and records are free API objects; a zone of N records
+  # applies in ~2N seconds because both engines write records ONE AT A TIME
+  # (DigitalOcean's API deadlocks on concurrent record writes to one domain
+  # -- "422 Error 1213 Deadlock found", live-measured 1 in 8; Pulumi chains
+  # the records, Terraform limits the client to one request per second).
+  # Both scenarios carry ${E2E_RUN_ID} in the domain name: DigitalOcean
+  # domain names are unique across ALL accounts.
+  #
+  # Two scenario shapes the idempotency gate demanded: hostname values are
+  # written fully qualified WITH the trailing dot (the only spelling
+  # DigitalOcean reports back unchanged -- a bare "letsencrypt.org" re-plans
+  # forever), and the custom-TTL arm sits on a uniquely named record because
+  # DigitalOcean harmonizes TTLs per hostname and the ip_address seed record
+  # joins the apex A set.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

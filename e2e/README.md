@@ -3208,6 +3208,100 @@ live and fails at the API.
 before a registry lane starts; the two scenarios and the two engines run
 strictly one at a time.
 
+**The idempotency gate is armed, and the provider test file is what makes
+it real.** `catalog/digitalocean/aa_e2e/profile.yaml` sets
+`assert_apply_idempotency: true` from the second live session on, and every
+lane since carries an IDEMPOTENCY phase (a second plan or preview right
+after DEPLOY must propose nothing). The switch is inert unless the provider
+test file reads it — `e2e/digitalocean/digitalocean_test.go` loads the
+provider profile in `TestMain` and copies the flag into every
+`ComponentTestContext`, exactly as the GCP, AWS, Azure, and Cloudflare test
+files do. The first armed run proved why: without the wiring the profile
+claimed a gate that never ran, and with it the very first lane caught the
+backups perma-diff below. A new provider test file must copy both blocks
+(required-env skip and idempotency flag), not one.
+
+**Droplet backups re-plan forever — a provider read defect, not a module
+one.** `digitalocean_droplet` decides `backups` from the droplet's
+`features` list, and DigitalOcean's current backup system no longer lists
+`"backups"` there (three live probes: `POST /v2/droplets` with `backups:
+true`, with and without a `backup_policy`, never showed the feature within
+four minutes of `active`, while `GET /v2/droplets/{id}/backups/policy`
+answered `backup_enabled: true` with the applied window and an
+`enable_backups` action had completed). So the first preview after apply
+proposes `backups: false → true` on every run. Upstream:
+digitalocean/terraform-provider-digitalocean#1525. The droplet `full`
+scenario therefore does not exercise `enableBackups` (a recorded deferral on
+its profile, unblocked by a provider release that reads the policy
+endpoint), and the kind's docs tell customers the noise is harmless and
+where the truth lives.
+
+**Firewalls never create tags.** `POST /v2/firewalls` naming a tag no
+resource carries fails `422 tag <name> does not exist` — Droplets (and
+volumes) create tags implicitly when they declare them, firewalls do not.
+The firewall `full` scenario targets the fixture Droplet's own Planton
+identity tag (`planton-ai_name:<fixture name>`), the one tag guaranteed to
+exist once the fixture is up; a scenario that wants a tag of its own must
+put it on a Droplet first.
+
+**DigitalOcean's DNS API deadlocks on concurrent record writes to one
+domain.** Parallel `POST /v2/domains/{d}/records` calls fail one of the
+batch with `422 Error 1213 (40001): Deadlock found when trying to get
+lock; try restarting transaction` — measured 1 in 8 on a fresh domain and
+again after a 15-second settle, so it is concurrency, not zone
+initialization, and the provider does not retry 422s. The zone modules
+serialize their inline records: Pulumi through an explicit dependency
+chain, Terraform through the provider's `requests_per_second = 1` static
+limit (a `for_each` resource has no other serialization lever). Standalone
+`DigitalOceanDnsRecord` instances applied concurrently against one domain
+from separate stacks can still collide — the record kind's GUIDE says so
+and points at inline records for zones with many records.
+
+**Hostname record values must be written with the trailing dot (or
+zone-relative).** The provider appends `.` to every CNAME/MX/NS/SRV/CAA
+(non-`iodef`) value it reads back and its DiffSuppress forgives only the
+dotted FQDN or the zone-relative spelling; a bare `letsencrypt.org` is a
+perpetual in-place update. Both DNS kinds' spec comments, GUIDEs, and
+scenarios now carry the dotted form; the idempotency gate is the proof.
+
+**One TTL per hostname.** DigitalOcean harmonizes TTLs across records
+sharing a fully-qualified name and rewrites stragglers server-side (the
+provider only warns), and the zone's create-only `ip_address` seed record
+joins the apex A set. The zone `full` scenario puts its custom-TTL arm on a
+uniquely named record for that reason.
+
+**Two more create-only ForceNew never-read-back sets, handled like the
+volume trio.** `digitalocean_droplet`'s `ssh_keys` / `user_data` /
+`droplet_agent` and `digitalocean_domain`'s `ip_address` are ForceNew and
+never read back, so a blind import followed by an apply planned a
+destroy-and-recreate of a running droplet and of a whole DNS zone. Both
+modules `ignore_changes` them in both engines (they mean nothing after
+creation), the spec comments say so, and the round-trips are the live
+proof. When a kind's import map lists a `config_only_attributes` tolerance,
+check the provider schema for `ForceNew` on the same argument — that
+combination can never round-trip and needs the module-level fix.
+
+**Inline child resources import blind through a keyed map output.** The
+zone's inline records import as `{domain},{record_id}`; the record ids are
+not derivable from spec or metadata, so the zone exports `record_ids`
+keyed by the same key both engines use for each record
+(`<name>-<recIdx>-<valIdx>`), and the import map derives `record_id` with
+`from_stack_output_keyed_by_address` — the `awsvpc` / `awskmskey` pattern.
+Nine resources round-tripped blind on the first run.
+
+**Tags outlive the resources that created them, and unset-region Droplets
+seed default VPCs.** Two residue classes the sweep must know: (1) every
+implicitly created tag (`planton-ai_*` labels, `planton-e2e`, `env:e2e`)
+stays on the account after its resources are gone — free, but not ours to
+leave; the session-end sweep lists `GET /v2/tags` and deletes the ones the
+lanes created. (2) A Droplet created with no region lands wherever
+DigitalOcean has capacity, and if that region had no default VPC yet,
+DigitalOcean creates one on the fly (`default-tor1`, `default-blr1`,
+`default-lon1`, and `default-sfo2` appeared this way across one session's
+droplet lanes) — undeletable, free, and DigitalOcean's own naming, so the
+seeded-defaults list simply grows; record the new regions rather than
+fighting them.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

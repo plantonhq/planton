@@ -35,7 +35,15 @@ type DigitalOceanDnsZoneStackOutputs struct {
 	// not return per zone). Set these at the domain's registrar to delegate.
 	NameServers []string `protobuf:"bytes,3,rep,name=name_servers,json=nameServers,proto3" json:"name_servers,omitempty"`
 	// The uniform resource name of the domain (e.g. "do:domain:example.com").
-	Urn           string `protobuf:"bytes,4,opt,name=urn,proto3" json:"urn,omitempty"`
+	Urn string `protobuf:"bytes,4,opt,name=urn,proto3" json:"urn,omitempty"`
+	// Numeric ids of the inline `records`, one entry per record value, keyed
+	// by "<record name>-<record index>-<value index>" (the index positions in
+	// the manifest's `records` list and that entry's `values` list, both from
+	// 0 — e.g. "@-0-0", "www-1-0"). DigitalOcean addresses a record as
+	// /v2/domains/{domain}/records/{id}, and state import takes
+	// "{domain},{record_id}"; this map is where the second half comes from.
+	// Empty for a zone with no inline records.
+	RecordIds     map[string]string `protobuf:"bytes,5,rep,name=record_ids,json=recordIds,proto3" json:"record_ids,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -98,16 +106,28 @@ func (x *DigitalOceanDnsZoneStackOutputs) GetUrn() string {
 	return ""
 }
 
+func (x *DigitalOceanDnsZoneStackOutputs) GetRecordIds() map[string]string {
+	if x != nil {
+		return x.RecordIds
+	}
+	return nil
+}
+
 var File_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/digitalocean/digitaloceandnszone/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\"\x8c\x01\n" +
+	"?catalog/digitalocean/digitaloceandnszone/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\"\xd1\x02\n" +
 	"\x1fDigitalOceanDnsZoneStackOutputs\x12\x1b\n" +
 	"\tzone_name\x18\x01 \x01(\tR\bzoneName\x12\x17\n" +
 	"\azone_id\x18\x02 \x01(\tR\x06zoneId\x12!\n" +
 	"\fname_servers\x18\x03 \x03(\tR\vnameServers\x12\x10\n" +
-	"\x03urn\x18\x04 \x01(\tR\x03urnB\xae\x03\n" +
+	"\x03urn\x18\x04 \x01(\tR\x03urn\x12\x84\x01\n" +
+	"\n" +
+	"record_ids\x18\x05 \x03(\v2e.dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.RecordIdsEntryR\trecordIds\x1a<\n" +
+	"\x0eRecordIdsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xae\x03\n" +
 	"9com.dev.planton.digitalocean.digitaloceandnszone.v1alpha1B\fOutputsProtoP\x01Zjgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceandnszone/v1alpha1;digitaloceandnszonev1alpha1\xa2\x02\x04DPDD\xaa\x025Dev.Planton.Digitalocean.Digitaloceandnszone.V1alpha1\xca\x025Dev\\Planton\\Digitalocean\\Digitaloceandnszone\\V1alpha1\xe2\x02ADev\\Planton\\Digitalocean\\Digitaloceandnszone\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Digitalocean::Digitaloceandnszone::V1alpha1b\x06proto3"
 
 var (
@@ -122,16 +142,18 @@ func file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDes
 	return file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDescData
 }
 
-var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_goTypes = []any{
 	(*DigitalOceanDnsZoneStackOutputs)(nil), // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs
+	nil,                                     // 1: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.RecordIdsEntry
 }
 var file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.record_ids:type_name -> dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.RecordIdsEntry
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_init() }
@@ -145,7 +167,7 @@ func file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_init()
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDesc), len(file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
