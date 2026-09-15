@@ -164,6 +164,6 @@ After the restore, re-enter what the backup does not carry: the credentials behi
 
 ## Requirements
 
-- Operator chart `0.15.0` or newer for the backup; `0.16.0` or newer for a restore that re-establishes the sign-in admin on its own.
+- Operator chart `0.16.3` or newer. Earlier charts declared the same fields, but their backup engine could not finish installing (a permission the operator lacked), a restore could come back as an empty database when that happened, and a restored platform's sign-in server could stall; `0.16.3` is the first chart on which backup and restore have been proven end to end on a live platform.
 - cert-manager on the cluster (the backup engine's certificate).
 - An object store the database pods can reach, and a credential for it — by reference, never typed into the manifest.

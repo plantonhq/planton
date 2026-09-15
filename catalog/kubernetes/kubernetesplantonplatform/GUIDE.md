@@ -149,7 +149,11 @@ writes over the archive it restored from; keep `backup` declared beside
 `recover_from` and the two share one bucket and one path. Recovery is
 honored only when the database is first created: on a running platform
 the operator leaves the database alone and the status names the
-procedure. Nothing here ever destroys data to honor a declaration.
+procedure. Nothing here ever destroys data to honor a declaration. The
+operator that honors all of this is chart `0.16.3` or newer: on earlier
+charts the backup engine could not finish installing and a restore could
+come back as an empty database in the archive's place, so pin the operator
+kind's `chart_version` at or above it wherever a backup is declared.
 
 The boundary, stated once: the secrets manager (OpenBAO) is outside this
 backup. It keeps its data on its own volume, so every secret value the
