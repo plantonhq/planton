@@ -23,6 +23,5 @@ violations:
   - catalog/gcp/gcpglobaladdress/presets/01-external-static-ip.yaml:invalid-preset
   - catalog/gcp/gcpglobaladdress/presets/02-internal-vpc-peering-range.yaml:invalid-preset
   - catalog/gcp/gcpglobaladdress/presets/03-private-service-connect.yaml:invalid-preset
-  - catalog/gcp/gcpvertexaiendpoint/presets/03-private-psc.yaml:invalid-preset
   - catalog/kubernetes/kubernetesjenkins/presets/01-standard.yaml:invalid-preset
   - catalog/kubernetes/kubernetessecret/presets/02-tls.yaml:invalid-preset

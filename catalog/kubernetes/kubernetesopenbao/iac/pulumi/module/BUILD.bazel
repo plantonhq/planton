@@ -3,12 +3,15 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "module",
     srcs = [
+        "backup.go",
         "bao_config.go",
         "helpers.go",
         "locals.go",
         "main.go",
         "namespace.go",
         "outputs.go",
+        "restore.go",
+        "scripts.go",
         "seal_secret.go",
         "values.go",
         "vars.go",
@@ -18,10 +21,12 @@ go_library(
     deps = [
         "//catalog/kubernetes",
         "//catalog/kubernetes/kubernetesopenbao/v1alpha1",
+        "//pkg/cloudflare/r2",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "//shared/cloudresourcekind",
         "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/batch/v1:batch",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/helm/v3:helm",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
