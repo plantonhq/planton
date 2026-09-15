@@ -382,7 +382,8 @@ message GcpGkeClusterSpec {
   bool enable_identity_service = 47;
 
   // Which cluster components ship logs to Cloud Logging. If omitted, GKE's
-  // default (system components + workloads) applies.
+  // default (system components + workloads) applies; declare it with
+  // `enabled: false` to turn the integration off.
   GcpGkeClusterLogging logging = 48;
 
   // Which cluster components ship metrics to Cloud Monitoring, plus managed
@@ -1432,10 +1433,25 @@ message GcpGkeClusterConfidentialNodes {
 }
 
 // GcpGkeClusterLogging selects which components ship logs to Cloud Logging.
+// The block says which way it manages the integration: `enabled: true` (the
+// default) with the components that ship logs, or `enabled: false` to turn
+// Cloud Logging integration off out loud.
 message GcpGkeClusterLogging {
+  // Logging that is on names its components; logging that is off names none.
+  option (buf.validate.message).cel = {
+    id: "logging_on_names_components"
+    message: "logging is on but names no components - list the components that ship logs, or set enabled: false to turn Cloud Logging integration off"
+    expression: "(has(this.enabled) && !this.enabled) || this.components.size() > 0"
+  };
+  option (buf.validate.message).cel = {
+    id: "logging_off_names_no_components"
+    message: "logging is off but still names components - drop components, or set enabled: true to ship their logs"
+    expression: "!(has(this.enabled) && !this.enabled) || this.components.size() == 0"
+  };
+
   // Components exposing logs: SYSTEM_COMPONENTS, WORKLOADS, APISERVER,
   // CONTROLLER_MANAGER, SCHEDULER, KCP_CONNECTION, KCP_SSHD, KCP_HPA,
-  // KCP_VPA. An empty list disables Cloud Logging integration entirely.
+  // KCP_VPA.
   repeated string components = 1 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
     (buf.validate.field).repeated = {
@@ -1457,6 +1473,12 @@ message GcpGkeClusterLogging {
       }
     }
   ];
+
+  // Whether Cloud Logging integration is on. Unset means on: declaring the
+  // block with components has always meant shipping their logs, and
+  // `enabled: false` is the explicit OFF (GKE then receives an empty
+  // component list).
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
 }
 
 // GcpGkeClusterMonitoring selects metric sources and managed Prometheus.

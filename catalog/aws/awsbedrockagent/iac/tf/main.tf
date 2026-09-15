@@ -39,7 +39,7 @@ resource "aws_bedrockagent_agent" "this" {
   }] : null
 
   # Session-summary memory -- SESSION_SUMMARY is the only memory type AWS
-  # defines; presence of spec.memory enables it and the module owns the
+  # defines; the block's switch enables it and the module owns the
   # constant.
   memory_configuration = local.has_memory ? [{
     enabled_memory_types = ["SESSION_SUMMARY"]
@@ -84,8 +84,8 @@ resource "aws_bedrockagent_agent_action_group" "this" {
   agent_id          = aws_bedrockagent_agent.this.agent_id
   agent_version     = "DRAFT"
 
-  description                = each.value.description != "" ? each.value.description : null
-  action_group_state         = each.value.state != "" ? each.value.state : null
+  description                   = each.value.description != "" ? each.value.description : null
+  action_group_state            = each.value.state != "" ? each.value.state : null
   parent_action_group_signature = each.value.parent_action_group_signature != "" ? each.value.parent_action_group_signature : null
 
   dynamic "action_group_executor" {

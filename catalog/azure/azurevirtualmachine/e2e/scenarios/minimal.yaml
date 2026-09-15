@@ -58,7 +58,8 @@ spec:
     type: SYSTEM_ASSIGNED
   availability:
     zone: "1"
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
   tags:
     e2e-suite: azure
     purpose: smoke

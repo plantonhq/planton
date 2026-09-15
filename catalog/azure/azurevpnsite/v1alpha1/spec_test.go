@@ -8,6 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAzureVpnSiteSpec(t *testing.T) {
@@ -101,14 +102,26 @@ var _ = ginkgo.Describe("AzureVpnSiteSpec Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
+			ginkgo.It("should accept an O365 policy that states breakout on with every category off", func() {
+				input := validResource()
+				input.Spec.O365Policy = &AzureVpnSiteO365Policy{
+					TrafficCategory: &AzureVpnSiteO365TrafficCategory{
+						AllowEndpointEnabled:    proto.Bool(false),
+						DefaultEndpointEnabled:  proto.Bool(false),
+						OptimizeEndpointEnabled: proto.Bool(false),
+					},
+				}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+			})
+
 			ginkgo.It("should accept device metadata and an O365 breakout policy", func() {
 				input := validResource()
 				input.Spec.DeviceVendor = "Cisco"
 				input.Spec.DeviceModel = "ISR4331"
 				input.Spec.O365Policy = &AzureVpnSiteO365Policy{
 					TrafficCategory: &AzureVpnSiteO365TrafficCategory{
-						OptimizeEndpointEnabled: true,
-						AllowEndpointEnabled:    true,
+						OptimizeEndpointEnabled: proto.Bool(true),
+						AllowEndpointEnabled:    proto.Bool(true),
 					},
 				}
 				err := protovalidate.Validate(input)

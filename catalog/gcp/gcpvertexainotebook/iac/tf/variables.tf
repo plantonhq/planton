@@ -83,12 +83,13 @@ variable "spec" {
     }), null)
 
     shielded_instance_config = optional(object({
-      enable_secure_boot          = optional(bool, false)
-      enable_vtpm                 = optional(bool, false)
-      enable_integrity_monitoring = optional(bool, false)
+      enable_secure_boot          = optional(bool)
+      enable_vtpm                 = optional(bool)
+      enable_integrity_monitoring = optional(bool)
     }), null)
 
     confidential_instance_config = optional(object({
+      enabled                    = optional(bool)
       confidential_instance_type = optional(string, "")
     }), null)
 

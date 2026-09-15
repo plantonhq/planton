@@ -63,7 +63,8 @@ spec:
     secureBootEnabled: true
     vtpmEnabled: true
 
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
 
   # User tags merged over the metadata-derived tags.
   tags:

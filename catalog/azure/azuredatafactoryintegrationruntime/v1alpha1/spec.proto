@@ -61,23 +61,22 @@ message AzureDataFactoryIntegrationRuntimeSpec {
   // A human-readable description of what the runtime is for.
   string description = 3;
 
-  // The managed data-flow compute engine. Set exactly one variant
-  // block on this spec.
-  AzureDataFactoryIntegrationRuntimeAzure azure = 4;
+  // The runtime's flavor: exactly one of the arms below, and the arm
+  // determines the engine. Choosing the self-hosted arm is the whole
+  // statement for a primary registration (its block may be empty), so a
+  // variant with nothing inside is a valid, complete choice.
+  oneof variant {
+    option (buf.validate.oneof).required = true;
 
-  // The managed SSIS package runtime. Set exactly one variant block
-  // on this spec.
-  AzureDataFactoryIntegrationRuntimeAzureSsis azure_ssis = 5;
+    // The managed data-flow compute engine.
+    AzureDataFactoryIntegrationRuntimeAzure azure = 4;
 
-  // The self-hosted agent registration. Set exactly one variant
-  // block on this spec.
-  AzureDataFactoryIntegrationRuntimeSelfHosted self_hosted = 6;
+    // The managed SSIS package runtime.
+    AzureDataFactoryIntegrationRuntimeAzureSsis azure_ssis = 5;
 
-  option (buf.validate.message).cel = {
-    id: "azure_data_factory_integration_runtime_exactly_one_variant"
-    message: "Set exactly one integration runtime variant block -- the variant determines the engine flavor"
-    expression: "(has(this.azure) ? 1 : 0) + (has(this.azure_ssis) ? 1 : 0) + (has(this.self_hosted) ? 1 : 0) == 1"
-  };
+    // The self-hosted agent registration.
+    AzureDataFactoryIntegrationRuntimeSelfHosted self_hosted = 6;
+  }
 
   // Azure's own name rule for the two MANAGED flavors (a slightly
   // stricter pattern than the self-hosted one: minimum 3

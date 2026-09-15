@@ -6,7 +6,7 @@ spec:
   name: allow-dns-egress
   namespace:
     value: "<your-namespace>"
-  pod_selector: {}
+  pod_selector: { match_all: true }
   policy_types:
     - egress
   egress_rules:

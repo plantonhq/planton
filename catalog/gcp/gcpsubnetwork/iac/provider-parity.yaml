@@ -32,3 +32,10 @@ resources:
       API enablement plumbing -- the module enables compute.googleapis.com
       with fixed arguments (disable_on_destroy false so destroying one
       subnet never disables the API project-wide); not spec surface.
+
+specExclusions:
+  # The flow-log block's own switch: the provider models flow logs by the
+  # presence of log_config; the module renders the block only while this
+  # switch is on.
+  - field: spec.log_config.enabled
+    reason: an explicit switch the module honors by rendering or omitting log_config -- the provider has no enabled flag on that block

@@ -91,7 +91,8 @@ spec:
 
   overprovision: false
 
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
 
   zones: ["1"]
 

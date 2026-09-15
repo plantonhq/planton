@@ -129,9 +129,12 @@ func subscription(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider
 			}
 			pushArgs.OidcToken = oidcArgs
 		}
-		if spec.PushConfig.NoWrapper != nil {
+		// The wrapper choice is a oneof: the unwrapped arm renders the provider's
+		// no_wrapper block; the pubsub_wrapper arm (or no choice) is the
+		// provider's default envelope and renders nothing.
+		if nw := spec.PushConfig.GetNoWrapper(); nw != nil {
 			pushArgs.NoWrapper = &pubsub.SubscriptionPushConfigNoWrapperArgs{
-				WriteMetadata: pulumi.Bool(spec.PushConfig.NoWrapper.WriteMetadata),
+				WriteMetadata: pulumi.Bool(nw.WriteMetadata),
 			}
 		}
 		args.PushConfig = pushArgs
@@ -183,10 +186,13 @@ func subscription(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider
 		if spec.CloudStorageConfig.MaxMessages > 0 {
 			csArgs.MaxMessages = pulumi.IntPtr(int(spec.CloudStorageConfig.MaxMessages))
 		}
-		if spec.CloudStorageConfig.AvroConfig != nil {
+		// The output format is a oneof: the Avro arm renders the provider's
+		// avro_config block; the text_config arm (or no choice) is the provider's
+		// default text output and renders nothing.
+		if avro := spec.CloudStorageConfig.GetAvroConfig(); avro != nil {
 			csArgs.AvroConfig = &pubsub.SubscriptionCloudStorageConfigAvroConfigArgs{
-				UseTopicSchema: pulumi.BoolPtr(spec.CloudStorageConfig.AvroConfig.UseTopicSchema),
-				WriteMetadata:  pulumi.BoolPtr(spec.CloudStorageConfig.AvroConfig.WriteMetadata),
+				UseTopicSchema: pulumi.BoolPtr(avro.UseTopicSchema),
+				WriteMetadata:  pulumi.BoolPtr(avro.WriteMetadata),
 			}
 		}
 		if spec.CloudStorageConfig.ServiceAccountEmail.GetValue() != "" {

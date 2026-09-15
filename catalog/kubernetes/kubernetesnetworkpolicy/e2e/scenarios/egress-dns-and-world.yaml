@@ -16,7 +16,7 @@ spec:
     - egress
   egress_rules:
     - to:
-        - namespace_selector: {}
+        - namespace_selector: { match_all: true }
       ports:
         - protocol: UDP
           port: "53"

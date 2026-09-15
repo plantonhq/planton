@@ -18,6 +18,20 @@ var vars = struct {
 	GatewayDefaultPort    int
 	GatewayServicePort    int
 
+	// PostgresClusterSuffix is the operator's name for the platform's
+	// database ("{platform name}-postgres"). The credential Secrets this
+	// module materializes for the database's backup and recovery stores
+	// hang off that name, so they read as the database's own beside the
+	// ObjectStore and settings Secret the operator creates under it.
+	PostgresClusterSuffix           string
+	BackupCredentialsSecretSuffix   string
+	RecoveryCredentialsSecretSuffix string
+	BackupEndpointCaSecretSuffix    string
+	RecoveryEndpointCaSecretSuffix  string
+	// EndpointCaSecretKey is the one key of an endpoint-CA Secret; the CR
+	// names it in endpointCASecretRef so the operator never guesses.
+	EndpointCaSecretKey string
+
 	// DeleteTimeout bounds destroy. Platform teardown is Kubernetes
 	// garbage collection (every operator-created object is
 	// owner-referenced to the CR), so the CR's own deletion normally
@@ -32,5 +46,13 @@ var vars = struct {
 	SetupCodeSecretKey:    "setup-code",
 	GatewayDefaultPort:    8080,
 	GatewayServicePort:    80,
-	DeleteTimeout:         "15m",
+
+	PostgresClusterSuffix:           "-postgres",
+	BackupCredentialsSecretSuffix:   "-backup-creds",
+	RecoveryCredentialsSecretSuffix: "-recovery-creds",
+	BackupEndpointCaSecretSuffix:    "-backup-endpoint-ca",
+	RecoveryEndpointCaSecretSuffix:  "-recovery-endpoint-ca",
+	EndpointCaSecretKey:             "ca.crt",
+
+	DeleteTimeout: "15m",
 }

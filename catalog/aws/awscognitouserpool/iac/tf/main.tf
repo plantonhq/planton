@@ -80,7 +80,7 @@ resource "aws_cognito_user_pool" "this" {
   }
 
   dynamic "email_mfa_configuration" {
-    for_each = var.spec.email_mfa != null ? [var.spec.email_mfa] : []
+    for_each = var.spec.email_mfa != null && coalesce(var.spec.email_mfa.enabled, true) ? [var.spec.email_mfa] : []
     content {
       message = email_mfa_configuration.value.message != "" ? email_mfa_configuration.value.message : null
       subject = email_mfa_configuration.value.subject != "" ? email_mfa_configuration.value.subject : null
@@ -195,8 +195,8 @@ resource "aws_cognito_user_pool" "this" {
   dynamic "device_configuration" {
     for_each = var.spec.device_configuration != null ? [var.spec.device_configuration] : []
     content {
-      challenge_required_on_new_device      = device_configuration.value.challenge_required_on_new_device
-      device_only_remembered_on_user_prompt = device_configuration.value.device_only_remembered_on_user_prompt
+      challenge_required_on_new_device      = coalesce(device_configuration.value.challenge_required_on_new_device, false)
+      device_only_remembered_on_user_prompt = coalesce(device_configuration.value.device_only_remembered_on_user_prompt, false)
     }
   }
 
@@ -243,15 +243,15 @@ resource "aws_cognito_user_pool" "this" {
   dynamic "lambda_config" {
     for_each = var.spec.lambda_config != null ? [var.spec.lambda_config] : []
     content {
-      pre_sign_up          = lambda_config.value.pre_sign_up != "" ? lambda_config.value.pre_sign_up : null
-      pre_authentication   = lambda_config.value.pre_authentication != "" ? lambda_config.value.pre_authentication : null
-      post_authentication  = lambda_config.value.post_authentication != "" ? lambda_config.value.post_authentication : null
-      post_confirmation    = lambda_config.value.post_confirmation != "" ? lambda_config.value.post_confirmation : null
+      pre_sign_up         = lambda_config.value.pre_sign_up != "" ? lambda_config.value.pre_sign_up : null
+      pre_authentication  = lambda_config.value.pre_authentication != "" ? lambda_config.value.pre_authentication : null
+      post_authentication = lambda_config.value.post_authentication != "" ? lambda_config.value.post_authentication : null
+      post_confirmation   = lambda_config.value.post_confirmation != "" ? lambda_config.value.post_confirmation : null
       # The plain field pins the V1_0 event; the config block below selects
       # the version explicitly. The spec's CEL keeps them mutually exclusive.
-      pre_token_generation = lambda_config.value.pre_token_generation != "" ? lambda_config.value.pre_token_generation : null
-      custom_message       = lambda_config.value.custom_message != "" ? lambda_config.value.custom_message : null
-      user_migration       = lambda_config.value.user_migration != "" ? lambda_config.value.user_migration : null
+      pre_token_generation           = lambda_config.value.pre_token_generation != "" ? lambda_config.value.pre_token_generation : null
+      custom_message                 = lambda_config.value.custom_message != "" ? lambda_config.value.custom_message : null
+      user_migration                 = lambda_config.value.user_migration != "" ? lambda_config.value.user_migration : null
       define_auth_challenge          = lambda_config.value.define_auth_challenge != "" ? lambda_config.value.define_auth_challenge : null
       create_auth_challenge          = lambda_config.value.create_auth_challenge != "" ? lambda_config.value.create_auth_challenge : null
       verify_auth_challenge_response = lambda_config.value.verify_auth_challenge_response != "" ? lambda_config.value.verify_auth_challenge_response : null

@@ -162,4 +162,4 @@ spec:
           s3:
             uri: s3://my-schema-bucket/models/inventory.smithy
       credentials:
-        jwtPassthrough: true
+        jwtPassthrough: {}

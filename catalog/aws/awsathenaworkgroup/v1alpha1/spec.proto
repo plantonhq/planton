@@ -240,7 +240,7 @@ message AwsAthenaWorkgroupSpec {
   option (buf.validate.message).cel = {
     id: "managed_results_excludes_output_location"
     message: "managed_query_results cannot be combined with result_configuration.output_location; results are stored either in AWS-managed storage or in your S3 bucket, not both"
-    expression: "!has(this.managed_query_results) || !has(this.result_configuration) || this.result_configuration.output_location == ''"
+    expression: "!(has(this.managed_query_results) && (!has(this.managed_query_results.enabled) || this.managed_query_results.enabled)) || !has(this.result_configuration) || this.result_configuration.output_location == ''"
   };
 
   // Literal values must be role ARNs (the provider validates ValidARN at
@@ -301,9 +301,9 @@ message AwsAthenaWorkgroupResultConfig {
 }
 
 // AwsAthenaWorkgroupManagedQueryResults configures AWS-managed query result
-// storage. The block's presence is the enable switch: include it (even empty)
-// and Athena stores results in AWS-owned storage with a 24-hour retention;
-// remove it to return to customer-managed (or account-default) result storage.
+// storage: declare the block and Athena stores results in AWS-owned storage
+// with a 24-hour retention; `enabled: false` keeps the block but returns to
+// customer-managed (or account-default) result storage.
 message AwsAthenaWorkgroupManagedQueryResults {
   // KMS key that encrypts results in AWS-managed storage. When omitted, AWS
   // encrypts managed results with an AWS-owned key -- already encrypted at
@@ -325,6 +325,11 @@ message AwsAthenaWorkgroupManagedQueryResults {
     message: "managed_query_results.kms_key literal value must be a full KMS key ARN (arn:...) -- aliases are not accepted here"
     expression: "!has(this.kms_key) || this.kms_key.value == '' || this.kms_key.value.startsWith('arn:')"
   };
+
+  // Whether AWS-managed result storage is on. Unset means on: declaring the
+  // block has always meant enabling it, and this switch lets a manifest say
+  // the opposite out loud while keeping the block's settings in place.
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
 }
 
 // AwsAthenaWorkgroupIdentityCenterConfig integrates the workgroup with AWS IAM
@@ -372,8 +377,9 @@ message AwsAthenaWorkgroupS3AccessGrantsConfig {
 }
 
 // AwsAthenaWorkgroupMonitoringConfig groups the workgroup's log delivery
-// destinations. Each arm is enabled by its presence and can be combined with
-// the others (e.g. CloudWatch for live debugging plus S3 for archive).
+// destinations. Each arm carries its own switch (on by default once declared)
+// and can be combined with the others (e.g. CloudWatch for live debugging plus
+// S3 for archive).
 message AwsAthenaWorkgroupMonitoringConfig {
   // Delivers logs to a CloudWatch Logs log group -- the destination to pick
   // when logs must be searchable, alarmable, or subscription-filtered.
@@ -389,7 +395,8 @@ message AwsAthenaWorkgroupMonitoringConfig {
 }
 
 // AwsAthenaWorkgroupCloudWatchLoggingConfig delivers workgroup logs to
-// CloudWatch Logs. The block's presence enables the delivery.
+// CloudWatch Logs. Declaring the block turns the delivery on; `enabled: false`
+// keeps the destination's settings while switching it off.
 message AwsAthenaWorkgroupCloudWatchLoggingConfig {
   // Name of the CloudWatch Logs log group to publish to. When omitted, Athena
   // publishes to its service-default log group. 1-512 characters:
@@ -414,6 +421,11 @@ message AwsAthenaWorkgroupCloudWatchLoggingConfig {
   // to deliver for that worker, such as "STDOUT" and "STDERR". When omitted,
   // Athena publishes its default set.
   repeated AwsAthenaWorkgroupLogTypeEntry log_types = 3;
+
+  // Whether this destination is on. Unset means on: declaring the block has
+  // always meant enabling it, and this switch lets a manifest say the opposite
+  // out loud while keeping the block's settings in place.
+  optional bool enabled = 4 [(dev.planton.shared.options.default) = "true"];
 }
 
 // AwsAthenaWorkgroupLogTypeEntry selects the log streams of one worker type
@@ -427,8 +439,9 @@ message AwsAthenaWorkgroupLogTypeEntry {
 }
 
 // AwsAthenaWorkgroupManagedLoggingConfig delivers workgroup logs to
-// Athena-managed storage. The block's presence enables the delivery; an empty
-// block uses AWS-owned encryption.
+// Athena-managed storage. Declaring the block turns the delivery on (with
+// AWS-owned encryption unless a key is named); `enabled: false` keeps the
+// destination's settings while switching it off.
 message AwsAthenaWorkgroupManagedLoggingConfig {
   // KMS key that encrypts logs in managed storage. Accepts a key ARN (the
   // default reference path) or an alias. When omitted, AWS encrypts the logs
@@ -437,10 +450,16 @@ message AwsAthenaWorkgroupManagedLoggingConfig {
     (dev.planton.shared.foreignkey.v1.default_kind) = AwsKmsKey,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_arn"
   ];
+
+  // Whether this destination is on. Unset means on: declaring the block has
+  // always meant enabling it, and this switch lets a manifest say the opposite
+  // out loud while keeping the block's settings in place.
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
 }
 
 // AwsAthenaWorkgroupS3LoggingConfig delivers workgroup logs to an S3 location.
-// The block's presence enables the delivery.
+// Declaring the block turns the delivery on; `enabled: false` keeps the
+// destination's settings while switching it off.
 message AwsAthenaWorkgroupS3LoggingConfig {
   // S3 URI where logs are delivered, e.g. "s3://my-log-archive/athena/".
   // Plain string (not a reference) because it is a URI with a user-defined
@@ -462,4 +481,9 @@ message AwsAthenaWorkgroupS3LoggingConfig {
     message: "s3_logging.log_location must be an s3:// URI with a valid lowercase bucket name when set"
     expression: "this.log_location == '' || this.log_location.matches('^s3://[a-z0-9][a-z0-9-]*[a-z0-9](/.*)?$')"
   };
+
+  // Whether this destination is on. Unset means on: declaring the block has
+  // always meant enabling it, and this switch lets a manifest say the opposite
+  // out loud while keeping the block's settings in place.
+  optional bool enabled = 3 [(dev.planton.shared.options.default) = "true"];
 }

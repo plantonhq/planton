@@ -509,6 +509,18 @@ type SubOperatorOptions struct {
 	// Deployments are the controller Deployments (in Namespace) that prove the
 	// install completed AND is serving. All must be available for ready=true.
 	Deployments []string
+
+	// ReapplyWhileNotReady re-applies the whole release on every pass in which
+	// a Deployment exists but is not yet available. For a release whose
+	// objects the operator owns alone (no config content another manager
+	// co-writes), this is what makes a partial install heal instead of
+	// waiting forever: an apply that was refused on its last object leaves the
+	// Deployment standing and starving (the backup plugin's Issuer did exactly
+	// that), and only a re-apply lands the missing object -- or surfaces the
+	// refusal again on every pass, where the status can carry it. Off for
+	// releases with co-owned content (Tekton), whose complete install must
+	// never be re-applied.
+	ReapplyWhileNotReady bool
 }
 
 // EnsureSubOperator is the detect-or-install idiom shared by every vendored
@@ -576,6 +588,11 @@ func (b *Base) EnsureSubOperator(ctx context.Context, c client.Client, opts SubO
 		if !ready {
 			log.Info("Sub-operator not yet ready", "deployment", name)
 			allReady = false
+		}
+	}
+	if !allReady && opts.ReapplyWhileNotReady {
+		if err := b.ApplyOperatorManifests(ctx, c, opts.Loader, opts.Namespace); err != nil {
+			return false, fmt.Errorf("re-applying %s manifests while it is not ready: %w", opts.LogName, err)
 		}
 	}
 	return allReady, nil

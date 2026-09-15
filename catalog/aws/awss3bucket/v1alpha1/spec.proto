@@ -5,6 +5,7 @@ package dev.planton.aws.awss3bucket.v1alpha1;
 import "buf/validate/validate.proto";
 import "google/protobuf/struct.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // AwsS3BucketSpec defines the desired configuration for an AWS S3 bucket.
 //
@@ -383,22 +384,26 @@ message AwsS3BucketEncryption {
 }
 
 // Public access guard rails for the bucket. Absence of this block means all
-// four guards are ON (fully private) — each field here flips a specific guard.
+// four guards are ON (fully private). Inside the block each guard is its own
+// statement: `false` relaxes that guard, `true` keeps it, and a guard left
+// unset stays ON, so relaxing one guard never silently relaxes the others.
 message AwsS3BucketPublicAccessBlock {
   // Reject new ACLs that grant public access (PUT requests carrying public
-  // ACLs fail).
-  bool block_public_acls = 1;
+  // ACLs fail). Unset keeps the guard on.
+  optional bool block_public_acls = 1 [(dev.planton.shared.options.default) = "true"];
 
   // Reject bucket policies that grant public access (the policy PUT fails).
-  bool block_public_policy = 2;
+  // Unset keeps the guard on.
+  optional bool block_public_policy = 2 [(dev.planton.shared.options.default) = "true"];
 
-  // Ignore all existing public ACLs when evaluating access.
-  bool ignore_public_acls = 3;
+  // Ignore all existing public ACLs when evaluating access. Unset keeps the
+  // guard on.
+  optional bool ignore_public_acls = 3 [(dev.planton.shared.options.default) = "true"];
 
   // Restrict access to this bucket to AWS service principals and authorized
   // users within the bucket owner's account, even if a policy grants public
-  // access.
-  bool restrict_public_buckets = 4;
+  // access. Unset keeps the guard on.
+  optional bool restrict_public_buckets = 4 [(dev.planton.shared.options.default) = "true"];
 }
 
 // One lifecycle rule: which objects it covers (filter) and what happens to

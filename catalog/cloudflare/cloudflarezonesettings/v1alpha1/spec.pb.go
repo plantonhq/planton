@@ -1036,8 +1036,10 @@ func (x *CloudflareZoneSettingsAegis) GetPoolId() string {
 // on writes -- there are no server-side defaults for omitted members.
 type CloudflareZoneSettingsAutomaticPlatformOptimization struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whether APO serves this zone from the edge cache.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Whether APO serves this zone from the edge cache. Required inside
+	// automatic_platform_optimization, as every member of this object is on
+	// writes.
+	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// Cache separately by device type (mobile, tablet, desktop).
 	CacheByDeviceType bool `protobuf:"varint,2,opt,name=cache_by_device_type,json=cacheByDeviceType,proto3" json:"cache_by_device_type,omitempty"`
 	// Whether the zone is proxied through Cloudflare (the API expects the current
@@ -1086,8 +1088,8 @@ func (*CloudflareZoneSettingsAutomaticPlatformOptimization) Descriptor() ([]byte
 }
 
 func (x *CloudflareZoneSettingsAutomaticPlatformOptimization) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1127,11 +1129,15 @@ func (x *CloudflareZoneSettingsAutomaticPlatformOptimization) GetWpPlugin() bool
 	return false
 }
 
-// Network Error Logging configuration (setting_id "nel").
+// Network Error Logging configuration (setting_id "nel"). Declaring the block
+// takes the setting under management, and the switch says which way; it is
+// required inside the block because a block that does not say on or off
+// manages nothing.
 type CloudflareZoneSettingsNel struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether browsers report network errors for this zone to Cloudflare.
-	Enabled       bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Required inside nel.
+	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1167,8 +1173,8 @@ func (*CloudflareZoneSettingsNel) Descriptor() ([]byte, []int) {
 }
 
 func (x *CloudflareZoneSettingsNel) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1177,8 +1183,10 @@ func (x *CloudflareZoneSettingsNel) GetEnabled() bool {
 // nests these fields under the API's strict_transport_security object.
 type CloudflareZoneSettingsSecurityHeader struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Whether Strict-Transport-Security is emitted.
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	// Whether Strict-Transport-Security is emitted. Required inside
+	// security_header: the block is written to Cloudflare whole, so it must say
+	// whether HSTS is on before the other dials mean anything.
+	Enabled *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// Apply HSTS to all subdomains. Only enable when every subdomain serves HTTPS --
 	// browsers will refuse plain http on all of them for max_age seconds.
 	IncludeSubdomains bool `protobuf:"varint,2,opt,name=include_subdomains,json=includeSubdomains,proto3" json:"include_subdomains,omitempty"`
@@ -1225,8 +1233,8 @@ func (*CloudflareZoneSettingsSecurityHeader) Descriptor() ([]byte, []int) {
 }
 
 func (x *CloudflareZoneSettingsSecurityHeader) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
 	}
 	return false
 }
@@ -1421,22 +1429,28 @@ const file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_spec_proto_rawDesc
 	"\aenabled\x18\x01 \x01(\bH\x00R\aenabled\x88\x01\x01\x12\x17\n" +
 	"\apool_id\x18\x02 \x01(\tR\x06poolIdB\n" +
 	"\n" +
-	"\b_enabled\"\xf3\x01\n" +
-	"3CloudflareZoneSettingsAutomaticPlatformOptimization\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12/\n" +
+	"\b_enabled\"\x8c\x02\n" +
+	"3CloudflareZoneSettingsAutomaticPlatformOptimization\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x12/\n" +
 	"\x14cache_by_device_type\x18\x02 \x01(\bR\x11cacheByDeviceType\x12\x0e\n" +
 	"\x02cf\x18\x03 \x01(\bR\x02cf\x12&\n" +
 	"\thostnames\x18\x04 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\thostnames\x12\x1c\n" +
 	"\twordpress\x18\x05 \x01(\bR\twordpress\x12\x1b\n" +
-	"\twp_plugin\x18\x06 \x01(\bR\bwpPlugin\"5\n" +
-	"\x19CloudflareZoneSettingsNel\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\"\xc5\x01\n" +
-	"$CloudflareZoneSettingsSecurityHeader\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12-\n" +
+	"\twp_plugin\x18\x06 \x01(\bR\bwpPluginB\n" +
+	"\n" +
+	"\b_enabled\"N\n" +
+	"\x19CloudflareZoneSettingsNel\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xde\x01\n" +
+	"$CloudflareZoneSettingsSecurityHeader\x12%\n" +
+	"\aenabled\x18\x01 \x01(\bB\x06\xbaH\x03\xc8\x01\x01H\x00R\aenabled\x88\x01\x01\x12-\n" +
 	"\x12include_subdomains\x18\x02 \x01(\bR\x11includeSubdomains\x12 \n" +
 	"\amax_age\x18\x03 \x01(\x03B\a\xbaH\x04\"\x02(\x00R\x06maxAge\x12\x18\n" +
 	"\anosniff\x18\x04 \x01(\bR\anosniff\x12\x18\n" +
-	"\apreload\x18\x05 \x01(\bR\apreloadB\xb4\x03\n" +
+	"\apreload\x18\x05 \x01(\bR\apreloadB\n" +
+	"\n" +
+	"\b_enabledB\xb4\x03\n" +
 	":com.dev.planton.cloudflare.cloudflarezonesettings.v1alpha1B\tSpecProtoP\x01Zngithub.com/plantonhq/planton/catalog/cloudflare/cloudflarezonesettings/v1alpha1;cloudflarezonesettingsv1alpha1\xa2\x02\x04DPCC\xaa\x026Dev.Planton.Cloudflare.Cloudflarezonesettings.V1alpha1\xca\x026Dev\\Planton\\Cloudflare\\Cloudflarezonesettings\\V1alpha1\xe2\x02BDev\\Planton\\Cloudflare\\Cloudflarezonesettings\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Cloudflare::Cloudflarezonesettings::V1alpha1b\x06proto3"
 
 var (
@@ -1487,6 +1501,9 @@ func file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
+	file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
+	file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
+	file_catalog_cloudflare_cloudflarezonesettings_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

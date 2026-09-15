@@ -1764,32 +1764,30 @@ func (x *AwsKinesisFirehoseDynamicPartitioning) GetRetryDurationInSeconds() int3
 //     permissions on the Glue catalog
 type AwsKinesisFirehoseDataFormatConversion struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Enable data format conversion. When true, exactly one deserializer arm
-	// (open_x_json or hive_json), exactly one serializer arm (parquet or orc),
-	// and schema are required. When false with arms configured, the
+	// Enable data format conversion. When true, a deserializer arm, a
+	// serializer arm, and schema are required. When false with arms configured, the
 	// conversion settings are retained but inactive (AWS permits disabling
 	// conversion without discarding its configuration).
 	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	// OpenX JSON deserializer arm. Handles most JSON formats including nested
-	// objects -- the right choice for general use. Exactly one of open_x_json
-	// or hive_json must be set when conversion is enabled; set it empty
-	// ("openXJson: {}") to accept the deserializer defaults.
-	OpenXJson *AwsKinesisFirehoseOpenXJsonDeserializer `protobuf:"bytes,2,opt,name=open_x_json,json=openXJson,proto3" json:"open_x_json,omitempty"`
-	// Apache Hive JSON deserializer arm. Use for Hive-compatible JSON when
-	// records carry non-standard timestamp encodings that need explicit
-	// parsing patterns. Exactly one of open_x_json or hive_json must be set
-	// when conversion is enabled.
-	HiveJson *AwsKinesisFirehoseHiveJsonDeserializer `protobuf:"bytes,3,opt,name=hive_json,json=hiveJson,proto3" json:"hive_json,omitempty"`
-	// Apache Parquet serializer arm. Best for read-heavy analytical workloads
-	// (Athena, Spark, Presto): excellent compression, predicate pushdown, and
-	// columnar pruning. Exactly one of parquet or orc must be set when
-	// conversion is enabled; set it empty ("parquet: {}") to accept the
-	// serializer defaults (SNAPPY compression).
-	Parquet *AwsKinesisFirehoseParquetSerializer `protobuf:"bytes,4,opt,name=parquet,proto3" json:"parquet,omitempty"`
-	// Apache ORC serializer arm. Best for Hive workloads: ACID support, bloom
-	// filters, and built-in indexing. Exactly one of parquet or orc must be
-	// set when conversion is enabled.
-	Orc *AwsKinesisFirehoseOrcSerializer `protobuf:"bytes,5,opt,name=orc,proto3" json:"orc,omitempty"`
+	// The deserializer that reads incoming records: one of the two arms below.
+	// Choosing an arm with nothing inside accepts that deserializer's defaults
+	// ("openXJson: {}"), so an empty arm is a valid, complete choice.
+	//
+	// Types that are valid to be assigned to Deserializer:
+	//
+	//	*AwsKinesisFirehoseDataFormatConversion_OpenXJson
+	//	*AwsKinesisFirehoseDataFormatConversion_HiveJson
+	Deserializer isAwsKinesisFirehoseDataFormatConversion_Deserializer `protobuf_oneof:"deserializer"`
+	// The serializer that writes the columnar output: one of the two arms
+	// below. Choosing an arm with nothing inside accepts that serializer's
+	// defaults ("parquet: {}" is SNAPPY compression), so an empty arm is a
+	// valid, complete choice.
+	//
+	// Types that are valid to be assigned to Serializer:
+	//
+	//	*AwsKinesisFirehoseDataFormatConversion_Parquet
+	//	*AwsKinesisFirehoseDataFormatConversion_Orc
+	Serializer isAwsKinesisFirehoseDataFormatConversion_Serializer `protobuf_oneof:"serializer"`
 	// AWS Glue Data Catalog schema reference. Defines the table schema used
 	// for converting JSON records to the columnar format. Required when
 	// data format conversion is enabled.
@@ -1835,30 +1833,52 @@ func (x *AwsKinesisFirehoseDataFormatConversion) GetEnabled() bool {
 	return false
 }
 
+func (x *AwsKinesisFirehoseDataFormatConversion) GetDeserializer() isAwsKinesisFirehoseDataFormatConversion_Deserializer {
+	if x != nil {
+		return x.Deserializer
+	}
+	return nil
+}
+
 func (x *AwsKinesisFirehoseDataFormatConversion) GetOpenXJson() *AwsKinesisFirehoseOpenXJsonDeserializer {
 	if x != nil {
-		return x.OpenXJson
+		if x, ok := x.Deserializer.(*AwsKinesisFirehoseDataFormatConversion_OpenXJson); ok {
+			return x.OpenXJson
+		}
 	}
 	return nil
 }
 
 func (x *AwsKinesisFirehoseDataFormatConversion) GetHiveJson() *AwsKinesisFirehoseHiveJsonDeserializer {
 	if x != nil {
-		return x.HiveJson
+		if x, ok := x.Deserializer.(*AwsKinesisFirehoseDataFormatConversion_HiveJson); ok {
+			return x.HiveJson
+		}
+	}
+	return nil
+}
+
+func (x *AwsKinesisFirehoseDataFormatConversion) GetSerializer() isAwsKinesisFirehoseDataFormatConversion_Serializer {
+	if x != nil {
+		return x.Serializer
 	}
 	return nil
 }
 
 func (x *AwsKinesisFirehoseDataFormatConversion) GetParquet() *AwsKinesisFirehoseParquetSerializer {
 	if x != nil {
-		return x.Parquet
+		if x, ok := x.Serializer.(*AwsKinesisFirehoseDataFormatConversion_Parquet); ok {
+			return x.Parquet
+		}
 	}
 	return nil
 }
 
 func (x *AwsKinesisFirehoseDataFormatConversion) GetOrc() *AwsKinesisFirehoseOrcSerializer {
 	if x != nil {
-		return x.Orc
+		if x, ok := x.Serializer.(*AwsKinesisFirehoseDataFormatConversion_Orc); ok {
+			return x.Orc
+		}
 	}
 	return nil
 }
@@ -1868,6 +1888,52 @@ func (x *AwsKinesisFirehoseDataFormatConversion) GetSchema() *AwsKinesisFirehose
 		return x.Schema
 	}
 	return nil
+}
+
+type isAwsKinesisFirehoseDataFormatConversion_Deserializer interface {
+	isAwsKinesisFirehoseDataFormatConversion_Deserializer()
+}
+
+type AwsKinesisFirehoseDataFormatConversion_OpenXJson struct {
+	// OpenX JSON deserializer arm. Handles most JSON formats including nested
+	// objects -- the right choice for general use.
+	OpenXJson *AwsKinesisFirehoseOpenXJsonDeserializer `protobuf:"bytes,2,opt,name=open_x_json,json=openXJson,proto3,oneof"`
+}
+
+type AwsKinesisFirehoseDataFormatConversion_HiveJson struct {
+	// Apache Hive JSON deserializer arm. Use for Hive-compatible JSON when
+	// records carry non-standard timestamp encodings that need explicit
+	// parsing patterns.
+	HiveJson *AwsKinesisFirehoseHiveJsonDeserializer `protobuf:"bytes,3,opt,name=hive_json,json=hiveJson,proto3,oneof"`
+}
+
+func (*AwsKinesisFirehoseDataFormatConversion_OpenXJson) isAwsKinesisFirehoseDataFormatConversion_Deserializer() {
+}
+
+func (*AwsKinesisFirehoseDataFormatConversion_HiveJson) isAwsKinesisFirehoseDataFormatConversion_Deserializer() {
+}
+
+type isAwsKinesisFirehoseDataFormatConversion_Serializer interface {
+	isAwsKinesisFirehoseDataFormatConversion_Serializer()
+}
+
+type AwsKinesisFirehoseDataFormatConversion_Parquet struct {
+	// Apache Parquet serializer arm. Best for read-heavy analytical workloads
+	// (Athena, Spark, Presto): excellent compression, predicate pushdown, and
+	// columnar pruning.
+	Parquet *AwsKinesisFirehoseParquetSerializer `protobuf:"bytes,4,opt,name=parquet,proto3,oneof"`
+}
+
+type AwsKinesisFirehoseDataFormatConversion_Orc struct {
+	// Apache ORC serializer arm. Best for Hive workloads: ACID support, bloom
+	// filters, and built-in indexing.
+	Orc *AwsKinesisFirehoseOrcSerializer `protobuf:"bytes,5,opt,name=orc,proto3,oneof"`
+}
+
+func (*AwsKinesisFirehoseDataFormatConversion_Parquet) isAwsKinesisFirehoseDataFormatConversion_Serializer() {
+}
+
+func (*AwsKinesisFirehoseDataFormatConversion_Orc) isAwsKinesisFirehoseDataFormatConversion_Serializer() {
 }
 
 // AwsKinesisFirehoseOpenXJsonDeserializer configures the OpenX JSON SerDe
@@ -3999,20 +4065,20 @@ const file_catalog_aws_awskinesisfirehose_v1alpha1_spec_proto_rawDesc = "" +
 	"%AwsKinesisFirehoseDynamicPartitioning\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x129\n" +
 	"\x19retry_duration_in_seconds\x18\x02 \x01(\x05R\x16retryDurationInSeconds:\xd4\x01\xbaH\xd0\x01\x1a\xcd\x01\n" +
-	"\x14retry_duration_range\x12=retry_duration_in_seconds must be between 0 and 7200 when set\x1avthis.retry_duration_in_seconds == 0 || (this.retry_duration_in_seconds >= 0 && this.retry_duration_in_seconds <= 7200)\"\xe5\n" +
-	"\n" +
+	"\x14retry_duration_range\x12=retry_duration_in_seconds must be between 0 and 7200 when set\x1avthis.retry_duration_in_seconds == 0 || (this.retry_duration_in_seconds >= 0 && this.retry_duration_in_seconds <= 7200)\"\x82\t\n" +
 	"&AwsKinesisFirehoseDataFormatConversion\x12\x18\n" +
-	"\aenabled\x18\x01 \x01(\bR\aenabled\x12t\n" +
-	"\vopen_x_json\x18\x02 \x01(\v2T.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOpenXJsonDeserializerR\topenXJson\x12p\n" +
-	"\thive_json\x18\x03 \x01(\v2S.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseHiveJsonDeserializerR\bhiveJson\x12j\n" +
-	"\aparquet\x18\x04 \x01(\v2P.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseParquetSerializerR\aparquet\x12^\n" +
-	"\x03orc\x18\x05 \x01(\v2L.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOrcSerializerR\x03orc\x12g\n" +
-	"\x06schema\x18\x06 \x01(\v2O.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseGlueSchemaConfigR\x06schema:\x83\x06\xbaH\xff\x05\x1a\x8e\x01\n" +
-	"\x18deserializer_at_most_one\x12Aat most one deserializer arm may be set: open_x_json or hive_json\x1a/!(has(this.open_x_json) && has(this.hive_json))\x1a\xc5\x01\n" +
-	"\"deserializer_required_when_enabled\x12`a deserializer arm (open_x_json or hive_json) is required when data format conversion is enabled\x1a=!this.enabled || has(this.open_x_json) || has(this.hive_json)\x1av\n" +
-	"\x16serializer_at_most_one\x125at most one serializer arm may be set: parquet or orc\x1a%!(has(this.parquet) && has(this.orc))\x1a\xad\x01\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12v\n" +
+	"\vopen_x_json\x18\x02 \x01(\v2T.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOpenXJsonDeserializerH\x00R\topenXJson\x12r\n" +
+	"\thive_json\x18\x03 \x01(\v2S.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseHiveJsonDeserializerH\x00R\bhiveJson\x12l\n" +
+	"\aparquet\x18\x04 \x01(\v2P.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseParquetSerializerH\x01R\aparquet\x12`\n" +
+	"\x03orc\x18\x05 \x01(\v2L.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOrcSerializerH\x01R\x03orc\x12g\n" +
+	"\x06schema\x18\x06 \x01(\v2O.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseGlueSchemaConfigR\x06schema:\xfa\x03\xbaH\xf6\x03\x1a\xc5\x01\n" +
+	"\"deserializer_required_when_enabled\x12`a deserializer arm (open_x_json or hive_json) is required when data format conversion is enabled\x1a=!this.enabled || has(this.open_x_json) || has(this.hive_json)\x1a\xad\x01\n" +
 	" serializer_required_when_enabled\x12Ta serializer arm (parquet or orc) is required when data format conversion is enabled\x1a3!this.enabled || has(this.parquet) || has(this.orc)\x1a|\n" +
-	"\x1cschema_required_when_enabled\x129schema is required when data format conversion is enabled\x1a!!this.enabled || has(this.schema)\"\xc2\x03\n" +
+	"\x1cschema_required_when_enabled\x129schema is required when data format conversion is enabled\x1a!!this.enabled || has(this.schema)B\x0e\n" +
+	"\fdeserializerB\f\n" +
+	"\n" +
+	"serializer\"\xc2\x03\n" +
 	"'AwsKinesisFirehoseOpenXJsonDeserializer\x12.\n" +
 	"\x10case_insensitive\x18\x01 \x01(\bH\x00R\x0fcaseInsensitive\x88\x01\x01\x12\xaf\x01\n" +
 	"\x1bcolumn_to_json_key_mappings\x18\x02 \x03(\v2q.dev.planton.aws.awskinesisfirehose.v1alpha1.AwsKinesisFirehoseOpenXJsonDeserializer.ColumnToJsonKeyMappingsEntryR\x17columnToJsonKeyMappings\x12T\n" +
@@ -4427,6 +4493,12 @@ func file_catalog_aws_awskinesisfirehose_v1alpha1_spec_proto_init() {
 		(*AwsKinesisFirehoseSpec_Splunk)(nil),
 		(*AwsKinesisFirehoseSpec_Snowflake)(nil),
 		(*AwsKinesisFirehoseSpec_Iceberg)(nil),
+	}
+	file_catalog_aws_awskinesisfirehose_v1alpha1_spec_proto_msgTypes[18].OneofWrappers = []any{
+		(*AwsKinesisFirehoseDataFormatConversion_OpenXJson)(nil),
+		(*AwsKinesisFirehoseDataFormatConversion_HiveJson)(nil),
+		(*AwsKinesisFirehoseDataFormatConversion_Parquet)(nil),
+		(*AwsKinesisFirehoseDataFormatConversion_Orc)(nil),
 	}
 	file_catalog_aws_awskinesisfirehose_v1alpha1_spec_proto_msgTypes[19].OneofWrappers = []any{}
 	file_catalog_aws_awskinesisfirehose_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}

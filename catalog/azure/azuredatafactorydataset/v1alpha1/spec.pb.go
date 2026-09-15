@@ -84,44 +84,30 @@ type AzureDataFactoryDatasetSpec struct {
 	// display path only ("/" separated), with no effect on the wire
 	// behavior. Omit for the factory root.
 	Folder string `protobuf:"bytes,8,opt,name=folder,proto3" json:"folder,omitempty"`
-	// Azure Blob Storage files addressed by a flat path + filename
-	// pair. Set exactly one variant block on this spec.
-	AzureBlob *AzureDataFactoryDatasetAzureBlob `protobuf:"bytes,9,opt,name=azure_blob,json=azureBlob,proto3" json:"azure_blob,omitempty"`
-	// An Azure SQL Database table. The one variant that references its
-	// linked service by ARM ID (same factory enforced). Set exactly one
-	// variant block on this spec.
-	AzureSqlTable *AzureDataFactoryDatasetAzureSqlTable `protobuf:"bytes,10,opt,name=azure_sql_table,json=azureSqlTable,proto3" json:"azure_sql_table,omitempty"`
-	// Opaque binary files (no column structure). Set exactly one
-	// variant block on this spec.
-	Binary *AzureDataFactoryDatasetBinary `protobuf:"bytes,11,opt,name=binary,proto3" json:"binary,omitempty"`
-	// An Azure Cosmos DB (SQL API) collection. Set exactly one variant
-	// block on this spec.
-	CosmosdbSqlapi *AzureDataFactoryDatasetCosmosdbSqlapi `protobuf:"bytes,12,opt,name=cosmosdb_sqlapi,json=cosmosdbSqlapi,proto3" json:"cosmosdb_sqlapi,omitempty"`
-	// Any other dataset type, as raw type-properties JSON -- the escape
-	// hatch for the many Data Factory dataset types azurerm has no
-	// first-class resource for. Set exactly one variant block on this
-	// spec.
-	Custom *AzureDataFactoryDatasetCustom `protobuf:"bytes,13,opt,name=custom,proto3" json:"custom,omitempty"`
-	// Delimited text (CSV) files. Set exactly one variant block on this
-	// spec.
-	DelimitedText *AzureDataFactoryDatasetDelimitedText `protobuf:"bytes,14,opt,name=delimited_text,json=delimitedText,proto3" json:"delimited_text,omitempty"`
-	// A file served by an HTTP endpoint (through a web linked service).
-	// Set exactly one variant block on this spec.
-	Http *AzureDataFactoryDatasetHttp `protobuf:"bytes,15,opt,name=http,proto3" json:"http,omitempty"`
-	// JSON files. Set exactly one variant block on this spec.
-	Json *AzureDataFactoryDatasetJson `protobuf:"bytes,16,opt,name=json,proto3" json:"json,omitempty"`
-	// A MySQL table. Set exactly one variant block on this spec.
-	Mysql *AzureDataFactoryDatasetMysql `protobuf:"bytes,17,opt,name=mysql,proto3" json:"mysql,omitempty"`
-	// Parquet files. Set exactly one variant block on this spec.
-	Parquet *AzureDataFactoryDatasetParquet `protobuf:"bytes,18,opt,name=parquet,proto3" json:"parquet,omitempty"`
-	// A PostgreSQL table. Set exactly one variant block on this spec.
-	Postgresql *AzureDataFactoryDatasetPostgresql `protobuf:"bytes,19,opt,name=postgresql,proto3" json:"postgresql,omitempty"`
-	// A Snowflake table. Set exactly one variant block on this spec.
-	Snowflake *AzureDataFactoryDatasetSnowflake `protobuf:"bytes,20,opt,name=snowflake,proto3" json:"snowflake,omitempty"`
-	// A SQL Server table. Set exactly one variant block on this spec.
-	SqlServerTable *AzureDataFactoryDatasetSqlServerTable `protobuf:"bytes,21,opt,name=sql_server_table,json=sqlServerTable,proto3" json:"sql_server_table,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The dataset's variant: exactly one of the arms below, and the arm
+	// determines the dataset type. Choosing an arm is the whole statement for
+	// the variants whose settings are all optional (an HTTP file, a Cosmos DB
+	// collection with its default name, a MySQL or PostgreSQL table named
+	// elsewhere), so a variant with nothing inside is a valid, complete choice.
+	//
+	// Types that are valid to be assigned to Variant:
+	//
+	//	*AzureDataFactoryDatasetSpec_AzureBlob
+	//	*AzureDataFactoryDatasetSpec_AzureSqlTable
+	//	*AzureDataFactoryDatasetSpec_Binary
+	//	*AzureDataFactoryDatasetSpec_CosmosdbSqlapi
+	//	*AzureDataFactoryDatasetSpec_Custom
+	//	*AzureDataFactoryDatasetSpec_DelimitedText
+	//	*AzureDataFactoryDatasetSpec_Http
+	//	*AzureDataFactoryDatasetSpec_Json
+	//	*AzureDataFactoryDatasetSpec_Mysql
+	//	*AzureDataFactoryDatasetSpec_Parquet
+	//	*AzureDataFactoryDatasetSpec_Postgresql
+	//	*AzureDataFactoryDatasetSpec_Snowflake
+	//	*AzureDataFactoryDatasetSpec_SqlServerTable
+	Variant       isAzureDataFactoryDatasetSpec_Variant `protobuf_oneof:"variant"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureDataFactoryDatasetSpec) Reset() {
@@ -210,96 +196,228 @@ func (x *AzureDataFactoryDatasetSpec) GetFolder() string {
 	return ""
 }
 
+func (x *AzureDataFactoryDatasetSpec) GetVariant() isAzureDataFactoryDatasetSpec_Variant {
+	if x != nil {
+		return x.Variant
+	}
+	return nil
+}
+
 func (x *AzureDataFactoryDatasetSpec) GetAzureBlob() *AzureDataFactoryDatasetAzureBlob {
 	if x != nil {
-		return x.AzureBlob
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_AzureBlob); ok {
+			return x.AzureBlob
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetAzureSqlTable() *AzureDataFactoryDatasetAzureSqlTable {
 	if x != nil {
-		return x.AzureSqlTable
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_AzureSqlTable); ok {
+			return x.AzureSqlTable
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetBinary() *AzureDataFactoryDatasetBinary {
 	if x != nil {
-		return x.Binary
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Binary); ok {
+			return x.Binary
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetCosmosdbSqlapi() *AzureDataFactoryDatasetCosmosdbSqlapi {
 	if x != nil {
-		return x.CosmosdbSqlapi
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_CosmosdbSqlapi); ok {
+			return x.CosmosdbSqlapi
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetCustom() *AzureDataFactoryDatasetCustom {
 	if x != nil {
-		return x.Custom
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Custom); ok {
+			return x.Custom
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetDelimitedText() *AzureDataFactoryDatasetDelimitedText {
 	if x != nil {
-		return x.DelimitedText
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_DelimitedText); ok {
+			return x.DelimitedText
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetHttp() *AzureDataFactoryDatasetHttp {
 	if x != nil {
-		return x.Http
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Http); ok {
+			return x.Http
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetJson() *AzureDataFactoryDatasetJson {
 	if x != nil {
-		return x.Json
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Json); ok {
+			return x.Json
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetMysql() *AzureDataFactoryDatasetMysql {
 	if x != nil {
-		return x.Mysql
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Mysql); ok {
+			return x.Mysql
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetParquet() *AzureDataFactoryDatasetParquet {
 	if x != nil {
-		return x.Parquet
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Parquet); ok {
+			return x.Parquet
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetPostgresql() *AzureDataFactoryDatasetPostgresql {
 	if x != nil {
-		return x.Postgresql
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Postgresql); ok {
+			return x.Postgresql
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetSnowflake() *AzureDataFactoryDatasetSnowflake {
 	if x != nil {
-		return x.Snowflake
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_Snowflake); ok {
+			return x.Snowflake
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryDatasetSpec) GetSqlServerTable() *AzureDataFactoryDatasetSqlServerTable {
 	if x != nil {
-		return x.SqlServerTable
+		if x, ok := x.Variant.(*AzureDataFactoryDatasetSpec_SqlServerTable); ok {
+			return x.SqlServerTable
+		}
 	}
 	return nil
 }
+
+type isAzureDataFactoryDatasetSpec_Variant interface {
+	isAzureDataFactoryDatasetSpec_Variant()
+}
+
+type AzureDataFactoryDatasetSpec_AzureBlob struct {
+	// Azure Blob Storage files addressed by a flat path + filename
+	// pair.
+	AzureBlob *AzureDataFactoryDatasetAzureBlob `protobuf:"bytes,9,opt,name=azure_blob,json=azureBlob,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_AzureSqlTable struct {
+	// An Azure SQL Database table. The one variant that references its
+	// linked service by ARM ID (same factory enforced).
+	AzureSqlTable *AzureDataFactoryDatasetAzureSqlTable `protobuf:"bytes,10,opt,name=azure_sql_table,json=azureSqlTable,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Binary struct {
+	// Opaque binary files (no column structure).
+	Binary *AzureDataFactoryDatasetBinary `protobuf:"bytes,11,opt,name=binary,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_CosmosdbSqlapi struct {
+	// An Azure Cosmos DB (SQL API) collection.
+	CosmosdbSqlapi *AzureDataFactoryDatasetCosmosdbSqlapi `protobuf:"bytes,12,opt,name=cosmosdb_sqlapi,json=cosmosdbSqlapi,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Custom struct {
+	// Any other dataset type, as raw type-properties JSON -- the escape
+	// hatch for the many Data Factory dataset types azurerm has no
+	// first-class resource for.
+	Custom *AzureDataFactoryDatasetCustom `protobuf:"bytes,13,opt,name=custom,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_DelimitedText struct {
+	// Delimited text (CSV) files.
+	DelimitedText *AzureDataFactoryDatasetDelimitedText `protobuf:"bytes,14,opt,name=delimited_text,json=delimitedText,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Http struct {
+	// A file served by an HTTP endpoint (through a web linked service).
+	Http *AzureDataFactoryDatasetHttp `protobuf:"bytes,15,opt,name=http,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Json struct {
+	// JSON files.
+	Json *AzureDataFactoryDatasetJson `protobuf:"bytes,16,opt,name=json,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Mysql struct {
+	// A MySQL table.
+	Mysql *AzureDataFactoryDatasetMysql `protobuf:"bytes,17,opt,name=mysql,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Parquet struct {
+	// Parquet files.
+	Parquet *AzureDataFactoryDatasetParquet `protobuf:"bytes,18,opt,name=parquet,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Postgresql struct {
+	// A PostgreSQL table.
+	Postgresql *AzureDataFactoryDatasetPostgresql `protobuf:"bytes,19,opt,name=postgresql,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_Snowflake struct {
+	// A Snowflake table.
+	Snowflake *AzureDataFactoryDatasetSnowflake `protobuf:"bytes,20,opt,name=snowflake,proto3,oneof"`
+}
+
+type AzureDataFactoryDatasetSpec_SqlServerTable struct {
+	// A SQL Server table.
+	SqlServerTable *AzureDataFactoryDatasetSqlServerTable `protobuf:"bytes,21,opt,name=sql_server_table,json=sqlServerTable,proto3,oneof"`
+}
+
+func (*AzureDataFactoryDatasetSpec_AzureBlob) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_AzureSqlTable) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Binary) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_CosmosdbSqlapi) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Custom) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_DelimitedText) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Http) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Json) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Mysql) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Parquet) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Postgresql) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_Snowflake) isAzureDataFactoryDatasetSpec_Variant() {}
+
+func (*AzureDataFactoryDatasetSpec_SqlServerTable) isAzureDataFactoryDatasetSpec_Variant() {}
 
 // One declared column of the dataset's structure: name, an optional
 // Data Factory interim type, and an optional description. Declaring
@@ -1952,7 +2070,7 @@ var File_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto protoreflect.
 
 const file_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azuredatafactorydataset/v1alpha1/spec.proto\x122dev.planton.azure.azuredatafactorydataset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x87\x1c\n" +
+	"9catalog/azure/azuredatafactorydataset/v1alpha1/spec.proto\x122dev.planton.azure.azuredatafactorydataset.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x86\x18\n" +
 	"\x1bAzureDataFactoryDatasetSpec\x12\x89\x01\n" +
 	"\x0fdata_factory_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x11\x92\xd4a\x1estatus.outputs.data_factory_idR\rdataFactoryId\x12\xbc\x01\n" +
 	"\x04name\x18\x02 \x01(\tB\xa7\x01\xbaH\xa3\x01\xba\x01\x9c\x01\n" +
@@ -1964,33 +2082,33 @@ const file_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto_rawDesc = "
 	"parameters\x18\x06 \x03(\v2_.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetSpec.ParametersEntryR\n" +
 	"parameters\x12\x9e\x01\n" +
 	"\x15additional_properties\x18\a \x03(\v2i.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetSpec.AdditionalPropertiesEntryR\x14additionalProperties\x12\x16\n" +
-	"\x06folder\x18\b \x01(\tR\x06folder\x12s\n" +
+	"\x06folder\x18\b \x01(\tR\x06folder\x12u\n" +
 	"\n" +
-	"azure_blob\x18\t \x01(\v2T.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetAzureBlobR\tazureBlob\x12\x80\x01\n" +
+	"azure_blob\x18\t \x01(\v2T.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetAzureBlobH\x00R\tazureBlob\x12\x82\x01\n" +
 	"\x0fazure_sql_table\x18\n" +
-	" \x01(\v2X.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetAzureSqlTableR\razureSqlTable\x12i\n" +
-	"\x06binary\x18\v \x01(\v2Q.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetBinaryR\x06binary\x12\x82\x01\n" +
-	"\x0fcosmosdb_sqlapi\x18\f \x01(\v2Y.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetCosmosdbSqlapiR\x0ecosmosdbSqlapi\x12i\n" +
-	"\x06custom\x18\r \x01(\v2Q.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetCustomR\x06custom\x12\x7f\n" +
-	"\x0edelimited_text\x18\x0e \x01(\v2X.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetDelimitedTextR\rdelimitedText\x12c\n" +
-	"\x04http\x18\x0f \x01(\v2O.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetHttpR\x04http\x12c\n" +
-	"\x04json\x18\x10 \x01(\v2O.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetJsonR\x04json\x12f\n" +
-	"\x05mysql\x18\x11 \x01(\v2P.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetMysqlR\x05mysql\x12l\n" +
-	"\aparquet\x18\x12 \x01(\v2R.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetParquetR\aparquet\x12u\n" +
+	" \x01(\v2X.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetAzureSqlTableH\x00R\razureSqlTable\x12k\n" +
+	"\x06binary\x18\v \x01(\v2Q.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetBinaryH\x00R\x06binary\x12\x84\x01\n" +
+	"\x0fcosmosdb_sqlapi\x18\f \x01(\v2Y.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetCosmosdbSqlapiH\x00R\x0ecosmosdbSqlapi\x12k\n" +
+	"\x06custom\x18\r \x01(\v2Q.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetCustomH\x00R\x06custom\x12\x81\x01\n" +
+	"\x0edelimited_text\x18\x0e \x01(\v2X.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetDelimitedTextH\x00R\rdelimitedText\x12e\n" +
+	"\x04http\x18\x0f \x01(\v2O.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetHttpH\x00R\x04http\x12e\n" +
+	"\x04json\x18\x10 \x01(\v2O.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetJsonH\x00R\x04json\x12h\n" +
+	"\x05mysql\x18\x11 \x01(\v2P.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetMysqlH\x00R\x05mysql\x12n\n" +
+	"\aparquet\x18\x12 \x01(\v2R.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetParquetH\x00R\aparquet\x12w\n" +
 	"\n" +
-	"postgresql\x18\x13 \x01(\v2U.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetPostgresqlR\n" +
-	"postgresql\x12r\n" +
-	"\tsnowflake\x18\x14 \x01(\v2T.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetSnowflakeR\tsnowflake\x12\x83\x01\n" +
-	"\x10sql_server_table\x18\x15 \x01(\v2Y.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetSqlServerTableR\x0esqlServerTable\x1a=\n" +
+	"postgresql\x18\x13 \x01(\v2U.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetPostgresqlH\x00R\n" +
+	"postgresql\x12t\n" +
+	"\tsnowflake\x18\x14 \x01(\v2T.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetSnowflakeH\x00R\tsnowflake\x12\x85\x01\n" +
+	"\x10sql_server_table\x18\x15 \x01(\v2Y.dev.planton.azure.azuredatafactorydataset.v1alpha1.AzureDataFactoryDatasetSqlServerTableH\x00R\x0esqlServerTable\x1a=\n" +
 	"\x0fParametersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aG\n" +
 	"\x19AdditionalPropertiesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x91\b\xbaH\x8d\b\x1a\xab\x04\n" +
-	".azure_data_factory_dataset_exactly_one_variant\x12PSet exactly one dataset variant block -- the variant determines the dataset type\x1a\xa6\x03(has(this.azure_blob) ? 1 : 0) + (has(this.azure_sql_table) ? 1 : 0) + (has(this.binary) ? 1 : 0) + (has(this.cosmosdb_sqlapi) ? 1 : 0) + (has(this.custom) ? 1 : 0) + (has(this.delimited_text) ? 1 : 0) + (has(this.http) ? 1 : 0) + (has(this.json) ? 1 : 0) + (has(this.mysql) ? 1 : 0) + (has(this.parquet) ? 1 : 0) + (has(this.postgresql) ? 1 : 0) + (has(this.snowflake) ? 1 : 0) + (has(this.sql_server_table) ? 1 : 0) == 1\x1a\xde\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xe3\x03\xbaH\xdf\x03\x1a\xde\x01\n" +
 	"7azure_data_factory_dataset_linked_service_name_required\x12Slinked_service_name is required for every variant except azure_sql_table and custom\x1aNhas(this.linked_service_name) || has(this.azure_sql_table) || has(this.custom)\x1a\xfb\x01\n" +
-	"8azure_data_factory_dataset_linked_service_name_conflicts\x12jazure_sql_table and custom carry their own linked service reference -- do not also set linked_service_name\x1aS!(has(this.linked_service_name) && (has(this.azure_sql_table) || has(this.custom)))\"\x80\x02\n" +
+	"8azure_data_factory_dataset_linked_service_name_conflicts\x12jazure_sql_table and custom carry their own linked service reference -- do not also set linked_service_name\x1aS!(has(this.linked_service_name) && (has(this.azure_sql_table) || has(this.custom)))B\x10\n" +
+	"\avariant\x12\x05\xbaH\x02\b\x01\"\x80\x02\n" +
 	"#AzureDataFactoryDatasetSchemaColumn\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x9a\x01\n" +
 	"\x04type\x18\x02 \x01(\tB\x85\x01\xbaH\x81\x01r\x7fR\x00R\x04ByteR\x06Byte[]R\aBooleanR\x04DateR\bDateTimeR\x0eDateTimeOffsetR\aDecimalR\x06DoubleR\x04GuidR\x05Int16R\x05Int32R\x05Int64R\x06SingleR\x06StringR\bTimeSpanR\x04type\x12 \n" +
@@ -2224,6 +2342,21 @@ func init() { file_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto_ini
 func file_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto_init() {
 	if File_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto != nil {
 		return
+	}
+	file_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{
+		(*AzureDataFactoryDatasetSpec_AzureBlob)(nil),
+		(*AzureDataFactoryDatasetSpec_AzureSqlTable)(nil),
+		(*AzureDataFactoryDatasetSpec_Binary)(nil),
+		(*AzureDataFactoryDatasetSpec_CosmosdbSqlapi)(nil),
+		(*AzureDataFactoryDatasetSpec_Custom)(nil),
+		(*AzureDataFactoryDatasetSpec_DelimitedText)(nil),
+		(*AzureDataFactoryDatasetSpec_Http)(nil),
+		(*AzureDataFactoryDatasetSpec_Json)(nil),
+		(*AzureDataFactoryDatasetSpec_Mysql)(nil),
+		(*AzureDataFactoryDatasetSpec_Parquet)(nil),
+		(*AzureDataFactoryDatasetSpec_Postgresql)(nil),
+		(*AzureDataFactoryDatasetSpec_Snowflake)(nil),
+		(*AzureDataFactoryDatasetSpec_SqlServerTable)(nil),
 	}
 	file_catalog_azure_azuredatafactorydataset_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
 	type x struct{}

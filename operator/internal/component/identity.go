@@ -202,6 +202,23 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 		cfg.ImageTag = planton.Spec.Identity.Image.Tag
 	}
 
+	// A realm restored from an archive carries its source's master admin
+	// password; Keycloak's recovery command repairs that only while no
+	// server node runs, so the recovery admin is created BEFORE the
+	// Deployment exists and the real admin is reset once the server answers
+	// (identity_recovery.go). Exactly once per platform lifetime.
+	recovering, err := id.identityRecoveryPending(ctx, c, planton)
+	if err != nil {
+		return Result{}, err
+	}
+	if recovering {
+		if res, err := id.recoverAdminBeforeServer(ctx, c, planton, cfg, ownerRef); err != nil {
+			return Result{}, err
+		} else if res != nil {
+			return *res, nil
+		}
+	}
+
 	if err := id.ApplyTypedObject(ctx, c, resources.IdentityDeployment(cfg)); err != nil {
 		return Result{}, fmt.Errorf("applying Identity Deployment: %w", err)
 	}
@@ -231,6 +248,13 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 	// as the OpenFGA bootstrap.
 	serverRoot := resources.IdentityInternalServerRootURL(planton.Name, planton.Namespace)
 	adminPassword := bootstrapAdmin[resources.IdentityBootstrapAdminPasswordKey]
+	if recovering {
+		if res, err := id.recoverAdminAfterServer(ctx, c, planton, serverRoot, adminPassword, &http.Client{Timeout: httpClientTimeout}); err != nil {
+			return Result{}, err
+		} else if res != nil {
+			return *res, nil
+		}
+	}
 	report, err := keycloak.Converge(ctx, keycloak.ConvergeInput{
 		OwnedRealmInput: keycloak.OwnedRealmInput{
 			Realm:               identityRealm(planton),
@@ -288,9 +312,23 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 	log.Info("Identity server ready")
 
 	if adminEmail == "" {
+		if restoredFrom := identityRestoredFrom(planton); restoredFrom != "" {
+			return Result{Ready: true, Message: identityRestoredRealmReadyMessage(planton.Name, restoredFrom, publicURL)}, nil
+		}
 		return Result{Ready: true, Message: identitySetupModeReadyMessage(planton.Name, planton.Namespace, publicURL)}, nil
 	}
 	return Result{Ready: true, Message: identityDeclaredAdminReadyMessage(planton.Name, publicURL)}, nil
+}
+
+// identityRestoredFrom is the archive server this platform's database was
+// restored from, or empty for a database created empty -- the fact the
+// database component records, read here because a restored realm already has
+// its people and no setup journey applies to it.
+func identityRestoredFrom(planton *v1.PlantonPlatform) string {
+	if planton.Status.Backup == nil {
+		return ""
+	}
+	return planton.Status.Backup.RestoredFrom
 }
 
 // ensureSeededAdminCredential ensures (and reads back) the seeded admin
@@ -358,6 +396,22 @@ func identitySetupModeReadyMessage(crName, namespace, publicURL string) string {
 			"manage users in the identity server's admin console at %s%s (credentials in Secret %s)",
 		resources.IdentitySetupCodeHint(crName, namespace),
 		publicURL, resources.IdentityPathPrefix,
+		resources.IdentityBootstrapAdminSecretName(crName))
+}
+
+// identityRestoredRealmReadyMessage covers a realm that came back from an
+// archive with no admin declared: its people and their passwords are the
+// source's, so there is no first visitor and no setup code to read -- saying
+// otherwise sends the person who restored the platform looking for a setup
+// page that will never appear. The recovery path is the same as the other
+// arms': the master admin this install re-established, in the bootstrap
+// Secret.
+func identityRestoredRealmReadyMessage(crName, restoredFrom, publicURL string) string {
+	return fmt.Sprintf(
+		"Identity server ready on the realm restored from server %s; the people and passwords are the source's, "+
+			"so existing users sign in as before and no setup code applies. To manage users, the identity server's admin "+
+			"console is at %s%s (the master admin was re-established for this install; credentials in Secret %s)",
+		restoredFrom, publicURL, resources.IdentityPathPrefix,
 		resources.IdentityBootstrapAdminSecretName(crName))
 }
 

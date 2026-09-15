@@ -73,12 +73,14 @@ Two rules the set stands on:
   own WAL to a new path; Barman refuses to archive into a path that already
   holds another cluster's WAL, and a second writer would corrupt the archive.
 
-The validated manifests for this set are the `gcp-gke` lane's own:
-`e2e/fixture-gke-source.yaml` (#5), `e2e/scenarios/gke-gcs-recovery.yaml`
-(#6), the plugin kind's install profile (#4, declared on the scenario as a
-prerequisite beside the resident operator), and the GCP side under
-`../aa_e2e/realcluster/gcp-gke/manifests/` (#1–#3). The
-`04-gke-ha-gcs-backups` preset is #5 as a starting point.
+Where each piece lives, validated: rows 1–3 are the
+[GKE keyless store set](../../_patterns/stateful-kind-disaster-recovery.md#the-gke-keyless-store-set-complete)
+in the disaster-recovery pattern (the binding's `ksaName` is the database's
+own name — CloudNativePG names the instance ServiceAccount after the
+Cluster); row 4 is the plugin kind at its defaults; row 5 is the
+`04-gke-ha-gcs-backups` preset (named by slug — presets ship in the
+release's `presets.zip` and in the catalog repository, not in the skill's
+pack); row 6's whole delta from that preset is its table row above.
 
 ## Disaster recovery on GKE with Cloudflare R2: the resource set
 
@@ -122,10 +124,11 @@ forever) stand unchanged. Three R2-specific facts join them:
   (`aws s3 rm --recursive`, against `s3_endpoint` with the token's pair)
   before destroying it.
 
-The validated manifests for this set are the `gcp-gke` lane's own:
-`e2e/fixture-gke-r2-source.yaml` (#4), `e2e/scenarios/gke-r2-recovery.yaml`
-(#5), and the Cloudflare side under `../aa_e2e/realcluster/gcp-gke/manifests/`
-(#1–#2). The `05-gke-ha-r2-backups` preset is #4 as a starting point.
+Where each piece lives, validated: rows 1 and 2 are the R2 store pair
+embedded whole in the
+[disaster-recovery pattern](../../_patterns/stateful-kind-disaster-recovery.md#the-composition);
+row 4 is the `05-gke-ha-r2-backups` preset (by slug); row 5's whole delta
+from that preset is its table row above.
 
 ## On the diagram
 

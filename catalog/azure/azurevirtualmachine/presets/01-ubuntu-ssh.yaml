@@ -26,4 +26,5 @@ spec:
     version: latest
   availability:
     zone: "1"
-  bootDiagnostics: {}  # managed-storage boot diagnostics -- the debugging lifeline
+  bootDiagnostics:  # managed-storage boot diagnostics -- the debugging lifeline
+    enabled: true

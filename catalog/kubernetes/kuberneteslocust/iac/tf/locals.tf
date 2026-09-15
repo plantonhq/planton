@@ -101,8 +101,8 @@ locals {
   # which this module refuses to render. Non-numeric tags (e.g.
   # "latest") cannot prove the floor, so they fail too (the
   # helm_release precondition).
-  image_tag              = coalesce(try(var.spec.image.tag, ""), local.default_image_tag)
-  image_tag_version      = try(regex("^v?(\\d+)\\.(\\d+)", local.image_tag), null)
+  image_tag               = coalesce(try(var.spec.image.tag, ""), local.default_image_tag)
+  image_tag_version       = try(regex("^v?(\\d+)\\.(\\d+)", local.image_tag), null)
   image_tag_login_capable = local.image_tag_version != null ? (tonumber(local.image_tag_version[0]) > 2 || (tonumber(local.image_tag_version[0]) == 2 && tonumber(local.image_tag_version[1]) >= 21)) : false
 
   # The module-owned login backend delivered next to the user's
@@ -115,6 +115,7 @@ locals {
   # pre-2.21 code path that renders credentials as pod arguments —
   # never engaged by this module. PARITY: byte-identical with the
   # Pulumi module's webauth.go.
+  # parity: webauth.go webAuthBackendPy
   web_auth_backend_py = <<EOT
 """Platform-managed login for the Locust web UI.
 

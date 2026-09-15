@@ -127,6 +127,7 @@ spec:
 | `spec.featureStore.computerSparkRuntimeVersion` | `string` |  |  |  |
 | `spec.featureStore.offlineConnectionName` | `string` |  |  |  |
 | `spec.featureStore.onlineConnectionName` | `string` |  |  |  |
+| `spec.featureStore.enabled` | `bool` |  | `true` |  |
 | `spec.primaryUserAssignedIdentity` | `string \| valueFrom` |  |  | AzureUserAssignedIdentity (`status.outputs.identity_id`) |
 | `spec.containerRegistryId` | `string \| valueFrom` |  |  | AzureContainerRegistry (`status.outputs.container_registry_id`) |
 | `spec.publicNetworkAccessEnabled` | `bool` |  | `true` |  |
@@ -319,6 +320,16 @@ store (the historical feature data).
 
 The name of the workspace connection pointing at the ONLINE
 store (the low-latency serving data).
+
+### spec.featureStore.enabled
+
+`bool` · optional (explicit presence)
+
+Whether the feature store is on. Unset means on: declaring the block has
+always meant a feature store, and this switch lets a manifest say the
+opposite out loud (a FEATURE_STORE workspace still requires it on).
+
+- default: `true`
 
 ### spec.primaryUserAssignedIdentity
 
@@ -688,8 +699,8 @@ The allowed destination ports: a port ("443"), a range
 
 ## Validation Rules
 
-- `feature_store_block_only_for_feature_store_kind`: feature_store can only be set when kind is FEATURE_STORE
-- `feature_store_kind_requires_block`: kind FEATURE_STORE requires the feature_store block
+- `feature_store_block_only_for_feature_store_kind`: feature_store can only be on when kind is FEATURE_STORE -- set enabled: false or drop the block
+- `feature_store_kind_requires_block`: kind FEATURE_STORE requires the feature_store block with its switch on
 - `service_side_encryption_requires_encryption`: service_side_encryption_enabled requires the encryption block
 - `serverless_no_public_ip_needs_subnet_or_public_workspace`: serverless_compute with public_ip_enabled false requires a subnet_id when public_network_access_enabled is false
 - `outbound_rule_names_unique_across_types`: outbound rule names must be unique across the fqdn, private-endpoint and service-tag lists together -- they share one ARM collection

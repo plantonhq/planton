@@ -125,8 +125,11 @@ type GcpBackendServiceSpec struct {
 	AffinityCookieTtlSec int32 `protobuf:"varint,12,opt,name=affinity_cookie_ttl_sec,json=affinityCookieTtlSec,proto3" json:"affinity_cookie_ttl_sec,omitempty"`
 	// The cookie GCP uses for STRONG_COOKIE_AFFINITY — stronger stickiness
 	// than GENERATED_COOKIE because the cookie encodes the exact backend
-	// endpoint. Required with (and only valid with) session_affinity
-	// STRONG_COOKIE_AFFINITY.
+	// endpoint. Only valid with session_affinity STRONG_COOKIE_AFFINITY, and
+	// optional there: choosing that mode is the whole statement, and the
+	// modules send GCP the cookie configuration it requires (GCP's generated
+	// cookie name, whole-site path, session lifetime) when this block is
+	// absent. Declare it only to customize the cookie.
 	StrongSessionAffinityCookie *GcpBackendServiceStrongSessionAffinityCookie `protobuf:"bytes,13,opt,name=strong_session_affinity_cookie,json=strongSessionAffinityCookie,proto3" json:"strong_session_affinity_cookie,omitempty"`
 	// The load balancing algorithm used within each backend group once the
 	// group is chosen (GCP default ROUND_ROBIN). LEAST_REQUEST and the
@@ -2487,7 +2490,7 @@ var File_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpbackendservice/v1alpha1/spec.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9bJ\n" +
+	"1catalog/gcp/gcpbackendservice/v1alpha1/spec.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa5J\n" +
 	"\x15GcpBackendServiceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xae\x02\n" +
@@ -2548,13 +2551,13 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xa0\x1a\xbaH\x9c\x1a\x1a\x93\x02\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xaa\x1a\xbaH\xa6\x1a\x1a\x93\x02\n" +
 	"\x1ccdn_requires_external_scheme\x12\x8e\x01Cloud CDN can only be enabled on external backend services (scheme EXTERNAL or EXTERNAL_MANAGED) — it does not front internal load balancers\x1ab!this.enable_cdn || !(this.load_balancing_scheme in ['INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED'])\x1a\xf5\x01\n" +
 	"\x17circuit_breakers_scheme\x12\x83\x01circuit_breakers only applies to Traffic Director backend services — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove it\x1aT!has(this.circuit_breakers) || this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED'\x1a\xfe\x01\n" +
 	"\x1amax_stream_duration_scheme\x12\x86\x01max_stream_duration only applies to Traffic Director backend services — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove it\x1aW!has(this.max_stream_duration) || this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED'\x1a\xec\x01\n" +
 	"\x18outlier_detection_scheme\x12coutlier_detection only applies with load_balancing_scheme INTERNAL_SELF_MANAGED or EXTERNAL_MANAGED\x1ak!has(this.outlier_detection) || this.load_balancing_scheme in ['INTERNAL_SELF_MANAGED', 'EXTERNAL_MANAGED']\x1a\x9a\x02\n" +
-	"\x19consistent_hash_coherence\x12oconsistent_hash requires load_balancing_scheme INTERNAL_SELF_MANAGED and locality_lb_policy MAGLEV or RING_HASH\x1a\x8b\x01!has(this.consistent_hash) || (this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED' && this.locality_lb_policy in ['MAGLEV', 'RING_HASH'])\x1a\x88\x02\n" +
-	" strong_cookie_affinity_coherence\x12\x82\x01strong_session_affinity_cookie is required with session_affinity STRONG_COOKIE_AFFINITY and not valid with any other affinity mode\x1a_has(this.strong_session_affinity_cookie) == (this.session_affinity == 'STRONG_COOKIE_AFFINITY')\x1a\xce\x01\n" +
+	"\x19consistent_hash_coherence\x12oconsistent_hash requires load_balancing_scheme INTERNAL_SELF_MANAGED and locality_lb_policy MAGLEV or RING_HASH\x1a\x8b\x01!has(this.consistent_hash) || (this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED' && this.locality_lb_policy in ['MAGLEV', 'RING_HASH'])\x1a\x92\x02\n" +
+	" strong_cookie_affinity_coherence\x12\x8d\x01strong_session_affinity_cookie customizes the cookie of session_affinity STRONG_COOKIE_AFFINITY and is not valid with any other affinity mode\x1a^!has(this.strong_session_affinity_cookie) || this.session_affinity == 'STRONG_COOKIE_AFFINITY'\x1a\xce\x01\n" +
 	"-affinity_cookie_ttl_requires_generated_cookie\x12Kaffinity_cookie_ttl_sec only applies with session_affinity GENERATED_COOKIE\x1aPthis.affinity_cookie_ttl_sec == 0 || this.session_affinity == 'GENERATED_COOKIE'\x1a\xb9\x01\n" +
 	"\x1cudp_forbids_session_affinity\x127session affinity is not applicable when protocol is UDP\x1a`this.protocol != 'UDP' || (!has(this.session_affinity) || this.session_affinity in ['', 'NONE'])\x1a\xd4\x01\n" +
 	"\x15tls_settings_protocol\x12ttls_settings only applies when protocol is SSL, HTTPS, or HTTP2 — the load balancer must speak TLS to the backends\x1aE!has(this.tls_settings) || this.protocol in ['SSL', 'HTTPS', 'HTTP2']\x1a\xc7\x01\n" +

@@ -656,11 +656,21 @@ message GcpComputeInstanceNetworkInterface {
   }];
 }
 
-// GcpComputeInstanceAccessConfig grants the interface an external IPv4.
+// GcpComputeInstanceAccessConfig grants the interface an external IPv4. A
+// config says which address it grants: a static `nat_ip`, or `ephemeral:
+// true` for an address GCP assigns; a config that names neither is refused,
+// so "give this interface an ephemeral external IP" is always a written
+// choice and never an accident of an empty row.
 message GcpComputeInstanceAccessConfig {
+  // Exactly one of a static nat_ip or ephemeral: true.
+  option (buf.validate.message).cel = {
+    id: "access_config_says_which_address"
+    message: "an access config grants either a static nat_ip or an ephemeral address — set nat_ip, or set ephemeral: true"
+    expression: "has(this.nat_ip) != (has(this.ephemeral) && this.ephemeral)"
+  };
+
   // Static external IP, as a literal or a reference to a reserved
-  // EXTERNAL GcpAddress. When omitted, GCP assigns an ephemeral external
-  // IP.
+  // EXTERNAL GcpAddress. Alternative to ephemeral: true.
   dev.planton.shared.foreignkey.v1.StringValueOrRef nat_ip = 1 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpAddress,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.address"
@@ -680,6 +690,11 @@ message GcpComputeInstanceAccessConfig {
 
   // Domain name for the public PTR (reverse DNS) record of this IP.
   string public_ptr_domain_name = 3;
+
+  // Let GCP assign an ephemeral external IPv4 to this interface. Alternative
+  // to a static nat_ip. The manifest's word for it -- never reaches GCP: an
+  // access config without a nat_ip IS the ephemeral request on the wire.
+  optional bool ephemeral = 4 [(dev.planton.shared.options.manifest_only) = true];
 }
 
 // GcpComputeInstanceIpv6AccessConfig grants the interface external IPv6

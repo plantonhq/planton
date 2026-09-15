@@ -137,9 +137,10 @@ message GcpIdentityPlatformConfigSignIn {
 
 // Email/password sign-in settings.
 message GcpIdentityPlatformConfigSignInEmail {
-  // Whether email sign-in is enabled. Sent explicitly, so setting this
-  // arm with enabled=false actively disables the method.
-  bool enabled = 1;
+  // Whether email sign-in is enabled. Required inside the arm: declaring
+  // the arm takes the method under management, and the switch says which
+  // way (false actively disables it).
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 
   // Whether a password is required for email accounts. When false,
   // users can sign in via email link alone.
@@ -148,9 +149,10 @@ message GcpIdentityPlatformConfigSignInEmail {
 
 // Phone-number sign-in settings.
 message GcpIdentityPlatformConfigSignInPhone {
-  // Whether phone sign-in is enabled. Sent explicitly, so setting this
-  // arm with enabled=false actively disables the method.
-  bool enabled = 1;
+  // Whether phone sign-in is enabled. Required inside the arm: declaring
+  // the arm takes the method under management, and the switch says which
+  // way (false actively disables it).
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 
   // Test phone numbers mapped to fixed verification codes (e.g.
   // "+15555550100" -> "123456") — lets CI and reviewers exercise the
@@ -160,9 +162,10 @@ message GcpIdentityPlatformConfigSignInPhone {
 
 // Anonymous sign-in settings.
 message GcpIdentityPlatformConfigSignInAnonymous {
-  // Whether anonymous (guest) sign-in is enabled. Sent explicitly, so
-  // setting this arm with enabled=false actively disables the method.
-  bool enabled = 1;
+  // Whether anonymous (guest) sign-in is enabled. Required inside the arm:
+  // declaring the arm takes the method under management, and the switch
+  // says which way (false actively disables it).
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 }
 
 // Multi-factor authentication policy.

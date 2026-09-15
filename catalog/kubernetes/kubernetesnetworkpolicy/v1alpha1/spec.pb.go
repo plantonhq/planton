@@ -9,6 +9,7 @@ package kubernetesnetworkpolicyv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -182,8 +183,8 @@ type KubernetesNetworkPolicySpec struct {
 	// Annotations to apply to the NetworkPolicy object.
 	Annotations map[string]string `protobuf:"bytes,4,rep,name=annotations,proto3" json:"annotations,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// *
-	// Selects the pods this policy applies to, within the policy's namespace. An
-	// EMPTY selector (no match_labels, no match_expressions) selects ALL pods in
+	// Selects the pods this policy applies to, within the policy's namespace.
+	// Omitting the selector, or writing `match_all: true`, selects ALL pods in
 	// the namespace — the default-deny building block. To target one Planton
 	// workload, match on its `app` label: `match_labels: {app: <workload-name>}`.
 	PodSelector *KubernetesNetworkPolicyLabelSelector `protobuf:"bytes,5,opt,name=pod_selector,json=podSelector,proto3" json:"pod_selector,omitempty"`
@@ -431,14 +432,14 @@ func (x *KubernetesNetworkPolicyEgressRule) GetPorts() []*KubernetesNetworkPolic
 type KubernetesNetworkPolicyPeer struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Selects pods by label. Present-but-empty selects ALL pods (in the policy's
+	// Selects pods by label. `match_all: true` selects ALL pods (in the policy's
 	// namespace, or in the namespaces selected by namespace_selector when both
 	// are set).
 	PodSelector *KubernetesNetworkPolicyLabelSelector `protobuf:"bytes,1,opt,name=pod_selector,json=podSelector,proto3" json:"pod_selector,omitempty"`
 	// *
 	// Selects namespaces by label (e.g. the automatic
 	// `kubernetes.io/metadata.name: <name>` label every namespace carries).
-	// Present-but-empty selects ALL namespaces — the cluster-wide-allow building
+	// `match_all: true` selects ALL namespaces — the cluster-wide-allow building
 	// block.
 	NamespaceSelector *KubernetesNetworkPolicyLabelSelector `protobuf:"bytes,2,opt,name=namespace_selector,json=namespaceSelector,proto3" json:"namespace_selector,omitempty"`
 	// *
@@ -641,7 +642,11 @@ func (x *KubernetesNetworkPolicyPort) GetEndPort() int32 {
 // *
 // **KubernetesNetworkPolicyLabelSelector** is a standard Kubernetes label
 // selector: exact-match labels and/or set-based expressions. Both parts must
-// match (they AND together); an empty selector matches everything.
+// match (they AND together). A selector says what it selects: labels and
+// expressions narrow the set, and `match_all: true` selects everything (the
+// empty selector on the Kubernetes wire); a selector that names neither is
+// refused, so "select everything" is always a written choice and never an
+// accident of an empty block.
 type KubernetesNetworkPolicyLabelSelector struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
@@ -652,8 +657,15 @@ type KubernetesNetworkPolicyLabelSelector struct {
 	// Set-based label requirements, for selections exact-match cannot express
 	// (key existence, value-in-set).
 	MatchExpressions []*KubernetesNetworkPolicyLabelSelectorRequirement `protobuf:"bytes,2,rep,name=match_expressions,json=matchExpressions,proto3" json:"match_expressions,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// *
+	// Select everything: every pod in scope for a pod selector, every namespace
+	// for a namespace selector. The manifest's word for the empty selector on
+	// the Kubernetes wire -- it never reaches the cluster; the selector it
+	// describes is emitted with no criteria. Cannot be combined with
+	// match_labels or match_expressions.
+	MatchAll      *bool `protobuf:"varint,3,opt,name=match_all,json=matchAll,proto3,oneof" json:"match_all,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesNetworkPolicyLabelSelector) Reset() {
@@ -698,6 +710,13 @@ func (x *KubernetesNetworkPolicyLabelSelector) GetMatchExpressions() []*Kubernet
 		return x.MatchExpressions
 	}
 	return nil
+}
+
+func (x *KubernetesNetworkPolicyLabelSelector) GetMatchAll() bool {
+	if x != nil && x.MatchAll != nil {
+		return *x.MatchAll
+	}
+	return false
 }
 
 // *
@@ -776,7 +795,7 @@ var File_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto protoref
 
 const file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesnetworkpolicy/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf7\x0f\n" +
+	">catalog/kubernetes/kubernetesnetworkpolicy/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf7\x0f\n" +
 	"\x1bKubernetesNetworkPolicySpec\x12d\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x12\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12\xe5\x01\n" +
 	"\x04name\x18\x02 \x01(\tB\xd0\x01\xbaH\xcc\x01\xba\x01\xc1\x01\n" +
@@ -833,13 +852,18 @@ const file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_rawDes
 	"\x12port.numeric_range\x12+a numeric port must be in the range 1-65535\x1aethis.port == '' || !this.port.matches('^[0-9]+$') || (int(this.port) >= 1 && int(this.port) <= 65535)\x1a\xae\x01\n" +
 	"\x1eend_port.requires_numeric_port\x12Wend_port requires port to be set to a NUMERIC port (a named port cannot anchor a range)\x1a3this.end_port == 0 || this.port.matches('^[0-9]+$')\x1a\x9c\x01\n" +
 	"\x11end_port.gte_port\x12.end_port must be greater than or equal to port\x1aWthis.end_port == 0 || !this.port.matches('^[0-9]+$') || this.end_port >= int(this.port)B\v\n" +
-	"\t_protocol\"\x92\x03\n" +
+	"\t_protocol\"\xf3\a\n" +
 	"$KubernetesNetworkPolicyLabelSelector\x12\x91\x01\n" +
 	"\fmatch_labels\x18\x01 \x03(\v2n.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelector.MatchLabelsEntryR\vmatchLabels\x12\x95\x01\n" +
-	"\x11match_expressions\x18\x02 \x03(\v2h.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelectorRequirementR\x10matchExpressions\x1a>\n" +
+	"\x11match_expressions\x18\x02 \x03(\v2h.dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyLabelSelectorRequirementR\x10matchExpressions\x12&\n" +
+	"\tmatch_all\x18\x03 \x01(\bB\x04Ȧ\x1d\x01H\x00R\bmatchAll\x88\x01\x01\x1a>\n" +
 	"\x10MatchLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xc6\x03\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xa8\x04\xbaH\xa4\x04\x1a\x86\x02\n" +
+	"\x1bmatch_all_excludes_criteria\x12tmatch_all: true selects everything — drop match_labels and match_expressions, or drop match_all to select by label\x1aq!(has(this.match_all) && this.match_all) || (this.match_labels.size() == 0 && this.match_expressions.size() == 0)\x1a\x98\x02\n" +
+	"\x1dselector_says_what_it_selects\x12\x88\x01a selector must say what it selects — set match_all: true to select every pod (or namespace), or name match_labels / match_expressions\x1al(has(this.match_all) && this.match_all) || this.match_labels.size() > 0 || this.match_expressions.size() > 0B\f\n" +
+	"\n" +
+	"_match_all\"\xc6\x03\n" +
 	"/KubernetesNetworkPolicyLabelSelectorRequirement\x12\x19\n" +
 	"\x03key\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03key\x12B\n" +
 	"\boperator\x18\x02 \x01(\tB&\xbaH#r!R\x02InR\x05NotInR\x06ExistsR\fDoesNotExistR\boperator\x12\x16\n" +
@@ -908,6 +932,7 @@ func file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_init() 
 		return
 	}
 	file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesnetworkpolicy_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

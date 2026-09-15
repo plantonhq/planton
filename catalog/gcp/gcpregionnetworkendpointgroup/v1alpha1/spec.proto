@@ -104,18 +104,21 @@ message GcpRegionNetworkEndpointGroupSpec {
   // network_endpoint_type is PRIVATE_SERVICE_CONNECT.
   GcpRegionNetworkEndpointGroupPscData psc_data = 9;
 
-  // Front a Cloud Run service. One of the three serverless targets — set
-  // exactly one when network_endpoint_type is SERVERLESS.
-  GcpRegionNetworkEndpointGroupCloudRun cloud_run = 10;
+  // The serverless target a SERVERLESS group fronts: exactly one of the arms
+  // below, and none for the other endpoint types. Choosing an arm is the whole
+  // statement for App Engine's default application, whose block carries
+  // nothing else.
+  oneof serverless_target {
+    // Front a Cloud Run service.
+    GcpRegionNetworkEndpointGroupCloudRun cloud_run = 10;
 
-  // Front a Cloud Functions (Gen 2) function. One of the three serverless
-  // targets — set exactly one when network_endpoint_type is SERVERLESS.
-  GcpRegionNetworkEndpointGroupCloudFunction cloud_function = 11;
+    // Front a Cloud Functions (Gen 2) function.
+    GcpRegionNetworkEndpointGroupCloudFunction cloud_function = 11;
 
-  // Front an App Engine service. One of the three serverless targets — set
-  // exactly one when network_endpoint_type is SERVERLESS. The block may be
-  // empty to route to the default App Engine application.
-  GcpRegionNetworkEndpointGroupAppEngine app_engine = 12;
+    // Front an App Engine service. The block may be empty to route to the
+    // default App Engine application.
+    GcpRegionNetworkEndpointGroupAppEngine app_engine = 12;
+  }
 
   // Deletion policy for the NEG — what happens when this resource is
   // destroyed:
@@ -135,7 +138,7 @@ message GcpRegionNetworkEndpointGroupSpec {
   option (buf.validate.message).cel = {
     id: "serverless_requires_exactly_one_block"
     message: "a SERVERLESS network endpoint group requires exactly one of cloud_run, cloud_function, or app_engine"
-    expression: "(has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') != 'SERVERLESS' || (has(this.cloud_run) ? 1 : 0) + (has(this.cloud_function) ? 1 : 0) + (has(this.app_engine) ? 1 : 0) == 1"
+    expression: "(has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') != 'SERVERLESS' || has(this.cloud_run) || has(this.cloud_function) || has(this.app_engine)"
   };
 
   option (buf.validate.message).cel = {

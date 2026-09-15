@@ -293,7 +293,8 @@ type GcpGkeClusterSpec struct {
 	// OIDC identity providers (beyond Google accounts).
 	EnableIdentityService bool `protobuf:"varint,47,opt,name=enable_identity_service,json=enableIdentityService,proto3" json:"enable_identity_service,omitempty"`
 	// Which cluster components ship logs to Cloud Logging. If omitted, GKE's
-	// default (system components + workloads) applies.
+	// default (system components + workloads) applies; declare it with
+	// `enabled: false` to turn the integration off.
 	Logging *GcpGkeClusterLogging `protobuf:"bytes,48,opt,name=logging,proto3" json:"logging,omitempty"`
 	// Which cluster components ship metrics to Cloud Monitoring, plus managed
 	// Prometheus. If omitted, GKE's defaults apply (system metrics + managed
@@ -3448,12 +3449,20 @@ func (x *GcpGkeClusterConfidentialNodes) GetConfidentialInstanceType() string {
 }
 
 // GcpGkeClusterLogging selects which components ship logs to Cloud Logging.
+// The block says which way it manages the integration: `enabled: true` (the
+// default) with the components that ship logs, or `enabled: false` to turn
+// Cloud Logging integration off out loud.
 type GcpGkeClusterLogging struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Components exposing logs: SYSTEM_COMPONENTS, WORKLOADS, APISERVER,
 	// CONTROLLER_MANAGER, SCHEDULER, KCP_CONNECTION, KCP_SSHD, KCP_HPA,
-	// KCP_VPA. An empty list disables Cloud Logging integration entirely.
-	Components    []string `protobuf:"bytes,1,rep,name=components,proto3" json:"components,omitempty"`
+	// KCP_VPA.
+	Components []string `protobuf:"bytes,1,rep,name=components,proto3" json:"components,omitempty"`
+	// Whether Cloud Logging integration is on. Unset means on: declaring the
+	// block with components has always meant shipping their logs, and
+	// `enabled: false` is the explicit OFF (GKE then receives an empty
+	// component list).
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3493,6 +3502,13 @@ func (x *GcpGkeClusterLogging) GetComponents() []string {
 		return x.Components
 	}
 	return nil
+}
+
+func (x *GcpGkeClusterLogging) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // GcpGkeClusterMonitoring selects metric sources and managed Prometheus.
@@ -4348,11 +4364,16 @@ const file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1eGcpGkeClusterConfidentialNodes\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\xda\x01\n" +
 	"\x1aconfidential_instance_type\x18\x02 \x01(\tB\x9b\x01\xbaH\x97\x01\xba\x01\x93\x01\n" +
-	" confidential_instance_type_valid\x12>confidential_instance_type must be empty, SEV, SEV_SNP, or TDX\x1a/this == '' || this in ['SEV', 'SEV_SNP', 'TDX']R\x18confidentialInstanceType\"\xbe\x01\n" +
+	" confidential_instance_type_valid\x12>confidential_instance_type must be empty, SEV, SEV_SNP, or TDX\x1a/this == '' || this in ['SEV', 'SEV_SNP', 'TDX']R\x18confidentialInstanceType\"\xb8\x05\n" +
 	"\x14GcpGkeClusterLogging\x12\xa5\x01\n" +
 	"\n" +
 	"components\x18\x01 \x03(\tB\x84\x01\xbaH\x80\x01\xd8\x01\x01\x92\x01z\x18\x01\"vrtR\x11SYSTEM_COMPONENTSR\tWORKLOADSR\tAPISERVERR\x12CONTROLLER_MANAGERR\tSCHEDULERR\x0eKCP_CONNECTIONR\bKCP_SSHDR\aKCP_HPAR\aKCP_VPAR\n" +
-	"components\"\x97\x05\n" +
+	"components\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01:\xc2\x03\xbaH\xbe\x03\x1a\xeb\x01\n" +
+	"\x1blogging_on_names_components\x12\x87\x01logging is on but names no components - list the components that ship logs, or set enabled: false to turn Cloud Logging integration off\x1aB(has(this.enabled) && !this.enabled) || this.components.size() > 0\x1a\xcd\x01\n" +
+	"\x1flogging_off_names_no_components\x12dlogging is off but still names components - drop components, or set enabled: true to ship their logs\x1aD!(has(this.enabled) && !this.enabled) || this.components.size() == 0B\n" +
+	"\n" +
+	"\b_enabled\"\x97\x05\n" +
 	"\x17GcpGkeClusterMonitoring\x12\xc9\x01\n" +
 	"\n" +
 	"components\x18\x01 \x03(\tB\xa8\x01\xbaH\xa4\x01\xd8\x01\x01\x92\x01\x9d\x01\x18\x01\"\x98\x01r\x95\x01R\x11SYSTEM_COMPONENTSR\tAPISERVERR\tSCHEDULERR\x12CONTROLLER_MANAGERR\aSTORAGER\x03HPAR\x03PODR\tDAEMONSETR\n" +
@@ -4555,6 +4576,7 @@ func file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_init() {
 	file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{}
 	file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_msgTypes[28].OneofWrappers = []any{}
 	file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_msgTypes[30].OneofWrappers = []any{}
+	file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_msgTypes[34].OneofWrappers = []any{}
 	file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_msgTypes[35].OneofWrappers = []any{}
 	file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_msgTypes[37].OneofWrappers = []any{}
 	file_catalog_gcp_gcpgkecluster_v1alpha1_spec_proto_msgTypes[38].OneofWrappers = []any{}

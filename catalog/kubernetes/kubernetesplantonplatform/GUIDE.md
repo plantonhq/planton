@@ -103,19 +103,79 @@ provision and, when a volume sticks, the CR's per-component status names
 the exact problem and fix — read `kubectl get plantonplatforms` status
 before reading pod logs.
 
+## Back up the platform's own database, and bring it back
+
+Without `database.postgresql.backup`, everything a platform knows —
+organizations, environments, connections, projects, pipeline history,
+members, the identity realm with its users — lives on one volume in one
+namespace, and `kubectl get plantonplatform` says so: `BACKUP` reads
+`NotConfigured`. Declaring the backup turns on continuous WAL archiving
+into an object store you own plus a base backup on a schedule (the first
+one the moment backups are declared — WAL alone restores nothing), with a
+retention the store enforces. The column then reads `Deploying`,
+`Healthy`, or `Failing` in the plugin's own words, and `status.backup`
+carries the archive's server name, the first recoverability point, and the
+last successful base backup. A failing backup never takes a working
+platform out of Ready.
+
+The declaration speaks the same vocabulary as the catalog's
+`KubernetesPostgres` kind, and on Cloudflare R2 it is composed entirely
+from other resources, so nothing is typed: a `CloudflareR2Bucket` (the
+archive; `jurisdiction` is fixed at creation and decides which host serves
+it), a `CloudflareAccountApiToken` scoped to that bucket with `Workers R2
+Storage Bucket Item Write` (the credential — R2 has no keyless posture from
+any cluster; the token kind exports itself as the S3 key pair
+`r2_access_key_id` / `r2_secret_access_key`), and the platform's `r2` arm
+referencing the bucket's `account_id` and `jurisdiction` outputs and the
+token's key pair. The module materializes the credential as a Secret
+(`<platform>-postgres-backup-creds`) BEFORE the platform resource, in the
+same apply, and names it to the operator — so the database is born
+archiving, and rotating the token is a new key pair the Secret follows on
+the next apply. The other arms mirror the operator's postures: S3 keyless
+(IRSA or an instance profile) or access keys, GCS keyless (Workload
+Identity — the identity needs `roles/storage.objectAdmin` AND
+`roles/storage.legacyBucketReader`) or a service-account key, Azure Blob
+keyless or a connection string. Keyless postures bind the database pods'
+cloud identity through `backup.service_account_annotations`.
+
+Bringing a platform back is a declaration too. Declare it again with
+`database.postgresql.recover_from`: the same store, and `server_name` set
+to what the source's `status.backup.serverName` said (or the folder name
+under the destination path in the bucket's own listing, when the source is
+gone). The database is bootstrapped from the archive — every record and
+the identity realm, so existing passwords sign in — and the restored
+platform archives its own backups under a NEW server name, so it never
+writes over the archive it restored from; keep `backup` declared beside
+`recover_from` and the two share one bucket and one path. Recovery is
+honored only when the database is first created: on a running platform
+the operator leaves the database alone and the status names the
+procedure. Nothing here ever destroys data to honor a declaration. The
+operator that honors all of this is chart `0.16.3` or newer: on earlier
+charts the backup engine could not finish installing and a restore could
+come back as an empty database in the archive's place, so pin the operator
+kind's `chart_version` at or above it wherever a backup is declared.
+
+The boundary, stated once: the secrets manager (OpenBAO) is outside this
+backup. It keeps its data on its own volume, so every secret value the
+source platform held — the credentials behind its connections above all —
+is re-entered after a restore. Every record that points at those secrets
+comes back; the values behind them do not.
+
 ## Destroy and the reinstall truth
 
 Teardown is Kubernetes garbage collection: every operator-created object
 is owner-referenced to the declaration, so deleting the platform
 completes with or without the operator running, and database credentials
 and volumes die together — no orphaned volume can hold a password a
-reinstall cannot match. Two residues to know: build caches and workflow
-volumes may survive in the namespace, so a reinstall into the SAME
-namespace should be preceded by deleting it (automatic when this
-resource owned the namespace via `create_namespace`); and the platform's
-namespace-qualified token-review ClusterRole/Binding lingers inert (its
-subject ServiceAccount died with the platform) until an operator release
-adds the janitor.
+reinstall cannot match. With a backup declared, the archive in the object
+store is the one thing that survives the teardown, and `recover_from` is
+how a reinstall becomes a restore instead of a fresh start. Two residues
+to know: build caches and workflow volumes may survive in the namespace,
+so a reinstall into the SAME namespace should be preceded by deleting it
+(automatic when this resource owned the namespace via
+`create_namespace`); and the platform's namespace-qualified token-review
+ClusterRole/Binding lingers inert (its subject ServiceAccount died with
+the platform) until an operator release adds the janitor.
 
 ## On the diagram
 

@@ -88,7 +88,7 @@ func (c *AdminClient) Authenticate(ctx context.Context, username, password strin
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("admin token request returned %d: %s", resp.StatusCode, string(body))
+		return &TokenRefusedError{Status: resp.StatusCode, Body: string(body)}
 	}
 
 	var tokenResp struct {
@@ -102,6 +102,27 @@ func (c *AdminClient) Authenticate(ctx context.Context, username, password strin
 	}
 	c.token = tokenResp.AccessToken
 	return nil
+}
+
+// TokenRefusedError is the token endpoint answering anything but a token:
+// typed so a caller can tell a refused credential (401, the restored-realm
+// case the identity component recovers from) apart from a server that is
+// not answering at all.
+type TokenRefusedError struct {
+	Status int
+	Body   string
+}
+
+func (e *TokenRefusedError) Error() string {
+	return fmt.Sprintf("admin token request returned %d: %s", e.Status, e.Body)
+}
+
+// IsCredentialRefused reports whether err is the token endpoint refusing the
+// credential itself (HTTP 401) -- as opposed to the server being down,
+// unreachable, or broken, which the reconcile cadence retries.
+func IsCredentialRefused(err error) bool {
+	var refused *TokenRefusedError
+	return errors.As(err, &refused) && refused.Status == http.StatusUnauthorized
 }
 
 // GetRealm returns the realm's full representation.
@@ -384,6 +405,42 @@ func (c *AdminClient) FindUsersByEmail(ctx context.Context, realm, email string)
 		return nil, fmt.Errorf("finding users by email: %w", err)
 	}
 	return reps, nil
+}
+
+// FindUserByUsername returns the realm user with exactly this username;
+// found=false when there is none.
+func (c *AdminClient) FindUserByUsername(ctx context.Context, realm, username string) (Representation, bool, error) {
+	var reps []Representation
+	path := c.adminPath(realm, "/users?exact=true&username="+url.QueryEscape(username))
+	if err := c.do(ctx, http.MethodGet, path, nil, http.StatusOK, &reps); err != nil {
+		return nil, false, fmt.Errorf("finding user by username: %w", err)
+	}
+	for _, rep := range reps {
+		if name, _ := rep["username"].(string); strings.EqualFold(name, username) {
+			return rep, true, nil
+		}
+	}
+	return nil, false, nil
+}
+
+// ResetUserPassword sets a user's password to a permanent value (no
+// change-at-next-sign-in). Used only on the master admin the operator itself
+// provisions, when a restored realm carries its source's password.
+func (c *AdminClient) ResetUserPassword(ctx context.Context, realm, userID, password string) error {
+	body := Representation{"type": "password", "value": password, "temporary": false}
+	if err := c.do(ctx, http.MethodPut, c.adminPath(realm, "/users/"+userID+"/reset-password"), body, http.StatusNoContent, nil); err != nil {
+		return fmt.Errorf("resetting user password: %w", err)
+	}
+	return nil
+}
+
+// DeleteUser removes a realm user. Used only on the temporary recovery admin
+// the operator itself created.
+func (c *AdminClient) DeleteUser(ctx context.Context, realm, userID string) error {
+	if err := c.do(ctx, http.MethodDelete, c.adminPath(realm, "/users/"+userID), nil, http.StatusNoContent, nil); err != nil {
+		return fmt.Errorf("deleting user: %w", err)
+	}
+	return nil
 }
 
 // GetGroupByPath returns the realm group at the given path; found=false on

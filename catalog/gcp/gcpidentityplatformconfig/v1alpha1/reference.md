@@ -205,13 +205,13 @@ spec:
 | `spec.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.signIn` | `GcpIdentityPlatformConfigSignIn` |  |  |  |
 | `spec.signIn.email` | `GcpIdentityPlatformConfigSignInEmail` |  |  |  |
-| `spec.signIn.email.enabled` | `bool` |  |  |  |
+| `spec.signIn.email.enabled` | `bool` | yes |  |  |
 | `spec.signIn.email.passwordRequired` | `bool` |  |  |  |
 | `spec.signIn.phoneNumber` | `GcpIdentityPlatformConfigSignInPhone` |  |  |  |
-| `spec.signIn.phoneNumber.enabled` | `bool` |  |  |  |
+| `spec.signIn.phoneNumber.enabled` | `bool` | yes |  |  |
 | `spec.signIn.phoneNumber.testPhoneNumbers` | `map<string, string>` |  |  |  |
 | `spec.signIn.anonymous` | `GcpIdentityPlatformConfigSignInAnonymous` |  |  |  |
-| `spec.signIn.anonymous.enabled` | `bool` |  |  |  |
+| `spec.signIn.anonymous.enabled` | `bool` | yes |  |  |
 | `spec.signIn.allowDuplicateEmails` | `bool` |  |  |  |
 | `spec.authorizedDomains` | `[]string` |  |  |  |
 | `spec.mfa` | `GcpIdentityPlatformConfigMfa` |  |  |  |
@@ -307,10 +307,13 @@ Email/password sign-in.
 
 ### spec.signIn.email.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Whether email sign-in is enabled. Sent explicitly, so setting this
-arm with enabled=false actively disables the method.
+Whether email sign-in is enabled. Required inside the arm: declaring
+the arm takes the method under management, and the switch says which
+way (false actively disables it).
+
+- rule: {"required":true}
 
 ### spec.signIn.email.passwordRequired
 
@@ -327,10 +330,13 @@ Phone-number (SMS code) sign-in.
 
 ### spec.signIn.phoneNumber.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Whether phone sign-in is enabled. Sent explicitly, so setting this
-arm with enabled=false actively disables the method.
+Whether phone sign-in is enabled. Required inside the arm: declaring
+the arm takes the method under management, and the switch says which
+way (false actively disables it).
+
+- rule: {"required":true}
 
 ### spec.signIn.phoneNumber.testPhoneNumbers
 
@@ -349,10 +355,13 @@ typically upgraded to a real provider later.
 
 ### spec.signIn.anonymous.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Whether anonymous (guest) sign-in is enabled. Sent explicitly, so
-setting this arm with enabled=false actively disables the method.
+Whether anonymous (guest) sign-in is enabled. Required inside the arm:
+declaring the arm takes the method under management, and the switch
+says which way (false actively disables it).
+
+- rule: {"required":true}
 
 ### spec.signIn.allowDuplicateEmails
 

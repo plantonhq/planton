@@ -1569,6 +1569,15 @@ spec:
                       message says why the state is what it is, in plain language -- the
                       plugin's own sentence when it is the one that knows.
                     type: string
+                  restoredFrom:
+                    description: |-
+                      restoredFrom is the source archive's server name when this platform's
+                      database was bootstrapped from an archive (spec.database.postgresql.recoverFrom
+                      honored at creation), read from the live database for as long as it
+                      lives. Empty for a database created empty. The identity component
+                      keys on it: a restored realm carries its source's admin credential,
+                      which the operator re-establishes exactly once.
+                    type: string
                   serverName:
                     description: |-
                       serverName is the name this platform's archive is filed under in the

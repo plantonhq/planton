@@ -1,0 +1,59 @@
+# THE RESTORE PROOF on a kind cluster, and the transit seal's first live
+# proof: a FRESH single-node vault on the same transit key as the source
+# (fixture-backup-source.yaml), declaring the same backup store and prefix
+# and `restore.snapshotKey` = the snapshot the seed script took — the
+# disaster-recovery shape a customer runs when the original is gone. The
+# seed wrote marker A, took the snapshot, then wrote marker B. The verifier
+# (switched on by this scenario's name) asserts the backup CronJob is
+# SUSPENDED while `restore` is declared, initializes the target (recovery
+# shares — auto-unseal needs no unseal step), hands the initial root token
+# to the Secret the spec names, watches the restore Job complete, then reads
+# marker A back through the source's root token (the restored state carries
+# the source's tokens) and asserts marker B is absent and the target's own
+# init token is dead. Finally it replaces pod 0 and proves it comes back
+# unsealed with no human — the transit seal doing its one job.
+#
+# JOINS the fixture-owned namespace; the chain is namespace -> key holder ->
+# store -> source, in that order (the source's seal test-encrypts against the
+# key holder at startup). Restores by KEY here; the GCS lane restores by
+# `latest`, so both declared sources are proven.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: e2e-bao-tgt
+  annotations:
+    planton.dev/e2e-prerequisites: "KubernetesNamespace, catalog/kubernetes/kubernetesopenbao/e2e/fixture-transit-key-holder.yaml, catalog/kubernetes/kubernetesopenbao/e2e/fixture-s3-store.yaml, catalog/kubernetes/kubernetesopenbao/e2e/fixture-backup-source.yaml"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesopenbao/e2e/scenarios/backup-restore-seed.setup.sh"
+spec:
+  namespace:
+    value: e2e-bao-lab
+  server:
+    ha:
+      replicas: 1
+    dataStorage:
+      size: 1Gi
+  autoUnseal:
+    transit:
+      address: http://e2e-bao-kms.e2e-bao-lab.svc:8200
+      keyName: openbao-e2e
+      mountPath: transit/
+      token: root
+  backup:
+    retentionDays: 1
+    objectStore:
+      prefix: openbao/${E2E_RUN_ID}/e2e-bao-src
+      s3:
+        bucket: openbao-snapshots
+        region: us-east-1
+        endpointUrl:
+          valueFrom:
+            name: e2e-bao-s3
+        forcePathStyle: true
+        accessKeys:
+          accessKeyId: e2e-bao-snapshots-admin
+          secretAccessKey: e2e-bao-snapshots-admin-secret-not-a-real-secret
+  restore:
+    snapshotKey: ${E2E_SETUP:OPENBAO_SNAPSHOT_KEY}
+    rootToken:
+      name: e2e-bao-tgt-init-root
+      key: token

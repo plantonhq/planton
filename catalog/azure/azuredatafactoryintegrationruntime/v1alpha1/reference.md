@@ -188,8 +188,7 @@ A human-readable description of what the runtime is for.
 
 `AzureDataFactoryIntegrationRuntimeAzure`
 
-The managed data-flow compute engine. Set exactly one variant
-block on this spec.
+The managed data-flow compute engine.
 
 - rule: interactive_authoring_time_to_live_in_minutes requires virtual_network_enabled to be true
 
@@ -271,8 +270,7 @@ with Azure's own error.
 
 `AzureDataFactoryIntegrationRuntimeAzureSsis`
 
-The managed SSIS package runtime. Set exactly one variant block
-on this spec.
+The managed SSIS package runtime.
 
 ### spec.azureSsis.region
 
@@ -786,8 +784,7 @@ root.
 
 `AzureDataFactoryIntegrationRuntimeSelfHosted`
 
-The self-hosted agent registration. Set exactly one variant
-block on this spec.
+The self-hosted agent registration.
 
 ### spec.selfHosted.rbacAuthorization
 
@@ -826,7 +823,6 @@ Unspecified applies false.
 
 ## Validation Rules
 
-- `azure_data_factory_integration_runtime_exactly_one_variant`: Set exactly one integration runtime variant block -- the variant determines the engine flavor
 - `azure_data_factory_integration_runtime_name_format_managed`: Managed runtime names need at least 3 characters -- letters, numbers, and dashes only, starting and ending with a letter or number, no consecutive dashes
 - `azure_data_factory_integration_runtime_name_format_self_hosted`: Self-hosted runtime names use letters, numbers, and dashes, starting and ending with a letter or number, with no consecutive dashes
 

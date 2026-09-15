@@ -100,7 +100,8 @@ spec:
     secureBootEnabled: true
     vtpmEnabled: true
 
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
 
   # User tags merged over the metadata-derived tags.
   tags:
@@ -189,6 +190,7 @@ spec:
 | `spec.patching.bypassPlatformSafetyChecksOnUserScheduleEnabled` | `bool` |  |  |  |
 | `spec.bootDiagnostics` | `AzureVirtualMachineBootDiagnostics` |  |  |  |
 | `spec.bootDiagnostics.storageAccountUri` | `string` |  |  |  |
+| `spec.bootDiagnostics.enabled` | `bool` |  | `true` |  |
 | `spec.galleryApplications` | `[]AzureVirtualMachineGalleryApplication` |  |  |  |
 | `spec.galleryApplications[].versionId` | `string` | yes |  |  |
 | `spec.galleryApplications[].order` | `int32` |  |  |  |
@@ -1064,6 +1066,16 @@ default), or point storage_account_uri at your own storage account.
 The storage account to write console logs/screenshots to, by blob
 endpoint URI. Empty uses Azure's MANAGED storage -- the right
 default (no storage account to operate).
+
+### spec.bootDiagnostics.enabled
+
+`bool` · optional (explicit presence)
+
+Whether boot diagnostics are on. Unset means on: declaring the block
+has always meant enabling it, and this switch lets a manifest say the
+opposite out loud.
+
+- default: `true`
 
 ### spec.galleryApplications
 

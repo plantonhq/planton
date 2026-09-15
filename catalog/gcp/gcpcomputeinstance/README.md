@@ -44,7 +44,7 @@ spec:
     - network:
         value: default
       accessConfigs:
-        - {}
+        - ephemeral: true
   scheduling:
     provisioningModel: SPOT
     instanceTerminationAction: DELETE

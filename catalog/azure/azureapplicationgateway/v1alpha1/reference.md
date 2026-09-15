@@ -288,7 +288,7 @@ spec:
 | `spec.sku` | `enum` | yes |  |  |
 | `spec.capacity` | `int32` |  |  |  |
 | `spec.autoscale` | `AzureApplicationGatewayAutoscale` |  |  |  |
-| `spec.autoscale.minCapacity` | `int32` |  |  |  |
+| `spec.autoscale.minCapacity` | `int32` | yes |  |  |
 | `spec.autoscale.maxCapacity` | `int32` |  |  |  |
 | `spec.zones` | `[]string` |  |  |  |
 | `spec.identity` | `AzureApplicationGatewayIdentity` |  |  |  |
@@ -556,13 +556,13 @@ Autoscale bounds (v2 SKUs only). Mutually exclusive with capacity.
 
 ### spec.autoscale.minCapacity
 
-`int32`
+`int32` · required · optional (explicit presence)
 
 The floor the gateway never scales below. 0-100; 0 lets the gateway
 scale to zero capacity units at idle (billing floor, not
-availability -- keep >= 2 for production).
+availability -- keep >= 2 for production). Required inside autoscale.
 
-- rule: {"int32":{"lte":100,"gte":0}}
+- rule: {"required":true,"int32":{"lte":100,"gte":0}}
 
 ### spec.autoscale.maxCapacity
 

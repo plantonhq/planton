@@ -5,6 +5,7 @@ package dev.planton.kubernetes.kubernetesauthorizationpolicy.v1alpha1;
 import "buf/validate/validate.proto";
 import "catalog/kubernetes/istio_api.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // KubernetesAuthorizationPolicySpec defines an Istio AuthorizationPolicy: a
 // namespaced policy that enforces access control on the workloads it selects.
@@ -111,9 +112,27 @@ message KubernetesAuthorizationPolicySpec {
 // KubernetesAuthorizationPolicyRule matches requests from a set of sources (`from`)
 // performing a set of operations (`to`) subject to a set of conditions (`when`). A
 // request matches the rule when at least one `from`, at least one `to`, and ALL
-// `when` conditions match. An empty rule matches every request. Faithful to the
+// `when` conditions match. A rule says what it matches: `from`, `to`, and `when`
+// narrow it, and `match_all: true` matches every request (the empty rule on the
+// Istio wire); a rule that names neither is refused, so "match every request" is
+// always a written choice and never an accident of an empty row. Faithful to the
 // upstream istio.io/api AuthorizationPolicy.Rule message.
 message KubernetesAuthorizationPolicyRule {
+  // match_all and the matchers are alternatives: every request, or the named ones.
+  option (buf.validate.message).cel = {
+    id: "match_all_excludes_matchers"
+    message: "match_all: true matches every request — drop from, to, and when, or drop match_all to match by them"
+    expression: "!(has(this.match_all) && this.match_all) || (this.from.size() == 0 && this.to.size() == 0 && this.when.size() == 0)"
+  };
+
+  // A rule that names nothing is always a mistake; matching everything must be
+  // written down.
+  option (buf.validate.message).cel = {
+    id: "rule_says_what_it_matches"
+    message: "a rule must say what it matches — set match_all: true to match every request, or name from, to, or when"
+    expression: "(has(this.match_all) && this.match_all) || this.from.size() > 0 || this.to.size() > 0 || this.when.size() > 0"
+  };
+
   // Sources of the request. If empty, any source matches. Upstream allows up to 512.
   repeated KubernetesAuthorizationPolicyRuleFrom from = 1 [(buf.validate.field).repeated.max_items = 512];
 
@@ -122,6 +141,13 @@ message KubernetesAuthorizationPolicyRule {
 
   // Additional conditions of the request. If empty, any condition matches.
   repeated KubernetesAuthorizationPolicyCondition when = 3;
+
+  // Match every request. The manifest's word for the empty rule on the Istio
+  // wire -- it never reaches the cluster; the rule it describes is emitted with
+  // no matchers. Cannot be combined with from, to, or when. With ALLOW this
+  // admits every request to the selected workloads; with DENY it is a total
+  // lockout.
+  optional bool match_all = 4 [(dev.planton.shared.options.manifest_only) = true];
 }
 
 // KubernetesAuthorizationPolicyRuleFrom wraps a single request source. The wrapper

@@ -27,7 +27,8 @@ spec:
     - network:
         value: default
       accessConfigs:
-        - networkTier: PREMIUM
+        - ephemeral: true
+          networkTier: PREMIUM
   scheduling:
     provisioningModel: SPOT
     onHostMaintenance: TERMINATE

@@ -28,8 +28,8 @@ variable "spec" {
       https_policy = optional(string)
     }))
     vdm_options = optional(object({
-      engagement_metrics_enabled = optional(bool, false)
-      optimized_shared_delivery_enabled = optional(bool, false)
+      engagement_metrics_enabled = optional(bool)
+      optimized_shared_delivery_enabled = optional(bool)
     }))
     event_destinations = optional(list(object({
       name = string

@@ -79,7 +79,7 @@ spec:
           port: metrics
   egress_rules:
     - to:
-        - namespace_selector: {}
+        - namespace_selector: { match_all: true }
       ports:
         - protocol: UDP
           port: "53"
@@ -110,6 +110,7 @@ spec:
 | `spec.podSelector.matchExpressions[].key` | `string` | yes |  |  |
 | `spec.podSelector.matchExpressions[].operator` | `string` |  |  |  |
 | `spec.podSelector.matchExpressions[].values` | `[]string` |  |  |  |
+| `spec.podSelector.matchAll` | `bool` |  |  |  |
 | `spec.policyTypes` | `[]enum` |  |  |  |
 | `spec.ingressRules` | `[]KubernetesNetworkPolicyIngressRule` |  |  |  |
 | `spec.ingressRules[].from` | `[]KubernetesNetworkPolicyPeer` |  |  |  |
@@ -119,12 +120,14 @@ spec:
 | `spec.ingressRules[].from[].podSelector.matchExpressions[].key` | `string` | yes |  |  |
 | `spec.ingressRules[].from[].podSelector.matchExpressions[].operator` | `string` |  |  |  |
 | `spec.ingressRules[].from[].podSelector.matchExpressions[].values` | `[]string` |  |  |  |
+| `spec.ingressRules[].from[].podSelector.matchAll` | `bool` |  |  |  |
 | `spec.ingressRules[].from[].namespaceSelector` | `KubernetesNetworkPolicyLabelSelector` |  |  |  |
 | `spec.ingressRules[].from[].namespaceSelector.matchLabels` | `map<string, string>` |  |  |  |
 | `spec.ingressRules[].from[].namespaceSelector.matchExpressions` | `[]KubernetesNetworkPolicyLabelSelectorRequirement` |  |  |  |
 | `spec.ingressRules[].from[].namespaceSelector.matchExpressions[].key` | `string` | yes |  |  |
 | `spec.ingressRules[].from[].namespaceSelector.matchExpressions[].operator` | `string` |  |  |  |
 | `spec.ingressRules[].from[].namespaceSelector.matchExpressions[].values` | `[]string` |  |  |  |
+| `spec.ingressRules[].from[].namespaceSelector.matchAll` | `bool` |  |  |  |
 | `spec.ingressRules[].from[].ipBlock` | `KubernetesNetworkPolicyIpBlock` |  |  |  |
 | `spec.ingressRules[].from[].ipBlock.cidr` | `string` | yes |  |  |
 | `spec.ingressRules[].from[].ipBlock.except` | `[]string` |  |  |  |
@@ -140,12 +143,14 @@ spec:
 | `spec.egressRules[].to[].podSelector.matchExpressions[].key` | `string` | yes |  |  |
 | `spec.egressRules[].to[].podSelector.matchExpressions[].operator` | `string` |  |  |  |
 | `spec.egressRules[].to[].podSelector.matchExpressions[].values` | `[]string` |  |  |  |
+| `spec.egressRules[].to[].podSelector.matchAll` | `bool` |  |  |  |
 | `spec.egressRules[].to[].namespaceSelector` | `KubernetesNetworkPolicyLabelSelector` |  |  |  |
 | `spec.egressRules[].to[].namespaceSelector.matchLabels` | `map<string, string>` |  |  |  |
 | `spec.egressRules[].to[].namespaceSelector.matchExpressions` | `[]KubernetesNetworkPolicyLabelSelectorRequirement` |  |  |  |
 | `spec.egressRules[].to[].namespaceSelector.matchExpressions[].key` | `string` | yes |  |  |
 | `spec.egressRules[].to[].namespaceSelector.matchExpressions[].operator` | `string` |  |  |  |
 | `spec.egressRules[].to[].namespaceSelector.matchExpressions[].values` | `[]string` |  |  |  |
+| `spec.egressRules[].to[].namespaceSelector.matchAll` | `bool` |  |  |  |
 | `spec.egressRules[].to[].ipBlock` | `KubernetesNetworkPolicyIpBlock` |  |  |  |
 | `spec.egressRules[].to[].ipBlock.cidr` | `string` | yes |  |  |
 | `spec.egressRules[].to[].ipBlock.except` | `[]string` |  |  |  |
@@ -196,10 +201,13 @@ Annotations to apply to the NetworkPolicy object.
 
 `KubernetesNetworkPolicyLabelSelector`
 
-Selects the pods this policy applies to, within the policy's namespace. An
-EMPTY selector (no match_labels, no match_expressions) selects ALL pods in
+Selects the pods this policy applies to, within the policy's namespace.
+Omitting the selector, or writing `match_all: true`, selects ALL pods in
 the namespace — the default-deny building block. To target one Planton
 workload, match on its `app` label: `match_labels: {app: <workload-name>}`.
+
+- rule: match_all: true selects everything — drop match_labels and match_expressions, or drop match_all to select by label
+- rule: a selector must say what it selects — set match_all: true to select every pod (or namespace), or name match_labels / match_expressions
 
 ### spec.podSelector.matchLabels
 
@@ -241,6 +249,16 @@ empty), or "DoesNotExist" (key absent, `values` must be empty).
 
 The values compared against the label's value. Required (non-empty) for
 In/NotIn; must be empty for Exists/DoesNotExist.
+
+### spec.podSelector.matchAll
+
+`bool` · optional (explicit presence)
+
+Select everything: every pod in scope for a pod selector, every namespace
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.policyTypes
 
@@ -285,9 +303,12 @@ origin — the rule then only restricts by port).
 
 `KubernetesNetworkPolicyLabelSelector`
 
-Selects pods by label. Present-but-empty selects ALL pods (in the policy's
+Selects pods by label. `match_all: true` selects ALL pods (in the policy's
 namespace, or in the namespaces selected by namespace_selector when both
 are set).
+
+- rule: match_all: true selects everything — drop match_labels and match_expressions, or drop match_all to select by label
+- rule: a selector must say what it selects — set match_all: true to select every pod (or namespace), or name match_labels / match_expressions
 
 ### spec.ingressRules[].from[].podSelector.matchLabels
 
@@ -330,14 +351,27 @@ empty), or "DoesNotExist" (key absent, `values` must be empty).
 The values compared against the label's value. Required (non-empty) for
 In/NotIn; must be empty for Exists/DoesNotExist.
 
+### spec.ingressRules[].from[].podSelector.matchAll
+
+`bool` · optional (explicit presence)
+
+Select everything: every pod in scope for a pod selector, every namespace
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
+
 ### spec.ingressRules[].from[].namespaceSelector
 
 `KubernetesNetworkPolicyLabelSelector`
 
 Selects namespaces by label (e.g. the automatic
 `kubernetes.io/metadata.name: <name>` label every namespace carries).
-Present-but-empty selects ALL namespaces — the cluster-wide-allow building
+`match_all: true` selects ALL namespaces — the cluster-wide-allow building
 block.
+
+- rule: match_all: true selects everything — drop match_labels and match_expressions, or drop match_all to select by label
+- rule: a selector must say what it selects — set match_all: true to select every pod (or namespace), or name match_labels / match_expressions
 
 ### spec.ingressRules[].from[].namespaceSelector.matchLabels
 
@@ -379,6 +413,16 @@ empty), or "DoesNotExist" (key absent, `values` must be empty).
 
 The values compared against the label's value. Required (non-empty) for
 In/NotIn; must be empty for Exists/DoesNotExist.
+
+### spec.ingressRules[].from[].namespaceSelector.matchAll
+
+`bool` · optional (explicit presence)
+
+Select everything: every pod in scope for a pod selector, every namespace
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.ingressRules[].from[].ipBlock
 
@@ -480,9 +524,12 @@ The allowed destinations. Empty means ALL destinations.
 
 `KubernetesNetworkPolicyLabelSelector`
 
-Selects pods by label. Present-but-empty selects ALL pods (in the policy's
+Selects pods by label. `match_all: true` selects ALL pods (in the policy's
 namespace, or in the namespaces selected by namespace_selector when both
 are set).
+
+- rule: match_all: true selects everything — drop match_labels and match_expressions, or drop match_all to select by label
+- rule: a selector must say what it selects — set match_all: true to select every pod (or namespace), or name match_labels / match_expressions
 
 ### spec.egressRules[].to[].podSelector.matchLabels
 
@@ -525,14 +572,27 @@ empty), or "DoesNotExist" (key absent, `values` must be empty).
 The values compared against the label's value. Required (non-empty) for
 In/NotIn; must be empty for Exists/DoesNotExist.
 
+### spec.egressRules[].to[].podSelector.matchAll
+
+`bool` · optional (explicit presence)
+
+Select everything: every pod in scope for a pod selector, every namespace
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
+
 ### spec.egressRules[].to[].namespaceSelector
 
 `KubernetesNetworkPolicyLabelSelector`
 
 Selects namespaces by label (e.g. the automatic
 `kubernetes.io/metadata.name: <name>` label every namespace carries).
-Present-but-empty selects ALL namespaces — the cluster-wide-allow building
+`match_all: true` selects ALL namespaces — the cluster-wide-allow building
 block.
+
+- rule: match_all: true selects everything — drop match_labels and match_expressions, or drop match_all to select by label
+- rule: a selector must say what it selects — set match_all: true to select every pod (or namespace), or name match_labels / match_expressions
 
 ### spec.egressRules[].to[].namespaceSelector.matchLabels
 
@@ -574,6 +634,16 @@ empty), or "DoesNotExist" (key absent, `values` must be empty).
 
 The values compared against the label's value. Required (non-empty) for
 In/NotIn; must be empty for Exists/DoesNotExist.
+
+### spec.egressRules[].to[].namespaceSelector.matchAll
+
+`bool` · optional (explicit presence)
+
+Select everything: every pod in scope for a pod selector, every namespace
+for a namespace selector. The manifest's word for the empty selector on
+the Kubernetes wire -- it never reaches the cluster; the selector it
+describes is emitted with no criteria. Cannot be combined with
+match_labels or match_expressions.
 
 ### spec.egressRules[].to[].ipBlock
 

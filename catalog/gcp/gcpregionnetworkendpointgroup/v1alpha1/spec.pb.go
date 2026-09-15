@@ -90,16 +90,17 @@ type GcpRegionNetworkEndpointGroupSpec struct {
 	// Extra Private Service Connect settings for a PSC NEG. Only valid when
 	// network_endpoint_type is PRIVATE_SERVICE_CONNECT.
 	PscData *GcpRegionNetworkEndpointGroupPscData `protobuf:"bytes,9,opt,name=psc_data,json=pscData,proto3" json:"psc_data,omitempty"`
-	// Front a Cloud Run service. One of the three serverless targets — set
-	// exactly one when network_endpoint_type is SERVERLESS.
-	CloudRun *GcpRegionNetworkEndpointGroupCloudRun `protobuf:"bytes,10,opt,name=cloud_run,json=cloudRun,proto3" json:"cloud_run,omitempty"`
-	// Front a Cloud Functions (Gen 2) function. One of the three serverless
-	// targets — set exactly one when network_endpoint_type is SERVERLESS.
-	CloudFunction *GcpRegionNetworkEndpointGroupCloudFunction `protobuf:"bytes,11,opt,name=cloud_function,json=cloudFunction,proto3" json:"cloud_function,omitempty"`
-	// Front an App Engine service. One of the three serverless targets — set
-	// exactly one when network_endpoint_type is SERVERLESS. The block may be
-	// empty to route to the default App Engine application.
-	AppEngine *GcpRegionNetworkEndpointGroupAppEngine `protobuf:"bytes,12,opt,name=app_engine,json=appEngine,proto3" json:"app_engine,omitempty"`
+	// The serverless target a SERVERLESS group fronts: exactly one of the arms
+	// below, and none for the other endpoint types. Choosing an arm is the whole
+	// statement for App Engine's default application, whose block carries
+	// nothing else.
+	//
+	// Types that are valid to be assigned to ServerlessTarget:
+	//
+	//	*GcpRegionNetworkEndpointGroupSpec_CloudRun
+	//	*GcpRegionNetworkEndpointGroupSpec_CloudFunction
+	//	*GcpRegionNetworkEndpointGroupSpec_AppEngine
+	ServerlessTarget isGcpRegionNetworkEndpointGroupSpec_ServerlessTarget `protobuf_oneof:"serverless_target"`
 	// Deletion policy for the NEG — what happens when this resource is
 	// destroyed:
 	//
@@ -208,23 +209,36 @@ func (x *GcpRegionNetworkEndpointGroupSpec) GetPscData() *GcpRegionNetworkEndpoi
 	return nil
 }
 
+func (x *GcpRegionNetworkEndpointGroupSpec) GetServerlessTarget() isGcpRegionNetworkEndpointGroupSpec_ServerlessTarget {
+	if x != nil {
+		return x.ServerlessTarget
+	}
+	return nil
+}
+
 func (x *GcpRegionNetworkEndpointGroupSpec) GetCloudRun() *GcpRegionNetworkEndpointGroupCloudRun {
 	if x != nil {
-		return x.CloudRun
+		if x, ok := x.ServerlessTarget.(*GcpRegionNetworkEndpointGroupSpec_CloudRun); ok {
+			return x.CloudRun
+		}
 	}
 	return nil
 }
 
 func (x *GcpRegionNetworkEndpointGroupSpec) GetCloudFunction() *GcpRegionNetworkEndpointGroupCloudFunction {
 	if x != nil {
-		return x.CloudFunction
+		if x, ok := x.ServerlessTarget.(*GcpRegionNetworkEndpointGroupSpec_CloudFunction); ok {
+			return x.CloudFunction
+		}
 	}
 	return nil
 }
 
 func (x *GcpRegionNetworkEndpointGroupSpec) GetAppEngine() *GcpRegionNetworkEndpointGroupAppEngine {
 	if x != nil {
-		return x.AppEngine
+		if x, ok := x.ServerlessTarget.(*GcpRegionNetworkEndpointGroupSpec_AppEngine); ok {
+			return x.AppEngine
+		}
 	}
 	return nil
 }
@@ -234,6 +248,35 @@ func (x *GcpRegionNetworkEndpointGroupSpec) GetDeletionPolicy() string {
 		return x.DeletionPolicy
 	}
 	return ""
+}
+
+type isGcpRegionNetworkEndpointGroupSpec_ServerlessTarget interface {
+	isGcpRegionNetworkEndpointGroupSpec_ServerlessTarget()
+}
+
+type GcpRegionNetworkEndpointGroupSpec_CloudRun struct {
+	// Front a Cloud Run service.
+	CloudRun *GcpRegionNetworkEndpointGroupCloudRun `protobuf:"bytes,10,opt,name=cloud_run,json=cloudRun,proto3,oneof"`
+}
+
+type GcpRegionNetworkEndpointGroupSpec_CloudFunction struct {
+	// Front a Cloud Functions (Gen 2) function.
+	CloudFunction *GcpRegionNetworkEndpointGroupCloudFunction `protobuf:"bytes,11,opt,name=cloud_function,json=cloudFunction,proto3,oneof"`
+}
+
+type GcpRegionNetworkEndpointGroupSpec_AppEngine struct {
+	// Front an App Engine service. The block may be empty to route to the
+	// default App Engine application.
+	AppEngine *GcpRegionNetworkEndpointGroupAppEngine `protobuf:"bytes,12,opt,name=app_engine,json=appEngine,proto3,oneof"`
+}
+
+func (*GcpRegionNetworkEndpointGroupSpec_CloudRun) isGcpRegionNetworkEndpointGroupSpec_ServerlessTarget() {
+}
+
+func (*GcpRegionNetworkEndpointGroupSpec_CloudFunction) isGcpRegionNetworkEndpointGroupSpec_ServerlessTarget() {
+}
+
+func (*GcpRegionNetworkEndpointGroupSpec_AppEngine) isGcpRegionNetworkEndpointGroupSpec_ServerlessTarget() {
 }
 
 // Cloud Run target for a SERVERLESS NEG. Set service (optionally with tag),
@@ -485,7 +528,7 @@ var File_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_spec_proto protorefl
 
 const file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/gcp/gcpregionnetworkendpointgroup/v1alpha1/spec.proto\x126dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc5\"\n" +
+	"=catalog/gcp/gcpregionnetworkendpointgroup/v1alpha1/spec.proto\x126dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbf\"\n" +
 	"!GcpRegionNetworkEndpointGroupSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xc9\x02\n" +
@@ -495,28 +538,29 @@ const file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_spec_proto_rawDesc
 	"\fvalid_region\x12Jregion is required and must be a valid GCP region name such as us-central1\x1a:this != '' && this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12\xf4\x02\n" +
 	"\x15network_endpoint_type\x18\x04 \x01(\tB\xba\x02\xbaH\xa8\x02\xba\x01\xa4\x02\n" +
 	"\x1bvalid_network_endpoint_type\x12\x84\x01network_endpoint_type must be one of SERVERLESS, PRIVATE_SERVICE_CONNECT, INTERNET_IP_PORT, INTERNET_FQDN_PORT, or GCE_VM_IP_PORTMAP\x1a~this == '' || this in ['SERVERLESS', 'PRIVATE_SERVICE_CONNECT', 'INTERNET_IP_PORT', 'INTERNET_FQDN_PORT', 'GCE_VM_IP_PORTMAP']\x8a\xa6\x1d\n" +
-	"SERVERLESSH\x00R\x13networkEndpointType\x88\x01\x01\x12*\n" +
+	"SERVERLESSH\x01R\x13networkEndpointType\x88\x01\x01\x12*\n" +
 	"\vdescription\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12w\n" +
 	"\anetwork\x18\x06 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xc2\x17\x92\xd4a status.outputs.network_self_linkR\anetwork\x12\x80\x01\n" +
 	"\n" +
 	"subnetwork\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\n" +
 	"subnetwork\x126\n" +
 	"\x12psc_target_service\x18\b \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\x10pscTargetService\x12w\n" +
-	"\bpsc_data\x18\t \x01(\v2\\.dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupPscDataR\apscData\x12z\n" +
+	"\bpsc_data\x18\t \x01(\v2\\.dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupPscDataR\apscData\x12|\n" +
 	"\tcloud_run\x18\n" +
-	" \x01(\v2].dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupCloudRunR\bcloudRun\x12\x89\x01\n" +
-	"\x0ecloud_function\x18\v \x01(\v2b.dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupCloudFunctionR\rcloudFunction\x12}\n" +
+	" \x01(\v2].dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupCloudRunH\x00R\bcloudRun\x12\x8b\x01\n" +
+	"\x0ecloud_function\x18\v \x01(\v2b.dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupCloudFunctionH\x00R\rcloudFunction\x12\x7f\n" +
 	"\n" +
-	"app_engine\x18\f \x01(\v2^.dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupAppEngineR\tappEngine\x12\xbb\x01\n" +
+	"app_engine\x18\f \x01(\v2^.dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupAppEngineH\x00R\tappEngine\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\r \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xf3\x11\xbaH\xef\x11\x1a\xfd\x02\n" +
-	"%serverless_requires_exactly_one_block\x12da SERVERLESS network endpoint group requires exactly one of cloud_run, cloud_function, or app_engine\x1a\xed\x01(has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') != 'SERVERLESS' || (has(this.cloud_run) ? 1 : 0) + (has(this.cloud_function) ? 1 : 0) + (has(this.app_engine) ? 1 : 0) == 1\x1a\xd7\x02\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xd2\x11\xbaH\xce\x11\x1a\xdc\x02\n" +
+	"%serverless_requires_exactly_one_block\x12da SERVERLESS network endpoint group requires exactly one of cloud_run, cloud_function, or app_engine\x1a\xcc\x01(has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') != 'SERVERLESS' || has(this.cloud_run) || has(this.cloud_function) || has(this.app_engine)\x1a\xd7\x02\n" +
 	"%serverless_blocks_forbidden_otherwise\x12Zcloud_run, cloud_function, and app_engine apply only to SERVERLESS network endpoint groups\x1a\xd1\x01(has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') == 'SERVERLESS' || (!has(this.cloud_run) && !has(this.cloud_function) && !has(this.app_engine))\x1a\xda\x02\n" +
 	"\x1bpsc_requires_target_service\x12\x88\x01a PRIVATE_SERVICE_CONNECT network endpoint group requires psc_target_service (the published service-attachment URL or Google API bundle)\x1a\xaf\x01(has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') != 'PRIVATE_SERVICE_CONNECT' || this.psc_target_service != ''\x1a\xd9\x02\n" +
 	"\x18psc_target_service_scope\x12_psc_target_service applies only to PRIVATE_SERVICE_CONNECT and INTERNET network endpoint groups\x1a\xdb\x01this.psc_target_service == '' || (has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') in ['PRIVATE_SERVICE_CONNECT', 'INTERNET_IP_PORT', 'INTERNET_FQDN_PORT']\x1a\x82\x02\n" +
 	"\x0epsc_data_scope\x12Hpsc_data applies only to PRIVATE_SERVICE_CONNECT network endpoint groups\x1a\xa5\x01!has(this.psc_data) || (has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') == 'PRIVATE_SERVICE_CONNECT'\x1a\xb5\x02\n" +
 	"\x10subnetwork_scope\x12`subnetwork applies only to PRIVATE_SERVICE_CONNECT and GCE_VM_IP_PORTMAP network endpoint groups\x1a\xbe\x01!has(this.subnetwork) || (has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') in ['PRIVATE_SERVICE_CONNECT', 'GCE_VM_IP_PORTMAP']\x1a\x9c\x02\n" +
-	"\x1anetwork_not_for_serverless\x12dnetwork applies only to non-serverless network endpoint groups (PSC, INTERNET, or GCE_VM_IP_PORTMAP)\x1a\x97\x01!has(this.network) || (has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') != 'SERVERLESS'B\x18\n" +
+	"\x1anetwork_not_for_serverless\x12dnetwork applies only to non-serverless network endpoint groups (PSC, INTERNET, or GCE_VM_IP_PORTMAP)\x1a\x97\x01!has(this.network) || (has(this.network_endpoint_type) && this.network_endpoint_type != '' ? this.network_endpoint_type : 'SERVERLESS') != 'SERVERLESS'B\x13\n" +
+	"\x11serverless_targetB\x18\n" +
 	"\x16_network_endpoint_type\"\xe9\x02\n" +
 	"%GcpRegionNetworkEndpointGroupCloudRun\x12r\n" +
 	"\aservice\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xbb\x17\x92\xd4a\x1bstatus.outputs.service_nameR\aservice\x12\x1a\n" +
@@ -578,7 +622,11 @@ func file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_spec_proto != nil {
 		return
 	}
-	file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_gcp_gcpregionnetworkendpointgroup_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{
+		(*GcpRegionNetworkEndpointGroupSpec_CloudRun)(nil),
+		(*GcpRegionNetworkEndpointGroupSpec_CloudFunction)(nil),
+		(*GcpRegionNetworkEndpointGroupSpec_AppEngine)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

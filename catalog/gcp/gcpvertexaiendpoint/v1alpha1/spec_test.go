@@ -8,6 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestSuite(t *testing.T) {
@@ -103,6 +104,16 @@ var _ = ginkgo.Describe("GcpVertexAiEndpointSpec", func() {
 		msg.Spec.PrivateServiceConnectConfig = &GcpVertexAiEndpointPrivateServiceConnectConfig{}
 		err := validator.Validate(msg)
 		gomega.Expect(err).ToNot(gomega.HaveOccurred())
+	})
+
+	ginkgo.It("should accept PSC declared and switched off beside a peered network", func() {
+		msg := minimal()
+		msg.Spec.PrivateServiceConnectConfig = &GcpVertexAiEndpointPrivateServiceConnectConfig{
+			Enabled:          proto.Bool(false),
+			ProjectAllowlist: []string{"project-a"},
+		}
+		msg.Spec.Network = strRef("projects/123456789/global/networks/my-vpc")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should accept spec with PSC config and project allowlist", func() {

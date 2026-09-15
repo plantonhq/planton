@@ -15,7 +15,8 @@ spec:
     - network:
         value: default
       accessConfigs:
-        - networkTier: PREMIUM
+        - ephemeral: true
+          networkTier: PREMIUM
   scheduling:
     # Spot: deeply discounted capacity GCP may reclaim at any time. The
     # legacy preemptible flag and no-automatic-restart are derived — this

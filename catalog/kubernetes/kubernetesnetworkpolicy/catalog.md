@@ -42,7 +42,7 @@ spec:
   name: default-deny-all
   namespace:
     value: backend-services
-  podSelector: {}
+  podSelector: { matchAll: true }
   policyTypes:
     - ingress
     - egress
@@ -66,7 +66,7 @@ spec:
       kind: KubernetesNamespace
       name: backend-namespace
       fieldPath: spec.name
-  podSelector: {}
+  podSelector: { matchAll: true }
   policyTypes:
     - ingress
     - egress
@@ -78,7 +78,7 @@ The InfraPipeline deploys the namespace first, then applies the policy into it.
 
 These are the most important decisions when configuring a Kubernetes NetworkPolicy. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Selection is the isolation** -- An EMPTY pod selector selects ALL pods in the namespace (the default-deny building block); labels narrow it to one workload. Every Planton workload stamps the `app` label (set to its name) on its pods, so `matchLabels: {app: checkout}` governs exactly that workload.
+**Selection is the isolation** -- A pod selector with `matchAll: true` (or none at all) selects ALL pods in the namespace (the default-deny building block); labels narrow it to one workload. Every Planton workload stamps the `app` label (set to its name) on its pods, so `matchLabels: {app: checkout}` governs exactly that workload.
 
 **Declare directions explicitly** -- When `policyTypes` is omitted, Kubernetes infers: ingress always, egress only when egress rules exist. Every isolation intent should set it explicitly — a deny-all-egress policy MUST say egress (there is no rule to infer it from), and an egress-only policy that omits it also isolates ingress.
 

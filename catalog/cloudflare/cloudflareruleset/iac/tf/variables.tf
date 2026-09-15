@@ -52,9 +52,11 @@ variable "spec" {
         score_response_header_name = optional(string, "")
       }))
 
-      # Per-rule logging
+      # Per-rule logging. The API requires the switch inside the block, so it
+      # is never null here; no literal default, so an unset value can never be
+      # mistaken for an explicit false.
       logging = optional(object({
-        enabled = optional(bool, false)
+        enabled = optional(bool)
       }))
 
       # Exposed-credential detection
@@ -265,9 +267,9 @@ variable "spec" {
             languages   = optional(list(string), [])
           })), {})
         }))
-        strip_etags        = optional(bool)
+        strip_etags         = optional(bool)
         strip_last_modified = optional(bool)
-        strip_set_cookie   = optional(bool)
+        strip_set_cookie    = optional(bool)
 
         # Log custom fields
         cookie_fields = optional(list(object({ name = string })), [])

@@ -276,11 +276,25 @@ var _ = ginkgo.Describe("CloudflareRulesetSpec Validation", func() {
 			}
 			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("accepts a rule logging block that switches logging off", func() {
+			r := validResource()
+			r.Spec.Rules[0].Logging = &CloudflareRulesetLogging{Enabled: boolPtr(false)}
+			gomega.Expect(protovalidate.Validate(r)).To(gomega.BeNil())
+		})
 	})
 
 	// ---- Negative cases ----
 
 	ginkgo.Describe("Invalid inputs", func() {
+
+		ginkgo.It("rejects a rule logging block that does not say on or off", func() {
+			r := validResource()
+			r.Spec.Rules[0].Logging = &CloudflareRulesetLogging{}
+			err := protovalidate.Validate(r)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("logging.enabled"))
+		})
 
 		ginkgo.It("rejects when neither zone_id nor account_id is set", func() {
 			r := validResource()

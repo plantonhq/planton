@@ -48,23 +48,29 @@ message AwsBedrockKnowledgeBaseSpec {
   ];
 
   // ---------------------------------------------------------------------------
-  // Knowledge-Base Type (exactly one; the modules derive AWS's `type`
-  // discriminator from which arm is set)
+  // Knowledge-Base Type (exactly one arm; the modules derive AWS's `type`
+  // discriminator from which arm is set). Choosing the managed arm is the
+  // whole statement for a fully AWS-managed store at defaults (its block may
+  // be empty), so a type with nothing inside is a valid, complete choice.
   // ---------------------------------------------------------------------------
 
-  // Embeddings-based retrieval over a vector store you own - pair with
-  // `storage`.
-  AwsBedrockKnowledgeBaseVectorConfig vector = 4;
+  oneof knowledge_base_type {
+    option (buf.validate.oneof).required = true;
 
-  // Embeddings-based retrieval with the vector store fully managed by
-  // AWS - no `storage` block.
-  AwsBedrockKnowledgeBaseManagedConfig managed = 5;
+    // Embeddings-based retrieval over a vector store you own - pair with
+    // `storage`.
+    AwsBedrockKnowledgeBaseVectorConfig vector = 4;
 
-  // Retrieval delegated to an existing Amazon Kendra index.
-  AwsBedrockKnowledgeBaseKendraConfig kendra = 6;
+    // Embeddings-based retrieval with the vector store fully managed by
+    // AWS - no `storage` block.
+    AwsBedrockKnowledgeBaseManagedConfig managed = 5;
 
-  // Natural-language-to-SQL over Amazon Redshift.
-  AwsBedrockKnowledgeBaseSqlConfig sql = 7;
+    // Retrieval delegated to an existing Amazon Kendra index.
+    AwsBedrockKnowledgeBaseKendraConfig kendra = 6;
+
+    // Natural-language-to-SQL over Amazon Redshift.
+    AwsBedrockKnowledgeBaseSqlConfig sql = 7;
+  }
 
   // ---------------------------------------------------------------------------
   // Vector Store (required with `vector`, forbidden otherwise)
@@ -83,13 +89,6 @@ message AwsBedrockKnowledgeBaseSpec {
   // SharePoint, or an AWS-managed connector) with its own chunking and
   // parsing configuration.
   repeated AwsBedrockKnowledgeBaseDataSource data_sources = 9;
-
-  // Exactly one knowledge-base type.
-  option (buf.validate.message).cel = {
-    id: "kb_type_exactly_one"
-    message: "exactly one of vector, managed, kendra, or sql must be configured"
-    expression: "[has(this.vector), has(this.managed), has(this.kendra), has(this.sql)].filter(x, x).size() == 1"
-  };
 
   // The vector type brings its own store; every other type must not.
   option (buf.validate.message).cel = {
@@ -717,28 +716,34 @@ message AwsBedrockKnowledgeBaseDataSource {
   ];
 
   // ---------------------------------------------------------------------------
-  // Connector (exactly one; the modules derive AWS's `type` discriminator
-  // from which arm is set)
+  // Connector (exactly one arm; the modules derive AWS's `type` discriminator
+  // from which arm is set). Choosing the managed-connector arm is the whole
+  // statement for a connector at its AWS defaults (its block may be empty),
+  // so a connector with nothing inside is a valid, complete choice.
   // ---------------------------------------------------------------------------
 
-  // Ingest objects from an S3 bucket.
-  AwsBedrockKnowledgeBaseS3DataSource s3 = 5;
+  oneof connector {
+    option (buf.validate.oneof).required = true;
 
-  // Crawl websites from seed URLs.
-  AwsBedrockKnowledgeBaseWebDataSource web = 6;
+    // Ingest objects from an S3 bucket.
+    AwsBedrockKnowledgeBaseS3DataSource s3 = 5;
 
-  // Ingest Confluence spaces and pages.
-  AwsBedrockKnowledgeBaseConfluenceDataSource confluence = 7;
+    // Crawl websites from seed URLs.
+    AwsBedrockKnowledgeBaseWebDataSource web = 6;
 
-  // Ingest Salesforce objects.
-  AwsBedrockKnowledgeBaseSalesforceDataSource salesforce = 8;
+    // Ingest Confluence spaces and pages.
+    AwsBedrockKnowledgeBaseConfluenceDataSource confluence = 7;
 
-  // Ingest SharePoint sites.
-  AwsBedrockKnowledgeBaseSharePointDataSource sharepoint = 9;
+    // Ingest Salesforce objects.
+    AwsBedrockKnowledgeBaseSalesforceDataSource salesforce = 8;
 
-  // AWS-managed knowledge-base connector (connector-specific parameters
-  // as a JSON document).
-  AwsBedrockKnowledgeBaseManagedConnectorDataSource managed_connector = 10;
+    // Ingest SharePoint sites.
+    AwsBedrockKnowledgeBaseSharePointDataSource sharepoint = 9;
+
+    // AWS-managed knowledge-base connector (connector-specific parameters
+    // as a JSON document).
+    AwsBedrockKnowledgeBaseManagedConnectorDataSource managed_connector = 10;
+  }
 
   // ---------------------------------------------------------------------------
   // Ingestion Pipeline
@@ -747,13 +752,6 @@ message AwsBedrockKnowledgeBaseDataSource {
   // How documents are split into chunks, parsed, and transformed before
   // embedding. Create-time only - changing it replaces the data source.
   AwsBedrockKnowledgeBaseVectorIngestion vector_ingestion = 11;
-
-  // Exactly one connector.
-  option (buf.validate.message).cel = {
-    id: "connector_exactly_one"
-    message: "exactly one of s3, web, confluence, salesforce, sharepoint, or managed_connector must be configured"
-    expression: "[has(this.s3), has(this.web), has(this.confluence), has(this.salesforce), has(this.sharepoint), has(this.managed_connector)].filter(x, x).size() == 1"
-  };
 }
 
 // AwsBedrockKnowledgeBaseS3DataSource ingests objects from S3.

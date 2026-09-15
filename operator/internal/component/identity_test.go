@@ -89,6 +89,17 @@ func TestControlPlaneDependencies_IdentityAlways(t *testing.T) {
 func TestIdentityReadyMessages(t *testing.T) {
 	const publicURL = "http://planton.example.com"
 
+	restored := identityRestoredRealmReadyMessage("planton", "planton-postgres-a4d0f96d", publicURL)
+	if strings.Contains(restored, "first visitor") || strings.Contains(restored, "read it with") || !strings.Contains(restored, "planton-postgres-a4d0f96d") || !strings.Contains(restored, "sign in as before") {
+		t.Errorf("a restored realm has its people already: no setup code, the source named, sign-in as before: %q", restored)
+	}
+	if !strings.Contains(restored, publicURL+resources.IdentityPathPrefix) || !strings.Contains(restored, resources.IdentityBootstrapAdminSecretName("planton")) {
+		t.Errorf("the restored-realm message names the same recovery path as the other arms: %q", restored)
+	}
+	if identityRestoredFrom(&v1.PlantonPlatform{}) != "" || identityRestoredFrom(&v1.PlantonPlatform{Status: v1.PlantonPlatformStatus{Backup: &v1.BackupStatus{RestoredFrom: "x"}}}) != "x" {
+		t.Error("identityRestoredFrom reads the database component's fact, empty when there is none")
+	}
+
 	setup := identitySetupModeReadyMessage("planton", "planton", publicURL)
 	if !strings.Contains(setup, "setup code") {
 		t.Errorf("setup message must name the setup code: %q", setup)

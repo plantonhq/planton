@@ -300,7 +300,7 @@ func createUniformWindows(ctx *pulumi.Context, locals *Locals, azureProvider pul
 		args.Identity = identityArgs
 	}
 
-	if diagnostics := spec.BootDiagnostics; diagnostics != nil {
+	if diagnostics := spec.BootDiagnostics; diagnostics != nil && diagnostics.GetEnabled() {
 		diagArgs := compute.WindowsVirtualMachineScaleSetBootDiagnosticsArgs{}
 		if diagnostics.StorageAccountUri != "" {
 			diagArgs.StorageAccountUri = pulumi.StringPtr(diagnostics.StorageAccountUri)

@@ -65,6 +65,15 @@ var _ = ginkgo.Describe("AwsSesConfigurationSetSpec validations", func() {
 		gomega.Expect(err).To(gomega.BeNil())
 	})
 
+	ginkgo.It("accepts a VDM override that states one dial off and leaves the other unset", func() {
+		input := minimalConfigSet()
+		input.Spec.VdmOptions = &AwsSesConfigurationSetVdmOptions{
+			EngagementMetricsEnabled: boolPtr(false),
+		}
+		gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		gomega.Expect(input.Spec.VdmOptions.OptimizedSharedDeliveryEnabled).To(gomega.BeNil(), "the unset dial stays unset at the schema layer; the platform fills its declared default before the module reads it")
+	})
+
 	ginkgo.It("accepts a CloudWatch event destination", func() {
 		input := minimalConfigSet()
 		input.Spec.EventDestinations = []*AwsSesConfigurationSetEventDestination{

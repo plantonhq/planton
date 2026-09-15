@@ -169,9 +169,9 @@ func Resources(ctx *pulumi.Context, stackInput *azurepostgresqlflexibleserverv1a
 	// system-managed.
 	if spec.MaintenanceWindow != nil {
 		serverArgs.MaintenanceWindow = &postgresql.FlexibleServerMaintenanceWindowArgs{
-			DayOfWeek:   pulumi.Int(int(spec.MaintenanceWindow.DayOfWeek)),
-			StartHour:   pulumi.Int(int(spec.MaintenanceWindow.StartHour)),
-			StartMinute: pulumi.Int(int(spec.MaintenanceWindow.StartMinute)),
+			DayOfWeek:   pulumi.Int(int(spec.MaintenanceWindow.GetDayOfWeek())),
+			StartHour:   pulumi.Int(int(spec.MaintenanceWindow.GetStartHour())),
+			StartMinute: pulumi.Int(int(spec.MaintenanceWindow.GetStartMinute())),
 		}
 	}
 

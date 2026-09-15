@@ -38,6 +38,36 @@ import (
 // (restart = sealed, the Shamir-mode truth), and re-reads the marker —
 // Raft data surviving pod replacement plus the re-seal reality is the
 // durability proof.
+//
+// AUTO-UNSEAL changes the bootstrap, not the proof: `sys/init` on an
+// auto-unseal seal refuses `secret_shares` and takes `recovery_shares`
+// instead (the server's own rule), there is no unseal call — the seal
+// unseals the server right after init — and a replaced pod comes back
+// Ready on its own. The verifier follows whichever seal the manifest
+// declares.
+//
+// Two more proofs ride on this verifier, each switched on by its
+// scenario's name and documented on its method:
+//
+//   - THE BACKUP PROOF (with-backup, openbao_backup.go): after the
+//     lifecycle, the four-command login recipe runs EXACTLY as the backup
+//     job prints it, a run is created from the backup CronJob, the store is
+//     listed from inside the cluster with the job's own identity, and
+//     retention is proven against a seeded stale object.
+//   - THE RESTORE PROOF (*-backup-restore, openbao_backup.go): the target's
+//     CronJob is asserted suspended, the target is initialized and its root
+//     token handed to the Secret the spec names, the restore Job completes,
+//     and the restored state is read with the SOURCE's token: the marker
+//     written before the snapshot is present, the one written after is
+//     absent, the target's own init token is dead, and a replaced pod comes
+//     back unsealed with no human.
+//
+// FIXTURES (manifests named `fixture-*.yaml`, deployed as prerequisites of
+// a scenario) are verified for PRESENCE only — Services and Running pods —
+// because a fresh OpenBao is sealed by design and its initialization
+// belongs to the lane's seed script, which runs after the chain deploys.
+// The one fixture that does more is the transit key holder: verifying it
+// means MAKING it a key holder (see proveTransitKeyHolder).
 type OpenBaoVerifier struct {
 	Namespace string
 	Name      string
@@ -46,13 +76,33 @@ type OpenBaoVerifier struct {
 	Replicas int
 	// Behavioral enables the pod-replacement durability arm.
 	Behavioral bool
+	// AutoUnseal is set when the manifest declares an auto_unseal seal
+	// arm: init uses recovery shares, no unseal calls are made, and a
+	// replaced pod is expected Ready without help.
+	AutoUnseal bool
+	// Fixture marks a prerequisite manifest: presence only, no init.
+	Fixture bool
+	// TransitKeyHolder marks the dev-mode fixture that serves the transit
+	// seal of the vaults behind it in the chain.
+	TransitKeyHolder bool
+	// BackupProof switches on THE BACKUP PROOF.
+	BackupProof bool
+	// RestoreProof switches on THE RESTORE PROOF; RootTokenSecretName and
+	// RootTokenSecretKey are the spec's `restore.root_token`, where the
+	// verifier places the target's initial root token after init.
+	RestoreProof        bool
+	RootTokenSecretName string
+	RootTokenSecretKey  string
 }
 
 // initResponse is the sys/init reply — held in memory only; the keys and
-// root token are run-scoped bootstrap material and are NEVER logged.
+// root token are run-scoped bootstrap material and are NEVER logged. An
+// auto-unseal init returns recovery keys instead of unseal keys; the
+// verifier keeps neither past the run.
 type initResponse struct {
-	Keys      []string `json:"keys"`
-	RootToken string   `json:"root_token"`
+	Keys         []string `json:"keys"`
+	RecoveryKeys []string `json:"recovery_keys"`
+	RootToken    string   `json:"root_token"`
 }
 
 func (v *OpenBaoVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
@@ -77,11 +127,32 @@ func (v *OpenBaoVerifier) VerifyExists(ctx context.Context, kubeconfig string) e
 		return err
 	}
 
+	if v.Fixture && v.Mode != "dev" {
+		// A prerequisite vault: present and running is the whole
+		// verification. It is sealed by design; the lane's seed script
+		// initializes it once the chain is up.
+		fmt.Printf("  [verify] fixture %q is present and running; its initialization belongs to the seed script\n", v.Name)
+		return nil
+	}
+
 	if v.Mode == "dev" {
 		// Dev mode auto-initializes and auto-unseals with root token
 		// "root"; the round-trip on the built-in secret/ mount is the
 		// whole proof.
-		return v.proveKvRoundTrip(ctx, kubeconfig, "root", "", "secret", false)
+		if err := v.proveKvRoundTrip(ctx, kubeconfig, "root", "", "secret", false); err != nil {
+			return err
+		}
+		if v.TransitKeyHolder {
+			return v.proveTransitKeyHolder(ctx, kubeconfig, "root")
+		}
+		return nil
+	}
+
+	if v.RestoreProof {
+		// A restore target is not bootstrapped into its own state: it is
+		// initialized so the restore Job can run, and then it carries the
+		// SOURCE's state. The whole lifecycle is the restore proof.
+		return v.proveRestore(ctx, kubeconfig)
 	}
 
 	// ----------------------- the seal lifecycle ------------------------
@@ -90,27 +161,43 @@ func (v *OpenBaoVerifier) VerifyExists(ctx context.Context, kubeconfig string) e
 		return err
 	}
 
-	// Readiness flips only AFTER unseal — the probe IS the seal status.
+	// Readiness flips only AFTER unseal — the probe IS the seal status
+	// (for an auto-unseal seal, after the seal's own unseal that follows
+	// init).
 	if err := v.waitForReadyPods(ctx, kubeconfig, 5*time.Minute); err != nil {
 		return errors.Wrap(err, "pods never became Ready after unseal (the readiness-tracks-seal-status contract)")
 	}
 	fmt.Printf("  [verify] SEAL LIFECYCLE: all %d pods flipped to Ready after unseal\n", v.Replicas)
 
-	return v.proveKvRoundTrip(ctx, kubeconfig, rootToken, unsealKey, "e2e-proof", true)
+	if err := v.proveKvRoundTrip(ctx, kubeconfig, rootToken, unsealKey, "e2e-proof", true); err != nil {
+		return err
+	}
+	if v.BackupProof {
+		return v.proveBackup(ctx, kubeconfig, rootToken)
+	}
+	return nil
 }
 
 func (v *OpenBaoVerifier) VerifyAbsent(ctx context.Context, kubeconfig string) error {
 	return KubectlResourceAbsent(ctx, kubeconfig, "statefulset", v.Name, v.Namespace)
 }
 
-// bootstrap initializes through pod 0 and unseals every pod. Returns the
-// run-scoped root token and unseal key.
+// bootstrap initializes through pod 0 and, on a Shamir seal, unseals every
+// pod. Returns the run-scoped root token and unseal key (empty under
+// auto-unseal, where no unseal key exists).
 func (v *OpenBaoVerifier) bootstrap(ctx context.Context, kubeconfig string) (string, string, error) {
 	pod0 := v.Name + "-0"
 
 	initResp, err := v.initThroughPod(ctx, kubeconfig, pod0)
 	if err != nil {
 		return "", "", err
+	}
+
+	if v.AutoUnseal {
+		// The seal unseals the server itself right after init; readiness
+		// flipping is the proof, asserted by the caller.
+		fmt.Printf("  [verify] SEAL LIFECYCLE: auto-unseal — no unseal step; the seal unseals the server on its own\n")
+		return initResp.RootToken, "", nil
 	}
 
 	// Unseal every pod: Shamir unseal keys are per-CLUSTER but the
@@ -130,6 +217,11 @@ func (v *OpenBaoVerifier) bootstrap(ctx context.Context, kubeconfig string) (str
 
 // initThroughPod asserts the uninitialized state (501 from sys/health —
 // the server's documented status-code contract) and performs sys/init.
+// The init body follows the seal: a Shamir seal takes `secret_shares`; an
+// auto-unseal seal REFUSES that parameter ("not applicable to seal type",
+// the server's own check) and takes `recovery_shares` — the recovery keys
+// exist for the day the seal itself is lost, and the barrier key never
+// leaves the seal.
 func (v *OpenBaoVerifier) initThroughPod(ctx context.Context, kubeconfig string, pod string) (*initResponse, error) {
 	var out *initResponse
 	err := v.withPodPortForward(ctx, kubeconfig, pod, func(base string) error {
@@ -141,10 +233,13 @@ func (v *OpenBaoVerifier) initThroughPod(ctx context.Context, kubeconfig string,
 		}
 		fmt.Printf("  [verify] SEAL LIFECYCLE: sys/health returned %d — uninitialized, as a fresh install must be\n", status)
 
-		// Initialize with a single key share — the lab shape; real
+		// Initialize with a single share — the lab shape; real
 		// operators pick shares/threshold to their custody model.
-		_, body, err := v.httpOnce(ctx, http.MethodPost, base+"/v1/sys/init",
-			`{"secret_shares": 1, "secret_threshold": 1}`, "", 2*time.Minute, 200)
+		initBody := `{"secret_shares": 1, "secret_threshold": 1}`
+		if v.AutoUnseal {
+			initBody = `{"recovery_shares": 1, "recovery_threshold": 1}`
+		}
+		_, body, err := v.httpOnce(ctx, http.MethodPost, base+"/v1/sys/init", initBody, "", 2*time.Minute, 200)
 		if err != nil {
 			return errors.Wrap(err, "sys/init failed")
 		}
@@ -152,10 +247,20 @@ func (v *OpenBaoVerifier) initThroughPod(ctx context.Context, kubeconfig string,
 		if err := json.Unmarshal([]byte(body), &resp); err != nil {
 			return errors.Wrap(err, "parsing the init response")
 		}
-		if len(resp.Keys) == 0 || resp.RootToken == "" {
-			return errors.New("init returned no keys or no root token")
+		if resp.RootToken == "" {
+			return errors.New("init returned no root token")
 		}
-		fmt.Printf("  [verify] SEAL LIFECYCLE: initialized (1 key share) — keys held in-process only\n")
+		if v.AutoUnseal {
+			if len(resp.RecoveryKeys) == 0 {
+				return errors.New("auto-unseal init returned no recovery keys")
+			}
+			fmt.Printf("  [verify] SEAL LIFECYCLE: initialized (1 recovery share) — the recovery key and root token are held in-process only\n")
+		} else {
+			if len(resp.Keys) == 0 {
+				return errors.New("init returned no unseal keys")
+			}
+			fmt.Printf("  [verify] SEAL LIFECYCLE: initialized (1 key share) — keys held in-process only\n")
+		}
 		out = &resp
 		return nil
 	})
@@ -219,37 +324,9 @@ func (v *OpenBaoVerifier) proveKvRoundTrip(ctx context.Context, kubeconfig, toke
 	}
 
 	if v.Behavioral {
-		// Capture the doomed pod's uid first — a terminating pod keeps
-		// reporting phase Running for its whole grace period, so a
-		// phase-keyed wait returns instantly against the DYING pod and
-		// the re-unseal below would be burned as a no-op on the old
-		// (still unsealed) server. The replacement is only real once a
-		// pod with a NEW uid is Running — and NOT Ready: a replaced
-		// Shamir-mode pod is sealed by design until the unseal below.
-		oldUid, err := podUid(ctx, kubeconfig, v.Namespace, pod0)
-		if err != nil {
+		if err := v.replacePod0(ctx, kubeconfig, unsealKey); err != nil {
 			return err
 		}
-		fmt.Printf("  [verify] DURABILITY: deleting pod %q\n", pod0)
-		if out, err := exec.CommandContext(ctx, "kubectl", "--kubeconfig", kubeconfig,
-			"delete", "pod", pod0, "-n", v.Namespace, "--wait=false").CombinedOutput(); err != nil {
-			return errors.Wrapf(err, "deleting pod 0: %s", string(out))
-		}
-		if err := waitForPodReplaced(ctx, kubeconfig, v.Namespace, pod0, oldUid, false, 10*time.Minute); err != nil {
-			return errors.Wrap(err, "the replacement pod never reached Running")
-		}
-		if err := v.waitForRunningPods(ctx, kubeconfig, 10*time.Minute); err != nil {
-			return errors.Wrap(err, "pod 0 never returned after deletion")
-		}
-		// THE RESTART TRUTH: a replaced Shamir-mode pod comes back
-		// SEALED and must be unsealed again (auto-unseal arms exist to
-		// remove exactly this step). The run's own unseal key completes
-		// the lifecycle.
-		fmt.Printf("  [verify] DURABILITY: replacement pod is running and SEALED (the Shamir restart truth) — re-unsealing\n")
-		if err := v.unsealPod(ctx, kubeconfig, pod0, unsealKey, 6*time.Minute); err != nil {
-			return errors.Wrap(err, "re-unsealing the replacement pod")
-		}
-		fmt.Printf("  [verify] DURABILITY: replacement pod re-unsealed and rejoining the Raft cluster\n")
 	}
 
 	// Read the marker back — through the ACTIVE service in HA (the
@@ -291,6 +368,54 @@ func (v *OpenBaoVerifier) proveKvRoundTrip(ctx context.Context, kubeconfig, toke
 	} else {
 		fmt.Printf("  [verify] KV: marker read back — the server serves secrets\n")
 	}
+	return nil
+}
+
+// replacePod0 deletes pod 0 and proves the restart truth of the declared
+// seal. On Shamir the replacement comes back SEALED and is unsealed again
+// with the run's key (auto-unseal arms exist to remove exactly this step);
+// under auto-unseal the replacement must come back Ready with no help —
+// the seal doing its one job, asserted rather than assumed.
+func (v *OpenBaoVerifier) replacePod0(ctx context.Context, kubeconfig, unsealKey string) error {
+	pod0 := v.Name + "-0"
+
+	// Capture the doomed pod's uid first — a terminating pod keeps
+	// reporting phase Running for its whole grace period, so a
+	// phase-keyed wait returns instantly against the DYING pod and a
+	// re-unseal would be burned as a no-op on the old (still unsealed)
+	// server. The replacement is only real once a pod with a NEW uid is
+	// Running.
+	oldUid, err := podUid(ctx, kubeconfig, v.Namespace, pod0)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("  [verify] DURABILITY: deleting pod %q\n", pod0)
+	if out, err := exec.CommandContext(ctx, "kubectl", "--kubeconfig", kubeconfig,
+		"delete", "pod", pod0, "-n", v.Namespace, "--wait=false").CombinedOutput(); err != nil {
+		return errors.Wrapf(err, "deleting pod 0: %s", string(out))
+	}
+
+	if v.AutoUnseal {
+		// Ready with a new uid and no unseal call: the seal unsealed it.
+		if err := waitForPodReplaced(ctx, kubeconfig, v.Namespace, pod0, oldUid, true, 10*time.Minute); err != nil {
+			return errors.Wrap(err, "the replacement pod never became Ready on its own — the auto-unseal seal did not unseal it (check the seal's key and the server's identity)")
+		}
+		fmt.Printf("  [verify] DURABILITY: replacement pod came back Ready with no unseal step — the auto-unseal seal unsealed it\n")
+		return nil
+	}
+
+	// A replaced Shamir-mode pod is sealed by design: Running, NOT Ready.
+	if err := waitForPodReplaced(ctx, kubeconfig, v.Namespace, pod0, oldUid, false, 10*time.Minute); err != nil {
+		return errors.Wrap(err, "the replacement pod never reached Running")
+	}
+	if err := v.waitForRunningPods(ctx, kubeconfig, 10*time.Minute); err != nil {
+		return errors.Wrap(err, "pod 0 never returned after deletion")
+	}
+	fmt.Printf("  [verify] DURABILITY: replacement pod is running and SEALED (the Shamir restart truth) — re-unsealing\n")
+	if err := v.unsealPod(ctx, kubeconfig, pod0, unsealKey, 6*time.Minute); err != nil {
+		return errors.Wrap(err, "re-unsealing the replacement pod")
+	}
+	fmt.Printf("  [verify] DURABILITY: replacement pod re-unsealed and rejoining the Raft cluster\n")
 	return nil
 }
 
@@ -370,8 +495,8 @@ func (v *OpenBaoVerifier) withPortForward(ctx context.Context, kubeconfig, targe
 // openBaoScenarioShape pulls the verifier's inputs out of a
 // KubernetesOpenBao scenario manifest: which server mode the oneof
 // declares (absent = standalone, the chart default) and the replica
-// count (only HA runs more than one). Scenario manifests use the
-// snake_case field convention.
+// count (only HA runs more than one). Manifests may spell fields in
+// either protojson case; the keys read here are case-neutral.
 func openBaoScenarioShape(spec map[string]interface{}) (mode string, replicas int) {
 	mode, replicas = "standalone", 1
 	server := specNestedMap(spec, "server")
@@ -389,6 +514,31 @@ func openBaoScenarioShape(spec map[string]interface{}) (mode string, replicas in
 		return "ha", replicas
 	}
 	return
+}
+
+// openBaoAutoUnseal reports whether the manifest declares an auto_unseal
+// seal arm (any of the four): the bootstrap then uses recovery shares and
+// makes no unseal calls.
+func openBaoAutoUnseal(spec map[string]interface{}) bool {
+	seal := specNestedMap(spec, "autoUnseal", "auto_unseal")
+	return len(seal) > 0
+}
+
+// openBaoRestoreRootToken reads `restore.root_token` (name, key) — the
+// Secret the verifier fills with the target's initial root token so the
+// restore Job can proceed. Empty when the manifest declares no restore.
+func openBaoRestoreRootToken(spec map[string]interface{}) (name, key string) {
+	restore := specNestedMap(spec, "restore")
+	if restore == nil {
+		return "", ""
+	}
+	token := specNestedMap(restore, "rootToken", "root_token")
+	if token == nil {
+		return "", ""
+	}
+	name, _ = token["name"].(string)
+	key, _ = token["key"].(string)
+	return name, key
 }
 
 // httpOnce performs one JSON request with retries across the tunnel

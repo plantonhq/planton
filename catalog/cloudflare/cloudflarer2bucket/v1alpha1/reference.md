@@ -647,6 +647,13 @@ Fields on other kinds that can point at this resource:
 | KubernetesMongodb | `spec.backup.storages[].r2.bucket` | `status.outputs.bucket_name` |
 | KubernetesMongodb | `spec.backup.storages[].r2.accountId` | `status.outputs.account_id` |
 | KubernetesMongodb | `spec.backup.storages[].r2.jurisdiction` | `status.outputs.jurisdiction` |
+| KubernetesOpenBao | `spec.backup.objectStore.r2.bucket` | `status.outputs.bucket_name` |
+| KubernetesOpenBao | `spec.backup.objectStore.r2.accountId` | `status.outputs.account_id` |
+| KubernetesOpenBao | `spec.backup.objectStore.r2.jurisdiction` | `status.outputs.jurisdiction` |
+| KubernetesPlantonPlatform | `spec.database.postgresql.backup.objectStore.r2.accountId` | `status.outputs.account_id` |
+| KubernetesPlantonPlatform | `spec.database.postgresql.backup.objectStore.r2.jurisdiction` | `status.outputs.jurisdiction` |
+| KubernetesPlantonPlatform | `spec.database.postgresql.recoverFrom.objectStore.r2.accountId` | `status.outputs.account_id` |
+| KubernetesPlantonPlatform | `spec.database.postgresql.recoverFrom.objectStore.r2.jurisdiction` | `status.outputs.jurisdiction` |
 | KubernetesPostgres | `spec.bootstrap.recovery.objectStore.r2.accountId` | `status.outputs.account_id` |
 | KubernetesPostgres | `spec.bootstrap.recovery.objectStore.r2.jurisdiction` | `status.outputs.jurisdiction` |
 | KubernetesPostgres | `spec.backup.objectStore.r2.accountId` | `status.outputs.account_id` |

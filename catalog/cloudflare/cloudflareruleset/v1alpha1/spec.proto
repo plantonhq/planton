@@ -255,10 +255,14 @@ message CloudflareRulesetRatelimit {
   string score_response_header_name = 8;
 }
 
-// CloudflareRulesetLogging configures per-rule logging.
+// CloudflareRulesetLogging configures per-rule logging. Declaring the block
+// takes the rule's logging under management, and the switch says which way:
+// `enabled: false` stops request logging for this rule, `enabled: true` turns
+// it on. The switch is required inside the block because a block that does not
+// say on or off manages nothing.
 message CloudflareRulesetLogging {
-  // Whether request logging is enabled for this rule.
-  bool enabled = 1;
+  // Whether request logging is enabled for this rule. Required inside logging.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 }
 
 // CloudflareRulesetExposedCredentialCheck detects requests carrying leaked credentials.

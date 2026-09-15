@@ -102,7 +102,7 @@ Removed `resolveStringValueOrRef` from 2 files across the codebase:
 
 ## Impact
 
-- **Proto breaking change**: Field type changed from `string` to `StringValueOrRef` on same field numbers. Acceptable per DD05 since these resources are pre-production.
+- **Proto breaking change**: Field type changed from `string` to `StringValueOrRef` on same field numbers. Acceptable per DD05 since these resources are preproduction.
 - **IaC behavior change**: VPC, AKS cluster, and container registry no longer self-create resource groups. Users must provide one explicitly (or reference an `AzureResourceGroup`).
 - **Test updates**: All test files updated to use `stringRef()` helper with `foreignkeyv1.StringValueOrRef` struct literals.
 

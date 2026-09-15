@@ -95,7 +95,9 @@ func Resources(ctx *pulumi.Context, stackInput *azuremachinelearningworkspacev1a
 		workspaceArgs.Kind = pulumi.String(kind)
 	}
 
-	if spec.FeatureStore != nil {
+	// The block's switch (on by default once declared, filled by the platform
+	// before this runs) decides whether the feature store renders.
+	if spec.FeatureStore != nil && spec.FeatureStore.GetEnabled() {
 		featureStoreArgs := &machinelearning.WorkspaceFeatureStoreArgs{}
 		if spec.FeatureStore.ComputerSparkRuntimeVersion != "" {
 			featureStoreArgs.ComputerSparkRuntimeVersion = pulumi.String(spec.FeatureStore.ComputerSparkRuntimeVersion)

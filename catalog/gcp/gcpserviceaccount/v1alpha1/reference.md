@@ -79,6 +79,7 @@ spec:
 | `spec.userManagedKey.publicKeyData` | `string` |  |  |  |
 | `spec.userManagedKey.keepers` | `map<string, string>` |  |  |  |
 | `spec.userManagedKey.deletionPolicy` | `string` |  |  |  |
+| `spec.userManagedKey.enabled` | `bool` |  | `true` |  |
 | `spec.projectIamRoles` | `[]string` |  |  |  |
 | `spec.orgId` | `string` |  |  |  |
 | `spec.orgIamRoles` | `[]string` |  |  |  |
@@ -223,6 +224,16 @@ Deletion policy for the key itself:
 
 - rule: deletion_policy must be one of: DELETE, PREVENT
 
+### spec.userManagedKey.enabled
+
+`bool` · optional (explicit presence)
+
+Whether the key exists. Unset means yes: declaring the block has always
+meant creating a key, and this switch lets a manifest say the opposite
+out loud (the key is destroyed when it flips to false).
+
+- default: `true`
+
 ### spec.projectIamRoles
 
 `[]string`
@@ -346,6 +357,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesExternalSecretsOperator | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesMongodb | `spec.backup.storages[].gcs.credentials.serviceAccountKey` | `status.outputs.key_base64` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.workloadIdentityServiceAccount` | `status.outputs.email` |
+| KubernetesOpenBao | `spec.backup.objectStore.gcs.serviceAccountKey` | `status.outputs.key_base64` |
+| KubernetesOpenBao | `spec.backup.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesPostgres | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesServiceAccount | `spec.workloadIdentity.gke.serviceAccountEmail` | `status.outputs.email` |
 | KubernetesVelero | `spec.backupStorage.gcs.workloadIdentityServiceAccountEmail` | `status.outputs.email` |

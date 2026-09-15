@@ -93,6 +93,12 @@ var _ = ginkgo.Describe("AzureVirtualMachineSpec Custom Validation Tests", func(
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept boot diagnostics declared and switched off", func() {
+			spec := validLinuxSpec()
+			spec.BootDiagnostics = &AzureVirtualMachineBootDiagnostics{Enabled: proto.Bool(false)}
+			gomega.Expect(protovalidate.Validate(validInput(spec))).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept a Linux VM with password auth explicitly enabled", func() {
 			spec := validLinuxSpec()
 			spec.OsProfile.Linux.SshPublicKeys = nil

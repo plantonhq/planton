@@ -22,8 +22,9 @@ Scheduling truth: the chart ships a REQUIRED pod anti-affinity on
 hostname, so three replicas need three schedulable nodes.
 
 Change first: `server.ha.replicas` (odd counts only — 5 tolerates two
-losses), storage sizes to your churn, and pair with the snapshot agent
-(`snapshotAgent`) once a Kubernetes-auth role exists for it — Raft
-snapshots in an object store are the disaster-recovery story.
+losses), storage sizes to your churn, and declare a `backup` block —
+scheduled Raft snapshots to S3, GCS, Azure Blob, or Cloudflare R2 are the
+disaster-recovery story, and a fresh cluster with the same seal key
+restores from them declaratively.
 
 See [02-production-ha.yaml](./02-production-ha.yaml) for the manifest.

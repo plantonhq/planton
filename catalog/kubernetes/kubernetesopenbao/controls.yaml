@@ -69,16 +69,16 @@ spec:
         reference: Unset exports nothing. metrics.enabled renders the telemetry stanza with unauthenticated_metrics_access scoped to /v1/sys/metrics (without it the endpoint requires an OpenBao token and Prometheus cannot scrape); service_monitor_enabled additionally renders a ServiceMonitor for the Prometheus operator.
     - control_id: backup-recovery
       status: configurable
-      field_path: snapshot_agent
+      field_path: backup
       evidence:
         type: spec_default
-        reference: Unset means no backups. Enabling it runs a CronJob shipping Raft snapshots to an S3-compatible bucket on the declared schedule (default every 15 minutes) -- snapshot files outlive the cluster and restore with `bao operator raft snapshot restore`. Prerequisite the module cannot create -- the agent's Kubernetes-auth role inside OpenBao is runtime configuration.
+        reference: Unset means no backups. Declaring it runs a CronJob that takes a Raft snapshot through OpenBao's API and ships it to S3, GCS, Azure Blob, or Cloudflare R2 on the schedule (default hourly) -- snapshots outlive the cluster, and a fresh cluster with the same seal key restores from them declaratively through `restore`. One prerequisite the module cannot create -- the job's Kubernetes-auth login inside OpenBao is a four-command runtime recipe printed on the spec and by the failing job.
     - control_id: backup-retention-policy
       status: configurable
-      field_path: snapshot_agent.s3_expire_days
+      field_path: backup.retention_days
       evidence:
         type: spec_default
-        reference: Snapshots older than s3_expire_days (default 14) are expired from the bucket by the agent -- the retention window is a declared field, not an unbounded accumulation.
+        reference: Snapshots older than retention_days (default 14) are deleted from the store after each run -- the retention window is a declared field, not an unbounded accumulation; zero keeps everything and defers to the bucket's own lifecycle rules.
     - control_id: multi-zone-ha
       status: configurable
       field_path: server.ha

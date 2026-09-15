@@ -119,10 +119,10 @@ spec:
 | `spec.encryption.bucketKeyEnabled` | `bool` |  |  |  |
 | `spec.encryption.blockedEncryptionTypes` | `[]string` |  |  |  |
 | `spec.publicAccessBlock` | `AwsS3BucketPublicAccessBlock` |  |  |  |
-| `spec.publicAccessBlock.blockPublicAcls` | `bool` |  |  |  |
-| `spec.publicAccessBlock.blockPublicPolicy` | `bool` |  |  |  |
-| `spec.publicAccessBlock.ignorePublicAcls` | `bool` |  |  |  |
-| `spec.publicAccessBlock.restrictPublicBuckets` | `bool` |  |  |  |
+| `spec.publicAccessBlock.blockPublicAcls` | `bool` |  | `true` |  |
+| `spec.publicAccessBlock.blockPublicPolicy` | `bool` |  | `true` |  |
+| `spec.publicAccessBlock.ignorePublicAcls` | `bool` |  | `true` |  |
+| `spec.publicAccessBlock.restrictPublicBuckets` | `bool` |  | `true` |  |
 | `spec.objectOwnership` | `string` |  |  |  |
 | `spec.acl` | `string` |  |  |  |
 | `spec.policy` | `object` |  |  |  |
@@ -396,30 +396,40 @@ field comments for what each one controls.
 
 ### spec.publicAccessBlock.blockPublicAcls
 
-`bool`
+`bool` · optional (explicit presence)
 
 Reject new ACLs that grant public access (PUT requests carrying public
-ACLs fail).
+ACLs fail). Unset keeps the guard on.
+
+- default: `true`
 
 ### spec.publicAccessBlock.blockPublicPolicy
 
-`bool`
+`bool` · optional (explicit presence)
 
 Reject bucket policies that grant public access (the policy PUT fails).
+Unset keeps the guard on.
+
+- default: `true`
 
 ### spec.publicAccessBlock.ignorePublicAcls
 
-`bool`
+`bool` · optional (explicit presence)
 
-Ignore all existing public ACLs when evaluating access.
+Ignore all existing public ACLs when evaluating access. Unset keeps the
+guard on.
+
+- default: `true`
 
 ### spec.publicAccessBlock.restrictPublicBuckets
 
-`bool`
+`bool` · optional (explicit presence)
 
 Restrict access to this bucket to AWS service principals and authorized
 users within the bucket owner's account, even if a policy grants public
-access.
+access. Unset keeps the guard on.
+
+- default: `true`
 
 ### spec.objectOwnership
 

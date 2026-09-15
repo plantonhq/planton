@@ -28,14 +28,14 @@ The single most important thing to understand about NetworkPolicies: **policies 
 
 Isolation therefore comes from **selecting pods while allowing little**. The two canonical shapes fall out of this model:
 
-- **Default-deny**: an empty `pod_selector` (which selects ALL pods in the namespace) with `policy_types: [ingress, egress]` and no rules — everything is denied, and every subsequent policy is a targeted exception.
+- **Default-deny**: a `pod_selector` with `match_all: true` (or no `pod_selector` at all — both select ALL pods in the namespace) with `policy_types: [ingress, egress]` and no rules — everything is denied, and every subsequent policy is a targeted exception.
 - **Targeted allow**: select specific pods and enumerate the peers and ports allowed.
 
 ## Selectors and Peers
 
 ### `pod_selector` — which pods the policy governs
 
-An **empty** selector (no `match_labels`, no `match_expressions`) selects **all pods in the namespace** — the default-deny building block. To target one Planton workload, match on its `app` label: every Planton workload kind stamps `app: <workload-metadata-name>` on its pods as immutable selection identity, so `match_labels: {app: backend-api}` targets exactly that workload's pods.
+A selector with `match_all: true` (or no `pod_selector` at all) selects **all pods in the namespace** — the default-deny building block; a selector that names neither `match_all` nor a label criterion is refused, so selecting everything is always written down. To target one Planton workload, match on its `app` label: every Planton workload kind stamps `app: <workload-metadata-name>` on its pods as immutable selection identity, so `match_labels: {app: backend-api}` targets exactly that workload's pods.
 
 ### Peers — who traffic is allowed to/from
 
@@ -74,7 +74,7 @@ NetworkPolicy objects are only **enforced** by a CNI plugin that implements them
 ### Common
 
 - **`spec.namespace`**: Literal namespace name or reference to a KubernetesNamespace resource. A NetworkPolicy governs only pods in its own namespace. When omitted, the policy lands in the cluster's `default` namespace
-- **`spec.pod_selector`**: Which pods the policy applies to; empty selects all pods in the namespace
+- **`spec.pod_selector`**: Which pods the policy applies to; omit it or set `match_all: true` to select all pods in the namespace
 - **`spec.policy_types`**: The governed directions (`ingress`, `egress`); omit to use the Kubernetes inference rule
 - **`spec.ingress_rules`** / **`spec.egress_rules`**: The allow rules
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance

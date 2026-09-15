@@ -59,6 +59,7 @@ spec:
   automaticInstanceRepair:
     enabled: true
     gracePeriod: PT30M
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
   zones: ["1", "2", "3"]
   zoneBalance: true

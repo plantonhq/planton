@@ -4,6 +4,7 @@ package dev.planton.gcp.gcpvertexaiendpoint.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // GcpVertexAiEndpointPscAutomationConfig asks Vertex AI to CREATE the
 // consumer-side PSC endpoint automatically: for each entry, GCP provisions
@@ -39,6 +40,8 @@ message GcpVertexAiEndpointPscAutomationConfig {
 // PSC provides a private, secure connection to the endpoint without
 // requiring VPC peering. It is the modern networking model for Vertex AI
 // endpoints and supports fine-grained access control via project allowlists.
+// Declaring the block turns PSC on; `enabled: false` keeps its settings in
+// the manifest while switching it off.
 message GcpVertexAiEndpointPrivateServiceConnectConfig {
   // Projects allowed to create forwarding rules targeting this endpoint's
   // service attachment. Each entry is a GCP project ID or project number.
@@ -55,6 +58,13 @@ message GcpVertexAiEndpointPrivateServiceConnectConfig {
   // Secure PSC (IAM authorization on top of network reachability) is not
   // modeled: the GA provider does not expose it (pre-release surface only),
   // and GA is the catalog's parity baseline.
+
+  // Whether Private Service Connect is on. Unset means on: declaring the
+  // block has always meant enabling PSC, and this switch lets a manifest say
+  // the opposite out loud while keeping the allowlist and automation
+  // settings in place (the modules then render no PSC block, since the API
+  // rejects the block with its flag off).
+  optional bool enabled = 3 [(dev.planton.shared.options.default) = "true"];
 }
 
 // GcpVertexAiEndpointRequestResponseLoggingConfig samples online
@@ -124,13 +134,13 @@ message GcpVertexAiEndpointRequestResponseLoggingConfig {
 message GcpVertexAiEndpointSpec {
   option (buf.validate.message).cel = {
     id: "network_psc_mutual_exclusion"
-    expression: "!has(this.network) || !has(this.private_service_connect_config)"
+    expression: "!has(this.network) || !(has(this.private_service_connect_config) && (!has(this.private_service_connect_config.enabled) || this.private_service_connect_config.enabled))"
     message: "network and private_service_connect_config are mutually exclusive; use VPC peering or PSC, not both"
   };
 
   option (buf.validate.message).cel = {
     id: "dedicated_psc_mutual_exclusion"
-    expression: "this.dedicated_endpoint_enabled == false || !has(this.private_service_connect_config)"
+    expression: "this.dedicated_endpoint_enabled == false || !(has(this.private_service_connect_config) && (!has(this.private_service_connect_config.enabled) || this.private_service_connect_config.enabled))"
     message: "dedicated_endpoint_enabled and private_service_connect_config are mutually exclusive; dedicated DNS is not available with PSC"
   };
 

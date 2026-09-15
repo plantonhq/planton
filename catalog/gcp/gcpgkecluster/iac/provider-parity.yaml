@@ -365,3 +365,8 @@ specExclusions:
       Drives the module-derived workload_identity_config.workload_pool
       argument (the API fixes the pool name to PROJECT_ID.svc.id.goog);
       the spec holds the decision, the module composes the value.
+  # The logging block's own switch: GKE spells "integration off" as the
+  # empty component list, so the module writes [] when the switch is off and
+  # the switch itself has no argument to reach.
+  - field: spec.logging.enabled
+    reason: an explicit switch the module honors by writing an empty enable_components list when off -- GKE has no enabled flag on logging_config

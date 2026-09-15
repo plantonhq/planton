@@ -116,6 +116,36 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// KubernetesOpenBao: the composition handles plus the backup and
+			// restore handles (one `<name>-backup` noun for the ServiceAccount,
+			// policy, and CronJob; the restore Job's hashed name rides in as
+			// an output because no recipe can recompute it).
+			name: "KubernetesOpenBao",
+			kind: cloudresourcekind.CloudResourceKind_KubernetesOpenBao,
+			rawOutputs: map[string]interface{}{
+				"namespace":                   "openbao",
+				"service":                     "vault",
+				"internal_service":            "vault-internal",
+				"active_service":              "vault-active",
+				"ui_service":                  "vault-ui",
+				"api_endpoint":                "http://vault.openbao.svc.cluster.local:8200",
+				"port":                        "8200",
+				"service_account_name":        "vault",
+				"port_forward_command":        "kubectl port-forward -n openbao svc/vault 8200:8200",
+				"backup_service_account_name": "vault-backup",
+				"backup_policy_name":          "vault-backup",
+				"backup_auth_role":            "vault-backup",
+				"backup_cron_job_name":        "vault-backup",
+				"restore_job_name":            "vault-restore-9412eb87",
+			},
+			mustPopulate: []string{
+				"namespace", "service", "internal_service", "active_service",
+				"api_endpoint", "port", "service_account_name",
+				"backup_service_account_name", "backup_policy_name",
+				"backup_auth_role", "backup_cron_job_name", "restore_job_name",
+			},
+		},
+		{
 			// KubernetesPerconaMongoOperator: installation identity handles.
 			name: "KubernetesPerconaMongoOperator",
 			kind: cloudresourcekind.CloudResourceKind_KubernetesPerconaMongoOperator,

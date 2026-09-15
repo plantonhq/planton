@@ -1,0 +1,14 @@
+# The namespace every backup-and-restore lane of this kind runs in — owned
+# by this one fixture so the chain has exactly one creator (a second
+# create_namespace would fail AlreadyExists at deploy) and every other
+# fixture JOINS it by name: the in-cluster object store, the transit key
+# holder, the source vault, and the vault under test. One namespace across
+# the kind and GKE lanes is deliberate: the GKE batch's Workload Identity
+# bindings name it, and one seed script serves every restore lane without
+# discovering where things live.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNamespace
+metadata:
+  name: e2e-bao-lab
+spec:
+  name: e2e-bao-lab

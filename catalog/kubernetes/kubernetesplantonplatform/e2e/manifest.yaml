@@ -27,6 +27,25 @@ spec:
     postgresql:
       replicas: 2
       storage_size: 20Gi
+      # The platform's own database archives to a Cloudflare R2 bucket. The
+      # values here are placeholders in the right shape (an offline plan
+      # cannot resolve a reference); the real declaration is BY REFERENCE
+      # to the bucket and token resources — see presets/06-backups-to-r2.yaml.
+      backup:
+        object_store:
+          destination_path: s3://planton-backups/planton
+          r2:
+            account_id:
+              value: 0123456789abcdef0123456789abcdef
+            jurisdiction:
+              value: default
+            credentials:
+              access_key_id:
+                value: replace-with-the-token-id
+              secret_access_key:
+                value: replace-with-the-token-secret
+        retention_policy: 30d
+        schedule: "0 0 2 * * *"
     redis:
       storage_size: 2Gi
   ingress:
@@ -88,6 +107,7 @@ spec:
   prerequisites:
     postgres_operator: auto
     tekton_pipelines: auto
+    postgres_backup_plugin: auto
   control_plane:
     replicas: 1
   console:

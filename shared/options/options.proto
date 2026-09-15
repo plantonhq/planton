@@ -79,6 +79,29 @@ extend google.protobuf.FieldOptions {
   // is skipped when no branch rides the deploy — the field's authored or
   // defaulted value stands.
   bool artifact_version_slot = 60008;
+
+  // Marks a field that exists so the manifest can say what the wire spells by
+  // the absence or shape of OTHER fields -- and that no engine forwards. The
+  // canonical cases: a selector's `match_all: true` where the upstream spelling
+  // is an empty selector, and an access config's `ephemeral: true` where the
+  // provider's spelling is a config without a static address. Without such a
+  // field, "select everything" and "nothing was authored" are the same empty
+  // block on every door, and a form cannot tell one from the other.
+  //
+  // Every engine path honors the marker by construction, never per kind: the
+  // tfvars converter drops the field before any Terraform module sees it (so a
+  // verbatim CRD projection never reaches the apiserver with an unknown key,
+  // and a hand-written module never declares a variable for it), the
+  // variables.tf generator emits no variable, and provider parity treats it as
+  // an exclusion with a derived reason. A Pulumi module reads the field only
+  // to derive the upstream shape (or not at all, where the validation rules
+  // already guarantee that shape) and never forwards it.
+  //
+  // The field's validation rules carry its meaning: a message-level rule
+  // forbids the marked field beside the content it stands in for, and another
+  // refuses the block that names neither. The marker says nothing about
+  // validation; it only says "this word is the manifest's, not the wire's".
+  bool manifest_only = 60009;
 }
 
 extend google.protobuf.EnumValueOptions {

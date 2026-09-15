@@ -3,6 +3,7 @@ syntax = "proto3";
 package dev.planton.aws.awssesaccountsettings.v1alpha1;
 
 import "buf/validate/validate.proto";
+import "shared/options/options.proto";
 
 // AwsSesAccountSettingsSpec defines SES (SESv2) account-level
 // settings for one AWS region: the account suppression list and the
@@ -34,8 +35,8 @@ message AwsSesAccountSettingsSpec {
 
   // The account-level suppression list configuration. Omit the arm to
   // leave the account's suppression settings untouched; set it with
-  // an empty reasons list to explicitly turn account-level
-  // auto-suppression OFF.
+  // `enabled: false` to explicitly turn account-level auto-suppression
+  // OFF.
   AwsSesAccountSettingsSuppression suppression = 2;
 
   // The Virtual Deliverability Manager (VDM) posture - SES's
@@ -47,19 +48,32 @@ message AwsSesAccountSettingsSpec {
 // AwsSesAccountSettingsSuppression configures which bounce/complaint
 // events automatically add recipient addresses to the account-level
 // suppression list (suppressed addresses are skipped on every send
-// from the account).
+// from the account). The arm says which way it manages the list:
+// `enabled: true` (the default) with the events that suppress, or
+// `enabled: false` to turn account-level auto-suppression OFF out loud.
 message AwsSesAccountSettingsSuppression {
+  // Suppression that is on must name the events; suppression that is off
+  // names none.
+  option (buf.validate.message).cel = {
+    id: "suppression_on_names_its_events"
+    message: "suppression is on but names no events - list BOUNCE and/or COMPLAINT in reasons, or set enabled: false to turn account-level auto-suppression off"
+    expression: "(has(this.enabled) && !this.enabled) || this.reasons.size() > 0"
+  };
+  option (buf.validate.message).cel = {
+    id: "suppression_off_names_no_events"
+    message: "suppression is off but still names events - drop reasons, or set enabled: true to suppress on them"
+    expression: "!(has(this.enabled) && !this.enabled) || this.reasons.size() == 0"
+  };
+
   // Which events auto-suppress a recipient:
   //   - "BOUNCE": hard bounces add the address to the list.
   //   - "COMPLAINT": spam complaints add the address to the list.
-  // Both together is the recommended reputation posture. An EMPTY
-  // list is meaningful: it explicitly disables account-level
-  // auto-suppression (configuration sets can still enable their own).
+  // Both together is the recommended reputation posture.
   //
   // Applying this arm overwrites whatever was previously set - and
   // the setting PERSISTS after this component is destroyed (SES has
   // no delete for it; the last-applied reasons stay in effect). To
-  // stop suppressing, apply an empty list before destroying.
+  // stop suppressing, apply `enabled: false` before destroying.
   repeated string reasons = 1 [(buf.validate.field).repeated = {
     unique: true
     items: {
@@ -71,16 +85,24 @@ message AwsSesAccountSettingsSuppression {
       }
     }
   }];
+
+  // Whether account-level auto-suppression is on. Unset means on:
+  // declaring the arm with events has always meant suppressing on them,
+  // and `enabled: false` is the explicit OFF (SES then holds an empty
+  // reason list).
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
 }
 
 // AwsSesAccountSettingsVdm configures the Virtual Deliverability
 // Manager: engagement dashboards and Guardian delivery optimization.
 message AwsSesAccountSettingsVdm {
-  // Master switch for VDM on the account. Destroying this component
-  // resets VDM to disabled (unlike the suppression arm, this one IS
-  // reverted on destroy). VDM carries its own AWS pricing - enabling
-  // it is a billing decision, not just a feature flag.
-  bool enabled = 1;
+  // Master switch for VDM on the account. Required inside vdm: declaring
+  // the arm takes VDM under management, and the switch says which way.
+  // Destroying this component resets VDM to disabled (unlike the
+  // suppression arm, this one IS reverted on destroy). VDM carries its own
+  // AWS pricing - enabling it is a billing decision, not just a feature
+  // flag.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 
   // Track open/click engagement metrics in the VDM dashboard. Unset
   // leaves AWS's default for the account; only meaningful while

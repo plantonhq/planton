@@ -39,14 +39,30 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonplatformv1alpha
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
+	// ------------------------------ object-store Secrets -------------------
+	// The credentials the database's backup and recovery stores declare,
+	// materialized before the CR so the database is born archiving.
+	var namespaceDeps []pulumi.ResourceOption
+	if createdNamespace != nil {
+		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+	}
+	objectStoreSecrets, err := createObjectStoreSecrets(ctx, locals, kubernetesProvider, namespaceDeps)
+	if err != nil {
+		return errors.Wrap(err, "failed to create the object-store Secrets")
+	}
+
 	// ------------------------------ the platform CR -----------------------
 	resourceOptions := []pulumi.ResourceOption{
 		pulumi.Provider(kubernetesProvider),
 		// Headroom for the delete — see the DESTROY note above.
 		pulumi.Timeouts(&pulumi.CustomTimeouts{Delete: vars.DeleteTimeout}),
 	}
+	crDeps := append([]pulumi.Resource{}, objectStoreSecrets...)
 	if createdNamespace != nil {
-		resourceOptions = append(resourceOptions, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
+		crDeps = append(crDeps, createdNamespace)
+	}
+	if len(crDeps) > 0 {
+		resourceOptions = append(resourceOptions, pulumi.DependsOn(crDeps))
 	}
 
 	_, err = apiextensions.NewCustomResource(ctx, locals.PlatformName,

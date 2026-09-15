@@ -1,0 +1,66 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonPlatform
+metadata:
+  name: planton
+spec:
+  namespace:
+    value: planton
+  create_namespace: true
+  version: v0.0.62
+  database:
+    postgresql:
+      # The platform's own database archives continuously (every write, as
+      # WAL) plus a nightly base backup into a Cloudflare R2 bucket you own,
+      # kept 30 days. Composed entirely from other catalog resources: a
+      # CloudflareR2Bucket (the archive) and a CloudflareAccountApiToken
+      # scoped to it (the credential) — nothing is typed here, and the
+      # module materializes the credential as a Secret before the platform
+      # so the database is born archiving. Rotating the token is a new key
+      # pair the Secret follows on the next apply.
+      backup:
+        object_store:
+          # The bucket is the CloudflareR2Bucket's bucket_name; the path after
+          # it is this platform's — its archive is filed beneath it under the
+          # platform's own server name, so several platforms can share one
+          # path without touching each other's archive.
+          destination_path: s3://acme-platform-backups/platform
+          r2:
+            # The account and jurisdiction follow the bucket by reference, so
+            # the S3 host the operator composes always matches where the
+            # bucket lives (an eu/fedramp/us bucket is served only through
+            # its own host).
+            account_id:
+              valueFrom:
+                kind: CloudflareR2Bucket
+                name: acme-platform-backups
+                fieldPath: status.outputs.account_id
+            jurisdiction:
+              valueFrom:
+                kind: CloudflareR2Bucket
+                name: acme-platform-backups
+                fieldPath: status.outputs.jurisdiction
+            # The credential is a CloudflareAccountApiToken carrying `Workers
+            # R2 Storage Bucket Item Write` on this bucket; the token kind
+            # exports itself as the S3 key pair R2 authenticates. R2 has no
+            # keyless posture, so a credential is always declared — never
+            # typed.
+            credentials:
+              access_key_id:
+                valueFrom:
+                  kind: CloudflareAccountApiToken
+                  name: acme-platform-backups-writer
+                  fieldPath: status.outputs.r2_access_key_id
+              secret_access_key:
+                valueFrom:
+                  kind: CloudflareAccountApiToken
+                  name: acme-platform-backups-writer
+                  fieldPath: status.outputs.r2_secret_access_key
+        retention_policy: 30d
+        # SIX-field cron, seconds first — 02:00 UTC nightly. The first base
+        # backup runs the moment backups are declared, whatever this says.
+        schedule: "0 0 2 * * *"
+  # Requires operator chart 0.15.0 or newer (the first whose definition
+  # knows `backup` and installs the Barman Cloud plugin beside CloudNativePG).
+  # To restore a platform from this archive, declare it again with
+  # `database.postgresql.recover_from` naming the same store and the
+  # source's `status.backup.serverName`; see the GUIDE.

@@ -4,6 +4,7 @@ package dev.planton.gcp.gcpvertexainotebook.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 // GcpVertexAiNotebookBootDisk defines the boot disk configuration for the
 // notebook instance. If not specified, GCP provisions a 150 GB PD_SSD
@@ -152,7 +153,9 @@ message GcpVertexAiNotebookNetworkInterface {
 // Computing for the notebook VM: guest memory is encrypted in use with
 // AMD SEV (Secure Encrypted Virtualization), protecting data even from
 // the host hypervisor. Requires an AMD-based machine type that supports
-// SEV (e.g., the n2d family). Immutable after creation.
+// SEV (e.g., the n2d family). Immutable after creation. Declaring the block
+// turns it on; `enabled: false` keeps the setting in the manifest while
+// switching it off.
 message GcpVertexAiNotebookConfidentialInstanceConfig {
   // Confidential computing technology for the instance.
   // The only supported value is SEV (AMD Secure Encrypted Virtualization).
@@ -162,6 +165,11 @@ message GcpVertexAiNotebookConfidentialInstanceConfig {
     expression: "this == '' || this == 'SEV'"
     message: "confidential_instance_type must be SEV (the only supported confidential technology)"
   }];
+
+  // Whether Confidential Computing is on. Unset means on: declaring the
+  // block has always meant enabling it, and this switch lets a manifest say
+  // the opposite out loud.
+  optional bool enabled = 2 [(dev.planton.shared.options.default) = "true"];
 }
 
 // GcpVertexAiNotebookReservationAffinity controls which Compute Engine
@@ -242,22 +250,25 @@ message GcpVertexAiNotebookContainerImage {
 
 // GcpVertexAiNotebookShieldedInstanceConfig defines Shielded VM settings
 // for the notebook instance. Shielded VMs provide verifiable integrity
-// to protect against rootkits and bootkits.
+// to protect against rootkits and bootkits. Each switch carries presence: a
+// switch left unset leaves GCP's default for it, and an explicit `false`
+// actively turns that protection off (vTPM and integrity monitoring are on
+// by default, so `false` on them is a real, deliberate statement).
 message GcpVertexAiNotebookShieldedInstanceConfig {
   // Enable Secure Boot. Ensures only verified boot software runs.
   // Disabled by default because some ML libraries may not have signed
   // boot loaders.
-  bool enable_secure_boot = 1;
+  optional bool enable_secure_boot = 1;
 
   // Enable vTPM (Virtual Trusted Platform Module).
   // Provides measured boot integrity and key generation.
-  // Enabled by default.
-  bool enable_vtpm = 2;
+  // Enabled by default; an explicit false turns it off.
+  optional bool enable_vtpm = 2;
 
   // Enable integrity monitoring. Compares boot measurements against
   // a trusted baseline.
-  // Enabled by default.
-  bool enable_integrity_monitoring = 3;
+  // Enabled by default; an explicit false turns it off.
+  optional bool enable_integrity_monitoring = 3;
 }
 
 // GcpVertexAiNotebookSpec defines the configuration for a GCP Vertex AI

@@ -292,7 +292,7 @@ func createUniformLinux(ctx *pulumi.Context, locals *Locals, azureProvider pulum
 		args.Identity = identityArgs
 	}
 
-	if diagnostics := spec.BootDiagnostics; diagnostics != nil {
+	if diagnostics := spec.BootDiagnostics; diagnostics != nil && diagnostics.GetEnabled() {
 		diagArgs := compute.LinuxVirtualMachineScaleSetBootDiagnosticsArgs{}
 		if diagnostics.StorageAccountUri != "" {
 			diagArgs.StorageAccountUri = pulumi.StringPtr(diagnostics.StorageAccountUri)

@@ -70,6 +70,33 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 			if pg.GetStorageClassName() != "" {
 				postgresql["storageClassName"] = pg.GetStorageClassName()
 			}
+			if b := pg.GetBackup(); b != nil {
+				backup := map[string]interface{}{
+					"objectStore": objectStoreBody(b.GetObjectStore(),
+						locals.BackupCredentialsSecretName, locals.BackupEndpointCaSecretName),
+				}
+				if b.RetentionPolicy != nil && b.GetRetentionPolicy() != "" {
+					backup["retentionPolicy"] = b.GetRetentionPolicy()
+				}
+				if b.Schedule != nil && b.GetSchedule() != "" {
+					backup["schedule"] = b.GetSchedule()
+				}
+				if len(b.GetServiceAccountAnnotations()) > 0 {
+					backup["serviceAccountAnnotations"] = stringMapToInterface(b.GetServiceAccountAnnotations())
+				}
+				postgresql["backup"] = backup
+			}
+			if r := pg.GetRecoverFrom(); r != nil {
+				recoverFrom := map[string]interface{}{
+					"objectStore": objectStoreBody(r.GetObjectStore(),
+						locals.RecoveryCredentialsSecretName, locals.RecoveryEndpointCaSecretName),
+					"serverName": r.GetServerName(),
+				}
+				if r.GetTargetTime() != "" {
+					recoverFrom["targetTime"] = r.GetTargetTime()
+				}
+				postgresql["recoverFrom"] = recoverFrom
+			}
 			if len(postgresql) > 0 {
 				database["postgresql"] = postgresql
 			}
@@ -380,6 +407,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		if p.TektonPipelines != nil && p.GetTektonPipelines() != "" {
 			prerequisites["tektonPipelines"] = p.GetTektonPipelines()
 		}
+		if p.PostgresBackupPlugin != nil && p.GetPostgresBackupPlugin() != "" {
+			prerequisites["postgresBackupPlugin"] = p.GetPostgresBackupPlugin()
+		}
 		if len(prerequisites) > 0 {
 			out["prerequisites"] = prerequisites
 		}
@@ -437,6 +467,69 @@ func imageMap(img *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformIm
 	}
 	if len(out) == 0 {
 		return nil
+	}
+	return out
+}
+
+// objectStoreBody renders a backup or recovery store as the CR's objectStore:
+// the destination path and exactly one backend arm, in the operator's
+// vocabulary. The spec declares credential VALUES; the CR names the Secret
+// this module materialized for them (object_store_secrets.go), and names
+// none for a keyless posture so the operator reads the pods' cloud identity
+// instead. R2 always names one — R2 has no keyless posture — and passes
+// account and jurisdiction through: composing the S3 endpoint from them is
+// the operator's job, so there is exactly one host table in the product.
+// An arm with nothing to say (keyless gcs) still renders as an empty
+// object: its presence is what selects the backend.
+func objectStoreBody(store *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformObjectStore,
+	credentialsSecretName, endpointCaSecretName string) map[string]interface{} {
+	out := map[string]interface{}{
+		"destinationPath": store.GetDestinationPath(),
+	}
+	switch {
+	case store.GetS3() != nil:
+		s3 := store.GetS3()
+		body := map[string]interface{}{}
+		if s3.GetEndpointUrl() != "" {
+			body["endpointURL"] = s3.GetEndpointUrl()
+		}
+		if s3.GetRegion() != "" {
+			body["region"] = s3.GetRegion()
+		}
+		if s3.GetAccessKeys() != nil {
+			body["credentialsSecretName"] = credentialsSecretName
+		}
+		if s3.GetEndpointCaPem() != "" {
+			body["endpointCASecretRef"] = map[string]interface{}{
+				"name": endpointCaSecretName,
+				"key":  vars.EndpointCaSecretKey,
+			}
+		}
+		out["s3"] = body
+	case store.GetGcs() != nil:
+		body := map[string]interface{}{}
+		if store.GetGcs().GetServiceAccountKeyJson() != "" {
+			body["credentialsSecretName"] = credentialsSecretName
+		}
+		out["gcs"] = body
+	case store.GetAzureBlob() != nil:
+		body := map[string]interface{}{
+			"storageAccount": store.GetAzureBlob().GetStorageAccount(),
+		}
+		if store.GetAzureBlob().GetConnectionString() != "" {
+			body["credentialsSecretName"] = credentialsSecretName
+		}
+		out["azureBlob"] = body
+	case store.GetR2() != nil:
+		r2 := store.GetR2()
+		body := map[string]interface{}{
+			"accountId":             r2.GetAccountId().GetValue(),
+			"credentialsSecretName": credentialsSecretName,
+		}
+		if r2.GetJurisdiction().GetValue() != "" {
+			body["jurisdiction"] = r2.GetJurisdiction().GetValue()
+		}
+		out["r2"] = body
 	}
 	return out
 }

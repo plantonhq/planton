@@ -17,15 +17,15 @@ variable "spec" {
     project_id = optional(string, "")
     sign_in = optional(object({
       email = optional(object({
-        enabled           = optional(bool, false)
+        enabled           = optional(bool)
         password_required = optional(bool, false)
       }))
       phone_number = optional(object({
-        enabled            = optional(bool, false)
+        enabled            = optional(bool)
         test_phone_numbers = optional(map(string), {})
       }))
       anonymous = optional(object({
-        enabled = optional(bool, false)
+        enabled = optional(bool)
       }))
       allow_duplicate_emails = optional(bool, false)
     }))

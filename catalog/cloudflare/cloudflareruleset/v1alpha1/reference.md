@@ -275,7 +275,7 @@ spec:
 | `spec.rules[].ratelimit.scorePerPeriod` | `int64` |  |  |  |
 | `spec.rules[].ratelimit.scoreResponseHeaderName` | `string` |  |  |  |
 | `spec.rules[].logging` | `CloudflareRulesetLogging` |  |  |  |
-| `spec.rules[].logging.enabled` | `bool` |  |  |  |
+| `spec.rules[].logging.enabled` | `bool` | yes |  |  |
 | `spec.rules[].exposedCredentialCheck` | `CloudflareRulesetExposedCredentialCheck` |  |  |  |
 | `spec.rules[].exposedCredentialCheck.usernameExpression` | `string` | yes |  |  |
 | `spec.rules[].exposedCredentialCheck.passwordExpression` | `string` | yes |  |  |
@@ -1855,9 +1855,11 @@ Per-rule logging configuration (override the rule's default log behavior).
 
 ### spec.rules[].logging.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Whether request logging is enabled for this rule.
+Whether request logging is enabled for this rule. Required inside logging.
+
+- rule: {"required":true}
 
 ### spec.rules[].exposedCredentialCheck
 

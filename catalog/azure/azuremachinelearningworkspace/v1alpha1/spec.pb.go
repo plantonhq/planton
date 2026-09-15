@@ -706,7 +706,9 @@ func (x *AzureMachineLearningWorkspaceIdentity) GetIdentityIds() []*v1.StringVal
 	return nil
 }
 
-// Feature-store settings (kind FEATURE_STORE only).
+// Feature-store settings (kind FEATURE_STORE only). Declaring the block with
+// its switch on (the default) is the feature store; `enabled: false` keeps
+// the settings in the manifest for a workspace of another kind.
 type AzureMachineLearningWorkspaceFeatureStore struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The Spark runtime version of the feature store's materialization
@@ -718,8 +720,12 @@ type AzureMachineLearningWorkspaceFeatureStore struct {
 	// The name of the workspace connection pointing at the ONLINE
 	// store (the low-latency serving data).
 	OnlineConnectionName string `protobuf:"bytes,3,opt,name=online_connection_name,json=onlineConnectionName,proto3" json:"online_connection_name,omitempty"`
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
+	// Whether the feature store is on. Unset means on: declaring the block has
+	// always meant a feature store, and this switch lets a manifest say the
+	// opposite out loud (a FEATURE_STORE workspace still requires it on).
+	Enabled       *bool `protobuf:"varint,4,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureMachineLearningWorkspaceFeatureStore) Reset() {
@@ -771,6 +777,13 @@ func (x *AzureMachineLearningWorkspaceFeatureStore) GetOnlineConnectionName() st
 		return x.OnlineConnectionName
 	}
 	return ""
+}
+
+func (x *AzureMachineLearningWorkspaceFeatureStore) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // Customer-managed-key encryption for the workspace's data at rest.
@@ -1199,7 +1212,7 @@ var File_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto protore
 
 const file_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azuremachinelearningworkspace/v1alpha1/spec.proto\x128dev.planton.azure.azuremachinelearningworkspace.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x98\"\n" +
+	"?catalog/azure/azuremachinelearningworkspace/v1alpha1/spec.proto\x128dev.planton.azure.azuremachinelearningworkspace.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xde#\n" +
 	"!AzureMachineLearningWorkspaceSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
@@ -1235,9 +1248,11 @@ const file_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto_rawDe
 	"\x1aservice_tag_outbound_rules\x18\x1b \x03(\v2m.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceServiceTagOutboundRuleR\x17serviceTagOutboundRules\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9d\t\xbaH\x99\t\x1a\x97\x01\n" +
-	"/feature_store_block_only_for_feature_store_kind\x128feature_store can only be set when kind is FEATURE_STORE\x1a*!has(this.feature_store) || this.kind == 2\x1a\x83\x01\n" +
-	"!feature_store_kind_requires_block\x123kind FEATURE_STORE requires the feature_store block\x1a)this.kind != 2 || has(this.feature_store)\x1a\xab\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xe3\n" +
+	"\xbaH\xdf\n" +
+	"\x1a\x84\x02\n" +
+	"/feature_store_block_only_for_feature_store_kind\x12_feature_store can only be on when kind is FEATURE_STORE -- set enabled: false or drop the block\x1ap!(has(this.feature_store) && (!has(this.feature_store.enabled) || this.feature_store.enabled)) || this.kind == 2\x1a\xdc\x01\n" +
+	"!feature_store_kind_requires_block\x12Fkind FEATURE_STORE requires the feature_store block with its switch on\x1aothis.kind != 2 || (has(this.feature_store) && (!has(this.feature_store.enabled) || this.feature_store.enabled))\x1a\xab\x01\n" +
 	"+service_side_encryption_requires_encryption\x12=service_side_encryption_enabled requires the encryption block\x1a=!this.service_side_encryption_enabled || has(this.encryption)\x1a\xf9\x02\n" +
 	"8serverless_no_public_ip_needs_subnet_or_public_workspace\x12pserverless_compute with public_ip_enabled false requires a subnet_id when public_network_access_enabled is false\x1a\xca\x01!(has(this.serverless_compute) && !this.serverless_compute.public_ip_enabled && !has(this.serverless_compute.subnet_id) && has(this.public_network_access_enabled) && !this.public_network_access_enabled)\x1a\xcc\x02\n" +
 	"'outbound_rule_names_unique_across_types\x12\x84\x01outbound rule names must be unique across the fqdn, private-endpoint and service-tag lists together -- they share one ARM collection\x1a\x99\x01(this.fqdn_outbound_rules.map(r, r.name) + this.private_endpoint_outbound_rules.map(r, r.name) + this.service_tag_outbound_rules.map(r, r.name)).unique()B \n" +
@@ -1245,11 +1260,14 @@ const file_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto_rawDe
 	"%AzureMachineLearningWorkspaceIdentity\x12\x7f\n" +
 	"\x04type\x18\x01 \x01(\x0e2c.dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceIdentityTypeB\x06\xbaH\x03\xc8\x01\x01R\x04type\x12z\n" +
 	"\fidentity_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\x8c\x10\x92\xd4a\x1astatus.outputs.identity_idR\videntityIds:\xf2\x01\xbaH\xee\x01\x1a\xeb\x01\n" +
-	"\x17identity_ids_match_type\x12midentity_ids is required for USER_ASSIGNED and SYSTEM_AND_USER_ASSIGNED and must be empty for SYSTEM_ASSIGNED\x1aa(this.type == 2 || this.type == 3) ? this.identity_ids.size() > 0 : this.identity_ids.size() == 0\"\xde\x01\n" +
+	"\x17identity_ids_match_type\x12midentity_ids is required for USER_ASSIGNED and SYSTEM_AND_USER_ASSIGNED and must be empty for SYSTEM_ASSIGNED\x1aa(this.type == 2 || this.type == 3) ? this.identity_ids.size() > 0 : this.identity_ids.size() == 0\"\x93\x02\n" +
 	")AzureMachineLearningWorkspaceFeatureStore\x12C\n" +
 	"\x1ecomputer_spark_runtime_version\x18\x01 \x01(\tR\x1bcomputerSparkRuntimeVersion\x126\n" +
 	"\x17offline_connection_name\x18\x02 \x01(\tR\x15offlineConnectionName\x124\n" +
-	"\x16online_connection_name\x18\x03 \x01(\tR\x14onlineConnectionName\"\xbe\x03\n" +
+	"\x16online_connection_name\x18\x03 \x01(\tR\x14onlineConnectionName\x12'\n" +
+	"\aenabled\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xbe\x03\n" +
 	"'AzureMachineLearningWorkspaceEncryption\x12\x84\x01\n" +
 	"\fkey_vault_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x0f\x92\xd4a\x1bstatus.outputs.key_vault_id\x98\xd4a\x01R\n" +
 	"keyVaultId\x12w\n" +
@@ -1382,6 +1400,7 @@ func file_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto_init()
 		return
 	}
 	file_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

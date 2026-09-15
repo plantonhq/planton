@@ -87,6 +87,25 @@ spec:
     postgresql:
       replicas: 2
       storage_size: 20Gi
+      # The platform's own database archives to a Cloudflare R2 bucket. The
+      # values here are placeholders in the right shape (an offline plan
+      # cannot resolve a reference); the real declaration is BY REFERENCE
+      # to the bucket and token resources — see presets/06-backups-to-r2.yaml.
+      backup:
+        object_store:
+          destination_path: s3://planton-backups/planton
+          r2:
+            account_id:
+              value: 0123456789abcdef0123456789abcdef
+            jurisdiction:
+              value: default
+            credentials:
+              access_key_id:
+                value: replace-with-the-token-id
+              secret_access_key:
+                value: replace-with-the-token-secret
+        retention_policy: 30d
+        schedule: "0 0 2 * * *"
     redis:
       storage_size: 2Gi
   ingress:
@@ -148,6 +167,7 @@ spec:
   prerequisites:
     postgres_operator: auto
     tekton_pipelines: auto
+    postgres_backup_plugin: auto
   control_plane:
     replicas: 1
   console:
@@ -174,6 +194,59 @@ spec:
 | `spec.database.postgresql.replicas` | `int32` |  | `1` |  |
 | `spec.database.postgresql.storageSize` | `string` |  |  |  |
 | `spec.database.postgresql.storageClassName` | `string` |  |  |  |
+| `spec.database.postgresql.backup` | `KubernetesPlantonPlatformPostgresqlBackup` |  |  |  |
+| `spec.database.postgresql.backup.objectStore` | `KubernetesPlantonPlatformObjectStore` | yes |  |  |
+| `spec.database.postgresql.backup.objectStore.destinationPath` | `string` | yes |  |  |
+| `spec.database.postgresql.backup.objectStore.s3` | `KubernetesPlantonPlatformS3ObjectStore` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.s3.region` | `string` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.s3.endpointUrl` | `string` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.s3.endpointCaPem` | `string` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.s3.keyless` | `bool` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.s3.accessKeys` | `KubernetesPlantonPlatformS3AccessKeys` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.s3.accessKeys.accessKeyId` | `string` | yes |  |  |
+| `spec.database.postgresql.backup.objectStore.s3.accessKeys.secretAccessKey` | `string` (sensitive) | yes |  |  |
+| `spec.database.postgresql.backup.objectStore.gcs` | `KubernetesPlantonPlatformGcsObjectStore` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.gcs.keyless` | `bool` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.gcs.serviceAccountKeyJson` | `string` (sensitive) |  |  |  |
+| `spec.database.postgresql.backup.objectStore.azureBlob` | `KubernetesPlantonPlatformAzureBlobObjectStore` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.azureBlob.storageAccount` | `string` | yes |  |  |
+| `spec.database.postgresql.backup.objectStore.azureBlob.keyless` | `bool` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.azureBlob.connectionString` | `string` (sensitive) |  |  |  |
+| `spec.database.postgresql.backup.objectStore.r2` | `KubernetesPlantonPlatformR2ObjectStore` |  |  |  |
+| `spec.database.postgresql.backup.objectStore.r2.accountId` | `string \| valueFrom` | yes |  | CloudflareR2Bucket (`status.outputs.account_id`) |
+| `spec.database.postgresql.backup.objectStore.r2.jurisdiction` | `string \| valueFrom` |  |  | CloudflareR2Bucket (`status.outputs.jurisdiction`) |
+| `spec.database.postgresql.backup.objectStore.r2.credentials` | `KubernetesPlantonPlatformR2Credentials` | yes |  |  |
+| `spec.database.postgresql.backup.objectStore.r2.credentials.accessKeyId` | `string \| valueFrom` | yes |  | CloudflareAccountApiToken (`status.outputs.r2_access_key_id`) |
+| `spec.database.postgresql.backup.objectStore.r2.credentials.secretAccessKey` | `string \| valueFrom` (sensitive) | yes |  | CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`) |
+| `spec.database.postgresql.backup.retentionPolicy` | `string` |  | `30d` |  |
+| `spec.database.postgresql.backup.schedule` | `string` |  | `0 0 2 * * *` |  |
+| `spec.database.postgresql.backup.serviceAccountAnnotations` | `map<string, string>` |  |  |  |
+| `spec.database.postgresql.recoverFrom` | `KubernetesPlantonPlatformPostgresqlRecoverFrom` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore` | `KubernetesPlantonPlatformObjectStore` | yes |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.destinationPath` | `string` | yes |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3` | `KubernetesPlantonPlatformS3ObjectStore` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3.region` | `string` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3.endpointUrl` | `string` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3.endpointCaPem` | `string` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3.keyless` | `bool` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3.accessKeys` | `KubernetesPlantonPlatformS3AccessKeys` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3.accessKeys.accessKeyId` | `string` | yes |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.s3.accessKeys.secretAccessKey` | `string` (sensitive) | yes |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.gcs` | `KubernetesPlantonPlatformGcsObjectStore` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.gcs.keyless` | `bool` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.gcs.serviceAccountKeyJson` | `string` (sensitive) |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.azureBlob` | `KubernetesPlantonPlatformAzureBlobObjectStore` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.azureBlob.storageAccount` | `string` | yes |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.azureBlob.keyless` | `bool` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.azureBlob.connectionString` | `string` (sensitive) |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.r2` | `KubernetesPlantonPlatformR2ObjectStore` |  |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.accountId` | `string \| valueFrom` | yes |  | CloudflareR2Bucket (`status.outputs.account_id`) |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.jurisdiction` | `string \| valueFrom` |  |  | CloudflareR2Bucket (`status.outputs.jurisdiction`) |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.credentials` | `KubernetesPlantonPlatformR2Credentials` | yes |  |  |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.credentials.accessKeyId` | `string \| valueFrom` | yes |  | CloudflareAccountApiToken (`status.outputs.r2_access_key_id`) |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.credentials.secretAccessKey` | `string \| valueFrom` (sensitive) | yes |  | CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`) |
+| `spec.database.postgresql.recoverFrom.serverName` | `string` | yes |  |  |
+| `spec.database.postgresql.recoverFrom.targetTime` | `string` |  |  |  |
 | `spec.database.redis` | `KubernetesPlantonPlatformRedis` |  |  |  |
 | `spec.database.redis.storageSize` | `string` |  |  |  |
 | `spec.database.redis.storageClassName` | `string` |  |  |  |
@@ -232,6 +305,7 @@ spec:
 | `spec.prerequisites` | `KubernetesPlantonPlatformPrerequisites` |  |  |  |
 | `spec.prerequisites.postgresOperator` | `string` |  | `auto` |  |
 | `spec.prerequisites.tektonPipelines` | `string` |  | `auto` |  |
+| `spec.prerequisites.postgresBackupPlugin` | `string` |  | `auto` |  |
 | `spec.controlPlane` | `KubernetesPlantonPlatformControlPlane` |  |  |  |
 | `spec.controlPlane.image` | `KubernetesPlantonPlatformImage` |  |  |  |
 | `spec.controlPlane.image.repository` | `string` |  |  |  |
@@ -416,6 +490,589 @@ spec.storage.size, then the platform default.
 `string`
 
 StorageClass override for the database volumes.
+
+### spec.database.postgresql.backup
+
+`KubernetesPlantonPlatformPostgresqlBackup`
+
+Where the platform's own database is backed up, and how. Declaring it
+turns on continuous WAL archiving to the store, a base backup on the
+schedule (the first one the moment backups are declared — WAL alone
+restores nothing), and a retention the store enforces; the operator
+installs the Barman Cloud plugin, CloudNativePG's backup engine, if
+the cluster does not have it yet (see prerequisites.postgres_backup_plugin).
+
+Absent means no backup: the database lives on one volume in this
+cluster and nothing copies it anywhere. The `BACKUP` column of
+`kubectl get plantonplatform` says which — `NotConfigured`,
+`Deploying`, `Healthy`, `Failing` (in the plugin's own words), or
+`Unavailable` — and `status.backup` carries the archive's server name,
+the first recoverability point, and the last successful base backup.
+A failing backup never takes a working platform out of Ready.
+
+The module creates the credential Secret this store needs BEFORE the
+platform resource, in the same apply, so the database is born
+archiving whichever order the declaration's parts are read in.
+
+### spec.database.postgresql.backup.objectStore
+
+`KubernetesPlantonPlatformObjectStore` · required
+
+The object store the backups go to and how the database's pods
+authenticate to it. WAL archiving into it starts as soon as the
+database is healthy; the schedule adds the base backups a
+point-in-time recovery replays WAL onto.
+
+- rule: {"required":true}
+- rule: the s3 backend stores at an s3:// destination path (also for S3-compatible stores like MinIO)
+- rule: the gcs backend stores at a gs:// destination path
+- rule: the azure_blob backend stores at an https:// destination path (https://<account>.blob.core.windows.net/<container>/<path>)
+- rule: the r2 backend stores at an s3:// destination path (s3://<bucket>/<path> — R2 is addressed through its S3 API; the bucket name is the CloudflareR2Bucket's bucket_name)
+
+### spec.database.postgresql.backup.objectStore.destinationPath
+
+`string` · required
+
+Where in the store the archive lives — the backend's native URI form:
+`s3://bucket/path` for S3, Cloudflare R2, and every S3-compatible
+store, `gs://bucket/path` for GCS, and
+`https://<account>.blob.core.windows.net/<container>/<path>` for
+Azure Blob. Base backups and WAL are filed beneath it under this
+platform's server name, so several platforms can share one path
+without ever touching each other's archive.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.backup.objectStore.s3
+
+`KubernetesPlantonPlatformS3ObjectStore`
+
+AWS S3 — or ANY S3-compatible store (MinIO, Ceph RGW, DigitalOcean
+Spaces, ...) via the endpoint_url override. Cloudflare R2 has its own
+arm (`r2`) that composes the catalog's Cloudflare kinds.
+
+- rule: keyless and access_keys are alternative credential postures — set exactly one
+- rule: an S3-compatible endpoint (endpoint_url) authenticates with access_keys — the keyless posture only mints AWS credentials
+
+### spec.database.postgresql.backup.objectStore.s3.region
+
+`string`
+
+AWS region of the bucket. Required for real S3; for S3-compatible
+stores use the store's expected value (MinIO accepts any).
+
+### spec.database.postgresql.backup.objectStore.s3.endpointUrl
+
+`string`
+
+S3-COMPATIBLE ARM: endpoint URL of the store (e.g.
+http://minio.minio-system.svc:9000 for in-cluster MinIO). Empty = real
+AWS S3. For Cloudflare R2 prefer the `r2` arm, which composes the
+endpoint from the bucket's account and jurisdiction.
+
+- rule: endpoint_url must be an http(s) URL (e.g. http://minio.minio-system.svc:9000)
+
+### spec.database.postgresql.backup.objectStore.s3.endpointCaPem
+
+`string`
+
+PEM CA bundle for verifying a self-signed endpoint_url TLS certificate
+(materialized as a Secret the plugin reads).
+
+### spec.database.postgresql.backup.objectStore.s3.keyless
+
+`bool`
+
+Keyless posture: the database pods' AWS identity (IRSA through
+backup.service_account_annotations, EKS Pod Identity, or the node's
+instance profile) authenticates to S3 — no stored keys. Mutually
+exclusive with access_keys.
+
+### spec.database.postgresql.backup.objectStore.s3.accessKeys
+
+`KubernetesPlantonPlatformS3AccessKeys`
+
+Static access keys, materialized as a Kubernetes Secret the plugin
+reads. The declared-credential arm — for S3-compatible stores and
+clusters without IRSA.
+
+### spec.database.postgresql.backup.objectStore.s3.accessKeys.accessKeyId
+
+`string` · required
+
+Access key ID — the public identifier of the key pair, not a secret;
+only the paired secret access key is a credential. For MinIO this is
+the access key / username.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.backup.objectStore.s3.accessKeys.secretAccessKey
+
+`string` · required · sensitive
+
+Secret access key (for MinIO: the secret key / password).
+
+- rule: {"required":true}
+
+### spec.database.postgresql.backup.objectStore.gcs
+
+`KubernetesPlantonPlatformGcsObjectStore`
+
+Google Cloud Storage.
+
+- rule: keyless and service_account_key_json are alternative credential postures — set exactly one
+
+### spec.database.postgresql.backup.objectStore.gcs.keyless
+
+`bool`
+
+Keyless posture: the database pods' GCP identity (GKE Workload
+Identity through backup.service_account_annotations) authenticates to
+GCS — no stored key. Mutually exclusive with service_account_key_json.
+
+THE IDENTITY NEEDS TWO ROLES ON THE BUCKET, not one: Barman Cloud
+verifies the archive destination with a bucket-level read
+(`storage.buckets.get`) before every WAL archive, and
+`roles/storage.objectAdmin` does not carry it — an identity granted
+objectAdmin alone fails every archive with "does not have
+storage.buckets.get access" while the database reports healthy. Grant
+`roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (a
+GcpGcsBucket's `iam_members`, one entry each).
+
+### spec.database.postgresql.backup.objectStore.gcs.serviceAccountKeyJson
+
+`string` · sensitive
+
+GCP service-account key (the JSON key file's content), materialized as
+a Kubernetes Secret the plugin reads. The declared-credential arm for
+non-GKE clusters backing up to GCS.
+
+### spec.database.postgresql.backup.objectStore.azureBlob
+
+`KubernetesPlantonPlatformAzureBlobObjectStore`
+
+Azure Blob Storage.
+
+- rule: keyless and connection_string are alternative credential postures — set exactly one
+
+### spec.database.postgresql.backup.objectStore.azureBlob.storageAccount
+
+`string` · required
+
+Storage-account name. Always required: it identifies the storage
+endpoint under either posture.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.backup.objectStore.azureBlob.keyless
+
+`bool`
+
+Keyless posture: the database pods' Azure identity (AKS Workload
+Identity through backup.service_account_annotations, or a managed
+identity) authenticates to Blob Storage — no stored secret. Mutually
+exclusive with connection_string.
+
+### spec.database.postgresql.backup.objectStore.azureBlob.connectionString
+
+`string` · sensitive
+
+Storage-account connection string — the all-in-one declared
+credential, materialized as a Kubernetes Secret the plugin reads.
+
+### spec.database.postgresql.backup.objectStore.r2
+
+`KubernetesPlantonPlatformR2ObjectStore`
+
+Cloudflare R2, in R2's own vocabulary: the owning account, the
+bucket's jurisdiction, and a Cloudflare credential — each a reference
+onto the catalog's CloudflareR2Bucket and CloudflareAccountApiToken by
+default. The operator performs the S3 translation R2 needs (the
+jurisdiction's endpoint host, region `auto`); nothing S3-shaped is
+typed here.
+
+### spec.database.postgresql.backup.objectStore.r2.accountId
+
+`string | valueFrom` · required
+
+The Cloudflare account that owns the bucket (32 hex characters). By
+reference to the bucket resource's `account_id` output, so the arm
+follows the bucket; a literal names an account outside the catalog.
+
+- references: CloudflareR2Bucket (`status.outputs.account_id`)
+- rule: account_id is the 32-hex-character Cloudflare account id
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.account_id}} -- a bare string does not parse
+
+### spec.database.postgresql.backup.objectStore.r2.jurisdiction
+
+`string | valueFrom`
+
+The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+`fedramp`, or `us`. It selects the S3 host the operator composes — a
+bucket created in a jurisdiction is unreachable through any other
+host — so it must match the bucket exactly; by reference to the bucket
+resource's `jurisdiction` output it cannot drift.
+
+- references: CloudflareR2Bucket (`status.outputs.jurisdiction`)
+- rule: jurisdiction must be one of "default", "eu", "fedramp", "us" (or empty for default)
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.jurisdiction}} -- a bare string does not parse
+
+### spec.database.postgresql.backup.objectStore.r2.credentials
+
+`KubernetesPlantonPlatformR2Credentials` · required
+
+The Cloudflare credential, as the S3 key pair R2's S3 API
+authenticates. Materialized as a Kubernetes Secret the plugin reads;
+never plaintext in the rendered resource.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.backup.objectStore.r2.credentials.accessKeyId
+
+`string | valueFrom` · required
+
+The S3 access key id: the API token's id. By reference to the token
+resource's `r2_access_key_id` output.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_access_key_id`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_access_key_id}} -- a bare string does not parse
+
+### spec.database.postgresql.backup.objectStore.r2.credentials.secretAccessKey
+
+`string | valueFrom` · required · sensitive
+
+The S3 secret access key: the SHA-256 of the API token's value. By
+reference to the token resource's `r2_secret_access_key` output.
+Rotates with the token: a rotated token is a new key pair, and the
+Secret this arm materializes follows the reference on the next apply.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_secret_access_key}} -- a bare string does not parse
+
+### spec.database.postgresql.backup.retentionPolicy
+
+`string` · optional (explicit presence)
+
+How long the store keeps base backups and the WAL that goes with
+them, as `<n>d|w|m` (days, weeks, months). Enforced by the plugin
+after each backup.
+
+- default: `30d`
+- rule: retention_policy must be a positive number of days, weeks, or months — e.g. '30d', '8w', or '6m'
+
+### spec.database.postgresql.backup.schedule
+
+`string` · optional (explicit presence)
+
+When base backups run: a cron expression WITH SECONDS — six fields,
+not the five Kubernetes CronJobs use ("0 0 2 * * *" is daily at
+02:00 UTC, the default). The first base backup always runs the moment
+backups are declared, whatever this says.
+
+- default: `0 0 2 * * *`
+- rule: schedule is a SIX-field cron expression (seconds first) — e.g. '0 0 2 * * *' for daily at 02:00; the five-field Kubernetes form is missing the seconds field
+
+### spec.database.postgresql.backup.serviceAccountAnnotations
+
+`map<string, string>`
+
+Annotations for the ServiceAccount the database's own pods run as
+(CloudNativePG names it after the database: `<platform>-postgres`).
+This is where a keyless posture binds a cloud identity: EKS IRSA
+(`eks.amazonaws.com/role-arn`), GKE Workload Identity
+(`iam.gke.io/gcp-service-account`), AKS Workload Identity
+(`azure.workload.identity/client-id`). Distinct from
+runner.service_account_annotations — the runner deploys infrastructure
+with its identity; the database's identity only writes backups. R2 has
+no keyless posture and never needs this.
+
+### spec.database.postgresql.recoverFrom
+
+`KubernetesPlantonPlatformPostgresqlRecoverFrom`
+
+Restore this platform's database from another platform's archive
+instead of creating it empty. Honored only when the database is first
+created — a running platform keeps its database as it is and the
+status names the procedure (delete the platform, declare it again
+with recover_from). Nothing here ever destroys data to honor a
+declaration.
+
+A restored platform archives its OWN backups under a new server name
+(every platform files its archive under its name plus a unique
+suffix), so it never writes over the source it restored from; declare
+`backup` beside `recover_from` and the two can share one bucket and
+one path.
+
+WHAT COMES BACK: every record the control plane keeps — organizations,
+environments, connections, projects, pipeline history, members, and
+the identity realm with its users, so existing passwords sign in.
+WHAT DOES NOT: the secrets manager's contents (OpenBAO keeps its data
+on its own volume, outside this archive), so every secret value the
+source held — the credentials behind connections above all — is
+re-entered after a restore.
+
+### spec.database.postgresql.recoverFrom.objectStore
+
+`KubernetesPlantonPlatformObjectStore` · required
+
+The store the source platform archived to. Recovery only READS from
+it; this platform's own backups go to `backup`. The same bucket and
+path as the source's `backup` are fine — server names keep the two
+archives apart.
+
+- rule: {"required":true}
+- rule: the s3 backend stores at an s3:// destination path (also for S3-compatible stores like MinIO)
+- rule: the gcs backend stores at a gs:// destination path
+- rule: the azure_blob backend stores at an https:// destination path (https://<account>.blob.core.windows.net/<container>/<path>)
+- rule: the r2 backend stores at an s3:// destination path (s3://<bucket>/<path> — R2 is addressed through its S3 API; the bucket name is the CloudflareR2Bucket's bucket_name)
+
+### spec.database.postgresql.recoverFrom.objectStore.destinationPath
+
+`string` · required
+
+Where in the store the archive lives — the backend's native URI form:
+`s3://bucket/path` for S3, Cloudflare R2, and every S3-compatible
+store, `gs://bucket/path` for GCS, and
+`https://<account>.blob.core.windows.net/<container>/<path>` for
+Azure Blob. Base backups and WAL are filed beneath it under this
+platform's server name, so several platforms can share one path
+without ever touching each other's archive.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.recoverFrom.objectStore.s3
+
+`KubernetesPlantonPlatformS3ObjectStore`
+
+AWS S3 — or ANY S3-compatible store (MinIO, Ceph RGW, DigitalOcean
+Spaces, ...) via the endpoint_url override. Cloudflare R2 has its own
+arm (`r2`) that composes the catalog's Cloudflare kinds.
+
+- rule: keyless and access_keys are alternative credential postures — set exactly one
+- rule: an S3-compatible endpoint (endpoint_url) authenticates with access_keys — the keyless posture only mints AWS credentials
+
+### spec.database.postgresql.recoverFrom.objectStore.s3.region
+
+`string`
+
+AWS region of the bucket. Required for real S3; for S3-compatible
+stores use the store's expected value (MinIO accepts any).
+
+### spec.database.postgresql.recoverFrom.objectStore.s3.endpointUrl
+
+`string`
+
+S3-COMPATIBLE ARM: endpoint URL of the store (e.g.
+http://minio.minio-system.svc:9000 for in-cluster MinIO). Empty = real
+AWS S3. For Cloudflare R2 prefer the `r2` arm, which composes the
+endpoint from the bucket's account and jurisdiction.
+
+- rule: endpoint_url must be an http(s) URL (e.g. http://minio.minio-system.svc:9000)
+
+### spec.database.postgresql.recoverFrom.objectStore.s3.endpointCaPem
+
+`string`
+
+PEM CA bundle for verifying a self-signed endpoint_url TLS certificate
+(materialized as a Secret the plugin reads).
+
+### spec.database.postgresql.recoverFrom.objectStore.s3.keyless
+
+`bool`
+
+Keyless posture: the database pods' AWS identity (IRSA through
+backup.service_account_annotations, EKS Pod Identity, or the node's
+instance profile) authenticates to S3 — no stored keys. Mutually
+exclusive with access_keys.
+
+### spec.database.postgresql.recoverFrom.objectStore.s3.accessKeys
+
+`KubernetesPlantonPlatformS3AccessKeys`
+
+Static access keys, materialized as a Kubernetes Secret the plugin
+reads. The declared-credential arm — for S3-compatible stores and
+clusters without IRSA.
+
+### spec.database.postgresql.recoverFrom.objectStore.s3.accessKeys.accessKeyId
+
+`string` · required
+
+Access key ID — the public identifier of the key pair, not a secret;
+only the paired secret access key is a credential. For MinIO this is
+the access key / username.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.recoverFrom.objectStore.s3.accessKeys.secretAccessKey
+
+`string` · required · sensitive
+
+Secret access key (for MinIO: the secret key / password).
+
+- rule: {"required":true}
+
+### spec.database.postgresql.recoverFrom.objectStore.gcs
+
+`KubernetesPlantonPlatformGcsObjectStore`
+
+Google Cloud Storage.
+
+- rule: keyless and service_account_key_json are alternative credential postures — set exactly one
+
+### spec.database.postgresql.recoverFrom.objectStore.gcs.keyless
+
+`bool`
+
+Keyless posture: the database pods' GCP identity (GKE Workload
+Identity through backup.service_account_annotations) authenticates to
+GCS — no stored key. Mutually exclusive with service_account_key_json.
+
+THE IDENTITY NEEDS TWO ROLES ON THE BUCKET, not one: Barman Cloud
+verifies the archive destination with a bucket-level read
+(`storage.buckets.get`) before every WAL archive, and
+`roles/storage.objectAdmin` does not carry it — an identity granted
+objectAdmin alone fails every archive with "does not have
+storage.buckets.get access" while the database reports healthy. Grant
+`roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (a
+GcpGcsBucket's `iam_members`, one entry each).
+
+### spec.database.postgresql.recoverFrom.objectStore.gcs.serviceAccountKeyJson
+
+`string` · sensitive
+
+GCP service-account key (the JSON key file's content), materialized as
+a Kubernetes Secret the plugin reads. The declared-credential arm for
+non-GKE clusters backing up to GCS.
+
+### spec.database.postgresql.recoverFrom.objectStore.azureBlob
+
+`KubernetesPlantonPlatformAzureBlobObjectStore`
+
+Azure Blob Storage.
+
+- rule: keyless and connection_string are alternative credential postures — set exactly one
+
+### spec.database.postgresql.recoverFrom.objectStore.azureBlob.storageAccount
+
+`string` · required
+
+Storage-account name. Always required: it identifies the storage
+endpoint under either posture.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.recoverFrom.objectStore.azureBlob.keyless
+
+`bool`
+
+Keyless posture: the database pods' Azure identity (AKS Workload
+Identity through backup.service_account_annotations, or a managed
+identity) authenticates to Blob Storage — no stored secret. Mutually
+exclusive with connection_string.
+
+### spec.database.postgresql.recoverFrom.objectStore.azureBlob.connectionString
+
+`string` · sensitive
+
+Storage-account connection string — the all-in-one declared
+credential, materialized as a Kubernetes Secret the plugin reads.
+
+### spec.database.postgresql.recoverFrom.objectStore.r2
+
+`KubernetesPlantonPlatformR2ObjectStore`
+
+Cloudflare R2, in R2's own vocabulary: the owning account, the
+bucket's jurisdiction, and a Cloudflare credential — each a reference
+onto the catalog's CloudflareR2Bucket and CloudflareAccountApiToken by
+default. The operator performs the S3 translation R2 needs (the
+jurisdiction's endpoint host, region `auto`); nothing S3-shaped is
+typed here.
+
+### spec.database.postgresql.recoverFrom.objectStore.r2.accountId
+
+`string | valueFrom` · required
+
+The Cloudflare account that owns the bucket (32 hex characters). By
+reference to the bucket resource's `account_id` output, so the arm
+follows the bucket; a literal names an account outside the catalog.
+
+- references: CloudflareR2Bucket (`status.outputs.account_id`)
+- rule: account_id is the 32-hex-character Cloudflare account id
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.account_id}} -- a bare string does not parse
+
+### spec.database.postgresql.recoverFrom.objectStore.r2.jurisdiction
+
+`string | valueFrom`
+
+The bucket's data-residency jurisdiction: `default` (or empty), `eu`,
+`fedramp`, or `us`. It selects the S3 host the operator composes — a
+bucket created in a jurisdiction is unreachable through any other
+host — so it must match the bucket exactly; by reference to the bucket
+resource's `jurisdiction` output it cannot drift.
+
+- references: CloudflareR2Bucket (`status.outputs.jurisdiction`)
+- rule: jurisdiction must be one of "default", "eu", "fedramp", "us" (or empty for default)
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareR2Bucket, name: <that resource's name>, fieldPath: status.outputs.jurisdiction}} -- a bare string does not parse
+
+### spec.database.postgresql.recoverFrom.objectStore.r2.credentials
+
+`KubernetesPlantonPlatformR2Credentials` · required
+
+The Cloudflare credential, as the S3 key pair R2's S3 API
+authenticates. Materialized as a Kubernetes Secret the plugin reads;
+never plaintext in the rendered resource.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.recoverFrom.objectStore.r2.credentials.accessKeyId
+
+`string | valueFrom` · required
+
+The S3 access key id: the API token's id. By reference to the token
+resource's `r2_access_key_id` output.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_access_key_id`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_access_key_id}} -- a bare string does not parse
+
+### spec.database.postgresql.recoverFrom.objectStore.r2.credentials.secretAccessKey
+
+`string | valueFrom` · required · sensitive
+
+The S3 secret access key: the SHA-256 of the API token's value. By
+reference to the token resource's `r2_secret_access_key` output.
+Rotates with the token: a rotated token is a new key pair, and the
+Secret this arm materializes follows the reference on the next apply.
+
+- references: CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: CloudflareAccountApiToken, name: <that resource's name>, fieldPath: status.outputs.r2_secret_access_key}} -- a bare string does not parse
+
+### spec.database.postgresql.recoverFrom.serverName
+
+`string` · required
+
+The name the source's archive is filed under: `status.backup.serverName`
+on the source platform, or the folder name in the bucket's own listing
+under the destination path when the source is gone. Every platform
+archives under its own name plus a unique suffix, so this names one
+archive exactly.
+
+- rule: {"required":true}
+
+### spec.database.postgresql.recoverFrom.targetTime
+
+`string`
+
+Recover to a point in time, as an RFC 3339 timestamp
+("2026-09-13T20:30:00Z"). Empty recovers to the end of the archive —
+every WAL segment the source shipped.
+
+- rule: target_time is an RFC 3339 timestamp — e.g. '2026-09-13T20:30:00Z' or '2026-09-13T20:30:00+05:30'
 
 ### spec.database.redis
 
@@ -943,6 +1600,22 @@ even on "skip".
 - default: `auto`
 - rule: {"string":{"in":["","auto","skip"]}}
 
+### spec.prerequisites.postgresBackupPlugin
+
+`string` · optional (explicit presence)
+
+The Barman Cloud plugin, CloudNativePG's backup engine, which serves
+every PostgreSQL on the cluster — the platform's own database and any
+database deployed through Planton. "auto" installs it whenever the
+operator installed CloudNativePG itself and cert-manager is on the
+cluster (the plugin needs it for the TLS between operator and plugin),
+or whenever database.postgresql.backup is declared; a plugin installed
+by any other means is detected and respected. "skip" declares it
+externally managed (or unwanted) and installs nothing.
+
+- default: `auto`
+- rule: {"string":{"in":["","auto","skip"]}}
+
 ### spec.controlPlane
 
 `KubernetesPlantonPlatformControlPlane`
@@ -1330,6 +2003,14 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
+| `spec.database.postgresql.backup.objectStore.r2.accountId` | CloudflareR2Bucket | `status.outputs.account_id` |
+| `spec.database.postgresql.backup.objectStore.r2.jurisdiction` | CloudflareR2Bucket | `status.outputs.jurisdiction` |
+| `spec.database.postgresql.backup.objectStore.r2.credentials.accessKeyId` | CloudflareAccountApiToken | `status.outputs.r2_access_key_id` |
+| `spec.database.postgresql.backup.objectStore.r2.credentials.secretAccessKey` | CloudflareAccountApiToken | `status.outputs.r2_secret_access_key` |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.accountId` | CloudflareR2Bucket | `status.outputs.account_id` |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.jurisdiction` | CloudflareR2Bucket | `status.outputs.jurisdiction` |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.credentials.accessKeyId` | CloudflareAccountApiToken | `status.outputs.r2_access_key_id` |
+| `spec.database.postgresql.recoverFrom.objectStore.r2.credentials.secretAccessKey` | CloudflareAccountApiToken | `status.outputs.r2_secret_access_key` |
 | `spec.ingress.gatewayRef.name` | KubernetesGateway | `status.outputs.gateway_name` |
 | `spec.ingress.gatewayRef.namespace` | KubernetesGateway | `status.outputs.namespace` |
 

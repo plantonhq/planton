@@ -90,7 +90,7 @@ resource "helm_release" "openbao" {
     # same budget.
     precondition {
       condition     = length(var.metadata.name) <= local.max_name_length
-      error_message = "metadata.name exceeds the OpenBao name budget: the chart derives Service names by suffixing (up to 19 characters with the injector enabled), so use at most 44 characters with the injector or 54 without."
+      error_message = "metadata.name exceeds the OpenBao name budget: the chart derives Service names by suffixing (up to 19 characters with the injector enabled) and the backup CronJob is <name>-backup under Kubernetes' 52-character CronJob cap, so use at most 44 characters with the injector, 45 with backup declared, or 54 otherwise."
     }
   }
 

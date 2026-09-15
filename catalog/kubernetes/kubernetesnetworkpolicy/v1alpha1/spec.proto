@@ -4,6 +4,7 @@ package dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 /**
  * **KubernetesNetworkPolicySpec** declares which network traffic is allowed to and
@@ -71,8 +72,8 @@ message KubernetesNetworkPolicySpec {
   map<string, string> annotations = 4;
 
   /**
-   * Selects the pods this policy applies to, within the policy's namespace. An
-   * EMPTY selector (no match_labels, no match_expressions) selects ALL pods in
+   * Selects the pods this policy applies to, within the policy's namespace.
+   * Omitting the selector, or writing `match_all: true`, selects ALL pods in
    * the namespace — the default-deny building block. To target one Planton
    * workload, match on its `app` label: `match_labels: {app: <workload-name>}`.
    */
@@ -192,7 +193,7 @@ message KubernetesNetworkPolicyEgressRule {
  */
 message KubernetesNetworkPolicyPeer {
   /**
-   * Selects pods by label. Present-but-empty selects ALL pods (in the policy's
+   * Selects pods by label. `match_all: true` selects ALL pods (in the policy's
    * namespace, or in the namespaces selected by namespace_selector when both
    * are set).
    */
@@ -201,7 +202,7 @@ message KubernetesNetworkPolicyPeer {
   /**
    * Selects namespaces by label (e.g. the automatic
    * `kubernetes.io/metadata.name: <name>` label every namespace carries).
-   * Present-but-empty selects ALL namespaces — the cluster-wide-allow building
+   * `match_all: true` selects ALL namespaces — the cluster-wide-allow building
    * block.
    */
   KubernetesNetworkPolicyLabelSelector namespace_selector = 2;
@@ -332,9 +333,28 @@ message KubernetesNetworkPolicyPort {
 /**
  * **KubernetesNetworkPolicyLabelSelector** is a standard Kubernetes label
  * selector: exact-match labels and/or set-based expressions. Both parts must
- * match (they AND together); an empty selector matches everything.
+ * match (they AND together). A selector says what it selects: labels and
+ * expressions narrow the set, and `match_all: true` selects everything (the
+ * empty selector on the Kubernetes wire); a selector that names neither is
+ * refused, so "select everything" is always a written choice and never an
+ * accident of an empty block.
  */
 message KubernetesNetworkPolicyLabelSelector {
+  // match_all and label criteria are alternatives: everything, or by label.
+  option (buf.validate.message).cel = {
+    id: "match_all_excludes_criteria"
+    message: "match_all: true selects everything — drop match_labels and match_expressions, or drop match_all to select by label"
+    expression: "!(has(this.match_all) && this.match_all) || (this.match_labels.size() == 0 && this.match_expressions.size() == 0)"
+  };
+
+  // A selector that selects nothing is always a mistake; selecting everything
+  // must be written down.
+  option (buf.validate.message).cel = {
+    id: "selector_says_what_it_selects"
+    message: "a selector must say what it selects — set match_all: true to select every pod (or namespace), or name match_labels / match_expressions"
+    expression: "(has(this.match_all) && this.match_all) || this.match_labels.size() > 0 || this.match_expressions.size() > 0"
+  };
+
   /**
    * Exact-match label requirements: every key/value pair listed must be present,
    * e.g. {"app": "checkout"}.
@@ -346,6 +366,15 @@ message KubernetesNetworkPolicyLabelSelector {
    * (key existence, value-in-set).
    */
   repeated KubernetesNetworkPolicyLabelSelectorRequirement match_expressions = 2;
+
+  /**
+   * Select everything: every pod in scope for a pod selector, every namespace
+   * for a namespace selector. The manifest's word for the empty selector on
+   * the Kubernetes wire -- it never reaches the cluster; the selector it
+   * describes is emitted with no criteria. Cannot be combined with
+   * match_labels or match_expressions.
+   */
+  optional bool match_all = 3 [(dev.planton.shared.options.manifest_only) = true];
 }
 
 /**

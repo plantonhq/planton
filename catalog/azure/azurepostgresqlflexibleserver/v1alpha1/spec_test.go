@@ -9,6 +9,7 @@ import (
 	"github.com/plantonhq/planton/shared"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAzurePostgresqlFlexibleServerSpec(t *testing.T) {
@@ -103,9 +104,9 @@ var _ = ginkgo.Describe("AzurePostgresqlFlexibleServerSpec Validation Tests", fu
 		ginkgo.It("should accept a maintenance window", func() {
 			input := minimalSpec()
 			input.Spec.MaintenanceWindow = &AzurePostgresqlFlexibleServerMaintenanceWindow{
-				DayOfWeek:   6,
-				StartHour:   2,
-				StartMinute: 30,
+				DayOfWeek:   proto.Int32(6),
+				StartHour:   proto.Int32(2),
+				StartMinute: proto.Int32(30),
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -310,9 +311,19 @@ var _ = ginkgo.Describe("AzurePostgresqlFlexibleServerSpec Validation Tests", fu
 			}
 		})
 
+		ginkgo.It("should accept a maintenance window at Sunday midnight stated explicitly", func() {
+			input := minimalSpec()
+			input.Spec.MaintenanceWindow = &AzurePostgresqlFlexibleServerMaintenanceWindow{
+				DayOfWeek:   proto.Int32(0),
+				StartHour:   proto.Int32(0),
+				StartMinute: proto.Int32(0),
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should reject a maintenance window with an out-of-range day", func() {
 			input := minimalSpec()
-			input.Spec.MaintenanceWindow = &AzurePostgresqlFlexibleServerMaintenanceWindow{DayOfWeek: 7}
+			input.Spec.MaintenanceWindow = &AzurePostgresqlFlexibleServerMaintenanceWindow{DayOfWeek: proto.Int32(7)}
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 

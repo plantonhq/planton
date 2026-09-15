@@ -1,0 +1,52 @@
+# The SOURCE vault of the kind restore lane: the production vault a customer
+# runs, on single-node Raft (the honest shape for a one-node lab cluster),
+# sealed by the transit key the key-holder fixture serves, and backing up
+# into the in-cluster S3 store by reference. The seed script initializes it,
+# runs the four-command login recipe exactly as the backup job prints it,
+# writes a marker, triggers one snapshot, writes a second marker, and
+# publishes the snapshot's object key; the scenario is the fresh target that
+# restores from it on the SAME transit key. The prefix carries the run id so
+# no two lanes ever share a snapshot folder. Retention is short so the
+# retention proof can seed a stale object and watch it go.
+#
+# JOINS the lane namespace; deploys AFTER the key holder and the store.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: e2e-bao-src
+spec:
+  namespace:
+    value: e2e-bao-lab
+  server:
+    ha:
+      replicas: 1
+    dataStorage:
+      size: 1Gi
+  autoUnseal:
+    transit:
+      address: http://e2e-bao-kms.e2e-bao-lab.svc:8200
+      keyName: openbao-e2e
+      mountPath: transit/
+      token: root
+  backup:
+    retentionDays: 1
+    # The bad-day premise is a source that is GONE. A live source on the
+    # default hourly schedule would snapshot on its own mid-lane and make
+    # `restore.latest` pick a run the proof did not stage (a moment after
+    # marker B). The CronJob controller refuses a cron that can never fire
+    # (an impossible date is an "invalid schedule"), so the fixture takes
+    # the rarest real moment -- midnight UTC on New Year's Day -- and every
+    # snapshot in the lane is one the seed script triggers by hand.
+    schedule: "0 0 1 1 *"
+    objectStore:
+      prefix: openbao/${E2E_RUN_ID}/e2e-bao-src
+      s3:
+        bucket: openbao-snapshots
+        region: us-east-1
+        endpointUrl:
+          valueFrom:
+            name: e2e-bao-s3
+        forcePathStyle: true
+        accessKeys:
+          accessKeyId: e2e-bao-snapshots-admin
+          secretAccessKey: e2e-bao-snapshots-admin-secret-not-a-real-secret

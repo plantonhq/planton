@@ -2,6 +2,7 @@ package verify
 
 import (
 	"context"
+	"path/filepath"
 	"strings"
 )
 
@@ -1371,19 +1372,35 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// sealed pods asserted NotReady-by-design, the verifier performs
 	// the real init/unseal bootstrap (readiness must FLIP), then a KV
 	// round-trip proves the server serves secrets. Dev mode skips
-	// init/unseal. The behavioral-raft scenario (recognized by name)
-	// replaces pod 0, re-unseals it (restart = sealed, the Shamir
-	// truth) and re-reads the marker. NEVER the generic Helm fallback:
-	// waiting on readiness hangs every fresh install by design.
+	// init/unseal; an auto_unseal seal changes init to recovery shares
+	// and drops the unseal step. The behavioral-raft scenario
+	// (recognized by name) replaces pod 0, re-unseals it (restart =
+	// sealed, the Shamir truth) and re-reads the marker. with-backup
+	// adds THE BACKUP PROOF (the login recipe verbatim, a run from the
+	// CronJob, the store listed with the job's identity, retention);
+	// *-backup-restore is THE RESTORE PROOF (the restored state read
+	// with the source's token). `fixture-*` manifests are prerequisites,
+	// verified for presence only — a fresh vault is sealed by design and
+	// the lane's seed script initializes it. NEVER the generic Helm
+	// fallback: waiting on readiness hangs every fresh install by design.
 	case "kubernetesopenbao":
 		spec := manifestSpecMap(manifestPath)
 		mode, replicas := openBaoScenarioShape(spec)
+		rootTokenSecret, rootTokenKey := openBaoRestoreRootToken(spec)
+		slug := strings.TrimSuffix(filepath.Base(manifestPath), filepath.Ext(manifestPath))
 		return &OpenBaoVerifier{
-			Namespace:  info.Namespace,
-			Name:       info.Name,
-			Mode:       mode,
-			Replicas:   replicas,
-			Behavioral: strings.Contains(manifestPath, "behavioral-raft"),
+			Namespace:           info.Namespace,
+			Name:                info.Name,
+			Mode:                mode,
+			Replicas:            replicas,
+			Behavioral:          strings.Contains(manifestPath, "behavioral-raft"),
+			AutoUnseal:          openBaoAutoUnseal(spec),
+			Fixture:             strings.HasPrefix(slug, "fixture-"),
+			TransitKeyHolder:    slug == "fixture-transit-key-holder",
+			BackupProof:         slug == "with-backup",
+			RestoreProof:        strings.HasSuffix(slug, "backup-restore"),
+			RootTokenSecretName: rootTokenSecret,
+			RootTokenSecretKey:  rootTokenKey,
 		}, nil
 
 	// The OpenFGA authorization engine: deployment rolled out (the

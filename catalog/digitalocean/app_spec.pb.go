@@ -2345,6 +2345,11 @@ type DigitalOceanAppDatabase struct {
 	Production bool `protobuf:"varint,4,opt,name=production,proto3" json:"production,omitempty"`
 	// Existing cluster name. Required by the API when production is true.
 	// Literal cluster name, or a reference to a DigitalOceanDatabaseCluster.
+	//
+	// Containment-exempt: an app ATTACHES an existing managed cluster as a
+	// dependency it connects to; the app is not created inside the cluster.
+	// On a diagram the app stays where its VPC places it, with a line to the
+	// cluster it attaches.
 	ClusterName   *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
 	DbName        string               `protobuf:"bytes,6,opt,name=db_name,json=dbName,proto3" json:"db_name,omitempty"`
 	DbUser        string               `protobuf:"bytes,7,opt,name=db_user,json=dbUser,proto3" json:"db_user,omitempty"`
@@ -2656,15 +2661,15 @@ const file_catalog_digitalocean_app_spec_proto_rawDesc = "" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x1a\n" +
 	"\bwildcard\x18\x03 \x01(\bR\bwildcard\x12y\n" +
 	"\x04zone\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xb2\xa6\x1d\bdns zone\x88\xd4a\x8c'\x92\xd4a\x18status.outputs.zone_name\x98\xd4a\x01R\x04zone\x125\n" +
-	"\x04type\x18\x05 \x01(\tB!\xbaH\x1e\xd8\x01\x01r\x19R\aDEFAULTR\aPRIMARYR\x05ALIASR\x04typeJ\x04\b\x02\x10\x03\"\xf2\x02\n" +
+	"\x04type\x18\x05 \x01(\tB!\xbaH\x1e\xd8\x01\x01r\x19R\aDEFAULTR\aPRIMARYR\x05ALIASR\x04typeJ\x04\b\x02\x10\x03\"\xf6\x02\n" +
 	"\x17DigitalOceanAppDatabase\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12O\n" +
 	"\x06engine\x18\x02 \x01(\x0e27.dev.planton.digitalocean.DigitalOceanAppDatabaseEngineR\x06engine\x12\x18\n" +
 	"\aversion\x18\x03 \x01(\tR\aversion\x12\x1e\n" +
 	"\n" +
 	"production\x18\x04 \x01(\bR\n" +
-	"production\x12\x85\x01\n" +
-	"\fcluster_name\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xb2\xa6\x1d\x10database cluster\x88\xd4a\x8b'\x92\xd4a\x11spec.cluster_nameR\vclusterName\x12\x17\n" +
+	"production\x12\x89\x01\n" +
+	"\fcluster_name\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xb2\xa6\x1d\x10database cluster\x88\xd4a\x8b'\x92\xd4a\x11spec.cluster_name\x98\xd4a\x01R\vclusterName\x12\x17\n" +
 	"\adb_name\x18\x06 \x01(\tR\x06dbName\x12\x17\n" +
 	"\adb_user\x18\a \x01(\tR\x06dbUser\"z\n" +
 	"\x1aDigitalOceanAppMaintenance\x12\x18\n" +

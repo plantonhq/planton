@@ -15,7 +15,9 @@ locals {
 
   # The user_managed_key message's PRESENCE is the decision to create a key;
   # its fields default to GCP's own defaults ({} = 2048-bit RSA JSON key).
-  create_key = var.spec.user_managed_key != null
+  # The block's own switch (on by default once declared) decides whether a
+  # key exists; a null switch reads as on.
+  create_key = var.spec.user_managed_key != null && coalesce(var.spec.user_managed_key.enabled, true)
 
   # Whether the account starts disabled (defaults to false = enabled)
   disabled = coalesce(var.spec.disabled, false)

@@ -364,7 +364,7 @@ message AwsCognitoUserPoolSpec {
   option (buf.validate.message).cel = {
     id: "email_mfa_requires_mfa"
     message: "email_mfa requires mfa_configuration to be 'OPTIONAL' or 'ON'"
-    expression: "!has(this.email_mfa) || this.mfa_configuration in ['OPTIONAL', 'ON']"
+    expression: "!(has(this.email_mfa) && (!has(this.email_mfa.enabled) || this.email_mfa.enabled)) || this.mfa_configuration in ['OPTIONAL', 'ON']"
   };
 
   // SMS_OTP first factor requires SMS delivery configuration.
@@ -458,8 +458,10 @@ message AwsCognitoUserPoolPasswordPolicy {
   }];
 }
 
-// AwsCognitoUserPoolEmailMfaConfig customizes the email message Cognito sends
-// when email is used as the second authentication factor.
+// AwsCognitoUserPoolEmailMfaConfig turns on email as a second authentication
+// factor and customizes the message Cognito sends. Declaring the block turns
+// email MFA on (with AWS's default message when none is given); `enabled:
+// false` keeps the message settings in the manifest while switching it off.
 message AwsCognitoUserPoolEmailMfaConfig {
   // The email body for MFA codes. Must contain the "{####}" placeholder where
   // Cognito injects the code. 6-20000 characters. When omitted, AWS uses its
@@ -469,6 +471,11 @@ message AwsCognitoUserPoolEmailMfaConfig {
   // The email subject for MFA codes. 1-140 characters. When omitted, AWS uses
   // its default subject.
   string subject = 2 [(buf.validate.field).string.max_len = 140];
+
+  // Whether email MFA is on. Unset means on: declaring the block has always
+  // meant enabling it, and this switch lets a manifest say the opposite out
+  // loud.
+  optional bool enabled = 3 [(dev.planton.shared.options.default) = "true"];
 
   // The MFA message must carry the code placeholder.
   option (buf.validate.message).cel = {
@@ -677,15 +684,19 @@ message AwsCognitoUserPoolInviteMessageTemplate {
   };
 }
 
-// AwsCognitoUserPoolDeviceConfig controls remembered-device behavior.
+// AwsCognitoUserPoolDeviceConfig controls remembered-device behavior. Declaring
+// the block writes both dials to Cognito: a dial set to `false` is the
+// statement, and a dial left unset is false as well, so a block that names
+// only one dial says exactly what Cognito will hold for the other.
 message AwsCognitoUserPoolDeviceConfig {
   // When true, a remembered device still requires a challenge (MFA) the first
   // time it is seen -- remembering only suppresses challenges afterwards.
-  bool challenge_required_on_new_device = 1;
+  // Unset is false.
+  optional bool challenge_required_on_new_device = 1 [(dev.planton.shared.options.default) = "false"];
 
   // When true, devices are remembered only after the user opts in when
-  // prompted. When false, every device is remembered automatically.
-  bool device_only_remembered_on_user_prompt = 2;
+  // prompted. When false (or unset), every device is remembered automatically.
+  optional bool device_only_remembered_on_user_prompt = 2 [(dev.planton.shared.options.default) = "false"];
 }
 
 // AwsCognitoUserPoolSchemaAttribute defines a custom user attribute added to the

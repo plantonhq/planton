@@ -1,0 +1,61 @@
+# The SOURCE vault of the gcp-gke restore proof on Cloudflare R2: sealed by
+# the batch's Cloud KMS key through the server's Workload Identity, backing up
+# into the batch's R2 bucket on the `r2` arm — the bucket, the account and
+# jurisdiction it lives in, and the S3 pair of the batch's writer token, as
+# the batch exported them (the same values the CloudflareR2Bucket and
+# CloudflareAccountApiToken kinds export; carried by value because the
+# Cloudflare side is not part of the lane's own graph). There is no keyless
+# posture for R2; the credential is the token. The seed script initializes
+# it, runs the login recipe, seeds the markers and one snapshot; the restore
+# scenario is the fresh target on the SAME KMS key, restoring by snapshot key.
+# The prefix carries the run id so no two lanes share a snapshot folder.
+#
+# Same names as the GCS source so one seed script serves both lanes; the two
+# never run at once. JOINS the lane namespace.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: e2e-bao-src
+spec:
+  namespace:
+    value: e2e-bao-lab
+  server:
+    ha:
+      replicas: 1
+    dataStorage:
+      size: 1Gi
+  autoUnseal:
+    gcpKms:
+      project:
+        value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT}
+      region: ${E2E_ENV:PLANTON_E2E_GCP_REGION}
+      keyRing:
+        value: ${E2E_ENV:PLANTON_E2E_GKE_OPENBAO_KEY_RING}
+      cryptoKey:
+        value: ${E2E_ENV:PLANTON_E2E_GKE_OPENBAO_CRYPTO_KEY}
+      workloadIdentityServiceAccount:
+        value: ${E2E_ENV:PLANTON_E2E_GKE_OPENBAO_UNSEAL_GSA}
+  backup:
+    retentionDays: 1
+    # The bad-day premise is a source that is GONE. A live source on the
+    # default hourly schedule would snapshot on its own mid-lane and make
+    # `restore.latest` pick a run the proof did not stage (a moment after
+    # marker B). The CronJob controller refuses a cron that can never fire
+    # (an impossible date is an "invalid schedule"), so the fixture takes
+    # the rarest real moment -- midnight UTC on New Year's Day -- and every
+    # snapshot in the lane is one the seed script triggers by hand.
+    schedule: "0 0 1 1 *"
+    objectStore:
+      prefix: openbao/${E2E_RUN_ID}/e2e-bao-src
+      r2:
+        bucket:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_R2_BUCKET}
+        accountId:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_R2_ACCOUNT_ID}
+        jurisdiction:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_R2_JURISDICTION}
+        credentials:
+          accessKeyId:
+            value: ${E2E_ENV:PLANTON_E2E_GKE_R2_ACCESS_KEY_ID}
+          secretAccessKey:
+            value: ${E2E_ENV:PLANTON_E2E_GKE_R2_SECRET_ACCESS_KEY}

@@ -123,7 +123,7 @@ const guestRegistry: Record<string, GuestConfig> = {
 
 ### No Breaking Changes
 
-The SEP presentation remains accessible at the same primary URL (`/meets/sep`). The dated URL changed format but this was pre-production.
+The SEP presentation remains accessible at the same primary URL (`/meets/sep`). The dated URL changed format but this was preproduction.
 
 ## Related Work
 

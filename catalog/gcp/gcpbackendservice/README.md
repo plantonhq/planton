@@ -65,7 +65,7 @@ planton apply -f backend-service.yaml
 | `backends` | `list(object)` | `[]` | The instance groups / NEGs serving traffic — see below. |
 | `sessionAffinity` | `string` | `NONE` | `CLIENT_IP*`, `GENERATED_COOKIE`, `HEADER_FIELD`, `HTTP_COOKIE`, `STRONG_COOKIE_AFFINITY`. |
 | `affinityCookieTtlSec` | `int` | session cookie | Generated-cookie lifetime (GENERATED_COOKIE only, ≤ 86400). |
-| `strongSessionAffinityCookie` | object | none | Cookie for STRONG_COOKIE_AFFINITY (required with that mode). |
+| `strongSessionAffinityCookie` | object | none | Customizes the cookie of STRONG_COOKIE_AFFINITY (omit for GCP's default cookie; not valid with other modes). |
 | `localityLbPolicy` | `string` | `ROUND_ROBIN` | Within-group algorithm incl. `LEAST_REQUEST`, `RING_HASH`, `MAGLEV`, `WEIGHTED_ROUND_ROBIN`. |
 | `localityLbPolicies` | `list(object)` | `[]` | Ordered built-in/custom xDS policy list (Traffic Director). |
 | `consistentHash` | object | none | Hash key parameters (INTERNAL_SELF_MANAGED + MAGLEV/RING_HASH). |

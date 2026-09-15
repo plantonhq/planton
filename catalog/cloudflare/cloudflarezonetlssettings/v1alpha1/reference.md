@@ -63,7 +63,7 @@ spec:
 | `spec.zoneId` | `string \| valueFrom` | yes |  | CloudflareDnsZone (`status.outputs.zone_id`) |
 | `spec.universalSslEnabled` | `bool` |  |  |  |
 | `spec.totalTls` | `CloudflareZoneTlsSettingsTotalTls` |  |  |  |
-| `spec.totalTls.enabled` | `bool` |  |  |  |
+| `spec.totalTls.enabled` | `bool` | yes |  |  |
 | `spec.totalTls.certificateAuthority` | `string` |  |  |  |
 | `spec.autoOriginTlsKex` | `bool` |  |  |  |
 | `spec.originTlsComplianceModes` | `[]string` |  |  |  |
@@ -111,9 +111,13 @@ tier). No delete at Cloudflare: destroy abandons the last-applied value.
 
 ### spec.totalTls.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Whether Total TLS issues per-hostname certificates for the zone.
+Whether Total TLS issues per-hostname certificates for the zone. Required
+inside total_tls: declaring the block takes Total TLS under management,
+and the switch says which way.
+
+- rule: {"required":true}
 
 ### spec.totalTls.certificateAuthority
 

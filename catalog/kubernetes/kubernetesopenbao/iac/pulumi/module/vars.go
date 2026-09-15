@@ -36,6 +36,58 @@ var vars = struct {
 	// cap at 63 characters.
 	MaxNameLength             int
 	MaxNameLengthWithInjector int
+
+	// Kubernetes caps CronJob names at 52 characters (the controller
+	// appends `-<10-digit schedule time>` to each Job it creates and
+	// does not truncate). `<name>-backup` (7) must fit, so declaring
+	// `backup` lowers the budget to 45.
+	MaxNameLengthWithBackup int
+
+	// Suffixes of the module-owned backup objects, all hung off
+	// metadata.name: the job's ServiceAccount (also the policy and the
+	// default auth role — one name is the whole login recipe), the
+	// scripts ConfigMap, the credentials Secret, the CronJob, and the
+	// restore Job's prefix (its suffix hashes the declaration).
+	BackupSuffix                  string
+	BackupScriptsSuffix           string
+	BackupCredentialsSecretSuffix string
+	RestoreJobPrefix              string
+
+	// The two job images. The `bao` CLI runs on the server's own image
+	// at the chart's appVersion (tag without the `v`, as the chart
+	// renders it) so the CLI never drifts from the server it snapshots;
+	// rclone is the official image at the pin whose auth chains the
+	// spec's keyless claims were read from. Both overridable through
+	// `backup.images`.
+	DefaultOpenBaoImage string
+	DefaultRcloneImage  string
+
+	// Where the job pods mount the scripts ConfigMap, the snapshot
+	// scratch volume, and a declared S3 CA bundle.
+	ScriptsMountPath   string
+	SnapshotsMountPath string
+	StoreCaMountPath   string
+
+	// The job pods' identity: OpenBao's image runs as uid 100 (its
+	// Dockerfile creates `openbao` with --uid 100); the rclone image
+	// declares no user and would run as root. Both containers run under
+	// this uid/gid so the 0600 snapshot file the bao CLI writes is
+	// readable by the upload container without a chmod step.
+	JobRunAsUser  int
+	JobRunAsGroup int
+
+	// Backup run hygiene: one run at a time, bounded retries, a deadline
+	// sized for a large snapshot, bounded history. The restore Job
+	// carries NO deadline — its wait for the operator's token Secret is
+	// unbounded by design.
+	BackupJobBackoffLimit          int
+	BackupJobActiveDeadlineSeconds int
+	BackupJobsHistoryLimit         int
+	RestoreJobBackoffLimit         int
+
+	// The client timeout the job's bao CLI runs with — snapshot calls
+	// on large vaults outlive the CLI's 60s default.
+	BaoClientTimeout string
 }{
 	HelmChartName:       "openbao",
 	HelmChartRepo:       "https://openbao.github.io/openbao-helm",
@@ -52,4 +104,27 @@ var vars = struct {
 
 	MaxNameLength:             54,
 	MaxNameLengthWithInjector: 44,
+	MaxNameLengthWithBackup:   45,
+
+	BackupSuffix:                  "-backup",
+	BackupScriptsSuffix:           "-backup-scripts",
+	BackupCredentialsSecretSuffix: "-backup-credentials",
+	RestoreJobPrefix:              "-restore-",
+
+	DefaultOpenBaoImage: "quay.io/openbao/openbao:2.6.1",
+	DefaultRcloneImage:  "docker.io/rclone/rclone:1.75.1",
+
+	ScriptsMountPath:   "/scripts",
+	SnapshotsMountPath: "/snapshots",
+	StoreCaMountPath:   "/etc/store-ca",
+
+	JobRunAsUser:  100,
+	JobRunAsGroup: 1000,
+
+	BackupJobBackoffLimit:          2,
+	BackupJobActiveDeadlineSeconds: 3600,
+	BackupJobsHistoryLimit:         3,
+	RestoreJobBackoffLimit:         3,
+
+	BaoClientTimeout: "600s",
 }

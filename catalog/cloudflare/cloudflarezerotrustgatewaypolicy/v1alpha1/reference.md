@@ -72,7 +72,7 @@ spec:
 | `spec.ruleSettings.addHeaders.*.values` | `[]string` | yes |  |  |
 | `spec.ruleSettings.allowChildBypass` | `bool` |  |  |  |
 | `spec.ruleSettings.auditSsh` | `CloudflareZeroTrustGatewayPolicyAuditSsh` |  |  |  |
-| `spec.ruleSettings.auditSsh.commandLogging` | `bool` |  |  |  |
+| `spec.ruleSettings.auditSsh.commandLogging` | `bool` | yes |  |  |
 | `spec.ruleSettings.bisoAdminControls` | `CloudflareZeroTrustGatewayPolicyBisoAdminControls` |  |  |  |
 | `spec.ruleSettings.bisoAdminControls.version` | `string` |  |  |  |
 | `spec.ruleSettings.bisoAdminControls.copy` | `string` |  |  |  |
@@ -113,7 +113,7 @@ spec:
 | `spec.ruleSettings.egress.ipv4Fallback` | `string` |  |  |  |
 | `spec.ruleSettings.egress.ipv6` | `string` |  |  |  |
 | `spec.ruleSettings.forensicCopy` | `CloudflareZeroTrustGatewayPolicyForensicCopy` |  |  |  |
-| `spec.ruleSettings.forensicCopy.enabled` | `bool` |  |  |  |
+| `spec.ruleSettings.forensicCopy.enabled` | `bool` | yes |  |  |
 | `spec.ruleSettings.ignoreCnameCategoryMatches` | `bool` |  |  |  |
 | `spec.ruleSettings.insecureDisableDnssecValidation` | `bool` |  |  |  |
 | `spec.ruleSettings.ipCategories` | `bool` |  |  |  |
@@ -129,7 +129,7 @@ spec:
 | `spec.ruleSettings.overrideHost` | `string` |  |  |  |
 | `spec.ruleSettings.overrideIps` | `[]string` |  |  |  |
 | `spec.ruleSettings.payloadLog` | `CloudflareZeroTrustGatewayPolicyPayloadLog` |  |  |  |
-| `spec.ruleSettings.payloadLog.enabled` | `bool` |  |  |  |
+| `spec.ruleSettings.payloadLog.enabled` | `bool` | yes |  |  |
 | `spec.ruleSettings.quarantine` | `CloudflareZeroTrustGatewayPolicyQuarantine` |  |  |  |
 | `spec.ruleSettings.quarantine.fileTypes` | `[]string` |  |  |  |
 | `spec.ruleSettings.redirect` | `CloudflareZeroTrustGatewayPolicyRedirect` |  |  |  |
@@ -366,9 +366,11 @@ Audit SSH settings. Only for l4 rules with the audit_ssh action.
 
 ### spec.ruleSettings.auditSsh.commandLogging
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Log the SSH commands executed in the session.
+Log the SSH commands executed in the session. Required inside audit_ssh.
+
+- rule: {"required":true}
 
 ### spec.ruleSettings.bisoAdminControls
 
@@ -669,9 +671,11 @@ Send a copy of the matched HTTP request to storage. Only for http rules.
 
 ### spec.ruleSettings.forensicCopy.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Enable sending the copy to storage.
+Enable sending the copy to storage. Required inside forensic_copy.
+
+- rule: {"required":true}
 
 ### spec.ruleSettings.ignoreCnameCategoryMatches
 
@@ -776,9 +780,11 @@ DLP payload logging. Only for http rules.
 
 ### spec.ruleSettings.payloadLog.enabled
 
-`bool`
+`bool` · required · optional (explicit presence)
 
-Enable DLP payload logging for this rule.
+Enable DLP payload logging for this rule. Required inside payload_log.
+
+- rule: {"required":true}
 
 ### spec.ruleSettings.quarantine
 

@@ -18,12 +18,14 @@ locals {
 
   # Public access block — ABSENCE of the spec block means fully private (all
   # four guards on). The satellite resource is therefore always created; the
-  # spec block only exists to relax specific guards.
-  public_access_block = var.spec.public_access_block != null ? var.spec.public_access_block : {
-    block_public_acls       = true
-    block_public_policy     = true
-    ignore_public_acls      = true
-    restrict_public_buckets = true
+  # spec block only exists to relax specific guards. Inside the block each
+  # guard is presence-tracked and defaults to ON, so a guard that arrives null
+  # stays on and only an explicit false relaxes it.
+  public_access_block = {
+    block_public_acls       = var.spec.public_access_block == null ? true : coalesce(var.spec.public_access_block.block_public_acls, true)
+    block_public_policy     = var.spec.public_access_block == null ? true : coalesce(var.spec.public_access_block.block_public_policy, true)
+    ignore_public_acls      = var.spec.public_access_block == null ? true : coalesce(var.spec.public_access_block.ignore_public_acls, true)
+    restrict_public_buckets = var.spec.public_access_block == null ? true : coalesce(var.spec.public_access_block.restrict_public_buckets, true)
   }
 
   # Object Ownership — empty means the modern BucketOwnerEnforced (ACLs
@@ -72,10 +74,10 @@ locals {
           (r.filter.object_size_less_than > 0 ? 1 : 0)
         )
       } : null
-      transitions = r.transitions
-      expiration  = r.expiration
-      noncurrent_version_transitions = r.noncurrent_version_transitions
-      noncurrent_version_expiration  = r.noncurrent_version_expiration
+      transitions                            = r.transitions
+      expiration                             = r.expiration
+      noncurrent_version_transitions         = r.noncurrent_version_transitions
+      noncurrent_version_expiration          = r.noncurrent_version_expiration
       abort_incomplete_multipart_upload_days = r.abort_incomplete_multipart_upload_days
     }
   ]

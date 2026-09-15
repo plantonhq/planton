@@ -55,6 +55,16 @@ func flattenWithOpts(data map[string]interface{}, md protoreflect.MessageDescrip
 			continue
 		}
 
+		// A manifest-only word is dropped before anything else looks at it:
+		// this check runs ahead of the message-kind branch because the fields
+		// it serves are scalars (the type rules below apply to messages only),
+		// and ahead of the key rename so the drop is by the JSON key protojson
+		// wrote. Both the snake_case path and the manifest projection take it.
+		if isManifestOnlyField(fd) {
+			delete(data, jsonKey)
+			continue
+		}
+
 		// Choose the emitted key. Default: rename JSON camelCase -> snake_case
 		// (the proto field name is already snake_case by convention). Manifest
 		// projection: keep the camelCase JSON key, which is the CRD's own key.

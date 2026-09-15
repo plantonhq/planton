@@ -143,3 +143,10 @@ resources:
         reason: module-wired parent linkage to the rule created in the same plan
       - arg: target_type
         reason: the only target type AWS supports is SSM_DOCUMENT -- both engines always send it, never user-facing
+
+specExclusions:
+  # The organization block's own switch. It chooses WHICH provider resource
+  # renders (an account-scoped aws_config_config_rule, or one of the three
+  # organization rule resources); no single argument carries it.
+  - field: spec.organization.enabled
+    reason: an explicit scope switch the module honors by choosing the account-scoped or organization-scoped resource -- no provider argument carries the choice

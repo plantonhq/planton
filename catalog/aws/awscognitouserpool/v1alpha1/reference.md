@@ -129,6 +129,7 @@ spec:
 | `spec.emailMfa` | `AwsCognitoUserPoolEmailMfaConfig` |  |  |  |
 | `spec.emailMfa.message` | `string` |  |  |  |
 | `spec.emailMfa.subject` | `string` |  |  |  |
+| `spec.emailMfa.enabled` | `bool` |  | `true` |  |
 | `spec.webAuthn` | `AwsCognitoUserPoolWebAuthnConfig` |  |  |  |
 | `spec.webAuthn.relyingPartyId` | `string` |  |  |  |
 | `spec.webAuthn.userVerification` | `string` |  |  |  |
@@ -161,8 +162,8 @@ spec:
 | `spec.inviteMessageTemplate.emailSubject` | `string` |  |  |  |
 | `spec.inviteMessageTemplate.smsMessage` | `string` |  |  |  |
 | `spec.deviceConfiguration` | `AwsCognitoUserPoolDeviceConfig` |  |  |  |
-| `spec.deviceConfiguration.challengeRequiredOnNewDevice` | `bool` |  |  |  |
-| `spec.deviceConfiguration.deviceOnlyRememberedOnUserPrompt` | `bool` |  |  |  |
+| `spec.deviceConfiguration.challengeRequiredOnNewDevice` | `bool` |  | `false` |  |
+| `spec.deviceConfiguration.deviceOnlyRememberedOnUserPrompt` | `bool` |  | `false` |  |
 | `spec.customAttributes` | `[]AwsCognitoUserPoolSchemaAttribute` |  |  |  |
 | `spec.customAttributes[].name` | `string` | yes |  |  |
 | `spec.customAttributes[].attributeDataType` | `string` | yes |  |  |
@@ -430,6 +431,16 @@ The email subject for MFA codes. 1-140 characters. When omitted, AWS uses
 its default subject.
 
 - rule: {"string":{"maxLen":"140"}}
+
+### spec.emailMfa.enabled
+
+`bool` · optional (explicit presence)
+
+Whether email MFA is on. Unset means on: declaring the block has always
+meant enabling it, and this switch lets a manifest say the opposite out
+loud.
+
+- default: `true`
 
 ### spec.webAuthn
 
@@ -721,17 +732,22 @@ skip MFA on trusted devices, and sign-in events carry a device key.
 
 ### spec.deviceConfiguration.challengeRequiredOnNewDevice
 
-`bool`
+`bool` · optional (explicit presence)
 
 When true, a remembered device still requires a challenge (MFA) the first
 time it is seen -- remembering only suppresses challenges afterwards.
+Unset is false.
+
+- default: `false`
 
 ### spec.deviceConfiguration.deviceOnlyRememberedOnUserPrompt
 
-`bool`
+`bool` · optional (explicit presence)
 
 When true, devices are remembered only after the user opts in when
-prompted. When false, every device is remembered automatically.
+prompted. When false (or unset), every device is remembered automatically.
+
+- default: `false`
 
 ### spec.customAttributes
 

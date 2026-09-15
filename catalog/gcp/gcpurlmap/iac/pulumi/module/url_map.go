@@ -1347,16 +1347,16 @@ func emptyAsNilString(value string) pulumi.StringPtrInput {
 // integer range). Returns the concrete pulumi.String so it satisfies both
 // the required (StringInput) and optional (StringPtrInput) SDK positions.
 func durationSeconds(d *gcpurlmapv1alpha1.GcpUrlMapDuration) pulumi.String {
-	return pulumi.String(strconv.FormatInt(d.Seconds, 10))
+	return pulumi.String(strconv.FormatInt(d.GetSeconds(), 10))
 }
 
 // durationNanos renders a Duration's sub-second component, omitted when
 // zero (whole-second durations).
 func durationNanos(d *gcpurlmapv1alpha1.GcpUrlMapDuration) pulumi.IntPtrInput {
-	if d.Nanos == 0 {
+	if d.GetNanos() == 0 {
 		return nil
 	}
-	return pulumi.Int(int(d.Nanos))
+	return pulumi.Int(int(d.GetNanos()))
 }
 
 func stringArrayOrNil(values []string) pulumi.StringArrayInput {

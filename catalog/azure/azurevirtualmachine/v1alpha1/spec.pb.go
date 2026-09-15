@@ -2523,15 +2523,21 @@ func (x *AzureVirtualMachinePatching) GetBypassPlatformSafetyChecksOnUserSchedul
 	return false
 }
 
-// Boot diagnostics. Presence enables it.
+// Boot diagnostics. Declaring the block turns it on (the switch defaults to
+// on), and `enabled: false` records the decision to keep it off while the
+// storage choice stays in the manifest.
 type AzureVirtualMachineBootDiagnostics struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The storage account to write console logs/screenshots to, by blob
 	// endpoint URI. Empty uses Azure's MANAGED storage -- the right
 	// default (no storage account to operate).
 	StorageAccountUri string `protobuf:"bytes,1,opt,name=storage_account_uri,json=storageAccountUri,proto3" json:"storage_account_uri,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// Whether boot diagnostics are on. Unset means on: declaring the block
+	// has always meant enabling it, and this switch lets a manifest say the
+	// opposite out loud.
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureVirtualMachineBootDiagnostics) Reset() {
@@ -2569,6 +2575,13 @@ func (x *AzureVirtualMachineBootDiagnostics) GetStorageAccountUri() string {
 		return x.StorageAccountUri
 	}
 	return ""
+}
+
+func (x *AzureVirtualMachineBootDiagnostics) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // One VM Application (gallery application) installed at deployment.
@@ -3148,9 +3161,12 @@ const file_catalog_azure_azurevirtualmachine_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1bAzureVirtualMachinePatching\x12\x7f\n" +
 	"\x0fassessment_mode\x18\x01 \x01(\x0e2V.dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachinePatchAssessmentModeR\x0eassessmentMode\x12w\n" +
 	"\x0ereboot_setting\x18\x02 \x01(\x0e2P.dev.planton.azure.azurevirtualmachine.v1alpha1.AzureVirtualMachineRebootSettingR\rrebootSetting\x12o\n" +
-	"6bypass_platform_safety_checks_on_user_schedule_enabled\x18\x03 \x01(\bR/bypassPlatformSafetyChecksOnUserScheduleEnabled\"T\n" +
+	"6bypass_platform_safety_checks_on_user_schedule_enabled\x18\x03 \x01(\bR/bypassPlatformSafetyChecksOnUserScheduleEnabled\"\x89\x01\n" +
 	"\"AzureVirtualMachineBootDiagnostics\x12.\n" +
-	"\x13storage_account_uri\x18\x01 \x01(\tR\x11storageAccountUri\"\xe3\x02\n" +
+	"\x13storage_account_uri\x18\x01 \x01(\tR\x11storageAccountUri\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xe3\x02\n" +
 	"%AzureVirtualMachineGalleryApplication\x12%\n" +
 	"\n" +
 	"version_id\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tversionId\x12(\n" +
@@ -3398,6 +3414,7 @@ func file_catalog_azure_azurevirtualmachine_v1alpha1_spec_proto_init() {
 	file_catalog_azure_azurevirtualmachine_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
 	file_catalog_azure_azurevirtualmachine_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
 	file_catalog_azure_azurevirtualmachine_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
+	file_catalog_azure_azurevirtualmachine_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
 	file_catalog_azure_azurevirtualmachine_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

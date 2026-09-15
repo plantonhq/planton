@@ -210,7 +210,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "main" {
   }
 
   dynamic "boot_diagnostics" {
-    for_each = var.spec.boot_diagnostics != null ? [var.spec.boot_diagnostics] : []
+    for_each = var.spec.boot_diagnostics != null && coalesce(var.spec.boot_diagnostics.enabled, true) ? [var.spec.boot_diagnostics] : []
     content {
       # Empty URI selects Azure's managed storage -- the right default.
       storage_account_uri = boot_diagnostics.value.storage_account_uri != null && boot_diagnostics.value.storage_account_uri != "" ? boot_diagnostics.value.storage_account_uri : null
@@ -508,7 +508,7 @@ resource "azurerm_windows_virtual_machine_scale_set" "main" {
   }
 
   dynamic "boot_diagnostics" {
-    for_each = var.spec.boot_diagnostics != null ? [var.spec.boot_diagnostics] : []
+    for_each = var.spec.boot_diagnostics != null && coalesce(var.spec.boot_diagnostics.enabled, true) ? [var.spec.boot_diagnostics] : []
     content {
       storage_account_uri = boot_diagnostics.value.storage_account_uri != null && boot_diagnostics.value.storage_account_uri != "" ? boot_diagnostics.value.storage_account_uri : null
     }
@@ -877,7 +877,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "main" {
   }
 
   dynamic "boot_diagnostics" {
-    for_each = var.spec.boot_diagnostics != null ? [var.spec.boot_diagnostics] : []
+    for_each = var.spec.boot_diagnostics != null && coalesce(var.spec.boot_diagnostics.enabled, true) ? [var.spec.boot_diagnostics] : []
     content {
       storage_account_uri = boot_diagnostics.value.storage_account_uri != null && boot_diagnostics.value.storage_account_uri != "" ? boot_diagnostics.value.storage_account_uri : null
     }

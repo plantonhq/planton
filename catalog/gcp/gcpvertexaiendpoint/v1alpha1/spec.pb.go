@@ -9,6 +9,7 @@ package gcpvertexaiendpointv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -94,6 +95,8 @@ func (x *GcpVertexAiEndpointPscAutomationConfig) GetProjectId() *v1.StringValueO
 // PSC provides a private, secure connection to the endpoint without
 // requiring VPC peering. It is the modern networking model for Vertex AI
 // endpoints and supports fine-grained access control via project allowlists.
+// Declaring the block turns PSC on; `enabled: false` keeps its settings in
+// the manifest while switching it off.
 type GcpVertexAiEndpointPrivateServiceConnectConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Projects allowed to create forwarding rules targeting this endpoint's
@@ -106,8 +109,14 @@ type GcpVertexAiEndpointPrivateServiceConnectConfig struct {
 	// hand). Online-prediction endpoints are exactly the surface Google
 	// documents this automation for. Mutable in place.
 	PscAutomationConfigs []*GcpVertexAiEndpointPscAutomationConfig `protobuf:"bytes,2,rep,name=psc_automation_configs,json=pscAutomationConfigs,proto3" json:"psc_automation_configs,omitempty"`
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
+	// Whether Private Service Connect is on. Unset means on: declaring the
+	// block has always meant enabling PSC, and this switch lets a manifest say
+	// the opposite out loud while keeping the allowlist and automation
+	// settings in place (the modules then render no PSC block, since the API
+	// rejects the block with its flag off).
+	Enabled       *bool `protobuf:"varint,3,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpVertexAiEndpointPrivateServiceConnectConfig) Reset() {
@@ -152,6 +161,13 @@ func (x *GcpVertexAiEndpointPrivateServiceConnectConfig) GetPscAutomationConfigs
 		return x.PscAutomationConfigs
 	}
 	return nil
+}
+
+func (x *GcpVertexAiEndpointPrivateServiceConnectConfig) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // GcpVertexAiEndpointRequestResponseLoggingConfig samples online
@@ -477,19 +493,22 @@ var File_catalog_gcp_gcpvertexaiendpoint_v1alpha1_spec_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcpvertexaiendpoint/v1alpha1/spec.proto\x12,dev.planton.gcp.gcpvertexaiendpoint.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa9\x02\n" +
+	"3catalog/gcp/gcpvertexaiendpoint/v1alpha1/spec.proto\x12,dev.planton.gcp.gcpvertexaiendpoint.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa9\x02\n" +
 	"&GcpVertexAiEndpointPscAutomationConfig\x12\x81\x01\n" +
 	"\anetwork\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB3\xbaH\x03\xc8\x01\x01\x88\xd4a\xc2\x17\x92\xd4a status.outputs.network_self_link\x98\xd4a\x01R\anetwork\x12{\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\"\xea\x01\n" +
+	"project_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\"\x9f\x02\n" +
 	".GcpVertexAiEndpointPrivateServiceConnectConfig\x12+\n" +
 	"\x11project_allowlist\x18\x01 \x03(\tR\x10projectAllowlist\x12\x8a\x01\n" +
-	"\x16psc_automation_configs\x18\x02 \x03(\v2T.dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointPscAutomationConfigR\x14pscAutomationConfigs\"\xa9\x02\n" +
+	"\x16psc_automation_configs\x18\x02 \x03(\v2T.dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointPscAutomationConfigR\x14pscAutomationConfigs\x12'\n" +
+	"\aenabled\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xa9\x02\n" +
 	"/GcpVertexAiEndpointRequestResponseLoggingConfig\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x97\x01\n" +
 	"\rsampling_rate\x18\x02 \x01(\x01Br\xbaHo\xba\x01l\n" +
 	"\x13valid_sampling_rate\x12)sampling_rate must be in the range (0, 1]\x1a*this == 0.0 || (this > 0.0 && this <= 1.0)R\fsamplingRate\x12B\n" +
-	"\x18bigquery_destination_uri\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\xd0\x0fR\x16bigqueryDestinationUri\"\xb9\x10\n" +
+	"\x18bigquery_destination_uri\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\xd0\x0fR\x16bigqueryDestinationUri\"\x8b\x12\n" +
 	"\x17GcpVertexAiEndpointSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12&\n" +
@@ -516,9 +535,9 @@ const file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a?\n" +
 	"\x11TrafficSplitEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01:\xc4\x03\xbaH\xc0\x03\x1a\xc4\x01\n" +
-	"\x1cnetwork_psc_mutual_exclusion\x12cnetwork and private_service_connect_config are mutually exclusive; use VPC peering or PSC, not both\x1a?!has(this.network) || !has(this.private_service_connect_config)\x1a\xf6\x01\n" +
-	"\x1ededicated_psc_mutual_exclusion\x12}dedicated_endpoint_enabled and private_service_connect_config are mutually exclusive; dedicated DNS is not available with PSC\x1aUthis.dedicated_endpoint_enabled == false || !has(this.private_service_connect_config)B\xf5\x02\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01:\x96\x05\xbaH\x92\x05\x1a\xad\x02\n" +
+	"\x1cnetwork_psc_mutual_exclusion\x12cnetwork and private_service_connect_config are mutually exclusive; use VPC peering or PSC, not both\x1a\xa7\x01!has(this.network) || !(has(this.private_service_connect_config) && (!has(this.private_service_connect_config.enabled) || this.private_service_connect_config.enabled))\x1a\xdf\x02\n" +
+	"\x1ededicated_psc_mutual_exclusion\x12}dedicated_endpoint_enabled and private_service_connect_config are mutually exclusive; dedicated DNS is not available with PSC\x1a\xbd\x01this.dedicated_endpoint_enabled == false || !(has(this.private_service_connect_config) && (!has(this.private_service_connect_config.enabled) || this.private_service_connect_config.enabled))B\xf5\x02\n" +
 	"0com.dev.planton.gcp.gcpvertexaiendpoint.v1alpha1B\tSpecProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpvertexaiendpoint/v1alpha1;gcpvertexaiendpointv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpvertexaiendpoint.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpvertexaiendpoint\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpvertexaiendpoint\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpvertexaiendpoint::V1alpha1b\x06proto3"
 
 var (
@@ -566,6 +585,7 @@ func file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_spec_proto_init() {
 	if File_catalog_gcp_gcpvertexaiendpoint_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_gcp_gcpvertexaiendpoint_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

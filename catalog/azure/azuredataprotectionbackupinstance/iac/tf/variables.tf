@@ -36,8 +36,8 @@ variable "spec" {
         included_resource_types          = optional(list(string), [])
         excluded_resource_types          = optional(list(string), [])
         label_selectors                  = optional(list(string), [])
-        cluster_scoped_resources_enabled = optional(bool, false)
-        volume_snapshot_enabled          = optional(bool, false)
+        cluster_scoped_resources_enabled = optional(bool)
+        volume_snapshot_enabled          = optional(bool)
       }))
     }))
     mysql_flexible_server = optional(object({

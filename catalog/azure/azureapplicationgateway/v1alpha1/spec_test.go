@@ -8,6 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAzureApplicationGatewaySpec(t *testing.T) {
@@ -86,7 +87,7 @@ var _ = ginkgo.Describe("AzureApplicationGatewaySpec Validation Tests", func() {
 		ginkgo.It("should accept autoscale instead of capacity", func() {
 			input := minimalSpec()
 			input.Spec.Capacity = nil
-			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MinCapacity: 2}
+			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MinCapacity: proto.Int32(2)}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -352,9 +353,25 @@ var _ = ginkgo.Describe("AzureApplicationGatewaySpec Validation Tests", func() {
 
 	ginkgo.Describe("When invalid input is passed", func() {
 
+		ginkgo.It("should accept an autoscale floor of 0 stated explicitly", func() {
+			input := minimalSpec()
+			input.Spec.Capacity = nil
+			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MinCapacity: proto.Int32(0)}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should reject autoscale that does not state its floor", func() {
+			input := minimalSpec()
+			input.Spec.Capacity = nil
+			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MaxCapacity: proto.Int32(10)}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("min_capacity"))
+		})
+
 		ginkgo.It("should reject both capacity and autoscale", func() {
 			input := minimalSpec()
-			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MinCapacity: 2}
+			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MinCapacity: proto.Int32(2)}
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 
@@ -368,7 +385,7 @@ var _ = ginkgo.Describe("AzureApplicationGatewaySpec Validation Tests", func() {
 			input := minimalSpec()
 			input.Spec.Sku = AzureApplicationGatewaySku_BASIC
 			input.Spec.Capacity = nil
-			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MinCapacity: 2}
+			input.Spec.Autoscale = &AzureApplicationGatewayAutoscale{MinCapacity: proto.Int32(2)}
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 

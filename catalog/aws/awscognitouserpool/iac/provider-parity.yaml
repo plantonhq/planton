@@ -144,3 +144,10 @@ resources:
         reason: module-wired to the pool this kind creates -- never free-form user surface
       - arg: client_id
         reason: scope selector -- this kind renders the pool-wide configuration (client_id absent by AWS's contract); client-scoped configurations are the AwsCognitoUserPoolClient kind's surface, rendered from its own spec with its own client ID
+
+specExclusions:
+  # The block's own switch. The provider models email MFA by the presence of
+  # email_mfa_configuration; the module renders the block only while this
+  # switch is on, so the switch has no argument of its own to reach.
+  - field: spec.email_mfa.enabled
+    reason: an explicit switch the module honors by rendering or omitting email_mfa_configuration -- the provider has no enabled flag on that block

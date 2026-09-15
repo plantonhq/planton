@@ -199,9 +199,11 @@ resources:
         reason: wired by the module to the gateway this kind deploys -- targets are folded satellites, never cross-gateway surface
 
 specExclusions:
-  # Passing the caller's JWT through to the backend is selected by the
-  # presence of the provider's EMPTY jwt_passthrough block (no argument
-  # leaves to map); the spec models it as a bool and the modules render
-  # the matching empty block.
-  - field: spec.targets.credentials.jwt_passthrough
-    reason: renders the provider's empty credential_provider_configuration.jwt_passthrough block -- block presence IS the value; no argument leaf exists to map
+  # The metadata block's own switch. The provider models propagation by the
+  # presence of metadata_configuration; the module renders the block only
+  # while this switch is on, so the switch has no argument of its own to reach.
+  # (Passing the caller's JWT through is a leafless oneof arm that renders
+  # the provider's empty jwt_passthrough block; with no leaf field it needs
+  # no entry here.)
+  - field: spec.targets.metadata.enabled
+    reason: an explicit switch the module honors by rendering or omitting metadata_configuration -- the provider has no enabled flag on that block

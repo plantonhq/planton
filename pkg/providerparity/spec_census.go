@@ -18,6 +18,8 @@ import (
 
 	"github.com/plantonhq/planton/pkg/crkreflect"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/options"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -53,6 +55,14 @@ type KindCensus struct {
 	// field under spec, rooted at "spec" (matching pkg/secretcoverage's path
 	// format), e.g. "spec.lifecycle_rules.condition.age_days".
 	SpecFieldPaths []string
+	// ManifestOnlyPaths is the subset of SpecFieldPaths whose field (or an
+	// ancestor) carries (dev.planton.shared.options.manifest_only): words the
+	// manifest carries so an empty block can say what it means, which no
+	// engine forwards. They are authored surface -- so they stay in
+	// SpecFieldPaths and in the field count -- but the reverse check reads
+	// each as an exclusion the proto itself declares, so a kind's manifest
+	// never repeats the fact.
+	ManifestOnlyPaths []string
 }
 
 // SpecCensus enumerates the spec surface of every implemented kind of one
@@ -73,9 +83,11 @@ func SpecCensus(provider cloudresourcekind.CloudResourceProvider) []KindCensus {
 		if specField == nil || specField.Kind() != protoreflect.MessageKind {
 			continue
 		}
+		paths, manifestOnly := CollectSpecCensus(specField.Message(), "spec")
 		out = append(out, KindCensus{
-			Kind:           kind.String(),
-			SpecFieldPaths: CollectSpecPaths(specField.Message(), "spec"),
+			Kind:              kind.String(),
+			SpecFieldPaths:    paths,
+			ManifestOnlyPaths: manifestOnly,
 		})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Kind < out[j].Kind })
@@ -86,15 +98,41 @@ func SpecCensus(provider cloudresourcekind.CloudResourceProvider) []KindCensus {
 // leaf field paths. Exposed so tests can drive it against the hermetic
 // testcloudresourcegeneric spec in isolation.
 func CollectSpecPaths(specMd protoreflect.MessageDescriptor, prefix string) []string {
-	var paths []string
-	walkSpec(specMd, prefix, map[protoreflect.FullName]bool{}, &paths)
-	sort.Strings(paths)
+	paths, _ := CollectSpecCensus(specMd, prefix)
 	return paths
 }
 
-func walkSpec(md protoreflect.MessageDescriptor, prefix string, visited map[protoreflect.FullName]bool, out *[]string) {
-	visited[md.FullName()] = true
-	defer delete(visited, md.FullName())
+// CollectSpecCensus is CollectSpecPaths plus the manifest-only subset: the
+// sorted leaf paths whose field, or an ancestor on the path, carries
+// (dev.planton.shared.options.manifest_only).
+func CollectSpecCensus(specMd protoreflect.MessageDescriptor, prefix string) (paths, manifestOnly []string) {
+	w := specWalk{visited: map[protoreflect.FullName]bool{}}
+	w.walk(specMd, prefix, false)
+	sort.Strings(w.paths)
+	sort.Strings(w.manifestOnly)
+	return w.paths, w.manifestOnly
+}
+
+// specWalk carries the two outputs of one descriptor walk: every leaf path,
+// and the leaves under a manifest-only field.
+type specWalk struct {
+	visited      map[protoreflect.FullName]bool
+	paths        []string
+	manifestOnly []string
+}
+
+// leaf records one leaf path; underManifestOnly says whether the field or an
+// ancestor carries the manifest-only marker.
+func (w *specWalk) leaf(path string, underManifestOnly bool) {
+	w.paths = append(w.paths, path)
+	if underManifestOnly {
+		w.manifestOnly = append(w.manifestOnly, path)
+	}
+}
+
+func (w *specWalk) walk(md protoreflect.MessageDescriptor, prefix string, underManifestOnly bool) {
+	w.visited[md.FullName()] = true
+	defer delete(w.visited, md.FullName())
 
 	fields := md.Fields()
 	for i := 0; i < fields.Len(); i++ {
@@ -103,25 +141,26 @@ func walkSpec(md protoreflect.MessageDescriptor, prefix string, visited map[prot
 		if prefix != "" {
 			path = prefix + "." + path
 		}
+		manifestOnly := underManifestOnly || isManifestOnlyField(fd)
 
 		switch {
 		case fd.IsMap():
 			// The author configures one map field; message values recurse
 			// because each value's shape is itself configurable surface.
 			if v := fd.MapValue(); v.Kind() == protoreflect.MessageKind && !isOpaqueLeafMessage(string(v.Message().FullName())) {
-				if visited[v.Message().FullName()] {
-					*out = append(*out, path)
+				if w.visited[v.Message().FullName()] {
+					w.leaf(path, manifestOnly)
 				} else {
-					walkSpec(v.Message(), path, visited, out)
+					w.walk(v.Message(), path, manifestOnly)
 				}
 			} else {
-				*out = append(*out, path)
+				w.leaf(path, manifestOnly)
 			}
 		case fd.Kind() == protoreflect.MessageKind:
 			switch {
 			case isOpaqueLeafMessage(string(fd.Message().FullName())):
-				*out = append(*out, path)
-			case visited[fd.Message().FullName()]:
+				w.leaf(path, manifestOnly)
+			case w.visited[fd.Message().FullName()]:
 				// Recursive re-entry: the field's message is an ancestor on
 				// the current walk path (a recursive grammar, e.g. WAF's
 				// statement tree nesting statements inside and/or/not). The
@@ -130,12 +169,25 @@ func walkSpec(md protoreflect.MessageDescriptor, prefix string, visited map[prot
 				// Dropping it silently (the previous behavior) hid the field
 				// from the census entirely, which is exactly the
 				// silent-omission class this package exists to eliminate.
-				*out = append(*out, path)
+				w.leaf(path, manifestOnly)
 			default:
-				walkSpec(fd.Message(), path, visited, out)
+				w.walk(fd.Message(), path, manifestOnly)
 			}
 		default:
-			*out = append(*out, path)
+			w.leaf(path, manifestOnly)
 		}
 	}
+}
+
+// isManifestOnlyField reports whether a field carries
+// (dev.planton.shared.options.manifest_only): a word the manifest carries so an
+// empty block can say what it means, which no engine forwards, and which
+// therefore has no provider counterpart by design.
+func isManifestOnlyField(fd protoreflect.FieldDescriptor) bool {
+	opts := fd.Options()
+	if opts == nil {
+		return false
+	}
+	v, ok := proto.GetExtension(opts, options.E_ManifestOnly).(bool)
+	return ok && v
 }

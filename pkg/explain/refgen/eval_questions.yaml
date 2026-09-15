@@ -267,3 +267,113 @@ questions:
       - kind: KubernetesCertificate
         file: GUIDE.md
         pattern: '(?i)certificate'
+
+  - id: q16
+    class: wisdom
+    question: >
+      A team wants OpenBao on GKE sealed by a Cloud KMS key, backed up
+      keylessly to a GCS bucket, and restorable by declaration. Which
+      catalog resources make up the set, which IAM grants does each
+      identity need, and where are the validated manifests?
+    answer: >
+      Nine resources: two GcpServiceAccounts (the server's seal identity
+      and the backup job's identity -- different blast radii), a
+      GcpKmsKeyRing, a GcpKmsKey, two GcpKmsKeyIamMembers on the key
+      (roles/cloudkms.cryptoKeyEncrypterDecrypter AND roles/cloudkms.viewer
+      -- the server checks the key exists at start and crash-loops on
+      "Error configuring seal" with only the first), a GcpGcsBucket
+      granting the job identity roles/storage.objectAdmin AND
+      roles/storage.legacyBucketReader, one GcpGkeWorkloadIdentityBinding
+      per ServiceAccount, and the KubernetesOpenBao. The shared store set
+      is embedded in the disaster-recovery pattern; the seal set and the
+      bad-day restore target are embedded in the OpenBao guide; the vault
+      is the 04-gke-ha-gcs-backups preset by slug.
+    checks:
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'roles/cloudkms\.viewer'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'Error configuring seal'
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: 'cloudkms\.cryptoKeys\.get'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'roles/storage\.legacyBucketReader'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'kind: GcpGkeWorkloadIdentityBinding'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'kind: GcpKmsKeyIamMember'
+
+  - id: q17
+    class: wisdom
+    question: >
+      The production OpenBao is gone; its snapshots are in the bucket. What
+      does the restore declaration need, what will the operator see and
+      do, and what must never be done afterwards?
+    answer: >
+      A fresh KubernetesOpenBao with the SAME autoUnseal key, the source's
+      backup block including its prefix, and a restore block (latest: true
+      on the bad day; a snapshotKey beside a live source) naming the Secret
+      for the root token; keep the source's name and namespace so the
+      bindings and the login role carry over. Backups are suspended while
+      restore is declared. The restore pod waits in
+      CreateContainerConfigError until the operator runs bao operator init
+      and creates the token Secret -- the designed wait, not a failure.
+      Afterwards remove the restore block and apply again, delete the
+      Secret, and never delete the finished Job by hand: a vanished Job is
+      recreated on the next apply and restores again over live data.
+    checks:
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: 'CreateContainerConfigError'
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: '(?i)must never be deleted by hand'
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: '(?i)rendered suspended'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'Keep the source.s name and\s+namespace'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'name the `snapshotKey` you mean'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'restore:\n    latest: true'
+
+  - id: q18
+    class: wisdom
+    question: >
+      Before promising an OpenBao backup story, what constraints and what
+      proof status must an agent state: the name budget, the login step,
+      the TLS name, which stores have a keyless posture, and which arms
+      have run live?
+    answer: >
+      With backup declared the name fits 45 characters (CronJob names cap
+      at 52); backups need Raft (server.ha) and the auth delegator; the
+      in-vault policy, auth mount, and role are a four-command recipe the
+      module cannot run (every failed run prints it with the real names);
+      a TLS certificate must include <name>-active.<namespace>.svc; GCS on
+      GKE, S3 on EKS, and Azure Blob on AKS have keyless postures, R2 has
+      none. Live-proven: S3 with keys and the transit-seal restore on kind,
+      keyless GCS and R2 with a KMS-key restore on GKE; Azure Blob and
+      keyless S3 (IRSA) render on both engines but have no live lane.
+    checks:
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: '45 with `backup`'
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: '-active\.<namespace>\.svc'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'sys/storage/raft/snapshot'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'R2 has no keyless posture'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: '(?i)azure blob arm and the keyless s3\s+arm \(IRSA\)'

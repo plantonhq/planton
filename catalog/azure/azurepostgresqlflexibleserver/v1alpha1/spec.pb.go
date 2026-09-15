@@ -1207,15 +1207,19 @@ func (x *AzurePostgresqlFlexibleServerHighAvailability) GetStandbyAvailabilityZo
 	return ""
 }
 
-// The weekly maintenance window for Azure-managed patching.
+// The weekly maintenance window for Azure-managed patching. Each dial carries
+// presence because zero is a real value here: Sunday at 00:00 is spelled
+// `day_of_week: 0, start_hour: 0, start_minute: 0`, and a dial left unset
+// means the same zero Azure would take; the two differ only in that the first
+// records the author's intent.
 type AzurePostgresqlFlexibleServerMaintenanceWindow struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Day of the week: 0 (Sunday) through 6 (Saturday).
-	DayOfWeek int32 `protobuf:"varint,1,opt,name=day_of_week,json=dayOfWeek,proto3" json:"day_of_week,omitempty"`
+	DayOfWeek *int32 `protobuf:"varint,1,opt,name=day_of_week,json=dayOfWeek,proto3,oneof" json:"day_of_week,omitempty"`
 	// The window's start hour, 0-23 (server-local UTC).
-	StartHour int32 `protobuf:"varint,2,opt,name=start_hour,json=startHour,proto3" json:"start_hour,omitempty"`
+	StartHour *int32 `protobuf:"varint,2,opt,name=start_hour,json=startHour,proto3,oneof" json:"start_hour,omitempty"`
 	// The window's start minute, 0-59.
-	StartMinute   int32 `protobuf:"varint,3,opt,name=start_minute,json=startMinute,proto3" json:"start_minute,omitempty"`
+	StartMinute   *int32 `protobuf:"varint,3,opt,name=start_minute,json=startMinute,proto3,oneof" json:"start_minute,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1251,22 +1255,22 @@ func (*AzurePostgresqlFlexibleServerMaintenanceWindow) Descriptor() ([]byte, []i
 }
 
 func (x *AzurePostgresqlFlexibleServerMaintenanceWindow) GetDayOfWeek() int32 {
-	if x != nil {
-		return x.DayOfWeek
+	if x != nil && x.DayOfWeek != nil {
+		return *x.DayOfWeek
 	}
 	return 0
 }
 
 func (x *AzurePostgresqlFlexibleServerMaintenanceWindow) GetStartHour() int32 {
-	if x != nil {
-		return x.StartHour
+	if x != nil && x.StartHour != nil {
+		return *x.StartHour
 	}
 	return 0
 }
 
 func (x *AzurePostgresqlFlexibleServerMaintenanceWindow) GetStartMinute() int32 {
-	if x != nil {
-		return x.StartMinute
+	if x != nil && x.StartMinute != nil {
+		return *x.StartMinute
 	}
 	return 0
 }
@@ -1566,12 +1570,15 @@ const file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_spec_proto_rawDe
 	"-AzurePostgresqlFlexibleServerHighAvailability\x12\x87\x01\n" +
 	"\x04mode\x18\x01 \x01(\x0e2k.dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerHighAvailabilityModeB\x06\xbaH\x03\xc8\x01\x01R\x04mode\x12\xba\x01\n" +
 	"\x19standby_availability_zone\x18\x02 \x01(\tB~\xbaH{\xba\x01x\n" +
-	"\x1bpostgres_standby_zone_valid\x122standby_availability_zone must be \"1\", \"2\", or \"3\"\x1a%this == '' || this in ['1', '2', '3']R\x17standbyAvailabilityZone\"\xb3\x01\n" +
-	".AzurePostgresqlFlexibleServerMaintenanceWindow\x12)\n" +
-	"\vday_of_week\x18\x01 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x06(\x00R\tdayOfWeek\x12(\n" +
+	"\x1bpostgres_standby_zone_valid\x122standby_availability_zone must be \"1\", \"2\", or \"3\"\x1a%this == '' || this in ['1', '2', '3']R\x17standbyAvailabilityZone\"\xf2\x01\n" +
+	".AzurePostgresqlFlexibleServerMaintenanceWindow\x12.\n" +
+	"\vday_of_week\x18\x01 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x06(\x00H\x00R\tdayOfWeek\x88\x01\x01\x12-\n" +
 	"\n" +
-	"start_hour\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x17(\x00R\tstartHour\x12,\n" +
-	"\fstart_minute\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18;(\x00R\vstartMinute\"\xb0\x01\n" +
+	"start_hour\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x17(\x00H\x01R\tstartHour\x88\x01\x01\x121\n" +
+	"\fstart_minute\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18;(\x00H\x02R\vstartMinute\x88\x01\x01B\x0e\n" +
+	"\f_day_of_weekB\r\n" +
+	"\v_start_hourB\x0f\n" +
+	"\r_start_minute\"\xb0\x01\n" +
 	"$AzurePostgresqlFlexibleServerCluster\x12 \n" +
 	"\x04size\x18\x01 \x01(\x05B\f\xbaH\t\xc8\x01\x01\x1a\x04\x18\x14(\x01R\x04size\x12L\n" +
 	"\x15default_database_name\x18\x02 \x01(\tB\x13\xbaH\x04r\x02\x10\x01\x8a\xa6\x1d\bpostgresH\x00R\x13defaultDatabaseName\x88\x01\x01B\x18\n" +
@@ -1709,6 +1716,7 @@ func file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_spec_proto_init()
 	}
 	file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
+	file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
 	file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
 	file_catalog_azure_azurepostgresqlflexibleserver_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
 	type x struct{}

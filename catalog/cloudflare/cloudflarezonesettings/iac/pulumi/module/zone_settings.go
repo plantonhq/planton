@@ -120,7 +120,7 @@ func collectSettings(spec *cloudflarezonesettingsv1alpha1.CloudflareZoneSettings
 	if spec.SecurityHeader != nil {
 		entries = append(entries, settingEntry{id: "security_header", value: map[string]interface{}{
 			"strict_transport_security": map[string]interface{}{
-				"enabled":            spec.SecurityHeader.Enabled,
+				"enabled":            spec.SecurityHeader.GetEnabled(),
 				"include_subdomains": spec.SecurityHeader.IncludeSubdomains,
 				"max_age":            spec.SecurityHeader.MaxAge,
 				"nosniff":            spec.SecurityHeader.Nosniff,
@@ -130,7 +130,7 @@ func collectSettings(spec *cloudflarezonesettingsv1alpha1.CloudflareZoneSettings
 	}
 	if spec.Nel != nil {
 		entries = append(entries, settingEntry{id: "nel", value: map[string]interface{}{
-			"enabled": spec.Nel.Enabled,
+			"enabled": spec.Nel.GetEnabled(),
 		}})
 	}
 	if spec.Aegis != nil {
@@ -147,7 +147,7 @@ func collectSettings(spec *cloudflarezonesettingsv1alpha1.CloudflareZoneSettings
 		apo := spec.AutomaticPlatformOptimization
 		// The APO API requires every member of the value object on writes.
 		entries = append(entries, settingEntry{id: "automatic_platform_optimization", value: map[string]interface{}{
-			"enabled":              apo.Enabled,
+			"enabled":              apo.GetEnabled(),
 			"cache_by_device_type": apo.CacheByDeviceType,
 			"cf":                   apo.Cf,
 			"hostnames":            apo.Hostnames,

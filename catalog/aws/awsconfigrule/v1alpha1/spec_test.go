@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAwsConfigRuleSpec(t *testing.T) {
@@ -57,6 +58,13 @@ var _ = ginkgo.Describe("AwsConfigRuleSpec validations", func() {
 					PolicyText:    "rule s3_encrypted { true }",
 				},
 			}
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts an organization block switched off beside account-only settings (the rule deploys account-scoped)", func() {
+			spec := minimalManagedRule()
+			spec.Organization = &AwsConfigRuleOrganization{Enabled: proto.Bool(false), ExcludedAccounts: []string{"123456789012"}}
+			spec.EvaluationModes = []string{"DETECTIVE"}
 			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 		})
 

@@ -50,9 +50,17 @@ var _ = ginkgo.Describe("CloudflareZoneTlsSettingsSpec Custom Validation Tests",
 			input := validTlsSettings(&CloudflareZoneTlsSettingsSpec{
 				ZoneId: zoneRef(),
 				TotalTls: &CloudflareZoneTlsSettingsTotalTls{
-					Enabled:              true,
+					Enabled:              boolPtr(true),
 					CertificateAuthority: strPtr("google"),
 				},
+			})
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept total_tls switched off", func() {
+			input := validTlsSettings(&CloudflareZoneTlsSettingsSpec{
+				ZoneId:   zoneRef(),
+				TotalTls: &CloudflareZoneTlsSettingsTotalTls{Enabled: boolPtr(false)},
 			})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -107,11 +115,21 @@ var _ = ginkgo.Describe("CloudflareZoneTlsSettingsSpec Custom Validation Tests",
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
+		ginkgo.It("should reject total_tls that does not say on or off", func() {
+			input := validTlsSettings(&CloudflareZoneTlsSettingsSpec{
+				ZoneId:   zoneRef(),
+				TotalTls: &CloudflareZoneTlsSettingsTotalTls{CertificateAuthority: strPtr("google")},
+			})
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("total_tls.enabled"))
+		})
+
 		ginkgo.It("should reject total_tls with an unknown certificate authority", func() {
 			input := validTlsSettings(&CloudflareZoneTlsSettingsSpec{
 				ZoneId: zoneRef(),
 				TotalTls: &CloudflareZoneTlsSettingsTotalTls{
-					Enabled:              true,
+					Enabled:              boolPtr(true),
 					CertificateAuthority: strPtr("digicert"),
 				},
 			})

@@ -9,6 +9,7 @@ package awsbedrockagentv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -298,11 +299,17 @@ func (x *AwsBedrockAgentGuardrail) GetVersion() string {
 	return ""
 }
 
-// AwsBedrockAgentMemory enables session-summary memory. AWS supports one
-// memory type (SESSION_SUMMARY) - the modules send that constant; presence
-// of this message is the enablement.
+// AwsBedrockAgentMemory configures session-summary memory. AWS supports one
+// memory type (SESSION_SUMMARY) - the modules send that constant. The block
+// carries its own switch: `enabled: true` (the default when the block is
+// declared) turns memory on with the dials below, `enabled: false` records
+// the decision to keep it off while keeping the dials in the manifest.
 type AwsBedrockAgentMemory struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
+	// Whether session-summary memory is on. Unset means on: declaring the
+	// block has always meant enabling memory, and this switch lets a manifest
+	// say the opposite out loud.
+	Enabled *bool `protobuf:"varint,3,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	// How many days AWS retains session summaries (AWS documents 0-365;
 	// omitted = AWS default, 30).
 	StorageDays int32 `protobuf:"varint,1,opt,name=storage_days,json=storageDays,proto3" json:"storage_days,omitempty"`
@@ -341,6 +348,13 @@ func (x *AwsBedrockAgentMemory) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AwsBedrockAgentMemory.ProtoReflect.Descriptor instead.
 func (*AwsBedrockAgentMemory) Descriptor() ([]byte, []int) {
 	return file_catalog_aws_awsbedrockagent_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *AwsBedrockAgentMemory) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 func (x *AwsBedrockAgentMemory) GetStorageDays() int32 {
@@ -1352,7 +1366,7 @@ var File_catalog_aws_awsbedrockagent_v1alpha1_spec_proto protoreflect.FileDescri
 
 const file_catalog_aws_awsbedrockagent_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awsbedrockagent/v1alpha1/spec.proto\x12(dev.planton.aws.awsbedrockagent.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xfb\x10\n" +
+	"/catalog/aws/awsbedrockagent/v1alpha1/spec.proto\x12(dev.planton.aws.awsbedrockagent.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfb\x10\n" +
 	"\x13AwsBedrockAgentSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12*\n" +
 	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\xc8\x01R\vdescription\x122\n" +
@@ -1379,12 +1393,15 @@ const file_catalog_aws_awsbedrockagent_v1alpha1_spec_proto_rawDesc = "" +
 	"%collaborators_require_supervisor_mode\x12Ocollaborators require agent_collaboration to be SUPERVISOR or SUPERVISOR_ROUTER\x1a\x7fthis.collaborators.size() == 0 || (this.agent_collaboration == 'SUPERVISOR' || this.agent_collaboration == 'SUPERVISOR_ROUTER')\"\xc1\x01\n" +
 	"\x18AwsBedrockAgentGuardrail\x12\x81\x01\n" +
 	"\fguardrail_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\xa6\t\x92\xd4a\x1bstatus.outputs.guardrail_idR\vguardrailId\x12!\n" +
-	"\aversion\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\aversion\"\x85\x01\n" +
-	"\x15AwsBedrockAgentMemory\x120\n" +
+	"\aversion\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\aversion\"\xba\x01\n" +
+	"\x15AwsBedrockAgentMemory\x12'\n" +
+	"\aenabled\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x120\n" +
 	"\fstorage_days\x18\x01 \x01(\x05B\r\xbaH\n" +
 	"\xd8\x01\x01\x1a\x05\x18\xed\x02(\x01R\vstorageDays\x12:\n" +
 	"\x13max_recent_sessions\x18\x02 \x01(\x05B\n" +
-	"\xbaH\a\xd8\x01\x01\x1a\x02(\x01R\x11maxRecentSessions\"\x9e\x05\n" +
+	"\xbaH\a\xd8\x01\x01\x1a\x02(\x01R\x11maxRecentSessionsB\n" +
+	"\n" +
+	"\b_enabled\"\x9e\x05\n" +
 	"\x1dAwsBedrockAgentPromptOverride\x12\x81\x01\n" +
 	"\x0foverride_lambda\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\xf1\a\x92\xd4a\x1bstatus.outputs.function_arnR\x0eoverrideLambda\x12\x8b\x01\n" +
 	"\x15prompt_configurations\x18\x02 \x03(\v2L.dev.planton.aws.awsbedrockagent.v1alpha1.AwsBedrockAgentPromptConfigurationB\b\xbaH\x05\x92\x01\x02\b\x01R\x14promptConfigurations:\xea\x02\xbaH\xe6\x02\x1a\x81\x01\n" +
@@ -1542,6 +1559,7 @@ func file_catalog_aws_awsbedrockagent_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awsbedrockagent_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_aws_awsbedrockagent_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_aws_awsbedrockagent_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

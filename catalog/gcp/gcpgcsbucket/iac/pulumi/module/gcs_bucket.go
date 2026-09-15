@@ -106,7 +106,7 @@ func gcsBucket(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) (
 	// SetStorageClass lifecycle rules.
 	if spec.Autoclass != nil {
 		autoclassArgs := &storage.BucketAutoclassArgs{
-			Enabled: pulumi.Bool(spec.Autoclass.Enabled),
+			Enabled: pulumi.Bool(spec.Autoclass.GetEnabled()),
 		}
 		if spec.Autoclass.TerminalStorageClass != "" {
 			autoclassArgs.TerminalStorageClass = pulumi.StringPtr(spec.Autoclass.TerminalStorageClass)

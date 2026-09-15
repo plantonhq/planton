@@ -61,21 +61,31 @@ message AwsEfsAccessPointSpec {
 }
 
 // AwsEfsAccessPointPosixUser defines the POSIX identity enforced for all file
-// operations through an access point.
+// operations through an access point. Both IDs carry presence and are required
+// inside the block: `0` is root, a real identity, so the schema must be able
+// to tell "uid 0" from "uid not given".
 message AwsEfsAccessPointPosixUser {
   // POSIX user ID (0–4294967295). All file system operations through this
-  // access point use this UID as the file owner.
-  int64 uid = 1 [(buf.validate.field).int64 = {
-    gte: 0
-    lte: 4294967295
-  }];
+  // access point use this UID as the file owner. Required inside posix_user;
+  // 0 is root.
+  optional int64 uid = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int64 = {
+      gte: 0
+      lte: 4294967295
+    }
+  ];
 
   // POSIX primary group ID (0–4294967295). All file system operations through
-  // this access point use this GID as the file group.
-  int64 gid = 2 [(buf.validate.field).int64 = {
-    gte: 0
-    lte: 4294967295
-  }];
+  // this access point use this GID as the file group. Required inside
+  // posix_user; 0 is root.
+  optional int64 gid = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int64 = {
+      gte: 0
+      lte: 4294967295
+    }
+  ];
 
   // Secondary POSIX group IDs supplementing the primary GID for group
   // permission checks. Maximum 16 (the NFS AUTH_SYS group limit).

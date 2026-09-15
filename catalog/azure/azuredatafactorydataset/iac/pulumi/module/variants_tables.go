@@ -16,7 +16,7 @@ func createAzureSqlTable(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	sqlTable := spec.AzureSqlTable
+	sqlTable := spec.GetAzureSqlTable()
 
 	// The one variant that references its linked service by ARM ID --
 	// Azure requires it to belong to the same factory as the dataset.
@@ -58,7 +58,7 @@ func createCosmosdbSqlapi(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	cosmosdb := spec.CosmosdbSqlapi
+	cosmosdb := spec.GetCosmosdbSqlapi()
 
 	args := &datafactory.DatasetCosmosDBApiArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -97,7 +97,7 @@ func createCustom(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	custom := spec.Custom
+	custom := spec.GetCustom()
 
 	linkedService := datafactory.CustomDatasetLinkedServiceArgs{
 		Name: pulumi.String(custom.LinkedService.Name.GetValue()),
@@ -133,7 +133,7 @@ func createMysql(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	mysql := spec.Mysql
+	mysql := spec.GetMysql()
 
 	args := &datafactory.DatasetMysqlArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -172,7 +172,7 @@ func createPostgresql(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	postgresql := spec.Postgresql
+	postgresql := spec.GetPostgresql()
 
 	args := &datafactory.DatasetPostgresqlArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -211,7 +211,7 @@ func createSnowflake(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	snowflake := spec.Snowflake
+	snowflake := spec.GetSnowflake()
 
 	args := &datafactory.DatasetSnowflakeArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -255,7 +255,7 @@ func createSqlServerTable(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	sqlServer := spec.SqlServerTable
+	sqlServer := spec.GetSqlServerTable()
 
 	args := &datafactory.DatasetSqlServerTableArgs{
 		Name:                 pulumi.String(spec.Name),

@@ -176,9 +176,9 @@ var _ = ginkgo.Describe("GcpPubSubTopicSpec", func() {
 						Value: "my-ingestion-bucket",
 					},
 				},
-				TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{
+				InputFormat: &GcpPubSubTopicIngestionCloudStorage_TextFormat{TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{
 					Delimiter: ",",
-				},
+				}},
 			},
 		}
 		err := validator.Validate(msg)
@@ -194,8 +194,8 @@ var _ = ginkgo.Describe("GcpPubSubTopicSpec", func() {
 						Value: "my-avro-bucket",
 					},
 				},
-				MatchGlob:  "*.avro",
-				AvroFormat: &GcpPubSubTopicIngestionCloudStorageAvroFormat{},
+				MatchGlob:   "*.avro",
+				InputFormat: &GcpPubSubTopicIngestionCloudStorage_AvroFormat{AvroFormat: &GcpPubSubTopicIngestionCloudStorageAvroFormat{}},
 			},
 		}
 		err := validator.Validate(msg)
@@ -240,7 +240,7 @@ var _ = ginkgo.Describe("GcpPubSubTopicSpec", func() {
 						Value: "my-bucket",
 					},
 				},
-				TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{},
+				InputFormat: &GcpPubSubTopicIngestionCloudStorage_TextFormat{TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{}},
 			},
 			PlatformLogsSettings: &GcpPubSubTopicIngestionPlatformLogsSettings{
 				Severity: "INFO",
@@ -546,24 +546,23 @@ var _ = ginkgo.Describe("GcpPubSubTopicSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
 
-	ginkgo.It("should reject Cloud Storage ingestion with two input formats", func() {
-		msg := minimal()
-		msg.Spec.IngestionDataSourceSettings = &GcpPubSubTopicIngestionDataSourceSettings{
-			CloudStorage: &GcpPubSubTopicIngestionCloudStorage{
-				Bucket:     svr("my-bucket"),
-				AvroFormat: &GcpPubSubTopicIngestionCloudStorageAvroFormat{},
-				TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{},
-			},
+	ginkgo.It("carries exactly one input format by construction (setting a second arm replaces the first)", func() {
+		cs := &GcpPubSubTopicIngestionCloudStorage{
+			Bucket:      svr("my-bucket"),
+			InputFormat: &GcpPubSubTopicIngestionCloudStorage_AvroFormat{AvroFormat: &GcpPubSubTopicIngestionCloudStorageAvroFormat{}},
 		}
-		err := validator.Validate(msg)
-		gomega.Expect(err).To(gomega.HaveOccurred())
+		cs.InputFormat = &GcpPubSubTopicIngestionCloudStorage_TextFormat{TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{}}
+		gomega.Expect(cs.GetAvroFormat()).To(gomega.BeNil())
+		msg := minimal()
+		msg.Spec.IngestionDataSourceSettings = &GcpPubSubTopicIngestionDataSourceSettings{CloudStorage: cs}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
 	ginkgo.It("should reject Cloud Storage ingestion without bucket", func() {
 		msg := minimal()
 		msg.Spec.IngestionDataSourceSettings = &GcpPubSubTopicIngestionDataSourceSettings{
 			CloudStorage: &GcpPubSubTopicIngestionCloudStorage{
-				TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{},
+				InputFormat: &GcpPubSubTopicIngestionCloudStorage_TextFormat{TextFormat: &GcpPubSubTopicIngestionCloudStorageTextFormat{}},
 			},
 		}
 		err := validator.Validate(msg)

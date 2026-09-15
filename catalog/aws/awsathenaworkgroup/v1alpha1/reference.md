@@ -108,6 +108,7 @@ spec:
 | `spec.resultConfiguration.s3AclOption` | `string` |  |  |  |
 | `spec.managedQueryResults` | `AwsAthenaWorkgroupManagedQueryResults` |  |  |  |
 | `spec.managedQueryResults.kmsKey` | `string \| valueFrom` |  |  | AwsKmsKey (`status.outputs.key_arn`) |
+| `spec.managedQueryResults.enabled` | `bool` |  | `true` |  |
 | `spec.bytesScannedCutoffPerQuery` | `int64` |  |  |  |
 | `spec.enforceWorkgroupConfiguration` | `bool` |  | `true` |  |
 | `spec.publishCloudwatchMetricsEnabled` | `bool` |  | `true` |  |
@@ -130,11 +131,14 @@ spec:
 | `spec.monitoring.cloudWatchLogging.logTypes` | `[]AwsAthenaWorkgroupLogTypeEntry` |  |  |  |
 | `spec.monitoring.cloudWatchLogging.logTypes[].key` | `string` | yes |  |  |
 | `spec.monitoring.cloudWatchLogging.logTypes[].values` | `[]string` | yes |  |  |
+| `spec.monitoring.cloudWatchLogging.enabled` | `bool` |  | `true` |  |
 | `spec.monitoring.managedLogging` | `AwsAthenaWorkgroupManagedLoggingConfig` |  |  |  |
 | `spec.monitoring.managedLogging.kmsKey` | `string \| valueFrom` |  |  | AwsKmsKey (`status.outputs.key_arn`) |
+| `spec.monitoring.managedLogging.enabled` | `bool` |  | `true` |  |
 | `spec.monitoring.s3Logging` | `AwsAthenaWorkgroupS3LoggingConfig` |  |  |  |
 | `spec.monitoring.s3Logging.logLocation` | `string` |  |  |  |
 | `spec.monitoring.s3Logging.kmsKey` | `string \| valueFrom` |  |  | AwsKmsKey (`status.outputs.key_arn`) |
+| `spec.monitoring.s3Logging.enabled` | `bool` |  | `true` |  |
 | `spec.forceDestroy` | `bool` |  |  |  |
 
 ## Field Details
@@ -273,6 +277,16 @@ time.
 
 - references: AwsKmsKey (`status.outputs.key_arn`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_arn}} -- a bare string does not parse
+
+### spec.managedQueryResults.enabled
+
+`bool` · optional (explicit presence)
+
+Whether AWS-managed result storage is on. Unset means on: declaring the
+block has always meant enabling it, and this switch lets a manifest say
+the opposite out loud while keeping the block's settings in place.
+
+- default: `true`
 
 ### spec.bytesScannedCutoffPerQuery
 
@@ -497,6 +511,16 @@ Log streams to publish for the worker, e.g. "STDOUT", "STDERR".
 
 - rule: {"repeated":{"minItems":"1"}}
 
+### spec.monitoring.cloudWatchLogging.enabled
+
+`bool` · optional (explicit presence)
+
+Whether this destination is on. Unset means on: declaring the block has
+always meant enabling it, and this switch lets a manifest say the opposite
+out loud while keeping the block's settings in place.
+
+- default: `true`
+
 ### spec.monitoring.managedLogging
 
 `AwsAthenaWorkgroupManagedLoggingConfig`
@@ -514,6 +538,16 @@ with an AWS-owned key.
 
 - references: AwsKmsKey (`status.outputs.key_arn`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_arn}} -- a bare string does not parse
+
+### spec.monitoring.managedLogging.enabled
+
+`bool` · optional (explicit presence)
+
+Whether this destination is on. Unset means on: declaring the block has
+always meant enabling it, and this switch lets a manifest say the opposite
+out loud while keeping the block's settings in place.
+
+- default: `true`
 
 ### spec.monitoring.s3Logging
 
@@ -544,6 +578,16 @@ bucket's default encryption.
 
 - references: AwsKmsKey (`status.outputs.key_arn`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_arn}} -- a bare string does not parse
+
+### spec.monitoring.s3Logging.enabled
+
+`bool` · optional (explicit presence)
+
+Whether this destination is on. Unset means on: declaring the block has
+always meant enabling it, and this switch lets a manifest say the opposite
+out loud while keeping the block's settings in place.
+
+- default: `true`
 
 ### spec.forceDestroy
 

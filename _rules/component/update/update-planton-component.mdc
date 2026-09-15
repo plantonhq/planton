@@ -990,6 +990,77 @@ Based on scenario:
   exact `metadata.name` -- same manifest, two physical names. Compiles
   clean, validates clean; only a live cross-engine comparison or code
   review catches it.
+- **A spec comment that names Secret keys, environment variables, or file
+  paths ANOTHER component consumes is verified against the TEMPLATE that
+  consumes them**: the chart template, the operator's controller, the script
+  -- never the values file, the README, or the consuming project's own docs.
+  The template is the contract; everything else is prose about it. A comment
+  authored from the docs told operators to create a Secret under keys the
+  chart never read; a pod built from that comment fails on every run, and no
+  offline gate can see it. When a spec field is a BYO Secret, quote the
+  consuming template's exact key names in the comment and cite where they
+  were read.
+- **A module-owned Job that waits for a HUMAN step is never awaited by the
+  deploy and never carries a finished-Job TTL**: Pulumi awaits Jobs to
+  completion by default and Terraform's `kubernetes_job_v1` defaults
+  `wait_for_completion = true`, so a Job whose success depends on an
+  operator's action (a Secret they create after `bao operator init`, a
+  token they mint) hangs the deploy until timeout and reports failure.
+  Annotate `pulumi.com/skipAwait: "true"` and set `wait_for_completion =
+  false`, in both engines, with the module comment saying why. Never set
+  `ttlSecondsAfterFinished` on a one-shot Job whose re-run would REPEAT its
+  effect (a restore installing the snapshot again over live data): the next
+  apply sees the finished Job gone, recreates it, and it runs again. Name it
+  by a hash of its declaration so a changed declaration is a new Job and an
+  unchanged one is a no-op. Bound the Job's work inside its script (a
+  preflight poll) and leave the wait for the human unbounded on purpose.
+- **Script text a kind ships through BOTH engines is a Go raw-string
+  constant and an HCL heredoc kept byte-identical, marked for the parity
+  guard**: a module is its directory (release packaging zips each engine
+  alone), so the text lives twice on purpose -- the ONLY difference is HCL's
+  `$${` / `%%{` escaping. Put `# parity: <go-file> <const>` on the line
+  above each Terraform heredoc opener (plain `<<`, never `<<-`) and
+  `hack/guards/ensure_cross_engine_script_parity.sh` diffs the pair on every
+  change; a heredoc without the marker is a drift nobody will catch.
+- **An IAM grant a spec comment or guide names is verified against the
+  CLIENT's first call in its SDK source, never against the role's name**: a
+  cloud role's name says what it is FOR, not which permissions it carries,
+  and the first thing many clients do is READ the resource they were
+  granted use of. A KMS seal wrapper fetches the key's metadata when the
+  server configures itself (a key-existence check); the encrypter-decrypter
+  role carries only the use permissions, so a vault documented with that one
+  role crash-loops on "Permission denied" before it can initialize, and no
+  offline gate can see it. Read the client's startup path in the pinned
+  clone, list every permission it exercises, and name every predefined role
+  the identity needs -- with the failure the missing one produces -- on the
+  field, in the guide's resource-set table, in the preset explainers, and in
+  the real-cluster batch that proves the set.
+- **A module-owned satellite that reaches its own server waits, bounded, for
+  the server to answer before it acts**: a backup job that fires inside an
+  unseal window, a rolling restart, or a leader election finds the active
+  Service with no endpoints and dies on "connection refused" in under a
+  second; with `restartPolicy: OnFailure` and a small backoff limit the Job
+  spends its retries in fifteen seconds and deletes its pod, taking every
+  log line with it. Poll the server's own readiness call (`bao status`
+  exits 0 only for an unsealed, initialized server) for a bounded window
+  before the first request, then let the failure text explain itself as
+  before. Prove it in the lane by creating the run right after init, not
+  after the server has been Ready for a minute.
+- **An operational truth the module enforces or prints is a spec FACT, and
+  it lives in the proto comment of the field it belongs to -- never only in
+  the module**: a name budget a precondition enforces, the pod state a
+  waiting Job shows (`CreateContainerConfigError` until an operator's Secret
+  exists), the recovery loop a script prints when an install fails, the DNS
+  name a job needs in a TLS certificate. The module's own comments and the
+  preset explainers do not reach an agent composing a manifest: the
+  packaged skill ships `reference.md` (generated from the proto comments),
+  `GUIDE.md`, and `_patterns/` -- not `iac/`, not `presets/`, not
+  `README.md`. Four such truths once lived only in a kind's `vars.go`,
+  `scripts.go`, and `restore.go`; every gate was green and no agent could
+  have warned a user about any of them. Write the fact on the field (the
+  Two-Layer Law of `_rules/docs/write-planton-component-guide.mdc`), quote
+  the module's exact wording so the reference page and the job log tell one
+  story, regenerate, and give the guide only the judgment around it.
 - Plan update and test sequence
 
 **Fix Issue:**

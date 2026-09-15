@@ -23,9 +23,9 @@ spec:
     - field_path: injector
       sku_meter: cluster CPU and memory reservations
       impact: Enabling the agent injector adds its own Deployment (webhook server) to the namespace, plus an agent sidecar in every pod that opts into injection annotations -- reservations outside this manifest.
-    - field_path: snapshot_agent
+    - field_path: backup
       sku_meter: object storage
-      impact: When enabled, a CronJob ships Raft snapshots to the configured S3-compatible bucket on the declared schedule -- snapshot storage grows with data size across the s3_expire_days window (default 14 days) and bills on the object store.
+      impact: When declared, a CronJob ships a full Raft snapshot to the declared object store (S3, GCS, Azure Blob, or Cloudflare R2) on the schedule (default hourly) -- snapshot storage is roughly vault size x runs kept across the retention_days window (default 14) and bills on the object store; the job's own CPU and memory reservation is short-lived.
   estimate_exclusions:
     - the price of reserved CPU, memory, and storage is the target cluster's node and storage-class economics, which this catalog cannot know
     - dev mode is in-memory -- no volumes are provisioned and ALL data is lost on pod restart

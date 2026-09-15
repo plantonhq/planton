@@ -76,8 +76,8 @@ resource "azurerm_data_protection_backup_instance_kubernetes_cluster" "main" {
       included_resource_types          = length(backup_datasource_parameters.value.included_resource_types) > 0 ? backup_datasource_parameters.value.included_resource_types : null
       excluded_resource_types          = length(backup_datasource_parameters.value.excluded_resource_types) > 0 ? backup_datasource_parameters.value.excluded_resource_types : null
       label_selectors                  = length(backup_datasource_parameters.value.label_selectors) > 0 ? backup_datasource_parameters.value.label_selectors : null
-      cluster_scoped_resources_enabled = backup_datasource_parameters.value.cluster_scoped_resources_enabled
-      volume_snapshot_enabled          = backup_datasource_parameters.value.volume_snapshot_enabled
+      cluster_scoped_resources_enabled = coalesce(backup_datasource_parameters.value.cluster_scoped_resources_enabled, false)
+      volume_snapshot_enabled          = coalesce(backup_datasource_parameters.value.volume_snapshot_enabled, false)
     }
   }
 }

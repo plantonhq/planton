@@ -32,6 +32,16 @@ type Locals struct {
 	// GatewayLocalPort resolved to the operator default when unset — the
 	// port the port_forward_command output advertises.
 	GatewayLocalPort int
+
+	// The names of the Secrets this module materializes for the database's
+	// backup and recovery object stores (see object_store_secrets.go).
+	// Deterministic from the platform name, so both engines and an import
+	// recipe derive them blind; the CR names them to the operator, which
+	// never creates them itself.
+	BackupCredentialsSecretName   string
+	RecoveryCredentialsSecretName string
+	BackupEndpointCaSecretName    string
+	RecoveryEndpointCaSecretName  string
 }
 
 // initializeLocals extracts and transforms spec fields into module-local
@@ -60,12 +70,19 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesplantonplatformv1
 		gatewayLocalPort = int(spec.GetGateway().GetLocalPort())
 	}
 
+	postgresClusterName := target.Metadata.Name + vars.PostgresClusterSuffix
+
 	return &Locals{
 		Spec:             spec,
 		PlatformName:     target.Metadata.Name,
 		Labels:           labels,
 		Namespace:        spec.Namespace.GetValue(),
 		GatewayLocalPort: gatewayLocalPort,
+
+		BackupCredentialsSecretName:   postgresClusterName + vars.BackupCredentialsSecretSuffix,
+		RecoveryCredentialsSecretName: postgresClusterName + vars.RecoveryCredentialsSecretSuffix,
+		BackupEndpointCaSecretName:    postgresClusterName + vars.BackupEndpointCaSecretSuffix,
+		RecoveryEndpointCaSecretName:  postgresClusterName + vars.RecoveryEndpointCaSecretSuffix,
 	}
 }
 

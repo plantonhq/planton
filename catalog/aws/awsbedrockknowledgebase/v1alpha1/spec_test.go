@@ -24,9 +24,9 @@ func svr(val string) *foreignkeyv1.StringValueOrRef {
 // MANAGED type (AWS manages the vector store).
 func minimalManagedKb() *AwsBedrockKnowledgeBaseSpec {
 	return &AwsBedrockKnowledgeBaseSpec{
-		Region:  "us-west-2",
-		RoleArn: svr("arn:aws:iam::123456789012:role/bedrock-kb"),
-		Managed: &AwsBedrockKnowledgeBaseManagedConfig{},
+		Region:            "us-west-2",
+		RoleArn:           svr("arn:aws:iam::123456789012:role/bedrock-kb"),
+		KnowledgeBaseType: &AwsBedrockKnowledgeBaseSpec_Managed{Managed: &AwsBedrockKnowledgeBaseManagedConfig{}},
 	}
 }
 
@@ -35,9 +35,9 @@ func vectorS3VectorsKb() *AwsBedrockKnowledgeBaseSpec {
 	return &AwsBedrockKnowledgeBaseSpec{
 		Region:  "us-west-2",
 		RoleArn: svr("arn:aws:iam::123456789012:role/bedrock-kb"),
-		Vector: &AwsBedrockKnowledgeBaseVectorConfig{
+		KnowledgeBaseType: &AwsBedrockKnowledgeBaseSpec_Vector{Vector: &AwsBedrockKnowledgeBaseVectorConfig{
 			EmbeddingModelArn: "arn:aws:bedrock:us-west-2::foundation-model/amazon.titan-embed-text-v2:0",
-		},
+		}},
 		Storage: &AwsBedrockKnowledgeBaseStorage{
 			S3Vectors: &AwsBedrockKnowledgeBaseS3VectorsStorage{
 				IndexArn: "arn:aws:s3vectors:us-west-2:123456789012:bucket/kb-vectors/index/kb-index",
@@ -81,7 +81,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 						},
 					},
 				}
-				spec.Vector.EmbeddingModel = &AwsBedrockKnowledgeBaseEmbeddingModelConfig{
+				spec.GetVector().EmbeddingModel = &AwsBedrockKnowledgeBaseEmbeddingModelConfig{
 					Dimensions:        1024,
 					EmbeddingDataType: "FLOAT32",
 				}
@@ -89,10 +89,10 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 					Name:               "docs",
 					Description:        "product documentation",
 					DataDeletionPolicy: "DELETE",
-					S3: &AwsBedrockKnowledgeBaseS3DataSource{
+					Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{
 						BucketArn:       svr("arn:aws:s3:::kb-docs"),
 						InclusionPrefix: "manuals/",
-					},
+					}},
 					VectorIngestion: &AwsBedrockKnowledgeBaseVectorIngestion{
 						Chunking: &AwsBedrockKnowledgeBaseChunking{
 							Strategy: "FIXED_SIZE",
@@ -113,7 +113,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 				spec := &AwsBedrockKnowledgeBaseSpec{
 					Region:  "us-west-2",
 					RoleArn: svr("arn:aws:iam::123456789012:role/bedrock-kb"),
-					Sql: &AwsBedrockKnowledgeBaseSqlConfig{
+					KnowledgeBaseType: &AwsBedrockKnowledgeBaseSpec_Sql{Sql: &AwsBedrockKnowledgeBaseSqlConfig{
 						Serverless: &AwsBedrockKnowledgeBaseRedshiftServerless{
 							WorkgroupArn: svr("arn:aws:redshift-serverless:us-west-2:123456789012:workgroup/abc"),
 							Auth: &AwsBedrockKnowledgeBaseRedshiftServerlessAuth{
@@ -140,7 +140,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 								},
 							},
 						},
-					},
+					}},
 				}
 				err := protovalidate.Validate(spec)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -152,9 +152,9 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 				spec := &AwsBedrockKnowledgeBaseSpec{
 					Region:  "us-west-2",
 					RoleArn: svr("arn:aws:iam::123456789012:role/bedrock-kb"),
-					Kendra: &AwsBedrockKnowledgeBaseKendraConfig{
+					KnowledgeBaseType: &AwsBedrockKnowledgeBaseSpec_Kendra{Kendra: &AwsBedrockKnowledgeBaseKendraConfig{
 						KendraIndexArn: "arn:aws:kendra:us-west-2:123456789012:index/abc-def",
-					},
+					}},
 				}
 				err := protovalidate.Validate(spec)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -166,12 +166,12 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 				spec := minimalManagedKb()
 				spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
 					Name: "site",
-					Web: &AwsBedrockKnowledgeBaseWebDataSource{
+					Connector: &AwsBedrockKnowledgeBaseDataSource_Web{Web: &AwsBedrockKnowledgeBaseWebDataSource{
 						SeedUrls:  []string{"https://docs.example.com"},
 						Scope:     "HOST_ONLY",
 						MaxPages:  500,
 						RateLimit: 60,
-					},
+					}},
 				}}
 				err := protovalidate.Validate(spec)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -186,17 +186,20 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 
 		ginkgo.It("should reject a spec with no type arm", func() {
 			spec := minimalManagedKb()
-			spec.Managed = nil
+			spec.KnowledgeBaseType = nil
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("exactly one"))
 		})
 
-		ginkgo.It("should reject a spec with two type arms", func() {
+		ginkgo.It("carries exactly one type arm by construction (setting a second arm replaces the first)", func() {
 			spec := vectorS3VectorsKb()
-			spec.Managed = &AwsBedrockKnowledgeBaseManagedConfig{}
-			err := protovalidate.Validate(spec)
-			gomega.Expect(err).NotTo(gomega.BeNil())
+			spec.KnowledgeBaseType = &AwsBedrockKnowledgeBaseSpec_Managed{Managed: &AwsBedrockKnowledgeBaseManagedConfig{}}
+			gomega.Expect(spec.GetVector()).To(gomega.BeNil())
+			// The vector store that came with the vector arm is now forbidden.
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+			spec.Storage = nil
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 		})
 
 		ginkgo.It("should reject a vector type without storage", func() {
@@ -272,7 +275,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 			spec := &AwsBedrockKnowledgeBaseSpec{
 				Region:  "us-west-2",
 				RoleArn: svr("arn:aws:iam::123456789012:role/r"),
-				Sql: &AwsBedrockKnowledgeBaseSqlConfig{
+				KnowledgeBaseType: &AwsBedrockKnowledgeBaseSpec_Sql{Sql: &AwsBedrockKnowledgeBaseSqlConfig{
 					Provisioned: &AwsBedrockKnowledgeBaseRedshiftProvisioned{
 						ClusterIdentifier: svr("analytics"),
 						Auth:              &AwsBedrockKnowledgeBaseRedshiftProvisionedAuth{Type: "USERNAME"},
@@ -280,7 +283,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 					Warehouse: &AwsBedrockKnowledgeBaseRedshiftStorage{
 						Redshift: &AwsBedrockKnowledgeBaseRedshiftDatabaseStorage{DatabaseName: "analytics"},
 					},
-				},
+				}},
 			}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
@@ -290,7 +293,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 			spec := &AwsBedrockKnowledgeBaseSpec{
 				Region:  "us-west-2",
 				RoleArn: svr("arn:aws:iam::123456789012:role/r"),
-				Sql: &AwsBedrockKnowledgeBaseSqlConfig{
+				KnowledgeBaseType: &AwsBedrockKnowledgeBaseSpec_Sql{Sql: &AwsBedrockKnowledgeBaseSqlConfig{
 					Serverless: &AwsBedrockKnowledgeBaseRedshiftServerless{
 						WorkgroupArn: svr("arn:aws:redshift-serverless:us-west-2:123456789012:workgroup/w"),
 						Auth:         &AwsBedrockKnowledgeBaseRedshiftServerlessAuth{Type: "USERNAME_PASSWORD"},
@@ -298,7 +301,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 					Warehouse: &AwsBedrockKnowledgeBaseRedshiftStorage{
 						DataCatalog: &AwsBedrockKnowledgeBaseDataCatalogStorage{TableNames: []string{"t"}},
 					},
-				},
+				}},
 			}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
@@ -308,7 +311,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 			spec := &AwsBedrockKnowledgeBaseSpec{
 				Region:  "us-west-2",
 				RoleArn: svr("arn:aws:iam::123456789012:role/r"),
-				Sql: &AwsBedrockKnowledgeBaseSqlConfig{
+				KnowledgeBaseType: &AwsBedrockKnowledgeBaseSpec_Sql{Sql: &AwsBedrockKnowledgeBaseSqlConfig{
 					Serverless: &AwsBedrockKnowledgeBaseRedshiftServerless{
 						WorkgroupArn: svr("arn:aws:redshift-serverless:us-west-2:123456789012:workgroup/w"),
 						Auth:         &AwsBedrockKnowledgeBaseRedshiftServerlessAuth{Type: "IAM"},
@@ -317,7 +320,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 						DataCatalog: &AwsBedrockKnowledgeBaseDataCatalogStorage{TableNames: []string{"t"}},
 						Redshift:    &AwsBedrockKnowledgeBaseRedshiftDatabaseStorage{DatabaseName: "d"},
 					},
-				},
+				}},
 			}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
@@ -333,8 +336,8 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 			spec := minimalManagedKb()
 			ds := func() *AwsBedrockKnowledgeBaseDataSource {
 				return &AwsBedrockKnowledgeBaseDataSource{
-					Name: "docs",
-					S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
+					Name:      "docs",
+					Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
 				}
 			}
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{ds(), ds()}
@@ -349,22 +352,23 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
 
-		ginkgo.It("should reject a data source with two connectors", func() {
+		ginkgo.It("carries exactly one connector by construction (setting a second arm replaces the first)", func() {
+			ds := &AwsBedrockKnowledgeBaseDataSource{
+				Name:      "docs",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
+			}
+			ds.Connector = &AwsBedrockKnowledgeBaseDataSource_Web{Web: &AwsBedrockKnowledgeBaseWebDataSource{SeedUrls: []string{"https://x.com"}}}
+			gomega.Expect(ds.GetS3()).To(gomega.BeNil())
 			spec := minimalManagedKb()
-			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "docs",
-				S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
-				Web:  &AwsBedrockKnowledgeBaseWebDataSource{SeedUrls: []string{"https://x.com"}},
-			}}
-			err := protovalidate.Validate(spec)
-			gomega.Expect(err).NotTo(gomega.BeNil())
+			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{ds}
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 		})
 
 		ginkgo.It("should reject a seed URL without a scheme", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "site",
-				Web:  &AwsBedrockKnowledgeBaseWebDataSource{SeedUrls: []string{"docs.example.com"}},
+				Name:      "site",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_Web{Web: &AwsBedrockKnowledgeBaseWebDataSource{SeedUrls: []string{"docs.example.com"}}},
 			}}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
@@ -374,13 +378,13 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
 				Name: "sp",
-				Sharepoint: &AwsBedrockKnowledgeBaseSharePointDataSource{
+				Connector: &AwsBedrockKnowledgeBaseDataSource_Sharepoint{Sharepoint: &AwsBedrockKnowledgeBaseSharePointDataSource{
 					SiteUrls:             []string{"https://x.sharepoint.com/sites/docs"},
 					Domain:               "x",
 					TenantId:             "not-a-uuid",
 					AuthType:             "OAUTH2_CLIENT_CREDENTIALS",
 					CredentialsSecretArn: svr("arn:aws:secretsmanager:us-west-2:123456789012:secret:sp"),
-				},
+				}},
 			}}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
@@ -395,8 +399,8 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should reject a FIXED_SIZE strategy without its block", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "docs",
-				S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
+				Name:      "docs",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
 				VectorIngestion: &AwsBedrockKnowledgeBaseVectorIngestion{
 					Chunking: &AwsBedrockKnowledgeBaseChunking{Strategy: "FIXED_SIZE"},
 				},
@@ -408,8 +412,8 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should reject a NONE strategy carrying a block", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "docs",
-				S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
+				Name:      "docs",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
 				VectorIngestion: &AwsBedrockKnowledgeBaseVectorIngestion{
 					Chunking: &AwsBedrockKnowledgeBaseChunking{
 						Strategy:  "NONE",
@@ -424,8 +428,8 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should require exactly two hierarchical levels", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "docs",
-				S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
+				Name:      "docs",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
 				VectorIngestion: &AwsBedrockKnowledgeBaseVectorIngestion{
 					Chunking: &AwsBedrockKnowledgeBaseChunking{
 						Strategy: "HIERARCHICAL",
@@ -445,8 +449,8 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should reject BEDROCK_FOUNDATION_MODEL parsing without its block", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "docs",
-				S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
+				Name:      "docs",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
 				VectorIngestion: &AwsBedrockKnowledgeBaseVectorIngestion{
 					Parsing: &AwsBedrockKnowledgeBaseParsing{Strategy: "BEDROCK_FOUNDATION_MODEL"},
 				},
@@ -458,8 +462,8 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should reject multimodal on a non-BDA strategy", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "docs",
-				S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
+				Name:      "docs",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
 				VectorIngestion: &AwsBedrockKnowledgeBaseVectorIngestion{
 					Parsing: &AwsBedrockKnowledgeBaseParsing{Strategy: "SMART_PARSING", Multimodal: true},
 				},
@@ -471,8 +475,8 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should accept SMART_PARSING with no block", func() {
 			spec := minimalManagedKb()
 			spec.DataSources = []*AwsBedrockKnowledgeBaseDataSource{{
-				Name: "docs",
-				S3:   &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")},
+				Name:      "docs",
+				Connector: &AwsBedrockKnowledgeBaseDataSource_S3{S3: &AwsBedrockKnowledgeBaseS3DataSource{BucketArn: svr("arn:aws:s3:::b")}},
 				VectorIngestion: &AwsBedrockKnowledgeBaseVectorIngestion{
 					Parsing: &AwsBedrockKnowledgeBaseParsing{Strategy: "SMART_PARSING"},
 				},

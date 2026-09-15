@@ -1,0 +1,50 @@
+# =============================================================================
+# Cross-Engine Script Parity Gate
+# =============================================================================
+# Some kinds hand a program to the cluster -- a shell script a CronJob runs, a
+# Python module a chart loads -- and both engines must render the same bytes
+# from one manifest. The text lives twice on purpose (a Go raw-string constant
+# in the Pulumi module, an HCL heredoc in the Terraform module; a release
+# packages each module alone, so neither can read the other's file), and two
+# copies drift silently: a fix to one engine's script is behavior only that
+# engine ships.
+#
+# The guard pairs every Terraform heredoc marked `# parity: <go-file> <const>`
+# with its Go constant, undoes HCL's `$${` / `%%{` escaping, and requires the
+# two to be byte-identical. Static, no network.
+#
+# See hack/guards/ensure_cross_engine_script_parity.sh for the full contract.
+# =============================================================================
+
+name: lint.cross-engine-script-parity
+
+on:
+  pull_request:
+    paths:
+      - 'catalog/**/iac/**'
+      - 'hack/guards/ensure_cross_engine_script_parity.sh'
+      - '.github/workflows/lint.cross-engine-script-parity.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'catalog/**/iac/**'
+      - 'hack/guards/ensure_cross_engine_script_parity.sh'
+      - '.github/workflows/lint.cross-engine-script-parity.yaml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: script-parity-lint-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cross-engine-script-parity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify cross-engine script text is byte-identical
+        run: bash ./hack/guards/ensure_cross_engine_script_parity.sh

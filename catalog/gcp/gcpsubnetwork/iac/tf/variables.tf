@@ -79,6 +79,7 @@ variable "spec" {
     # VPC Flow Logs; presence of the object enables logging. Every field has
     # a GCP default, so an empty object is valid.
     log_config = optional(object({
+      enabled              = optional(bool)
       aggregation_interval = optional(string)
       flow_sampling        = optional(number)
       metadata             = optional(string)

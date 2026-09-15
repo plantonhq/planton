@@ -28,10 +28,12 @@ go_library(
         "//qa/componente2eprofile/v1:componente2eprofile",
         "//shared",
         "//shared/cloudresourcekind",
+        "//shared/options",
         "@com_github_hashicorp_hcl_v2//hclparse",
         "@com_github_hashicorp_hcl_v2//hclsyntax",
         "@com_github_pkg_errors//:errors",
         "@in_gopkg_yaml_v3//:yaml_v3",
+        "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )

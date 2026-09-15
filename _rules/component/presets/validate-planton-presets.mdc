@@ -63,9 +63,9 @@ Read the component's `api.proto` to extract constants, then check:
 
 Read the component's `spec.proto` to identify `StringValueOrRef` fields, then check:
 
-- [ ] Every `StringValueOrRef` field uses the `value:` wrapper form
+- [ ] Every `StringValueOrRef` field uses the `value:` or `valueFrom:` wrapper form
 - [ ] No plain strings are used where `StringValueOrRef` is expected
-- [ ] `valueFrom:` is not used (presets use `value:` only)
+- [ ] A credential or identity the catalog can mint as a resource with outputs (an API token's key pair, a bucket's account and jurisdiction, a service account's email) is carried with `valueFrom:` onto that kind's `status.outputs` field — the preset teaches the declared-and-referenced shape, never a pasted value; `value:` is for what no kind exports (a hostname, a region, a size)
 
 #### 2e. Required Fields
 

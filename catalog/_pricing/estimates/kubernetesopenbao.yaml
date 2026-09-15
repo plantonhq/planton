@@ -46,3 +46,26 @@ spec:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - the chart's default required anti-affinity places each replica on a distinct node -- the cluster needs at least 3 schedulable nodes
         - the GCP Cloud KMS unseal key bills on the GCP account, outside the cluster
+    - preset: 04-gke-ha-gcs-backups
+      capacity_footprint:
+        cpu_requests: 750m
+        memory_requests: 1536Mi
+        cpu_limits: "3"
+        memory_limits: 3Gi
+        persistent_storage: 60Gi
+        basis: 3 server replicas x (250m CPU / 512Mi memory requests, 1 CPU / 1Gi limits) + 3 x (10Gi data + 10Gi audit) volumes
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node and storage-class economics
+        - the chart's default required anti-affinity places each replica on a distinct node -- the cluster needs at least 3 schedulable nodes
+        - the GCP Cloud KMS unseal key bills on the GCP account, outside the cluster
+    - preset: 05-production-ha-r2-backups
+      capacity_footprint:
+        cpu_requests: 750m
+        memory_requests: 1536Mi
+        cpu_limits: "3"
+        memory_limits: 3Gi
+        persistent_storage: 60Gi
+        basis: 3 server replicas x (250m CPU / 512Mi memory requests, 1 CPU / 1Gi limits) + 3 x (10Gi data + 10Gi audit) volumes
+      exclusions:
+        - the dollar value of this capacity is the target cluster's node and storage-class economics
+        - the chart's default required anti-affinity places each replica on a distinct node -- the cluster needs at least 3 schedulable nodes

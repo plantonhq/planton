@@ -283,6 +283,7 @@ variable "spec" {
     # storage.
     boot_diagnostics = optional(object({
       storage_account_uri = optional(string)
+      enabled             = optional(bool)
     }))
 
     # Availability zones + strict balancing.

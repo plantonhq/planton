@@ -79,7 +79,7 @@ var _ = ginkgo.Describe("CloudflareZoneSettingsSpec Custom Validation Tests", fu
 			input := validZoneSettings(&CloudflareZoneSettingsSpec{
 				ZoneId: zoneRef(),
 				SecurityHeader: &CloudflareZoneSettingsSecurityHeader{
-					Enabled:           true,
+					Enabled:           boolPtr(true),
 					IncludeSubdomains: true,
 					MaxAge:            31536000,
 					Nosniff:           true,
@@ -93,12 +93,27 @@ var _ = ginkgo.Describe("CloudflareZoneSettingsSpec Custom Validation Tests", fu
 			input := validZoneSettings(&CloudflareZoneSettingsSpec{
 				ZoneId: zoneRef(),
 				AutomaticPlatformOptimization: &CloudflareZoneSettingsAutomaticPlatformOptimization{
-					Enabled:           true,
+					Enabled:           boolPtr(true),
 					CacheByDeviceType: true,
 					Cf:                true,
 					Hostnames:         []string{"example.com", "www.example.com"},
 					Wordpress:         true,
 					WpPlugin:          true,
+				},
+			})
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept managed switches stated off (nel, security_header, automatic_platform_optimization)", func() {
+			input := validZoneSettings(&CloudflareZoneSettingsSpec{
+				ZoneId: zoneRef(),
+				Nel:    &CloudflareZoneSettingsNel{Enabled: boolPtr(false)},
+				SecurityHeader: &CloudflareZoneSettingsSecurityHeader{
+					Enabled: boolPtr(false),
+				},
+				AutomaticPlatformOptimization: &CloudflareZoneSettingsAutomaticPlatformOptimization{
+					Enabled:   boolPtr(false),
+					Hostnames: []string{"example.com"},
 				},
 			})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -180,11 +195,23 @@ var _ = ginkgo.Describe("CloudflareZoneSettingsSpec Custom Validation Tests", fu
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
+		ginkgo.It("should reject a managed-switch block that does not say on or off", func() {
+			for _, spec := range []*CloudflareZoneSettingsSpec{
+				{ZoneId: zoneRef(), Nel: &CloudflareZoneSettingsNel{}},
+				{ZoneId: zoneRef(), SecurityHeader: &CloudflareZoneSettingsSecurityHeader{MaxAge: 31536000}},
+				{ZoneId: zoneRef(), AutomaticPlatformOptimization: &CloudflareZoneSettingsAutomaticPlatformOptimization{Hostnames: []string{"example.com"}}},
+			} {
+				err := protovalidate.Validate(validZoneSettings(spec))
+				gomega.Expect(err).ToNot(gomega.BeNil())
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("enabled"))
+			}
+		})
+
 		ginkgo.It("should reject a security_header with negative max_age", func() {
 			input := validZoneSettings(&CloudflareZoneSettingsSpec{
 				ZoneId: zoneRef(),
 				SecurityHeader: &CloudflareZoneSettingsSecurityHeader{
-					Enabled: true,
+					Enabled: boolPtr(true),
 					MaxAge:  -5,
 				},
 			})
@@ -226,7 +253,7 @@ var _ = ginkgo.Describe("CloudflareZoneSettingsSpec Custom Validation Tests", fu
 			input := validZoneSettings(&CloudflareZoneSettingsSpec{
 				ZoneId: zoneRef(),
 				AutomaticPlatformOptimization: &CloudflareZoneSettingsAutomaticPlatformOptimization{
-					Enabled:   true,
+					Enabled:   boolPtr(true),
 					Wordpress: true,
 					WpPlugin:  true,
 				},

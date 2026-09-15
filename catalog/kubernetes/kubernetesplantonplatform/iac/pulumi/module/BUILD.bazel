@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -6,6 +6,7 @@ go_library(
         "locals.go",
         "main.go",
         "namespace.go",
+        "object_store_secrets.go",
         "outputs.go",
         "platform_cr.go",
         "vars.go",
@@ -22,5 +23,17 @@ go_library(
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["platform_cr_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes/kubernetesplantonplatform/v1alpha1",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
+        "@org_golang_google_protobuf//proto",
     ],
 )

@@ -32,6 +32,7 @@ alwaysApply: false
 - The stated failure mode is real: the schemas/module code of the composed kinds actually produce it. A pattern teaching a failure that cannot happen -- or missing one that always happens -- is a Critical finding.
 - Complete manifests validate against current schemas; `valueFrom` wiring uses `kind` / `name` / `fieldPath` exactly; field spellings match the reference pages (camelCase spec YAML, snake_case fieldPath).
 - Schema freshness: no removed/renamed fields, kinds, or enum values anywhere in the prose or manifests.
+- Pack reachability: every file the pattern sends the reader to exists in the packaged skill's reference pack (`reference.md`, `GUIDE.md`, the fact-sheet sidecars, `_patterns/`). A path under `presets/`, `e2e/`, or `iac/` is a Critical finding; presets are named by slug. `rg -n 'presets/|e2e/|aa_e2e' <pattern>.md` must return nothing.
 
 ### Step 4: Judgment Quality (Warning)
 

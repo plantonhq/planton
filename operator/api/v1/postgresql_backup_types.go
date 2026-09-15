@@ -222,6 +222,15 @@ type BackupStatus struct {
 	// +optional
 	ServerName string `json:"serverName,omitempty"`
 
+	// restoredFrom is the source archive's server name when this platform's
+	// database was bootstrapped from an archive (spec.database.postgresql.recoverFrom
+	// honored at creation), read from the live database for as long as it
+	// lives. Empty for a database created empty. The identity component
+	// keys on it: a restored realm carries its source's admin credential,
+	// which the operator re-establishes exactly once.
+	// +optional
+	RestoredFrom string `json:"restoredFrom,omitempty"`
+
 	// firstRecoverabilityPoint is the earliest point in time the archive can
 	// restore to (the start of the oldest base backup still retained).
 	// +optional

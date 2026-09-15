@@ -933,7 +933,10 @@ func buildAddons(spec *azureaksclusterv1alpha1.AzureAksClusterSpec, clusterArgs 
 		}
 	}
 
-	if kvProvider := spec.KeyVaultSecretsProvider; kvProvider != nil {
+	// Each add-on block carries its own switch (on by default once declared,
+	// filled by the platform before this runs); the switch decides whether
+	// the add-on renders.
+	if kvProvider := spec.KeyVaultSecretsProvider; kvProvider != nil && kvProvider.GetEnabled() {
 		kvArgs := &containerservice.KubernetesClusterKeyVaultSecretsProviderArgs{
 			SecretRotationEnabled: pulumi.Bool(kvProvider.SecretRotationEnabled),
 		}
@@ -949,7 +952,7 @@ func buildAddons(spec *azureaksclusterv1alpha1.AzureAksClusterSpec, clusterArgs 
 		}
 	}
 
-	if metrics := spec.MonitorMetrics; metrics != nil {
+	if metrics := spec.MonitorMetrics; metrics != nil && metrics.GetEnabled() {
 		metricsArgs := &containerservice.KubernetesClusterMonitorMetricsArgs{}
 		if metrics.AnnotationsAllowed != "" {
 			metricsArgs.AnnotationsAllowed = pulumi.String(metrics.AnnotationsAllowed)
@@ -983,7 +986,7 @@ func buildAddons(spec *azureaksclusterv1alpha1.AzureAksClusterSpec, clusterArgs 
 		}
 	}
 
-	if confidentialComputing := spec.ConfidentialComputing; confidentialComputing != nil {
+	if confidentialComputing := spec.ConfidentialComputing; confidentialComputing != nil && confidentialComputing.GetEnabled() {
 		clusterArgs.ConfidentialComputing = &containerservice.KubernetesClusterConfidentialComputingArgs{
 			SgxQuoteHelperEnabled: pulumi.Bool(confidentialComputing.SgxQuoteHelperEnabled),
 		}

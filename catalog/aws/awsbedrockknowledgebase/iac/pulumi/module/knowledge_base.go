@@ -40,13 +40,13 @@ func knowledgeBase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) 
 	kbConfiguration := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationArgs{}
 
 	switch {
-	case spec.Vector != nil:
+	case spec.GetVector() != nil:
 		kbConfiguration.Type = pulumi.String("VECTOR")
 		vector := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationVectorKnowledgeBaseConfigurationArgs{
-			EmbeddingModelArn: pulumi.String(spec.Vector.EmbeddingModelArn),
+			EmbeddingModelArn: pulumi.String(spec.GetVector().EmbeddingModelArn),
 		}
-		if spec.Vector.EmbeddingModel != nil {
-			m := spec.Vector.EmbeddingModel
+		if spec.GetVector().EmbeddingModel != nil {
+			m := spec.GetVector().EmbeddingModel
 			bedrockModel := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationVectorKnowledgeBaseConfigurationEmbeddingModelConfigurationBedrockEmbeddingModelConfigurationArgs{}
 			if m.Dimensions != 0 {
 				bedrockModel.Dimensions = pulumi.Int(int(m.Dimensions))
@@ -75,13 +75,13 @@ func knowledgeBase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) 
 		// The supplemental S3 location rides a fixed two-level wrapper
 		// upstream (storage_location type S3 + s3_location.uri); the spec
 		// carries the URI leaf directly.
-		if spec.Vector.SupplementalDataS3Uri != "" {
+		if spec.GetVector().SupplementalDataS3Uri != "" {
 			vector.SupplementalDataStorageConfiguration = &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationVectorKnowledgeBaseConfigurationSupplementalDataStorageConfigurationArgs{
 				StorageLocations: bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationVectorKnowledgeBaseConfigurationSupplementalDataStorageConfigurationStorageLocationArray{
 					&bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationVectorKnowledgeBaseConfigurationSupplementalDataStorageConfigurationStorageLocationArgs{
 						Type: pulumi.String("S3"),
 						S3Location: &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationVectorKnowledgeBaseConfigurationSupplementalDataStorageConfigurationStorageLocationS3LocationArgs{
-							Uri: pulumi.String(spec.Vector.SupplementalDataS3Uri),
+							Uri: pulumi.String(spec.GetVector().SupplementalDataS3Uri),
 						},
 					},
 				},
@@ -89,11 +89,11 @@ func knowledgeBase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) 
 		}
 		kbConfiguration.VectorKnowledgeBaseConfiguration = vector
 
-	case spec.Managed != nil:
+	case spec.GetManaged() != nil:
 		kbConfiguration.Type = pulumi.String("MANAGED")
 		managed := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationManagedKnowledgeBaseConfigurationArgs{}
-		if spec.Managed.EmbeddingModelArn != "" {
-			managed.EmbeddingModelArn = pulumi.String(spec.Managed.EmbeddingModelArn)
+		if spec.GetManaged().EmbeddingModelArn != "" {
+			managed.EmbeddingModelArn = pulumi.String(spec.GetManaged().EmbeddingModelArn)
 		}
 		// Derived discriminator, ALWAYS sent: AWS's embeddingModelType is
 		// CUSTOM exactly when an embedding-model ARN is brought, MANAGED
@@ -102,13 +102,13 @@ func knowledgeBase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) 
 		// apply with "unexpected unknown property value" AFTER AWS created
 		// the knowledge base -- stranding it outside state (live-caught
 		// 2026-08-13). Sending the derived value keeps it known at plan.
-		if spec.Managed.EmbeddingModelArn != "" {
+		if spec.GetManaged().EmbeddingModelArn != "" {
 			managed.EmbeddingModelType = pulumi.String("CUSTOM")
 		} else {
 			managed.EmbeddingModelType = pulumi.String("MANAGED")
 		}
-		if spec.Managed.EmbeddingModel != nil {
-			m := spec.Managed.EmbeddingModel
+		if spec.GetManaged().EmbeddingModel != nil {
+			m := spec.GetManaged().EmbeddingModel
 			bedrockModel := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationManagedKnowledgeBaseConfigurationEmbeddingModelConfigurationBedrockEmbeddingModelConfigurationArgs{}
 			if m.Dimensions != 0 {
 				bedrockModel.Dimensions = pulumi.Int(int(m.Dimensions))
@@ -134,81 +134,81 @@ func knowledgeBase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) 
 				BedrockEmbeddingModelConfiguration: bedrockModel,
 			}
 		}
-		if spec.Managed.KmsKeyArn.GetValue() != "" {
+		if spec.GetManaged().KmsKeyArn.GetValue() != "" {
 			managed.ServerSideEncryptionConfiguration = &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationManagedKnowledgeBaseConfigurationServerSideEncryptionConfigurationArgs{
-				KmsKeyArn: pulumi.String(spec.Managed.KmsKeyArn.GetValue()),
+				KmsKeyArn: pulumi.String(spec.GetManaged().KmsKeyArn.GetValue()),
 			}
 		}
 		kbConfiguration.ManagedKnowledgeBaseConfiguration = managed
 
-	case spec.Kendra != nil:
+	case spec.GetKendra() != nil:
 		kbConfiguration.Type = pulumi.String("KENDRA")
 		kbConfiguration.KendraKnowledgeBaseConfiguration = &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationKendraKnowledgeBaseConfigurationArgs{
-			KendraIndexArn: pulumi.String(spec.Kendra.KendraIndexArn),
+			KendraIndexArn: pulumi.String(spec.GetKendra().KendraIndexArn),
 		}
 
-	case spec.Sql != nil:
+	case spec.GetSql() != nil:
 		kbConfiguration.Type = pulumi.String("SQL")
 		// REDSHIFT is the only SQL engine AWS defines -- the module owns
 		// the constant.
 		redshift := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationArgs{}
 
 		queryEngine := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryEngineConfigurationArgs{}
-		if spec.Sql.Provisioned != nil {
+		if spec.GetSql().Provisioned != nil {
 			queryEngine.Type = pulumi.String("PROVISIONED")
 			provisionedAuth := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryEngineConfigurationProvisionedConfigurationAuthConfigurationArgs{
-				Type: pulumi.String(spec.Sql.Provisioned.Auth.Type),
+				Type: pulumi.String(spec.GetSql().Provisioned.Auth.Type),
 			}
-			if spec.Sql.Provisioned.Auth.DatabaseUser != "" {
-				provisionedAuth.DatabaseUser = pulumi.String(spec.Sql.Provisioned.Auth.DatabaseUser)
+			if spec.GetSql().Provisioned.Auth.DatabaseUser != "" {
+				provisionedAuth.DatabaseUser = pulumi.String(spec.GetSql().Provisioned.Auth.DatabaseUser)
 			}
-			if spec.Sql.Provisioned.Auth.UsernamePasswordSecretArn.GetValue() != "" {
-				provisionedAuth.UsernamePasswordSecretArn = pulumi.String(spec.Sql.Provisioned.Auth.UsernamePasswordSecretArn.GetValue())
+			if spec.GetSql().Provisioned.Auth.UsernamePasswordSecretArn.GetValue() != "" {
+				provisionedAuth.UsernamePasswordSecretArn = pulumi.String(spec.GetSql().Provisioned.Auth.UsernamePasswordSecretArn.GetValue())
 			}
 			queryEngine.ProvisionedConfiguration = &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryEngineConfigurationProvisionedConfigurationArgs{
-				ClusterIdentifier: pulumi.String(spec.Sql.Provisioned.ClusterIdentifier.GetValue()),
+				ClusterIdentifier: pulumi.String(spec.GetSql().Provisioned.ClusterIdentifier.GetValue()),
 				AuthConfiguration: provisionedAuth,
 			}
 		}
-		if spec.Sql.Serverless != nil {
+		if spec.GetSql().Serverless != nil {
 			queryEngine.Type = pulumi.String("SERVERLESS")
 			serverlessAuth := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryEngineConfigurationServerlessConfigurationAuthConfigurationArgs{
-				Type: pulumi.String(spec.Sql.Serverless.Auth.Type),
+				Type: pulumi.String(spec.GetSql().Serverless.Auth.Type),
 			}
-			if spec.Sql.Serverless.Auth.UsernamePasswordSecretArn.GetValue() != "" {
-				serverlessAuth.UsernamePasswordSecretArn = pulumi.String(spec.Sql.Serverless.Auth.UsernamePasswordSecretArn.GetValue())
+			if spec.GetSql().Serverless.Auth.UsernamePasswordSecretArn.GetValue() != "" {
+				serverlessAuth.UsernamePasswordSecretArn = pulumi.String(spec.GetSql().Serverless.Auth.UsernamePasswordSecretArn.GetValue())
 			}
 			queryEngine.ServerlessConfiguration = &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryEngineConfigurationServerlessConfigurationArgs{
-				WorkgroupArn:      pulumi.String(spec.Sql.Serverless.WorkgroupArn.GetValue()),
+				WorkgroupArn:      pulumi.String(spec.GetSql().Serverless.WorkgroupArn.GetValue()),
 				AuthConfiguration: serverlessAuth,
 			}
 		}
 		redshift.QueryEngineConfiguration = queryEngine
 
 		warehouse := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationStorageConfigurationArgs{}
-		if spec.Sql.Warehouse.DataCatalog != nil {
+		if spec.GetSql().Warehouse.DataCatalog != nil {
 			warehouse.Type = pulumi.String("AWS_DATA_CATALOG")
 			warehouse.AwsDataCatalogConfiguration = &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationStorageConfigurationAwsDataCatalogConfigurationArgs{
-				TableNames: pulumi.ToStringArray(spec.Sql.Warehouse.DataCatalog.TableNames),
+				TableNames: pulumi.ToStringArray(spec.GetSql().Warehouse.DataCatalog.TableNames),
 			}
 		}
-		if spec.Sql.Warehouse.Redshift != nil {
+		if spec.GetSql().Warehouse.Redshift != nil {
 			warehouse.Type = pulumi.String("REDSHIFT")
 			warehouse.RedshiftConfiguration = &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationStorageConfigurationRedshiftConfigurationArgs{
-				DatabaseName: pulumi.String(spec.Sql.Warehouse.Redshift.DatabaseName),
+				DatabaseName: pulumi.String(spec.GetSql().Warehouse.Redshift.DatabaseName),
 			}
 		}
 		redshift.StorageConfiguration = warehouse
 
-		if spec.Sql.QueryGeneration != nil {
+		if spec.GetSql().QueryGeneration != nil {
 			qg := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryGenerationConfigurationArgs{}
-			if spec.Sql.QueryGeneration.ExecutionTimeoutSeconds != 0 {
-				qg.ExecutionTimeoutSeconds = pulumi.Int(int(spec.Sql.QueryGeneration.ExecutionTimeoutSeconds))
+			if spec.GetSql().QueryGeneration.ExecutionTimeoutSeconds != 0 {
+				qg.ExecutionTimeoutSeconds = pulumi.Int(int(spec.GetSql().QueryGeneration.ExecutionTimeoutSeconds))
 			}
-			if len(spec.Sql.QueryGeneration.CuratedQueries) > 0 || len(spec.Sql.QueryGeneration.Tables) > 0 {
+			if len(spec.GetSql().QueryGeneration.CuratedQueries) > 0 || len(spec.GetSql().QueryGeneration.Tables) > 0 {
 				genContext := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryGenerationConfigurationGenerationContextArgs{}
 				var curated bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryGenerationConfigurationGenerationContextCuratedQueryArray
-				for _, q := range spec.Sql.QueryGeneration.CuratedQueries {
+				for _, q := range spec.GetSql().QueryGeneration.CuratedQueries {
 					curated = append(curated, &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryGenerationConfigurationGenerationContextCuratedQueryArgs{
 						NaturalLanguage: pulumi.String(q.NaturalLanguage),
 						Sql:             pulumi.String(q.Sql),
@@ -216,7 +216,7 @@ func knowledgeBase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) 
 				}
 				genContext.CuratedQueries = curated
 				var tables bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryGenerationConfigurationGenerationContextTableArray
-				for _, t := range spec.Sql.QueryGeneration.Tables {
+				for _, t := range spec.GetSql().QueryGeneration.Tables {
 					table := &bedrock.AgentKnowledgeBaseKnowledgeBaseConfigurationSqlKnowledgeBaseConfigurationRedshiftConfigurationQueryGenerationConfigurationGenerationContextTableArgs{
 						Name: pulumi.String(t.Name),
 					}
@@ -442,23 +442,23 @@ func dataSourceArgs(kb *bedrock.AgentKnowledgeBase, d *awsbedrockknowledgebasev1
 
 	configuration := &bedrock.AgentDataSourceDataSourceConfigurationArgs{}
 	switch {
-	case d.S3 != nil:
+	case d.GetS3() != nil:
 		configuration.Type = pulumi.String("S3")
 		s3 := &bedrock.AgentDataSourceDataSourceConfigurationS3ConfigurationArgs{
-			BucketArn: pulumi.String(d.S3.BucketArn.GetValue()),
+			BucketArn: pulumi.String(d.GetS3().BucketArn.GetValue()),
 		}
-		if d.S3.InclusionPrefix != "" {
-			s3.InclusionPrefixes = pulumi.StringArray{pulumi.String(d.S3.InclusionPrefix)}
+		if d.GetS3().InclusionPrefix != "" {
+			s3.InclusionPrefixes = pulumi.StringArray{pulumi.String(d.GetS3().InclusionPrefix)}
 		}
-		if d.S3.BucketOwnerAccountId != "" {
-			s3.BucketOwnerAccountId = pulumi.String(d.S3.BucketOwnerAccountId)
+		if d.GetS3().BucketOwnerAccountId != "" {
+			s3.BucketOwnerAccountId = pulumi.String(d.GetS3().BucketOwnerAccountId)
 		}
 		configuration.S3Configuration = s3
 
-	case d.Web != nil:
+	case d.GetWeb() != nil:
 		configuration.Type = pulumi.String("WEB")
 		var seedUrls bedrock.AgentDataSourceDataSourceConfigurationWebConfigurationSourceConfigurationUrlConfigurationSeedUrlArray
-		for _, u := range d.Web.SeedUrls {
+		for _, u := range d.GetWeb().SeedUrls {
 			seedUrls = append(seedUrls, &bedrock.AgentDataSourceDataSourceConfigurationWebConfigurationSourceConfigurationUrlConfigurationSeedUrlArgs{
 				Url: pulumi.String(u),
 			})
@@ -471,46 +471,46 @@ func dataSourceArgs(kb *bedrock.AgentKnowledgeBase, d *awsbedrockknowledgebasev1
 			},
 		}
 		crawler := &bedrock.AgentDataSourceDataSourceConfigurationWebConfigurationCrawlerConfigurationArgs{}
-		if d.Web.Scope != "" {
-			crawler.Scope = pulumi.String(d.Web.Scope)
+		if d.GetWeb().Scope != "" {
+			crawler.Scope = pulumi.String(d.GetWeb().Scope)
 		}
-		if len(d.Web.InclusionFilters) > 0 {
-			crawler.InclusionFilters = pulumi.ToStringArray(d.Web.InclusionFilters)
+		if len(d.GetWeb().InclusionFilters) > 0 {
+			crawler.InclusionFilters = pulumi.ToStringArray(d.GetWeb().InclusionFilters)
 		}
-		if len(d.Web.ExclusionFilters) > 0 {
-			crawler.ExclusionFilters = pulumi.ToStringArray(d.Web.ExclusionFilters)
+		if len(d.GetWeb().ExclusionFilters) > 0 {
+			crawler.ExclusionFilters = pulumi.ToStringArray(d.GetWeb().ExclusionFilters)
 		}
-		if d.Web.UserAgent != "" {
-			crawler.UserAgent = pulumi.String(d.Web.UserAgent)
+		if d.GetWeb().UserAgent != "" {
+			crawler.UserAgent = pulumi.String(d.GetWeb().UserAgent)
 		}
-		if d.Web.MaxPages != 0 || d.Web.RateLimit != 0 {
+		if d.GetWeb().MaxPages != 0 || d.GetWeb().RateLimit != 0 {
 			limits := &bedrock.AgentDataSourceDataSourceConfigurationWebConfigurationCrawlerConfigurationCrawlerLimitsArgs{}
-			if d.Web.MaxPages != 0 {
-				limits.MaxPages = pulumi.Int(int(d.Web.MaxPages))
+			if d.GetWeb().MaxPages != 0 {
+				limits.MaxPages = pulumi.Int(int(d.GetWeb().MaxPages))
 			}
-			if d.Web.RateLimit != 0 {
-				limits.RateLimit = pulumi.Int(int(d.Web.RateLimit))
+			if d.GetWeb().RateLimit != 0 {
+				limits.RateLimit = pulumi.Int(int(d.GetWeb().RateLimit))
 			}
 			crawler.CrawlerLimits = limits
 		}
 		web.CrawlerConfiguration = crawler
 		configuration.WebConfiguration = web
 
-	case d.Confluence != nil:
+	case d.GetConfluence() != nil:
 		configuration.Type = pulumi.String("CONFLUENCE")
 		confluence := &bedrock.AgentDataSourceDataSourceConfigurationConfluenceConfigurationArgs{
 			SourceConfiguration: &bedrock.AgentDataSourceDataSourceConfigurationConfluenceConfigurationSourceConfigurationArgs{
 				// SAAS is the only Confluence host type AWS defines -- the
 				// module owns the constant.
 				HostType:             pulumi.String("SAAS"),
-				HostUrl:              pulumi.String(d.Confluence.HostUrl),
-				AuthType:             pulumi.String(d.Confluence.AuthType),
-				CredentialsSecretArn: pulumi.String(d.Confluence.CredentialsSecretArn.GetValue()),
+				HostUrl:              pulumi.String(d.GetConfluence().HostUrl),
+				AuthType:             pulumi.String(d.GetConfluence().AuthType),
+				CredentialsSecretArn: pulumi.String(d.GetConfluence().CredentialsSecretArn.GetValue()),
 			},
 		}
-		if len(d.Confluence.Filters) > 0 {
+		if len(d.GetConfluence().Filters) > 0 {
 			var filters bedrock.AgentDataSourceDataSourceConfigurationConfluenceConfigurationCrawlerConfigurationFilterConfigurationPatternObjectFilterFilterArray
-			for _, f := range d.Confluence.Filters {
+			for _, f := range d.GetConfluence().Filters {
 				filter := &bedrock.AgentDataSourceDataSourceConfigurationConfluenceConfigurationCrawlerConfigurationFilterConfigurationPatternObjectFilterFilterArgs{
 					ObjectType: pulumi.String(f.ObjectType),
 				}
@@ -537,20 +537,20 @@ func dataSourceArgs(kb *bedrock.AgentKnowledgeBase, d *awsbedrockknowledgebasev1
 		}
 		configuration.ConfluenceConfiguration = confluence
 
-	case d.Salesforce != nil:
+	case d.GetSalesforce() != nil:
 		configuration.Type = pulumi.String("SALESFORCE")
 		salesforce := &bedrock.AgentDataSourceDataSourceConfigurationSalesforceConfigurationArgs{
 			SourceConfiguration: &bedrock.AgentDataSourceDataSourceConfigurationSalesforceConfigurationSourceConfigurationArgs{
 				// OAUTH2_CLIENT_CREDENTIALS is the only Salesforce auth
 				// type AWS defines -- the module owns the constant.
 				AuthType:             pulumi.String("OAUTH2_CLIENT_CREDENTIALS"),
-				HostUrl:              pulumi.String(d.Salesforce.HostUrl),
-				CredentialsSecretArn: pulumi.String(d.Salesforce.CredentialsSecretArn.GetValue()),
+				HostUrl:              pulumi.String(d.GetSalesforce().HostUrl),
+				CredentialsSecretArn: pulumi.String(d.GetSalesforce().CredentialsSecretArn.GetValue()),
 			},
 		}
-		if len(d.Salesforce.Filters) > 0 {
+		if len(d.GetSalesforce().Filters) > 0 {
 			var filters bedrock.AgentDataSourceDataSourceConfigurationSalesforceConfigurationCrawlerConfigurationFilterConfigurationPatternObjectFilterFilterArray
-			for _, f := range d.Salesforce.Filters {
+			for _, f := range d.GetSalesforce().Filters {
 				filter := &bedrock.AgentDataSourceDataSourceConfigurationSalesforceConfigurationCrawlerConfigurationFilterConfigurationPatternObjectFilterFilterArgs{
 					ObjectType: pulumi.String(f.ObjectType),
 				}
@@ -575,26 +575,26 @@ func dataSourceArgs(kb *bedrock.AgentKnowledgeBase, d *awsbedrockknowledgebasev1
 		}
 		configuration.SalesforceConfiguration = salesforce
 
-	case d.Sharepoint != nil:
+	case d.GetSharepoint() != nil:
 		configuration.Type = pulumi.String("SHAREPOINT")
 		sourceConfiguration := &bedrock.AgentDataSourceDataSourceConfigurationSharePointConfigurationSourceConfigurationArgs{
 			// ONLINE is the only SharePoint host type AWS defines -- the
 			// module owns the constant.
 			HostType:             pulumi.String("ONLINE"),
-			SiteUrls:             pulumi.ToStringArray(d.Sharepoint.SiteUrls),
-			Domain:               pulumi.String(d.Sharepoint.Domain),
-			AuthType:             pulumi.String(d.Sharepoint.AuthType),
-			CredentialsSecretArn: pulumi.String(d.Sharepoint.CredentialsSecretArn.GetValue()),
+			SiteUrls:             pulumi.ToStringArray(d.GetSharepoint().SiteUrls),
+			Domain:               pulumi.String(d.GetSharepoint().Domain),
+			AuthType:             pulumi.String(d.GetSharepoint().AuthType),
+			CredentialsSecretArn: pulumi.String(d.GetSharepoint().CredentialsSecretArn.GetValue()),
 		}
-		if d.Sharepoint.TenantId != "" {
-			sourceConfiguration.TenantId = pulumi.String(d.Sharepoint.TenantId)
+		if d.GetSharepoint().TenantId != "" {
+			sourceConfiguration.TenantId = pulumi.String(d.GetSharepoint().TenantId)
 		}
 		sharepoint := &bedrock.AgentDataSourceDataSourceConfigurationSharePointConfigurationArgs{
 			SourceConfiguration: sourceConfiguration,
 		}
-		if len(d.Sharepoint.Filters) > 0 {
+		if len(d.GetSharepoint().Filters) > 0 {
 			var filters bedrock.AgentDataSourceDataSourceConfigurationSharePointConfigurationCrawlerConfigurationFilterConfigurationPatternObjectFilterFilterArray
-			for _, f := range d.Sharepoint.Filters {
+			for _, f := range d.GetSharepoint().Filters {
 				filter := &bedrock.AgentDataSourceDataSourceConfigurationSharePointConfigurationCrawlerConfigurationFilterConfigurationPatternObjectFilterFilterArgs{
 					ObjectType: pulumi.String(f.ObjectType),
 				}
@@ -619,35 +619,35 @@ func dataSourceArgs(kb *bedrock.AgentKnowledgeBase, d *awsbedrockknowledgebasev1
 		}
 		configuration.SharePointConfiguration = sharepoint
 
-	case d.ManagedConnector != nil:
+	case d.GetManagedConnector() != nil:
 		configuration.Type = pulumi.String("MANAGED_KNOWLEDGE_BASE_CONNECTOR")
 		managed := &bedrock.AgentDataSourceDataSourceConfigurationManagedKnowledgeBaseConnectorConfigurationArgs{}
-		if d.ManagedConnector.ConnectorParameters != nil {
-			parametersJson, err := json.Marshal(d.ManagedConnector.ConnectorParameters.AsMap())
+		if d.GetManagedConnector().ConnectorParameters != nil {
+			parametersJson, err := json.Marshal(d.GetManagedConnector().ConnectorParameters.AsMap())
 			if err != nil {
 				return nil, errors.Wrap(err, "marshal connector parameters")
 			}
 			managed.ConnectorParameters = pulumi.String(string(parametersJson))
 		}
-		if d.ManagedConnector.DeletionProtection != nil {
+		if d.GetManagedConnector().DeletionProtection != nil {
 			protection := &bedrock.AgentDataSourceDataSourceConfigurationManagedKnowledgeBaseConnectorConfigurationDeletionProtectionConfigurationArgs{
-				DeletionProtectionStatus: pulumi.String(enabledOrDisabled(d.ManagedConnector.DeletionProtection.Enabled)),
+				DeletionProtectionStatus: pulumi.String(enabledOrDisabled(d.GetManagedConnector().DeletionProtection.Enabled)),
 			}
-			if d.ManagedConnector.DeletionProtection.ThresholdPercent != 0 {
-				protection.DeletionProtectionThreshold = pulumi.Int(int(d.ManagedConnector.DeletionProtection.ThresholdPercent))
+			if d.GetManagedConnector().DeletionProtection.ThresholdPercent != 0 {
+				protection.DeletionProtectionThreshold = pulumi.Int(int(d.GetManagedConnector().DeletionProtection.ThresholdPercent))
 			}
 			managed.DeletionProtectionConfiguration = protection
 		}
-		if d.ManagedConnector.MediaExtraction != nil {
+		if d.GetManagedConnector().MediaExtraction != nil {
 			managed.MediaExtractionConfiguration = &bedrock.AgentDataSourceDataSourceConfigurationManagedKnowledgeBaseConnectorConfigurationMediaExtractionConfigurationArgs{
 				AudioExtractionConfiguration: &bedrock.AgentDataSourceDataSourceConfigurationManagedKnowledgeBaseConnectorConfigurationMediaExtractionConfigurationAudioExtractionConfigurationArgs{
-					AudioExtractionStatus: pulumi.String(enabledOrDisabled(d.ManagedConnector.MediaExtraction.Audio)),
+					AudioExtractionStatus: pulumi.String(enabledOrDisabled(d.GetManagedConnector().MediaExtraction.Audio)),
 				},
 				ImageExtractionConfiguration: &bedrock.AgentDataSourceDataSourceConfigurationManagedKnowledgeBaseConnectorConfigurationMediaExtractionConfigurationImageExtractionConfigurationArgs{
-					ImageExtractionStatus: pulumi.String(enabledOrDisabled(d.ManagedConnector.MediaExtraction.Image)),
+					ImageExtractionStatus: pulumi.String(enabledOrDisabled(d.GetManagedConnector().MediaExtraction.Image)),
 				},
 				VideoExtractionConfiguration: &bedrock.AgentDataSourceDataSourceConfigurationManagedKnowledgeBaseConnectorConfigurationMediaExtractionConfigurationVideoExtractionConfigurationArgs{
-					VideoExtractionStatus: pulumi.String(enabledOrDisabled(d.ManagedConnector.MediaExtraction.Video)),
+					VideoExtractionStatus: pulumi.String(enabledOrDisabled(d.GetManagedConnector().MediaExtraction.Video)),
 				},
 			}
 		}

@@ -1,9 +1,18 @@
-# Workload Identity trust for the Postgres lanes. CloudNativePG creates one
-# ServiceAccount per Cluster, named after the Cluster, in the Cluster's
-# namespace — so the binding's KSA coordinates are the scenario's names, and
-# a source cluster and a recovery target need one binding each (both read or
-# write the bucket through their own pods). The scenario namespace is owned
-# by the source fixture; the recovery scenario joins it.
+# Workload Identity trust for the keyless backup identities.
+#
+# Postgres: CloudNativePG creates one ServiceAccount per Cluster, named after
+# the Cluster, in the Cluster's namespace — so the binding's KSA coordinates
+# are the scenario's names, and a source cluster and a recovery target need
+# one binding each (both read or write the bucket through their own pods).
+# The scenario namespace is owned by the source fixture; the recovery
+# scenario joins it.
+#
+# OpenBao: the module renders a dedicated ServiceAccount for the backup job,
+# `<name>-backup`, in the vault's namespace — so the source vault and the
+# restore target each need a binding on THEIR backup ServiceAccount (the
+# target reads the snapshot through the same identity the source wrote it
+# with). The lane namespace is owned by a KubernetesNamespace prerequisite
+# every OpenBao fixture and scenario joins.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpGkeWorkloadIdentityBinding
 metadata:
@@ -33,3 +42,33 @@ spec:
       fieldPath: status.outputs.email
   ksaNamespace: e2e-pg-gke
   ksaName: e2e-pg-gke-dr
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: planton-e2e-gke-openbao-src-backup-wi
+spec:
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  serviceAccountEmail:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-openbao-backup
+      fieldPath: status.outputs.email
+  ksaNamespace: e2e-bao-lab
+  ksaName: e2e-bao-src-backup
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: planton-e2e-gke-openbao-tgt-backup-wi
+spec:
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  serviceAccountEmail:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-openbao-backup
+      fieldPath: status.outputs.email
+  ksaNamespace: e2e-bao-lab
+  ksaName: e2e-bao-tgt-backup

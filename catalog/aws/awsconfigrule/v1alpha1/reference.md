@@ -98,6 +98,7 @@ spec:
 | `spec.organization.excludedAccounts` | `[]string` |  |  |  |
 | `spec.organization.triggerTypes` | `[]string` |  |  |  |
 | `spec.organization.debugLogDeliveryAccounts` | `[]string` |  |  |  |
+| `spec.organization.enabled` | `bool` |  | `true` |  |
 | `spec.remediation` | `AwsConfigRuleRemediation` |  |  |  |
 | `spec.remediation.automatic` | `bool` |  |  |  |
 | `spec.remediation.targetId` | `string` | yes |  |  |
@@ -301,9 +302,11 @@ rules.
 
 `AwsConfigRuleOrganization`
 
-Deploy the rule organization-wide. Presence of this message makes
-it an ORGANIZATION rule (name cap drops to 64 characters; run
-from the management or delegated-admin account).
+Deploy the rule organization-wide. Declaring this message (with its
+switch on, the default) makes it an ORGANIZATION rule (name cap drops
+to 64 characters; run from the management or delegated-admin account);
+`organization.enabled: false` keeps the organization settings in the
+manifest while the rule deploys account-scoped.
 
 ### spec.organization.excludedAccounts
 
@@ -330,6 +333,16 @@ Accounts allowed to receive Guard debug logs (custom_policy rules
 only).
 
 - rule: {"repeated":{"maxItems":"1000","unique":true,"items":{"string":{"pattern":"^[0-9]{12}$"}}}}
+
+### spec.organization.enabled
+
+`bool` · optional (explicit presence)
+
+Whether the rule deploys organization-wide. Unset means yes: declaring
+the block has always meant an organization rule, and this switch lets
+a manifest say the opposite out loud.
+
+- default: `true`
 
 ### spec.remediation
 

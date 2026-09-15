@@ -15,7 +15,7 @@ func createAzureSsis(
 	spec *azuredatafactoryintegrationruntimev1alpha1.AzureDataFactoryIntegrationRuntimeSpec,
 	azureProvider pulumi.ProviderResource,
 ) (*runtimeOutputs, error) {
-	ssis := spec.AzureSsis
+	ssis := spec.GetAzureSsis()
 
 	args := &datafactory.IntegrationRuntimeSsisArgs{
 		Name:                         pulumi.String(spec.Name),

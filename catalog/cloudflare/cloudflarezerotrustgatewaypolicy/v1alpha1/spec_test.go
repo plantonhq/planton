@@ -110,9 +110,47 @@ var _ = ginkgo.Describe("CloudflareZeroTrustGatewayPolicySpec Custom Validation 
 			})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("should accept logging blocks that switch each surface off", func() {
+			input := validPolicy(&CloudflareZeroTrustGatewayPolicySpec{
+				AccountId: testAccountId,
+				Name:      "quiet-allow",
+				Action:    "allow",
+				Filter:    "http",
+				Enabled:   boolPtr(true),
+				Traffic:   "http.request.uri matches \".*example.com.*\"",
+				RuleSettings: &CloudflareZeroTrustGatewayPolicyRuleSettings{
+					AuditSsh:     &CloudflareZeroTrustGatewayPolicyAuditSsh{CommandLogging: boolPtr(false)},
+					ForensicCopy: &CloudflareZeroTrustGatewayPolicyForensicCopy{Enabled: boolPtr(false)},
+					PayloadLog:   &CloudflareZeroTrustGatewayPolicyPayloadLog{Enabled: boolPtr(false)},
+				},
+			})
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
+
+		ginkgo.It("should reject a logging block that does not say on or off", func() {
+			for _, settings := range []*CloudflareZeroTrustGatewayPolicyRuleSettings{
+				{AuditSsh: &CloudflareZeroTrustGatewayPolicyAuditSsh{}},
+				{ForensicCopy: &CloudflareZeroTrustGatewayPolicyForensicCopy{}},
+				{PayloadLog: &CloudflareZeroTrustGatewayPolicyPayloadLog{}},
+			} {
+				input := validPolicy(&CloudflareZeroTrustGatewayPolicySpec{
+					AccountId:    testAccountId,
+					Name:         "half-declared",
+					Action:       "allow",
+					Filter:       "http",
+					Enabled:      boolPtr(true),
+					Traffic:      "http.request.uri matches \".*example.com.*\"",
+					RuleSettings: settings,
+				})
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("required"))
+			}
+		})
 
 		ginkgo.It("should reject a missing account_id", func() {
 			input := validPolicy(&CloudflareZeroTrustGatewayPolicySpec{

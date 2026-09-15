@@ -60,9 +60,11 @@ func validResource() *AzureDataFactoryDataset {
 			DataFactoryId:     literal(testFactoryId),
 			Name:              "orders-csv",
 			LinkedServiceName: literal("blob-conn"),
-			DelimitedText: &AzureDataFactoryDatasetDelimitedText{
-				AzureBlobStorageLocation: blobLocation(),
-				FirstRowAsHeader:         proto.Bool(true),
+			Variant: &AzureDataFactoryDatasetSpec_DelimitedText{
+				DelimitedText: &AzureDataFactoryDatasetDelimitedText{
+					AzureBlobStorageLocation: blobLocation(),
+					FirstRowAsHeader:         proto.Bool(true),
+				},
 			},
 		},
 	}
@@ -72,7 +74,7 @@ func validResource() *AzureDataFactoryDataset {
 // case can install a different one.
 func withoutVariant() *AzureDataFactoryDataset {
 	input := validResource()
-	input.Spec.DelimitedText = nil
+	input.Spec.Variant = nil
 	return input
 }
 
@@ -88,31 +90,31 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 
 			ginkgo.It("should accept an azure blob dataset", func() {
 				input := withoutVariant()
-				input.Spec.AzureBlob = &AzureDataFactoryDatasetAzureBlob{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_AzureBlob{AzureBlob: &AzureDataFactoryDatasetAzureBlob{
 					Path:     "raw/orders",
 					Filename: "orders.csv",
 					SchemaColumn: []*AzureDataFactoryDatasetSchemaColumn{
 						{Name: "order_id", Type: "Int64"},
 						{Name: "placed_at", Type: "DateTime", Description: "Order timestamp"},
 					},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept an azure sql table dataset referencing its linked service by ID", func() {
 				input := withoutVariant()
 				input.Spec.LinkedServiceName = nil
-				input.Spec.AzureSqlTable = &AzureDataFactoryDatasetAzureSqlTable{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_AzureSqlTable{AzureSqlTable: &AzureDataFactoryDatasetAzureSqlTable{
 					LinkedServiceId: literal(testLinkedServiceId),
 					Schema:          "dbo",
 					Table:           "orders",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a binary dataset on SFTP with compression", func() {
 				input := withoutVariant()
-				input.Spec.Binary = &AzureDataFactoryDatasetBinary{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Binary{Binary: &AzureDataFactoryDatasetBinary{
 					SftpServerLocation: &AzureDataFactoryDatasetSftpServerLocation{
 						Path:     "outbound",
 						Filename: "archive.tar.gz",
@@ -121,96 +123,96 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 						Type:  "TarGZip",
 						Level: "Optimal",
 					},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a cosmosdb SQL API dataset", func() {
 				input := withoutVariant()
-				input.Spec.CosmosdbSqlapi = &AzureDataFactoryDatasetCosmosdbSqlapi{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_CosmosdbSqlapi{CosmosdbSqlapi: &AzureDataFactoryDatasetCosmosdbSqlapi{
 					CollectionName: "orders",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a custom dataset carrying its own linked service reference", func() {
 				input := withoutVariant()
 				input.Spec.LinkedServiceName = nil
-				input.Spec.Custom = &AzureDataFactoryDatasetCustom{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Custom{Custom: &AzureDataFactoryDatasetCustom{
 					LinkedService: &AzureDataFactoryDatasetCustomLinkedService{
 						Name:       literal("blob-conn"),
 						Parameters: map[string]string{"container": "landing"},
 					},
 					Type:               "Excel",
 					TypePropertiesJson: `{"location":{"type":"AzureBlobStorageLocation","container":"landing"},"sheetName":"Sheet1"}`,
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept an http dataset", func() {
 				input := withoutVariant()
-				input.Spec.Http = &AzureDataFactoryDatasetHttp{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Http{Http: &AzureDataFactoryDatasetHttp{
 					RelativeUrl:   "exports/daily.csv",
 					RequestMethod: "GET",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a json dataset on blob storage with path and filename", func() {
 				input := withoutVariant()
-				input.Spec.Json = &AzureDataFactoryDatasetJson{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Json{Json: &AzureDataFactoryDatasetJson{
 					AzureBlobStorageLocation: blobLocation(),
 					Encoding:                 "UTF-8",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a mysql dataset", func() {
 				input := withoutVariant()
-				input.Spec.Mysql = &AzureDataFactoryDatasetMysql{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Mysql{Mysql: &AzureDataFactoryDatasetMysql{
 					TableName: "orders",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a parquet dataset on Data Lake Gen2", func() {
 				input := withoutVariant()
-				input.Spec.Parquet = &AzureDataFactoryDatasetParquet{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Parquet{Parquet: &AzureDataFactoryDatasetParquet{
 					AzureBlobFsLocation: &AzureDataFactoryDatasetBlobFsLocation{
 						FileSystem: "lake",
 						Path:       "curated/orders",
 					},
 					CompressionCodec: "snappy",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a postgresql dataset", func() {
 				input := withoutVariant()
-				input.Spec.Postgresql = &AzureDataFactoryDatasetPostgresql{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Postgresql{Postgresql: &AzureDataFactoryDatasetPostgresql{
 					TableName: "public.orders",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a snowflake dataset with snowflake-typed columns", func() {
 				input := withoutVariant()
-				input.Spec.Snowflake = &AzureDataFactoryDatasetSnowflake{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Snowflake{Snowflake: &AzureDataFactoryDatasetSnowflake{
 					TableName:  "ORDERS",
 					SchemaName: "PUBLIC",
 					SchemaColumn: []*AzureDataFactoryDatasetSnowflakeSchemaColumn{
 						{Name: "ORDER_ID", Type: "NUMBER", Precision: 38},
 						{Name: "TOTAL", Type: "DECIMAL", Precision: 12, Scale: 2},
 					},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept a sql server table dataset", func() {
 				input := withoutVariant()
-				input.Spec.SqlServerTable = &AzureDataFactoryDatasetSqlServerTable{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_SqlServerTable{SqlServerTable: &AzureDataFactoryDatasetSqlServerTable{
 					TableName: "dbo.orders",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 		})
@@ -235,22 +237,22 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 
 			ginkgo.It("should accept delimited text parse settings", func() {
 				input := validResource()
-				input.Spec.DelimitedText.ColumnDelimiter = ";"
-				input.Spec.DelimitedText.RowDelimiter = "\n"
-				input.Spec.DelimitedText.QuoteCharacter = "'"
-				input.Spec.DelimitedText.EscapeCharacter = "/"
-				input.Spec.DelimitedText.Encoding = "UTF-8"
-				input.Spec.DelimitedText.NullValue = "NULL"
-				input.Spec.DelimitedText.CompressionCodec = "gzip"
-				input.Spec.DelimitedText.CompressionLevel = "Fastest"
+				input.Spec.GetDelimitedText().ColumnDelimiter = ";"
+				input.Spec.GetDelimitedText().RowDelimiter = "\n"
+				input.Spec.GetDelimitedText().QuoteCharacter = "'"
+				input.Spec.GetDelimitedText().EscapeCharacter = "/"
+				input.Spec.GetDelimitedText().Encoding = "UTF-8"
+				input.Spec.GetDelimitedText().NullValue = "NULL"
+				input.Spec.GetDelimitedText().CompressionCodec = "gzip"
+				input.Spec.GetDelimitedText().CompressionLevel = "Fastest"
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should accept dynamic expression flags on locations", func() {
 				input := validResource()
 				input.Spec.Parameters = map[string]string{"runDate": ""}
-				input.Spec.DelimitedText.AzureBlobStorageLocation.Path = "raw/@{dataset().runDate}"
-				input.Spec.DelimitedText.AzureBlobStorageLocation.DynamicPathEnabled = true
+				input.Spec.GetDelimitedText().AzureBlobStorageLocation.Path = "raw/@{dataset().runDate}"
+				input.Spec.GetDelimitedText().AzureBlobStorageLocation.DynamicPathEnabled = true
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 		})
@@ -265,10 +267,18 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
-			ginkgo.It("should reject a spec with two variant blocks", func() {
+			ginkgo.It("carries exactly one variant by construction (setting a second arm replaces the first)", func() {
 				input := validResource()
-				input.Spec.Mysql = &AzureDataFactoryDatasetMysql{TableName: "orders"}
-				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Mysql{Mysql: &AzureDataFactoryDatasetMysql{TableName: "orders"}}
+				gomega.Expect(input.Spec.GetDelimitedText()).To(gomega.BeNil())
+				gomega.Expect(input.Spec.GetMysql()).NotTo(gomega.BeNil())
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+			})
+
+			ginkgo.It("accepts a variant whose selection is its only content (an HTTP file with every setting left to Data Factory)", func() {
+				input := validResource()
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Http{Http: &AzureDataFactoryDatasetHttp{}}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a name-wired variant without linked_service_name", func() {
@@ -279,19 +289,19 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 
 			ginkgo.It("should reject linked_service_name alongside azure_sql_table", func() {
 				input := withoutVariant()
-				input.Spec.AzureSqlTable = &AzureDataFactoryDatasetAzureSqlTable{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_AzureSqlTable{AzureSqlTable: &AzureDataFactoryDatasetAzureSqlTable{
 					LinkedServiceId: literal(testLinkedServiceId),
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject linked_service_name alongside custom", func() {
 				input := withoutVariant()
-				input.Spec.Custom = &AzureDataFactoryDatasetCustom{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Custom{Custom: &AzureDataFactoryDatasetCustom{
 					LinkedService:      &AzureDataFactoryDatasetCustomLinkedService{Name: literal("blob-conn")},
 					Type:               "Excel",
 					TypePropertiesJson: `{}`,
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
@@ -324,13 +334,13 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 
 			ginkgo.It("should reject a delimited text dataset with no location", func() {
 				input := withoutVariant()
-				input.Spec.DelimitedText = &AzureDataFactoryDatasetDelimitedText{}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_DelimitedText{DelimitedText: &AzureDataFactoryDatasetDelimitedText{}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a delimited text dataset with two locations", func() {
 				input := validResource()
-				input.Spec.DelimitedText.HttpServerLocation = httpLocation()
+				input.Spec.GetDelimitedText().HttpServerLocation = httpLocation()
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
@@ -338,13 +348,13 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 				input := withoutVariant()
 				loc := httpLocation()
 				loc.Path = ""
-				input.Spec.DelimitedText = &AzureDataFactoryDatasetDelimitedText{HttpServerLocation: loc}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_DelimitedText{DelimitedText: &AzureDataFactoryDatasetDelimitedText{HttpServerLocation: loc}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a binary dataset with no location", func() {
 				input := withoutVariant()
-				input.Spec.Binary = &AzureDataFactoryDatasetBinary{}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Binary{Binary: &AzureDataFactoryDatasetBinary{}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
@@ -352,13 +362,13 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 				input := withoutVariant()
 				loc := httpLocation()
 				loc.Filename = ""
-				input.Spec.Binary = &AzureDataFactoryDatasetBinary{HttpServerLocation: loc}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Binary{Binary: &AzureDataFactoryDatasetBinary{HttpServerLocation: loc}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a json dataset with no location", func() {
 				input := withoutVariant()
-				input.Spec.Json = &AzureDataFactoryDatasetJson{}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Json{Json: &AzureDataFactoryDatasetJson{}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
@@ -366,7 +376,7 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 				input := withoutVariant()
 				loc := blobLocation()
 				loc.Filename = ""
-				input.Spec.Json = &AzureDataFactoryDatasetJson{AzureBlobStorageLocation: loc}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Json{Json: &AzureDataFactoryDatasetJson{AzureBlobStorageLocation: loc}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
@@ -374,7 +384,7 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 				input := withoutVariant()
 				loc := httpLocation()
 				loc.Filename = ""
-				input.Spec.Parquet = &AzureDataFactoryDatasetParquet{HttpServerLocation: loc}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Parquet{Parquet: &AzureDataFactoryDatasetParquet{HttpServerLocation: loc}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
@@ -382,7 +392,7 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 				input := withoutVariant()
 				loc := httpLocation()
 				loc.Path = ""
-				input.Spec.Parquet = &AzureDataFactoryDatasetParquet{HttpServerLocation: loc}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Parquet{Parquet: &AzureDataFactoryDatasetParquet{HttpServerLocation: loc}}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 			})
 
@@ -390,21 +400,21 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 				input := withoutVariant()
 				loc := httpLocation()
 				loc.RelativeUrl = ""
-				input.Spec.DelimitedText = &AzureDataFactoryDatasetDelimitedText{HttpServerLocation: loc}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_DelimitedText{DelimitedText: &AzureDataFactoryDatasetDelimitedText{HttpServerLocation: loc}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a blob storage location missing container", func() {
 				input := validResource()
-				input.Spec.DelimitedText.AzureBlobStorageLocation.Container = ""
+				input.Spec.GetDelimitedText().AzureBlobStorageLocation.Container = ""
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject an SFTP location missing path", func() {
 				input := withoutVariant()
-				input.Spec.Binary = &AzureDataFactoryDatasetBinary{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Binary{Binary: &AzureDataFactoryDatasetBinary{
 					SftpServerLocation: &AzureDataFactoryDatasetSftpServerLocation{Filename: "archive.bin"},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 		})
@@ -413,116 +423,116 @@ var _ = ginkgo.Describe("AzureDataFactoryDatasetSpec Validation Tests", func() {
 
 			ginkgo.It("should reject a binary compression without a type", func() {
 				input := withoutVariant()
-				input.Spec.Binary = &AzureDataFactoryDatasetBinary{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Binary{Binary: &AzureDataFactoryDatasetBinary{
 					AzureBlobStorageLocation: blobLocation(),
 					Compression:              &AzureDataFactoryDatasetBinaryCompression{Level: "Optimal"},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a binary compression with an unknown codec", func() {
 				input := withoutVariant()
-				input.Spec.Binary = &AzureDataFactoryDatasetBinary{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Binary{Binary: &AzureDataFactoryDatasetBinary{
 					AzureBlobStorageLocation: blobLocation(),
 					Compression:              &AzureDataFactoryDatasetBinaryCompression{Type: "snappy"},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a delimited text compression codec outside the vocabulary", func() {
 				input := validResource()
-				input.Spec.DelimitedText.CompressionCodec = "zstd"
+				input.Spec.GetDelimitedText().CompressionCodec = "zstd"
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a parquet compression codec of None (delimited-text-only token)", func() {
 				input := withoutVariant()
-				input.Spec.Parquet = &AzureDataFactoryDatasetParquet{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Parquet{Parquet: &AzureDataFactoryDatasetParquet{
 					AzureBlobStorageLocation: blobLocation(),
 					CompressionCodec:         "None",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a compression level outside the vocabulary", func() {
 				input := validResource()
-				input.Spec.DelimitedText.CompressionLevel = "Maximum"
+				input.Spec.GetDelimitedText().CompressionLevel = "Maximum"
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a schema column without a name", func() {
 				input := validResource()
-				input.Spec.DelimitedText.SchemaColumn = []*AzureDataFactoryDatasetSchemaColumn{{Type: "String"}}
+				input.Spec.GetDelimitedText().SchemaColumn = []*AzureDataFactoryDatasetSchemaColumn{{Type: "String"}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a schema column type outside the interim vocabulary", func() {
 				input := validResource()
-				input.Spec.DelimitedText.SchemaColumn = []*AzureDataFactoryDatasetSchemaColumn{{Name: "order_id", Type: "BIGINT"}}
+				input.Spec.GetDelimitedText().SchemaColumn = []*AzureDataFactoryDatasetSchemaColumn{{Name: "order_id", Type: "BIGINT"}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a snowflake column type outside snowflake's vocabulary", func() {
 				input := withoutVariant()
-				input.Spec.Snowflake = &AzureDataFactoryDatasetSnowflake{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Snowflake{Snowflake: &AzureDataFactoryDatasetSnowflake{
 					SchemaColumn: []*AzureDataFactoryDatasetSnowflakeSchemaColumn{{Name: "ORDER_ID", Type: "Int64"}},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a negative snowflake column precision", func() {
 				input := withoutVariant()
-				input.Spec.Snowflake = &AzureDataFactoryDatasetSnowflake{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Snowflake{Snowflake: &AzureDataFactoryDatasetSnowflake{
 					SchemaColumn: []*AzureDataFactoryDatasetSnowflakeSchemaColumn{{Name: "ORDER_ID", Type: "NUMBER", Precision: -1}},
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject an azure sql table dataset without linked_service_id", func() {
 				input := withoutVariant()
 				input.Spec.LinkedServiceName = nil
-				input.Spec.AzureSqlTable = &AzureDataFactoryDatasetAzureSqlTable{Table: "orders"}
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_AzureSqlTable{AzureSqlTable: &AzureDataFactoryDatasetAzureSqlTable{Table: "orders"}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a custom dataset without a type", func() {
 				input := withoutVariant()
 				input.Spec.LinkedServiceName = nil
-				input.Spec.Custom = &AzureDataFactoryDatasetCustom{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Custom{Custom: &AzureDataFactoryDatasetCustom{
 					LinkedService:      &AzureDataFactoryDatasetCustomLinkedService{Name: literal("blob-conn")},
 					TypePropertiesJson: `{}`,
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a custom dataset without type properties", func() {
 				input := withoutVariant()
 				input.Spec.LinkedServiceName = nil
-				input.Spec.Custom = &AzureDataFactoryDatasetCustom{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Custom{Custom: &AzureDataFactoryDatasetCustom{
 					LinkedService: &AzureDataFactoryDatasetCustomLinkedService{Name: literal("blob-conn")},
 					Type:          "Excel",
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a custom dataset without a linked service block", func() {
 				input := withoutVariant()
 				input.Spec.LinkedServiceName = nil
-				input.Spec.Custom = &AzureDataFactoryDatasetCustom{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Custom{Custom: &AzureDataFactoryDatasetCustom{
 					Type:               "Excel",
 					TypePropertiesJson: `{}`,
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject a custom linked service block without a name", func() {
 				input := withoutVariant()
 				input.Spec.LinkedServiceName = nil
-				input.Spec.Custom = &AzureDataFactoryDatasetCustom{
+				input.Spec.Variant = &AzureDataFactoryDatasetSpec_Custom{Custom: &AzureDataFactoryDatasetCustom{
 					LinkedService:      &AzureDataFactoryDatasetCustomLinkedService{},
 					Type:               "Excel",
 					TypePropertiesJson: `{}`,
-				}
+				}}
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 			})
 		})

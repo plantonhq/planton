@@ -35,3 +35,10 @@ resources:
         spec: spec.vdm.optimized_shared_delivery
       - arg: guardian_attributes.optimized_shared_delivery
         spec: spec.vdm.optimized_shared_delivery
+
+specExclusions:
+  # The suppression arm's own switch. SES spells "auto-suppression off" as
+  # the empty reason list, so the module writes [] when the switch is off
+  # and the switch itself has no argument to reach.
+  - field: spec.suppression.enabled
+    reason: an explicit switch the module honors by writing the empty suppressed_reasons list when off -- SES has no enabled flag on suppression

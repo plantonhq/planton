@@ -150,6 +150,44 @@ func TestFlatten_PreservesNonRuleFields(t *testing.T) {
 	}
 }
 
+// TestFlatten_ManifestOnlyField_DroppedOnBothPaths asserts a field marked
+// (dev.planton.shared.options.manifest_only) never reaches tfvars: not on the
+// snake_case path a hand-written module reads, and not on the manifest
+// projection a CRD-faithful module forwards verbatim (where an unknown key
+// would be refused by the apiserver at apply). A sibling scalar without the
+// marker rides through untouched on both.
+func TestFlatten_ManifestOnlyField_DroppedOnBothPaths(t *testing.T) {
+	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
+
+	for _, tc := range []struct {
+		name string
+		opts flattenOpts
+		key  string // how the marked field's sibling is spelled after the walk
+	}{
+		{name: "snake_case path", opts: flattenOpts{}, key: "create_namespace"},
+		{name: "manifest projection", opts: flattenOpts{preserveJSONNames: true}, key: "createNamespace"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			data := buildTestK8sJSON(t)
+			spec := data["spec"].(map[string]interface{})
+			spec["selectAll"] = true // the marked field, as protojson writes it
+
+			flattenWithOpts(data, md, DefaultRules(), tc.opts)
+
+			spec = data["spec"].(map[string]interface{})
+			if _, exists := spec["selectAll"]; exists {
+				t.Error("spec.selectAll carries manifest_only and must be dropped (camelCase key)")
+			}
+			if _, exists := spec["select_all"]; exists {
+				t.Error("spec.select_all carries manifest_only and must be dropped (snake_case key)")
+			}
+			if _, exists := spec[tc.key]; !exists {
+				t.Errorf("spec.%s has no marker and must be preserved", tc.key)
+			}
+		})
+	}
+}
+
 func TestFlatten_EmptyRules_NoChanges(t *testing.T) {
 	data := buildTestK8sJSON(t)
 	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()

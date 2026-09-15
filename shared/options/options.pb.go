@@ -140,6 +140,14 @@ var file_shared_options_options_proto_extTypes = []protoimpl.ExtensionInfo{
 		Filename:      "shared/options/options.proto",
 	},
 	{
+		ExtendedType:  (*descriptorpb.FieldOptions)(nil),
+		ExtensionType: (*bool)(nil),
+		Field:         60009,
+		Name:          "dev.planton.shared.options.manifest_only",
+		Tag:           "varint,60009,opt,name=manifest_only",
+		Filename:      "shared/options/options.proto",
+	},
+	{
 		ExtendedType:  (*descriptorpb.EnumValueOptions)(nil),
 		ExtensionType: (*string)(nil),
 		Field:         60050,
@@ -229,12 +237,36 @@ var (
 	//
 	// optional bool artifact_version_slot = 60008;
 	E_ArtifactVersionSlot = &file_shared_options_options_proto_extTypes[7]
+	// Marks a field that exists so the manifest can say what the wire spells by
+	// the absence or shape of OTHER fields -- and that no engine forwards. The
+	// canonical cases: a selector's `match_all: true` where the upstream spelling
+	// is an empty selector, and an access config's `ephemeral: true` where the
+	// provider's spelling is a config without a static address. Without such a
+	// field, "select everything" and "nothing was authored" are the same empty
+	// block on every door, and a form cannot tell one from the other.
+	//
+	// Every engine path honors the marker by construction, never per kind: the
+	// tfvars converter drops the field before any Terraform module sees it (so a
+	// verbatim CRD projection never reaches the apiserver with an unknown key,
+	// and a hand-written module never declares a variable for it), the
+	// variables.tf generator emits no variable, and provider parity treats it as
+	// an exclusion with a derived reason. A Pulumi module reads the field only
+	// to derive the upstream shape (or not at all, where the validation rules
+	// already guarantee that shape) and never forwards it.
+	//
+	// The field's validation rules carry its meaning: a message-level rule
+	// forbids the marked field beside the content it stands in for, and another
+	// refuses the block that names neither. The marker says nothing about
+	// validation; it only says "this word is the manifest's, not the wire's".
+	//
+	// optional bool manifest_only = 60009;
+	E_ManifestOnly = &file_shared_options_options_proto_extTypes[8]
 )
 
 // Extension fields to descriptorpb.EnumValueOptions.
 var (
 	// optional string display_label = 60050;
-	E_DisplayLabel = &file_shared_options_options_proto_extTypes[8]
+	E_DisplayLabel = &file_shared_options_options_proto_extTypes[9]
 )
 
 var File_shared_options_options_proto protoreflect.FileDescriptor
@@ -252,7 +284,8 @@ const file_shared_options_options_proto_rawDesc = "" +
 	"\x17sensitive_exempt_reason\x12\x1d.google.protobuf.FieldOptions\x18\xe5\xd4\x03 \x01(\tR\x15sensitiveExemptReason:D\n" +
 	"\rdiagram_label\x12\x1d.google.protobuf.FieldOptions\x18\xe6\xd4\x03 \x01(\tR\fdiagramLabel:O\n" +
 	"\x13artifact_image_slot\x12\x1d.google.protobuf.FieldOptions\x18\xe7\xd4\x03 \x01(\tR\x11artifactImageSlot:S\n" +
-	"\x15artifact_version_slot\x12\x1d.google.protobuf.FieldOptions\x18\xe8\xd4\x03 \x01(\bR\x13artifactVersionSlot:H\n" +
+	"\x15artifact_version_slot\x12\x1d.google.protobuf.FieldOptions\x18\xe8\xd4\x03 \x01(\bR\x13artifactVersionSlot:D\n" +
+	"\rmanifest_only\x12\x1d.google.protobuf.FieldOptions\x18\xe9\xd4\x03 \x01(\bR\fmanifestOnly:H\n" +
 	"\rdisplay_label\x12!.google.protobuf.EnumValueOptions\x18\x92\xd5\x03 \x01(\tR\fdisplayLabelB\xe7\x01\n" +
 	"\x1ecom.dev.planton.shared.optionsB\fOptionsProtoP\x01Z+github.com/plantonhq/planton/shared/options\xa2\x02\x04DPSO\xaa\x02\x1aDev.Planton.Shared.Options\xca\x02\x1aDev\\Planton\\Shared\\Options\xe2\x02&Dev\\Planton\\Shared\\Options\\GPBMetadata\xea\x02\x1dDev::Planton::Shared::Optionsb\x06proto3"
 
@@ -283,12 +316,13 @@ var file_shared_options_options_proto_depIdxs = []int32{
 	1,  // 5: dev.planton.shared.options.diagram_label:extendee -> google.protobuf.FieldOptions
 	1,  // 6: dev.planton.shared.options.artifact_image_slot:extendee -> google.protobuf.FieldOptions
 	1,  // 7: dev.planton.shared.options.artifact_version_slot:extendee -> google.protobuf.FieldOptions
-	2,  // 8: dev.planton.shared.options.display_label:extendee -> google.protobuf.EnumValueOptions
-	0,  // 9: dev.planton.shared.options.recommended_default_map:type_name -> dev.planton.shared.options.KeyValuePair
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	9,  // [9:10] is the sub-list for extension type_name
-	0,  // [0:9] is the sub-list for extension extendee
+	1,  // 8: dev.planton.shared.options.manifest_only:extendee -> google.protobuf.FieldOptions
+	2,  // 9: dev.planton.shared.options.display_label:extendee -> google.protobuf.EnumValueOptions
+	0,  // 10: dev.planton.shared.options.recommended_default_map:type_name -> dev.planton.shared.options.KeyValuePair
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	10, // [10:11] is the sub-list for extension type_name
+	0,  // [0:10] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
 }
 
@@ -304,7 +338,7 @@ func file_shared_options_options_proto_init() {
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_shared_options_options_proto_rawDesc), len(file_shared_options_options_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   1,
-			NumExtensions: 9,
+			NumExtensions: 10,
 			NumServices:   0,
 		},
 		GoTypes:           file_shared_options_options_proto_goTypes,

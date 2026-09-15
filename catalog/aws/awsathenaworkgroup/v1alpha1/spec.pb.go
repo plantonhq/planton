@@ -429,9 +429,9 @@ func (x *AwsAthenaWorkgroupResultConfig) GetS3AclOption() string {
 }
 
 // AwsAthenaWorkgroupManagedQueryResults configures AWS-managed query result
-// storage. The block's presence is the enable switch: include it (even empty)
-// and Athena stores results in AWS-owned storage with a 24-hour retention;
-// remove it to return to customer-managed (or account-default) result storage.
+// storage: declare the block and Athena stores results in AWS-owned storage
+// with a 24-hour retention; `enabled: false` keeps the block but returns to
+// customer-managed (or account-default) result storage.
 type AwsAthenaWorkgroupManagedQueryResults struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// KMS key that encrypts results in AWS-managed storage. When omitted, AWS
@@ -442,7 +442,11 @@ type AwsAthenaWorkgroupManagedQueryResults struct {
 	// Unlike the other three KMS fields on this workgroup, this one accepts a
 	// full key ARN ONLY -- the provider rejects "alias/..." forms here at plan
 	// time.
-	KmsKey        *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	KmsKey *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	// Whether AWS-managed result storage is on. Unset means on: declaring the
+	// block has always meant enabling it, and this switch lets a manifest say
+	// the opposite out loud while keeping the block's settings in place.
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -482,6 +486,13 @@ func (x *AwsAthenaWorkgroupManagedQueryResults) GetKmsKey() *v1.StringValueOrRef
 		return x.KmsKey
 	}
 	return nil
+}
+
+func (x *AwsAthenaWorkgroupManagedQueryResults) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // AwsAthenaWorkgroupIdentityCenterConfig integrates the workgroup with AWS IAM
@@ -618,8 +629,9 @@ func (x *AwsAthenaWorkgroupS3AccessGrantsConfig) GetCreateUserLevelPrefix() bool
 }
 
 // AwsAthenaWorkgroupMonitoringConfig groups the workgroup's log delivery
-// destinations. Each arm is enabled by its presence and can be combined with
-// the others (e.g. CloudWatch for live debugging plus S3 for archive).
+// destinations. Each arm carries its own switch (on by default once declared)
+// and can be combined with the others (e.g. CloudWatch for live debugging plus
+// S3 for archive).
 type AwsAthenaWorkgroupMonitoringConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Delivers logs to a CloudWatch Logs log group -- the destination to pick
@@ -687,7 +699,8 @@ func (x *AwsAthenaWorkgroupMonitoringConfig) GetS3Logging() *AwsAthenaWorkgroupS
 }
 
 // AwsAthenaWorkgroupCloudWatchLoggingConfig delivers workgroup logs to
-// CloudWatch Logs. The block's presence enables the delivery.
+// CloudWatch Logs. Declaring the block turns the delivery on; `enabled: false`
+// keeps the destination's settings while switching it off.
 type AwsAthenaWorkgroupCloudWatchLoggingConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Name of the CloudWatch Logs log group to publish to. When omitted, Athena
@@ -702,7 +715,11 @@ type AwsAthenaWorkgroupCloudWatchLoggingConfig struct {
 	// such as "SPARK_DRIVER" and "SPARK_EXECUTOR"; values are the log streams
 	// to deliver for that worker, such as "STDOUT" and "STDERR". When omitted,
 	// Athena publishes its default set.
-	LogTypes      []*AwsAthenaWorkgroupLogTypeEntry `protobuf:"bytes,3,rep,name=log_types,json=logTypes,proto3" json:"log_types,omitempty"`
+	LogTypes []*AwsAthenaWorkgroupLogTypeEntry `protobuf:"bytes,3,rep,name=log_types,json=logTypes,proto3" json:"log_types,omitempty"`
+	// Whether this destination is on. Unset means on: declaring the block has
+	// always meant enabling it, and this switch lets a manifest say the opposite
+	// out loud while keeping the block's settings in place.
+	Enabled       *bool `protobuf:"varint,4,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -756,6 +773,13 @@ func (x *AwsAthenaWorkgroupCloudWatchLoggingConfig) GetLogTypes() []*AwsAthenaWo
 		return x.LogTypes
 	}
 	return nil
+}
+
+func (x *AwsAthenaWorkgroupCloudWatchLoggingConfig) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // AwsAthenaWorkgroupLogTypeEntry selects the log streams of one worker type
@@ -815,14 +839,19 @@ func (x *AwsAthenaWorkgroupLogTypeEntry) GetValues() []string {
 }
 
 // AwsAthenaWorkgroupManagedLoggingConfig delivers workgroup logs to
-// Athena-managed storage. The block's presence enables the delivery; an empty
-// block uses AWS-owned encryption.
+// Athena-managed storage. Declaring the block turns the delivery on (with
+// AWS-owned encryption unless a key is named); `enabled: false` keeps the
+// destination's settings while switching it off.
 type AwsAthenaWorkgroupManagedLoggingConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// KMS key that encrypts logs in managed storage. Accepts a key ARN (the
 	// default reference path) or an alias. When omitted, AWS encrypts the logs
 	// with an AWS-owned key.
-	KmsKey        *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	KmsKey *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	// Whether this destination is on. Unset means on: declaring the block has
+	// always meant enabling it, and this switch lets a manifest say the opposite
+	// out loud while keeping the block's settings in place.
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -864,8 +893,16 @@ func (x *AwsAthenaWorkgroupManagedLoggingConfig) GetKmsKey() *v1.StringValueOrRe
 	return nil
 }
 
+func (x *AwsAthenaWorkgroupManagedLoggingConfig) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
+}
+
 // AwsAthenaWorkgroupS3LoggingConfig delivers workgroup logs to an S3 location.
-// The block's presence enables the delivery.
+// Declaring the block turns the delivery on; `enabled: false` keeps the
+// destination's settings while switching it off.
 type AwsAthenaWorkgroupS3LoggingConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// S3 URI where logs are delivered, e.g. "s3://my-log-archive/athena/".
@@ -875,7 +912,11 @@ type AwsAthenaWorkgroupS3LoggingConfig struct {
 	// KMS key that encrypts delivered log objects. Accepts a key ARN (the
 	// default reference path) or an alias. When omitted, objects use the
 	// bucket's default encryption.
-	KmsKey        *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	KmsKey *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=kms_key,json=kmsKey,proto3" json:"kms_key,omitempty"`
+	// Whether this destination is on. Unset means on: declaring the block has
+	// always meant enabling it, and this switch lets a manifest say the opposite
+	// out loud while keeping the block's settings in place.
+	Enabled       *bool `protobuf:"varint,3,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -924,11 +965,18 @@ func (x *AwsAthenaWorkgroupS3LoggingConfig) GetKmsKey() *v1.StringValueOrRef {
 	return nil
 }
 
+func (x *AwsAthenaWorkgroupS3LoggingConfig) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
+}
+
 var File_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awsathenaworkgroup/v1alpha1/spec.proto\x12+dev.planton.aws.awsathenaworkgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x8d\x17\n" +
+	"2catalog/aws/awsathenaworkgroup/v1alpha1/spec.proto\x12+dev.planton.aws.awsathenaworkgroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe4\x17\n" +
 	"\x16AwsAthenaWorkgroupSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12*\n" +
 	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\x12>\n" +
@@ -949,13 +997,13 @@ const file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"monitoring\x18\x10 \x01(\v2O.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupMonitoringConfigR\n" +
 	"monitoring\x12#\n" +
-	"\rforce_destroy\x18\x11 \x01(\bR\fforceDestroy:\x97\n" +
-	"\xbaH\x93\n" +
+	"\rforce_destroy\x18\x11 \x01(\bR\fforceDestroy:\xee\n" +
+	"\xbaH\xea\n" +
 	"\x1a\xcb\x01\n" +
 	"\x1abytes_scanned_cutoff_range\x12Pbytes_scanned_cutoff_per_query must be 0 (no limit) or at least 10485760 (10 MB)\x1a[this.bytes_scanned_cutoff_per_query == 0 || this.bytes_scanned_cutoff_per_query >= 10485760\x1a\xa5\x02\n" +
 	"\x1eresult_encryption_option_valid\x12Yresult_configuration.encryption_option must be 'SSE_S3', 'SSE_KMS', or 'CSE_KMS' when set\x1a\xa7\x01!has(this.result_configuration) || this.result_configuration.encryption_option == '' || this.result_configuration.encryption_option in ['SSE_S3', 'SSE_KMS', 'CSE_KMS']\x1a\x83\x02\n" +
-	"\x13s3_acl_option_valid\x12Oresult_configuration.s3_acl_option must be 'BUCKET_OWNER_FULL_CONTROL' when set\x1a\x9a\x01!has(this.result_configuration) || this.result_configuration.s3_acl_option == '' || this.result_configuration.s3_acl_option == 'BUCKET_OWNER_FULL_CONTROL'\x1a\xc8\x02\n" +
-	"(managed_results_excludes_output_location\x12\xa3\x01managed_query_results cannot be combined with result_configuration.output_location; results are stored either in AWS-managed storage or in your S3 bucket, not both\x1av!has(this.managed_query_results) || !has(this.result_configuration) || this.result_configuration.output_location == ''\x1a\xc9\x01\n" +
+	"\x13s3_acl_option_valid\x12Oresult_configuration.s3_acl_option must be 'BUCKET_OWNER_FULL_CONTROL' when set\x1a\x9a\x01!has(this.result_configuration) || this.result_configuration.s3_acl_option == '' || this.result_configuration.s3_acl_option == 'BUCKET_OWNER_FULL_CONTROL'\x1a\x9f\x03\n" +
+	"(managed_results_excludes_output_location\x12\xa3\x01managed_query_results cannot be combined with result_configuration.output_location; results are stored either in AWS-managed storage or in your S3 bucket, not both\x1a\xcc\x01!(has(this.managed_query_results) && (!has(this.managed_query_results.enabled) || this.managed_query_results.enabled)) || !has(this.result_configuration) || this.result_configuration.output_location == ''\x1a\xc9\x01\n" +
 	"\x19execution_role_arn_format\x12>execution_role literal value must be an IAM role ARN (arn:...)\x1al!has(this.execution_role) || this.execution_role.value == '' || this.execution_role.value.startsWith('arn:')B\b\n" +
 	"\x06_stateB\"\n" +
 	" _enforce_workgroup_configurationB%\n" +
@@ -965,10 +1013,13 @@ const file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\x11encryption_option\x18\x02 \x01(\tR\x10encryptionOption\x12s\n" +
 	"\vkms_key_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x122\n" +
 	"\x15expected_bucket_owner\x18\x04 \x01(\tR\x13expectedBucketOwner\x12\"\n" +
-	"\rs3_acl_option\x18\x05 \x01(\tR\vs3AclOption\"\x89\x03\n" +
+	"\rs3_acl_option\x18\x05 \x01(\tR\vs3AclOption\"\xbe\x03\n" +
 	"%AwsAthenaWorkgroupManagedQueryResults\x12l\n" +
-	"\akms_key\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey:\xf1\x01\xbaH\xed\x01\x1a\xea\x01\n" +
-	"\x1cmanaged_results_kms_arn_only\x12qmanaged_query_results.kms_key literal value must be a full KMS key ARN (arn:...) -- aliases are not accepted here\x1aW!has(this.kms_key) || this.kms_key.value == '' || this.kms_key.value.startsWith('arn:')\"\xee\x02\n" +
+	"\akms_key\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01:\xf1\x01\xbaH\xed\x01\x1a\xea\x01\n" +
+	"\x1cmanaged_results_kms_arn_only\x12qmanaged_query_results.kms_key literal value must be a full KMS key ARN (arn:...) -- aliases are not accepted here\x1aW!has(this.kms_key) || this.kms_key.value == '' || this.kms_key.value.startsWith('arn:')B\n" +
+	"\n" +
+	"\b_enabled\"\xee\x02\n" +
 	"&AwsAthenaWorkgroupIdentityCenterConfig\x124\n" +
 	"\x16enable_identity_center\x18\x01 \x01(\bR\x14enableIdentityCenter\x12?\n" +
 	"\x1cidentity_center_instance_arn\x18\x02 \x01(\tR\x19identityCenterInstanceArn:\xcc\x01\xbaH\xc8\x01\x1a\xc5\x01\n" +
@@ -981,20 +1032,29 @@ const file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\x13cloud_watch_logging\x18\x01 \x01(\v2V.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupCloudWatchLoggingConfigR\x11cloudWatchLogging\x12|\n" +
 	"\x0fmanaged_logging\x18\x02 \x01(\v2S.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupManagedLoggingConfigR\x0emanagedLogging\x12m\n" +
 	"\n" +
-	"s3_logging\x18\x03 \x01(\v2N.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupS3LoggingConfigR\ts3Logging\"\xa9\x02\n" +
+	"s3_logging\x18\x03 \x01(\v2N.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupS3LoggingConfigR\ts3Logging\"\xde\x02\n" +
 	")AwsAthenaWorkgroupCloudWatchLoggingConfig\x12<\n" +
 	"\tlog_group\x18\x01 \x01(\tB\x1f\xbaH\x1c\xd8\x01\x01r\x17\x18\x80\x042\x12^[a-zA-Z0-9._/-]+$R\blogGroup\x12T\n" +
 	"\x16log_stream_name_prefix\x18\x02 \x01(\tB\x1f\xbaH\x1c\xd8\x01\x01r\x17\x18\x80\x042\x12^[a-zA-Z0-9._/-]+$R\x13logStreamNamePrefix\x12h\n" +
-	"\tlog_types\x18\x03 \x03(\v2K.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupLogTypeEntryR\blogTypes\"]\n" +
+	"\tlog_types\x18\x03 \x03(\v2K.dev.planton.aws.awsathenaworkgroup.v1alpha1.AwsAthenaWorkgroupLogTypeEntryR\blogTypes\x12'\n" +
+	"\aenabled\x18\x04 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"]\n" +
 	"\x1eAwsAthenaWorkgroupLogTypeEntry\x12\x19\n" +
 	"\x03key\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x03key\x12 \n" +
-	"\x06values\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06values\"\x96\x01\n" +
+	"\x06values\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06values\"\xcb\x01\n" +
 	"&AwsAthenaWorkgroupManagedLoggingConfig\x12l\n" +
-	"\akms_key\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey\"\x9e\x03\n" +
+	"\akms_key\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xd3\x03\n" +
 	"!AwsAthenaWorkgroupS3LoggingConfig\x12+\n" +
 	"\flog_location\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vlogLocation\x12l\n" +
-	"\akms_key\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey:\xdd\x01\xbaH\xd9\x01\x1a\xd6\x01\n" +
-	"\x19s3_logging_location_shape\x12Xs3_logging.log_location must be an s3:// URI with a valid lowercase bucket name when set\x1a_this.log_location == '' || this.log_location.matches('^s3://[a-z0-9][a-z0-9-]*[a-z0-9](/.*)?$')B\xee\x02\n" +
+	"\akms_key\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\x06kmsKey\x12'\n" +
+	"\aenabled\x18\x03 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01:\xdd\x01\xbaH\xd9\x01\x1a\xd6\x01\n" +
+	"\x19s3_logging_location_shape\x12Xs3_logging.log_location must be an s3:// URI with a valid lowercase bucket name when set\x1a_this.log_location == '' || this.log_location.matches('^s3://[a-z0-9][a-z0-9-]*[a-z0-9](/.*)?$')B\n" +
+	"\n" +
+	"\b_enabledB\xee\x02\n" +
 	"/com.dev.planton.aws.awsathenaworkgroup.v1alpha1B\tSpecProtoP\x01Z_github.com/plantonhq/planton/catalog/aws/awsathenaworkgroup/v1alpha1;awsathenaworkgroupv1alpha1\xa2\x02\x04DPAA\xaa\x02+Dev.Planton.Aws.Awsathenaworkgroup.V1alpha1\xca\x02+Dev\\Planton\\Aws\\Awsathenaworkgroup\\V1alpha1\xe2\x027Dev\\Planton\\Aws\\Awsathenaworkgroup\\V1alpha1\\GPBMetadata\xea\x02/Dev::Planton::Aws::Awsathenaworkgroup::V1alpha1b\x06proto3"
 
 var (
@@ -1052,6 +1112,10 @@ func file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
+	file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
+	file_catalog_aws_awsathenaworkgroup_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

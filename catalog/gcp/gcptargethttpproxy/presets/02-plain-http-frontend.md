@@ -4,7 +4,7 @@ A target HTTP proxy that serves the application itself over plain HTTP — the r
 
 ## When to Use
 
-- Pre-production environments where TLS provisioning is not worth the setup cost
+- Preproduction environments where TLS provisioning is not worth the setup cost
 - Load testing the backend path without TLS handshake overhead
 - Serving traffic behind an upstream TLS terminator you do not control
 

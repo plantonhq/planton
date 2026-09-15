@@ -498,6 +498,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesExternalDns | `spec.workloadIdentity.eks.roleArn` | `status.outputs.role_arn` |
 | KubernetesExternalSecretsOperator | `spec.workloadIdentity.eks.roleArn` | `status.outputs.role_arn` |
 | KubernetesKarpenter | `spec.aws.irsaRoleArn` | `status.outputs.role_arn` |
+| KubernetesOpenBao | `spec.backup.workloadIdentity.eks.roleArn` | `status.outputs.role_arn` |
 | KubernetesPostgres | `spec.workloadIdentity.eks.roleArn` | `status.outputs.role_arn` |
 | KubernetesSecretStore | `spec.config.aws.role` | `status.outputs.role_arn` |
 | KubernetesServiceAccount | `spec.workloadIdentity.eks.roleArn` | `status.outputs.role_arn` |

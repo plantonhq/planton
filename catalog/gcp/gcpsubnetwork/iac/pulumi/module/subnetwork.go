@@ -155,7 +155,9 @@ func subnetwork(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 	// VPC Flow Logs: presence of the message enables logging. Defaults mirror
 	// the API's own (5s aggregation, 50% sampling, all metadata) so an empty
 	// spec object behaves sanely — identical to the Terraform module.
-	if spec.LogConfig != nil {
+	// The block's switch (on by default once declared, filled by the platform
+	// before this runs) decides whether flow logs render.
+	if spec.LogConfig != nil && spec.LogConfig.GetEnabled() {
 		logConfig := &compute.SubnetworkLogConfigArgs{
 			AggregationInterval: pulumi.String(spec.LogConfig.GetAggregationInterval()),
 			FlowSampling:        pulumi.Float64(spec.LogConfig.GetFlowSampling()),

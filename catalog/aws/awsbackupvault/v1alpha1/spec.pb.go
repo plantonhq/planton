@@ -48,17 +48,16 @@ type AwsBackupVaultSpec struct {
 	// The AWS region the vault lives in.
 	// Example: "us-west-2", "eu-west-1"
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
-	// The standard backup vault arm: the everyday vault type that
-	// backup plans target by name, with optional KMS encryption, vault
-	// lock, access policy, and event notifications.
-	Standard *AwsBackupVaultStandard `protobuf:"bytes,2,opt,name=standard,proto3" json:"standard,omitempty"`
-	// The logically air-gapped vault arm: a hardened vault whose
-	// recovery points cannot be deleted or re-encrypted - retention is
-	// locked in at creation and EVERY field forces replacement.
-	// Recovery points reach it via a backup plan rule's
-	// target_logically_air_gapped_backup_vault_arn (rules always need a
-	// standard target vault too).
-	AirGapped     *AwsBackupVaultAirGapped `protobuf:"bytes,3,opt,name=air_gapped,json=airGapped,proto3" json:"air_gapped,omitempty"`
+	// The vault type: exactly one of the arms below. Choosing the standard
+	// arm is the whole statement for an everyday vault at AWS defaults (its
+	// block may be empty), so a type with nothing inside is a valid, complete
+	// choice.
+	//
+	// Types that are valid to be assigned to VaultType:
+	//
+	//	*AwsBackupVaultSpec_Standard
+	//	*AwsBackupVaultSpec_AirGapped
+	VaultType     isAwsBackupVaultSpec_VaultType `protobuf_oneof:"vault_type"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -100,19 +99,55 @@ func (x *AwsBackupVaultSpec) GetRegion() string {
 	return ""
 }
 
+func (x *AwsBackupVaultSpec) GetVaultType() isAwsBackupVaultSpec_VaultType {
+	if x != nil {
+		return x.VaultType
+	}
+	return nil
+}
+
 func (x *AwsBackupVaultSpec) GetStandard() *AwsBackupVaultStandard {
 	if x != nil {
-		return x.Standard
+		if x, ok := x.VaultType.(*AwsBackupVaultSpec_Standard); ok {
+			return x.Standard
+		}
 	}
 	return nil
 }
 
 func (x *AwsBackupVaultSpec) GetAirGapped() *AwsBackupVaultAirGapped {
 	if x != nil {
-		return x.AirGapped
+		if x, ok := x.VaultType.(*AwsBackupVaultSpec_AirGapped); ok {
+			return x.AirGapped
+		}
 	}
 	return nil
 }
+
+type isAwsBackupVaultSpec_VaultType interface {
+	isAwsBackupVaultSpec_VaultType()
+}
+
+type AwsBackupVaultSpec_Standard struct {
+	// The standard backup vault arm: the everyday vault type that
+	// backup plans target by name, with optional KMS encryption, vault
+	// lock, access policy, and event notifications.
+	Standard *AwsBackupVaultStandard `protobuf:"bytes,2,opt,name=standard,proto3,oneof"`
+}
+
+type AwsBackupVaultSpec_AirGapped struct {
+	// The logically air-gapped vault arm: a hardened vault whose
+	// recovery points cannot be deleted or re-encrypted - retention is
+	// locked in at creation and EVERY field forces replacement.
+	// Recovery points reach it via a backup plan rule's
+	// target_logically_air_gapped_backup_vault_arn (rules always need a
+	// standard target vault too).
+	AirGapped *AwsBackupVaultAirGapped `protobuf:"bytes,3,opt,name=air_gapped,json=airGapped,proto3,oneof"`
+}
+
+func (*AwsBackupVaultSpec_Standard) isAwsBackupVaultSpec_VaultType() {}
+
+func (*AwsBackupVaultSpec_AirGapped) isAwsBackupVaultSpec_VaultType() {}
 
 // AwsBackupVaultStandard configures a standard backup vault and its
 // attachable satellites.
@@ -420,23 +455,25 @@ var File_catalog_aws_awsbackupvault_v1alpha1_spec_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsbackupvault_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsbackupvault/v1alpha1/spec.proto\x12'dev.planton.aws.awsbackupvault.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x96\x03\n" +
+	".catalog/aws/awsbackupvault/v1alpha1/spec.proto\x12'dev.planton.aws.awsbackupvault.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x8c\x02\n" +
 	"\x12AwsBackupVaultSpec\x12\x1f\n" +
-	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12[\n" +
-	"\bstandard\x18\x02 \x01(\v2?.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultStandardR\bstandard\x12_\n" +
+	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12]\n" +
+	"\bstandard\x18\x02 \x01(\v2?.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultStandardH\x00R\bstandard\x12a\n" +
 	"\n" +
-	"air_gapped\x18\x03 \x01(\v2@.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultAirGappedR\tairGapped:\xa0\x01\xbaH\x9c\x01\x1a\x99\x01\n" +
-	"\x1bspec.exactly_one_vault_type\x12Nconfigure exactly one of standard / air_gapped - a vault is one AWS vault type\x1a*has(this.standard) != has(this.air_gapped)\"\xa0\x03\n" +
+	"air_gapped\x18\x03 \x01(\v2@.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultAirGappedH\x00R\tairGappedB\x13\n" +
+	"\n" +
+	"vault_type\x12\x05\xbaH\x02\b\x01\"\xa0\x03\n" +
 	"\x16AwsBackupVaultStandard\x12s\n" +
 	"\vkms_key_arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12#\n" +
 	"\rforce_destroy\x18\x02 \x01(\bR\fforceDestroy\x12O\n" +
 	"\x04lock\x18\x03 \x01(\v2;.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultLockR\x04lock\x12/\n" +
 	"\x06policy\x18\x04 \x01(\v2\x17.google.protobuf.StructR\x06policy\x12j\n" +
-	"\rnotifications\x18\x05 \x01(\v2D.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultNotificationsR\rnotifications\"\xf8\x03\n" +
+	"\rnotifications\x18\x05 \x01(\v2D.dev.planton.aws.awsbackupvault.v1alpha1.AwsBackupVaultNotificationsR\rnotifications\"\x88\x06\n" +
 	"\x12AwsBackupVaultLock\x12<\n" +
 	"\x13changeable_for_days\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x03H\x00R\x11changeableForDays\x88\x01\x01\x12:\n" +
 	"\x12min_retention_days\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x01R\x10minRetentionDays\x88\x01\x01\x12:\n" +
-	"\x12max_retention_days\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x02R\x10maxRetentionDays\x88\x01\x01:\xe5\x01\xbaH\xe1\x01\x1a\xde\x01\n" +
+	"\x12max_retention_days\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x02R\x10maxRetentionDays\x88\x01\x01:\xf5\x03\xbaH\xf1\x03\x1a\x8d\x02\n" +
+	"\x19lock.constrains_something\x12\x90\x01a vault lock must set at least one of changeable_for_days, min_retention_days, or max_retention_days - a lock with none of them enforces nothing\x1a]has(this.changeable_for_days) || has(this.min_retention_days) || has(this.max_retention_days)\x1a\xde\x01\n" +
 	"\x1elock.retention_window_coherent\x12Fmax_retention_days must be greater than or equal to min_retention_days\x1at!has(this.min_retention_days) || !has(this.max_retention_days) || this.max_retention_days >= this.min_retention_daysB\x16\n" +
 	"\x14_changeable_for_daysB\x15\n" +
 	"\x13_min_retention_daysB\x15\n" +
@@ -493,6 +530,10 @@ func init() { file_catalog_aws_awsbackupvault_v1alpha1_spec_proto_init() }
 func file_catalog_aws_awsbackupvault_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awsbackupvault_v1alpha1_spec_proto != nil {
 		return
+	}
+	file_catalog_aws_awsbackupvault_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{
+		(*AwsBackupVaultSpec_Standard)(nil),
+		(*AwsBackupVaultSpec_AirGapped)(nil),
 	}
 	file_catalog_aws_awsbackupvault_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	type x struct{}

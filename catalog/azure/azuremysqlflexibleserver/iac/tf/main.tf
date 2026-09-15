@@ -84,9 +84,9 @@ resource "azurerm_mysql_flexible_server" "main" {
   dynamic "maintenance_window" {
     for_each = var.spec.maintenance_window != null ? [var.spec.maintenance_window] : []
     content {
-      day_of_week  = maintenance_window.value.day_of_week
-      start_hour   = maintenance_window.value.start_hour
-      start_minute = maintenance_window.value.start_minute
+      day_of_week  = coalesce(maintenance_window.value.day_of_week, 0)
+      start_hour   = coalesce(maintenance_window.value.start_hour, 0)
+      start_minute = coalesce(maintenance_window.value.start_minute, 0)
     }
   }
 

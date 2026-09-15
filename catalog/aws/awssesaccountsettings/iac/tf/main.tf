@@ -7,8 +7,9 @@
 #   - each arm renders ONLY when its spec message is present (an
 #     omitted arm leaves the account's current setting untouched --
 #     that omission is meaningful and deliberate);
-#   - an EMPTY suppression reasons list is a real posture: it turns
-#     account-level auto-suppression OFF (the required upstream set
+#   - suppression switched off (enabled: false) is a real posture: it
+#     writes the EMPTY reason list, which turns account-level
+#     auto-suppression OFF (the required upstream set
 #     argument accepts []);
 #   - destroy semantics DIFFER per arm: suppression PERSISTS after
 #     destroy (the provider's delete is a no-op; the last-applied
@@ -25,7 +26,10 @@ data "aws_caller_identity" "this" {}
 resource "aws_sesv2_account_suppression_attributes" "this" {
   count = var.spec.suppression != null ? 1 : 0
 
-  suppressed_reasons = var.spec.suppression.reasons
+  # Suppression switched off is written as the empty reason list (SES's
+  # spelling of "no auto-suppression"); the API already refuses a
+  # switched-on arm with no events.
+  suppressed_reasons = coalesce(var.spec.suppression.enabled, true) ? var.spec.suppression.reasons : []
 }
 
 resource "aws_sesv2_account_vdm_attributes" "this" {

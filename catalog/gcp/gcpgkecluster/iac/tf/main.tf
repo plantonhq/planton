@@ -677,13 +677,14 @@ resource "google_container_cluster" "this" {
     }
   }
 
-  # An explicit empty components list is meaningful: it disables the Cloud
-  # Logging/Monitoring integration outright, so the spec's presence (not
-  # emptiness) drives whether the block is emitted.
+  # Logging switched off is written as the empty component list (GKE's
+  # spelling of "no Cloud Logging integration"); the API already refuses a
+  # switched-on block with no components. Monitoring's presence carries
+  # nothing by itself (an empty component list is GKE's default there).
   dynamic "logging_config" {
     for_each = var.spec.logging != null ? [var.spec.logging] : []
     content {
-      enable_components = logging_config.value.components
+      enable_components = coalesce(logging_config.value.enabled, true) ? logging_config.value.components : []
     }
   }
 

@@ -927,7 +927,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesHarbor | `spec.storage.s3.endpoint` | `status.outputs.s3_endpoint` |
 | KubernetesMlflow | `spec.artifactStore.s3Compatible.endpoint` | `status.outputs.s3_endpoint` |
 | KubernetesMlflow | `spec.artifactStore.s3Compatible.credentialsSecret.secretName` | `status.outputs.s3_credentials_secret_name` |
-| KubernetesOpenBao | `spec.snapshotAgent.s3Host` | `status.outputs.s3_endpoint` |
+| KubernetesOpenBao | `spec.backup.objectStore.s3.endpointUrl` | `status.outputs.s3_endpoint` |
 
 ## See Also
 

@@ -84,7 +84,7 @@ resource "aws_athena_workgroup" "this" {
     dynamic "managed_query_results_configuration" {
       for_each = local.has_managed_results ? [1] : []
       content {
-        enabled = true
+        enabled = coalesce(var.spec.managed_query_results.enabled, true)
 
         dynamic "encryption_configuration" {
           for_each = var.spec.managed_query_results.kms_key != "" ? [1] : []
@@ -133,7 +133,7 @@ resource "aws_athena_workgroup" "this" {
         dynamic "cloud_watch_logging_configuration" {
           for_each = local.has_cw_logging ? [1] : []
           content {
-            enabled                = true
+            enabled                = coalesce(var.spec.monitoring.cloud_watch_logging.enabled, true)
             log_group              = var.spec.monitoring.cloud_watch_logging.log_group != "" ? var.spec.monitoring.cloud_watch_logging.log_group : null
             log_stream_name_prefix = var.spec.monitoring.cloud_watch_logging.log_stream_name_prefix != "" ? var.spec.monitoring.cloud_watch_logging.log_stream_name_prefix : null
 
@@ -153,7 +153,7 @@ resource "aws_athena_workgroup" "this" {
         dynamic "managed_logging_configuration" {
           for_each = local.has_managed_logging ? [1] : []
           content {
-            enabled = true
+            enabled = coalesce(var.spec.monitoring.managed_logging.enabled, true)
             kms_key = var.spec.monitoring.managed_logging.kms_key != "" ? var.spec.monitoring.managed_logging.kms_key : null
           }
         }
@@ -161,7 +161,7 @@ resource "aws_athena_workgroup" "this" {
         dynamic "s3_logging_configuration" {
           for_each = local.has_s3_logging ? [1] : []
           content {
-            enabled      = true
+            enabled      = coalesce(var.spec.monitoring.s3_logging.enabled, true)
             log_location = var.spec.monitoring.s3_logging.log_location != "" ? var.spec.monitoring.s3_logging.log_location : null
             kms_key      = var.spec.monitoring.s3_logging.kms_key != "" ? var.spec.monitoring.s3_logging.kms_key : null
           }

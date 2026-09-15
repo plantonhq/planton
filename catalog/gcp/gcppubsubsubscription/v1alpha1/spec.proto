@@ -86,6 +86,12 @@ message GcpPubSubSubscriptionPushConfigNoWrapper {
   bool write_metadata = 1;
 }
 
+// GcpPubSubSubscriptionPushConfigPubsubWrapper is the standard push payload:
+// the message wrapped in the Pub/Sub JSON envelope. It carries no settings;
+// choosing it says the envelope is wanted, the same delivery a push config with
+// no wrapper choice gets.
+message GcpPubSubSubscriptionPushConfigPubsubWrapper {}
+
 // GcpPubSubSubscriptionPushConfig configures push delivery to an HTTPS endpoint.
 // Pub/Sub sends each message as an HTTP POST request to the configured endpoint.
 //
@@ -112,8 +118,17 @@ message GcpPubSubSubscriptionPushConfig {
   // OIDC token configuration for authenticating push requests.
   GcpPubSubSubscriptionPushConfigOidcToken oidc_token = 3;
 
-  // When set, the message payload is sent unwrapped (no Pub/Sub envelope).
-  GcpPubSubSubscriptionPushConfigNoWrapper no_wrapper = 4;
+  // How the payload is delivered: wrapped in the Pub/Sub envelope, or
+  // unwrapped (the raw message data as the HTTP body). Leaving the choice
+  // unset delivers wrapped, Pub/Sub's default; choosing `pubsub_wrapper`
+  // says so explicitly.
+  oneof wrapper {
+    // The message payload is sent unwrapped (no Pub/Sub envelope).
+    GcpPubSubSubscriptionPushConfigNoWrapper no_wrapper = 4;
+
+    // The message is wrapped in the standard Pub/Sub envelope.
+    GcpPubSubSubscriptionPushConfigPubsubWrapper pubsub_wrapper = 5;
+  }
 }
 
 // GcpPubSubSubscriptionBigQueryConfig configures delivery to a BigQuery table.
@@ -168,6 +183,12 @@ message GcpPubSubSubscriptionCloudStorageConfigAvroConfig {
   bool write_metadata = 2;
 }
 
+// GcpPubSubSubscriptionCloudStorageConfigTextConfig writes each message's raw
+// data as text, one message per line. It carries no settings; choosing it says
+// text output is wanted, the same output a Cloud Storage config with no format
+// choice gets.
+message GcpPubSubSubscriptionCloudStorageConfigTextConfig {}
+
 // GcpPubSubSubscriptionCloudStorageConfig configures delivery to a Cloud Storage
 // bucket. Messages are batched and written as objects based on size, duration,
 // or message count thresholds.
@@ -204,9 +225,16 @@ message GcpPubSubSubscriptionCloudStorageConfig {
   // Maximum number of messages per Cloud Storage file. Minimum: 1000.
   int64 max_messages = 7;
 
-  // Avro format configuration. When set, messages are written in Avro format.
-  // If not set, messages are written in their raw format.
-  GcpPubSubSubscriptionCloudStorageConfigAvroConfig avro_config = 8;
+  // The output format: Avro records, or raw text. Leaving the choice unset
+  // writes text, Pub/Sub's default; choosing `text_config` says so explicitly.
+  oneof output_format {
+    // Messages are written as Avro records, optionally using the topic schema
+    // and carrying message metadata.
+    GcpPubSubSubscriptionCloudStorageConfigAvroConfig avro_config = 8;
+
+    // Messages are written as raw text.
+    GcpPubSubSubscriptionCloudStorageConfigTextConfig text_config = 10;
+  }
 
   // Service account to use for writing to Cloud Storage. Accepts a literal
   // email or a reference to a GcpServiceAccount resource. Defaults to the

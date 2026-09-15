@@ -29,7 +29,7 @@ func vdmOnly() *AwsSesAccountSettingsSpec {
 	return &AwsSesAccountSettingsSpec{
 		Region: "us-west-2",
 		Vdm: &AwsSesAccountSettingsVdm{
-			Enabled:           true,
+			Enabled:           proto.Bool(true),
 			EngagementMetrics: proto.Bool(true),
 		},
 	}
@@ -53,10 +53,10 @@ var _ = ginkgo.Describe("AwsSesAccountSettingsSpec validations", func() {
 			})
 		})
 
-		ginkgo.Context("with an explicitly empty suppression list (auto-suppression off)", func() {
+		ginkgo.Context("with suppression switched off (auto-suppression off)", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := suppressionOnly()
-				spec.Suppression.Reasons = []string{}
+				spec.Suppression = &AwsSesAccountSettingsSuppression{Enabled: proto.Bool(false)}
 				err := protovalidate.Validate(spec)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -65,7 +65,7 @@ var _ = ginkgo.Describe("AwsSesAccountSettingsSpec validations", func() {
 		ginkgo.Context("with both arms", func() {
 			ginkgo.It("should not return a validation error", func() {
 				spec := suppressionOnly()
-				spec.Vdm = &AwsSesAccountSettingsVdm{Enabled: true, OptimizedSharedDelivery: proto.Bool(false)}
+				spec.Vdm = &AwsSesAccountSettingsVdm{Enabled: proto.Bool(true), OptimizedSharedDelivery: proto.Bool(false)}
 				err := protovalidate.Validate(spec)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -73,6 +73,34 @@ var _ = ginkgo.Describe("AwsSesAccountSettingsSpec validations", func() {
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
+
+		ginkgo.Context("with a suppression arm that names no events and does not say off", func() {
+			ginkgo.It("should return a validation error naming the switch", func() {
+				spec := suppressionOnly()
+				spec.Suppression = &AwsSesAccountSettingsSuppression{}
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("enabled: false"))
+			})
+		})
+
+		ginkgo.Context("with suppression switched off but still naming events", func() {
+			ginkgo.It("should return a validation error", func() {
+				spec := suppressionOnly()
+				spec.Suppression = &AwsSesAccountSettingsSuppression{Enabled: proto.Bool(false), Reasons: []string{"BOUNCE"}}
+				gomega.Expect(protovalidate.Validate(spec)).ToNot(gomega.BeNil())
+			})
+		})
+
+		ginkgo.Context("with a vdm arm that does not say on or off", func() {
+			ginkgo.It("should return a validation error", func() {
+				spec := vdmOnly()
+				spec.Vdm = &AwsSesAccountSettingsVdm{EngagementMetrics: proto.Bool(true)}
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).ToNot(gomega.BeNil())
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("vdm.enabled"))
+			})
+		})
 
 		ginkgo.It("rejects an instance managing neither arm", func() {
 			spec := &AwsSesAccountSettingsSpec{Region: "us-west-2"}

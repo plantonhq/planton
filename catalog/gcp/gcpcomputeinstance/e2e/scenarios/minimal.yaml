@@ -36,6 +36,7 @@ spec:
           name: planton-oss-e2e-gcpsnw-vm-prereq
           fieldPath: status.outputs.subnetwork_self_link
       accessConfigs:
-        - networkTier: PREMIUM
+        - ephemeral: true
+          networkTier: PREMIUM
   labels:
     e2e-suite: gcp

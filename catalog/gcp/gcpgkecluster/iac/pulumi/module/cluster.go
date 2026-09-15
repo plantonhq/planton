@@ -762,12 +762,17 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 		}
 	}
 
-	// An explicit empty components list is meaningful: it disables the
-	// Cloud Logging/Monitoring integration outright, so the spec message's
-	// presence (not emptiness) drives whether the block is emitted.
+	// Logging switched off is written as the empty component list (GKE's
+	// spelling of "no Cloud Logging integration"); the API already refuses a
+	// switched-on block with no components. Monitoring's presence carries
+	// nothing by itself (an empty component list is GKE's default there).
 	if spec.Logging != nil {
+		components := []string{}
+		if spec.Logging.GetEnabled() {
+			components = spec.Logging.Components
+		}
 		args.LoggingConfig = &container.ClusterLoggingConfigArgs{
-			EnableComponents: pulumi.ToStringArray(spec.Logging.Components),
+			EnableComponents: pulumi.ToStringArray(components),
 		}
 	}
 

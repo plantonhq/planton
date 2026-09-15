@@ -912,36 +912,40 @@ message AwsKinesisFirehoseDynamicPartitioning {
 // - The Firehose IAM role must have glue:GetTable and glue:GetTableVersions
 //   permissions on the Glue catalog
 message AwsKinesisFirehoseDataFormatConversion {
-  // Enable data format conversion. When true, exactly one deserializer arm
-  // (open_x_json or hive_json), exactly one serializer arm (parquet or orc),
-  // and schema are required. When false with arms configured, the
+  // Enable data format conversion. When true, a deserializer arm, a
+  // serializer arm, and schema are required. When false with arms configured, the
   // conversion settings are retained but inactive (AWS permits disabling
   // conversion without discarding its configuration).
   bool enabled = 1;
 
-  // OpenX JSON deserializer arm. Handles most JSON formats including nested
-  // objects -- the right choice for general use. Exactly one of open_x_json
-  // or hive_json must be set when conversion is enabled; set it empty
-  // ("openXJson: {}") to accept the deserializer defaults.
-  AwsKinesisFirehoseOpenXJsonDeserializer open_x_json = 2;
+  // The deserializer that reads incoming records: one of the two arms below.
+  // Choosing an arm with nothing inside accepts that deserializer's defaults
+  // ("openXJson: {}"), so an empty arm is a valid, complete choice.
+  oneof deserializer {
+    // OpenX JSON deserializer arm. Handles most JSON formats including nested
+    // objects -- the right choice for general use.
+    AwsKinesisFirehoseOpenXJsonDeserializer open_x_json = 2;
 
-  // Apache Hive JSON deserializer arm. Use for Hive-compatible JSON when
-  // records carry non-standard timestamp encodings that need explicit
-  // parsing patterns. Exactly one of open_x_json or hive_json must be set
-  // when conversion is enabled.
-  AwsKinesisFirehoseHiveJsonDeserializer hive_json = 3;
+    // Apache Hive JSON deserializer arm. Use for Hive-compatible JSON when
+    // records carry non-standard timestamp encodings that need explicit
+    // parsing patterns.
+    AwsKinesisFirehoseHiveJsonDeserializer hive_json = 3;
+  }
 
-  // Apache Parquet serializer arm. Best for read-heavy analytical workloads
-  // (Athena, Spark, Presto): excellent compression, predicate pushdown, and
-  // columnar pruning. Exactly one of parquet or orc must be set when
-  // conversion is enabled; set it empty ("parquet: {}") to accept the
-  // serializer defaults (SNAPPY compression).
-  AwsKinesisFirehoseParquetSerializer parquet = 4;
+  // The serializer that writes the columnar output: one of the two arms
+  // below. Choosing an arm with nothing inside accepts that serializer's
+  // defaults ("parquet: {}" is SNAPPY compression), so an empty arm is a
+  // valid, complete choice.
+  oneof serializer {
+    // Apache Parquet serializer arm. Best for read-heavy analytical workloads
+    // (Athena, Spark, Presto): excellent compression, predicate pushdown, and
+    // columnar pruning.
+    AwsKinesisFirehoseParquetSerializer parquet = 4;
 
-  // Apache ORC serializer arm. Best for Hive workloads: ACID support, bloom
-  // filters, and built-in indexing. Exactly one of parquet or orc must be
-  // set when conversion is enabled.
-  AwsKinesisFirehoseOrcSerializer orc = 5;
+    // Apache ORC serializer arm. Best for Hive workloads: ACID support, bloom
+    // filters, and built-in indexing.
+    AwsKinesisFirehoseOrcSerializer orc = 5;
+  }
 
   // AWS Glue Data Catalog schema reference. Defines the table schema used
   // for converting JSON records to the columnar format. Required when
@@ -953,21 +957,9 @@ message AwsKinesisFirehoseDataFormatConversion {
   // ---------------------------------------------------------------------------
 
   option (buf.validate.message).cel = {
-    id: "deserializer_at_most_one"
-    message: "at most one deserializer arm may be set: open_x_json or hive_json"
-    expression: "!(has(this.open_x_json) && has(this.hive_json))"
-  };
-
-  option (buf.validate.message).cel = {
     id: "deserializer_required_when_enabled"
     message: "a deserializer arm (open_x_json or hive_json) is required when data format conversion is enabled"
     expression: "!this.enabled || has(this.open_x_json) || has(this.hive_json)"
-  };
-
-  option (buf.validate.message).cel = {
-    id: "serializer_at_most_one"
-    message: "at most one serializer arm may be set: parquet or orc"
-    expression: "!(has(this.parquet) && has(this.orc))"
   };
 
   option (buf.validate.message).cel = {

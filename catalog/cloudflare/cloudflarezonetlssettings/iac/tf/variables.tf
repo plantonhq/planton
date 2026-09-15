@@ -16,8 +16,10 @@ variable "spec" {
   type = object({
     zone_id               = string
     universal_ssl_enabled = optional(bool)
+    # The API requires the switch inside the block; no literal default, so an
+    # unset value can never be mistaken for an explicit false.
     total_tls = optional(object({
-      enabled               = optional(bool, false)
+      enabled               = optional(bool)
       certificate_authority = optional(string)
     }))
     auto_origin_tls_kex         = optional(bool)

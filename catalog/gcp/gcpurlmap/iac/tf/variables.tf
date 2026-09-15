@@ -65,15 +65,15 @@ variable "spec" {
       # Durations arrive as {seconds, nanos} pairs mirroring GCP's Duration
       # shape; zero-valued pairs are sent as-is (a present block is intent).
       timeout = optional(object({
-        seconds = optional(number, 0)
-        nanos   = optional(number, 0)
+        seconds = optional(number)
+        nanos   = optional(number)
       }))
       retry_policy = optional(object({
         num_retries      = optional(number, 0)
         retry_conditions = optional(list(string), [])
         per_try_timeout = optional(object({
-          seconds = optional(number, 0)
-          nanos   = optional(number, 0)
+          seconds = optional(number)
+          nanos   = optional(number)
         }))
       }))
       request_mirror_policy = optional(object({
@@ -96,15 +96,15 @@ variable "spec" {
         }))
         delay = optional(object({
           fixed_delay = optional(object({
-            seconds = optional(number, 0)
-            nanos   = optional(number, 0)
+            seconds = optional(number)
+            nanos   = optional(number)
           }))
           percentage = optional(number, 0)
         }))
       }))
       max_stream_duration = optional(object({
-        seconds = optional(number, 0)
-        nanos   = optional(number, 0)
+        seconds = optional(number)
+        nanos   = optional(number)
       }))
       cache_policy = optional(object({
         cache_mode                        = optional(string, "")
@@ -197,15 +197,15 @@ variable "spec" {
           path_prefix_rewrite = optional(string, "")
         }))
         timeout = optional(object({
-          seconds = optional(number, 0)
-          nanos   = optional(number, 0)
+          seconds = optional(number)
+          nanos   = optional(number)
         }))
         retry_policy = optional(object({
           num_retries      = optional(number, 0)
           retry_conditions = optional(list(string), [])
           per_try_timeout = optional(object({
-            seconds = optional(number, 0)
-            nanos   = optional(number, 0)
+            seconds = optional(number)
+            nanos   = optional(number)
           }))
         }))
         request_mirror_policy = optional(object({
@@ -228,15 +228,15 @@ variable "spec" {
           }))
           delay = optional(object({
             fixed_delay = optional(object({
-              seconds = optional(number, 0)
-              nanos   = optional(number, 0)
+              seconds = optional(number)
+              nanos   = optional(number)
             }))
             percentage = optional(number, 0)
           }))
         }))
         max_stream_duration = optional(object({
-          seconds = optional(number, 0)
-          nanos   = optional(number, 0)
+          seconds = optional(number)
+          nanos   = optional(number)
         }))
         cache_policy = optional(object({
           cache_mode                        = optional(string, "")
@@ -319,15 +319,15 @@ variable "spec" {
             path_prefix_rewrite = optional(string, "")
           }))
           timeout = optional(object({
-            seconds = optional(number, 0)
-            nanos   = optional(number, 0)
+            seconds = optional(number)
+            nanos   = optional(number)
           }))
           retry_policy = optional(object({
             num_retries      = optional(number, 0)
             retry_conditions = optional(list(string), [])
             per_try_timeout = optional(object({
-              seconds = optional(number, 0)
-              nanos   = optional(number, 0)
+              seconds = optional(number)
+              nanos   = optional(number)
             }))
           }))
           request_mirror_policy = optional(object({
@@ -350,15 +350,15 @@ variable "spec" {
             }))
             delay = optional(object({
               fixed_delay = optional(object({
-                seconds = optional(number, 0)
-                nanos   = optional(number, 0)
+                seconds = optional(number)
+                nanos   = optional(number)
               }))
               percentage = optional(number, 0)
             }))
           }))
           max_stream_duration = optional(object({
-            seconds = optional(number, 0)
-            nanos   = optional(number, 0)
+            seconds = optional(number)
+            nanos   = optional(number)
           }))
           cache_policy = optional(object({
             cache_mode                        = optional(string, "")
@@ -429,15 +429,15 @@ variable "spec" {
             path_template_rewrite = optional(string, "")
           }))
           timeout = optional(object({
-            seconds = optional(number, 0)
-            nanos   = optional(number, 0)
+            seconds = optional(number)
+            nanos   = optional(number)
           }))
           retry_policy = optional(object({
             num_retries      = optional(number, 0)
             retry_conditions = optional(list(string), [])
             per_try_timeout = optional(object({
-              seconds = optional(number, 0)
-              nanos   = optional(number, 0)
+              seconds = optional(number)
+              nanos   = optional(number)
             }))
           }))
           request_mirror_policy = optional(object({
@@ -460,15 +460,15 @@ variable "spec" {
             }))
             delay = optional(object({
               fixed_delay = optional(object({
-                seconds = optional(number, 0)
-                nanos   = optional(number, 0)
+                seconds = optional(number)
+                nanos   = optional(number)
               }))
               percentage = optional(number, 0)
             }))
           }))
           max_stream_duration = optional(object({
-            seconds = optional(number, 0)
-            nanos   = optional(number, 0)
+            seconds = optional(number)
+            nanos   = optional(number)
           }))
           cache_policy = optional(object({
             cache_mode                        = optional(string, "")

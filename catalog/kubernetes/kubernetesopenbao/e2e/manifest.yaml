@@ -2,7 +2,10 @@
 # so the offline plan/preview proofs cover what the kind-cluster lanes
 # exclude (HA Raft with synthesized retry_join, TLS listener wiring, a
 # declared-credential auto-unseal seal, the injector, metrics +
-# ServiceMonitor, audit storage, the snapshot agent).
+# ServiceMonitor, audit storage, the KEYLESS S3 backup arm through EKS
+# IRSA — the one store posture no lane can prove: the kind lanes back up
+# with declared keys to an in-cluster store and the GKE lanes prove GCS
+# and R2, so the IRSA arm's rendering lives here).
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesOpenBao
 metadata:
@@ -61,16 +64,21 @@ spec:
   metrics:
     enabled: true
     serviceMonitorEnabled: true
-  snapshotAgent:
-    enabled: true
+  backup:
     schedule: "0 */6 * * *"
-    s3Host:
-      value: s3.us-west-2.amazonaws.com
-    s3Bucket: bao-dev-snapshots
-    s3ExpireDays: 7
-    s3CredentialsSecretName: bao-dev-s3-credentials
-    baoRole: snapshot
-    baoAuthPath: kubernetes
+    retentionDays: 7
+    objectStore:
+      prefix: openbao/bao-dev
+      s3:
+        bucket: bao-dev-snapshots
+        region: us-west-2
+        keyless: true
+    workloadIdentity:
+      eks:
+        roleArn:
+          value: arn:aws:iam::111122223333:role/bao-dev-backup
+    auth:
+      mountPath: kubernetes
   serviceAccount:
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::111122223333:role/bao-dev-unseal

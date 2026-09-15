@@ -9,6 +9,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestSuite(t *testing.T) {
@@ -152,11 +153,11 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 						Paths:   []string{"/api/*"},
 						Service: backendSelfLink(),
 						RouteAction: &GcpUrlMapRouteAction{
-							Timeout: &GcpUrlMapDuration{Seconds: 30},
+							Timeout: &GcpUrlMapDuration{Seconds: proto.Int64(30)},
 							RetryPolicy: &GcpUrlMapRetryPolicy{
 								NumRetries:      3,
 								RetryConditions: []string{"5xx", "connect-failure"},
-								PerTryTimeout:   &GcpUrlMapDuration{Seconds: 5},
+								PerTryTimeout:   &GcpUrlMapDuration{Seconds: proto.Int64(5)},
 							},
 						},
 					},
@@ -174,7 +175,7 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 				AllowMethods: []string{"GET", "POST"},
 				MaxAge:       3600,
 			},
-			MaxStreamDuration: &GcpUrlMapDuration{Seconds: 60},
+			MaxStreamDuration: &GcpUrlMapDuration{Seconds: proto.Int64(60)},
 		}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})
@@ -200,14 +201,14 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 								},
 								{BackendService: backendSelfLink(), Weight: 100},
 							},
-							Timeout: &GcpUrlMapDuration{Seconds: 15},
+							Timeout: &GcpUrlMapDuration{Seconds: proto.Int64(15)},
 							RequestMirrorPolicy: &GcpUrlMapRequestMirrorPolicy{
 								BackendService: backendSelfLink(),
 							},
 							FaultInjectionPolicy: &GcpUrlMapFaultInjectionPolicy{
 								Abort: &GcpUrlMapFaultAbort{HttpStatus: 503, Percentage: 0.5},
 								Delay: &GcpUrlMapFaultDelay{
-									FixedDelay: &GcpUrlMapDuration{Nanos: 250000000},
+									FixedDelay: &GcpUrlMapDuration{Nanos: proto.Int32(250000000)},
 									Percentage: 1,
 								},
 							},
@@ -232,13 +233,13 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 						RouteAction: &GcpUrlMapRouteAction{
 							CachePolicy: &GcpUrlMapCachePolicy{
 								CacheMode:       "CACHE_ALL_STATIC",
-								DefaultTtl:      &GcpUrlMapDuration{Seconds: 3600},
-								MaxTtl:          &GcpUrlMapDuration{Seconds: 86400},
-								ClientTtl:       &GcpUrlMapDuration{Seconds: 600},
-								ServeWhileStale: &GcpUrlMapDuration{Seconds: 86400},
+								DefaultTtl:      &GcpUrlMapDuration{Seconds: proto.Int64(3600)},
+								MaxTtl:          &GcpUrlMapDuration{Seconds: proto.Int64(86400)},
+								ClientTtl:       &GcpUrlMapDuration{Seconds: proto.Int64(600)},
+								ServeWhileStale: &GcpUrlMapDuration{Seconds: proto.Int64(86400)},
 								NegativeCaching: true,
 								NegativeCachingPolicy: []*GcpUrlMapNegativeCachingPolicy{
-									{Code: 404, Ttl: &GcpUrlMapDuration{Seconds: 120}},
+									{Code: 404, Ttl: &GcpUrlMapDuration{Seconds: proto.Int64(120)}},
 								},
 								CacheKeyPolicy: &GcpUrlMapCacheKeyPolicy{
 									IncludeHost:             true,
@@ -658,7 +659,7 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 		target.Spec.DefaultRouteAction = &GcpUrlMapRouteAction{
 			CachePolicy: &GcpUrlMapCachePolicy{
 				CacheMode:  "USE_ORIGIN_HEADERS",
-				DefaultTtl: &GcpUrlMapDuration{Seconds: 3600},
+				DefaultTtl: &GcpUrlMapDuration{Seconds: proto.Int64(3600)},
 			},
 		}
 		err := validator.Validate(target)
@@ -672,7 +673,7 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 			CachePolicy: &GcpUrlMapCachePolicy{
 				NegativeCaching: true,
 				NegativeCachingPolicy: []*GcpUrlMapNegativeCachingPolicy{
-					{Code: 418, Ttl: &GcpUrlMapDuration{Seconds: 60}},
+					{Code: 418, Ttl: &GcpUrlMapDuration{Seconds: proto.Int64(60)}},
 				},
 			},
 		}
@@ -716,10 +717,18 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should accept an explicit zero duration (a TTL of 0s is a real setting)", func() {
+		target := minimal()
+		target.Spec.DefaultRouteAction = &GcpUrlMapRouteAction{
+			Timeout: &GcpUrlMapDuration{Seconds: proto.Int64(0), Nanos: proto.Int32(0)},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
 	ginkgo.It("should reject duration nanos above the nanosecond bound", func() {
 		target := minimal()
 		target.Spec.DefaultRouteAction = &GcpUrlMapRouteAction{
-			Timeout: &GcpUrlMapDuration{Seconds: 1, Nanos: 1000000000},
+			Timeout: &GcpUrlMapDuration{Seconds: proto.Int64(1), Nanos: proto.Int32(1000000000)},
 		}
 		err := validator.Validate(target)
 		gomega.Expect(err).To(gomega.HaveOccurred())
@@ -785,7 +794,7 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 						Priority:    1,
 						UrlRedirect: &GcpUrlMapUrlRedirect{HttpsRedirect: true, StripQuery: false},
 						RouteAction: &GcpUrlMapRouteAction{
-							Timeout: &GcpUrlMapDuration{Seconds: 5},
+							Timeout: &GcpUrlMapDuration{Seconds: proto.Int64(5)},
 						},
 						MatchRules: []*GcpUrlMapRouteRuleMatchRule{{PrefixMatch: "/"}},
 					},

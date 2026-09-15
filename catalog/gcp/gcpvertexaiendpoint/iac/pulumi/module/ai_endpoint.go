@@ -90,7 +90,10 @@ func aiEndpoint(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 	// attachment. Secure PSC (IAM authorization on top of network
 	// reachability) is not offered: the GA provider does not expose it,
 	// and GA is the catalog's parity baseline.
-	if spec.PrivateServiceConnectConfig != nil {
+	// The block's switch (on by default once declared, filled by the platform
+	// before this runs) decides whether the PSC block renders at all: the
+	// API rejects the block with its flag off, so "off" is the absent block.
+	if spec.PrivateServiceConnectConfig != nil && spec.PrivateServiceConnectConfig.GetEnabled() {
 		pscArgs := &vertex.AiEndpointPrivateServiceConnectConfigArgs{
 			EnablePrivateServiceConnect: pulumi.Bool(true),
 		}

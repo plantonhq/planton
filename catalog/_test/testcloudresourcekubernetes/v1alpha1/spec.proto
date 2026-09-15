@@ -61,4 +61,11 @@ message TestCloudResourceKubernetesSpec {
   // ─── Scalar with default ──────────────────────────────────────────────────────
 
   optional string schedule = 8 [(dev.planton.shared.options.default) = "0 0 * * *"];
+
+  // ─── Manifest-only word (never forwarded to an engine) ────────────────────────
+
+  // A word the manifest carries so an empty block can say what it means; the
+  // wire spells it by the absence of other fields. The generators must drop it
+  // from tfvars and declare no variable for it.
+  optional bool select_all = 9 [(dev.planton.shared.options.manifest_only) = true];
 }

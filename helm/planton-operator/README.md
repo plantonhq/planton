@@ -201,7 +201,11 @@ through Planton can back itself up too; a `Backup` column on `kubectl get
 plantonplatform` reads `Healthy`, `Deploying`, `Failing` (in the plugin's own words),
 `Unavailable`, or `NotConfigured`, and a platform declared with
 `spec.database.postgresql.recoverFrom` restores its database from another platform's
-archive. A failing backup never takes a working platform out of `Ready`.
+archive -- every record and every identity user, with the identity server's master
+admin re-established for the new install through Keycloak's own recovery command,
+exactly once, before the server starts. A fresh install with a backup declared waits
+for the plugin and for its credentials Secret so the database is born archiving. A
+failing backup never takes a working platform out of `Ready`.
 
 Each component is reconciled independently with explicit dependency tracking.
 The operator reports per-component status, an aggregate `Ready` condition whose

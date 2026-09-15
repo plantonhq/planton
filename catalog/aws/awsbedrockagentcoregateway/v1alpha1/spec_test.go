@@ -7,6 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
@@ -108,10 +109,10 @@ var _ = ginkgo.Describe("AwsBedrockAgentCoreGatewaySpec validations", func() {
 					},
 				}
 				lambdaTarget.Credentials = &AwsBedrockAgentCoreGatewayTargetCredentials{
-					GatewayIamRole: &AwsBedrockAgentCoreGatewaySigv4Credentials{
+					Provider: &AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole{GatewayIamRole: &AwsBedrockAgentCoreGatewaySigv4Credentials{
 						Service: "lambda",
 						Region:  "us-west-2",
-					},
+					}},
 				}
 				spec.Targets = []*AwsBedrockAgentCoreGatewayTarget{
 					lambdaTarget,
@@ -124,11 +125,11 @@ var _ = ginkgo.Describe("AwsBedrockAgentCoreGatewaySpec validations", func() {
 							},
 						},
 						Credentials: &AwsBedrockAgentCoreGatewayTargetCredentials{
-							ApiKey: &AwsBedrockAgentCoreGatewayApiKeyCredentials{
+							Provider: &AwsBedrockAgentCoreGatewayTargetCredentials_ApiKey{ApiKey: &AwsBedrockAgentCoreGatewayApiKeyCredentials{
 								ProviderArn:             svr("arn:aws:bedrock-agentcore:us-west-2:123456789012:token-vault/default/apikeycredentialprovider/docs"),
 								CredentialLocation:      "HEADER",
 								CredentialParameterName: "X-Api-Key",
-							},
+							}},
 						},
 						Metadata: &AwsBedrockAgentCoreGatewayTargetMetadata{
 							AllowedRequestHeaders: []string{"X-Trace-Id"},
@@ -152,11 +153,11 @@ var _ = ginkgo.Describe("AwsBedrockAgentCoreGatewaySpec validations", func() {
 							},
 						},
 						Credentials: &AwsBedrockAgentCoreGatewayTargetCredentials{
-							Oauth: &AwsBedrockAgentCoreGatewayOauthCredentials{
+							Provider: &AwsBedrockAgentCoreGatewayTargetCredentials_Oauth{Oauth: &AwsBedrockAgentCoreGatewayOauthCredentials{
 								ProviderArn: svr("arn:aws:bedrock-agentcore:us-west-2:123456789012:token-vault/default/oauth2credentialprovider/gh"),
 								Scopes:      []string{"repo"},
 								GrantType:   "CLIENT_CREDENTIALS",
-							},
+							}},
 						},
 					},
 					{
@@ -174,9 +175,9 @@ var _ = ginkgo.Describe("AwsBedrockAgentCoreGatewaySpec validations", func() {
 							},
 						},
 						Credentials: &AwsBedrockAgentCoreGatewayTargetCredentials{
-							CallerIamCredentials: &AwsBedrockAgentCoreGatewaySigv4Credentials{
+							Provider: &AwsBedrockAgentCoreGatewayTargetCredentials_CallerIamCredentials{CallerIamCredentials: &AwsBedrockAgentCoreGatewaySigv4Credentials{
 								Service: "execute-api",
-							},
+							}},
 						},
 					},
 				}
@@ -329,17 +330,25 @@ var _ = ginkgo.Describe("AwsBedrockAgentCoreGatewaySpec validations", func() {
 			})
 		})
 
-		ginkgo.Context("with two credential arms on one target", func() {
-			ginkgo.It("should return a validation error", func() {
+		ginkgo.Context("with the credential provider as a oneof", func() {
+			ginkgo.It("carries at most one arm by construction and accepts the JWT pass-through arm", func() {
 				spec := minimalGateway()
 				target := validLambdaTarget()
 				target.Credentials = &AwsBedrockAgentCoreGatewayTargetCredentials{
-					JwtPassthrough: true,
-					GatewayIamRole: &AwsBedrockAgentCoreGatewaySigv4Credentials{Service: "lambda"},
+					Provider: &AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole{GatewayIamRole: &AwsBedrockAgentCoreGatewaySigv4Credentials{Service: "lambda"}},
 				}
+				target.Credentials.Provider = &AwsBedrockAgentCoreGatewayTargetCredentials_JwtPassthrough{JwtPassthrough: &AwsBedrockAgentCoreGatewayJwtPassthroughCredentials{}}
+				gomega.Expect(target.Credentials.GetGatewayIamRole()).To(gomega.BeNil())
 				spec.Targets = []*AwsBedrockAgentCoreGatewayTarget{target}
-				err := protovalidate.Validate(spec)
-				gomega.Expect(err).NotTo(gomega.BeNil())
+				gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+			})
+
+			ginkgo.It("accepts metadata propagation declared and switched off", func() {
+				spec := minimalGateway()
+				target := validLambdaTarget()
+				target.Metadata = &AwsBedrockAgentCoreGatewayTargetMetadata{Enabled: proto.Bool(false), AllowedRequestHeaders: []string{"X-Trace-Id"}}
+				spec.Targets = []*AwsBedrockAgentCoreGatewayTarget{target}
+				gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 			})
 		})
 
@@ -348,7 +357,7 @@ var _ = ginkgo.Describe("AwsBedrockAgentCoreGatewaySpec validations", func() {
 				spec := minimalGateway()
 				target := validLambdaTarget()
 				target.Credentials = &AwsBedrockAgentCoreGatewayTargetCredentials{
-					GatewayIamRole: &AwsBedrockAgentCoreGatewaySigv4Credentials{Region: "us-west-2"},
+					Provider: &AwsBedrockAgentCoreGatewayTargetCredentials_GatewayIamRole{GatewayIamRole: &AwsBedrockAgentCoreGatewaySigv4Credentials{Region: "us-west-2"}},
 				}
 				spec.Targets = []*AwsBedrockAgentCoreGatewayTarget{target}
 				err := protovalidate.Validate(spec)
@@ -361,11 +370,11 @@ var _ = ginkgo.Describe("AwsBedrockAgentCoreGatewaySpec validations", func() {
 				spec := minimalGateway()
 				target := validLambdaTarget()
 				target.Credentials = &AwsBedrockAgentCoreGatewayTargetCredentials{
-					Oauth: &AwsBedrockAgentCoreGatewayOauthCredentials{
+					Provider: &AwsBedrockAgentCoreGatewayTargetCredentials_Oauth{Oauth: &AwsBedrockAgentCoreGatewayOauthCredentials{
 						ProviderArn: svr("arn:aws:bedrock-agentcore:us-west-2:123456789012:token-vault/default/oauth2credentialprovider/gh"),
 						Scopes:      []string{"repo"},
 						GrantType:   "AUTHORIZATION_CODE",
-					},
+					}},
 				}
 				spec.Targets = []*AwsBedrockAgentCoreGatewayTarget{target}
 				err := protovalidate.Validate(spec)

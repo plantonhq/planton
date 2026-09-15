@@ -36,4 +36,5 @@ spec:
       caching: READ_ONLY
   terminationNotification:
     timeout: PT15M  # maximum drain window before eviction
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true

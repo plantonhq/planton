@@ -16,7 +16,7 @@ func createAzureBlob(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	blob := spec.AzureBlob
+	blob := spec.GetAzureBlob()
 
 	args := &datafactory.DatasetAzureBlobArgs{
 		Name:                   pulumi.String(spec.Name),
@@ -58,7 +58,7 @@ func createBinary(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	binary := spec.Binary
+	binary := spec.GetBinary()
 
 	args := &datafactory.DatasetBinaryArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -120,7 +120,7 @@ func createDelimitedText(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	delimitedText := spec.DelimitedText
+	delimitedText := spec.GetDelimitedText()
 
 	args := &datafactory.DatasetDelimitedTextArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -207,7 +207,7 @@ func createHttp(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	http := spec.Http
+	http := spec.GetHttp()
 
 	args := &datafactory.DatasetHttpArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -248,7 +248,7 @@ func createJson(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	jsonDataset := spec.Json
+	jsonDataset := spec.GetJson()
 
 	args := &datafactory.DatasetJsonArgs{
 		Name:                 pulumi.String(spec.Name),
@@ -309,7 +309,7 @@ func createParquet(
 	spec *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetSpec,
 	azureProvider pulumi.ProviderResource,
 ) (pulumi.StringInput, pulumi.StringInput, error) {
-	parquet := spec.Parquet
+	parquet := spec.GetParquet()
 
 	args := &datafactory.DatasetParquetArgs{
 		Name:                 pulumi.String(spec.Name),

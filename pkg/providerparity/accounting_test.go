@@ -648,6 +648,44 @@ func TestBuildAccounting_ManifestStaleness(t *testing.T) {
 	}
 }
 
+// A spec leaf the proto marks manifest_only reaches no provider argument by
+// design, and the schema itself declares that: the reverse check excludes it
+// with no specExclusions entry, and an entry that repeats the fact is stale.
+func TestBuildAccounting_ManifestOnlyLeafIsExcludedBySchema(t *testing.T) {
+	spec, modules, schemas, _, _ := accountingFixture()
+	for i := range spec {
+		if spec[i].Kind == "TestPlain" {
+			spec[i].SpecFieldPaths = append(spec[i].SpecFieldPaths, "spec.select_all")
+			spec[i].ManifestOnlyPaths = []string{"spec.select_all"}
+		}
+	}
+	manifest := &Manifest{Resources: map[string]*ResourceManifest{
+		"google_plain": {Mappings: []Mapping{{Spec: "spec.plain_name", Arg: "name"}}},
+	}}
+
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{"TestPlain": manifest}, nil)
+	plain := kindByName(t, acc, "TestPlain")
+	if len(plain.UncoveredSpecFields) != 0 {
+		t.Errorf("a manifest_only leaf needs no specExclusions entry; uncovered = %v", plain.UncoveredSpecFields)
+	}
+	if len(plain.ManifestStale) != 0 {
+		t.Errorf("nothing stale expected; got %v", plain.ManifestStale)
+	}
+
+	manifest.SpecExclusions = []SpecExclusion{{Field: "spec.select_all", Reason: "repeats the proto"}}
+	acc = buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{"TestPlain": manifest}, nil)
+	plain = kindByName(t, acc, "TestPlain")
+	found := false
+	for _, s := range plain.ManifestStale {
+		if strings.Contains(s, "spec.select_all is manifest_only") {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("a specExclusions entry for a manifest_only leaf must be reported stale; got %v", plain.ManifestStale)
+	}
+}
+
 // A consumed resource no loaded schema knows (a utility provider like
 // hashicorp/time) is legal exactly when the manifest judges it internal --
 // the judgment is "module plumbing, no provider surface to account", so no

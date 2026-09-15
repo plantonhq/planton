@@ -141,7 +141,7 @@ func buildRuleSettingsArgs(
 	}
 	if ruleSettings.AuditSsh != nil {
 		settingsArgs.AuditSsh = &cloudflare.ZeroTrustGatewayPolicyRuleSettingsAuditSshArgs{
-			CommandLogging: pulumi.BoolPtr(ruleSettings.AuditSsh.CommandLogging),
+			CommandLogging: pulumi.BoolPtr(ruleSettings.AuditSsh.GetCommandLogging()),
 		}
 	}
 	if ruleSettings.BisoAdminControls != nil {
@@ -193,7 +193,7 @@ func buildRuleSettingsArgs(
 	}
 	if ruleSettings.ForensicCopy != nil {
 		settingsArgs.ForensicCopy = &cloudflare.ZeroTrustGatewayPolicyRuleSettingsForensicCopyArgs{
-			Enabled: pulumi.BoolPtr(ruleSettings.ForensicCopy.Enabled),
+			Enabled: pulumi.BoolPtr(ruleSettings.ForensicCopy.GetEnabled()),
 		}
 	}
 	if ruleSettings.IgnoreCnameCategoryMatches != nil {
@@ -239,7 +239,7 @@ func buildRuleSettingsArgs(
 	}
 	if ruleSettings.PayloadLog != nil {
 		settingsArgs.PayloadLog = &cloudflare.ZeroTrustGatewayPolicyRuleSettingsPayloadLogArgs{
-			Enabled: pulumi.BoolPtr(ruleSettings.PayloadLog.Enabled),
+			Enabled: pulumi.BoolPtr(ruleSettings.PayloadLog.GetEnabled()),
 		}
 	}
 	if ruleSettings.Quarantine != nil {

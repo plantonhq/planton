@@ -73,15 +73,17 @@ type AzureDataFactoryIntegrationRuntimeSpec struct {
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// A human-readable description of what the runtime is for.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	// The managed data-flow compute engine. Set exactly one variant
-	// block on this spec.
-	Azure *AzureDataFactoryIntegrationRuntimeAzure `protobuf:"bytes,4,opt,name=azure,proto3" json:"azure,omitempty"`
-	// The managed SSIS package runtime. Set exactly one variant block
-	// on this spec.
-	AzureSsis *AzureDataFactoryIntegrationRuntimeAzureSsis `protobuf:"bytes,5,opt,name=azure_ssis,json=azureSsis,proto3" json:"azure_ssis,omitempty"`
-	// The self-hosted agent registration. Set exactly one variant
-	// block on this spec.
-	SelfHosted    *AzureDataFactoryIntegrationRuntimeSelfHosted `protobuf:"bytes,6,opt,name=self_hosted,json=selfHosted,proto3" json:"self_hosted,omitempty"`
+	// The runtime's flavor: exactly one of the arms below, and the arm
+	// determines the engine. Choosing the self-hosted arm is the whole
+	// statement for a primary registration (its block may be empty), so a
+	// variant with nothing inside is a valid, complete choice.
+	//
+	// Types that are valid to be assigned to Variant:
+	//
+	//	*AzureDataFactoryIntegrationRuntimeSpec_Azure
+	//	*AzureDataFactoryIntegrationRuntimeSpec_AzureSsis
+	//	*AzureDataFactoryIntegrationRuntimeSpec_SelfHosted
+	Variant       isAzureDataFactoryIntegrationRuntimeSpec_Variant `protobuf_oneof:"variant"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -137,25 +139,66 @@ func (x *AzureDataFactoryIntegrationRuntimeSpec) GetDescription() string {
 	return ""
 }
 
+func (x *AzureDataFactoryIntegrationRuntimeSpec) GetVariant() isAzureDataFactoryIntegrationRuntimeSpec_Variant {
+	if x != nil {
+		return x.Variant
+	}
+	return nil
+}
+
 func (x *AzureDataFactoryIntegrationRuntimeSpec) GetAzure() *AzureDataFactoryIntegrationRuntimeAzure {
 	if x != nil {
-		return x.Azure
+		if x, ok := x.Variant.(*AzureDataFactoryIntegrationRuntimeSpec_Azure); ok {
+			return x.Azure
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryIntegrationRuntimeSpec) GetAzureSsis() *AzureDataFactoryIntegrationRuntimeAzureSsis {
 	if x != nil {
-		return x.AzureSsis
+		if x, ok := x.Variant.(*AzureDataFactoryIntegrationRuntimeSpec_AzureSsis); ok {
+			return x.AzureSsis
+		}
 	}
 	return nil
 }
 
 func (x *AzureDataFactoryIntegrationRuntimeSpec) GetSelfHosted() *AzureDataFactoryIntegrationRuntimeSelfHosted {
 	if x != nil {
-		return x.SelfHosted
+		if x, ok := x.Variant.(*AzureDataFactoryIntegrationRuntimeSpec_SelfHosted); ok {
+			return x.SelfHosted
+		}
 	}
 	return nil
+}
+
+type isAzureDataFactoryIntegrationRuntimeSpec_Variant interface {
+	isAzureDataFactoryIntegrationRuntimeSpec_Variant()
+}
+
+type AzureDataFactoryIntegrationRuntimeSpec_Azure struct {
+	// The managed data-flow compute engine.
+	Azure *AzureDataFactoryIntegrationRuntimeAzure `protobuf:"bytes,4,opt,name=azure,proto3,oneof"`
+}
+
+type AzureDataFactoryIntegrationRuntimeSpec_AzureSsis struct {
+	// The managed SSIS package runtime.
+	AzureSsis *AzureDataFactoryIntegrationRuntimeAzureSsis `protobuf:"bytes,5,opt,name=azure_ssis,json=azureSsis,proto3,oneof"`
+}
+
+type AzureDataFactoryIntegrationRuntimeSpec_SelfHosted struct {
+	// The self-hosted agent registration.
+	SelfHosted *AzureDataFactoryIntegrationRuntimeSelfHosted `protobuf:"bytes,6,opt,name=self_hosted,json=selfHosted,proto3,oneof"`
+}
+
+func (*AzureDataFactoryIntegrationRuntimeSpec_Azure) isAzureDataFactoryIntegrationRuntimeSpec_Variant() {
+}
+
+func (*AzureDataFactoryIntegrationRuntimeSpec_AzureSsis) isAzureDataFactoryIntegrationRuntimeSpec_Variant() {
+}
+
+func (*AzureDataFactoryIntegrationRuntimeSpec_SelfHosted) isAzureDataFactoryIntegrationRuntimeSpec_Variant() {
 }
 
 // The fully managed compute for mapping data flows: serverless Spark
@@ -1481,19 +1524,20 @@ var File_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_spec_proto pr
 
 const file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Dcatalog/azure/azuredatafactoryintegrationruntime/v1alpha1/spec.proto\x12=dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf8\v\n" +
+	"Dcatalog/azure/azuredatafactoryintegrationruntime/v1alpha1/spec.proto\x12=dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x8f\n" +
+	"\n" +
 	"&AzureDataFactoryIntegrationRuntimeSpec\x12\x89\x01\n" +
 	"\x0fdata_factory_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x11\x92\xd4a\x1estatus.outputs.data_factory_idR\rdataFactoryId\x12\x1a\n" +
 	"\x04name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x12|\n" +
-	"\x05azure\x18\x04 \x01(\v2f.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeAzureR\x05azure\x12\x89\x01\n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12~\n" +
+	"\x05azure\x18\x04 \x01(\v2f.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeAzureH\x00R\x05azure\x12\x8b\x01\n" +
 	"\n" +
-	"azure_ssis\x18\x05 \x01(\v2j.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeAzureSsisR\tazureSsis\x12\x8c\x01\n" +
-	"\vself_hosted\x18\x06 \x01(\v2k.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSelfHostedR\n" +
-	"selfHosted:\xea\x06\xbaH\xe6\x06\x1a\xfe\x01\n" +
-	":azure_data_factory_integration_runtime_exactly_one_variant\x12]Set exactly one integration runtime variant block -- the variant determines the engine flavor\x1aa(has(this.azure) ? 1 : 0) + (has(this.azure_ssis) ? 1 : 0) + (has(this.self_hosted) ? 1 : 0) == 1\x1a\xca\x02\n" +
+	"azure_ssis\x18\x05 \x01(\v2j.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeAzureSsisH\x00R\tazureSsis\x12\x8e\x01\n" +
+	"\vself_hosted\x18\x06 \x01(\v2k.dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSelfHostedH\x00R\n" +
+	"selfHosted:\xe9\x04\xbaH\xe5\x04\x1a\xca\x02\n" +
 	":azure_data_factory_integration_runtime_name_format_managed\x12\x99\x01Managed runtime names need at least 3 characters -- letters, numbers, and dashes only, starting and ending with a letter or number, no consecutive dashes\x1ap!(has(this.azure) || has(this.azure_ssis)) || this.name.matches('^([a-zA-Z0-9](-|-?[a-zA-Z0-9]+)+[a-zA-Z0-9])$')\x1a\x95\x02\n" +
-	">azure_data_factory_integration_runtime_name_format_self_hosted\x12\x83\x01Self-hosted runtime names use letters, numbers, and dashes, starting and ending with a letter or number, with no consecutive dashes\x1aM!has(this.self_hosted) || this.name.matches('^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$')\"\x99\b\n" +
+	">azure_data_factory_integration_runtime_name_format_self_hosted\x12\x83\x01Self-hosted runtime names use letters, numbers, and dashes, starting and ending with a letter or number, with no consecutive dashes\x1aM!has(this.self_hosted) || this.name.matches('^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$')B\x10\n" +
+	"\avariant\x12\x05\xbaH\x02\b\x01\"\x99\b\n" +
 	"'AzureDataFactoryIntegrationRuntimeAzure\x12\x1e\n" +
 	"\x06region\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06region\x126\n" +
 	"\x0fcleanup_enabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\x0ecleanupEnabled\x88\x01\x01\x12V\n" +
@@ -1719,6 +1763,11 @@ func init() { file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_spe
 func file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_spec_proto_init() {
 	if File_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_spec_proto != nil {
 		return
+	}
+	file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{
+		(*AzureDataFactoryIntegrationRuntimeSpec_Azure)(nil),
+		(*AzureDataFactoryIntegrationRuntimeSpec_AzureSsis)(nil),
+		(*AzureDataFactoryIntegrationRuntimeSpec_SelfHosted)(nil),
 	}
 	file_catalog_azure_azuredatafactoryintegrationruntime_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}

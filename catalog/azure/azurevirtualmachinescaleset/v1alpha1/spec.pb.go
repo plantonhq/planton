@@ -4092,15 +4092,21 @@ func (x *AzureVirtualMachineScaleSetExtensionProtectedSettingsFromKeyVault) GetS
 	return nil
 }
 
-// Boot diagnostics. Presence enables it.
+// Boot diagnostics. Declaring the block turns it on (the switch defaults to
+// on), and `enabled: false` records the decision to keep it off while the
+// storage choice stays in the manifest.
 type AzureVirtualMachineScaleSetBootDiagnostics struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The storage account to write console logs/screenshots to, by blob
 	// endpoint URI. Empty uses Azure's MANAGED storage -- the right
 	// default (no storage account to operate).
 	StorageAccountUri string `protobuf:"bytes,1,opt,name=storage_account_uri,json=storageAccountUri,proto3" json:"storage_account_uri,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// Whether boot diagnostics are on. Unset means on: declaring the block
+	// has always meant enabling it, and this switch lets a manifest say the
+	// opposite out loud.
+	Enabled       *bool `protobuf:"varint,2,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureVirtualMachineScaleSetBootDiagnostics) Reset() {
@@ -4138,6 +4144,13 @@ func (x *AzureVirtualMachineScaleSetBootDiagnostics) GetStorageAccountUri() stri
 		return x.StorageAccountUri
 	}
 	return ""
+}
+
+func (x *AzureVirtualMachineScaleSetBootDiagnostics) GetEnabled() bool {
+	if x != nil && x.Enabled != nil {
+		return *x.Enabled
+	}
+	return false
 }
 
 // Placement constraints.
@@ -4875,9 +4888,12 @@ const file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_rawDesc
 	"AAzureVirtualMachineScaleSetExtensionProtectedSettingsFromKeyVault\x12%\n" +
 	"\n" +
 	"secret_url\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\tsecretUrl\x12\x8a\x01\n" +
-	"\x0fsource_vault_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x0f\x92\xd4a\x1bstatus.outputs.key_vault_id\x98\xd4a\x01R\rsourceVaultId\"\\\n" +
+	"\x0fsource_vault_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\xd5\x0f\x92\xd4a\x1bstatus.outputs.key_vault_id\x98\xd4a\x01R\rsourceVaultId\"\x91\x01\n" +
 	"*AzureVirtualMachineScaleSetBootDiagnostics\x12.\n" +
-	"\x13storage_account_uri\x18\x01 \x01(\tR\x11storageAccountUri\"\xf7\x05\n" +
+	"\x13storage_account_uri\x18\x01 \x01(\tR\x11storageAccountUri\x12'\n" +
+	"\aenabled\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01B\n" +
+	"\n" +
+	"\b_enabled\"\xf7\x05\n" +
 	"$AzureVirtualMachineScaleSetPlacement\x12?\n" +
 	"\x1cproximity_placement_group_id\x18\x01 \x01(\tR\x19proximityPlacementGroupId\x12A\n" +
 	"\x1dcapacity_reservation_group_id\x18\x02 \x01(\tR\x1acapacityReservationGroupId\x12\"\n" +
@@ -5205,6 +5221,7 @@ func file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_init() {
 	file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{}
 	file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}
 	file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{}
+	file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_msgTypes[29].OneofWrappers = []any{}
 	file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_msgTypes[30].OneofWrappers = []any{}
 	file_catalog_azure_azurevirtualmachinescaleset_v1alpha1_spec_proto_msgTypes[35].OneofWrappers = []any{}
 	type x struct{}

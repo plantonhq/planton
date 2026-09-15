@@ -43,7 +43,7 @@ variable "spec" {
     always_use_https         = optional(bool)
     automatic_https_rewrites = optional(bool)
     automatic_platform_optimization = optional(object({
-      enabled              = optional(bool, false)
+      enabled              = optional(bool)
       cache_by_device_type = optional(bool, false)
       cf                   = optional(bool, false)
       hostnames            = list(string)
@@ -73,7 +73,7 @@ variable "spec" {
     min_tls_version    = optional(string)
     mirage             = optional(bool)
     nel = optional(object({
-      enabled = optional(bool, false)
+      enabled = optional(bool)
     }))
     opportunistic_encryption    = optional(bool)
     opportunistic_onion         = optional(bool)
@@ -92,7 +92,7 @@ variable "spec" {
     rocket_loader               = optional(bool)
     search_for_agents           = optional(bool)
     security_header = optional(object({
-      enabled            = optional(bool, false)
+      enabled            = optional(bool)
       include_subdomains = optional(bool, false)
       max_age            = optional(number, 0)
       nosniff            = optional(bool, false)

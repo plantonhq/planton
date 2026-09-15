@@ -149,7 +149,7 @@ func buildLinuxArgs(locals *Locals) *compute.LinuxVirtualMachineArgs {
 
 	// Presence enables boot diagnostics; an empty URI uses Azure's
 	// managed storage (the right default).
-	if spec.BootDiagnostics != nil {
+	if spec.BootDiagnostics != nil && spec.BootDiagnostics.GetEnabled() {
 		bootDiagnostics := compute.LinuxVirtualMachineBootDiagnosticsArgs{}
 		if spec.BootDiagnostics.StorageAccountUri != "" {
 			bootDiagnostics.StorageAccountUri = pulumi.String(spec.BootDiagnostics.StorageAccountUri)
@@ -462,7 +462,7 @@ func buildWindowsArgs(locals *Locals) *compute.WindowsVirtualMachineArgs {
 		args.LicenseType = pulumi.String(locals.WindowsLicenseType)
 	}
 
-	if spec.BootDiagnostics != nil {
+	if spec.BootDiagnostics != nil && spec.BootDiagnostics.GetEnabled() {
 		bootDiagnostics := compute.WindowsVirtualMachineBootDiagnosticsArgs{}
 		if spec.BootDiagnostics.StorageAccountUri != "" {
 			bootDiagnostics.StorageAccountUri = pulumi.String(spec.BootDiagnostics.StorageAccountUri)

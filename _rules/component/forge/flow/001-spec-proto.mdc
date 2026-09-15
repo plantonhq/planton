@@ -149,6 +149,49 @@ PROACTIVE DEFAULT IDENTIFICATION (MANDATORY STEP)
   presence explicit so required accepts a stated false and still rejects absence.
   A spec test asserting the explicit-false shape validates is the guard for this
   class.
+- **A switch on an optional block takes one of three spellings, decided by what
+  the block's absence means and what else the block carries -- never a plain
+  `bool`.** A present-but-empty block must never be the only way to say
+  something, because "declared, with defaults" and "nothing authored" are the
+  same empty block on every door, and no form can tell them apart. So:
+  (1) a dial whose absent block means a value carries that value as its
+  `(dev.planton.shared.options.default)` -- unset inside a present block is
+  filled to what the absent block meant, and only a stated other value changes
+  it (a set of public-access guards that default ON); (2) a switch beside other
+  dials, where a present block has meant "on, with defaults", is
+  `optional bool enabled [(dev.planton.shared.options.default) = "true"]` so
+  `{}` keeps its meaning and now states it, and `enabled: false` is "declared,
+  off"; (3) a switch that is the block's only meaningful content is
+  `optional bool enabled [(buf.validate.field).required = true]`, because `{}`
+  there means nothing and a silent default would choose for the author. A dial
+  whose zero is a real value (a maintenance window at Sunday midnight, a `0s`
+  duration, root uid/gid) is `optional` with NO default; the module reads the
+  pointer, because the getter on a nil pointer returns the same zero and hides
+  the difference the field exists to make. Sibling arms that were "set exactly
+  one" by a counting rule become a protobuf `oneof` with their field numbers
+  kept, an empty marker message for every legitimately empty arm, and
+  `(buf.validate.oneof).required` only where a choice is mandatory (absence
+  that means the provider's default needs no `none` arm); a `type` string the
+  oneof makes redundant is retired (`reserved` number and name) and derived
+  from the arm in the module.
+- **A word the manifest needs that the wire spells by absence is a field marked
+  `(dev.planton.shared.options.manifest_only) = true`, never a per-module
+  habit.** Some choices have no wire spelling of their own: "select every pod"
+  is the empty selector on the Kubernetes wire, "an ephemeral external address"
+  is an access config without a static one, "match every request" is the empty
+  Istio rule. Model the choice as an `optional bool` the manifest states
+  (`match_all`, `ephemeral`), mark it `manifest_only`, and carry its meaning in
+  validation rules: one message rule forbids the word beside the content it
+  stands in for, another refuses the block that names neither, so the choice
+  is always written down and never an accident of an empty row. The marker is
+  honored by construction everywhere downstream -- the tfvars converter drops
+  the field before any Terraform module sees it (a verbatim CRD projection
+  never reaches the apiserver with an unknown key), the variables.tf generator
+  declares nothing for it, provider parity reads it as an exclusion the schema
+  declares (a `specExclusions` entry repeating it is reported stale) -- so a
+  Terraform module never declares or reads it, and a Pulumi module reads it
+  only to derive the upstream shape, or not at all where the validation rules
+  already guarantee that shape.
 - **CRD-projection kinds: pin `json_name` when the CRD key's casing differs from
   protojson's derivation -- acronym casing is part of the faithful-projection
   contract.** protojson derives lowerCamelCase from the snake_case field name

@@ -12,7 +12,7 @@ AWS does not return canary environment variables on reads (write-only), and they
 
 ## start_canary is the cost lever
 
-A READY canary costs nothing; runs bill per run. Keep `start_canary: false` in pre-production manifests and flip it (an in-place update — the provider calls StartCanary) when monitoring should begin.
+A READY canary costs nothing; runs bill per run. Keep `start_canary: false` in preproduction manifests and flip it (an in-place update — the provider calls StartCanary) when monitoring should begin.
 
 ## Group joins are name-based on purpose
 

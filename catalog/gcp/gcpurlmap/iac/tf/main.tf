@@ -95,8 +95,8 @@ resource "google_compute_url_map" "this" {
       dynamic "timeout" {
         for_each = default_route_action.value.timeout != null ? [default_route_action.value.timeout] : []
         content {
-          seconds = timeout.value.seconds
-          nanos   = timeout.value.nanos != 0 ? timeout.value.nanos : null
+          seconds = coalesce(timeout.value.seconds, 0)
+          nanos   = coalesce(timeout.value.nanos, 0) != 0 ? timeout.value.nanos : null
         }
       }
 
@@ -109,8 +109,8 @@ resource "google_compute_url_map" "this" {
           dynamic "per_try_timeout" {
             for_each = retry_policy.value.per_try_timeout != null ? [retry_policy.value.per_try_timeout] : []
             content {
-              seconds = per_try_timeout.value.seconds
-              nanos   = per_try_timeout.value.nanos != 0 ? per_try_timeout.value.nanos : null
+              seconds = coalesce(per_try_timeout.value.seconds, 0)
+              nanos   = coalesce(per_try_timeout.value.nanos, 0) != 0 ? per_try_timeout.value.nanos : null
             }
           }
         }
@@ -154,8 +154,8 @@ resource "google_compute_url_map" "this" {
               dynamic "fixed_delay" {
                 for_each = delay.value.fixed_delay != null ? [delay.value.fixed_delay] : []
                 content {
-                  seconds = fixed_delay.value.seconds
-                  nanos   = fixed_delay.value.nanos != 0 ? fixed_delay.value.nanos : null
+                  seconds = coalesce(fixed_delay.value.seconds, 0)
+                  nanos   = coalesce(fixed_delay.value.nanos, 0) != 0 ? fixed_delay.value.nanos : null
                 }
               }
             }
@@ -166,8 +166,8 @@ resource "google_compute_url_map" "this" {
       dynamic "max_stream_duration" {
         for_each = default_route_action.value.max_stream_duration != null ? [default_route_action.value.max_stream_duration] : []
         content {
-          seconds = max_stream_duration.value.seconds
-          nanos   = max_stream_duration.value.nanos != 0 ? max_stream_duration.value.nanos : null
+          seconds = coalesce(max_stream_duration.value.seconds, 0)
+          nanos   = coalesce(max_stream_duration.value.nanos, 0) != 0 ? max_stream_duration.value.nanos : null
         }
       }
 
@@ -195,32 +195,32 @@ resource "google_compute_url_map" "this" {
           dynamic "client_ttl" {
             for_each = cache_policy.value.client_ttl != null ? [cache_policy.value.client_ttl] : []
             content {
-              seconds = client_ttl.value.seconds
-              nanos   = client_ttl.value.nanos != 0 ? client_ttl.value.nanos : null
+              seconds = coalesce(client_ttl.value.seconds, 0)
+              nanos   = coalesce(client_ttl.value.nanos, 0) != 0 ? client_ttl.value.nanos : null
             }
           }
 
           dynamic "default_ttl" {
             for_each = cache_policy.value.default_ttl != null ? [cache_policy.value.default_ttl] : []
             content {
-              seconds = default_ttl.value.seconds
-              nanos   = default_ttl.value.nanos != 0 ? default_ttl.value.nanos : null
+              seconds = coalesce(default_ttl.value.seconds, 0)
+              nanos   = coalesce(default_ttl.value.nanos, 0) != 0 ? default_ttl.value.nanos : null
             }
           }
 
           dynamic "max_ttl" {
             for_each = cache_policy.value.max_ttl != null ? [cache_policy.value.max_ttl] : []
             content {
-              seconds = max_ttl.value.seconds
-              nanos   = max_ttl.value.nanos != 0 ? max_ttl.value.nanos : null
+              seconds = coalesce(max_ttl.value.seconds, 0)
+              nanos   = coalesce(max_ttl.value.nanos, 0) != 0 ? max_ttl.value.nanos : null
             }
           }
 
           dynamic "serve_while_stale" {
             for_each = cache_policy.value.serve_while_stale != null ? [cache_policy.value.serve_while_stale] : []
             content {
-              seconds = serve_while_stale.value.seconds
-              nanos   = serve_while_stale.value.nanos != 0 ? serve_while_stale.value.nanos : null
+              seconds = coalesce(serve_while_stale.value.seconds, 0)
+              nanos   = coalesce(serve_while_stale.value.nanos, 0) != 0 ? serve_while_stale.value.nanos : null
             }
           }
 
@@ -231,8 +231,8 @@ resource "google_compute_url_map" "this" {
               dynamic "ttl" {
                 for_each = negative_caching_policy.value.ttl != null ? [negative_caching_policy.value.ttl] : []
                 content {
-                  seconds = ttl.value.seconds
-                  nanos   = ttl.value.nanos != 0 ? ttl.value.nanos : null
+                  seconds = coalesce(ttl.value.seconds, 0)
+                  nanos   = coalesce(ttl.value.nanos, 0) != 0 ? ttl.value.nanos : null
                 }
               }
             }
@@ -357,8 +357,8 @@ resource "google_compute_url_map" "this" {
           dynamic "timeout" {
             for_each = default_route_action.value.timeout != null ? [default_route_action.value.timeout] : []
             content {
-              seconds = timeout.value.seconds
-              nanos   = timeout.value.nanos != 0 ? timeout.value.nanos : null
+              seconds = coalesce(timeout.value.seconds, 0)
+              nanos   = coalesce(timeout.value.nanos, 0) != 0 ? timeout.value.nanos : null
             }
           }
 
@@ -371,8 +371,8 @@ resource "google_compute_url_map" "this" {
               dynamic "per_try_timeout" {
                 for_each = retry_policy.value.per_try_timeout != null ? [retry_policy.value.per_try_timeout] : []
                 content {
-                  seconds = per_try_timeout.value.seconds
-                  nanos   = per_try_timeout.value.nanos != 0 ? per_try_timeout.value.nanos : null
+                  seconds = coalesce(per_try_timeout.value.seconds, 0)
+                  nanos   = coalesce(per_try_timeout.value.nanos, 0) != 0 ? per_try_timeout.value.nanos : null
                 }
               }
             }
@@ -416,8 +416,8 @@ resource "google_compute_url_map" "this" {
                   dynamic "fixed_delay" {
                     for_each = delay.value.fixed_delay != null ? [delay.value.fixed_delay] : []
                     content {
-                      seconds = fixed_delay.value.seconds
-                      nanos   = fixed_delay.value.nanos != 0 ? fixed_delay.value.nanos : null
+                      seconds = coalesce(fixed_delay.value.seconds, 0)
+                      nanos   = coalesce(fixed_delay.value.nanos, 0) != 0 ? fixed_delay.value.nanos : null
                     }
                   }
                 }
@@ -428,8 +428,8 @@ resource "google_compute_url_map" "this" {
           dynamic "max_stream_duration" {
             for_each = default_route_action.value.max_stream_duration != null ? [default_route_action.value.max_stream_duration] : []
             content {
-              seconds = max_stream_duration.value.seconds
-              nanos   = max_stream_duration.value.nanos != 0 ? max_stream_duration.value.nanos : null
+              seconds = coalesce(max_stream_duration.value.seconds, 0)
+              nanos   = coalesce(max_stream_duration.value.nanos, 0) != 0 ? max_stream_duration.value.nanos : null
             }
           }
 
@@ -457,32 +457,32 @@ resource "google_compute_url_map" "this" {
               dynamic "client_ttl" {
                 for_each = cache_policy.value.client_ttl != null ? [cache_policy.value.client_ttl] : []
                 content {
-                  seconds = client_ttl.value.seconds
-                  nanos   = client_ttl.value.nanos != 0 ? client_ttl.value.nanos : null
+                  seconds = coalesce(client_ttl.value.seconds, 0)
+                  nanos   = coalesce(client_ttl.value.nanos, 0) != 0 ? client_ttl.value.nanos : null
                 }
               }
 
               dynamic "default_ttl" {
                 for_each = cache_policy.value.default_ttl != null ? [cache_policy.value.default_ttl] : []
                 content {
-                  seconds = default_ttl.value.seconds
-                  nanos   = default_ttl.value.nanos != 0 ? default_ttl.value.nanos : null
+                  seconds = coalesce(default_ttl.value.seconds, 0)
+                  nanos   = coalesce(default_ttl.value.nanos, 0) != 0 ? default_ttl.value.nanos : null
                 }
               }
 
               dynamic "max_ttl" {
                 for_each = cache_policy.value.max_ttl != null ? [cache_policy.value.max_ttl] : []
                 content {
-                  seconds = max_ttl.value.seconds
-                  nanos   = max_ttl.value.nanos != 0 ? max_ttl.value.nanos : null
+                  seconds = coalesce(max_ttl.value.seconds, 0)
+                  nanos   = coalesce(max_ttl.value.nanos, 0) != 0 ? max_ttl.value.nanos : null
                 }
               }
 
               dynamic "serve_while_stale" {
                 for_each = cache_policy.value.serve_while_stale != null ? [cache_policy.value.serve_while_stale] : []
                 content {
-                  seconds = serve_while_stale.value.seconds
-                  nanos   = serve_while_stale.value.nanos != 0 ? serve_while_stale.value.nanos : null
+                  seconds = coalesce(serve_while_stale.value.seconds, 0)
+                  nanos   = coalesce(serve_while_stale.value.nanos, 0) != 0 ? serve_while_stale.value.nanos : null
                 }
               }
 
@@ -493,8 +493,8 @@ resource "google_compute_url_map" "this" {
                   dynamic "ttl" {
                     for_each = negative_caching_policy.value.ttl != null ? [negative_caching_policy.value.ttl] : []
                     content {
-                      seconds = ttl.value.seconds
-                      nanos   = ttl.value.nanos != 0 ? ttl.value.nanos : null
+                      seconds = coalesce(ttl.value.seconds, 0)
+                      nanos   = coalesce(ttl.value.nanos, 0) != 0 ? ttl.value.nanos : null
                     }
                   }
                 }
@@ -609,8 +609,8 @@ resource "google_compute_url_map" "this" {
               dynamic "timeout" {
                 for_each = route_action.value.timeout != null ? [route_action.value.timeout] : []
                 content {
-                  seconds = timeout.value.seconds
-                  nanos   = timeout.value.nanos != 0 ? timeout.value.nanos : null
+                  seconds = coalesce(timeout.value.seconds, 0)
+                  nanos   = coalesce(timeout.value.nanos, 0) != 0 ? timeout.value.nanos : null
                 }
               }
 
@@ -623,8 +623,8 @@ resource "google_compute_url_map" "this" {
                   dynamic "per_try_timeout" {
                     for_each = retry_policy.value.per_try_timeout != null ? [retry_policy.value.per_try_timeout] : []
                     content {
-                      seconds = per_try_timeout.value.seconds
-                      nanos   = per_try_timeout.value.nanos != 0 ? per_try_timeout.value.nanos : null
+                      seconds = coalesce(per_try_timeout.value.seconds, 0)
+                      nanos   = coalesce(per_try_timeout.value.nanos, 0) != 0 ? per_try_timeout.value.nanos : null
                     }
                   }
                 }
@@ -668,8 +668,8 @@ resource "google_compute_url_map" "this" {
                       dynamic "fixed_delay" {
                         for_each = delay.value.fixed_delay != null ? [delay.value.fixed_delay] : []
                         content {
-                          seconds = fixed_delay.value.seconds
-                          nanos   = fixed_delay.value.nanos != 0 ? fixed_delay.value.nanos : null
+                          seconds = coalesce(fixed_delay.value.seconds, 0)
+                          nanos   = coalesce(fixed_delay.value.nanos, 0) != 0 ? fixed_delay.value.nanos : null
                         }
                       }
                     }
@@ -680,8 +680,8 @@ resource "google_compute_url_map" "this" {
               dynamic "max_stream_duration" {
                 for_each = route_action.value.max_stream_duration != null ? [route_action.value.max_stream_duration] : []
                 content {
-                  seconds = max_stream_duration.value.seconds
-                  nanos   = max_stream_duration.value.nanos != 0 ? max_stream_duration.value.nanos : null
+                  seconds = coalesce(max_stream_duration.value.seconds, 0)
+                  nanos   = coalesce(max_stream_duration.value.nanos, 0) != 0 ? max_stream_duration.value.nanos : null
                 }
               }
 
@@ -709,32 +709,32 @@ resource "google_compute_url_map" "this" {
                   dynamic "client_ttl" {
                     for_each = cache_policy.value.client_ttl != null ? [cache_policy.value.client_ttl] : []
                     content {
-                      seconds = client_ttl.value.seconds
-                      nanos   = client_ttl.value.nanos != 0 ? client_ttl.value.nanos : null
+                      seconds = coalesce(client_ttl.value.seconds, 0)
+                      nanos   = coalesce(client_ttl.value.nanos, 0) != 0 ? client_ttl.value.nanos : null
                     }
                   }
 
                   dynamic "default_ttl" {
                     for_each = cache_policy.value.default_ttl != null ? [cache_policy.value.default_ttl] : []
                     content {
-                      seconds = default_ttl.value.seconds
-                      nanos   = default_ttl.value.nanos != 0 ? default_ttl.value.nanos : null
+                      seconds = coalesce(default_ttl.value.seconds, 0)
+                      nanos   = coalesce(default_ttl.value.nanos, 0) != 0 ? default_ttl.value.nanos : null
                     }
                   }
 
                   dynamic "max_ttl" {
                     for_each = cache_policy.value.max_ttl != null ? [cache_policy.value.max_ttl] : []
                     content {
-                      seconds = max_ttl.value.seconds
-                      nanos   = max_ttl.value.nanos != 0 ? max_ttl.value.nanos : null
+                      seconds = coalesce(max_ttl.value.seconds, 0)
+                      nanos   = coalesce(max_ttl.value.nanos, 0) != 0 ? max_ttl.value.nanos : null
                     }
                   }
 
                   dynamic "serve_while_stale" {
                     for_each = cache_policy.value.serve_while_stale != null ? [cache_policy.value.serve_while_stale] : []
                     content {
-                      seconds = serve_while_stale.value.seconds
-                      nanos   = serve_while_stale.value.nanos != 0 ? serve_while_stale.value.nanos : null
+                      seconds = coalesce(serve_while_stale.value.seconds, 0)
+                      nanos   = coalesce(serve_while_stale.value.nanos, 0) != 0 ? serve_while_stale.value.nanos : null
                     }
                   }
 
@@ -745,8 +745,8 @@ resource "google_compute_url_map" "this" {
                       dynamic "ttl" {
                         for_each = negative_caching_policy.value.ttl != null ? [negative_caching_policy.value.ttl] : []
                         content {
-                          seconds = ttl.value.seconds
-                          nanos   = ttl.value.nanos != 0 ? ttl.value.nanos : null
+                          seconds = coalesce(ttl.value.seconds, 0)
+                          nanos   = coalesce(ttl.value.nanos, 0) != 0 ? ttl.value.nanos : null
                         }
                       }
                     }
@@ -839,8 +839,8 @@ resource "google_compute_url_map" "this" {
               dynamic "timeout" {
                 for_each = route_action.value.timeout != null ? [route_action.value.timeout] : []
                 content {
-                  seconds = timeout.value.seconds
-                  nanos   = timeout.value.nanos != 0 ? timeout.value.nanos : null
+                  seconds = coalesce(timeout.value.seconds, 0)
+                  nanos   = coalesce(timeout.value.nanos, 0) != 0 ? timeout.value.nanos : null
                 }
               }
 
@@ -853,8 +853,8 @@ resource "google_compute_url_map" "this" {
                   dynamic "per_try_timeout" {
                     for_each = retry_policy.value.per_try_timeout != null ? [retry_policy.value.per_try_timeout] : []
                     content {
-                      seconds = per_try_timeout.value.seconds
-                      nanos   = per_try_timeout.value.nanos != 0 ? per_try_timeout.value.nanos : null
+                      seconds = coalesce(per_try_timeout.value.seconds, 0)
+                      nanos   = coalesce(per_try_timeout.value.nanos, 0) != 0 ? per_try_timeout.value.nanos : null
                     }
                   }
                 }
@@ -898,8 +898,8 @@ resource "google_compute_url_map" "this" {
                       dynamic "fixed_delay" {
                         for_each = delay.value.fixed_delay != null ? [delay.value.fixed_delay] : []
                         content {
-                          seconds = fixed_delay.value.seconds
-                          nanos   = fixed_delay.value.nanos != 0 ? fixed_delay.value.nanos : null
+                          seconds = coalesce(fixed_delay.value.seconds, 0)
+                          nanos   = coalesce(fixed_delay.value.nanos, 0) != 0 ? fixed_delay.value.nanos : null
                         }
                       }
                     }
@@ -910,8 +910,8 @@ resource "google_compute_url_map" "this" {
               dynamic "max_stream_duration" {
                 for_each = route_action.value.max_stream_duration != null ? [route_action.value.max_stream_duration] : []
                 content {
-                  seconds = max_stream_duration.value.seconds
-                  nanos   = max_stream_duration.value.nanos != 0 ? max_stream_duration.value.nanos : null
+                  seconds = coalesce(max_stream_duration.value.seconds, 0)
+                  nanos   = coalesce(max_stream_duration.value.nanos, 0) != 0 ? max_stream_duration.value.nanos : null
                 }
               }
 
@@ -939,32 +939,32 @@ resource "google_compute_url_map" "this" {
                   dynamic "client_ttl" {
                     for_each = cache_policy.value.client_ttl != null ? [cache_policy.value.client_ttl] : []
                     content {
-                      seconds = client_ttl.value.seconds
-                      nanos   = client_ttl.value.nanos != 0 ? client_ttl.value.nanos : null
+                      seconds = coalesce(client_ttl.value.seconds, 0)
+                      nanos   = coalesce(client_ttl.value.nanos, 0) != 0 ? client_ttl.value.nanos : null
                     }
                   }
 
                   dynamic "default_ttl" {
                     for_each = cache_policy.value.default_ttl != null ? [cache_policy.value.default_ttl] : []
                     content {
-                      seconds = default_ttl.value.seconds
-                      nanos   = default_ttl.value.nanos != 0 ? default_ttl.value.nanos : null
+                      seconds = coalesce(default_ttl.value.seconds, 0)
+                      nanos   = coalesce(default_ttl.value.nanos, 0) != 0 ? default_ttl.value.nanos : null
                     }
                   }
 
                   dynamic "max_ttl" {
                     for_each = cache_policy.value.max_ttl != null ? [cache_policy.value.max_ttl] : []
                     content {
-                      seconds = max_ttl.value.seconds
-                      nanos   = max_ttl.value.nanos != 0 ? max_ttl.value.nanos : null
+                      seconds = coalesce(max_ttl.value.seconds, 0)
+                      nanos   = coalesce(max_ttl.value.nanos, 0) != 0 ? max_ttl.value.nanos : null
                     }
                   }
 
                   dynamic "serve_while_stale" {
                     for_each = cache_policy.value.serve_while_stale != null ? [cache_policy.value.serve_while_stale] : []
                     content {
-                      seconds = serve_while_stale.value.seconds
-                      nanos   = serve_while_stale.value.nanos != 0 ? serve_while_stale.value.nanos : null
+                      seconds = coalesce(serve_while_stale.value.seconds, 0)
+                      nanos   = coalesce(serve_while_stale.value.nanos, 0) != 0 ? serve_while_stale.value.nanos : null
                     }
                   }
 
@@ -975,8 +975,8 @@ resource "google_compute_url_map" "this" {
                       dynamic "ttl" {
                         for_each = negative_caching_policy.value.ttl != null ? [negative_caching_policy.value.ttl] : []
                         content {
-                          seconds = ttl.value.seconds
-                          nanos   = ttl.value.nanos != 0 ? ttl.value.nanos : null
+                          seconds = coalesce(ttl.value.seconds, 0)
+                          nanos   = coalesce(ttl.value.nanos, 0) != 0 ? ttl.value.nanos : null
                         }
                       }
                     }

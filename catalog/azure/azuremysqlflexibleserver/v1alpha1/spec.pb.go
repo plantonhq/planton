@@ -805,15 +805,19 @@ func (x *AzureMysqlFlexibleServerHighAvailability) GetStandbyAvailabilityZone() 
 	return ""
 }
 
-// The weekly maintenance window for Azure-managed patching.
+// The weekly maintenance window for Azure-managed patching. Each dial carries
+// presence because zero is a real value here: Sunday at 00:00 is spelled
+// `day_of_week: 0, start_hour: 0, start_minute: 0`, and a dial left unset
+// means the same zero Azure would take; the two differ only in that the first
+// records the author's intent.
 type AzureMysqlFlexibleServerMaintenanceWindow struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Day of the week: 0 (Sunday) through 6 (Saturday).
-	DayOfWeek int32 `protobuf:"varint,1,opt,name=day_of_week,json=dayOfWeek,proto3" json:"day_of_week,omitempty"`
+	DayOfWeek *int32 `protobuf:"varint,1,opt,name=day_of_week,json=dayOfWeek,proto3,oneof" json:"day_of_week,omitempty"`
 	// The window's start hour, 0-23 (UTC).
-	StartHour int32 `protobuf:"varint,2,opt,name=start_hour,json=startHour,proto3" json:"start_hour,omitempty"`
+	StartHour *int32 `protobuf:"varint,2,opt,name=start_hour,json=startHour,proto3,oneof" json:"start_hour,omitempty"`
 	// The window's start minute, 0-59.
-	StartMinute   int32 `protobuf:"varint,3,opt,name=start_minute,json=startMinute,proto3" json:"start_minute,omitempty"`
+	StartMinute   *int32 `protobuf:"varint,3,opt,name=start_minute,json=startMinute,proto3,oneof" json:"start_minute,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -849,22 +853,22 @@ func (*AzureMysqlFlexibleServerMaintenanceWindow) Descriptor() ([]byte, []int) {
 }
 
 func (x *AzureMysqlFlexibleServerMaintenanceWindow) GetDayOfWeek() int32 {
-	if x != nil {
-		return x.DayOfWeek
+	if x != nil && x.DayOfWeek != nil {
+		return *x.DayOfWeek
 	}
 	return 0
 }
 
 func (x *AzureMysqlFlexibleServerMaintenanceWindow) GetStartHour() int32 {
-	if x != nil {
-		return x.StartHour
+	if x != nil && x.StartHour != nil {
+		return *x.StartHour
 	}
 	return 0
 }
 
 func (x *AzureMysqlFlexibleServerMaintenanceWindow) GetStartMinute() int32 {
-	if x != nil {
-		return x.StartMinute
+	if x != nil && x.StartMinute != nil {
+		return *x.StartMinute
 	}
 	return 0
 }
@@ -1247,12 +1251,15 @@ const file_catalog_azure_azuremysqlflexibleserver_v1alpha1_spec_proto_rawDesc = 
 	"(AzureMysqlFlexibleServerHighAvailability\x12}\n" +
 	"\x04mode\x18\x01 \x01(\x0e2a.dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerHighAvailabilityModeB\x06\xbaH\x03\xc8\x01\x01R\x04mode\x12\xb7\x01\n" +
 	"\x19standby_availability_zone\x18\x02 \x01(\tB{\xbaHx\xba\x01u\n" +
-	"\x18mysql_standby_zone_valid\x122standby_availability_zone must be \"1\", \"2\", or \"3\"\x1a%this == '' || this in ['1', '2', '3']R\x17standbyAvailabilityZone\"\xae\x01\n" +
-	")AzureMysqlFlexibleServerMaintenanceWindow\x12)\n" +
-	"\vday_of_week\x18\x01 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x06(\x00R\tdayOfWeek\x12(\n" +
+	"\x18mysql_standby_zone_valid\x122standby_availability_zone must be \"1\", \"2\", or \"3\"\x1a%this == '' || this in ['1', '2', '3']R\x17standbyAvailabilityZone\"\xed\x01\n" +
+	")AzureMysqlFlexibleServerMaintenanceWindow\x12.\n" +
+	"\vday_of_week\x18\x01 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x06(\x00H\x00R\tdayOfWeek\x88\x01\x01\x12-\n" +
 	"\n" +
-	"start_hour\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x17(\x00R\tstartHour\x12,\n" +
-	"\fstart_minute\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18;(\x00R\vstartMinute\"\xf1\x06\n" +
+	"start_hour\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x17(\x00H\x01R\tstartHour\x88\x01\x01\x121\n" +
+	"\fstart_minute\x18\x03 \x01(\x05B\t\xbaH\x06\x1a\x04\x18;(\x00H\x02R\vstartMinute\x88\x01\x01B\x0e\n" +
+	"\f_day_of_weekB\r\n" +
+	"\v_start_hourB\x0f\n" +
+	"\r_start_minute\"\xf1\x06\n" +
 	"*AzureMysqlFlexibleServerCustomerManagedKey\x12\x89\x01\n" +
 	"\x10key_vault_key_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xe9\x0f\x92\xd4a\x1dstatus.outputs.versionless_idR\rkeyVaultKeyId\x12\xa1\x01\n" +
 	"!primary_user_assigned_identity_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\x8c\x10\x92\xd4a\x1astatus.outputs.identity_idR\x1dprimaryUserAssignedIdentityId\x12\x97\x01\n" +
@@ -1372,6 +1379,7 @@ func file_catalog_azure_azuremysqlflexibleserver_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_azure_azuremysqlflexibleserver_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_azure_azuremysqlflexibleserver_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
+	file_catalog_azure_azuremysqlflexibleserver_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
 	file_catalog_azure_azuremysqlflexibleserver_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
 	file_catalog_azure_azuremysqlflexibleserver_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}

@@ -17,6 +17,12 @@ const (
 	OpPort               = "port"
 	OpServiceAccountName = "service_account_name"
 	OpPortForwardCommand = "port_forward_command"
+
+	OpBackupServiceAccountName = "backup_service_account_name"
+	OpBackupPolicyName         = "backup_policy_name"
+	OpBackupAuthRole           = "backup_auth_role"
+	OpBackupCronJobName        = "backup_cron_job_name"
+	OpRestoreJobName           = "restore_job_name"
 )
 
 // exportOutputs publishes the composition handles. All names derive from
@@ -56,4 +62,18 @@ func exportOutputs(ctx *pulumi.Context, locals *Locals) {
 	ctx.Export(OpPortForwardCommand, pulumi.String(fmt.Sprintf(
 		"kubectl port-forward -n %s svc/%s %d:%d",
 		locals.Namespace, locals.ReleaseName, vars.ApiPort, vars.ApiPort)))
+
+	// The backup handles: one name (`<name>-backup`) serves as the job's
+	// ServiceAccount, its OpenBao policy, and the CronJob, so the login
+	// recipe an operator copies from these outputs is one noun. Empty
+	// strings when the block is not declared.
+	backupName, backupRole := "", ""
+	if locals.BackupEnabled {
+		backupName, backupRole = locals.BackupName, locals.BackupAuthRole
+	}
+	ctx.Export(OpBackupServiceAccountName, pulumi.String(backupName))
+	ctx.Export(OpBackupPolicyName, pulumi.String(backupName))
+	ctx.Export(OpBackupAuthRole, pulumi.String(backupRole))
+	ctx.Export(OpBackupCronJobName, pulumi.String(backupName))
+	ctx.Export(OpRestoreJobName, pulumi.String(locals.RestoreJobName))
 }

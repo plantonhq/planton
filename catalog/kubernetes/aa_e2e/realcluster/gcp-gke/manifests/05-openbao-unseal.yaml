@@ -1,0 +1,134 @@
+# The OpenBao seal node set — what a vault on GKE needs to unseal itself
+# without a human, created from the catalog exactly as the component guide's
+# resource-set table says: an identity for the SERVER (distinct from the
+# backup job's, 01-backup-identities.yaml — the seal key and the snapshot
+# bucket are different blast radii), Workload Identity trust for the server
+# ServiceAccount of the source vault and of the restore target (the chart
+# names that ServiceAccount after the release, so one binding per vault), a
+# Cloud KMS key ring, the wrapping key inside it, and the one role the seal
+# needs on that key. A declared restore requires the SAME key on source and
+# target; both vaults reference this one key.
+#
+# TWO GCP FACTS SHAPE THE NAMES. A key ring can never be deleted — destroy
+# only abandons it, and its name is occupied in the project and location
+# forever — so the ring's name is fixed and permanent, and the audit expects
+# it to survive. A key can never be deleted either: destroy schedules every
+# version for destruction, the key shell stays, and its name can never be
+# reused inside the ring — so the key's name carries the batch id the
+# bootstrap generates (a new key per bootstrap, inside the one permanent
+# ring), and `deletionPolicy: DELETE` makes destroy really destroy the
+# versions. The audit asserts exactly that shape: ring present, every
+# version of this batch's key destroyed or scheduled for destruction.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccount
+metadata:
+  name: planton-e2e-gke-openbao-unseal
+spec:
+  serviceAccountId: planton-e2e-gke-openbao-unseal
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  displayName: Planton E2E (gcp-gke) - OpenBao auto-unseal via Workload Identity
+  description: Keyless identity the OpenBao server pods assume through GKE Workload Identity to wrap and unwrap the master key with the batch's Cloud KMS key
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: planton-e2e-gke-openbao-src-wi
+spec:
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  serviceAccountEmail:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.email
+  ksaNamespace: e2e-bao-lab
+  ksaName: e2e-bao-src
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: planton-e2e-gke-openbao-tgt-wi
+spec:
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  serviceAccountEmail:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.email
+  ksaNamespace: e2e-bao-lab
+  ksaName: e2e-bao-tgt
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyRing
+metadata:
+  name: planton-e2e-gke-openbao-unseal
+spec:
+  projectId:
+    value: ${GCP_PROJECT_ID}
+  # Permanent by GCP design: fixed name, same location as the bucket.
+  keyRingName: planton-e2e-gke-openbao-unseal
+  location: ${GCP_REGION}
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKey
+metadata:
+  name: planton-e2e-gke-openbao-unseal
+spec:
+  keyRingId:
+    valueFrom:
+      kind: GcpKmsKeyRing
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.key_ring_id
+  # One key per bootstrap: a destroyed key's name can never be reused in
+  # its ring, and the batch is bootstrapped and torn down many times.
+  keyName: planton-e2e-gke-openbao-unseal-${PLANTON_E2E_GKE_BATCH_ID}
+  # Destroy really destroys in the batch: every version is scheduled for
+  # destruction (the shell survives regardless). Production presets pin
+  # PREVENT.
+  deletionPolicy: DELETE
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyIamMember
+metadata:
+  name: planton-e2e-gke-openbao-unseal
+spec:
+  cryptoKeyId:
+    valueFrom:
+      kind: GcpKmsKey
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.key_id
+  # Encrypt on init, decrypt on every unseal — the role the seal USES the key with.
+  role:
+    value: roles/cloudkms.cryptoKeyEncrypterDecrypter
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.member
+---
+# The second grant a seal needs: the server READS the key's metadata when it
+# configures its seal at start (the wrapper's key-existence check), and
+# cryptoKeyEncrypterDecrypter carries only the encrypt/decrypt permissions.
+# Without cloudkms.cryptoKeys.get the server exits with "Error configuring
+# seal ... Permission 'cloudkms.cryptoKeys.get' denied" before init can open.
+# roles/cloudkms.viewer is the predefined role that carries it, scoped to the
+# key.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyIamMember
+metadata:
+  name: planton-e2e-gke-openbao-unseal-viewer
+spec:
+  cryptoKeyId:
+    valueFrom:
+      kind: GcpKmsKey
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.key_id
+  role:
+    value: roles/cloudkms.viewer
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: planton-e2e-gke-openbao-unseal
+      fieldPath: status.outputs.member

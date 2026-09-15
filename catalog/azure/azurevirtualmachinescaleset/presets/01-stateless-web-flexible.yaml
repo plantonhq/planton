@@ -64,5 +64,6 @@ spec:
     gracePeriod: PT30M
   terminationNotification:
     timeout: PT10M
-  bootDiagnostics: {}
+  bootDiagnostics:
+    enabled: true
   zones: ["1", "2", "3"]

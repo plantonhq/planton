@@ -59,16 +59,13 @@ type AwsBedrockKnowledgeBaseSpec struct {
 	// (read data sources, call the embedding model, read/write the vector
 	// store). The role must trust bedrock.amazonaws.com.
 	RoleArn *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=role_arn,json=roleArn,proto3" json:"role_arn,omitempty"`
-	// Embeddings-based retrieval over a vector store you own - pair with
-	// `storage`.
-	Vector *AwsBedrockKnowledgeBaseVectorConfig `protobuf:"bytes,4,opt,name=vector,proto3" json:"vector,omitempty"`
-	// Embeddings-based retrieval with the vector store fully managed by
-	// AWS - no `storage` block.
-	Managed *AwsBedrockKnowledgeBaseManagedConfig `protobuf:"bytes,5,opt,name=managed,proto3" json:"managed,omitempty"`
-	// Retrieval delegated to an existing Amazon Kendra index.
-	Kendra *AwsBedrockKnowledgeBaseKendraConfig `protobuf:"bytes,6,opt,name=kendra,proto3" json:"kendra,omitempty"`
-	// Natural-language-to-SQL over Amazon Redshift.
-	Sql *AwsBedrockKnowledgeBaseSqlConfig `protobuf:"bytes,7,opt,name=sql,proto3" json:"sql,omitempty"`
+	// Types that are valid to be assigned to KnowledgeBaseType:
+	//
+	//	*AwsBedrockKnowledgeBaseSpec_Vector
+	//	*AwsBedrockKnowledgeBaseSpec_Managed
+	//	*AwsBedrockKnowledgeBaseSpec_Kendra
+	//	*AwsBedrockKnowledgeBaseSpec_Sql
+	KnowledgeBaseType isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType `protobuf_oneof:"knowledge_base_type"`
 	// Where the `vector` type stores and queries embeddings - exactly one
 	// backend.
 	Storage *AwsBedrockKnowledgeBaseStorage `protobuf:"bytes,8,opt,name=storage,proto3" json:"storage,omitempty"`
@@ -132,30 +129,45 @@ func (x *AwsBedrockKnowledgeBaseSpec) GetRoleArn() *v1.StringValueOrRef {
 	return nil
 }
 
+func (x *AwsBedrockKnowledgeBaseSpec) GetKnowledgeBaseType() isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType {
+	if x != nil {
+		return x.KnowledgeBaseType
+	}
+	return nil
+}
+
 func (x *AwsBedrockKnowledgeBaseSpec) GetVector() *AwsBedrockKnowledgeBaseVectorConfig {
 	if x != nil {
-		return x.Vector
+		if x, ok := x.KnowledgeBaseType.(*AwsBedrockKnowledgeBaseSpec_Vector); ok {
+			return x.Vector
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseSpec) GetManaged() *AwsBedrockKnowledgeBaseManagedConfig {
 	if x != nil {
-		return x.Managed
+		if x, ok := x.KnowledgeBaseType.(*AwsBedrockKnowledgeBaseSpec_Managed); ok {
+			return x.Managed
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseSpec) GetKendra() *AwsBedrockKnowledgeBaseKendraConfig {
 	if x != nil {
-		return x.Kendra
+		if x, ok := x.KnowledgeBaseType.(*AwsBedrockKnowledgeBaseSpec_Kendra); ok {
+			return x.Kendra
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseSpec) GetSql() *AwsBedrockKnowledgeBaseSqlConfig {
 	if x != nil {
-		return x.Sql
+		if x, ok := x.KnowledgeBaseType.(*AwsBedrockKnowledgeBaseSpec_Sql); ok {
+			return x.Sql
+		}
 	}
 	return nil
 }
@@ -173,6 +185,40 @@ func (x *AwsBedrockKnowledgeBaseSpec) GetDataSources() []*AwsBedrockKnowledgeBas
 	}
 	return nil
 }
+
+type isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType interface {
+	isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType()
+}
+
+type AwsBedrockKnowledgeBaseSpec_Vector struct {
+	// Embeddings-based retrieval over a vector store you own - pair with
+	// `storage`.
+	Vector *AwsBedrockKnowledgeBaseVectorConfig `protobuf:"bytes,4,opt,name=vector,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseSpec_Managed struct {
+	// Embeddings-based retrieval with the vector store fully managed by
+	// AWS - no `storage` block.
+	Managed *AwsBedrockKnowledgeBaseManagedConfig `protobuf:"bytes,5,opt,name=managed,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseSpec_Kendra struct {
+	// Retrieval delegated to an existing Amazon Kendra index.
+	Kendra *AwsBedrockKnowledgeBaseKendraConfig `protobuf:"bytes,6,opt,name=kendra,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseSpec_Sql struct {
+	// Natural-language-to-SQL over Amazon Redshift.
+	Sql *AwsBedrockKnowledgeBaseSqlConfig `protobuf:"bytes,7,opt,name=sql,proto3,oneof"`
+}
+
+func (*AwsBedrockKnowledgeBaseSpec_Vector) isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType() {}
+
+func (*AwsBedrockKnowledgeBaseSpec_Managed) isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType() {}
+
+func (*AwsBedrockKnowledgeBaseSpec_Kendra) isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType() {}
+
+func (*AwsBedrockKnowledgeBaseSpec_Sql) isAwsBedrockKnowledgeBaseSpec_KnowledgeBaseType() {}
 
 // AwsBedrockKnowledgeBaseVectorConfig configures embeddings-based
 // retrieval over a customer-owned vector store.
@@ -2164,19 +2210,15 @@ type AwsBedrockKnowledgeBaseDataSource struct {
 	DataDeletionPolicy string `protobuf:"bytes,3,opt,name=data_deletion_policy,json=dataDeletionPolicy,proto3" json:"data_deletion_policy,omitempty"`
 	// Customer-managed KMS key for encrypting transient ingestion data.
 	KmsKeyArn *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=kms_key_arn,json=kmsKeyArn,proto3" json:"kms_key_arn,omitempty"`
-	// Ingest objects from an S3 bucket.
-	S3 *AwsBedrockKnowledgeBaseS3DataSource `protobuf:"bytes,5,opt,name=s3,proto3" json:"s3,omitempty"`
-	// Crawl websites from seed URLs.
-	Web *AwsBedrockKnowledgeBaseWebDataSource `protobuf:"bytes,6,opt,name=web,proto3" json:"web,omitempty"`
-	// Ingest Confluence spaces and pages.
-	Confluence *AwsBedrockKnowledgeBaseConfluenceDataSource `protobuf:"bytes,7,opt,name=confluence,proto3" json:"confluence,omitempty"`
-	// Ingest Salesforce objects.
-	Salesforce *AwsBedrockKnowledgeBaseSalesforceDataSource `protobuf:"bytes,8,opt,name=salesforce,proto3" json:"salesforce,omitempty"`
-	// Ingest SharePoint sites.
-	Sharepoint *AwsBedrockKnowledgeBaseSharePointDataSource `protobuf:"bytes,9,opt,name=sharepoint,proto3" json:"sharepoint,omitempty"`
-	// AWS-managed knowledge-base connector (connector-specific parameters
-	// as a JSON document).
-	ManagedConnector *AwsBedrockKnowledgeBaseManagedConnectorDataSource `protobuf:"bytes,10,opt,name=managed_connector,json=managedConnector,proto3" json:"managed_connector,omitempty"`
+	// Types that are valid to be assigned to Connector:
+	//
+	//	*AwsBedrockKnowledgeBaseDataSource_S3
+	//	*AwsBedrockKnowledgeBaseDataSource_Web
+	//	*AwsBedrockKnowledgeBaseDataSource_Confluence
+	//	*AwsBedrockKnowledgeBaseDataSource_Salesforce
+	//	*AwsBedrockKnowledgeBaseDataSource_Sharepoint
+	//	*AwsBedrockKnowledgeBaseDataSource_ManagedConnector
+	Connector isAwsBedrockKnowledgeBaseDataSource_Connector `protobuf_oneof:"connector"`
 	// How documents are split into chunks, parsed, and transformed before
 	// embedding. Create-time only - changing it replaces the data source.
 	VectorIngestion *AwsBedrockKnowledgeBaseVectorIngestion `protobuf:"bytes,11,opt,name=vector_ingestion,json=vectorIngestion,proto3" json:"vector_ingestion,omitempty"`
@@ -2242,44 +2284,63 @@ func (x *AwsBedrockKnowledgeBaseDataSource) GetKmsKeyArn() *v1.StringValueOrRef 
 	return nil
 }
 
+func (x *AwsBedrockKnowledgeBaseDataSource) GetConnector() isAwsBedrockKnowledgeBaseDataSource_Connector {
+	if x != nil {
+		return x.Connector
+	}
+	return nil
+}
+
 func (x *AwsBedrockKnowledgeBaseDataSource) GetS3() *AwsBedrockKnowledgeBaseS3DataSource {
 	if x != nil {
-		return x.S3
+		if x, ok := x.Connector.(*AwsBedrockKnowledgeBaseDataSource_S3); ok {
+			return x.S3
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseDataSource) GetWeb() *AwsBedrockKnowledgeBaseWebDataSource {
 	if x != nil {
-		return x.Web
+		if x, ok := x.Connector.(*AwsBedrockKnowledgeBaseDataSource_Web); ok {
+			return x.Web
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseDataSource) GetConfluence() *AwsBedrockKnowledgeBaseConfluenceDataSource {
 	if x != nil {
-		return x.Confluence
+		if x, ok := x.Connector.(*AwsBedrockKnowledgeBaseDataSource_Confluence); ok {
+			return x.Confluence
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseDataSource) GetSalesforce() *AwsBedrockKnowledgeBaseSalesforceDataSource {
 	if x != nil {
-		return x.Salesforce
+		if x, ok := x.Connector.(*AwsBedrockKnowledgeBaseDataSource_Salesforce); ok {
+			return x.Salesforce
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseDataSource) GetSharepoint() *AwsBedrockKnowledgeBaseSharePointDataSource {
 	if x != nil {
-		return x.Sharepoint
+		if x, ok := x.Connector.(*AwsBedrockKnowledgeBaseDataSource_Sharepoint); ok {
+			return x.Sharepoint
+		}
 	}
 	return nil
 }
 
 func (x *AwsBedrockKnowledgeBaseDataSource) GetManagedConnector() *AwsBedrockKnowledgeBaseManagedConnectorDataSource {
 	if x != nil {
-		return x.ManagedConnector
+		if x, ok := x.Connector.(*AwsBedrockKnowledgeBaseDataSource_ManagedConnector); ok {
+			return x.ManagedConnector
+		}
 	}
 	return nil
 }
@@ -2289,6 +2350,57 @@ func (x *AwsBedrockKnowledgeBaseDataSource) GetVectorIngestion() *AwsBedrockKnow
 		return x.VectorIngestion
 	}
 	return nil
+}
+
+type isAwsBedrockKnowledgeBaseDataSource_Connector interface {
+	isAwsBedrockKnowledgeBaseDataSource_Connector()
+}
+
+type AwsBedrockKnowledgeBaseDataSource_S3 struct {
+	// Ingest objects from an S3 bucket.
+	S3 *AwsBedrockKnowledgeBaseS3DataSource `protobuf:"bytes,5,opt,name=s3,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseDataSource_Web struct {
+	// Crawl websites from seed URLs.
+	Web *AwsBedrockKnowledgeBaseWebDataSource `protobuf:"bytes,6,opt,name=web,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseDataSource_Confluence struct {
+	// Ingest Confluence spaces and pages.
+	Confluence *AwsBedrockKnowledgeBaseConfluenceDataSource `protobuf:"bytes,7,opt,name=confluence,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseDataSource_Salesforce struct {
+	// Ingest Salesforce objects.
+	Salesforce *AwsBedrockKnowledgeBaseSalesforceDataSource `protobuf:"bytes,8,opt,name=salesforce,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseDataSource_Sharepoint struct {
+	// Ingest SharePoint sites.
+	Sharepoint *AwsBedrockKnowledgeBaseSharePointDataSource `protobuf:"bytes,9,opt,name=sharepoint,proto3,oneof"`
+}
+
+type AwsBedrockKnowledgeBaseDataSource_ManagedConnector struct {
+	// AWS-managed knowledge-base connector (connector-specific parameters
+	// as a JSON document).
+	ManagedConnector *AwsBedrockKnowledgeBaseManagedConnectorDataSource `protobuf:"bytes,10,opt,name=managed_connector,json=managedConnector,proto3,oneof"`
+}
+
+func (*AwsBedrockKnowledgeBaseDataSource_S3) isAwsBedrockKnowledgeBaseDataSource_Connector() {}
+
+func (*AwsBedrockKnowledgeBaseDataSource_Web) isAwsBedrockKnowledgeBaseDataSource_Connector() {}
+
+func (*AwsBedrockKnowledgeBaseDataSource_Confluence) isAwsBedrockKnowledgeBaseDataSource_Connector() {
+}
+
+func (*AwsBedrockKnowledgeBaseDataSource_Salesforce) isAwsBedrockKnowledgeBaseDataSource_Connector() {
+}
+
+func (*AwsBedrockKnowledgeBaseDataSource_Sharepoint) isAwsBedrockKnowledgeBaseDataSource_Connector() {
+}
+
+func (*AwsBedrockKnowledgeBaseDataSource_ManagedConnector) isAwsBedrockKnowledgeBaseDataSource_Connector() {
 }
 
 // AwsBedrockKnowledgeBaseS3DataSource ingests objects from S3.
@@ -3515,21 +3627,20 @@ var File_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto protoreflect.Fi
 
 const file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/aws/awsbedrockknowledgebase/v1alpha1/spec.proto\x120dev.planton.aws.awsbedrockknowledgebase.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe9\n" +
-	"\n" +
+	"7catalog/aws/awsbedrockknowledgebase/v1alpha1/spec.proto\x120dev.planton.aws.awsbedrockknowledgebase.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cgoogle/protobuf/struct.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd3\t\n" +
 	"\x1bAwsBedrockKnowledgeBaseSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12*\n" +
 	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\xc8\x01R\vdescription\x12u\n" +
-	"\brole_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12m\n" +
-	"\x06vector\x18\x04 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorConfigR\x06vector\x12p\n" +
-	"\amanaged\x18\x05 \x01(\v2V.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConfigR\amanaged\x12m\n" +
-	"\x06kendra\x18\x06 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseKendraConfigR\x06kendra\x12d\n" +
-	"\x03sql\x18\a \x01(\v2R.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSqlConfigR\x03sql\x12j\n" +
+	"\brole_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12o\n" +
+	"\x06vector\x18\x04 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorConfigH\x00R\x06vector\x12r\n" +
+	"\amanaged\x18\x05 \x01(\v2V.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConfigH\x00R\amanaged\x12o\n" +
+	"\x06kendra\x18\x06 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseKendraConfigH\x00R\x06kendra\x12f\n" +
+	"\x03sql\x18\a \x01(\v2R.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSqlConfigH\x00R\x03sql\x12j\n" +
 	"\astorage\x18\b \x01(\v2P.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseStorageR\astorage\x12v\n" +
-	"\fdata_sources\x18\t \x03(\v2S.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSourceR\vdataSources:\xeb\x03\xbaH\xe7\x03\x1a\xb9\x01\n" +
-	"\x13kb_type_exactly_one\x12Aexactly one of vector, managed, kendra, or sql must be configured\x1a_[has(this.vector), has(this.managed), has(this.kendra), has(this.sql)].filter(x, x).size() == 1\x1a\xb4\x01\n" +
+	"\fdata_sources\x18\t \x03(\v2S.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSourceR\vdataSources:\xaf\x02\xbaH\xab\x02\x1a\xb4\x01\n" +
 	"\x12storage_iff_vector\x12wstorage is required with the vector type and forbidden with managed/kendra/sql (AWS manages or delegates their storage)\x1a%has(this.vector) == has(this.storage)\x1ar\n" +
-	"\x18data_source_names_unique\x12+data_sources entries must have unique names\x1a)this.data_sources.map(d, d.name).unique()\"\xc4\x02\n" +
+	"\x18data_source_names_unique\x12+data_sources entries must have unique names\x1a)this.data_sources.map(d, d.name).unique()B\x1c\n" +
+	"\x13knowledge_base_type\x12\x05\xbaH\x02\b\x01\"\xc4\x02\n" +
 	"#AwsBedrockKnowledgeBaseVectorConfig\x127\n" +
 	"\x13embedding_model_arn\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x11embeddingModelArn\x12\x86\x01\n" +
 	"\x0fembedding_model\x18\x02 \x01(\v2].dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseEmbeddingModelConfigR\x0eembeddingModel\x12[\n" +
@@ -3677,27 +3788,27 @@ const file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_rawDesc = "" 
 	"\fvector_field\x18\x01 \x01(\tR\vvectorField\x12\x1d\n" +
 	"\n" +
 	"text_field\x18\x02 \x01(\tR\ttextField\x12%\n" +
-	"\x0emetadata_field\x18\x03 \x01(\tR\rmetadataField\"\xd1\v\n" +
+	"\x0emetadata_field\x18\x03 \x01(\tR\rmetadataField\"\xd3\t\n" +
 	"!AwsBedrockKnowledgeBaseDataSource\x12:\n" +
 	"\x04name\x18\x01 \x01(\tB&\xbaH#r!\x10\x01\x18d2\x1b^([0-9a-zA-Z][_-]?){1,100}$R\x04name\x12*\n" +
 	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\xc8\x01R\vdescription\x12J\n" +
 	"\x14data_deletion_policy\x18\x03 \x01(\tB\x18\xbaH\x15\xd8\x01\x01r\x10R\x06RETAINR\x06DELETER\x12dataDeletionPolicy\x12s\n" +
-	"\vkms_key_arn\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12e\n" +
-	"\x02s3\x18\x05 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseS3DataSourceR\x02s3\x12h\n" +
-	"\x03web\x18\x06 \x01(\v2V.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseWebDataSourceR\x03web\x12}\n" +
+	"\vkms_key_arn\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xfb\a\x92\xd4a\x16status.outputs.key_arnR\tkmsKeyArn\x12g\n" +
+	"\x02s3\x18\x05 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseS3DataSourceH\x00R\x02s3\x12j\n" +
+	"\x03web\x18\x06 \x01(\v2V.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseWebDataSourceH\x00R\x03web\x12\x7f\n" +
 	"\n" +
-	"confluence\x18\a \x01(\v2].dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSourceR\n" +
-	"confluence\x12}\n" +
+	"confluence\x18\a \x01(\v2].dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSourceH\x00R\n" +
+	"confluence\x12\x7f\n" +
 	"\n" +
-	"salesforce\x18\b \x01(\v2].dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSourceR\n" +
-	"salesforce\x12}\n" +
+	"salesforce\x18\b \x01(\v2].dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSourceH\x00R\n" +
+	"salesforce\x12\x7f\n" +
 	"\n" +
-	"sharepoint\x18\t \x01(\v2].dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSourceR\n" +
-	"sharepoint\x12\x90\x01\n" +
+	"sharepoint\x18\t \x01(\v2].dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSourceH\x00R\n" +
+	"sharepoint\x12\x92\x01\n" +
 	"\x11managed_connector\x18\n" +
-	" \x01(\v2c.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSourceR\x10managedConnector\x12\x83\x01\n" +
-	"\x10vector_ingestion\x18\v \x01(\v2X.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestionR\x0fvectorIngestion:\x9b\x02\xbaH\x97\x02\x1a\x94\x02\n" +
-	"\x15connector_exactly_one\x12cexactly one of s3, web, confluence, salesforce, sharepoint, or managed_connector must be configured\x1a\x95\x01[has(this.s3), has(this.web), has(this.confluence), has(this.salesforce), has(this.sharepoint), has(this.managed_connector)].filter(x, x).size() == 1\"\xaa\x02\n" +
+	" \x01(\v2c.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSourceH\x00R\x10managedConnector\x12\x83\x01\n" +
+	"\x10vector_ingestion\x18\v \x01(\v2X.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestionR\x0fvectorIngestionB\x12\n" +
+	"\tconnector\x12\x05\xbaH\x02\b\x01\"\xaa\x02\n" +
 	"#AwsBedrockKnowledgeBaseS3DataSource\x12{\n" +
 	"\n" +
 	"bucket_arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\xf5\a\x92\xd4a\x19status.outputs.bucket_arnR\tbucketArn\x128\n" +
@@ -3951,6 +4062,20 @@ func init() { file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_init(
 func file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_init() {
 	if File_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto != nil {
 		return
+	}
+	file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{
+		(*AwsBedrockKnowledgeBaseSpec_Vector)(nil),
+		(*AwsBedrockKnowledgeBaseSpec_Managed)(nil),
+		(*AwsBedrockKnowledgeBaseSpec_Kendra)(nil),
+		(*AwsBedrockKnowledgeBaseSpec_Sql)(nil),
+	}
+	file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_msgTypes[30].OneofWrappers = []any{
+		(*AwsBedrockKnowledgeBaseDataSource_S3)(nil),
+		(*AwsBedrockKnowledgeBaseDataSource_Web)(nil),
+		(*AwsBedrockKnowledgeBaseDataSource_Confluence)(nil),
+		(*AwsBedrockKnowledgeBaseDataSource_Salesforce)(nil),
+		(*AwsBedrockKnowledgeBaseDataSource_Sharepoint)(nil),
+		(*AwsBedrockKnowledgeBaseDataSource_ManagedConnector)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

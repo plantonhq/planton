@@ -97,6 +97,24 @@ func TestProtoToVariablesTF_RefMapVariablesIsMapString(t *testing.T) {
 	}
 }
 
+// TestProtoToVariablesTF_ManifestOnlyFieldHasNoVariable asserts a field marked
+// (dev.planton.shared.options.manifest_only) is not declared in variables.tf:
+// the tfvars converter never sends it, so a declared attribute would be dead
+// on every module. Its unmarked sibling is declared as usual.
+func TestProtoToVariablesTF_ManifestOnlyFieldHasNoVariable(t *testing.T) {
+	got, err := ProtoToVariablesTF(&testkubernetesv1.TestCloudResourceKubernetes{})
+	if err != nil {
+		t.Fatalf("ProtoToVariablesTF: %v", err)
+	}
+	spec := extractBlock(got, `variable "spec"`)
+	if strings.Contains(spec, "select_all") {
+		t.Errorf("spec.select_all carries manifest_only and must not be declared:\n%s", spec)
+	}
+	if !strings.Contains(spec, "create_namespace = optional(bool, false)") {
+		t.Errorf("spec.create_namespace has no marker and must be declared:\n%s", spec)
+	}
+}
+
 func TestProtoToVariablesTF_CronJob_ApiVersionKindStatusSkipped(t *testing.T) {
 	msg := &kubernetescronjobv1alpha1.KubernetesCronJob{}
 

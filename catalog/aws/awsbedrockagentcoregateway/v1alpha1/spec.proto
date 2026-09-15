@@ -230,17 +230,26 @@ message AwsBedrockAgentCoreGatewayPrivateEndpoint {
 // path through your VPC.
 message AwsBedrockAgentCoreGatewayManagedVpcEndpoint {
   // The VPC to route through.
+  //
+  // Containment-exempt: a managed endpoint is a private PATH through the
+  // VPC to a private provider or backend; the gateway is not deployed inside
+  // it. On a diagram it stands where its own network places it, with a
+  // line into the VPC -- the verdict a Lambda's VPC subnets and an
+  // EventBridge pipe's task subnets already carry.
   dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 1 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 
   // Subnets for the managed endpoint's network interfaces (at least one).
+  // Containment-exempt for the same reason as the VPC above.
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 
@@ -822,33 +831,37 @@ message AwsBedrockAgentCoreGatewaySchemaS3 {
 }
 
 // AwsBedrockAgentCoreGatewayTargetCredentials is how the gateway
-// authenticates to the backend - at most one arm (AWS's five credential
-// provider types).
+// authenticates to the backend: one of AWS's five credential provider
+// types, or none at all (omit the block for the gateway's own IAM role
+// without SigV4 service signing). Choosing an arm is the whole statement
+// for the arms that carry no settings (the caller's or the gateway's IAM
+// identity without a signing service, and the JWT pass-through), so an arm
+// with nothing inside is a valid, complete choice.
 message AwsBedrockAgentCoreGatewayTargetCredentials {
-  // Send an API key from an AgentCore Identity api-key credential
-  // provider.
-  AwsBedrockAgentCoreGatewayApiKeyCredentials api_key = 1;
+  oneof provider {
+    // Send an API key from an AgentCore Identity api-key credential
+    // provider.
+    AwsBedrockAgentCoreGatewayApiKeyCredentials api_key = 1;
 
-  // Forward the CALLER's own IAM credentials to the backend (SigV4).
-  AwsBedrockAgentCoreGatewaySigv4Credentials caller_iam_credentials = 2;
+    // Forward the CALLER's own IAM credentials to the backend (SigV4).
+    AwsBedrockAgentCoreGatewaySigv4Credentials caller_iam_credentials = 2;
 
-  // Sign requests with the GATEWAY's IAM role (SigV4).
-  AwsBedrockAgentCoreGatewaySigv4Credentials gateway_iam_role = 3;
+    // Sign requests with the GATEWAY's IAM role (SigV4).
+    AwsBedrockAgentCoreGatewaySigv4Credentials gateway_iam_role = 3;
 
-  // Pass the caller's inbound JWT straight through to the backend.
-  bool jwt_passthrough = 4;
+    // Pass the caller's inbound JWT straight through to the backend.
+    AwsBedrockAgentCoreGatewayJwtPassthroughCredentials jwt_passthrough = 4;
 
-  // Obtain an OAuth token from an AgentCore Identity oauth2 credential
-  // provider.
-  AwsBedrockAgentCoreGatewayOauthCredentials oauth = 5;
-
-  // AWS takes at most one credential arm.
-  option (buf.validate.message).cel = {
-    id: "credentials_at_most_one"
-    message: "set at most one of api_key, caller_iam_credentials, gateway_iam_role, jwt_passthrough, or oauth"
-    expression: "(has(this.api_key) ? 1 : 0) + (has(this.caller_iam_credentials) ? 1 : 0) + (has(this.gateway_iam_role) ? 1 : 0) + (this.jwt_passthrough ? 1 : 0) + (has(this.oauth) ? 1 : 0) <= 1"
-  };
+    // Obtain an OAuth token from an AgentCore Identity oauth2 credential
+    // provider.
+    AwsBedrockAgentCoreGatewayOauthCredentials oauth = 5;
+  }
 }
+
+// AwsBedrockAgentCoreGatewayJwtPassthroughCredentials passes the caller's
+// inbound JWT straight through to the backend. It carries no settings;
+// choosing it is the configuration, as it is at the provider.
+message AwsBedrockAgentCoreGatewayJwtPassthroughCredentials {}
 
 // AwsBedrockAgentCoreGatewayApiKeyCredentials sends an API key with each
 // backend request.
@@ -944,6 +957,8 @@ message AwsBedrockAgentCoreGatewayOauthCredentials {
 
 // AwsBedrockAgentCoreGatewayTargetMetadata controls which caller
 // metadata propagates to the backend and back (max 10 entries each).
+// Declaring the block turns propagation on for the listed entries;
+// `enabled: false` keeps the lists in the manifest while switching it off.
 message AwsBedrockAgentCoreGatewayTargetMetadata {
   // URL query parameters propagated from the caller to the backend.
   repeated string allowed_query_parameters = 1 [(buf.validate.field).repeated = {
@@ -968,4 +983,9 @@ message AwsBedrockAgentCoreGatewayTargetMetadata {
       string: {min_len: 1}
     }
   }];
+
+  // Whether metadata propagation is on. Unset means on: declaring the block
+  // has always meant propagating, and this switch lets a manifest say the
+  // opposite out loud.
+  optional bool enabled = 4 [(dev.planton.shared.options.default) = "true"];
 }

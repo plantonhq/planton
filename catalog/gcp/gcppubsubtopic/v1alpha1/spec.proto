@@ -160,12 +160,6 @@ message GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat {}
 // GcpPubSubTopicIngestionCloudStorage defines settings for ingesting data from
 // a Google Cloud Storage bucket into this Pub/Sub topic.
 message GcpPubSubTopicIngestionCloudStorage {
-  option (buf.validate.message).cel = {
-    id: "exactly_one_input_format"
-    expression: "(has(this.avro_format) ? 1 : 0) + (has(this.pubsub_avro_format) ? 1 : 0) + (has(this.text_format) ? 1 : 0) == 1"
-    message: "choose exactly one input format for Cloud Storage ingestion: avro_format, pubsub_avro_format, or text_format"
-  };
-
   // The name of the Cloud Storage bucket to ingest from (without "gs://" prefix).
   // See: https://cloud.google.com/storage/docs/buckets#naming
   dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
@@ -183,19 +177,25 @@ message GcpPubSubTopicIngestionCloudStorage {
   // If unset, all objects are eligible for ingestion regardless of creation time.
   string minimum_object_create_time = 3;
 
-  // Read Cloud Storage data in Avro binary format. The bytes of each object
-  // are set to the data field of a Pub/Sub message.
-  // Set this field (as an empty message) to select Avro format.
-  GcpPubSubTopicIngestionCloudStorageAvroFormat avro_format = 4;
+  // The input format: exactly one of the arms below. Choosing an arm is the
+  // whole statement for the two Avro formats and for text at the default
+  // newline delimiter, so an arm with nothing inside is a valid, complete
+  // choice.
+  oneof input_format {
+    option (buf.validate.oneof).required = true;
 
-  // Read Cloud Storage data written via Cloud Storage subscriptions.
-  // Restores the data and attributes of the originally exported Pub/Sub messages.
-  // Set this field (as an empty message) to select Pub/Sub Avro format.
-  GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat pubsub_avro_format = 5;
+    // Read Cloud Storage data in Avro binary format. The bytes of each object
+    // are set to the data field of a Pub/Sub message.
+    GcpPubSubTopicIngestionCloudStorageAvroFormat avro_format = 4;
 
-  // Read Cloud Storage data in text format. Each line of text (as defined by
-  // the delimiter) becomes the data field of a Pub/Sub message.
-  GcpPubSubTopicIngestionCloudStorageTextFormat text_format = 6;
+    // Read Cloud Storage data written via Cloud Storage subscriptions.
+    // Restores the data and attributes of the originally exported Pub/Sub messages.
+    GcpPubSubTopicIngestionCloudStoragePubsubAvroFormat pubsub_avro_format = 5;
+
+    // Read Cloud Storage data in text format. Each line of text (as defined by
+    // the delimiter) becomes the data field of a Pub/Sub message.
+    GcpPubSubTopicIngestionCloudStorageTextFormat text_format = 6;
+  }
 }
 
 // GcpPubSubTopicIngestionConfluentCloud defines settings for ingesting data from

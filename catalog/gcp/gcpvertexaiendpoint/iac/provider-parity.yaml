@@ -32,11 +32,12 @@ resources:
     exclusions:
       - arg: private_service_connect_config.enable_private_service_connect
         reason: >-
-          PSC enablement is the spec MESSAGE'S PRESENCE, not a separate
-          flag: both modules always send true when
-          private_service_connect_config exists (the provider requires
-          the flag inside the block and ForceNews it; false alongside the
-          block would be a contradiction the API rejects)
+          both modules always send true when they render the block: the
+          provider requires the flag inside the block and ForceNews it, and
+          false alongside the block is a contradiction the API rejects, so
+          the spec's own switch (spec.private_service_connect_config.enabled)
+          decides whether the block renders at all rather than mapping onto
+          this flag
       - arg: region
         reason: >-
           dead schema at v7.43.0 -- the argument is declared (ForceNew)
@@ -52,3 +53,9 @@ resources:
       aiplatform.googleapis.com with fixed arguments (disable_on_destroy
       false so destroying one endpoint never disables the API
       project-wide); not spec surface.
+
+specExclusions:
+  # The PSC block's own switch decides whether the block renders at all (see
+  # the enable_private_service_connect exclusion above).
+  - field: spec.private_service_connect_config.enabled
+    reason: an explicit switch the module honors by rendering or omitting private_service_connect_config -- the provider's own flag cannot be false inside the block

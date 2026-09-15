@@ -406,69 +406,71 @@ func targetArgs(t *awsbedrockagentcoregatewayv1alpha1.AwsBedrockAgentCoreGateway
 	}
 	args.TargetConfiguration = configuration
 
-	// How the GATEWAY authenticates to this backend (at most one arm,
-	// spec-validated). jwt_passthrough is an empty member at the provider
-	// -- presence IS the configuration.
+	// How the GATEWAY authenticates to this backend: the credentials
+	// oneof carries at most one arm by construction. jwt_passthrough is an
+	// empty member at the provider -- choosing the arm IS the configuration.
 	if t.Credentials != nil {
 		credentials := &bedrock.AgentcoreGatewayTargetCredentialProviderConfigurationArgs{}
-		if t.Credentials.ApiKey != nil {
+		if t.Credentials.GetApiKey() != nil {
 			apiKey := &bedrock.AgentcoreGatewayTargetCredentialProviderConfigurationApiKeyArgs{
-				ProviderArn: pulumi.String(t.Credentials.ApiKey.ProviderArn.GetValue()),
+				ProviderArn: pulumi.String(t.Credentials.GetApiKey().ProviderArn.GetValue()),
 			}
-			if t.Credentials.ApiKey.CredentialLocation != "" {
-				apiKey.CredentialLocation = pulumi.String(t.Credentials.ApiKey.CredentialLocation)
+			if t.Credentials.GetApiKey().CredentialLocation != "" {
+				apiKey.CredentialLocation = pulumi.String(t.Credentials.GetApiKey().CredentialLocation)
 			}
-			if t.Credentials.ApiKey.CredentialParameterName != "" {
-				apiKey.CredentialParameterName = pulumi.String(t.Credentials.ApiKey.CredentialParameterName)
+			if t.Credentials.GetApiKey().CredentialParameterName != "" {
+				apiKey.CredentialParameterName = pulumi.String(t.Credentials.GetApiKey().CredentialParameterName)
 			}
-			if t.Credentials.ApiKey.CredentialPrefix != "" {
-				apiKey.CredentialPrefix = pulumi.String(t.Credentials.ApiKey.CredentialPrefix)
+			if t.Credentials.GetApiKey().CredentialPrefix != "" {
+				apiKey.CredentialPrefix = pulumi.String(t.Credentials.GetApiKey().CredentialPrefix)
 			}
 			credentials.ApiKey = apiKey
 		}
-		if t.Credentials.CallerIamCredentials != nil {
+		if t.Credentials.GetCallerIamCredentials() != nil {
 			caller := &bedrock.AgentcoreGatewayTargetCredentialProviderConfigurationCallerIamCredentialsArgs{
-				Service: pulumi.String(t.Credentials.CallerIamCredentials.Service),
+				Service: pulumi.String(t.Credentials.GetCallerIamCredentials().Service),
 			}
-			if t.Credentials.CallerIamCredentials.Region != "" {
-				caller.Region = pulumi.String(t.Credentials.CallerIamCredentials.Region)
+			if t.Credentials.GetCallerIamCredentials().Region != "" {
+				caller.Region = pulumi.String(t.Credentials.GetCallerIamCredentials().Region)
 			}
 			credentials.CallerIamCredentials = caller
 		}
-		if t.Credentials.GatewayIamRole != nil {
+		if t.Credentials.GetGatewayIamRole() != nil {
 			role := &bedrock.AgentcoreGatewayTargetCredentialProviderConfigurationGatewayIamRoleArgs{}
-			if t.Credentials.GatewayIamRole.Service != "" {
-				role.Service = pulumi.String(t.Credentials.GatewayIamRole.Service)
+			if t.Credentials.GetGatewayIamRole().Service != "" {
+				role.Service = pulumi.String(t.Credentials.GetGatewayIamRole().Service)
 			}
-			if t.Credentials.GatewayIamRole.Region != "" {
-				role.Region = pulumi.String(t.Credentials.GatewayIamRole.Region)
+			if t.Credentials.GetGatewayIamRole().Region != "" {
+				role.Region = pulumi.String(t.Credentials.GetGatewayIamRole().Region)
 			}
 			credentials.GatewayIamRole = role
 		}
-		if t.Credentials.JwtPassthrough {
+		if t.Credentials.GetJwtPassthrough() != nil {
 			credentials.JwtPassthrough = &bedrock.AgentcoreGatewayTargetCredentialProviderConfigurationJwtPassthroughArgs{}
 		}
-		if t.Credentials.Oauth != nil {
+		if t.Credentials.GetOauth() != nil {
 			oauth := &bedrock.AgentcoreGatewayTargetCredentialProviderConfigurationOauthArgs{
-				ProviderArn: pulumi.String(t.Credentials.Oauth.ProviderArn.GetValue()),
-				Scopes:      pulumi.ToStringArray(t.Credentials.Oauth.Scopes),
+				ProviderArn: pulumi.String(t.Credentials.GetOauth().ProviderArn.GetValue()),
+				Scopes:      pulumi.ToStringArray(t.Credentials.GetOauth().Scopes),
 			}
-			if t.Credentials.Oauth.GrantType != "" {
-				oauth.GrantType = pulumi.String(t.Credentials.Oauth.GrantType)
+			if t.Credentials.GetOauth().GrantType != "" {
+				oauth.GrantType = pulumi.String(t.Credentials.GetOauth().GrantType)
 			}
-			if t.Credentials.Oauth.DefaultReturnUrl != "" {
-				oauth.DefaultReturnUrl = pulumi.String(t.Credentials.Oauth.DefaultReturnUrl)
+			if t.Credentials.GetOauth().DefaultReturnUrl != "" {
+				oauth.DefaultReturnUrl = pulumi.String(t.Credentials.GetOauth().DefaultReturnUrl)
 			}
-			if len(t.Credentials.Oauth.CustomParameters) > 0 {
-				oauth.CustomParameters = pulumi.ToStringMap(t.Credentials.Oauth.CustomParameters)
+			if len(t.Credentials.GetOauth().CustomParameters) > 0 {
+				oauth.CustomParameters = pulumi.ToStringMap(t.Credentials.GetOauth().CustomParameters)
 			}
 			credentials.Oauth = oauth
 		}
 		args.CredentialProviderConfiguration = credentials
 	}
 
-	// Caller metadata propagation (max 10 entries each).
-	if t.Metadata != nil {
+	// Caller metadata propagation (max 10 entries each); the block's own
+	// switch (on by default once declared, filled by the platform before
+	// this runs) decides whether it renders.
+	if t.Metadata != nil && t.Metadata.GetEnabled() {
 		metadata := &bedrock.AgentcoreGatewayTargetMetadataConfigurationArgs{}
 		if len(t.Metadata.AllowedQueryParameters) > 0 {
 			metadata.AllowedQueryParameters = pulumi.ToStringArray(t.Metadata.AllowedQueryParameters)

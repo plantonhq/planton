@@ -63,10 +63,10 @@ resource "aws_sesv2_configuration_set" "this" {
     for_each = var.spec.vdm_options != null ? [var.spec.vdm_options] : []
     content {
       dashboard_options {
-        engagement_metrics = vdm_options.value.engagement_metrics_enabled ? "ENABLED" : "DISABLED"
+        engagement_metrics = coalesce(vdm_options.value.engagement_metrics_enabled, false) ? "ENABLED" : "DISABLED"
       }
       guardian_options {
-        optimized_shared_delivery = vdm_options.value.optimized_shared_delivery_enabled ? "ENABLED" : "DISABLED"
+        optimized_shared_delivery = coalesce(vdm_options.value.optimized_shared_delivery_enabled, false) ? "ENABLED" : "DISABLED"
       }
     }
   }

@@ -97,13 +97,16 @@ planton apply -f authorizationpolicy.yaml
 ### Rule fields
 
 A request matches a rule when at least one `from`, at least one `to`, and all `when`
-match. An empty rule matches everything.
+match. A rule that should match every request says so: `matchAll: true` (the empty
+rule on the Istio wire); a rule that names neither a matcher nor `matchAll` is refused,
+so matching everything is always written down.
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `from[].source` | object | Request source match (identities, namespaces, IPs). See source fields. |
 | `to[].operation` | object | Request operation match (hosts, ports, methods, paths). |
 | `when[]` | list | Additional conditions (`key`, `values`, `not_values`). |
+| `matchAll` | bool | Match every request; cannot be combined with `from`, `to`, or `when`. Never reaches the cluster -- the rule is emitted with no matchers, Istio's own spelling of "everything". |
 
 ### Source fields (all optional lists; each supports `*`/prefix/suffix match)
 

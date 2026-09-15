@@ -88,7 +88,7 @@ spec:
       evidence:
         type: spec_default
         reference: False (the default) keeps instances -- GPU included -- zonally redundant across the region; true opts a GPU service into single-zone capacity, trading zonal-failure tolerance for cheaper GPUs. Non-GPU services run on Cloud Run's regional infrastructure with no placement choice exposed.
-      notes: The 03-gpu-inference preset disables zonal redundancy deliberately -- a stated pre-production trade-off. multi_region_settings extends availability past zones to whole regions (one service identity serving from several).
+      notes: The 03-gpu-inference preset disables zonal redundancy deliberately -- a stated preproduction trade-off. multi_region_settings extends availability past zones to whole regions (one service identity serving from several).
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_protection

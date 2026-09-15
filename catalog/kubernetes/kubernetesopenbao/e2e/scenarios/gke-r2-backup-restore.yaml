@@ -1,0 +1,61 @@
+# THE RESTORE PROOF on GKE from Cloudflare R2: a FRESH vault on the batch's
+# Cloud KMS key (the same key as the source, fixture-gke-r2-source.yaml),
+# declaring the source's R2 store — bucket, account, jurisdiction, and the
+# writer token's S3 pair as the batch exported them — and `restore.snapshotKey`
+# = the snapshot the seed script took, published by the seed. The recovery
+# shape a customer runs when the backups live outside the cloud that ran the
+# vault. The seed wrote marker A, took the snapshot, then wrote marker B; the
+# verifier initializes the target, hands over the root token, watches the Job
+# complete, reads A back through the source's token, asserts B absent and the
+# target's init token dead, then replaces pod 0 and proves the KMS seal brings
+# it back unsealed with no human.
+#
+# JOINS the fixture-owned namespace. Same seed script as the GCS lane.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  name: e2e-bao-tgt
+  annotations:
+    planton.dev/e2e-cluster-profile: "gcp-gke"
+    planton.dev/e2e-prerequisites: "KubernetesNamespace, catalog/kubernetes/kubernetesopenbao/e2e/fixture-gke-r2-source.yaml"
+    planton.dev/e2e-setup-script: "catalog/kubernetes/kubernetesopenbao/e2e/scenarios/backup-restore-seed.setup.sh"
+spec:
+  namespace:
+    value: e2e-bao-lab
+  server:
+    ha:
+      replicas: 1
+    dataStorage:
+      size: 1Gi
+  autoUnseal:
+    gcpKms:
+      project:
+        value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT}
+      region: ${E2E_ENV:PLANTON_E2E_GCP_REGION}
+      keyRing:
+        value: ${E2E_ENV:PLANTON_E2E_GKE_OPENBAO_KEY_RING}
+      cryptoKey:
+        value: ${E2E_ENV:PLANTON_E2E_GKE_OPENBAO_CRYPTO_KEY}
+      workloadIdentityServiceAccount:
+        value: ${E2E_ENV:PLANTON_E2E_GKE_OPENBAO_UNSEAL_GSA}
+  backup:
+    retentionDays: 1
+    objectStore:
+      prefix: openbao/${E2E_RUN_ID}/e2e-bao-src
+      r2:
+        bucket:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_R2_BUCKET}
+        accountId:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_R2_ACCOUNT_ID}
+        jurisdiction:
+          value: ${E2E_ENV:PLANTON_E2E_GKE_R2_JURISDICTION}
+        credentials:
+          accessKeyId:
+            value: ${E2E_ENV:PLANTON_E2E_GKE_R2_ACCESS_KEY_ID}
+          secretAccessKey:
+            value: ${E2E_ENV:PLANTON_E2E_GKE_R2_SECRET_ACCESS_KEY}
+  restore:
+    snapshotKey: ${E2E_SETUP:OPENBAO_SNAPSHOT_KEY}
+    rootToken:
+      name: e2e-bao-tgt-init-root
+      key: token

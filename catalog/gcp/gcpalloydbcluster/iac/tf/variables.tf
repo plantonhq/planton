@@ -64,7 +64,9 @@ variable "spec" {
     # Dataplex Universal Catalog integration (GCP enables it by default
     # when absent).
     dataplex_config = optional(object({
-      enabled = optional(bool, false)
+      # Required by the API inside the block; no literal default, so an unset
+      # value can never be mistaken for an explicit false.
+      enabled = optional(bool)
     }), null)
 
     # Restore provenance — at most one source (spec-enforced); all

@@ -85,8 +85,10 @@ message CloudflareZoneTlsSettingsSpec {
 
 // Total TLS configuration.
 message CloudflareZoneTlsSettingsTotalTls {
-  // Whether Total TLS issues per-hostname certificates for the zone.
-  bool enabled = 1;
+  // Whether Total TLS issues per-hostname certificates for the zone. Required
+  // inside total_tls: declaring the block takes Total TLS under management,
+  // and the switch says which way.
+  optional bool enabled = 1 [(buf.validate.field).required = true];
 
   // The certificate authority issuing Total TLS certificates. Unset lets
   // Cloudflare choose. The certificates' validity period is fixed by Cloudflare

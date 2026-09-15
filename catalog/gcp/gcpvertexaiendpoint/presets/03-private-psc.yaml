@@ -14,9 +14,6 @@ spec:
     projectAllowlist:
       - consumer-analytics-prod
       - consumer-reporting-prod
-    # Secure PSC: connections additionally require IAM authorization on
-    # the endpoint (slightly higher latency; strongest access control).
-    enableSecurePrivateServiceConnect: true
   kmsKeyName:
     valueFrom:
       kind: GcpKmsKey

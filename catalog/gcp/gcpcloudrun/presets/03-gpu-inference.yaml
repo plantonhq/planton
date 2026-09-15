@@ -29,7 +29,7 @@ spec:
   nodeSelector:
     accelerator: nvidia-l4
   # Single-zone GPU serving: cheaper GPU capacity in exchange for zonal-
-  # failure risk — the common choice while a model is pre-production.
+  # failure risk — the common choice while a model is preproduction.
   gpuZonalRedundancyDisabled: true
   scaling:
     minInstanceCount: 0 # GPUs are expensive — scale to zero when idle

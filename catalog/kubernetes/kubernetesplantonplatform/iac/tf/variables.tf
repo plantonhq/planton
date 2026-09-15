@@ -33,6 +33,79 @@ variable "spec" {
         replicas           = optional(number)
         storage_size       = optional(string, "")
         storage_class_name = optional(string, "")
+        # backup and recover_from declare an object store in one shape. The
+        # r2 arm's account_id, jurisdiction, and credentials are foreign keys
+        # in the spec (CloudflareR2Bucket, CloudflareAccountApiToken); they
+        # arrive here already resolved to plain strings.
+        backup = optional(object({
+          object_store = object({
+            destination_path = string
+            s3 = optional(object({
+              region          = optional(string, "")
+              endpoint_url    = optional(string, "")
+              endpoint_ca_pem = optional(string, "")
+              keyless         = optional(bool, false)
+              access_keys = optional(object({
+                access_key_id     = string
+                secret_access_key = string
+              }))
+            }))
+            gcs = optional(object({
+              keyless                  = optional(bool, false)
+              service_account_key_json = optional(string, "")
+            }))
+            azure_blob = optional(object({
+              storage_account   = string
+              keyless           = optional(bool, false)
+              connection_string = optional(string, "")
+            }))
+            r2 = optional(object({
+              account_id   = string
+              jurisdiction = optional(string, "")
+              credentials = object({
+                access_key_id     = string
+                secret_access_key = string
+              })
+            }))
+          })
+          retention_policy            = optional(string)
+          schedule                    = optional(string)
+          service_account_annotations = optional(map(string), {})
+        }))
+        recover_from = optional(object({
+          object_store = object({
+            destination_path = string
+            s3 = optional(object({
+              region          = optional(string, "")
+              endpoint_url    = optional(string, "")
+              endpoint_ca_pem = optional(string, "")
+              keyless         = optional(bool, false)
+              access_keys = optional(object({
+                access_key_id     = string
+                secret_access_key = string
+              }))
+            }))
+            gcs = optional(object({
+              keyless                  = optional(bool, false)
+              service_account_key_json = optional(string, "")
+            }))
+            azure_blob = optional(object({
+              storage_account   = string
+              keyless           = optional(bool, false)
+              connection_string = optional(string, "")
+            }))
+            r2 = optional(object({
+              account_id   = string
+              jurisdiction = optional(string, "")
+              credentials = object({
+                access_key_id     = string
+                secret_access_key = string
+              })
+            }))
+          })
+          server_name = string
+          target_time = optional(string, "")
+        }))
       }))
       redis = optional(object({
         storage_size       = optional(string, "")
@@ -152,8 +225,9 @@ variable "spec" {
       }))
     }))
     prerequisites = optional(object({
-      postgres_operator = optional(string)
-      tekton_pipelines  = optional(string)
+      postgres_operator      = optional(string)
+      tekton_pipelines       = optional(string)
+      postgres_backup_plugin = optional(string)
     }))
     control_plane = optional(object({
       image = optional(object({

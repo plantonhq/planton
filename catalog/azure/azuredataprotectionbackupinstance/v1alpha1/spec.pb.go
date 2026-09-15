@@ -9,6 +9,7 @@ package azuredataprotectionbackupinstancev1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -445,11 +446,13 @@ type AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParameters stru
 	// backed up (e.g. "app=commerce").
 	LabelSelectors []string `protobuf:"bytes,5,rep,name=label_selectors,json=labelSelectors,proto3" json:"label_selectors,omitempty"`
 	// Whether cluster-scoped resources (CRDs, cluster roles, ...) join
-	// the backup. Azure's default is false (namespaced resources only).
-	ClusterScopedResourcesEnabled bool `protobuf:"varint,6,opt,name=cluster_scoped_resources_enabled,json=clusterScopedResourcesEnabled,proto3" json:"cluster_scoped_resources_enabled,omitempty"`
+	// the backup. Azure's default is false (namespaced resources only), and a
+	// switch left unset states that default; `false` says it out loud.
+	ClusterScopedResourcesEnabled *bool `protobuf:"varint,6,opt,name=cluster_scoped_resources_enabled,json=clusterScopedResourcesEnabled,proto3,oneof" json:"cluster_scoped_resources_enabled,omitempty"`
 	// Whether persistent-volume snapshots are taken with each backup.
-	// Azure's default is false (configuration only, no volume data).
-	VolumeSnapshotEnabled bool `protobuf:"varint,7,opt,name=volume_snapshot_enabled,json=volumeSnapshotEnabled,proto3" json:"volume_snapshot_enabled,omitempty"`
+	// Azure's default is false (configuration only, no volume data), and a
+	// switch left unset states that default; `false` says it out loud.
+	VolumeSnapshotEnabled *bool `protobuf:"varint,7,opt,name=volume_snapshot_enabled,json=volumeSnapshotEnabled,proto3,oneof" json:"volume_snapshot_enabled,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -520,15 +523,15 @@ func (x *AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParameters)
 }
 
 func (x *AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParameters) GetClusterScopedResourcesEnabled() bool {
-	if x != nil {
-		return x.ClusterScopedResourcesEnabled
+	if x != nil && x.ClusterScopedResourcesEnabled != nil {
+		return *x.ClusterScopedResourcesEnabled
 	}
 	return false
 }
 
 func (x *AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParameters) GetVolumeSnapshotEnabled() bool {
-	if x != nil {
-		return x.VolumeSnapshotEnabled
+	if x != nil && x.VolumeSnapshotEnabled != nil {
+		return *x.VolumeSnapshotEnabled
 	}
 	return false
 }
@@ -701,7 +704,7 @@ var File_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_spec_proto pro
 
 const file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Ccatalog/azure/azuredataprotectionbackupinstance/v1alpha1/spec.proto\x12<dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd9\r\n" +
+	"Ccatalog/azure/azuredataprotectionbackupinstance/v1alpha1/spec.proto\x12<dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd9\r\n" +
 	"%AzureDataProtectionBackupInstanceSpec\x12|\n" +
 	"\bvault_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB-\xbaH\x03\xc8\x01\x01\x88\xd4a\x84\x11\x92\xd4a\x1estatus.outputs.backup_vault_idR\avaultId\x12\x1a\n" +
 	"\x04name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x1e\n" +
@@ -726,15 +729,17 @@ const file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_spec_proto_r
 	"2AzureDataProtectionBackupInstanceKubernetesCluster\x12\x94\x01\n" +
 	"\x15kubernetes_cluster_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\xbaH\x03\xc8\x01\x01\x88\xd4a\xd1\x0f\x92\xd4a\x19status.outputs.cluster_id\x98\xd4a\x01R\x13kubernetesClusterId\x12\xaa\x01\n" +
 	"\x1csnapshot_resource_group_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB5\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x0f\x92\xd4a\"status.outputs.resource_group_name\x98\xd4a\x01R\x19snapshotResourceGroupName\x12\xc7\x01\n" +
-	"\x1cbackup_datasource_parameters\x18\x03 \x01(\v2\x84\x01.dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParametersR\x1abackupDatasourceParameters\"\xc4\x03\n" +
+	"\x1cbackup_datasource_parameters\x18\x03 \x01(\v2\x84\x01.dev.planton.azure.azuredataprotectionbackupinstance.v1alpha1.AzureDataProtectionBackupInstanceKubernetesClusterDatasourceParametersR\x1abackupDatasourceParameters\"\xa5\x04\n" +
 	"FAzureDataProtectionBackupInstanceKubernetesClusterDatasourceParameters\x12/\n" +
 	"\x13included_namespaces\x18\x01 \x03(\tR\x12includedNamespaces\x12/\n" +
 	"\x13excluded_namespaces\x18\x02 \x03(\tR\x12excludedNamespaces\x126\n" +
 	"\x17included_resource_types\x18\x03 \x03(\tR\x15includedResourceTypes\x126\n" +
 	"\x17excluded_resource_types\x18\x04 \x03(\tR\x15excludedResourceTypes\x12'\n" +
-	"\x0flabel_selectors\x18\x05 \x03(\tR\x0elabelSelectors\x12G\n" +
-	" cluster_scoped_resources_enabled\x18\x06 \x01(\bR\x1dclusterScopedResourcesEnabled\x126\n" +
-	"\x17volume_snapshot_enabled\x18\a \x01(\bR\x15volumeSnapshotEnabled\"\xb0\x01\n" +
+	"\x0flabel_selectors\x18\x05 \x03(\tR\x0elabelSelectors\x12W\n" +
+	" cluster_scoped_resources_enabled\x18\x06 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\x1dclusterScopedResourcesEnabled\x88\x01\x01\x12F\n" +
+	"\x17volume_snapshot_enabled\x18\a \x01(\bB\t\x8a\xa6\x1d\x05falseH\x01R\x15volumeSnapshotEnabled\x88\x01\x01B#\n" +
+	"!_cluster_scoped_resources_enabledB\x1a\n" +
+	"\x18_volume_snapshot_enabled\"\xb0\x01\n" +
 	"4AzureDataProtectionBackupInstanceMysqlFlexibleServer\x12x\n" +
 	"\tserver_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xf2\x0f\x92\xd4a\x18status.outputs.server_idR\bserverId\"\xb5\x01\n" +
 	"9AzureDataProtectionBackupInstancePostgresqlFlexibleServer\x12x\n" +
@@ -799,6 +804,7 @@ func file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_spec_proto_in
 		return
 	}
 	file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_catalog_azure_azuredataprotectionbackupinstance_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

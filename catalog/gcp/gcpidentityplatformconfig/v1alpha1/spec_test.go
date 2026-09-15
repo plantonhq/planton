@@ -9,6 +9,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestSuite(t *testing.T) {
@@ -41,7 +42,7 @@ var _ = ginkgo.Describe("GcpIdentityPlatformConfigSpec", func() {
 			Spec: &GcpIdentityPlatformConfigSpec{
 				SignIn: &GcpIdentityPlatformConfigSignIn{
 					Email: &GcpIdentityPlatformConfigSignInEmail{
-						Enabled:          true,
+						Enabled:          proto.Bool(true),
 						PasswordRequired: true,
 					},
 				},
@@ -53,6 +54,19 @@ var _ = ginkgo.Describe("GcpIdentityPlatformConfigSpec", func() {
 
 	ginkgo.It("should accept a minimal email/password config", func() {
 		gomega.Expect(validator.Validate(minimal())).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept a sign-in arm switched off and refuse one that does not say on or off", func() {
+		target := minimal()
+		target.Spec.SignIn = &GcpIdentityPlatformConfigSignIn{
+			Anonymous: &GcpIdentityPlatformConfigSignInAnonymous{Enabled: proto.Bool(false)},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+
+		target.Spec.SignIn.Anonymous = &GcpIdentityPlatformConfigSignInAnonymous{}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("anonymous.enabled"))
 	})
 
 	ginkgo.It("should accept an entirely empty spec (initialize-only)", func() {
@@ -71,10 +85,10 @@ var _ = ginkgo.Describe("GcpIdentityPlatformConfigSpec", func() {
 	ginkgo.It("should accept every sign-in arm plus anonymous autodelete", func() {
 		target := minimal()
 		target.Spec.SignIn.PhoneNumber = &GcpIdentityPlatformConfigSignInPhone{
-			Enabled:          true,
+			Enabled:          proto.Bool(true),
 			TestPhoneNumbers: map[string]string{"+15555550100": "123456"},
 		}
-		target.Spec.SignIn.Anonymous = &GcpIdentityPlatformConfigSignInAnonymous{Enabled: true}
+		target.Spec.SignIn.Anonymous = &GcpIdentityPlatformConfigSignInAnonymous{Enabled: proto.Bool(true)}
 		target.Spec.SignIn.AllowDuplicateEmails = false
 		target.Spec.AutodeleteAnonymousUsers = true
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())

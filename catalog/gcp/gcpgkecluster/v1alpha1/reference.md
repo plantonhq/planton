@@ -273,6 +273,7 @@ spec:
 | `spec.enableIdentityService` | `bool` |  |  |  |
 | `spec.logging` | `GcpGkeClusterLogging` |  |  |  |
 | `spec.logging.components` | `[]string` |  |  |  |
+| `spec.logging.enabled` | `bool` |  | `true` |  |
 | `spec.monitoring` | `GcpGkeClusterMonitoring` |  |  |  |
 | `spec.monitoring.components` | `[]string` |  |  |  |
 | `spec.monitoring.managedPrometheusEnabled` | `bool` |  | `true` |  |
@@ -1515,7 +1516,11 @@ OIDC identity providers (beyond Google accounts).
 `GcpGkeClusterLogging`
 
 Which cluster components ship logs to Cloud Logging. If omitted, GKE's
-default (system components + workloads) applies.
+default (system components + workloads) applies; declare it with
+`enabled: false` to turn the integration off.
+
+- rule: logging is on but names no components - list the components that ship logs, or set enabled: false to turn Cloud Logging integration off
+- rule: logging is off but still names components - drop components, or set enabled: true to ship their logs
 
 ### spec.logging.components
 
@@ -1523,9 +1528,20 @@ default (system components + workloads) applies.
 
 Components exposing logs: SYSTEM_COMPONENTS, WORKLOADS, APISERVER,
 CONTROLLER_MANAGER, SCHEDULER, KCP_CONNECTION, KCP_SSHD, KCP_HPA,
-KCP_VPA. An empty list disables Cloud Logging integration entirely.
+KCP_VPA.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","repeated":{"unique":true,"items":{"string":{"in":["SYSTEM_COMPONENTS","WORKLOADS","APISERVER","CONTROLLER_MANAGER","SCHEDULER","KCP_CONNECTION","KCP_SSHD","KCP_HPA","KCP_VPA"]}}}}
+
+### spec.logging.enabled
+
+`bool` · optional (explicit presence)
+
+Whether Cloud Logging integration is on. Unset means on: declaring the
+block with components has always meant shipping their logs, and
+`enabled: false` is the explicit OFF (GKE then receives an empty
+component list).
+
+- default: `true`
 
 ### spec.monitoring
 

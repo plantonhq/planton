@@ -72,8 +72,8 @@ spec:
 | `spec.trackingOptions.customRedirectDomain` | `string` | yes |  |  |
 | `spec.trackingOptions.httpsPolicy` | `string` |  | `OPTIONAL` |  |
 | `spec.vdmOptions` | `AwsSesConfigurationSetVdmOptions` |  |  |  |
-| `spec.vdmOptions.engagementMetricsEnabled` | `bool` |  |  |  |
-| `spec.vdmOptions.optimizedSharedDeliveryEnabled` | `bool` |  |  |  |
+| `spec.vdmOptions.engagementMetricsEnabled` | `bool` |  | `false` |  |
+| `spec.vdmOptions.optimizedSharedDeliveryEnabled` | `bool` |  | `false` |  |
 | `spec.eventDestinations` | `[]AwsSesConfigurationSetEventDestination` |  |  |  |
 | `spec.eventDestinations[].name` | `string` | yes |  |  |
 | `spec.eventDestinations[].enabled` | `bool` |  | `true` |  |
@@ -223,20 +223,24 @@ the account-level VDM configuration.
 
 ### spec.vdmOptions.engagementMetricsEnabled
 
-`bool`
+`bool` · optional (explicit presence)
 
 Whether VDM engagement metrics (opens/clicks broken down by ISP,
 subject line, and sending identity in the VDM dashboard) are
-collected for mail sent under this set.
+collected for mail sent under this set. Unset is DISABLED.
+
+- default: `false`
 
 ### spec.vdmOptions.optimizedSharedDeliveryEnabled
 
-`bool`
+`bool` · optional (explicit presence)
 
 Whether VDM optimized shared delivery is used: SES picks the shared
 IP with the best standing for each receiving ISP instead of rotating
 blindly. Only meaningful when sending from the shared IP space (not a
-dedicated pool).
+dedicated pool). Unset is DISABLED.
+
+- default: `false`
 
 ### spec.eventDestinations
 
