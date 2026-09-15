@@ -7,12 +7,56 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
-// OpenBAOInitResult holds the secrets produced by a successful initialization.
+// OpenBAOInitResult holds the secrets produced by a successful initialization:
+// the root token and, depending on the seal, either the unseal keys (built-in
+// seal) or the recovery keys (a cloud seal). Exactly one of the two slices is
+// populated; the caller must never store one under the other's name.
 type OpenBAOInitResult struct {
-	UnsealKeys []string
-	RootToken  string
+	UnsealKeys   []string
+	RecoveryKeys []string
+	RootToken    string
+}
+
+// OpenBAOInitOptions is the shape of a /sys/init request, and the shape is
+// decided by the seal: a built-in-seal server takes secret_shares and
+// secret_threshold and returns unseal keys; a server under a cloud seal
+// REFUSES those two parameters ("not applicable to seal type"), forces its
+// own barrier to one share, and takes recovery_shares and recovery_threshold
+// instead, returning recovery keys. The operator asks for one shape or the
+// other; a request carrying both is rejected by every server.
+type OpenBAOInitOptions struct {
+	// SecretShares/SecretThreshold: the built-in seal's key shares.
+	SecretShares    int
+	SecretThreshold int
+	// RecoveryShares/RecoveryThreshold: a cloud seal's recovery quorum.
+	RecoveryShares    int
+	RecoveryThreshold int
+}
+
+// ShamirInit is the built-in seal's request shape.
+func ShamirInit(shares, threshold int) OpenBAOInitOptions {
+	return OpenBAOInitOptions{SecretShares: shares, SecretThreshold: threshold}
+}
+
+// RecoveryInit is a cloud seal's request shape.
+func RecoveryInit(shares, threshold int) OpenBAOInitOptions {
+	return OpenBAOInitOptions{RecoveryShares: shares, RecoveryThreshold: threshold}
+}
+
+func (o OpenBAOInitOptions) body() map[string]int {
+	body := map[string]int{}
+	if o.SecretShares != 0 {
+		body["secret_shares"] = o.SecretShares
+		body["secret_threshold"] = o.SecretThreshold
+	}
+	if o.RecoveryShares != 0 {
+		body["recovery_shares"] = o.RecoveryShares
+		body["recovery_threshold"] = o.RecoveryThreshold
+	}
+	return body
 }
 
 // OpenBAOHealthStatus represents the state of an OpenBAO instance.
@@ -57,14 +101,14 @@ func CheckOpenBAOHealth(ctx context.Context, client *http.Client, apiAddr string
 }
 
 // InitializeOpenBAO calls /v1/sys/init to initialize a fresh OpenBAO instance
-// with the given number of secret shares and threshold. Returns the unseal keys
-// and root token. This is a one-time operation; calling it on an already
-// initialized instance returns an error.
-func InitializeOpenBAO(ctx context.Context, client *http.Client, apiAddr string, secretShares, secretThreshold int) (*OpenBAOInitResult, error) {
-	body, err := json.Marshal(map[string]int{
-		"secret_shares":    secretShares,
-		"secret_threshold": secretThreshold,
-	})
+// in the shape the seal requires (OpenBAOInitOptions). Returns the root token
+// and the keys the server produced -- unseal keys or recovery keys. This is a
+// one-time operation; calling it on an already initialized instance returns
+// an error. Under a cloud seal the server re-seals itself after init and its
+// own start-up loop opens it within seconds (WaitUntilUnsealed); the caller
+// never calls /sys/unseal there.
+func InitializeOpenBAO(ctx context.Context, client *http.Client, apiAddr string, opts OpenBAOInitOptions) (*OpenBAOInitResult, error) {
+	body, err := json.Marshal(opts.body())
 	if err != nil {
 		return nil, fmt.Errorf("marshaling init request: %w", err)
 	}
@@ -87,17 +131,46 @@ func InitializeOpenBAO(ctx context.Context, client *http.Client, apiAddr string,
 	}
 
 	var result struct {
-		Keys      []string `json:"keys"`
-		RootToken string   `json:"root_token"`
+		Keys         []string `json:"keys"`
+		RecoveryKeys []string `json:"recovery_keys"`
+		RootToken    string   `json:"root_token"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("decoding init response: %w", err)
 	}
 
 	return &OpenBAOInitResult{
-		UnsealKeys: result.Keys,
-		RootToken:  result.RootToken,
+		UnsealKeys:   result.Keys,
+		RecoveryKeys: result.RecoveryKeys,
+		RootToken:    result.RootToken,
 	}, nil
+}
+
+// WaitUntilUnsealed polls /v1/sys/health until the server reports itself
+// initialized and unsealed, or the timeout passes. Under a cloud seal the
+// server opens itself: after init, and on every start, its own loop fetches
+// the stored key through the seal and retries every five seconds until it
+// succeeds. The caller sizes the timeout to that interval; a vault still
+// sealed afterwards is reported, not retried here.
+func WaitUntilUnsealed(ctx context.Context, client *http.Client, apiAddr string, timeout time.Duration) (bool, error) {
+	deadline := time.Now().Add(timeout)
+	for {
+		health, err := CheckOpenBAOHealth(ctx, client, apiAddr)
+		if err != nil {
+			return false, err
+		}
+		if health.Initialized && !health.Sealed {
+			return true, nil
+		}
+		if time.Now().After(deadline) {
+			return false, nil
+		}
+		select {
+		case <-ctx.Done():
+			return false, ctx.Err()
+		case <-time.After(500 * time.Millisecond):
+		}
+	}
 }
 
 // EnsureOpenBAOMounts idempotently enables the two secrets engines the

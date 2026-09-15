@@ -142,7 +142,7 @@ func fullControlPlaneConfig() ControlPlaneConfig {
 		PlantonAPIEndpoint: "planton.example.com:443",
 		TemporalEndpoint:   "planton.example.com:443",
 	}
-	vault := OpenBAOConnection("planton", "default")
+	vault := OpenBAOConnection("planton", "default", OpenBAOInitSecretName("planton"))
 	cfg.Vault = &VaultBinding{
 		APIAddr:        vault.APIAddr,
 		InitSecretName: vault.InitSecretName,

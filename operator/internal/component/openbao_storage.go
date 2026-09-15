@@ -6,9 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -20,9 +18,12 @@ import (
 // The vault's storage is the platform's PostgreSQL. This file is the vault's
 // half of that seam: reading the state the database component and
 // CloudNativePG produce (the role reconciled onto the instance, the database
-// applied), and deriving the connection URL the server reads at start. The
-// database component's half -- declaring the role and the database -- lives
-// with the Cluster it renders (postgresql.go).
+// applied) before the server is rendered. The database component's half --
+// declaring the role, its credential Secret, and the database -- lives with
+// the Cluster it renders (postgresql.go); the vault consumes that Secret the
+// way every consumer of the platform's database does, as a variable
+// projected straight from it (openbao_helm.go), so nothing here composes
+// or copies a credential.
 
 // vaultDatabaseReady reports whether the vault's role and database exist on
 // the live cluster, and when they do not, a sentence that says what is still
@@ -109,45 +110,4 @@ func managedRoleCauses(cluster *unstructured.Unstructured, role string) []string
 	}
 	sort.Strings(causes)
 	return causes
-}
-
-// ensureStorageSecret derives the vault's connection URL from the role's
-// credential Secret and applies it as the operator-owned storage Secret the
-// chart projects into the server as BAO_PG_CONNECTION_URL. Applied (not
-// create-once) so it can never drift from the role Secret it is derived from;
-// the process reads it at start, so a deliberate rotation of the role's
-// password would also need the pod rolled -- the same class as every
-// consumer's database password today.
-func (o *OpenBAO) ensureStorageSecret(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, storageSecretName string) error {
-	roleSecretName := resources.PostgreSQLVaultRoleSecretName(planton.Name)
-	var roleSecret corev1.Secret
-	if err := c.Get(ctx, types.NamespacedName{Name: roleSecretName, Namespace: planton.Namespace}, &roleSecret); err != nil {
-		return fmt.Errorf("reading the vault's database role credential %s: %w", roleSecretName, err)
-	}
-	password := string(roleSecret.Data[resources.BasicAuthPasswordKey])
-	if password == "" {
-		return fmt.Errorf("the vault's database role credential %s carries no %q key", roleSecretName, resources.BasicAuthPasswordKey)
-	}
-
-	secret := &corev1.Secret{
-		TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      storageSecretName,
-			Namespace: planton.Namespace,
-			Labels: map[string]string{
-				"app.kubernetes.io/managed-by": resources.ManagedByLabel,
-			},
-		},
-		Type: corev1.SecretTypeOpaque,
-		Data: map[string][]byte{
-			resources.OpenBAOStorageURLEnv: []byte(resources.OpenBAOStorageURL(planton.Name, planton.Namespace, password)),
-		},
-	}
-	if ownerRef := o.OwnerReferenceFor(planton); ownerRef != nil {
-		secret.OwnerReferences = []metav1.OwnerReference{*ownerRef}
-	}
-	if err := o.ApplyTypedObject(ctx, c, secret); err != nil {
-		return fmt.Errorf("applying the vault's storage Secret %s: %w", storageSecretName, err)
-	}
-	return nil
 }

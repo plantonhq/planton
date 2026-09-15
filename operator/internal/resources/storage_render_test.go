@@ -84,7 +84,7 @@ func TestStorageRender_Valkey(t *testing.T) {
 // be a volume the archive does not cover.
 func TestStorageRender_OpenBAO_NoVolume(t *testing.T) {
 	objs, err := RenderHelmChart(LoadOpenBAOChart(), "test-openbao", "default",
-		OpenBAOHelmValues("test", "test-openbao-storage"))
+		OpenBAOHelmValues(OpenBAOHelmOptions{CRName: "test", Namespace: "default", StoragePasswordSecretName: PostgreSQLVaultRoleSecretName("test")}))
 	if err != nil {
 		t.Fatalf("failed to render chart: %v", err)
 	}

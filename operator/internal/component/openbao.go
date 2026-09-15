@@ -5,12 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	corev1 "k8s.io/api/core/v1"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 
@@ -29,12 +27,17 @@ import (
 // its own least-privilege role, both declared by the database component --
 // so it has no volume, the platform's one archive carries every secret with
 // the records, and a restored database brings back a vault that finds itself
-// initialized. The component waits for that role and database to exist
-// before the server is rendered (the backend gives up after one failed
-// connect), initializes OpenBAO through its HTTP API once the pod is running,
-// stores the unseal keys and root token in a Kubernetes Secret, and
-// re-unseals on pod restart. There is exactly one initialization path -- the
-// platform's database is not initialized by hand either.
+// initialized. What opens it is the seal the declaration chose at creation:
+// the built-in key shares, which the operator holds in the init Secret and
+// unseals with after every restart and every restore; or a key in the
+// adopter's cloud (spec.vault.autoUnseal), which the server opens itself
+// with and the operator never touches. The init Secret is the adopter's own
+// when spec.vault.initSecretName names one (written once, never deleted by
+// the operator) and the operator's otherwise. There is exactly one
+// initialization path -- the platform's database is not initialized by hand
+// either -- and the component waits for the vault's role and database to
+// exist before the server is rendered (the backend gives up after one
+// failed connect).
 type OpenBAO struct{ Base }
 
 func (o *OpenBAO) Name() string { return "openbao" }
@@ -52,6 +55,13 @@ func (o *OpenBAO) IsEnabled(planton *v1.PlantonPlatform) bool {
 	return planton.Spec.Vault == nil || planton.Spec.Vault.Enabled == nil ||
 		*planton.Spec.Vault.Enabled
 }
+
+// sealOpenWait is how long a pass waits, after initializing a vault under a
+// cloud seal, for the server's own loop to open it: the server retries the
+// stored key every five seconds, so one interval plus margin covers the
+// common case in the same pass; a vault still sealed after that is reported
+// and the next pass finds it open.
+const sealOpenWait = 8 * time.Second
 
 func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Scheme, planton *v1.PlantonPlatform) (Result, error) {
 	log := logf.FromContext(ctx).WithValues("component", o.Name())
@@ -73,23 +83,26 @@ func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 		}, nil
 	}
 
-	// The connection URL is derived from the role's credential Secret every
-	// pass, so it can never drift from it, and applied as the Secret the chart
-	// projects into the process as BAO_PG_CONNECTION_URL.
-	storageSecretName := resources.OpenBAOStorageSecretName(planton.Name)
-	if err := o.ensureStorageSecret(ctx, c, planton, storageSecretName); err != nil {
+	seal := sealOptionsFrom(planton)
+	refused, initSecret, err := o.preflightSeal(ctx, c, planton, seal)
+	if err != nil {
 		return Result{}, err
+	}
+	if refused != nil {
+		return *refused, nil
 	}
 
 	chartData := resources.LoadOpenBAOChart()
-	values := resources.OpenBAOHelmValues(planton.Name, storageSecretName)
+	values := resources.OpenBAOHelmValues(resources.OpenBAOHelmOptions{
+		CRName:                    planton.Name,
+		Namespace:                 planton.Namespace,
+		StoragePasswordSecretName: resources.PostgreSQLVaultRoleSecretName(planton.Name),
+		Seal:                      seal,
+		ServiceAccountAnnotations: vaultServiceAccountAnnotations(planton),
+	})
 
-	rendered, err := resources.RenderHelmChart(
-		chartData,
-		fmt.Sprintf("%s-openbao", planton.Name),
-		planton.Namespace,
-		values,
-	)
+	releaseName := fmt.Sprintf("%s-openbao", planton.Name)
+	rendered, err := resources.RenderHelmChart(chartData, releaseName, planton.Namespace, values)
 	if err != nil {
 		return Result{}, fmt.Errorf("rendering OpenBAO chart: %w", err)
 	}
@@ -101,162 +114,242 @@ func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	// OpenBAO readiness probes fail when sealed/uninitialized, so checking
 	// StatefulSet readiness would deadlock. Instead, check if the pod is in
 	// Running phase (container started, API accessible) before proceeding
-	// to initialization.
-	releaseName := fmt.Sprintf("%s-openbao", planton.Name)
+	// to initialization. The chart's fullnameOverride makes the StatefulSet's
+	// name the release name.
 	podRunning, err := o.IsPodRunning(ctx, c, releaseName, planton.Namespace)
 	if err != nil {
 		return Result{}, fmt.Errorf("checking OpenBAO pod status: %w", err)
 	}
 	if !podRunning {
 		log.Info("OpenBAO pod not yet running")
-		// The chart's fullnameOverride makes the StatefulSet's name the
-		// release name.
-		return o.NotReady(ctx, c, planton.Namespace, StatefulSetRef(releaseName), "Waiting for OpenBAO pod"), nil
+		return o.notReadyWithSealHint(ctx, c, planton, seal, releaseName, "Waiting for OpenBAO pod"), nil
 	}
 
-	return o.ensureAutoInit(ctx, c, planton)
+	return o.ensureInitialized(ctx, c, planton, seal, initSecret, resources.OpenBAOAPIAddr(planton.Name, planton.Namespace), http.DefaultClient)
 }
 
-func (o *OpenBAO) ensureAutoInit(ctx context.Context, c client.Client, planton *v1.PlantonPlatform) (Result, error) {
-	log := logf.FromContext(ctx).WithValues("component", o.Name())
+// preflightSeal is everything checked BEFORE the chart renders, so that a
+// declaration the vault cannot honor is a sentence and never a pod that
+// cannot start: the credentials Secret a seal arm names must exist with its
+// key, and the declared seal must be the one the vault was initialized under
+// (the init Secret records it; the server would refuse to start against its
+// own storage under another). Returns the refusal, or the init Secret as
+// read (nil when it does not exist) for the arms that follow.
+func (o *OpenBAO) preflightSeal(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions) (*Result, *corev1.Secret, error) {
+	initSecretName := vaultInitSecretName(planton)
 
-	apiAddr := resources.OpenBAOAPIAddr(planton.Name, planton.Namespace)
-	health, err := bootstrap.CheckOpenBAOHealth(ctx, http.DefaultClient, apiAddr)
+	if msg, err := o.preflightSealCredentialsSecret(ctx, c, planton.Namespace, seal); err != nil {
+		return nil, nil, err
+	} else if msg != "" {
+		return &Result{
+			Ready:   false,
+			Reason:  v1.ComponentReasonConfigurationRefused,
+			Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: seal.CredentialsSecretName()},
+			Message: msg,
+		}, nil, nil
+	}
+
+	initSecret, err := readInitSecret(ctx, c, initSecretName, planton.Namespace)
 	if err != nil {
-		log.Info("OpenBAO health check failed (may not be ready yet)", "error", err.Error())
-		return Result{Ready: false, Message: "Waiting for OpenBAO health endpoint"}, nil
+		return nil, nil, err
 	}
-
-	initSecretName := resources.OpenBAOInitSecretName(planton.Name)
-
-	if health.Initialized && !health.Sealed {
-		// Steady state -- but the engine mounts are still ensured every pass
-		// (idempotent GET + enable-if-missing): installs initialized before
-		// mount-ensuring existed, or manually altered vaults, converge here.
-		if err := o.ensureMountsFromInitSecret(ctx, c, planton, apiAddr, initSecretName); err != nil {
-			return Result{}, err
-		}
-		// The key material must explain itself where it is read (the
-		// one-time-password precedent). Ensured on the steady-state pass so
-		// installs initialized before the note existed gain it; annotations
-		// only, the key data is untouched.
-		if err := o.EnsureSecretAnnotations(ctx, c, initSecretName, planton.Namespace,
-			map[string]string{
-				resources.OpenBAOInitSecretAnnotation: resources.OpenBAOInitSecretNote(planton.Name),
-			}); err != nil {
-			return Result{}, fmt.Errorf("annotating OpenBAO init secret: %w", err)
-		}
-		log.Info("OpenBAO ready (already initialized and unsealed)")
-		return Result{Ready: true, Message: "OpenBAO healthy (auto-init)"}, nil
-	}
-
-	if !health.Initialized {
-		log.Info("OpenBAO not initialized, running auto-init")
-		initResult, err := bootstrap.InitializeOpenBAO(ctx, http.DefaultClient, apiAddr,
-			resources.OpenBAOSecretShares, resources.OpenBAOSecretThreshold)
-		if err != nil {
-			return Result{}, fmt.Errorf("auto-initializing OpenBAO: %w", err)
-		}
-
-		keysJSON, err := json.Marshal(initResult.UnsealKeys)
-		if err != nil {
-			return Result{}, fmt.Errorf("marshaling unseal keys: %w", err)
-		}
-
-		ownerRef := o.OwnerReferenceFor(planton)
-		initSecret := &corev1.Secret{
-			TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Secret"},
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      initSecretName,
-				Namespace: planton.Namespace,
-				Labels: map[string]string{
-					"app.kubernetes.io/managed-by": resources.ManagedByLabel,
-				},
-				Annotations: map[string]string{
-					resources.OpenBAOInitSecretAnnotation: resources.OpenBAOInitSecretNote(planton.Name),
-				},
-			},
-			Type: corev1.SecretTypeOpaque,
-			Data: map[string][]byte{
-				resources.OpenBAOInitSecretUnsealKeysKey: keysJSON,
-				resources.OpenBAOInitSecretRootTokenKey:  []byte(initResult.RootToken),
-			},
-		}
-		if ownerRef != nil {
-			initSecret.OwnerReferences = []metav1.OwnerReference{*ownerRef}
-		}
-
-		if err := c.Create(ctx, initSecret); err != nil && !apierrors.IsAlreadyExists(err) {
-			return Result{}, fmt.Errorf("creating OpenBAO init secret: %w", err)
-		}
-
-		log.Info("OpenBAO initialized, init secret created")
-
-		if err := bootstrap.UnsealOpenBAO(ctx, http.DefaultClient, apiAddr, initResult.UnsealKeys); err != nil {
-			return Result{}, fmt.Errorf("auto-unsealing OpenBAO: %w", err)
-		}
-
-		if err := bootstrap.EnsureOpenBAOMounts(ctx, http.DefaultClient, apiAddr, initResult.RootToken); err != nil {
-			return Result{}, fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
-		}
-
-		log.Info("OpenBAO unsealed")
-		return Result{Ready: true, Message: "OpenBAO healthy (auto-init)"}, nil
-	}
-
-	// Initialized but sealed: read keys from Secret and unseal. A vault that
-	// is initialized while the operator holds no keys is the restored case
-	// above all -- the data came back from the archive, the keys did not --
-	// and the declaration names a Secret that does not exist, so it is
-	// refused the way a missing named Secret is refused everywhere else, with
-	// the Secret as the object and the two ways out in the sentence.
-	var initSecret corev1.Secret
-	if err := c.Get(ctx, types.NamespacedName{
-		Name: initSecretName, Namespace: planton.Namespace,
-	}, &initSecret); err != nil {
-		if apierrors.IsNotFound(err) {
-			return Result{
+	if initSecret != nil {
+		if recorded := initSecret.Annotations[resources.OpenBAOSealAnnotation]; recorded != "" && recorded != seal.Fingerprint() {
+			return &Result{
 				Ready:   false,
 				Reason:  v1.ComponentReasonConfigurationRefused,
 				Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: initSecretName},
-				Message: sealedWithoutKeysMessage(planton, initSecretName),
+				Message: sealChangedMessage(recorded, seal.Fingerprint(), initSecretName),
+			}, initSecret, nil
+		}
+	}
+	return nil, initSecret, nil
+}
+
+// notReadyWithSealHint classifies the vault's workload through the shared
+// explainer and, when the verdict is a crash-loop under a cloud seal, adds
+// the one clause the classifier cannot know: the server configures the seal
+// before anything else and exits when the wrapper's first call fails.
+func (o *OpenBAO) notReadyWithSealHint(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, releaseName, waiting string) Result {
+	res := o.NotReady(ctx, c, planton.Namespace, StatefulSetRef(releaseName), waiting)
+	if res.Reason == v1.ComponentReasonCrashLooping && seal != nil {
+		res.Message += " " + sealStartHint(seal)
+	}
+	return res
+}
+
+// ensureInitialized drives the vault from whatever state its storage is in
+// to open and usable: a fresh vault is initialized in the shape its seal
+// requires and its keys written to the init Secret; a sealed vault under the
+// built-in seal is unsealed from that Secret; a sealed vault under a cloud
+// seal is the server's to open, and the sentence says whether it is opening
+// or blocked; an open vault has its engines ensured and its Secret's note
+// re-asserted. apiAddr and httpClient are parameters so the flow is proven
+// against a fake server.
+func (o *OpenBAO) ensureInitialized(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, initSecret *corev1.Secret, apiAddr string, httpClient *http.Client) (Result, error) {
+	log := logf.FromContext(ctx).WithValues("component", o.Name())
+	releaseName := fmt.Sprintf("%s-openbao", planton.Name)
+
+	health, err := bootstrap.CheckOpenBAOHealth(ctx, httpClient, apiAddr)
+	if err != nil {
+		// A pod that runs but does not answer is, above all, a server that
+		// keeps exiting -- and a crash-looping pod still reports phase
+		// Running. The classifier names the pod and its exit; the seal
+		// hint names the check that most likely failed.
+		log.Info("OpenBAO health check failed (may not be ready yet)", "error", err.Error())
+		return o.notReadyWithSealHint(ctx, c, planton, seal, releaseName, "Waiting for OpenBAO health endpoint"), nil
+	}
+
+	switch {
+	case health.Initialized && !health.Sealed:
+		return o.reconcileOpenVault(ctx, c, planton, seal, initSecret, apiAddr, httpClient)
+
+	case !health.Initialized:
+		return o.initializeVault(ctx, c, planton, seal, initSecret, apiAddr, httpClient)
+
+	default: // initialized and sealed
+		if seal != nil {
+			// The operator never unseals a cloud-sealed vault; the server
+			// does, retrying its key every five seconds. Young pod: it is
+			// opening. Old pod: the identity cannot decrypt with the key.
+			age := o.vaultPodAge(ctx, c, releaseName, planton.Namespace, time.Now())
+			return Result{
+				Ready:   false,
+				Reason:  v1.ComponentReasonDeploying,
+				Object:  &v1.ComponentObjectReference{Kind: "StatefulSet", Name: releaseName},
+				Message: sealNotOpenedMessage(seal, age),
 			}, nil
 		}
-		return Result{}, fmt.Errorf("reading OpenBAO init secret: %w", err)
+		return o.unsealFromInitSecret(ctx, c, planton, initSecret, apiAddr, httpClient)
+	}
+}
+
+// initializeVault runs the one initialization path: /sys/init in the shape
+// the seal requires, the keys and root token written to the init Secret,
+// then the vault opened -- by the operator with the shares under the
+// built-in seal, by the server itself under a cloud seal -- and the engines
+// mounted. A Secret that already holds keys is refused first: writing new
+// keys over another vault's is the one thing this path must never do.
+func (o *OpenBAO) initializeVault(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, initSecret *corev1.Secret, apiAddr string, httpClient *http.Client) (Result, error) {
+	log := logf.FromContext(ctx).WithValues("component", o.Name())
+	initSecretName := vaultInitSecretName(planton)
+
+	if initSecretHoldsKeys(initSecret) {
+		return Result{
+			Ready:   false,
+			Reason:  v1.ComponentReasonConfigurationRefused,
+			Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: initSecretName},
+			Message: initSecretHoldsForeignKeysMessage(planton, initSecretName),
+		}, nil
+	}
+
+	log.Info("OpenBAO not initialized, initializing", "seal", seal.Word())
+	initOpts := bootstrap.ShamirInit(resources.OpenBAOSecretShares, resources.OpenBAOSecretThreshold)
+	if seal != nil {
+		initOpts = bootstrap.RecoveryInit(resources.OpenBAOSecretShares, resources.OpenBAOSecretThreshold)
+	}
+	initResult, err := bootstrap.InitializeOpenBAO(ctx, httpClient, apiAddr, initOpts)
+	if err != nil {
+		return Result{}, fmt.Errorf("initializing OpenBAO: %w", err)
+	}
+
+	// From here until the write lands the keys exist only in this pass.
+	if err := o.writeInitSecret(ctx, c, planton, seal, initResult); err != nil {
+		log.Error(err, "OpenBAO initialized but its keys could not be written", "secret", initSecretName)
+		return Result{
+			Ready:   false,
+			Reason:  v1.ComponentReasonReconcileFailed,
+			Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: initSecretName},
+			Message: initSecretWriteFailedMessage(seal, initSecretName, err),
+		}, nil
+	}
+	log.Info("OpenBAO initialized, init secret written", "secret", initSecretName)
+
+	if seal == nil {
+		if err := bootstrap.UnsealOpenBAO(ctx, httpClient, apiAddr, initResult.UnsealKeys); err != nil {
+			return Result{}, fmt.Errorf("unsealing OpenBAO: %w", err)
+		}
+	} else {
+		open, err := bootstrap.WaitUntilUnsealed(ctx, httpClient, apiAddr, sealOpenWait)
+		if err != nil {
+			return Result{}, fmt.Errorf("waiting for the seal to open OpenBAO: %w", err)
+		}
+		if !open {
+			return Result{
+				Ready:   false,
+				Reason:  v1.ComponentReasonDeploying,
+				Object:  &v1.ComponentObjectReference{Kind: "StatefulSet", Name: fmt.Sprintf("%s-openbao", planton.Name)},
+				Message: sealNotOpenedMessage(seal, 0),
+			}, nil
+		}
+	}
+
+	if err := bootstrap.EnsureOpenBAOMounts(ctx, httpClient, apiAddr, initResult.RootToken); err != nil {
+		return Result{}, fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
+	}
+
+	log.Info("OpenBAO initialized and open")
+	return Result{Ready: true, Message: "OpenBAO healthy (initialized)"}, nil
+}
+
+// unsealFromInitSecret opens a built-in-seal vault that is initialized and
+// sealed -- a restarted pod, or a restored vault -- with the shares from the
+// init Secret. No Secret is the restored case above all (the data came back
+// from the archive, the keys did not) and is refused with the Secret named.
+func (o *OpenBAO) unsealFromInitSecret(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, initSecret *corev1.Secret, apiAddr string, httpClient *http.Client) (Result, error) {
+	log := logf.FromContext(ctx).WithValues("component", o.Name())
+	initSecretName := vaultInitSecretName(planton)
+
+	if initSecret == nil {
+		return Result{
+			Ready:   false,
+			Reason:  v1.ComponentReasonConfigurationRefused,
+			Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: initSecretName},
+			Message: sealedWithoutKeysMessage(planton, initSecretName),
+		}, nil
 	}
 
 	var unsealKeys []string
 	if err := json.Unmarshal(initSecret.Data[resources.OpenBAOInitSecretUnsealKeysKey], &unsealKeys); err != nil {
-		return Result{}, fmt.Errorf("parsing unseal keys from secret: %w", err)
+		return Result{}, fmt.Errorf("parsing unseal keys from secret %s: %w", initSecretName, err)
 	}
-
-	if err := bootstrap.UnsealOpenBAO(ctx, http.DefaultClient, apiAddr, unsealKeys); err != nil {
-		return Result{}, fmt.Errorf("auto-unsealing OpenBAO: %w", err)
+	if err := bootstrap.UnsealOpenBAO(ctx, httpClient, apiAddr, unsealKeys); err != nil {
+		return Result{}, fmt.Errorf("unsealing OpenBAO: %w", err)
 	}
-
-	if err := o.ensureMountsFromInitSecret(ctx, c, planton, apiAddr, initSecretName); err != nil {
-		return Result{}, err
+	if err := bootstrap.EnsureOpenBAOMounts(ctx, httpClient, apiAddr, string(initSecret.Data[resources.OpenBAOInitSecretRootTokenKey])); err != nil {
+		return Result{}, fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
 	}
 
 	log.Info("OpenBAO unsealed from stored keys")
-	return Result{Ready: true, Message: "OpenBAO healthy (auto-unsealed)"}, nil
+	return Result{Ready: true, Message: "OpenBAO healthy (unsealed)"}, nil
 }
 
-// ensureMountsFromInitSecret runs the idempotent engine-mount ensure using the
-// root token from the init Secret -- the KV v2 engine at secret/ and the
-// Transit engine at transit/ the control plane expects. On a restored vault
-// the mounts are already in the storage that came back; the ensure finds them
-// and does nothing.
-func (o *OpenBAO) ensureMountsFromInitSecret(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, apiAddr, initSecretName string) error {
-	var initSecret corev1.Secret
-	if err := c.Get(ctx, types.NamespacedName{
-		Name: initSecretName, Namespace: planton.Namespace,
-	}, &initSecret); err != nil {
-		return fmt.Errorf("reading OpenBAO init secret for mount ensure: %w", err)
+// reconcileOpenVault is the steady state. The engine mounts are ensured every
+// pass (idempotent GET + enable-if-missing) with the root token from the init
+// Secret, and the Secret's note and fingerprint are re-asserted (annotations
+// only). A vault that is open while its Secret does not exist is refused
+// with the Secret named: the operator and the control plane sign in with the
+// token it holds.
+func (o *OpenBAO) reconcileOpenVault(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, initSecret *corev1.Secret, apiAddr string, httpClient *http.Client) (Result, error) {
+	log := logf.FromContext(ctx).WithValues("component", o.Name())
+	initSecretName := vaultInitSecretName(planton)
+
+	if initSecret == nil {
+		return Result{
+			Ready:   false,
+			Reason:  v1.ComponentReasonConfigurationRefused,
+			Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: initSecretName},
+			Message: openVaultWithoutSecretMessage(planton, seal, initSecretName),
+		}, nil
 	}
-	rootToken := string(initSecret.Data[resources.OpenBAOInitSecretRootTokenKey])
-	if err := bootstrap.EnsureOpenBAOMounts(ctx, http.DefaultClient, apiAddr, rootToken); err != nil {
-		return fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
+
+	if err := bootstrap.EnsureOpenBAOMounts(ctx, httpClient, apiAddr, string(initSecret.Data[resources.OpenBAOInitSecretRootTokenKey])); err != nil {
+		return Result{}, fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
 	}
-	return nil
+	if err := o.ensureInitSecretAnnotations(ctx, c, planton, seal, initSecret); err != nil {
+		return Result{}, err
+	}
+
+	log.Info("OpenBAO ready (initialized and unsealed)")
+	return Result{Ready: true, Message: "OpenBAO healthy"}, nil
 }

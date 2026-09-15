@@ -3059,13 +3059,17 @@ type KubernetesPlantonPlatformVault struct {
 	// Name of a Secret YOU own, in the platform's namespace, where the
 	// operator writes the vault's keys at initialization: the unseal keys
 	// (recovery keys under auto_unseal) and the root token. The operator
-	// creates it WITHOUT an owner reference, so deleting the platform leaves
-	// it standing; on a restore it reads the shares from it to unseal a
-	// built-in-seal vault, and under any seal it is the vault's break-glass
-	// (the root token; the recovery quorum). Keep a copy of it outside the
-	// cluster — it is the one object a lost cluster takes with it that no
-	// archive brings back. Unset, the operator keeps the keys in a Secret it
-	// owns (`<platform>-openbao-init`), deleted with the platform.
+	// creates it WITHOUT an owner reference and never deletes it, so deleting
+	// the PlantonPlatform leaves it standing -- but a namespace this resource
+	// owns (create_namespace: true) is deleted with the resource and takes
+	// every Secret in it, so a destroy through Planton does not. On a restore
+	// the operator reads the shares from it to unseal a built-in-seal vault,
+	// and under any seal it is the vault's break-glass (the root token; the
+	// recovery quorum). Keep a copy of it outside the cluster, or place the
+	// platform in a namespace you own — it is the one object a lost cluster
+	// takes with it that no archive brings back. Unset, the operator keeps the
+	// keys in a Secret it owns (`<platform>-openbao-init`), deleted with the
+	// platform.
 	InitSecretName string `protobuf:"bytes,6,opt,name=init_secret_name,json=initSecretName,proto3" json:"init_secret_name,omitempty"`
 	// *
 	// Annotations for the ServiceAccount the vault's pods run as (the

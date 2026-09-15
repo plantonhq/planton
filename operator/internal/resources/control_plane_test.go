@@ -900,7 +900,7 @@ func TestControlPlaneDeployment_NoVaultMeansExplicitOptOut(t *testing.T) {
 // single-tenant and exists solely for this control plane), and no opt-out.
 func TestControlPlaneDeployment_VaultBinding(t *testing.T) {
 	cfg := testControlPlaneConfig()
-	conn := OpenBAOConnection("planton", "default")
+	conn := OpenBAOConnection("planton", "default", OpenBAOInitSecretName("planton"))
 	cfg.Vault = &VaultBinding{
 		APIAddr:        conn.APIAddr,
 		InitSecretName: conn.InitSecretName,

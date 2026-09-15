@@ -42,11 +42,14 @@ type OpenBAOConnectionInfo struct {
 }
 
 // OpenBAOConnection returns connection info for the OpenBAO instance.
-func OpenBAOConnection(crName, namespace string) OpenBAOConnectionInfo {
+// initSecretName is the Secret the vault's root token lives in -- the
+// adopter's own when the declaration names one, the operator's otherwise --
+// so the consumer reads the token from wherever the operator wrote it.
+func OpenBAOConnection(crName, namespace, initSecretName string) OpenBAOConnectionInfo {
 	return OpenBAOConnectionInfo{
 		APIAddr:        OpenBAOAPIAddr(crName, namespace),
 		Port:           OpenBAOPort,
-		InitSecretName: OpenBAOInitSecretName(crName),
+		InitSecretName: initSecretName,
 		RootTokenKey:   OpenBAOInitSecretRootTokenKey,
 	}
 }

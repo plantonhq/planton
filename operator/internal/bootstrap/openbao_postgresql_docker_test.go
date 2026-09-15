@@ -9,6 +9,12 @@ package bootstrap
 // sealed, opens with the first one's keys, and already has the mounts. That
 // is exactly what a platform restore does to the bundled vault.
 //
+// The connection reaches the server the way the operator projects it: the
+// URL as a plain variable with no password, and the password as PGPASSWORD
+// -- so this suite is also the proof that the backend's driver honors the
+// standard PostgreSQL environment, which OpenBao's own documentation
+// promises and the operator relies on.
+//
 // Container management is hand-rolled docker CLI, like the Keycloak suite:
 // the whole need is a few `docker run`s on one network plus readiness polls.
 // Run with `go test -tags=requires_docker ./internal/bootstrap/ -run
@@ -35,9 +41,8 @@ const (
 )
 
 // The same stanza the operator renders (openbao_helm.go), as the JSON the
-// image's entrypoint accepts through BAO_LOCAL_CONFIG; the URL rides the
-// environment variable the backend reads first, exactly as the chart projects
-// it. disable_mlock because the container has no IPC_LOCK.
+// image's entrypoint accepts through BAO_LOCAL_CONFIG. disable_mlock because
+// the container has no IPC_LOCK.
 const openbaoTestConfig = `{
   "ui": false,
   "disable_mlock": true,
@@ -46,31 +51,17 @@ const openbaoTestConfig = `{
 }`
 
 func TestOpenBAO_PostgreSQLStorage(t *testing.T) {
-	if _, err := exec.LookPath("docker"); err != nil {
-		t.Skip("docker not on PATH")
-	}
+	requireDocker(t)
 	network := fmt.Sprintf("openbao-pg-proof-%d", os.Getpid())
 	mustDocker(t, "network", "create", network)
 	t.Cleanup(func() { _ = exec.Command("docker", "network", "rm", network).Run() })
 
-	// PostgreSQL with the vault's own role and database -- the shape the
-	// database component declares through CloudNativePG in the operator.
-	pg := "openbao-proof-pg"
-	_ = exec.Command("docker", "rm", "-f", pg).Run()
-	mustDocker(t, "run", "-d", "--rm", "--name", pg, "--network", network,
-		"-e", "POSTGRES_PASSWORD=superuser-password", pgTestImage)
-	t.Cleanup(func() { _ = exec.Command("docker", "rm", "-f", pg).Run() })
-	waitFor(t, 60*time.Second, "postgres ready", func() bool {
-		return exec.Command("docker", "exec", pg, "pg_isready", "-U", "postgres").Run() == nil
-	})
-	mustDocker(t, "exec", pg, "psql", "-U", "postgres", "-v", "ON_ERROR_STOP=1", "-c",
-		fmt.Sprintf("CREATE ROLE %s LOGIN PASSWORD '%s'; CREATE DATABASE %s OWNER %s;", pgTestRole, pgTestPassword, pgTestDatabase, pgTestRole))
-
-	connURL := fmt.Sprintf("postgres://%s:%s@%s:5432/%s?sslmode=disable", pgTestRole, pgTestPassword, pg, pgTestDatabase)
+	pg := startPostgreSQL(t, network, "openbao-proof-pg")
+	storage := storageEnv(pg)
 	ctx := context.Background()
 
 	// First server: born uninitialized against an empty database.
-	first := startOpenBAO(t, network, "openbao-proof-1", connURL)
+	first := startOpenBAO(t, network, "openbao-proof-1", openbaoTestConfig, storage...)
 	health, err := CheckOpenBAOHealth(ctx, http.DefaultClient, first)
 	if err != nil {
 		t.Fatalf("health: %v", err)
@@ -78,9 +69,12 @@ func TestOpenBAO_PostgreSQLStorage(t *testing.T) {
 	if health.Initialized {
 		t.Fatal("a fresh database must yield an uninitialized vault")
 	}
-	initResult, err := InitializeOpenBAO(ctx, http.DefaultClient, first, 5, 3)
+	initResult, err := InitializeOpenBAO(ctx, http.DefaultClient, first, ShamirInit(5, 3))
 	if err != nil {
 		t.Fatalf("init: %v", err)
+	}
+	if len(initResult.UnsealKeys) != 5 || len(initResult.RecoveryKeys) != 0 {
+		t.Fatalf("a built-in-seal init returns unseal keys and no recovery keys, got %d/%d", len(initResult.UnsealKeys), len(initResult.RecoveryKeys))
 	}
 	if err := UnsealOpenBAO(ctx, http.DefaultClient, first, initResult.UnsealKeys); err != nil {
 		t.Fatalf("unseal: %v", err)
@@ -97,7 +91,7 @@ func TestOpenBAO_PostgreSQLStorage(t *testing.T) {
 	// the same database is the restored vault: initialized, sealed, waiting
 	// for the keys the first one produced.
 	mustDocker(t, "rm", "-f", "openbao-proof-1")
-	second := startOpenBAO(t, network, "openbao-proof-2", connURL)
+	second := startOpenBAO(t, network, "openbao-proof-2", openbaoTestConfig, storage...)
 	health, err = CheckOpenBAOHealth(ctx, http.DefaultClient, second)
 	if err != nil {
 		t.Fatalf("health (second): %v", err)
@@ -118,23 +112,61 @@ func TestOpenBAO_PostgreSQLStorage(t *testing.T) {
 		}
 	}
 	// The table the backend created for itself is the archive's payload.
-	out := mustDocker(t, "exec", pg, "psql", "-U", pgTestRole, "-d", pgTestDatabase, "-tAc",
+	out := mustDocker(t, "exec", "-e", "PGPASSWORD="+pgTestPassword, pg, "psql", "-U", pgTestRole, "-d", pgTestDatabase, "-tAc",
 		"SELECT count(*) FROM openbao_kv_store")
 	if strings.TrimSpace(out) == "0" || strings.TrimSpace(out) == "" {
 		t.Errorf("openbao_kv_store carries no rows after init; got %q", out)
 	}
 }
 
-// startOpenBAO runs one OpenBao server container against the connection URL
-// and returns its API address on the host once the health endpoint answers.
-func startOpenBAO(t *testing.T, network, name, connURL string) string {
+func requireDocker(t *testing.T) {
+	t.Helper()
+	if _, err := exec.LookPath("docker"); err != nil {
+		t.Skip("docker not on PATH")
+	}
+}
+
+// startPostgreSQL runs a PostgreSQL with the vault's own role and database --
+// the shape the database component declares through CloudNativePG in the
+// operator -- and returns the container name (its hostname on the network).
+func startPostgreSQL(t *testing.T, network, name string) string {
 	t.Helper()
 	_ = exec.Command("docker", "rm", "-f", name).Run()
 	mustDocker(t, "run", "-d", "--rm", "--name", name, "--network", network,
-		"-p", "0:8200",
-		"-e", "BAO_LOCAL_CONFIG="+openbaoTestConfig,
-		"-e", "BAO_PG_CONNECTION_URL="+connURL,
-		openbaoTestImage, "server")
+		"-e", "POSTGRES_PASSWORD=superuser-password", pgTestImage)
+	t.Cleanup(func() { _ = exec.Command("docker", "rm", "-f", name).Run() })
+	waitFor(t, 60*time.Second, "postgres ready", func() bool {
+		return exec.Command("docker", "exec", name, "pg_isready", "-U", "postgres").Run() == nil
+	})
+	// Two -c flags, not one: psql runs a single -c string as one transaction,
+	// and CREATE DATABASE refuses to run inside a transaction block.
+	mustDocker(t, "exec", name, "psql", "-U", "postgres", "-v", "ON_ERROR_STOP=1",
+		"-c", fmt.Sprintf("CREATE ROLE %s LOGIN PASSWORD '%s';", pgTestRole, pgTestPassword),
+		"-c", fmt.Sprintf("CREATE DATABASE %s OWNER %s;", pgTestDatabase, pgTestRole))
+	return name
+}
+
+// storageEnv is the operator's storage projection: the URL with no password
+// as the backend's variable, the password as libpq's.
+func storageEnv(pgHost string) []string {
+	return []string{
+		"BAO_PG_CONNECTION_URL=" + fmt.Sprintf("postgres://%s@%s:5432/%s?sslmode=disable", pgTestRole, pgHost, pgTestDatabase),
+		"PGPASSWORD=" + pgTestPassword,
+	}
+}
+
+// startOpenBAO runs one OpenBao server container with the given config and
+// environment and returns its API address on the host once the health
+// endpoint answers.
+func startOpenBAO(t *testing.T, network, name, config string, env ...string) string {
+	t.Helper()
+	_ = exec.Command("docker", "rm", "-f", name).Run()
+	args := []string{"run", "-d", "--rm", "--name", name, "--network", network, "-p", "0:8200", "-e", "BAO_LOCAL_CONFIG=" + config}
+	for _, e := range env {
+		args = append(args, "-e", e)
+	}
+	args = append(args, openbaoTestImage, "server")
+	mustDocker(t, args...)
 	t.Cleanup(func() { _ = exec.Command("docker", "rm", "-f", name).Run() })
 	port := strings.TrimSpace(mustDocker(t, "port", name, "8200/tcp"))
 	// docker port prints "0.0.0.0:PORT" (and may print an IPv6 line too).

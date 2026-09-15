@@ -14,34 +14,11 @@ import (
 // slot is written beside status.backup on every pass, by the component that
 // writes status.backup, without probing the vault.
 
-// The words status.backup.vault.seal speaks. Deliberately strings, not an
-// enum on the definition, for the reason BackupState is not one.
-const (
-	vaultSealShamir        = "shamir"
-	vaultSealAwsKms        = "awsKms"
-	vaultSealGcpKms        = "gcpKms"
-	vaultSealAzureKeyVault = "azureKeyVault"
-	vaultSealTransit       = "transit"
-)
-
 // vaultSealWord names what opens the vault: the cloud seal the spec declares,
-// or the built-in key shares when it declares none.
+// or the built-in key shares when it declares none -- the one vocabulary the
+// rendering, the init Secret's annotation, and this status share.
 func vaultSealWord(planton *v1.PlantonPlatform) string {
-	if planton.Spec.Vault == nil || planton.Spec.Vault.AutoUnseal == nil {
-		return vaultSealShamir
-	}
-	seal := planton.Spec.Vault.AutoUnseal
-	switch {
-	case seal.AwsKms != nil:
-		return vaultSealAwsKms
-	case seal.GcpKms != nil:
-		return vaultSealGcpKms
-	case seal.AzureKeyVault != nil:
-		return vaultSealAzureKeyVault
-	case seal.Transit != nil:
-		return vaultSealTransit
-	}
-	return vaultSealShamir
+	return sealOptionsFrom(planton).Word()
 }
 
 // vaultInitSecretName is the Secret that holds the vault's keys and root
@@ -69,19 +46,19 @@ func vaultBackupStatus(planton *v1.PlantonPlatform, state v1.BackupState) *v1.Va
 			Message: "The bundled vault is not deployed; there is nothing to archive.",
 		}
 	}
-	seal := vaultSealWord(planton)
+	seal := sealOptionsFrom(planton)
 	initSecret := vaultInitSecretName(planton)
 	if state == v1.BackupStateNotConfigured || state == "" {
 		return &v1.VaultBackupStatus{
 			Covered:        false,
-			Seal:           seal,
+			Seal:           seal.Word(),
 			InitSecretName: initSecret,
 			Message:        "No backup is declared; the vault's data lives in this database and nothing copies it anywhere.",
 		}
 	}
 	return &v1.VaultBackupStatus{
 		Covered:        true,
-		Seal:           seal,
+		Seal:           seal.Word(),
 		InitSecretName: initSecret,
 		Message:        vaultCoverageMessage(seal, initSecret, vaultInitSecretIsAdoptersOwn(planton)),
 	}
@@ -91,9 +68,9 @@ func vaultBackupStatus(planton *v1.PlantonPlatform, state v1.BackupState) *v1.Va
 // reads: the archive carries the vault; here is what opens it and what to
 // keep. Under the built-in seal the keys Secret IS the way back in; under a
 // cloud seal the restored vault opens itself and the Secret is break-glass.
-func vaultCoverageMessage(seal, initSecret string, adoptersOwn bool) string {
+func vaultCoverageMessage(seal *resources.OpenBAOSealOptions, initSecret string, adoptersOwn bool) string {
 	const carries = "The archive carries the vault -- it stores in this database. "
-	if seal == vaultSealShamir {
+	if seal.Word() == resources.OpenBAOSealShamir {
 		if adoptersOwn {
 			return carries + fmt.Sprintf("It is sealed with the built-in key shares held in Secret %s, which you own: "+
 				"a restore needs that Secret present in the new cluster, and it is the one object to keep a copy of outside the cluster.", initSecret)
@@ -103,22 +80,7 @@ func vaultCoverageMessage(seal, initSecret string, adoptersOwn bool) string {
 			"name a Secret you own in spec.vault.initSecretName, or seal the vault with a cloud key (spec.vault.autoUnseal).", initSecret)
 	}
 	return carries + fmt.Sprintf("It is sealed by %s: a restored vault opens itself from your key. "+
-		"Secret %s holds the root token and recovery keys (the vault's break-glass) -- keep a copy of it outside the cluster.", vaultSealHuman(seal), initSecret)
-}
-
-// vaultSealHuman is the seal word as a person reads it.
-func vaultSealHuman(seal string) string {
-	switch seal {
-	case vaultSealAwsKms:
-		return "an AWS KMS key"
-	case vaultSealGcpKms:
-		return "a Google Cloud KMS key"
-	case vaultSealAzureKeyVault:
-		return "an Azure Key Vault key"
-	case vaultSealTransit:
-		return "a central OpenBao's transit key"
-	}
-	return "the built-in key shares"
+		"Secret %s holds the root token and recovery keys (the vault's break-glass) -- keep a copy of it outside the cluster.", seal.Human(), initSecret)
 }
 
 // sealedWithoutKeysMessage is the vault component's sentence for a vault

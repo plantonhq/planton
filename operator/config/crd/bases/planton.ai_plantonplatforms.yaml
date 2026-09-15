@@ -1638,8 +1638,10 @@ spec:
                       initSecretName names a Secret the ADOPTER owns, in the platform's
                       namespace, where the operator writes the vault's keys at
                       initialization: the unseal keys (recovery keys under autoUnseal) and
-                      the root token. The operator creates it WITHOUT an owner reference, so
-                      deleting the platform leaves it standing; on a restore it reads the
+                      the root token. The operator creates it WITHOUT an owner reference and
+                      never deletes it, so deleting the PlantonPlatform leaves it standing --
+                      deleting the namespace does not, and a namespace the declaring resource
+                      owns goes with that resource. On a restore the operator reads the
                       shares from it to unseal a built-in-seal vault, and under any seal it
                       is the vault's break-glass. It is the one object a lost cluster takes
                       with it that no archive brings back -- keep a copy outside the

@@ -196,7 +196,7 @@ func (cp *ControlPlane) buildConfig(planton *v1.PlantonPlatform, ownerRef *metav
 	// VAULT_ADDR withOUT that opt-out as a loud boot failure, protecting the
 	// hosted deployment shape from silently losing its vault).
 	if isVaultEnabled(planton) {
-		conn := resources.OpenBAOConnection(planton.Name, planton.Namespace)
+		conn := resources.OpenBAOConnection(planton.Name, planton.Namespace, vaultInitSecretName(planton))
 		cfg.Vault = &resources.VaultBinding{
 			APIAddr:        conn.APIAddr,
 			InitSecretName: conn.InitSecretName,

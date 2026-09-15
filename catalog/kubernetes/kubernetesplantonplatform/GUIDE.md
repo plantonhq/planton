@@ -172,9 +172,12 @@ checked at server start: a GCP identity needs
 or the pod crash-loops on `Permission 'cloudkms.cryptoKeys.get' denied`
 before init can open. Or `vault.init_secret_name` names a Secret you own:
 the operator writes the vault's unseal keys and root token into it at
-first boot without an owner reference, so a platform destroy leaves it
-standing, and a restore unseals with it once you have recreated it in the
-new cluster from the copy you kept. The spec refuses a backup with neither.
+first boot without an owner reference and never deletes it, so deleting the
+`PlantonPlatform` leaves it standing -- but a namespace this resource owns
+(`create_namespace: true`) is deleted with the resource and takes every
+Secret in it, so keep a copy outside the cluster (or place the platform in
+a namespace you own), and a restore unseals with it once you have recreated
+it in the new cluster from that copy. The spec refuses a backup with neither.
 Under either seal, that Secret is the vault's break-glass (the root token;
 the recovery quorum) — the one object a lost cluster takes with it that no
 archive brings back, so keep a copy outside the cluster.

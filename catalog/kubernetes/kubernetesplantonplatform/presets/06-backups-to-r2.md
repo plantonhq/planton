@@ -58,9 +58,13 @@ every user, and every secret, not a fresh install.
   Ready
 - **The vault's keys outlive the platform** — `vault.init_secret_name`
   names a Secret you own; the operator writes the vault's unseal keys and
-  root token into it at first boot and never deletes it, so a platform
-  destroy leaves it standing. A backup with neither this nor a cloud seal
-  is refused: the archive would carry every secret and no way to open it
+  root token into it at first boot and never deletes it, so deleting the
+  `PlantonPlatform` leaves it standing. This preset owns its namespace
+  (`create_namespace: true`), and a destroy through Planton deletes that
+  namespace with every Secret in it — keep a copy of the Secret outside the
+  cluster; it is what a restore into a new cluster needs. A backup with
+  neither this nor a cloud seal is refused: the archive would carry every
+  secret and no way to open it
 
 ## What Comes Back
 
