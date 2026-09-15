@@ -142,11 +142,12 @@ func fullControlPlaneConfig() ControlPlaneConfig {
 		PlantonAPIEndpoint: "planton.example.com:443",
 		TemporalEndpoint:   "planton.example.com:443",
 	}
-	vault := OpenBAOConnection("planton", "default", OpenBAOInitSecretName("planton"))
+	vault := OpenBAOConnection("planton", "default")
 	cfg.Vault = &VaultBinding{
-		APIAddr:        vault.APIAddr,
-		InitSecretName: vault.InitSecretName,
-		RootTokenKey:   vault.RootTokenKey,
+		APIAddr:         vault.APIAddr,
+		TokenSecretName: vault.TokenSecretName,
+		TokenKey:        vault.TokenKey,
+		TokenAccessor:   "hmac-accessor-of-the-minted-token",
 	}
 	cfg.SecretBackend = &SecretBackendBinding{Type: "aws-secrets-manager", AwsRegion: "ap-south-1"}
 	cfg.License = &LicenseBinding{SecretName: "acme-license", SecretKey: "license-key"}

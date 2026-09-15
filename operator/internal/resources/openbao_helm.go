@@ -2,7 +2,6 @@ package resources
 
 import (
 	"fmt"
-	"net/url"
 	"sort"
 	"strings"
 )
@@ -15,19 +14,26 @@ const (
 	OpenBAOHelmChartVersion = "0.28.6"
 	OpenBAOPort             = 8200
 
-	// OpenBAOStorageURLEnv is the environment variable OpenBao's PostgreSQL
-	// storage backend reads its connection URL from, ahead of the config
-	// file. The URL names the role, the host, and the database and carries
-	// NO password: the backend honors the standard PostgreSQL environment,
-	// so the password rides OpenBAOStoragePasswordEnv, projected from the
-	// role's credential Secret -- the same projection every consumer of the
-	// platform's database uses for its own password. The config, which the
-	// chart renders into a ConfigMap, never sees either.
-	OpenBAOStorageURLEnv = "BAO_PG_CONNECTION_URL"
-
-	// OpenBAOStoragePasswordEnv is libpq's password variable; the vault's
-	// PostgreSQL driver reads it when the connection URL carries none.
+	// The vault's PostgreSQL connection reaches the server as the driver's
+	// own environment -- libpq's variables, which OpenBao's pgx-based
+	// backend honors when the config's connection_url is absent -- and the
+	// stanza names no connection at all. The five public parts are plain
+	// variables; the password is projected from the role's credential
+	// Secret through OpenBAOStoragePasswordEnv, the same projection every
+	// consumer of the platform's database uses for its own password. The
+	// config, which the chart renders into a ConfigMap, never sees any of
+	// it. This is the shape the standalone OpenBao kind hands its connection
+	// over in, so an agent who read one vault has read both.
+	OpenBAOStorageHostEnv     = "PGHOST"
+	OpenBAOStoragePortEnv     = "PGPORT"
+	OpenBAOStorageDatabaseEnv = "PGDATABASE"
+	OpenBAOStorageUserEnv     = "PGUSER"
+	OpenBAOStorageSSLModeEnv  = "PGSSLMODE"
 	OpenBAOStoragePasswordEnv = "PGPASSWORD"
+
+	// openbaoStorageSSLMode is the posture every platform consumer uses on
+	// this in-cluster, single-namespace link (OpenFGA's URL says the same).
+	openbaoStorageSSLMode = "disable"
 
 	// openbaoStorageMaxParallel caps the storage backend's connection pool
 	// (OpenBao sets the pool's open-connection limit to max_parallel). The
@@ -87,19 +93,24 @@ type OpenBAOHelmOptions struct {
 // brings back a vault that finds itself initialized. The chart's native seams
 // carry every half -- `server.standalone.config` is the HCL the chart
 // renders into a ConfigMap, so it names the backend, its sizing, and the
-// seal's non-credential parameters and NOTHING credential-bearing; public
-// identifiers ride `server.extraEnvironmentVars`; every credential (the
-// storage role's password, a seal's key material) reaches the process as a
-// variable projected from a Secret through `server.extraSecretEnvironmentVars`.
+// seal's non-credential parameters and NOTHING credential-bearing (not even
+// a connection URL: the driver reads its connection from the environment);
+// public identifiers and the connection's public parts ride
+// `server.extraEnvironmentVars`; every credential (the storage role's
+// password, a seal's key material) reaches the process as a variable
+// projected from a Secret through `server.extraSecretEnvironmentVars`.
 //
 // Reference: Planton KubernetesOpenBao module (openbao/openbao) for the
 // config rendering; OpenBao's physical/postgresql for the backend's contract.
 func OpenBAOHelmValues(opts OpenBAOHelmOptions) map[string]any {
-	// max_parallel bounds the pool (see openbaoStorageMaxParallel). The
-	// backend creates its own table on first start and gives up after ONE
-	// failed connect (max_connect_retries default 1) -- so the component
-	// waits for the role and database to exist before this renders, and a
-	// transient outage is a pod restart, never a stuck server.
+	// max_parallel bounds the pool (see openbaoStorageMaxParallel). No
+	// connection_url, deliberately: this document is a ConfigMap, and the
+	// driver reads PGHOST/PGPORT/PGDATABASE/PGUSER/PGSSLMODE and PGPASSWORD
+	// from the pod's environment when the URL is blank. The backend creates
+	// its own table on first start and gives up after ONE failed connect
+	// (max_connect_retries default 1) -- so the component waits for the
+	// role and database to exist before this renders, and a transient
+	// outage is a pod restart, never a stuck server.
 	standaloneConfig := `ui = true
 
 listener "tcp" {
@@ -133,10 +144,13 @@ storage "postgresql" {
 				"memory": "512Mi",
 			},
 		},
-		// The auth-delegator ClusterRoleBinding grants tokenreview/
-		// subjectaccessreview permissions the operator's own RBAC does
-		// not carry -- and Planton does not use Kubernetes auth for
-		// OpenBAO anyway (token auth from the init Secret only).
+		// The vault's ServiceAccount DOES need system:auth-delegator --
+		// the Kubernetes auth method the operator signs in through reviews
+		// tokens with it -- but not from the chart: the chart's binding is
+		// cluster-scoped output of a namespaced platform, which the apply
+		// seam refuses (no owner can collect it), and it could not carry
+		// the platform's UID for the janitor. The operator applies the
+		// binding itself as a satellite (OpenBAOAuthDelegatorClusterRoleBinding).
 		"authDelegator": map[string]any{
 			"enabled": false,
 		},
@@ -178,17 +192,33 @@ storage "postgresql" {
 	}
 }
 
-// openbaoPlainEnv is the non-secret environment: the storage URL (no
-// password in it) and the seal's public identifiers. A map, as the chart
-// takes it; Helm ranges maps in key order, so the render is deterministic.
+// openbaoPlainEnv is the non-secret environment: the storage connection's
+// public parts (OpenBAOStorageEnv) and the seal's public identifiers. A
+// map, as the chart takes it; Helm ranges maps in key order, so the render
+// is deterministic.
 func openbaoPlainEnv(opts OpenBAOHelmOptions) map[string]any {
-	env := map[string]any{
-		OpenBAOStorageURLEnv: OpenBAOStorageURL(opts.CRName, opts.Namespace),
+	env := map[string]any{}
+	for k, v := range OpenBAOStorageEnv(opts.CRName, opts.Namespace) {
+		env[k] = v
 	}
 	for k, v := range opts.Seal.PlainEnv() {
 		env[k] = v
 	}
 	return env
+}
+
+// OpenBAOStorageEnv is the vault's PostgreSQL connection as the driver's
+// environment: its own role and database on the platform's cluster, through
+// the primary's -rw Service, sslmode disable -- and NO password, which rides
+// OpenBAOStoragePasswordEnv from the role's Secret.
+func OpenBAOStorageEnv(crName, namespace string) map[string]string {
+	return map[string]string{
+		OpenBAOStorageHostEnv:     PostgreSQLHost(crName, namespace),
+		OpenBAOStoragePortEnv:     fmt.Sprintf("%d", PostgreSQLPort),
+		OpenBAOStorageDatabaseEnv: DBOpenBAO,
+		OpenBAOStorageUserEnv:     PostgreSQLVaultRole,
+		OpenBAOStorageSSLModeEnv:  openbaoStorageSSLMode,
+	}
 }
 
 // openbaoSecretEnv is every credential the process needs, each projected
@@ -236,17 +266,6 @@ func OpenBAOInitSecretName(crName string) string {
 	return fmt.Sprintf("%s-openbao-init", crName)
 }
 
-// OpenBAOStorageURL composes the vault's PostgreSQL connection URL: its own
-// role and database on the platform's cluster, through the primary's -rw
-// Service, with NO password -- that rides OpenBAOStoragePasswordEnv.
-// sslmode=disable is the posture every platform consumer uses on this
-// in-cluster, single-namespace link (OpenFGA's URL says the same).
-func OpenBAOStorageURL(crName, namespace string) string {
-	return fmt.Sprintf("postgres://%s@%s:%d/%s?sslmode=disable",
-		url.User(PostgreSQLVaultRole).String(),
-		PostgreSQLHost(crName, namespace), PostgreSQLPort, DBOpenBAO)
-}
-
 // OpenBAOInitSecretAnnotation marks the init Secret as self-describing: with
 // the vault deployed by default, every install carries this Secret, and the
 // key material inside is the most security-sensitive object the operator
@@ -263,15 +282,16 @@ func OpenBAOInitSecretNote(crName string, seal *OpenBAOSealOptions, adoptersOwn 
 	var b strings.Builder
 	if seal.Word() == OpenBAOSealShamir {
 		fmt.Fprintf(&b, "Unseal keys and root token for the bundled secrets manager (OpenBAO release %s). ", release)
-		b.WriteString("The vault is sealed with these key shares: the operator unseals it with them after every pod restart and after a restore, ")
-		b.WriteString("and the root token is what the operator and the control plane sign in with. ")
+		b.WriteString("The vault is sealed with these key shares: the operator unseals it with them after every pod restart and after a restore. ")
 		b.WriteString("Without this Secret an initialized vault stays locked and nothing can open it -- not the operator, not a restore. ")
 	} else {
 		fmt.Fprintf(&b, "Recovery keys and root token for the bundled secrets manager (OpenBAO release %s), sealed by %s. ", release, seal.Human())
 		b.WriteString("The vault opens itself from that key on every start, including after a restore; these keys never unseal anything. ")
-		b.WriteString("They authorize the vault's break-glass (generating a new root token, rekeying), and the root token is what the operator and the control plane sign in with. ")
+		b.WriteString("They authorize the vault's break-glass (generating a new root token, rekeying). ")
 		b.WriteString("Without this Secret the vault still opens, but its break-glass is gone. ")
 	}
+	b.WriteString("Nothing running signs in with the root token: the operator signs in with its own Kubernetes identity and the control plane with a token the operator mints for it; ")
+	b.WriteString("the root token is the break-glass, and the operator uses it only to repair its own sign-in. ")
 	if adoptersOwn {
 		b.WriteString("You own this Secret (spec.vault.initSecretName): the operator wrote into it once and never deletes it, and deleting the PlantonPlatform leaves it standing. ")
 		b.WriteString("A namespace the declaration owns is deleted with the declaration and takes every Secret in it, so keep a copy of this Secret outside the cluster -- ")

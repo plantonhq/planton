@@ -1159,8 +1159,12 @@ type ComponentsSpec struct {
 // keeps its data in the platform's PostgreSQL -- no volume of its own, so the
 // database backup carries every secret with the records -- and the operator
 // initializes it exactly one way: it calls /sys/init, writes the keys and the
-// root token into the init Secret (initSecretName, or its own), and unseals
-// it with the shares (built-in seal) or lets the seal open it (autoUnseal).
+// root token into the init Secret (initSecretName, or its own), unseals it
+// with the shares (built-in seal) or lets the seal open it (autoUnseal), and
+// sets up how the platform signs in: the operator through the vault's
+// Kubernetes auth method as its own ServiceAccount, the control plane with a
+// token the operator mints for it, keeps alive, and issues again after a
+// restore. Nothing running signs in with the root token; it is the break-glass.
 //
 // A disabled vault takes nothing: a seal, a Secret name, or an identity on
 // spec.vault.enabled: false is a contradiction the definition refuses.

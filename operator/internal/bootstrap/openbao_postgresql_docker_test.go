@@ -9,11 +9,12 @@ package bootstrap
 // sealed, opens with the first one's keys, and already has the mounts. That
 // is exactly what a platform restore does to the bundled vault.
 //
-// The connection reaches the server the way the operator projects it: the
-// URL as a plain variable with no password, and the password as PGPASSWORD
-// -- so this suite is also the proof that the backend's driver honors the
-// standard PostgreSQL environment, which OpenBao's own documentation
-// promises and the operator relies on.
+// The connection reaches the server the way the operator projects it: no
+// connection URL anywhere, the connection's public parts as libpq's plain
+// variables and the password as PGPASSWORD -- so this suite is also the
+// proof that the backend's driver reads the whole connection from the
+// standard PostgreSQL environment when the config names none, which
+// OpenBao's own documentation promises and the operator relies on.
 //
 // Container management is hand-rolled docker CLI, like the Keycloak suite:
 // the whole need is a few `docker run`s on one network plus readiness polls.
@@ -135,22 +136,30 @@ func startPostgreSQL(t *testing.T, network, name string) string {
 	mustDocker(t, "run", "-d", "--rm", "--name", name, "--network", network,
 		"-e", "POSTGRES_PASSWORD=superuser-password", pgTestImage)
 	t.Cleanup(func() { _ = exec.Command("docker", "rm", "-f", name).Run() })
-	waitFor(t, 60*time.Second, "postgres ready", func() bool {
-		return exec.Command("docker", "exec", name, "pg_isready", "-U", "postgres").Run() == nil
+	// The image's entrypoint starts a temporary server for its init scripts,
+	// stops it, and starts the real one -- and pg_isready answers for both,
+	// so a check that passed once can be followed by a socket that is gone.
+	// The readiness that matters is the statement itself succeeding: it is
+	// retried until it does. Two -c flags, not one: psql runs a single -c
+	// string as one transaction, and CREATE DATABASE refuses to run inside
+	// a transaction block.
+	waitFor(t, 60*time.Second, "postgres ready with the vault's role and database", func() bool {
+		return exec.Command("docker", "exec", name, "psql", "-U", "postgres", "-v", "ON_ERROR_STOP=1",
+			"-c", fmt.Sprintf("CREATE ROLE %s LOGIN PASSWORD '%s';", pgTestRole, pgTestPassword),
+			"-c", fmt.Sprintf("CREATE DATABASE %s OWNER %s;", pgTestDatabase, pgTestRole)).Run() == nil
 	})
-	// Two -c flags, not one: psql runs a single -c string as one transaction,
-	// and CREATE DATABASE refuses to run inside a transaction block.
-	mustDocker(t, "exec", name, "psql", "-U", "postgres", "-v", "ON_ERROR_STOP=1",
-		"-c", fmt.Sprintf("CREATE ROLE %s LOGIN PASSWORD '%s';", pgTestRole, pgTestPassword),
-		"-c", fmt.Sprintf("CREATE DATABASE %s OWNER %s;", pgTestDatabase, pgTestRole))
 	return name
 }
 
-// storageEnv is the operator's storage projection: the URL with no password
-// as the backend's variable, the password as libpq's.
+// storageEnv is the operator's storage projection: the connection's public
+// parts as libpq's plain variables, the password as libpq's too, and no URL.
 func storageEnv(pgHost string) []string {
 	return []string{
-		"BAO_PG_CONNECTION_URL=" + fmt.Sprintf("postgres://%s@%s:5432/%s?sslmode=disable", pgTestRole, pgHost, pgTestDatabase),
+		"PGHOST=" + pgHost,
+		"PGPORT=5432",
+		"PGDATABASE=" + pgTestDatabase,
+		"PGUSER=" + pgTestRole,
+		"PGSSLMODE=disable",
 		"PGPASSWORD=" + pgTestPassword,
 	}
 }
@@ -161,7 +170,11 @@ func storageEnv(pgHost string) []string {
 func startOpenBAO(t *testing.T, network, name, config string, env ...string) string {
 	t.Helper()
 	_ = exec.Command("docker", "rm", "-f", name).Run()
-	args := []string{"run", "-d", "--rm", "--name", name, "--network", network, "-p", "0:8200", "-e", "BAO_LOCAL_CONFIG=" + config}
+	// host.docker.internal resolves on Docker Desktop by itself; the
+	// add-host makes it resolve on a plain Linux engine too (the login
+	// proof's stand-in API server runs in the test process, on the host).
+	args := []string{"run", "-d", "--rm", "--name", name, "--network", network, "-p", "0:8200",
+		"--add-host=host.docker.internal:host-gateway", "-e", "BAO_LOCAL_CONFIG=" + config}
 	for _, e := range env {
 		args = append(args, "-e", e)
 	}

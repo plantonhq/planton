@@ -3,6 +3,7 @@ package component
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -29,9 +30,15 @@ import (
 // (bootstrap's requires_docker suites); this is the offline bar.
 
 // fakeVault is the OpenBao HTTP surface the component talks to: health,
-// init, unseal, mounts. Its seal type decides which init shape it accepts,
-// exactly as the real server does, and a cloud-sealed fake opens itself on
-// the poll after init the way the real server's loop does.
+// init, unseal, mounts, and the access arrangement -- the kubernetes auth
+// method with its config and roles, policies, token roles, and the token
+// operations (create through a role, lookup/renew/revoke by accessor,
+// revoke-self). Its seal type decides which init shape it accepts, exactly
+// as the real server does, and a cloud-sealed fake opens itself on the poll
+// after init the way the real server's loop does. A login is judged the way
+// the real method judges it: the JWT's subject against the role's bound
+// names and namespaces. Every call records which token made it, so the
+// tests can say what root did and what the operator's own session did.
 type fakeVault struct {
 	mu          sync.Mutex
 	initialized bool
@@ -45,16 +52,114 @@ type fakeVault struct {
 	unsealCalls int
 	mounts      map[string]bool
 	rootToken   string
+	// roots are the tokens the fake treats as root: the one init hands out
+	// and any a test adds (a kept root token in a restored Secret).
+	roots       map[string]bool
 	mountTokens []string
+
+	// The access arrangement.
+	authEnabled bool
+	authConfig  map[string]any
+	authRoles   map[string]map[string]any
+	policies    map[string]string
+	tokenRoles  map[string]map[string]any
+	tokens      map[string]*fakeToken // by client token
+	accessors   map[string]string     // accessor -> client token
+	nextToken   int
+	// loginFails makes every login fail the way a TokenReview the vault
+	// cannot make does (a 500 with "lookup failed"), regardless of the role.
+	loginFails bool
+
+	// What happened, for the tests to judge.
+	authEnableTokens []string
+	policyWrites     []string
+	authRoleWrites   []string
+	tokenRoleWrites  []string
+	configWrites     []string
+	logins           int
+	mintedThrough    []string
+	renewals         int
+	revokedSelf      []string
+}
+
+type fakeToken struct {
+	accessor string
+	policies []string
+	ttl      int
+	root     bool
+	revoked  bool
 }
 
 func newFakeVault(initialized, sealed, cloudSeal bool) *fakeVault {
-	return &fakeVault{initialized: initialized, sealed: sealed, cloudSeal: cloudSeal, opensItself: true, mounts: map[string]bool{}, rootToken: "root-from-init"}
+	f := &fakeVault{
+		initialized: initialized, sealed: sealed, cloudSeal: cloudSeal, opensItself: true,
+		mounts: map[string]bool{}, rootToken: "root-from-init", roots: map[string]bool{"root-from-init": true},
+		authConfig: map[string]any{}, authRoles: map[string]map[string]any{}, policies: map[string]string{},
+		tokenRoles: map[string]map[string]any{}, tokens: map[string]*fakeToken{}, accessors: map[string]string{},
+	}
+	return f
+}
+
+// withAccessConfigured pre-provisions the arrangement the operator would have
+// written at initialization -- what an initialized vault carries in its
+// storage, restored or restarted -- bound to the given identity.
+func (f *fakeVault) withAccessConfigured(crName string, id operatorIdentity) *fakeVault {
+	f.authEnabled = true
+	f.authConfig = map[string]any{"kubernetes_host": resources.OpenBAOKubernetesHost}
+	f.policies[resources.OpenBAOOperatorRoleName(crName)] = resources.OpenBAOOperatorPolicy(crName)
+	f.policies[resources.OpenBAOControlPlaneRoleName(crName)] = resources.OpenBAOControlPlanePolicy()
+	f.authRoles[resources.OpenBAOOperatorRoleName(crName)] = map[string]any{
+		"bound_service_account_names":      []any{id.ServiceAccount},
+		"bound_service_account_namespaces": []any{id.Namespace},
+		"token_policies":                   []any{resources.OpenBAOOperatorRoleName(crName)},
+		"token_ttl":                        float64(600),
+		"token_max_ttl":                    float64(600),
+	}
+	f.tokenRoles[resources.OpenBAOControlPlaneRoleName(crName)] = map[string]any{
+		"allowed_policies": []any{resources.OpenBAOControlPlaneRoleName(crName)},
+		"orphan":           true,
+		"renewable":        true,
+		"token_period":     float64(resources.OpenBAOControlPlaneTokenPeriod / time.Second),
+		"token_type":       "service",
+	}
+	return f
+}
+
+// issue mints a fake token with the given policies and TTL.
+func (f *fakeVault) issue(prefix string, policies []string, ttl int) *fakeToken {
+	f.nextToken++
+	client := fmt.Sprintf("%s-%d", prefix, f.nextToken)
+	tok := &fakeToken{accessor: "acc-" + client, policies: policies, ttl: ttl}
+	f.tokens[client] = tok
+	f.accessors[tok.accessor] = client
+	return tok
+}
+
+func (f *fakeVault) clientTokenOf(tok *fakeToken) string {
+	return f.accessors[tok.accessor]
+}
+
+// isRoot reports whether the presented token is a root token.
+func (f *fakeVault) isRoot(token string) bool { return f.roots[token] }
+
+// isLive reports whether the presented token is root or an unrevoked session.
+func (f *fakeVault) isLive(token string) bool {
+	if f.isRoot(token) {
+		return true
+	}
+	tok, ok := f.tokens[token]
+	return ok && !tok.revoked
+}
+
+func writeVaultError(w http.ResponseWriter, status int, msg string) {
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(map[string]any{"errors": []string{msg}})
 }
 
 func (f *fakeVault) serve(t *testing.T) *httptest.Server {
 	t.Helper()
 	mux := http.NewServeMux()
+	f.serveAccess(t, mux)
 	mux.HandleFunc("/v1/sys/health", func(w http.ResponseWriter, _ *http.Request) {
 		f.mu.Lock()
 		defer f.mu.Unlock()
@@ -105,6 +210,10 @@ func (f *fakeVault) serve(t *testing.T) *httptest.Server {
 		f.mu.Lock()
 		defer f.mu.Unlock()
 		f.mountTokens = append(f.mountTokens, r.Header.Get("X-Vault-Token"))
+		if !f.isLive(r.Header.Get("X-Vault-Token")) {
+			writeVaultError(w, http.StatusForbidden, "permission denied")
+			return
+		}
 		out := map[string]any{"sys/": map[string]any{}}
 		for m := range f.mounts {
 			out[m] = map[string]any{}
@@ -114,6 +223,10 @@ func (f *fakeVault) serve(t *testing.T) *httptest.Server {
 	mux.HandleFunc("/v1/sys/mounts/", func(w http.ResponseWriter, r *http.Request) {
 		f.mu.Lock()
 		defer f.mu.Unlock()
+		if !f.isLive(r.Header.Get("X-Vault-Token")) {
+			writeVaultError(w, http.StatusForbidden, "permission denied")
+			return
+		}
 		f.mounts[strings.TrimPrefix(r.URL.Path, "/v1/sys/mounts/")+"/"] = true
 		w.WriteHeader(http.StatusNoContent)
 	})
@@ -158,6 +271,7 @@ func initSecretOf(t *testing.T, c client.Client, name string) *corev1.Secret {
 
 func runEnsure(t *testing.T, planton *v1.PlantonPlatform, c client.Client, srv *httptest.Server) Result {
 	t.Helper()
+	withOperatorIdentity(t, testOperatorIdentity())
 	o := &OpenBAO{}
 	seal := sealOptionsFrom(planton)
 	initSecret, err := readInitSecret(context.Background(), c, vaultInitSecretName(planton), planton.Namespace)
@@ -331,9 +445,10 @@ func TestEnsureInitialized_PopulatedSecretOnUninitializedVaultIsRefused(t *testi
 }
 
 // A restored (or restarted) built-in-seal vault with its Secret present is
-// unsealed from the Secret and its engines re-ensured with the root token.
+// unsealed from the Secret; then the operator signs in as itself and its
+// engines are re-ensured on that session, never with the kept root token.
 func TestEnsureInitialized_RestoredShamir_UnsealsFromSecret(t *testing.T) {
-	vault := newFakeVault(true, true, false)
+	vault := newFakeVault(true, true, false).withAccessConfigured("planton", testOperatorIdentity())
 	vault.mounts["secret/"], vault.mounts["transit/"] = true, true
 	srv := vault.serve(t)
 	planton := vaultTestPlatform(&v1.OpenBAOSpec{InitSecretName: "my-vault-keys"})
@@ -350,8 +465,13 @@ func TestEnsureInitialized_RestoredShamir_UnsealsFromSecret(t *testing.T) {
 	if vault.unsealCalls == 0 || vault.sealed {
 		t.Error("the operator unseals with the kept shares")
 	}
-	if len(vault.mountTokens) == 0 || vault.mountTokens[0] != "kept-root" {
-		t.Errorf("the engines are checked with the kept root token, got %v", vault.mountTokens)
+	if len(vault.mountTokens) == 0 || !strings.HasPrefix(vault.mountTokens[0], "s.login") {
+		t.Errorf("the engines are checked on the operator's own session, got %v", vault.mountTokens)
+	}
+	for _, tok := range vault.mountTokens {
+		if tok == "kept-root" {
+			t.Error("the kept root token is break-glass and is never presented on a steady pass")
+		}
 	}
 }
 
@@ -408,28 +528,49 @@ func TestEnsureInitialized_CloudSealStaysSealed_SentenceByPodAge(t *testing.T) {
 	}
 }
 
-// An open vault whose Secret does not exist is refused with the Secret named
-// and the ways back: the operator and the control plane sign in with the
-// token it holds.
-func TestEnsureInitialized_OpenVaultWithoutSecretIsRefused(t *testing.T) {
-	vault := newFakeVault(true, false, true)
-	srv := vault.serve(t)
-	planton := vaultTestPlatform(&v1.OpenBAOSpec{AutoUnseal: transitSeal(), InitSecretName: "my-vault-keys"})
-	planton.Status.Backup = &v1.BackupStatus{RestoredFrom: "planton-postgres-deadbeef"}
-	c := vaultFakeClient(t, transitCredentials())
+// An open vault whose Secret does not exist is a working platform with a
+// hazard, not a refusal: nothing running needs that Secret. The component is
+// Ready and its sentence says what the missing Secret costs -- the
+// break-glass under a cloud seal, the next restart under the built-in one --
+// and the ways back.
+func TestEnsureInitialized_OpenVaultWithoutSecret_IsReadyWithTheHazardNamed(t *testing.T) {
+	t.Run("cloud seal: break-glass gone", func(t *testing.T) {
+		vault := newFakeVault(true, false, true).withAccessConfigured("planton", testOperatorIdentity())
+		vault.mounts["secret/"], vault.mounts["transit/"] = true, true
+		srv := vault.serve(t)
+		planton := vaultTestPlatform(&v1.OpenBAOSpec{AutoUnseal: transitSeal(), InitSecretName: "my-vault-keys"})
+		planton.Status.Backup = &v1.BackupStatus{RestoredFrom: "planton-postgres-deadbeef"}
+		c := vaultFakeClient(t, transitCredentials())
 
-	res := runEnsure(t, planton, c, srv)
-	if res.Ready || res.Reason != v1.ComponentReasonConfigurationRefused || res.Object == nil || res.Object.Name != "my-vault-keys" {
-		t.Fatalf("expected ConfigurationRefused naming the Secret, got %+v", res)
-	}
-	mustContain(t, res.Message, "came back from archive planton-postgres-deadbeef", "transit key opened it", "does not exist", "Recreate it from the copy you kept", "renamed spec.vault.initSecretName")
+		res := runEnsure(t, planton, c, srv)
+		if !res.Ready {
+			t.Fatalf("expected Ready with the hazard named, got %+v", res)
+		}
+		mustContain(t, res.Message, "OpenBAO healthy", "came back from archive planton-postgres-deadbeef", "transit key opened it", "does not exist", "break-glass", "gone until the Secret is back", "Recreate it from the copy you kept", "renamed spec.vault.initSecretName")
+		if _, ok := tokenSecretOf(t, c); !ok {
+			t.Error("the control plane's token is minted regardless: the platform works")
+		}
+	})
+	t.Run("built-in seal: the next restart", func(t *testing.T) {
+		vault := newFakeVault(true, false, false).withAccessConfigured("planton", testOperatorIdentity())
+		vault.mounts["secret/"], vault.mounts["transit/"] = true, true
+		srv := vault.serve(t)
+		planton := vaultTestPlatform(&v1.OpenBAOSpec{InitSecretName: "my-vault-keys"})
+		c := vaultFakeClient(t)
+
+		res := runEnsure(t, planton, c, srv)
+		if !res.Ready {
+			t.Fatalf("expected Ready with the hazard named, got %+v", res)
+		}
+		mustContain(t, res.Message, "works until the vault next restarts", "nothing can unseal it", "unseal keys are the only way")
+	})
 }
 
 // The steady state re-asserts the note and the fingerprint: a Secret
 // recreated from its data alone regains its pin; a recorded fingerprint is
 // re-asserted with its own value, never the declaration's.
 func TestEnsureInitialized_OpenVault_AnnotationsReasserted(t *testing.T) {
-	vault := newFakeVault(true, false, false)
+	vault := newFakeVault(true, false, false).withAccessConfigured("planton", testOperatorIdentity())
 	vault.mounts["secret/"], vault.mounts["transit/"] = true, true
 	srv := vault.serve(t)
 	planton := vaultTestPlatform(&v1.OpenBAOSpec{InitSecretName: "my-vault-keys"})
@@ -456,7 +597,7 @@ func TestEnsureInitialized_OpenVault_AnnotationsReasserted(t *testing.T) {
 		Data:       bare.Data,
 	}
 	c2 := vaultFakeClient(t, recorded)
-	vault2 := newFakeVault(true, false, false)
+	vault2 := newFakeVault(true, false, false).withAccessConfigured("planton", testOperatorIdentity())
 	vault2.mounts["secret/"], vault2.mounts["transit/"] = true, true
 	if res := runEnsure(t, planton, c2, vault2.serve(t)); !res.Ready {
 		t.Fatalf("expected Ready, got %+v", res)

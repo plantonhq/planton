@@ -245,23 +245,26 @@ func initSecretWriteFailedMessage(seal *resources.OpenBAOSealOptions, initSecret
 		initSecret, err, consequence, resources.DBOpenBAO)
 }
 
-// openVaultWithoutSecretMessage is the refusal for a vault that is open
-// while the Secret that should hold its root token does not exist: a
-// restored vault under a cloud seal with no kept Secret, a renamed
-// spec.vault.initSecretName, an operator Secret deleted from under a running
-// platform. The operator and the control plane sign in with that token, so
-// the platform cannot use its vault until the Secret is back.
+// openVaultWithoutSecretMessage is the Ready sentence for a vault that is
+// open and working while its init Secret does not exist: a restored vault
+// under a cloud seal with no kept Secret, a renamed spec.vault.initSecretName,
+// an operator Secret deleted from under a running platform. Nothing running
+// needs that Secret -- the operator signs in as itself and the control plane
+// with the token the operator mints -- so the platform is not refused; but
+// what the Secret held is gone until it is back, and under the built-in seal
+// that is the only way to open the vault after its next restart.
 func openVaultWithoutSecretMessage(planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, initSecret string) string {
-	origin := "The vault is open"
+	origin := "OpenBAO healthy, but Secret " + initSecret + " does not exist in namespace " + planton.Namespace
 	if planton.Status.Backup != nil && planton.Status.Backup.RestoredFrom != "" {
-		origin = fmt.Sprintf("The vault came back from archive %s and %s opened it", planton.Status.Backup.RestoredFrom, seal.Human())
+		origin = fmt.Sprintf("OpenBAO healthy -- the vault came back from archive %s and %s opened it -- but Secret %s does not exist in namespace %s",
+			planton.Status.Backup.RestoredFrom, seal.Human(), initSecret, planton.Namespace)
 	}
-	consequence := "the operator and the control plane sign in with the root token it holds, so the platform cannot use its vault without it"
+	consequence := "the platform works, and the vault's break-glass (its root token and recovery keys) is gone until the Secret is back"
 	if seal.Word() == resources.OpenBAOSealShamir {
-		consequence = "the operator and the control plane sign in with the root token it holds, and its unseal keys are the only way to open the vault after its next restart"
+		consequence = "the platform works until the vault next restarts, and then nothing can unseal it: that Secret's unseal keys are the only way"
 	}
 	return fmt.Sprintf(
-		"%s, but Secret %s does not exist in namespace %s -- %s. "+
+		"%s: %s. "+
 			"Recreate it from the copy you kept; if you renamed spec.vault.initSecretName, copy the Secret to the new name.",
-		origin, initSecret, planton.Namespace, consequence)
+		origin, consequence)
 }

@@ -35,10 +35,11 @@ func (cp *ControlPlane) Dependencies(planton *v1.PlantonPlatform) []string {
 	// CreateContainerConfigError.
 	deps := []string{"postgresql", "redis", "temporal", "identity", "openfga"}
 	// With the vault component enabled, the control plane's VAULT_TOKEN is a
-	// SecretKeyRef into the openbao init Secret -- same tie as the FGA
-	// ConfigMap above: depend on it so the wait is an explained status, and
-	// so the vault is initialized, unsealed and engine-mounted before the
-	// first Java consumer dials it.
+	// SecretKeyRef into the token Secret the openbao component mints -- same
+	// tie as the FGA ConfigMap above: depend on it so the wait is an
+	// explained status, and so the vault is initialized, unsealed,
+	// engine-mounted, and the token minted before the first Java consumer
+	// dials it.
 	if isVaultEnabled(planton) {
 		deps = append(deps, "openbao")
 	}
@@ -52,6 +53,27 @@ func (cp *ControlPlane) Reconcile(ctx context.Context, c client.Client, _ *runti
 	ownerRef := cp.OwnerReferenceFor(planton)
 
 	cfg := cp.buildConfig(planton, ownerRef)
+
+	// The vault token the Deployment projects is minted by the openbao
+	// component, which this one depends on -- so the Secret exists by the
+	// time this runs, and its accessor goes on the pod template: a token
+	// re-issued after a restore is a new string the running pod would never
+	// see, and the changed accessor is what rolls it.
+	if cfg.Vault != nil {
+		accessor, found, err := readVaultTokenAccessor(ctx, c, planton)
+		if err != nil {
+			return Result{}, err
+		}
+		if !found {
+			return Result{
+				Ready:   false,
+				Reason:  v1.ComponentReasonWaitingForDependency,
+				Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: resources.OpenBAOTokenSecretName(planton.Name)},
+				Message: fmt.Sprintf("Waiting for the vault component to mint the control plane's token into Secret %s", resources.OpenBAOTokenSecretName(planton.Name)),
+			}, nil
+		}
+		cfg.Vault.TokenAccessor = accessor
+	}
 
 	// Every Secret spec.email names must exist with its keys BEFORE the
 	// Deployment projects them, or the pod sits in FailedMount with no reason
@@ -191,16 +213,18 @@ func (cp *ControlPlane) buildConfig(planton *v1.PlantonPlatform, ownerRef *metav
 	}
 
 	// The platform vault is present or absent -- never a placeholder. Enabled:
-	// the real OpenBAO address + the root token by Secret reference. Disabled:
-	// an explicit PLANTON_VAULT_ENABLED=false (the Java side treats missing
-	// VAULT_ADDR withOUT that opt-out as a loud boot failure, protecting the
-	// hosted deployment shape from silently losing its vault).
+	// the real OpenBAO address + the control plane's own token by Secret
+	// reference (the accessor that rolls the pod is read from that Secret in
+	// Reconcile). Disabled: an explicit PLANTON_VAULT_ENABLED=false (the Java
+	// side treats missing VAULT_ADDR withOUT that opt-out as a loud boot
+	// failure, protecting the hosted deployment shape from silently losing
+	// its vault).
 	if isVaultEnabled(planton) {
-		conn := resources.OpenBAOConnection(planton.Name, planton.Namespace, vaultInitSecretName(planton))
+		conn := resources.OpenBAOConnection(planton.Name, planton.Namespace)
 		cfg.Vault = &resources.VaultBinding{
-			APIAddr:        conn.APIAddr,
-			InitSecretName: conn.InitSecretName,
-			RootTokenKey:   conn.RootTokenKey,
+			APIAddr:         conn.APIAddr,
+			TokenSecretName: conn.TokenSecretName,
+			TokenKey:        conn.TokenKey,
 		}
 	}
 

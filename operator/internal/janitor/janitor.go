@@ -8,8 +8,9 @@
 // cluster-scoped dependent:
 //
 //   - a platform's own cluster-scoped satellites (today: the control plane's
-//     token-reviewer ClusterRole and ClusterRoleBinding), which belong to one
-//     platform and should leave when it leaves;
+//     token-reviewer ClusterRole and ClusterRoleBinding, and the vault's
+//     auth-delegator ClusterRoleBinding), which belong to one platform and
+//     should leave when it leaves;
 //   - the shared sub-operators (CloudNativePG, Tekton Pipelines) the first
 //     platform on a cluster installs and every later platform reuses, which
 //     should leave when the LAST platform leaves -- unless something else on

@@ -896,27 +896,60 @@ func TestControlPlaneDeployment_NoVaultMeansExplicitOptOut(t *testing.T) {
 }
 
 // With the vault component enabled, the control plane gets the real OpenBAO
-// Service address and the root token by Secret reference (this vault is
-// single-tenant and exists solely for this control plane), and no opt-out.
+// Service address and its OWN token by Secret reference -- the one the
+// operator minted through the control plane's token role, never the init
+// Secret's root token -- and no opt-out. The token's accessor rides the pod
+// template so a re-issued token rolls the Deployment.
 func TestControlPlaneDeployment_VaultBinding(t *testing.T) {
 	cfg := testControlPlaneConfig()
-	conn := OpenBAOConnection("planton", "default", OpenBAOInitSecretName("planton"))
+	conn := OpenBAOConnection("planton", "default")
 	cfg.Vault = &VaultBinding{
-		APIAddr:        conn.APIAddr,
-		InitSecretName: conn.InitSecretName,
-		RootTokenKey:   conn.RootTokenKey,
+		APIAddr:         conn.APIAddr,
+		TokenSecretName: conn.TokenSecretName,
+		TokenKey:        conn.TokenKey,
+		TokenAccessor:   "accessor-one",
 	}
 	deploy := ControlPlaneDeployment(cfg)
-	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
+	container := deploy.Spec.Template.Spec.Containers[0]
+	envMap := envVarMap(container.Env)
 
 	if envMap["VAULT_ADDR"] != conn.APIAddr {
 		t.Errorf("VAULT_ADDR = %q, want the deployed OpenBAO address %q", envMap["VAULT_ADDR"], conn.APIAddr)
 	}
 	if envMap["VAULT_TOKEN"] != fromSecretRef {
-		t.Error("VAULT_TOKEN must come from the init Secret, never a literal")
+		t.Error("VAULT_TOKEN must come from a Secret, never a literal")
+	}
+	for _, env := range container.Env {
+		if env.Name != "VAULT_TOKEN" {
+			continue
+		}
+		ref := env.ValueFrom.SecretKeyRef
+		if ref.Name != OpenBAOTokenSecretName("planton") || ref.Key != OpenBAOTokenSecretTokenKey {
+			t.Errorf("VAULT_TOKEN reads %s/%s, want the operator-minted token Secret %s/%s", ref.Name, ref.Key, OpenBAOTokenSecretName("planton"), OpenBAOTokenSecretTokenKey)
+		}
+		if ref.Name == OpenBAOInitSecretName("planton") || ref.Key == OpenBAOInitSecretRootTokenKey {
+			t.Error("the control plane must never read the init Secret's root token")
+		}
 	}
 	if _, ok := envMap["PLANTON_VAULT_ENABLED"]; ok {
 		t.Error("PLANTON_VAULT_ENABLED must be absent when the vault is wired (enabled is the Java default)")
+	}
+	if got := deploy.Spec.Template.Annotations[ControlPlaneVaultTokenAccessorAnnotation]; got != "accessor-one" {
+		t.Errorf("pod template annotation %s = %q, want the token's accessor", ControlPlaneVaultTokenAccessorAnnotation, got)
+	}
+
+	// A re-minted token is a new accessor, and a new accessor is a changed
+	// pod template -- what makes the Deployment roll.
+	cfg.Vault.TokenAccessor = "accessor-two"
+	rolled := ControlPlaneDeployment(cfg)
+	if rolled.Spec.Template.Annotations[ControlPlaneVaultTokenAccessorAnnotation] == deploy.Spec.Template.Annotations[ControlPlaneVaultTokenAccessorAnnotation] {
+		t.Error("a changed token accessor must change the pod template")
+	}
+
+	// Without a vault the template carries no vault annotation at all.
+	bare := ControlPlaneDeployment(testControlPlaneConfig())
+	if _, ok := bare.Spec.Template.Annotations[ControlPlaneVaultTokenAccessorAnnotation]; ok {
+		t.Error("a platform without a vault must not carry the vault token annotation")
 	}
 }
 

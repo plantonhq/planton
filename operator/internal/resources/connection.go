@@ -33,24 +33,24 @@ func PostgreSQLConnection(crName, namespace string) PostgreSQLConnectionInfo {
 	}
 }
 
-// OpenBAOConnectionInfo provides API address and credential references.
+// OpenBAOConnectionInfo provides the API address and the credential
+// reference a consumer signs in with: the token Secret the operator mints
+// for it, never the init Secret -- the root token in there is the vault's
+// break-glass and no consumer reads it.
 type OpenBAOConnectionInfo struct {
-	APIAddr        string
-	Port           int32
-	InitSecretName string
-	RootTokenKey   string
+	APIAddr         string
+	Port            int32
+	TokenSecretName string
+	TokenKey        string
 }
 
 // OpenBAOConnection returns connection info for the OpenBAO instance.
-// initSecretName is the Secret the vault's root token lives in -- the
-// adopter's own when the declaration names one, the operator's otherwise --
-// so the consumer reads the token from wherever the operator wrote it.
-func OpenBAOConnection(crName, namespace, initSecretName string) OpenBAOConnectionInfo {
+func OpenBAOConnection(crName, namespace string) OpenBAOConnectionInfo {
 	return OpenBAOConnectionInfo{
-		APIAddr:        OpenBAOAPIAddr(crName, namespace),
-		Port:           OpenBAOPort,
-		InitSecretName: initSecretName,
-		RootTokenKey:   OpenBAOInitSecretRootTokenKey,
+		APIAddr:         OpenBAOAPIAddr(crName, namespace),
+		Port:            OpenBAOPort,
+		TokenSecretName: OpenBAOTokenSecretName(crName),
+		TokenKey:        OpenBAOTokenSecretTokenKey,
 	}
 }
 

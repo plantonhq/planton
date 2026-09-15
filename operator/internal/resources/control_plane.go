@@ -162,21 +162,35 @@ type ControlPlaneConfig struct {
 }
 
 // VaultBinding carries what the control plane needs to reach the deployed
-// OpenBAO. The root token rides a Secret reference (the operator-owned init
-// Secret), never a literal: this vault is single-tenant and exists solely for
-// this control plane, so the root token to its sole consumer is a deliberate
-// trust call (a scoped periodic token would add a renewal lifecycle -- a new
-// failure mode -- for no boundary gain; the unseal keys stay separate).
+// OpenBAO: the address, and the token the operator minted for it, by Secret
+// reference and never a literal. The token is the control plane's own --
+// limited to the two engines it uses, kept alive by the operator, issued
+// again after a restore -- and never the vault's root token, which stays in
+// the init Secret as break-glass. A re-issued token is a new string the
+// running pod would never see, so the token's accessor rides the pod
+// template as an annotation and rolls the Deployment when it changes.
 type VaultBinding struct {
 	// APIAddr is the OpenBAO Service's in-cluster HTTP address.
 	APIAddr string
 
-	// InitSecretName is the operator's init Secret holding the root token.
-	InitSecretName string
+	// TokenSecretName is the operator-owned Secret holding the control
+	// plane's token.
+	TokenSecretName string
 
-	// RootTokenKey is the token's key within the init Secret.
-	RootTokenKey string
+	// TokenKey is the token's key within that Secret.
+	TokenKey string
+
+	// TokenAccessor identifies the token the Secret currently holds -- the
+	// public handle, never the token itself. A changed accessor is a changed
+	// token, and the pod template carries it so the Deployment rolls.
+	TokenAccessor string
 }
+
+// ControlPlaneVaultTokenAccessorAnnotation is the pod-template annotation
+// carrying the vault token's accessor (VaultBinding.TokenAccessor) -- the
+// same grain as the gateway's config-hash annotation: the value that must
+// roll the pod when it changes, on the template that decides a roll.
+const ControlPlaneVaultTokenAccessorAnnotation = "planton.ai/vault-token-accessor"
 
 // LicenseBinding carries the resolved license-key delivery: Key for an
 // inline spec value, SecretName+SecretKey for a Secret-backed one (exactly
@@ -606,7 +620,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 				},
 			},
 			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{Labels: labels},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels, Annotations: controlPlanePodAnnotations(cfg)},
 				Spec: corev1.PodSpec{
 					ServiceAccountName: ControlPlaneServiceAccountName(cfg.CRName),
 					Volumes:            volumes,
@@ -1202,11 +1216,11 @@ func consoleEnvVars(binding *ConsoleBinding) []corev1.EnvVar {
 }
 
 // vaultEnvVars wires the platform vault: the deployed OpenBAO's real address
-// and root token when the component is enabled, or an explicit opt-out when it
-// is not. There is deliberately NO placeholder arm -- a dead vault address
-// boots fine and then fails confusingly at first use (and log-screams from the
-// OIDC signing-key bootstrap on every boot), which is the exact rot class the
-// storage seam eliminated for the R2 variables.
+// and the control plane's own token when the component is enabled, or an
+// explicit opt-out when it is not. There is deliberately NO placeholder arm
+// -- a dead vault address boots fine and then fails confusingly at first use
+// (and log-screams from the OIDC signing-key bootstrap on every boot), which
+// is the exact rot class the storage seam eliminated for the R2 variables.
 func vaultEnvVars(binding *VaultBinding) []corev1.EnvVar {
 	if binding == nil {
 		// The control plane's vault default is enabled+required (so a hosted
@@ -1219,8 +1233,19 @@ func vaultEnvVars(binding *VaultBinding) []corev1.EnvVar {
 	return []corev1.EnvVar{
 		// ── platform vault (OpenBAO component): secrets + Transit signing ──
 		{Name: "VAULT_ADDR", Value: binding.APIAddr},
-		secretEnv("VAULT_TOKEN", binding.InitSecretName, binding.RootTokenKey),
+		secretEnv("VAULT_TOKEN", binding.TokenSecretName, binding.TokenKey),
 	}
+}
+
+// controlPlanePodAnnotations is what rolls the control plane's pods when a
+// value they read only at start changes: today the vault token's accessor.
+// Nil when nothing applies, so a platform without a vault renders a bare
+// template.
+func controlPlanePodAnnotations(cfg ControlPlaneConfig) map[string]string {
+	if cfg.Vault == nil || cfg.Vault.TokenAccessor == "" {
+		return nil
+	}
+	return map[string]string{ControlPlaneVaultTokenAccessorAnnotation: cfg.Vault.TokenAccessor}
 }
 
 // secretBackendEnvVars activates the control plane's default-secret-backend

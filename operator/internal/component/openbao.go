@@ -38,6 +38,13 @@ import (
 // either -- and the component waits for the vault's role and database to
 // exist before the server is rendered (the backend gives up after one
 // failed connect).
+//
+// Nothing running signs in with the root token. The operator signs in as
+// its own ServiceAccount through the Kubernetes auth method it enables at
+// initialization (openbao_login.go), and hands the control plane a token it
+// mints through a token role, keeps alive, and issues again after a restore
+// (openbao_token.go). The root token stays in the init Secret as the
+// break-glass, used by the operator only to repair its own sign-in.
 type OpenBAO struct{ Base }
 
 func (o *OpenBAO) Name() string { return "openbao" }
@@ -90,6 +97,15 @@ func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	}
 	if refused != nil {
 		return *refused, nil
+	}
+
+	// The vault verifies a login's ServiceAccount token with the API server
+	// using its own ServiceAccount, which therefore needs the cluster's
+	// auth-delegator role. Cluster-scoped, so it is a satellite (labeled
+	// with the platform's UID, collected by the janitor) applied here as a
+	// typed object -- never chart output, which the apply seam would refuse.
+	if err := o.ApplyTypedObject(ctx, c, resources.OpenBAOAuthDelegatorClusterRoleBinding(planton.Namespace, planton.Name, planton.UID)); err != nil {
+		return Result{}, fmt.Errorf("applying the vault's auth-delegator ClusterRoleBinding: %w", err)
 	}
 
 	chartData := resources.LoadOpenBAOChart()
@@ -284,12 +300,62 @@ func (o *OpenBAO) initializeVault(ctx context.Context, c client.Client, planton 
 		}
 	}
 
-	if err := bootstrap.EnsureOpenBAOMounts(ctx, httpClient, apiAddr, initResult.RootToken); err != nil {
+	// The root token is in this pass's memory and nowhere else it will be
+	// used from: the engines and the whole access arrangement are written
+	// with it now, then the operator signs in as itself and finishes the
+	// pass on its own session -- which proves, before the platform is ever
+	// Ready, that the operator's role and policy are enough.
+	root := rootSession(initResult.RootToken, apiAddr, httpClient)
+	if err := bootstrap.EnsureOpenBAOMounts(ctx, httpClient, apiAddr, root.token); err != nil {
 		return Result{}, fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
+	}
+	id, err := readOperatorIdentity()
+	if err != nil {
+		return Result{Ready: false, Reason: v1.ComponentReasonReconcileFailed, Message: err.Error()}, nil
+	}
+	if err := configureVaultAccess(ctx, root, planton.Name, *id); err != nil {
+		return Result{}, fmt.Errorf("configuring the vault's access arrangement: %w", err)
+	}
+	session, refused, err := signIn(ctx, planton, apiAddr, httpClient, initResult.RootToken, initSecretName)
+	if err != nil {
+		return Result{}, err
+	}
+	if refused != nil {
+		return *refused, nil
+	}
+	defer session.close(ctx)
+	if err := o.finishOpenVault(ctx, c, planton, session); err != nil {
+		return Result{}, err
 	}
 
 	log.Info("OpenBAO initialized and open")
 	return Result{Ready: true, Message: "OpenBAO healthy (initialized)"}, nil
+}
+
+// finishOpenVault is what every pass with an open vault does on the
+// operator's own session: the engines ensured, the access arrangement
+// re-asserted (a write only on drift), the control plane's token kept alive
+// or minted.
+func (o *OpenBAO) finishOpenVault(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, s *vaultSession) error {
+	if err := bootstrap.EnsureOpenBAOMounts(ctx, s.http, s.apiAddr, s.token); err != nil {
+		return fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
+	}
+	if err := ensureVaultAccess(ctx, s, planton.Name, s.identity); err != nil {
+		return fmt.Errorf("re-asserting the vault's access arrangement: %w", err)
+	}
+	if _, err := ensureControlPlaneToken(ctx, c, planton, s, o.OwnerReferenceFor(planton)); err != nil {
+		return fmt.Errorf("ensuring the control plane's vault token: %w", err)
+	}
+	return nil
+}
+
+// rootTokenOf is the break-glass a pass may repair its sign-in with: the
+// init Secret's root token, or "" when the Secret is gone.
+func rootTokenOf(initSecret *corev1.Secret) string {
+	if initSecret == nil {
+		return ""
+	}
+	return string(initSecret.Data[resources.OpenBAOInitSecretRootTokenKey])
 }
 
 // unsealFromInitSecret opens a built-in-seal vault that is initialized and
@@ -316,35 +382,48 @@ func (o *OpenBAO) unsealFromInitSecret(ctx context.Context, c client.Client, pla
 	if err := bootstrap.UnsealOpenBAO(ctx, httpClient, apiAddr, unsealKeys); err != nil {
 		return Result{}, fmt.Errorf("unsealing OpenBAO: %w", err)
 	}
-	if err := bootstrap.EnsureOpenBAOMounts(ctx, httpClient, apiAddr, string(initSecret.Data[resources.OpenBAOInitSecretRootTokenKey])); err != nil {
-		return Result{}, fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
+	session, refused, err := signIn(ctx, planton, apiAddr, httpClient, rootTokenOf(initSecret), initSecretName)
+	if err != nil {
+		return Result{}, err
+	}
+	if refused != nil {
+		return *refused, nil
+	}
+	defer session.close(ctx)
+	if err := o.finishOpenVault(ctx, c, planton, session); err != nil {
+		return Result{}, err
 	}
 
 	log.Info("OpenBAO unsealed from stored keys")
 	return Result{Ready: true, Message: "OpenBAO healthy (unsealed)"}, nil
 }
 
-// reconcileOpenVault is the steady state. The engine mounts are ensured every
-// pass (idempotent GET + enable-if-missing) with the root token from the init
-// Secret, and the Secret's note and fingerprint are re-asserted (annotations
-// only). A vault that is open while its Secret does not exist is refused
-// with the Secret named: the operator and the control plane sign in with the
-// token it holds.
+// reconcileOpenVault is the steady state: the operator signs in as itself,
+// ensures the engines, re-asserts the access arrangement and the init
+// Secret's note and fingerprint (annotations only), and keeps the control
+// plane's token alive. A vault that is open while its init Secret does not
+// exist is a working platform with a hazard, not a refusal: nothing running
+// needs that Secret, so the component is Ready and its sentence says what
+// the missing Secret costs and what to do before it costs it.
 func (o *OpenBAO) reconcileOpenVault(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, initSecret *corev1.Secret, apiAddr string, httpClient *http.Client) (Result, error) {
 	log := logf.FromContext(ctx).WithValues("component", o.Name())
 	initSecretName := vaultInitSecretName(planton)
 
-	if initSecret == nil {
-		return Result{
-			Ready:   false,
-			Reason:  v1.ComponentReasonConfigurationRefused,
-			Object:  &v1.ComponentObjectReference{Kind: "Secret", Name: initSecretName},
-			Message: openVaultWithoutSecretMessage(planton, seal, initSecretName),
-		}, nil
+	session, refused, err := signIn(ctx, planton, apiAddr, httpClient, rootTokenOf(initSecret), initSecretName)
+	if err != nil {
+		return Result{}, err
+	}
+	if refused != nil {
+		return *refused, nil
+	}
+	defer session.close(ctx)
+	if err := o.finishOpenVault(ctx, c, planton, session); err != nil {
+		return Result{}, err
 	}
 
-	if err := bootstrap.EnsureOpenBAOMounts(ctx, httpClient, apiAddr, string(initSecret.Data[resources.OpenBAOInitSecretRootTokenKey])); err != nil {
-		return Result{}, fmt.Errorf("ensuring OpenBAO secrets engines: %w", err)
+	if initSecret == nil {
+		log.Info("OpenBAO ready; its init Secret does not exist", "secret", initSecretName)
+		return Result{Ready: true, Message: openVaultWithoutSecretMessage(planton, seal, initSecretName)}, nil
 	}
 	if err := o.ensureInitSecretAnnotations(ctx, c, planton, seal, initSecret); err != nil {
 		return Result{}, err

@@ -1,7 +1,6 @@
 package resources
 
 import (
-	neturl "net/url"
 	"strings"
 	"testing"
 
@@ -109,16 +108,22 @@ func TestOpenBAOHelmValues_Storage(t *testing.T) {
 	if !ok {
 		t.Fatalf("expected plain environment variables, got %v", server["extraEnvironmentVars"])
 	}
-	url, _ := plain[OpenBAOStorageURLEnv].(string)
-	if url != "postgres://openbao@my-planton-postgres-rw.planton.svc.cluster.local:5432/openbao?sslmode=disable" {
-		t.Errorf("the storage URL must be a plain variable naming role, host, and database with no password, got %q", url)
+	for k, want := range map[string]string{
+		OpenBAOStorageHostEnv:     "my-planton-postgres-rw.planton.svc.cluster.local",
+		OpenBAOStoragePortEnv:     "5432",
+		OpenBAOStorageDatabaseEnv: "openbao",
+		OpenBAOStorageUserEnv:     "openbao",
+		OpenBAOStorageSSLModeEnv:  "disable",
+	} {
+		if got, _ := plain[k].(string); got != want {
+			t.Errorf("the storage connection rides the driver's environment: %s = %q, want %q", k, got, want)
+		}
 	}
-	parsed, err := neturl.Parse(url)
-	if err != nil {
-		t.Fatalf("the storage URL must parse: %v", err)
+	if _, has := plain["BAO_PG_CONNECTION_URL"]; has {
+		t.Error("no connection URL anywhere: the driver reads the environment when the config names none")
 	}
-	if _, has := parsed.User.Password(); has || parsed.User.Username() != PostgreSQLVaultRole {
-		t.Errorf("the storage URL must name the role and carry no password, got %q", url)
+	if _, has := plain[OpenBAOStoragePasswordEnv]; has {
+		t.Error("the password is never a plain variable")
 	}
 
 	env, ok := server["extraSecretEnvironmentVars"].([]any)
@@ -131,14 +136,29 @@ func TestOpenBAOHelmValues_Storage(t *testing.T) {
 	}
 }
 
-// The connection URL is composed in one place: the vault's own role and
-// database on the platform's primary, with the platform's in-cluster TLS
-// posture, and no password -- that is a separate variable.
-func TestOpenBAOStorageURL(t *testing.T) {
-	got := OpenBAOStorageURL("my-planton", "planton")
-	want := "postgres://openbao@my-planton-postgres-rw.planton.svc.cluster.local:5432/openbao?sslmode=disable"
-	if got != want {
-		t.Errorf("URL\n got: %s\nwant: %s", got, want)
+// The connection is composed in one place, as the driver's environment: the
+// vault's own role and database on the platform's primary, the platform's
+// in-cluster TLS posture, and no password -- that is a projected variable.
+// The standalone OpenBao kind hands its connection over in exactly these
+// five variables, so both vaults read the same way.
+func TestOpenBAOStorageEnv(t *testing.T) {
+	got := OpenBAOStorageEnv("my-planton", "planton")
+	want := map[string]string{
+		"PGHOST": "my-planton-postgres-rw.planton.svc.cluster.local", "PGPORT": "5432", "PGDATABASE": "openbao", "PGUSER": "openbao", "PGSSLMODE": "disable",
+	}
+	if len(got) != len(want) {
+		t.Fatalf("env = %v, want exactly %v", got, want)
+	}
+	for k, v := range want {
+		if got[k] != v {
+			t.Errorf("%s = %q, want %q", k, got[k], v)
+		}
+	}
+	if _, has := got["PGPASSWORD"]; has {
+		t.Error("the password never rides the plain environment")
+	}
+	if !strings.Contains(OpenBAOHelmValues(testOpenBAOOptions())["server"].(map[string]any)["standalone"].(map[string]any)["config"].(string), `storage "postgresql" {`+"\n  max_parallel") {
+		t.Error("the storage stanza names the pool cap and nothing about the connection")
 	}
 }
 
@@ -205,6 +225,16 @@ func TestOpenBAOInitSecretNote(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			note := OpenBAOInitSecretNote("my-planton", tc.seal, tc.adoptersOwn)
+			// Under every seal and owner: nothing running signs in with the
+			// root token, and the note never says it does.
+			for _, want := range []string{"Nothing running signs in with the root token", "own Kubernetes identity", "token the operator mints", "repair its own sign-in"} {
+				if !strings.Contains(note, want) {
+					t.Errorf("note must say %q, got: %s", want, note)
+				}
+			}
+			if strings.Contains(note, "control plane sign in with") {
+				t.Errorf("note must not describe the root token as a sign-in credential, got: %s", note)
+			}
 			for _, want := range tc.want {
 				if !strings.Contains(note, want) {
 					t.Errorf("note must say %q, got: %s", want, note)
@@ -305,8 +335,8 @@ func TestOpenBAOHelmValues_ChartRendering(t *testing.T) {
 	kinds := make(map[string]bool)
 	for _, obj := range objs {
 		kinds[obj.GetKind()] = true
-		if obj.GetKind() == "ClusterRoleBinding" && obj.GetName() == "test-openbao-server-binding" {
-			t.Error("auth-delegator ClusterRoleBinding must be disabled -- the operator RBAC cannot grant tokenreview permissions")
+		if obj.GetKind() == "ClusterRoleBinding" {
+			t.Errorf("the chart must render no cluster-scoped object (%s): a namespaced platform cannot own one; the vault's auth-delegator grant is applied as a satellite by the operator", obj.GetName())
 		}
 	}
 	if !kinds["StatefulSet"] || !kinds["Service"] {
@@ -324,17 +354,23 @@ func TestOpenBAOHelmValues_ChartRendering(t *testing.T) {
 		t.Errorf("rendered container must carry the requests + memory limit, got resources=%v", c["resources"])
 	}
 
-	// The storage seams, at the render: the URL is a plain variable with no
-	// password, the password is projected from the role Secret's key, and
-	// the data mount the file backend needed is gone with the volume.
+	// The storage seams, at the render: the connection's public parts are
+	// plain variables, the password is projected from the role Secret's key,
+	// no URL exists, and the data mount the file backend needed is gone with
+	// the volume.
 	envs, _, _ := unstructured.NestedSlice(c, "env")
 	byName := envByName(envs)
-	urlEnv := byName[OpenBAOStorageURLEnv]
-	if urlEnv == nil {
-		t.Fatalf("rendered container carries no %s variable; env=%v", OpenBAOStorageURLEnv, envs)
+	for k, want := range OpenBAOStorageEnv("test", "default") {
+		e := byName[k]
+		if e == nil {
+			t.Fatalf("rendered container carries no %s variable; env=%v", k, envs)
+		}
+		if v, _ := e["value"].(string); v != want {
+			t.Errorf("%s = %v, want the plain value %q", k, e, want)
+		}
 	}
-	if v, _ := urlEnv["value"].(string); v != OpenBAOStorageURL("test", "default") || strings.Contains(v, "password") {
-		t.Errorf("%s must be the plain, password-less URL, got %v", OpenBAOStorageURLEnv, urlEnv)
+	if byName["BAO_PG_CONNECTION_URL"] != nil {
+		t.Error("rendered container must carry no connection URL")
 	}
 	passEnv := byName[OpenBAOStoragePasswordEnv]
 	if passEnv == nil {

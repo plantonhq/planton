@@ -2,6 +2,7 @@ package component
 
 import (
 	"errors"
+	"strings"
 	"testing"
 	"time"
 
@@ -88,17 +89,21 @@ func TestInitSecretWriteFailedMessage(t *testing.T) {
 	mustContain(t, cloud, "still opens itself from your key", "break-glass", "cannot be initialized again")
 }
 
-// An open vault with no Secret: the sentence names where the vault came
-// from, which seal opened it, what the missing Secret held, and both ways
-// back. Under the built-in seal it also says the next restart cannot open.
+// An open vault with no Secret: a Ready sentence that says the platform
+// works, where the vault came from, which seal opened it, what the missing
+// Secret costs, and both ways back. Under the built-in seal the cost is the
+// next restart; under a cloud seal, the break-glass.
 func TestOpenVaultWithoutSecretMessage(t *testing.T) {
 	planton := vaultTestPlatform(&v1.OpenBAOSpec{InitSecretName: "my-vault-keys"})
 	shamir := openVaultWithoutSecretMessage(planton, nil, "my-vault-keys")
-	mustContain(t, shamir, "The vault is open, but Secret my-vault-keys does not exist", "only way to open the vault after its next restart", "Recreate it from the copy you kept", "renamed spec.vault.initSecretName")
+	mustContain(t, shamir, "OpenBAO healthy, but Secret my-vault-keys does not exist", "works until the vault next restarts", "unseal keys are the only way", "Recreate it from the copy you kept", "renamed spec.vault.initSecretName")
 
 	planton.Status.Backup = &v1.BackupStatus{RestoredFrom: "planton-postgres-deadbeef"}
 	cloud := openVaultWithoutSecretMessage(planton, &resources.OpenBAOSealOptions{AwsKms: &resources.OpenBAOAwsKmsSealOptions{}}, "my-vault-keys")
-	mustContain(t, cloud, "came back from archive planton-postgres-deadbeef", "an AWS KMS key opened it", "cannot use its vault without it")
+	mustContain(t, cloud, "came back from archive planton-postgres-deadbeef", "an AWS KMS key opened it", "the platform works", "break-glass", "gone until the Secret is back")
+	if strings.Contains(shamir, "sign in with") || strings.Contains(cloud, "sign in with") {
+		t.Error("the sentence must not describe the root token as anything's sign-in")
+	}
 }
 
 // The init Secret's contract in one place: which data key a seal's keys live
