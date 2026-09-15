@@ -27,7 +27,7 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - dedicated node VM hours follow the job schedule -- up to 2 Standard_NC6S_V3 (V100) nodes bill the GPU size's rate only while scaled up, plus the deliberately short 10-minute idle tail
+        - dedicated node VM hours follow the job schedule -- up to 2 Standard_NC6s_v3 (V100) nodes bill the GPU size's rate only while scaled up, plus the deliberately short 10-minute idle tail
         - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own components
         - network egress and inter-region data movement follow the jobs, not the manifest -- GPU clusters often run where quota lives, away from the workspace's region
       notes: Zero committed cost -- min_node_count 0 keeps the expensive GPU meter entirely off while idle; every billed hour is a scaled-up V100 node-hour.

@@ -11,7 +11,7 @@ spec:
   region: eastus
   # NC-series (V100): check the family's regional quota BEFORE sizing;
   # the failure otherwise arrives at scale-up, not at create.
-  vmSize: STANDARD_NC6S_V3
+  vmSize: Standard_NC6s_v3
   vmPriority: DEDICATED
   scaleSettings:
     minNodeCount: 0
