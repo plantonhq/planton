@@ -56,8 +56,15 @@ type TestCloudResourceGenericSpec struct {
 	SensitiveString string                    `protobuf:"bytes,15,opt,name=sensitive_string,json=sensitiveString,proto3" json:"sensitive_string,omitempty"`
 	SensitiveRef    *v1.StringValueOrRef      `protobuf:"bytes,16,opt,name=sensitive_ref,json=sensitiveRef,proto3" json:"sensitive_ref,omitempty"`
 	Replicas        *int32                    `protobuf:"varint,18,opt,name=replicas,proto3,oneof" json:"replicas,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// A kind-less reference declared access, not placement: no default_kind
+	// (the kind is stated per manifest in valueFrom) and containment_exempt
+	// authored on the field. Durable fixture for the containment-decision
+	// registry's "-> *" form and for every consumer that must skip such an
+	// edge when it resolves nesting, so the contract holds even when no
+	// production kind happens to carry the shape.
+	KindlessAccessRef *v1.StringValueOrRef `protobuf:"bytes,19,opt,name=kindless_access_ref,json=kindlessAccessRef,proto3" json:"kindless_access_ref,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *TestCloudResourceGenericSpec) Reset() {
@@ -209,6 +216,13 @@ func (x *TestCloudResourceGenericSpec) GetReplicas() int32 {
 	return 0
 }
 
+func (x *TestCloudResourceGenericSpec) GetKindlessAccessRef() *v1.StringValueOrRef {
+	if x != nil {
+		return x.KindlessAccessRef
+	}
+	return nil
+}
+
 // TestGenericStep is the structured replacement for v1alpha1's plain command
 // strings.
 type TestGenericStep struct {
@@ -313,7 +327,7 @@ var File_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto protoreflect
 
 const file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc = "" +
 	"\n" +
-	":catalog/_test/testcloudresourcegeneric/v1alpha2/spec.proto\x123dev.planton._test.testcloudresourcegeneric.v1alpha2\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x94\v\n" +
+	":catalog/_test/testcloudresourcegeneric/v1alpha2/spec.proto\x123dev.planton._test.testcloudresourcegeneric.v1alpha2\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfe\v\n" +
 	"\x1cTestCloudResourceGenericSpec\x12:\n" +
 	"\fdisplay_name\x18\x01 \x01(\tB\x12\x8a\xa6\x1d\x0edefault-stringH\x00R\vdisplayName\x88\x01\x01\x12,\n" +
 	"\vint32_field\x18\x03 \x01(\x05B\x06\x8a\xa6\x1d\x0242H\x01R\n" +
@@ -336,7 +350,8 @@ const file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_rawDesc = 
 	"\x05steps\x18\x0e \x03(\v2D.dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericStepR\x05steps\x12/\n" +
 	"\x10sensitive_string\x18\x0f \x01(\tB\x04\xa0\xa6\x1d\x01R\x0fsensitiveString\x12]\n" +
 	"\rsensitive_ref\x18\x10 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\xa0\xa6\x1d\x01R\fsensitiveRef\x12&\n" +
-	"\breplicas\x18\x12 \x01(\x05B\x05\x8a\xa6\x1d\x011H\bR\breplicas\x88\x01\x01\x1a9\n" +
+	"\breplicas\x18\x12 \x01(\x05B\x05\x8a\xa6\x1d\x011H\bR\breplicas\x88\x01\x01\x12h\n" +
+	"\x13kindless_access_ref\x18\x13 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\x98\xd4a\x01R\x11kindlessAccessRef\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x0f\n" +
@@ -387,11 +402,12 @@ var file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_depIdxs = []
 	3, // 4: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.labels:type_name -> dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.LabelsEntry
 	1, // 5: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.steps:type_name -> dev.planton._test.testcloudresourcegeneric.v1alpha2.TestGenericStep
 	4, // 6: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.sensitive_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	4, // 7: dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.kindless_access_ref:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_catalog__test_testcloudresourcegeneric_v1alpha2_spec_proto_init() }

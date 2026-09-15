@@ -39,6 +39,7 @@ func TestCollectSpecPaths_HermeticFixture(t *testing.T) {
 		"spec.float_field",
 		"spec.int32_field",
 		"spec.int64_field",
+		"spec.kindless_access_ref",
 		"spec.labels",
 		"spec.nested.nested_int",
 		"spec.nested.nested_string",

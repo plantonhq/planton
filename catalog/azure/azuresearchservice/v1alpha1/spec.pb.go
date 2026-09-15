@@ -472,6 +472,12 @@ type AzureSearchServiceSharedPrivateLink struct {
 	// default reference kind -- the target can be any of several kinds
 	// (storage account, SQL server, Key Vault, Cognitive account, ...);
 	// name the kind explicitly in valueFrom when referencing.
+	//
+	// Containment-exempt: a shared private link is the search service's
+	// outbound door to a resource it indexes or enriches from; the
+	// service is not deployed into that resource. Every listed target is
+	// a container, and a service linked by reference would otherwise be
+	// drawn inside the store it reads.
 	TargetResourceId *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=target_resource_id,json=targetResourceId,proto3" json:"target_resource_id,omitempty"`
 	// The approval-request message shown to the target resource's
 	// owner (the link sits "Pending" until they approve). Updates in
@@ -585,12 +591,13 @@ const file_catalog_azure_azuresearchservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1aAzureSearchServiceIdentity\x12i\n" +
 	"\x04type\x18\x01 \x01(\x0e2M.dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceIdentityTypeB\x06\xbaH\x03\xc8\x01\x01R\x04type\x12z\n" +
 	"\fidentity_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\x8c\x10\x92\xd4a\x1astatus.outputs.identity_idR\videntityIds:\xf2\x01\xbaH\xee\x01\x1a\xeb\x01\n" +
-	"\x17identity_ids_match_type\x12midentity_ids is required for USER_ASSIGNED and SYSTEM_AND_USER_ASSIGNED and must be empty for SYSTEM_ASSIGNED\x1aa(this.type == 2 || this.type == 3) ? this.identity_ids.size() > 0 : this.identity_ids.size() == 0\"\xbb\x02\n" +
+	"\x17identity_ids_match_type\x12midentity_ids is required for USER_ASSIGNED and SYSTEM_AND_USER_ASSIGNED and must be empty for SYSTEM_ASSIGNED\x1aa(this.type == 2 || this.type == 3) ? this.identity_ids.size() > 0 : this.identity_ids.size() == 0\"\xbf\x02\n" +
 	"#AzureSearchServiceSharedPrivateLink\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12a\n" +
-	"\x10subresource_name\x18\x02 \x01(\tB6\xbaH3\xc8\x01\x01r.2,^[a-zA-Z0-9][a-zA-Z0-9_.-]{1,61}[a-zA-Z0-9]$R\x0fsubresourceName\x12h\n" +
-	"\x12target_resource_id\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x10targetResourceId\x12'\n" +
+	"\x10subresource_name\x18\x02 \x01(\tB6\xbaH3\xc8\x01\x01r.2,^[a-zA-Z0-9][a-zA-Z0-9_.-]{1,61}[a-zA-Z0-9]$R\x0fsubresourceName\x12l\n" +
+	"\x12target_resource_id\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x10targetResourceId\x12'\n" +
 	"\x0frequest_message\x18\x04 \x01(\tR\x0erequestMessage*q\n" +
 	"\x1dAzureSearchServiceHostingMode\x121\n" +
 	"-azure_search_service_hosting_mode_unspecified\x10\x00\x12\v\n" +

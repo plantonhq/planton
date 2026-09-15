@@ -215,12 +215,18 @@ type AzureServiceBusQueueSpec struct {
 	// is a legal target), or pass a literal name. The target must exist
 	// before the queue; forwarding to a session-aware target is rejected by
 	// Azure.
+	//
+	// Containment-exempt: the queue LIVES in its namespace and forwards
+	// TO the target. A topic is a container (its subscriptions live in
+	// it), so a queue forwarding to a topic by reference would otherwise
+	// be drawn inside the topic it feeds; on a diagram the queue stays a
+	// sibling of the topic with a line to it.
 	ForwardTo *v1.StringValueOrRef `protobuf:"bytes,16,opt,name=forward_to,json=forwardTo,proto3" json:"forward_to,omitempty"`
 	// Auto-forward dead-lettered messages to another queue or topic in the
 	// same namespace, by entity name -- centralize poison-message handling
 	// instead of draining every queue's dead-letter sub-queue separately.
 	// Reference the target's queue_name or topic_name output, or pass a
-	// literal name.
+	// literal name. Access, not placement, like `forward_to`.
 	ForwardDeadLetteredMessagesTo *v1.StringValueOrRef `protobuf:"bytes,17,opt,name=forward_dead_lettered_messages_to,json=forwardDeadLetteredMessagesTo,proto3" json:"forward_dead_lettered_messages_to,omitempty"`
 	// The queue's gate state: ACTIVE (normal), DISABLED (sends and receives
 	// rejected; messages retained), SEND_DISABLED (receive-only drain mode),
@@ -392,7 +398,7 @@ var File_catalog_azure_azureservicebusqueue_v1alpha1_spec_proto protoreflect.Fil
 
 const file_catalog_azure_azureservicebusqueue_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/azure/azureservicebusqueue/v1alpha1/spec.proto\x12/dev.planton.azure.azureservicebusqueue.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfb\x13\n" +
+	"6catalog/azure/azureservicebusqueue/v1alpha1/spec.proto\x12/dev.planton.azure.azureservicebusqueue.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x88\x14\n" +
 	"\x18AzureServiceBusQueueSpec\x12\x81\x01\n" +
 	"\fnamespace_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\x96\x10\x92\xd4a\x1bstatus.outputs.namespace_idR\vnamespaceId\x12\xdd\x02\n" +
 	"\n" +
@@ -412,10 +418,10 @@ const file_catalog_azure_azureservicebusqueue_v1alpha1_spec_proto_rawDesc = "" +
 	"\x13auto_delete_on_idle\x18\r \x01(\tH\n" +
 	"R\x10autoDeleteOnIdle\x88\x01\x01\x12K\n" +
 	"\x1abatched_operations_enabled\x18\x0e \x01(\bB\b\x8a\xa6\x1d\x04trueH\vR\x18batchedOperationsEnabled\x88\x01\x01\x12,\n" +
-	"\x0fexpress_enabled\x18\x0f \x01(\bH\fR\x0eexpressEnabled\x88\x01\x01\x12Q\n" +
+	"\x0fexpress_enabled\x18\x0f \x01(\bH\fR\x0eexpressEnabled\x88\x01\x01\x12W\n" +
 	"\n" +
-	"forward_to\x18\x10 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\tforwardTo\x12|\n" +
-	"!forward_dead_lettered_messages_to\x18\x11 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x1dforwardDeadLetteredMessagesTo\x12n\n" +
+	"forward_to\x18\x10 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\x98\xd4a\x01R\tforwardTo\x12\x82\x01\n" +
+	"!forward_dead_lettered_messages_to\x18\x11 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\x98\xd4a\x01R\x1dforwardDeadLetteredMessagesTo\x12n\n" +
 	"\x06status\x18\x12 \x01(\x0e2L.dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusEntityStatusB\b\xbaH\x05\x82\x01\x02\x10\x01R\x06status:\xf2\x03\xbaH\xee\x03\x1a\x80\x02\n" +
 	"<service_bus_queue_express_conflicts_with_duplicate_detection\x12\x81\x01express_enabled holds messages in memory before storage, which is incompatible with duplicate detection -- disable one of the two\x1a<!(this.express_enabled && this.requires_duplicate_detection)\x1a\xe8\x01\n" +
 	"-service_bus_queue_dedup_window_requires_dedup\x12^duplicate_detection_history_time_window only applies when requires_duplicate_detection is true\x1aW!has(this.duplicate_detection_history_time_window) || this.requires_duplicate_detectionB\x18\n" +

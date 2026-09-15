@@ -236,6 +236,13 @@ type AwsEventBridgeTarget struct {
 	// No `default_kind` is set because the target resource type varies
 	// (Lambda, SQS, SNS, etc.). Use `valueFrom` to reference specific
 	// Planton resources.
+	//
+	// Containment-exempt: a target is where matched events are DELIVERED,
+	// never where the rule lives -- the rule belongs to its event bus. A
+	// target that is itself a container (another event bus, for a
+	// cross-bus forward) would otherwise pull the rule inside the bus it
+	// forwards to; on a diagram the rule stays on its own bus with a line
+	// to each target.
 	Arn *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=arn,proto3" json:"arn,omitempty"`
 	// IAM role ARN for EventBridge to assume when invoking this target.
 	// Required for targets where EventBridge needs to assume a role:
@@ -1648,10 +1655,11 @@ const file_catalog_aws_awseventbridgerule_v1alpha1_spec_proto_rawDesc = "" +
 	"\atargets\x18\t \x03(\v2A.dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeTargetB\b\xbaH\x05\x92\x01\x02\x10\x05R\atargets:\x9c\x04\xbaH\x98\x04\x1a\xe2\x01\n" +
 	"\"event_pattern_or_schedule_required\x12?exactly one of event_pattern or schedule_expression must be set\x1a{(has(this.event_pattern) && this.schedule_expression == '') || (!has(this.event_pattern) && this.schedule_expression != '')\x1a\xe2\x01\n" +
 	"\x12state_valid_values\x12`state must be 'ENABLED', 'DISABLED', or 'ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS' when set\x1ajthis.state == '' || this.state in ['ENABLED', 'DISABLED', 'ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS']\x1aL\n" +
-	"\x11targets_not_empty\x12\x1fat least one target is required\x1a\x16size(this.targets) > 0\"\xf6\x13\n" +
+	"\x11targets_not_empty\x12\x1fat least one target is required\x1a\x16size(this.targets) > 0\"\xfa\x13\n" +
 	"\x14AwsEventBridgeTarget\x121\n" +
-	"\x04name\x18\x01 \x01(\tB\x1d\xbaH\x1a\xc8\x01\x01r\x15\x18@2\x11^[0-9A-Za-z_.-]+$R\x04name\x12L\n" +
-	"\x03arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x03arn\x12o\n" +
+	"\x04name\x18\x01 \x01(\tB\x1d\xbaH\x1a\xc8\x01\x01r\x15\x18@2\x11^[0-9A-Za-z_.-]+$R\x04name\x12P\n" +
+	"\x03arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x03arn\x12o\n" +
 	"\brole_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB \x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x1e\n" +
 	"\x05input\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\x80@R\x05input\x12'\n" +
 	"\n" +

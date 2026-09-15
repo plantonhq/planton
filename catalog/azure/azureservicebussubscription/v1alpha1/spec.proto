@@ -125,13 +125,23 @@ message AzureServiceBusSubscriptionSpec {
   // target's queue_name or topic_name output (no default kind: either
   // entity type is a legal target), or pass a literal name. The target
   // must exist before the subscription.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef forward_to = 11;
+  //
+  // Containment-exempt: the subscription LIVES in its own topic and
+  // forwards TO the target. When the target is another topic (a
+  // container), the subscription would otherwise be torn between the
+  // topic it belongs to and the topic it feeds; on a diagram it stays
+  // in its topic with a line out.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef forward_to = 11 [
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // Auto-forward dead-lettered messages to another queue or topic in the
   // same namespace, by entity name -- centralize poison-message handling.
   // Reference the target's queue_name or topic_name output, or pass a
-  // literal name.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef forward_dead_lettered_messages_to = 12;
+  // literal name. Access, not placement, like `forward_to`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef forward_dead_lettered_messages_to = 12 [
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // The subscription's gate state: ACTIVE (normal), DISABLED (delivery
   // and new arrivals stopped), or RECEIVE_DISABLED (arrivals accumulate,

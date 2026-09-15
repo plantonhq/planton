@@ -3,6 +3,8 @@
 # Every line is a reference field whose default_kind targets a container kind:
 #   contained — the referencing resource nests inside the referenced container on diagrams
 #   exempt    — the reference is access-style (containment_exempt authored on the field); no nesting
+# A line ending in "-> *" is a kind-less reference (no default_kind; the kind is stated per manifest in valueFrom)
+# whose author declared it access: it never nests, whichever container kind a manifest names.
 #
 contained dev.planton._test.testcloudresourcekubernetes.v1alpha1.TestCloudResourceKubernetesSpec.namespace -> KubernetesNamespace
 contained dev.planton.aws.awsalb.v1alpha1.AwsAlbSpec.subnets -> AwsSubnet
@@ -647,6 +649,7 @@ contained dev.planton.kubernetes.kubernetesvalkey.v1alpha1.KubernetesValkeySpec.
 contained dev.planton.kubernetes.kubernetesvelero.v1alpha1.KubernetesVeleroSpec.namespace -> KubernetesNamespace
 contained dev.planton.openfga.openfgaauthorizationmodel.v1alpha1.OpenFgaAuthorizationModelSpec.store_id -> OpenFgaStore
 contained dev.planton.openfga.openfgarelationshiptuple.v1alpha1.OpenFgaRelationshipTupleSpec.store_id -> OpenFgaStore
+exempt    dev.planton._test.testcloudresourcegeneric.v1alpha2.TestCloudResourceGenericSpec.kindless_access_ref -> *
 exempt    dev.planton.aws.awsalb.v1alpha1.AwsAlbDns.route53_zone_id -> AwsRoute53Zone
 exempt    dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncCognitoUserPoolAuth.user_pool_id -> AwsCognitoUserPool
 exempt    dev.planton.aws.awsappsyncapi.v1alpha1.AwsAppSyncDatasourceEventbridge.event_bus_arn -> AwsEventBridgeBus
@@ -666,8 +669,13 @@ exempt    dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsV
 exempt    dev.planton.aws.awselasticfilesystem.v1alpha1.AwsElasticFileSystemReplication.destination_file_system_id -> AwsElasticFileSystem
 exempt    dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeEcsNetworkConfiguration.subnets -> AwsSubnet
 exempt    dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeSelfManagedKafkaVpc.subnets -> AwsSubnet
+exempt    dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeSpec.enrichment -> *
+exempt    dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeSpec.source -> *
+exempt    dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeSpec.target -> *
 exempt    dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeEcsNetworkConfiguration.subnets -> AwsSubnet
+exempt    dev.planton.aws.awseventbridgerule.v1alpha1.AwsEventBridgeTarget.arn -> *
 exempt    dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeScheduleNetworkConfiguration.subnets -> AwsSubnet
+exempt    dev.planton.aws.awseventbridgescheduler.v1alpha1.AwsEventBridgeScheduleTarget.arn -> *
 exempt    dev.planton.aws.awsfsxontapfilesystem.v1alpha1.AwsFsxOntapFileSystemSpec.route_table_ids -> AwsSubnet
 exempt    dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1.AwsFsxOpenzfsFileSystemSpec.route_table_ids -> AwsSubnet
 exempt    dev.planton.aws.awshttpapigateway.v1alpha1.AwsHttpApiGatewayJwtConfig.issuer -> AwsCognitoUserPool
@@ -711,6 +719,7 @@ exempt    dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstan
 exempt    dev.planton.azure.azurecontainerinstance.v1alpha1.AzureContainerInstanceVolumeAzureFile.storage_account_name -> AzureStorageAccount
 exempt    dev.planton.azure.azurecosmosdbaccount.v1alpha1.AzureCosmosdbAccountVirtualNetworkRule.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azurecosmosdbsqlroledefinition.v1alpha1.AzureCosmosdbSqlRoleDefinitionSpec.assignable_scopes -> AzureCosmosdbAccount
+exempt    dev.planton.azure.azuredatafactory.v1alpha1.AzureDataFactoryManagedPrivateEndpoint.target_resource_id -> *
 exempt    dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSsisExpressVnetIntegration.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSsisVnetIntegration.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azuredatafactoryintegrationruntime.v1alpha1.AzureDataFactoryIntegrationRuntimeSsisVnetIntegration.vnet_id -> AzureVirtualNetwork
@@ -732,6 +741,7 @@ exempt    dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventg
 exempt    dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionDestination.service_bus_topic_id -> AzureServiceBusTopic
 exempt    dev.planton.azure.azureeventgrideventsubscription.v1alpha1.AzureEventgridEventSubscriptionStorageQueueDestination.storage_account_id -> AzureStorageAccount
 exempt    dev.planton.azure.azureeventgridnamespace.v1alpha1.AzureEventgridNamespaceTopicSpacesConfiguration.route_topic_id -> AzureEventgridTopic
+exempt    dev.planton.azure.azureeventgridsystemtopic.v1alpha1.AzureEventgridSystemTopicSpec.source_resource_id -> *
 exempt    dev.planton.azure.azureeventhub.v1alpha1.AzureEventHubCaptureDestination.storage_account_id -> AzureStorageAccount
 exempt    dev.planton.azure.azureeventhubdisasterrecoveryconfig.v1alpha1.AzureEventHubDisasterRecoveryConfigSpec.partner_namespace_id -> AzureEventHubNamespace
 exempt    dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceVirtualNetworkRule.subnet_id -> AzureSubnet
@@ -758,29 +768,41 @@ exempt    dev.planton.azure.azurelinuxwebapp.v1alpha1.AzureLinuxWebAppStorageMou
 exempt    dev.planton.azure.azuremachinelearningcomputecluster.v1alpha1.AzureMachineLearningComputeClusterSpec.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1.AzureMachineLearningComputeInstanceSpec.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceEncryption.key_vault_id -> AzureKeyVault
+exempt    dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspacePrivateEndpointOutboundRule.service_resource_id -> *
 exempt    dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceServerlessCompute.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceSpec.key_vault_id -> AzureKeyVault
 exempt    dev.planton.azure.azuremachinelearningworkspace.v1alpha1.AzureMachineLearningWorkspaceSpec.storage_account_id -> AzureStorageAccount
 exempt    dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupEventHubReceiver.event_hub_name -> AzureEventHub
 exempt    dev.planton.azure.azuremonitoractiongroup.v1alpha1.AzureMonitorActionGroupEventHubReceiver.event_hub_namespace -> AzureEventHubNamespace
 exempt    dev.planton.azure.azuremonitoractivitylogalert.v1alpha1.AzureMonitorActivityLogAlertSpec.scopes -> AzureResourceGroup
+exempt    dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingMetricTrigger.metric_resource_id -> *
+exempt    dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingSpec.target_resource_id -> *
 exempt    dev.planton.azure.azuremonitordatacollectionrule.v1alpha1.AzureMonitorDataCollectionRuleEventHubDestination.event_hub_id -> AzureEventHub
 exempt    dev.planton.azure.azuremonitordatacollectionrule.v1alpha1.AzureMonitorDataCollectionRuleStorageBlobDestination.storage_account_id -> AzureStorageAccount
 exempt    dev.planton.azure.azuremonitordatacollectionrule.v1alpha1.AzureMonitorDataCollectionRuleStorageTableDirect.storage_account_id -> AzureStorageAccount
 exempt    dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1.AzureMonitorDiagnosticSettingSpec.eventhub_name -> AzureEventHub
 exempt    dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1.AzureMonitorDiagnosticSettingSpec.storage_account_id -> AzureStorageAccount
+exempt    dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1.AzureMonitorDiagnosticSettingSpec.target_resource_id -> *
+exempt    dev.planton.azure.azuremonitormetricalert.v1alpha1.AzureMonitorMetricAlertSpec.scopes -> *
 exempt    dev.planton.azure.azuremssqlfailovergroup.v1alpha1.AzureMssqlFailoverGroupPartnerServer.server_id -> AzureMssqlServer
 exempt    dev.planton.azure.azuremssqlserver.v1alpha1.AzureMssqlServerVirtualNetworkRule.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azuremysqlflexibleserver.v1alpha1.AzureMysqlFlexibleServerSpec.private_dns_zone_id -> AzurePrivateDnsZone
 exempt    dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogSpec.storage_account_id -> AzureStorageAccount
+exempt    dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1.AzureNetworkWatcherFlowLogSpec.target_resource_id -> *
 exempt    dev.planton.azure.azurepostgresqlflexibleserver.v1alpha1.AzurePostgresqlFlexibleServerSpec.private_dns_zone_id -> AzurePrivateDnsZone
 exempt    dev.planton.azure.azureprivatednsresolver.v1alpha1.AzurePrivateDnsResolverSpec.virtual_network_id -> AzureVirtualNetwork
 exempt    dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1.AzurePrivateDnsResolverVirtualNetworkLinkSpec.virtual_network_id -> AzureVirtualNetwork
 exempt    dev.planton.azure.azureprivatednszonevirtualnetworklink.v1alpha1.AzurePrivateDnsZoneVirtualNetworkLinkSpec.virtual_network_id -> AzureVirtualNetwork
+exempt    dev.planton.azure.azureprivateendpoint.v1alpha1.AzurePrivateEndpointServiceConnection.private_connection_resource_id -> *
 exempt    dev.planton.azure.azureprivateendpoint.v1alpha1.AzurePrivateEndpointSpec.private_dns_zone_ids -> AzurePrivateDnsZone
 exempt    dev.planton.azure.azureroledefinition.v1alpha1.AzureRoleDefinitionSpec.assignable_scopes -> AzureResourceGroup
+exempt    dev.planton.azure.azuresearchservice.v1alpha1.AzureSearchServiceSharedPrivateLink.target_resource_id -> *
 exempt    dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1.AzureServiceBusDisasterRecoveryConfigSpec.partner_namespace_id -> AzureServiceBusNamespace
 exempt    dev.planton.azure.azureservicebusnamespace.v1alpha1.AzureServiceBusNamespaceNetworkRule.subnet_id -> AzureSubnet
+exempt    dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueSpec.forward_dead_lettered_messages_to -> *
+exempt    dev.planton.azure.azureservicebusqueue.v1alpha1.AzureServiceBusQueueSpec.forward_to -> *
+exempt    dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionSpec.forward_dead_lettered_messages_to -> *
+exempt    dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionSpec.forward_to -> *
 exempt    dev.planton.azure.azurestorageaccount.v1alpha1.AzureStorageAccountNetworkRules.virtual_network_subnet_ids -> AzureSubnet
 exempt    dev.planton.azure.azurestorageobjectreplication.v1alpha1.AzureStorageObjectReplicationSpec.destination_storage_account_id -> AzureStorageAccount
 exempt    dev.planton.azure.azurestorageobjectreplication.v1alpha1.AzureStorageObjectReplicationSpec.source_storage_account_id -> AzureStorageAccount

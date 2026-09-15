@@ -53,7 +53,16 @@ message AzureMonitorMetricAlertSpec {
   // resource's `*_id` output explicitly with valueFrom (kind + fieldPath),
   // or pass a literal ARM ID. Multiple scopes (or a group/subscription
   // scope) require target_resource_type and target_resource_location.
-  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef scopes = 3 [(buf.validate.field).repeated = {min_items: 1}];
+  //
+  // Containment-exempt: an alert EVALUATES its scopes' metrics; it is
+  // never deployed into one of them, and a rule over several scopes
+  // could not live in all of them anyway. Without the exemption an
+  // alert scoped to a storage account or a cluster by reference would
+  // be drawn inside what it watches.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef scopes = 3 [
+    (buf.validate.field).repeated = {min_items: 1},
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // A human-readable description delivered with every notification --
   // the place for runbook links and on-call context.

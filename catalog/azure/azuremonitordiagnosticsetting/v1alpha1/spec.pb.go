@@ -113,6 +113,12 @@ type AzureMonitorDiagnosticSettingSpec struct {
 	// kind dominates as a target: reference the resource's `*_id` output
 	// explicitly with valueFrom (kind + fieldPath), or pass a literal ARM ID.
 	//
+	// Containment-exempt: a diagnostic setting WATCHES its target and
+	// routes what it emits; it is an extension resource, not a tenant.
+	// Vaults, clusters, and gateways are all containers, and a setting
+	// wired to one by reference would otherwise be drawn inside the very
+	// thing it monitors.
+	//
 	// **ForceNew**: Changing this destroys and recreates the setting.
 	TargetResourceId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=target_resource_id,json=targetResourceId,proto3" json:"target_resource_id,omitempty"`
 	// The log categories to enable on the target. Each entry names either a
@@ -370,11 +376,12 @@ var File_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_spec_proto protore
 
 const file_catalog_azure_azuremonitordiagnosticsetting_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/azure/azuremonitordiagnosticsetting/v1alpha1/spec.proto\x128dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xde\x11\n" +
+	"?catalog/azure/azuremonitordiagnosticsetting/v1alpha1/spec.proto\x128dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xe2\x11\n" +
 	"!AzureMonitorDiagnosticSettingSpec\x12\xbb\x01\n" +
 	"\fsetting_name\x18\x01 \x01(\tB\x97\x01\xbaH\x93\x01\xba\x01\x85\x01\n" +
-	"\x1fdiagnostic_setting_name_charset\x12Bdiagnostic setting name may not contain any of < > * % & : \\ ? + /\x1a\x1e!this.matches('[<>*%&:\\\\?+/]')\xc8\x01\x01r\x05\x10\x01\x18\x84\x02R\vsettingName\x12h\n" +
-	"\x12target_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x10targetResourceId\x12}\n" +
+	"\x1fdiagnostic_setting_name_charset\x12Bdiagnostic setting name may not contain any of < > * % & : \\ ? + /\x1a\x1e!this.matches('[<>*%&:\\\\?+/]')\xc8\x01\x01r\x05\x10\x01\x18\x84\x02R\vsettingName\x12l\n" +
+	"\x12target_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x10targetResourceId\x12}\n" +
 	"\fenabled_logs\x18\x03 \x03(\v2Z.dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1.AzureMonitorDiagnosticSettingLogR\venabledLogs\x12\x86\x01\n" +
 	"\x0fenabled_metrics\x18\x04 \x03(\v2].dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1.AzureMonitorDiagnosticSettingMetricR\x0eenabledMetrics\x12\x95\x01\n" +
 	"\x1alog_analytics_workspace_id\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB$\x88\xd4a\x82\x10\x92\xd4a\x1bstatus.outputs.workspace_idR\x17logAnalyticsWorkspaceId\x12\xc1\x01\n" +

@@ -173,7 +173,16 @@ message AwsEventBridgeScheduleTarget {
   // target API ARNs. No single kind dominates, so references here
   // carry NO default kind - in manifests, a valueFrom on this field
   // must state its kind explicitly.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 1 [(buf.validate.field).required = true];
+  //
+  // Containment-exempt: the target is what the schedule INVOKES, never
+  // where the schedule lives -- a schedule belongs to its schedule group.
+  // A target that is a container (an ECS cluster, an event bus) would
+  // otherwise pull the schedule inside it; on a diagram the schedule
+  // stands in its group with a line to what it fires.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // The role Scheduler assumes to invoke the target. Its trust policy
   // must allow scheduler.amazonaws.com. Reference an AwsIamRole
