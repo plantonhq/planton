@@ -503,6 +503,7 @@ locals {
       replicas                  = try(var.spec.control_plane.replicas, null)
       externalConfigSecretName  = try(var.spec.control_plane.external_config_secret_name, "") != "" ? var.spec.control_plane.external_config_secret_name : null
       serviceAccountAnnotations = length(try(var.spec.control_plane.service_account_annotations, {})) > 0 ? var.spec.control_plane.service_account_annotations : null
+      iacModulesVersion         = try(var.spec.control_plane.iac_modules_version, "") != "" ? var.spec.control_plane.iac_modules_version : null
     } : k => v if v != null
   }
   console_image = {

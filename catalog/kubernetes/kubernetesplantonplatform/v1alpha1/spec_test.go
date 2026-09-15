@@ -192,6 +192,22 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept a module-release override that names a published release", func() {
+			// The one legitimate use: routing around a retracted artifact set. The
+			// platform resolves modules at its own catalog release when this is unset.
+			input := minimalValidPlatform()
+			input.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{IacModulesVersion: "v0.5.60"}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+
+			// Unset is the shape every install should have, and a controlPlane block
+			// declared for other reasons (replicas) must not trip the pattern.
+			unset := minimalValidPlatform()
+			replicas := int32(1)
+			unset.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{Replicas: &replicas}
+			gomega.Expect(protovalidate.Validate(unset)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept the AWS secret backend with its config", func() {
 			input := minimalValidPlatform()
 			input.Spec.Bootstrap = &KubernetesPlantonPlatformBootstrap{
@@ -561,6 +577,17 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			input.Spec.Version = ""
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should refuse a module-release override that is not an exact release tag", func() {
+			// Only exact releases publish module artifacts; a pre-release, a bare
+			// number, or a branch would 404 at every module download.
+			for _, notARelease := range []string{"v0.5.60-rc.1", "0.5.60", "main", "latest"} {
+				input := minimalValidPlatform()
+				input.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{IacModulesVersion: notARelease}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil(), notARelease)
+			}
 		})
 
 		ginkgo.It("should fail when namespace is missing", func() {

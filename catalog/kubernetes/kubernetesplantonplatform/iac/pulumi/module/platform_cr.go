@@ -435,6 +435,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		if len(cp.GetServiceAccountAnnotations()) > 0 {
 			controlPlane["serviceAccountAnnotations"] = stringMapToInterface(cp.GetServiceAccountAnnotations())
 		}
+		if cp.GetIacModulesVersion() != "" {
+			controlPlane["iacModulesVersion"] = cp.GetIacModulesVersion()
+		}
 		if len(controlPlane) > 0 {
 			out["controlPlane"] = controlPlane
 		}

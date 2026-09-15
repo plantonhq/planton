@@ -345,6 +345,7 @@ spec:
 | `spec.controlPlane.replicas` | `int32` |  | `1` |  |
 | `spec.controlPlane.externalConfigSecretName` | `string` |  |  |  |
 | `spec.controlPlane.serviceAccountAnnotations` | `map<string, string>` |  |  |  |
+| `spec.controlPlane.iacModulesVersion` | `string` |  |  |  |
 | `spec.console` | `KubernetesPlantonPlatformConsole` |  |  |  |
 | `spec.console.image` | `KubernetesPlantonPlatformImage` |  |  |  |
 | `spec.console.image.repository` | `string` |  |  |  |
@@ -1954,6 +1955,20 @@ Workload-identity annotations on the control plane's ServiceAccount
 — the platform's OWN cloud identity (cloud secret backends, KMS).
 Distinct from runner.service_account_annotations, which is the
 DEPLOY-TIME identity.
+
+### spec.controlPlane.iacModulesVersion
+
+`string`
+
+Override of the release the platform downloads official IaC module
+artifacts from (vX.Y.Z; both engines ride one tag). Leave it unset:
+the platform resolves modules at its own catalog release — the same
+pin its schemas and chart bundle come from — so a kind it accepts
+always has its module published. Set it only to route around a
+retracted artifact set; it selects among published releases and
+controls nothing else (not the platform version, not the charts).
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^v\\d+\\.\\d+\\.\\d+$"}}
 
 ### spec.console
 

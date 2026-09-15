@@ -238,18 +238,18 @@ type ControlPlaneSpec struct {
 	// +optional
 	ExternalConfigSecretName string `json:"externalConfigSecretName,omitempty"`
 
-	// iacModulesVersion overrides the release version at which the platform
-	// resolves official IaC module artifacts (both engines: the OpenTofu
-	// module zips and the Pulumi module binaries ride the same release tag).
-	// It feeds the control plane's PLANTON_VERSION environment variable and
-	// controls nothing else -- deliberately NOT the platform image version
-	// (spec.version) and NOT the infra-charts pin (charts are validated by
-	// the control plane's own protos, so their tag stays compile-locked to
-	// the image). Unset means the operator's verified default pin; setting
-	// it is a deliberate operator act, e.g. adopting a newer module release
-	// ahead of an operator upgrade. Every value must have a published
-	// artifact set under downloads.planton.dev/releases/<version>/ or
-	// deploys fail at module download.
+	// iacModulesVersion overrides the release the platform downloads official
+	// IaC module artifacts from (both engines: the OpenTofu module zips and
+	// the Pulumi module binaries ride the same release tag). Unset -- the
+	// shape every install should have -- the platform resolves modules at its
+	// own catalog release: the same pin its schemas and chart bundle come
+	// from, so a kind the platform accepts always has its module published.
+	// Set it only to route around a retracted artifact set; it selects among
+	// published releases and controls nothing else -- deliberately NOT the
+	// platform image version (spec.version) and NOT the chart bundle. Every
+	// value must have a published artifact set under
+	// downloads.planton.dev/releases/<version>/ or deploys fail at module
+	// download.
 	// +kubebuilder:validation:Pattern=`^v\d+\.\d+\.\d+$`
 	// +optional
 	IacModulesVersion string `json:"iacModulesVersion,omitempty"`

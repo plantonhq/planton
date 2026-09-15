@@ -1897,6 +1897,20 @@ message KubernetesPlantonPlatformControlPlane {
    * DEPLOY-TIME identity.
    */
   map<string, string> service_account_annotations = 4;
+
+  /**
+   * Override of the release the platform downloads official IaC module
+   * artifacts from (vX.Y.Z; both engines ride one tag). Leave it unset:
+   * the platform resolves modules at its own catalog release — the same
+   * pin its schemas and chart bundle come from — so a kind it accepts
+   * always has its module published. Set it only to route around a
+   * retracted artifact set; it selects among published releases and
+   * controls nothing else (not the platform version, not the charts).
+   */
+  string iac_modules_version = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^v\\d+\\.\\d+\\.\\d+$"
+  ];
 }
 
 /**

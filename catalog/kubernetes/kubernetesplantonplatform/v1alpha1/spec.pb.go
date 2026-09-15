@@ -3864,8 +3864,17 @@ type KubernetesPlantonPlatformControlPlane struct {
 	// Distinct from runner.service_account_annotations, which is the
 	// DEPLOY-TIME identity.
 	ServiceAccountAnnotations map[string]string `protobuf:"bytes,4,rep,name=service_account_annotations,json=serviceAccountAnnotations,proto3" json:"service_account_annotations,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	// *
+	// Override of the release the platform downloads official IaC module
+	// artifacts from (vX.Y.Z; both engines ride one tag). Leave it unset:
+	// the platform resolves modules at its own catalog release — the same
+	// pin its schemas and chart bundle come from — so a kind it accepts
+	// always has its module published. Set it only to route around a
+	// retracted artifact set; it selects among published releases and
+	// controls nothing else (not the platform version, not the charts).
+	IacModulesVersion string `protobuf:"bytes,5,opt,name=iac_modules_version,json=iacModulesVersion,proto3" json:"iac_modules_version,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformControlPlane) Reset() {
@@ -3924,6 +3933,13 @@ func (x *KubernetesPlantonPlatformControlPlane) GetServiceAccountAnnotations() m
 		return x.ServiceAccountAnnotations
 	}
 	return nil
+}
+
+func (x *KubernetesPlantonPlatformControlPlane) GetIacModulesVersion() string {
+	if x != nil {
+		return x.IacModulesVersion
+	}
+	return ""
 }
 
 // *
@@ -4347,12 +4363,13 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x16postgres_backup_plugin\x18\x04 \x01(\tB\x1b\xbaH\x10r\x0eR\x00R\x04autoR\x04skip\x8a\xa6\x1d\x04autoH\x02R\x14postgresBackupPlugin\x88\x01\x01B\x14\n" +
 	"\x12_postgres_operatorB\x13\n" +
 	"\x11_tekton_pipelinesB\x19\n" +
-	"\x17_postgres_backup_plugin\"\xa3\x04\n" +
+	"\x17_postgres_backup_plugin\"\xef\x04\n" +
 	"%KubernetesPlantonPlatformControlPlane\x12o\n" +
 	"\x05image\x18\x01 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImageR\x05image\x12-\n" +
 	"\breplicas\x18\x02 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x00R\breplicas\x88\x01\x01\x12=\n" +
 	"\x1bexternal_config_secret_name\x18\x03 \x01(\tR\x18externalConfigSecretName\x12\xbf\x01\n" +
-	"\x1bservice_account_annotations\x18\x04 \x03(\v2\x7f.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x1aL\n" +
+	"\x1bservice_account_annotations\x18\x04 \x03(\v2\x7f.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x12J\n" +
+	"\x13iac_modules_version\x18\x05 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^v\\d+\\.\\d+\\.\\d+$R\x11iacModulesVersion\x1aL\n" +
 	"\x1eServiceAccountAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\v\n" +

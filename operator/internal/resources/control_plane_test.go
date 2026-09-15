@@ -842,27 +842,32 @@ func TestControlPlaneDeployment_RunnerTaskQueueFollowsOrg(t *testing.T) {
 	}
 }
 
-// PLANTON_VERSION resolves IaC module artifacts from the public CDN and is
-// pinned independently of the platform image version -- a platform tag with
-// no published artifacts would make every deploy 404 at download. The CR's
-// spec.controlPlane.iacModulesVersion is the per-install override; empty
-// means the compiled pin.
-func TestControlPlaneDeployment_ModuleArtifactsVersionPinned(t *testing.T) {
+// The control plane downloads official IaC modules at its own catalog release,
+// so the operator hands it no module version: a value rendered here would be a
+// second truth beside the platform's (and once was -- a compiled-in pin three
+// weeks behind the catalog, so a kind the platform accepted 404'd at module
+// download). The CR's spec.controlPlane.iacModulesVersion is the per-install
+// override for a retracted artifact set, rendered by presence under Spring's
+// hyphen-stripped name; the platform's own version never leaks into it.
+func TestControlPlaneDeployment_IacModulesVersionRenderedOnlyAsOverride(t *testing.T) {
 	cfg := testControlPlaneConfig()
 	cfg.Version = "v99.0.0"
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
-	if envMap["PLANTON_VERSION"] != controlPlaneModuleArtifactsVersion {
-		t.Errorf("PLANTON_VERSION = %q, want the pinned %s (not the platform version)",
-			envMap["PLANTON_VERSION"], controlPlaneModuleArtifactsVersion)
+	for _, name := range []string{controlPlaneIacModulesVersionEnv, "PLANTON_VERSION", "PLANTON_INFRA_HUB_IAC_MODULES_VERSION"} {
+		if v, ok := envMap[name]; ok {
+			t.Errorf("%s = %q rendered for a plain install; the control plane resolves modules at its own catalog release", name, v)
+		}
 	}
 
 	cfg.IacModulesVersion = "v0.6.1"
 	overridden := envVarMap(ControlPlaneDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
-	if overridden["PLANTON_VERSION"] != "v0.6.1" {
-		t.Errorf("PLANTON_VERSION = %q, want the CR override v0.6.1 to beat the pin",
-			overridden["PLANTON_VERSION"])
+	if overridden[controlPlaneIacModulesVersionEnv] != "v0.6.1" {
+		t.Errorf("%s = %q, want the CR override v0.6.1", controlPlaneIacModulesVersionEnv, overridden[controlPlaneIacModulesVersionEnv])
+	}
+	if _, ok := overridden["PLANTON_VERSION"]; ok {
+		t.Error("PLANTON_VERSION must not be rendered under any shape: the platform's version is not the module release")
 	}
 	// The chart bundle's location is the control plane's to derive from its own
 	// catalog pin; the operator only switches the seed on. The hyphen-stripped

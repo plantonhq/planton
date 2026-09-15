@@ -36,18 +36,20 @@ const (
 	controlPlaneDefaultLogLevel          = "info"
 	controlPlaneDefaultTemporalNamespace = "default"
 
-	// controlPlaneModuleArtifactsVersion pins PLANTON_VERSION: the version at
-	// which the control plane resolves IaC module artifacts from the public
-	// CDN (downloads URL construction), NOT the platform image version. The
-	// two release trains are independent -- a platform tag with no module
-	// artifacts published under it would make every deploy 404 at download --
-	// so this advances deliberately, when a verified artifact set exists.
-	// The CR's spec.controlPlane.iacModulesVersion overrides this default
-	// per install; the pin is the value every plain install must be able to
-	// trust, so it only ever names a tag whose artifact set was verified
-	// live against the CDN (HEAD on the module zips, not inferred from the
-	// release existing).
-	controlPlaneModuleArtifactsVersion = "v0.5.33"
+	// controlPlaneIacModulesVersionEnv is the control plane's per-install
+	// OVERRIDE of the release its stack jobs download official IaC modules
+	// from. Rendered only when the platform resource declares
+	// spec.controlPlane.iacModulesVersion; absent otherwise, because the
+	// control plane resolves modules at its own catalog release -- the pin
+	// its schemas and chart bundle come from -- and needs nobody to tell it
+	// which. The operator carries no module version of its own: a version
+	// compiled in here would be a second truth beside the platform's, and
+	// it was (three weeks behind the catalog, so a kind the platform
+	// accepted 404'd at module download). The name is Spring's relaxed
+	// binding of planton.infra-hub.iac-modules.version with hyphens
+	// STRIPPED, the same shape as PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED;
+	// the underscored variant does not bind.
+	controlPlaneIacModulesVersionEnv = "PLANTON_INFRAHUB_IACMODULES_VERSION"
 )
 
 // ControlPlaneConfig bundles all inputs needed to build the ControlPlane
@@ -64,9 +66,10 @@ type ControlPlaneConfig struct {
 	ImageTag                 string
 	ExternalConfigSecretName string
 
-	// IacModulesVersion overrides controlPlaneModuleArtifactsVersion
-	// (PLANTON_VERSION) when the CR sets spec.controlPlane.iacModulesVersion.
-	// Empty means the compiled pin.
+	// IacModulesVersion is the CR's spec.controlPlane.iacModulesVersion:
+	// the release the control plane downloads official IaC modules from
+	// INSTEAD of its own catalog release. Empty -- the shape every plain
+	// install has -- renders nothing, and the control plane uses its pin.
 	IacModulesVersion string
 
 	PostgreSQL PostgreSQLConnectionInfo
@@ -950,7 +953,11 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "TEKTON_SERVICE_PIPELINE_DISK_SIZE", Value: "5Gi"},
 
 		// ── misc ──
-		{Name: "PLANTON_VERSION", Value: effectiveIacModulesVersion(cfg)},
+		// No module version here: the control plane downloads official IaC
+		// modules at its own catalog release, exactly as it seeds charts from
+		// it (below). The per-install override is appended after this block,
+		// by presence.
+		//
 		// The control plane seeds the InfraChart catalog from the bundle of its
 		// OWN catalog release: the charts are validated against its protos at
 		// apply, so only the release those protos came from can ever be right,
@@ -966,6 +973,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "STIGMER_ORG_ID", Value: "local"},
 	}...)
 
+	envs = append(envs, iacModulesVersionEnvVars(cfg.IacModulesVersion)...)
 	envs = append(envs, fgaEnvVars(cfg.OpenFGA)...)
 	envs = append(envs, storageEnvVars(cfg.Storage)...)
 	envs = append(envs, webIdentityEnvVars(cfg.WebIdentity)...)
@@ -1065,17 +1073,18 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	return envs
 }
 
-// effectiveIacModulesVersion resolves PLANTON_VERSION: the CR's explicit
-// spec.controlPlane.iacModulesVersion when set, otherwise the operator's
-// verified default pin. The override exists because the module-artifact train
-// advances independently of operator releases -- an install must be able to
-// adopt a newer verified artifact set (or route around a retracted one)
-// without waiting for a new operator image.
-func effectiveIacModulesVersion(cfg ControlPlaneConfig) string {
-	if cfg.IacModulesVersion != "" {
-		return cfg.IacModulesVersion
+// iacModulesVersionEnvVars renders the module-release override by presence:
+// nothing for the plain install (the control plane resolves official modules
+// at its own catalog release), the one variable when the platform resource
+// declares spec.controlPlane.iacModulesVersion. The override exists for a
+// retracted artifact set -- an install must be able to route around one
+// without waiting for a platform release -- and for nothing else; a default
+// rendered here would be a second module version beside the platform's own.
+func iacModulesVersionEnvVars(override string) []corev1.EnvVar {
+	if override == "" {
+		return nil
 	}
-	return controlPlaneModuleArtifactsVersion
+	return []corev1.EnvVar{{Name: controlPlaneIacModulesVersionEnv, Value: override}}
 }
 
 // remoteRunnerAPIEndpoint resolves the control-plane address stamped into the

@@ -69,7 +69,17 @@ import (
 // (TEMPORAL_TASK_QUEUE_USER_INVITATION). An older control plane requires the
 // placeholder key, the base path, and the queue name to boot at all, so under
 // this operator it would never come up.
-const MinimumSupported = "v0.0.60"
+//
+// v0.0.65: the control plane resolves official IaC modules at its own catalog
+// release -- the same pin its schemas and chart bundle come from -- and the
+// operator stops handing it a module version (the former PLANTON_VERSION,
+// which this operator once compiled in as a constant three weeks behind the
+// platform's catalog). The only variable in this area is now the per-install
+// override PLANTON_INFRAHUB_IACMODULES_VERSION, rendered solely when the
+// platform resource declares controlPlane.iacModulesVersion. An older control
+// plane binds PLANTON_VERSION without a default and cannot boot without it,
+// so under this operator it would never come up.
+const MinimumSupported = "v0.0.65"
 
 // releaseForm is the only shape spec.version may take: a full semantic
 // version with the "v" prefix, optionally with a pre-release suffix and build

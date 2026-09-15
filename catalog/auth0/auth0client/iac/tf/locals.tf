@@ -37,7 +37,7 @@ locals {
   initiate_login_uri   = var.spec.initiate_login_uri
 
   # Organization settings
-  organization_usage           = var.spec.organization_usage
+  organization_usage            = var.spec.organization_usage
   organization_require_behavior = var.spec.organization_require_behavior
 
   # Client metadata
@@ -101,11 +101,20 @@ locals {
 
   # API grants for authorizing API access
   # audience is already flattened to a plain string by the tfvars generator.
+  #
+  # allow_any_organization is sent only when true, never as an explicit false:
+  # Auth0 reads the attribute's PRESENCE on a grant as use of Organizations for
+  # machine-to-machine access, a paid feature, and refuses the whole grant on a
+  # tenant without it ("Please upgrade your subscription to use Machine to
+  # Machine access to Organizations"). A manifest that never mentioned
+  # organizations must not be refused for a feature it did not ask for; the
+  # Pulumi module already sends the attribute by presence, and both engines
+  # must agree.
   api_grants = [
     for grant in(var.spec.api_grants != null ? var.spec.api_grants : []) : {
       audience               = grant.audience
       scopes                 = grant.scopes != null ? grant.scopes : []
-      allow_any_organization = coalesce(grant.allow_any_organization, false)
+      allow_any_organization = try(grant.allow_any_organization, false) ? true : null
       organization_usage     = grant.organization_usage
     }
     if grant != null && grant.audience != null && grant.audience != ""
