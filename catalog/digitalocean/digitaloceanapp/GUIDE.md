@@ -49,6 +49,10 @@ Per-component `routes` / `cors` and the old top-level `domains` list are schema-
 
 `spec.domains[].zone` can reference a DigitalOceanDnsZone. The zone must already exist; App Platform will not create DNS for you. Omit domains to use the default `ondigitalocean.app` hostname.
 
-## `project_id` is a literal UUID for now
+## `projectId` places the app in a project
 
-There is no DigitalOcean Project kind yet. Pass the project UUID as a string. A typed reference lands when that kind is forged.
+`spec.projectId` can reference a DigitalOceanProject (its `project_id` output) or carry a literal project UUID. Leave it unset and the app lands in the account's default project.
+
+## Pulling from DigitalOcean Container Registry
+
+An image with `registryType: docr` is pulled from the account's own registry; App Platform resolves it itself, so `registry` stays empty and there is no reference to wire. To record that the app depends on a `DigitalOceanContainerRegistry` Planton manages -- so the registry deploys first and the dependency shows on the diagram -- declare it under `metadata.relationships` with type `uses`.
