@@ -151,6 +151,12 @@ type AwsOrganizationPolicyAttachment struct {
 	// root ID, a literal "ou-..." ID, a literal 12-digit account ID, or
 	// an AwsOrganizationAccount/AwsOrganization reference by field
 	// path. IMMUTABLE.
+	//
+	// Containment-exempt: a policy GOVERNS its targets from above; it is
+	// not a member of the unit or organization it attaches to, and one
+	// policy attached to several units could not live in all of them. On
+	// a diagram the policy stands beside the tenancy tree with a line to
+	// each target it governs.
 	TargetId      *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=target_id,json=targetId,proto3" json:"target_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -209,9 +215,9 @@ const file_catalog_aws_awsorganizationpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\vdescription\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x04R\vdescription\x12q\n" +
 	"\vattachments\x18\x06 \x03(\v2O.dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyAttachmentR\vattachments:\xe9\x03\xbaH\xe5\x03\x1a\xba\x02\n" +
 	"%spec.attachment_target_literal_format\x12~a literal attachment target_id must be an organization root (r-...), an organizational unit (ou-...), or a 12-digit account ID\x1a\x90\x01this.attachments.all(a, !has(a.target_id.value) || a.target_id.value.matches('^(r-[0-9a-z]{4,32}|ou-[0-9a-z]{4,32}-[0-9a-z]{8,32}|[0-9]{12})$'))\x1a\xa5\x01\n" +
-	"\x1espec.attachment_targets_unique\x12,attachments entries must have unique targets\x1aUthis.attachments.filter(a, has(a.target_id.value)).map(a, a.target_id.value).unique()\"\x97\x01\n" +
-	"\x1fAwsOrganizationPolicyAttachment\x12t\n" +
-	"\ttarget_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\xbaH\x03\xc8\x01\x01\x88\xd4a\xf7\t\x92\xd4a\x14status.outputs.ou_idR\btargetIdB\x83\x03\n" +
+	"\x1espec.attachment_targets_unique\x12,attachments entries must have unique targets\x1aUthis.attachments.filter(a, has(a.target_id.value)).map(a, a.target_id.value).unique()\"\x9b\x01\n" +
+	"\x1fAwsOrganizationPolicyAttachment\x12x\n" +
+	"\ttarget_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xf7\t\x92\xd4a\x14status.outputs.ou_id\x98\xd4a\x01R\btargetIdB\x83\x03\n" +
 	"2com.dev.planton.aws.awsorganizationpolicy.v1alpha1B\tSpecProtoP\x01Zegithub.com/plantonhq/planton/catalog/aws/awsorganizationpolicy/v1alpha1;awsorganizationpolicyv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Aws.Awsorganizationpolicy.V1alpha1\xca\x02.Dev\\Planton\\Aws\\Awsorganizationpolicy\\V1alpha1\xe2\x02:Dev\\Planton\\Aws\\Awsorganizationpolicy\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Aws::Awsorganizationpolicy::V1alpha1b\x06proto3"
 
 var (

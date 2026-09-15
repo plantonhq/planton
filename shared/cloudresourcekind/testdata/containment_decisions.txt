@@ -66,6 +66,8 @@ contained dev.planton.aws.awsnetworkacl.v1alpha1.AwsNetworkAclSpec.subnet_ids ->
 contained dev.planton.aws.awsnetworkacl.v1alpha1.AwsNetworkAclSpec.vpc_id -> AwsVpc
 contained dev.planton.aws.awsnlb.v1alpha1.AwsNlbSubnetMapping.subnet_id -> AwsSubnet
 contained dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainVpcOptions.subnet_ids -> AwsSubnet
+contained dev.planton.aws.awsorganizationaccount.v1alpha1.AwsOrganizationAccountSpec.parent_id -> AwsOrganizationalUnit
+contained dev.planton.aws.awsorganizationalunit.v1alpha1.AwsOrganizationalUnitSpec.parent_id -> AwsOrganization
 contained dev.planton.aws.awsplantonrunner.v1alpha1.AwsPlantonRunnerSpec.subnets -> AwsSubnet
 contained dev.planton.aws.awsrdscluster.v1alpha1.AwsRdsClusterSpec.subnet_ids -> AwsSubnet
 contained dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.subnet_ids -> AwsSubnet
@@ -690,6 +692,7 @@ exempt    dev.planton.aws.awslblistenerrule.v1alpha1.AwsLbListenerRuleActionAuth
 exempt    dev.planton.aws.awsmanagedprometheusscraper.v1alpha1.AwsManagedPrometheusScraperEksSource.cluster_arn -> AwsEksCluster
 exempt    dev.planton.aws.awsnlb.v1alpha1.AwsNlbDns.route53_zone_id -> AwsRoute53Zone
 exempt    dev.planton.aws.awsopensearchdomain.v1alpha1.AwsOpenSearchDomainCognitoOptions.user_pool_id -> AwsCognitoUserPool
+exempt    dev.planton.aws.awsorganizationpolicy.v1alpha1.AwsOrganizationPolicyAttachment.target_id -> AwsOrganizationalUnit
 exempt    dev.planton.aws.awsredshiftcluster.v1alpha1.AwsRedshiftClusterEndpointAuthorization.vpc_ids -> AwsVpc
 exempt    dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupEndpointAccess.subnet_ids -> AwsSubnet
 exempt    dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1.AwsRedshiftServerlessWorkgroupSpec.subnet_ids -> AwsSubnet

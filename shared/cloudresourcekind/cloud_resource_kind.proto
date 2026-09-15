@@ -1857,10 +1857,20 @@ enum CloudResourceKind {
   // service-access resource fights the org's own argument with a
   // perpetual diff). Deleting this deletes the entire organization.
   // 1270 opens the Organizations sub-band (1270-1279).
+  //
+  // A container kind: the organization is the outer wall of the
+  // tenancy tree AWS's own console draws -- organizational units are
+  // rooms inside it and member accounts stand inside those. A
+  // first-level unit names the organization through its parent
+  // reference and is placed inside it; a policy attached to the root
+  // names the organization too, but a policy is a guard applied from
+  // above, never a resident, and its attachment reference is
+  // containment-exempt on its spec.
   AwsOrganization = 1270 [(kind_meta) = {
     provider: aws
     version: "v1alpha1"
     id_prefix: "awsorg"
+    container_kind: true
     service_group: aws_management_governance
   }];
 
@@ -1868,11 +1878,19 @@ enum CloudResourceKind {
   // an explicit spec field (OU names allow spaces metadata.name cannot
   // carry); the parent reference (root or parent OU) is required and
   // immutable, so the organization is a registry prerequisite.
+  //
+  // A container kind: a unit is a room of the tenancy tree -- nested
+  // units and member accounts name it through their parent reference
+  // and are placed inside it. A policy attached to a unit names it too
+  // and stands beside the room (containment-exempt on the policy's
+  // spec): one policy attaches to many units and cannot live in all of
+  // them.
   AwsOrganizationalUnit = 1271 [(kind_meta) = {
     provider: aws
     version: "v1alpha1"
     id_prefix: "awsou"
     prerequisites: [AwsOrganization]
+    container_kind: true
     service_group: aws_management_governance
   }];
 

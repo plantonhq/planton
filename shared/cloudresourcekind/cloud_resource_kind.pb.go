@@ -592,11 +592,27 @@ const (
 	// service-access resource fights the org's own argument with a
 	// perpetual diff). Deleting this deletes the entire organization.
 	// 1270 opens the Organizations sub-band (1270-1279).
+	//
+	// A container kind: the organization is the outer wall of the
+	// tenancy tree AWS's own console draws -- organizational units are
+	// rooms inside it and member accounts stand inside those. A
+	// first-level unit names the organization through its parent
+	// reference and is placed inside it; a policy attached to the root
+	// names the organization too, but a policy is a guard applied from
+	// above, never a resident, and its attachment reference is
+	// containment-exempt on its spec.
 	CloudResourceKind_AwsOrganization CloudResourceKind = 1270
 	// An organizational unit in the org's OU tree. The display name is
 	// an explicit spec field (OU names allow spaces metadata.name cannot
 	// carry); the parent reference (root or parent OU) is required and
 	// immutable, so the organization is a registry prerequisite.
+	//
+	// A container kind: a unit is a room of the tenancy tree -- nested
+	// units and member accounts name it through their parent reference
+	// and are placed inside it. A policy attached to a unit names it too
+	// and stands beside the room (containment-exempt on the policy's
+	// spec): one policy attaches to many units and cannot live in all of
+	// them.
 	CloudResourceKind_AwsOrganizationalUnit CloudResourceKind = 1271
 	// A MEMBER account of the organization: creation, OU placement, and
 	// the account-level settings satellites (alternate/primary contacts,
@@ -4280,7 +4296,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\x83\xdc\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x87\xdc\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4452,9 +4468,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x0eAwsSsmDocument\x10\xed\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsssmdPm\x12:\n" +
 	"\x17AwsSsmMaintenanceWindow\x10\xee\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawsssmmwPm\x126\n" +
 	"\x13AwsSsmPatchBaseline\x10\xef\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawsssmpbPm\x123\n" +
-	"\x11AwsSsmAssociation\x10\xf0\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsssmaPm\x120\n" +
-	"\x0fAwsOrganization\x10\xf6\t\x1a\x1a\xa2\xf7\x04\x16\b\f\x12\bv1alpha1\"\x06awsorgPm\x129\n" +
-	"\x15AwsOrganizationalUnit\x10\xf7\t\x1a\x1d\xa2\xf7\x04\x19\b\f\x12\bv1alpha1\"\x05awsou:\x02\xf6\tPm\x129\n" +
+	"\x11AwsSsmAssociation\x10\xf0\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsssmaPm\x122\n" +
+	"\x0fAwsOrganization\x10\xf6\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\x06awsorg0\x01Pm\x12;\n" +
+	"\x15AwsOrganizationalUnit\x10\xf7\t\x1a\x1f\xa2\xf7\x04\x1b\b\f\x12\bv1alpha1\"\x05awsou0\x01:\x02\xf6\tPm\x129\n" +
 	"\x16AwsOrganizationAccount\x10\xf8\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawsoacctPm\x127\n" +
 	"\x15AwsOrganizationPolicy\x10\xf9\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsopolPm\x12*\n" +
 	"\tAwsBudget\x10\x80\n" +
