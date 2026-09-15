@@ -2506,7 +2506,9 @@ gateway, e.g. "10.225.0.0/24" (at least /27).
 `string | valueFrom`
 
 Existing subnet to host the new gateway -- must be dedicated to it
-and at least /27.
+and at least /27. The add-on's GATEWAY lives in this subnet; the
+cluster does not, so the reference is access, not placement, on a
+diagram -- the cluster's own node subnet places it.
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse

@@ -174,6 +174,10 @@ The storage account whose blob services are protected, by ARM ID.
 Fixed at creation. The vault's identity needs the "Storage
 Account Backup Contributor" role on this account before create.
 
+The instance PROTECTS this account's blob services and is an ARM child
+of its vault, so on a diagram the reference is access, not placement --
+the rule the Kubernetes variant's cluster already carries.
+
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureStorageAccount, name: <that resource's name>, fieldPath: status.outputs.storage_account_id}} -- a bare string does not parse
@@ -216,6 +220,10 @@ The resource group (by name) where Azure Backup stores the disk
 snapshots. Fixed at creation. The vault's identity needs the
 "Disk Snapshot Contributor" role on this group before create.
 
+Snapshots are WRITTEN into this group; the instance itself is an ARM
+child of its vault, so on a diagram the reference is access, not
+placement.
+
 - references: AzureResourceGroup (`status.outputs.resource_group_name`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureResourceGroup, name: <that resource's name>, fieldPath: status.outputs.resource_group_name}} -- a bare string does not parse
@@ -248,7 +256,8 @@ The AKS cluster to protect, by ARM ID. Fixed at creation. The
 cluster must carry the AKS Backup extension and its
 trusted-access role binding to the vault before create -- an
 apply-time contract Azure enforces, not something this spec can
-check.
+check. The backup instance PROTECTS the cluster and lives in its
+vault, so the reference is access, not placement, on a diagram.
 
 - references: AzureAksCluster (`status.outputs.cluster_id`)
 - rule: {"required":true}
@@ -260,6 +269,10 @@ check.
 
 The resource group (by name) where Azure Backup stores the
 cluster's snapshots. Fixed at creation.
+
+Snapshots are WRITTEN into this group; the instance itself is an ARM
+child of its vault, so on a diagram the reference is access, not
+placement.
 
 - references: AzureResourceGroup (`status.outputs.resource_group_name`)
 - rule: {"required":true}
@@ -379,6 +392,10 @@ The storage account to protect, by ARM ID. Must have hierarchical
 namespace (Data Lake Gen2) enabled. Fixed at creation. The
 vault's identity needs the "Storage Account Backup Contributor"
 role on this account before create.
+
+The instance PROTECTS this account's Data Lake containers and is an ARM
+child of its vault, so on a diagram the reference is access, not
+placement.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}

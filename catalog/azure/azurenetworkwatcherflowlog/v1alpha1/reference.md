@@ -144,7 +144,10 @@ accepting new NSG flow logs on 2025-06-30.
 The storage account flow-log files land in -- references an
 AzureStorageAccount's ARM id. Creating the flow log writes a
 lifecycle-management rule on this account that OVERWRITES existing
-rules (see the spec note). Updatable in place.
+rules (see the spec note). Updatable in place. Containment-exempt: the
+flow log WRITES to the account and lives in its Network Watcher's
+resource group, so on a diagram it is drawn beside the account with a
+line to it, never inside it.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}

@@ -117,14 +117,14 @@ const OpenBAOInitSecretAnnotation = "planton.ai/openbao-init"
 
 // OpenBAOInitSecretNote renders the annotation's plain-language explanation:
 // what the keys unlock, why the operator holds them, and the alternative for
-// teams that want to hold their own.
+// teams that want to own the Secret themselves.
 func OpenBAOInitSecretNote(crName string) string {
 	return fmt.Sprintf(
 		"Unseal keys and root token for the bundled secrets manager (OpenBAO release %s-openbao). "+
 			"The operator uses the keys to unseal the vault after every pod restart and hands the token "+
 			"to the control plane, which stores platform secrets here. Deleting this Secret leaves an "+
-			"initialized-but-locked vault only these keys can open. Teams that prefer to hold their own "+
-			"keys set spec.vault.initMode: manual and run the init/unseal ceremony themselves.",
+			"initialized-but-locked vault only these keys can open. Teams that prefer to own this Secret "+
+			"name it in spec.vault.initSecretName: the operator writes the keys there and never deletes it.",
 		crName)
 }
 

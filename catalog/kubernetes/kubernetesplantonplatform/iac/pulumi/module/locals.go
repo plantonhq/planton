@@ -42,6 +42,11 @@ type Locals struct {
 	RecoveryCredentialsSecretName string
 	BackupEndpointCaSecretName    string
 	RecoveryEndpointCaSecretName  string
+
+	// The name of the Secret this module materializes for a declared seal
+	// credential (see seal_secret.go). Same discipline: derived from the
+	// platform name, named to the operator by the CR, never created by it.
+	SealCredentialsSecretName string
 }
 
 // initializeLocals extracts and transforms spec fields into module-local
@@ -83,6 +88,8 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesplantonplatformv1
 		RecoveryCredentialsSecretName: postgresClusterName + vars.RecoveryCredentialsSecretSuffix,
 		BackupEndpointCaSecretName:    postgresClusterName + vars.BackupEndpointCaSecretSuffix,
 		RecoveryEndpointCaSecretName:  postgresClusterName + vars.RecoveryEndpointCaSecretSuffix,
+
+		SealCredentialsSecretName: target.Metadata.Name + vars.OpenBAOReleaseSuffix + vars.SealCredentialsSecretSuffix,
 	}
 }
 

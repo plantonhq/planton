@@ -93,6 +93,27 @@ resource "kubernetes_secret_v1" "recovery_endpoint_ca" {
   depends_on = [kubernetes_namespace_v1.planton_platform]
 }
 
+# The credential a declared vault seal carries (an AWS secret access key, an
+# Azure client secret, a transit token), materialized as the Secret the CR
+# names (`<platform>-openbao-seal-creds`), keyed by the environment variable
+# the seal wrapper reads (see locals.seal_creds_data). A keyless arm — and the
+# GCP arm always — creates none and the CR names none. Created before the CR
+# so the vault's seal finds its credential at its first start; deleted with
+# the resource. Twin of the Pulumi module's seal_secret.go.
+resource "kubernetes_secret_v1" "vault_seal_credentials" {
+  count = local.seal_creds_data != null ? 1 : 0
+
+  metadata {
+    name      = local.seal_creds_secret_name
+    namespace = local.namespace
+    labels    = local.labels
+  }
+
+  data = local.seal_creds_data
+
+  depends_on = [kubernetes_namespace_v1.planton_platform]
+}
+
 # The PlantonPlatform declaration.
 resource "kubectl_manifest" "planton_platform" {
   yaml_body = yamlencode({
@@ -121,5 +142,6 @@ resource "kubectl_manifest" "planton_platform" {
     kubernetes_secret_v1.recovery_credentials,
     kubernetes_secret_v1.backup_endpoint_ca,
     kubernetes_secret_v1.recovery_endpoint_ca,
+    kubernetes_secret_v1.vault_seal_credentials,
   ]
 }

@@ -27,10 +27,16 @@ func literalRef(value string) *foreignkeyv1.StringValueOrRef {
 // gatewayRef is a valueFrom against a KubernetesGateway resource; an empty
 // fieldPath leans on the field's annotated default.
 func gatewayRef(name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+	return refTo(cloudresourcekind.CloudResourceKind_KubernetesGateway, name, fieldPath)
+}
+
+// refTo is a valueFrom against any catalog resource — the shape a manifest
+// uses to follow another resource's output instead of typing its value.
+func refTo(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
-				Kind:      cloudresourcekind.CloudResourceKind_KubernetesGateway,
+				Kind:      kind,
 				Name:      name,
 				FieldPath: fieldPath,
 			},
@@ -304,7 +310,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		// ---- the database's backup and recovery ------------------------------------
 
 		ginkgo.It("should accept a backup to R2 composed from the Cloudflare kinds by reference", func() {
-			input := minimalValidPlatform()
+			input := backupCapablePlatform()
 			input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore:     r2StoreByReference("s3://acme-platform-backups/platform"),
 				RetentionPolicy: strPtr("30d"),
@@ -314,7 +320,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should accept a backup to R2 with every value literal and no jurisdiction", func() {
-			input := minimalValidPlatform()
+			input := backupCapablePlatform()
 			store := r2StoreByReference("s3://acme-platform-backups/platform")
 			store.GetR2().AccountId = literalRef("0123456789abcdef0123456789abcdef")
 			store.GetR2().Jurisdiction = nil
@@ -326,7 +332,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 
 		ginkgo.It("should accept every retention unit the store enforces", func() {
 			for _, retention := range []string{"7d", "8w", "6m"} {
-				input := minimalValidPlatform()
+				input := backupCapablePlatform()
 				input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 					ObjectStore:     r2StoreByReference("s3://acme-platform-backups/platform"),
 					RetentionPolicy: strPtr(retention),
@@ -336,7 +342,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should accept S3 keyless and S3 with access keys", func() {
-			keyless := minimalValidPlatform()
+			keyless := backupCapablePlatform()
 			keyless.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "s3://acme-backups/platform",
@@ -348,7 +354,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			})
 			gomega.Expect(protovalidate.Validate(keyless)).To(gomega.BeNil())
 
-			keyed := minimalValidPlatform()
+			keyed := backupCapablePlatform()
 			keyed.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "s3://backups/platform",
@@ -362,7 +368,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should accept GCS keyless and GCS with a service-account key", func() {
-			keyless := minimalValidPlatform()
+			keyless := backupCapablePlatform()
 			keyless.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "gs://acme-backups/platform",
@@ -371,7 +377,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			})
 			gomega.Expect(protovalidate.Validate(keyless)).To(gomega.BeNil())
 
-			keyed := minimalValidPlatform()
+			keyed := backupCapablePlatform()
 			keyed.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "gs://acme-backups/platform",
@@ -382,7 +388,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should accept Azure Blob keyless and Azure Blob with a connection string", func() {
-			keyless := minimalValidPlatform()
+			keyless := backupCapablePlatform()
 			keyless.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "https://acme.blob.core.windows.net/backups/platform",
@@ -393,7 +399,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			})
 			gomega.Expect(protovalidate.Validate(keyless)).To(gomega.BeNil())
 
-			keyed := minimalValidPlatform()
+			keyed := backupCapablePlatform()
 			keyed.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "https://acme.blob.core.windows.net/backups/platform",
@@ -406,7 +412,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should accept a recovery from R2 beside the platform's own backup, with and without a target time", func() {
-			input := minimalValidPlatform()
+			input := backupCapablePlatform()
 			input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform"),
 			})
@@ -428,6 +434,123 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 				input.Spec.Prerequisites = &KubernetesPlantonPlatformPrerequisites{PostgresBackupPlugin: strPtr(word)}
 				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil(), "postgres_backup_plugin %q", word)
 			}
+		})
+
+		// ---- the vault's seal and keys ------------------------------------------------
+
+		ginkgo.It("should accept a vault with only a named keys Secret (the built-in seal, keys you own)", func() {
+			input := minimalValidPlatform()
+			input.Spec.Vault = &KubernetesPlantonPlatformVault{InitSecretName: "planton-vault-keys"}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept an AWS KMS seal, keyless and with static keys", func() {
+			keyless := minimalValidPlatform()
+			keyless.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AwsKms{
+					AwsKms: &KubernetesPlantonPlatformVaultAwsKmsSeal{Region: "us-west-2", KmsKeyId: "alias/planton-vault-unseal"},
+				}},
+				ServiceAccountAnnotations: map[string]string{"eks.amazonaws.com/role-arn": "arn:aws:iam::123456789012:role/planton-vault-unseal"},
+			}
+			gomega.Expect(protovalidate.Validate(keyless)).To(gomega.BeNil())
+
+			keyed := minimalValidPlatform()
+			keyed.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AwsKms{
+					AwsKms: &KubernetesPlantonPlatformVaultAwsKmsSeal{
+						Region: "us-west-2", KmsKeyId: "alias/planton-vault-unseal",
+						AccessKeyId: "AKIA-example", SecretAccessKey: "secret",
+					},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(keyed)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept a GCP KMS seal by reference and by literal, with and without a workload identity", func() {
+			byReference := minimalValidPlatform()
+			byReference.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{
+					GcpKms: &KubernetesPlantonPlatformVaultGcpKmsSeal{
+						Project:                        refTo(cloudresourcekind.CloudResourceKind_GcpProject, "acme-platform", "status.outputs.project_id"),
+						Region:                         "global",
+						KeyRing:                        refTo(cloudresourcekind.CloudResourceKind_GcpKmsKeyRing, "planton-vault-unseal", "status.outputs.key_ring_name"),
+						CryptoKey:                      refTo(cloudresourcekind.CloudResourceKind_GcpKmsKey, "planton-vault-unseal", "status.outputs.key_name"),
+						WorkloadIdentityServiceAccount: refTo(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "planton-vault-unseal", "status.outputs.email"),
+					},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(byReference)).To(gomega.BeNil())
+
+			literal := minimalValidPlatform()
+			literal.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{
+					GcpKms: &KubernetesPlantonPlatformVaultGcpKmsSeal{
+						Project: literalRef("acme-platform"), Region: "us-central1",
+						KeyRing: literalRef("planton-vault-unseal"), CryptoKey: literalRef("planton-vault-unseal"),
+					},
+				}},
+				ServiceAccountAnnotations: map[string]string{"iam.gke.io/gcp-service-account": "planton-vault-unseal@acme-platform.iam.gserviceaccount.com"},
+			}
+			gomega.Expect(protovalidate.Validate(literal)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept an Azure Key Vault seal, keyless and with a service principal", func() {
+			keyless := minimalValidPlatform()
+			keyless.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault{
+					AzureKeyVault: &KubernetesPlantonPlatformVaultAzureKeyVaultSeal{VaultName: "acme-kv", KeyName: "planton-vault-unseal", TenantId: "tenant"},
+				}},
+				ServiceAccountAnnotations: map[string]string{"azure.workload.identity/client-id": "00000000-0000-0000-0000-000000000000"},
+			}
+			gomega.Expect(protovalidate.Validate(keyless)).To(gomega.BeNil())
+
+			keyed := minimalValidPlatform()
+			keyed.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault{
+					AzureKeyVault: &KubernetesPlantonPlatformVaultAzureKeyVaultSeal{
+						VaultName: "acme-kv", KeyName: "planton-vault-unseal", TenantId: "tenant",
+						ClientId: "client", ClientSecret: "secret",
+					},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(keyed)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept a transit seal with and without the default mount path", func() {
+			input := minimalValidPlatform()
+			input.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_Transit{
+					Transit: &KubernetesPlantonPlatformVaultTransitSeal{Address: "http://key-holder.openbao.svc:8200", KeyName: "autounseal", Token: "s.token"},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+			input.Spec.Vault.AutoUnseal.GetTransit().MountPath = strPtr("keys/")
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept a backup beside a seal, beside a named keys Secret, and beside an opted-out vault with a cloud backend", func() {
+			sealed := minimalValidPlatform()
+			sealed.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform")})
+			sealed.Spec.Vault = &KubernetesPlantonPlatformVault{
+				AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_Transit{
+					Transit: &KubernetesPlantonPlatformVaultTransitSeal{Address: "http://key-holder.openbao.svc:8200", KeyName: "autounseal"},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(sealed)).To(gomega.BeNil())
+
+			named := backupCapablePlatform()
+			named.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform")})
+			gomega.Expect(protovalidate.Validate(named)).To(gomega.BeNil())
+
+			off := false
+			optedOut := minimalValidPlatform()
+			optedOut.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform")})
+			optedOut.Spec.Vault = &KubernetesPlantonPlatformVault{Enabled: &off}
+			optedOut.Spec.Bootstrap = &KubernetesPlantonPlatformBootstrap{SecretBackend: &KubernetesPlantonPlatformSecretBackend{
+				Type:              "awsSecretsManager",
+				AwsSecretsManager: &KubernetesPlantonPlatformAwsSecretsManager{Region: "us-east-1", KmsKeyArn: "arn:aws:kms:us-east-1:123456789012:key/abc"},
+			}}
+			gomega.Expect(protovalidate.Validate(optedOut)).To(gomega.BeNil())
 		})
 	})
 
@@ -776,19 +899,19 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		// ---- the database's backup and recovery ------------------------------------
 
 		ginkgo.It("should fail on a backup without an object store", func() {
-			input := minimalValidPlatform()
+			input := backupCapablePlatform()
 			input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{RetentionPolicy: strPtr("30d")})
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
 		ginkgo.It("should fail on an object store without a backend arm, or without a destination path", func() {
-			noArm := minimalValidPlatform()
+			noArm := backupCapablePlatform()
 			noArm.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{DestinationPath: "s3://acme-backups/platform"},
 			})
 			gomega.Expect(protovalidate.Validate(noArm)).NotTo(gomega.BeNil())
 
-			noPath := minimalValidPlatform()
+			noPath := backupCapablePlatform()
 			noPath.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: r2StoreByReference(""),
 			})
@@ -814,7 +937,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 				"the r2 backend stores at an s3:// destination path": r2StoreByReference("gs://acme-backups/platform"),
 			}
 			for message, store := range cases {
-				input := minimalValidPlatform()
+				input := backupCapablePlatform()
 				input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: store})
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil(), message)
@@ -824,7 +947,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 
 		ginkgo.It("should fail on a retention that is not a positive number of days, weeks, or months", func() {
 			for _, retention := range []string{"0d", "30x", "d30", "30"} {
-				input := minimalValidPlatform()
+				input := backupCapablePlatform()
 				input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 					ObjectStore:     r2StoreByReference("s3://acme-platform-backups/platform"),
 					RetentionPolicy: strPtr(retention),
@@ -836,7 +959,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail on a five-field cron schedule and name the missing seconds field", func() {
-			input := minimalValidPlatform()
+			input := backupCapablePlatform()
 			input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform"),
 				Schedule:    strPtr("0 2 * * *"),
@@ -856,14 +979,14 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			for name, store := range map[string]*KubernetesPlantonPlatformObjectStore{
 				"account": noAccount, "credentials": noCredentials, "secret key": noSecret,
 			} {
-				input := minimalValidPlatform()
+				input := backupCapablePlatform()
 				input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: store})
 				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), "missing %s", name)
 			}
 		})
 
 		ginkgo.It("should fail on an R2 account id that is not 32 hex characters, or an unknown jurisdiction", func() {
-			badAccount := minimalValidPlatform()
+			badAccount := backupCapablePlatform()
 			store := r2StoreByReference("s3://acme-platform-backups/platform")
 			store.GetR2().AccountId = literalRef("acme")
 			badAccount.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: store})
@@ -871,7 +994,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			gomega.Expect(err).NotTo(gomega.BeNil())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("32-hex-character Cloudflare account id"))
 
-			badJurisdiction := minimalValidPlatform()
+			badJurisdiction := backupCapablePlatform()
 			store = r2StoreByReference("s3://acme-platform-backups/platform")
 			store.GetR2().Jurisdiction = literalRef("europe")
 			badJurisdiction.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: store})
@@ -890,7 +1013,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			for name, s3 := range map[string]*KubernetesPlantonPlatformS3ObjectStore{
 				"both": both, "neither": neither, "compatible keyless": compatibleKeyless,
 			} {
-				input := minimalValidPlatform()
+				input := backupCapablePlatform()
 				input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 					ObjectStore: &KubernetesPlantonPlatformObjectStore{
 						DestinationPath: "s3://acme-backups/platform",
@@ -902,7 +1025,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 		})
 
 		ginkgo.It("should fail on an S3 endpoint that is not an http(s) URL, and on access keys missing a half", func() {
-			badEndpoint := minimalValidPlatform()
+			badEndpoint := backupCapablePlatform()
 			badEndpoint.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "s3://backups/platform",
@@ -914,7 +1037,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			})
 			gomega.Expect(protovalidate.Validate(badEndpoint)).NotTo(gomega.BeNil())
 
-			halfKeys := minimalValidPlatform()
+			halfKeys := backupCapablePlatform()
 			halfKeys.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 				ObjectStore: &KubernetesPlantonPlatformObjectStore{
 					DestinationPath: "s3://backups/platform",
@@ -931,7 +1054,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 				"both":    {Keyless: true, ServiceAccountKeyJson: "{}"},
 				"neither": {},
 			} {
-				input := minimalValidPlatform()
+				input := backupCapablePlatform()
 				input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 					ObjectStore: &KubernetesPlantonPlatformObjectStore{
 						DestinationPath: "gs://acme-backups/platform",
@@ -948,7 +1071,7 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 				"neither":    {StorageAccount: "acme"},
 				"no account": {Keyless: true},
 			} {
-				input := minimalValidPlatform()
+				input := backupCapablePlatform()
 				input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{
 					ObjectStore: &KubernetesPlantonPlatformObjectStore{
 						DestinationPath: "https://acme.blob.core.windows.net/backups/platform",
@@ -986,8 +1109,101 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			input.Spec.Prerequisites = &KubernetesPlantonPlatformPrerequisites{PostgresBackupPlugin: strPtr("install")}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
+
+		// ---- the vault's seal and keys ------------------------------------------------
+
+		ginkgo.It("should refuse a backup whose vault keys would die with the platform", func() {
+			input := minimalValidPlatform()
+			input.Spec.Database = withBackup(&KubernetesPlantonPlatformPostgresqlBackup{ObjectStore: r2StoreByReference("s3://acme-platform-backups/platform")})
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("set vault.init_secret_name to a Secret you own"))
+
+			// An explicit vault block that names nothing is the same posture.
+			input.Spec.Vault = &KubernetesPlantonPlatformVault{}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should refuse a seal, a keys Secret, or an identity on an opted-out vault", func() {
+			off := false
+			for name, vault := range map[string]*KubernetesPlantonPlatformVault{
+				"seal": {Enabled: &off, AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{Seal: &KubernetesPlantonPlatformVaultAutoUnseal_Transit{
+					Transit: &KubernetesPlantonPlatformVaultTransitSeal{Address: "http://key-holder.openbao.svc:8200", KeyName: "autounseal"},
+				}}},
+				"keys Secret": {Enabled: &off, InitSecretName: "planton-vault-keys"},
+				"identity":    {Enabled: &off, ServiceAccountAnnotations: map[string]string{"eks.amazonaws.com/role-arn": "arn:aws:iam::123456789012:role/x"}},
+			} {
+				input := minimalValidPlatform()
+				input.Spec.Vault = vault
+				input.Spec.Bootstrap = &KubernetesPlantonPlatformBootstrap{SecretBackend: &KubernetesPlantonPlatformSecretBackend{
+					Type:              "awsSecretsManager",
+					AwsSecretsManager: &KubernetesPlantonPlatformAwsSecretsManager{Region: "us-east-1", KmsKeyArn: "arn:aws:kms:us-east-1:123456789012:key/abc"},
+				}}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil(), name)
+				gomega.Expect(err.Error()).To(gomega.ContainSubstring("vault.enabled: false opts out"), name)
+			}
+		})
+
+		ginkgo.It("should refuse the platform secret backend on an opted-out vault", func() {
+			off := false
+			input := minimalValidPlatform()
+			input.Spec.Vault = &KubernetesPlantonPlatformVault{Enabled: &off}
+			input.Spec.Bootstrap = &KubernetesPlantonPlatformBootstrap{SecretBackend: &KubernetesPlantonPlatformSecretBackend{Type: "platform"}}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("re-enable the vault or use type awsSecretsManager"))
+		})
+
+		ginkgo.It("should refuse an auto_unseal block that names no seal", func() {
+			input := minimalValidPlatform()
+			input.Spec.Vault = &KubernetesPlantonPlatformVault{AutoUnseal: &KubernetesPlantonPlatformVaultAutoUnseal{}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should refuse each seal arm missing what its key needs", func() {
+			cases := map[string]*KubernetesPlantonPlatformVaultAutoUnseal{
+				"aws without a region": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AwsKms{AwsKms: &KubernetesPlantonPlatformVaultAwsKmsSeal{KmsKeyId: "alias/x"}}},
+				"aws without a key":    {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AwsKms{AwsKms: &KubernetesPlantonPlatformVaultAwsKmsSeal{Region: "us-west-2"}}},
+				"gcp without a project": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{GcpKms: &KubernetesPlantonPlatformVaultGcpKmsSeal{
+					Region: "global", KeyRing: literalRef("ring"), CryptoKey: literalRef("key"),
+				}}},
+				"gcp without a region": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{GcpKms: &KubernetesPlantonPlatformVaultGcpKmsSeal{
+					Project: literalRef("p"), KeyRing: literalRef("ring"), CryptoKey: literalRef("key"),
+				}}},
+				"gcp without a key ring": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{GcpKms: &KubernetesPlantonPlatformVaultGcpKmsSeal{
+					Project: literalRef("p"), Region: "global", CryptoKey: literalRef("key"),
+				}}},
+				"gcp without a crypto key": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{GcpKms: &KubernetesPlantonPlatformVaultGcpKmsSeal{
+					Project: literalRef("p"), Region: "global", KeyRing: literalRef("ring"),
+				}}},
+				"azure without a vault name": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault{AzureKeyVault: &KubernetesPlantonPlatformVaultAzureKeyVaultSeal{KeyName: "k", TenantId: "t"}}},
+				"azure without a key name":   {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault{AzureKeyVault: &KubernetesPlantonPlatformVaultAzureKeyVaultSeal{VaultName: "v", TenantId: "t"}}},
+				"azure without a tenant":     {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault{AzureKeyVault: &KubernetesPlantonPlatformVaultAzureKeyVaultSeal{VaultName: "v", KeyName: "k"}}},
+				"transit without an address": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_Transit{Transit: &KubernetesPlantonPlatformVaultTransitSeal{KeyName: "k"}}},
+				"transit without a key name": {Seal: &KubernetesPlantonPlatformVaultAutoUnseal_Transit{Transit: &KubernetesPlantonPlatformVaultTransitSeal{Address: "http://key-holder:8200"}}},
+			}
+			for name, seal := range cases {
+				input := minimalValidPlatform()
+				input.Spec.Vault = &KubernetesPlantonPlatformVault{AutoUnseal: seal}
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), name)
+			}
+		})
 	})
 })
+
+// backupCapablePlatform is the zero-config platform with the one thing a
+// backup declaration requires of the vault: keys that outlive the platform.
+// The archive carries the vault's data, and the spec refuses a backup whose
+// vault keys would die with the platform; naming the keys Secret is the
+// bare-metal answer (a cloud seal is the other), so every backup fixture
+// starts here and each refusal below fires for its own reason, never for
+// the missing keys.
+func backupCapablePlatform() *KubernetesPlantonPlatform {
+	input := minimalValidPlatform()
+	input.Spec.Vault = &KubernetesPlantonPlatformVault{InitSecretName: "planton-vault-keys"}
+	return input
+}
 
 // withBackup wraps a backup declaration in the database block, the way a
 // manifest declares it under spec.database.postgresql.backup.

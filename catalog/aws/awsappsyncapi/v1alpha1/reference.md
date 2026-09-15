@@ -366,6 +366,10 @@ Cognito user pool authorization (type AMAZON_COGNITO_USER_POOLS).
 The user pool. Can reference an AwsCognitoUserPool resource or
 pass a literal pool id.
 
+Containment-exempt: the API authorizes callers AGAINST the pool; it is
+not deployed into it. On a diagram the pool is a room its clients and
+identity providers live in, and the API stands outside with a line in.
+
 - references: AwsCognitoUserPool (`status.outputs.user_pool_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsCognitoUserPool, name: <that resource's name>, fieldPath: status.outputs.user_pool_id}} -- a bare string does not parse
 
@@ -500,6 +504,10 @@ Cognito user pool authorization (type AMAZON_COGNITO_USER_POOLS).
 
 The user pool. Can reference an AwsCognitoUserPool resource or
 pass a literal pool id.
+
+Containment-exempt: the API authorizes callers AGAINST the pool; it is
+not deployed into it. On a diagram the pool is a room its clients and
+identity providers live in, and the API stands outside with a line in.
 
 - references: AwsCognitoUserPool (`status.outputs.user_pool_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsCognitoUserPool, name: <that resource's name>, fieldPath: status.outputs.user_pool_id}} -- a bare string does not parse
@@ -1216,6 +1224,9 @@ Cognito user pool authorization (type AMAZON_COGNITO_USER_POOLS).
 The user pool. Can reference an AwsCognitoUserPool resource or
 pass a literal pool id.
 
+Containment-exempt: the API authorizes callers AGAINST the pool; it is
+not deployed into it (the GraphQL arm carries the same verdict).
+
 - references: AwsCognitoUserPool (`status.outputs.user_pool_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsCognitoUserPool, name: <that resource's name>, fieldPath: status.outputs.user_pool_id}} -- a bare string does not parse
 
@@ -1720,6 +1731,11 @@ rename the entry instead of editing it in place.
 
 The event bus. Can reference an AwsEventBridgeBus resource or
 pass a literal bus ARN.
+
+Containment-exempt: the API PUBLISHES events onto the bus; it is not
+deployed into it. On a diagram the bus is a room its rules live in,
+and the API stands outside with a line in -- the verdict an SES
+configuration set's event-bus destination already carries.
 
 - references: AwsEventBridgeBus (`status.outputs.bus_arn`)
 - rule: {"required":true}

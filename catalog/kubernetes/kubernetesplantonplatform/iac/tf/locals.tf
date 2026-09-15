@@ -373,12 +373,97 @@ locals {
       resend  = local.email_resend
     } : k => v if v != null
   }
+  # ---- vault: the seal and its credential ----------------------------------------
+  # The seal follows the object-store discipline: the spec declares a
+  # credential VALUE, this module materializes it as a Secret the CR names,
+  # and a keyless arm names none. The Secret hangs off the operator's name for
+  # the vault ("<platform>-openbao") and is keyed by the ENV VAR each seal
+  # wrapper reads (the cloud SDKs' standard variables; transit's token
+  # variable), so the operator hands every key to the vault's process as the
+  # variable of the same name. Twin of the Pulumi module's seal_secret.go.
+  openbao_release_name   = "${local.platform_name}-openbao"
+  seal_creds_secret_name = "${local.openbao_release_name}-seal-creds"
+
+  seal_aws     = try(var.spec.vault.auto_unseal.aws_kms, null)
+  seal_gcp     = try(var.spec.vault.auto_unseal.gcp_kms, null)
+  seal_azure   = try(var.spec.vault.auto_unseal.azure_key_vault, null)
+  seal_transit = try(var.spec.vault.auto_unseal.transit, null)
+
+  # Credential material only — public identifiers (an access key id, a client
+  # id) ride the CR as plain fields. null when the declared arm is keyless, so
+  # no Secret exists and the CR names none.
+  seal_creds_data = (
+    local.seal_aws != null && try(coalesce(local.seal_aws.secret_access_key), "") != "" ? {
+      AWS_SECRET_ACCESS_KEY = local.seal_aws.secret_access_key
+      } : local.seal_azure != null && try(coalesce(local.seal_azure.client_secret), "") != "" ? {
+      AZURE_CLIENT_SECRET = local.seal_azure.client_secret
+      } : local.seal_transit != null && try(coalesce(local.seal_transit.token), "") != "" ? {
+      VAULT_TOKEN = local.seal_transit.token
+    } : null
+  )
+
+  # The CR's autoUnseal: exactly one arm in the operator's vocabulary,
+  # identifiers through, credentialsSecretName only when a Secret exists.
+  # The GCP arm is keyless by construction; its workload identity rides the
+  # ServiceAccount annotations below, never this body. mountPath renders on
+  # presence only, so the operator's own default stands.
+  vault_auto_unseal_body = (
+    local.seal_aws != null ? {
+      awsKms = {
+        for k, v in {
+          region                = local.seal_aws.region
+          kmsKeyId              = local.seal_aws.kms_key_id
+          accessKeyId           = try(coalesce(local.seal_aws.access_key_id), "") != "" ? local.seal_aws.access_key_id : null
+          credentialsSecretName = local.seal_creds_data != null ? local.seal_creds_secret_name : null
+        } : k => v if v != null
+      }
+      } : local.seal_gcp != null ? {
+      gcpKms = {
+        project   = local.seal_gcp.project
+        region    = local.seal_gcp.region
+        keyRing   = local.seal_gcp.key_ring
+        cryptoKey = local.seal_gcp.crypto_key
+      }
+      } : local.seal_azure != null ? {
+      azureKeyVault = {
+        for k, v in {
+          vaultName             = local.seal_azure.vault_name
+          keyName               = local.seal_azure.key_name
+          tenantId              = local.seal_azure.tenant_id
+          clientId              = try(coalesce(local.seal_azure.client_id), "") != "" ? local.seal_azure.client_id : null
+          credentialsSecretName = local.seal_creds_data != null ? local.seal_creds_secret_name : null
+        } : k => v if v != null
+      }
+      } : local.seal_transit != null ? {
+      transit = {
+        for k, v in {
+          address               = local.seal_transit.address
+          keyName               = local.seal_transit.key_name
+          mountPath             = try(coalesce(local.seal_transit.mount_path), "") != "" ? local.seal_transit.mount_path : null
+          credentialsSecretName = local.seal_creds_data != null ? local.seal_creds_secret_name : null
+        } : k => v if v != null
+      }
+    } : null
+  )
+
+  # The vault ServiceAccount's annotations, merged the one way both engines
+  # agree on: the GCP arm's declared workload identity contributes the GKE
+  # annotation (the annotation follows the identity by reference), and every
+  # explicit vault.service_account_annotations entry is laid over it, so an
+  # explicit value wins on conflict. The operator sees one map.
+  vault_sa_annotations = merge(
+    local.seal_gcp != null && try(coalesce(local.seal_gcp.workload_identity_service_account), "") != "" ? {
+      "iam.gke.io/gcp-service-account" = local.seal_gcp.workload_identity_service_account
+    } : {},
+    try(var.spec.vault.service_account_annotations, null) != null ? var.spec.vault.service_account_annotations : {}
+  )
+
   vault_body = {
     for k, v in {
-      enabled          = try(var.spec.vault.enabled, null)
-      initMode         = try(var.spec.vault.init_mode, "") != "" ? var.spec.vault.init_mode : null
-      storageSize      = try(var.spec.vault.storage_size, "") != "" ? var.spec.vault.storage_size : null
-      storageClassName = try(var.spec.vault.storage_class_name, "") != "" ? var.spec.vault.storage_class_name : null
+      enabled                   = try(var.spec.vault.enabled, null)
+      autoUnseal                = local.vault_auto_unseal_body
+      initSecretName            = try(var.spec.vault.init_secret_name, "") != "" ? var.spec.vault.init_secret_name : null
+      serviceAccountAnnotations = length(local.vault_sa_annotations) > 0 ? local.vault_sa_annotations : null
     } : k => v if v != null
   }
 

@@ -22,7 +22,7 @@ import (
 
 // defaultOpenBAOStorageSize sizes the vault's data volume. Its contents are
 // KV secret payloads and Transit key material -- kilobytes each; 2Gi is
-// headroom, not bulk. spec.storage.size / spec.vault.storageSize override.
+// headroom, not bulk. spec.storage.size overrides.
 const defaultOpenBAOStorageSize = "2Gi"
 
 // OpenBAO deploys and monitors OpenBAO (open-source Vault fork), the bundled
@@ -31,10 +31,10 @@ const defaultOpenBAOStorageSize = "2Gi"
 // and the OIDC issuer's signing key -- integral the way the database is.
 // spec.vault.enabled: false is the deliberate opt-out.
 //
-// In auto-init mode, the component initializes OpenBAO via its HTTP API after
-// the pod is running, stores unseal keys and root token in a Kubernetes Secret,
-// and re-unseals on pod restart. In manual mode, the component waits for the
-// user to initialize and unseal.
+// The component initializes OpenBAO through its HTTP API once the pod is
+// running, stores the unseal keys and root token in a Kubernetes Secret, and
+// re-unseals on pod restart. There is exactly one initialization path -- the
+// platform's database is not initialized by hand either.
 type OpenBAO struct{ Base }
 
 func (o *OpenBAO) Name() string                                { return "openbao" }
@@ -52,19 +52,11 @@ func (o *OpenBAO) IsEnabled(planton *v1.PlantonPlatform) bool {
 func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Scheme, planton *v1.PlantonPlatform) (Result, error) {
 	log := logf.FromContext(ctx).WithValues("component", o.Name())
 
-	var componentSize resource.Quantity
-	var componentClass string
-	initMode := v1.OpenBAOInitModeAuto
-
-	if vault := planton.Spec.Vault; vault != nil {
-		componentSize = vault.StorageSize
-		componentClass = vault.StorageClassName
-		if vault.InitMode != "" {
-			initMode = vault.InitMode
-		}
-	}
-	storageSize := effectiveStorageSize(planton, componentSize, defaultOpenBAOStorageSize)
-	storageClass := effectiveStorageClass(planton, componentClass)
+	// The vault carries no per-component volume override: its data belongs
+	// in the platform's database, and the volume it still mounts today
+	// follows the platform-wide storage dial alone.
+	storageSize := effectiveStorageSize(planton, resource.Quantity{}, defaultOpenBAOStorageSize)
+	storageClass := effectiveStorageClass(planton, "")
 
 	chartData := resources.LoadOpenBAOChart()
 	values := resources.OpenBAOHelmValues(planton.Name, storageSize, storageClass)
@@ -99,36 +91,11 @@ func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 		return o.NotReady(ctx, c, planton.Namespace, StatefulSetRef(releaseName), "Waiting for OpenBAO pod"), nil
 	}
 
-	if initMode == v1.OpenBAOInitModeManual {
-		return o.checkManualInit(ctx, planton)
-	}
-
 	return o.ensureAutoInit(ctx, c, planton)
 }
 
-func (o *OpenBAO) checkManualInit(ctx context.Context, planton *v1.PlantonPlatform) (Result, error) {
-	log := logf.FromContext(ctx).WithValues("component", o.Name(), "initMode", "manual")
-
-	apiAddr := resources.OpenBAOAPIAddr(planton.Name, planton.Namespace)
-	health, err := bootstrap.CheckOpenBAOHealth(ctx, http.DefaultClient, apiAddr)
-	if err != nil {
-		log.Info("OpenBAO health check failed (may not be ready yet)", "error", err.Error())
-		return Result{Ready: false, Message: "Waiting for OpenBAO health endpoint"}, nil
-	}
-
-	if !health.Initialized || health.Sealed {
-		log.Info("OpenBAO awaiting manual init/unseal",
-			"initialized", health.Initialized, "sealed", health.Sealed)
-		return Result{Ready: false, Message: "OpenBAO deployed, awaiting manual initialization and unseal " +
-			"(the platform expects a KV v2 engine at secret/ and a Transit engine at transit/)"}, nil
-	}
-
-	log.Info("OpenBAO ready (manual init)")
-	return Result{Ready: true, Message: "OpenBAO healthy (manual init; expects KV v2 at secret/ and Transit at transit/)"}, nil
-}
-
 func (o *OpenBAO) ensureAutoInit(ctx context.Context, c client.Client, planton *v1.PlantonPlatform) (Result, error) {
-	log := logf.FromContext(ctx).WithValues("component", o.Name(), "initMode", "auto")
+	log := logf.FromContext(ctx).WithValues("component", o.Name())
 
 	apiAddr := resources.OpenBAOAPIAddr(planton.Name, planton.Namespace)
 	health, err := bootstrap.CheckOpenBAOHealth(ctx, http.DefaultClient, apiAddr)

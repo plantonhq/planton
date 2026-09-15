@@ -59,8 +59,20 @@ spec:
         # SIX-field cron, seconds first — 02:00 UTC nightly. The first base
         # backup runs the moment backups are declared, whatever this says.
         schedule: "0 0 2 * * *"
-  # Requires operator chart 0.15.0 or newer (the first whose definition
-  # knows `backup` and installs the Barman Cloud plugin beside CloudNativePG).
-  # To restore a platform from this archive, declare it again with
+  vault:
+    # The archive above carries the bundled secrets manager too — it stores
+    # its data in the same database — so what the backup cannot carry is the
+    # keys that open it. Name the Secret you own: the operator writes the
+    # vault's unseal keys and root token into it at first boot and never
+    # deletes it, so a platform destroy leaves it standing and a restore
+    # opens the vault with it. Keep a copy outside the cluster; it is the
+    # one object a lost cluster takes with it. (A cloud key through
+    # `auto_unseal` is the other way to keep the keys out of the platform's
+    # hands; an R2 archive is cloud-neutral, so this preset names a Secret.)
+    init_secret_name: planton-vault-keys
+  # Requires the operator chart whose definition knows `backup` and the
+  # vault's `init_secret_name` — the platform kind's GUIDE names the floor.
+  # To restore a platform from this archive, recreate the keys Secret in the
+  # new cluster, then declare the platform again with
   # `database.postgresql.recover_from` naming the same store and the
   # source's `status.backup.serverName`; see the GUIDE.

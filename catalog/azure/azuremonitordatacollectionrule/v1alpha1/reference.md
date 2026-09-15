@@ -814,6 +814,10 @@ The destination's rule-local name (referenced by data flows).
 The destination Event Hub, by ARM resource ID. Can be a literal
 ARM ID or a reference to an AzureEventHub output.
 
+Collected data is DELIVERED into the hub; the rule lives in its own
+resource group, so on a diagram the reference is access, not
+placement -- the diagnostic setting's rule.
+
 - references: AzureEventHub (`status.outputs.event_hub_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureEventHub, name: <that resource's name>, fieldPath: status.outputs.event_hub_id}} -- a bare string does not parse
@@ -840,6 +844,10 @@ The destination's rule-local name (referenced by data flows).
 
 The destination Event Hub, by ARM resource ID. Can be a literal
 ARM ID or a reference to an AzureEventHub output.
+
+Collected data is DELIVERED into the hub; the rule lives in its own
+resource group, so on a diagram the reference is access, not
+placement -- the diagnostic setting's rule.
 
 - references: AzureEventHub (`status.outputs.event_hub_id`)
 - rule: {"required":true}
@@ -902,6 +910,10 @@ The blob container the telemetry is written to.
 The destination storage account, by ARM resource ID. Can be a
 literal ARM ID or a reference to an AzureStorageAccount output.
 
+Collected data is DELIVERED into this account; the rule lives in its
+own resource group, so on a diagram the reference is access, not
+placement -- the diagnostic setting's rule.
+
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureStorageAccount, name: <that resource's name>, fieldPath: status.outputs.storage_account_id}} -- a bare string does not parse
@@ -936,6 +948,10 @@ The blob container the telemetry is written to.
 The destination storage account, by ARM resource ID. Can be a
 literal ARM ID or a reference to an AzureStorageAccount output.
 
+Collected data is DELIVERED into this account; the rule lives in its
+own resource group, so on a diagram the reference is access, not
+placement -- the diagnostic setting's rule.
+
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureStorageAccount, name: <that resource's name>, fieldPath: status.outputs.storage_account_id}} -- a bare string does not parse
@@ -969,6 +985,10 @@ The storage table the telemetry is written to.
 
 The destination storage account, by ARM resource ID. Can be a
 literal ARM ID or a reference to an AzureStorageAccount output.
+
+Collected data is DELIVERED into this account; the rule lives in its
+own resource group, so on a diagram the reference is access, not
+placement -- the diagnostic setting's rule.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}

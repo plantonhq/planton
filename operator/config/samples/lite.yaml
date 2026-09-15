@@ -19,12 +19,11 @@ spec:
       storageSize: 1Gi
     redis:
       storageSize: 256Mi
-  # The bundled secrets manager (spec.vault) is deployed by default; only its
-  # lab-sized volume is overridden here. Opting out is the deliberate act:
+  # The bundled secrets manager (spec.vault) is deployed by default and keeps
+  # its data in the platform's database, so a lab install has nothing to size
+  # for it. Opting out is the deliberate act:
   #   vault:
   #     enabled: false
-  vault:
-    storageSize: 1Gi
   controlPlane:
     image:
       repository: nginx

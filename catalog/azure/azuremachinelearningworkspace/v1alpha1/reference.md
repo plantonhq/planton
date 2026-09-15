@@ -216,7 +216,9 @@ to, by ARM ID. Fixed at creation.
 `string | valueFrom` · required
 
 The Key Vault the workspace stores its secrets in (connection
-credentials, compute SSH keys), by ARM ID. Fixed at creation.
+credentials, compute SSH keys), by ARM ID. Fixed at creation. The
+workspace WRITES INTO the vault and lives in its own resource group,
+so the reference is access, not placement, on a diagram.
 
 - references: AzureKeyVault (`status.outputs.key_vault_id`)
 - rule: {"required":true}
@@ -230,6 +232,11 @@ The storage account backing the workspace's artifacts and its two
 built-in datastores, by ARM ID. Must be a general-purpose account
 WITHOUT hierarchical namespace (ARM rejects Data Lake Gen2
 accounts as default workspace storage). Fixed at creation.
+
+The workspace READS and WRITES this account as its default storage and
+lives in its own resource group, so on a diagram the reference is
+access, not placement -- the same rule its key_vault_id already
+carries.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
@@ -396,7 +403,9 @@ BEFORE this is configured.
 
 `string | valueFrom` · required
 
-The Key Vault holding the encryption key, by ARM ID.
+The Key Vault holding the encryption key, by ARM ID. The workspace
+UNWRAPS its key through the vault and never lives in it, so the
+reference is access, not placement, on a diagram.
 
 - references: AzureKeyVault (`status.outputs.key_vault_id`)
 - rule: {"required":true}
@@ -534,6 +543,10 @@ on-demand compute for jobs without a named cluster).
 The subnet serverless compute nodes are placed in, by ARM ID.
 Required when public_ip_enabled is false and the workspace's
 public network access is disabled.
+On a diagram the workspace lives in its resource group and its
+serverless nodes attach to this subnet, so the reference is
+access, not placement -- a workspace is never drawn inside the
+subnet it injects compute into (the Azure-SSIS runtime's rule).
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse

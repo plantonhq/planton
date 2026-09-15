@@ -921,6 +921,12 @@ apigateway.amazonaws.com instead.
 Cognito user pools whose tokens the authorizer accepts, for
 COGNITO_USER_POOLS authorizers.
 
+Containment-exempt: the API authorizes callers AGAINST the pool; it is
+not deployed into it. On a diagram the pool is a room its clients and
+identity providers live in, and the API stands outside with a line in
+-- the same verdict the HTTP API's JWT issuer and the ALB listener's
+Cognito action already carry.
+
 - references: AwsCognitoUserPool (`status.outputs.user_pool_arn`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsCognitoUserPool, name: <that resource's name>, fieldPath: status.outputs.user_pool_arn}} -- a bare string does not parse
 

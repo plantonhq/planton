@@ -206,7 +206,9 @@ constraint: at most ONE management group may appear in this list.
 
 Each entry is a literal ARM ID or a reference to a resource's ID output
 (defaults to an AzureResourceGroup's ARM ID); literals and references
-can mix freely. Updatable in place.
+can mix freely. Updatable in place. Where a role MAY BE ASSIGNED is not
+where the definition lives (that is `scope`), so on a diagram these
+references are access, not placement.
 
 - references: AzureResourceGroup (`status.outputs.resource_group_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureResourceGroup, name: <that resource's name>, fieldPath: status.outputs.resource_group_id}} -- a bare string does not parse

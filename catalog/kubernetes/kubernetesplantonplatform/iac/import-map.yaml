@@ -42,3 +42,82 @@ spec:
       where_to_find: >-
         Only imported when create_namespace is true; the platform's
         namespace itself.
+    # ── the credential Secrets the module materializes (kubernetes_secret_v1)
+    # Each exists only when its declaration carries a credential VALUE (a
+    # keyless posture creates none): the database's backup and recovery
+    # store credentials, a private S3 endpoint's CA bundle for either store,
+    # and a declared seal arm's credential for the vault. All hang off the
+    # operator's own names — "<platform>-postgres" for the database's,
+    # "<platform>-openbao" for the vault's — and live in the platform's
+    # namespace.
+    - name: secret_name
+      tofu_resource_name: backup_credentials
+      derivations:
+        - from_metadata_name_suffix: "-postgres-backup-creds"
+      where_to_find: >-
+        Always "<platform>-postgres-backup-creds" when the backup store
+        declares a credential — `kubectl get secrets -n <namespace>`.
+    - name: secret_namespace
+      tofu_resource_name: backup_credentials
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the platform.
+    - name: secret_name
+      tofu_resource_name: recovery_credentials
+      derivations:
+        - from_metadata_name_suffix: "-postgres-recovery-creds"
+      where_to_find: >-
+        Always "<platform>-postgres-recovery-creds" when the recovery store
+        declares a credential — `kubectl get secrets -n <namespace>`.
+    - name: secret_namespace
+      tofu_resource_name: recovery_credentials
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the platform.
+    - name: secret_name
+      tofu_resource_name: backup_endpoint_ca
+      derivations:
+        - from_metadata_name_suffix: "-postgres-backup-endpoint-ca"
+      where_to_find: >-
+        Always "<platform>-postgres-backup-endpoint-ca" when the backup
+        store's s3 arm carries endpoint_ca_pem.
+    - name: secret_namespace
+      tofu_resource_name: backup_endpoint_ca
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the platform.
+    - name: secret_name
+      tofu_resource_name: recovery_endpoint_ca
+      derivations:
+        - from_metadata_name_suffix: "-postgres-recovery-endpoint-ca"
+      where_to_find: >-
+        Always "<platform>-postgres-recovery-endpoint-ca" when the recovery
+        store's s3 arm carries endpoint_ca_pem.
+    - name: secret_namespace
+      tofu_resource_name: recovery_endpoint_ca
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the platform.
+    - name: secret_name
+      tofu_resource_name: vault_seal_credentials
+      derivations:
+        - from_metadata_name_suffix: "-openbao-seal-creds"
+      where_to_find: >-
+        Always "<platform>-openbao-seal-creds" when the vault's seal arm
+        declares a credential (an AWS secret access key, an Azure client
+        secret, a transit token) — `kubectl get secrets -n <namespace>`.
+    - name: secret_namespace
+      tofu_resource_name: vault_seal_credentials
+      derivations:
+        - from_stack_output: namespace
+        - from_spec_field: namespace.value
+      where_to_find: >-
+        Same namespace as the platform.

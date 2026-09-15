@@ -103,7 +103,9 @@ AzureVirtualHub's ARM ID. Fixed at creation.
 The virtual network being attached (the spoke) -- references an
 AzureVirtualNetwork's ARM ID. The VNet's address space must not
 overlap the hub's or any other connected network's. Fixed at
-creation.
+creation. Containment-exempt: the connection is an ARM child of the
+hub and merely attaches the spoke, so on a diagram it stands in the
+hub with a line to the spoke network, never inside the network.
 
 - references: AzureVirtualNetwork (`status.outputs.virtual_network_id`)
 - rule: {"required":true}

@@ -120,6 +120,7 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | GcpKmsKey | `spec.keyRingId` | `status.outputs.key_ring_id` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.keyRing` | `status.outputs.key_ring_name` |
+| KubernetesPlantonPlatform | `spec.vault.autoUnseal.gcpKms.keyRing` | `status.outputs.key_ring_name` |
 
 ## See Also
 

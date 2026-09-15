@@ -248,4 +248,43 @@ type BackupStatus struct {
 	// plugin's own sentence when it is the one that knows.
 	// +optional
 	Message string `json:"message,omitempty"`
+
+	// vault is whether this archive carries the bundled secrets manager, and
+	// what opens the restored vault. Present whenever the operator can say;
+	// absent while it cannot yet.
+	// +optional
+	Vault *VaultBackupStatus `json:"vault,omitempty"`
+}
+
+// VaultBackupStatus is the archive's answer for the bundled secrets manager:
+// the vault stores in the platform's database, so the same archive that
+// carries the records carries every secret -- and a restore is only whole
+// if the restored vault can be OPENED. These four facts are what a person
+// planning for the bad day needs machine-readable.
+type VaultBackupStatus struct {
+	// covered is whether the archive carries the vault's data: true when the
+	// vault runs and a backup is declared; false when the vault is opted out
+	// (nothing to archive) or no backup is declared.
+	Covered bool `json:"covered"`
+
+	// seal is what opens the vault: "shamir" (the built-in key shares, held
+	// in the init Secret), or the cloud seal declared on spec.vault.autoUnseal
+	// -- "awsKms", "gcpKms", "azureKeyVault", "transit". Deliberately a word,
+	// not an enum, for the reason BackupState is not one.
+	// +optional
+	Seal string `json:"seal,omitempty"`
+
+	// initSecretName is the Secret holding the vault's keys and root token
+	// -- the one object to keep a copy of outside the cluster. Under
+	// "shamir" a restore needs it present; under a cloud seal it is the
+	// break-glass. The adopter's own when spec.vault.initSecretName is set,
+	// otherwise the operator's, deleted with the platform.
+	// +optional
+	InitSecretName string `json:"initSecretName,omitempty"`
+
+	// message says, in plain language, what a restore brings back and what
+	// it needs from the person -- which Secret to keep, which key must
+	// exist.
+	// +optional
+	Message string `json:"message,omitempty"`
 }

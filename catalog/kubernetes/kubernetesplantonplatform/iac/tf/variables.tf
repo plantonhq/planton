@@ -212,10 +212,42 @@ variable "spec" {
       }))
     }))
     vault = optional(object({
-      enabled            = optional(bool)
-      init_mode          = optional(string)
-      storage_size       = optional(string, "")
-      storage_class_name = optional(string, "")
+      enabled = optional(bool)
+      # Exactly one seal arm (the spec's CEL holds it). The GCP arm's
+      # project, key_ring, crypto_key, and workload_identity_service_account
+      # are foreign keys in the spec; they arrive here already resolved to
+      # plain strings. Credential values never reach the CR: the module
+      # materializes them as the seal-credentials Secret the CR names.
+      auto_unseal = optional(object({
+        aws_kms = optional(object({
+          region            = string
+          kms_key_id        = string
+          access_key_id     = optional(string, "")
+          secret_access_key = optional(string, "")
+        }))
+        gcp_kms = optional(object({
+          project                           = string
+          region                            = string
+          key_ring                          = string
+          crypto_key                        = string
+          workload_identity_service_account = optional(string, "")
+        }))
+        azure_key_vault = optional(object({
+          vault_name    = string
+          key_name      = string
+          tenant_id     = string
+          client_id     = optional(string, "")
+          client_secret = optional(string, "")
+        }))
+        transit = optional(object({
+          address    = string
+          key_name   = string
+          mount_path = optional(string)
+          token      = optional(string, "")
+        }))
+      }))
+      init_secret_name            = optional(string, "")
+      service_account_annotations = optional(map(string), {})
     }))
     components = optional(object({
       graph = optional(object({

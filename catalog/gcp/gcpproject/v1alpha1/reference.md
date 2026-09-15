@@ -276,6 +276,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesClusterSecretStore | `spec.config.gcpSecretManager.projectId` | `status.outputs.project_id` |
 | KubernetesExternalDns | `spec.googleCloudDns.project` | `status.outputs.project_id` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.project` | `status.outputs.project_id` |
+| KubernetesPlantonPlatform | `spec.vault.autoUnseal.gcpKms.project` | `status.outputs.project_id` |
 | KubernetesSecretStore | `spec.config.gcpSecretManager.projectId` | `status.outputs.project_id` |
 
 ## See Also

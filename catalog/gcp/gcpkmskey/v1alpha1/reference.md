@@ -355,6 +355,7 @@ Fields on other kinds that can point at this resource:
 | GcpVertexAiNotebook | `spec.dataDisk.kmsKey` | `status.outputs.key_id` |
 | GcpWorkflow | `spec.cryptoKey` | `status.outputs.key_id` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |
+| KubernetesPlantonPlatform | `spec.vault.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |
 
 ## See Also
 

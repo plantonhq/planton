@@ -151,7 +151,9 @@ by the soft-deleted ghost until purged.
 `string | valueFrom` · required
 
 The Key Vault the hub stores its secrets in (connection
-credentials, project secrets), by ARM ID. Fixed at creation.
+credentials, project secrets), by ARM ID. Fixed at creation. The hub
+WRITES INTO the vault and lives in its own resource group, so the
+reference is access, not placement, on a diagram.
 
 - references: AzureKeyVault (`status.outputs.key_vault_id`)
 - rule: {"required":true}
@@ -165,6 +167,11 @@ The storage account backing the hub's artifacts and file shares,
 by ARM ID. Use a general-purpose account WITHOUT hierarchical
 namespace -- the hub is an ML workspace at ARM, which rejects
 Data Lake Gen2 accounts as default storage. Fixed at creation.
+
+The hub READS and WRITES this account as its default workspace storage
+and lives in its own resource group, so on a diagram the reference is
+access, not placement -- the same rule its key_vault_id already
+carries.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
@@ -271,7 +278,9 @@ high_business_impact_enabled true service-side.
 
 `string | valueFrom` · required
 
-The Key Vault holding the encryption key, by ARM ID.
+The Key Vault holding the encryption key, by ARM ID. The hub UNWRAPS
+its key through the vault and never lives in it, so the reference is
+access, not placement, on a diagram.
 
 - references: AzureKeyVault (`status.outputs.key_vault_id`)
 - rule: {"required":true}

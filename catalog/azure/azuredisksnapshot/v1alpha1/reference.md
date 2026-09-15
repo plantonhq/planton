@@ -175,7 +175,9 @@ a NEW snapshot resource.
 
 The storage account holding source_uri (the read grant for
 "Import"). Can be a literal ARM ID or a reference to an
-AzureStorageAccount output.
+AzureStorageAccount output. The snapshot READS the VHD out of the
+account and lives in its own resource group, so the reference is
+access, not placement, on a diagram.
 
 **ForceNew**: changing this destroys and recreates the snapshot.
 
@@ -268,7 +270,9 @@ The secret's URL (the Key Vault secret identifier).
 `string | valueFrom` · required
 
 The Key Vault holding the secret. Can be a literal ARM ID or a
-reference to an AzureKeyVault output.
+reference to an AzureKeyVault output. The snapshot reads its key out
+of the vault and lives in its own resource group, so the reference is
+access, not placement, on a diagram.
 
 - references: AzureKeyVault (`status.outputs.key_vault_id`)
 - rule: {"required":true}
@@ -294,7 +298,8 @@ The key's URL (the Key Vault key identifier).
 `string | valueFrom` · required
 
 The Key Vault holding the key. Can be a literal ARM ID or a
-reference to an AzureKeyVault output.
+reference to an AzureKeyVault output. Access, not placement, on a
+diagram, for the same reason as the disk encryption key's vault.
 
 - references: AzureKeyVault (`status.outputs.key_vault_id`)
 - rule: {"required":true}

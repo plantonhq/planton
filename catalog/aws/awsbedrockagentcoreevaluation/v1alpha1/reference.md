@@ -1286,6 +1286,12 @@ AWS manages VPC endpoints in your subnets.
 
 The VPC to route through.
 
+Containment-exempt: a managed endpoint is a private PATH through the
+VPC to a private provider or backend; the harness is not deployed inside
+it. On a diagram it stands where its own network places it, with a
+line into the VPC -- the verdict a Lambda's VPC subnets and an
+EventBridge pipe's task subnets already carry.
+
 - references: AwsVpc (`status.outputs.vpc_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsVpc, name: <that resource's name>, fieldPath: status.outputs.vpc_id}} -- a bare string does not parse
@@ -1296,6 +1302,7 @@ The VPC to route through.
 
 Subnets for the managed endpoint's network interfaces (at least
 one).
+Containment-exempt for the same reason as the VPC above.
 
 - references: AwsSubnet (`status.outputs.subnet_id`)
 - rule: {"required":true,"repeated":{"minItems":"1"}}
@@ -1388,6 +1395,12 @@ AWS manages VPC endpoints in your subnets.
 
 The VPC to route through.
 
+Containment-exempt: a managed endpoint is a private PATH through the
+VPC to a private provider or backend; the harness is not deployed inside
+it. On a diagram it stands where its own network places it, with a
+line into the VPC -- the verdict a Lambda's VPC subnets and an
+EventBridge pipe's task subnets already carry.
+
 - references: AwsVpc (`status.outputs.vpc_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsVpc, name: <that resource's name>, fieldPath: status.outputs.vpc_id}} -- a bare string does not parse
@@ -1398,6 +1411,7 @@ The VPC to route through.
 
 Subnets for the managed endpoint's network interfaces (at least
 one).
+Containment-exempt for the same reason as the VPC above.
 
 - references: AwsSubnet (`status.outputs.subnet_id`)
 - rule: {"required":true,"repeated":{"minItems":"1"}}

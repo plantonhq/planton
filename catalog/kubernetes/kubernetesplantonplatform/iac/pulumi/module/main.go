@@ -39,16 +39,18 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonplatformv1alpha
 		return errors.Wrap(err, "failed to create namespace")
 	}
 
-	// ------------------------------ object-store Secrets -------------------
-	// The credentials the database's backup and recovery stores declare,
-	// materialized before the CR so the database is born archiving.
+	// ------------------------------ materialized Secrets -------------------
+	// The credentials the declaration speaks as values — the database's
+	// backup and recovery stores, the vault's seal — materialized as the
+	// Secrets the CR names, before the CR, so the database is born archiving
+	// and the vault's seal finds its credential at its first start.
 	var namespaceDeps []pulumi.ResourceOption
 	if createdNamespace != nil {
 		namespaceDeps = append(namespaceDeps, pulumi.DependsOn([]pulumi.Resource{createdNamespace}))
 	}
-	objectStoreSecrets, err := createObjectStoreSecrets(ctx, locals, kubernetesProvider, namespaceDeps)
+	materializedSecrets, err := createMaterializedSecrets(ctx, locals, kubernetesProvider, namespaceDeps)
 	if err != nil {
-		return errors.Wrap(err, "failed to create the object-store Secrets")
+		return errors.Wrap(err, "failed to create the platform's credential Secrets")
 	}
 
 	// ------------------------------ the platform CR -----------------------
@@ -57,7 +59,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonplatformv1alpha
 		// Headroom for the delete — see the DESTROY note above.
 		pulumi.Timeouts(&pulumi.CustomTimeouts{Delete: vars.DeleteTimeout}),
 	}
-	crDeps := append([]pulumi.Resource{}, objectStoreSecrets...)
+	crDeps := append([]pulumi.Resource{}, materializedSecrets...)
 	if createdNamespace != nil {
 		crDeps = append(crDeps, createdNamespace)
 	}

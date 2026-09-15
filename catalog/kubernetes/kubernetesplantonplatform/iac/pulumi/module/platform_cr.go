@@ -356,19 +356,24 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 	}
 
 	// ---- vault -----------------------------------------------------------------
+	// The seal follows the object-store discipline: the spec declares a
+	// credential VALUE, the CR names the Secret this module materialized for
+	// it (seal_secret.go), and a keyless arm names none. The identity map is
+	// the merged one — the GCP arm's declared workload identity plus every
+	// explicit annotation — so the operator sees one map, never two sources.
 	if v := spec.GetVault(); v != nil {
 		vault := map[string]interface{}{}
 		if v.Enabled != nil {
 			vault["enabled"] = v.GetEnabled()
 		}
-		if v.InitMode != nil && v.GetInitMode() != "" {
-			vault["initMode"] = v.GetInitMode()
+		if seal := v.GetAutoUnseal(); seal != nil {
+			vault["autoUnseal"] = autoUnsealBody(seal, locals.SealCredentialsSecretName)
 		}
-		if v.GetStorageSize() != "" {
-			vault["storageSize"] = v.GetStorageSize()
+		if v.GetInitSecretName() != "" {
+			vault["initSecretName"] = v.GetInitSecretName()
 		}
-		if v.GetStorageClassName() != "" {
-			vault["storageClassName"] = v.GetStorageClassName()
+		if annotations := vaultServiceAccountAnnotations(v); annotations != nil {
+			vault["serviceAccountAnnotations"] = stringMapToInterface(annotations)
 		}
 		if len(vault) > 0 {
 			out["vault"] = vault
@@ -530,6 +535,72 @@ func objectStoreBody(store *kubernetesplantonplatformv1alpha1.KubernetesPlantonP
 			body["jurisdiction"] = r2.GetJurisdiction().GetValue()
 		}
 		out["r2"] = body
+	}
+	return out
+}
+
+// autoUnsealBody renders the vault's seal as the CR's autoUnseal: exactly one
+// arm, in the operator's vocabulary. Identifiers pass through (a KMS key, a
+// ring, a Key Vault name, a transit address — and the public halves of a
+// credential pair: an access key id, a client id); credential VALUES do not.
+// An arm that declares one has credentialsSecretName set to the Secret this
+// module materialized, keyed by the environment-variable name the seal
+// wrapper reads (seal_secret.go); a keyless arm names no Secret. The GCP arm
+// is keyless by construction and its workload identity rides the
+// ServiceAccount annotations, not this body. mountPath renders on presence
+// only, like every defaulted scalar, so the operator's own default stands.
+func autoUnsealBody(seal *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal,
+	credentialsSecretName string) map[string]interface{} {
+	out := map[string]interface{}{}
+	switch {
+	case seal.GetAwsKms() != nil:
+		aws := seal.GetAwsKms()
+		body := map[string]interface{}{
+			"region":   aws.GetRegion(),
+			"kmsKeyId": aws.GetKmsKeyId(),
+		}
+		if aws.GetAccessKeyId() != "" {
+			body["accessKeyId"] = aws.GetAccessKeyId()
+		}
+		if aws.GetSecretAccessKey() != "" {
+			body["credentialsSecretName"] = credentialsSecretName
+		}
+		out["awsKms"] = body
+	case seal.GetGcpKms() != nil:
+		gcp := seal.GetGcpKms()
+		out["gcpKms"] = map[string]interface{}{
+			"project":   gcp.GetProject().GetValue(),
+			"region":    gcp.GetRegion(),
+			"keyRing":   gcp.GetKeyRing().GetValue(),
+			"cryptoKey": gcp.GetCryptoKey().GetValue(),
+		}
+	case seal.GetAzureKeyVault() != nil:
+		azure := seal.GetAzureKeyVault()
+		body := map[string]interface{}{
+			"vaultName": azure.GetVaultName(),
+			"keyName":   azure.GetKeyName(),
+			"tenantId":  azure.GetTenantId(),
+		}
+		if azure.GetClientId() != "" {
+			body["clientId"] = azure.GetClientId()
+		}
+		if azure.GetClientSecret() != "" {
+			body["credentialsSecretName"] = credentialsSecretName
+		}
+		out["azureKeyVault"] = body
+	case seal.GetTransit() != nil:
+		transit := seal.GetTransit()
+		body := map[string]interface{}{
+			"address": transit.GetAddress(),
+			"keyName": transit.GetKeyName(),
+		}
+		if transit.MountPath != nil && transit.GetMountPath() != "" {
+			body["mountPath"] = transit.GetMountPath()
+		}
+		if transit.GetToken() != "" {
+			body["credentialsSecretName"] = credentialsSecretName
+		}
+		out["transit"] = body
 	}
 	return out
 }

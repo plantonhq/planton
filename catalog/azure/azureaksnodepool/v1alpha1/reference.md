@@ -365,7 +365,11 @@ The subnet this pool's nodes deploy into. Leave unset to inherit the
 cluster's node subnet -- correct for nearly every pool. Reference a
 different AzureSubnet to segment pools across subnets (e.g. a
 dedicated subnet for an internet-exposed pool). Changing it replaces
-the pool.
+the pool. A node pool is an ARM child of its cluster
+(managedClusters/{cluster}/agentPools/{pool}) and lives there on a
+diagram; the subnet is where its nodes attach, so the reference is
+access, not placement -- otherwise a pool on its own subnet would be
+drawn outside the cluster it belongs to.
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse
@@ -376,7 +380,8 @@ the pool.
 
 A separate subnet for POD IPs (traditional Azure CNI with dynamic
 pod IP allocation). Only meaningful alongside vnet_subnet_id on
-clusters using non-overlay Azure CNI.
+clusters using non-overlay Azure CNI. Access, not placement, like
+vnet_subnet_id.
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse

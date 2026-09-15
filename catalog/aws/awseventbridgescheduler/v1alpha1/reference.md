@@ -432,6 +432,12 @@ VPC networking for awsvpc-mode tasks (required for Fargate).
 The subnets tasks launch into. Reference AwsSubnet subnet_id
 outputs or pass literal subnet-... ids.
 
+Containment-exempt: these subnets place the ECS TASKS the schedule
+launches, not the schedule itself, which is a managed service outside
+the network. On a diagram the schedule stands beside the VPC with a
+line in -- the verdict an EventBridge rule's ECS target subnets
+already carry.
+
 - references: AwsSubnet (`status.outputs.subnet_id`)
 - rule: {"repeated":{"minItems":"1"}}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse

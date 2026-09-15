@@ -155,11 +155,31 @@ charts the backup engine could not finish installing and a restore could
 come back as an empty database in the archive's place, so pin the operator
 kind's `chart_version` at or above it wherever a backup is declared.
 
-The boundary, stated once: the secrets manager (OpenBAO) is outside this
-backup. It keeps its data on its own volume, so every secret value the
-source platform held — the credentials behind its connections above all —
-is re-entered after a restore. Every record that points at those secrets
-comes back; the values behind them do not.
+The archive carries the secrets manager too. The bundled vault (OpenBAO)
+stores its data in the platform's own PostgreSQL, so every connection
+credential, every managed secret, the license signing key, and the OIDC
+issuer's signing key ride the same WAL stream as the records and come back
+to the same instant — keyless connections keep verifying against the same
+key. What the archive cannot carry is the keys that OPEN the vault, so a
+backup requires them to outlive the platform, one of two ways.
+`vault.auto_unseal` seals the vault with a key in your cloud (AWS KMS, GCP
+Cloud KMS, Azure Key Vault, or a central OpenBao's transit engine — the
+four arms the standalone `KubernetesOpenBao` kind speaks, byte for byte);
+the restored vault opens itself, on a cluster that has never seen it. The
+key and its grants must exist BEFORE the platform, because the seal is
+checked at server start: a GCP identity needs
+`roles/cloudkms.cryptoKeyEncrypterDecrypter` AND `roles/cloudkms.viewer`,
+or the pod crash-loops on `Permission 'cloudkms.cryptoKeys.get' denied`
+before init can open. Or `vault.init_secret_name` names a Secret you own:
+the operator writes the vault's unseal keys and root token into it at
+first boot without an owner reference, so a platform destroy leaves it
+standing, and a restore unseals with it once you have recreated it in the
+new cluster from the copy you kept. The spec refuses a backup with neither.
+Under either seal, that Secret is the vault's break-glass (the root token;
+the recovery quorum) — the one object a lost cluster takes with it that no
+archive brings back, so keep a copy outside the cluster.
+`status.backup.vault` says whether the archive covers the vault, which
+seal opens it, and which Secret to keep.
 
 ## Destroy and the reinstall truth
 

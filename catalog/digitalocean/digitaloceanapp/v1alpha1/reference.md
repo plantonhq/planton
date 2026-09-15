@@ -2497,6 +2497,11 @@ dev database.
 Existing cluster name. Required by the API when production is true.
 Literal cluster name, or a reference to a DigitalOceanDatabaseCluster.
 
+Containment-exempt: an app ATTACHES an existing managed cluster as a
+dependency it connects to; the app is not created inside the cluster.
+On a diagram the app stays where its VPC places it, with a line to the
+cluster it attaches.
+
 - references: DigitalOceanDatabaseCluster (`spec.cluster_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanDatabaseCluster, name: <that resource's name>, fieldPath: spec.cluster_name}} -- a bare string does not parse
 

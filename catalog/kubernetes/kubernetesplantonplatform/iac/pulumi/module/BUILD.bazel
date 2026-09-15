@@ -9,6 +9,7 @@ go_library(
         "object_store_secrets.go",
         "outputs.go",
         "platform_cr.go",
+        "seal_secret.go",
         "vars.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonplatform/iac/pulumi/module",

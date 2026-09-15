@@ -231,6 +231,10 @@ username and port, surfaced in the outputs.
 The subnet the instance is placed in, by ARM ID. Only legal when
 the workspace does NOT use a managed network (Azure then networks
 the instance itself). Fixed at creation.
+On a diagram the instance is an ARM child of its workspace
+(workspaces/{ws}/computes/{name}) and lives there; the subnet is
+where its network interface attaches, so the reference is access,
+not placement (the compute cluster's and the AKS node pool's rule).
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse

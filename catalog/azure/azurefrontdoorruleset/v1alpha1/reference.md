@@ -1575,6 +1575,8 @@ Send matched requests to a different origin group than the route's
 own, by ARM ID. References an AzureFrontDoorOriginGroup's
 origin_group_id output. When set, forwarding_protocol must be
 chosen too; when unset, the route's own origin group keeps serving.
+The rule set lives in its profile and steers TO the origin group, so
+the reference is access, not placement, on a diagram.
 
 - references: AzureFrontDoorOriginGroup (`status.outputs.origin_group_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureFrontDoorOriginGroup, name: <that resource's name>, fieldPath: status.outputs.origin_group_id}} -- a bare string does not parse

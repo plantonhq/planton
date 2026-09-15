@@ -83,6 +83,11 @@ The database cluster to replicate (the primary). Use a literal cluster
 UUID or a reference to a DigitalOceanDatabaseCluster resource.
 Changing it replaces the replica.
 
+Containment-exempt: a read replica is a single-node cluster of its own
+that FOLLOWS the primary, in the primary's region or another; it is not
+created inside it. On a diagram the replica stands as its own store
+with a line to the primary, never inside the primary's room.
+
 - references: DigitalOceanDatabaseCluster (`status.outputs.cluster_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanDatabaseCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_id}} -- a bare string does not parse

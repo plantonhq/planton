@@ -124,7 +124,9 @@ with a letter or digit.
 The origin group that answers requests matched by this route, by ARM
 ID. References an AzureFrontDoorOriginGroup's origin_group_id
 output. Updatable in place (repointing a route is how traffic moves
-between backend pools).
+between backend pools). The route lives in its endpoint and forwards
+TO the origin group, so the reference is access, not placement, on a
+diagram.
 
 - references: AzureFrontDoorOriginGroup (`status.outputs.origin_group_id`)
 - rule: {"required":true}

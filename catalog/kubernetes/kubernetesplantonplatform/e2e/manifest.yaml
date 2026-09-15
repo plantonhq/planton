@@ -98,8 +98,18 @@ spec:
     enabled: true
   vault:
     enabled: true
-    init_mode: auto
-    storage_size: 2Gi
+    # The vault's data rides the database backup above; what opens the
+    # restored vault is declared here. On EKS the seal is an AWS KMS key
+    # reached keyless through IRSA on the vault's own ServiceAccount
+    # (`planton-openbao`), and the keys Secret is one you own, so a
+    # platform destroy leaves the break-glass standing.
+    auto_unseal:
+      aws_kms:
+        region: us-east-1
+        kms_key_id: alias/planton-vault-unseal
+    init_secret_name: planton-vault-keys
+    service_account_annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/planton-vault-unseal
   components:
     graph:
       enabled: true

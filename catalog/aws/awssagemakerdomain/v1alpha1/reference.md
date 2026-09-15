@@ -4272,6 +4272,11 @@ space form has no per-mount path, unlike the domain baseline's config).
 The EFS file system to mount. The file system must have mount targets in
 the domain's VPC.
 
+Containment-exempt: a space MOUNTS the file system; the domain is not
+deployed inside it. On a diagram the domain stands in its VPC with a
+line to the file system -- the verdict the domain-level
+AwsSagemakerDomainEfsFileSystemConfig.file_system_id already carries.
+
 - references: AwsElasticFileSystem (`status.outputs.file_system_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsElasticFileSystem, name: <that resource's name>, fieldPath: status.outputs.file_system_id}} -- a bare string does not parse

@@ -3,15 +3,20 @@
 The zero-config platform whose own database archives continuously to a
 Cloudflare R2 bucket you own — every write as WAL, a base backup nightly,
 30 days kept — declared entirely by reference to the bucket and token
-resources that the catalog created, so no key is ever typed. The same
-declaration, with `recover_from` added, brings the platform back from that
-archive as itself: every record and every user, not a fresh install.
+resources that the catalog created, so no key is ever typed. The archive
+carries the bundled secrets manager with the records, because the vault
+stores its data in that same database; the one thing it cannot carry is
+the keys that open the vault, so the preset names a Secret you own for
+them. The same declaration, with `recover_from` added and that Secret in
+place, brings the platform back from the archive as itself: every record,
+every user, and every secret, not a fresh install.
 
 ## When to Use
 
 - Any platform whose records you would mind losing — organizations,
   environments, connections, projects, pipeline history, members, the
-  identity realm — which is every platform a team runs
+  identity realm, and the credentials behind every connection — which is
+  every platform a team runs
 - An archive deliberately OUTSIDE the cluster's cloud provider, so no
   provider mishap can take the platform and its recovery path down
   together (R2 has no egress fees and speaks S3)
@@ -26,8 +31,8 @@ archive as itself: every record and every user, not a fresh install.
 - cert-manager on the cluster: the operator installs CloudNativePG's
   backup engine (the Barman Cloud plugin) beside CloudNativePG and needs
   it for the TLS between the two
-- Operator chart 0.15.0 or newer (the first whose definition knows
-  `backup`)
+- The operator chart whose definition knows `backup` and the vault's
+  `init_secret_name` (the GUIDE names the floor)
 
 ## Key Configuration Choices
 
@@ -51,13 +56,25 @@ archive as itself: every record and every user, not a fresh install.
   `Healthy` when archiving works and `Failing` in the plugin's own words
   when it does not; a failing backup never takes a working platform out of
   Ready
+- **The vault's keys outlive the platform** — `vault.init_secret_name`
+  names a Secret you own; the operator writes the vault's unseal keys and
+  root token into it at first boot and never deletes it, so a platform
+  destroy leaves it standing. A backup with neither this nor a cloud seal
+  is refused: the archive would carry every secret and no way to open it
 
-## The Boundary
+## What Comes Back
 
-Only the platform's PostgreSQL is covered. The secrets manager (OpenBAO)
-keeps its data on its own volume outside this archive, so a restored
-platform comes back with every record and an empty secrets manager: the
-credentials behind its connections are re-entered after a restore.
+Everything the platform held: every record the control plane keeps, the
+identity realm with its users, and the secrets manager's contents — every
+connection credential, every managed secret, the license and OIDC signing
+keys — because the vault stores in the same database the archive carries.
+On the bad day, recreate `planton-vault-keys` in the new cluster from the
+copy you kept, declare the platform again with `recover_from`, and the
+operator unseals the restored vault with it. `status.backup.vault` says
+what the archive covers and names the Secret to keep. What no archive
+brings back is that Secret itself when it was lost with the cluster and
+never copied — so copy it. A cloud key through `vault.auto_unseal` is the
+other posture: the restored vault opens itself with no Secret to carry.
 
 ## Placeholders to Replace
 
@@ -65,6 +82,8 @@ credentials behind its connections are re-entered after a restore.
   in `destination_path`, its `bucket_name`)
 - `acme-platform-backups-writer` — your `CloudflareAccountApiToken`
   resource's name
+- `planton-vault-keys` — the name you want the vault's keys Secret to have;
+  the operator creates it, you keep a copy of it
 
 ## Related Presets
 

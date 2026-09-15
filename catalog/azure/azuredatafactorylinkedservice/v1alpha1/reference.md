@@ -381,6 +381,11 @@ no-secret form: authentication comes from managed identity
 (use_managed_identity) or a service principal. Azure stores it as
 a secure string (mirrored: marked sensitive).
 
+A linked service is the factory's connection definition for a store it
+reads from and writes to; it never lives inside the account, so on a
+diagram the reference is access, not placement -- the same rule its Key
+Vault references already carry.
+
 - references: AzureStorageAccount (`status.outputs.primary_blob_endpoint`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureStorageAccount, name: <that resource's name>, fieldPath: status.outputs.primary_blob_endpoint}} -- a bare string does not parse
 
@@ -1089,6 +1094,10 @@ The Data Lake endpoint URL (https://account.dfs.core.windows.net)
 -- defaults to referencing an AzureStorageAccount's
 primary_dfs_endpoint output.
 
+A linked service is the factory's connection definition for a store it
+reads from and writes to; it never lives inside the account, so on a
+diagram the reference is access, not placement.
+
 - references: AzureStorageAccount (`status.outputs.primary_dfs_endpoint`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureStorageAccount, name: <that resource's name>, fieldPath: status.outputs.primary_dfs_endpoint}} -- a bare string does not parse
@@ -1147,7 +1156,9 @@ variant block on this spec.
 
 The Key Vault, by ARM ID -- defaults to referencing an
 AzureKeyVault's key_vault_id output. The modules derive the
-vault's base URI from it, exactly as the provider does.
+vault's base URI from it, exactly as the provider does. A linked
+service POINTS AT the vault and lives in its factory, so the
+reference is access, not placement, on a diagram.
 
 - references: AzureKeyVault (`status.outputs.key_vault_id`)
 - rule: {"required":true}

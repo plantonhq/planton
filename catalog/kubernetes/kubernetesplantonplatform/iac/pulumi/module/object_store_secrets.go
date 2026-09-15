@@ -20,27 +20,38 @@ const (
 	objectStoreKeyAzureConnectionString  = "AZURE_STORAGE_CONNECTION_STRING"
 )
 
-// objectStoreSecret is one Secret the declaration needs the module to
-// materialize: the credential a store's arm declares, or the CA bundle a
-// private S3 endpoint chains to. The spec speaks in declared values (and
+// materializedSecret is one Secret the declaration needs the module to
+// create before the platform: the credential a store's arm declares, the CA
+// bundle a private S3 endpoint chains to, or the credential a seal arm
+// declares (seal_secret.go). The spec speaks in declared values (and
 // references resolved to values before this module runs); the operator
 // speaks in Secret names; these are the translation.
-type objectStoreSecret struct {
+type materializedSecret struct {
 	Name string
 	Data map[string]string
 }
 
+// materializedSecrets lists every Secret the declaration needs, in the
+// order they are created: the object-store Secrets, then the seal
+// credentials. Pure so the rendering can be tested without a Pulumi runtime.
+func materializedSecrets(locals *Locals) []materializedSecret {
+	out := objectStoreSecrets(locals)
+	if s := sealCredentialsSecret(locals); s != nil {
+		out = append(out, *s)
+	}
+	return out
+}
+
 // objectStoreSecrets lists every Secret the platform's backup and recovery
-// declarations need, in the order they are created. Empty when neither is
-// declared, or when every declared store is keyless — a keyless posture
-// names no Secret and the CR carries no credentialsSecretName for it.
-// Pure so the rendering can be tested without a Pulumi runtime.
-func objectStoreSecrets(locals *Locals) []objectStoreSecret {
+// declarations need. Empty when neither is declared, or when every declared
+// store is keyless — a keyless posture names no Secret and the CR carries no
+// credentialsSecretName for it.
+func objectStoreSecrets(locals *Locals) []materializedSecret {
 	pg := locals.Spec.GetDatabase().GetPostgresql()
 	if pg == nil {
 		return nil
 	}
-	var out []objectStoreSecret
+	var out []materializedSecret
 	if b := pg.GetBackup(); b != nil {
 		out = append(out, storeSecrets(b.GetObjectStore(),
 			locals.BackupCredentialsSecretName, locals.BackupEndpointCaSecretName)...)
@@ -56,13 +67,13 @@ func objectStoreSecrets(locals *Locals) []objectStoreSecret {
 // arm declares one) and, for an S3-compatible endpoint with a private CA,
 // the CA bundle under the one key the CR's endpointCASecretRef names.
 func storeSecrets(store *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformObjectStore,
-	credentialsSecretName, endpointCaSecretName string) []objectStoreSecret {
-	var out []objectStoreSecret
+	credentialsSecretName, endpointCaSecretName string) []materializedSecret {
+	var out []materializedSecret
 	if data := objectStoreCredentialsData(store); data != nil {
-		out = append(out, objectStoreSecret{Name: credentialsSecretName, Data: data})
+		out = append(out, materializedSecret{Name: credentialsSecretName, Data: data})
 	}
 	if s3 := store.GetS3(); s3 != nil && s3.GetEndpointCaPem() != "" {
-		out = append(out, objectStoreSecret{
+		out = append(out, materializedSecret{
 			Name: endpointCaSecretName,
 			Data: map[string]string{vars.EndpointCaSecretKey: s3.GetEndpointCaPem()},
 		})
@@ -109,18 +120,18 @@ func objectStoreCredentialsData(store *kubernetesplantonplatformv1alpha1.Kuberne
 	return nil
 }
 
-// createObjectStoreSecrets materializes the Secrets objectStoreSecrets
-// lists, after the namespace and before the CR (the caller adds the
-// returned resources to the CR's DependsOn). Created first so the database
-// is born archiving: the operator holds nothing for a credential that is
-// already there. Terraform equivalent: kubernetes_secret_v1 with count on
-// the same names.
-func createObjectStoreSecrets(ctx *pulumi.Context, locals *Locals,
+// createMaterializedSecrets creates the Secrets materializedSecrets lists,
+// after the namespace and before the CR (the caller adds the returned
+// resources to the CR's DependsOn). Created first so the database is born
+// archiving and the vault's seal finds its credential at its first start:
+// the operator holds nothing for a Secret that is already there. Terraform
+// equivalent: kubernetes_secret_v1 with count on the same names.
+func createMaterializedSecrets(ctx *pulumi.Context, locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 	dependencies []pulumi.ResourceOption,
 ) ([]pulumi.Resource, error) {
 	var created []pulumi.Resource
-	for _, s := range objectStoreSecrets(locals) {
+	for _, s := range materializedSecrets(locals) {
 		secret, err := kubernetescorev1.NewSecret(ctx, s.Name,
 			&kubernetescorev1.SecretArgs{
 				Metadata: kubernetesmeta.ObjectMetaArgs{

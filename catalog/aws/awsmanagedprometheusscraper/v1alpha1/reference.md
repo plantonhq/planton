@@ -112,6 +112,12 @@ scraper.
 The EKS cluster to scrape. Reference an AwsEksCluster cluster_arn
 output or pass a literal ARN.
 
+Containment-exempt: the scraper READS the cluster's metrics; its
+collectors run on AWS-managed interfaces in the subnets below, never
+as workloads inside the cluster. On a diagram the scraper stands where
+its subnets place it, with a line to the cluster it scrapes -- the
+verdict every other reader of a room already carries.
+
 - references: AwsEksCluster (`status.outputs.cluster_arn`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsEksCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_arn}} -- a bare string does not parse

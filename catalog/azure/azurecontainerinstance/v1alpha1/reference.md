@@ -669,7 +669,11 @@ AzureStorageShare output.
 `string | valueFrom` · required
 
 The storage account holding the share. Can be a literal or a
-reference to an AzureStorageAccount output.
+reference to an AzureStorageAccount output. The container group
+MOUNTS the share and lives in its own resource group (or its subnet),
+so the reference is access, not placement, on a diagram -- the same
+reasoning the Container App environment's storage registration
+carries for the identical pair of fields.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_name`)
 - rule: {"required":true}
@@ -682,7 +686,7 @@ reference to an AzureStorageAccount output.
 The storage account's access key. SECRET -- Azure never returns it
 on reads; both engines re-send it from configuration on updates.
 Reference an AzureStorageAccount's primary_access_key output or
-pass a literal.
+pass a literal. Access, not placement, like storage_account_name.
 
 - references: AzureStorageAccount (`status.outputs.primary_access_key`)
 - rule: {"required":true}
@@ -1064,7 +1068,11 @@ AzureStorageShare output.
 `string | valueFrom` · required
 
 The storage account holding the share. Can be a literal or a
-reference to an AzureStorageAccount output.
+reference to an AzureStorageAccount output. The container group
+MOUNTS the share and lives in its own resource group (or its subnet),
+so the reference is access, not placement, on a diagram -- the same
+reasoning the Container App environment's storage registration
+carries for the identical pair of fields.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_name`)
 - rule: {"required":true}
@@ -1077,7 +1085,7 @@ reference to an AzureStorageAccount output.
 The storage account's access key. SECRET -- Azure never returns it
 on reads; both engines re-send it from configuration on updates.
 Reference an AzureStorageAccount's primary_access_key output or
-pass a literal.
+pass a literal. Access, not placement, like storage_account_name.
 
 - references: AzureStorageAccount (`status.outputs.primary_access_key`)
 - rule: {"required":true}

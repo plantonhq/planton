@@ -207,7 +207,9 @@ one variant block on this spec.
 
 The CHILD profile's ARM resource ID -- defaults to referencing an
 AzureTrafficManagerProfile's traffic_manager_profile_id output.
-Retargeting updates the endpoint in place.
+Retargeting updates the endpoint in place. The endpoint lives in its
+own parent profile (profile_id) and merely points at this one, so the
+reference is access, not placement, on a diagram.
 
 - references: AzureTrafficManagerProfile (`status.outputs.traffic_manager_profile_id`)
 - rule: {"required":true}

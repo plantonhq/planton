@@ -573,7 +573,9 @@ requires storage_account_id.
 
 The storage account holding blob_uri. Required with blob_uri,
 forbidden otherwise. Can be a literal ARM ID or a reference to an
-AzureStorageAccount output.
+AzureStorageAccount output. The version is BUILT from the blob and
+lives in its gallery, so the reference is access, not placement, on a
+diagram.
 
 **ForceNew**: changing this destroys and recreates the version.
 

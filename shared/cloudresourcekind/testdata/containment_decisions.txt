@@ -855,4 +855,6 @@ exempt    dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceK
 exempt    dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceKafkaTls.ca_secret_name -> KubernetesKafka
 exempt    dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.key_ring -> GcpKmsKeyRing
 exempt    dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.project -> GcpProject
+exempt    dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring -> GcpKmsKeyRing
+exempt    dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project -> GcpProject
 exempt    dev.planton.kubernetes.kubernetesrbac.v1alpha1.KubernetesRbacServiceAccountSubject.namespace -> KubernetesNamespace

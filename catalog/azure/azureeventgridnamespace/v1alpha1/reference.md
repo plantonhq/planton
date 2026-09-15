@@ -264,6 +264,9 @@ Route all MQTT messages into an Event Grid CUSTOM topic
 custom topic must live in the same region and use the CloudEvents
 schema. Omit to keep MQTT traffic inside the broker.
 
+The namespace lives in its resource group and routes INTO the topic,
+so the reference is access, not placement, on a diagram.
+
 - references: AzureEventgridTopic (`status.outputs.topic_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureEventgridTopic, name: <that resource's name>, fieldPath: status.outputs.topic_id}} -- a bare string does not parse
 

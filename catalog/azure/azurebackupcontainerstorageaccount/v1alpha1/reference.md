@@ -88,6 +88,10 @@ by NAME (ARM addresses backup containers as children of a vault).
 The storage account to register, by ARM ID. The account must live
 in the vault's region (Azure Files backup is regional).
 
+The registration REGISTERS this account with the vault and is an ARM
+child of the vault, never a thing inside the account, so on a diagram
+the reference is access, not placement.
+
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureStorageAccount, name: <that resource's name>, fieldPath: status.outputs.storage_account_id}} -- a bare string does not parse

@@ -188,6 +188,11 @@ references to DigitalOceanDroplet resources.
 Kubernetes cluster IDs traffic is allowed from, as literal UUIDs or
 references to DigitalOceanKubernetesCluster resources.
 
+Containment-exempt: a firewall is an account-level rule set applied to
+Droplets; a cluster named here is a TRUSTED SOURCE of traffic, never the
+place the firewall lives. On a diagram the firewall stands beside the
+Droplets it protects, with a line to the cluster whose traffic it admits.
+
 - references: DigitalOceanKubernetesCluster (`status.outputs.cluster_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanKubernetesCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_id}} -- a bare string does not parse
 
@@ -260,6 +265,10 @@ references to DigitalOceanDroplet resources.
 
 Kubernetes cluster IDs traffic is allowed to, as literal UUIDs or
 references to DigitalOceanKubernetesCluster resources.
+
+Containment-exempt: a cluster named here is a permitted DESTINATION of
+the protected Droplets' traffic, never the place the firewall lives (see
+the inbound rule's source_kubernetes_ids).
 
 - references: DigitalOceanKubernetesCluster (`status.outputs.cluster_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanKubernetesCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_id}} -- a bare string does not parse

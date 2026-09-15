@@ -176,18 +176,6 @@ const (
 	EmailModeResend        = "Resend"
 )
 
-// OpenBAOInitMode controls how OpenBAO is initialized after deployment.
-// "auto" (default): the operator initializes and unseals OpenBAO automatically,
-// storing unseal keys and root token in a Kubernetes Secret.
-// "manual": the operator deploys the chart but leaves initialization to the user.
-// +kubebuilder:validation:Enum=auto;manual
-type OpenBAOInitMode string
-
-const (
-	OpenBAOInitModeAuto   OpenBAOInitMode = "auto"
-	OpenBAOInitModeManual OpenBAOInitMode = "manual"
-)
-
 // IngressReachability is the one fact about the front door the operator
 // cannot observe from inside the cluster: whether the public internet can
 // reach it. Everything the platform offers that needs an inbound path from
@@ -401,6 +389,7 @@ type RemoteRunnersSpec struct {
 // A minimal spec requires only the version field; all other fields have sensible defaults.
 // +kubebuilder:validation:XValidation:rule="!has(self.bootstrap) || !has(self.bootstrap.secretBackend) || self.bootstrap.secretBackend.type != 'platform' || !has(self.vault) || !has(self.vault.enabled) || self.vault.enabled",message="bootstrap.secretBackend type 'platform' stores secrets in the bundled vault, which spec.vault.enabled: false has opted out of; re-enable the vault or use type awsSecretsManager"
 // +kubebuilder:validation:XValidation:rule="!has(self.remoteRunners) || !has(self.remoteRunners.enabled) || !self.remoteRunners.enabled || (has(self.ingress) && self.ingress.enabled)",message="remoteRunners.enabled opens the deploy queue to runners outside the cluster through the front door, but with ingress disabled there is no front door a laptop could reach; set ingress.enabled: true with a gatewayRef, or leave remoteRunners off"
+// +kubebuilder:validation:XValidation:rule="!has(self.database) || !has(self.database.postgresql) || !has(self.database.postgresql.backup) || (has(self.vault) && has(self.vault.enabled) && !self.vault.enabled) || (has(self.vault) && (has(self.vault.autoUnseal) || (has(self.vault.initSecretName) && size(self.vault.initSecretName) > 0)))",message="a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform; set vault.initSecretName to a Secret you own (and keep a copy outside the cluster), or declare vault.autoUnseal so a restored vault opens from your cloud key"
 type PlantonPlatformSpec struct {
 	// version is the Planton platform release to deploy, as vMAJOR.MINOR.PATCH
 	// (a pre-release suffix is allowed). The control plane, console, and runner
@@ -511,6 +500,9 @@ type PlantonPlatformSpec struct {
 	// gets an initialized, unsealed vault with its engines mounted and the
 	// platform secret backend seeded as the org default. Choosing a cloud
 	// secret backend instead is a layered choice, not a reason to opt out.
+	// The vault stores its data in the platform's own PostgreSQL, so
+	// spec.database.postgresql.backup archives it with the records; what
+	// opens the restored vault is declared here (autoUnseal, initSecretName).
 	// +optional
 	Vault *OpenBAOSpec `json:"vault,omitempty"`
 
@@ -1163,7 +1155,16 @@ type ComponentsSpec struct {
 	Graph *Neo4jSpec `json:"graph,omitempty"`
 }
 
-// OpenBAOSpec configures the bundled secrets manager (OpenBAO).
+// OpenBAOSpec configures the bundled secrets manager (OpenBAO). The vault
+// keeps its data in the platform's PostgreSQL -- no volume of its own, so the
+// database backup carries every secret with the records -- and the operator
+// initializes it exactly one way: it calls /sys/init, writes the keys and the
+// root token into the init Secret (initSecretName, or its own), and unseals
+// it with the shares (built-in seal) or lets the seal open it (autoUnseal).
+//
+// A disabled vault takes nothing: a seal, a Secret name, or an identity on
+// spec.vault.enabled: false is a contradiction the definition refuses.
+// +kubebuilder:validation:XValidation:rule="!has(self.enabled) || self.enabled || (!has(self.autoUnseal) && (!has(self.initSecretName) || size(self.initSecretName) == 0) && (!has(self.serviceAccountAnnotations) || size(self.serviceAccountAnnotations) == 0))",message="vault.enabled: false opts out of the bundled secrets manager; remove autoUnseal, initSecretName, and serviceAccountAnnotations, or re-enable the vault"
 type OpenBAOSpec struct {
 	// enabled controls whether the bundled secrets manager is deployed.
 	// Default true: a Planton without a secrets store cannot hold pasted
@@ -1175,27 +1176,169 @@ type OpenBAOSpec struct {
 	// +optional
 	Enabled *bool `json:"enabled,omitempty"`
 
-	// initMode controls how OpenBAO is initialized after deployment.
-	// "auto" (default): the operator calls /sys/init and /sys/unseal
-	//   automatically, storing unseal keys and root token in a Kubernetes
-	//   Secret ({crName}-openbao-init). Convenient for dev and Kind clusters.
-	// "manual": the operator deploys the chart but leaves initialization
-	//   to the user. The component reports Deploying until manually
-	//   initialized and unsealed.
-	// +kubebuilder:default="auto"
+	// autoUnseal delegates the vault's master-key protection to a key in
+	// the adopter's cloud (or a central OpenBao/Vault's transit engine), so
+	// the vault unseals itself on every start -- including the start after a
+	// restore, on a cluster that has never seen it. Unset, the vault uses the
+	// built-in key shares and the operator unseals it with the shares it
+	// wrote to the init Secret; a restore then needs that Secret present.
+	// Exactly one seal arm is set, and its key and grants must exist BEFORE
+	// the platform: the seal is checked at server start, not at init, so a
+	// missing key or role crash-loops the vault before anything else can
+	// happen.
 	// +optional
-	InitMode OpenBAOInitMode `json:"initMode,omitempty"`
+	AutoUnseal *OpenBAOAutoUnsealSpec `json:"autoUnseal,omitempty"`
 
-	// storageSize is the persistent volume size for OpenBAO data. Defaults
-	// to spec.storage.size, then 2Gi (secrets and encryption keys are
-	// kilobytes; the volume needs headroom, not bulk).
+	// initSecretName names a Secret the ADOPTER owns, in the platform's
+	// namespace, where the operator writes the vault's keys at
+	// initialization: the unseal keys (recovery keys under autoUnseal) and
+	// the root token. The operator creates it WITHOUT an owner reference, so
+	// deleting the platform leaves it standing; on a restore it reads the
+	// shares from it to unseal a built-in-seal vault, and under any seal it
+	// is the vault's break-glass. It is the one object a lost cluster takes
+	// with it that no archive brings back -- keep a copy outside the
+	// cluster. Empty means the operator keeps the keys in a Secret it owns
+	// ({platform}-openbao-init), deleted with the platform.
 	// +optional
-	StorageSize resource.Quantity `json:"storageSize,omitempty"`
+	InitSecretName string `json:"initSecretName,omitempty"`
 
-	// storageClassName pins the OpenBAO volume to a StorageClass. Defaults
-	// to spec.storage.storageClassName, then the cluster default.
+	// serviceAccountAnnotations go on the ServiceAccount the vault's pods run
+	// as (the operator names it "{platform}-openbao"). This is where a
+	// keyless seal identity binds: EKS "eks.amazonaws.com/role-arn" for an
+	// AWS KMS seal, AKS "azure.workload.identity/client-id" for a Key Vault
+	// seal, GKE "iam.gke.io/gcp-service-account" for a Cloud KMS seal. The
+	// identity only reaches the seal key; the runner's, the control plane's,
+	// and the database backup's identities are their own.
 	// +optional
-	StorageClassName string `json:"storageClassName,omitempty"`
+	ServiceAccountAnnotations map[string]string `json:"serviceAccountAnnotations,omitempty"`
+}
+
+// OpenBAOAutoUnsealSpec is the vault's seal: exactly one arm. Credentials
+// follow the platform's discipline for every cloud credential -- keyless
+// through the vault's ServiceAccount identity where the cloud allows, and
+// otherwise a Secret the declaration names, never a value in the resource.
+// The named Secret is keyed by the environment variable the seal wrapper
+// reads, so the operator hands every key to the vault's process as the
+// variable of the same name; nothing credential-bearing enters the vault's
+// configuration.
+// +kubebuilder:validation:XValidation:rule="[has(self.awsKms), has(self.gcpKms), has(self.azureKeyVault), has(self.transit)].filter(x, x).size() == 1",message="autoUnseal names exactly one seal: awsKms, gcpKms, azureKeyVault, or transit"
+type OpenBAOAutoUnsealSpec struct {
+	// +optional
+	AwsKms *OpenBAOAwsKmsSealSpec `json:"awsKms,omitempty"`
+	// +optional
+	GcpKms *OpenBAOGcpKmsSealSpec `json:"gcpKms,omitempty"`
+	// +optional
+	AzureKeyVault *OpenBAOAzureKeyVaultSealSpec `json:"azureKeyVault,omitempty"`
+	// +optional
+	Transit *OpenBAOTransitSealSpec `json:"transit,omitempty"`
+}
+
+// OpenBAOAwsKmsSealSpec: an AWS KMS key. Natural on EKS with IRSA on the
+// vault's ServiceAccount; static keys are the fallback.
+type OpenBAOAwsKmsSealSpec struct {
+	// region of the KMS key.
+	// +kubebuilder:validation:MinLength=1
+	Region string `json:"region"`
+
+	// kmsKeyId is the key id, alias, or full ARN of a SYMMETRIC
+	// encrypt/decrypt key.
+	// +kubebuilder:validation:MinLength=1
+	KmsKeyID string `json:"kmsKeyId"`
+
+	// accessKeyId is the public half of a static key pair -- an identifier,
+	// not a credential. Set only with credentialsSecretName; empty means the
+	// vault's pods inherit an IAM role (IRSA, EKS Pod Identity, an instance
+	// profile), the preferred posture.
+	// +optional
+	AccessKeyID string `json:"accessKeyId,omitempty"`
+
+	// credentialsSecretName names a Secret in the platform's namespace with
+	// key AWS_SECRET_ACCESS_KEY, the secret half of the static key pair.
+	// Empty means keyless.
+	// +optional
+	CredentialsSecretName string `json:"credentialsSecretName,omitempty"`
+}
+
+// OpenBAOGcpKmsSealSpec: a Google Cloud KMS key. Keyless by construction --
+// the vault's ServiceAccount carries the identity through GKE Workload
+// Identity (serviceAccountAnnotations), or the node's ambient credentials
+// apply. The identity needs TWO roles on the key: cryptoKeyEncrypterDecrypter
+// to wrap on init and unwrap on every unseal, AND cloudkms.viewer for the
+// key-existence check the server makes when it configures the seal at start;
+// with only the first, the pod crash-loops on "Permission
+// 'cloudkms.cryptoKeys.get' denied" and init never opens.
+type OpenBAOGcpKmsSealSpec struct {
+	// project that holds the key ring.
+	// +kubebuilder:validation:MinLength=1
+	Project string `json:"project"`
+
+	// region of the key ring ("global", "us-central1", ...).
+	// +kubebuilder:validation:MinLength=1
+	Region string `json:"region"`
+
+	// keyRing is the key ring's name.
+	// +kubebuilder:validation:MinLength=1
+	KeyRing string `json:"keyRing"`
+
+	// cryptoKey is the symmetric encrypt/decrypt key that wraps the master
+	// key.
+	// +kubebuilder:validation:MinLength=1
+	CryptoKey string `json:"cryptoKey"`
+}
+
+// OpenBAOAzureKeyVaultSealSpec: a key in an Azure Key Vault. Natural on AKS
+// with Workload Identity or a managed identity on the vault's
+// ServiceAccount; a service principal is the fallback.
+type OpenBAOAzureKeyVaultSealSpec struct {
+	// vaultName is the Key Vault (the vault, not the key).
+	// +kubebuilder:validation:MinLength=1
+	VaultName string `json:"vaultName"`
+
+	// keyName is the key inside the vault.
+	// +kubebuilder:validation:MinLength=1
+	KeyName string `json:"keyName"`
+
+	// tenantId is the Entra (Azure AD) tenant.
+	// +kubebuilder:validation:MinLength=1
+	TenantID string `json:"tenantId"`
+
+	// clientId is a service principal's client id -- an identifier, not a
+	// credential. Set only with credentialsSecretName; empty means the
+	// vault's pods carry an Azure identity, the preferred posture.
+	// +optional
+	ClientID string `json:"clientId,omitempty"`
+
+	// credentialsSecretName names a Secret in the platform's namespace with
+	// key AZURE_CLIENT_SECRET, the service principal's secret. Empty means
+	// keyless.
+	// +optional
+	CredentialsSecretName string `json:"credentialsSecretName,omitempty"`
+}
+
+// OpenBAOTransitSealSpec: the transit engine of a central OpenBao or Vault.
+// The vault depends on the central instance being reachable and unsealed at
+// every start; the engine must exist before this platform (the key may be
+// born on the first encrypt), or the pod crash-loops on "Error configuring
+// seal".
+type OpenBAOTransitSealSpec struct {
+	// address of the central instance ("https://bao.example.com:8200").
+	// +kubebuilder:validation:MinLength=1
+	Address string `json:"address"`
+
+	// keyName is the transit key that wraps the master key.
+	// +kubebuilder:validation:MinLength=1
+	KeyName string `json:"keyName"`
+
+	// mountPath is the transit engine's mount on the central instance.
+	// +kubebuilder:default="transit/"
+	// +optional
+	MountPath string `json:"mountPath,omitempty"`
+
+	// credentialsSecretName names a Secret in the platform's namespace with
+	// key VAULT_TOKEN, a token authorized to encrypt and decrypt on the
+	// transit key. Empty means the central instance is reached without one.
+	// +optional
+	CredentialsSecretName string `json:"credentialsSecretName,omitempty"`
 }
 
 // Neo4jSpec configures the Neo4j graph database deployment.

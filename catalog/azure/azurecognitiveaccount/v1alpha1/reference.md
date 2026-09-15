@@ -394,6 +394,10 @@ VNet subnets allowed through the perimeter (service endpoints).
 The subnet's ARM ID. The subnet needs the
 "Microsoft.CognitiveServices" service endpoint enabled (or set
 ignore_missing_vnet_service_endpoint).
+On a diagram this is a firewall rule -- the account admits traffic
+from the subnet and lives in its resource group -- so the
+reference is access, not placement (every PaaS kind's
+network-rule subnets carry the same mark).
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: {"required":true}
@@ -445,6 +449,10 @@ The delegated subnet agents are injected into. NOTE (deletion
 behavior): Azure removes the subnet's service association link
 asynchronously after the account deletes -- the subnet cannot be
 deleted until that completes (the module waits).
+On a diagram the account lives in its resource group and its
+agents' compute attaches to this subnet, so the reference is
+access, not placement -- the account is never drawn inside the
+subnet it injects into (the Azure-SSIS runtime's rule).
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: {"required":true}
@@ -507,6 +515,10 @@ customer data in (Speech, Custom Vision and friends).
 `string | valueFrom` · required
 
 The storage account's ARM ID.
+
+The account reads training data and writes results here and lives in
+its own resource group, so on a diagram the reference is access, not
+placement.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}

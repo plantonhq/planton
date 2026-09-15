@@ -708,6 +708,11 @@ VPC placement for reaching brokers on private networks.
 The subnets the client uses (at most 16). Reference AwsSubnet
 subnet_id outputs or pass literal subnet-... ids.
 
+Containment-exempt: the pipe is a managed service that reaches INTO
+the VPC to poll the brokers; it is not deployed into the subnets. On a
+diagram the pipe stands outside the network with a line in -- the same
+verdict a Lambda function's VPC subnets carry.
+
 - references: AwsSubnet (`status.outputs.subnet_id`)
 - rule: {"repeated":{"minItems":"1","maxItems":"16"}}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse
@@ -1053,6 +1058,11 @@ VPC networking for awsvpc-mode tasks (required for Fargate).
 
 The subnets tasks launch into (at most 16). Reference AwsSubnet
 subnet_id outputs or pass literal subnet-... ids.
+
+Containment-exempt: these subnets place the ECS TASKS the pipe
+launches, not the pipe itself, which is a managed service outside the
+network. On a diagram the pipe stands beside the VPC with a line in --
+the verdict an EventBridge rule's ECS target subnets already carry.
 
 - references: AwsSubnet (`status.outputs.subnet_id`)
 - rule: {"repeated":{"minItems":"1","maxItems":"16"}}

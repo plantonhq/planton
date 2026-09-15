@@ -592,6 +592,10 @@ vnet_integration (standard injection).
 The subnet the runtime reaches, by ARM ID -- defaults to
 referencing an AzureSubnet's subnet_id output.
 
+The runtime is an ARM child of its factory and lives there; the
+subnet is where its nodes attach, so on a diagram the reference is
+access, not placement -- the AKS node pool's rule.
+
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse
@@ -616,6 +620,10 @@ The virtual network, by ARM ID -- pairs with subnet_name.
 Defaults to referencing an AzureVirtualNetwork's
 virtual_network_id output.
 
+The runtime is an ARM child of its factory and lives there; the
+network is where its nodes attach, so on a diagram the reference is
+access, not placement -- the AKS node pool's rule.
+
 - references: AzureVirtualNetwork (`status.outputs.virtual_network_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureVirtualNetwork, name: <that resource's name>, fieldPath: status.outputs.virtual_network_id}} -- a bare string does not parse
 
@@ -626,6 +634,8 @@ virtual_network_id output.
 The subnet, by ARM ID -- the direct alternative to vnet_id +
 subnet_name. Defaults to referencing an AzureSubnet's subnet_id
 output.
+
+Access, not placement, for the same reason as vnet_id above.
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse

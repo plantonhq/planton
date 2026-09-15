@@ -32,6 +32,15 @@ var vars = struct {
 	// names it in endpointCASecretRef so the operator never guesses.
 	EndpointCaSecretKey string
 
+	// OpenBAOReleaseSuffix is the operator's name for the platform's vault
+	// ("{platform name}-openbao" — its Helm release, its ServiceAccount, its
+	// init Secret's prefix). The seal-credentials Secret this module
+	// materializes hangs off that name, beside the operator's own vault
+	// Secrets, keyed by the environment-variable names the seal wrapper reads
+	// (see seal_secret.go).
+	OpenBAOReleaseSuffix        string
+	SealCredentialsSecretSuffix string
+
 	// DeleteTimeout bounds destroy. Platform teardown is Kubernetes
 	// garbage collection (every operator-created object is
 	// owner-referenced to the CR), so the CR's own deletion normally
@@ -53,6 +62,9 @@ var vars = struct {
 	BackupEndpointCaSecretSuffix:    "-backup-endpoint-ca",
 	RecoveryEndpointCaSecretSuffix:  "-recovery-endpoint-ca",
 	EndpointCaSecretKey:             "ca.crt",
+
+	OpenBAOReleaseSuffix:        "-openbao",
+	SealCredentialsSecretSuffix: "-seal-creds",
 
 	DeleteTimeout: "15m",
 }

@@ -183,6 +183,10 @@ load-balancer metrics.
 UUIDs or references to DigitalOceanDatabaseCluster resources. Valid
 only with database metrics.
 
+Containment-exempt: an alert policy WATCHES the clusters it names and
+never lives in one. On a diagram the alert stays with the watching
+layer, with a line to each cluster it watches.
+
 - references: DigitalOceanDatabaseCluster (`status.outputs.cluster_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanDatabaseCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_id}} -- a bare string does not parse
 

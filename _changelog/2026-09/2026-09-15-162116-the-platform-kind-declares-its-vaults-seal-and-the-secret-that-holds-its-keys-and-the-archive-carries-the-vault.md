@@ -1,0 +1,35 @@
+# The platform kind declares its vault's seal and the Secret that holds its keys, and the archive carries the vault
+
+**Date**: September 15, 2026
+**Type**: Feature
+**Components**: KubernetesPlantonPlatform (spec, both IaC modules, presets, guide, catalog page, control and cost profiles, import map, permissions), the Planton operator's PlantonPlatform definition
+
+## Summary
+
+A self-hosted platform's backup used to leave its most sensitive data behind: the contract said the bundled secrets manager kept its data on its own volume outside the archive, so a restored platform came back with every record and an empty vault — every connection credential, every managed secret, the license signing key, and the OIDC issuer's signing key gone. The vault now stores in the platform's own PostgreSQL, so the same archive and the same `recoverFrom` carry records and secrets to the same instant; and because a restore is only whole if the restored vault can be opened, the contract says how: `vault.autoUnseal` seals it with a key in the adopter's cloud (the four seal arms the standalone `KubernetesOpenBao` kind speaks, byte for byte), and `vault.initSecretName` names a Secret the adopter owns for the vault's keys, which the operator writes at first boot and never deletes. A backup with neither is refused with a sentence that says what to add. Both IaC engines render the new fields identically, materializing any seal credential as a Secret the resource names, never a value in it; the operator's definition speaks the same words and gains a `status.backup.vault` slot. This is the contract; the operator behavior that honors it lands next.
+
+## What Changed
+
+### The spec
+
+`KubernetesPlantonPlatformVault` retires `init_mode`, `storage_size`, and `storage_class_name` (reserved, with the reason on the message: the vault has no volume because it stores in the platform's database, and it has one initialization path) and gains `auto_unseal`, `init_secret_name`, and `service_account_annotations`. The seal family — `KubernetesPlantonPlatformVaultAutoUnseal` and its AWS KMS, GCP Cloud KMS, Azure Key Vault, and transit arms — copies the standalone vault kind's messages field for field, options, containment verdicts, and hazards included (the seal is checked at server start; a GCP identity needs both `cryptoKeyEncrypterDecrypter` and `cloudkms.viewer`), plus the one-line `oneof` requirement the platform kind's object stores already carry. Three rules: a backup needs the vault's keys to outlive the platform (`auto_unseal` or `init_secret_name`, unless the vault is opted out); an opted-out vault takes no seal, Secret, or identity; and the platform secret backend cannot ride an opted-out vault — the last one the operator's definition already enforced and the catalog did not. The `backup` and `recover_from` documentation says what comes back (everything, the vault included) and what a lost init Secret costs (break-glass, unless a copy was kept). 79 spec tests: every arm literal and by reference, every refusal by its own sentence.
+
+### Both engines, in lockstep
+
+The Pulumi module renders `vault.autoUnseal.<arm>` with identifiers and, when the arm declares a credential value, `credentialsSecretName` — the Secret the module materializes as `<platform>-openbao-seal-creds`, keyed by the environment variable the seal wrapper reads (`AWS_SECRET_ACCESS_KEY`, `AZURE_CLIENT_SECRET`, `VAULT_TOKEN`), created before the platform beside the object-store Secrets. The GCP arm's `workload_identity_service_account` becomes the `iam.gke.io/gcp-service-account` annotation on the vault's ServiceAccount, merged with explicit `serviceAccountAnnotations` (explicit wins). The Terraform module renders the same body from the same manifest; seven fixtures across every arm, keyed and keyless, rendered on both engines and diffed byte for byte, and every credential value grepped for outside its Secret — none found. The kind's `variables.tf` carries the new object; the Pulumi module's rendering tests gain the vault's cases.
+
+### The operator's definition
+
+`OpenBAOSpec` gains `autoUnseal` (four arm types), `initSecretName`, and `serviceAccountAnnotations`; loses `initMode` and the volume fields, and the manual-init arm of the component goes with them (it waited for a person to initialize, unseal, and hand-mount the engines, while the control plane read its token from a Secret that arm never created). The definition refuses the same contradictions the catalog refuses, in the same sentences. `BackupStatus` gains `vault {covered, seal, initSecretName, message}` for the archive's answer about the secrets manager. The generated CRD and the chart's copy move together; the init Secret's annotation points teams that want to own the Secret at `initSecretName`.
+
+### Presets, fixtures, profiles, documents
+
+The Backups-to-R2 preset names the keys Secret and its explainer says what comes back and what to keep; the full-surface manifest carries the AWS KMS arm with an IRSA identity. The permissions profile gains the Secrets rule the module has needed since it began materializing object-store credentials; the import map gains every materialized Secret (the conformance gate had been red for the four object-store Secrets). The control profile names the seal as the second customer-managed-key seam and the vault's identity beside the runner's; the cost profile names the cloud key's bill. The guide, README, and catalog page say the archive carries the vault and what opens it.
+
+### Generated records that were behind the code they describe
+
+Regenerating the reference pages for this kind also brought forty-five sibling kinds' pages current with containment prose that landed in their protos over the last days without a regeneration, and the containment-decisions golden gains the platform vault's two exempt references (access, never placement — the standalone kind's verdicts).
+
+## Verification
+
+`buf lint`, `buf format`; `go test ./catalog/kubernetes/kubernetesplantonplatform/v1alpha1/` (79/79); `go build`, `go vet`, and `go test` of the Pulumi module (10/10, five new); `tofu fmt`, `tofu validate`; seven per-arm manifests rendered by both engines through the CLI's own loader and `tofu console`, CR bodies identical, Secret data identical, leak grep clean; `make -C operator manifests generate fmt vet`; `make -C operator test` (every package green; the envtest lane installed the new definition and compiled its rules on a real API server — and caught a smart-quoted empty string in two rules on the first run, fixed with `size()` checks); the operator's e2e package compiled under its tag; `go test ./pkg/explain/refgen/ ./pkg/protodocs/`; `planton validate-refs --check`; `planton secret-coverage --check`; the catalog-data lane's sixteen packages; `TestImportMapConformance/kubernetes/kubernetesplantonplatform`; `TestStackOutputsConformance`; `TestContainmentDecisions`; `planton validate-manifest` on all six presets, the full-surface manifest, and both scenarios with the CLI built from the tree, plus the negative proof that a backup without the keys Secret is refused with the intended sentence; `gofmt`.

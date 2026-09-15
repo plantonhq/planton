@@ -108,6 +108,11 @@ Droplet IDs or references to DigitalOceanDroplet resources.
 literal cluster UUIDs or references to DigitalOceanKubernetesCluster
 resources.
 
+Containment-exempt: this is the database cluster's inbound trusted-
+sources list; a Kubernetes cluster named here is a client the database
+ADMITS, never the place the rule set lives. On a diagram the rule set
+stays with its database cluster, with a line to each trusted cluster.
+
 - references: DigitalOceanKubernetesCluster (`status.outputs.cluster_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanKubernetesCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_id}} -- a bare string does not parse
 

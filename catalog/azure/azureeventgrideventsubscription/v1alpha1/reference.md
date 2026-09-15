@@ -308,6 +308,10 @@ Deliver to an Event Hub, by ARM ID -- defaults to referencing an
 AzureEventHub's event_hub_id output. Set exactly one arm on this
 block.
 
+Events are DELIVERED into the hub; the subscription belongs to the
+topic it subscribes to, so on a diagram the reference is access, not
+placement.
+
 - references: AzureEventHub (`status.outputs.event_hub_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureEventHub, name: <that resource's name>, fieldPath: status.outputs.event_hub_id}} -- a bare string does not parse
 
@@ -340,6 +344,10 @@ Deliver to a Service Bus topic, by ARM ID -- defaults to
 referencing an AzureServiceBusTopic's topic_id output. Set
 exactly one arm on this block.
 
+Events are DELIVERED into the topic; the subscription belongs to the
+Event Grid topic it subscribes to, so on a diagram the reference is
+access, not placement.
+
 - references: AzureServiceBusTopic (`status.outputs.topic_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureServiceBusTopic, name: <that resource's name>, fieldPath: status.outputs.topic_id}} -- a bare string does not parse
 
@@ -356,6 +364,10 @@ block.
 
 The storage account holding the queue, by ARM ID -- defaults to
 referencing an AzureStorageAccount's storage_account_id output.
+
+Events are DELIVERED into a queue in this account; the subscription
+belongs to the topic it subscribes to, so on a diagram the reference is
+access, not placement.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
@@ -537,6 +549,10 @@ vanish after the retry policy gives up.
 The storage account holding the dead-letter container, by ARM ID
 -- defaults to referencing an AzureStorageAccount's
 storage_account_id output.
+
+Dead-lettered events are WRITTEN into this account; the subscription
+belongs to the topic it subscribes to, so on a diagram the reference is
+access, not placement.
 
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}

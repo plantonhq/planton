@@ -158,8 +158,18 @@ spec:
     enabled: true
   vault:
     enabled: true
-    init_mode: auto
-    storage_size: 2Gi
+    # The vault's data rides the database backup above; what opens the
+    # restored vault is declared here. On EKS the seal is an AWS KMS key
+    # reached keyless through IRSA on the vault's own ServiceAccount
+    # (`planton-openbao`), and the keys Secret is one you own, so a
+    # platform destroy leaves the break-glass standing.
+    auto_unseal:
+      aws_kms:
+        region: us-east-1
+        kms_key_id: alias/planton-vault-unseal
+    init_secret_name: planton-vault-keys
+    service_account_annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/planton-vault-unseal
   components:
     graph:
       enabled: true
@@ -294,9 +304,31 @@ spec:
 | `spec.build.enabled` | `bool` |  | `true` |  |
 | `spec.vault` | `KubernetesPlantonPlatformVault` |  |  |  |
 | `spec.vault.enabled` | `bool` |  | `true` |  |
-| `spec.vault.initMode` | `string` |  | `auto` |  |
-| `spec.vault.storageSize` | `string` |  |  |  |
-| `spec.vault.storageClassName` | `string` |  |  |  |
+| `spec.vault.autoUnseal` | `KubernetesPlantonPlatformVaultAutoUnseal` |  |  |  |
+| `spec.vault.autoUnseal.awsKms` | `KubernetesPlantonPlatformVaultAwsKmsSeal` |  |  |  |
+| `spec.vault.autoUnseal.awsKms.region` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.awsKms.kmsKeyId` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.awsKms.accessKeyId` | `string` |  |  |  |
+| `spec.vault.autoUnseal.awsKms.secretAccessKey` | `string` (sensitive) |  |  |  |
+| `spec.vault.autoUnseal.gcpKms` | `KubernetesPlantonPlatformVaultGcpKmsSeal` |  |  |  |
+| `spec.vault.autoUnseal.gcpKms.project` | `string \| valueFrom` | yes |  | GcpProject (`status.outputs.project_id`) |
+| `spec.vault.autoUnseal.gcpKms.region` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.gcpKms.keyRing` | `string \| valueFrom` | yes |  | GcpKmsKeyRing (`status.outputs.key_ring_name`) |
+| `spec.vault.autoUnseal.gcpKms.cryptoKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_name`) |
+| `spec.vault.autoUnseal.gcpKms.workloadIdentityServiceAccount` | `string \| valueFrom` |  |  | GcpServiceAccount (`status.outputs.email`) |
+| `spec.vault.autoUnseal.azureKeyVault` | `KubernetesPlantonPlatformVaultAzureKeyVaultSeal` |  |  |  |
+| `spec.vault.autoUnseal.azureKeyVault.vaultName` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.azureKeyVault.keyName` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.azureKeyVault.tenantId` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.azureKeyVault.clientId` | `string` |  |  |  |
+| `spec.vault.autoUnseal.azureKeyVault.clientSecret` | `string` (sensitive) |  |  |  |
+| `spec.vault.autoUnseal.transit` | `KubernetesPlantonPlatformVaultTransitSeal` |  |  |  |
+| `spec.vault.autoUnseal.transit.address` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.transit.keyName` | `string` | yes |  |  |
+| `spec.vault.autoUnseal.transit.mountPath` | `string` |  | `transit/` |  |
+| `spec.vault.autoUnseal.transit.token` | `string` (sensitive) |  |  |  |
+| `spec.vault.initSecretName` | `string` |  |  |  |
+| `spec.vault.serviceAccountAnnotations` | `map<string, string>` |  |  |  |
 | `spec.components` | `KubernetesPlantonPlatformComponents` |  |  |  |
 | `spec.components.graph` | `KubernetesPlantonPlatformGraph` |  |  |  |
 | `spec.components.graph.enabled` | `bool` |  |  |  |
@@ -509,6 +541,15 @@ cluster and nothing copies it anywhere. The `BACKUP` column of
 `Unavailable` — and `status.backup` carries the archive's server name,
 the first recoverability point, and the last successful base backup.
 A failing backup never takes a working platform out of Ready.
+
+The archive carries the bundled vault too: the secrets manager stores
+its data in this same database, so every connection credential,
+managed secret, and signing key rides the WAL stream with the records
+— `status.backup.vault` says so, and names the Secret whose keys open
+the restored vault. A backup therefore needs the vault's keys to
+outlive the platform: `vault.auto_unseal` (a cloud key opens it) or
+`vault.init_secret_name` (a Secret you own holds the keys); the spec
+refuses a backup with neither.
 
 The module creates the credential Secret this store needs BEFORE the
 platform resource, in the same apply, so the database is born
@@ -808,11 +849,18 @@ one path.
 
 WHAT COMES BACK: every record the control plane keeps — organizations,
 environments, connections, projects, pipeline history, members, and
-the identity realm with its users, so existing passwords sign in.
-WHAT DOES NOT: the secrets manager's contents (OpenBAO keeps its data
-on its own volume, outside this archive), so every secret value the
-source held — the credentials behind connections above all — is
-re-entered after a restore.
+the identity realm with its users, so existing passwords sign in —
+AND the secrets manager's contents, because the vault stores in this
+same database: every connection credential, every managed secret, the
+license signing key, and the OIDC issuer's signing key, so keyless
+connections keep verifying against the same key. The restored vault
+opens itself under a cloud seal (`vault.auto_unseal`, declared the
+same as the source's), or with the keys Secret the source named in
+`vault.init_secret_name` — recreate that Secret in the new cluster
+before declaring the restore. WHAT DOES NOT: the root token and
+recovery keys of an init Secret that was lost with the old cluster
+(the vault's break-glass), unless you kept a copy; the platform runs
+without them.
 
 ### spec.database.postgresql.recoverFrom.objectStore
 
@@ -1495,7 +1543,12 @@ The bundled secrets manager (OpenBAO). ON by default — a
 version-only platform stores connection secrets with zero
 configuration. Explicit `enabled: false` is the deliberate opt-out
 (bring a cloud secret backend through bootstrap.secret_backend
-instead).
+instead). The vault stores its data in the platform's own PostgreSQL,
+so `database.postgresql.backup` archives it with the records; what
+opens the restored vault is declared here — a cloud key (`auto_unseal`)
+or a keys Secret you own (`init_secret_name`).
+
+- rule: vault.enabled: false opts out of the bundled secrets manager — remove auto_unseal, init_secret_name, and service_account_annotations, or re-enable the vault
 
 ### spec.vault.enabled
 
@@ -1508,32 +1561,260 @@ nowhere to live.
 
 - default: `true`
 
-### spec.vault.initMode
+### spec.vault.autoUnseal
+
+`KubernetesPlantonPlatformVaultAutoUnseal`
+
+Auto-unseal: delegate master-key protection to a key in your cloud
+(or a central OpenBao/Vault's transit engine) so the vault unseals
+itself on every start — including the start after a restore, on a
+cluster that has never seen it. Unset, the vault uses the built-in
+key shares and the operator unseals it with the shares it wrote to
+the init Secret; a restore then needs that Secret present (see
+init_secret_name). Exactly one seal backend may be declared, and its
+key and grants must exist BEFORE the platform: the seal is checked at
+server start, not at init, so a missing key or role crash-loops the
+vault before anything else can happen.
+
+VERSION HORIZON (verified at OpenBao v2.6.1): the cloud KMS seal
+mechanisms (awskms, gcpckms, azurekeyvault) are built in but
+DEPRECATED — upstream moves them to external KMS plugins in v2.7.0.
+The operator renders the seal stanza for the pinned 2.6.x line;
+expect the rendering to gain a plugin declaration when its chart pin
+crosses 2.7.
+
+### spec.vault.autoUnseal.awsKms
+
+`KubernetesPlantonPlatformVaultAwsKmsSeal`
+
+AWS KMS. Natural on EKS (IRSA for keyless auth).
+
+### spec.vault.autoUnseal.awsKms.region
+
+`string` · required
+
+AWS region of the KMS key (e.g. "us-west-2").
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.awsKms.kmsKeyId
+
+`string` · required
+
+KMS key ID or full ARN of a SYMMETRIC encrypt/decrypt key.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.awsKms.accessKeyId
+
+`string`
+
+Static credentials — only when keyless (IRSA / instance profile)
+is unavailable. The module materializes them into a Secret
+(`<platform>-openbao-seal-creds`) delivered as environment variables;
+nothing credential-bearing lands in the config ConfigMap.
+
+### spec.vault.autoUnseal.awsKms.secretAccessKey
+
+`string` · sensitive
+
+The secret access key paired with access_key_id.
+
+### spec.vault.autoUnseal.gcpKms
+
+`KubernetesPlantonPlatformVaultGcpKmsSeal`
+
+GCP Cloud KMS. Natural on GKE (Workload Identity).
+
+### spec.vault.autoUnseal.gcpKms.project
+
+`string | valueFrom` · required
+
+GCP project containing the KMS key ring.
+
+containment_exempt: names where the unseal key lives — the server
+runs in the cluster, not the project.
+
+- references: GcpProject (`status.outputs.project_id`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
+
+### spec.vault.autoUnseal.gcpKms.region
+
+`string` · required
+
+KMS key ring region (e.g. "global", "us-central1").
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.gcpKms.keyRing
+
+`string | valueFrom` · required
+
+Key ring name.
+
+containment_exempt: an unseal-key source the server calls out to —
+access, never placement.
+
+- references: GcpKmsKeyRing (`status.outputs.key_ring_name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKeyRing, name: <that resource's name>, fieldPath: status.outputs.key_ring_name}} -- a bare string does not parse
+
+### spec.vault.autoUnseal.gcpKms.cryptoKey
+
+`string | valueFrom` · required
+
+Crypto key (symmetric encrypt/decrypt) used to wrap the master
+key. The identity running OpenBao needs TWO roles on it:
+roles/cloudkms.cryptoKeyEncrypterDecrypter to wrap on init and
+unwrap on every unseal, AND roles/cloudkms.viewer — the server reads
+the key's metadata when it configures the seal at start (a
+key-existence check), and the encrypter-decrypter role does not
+carry cloudkms.cryptoKeys.get. With only the first role the pod
+crash-loops with "Error configuring seal \"gcpckms\": ... Permission
+'cloudkms.cryptoKeys.get' denied" and init never opens. Two
+GcpKmsKeyIamMember resources, one per role, scoped to the key.
+
+- references: GcpKmsKey (`status.outputs.key_name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpKmsKey, name: <that resource's name>, fieldPath: status.outputs.key_name}} -- a bare string does not parse
+
+### spec.vault.autoUnseal.gcpKms.workloadIdentityServiceAccount
+
+`string | valueFrom`
+
+GKE Workload Identity: the GCP service account email to annotate
+the vault's ServiceAccount with (iam.gke.io/gcp-service-account) —
+by reference to the GcpServiceAccount the seal grants were written
+for, so the annotation follows the identity. Leave empty to rely on
+node/ambient credentials. The cluster-side half is a
+GcpGkeWorkloadIdentityBinding for `<platform>-openbao` in the
+platform's namespace.
+
+- references: GcpServiceAccount (`status.outputs.email`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpServiceAccount, name: <that resource's name>, fieldPath: status.outputs.email}} -- a bare string does not parse
+
+### spec.vault.autoUnseal.azureKeyVault
+
+`KubernetesPlantonPlatformVaultAzureKeyVaultSeal`
+
+Azure Key Vault. Natural on AKS (Workload Identity / MSI).
+
+### spec.vault.autoUnseal.azureKeyVault.vaultName
+
+`string` · required
+
+Key Vault name (the vault, not the key).
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.azureKeyVault.keyName
+
+`string` · required
+
+Name of the key inside the vault.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.azureKeyVault.tenantId
+
+`string` · required
+
+Entra (Azure AD) tenant ID.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.azureKeyVault.clientId
+
+`string`
+
+Service-principal client ID — only when keyless (AKS Workload
+Identity / Managed Identity) is unavailable.
+
+### spec.vault.autoUnseal.azureKeyVault.clientSecret
+
+`string` · sensitive
+
+Service-principal client secret paired with client_id. Delivered
+as environment variables from a module-owned Secret; never lands
+in the config ConfigMap.
+
+### spec.vault.autoUnseal.transit
+
+`KubernetesPlantonPlatformVaultTransitSeal`
+
+Transit engine of another OpenBao/Vault instance.
+
+### spec.vault.autoUnseal.transit.address
+
+`string` · required
+
+Address of the central instance (e.g. "https://bao.example.com:8200").
+The satellite depends on the central instance being reachable
+and unsealed at every startup.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.transit.keyName
+
+`string` · required
+
+Transit key name used to wrap the master key. The key need not exist
+beforehand: the transit engine creates a key on its first encrypt
+(the server's own startup test-encrypt does it) — the ENGINE must
+exist, the key may be born there.
+
+- rule: {"string":{"minLen":"1"}}
+
+### spec.vault.autoUnseal.transit.mountPath
 
 `string` · optional (explicit presence)
 
-Initialization: "auto" (the operator initializes and unseals,
-storing the unseal keys in an annotated platform Secret) or "manual"
-(you run the init ceremony).
+Transit engine mount path. The engine must be enabled on the central
+instance before this satellite starts (`bao secrets enable
+-path=transit transit` there); a satellite whose seal finds no engine
+exits at startup with "Error configuring seal" and crash-loops until
+the engine exists.
 
-- default: `auto`
-- rule: {"string":{"in":["","auto","manual"]}}
+- default: `transit/`
 
-### spec.vault.storageSize
+### spec.vault.autoUnseal.transit.token
+
+`string` · sensitive
+
+Token authorized for encrypt/decrypt on the transit key.
+Delivered as environment variables from a module-owned Secret;
+never lands in the config ConfigMap.
+
+### spec.vault.initSecretName
 
 `string`
 
-Volume size (e.g. "2Gi"). Falls back to spec.storage.size, then the
-platform default.
+Name of a Secret YOU own, in the platform's namespace, where the
+operator writes the vault's keys at initialization: the unseal keys
+(recovery keys under auto_unseal) and the root token. The operator
+creates it WITHOUT an owner reference, so deleting the platform leaves
+it standing; on a restore it reads the shares from it to unseal a
+built-in-seal vault, and under any seal it is the vault's break-glass
+(the root token; the recovery quorum). Keep a copy of it outside the
+cluster — it is the one object a lost cluster takes with it that no
+archive brings back. Unset, the operator keeps the keys in a Secret it
+owns (`<platform>-openbao-init`), deleted with the platform.
 
-- rule: storage_size must be a Kubernetes quantity like "2Gi"
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
+### spec.vault.serviceAccountAnnotations
 
-### spec.vault.storageClassName
+`map<string, string>`
 
-`string`
-
-StorageClass override for the secrets-manager volume.
+Annotations for the ServiceAccount the vault's pods run as (the
+operator names it `<platform>-openbao`). This is where a keyless seal
+identity binds: EKS IRSA (`eks.amazonaws.com/role-arn`) for an AWS KMS
+seal, AKS Workload Identity (`azure.workload.identity/client-id`) for
+a Key Vault seal, GKE Workload Identity
+(`iam.gke.io/gcp-service-account`) for a Cloud KMS seal — the GCP
+arm's `workload_identity_service_account` writes that last annotation
+for you by reference; an explicit entry here wins on conflict.
+Distinct from the runner's, the control plane's, and the database
+backup's identities: this one only reaches the seal key.
 
 ### spec.components
 
@@ -1983,6 +2264,11 @@ Key within the Secret holding the value.
 
 - rule: {"string":{"minLen":"1"}}
 
+## Validation Rules
+
+- `spec.vault.backup_needs_surviving_keys`: a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key
+- `spec.vault.disabled_needs_cloud_secret_backend`: bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: KubernetesPlantonPlatform, name: <resource-name>, fieldPath: status.outputs.<output>}`.
@@ -2013,6 +2299,10 @@ Fields that can point at another resource's outputs:
 | `spec.database.postgresql.recoverFrom.objectStore.r2.credentials.secretAccessKey` | CloudflareAccountApiToken | `status.outputs.r2_secret_access_key` |
 | `spec.ingress.gatewayRef.name` | KubernetesGateway | `status.outputs.gateway_name` |
 | `spec.ingress.gatewayRef.namespace` | KubernetesGateway | `status.outputs.namespace` |
+| `spec.vault.autoUnseal.gcpKms.project` | GcpProject | `status.outputs.project_id` |
+| `spec.vault.autoUnseal.gcpKms.keyRing` | GcpKmsKeyRing | `status.outputs.key_ring_name` |
+| `spec.vault.autoUnseal.gcpKms.cryptoKey` | GcpKmsKey | `status.outputs.key_name` |
+| `spec.vault.autoUnseal.gcpKms.workloadIdentityServiceAccount` | GcpServiceAccount | `status.outputs.email` |
 
 ## See Also
 

@@ -549,6 +549,9 @@ ID -- defaults to referencing an AzureStorageAccount's
 storage_account_id output. FIXED AT CREATION -- changing it
 replaces the trigger.
 
+The trigger LISTENS to this account's blob events and belongs to its
+factory, so on a diagram the reference is access, not placement.
+
 - references: AzureStorageAccount (`status.outputs.storage_account_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureStorageAccount, name: <that resource's name>, fieldPath: status.outputs.storage_account_id}} -- a bare string does not parse
@@ -644,6 +647,9 @@ the trigger STARTS, and a CloudEvents-schema topic validates
 webhook subscribers with an HTTP OPTIONS handshake Data
 Factory's endpoint does not answer -- Start fails with "Webhook
 endpoint validation failed ... MethodNotAllowed".
+
+The trigger lives in its factory and listens TO the topic, so the
+reference is access, not placement, on a diagram.
 
 - references: AzureEventgridTopic (`status.outputs.topic_id`)
 - rule: {"required":true}

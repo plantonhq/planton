@@ -17,7 +17,7 @@ spec:
       field_path: bootstrap.secret_backend.aws_secrets_manager.kms_key_arn
       evidence:
         type: spec_default
-        reference: The managed-secret store is the one surface with a first-class CMK seam — the awsSecretsManager backend requires a KMS key ARN. Volume-level CMKs ride the chosen StorageClass.
+        reference: Two surfaces take a customer-managed key. The bundled secrets manager's seal — vault.auto_unseal wraps the vault's master key with a key in your cloud (AWS KMS, GCP Cloud KMS, Azure Key Vault, or a central OpenBao's transit engine), so the vault opens itself on every start and a restored vault opens from the same key; the key and its grants must exist before the platform (the seal is checked at server start, and a GCP identity needs both cryptoKeyEncrypterDecrypter and cloudkms.viewer). And the awsSecretsManager cloud backend, which requires a KMS key ARN. Volume-level CMKs ride the chosen StorageClass.
     - control_id: enc-in-transit
       status: configurable
       field_path: ingress.tls
@@ -50,7 +50,7 @@ spec:
       field_path: runner.service_account_annotations
       evidence:
         type: spec_default
-        reference: The runner's cloud identity is keyless workload identity (EKS role-arn / GKE service-account / AKS client-id annotations) or a customer-owned credentials Secret — the platform stores no cloud credentials either way. The control plane's OWN cloud identity (for cloud secret backends and KMS) is the sibling control_plane.service_account_annotations.
+        reference: The runner's cloud identity is keyless workload identity (EKS role-arn / GKE service-account / AKS client-id annotations) or a customer-owned credentials Secret — the platform stores no cloud credentials either way. The control plane's OWN cloud identity (for cloud secret backends and KMS) is the sibling control_plane.service_account_annotations; the database backup's identity is database.postgresql.backup.service_account_annotations; the vault's seal identity is vault.service_account_annotations (the GCP seal arm's workload_identity_service_account writes the GKE annotation by reference). Each identity reaches only what it is for.
     - control_id: no-legacy-auth
       status: enforced_by_default
       evidence:
@@ -71,7 +71,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unset means no backup — the platform's database lives on one volume in the cluster and nothing copies it anywhere (the BACKUP column reads NotConfigured). Declaring database.postgresql.backup.object_store turns on continuous WAL archiving plus scheduled base backups (the first one immediately) into an S3, GCS, Azure Blob, or Cloudflare R2 bucket you own, with the credential declared by reference and materialized as a Secret by the module; database.postgresql.recover_from declares a new platform restored from such an archive, honored when its database is first created.
-      notes: Only the platform's PostgreSQL is covered — every record the control plane keeps and the identity realm. The secrets manager (OpenBAO) keeps its data on its own volume outside this archive, so a restored platform runs with an empty secrets manager until connection credentials are re-entered; the GUIDE names the boundary. The 06-backups-to-r2 preset backs up nightly with 30d retention; the other presets deliberately have none.
+      notes: The archive carries the whole platform — every record the control plane keeps, the identity realm, and the bundled secrets manager's contents (every connection credential, managed secret, and signing key), because the vault stores its data in the same database. A restore is whole only if the restored vault can be opened, so a backup requires the vault's keys to outlive the platform — vault.auto_unseal (a cloud key opens it) or vault.init_secret_name (a Secret you own holds the keys; keep a copy outside the cluster) — and the spec refuses a backup with neither; status.backup.vault states the coverage and names the Secret to keep. The 06-backups-to-r2 preset backs up nightly with 30d retention and names the keys Secret; the other presets deliberately have no backup.
     - control_id: backup-retention-policy
       status: configurable
       field_path: database.postgresql.backup.retention_policy

@@ -99,7 +99,9 @@ more for multi-region topologies.
 `string | valueFrom` · required
 
 The partner logical server, in a different region than the primary.
-Defaults to referencing an AzureMssqlServer's server_id output.
+Defaults to referencing an AzureMssqlServer's server_id output. The
+group is created ON its primary and replicates TO this server, so on a
+diagram this reference is access, not placement.
 
 - references: AzureMssqlServer (`status.outputs.server_id`)
 - rule: {"required":true}

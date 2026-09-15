@@ -109,7 +109,7 @@ func TestOpenBAOInitSecretName(t *testing.T) {
 }
 
 // The init Secret's note must explain the key material in plain language:
-// what it unlocks, the cost of deleting it, and the hold-your-own-keys
+// what it unlocks, the cost of deleting it, and the own-your-own-Secret
 // alternative. Deployed by default, this Secret exists on every install.
 func TestOpenBAOInitSecretNote(t *testing.T) {
 	note := OpenBAOInitSecretNote("my-planton")
@@ -117,7 +117,7 @@ func TestOpenBAOInitSecretNote(t *testing.T) {
 		"my-planton-openbao",
 		"unseal",
 		"Deleting this Secret",
-		"initMode: manual",
+		"spec.vault.initSecretName",
 	} {
 		if !strings.Contains(note, want) {
 			t.Errorf("init Secret note must mention %q, got: %s", want, note)

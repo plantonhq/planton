@@ -132,7 +132,7 @@ func TestPlatformSpecBody_R2BackupNamesTheMaterializedSecret(t *testing.T) {
 		t.Errorf("prerequisites.postgresBackupPlugin = %#v, want auto", prerequisites["postgresBackupPlugin"])
 	}
 
-	wantSecrets := []objectStoreSecret{{
+	wantSecrets := []materializedSecret{{
 		Name: "acme-postgres-backup-creds",
 		Data: map[string]string{
 			"ACCESS_KEY_ID":     "token-id",
@@ -271,7 +271,7 @@ func TestObjectStoreBody_S3WithKeysAndPrivateCA(t *testing.T) {
 		t.Errorf("objectStore rendered\n got: %#v\nwant: %#v", got, want)
 	}
 
-	wantSecrets := []objectStoreSecret{
+	wantSecrets := []materializedSecret{
 		{Name: "acme-postgres-backup-creds", Data: map[string]string{
 			"ACCESS_KEY_ID": "minio-access-key", "SECRET_ACCESS_KEY": "minio-secret-key",
 		}},
@@ -281,5 +281,204 @@ func TestObjectStoreBody_S3WithKeysAndPrivateCA(t *testing.T) {
 	}
 	if got := storeSecrets(store, "acme-postgres-backup-creds", "acme-postgres-backup-endpoint-ca"); !reflect.DeepEqual(got, wantSecrets) {
 		t.Errorf("Secrets to materialize\n got: %#v\nwant: %#v", got, wantSecrets)
+	}
+}
+
+// ---- the vault's seal and keys ------------------------------------------------
+//
+// The vault renders like the object stores: identifiers pass through, a
+// declared credential VALUE becomes the seal-credentials Secret the CR names
+// (keyed by the environment variable the seal wrapper reads), a keyless arm
+// names none, and the volume keys the vault no longer has never render.
+
+func vaultBody(t *testing.T, locals *Locals) map[string]interface{} {
+	t.Helper()
+	vault, ok := platformSpecBody(locals)["vault"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("spec.vault not rendered: %#v", platformSpecBody(locals))
+	}
+	return vault
+}
+
+func TestPlatformSpecBody_VaultWithoutASealRendersOnlyWhatWasDeclared(t *testing.T) {
+	locals := localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Vault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVault{
+			InitSecretName: "planton-vault-keys",
+		},
+	})
+	want := map[string]interface{}{"initSecretName": "planton-vault-keys"}
+	if got := vaultBody(t, locals); !reflect.DeepEqual(got, want) {
+		t.Errorf("vault rendered\n got: %#v\nwant: %#v", got, want)
+	}
+	if secrets := materializedSecrets(locals); len(secrets) != 0 {
+		t.Errorf("no seal credential declared, yet %d Secret(s) would be created: %#v", len(secrets), secrets)
+	}
+}
+
+func TestPlatformSpecBody_AwsKmsSealWithKeysNamesTheMaterializedSecret(t *testing.T) {
+	locals := localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Vault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVault{
+			AutoUnseal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_AwsKms{
+					AwsKms: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal{
+						Region: "us-west-2", KmsKeyId: "alias/planton-vault-unseal",
+						AccessKeyId: "AKIA-example", SecretAccessKey: "secret",
+					},
+				},
+			},
+		},
+	})
+	want := map[string]interface{}{
+		"autoUnseal": map[string]interface{}{
+			"awsKms": map[string]interface{}{
+				"region":                "us-west-2",
+				"kmsKeyId":              "alias/planton-vault-unseal",
+				"accessKeyId":           "AKIA-example",
+				"credentialsSecretName": "acme-openbao-seal-creds",
+			},
+		},
+	}
+	if got := vaultBody(t, locals); !reflect.DeepEqual(got, want) {
+		t.Errorf("vault rendered\n got: %#v\nwant: %#v", got, want)
+	}
+	wantSecrets := []materializedSecret{{
+		Name: "acme-openbao-seal-creds",
+		Data: map[string]string{"AWS_SECRET_ACCESS_KEY": "secret"},
+	}}
+	if got := materializedSecrets(locals); !reflect.DeepEqual(got, wantSecrets) {
+		t.Errorf("Secrets to materialize\n got: %#v\nwant: %#v", got, wantSecrets)
+	}
+}
+
+func TestPlatformSpecBody_KeylessSealsNameNoSecret(t *testing.T) {
+	cases := map[string]struct {
+		seal *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
+		want map[string]interface{}
+	}{
+		"aws keyless": {
+			seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_AwsKms{
+					AwsKms: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal{Region: "us-west-2", KmsKeyId: "alias/planton-vault-unseal"},
+				},
+			},
+			want: map[string]interface{}{"awsKms": map[string]interface{}{"region": "us-west-2", "kmsKeyId": "alias/planton-vault-unseal"}},
+		},
+		"gcp": {
+			seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{
+					GcpKms: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal{
+						Project: literal("acme-platform"), Region: "global",
+						KeyRing: literal("planton-vault-unseal"), CryptoKey: literal("planton-vault-unseal"),
+					},
+				},
+			},
+			want: map[string]interface{}{"gcpKms": map[string]interface{}{
+				"project": "acme-platform", "region": "global", "keyRing": "planton-vault-unseal", "cryptoKey": "planton-vault-unseal",
+			}},
+		},
+		"azure keyless": {
+			seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault{
+					AzureKeyVault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal{VaultName: "acme-kv", KeyName: "unseal", TenantId: "tenant"},
+				},
+			},
+			want: map[string]interface{}{"azureKeyVault": map[string]interface{}{"vaultName": "acme-kv", "keyName": "unseal", "tenantId": "tenant"}},
+		},
+		"transit without a token": {
+			seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_Transit{
+					Transit: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultTransitSeal{Address: "http://key-holder.openbao.svc:8200", KeyName: "autounseal"},
+				},
+			},
+			want: map[string]interface{}{"transit": map[string]interface{}{"address": "http://key-holder.openbao.svc:8200", "keyName": "autounseal"}},
+		},
+	}
+	for name, tc := range cases {
+		locals := localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+			Vault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVault{AutoUnseal: tc.seal},
+		})
+		if got := vaultBody(t, locals)["autoUnseal"]; !reflect.DeepEqual(got, tc.want) {
+			t.Errorf("%s: autoUnseal rendered\n got: %#v\nwant: %#v", name, got, tc.want)
+		}
+		if secrets := materializedSecrets(locals); len(secrets) != 0 {
+			t.Errorf("%s: keyless, yet %d Secret(s) would be created: %#v", name, len(secrets), secrets)
+		}
+	}
+}
+
+func TestPlatformSpecBody_AzureAndTransitCredentialsRideTheSecretUnderTheirEnvNames(t *testing.T) {
+	azure := localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Vault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVault{
+			AutoUnseal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_AzureKeyVault{
+					AzureKeyVault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal{
+						VaultName: "acme-kv", KeyName: "unseal", TenantId: "tenant", ClientId: "client", ClientSecret: "sp-secret",
+					},
+				},
+			},
+		},
+	})
+	wantAzure := map[string]interface{}{
+		"vaultName": "acme-kv", "keyName": "unseal", "tenantId": "tenant", "clientId": "client",
+		"credentialsSecretName": "acme-openbao-seal-creds",
+	}
+	if got := vaultBody(t, azure)["autoUnseal"].(map[string]interface{})["azureKeyVault"]; !reflect.DeepEqual(got, wantAzure) {
+		t.Errorf("azureKeyVault rendered\n got: %#v\nwant: %#v", got, wantAzure)
+	}
+	if got := materializedSecrets(azure); len(got) != 1 || !reflect.DeepEqual(got[0].Data, map[string]string{"AZURE_CLIENT_SECRET": "sp-secret"}) {
+		t.Errorf("azure seal Secret\n got: %#v", got)
+	}
+
+	transit := localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Vault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVault{
+			AutoUnseal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_Transit{
+					Transit: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultTransitSeal{
+						Address: "http://key-holder.openbao.svc:8200", KeyName: "autounseal", MountPath: proto.String("keys/"), Token: "s.token",
+					},
+				},
+			},
+		},
+	})
+	wantTransit := map[string]interface{}{
+		"address": "http://key-holder.openbao.svc:8200", "keyName": "autounseal", "mountPath": "keys/",
+		"credentialsSecretName": "acme-openbao-seal-creds",
+	}
+	if got := vaultBody(t, transit)["autoUnseal"].(map[string]interface{})["transit"]; !reflect.DeepEqual(got, wantTransit) {
+		t.Errorf("transit rendered\n got: %#v\nwant: %#v", got, wantTransit)
+	}
+	if got := materializedSecrets(transit); len(got) != 1 || !reflect.DeepEqual(got[0].Data, map[string]string{"VAULT_TOKEN": "s.token"}) {
+		t.Errorf("transit seal Secret\n got: %#v", got)
+	}
+}
+
+func TestPlatformSpecBody_GcpWorkloadIdentityBecomesTheAnnotationAndExplicitEntriesWin(t *testing.T) {
+	locals := localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		Vault: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVault{
+			AutoUnseal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal{
+				Seal: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultAutoUnseal_GcpKms{
+					GcpKms: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal{
+						Project: literal("acme-platform"), Region: "global",
+						KeyRing: literal("planton-vault-unseal"), CryptoKey: literal("planton-vault-unseal"),
+						WorkloadIdentityServiceAccount: literal("planton-vault-unseal@acme-platform.iam.gserviceaccount.com"),
+					},
+				},
+			},
+			ServiceAccountAnnotations: map[string]string{"example.com/team": "platform"},
+		},
+	})
+	want := map[string]interface{}{
+		"iam.gke.io/gcp-service-account": "planton-vault-unseal@acme-platform.iam.gserviceaccount.com",
+		"example.com/team":               "platform",
+	}
+	if got := vaultBody(t, locals)["serviceAccountAnnotations"]; !reflect.DeepEqual(got, want) {
+		t.Errorf("serviceAccountAnnotations rendered\n got: %#v\nwant: %#v", got, want)
+	}
+
+	// The same annotation declared explicitly overrides the arm's identity.
+	locals.Spec.Vault.ServiceAccountAnnotations["iam.gke.io/gcp-service-account"] = "override@acme-platform.iam.gserviceaccount.com"
+	got := vaultBody(t, locals)["serviceAccountAnnotations"].(map[string]interface{})
+	if got["iam.gke.io/gcp-service-account"] != "override@acme-platform.iam.gserviceaccount.com" {
+		t.Errorf("an explicit annotation must win over the arm's identity, got %#v", got)
 	}
 }

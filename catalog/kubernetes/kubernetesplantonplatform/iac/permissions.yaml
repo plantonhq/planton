@@ -29,6 +29,19 @@ spec:
         provenance: derived
         notes: Covers kubernetes_namespace_v1 — the optional owning namespace (create_namespace), created before the CR and deleted with the resource (the delete blocks until the namespace is fully gone).
       - api_groups:
+          - ""
+        resources:
+          - secrets
+        verbs:
+          - get
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: Covers every Secret the module materializes in the platform's namespace before the CR, so the operator finds each credential already there — kubernetes_secret_v1.backup_credentials and recovery_credentials (the database's object-store credential per backend), backup_endpoint_ca and recovery_endpoint_ca (a private S3 endpoint's CA bundle), and vault_seal_credentials (a declared seal arm's credential, keyed by the environment variable the seal wrapper reads). A keyless posture creates none. All deleted with the resource.
+      - api_groups:
           - planton.ai
         resources:
           - plantonplatforms

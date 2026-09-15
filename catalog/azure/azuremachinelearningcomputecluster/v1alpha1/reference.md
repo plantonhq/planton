@@ -315,6 +315,11 @@ creation.
 The subnet the cluster's nodes are placed in, by ARM ID. Leave
 unset to let Azure network the nodes (a workspace managed network
 assigns one, read back after apply). Fixed at creation.
+On a diagram the cluster is an ARM child of its workspace
+(workspaces/{ws}/computes/{name}) and lives there; the subnet is
+where its nodes attach, so the reference is access, not placement
+-- otherwise a cluster on its own subnet would be drawn outside
+the workspace it belongs to (the AKS node pool's rule).
 
 - references: AzureSubnet (`status.outputs.subnet_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureSubnet, name: <that resource's name>, fieldPath: status.outputs.subnet_id}} -- a bare string does not parse

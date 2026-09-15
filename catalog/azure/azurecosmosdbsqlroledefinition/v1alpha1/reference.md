@@ -147,6 +147,10 @@ the account ID (references cannot append path suffixes), e.g.:
   assignableScopes:
     - value: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{account}/dbs/app-data
 
+Where a role MAY BE ASSIGNED is not where the definition lives (that is
+`cosmosdb_account_id`), so on a diagram these references are access,
+not placement.
+
 - references: AzureCosmosdbAccount (`status.outputs.cosmosdb_account_id`)
 - rule: {"repeated":{"minItems":"1"}}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AzureCosmosdbAccount, name: <that resource's name>, fieldPath: status.outputs.cosmosdb_account_id}} -- a bare string does not parse
