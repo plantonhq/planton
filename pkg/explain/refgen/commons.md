@@ -127,7 +127,7 @@ contributable through pull requests:
 - **`GUIDE.md` beside the root index** -- wisdom about using the catalog as
   a whole, including how to find a compatible alternative when the software
   you were asked for has no kind of its own.
-- **`patterns/` beside the root index** -- named architecture patterns:
+- **`_patterns/` beside the root index** -- named architecture patterns:
   compositions of multiple kinds with validated manifests and the
   trade-offs behind them.
 
@@ -145,5 +145,5 @@ every kind name they declare.
   page -- kind tables with purpose one-liners and page links.
 - `reference-graph.yaml` beside this page -- every foreign-key edge in the
   catalog.
-- `GUIDE.md` and `patterns/` beside the root index -- catalog-level authored
+- `GUIDE.md` and `_patterns/` beside the root index -- catalog-level authored
   wisdom.

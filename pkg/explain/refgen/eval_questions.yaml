@@ -382,3 +382,44 @@ questions:
       - kind: KubernetesOpenBao
         file: GUIDE.md
         pattern: '(?i)azure blob arm and the keyless s3\s+arm \(IRSA\)'
+
+  - id: q19
+    class: wisdom
+    question: >
+      A team already runs and backs up a KubernetesPostgres and wants to add
+      OpenBao. Which storage engine should the vault use, what does each
+      engine mean for backups and for the bad day, and what stays true on
+      either engine?
+    answer: >
+      PostgreSQL storage by reference to that database when ONE backup
+      should cover the vault: the vault claims no volume, its disaster
+      recovery is the database's (the database's restore brings it back,
+      then an unseal -- never a re-init), the kind refuses a backup block
+      on it so two stories are never run by accident, availability has no
+      quorum (any live standby takes the HA lock), and a database outage is
+      a vault outage. Integrated Raft (the default) when the vault must own
+      its recovery or outlive the database: snapshots to a store, the
+      restore runbook, quorum arithmetic. Dev is never for real secrets. On
+      either engine the seal key is required on restore because the
+      barrier key wraps the data, and every pod is unsealed separately.
+    checks:
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: '## Storage engine: Raft or PostgreSQL'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'wants ONE backup to cover the vault'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'a restored database and a different\s+seal key is an unreadable vault'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'two stories to rehearse where one was wanted'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'finds it initialized and sealed'
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: 'one database per vault'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'ONE backup covers the database and the vault'

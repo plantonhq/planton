@@ -25,7 +25,7 @@ One file per pattern. Frontmatter declares the kinds the pattern composes,
 so tooling (and you) can find every pattern touching a kind:
 
 ```
-rg -l "KubernetesNamespace" patterns/     # every pattern composing a kind
+rg -l "KubernetesNamespace" _patterns/    # every pattern composing a kind
 ```
 
 Each pattern states the problem, the composition choices with their

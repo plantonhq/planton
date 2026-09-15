@@ -109,7 +109,7 @@ pack answers it in three reads:
 ```
 rg -n "^## Spec Fields" -A 80 <page> | rg -i "backup|restore|recover|bootstrap"   # the kind's own blocks
 rg -n "^## References" -A 30 <page>                                              # the store, identity, and token kinds it wires to
-rg -n "^## (Backups|Disaster recovery|Restore)" -A 40 <kind-dir>/GUIDE.md        # the judgment
+rg -n "^## (Storage engine|Backups|Disaster recovery|Restore)" -A 40 <kind-dir>/GUIDE.md   # the judgment (a kind with more than one engine decides the story there first)
 ```
 
 - The kind's backup block names the store in that store's OWN vocabulary
@@ -145,6 +145,11 @@ target the guide embeds under "Restore on the bad day" and run this
 checklist against the manifest -- every line is a rule the pack states, and
 a restore that violates one fails on the bad day, not at validation:
 
+0. The source is a Raft vault. Snapshots exist only for integrated Raft
+   storage; a vault on PostgreSQL storage has none, refuses the `backup`
+   block, and comes back when its database is restored — its checklist is
+   the database kind's, and the guide's engine section says which vault a
+   customer has before any of the steps below apply.
 1. Same seal key on source and target (`autoUnseal` points at the same KMS
    key or the same transit key on the same key holder); a Shamir vault
    restores only by the guide's manual runbook.

@@ -34,6 +34,98 @@ composition consequences:
   entirely but is never for real secrets — the reference page is blunt
   about why.
 
+## Storage engine: Raft or PostgreSQL
+
+The second decision to make before the first deploy, and the one that
+decides whose disaster-recovery story the vault has. The reference page
+carries what each engine IS; this is when to choose which, and what the
+wrong choice costs.
+
+- **Choose integrated Raft (the default) when the vault should own its own
+  recovery.** The vault's data lives on its own volumes, its backup is the
+  kind's `backup` block (Raft snapshots to a store you name), and the bad
+  day is the [restore runbook](#restore-on-the-bad-day) below: a fresh vault
+  on the same seal key reads the snapshot and comes back. Availability is
+  quorum arithmetic — one server is a legal cluster, three survive one
+  loss, five survive two, and the count needs as many nodes. This is the
+  right engine when the vault is the team's most durable thing, when no
+  database the team already protects sits beside it, or when secrets must
+  outlive everything else in the cluster.
+- **Choose PostgreSQL storage when the team already runs and backs up a
+  `KubernetesPostgres` and wants ONE backup to cover the vault.** The vault
+  keeps its data in that database by reference, claims no volume, and its
+  disaster recovery becomes the database's: the database's backup carries
+  the vault's data, and the database's restore brings the vault back. What
+  does NOT change is the seal — the data in the database is encrypted by
+  the barrier key the seal wraps, so a restored database and a different
+  seal key is an unreadable vault, exactly as on Raft. Availability has no
+  quorum: the server holding the HA lock serves, and any live standby takes
+  the lock when it dies, so `replicas: 2` is a warm standby, not a
+  majority. Two costs to say out loud: a database
+  outage is a vault outage (the identity stack, the authorization engine,
+  and the secrets manager now share one blast radius when they share one
+  database — a deliberate trade, not an accident), and every server opens
+  its own pool, so `maxParallel` is set against the database's headroom
+  before the replica count multiplies it. This is the engine the
+  `06-production-postgresql-storage` preset shows (named by slug — presets
+  ship in the release's `presets.zip` and in the catalog repository, not in
+  the skill's pack), and the engine a platform's own bundled vault stores
+  on when the platform's database is already the thing being backed up.
+- **Never choose dev for real secrets.** It is the lab posture: in-memory,
+  auto-unsealed, the root token in plain text, nothing to back up.
+
+The database side of the PostgreSQL choice, so the proposal says it whole:
+
+- **The vault gets its own database, never a share of another consumer's.**
+  Its two tables land beside nobody else's schema. On a
+  [KubernetesPostgres](../kubernetespostgres/GUIDE.md) that is still to be
+  created, declare it at bootstrap — `bootstrap.initdb.postInitSql` with one
+  `CREATE DATABASE <name> OWNER <owner>;` line per extra database, the owner
+  being the role whose credential Secret the vault references (the
+  bootstrap owner's `<cluster>-app` Secret is the one the operator
+  maintains). On a cluster that already runs, `bootstrap` is immutable, so
+  the database is created once by hand — `psql` on the primary as the
+  `postgres` OS user, the same `CREATE DATABASE ... OWNER ...;` — and it
+  stays: the kind declares databases only at bootstrap, so nothing in its
+  declaration reconciles them away. OpenBao creates its own tables on
+  first start, so the owner role needs no further grant.
+- **Order matters, and the failure is loud.** The server pings the
+  database with a short backoff and then exits with `failed to connect to
+  postgres` — a crash-looping pod whose log names the cause — so the
+  database and its `openbao` database exist before the vault deploys; a
+  host declared by reference to the `KubernetesPostgres` orders the deploy
+  for you.
+- **Unseal every pod, on either engine.** Shamir unseal is a per-server
+  operation; a second PostgreSQL-stored replica is sealed until it is
+  unsealed too (an `autoUnseal` arm removes the step on both engines).
+- **The bad day on PostgreSQL storage is the database's restore, then an
+  unseal.** A server pointed at a database that already holds a vault
+  finds it initialized and sealed — no `bao operator init`, ever, on a
+  restored database; a Shamir vault is unsealed with the source's shares,
+  an auto-unsealed one opens itself. When the recovered cluster carries a
+  new name, re-declare the vault's `host` and `passwordSecret` references
+  to it and restart the pods (config changes never roll them; delete the
+  pods to pick up the new environment). The Raft runbooks below do not
+  apply to this engine.
+
+What breaks when the choice is wrong is caught early, by design: a `backup`
+block on PostgreSQL storage is refused at validation with the reason
+(snapshots exist only for Raft; the database's backup is the vault's), and
+a data volume has no field to be written in outside the Raft arm. What is
+NOT caught is the strategic mismatch — a team that wanted one backup for
+the whole platform running a Raft vault with its own snapshot store beside
+the database's archive, two stories to rehearse where one was wanted; or a
+team whose vault must survive the database's loss storing inside it. Ask
+which of the two the customer means before proposing.
+
+On the architecture diagram the choice is visible: PostgreSQL storage draws
+edges from the vault to the `KubernetesPostgres` node (its host) and to
+that database's credential Secret (its password), so the dependency is a
+real, customizable node in the graph; Raft draws nothing but the vault's
+own volume. The multi-kind view of the same decision — where the store,
+the identity, and the restore live for every stateful kind — is the
+[disaster-recovery pattern](../../_patterns/stateful-kind-disaster-recovery.md#choices-and-consequences).
+
 ## The self-hosted secrets chain
 
 OpenBao is the backend that completes an in-cluster External Secrets
