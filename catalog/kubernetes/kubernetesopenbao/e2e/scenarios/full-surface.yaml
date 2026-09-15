@@ -15,7 +15,10 @@ spec:
     value: e2e-bao-full
   createNamespace: true
   server:
-    standalone: {}
+    raft:
+      dataStorage:
+        size: 1Gi
+    replicas: 1
     resources:
       requests:
         cpu: 100m
@@ -23,8 +26,6 @@ spec:
       limits:
         cpu: "1"
         memory: 512Mi
-    dataStorage:
-      size: 1Gi
     auditStorage:
       size: 1Gi
     logLevel: debug

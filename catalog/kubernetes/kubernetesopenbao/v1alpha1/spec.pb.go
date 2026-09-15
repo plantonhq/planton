@@ -47,8 +47,17 @@ const (
 // removes the UNSEAL step from restarts, but the one-time
 // initialization is always yours.
 //
-// ONE SERVER MODE at a time: dev XOR standalone XOR ha (Raft). When
-// no mode is declared, standalone is used — the chart's own default.
+// THE SERVER DECLARES A STORAGE ENGINE AND A REPLICA COUNT, or `dev`.
+// OpenBao keeps those two facts apart and so does this spec: `server.raft`
+// (integrated storage, one volume per replica, the only engine with a
+// snapshot API) or `server.postgresql` (OpenBao's production-ready
+// external backend, no volume, backed up by its database) and
+// `server.replicas`. Declaring nothing is a single-node Raft server. The
+// chart itself knows only modes (`dev`, `standalone`, `ha`) and a raw
+// configuration string; this module writes the whole string and drives
+// the chart's `ha` mode for every engine (Raft on, or Raft off with the
+// engine's stanza in the string), so the chart is never told a value it
+// lacks. `dev` is a real chart value and a real server flag and stays.
 // The server always runs as a StatefulSet with an OnDelete update
 // strategy (config changes never roll pods automatically; delete pods
 // to pick up config).
@@ -79,7 +88,9 @@ type KubernetesOpenBaoSpec struct {
 	// exist in the SERVED index at https://openbao.github.io/openbao-helm.
 	ChartVersion *string `protobuf:"bytes,3,opt,name=chart_version,json=chartVersion,proto3,oneof" json:"chart_version,omitempty"`
 	// *
-	// The OpenBao server: mode, sizing, storage, and logging.
+	// The OpenBao server: the storage engine (or `dev`), the replica
+	// count, sizing, the audit volume, and logging. UNSET = one Raft
+	// server.
 	Server *KubernetesOpenBaoServer `protobuf:"bytes,4,opt,name=server,proto3" json:"server,omitempty"`
 	// *
 	// End-to-end TLS for the OpenBao listener. When unset, the server
@@ -160,9 +171,10 @@ type KubernetesOpenBaoSpec struct {
 	// identity, and token kinds; retention prunes older objects.
 	//
 	// RAFT ONLY: snapshots exist only for integrated Raft storage
-	// (`server.ha`; a single replica is a legal Raft cluster of one).
-	// Standalone file storage and dev mode have no snapshot API, and the
-	// server refuses the call ("raft storage is not in use").
+	// (`server.raft`, the default when no engine is declared; a single
+	// replica is a legal Raft cluster of one). Dev mode has no snapshot
+	// API, and a vault stored in PostgreSQL is backed up by its database —
+	// the server refuses the call on either ("raft storage is not in use").
 	//
 	// ONE STEP THE MODULE CANNOT TAKE: the job logs in through OpenBao's
 	// Kubernetes auth method, and the policy, auth mount, and role it
@@ -351,35 +363,71 @@ func (x *KubernetesOpenBaoSpec) GetRestore() *KubernetesOpenBaoRestore {
 }
 
 // *
-// The OpenBao server: mode, sizing, storage, and logging.
+// The OpenBao server: the storage engine (or `dev`), the replica count,
+// sizing, the audit volume, and logging.
+//
+// STORAGE ENGINE AND REPLICA COUNT ARE TWO FACTS. `raft` or `postgresql`
+// says where the data lives; `replicas` says how many servers serve it.
+// Either engine runs at any count from 1 to 11: a single Raft node is a
+// legal cluster of one, and a single PostgreSQL-stored server still
+// holds the HA lock so the chart's active-leader Service selects it.
+// UNSET engine = `raft`; UNSET replicas = 1.
+//
+// WHAT THE CHART IS TOLD: the chart offers a mode switch (`dev`,
+// `standalone`, `ha`) and a raw configuration string per mode. This
+// module writes the entire configuration string from these fields and
+// drives the chart's `ha` mode for every engine — Raft with the chart's
+// Raft toggle on (one data volume per replica), PostgreSQL with it off
+// and no data volume — and `dev` through the chart's dev flag. File
+// storage is not offered: OpenBao itself calls it not production
+// recommended (not transactional, no high availability), and a
+// single-node Raft server covers the single-instance case with
+// transactions and snapshots.
 type KubernetesOpenBaoServer struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Server mode. UNSET = standalone (the chart default): a single
-	// instance with file storage on a PersistentVolumeClaim.
+	// Dev mode: in-memory, auto-initialized, auto-unsealed, root token
+	// literally "root". NEVER for real secrets — all data is lost on
+	// every restart, and the root token is plaintext in the pod spec
+	// (readable by anyone who can get pods). Exists so the component
+	// can be evaluated and composed against without the init/unseal
+	// ceremony. No volume is created in dev mode, and workload-identity
+	// ServiceAccount annotations are NOT applied (a chart behavior — dev
+	// mode drops them). Exclusive with a storage engine and with
+	// `replicas`: dev is one in-memory server.
+	Dev *KubernetesOpenBaoDevMode `protobuf:"bytes,1,opt,name=dev,proto3" json:"dev,omitempty"`
+	// *
+	// The storage engine. UNSET = `raft`.
 	//
-	// Types that are valid to be assigned to Mode:
+	// Types that are valid to be assigned to Storage:
 	//
-	//	*KubernetesOpenBaoServer_Dev
-	//	*KubernetesOpenBaoServer_Standalone
-	//	*KubernetesOpenBaoServer_Ha
-	Mode isKubernetesOpenBaoServer_Mode `protobuf_oneof:"mode"`
+	//	*KubernetesOpenBaoServer_Raft
+	//	*KubernetesOpenBaoServer_Postgresql
+	Storage isKubernetesOpenBaoServer_Storage `protobuf_oneof:"storage"`
+	// *
+	// Number of server replicas (Raft peers, or PostgreSQL-stored servers
+	// sharing one lock table). UNSET = 1. On Raft, odd counts (3, 5)
+	// tolerate minority loss and 3 is the standard production shape; on
+	// PostgreSQL any count above 1 gives failover, the database decides
+	// durability. Remember the chart's default REQUIRED hostname
+	// anti-affinity: replicas beyond the node count stay Pending (see
+	// scheduling). At 1 the module disables the chart's
+	// PodDisruptionBudget — the chart would render `maxUnavailable: 0`
+	// for one replica, which blocks every node drain and protects nothing.
+	// With `dev` only 1 is accepted (dev is one in-memory server).
+	Replicas *int32 `protobuf:"varint,12,opt,name=replicas,proto3,oneof" json:"replicas,omitempty"`
 	// *
 	// CPU and memory for the server container. The chart ships no
 	// defaults; these are modest laboratory defaults — size real
 	// installs to the workload.
 	Resources *kubernetes.ContainerResources `protobuf:"bytes,4,opt,name=resources,proto3" json:"resources,omitempty"`
 	// *
-	// The data volume (file storage in standalone, Raft storage in HA).
-	// Ignored in dev mode (in-memory). One PVC per replica, mounted at
-	// /openbao/data.
-	DataStorage *KubernetesOpenBaoStorage `protobuf:"bytes,5,opt,name=data_storage,json=dataStorage,proto3" json:"data_storage,omitempty"`
-	// *
 	// Optional dedicated volume for file audit logs, mounted at
-	// /openbao/audit. Creating the volume does NOT enable auditing —
-	// after initialization run
+	// /openbao/audit — available on either storage engine (the chart
+	// claims it for any non-dev server). Creating the volume does NOT
+	// enable auditing — after initialization run
 	// `bao audit enable file file_path=/openbao/audit/audit.log`.
-	AuditStorage *KubernetesOpenBaoStorage `protobuf:"bytes,6,opt,name=audit_storage,json=auditStorage,proto3" json:"audit_storage,omitempty"`
+	AuditStorage *KubernetesOpenBaoVolume `protobuf:"bytes,6,opt,name=audit_storage,json=auditStorage,proto3" json:"audit_storage,omitempty"`
 	// *
 	// Server log verbosity: trace, debug, info (default), warn, error.
 	LogLevel *string `protobuf:"bytes,7,opt,name=log_level,json=logLevel,proto3,oneof" json:"log_level,omitempty"`
@@ -428,38 +476,43 @@ func (*KubernetesOpenBaoServer) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *KubernetesOpenBaoServer) GetMode() isKubernetesOpenBaoServer_Mode {
-	if x != nil {
-		return x.Mode
-	}
-	return nil
-}
-
 func (x *KubernetesOpenBaoServer) GetDev() *KubernetesOpenBaoDevMode {
 	if x != nil {
-		if x, ok := x.Mode.(*KubernetesOpenBaoServer_Dev); ok {
-			return x.Dev
+		return x.Dev
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoServer) GetStorage() isKubernetesOpenBaoServer_Storage {
+	if x != nil {
+		return x.Storage
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoServer) GetRaft() *KubernetesOpenBaoRaftStorage {
+	if x != nil {
+		if x, ok := x.Storage.(*KubernetesOpenBaoServer_Raft); ok {
+			return x.Raft
 		}
 	}
 	return nil
 }
 
-func (x *KubernetesOpenBaoServer) GetStandalone() *KubernetesOpenBaoStandaloneMode {
+func (x *KubernetesOpenBaoServer) GetPostgresql() *KubernetesOpenBaoPostgresqlStorage {
 	if x != nil {
-		if x, ok := x.Mode.(*KubernetesOpenBaoServer_Standalone); ok {
-			return x.Standalone
+		if x, ok := x.Storage.(*KubernetesOpenBaoServer_Postgresql); ok {
+			return x.Postgresql
 		}
 	}
 	return nil
 }
 
-func (x *KubernetesOpenBaoServer) GetHa() *KubernetesOpenBaoHaMode {
-	if x != nil {
-		if x, ok := x.Mode.(*KubernetesOpenBaoServer_Ha); ok {
-			return x.Ha
-		}
+func (x *KubernetesOpenBaoServer) GetReplicas() int32 {
+	if x != nil && x.Replicas != nil {
+		return *x.Replicas
 	}
-	return nil
+	return 0
 }
 
 func (x *KubernetesOpenBaoServer) GetResources() *kubernetes.ContainerResources {
@@ -469,14 +522,7 @@ func (x *KubernetesOpenBaoServer) GetResources() *kubernetes.ContainerResources 
 	return nil
 }
 
-func (x *KubernetesOpenBaoServer) GetDataStorage() *KubernetesOpenBaoStorage {
-	if x != nil {
-		return x.DataStorage
-	}
-	return nil
-}
-
-func (x *KubernetesOpenBaoServer) GetAuditStorage() *KubernetesOpenBaoStorage {
+func (x *KubernetesOpenBaoServer) GetAuditStorage() *KubernetesOpenBaoVolume {
 	if x != nil {
 		return x.AuditStorage
 	}
@@ -504,49 +550,46 @@ func (x *KubernetesOpenBaoServer) GetScheduling() *KubernetesOpenBaoScheduling {
 	return nil
 }
 
-type isKubernetesOpenBaoServer_Mode interface {
-	isKubernetesOpenBaoServer_Mode()
+type isKubernetesOpenBaoServer_Storage interface {
+	isKubernetesOpenBaoServer_Storage()
 }
 
-type KubernetesOpenBaoServer_Dev struct {
+type KubernetesOpenBaoServer_Raft struct {
 	// *
-	// Dev mode: in-memory, auto-initialized, auto-unsealed, root
-	// token literally "root". NEVER for real secrets — all data is
-	// lost on every restart, and the root token is plaintext in the
-	// pod spec (readable by anyone who can get pods). Exists so the
-	// component can be evaluated and composed against without the
-	// init/unseal ceremony. No PVC is created in dev mode, and
-	// workload-identity ServiceAccount annotations are NOT applied
-	// (a chart behavior — dev mode drops them).
-	Dev *KubernetesOpenBaoDevMode `protobuf:"bytes,1,opt,name=dev,proto3,oneof"`
+	// Integrated Raft storage: every replica persists to its own data
+	// volume and the cluster elects a leader. The ONLY engine with a
+	// snapshot API — `backup` and `restore` require it. This module
+	// renders `retry_join` stanzas for every peer (the chart alone
+	// ships NONE — without them a multi-replica Raft install never
+	// forms a cluster and each pod sits uninitialized and independent).
+	// Bootstrap: initialize pod-0 and unseal every pod; joins then
+	// happen automatically through retry_join.
+	Raft *KubernetesOpenBaoRaftStorage `protobuf:"bytes,10,opt,name=raft,proto3,oneof"`
 }
 
-type KubernetesOpenBaoServer_Standalone struct {
+type KubernetesOpenBaoServer_Postgresql struct {
 	// *
-	// Standalone: one instance, `storage "file"` on the data PVC.
-	// The production shape for single-instance installs.
-	Standalone *KubernetesOpenBaoStandaloneMode `protobuf:"bytes,2,opt,name=standalone,proto3,oneof"`
+	// PostgreSQL storage: OpenBao's production-ready external backend
+	// (transactional, paginated lists, high availability through a
+	// lock table it creates itself), declared by reference to the
+	// catalog's KubernetesPostgres or by literal host. No data volume —
+	// the vault's data lives in the database, and THE DATABASE'S BACKUP
+	// IS THE VAULT'S BACKUP: `backup` and `restore` (Raft snapshots) are
+	// refused on this engine. The module renders `ha_enabled` on at
+	// every replica count so the server labels its active pod and the
+	// chart's active-leader Service selects it; the connection reaches
+	// the server as the standard PostgreSQL environment (PGHOST,
+	// PGPORT, PGDATABASE, PGUSER, PGSSLMODE, and PGPASSWORD from the
+	// referenced Secret) — nothing credential-bearing enters the
+	// configuration ConfigMap.
+	Postgresql *KubernetesOpenBaoPostgresqlStorage `protobuf:"bytes,11,opt,name=postgresql,proto3,oneof"`
 }
 
-type KubernetesOpenBaoServer_Ha struct {
-	// *
-	// High availability with integrated Raft storage: every replica
-	// persists to its own data PVC and the cluster elects a leader.
-	// This module renders `retry_join` stanzas for every peer (the
-	// chart alone ships NONE — without them a multi-replica Raft
-	// install never forms a cluster and each pod sits uninitialized
-	// and independent). Bootstrap: initialize pod-0 and unseal every
-	// pod; joins then happen automatically through retry_join.
-	Ha *KubernetesOpenBaoHaMode `protobuf:"bytes,3,opt,name=ha,proto3,oneof"`
-}
+func (*KubernetesOpenBaoServer_Raft) isKubernetesOpenBaoServer_Storage() {}
 
-func (*KubernetesOpenBaoServer_Dev) isKubernetesOpenBaoServer_Mode() {}
+func (*KubernetesOpenBaoServer_Postgresql) isKubernetesOpenBaoServer_Storage() {}
 
-func (*KubernetesOpenBaoServer_Standalone) isKubernetesOpenBaoServer_Mode() {}
-
-func (*KubernetesOpenBaoServer_Ha) isKubernetesOpenBaoServer_Mode() {}
-
-// * Dev-mode marker (see the mode comment for the warnings).
+// * Dev-mode marker (see the `dev` field for the warnings).
 type KubernetesOpenBaoDevMode struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -583,27 +626,35 @@ func (*KubernetesOpenBaoDevMode) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
 }
 
-// * Standalone-mode marker (single instance, file storage).
-type KubernetesOpenBaoStandaloneMode struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+// *
+// Integrated Raft storage. Declare it empty (`raft: {}`) to name the
+// engine explicitly, or leave the engine unset — both are Raft.
+type KubernetesOpenBaoRaftStorage struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The data volume every replica persists its Raft data to: one PVC
+	// per replica, mounted at /openbao/data. UNSET = the chart's 10Gi on
+	// the cluster's default StorageClass. Lives here, and nowhere else,
+	// because Raft is the only engine that has a volume.
+	DataStorage   *KubernetesOpenBaoVolume `protobuf:"bytes,1,opt,name=data_storage,json=dataStorage,proto3" json:"data_storage,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenBaoStandaloneMode) Reset() {
-	*x = KubernetesOpenBaoStandaloneMode{}
+func (x *KubernetesOpenBaoRaftStorage) Reset() {
+	*x = KubernetesOpenBaoRaftStorage{}
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenBaoStandaloneMode) String() string {
+func (x *KubernetesOpenBaoRaftStorage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenBaoStandaloneMode) ProtoMessage() {}
+func (*KubernetesOpenBaoRaftStorage) ProtoMessage() {}
 
-func (x *KubernetesOpenBaoStandaloneMode) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenBaoRaftStorage) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -615,39 +666,97 @@ func (x *KubernetesOpenBaoStandaloneMode) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenBaoStandaloneMode.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenBaoStandaloneMode) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenBaoRaftStorage.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoRaftStorage) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
 }
 
-// * High-availability (integrated Raft) configuration.
-type KubernetesOpenBaoHaMode struct {
+func (x *KubernetesOpenBaoRaftStorage) GetDataStorage() *KubernetesOpenBaoVolume {
+	if x != nil {
+		return x.DataStorage
+	}
+	return nil
+}
+
+// *
+// PostgreSQL storage by reference to the catalog's database kind (or by
+// literal host). Same shape as every catalog kind that stores in a
+// KubernetesPostgres: the read-write Service is the host, the
+// application-user Secret holds the password.
+//
+// WHAT THE DATABASE MUST ALREADY HAVE: the database and a role that owns
+// it (on a KubernetesPostgres, declare them at bootstrap — `initdb`'s
+// database and owner). OpenBao creates its own tables in that database
+// on first start (`openbao_kv_store`, `openbao_ha_locks`); it needs no
+// superuser. The password Secret must live in the vault's namespace — a
+// Kubernetes constraint (a secretKeyRef reads only its own namespace),
+// not a chart one; co-locate the vault with its database or replicate
+// the Secret.
+type KubernetesOpenBaoPostgresqlStorage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Number of server replicas (Raft peers). Odd counts (3, 5)
-	// tolerate minority loss; 3 is the standard production shape. A
-	// single replica is a legal Raft cluster of one (useful in labs).
-	// Remember the chart's default required anti-affinity: replicas
-	// beyond the node count stay Pending (see scheduling).
-	Replicas      *int32 `protobuf:"varint,1,opt,name=replicas,proto3,oneof" json:"replicas,omitempty"`
+	// PostgreSQL host — a Service name (same namespace) or a full FQDN
+	// (cross-namespace or external). Accepts a literal or a reference to
+	// a KubernetesPostgres resource (its read-write Service — always the
+	// current primary). Reaches the server as PGHOST.
+	Host *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=host,proto3" json:"host,omitempty"`
+	// *
+	// PostgreSQL port. Empty = 5432. Reaches the server as PGPORT.
+	Port *int32 `protobuf:"varint,2,opt,name=port,proto3,oneof" json:"port,omitempty"`
+	// *
+	// Database that holds the vault's tables — one database per vault (on
+	// a KubernetesPostgres: declare it at bootstrap via initdb, e.g.
+	// "openbao"). Reaches the server as PGDATABASE.
+	Database string `protobuf:"bytes,3,opt,name=database,proto3" json:"database,omitempty"`
+	// *
+	// Database user the vault connects as — the role that owns the
+	// database (its ownership covers the tables OpenBao creates). Empty =
+	// "app", the owner a KubernetesPostgres bootstraps by default; name the
+	// role explicitly when the bootstrap declared one. Reaches the server
+	// as PGUSER.
+	Username *string `protobuf:"bytes,4,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	// *
+	// The user's password, read from an existing Secret and delivered to
+	// the server as PGPASSWORD through the chart's secret-environment seam
+	// — never rendered into the configuration or the chart values.
+	PasswordSecret *KubernetesOpenBaoPostgresqlPasswordSecret `protobuf:"bytes,5,opt,name=password_secret,json=passwordSecret,proto3" json:"password_secret,omitempty"`
+	// *
+	// PostgreSQL sslmode for the connection (disable, require, verify-ca,
+	// verify-full). Empty = "require": the connection is encrypted and
+	// OpenBao's backend tries TLS by default; a KubernetesPostgres serves
+	// TLS out of the box, so `require` works with no CA in hand.
+	// `verify-ca` / `verify-full` also verify the server's certificate and
+	// need its CA reachable by the pod — mount it through `helm_values`
+	// and point PGSSLROOTCERT at it via `server.extraEnvironmentVars`.
+	// `disable` only for a database that serves no TLS at all. Reaches
+	// the server as PGSSLMODE.
+	SslMode *string `protobuf:"bytes,6,opt,name=ssl_mode,json=sslMode,proto3,oneof" json:"ssl_mode,omitempty"`
+	// *
+	// Maximum concurrent connections EACH server opens to the database
+	// (`max_parallel` in the storage stanza). Empty = OpenBao's default of
+	// 128 — more than a default PostgreSQL's 100 `max_connections`, and
+	// multiplied by `replicas`. Set it when the database is shared or its
+	// connection budget is known (a vault at rest uses a handful; 32 is
+	// a generous ceiling for most).
+	MaxParallel   *int32 `protobuf:"varint,7,opt,name=max_parallel,json=maxParallel,proto3,oneof" json:"max_parallel,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenBaoHaMode) Reset() {
-	*x = KubernetesOpenBaoHaMode{}
+func (x *KubernetesOpenBaoPostgresqlStorage) Reset() {
+	*x = KubernetesOpenBaoPostgresqlStorage{}
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenBaoHaMode) String() string {
+func (x *KubernetesOpenBaoPostgresqlStorage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenBaoHaMode) ProtoMessage() {}
+func (*KubernetesOpenBaoPostgresqlStorage) ProtoMessage() {}
 
-func (x *KubernetesOpenBaoHaMode) ProtoReflect() protoreflect.Message {
+func (x *KubernetesOpenBaoPostgresqlStorage) ProtoReflect() protoreflect.Message {
 	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -659,20 +768,125 @@ func (x *KubernetesOpenBaoHaMode) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenBaoHaMode.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenBaoHaMode) Descriptor() ([]byte, []int) {
+// Deprecated: Use KubernetesOpenBaoPostgresqlStorage.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoPostgresqlStorage) Descriptor() ([]byte, []int) {
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *KubernetesOpenBaoHaMode) GetReplicas() int32 {
-	if x != nil && x.Replicas != nil {
-		return *x.Replicas
+func (x *KubernetesOpenBaoPostgresqlStorage) GetHost() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Host
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoPostgresqlStorage) GetPort() int32 {
+	if x != nil && x.Port != nil {
+		return *x.Port
 	}
 	return 0
 }
 
-// * A persistent volume request.
-type KubernetesOpenBaoStorage struct {
+func (x *KubernetesOpenBaoPostgresqlStorage) GetDatabase() string {
+	if x != nil {
+		return x.Database
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoPostgresqlStorage) GetUsername() string {
+	if x != nil && x.Username != nil {
+		return *x.Username
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoPostgresqlStorage) GetPasswordSecret() *KubernetesOpenBaoPostgresqlPasswordSecret {
+	if x != nil {
+		return x.PasswordSecret
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoPostgresqlStorage) GetSslMode() string {
+	if x != nil && x.SslMode != nil {
+		return *x.SslMode
+	}
+	return ""
+}
+
+func (x *KubernetesOpenBaoPostgresqlStorage) GetMaxParallel() int32 {
+	if x != nil && x.MaxParallel != nil {
+		return *x.MaxParallel
+	}
+	return 0
+}
+
+// *
+// A password read from an existing Kubernetes Secret. Defaults compose
+// a KubernetesPostgres resource's application-user Secret.
+type KubernetesOpenBaoPostgresqlPasswordSecret struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// Secret name. Accepts a literal or a reference to a
+	// KubernetesPostgres resource (its `<cluster>-app` credential Secret,
+	// maintained by the operator across failovers). Must live in the
+	// vault's namespace (see the engine's comment).
+	SecretName *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=secret_name,json=secretName,proto3" json:"secret_name,omitempty"`
+	// *
+	// Key within the Secret holding the password. Empty = "password"
+	// (the key a KubernetesPostgres application Secret uses).
+	SecretKey     *string `protobuf:"bytes,2,opt,name=secret_key,json=secretKey,proto3,oneof" json:"secret_key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesOpenBaoPostgresqlPasswordSecret) Reset() {
+	*x = KubernetesOpenBaoPostgresqlPasswordSecret{}
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesOpenBaoPostgresqlPasswordSecret) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesOpenBaoPostgresqlPasswordSecret) ProtoMessage() {}
+
+func (x *KubernetesOpenBaoPostgresqlPasswordSecret) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesOpenBaoPostgresqlPasswordSecret.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoPostgresqlPasswordSecret) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *KubernetesOpenBaoPostgresqlPasswordSecret) GetSecretName() *v1.StringValueOrRef {
+	if x != nil {
+		return x.SecretName
+	}
+	return nil
+}
+
+func (x *KubernetesOpenBaoPostgresqlPasswordSecret) GetSecretKey() string {
+	if x != nil && x.SecretKey != nil {
+		return *x.SecretKey
+	}
+	return ""
+}
+
+// * A persistent volume request (the Raft data volume, the audit volume).
+type KubernetesOpenBaoVolume struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
 	// Volume size (e.g. "10Gi").
@@ -686,21 +900,21 @@ type KubernetesOpenBaoStorage struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *KubernetesOpenBaoStorage) Reset() {
-	*x = KubernetesOpenBaoStorage{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[5]
+func (x *KubernetesOpenBaoVolume) Reset() {
+	*x = KubernetesOpenBaoVolume{}
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *KubernetesOpenBaoStorage) String() string {
+func (x *KubernetesOpenBaoVolume) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*KubernetesOpenBaoStorage) ProtoMessage() {}
+func (*KubernetesOpenBaoVolume) ProtoMessage() {}
 
-func (x *KubernetesOpenBaoStorage) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[5]
+func (x *KubernetesOpenBaoVolume) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -711,19 +925,19 @@ func (x *KubernetesOpenBaoStorage) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use KubernetesOpenBaoStorage.ProtoReflect.Descriptor instead.
-func (*KubernetesOpenBaoStorage) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+// Deprecated: Use KubernetesOpenBaoVolume.ProtoReflect.Descriptor instead.
+func (*KubernetesOpenBaoVolume) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *KubernetesOpenBaoStorage) GetSize() string {
+func (x *KubernetesOpenBaoVolume) GetSize() string {
 	if x != nil && x.Size != nil {
 		return *x.Size
 	}
 	return ""
 }
 
-func (x *KubernetesOpenBaoStorage) GetStorageClass() *v1.StringValueOrRef {
+func (x *KubernetesOpenBaoVolume) GetStorageClass() *v1.StringValueOrRef {
 	if x != nil {
 		return x.StorageClass
 	}
@@ -745,7 +959,7 @@ type KubernetesOpenBaoScheduling struct {
 
 func (x *KubernetesOpenBaoScheduling) Reset() {
 	*x = KubernetesOpenBaoScheduling{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -757,7 +971,7 @@ func (x *KubernetesOpenBaoScheduling) String() string {
 func (*KubernetesOpenBaoScheduling) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -770,7 +984,7 @@ func (x *KubernetesOpenBaoScheduling) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoScheduling.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *KubernetesOpenBaoScheduling) GetNodeSelector() map[string]string {
@@ -813,7 +1027,7 @@ type KubernetesOpenBaoTls struct {
 
 func (x *KubernetesOpenBaoTls) Reset() {
 	*x = KubernetesOpenBaoTls{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -825,7 +1039,7 @@ func (x *KubernetesOpenBaoTls) String() string {
 func (*KubernetesOpenBaoTls) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoTls) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -838,7 +1052,7 @@ func (x *KubernetesOpenBaoTls) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoTls.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoTls) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *KubernetesOpenBaoTls) GetEnabled() bool {
@@ -884,7 +1098,7 @@ type KubernetesOpenBaoAutoUnseal struct {
 
 func (x *KubernetesOpenBaoAutoUnseal) Reset() {
 	*x = KubernetesOpenBaoAutoUnseal{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -896,7 +1110,7 @@ func (x *KubernetesOpenBaoAutoUnseal) String() string {
 func (*KubernetesOpenBaoAutoUnseal) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoAutoUnseal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -909,7 +1123,7 @@ func (x *KubernetesOpenBaoAutoUnseal) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoAutoUnseal.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoAutoUnseal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *KubernetesOpenBaoAutoUnseal) GetSeal() isKubernetesOpenBaoAutoUnseal_Seal {
@@ -1011,7 +1225,7 @@ type KubernetesOpenBaoAwsKmsSeal struct {
 
 func (x *KubernetesOpenBaoAwsKmsSeal) Reset() {
 	*x = KubernetesOpenBaoAwsKmsSeal{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1023,7 +1237,7 @@ func (x *KubernetesOpenBaoAwsKmsSeal) String() string {
 func (*KubernetesOpenBaoAwsKmsSeal) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoAwsKmsSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1036,7 +1250,7 @@ func (x *KubernetesOpenBaoAwsKmsSeal) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoAwsKmsSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoAwsKmsSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *KubernetesOpenBaoAwsKmsSeal) GetRegion() string {
@@ -1102,7 +1316,7 @@ type KubernetesOpenBaoGcpKmsSeal struct {
 	// the server ServiceAccount with (iam.gke.io/gcp-service-account).
 	// Leave empty to rely on node/ambient credentials. NOTE dev mode
 	// drops ServiceAccount annotations (chart behavior) — auto-unseal
-	// with workload identity requires standalone or ha mode.
+	// with workload identity needs a storage engine, not dev.
 	WorkloadIdentityServiceAccount *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=workload_identity_service_account,json=workloadIdentityServiceAccount,proto3" json:"workload_identity_service_account,omitempty"`
 	unknownFields                  protoimpl.UnknownFields
 	sizeCache                      protoimpl.SizeCache
@@ -1110,7 +1324,7 @@ type KubernetesOpenBaoGcpKmsSeal struct {
 
 func (x *KubernetesOpenBaoGcpKmsSeal) Reset() {
 	*x = KubernetesOpenBaoGcpKmsSeal{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1122,7 +1336,7 @@ func (x *KubernetesOpenBaoGcpKmsSeal) String() string {
 func (*KubernetesOpenBaoGcpKmsSeal) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoGcpKmsSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1135,7 +1349,7 @@ func (x *KubernetesOpenBaoGcpKmsSeal) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoGcpKmsSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoGcpKmsSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *KubernetesOpenBaoGcpKmsSeal) GetProject() *v1.StringValueOrRef {
@@ -1200,7 +1414,7 @@ type KubernetesOpenBaoAzureKeyVaultSeal struct {
 
 func (x *KubernetesOpenBaoAzureKeyVaultSeal) Reset() {
 	*x = KubernetesOpenBaoAzureKeyVaultSeal{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1212,7 +1426,7 @@ func (x *KubernetesOpenBaoAzureKeyVaultSeal) String() string {
 func (*KubernetesOpenBaoAzureKeyVaultSeal) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoAzureKeyVaultSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1225,7 +1439,7 @@ func (x *KubernetesOpenBaoAzureKeyVaultSeal) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesOpenBaoAzureKeyVaultSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoAzureKeyVaultSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *KubernetesOpenBaoAzureKeyVaultSeal) GetVaultName() string {
@@ -1295,7 +1509,7 @@ type KubernetesOpenBaoTransitSeal struct {
 
 func (x *KubernetesOpenBaoTransitSeal) Reset() {
 	*x = KubernetesOpenBaoTransitSeal{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1307,7 +1521,7 @@ func (x *KubernetesOpenBaoTransitSeal) String() string {
 func (*KubernetesOpenBaoTransitSeal) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoTransitSeal) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1320,7 +1534,7 @@ func (x *KubernetesOpenBaoTransitSeal) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoTransitSeal.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoTransitSeal) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *KubernetesOpenBaoTransitSeal) GetAddress() string {
@@ -1380,7 +1594,7 @@ type KubernetesOpenBaoInjector struct {
 
 func (x *KubernetesOpenBaoInjector) Reset() {
 	*x = KubernetesOpenBaoInjector{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1392,7 +1606,7 @@ func (x *KubernetesOpenBaoInjector) String() string {
 func (*KubernetesOpenBaoInjector) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoInjector) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1405,7 +1619,7 @@ func (x *KubernetesOpenBaoInjector) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoInjector.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoInjector) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *KubernetesOpenBaoInjector) GetEnabled() bool {
@@ -1448,8 +1662,8 @@ type KubernetesOpenBaoMetrics struct {
 	// *
 	// Also create a ServiceMonitor (requires the Prometheus Operator
 	// CRDs — a KubernetesKubePrometheusStack — on the cluster; the
-	// install FAILS without them). In HA mode the chart scrapes only
-	// the active node.
+	// install FAILS without them). The chart scrapes only the active
+	// node (every non-dev server runs in the chart's HA mode).
 	ServiceMonitorEnabled bool `protobuf:"varint,2,opt,name=service_monitor_enabled,json=serviceMonitorEnabled,proto3" json:"service_monitor_enabled,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
@@ -1457,7 +1671,7 @@ type KubernetesOpenBaoMetrics struct {
 
 func (x *KubernetesOpenBaoMetrics) Reset() {
 	*x = KubernetesOpenBaoMetrics{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1469,7 +1683,7 @@ func (x *KubernetesOpenBaoMetrics) String() string {
 func (*KubernetesOpenBaoMetrics) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoMetrics) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1482,7 +1696,7 @@ func (x *KubernetesOpenBaoMetrics) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoMetrics.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoMetrics) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *KubernetesOpenBaoMetrics) GetEnabled() bool {
@@ -1590,7 +1804,7 @@ type KubernetesOpenBaoBackup struct {
 
 func (x *KubernetesOpenBaoBackup) Reset() {
 	*x = KubernetesOpenBaoBackup{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1602,7 +1816,7 @@ func (x *KubernetesOpenBaoBackup) String() string {
 func (*KubernetesOpenBaoBackup) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoBackup) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1615,7 +1829,7 @@ func (x *KubernetesOpenBaoBackup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoBackup.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoBackup) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *KubernetesOpenBaoBackup) GetSchedule() string {
@@ -1698,7 +1912,7 @@ type KubernetesOpenBaoBackupObjectStore struct {
 
 func (x *KubernetesOpenBaoBackupObjectStore) Reset() {
 	*x = KubernetesOpenBaoBackupObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1710,7 +1924,7 @@ func (x *KubernetesOpenBaoBackupObjectStore) String() string {
 func (*KubernetesOpenBaoBackupObjectStore) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoBackupObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1723,7 +1937,7 @@ func (x *KubernetesOpenBaoBackupObjectStore) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use KubernetesOpenBaoBackupObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoBackupObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *KubernetesOpenBaoBackupObjectStore) GetPrefix() string {
@@ -1869,7 +2083,7 @@ type KubernetesOpenBaoS3ObjectStore struct {
 
 func (x *KubernetesOpenBaoS3ObjectStore) Reset() {
 	*x = KubernetesOpenBaoS3ObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1881,7 +2095,7 @@ func (x *KubernetesOpenBaoS3ObjectStore) String() string {
 func (*KubernetesOpenBaoS3ObjectStore) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoS3ObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1894,7 +2108,7 @@ func (x *KubernetesOpenBaoS3ObjectStore) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoS3ObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoS3ObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *KubernetesOpenBaoS3ObjectStore) GetBucket() string {
@@ -1965,7 +2179,7 @@ type KubernetesOpenBaoS3AccessKeys struct {
 
 func (x *KubernetesOpenBaoS3AccessKeys) Reset() {
 	*x = KubernetesOpenBaoS3AccessKeys{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1977,7 +2191,7 @@ func (x *KubernetesOpenBaoS3AccessKeys) String() string {
 func (*KubernetesOpenBaoS3AccessKeys) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoS3AccessKeys) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1990,7 +2204,7 @@ func (x *KubernetesOpenBaoS3AccessKeys) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoS3AccessKeys.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoS3AccessKeys) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *KubernetesOpenBaoS3AccessKeys) GetAccessKeyId() string {
@@ -2044,7 +2258,7 @@ type KubernetesOpenBaoGcsObjectStore struct {
 
 func (x *KubernetesOpenBaoGcsObjectStore) Reset() {
 	*x = KubernetesOpenBaoGcsObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2056,7 +2270,7 @@ func (x *KubernetesOpenBaoGcsObjectStore) String() string {
 func (*KubernetesOpenBaoGcsObjectStore) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoGcsObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2069,7 +2283,7 @@ func (x *KubernetesOpenBaoGcsObjectStore) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoGcsObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoGcsObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *KubernetesOpenBaoGcsObjectStore) GetBucket() *v1.StringValueOrRef {
@@ -2128,7 +2342,7 @@ type KubernetesOpenBaoAzureBlobObjectStore struct {
 
 func (x *KubernetesOpenBaoAzureBlobObjectStore) Reset() {
 	*x = KubernetesOpenBaoAzureBlobObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2140,7 +2354,7 @@ func (x *KubernetesOpenBaoAzureBlobObjectStore) String() string {
 func (*KubernetesOpenBaoAzureBlobObjectStore) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoAzureBlobObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2153,7 +2367,7 @@ func (x *KubernetesOpenBaoAzureBlobObjectStore) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use KubernetesOpenBaoAzureBlobObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoAzureBlobObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *KubernetesOpenBaoAzureBlobObjectStore) GetStorageAccount() string {
@@ -2241,7 +2455,7 @@ type KubernetesOpenBaoR2ObjectStore struct {
 
 func (x *KubernetesOpenBaoR2ObjectStore) Reset() {
 	*x = KubernetesOpenBaoR2ObjectStore{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2253,7 +2467,7 @@ func (x *KubernetesOpenBaoR2ObjectStore) String() string {
 func (*KubernetesOpenBaoR2ObjectStore) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoR2ObjectStore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2266,7 +2480,7 @@ func (x *KubernetesOpenBaoR2ObjectStore) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoR2ObjectStore.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoR2ObjectStore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *KubernetesOpenBaoR2ObjectStore) GetBucket() *v1.StringValueOrRef {
@@ -2328,7 +2542,7 @@ type KubernetesOpenBaoR2Credentials struct {
 
 func (x *KubernetesOpenBaoR2Credentials) Reset() {
 	*x = KubernetesOpenBaoR2Credentials{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2340,7 +2554,7 @@ func (x *KubernetesOpenBaoR2Credentials) String() string {
 func (*KubernetesOpenBaoR2Credentials) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoR2Credentials) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2353,7 +2567,7 @@ func (x *KubernetesOpenBaoR2Credentials) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoR2Credentials.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoR2Credentials) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *KubernetesOpenBaoR2Credentials) GetAccessKeyId() *v1.StringValueOrRef {
@@ -2391,7 +2605,7 @@ type KubernetesOpenBaoBackupAuth struct {
 
 func (x *KubernetesOpenBaoBackupAuth) Reset() {
 	*x = KubernetesOpenBaoBackupAuth{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2403,7 +2617,7 @@ func (x *KubernetesOpenBaoBackupAuth) String() string {
 func (*KubernetesOpenBaoBackupAuth) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoBackupAuth) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2416,7 +2630,7 @@ func (x *KubernetesOpenBaoBackupAuth) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoBackupAuth.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoBackupAuth) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *KubernetesOpenBaoBackupAuth) GetMountPath() string {
@@ -2452,7 +2666,7 @@ type KubernetesOpenBaoBackupImages struct {
 
 func (x *KubernetesOpenBaoBackupImages) Reset() {
 	*x = KubernetesOpenBaoBackupImages{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2464,7 +2678,7 @@ func (x *KubernetesOpenBaoBackupImages) String() string {
 func (*KubernetesOpenBaoBackupImages) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoBackupImages) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2477,7 +2691,7 @@ func (x *KubernetesOpenBaoBackupImages) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoBackupImages.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoBackupImages) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *KubernetesOpenBaoBackupImages) GetOpenbao() *kubernetes.ContainerImage {
@@ -2523,7 +2737,7 @@ type KubernetesOpenBaoRestore struct {
 
 func (x *KubernetesOpenBaoRestore) Reset() {
 	*x = KubernetesOpenBaoRestore{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2535,7 +2749,7 @@ func (x *KubernetesOpenBaoRestore) String() string {
 func (*KubernetesOpenBaoRestore) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoRestore) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2548,7 +2762,7 @@ func (x *KubernetesOpenBaoRestore) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoRestore.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoRestore) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *KubernetesOpenBaoRestore) GetSource() isKubernetesOpenBaoRestore_Source {
@@ -2634,7 +2848,7 @@ type KubernetesOpenBaoServiceAccount struct {
 
 func (x *KubernetesOpenBaoServiceAccount) Reset() {
 	*x = KubernetesOpenBaoServiceAccount{}
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2646,7 +2860,7 @@ func (x *KubernetesOpenBaoServiceAccount) String() string {
 func (*KubernetesOpenBaoServiceAccount) ProtoMessage() {}
 
 func (x *KubernetesOpenBaoServiceAccount) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2659,7 +2873,7 @@ func (x *KubernetesOpenBaoServiceAccount) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesOpenBaoServiceAccount.ProtoReflect.Descriptor instead.
 func (*KubernetesOpenBaoServiceAccount) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *KubernetesOpenBaoServiceAccount) GetAnnotations() map[string]string {
@@ -2680,7 +2894,7 @@ var File_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesopenbao/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xaa\x14\n" +
+	"8catalog/kubernetes/kubernetesopenbao/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesopenbao.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a catalog/kubernetes/options.proto\x1a*catalog/kubernetes/workload_identity.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc4\x15\n" +
 	"\x15KubernetesOpenBaoSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -2700,45 +2914,67 @@ const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDesc = ""
 	"\vhelm_values\x18\r \x01(\tR\n" +
 	"helmValues\x12b\n" +
 	"\x06backup\x18\x0e \x01(\v2J.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupR\x06backup\x12e\n" +
-	"\arestore\x18\x0f \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestoreR\arestore:\xbe\n" +
-	"\xbaH\xba\n" +
-	"\x1a\xf4\x01\n" +
-	"\x19spec.backup.requires_raft\x12\x96\x01Backups snapshot Raft storage: set server.ha (a single replica is a legal Raft cluster) — dev mode and standalone file storage have no snapshot API.\x1a>!has(this.backup) || (has(this.server) && has(this.server.ha))\x1a\x85\x03\n" +
+	"\arestore\x18\x0f \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestoreR\arestore:\xd8\v\xbaH\xd4\v\x1a\x9c\x02\n" +
+	"\x16spec.backup.not_on_dev\x12\xc0\x01Backups snapshot Raft storage and dev mode has no snapshot API (it is in-memory) — remove backup, or remove server.dev and run a storage engine (leave server.raft unset for one Raft server).\x1a?!has(this.backup) || !has(this.server) || !has(this.server.dev)\x1a\x80\x02\n" +
+	"\x1dspec.backup.not_on_postgresql\x12\x96\x01Snapshots exist only for Raft storage; a vault stored in PostgreSQL is backed up by its database — remove backup, or store the vault on server.raft.\x1aF!has(this.backup) || !has(this.server) || !has(this.server.postgresql)\x1a\x85\x03\n" +
 	"#spec.backup.requires_auth_delegator\x12\xc7\x01The backup job logs in through OpenBao's Kubernetes auth method, which verifies its token with a TokenReview — leave service_account.auth_delegator_enabled on (the default) when backup is declared.\x1a\x93\x01!has(this.backup) || !has(this.service_account) || !has(this.service_account.auth_delegator_enabled) || this.service_account.auth_delegator_enabled\x1a\xe6\x01\n" +
-	"\x1cspec.restore.requires_backup\x12\x9d\x01A restore reads from the store declared on backup (bucket, prefix, credentials, identity) — declare backup with the same store the snapshot was written to.\x1a&!has(this.restore) || has(this.backup)\x1a\xcf\x03\n" +
-	"!spec.restore.requires_auto_unseal\x12\xeb\x01A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide.\x1a\xbb\x01!has(this.restore) || (has(this.auto_unseal) && (has(this.auto_unseal.aws_kms) || has(this.auto_unseal.gcp_kms) || has(this.auto_unseal.azure_key_vault) || has(this.auto_unseal.transit)))B\x10\n" +
+	"\x1cspec.restore.requires_backup\x12\x9d\x01A restore reads from the store declared on backup (bucket, prefix, credentials, identity) — declare backup with the same store the snapshot was written to.\x1a&!has(this.restore) || has(this.backup)\x1a\xbe\x02\n" +
+	"!spec.restore.requires_auto_unseal\x12\xeb\x01A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide.\x1a+!has(this.restore) || has(this.auto_unseal)B\x10\n" +
 	"\x0e_chart_versionB\r\n" +
-	"\v_ui_enabledJ\x04\b\v\x10\fR\x0esnapshot_agent\"\x93\t\n" +
-	"\x17KubernetesOpenBaoServer\x12_\n" +
-	"\x03dev\x18\x01 \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoDevModeH\x00R\x03dev\x12t\n" +
+	"\v_ui_enabledJ\x04\b\v\x10\fR\x0esnapshot_agent\"\xea\f\n" +
+	"\x17KubernetesOpenBaoServer\x12]\n" +
+	"\x03dev\x18\x01 \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoDevModeR\x03dev\x12e\n" +
+	"\x04raft\x18\n" +
+	" \x01(\v2O.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRaftStorageH\x00R\x04raft\x12w\n" +
 	"\n" +
-	"standalone\x18\x02 \x01(\v2R.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStandaloneModeH\x00R\n" +
-	"standalone\x12\\\n" +
-	"\x02ha\x18\x03 \x01(\v2J.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoHaModeH\x00R\x02ha\x12n\n" +
+	"postgresql\x18\v \x01(\v2U.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlStorageH\x00R\n" +
+	"postgresql\x12/\n" +
+	"\breplicas\x18\f \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\v(\x01\x8a\xa6\x1d\x011H\x01R\breplicas\x88\x01\x01\x12n\n" +
 	"\tresources\x18\x04 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB$\xba\xfb\xa4\x02\x1f\n" +
 	"\x0e\n" +
 	"\x051000m\x12\x05512Mi\x12\r\n" +
-	"\x04100m\x12\x05256MiR\tresources\x12n\n" +
-	"\fdata_storage\x18\x05 \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStorageR\vdataStorage\x12p\n" +
-	"\raudit_storage\x18\x06 \x01(\v2K.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStorageR\fauditStorage\x12\xbb\x01\n" +
+	"\x04100m\x12\x05256MiR\tresources\x12o\n" +
+	"\raudit_storage\x18\x06 \x01(\v2J.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoVolumeR\fauditStorage\x12\xbb\x01\n" +
 	"\tlog_level\x18\a \x01(\tB\x98\x01\xbaH\x8c\x01\xba\x01\x88\x01\n" +
-	"\x15spec.server.log_level\x12:Log level must be one of: trace, debug, info, warn, error.\x1a3this in [\"trace\", \"debug\", \"info\", \"warn\", \"error\"]\x8a\xa6\x1d\x04infoH\x01R\blogLevel\x88\x01\x01\x12\x9d\x01\n" +
+	"\x15spec.server.log_level\x12:Log level must be one of: trace, debug, info, warn, error.\x1a3this in [\"trace\", \"debug\", \"info\", \"warn\", \"error\"]\x8a\xa6\x1d\x04infoH\x02R\blogLevel\x88\x01\x01\x12\x9d\x01\n" +
 	"\n" +
 	"log_format\x18\b \x01(\tBy\xbaHj\xba\x01g\n" +
-	"\x16spec.server.log_format\x12/Log format must be either \"standard\" or \"json\".\x1a\x1cthis in [\"standard\", \"json\"]\x8a\xa6\x1d\bstandardH\x02R\tlogFormat\x88\x01\x01\x12n\n" +
+	"\x16spec.server.log_format\x12/Log format must be either \"standard\" or \"json\".\x1a\x1cthis in [\"standard\", \"json\"]\x8a\xa6\x1d\bstandardH\x03R\tlogFormat\x88\x01\x01\x12n\n" +
 	"\n" +
 	"scheduling\x18\t \x01(\v2N.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSchedulingR\n" +
-	"schedulingB\x06\n" +
-	"\x04modeB\f\n" +
+	"scheduling:\xca\x03\xbaH\xc6\x03\x1a\xd6\x01\n" +
+	" spec.server.dev_excludes_storage\x12tDev mode is in-memory and takes no storage engine — remove raft/postgresql, or remove dev to run a storage engine.\x1a<!has(this.dev) || (!has(this.raft) && !has(this.postgresql))\x1a\xea\x01\n" +
+	"!spec.server.dev_excludes_replicas\x12\x87\x01Dev mode runs exactly one in-memory server — remove replicas (or leave it at 1), or remove dev to run a storage engine at that count.\x1a;!has(this.dev) || !has(this.replicas) || this.replicas == 1B\t\n" +
+	"\astorageB\v\n" +
+	"\t_replicasB\f\n" +
 	"\n" +
 	"_log_levelB\r\n" +
-	"\v_log_format\"\x1a\n" +
-	"\x18KubernetesOpenBaoDevMode\"!\n" +
-	"\x1fKubernetesOpenBaoStandaloneMode\"W\n" +
-	"\x17KubernetesOpenBaoHaMode\x12/\n" +
-	"\breplicas\x18\x01 \x01(\x05B\x0e\xbaH\x06\x1a\x04\x18\v(\x01\x8a\xa6\x1d\x013H\x00R\breplicas\x88\x01\x01B\v\n" +
-	"\t_replicas\"\xff\x01\n" +
-	"\x18KubernetesOpenBaoStorage\x12T\n" +
+	"\v_log_formatJ\x04\b\x02\x10\x03J\x04\b\x03\x10\x04J\x04\b\x05\x10\x06R\n" +
+	"standaloneR\x02haR\fdata_storage\"\x1a\n" +
+	"\x18KubernetesOpenBaoDevMode\"\x8d\x01\n" +
+	"\x1cKubernetesOpenBaoRaftStorage\x12m\n" +
+	"\fdata_storage\x18\x01 \x01(\v2J.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoVolumeR\vdataStorage\"\xe1\x05\n" +
+	"\"KubernetesOpenBaoPostgresqlStorage\x12p\n" +
+	"\x04host\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x85 \x92\xd4a\x19status.outputs.rw_serviceR\x04host\x12,\n" +
+	"\x04port\x18\x02 \x01(\x05B\x13\xbaH\b\x1a\x06\x18\xff\xff\x03 \x00\x8a\xa6\x1d\x045432H\x00R\x04port\x88\x01\x01\x12\"\n" +
+	"\bdatabase\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\bdatabase\x12(\n" +
+	"\busername\x18\x04 \x01(\tB\a\x8a\xa6\x1d\x03appH\x01R\busername\x88\x01\x01\x12\x8d\x01\n" +
+	"\x0fpassword_secret\x18\x05 \x01(\v2\\.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlPasswordSecretB\x06\xbaH\x03\xc8\x01\x01R\x0epasswordSecret\x12\xd4\x01\n" +
+	"\bssl_mode\x18\x06 \x01(\tB\xb3\x01\xbaH\xa4\x01\xba\x01\xa0\x01\n" +
+	"\x1fspec.server.postgresql.ssl_mode\x12Asslmode must be one of: disable, require, verify-ca, verify-full.\x1a:this in [\"disable\", \"require\", \"verify-ca\", \"verify-full\"]\x8a\xa6\x1d\arequireH\x02R\asslMode\x88\x01\x01\x122\n" +
+	"\fmax_parallel\x18\a \x01(\x05B\n" +
+	"\xbaH\a\x1a\x05\x18\x80\b(\x01H\x03R\vmaxParallel\x88\x01\x01B\a\n" +
+	"\x05_portB\v\n" +
+	"\t_usernameB\v\n" +
+	"\t_ssl_modeB\x0f\n" +
+	"\r_max_parallel\"\xbf\x02\n" +
+	")KubernetesOpenBaoPostgresqlPasswordSecret\x12\x87\x01\n" +
+	"\vsecret_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\x85 \x92\xd4a#status.outputs.password_secret.nameR\n" +
+	"secretName\x12y\n" +
+	"\n" +
+	"secret_key\x18\x02 \x01(\tBU\x8a\xa6\x1d\bpassword\xaa\xa6\x1dEKey NAME within an existing Secret (a reference), not secret materialH\x00R\tsecretKey\x88\x01\x01B\r\n" +
+	"\v_secret_key\"\xfe\x01\n" +
+	"\x17KubernetesOpenBaoVolume\x12T\n" +
 	"\x04size\x18\x01 \x01(\tB;\xbaH0r.2,^\\d+(\\.\\d+)?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x0410GiH\x00R\x04size\x88\x01\x01\x12\x83\x01\n" +
 	"\rstorage_class\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClassB\a\n" +
 	"\x05_size\"\xb4\x02\n" +
@@ -2751,13 +2987,13 @@ const file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDesc = ""
 	"\x14KubernetesOpenBaoTls\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x81\x01\n" +
 	"\x10cert_secret_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB#\x88\xd4a\xc1\x1f\x92\xd4a\x1astatus.outputs.secret_nameR\x0ecertSecretName:\xe6\x02\xbaH\xe2\x02\x1a\xdf\x02\n" +
-	"\"spec.tls.cert_secret_name.required\x12\x8e\x01TLS needs certificate material: set cert_secret_name to a kubernetes.io/tls Secret (or reference a KubernetesCertificate) when TLS is enabled.\x1a\xa7\x01!this.enabled || (has(this.cert_secret_name) && ((has(this.cert_secret_name.value) && size(this.cert_secret_name.value) > 0) || has(this.cert_secret_name.value_from)))\"\xe9\x03\n" +
+	"\"spec.tls.cert_secret_name.required\x12\x8e\x01TLS needs certificate material: set cert_secret_name to a kubernetes.io/tls Secret (or reference a KubernetesCertificate) when TLS is enabled.\x1a\xa7\x01!this.enabled || (has(this.cert_secret_name) && ((has(this.cert_secret_name.value) && size(this.cert_secret_name.value) > 0) || has(this.cert_secret_name.value_from)))\"\xf0\x03\n" +
 	"\x1bKubernetesOpenBaoAutoUnseal\x12i\n" +
 	"\aaws_kms\x18\x01 \x01(\v2N.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAwsKmsSealH\x00R\x06awsKms\x12i\n" +
 	"\agcp_kms\x18\x02 \x01(\v2N.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSealH\x00R\x06gcpKms\x12\x7f\n" +
 	"\x0fazure_key_vault\x18\x03 \x01(\v2U.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureKeyVaultSealH\x00R\razureKeyVault\x12k\n" +
-	"\atransit\x18\x04 \x01(\v2O.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTransitSealH\x00R\atransitB\x06\n" +
-	"\x04seal\"\xbb\x01\n" +
+	"\atransit\x18\x04 \x01(\v2O.dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTransitSealH\x00R\atransitB\r\n" +
+	"\x04seal\x12\x05\xbaH\x02\b\x01\"\xbb\x01\n" +
 	"\x1bKubernetesOpenBaoAwsKmsSeal\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12%\n" +
 	"\n" +
@@ -2903,102 +3139,106 @@ func file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescGZIP()
 	return file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_goTypes = []any{
-	(*KubernetesOpenBaoSpec)(nil),                 // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec
-	(*KubernetesOpenBaoServer)(nil),               // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer
-	(*KubernetesOpenBaoDevMode)(nil),              // 2: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoDevMode
-	(*KubernetesOpenBaoStandaloneMode)(nil),       // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStandaloneMode
-	(*KubernetesOpenBaoHaMode)(nil),               // 4: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoHaMode
-	(*KubernetesOpenBaoStorage)(nil),              // 5: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStorage
-	(*KubernetesOpenBaoScheduling)(nil),           // 6: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling
-	(*KubernetesOpenBaoTls)(nil),                  // 7: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTls
-	(*KubernetesOpenBaoAutoUnseal)(nil),           // 8: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal
-	(*KubernetesOpenBaoAwsKmsSeal)(nil),           // 9: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAwsKmsSeal
-	(*KubernetesOpenBaoGcpKmsSeal)(nil),           // 10: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal
-	(*KubernetesOpenBaoAzureKeyVaultSeal)(nil),    // 11: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureKeyVaultSeal
-	(*KubernetesOpenBaoTransitSeal)(nil),          // 12: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTransitSeal
-	(*KubernetesOpenBaoInjector)(nil),             // 13: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoInjector
-	(*KubernetesOpenBaoMetrics)(nil),              // 14: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoMetrics
-	(*KubernetesOpenBaoBackup)(nil),               // 15: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup
-	(*KubernetesOpenBaoBackupObjectStore)(nil),    // 16: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore
-	(*KubernetesOpenBaoS3ObjectStore)(nil),        // 17: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore
-	(*KubernetesOpenBaoS3AccessKeys)(nil),         // 18: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3AccessKeys
-	(*KubernetesOpenBaoGcsObjectStore)(nil),       // 19: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore
-	(*KubernetesOpenBaoAzureBlobObjectStore)(nil), // 20: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureBlobObjectStore
-	(*KubernetesOpenBaoR2ObjectStore)(nil),        // 21: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore
-	(*KubernetesOpenBaoR2Credentials)(nil),        // 22: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials
-	(*KubernetesOpenBaoBackupAuth)(nil),           // 23: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupAuth
-	(*KubernetesOpenBaoBackupImages)(nil),         // 24: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages
-	(*KubernetesOpenBaoRestore)(nil),              // 25: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestore
-	(*KubernetesOpenBaoServiceAccount)(nil),       // 26: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount
-	nil,                                           // 27: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.NodeSelectorEntry
-	nil,                                           // 28: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount.AnnotationsEntry
-	(*v1.StringValueOrRef)(nil),                   // 29: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil),         // 30: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil),         // 31: dev.planton.kubernetes.WorkloadToleration
-	(*kubernetes.KubernetesWorkloadIdentity)(nil), // 32: dev.planton.kubernetes.KubernetesWorkloadIdentity
-	(*kubernetes.ContainerImage)(nil),             // 33: dev.planton.kubernetes.ContainerImage
-	(*kubernetes.KubernetesSecretKey)(nil),        // 34: dev.planton.kubernetes.KubernetesSecretKey
+	(*KubernetesOpenBaoSpec)(nil),                     // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec
+	(*KubernetesOpenBaoServer)(nil),                   // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer
+	(*KubernetesOpenBaoDevMode)(nil),                  // 2: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoDevMode
+	(*KubernetesOpenBaoRaftStorage)(nil),              // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRaftStorage
+	(*KubernetesOpenBaoPostgresqlStorage)(nil),        // 4: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlStorage
+	(*KubernetesOpenBaoPostgresqlPasswordSecret)(nil), // 5: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlPasswordSecret
+	(*KubernetesOpenBaoVolume)(nil),                   // 6: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoVolume
+	(*KubernetesOpenBaoScheduling)(nil),               // 7: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling
+	(*KubernetesOpenBaoTls)(nil),                      // 8: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTls
+	(*KubernetesOpenBaoAutoUnseal)(nil),               // 9: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal
+	(*KubernetesOpenBaoAwsKmsSeal)(nil),               // 10: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAwsKmsSeal
+	(*KubernetesOpenBaoGcpKmsSeal)(nil),               // 11: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal
+	(*KubernetesOpenBaoAzureKeyVaultSeal)(nil),        // 12: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureKeyVaultSeal
+	(*KubernetesOpenBaoTransitSeal)(nil),              // 13: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTransitSeal
+	(*KubernetesOpenBaoInjector)(nil),                 // 14: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoInjector
+	(*KubernetesOpenBaoMetrics)(nil),                  // 15: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoMetrics
+	(*KubernetesOpenBaoBackup)(nil),                   // 16: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup
+	(*KubernetesOpenBaoBackupObjectStore)(nil),        // 17: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore
+	(*KubernetesOpenBaoS3ObjectStore)(nil),            // 18: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore
+	(*KubernetesOpenBaoS3AccessKeys)(nil),             // 19: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3AccessKeys
+	(*KubernetesOpenBaoGcsObjectStore)(nil),           // 20: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore
+	(*KubernetesOpenBaoAzureBlobObjectStore)(nil),     // 21: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureBlobObjectStore
+	(*KubernetesOpenBaoR2ObjectStore)(nil),            // 22: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore
+	(*KubernetesOpenBaoR2Credentials)(nil),            // 23: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials
+	(*KubernetesOpenBaoBackupAuth)(nil),               // 24: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupAuth
+	(*KubernetesOpenBaoBackupImages)(nil),             // 25: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages
+	(*KubernetesOpenBaoRestore)(nil),                  // 26: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestore
+	(*KubernetesOpenBaoServiceAccount)(nil),           // 27: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount
+	nil,                                               // 28: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.NodeSelectorEntry
+	nil,                                               // 29: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount.AnnotationsEntry
+	(*v1.StringValueOrRef)(nil),                       // 30: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil),             // 31: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil),             // 32: dev.planton.kubernetes.WorkloadToleration
+	(*kubernetes.KubernetesWorkloadIdentity)(nil),     // 33: dev.planton.kubernetes.KubernetesWorkloadIdentity
+	(*kubernetes.ContainerImage)(nil),                 // 34: dev.planton.kubernetes.ContainerImage
+	(*kubernetes.KubernetesSecretKey)(nil),            // 35: dev.planton.kubernetes.KubernetesSecretKey
 }
 var file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_depIdxs = []int32{
-	29, // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 0: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 1: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.server:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer
-	7,  // 2: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.tls:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTls
-	8,  // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal
-	13, // 4: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.injector:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoInjector
-	14, // 5: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.metrics:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoMetrics
-	26, // 6: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.service_account:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount
-	15, // 7: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.backup:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup
-	25, // 8: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.restore:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestore
+	8,  // 2: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.tls:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTls
+	9,  // 3: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal
+	14, // 4: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.injector:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoInjector
+	15, // 5: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.metrics:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoMetrics
+	27, // 6: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.service_account:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount
+	16, // 7: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.backup:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup
+	26, // 8: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoSpec.restore:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestore
 	2,  // 9: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.dev:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoDevMode
-	3,  // 10: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.standalone:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStandaloneMode
-	4,  // 11: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.ha:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoHaMode
-	30, // 12: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	5,  // 13: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.data_storage:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStorage
-	5,  // 14: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.audit_storage:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStorage
-	6,  // 15: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.scheduling:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling
-	29, // 16: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	27, // 17: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.NodeSelectorEntry
-	31, // 18: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	29, // 19: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTls.cert_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	9,  // 20: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAwsKmsSeal
-	10, // 21: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal
-	11, // 22: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureKeyVaultSeal
-	12, // 23: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTransitSeal
-	29, // 24: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 25: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 26: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 27: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	30, // 28: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoInjector.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	16, // 29: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.object_store:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore
-	32, // 30: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.workload_identity:type_name -> dev.planton.kubernetes.KubernetesWorkloadIdentity
-	23, // 31: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.auth:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupAuth
-	24, // 32: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.images:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages
-	30, // 33: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	17, // 34: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore
-	19, // 35: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.gcs:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore
-	20, // 36: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.azure_blob:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureBlobObjectStore
-	21, // 37: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.r2:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore
-	29, // 38: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore.endpoint_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	18, // 39: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore.access_keys:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3AccessKeys
-	29, // 40: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 41: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore.service_account_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 42: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 43: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 44: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 45: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.credentials:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials
-	29, // 46: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 47: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 48: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages.openbao:type_name -> dev.planton.kubernetes.ContainerImage
-	33, // 49: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages.rclone:type_name -> dev.planton.kubernetes.ContainerImage
-	34, // 50: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestore.root_token:type_name -> dev.planton.kubernetes.KubernetesSecretKey
-	28, // 51: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount.annotations:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount.AnnotationsEntry
-	52, // [52:52] is the sub-list for method output_type
-	52, // [52:52] is the sub-list for method input_type
-	52, // [52:52] is the sub-list for extension type_name
-	52, // [52:52] is the sub-list for extension extendee
-	0,  // [0:52] is the sub-list for field type_name
+	3,  // 10: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.raft:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRaftStorage
+	4,  // 11: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.postgresql:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlStorage
+	31, // 12: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	6,  // 13: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.audit_storage:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoVolume
+	7,  // 14: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServer.scheduling:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling
+	6,  // 15: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRaftStorage.data_storage:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoVolume
+	30, // 16: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlStorage.host:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 17: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlStorage.password_secret:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlPasswordSecret
+	30, // 18: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoPostgresqlPasswordSecret.secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 19: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoVolume.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	28, // 20: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.node_selector:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.NodeSelectorEntry
+	32, // 21: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	30, // 22: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTls.cert_secret_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	10, // 23: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAwsKmsSeal
+	11, // 24: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal
+	12, // 25: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureKeyVaultSeal
+	13, // 26: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoTransitSeal
+	30, // 27: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 28: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 29: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 30: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	31, // 31: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoInjector.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	17, // 32: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.object_store:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore
+	33, // 33: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.workload_identity:type_name -> dev.planton.kubernetes.KubernetesWorkloadIdentity
+	24, // 34: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.auth:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupAuth
+	25, // 35: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.images:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages
+	31, // 36: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackup.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	18, // 37: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.s3:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore
+	20, // 38: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.gcs:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore
+	21, // 39: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.azure_blob:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoAzureBlobObjectStore
+	22, // 40: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupObjectStore.r2:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore
+	30, // 41: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore.endpoint_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	19, // 42: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3ObjectStore.access_keys:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoS3AccessKeys
+	30, // 43: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 44: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcsObjectStore.service_account_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 45: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 46: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.account_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 47: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.jurisdiction:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 48: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2ObjectStore.credentials:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials
+	30, // 49: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials.access_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 50: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoR2Credentials.secret_access_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	34, // 51: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages.openbao:type_name -> dev.planton.kubernetes.ContainerImage
+	34, // 52: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoBackupImages.rclone:type_name -> dev.planton.kubernetes.ContainerImage
+	35, // 53: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoRestore.root_token:type_name -> dev.planton.kubernetes.KubernetesSecretKey
+	29, // 54: dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount.annotations:type_name -> dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoServiceAccount.AnnotationsEntry
+	55, // [55:55] is the sub-list for method output_type
+	55, // [55:55] is the sub-list for method input_type
+	55, // [55:55] is the sub-list for extension type_name
+	55, // [55:55] is the sub-list for extension extendee
+	0,  // [0:55] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_init() }
@@ -3008,40 +3248,40 @@ func file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{
-		(*KubernetesOpenBaoServer_Dev)(nil),
-		(*KubernetesOpenBaoServer_Standalone)(nil),
-		(*KubernetesOpenBaoServer_Ha)(nil),
+		(*KubernetesOpenBaoServer_Raft)(nil),
+		(*KubernetesOpenBaoServer_Postgresql)(nil),
 	}
 	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{
 		(*KubernetesOpenBaoAutoUnseal_AwsKms)(nil),
 		(*KubernetesOpenBaoAutoUnseal_GcpKms)(nil),
 		(*KubernetesOpenBaoAutoUnseal_AzureKeyVault)(nil),
 		(*KubernetesOpenBaoAutoUnseal_Transit)(nil),
 	}
-	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
 	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{
 		(*KubernetesOpenBaoBackupObjectStore_S3)(nil),
 		(*KubernetesOpenBaoBackupObjectStore_Gcs)(nil),
 		(*KubernetesOpenBaoBackupObjectStore_AzureBlob)(nil),
 		(*KubernetesOpenBaoBackupObjectStore_R2)(nil),
 	}
-	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[23].OneofWrappers = []any{}
-	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[25].OneofWrappers = []any{
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[24].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[26].OneofWrappers = []any{
 		(*KubernetesOpenBaoRestore_SnapshotKey)(nil),
 		(*KubernetesOpenBaoRestore_Latest)(nil),
 	}
-	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[26].OneofWrappers = []any{}
+	file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_msgTypes[27].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kubernetesopenbao_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   29,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -43,9 +43,11 @@ type KubernetesOpenBaoStackOutputs struct {
 	// and Raft cluster addresses.
 	InternalService string `protobuf:"bytes,3,opt,name=internal_service,json=internalService,proto3" json:"internal_service,omitempty"`
 	// *
-	// The active-leader Service (`<name>-active`) — HA mode only,
-	// empty otherwise. Points at exactly the elected leader; the right
-	// target for write-heavy clients.
+	// The active-leader Service (`<name>-active`) — every server on a
+	// storage engine has one (Raft or PostgreSQL, at any replica count);
+	// empty only in dev mode. Points at exactly the pod holding the HA
+	// lock; the right target for write-heavy clients and the address the
+	// backup and restore jobs use.
 	ActiveService string `protobuf:"bytes,4,opt,name=active_service,json=activeService,proto3" json:"active_service,omitempty"`
 	// *
 	// The UI Service name (`<name>-ui`) when ui_enabled, empty

@@ -15,7 +15,7 @@ spec:
     value: e2e-bao-raft
   createNamespace: true
   server:
-    ha:
-      replicas: 1
-    dataStorage:
-      size: 1Gi
+    raft:
+      dataStorage:
+        size: 1Gi
+    replicas: 1

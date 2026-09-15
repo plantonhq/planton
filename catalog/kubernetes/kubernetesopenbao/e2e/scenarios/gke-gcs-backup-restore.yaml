@@ -26,10 +26,10 @@ spec:
   namespace:
     value: e2e-bao-lab
   server:
-    ha:
-      replicas: 1
-    dataStorage:
-      size: 1Gi
+    raft:
+      dataStorage:
+        size: 1Gi
+    replicas: 1
   autoUnseal:
     gcpKms:
       project:

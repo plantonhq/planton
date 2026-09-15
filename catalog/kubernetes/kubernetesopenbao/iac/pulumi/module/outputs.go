@@ -25,6 +25,19 @@ const (
 	OpRestoreJobName           = "restore_job_name"
 )
 
+// activeServiceName is the active-leader Service (`<name>-active`), which
+// exists for every server on a storage engine — both engines run in the
+// chart's HA mode and hold the HA lock at any replica count — selected on
+// the openbao-active label the server itself maintains through
+// service_registration. Dev is the one shape without it ("" then). The
+// Terraform twin's `active_service` output follows the same rule.
+func activeServiceName(locals *Locals) string {
+	if locals.Dev {
+		return ""
+	}
+	return locals.ReleaseName + "-active"
+}
+
 // exportOutputs publishes the composition handles. All names derive from
 // the fullnameOverride pin (= metadata.name). Root tokens and unseal
 // keys are deliberately NOT outputs — `bao operator init` produces them
@@ -34,14 +47,7 @@ func exportOutputs(ctx *pulumi.Context, locals *Locals) {
 	ctx.Export(OpService, pulumi.String(locals.ReleaseName))
 	ctx.Export(OpInternalService, pulumi.String(locals.ReleaseName+"-internal"))
 
-	// The active-leader Service exists only in HA mode (selected on the
-	// openbao-active label the server itself maintains through
-	// service_registration).
-	activeService := ""
-	if locals.Mode == modeHa {
-		activeService = locals.ReleaseName + "-active"
-	}
-	ctx.Export(OpActiveService, pulumi.String(activeService))
+	ctx.Export(OpActiveService, pulumi.String(activeServiceName(locals)))
 
 	uiService := ""
 	uiEnabled := true

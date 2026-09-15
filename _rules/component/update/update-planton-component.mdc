@@ -457,6 +457,26 @@ Based on scenario:
 - **Must execute**: `go test ./catalog/<provider>/<component>/...` to validate spec tests
 - **Must execute**: `go build ./catalog/<provider>/<component>/...` for build validation
 - **Must validate**: Existing presets are consistent with new spec.proto (no stale field names, correct StringValueOrRef usage)
+- **A chart's mode switch is a chart fact, never a product fact.** Helm
+  charts for stateful software often expose one mode knob (`dev` /
+  `standalone` / `ha`) that fuses facts the software itself keeps apart --
+  a storage engine and a replica count, a topology and a durability
+  posture. A kind that copies that knob inherits the fusion: users are
+  offered an "HA" arm that really means one engine, and rules end up keyed
+  on the arm instead of the fact. Model the facts the software has (read
+  its own configuration reference), drive the chart's mode FROM them in
+  both engines, and put each engine's stanza in the configuration string
+  the chart hands you -- the chart is never told a value it lacks, and no
+  template is patched. Before calling any chart mode "production", read
+  upstream's own posture on what that mode runs: a chart's default (file
+  storage, an embedded database) is a chart default, not a recommendation,
+  and when the kind's own rules keep steering users away from it (every
+  backup fixture avoids it), the default is the defect. A shape that makes
+  a rule unwritable (a volume inside the one engine that has one) beats a
+  CEL that refuses it; and a scalar with a declared `(default)` is filled
+  in by the manifest loader BEFORE validation, so a CEL keyed on
+  `has(this.<scalar>)` cannot tell a written value from the default --
+  key on the value.
 
 **Refresh Docs:**
 - Read existing GUIDE.md to understand current state

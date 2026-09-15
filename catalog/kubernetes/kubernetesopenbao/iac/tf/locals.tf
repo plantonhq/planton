@@ -34,15 +34,33 @@ locals {
     try(var.metadata.env, "") != "" ? { "planton.ai/environment" = var.metadata.env } : {},
   )
 
-  # ------------------------------ mode ----------------------------------
-  # The spec's mode oneof arrives as three nullable blocks; unset =
-  # standalone (the chart's own default). Precedence dev > ha mirrors
-  # nothing — the proto oneof guarantees at most one.
-  mode = (
-    try(var.spec.server.dev, null) != null ? "dev" :
-    try(var.spec.server.ha, null) != null ? "ha" : "standalone"
-  )
-  ha_replicas = local.mode == "ha" ? coalesce(try(var.spec.server.ha.replicas, null), 3) : 1
+  # ------------------------- storage engine -----------------------------
+  # The spec carries `dev` (one in-memory server) and a storage oneof
+  # (`raft` | `postgresql`, unset = raft) plus `replicas` (unset = 1). The
+  # chart knows only modes: every engine is driven through its `ha` mode
+  # with the engine's stanza in the configuration string below (twin of
+  # locals.go / values.go). The spec refuses dev beside an engine or a
+  # count, so dev needs no precedence — it pins one server.
+  dev      = try(var.spec.server.dev, null) != null
+  storage  = try(var.spec.server.postgresql, null) != null ? "postgresql" : "raft"
+  replicas = local.dev ? 1 : coalesce(try(var.spec.server.replicas, null), 1)
+
+  # The PostgreSQL connection as the driver's standard environment (twin of
+  # postgres_env.go). OpenBao's backend runs on pgx, which reads PGHOST,
+  # PGPORT, PGDATABASE, PGUSER, PGSSLMODE and PGPASSWORD when the config's
+  # connection_url is blank — so no connection string is ever composed.
+  # The password is NOT here: it rides from the REFERENCED Secret through
+  # extraSecretEnvironmentVars. Empty on every other engine.
+  pg = try(var.spec.server.postgresql, null)
+  pg_plain_env = local.pg == null ? {} : {
+    PGHOST     = local.pg.host
+    PGPORT     = tostring(coalesce(try(local.pg.port, null), 5432))
+    PGDATABASE = local.pg.database
+    PGUSER     = try(coalesce(local.pg.username), "") != "" ? local.pg.username : "app"
+    PGSSLMODE  = try(coalesce(local.pg.ssl_mode), "") != "" ? local.pg.ssl_mode : "require"
+  }
+  pg_password_secret_name = local.pg == null ? "" : local.pg.password_secret.secret_name
+  pg_password_secret_key  = local.pg == null ? "" : (try(coalesce(local.pg.password_secret.secret_key), "") != "" ? local.pg.password_secret.secret_key : "password")
 
   # ------------------------------ tls ------------------------------------
   tls_enabled     = try(var.spec.tls.enabled, false)
@@ -85,8 +103,8 @@ locals {
   # (verified at chart 0.28.6). Peers are the StatefulSet pods' stable
   # DNS names through the headless `-internal` Service (fullnameOverride
   # pins the names). Joins are idempotent.
-  config_retry_join_lines = local.mode == "ha" ? flatten([
-    for i in range(local.ha_replicas) : concat(
+  config_retry_join_lines = local.storage == "raft" ? flatten([
+    for i in range(local.replicas) : concat(
       [
         "  retry_join {",
         "    leader_api_addr = \"${local.scheme}://${local.release_name}-${i}.${local.release_name}-internal:${local.api_port}\"",
@@ -96,12 +114,30 @@ locals {
     )
   ]) : []
 
+  # Both engines run in the chart's HA mode, so both end with the
+  # service_registration stanza: the server patches
+  # openbao-active/openbao-sealed labels onto its own pod — what the
+  # chart's active/standby Services select on.
+  #
+  # PostgreSQL: ha_enabled is UNCONDITIONAL, one replica included — the
+  # server labels its pod active only from its HA leader path, and that
+  # path runs only when the backend reports HA enabled; without it a
+  # one-replica vault's `-active` Service would select nothing. No
+  # connection_url, deliberately: this document is a ConfigMap and the
+  # driver reads the connection from the pod's environment.
   config_storage_block = (
-    local.mode == "standalone" ? join("\n", [
-      "storage \"file\" {",
-      "  path = \"${local.data_mount_path}\"",
-      "}",
-      ]) : local.mode == "ha" ? join("\n", concat(
+    local.storage == "postgresql" ? join("\n", concat(
+      [
+        "storage \"postgresql\" {",
+        "  ha_enabled = \"true\"",
+      ],
+      try(local.pg.max_parallel, null) != null && try(local.pg.max_parallel, 0) > 0 ? ["  max_parallel = \"${local.pg.max_parallel}\""] : [],
+      [
+        "}",
+        "",
+        "service_registration \"kubernetes\" {}",
+      ],
+      )) : join("\n", concat(
       [
         "storage \"raft\" {",
         "  path = \"${local.data_mount_path}\"",
@@ -110,12 +146,9 @@ locals {
       [
         "}",
         "",
-        # The server patches openbao-active/openbao-sealed labels onto
-        # its own pod — what the chart's active/standby Services select
-        # on.
         "service_registration \"kubernetes\" {}",
       ],
-    )) : ""
+    ))
   )
 
   # Seal stanza (non-credential parameters only). The proto oneof
@@ -166,7 +199,7 @@ locals {
   # Dev mode renders NO config (`bao server -dev` ignores it). The
   # trailing newline matches bao_config.go's TrimRight+"\n" ending —
   # the rendered ConfigMaps must stay byte-identical across engines.
-  bao_config_hcl = local.mode == "dev" ? "" : "${join("\n\n", compact([
+  bao_config_hcl = local.dev ? "" : "${join("\n\n", compact([
     "ui = ${local.ui_enabled}",
     local.config_listener_block,
     local.config_storage_block,
@@ -191,6 +224,15 @@ locals {
     try(coalesce(local.seal_aws.access_key_id), "") != "" ? { "AWS_ACCESS_KEY_ID" = local.seal_aws.access_key_id } : {},
   ) : {}
 
+  # Every Secret-backed environment variable the server reads, keyed by
+  # its name: the seal's material from the module-owned Secret (key = the
+  # variable name) and the PostgreSQL password from the referenced Secret
+  # and key (twin of the secretEnvRef list in values.go).
+  secret_env_refs = merge(
+    { for envName in keys(local.seal_secret_data) : envName => { secretName = local.seal_credentials_secret_name, secretKey = envName } },
+    local.pg_password_secret_name != "" ? { PGPASSWORD = { secretName = local.pg_password_secret_name, secretKey = local.pg_password_secret_key } } : {},
+  )
+
   # ServiceAccount annotations: the GCP seal arm's declared workload
   # identity contributes iam.gke.io/gcp-service-account; explicit
   # service_account.annotations win on conflict (twin of values.go).
@@ -201,27 +243,47 @@ locals {
     try(var.spec.service_account.annotations, {}) != null ? try(var.spec.service_account.annotations, {}) : {},
   )
 
+  # The chart's `ha.disruptionBudget` from the replica count (twin of
+  # disruptionBudgetBlock in values.go). The chart enables its
+  # PodDisruptionBudget by default and hard-codes maxUnavailable 0 for one
+  # replica — a budget that blocks every node drain and protects nothing —
+  # so at one replica it is disabled. Above one: Raft keeps the chart's
+  # quorum arithmetic; PostgreSQL allows all but one (the database holds
+  # the data, one live node is availability).
+  # SINGLE null-pruned object, never a conditional between objects of
+  # different shapes (the HCL type-unification class).
+  disruption_budget = { for k, v in {
+    enabled        = local.replicas > 1
+    maxUnavailable = local.replicas > 1 && local.storage == "postgresql" ? local.replicas - 1 : null
+  } : k => v if v != null }
+
   # ------------------------------ values ---------------------------------
   # The typed chart values (twin of values.go's buildHelmValues) — one
   # object literal per block, conditional keys null-pruned.
+  #
+  # THE CHART IS TOLD A MODE, NEVER AN ENGINE: `ha` for every storage
+  # engine, with the string in `ha.raft.config` (Raft on) or `ha.config`
+  # (Raft off — the path the chart reads then). The chart's `standalone`
+  # mode (file storage) is never driven. SINGLE null-pruned object per
+  # engine shape, never a two-arm conditional with different object
+  # shapes (the HCL type-unification class).
   server_block_raw = {
-    dev = local.mode == "dev" ? { enabled = true } : null
-    standalone = local.mode == "standalone" ? {
-      enabled = true
-      config  = local.bao_config_hcl
-    } : null
-    ha = local.mode == "ha" ? {
+    dev = local.dev ? { enabled = true } : null
+    ha = local.dev ? null : { for k, v in {
       enabled  = true
-      replicas = local.ha_replicas
-      raft = {
-        enabled = true
+      replicas = local.replicas
+      raft = { for k2, v2 in {
+        enabled = local.storage == "raft"
         # Stable, human-readable Raft node IDs = pod names (without
         # this the server generates a GUID — persisted on the data PVC,
-        # but opaque in every peer listing).
-        setNodeId = true
-        config    = local.bao_config_hcl
-      }
-    } : null
+        # but opaque in every peer listing). Raft only.
+        setNodeId = local.storage == "raft" ? true : null
+        config    = local.storage == "raft" ? local.bao_config_hcl : null
+      } : k2 => v2 if v2 != null }
+      # With Raft off the chart reads the string from ha.config.
+      config           = local.storage == "postgresql" ? local.bao_config_hcl : null
+      disruptionBudget = local.disruption_budget
+    } : k => v if v != null }
 
     resources = try(var.spec.server.resources, null) != null ? {
       for k, v in {
@@ -256,13 +318,14 @@ locals {
       }
     ] : null
 
-    # Data volume: consumed by the chart only in standalone/ha+raft (dev
-    # is in-memory) — rendered unconditionally for explicitness.
-    dataStorage = {
+    # Data volume: Raft's alone (the spec carries it inside server.raft).
+    # PostgreSQL is told `enabled: false` explicitly so the rendered
+    # values say what the engine has; dev renders no key (in-memory).
+    dataStorage = local.dev ? null : {
       for k, v in {
-        enabled      = true
-        size         = try(coalesce(var.spec.server.data_storage.size), "") != "" ? var.spec.server.data_storage.size : null
-        storageClass = try(coalesce(var.spec.server.data_storage.storage_class), "") != "" ? var.spec.server.data_storage.storage_class : null
+        enabled      = local.storage == "raft"
+        size         = local.storage == "raft" && try(coalesce(var.spec.server.raft.data_storage.size), "") != "" ? var.spec.server.raft.data_storage.size : null
+        storageClass = local.storage == "raft" && try(coalesce(var.spec.server.raft.data_storage.storage_class), "") != "" ? var.spec.server.raft.data_storage.storage_class : null
       } : k => v if v != null
     }
 
@@ -288,15 +351,19 @@ locals {
       readOnly  = true
     }] : null
 
-    extraEnvironmentVars = length(local.seal_plain_env) > 0 ? local.seal_plain_env : null
-    # Credential material reaches the server as env vars from the
-    # module-owned Secret — never through the config ConfigMap. Keys
-    # sorted for a deterministic rendering (twin of values.go).
-    extraSecretEnvironmentVars = length(local.seal_secret_data) > 0 ? [
-      for envName in sort(keys(local.seal_secret_data)) : {
+    # The two environment seams the chart offers, each fed by every
+    # consumer that needs it (twin of values.go). Plain: the seal's
+    # identifiers and the PostgreSQL connection facts. Secret-backed: the
+    # seal's credential material from the module-owned Secret, and the
+    # PostgreSQL password from the REFERENCED Secret — never through the
+    # config ConfigMap. Sorted by variable name for a deterministic
+    # rendering.
+    extraEnvironmentVars = length(merge(local.seal_plain_env, local.pg_plain_env)) > 0 ? merge(local.seal_plain_env, local.pg_plain_env) : null
+    extraSecretEnvironmentVars = length(local.secret_env_refs) > 0 ? [
+      for envName in sort(keys(local.secret_env_refs)) : {
         envName    = envName
-        secretName = local.seal_credentials_secret_name
-        secretKey  = envName
+        secretName = local.secret_env_refs[envName].secretName
+        secretKey  = local.secret_env_refs[envName].secretKey
       }
     ] : null
 

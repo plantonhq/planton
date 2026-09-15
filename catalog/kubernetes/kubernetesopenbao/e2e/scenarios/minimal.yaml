@@ -13,6 +13,6 @@ spec:
     value: e2e-bao-min
   createNamespace: true
   server:
-    standalone: {}
-    dataStorage:
-      size: 1Gi
+    raft:
+      dataStorage:
+        size: 1Gi

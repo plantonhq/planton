@@ -32,8 +32,17 @@ import "shared/options/options.proto";
  * removes the UNSEAL step from restarts, but the one-time
  * initialization is always yours.
  *
- * ONE SERVER MODE at a time: dev XOR standalone XOR ha (Raft). When
- * no mode is declared, standalone is used — the chart's own default.
+ * THE SERVER DECLARES A STORAGE ENGINE AND A REPLICA COUNT, or `dev`.
+ * OpenBao keeps those two facts apart and so does this spec: `server.raft`
+ * (integrated storage, one volume per replica, the only engine with a
+ * snapshot API) or `server.postgresql` (OpenBao's production-ready
+ * external backend, no volume, backed up by its database) and
+ * `server.replicas`. Declaring nothing is a single-node Raft server. The
+ * chart itself knows only modes (`dev`, `standalone`, `ha`) and a raw
+ * configuration string; this module writes the whole string and drives
+ * the chart's `ha` mode for every engine (Raft on, or Raft off with the
+ * engine's stanza in the string), so the chart is never told a value it
+ * lacks. `dev` is a real chart value and a real server flag and stays.
  * The server always runs as a StatefulSet with an OnDelete update
  * strategy (config changes never roll pods automatically; delete pods
  * to pick up config).
@@ -74,7 +83,9 @@ message KubernetesOpenBaoSpec {
   optional string chart_version = 3 [(dev.planton.shared.options.default) = "0.28.6"];
 
   /**
-   * The OpenBao server: mode, sizing, storage, and logging.
+   * The OpenBao server: the storage engine (or `dev`), the replica
+   * count, sizing, the audit volume, and logging. UNSET = one Raft
+   * server.
    */
   KubernetesOpenBaoServer server = 4;
 
@@ -178,9 +189,10 @@ message KubernetesOpenBaoSpec {
    * identity, and token kinds; retention prunes older objects.
    *
    * RAFT ONLY: snapshots exist only for integrated Raft storage
-   * (`server.ha`; a single replica is a legal Raft cluster of one).
-   * Standalone file storage and dev mode have no snapshot API, and the
-   * server refuses the call ("raft storage is not in use").
+   * (`server.raft`, the default when no engine is declared; a single
+   * replica is a legal Raft cluster of one). Dev mode has no snapshot
+   * API, and a vault stored in PostgreSQL is backed up by its database —
+   * the server refuses the call on either ("raft storage is not in use").
    *
    * ONE STEP THE MODULE CANNOT TAKE: the job logs in through OpenBao's
    * Kubernetes auth method, and the policy, auth mount, and role it
@@ -241,9 +253,14 @@ message KubernetesOpenBaoSpec {
   KubernetesOpenBaoRestore restore = 15;
 
   option (buf.validate.message).cel = {
-    id: "spec.backup.requires_raft"
-    message: "Backups snapshot Raft storage: set server.ha (a single replica is a legal Raft cluster) — dev mode and standalone file storage have no snapshot API."
-    expression: "!has(this.backup) || (has(this.server) && has(this.server.ha))"
+    id: "spec.backup.not_on_dev"
+    message: "Backups snapshot Raft storage and dev mode has no snapshot API (it is in-memory) — remove backup, or remove server.dev and run a storage engine (leave server.raft unset for one Raft server)."
+    expression: "!has(this.backup) || !has(this.server) || !has(this.server.dev)"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.backup.not_on_postgresql"
+    message: "Snapshots exist only for Raft storage; a vault stored in PostgreSQL is backed up by its database — remove backup, or store the vault on server.raft."
+    expression: "!has(this.backup) || !has(this.server) || !has(this.server.postgresql)"
   };
   option (buf.validate.message).cel = {
     id: "spec.backup.requires_auth_delegator"
@@ -258,48 +275,106 @@ message KubernetesOpenBaoSpec {
   option (buf.validate.message).cel = {
     id: "spec.restore.requires_auto_unseal"
     message: "A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide."
-    expression: "!has(this.restore) || (has(this.auto_unseal) && (has(this.auto_unseal.aws_kms) || has(this.auto_unseal.gcp_kms) || has(this.auto_unseal.azure_key_vault) || has(this.auto_unseal.transit)))"
+    expression: "!has(this.restore) || has(this.auto_unseal)"
   };
 }
 
 /**
- * The OpenBao server: mode, sizing, storage, and logging.
+ * The OpenBao server: the storage engine (or `dev`), the replica count,
+ * sizing, the audit volume, and logging.
+ *
+ * STORAGE ENGINE AND REPLICA COUNT ARE TWO FACTS. `raft` or `postgresql`
+ * says where the data lives; `replicas` says how many servers serve it.
+ * Either engine runs at any count from 1 to 11: a single Raft node is a
+ * legal cluster of one, and a single PostgreSQL-stored server still
+ * holds the HA lock so the chart's active-leader Service selects it.
+ * UNSET engine = `raft`; UNSET replicas = 1.
+ *
+ * WHAT THE CHART IS TOLD: the chart offers a mode switch (`dev`,
+ * `standalone`, `ha`) and a raw configuration string per mode. This
+ * module writes the entire configuration string from these fields and
+ * drives the chart's `ha` mode for every engine — Raft with the chart's
+ * Raft toggle on (one data volume per replica), PostgreSQL with it off
+ * and no data volume — and `dev` through the chart's dev flag. File
+ * storage is not offered: OpenBao itself calls it not production
+ * recommended (not transactional, no high availability), and a
+ * single-node Raft server covers the single-instance case with
+ * transactions and snapshots.
  */
 message KubernetesOpenBaoServer {
   /**
-   * Server mode. UNSET = standalone (the chart default): a single
-   * instance with file storage on a PersistentVolumeClaim.
+   * Dev mode: in-memory, auto-initialized, auto-unsealed, root token
+   * literally "root". NEVER for real secrets — all data is lost on
+   * every restart, and the root token is plaintext in the pod spec
+   * (readable by anyone who can get pods). Exists so the component
+   * can be evaluated and composed against without the init/unseal
+   * ceremony. No volume is created in dev mode, and workload-identity
+   * ServiceAccount annotations are NOT applied (a chart behavior — dev
+   * mode drops them). Exclusive with a storage engine and with
+   * `replicas`: dev is one in-memory server.
    */
-  oneof mode {
+  KubernetesOpenBaoDevMode dev = 1;
+
+  // Fields 2 and 3 carried the chart's `standalone` (file storage) and
+  // `ha` (Raft) mode arms; the storage engine and the replica count
+  // below are their home now. Field 5 carried the data volume at the
+  // server level; it lives inside `raft`, the only engine that has one.
+  reserved 2, 3, 5;
+  reserved "standalone", "ha", "data_storage";
+
+  /**
+   * The storage engine. UNSET = `raft`.
+   */
+  oneof storage {
     /**
-     * Dev mode: in-memory, auto-initialized, auto-unsealed, root
-     * token literally "root". NEVER for real secrets — all data is
-     * lost on every restart, and the root token is plaintext in the
-     * pod spec (readable by anyone who can get pods). Exists so the
-     * component can be evaluated and composed against without the
-     * init/unseal ceremony. No PVC is created in dev mode, and
-     * workload-identity ServiceAccount annotations are NOT applied
-     * (a chart behavior — dev mode drops them).
+     * Integrated Raft storage: every replica persists to its own data
+     * volume and the cluster elects a leader. The ONLY engine with a
+     * snapshot API — `backup` and `restore` require it. This module
+     * renders `retry_join` stanzas for every peer (the chart alone
+     * ships NONE — without them a multi-replica Raft install never
+     * forms a cluster and each pod sits uninitialized and independent).
+     * Bootstrap: initialize pod-0 and unseal every pod; joins then
+     * happen automatically through retry_join.
      */
-    KubernetesOpenBaoDevMode dev = 1;
+    KubernetesOpenBaoRaftStorage raft = 10;
 
     /**
-     * Standalone: one instance, `storage "file"` on the data PVC.
-     * The production shape for single-instance installs.
+     * PostgreSQL storage: OpenBao's production-ready external backend
+     * (transactional, paginated lists, high availability through a
+     * lock table it creates itself), declared by reference to the
+     * catalog's KubernetesPostgres or by literal host. No data volume —
+     * the vault's data lives in the database, and THE DATABASE'S BACKUP
+     * IS THE VAULT'S BACKUP: `backup` and `restore` (Raft snapshots) are
+     * refused on this engine. The module renders `ha_enabled` on at
+     * every replica count so the server labels its active pod and the
+     * chart's active-leader Service selects it; the connection reaches
+     * the server as the standard PostgreSQL environment (PGHOST,
+     * PGPORT, PGDATABASE, PGUSER, PGSSLMODE, and PGPASSWORD from the
+     * referenced Secret) — nothing credential-bearing enters the
+     * configuration ConfigMap.
      */
-    KubernetesOpenBaoStandaloneMode standalone = 2;
-
-    /**
-     * High availability with integrated Raft storage: every replica
-     * persists to its own data PVC and the cluster elects a leader.
-     * This module renders `retry_join` stanzas for every peer (the
-     * chart alone ships NONE — without them a multi-replica Raft
-     * install never forms a cluster and each pod sits uninitialized
-     * and independent). Bootstrap: initialize pod-0 and unseal every
-     * pod; joins then happen automatically through retry_join.
-     */
-    KubernetesOpenBaoHaMode ha = 3;
+    KubernetesOpenBaoPostgresqlStorage postgresql = 11;
   }
+
+  /**
+   * Number of server replicas (Raft peers, or PostgreSQL-stored servers
+   * sharing one lock table). UNSET = 1. On Raft, odd counts (3, 5)
+   * tolerate minority loss and 3 is the standard production shape; on
+   * PostgreSQL any count above 1 gives failover, the database decides
+   * durability. Remember the chart's default REQUIRED hostname
+   * anti-affinity: replicas beyond the node count stay Pending (see
+   * scheduling). At 1 the module disables the chart's
+   * PodDisruptionBudget — the chart would render `maxUnavailable: 0`
+   * for one replica, which blocks every node drain and protects nothing.
+   * With `dev` only 1 is accepted (dev is one in-memory server).
+   */
+  optional int32 replicas = 12 [
+    (dev.planton.shared.options.default) = "1",
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 11
+    }
+  ];
 
   /**
    * CPU and memory for the server container. The chart ships no
@@ -318,19 +393,13 @@ message KubernetesOpenBaoServer {
   }];
 
   /**
-   * The data volume (file storage in standalone, Raft storage in HA).
-   * Ignored in dev mode (in-memory). One PVC per replica, mounted at
-   * /openbao/data.
-   */
-  KubernetesOpenBaoStorage data_storage = 5;
-
-  /**
    * Optional dedicated volume for file audit logs, mounted at
-   * /openbao/audit. Creating the volume does NOT enable auditing —
-   * after initialization run
+   * /openbao/audit — available on either storage engine (the chart
+   * claims it for any non-dev server). Creating the volume does NOT
+   * enable auditing — after initialization run
    * `bao audit enable file file_path=/openbao/audit/audit.log`.
    */
-  KubernetesOpenBaoStorage audit_storage = 6;
+  KubernetesOpenBaoVolume audit_storage = 6;
 
   /**
    * Server log verbosity: trace, debug, info (default), warn, error.
@@ -365,34 +434,162 @@ message KubernetesOpenBaoServer {
    * replicas share their node's fate).
    */
   KubernetesOpenBaoScheduling scheduling = 9;
+
+  option (buf.validate.message).cel = {
+    id: "spec.server.dev_excludes_storage"
+    message: "Dev mode is in-memory and takes no storage engine — remove raft/postgresql, or remove dev to run a storage engine."
+    expression: "!has(this.dev) || (!has(this.raft) && !has(this.postgresql))"
+  };
+  // `replicas` carries a declared default of 1 that the manifest loader
+  // fills in before validation, so presence alone cannot tell a written
+  // count from the default; the rule keys on the value instead.
+  option (buf.validate.message).cel = {
+    id: "spec.server.dev_excludes_replicas"
+    message: "Dev mode runs exactly one in-memory server — remove replicas (or leave it at 1), or remove dev to run a storage engine at that count."
+    expression: "!has(this.dev) || !has(this.replicas) || this.replicas == 1"
+  };
 }
 
-/** Dev-mode marker (see the mode comment for the warnings). */
+/** Dev-mode marker (see the `dev` field for the warnings). */
 message KubernetesOpenBaoDevMode {}
 
-/** Standalone-mode marker (single instance, file storage). */
-message KubernetesOpenBaoStandaloneMode {}
-
-/** High-availability (integrated Raft) configuration. */
-message KubernetesOpenBaoHaMode {
+/**
+ * Integrated Raft storage. Declare it empty (`raft: {}`) to name the
+ * engine explicitly, or leave the engine unset — both are Raft.
+ */
+message KubernetesOpenBaoRaftStorage {
   /**
-   * Number of server replicas (Raft peers). Odd counts (3, 5)
-   * tolerate minority loss; 3 is the standard production shape. A
-   * single replica is a legal Raft cluster of one (useful in labs).
-   * Remember the chart's default required anti-affinity: replicas
-   * beyond the node count stay Pending (see scheduling).
+   * The data volume every replica persists its Raft data to: one PVC
+   * per replica, mounted at /openbao/data. UNSET = the chart's 10Gi on
+   * the cluster's default StorageClass. Lives here, and nowhere else,
+   * because Raft is the only engine that has a volume.
    */
-  optional int32 replicas = 1 [
-    (dev.planton.shared.options.default) = "3",
-    (buf.validate.field).int32 = {
-      gte: 1
-      lte: 11
+  KubernetesOpenBaoVolume data_storage = 1;
+}
+
+/**
+ * PostgreSQL storage by reference to the catalog's database kind (or by
+ * literal host). Same shape as every catalog kind that stores in a
+ * KubernetesPostgres: the read-write Service is the host, the
+ * application-user Secret holds the password.
+ *
+ * WHAT THE DATABASE MUST ALREADY HAVE: the database and a role that owns
+ * it (on a KubernetesPostgres, declare them at bootstrap — `initdb`'s
+ * database and owner). OpenBao creates its own tables in that database
+ * on first start (`openbao_kv_store`, `openbao_ha_locks`); it needs no
+ * superuser. The password Secret must live in the vault's namespace — a
+ * Kubernetes constraint (a secretKeyRef reads only its own namespace),
+ * not a chart one; co-locate the vault with its database or replicate
+ * the Secret.
+ */
+message KubernetesOpenBaoPostgresqlStorage {
+  /**
+   * PostgreSQL host — a Service name (same namespace) or a full FQDN
+   * (cross-namespace or external). Accepts a literal or a reference to
+   * a KubernetesPostgres resource (its read-write Service — always the
+   * current primary). Reaches the server as PGHOST.
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef host = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesPostgres,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.rw_service"
+  ];
+
+  /**
+   * PostgreSQL port. Empty = 5432. Reaches the server as PGPORT.
+   */
+  optional int32 port = 2 [
+    (dev.planton.shared.options.default) = "5432",
+    (buf.validate.field).int32.gt = 0,
+    (buf.validate.field).int32.lte = 65535
+  ];
+
+  /**
+   * Database that holds the vault's tables — one database per vault (on
+   * a KubernetesPostgres: declare it at bootstrap via initdb, e.g.
+   * "openbao"). Reaches the server as PGDATABASE.
+   */
+  string database = 3 [(buf.validate.field).required = true];
+
+  /**
+   * Database user the vault connects as — the role that owns the
+   * database (its ownership covers the tables OpenBao creates). Empty =
+   * "app", the owner a KubernetesPostgres bootstraps by default; name the
+   * role explicitly when the bootstrap declared one. Reaches the server
+   * as PGUSER.
+   */
+  optional string username = 4 [(dev.planton.shared.options.default) = "app"];
+
+  /**
+   * The user's password, read from an existing Secret and delivered to
+   * the server as PGPASSWORD through the chart's secret-environment seam
+   * — never rendered into the configuration or the chart values.
+   */
+  KubernetesOpenBaoPostgresqlPasswordSecret password_secret = 5 [(buf.validate.field).required = true];
+
+  /**
+   * PostgreSQL sslmode for the connection (disable, require, verify-ca,
+   * verify-full). Empty = "require": the connection is encrypted and
+   * OpenBao's backend tries TLS by default; a KubernetesPostgres serves
+   * TLS out of the box, so `require` works with no CA in hand.
+   * `verify-ca` / `verify-full` also verify the server's certificate and
+   * need its CA reachable by the pod — mount it through `helm_values`
+   * and point PGSSLROOTCERT at it via `server.extraEnvironmentVars`.
+   * `disable` only for a database that serves no TLS at all. Reaches
+   * the server as PGSSLMODE.
+   */
+  optional string ssl_mode = 6 [
+    (dev.planton.shared.options.default) = "require",
+    (buf.validate.field).cel = {
+      id: "spec.server.postgresql.ssl_mode"
+      message: "sslmode must be one of: disable, require, verify-ca, verify-full."
+      expression: "this in [\"disable\", \"require\", \"verify-ca\", \"verify-full\"]"
     }
+  ];
+
+  /**
+   * Maximum concurrent connections EACH server opens to the database
+   * (`max_parallel` in the storage stanza). Empty = OpenBao's default of
+   * 128 — more than a default PostgreSQL's 100 `max_connections`, and
+   * multiplied by `replicas`. Set it when the database is shared or its
+   * connection budget is known (a vault at rest uses a handful; 32 is
+   * a generous ceiling for most).
+   */
+  optional int32 max_parallel = 7 [
+    (buf.validate.field).int32.gte = 1,
+    (buf.validate.field).int32.lte = 1024
   ];
 }
 
-/** A persistent volume request. */
-message KubernetesOpenBaoStorage {
+/**
+ * A password read from an existing Kubernetes Secret. Defaults compose
+ * a KubernetesPostgres resource's application-user Secret.
+ */
+message KubernetesOpenBaoPostgresqlPasswordSecret {
+  /**
+   * Secret name. Accepts a literal or a reference to a
+   * KubernetesPostgres resource (its `<cluster>-app` credential Secret,
+   * maintained by the operator across failovers). Must live in the
+   * vault's namespace (see the engine's comment).
+   */
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesPostgres,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.password_secret.name"
+  ];
+
+  /**
+   * Key within the Secret holding the password. Empty = "password"
+   * (the key a KubernetesPostgres application Secret uses).
+   */
+  optional string secret_key = 2 [
+    (dev.planton.shared.options.default) = "password",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Key NAME within an existing Secret (a reference), not secret material"
+  ];
+}
+
+/** A persistent volume request (the Raft data volume, the audit volume). */
+message KubernetesOpenBaoVolume {
   /**
    * Volume size (e.g. "10Gi").
    */
@@ -475,6 +672,8 @@ message KubernetesOpenBaoTls {
  */
 message KubernetesOpenBaoAutoUnseal {
   oneof seal {
+    option (buf.validate.oneof).required = true;
+
     /** AWS KMS. Natural on EKS (IRSA for keyless auth). */
     KubernetesOpenBaoAwsKmsSeal aws_kms = 1;
 
@@ -573,7 +772,7 @@ message KubernetesOpenBaoGcpKmsSeal {
    * the server ServiceAccount with (iam.gke.io/gcp-service-account).
    * Leave empty to rely on node/ambient credentials. NOTE dev mode
    * drops ServiceAccount annotations (chart behavior) — auto-unseal
-   * with workload identity requires standalone or ha mode.
+   * with workload identity needs a storage engine, not dev.
    */
   dev.planton.shared.foreignkey.v1.StringValueOrRef workload_identity_service_account = 5 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
@@ -703,8 +902,8 @@ message KubernetesOpenBaoMetrics {
   /**
    * Also create a ServiceMonitor (requires the Prometheus Operator
    * CRDs — a KubernetesKubePrometheusStack — on the cluster; the
-   * install FAILS without them). In HA mode the chart scrapes only
-   * the active node.
+   * install FAILS without them). The chart scrapes only the active
+   * node (every non-dev server runs in the chart's HA mode).
    */
   bool service_monitor_enabled = 2;
 

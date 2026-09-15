@@ -67,7 +67,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: The chart renders the server StatefulSet (1 replica in dev/standalone, spec.server.ha.replicas in HA); the injector Deployment renders only when spec.injector.enabled is true. The per-replica PVCs are created by the StatefulSet controller, never by the runner. The module sets wait=false / non-atomic BY DESIGN (sealed pods are NotReady until operator init/unseal), so no pods read access is needed for rollout tracking.
+        notes: The chart renders the server StatefulSet (spec.server.replicas pods, default 1, on either storage engine; one pod in dev mode); the injector Deployment renders only when spec.injector.enabled is true. The per-replica PVCs are created by the StatefulSet controller, never by the runner. The module sets wait=false / non-atomic BY DESIGN (sealed pods are NotReady until operator init/unseal), so no pods read access is needed for rollout tracking.
       - api_groups:
           - rbac.authorization.k8s.io
         resources:
@@ -84,7 +84,7 @@ spec:
           - delete
         cluster_scoped: true
         provenance: derived
-        notes: The chart binds the server ServiceAccount to system:auth-delegator (ClusterRoleBinding) when spec.service_account.auth_delegator_enabled is true (the default) -- required for OpenBao's Kubernetes auth method to verify client tokens via TokenReview. The injector's RBAC objects render only when spec.injector.enabled is true.
+        notes: The chart binds the server ServiceAccount to system:auth-delegator (ClusterRoleBinding) when spec.service_account.auth_delegator_enabled is true (the default) -- required for OpenBao's Kubernetes auth method to verify client tokens via TokenReview. For every server on a storage engine (the chart's HA mode, Raft or PostgreSQL) the chart also renders the namespaced discovery Role and RoleBinding that let the server patch the openbao-active label onto its own pod -- what the active and standby Services select on. The injector's RBAC objects render only when spec.injector.enabled is true.
       - api_groups:
           - admissionregistration.k8s.io
         resources:
@@ -99,6 +99,20 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: Rendered only when spec.injector.enabled is true -- the agent injector's cluster-wide MutatingWebhookConfiguration (off by default here, a deliberate divergence from the chart's default; fails open so injector downtime never blocks pod creation).
+      - api_groups:
+          - policy
+        resources:
+          - poddisruptionbudgets
+        verbs:
+          - get
+          - list
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The chart's server PodDisruptionBudget, rendered for every server on a storage engine (the chart's HA mode) with spec.server.replicas above 1 -- the module disables it at one replica, where the chart would render maxUnavailable 0 and block every node drain while protecting nothing. The injector's own PodDisruptionBudget renders only when spec.injector.enabled is true.
       - api_groups:
           - networking.k8s.io
         resources:

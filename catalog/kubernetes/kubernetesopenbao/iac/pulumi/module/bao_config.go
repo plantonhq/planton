@@ -16,12 +16,15 @@ import (
 // stanzas carry only NON-credential parameters (regions, key ids,
 // addresses); credential material rides environment variables from the
 // module-owned seal-credentials Secret (seal_secret.go) — the seal
-// wrappers read their cloud SDKs' standard env vars.
+// wrappers read their cloud SDKs' standard env vars. The PostgreSQL
+// stanza carries NO connection_url at all: the driver reads the whole
+// connection from its environment (postgres_env.go), the password from
+// the referenced Secret.
 //
 // Dev mode renders NO config: `bao server -dev` ignores it (in-memory,
 // auto-unsealed).
 func renderBaoConfigHcl(locals *Locals) string {
-	if locals.Mode == modeDev {
+	if locals.Dev {
 		return ""
 	}
 
@@ -60,10 +63,33 @@ func renderBaoConfigHcl(locals *Locals) string {
 	b.WriteString("}\n\n")
 
 	// ------------------------------ storage -------------------------------
-	switch locals.Mode {
-	case modeStandalone:
-		fmt.Fprintf(&b, "storage \"file\" {\n  path = \"%s\"\n}\n\n", vars.DataMountPath)
-	case modeHa:
+	// Both engines run in the chart's HA mode, so both end with the
+	// service_registration stanza: the server patches
+	// openbao-active/openbao-sealed labels onto its own pod, which is what
+	// the chart's active/standby Services select on — without it those
+	// Services would select nothing.
+	switch locals.Storage {
+	case storagePostgresql:
+		b.WriteString("storage \"postgresql\" {\n")
+		// ha_enabled is UNCONDITIONAL, one replica included: the server
+		// labels its pod active only from its HA leader path, and that
+		// path runs only when the backend reports HA enabled. Without it
+		// a one-replica PostgreSQL vault would never carry the
+		// openbao-active label and the `-active` Service (and the
+		// active_service output) would select nothing. One holder of the
+		// lock table costs nothing.
+		b.WriteString("  ha_enabled = \"true\"\n")
+		if pg := locals.Spec.GetServer().GetPostgresql(); pg.MaxParallel != nil && pg.GetMaxParallel() > 0 {
+			// The per-server connection ceiling; the backend's own default
+			// is 128, more than a default PostgreSQL's max_connections.
+			fmt.Fprintf(&b, "  max_parallel = \"%d\"\n", pg.GetMaxParallel())
+		}
+		// No connection_url, deliberately: this document is a ConfigMap,
+		// and the driver reads PGHOST/PGPORT/PGDATABASE/PGUSER/PGSSLMODE
+		// and PGPASSWORD from the pod's environment when the URL is blank.
+		b.WriteString("}\n\n")
+		b.WriteString("service_registration \"kubernetes\" {}\n\n")
+	case storageRaft:
 		fmt.Fprintf(&b, "storage \"raft\" {\n")
 		fmt.Fprintf(&b, "  path = \"%s\"\n", vars.DataMountPath)
 		// THE RETRY_JOIN SYNTHESIS: the chart ships NO retry_join —
@@ -88,10 +114,6 @@ func renderBaoConfigHcl(locals *Locals) string {
 			b.WriteString("  }\n")
 		}
 		b.WriteString("}\n\n")
-		// The server patches openbao-active/openbao-sealed labels onto
-		// its own pod, which is what the chart's active/standby
-		// Services select on — without this stanza those Services
-		// would select nothing.
 		b.WriteString("service_registration \"kubernetes\" {}\n\n")
 	}
 

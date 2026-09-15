@@ -12,12 +12,14 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Server modes (the spec's mode oneof; unset = standalone — the chart's
-// own default).
+// Storage engines (the spec's storage oneof; unset = Raft). The chart
+// itself knows only modes — every engine is driven through the chart's
+// `ha` mode with the engine's stanza in the configuration string this
+// module writes (values.go); `dev` is the one chart mode that is also a
+// spec fact and is carried separately (Locals.Dev).
 const (
-	modeDev        = "dev"
-	modeStandalone = "standalone"
-	modeHa         = "ha"
+	storageRaft       = "raft"
+	storagePostgresql = "postgresql"
 )
 
 // Locals holds computed values derived from the stack input. Every
@@ -40,11 +42,28 @@ type Locals struct {
 
 	ChartVersion string
 
-	// Mode resolved from the spec oneof (dev / standalone / ha).
-	Mode string
+	// True for `server.dev`: one in-memory server on `bao server -dev`,
+	// no config, no volume, no storage engine.
+	Dev bool
 
-	// Raft peer count (ha mode; 1 otherwise).
+	// Storage engine resolved from the spec oneof (raft / postgresql;
+	// unset = raft). Meaningless when Dev is true.
+	Storage string
+
+	// Server replica count (Raft peers, or PostgreSQL-stored servers
+	// sharing one lock table); 1 when unset, always 1 in dev.
 	Replicas int
+
+	// The PostgreSQL connection as the driver's standard environment
+	// (PGHOST, PGPORT, PGDATABASE, PGUSER, PGSSLMODE) — nil on every
+	// other engine. The password is NOT here: it rides from the referenced
+	// Secret through the chart's secret-environment seam (postgres_env.go).
+	PgPlainEnv map[string]string
+
+	// The referenced Secret and key holding the PostgreSQL password ("" on
+	// every other engine).
+	PgPasswordSecretName string
+	PgPasswordSecretKey  string
 
 	// http or https, following tls.enabled — drives the synthesized
 	// listener config, retry_join addresses, and the exported endpoint.
@@ -95,7 +114,8 @@ type Locals struct {
 	BackupCredentialsSecretName string
 
 	// The address the jobs' bao CLI talks to: the active-leader Service
-	// in HA (the only mode backups are legal on), scheme following TLS.
+	// (every server on a storage engine has one; backups are legal only
+	// on Raft), scheme following TLS.
 	BaoAddr string
 
 	// `<name>-restore-<8 hex>`, "" when no restore is declared. The hex
@@ -134,21 +154,21 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesopenbaov1alpha1.K
 		chartVersion = vars.DefaultChartVersion
 	}
 
-	// Resolve the mode oneof; unset = standalone (the chart default).
-	mode := modeStandalone
-	replicas := 1
-	if spec.GetServer() != nil {
-		switch {
-		case spec.GetServer().GetDev() != nil:
-			mode = modeDev
-		case spec.GetServer().GetHa() != nil:
-			mode = modeHa
-			replicas = 3
-			if spec.GetServer().GetHa().Replicas != nil {
-				replicas = int(spec.GetServer().GetHa().GetReplicas())
-			}
-		}
+	// Resolve the engine and the count. Unset engine = Raft, unset count
+	// = 1: a single-node Raft cluster is the shape a bare manifest gets.
+	// The spec refuses `dev` beside an engine or a count, so dev needs no
+	// precedence here — it simply pins one in-memory server.
+	server := spec.GetServer()
+	dev := server.GetDev() != nil
+	storage := storageRaft
+	if server.GetPostgresql() != nil {
+		storage = storagePostgresql
 	}
+	replicas := 1
+	if !dev && server != nil && server.Replicas != nil {
+		replicas = int(server.GetReplicas())
+	}
+	pgPlainEnv, pgSecretName, pgSecretKey := postgresEnv(server.GetPostgresql())
 
 	tlsEnabled := spec.GetTls().GetEnabled()
 	tlsSecretName := ""
@@ -171,8 +191,12 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesopenbaov1alpha1.K
 		Namespace:                 spec.Namespace.GetValue(),
 		ReleaseName:               target.Metadata.Name,
 		ChartVersion:              chartVersion,
-		Mode:                      mode,
+		Dev:                       dev,
+		Storage:                   storage,
 		Replicas:                  replicas,
+		PgPlainEnv:                pgPlainEnv,
+		PgPasswordSecretName:      pgSecretName,
+		PgPasswordSecretKey:       pgSecretKey,
 		Scheme:                    scheme,
 		TlsEnabled:                tlsEnabled,
 		TlsSecretName:             tlsSecretName,

@@ -78,9 +78,8 @@ OpenBao waits only for the namespace — it has no database seam.
 | `keycloak_hostname` | Public base URL tokens are minted for (full URL) | `https://auth.example.com` | **MUST change** — the placeholder deploys but mints tokens for a domain you do not own |
 | `keycloak_instances` | Keycloak replicas (auto-clustering) | `1` | `2+` for HA once the platform is critical-path |
 | `openfga_preshared_api_key` | The API key OpenFGA clients present | `change-me` | **MUST change** — the placeholder is not a credential |
-| `openbao_ha_enabled` | OpenBao as a Raft HA cluster | `false` | The cluster has the nodes and secrets are critical-path |
-| `openbao_ha_replicas` | Raft cluster size (odd numbers only make sense) | `3` | `5` to survive two member losses |
-| `openbao_disk_size` | OpenBao data volume (per replica in HA) | `10Gi` | Aggressive audit/snapshot schedules |
+| `openbao_replicas` | OpenBao server replicas on integrated Raft storage (odd numbers only make sense above 1) | `1` | `3` once the cluster has the nodes and secrets are critical-path; `5` to survive two member losses |
+| `openbao_disk_size` | OpenBao Raft data volume (per replica) | `10Gi` | Aggressive audit/snapshot schedules |
 
 ## After deployment
 
@@ -96,8 +95,8 @@ OpenBao waits only for the namespace — it has no database seam.
 
    Store the five unseal key shares and the root token OUTSIDE the
    cluster — they are produced only once, and this chart deliberately
-   never knows them. In HA mode, unseal every replica; peers join the
-   Raft cluster on their own.
+   never knows them. Above one replica, unseal every replica; peers join
+   the Raft cluster on their own.
 
 2. **Log in to Keycloak.** The operator generated the bootstrap admin:
 
@@ -160,9 +159,9 @@ OpenBao waits only for the namespace — it has no database seam.
   KubernetesPostgres resource. For OpenBao, declare its `backup` block (S3, GCS,
   Azure Blob, or Cloudflare R2 by reference) and run the four-command login recipe
   the spec prints once the vault is initialized. Snapshots exist only for Raft
-  storage, so backups need `openbao_ha_enabled: true` first (a single-node Raft
-  cluster, `openbao_ha_replicas: "1"`, is the honest start on a small cluster);
-  a declared restore additionally needs an `auto_unseal` arm, and the component
+  storage, which this chart's vault runs at every `openbao_replicas` count (a
+  single-node Raft cluster is the honest start on a small cluster); a declared
+  restore additionally needs an `auto_unseal` arm, and the component
   guide's runbook covers the rest.
 - **Scaling OpenFGA:** the servers are stateless — raise `replicas` on
   the deployed resource; the database is the shared truth. Its `3`

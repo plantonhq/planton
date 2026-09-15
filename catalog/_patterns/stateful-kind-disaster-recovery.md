@@ -117,10 +117,10 @@ spec:
     value: openbao
   createNamespace: true
   server:
-    ha:
-      replicas: 3
-    dataStorage:
-      size: 10Gi
+    raft:
+      dataStorage:
+        size: 10Gi
+    replicas: 3
   backup:
     schedule: "0 * * * *"
     retentionDays: 14

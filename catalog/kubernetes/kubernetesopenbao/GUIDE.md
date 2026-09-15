@@ -59,8 +59,9 @@ renders and what it asks of the operator:
   through the Kubernetes auth method, streams a snapshot with the `bao` CLI,
   ships it to `<prefix>/<name>-<UTC timestamp>.snap`, and prunes objects
   under the prefix older than `retentionDays`. Snapshots exist only for
-  integrated Raft storage — `backup` requires `server.ha` (single-node Raft
-  is `ha.replicas: 1`).
+  integrated Raft storage — `backup` requires `server.raft` (the default
+  engine; a single-node Raft server is `replicas: 1`). A vault stored in
+  PostgreSQL is backed up by its database and refuses `backup`.
 - **One prefix per live vault.** Retention prunes under the prefix, so two
   live vaults must never share one; a restore target deliberately declares
   its source's prefix, and that is the only sharing there is.
@@ -177,7 +178,7 @@ side together — every one a kind in this catalog, wired by reference. The
 | 5 | `GcpKmsKeyIamMember` (two per key) | Lets the server use the key AND read it | `cryptoKeyId` by reference to #4's `key_id`, `member` by reference to #1's `member`; one with `role: roles/cloudkms.cryptoKeyEncrypterDecrypter` (wrap on init, unwrap on every unseal) and one with `role: roles/cloudkms.viewer` — the server checks the key exists when it configures its seal at START, and the encrypter-decrypter role does not carry `cloudkms.cryptoKeys.get`; with only the first role the pod crash-loops on "Error configuring seal" before init can open |
 | 6 | `GcpGcsBucket` | The snapshot store | `iamMembers`: **two** roles for #2 — `roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (rclone reads the bucket's attributes before writing; objectAdmin alone does not carry `storage.buckets.get`) — `member` by reference to #2's `member` |
 | 7 | `GcpGkeWorkloadIdentityBinding` (two per vault) | Lets the KSAs act as the identities | for the server: `ksaName` = the vault's `metadata.name` (the chart names the ServiceAccount after the release) bound to #1; for the job: `ksaName` = `<name>-backup` bound to #2; `ksaNamespace` = the vault's namespace. A restore target is another vault and needs its own pair |
-| 8 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, `autoUnseal.gcpKms` with `keyRing` and `cryptoKey` by reference to #3/#4 (bare names) and `workloadIdentityServiceAccount` by reference to #1, `backup.objectStore.gcs.bucket` by reference to #6 with `keyless: true`, `backup.workloadIdentity.gke.serviceAccountEmail` by reference to #2, a `prefix` of its own |
+| 8 | `KubernetesOpenBao` (the production vault) | Raft + auto-unseal + backups | `server.raft` with `server.replicas: 3`, `autoUnseal.gcpKms` with `keyRing` and `cryptoKey` by reference to #3/#4 (bare names) and `workloadIdentityServiceAccount` by reference to #1, `backup.objectStore.gcs.bucket` by reference to #6 with `keyless: true`, `backup.workloadIdentity.gke.serviceAccountEmail` by reference to #2, a `prefix` of its own |
 | 9 | `KubernetesOpenBao` (the restore target, on the bad day) | Restore | the same `autoUnseal` (the same key), the same `backup` block INCLUDING the source's `prefix`, `restore.latest: true` (or a `snapshotKey`), `restore.rootToken` naming the Secret you will create after init; the SOURCE's name and namespace, so #7's pair and the restored login role carry over (a target under another name needs its own #7 pair and re-runs the login recipe) |
 
 Where each piece of the set lives, validated: rows 2, 6, and 7 are the
@@ -303,7 +304,7 @@ the GCS one.
 |---|---|---|---|
 | 1 | `CloudflareR2Bucket` | The snapshot store | `jurisdiction` fixed at creation (`default`, `eu`, `fedramp`, `us`) — it decides which host serves the bucket; exports `bucket_name`, `account_id`, `jurisdiction` |
 | 2 | `CloudflareAccountApiToken` (e.g. `bao-snapshots-writer`) | The credential — R2 has NO keyless posture from any cluster | one policy: permission group `Workers R2 Storage Bucket Item Write` on resource `com.cloudflare.edge.r2.bucket.<account>_<jurisdiction>_<bucket>` (least privilege: objects in this bucket only); exports the token as the S3 key pair, `r2_access_key_id` + `r2_secret_access_key` |
-| 3 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, an `autoUnseal` arm, `backup.objectStore.r2` with `bucket`, `accountId`, `jurisdiction` by reference to #1 and `credentials` by reference to #2, a `prefix` of its own. No `backup.workloadIdentity` — nothing on the cluster side identifies the job to R2 |
+| 3 | `KubernetesOpenBao` (the production vault) | Raft + auto-unseal + backups | `server.raft` with `server.replicas: 3`, an `autoUnseal` arm, `backup.objectStore.r2` with `bucket`, `accountId`, `jurisdiction` by reference to #1 and `credentials` by reference to #2, a `prefix` of its own. No `backup.workloadIdentity` — nothing on the cluster side identifies the job to R2 |
 | 4 | `KubernetesOpenBao` (the restore target) | Restore | the same `autoUnseal` (the same key), the same `r2` store and `prefix`, `restore.snapshotKey` (or `latest`), `restore.rootToken` |
 
 Three R2 facts join the rules above:
@@ -363,10 +364,10 @@ spec:
   # A rehearsal beside a live source omits this and joins the source's.
   createNamespace: true
   server:
-    ha:
-      replicas: 3
-    dataStorage:
-      size: 10Gi
+    raft:
+      dataStorage:
+        size: 10Gi
+    replicas: 3
   # The SAME key the source was sealed with — the snapshot is protected by it.
   autoUnseal:
     gcpKms:

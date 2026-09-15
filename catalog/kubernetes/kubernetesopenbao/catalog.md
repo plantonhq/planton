@@ -58,8 +58,10 @@ spec:
     value: "openbao"
   createNamespace: true
   server:
-    ha:
-      replicas: 3
+    raft:
+      dataStorage:
+        size: 10Gi
+    replicas: 3
     resources:
       requests:
         cpu: 250m
@@ -67,8 +69,6 @@ spec:
       limits:
         cpu: "1"
         memory: 1Gi
-    dataStorage:
-      size: 10Gi
     auditStorage:
       size: 10Gi
   metrics:
@@ -130,11 +130,11 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 
 **TLS is a composite this module owns end to end** -- `tls.enabled` with `tls.certSecretName` switches the listener's certificate files, the Secret mount, every derived URL, and the probe scheme TOGETHER. (The chart's lone `global.tlsDisable` flag alone produces a plaintext server addressed as https -- an instant outage; the module renders all the pieces coherently.) A KubernetesCertificate reference is the natural issuer.
 
-**Storage split** -- `server.dataStorage` (default 10Gi; one PVC per replica) holds file storage in standalone and Raft data in HA; dev mode ignores it. `server.auditStorage` optionally mounts a second volume at `/openbao/audit` -- creating the volume does NOT enable auditing; run `bao audit enable file file_path=/openbao/audit/audit.log` after initialization.
+**Volumes** -- `server.raft.dataStorage` (default 10Gi; one PVC per replica) holds the Raft data and lives inside the Raft arm because no other engine has a volume: a PostgreSQL-stored vault keeps its data in the database and dev is in-memory. `server.auditStorage` optionally mounts a second volume at `/openbao/audit` -- creating the volume does NOT enable auditing; run `bao audit enable file file_path=/openbao/audit/audit.log` after initialization.
 
 **Agent Injector** -- OFF by default here, a deliberate divergence from the chart (whose default installs the MutatingWebhookConfiguration for every pod create/update cluster-wide). When on, `injector.failurePolicy` chooses `Ignore` (fail open -- injector downtime skips injection; the default) or `Fail`; above 1 replica, leader election creates the hard-coded `openbao-injector-certs` Secret -- one multi-replica injector per namespace.
 
-**Backups and restore** -- `backup` runs a CronJob (default hourly) that takes a Raft snapshot through OpenBao's own API and ships it with rclone to the declared store: `s3` (real S3 or any S3-compatible endpoint -- an in-cluster KubernetesSeaweedFs composes naturally), `gcs`, `azureBlob`, or `r2` (Cloudflare R2 in its own vocabulary, by reference to the catalog's bucket and token kinds). Each cloud arm is keyless through `backup.workloadIdentity` or carries declared keys the module materializes as a Secret; `retentionDays` (default 14) prunes older snapshots. Raft only (`server.ha`). PREREQUISITE the module cannot create: the job's login inside OpenBao is a four-command Kubernetes-auth recipe run once after initialization -- the spec prints it, and so does a failing job, with the real names. `restore` on a fresh cluster with the same seal key fetches a named or the newest snapshot and installs it; the Job waits for the operator to hand it the fresh cluster's initial root token through a Secret, and the backup schedule stays suspended until the `restore` block is removed.
+**Backups and restore** -- `backup` runs a CronJob (default hourly) that takes a Raft snapshot through OpenBao's own API and ships it with rclone to the declared store: `s3` (real S3 or any S3-compatible endpoint -- an in-cluster KubernetesSeaweedFs composes naturally), `gcs`, `azureBlob`, or `r2` (Cloudflare R2 in its own vocabulary, by reference to the catalog's bucket and token kinds). Each cloud arm is keyless through `backup.workloadIdentity` or carries declared keys the module materializes as a Secret; `retentionDays` (default 14) prunes older snapshots. Raft only (`server.raft`, the default engine); a vault stored in PostgreSQL is backed up by its database and refuses `backup`. PREREQUISITE the module cannot create: the job's login inside OpenBao is a four-command Kubernetes-auth recipe run once after initialization -- the spec prints it, and so does a failing job, with the real names. `restore` on a fresh cluster with the same seal key fetches a named or the newest snapshot and installs it; the Job waits for the operator to hand it the fresh cluster's initial root token through a Secret, and the backup schedule stays suspended until the `restore` block is removed.
 
 **Metrics are unauthenticated when enabled** -- `metrics.enabled` renders the telemetry stanza AND opens `/v1/sys/metrics` without a token; anything that can reach the Service can read operational telemetry. `metrics.serviceMonitorEnabled` additionally requires the Prometheus Operator CRDs, and in HA scrapes only the active node.
 
@@ -149,7 +149,8 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
-| **KubernetesStorageClass** (optional) | `server.dataStorage.storageClass` / `server.auditStorage.storageClass` | `status.outputs.storage_class_name` |
+| **KubernetesStorageClass** (optional) | `server.raft.dataStorage.storageClass` / `server.auditStorage.storageClass` | `status.outputs.storage_class_name` |
+| **KubernetesPostgres** (optional) | `server.postgresql.host` / `server.postgresql.passwordSecret.secretName` | `status.outputs.rw_service` / `status.outputs.password_secret.name` |
 | **KubernetesCertificate** (optional) | `tls.certSecretName` | `status.outputs.secret_name` |
 | **GcpProject** (optional) | `autoUnseal.gcpKms.project` | `status.outputs.project_id` |
 | **GcpKmsKeyRing** (optional) | `autoUnseal.gcpKms.keyRing` | `status.outputs.key_ring_name` |

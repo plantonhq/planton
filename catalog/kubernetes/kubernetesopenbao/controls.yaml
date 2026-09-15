@@ -81,10 +81,10 @@ spec:
         reference: Snapshots older than retention_days (default 14) are deleted from the store after each run -- the retention window is a declared field, not an unbounded accumulation; zero keeps everything and defers to the bucket's own lifecycle rules.
     - control_id: multi-zone-ha
       status: configurable
-      field_path: server.ha
+      field_path: server.replicas
       evidence:
         type: spec_default
-        reference: Dev and standalone modes are single-instance. HA mode runs a Raft cluster (default 3 replicas -- odd counts tolerate minority loss), and the chart's default required anti-affinity places each replica on a distinct node. Spread across ZONES follows the cluster's node topology -- the spec does not model zone constraints directly.
+        reference: The replica count (default 1) applies to either storage engine -- on Raft odd counts (3, 5) tolerate minority loss; on PostgreSQL any count above 1 gives failover and the database decides durability -- and the chart's default required anti-affinity places each replica on a distinct node. Spread across ZONES follows the cluster's node topology -- the spec does not model zone constraints directly.
     - control_id: deletion-protection
       status: not_applicable
       notes: Neither Helm releases nor the chart's objects carry a deletion-protection flag; protection is operational (cluster RBAC, change review). The seal itself is a different safety net -- deleting pods loses nothing while the data PVCs survive, and a re-created sealed server needs its unseal keys or KMS seal to serve again.

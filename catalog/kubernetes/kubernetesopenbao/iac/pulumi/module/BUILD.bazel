@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -10,6 +10,7 @@ go_library(
         "main.go",
         "namespace.go",
         "outputs.go",
+        "postgres_env.go",
         "restore.go",
         "scripts.go",
         "seal_secret.go",
@@ -31,6 +32,18 @@ go_library(
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/helm/v3:helm",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+        "@io_k8s_sigs_yaml//:yaml",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["render_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/kubernetes/kubernetesopenbao/v1alpha1",
+        "//shared",
+        "//shared/foreignkey/v1:foreignkey",
         "@io_k8s_sigs_yaml//:yaml",
     ],
 )

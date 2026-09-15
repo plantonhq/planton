@@ -69,16 +69,18 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 			input.Spec.CreateNamespace = true
 			input.Spec.ChartVersion = strPtr("0.28.6")
 			input.Spec.Server = &KubernetesOpenBaoServer{
-				Mode: &KubernetesOpenBaoServer_Ha{Ha: &KubernetesOpenBaoHaMode{Replicas: int32Ptr(3)}},
+				Storage: &KubernetesOpenBaoServer_Raft{Raft: &KubernetesOpenBaoRaftStorage{
+					DataStorage: &KubernetesOpenBaoVolume{
+						Size:         strPtr("20Gi"),
+						StorageClass: literal("fast-ssd"),
+					},
+				}},
+				Replicas: int32Ptr(3),
 				Resources: &kubernetes.ContainerResources{
 					Requests: &kubernetes.CpuMemory{Cpu: "100m", Memory: "256Mi"},
 					Limits:   &kubernetes.CpuMemory{Cpu: "1", Memory: "1Gi"},
 				},
-				DataStorage: &KubernetesOpenBaoStorage{
-					Size:         strPtr("20Gi"),
-					StorageClass: literal("fast-ssd"),
-				},
-				AuditStorage: &KubernetesOpenBaoStorage{Size: strPtr("5Gi")},
+				AuditStorage: &KubernetesOpenBaoVolume{Size: strPtr("5Gi")},
 				LogLevel:     strPtr("debug"),
 				LogFormat:    strPtr("json"),
 				Scheduling: &KubernetesOpenBaoScheduling{
@@ -148,22 +150,63 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 		})
 
 		ginkgo.It("dev mode should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Dev: &KubernetesOpenBaoDevMode{}}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a server with no engine declared (one Raft server) should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("Raft declared explicitly at one replica (a Raft cluster of one) should be valid", func() {
 			input.Spec.Server = &KubernetesOpenBaoServer{
-				Mode: &KubernetesOpenBaoServer_Dev{Dev: &KubernetesOpenBaoDevMode{}},
+				Storage:  &KubernetesOpenBaoServer_Raft{Raft: &KubernetesOpenBaoRaftStorage{}},
+				Replicas: int32Ptr(1),
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
-		ginkgo.It("standalone mode should be valid", func() {
+		ginkgo.It("Raft at three replicas with a sized data volume should be valid", func() {
 			input.Spec.Server = &KubernetesOpenBaoServer{
-				Mode: &KubernetesOpenBaoServer_Standalone{Standalone: &KubernetesOpenBaoStandaloneMode{}},
+				Storage: &KubernetesOpenBaoServer_Raft{Raft: &KubernetesOpenBaoRaftStorage{
+					DataStorage: &KubernetesOpenBaoVolume{Size: strPtr("20Gi")},
+				}},
+				Replicas: int32Ptr(3),
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
-		ginkgo.It("a single-replica HA cluster (Raft cluster of one) should be valid", func() {
+		ginkgo.It("a replica count with no engine declared (three Raft servers) should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Replicas: int32Ptr(3)}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("PostgreSQL storage by reference at one replica should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: postgresqlByReference()}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("PostgreSQL storage by literal at three replicas with every field set should be valid", func() {
 			input.Spec.Server = &KubernetesOpenBaoServer{
-				Mode: &KubernetesOpenBaoServer_Ha{Ha: &KubernetesOpenBaoHaMode{Replicas: int32Ptr(1)}},
+				Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: &KubernetesOpenBaoPostgresqlStorage{
+					Host:           literal("identity-db-rw.identity.svc.cluster.local"),
+					Port:           int32Ptr(5433),
+					Database:       "openbao",
+					Username:       strPtr("identity"),
+					PasswordSecret: &KubernetesOpenBaoPostgresqlPasswordSecret{SecretName: literal("identity-db-app"), SecretKey: strPtr("password")},
+					SslMode:        strPtr("verify-full"),
+					MaxParallel:    int32Ptr(32),
+				}},
+				Replicas: int32Ptr(3),
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("PostgreSQL storage with an audit volume should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{
+				Storage:      postgresqlByReference(),
+				AuditStorage: &KubernetesOpenBaoVolume{Size: strPtr("5Gi")},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -307,7 +350,19 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 		})
 
 		ginkgo.It("a single-replica Raft cluster with backups should be valid", func() {
-			input.Spec.Server = &KubernetesOpenBaoServer{Mode: &KubernetesOpenBaoServer_Ha{Ha: &KubernetesOpenBaoHaMode{Replicas: int32Ptr(1)}}}
+			input.Spec.Server = raftServer()
+			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_S3{S3: s3WithKeys("")})
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a backup on a server that declared no engine (one Raft server) should be valid", func() {
+			input.Spec.Server = nil
+			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_S3{S3: s3WithKeys("")})
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a backup on a three-replica Raft cluster should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Replicas: int32Ptr(3)}
 			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_S3{S3: s3WithKeys("")})
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -318,22 +373,35 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
-		ginkgo.It("a backup on standalone file storage should be invalid", func() {
-			input.Spec.Server = &KubernetesOpenBaoServer{Mode: &KubernetesOpenBaoServer_Standalone{Standalone: &KubernetesOpenBaoStandaloneMode{}}}
+		ginkgo.It("a backup on PostgreSQL storage should be refused, saying the database's backup covers it", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: postgresqlByReference()}
 			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_S3{S3: s3WithKeys("")})
-			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("backed up by its database"))
 		})
 
-		ginkgo.It("a backup with no server mode (chart-default standalone) should be invalid", func() {
-			input.Spec.Server = nil
+		ginkgo.It("a backup in dev mode should be refused, saying dev has no snapshot API", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Dev: &KubernetesOpenBaoDevMode{}}
 			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_S3{S3: s3WithKeys("")})
-			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("dev mode has no snapshot API"))
 		})
 
-		ginkgo.It("a backup in dev mode should be invalid", func() {
-			input.Spec.Server = &KubernetesOpenBaoServer{Mode: &KubernetesOpenBaoServer_Dev{Dev: &KubernetesOpenBaoDevMode{}}}
+		ginkgo.It("a restore on PostgreSQL storage is refused through the backup rule", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: postgresqlByReference()}
 			input.Spec.Backup = backupWith(&KubernetesOpenBaoBackupObjectStore_S3{S3: s3WithKeys("")})
-			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+			input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{
+				Seal: &KubernetesOpenBaoAutoUnseal_Transit{Transit: &KubernetesOpenBaoTransitSeal{Address: "http://key-holder.openbao.svc:8200", KeyName: "autounseal"}},
+			}
+			input.Spec.Restore = &KubernetesOpenBaoRestore{
+				Source:    &KubernetesOpenBaoRestore_Latest{Latest: true},
+				RootToken: &kubernetes.KubernetesSecretKey{Name: "openbao-init", Key: "root_token"},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("backed up by its database"))
 		})
 
 		ginkgo.It("a backup with the auth delegator disabled should be invalid", func() {
@@ -599,24 +667,110 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
-		ginkgo.It("zero HA replicas should be invalid", func() {
+		ginkgo.It("zero replicas should be invalid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Replicas: int32Ptr(0)}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("replicas above 11 should be invalid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Replicas: int32Ptr(12)}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("dev mode beside a storage engine should be refused, saying dev is in-memory", func() {
 			input.Spec.Server = &KubernetesOpenBaoServer{
-				Mode: &KubernetesOpenBaoServer_Ha{Ha: &KubernetesOpenBaoHaMode{Replicas: int32Ptr(0)}},
+				Dev:     &KubernetesOpenBaoDevMode{},
+				Storage: &KubernetesOpenBaoServer_Raft{Raft: &KubernetesOpenBaoRaftStorage{}},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("takes no storage engine"))
+		})
+
+		ginkgo.It("dev mode beside PostgreSQL storage should be refused", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Dev: &KubernetesOpenBaoDevMode{}, Storage: postgresqlByReference()}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("takes no storage engine"))
+		})
+
+		ginkgo.It("dev mode with the default replica count of one (the loader fills the default) should be valid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Dev: &KubernetesOpenBaoDevMode{}, Replicas: int32Ptr(1)}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("dev mode beside a replica count above one should be refused, saying dev is one server", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{Dev: &KubernetesOpenBaoDevMode{}, Replicas: int32Ptr(2)}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("exactly one in-memory server"))
+		})
+
+		ginkgo.It("a Raft data volume size without a unit suffix should be invalid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{
+				Storage: &KubernetesOpenBaoServer_Raft{Raft: &KubernetesOpenBaoRaftStorage{
+					DataStorage: &KubernetesOpenBaoVolume{Size: strPtr("10GB")},
+				}},
 			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
-		ginkgo.It("HA replicas above 11 should be invalid", func() {
-			input.Spec.Server = &KubernetesOpenBaoServer{
-				Mode: &KubernetesOpenBaoServer_Ha{Ha: &KubernetesOpenBaoHaMode{Replicas: int32Ptr(12)}},
-			}
+		ginkgo.It("an audit volume size without a unit suffix should be invalid", func() {
+			input.Spec.Server = &KubernetesOpenBaoServer{AuditStorage: &KubernetesOpenBaoVolume{Size: strPtr("10GB")}}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
-		ginkgo.It("a storage size without a unit suffix should be invalid", func() {
-			input.Spec.Server = &KubernetesOpenBaoServer{
-				DataStorage: &KubernetesOpenBaoStorage{Size: strPtr("10GB")},
-			}
+		ginkgo.It("PostgreSQL storage without a host should be invalid", func() {
+			pg := postgresqlByReference().Postgresql
+			pg.Host = nil
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: pg}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("PostgreSQL storage without a database should be invalid", func() {
+			pg := postgresqlByReference().Postgresql
+			pg.Database = ""
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: pg}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("PostgreSQL storage without a password Secret should be invalid", func() {
+			pg := postgresqlByReference().Postgresql
+			pg.PasswordSecret = nil
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: pg}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("a password Secret without a name should be invalid", func() {
+			pg := postgresqlByReference().Postgresql
+			pg.PasswordSecret = &KubernetesOpenBaoPostgresqlPasswordSecret{SecretKey: strPtr("password")}
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: pg}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an unknown PostgreSQL sslmode should be invalid", func() {
+			pg := postgresqlByReference().Postgresql
+			pg.SslMode = strPtr("prefer")
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: pg}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("a PostgreSQL port outside 1-65535 should be invalid", func() {
+			pg := postgresqlByReference().Postgresql
+			pg.Port = int32Ptr(70000)
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: pg}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("a PostgreSQL connection ceiling of zero should be invalid", func() {
+			pg := postgresqlByReference().Postgresql
+			pg.MaxParallel = int32Ptr(0)
+			input.Spec.Server = &KubernetesOpenBaoServer{Storage: &KubernetesOpenBaoServer_Postgresql{Postgresql: pg}}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an auto_unseal block with no seal arm should be invalid on its own", func() {
+			input.Spec.AutoUnseal = &KubernetesOpenBaoAutoUnseal{}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
@@ -731,10 +885,27 @@ var _ = ginkgo.Describe("KubernetesOpenBao Validation Tests", func() {
 	})
 })
 
-// raftServer is the one server mode backups are legal on: a Raft cluster
-// (here of one replica, the laboratory shape).
+// raftServer is the one storage engine backups are legal on, declared
+// explicitly at one replica (the laboratory shape); an undeclared engine is
+// the same server.
 func raftServer() *KubernetesOpenBaoServer {
-	return &KubernetesOpenBaoServer{Mode: &KubernetesOpenBaoServer_Ha{Ha: &KubernetesOpenBaoHaMode{Replicas: int32Ptr(1)}}}
+	return &KubernetesOpenBaoServer{
+		Storage:  &KubernetesOpenBaoServer_Raft{Raft: &KubernetesOpenBaoRaftStorage{}},
+		Replicas: int32Ptr(1),
+	}
+}
+
+// postgresqlByReference is the PostgreSQL engine wired entirely to a
+// KubernetesPostgres: the read-write Service as the host and the
+// application-user Secret as the password, both by reference.
+func postgresqlByReference() *KubernetesOpenBaoServer_Postgresql {
+	return &KubernetesOpenBaoServer_Postgresql{Postgresql: &KubernetesOpenBaoPostgresqlStorage{
+		Host:     valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "identity-db", "status.outputs.rw_service"),
+		Database: "openbao",
+		PasswordSecret: &KubernetesOpenBaoPostgresqlPasswordSecret{
+			SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "identity-db", "status.outputs.password_secret.name"),
+		},
+	}}
 }
 
 // backupWith wraps one object-store arm in an otherwise-default backup block.

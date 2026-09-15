@@ -18,11 +18,26 @@ variable "spec" {
     create_namespace = optional(bool, false)
     chart_version    = optional(string)
     server = optional(object({
-      dev        = optional(object({}))
-      standalone = optional(object({}))
-      ha = optional(object({
-        replicas = optional(number)
+      dev = optional(object({}))
+      raft = optional(object({
+        data_storage = optional(object({
+          size          = optional(string)
+          storage_class = optional(string, "")
+        }))
       }))
+      postgresql = optional(object({
+        host     = string
+        port     = optional(number)
+        database = string
+        username = optional(string)
+        password_secret = object({
+          secret_name = string
+          secret_key  = optional(string)
+        })
+        ssl_mode     = optional(string)
+        max_parallel = optional(number)
+      }))
+      replicas = optional(number)
       resources = optional(object({
         limits = optional(object({
           cpu    = optional(string, "")
@@ -32,10 +47,6 @@ variable "spec" {
           cpu    = optional(string, "")
           memory = optional(string, "")
         }))
-      }))
-      data_storage = optional(object({
-        size          = optional(string)
-        storage_class = optional(string, "")
       }))
       audit_storage = optional(object({
         size          = optional(string)

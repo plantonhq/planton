@@ -18,10 +18,10 @@ spec:
   namespace:
     value: e2e-bao-lab
   server:
-    ha:
-      replicas: 1
-    dataStorage:
-      size: 1Gi
+    raft:
+      dataStorage:
+        size: 1Gi
+    replicas: 1
   autoUnseal:
     transit:
       address: http://e2e-bao-kms.e2e-bao-lab.svc:8200

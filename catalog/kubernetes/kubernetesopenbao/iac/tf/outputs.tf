@@ -20,8 +20,8 @@ output "internal_service" {
 }
 
 output "active_service" {
-  description = "The active-leader Service — HA mode only, empty otherwise."
-  value       = local.mode == "ha" ? "${local.release_name}-active" : ""
+  description = "The active-leader Service — every server on a storage engine has one (Raft or PostgreSQL, any replica count); empty only in dev mode."
+  value       = local.dev ? "" : "${local.release_name}-active"
 }
 
 output "ui_service" {

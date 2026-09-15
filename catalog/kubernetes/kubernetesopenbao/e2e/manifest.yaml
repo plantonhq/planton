@@ -15,8 +15,10 @@ spec:
     value: openbao-dev
   createNamespace: true
   server:
-    ha:
-      replicas: 3
+    raft:
+      dataStorage:
+        size: 10Gi
+    replicas: 3
     resources:
       requests:
         cpu: 100m
@@ -24,8 +26,6 @@ spec:
       limits:
         cpu: 1000m
         memory: 512Mi
-    dataStorage:
-      size: 10Gi
     auditStorage:
       size: 5Gi
     logLevel: info

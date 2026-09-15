@@ -29,8 +29,17 @@ it is the designed behavior, not a failure. Auto-unseal (below)
 removes the UNSEAL step from restarts, but the one-time
 initialization is always yours.
 
-ONE SERVER MODE at a time: dev XOR standalone XOR ha (Raft). When
-no mode is declared, standalone is used — the chart's own default.
+THE SERVER DECLARES A STORAGE ENGINE AND A REPLICA COUNT, or `dev`.
+OpenBao keeps those two facts apart and so does this spec: `server.raft`
+(integrated storage, one volume per replica, the only engine with a
+snapshot API) or `server.postgresql` (OpenBao's production-ready
+external backend, no volume, backed up by its database) and
+`server.replicas`. Declaring nothing is a single-node Raft server. The
+chart itself knows only modes (`dev`, `standalone`, `ha`) and a raw
+configuration string; this module writes the whole string and drives
+the chart's `ha` mode for every engine (Raft on, or Raft off with the
+engine's stanza in the string), so the chart is never told a value it
+lacks. `dev` is a real chart value and a real server flag and stays.
 The server always runs as a StatefulSet with an OnDelete update
 strategy (config changes never roll pods automatically; delete pods
 to pick up config).
@@ -64,8 +73,10 @@ spec:
     value: openbao-dev
   createNamespace: true
   server:
-    ha:
-      replicas: 3
+    raft:
+      dataStorage:
+        size: 10Gi
+    replicas: 3
     resources:
       requests:
         cpu: 100m
@@ -73,8 +84,6 @@ spec:
       limits:
         cpu: 1000m
         memory: 512Mi
-    dataStorage:
-      size: 10Gi
     auditStorage:
       size: 5Gi
     logLevel: info
@@ -147,9 +156,21 @@ spec:
 | `spec.chartVersion` | `string` |  | `0.28.6` |  |
 | `spec.server` | `KubernetesOpenBaoServer` |  |  |  |
 | `spec.server.dev` | `KubernetesOpenBaoDevMode` |  |  |  |
-| `spec.server.standalone` | `KubernetesOpenBaoStandaloneMode` |  |  |  |
-| `spec.server.ha` | `KubernetesOpenBaoHaMode` |  |  |  |
-| `spec.server.ha.replicas` | `int32` |  | `3` |  |
+| `spec.server.raft` | `KubernetesOpenBaoRaftStorage` |  |  |  |
+| `spec.server.raft.dataStorage` | `KubernetesOpenBaoVolume` |  |  |  |
+| `spec.server.raft.dataStorage.size` | `string` |  | `10Gi` |  |
+| `spec.server.raft.dataStorage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
+| `spec.server.postgresql` | `KubernetesOpenBaoPostgresqlStorage` |  |  |  |
+| `spec.server.postgresql.host` | `string \| valueFrom` | yes |  | KubernetesPostgres (`status.outputs.rw_service`) |
+| `spec.server.postgresql.port` | `int32` |  | `5432` |  |
+| `spec.server.postgresql.database` | `string` | yes |  |  |
+| `spec.server.postgresql.username` | `string` |  | `app` |  |
+| `spec.server.postgresql.passwordSecret` | `KubernetesOpenBaoPostgresqlPasswordSecret` | yes |  |  |
+| `spec.server.postgresql.passwordSecret.secretName` | `string \| valueFrom` | yes |  | KubernetesPostgres (`status.outputs.password_secret.name`) |
+| `spec.server.postgresql.passwordSecret.secretKey` | `string` |  | `password` |  |
+| `spec.server.postgresql.sslMode` | `string` |  | `require` |  |
+| `spec.server.postgresql.maxParallel` | `int32` |  |  |  |
+| `spec.server.replicas` | `int32` |  | `1` |  |
 | `spec.server.resources` | `ContainerResources` |  |  |  |
 | `spec.server.resources.limits` | `CpuMemory` |  |  |  |
 | `spec.server.resources.limits.cpu` | `string` |  |  |  |
@@ -157,10 +178,7 @@ spec:
 | `spec.server.resources.requests` | `CpuMemory` |  |  |  |
 | `spec.server.resources.requests.cpu` | `string` |  |  |  |
 | `spec.server.resources.requests.memory` | `string` |  |  |  |
-| `spec.server.dataStorage` | `KubernetesOpenBaoStorage` |  |  |  |
-| `spec.server.dataStorage.size` | `string` |  | `10Gi` |  |
-| `spec.server.dataStorage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
-| `spec.server.auditStorage` | `KubernetesOpenBaoStorage` |  |  |  |
+| `spec.server.auditStorage` | `KubernetesOpenBaoVolume` |  |  |  |
 | `spec.server.auditStorage.size` | `string` |  | `10Gi` |  |
 | `spec.server.auditStorage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.server.logLevel` | `string` |  | `info` |  |
@@ -321,51 +339,209 @@ exist in the SERVED index at https://openbao.github.io/openbao-helm.
 
 `KubernetesOpenBaoServer`
 
-The OpenBao server: mode, sizing, storage, and logging.
+The OpenBao server: the storage engine (or `dev`), the replica
+count, sizing, the audit volume, and logging. UNSET = one Raft
+server.
+
+- rule: Dev mode is in-memory and takes no storage engine — remove raft/postgresql, or remove dev to run a storage engine.
+- rule: Dev mode runs exactly one in-memory server — remove replicas (or leave it at 1), or remove dev to run a storage engine at that count.
 
 ### spec.server.dev
 
 `KubernetesOpenBaoDevMode`
 
-Dev mode: in-memory, auto-initialized, auto-unsealed, root
-token literally "root". NEVER for real secrets — all data is
-lost on every restart, and the root token is plaintext in the
-pod spec (readable by anyone who can get pods). Exists so the
-component can be evaluated and composed against without the
-init/unseal ceremony. No PVC is created in dev mode, and
-workload-identity ServiceAccount annotations are NOT applied
-(a chart behavior — dev mode drops them).
+Dev mode: in-memory, auto-initialized, auto-unsealed, root token
+literally "root". NEVER for real secrets — all data is lost on
+every restart, and the root token is plaintext in the pod spec
+(readable by anyone who can get pods). Exists so the component
+can be evaluated and composed against without the init/unseal
+ceremony. No volume is created in dev mode, and workload-identity
+ServiceAccount annotations are NOT applied (a chart behavior — dev
+mode drops them). Exclusive with a storage engine and with
+`replicas`: dev is one in-memory server.
 
-### spec.server.standalone
+### spec.server.raft
 
-`KubernetesOpenBaoStandaloneMode`
+`KubernetesOpenBaoRaftStorage`
 
-Standalone: one instance, `storage "file"` on the data PVC.
-The production shape for single-instance installs.
+Integrated Raft storage: every replica persists to its own data
+volume and the cluster elects a leader. The ONLY engine with a
+snapshot API — `backup` and `restore` require it. This module
+renders `retry_join` stanzas for every peer (the chart alone
+ships NONE — without them a multi-replica Raft install never
+forms a cluster and each pod sits uninitialized and independent).
+Bootstrap: initialize pod-0 and unseal every pod; joins then
+happen automatically through retry_join.
 
-### spec.server.ha
+### spec.server.raft.dataStorage
 
-`KubernetesOpenBaoHaMode`
+`KubernetesOpenBaoVolume`
 
-High availability with integrated Raft storage: every replica
-persists to its own data PVC and the cluster elects a leader.
-This module renders `retry_join` stanzas for every peer (the
-chart alone ships NONE — without them a multi-replica Raft
-install never forms a cluster and each pod sits uninitialized
-and independent). Bootstrap: initialize pod-0 and unseal every
-pod; joins then happen automatically through retry_join.
+The data volume every replica persists its Raft data to: one PVC
+per replica, mounted at /openbao/data. UNSET = the chart's 10Gi on
+the cluster's default StorageClass. Lives here, and nowhere else,
+because Raft is the only engine that has a volume.
 
-### spec.server.ha.replicas
+### spec.server.raft.dataStorage.size
+
+`string` · optional (explicit presence)
+
+Volume size (e.g. "10Gi").
+
+- default: `10Gi`
+- rule: {"string":{"pattern":"^\\d+(\\.\\d+)?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$"}}
+
+### spec.server.raft.dataStorage.storageClass
+
+`string | valueFrom`
+
+StorageClass name. Empty uses the cluster's default class.
+Accepts a literal name or a reference to a
+KubernetesStorageClass resource.
+
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
+
+### spec.server.postgresql
+
+`KubernetesOpenBaoPostgresqlStorage`
+
+PostgreSQL storage: OpenBao's production-ready external backend
+(transactional, paginated lists, high availability through a
+lock table it creates itself), declared by reference to the
+catalog's KubernetesPostgres or by literal host. No data volume —
+the vault's data lives in the database, and THE DATABASE'S BACKUP
+IS THE VAULT'S BACKUP: `backup` and `restore` (Raft snapshots) are
+refused on this engine. The module renders `ha_enabled` on at
+every replica count so the server labels its active pod and the
+chart's active-leader Service selects it; the connection reaches
+the server as the standard PostgreSQL environment (PGHOST,
+PGPORT, PGDATABASE, PGUSER, PGSSLMODE, and PGPASSWORD from the
+referenced Secret) — nothing credential-bearing enters the
+configuration ConfigMap.
+
+### spec.server.postgresql.host
+
+`string | valueFrom` · required
+
+PostgreSQL host — a Service name (same namespace) or a full FQDN
+(cross-namespace or external). Accepts a literal or a reference to
+a KubernetesPostgres resource (its read-write Service — always the
+current primary). Reaches the server as PGHOST.
+
+- references: KubernetesPostgres (`status.outputs.rw_service`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesPostgres, name: <that resource's name>, fieldPath: status.outputs.rw_service}} -- a bare string does not parse
+
+### spec.server.postgresql.port
 
 `int32` · optional (explicit presence)
 
-Number of server replicas (Raft peers). Odd counts (3, 5)
-tolerate minority loss; 3 is the standard production shape. A
-single replica is a legal Raft cluster of one (useful in labs).
-Remember the chart's default required anti-affinity: replicas
-beyond the node count stay Pending (see scheduling).
+PostgreSQL port. Empty = 5432. Reaches the server as PGPORT.
 
-- default: `3`
+- default: `5432`
+- rule: {"int32":{"lte":65535,"gt":0}}
+
+### spec.server.postgresql.database
+
+`string` · required
+
+Database that holds the vault's tables — one database per vault (on
+a KubernetesPostgres: declare it at bootstrap via initdb, e.g.
+"openbao"). Reaches the server as PGDATABASE.
+
+- rule: {"required":true}
+
+### spec.server.postgresql.username
+
+`string` · optional (explicit presence)
+
+Database user the vault connects as — the role that owns the
+database (its ownership covers the tables OpenBao creates). Empty =
+"app", the owner a KubernetesPostgres bootstraps by default; name the
+role explicitly when the bootstrap declared one. Reaches the server
+as PGUSER.
+
+- default: `app`
+
+### spec.server.postgresql.passwordSecret
+
+`KubernetesOpenBaoPostgresqlPasswordSecret` · required
+
+The user's password, read from an existing Secret and delivered to
+the server as PGPASSWORD through the chart's secret-environment seam
+— never rendered into the configuration or the chart values.
+
+- rule: {"required":true}
+
+### spec.server.postgresql.passwordSecret.secretName
+
+`string | valueFrom` · required
+
+Secret name. Accepts a literal or a reference to a
+KubernetesPostgres resource (its `<cluster>-app` credential Secret,
+maintained by the operator across failovers). Must live in the
+vault's namespace (see the engine's comment).
+
+- references: KubernetesPostgres (`status.outputs.password_secret.name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesPostgres, name: <that resource's name>, fieldPath: status.outputs.password_secret.name}} -- a bare string does not parse
+
+### spec.server.postgresql.passwordSecret.secretKey
+
+`string` · optional (explicit presence)
+
+Key within the Secret holding the password. Empty = "password"
+(the key a KubernetesPostgres application Secret uses).
+
+- default: `password`
+
+### spec.server.postgresql.sslMode
+
+`string` · optional (explicit presence)
+
+PostgreSQL sslmode for the connection (disable, require, verify-ca,
+verify-full). Empty = "require": the connection is encrypted and
+OpenBao's backend tries TLS by default; a KubernetesPostgres serves
+TLS out of the box, so `require` works with no CA in hand.
+`verify-ca` / `verify-full` also verify the server's certificate and
+need its CA reachable by the pod — mount it through `helm_values`
+and point PGSSLROOTCERT at it via `server.extraEnvironmentVars`.
+`disable` only for a database that serves no TLS at all. Reaches
+the server as PGSSLMODE.
+
+- default: `require`
+- rule: sslmode must be one of: disable, require, verify-ca, verify-full.
+
+### spec.server.postgresql.maxParallel
+
+`int32` · optional (explicit presence)
+
+Maximum concurrent connections EACH server opens to the database
+(`max_parallel` in the storage stanza). Empty = OpenBao's default of
+128 — more than a default PostgreSQL's 100 `max_connections`, and
+multiplied by `replicas`. Set it when the database is shared or its
+connection budget is known (a vault at rest uses a handful; 32 is
+a generous ceiling for most).
+
+- rule: {"int32":{"lte":1024,"gte":1}}
+
+### spec.server.replicas
+
+`int32` · optional (explicit presence)
+
+Number of server replicas (Raft peers, or PostgreSQL-stored servers
+sharing one lock table). UNSET = 1. On Raft, odd counts (3, 5)
+tolerate minority loss and 3 is the standard production shape; on
+PostgreSQL any count above 1 gives failover, the database decides
+durability. Remember the chart's default REQUIRED hostname
+anti-affinity: replicas beyond the node count stay Pending (see
+scheduling). At 1 the module disables the chart's
+PodDisruptionBudget — the chart would render `maxUnavailable: 0`
+for one replica, which blocks every node drain and protects nothing.
+With `dev` only 1 is accepted (dev is one in-memory server).
+
+- default: `1`
 - rule: {"int32":{"lte":11,"gte":1}}
 
 ### spec.server.resources
@@ -406,41 +582,14 @@ Specify the minimum amount of CPU and memory that the container is guaranteed.
 
 `string`
 
-### spec.server.dataStorage
-
-`KubernetesOpenBaoStorage`
-
-The data volume (file storage in standalone, Raft storage in HA).
-Ignored in dev mode (in-memory). One PVC per replica, mounted at
-/openbao/data.
-
-### spec.server.dataStorage.size
-
-`string` · optional (explicit presence)
-
-Volume size (e.g. "10Gi").
-
-- default: `10Gi`
-- rule: {"string":{"pattern":"^\\d+(\\.\\d+)?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$"}}
-
-### spec.server.dataStorage.storageClass
-
-`string | valueFrom`
-
-StorageClass name. Empty uses the cluster's default class.
-Accepts a literal name or a reference to a
-KubernetesStorageClass resource.
-
-- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
-
 ### spec.server.auditStorage
 
-`KubernetesOpenBaoStorage`
+`KubernetesOpenBaoVolume`
 
 Optional dedicated volume for file audit logs, mounted at
-/openbao/audit. Creating the volume does NOT enable auditing —
-after initialization run
+/openbao/audit — available on either storage engine (the chart
+claims it for any non-dev server). Creating the volume does NOT
+enable auditing — after initialization run
 `bao audit enable file file_path=/openbao/audit/audit.log`.
 
 ### spec.server.auditStorage.size
@@ -703,7 +852,7 @@ GKE Workload Identity: the GCP service account email to annotate
 the server ServiceAccount with (iam.gke.io/gcp-service-account).
 Leave empty to rely on node/ambient credentials. NOTE dev mode
 drops ServiceAccount annotations (chart behavior) — auto-unseal
-with workload identity requires standalone or ha mode.
+with workload identity needs a storage engine, not dev.
 
 - references: GcpServiceAccount (`status.outputs.email`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpServiceAccount, name: <that resource's name>, fieldPath: status.outputs.email}} -- a bare string does not parse
@@ -931,8 +1080,8 @@ endpoint requires an OpenBao token and Prometheus cannot scrape.
 
 Also create a ServiceMonitor (requires the Prometheus Operator
 CRDs — a KubernetesKubePrometheusStack — on the cluster; the
-install FAILS without them). In HA mode the chart scrapes only
-the active node.
+install FAILS without them). The chart scrapes only the active
+node (every non-dev server runs in the chart's HA mode).
 
 ### spec.serviceAccount
 
@@ -987,9 +1136,10 @@ store's own vocabulary, wired by reference to the catalog's bucket,
 identity, and token kinds; retention prunes older objects.
 
 RAFT ONLY: snapshots exist only for integrated Raft storage
-(`server.ha`; a single replica is a legal Raft cluster of one).
-Standalone file storage and dev mode have no snapshot API, and the
-server refuses the call ("raft storage is not in use").
+(`server.raft`, the default when no engine is declared; a single
+replica is a legal Raft cluster of one). Dev mode has no snapshot
+API, and a vault stored in PostgreSQL is backed up by its database —
+the server refuses the call on either ("raft storage is not in use").
 
 ONE STEP THE MODULE CANNOT TAKE: the job logs in through OpenBao's
 Kubernetes auth method, and the policy, auth mount, and role it
@@ -1640,7 +1790,8 @@ The key within the Kubernetes Secret.
 
 ## Validation Rules
 
-- `spec.backup.requires_raft`: Backups snapshot Raft storage: set server.ha (a single replica is a legal Raft cluster) — dev mode and standalone file storage have no snapshot API.
+- `spec.backup.not_on_dev`: Backups snapshot Raft storage and dev mode has no snapshot API (it is in-memory) — remove backup, or remove server.dev and run a storage engine (leave server.raft unset for one Raft server).
+- `spec.backup.not_on_postgresql`: Snapshots exist only for Raft storage; a vault stored in PostgreSQL is backed up by its database — remove backup, or store the vault on server.raft.
 - `spec.backup.requires_auth_delegator`: The backup job logs in through OpenBao's Kubernetes auth method, which verifies its token with a TokenReview — leave service_account.auth_delegator_enabled on (the default) when backup is declared.
 - `spec.restore.requires_backup`: A restore reads from the store declared on backup (bucket, prefix, credentials, identity) — declare backup with the same store the snapshot was written to.
 - `spec.restore.requires_auto_unseal`: A declared restore needs auto_unseal with the same seal key the snapshot was taken under — declare the same aws_kms, gcp_kms, azure_key_vault, or transit seal as the source. A Shamir cluster restores by hand; see the component guide.
@@ -1654,7 +1805,7 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesOpenBa
 | `status.outputs.namespace` | `string` | Namespace the server runs in. |
 | `status.outputs.service` | `string` | The main client Service name (round-robins ALL server pods, including sealed/not-ready ones — by design, so init/unseal can reach them). |
 | `status.outputs.internal_service` | `string` | The headless Service (`<name>-internal`) used for peer discovery and Raft cluster addresses. |
-| `status.outputs.active_service` | `string` | The active-leader Service (`<name>-active`) — HA mode only, empty otherwise. Points at exactly the elected leader; the right target for write-heavy clients. |
+| `status.outputs.active_service` | `string` | The active-leader Service (`<name>-active`) — every server on a storage engine has one (Raft or PostgreSQL, at any replica count); empty only in dev mode. Points at exactly the pod holding the HA lock; the right target for write-heavy clients and the address the backup and restore jobs use. |
 | `status.outputs.ui_service` | `string` | The UI Service name (`<name>-ui`) when ui_enabled, empty otherwise. |
 | `status.outputs.api_endpoint` | `string` | In-cluster API endpoint, scheme included (e.g. "http://bao.openbao.svc.cluster.local:8200" — https when TLS is enabled). What secret-consuming addons (external-secrets ClusterSecretStore, cert-manager Vault issuers) should point at. |
 | `status.outputs.port` | `string` | API port (8200). |
@@ -1673,7 +1824,9 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.server.dataStorage.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.server.raft.dataStorage.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.server.postgresql.host` | KubernetesPostgres | `status.outputs.rw_service` |
+| `spec.server.postgresql.passwordSecret.secretName` | KubernetesPostgres | `status.outputs.password_secret.name` |
 | `spec.server.auditStorage.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.tls.certSecretName` | KubernetesCertificate | `status.outputs.secret_name` |
 | `spec.autoUnseal.gcpKms.project` | GcpProject | `status.outputs.project_id` |

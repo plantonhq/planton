@@ -101,29 +101,20 @@ params:
     value: change-me
 
   # ── OpenBao ──────────────────────────────────────────────────────────────
-  - name: openbao_ha_enabled
-    type: bool
+  - name: openbao_replicas
     description: >
-      Runs OpenBao as a Raft HA cluster (leader election, one volume per
-      replica) instead of a single instance. Needs at least as many
-      schedulable nodes as replicas — the chart ships a required hostname
-      anti-affinity. The single-instance default is the honest start; flip
-      this once the cluster has the nodes and the secrets store has become
-      critical-path.
-    value: false
-
-  - name: openbao_ha_replicas
-    description: >
-      Raft cluster size when openbao_ha_enabled is true. 3 (default) is
-      the smallest size that survives one member's loss with quorum
-      intact; 5 survives two. Even numbers buy nothing — quorum math.
-      Ignored while openbao_ha_enabled is false.
-    value: "3"
+      OpenBao server replicas on integrated Raft storage (leader election,
+      one volume per replica). 1 (default) is a legal Raft cluster of one
+      and the honest start; 3 is the smallest size that survives one
+      member's loss with quorum intact; 5 survives two. Even numbers buy
+      nothing — quorum math. Needs at least as many schedulable nodes as
+      replicas — the chart ships a required hostname anti-affinity.
+    value: "1"
 
   - name: openbao_disk_size
     description: >
-      Persistent volume size for OpenBao's data (a Kubernetes quantity;
-      per replica in HA mode). Secrets are small — 10Gi is generous — but
-      the volume also carries Raft snapshots in HA mode; grow it before
-      enabling aggressive audit or snapshot schedules.
+      Persistent volume size for OpenBao's Raft data (a Kubernetes
+      quantity; one volume per replica). Secrets are small — 10Gi is
+      generous — but the volume also carries Raft snapshots; grow it
+      before enabling aggressive audit or snapshot schedules.
     value: 10Gi

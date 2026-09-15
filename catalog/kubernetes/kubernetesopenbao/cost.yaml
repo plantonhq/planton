@@ -11,12 +11,12 @@ spec:
     - field_path: server.resources
       sku_meter: cluster CPU and memory reservations
       impact: Each server replica reserves the declared requests. When omitted, the module applies the spec's declared defaults (100m CPU / 256Mi memory requests, 1000m CPU / 512Mi limits) -- modest laboratory sizing; size real deployments explicitly.
-    - field_path: server.ha
+    - field_path: server.replicas
       sku_meter: cluster CPU and memory reservations
-      impact: HA mode runs a Raft cluster of `replicas` servers (default 3) -- each carries the full per-replica reservation and its own volumes. Dev and standalone modes run exactly one.
-    - field_path: server.data_storage
+      impact: Every replica (default 1) carries the full per-replica reservation, on either storage engine; on Raft each replica also carries its own data volume. Dev mode runs exactly one server.
+    - field_path: server.raft.data_storage
       sku_meter: provisioned storage capacity
-      impact: One data PVC per replica (default 10Gi) holding the Raft or file storage. Ignored in dev mode, which is entirely in-memory.
+      impact: One data PVC per replica (default 10Gi) holding the Raft data -- the only engine with a volume. A vault stored in PostgreSQL provisions no data volume (its data lives in the database, billed there); dev mode is entirely in-memory.
     - field_path: server.audit_storage
       sku_meter: provisioned storage capacity
       impact: When set, a second PVC per replica (default 10Gi) for audit device output.
@@ -29,5 +29,6 @@ spec:
   estimate_exclusions:
     - the price of reserved CPU, memory, and storage is the target cluster's node and storage-class economics, which this catalog cannot know
     - dev mode is in-memory -- no volumes are provisioned and ALL data is lost on pod restart
+    - a vault on PostgreSQL storage (server.postgresql) stores in a database this manifest only references -- its capacity and its backups bill with that database, not here
     - auto-unseal KMS keys (AWS, GCP, Azure) and snapshot object storage bill on their own cloud accounts, outside the cluster
   notes: "This component installs the OpenBao Helm chart -- its cost is the share of the cluster its server replicas and their volumes reserve, realized on the cluster's bill. The manifest-time statement is replicas x (per-replica resources + data and audit volumes)."

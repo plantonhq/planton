@@ -269,7 +269,7 @@ Fields on other kinds that can point at this resource:
 | KubernetesMysql | `spec.backup.storages[].pvc.volume.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesNats | `spec.jetStream.storageClass` | `metadata.name` |
 | KubernetesNeo4j | `spec.dataVolume.storageClass` | `status.outputs.storage_class_name` |
-| KubernetesOpenBao | `spec.server.dataStorage.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesOpenBao | `spec.server.raft.dataStorage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesOpenBao | `spec.server.auditStorage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesOpenSearch | `spec.nodePools[].persistence.pvc.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesPersistentVolumeClaim | `spec.storageClassName` | `status.outputs.storage_class_name` |

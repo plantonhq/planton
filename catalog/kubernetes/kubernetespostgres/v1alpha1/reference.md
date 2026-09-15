@@ -2074,6 +2074,8 @@ Fields on other kinds that can point at this resource:
 | KubernetesKeycloak | `spec.db.passwordSecret.name` | `status.outputs.password_secret.name` |
 | KubernetesMlflow | `spec.backendStore.postgres.host` | `status.outputs.rw_service` |
 | KubernetesMlflow | `spec.backendStore.postgres.passwordSecret.secretName` | `status.outputs.password_secret.name` |
+| KubernetesOpenBao | `spec.server.postgresql.host` | `status.outputs.rw_service` |
+| KubernetesOpenBao | `spec.server.postgresql.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | KubernetesOpenFga | `spec.datastore.postgres.host` | `status.outputs.rw_service` |
 | KubernetesOpenFga | `spec.datastore.postgres.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | KubernetesOpenFga | `spec.datastore.mysql.passwordSecret.secretName` | `status.outputs.password_secret.name` |

@@ -82,7 +82,7 @@ EOF
 }
 
 jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
-# In HA mode BAO_ADDR is the active-leader Service, which has no endpoints
+# BAO_ADDR is the active-leader Service, which has no endpoints
 # until a server is initialized and unsealed -- and a fresh unseal, a
 # rolling restart, or a leader election empties it for a few seconds. A run
 # that starts inside that window must wait, not spend the Job's backoff
@@ -113,7 +113,7 @@ login_out=$(bao write -field=token "auth/$BAO_AUTH_PATH/login" role="$BAO_ROLE" 
     *"certificate"*|*"x509"*|*"tls"*)
       echo "TLS verification against $BAO_ADDR failed. The server certificate must include the active Service name (the host in BAO_ADDR) in its dnsNames; add it to the KubernetesCertificate and let it re-issue." ;;
     *"connection refused"*|*"no such host"*|*"i/o timeout"*)
-      echo "OpenBao is not reachable at $BAO_ADDR. In HA mode this is the active-leader Service: it has no endpoints until a server is initialized and unsealed ('bao operator init' then unseal, or auto-unseal after init)." ;;
+      echo "OpenBao is not reachable at $BAO_ADDR. This is the active-leader Service: it has no endpoints until a server is initialized and unsealed ('bao operator init' then unseal, or auto-unseal after init)." ;;
     *"Vault is sealed"*|*"Vault is not initialized"*)
       echo "OpenBao is sealed or not initialized. Initialize and unseal it first; backups resume on the next scheduled run." ;;
   esac
@@ -127,7 +127,7 @@ save_out=$(bao operator raft snapshot save "$file" 2>&1) || {
   echo "Taking the snapshot failed: $save_out"
   case "$save_out" in
     *"raft storage is not in use"*)
-      echo "This server does not run integrated Raft storage; snapshots exist only for server.ha. The spec rule should have refused this — re-check the deployed manifest." ;;
+      echo "This server does not run integrated Raft storage; snapshots exist only for Raft storage (server.raft). The spec rule should have refused this — re-check the deployed manifest." ;;
     *"permission denied"*)
       echo "The token from role '$BAO_ROLE' cannot read sys/storage/raft/snapshot. The policy '$BACKUP_POLICY' must grant capabilities = [\"read\"] on that path; re-run the policy command from the recipe."
       recipe ;;
@@ -263,7 +263,7 @@ if ! out=$(bao operator raft snapshot restore "$SNAPSHOT_DIR/restore.snap" 2>&1)
     *"permission denied"*)
       echo "The token in Secret $ROOT_TOKEN_SECRET/$ROOT_TOKEN_KEY cannot install snapshots. It must be the initial root token 'bao operator init' printed for THIS cluster." ;;
     *"raft storage is not in use"*)
-      echo "This server does not run integrated Raft storage; a restore needs server.ha." ;;
+      echo "This server does not run integrated Raft storage; a restore needs Raft storage (server.raft)." ;;
   esac
   echo "OpenBao seals itself when an install fails part-way. Delete the server pods in namespace $RELEASE_NAMESPACE so they restart and auto-unseal (kubectl delete pod -n $RELEASE_NAMESPACE -l app.kubernetes.io/instance=$RELEASE_NAME), fix the cause above, then change or re-declare 'restore' to run again."
   exit 1
