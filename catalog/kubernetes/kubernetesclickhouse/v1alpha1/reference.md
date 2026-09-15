@@ -98,7 +98,7 @@ spec:
 | `spec.resources.requests.cpu` | `string` |  |  |  |
 | `spec.resources.requests.memory` | `string` |  |  |  |
 | `spec.diskSize` | `string` | yes |  |  |
-| `spec.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.logDiskSize` | `string` |  |  |  |
 | `spec.retainVolumesOnDelete` | `bool` |  |  |  |
 | `spec.coordination` | `KubernetesClickHouseCoordination` |  |  |  |
@@ -113,7 +113,7 @@ spec:
 | `spec.coordination.keeper.resources.requests.cpu` | `string` |  |  |  |
 | `spec.coordination.keeper.resources.requests.memory` | `string` |  |  |  |
 | `spec.coordination.keeper.diskSize` | `string` |  | `10Gi` |  |
-| `spec.coordination.keeper.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.coordination.keeper.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.coordination.external` | `KubernetesClickHouseExternalCoordination` |  |  |  |
 | `spec.coordination.external.nodes` | `[]KubernetesClickHouseCoordinationNode` |  |  |  |
 | `spec.coordination.external.nodes[].host` | `string` | yes |  |  |
@@ -317,8 +317,8 @@ Storage class for the data volumes. Accepts a literal name or a
 reference to a KubernetesStorageClass resource. Empty = the
 cluster's default storage class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.logDiskSize
 
@@ -443,8 +443,8 @@ snapshots (metadata only, not table data). Default "10Gi".
 Storage class for the Keeper volumes. Empty = the cluster's
 default storage class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.coordination.external
 
@@ -793,8 +793,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.storageClass` | KubernetesStorageClass | `metadata.name` |
-| `spec.coordination.keeper.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.coordination.keeper.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 
 ## Referenced By
 

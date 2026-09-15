@@ -457,7 +457,7 @@ spec:
 | `spec.disableEdgeCache` | `bool` |  |  |  |
 | `spec.disableEmailObfuscation` | `bool` |  |  |  |
 | `spec.enhancedThreatControlEnabled` | `bool` |  |  |  |
-| `spec.projectId` | `string` |  |  |  |
+| `spec.projectId` | `string \| valueFrom` |  |  | DigitalOceanProject (`status.outputs.project_id`) |
 
 ## Field Details
 
@@ -613,6 +613,13 @@ Redeploy automatically when this branch is pushed.
 
 Which registry hosts the image. Required.
 
+With docr the image is pulled from the account's own DigitalOcean
+Container Registry; App Platform resolves it itself, so no field here
+names the registry and no reference is wired. To say that the app
+depends on a DigitalOceanContainerRegistry that Planton manages -- so
+the registry deploys first and the dependency is drawn -- declare it
+under metadata.relationships with type `uses`.
+
 - rule: {"required":true}
 
 Allowed values (use exactly as shown):
@@ -627,7 +634,10 @@ Allowed values (use exactly as shown):
 `string`
 
 Registry hostname. Required for docker_hub and ghcr (for example ghcr.io
-or a Docker Hub namespace). Must be empty for docr.
+or a Docker Hub namespace). Must be empty for docr -- DigitalOcean's own
+registry is addressed by the account, not by a hostname (see
+registry_type). A hostname is not a Planton resource, so this is a
+plain string, never a reference.
 
 ### spec.services[].image.repository
 
@@ -1166,6 +1176,13 @@ Redeploy automatically when this branch is pushed.
 
 Which registry hosts the image. Required.
 
+With docr the image is pulled from the account's own DigitalOcean
+Container Registry; App Platform resolves it itself, so no field here
+names the registry and no reference is wired. To say that the app
+depends on a DigitalOceanContainerRegistry that Planton manages -- so
+the registry deploys first and the dependency is drawn -- declare it
+under metadata.relationships with type `uses`.
+
 - rule: {"required":true}
 
 Allowed values (use exactly as shown):
@@ -1180,7 +1197,10 @@ Allowed values (use exactly as shown):
 `string`
 
 Registry hostname. Required for docker_hub and ghcr (for example ghcr.io
-or a Docker Hub namespace). Must be empty for docr.
+or a Docker Hub namespace). Must be empty for docr -- DigitalOcean's own
+registry is addressed by the account, not by a hostname (see
+registry_type). A hostname is not a Planton resource, so this is a
+plain string, never a reference.
 
 ### spec.workers[].image.repository
 
@@ -1660,6 +1680,13 @@ Redeploy automatically when this branch is pushed.
 
 Which registry hosts the image. Required.
 
+With docr the image is pulled from the account's own DigitalOcean
+Container Registry; App Platform resolves it itself, so no field here
+names the registry and no reference is wired. To say that the app
+depends on a DigitalOceanContainerRegistry that Planton manages -- so
+the registry deploys first and the dependency is drawn -- declare it
+under metadata.relationships with type `uses`.
+
 - rule: {"required":true}
 
 Allowed values (use exactly as shown):
@@ -1674,7 +1701,10 @@ Allowed values (use exactly as shown):
 `string`
 
 Registry hostname. Required for docker_hub and ghcr (for example ghcr.io
-or a Docker Hub namespace). Must be empty for docr.
+or a Docker Hub namespace). Must be empty for docr -- DigitalOcean's own
+registry is addressed by the account, not by a hostname (see
+registry_type). A hostname is not a Planton resource, so this is a
+plain string, never a reference.
 
 ### spec.jobs[].image.repository
 
@@ -2832,10 +2862,15 @@ Feature flags App Platform accepts as free-form strings.
 
 ### spec.projectId
 
-`string`
+`string | valueFrom`
 
-DigitalOcean project to put the app in. Literal project UUID. A typed
-reference will land when the Project kind is forged.
+(Optional) The project the app is created in. Reference a
+DigitalOceanProject resource (the default wiring resolves its
+project_id output) or pass a literal project UUID. When unset, the app
+lands in the account's default project.
+
+- references: DigitalOceanProject (`status.outputs.project_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
 ## Validation Rules
 
@@ -2862,6 +2897,7 @@ Fields that can point at another resource's outputs:
 | `spec.databases[].clusterName` | DigitalOceanDatabaseCluster | `spec.cluster_name` |
 | `spec.domains[].zone` | DigitalOceanDnsZone | `status.outputs.zone_name` |
 | `spec.vpc` | DigitalOceanVpc | `status.outputs.vpc_id` |
+| `spec.projectId` | DigitalOceanProject | `status.outputs.project_id` |
 
 ## Referenced By
 

@@ -504,6 +504,8 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | AzureAiFoundry | `spec.containerRegistryId` | `status.outputs.container_registry_id` |
 | AzureAksCluster | `spec.bootstrapProfile.containerRegistryId` | `status.outputs.container_registry_id` |
+| AzureContainerApp | `spec.registries[].server` | `status.outputs.login_server` |
+| AzureContainerAppJob | `spec.registries[].server` | `status.outputs.login_server` |
 | AzureContainerInstance | `spec.imageRegistryCredentials[].server` | `status.outputs.login_server` |
 | AzureMachineLearningWorkspace | `spec.containerRegistryId` | `status.outputs.container_registry_id` |
 

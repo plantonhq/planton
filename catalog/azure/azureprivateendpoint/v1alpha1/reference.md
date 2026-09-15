@@ -147,6 +147,14 @@ default_kind; reference the service's own output id in composed
 environments. Set this OR connection_alias, never both. Fixed at
 creation.
 
+Containment-exempt: the endpoint LIVES in its subnet (the subnet
+reference above places it) and REACHES the service named here.
+Private endpoints are how Azure PaaS joins a network, and most of
+what they reach is itself a container (a storage account, a Key
+Vault, a Cosmos account, a SQL server); without the exemption an
+endpoint would be drawn inside the service it merely connects to,
+torn out of the subnet that is its real home.
+
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.privateServiceConnection.connectionAlias

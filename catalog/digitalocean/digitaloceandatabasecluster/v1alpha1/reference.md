@@ -66,7 +66,8 @@ spec:
     thresholdPercent: 80
     incrementGib: 50
   sqlMode: "ANSI,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
-  projectId: 3f2a9c6e-8d41-4b7a-9f0e-1c5d7b2a4e68
+  projectId:
+    value: 3f2a9c6e-8d41-4b7a-9f0e-1c5d7b2a4e68
   tags:
     - env:example
 ```
@@ -95,7 +96,7 @@ spec:
 | `spec.storageAutoscale.incrementGib` | `uint32` |  |  |  |
 | `spec.evictionPolicy` | `string` |  |  |  |
 | `spec.sqlMode` | `string` |  |  |  |
-| `spec.projectId` | `string` |  |  |  |
+| `spec.projectId` | `string \| valueFrom` |  |  | DigitalOceanProject (`status.outputs.project_id`) |
 | `spec.tags` | `[]string` |  |  |  |
 
 ## Field Details
@@ -307,11 +308,15 @@ the cluster to noeviction.
 
 ### spec.projectId
 
-`string`
+`string | valueFrom`
 
-(Optional) DigitalOcean project UUID to put the cluster in. Literal; a
-typed reference lands when the Project kind is forged. Cannot be
-changed after creation.
+(Optional) The project the cluster is created in. Reference a
+DigitalOceanProject resource (the default wiring resolves its
+project_id output) or pass a literal project UUID. Cannot be changed
+after creation.
+
+- references: DigitalOceanProject (`status.outputs.project_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
 ### spec.tags
 
@@ -356,6 +361,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.vpc` | DigitalOceanVpc | `status.outputs.vpc_id` |
+| `spec.projectId` | DigitalOceanProject | `status.outputs.project_id` |
 
 ## Referenced By
 

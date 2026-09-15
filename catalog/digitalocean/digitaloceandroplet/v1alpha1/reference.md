@@ -49,8 +49,8 @@ spec:
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   sshKeys:
-    - "12345678"
-    - "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
+    - value: "12345678"
+    - value: "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
   enableIpv6: true
   enableBackups: true
   backupPolicy:
@@ -86,7 +86,7 @@ spec:
 | `spec.tags` | `[]string` |  |  |  |
 | `spec.userData` | `string` |  |  |  |
 | `spec.monitoring` | `bool` |  |  |  |
-| `spec.sshKeys` | `[]string` |  |  |  |
+| `spec.sshKeys` | `[]string \| valueFrom` |  |  | DigitalOceanSshKey (`status.outputs.ssh_key_id`) |
 | `spec.backupPolicy` | `DigitalOceanDropletBackupPolicy` |  |  |  |
 | `spec.backupPolicy.plan` | `string` |  |  |  |
 | `spec.backupPolicy.weekday` | `string` |  |  |  |
@@ -220,14 +220,19 @@ changed after creation.
 
 ### spec.sshKeys
 
-`[]string`
+`[]string | valueFrom`
 
 (Optional) SSH keys to inject at creation — the standard access path to
-a droplet. Each entry is the ID or fingerprint of an SSH key already
-registered on the DigitalOcean account. Keys cannot be added or removed
-after creation: any change forces the droplet to be recreated.
+a droplet. Each entry is a reference to a DigitalOceanSshKey resource
+(the default wiring resolves its numeric ssh_key_id; the fingerprint
+output works too -- droplets accept either) or a literal ID or
+fingerprint of a key already registered on the account. Keys cannot be
+added or removed after creation: any change forces the droplet to be
+recreated.
 
-- rule: {"repeated":{"unique":true,"items":{"string":{"minLen":"1"}}}}
+- references: DigitalOceanSshKey (`status.outputs.ssh_key_id`)
+- rule: each SSH key may be listed once -- DigitalOcean rejects a duplicate key on create
+- rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanSshKey, name: <that resource's name>, fieldPath: status.outputs.ssh_key_id}} -- a bare string does not parse
 
 ### spec.backupPolicy
 
@@ -338,6 +343,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.vpc` | DigitalOceanVpc | `status.outputs.vpc_id` |
 | `spec.volumeIds` | DigitalOceanVolume | `status.outputs.volume_id` |
+| `spec.sshKeys` | DigitalOceanSshKey | `status.outputs.ssh_key_id` |
 
 ## Referenced By
 

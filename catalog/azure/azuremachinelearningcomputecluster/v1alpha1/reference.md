@@ -137,8 +137,8 @@ Fixed at creation.
 
 `string` · required
 
-The VM size of each node, e.g. "STANDARD_DS2_V2" or
-"STANDARD_NC6S_V3" (GPU). Regional VM-family quota gates what
+The VM size of each node, e.g. "Standard_DS2_v2" or
+"Standard_NC6s_v3" (GPU). Regional VM-family quota gates what
 actually provisions. Fixed at creation.
 
 - rule: {"required":true}

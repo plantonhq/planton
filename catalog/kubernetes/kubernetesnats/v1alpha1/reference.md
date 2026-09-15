@@ -131,7 +131,7 @@ spec:
 | `spec.jetStream` | `KubernetesNatsJetStream` |  |  |  |
 | `spec.jetStream.enabled` | `bool` |  | `true` |  |
 | `spec.jetStream.diskSize` | `string` |  | `10Gi` |  |
-| `spec.jetStream.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.jetStream.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.jetStream.maxFileStore` | `string` |  |  |  |
 | `spec.jetStream.memoryStoreMaxSize` | `string` |  |  |  |
 | `spec.auth` | `KubernetesNatsAuth` |  |  |  |
@@ -302,8 +302,8 @@ where stream data lives. Empty = "10Gi" (the chart default).
 Storage class for the JetStream volumes. Empty = the cluster's
 default class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.jetStream.maxFileStore
 
@@ -876,7 +876,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.jetStream.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.jetStream.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.tls.secretName` | KubernetesCertificate | `status.outputs.secret_name` |
 
 ## See Also

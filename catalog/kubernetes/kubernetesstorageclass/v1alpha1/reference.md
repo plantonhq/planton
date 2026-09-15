@@ -251,23 +251,23 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
-| KubernetesClickHouse | `spec.storageClass` | `metadata.name` |
-| KubernetesClickHouse | `spec.coordination.keeper.storageClass` | `metadata.name` |
-| KubernetesGhaRunnerScaleSet | `spec.containerMode.kubernetesWorkVolume.storageClass` | `metadata.name` |
+| KubernetesClickHouse | `spec.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesClickHouse | `spec.coordination.keeper.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesGhaRunnerScaleSet | `spec.containerMode.kubernetesWorkVolume.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesGrafana | `spec.storage.storageClass` | `status.outputs.storage_class_name` |
-| KubernetesKafka | `spec.nodePools[].storage.storageClass` | `metadata.name` |
-| KubernetesKafka | `spec.nodePools[].storage.volumes[].storageClass` | `metadata.name` |
-| KubernetesKubePrometheusStack | `spec.prometheus.storageClass` | `metadata.name` |
-| KubernetesKubePrometheusStack | `spec.alertmanager.storageClass` | `metadata.name` |
-| KubernetesKubePrometheusStack | `spec.grafana.storage.storageClass` | `metadata.name` |
-| KubernetesLoki | `spec.monolithic.storageClass` | `metadata.name` |
-| KubernetesLoki | `spec.simpleScalable.storageClass` | `metadata.name` |
+| KubernetesKafka | `spec.nodePools[].storage.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesKafka | `spec.nodePools[].storage.volumes[].storageClass` | `status.outputs.storage_class_name` |
+| KubernetesKubePrometheusStack | `spec.prometheus.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesKubePrometheusStack | `spec.alertmanager.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesKubePrometheusStack | `spec.grafana.storage.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesLoki | `spec.monolithic.storageClass` | `status.outputs.storage_class_name` |
+| KubernetesLoki | `spec.simpleScalable.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesMongodb | `spec.replicaSets[].storage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesMongodb | `spec.sharding.configServer.storage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesMysql | `spec.storage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesMysql | `spec.proxy.proxysql.storage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesMysql | `spec.backup.storages[].pvc.volume.storageClass` | `status.outputs.storage_class_name` |
-| KubernetesNats | `spec.jetStream.storageClass` | `metadata.name` |
+| KubernetesNats | `spec.jetStream.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesNeo4j | `spec.dataVolume.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesOpenBao | `spec.server.raft.dataStorage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesOpenBao | `spec.server.auditStorage.storageClass` | `status.outputs.storage_class_name` |
@@ -277,15 +277,15 @@ Fields on other kinds that can point at this resource:
 | KubernetesPostgres | `spec.walStorage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesQdrant | `spec.storage.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesQdrant | `spec.snapshots.storageClass` | `status.outputs.storage_class_name` |
-| KubernetesRabbitMq | `spec.storageClass` | `metadata.name` |
+| KubernetesRabbitMq | `spec.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesSeaweedFs | `spec.master.dataVolume.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesSeaweedFs | `spec.volume.dataVolume.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesSeaweedFs | `spec.filer.dataVolume.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesSeaweedFs | `spec.admin.dataVolume.storageClass` | `status.outputs.storage_class_name` |
-| KubernetesSignoz | `spec.server.storageClass` | `metadata.name` |
+| KubernetesSignoz | `spec.server.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesSolr | `spec.zookeeper.provided.persistence.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesSolr | `spec.storage.persistent.storageClass` | `status.outputs.storage_class_name` |
-| KubernetesTempo | `spec.storageClass` | `metadata.name` |
+| KubernetesTempo | `spec.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesValkey | `spec.replication.persistence.storageClass` | `status.outputs.storage_class_name` |
 | KubernetesValkey | `spec.persistence.storageClass` | `status.outputs.storage_class_name` |
 

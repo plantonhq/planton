@@ -238,6 +238,11 @@ reference the resource's `*_id` output explicitly with valueFrom
 (kind + fieldPath), or pass a literal ARM ID. Azure allows ONE
 autoscale setting per target.
 
+Containment-exempt: the setting DRIVES its target's capacity from
+outside; it is an extension resource that hangs on the scale set or
+plan, never a tenant of it. Without the exemption a setting wired
+to a container target by reference would be drawn inside it.
+
 **ForceNew**: changing this destroys and recreates the setting.
 
 - rule: {"required":true}
@@ -379,7 +384,8 @@ target_resource_id), but any metric-emitting resource works (e.g.
 scale a worker scale set on a Service Bus queue's depth). No
 default kind for the same reason as target_resource_id: reference
 the resource's `*_id` output explicitly with valueFrom, or pass a
-literal ARM ID.
+literal ARM ID. Access, not placement, like target_resource_id --
+the setting reads this resource's metric, nothing more.
 
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse

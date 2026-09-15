@@ -181,7 +181,8 @@ spec:
     - name: queue-conn
       value: DefaultEndpointsProtocol=https;AccountName=test
   registries:
-    - server: testregistry.azurecr.io
+    - server:
+        value: testregistry.azurecr.io
       identity: System
   ingress:
     external_enabled: true
@@ -348,7 +349,7 @@ spec:
 | `spec.secrets[].keyVaultSecretId` | `string` |  |  |  |
 | `spec.secrets[].identity` | `string` |  |  |  |
 | `spec.registries` | `[]AzureContainerAppRegistry` |  |  |  |
-| `spec.registries[].server` | `string` | yes |  |  |
+| `spec.registries[].server` | `string \| valueFrom` | yes |  | AzureContainerRegistry (`status.outputs.login_server`) |
 | `spec.registries[].username` | `string` |  |  |  |
 | `spec.registries[].passwordSecretName` | `string` |  |  |  |
 | `spec.registries[].identity` | `string` |  |  |  |
@@ -1549,12 +1550,16 @@ or managed identity.
 
 ### spec.registries[].server
 
-`string` · required
+`string | valueFrom` · required
 
-Registry server hostname.
-Examples: "myregistry.azurecr.io", "ghcr.io", "docker.io"
+Registry server hostname. Reference an AzureContainerRegistry's
+login_server output (the default wiring -- the same shape the
+Container Instance's registry credential carries) or pass a literal
+such as "ghcr.io" or "docker.io".
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+- references: AzureContainerRegistry (`status.outputs.login_server`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: AzureContainerRegistry, name: <that resource's name>, fieldPath: status.outputs.login_server}} -- a bare string does not parse
 
 ### spec.registries[].username
 
@@ -1926,6 +1931,7 @@ Fields that can point at another resource's outputs:
 | `spec.containerAppEnvironmentId` | AzureContainerAppEnvironment | `status.outputs.environment_id` |
 | `spec.volumes[].storageName` | AzureContainerAppEnvironmentStorage | `status.outputs.storage_name` |
 | `spec.customScaleRules[].identityId` | AzureUserAssignedIdentity | `status.outputs.identity_id` |
+| `spec.registries[].server` | AzureContainerRegistry | `status.outputs.login_server` |
 | `spec.identity.userAssignedIdentityIds` | AzureUserAssignedIdentity | `status.outputs.identity_id` |
 
 ## Referenced By

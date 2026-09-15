@@ -165,7 +165,7 @@ spec:
 | `spec.storage.s3Vectors` | `AwsBedrockKnowledgeBaseS3VectorsStorage` |  |  |  |
 | `spec.storage.s3Vectors.indexArn` | `string` |  |  |  |
 | `spec.storage.s3Vectors.indexName` | `string` |  |  |  |
-| `spec.storage.s3Vectors.vectorBucketArn` | `string` |  |  |  |
+| `spec.storage.s3Vectors.vectorBucketArn` | `string \| valueFrom` |  |  | AwsS3VectorBucket (`status.outputs.vector_bucket_arn`) |
 | `spec.storage.rds` | `AwsBedrockKnowledgeBaseRdsStorage` |  |  |  |
 | `spec.storage.rds.resourceArn` | `string \| valueFrom` | yes |  | AwsRdsCluster (`status.outputs.arn`) |
 | `spec.storage.rds.credentialsSecretArn` | `string \| valueFrom` | yes |  | AwsSecretsManagerSecret (`status.outputs.secret_arn`) |
@@ -855,7 +855,10 @@ lowest-cost self-contained option).
 
 `string`
 
-ARN of an existing S3 vector index.
+ARN of an existing S3 vector index. Stays a literal: a bucket's index
+ARNs are a map output keyed by index name, so no single field path
+addresses one -- address a Planton-managed bucket through
+`vector_bucket_arn` + `index_name` instead.
 
 ### spec.storage.s3Vectors.indexName
 
@@ -865,9 +868,14 @@ Name of the vector index inside `vector_bucket_arn`.
 
 ### spec.storage.s3Vectors.vectorBucketArn
 
-`string`
+`string | valueFrom`
 
-ARN of the S3 vector bucket holding `index_name`.
+ARN of the S3 vector bucket holding `index_name`. Reference an
+AwsS3VectorBucket's vector_bucket_arn output (the default wiring) or
+pass a literal ARN.
+
+- references: AwsS3VectorBucket (`status.outputs.vector_bucket_arn`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: AwsS3VectorBucket, name: <that resource's name>, fieldPath: status.outputs.vector_bucket_arn}} -- a bare string does not parse
 
 ### spec.storage.rds
 
@@ -1819,6 +1827,7 @@ Fields that can point at another resource's outputs:
 | `spec.sql.serverless.auth.usernamePasswordSecretArn` | AwsSecretsManagerSecret | `status.outputs.secret_arn` |
 | `spec.storage.opensearchServerless.collectionArn` | AwsOpenSearchServerlessCollection | `status.outputs.collection_arn` |
 | `spec.storage.opensearchManaged.domainArn` | AwsOpenSearchDomain | `status.outputs.domain_arn` |
+| `spec.storage.s3Vectors.vectorBucketArn` | AwsS3VectorBucket | `status.outputs.vector_bucket_arn` |
 | `spec.storage.rds.resourceArn` | AwsRdsCluster | `status.outputs.arn` |
 | `spec.storage.rds.credentialsSecretArn` | AwsSecretsManagerSecret | `status.outputs.secret_arn` |
 | `spec.storage.pinecone.credentialsSecretArn` | AwsSecretsManagerSecret | `status.outputs.secret_arn` |

@@ -353,6 +353,12 @@ default reference kind -- the target can be any of several kinds
 (storage account, SQL server, Key Vault, Cognitive account, ...);
 name the kind explicitly in valueFrom when referencing.
 
+Containment-exempt: a shared private link is the search service's
+outbound door to a resource it indexes or enriches from; the
+service is not deployed into that resource. Every listed target is
+a container, and a service linked by reference would otherwise be
+drawn inside the store it reads.
+
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

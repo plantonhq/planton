@@ -126,7 +126,7 @@ spec:
 | `spec.containerMode` | `KubernetesGhaRunnerScaleSetContainerMode` |  |  |  |
 | `spec.containerMode.mode` | `string` | yes |  |  |
 | `spec.containerMode.kubernetesWorkVolume` | `KubernetesGhaRunnerScaleSetWorkVolume` |  |  |  |
-| `spec.containerMode.kubernetesWorkVolume.storageClass` | `string \| valueFrom` | yes |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.containerMode.kubernetesWorkVolume.storageClass` | `string \| valueFrom` | yes |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.containerMode.kubernetesWorkVolume.size` | `string` | yes |  |  |
 | `spec.runner` | `KubernetesGhaRunnerScaleSetRunner` |  |  |  |
 | `spec.runner.image` | `string` |  |  |  |
@@ -347,9 +347,9 @@ StorageClass to provision from. Accepts a literal name or a
 reference to a KubernetesStorageClass resource. Must support
 dynamic provisioning.
 
-- references: KubernetesStorageClass (`metadata.name`)
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
 - rule: {"required":true}
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.containerMode.kubernetesWorkVolume.size
 
@@ -562,7 +562,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.containerMode.kubernetesWorkVolume.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.containerMode.kubernetesWorkVolume.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.githubServerTls.configMapName` | KubernetesConfigMap | `metadata.name` |
 
 ## See Also

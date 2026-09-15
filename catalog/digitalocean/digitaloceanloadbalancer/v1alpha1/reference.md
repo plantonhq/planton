@@ -120,7 +120,7 @@ spec:
 | `spec.tlsCipherPolicy` | `string` |  |  |  |
 | `spec.network` | `string` |  |  |  |
 | `spec.networkStack` | `string` |  |  |  |
-| `spec.projectId` | `string` |  |  |  |
+| `spec.projectId` | `string \| valueFrom` |  |  | DigitalOceanProject (`status.outputs.project_id`) |
 | `spec.subnetUuid` | `string` |  |  |  |
 | `spec.ip` | `string` |  |  |  |
 | `spec.targetLoadBalancerIds` | `[]string \| valueFrom` |  |  | DigitalOceanLoadBalancer (`status.outputs.load_balancer_id`) |
@@ -513,11 +513,15 @@ the API, so drift on it is invisible.
 
 ### spec.projectId
 
-`string`
+`string | valueFrom`
 
-(Optional) DigitalOcean project UUID to put the balancer in. Literal; a
-typed reference lands when the Project kind is forged. When unset, the
+(Optional) The project the balancer is created in. Reference a
+DigitalOceanProject resource (the default wiring resolves its
+project_id output) or pass a literal project UUID. When unset, the
 account's default project is used.
+
+- references: DigitalOceanProject (`status.outputs.project_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
 ### spec.subnetUuid
 
@@ -694,6 +698,7 @@ Fields that can point at another resource's outputs:
 | `spec.vpc` | DigitalOceanVpc | `status.outputs.vpc_id` |
 | `spec.forwardingRules[].certificateName` | DigitalOceanCertificate | `status.outputs.certificate_id` |
 | `spec.dropletIds` | DigitalOceanDroplet | `status.outputs.droplet_id` |
+| `spec.projectId` | DigitalOceanProject | `status.outputs.project_id` |
 | `spec.targetLoadBalancerIds` | DigitalOceanLoadBalancer | `status.outputs.load_balancer_id` |
 | `spec.domains[].certificateName` | DigitalOceanCertificate | `status.outputs.certificate_id` |
 

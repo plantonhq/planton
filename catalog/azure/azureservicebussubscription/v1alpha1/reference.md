@@ -229,6 +229,12 @@ target's queue_name or topic_name output (no default kind: either
 entity type is a legal target), or pass a literal name. The target
 must exist before the subscription.
 
+Containment-exempt: the subscription LIVES in its own topic and
+forwards TO the target. When the target is another topic (a
+container), the subscription would otherwise be torn between the
+topic it belongs to and the topic it feeds; on a diagram it stays
+in its topic with a line out.
+
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.forwardDeadLetteredMessagesTo
@@ -238,7 +244,7 @@ must exist before the subscription.
 Auto-forward dead-lettered messages to another queue or topic in the
 same namespace, by entity name -- centralize poison-message handling.
 Reference the target's queue_name or topic_name output, or pass a
-literal name.
+literal name. Access, not placement, like `forward_to`.
 
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

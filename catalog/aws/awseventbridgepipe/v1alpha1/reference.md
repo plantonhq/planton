@@ -287,6 +287,12 @@ broker. FIXED FOR LIFE - changing the source replaces the whole
 pipe. References here carry no default kind: state the kind
 explicitly in valueFrom.
 
+Containment-exempt: a pipe is a managed integration that READS its
+source, transforms, and WRITES its target; none of the three ends is
+where the pipe lives. Whichever of them is a container (an ECS
+cluster, a Redshift cluster, an event bus), the pipe stands between
+its ends on a diagram, never inside one of them.
+
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
@@ -825,6 +831,7 @@ The enrichment step's ARN: a Lambda function, Step Functions
 express state machine, or API destination that transforms each
 batch before delivery. Unset skips enrichment. References here
 carry no default kind: state the kind explicitly in valueFrom.
+Access, not placement, like `source`.
 
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
@@ -881,7 +888,7 @@ function, Step Functions state machine, Kinesis stream, SQS queue,
 Redshift cluster, SageMaker pipeline, CloudWatch log group,
 EventBridge bus, or API destination. Swaps in place. References
 here carry no default kind: state the kind explicitly in
-valueFrom.
+valueFrom. Access, not placement, like `source`.
 
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
