@@ -71,6 +71,11 @@ func testControllerDeployment(available bool) *appsv1.Deployment {
 // returning its verdict plus how many times the manifest loader was invoked.
 func runGate(t *testing.T, skip bool, objs ...client.Object) (ready bool, applies int) {
 	t.Helper()
+	return runGateWith(t, skip, false, objs...)
+}
+
+func runGateWith(t *testing.T, skip, reapplyWhileNotReady bool, objs ...client.Object) (ready bool, applies int) {
+	t.Helper()
 	c := fake.NewClientBuilder().WithScheme(subOperatorScheme(t)).WithObjects(objs...).Build()
 
 	base := &Base{}
@@ -82,13 +87,32 @@ func runGate(t *testing.T, skip bool, objs ...client.Object) (ready bool, applie
 			applies++
 			return nil, nil
 		},
-		Namespace:   testNamespace,
-		Deployments: []string{testDeployment},
+		Namespace:            testNamespace,
+		Deployments:          []string{testDeployment},
+		ReapplyWhileNotReady: reapplyWhileNotReady,
 	})
 	if err != nil {
 		t.Fatalf("EnsureSubOperator: %v", err)
 	}
 	return ready, applies
+}
+
+// A release the operator owns alone may ask to be re-applied on every pass
+// its controller stands unready: an apply refused on its last object leaves
+// the Deployment starving for something only a re-apply lands. A serving
+// controller is still never re-applied.
+func TestEnsureSubOperator_ReapplyWhileNotReadyHealsAPartialInstall(t *testing.T) {
+	ready, applies := runGateWith(t, false, true, testCRD(SSAFieldManager), testControllerDeployment(false))
+	if ready {
+		t.Error("an unavailable controller cannot be ready")
+	}
+	if applies != 1 {
+		t.Errorf("an unready controller under ReapplyWhileNotReady is re-applied once per pass, applied %d times", applies)
+	}
+	ready, applies = runGateWith(t, false, true, testCRD(SSAFieldManager), testControllerDeployment(true))
+	if !ready || applies != 0 {
+		t.Errorf("a serving controller is never re-applied: ready=%v applies=%d", ready, applies)
+	}
 }
 
 func TestEnsureSubOperator_SkipTrustsTheAdopter(t *testing.T) {

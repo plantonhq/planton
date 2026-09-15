@@ -67,6 +67,11 @@ func BarmanCloudPluginSubOperator() SubOperatorOptions {
 		Loader:      resources.LoadBarmanCloudPluginManifests,
 		Namespace:   resources.CloudNativePGNamespace,
 		Deployments: []string{resources.BarmanCloudPluginDeploymentName},
+		// The plugin chart's objects are the operator's alone, and the chart
+		// mints TLS through cert-manager objects that a refused apply can leave
+		// behind while the Deployment stands; re-applying until it serves is
+		// what lands them, or keeps the refusal in front of the person.
+		ReapplyWhileNotReady: true,
 	}
 }
 
