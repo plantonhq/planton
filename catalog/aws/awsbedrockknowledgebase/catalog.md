@@ -135,6 +135,7 @@ These are the most important decisions when configuring a knowledge base. Explor
 | **AwsOpenSearchServerlessCollection** | `storage.opensearchServerless.collectionArn` | `status.outputs.collection_arn` |
 | **AwsOpenSearchDomain** | `storage.opensearchManaged.domainArn` | `status.outputs.domain_arn` |
 | **AwsRdsCluster** | `storage.rds.resourceArn` | `status.outputs.arn` |
+| **AwsS3VectorBucket** | `storage.s3Vectors.vectorBucketArn` | `status.outputs.vector_bucket_arn` |
 | **AwsSecretsManagerSecret** | SaaS store and connector `credentialsSecretArn` fields | `status.outputs.secret_arn` |
 | **AwsRedshiftCluster** | `sql.provisioned.clusterIdentifier` | `status.outputs.cluster_identifier` |
 | **AwsRedshiftServerlessWorkgroup** | `sql.serverless.workgroupArn` | `status.outputs.arn` |

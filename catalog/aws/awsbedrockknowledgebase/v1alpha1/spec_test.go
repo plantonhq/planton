@@ -241,7 +241,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 
 		ginkgo.It("should reject S3 Vectors with both index_arn and bucket addressing", func() {
 			spec := vectorS3VectorsKb()
-			spec.Storage.S3Vectors.VectorBucketArn = "arn:aws:s3vectors:us-west-2:123456789012:bucket/b"
+			spec.Storage.S3Vectors.VectorBucketArn = svr("arn:aws:s3vectors:us-west-2:123456789012:bucket/b")
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
@@ -249,7 +249,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should reject S3 Vectors with a bucket but no index name", func() {
 			spec := vectorS3VectorsKb()
 			spec.Storage.S3Vectors = &AwsBedrockKnowledgeBaseS3VectorsStorage{
-				VectorBucketArn: "arn:aws:s3vectors:us-west-2:123456789012:bucket/b",
+				VectorBucketArn: svr("arn:aws:s3vectors:us-west-2:123456789012:bucket/b"),
 			}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
@@ -258,7 +258,7 @@ var _ = ginkgo.Describe("AwsBedrockKnowledgeBaseSpec validations", func() {
 		ginkgo.It("should accept S3 Vectors addressed by bucket plus index name", func() {
 			spec := vectorS3VectorsKb()
 			spec.Storage.S3Vectors = &AwsBedrockKnowledgeBaseS3VectorsStorage{
-				VectorBucketArn: "arn:aws:s3vectors:us-west-2:123456789012:bucket/b",
+				VectorBucketArn: svr("arn:aws:s3vectors:us-west-2:123456789012:bucket/b"),
 				IndexName:       "kb-index",
 			}
 			err := protovalidate.Validate(spec)

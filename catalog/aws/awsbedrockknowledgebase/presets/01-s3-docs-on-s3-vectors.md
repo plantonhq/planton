@@ -20,8 +20,9 @@ Titan Text Embeddings V2 at 256 dimensions.
 
 ## Customize
 
-- Point `indexArn` at your S3 Vectors index (or use
-  `vectorBucketArn` + `indexName`)
+- Point `indexArn` at your S3 Vectors index, or address a
+  Planton-managed bucket with `vectorBucketArn` (a reference to an
+  `AwsS3VectorBucket`, or a literal ARN under `value:`) + `indexName`
 - Raise `dimensions` to 512/1024 for higher recall (recreate the index
   to match)
 - Switch chunking to `HIERARCHICAL` (parent/child levels) for long,

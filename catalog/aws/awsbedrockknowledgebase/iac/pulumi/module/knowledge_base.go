@@ -297,8 +297,8 @@ func knowledgeBase(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) 
 			if s.IndexName != "" {
 				s3Vectors.IndexName = pulumi.String(s.IndexName)
 			}
-			if s.VectorBucketArn != "" {
-				s3Vectors.VectorBucketArn = pulumi.String(s.VectorBucketArn)
+			if arn := s.GetVectorBucketArn().GetValue(); arn != "" {
+				s3Vectors.VectorBucketArn = pulumi.String(arn)
 			}
 			storage.S3VectorsConfiguration = s3Vectors
 		case spec.Storage.Rds != nil:

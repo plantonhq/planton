@@ -506,20 +506,34 @@ message AwsBedrockKnowledgeBaseOpenSearchManagedStorage {
 // Vectors. Point at an existing index by ARN, or name a bucket and an
 // index within it - exactly one addressing shape.
 message AwsBedrockKnowledgeBaseS3VectorsStorage {
-  // ARN of an existing S3 vector index.
+  // Retired field. vector_bucket_arn was a plain string with no way to
+  // reference an AwsS3VectorBucket resource. Its number must never be
+  // reused with a different meaning; the field returns below as a typed
+  // reference that also accepts a literal ARN.
+  reserved 3;
+
+  // ARN of an existing S3 vector index. Stays a literal: a bucket's index
+  // ARNs are a map output keyed by index name, so no single field path
+  // addresses one -- address a Planton-managed bucket through
+  // `vector_bucket_arn` + `index_name` instead.
   string index_arn = 1;
 
   // Name of the vector index inside `vector_bucket_arn`.
   string index_name = 2;
 
-  // ARN of the S3 vector bucket holding `index_name`.
-  string vector_bucket_arn = 3;
+  // ARN of the S3 vector bucket holding `index_name`. Reference an
+  // AwsS3VectorBucket's vector_bucket_arn output (the default wiring) or
+  // pass a literal ARN.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vector_bucket_arn = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = AwsS3VectorBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vector_bucket_arn"
+  ];
 
   // Address by index ARN, or by bucket ARN + index name - never both.
   option (buf.validate.message).cel = {
     id: "s3_vectors_addressing"
     message: "set index_arn alone, or vector_bucket_arn with index_name"
-    expression: "this.index_arn != '' ? (this.index_name == '' && this.vector_bucket_arn == '') : (this.index_name != '' && this.vector_bucket_arn != '')"
+    expression: "this.index_arn != '' ? (this.index_name == '' && !has(this.vector_bucket_arn)) : (this.index_name != '' && has(this.vector_bucket_arn))"
   };
 }
 
