@@ -34,6 +34,7 @@ alwaysApply: false
 - Every factual claim traces to a source read in Step 1. A claim about deployment behavior that the module code contradicts -- or that nothing substantiates -- is a Critical finding: authored wisdom that fabricates is worse than no wisdom.
 - Every complete embedded manifest validates; every mentioned spec field exists in the current schema with the spelling shown (camelCase for spec YAML, snake_case for `fieldPath` strings).
 - Schema freshness: the guide references no removed or renamed field, kind, or enum value. Wisdom may age gracefully; it may not be schema-wrong.
+- Pack reachability: every file the guide sends the reader to exists in the packaged skill's reference pack (`reference.md`, `GUIDE.md`, the three fact-sheet sidecars, `_patterns/`). A path under `e2e/`, `iac/`, or `presets/`, or to `README.md` / `catalog.md`, is a Critical finding: an installed agent cannot open it. Presets may be named by slug with the sentence that they ship outside the pack; a composition's complete manifest is embedded or lives in a pattern. `rg -n 'e2e/|\.\./aa_e2e|presets/[a-z0-9-]+\.' GUIDE.md` must return nothing.
 
 ### Step 4: Five-Laws Compliance (Warning)
 

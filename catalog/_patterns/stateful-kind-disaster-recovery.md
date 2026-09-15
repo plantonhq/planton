@@ -2,6 +2,9 @@
 kinds:
   - CloudflareR2Bucket
   - CloudflareAccountApiToken
+  - GcpServiceAccount
+  - GcpGcsBucket
+  - GcpGkeWorkloadIdentityBinding
   - KubernetesPostgres
   - KubernetesMongodb
   - KubernetesOpenBao
@@ -156,10 +159,96 @@ The database and the replica set declare the same store pair in their own
 shapes — PostgreSQL's archive is a `destinationPath` with the bucket inside
 it (`s3://prod-archive/prod-db`), MongoDB's is a named storage with a
 `bucket` and a `prefix`. Their complete manifests are the kinds' own R2
-presets (`kubernetespostgres/presets/05-gke-ha-r2-backups.yaml`,
-`kubernetesmongodb/presets/04-gke-replica-set-r2-backups.yaml`); the wiring
-onto `CloudflareR2Bucket` and `CloudflareAccountApiToken` is byte-for-byte
-the vault's.
+presets, named by slug (`05-gke-ha-r2-backups` for PostgreSQL,
+`04-gke-replica-set-r2-backups` for MongoDB; presets ship in the release's
+`presets.zip` and the catalog repository, not in the skill's pack); the
+wiring onto `CloudflareR2Bucket` and `CloudflareAccountApiToken` is
+byte-for-byte the vault's.
+
+### The GKE keyless store set, complete
+
+The same three nodes every keyless GKE backup stands on, whichever of the
+three kinds writes the backups: an identity with no key, a bucket that grants
+that identity TWO roles, and the Workload Identity trust that lets one
+Kubernetes ServiceAccount act as the identity. The instance then declares the
+bucket by reference and `keyless: true`, and names the identity in its
+`workloadIdentity` block (OpenBao, PostgreSQL) — nothing is pasted, nothing
+rotates by hand.
+
+```yaml
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccount
+metadata:
+  name: openbao-backup
+spec:
+  serviceAccountId: openbao-backup
+  projectId:
+    value: my-gcp-project
+  displayName: OpenBao snapshots via Workload Identity
+  description: Keyless identity the backup job's ServiceAccount assumes through GKE Workload Identity to write and prune snapshots
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucket
+metadata:
+  name: openbao-snapshots
+spec:
+  projectId:
+    value: my-gcp-project
+  bucketName: openbao-snapshots-my-gcp-project
+  location: asia-south1
+  uniformBucketLevelAccessEnabled: true
+  publicAccessPrevention: enforced
+  iamMembers:
+    - role: roles/storage.objectAdmin
+      member:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: openbao-backup
+          fieldPath: status.outputs.member
+    - role: roles/storage.legacyBucketReader
+      member:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: openbao-backup
+          fieldPath: status.outputs.member
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: openbao-backup-wi
+spec:
+  projectId:
+    value: my-gcp-project
+  serviceAccountEmail:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: openbao-backup
+      fieldPath: status.outputs.email
+  ksaNamespace: openbao
+  ksaName: openbao-backup
+```
+
+Three rules ride with the set:
+
+- **The bucket grants two roles, not one.** `roles/storage.objectAdmin`
+  writes, reads, and deletes objects; `roles/storage.legacyBucketReader`
+  carries `storage.buckets.get`, which rclone, Barman Cloud, and the storage
+  clients exercise on the bucket before they write. With the first role
+  alone the first backup fails on the bucket-level GET, not on the object.
+- **The binding names the ServiceAccount the KIND renders**, and each kind
+  renders a different one: OpenBao's backup job runs as `<name>-backup` in
+  the vault's namespace; CloudNativePG names the instance ServiceAccount
+  after the Cluster, so PostgreSQL's binding uses the database's own name.
+  A restore target is another instance with another ServiceAccount and needs
+  its own binding on the same identity.
+- **MongoDB takes the identity keyed, not bound.** Percona Backup for
+  MongoDB has no Workload Identity path, so its identity declares
+  `userManagedKey: {}` and the replica set references the exported
+  `key_base64`; the bucket's two roles are the same, the binding is absent.
+
+The vault's `04-gke-ha-gcs-backups` preset is the instance on this set; its
+guide embeds the Cloud KMS seal set beside it (a declared restore needs the
+same key on source and target) and the bad-day restore target.
 
 ## Choices and consequences
 

@@ -178,12 +178,115 @@ side together — every one a kind in this catalog, wired by reference. The
 | 6 | `GcpGcsBucket` | The snapshot store | `iamMembers`: **two** roles for #2 — `roles/storage.objectAdmin` AND `roles/storage.legacyBucketReader` (rclone reads the bucket's attributes before writing; objectAdmin alone does not carry `storage.buckets.get`) — `member` by reference to #2's `member` |
 | 7 | `GcpGkeWorkloadIdentityBinding` (two per vault) | Lets the KSAs act as the identities | for the server: `ksaName` = the vault's `metadata.name` (the chart names the ServiceAccount after the release) bound to #1; for the job: `ksaName` = `<name>-backup` bound to #2; `ksaNamespace` = the vault's namespace. A restore target is another vault and needs its own pair |
 | 8 | `KubernetesOpenBao` (the production vault) | HA + auto-unseal + backups | `server.ha`, `autoUnseal.gcpKms` with `keyRing` and `cryptoKey` by reference to #3/#4 (bare names) and `workloadIdentityServiceAccount` by reference to #1, `backup.objectStore.gcs.bucket` by reference to #6 with `keyless: true`, `backup.workloadIdentity.gke.serviceAccountEmail` by reference to #2, a `prefix` of its own |
-| 9 | `KubernetesOpenBao` (the restore target, on the bad day) | Restore | the same `autoUnseal` (the same key), the same `backup` block INCLUDING the source's `prefix`, `restore.latest: true` (or a `snapshotKey`), `restore.rootToken` naming the Secret you will create after init; its own #7 pair |
+| 9 | `KubernetesOpenBao` (the restore target, on the bad day) | Restore | the same `autoUnseal` (the same key), the same `backup` block INCLUDING the source's `prefix`, `restore.latest: true` (or a `snapshotKey`), `restore.rootToken` naming the Secret you will create after init; the SOURCE's name and namespace, so #7's pair and the restored login role carry over (a target under another name needs its own #7 pair and re-runs the login recipe) |
 
-The validated manifests for this set are the `gcp-gke` lane's own:
-`e2e/fixture-gke-gcs-source.yaml` (#8), `e2e/scenarios/gke-gcs-backup-restore.yaml`
-(#9), and the GCP side under `../aa_e2e/realcluster/gcp-gke/manifests/`
-(#1–#7). The `04-gke-ha-gcs-backups` preset is #8 as a starting point.
+Where each piece of the set lives, validated: rows 2, 6, and 7 are the
+[GKE keyless store set](../../_patterns/stateful-kind-disaster-recovery.md#the-gke-keyless-store-set-complete)
+in the disaster-recovery pattern (the same three nodes PostgreSQL stands on);
+row 8 is the `04-gke-ha-gcs-backups` preset (named by slug — presets ship in
+the release's `presets.zip` and in the catalog repository, not in the
+skill's pack); row 9 is the complete manifest under
+[Restore on the bad day](#restore-on-the-bad-day). Rows 1, 3, 4, and 5 — the
+seal set — are the vault's alone, so they are here:
+
+```yaml
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceAccount
+metadata:
+  name: openbao-unseal
+spec:
+  serviceAccountId: openbao-unseal
+  projectId:
+    value: my-gcp-project
+  displayName: OpenBao auto-unseal via Workload Identity
+  description: Keyless identity the OpenBao server pods assume through GKE Workload Identity to wrap and unwrap the master key with the Cloud KMS key
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeWorkloadIdentityBinding
+metadata:
+  name: openbao-unseal-wi
+spec:
+  projectId:
+    value: my-gcp-project
+  serviceAccountEmail:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: openbao-unseal
+      fieldPath: status.outputs.email
+  ksaNamespace: openbao
+  # The chart names the server ServiceAccount after the release, so this is
+  # the vault's metadata.name. A restore target is another vault and needs
+  # its own binding on the same identity.
+  ksaName: openbao
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyRing
+metadata:
+  name: openbao-unseal
+spec:
+  projectId:
+    value: my-gcp-project
+  # Permanent by GCP design: the ring can never be deleted and its name is
+  # occupied in this project and location forever.
+  keyRingName: openbao-unseal
+  location: asia-south1
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKey
+metadata:
+  name: openbao-unseal
+spec:
+  keyRingId:
+    valueFrom:
+      kind: GcpKmsKeyRing
+      name: openbao-unseal
+      fieldPath: status.outputs.key_ring_id
+  keyName: openbao-unseal
+  # Destroying the key destroys every vault sealed by it; PREVENT is the
+  # production posture.
+  deletionPolicy: PREVENT
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyIamMember
+metadata:
+  name: openbao-unseal-encrypter-decrypter
+spec:
+  cryptoKeyId:
+    valueFrom:
+      kind: GcpKmsKey
+      name: openbao-unseal
+      fieldPath: status.outputs.key_id
+  # Wrap on init, unwrap on every unseal — the role the seal USES the key with.
+  role:
+    value: roles/cloudkms.cryptoKeyEncrypterDecrypter
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: openbao-unseal
+      fieldPath: status.outputs.member
+---
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpKmsKeyIamMember
+metadata:
+  name: openbao-unseal-viewer
+spec:
+  cryptoKeyId:
+    valueFrom:
+      kind: GcpKmsKey
+      name: openbao-unseal
+      fieldPath: status.outputs.key_id
+  # The second grant: the server READS the key's metadata when it configures
+  # its seal at START, and the encrypter-decrypter role does not carry
+  # cloudkms.cryptoKeys.get. Without this one the pod crash-loops on "Error
+  # configuring seal" before init can open.
+  role:
+    value: roles/cloudkms.viewer
+  member:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: openbao-unseal
+      fieldPath: status.outputs.member
+```
 
 ## Disaster recovery with Cloudflare R2: the resource set
 
@@ -219,10 +322,13 @@ Three R2 facts join the rules above:
   API (`aws s3 rm --recursive`, against the account's R2 endpoint with the
   token's pair) before destroying it.
 
-The validated manifests for this set are the `gcp-gke` lane's own:
-`e2e/fixture-gke-r2-source.yaml` (#3), `e2e/scenarios/gke-r2-backup-restore.yaml`
-(#4), and the Cloudflare side under `../aa_e2e/realcluster/gcp-gke/manifests/`
-(#1–#2). The `05-production-ha-r2-backups` preset is #3 as a starting point.
+Where each piece lives, validated: rows 1 and 2 are the R2 store pair and
+row 3 is the vault on it, both embedded whole in the
+[disaster-recovery pattern](../../_patterns/stateful-kind-disaster-recovery.md#the-composition)
+(row 3 is the `05-production-ha-r2-backups` preset by slug); row 4 is the
+restore target under [Restore on the bad day](#restore-on-the-bad-day) with
+the `r2` store from row 3 in place of the `gcs` one — the `restore` block
+and the seal are identical.
 
 ## Restore on the bad day
 
@@ -230,9 +336,80 @@ The original is gone; the snapshots are in the store; the seal key still
 exists. Declare a fresh `KubernetesOpenBao` with the same `autoUnseal`
 key, the source's `backup` block (same store, same `prefix`), and a
 `restore` block — `latest: true`, or the exact `snapshotKey` from the
-store's listing — naming the Secret the root token will live in:
+store's listing (any listing serves to pick a key: `gcloud storage ls
+gs://<bucket>/<prefix>/`, or the R2 endpoint with the token's pair) — naming
+the Secret the root token will live in. **Keep the source's name and
+namespace.** The lost vault's Workload Identity bindings name its server
+ServiceAccount and its `<name>-backup` job ServiceAccount, and the restored
+state's login role is bound to the same names — a target with the source's
+name and namespace inherits all of it and resumes backups untouched; a
+different name needs its own binding pair and a re-run of the login recipe
+(that is the rehearsal-beside-a-live-source shape, not the bad day's). The
+whole bad-day declaration for the GKE set above, validated — the production
+manifest plus `restore`, with `createNamespace` because the lost cluster's
+namespace is gone too:
 
 ```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOpenBao
+metadata:
+  # The source's name: its bindings, its login role, and its prefix all
+  # match without a change.
+  name: openbao
+spec:
+  namespace:
+    value: openbao
+  # The bad day starts from an empty cluster; the target owns its namespace.
+  # A rehearsal beside a live source omits this and joins the source's.
+  createNamespace: true
+  server:
+    ha:
+      replicas: 3
+    dataStorage:
+      size: 10Gi
+  # The SAME key the source was sealed with — the snapshot is protected by it.
+  autoUnseal:
+    gcpKms:
+      project:
+        value: my-gcp-project
+      region: asia-south1
+      keyRing:
+        valueFrom:
+          kind: GcpKmsKeyRing
+          name: openbao-unseal
+          fieldPath: status.outputs.key_ring_name
+      cryptoKey:
+        valueFrom:
+          kind: GcpKmsKey
+          name: openbao-unseal
+          fieldPath: status.outputs.key_name
+      workloadIdentityServiceAccount:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: openbao-unseal
+          fieldPath: status.outputs.email
+  # The source's backup block, prefix included: the target reads the
+  # source's snapshots through the same identity the source wrote them with.
+  # While `restore` is declared this schedule renders suspended.
+  backup:
+    schedule: "0 * * * *"
+    retentionDays: 14
+    objectStore:
+      prefix: openbao/openbao
+      gcs:
+        bucket:
+          valueFrom:
+            kind: GcpGcsBucket
+            name: openbao-snapshots
+            fieldPath: status.outputs.bucket_name
+        keyless: true
+    workloadIdentity:
+      gke:
+        serviceAccountEmail:
+          valueFrom:
+            kind: GcpServiceAccount
+            name: openbao-backup
+            fieldPath: status.outputs.email
   restore:
     latest: true
     rootToken:
@@ -249,7 +426,12 @@ live source had just taken on its hourly schedule).
 
 Then the one manual step every OpenBao has: initialize the fresh cluster.
 With auto-unseal, init returns recovery keys and a root token, and the
-server unseals itself.
+server unseals itself. The `1`/`1` recovery shares below are the proof
+lane's value; production splits the recovery key across its key holders
+(`-recovery-shares=5 -recovery-threshold=3` is the usual shape) exactly as
+it would split unseal keys for a Shamir vault — under auto-unseal they never
+unseal anything; they authorize the operations that need a quorum, such as
+`generate-root`.
 
 ```bash
 kubectl exec -n <namespace> <name>-0 -- bao operator init -recovery-shares=1 -recovery-threshold=1 -format=json

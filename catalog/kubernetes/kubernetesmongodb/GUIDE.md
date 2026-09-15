@@ -80,11 +80,14 @@ Two rules the set stands on:
   reference to `key_base64` keeps it in state and in the operator's Secret
   only.
 
-The validated manifests for this set are the `gcp-gke` lane's own:
-`e2e/fixture-gke-source.yaml` (#4), `e2e/scenarios/gke-gcs-restore.yaml`
-(#5), and the GCP side under `../aa_e2e/realcluster/gcp-gke/manifests/`
-(#1–#2). The `03-gke-replica-set-gcs-backups` preset is #4 as a starting
-point.
+Where each piece lives, validated: rows 1 and 2 are the
+[GKE keyless store set](../../_patterns/stateful-kind-disaster-recovery.md#the-gke-keyless-store-set-complete)
+in the disaster-recovery pattern, taken KEYED here — the identity declares
+`userManagedKey: {}` and there is no binding, exactly as the pattern's third
+rule says; row 4 is the `03-gke-replica-set-gcs-backups` preset (named by
+slug — presets ship in the release's `presets.zip` and in the catalog
+repository, not in the skill's pack); row 5's whole delta from that preset
+is its table row above.
 
 ## Disaster recovery on GKE with Cloudflare R2: the resource set
 
@@ -130,10 +133,11 @@ join it:
   API (`aws s3 rm --recursive`, against `s3_endpoint` with the token's pair)
   before destroying it.
 
-The validated manifests for this set are the `gcp-gke` lane's own:
-`e2e/fixture-gke-r2-source.yaml` (#4), `e2e/scenarios/gke-r2-restore.yaml`
-(#5), and the Cloudflare side under `../aa_e2e/realcluster/gcp-gke/manifests/`
-(#1–#2). The `04-gke-replica-set-r2-backups` preset is #4 as a starting point.
+Where each piece lives, validated: rows 1 and 2 are the R2 store pair
+embedded whole in the
+[disaster-recovery pattern](../../_patterns/stateful-kind-disaster-recovery.md#the-composition);
+row 4 is the `04-gke-replica-set-r2-backups` preset (by slug); row 5's
+whole delta from that preset is its table row above.
 
 ## On the diagram
 

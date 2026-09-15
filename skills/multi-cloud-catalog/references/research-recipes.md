@@ -140,9 +140,10 @@ rg -n "^## (Backups|Disaster recovery|Restore)" -A 40 <kind-dir>/GUIDE.md       
   name the jobs need (`### spec.tls.certSecretName`), and the two KMS roles a
   Cloud KMS seal identity needs (`### spec.autoUnseal.gcpKms`).
 
-Before writing a `restore` for the vault, run this checklist against the
-manifest -- every line is a rule the pack states, and a restore that
-violates one fails on the bad day, not at validation:
+Before writing a `restore` for the vault, start from the complete restore
+target the guide embeds under "Restore on the bad day" and run this
+checklist against the manifest -- every line is a rule the pack states, and
+a restore that violates one fails on the bad day, not at validation:
 
 1. Same seal key on source and target (`autoUnseal` points at the same KMS
    key or the same transit key on the same key holder); a Shamir vault

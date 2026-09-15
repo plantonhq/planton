@@ -64,7 +64,8 @@ is a pointer, not a file you can open here. Presets ship whole in the
 release's `content/presets.zip` beside the reference pack, and in a repo
 checkout under `catalog/<provider>/<kind>/presets/`; when an answer needs
 the manifest itself, use one of those or the validated manifests a
-pattern embeds. The consequence for authors is the flip side: an
+pattern or a guide embeds (a guide names only what this pack carries, so
+a path it gives you resolves here). The consequence for authors is the flip side: an
 operational truth an agent must know (a name budget, an expected pod
 state, a recovery loop) reaches an installed agent only through the proto
 comment that renders into `reference.md`, a `GUIDE.md`, or a pattern --

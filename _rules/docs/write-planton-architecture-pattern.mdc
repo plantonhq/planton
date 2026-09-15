@@ -82,6 +82,7 @@ patterns. Links must resolve.]
 
 - Every failure-mode claim is verified against the schemas and IaC module code of the kinds involved -- read them before writing, cite behavior only as the code implements it.
 - Complete embedded manifests validate (CI-enforced by the catalog checks); wiring examples use the exact `valueFrom` key set `kind` / `name` / `fieldPath`.
+- Name only what the packaged skill carries (the same law as the guide rule): a pattern ships inside the multi-cloud-catalog skill's reference pack beside the kinds' `reference.md` and `GUIDE.md`; it never sends the reader to a path under `presets/`, `e2e/`, or `iac/`. A preset is named by slug with the sentence that presets ship outside the pack; a manifest the reader must copy is embedded here.
 - Diagram consequences are stated wherever a structural choice exists (the five laws of guide content apply to patterns in full).
 - No marketing language; no speculative content.
 
