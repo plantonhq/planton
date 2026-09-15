@@ -63,7 +63,8 @@ spec:
       key_vault_secret_id: https://test-vault.vault.azure.net/secrets/db-password
       identity: System
   registries:
-    - server: testregistry.azurecr.io
+    - server:
+        value: testregistry.azurecr.io
       identity: System
   identity:
     type: SYSTEM_ASSIGNED

@@ -520,7 +520,7 @@ func buildRegistries(specs []*azurecontainerappjobv1alpha1.AzureContainerAppJobR
 	registries := make(containerapp.JobRegistryArray, 0, len(specs))
 	for _, r := range specs {
 		registry := containerapp.JobRegistryArgs{
-			Server: pulumi.String(r.Server),
+			Server: pulumi.String(r.GetServer().GetValue()),
 		}
 
 		// Exactly one auth mode (spec-enforced): managed identity, or

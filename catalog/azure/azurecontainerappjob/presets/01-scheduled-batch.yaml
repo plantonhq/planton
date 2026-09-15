@@ -28,7 +28,8 @@ spec:
       keyVaultSecretId: https://my-keyvault.vault.azure.net/secrets/db-connection
       identity: "<your-user-assigned-identity-id>"
   registries:
-    - server: mycompany.azurecr.io
+    - server:
+        value: mycompany.azurecr.io
       identity: "<your-user-assigned-identity-id>"
   identity:
     type: USER_ASSIGNED

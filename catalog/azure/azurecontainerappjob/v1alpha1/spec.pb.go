@@ -1681,9 +1681,11 @@ func (x *AzureContainerAppJobSecret) GetIdentity() string {
 // 2. Managed identity: Set `identity` (system-assigned or user-assigned identity ID).
 type AzureContainerAppJobRegistry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Registry server hostname.
-	// Examples: "myregistry.azurecr.io", "ghcr.io", "docker.io"
-	Server string `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
+	// Registry server hostname. Reference an AzureContainerRegistry's
+	// login_server output (the default wiring -- the same shape the
+	// Container Instance's registry credential carries) or pass a literal
+	// such as "ghcr.io" or "docker.io".
+	Server *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=server,proto3" json:"server,omitempty"`
 	// Registry username. Required with password_secret_name.
 	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
 	// Secret name containing the registry password.
@@ -1728,11 +1730,11 @@ func (*AzureContainerAppJobRegistry) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerappjob_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
-func (x *AzureContainerAppJobRegistry) GetServer() string {
+func (x *AzureContainerAppJobRegistry) GetServer() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Server
 	}
-	return ""
+	return nil
 }
 
 func (x *AzureContainerAppJobRegistry) GetUsername() string {
@@ -1978,14 +1980,13 @@ const file_catalog_azure_azurecontainerappjob_v1alpha1_spec_proto_rawDesc = "" +
 	"\x13key_vault_secret_id\x18\x03 \x01(\tR\x10keyVaultSecretId\x12\x1a\n" +
 	"\bidentity\x18\x04 \x01(\tR\bidentity:\xbf\x03\xbaH\xbb\x03\x1a\xa4\x01\n" +
 	"\x1ejob_secret_value_xor_key_vault\x12Ka secret takes either a plain-text value or a key_vault_secret_id, not both\x1a5!(this.value != '' && this.key_vault_secret_id != '')\x1a\x91\x02\n" +
-	"&job_secret_key_vault_requires_identity\x12\xab\x01key_vault_secret_id requires identity (\"System\" or a user-assigned identity ARM ID) so the job can read the vault, and identity is only meaningful with key_vault_secret_id\x1a9(this.key_vault_secret_id != '') == (this.identity != '')\"\xa9\x04\n" +
-	"\x1cAzureContainerAppJobRegistry\x12\"\n" +
-	"\x06server\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06server\x12\x1a\n" +
+	"&job_secret_key_vault_requires_identity\x12\xab\x01key_vault_secret_id requires identity (\"System\" or a user-assigned identity ARM ID) so the job can read the vault, and identity is only meaningful with key_vault_secret_id\x1a9(this.key_vault_secret_id != '') == (this.identity != '')\"\x83\x05\n" +
+	"\x1cAzureContainerAppJobRegistry\x12v\n" +
+	"\x06server\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\xd3\x0f\x92\xd4a\x1bstatus.outputs.login_serverR\x06server\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x120\n" +
 	"\x14password_secret_name\x18\x03 \x01(\tR\x12passwordSecretName\x12\x1a\n" +
 	"\bidentity\x18\x04 \x01(\tR\bidentity:\xfa\x02\xbaH\xf6\x02\x1a\xf3\x02\n" +
-	"\x16job_registry_auth_mode\x12\xb3\x01a registry authenticates with either a managed identity or a username + password_secret_name pair -- exactly one mode, and username and password_secret_name always travel together\x1a\xa2\x01(this.identity != '' && this.username == '' && this.password_secret_name == '') || (this.identity == '' && this.username != '' && this.password_secret_name != '')\"\xd7\x04\n" +
+	"\x16job_registry_auth_mode\x12\xb3\x01a registry authenticates with either a managed identity or a username + password_secret_name pair -- exactly one mode, and username and password_secret_name always travel together\x1a\xa2\x01(this.identity != '' && this.username == '' && this.password_secret_name == '') || (this.identity == '' && this.username != '' && this.password_secret_name != '')J\x04\b\x01\x10\x02\"\xd7\x04\n" +
 	"\x1cAzureContainerAppJobIdentity\x12q\n" +
 	"\x04type\x18\x01 \x01(\x0e2Q.dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIdentityTypeB\n" +
 	"\xbaH\a\x82\x01\x04\x10\x01 \x00R\x04type\x12\x94\x01\n" +
@@ -2080,13 +2081,14 @@ var file_catalog_azure_azurecontainerappjob_v1alpha1_spec_proto_depIdxs = []int3
 	14, // 25: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobProbe.headers:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobProbeHeader
 	1,  // 26: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobVolume.storage_type:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobVolumeStorageType
 	22, // 27: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobVolume.storage_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 28: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIdentity.type:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIdentityType
-	22, // 29: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIdentity.user_assigned_identity_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	30, // [30:30] is the sub-list for method output_type
-	30, // [30:30] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	22, // 28: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobRegistry.server:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 29: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIdentity.type:type_name -> dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIdentityType
+	22, // 30: dev.planton.azure.azurecontainerappjob.v1alpha1.AzureContainerAppJobIdentity.user_assigned_identity_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	31, // [31:31] is the sub-list for method output_type
+	31, // [31:31] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_catalog_azure_azurecontainerappjob_v1alpha1_spec_proto_init() }
