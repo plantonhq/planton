@@ -30,7 +30,7 @@ that has progressed.
 | Provider schema (parity baseline) | `digitalocean@2.99.1` |
 | Kinds in the catalog | 31 |
 | Distinct provider resources consumed | 37 |
-| Spec fields authored across all kinds | 675 |
+| Spec fields authored across all kinds | 676 |
 | Module pins on `digitalocean` | `~> 2.99` × 31 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -59,7 +59,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**31 of 31 kinds are at total accounting; 12 proven live.**
+**31 of 31 kinds are at total accounting; 13 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -81,10 +81,10 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | DigitalOceanDroplet | 21 | 16 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanDropletAutoscalePool | 18 | 9 | 8 | 1 | 0 | ✅ | — |
 | DigitalOceanFirewall | 17 | 2 | 15 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| DigitalOceanFunction | 292 | 0 | 36 | 256 | 0 | ✅ | — |
+| DigitalOceanFunction | 292 | 0 | 37 | 255 | 0 | ✅ | — |
 | DigitalOceanKubernetesCluster | 47 | 31 | 15 | 1 | 0 | ✅ | — |
 | DigitalOceanKubernetesNodePool | 13 | 8 | 5 | 0 | 0 | ✅ | — |
-| DigitalOceanLoadBalancer | 46 | 31 | 15 | 0 | 0 | ✅ | — |
+| DigitalOceanLoadBalancer | 46 | 31 | 15 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanMonitorAlert | 11 | 8 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanProject | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanReservedIp | 8 | 1 | 3 | 4 | 0 | ✅ | — |

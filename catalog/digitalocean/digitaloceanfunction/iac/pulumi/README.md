@@ -2,9 +2,11 @@
 
 Deploys a `digitalocean:index/app:App` with a single functions component from a `DigitalOceanFunction` spec. There is no standalone Functions resource.
 
-The app name is `metadata.name`. The functions component name is `spec.functionName`. Source (`git` / `github` / `gitlab` / `bitbucket`) is actually set on the component — a Functions deploy with an empty source cannot build.
+The app name is `spec.appName` (2-32 characters, unique in the account -- never `metadata.name`, which the API would reject for length). The functions component name is `spec.functionName`. Source (`git` / `github` / `gitlab` / `bitbucket`) is actually set on the component — a Functions deploy with an empty source cannot build. `sourceDirectory` is omitted from the app spec when unset so App Platform reads `project.yml` from the repository root.
 
-Runtime, memory, timeout, and schedules are read by App Platform from `project.yml` inside `sourceDirectory`. They are not Pulumi args.
+Runtime, memory, timeout, and schedules are read by App Platform from `project.yml`. They are not Pulumi args.
+
+Component alert destinations (emails, Slack webhooks) are wired -- the SDK carries them since pulumi-digitalocean v4.53.0. Webhook URLs are wrapped as Pulumi secrets because the SDK does not flag them.
 
 ## Prerequisites
 

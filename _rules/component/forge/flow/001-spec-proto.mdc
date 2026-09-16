@@ -274,3 +274,25 @@ PROACTIVE CREATE-TIME-REQUIRED IDENTIFICATION (MANDATORY STEP)
   options endpoint or catalog call, give one or two examples marked with
   the date they were checked, and make the presets name the version they
   were verified against and when.
+- A provider resource that carries its own validated, account-unique name
+  gets that name as a SPEC FIELD, never derived from `metadata.name` -- even
+  when the kind is a thin composition and the name feels like the resource's
+  Planton identity. Planton metadata names are routinely longer than a
+  cloud's cap (App Platform: 32 characters) and are unique only within an
+  org and environment, so a module that names the cloud object from
+  `metadata.name` passes every offline gate and fails at plan for most real
+  names. Model the name with the cloud's own rule (length, pattern,
+  uniqueness scope) in the field's validation and comment.
+- A cloud's region, location, or zone vocabulary is not always ONE enum per
+  provider. Some services place resources in datacenter GROUPS with their
+  own slugs (App Platform's `nyc` covers nyc1 and nyc3) and silently
+  normalize a member datacenter's slug to the group's, so a spec typed with
+  the general region enum passes every offline gate and re-plans on every
+  apply. Read the service's own region endpoint before reusing a shared
+  enum; when the vocabularies differ, the service gets its own enum with the
+  normalization rule stated in its comment.
+- A `PARITY-EXCEPTION` guard ("the other engine's SDK cannot express this")
+  is a claim about a SPECIFIC SDK version. Name that version in the guard's
+  message and the field comment, and re-verify every guard on disk whenever
+  the pin moves -- a gap that closed a pin ago leaves one engine refusing a
+  setting the other has wired all along.

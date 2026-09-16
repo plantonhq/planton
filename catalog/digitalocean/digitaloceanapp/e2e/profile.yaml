@@ -3,21 +3,48 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanapp
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests,
-  # both engine builds, tofu validate green, checker-green parity
-  # manifest, import map, presets, README/catalog/GUIDE). Live
-  # dual-engine proof has not yet run. TWO scenarios: `minimal` is a
-  # public Docker Hub nginx image (no GitHub connection, no private
-  # registry) proving the image-source service path; `composed` is a
-  # service plus a worker from public images proving the multi-component
-  # app spec. Deliberately not in the live lanes: GitHub deploy_on_push
-  # (needs a linked GitHub account), custom domains (needs a delegated
-  # zone), VPC placement / maintenance / liveness probes / ingress
-  # authority and secure_header / alert destinations (Pulumi SDK gaps
-  # at v4.49.0 -- Terraform wires them; Pulumi fails loudly if set).
-  # App Platform image deploys typically finish in a few minutes;
-  # basic-xxs bills ~$5/month, so a minutes-long lane is cents.
+  # Live-proven on BOTH engines, all three scenarios, full lifecycle under
+  # the idempotency gate, plus the blind import round-trip (Terraform lane;
+  # the only tolerated update is the provider-local `deployment_per_page`):
+  # `minimal` (one HTTP service from the public nginx image -- the
+  # image-source path and the app_id / default_hostname / live_url / live_domain
+  # / active_deployment_id outputs), `composed` (a service plus a worker,
+  # both from public images -- the multi-component spec), and `alerted`
+  # (an app-level deployment_failed rule and a component cpu_utilization
+  # rule -- both alert families read back cleanly). The verifier asserts
+  # the live app has an ACTIVE deployment and that the URL-shaped outputs
+  # match the live app. Image deploys reach ACTIVE in 25-50 seconds;
+  # basic-xxs bills ~$5/month prorated, so a lane is under a cent.
+  #
+  # What the first live runs taught: App Platform regions are datacenter
+  # GROUPS (nyc, ams, fra ...), not droplet slugs -- the API accepted
+  # `nyc3` and stored `nyc`, and every re-plan proposed the change forever
+  # on both engines until the spec's region became its own enum. App names
+  # and component names share the API rule ^[a-z][a-z0-9-]{0,30}[a-z0-9]$
+  # (2-32, letter-first; measured on the validate-only POST /v2/apps/propose,
+  # which also reports app_name_available), and app names are unique per
+  # account, so every scenario's appName carries ${E2E_RUN_ID}.
+  #
+  # Deliberately NOT in the live lanes, each with its unblock condition:
+  # alert destinations (emails / Slack) -- a PROVIDER DEFECT at v2.99.1:
+  #   both engines wire them and the API applies them, but the provider
+  #   never reads them back, so a refreshed plan proposes them again forever
+  #   and every apply redeploys the app (measured live 2026-09-16). Unblocks
+  #   when the provider's Read flattens destinations; the kind docs tell
+  #   customers to set them on Pulumi stacks or manage them in the panel.
+  # GitHub / GitLab / Bitbucket sources with deploy_on_push -- need a linked
+  #   VCS account on the DigitalOcean team.
+  # custom domains (spec.domains) -- need a zone the account controls
+  #   (PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN, the certificate class).
+  # vpc placement -- wired on both engines since the v4.53.0 pin; the live
+  #   arm rides the Vpc fixture once its address range is free again.
+  # maintenance mode and ingress authority matches -- wired on both engines
+  #   since the v4.53.0 pin; maintenance takes the app offline by design and
+  #   authority needs a custom domain, so both stay offline-planned.
+  # Pulumi SDK gaps at the v4.53.0 pin (verified on disk): service/worker
+  #   liveness_health_check and ingress secure_header -- Terraform wires
+  #   them; Pulumi fails loudly if set.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25

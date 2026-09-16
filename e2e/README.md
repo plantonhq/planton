@@ -3434,6 +3434,74 @@ are torn down only after VERIFY-CLN, so relocated members are still there
 to be found). `StringSliceOutput` / `StringMapOutput` beside `StringOutput`
 coerce the list and map output shapes with the same numeric care.
 
+**App Platform regions are datacenter GROUPS, not droplet slugs.** The
+App API places an app in `nyc`, `ams`, `fra`, `sfo`, `sgp`, `blr`, `tor`,
+`lon`, `syd`, `atl`, `ric`, or `mkc` (`GET /v2/apps/regions`; `nyc` covers
+nyc1 and nyc3). It ACCEPTS a droplet slug such as `nyc3` and silently
+stores `nyc`, so a spec typed with the droplet-region enum passes every
+offline gate and then re-plans on every apply on both engines (first
+contact, 2026-09-16: all three App scenarios failed the idempotency gate
+on `~spec` for exactly this). The App and Function specs now carry their
+own `DigitalOceanAppRegion` enum; any future kind that composes
+`digitalocean_app` must use it, never `DigitalOceanRegion`.
+
+**App Platform names: one API rule for apps AND components, and apps are
+account-unique.** `POST /v2/apps/propose` is a validate-only endpoint
+(creates nothing, prices the spec, and reports `app_name_available`) — use
+it as the free first probe for any App Platform question. Measured: app
+names AND every component name must match `^[a-z][a-z0-9-]{0,30}[a-z0-9]$`
+(2–32, letter-first; `9abc`, `Hello_World`, and `web.1` are all rejected
+with the field named), and a 43-character name is rejected at 32. Both
+kinds validate every name with that pattern, and every App Platform
+scenario's `appName` carries `${E2E_RUN_ID}` (the longest is 30 of 32
+characters with the engine suffix). A kind that composes a provider
+resource carrying its own validated, account-unique name exposes that name
+on its spec — the Function kind used to derive it from `metadata.name`,
+which no e2e metadata name could satisfy.
+
+**A functions component reads `project.yml` from `source_dir`, and the
+sample's is at the repo root.** DigitalOcean's
+`sample-functions-nodejs-helloworld` keeps `project.yml` at the root with
+the code under `packages/`; its own deploy template uses `source_dir: /`.
+Every shipped example pointed at `packages/`, which would have failed the
+build minutes into the deploy (the API validates nothing about the
+directory). Leave the field unset for a root `project.yml`; both modules
+omit it rather than send an empty string. A git-source build reached
+ACTIVE in ~80 seconds on both engines; image deploys in 25–50 seconds.
+
+**Alert destinations on `digitalocean_app` are write-only at v2.99.1 — a
+provider defect, recorded, never tolerated.** The provider applies email /
+Slack destinations through `UpdateAlertDestinations` after the spec is
+saved, but `flattenAppAlerts` never reads them back, so a refreshed plan
+proposes `+ destinations` on every alert forever, and because any `spec`
+diff is an `Apps.Update`, every apply redeploys the app. Measured live on
+the Terraform lane (with refresh); Pulumi's no-refresh preview stayed
+quiet, which is exactly the asymmetry the idempotency notes above warn
+about. Handled as the droplet-backups class: the arm stays modeled and
+wired on both engines, the scenarios do not set it, the profile records
+the deferral with its unblock condition, and the kind docs tell customers
+to set destinations on Pulumi stacks or manage them in the control panel.
+Never `ignore_changes` on destinations — they are genuinely mutable. The
+same read-back class hits `envs[].secret` (the API returns secrets
+encrypted; upstream #869), documented on both kinds.
+
+**A PARITY-EXCEPTION guard is a claim about a specific SDK version — re-verify
+every guard on every pin bump.** The App module guarded six arms as Pulumi
+SDK gaps at v4.49.0; four of them (`maintenance`, `vpc` as a one-element
+`vpcs` list, ingress `authority`, alert `destinations` on app-level and all
+component alerts) had closed at the v4.53.0 pin the tree carried for a
+month, so Pulumi customers got a hard error for settings Terraform
+customers had all along. Check the SDK's `pulumiTypes.go` on disk for each
+guarded field before a lane, wire what closed, and name the verified
+version in the guards that remain.
+
+**Never cap a lane's output pipeline.** `go test ... | tee log | rg ... |
+head -N` stalls the whole lane when `head` exits: the broken pipe blocks
+`go test` on its next write, mid-phase, with the resource still alive (one
+App sat ACTIVE for six minutes inside a hung `tofu import` until the lane
+was interrupted and the app deleted by hand). Redirect the lane to a file
+and grep the file afterwards.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

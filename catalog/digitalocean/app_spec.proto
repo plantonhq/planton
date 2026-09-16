@@ -12,6 +12,46 @@ import "shared/options/options.proto";
 // Modules map lowercase enum values to the provider's uppercase strings.
 
 // -----------------------------------------------------------------------------
+// Region
+// -----------------------------------------------------------------------------
+
+// App Platform region. These are NOT droplet regions: App Platform places an
+// app in a datacenter GROUP and names it by a three-letter slug (nyc covers
+// nyc1 and nyc3, ams covers ams3, and so on). The API accepts a droplet slug
+// such as nyc3 but stores the group slug, so a spec that says nyc3 re-plans on
+// every apply; typing the field with the group slugs makes that mismatch
+// unrepresentable. The list is GET /v2/apps/regions (measured 2026-09-16;
+// blr is the API's default when a region is omitted, which is why the field
+// is required here).
+enum DigitalOceanAppRegion {
+  digital_ocean_app_region_unspecified = 0;
+  // Amsterdam (ams3)
+  ams = 1;
+  // New York (nyc1, nyc3)
+  nyc = 2;
+  // Frankfurt (fra1)
+  fra = 3;
+  // San Francisco (sfo3)
+  sfo = 4;
+  // Singapore (sgp1)
+  sgp = 5;
+  // Bangalore (blr1)
+  blr = 6;
+  // Toronto (tor1)
+  tor = 7;
+  // London (lon1)
+  lon = 8;
+  // Sydney (syd1)
+  syd = 9;
+  // Atlanta (atl1)
+  atl = 10;
+  // Richmond (ric1)
+  ric = 11;
+  // Kansas City (mkc1)
+  mkc = 12;
+}
+
+// -----------------------------------------------------------------------------
 // Environment variables
 // -----------------------------------------------------------------------------
 
@@ -177,8 +217,9 @@ message DigitalOceanAppImageSource {
 
 // HTTP/TCP health check. The same shape is used for readiness (health_check)
 // and liveness (liveness_health_check) on services; workers only have the
-// liveness variant. The Pulumi SDK at v4.49.0 cannot set liveness_health_check
-// - Terraform wires it; Pulumi fails loudly if it is set.
+// liveness variant. The Pulumi SDK (v4.53.0, verified) has no
+// liveness_health_check on services or workers - Terraform wires it; Pulumi
+// fails loudly if it is set.
 message DigitalOceanAppHealthCheck {
   // Port to probe. Range 1-65535. When omitted, App Platform uses the
   // component's HTTP port.
@@ -289,9 +330,17 @@ message DigitalOceanAppSlackWebhook {
   ];
 }
 
-// Email and Slack destinations for an alert. Applied via a side-channel API
-// call after the app spec is saved; they are never read back into Terraform
-// state, so an import round-trip will not restore them.
+// Email and Slack destinations for an alert. Both engines wire them, and the
+// provider applies them via a side-channel API call after the app spec is
+// saved -- but it never reads them back into state (provider defect at
+// v2.99.1, measured live 2026-09-16). Consequences: a Terraform plan with
+// refresh proposes the destinations again on every run, and because any spec
+// diff is an App update, every apply triggers a new deployment; Pulumi shows
+// the same diff only after a refresh; an import never restores them. Until
+// the provider reads destinations back, set them on Pulumi stacks, or leave
+// them unset (DigitalOcean then notifies the team's default address) and
+// manage destinations in the control panel. Emails must be verified team
+// members or the API rejects the call.
 message DigitalOceanAppAlertDestinations {
   repeated string emails = 1;
   repeated DigitalOceanAppSlackWebhook slack_webhooks = 2;
@@ -399,8 +448,8 @@ message DigitalOceanAppCors {
 message DigitalOceanAppIngressMatch {
   // Path prefix, for example /api
   string path_prefix = 1;
-  // Exact Host header to match. The Pulumi SDK at v4.49.0 cannot set this;
-  // Terraform wires it and Pulumi fails loudly if it is set.
+  // Exact Host header to match. Both engines wire it (the Pulumi SDK carries
+  // it since v4.53.0).
   string authority_exact = 2;
 }
 
@@ -435,8 +484,9 @@ message DigitalOceanAppSecureHeader {
 
 message DigitalOceanAppIngress {
   repeated DigitalOceanAppIngressRule rules = 1;
-  // The provider schema caps this at one header. The Pulumi SDK at v4.49.0
-  // cannot set it; Terraform wires it and Pulumi fails loudly if it is set.
+  // The provider schema caps this at one header. The Pulumi SDK (v4.53.0,
+  // verified) has no secure_header on ingress rules; Terraform wires it and
+  // Pulumi fails loudly if it is set.
   DigitalOceanAppSecureHeader secure_header = 2;
 }
 

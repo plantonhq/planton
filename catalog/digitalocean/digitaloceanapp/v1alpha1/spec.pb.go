@@ -81,17 +81,29 @@ func (DigitalOceanAppJobKind) EnumDescriptor() ([]byte, []int) {
 // services, workers, jobs, static sites, functions, and in-app databases,
 // plus domains, ingress, alerts, and VPC placement.
 //
-// The app name is spec.app_name (2-32 characters, the provider's limit).
-// Component instance sizes are free-form slugs such as basic-xxs or
-// professional-s - the provider does not publish a closed list, so new
-// sizes work without a catalog change.
+// The app name is spec.app_name (2-32 characters, the API's limit). Every
+// component name shares the API's naming rule, ^[a-z][a-z0-9-]{0,30}[a-z0-9]$,
+// and the API rejects the whole app spec when any one of them breaks it, so
+// the rule is enforced at validation on each name field below. Component
+// instance sizes are free-form slugs such as basic-xxs or professional-s -
+// the provider does not publish a closed list, so new sizes work without a
+// catalog change.
 type DigitalOceanAppSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// App name, unique in the DigitalOcean account. DNS-friendly, 2-32
-	// characters. This is spec.name in the Terraform resource.
+	// App name, unique across every app in the DigitalOcean account. 2-32
+	// characters matching ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ -- starts with a
+	// letter, ends with a letter or digit (the API's own rule; it answers
+	// "name in body should match ..." otherwise, and reports a taken name as
+	// app_name_available: false on its validate-only POST /v2/apps/propose).
+	// This is spec.name in the Terraform resource. Renaming updates the app in
+	// place; the default <name>-<hash>.ondigitalocean.app hostname carries the
+	// name, so the app's URL changes with it.
 	AppName string `protobuf:"bytes,1,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
-	// Region slug, for example nyc3. Required to place the app.
-	Region      digitalocean.DigitalOceanRegion          `protobuf:"varint,2,opt,name=region,proto3,enum=dev.planton.digitalocean.DigitalOceanRegion" json:"region,omitempty"`
+	// App Platform region group, for example nyc (never a droplet slug such
+	// as nyc3 -- the API would store nyc and the plan would never settle).
+	// Required: the API defaults to blr when omitted, which is rarely what a
+	// manifest author means.
+	Region      digitalocean.DigitalOceanAppRegion       `protobuf:"varint,2,opt,name=region,proto3,enum=dev.planton.digitalocean.DigitalOceanAppRegion" json:"region,omitempty"`
 	Services    []*DigitalOceanAppService                `protobuf:"bytes,3,rep,name=services,proto3" json:"services,omitempty"`
 	Workers     []*DigitalOceanAppWorker                 `protobuf:"bytes,4,rep,name=workers,proto3" json:"workers,omitempty"`
 	Jobs        []*DigitalOceanAppJob                    `protobuf:"bytes,5,rep,name=jobs,proto3" json:"jobs,omitempty"`
@@ -104,16 +116,19 @@ type DigitalOceanAppSpec struct {
 	Ingress     *digitalocean.DigitalOceanAppIngress     `protobuf:"bytes,12,opt,name=ingress,proto3" json:"ingress,omitempty"`
 	Egress      digitalocean.DigitalOceanAppEgressType   `protobuf:"varint,13,opt,name=egress,proto3,enum=dev.planton.digitalocean.DigitalOceanAppEgressType" json:"egress,omitempty"`
 	Maintenance *digitalocean.DigitalOceanAppMaintenance `protobuf:"bytes,14,opt,name=maintenance,proto3" json:"maintenance,omitempty"`
-	// VPC the app's egress is placed in. Optional. The Pulumi SDK at v4.49.0
-	// cannot set this; Terraform wires it and Pulumi fails loudly if it is set.
+	// VPC the app's egress is placed in. Optional; both engines wire it (the
+	// Pulumi SDK carries it since v4.53.0 as a one-element vpcs list).
 	Vpc *v1.StringValueOrRef `protobuf:"bytes,15,opt,name=vpc,proto3" json:"vpc,omitempty"`
 	// Feature flags App Platform accepts as free-form strings.
 	Features                     []string `protobuf:"bytes,16,rep,name=features,proto3" json:"features,omitempty"`
 	DisableEdgeCache             bool     `protobuf:"varint,17,opt,name=disable_edge_cache,json=disableEdgeCache,proto3" json:"disable_edge_cache,omitempty"`
 	DisableEmailObfuscation      bool     `protobuf:"varint,18,opt,name=disable_email_obfuscation,json=disableEmailObfuscation,proto3" json:"disable_email_obfuscation,omitempty"`
 	EnhancedThreatControlEnabled bool     `protobuf:"varint,19,opt,name=enhanced_threat_control_enabled,json=enhancedThreatControlEnabled,proto3" json:"enhanced_threat_control_enabled,omitempty"`
-	// DigitalOcean project to put the app in. Literal project UUID. A typed
-	// reference will land when the Project kind is forged.
+	// DigitalOcean project to put the app in. Literal project UUID (the FK
+	// upgrade to DigitalOceanProject is recorded backlog). Create-only: the
+	// provider marks project_id ForceNew, so changing it destroys and recreates
+	// the app (new UUID, new default hostname). Unset puts the app in the
+	// account's default project.
 	ProjectId     string `protobuf:"bytes,20,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -156,11 +171,11 @@ func (x *DigitalOceanAppSpec) GetAppName() string {
 	return ""
 }
 
-func (x *DigitalOceanAppSpec) GetRegion() digitalocean.DigitalOceanRegion {
+func (x *DigitalOceanAppSpec) GetRegion() digitalocean.DigitalOceanAppRegion {
 	if x != nil {
 		return x.Region
 	}
-	return digitalocean.DigitalOceanRegion(0)
+	return digitalocean.DigitalOceanAppRegion(0)
 }
 
 func (x *DigitalOceanAppSpec) GetServices() []*DigitalOceanAppService {
@@ -292,7 +307,9 @@ func (x *DigitalOceanAppSpec) GetProjectId() string {
 // HTTP service that receives external or internal traffic.
 type DigitalOceanAppService struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	Name  string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+	// chars, starts with a letter) and a violation rejects the whole app spec.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Working directory inside the repo for the build.
 	SourceDir string                                       `protobuf:"bytes,2,opt,name=source_dir,json=sourceDir,proto3" json:"source_dir,omitempty"`
 	Git       *digitalocean.DigitalOceanAppGitSource       `protobuf:"bytes,3,opt,name=git,proto3" json:"git,omitempty"`
@@ -315,7 +332,8 @@ type DigitalOceanAppService struct {
 	HttpPort      *uint32                                  `protobuf:"varint,14,opt,name=http_port,json=httpPort,proto3,oneof" json:"http_port,omitempty"`
 	InternalPorts []uint32                                 `protobuf:"varint,15,rep,packed,name=internal_ports,json=internalPorts,proto3" json:"internal_ports,omitempty"`
 	HealthCheck   *digitalocean.DigitalOceanAppHealthCheck `protobuf:"bytes,16,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`
-	// Liveness probe. Terraform wires this; Pulumi at v4.49.0 fails loudly if set.
+	// Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
+	// has no liveness_health_check on services, so Pulumi fails loudly if set.
 	LivenessHealthCheck *digitalocean.DigitalOceanAppHealthCheck      `protobuf:"bytes,17,opt,name=liveness_health_check,json=livenessHealthCheck,proto3" json:"liveness_health_check,omitempty"`
 	Autoscaling         *digitalocean.DigitalOceanAppAutoscaling      `protobuf:"bytes,18,opt,name=autoscaling,proto3" json:"autoscaling,omitempty"`
 	Termination         *digitalocean.DigitalOceanAppTermination      `protobuf:"bytes,19,opt,name=termination,proto3" json:"termination,omitempty"`
@@ -512,7 +530,9 @@ func (x *DigitalOceanAppService) GetLogDestinations() []*digitalocean.DigitalOce
 
 // Background worker. No HTTP port. Autoscaling is supported.
 type DigitalOceanAppWorker struct {
-	state            protoimpl.MessageState                       `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+	// chars, starts with a letter) and a violation rejects the whole app spec.
 	Name             string                                       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	SourceDir        string                                       `protobuf:"bytes,2,opt,name=source_dir,json=sourceDir,proto3" json:"source_dir,omitempty"`
 	Git              *digitalocean.DigitalOceanAppGitSource       `protobuf:"bytes,3,opt,name=git,proto3" json:"git,omitempty"`
@@ -526,7 +546,8 @@ type DigitalOceanAppWorker struct {
 	RunCommand       string                                       `protobuf:"bytes,11,opt,name=run_command,json=runCommand,proto3" json:"run_command,omitempty"`
 	InstanceSizeSlug string                                       `protobuf:"bytes,12,opt,name=instance_size_slug,json=instanceSizeSlug,proto3" json:"instance_size_slug,omitempty"`
 	InstanceCount    uint32                                       `protobuf:"varint,13,opt,name=instance_count,json=instanceCount,proto3" json:"instance_count,omitempty"`
-	// Liveness probe. Terraform wires this; Pulumi at v4.49.0 fails loudly if set.
+	// Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
+	// has no liveness_health_check on workers, so Pulumi fails loudly if set.
 	LivenessHealthCheck *digitalocean.DigitalOceanAppHealthCheck      `protobuf:"bytes,14,opt,name=liveness_health_check,json=livenessHealthCheck,proto3" json:"liveness_health_check,omitempty"`
 	Autoscaling         *digitalocean.DigitalOceanAppAutoscaling      `protobuf:"bytes,15,opt,name=autoscaling,proto3" json:"autoscaling,omitempty"`
 	Termination         *digitalocean.DigitalOceanAppTermination      `protobuf:"bytes,16,opt,name=termination,proto3" json:"termination,omitempty"`
@@ -703,7 +724,9 @@ func (x *DigitalOceanAppWorker) GetLogDestinations() []*digitalocean.DigitalOcea
 // Job that runs around a deployment. kind selects pre_deploy, post_deploy,
 // or failed_deploy. No autoscaling.
 type DigitalOceanAppJob struct {
-	state            protoimpl.MessageState                        `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+	// chars, starts with a letter) and a violation rejects the whole app spec.
 	Name             string                                        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	SourceDir        string                                        `protobuf:"bytes,2,opt,name=source_dir,json=sourceDir,proto3" json:"source_dir,omitempty"`
 	Git              *digitalocean.DigitalOceanAppGitSource        `protobuf:"bytes,3,opt,name=git,proto3" json:"git,omitempty"`
@@ -885,7 +908,9 @@ func (x *DigitalOceanAppJob) GetLogDestinations() []*digitalocean.DigitalOceanAp
 // Static site. No instance size, no alerts, no log destinations, no image
 // source - the site is built from git.
 type DigitalOceanAppStaticSite struct {
-	state           protoimpl.MessageState                       `protogen:"open.v1"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+	// chars, starts with a letter) and a violation rejects the whole app spec.
 	Name            string                                       `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	SourceDir       string                                       `protobuf:"bytes,2,opt,name=source_dir,json=sourceDir,proto3" json:"source_dir,omitempty"`
 	Git             *digitalocean.DigitalOceanAppGitSource       `protobuf:"bytes,3,opt,name=git,proto3" json:"git,omitempty"`
@@ -1040,7 +1065,9 @@ func (x *DigitalOceanAppStaticSite) GetEnvs() []*digitalocean.DigitalOceanAppEnv
 // container image).
 type DigitalOceanAppFunctionComponent struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	Name  string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+	// chars, starts with a letter) and a violation rejects the whole app spec.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// Directory inside the repo that contains project.yml and the packages tree.
 	SourceDir       string                                        `protobuf:"bytes,2,opt,name=source_dir,json=sourceDir,proto3" json:"source_dir,omitempty"`
 	Git             *digitalocean.DigitalOceanAppGitSource        `protobuf:"bytes,3,opt,name=git,proto3" json:"git,omitempty"`
@@ -1151,10 +1178,10 @@ var File_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/digitalocean/digitaloceanapp/v1alpha1/spec.proto\x121dev.planton.digitalocean.digitaloceanapp.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\x1a!catalog/digitalocean/region.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa8\x0e\n" +
-	"\x13DigitalOceanAppSpec\x12H\n" +
-	"\bapp_name\x18\x01 \x01(\tB-\xbaH*\xc8\x01\x01r%\x10\x02\x18 2\x1f^[a-z0-9]([a-z0-9-]*[a-z0-9])?$R\aappName\x12L\n" +
-	"\x06region\x18\x02 \x01(\x0e2,.dev.planton.digitalocean.DigitalOceanRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12e\n" +
+	"8catalog/digitalocean/digitaloceanapp/v1alpha1/spec.proto\x121dev.planton.digitalocean.digitaloceanapp.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xaa\x0e\n" +
+	"\x13DigitalOceanAppSpec\x12G\n" +
+	"\bapp_name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\aappName\x12O\n" +
+	"\x06region\x18\x02 \x01(\x0e2/.dev.planton.digitalocean.DigitalOceanAppRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12e\n" +
 	"\bservices\x18\x03 \x03(\v2I.dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppServiceR\bservices\x12b\n" +
 	"\aworkers\x18\x04 \x03(\v2H.dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorkerR\aworkers\x12Y\n" +
 	"\x04jobs\x18\x05 \x03(\v2E.dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJobR\x04jobs\x12o\n" +
@@ -1175,10 +1202,9 @@ const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = ""
 	"\x1fenhanced_threat_control_enabled\x18\x13 \x01(\bR\x1cenhancedThreatControlEnabled\x12\x1d\n" +
 	"\n" +
 	"project_id\x18\x14 \x01(\tR\tprojectId:\xf8\x01\xbaH\xf4\x01\x1a\xf1\x01\n" +
-	"\x13app_has_a_component\x12iadd at least one component: a service, worker, job, static site, or function - an empty app cannot deploy\x1aosize(this.services) + size(this.workers) + size(this.jobs) + size(this.static_sites) + size(this.functions) > 0\"\x81\x0f\n" +
-	"\x16DigitalOceanAppService\x12\x1e\n" +
-	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x1d\n" +
+	"\x13app_has_a_component\x12iadd at least one component: a service, worker, job, static site, or function - an empty app cannot deploy\x1aosize(this.services) + size(this.workers) + size(this.jobs) + size(this.static_sites) + size(this.functions) > 0\"\xa3\x0f\n" +
+	"\x16DigitalOceanAppService\x12@\n" +
+	"\x04name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\x04name\x12\x1d\n" +
 	"\n" +
 	"source_dir\x18\x02 \x01(\tR\tsourceDir\x12D\n" +
 	"\x03git\x18\x03 \x01(\v22.dev.planton.digitalocean.DigitalOceanAppGitSourceR\x03git\x12M\n" +
@@ -1206,10 +1232,9 @@ const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = ""
 	"\x12service_one_source\x12Qset exactly one source for this service: git, github, gitlab, bitbucket, or image\x1a\x92\x01(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) + (has(this.image) ? 1 : 0) == 1\x1a\xc3\x01\n" +
 	"\x1aservice_autoscale_or_count\x12pwhen autoscaling is set, leave instance_count unset - App Platform ignores a fixed count while autoscaling is on\x1a3!has(this.autoscaling) || this.instance_count == 0uB\f\n" +
 	"\n" +
-	"_http_port\"\xe9\x0e\n" +
-	"\x15DigitalOceanAppWorker\x12\x1e\n" +
-	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x1d\n" +
+	"_http_port\"\x8b\x0f\n" +
+	"\x15DigitalOceanAppWorker\x12@\n" +
+	"\x04name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\x04name\x12\x1d\n" +
 	"\n" +
 	"source_dir\x18\x02 \x01(\tR\tsourceDir\x12D\n" +
 	"\x03git\x18\x03 \x01(\v22.dev.planton.digitalocean.DigitalOceanAppGitSourceR\x03git\x12M\n" +
@@ -1233,10 +1258,9 @@ const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = ""
 	"\x10log_destinations\x18\x13 \x03(\v27.dev.planton.digitalocean.DigitalOceanAppLogDestinationR\x0flogDestinations:\xef\x04\xbaH\xeb\x04\x1a\xfa\x01\n" +
 	"\x11worker_one_source\x12Pset exactly one source for this worker: git, github, gitlab, bitbucket, or image\x1a\x92\x01(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) + (has(this.image) ? 1 : 0) == 1\x1a\xc2\x01\n" +
 	"\x19worker_autoscale_or_count\x12pwhen autoscaling is set, leave instance_count unset - App Platform ignores a fixed count while autoscaling is on\x1a3!has(this.autoscaling) || this.instance_count == 0u\x1a\xa6\x01\n" +
-	"\x0fworker_no_drain\x12Sdrain_seconds is a service-only HTTP drain; workers only honor grace_period_seconds\x1a>!has(this.termination) || !has(this.termination.drain_seconds)\"\xb2\f\n" +
-	"\x12DigitalOceanAppJob\x12\x1e\n" +
-	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x1d\n" +
+	"\x0fworker_no_drain\x12Sdrain_seconds is a service-only HTTP drain; workers only honor grace_period_seconds\x1a>!has(this.termination) || !has(this.termination.drain_seconds)\"\xd4\f\n" +
+	"\x12DigitalOceanAppJob\x12@\n" +
+	"\x04name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\x04name\x12\x1d\n" +
 	"\n" +
 	"source_dir\x18\x02 \x01(\tR\tsourceDir\x12D\n" +
 	"\x03git\x18\x03 \x01(\v22.dev.planton.digitalocean.DigitalOceanAppGitSourceR\x03git\x12M\n" +
@@ -1258,10 +1282,9 @@ const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = ""
 	"\x06alerts\x18\x11 \x03(\v27.dev.planton.digitalocean.DigitalOceanAppComponentAlertR\x06alerts\x12b\n" +
 	"\x10log_destinations\x18\x12 \x03(\v27.dev.planton.digitalocean.DigitalOceanAppLogDestinationR\x0flogDestinations:\x9e\x03\xbaH\x9a\x03\x1a\xf4\x01\n" +
 	"\x0ejob_one_source\x12Mset exactly one source for this job: git, github, gitlab, bitbucket, or image\x1a\x92\x01(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) + (has(this.image) ? 1 : 0) == 1\x1a\xa0\x01\n" +
-	"\fjob_no_drain\x12Pdrain_seconds is a service-only HTTP drain; jobs only honor grace_period_seconds\x1a>!has(this.termination) || !has(this.termination.drain_seconds)\"\xd8\a\n" +
-	"\x19DigitalOceanAppStaticSite\x12\x1e\n" +
-	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x1d\n" +
+	"\fjob_no_drain\x12Pdrain_seconds is a service-only HTTP drain; jobs only honor grace_period_seconds\x1a>!has(this.termination) || !has(this.termination.drain_seconds)\"\xfa\a\n" +
+	"\x19DigitalOceanAppStaticSite\x12@\n" +
+	"\x04name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\x04name\x12\x1d\n" +
 	"\n" +
 	"source_dir\x18\x02 \x01(\tR\tsourceDir\x12D\n" +
 	"\x03git\x18\x03 \x01(\v22.dev.planton.digitalocean.DigitalOceanAppGitSourceR\x03git\x12M\n" +
@@ -1278,10 +1301,9 @@ const file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_rawDesc = ""
 	"\x0eerror_document\x18\f \x01(\tR\rerrorDocument\x12+\n" +
 	"\x11catchall_document\x18\r \x01(\tR\x10catchallDocument\x12C\n" +
 	"\x04envs\x18\x0e \x03(\v2/.dev.planton.digitalocean.DigitalOceanAppEnvVarR\x04envs:\xe7\x01\xbaH\xe3\x01\x1a\xe0\x01\n" +
-	"\x16static_site_one_source\x12Nset exactly one source for this static site: git, github, gitlab, or bitbucket\x1av(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) == 1\"\x86\a\n" +
-	" DigitalOceanAppFunctionComponent\x12\x1e\n" +
-	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\x1d\n" +
+	"\x16static_site_one_source\x12Nset exactly one source for this static site: git, github, gitlab, or bitbucket\x1av(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) == 1\"\xa8\a\n" +
+	" DigitalOceanAppFunctionComponent\x12@\n" +
+	"\x04name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\x04name\x12\x1d\n" +
 	"\n" +
 	"source_dir\x18\x02 \x01(\tR\tsourceDir\x12D\n" +
 	"\x03git\x18\x03 \x01(\v22.dev.planton.digitalocean.DigitalOceanAppGitSourceR\x03git\x12M\n" +
@@ -1322,7 +1344,7 @@ var file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_goTypes = []an
 	(*DigitalOceanAppJob)(nil),                          // 4: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob
 	(*DigitalOceanAppStaticSite)(nil),                   // 5: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppStaticSite
 	(*DigitalOceanAppFunctionComponent)(nil),            // 6: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppFunctionComponent
-	(digitalocean.DigitalOceanRegion)(0),                // 7: dev.planton.digitalocean.DigitalOceanRegion
+	(digitalocean.DigitalOceanAppRegion)(0),             // 7: dev.planton.digitalocean.DigitalOceanAppRegion
 	(*digitalocean.DigitalOceanAppDatabase)(nil),        // 8: dev.planton.digitalocean.DigitalOceanAppDatabase
 	(*digitalocean.DigitalOceanAppDomain)(nil),          // 9: dev.planton.digitalocean.DigitalOceanAppDomain
 	(*digitalocean.DigitalOceanAppEnvVar)(nil),          // 10: dev.planton.digitalocean.DigitalOceanAppEnvVar
@@ -1343,7 +1365,7 @@ var file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_goTypes = []an
 	(*digitalocean.DigitalOceanAppLogDestination)(nil),  // 25: dev.planton.digitalocean.DigitalOceanAppLogDestination
 }
 var file_catalog_digitalocean_digitaloceanapp_v1alpha1_spec_proto_depIdxs = []int32{
-	7,  // 0: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.region:type_name -> dev.planton.digitalocean.DigitalOceanRegion
+	7,  // 0: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.region:type_name -> dev.planton.digitalocean.DigitalOceanAppRegion
 	2,  // 1: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.services:type_name -> dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppService
 	3,  // 2: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.workers:type_name -> dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppWorker
 	4,  // 3: dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppSpec.jobs:type_name -> dev.planton.digitalocean.digitaloceanapp.v1alpha1.DigitalOceanAppJob

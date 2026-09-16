@@ -4,7 +4,6 @@ package dev.planton.digitalocean.digitaloceanfunction.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "catalog/digitalocean/app_spec.proto";
-import "catalog/digitalocean/region.proto";
 
 // DigitalOceanFunctionSpec deploys serverless functions as an App Platform
 // app with a single functions component. The provider has no standalone
@@ -21,32 +20,57 @@ message DigitalOceanFunctionSpec {
     expression: "(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) == 1"
   };
 
-  // Functions component name inside the app.
+  // Functions component name inside the app. The App Platform API enforces
+  // ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ on every component name (2-32 chars,
+  // starts with a letter, ends with a letter or digit) and rejects the
+  // whole app spec otherwise, so the same rule is enforced here.
   string function_name = 1 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 1,
-    (buf.validate.field).string.max_len = 32
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 32,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]{0,30}[a-z0-9]$"
   ];
 
-  DigitalOceanRegion region = 2 [(buf.validate.field).required = true];
+  // App Platform region group, for example nyc (never a droplet slug such
+  // as nyc3 -- the API would store nyc and the plan would never settle).
+  DigitalOceanAppRegion region = 2 [(buf.validate.field).required = true];
 
   DigitalOceanAppGitSource git = 3;
   DigitalOceanAppGithubSource github = 4;
   DigitalOceanAppGitlabSource gitlab = 5;
   DigitalOceanAppBitbucketSource bitbucket = 6;
 
-  // Directory inside the repo that contains project.yml and the packages
-  // tree, for example packages/api.
-  string source_directory = 7 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 1
-  ];
+  // Directory inside the repo that contains project.yml (App Platform reads
+  // runtime, memory, timeout, and schedules from it). Leave unset when
+  // project.yml is at the repository root -- DigitalOcean's own hello-world
+  // sample is laid out that way. Set it only when project.yml lives in a
+  // subdirectory, for example functions/api. A wrong directory fails the
+  // App Platform build minutes into the deploy, never at validation.
+  string source_directory = 7;
 
   repeated DigitalOceanAppEnvVar envs = 8;
   repeated DigitalOceanAppComponentAlert alerts = 9;
   repeated DigitalOceanAppLogDestination log_destinations = 10;
 
-  // DigitalOcean project UUID to put the app in. Literal; a typed reference
-  // lands when the Project kind is forged.
+  // DigitalOcean project UUID to put the app in. Literal UUID (the FK
+  // upgrade to DigitalOceanProject is recorded backlog). Create-only: the
+  // provider marks project_id ForceNew, so changing it destroys and
+  // recreates the app. Unset puts the app in the account's default project.
   string project_id = 11;
+
+  // Name of the App Platform app that hosts the functions component. This is
+  // spec.name on digitalocean_app: 2-32 chars, ^[a-z][a-z0-9-]{0,30}[a-z0-9]$,
+  // and unique across every app in the DigitalOcean account (the API answers
+  // "name in body should be at most 32 chars long" / "app_name_available:
+  // false" otherwise). It is a spec field, never derived from metadata.name,
+  // because Planton names are longer than 32 chars and unique only within an
+  // org/env. Renaming updates the app in place; the default
+  // <name>-<hash>.ondigitalocean.app hostname carries the name, so the URL
+  // changes with it.
+  string app_name = 12 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2,
+    (buf.validate.field).string.max_len = 32,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9-]{0,30}[a-z0-9]$"
+  ];
 }

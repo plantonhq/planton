@@ -15,51 +15,25 @@ func app(
 ) (*digitalocean.App, error) {
 	spec := locals.DigitalOceanApp.Spec
 
-	if spec.GetMaintenance() != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.maintenance is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no AppSpec maintenance field. Re-evaluate when the SDK exposes spec.maintenance.")
-	}
-	if spec.GetVpc() != nil && spec.GetVpc().GetValue() != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.vpc is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no AppSpec vpc field. Re-evaluate when the SDK exposes spec.vpc.")
-	}
+	// Two arms Terraform wires that the Pulumi bridge still cannot express at
+	// pulumi-digitalocean v4.53.0 (re-verified against the SDK on disk: no
+	// SecureHeader on AppSpecIngressRuleArgs, no LivenessHealthCheck on the
+	// service or worker args). Failing loudly on a meaningful set keeps the two
+	// engines honest with each other -- a silent drop would deploy a different
+	// app than the manifest describes. Re-evaluate on every SDK pin bump; the
+	// maintenance, vpc, ingress authority, and alert-destination arms that used
+	// to sit in this list closed at v4.53.0 and are wired below.
 	if spec.GetIngress() != nil && spec.GetIngress().GetSecureHeader() != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.ingress.secure_header is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no ingress secure_header field. Re-evaluate when the SDK exposes ingress.secure_header.")
-	}
-	if spec.GetIngress() != nil {
-		for _, rule := range spec.GetIngress().GetRules() {
-			if rule.GetMatch() != nil && rule.GetMatch().GetAuthorityExact() != "" {
-				return nil, errors.New("PARITY-EXCEPTION: spec.ingress.rules.match.authority_exact is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no ingress match.authority field. Re-evaluate when the SDK exposes ingress.rule.match.authority.")
-			}
-		}
+		return nil, errors.New("PARITY-EXCEPTION: spec.ingress.secure_header is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no secure_header on ingress rules. Re-evaluate when the SDK exposes ingress.secure_header.")
 	}
 	for _, s := range spec.GetServices() {
 		if s.GetLivenessHealthCheck() != nil {
-			return nil, errors.New("PARITY-EXCEPTION: service liveness_health_check is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no liveness_health_check on services. Re-evaluate when the SDK exposes service.liveness_health_check.")
-		}
-		if err := componentAlerts(s.GetAlerts()); err != nil {
-			return nil, err
+			return nil, errors.New("PARITY-EXCEPTION: service liveness_health_check is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no liveness_health_check on services. Re-evaluate when the SDK exposes service.liveness_health_check.")
 		}
 	}
 	for _, w := range spec.GetWorkers() {
 		if w.GetLivenessHealthCheck() != nil {
-			return nil, errors.New("PARITY-EXCEPTION: worker liveness_health_check is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no liveness_health_check on workers. Re-evaluate when the SDK exposes worker.liveness_health_check.")
-		}
-		if err := componentAlerts(w.GetAlerts()); err != nil {
-			return nil, err
-		}
-	}
-	for _, j := range spec.GetJobs() {
-		if err := componentAlerts(j.GetAlerts()); err != nil {
-			return nil, err
-		}
-	}
-	for _, f := range spec.GetFunctions() {
-		if err := componentAlerts(f.GetAlerts()); err != nil {
-			return nil, err
-		}
-	}
-	for _, a := range spec.GetAlerts() {
-		if destinationsSet(a.GetDestinations()) {
-			return nil, errors.New(destGap)
+			return nil, errors.New("PARITY-EXCEPTION: worker liveness_health_check is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no liveness_health_check on workers. Re-evaluate when the SDK exposes worker.liveness_health_check.")
 		}
 	}
 
@@ -73,6 +47,22 @@ func app(
 	}
 	if feats := spec.GetFeatures(); len(feats) > 0 {
 		appSpec.Features = pulumi.ToStringArray(feats)
+	}
+	if m := spec.GetMaintenance(); m != nil {
+		appSpec.Maintenance = &digitalocean.AppSpecMaintenanceArgs{
+			Enabled:        pulumi.Bool(m.GetEnabled()),
+			Archive:        pulumi.Bool(m.GetArchive()),
+			OfflinePageUrl: strPtr(m.GetOfflinePageUrl()),
+		}
+	}
+	// The SDK models VPC placement as a list; the API and Terraform accept
+	// exactly one VPC per app, so the spec's single reference becomes a
+	// one-element array here (the same shape Terraform's single vpc block
+	// serializes to).
+	if v := spec.GetVpc(); v != nil && v.GetValue() != "" {
+		appSpec.Vpcs = digitalocean.AppSpecVpcArray{
+			digitalocean.AppSpecVpcArgs{Id: pulumi.String(v.GetValue())},
+		}
 	}
 
 	services, err := buildServices(spec.GetServices())
@@ -187,11 +177,7 @@ func buildServices(in []*digitaloceanappv1alpha1.DigitalOceanAppService) (digita
 				DrainSeconds:       intPtrFromUint32(s.GetTermination().DrainSeconds),
 			}
 		}
-		alerts, err := serviceAlerts(s.GetAlerts())
-		if err != nil {
-			return nil, err
-		}
-		args.Alerts = alerts
+		args.Alerts = serviceAlerts(s.GetAlerts())
 		args.LogDestinations = serviceLogs(s.GetLogDestinations())
 		out = append(out, args)
 	}
@@ -248,18 +234,30 @@ func serviceImage(img *do.DigitalOceanAppImageSource) *digitalocean.AppSpecServi
 	return args
 }
 
-func serviceAlerts(in []*do.DigitalOceanAppComponentAlert) (digitalocean.AppSpecServiceAlertArray, error) {
+func serviceAlerts(in []*do.DigitalOceanAppComponentAlert) digitalocean.AppSpecServiceAlertArray {
 	out := digitalocean.AppSpecServiceAlertArray{}
 	for _, a := range in {
-		out = append(out, digitalocean.AppSpecServiceAlertArgs{
+		args := digitalocean.AppSpecServiceAlertArgs{
 			Rule:     pulumi.String(providerEnum(a.GetRule().String())),
 			Operator: pulumi.String(providerEnum(a.GetOperator().String())),
 			Window:   pulumi.String(providerEnum(a.GetWindow().String())),
 			Value:    pulumi.Float64(a.GetValue()),
 			Disabled: pulumi.Bool(a.GetDisabled()),
-		})
+		}
+		if d := a.GetDestinations(); destinationsSet(d) {
+			hooks := digitalocean.AppSpecServiceAlertDestinationsSlackWebhookArray{}
+			for _, h := range d.GetSlackWebhooks() {
+				hooks = append(hooks, digitalocean.AppSpecServiceAlertDestinationsSlackWebhookArgs{
+					Channel: pulumi.String(h.GetChannel()), Url: secretString(h.GetUrl()),
+				})
+			}
+			args.Destinations = &digitalocean.AppSpecServiceAlertDestinationsArgs{
+				Emails: pulumi.ToStringArray(d.GetEmails()), SlackWebhooks: hooks,
+			}
+		}
+		out = append(out, args)
 	}
-	return out, nil
+	return out
 }
 
 func serviceLogs(in []*do.DigitalOceanAppLogDestination) digitalocean.AppSpecServiceLogDestinationArray {
@@ -394,13 +392,25 @@ func workerImage(img *do.DigitalOceanAppImageSource) *digitalocean.AppSpecWorker
 func workerAlerts(in []*do.DigitalOceanAppComponentAlert) digitalocean.AppSpecWorkerAlertArray {
 	out := digitalocean.AppSpecWorkerAlertArray{}
 	for _, a := range in {
-		out = append(out, digitalocean.AppSpecWorkerAlertArgs{
+		args := digitalocean.AppSpecWorkerAlertArgs{
 			Rule:     pulumi.String(providerEnum(a.GetRule().String())),
 			Operator: pulumi.String(providerEnum(a.GetOperator().String())),
 			Window:   pulumi.String(providerEnum(a.GetWindow().String())),
 			Value:    pulumi.Float64(a.GetValue()),
 			Disabled: pulumi.Bool(a.GetDisabled()),
-		})
+		}
+		if d := a.GetDestinations(); destinationsSet(d) {
+			hooks := digitalocean.AppSpecWorkerAlertDestinationsSlackWebhookArray{}
+			for _, h := range d.GetSlackWebhooks() {
+				hooks = append(hooks, digitalocean.AppSpecWorkerAlertDestinationsSlackWebhookArgs{
+					Channel: pulumi.String(h.GetChannel()), Url: secretString(h.GetUrl()),
+				})
+			}
+			args.Destinations = &digitalocean.AppSpecWorkerAlertDestinationsArgs{
+				Emails: pulumi.ToStringArray(d.GetEmails()), SlackWebhooks: hooks,
+			}
+		}
+		out = append(out, args)
 	}
 	return out
 }
@@ -514,13 +524,25 @@ func jobImage(img *do.DigitalOceanAppImageSource) *digitalocean.AppSpecJobImageA
 func jobAlerts(in []*do.DigitalOceanAppComponentAlert) digitalocean.AppSpecJobAlertArray {
 	out := digitalocean.AppSpecJobAlertArray{}
 	for _, a := range in {
-		out = append(out, digitalocean.AppSpecJobAlertArgs{
+		args := digitalocean.AppSpecJobAlertArgs{
 			Rule:     pulumi.String(providerEnum(a.GetRule().String())),
 			Operator: pulumi.String(providerEnum(a.GetOperator().String())),
 			Window:   pulumi.String(providerEnum(a.GetWindow().String())),
 			Value:    pulumi.Float64(a.GetValue()),
 			Disabled: pulumi.Bool(a.GetDisabled()),
-		})
+		}
+		if d := a.GetDestinations(); destinationsSet(d) {
+			hooks := digitalocean.AppSpecJobAlertDestinationsSlackWebhookArray{}
+			for _, h := range d.GetSlackWebhooks() {
+				hooks = append(hooks, digitalocean.AppSpecJobAlertDestinationsSlackWebhookArgs{
+					Channel: pulumi.String(h.GetChannel()), Url: secretString(h.GetUrl()),
+				})
+			}
+			args.Destinations = &digitalocean.AppSpecJobAlertDestinationsArgs{
+				Emails: pulumi.ToStringArray(d.GetEmails()), SlackWebhooks: hooks,
+			}
+		}
+		out = append(out, args)
 	}
 	return out
 }
@@ -633,13 +655,25 @@ func buildFunctions(in []*digitaloceanappv1alpha1.DigitalOceanAppFunctionCompone
 func functionAlerts(in []*do.DigitalOceanAppComponentAlert) digitalocean.AppSpecFunctionAlertArray {
 	out := digitalocean.AppSpecFunctionAlertArray{}
 	for _, a := range in {
-		out = append(out, digitalocean.AppSpecFunctionAlertArgs{
+		args := digitalocean.AppSpecFunctionAlertArgs{
 			Rule:     pulumi.String(providerEnum(a.GetRule().String())),
 			Operator: pulumi.String(providerEnum(a.GetOperator().String())),
 			Window:   pulumi.String(providerEnum(a.GetWindow().String())),
 			Value:    pulumi.Float64(a.GetValue()),
 			Disabled: pulumi.Bool(a.GetDisabled()),
-		})
+		}
+		if d := a.GetDestinations(); destinationsSet(d) {
+			hooks := digitalocean.AppSpecFunctionAlertDestinationsSlackWebhookArray{}
+			for _, h := range d.GetSlackWebhooks() {
+				hooks = append(hooks, digitalocean.AppSpecFunctionAlertDestinationsSlackWebhookArgs{
+					Channel: pulumi.String(h.GetChannel()), Url: secretString(h.GetUrl()),
+				})
+			}
+			args.Destinations = &digitalocean.AppSpecFunctionAlertDestinationsArgs{
+				Emails: pulumi.ToStringArray(d.GetEmails()), SlackWebhooks: hooks,
+			}
+		}
+		out = append(out, args)
 	}
 	return out
 }
@@ -713,13 +747,29 @@ func buildDomains(in []*do.DigitalOceanAppDomain) digitalocean.AppSpecDomainName
 	return out
 }
 
+// buildAppAlerts wires app-level alert rules (deployment, domain, autoscale
+// events). Destinations ride the same block: the provider applies them through
+// a side-channel call after the app exists and reads them back from
+// ListAlerts, so both engines carry them in state the same way.
 func buildAppAlerts(in []*do.DigitalOceanAppAlert) digitalocean.AppSpecAlertArray {
 	out := digitalocean.AppSpecAlertArray{}
 	for _, a := range in {
-		out = append(out, digitalocean.AppSpecAlertArgs{
+		args := digitalocean.AppSpecAlertArgs{
 			Rule:     pulumi.String(providerEnum(a.GetRule().String())),
 			Disabled: pulumi.Bool(a.GetDisabled()),
-		})
+		}
+		if d := a.GetDestinations(); destinationsSet(d) {
+			hooks := digitalocean.AppSpecAlertDestinationsSlackWebhookArray{}
+			for _, h := range d.GetSlackWebhooks() {
+				hooks = append(hooks, digitalocean.AppSpecAlertDestinationsSlackWebhookArgs{
+					Channel: pulumi.String(h.GetChannel()), Url: secretString(h.GetUrl()),
+				})
+			}
+			args.Destinations = &digitalocean.AppSpecAlertDestinationsArgs{
+				Emails: pulumi.ToStringArray(d.GetEmails()), SlackWebhooks: hooks,
+			}
+		}
+		out = append(out, args)
 	}
 	return out
 }
@@ -728,12 +778,19 @@ func buildIngress(ing *do.DigitalOceanAppIngress) *digitalocean.AppSpecIngressAr
 	rules := digitalocean.AppSpecIngressRuleArray{}
 	for _, r := range ing.GetRules() {
 		rule := digitalocean.AppSpecIngressRuleArgs{}
-		if m := r.GetMatch(); m != nil && m.GetPathPrefix() != "" {
-			rule.Match = &digitalocean.AppSpecIngressRuleMatchArgs{
-				Path: &digitalocean.AppSpecIngressRuleMatchPathArgs{
+		if m := r.GetMatch(); m != nil && (m.GetPathPrefix() != "" || m.GetAuthorityExact() != "") {
+			match := &digitalocean.AppSpecIngressRuleMatchArgs{}
+			if m.GetPathPrefix() != "" {
+				match.Path = &digitalocean.AppSpecIngressRuleMatchPathArgs{
 					Prefix: pulumi.String(m.GetPathPrefix()),
-				},
+				}
 			}
+			if m.GetAuthorityExact() != "" {
+				match.Authority = &digitalocean.AppSpecIngressRuleMatchAuthorityArgs{
+					Exact: pulumi.String(m.GetAuthorityExact()),
+				}
+			}
+			rule.Match = match
 		}
 		if c := r.GetComponent(); c != nil {
 			rule.Component = &digitalocean.AppSpecIngressRuleComponentArgs{

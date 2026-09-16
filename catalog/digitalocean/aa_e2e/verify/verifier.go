@@ -51,7 +51,7 @@ type OutputsVerifier interface {
 // verifiers. Every kind that appears in another kind's registry prerequisites
 // MUST have an entry here, or composed scenarios fail at DEPENDENCIES-UP.
 var verifiers = map[string]Verifier{
-	"digitaloceanapp":                    &appVerifier{component: "digitaloceanapp", idOutputKey: "app_id"},
+	"digitaloceanapp":                    &appVerifier{component: "digitaloceanapp", idOutputKey: "app_id", urlOutputKey: "live_url"},
 	"digitaloceanbucket":                 &bucketVerifier{},
 	"digitaloceancdn":                    &cdnVerifier{},
 	"digitaloceancertificate":            &certificateVerifier{},
@@ -69,7 +69,7 @@ var verifiers = map[string]Verifier{
 	"digitaloceandroplet":                &dropletVerifier{},
 	"digitaloceandropletautoscalepool":   &dropletAutoscalePoolVerifier{},
 	"digitaloceanfirewall":               &firewallVerifier{},
-	"digitaloceanfunction":               &appVerifier{component: "digitaloceanfunction", idOutputKey: "function_id"},
+	"digitaloceanfunction":               &appVerifier{component: "digitaloceanfunction", idOutputKey: "function_id", urlOutputKey: "https_endpoint"},
 	"digitaloceankubernetescluster":      &kubernetesClusterVerifier{},
 	"digitaloceankubernetesnodepool":     &kubernetesNodePoolVerifier{},
 	"digitaloceanloadbalancer":           &loadBalancerVerifier{},

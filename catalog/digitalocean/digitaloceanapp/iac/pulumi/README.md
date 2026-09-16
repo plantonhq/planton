@@ -2,18 +2,14 @@
 
 Deploys a `digitalocean:index/app:App` from a `DigitalOceanApp` spec. The module maps every component family (service, worker, job, static site, function, in-app database), domains, ingress, alerts, and env vars onto the App Platform spec.
 
-## Pulumi SDK gaps (v4.49.0)
+## Pulumi SDK gaps (v4.53.0)
 
-These spec fields are real and Terraform wires them. This module fails the apply with `PARITY-EXCEPTION` if they are set, until the Pulumi DigitalOcean SDK grows the matching args:
+Two spec fields are real and Terraform wires them, but the Pulumi DigitalOcean SDK at v4.53.0 (verified on disk) has no matching args. This module fails the apply with `PARITY-EXCEPTION` if they are set, so both engines always deploy the same app:
 
-- `spec.vpc`
-- `spec.maintenance`
 - service/worker `livenessHealthCheck`
 - `spec.ingress.secureHeader`
-- `spec.ingress.rule.match.authority`
-- alert destinations (emails / Slack)
 
-Omit them on Pulumi stacks, or deploy those arms with Terraform.
+Omit them on Pulumi stacks, or deploy those arms with Terraform. `spec.vpc` (a one-element `vpcs` list on the SDK), `spec.maintenance`, `spec.ingress.rule.match.authority`, and alert destinations on app-level and component alerts closed at v4.53.0 and are wired. Slack webhook URLs are wrapped as Pulumi secrets because the SDK does not flag them.
 
 ## Prerequisites
 

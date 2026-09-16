@@ -6,11 +6,11 @@ Deploys serverless functions as an App Platform app with a single functions comp
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
-- **App Platform Application** -- a `digitalocean_app` whose name is the Cloud Resource metadata name
+- **App Platform Application** -- a `digitalocean_app` named `spec.appName`
 - **Functions component** -- one functions component named `spec.functionName`, sourced from the Git remote you declared
 - **Environment variables** -- from `spec.envs`; `secret` values are stored in App Platform's secret store
 
-App Platform reads `project.yml` from `sourceDirectory` to set runtime, memory, timeout, entrypoint, and any cron triggers.
+App Platform reads `project.yml` from the repository root (or from `sourceDirectory` when set) to set runtime, memory, timeout, entrypoint, and any cron triggers.
 
 ## Before You Deploy
 
@@ -22,8 +22,8 @@ App Platform reads `project.yml` from `sourceDirectory` to set runtime, memory, 
 ### DigitalOcean Account
 
 - **A Git repository** in DigitalOcean Functions layout: a `project.yml` and a packages tree. Provide a public clone URL (`git`), or a linked GitHub/GitLab/Bitbucket repo.
-- **A source directory** that contains `project.yml` (for DigitalOcean's hello-world sample, `packages`).
-- **A supported App Platform region** (for example `nyc3`).
+- **An app name** that is 2-32 characters, starts with a letter, and is not already used by another app in the account.
+- **An App Platform region group** (for example `nyc` -- a datacenter group, not a droplet slug like `nyc3`).
 
 ## Deploy
 
@@ -43,12 +43,12 @@ metadata:
   org: acme-corp
   env: prod
 spec:
+  appName: hello-fn
   functionName: hello
-  region: nyc3
+  region: nyc
   git:
     repoCloneUrl: https://github.com/digitalocean/sample-functions-nodejs-helloworld.git
     branch: master
-  sourceDirectory: packages
 ```
 
 ```shell
@@ -61,11 +61,13 @@ This clones the public hello-world sample and deploys it as an HTTP function; no
 
 These are the most important decisions when configuring a functions app. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Function name vs app name** -- `functionName` is the component name inside the app (max 32 characters); the App Platform app name is the Cloud Resource `metadata.name`. They can differ, and import and verification key off the app UUID (`function_id`), not the component name.
+**App name vs function name** -- `appName` names the App Platform app; `functionName` names the functions component inside it. Both follow the API's rule (2-32 characters, `^[a-z][a-z0-9-]{0,30}[a-z0-9]$`), and `appName` must be unique across every app in the account. Renaming the app updates it in place, but the default `<name>-<hash>.ondigitalocean.app` URL changes with the name. Import and verification key off the app UUID (`function_id`), not either name.
 
 **Source** -- exactly one of `git`, `github`, `gitlab`, or `bitbucket`; there is no container-image source for functions. The VCS-linked sources need the matching connection in the DigitalOcean control panel -- `deployOnPush` fails without it -- so `git` with a public clone URL is the right default for new accounts.
 
-**Source directory** -- `sourceDirectory` must point at the directory containing `project.yml` and the packages tree (for DigitalOcean's hello-world sample that is `packages`, not the repo root). A wrong directory produces a failed App Platform build, not a spec-validation error, so it surfaces minutes into the deploy rather than at apply time.
+**Source directory** -- `sourceDirectory` is the directory containing `project.yml`. Leave it unset when `project.yml` is at the repository root (DigitalOcean's hello-world sample is laid out that way); set it, for example `functions/api`, only when `project.yml` lives in a subdirectory. A wrong directory produces a failed App Platform build, not a spec-validation error, so it surfaces minutes into the deploy rather than at apply time.
+
+**Project** -- `projectId` is create-only: changing it destroys and recreates the app. Leave it unset to use the account's default project.
 
 **Runtime, memory, timeout, schedules** -- edit `project.yml` in the repo. They are deliberately not fields on this spec: Terraform and Pulumi cannot set those knobs on `digitalocean_app`, so a spec field for them would look configurable and do nothing. To change runtime or add a cron schedule, edit `project.yml` and redeploy.
 
@@ -75,7 +77,7 @@ These are the most important decisions when configuring a functions app. Explore
 
 ### What This Component Consumes
 
-This component has no foreign key dependencies -- the spec carries no typed references. Sources are Git coordinates, and `projectId` is a literal UUID until the Project kind is forged.
+This component has no foreign key dependencies -- the spec carries no typed references. Sources are Git coordinates, and `projectId` is a literal UUID (a typed reference to DigitalOceanProject is recorded backlog).
 
 ### What This Component Provides
 

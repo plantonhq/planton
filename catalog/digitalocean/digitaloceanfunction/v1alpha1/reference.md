@@ -27,8 +27,12 @@ silently do nothing.
 # Functions resource; both engines create digitalocean_app.
 #
 # Runtime, memory, timeout, entrypoint, and schedules live in the
-# repo's project.yml inside sourceDirectory. Putting those knobs on
-# this spec would silently do nothing.
+# repo's project.yml. App Platform reads it from sourceDirectory, or
+# from the repository root when sourceDirectory is unset (this sample).
+# Putting those knobs on this spec would silently do nothing.
+#
+# appName is the App Platform app's own name: 2-32 characters, starts
+# with a letter, unique across every app in the DigitalOcean account.
 #
 # Usage:
 #   planton apply -f manifest.yaml
@@ -38,12 +42,12 @@ kind: DigitalOceanFunction
 metadata:
   name: hello
 spec:
+  appName: hello-fn
   functionName: hello
-  region: nyc3
+  region: nyc
   git:
     repoCloneUrl: https://github.com/digitalocean/sample-functions-nodejs-helloworld.git
     branch: master
-  sourceDirectory: packages
 ```
 
 ## Spec Fields
@@ -67,7 +71,7 @@ spec:
 | `spec.bitbucket.repo` | `string` | yes |  |  |
 | `spec.bitbucket.branch` | `string` | yes |  |  |
 | `spec.bitbucket.deployOnPush` | `bool` |  |  |  |
-| `spec.sourceDirectory` | `string` | yes |  |  |
+| `spec.sourceDirectory` | `string` |  |  |  |
 | `spec.envs` | `[]DigitalOceanAppEnvVar` |  |  |  |
 | `spec.envs[].key` | `string` | yes |  |  |
 | `spec.envs[].plaintext` | `string` |  |  |  |
@@ -101,6 +105,7 @@ spec:
 | `spec.logDestinations[].openSearch.basicAuth.user` | `string` |  |  |  |
 | `spec.logDestinations[].openSearch.basicAuth.password` | `string` (sensitive) |  |  |  |
 | `spec.projectId` | `string` |  |  |  |
+| `spec.appName` | `string` | yes |  |  |
 
 ## Field Details
 
@@ -108,32 +113,37 @@ spec:
 
 `string` · required
 
-Functions component name inside the app.
+Functions component name inside the app. The App Platform API enforces
+^[a-z][a-z0-9-]{0,30}[a-z0-9]$ on every component name (2-32 chars,
+starts with a letter, ends with a letter or digit) and rejects the
+whole app spec otherwise, so the same rule is enforced here.
 
-- rule: {"required":true,"string":{"minLen":"1","maxLen":"32"}}
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ### spec.region
 
 `enum` · required
 
+App Platform region group, for example nyc (never a droplet slug such
+as nyc3 -- the API would store nyc and the plan would never settle).
+
 - rule: {"required":true}
 
 Allowed values (use exactly as shown):
 
-- `digital_ocean_region_unspecified` -- 0: default / unspecified region
-- `nyc3` -- new york 3
-- `sfo3` -- san francisco 3
-- `fra1` -- frankfurt 1
-- `sgp1` -- singapore 1
-- `lon1` -- london 1
-- `tor1` -- toronto 1
-- `blr1` -- bangalore 1
-- `ams3` -- amsterdam 3
-- `nyc1` -- new york 1
-- `nyc2` -- new york 2
-- `sfo2` -- san francisco 2
-- `syd1` -- sydney 1
-- `atl1` -- atlanta 1
+- `digital_ocean_app_region_unspecified`
+- `ams` -- Amsterdam (ams3)
+- `nyc` -- New York (nyc1, nyc3)
+- `fra` -- Frankfurt (fra1)
+- `sfo` -- San Francisco (sfo3)
+- `sgp` -- Singapore (sgp1)
+- `blr` -- Bangalore (blr1)
+- `tor` -- Toronto (tor1)
+- `lon` -- London (lon1)
+- `syd` -- Sydney (syd1)
+- `atl` -- Atlanta (atl1)
+- `ric` -- Richmond (ric1)
+- `mkc` -- Kansas City (mkc1)
 
 ### spec.git
 
@@ -223,12 +233,14 @@ Redeploy automatically when this branch is pushed.
 
 ### spec.sourceDirectory
 
-`string` · required
+`string`
 
-Directory inside the repo that contains project.yml and the packages
-tree, for example packages/api.
-
-- rule: {"required":true,"string":{"minLen":"1"}}
+Directory inside the repo that contains project.yml (App Platform reads
+runtime, memory, timeout, and schedules from it). Leave unset when
+project.yml is at the repository root -- DigitalOcean's own hello-world
+sample is laid out that way. Set it only when project.yml lives in a
+subdirectory, for example functions/api. A wrong directory fails the
+App Platform build minutes into the deploy, never at validation.
 
 ### spec.envs
 
@@ -436,8 +448,26 @@ The provider requires this block even when user and password are empty
 
 `string`
 
-DigitalOcean project UUID to put the app in. Literal; a typed reference
-lands when the Project kind is forged.
+DigitalOcean project UUID to put the app in. Literal UUID (the FK
+upgrade to DigitalOceanProject is recorded backlog). Create-only: the
+provider marks project_id ForceNew, so changing it destroys and
+recreates the app. Unset puts the app in the account's default project.
+
+### spec.appName
+
+`string` · required
+
+Name of the App Platform app that hosts the functions component. This is
+spec.name on digitalocean_app: 2-32 chars, ^[a-z][a-z0-9-]{0,30}[a-z0-9]$,
+and unique across every app in the DigitalOcean account (the API answers
+"name in body should be at most 32 chars long" / "app_name_available:
+false" otherwise). It is a spec field, never derived from metadata.name,
+because Planton names are longer than 32 chars and unique only within an
+org/env. Renaming updates the app in place; the default
+<name>-<hash>.ondigitalocean.app hostname carries the name, so the URL
+changes with it.
+
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ## Validation Rules
 

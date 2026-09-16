@@ -16,16 +16,12 @@ func function(
 ) (*digitalocean.App, error) {
 	spec := locals.DigitalOceanFunction.Spec
 
-	for _, a := range spec.GetAlerts() {
-		if a.GetDestinations() != nil &&
-			(len(a.GetDestinations().GetEmails()) > 0 || len(a.GetDestinations().GetSlackWebhooks()) > 0) {
-			return nil, errors.New("PARITY-EXCEPTION: alert destinations (emails / slack webhooks) are modeled and Terraform wires them; the Pulumi DigitalOcean SDK v4.49.0 has no destinations field on function alerts. Re-evaluate when the SDK exposes alert destinations.")
-		}
-	}
-
+	// source_dir is omitted (nil) when the spec leaves source_directory unset
+	// so App Platform reads project.yml from the repository root -- sending ""
+	// would name a directory that does not exist.
 	fn := digitalocean.AppSpecFunctionArgs{
 		Name:      pulumi.String(spec.GetFunctionName()),
-		SourceDir: pulumi.String(spec.GetSourceDirectory()),
+		SourceDir: strPtr(spec.GetSourceDirectory()),
 		Envs:      functionEnvs(spec.GetEnvs()),
 		Alerts:    functionAlerts(spec.GetAlerts()),
 	}
@@ -59,8 +55,11 @@ func function(
 	}
 	fn.LogDestinations = functionLogs(spec.GetLogDestinations())
 
+	// The App Platform app is named from spec.app_name, never metadata.name:
+	// the API caps app names at 32 characters and requires them to be unique
+	// across the account, neither of which a Planton metadata name guarantees.
 	appSpec := digitalocean.AppSpecArgs{
-		Name:      pulumi.String(locals.DigitalOceanFunction.Metadata.Name),
+		Name:      pulumi.String(spec.GetAppName()),
 		Region:    pulumi.String(spec.GetRegion().String()),
 		Functions: digitalocean.AppSpecFunctionArray{fn},
 	}
@@ -120,16 +119,37 @@ func functionEnvs(envs []*do.DigitalOceanAppEnvVar) digitalocean.AppSpecFunction
 	return out
 }
 
+// functionAlerts wires component alerts including their email / Slack
+// destinations (carried by the SDK since pulumi-digitalocean v4.53.0; the
+// provider applies them through a side-channel call after the app exists and
+// reads them back from ListAlerts). An empty destinations block is omitted so
+// the provider never issues a clearing call. Webhook URLs are (sensitive) on
+// the spec, so they are wrapped as Pulumi secrets -- the SDK does not flag
+// them itself.
 func functionAlerts(in []*do.DigitalOceanAppComponentAlert) digitalocean.AppSpecFunctionAlertArray {
 	out := digitalocean.AppSpecFunctionAlertArray{}
 	for _, a := range in {
-		out = append(out, digitalocean.AppSpecFunctionAlertArgs{
+		args := digitalocean.AppSpecFunctionAlertArgs{
 			Rule:     pulumi.String(providerEnum(a.GetRule().String())),
 			Operator: pulumi.String(providerEnum(a.GetOperator().String())),
 			Window:   pulumi.String(providerEnum(a.GetWindow().String())),
 			Value:    pulumi.Float64(a.GetValue()),
 			Disabled: pulumi.Bool(a.GetDisabled()),
-		})
+		}
+		if d := a.GetDestinations(); d != nil && (len(d.GetEmails()) > 0 || len(d.GetSlackWebhooks()) > 0) {
+			hooks := digitalocean.AppSpecFunctionAlertDestinationsSlackWebhookArray{}
+			for _, h := range d.GetSlackWebhooks() {
+				hooks = append(hooks, digitalocean.AppSpecFunctionAlertDestinationsSlackWebhookArgs{
+					Channel: pulumi.String(h.GetChannel()),
+					Url:     pulumi.ToSecret(pulumi.String(h.GetUrl())).(pulumi.StringOutput),
+				})
+			}
+			args.Destinations = &digitalocean.AppSpecFunctionAlertDestinationsArgs{
+				Emails:        pulumi.ToStringArray(d.GetEmails()),
+				SlackWebhooks: hooks,
+			}
+		}
+		out = append(out, args)
 	}
 	return out
 }

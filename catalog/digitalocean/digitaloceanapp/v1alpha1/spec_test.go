@@ -23,7 +23,7 @@ func validImageApp() *DigitalOceanApp {
 		Metadata:   &shared.CloudResourceMetadata{Name: "demo-app"},
 		Spec: &DigitalOceanAppSpec{
 			AppName: "demo-app",
-			Region:  digitalocean.DigitalOceanRegion_nyc3,
+			Region:  digitalocean.DigitalOceanAppRegion_nyc,
 			Services: []*DigitalOceanAppService{
 				{
 					Name: "web",

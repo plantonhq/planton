@@ -347,7 +347,15 @@ spec:
     - terraform_type: digitalocean_app
       pulumi_type: digitalocean:index/app:App
       id_format: "{app_id}"
-      # A provider-local pagination knob, never sent to the API.
+      # A provider-local pagination knob, never sent to the API. Live-proven
+      # 2026-09-16 on the App kind (three scenarios) and the Function kind:
+      # the provider's Read flattens the whole spec, so this is the only
+      # tolerance a blind import needs. NOT listed here on purpose: alert
+      # `destinations` are never read back by the provider at v2.99.1, so an
+      # import of an app that has them plans an update -- but that is a
+      # perpetual diff on every refreshed plan, not an import-only artifact,
+      # and tolerating it would hide a defect that redeploys the app on every
+      # apply. The kinds record it as a provider-defect deferral instead.
       config_only_attributes: [deployment_per_page]
 
     # --- Projects & account ------------------------------------------------------
