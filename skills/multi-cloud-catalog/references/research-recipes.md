@@ -167,6 +167,47 @@ a restore that violates one fails on the bad day, not at validation:
 6. Never delete the finished restore Job to tidy up -- a changed
    declaration is how a restore runs again.
 
+### Self-hosted Planton: one archive for records and secrets
+
+A self-hosted Planton (`KubernetesPlantonPlatform`) bundles its own vault,
+and that vault stores INSIDE the platform's database -- so "can we get our
+secrets back?" is answered by the platform's one backup block, never by a
+second archive. Three reads:
+
+```
+rg -n "^### spec.database.postgresql.(backup|recoverFrom)" -A 12 <platform-page>   # the archive and the restore
+rg -n "^### spec.vault" -A 14 <platform-page>                                      # what opens the restored vault
+rg -n "^## (Disaster recovery|Restore)" -A 60 kubernetes/kubernetesplantonplatform/GUIDE.md   # the resource sets and the runbook
+```
+
+The checklist -- every line is a rule the pack states, and the platform's
+guide names the sentence the operator prints when a line is broken:
+
+1. A `backup` with the vault enabled needs `vault.autoUnseal` or
+   `vault.initSecretName`; the kind refuses the declaration with neither
+   (the archive would carry every secret and no way to open them).
+2. A cloud seal is the standalone vault's four arms, byte for byte; on
+   Google Cloud the seal identity needs `roles/cloudkms.cryptoKeyEncrypterDecrypter`
+   AND `roles/cloudkms.viewer`, and the key and grants exist BEFORE the
+   platform because the seal is checked when the server starts.
+3. A keyless platform on GKE carries TWO Workload Identity bindings: the
+   vault's on `<platform>-openbao`, the database's on `<platform>-postgres`;
+   the vault's identity travels by reference on the arm, the database's is a
+   literal email in `backup.serviceAccountAnnotations`.
+4. `vault.initSecretName` is the one object no archive carries: the
+   operator writes it once, never deletes it, and a namespace the
+   declaration owns takes it along -- the copy outside the cluster is the
+   runbook's first step.
+5. On the bad day, under the built-in seal recreate that Secret before (or
+   within minutes of) declaring `recoverFrom`; under a cloud seal the
+   restored vault opens itself and the Secret is break-glass you recreate
+   after. A restore that finds no Secret is refused in one sentence naming
+   the archive, the Secret, its keys, and the step.
+6. The seal is decided at creation: a declaration whose seal differs from
+   the archive's is refused before anything renders.
+7. Read `status.backup.vault` (`covered`, `seal`, `initSecretName`, a
+   sentence) before promising anything about what comes back.
+
 ## Where judgment has been written
 
 A page that has authored wisdom links it in its head:

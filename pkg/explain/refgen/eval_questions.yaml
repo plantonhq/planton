@@ -423,3 +423,131 @@ questions:
         pattern: 'one database per vault'
       - catalog: _patterns/stateful-kind-disaster-recovery.md
         pattern: 'ONE backup covers the database and the vault'
+
+  - id: q20
+    class: wisdom
+    question: >
+      A team self-hosts Planton on GKE and wants the whole platform -- its
+      records AND its secrets -- backed up keylessly to Cloud Storage,
+      sealed by a Cloud KMS key, and restorable by declaration. Which
+      resources do they declare, and what will bite them?
+    answer: >
+      One KubernetesPlantonPlatform with database.postgresql.backup (the gcs
+      arm, keyless: true, the backup identity's email in
+      backup.serviceAccountAnnotations) and vault.autoUnseal.gcpKms by
+      reference to a GcpKmsKeyRing, a GcpKmsKey with deletionPolicy PREVENT,
+      and a GcpServiceAccount seal identity, plus vault.initSecretName for
+      the break-glass Secret -- the bundled vault stores in the platform's
+      own database, so one archive carries records and secrets and the
+      vault has no backup block of its own. Around it: two identities (the
+      seal key and the archive bucket are different blast radii), the ring
+      and the key, TWO grants on the key (cryptoKeyEncrypterDecrypter AND
+      viewer -- the server reads the key when it configures its seal at
+      start, and without viewer the pod crash-loops on "Error configuring
+      seal"), the bucket with TWO storage roles, and TWO Workload Identity
+      bindings: the vault's on "<platform>-openbao" and the database's on
+      "<platform>-postgres". The key and grants exist BEFORE the platform.
+    checks:
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '## Disaster recovery on GKE: the resource set'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'ksaName: planton-openbao'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'the seal key and the archive bucket are different blast radii'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'role:\n    value: roles/cloudkms.viewer'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'workloadIdentityServiceAccount:\n          valueFrom:\n            kind: GcpServiceAccount'
+      - kind: KubernetesPlantonPlatform
+        file: reference.md
+        pattern: 'roles/cloudkms.viewer'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'The bundled platform: one archive for records and secrets'
+
+  - id: q21
+    class: wisdom
+    question: >
+      A team self-hosts Planton on bare metal with no cloud key service and
+      wants a backup they can actually restore from. What must their
+      platform declare, what must they keep, and what happens if they
+      declare a backup without it?
+    answer: >
+      The backup block plus vault.initSecretName naming a Secret they own:
+      the operator writes the vault's unseal keys and root token into it at
+      first boot, never deletes it, and never writes over a Secret that
+      already holds a vault's keys. A backup declared with neither a seal
+      nor that Secret is refused by the kind's own rule -- the archive would
+      carry every secret and no way to open them. The Secret is the one
+      object no archive carries: deleting the platform leaves it standing,
+      but a namespace the declaration owns is deleted with the platform and
+      takes every Secret in it, so copy the Secret out of the cluster the
+      day the platform is born. status.backup.vault names the Secret to keep.
+    checks:
+      - kind: KubernetesPlantonPlatform
+        file: reference.md
+        pattern: 'spec\.vault\.backup_needs_surviving_keys'
+      - kind: KubernetesPlantonPlatform
+        file: reference.md
+        pattern: 'keep a copy outside the cluster'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '## Disaster recovery with Cloudflare R2: the resource set'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'never writes over a Secret that already holds\s+a vault.s keys'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'Copy it out of the cluster the day the platform is born'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '`status.backup.vault` carries four facts'
+
+  - id: q22
+    class: wisdom
+    question: >
+      The cluster running a self-hosted Planton is gone; its archive is in
+      the bucket. What does the team declare to bring everything back, what
+      differs between a cloud seal and the built-in seal, what will the
+      operator say if they get the order wrong, and what can a restore
+      never bring back?
+    answer: >
+      The platform declared again with database.postgresql.recoverFrom
+      (the same store, the source's serverName), the same version and
+      hostname the source had, the same seal, and backup kept beside it.
+      Under a cloud seal the key's grants and the vault's binding must exist
+      for the new cluster, the restored vault opens itself (the operator
+      never unseals it), and the keys Secret is recreated afterwards -- until
+      then the platform works and its status says the break-glass is gone.
+      Under the built-in seal the keys Secret is recreated from the kept copy
+      BEFORE (or within minutes of) the declaration and the operator unseals
+      with it; forgotten, the vault component refuses with
+      ConfigurationRefused naming the archive, the Secret, its keys, and the
+      step, and the next pass unseals once it is back. A restore never
+      brings back the keys that open the vault, and a declaration naming a
+      different seal than the archive's is refused before anything renders.
+    checks:
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '## Restore on the bad day'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'opens itself from your key — the operator\s+never unseals it'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'Recreate that Secret from the copy you\s+kept'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'gone until the Secret is back'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'cannot be changed on a\s+running platform'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'recoverFrom:\n        objectStore:'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'what stays with the operator is the key that opens it'

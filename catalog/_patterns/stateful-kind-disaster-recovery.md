@@ -8,6 +8,7 @@ kinds:
   - KubernetesPostgres
   - KubernetesMongodb
   - KubernetesOpenBao
+  - KubernetesPlantonPlatform
 ---
 
 # Stateful Kind Disaster Recovery: the Backup Store, the Identity, and the Restore
@@ -15,11 +16,15 @@ kinds:
 Three stateful kinds in this catalog — the PostgreSQL database, the MongoDB
 replica set, and the OpenBao secrets vault — back themselves up to an object
 store the adopter owns and restore a fresh instance from it by declaration.
-They share one composition shape and one set of failure modes, and a
-proposal that gets the shape wrong fails late: a backup job that authenticates
-anonymously, two live instances corrupting one archive, or a restore that
-"succeeds" into an empty target. This pattern states the shared truth once;
-each kind's guide carries what is that kind's alone.
+A fourth, the self-hosted Planton platform, carries a vault INSIDE its
+database, so one archive covers its records and its secrets and the vault
+never backs itself up at all. They share one composition shape and one set
+of failure modes, and a proposal that gets the shape wrong fails late: a
+backup job that authenticates anonymously, two live instances corrupting one
+archive, a restore that "succeeds" into an empty target, or a restored
+platform whose secrets came back sealed with no key to open them. This
+pattern states the shared truth once; each kind's guide carries what is that
+kind's alone.
 
 ## The problem
 
@@ -70,6 +75,46 @@ a `valueFrom` reference so the diagram shows the whole recovery path:
    `autoUnseal` key and a Secret for the fresh cluster's init root token;
    PostgreSQL: the source's `<name>-app` Secret; MongoDB: the source's
    `<name>-secrets` Secret).
+
+### The bundled platform: one archive for records and secrets
+
+The self-hosted platform (`KubernetesPlantonPlatform`) is the case where
+the secrets vault is not a fourth stateful kind to back up. The platform's
+bundled OpenBao stores its data in the platform's own PostgreSQL, so the
+platform's one `database.postgresql.backup` block archives every record AND
+every connection credential, managed secret, and signing key to the same
+instant, and `database.postgresql.recoverFrom` brings both back in one
+declaration. The vault has no backup block, no snapshot, no store of its
+own — which is why the store side of this pattern (the bucket, the identity
+or the token, one path per live platform) applies to the platform exactly
+as it applies to the database kind, and the vault side collapses to one
+question: **what opens the restored vault?**
+
+Two answers, and the kind refuses a backup with neither:
+
+- **A cloud key** — `vault.autoUnseal` with the same four arms the
+  standalone vault speaks (GCP Cloud KMS by reference to `GcpKmsKeyRing`,
+  `GcpKmsKey`, and a `GcpServiceAccount` for the keyless identity; AWS KMS;
+  Azure Key Vault; a central OpenBao's transit engine). The restored vault
+  opens itself on a cluster that has never seen it. The seal set is the
+  standalone vault's, byte for byte — the GCP identity needs both
+  `roles/cloudkms.cryptoKeyEncrypterDecrypter` and `roles/cloudkms.viewer`,
+  because the server reads the key when it configures its seal at START —
+  with one difference in the binding: the vault's Kubernetes ServiceAccount
+  is `<platform>-openbao` (the operator names it after its release), and the
+  database's is `<platform>-postgres` (CloudNativePG names it after the
+  Cluster), so a keyless platform on GKE carries two bindings.
+- **A Secret you own** — `vault.initSecretName`. The operator writes the
+  vault's unseal keys (recovery keys under a cloud seal) and root token into
+  it at first boot, without an owner reference, and never deletes it. It is
+  the one object no archive carries: keep a copy outside the cluster, because
+  a namespace the declaration owns is deleted with the platform and takes
+  every Secret in it.
+
+The platform kind's guide embeds the GKE set (the seal identity, ring, key,
+both grants, the vault's binding, and the platform) and names the R2 shape
+by preset slug; the store set beside them is the GKE keyless store set
+below, with the database's ServiceAccount name in its binding.
 
 The R2 store pair, complete — one private bucket and one token scoped to it
 with the least privilege an S3 client that writes backups needs (`Workers R2
@@ -259,6 +304,7 @@ same key on source and target) and the bad-day restore target.
 | **Cloudflare R2 by reference** | The store outside the cloud that runs the cluster; one token per bucket, least privilege; the store follows the bucket's jurisdiction | No keyless posture exists; emptying the bucket before teardown is yours | Bucket and token are two nodes; the instance draws edges to both |
 | **One path or prefix per live instance** | Retention and archiving stay correct | A restore target must declare the SOURCE's path to read it — the one deliberate sharing — and then (PostgreSQL) archive its own to a NEW path, or (OpenBao) suspend its schedule while the restore is declared | None; the path is a string, which is why the rule is taught here |
 | **The GCS bucket's two roles** | rclone, Barman, and the storage clients read the bucket's attributes before writing | `roles/storage.objectAdmin` alone fails with `storage.buckets.get`; add `roles/storage.legacyBucketReader` on the bucket's `iamMembers` | None |
+| **The bundled platform's vault rides the database's archive** (`KubernetesPlantonPlatform`) | One backup, one schedule, one retention, one restore for records and secrets, to the same instant; the vault has no volume, no snapshot job, no second store | The database's outage is the vault's; the keys that OPEN the vault are never in the archive, so a backup is refused unless `vault.autoUnseal` or `vault.initSecretName` makes them outlive the platform; the seal is decided at creation and a changed seal is refused before render | The platform is one node; the seal set draws edges to the KMS ring, key, and identity kinds; the keys Secret is a name, not a node — which is why the copy outside the cluster is taught here |
 | **OpenBao's storage engine** (integrated Raft, or PostgreSQL by reference to a `KubernetesPostgres`) | Raft: the vault owns its recovery — this pattern's snapshot, store, and restore apply to it directly. PostgreSQL: ONE backup covers the database and the vault; the vault's bad day is the database's restore, and the kind refuses a `backup` block so two stories are never run by accident | Raft: a second store and a second rehearsal beside the database's. PostgreSQL: the database's outage is the vault's; the seal key is still required on restore (the barrier key wraps the data on either engine); the vault's connection pool counts against the database's headroom | Raft: the vault and its own volume, no edge. PostgreSQL: edges from the vault to the database node and to its credential Secret — the dependency is a visible node. The judgment of when to choose which is the [OpenBao guide's engine section](../kubernetes/kubernetesopenbao/GUIDE.md#storage-engine-raft-or-postgresql) |
 
 ## The restore is a declaration, and one step stays yours
@@ -282,6 +328,17 @@ readable, and each guide names the one step that stays with the operator:
 - **MongoDB** — the restored database carries the source's users; the target
   references the source's `<name>-secrets` Secret, and the restore waits for
   the replica set to form before the Restore object exists.
+- **The bundled platform** — the vault's data comes back with the database,
+  and what stays with the operator is the key that opens it. Under a cloud
+  seal: nothing — the key, its grants, and the vault's binding must exist in
+  the new cluster's project and cluster before the platform, and the vault
+  opens itself. Under the built-in seal: recreate `vault.initSecretName`
+  from the copy you kept before (or within minutes of) declaring
+  `recoverFrom`; a restore that finds no Secret is refused in one sentence
+  that names the archive, the Secret, its keys, and this step, and the next
+  pass unseals once the Secret is back. Nothing is ever guessed and nothing
+  is destroyed; `status.backup.vault` says which posture applies and which
+  Secret to keep.
 
 Two consequences follow. First, a declared restore that is waiting is in a
 designed state, not a failed one — the vault's restore pod sits in
@@ -303,7 +360,11 @@ second cluster.
 - A store inside the same cluster (an in-cluster `KubernetesSeaweedFs`
   reached by its S3 endpoint) protects against pod loss, not cluster loss.
   It is the right lab shape and the wrong disaster-recovery shape; say so in
-  the proposal.
+  the proposal — for the platform as much as for the three kinds.
+- A self-hosted platform's vault is never backed up on its own: it has no
+  `backup` block and needs none. Proposing a second archive for it is the
+  wrong shape; the platform's one backup already carries it, and the only
+  question is the seal or the Secret above.
 - An OpenBao in `dev` has nothing to snapshot, and an OpenBao on
   PostgreSQL storage is backed up by its database -- its disaster recovery
   is the database's, and the kind refuses a backup block on both, with the
@@ -318,6 +379,9 @@ second cluster.
 - [KubernetesOpenBao guide](../kubernetes/kubernetesopenbao/GUIDE.md) — the
   resource sets for GKE and R2, the login recipe, the bad-day runbook, and
   the Shamir runbook.
+- [KubernetesPlantonPlatform guide](../kubernetes/kubernetesplantonplatform/GUIDE.md)
+  — the self-hosted platform's GKE and R2 resource sets with the vault's
+  seal and keys Secret, and the bad-day runbook per seal.
 - [KubernetesPostgres guide](../kubernetes/kubernetespostgres/GUIDE.md) and
   [KubernetesMongodb guide](../kubernetes/kubernetesmongodb/GUIDE.md) — the
   same two resource sets for the databases, with each kind's credential
