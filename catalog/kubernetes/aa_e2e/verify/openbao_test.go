@@ -67,8 +67,9 @@ func TestOpenBaoRestoreRootToken(t *testing.T) {
 // Dev or the storage engine, and the replica count, drive which lifecycle
 // arms run; the keys are case-neutral, an absent server block or an unset
 // engine means Raft at one replica (the spec's defaults), and the
-// PostgreSQL arm yields the referenced cluster and the database the psql
-// proof opens.
+// PostgreSQL arm yields the cluster and the database the psql proof opens
+// — from the reference as authored, or from the `<cluster>-rw` literal
+// the harness resolves the reference into before the verifier reads it.
 func TestOpenBaoScenarioShape(t *testing.T) {
 	cases := []struct {
 		name string
@@ -85,7 +86,13 @@ func TestOpenBaoScenarioShape(t *testing.T) {
 		{"postgresql by reference, snake_case",
 			"spec:\n  server:\n    postgresql:\n      host:\n        value_from:\n          name: pg\n      database: vault\n    replicas: 2\n",
 			openBaoShape{Storage: storagePostgresql, Replicas: 2, PgCluster: "pg", PgDatabase: "vault"}},
-		{"postgresql with a literal host has no cluster to open",
+		{"postgresql with the reference resolved to the rw Service (what the harness hands the verifier)",
+			"spec:\n  server:\n    postgresql:\n      host:\n        value: e2e-bao-pg-rw\n      database: openbao\n      username: openbao\n      passwordSecret:\n        secretName:\n          value: e2e-bao-pg-app\n    replicas: 1\n",
+			openBaoShape{Storage: storagePostgresql, Replicas: 1, PgCluster: "e2e-bao-pg", PgDatabase: "openbao"}},
+		{"postgresql with a qualified rw Service host",
+			"spec:\n  server:\n    postgresql:\n      host:\n        value: pg-rw.data.svc.cluster.local\n      database: vault\n",
+			openBaoShape{Storage: storagePostgresql, Replicas: 1, PgCluster: "pg", PgDatabase: "vault"}},
+		{"postgresql with a literal host that is no rw Service has no cluster to open",
 			"spec:\n  server:\n    postgresql:\n      host:\n        value: db.example.internal\n      database: openbao\n",
 			openBaoShape{Storage: storagePostgresql, Replicas: 1, PgDatabase: "openbao"}},
 	}
@@ -96,6 +103,27 @@ func TestOpenBaoScenarioShape(t *testing.T) {
 				t.Fatalf("openBaoScenarioShape = %+v, want %+v", got, tc.want)
 			}
 		})
+	}
+}
+
+// A host names a CloudNativePG cluster only when it is that cluster's
+// read-write Service, in any DNS form; anything else has no cluster.
+func TestCnpgClusterFromRwHost(t *testing.T) {
+	cases := map[string]string{
+		"pg-rw":                        "pg",
+		"e2e-bao-pg-rw":                "e2e-bao-pg",
+		"pg-rw.data":                   "pg",
+		"pg-rw.data.svc.cluster.local": "pg",
+		"pg-ro":                        "",
+		"pg":                           "",
+		"-rw":                          "",
+		"db.example.internal":          "",
+		"":                             "",
+	}
+	for host, want := range cases {
+		if got := cnpgClusterFromRwHost(host); got != want {
+			t.Errorf("cnpgClusterFromRwHost(%q) = %q, want %q", host, got, want)
+		}
 	}
 }
 

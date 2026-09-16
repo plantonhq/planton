@@ -484,7 +484,11 @@ func (v *OpenBaoVerifier) replacePod0(ctx context.Context, kubeconfig, unsealKey
 //     the DECLARED database, read with psql on the CloudNativePG primary.
 //     The connection reaches the server as PG* environment variables, so
 //     this is the proof that PGDATABASE (and the rest) landed where the
-//     manifest said.
+//     manifest said. Every lane on this engine composes a
+//     KubernetesPostgres beside the vault (the password Secret must share
+//     the vault's namespace, so the cluster does too); a host that names
+//     no such cluster is a refusal, never a silent skip — a witness that
+//     can go quiet is a proof that can die unnoticed.
 func (v *OpenBaoVerifier) provePostgresqlStorage(ctx context.Context, kubeconfig, token string) error {
 	dataClaim := "data-" + v.Name + "-0"
 	if err := KubectlResourceAbsent(ctx, kubeconfig, "persistentvolumeclaim", dataClaim, v.Namespace); err != nil {
@@ -497,11 +501,10 @@ func (v *OpenBaoVerifier) provePostgresqlStorage(ctx context.Context, kubeconfig
 	}
 
 	if v.PgCluster == "" || v.PgDatabase == "" {
-		// The host was declared as a literal, not by reference to a
-		// KubernetesPostgres in the chain — there is no cluster to open.
-		// The server's word above still stands; say what was skipped.
-		fmt.Printf("  [verify] POSTGRESQL STORAGE: host declared literally — the database-side table check has no cluster to open and is skipped\n")
-		return nil
+		return errors.Errorf("the database witness has no cluster to open: the host must be a KubernetesPostgres's read-write Service (`<cluster>-rw`, by reference or as its literal) in the vault's namespace and `database` must be declared — declare the database beside the vault, as every PostgreSQL lane does")
+	}
+	if err := KubectlResourceExists(ctx, kubeconfig, "cluster.postgresql.cnpg.io", v.PgCluster, v.Namespace); err != nil {
+		return errors.Wrapf(err, "no CloudNativePG cluster %q in namespace %q serves the declared host — the database witness needs the KubernetesPostgres the vault stores in, beside it", v.PgCluster, v.Namespace)
 	}
 	primary, err := cnpgCurrentPrimary(ctx, kubeconfig, v.Namespace, v.PgCluster)
 	if err != nil {
@@ -668,21 +671,32 @@ type openBaoShape struct {
 	Dev      bool
 	Storage  string
 	Replicas int
-	// PgCluster is the KubernetesPostgres the PostgreSQL arm's host was
-	// declared FROM (the `valueFrom.name`); PgDatabase is the database
-	// the vault stores in. Both empty unless the engine is PostgreSQL.
+	// PgCluster is the CloudNativePG cluster serving the PostgreSQL arm's
+	// host; PgDatabase is the database the vault stores in. Both empty
+	// unless the engine is PostgreSQL.
 	PgCluster  string
 	PgDatabase string
 }
 
+// rwServiceSuffix is CloudNativePG's read-write Service name suffix: a
+// cluster named `pg` is written to through `pg-rw`, and the
+// KubernetesPostgres kind exports exactly that short name as its
+// `rw_service` output.
+const rwServiceSuffix = "-rw"
+
 // openBaoScenarioShape pulls the verifier's inputs out of a
 // KubernetesOpenBao scenario manifest: dev or the storage engine (absent
 // = Raft, the spec's default), the replica count (default 1), and on
-// PostgreSQL the referenced cluster and database. The manifest is read as
-// authored — before the harness resolves references — so the host's
-// `valueFrom.name` is still the KubernetesPostgres's name. Manifests may
-// spell fields in either protojson case; the keys read here are
-// case-neutral.
+// PostgreSQL the cluster and database the psql witness opens.
+//
+// The harness resolves references BEFORE the verifier reads the manifest
+// (a `host.valueFrom` onto a KubernetesPostgres arrives here as the
+// literal `<cluster>-rw` its `rw_service` output holds), so the cluster
+// is derived from the host in whichever form it has: the reference's own
+// name when the manifest is read as authored, otherwise the first DNS
+// label with the `-rw` suffix stripped. A host that is not a CloudNativePG
+// read-write Service yields no cluster. Manifests may spell fields in
+// either protojson case; the keys read here are case-neutral.
 func openBaoScenarioShape(spec map[string]interface{}) openBaoShape {
 	shape := openBaoShape{Storage: storageRaft, Replicas: 1}
 	server := specNestedMap(spec, "server")
@@ -702,10 +716,27 @@ func openBaoScenarioShape(spec map[string]interface{}) openBaoShape {
 		if host := specNestedMap(pg, "host"); host != nil {
 			if valueFrom := specNestedMap(host, "valueFrom", "value_from"); valueFrom != nil {
 				shape.PgCluster, _ = valueFrom["name"].(string)
+			} else if literal, _ := host["value"].(string); literal != "" {
+				shape.PgCluster = cnpgClusterFromRwHost(literal)
 			}
 		}
 	}
 	return shape
+}
+
+// cnpgClusterFromRwHost names the CloudNativePG cluster behind a host
+// that is its read-write Service — `pg-rw`, `pg-rw.ns`, or the full
+// `pg-rw.ns.svc.cluster.local` — and returns "" for any other host (a
+// managed endpoint, a bare hostname): there is no cluster to open there.
+func cnpgClusterFromRwHost(host string) string {
+	label := host
+	if i := strings.IndexByte(host, '.'); i >= 0 {
+		label = host[:i]
+	}
+	if !strings.HasSuffix(label, rwServiceSuffix) || label == rwServiceSuffix {
+		return ""
+	}
+	return strings.TrimSuffix(label, rwServiceSuffix)
 }
 
 // openBaoAutoUnseal reports whether the manifest declares an auto_unseal
