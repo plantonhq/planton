@@ -98,7 +98,7 @@ For Git-based projects, configure the repository source through the web console 
 Trigger a new pipeline without changing the project's configuration. Useful for drift correction (re-applying desired state after manual cloud console changes), retrying after a failed deployment, or re-running after fixing external issues like quota limits or permissions:
 
 ```bash
-planton infra-project run-pipeline <project-name-or-id>
+planton infra project deploy <project-name-or-id>
 ```
 
 ### Undeploy
@@ -125,8 +125,8 @@ Deleting a project does not automatically destroy its infrastructure. You must e
 # Create a project from a chart (triggers deployment automatically)
 planton chart install my-project ./chart-dir -f values.yaml
 
-# Run a pipeline for an existing project
-planton infra-project run-pipeline <project-name-or-id>
+# Deploy an existing project (starts a deploy run and follows it)
+planton infra project deploy <project-name-or-id>
 
 # List pipelines for a project
 planton infra-project infra-pipelines --project <project-id>

@@ -130,8 +130,8 @@ planton infra-pipeline resolve-node-manual-gate <pipeline-id> <env-name> <node-i
 Infra Pipelines are typically created automatically when you create or update an Infra Project. To trigger a pipeline manually:
 
 ```bash
-# Run a pipeline for an Infra Project
-planton infra-project run-pipeline <project-id>
+# Deploy an Infra Project (starts a deploy run and follows it)
+planton infra project deploy <project-id>
 
 # List pipelines for a project
 planton infra-project infra-pipelines --project <project-id>

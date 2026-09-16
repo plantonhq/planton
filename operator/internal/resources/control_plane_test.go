@@ -790,18 +790,16 @@ func TestControlPlaneDeployment_BuildRoutingSeedAbsentWhenBuildsOff(t *testing.T
 	}
 }
 
-// Neither pipeline family receives catalog coordinates: service builds
-// compile at dispatch from release-pinned content, and the infra family's
-// git-repository lane is deliberately inert (unset catalog, creation-time
-// refusal). The build knobs are the workspace sizes and the task queues --
-// and the retired coordinates must never reappear, or a deployment would
-// silently re-arm cluster-side git resolution.
+// Service builds receive no catalog coordinates: they compile at dispatch
+// from release-pinned content. The build knobs are the workspace size and
+// the task queues -- and the retired names must never reappear: the catalog
+// coordinates would silently re-arm cluster-side git resolution, and the
+// infra build-stage and git-commit queues name workers that do not exist.
 func TestControlPlaneDeployment_TektonBuildEnv(t *testing.T) {
 	deploy := ControlPlaneDeployment(testControlPlaneConfig())
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
 	want := map[string]string{
-		"TEKTON_INFRA_PIPELINE_DISK_SIZE":                   "1Gi",
 		"TEKTON_SERVICE_PIPELINE_DISK_SIZE":                 "5Gi",
 		"TEMPORAL_TASK_QUEUE_SERVICE_PIPELINE_BUILD_STAGE":  "service-pipeline-build-stage",
 		"TEMPORAL_TASK_QUEUE_SERVICE_PIPELINE_DEPLOY_STAGE": "service-pipeline-deploy-stage",
@@ -816,9 +814,12 @@ func TestControlPlaneDeployment_TektonBuildEnv(t *testing.T) {
 		"TEKTON_PIPELINE_GIT_REPO_URL",
 		"TEKTON_PIPELINE_GIT_REVISION",
 		"TEKTON_PIPELINE_FILE_PATH_IN_REPO_KUSTOMIZE",
+		"TEKTON_INFRA_PIPELINE_DISK_SIZE",
+		"TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_BUILD_STAGE",
+		"TEMPORAL_TASK_QUEUE_INFRA_PROJECT_GIT_COMMIT",
 	} {
 		if _, present := envMap[retired]; present {
-			t.Errorf("%s must not be set: no pipeline definition is resolved from git", retired)
+			t.Errorf("%s must not be set: the control plane reads no such variable", retired)
 		}
 	}
 }

@@ -61,10 +61,7 @@ binding — as its own top-level subfolder of your workspace, and everything
 in this reference applies to it from that moment. It writes many files at
 once, so the composing declaration (SKILL.md's live-screen rule) comes
 FIRST. Re-running it against the same folder refreshes the managed files
-from server truth and leaves any other files alone. Only chart-sourced
-projects check out: a git-sourced project's files live in its repository
-(the command refuses with the clone URL — offer to work from a clone the
-user makes, never fork the repo yourself).
+from server truth and leaves any other files alone.
 
 ## Opening posture: diagnose FIRST when there is a failure
 
