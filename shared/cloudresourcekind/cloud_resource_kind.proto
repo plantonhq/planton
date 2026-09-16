@@ -130,6 +130,21 @@ message CloudResourceKindMeta {
   //enforce both directions, including that the group belongs to the kind's
   //own provider.
   CloudProviderServiceGroup service_group = 10;
+
+  //set ONLY for cluster kinds whose deploy publishes a Kubernetes provider
+  //connection (the platform materializes one from the cluster's stack
+  //outputs, named by the manifest's planton.dev/connection-name annotation
+  //or the default <env>-<name>). the fact drives dependency ORDERING, not
+  //drawing: a Kubernetes workload whose planton.dev/connection names the
+  //connection such a cluster will publish runs on that cluster and orders
+  //after it -- an edge every lane that orders a manifest set derives from
+  //the manifests alone (pkg/manifestgraph and the platform's DAG factory),
+  //so a first deploy or a recreate never runs a workload before the cluster
+  //whose connection it needs. the platform pairs every flagged kind with a
+  //connection materializer; a kind flagged here without one would strand its
+  //workloads waiting on a connection that never comes, which is why the
+  //platform's conformance test binds the two.
+  bool publishes_kubernetes_connection = 11;
 }
 
 //marks one of a kind's schema versions as deprecated. carried on
@@ -267,6 +282,7 @@ enum CloudResourceKind {
       AwsIamRole
     ]
     service_group: aws_containers
+    publishes_kubernetes_connection: true
   }];
   AwsIamRole = 1008 [(kind_meta) = {
     provider: aws
@@ -2412,6 +2428,7 @@ enum CloudResourceKind {
     container_kind: true
     prerequisites: [AzureResourceGroup]
     service_group: azure_containers
+    publishes_kubernetes_connection: true
   }];
   // AzureAksCluster is a prerequisite because a node pool attaches to an
   // existing cluster by ARM ID; the resource group chains transitively.
@@ -4622,6 +4639,7 @@ enum CloudResourceKind {
       GcpSubnetwork
     ]
     service_group: gcp_containers
+    publishes_kubernetes_connection: true
   }];
   GcpIamCustomRole = 3008 [(kind_meta) = {
     provider: gcp

@@ -771,6 +771,7 @@ go_test(
         "kind_version_test.go",
         "prerequisites_test.go",
         "provider_dir_test.go",
+        "publishes_kubernetes_connection_test.go",
         "registry_snapshot_test.go",
         "service_group_test.go",
     ],

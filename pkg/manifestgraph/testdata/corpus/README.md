@@ -20,6 +20,8 @@ The scenarios, by the semantics point each pins:
 | `relationships-edge` | `metadata.relationships` entries are ordering facts on their own, with no `valueFrom` anywhere |
 | `derived-namespace` | A literal namespace on a placement-annotated field is a derived target when the set does not deploy it — recorded, never refused, never deployed |
 | `namespace-edge` | The same literal becomes a real edge when the set DOES deploy the namespace |
+| `connection-placement` | A Kubernetes workload whose `planton.dev/connection` names the connection a sibling cluster publishes (`planton.dev/connection-name`) runs on that cluster — the cluster orders first with no relationship authored |
+| `connection-placement-default-name` | The same edge against the cluster's DEFAULT published name `<env>-<name>` when no `connection-name` annotation is set |
 | `map-ref` | References inside map-typed fields form edges (the traversal has no map blind spot) |
 | `cycle` | A dependency cycle yields no order and names the chain |
 | `external-valuefrom` | A `valueFrom` target outside the set is the external classification (consumer policy decides warning vs refusal) |

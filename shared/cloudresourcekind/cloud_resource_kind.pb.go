@@ -4034,9 +4034,23 @@ type CloudResourceKindMeta struct {
 	// for providers without a service taxonomy — the crkreflect registry tests
 	// enforce both directions, including that the group belongs to the kind's
 	// own provider.
-	ServiceGroup  CloudProviderServiceGroup `protobuf:"varint,10,opt,name=service_group,json=serviceGroup,proto3,enum=dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup" json:"service_group,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	ServiceGroup CloudProviderServiceGroup `protobuf:"varint,10,opt,name=service_group,json=serviceGroup,proto3,enum=dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup" json:"service_group,omitempty"`
+	// set ONLY for cluster kinds whose deploy publishes a Kubernetes provider
+	// connection (the platform materializes one from the cluster's stack
+	// outputs, named by the manifest's planton.dev/connection-name annotation
+	// or the default <env>-<name>). the fact drives dependency ORDERING, not
+	// drawing: a Kubernetes workload whose planton.dev/connection names the
+	// connection such a cluster will publish runs on that cluster and orders
+	// after it -- an edge every lane that orders a manifest set derives from
+	// the manifests alone (pkg/manifestgraph and the platform's DAG factory),
+	// so a first deploy or a recreate never runs a workload before the cluster
+	// whose connection it needs. the platform pairs every flagged kind with a
+	// connection materializer; a kind flagged here without one would strand its
+	// workloads waiting on a connection that never comes, which is why the
+	// platform's conformance test binds the two.
+	PublishesKubernetesConnection bool `protobuf:"varint,11,opt,name=publishes_kubernetes_connection,json=publishesKubernetesConnection,proto3" json:"publishes_kubernetes_connection,omitempty"`
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
 }
 
 func (x *CloudResourceKindMeta) Reset() {
@@ -4137,6 +4151,13 @@ func (x *CloudResourceKindMeta) GetServiceGroup() CloudProviderServiceGroup {
 		return x.ServiceGroup
 	}
 	return CloudProviderServiceGroup_cloud_provider_service_group_unspecified
+}
+
+func (x *CloudResourceKindMeta) GetPublishesKubernetesConnection() bool {
+	if x != nil {
+		return x.PublishesKubernetesConnection
+	}
+	return false
 }
 
 // marks one of a kind's schema versions as deprecated. carried on
@@ -4277,7 +4298,7 @@ var File_shared_cloudresourcekind_cloud_resource_kind_proto protoreflect.FileDes
 
 const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\n" +
-	"2shared/cloudresourcekind/cloud_resource_kind.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a;shared/cloudresourcekind/cloud_provider_service_group.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\xc9\x05\n" +
+	"2shared/cloudresourcekind/cloud_resource_kind.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a;shared/cloudresourcekind/cloud_provider_service_group.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\x91\x06\n" +
 	"\x15CloudResourceKindMeta\x12W\n" +
 	"\bprovider\x18\x01 \x01(\x0e2;.dev.planton.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x12\n" +
@@ -4289,14 +4310,15 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1ekubernetes_manifest_projection\x18\b \x01(\v2B.dev.planton.shared.cloudresourcekind.KubernetesManifestProjectionR\x1ckubernetesManifestProjection\x12m\n" +
 	"\fdeprecations\x18\t \x03(\v2I.dev.planton.shared.cloudresourcekind.CloudResourceKindVersionDeprecationR\fdeprecations\x12d\n" +
 	"\rservice_group\x18\n" +
-	" \x01(\x0e2?.dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupR\fserviceGroup\"S\n" +
+	" \x01(\x0e2?.dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupR\fserviceGroup\x12F\n" +
+	"\x1fpublishes_kubernetes_connection\x18\v \x01(\bR\x1dpublishesKubernetesConnection\"S\n" +
 	"#CloudResourceKindVersionDeprecation\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\tR\aversion\x12\x12\n" +
 	"\x04note\x18\x02 \x01(\tR\x04note\"S\n" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\x87\xdc\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x8d\xdc\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4309,8 +4331,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\n" +
 	"AwsEcrRepo\x10\xec\a\x1a\x1a\xa2\xf7\x04\x16\b\f\x12\bv1alpha1\"\x06awsecrPe\x121\n" +
 	"\rAwsEcsCluster\x10\xed\a\x1a\x1d\xa2\xf7\x04\x19\b\f\x12\bv1alpha1\"\aawsecsc0\x01Pe\x127\n" +
-	"\rAwsEcsService\x10\xee\a\x1a#\xa2\xf7\x04\x1f\b\f\x12\bv1alpha1\"\aawsecss:\x06\xed\a\x8f\b\xbc\bPe\x126\n" +
-	"\rAwsEksCluster\x10\xef\a\x1a\"\xa2\xf7\x04\x1e\b\f\x12\bv1alpha1\"\x06awseks0\x01:\x04\xbc\b\xf0\aPe\x12,\n" +
+	"\rAwsEcsService\x10\xee\a\x1a#\xa2\xf7\x04\x1f\b\f\x12\bv1alpha1\"\aawsecss:\x06\xed\a\x8f\b\xbc\bPe\x128\n" +
+	"\rAwsEksCluster\x10\xef\a\x1a$\xa2\xf7\x04 \b\f\x12\bv1alpha1\"\x06awseks0\x01:\x04\xbc\b\xf0\aPeX\x01\x12,\n" +
 	"\n" +
 	"AwsIamRole\x10\xf0\a\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsiamrPi\x12.\n" +
 	"\tAwsLambda\x10\xf1\a\x1a\x1e\xa2\xf7\x04\x1a\b\f\x12\bv1alpha1\"\x06awslam:\x02\xf0\aPd\x123\n" +
@@ -4547,8 +4569,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1a\x1a\xa2\xf7\x04\x16\b\f\x12\bv1alpha1\"\x06awspcaPi\x128\n" +
 	"\x15AwsSesAccountSettings\x10\xd0\n" +
 	"\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawssesasPk\x124\n" +
-	"\x12AzureResourceGroup\x10\xd0\x0f\x1a\x1b\xa2\xf7\x04\x17\b\r\x12\bv1alpha1\"\x04azrg0\x01P\xd3\x01\x124\n" +
-	"\x0fAzureAksCluster\x10\xd1\x0f\x1a\x1e\xa2\xf7\x04\x1a\b\r\x12\bv1alpha1\"\x03aks0\x01:\x02\xd0\x0fP\xc9\x01\x125\n" +
+	"\x12AzureResourceGroup\x10\xd0\x0f\x1a\x1b\xa2\xf7\x04\x17\b\r\x12\bv1alpha1\"\x04azrg0\x01P\xd3\x01\x126\n" +
+	"\x0fAzureAksCluster\x10\xd1\x0f\x1a \xa2\xf7\x04\x1c\b\r\x12\bv1alpha1\"\x03aks0\x01:\x02\xd0\x0fP\xc9\x01X\x01\x125\n" +
 	"\x10AzureAksNodePool\x10\xd2\x0f\x1a\x1e\xa2\xf7\x04\x1a\b\r\x12\bv1alpha1\"\x05aksnp:\x02\xd1\x0fP\xc9\x01\x129\n" +
 	"\x16AzureContainerRegistry\x10\xd3\x0f\x1a\x1c\xa2\xf7\x04\x18\b\r\x12\bv1alpha1\"\x03acr:\x02\xd0\x0fP\xc9\x01\x123\n" +
 	"\fAzureDnsZone\x10\xd4\x0f\x1a \xa2\xf7\x04\x1c\b\r\x12\bv1alpha1\"\x05azdns0\x01:\x02\xd0\x0fP\xcd\x01\x123\n" +
@@ -4746,8 +4768,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\vGcpCloudSql\x10\xbc\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpsql0\x01:\x02\xa9\x18P\xaf\x02\x122\n" +
 	"\n" +
 	"GcpDnsZone\x10\xbd\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpdns0\x01:\x02\xc2\x17P\xb0\x02\x122\n" +
-	"\fGcpGcsBucket\x10\xbe\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpgcs:\x02\xc6\x17P\xae\x02\x127\n" +
-	"\rGcpGkeCluster\x10\xbf\x17\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\x06gcpgke0\x01:\x04\xc2\x17\xc3\x17P\xad\x02\x123\n" +
+	"\fGcpGcsBucket\x10\xbe\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpgcs:\x02\xc6\x17P\xae\x02\x129\n" +
+	"\rGcpGkeCluster\x10\xbf\x17\x1a%\xa2\xf7\x04!\b\x12\x12\bv1alpha1\"\x06gcpgke0\x01:\x04\xc2\x17\xc3\x17P\xad\x02X\x01\x123\n" +
 	"\x10GcpIamCustomRole\x10\xc0\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcproleP\xb4\x02\x12.\n" +
 	"\n" +
 	"GcpProject\x10\xc1\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpprj0\x01P\xb4\x02\x121\n" +

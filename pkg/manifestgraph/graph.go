@@ -32,7 +32,7 @@ type Graph struct {
 }
 
 // BuildGraph derives the set's dependency graph from the manifests' own
-// composition facts — the three edge sources the platform's orchestrator
+// composition facts — the four edge sources the platform's orchestrator
 // uses, in the same semantics:
 //
 //   - valueFrom references, by their EFFECTIVE kind (annotation defaults
@@ -42,12 +42,16 @@ type Graph struct {
 //     ordering fact: the related resource comes first);
 //   - literal namespace placement: a namespace-annotated field holding a
 //     LITERAL value implies the namespace, an edge when the set deploys it
-//     and a derived record when it does not.
+//     and a derived record when it does not;
+//   - connection placement: a Kubernetes workload whose planton.dev/connection
+//     annotation names the connection a sibling cluster will publish runs on
+//     that cluster, so the cluster comes first (see connection.go).
 //
 // A reference that names an env explicitly only forms an edge when that
 // identity is in the set; otherwise it is the env-external finding class.
 func BuildGraph(set *Set) *Graph {
 	g := &Graph{Set: set, DependsOn: make([][]int, len(set.Nodes))}
+	publishers := publishedConnectionIndex(set)
 
 	seen := make([]map[int]bool, len(set.Nodes))
 	addEdge := func(consumer, producer int) {
@@ -128,6 +132,16 @@ func BuildGraph(set *Set) *Graph {
 			if !derivedSeen[nsID] {
 				derivedSeen[nsID] = true
 				g.Derived = append(g.Derived, nsID)
+			}
+		}
+
+		// Source 4: connection placement. A consumed connection no sibling
+		// publishes is not a finding: it may be user-authored, published by a
+		// cluster deployed elsewhere, or resolved from a default — all backend
+		// facts the platform checks at admission, none this lane can see.
+		if slug := ConsumedConnectionSlug(node); slug != "" {
+			if producer, ok := publishers[slug]; ok {
+				addEdge(i, producer)
 			}
 		}
 	}

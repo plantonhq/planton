@@ -1,0 +1,5 @@
+order:
+    - AwsEksCluster/platform@prod
+    - KubernetesCertManager/cert-manager@prod
+derived:
+    - KubernetesNamespace/cert-manager@prod

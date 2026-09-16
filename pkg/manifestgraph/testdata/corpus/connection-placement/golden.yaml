@@ -1,0 +1,3 @@
+order:
+    - GcpGkeCluster/platform-cluster@prod
+    - KubernetesGatewayApiCrds/platform-cluster-gateway-api-crds@prod

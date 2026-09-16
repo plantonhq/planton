@@ -20,10 +20,13 @@
 // would mint a phantom node instead of joining the real one, and the failure
 // is silent by design (an unmatched identity is a no-op, never an error).
 //
-// Edges come from three sources, mirroring the platform's orchestrator:
+// Edges come from four sources, mirroring the platform's orchestrator:
 // valueFrom references (by their EFFECTIVE kind — the field's default_kind
 // annotation applies before ordering, so an annotation-riding reference
-// orders exactly like an explicit one), explicit metadata.relationships, and
+// orders exactly like an explicit one), explicit metadata.relationships,
 // literal namespace placement (a literal value in a namespace-annotated field
-// implies the namespace must exist — a derived target, never deployed here).
+// implies the namespace must exist — a derived target, never deployed here),
+// and connection placement (a Kubernetes workload whose planton.dev/connection
+// annotation names the connection a sibling cluster publishes runs on that
+// cluster — see connection.go for the two-ended naming contract).
 package manifestgraph
