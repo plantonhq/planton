@@ -3316,13 +3316,83 @@ token, and the lanes skip honestly on a machine that has not. The
 provider's own acceptance test dodges the same rule by reading the account
 data source's email.
 
-**Alert policies store tags as selectors; firewalls demand them.** A
-`digitalocean_monitor_alert` naming a tag no resource carries is accepted
-(HTTP 200) and creates nothing in `/v2/tags` — the policy simply watches
-nothing until a Droplet wears the tag — while a firewall naming the same
-tag fails `422 tag ... does not exist`. Two DigitalOcean APIs, two rules;
-the kind docs on each side say which. The alert's tag-only scenario
-therefore runs fixture-free with a run-scoped tag on purpose.
+**Alert policies and load balancers store tags as selectors; firewalls
+demand them.** A `digitalocean_monitor_alert` or a `digitalocean_loadbalancer`
+naming a tag no resource carries is accepted (HTTP 200 / 201) and creates
+nothing in `/v2/tags` — the policy watches nothing and the balancer's
+`droplet_ids` stays empty until a Droplet wears the tag — while a firewall
+naming the same tag fails `422 tag ... does not exist`. Three DigitalOcean
+APIs, two rules; the kind docs on each side say which. The alert's
+tag-only scenario therefore runs fixture-free with a run-scoped tag on
+purpose. The load balancer's tag scenario goes the other way on purpose:
+an accepted-but-memberless tag would deploy green and prove nothing, so
+its `full` scenario deploys a scenario-local droplet fixture
+(`e2e/fixtures/droplet-nyc3.yaml` — region-pinned to the balancer's region,
+joined to the same VPC fixture, carrying the tag) and the lane's live
+`GET` shows the fixture's id in `droplet_ids`. Load-balancer and
+database-cluster names are unique per account (`422 There is already a
+load balancer with that name` / `422 cluster name is not available`), so
+both kinds' scenarios carry `${E2E_RUN_ID}`.
+
+**A load balancer can sit in `new` past the provider's 10-minute waiter,
+and deleting it then leaves a ghost VPC member.** Measured once in three
+`full`-scenario creates on one day (the identical request went `active`
+in under two minutes the other two times, and the status page showed no
+incident): the Terraform apply failed `timeout while waiting for state to
+become 'active' (last state: 'new')`, the harness destroyed the balancer
+(204, then 404 on GET), and the fixture VPC's teardown then failed six
+times with `409 Can not delete VPC with members` — `GET
+/v2/vpcs/{id}/members` still listed `do:loadbalancer:<the deleted id>`
+with an empty name. The ghost cleared on DigitalOcean's side roughly 45
+minutes later and the VPC deleted normally. Two consequences for the
+harness: (1) a stranded fixture VPC holds the fixture's NAME, and VPC
+names are unique per account, so every later lane that installs the
+fixture fails at DEPENDENCIES-UP until it is gone — `PATCH /v2/vpcs/{id}`
+with a new name frees the fixture name immediately, and the renamed VPC
+is deleted in the session sweep once its member list is empty; (2) the
+dependency teardown's six one-minute retries (~17 minutes with the
+Pulumi timeouts) can exhaust a `go test -timeout` sized for the happy
+path and kill the NEXT scenario mid-create, leaving a real orphan — size
+the timeout for the failure path (45 minutes for a two-scenario kind), and
+after any timed-out run list the account before re-running.
+
+**Managed-database engine versions are a live offer list, and the
+database API's `422 cluster name is not available` is three different
+failures.** `GET /v2/databases/options` names the versions DigitalOcean
+will create per engine today (2026-09-16: `pg` 15–18, `mysql` `8.4` only,
+`valkey` `8`, `kafka` `3.9`/`4.2`, `opensearch` `2.19`/`3.3`/`3.6`,
+`mongodb` `7.0`/`8.0`; `redis` is gone — `engine: redis` fails
+`422 region 'nyc3' is not valid`, DigitalOcean's way of saying "offered
+nowhere"). A version off the list fails `422 invalid cluster engine
+version` at create, so read the options endpoint before a lane and keep
+fixtures on a currently offered version. Cluster names are unique per
+account and the default quota is 10 clusters (`412 maximum clusters
+reached`); a deleted cluster 404s within a second. The 422 "name is not
+available" is honest for a real duplicate, but the same text comes back
+for a brand-new name in two more cases, both measured with curl against
+the exact body godo sends: (1) a request whose TAGS the database service
+will not take — the request without tags succeeds, each of Planton's label
+tags succeeds alone, and the full seven-tag label set the modules send
+(~266 characters for the e2e fixture's 47-character name, `id` == `name`)
+fails every time, while any six of the seven passed; DigitalOcean
+documents no per-cluster tag budget, and the rule is NOT yet
+characterized (the database-cluster profile carries the unblock
+sequence); (2) any create in the minutes after a FAILED create, tagged or
+not — a failed create poisons the account for a few minutes and can leave
+a ghost cluster (404 on GET, absent from the list, still listed in
+`GET /v2/vpcs/{id}/members` as a `do:dbaas:` URN with an empty name, which
+blocks the VPC's deletion and holds its CIDR — `422 This range/size
+overlaps with another VPC network` on the next fixture install even after
+the VPC is renamed). Probe the database API patiently: one create at a
+time, never a second attempt inside a failing window, and delete a probe
+only after it reads `online`; and never probe-create databases while a
+database lane is running. One more database residue class for the sweep:
+DigitalOcean auto-creates THREE alert policies for every cluster that
+reaches `online` (`v1/dbaas/alerts/cpu_alerts`, `memory_utilization_alerts`,
+`disk_utilization_alerts`, `compare: GreaterThan 90 over 5m`, emailing a
+team member) and they outlive the cluster's deletion, still pointing at
+the deleted UUID — `GET /v2/monitoring/alerts` listed 51 after one
+session's probes; `DELETE /v2/monitoring/alerts/{uuid}` clears them.
 
 **Probe required-ness and forced values against the API before the lane —
 the provider's schema is not the contract.** `digitalocean_uptime_alert`

@@ -1,6 +1,6 @@
 # DigitalOcean Load Balancer -- Pulumi Module
 
-Deploys a `digitalocean:index/loadBalancer:LoadBalancer` from a `DigitalOceanLoadBalancer` stack input: regional and global types, sizing, forwarding rules with TLS termination or passthrough, health checks, sticky sessions, backend targeting by Droplet IDs or tag, VPC placement, firewall, HTTPS redirect, PROXY protocol, keepalive, idle-timeout, TLS cipher policy, project placement, and the global balancer's domains, targets, CDN, and failover. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`.
+Deploys a `digitalocean:index/loadBalancer:LoadBalancer` from a `DigitalOceanLoadBalancer` stack input: regional and global types, sizing, forwarding rules with TLS termination or passthrough, health checks, sticky sessions, backend targeting by Droplet IDs or tag, VPC placement, firewall, HTTPS redirect, PROXY protocol, keepalive, idle-timeout, TLS cipher policy, project placement, and the global balancer's domains, targets, CDN, and failover. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.53.0` (the gaps below re-verified against that version's `LoadBalancerArgs`).
 
 ## Module structure
 

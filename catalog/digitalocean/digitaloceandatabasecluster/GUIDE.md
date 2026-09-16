@@ -4,7 +4,19 @@ Judgment calls that matter when you run managed databases on DigitalOcean.
 
 ## Pick the engine slug, not the marketing name
 
-The `engine` values are DigitalOcean's own API slugs: PostgreSQL is `pg`, never `postgres`. Redis and Valkey are separate slugs for the same caching product line — DigitalOcean treats them as interchangeable and migrates Redis clusters toward Valkey; new caches should start on `valkey`.
+The `engine` values are DigitalOcean's own API slugs: PostgreSQL is `pg`, never `postgres`. Redis and Valkey are two slugs for one caching product line, and DigitalOcean has finished the move: a new cluster with `engine: redis` is rejected at the API (measured 2026-09-16 — the error reads `region 'nyc3' is not valid`, DigitalOcean's way of saying the engine is offered in no region). Keep `redis` only for adopting a cluster that already exists; every new cache is `valkey`.
+
+## The version must be one DigitalOcean offers today
+
+`engineVersion` is checked against DigitalOcean's live offer list, not against a format. `GET /v2/databases/options` names the versions per engine, and a value not on it fails at create with `422 invalid cluster engine version` — a bare `"8"` for MySQL fails today because the only MySQL line offered is `"8.4"`. The list moves: PostgreSQL 15 leaves the offer in May 2027, and majors retire on a schedule DigitalOcean publishes in the same response. When a deploy fails with that error, read the options endpoint and raise the version; the presets in this component name the version they were verified against and the date.
+
+## "cluster name is not available" means more than one thing
+
+Cluster names are unique per account, and a real duplicate is refused with `422 cluster name is not available`. DigitalOcean gives the same 422 for a brand-new name in two other situations, measured on 2026-09-16: a create whose tag set the database service will not take (the identical request without tags succeeds; every one of Planton's label tags succeeds alone; all seven together — about 266 characters for a 47-character resource name whose `id` equals its `name` — fail every time; DigitalOcean documents no such budget), and any create in the few minutes after a failed create, tagged or not — a failed create can also leave a ghost cluster that answers 404, is missing from the list, and still counts as a member of its VPC. If you see this error on a name you know is free: wait a few minutes, then retry once before changing anything; if it persists, shorten the resource name or drop `spec.tags`, and when a VPC later refuses to delete, look at `GET /v2/vpcs/{id}/members` for a `do:dbaas:` URN with an empty name. The exact rule is still being characterized; until it is, treat long tag sets on long names as a risk.
+
+## Every cluster comes with three alert policies you did not declare
+
+When a cluster reaches `online`, DigitalOcean creates three monitoring alert policies for it — CPU, memory, and disk utilization above 90% over five minutes, emailing a team member — and they are not part of this resource: neither engine manages them, and deleting the cluster leaves them behind, still pointing at the deleted cluster's UUID. Expect them in `GET /v2/monitoring/alerts` (type `v1/dbaas/alerts/...`) and delete the ones whose cluster is gone; a DigitalOceanMonitorAlert manifest is the way to own the alerting you actually want.
 
 ## Node count is an engine decision
 

@@ -138,7 +138,7 @@ resources:
     reason: "uploading object content is data-plane work, not infrastructure; a declarative kind for file contents is marginal and invites abuse as a deployment mechanism"
   - resource: digitalocean_tag
     disposition: deferred
-    reason: "Droplets and volumes create tags implicitly when they declare them, so a tagged fleet needs no standalone kind; tag CONSUMERS differ per API (both live-verified) -- a firewall naming a tag no Droplet carries yet is rejected (422 'tag does not exist'), while a monitor alert policy accepts it as a selector and creates nothing. So only the firewall-before-its-first-Droplet ordering has no handle today and must target a tag some Droplet already carries. Revisit as a re-tier if that ordering constraint proves too costly for charts"
+    reason: "Droplets and volumes create tags implicitly when they declare them, so a tagged fleet needs no standalone kind; tag CONSUMERS differ per API (all three live-verified) -- a firewall naming a tag no Droplet carries yet is rejected (422 'tag does not exist'), while a monitor alert policy and a load balancer both accept it as a selector and create nothing (the balancer's member list stays empty until a Droplet wears the tag). So only the firewall-before-its-first-Droplet ordering has no handle today and must target a tag some Droplet already carries. Revisit as a re-tier if that ordering constraint proves too costly for charts"
   - resource: digitalocean_vector_database
     disposition: model-planned
     reason: "judged as a planned DigitalOceanVectorDatabase kind (Weaviate-powered managed cluster, managed independently from standard database clusters; FK project, vpc)"

@@ -81,8 +81,9 @@ Both provisioners export the identical output set:
 - **Certificates are identified by name**, not UUID. Let's Encrypt renewals rotate the UUID; `DigitalOceanCertificate.status.outputs.certificate_id` carries the stable name.
 - **`size` and `sizeUnit` are the cost knob.** `lb-small` equals 1 unit; `lb-medium` is 3; `lb-large` is 6 — you pay per unit. Past that, only `sizeUnit` (up to 200) applies.
 - **GLOBAL balancers have no region and no forwarding rules.** They route through `glbSettings`, `domains`, and `targetLoadBalancerIds`.
+- **A `dropletTag` does not have to exist yet.** DigitalOcean stores it as a selector and attaches Droplets as they pick up the tag; unlike a firewall, it never rejects an unknown tag. Load-balancer names are unique per account.
 - **`network`, `networkStack`, and `tlsCipherPolicy` are write-only.** The API never reports them back, so import leaves them empty and drift on them is invisible.
-- **Pulumi SDK v4.49.0 cannot express `subnetUuid` or BYOIP `ip`.** The Pulumi module fails loudly if they are set; Terraform wires them. See the [GUIDE](GUIDE.md).
+- **The pinned Pulumi SDK (v4.53.0) cannot express `subnetUuid` or BYOIP `ip`.** The Pulumi module fails loudly if they are set; Terraform wires them. See the [GUIDE](GUIDE.md).
 
 ---
 

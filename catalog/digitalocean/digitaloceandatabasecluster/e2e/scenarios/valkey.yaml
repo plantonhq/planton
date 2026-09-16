@@ -2,6 +2,9 @@
 # end to end plus eviction_policy (valid only on the caching engines --
 # the spec's CEL rule and the provider's plan-time check agree). Single
 # node on the cheapest slug; no VPC.
+# The cluster name carries the run id: cluster names are unique per account
+# (the API answers 422 "cluster name is not available"), and a delete returns
+# before the cluster is gone, so a re-run must never reuse the previous name.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
@@ -17,7 +20,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-dodb-valkey
+  clusterName: pltn-e2e-dodb-valkey-${E2E_RUN_ID}
   engine: valkey
   engineVersion: "8"
   region: nyc3

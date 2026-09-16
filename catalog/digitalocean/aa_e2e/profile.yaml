@@ -27,6 +27,23 @@ spec:
   # by itself (default-tor1, -blr1, -lon1, -sfo2 appeared this way in one
   # session; -nyc2, -sgp1, -sfo3 in the next); record, do not fight. Tags are the other residue class: every tag a lane's droplet or
   # volume declares outlives it, so the session-end sweep deletes them.
+  # Ghost VPC members are the third: a load balancer that never left `new`
+  # or a database whose create failed can stay in `GET /v2/vpcs/{id}/members`
+  # (URN, empty name) after the resource itself 404s, so the fixture VPC's
+  # teardown fails `409 Can not delete VPC with members` and its CIDR stays
+  # taken until DigitalOcean clears the ghost (45 minutes to hours). Rename
+  # the stranded VPC to free the fixture name and delete it in a later sweep.
+  # Database clusters leave a fourth residue: DigitalOcean auto-creates three
+  # alert policies per cluster (`v1/dbaas/alerts/{cpu,memory,disk}_*`,
+  # emailing a team member) that OUTLIVE the cluster -- the sweep lists
+  # `GET /v2/monitoring/alerts` and deletes every `v1/dbaas/` policy whose
+  # entity no longer exists (51 found after one session of database probes).
+  #
+  # DATABASE LANES: the account quota is 10 clusters (`412 maximum clusters
+  # reached`), and a FAILED `POST /v2/databases` poisons the account for a
+  # few minutes -- every create then answers `422 cluster name is not
+  # available` whatever the name. Never probe-create databases while a
+  # database lane runs, and never retry a failed create inside that window.
   #
   # OPERATOR PRECONDITION (per machine): the alert lanes (monitor alerts,
   # uptime alert rows) read their email recipient from

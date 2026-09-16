@@ -4,7 +4,14 @@
 # storage (the provider's bare-MiB string wiring -- the arm the old module
 # broke), a maintenance window, sql_mode on MySQL, and the user-tags +
 # Planton-labels tag composition. storage_autoscale is deliberately absent:
-# the Pulumi SDK v4.49.0 has no such field and the module fails loudly.
+# the pinned Pulumi SDK (v4.53.0) has no such field and the module fails
+# loudly. engineVersion is the version DigitalOcean offers TODAY: MySQL is
+# "8.4" only -- a bare "8" is rejected at create (422 "invalid cluster
+# engine version"); check `GET /v2/databases/options` when a lane fails
+# there, because DigitalOcean retires majors on a schedule.
+# The cluster name carries the run id: cluster names are unique per account
+# (the API answers 422 "cluster name is not available"), and a delete returns
+# before the cluster is gone, so a re-run must never reuse the previous name.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
@@ -21,9 +28,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-dodb-mysql
+  clusterName: pltn-e2e-dodb-mysql-${E2E_RUN_ID}
   engine: mysql
-  engineVersion: "8"
+  engineVersion: "8.4"
   region: nyc3
   sizeSlug: db-s-1vcpu-1gb
   nodeCount: 1

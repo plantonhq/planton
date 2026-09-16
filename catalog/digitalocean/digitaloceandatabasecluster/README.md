@@ -9,8 +9,8 @@ The spec maps one-to-one onto DigitalOcean's managed database cluster:
 | Spec field | What it controls |
 |---|---|
 | `clusterName` | The cluster's name in DigitalOcean (up to 64 characters) |
-| `engine` | `pg`, `mysql`, `redis`, `mongodb`, `kafka`, `opensearch`, or `valkey` |
-| `engineVersion` | Major or major.minor version (`"16"`, `"8"`, `"3.5"`); changing it performs an in-place major upgrade — DigitalOcean never downgrades |
+| `engine` | `pg`, `mysql`, `valkey`, `mongodb`, `kafka`, or `opensearch` for new clusters; `redis` only adopts an existing cluster (DigitalOcean no longer creates Redis) |
+| `engineVersion` | A version DigitalOcean currently offers for the engine, exactly as `GET /v2/databases/options` lists it (`"16"` for PostgreSQL, `"8.4"` for MySQL, `"8"` for Valkey, `"4.2"` for Kafka, `"2.19"` for OpenSearch, `"8.0"` for MongoDB as of 2026-09-16); a version not on that list is rejected at create. Changing it performs an in-place major upgrade — DigitalOcean never downgrades |
 | `region` | Data-center region; changing it live-migrates the cluster |
 | `sizeSlug` | Per-node CPU/memory (`db-s-1vcpu-1gb`, `db-s-2vcpu-4gb`, ...); changing it resizes in place |
 | `nodeCount` | Engine-specific: 1–3 for most engines, 3+ for Kafka, up to 15 for OpenSearch |
@@ -101,7 +101,7 @@ Both provisioners export the identical output set:
 - **Region changes migrate live.** The cluster stays up while DigitalOcean moves it; plan for elevated latency during the move.
 - **Removing `evictionPolicy` resets to `noeviction`** rather than leaving the last policy in place.
 - **`backupRestore` acts only at creation.** DigitalOcean never reports it back; changing it on an existing cluster does nothing.
-- **`storageAutoscale` is Terraform-only today.** The Pulumi bridge (v4.49.0) has no such field; the Pulumi module fails loudly if it is set rather than silently dropping it.
+- **`storageAutoscale` is Terraform-only today.** The pinned Pulumi bridge (v4.53.0) has no such field; the Pulumi module fails loudly if it is set rather than silently dropping it.
 
 See `GUIDE.md` for operational judgment (sizing, engine selection, upgrade practice) and `catalog.md` for the deployment-store page.
 
@@ -111,7 +111,7 @@ See `GUIDE.md` for operational judgment (sizing, engine selection, upgrade pract
 - `iac/tf/` and `iac/pulumi/` — the two provisioner modules implementing the same contract with identical outputs
 - `iac/provider-parity.yaml` — the recorded mapping judgment against the pinned provider
 - `iac/import-map.yaml` — how an existing cluster's identity derives for import
-- `presets/` — ready-to-deploy starting points (PostgreSQL HA/dev, Redis, Kafka, OpenSearch)
+- `presets/` — ready-to-deploy starting points (PostgreSQL HA/dev, Valkey, Kafka, OpenSearch)
 - `e2e/` — test profile, canonical manifests, and live-lane scenarios
 
 ---

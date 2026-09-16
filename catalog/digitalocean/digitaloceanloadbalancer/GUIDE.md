@@ -23,7 +23,11 @@ The provider's own check allows region-without-type (it implies REGIONAL). This 
 
 A balancer with neither is valid — it just has no backends. Useful for proving the balancer itself, not for serving traffic.
 
-The provider sends a `dropletTag` without checking that any Droplet carries it. If the API rejects a nonexistent tag, create the tag (or a Droplet that has it) first.
+DigitalOcean accepts a `dropletTag` that no Droplet carries yet (measured: the create succeeds, the tag is stored as a selector, no tag object is created, and the member list stays empty) — the opposite of a DigitalOcean firewall, which rejects an unknown tag with a 422. So a tag-targeted balancer can be created before its Droplets exist; it simply serves nothing until a Droplet carrying the tag appears in the same region. Tagging the Droplets first is still the sensible order: it lets you confirm membership on the first apply instead of wondering why traffic goes nowhere.
+
+## A balancer stuck in `new`
+
+A new balancer normally reaches `active` in one to two minutes; the provider waits up to ten. Once in three identical creates on one day, a balancer never left `new` in that window (no incident on DigitalOcean's status page), the apply failed with `timeout while waiting for state to become 'active'`, and the same manifest succeeded on the next apply. Treat a single stall as DigitalOcean's, not the manifest's: destroy and re-apply. One after-effect to know about: deleting a balancer that never left `new` can leave it listed as a member of its VPC for a while after the balancer itself is gone, and the VPC refuses deletion (`409 Can not delete VPC with members`) until DigitalOcean clears the ghost — observed at about 45 minutes.
 
 ## Firewall rules use the provider's own prefix format
 
@@ -41,7 +45,7 @@ The provider sends a `dropletTag` without checking that any Droplet carries it. 
 
 `subnetUuid` places the balancer in a DigitalOcean-managed VPC subnet and requires `vpc`. Both are create-only.
 
-The Pulumi bridge (v4.49.0) cannot express either. The Pulumi module fails the apply with `PARITY-EXCEPTION` if they are set. If the balancer needs them today, deploy it through Terraform.
+The pinned Pulumi bridge (`pulumi-digitalocean/sdk/v4 v4.53.0`, re-verified against the SDK's `LoadBalancerArgs`) cannot express either. The Pulumi module fails the apply with `PARITY-EXCEPTION` if they are set. If the balancer needs them today, deploy it through Terraform.
 
 ## Sticky sessions: cookies or none
 

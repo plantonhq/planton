@@ -16,15 +16,16 @@ func loadBalancer(
 ) (*digitalocean.LoadBalancer, error) {
 	spec := locals.DigitalOceanLoadBalancer.Spec
 
-	// Pulumi SDK v4.49.0 gaps: these spec fields are modeled and the
-	// Terraform module wires them, but the SDK has no matching inputs on
-	// LoadBalancer. Fail loudly on a meaningful set (proto zero values
+	// Pulumi SDK gaps (pinned v4.53.0, re-verified: LoadBalancerArgs has no
+	// SubnetUuid and exposes Ip only as state): these spec fields are
+	// modeled and the Terraform module wires them, but the SDK has no
+	// matching inputs on LoadBalancer. Fail loudly on a meaningful set (proto zero values
 	// pass) rather than silently dropping configuration.
 	if spec.SubnetUuid != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.subnet_uuid is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no subnet_uuid field on LoadBalancer. Re-evaluate when the SDK exposes subnet_uuid.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.subnet_uuid is modeled and Terraform wires it; the pinned Pulumi DigitalOcean SDK (v4.53.0) has no subnet_uuid field on LoadBalancer. Re-evaluate when the SDK exposes subnet_uuid.")
 	}
 	if spec.Ip != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.ip (BYOIP input) is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 exposes Ip only as a computed output. Re-evaluate when the SDK accepts ip as a create-time input.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.ip (BYOIP input) is modeled and Terraform wires it; the pinned Pulumi DigitalOcean SDK (v4.53.0) exposes Ip only as a computed output. Re-evaluate when the SDK accepts ip as a create-time input.")
 	}
 
 	args := &digitalocean.LoadBalancerArgs{

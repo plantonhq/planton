@@ -5,7 +5,7 @@ metadata:
 spec:
   clusterName: my-opensearch
   engine: opensearch
-  engineVersion: "2"
+  engineVersion: "2.19"
   region: nyc3
   sizeSlug: db-s-2vcpu-4gb
   nodeCount: 1

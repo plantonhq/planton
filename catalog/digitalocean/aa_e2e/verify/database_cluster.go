@@ -10,10 +10,11 @@ import (
 
 // databaseClusterVerifier verifies a DigitalOceanDatabaseCluster via
 // GET /v2/databases/{id}. Beyond existence, it asserts the connection
-// details the module CLAIMS in its stack outputs (host, port) against the
-// live cluster -- outputs are contractually identical across both engines,
-// so one assertion protects both, and an absent output simply means "not
-// claimed" and is skipped.
+// details the module CLAIMS in its stack outputs (host, port,
+// database_name, and the VPC-only private_host) against the live cluster
+// -- outputs are contractually identical across both engines, so one
+// assertion protects both, and an absent output simply means "not claimed"
+// and is skipped.
 type databaseClusterVerifier struct{}
 
 func (*databaseClusterVerifier) IDOutputKey() string { return "cluster_id" }
@@ -61,6 +62,24 @@ func (v *databaseClusterVerifier) VerifyExistsFromOutputs(ctx context.Context, c
 		if port := StringOutput(outputs, "port"); port != "" && strconv.Itoa(database.Connection.Port) != port {
 			return pkgerrors.Errorf("digitaloceandatabasecluster %q port mismatch: output %s, live %d",
 				id, port, database.Connection.Port)
+		}
+		if name := StringOutput(outputs, "database_name"); name != "" && database.Connection.Database != name {
+			return pkgerrors.Errorf("digitaloceandatabasecluster %q database_name mismatch: output %q, live %q",
+				id, name, database.Connection.Database)
+		}
+	}
+
+	// The private endpoint exists only for a VPC-attached cluster, so a
+	// claimed private_host is the VPC arm's own proof: it must match the
+	// private connection DigitalOcean reports, never merely be non-empty.
+	if privateHost := StringOutput(outputs, "private_host"); privateHost != "" {
+		if database.PrivateConnection == nil {
+			return pkgerrors.Errorf("digitaloceandatabasecluster %q claims private_host %q but the live cluster reports no private connection",
+				id, privateHost)
+		}
+		if database.PrivateConnection.Host != privateHost {
+			return pkgerrors.Errorf("digitaloceandatabasecluster %q private_host mismatch: output %q, live %q",
+				id, privateHost, database.PrivateConnection.Host)
 		}
 	}
 

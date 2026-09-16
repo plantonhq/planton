@@ -23,3 +23,5 @@ A VPC exists in exactly one region, and members can only join from that region. 
 ## Destroy members first; the VPC goes last
 
 DigitalOcean refuses to delete a VPC that still contains resources, and the module's delete retries only paper over short races (a Droplet mid-destroy), not real membership. Tear environments down in dependency order — workloads, then load balancers and databases, then the VPC. The same applies in reverse for creation, which is why other kinds' E2E lanes install this VPC as their first fixture.
+
+One member class outlives its resource: a load balancer that never left `new` and was then deleted can stay listed in `GET /v2/vpcs/{id}/members` (URN present, name empty) for a while after the balancer itself answers 404, and the VPC delete keeps failing `409 Can not delete VPC with members` until DigitalOcean clears it (observed: about 45 minutes). Nothing on the account can be deleted to speed it up. If the VPC's name is needed sooner, rename the stranded VPC (`PATCH /v2/vpcs/{id}` with a new `name`) and delete it once its member list is empty.

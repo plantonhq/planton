@@ -265,3 +265,12 @@ PROACTIVE CREATE-TIME-REQUIRED IDENTIFICATION (MANDATORY STEP)
   input reads back different from what was written and re-plans forever;
   making it unrepresentable is the only shape a manifest and the cloud agree
   on at every apply.
+- Version-like string fields (an engine version, a runtime version, an API
+  version) are checked by the cloud against a LIVE offer list that moves on
+  the vendor's schedule, not against a format. Never enumerate the currently
+  valid versions in the field comment as if they were the rule -- they go
+  stale silently and a copied example then fails at create (a managed
+  MySQL "8" that became "8.4"-only). Point the author at the vendor's
+  options endpoint or catalog call, give one or two examples marked with
+  the date they were checked, and make the presets name the version they
+  were verified against and when.

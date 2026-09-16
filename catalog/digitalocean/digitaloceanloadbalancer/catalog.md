@@ -99,7 +99,7 @@ These are the most important decisions when configuring a load balancer. Explore
 
 **Forwarding rules and certificates** -- Each rule maps an `entryPort`/`entryProtocol` pair to a `targetPort`/`targetProtocol`. For HTTPS termination, set `entryProtocol: https` and provide `certificateName`; for passthrough, set `tlsPassthrough: true` and omit the certificate. DigitalOcean identifies certificates by NAME because Let's Encrypt certificate UUIDs rotate on every auto-renewal -- never paste a certificate UUID into `certificateName`.
 
-**Backend targeting** -- `dropletTag` is a living membership: every Droplet carrying the tag is attached as Droplets come and go, which makes it the right default for anything that scales. `dropletIds` is a fixed list for a known, small set. The two are mutually exclusive, and the provider sends a tag without checking that any Droplet carries it.
+**Backend targeting** -- `dropletTag` is a living membership: every Droplet carrying the tag is attached as Droplets come and go, which makes it the right default for anything that scales. `dropletIds` is a fixed list for a known, small set. The two are mutually exclusive. DigitalOcean accepts a tag no Droplet carries yet (it is stored as a selector and attaches Droplets as they pick up the tag) — unlike a firewall, which rejects an unknown tag. Load-balancer names are unique per account.
 
 **Health checks** -- Configure `healthCheck` with port, protocol, and path (required for http/https, forbidden for tcp), plus optional interval and threshold tuning. Without one, DigitalOcean applies a TCP check against the first forwarding rule's target port -- which passes while your application returns errors, so production HTTP services want an HTTP path check.
 

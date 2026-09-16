@@ -3,6 +3,9 @@
 # create/verify/destroy lifecycle and the cluster_id / host / port /
 # connection outputs. Named `minimal` so it doubles as this kind's install
 # profile when database satellites compose it as a fixture.
+# The cluster name carries the run id: cluster names are unique per account
+# (the API answers 422 "cluster name is not available"), and a delete returns
+# before the cluster is gone, so a re-run must never reuse the previous name.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
@@ -18,7 +21,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-dodb-min
+  clusterName: pltn-e2e-dodb-min-${E2E_RUN_ID}
   engine: pg
   engineVersion: "16"
   region: nyc3

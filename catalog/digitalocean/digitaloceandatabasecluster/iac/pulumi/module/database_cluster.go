@@ -21,7 +21,7 @@ func cluster(
 	}
 
 	if spec.StorageAutoscale != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.storage_autoscale is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no storage_autoscale field on DatabaseCluster. Re-evaluate when the SDK exposes storage_autoscale.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.storage_autoscale is modeled and Terraform wires it; the pinned Pulumi DigitalOcean SDK (v4.53.0, re-verified against DatabaseClusterArgs) has no storage_autoscale field on DatabaseCluster. Re-evaluate when the SDK exposes storage_autoscale.")
 	}
 
 	// User tags plus the standard Planton labels rendered as "key:value"

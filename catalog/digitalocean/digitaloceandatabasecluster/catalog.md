@@ -78,7 +78,7 @@ The InfraPipeline resolves the dependency graph, deploys the VPC first, then pro
 
 These are the most important decisions when configuring a database cluster. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Engine selection** -- The `engine` values are DigitalOcean's own API slugs: PostgreSQL is `pg`, never `postgres`. Redis and Valkey are separate slugs for the same caching product line -- DigitalOcean treats them as interchangeable and is migrating Redis toward Valkey, so new caches should start on `valkey`. Raising `engineVersion` performs an in-place major upgrade on the running cluster with no downgrade and no blue-green; take a `backupRestore` copy first when application compatibility is unproven.
+**Engine selection** -- The `engine` values are DigitalOcean's own API slugs: PostgreSQL is `pg`, never `postgres`. Redis and Valkey are two slugs for one caching product line, and DigitalOcean no longer creates Redis clusters (a create with `engine: redis` is rejected) -- `redis` only adopts an existing cluster; every new cache is `valkey`. `engineVersion` must be a version DigitalOcean currently offers for the engine (`GET /v2/databases/options`; MySQL is `"8.4"` only), or the create fails with `422 invalid cluster engine version`. Raising `engineVersion` performs an in-place major upgrade on the running cluster with no downgrade and no blue-green; take a `backupRestore` copy first when application compatibility is unproven.
 
 **Node count and high availability** -- Valid node counts are engine-specific: PostgreSQL/MySQL/MongoDB accept 1-3 (2 buys a standby without quorum, so most teams go straight to 3 for automatic failover), Kafka requires at least 3, OpenSearch scales to 15, and single-node Redis/Valkey is normal because caches tolerate a failover gap. Single-node clusters of the transactional engines have no redundancy and are suited only for development.
 
@@ -125,11 +125,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Development PostgreSQL** -- Single-node PostgreSQL 16 on the smallest instance, no VPC. Minimal cost for development, CI/CD test databases, and staging. Start from the **Development PostgreSQL** preset.
 
-**Redis cache** -- Single-node Redis 7 with VPC placement and an LRU eviction policy for low-latency caching, session storage, and pub/sub messaging. Start from the **Redis Cache** preset.
+**Valkey cache** -- Single-node Valkey 8 with VPC placement and an LRU eviction policy for low-latency caching, session storage, and pub/sub messaging. Start from the **Valkey Cache** preset.
 
-**Kafka streaming** -- 3-node Kafka 3.5 inside a VPC, the minimum DigitalOcean Kafka topology, for event streaming between services. Start from the **Kafka Cluster** preset.
+**Kafka streaming** -- 3-node Kafka 4.2 inside a VPC, the minimum DigitalOcean Kafka topology, for event streaming between services. Start from the **Kafka Cluster** preset.
 
-**OpenSearch analytics** -- Single-node OpenSearch 2 with 100 GiB storage for log analytics and full-text search; OpenSearch Dashboards connection details arrive as the `ui_*` outputs. Start from the **OpenSearch** preset.
+**OpenSearch analytics** -- Single-node OpenSearch 2.19 with 100 GiB storage for log analytics and full-text search; OpenSearch Dashboards connection details arrive as the `ui_*` outputs. Start from the **OpenSearch** preset.
 
 ## Works With
 
