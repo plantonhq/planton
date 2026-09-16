@@ -1,0 +1,72 @@
+# An in-cluster S3-compatible store for the Kind lanes: MinIO, one replica on
+# an emptyDir, with the bucket the lanes archive to created by a one-shot Job.
+# This is lab infrastructure, not a product component -- nothing here is a
+# real secret, and the store lives and dies with the lane's cluster. Images
+# are pinned so a lane run is reproducible; move both pins together.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: planton-lane-minio
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: planton-lane-minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: quay.io/minio/minio:RELEASE.2025-07-23T15-54-02Z
+          args: ["server", "/data", "--console-address", ":9001"]
+          env:
+            - name: MINIO_ROOT_USER
+              value: laneadmin
+            - name: MINIO_ROOT_PASSWORD
+              value: laneadmin-secret-not-a-real-secret
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  namespace: planton-lane-minio
+spec:
+  selector:
+    app: minio
+  ports:
+    - name: s3
+      port: 9000
+      targetPort: 9000
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: make-bucket
+  namespace: planton-lane-minio
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mc
+          image: quay.io/minio/mc:RELEASE.2025-07-21T05-28-08Z
+          command: ["/bin/sh", "-c"]
+          args:
+            - mc alias set lane http://minio.planton-lane-minio.svc:9000 laneadmin laneadmin-secret-not-a-real-secret && mc mb --ignore-existing lane/planton-backups

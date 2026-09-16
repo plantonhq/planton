@@ -90,7 +90,9 @@ kubectl get plantonplatform -w
 | `make manifests` | Regenerate the CRDs and the manager ClusterRole into `config/` AND into the Helm chart (the chart derives both; CI fails a stale chart) |
 | `make generate` | Regenerate DeepCopy methods |
 | `make test` | Unit tests, envtest, and the chart render test |
-| `make test-e2e` | The Kind e2e suite on a dedicated cluster (`setup-test-e2e` / `cleanup-test-e2e` manage it) |
+| `make test-e2e` | The Kind e2e suite on a dedicated cluster (`setup-test-e2e` / `cleanup-test-e2e` manage it): the manager runs, serves metrics, and honors its version floor |
+| `make test-e2e-vault-restore` | The vault restore lanes on the same Kind cluster, alone: two whole platform lifecycles -- the built-in seal with an adopter-owned keys Secret, and the transit seal against an in-cluster key holder -- each installed, archived to an in-cluster object store, destroyed, and declared again from the archive, with the secrets written before the disaster read back through the control plane's own token and a signature verified on the restored OIDC signing key. Set `E2E_CONSOLE_IMAGE_TAG` when the console's published image line lags the platform version the lanes declare |
+| `make vet-e2e` | Compile-check both Kind suites under the `e2e` build tag (`make vet` does not see them) |
 | `make test-chart-lifecycle` | The chart lifecycle suite on its own Kind cluster: fresh install, keep, reinstall, keep off, both upgrade paths from the last published charts |
 | `make test-realm-convergence` | The Keycloak realm-convergence and federation suite (needs Docker) |
 | `make lint` / `make lint-fix` | golangci-lint |
@@ -117,7 +119,8 @@ config/                          Kubebuilder scaffolding: generated CRDs and RBA
 hack/                            Generators (the chart's CRD templates) and the lab directory fixture
 test/chart                       The chart render test (inside make test)
 test/chartlifecycle              The chart lifecycle suite (Kind)
-test/e2e                         The kubebuilder e2e suite (Kind)
+test/e2e                         The kubebuilder e2e suite and the vault restore lanes (Kind)
+test/fixtures                    The lab infrastructure the Kind suites stand a platform beside: an object store and a key holder, pinned and embedded
 ```
 
 Packages marked (README) carry their own design notes.

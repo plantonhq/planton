@@ -7,7 +7,11 @@
 #                      builds the manager image from the working tree, loads it
 #                      into Kind, installs the CRDs and the manager through the
 #                      kubebuilder path, and asserts the manager runs and serves
-#                      metrics (KIND_CLUSTER=planton-operator-test-e2e).
+#                      metrics (KIND_CLUSTER=planton-operator-test-e2e). The same
+#                      package also carries the vault restore lanes (two whole
+#                      platform lifecycles, labeled vault-restore); this job runs
+#                      the default label filter, which excludes them -- they run
+#                      through `make test-e2e-vault-restore` with their own budget.
 #   chart-lifecycle -- the chart's lifecycle suite (operator/test/chartlifecycle):
 #                      installs helm/planton-operator from the working tree and
 #                      proves it owns its definitions (install, keep, reinstall,

@@ -101,11 +101,33 @@ setup-test-e2e: ## Set up a Kind cluster for e2e tests if it does not exist
 			$(KIND) create cluster --name $(KIND_CLUSTER) ;; \
 	esac
 
+# The e2e package carries two kinds of specs behind one harness: the manager's
+# own suite (runs, serves metrics, honors its version floor) and the vault
+# restore lanes (two whole platform lifecycles, install to restore, labeled
+# vault-restore). The default run excludes the lanes so `make test-e2e` and
+# the CI job that runs it keep today's cost; `make test-e2e-vault-restore`
+# runs the lanes alone with the budget they need.
+E2E_LABEL_FILTER ?= !vault-restore
+
+.PHONY: vet-e2e
+vet-e2e: ## Compile-check the Kind suites (built under the e2e tag, which `make vet` does not see).
+	go vet -tags=e2e ./test/...
+
 .PHONY: test-e2e
 # The suite builds and side-loads the manager image before its first spec, so a
 # cold build cache alone can consume Go's default 10-minute test timeout.
 test-e2e: setup-test-e2e manifests generate fmt vet ## Run the e2e tests. Expected an isolated environment using Kind.
-	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -timeout 40m
+	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter='$(E2E_LABEL_FILTER)' -timeout 40m
+	$(MAKE) cleanup-test-e2e
+
+.PHONY: test-e2e-vault-restore
+# Two platform lifecycles on a real cluster: the built-in seal with an
+# adopter-owned keys Secret, and the transit seal against an in-cluster key
+# holder -- each installed, archived, destroyed, and declared again from the
+# archive with every secret read back. E2E_CONSOLE_IMAGE_TAG pins the console
+# image when its published line lags the platform version the lanes declare.
+test-e2e-vault-restore: setup-test-e2e manifests generate fmt vet ## Run the vault restore lanes alone on the e2e Kind cluster.
+	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter='vault-restore' -timeout 150m
 	$(MAKE) cleanup-test-e2e
 
 .PHONY: cleanup-test-e2e

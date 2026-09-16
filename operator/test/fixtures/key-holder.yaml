@@ -1,0 +1,57 @@
+# A dev-mode OpenBao standing in for a central key service: auto-initialized,
+# auto-unsealed, root token fixed, in memory. A platform that declares
+# spec.vault.autoUnseal.transit against it exercises the whole cloud-seal
+# path -- recovery init, the server opening itself, a restored vault opening
+# itself -- with no cloud account, which is the only auto-unseal a Kind
+# cluster can run. The lane mounts the transit engine and creates the
+# wrapping key after this comes up, because the vault test-encrypts against
+# that key the moment its seal is configured. Lab infrastructure only; the
+# image is the OpenBao line the operator's chart runs.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: planton-lane-key-holder
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: key-holder
+  namespace: planton-lane-key-holder
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: key-holder
+  template:
+    metadata:
+      labels:
+        app: key-holder
+    spec:
+      containers:
+        - name: openbao
+          image: quay.io/openbao/openbao:2.6.1
+          args: ["server", "-dev"]
+          env:
+            - name: BAO_DEV_ROOT_TOKEN_ID
+              value: lane-holder-root
+            - name: BAO_DEV_LISTEN_ADDRESS
+              value: 0.0.0.0:8200
+          ports:
+            - containerPort: 8200
+          readinessProbe:
+            httpGet:
+              path: /v1/sys/health
+              port: 8200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: key-holder
+  namespace: planton-lane-key-holder
+spec:
+  selector:
+    app: key-holder
+  ports:
+    - name: api
+      port: 8200
+      targetPort: 8200
