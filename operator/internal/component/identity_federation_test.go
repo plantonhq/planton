@@ -116,6 +116,47 @@ func TestBuildFederationState_SteadyStateNoRotation(t *testing.T) {
 	}
 }
 
+// An operator-side failure on the Provisioned condition (the realm could not
+// be reconciled, verification could not run) is re-examined by the next
+// pass: verification is due even at a verified generation with an unchanged
+// credential, so one transient never outlives itself. A directory verdict
+// (VerificationFailed) and an unbuildable desired state keep the cadence law.
+func TestBuildFederationState_OperatorSideFailureIsReverified(t *testing.T) {
+	cases := []struct {
+		reason string
+		due    bool
+	}{
+		{"ConvergeFailed", true},
+		{"VerificationError", true},
+		{"VerificationFailed", false},
+		{"DesiredStateUnavailable", false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.reason, func(t *testing.T) {
+			platform := testPlatform("prime")
+			idp := ldapIdentityProvider()
+			idp.Status.Conditions = []metav1.Condition{{
+				Type: v1.ConditionProvisioned, Status: metav1.ConditionFalse,
+				Reason: tc.reason, ObservedGeneration: 1, LastTransitionTime: metav1.Now(),
+			}}
+			idp.Status.Verification = &v1.IdentityProviderVerification{
+				Checks: []v1.IdentityProviderVerificationCheck{{Name: "connection", Verdict: "Passed"}},
+			}
+			state := federationTestSecret(resources.IdentityRealmStateSecretName("prime"), map[string]string{
+				resources.IdentityRealmStateFederationCredentialKey: sha256Hex("bind-pw"),
+			})
+			c := fake.NewClientBuilder().WithScheme(bindingScheme(t)).
+				WithObjects(platform, idp, state, federationTestSecret("corp-bind", map[string]string{"password": "bind-pw"})).
+				Build()
+
+			build := buildFederation(c, platform, idp)
+			if build.verificationDue != tc.due {
+				t.Fatalf("reason %s: verificationDue = %v, want %v", tc.reason, build.verificationDue, tc.due)
+			}
+		})
+	}
+}
+
 // A rotated Secret is detected against the recorded fingerprint: the
 // credential is re-written and verification re-runs.
 func TestBuildFederationState_CredentialRotation(t *testing.T) {

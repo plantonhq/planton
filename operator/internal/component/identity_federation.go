@@ -76,7 +76,8 @@ func (id *Identity) buildFederationState(ctx context.Context, c client.Client, p
 	provisioned := meta.FindStatusCondition(idp.Status.Conditions, v1.ConditionProvisioned)
 	build.verificationDue = provisioned == nil ||
 		provisioned.ObservedGeneration != idp.Generation ||
-		idp.Status.Verification == nil
+		idp.Status.Verification == nil ||
+		operatorSideFailure(provisioned)
 
 	switch {
 	case idp.Spec.ActiveDirectory != nil:
@@ -193,6 +194,32 @@ func (id *Identity) buildBrokerState(ctx context.Context, c client.Client, names
 		Primary:          oidc.Primary,
 		Endpoints:        endpoints,
 	}}
+}
+
+// operatorSideFailure is true when the Provisioned condition records a
+// failure of the OPERATOR'S OWN pass -- the realm could not be reconciled
+// (ConvergeFailed: an admin-token 500 while the identity server rolled), or
+// verification could not run (VerificationError) -- as opposed to a
+// directory verdict (VerificationFailed: a wrong bind password) or an
+// unbuildable desired state (DesiredStateUnavailable: a Secret missing).
+//
+// Such a failure must be re-examined by the next pass that converges: the
+// finish step otherwise returns early on "verification not due, nothing
+// repaired" and the False condition -- and the facts file's provisioned:false
+// -- outlives a transient by forever (proven live 2026-09-16: a realm that
+// converged clean every 30 seconds for five hours still read ConvergeFailed
+// from one 500 during a rollout). Directory verdicts keep the cadence law:
+// a failed bind is never re-probed on every pass, only on the manifest's
+// generation, a credential rotation, or a repair.
+func operatorSideFailure(provisioned *metav1.Condition) bool {
+	if provisioned == nil || provisioned.Status != metav1.ConditionFalse {
+		return false
+	}
+	switch provisioned.Reason {
+	case "ConvergeFailed", "VerificationError":
+		return true
+	}
+	return false
 }
 
 // federationForConverge maps the binding + build outcome onto the
