@@ -300,8 +300,10 @@ type DigitalOceanDropletAutoscalePoolTemplate struct {
 	// resource.
 	SshKeys []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=ssh_keys,json=sshKeys,proto3" json:"ssh_keys,omitempty"`
 	// (Optional) The VPC every member joins. Use a literal VPC UUID or a
-	// reference to a DigitalOceanVpc resource. When unset, DigitalOcean
-	// places members in the region's default VPC.
+	// reference to a DigitalOceanVpc resource. When unset, members join the
+	// region's default VPC -- both provisioners look that VPC up and send it
+	// explicitly, because DigitalOcean reports it back on every read and an
+	// implicit value would otherwise re-plan on every apply.
 	Vpc *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=vpc,proto3" json:"vpc,omitempty"`
 	// (Optional) The project members are created in. Use a literal project
 	// UUID or a reference to a DigitalOceanProject resource. When unset,

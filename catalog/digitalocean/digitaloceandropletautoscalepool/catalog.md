@@ -21,6 +21,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### DigitalOcean Account
 
 - **Droplet quota and budget** -- the pool needs quota for its maximum size, and every member is a real droplet billing its size's hourly rate from the moment the pool provisions it.
+- **Destroy needs a second pass at the current provider** -- the first destroy reports `unexpected state 'deleting'` after DigitalOcean has already accepted the deletion; the pool and its members are removed within seconds. Terraform: destroy again. Pulumi: refresh, then destroy. The GUIDE explains the upstream defect.
 
 ## Deploy
 
@@ -116,7 +117,7 @@ These are the most important decisions when configuring a droplet autoscale pool
 
 ### What This Component Provides
 
-After provisioning, `status.outputs` carries `pool_id` (the pool's UUID -- its API identity and import id) and `status` (DigitalOcean's health reading at apply time, `active` once the pool and every member are provisioned). Neither is a wiring surface for downstream Cloud Resources: member droplet ids churn by design, so firewalls and load balancers address the fleet through the template's `tags`, which follow the membership as it scales -- not through these outputs.
+After provisioning, `status.outputs` carries `pool_id` (the pool's UUID -- its API identity and import id). The pool's health is deliberately not an output: a status captured at apply time goes stale the moment DigitalOcean changes it (a member fails, the pool scales), so live health is read from the API (`GET /v2/droplets/autoscale/{pool_id}`), never from stored outputs. `pool_id` is not a wiring surface for downstream Cloud Resources either: member droplet ids churn by design, so firewalls and load balancers address the fleet through the template's `tags`, which follow the membership as it scales.
 
 ## Common Patterns
 

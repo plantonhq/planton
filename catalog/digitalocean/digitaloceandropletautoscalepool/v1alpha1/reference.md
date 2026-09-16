@@ -256,8 +256,10 @@ resource.
 `string | valueFrom`
 
 (Optional) The VPC every member joins. Use a literal VPC UUID or a
-reference to a DigitalOceanVpc resource. When unset, DigitalOcean
-places members in the region's default VPC.
+reference to a DigitalOceanVpc resource. When unset, members join the
+region's default VPC -- both provisioners look that VPC up and send it
+explicitly, because DigitalOcean reports it back on every read and an
+implicit value would otherwise re-plan on every apply.
 
 - references: DigitalOceanVpc (`status.outputs.vpc_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanVpc, name: <that resource's name>, fieldPath: status.outputs.vpc_id}} -- a bare string does not parse
@@ -310,7 +312,6 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDrop
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.pool_id` | `string` | UUID of the autoscale pool (the resource's API identity and its import id). |
-| `status.outputs.status` | `string` | Health status of the pool as reported by DigitalOcean at apply time ("active" once the pool and every member droplet are provisioned; an error state means the pool needs user intervention). |
 
 ## References
 

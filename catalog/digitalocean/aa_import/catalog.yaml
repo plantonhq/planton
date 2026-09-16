@@ -158,13 +158,21 @@ spec:
         back as a NUMERIC image id even when a slug was configured -- the
         provider's Read persists the configured value to hide the drift,
         but a fresh import has no configured value to keep, so the first
-        post-import plan diffs the image when the config uses a slug.
+        post-import plan updates the image from the numeric id back to the
+        configured slug. Measured live: re-sending the identical slug
+        template is a no-op on DigitalOcean's side (no member roll, no
+        history event, updated_at unchanged), so the adopter's first apply
+        is safe. Nested paths are written block.leaf -- the round-trip
+        runner prunes them element-wise through the block list, so a `.0.`
+        index segment would never match.
       # public_networking is schema-declared but never copied into any
       # create/update request at the pin (dead on write); Read still
       # populates it from the API, so it round-trips as whatever the
       # platform defaulted, never as configured intent.
       config_only_attributes:
-        - droplet_template.0.public_networking
+        - droplet_template.public_networking
+      write_normalized_attributes:
+        - droplet_template.image
 
     # --- Kubernetes ----------------------------------------------------------
     - terraform_type: digitalocean_kubernetes_cluster

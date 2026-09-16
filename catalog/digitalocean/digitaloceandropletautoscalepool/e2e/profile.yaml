@@ -3,23 +3,39 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandropletautoscalepool
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. Two scenarios riding the SshKey install fixture (the
-  # registry prerequisite): `minimal` (static, ONE member) and `dynamic`
-  # (min 1 / max 2 on a CPU target, agent enabled). BILLING: each lane
-  # runs one real member droplet (~$0.009/hr smallest size) while it
-  # lives; create waits for the pool AND every member to reach active (up
-  # to 15 minutes upstream), hence the widened timeout.
-  # DESTROY DESTROYS THE MEMBERS (the API's only delete is the dangerous
-  # variant) -- the zero-orphan sweep is doubly binding: an orphaned pool
-  # keeps real droplets billing. Watch items for the proof lane: the
-  # template's image reads back as a numeric id (the provider persists the
-  # configured slug -- import tolerance recorded); the dynamic lane's
-  # scale-up needs sustained load (observation, not assertion); template
-  # and scaling edits are in-place update arms the six-phase runner cannot
-  # exercise (recorded deferrals).
+  # pending_proof: the kind is NOT proven, blocked by an UPSTREAM PROVIDER
+  # DEFECT on destroy (first live attempt 2026-09-16, provider v2.100.1 /
+  # Pulumi bridge v4.53.0). Everything before destroy passed on BOTH engines
+  # and BOTH scenarios: DEPLOY (~31-41s; DigitalOcean reports the pool
+  # active at +1s and the member droplet active at ~+33s), the idempotency
+  # gate (Terraform's refreshed plan clean -- the template's vpc_uuid is
+  # sent explicitly because DigitalOcean fills the region's default VPC
+  # when it is unset and reads it back, and the provider's field is
+  # Optional but not Computed), VERIFY-RES (live status active AND at least
+  # one member, each member active), and the Terraform blind import
+  # round-trip (the one tolerated update is the declared
+  # droplet_template.image slug-to-numeric-id normalization; re-sending
+  # the identical slug is a no-op on DigitalOcean's side -- measured: no
+  # member roll, no history event).
+  # THE DEFECT: `digitalocean_droplet_autoscale`'s delete waiter accepts
+  # only "OK" -> "Not Found", but after the dangerous DELETE the API
+  # reports the pool `deleting` for several seconds while it terminates the
+  # members, and the provider's refresh returns that status verbatim, so
+  # every destroy fails `unexpected state 'deleting', wanted target 'Not
+  # Found'` 5-6 seconds in (4 of 4 lanes). DigitalOcean completes the
+  # deletion anyway (pool and member both 404 within ~10 seconds); the
+  # engine is left holding a resource that no longer exists. Terraform
+  # recovers on the next destroy (refresh reads 404 and drops it); Pulumi
+  # needs `pulumi refresh` first, because a second Delete on a gone pool
+  # answers 404 and the provider errors on that too. The one-line upstream
+  # fix is to treat `deleting` (any non-404 status) as a pending state in
+  # the delete waiter.
+  # UNBLOCK: a provider release carrying that fix AND a Pulumi bridge that
+  # embeds it, then the pin bump; re-run the four lanes.
+  # Watch items still standing: the dynamic lane's scale-up needs sustained
+  # load (observation, not assertion). Deferred arms (no runner update
+  # phase): template and scaling edits, in-place upstream. BILLING: each
+  # lane runs one real s-1vcpu-1gb member (~$0.009/hr) for ~1-2 minutes.
   tier: 1
   status: pending_proof
   validated_provisioners: []

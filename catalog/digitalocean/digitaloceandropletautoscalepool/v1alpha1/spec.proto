@@ -132,8 +132,10 @@ message DigitalOceanDropletAutoscalePoolTemplate {
   ];
 
   // (Optional) The VPC every member joins. Use a literal VPC UUID or a
-  // reference to a DigitalOceanVpc resource. When unset, DigitalOcean
-  // places members in the region's default VPC.
+  // reference to a DigitalOceanVpc resource. When unset, members join the
+  // region's default VPC -- both provisioners look that VPC up and send it
+  // explicitly, because DigitalOcean reports it back on every read and an
+  // implicit value would otherwise re-plan on every apply.
   dev.planton.shared.foreignkey.v1.StringValueOrRef vpc = 5 [
     (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanVpc,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"

@@ -3502,6 +3502,78 @@ App sat ACTIVE for six minutes inside a hung `tofu import` until the lane
 was interrupted and the app deleted by hand). Redirect the lane to a file
 and grep the file afterwards.
 
+**A write-once secret is proven by USING it, never by reading it back.**
+DigitalOcean returns a Spaces key's `secret_key` only in the create
+response; no later GET carries it, so an engine that lost it at create has
+shipped an unusable key and no existence check could tell. The Spaces key
+verifier signs one S3 `ListBuckets` with the captured pair: the S3 plane's
+error code classifies the SECRET, not the grant (`InvalidAccessKeyId` /
+`SignatureDoesNotMatch` mean the pair is wrong; `AccessDenied` means the
+signature was accepted and only the grant scope refused, which still proves
+the secret). Measured: a freshly minted pair is accepted within two seconds
+of the create response, so the probe is one call, not a poll. Pulumi outputs
+reach the verifier decrypted because the runner reads them with
+`--show-secrets`. The same key has NO importer upstream, and the
+`not_importable_upstream_reason` form was deliberately not used: its
+reconcile-apply re-CREATES the resource, which for a key mints a SECOND
+access key and orphans the first. The scenario-level
+`planton.dev/e2e-import-roundtrip-skip` is the honest form for any
+provider-minted credential whose re-create would leak.
+
+**Nested import tolerances are written `block.leaf`, never `block.0.leaf`.**
+The round-trip runner prunes declared sub-paths element-wise through the
+block LIST (`droplet_template.image` matches `droplet_template[i].image`); a
+`.0.` index segment is compared against map keys and never matches, so the
+tolerance silently does not fire and the lane fails on the very diff it was
+meant to tolerate. And a tolerance that lives only in a catalog row's
+`notes:` is prose -- the runner honors `config_only_attributes` and
+`write_normalized_attributes` alone. Because the reconcile-apply really
+applies tolerated updates, measure what the API does with the re-sent value
+before tolerating it (the autoscale pool's image slug re-send was measured
+a no-op on DigitalOcean's side -- no member roll, no history event).
+
+**`digitalocean_droplet_autoscale` destroy fails on an upstream waiter
+defect (provider v2.100.1 / bridge v4.53.0) -- the kind is NOT provable at
+this pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
+bare curl without it is a 400) the API reports the pool `deleting` for
+several seconds while it terminates the members, the provider's refresh
+returns that status verbatim, and its delete waiter accepts only
+`OK` -> `Not Found`, so `unexpected state 'deleting'` fails every destroy
+5-6 seconds in (4 of 4 lanes, both engines, both scenarios). DigitalOcean
+completes the deletion anyway: pool and member droplet both answer a real
+HTTP 404 within ~10 seconds (the body reads "autoscale group with id ...
+not found"). Everything before destroy is green on both engines. The lane
+consequence: a failed DESTROY skips VERIFY-CLN, the dependency teardown
+then deletes the fixture SSH key while the deleting pool's template still
+references it, and the NEXT scenario's fixture create of the SAME key
+material answers `422 SSH Key is already in use` (an immediate re-create
+after a clean delete is accepted in under a second -- the collision is the
+deleting pool, not a lag). Run the pool's scenarios one at a time with a
+minute between them until the upstream fix lands. Sweep pools, then
+droplets, then tags after any pool lane.
+
+**Autoscale pool read-back, measured.** `POST /v2/droplets/autoscale` (the
+path is `/autoscale`, not `/autoscale_pools`) with `vpc_uuid` unset stores
+the region's DEFAULT VPC and reads it back; `project_id` unset reads back
+empty; `image` reads back as the numeric id; `ssh_keys` read back as the
+ids sent; a static config reads back only `target_number_instances` (no
+cooldown default). The provider's template `vpc_uuid` is Optional but NOT
+Computed (the droplet's is Optional+Computed, which is why the Droplet kind
+never met this), so both modules resolve the region's default VPC (`data
+"digitalocean_vpc" { region }` / `LookupVpc{Region}`) and send it explicitly
+-- the manifest stays simple and the refreshed plan is clean. The API
+reports the pool `active` at +1s and the first member `active` at ~+33s, so
+a pool verifier must assert the members, not the pool status. Member
+droplets carry nothing that links them to their pool (name
+`<pool-name>-<uuid>-NNN`, the template's tags), so the verifier remembers
+the member ids it saw at deploy and probes each at destroy -- the harness's
+one stateful verifier, with its promotion trigger in the file comment.
+
+**Spaces bucket listing lags a deleted bucket by a few seconds.** A
+`ListBuckets` right after `DeleteBucket` can still show the name; a
+`DeleteBucket` retry then answers `NoSuchBucket`. Sweep buckets last and
+re-list before calling one orphaned.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

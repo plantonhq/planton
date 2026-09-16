@@ -3,24 +3,26 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceancdn
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. Two scenarios, both riding the Bucket install fixture BY
-  # REFERENCE: `minimal` (ttl unset -- the provider-default read-back
-  # path) and `configured` (explicit ttl). CDN endpoints are free; the
-  # bucket lane needs the Spaces key pair SPACES_ACCESS_KEY_ID /
-  # SPACES_SECRET_ACCESS_KEY alongside DIGITALOCEAN_TOKEN.
-  # Deferred arm (environmental gate, the D8 Let's Encrypt class): the
-  # certificate + custom_domain pair needs a delegated domain -- recorded,
-  # not skipped. Watch items for the proof lane: CDN creation is
-  # eventually consistent (the provider retries reads on 404 for 30s), and
-  # the provider's read-after-destroy ERRORS instead of settling (it
-  # clears state but still returns an error after its 404 retry window) --
-  # treat destroy verification through the verifier's absence check, not
-  # an IaC refresh. TTL/certificate edits are in-place update arms the
-  # six-phase runner cannot exercise (recorded deferrals).
+  # green: proven live on BOTH engines (2026-09-16), both scenarios, every
+  # phase including the idempotency gate and the blind import round-trip
+  # (lossless: zero tolerated updates -- the UUID importer reads origin,
+  # ttl, and endpoint back exactly). Both scenarios ride the Bucket install
+  # fixture BY REFERENCE (origin = the fixture's bucket_domain_name), so
+  # the lanes need the Spaces key pair beside DIGITALOCEAN_TOKEN for the
+  # bucket module's data plane. `minimal` leaves ttl unset and DigitalOcean
+  # reports 3600 back with no diff; `configured` sets 600.
+  # What the lanes proved beyond existence: the verifier asserts the
+  # `endpoint` output against the live endpoint (the hostname customers
+  # CNAME to). The provider's read-after-destroy errors instead of settling,
+  # so the verifier's own 404 is the kind's destroy proof -- measured: the
+  # API answers 404 within two seconds of the DELETE. Endpoints are free.
+  # Deferred arms: certificate + custom_domain (environmental gate -- needs
+  # a delegated domain and a certificate, the Let's Encrypt class; unblock:
+  # PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN); ttl and certificate edits
+  # (in-place upstream; the six-phase runner has no update phase).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
   timeout_minutes: 15

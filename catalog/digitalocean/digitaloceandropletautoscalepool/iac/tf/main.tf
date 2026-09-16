@@ -10,6 +10,22 @@
 # (up to 15 minutes upstream). DESTROY DESTROYS THE MEMBERS: the API's
 # only delete is the dangerous variant that terminates every droplet the
 # pool owns.
+#
+# Known upstream defect at provider v2.100.1: the delete waiter expects the
+# pool to answer "OK" and then 404, but the API reports `deleting` while the
+# members are terminated and the provider fails on that word ("unexpected
+# state 'deleting'") 5-6 seconds in. DigitalOcean completes the deletion
+# regardless (pool and members 404 within ~10 seconds); a second destroy
+# refreshes, reads the 404, and drops the pool from state. Nothing in this
+# module can change the waiter; the fix is upstream (accept `deleting` as a
+# pending state).
+
+# The region's default VPC, looked up only when the spec leaves the template's
+# vpc unset (see locals.vpc_uuid for why it is always sent explicitly).
+data "digitalocean_vpc" "region_default" {
+  count  = local.configured_vpc_uuid == null ? 1 : 0
+  region = var.spec.droplet_template.region
+}
 
 resource "digitalocean_droplet_autoscale" "pool" {
   name = var.spec.pool_name

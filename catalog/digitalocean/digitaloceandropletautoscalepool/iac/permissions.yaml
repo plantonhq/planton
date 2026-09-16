@@ -18,7 +18,7 @@ spec:
           - droplet:update
           - droplet:delete
         provenance: derived
-        notes: Covers digitalocean_droplet_autoscale's create/read/update/delete/import paths, both waiters included -- read the pool and list its members via GET /v2/droplets/autoscale_pools/{id} and .../members (the create/delete waiters poll both) (droplet:read), create the pool via POST /v2/droplets/autoscale_pools (droplet:create), update name/config/template via PUT /v2/droplets/autoscale_pools/{id} (droplet:update), and delete the pool AND its member droplets via DELETE /v2/droplets/autoscale_pools/{id}/dangerous (droplet:delete). A full-access token also works; it is never least-privilege.
+        notes: Covers digitalocean_droplet_autoscale's create/read/update/delete/import paths, both waiters included -- read the pool and list its members via GET /v2/droplets/autoscale/{id} and .../members (the create/delete waiters poll both) (droplet:read), create the pool via POST /v2/droplets/autoscale (droplet:create), update name/config/template via PUT /v2/droplets/autoscale/{id} (droplet:update), and delete the pool AND its member droplets via DELETE /v2/droplets/autoscale/{id}/dangerous (droplet:delete). A full-access token also works; it is never least-privilege.
       - purpose: ResolveSshKeys
         scopes:
           - ssh_key:read

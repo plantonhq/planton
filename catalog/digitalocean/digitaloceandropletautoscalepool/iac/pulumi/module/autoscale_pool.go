@@ -13,6 +13,17 @@ import (
 // member droplet to reach "active" (up to 15 minutes upstream). DESTROY
 // DESTROYS THE MEMBERS: the API's only delete terminates every droplet
 // the pool owns.
+//
+// Known upstream defect at bridge v4.53.0 (provider v2.100.1): the delete
+// waiter expects the pool to answer "OK" and then 404, but the API reports
+// `deleting` while the members are terminated and the provider fails on
+// that word ("unexpected state 'deleting'") 5-6 seconds in. DigitalOcean
+// completes the deletion regardless (pool and members 404 within ~10
+// seconds). Recovery is `pulumi refresh` (the pool reads 404 and leaves
+// state) and then destroy; a second destroy without the refresh calls
+// delete on a gone pool and the provider errors on the 404 too. Nothing in
+// this module can change the waiter; the fix is upstream (accept `deleting`
+// as a pending state).
 func autoscalePool(
 	ctx *pulumi.Context,
 	locals *Locals,
@@ -83,9 +94,25 @@ func autoscalePool(
 		WithDropletAgent: pulumi.BoolPtr(template.WithDropletAgent),
 		Ipv6:             pulumi.BoolPtr(template.Ipv6),
 	}
-	if template.Vpc.GetValue() != "" {
-		templateArgs.VpcUuid = pulumi.String(template.Vpc.GetValue())
+	// The VPC is always sent explicitly. When the spec leaves it unset,
+	// DigitalOcean places members in the region's default VPC and reports
+	// that UUID back on every read; the provider's vpc_uuid is Optional but
+	// not Computed, so an unset value beside a populated read-back would
+	// re-plan on every apply (measured live: an unset vpc_uuid read back as
+	// the default-<region> VPC). Sending the API's own default makes the
+	// manifest and the cloud agree. The Terraform module resolves it the
+	// same way.
+	vpcUUID := template.Vpc.GetValue()
+	if vpcUUID == "" {
+		regionDefault, err := digitalocean.LookupVpc(ctx, &digitalocean.LookupVpcArgs{
+			Region: pulumi.StringRef(template.Region.String()),
+		}, pulumi.Provider(digitalOceanProvider))
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to look up the default vpc of region %s", template.Region.String())
+		}
+		vpcUUID = regionDefault.Id
 	}
+	templateArgs.VpcUuid = pulumi.String(vpcUUID)
 	if template.ProjectId.GetValue() != "" {
 		templateArgs.ProjectId = pulumi.String(template.ProjectId.GetValue())
 	}
@@ -111,7 +138,6 @@ func autoscalePool(
 	}
 
 	ctx.Export(OpPoolId, createdPool.ID())
-	ctx.Export(OpStatus, createdPool.Status)
 
 	return createdPool, nil
 }
