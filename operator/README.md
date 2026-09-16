@@ -91,7 +91,7 @@ kubectl get plantonplatform -w
 | `make generate` | Regenerate DeepCopy methods |
 | `make test` | Unit tests, envtest, and the chart render test |
 | `make test-e2e` | The Kind e2e suite on a dedicated cluster (`setup-test-e2e` / `cleanup-test-e2e` manage it): the manager runs, serves metrics, and honors its version floor |
-| `make test-e2e-vault-restore` | The vault restore lanes on the same Kind cluster, alone: two whole platform lifecycles -- the built-in seal with an adopter-owned keys Secret, and the transit seal against an in-cluster key holder -- each installed, archived to an in-cluster object store, destroyed, and declared again from the archive, with the secrets written before the disaster read back through the control plane's own token and a signature verified on the restored OIDC signing key. Set `E2E_CONSOLE_IMAGE_TAG` when the console's published image line lags the platform version the lanes declare |
+| `make test-e2e-vault-restore` | The vault restore lanes on the same Kind cluster, alone: two whole platform lifecycles -- the built-in seal with an adopter-owned keys Secret, and the transit seal against an in-cluster key holder -- each installed, archived to an in-cluster object store, destroyed, and declared again from the archive, with the secrets written before the disaster read back through the control plane's own token and a signature verified on the restored OIDC signing key. About twenty-five minutes on a sixteen-core machine once images are cached; CI runs it post-merge, never on a pull request. Set `E2E_CONSOLE_IMAGE_TAG` when the console's published image line lags the platform version the lanes declare |
 | `make vet-e2e` | Compile-check both Kind suites under the `e2e` build tag (`make vet` does not see them) |
 | `make test-chart-lifecycle` | The chart lifecycle suite on its own Kind cluster: fresh install, keep, reinstall, keep off, both upgrade paths from the last published charts |
 | `make test-realm-convergence` | The Keycloak realm-convergence and federation suite (needs Docker) |
@@ -100,6 +100,8 @@ kubectl get plantonplatform -w
 | `make generate-manifests` | Refresh the embedded third-party manifests and chart archives the operator renders at runtime |
 
 Run `make help` for every target with its description.
+
+The Kind suites never read your kubeconfig. Each Kind cluster's credentials are written to a file of their own under `bin/` (`E2E_KUBECONFIG`, `E2E_CHART_KUBECONFIG`), and every `kubectl`, `make install`, `make deploy`, and Helm SDK call a suite makes goes there -- a suite deletes namespaces and platforms and tears its cluster down, and on a machine whose current context is a live cluster those commands must have nowhere else to go.
 
 ## Package Map
 

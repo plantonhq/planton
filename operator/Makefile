@@ -87,8 +87,18 @@ test-realm-convergence: ## Run the Keycloak realm-convergence + federation suite
 # - CERT_MANAGER_INSTALL_SKIP=true
 KIND_CLUSTER ?= planton-operator-test-e2e
 
+# A Kind suite creates and deletes namespaces, deletes PlantonPlatforms, and
+# tears its cluster down -- and every one of those goes to whatever the current
+# kubeconfig context names at that moment. So the suites never inherit the
+# developer's kubeconfig: each cluster's credentials live in a file of their own
+# under bin/, written by `kind create cluster` and read by every kubectl, Helm
+# SDK call, `make install`, and `make deploy` the suite runs (they inherit the
+# test process's environment). On a machine whose current context is a live
+# cluster, this is the difference between a lane and an outage.
+E2E_KUBECONFIG ?= $(LOCALBIN)/kubeconfig-$(KIND_CLUSTER)
+
 .PHONY: setup-test-e2e
-setup-test-e2e: ## Set up a Kind cluster for e2e tests if it does not exist
+setup-test-e2e: $(LOCALBIN) ## Set up a Kind cluster for e2e tests if it does not exist
 	@command -v $(KIND) >/dev/null 2>&1 || { \
 		echo "Kind is not installed. Please install Kind manually."; \
 		exit 1; \
@@ -98,7 +108,7 @@ setup-test-e2e: ## Set up a Kind cluster for e2e tests if it does not exist
 			echo "Kind cluster '$(KIND_CLUSTER)' already exists. Skipping creation." ;; \
 		*) \
 			echo "Creating Kind cluster '$(KIND_CLUSTER)'..."; \
-			$(KIND) create cluster --name $(KIND_CLUSTER) ;; \
+			$(KIND) create cluster --name $(KIND_CLUSTER) --kubeconfig $(E2E_KUBECONFIG) ;; \
 	esac
 
 # The e2e package carries two kinds of specs behind one harness: the manager's
@@ -117,7 +127,7 @@ vet-e2e: ## Compile-check the Kind suites (built under the e2e tag, which `make 
 # The suite builds and side-loads the manager image before its first spec, so a
 # cold build cache alone can consume Go's default 10-minute test timeout.
 test-e2e: setup-test-e2e manifests generate fmt vet ## Run the e2e tests. Expected an isolated environment using Kind.
-	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter='$(E2E_LABEL_FILTER)' -timeout 40m
+	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) KUBECONFIG=$(E2E_KUBECONFIG) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter='$(E2E_LABEL_FILTER)' -timeout 40m
 	$(MAKE) cleanup-test-e2e
 
 .PHONY: test-e2e-vault-restore
@@ -126,31 +136,35 @@ test-e2e: setup-test-e2e manifests generate fmt vet ## Run the e2e tests. Expect
 # holder -- each installed, archived, destroyed, and declared again from the
 # archive with every secret read back. E2E_CONSOLE_IMAGE_TAG pins the console
 # image when its published line lags the platform version the lanes declare.
+# CI runs this post-merge (.github/workflows/e2e-operator-vault-restore.yaml),
+# never on a pull request.
 test-e2e-vault-restore: setup-test-e2e manifests generate fmt vet ## Run the vault restore lanes alone on the e2e Kind cluster.
-	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter='vault-restore' -timeout 150m
+	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) KUBECONFIG=$(E2E_KUBECONFIG) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter='vault-restore' -timeout 150m
 	$(MAKE) cleanup-test-e2e
 
 .PHONY: cleanup-test-e2e
 cleanup-test-e2e: ## Tear down the Kind cluster used for e2e tests
-	@$(KIND) delete cluster --name $(KIND_CLUSTER)
+	@$(KIND) delete cluster --name $(KIND_CLUSTER) --kubeconfig $(E2E_KUBECONFIG)
 
 # The chart lifecycle suite (test/chartlifecycle) proves what helm/planton-operator
 # promises for the definitions it owns -- install, keep, adopt, upgrade -- on its
 # own Kind cluster, driving Helm through the SDK against the working-tree chart
 # and the last published charts that predate that ownership.
 KIND_CHART_CLUSTER ?= planton-operator-test-chart
+# Its own kubeconfig, for the reason E2E_KUBECONFIG states.
+E2E_CHART_KUBECONFIG ?= $(LOCALBIN)/kubeconfig-$(KIND_CHART_CLUSTER)
 
 .PHONY: test-chart-lifecycle
-test-chart-lifecycle: manifests generate fmt vet ## Run the chart lifecycle suite on a dedicated Kind cluster.
+test-chart-lifecycle: $(LOCALBIN) manifests generate fmt vet ## Run the chart lifecycle suite on a dedicated Kind cluster.
 	@case "$$($(KIND) get clusters)" in \
 		*"$(KIND_CHART_CLUSTER)"*) \
 			echo "Kind cluster '$(KIND_CHART_CLUSTER)' already exists. Skipping creation." ;; \
 		*) \
 			echo "Creating Kind cluster '$(KIND_CHART_CLUSTER)'..."; \
-			$(KIND) create cluster --name $(KIND_CHART_CLUSTER) ;; \
+			$(KIND) create cluster --name $(KIND_CHART_CLUSTER) --kubeconfig $(E2E_CHART_KUBECONFIG) ;; \
 	esac
-	KIND=$(KIND) KIND_CLUSTER=$(KIND_CHART_CLUSTER) go test -tags=e2e ./test/chartlifecycle/ -v -ginkgo.v -timeout 30m
-	@$(KIND) delete cluster --name $(KIND_CHART_CLUSTER)
+	KIND=$(KIND) KIND_CLUSTER=$(KIND_CHART_CLUSTER) KUBECONFIG=$(E2E_CHART_KUBECONFIG) go test -tags=e2e ./test/chartlifecycle/ -v -ginkgo.v -timeout 30m
+	@$(KIND) delete cluster --name $(KIND_CHART_CLUSTER) --kubeconfig $(E2E_CHART_KUBECONFIG)
 
 .PHONY: lint
 lint: golangci-lint ## Run golangci-lint linter

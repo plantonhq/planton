@@ -173,9 +173,15 @@ func secretValue(ns, name, key string) string {
 	return string(decoded)
 }
 
-// secretDataKeys lists a Secret's data keys.
+// secretDataKeys lists a Secret's data keys; nil when the Secret is gone.
+// kubectl's jsonpath cannot walk a map's keys, only its values, so this one
+// read goes through a Go template.
 func secretDataKeys(ns, name string) []string {
-	out := secretJSONPath(ns, name, "{range $k, $v := .data}{$k}{\"\\n\"}{end}")
+	const keysTemplate = `go-template={{range $k, $v := .data}}{{$k}}{{"\n"}}{{end}}`
+	out, err := kubectl("get", "secret", name, "-n", ns, "-o", keysTemplate)
+	if err != nil {
+		return nil
+	}
 	return utils.GetNonEmptyLines(out)
 }
 

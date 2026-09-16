@@ -11,7 +11,8 @@
 #                      package also carries the vault restore lanes (two whole
 #                      platform lifecycles, labeled vault-restore); this job runs
 #                      the default label filter, which excludes them -- they run
-#                      through `make test-e2e-vault-restore` with their own budget.
+#                      post-merge in e2e-operator-vault-restore.yaml, which queues
+#                      rather than cancels and lets the suite install cert-manager.
 #   chart-lifecycle -- the chart's lifecycle suite (operator/test/chartlifecycle):
 #                      installs helm/planton-operator from the working tree and
 #                      proves it owns its definitions (install, keep, reinstall,

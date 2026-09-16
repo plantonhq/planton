@@ -58,14 +58,16 @@ const (
 	// the operator's own text (component/openbao_backup_status.go,
 	// openbao_init_secret.go, openbao_seal.go), read by fragment so a
 	// rewording that keeps the meaning does not break the lane.
-	backupRefusedByAPI          = "set vault.initSecretName to a Secret you own"
-	sealedWithoutKeysFragment   = "so the operator holds no keys to open it"
-	keptCopyFragment            = "Recreate that Secret from the copy you kept"
-	sealChangedFragment         = "cannot be changed on a running platform"
-	sealStartCheckFragment      = "the seal check the server makes at start"
-	sealStartLogLine            = "Error configuring seal"
-	breakGlassGoneFragment      = "break-glass (its root token and recovery keys) is gone"
-	signaturePayload            = "a token minted before the bad day"
+	backupRefusedByAPI        = "set vault.initSecretName to a Secret you own"
+	sealedWithoutKeysFragment = "so the operator holds no keys to open it"
+	keptCopyFragment          = "Recreate that Secret from the copy you kept"
+	sealChangedFragment       = "cannot be changed on a running platform"
+	sealStartCheckFragment    = "the seal check the server makes at start"
+	sealStartLogLine          = "Error configuring seal"
+	breakGlassGoneFragment    = "break-glass (its root token and recovery keys) is gone"
+	signaturePayload          = "a token minted before the bad day"
+	// The role's period in seconds -- what `token lookup` reports as the
+	// minted token's creation_ttl.
 	operatorTokenPeriodInSecond = float64(resources.OpenBAOControlPlaneTokenPeriod / time.Second)
 
 	// The jsonpaths of the init Secret's self-description.
@@ -209,10 +211,16 @@ var _ = Describe("The bundled vault comes back from the archive", Ordered, Label
 			Expect(accessor).NotTo(BeEmpty())
 			accessorBefore = accessor
 
-			By("the token is what the role promises: orphan, periodic at seven days, the control plane's policy")
+			By("the token is what the role promises: orphan, renewable, the role's seven-day period, the control plane's policy")
+			// A token minted through a token role carries no period of its
+			// own: the server keeps the period on the role and reads it there
+			// at every renewal, so a lookup names the role and shows the
+			// period as the token's creation TTL, never as a `period` field.
 			self := baoJSON(ns, token, "token", "lookup")
 			Expect(self["orphan"]).To(BeTrue())
-			Expect(self["period"]).To(BeNumerically("==", operatorTokenPeriodInSecond))
+			Expect(self["renewable"]).To(BeTrue())
+			Expect(self["role"]).To(Equal(resources.OpenBAOControlPlaneRoleName(platformName)))
+			Expect(self["creation_ttl"]).To(BeNumerically("==", operatorTokenPeriodInSecond))
 			Expect(self["policies"]).To(ContainElement(resources.OpenBAOControlPlaneRoleName(platformName)))
 			Expect(self["policies"]).NotTo(ContainElement("root"))
 
@@ -226,9 +234,14 @@ var _ = Describe("The bundled vault comes back from the archive", Ordered, Label
 			Expect(out).To(ContainSubstring("permission denied"))
 
 			By("the control plane reads that Secret and rolls on its accessor; the init Secret is not in its environment")
-			annotated, err := controlPlaneAccessorAnnotation(ns)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(annotated).To(Equal(accessor))
+			// The control plane's Deployment is rendered only once its own
+			// dependencies are Ready -- the identity server among them,
+			// minutes after the vault -- so it is waited for, never read cold.
+			Eventually(func(g Gomega) {
+				annotated, err := controlPlaneAccessorAnnotation(ns)
+				g.Expect(err).NotTo(HaveOccurred(), "the control-plane Deployment is not rendered yet")
+				g.Expect(annotated).To(Equal(accessor))
+			}, componentBudget, 15*time.Second).Should(Succeed())
 			tokenSource := controlPlaneDeploymentJSONPath(ns,
 				`{.spec.template.spec.containers[0].env[?(@.name=="VAULT_TOKEN")].valueFrom.secretKeyRef.name}`)
 			Expect(tokenSource).To(Equal(resources.OpenBAOTokenSecretName(platformName)))
@@ -350,16 +363,22 @@ var _ = Describe("The bundled vault comes back from the archive", Ordered, Label
 			signingKeyBefore  string
 			signature         string
 			logOffsetAtLaneUp int
+			// transitPlatform is the lane's declaration; built in BeforeAll,
+			// never at tree construction, because runID does not exist until
+			// the suite's BeforeAll runs -- a prefix built earlier would read
+			// "/transit" and the restore would look for the archive under a
+			// run id the source never wrote to.
+			transitPlatform platformOptions
 		)
 		fingerprint := fmt.Sprintf("%s %s/%s/%s", resources.OpenBAOSealTransit,
 			fixtures.KeyHolderAddress, fixtures.KeyHolderTransitMount, fixtures.KeyHolderTransitKey)
-		transitPlatform := platformOptions{
-			namespace: ns, backupPrefix: runID + "/transit", initSecretName: laneKeysSecret,
-			transitKey: fixtures.KeyHolderTransitKey,
-		}
 
 		BeforeAll(func() {
 			currentLane = ns
+			transitPlatform = platformOptions{
+				namespace: ns, backupPrefix: runID + "/transit", initSecretName: laneKeysSecret,
+				transitKey: fixtures.KeyHolderTransitKey,
+			}
 			createNamespace(ns)
 			literalSecret(ns, laneBackupCredentials, map[string]string{
 				resources.ObjectStoreKeyAccessKeyID:     fixtures.MinIOAccessKey,
