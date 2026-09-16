@@ -161,6 +161,40 @@ func TestFederation_LDAPProvisionVerifyAndIdempotency(t *testing.T) {
 		t.Errorf("a synced federated user must carry the LDAP_ID attribute (the objectGUID), got attributes %v", attrs)
 	}
 
+	// The person's NAMES arrive as the manifest's attributes say (givenName
+	// -> firstName, sn -> lastName), on a directory whose cn is the username.
+	// Keycloak's AD-vendor default set has no first-name mapper and a
+	// full-name mapper splitting cn; the e2e lab caught a person imported
+	// with no first name and her surname in its place. The operator now
+	// owns the name mappers -- this is the outcome that must hold.
+	if first, last := syncedUsers[0]["firstName"], syncedUsers[0]["lastName"]; first != "Ada" || last != "Lovelace" {
+		t.Errorf("synced ada.lovelace names = %v / %v, want Ada / Lovelace (the manifest's givenName/sn mapping)", first, last)
+	}
+	ldapComponentID, _ := ldapComponent["id"].(string)
+	childMappers, err := admin.ListComponents(ctx, "ldapfed", ldapComponentID, ldapStorageMapperType)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mapperNames := map[string]Representation{}
+	for _, m := range childMappers {
+		name, _ := m["name"].(string)
+		mapperNames[name] = m
+	}
+	for name, owned := range fed.LDAP.ownedAttributeMappers() {
+		live, ok := mapperNames[name]
+		if !ok {
+			t.Errorf("owned attribute mapper %q must exist on the component", name)
+			continue
+		}
+		cfg, _ := live["config"].(map[string]any)
+		if got, _ := cfg["ldap.attribute"].([]any); len(got) != 1 || got[0] != owned.ldapAttribute {
+			t.Errorf("mapper %q ldap.attribute = %v, want %s", name, got, owned.ldapAttribute)
+		}
+	}
+	if _, stillThere := mapperNames[vendorFullNameMapperName]; stillThere {
+		t.Errorf("the vendor %q mapper must be removed once first and last name are owned explicitly", vendorFullNameMapperName)
+	}
+
 	// Idempotency: a converged realm produces ZERO writes -- including the
 	// masked bind credential, which is never diffed (write-on-rotation
 	// only).
@@ -483,6 +517,46 @@ func TestFederation_SeededAdminCollisionVerdict(t *testing.T) {
 	// import past the local twin.
 	if usersCheck := checkByName(t, checks, "usersSearch"); usersCheck.Verdict != VerdictFailed {
 		t.Errorf("usersSearch = %s (%s), want Failed while the collision blocks an import", usersCheck.Verdict, usersCheck.Message)
+	}
+}
+
+// The other half of the collision law, against the real directory: a LOCAL
+// user holding an email NO directory person shares -- the shape of nearly
+// every install, whose seeded admin is rarely a lab fixture -- must NOT fail
+// the manifest. The user sync imports cleanly, so the verdict is the
+// advisory (Unknown) that still names the remedy. The e2e lab caught the old
+// Failed-on-existence shape live on the published line.
+func TestFederation_SeededAdminWithoutDirectoryTwinIsAdvisory(t *testing.T) {
+	admin := authedAdmin(t)
+	createRealm(t, admin, "no-twin", nil)
+
+	if err := admin.do(context.Background(), http.MethodPost,
+		admin.serverRoot+"/admin/realms/no-twin/users",
+		Representation{"username": "admin", "email": "nobody-in-the-directory@planton.local", "enabled": true},
+		http.StatusCreated, nil); err != nil {
+		t.Fatal(err)
+	}
+
+	fed := &OwnedFederation{LDAP: testLab.ldapFederation()}
+	fed.LDAP.RotateCredential = true
+	mustConverge(t, federationInput("no-twin", fed))
+
+	verifyIn := verifyInput("no-twin", fed)
+	verifyIn.SeededAdminEmail = "nobody-in-the-directory@planton.local"
+	checks, err := Verify(context.Background(), verifyIn)
+	if err != nil {
+		t.Fatalf("verification could not run: %v", err)
+	}
+
+	if usersCheck := checkByName(t, checks, "usersSearch"); usersCheck.Verdict != VerdictPassed {
+		t.Fatalf("usersSearch = %s (%s), want Passed -- nothing in the directory collides", usersCheck.Verdict, usersCheck.Message)
+	}
+	collision := checkByName(t, checks, "seededAdminCollision")
+	if collision.Verdict != VerdictUnknown {
+		t.Fatalf("seededAdminCollision = %s (%s), want the advisory Unknown for a local holder with a clean import", collision.Verdict, collision.Message)
+	}
+	if !strings.Contains(collision.Message, "bootstrap.admins") {
+		t.Errorf("the advisory must still name the remedy: %q", collision.Message)
 	}
 }
 

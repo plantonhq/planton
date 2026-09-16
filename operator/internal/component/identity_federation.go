@@ -236,13 +236,16 @@ func (id *Identity) finishFederation(ctx context.Context, c client.Client, idp *
 	}
 
 	verification := &v1.IdentityProviderVerification{Checks: make([]v1.IdentityProviderVerificationCheck, 0, len(checks))}
-	var failed []string
+	var failed, advisory []string
 	for _, check := range checks {
 		verification.Checks = append(verification.Checks, v1.IdentityProviderVerificationCheck{
 			Name: check.Name, Verdict: string(check.Verdict), Message: check.Message,
 		})
-		if check.Verdict == keycloak.VerdictFailed {
+		switch check.Verdict {
+		case keycloak.VerdictFailed:
 			failed = append(failed, check.Name)
+		case keycloak.VerdictUnknown:
+			advisory = append(advisory, check.Name)
 		}
 	}
 
@@ -251,6 +254,12 @@ func (id *Identity) finishFederation(ctx context.Context, c client.Client, idp *
 		Reason:             "Provisioned",
 		Message:            "federation is provisioned on the identity server and every verification check passed",
 		ObservedGeneration: idp.Generation,
+	}
+	if len(advisory) > 0 {
+		// An Unknown verdict is a stated condition, not a failure -- the
+		// condition stays True, and its sentence says so instead of
+		// claiming a pass the check did not make.
+		condition.Message = fmt.Sprintf("federation is provisioned on the identity server; every verification check passed except %v, which could not be decided and states its condition in status.verification", advisory)
 	}
 	if len(failed) > 0 {
 		condition.Status = metav1.ConditionFalse

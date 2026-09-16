@@ -3,6 +3,7 @@ package keycloak
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -220,17 +221,48 @@ func (f *OwnedLDAPFederation) groupMapperConfig() map[string][]string {
 	}
 }
 
-// attributeMapperOverrides maps the Keycloak-created user-attribute mappers
-// (by their well-known names) to the manifest's attribute choices. Keycloak
-// creates these automatically when the component is created; the operator
-// owns exactly their ldap.attribute key so a non-standard directory schema
-// (declared in the manifest) converges onto them.
-func (f *OwnedLDAPFederation) attributeMapperOverrides() map[string]string {
-	return map[string]string{
-		"username":   f.UsernameAttribute,
-		"email":      f.EmailAttribute,
-		"first name": f.FirstNameAttribute,
-		"last name":  f.LastNameAttribute,
+// ownedAttributeMappers is the operator-owned set of user-attribute mappers
+// on the LDAP component, keyed by Keycloak's well-known mapper names:
+// mapper name -> (user model attribute, the manifest's directory attribute).
+// Keycloak auto-creates SOME of these when the component is created, but
+// the set differs by vendor -- the Active Directory path creates "full name"
+// (splitting `cn`) and "last name", and NO "first name" -- so a mapper that
+// is missing is CREATED, never skipped: the manifest's firstNameAttribute
+// was a silent no-op on every AD directory until the lab showed a person
+// imported with no first name and her surname where her first name goes.
+func (f *OwnedLDAPFederation) ownedAttributeMappers() map[string]ownedAttributeMapper {
+	return map[string]ownedAttributeMapper{
+		"username":   {userModelAttribute: "username", ldapAttribute: f.UsernameAttribute},
+		"email":      {userModelAttribute: "email", ldapAttribute: f.EmailAttribute},
+		"first name": {userModelAttribute: "firstName", ldapAttribute: f.FirstNameAttribute},
+		"last name":  {userModelAttribute: "lastName", ldapAttribute: f.LastNameAttribute},
+	}
+}
+
+type ownedAttributeMapper struct {
+	userModelAttribute string
+	ldapAttribute      string
+}
+
+// vendorFullNameMapperName is Keycloak's AD-vendor default that derives BOTH
+// names from one attribute (`cn`). It fights the explicit first/last mappers
+// -- on import the two write the same fields in unspecified order -- so the
+// operator removes it once it owns the name mappers.
+const vendorFullNameMapperName = "full name"
+
+// ldapAttributeMapperConfig renders a user-attribute mapper the operator
+// creates: read-only (the directory is the source of truth), always read
+// from the directory, never mandatory (a service account may carry no given
+// name; an import must not fail on it -- the email-less posture is decided
+// by the product, not by the mapper).
+func ldapAttributeMapperConfig(m ownedAttributeMapper) map[string][]string {
+	return map[string][]string{
+		"user.model.attribute":        {m.userModelAttribute},
+		"ldap.attribute":              {m.ldapAttribute},
+		"read.only":                   {"true"},
+		"always.read.value.from.ldap": {"true"},
+		"is.mandatory.in.ldap":        {"false"},
+		"is.binary.attribute":         {"false"},
 	}
 }
 
@@ -564,19 +596,45 @@ func convergeLDAPMappers(ctx context.Context, admin *AdminClient, realm, compone
 		report.repaired("LDAP group mapper %s created", ldapGroupMapperName)
 	}
 
-	// The manifest's attribute schema onto the auto-created mappers. A
-	// mapper Keycloak did not create (unexpected on the AD vendor path) is
-	// skipped rather than invented -- the verification pass's sync verdict
-	// is where a schema mismatch would surface honestly.
-	for mapperName, ldapAttribute := range ldap.attributeMapperOverrides() {
-		live, ok := byName[mapperName]
-		if !ok {
+	// The manifest's attribute schema onto the owned user-attribute mappers:
+	// a live one converges on its ldap.attribute key (Keycloak's own
+	// defaults for the rest stay its business); a missing one is created
+	// whole. Deterministic order so the report reads the same every pass.
+	names := make([]string, 0, len(ldap.ownedAttributeMappers()))
+	for name := range ldap.ownedAttributeMappers() {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, mapperName := range names {
+		owned := ldap.ownedAttributeMappers()[mapperName]
+		if live, ok := byName[mapperName]; ok {
+			if err := convergeComponentConfig(ctx, admin, realm, live,
+				map[string][]string{"ldap.attribute": {owned.ldapAttribute}}, nil, report); err != nil {
+				return err
+			}
 			continue
 		}
-		if err := convergeComponentConfig(ctx, admin, realm, live,
-			map[string][]string{"ldap.attribute": {ldapAttribute}}, nil, report); err != nil {
+		if err := admin.CreateComponent(ctx, realm, Representation{
+			"name":         mapperName,
+			"providerId":   "user-attribute-ldap-mapper",
+			"providerType": ldapStorageMapperType,
+			"parentId":     componentID,
+			"config":       ldapAttributeMapperConfig(owned),
+		}); err != nil {
 			return err
 		}
+		report.repaired("LDAP attribute mapper %q created (%s <- %s)", mapperName, owned.userModelAttribute, owned.ldapAttribute)
+	}
+
+	// The vendor's full-name mapper would overwrite the names the owned
+	// mappers just imported; with first and last name owned explicitly it
+	// has no job left.
+	if live, ok := byName[vendorFullNameMapperName]; ok {
+		id, _ := live["id"].(string)
+		if err := admin.DeleteComponent(ctx, realm, id); err != nil {
+			return err
+		}
+		report.repaired("LDAP mapper %q removed: first and last name are mapped from the manifest's attributes", vendorFullNameMapperName)
 	}
 	return nil
 }

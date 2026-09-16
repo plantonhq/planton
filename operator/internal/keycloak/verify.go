@@ -77,23 +77,40 @@ func Verify(ctx context.Context, in VerifyInput) ([]Check, error) {
 	}
 
 	var checks []Check
+	evidence := collisionEvidence{}
 	switch {
 	case in.Federation.LDAP != nil:
-		checks = verifyLDAP(ctx, admin, in.Realm, in.Federation.LDAP)
+		checks, evidence = verifyLDAP(ctx, admin, in.Realm, in.Federation.LDAP)
 	case in.Federation.Broker != nil:
 		checks = verifyBroker(ctx, in.HTTPClient, in.Federation.Broker)
+		evidence = collisionEvidence{directoryUnbrowsable: true}
 	}
 
 	if in.SeededAdminEmail != "" {
-		checks = append(checks, verifySeededAdminCollision(ctx, admin, in.Realm, in.SeededAdminEmail))
+		checks = append(checks, verifySeededAdminCollision(ctx, admin, in.Realm, in.SeededAdminEmail, evidence))
 	}
 	return checks, nil
+}
+
+// collisionEvidence is what the same verification pass learned about the
+// directory side of a seeded-admin collision. The user sync is the only
+// directory read the operator has (Keycloak is the sole gateway): a real
+// collision shows up there as an import failure, so the collision verdict
+// weighs that count instead of failing on the local user's mere existence.
+type collisionEvidence struct {
+	// userImportFailures is the user sync's failed count (LDAP arm). A real
+	// email collision is one of them.
+	userImportFailures int
+	// directoryUnbrowsable is true on the brokered arm: nothing can be read
+	// ahead of a sign-in, so a collision is knowable only when the person
+	// first arrives.
+	directoryUnbrowsable bool
 }
 
 // verifyLDAP probes the directory through the identity server: reachability,
 // the bind credential, then real user and group syncs whose counts make the
 // verdicts concrete ("42 users visible", not "OK").
-func verifyLDAP(ctx context.Context, admin *AdminClient, realm string, ldap *OwnedLDAPFederation) []Check {
+func verifyLDAP(ctx context.Context, admin *AdminClient, realm string, ldap *OwnedLDAPFederation) ([]Check, collisionEvidence) {
 	probe := Representation{
 		"connectionUrl":     strings.Join(ldap.Servers, " "),
 		"authType":          "simple",
@@ -113,7 +130,7 @@ func verifyLDAP(ctx context.Context, admin *AdminClient, realm string, ldap *Own
 			strings.Join(ldap.Servers, " "), keycloakReason(err))})
 		// Without a connection the remaining probes can only restate the
 		// same failure; stopping keeps the verdict list signal, not noise.
-		return checks
+		return checks, collisionEvidence{}
 	}
 	checks = append(checks, Check{Name: "connection", Verdict: VerdictPassed, Message: fmt.Sprintf(
 		"the directory answered at %s", strings.Join(ldap.Servers, " "))})
@@ -125,27 +142,29 @@ func verifyLDAP(ctx context.Context, admin *AdminClient, realm string, ldap *Own
 		checks = append(checks, Check{Name: "bind", Verdict: VerdictFailed, Message: fmt.Sprintf(
 			"the service account %s could not authenticate -- check the bind DN and the password in the referenced Secret: %s",
 			ldap.BindDN, keycloakReason(err))})
-		return checks
+		return checks, collisionEvidence{}
 	}
 	checks = append(checks, Check{Name: "bind", Verdict: VerdictPassed, Message: fmt.Sprintf(
 		"authenticated as %s", ldap.BindDN)})
 
-	checks = append(checks, verifyLDAPSyncs(ctx, admin, realm)...)
-	return checks
+	syncChecks, evidence := verifyLDAPSyncs(ctx, admin, realm)
+	checks = append(checks, syncChecks...)
+	return checks, evidence
 }
 
 // verifyLDAPSyncs triggers a real user sync and a real group sync on the
-// provisioned component and reports their counts.
-func verifyLDAPSyncs(ctx context.Context, admin *AdminClient, realm string) []Check {
+// provisioned component and reports their counts -- and hands the user
+// sync's failure count on as collision evidence.
+func verifyLDAPSyncs(ctx context.Context, admin *AdminClient, realm string) ([]Check, collisionEvidence) {
 	realmRep, err := admin.GetRealm(ctx, realm)
 	if err != nil {
-		return []Check{{Name: "usersSearch", Verdict: VerdictUnknown, Message: "could not read the realm to locate the federation component: " + err.Error()}}
+		return []Check{{Name: "usersSearch", Verdict: VerdictUnknown, Message: "could not read the realm to locate the federation component: " + err.Error()}}, collisionEvidence{}
 	}
 	realmID, _ := realmRep["id"].(string)
 
 	components, err := admin.ListComponents(ctx, realm, realmID, userStorageProviderType)
 	if err != nil {
-		return []Check{{Name: "usersSearch", Verdict: VerdictUnknown, Message: "could not list federation components: " + err.Error()}}
+		return []Check{{Name: "usersSearch", Verdict: VerdictUnknown, Message: "could not list federation components: " + err.Error()}}, collisionEvidence{}
 	}
 	var componentID string
 	for _, c := range components {
@@ -155,12 +174,16 @@ func verifyLDAPSyncs(ctx context.Context, admin *AdminClient, realm string) []Ch
 		}
 	}
 	if componentID == "" {
-		return []Check{{Name: "usersSearch", Verdict: VerdictUnknown, Message: "the federation component has not been provisioned yet; the next reconcile pass verifies it"}}
+		return []Check{{Name: "usersSearch", Verdict: VerdictUnknown, Message: "the federation component has not been provisioned yet; the next reconcile pass verifies it"}}, collisionEvidence{}
 	}
 
 	checks := make([]Check, 0, 2)
+	evidence := collisionEvidence{}
 
 	userSync, err := admin.TriggerUserStorageSync(ctx, realm, componentID, "triggerFullSync")
+	if err == nil {
+		evidence.userImportFailures = userSync.Failed
+	}
 	switch {
 	case err != nil:
 		checks = append(checks, Check{Name: "usersSearch", Verdict: VerdictFailed, Message: "searching the users DN failed -- check usersDn and the service account's read permissions: " + keycloakReason(err)})
@@ -177,7 +200,7 @@ func verifyLDAPSyncs(ctx context.Context, admin *AdminClient, realm string) []Ch
 	mappers, err := admin.ListComponents(ctx, realm, componentID, ldapStorageMapperType)
 	if err != nil {
 		checks = append(checks, Check{Name: "groupsSearch", Verdict: VerdictUnknown, Message: "could not list the federation mappers: " + err.Error()})
-		return checks
+		return checks, evidence
 	}
 	var mapperID string
 	for _, m := range mappers {
@@ -188,7 +211,7 @@ func verifyLDAPSyncs(ctx context.Context, admin *AdminClient, realm string) []Ch
 	}
 	if mapperID == "" {
 		checks = append(checks, Check{Name: "groupsSearch", Verdict: VerdictUnknown, Message: "the group mapper has not been provisioned yet; the next reconcile pass verifies it"})
-		return checks
+		return checks, evidence
 	}
 
 	groupSync, err := admin.TriggerLDAPMapperSync(ctx, realm, componentID, mapperID, "fedToKeycloak")
@@ -203,7 +226,7 @@ func verifyLDAPSyncs(ctx context.Context, admin *AdminClient, realm string) []Ch
 			"%d directory groups mirrored under %s (%d added, %d updated this sync)",
 			groupSync.Added+groupSync.Updated, resources.IdentityDirectoryGroupsPath, groupSync.Added, groupSync.Updated)})
 	}
-	return checks
+	return checks, evidence
 }
 
 // verifyBroker checks what CAN be known before anyone signs in: the issuer's
@@ -259,21 +282,55 @@ func entraTenancyCheck(issuerURL string) *Check {
 // a directory user with the same email can then never materialize (realm
 // emails are unique). Both objects are legitimate; the remedy is a human
 // choice, named in the message.
-func verifySeededAdminCollision(ctx context.Context, admin *AdminClient, realm, seededEmail string) Check {
+func verifySeededAdminCollision(ctx context.Context, admin *AdminClient, realm, seededEmail string, evidence collisionEvidence) Check {
 	users, err := admin.FindUsersByEmail(ctx, realm, seededEmail)
 	if err != nil {
 		return Check{Name: "seededAdminCollision", Verdict: VerdictUnknown, Message: "could not search realm users: " + err.Error()}
 	}
+	localHolder := false
 	for _, user := range users {
 		if link, _ := user["federationLink"].(string); link == "" {
-			// The seeded local admin exists alongside declared federation.
-			return Check{Name: "seededAdminCollision", Verdict: VerdictFailed, Message: fmt.Sprintf(
-				"a local admin user holds %s, so a directory account with the same email can never sign in (realm emails are unique). Remedy: list the person under bootstrap.admins WITHOUT adminEmail in the PlantonPlatform manifest (bootstrap grants match by email at first federated sign-in), then delete the local user in the identity server's admin console once the federated sign-in works",
-				seededEmail)}
+			localHolder = true
 		}
 	}
-	return Check{Name: "seededAdminCollision", Verdict: VerdictPassed, Message: fmt.Sprintf(
-		"no local user holds %s; the declared admin can arrive through the directory", seededEmail)}
+	return seededAdminCollisionVerdict(seededEmail, localHolder, evidence)
+}
+
+// The remedy is one sentence, identical on every branch that names it.
+const seededAdminCollisionRemedy = "Remedy: list the person under bootstrap.admins WITHOUT adminEmail in the PlantonPlatform manifest (bootstrap grants match by email at first federated sign-in), then delete the local user in the identity server's admin console once the federated sign-in works"
+
+// seededAdminCollisionVerdict is the pure decision. A local holder is a
+// PRECONDITION for a collision, not the collision itself -- nearly every
+// install seeds one, and failing the whole manifest on its existence would
+// mark every cleanly-federated directory "verification failed" (the lab
+// showed exactly that: 222 users imported, zero failures, verdict Failed).
+// Failed is reserved for what the pass PROVED: a local holder AND the user
+// sync reporting import failures, which is how a directory twin blocked by
+// the unique-email rule surfaces. A local holder with a clean import -- or
+// on the brokered arm, where nothing is readable before a sign-in -- is an
+// advisory: the verdict is Unknown (neutral to the Provisioned condition and
+// to the console) and the message still names the remedy.
+func seededAdminCollisionVerdict(seededEmail string, localHolder bool, evidence collisionEvidence) Check {
+	switch {
+	case !localHolder:
+		return Check{Name: "seededAdminCollision", Verdict: VerdictPassed, Message: fmt.Sprintf(
+			"no local user holds %s; the declared admin can arrive through the directory", seededEmail)}
+	case evidence.userImportFailures > 0:
+		// The sync cannot say WHICH entries failed (any local twin blocks
+		// its directory namesake the same way), so the verdict states the
+		// inference and points at the log that names each one.
+		return Check{Name: "seededAdminCollision", Verdict: VerdictFailed, Message: fmt.Sprintf(
+			"a local admin user holds %s and this pass's user sync reported %d failed import(s) -- the identity server's log names each; if the person holding that email is among them, their directory account can never sign in (realm emails are unique). %s",
+			seededEmail, evidence.userImportFailures, seededAdminCollisionRemedy)}
+	case evidence.directoryUnbrowsable:
+		return Check{Name: "seededAdminCollision", Verdict: VerdictUnknown, Message: fmt.Sprintf(
+			"a local admin user holds %s; whether a directory person shares it is knowable only at their first brokered sign-in, which would be refused (realm emails are unique). If that person should arrive through the directory: %s",
+			seededEmail, seededAdminCollisionRemedy)}
+	default:
+		return Check{Name: "seededAdminCollision", Verdict: VerdictUnknown, Message: fmt.Sprintf(
+			"a local admin user holds %s; this pass's user sync imported every directory user cleanly, so no directory account shares it today. If one ever does, it can never sign in (realm emails are unique). To let that person arrive through the directory instead: %s",
+			seededEmail, seededAdminCollisionRemedy)}
+	}
 }
 
 // DiscoverOIDC fetches the issuer's discovery document and returns the
