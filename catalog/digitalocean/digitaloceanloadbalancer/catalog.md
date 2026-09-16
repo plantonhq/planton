@@ -7,7 +7,7 @@ Deploys a DigitalOcean Load Balancer with regional or global routing, configurab
 When you deploy this Cloud Resource, the IaC module provisions:
 
 - **DigitalOcean Load Balancer** -- a regional or global balancer with the configured forwarding rules or global-routing settings
-- **Health Check** -- created only when `healthCheck` is provided; probes backends on the specified port, protocol, and path
+- **Health Check** -- probes backends on the specified port, protocol, and path; when `healthCheck` is omitted DigitalOcean still creates its default TCP check against the first forwarding rule's target port
 - **Sticky Sessions** -- cookie-based affinity when `stickySessions.type` is `cookies`
 - **Backend Droplet Attachments** -- targets Droplets via explicit `dropletIds` or a `dropletTag` (mutually exclusive)
 - **Firewall** -- source allow/deny rules when `firewall` is set

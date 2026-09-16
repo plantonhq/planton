@@ -115,8 +115,10 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 // volumes -- destroy done in ~2s, the probe 1s later saw the volume, 404 a
 // few seconds after). Sixty seconds is far beyond the observed lag for the
 // fast classes and short enough that a genuinely leaked resource still fails
-// the lane promptly; the slow classes (clusters, databases) delete
-// synchronously in the provider and never reach this poll.
+// the lane promptly. The slow-to-create classes are not slow to vanish:
+// the database provider's Delete returns as soon as the DELETE is accepted
+// (it never waits), and a deleted cluster answered 404 within one second
+// when measured -- so they pass through this poll like the fast classes.
 const (
 	absentPollTimeout  = 60 * time.Second
 	absentPollInterval = 2 * time.Second
