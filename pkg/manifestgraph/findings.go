@@ -40,6 +40,13 @@ const (
 	// exists.
 	FindingCycle FindingClass = "cycle"
 
+	// FindingDerivedEdgeDropped: an edge the graph INFERRED (a literal
+	// naming a sibling, an operator prerequisite, a namespace or connection
+	// placement) closed a cycle with the author's own edges and was dropped
+	// so the set stays orderable. The author's words always win over an
+	// inference; the drop is reported so the order's reason is visible.
+	FindingDerivedEdgeDropped FindingClass = "derived-edge-dropped"
+
 	// FindingUnresolvedRef: resolution had no outputs for the reference's
 	// target — the target was not deployed by this run. Whether that is an
 	// error is the consumer's policy.

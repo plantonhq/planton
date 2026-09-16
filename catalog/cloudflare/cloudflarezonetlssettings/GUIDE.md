@@ -24,7 +24,7 @@ Total TLS certificates live for 90 days, fixed by Cloudflare. The provider expos
 
 ## Two surfaces need Advanced Certificate Manager; one needs an active zone
 
-Measured live (2026-08-27): enabling Total TLS AND writing any per-hostname override (`hostnameSettings`) both fail with 401 code 1450 -- "This feature is available with the Advanced Certificate Manager" -- unless the zone carries the ACM subscription (a per-zone add-on, roughly $10/month, independent of the zone's plan tier; a Pro zone without ACM fails the same way a Free zone does). If an apply hits 1450, the fix is to buy ACM for that zone or drop the field, not to retry.
+Measured live (2026-08-27): enabling Total TLS AND writing any per-hostname override (`hostnameSettings`) both fail with 401 code 1450 -- "This feature is available with the Advanced Certificate Manager" -- unless the zone carries the ACM subscription (a per-zone add-on billed monthly, independent of the zone's plan tier; a Pro zone without ACM fails the same way a Free zone does). If an apply hits 1450, the fix is to buy ACM for that zone or drop the field, not to retry.
 
 Separately, `autoOriginTlsKex` exists only on ACTIVE zones: writing it on a pending (undelegated) zone fails with 400 code 1000 and the misleading message "Invalid zone identifier". The zone id is fine -- activate the zone first.
 

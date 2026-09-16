@@ -4,7 +4,7 @@ Operational judgment for SaaS custom hostnames. The README covers what each fiel
 
 ## The account must be enrolled in Cloudflare for SaaS first
 
-Every custom-hostname API call — creates AND reads — answers 400 code 1404 "No quota has been allocated for this zone or for this account" until Cloudflare for SaaS is enabled (measured live on Free and Pro zones alike; plan tier does not matter). Enrollment is a dashboard action (SSL/TLS → Custom Hostnames) with a payment method on file; the first 100 hostnames are free, beyond that ~$0.10/hostname/month. The quota lands ACCOUNT-WIDE (measured live 2026-08-29: after enrolling, a create succeeded on a freshly created, still-pending zone that was never individually enrolled), so one enrollment unlocks every zone on the account. Nothing in this kind works before that toggle.
+Every custom-hostname API call — creates AND reads — answers 400 code 1404 "No quota has been allocated for this zone or for this account" until Cloudflare for SaaS is enabled (measured live on Free and Pro zones alike; plan tier does not matter). Enrollment is a dashboard action (SSL/TLS → Custom Hostnames) with a payment method on file; the first 100 hostnames are included, and every hostname beyond that allotment bills per hostname per month. The quota lands ACCOUNT-WIDE (measured live 2026-08-29: after enrolling, a create succeeded on a freshly created, still-pending zone that was never individually enrolled), so one enrollment unlocks every zone on the account. Nothing in this kind works before that toggle.
 
 ## The certificate authority is not yours to pick (unless Enterprise)
 

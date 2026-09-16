@@ -22,20 +22,27 @@ func TestCorpusOfflinePolicy(t *testing.T) {
 	// leaves the healthy remainder (making its dependents' references
 	// external). That interplay is itself pinned behavior.
 	policy := map[string]bool{
-		"annotation-riding-ref": false,
-		"cycle":                 true,
-		"derived-namespace":     false, // a derived target is a stated fact, not a refusal
-		"duplicate-identity":    true,
-		"env-external":          true, // needs a value from another environment — no backend to find it
-		"explicit-kind-ref":     false,
-		"external-relationship": false, // ordering fact only — deploys with a stated assumption
-		"external-valuefrom":    true,  // needs a value the set cannot produce
-		"map-ref":               false,
-		"namespace-edge":        true, // schema-minimal fixture: refuses at load-and-schema
-		"phantom-node-slug":     false,
-		"ref-rule-violation":    true,
-		"relationships-edge":    false,
-		"two-node-real-kinds":   true, // schema-minimal producer refuses at load; its dependent's ref becomes external
+		"annotation-riding-ref":             false,
+		"connection-placement":              true, // schema-minimal cluster fixture: refuses at load-and-schema
+		"connection-placement-default-name": true, // schema-minimal cluster fixture: refuses at load-and-schema
+		"cycle":                             true,
+		"derived-edge-cycle":                false, // the inference yields to the author's order — a stated fact, not a refusal
+		"derived-namespace":                 false, // a derived target is a stated fact, not a refusal
+		"duplicate-identity":                true,
+		"env-external":                      true, // needs a value from another environment — no backend to find it
+		"explicit-kind-ref":                 false,
+		"external-relationship":             false, // ordering fact only — deploys with a stated assumption
+		"external-valuefrom":                true,  // needs a value the set cannot produce
+		"literal-sibling":                   false,
+		"literal-sibling-no-match":          false,
+		"map-ref":                           false,
+		"namespace-edge":                    true, // schema-minimal fixture: refuses at load-and-schema
+		"operator-prerequisite":             false,
+		"operator-prerequisite-ambiguous":   false,
+		"phantom-node-slug":                 false,
+		"ref-rule-violation":                true,
+		"relationships-edge":                false,
+		"two-node-real-kinds":               true, // schema-minimal producer refuses at load; its dependent's ref becomes external
 	}
 
 	corpusDir := filepath.Join("..", "manifestgraph", "testdata", "corpus")

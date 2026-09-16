@@ -12,10 +12,11 @@ import (
 // graph has a cycle, the returned finding names it as a chain and the order
 // is nil.
 func (g *Graph) TopoOrder() ([]int, *Finding) {
-	n := len(g.DependsOn)
+	edges := g.Producers()
+	n := len(edges)
 	inDegree := make([]int, n)
 	consumersOf := make([][]int, n)
-	for consumer, producers := range g.DependsOn {
+	for consumer, producers := range edges {
 		inDegree[consumer] = len(producers)
 		for _, producer := range producers {
 			consumersOf[producer] = append(consumersOf[producer], consumer)
@@ -45,7 +46,7 @@ func (g *Graph) TopoOrder() ([]int, *Finding) {
 	}
 
 	if len(order) != n {
-		cycle := FindCycle(g.DependsOn)
+		cycle := FindCycle(edges)
 		parts := make([]string, 0, len(cycle))
 		for _, idx := range cycle {
 			parts = append(parts, g.Set.Nodes[idx].Identity.String())
@@ -122,8 +123,8 @@ func (g *Graph) String() string {
 	var b strings.Builder
 	for i, node := range g.Set.Nodes {
 		deps := make([]string, 0, len(g.DependsOn[i]))
-		for _, p := range g.DependsOn[i] {
-			deps = append(deps, g.Set.Nodes[p].Identity.String())
+		for _, dep := range g.DependsOn[i] {
+			deps = append(deps, fmt.Sprintf("%s (%s)", g.Set.Nodes[dep.Producer].Identity, dep.Source))
 		}
 		fmt.Fprintf(&b, "%s <- [%s]\n", node.Identity, strings.Join(deps, ", "))
 	}

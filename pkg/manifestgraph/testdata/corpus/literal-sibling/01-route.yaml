@@ -1,0 +1,25 @@
+# The consumer end: a route names its gateway by LITERAL — the shape the
+# console's wizard writes and kubectl users think in. Authored first so the
+# authored order is wrong without the literal-sibling rule.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesHttpRoute
+metadata:
+  name: shop-web
+  env: dev
+spec:
+  namespace:
+    value: shop
+  parentRefs:
+    - name:
+        value: public-gateway
+  hostnames:
+    - shop.example.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name:
+            value: shop-web
+          port: 8080

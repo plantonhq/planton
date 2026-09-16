@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// graphOf builds a Graph with synthetic dependency edges over n anonymous
+// graphOf builds a Graph with synthetic authored edges over n anonymous
 // nodes — TopoOrder and FindCycle are pure over the adjacency structure.
 func graphOf(dependsOn [][]int) *Graph {
 	n := len(dependsOn)
@@ -14,7 +14,13 @@ func graphOf(dependsOn [][]int) *Graph {
 	for i := range set.Nodes {
 		set.Nodes[i].Identity = Identity{Slug: string(rune('a' + i))}
 	}
-	return &Graph{Set: set, DependsOn: dependsOn}
+	g := &Graph{Set: set, DependsOn: make([][]Dependency, n)}
+	for consumer, producers := range dependsOn {
+		for _, producer := range producers {
+			g.DependsOn[consumer] = append(g.DependsOn[consumer], Dependency{Producer: producer, Source: EdgeSourceValueFrom})
+		}
+	}
+	return g
 }
 
 // TestTopoOrder_EveryEdgeRespected pins the ordering property: every
@@ -38,7 +44,7 @@ func TestTopoOrder_EveryEdgeRespected(t *testing.T) {
 	for pos, node := range order {
 		position[node] = pos
 	}
-	for consumer, producers := range g.DependsOn {
+	for consumer, producers := range g.Producers() {
 		for _, producer := range producers {
 			assert.Less(t, position[producer], position[consumer],
 				"producer %d must precede consumer %d", producer, consumer)

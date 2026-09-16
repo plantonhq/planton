@@ -20,13 +20,20 @@
 // would mint a phantom node instead of joining the real one, and the failure
 // is silent by design (an unmatched identity is a no-op, never an error).
 //
-// Edges come from four sources, mirroring the platform's orchestrator:
-// valueFrom references (by their EFFECTIVE kind — the field's default_kind
-// annotation applies before ordering, so an annotation-riding reference
-// orders exactly like an explicit one), explicit metadata.relationships,
-// literal namespace placement (a literal value in a namespace-annotated field
-// implies the namespace must exist — a derived target, never deployed here),
-// and connection placement (a Kubernetes workload whose planton.dev/connection
-// annotation names the connection a sibling cluster publishes runs on that
-// cluster — see connection.go for the two-ended naming contract).
+// Edges come from six sources, mirroring the platform's orchestrator. Two
+// are the author's own words: valueFrom references (by their EFFECTIVE kind —
+// the field's default_kind annotation applies before ordering, so an
+// annotation-riding reference orders exactly like an explicit one) and
+// explicit metadata.relationships. Four are inferences the graph draws from
+// metadata and matching names: literal namespace placement (a literal value
+// in a namespace-annotated field implies the namespace must exist — a derived
+// target, never deployed here), connection placement (a Kubernetes workload
+// whose planton.dev/connection annotation names the connection a sibling
+// cluster publishes runs on that cluster — see connection.go for the
+// two-ended naming contract), literal siblings (a literal in any default_kind
+// field that names a sibling of that kind by slug — a route naming its
+// gateway), and operator prerequisites (the kind metadata's operator, present
+// exactly once in the set — see prerequisite.go). Every edge carries its
+// source, and an inference that closes a cycle with the author's edges yields
+// to them (see BuildGraph).
 package manifestgraph
