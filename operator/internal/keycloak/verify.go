@@ -84,6 +84,15 @@ func Verify(ctx context.Context, in VerifyInput) ([]Check, error) {
 	case in.Federation.Broker != nil:
 		checks = verifyBroker(ctx, in.HTTPClient, in.Federation.Broker)
 		evidence = collisionEvidence{directoryUnbrowsable: true}
+		if in.Federation.Broker.Primary {
+			live, err := readRedirector(ctx, admin, in.Realm)
+			if err != nil {
+				checks = append(checks, Check{Name: primarySignInCheckName, Verdict: VerdictUnknown,
+					Message: "could not read the browser flow to verify primary sign-in: " + err.Error()})
+			} else if check, ok := primarySignInCheck(live, in.Federation.Broker); ok {
+				checks = append(checks, check)
+			}
+		}
 	}
 
 	if in.SeededAdminEmail != "" {

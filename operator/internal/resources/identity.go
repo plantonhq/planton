@@ -258,6 +258,21 @@ const (
 	// a rename would silently break the upstream registration.
 	IdentityBrokerAlias = "corp-directory"
 
+	// IdentityPrimaryBrokerConfigAlias names the ONE authenticator config the
+	// operator owns on the realm's browser flow: the Identity Provider
+	// Redirector's config carrying defaultProvider = IdentityBrokerAlias
+	// when the bound manifest declares oidc.primary (DD-023). Present, every
+	// sign-in goes straight to the broker; absent, the identity server's own
+	// form shows with the broker's button beside it.
+	IdentityPrimaryBrokerConfigAlias = "planton-primary-broker"
+
+	// IdentityBreakGlassHint is the kc_idp_hint value every Planton client
+	// sends to reach the local form while a primary broker is set. The
+	// redirector steps aside for a hint it cannot route, and no broker will
+	// ever carry this alias -- the sentinel is the contract, pinned against
+	// the identity server by the convergence suite.
+	IdentityBreakGlassHint = "local"
+
 	// IdentityDirectoryGroupsPath is the realm-group subtree the LDAP group
 	// mapper syncs directory groups into. Namespacing mirrored groups under
 	// one parent keeps drop-non-existing sync semantics scoped to directory
@@ -517,6 +532,10 @@ type IdentityFederationFacts struct {
 	// ProviderLabel is the name admins know the directory by (the
 	// sign-in button label, defaulted arm-appropriately).
 	ProviderLabel string `json:"providerLabel,omitempty"`
+	// Primary is true when the brokered arm sends every sign-in straight to
+	// the provider (oidc.primary) -- the product tells admins so, and names
+	// the break-glass path beside it. Always false on the LDAP arm.
+	Primary bool `json:"primary,omitempty"`
 	// Provisioned mirrors the manifest's Provisioned condition: federation
 	// exists on the identity server exactly as declared.
 	Provisioned bool `json:"provisioned,omitempty"`

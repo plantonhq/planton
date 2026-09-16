@@ -227,6 +227,10 @@ func TestBuildFederationState_BrokerDiscoveryAndReplay(t *testing.T) {
 	if broker.GroupsClaim != "groups" || broker.SubjectClaim != "sub" {
 		t.Errorf("claim defaults = groups:%q subject:%q, want groups/sub", broker.GroupsClaim, broker.SubjectClaim)
 	}
+	// primary is off unless declared: the button-beside-form shape is the default.
+	if broker.Primary {
+		t.Error("primary must default to false")
+	}
 
 	// Steady state: verified generation + recorded endpoints -> zero
 	// fetches (the cadence law for the upstream's discovery document).
@@ -335,6 +339,32 @@ func TestProjectFederationFacts_BoundManifestProjectsVerdicts(t *testing.T) {
 	}
 	if facts.ObservedAt == "" {
 		t.Error("a fresh verification must stamp observedAt")
+	}
+}
+
+// The brokered arm's facts carry primary (DD-023) so the product can say
+// where sign-in goes and name the break-glass path; the LDAP arm never does.
+func TestProjectFederationFacts_BrokeredArmCarriesPrimary(t *testing.T) {
+	platform := testPlatform("prime")
+	idp := &v1.PlantonIdentityProvider{}
+	idp.Name = bindingTestIdpName
+	idp.Namespace = bindingTestNamespace
+	idp.Spec.OIDC = &v1.OIDCBrokerSpec{
+		IssuerURL:       "https://login.example.com/tenant/v2.0",
+		ClientID:        "client-id",
+		ClientSecretRef: v1.SecretKeyRef{Name: "corp-oidc", Key: "client-secret"},
+		Primary:         true,
+	}
+	c := fake.NewClientBuilder().WithScheme(bindingScheme(t)).WithObjects(platform, idp).Build()
+
+	(&Identity{}).projectFederationFacts(context.Background(), c, platform, idp, false)
+
+	facts := factsOf(t, c, "prime")
+	if facts.Arm != "oidc" || !facts.Primary {
+		t.Fatalf("facts = %+v, want the oidc arm with primary", facts)
+	}
+	if facts.ProviderLabel != "Sign in with your organization" {
+		t.Errorf("providerLabel = %q, want the brokered-arm default", facts.ProviderLabel)
 	}
 }
 

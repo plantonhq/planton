@@ -190,6 +190,7 @@ func (id *Identity) buildBrokerState(ctx context.Context, c client.Client, names
 		GroupsClaim:      defaultString(oidc.GroupsClaim, "groups"),
 		SubjectClaim:     defaultString(oidc.SubjectClaim, "sub"),
 		DisplayName:      defaultString(spec.SignInButtonLabel, "Sign in with your organization"),
+		Primary:          oidc.Primary,
 		Endpoints:        endpoints,
 	}}
 }
@@ -373,6 +374,7 @@ func (id *Identity) projectFederationFacts(ctx context.Context, c client.Client,
 			// The broker's default display name -- kept in lockstep with
 			// buildBrokerState so the facts and the sign-in button agree.
 			facts.ProviderLabel = defaultString(fresh.Spec.SignInButtonLabel, "Sign in with your organization")
+			facts.Primary = fresh.Spec.OIDC.Primary
 		}
 		facts.Provisioned = meta.IsStatusConditionTrue(fresh.Status.Conditions, v1.ConditionProvisioned)
 		if fresh.Status.Verification != nil {

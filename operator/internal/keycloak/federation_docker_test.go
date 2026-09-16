@@ -14,6 +14,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -476,6 +477,143 @@ func TestFederation_BrokerProvisionAndArmSwitch(t *testing.T) {
 			}
 		}
 	}
+}
+
+// The primary broker (DD-023) against a real identity server: the operator's
+// one config on the browser flow's redirector sends an unhinted sign-in to
+// the broker, the break-glass hint makes the redirector step aside so the
+// local form renders (the Keycloak semantics every Planton client relies
+// on -- a Keycloak upgrade that changed them fails HERE first), an admin's
+// own redirector config is never replaced, and unsetting primary removes
+// exactly the operator's config.
+func TestFederation_PrimaryBrokerRedirectorAndBreakGlass(t *testing.T) {
+	admin := authedAdmin(t)
+	createRealm(t, admin, "entra-sim-primary", nil)
+	createRealm(t, admin, "primary", nil)
+	ctx := context.Background()
+
+	issuer := "http://" + testNetworkAlias + ":8080" + resources.IdentityPathPrefix + "/realms/entra-sim-primary"
+	endpoints, _, err := DiscoverOIDC(ctx, aliasResolvingClient(), issuer)
+	if err != nil {
+		t.Fatalf("discovery: %v", err)
+	}
+	broker := &OwnedOIDCBroker{
+		IssuerURL: issuer, ClientID: "planton-app-registration", ClientSecret: "upstream-client-secret",
+		RotateCredential: true, Scopes: []string{"openid", "profile", "email"},
+		GroupsClaim: "groups", SubjectClaim: "sub", DisplayName: "Sign in with Contoso",
+		Primary: true, Endpoints: endpoints,
+	}
+	fed := &OwnedFederation{Broker: broker}
+	in := federationInput("primary", fed)
+	mustConverge(t, in)
+
+	live, err := readRedirector(ctx, admin, "primary")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if live.ConfigAlias != resources.IdentityPrimaryBrokerConfigAlias || live.DefaultProvider != resources.IdentityBrokerAlias {
+		t.Fatalf("redirector after converge = %+v, want the operator's config naming %s", live, resources.IdentityBrokerAlias)
+	}
+	broker.RotateCredential = false
+	if second := mustConverge(t, in); !second.Clean() {
+		t.Fatalf("second primary pass must write nothing, wrote %d: %v", second.Writes, second.Repairs)
+	}
+	checks, err := Verify(ctx, verifyInput("primary", fed))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c := checkNamed(checks, primarySignInCheckName); c == nil || c.Verdict != VerdictPassed {
+		t.Fatalf("primarySignIn verdict = %+v, want Passed", c)
+	}
+
+	// The sign-in semantics, observed on the wire. An authorization request
+	// from the console client with no hint is redirected into the broker;
+	// the same request carrying the break-glass hint renders the local form.
+	noRedirect := &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error {
+		return http.ErrUseLastResponse
+	}}
+	authorize := func(hint string) *http.Response {
+		q := url.Values{}
+		q.Set("client_id", resources.IdentityConsoleClientID)
+		q.Set("response_type", "code")
+		q.Set("scope", "openid")
+		q.Set("redirect_uri", resources.IdentityConsoleRedirectURIs(testPublicURL)[0])
+		if hint != "" {
+			q.Set("kc_idp_hint", hint)
+		}
+		resp, err := noRedirect.Get(testServerRoot + "/realms/primary/protocol/openid-connect/auth?" + q.Encode())
+		if err != nil {
+			t.Fatalf("authorization request: %v", err)
+		}
+		return resp
+	}
+	unhinted := authorize("")
+	if unhinted.StatusCode < 300 || unhinted.StatusCode > 399 ||
+		!strings.Contains(unhinted.Header.Get("Location"), "/broker/"+resources.IdentityBrokerAlias+"/") {
+		t.Fatalf("an unhinted sign-in must be redirected into the broker; got %d %s", unhinted.StatusCode, unhinted.Header.Get("Location"))
+	}
+	_ = unhinted.Body.Close()
+	breakGlass := authorize(resources.IdentityBreakGlassHint)
+	body, _ := io.ReadAll(breakGlass.Body)
+	_ = breakGlass.Body.Close()
+	if breakGlass.StatusCode != http.StatusOK || !strings.Contains(string(body), `name="username"`) {
+		t.Fatalf("the break-glass hint must render the local form; got %d (form present: %v)",
+			breakGlass.StatusCode, strings.Contains(string(body), `name="username"`))
+	}
+
+	// Never-clobber: an admin's own config on the redirector stays, and the
+	// declaration becomes an advisory finding instead of a write.
+	if err := admin.DeleteAuthenticatorConfig(ctx, "primary", live.ConfigID); err != nil {
+		t.Fatal(err)
+	}
+	if err := admin.CreateExecutionConfig(ctx, "primary", live.ExecutionID, Representation{
+		"alias": "acme-redirect", "config": map[string]string{"defaultProvider": "acme"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if report := mustConverge(t, in); !report.Clean() {
+		t.Fatalf("an admin's redirector config must not be written over, wrote %d: %v", report.Writes, report.Repairs)
+	}
+	checks, err = Verify(ctx, verifyInput("primary", fed))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c := checkNamed(checks, primarySignInCheckName); c == nil || c.Verdict != VerdictUnknown || !strings.Contains(c.Message, `"acme-redirect"`) {
+		t.Fatalf("primarySignIn over an admin's config = %+v, want Unknown naming it", c)
+	}
+	after, err := readRedirector(ctx, admin, "primary")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := admin.DeleteAuthenticatorConfig(ctx, "primary", after.ConfigID); err != nil {
+		t.Fatal(err)
+	}
+
+	// Off: the operator's config is created again by the next primary pass,
+	// then removed by an unset -- and the local form is back unhinted.
+	mustConverge(t, in)
+	broker.Primary = false
+	mustConverge(t, in)
+	if off, err := readRedirector(ctx, admin, "primary"); err != nil || off.ConfigID != "" {
+		t.Fatalf("unsetting primary must remove the operator's config: %+v %v", off, err)
+	}
+	plain := authorize("")
+	_ = plain.Body.Close()
+	if plain.StatusCode != http.StatusOK {
+		t.Fatalf("with primary off an unhinted sign-in renders the form; got %d", plain.StatusCode)
+	}
+	if checks, err = Verify(ctx, verifyInput("primary", fed)); err != nil || checkNamed(checks, primarySignInCheckName) != nil {
+		t.Fatalf("no primarySignIn check when primary is off: %v %v", checks, err)
+	}
+}
+
+func checkNamed(checks []Check, name string) *Check {
+	for i := range checks {
+		if checks[i].Name == name {
+			return &checks[i]
+		}
+	}
+	return nil
 }
 
 // The seeded-admin collision: a LOCAL user holding the declared admin email

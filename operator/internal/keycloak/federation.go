@@ -95,6 +95,13 @@ type OwnedOIDCBroker struct {
 	SubjectClaim string
 	DisplayName  string
 
+	// Primary makes the broker the realm's default sign-in: the browser
+	// flow's Identity Provider Redirector carries an operator-owned config
+	// naming this broker, so the identity server's own form is skipped
+	// unless a sign-in arrives with a kc_idp_hint the redirector cannot
+	// route (the break-glass, DD-023). Off removes that config.
+	Primary bool
+
 	// Endpoints are non-nil only when the caller ran discovery this pass
 	// (verification cadence); nil leaves the live endpoint fields untouched,
 	// which is what keeps the steady-state reconcile from fetching the
@@ -399,8 +406,9 @@ func subjectProtocolMapper(fed *OwnedFederation) *OwnedMapper {
 // manifest declares -- and to NOTHING when none is desired, which is the
 // manifest-deletion path. A nil fed is the hands-off case (see
 // OwnedFederation's nil-vs-empty contract). Order: LDAP component (+ mappers
-// + the directory groups parent), broker instance (+ mappers), then the
-// groups + directory-subject protocol mappers on the sign-in clients.
+// + the directory groups parent), broker instance (+ mappers), the primary
+// sign-in redirector config, then the groups + directory-subject protocol
+// mappers on the sign-in clients.
 func convergeFederation(ctx context.Context, admin *AdminClient, realm string, realmID string, fed *OwnedFederation, report *Report) error {
 	if fed == nil {
 		return nil
@@ -409,6 +417,12 @@ func convergeFederation(ctx context.Context, admin *AdminClient, realm string, r
 		return err
 	}
 	if err := convergeBroker(ctx, admin, realm, fed.Broker, report); err != nil {
+		return err
+	}
+	// After the broker: the redirector's default provider must name an
+	// instance that exists (DD-023); with no broker desired, the operator's
+	// config on the redirector goes with it.
+	if err := convergePrimaryBroker(ctx, admin, realm, fed.Broker, report); err != nil {
 		return err
 	}
 	if err := convergeSignInClientMapper(ctx, admin, realm, resources.IdentityGroupsMapperName, groupsProtocolMapper(fed), report); err != nil {

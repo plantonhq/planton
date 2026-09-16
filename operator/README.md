@@ -54,6 +54,8 @@ A component that is not Ready explains itself. Every component's status carries 
 
 `PlantonIdentityProvider` has no controller of its own: a change to one re-enqueues the platforms in its namespace, and the identity component resolves the binding inside the same loop.
 
+On the brokered arm, `spec.oidc.primary: true` sends every sign-in straight to the company directory: the operator owns one authenticator config on the realm's browser flow (its Identity Provider Redirector, naming the broker as default), so the identity server's own form is skipped. The local form stays reachable for break-glass -- the console's `/login?local=1`, `planton login --local`, and the same hint on device sign-in all carry Keycloak's `kc_idp_hint=local`, which the redirector cannot route and so steps aside for. An admin's own config on that redirector is never replaced; the verification reports `primarySignIn` as a finding instead. Unsetting `primary` removes the operator's config and the sign-in button returns beside the form.
+
 ## The Front Door
 
 A platform is reached through one public origin, rendered from one route table (`internal/resources/front_door_routes.go`) onto whichever door the declaration chooses: an Ingress object, a Gateway API HTTPRoute attached to a Gateway the cluster already runs, or the built-in nginx gateway served over `kubectl port-forward`. The browser API (gRPC-Web) lives under `/rpc`, the storage relay under `/storage`, the identity server under `/idp`, the keyless identity issuer's two discovery documents (`/.well-known/openid-configuration`, `/.well-known/jwks.json`) and inbound webhooks (`/webhooks`) reach the control plane's webhook port, and the console answers everything else.
