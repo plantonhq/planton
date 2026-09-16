@@ -229,8 +229,7 @@ After the restore there is nothing to re-enter. Your cloud connections, config s
 
 ## Requirements
 
-- An operator chart that carries the vault in the archive: the chart's release notes name the first version that does, and this page will name it here when it ships. Earlier charts back up the database alone and leave the secrets manager outside the archive.
-- Operator chart `0.16.3` or newer for the database backup itself. Earlier charts declared the same fields, but their backup engine could not finish installing (a permission the operator lacked), a restore could come back as an empty database when that happened, and a restored platform's sign-in server could stall; `0.16.3` is the first chart on which the database's backup and restore have been proven end to end on a live platform.
+- Operator chart `0.17.0` or newer. It is the first chart that carries the secrets manager in the archive and the first on which the whole restore -- records and secrets together -- has been proven end to end on a live platform. Earlier charts backed up the database alone and left the secrets manager outside the archive; before `0.16.3` the backup engine could not finish installing, a restore could come back as an empty database, and a restored platform's sign-in server could stall.
 - cert-manager on the cluster (the backup engine's certificate).
 - An object store the database pods can reach, and a credential for it -- by reference, never typed into the manifest.
 - For a cloud seal: the key, its grants, and the vault's identity, created before the platform. For the built-in seal: the keys Secret, copied out of the cluster the day the platform is born.

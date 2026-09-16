@@ -150,13 +150,13 @@ writes over the archive it restored from; keep `backup` declared beside
 honored only when the database is first created: on a running platform
 the operator leaves the database alone and the status names the
 procedure. Nothing here ever destroys data to honor a declaration. The
-operator that honors all of this is chart `0.16.3` or newer: on earlier
-charts the backup engine could not finish installing and a restore could
-come back as an empty database in the archive's place, so pin the operator
-kind's `chartVersion` at or above it wherever a backup is declared. The
-vault's part of the story below — the seal, the keys Secret, the archive
-carrying the vault — needs the operator chart that carries it, which is
-named here the day it is released.
+operator that honors all of this — the database's backup and restore, and
+the vault's seal, keys Secret, and place in the archive below — is chart
+`0.17.0` or newer: earlier charts backed up the database alone and left
+the vault on its own volume, and before `0.16.3` the backup engine could
+not finish installing, so a restore could come back as an empty database
+in the archive's place. Pin the operator kind's `chartVersion` at or above
+`0.17.0` wherever a backup is declared.
 
 The archive carries the secrets manager too. The bundled vault (OpenBAO)
 stores its data in the platform's own PostgreSQL, so every connection
