@@ -1,12 +1,8 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import { Box } from '@mui/material';
 import { SelfHostedDevOps } from '@/components/product/solutions/self-hosted-devops';
 
-export const metadata: Metadata = {
-  title: 'Self-Hosted DevOps | Planton',
-  description:
-    'Enterprise security with SaaS convenience. Your credentials never leave your cloud boundary.',
-};
+export const metadata = pageMetadata('/solutions/by-use-case/self-hosted-devops');
 
 export default function SelfHostedDevOpsPage() {
   return (

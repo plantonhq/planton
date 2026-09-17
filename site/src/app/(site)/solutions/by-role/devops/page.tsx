@@ -1,5 +1,8 @@
-import { RedirectPage } from '@/components/common/redirect-page';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export default function DevopsRedirect() {
-  return <RedirectPage to="/solutions/by-role/platform-engineers" />;
+export const metadata = retiredRouteMetadata('/solutions/by-role/devops');
+
+export default function Page() {
+  return <RetiredRoute from="/solutions/by-role/devops" />;
 }

@@ -177,7 +177,7 @@ const faqs: IFaq[] = [
             support@planton.ai
           </Link>{' '}
           from your purchase email. The full details live in our{' '}
-          <Link className="text-white underline" href="/refund-policy">
+          <Link className="text-white underline" href="/legal/refund-policy">
             refund policy
           </Link>
           .

@@ -1,6 +1,9 @@
 import React from 'react';
 import { getAllBlogPosts } from '@/lib/mdx';
 import BlogPostCard from '@/components/blog/BlogPostCard';
+import { pageMetadata } from '@/lib/page-metadata';
+
+export const metadata = pageMetadata('/blog');
 
 export default function BlogPage() {
   const posts = getAllBlogPosts();

@@ -1,12 +1,8 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import { Box } from '@mui/material';
 import { ServiceHubHero, ServiceHubCapabilities, ServiceHubCTA } from '@/components/product/service-hub';
 
-export const metadata: Metadata = {
-  title: 'Service Hub | Planton',
-  description:
-    'Ship code from Git to production. Managed CI/CD with Tekton pipelines, multi-environment promotion, deploy to Kubernetes, ECS, or Cloud Run, and Kustomize-native config — all from one workflow.',
-};
+export const metadata = pageMetadata('/features/service-hub');
 
 export default function ServiceHubPage() {
   return (

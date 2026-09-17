@@ -137,9 +137,9 @@ export const footerGroups: FooterGroup[] = [
 
 export const footerTermsLinks = [
   { title: 'Status', url: '/' },
-  { title: 'Privacy', url: '/privacy' },
-  { title: 'Terms', url: '/terms' },
-  { title: 'Refunds', url: '/refund-policy' },
+  { title: 'Privacy', url: '/legal/privacy' },
+  { title: 'Terms', url: '/legal/terms' },
+  { title: 'Refunds', url: '/legal/refund-policy' },
 ];
 
 export const DISCORD_URL = 'https://discord.gg/pwcSapdQAp';

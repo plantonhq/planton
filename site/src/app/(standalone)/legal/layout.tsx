@@ -4,8 +4,11 @@ import InvestHeader from '@/components/invest/InvestHeader';
 import { HeaderLogo } from '../_components/HeaderLogo';
 
 export const metadata: Metadata = {
-  title: 'Legal - Planton',
-  description: 'Legal information and investor updates for Planton',
+  title: 'Investor Updates - Planton',
+  description: 'Investor updates from Planton.',
+  // Investor updates are shared by URL with investors, never search results
+  // (see the invest layout for why crawling stays allowed).
+  robots: { index: false, follow: false, nocache: true },
 };
 
 const inter = Inter({

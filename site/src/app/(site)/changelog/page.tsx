@@ -1,6 +1,9 @@
 import React from 'react';
 import { getAllChangelogEntries } from '@/lib/changelog';
 import { ChangelogTimeline } from '@/components/changelog';
+import { pageMetadata } from '@/lib/page-metadata';
+
+export const metadata = pageMetadata('/changelog');
 
 export default function ChangelogPage() {
   const entries = getAllChangelogEntries();

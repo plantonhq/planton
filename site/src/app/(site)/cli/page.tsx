@@ -1,5 +1,8 @@
-import { RedirectPage } from '@/components/common/redirect-page';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export default function CliRedirect() {
-  return <RedirectPage to="/features/cli" />;
+export const metadata = retiredRouteMetadata('/cli');
+
+export default function Page() {
+  return <RetiredRoute from="/cli" />;
 }

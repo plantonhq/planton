@@ -116,8 +116,7 @@ Now that you have your first application running:
 
 If you run into any issues:
 
-- Check our [troubleshooting guide](/docs/troubleshooting)
-- Search our [knowledge base](/docs/kb)
+- Read the [documentation](/docs)
 - Reach out to our support team
 - Ask questions in our community forums
 

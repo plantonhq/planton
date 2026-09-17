@@ -1,11 +1,7 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import StartupsPage from '@/components/product/solutions/startups';
 
-export const metadata: Metadata = {
-  title: 'Startups | Planton',
-  description:
-    'Ship production infrastructure without growing your ops team. Free tier, open-source foundation, no lock-in.',
-};
+export const metadata = pageMetadata('/solutions/by-size/startups');
 
 export default function Page() {
   return <StartupsPage />;

@@ -1,5 +1,8 @@
-import { RedirectPage } from '@/components/common/redirect-page';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export default function SelfServiceDevopsRedirect() {
-  return <RedirectPage to="/features" />;
+export const metadata = retiredRouteMetadata('/features/self-service-devops');
+
+export default function Page() {
+  return <RetiredRoute from="/features/self-service-devops" />;
 }

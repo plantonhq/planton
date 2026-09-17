@@ -1,5 +1,8 @@
-import { RedirectPage } from '@/components/common/redirect-page';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export default function IacWorkflowsRedirect() {
-  return <RedirectPage to="/features/infra-hub" />;
+export const metadata = retiredRouteMetadata('/features/iac-workflows');
+
+export default function Page() {
+  return <RetiredRoute from="/features/iac-workflows" />;
 }

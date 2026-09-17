@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import { Box } from '@mui/material';
 import {
   ProductOverviewHero,
@@ -8,11 +8,7 @@ import {
   ProductCTA,
 } from '@/components/product/overview';
 
-export const metadata: Metadata = {
-  title: 'Product | Planton',
-  description:
-    'The Self-Service Cloud Platform — AI-designed infrastructure and Git-to-production deployments, in your own cloud account. Deploy to any cloud with an open source foundation and zero vendor lock-in.',
-};
+export const metadata = pageMetadata('/features');
 
 export default function ProductOverviewPage() {
   return (

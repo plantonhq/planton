@@ -1,11 +1,7 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import EnterprisesPage from '@/components/product/solutions/enterprises';
 
-export const metadata: Metadata = {
-  title: 'Enterprises | Planton',
-  description:
-    'Enterprise controls without enterprise friction. Runner security, compliance-ready, multi-cloud governance.',
-};
+export const metadata = pageMetadata('/solutions/by-size/enterprises');
 
 export default function Page() {
   return <EnterprisesPage />;

@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: 'Invest in Planton - The Self-Service Cloud Platform',
   description:
     'Join us in building the platform that makes cloud infrastructure accessible to every company. Seed stage investment opportunity.',
+  // The investor pages carry the round's terms and the cap table walkthrough.
+  // They are shared by URL with the people they are for, never search results.
+  // Crawling stays allowed so crawlers can read this directive; a robots.txt
+  // Disallow would leave shared links indexable.
+  robots: { index: false, follow: false, nocache: true },
 };
 
 const inter = Inter({

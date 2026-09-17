@@ -1,11 +1,7 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import GrowingTeamsPage from '@/components/product/solutions/growing-teams';
 
-export const metadata: Metadata = {
-  title: 'Growing Teams | Planton',
-  description:
-    'Scale your infrastructure without scaling your ops team. Self-service, standards enforcement, and team visibility.',
-};
+export const metadata = pageMetadata('/solutions/by-size/growing-teams');
 
 export default function Page() {
   return <GrowingTeamsPage />;

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getBlogPostContentBySlug, getAllBlogPosts, getNextBlogPost, Author } from '@/lib/mdx';
 import { cleanSlug } from '@/lib/utils';
@@ -17,6 +18,24 @@ export async function generateStaticParams() {
   }));
 
   return params;
+}
+
+/**
+ * Every post carries its own title and description from its frontmatter;
+ * before this, all of them shared the site's default title.
+ */
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const raw = getBlogPostContentBySlug(cleanSlug(slug));
+  if (!raw) return { title: 'Not Found' };
+  const { data } = matter(raw);
+  const description = data.excerpt || data.description;
+  return {
+    title: `${data.title} | Planton Blog`,
+    description,
+    alternates: { canonical: `https://planton.ai/blog/${cleanSlug(slug)}` },
+    openGraph: { title: data.title, description, type: 'article', publishedTime: data.date },
+  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {

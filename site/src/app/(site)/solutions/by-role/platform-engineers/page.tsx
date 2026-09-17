@@ -1,11 +1,7 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import PlatformEngineersPage from '@/components/product/solutions/platform-engineers';
 
-export const metadata: Metadata = {
-  title: 'For Platform Engineers | Planton',
-  description:
-    'Build golden paths, not bottleneck queues. Define standards, govern credentials, and let developers self-serve.',
-};
+export const metadata = pageMetadata('/solutions/by-role/platform-engineers');
 
 export default function Page() {
   return <PlatformEngineersPage />;

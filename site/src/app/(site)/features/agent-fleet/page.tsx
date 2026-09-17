@@ -1,12 +1,8 @@
-import { Metadata } from 'next';
+import { pageMetadata } from '@/lib/page-metadata';
 import { Box } from '@mui/material';
 import { AgentFleetHero, AgentFleetCapabilities, AgentFleetCTA } from '@/components/product/agent-fleet';
 
-export const metadata: Metadata = {
-  title: 'Agent Fleet | Planton',
-  description:
-    'Purpose-built AI agents for DevOps. Browse the marketplace, encode your runbooks as skills, orchestrate sub-agents, and stream every action in real time.',
-};
+export const metadata = pageMetadata('/features/agent-fleet');
 
 export default function AgentFleetPage() {
   return (

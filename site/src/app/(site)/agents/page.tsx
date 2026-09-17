@@ -1,5 +1,8 @@
-import { RedirectPage } from '@/components/common/redirect-page';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export default function AgentsRedirect() {
-  return <RedirectPage to="/features/agent-fleet" />;
+export const metadata = retiredRouteMetadata('/agents');
+
+export default function Page() {
+  return <RetiredRoute from="/agents" />;
 }
