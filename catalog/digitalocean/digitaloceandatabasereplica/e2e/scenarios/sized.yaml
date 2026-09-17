@@ -5,11 +5,18 @@
 # tags plus Planton labels, identical across engines). The in-place RESIZE
 # transition (editing size/storage on a live replica) is a proof-lane
 # exercise -- the offline runner deploys each scenario once.
+#
+# The metadata name uses the kind's id prefix (`dodbrep`), the catalog's
+# shape for long kind names: DigitalOcean caps a replica's combined tags
+# (joined by commas) at 255 characters -- the same rule as the primary's
+# create -- and the six Planton label tags carry this name twice
+# (`planton-ai_name:` and `planton-ai_id:`); with the two user tags below,
+# the full kind name here would have joined to 286. This name joins to 246.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseReplica
 metadata:
-  name: planton-oss-e2e-digitaloceandatabasereplica-sized
-  id: planton-oss-e2e-digitaloceandatabasereplica-sized
+  name: planton-oss-e2e-dodbrep-sized
+  id: planton-oss-e2e-dodbrep-sized
   org: planton-oss
   env: e2e
   labels:

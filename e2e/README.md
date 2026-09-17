@@ -3695,6 +3695,87 @@ region exported `region: nyc3` (the provider's default) and imported on it.
 Buckets create in 6-14 s and answer 404 within a second of a `DESTROY`
 that took 3-10 s.
 
+**Database satellite lanes: every scenario pays for its own cluster.** The
+runner deploys prerequisites per scenario, so a satellite kind with two
+scenarios on two engines is FOUR cluster creates (4m30s-5m45s each,
+~$0.02/hour), and a scenario that adds a manifest-path cluster fixture
+(the user kind's `mysql-auth`) deploys its two clusters one after the other
+(~9m30s-10m of `DEPENDENCIES-UP`). The satellite operations themselves are
+2-10 s. Budget `-timeout 60m` per ordinary lane, run ONE scenario per
+`go test`, and keep the lane in the FOREGROUND of a shell the tool owns: a
+lane started as a backgrounded subshell (`( go test ... ) &`) was reaped
+with its parent mid-`DEPENDENCIES-UP`, leaving the fixture cluster alive
+with no owner (deleted by hand) -- the same silent-kill class as a capped
+output pipeline, from the other side.
+
+**DigitalOcean's auto-created `v1/dbaas/alerts/*` policies appear MINUTES
+after a cluster is online, so a sweep right after a lane can find none and
+the next find six.** Sweep between lanes for hygiene, but the session-end
+sweep is the one that counts; a read replica mints its own three as well.
+
+**The replica endpoint enforces the same combined-tags cap as the cluster
+create, honestly.** `POST /v2/databases/{id}/replicas` with six tags
+joining to 256 characters answers `422 combined tags cannot exceed 255
+characters` and creates nothing (the replica list stays empty, no tag is
+minted); 255 passes. The replica kind carries the cluster's twin guard
+from that measurement, and both replica scenarios moved to the id-prefix
+name shape (`planton-oss-e2e-dodbrep-*`) -- the full kind name joined to
+257 exactly like the cluster's did, because the two kind names are the
+same length. Measured on the same probe: a `db-s-1vcpu-2gb` replica of a
+10 GiB primary with `storage_size_mib: 30720` is accepted and reads back
+as sent; the replica reads `forking` at create and `online` in 6-7 min
+with no 412 on a six-minute-old primary; it 404s within 4 s of its
+delete; its tags outlive it (sweep class).
+
+**A read replica is its own cluster to DigitalOcean, with its own EMPTY
+firewall.** The replica's UUID answers `GET /v2/databases/{replica_id}`
+directly, does not appear in `GET /v2/databases`, and carries its own
+trusted-sources list: a primary with one `ip_addr` rule had a fresh
+replica reading `rules: []`, and a rule PUT on the replica's UUID landed
+on the replica alone. The firewall and replica kinds both teach a second
+`DigitalOceanDatabaseFirewall` per replica with `cluster` pointing at the
+replica's `replica_id` (an explicit `valueFrom.kind` overrides the
+field's default kind). That composition is measured by API, not yet by a
+lane.
+
+**The database firewall accepts IPv4 only.** An IPv6 address and an IPv6
+prefix both answer `422 invalid rule with type IP_ADDR because: invalid ip
+format`; a bare IPv4 and its `/32` both pass and read back exactly as
+written. The firewall `minimal` scenario shipped an IPv6 rule and failed
+at DEPLOY on the first lane; the spec's `ipRules` rule is now
+`isIp(4) || isIpPrefix(4)` so the class fails at validation. The kind's
+destroy contract held live: after `DESTROY` the live rule list is EMPTY
+(the verifier asserts that, never a 404), and the bare `{cluster_id}`
+import round-trips lossless on both scenarios.
+
+**A database user's `settings` read-back is ENGINE-specific, and the
+manifest must say which engine it is on.** The provider stores `settings`
+only from the create response and never refreshes it. A PostgreSQL user's
+create answers with `settings: {pg_allow_replication: false}`, stored as
+one empty settings block, so a PostgreSQL manifest WITHOUT `settings`
+failed the idempotency gate on both engines (`-settings`); a MySQL user's
+create answers with no settings object at all, so an always-sent empty
+block failed the MySQL lane the same way in reverse (`+settings`) -- and
+`PUT /v2/databases/{id}/users/{name}` with `settings: {}` on a MySQL
+cluster is REFUSED (`422 operation is not supported for this cluster
+type`), which would have made every post-import apply error. The modules
+cannot infer the engine from a cluster UUID, so the manifest carries the
+knowledge: PostgreSQL users declare `settings: {}`, MySQL users leave it
+out, Kafka/OpenSearch users declare their ACLs. With that shape both
+scenarios pass the gate on both engines; the PostgreSQL round-trip
+tolerates exactly the declared config-only `settings` (the re-assert is a
+201 no-op on PostgreSQL), the MySQL round-trip is lossless. The API's GET
+does return `settings` for PostgreSQL users -- it is the provider's Read
+that ignores it, so this is an upstream read-back defect with an
+engine-dependent shape, not something a module can hide.
+
+**Idempotency-gate diffs on the satellites were all first-contact
+read-back classes, none of them module wiring.** Db, connection pool, and
+firewall passed the gate on the first green DEPLOY on both engines; their
+round-trips were lossless; the pool's omitted `user` reads back stable and
+its empty `password` output on the inbound-user shape is the documented
+contract.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

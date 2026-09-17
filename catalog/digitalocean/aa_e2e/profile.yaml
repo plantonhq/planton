@@ -58,6 +58,14 @@ spec:
   # `422 cluster name is not available` whatever the name -- and can leave
   # the ghost VPC member above. Never probe-create databases while a
   # database lane runs, and never retry a failed create inside that window.
+  # The replica endpoint (`POST /v2/databases/{id}/replicas`) enforces the
+  # same 255-character combined-tags cap, equally honestly. A read replica
+  # is its own cluster under its own UUID -- with its own, initially EMPTY
+  # firewall and its own three auto-created `v1/dbaas/alerts/*` policies,
+  # which appear MINUTES after `online` (a sweep right after a lane can find
+  # none; the session-end sweep is the one that counts). Every satellite
+  # scenario deploys its own cluster fixture (~5 min), so a satellite kind
+  # with two scenarios on two engines is four cluster creates.
   #
   # OPERATOR PRECONDITION (per machine): the alert lanes (monitor alerts,
   # uptime alert rows) read their email recipient from

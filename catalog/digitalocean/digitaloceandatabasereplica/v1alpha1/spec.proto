@@ -77,5 +77,19 @@ message DigitalOceanDatabaseReplicaSpec {
   // WARNING -- replica tags are CREATE-ONLY upstream: changing this list
   // REPLACES the whole replica (a new replica is seeded from the primary;
   // replication catch-up applies). Settle tagging before production use.
+  //
+  // BUDGET -- DigitalOcean caps a replica's COMBINED tags (the tag names
+  // joined by commas) at 255 characters, the same rule as the primary's
+  // create (measured 2026-09-17 on `POST /v2/databases/{id}/replicas`:
+  // 255 pass, 256 fail with `422 combined tags cannot exceed 255
+  // characters`). The six Planton label tags (`planton-ai_resource`,
+  // `planton-ai_organization`, `planton-ai_environment`,
+  // `planton-ai_kind`, `planton-ai_name`, `planton-ai_id`) carry
+  // metadata.name and metadata.id, so they alone cost about 133
+  // characters plus the name and id lengths; what remains is the budget
+  // for this list. Both provisioners check the final set before anything
+  // renders and fail with the exact arithmetic -- shorten metadata.name or
+  // metadata.id, or trim this list, and the replica is never replaced over
+  // a tag the API would have refused.
   repeated string tags = 7 [(buf.validate.field).repeated.items.string.pattern = "^[a-zA-Z0-9:\\-_]{1,255}$"];
 }

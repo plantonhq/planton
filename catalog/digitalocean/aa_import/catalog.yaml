@@ -237,9 +237,18 @@ spec:
     - terraform_type: digitalocean_database_user
       pulumi_type: digitalocean:index/databaseUser:DatabaseUser
       id_format: "{cluster_id},{user_name}"
-      # The API returns ACL settings only in the CREATE response -- GetUser
-      # never includes them (the provider sets them create-only by design),
-      # so import can never carry them.
+      # The provider stores `settings` only from the CREATE response and
+      # its Read never refreshes it (the API's GET does return a settings
+      # object for PostgreSQL users, but the provider ignores it by design),
+      # so a blind import leaves the attribute empty and the first plan
+      # re-asserts whatever the manifest declares. Manifests declare it BY
+      # ENGINE: PostgreSQL users carry `settings: {}` (DigitalOcean stores a
+      # settings object for every PostgreSQL user; the re-assert after
+      # import is a server-side no-op -- PUT with `settings: {}` answers 201
+      # and changes nothing), MySQL users carry none (the API refuses a
+      # settings update on MySQL with `422 operation is not supported for
+      # this cluster type`, so a MySQL import is lossless only because
+      # nothing is re-asserted).
       config_only_attributes: [settings]
       notes: >-
         MongoDB user passwords exist only in the create response, so an
@@ -247,9 +256,14 @@ spec:
     - terraform_type: digitalocean_database_db
       pulumi_type: digitalocean:index/databaseDb:DatabaseDb
       id_format: "{cluster_id},{database_name}"
+      # Live-proven lossless (2026-09-17): two create-only arguments and a
+      # bare existence-check Read -- nothing to tolerate.
     - terraform_type: digitalocean_database_connection_pool
       pulumi_type: digitalocean:index/databaseConnectionPool:DatabaseConnectionPool
       id_format: "{cluster_id},{pool_name}"
+      # Live-proven lossless on both scenarios (2026-09-17): every argument
+      # is create-only upstream and reads back as sent; an omitted `user`
+      # reads back empty and stable, so no tolerance is ever needed here.
     - terraform_type: digitalocean_database_firewall
       pulumi_type: digitalocean:index/databaseFirewall:DatabaseFirewall
       id_format: "{cluster_id}"
@@ -257,8 +271,13 @@ spec:
         The rule set is a property of its cluster: import takes the BARE
         cluster UUID, and the importer then mints a fresh random state id
         ("{cluster_id}-<uniqueid>") -- the state id is deliberately
-        non-deterministic and never compared. Rules read back in full.
-        Destroy is a PUT of an empty rule list, never a deletion.
+        non-deterministic and never compared. Rules read back in full
+        (live-proven lossless on both scenarios, 2026-09-17: the set
+        semantics absorb the server-side uuid/created_at noise, and a bare
+        IPv4 reads back exactly as written -- never as its /32). Destroy is
+        a PUT of an empty rule list, never a deletion. A read replica has
+        its own rule set under its own UUID; the primary's import carries
+        nothing about it.
     - terraform_type: digitalocean_database_replica
       pulumi_type: digitalocean:index/databaseReplica:DatabaseReplica
       id_format: "{cluster_id},{replica_name}"

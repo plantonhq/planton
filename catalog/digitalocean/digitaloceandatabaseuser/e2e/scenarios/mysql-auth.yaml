@@ -4,6 +4,13 @@
 # manifest-path fixture (the annotation below) because the auth plugin is
 # MySQL-only and the kind's registry prerequisite installs a PostgreSQL
 # cluster.
+#
+# No `settings` here, deliberately: a MySQL user never carries a settings
+# object in DigitalOcean's responses and the API refuses a settings update
+# on a MySQL cluster (`422 operation is not supported for this cluster
+# type`), so a MySQL manifest that declared even `settings: {}` would fail
+# every apply after the first. PostgreSQL users declare `settings: {}` for
+# the opposite reason (see minimal).
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseUser
 metadata:
@@ -23,7 +30,7 @@ spec:
   cluster:
     valueFrom:
       kind: DigitalOceanDatabaseCluster
-      name: planton-oss-e2e-digitaloceandatabaseuser-mysql-fixture
+      name: planton-oss-e2e-dodbu-mysql-fixture
       fieldPath: status.outputs.cluster_id
   userName: pltn-e2e-dodbu-auth
   mysqlAuthPlugin: mysql_native_password

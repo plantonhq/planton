@@ -3,17 +3,24 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabaseconnectionpool
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios on the PostgreSQL cluster registry
-  # prerequisite: `minimal` is a transaction-mode pool authenticating as
-  # the cluster's built-in doadmin user (no user fixture needed);
-  # `inbound-user` omits the user, proving DigitalOcean's inbound-user pool
-  # shape (clients bring their own credentials; the password output is
-  # legitimately empty). Pool operations are seconds; the cluster fixture
-  # (~5 min, ~$0.02/hour) dominates the lane time.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip on every Terraform
+  # lane (`{cluster_id},{pool_name}` from the stack outputs; lossless on
+  # both scenarios -- nothing tolerated). TWO scenarios on the PostgreSQL
+  # cluster registry prerequisite (`planton-oss-e2e-dodb-min`): `minimal`
+  # is a transaction-mode pool authenticating as the cluster's built-in
+  # doadmin user (no user fixture needed; all eight outputs populated and
+  # host/port asserted against the live pool); `inbound-user` omits the
+  # user, proving DigitalOcean's inbound-user pool shape (clients bring
+  # their own credentials; the password output is legitimately empty --
+  # 7 of 8 outputs populated -- and the omitted user reads back stable
+  # under the idempotency gate on both engines).
+  #
+  # Measured 2026-09-17: the cluster fixture creates in 4m58s-5m44s
+  # (~$0.02/hour); the pool deploys in 2-8 s and destroys in 2-9 s. Every
+  # cluster that reaches `online` leaves three `v1/dbaas/alerts/*` policies
+  # behind after deletion -- sweep them.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 35

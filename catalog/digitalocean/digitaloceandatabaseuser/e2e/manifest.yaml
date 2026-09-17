@@ -12,6 +12,9 @@ spec:
   cluster:
     value: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
   userName: orders-service
+  # PostgreSQL users declare an empty settings block (DigitalOcean stores a
+  # settings object for every PostgreSQL user); MySQL users leave it out.
+  settings: {}
 ---
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseUser

@@ -3,23 +3,49 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabasereplica
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios on the PostgreSQL cluster registry
-  # prerequisite: `minimal` is a same-region same-size replica (region and
-  # size explicit by design -- the spec requires them to kill the
-  # provider's omitted-value drift/replacement class); `sized` proves a
-  # larger slug, custom storage (the bare-MiB string), and the tag set.
-  # THE BILLING CLASS: a replica is a second cluster-sized node that also
-  # takes ~cluster-create time (DigitalOcean retries through 412 while the
-  # primary's first backup completes), so each lane is roughly TWO cluster
-  # creates end to end -- hence the longer timeout. Proof-lane watch items:
-  # the in-place resize transition (size/storage edits on a live replica)
-  # and cross-region + VPC placement (needs a second-region VPC fixture)
-  # are recorded deferrals; replica tags are create-only upstream (a retag
-  # REPLACES the replica -- never "fix" that as if it were drift).
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip on every Terraform
+  # lane (`{cluster_id},{replica_name}` composite from the stack outputs;
+  # lossless on both scenarios -- nothing tolerated). TWO scenarios on the
+  # PostgreSQL cluster registry prerequisite (`planton-oss-e2e-dodb-min`):
+  # `minimal` is a same-region same-size replica (region and size explicit
+  # by design -- the spec requires them to kill the provider's
+  # omitted-value drift/replacement class); `sized` proves a larger slug
+  # (`db-s-1vcpu-2gb`), custom storage (30720 MiB as the bare-MiB string,
+  # accepted on a 10 GiB primary and read back as sent), and the tag set
+  # (two user tags plus the six Planton labels, identical across engines).
+  # All eleven outputs populate on both engines; the verifier asserts
+  # `online`, host/port, and that `replica_id` is the API UUID (never the
+  # provider's legacy composite state id).
+  #
+  # THE BILLING CLASS, measured 2026-09-17: the fixture creates in
+  # 5m00s-5m35s and the replica's own DEPLOY is 5m09s-5m22s (the provider's
+  # create blocks until the replica reads `online`; the API reports
+  # `forking` first; no 412 retry was observed against a fixture that had
+  # just come online), so a lane is ~11-13 minutes end to end -- hence the
+  # longer timeout. DESTROY is 4-46 s and the replica 404s within a second;
+  # DEPENDENCIES-DOWN 12-46 s. A replica mints its own three
+  # `v1/dbaas/alerts/*` policies beside the primary's and its tags outlive
+  # it -- both are sweep classes.
+  #
+  # Live-measured and landed on the kind: `POST /v2/databases/{id}/replicas`
+  # enforces the same 255-character combined-tags cap as the cluster create
+  # (255 pass, 256 fail with `422 combined tags cannot exceed 255
+  # characters`, nothing created), so both modules carry the cluster's twin
+  # guard and the scenarios use the id-prefix name shape
+  # (`planton-oss-e2e-dodbrep-*` -- the full kind name joined to 257, the
+  # cluster's own failing number, because the two kind names are the same
+  # length). A replica is its own cluster to DigitalOcean: addressable by
+  # its UUID, absent from the cluster list, and carrying its own EMPTY
+  # firewall that the primary's rules never reach (the firewall kind's docs
+  # teach a second firewall per replica).
+  #
+  # Deferred arms, each with its unblock: the in-place RESIZE transition
+  # (size/storage edits on a live replica -- the runner has no update
+  # phase); cross-region + VPC placement (needs a second-region VPC
+  # fixture). Replica tags are create-only upstream (a retag REPLACES the
+  # replica -- never "fix" that as if it were drift).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 50

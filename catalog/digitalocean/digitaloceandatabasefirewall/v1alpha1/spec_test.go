@@ -92,11 +92,27 @@ var _ = ginkgo.Describe("DigitalOceanDatabaseFirewallSpec validations", func() {
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
-		ginkgo.It("accepts an IPv6 address", func() {
+		ginkgo.It("accepts a /32 CIDR block", func() {
+			spec := makeValidSpec()
+			spec.IpRules = []string{"203.0.113.10/32"}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		// DigitalOcean's database firewall rejects every IPv6 shape at apply
+		// (`422 invalid ip format`), so the spec refuses them at validation.
+		ginkgo.It("rejects an IPv6 address", func() {
 			spec := makeValidSpec()
 			spec.IpRules = []string{"2001:db8::1"}
 			err := protovalidate.Validate(spec)
-			gomega.Expect(err).To(gomega.BeNil())
+			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an IPv6 CIDR block", func() {
+			spec := makeValidSpec()
+			spec.IpRules = []string{"2001:db8::/32"}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
 
 		ginkgo.It("rejects a value that is neither IP nor CIDR", func() {

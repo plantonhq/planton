@@ -3,15 +3,21 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabasedb
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. ONE scenario: `minimal` -- an additional logical database
-  # on the PostgreSQL cluster registry prerequisite. The resource has
-  # exactly two create-only arguments, so the minimal lane IS total
-  # coverage. Database operations are seconds; the cluster fixture (~5 min,
-  # ~$0.02/hour) dominates the lane time.
+  # Live-proven on BOTH engines, full lifecycle under the idempotency gate,
+  # plus the blind import round-trip on the Terraform lane
+  # (`{cluster_id},{database_name}`, both from the stack outputs; lossless
+  # -- nothing tolerated). ONE scenario: `minimal` -- an additional logical
+  # database on the PostgreSQL cluster registry prerequisite
+  # (`planton-oss-e2e-dodb-min`). The resource has exactly two create-only
+  # arguments, so the minimal lane IS total coverage.
+  #
+  # Measured 2026-09-17: the cluster fixture creates in 4m40s-5m00s
+  # (~$0.02/hour); the database itself deploys in 4-9 s and destroys in
+  # 5-11 s; absence is answered within 2 s of the destroy. Every cluster
+  # that reaches `online` leaves three `v1/dbaas/alerts/*` policies behind
+  # after deletion, and they can appear minutes after the cluster is online
+  # -- sweep them at session end, not only between lanes.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 35

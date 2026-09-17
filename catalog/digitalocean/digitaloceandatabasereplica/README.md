@@ -12,7 +12,7 @@ A single-node read-only replica of a DigitalOcean managed database cluster (Post
 - `size` -- the replica's node slug; must be at least the primary's size; grows in place, never shrinks
 - `vpc` -- optional private-network placement in the REPLICA's region, by UUID or `DigitalOceanVpc` reference (create-only)
 - `storage_size_mib` -- optional custom disk; grows in place with size; must stay at least the primary's storage
-- `tags` -- CREATE-ONLY upstream: a retag REPLACES the replica
+- `tags` -- CREATE-ONLY upstream: a retag REPLACES the replica. DigitalOcean caps the combined tags (joined by commas) at 255 characters, the same rule as the primary, and the six Planton label tags carrying `metadata.name`/`metadata.id` count toward it; both provisioners fail fast with the arithmetic when the budget is crossed
 
 `region` and `size` are REQUIRED here although the upstream provider marks them optional: the provider reads both back but never computes them, so omitted values drift on the next apply -- and region's drift schedules a full replica REPLACEMENT. Explicit values make that failure class unrepresentable; "inherit from the primary" is expressed by writing the primary's values.
 

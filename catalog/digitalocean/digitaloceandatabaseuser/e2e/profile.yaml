@@ -3,22 +3,44 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabaseuser
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is a plain user on the PostgreSQL
-  # cluster registry prerequisite proving the lifecycle and the
-  # (cluster_id, user_name) identity outputs; `mysql-auth` proves the
-  # MySQL-only auth-plugin argument on a MySQL manifest-path fixture (that
-  # lane deploys TWO clusters -- the registry prerequisite plus the MySQL
-  # fixture -- so it dominates the lane time at ~2x cluster creates).
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip on every Terraform
+  # lane (`{cluster_id},{user_name}` from the stack outputs). TWO
+  # scenarios: `minimal` is a PostgreSQL user on the cluster registry
+  # prerequisite (`planton-oss-e2e-dodb-min`) proving the lifecycle, the
+  # (cluster_id, user_name) identity outputs, and the server-generated
+  # password/role outputs (4 of 6 outputs populated -- access_cert and
+  # access_key are Kafka-only); its round-trip tolerates exactly the
+  # declared config-only `settings` (the provider never reads settings
+  # back, so the re-assert after import is a server-side no-op). `mysql-auth`
+  # proves the MySQL-only auth-plugin argument on a MySQL manifest-path
+  # fixture (`planton-oss-e2e-dodbu-mysql-fixture`, MySQL 8.4, its cluster
+  # name run-scoped) -- that lane deploys TWO clusters, one after the other,
+  # so DEPENDENCIES-UP is ~9m30s-10m; its round-trip is lossless.
+  #
+  # Live-caught 2026-09-17 under the idempotency gate and landed as the
+  # kind's engine rule: what DigitalOcean stores for `settings` is
+  # engine-specific. Every PostgreSQL user comes back from the create with
+  # a settings object (`pg_allow_replication: false`) that the provider
+  # stores as one empty block and never refreshes, so a PostgreSQL manifest
+  # without `settings` proposed removing it on the first re-plan on BOTH
+  # engines; a MySQL user never carries one, and the API REFUSES a settings
+  # update on MySQL (`422 operation is not supported for this cluster
+  # type`), so an always-sent empty block failed the MySQL lane the same
+  # way in reverse (and would have errored every apply after a blind
+  # import). The modules cannot know the engine from a cluster UUID, so the
+  # manifest carries it: PostgreSQL users declare `settings: {}`, MySQL
+  # users leave it out -- the scenarios, the preset, and every doc surface
+  # say so, and both lanes pass the gate with that shape.
+  #
   # Deliberately not in the live lanes: kafka_acls / opensearch_acls (the
   # kafka fixture is the program's most expensive class -- 3-node minimum
   # -- and opensearch was deferred with it on the cluster kind; the ACL
   # arms ride whichever proof session first pays for those fixtures).
-  # User operations themselves are seconds; cluster fixtures (~5 min each,
-  # ~$0.02/hour) dominate.
+  # User operations are 2-10 s; cluster fixtures (4m43s-5m45s each,
+  # ~$0.02/hour) dominate. Every cluster that reaches `online` leaves three
+  # `v1/dbaas/alerts/*` policies behind after deletion -- sweep them.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 40

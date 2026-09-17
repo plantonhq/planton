@@ -1,7 +1,9 @@
 # Minimal DigitalOceanDatabaseFirewall: an IP-only trusted-sources rule set
 # on the PostgreSQL cluster registry prerequisite, mixing a plain IPv4, a
-# CIDR block, and an IPv6 address to prove the ip_addr fan-out across
-# address shapes. Proves the full lifecycle including the kind's unusual
+# /16 CIDR block, and a /32 CIDR block to prove the ip_addr fan-out across
+# the address shapes DigitalOcean accepts (IPv4 only -- every IPv6 shape is
+# refused at apply with `422 invalid ip format`, so the spec rejects IPv6 at
+# validation). Proves the full lifecycle including the kind's unusual
 # destroy semantics: the verifier asserts the live rule list is EMPTY after
 # destroy (a PUT of an empty set -- there is no object to 404 on).
 apiVersion: digital-ocean.planton.dev/v1alpha1
@@ -27,4 +29,4 @@ spec:
   ipRules:
     - 203.0.113.10
     - 10.10.0.0/16
-    - 2001:db8::7
+    - 203.0.113.0/24

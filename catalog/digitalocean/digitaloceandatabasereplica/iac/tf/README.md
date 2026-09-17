@@ -20,5 +20,5 @@ Exactly the `DigitalOceanDatabaseReplicaStackOutputs` contract: `replica_id` (th
 
 - Only `size`/`storage_size_mib` update in place (a resize waited to "online"); every other change -- including TAGS (create-only upstream) -- replaces the replica.
 - `region` and `size` are required by the spec (the provider's omitted-value drift class is unrepresentable).
-- Tags are spec tags plus the standard Planton labels, identical to the Pulumi module.
+- Tags are spec tags plus the standard Planton labels, identical to the Pulumi module. A `lifecycle { precondition }` on the resource fails the plan when the combined tags (joined by commas) exceed DigitalOcean's measured 255-character cap -- the same number and message as the Pulumi module's guard (its twin), because replica tags are create-only and a refused tag must never surface as a replacement.
 - Import: `terraform import ... <cluster_id>,<replica_name>` (see `iac/import-map.yaml`).

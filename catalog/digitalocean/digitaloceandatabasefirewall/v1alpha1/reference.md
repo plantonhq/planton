@@ -78,6 +78,13 @@ The database cluster whose inbound sources these rules define. Use a
 literal cluster UUID or a reference to a DigitalOceanDatabaseCluster
 resource. Changing it moves the rule set to another cluster (replace).
 
+A read replica is its own cluster to DigitalOcean with its own
+trusted-sources list, which starts EMPTY -- the primary's rules never
+reach it. Protect a replica with a second firewall resource whose
+cluster points at the replica: `valueFrom` with
+`kind: DigitalOceanDatabaseReplica` and
+`fieldPath: status.outputs.replica_id`, or its UUID as a literal.
+
 - references: DigitalOceanDatabaseCluster (`status.outputs.cluster_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanDatabaseCluster, name: <that resource's name>, fieldPath: status.outputs.cluster_id}} -- a bare string does not parse
@@ -86,9 +93,14 @@ resource. Changing it moves the rule set to another cluster (replace).
 
 `[]string`
 
-(Optional) IP addresses or CIDR blocks trusted to reach the cluster.
+(Optional) IPv4 addresses or IPv4 CIDR blocks trusted to reach the
+cluster. IPv4 ONLY: DigitalOcean's database firewall rejects every IPv6
+shape at apply (`422 invalid rule with type IP_ADDR because: invalid ip
+format`, measured 2026-09-17 for both an address and a /32 prefix), so
+the rule below refuses IPv6 at validation instead. A bare address and
+its /32 form are both accepted and read back exactly as sent.
 
-- rule: {"repeated":{"items":{"cel":[{"id":"ip_or_cidr","message":"must be an IP address or CIDR block","expression":"this.isIp() || this.isIpPrefix()"}]}}}
+- rule: {"repeated":{"items":{"cel":[{"id":"ipv4_or_cidr","message":"must be an IPv4 address or IPv4 CIDR block (DigitalOcean database firewalls do not accept IPv6)","expression":"this.isIp(4) || this.isIpPrefix(4)"}]}}}
 
 ### spec.dropletIds
 
