@@ -17,12 +17,14 @@ spec:
   config:
     append_only: true
     max_memory: 128mb
+  # One declared password and one left to the module: the mixed case the
+  # auth Secret's merge must render without indexing a generated key that
+  # does not exist for the declared user.
   auth:
     users:
       - name: default
         password: e2e-valkey-default-password
       - name: reader
-        password: e2e-valkey-reader-password
         permissions: "~* -@all +@read +ping +info"
   resources:
     requests:

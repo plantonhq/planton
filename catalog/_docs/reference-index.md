@@ -29,5 +29,5 @@ Start with:
 | [cloudflare](../cloudflare/reference-index.md) | 66 | 66 | 66 |
 | [digitalocean](../digitalocean/reference-index.md) | 31 | 31 | 31 |
 | [gcp](../gcp/reference-index.md) | 104 | 104 | 102 |
-| [kubernetes](../kubernetes/reference-index.md) | 124 | 124 | 75 |
+| [kubernetes](../kubernetes/reference-index.md) | 124 | 124 | 76 |
 | [openfga](../openfga/reference-index.md) | 3 | 3 | 0 |

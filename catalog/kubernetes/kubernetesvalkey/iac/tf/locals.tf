@@ -66,6 +66,20 @@ locals {
   # so passwords never appear in rendered chart values.
   auth_secret_name = "${var.metadata.name}-auth"
 
+  # The two halves of the auth Secret's data, split by whether the user
+  # brought a password. An absent or empty password means "mint one":
+  # random_password.user is keyed by exactly these usernames, and
+  # declared_passwords carries the rest verbatim. Both are empty maps when
+  # auth is off, so every consumer can reference them unconditionally.
+  generated_password_users = local.auth_enabled ? {
+    for user in var.spec.auth.users : user.name => user
+    if try(coalesce(user.password), "") == ""
+  } : {}
+  declared_passwords = local.auth_enabled ? {
+    for user in var.spec.auth.users : user.name => user.password
+    if try(coalesce(user.password), "") != ""
+  } : {}
+
   # The write Service port, resolved to the chart default when the service
   # block or its port is unset — feeds the endpoint outputs. port is an
   # OPTIONAL scalar: unset arrives as null, and try(coalesce(x), null)

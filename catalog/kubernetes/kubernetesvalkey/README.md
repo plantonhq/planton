@@ -55,12 +55,17 @@ renders no headless Service).
 
 **Key design points:**
 
-- **Authentication is declared, never defaulted** — the chart ships
-  with auth OFF (anyone who can reach the Service can read and write).
-  Declaring ACL users turns it on; the user list MUST include
-  `default` (otherwise unauthenticated clients keep full access), and
-  passwords materialize as the `<name>-auth` Kubernetes Secret — never
-  plaintext in rendered chart values.
+- **Authentication is declared, never defaulted; passwords are minted,
+  never required** — the chart ships with auth OFF (anyone who can reach
+  the Service can read and write). Declaring ACL users turns it on; the
+  user list MUST include `default` (otherwise unauthenticated clients
+  keep full access). A user needs only a name: the module generates a
+  password for every user declared without one and keeps it stable
+  across re-applies; a declared password (a managed-secret reference)
+  is used as given. Either way the credentials materialize as the
+  `<name>-auth` Kubernetes Secret (one key per username) — never
+  plaintext in rendered chart values — and `password_secret` tells
+  clients where to read the `default` user's.
 - **Durability is module-owned** — Valkey's persistence and memory
   directives live in valkey.conf, which the chart accepts only as one
   raw string. The typed `config` block (`append_only`,
@@ -109,8 +114,9 @@ renders no headless Service).
   an eviction), `max_memory_policy` (`noeviction` default — right for
   durable stores; `allkeys-lru` and friends for caches), and
   `extra_directives`
-- **`spec.auth`**: ACL users (name, password, `permissions` rule
-  string — empty means full access); must include the `default` user
+- **`spec.auth`**: ACL users (name; an optional password — empty means
+  the module generates one; `permissions` rule string — empty means
+  full access); must include the `default` user
 - **`spec.tls`**: `enabled` + `certificate_secret` (a
   KubernetesCertificate reference or a literal kubernetes.io/tls
   Secret name), optional `require_client_certificate` for mutual TLS
@@ -141,7 +147,7 @@ renders no headless Service).
 | `kube_endpoint` | In-cluster endpoint of the write Service (`<name>.<namespace>.svc.cluster.local:<port>`) |
 | `port_forward_command` | Port-forward command for workstation access when no exposure is composed |
 | `username` | The ACL username applications authenticate with (`default` when auth is declared; empty when auth is off) |
-| `password_secret` | `{name, key}` of that user's password in the module-materialized `<name>-auth` Secret; unset when auth is off |
+| `password_secret` | `{name, key}` of that user's password in the module-materialized `<name>-auth` Secret, whether declared or module-generated; unset when auth is off |
 
 ## Composing in Infra Charts
 
@@ -199,8 +205,7 @@ spec:
     max_memory: 512mb
   auth:
     users:
-      - name: default
-        password: <set-a-strong-password>
+      - name: default # no password: the module mints one into jobs-store-auth
 ```
 
 ### Production replication (read Service, write safety, metrics)
@@ -224,10 +229,9 @@ spec:
     max_memory: 1gb
   auth:
     users:
-      - name: default
-        password: <set-a-strong-password>
+      - name: default # module-generated
       - name: app
-        password: <set-a-strong-password>
+        password: $secret/sessions-app-password # bring your own, as a managed-secret reference
         permissions: "~* -@all +@read +@write +ping +info"
   resources:
     requests:

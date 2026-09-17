@@ -39,10 +39,10 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	// NEO4J_AUTH with value "neo4j/<password>", and the chart LOOKS IT UP
 	// at template time — the Secret must exist BEFORE the release (main.go
 	// wires the explicit dependency on the module-materialized Secret).
-	// The password itself NEVER appears in rendered chart values.
-	if locals.AuthSecretName != "" {
-		neo4j["passwordFromSecret"] = locals.AuthSecretName
-	}
+	// Always set: the module materializes the Secret for every arm but
+	// existing_secret, which names one the user owns. The password itself
+	// NEVER appears in rendered chart values.
+	neo4j["passwordFromSecret"] = locals.AuthSecretName
 
 	// The chart's primary resources shape is flat {cpu, memory} applied to
 	// BOTH requests and limits; it also accepts a full-format limits

@@ -8,4 +8,6 @@ const (
 	OpHttpEndpoint       = "http_endpoint"
 	OpAuthSecretName     = "auth_secret_name"
 	OpPortForwardCommand = "port_forward_command"
+	OpPasswordSecretName = "password_secret.name"
+	OpPasswordSecretKey  = "password_secret.key"
 )

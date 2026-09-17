@@ -5,8 +5,11 @@ metadata:
 spec:
   # Valkey installs as one Helm release NAMED AFTER metadata.name, plus
   # an optional auth Secret (`<name>-auth`, count-indexed — keyed "0")
-  # and the optional anchor namespace. Multiple Valkey instances coexist
-  # in one cluster, so nothing here is a fixed chart name.
+  # with one random_password companion PER USER DECLARED WITHOUT A
+  # PASSWORD (for_each keyed by username; imported by VALUE — the random
+  # provider keeps no cloud state), and the optional anchor namespace.
+  # Multiple Valkey instances coexist in one cluster, so nothing here is a
+  # fixed chart name.
   values:
     - name: release_name
       derivations:
@@ -42,3 +45,20 @@ spec:
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
+    # ── the per-user password companions ─────────────────────────────────
+    # random_password.user is for_each keyed by USERNAME over the users the
+    # spec declares without a password; each instance's import ID is that
+    # user's password VALUE, read from the auth Secret under the username
+    # key — the address key names the key, so one row serves every
+    # generated user. A user whose password the spec declares has no
+    # companion.
+    - name: password_value
+      tofu_resource_name: user
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-auth"
+            key_from_address_key: true
+      where_to_find: >-
+        SECRET MATERIAL — handle accordingly. kubectl get secret
+        <resource-name>-auth -n <namespace>
+        -o jsonpath='{.data.<username>}' | base64 -d

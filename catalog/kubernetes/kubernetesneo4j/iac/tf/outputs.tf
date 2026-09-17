@@ -31,8 +31,19 @@ output "http_endpoint" {
 }
 
 output "auth_secret_name" {
-  description = "Secret holding the admin credentials (NEO4J_AUTH key): the module-materialized <name>-auth, the referenced existing Secret, or empty when the chart generated a random password"
+  description = "Secret holding the admin credentials in the chart's contract (NEO4J_AUTH key): the module-materialized <name>-auth (declared or generated password), or the referenced existing Secret; always set"
   value       = local.auth_secret_name
+}
+
+# The bare-password handle exists only for the Secret this module owns: an
+# existing Secret's layout is the owner's, and the module never assumes it
+# carries a `password` key.
+output "password_secret" {
+  description = "Secret key holding the neo4j admin user's bare password (unset when auth.existing_secret is declared)"
+  value = local.create_auth_secret ? {
+    name = local.auth_secret_name
+    key  = "password"
+  } : null
 }
 
 output "port_forward_command" {

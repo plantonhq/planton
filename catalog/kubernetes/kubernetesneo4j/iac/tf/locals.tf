@@ -67,19 +67,26 @@ locals {
   # The chart contract: neo4j.passwordFromSecret names a Secret carrying key
   # NEO4J_AUTH with value "neo4j/<password>", and the chart LOOKS IT UP at
   # template time — the Secret must exist BEFORE the release (main.tf wires
-  # the explicit dependency). The password arm materializes the Secret in
-  # this module; the existing_secret arm references one the user owns; with
-  # auth absent the chart generates a random password.
-  auth_password        = try(coalesce(var.spec.auth.password), null)
-  auth_existing_secret = try(coalesce(var.spec.auth.existing_secret), null)
-  create_auth_secret   = local.auth_password != null
+  # the explicit dependency). The module materializes that Secret itself
+  # unless the existing_secret arm references one the user owns: with the
+  # password arm it carries the declared value, with auth absent it carries
+  # the password random_password.admin generates. The chart is never left
+  # to mint a credential nobody can find afterwards.
+  auth_password           = try(coalesce(var.spec.auth.password), null)
+  auth_existing_secret    = try(coalesce(var.spec.auth.existing_secret), null)
+  create_auth_secret      = local.auth_existing_secret == null
+  generate_admin_password = local.create_auth_secret && local.auth_password == null
+
+  # The admin password that lands in the module's Secret: declared, or
+  # generated. one() over the splat is null when the generator has no
+  # instance, so a declared password never indexes a resource that does
+  # not exist.
+  admin_password = local.auth_password != null ? local.auth_password : one(random_password.admin[*].result)
 
   # The Secret name rendered into neo4j.passwordFromSecret (and exported as
-  # auth_secret_name): the module-materialized "<name>-auth", the referenced
-  # existing Secret, or "" when auth is absent.
-  auth_secret_name = local.create_auth_secret ? "${var.metadata.name}-auth" : (
-    local.auth_existing_secret != null ? local.auth_existing_secret : ""
-  )
+  # auth_secret_name): the module-materialized "<name>-auth", or the
+  # referenced existing Secret. Never empty.
+  auth_secret_name = local.create_auth_secret ? "${var.metadata.name}-auth" : local.auth_existing_secret
 
   # ---- service --------------------------------------------------------------
   # DELIBERATE OVERRIDE OF THE CHART DEFAULT: the chart ships
@@ -162,7 +169,7 @@ locals {
           acceptLicenseAgreement = var.spec.accept_license_agreement ? "yes" : null
 
           # The password itself NEVER appears here — only the Secret name.
-          passwordFromSecret = local.auth_secret_name != "" ? local.auth_secret_name : null
+          passwordFromSecret = local.auth_secret_name
 
           resources = local.neo4j_resources
         } : nk => nv if nv != null

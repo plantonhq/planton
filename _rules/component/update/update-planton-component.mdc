@@ -751,6 +751,17 @@ Based on scenario:
   families and add a `tofu_resource_name`-scoped declaration per singleton
   — deterministic satellite names are metadata.name plus a fixed suffix, so
   `from_metadata_name_suffix` derives each one blind.
+- **A credential the module can mint is never required by the spec.** An
+  update that finds a `sensitive` field with `required = true`, or a
+  module that leaves a chart to generate a credential it logs once, fixes
+  both in the same pass: the field becomes optional (a declared value wins;
+  empty means the module generates it -- `random_password` / `random.
+  RandomPassword`, same alphabet and length in both engines, letters and
+  digits only, keyed by the credential's identity), the Secret it lands in
+  gains an output (`KubernetesSecretKey`), the e2e `minimal` scenario
+  declares the user without the password, the presets drop their
+  placeholder passwords, and the import map gains the by-value row below.
+  Reference shapes: `KubernetesValkey`, `KubernetesNeo4j`, `KubernetesNats`.
 - **A module-generated credential (`random_password`) is import-mappable —
   by VALUE, with two mandatory guards**: the random provider keeps no
   cloud-side state, so its import ID is the password value itself, read

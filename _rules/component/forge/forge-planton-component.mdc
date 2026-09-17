@@ -172,6 +172,29 @@ apply). Use direct leaf access with `try(x.obj.leaf, null)` instead: it carries 
 leaf's own sensitivity and degrades to null when the object is absent. Truly sensitive leaf
 outputs additionally carry `sensitive = true` as always.
 
+## Credentials the module can mint are minted, never required (NON-NEGOTIABLE)
+
+When a component materializes a credential into a Kubernetes Secret (or any equivalent
+store the module creates), the spec NEVER requires the person to supply that credential:
+the field is optional and `sensitive`, a declared value (a managed-secret reference) is
+used as given, and an empty one means the module generates the credential itself --
+`random_password` in Terraform and `random.RandomPassword` in Pulumi, with identical
+alphabet and length in both engines, letters and digits only (symbols are the one class
+that can need quoting in a chart's init script or a client URL), keyed by the
+credential's identity (the username, never a list index, so a spec reorder never swaps
+passwords) and with `lifecycle.ignore_changes` / `pulumi.IgnoreChanges` on every
+generation-shape argument so an imported credential never regenerates on plan. The
+Secret the credential lands in is reported as an output (a `KubernetesSecretKey` naming
+the Secret and the key), and a consumer reads it from there, never from the manifest.
+When the chart itself would otherwise mint a credential and log it once, the module
+mints it instead: a credential nobody can find afterwards is not a credential.
+A field that requires a secret the module could have generated is a forge defect; the
+import map gains the generated resource's by-value row (the update rule's
+`random_password` guards), the e2e `minimal` scenario declares the user without the
+password so the cheapest scenario proves generation, and the presets ship no placeholder
+password. Reference shapes: `KubernetesValkey` (per-user), `KubernetesNeo4j`
+(single admin, declared-or-generated), `KubernetesNats`, `KubernetesSuperset`.
+
 FOREIGN-KEY FIELD-PATH FORMAT (verify against the CONSUMING API)
 When wiring `default_kind_field_path` for a network/resource reference, verify which
 address format the consuming API accepts -- GCP APIs are inconsistent. Compute-family

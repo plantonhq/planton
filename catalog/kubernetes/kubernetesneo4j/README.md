@@ -39,17 +39,18 @@ an agent's long-lived memory of entities and their connections —
 workloads where the JOIN-heavy relational alternative degrades and a
 native graph engine does not.
 
-**The credential contract**: the `neo4j` admin user's password is
-declared in `auth.password` — secret-by-default: the modules
+**The credential contract — minted, never required**: leave `auth`
+empty and the modules generate the `neo4j` admin user's password,
 materialize it as the `<name>-auth` Kubernetes Secret carrying the
-chart's contract (ONE key, `NEO4J_AUTH`, value `neo4j/<password>`) and
-point the chart at it via `passwordFromSecret`. The chart looks that
-Secret up AT TEMPLATE TIME, so the modules create it BEFORE the
-release — and the password never lands in rendered Helm values.
-Alternatively `auth.existing_secret` references a Secret you own that
-already carries the `NEO4J_AUTH` key; empty auth lets the chart
-generate a random password and log it once at first startup (fine for
-experiments; declare a credential for anything real).
+chart's contract (`NEO4J_AUTH`, value `neo4j/<password>`) plus a bare
+`password` key, and point the chart at it via `passwordFromSecret`.
+The chart looks that Secret up AT TEMPLATE TIME, so the modules create
+it BEFORE the release — and the password never lands in rendered Helm
+values; `auth_secret_name` and `password_secret` tell workloads where
+to read it, and nobody escrows a value the module can mint. Declare
+`auth.password` (a managed-secret reference) to bring your own, or
+`auth.existing_secret` to reference a Secret you own that already
+carries the `NEO4J_AUTH` key.
 
 **Key design points:**
 
@@ -95,9 +96,11 @@ experiments; declare a credential for anything real).
 - **`spec.edition`**: `community` (default, single-instance) or
   `enterprise` (clustering and advanced features; requires
   `accept_license_agreement` and a valid license)
-- **`spec.auth`**: `password` (materialized as the `<name>-auth`
-  Secret) or `existing_secret` (must already carry `NEO4J_AUTH:
-  neo4j/<password>` and exist before the install)
+- **`spec.auth`**: optional. Empty = the module generates the admin
+  password into the `<name>-auth` Secret; `password` (a managed-secret
+  reference, materialized the same way) or `existing_secret` (must
+  already carry `NEO4J_AUTH: neo4j/<password>` and exist before the
+  install) to bring your own
 - **`spec.cluster_name`**: Enterprise members sharing this name form
   one cluster; empty = standalone (and always standalone on community)
 - **`spec.resources`**: chart minimum 500m CPU / 2Gi memory — the
@@ -133,8 +136,9 @@ experiments; declare a credential for anything real).
 | `service_name` | The main Neo4j Service (bolt/http/https ports; = the release name) |
 | `bolt_endpoint` | In-cluster bolt endpoint drivers connect to (`neo4j://<name>.<ns>.svc.cluster.local:7687`) |
 | `http_endpoint` | In-cluster HTTP API / Browser endpoint (port 7474) |
-| `auth_secret_name` | The Secret holding the admin credentials — the module-materialized `<name>-auth`, or the referenced existing Secret; empty when the chart generated a random password |
+| `auth_secret_name` | The Secret holding the admin credentials in the chart's contract (`NEO4J_AUTH`) — the module-materialized `<name>-auth` (declared or generated password), or the referenced existing Secret; always set |
 | `port_forward_command` | Port-forward command for bolt access from a workstation |
+| `password_secret` | `{name, key}` of the admin user's bare password in the module-materialized `<name>-auth` Secret (key `password`); unset when `existing_secret` is declared, since that Secret's layout is yours |
 
 ## Composing in Infra Charts
 
@@ -144,9 +148,10 @@ experiments; declare a credential for anything real).
   the **`ssl` scope Secrets** accept a KubernetesCertificate reference
   — with the key-name bridge above.
 - **Applications consume the outputs**: `bolt_endpoint` as the driver
-  URI, `auth_secret_name` for the credential (the `NEO4J_AUTH` key
-  carries `neo4j/<password>`) — the password rides the Secret, never
-  the manifest.
+  URI, `password_secret` for the bare password (or `auth_secret_name`
+  when a workload wants the chart's `neo4j/<password>` pair) — the
+  password rides the Secret, never the manifest, whether it was
+  declared or module-generated.
 - **Exposure composes, never embeds**: a KubernetesIngress or Gateway
   API route over `service_name` for HTTP/Browser; bolt is a TCP
   protocol — a TCP route or an explicit `service.type: LoadBalancer`
@@ -158,7 +163,7 @@ experiments; declare a credential for anything real).
 
 ## Examples
 
-### Development (community, declared password)
+### Development (community, module-minted password)
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -169,8 +174,7 @@ spec:
   namespace:
     value: dev-graph
   create_namespace: true
-  auth:
-    password: <set-a-strong-password>
+  # no auth: the module mints the admin password into dev-graph-auth
 ```
 
 ### Production single instance (sized, tuned memory)
@@ -185,7 +189,7 @@ spec:
     value: graph
   create_namespace: true
   auth:
-    password: <set-a-strong-password>
+    password: $secret/knowledge-graph-admin # bring your own, as a managed-secret reference
   resources:
     requests: { cpu: "2", memory: 8Gi }
     limits: { cpu: "4", memory: 8Gi }

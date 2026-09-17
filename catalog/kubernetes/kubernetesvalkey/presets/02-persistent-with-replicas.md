@@ -26,7 +26,8 @@ durability for production workloads.
   restart
 - **PDB with `maxUnavailable: 1`** -- node drains take at most one pod down
   at a time
-- **ACL auth declared** -- the `default` user's password lands in the
+- **ACL auth declared, password minted** -- the `default` user is declared
+  without a password, so the module generates one and lands it in the
   `<name>-auth` Secret; replicas authenticate to the primary with the same
   ACL machinery
 
@@ -35,7 +36,6 @@ durability for production workloads.
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<your-namespace>` | Target namespace | Your namespace management or `KubernetesNamespace` resource |
-| `<your-password>` | Password for the `default` ACL user | Generate one; rotate by updating the spec |
 
 ## Related Presets
 

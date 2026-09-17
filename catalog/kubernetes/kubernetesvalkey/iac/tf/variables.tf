@@ -55,7 +55,7 @@ variable "spec" {
     auth = optional(object({
       users = list(object({
         name = string
-        password = string
+        password = optional(string, "")
         permissions = optional(string)
       }))
     }))

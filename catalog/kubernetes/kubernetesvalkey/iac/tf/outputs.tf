@@ -40,7 +40,8 @@ output "port_forward_command" {
 # The credential handles point at the module-materialized auth Secret:
 # "default" is the user plain AUTH <password> maps to (the
 # application-facing credential), and its Secret key is the username (the
-# auth Secret's one-key-per-user layout). Empty/unset when auth is off —
+# auth Secret's one-key-per-user layout) — the same handle whether the
+# password was declared or generated here. Empty/unset when auth is off —
 # no Secret exists then.
 output "username" {
   description = "The ACL username applications authenticate with (empty when auth is off)"

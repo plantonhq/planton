@@ -38,11 +38,15 @@ const (
 // `cluster_name` — each member is its own first-class resource, not
 // a replicas knob.
 //
-// CREDENTIALS: the `neo4j` admin user's password is declared in
-// `password` (secret-by-default: the modules materialize it as the
-// `<name>-auth` Secret and point the chart at it — it never lands in
-// rendered Helm values) or referenced from an existing Secret that
-// carries the chart's `NEO4J_AUTH: neo4j/<password>` contract.
+// CREDENTIALS ARE MINTED, NEVER REQUIRED: leave `auth` empty and the
+// modules generate the `neo4j` admin user's password, materialize it as
+// the `<name>-auth` Secret (the chart's `NEO4J_AUTH: neo4j/<password>`
+// contract plus a bare `password` key), and point the chart at it — the
+// password never lands in rendered Helm values, and `auth_secret_name` /
+// `password_secret` tell workloads where to read it. Declare
+// `auth.password` (a managed-secret reference) to bring your own, or
+// `auth.existing_secret` to reference a Secret you own that already
+// carries the chart's contract.
 //
 // EXPOSURE: the chart's default LoadBalancer service is deliberately
 // overridden to ClusterIP — exposure composes from first-class kinds
@@ -81,9 +85,11 @@ type KubernetesNeo4JSpec struct {
 	// no effect on community.
 	AcceptLicenseAgreement bool `protobuf:"varint,5,opt,name=accept_license_agreement,json=acceptLicenseAgreement,proto3" json:"accept_license_agreement,omitempty"`
 	// *
-	// Admin (`neo4j` user) credentials. Empty = the chart generates a
-	// random password and logs it once at first startup (fine for
-	// experiments; declare a credential for anything real).
+	// Admin (`neo4j` user) credentials. Empty = the module generates a
+	// password and materializes it as the `<name>-auth` Secret exactly as
+	// it would a declared one — the recommended shape, since nobody has to
+	// mint or escrow a value the module can. Declare an arm only to bring
+	// your own.
 	Auth *KubernetesNeo4JAuth `protobuf:"bytes,6,opt,name=auth,proto3" json:"auth,omitempty"`
 	// *
 	// Server name for clustering: Enterprise members that share this
@@ -327,7 +333,9 @@ func (x *KubernetesNeo4JSpec) GetHelmValues() string {
 }
 
 // *
-// Admin credentials. At most one arm.
+// Admin credentials, when bringing your own. At most one arm; with
+// neither, the module generates the password and materializes it the
+// same way the `password` arm is.
 type KubernetesNeo4JAuth struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Source:
@@ -400,9 +408,10 @@ type isKubernetesNeo4JAuth_Source interface {
 
 type KubernetesNeo4JAuth_Password struct {
 	// *
-	// The admin password, declared here and materialized by the
-	// modules as the `<name>-auth` Secret (key NEO4J_AUTH, the
-	// chart's contract). Never appears in rendered Helm values.
+	// The admin password, declared here (as a managed-secret reference)
+	// and materialized by the modules as the `<name>-auth` Secret (key
+	// NEO4J_AUTH, the chart's contract, plus a bare `password` key).
+	// Never appears in rendered Helm values.
 	Password string `protobuf:"bytes,1,opt,name=password,proto3,oneof"`
 }
 

@@ -163,6 +163,27 @@ var _ = ginkgo.Describe("KubernetesValkey Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
+		ginkgo.It("an ACL user without a password should be valid (the module generates one)", func() {
+			// A user needs only a name: the password is the module's to mint
+			// into the <name>-auth Secret when the spec leaves it empty.
+			input.Spec.Auth = &KubernetesValkeyAuth{
+				Users: []*KubernetesValkeyAclUser{
+					{Name: "default"},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("declared and generated passwords may mix within one auth block", func() {
+			input.Spec.Auth = &KubernetesValkeyAuth{
+				Users: []*KubernetesValkeyAclUser{
+					{Name: "default"},
+					{Name: "reader", Password: "$secret/valkey-reader", Permissions: stringPtr("~* -@all +@read +ping +info")},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("auth with distinct users and custom permissions should be valid (unique_names)", func() {
 			auth := validAuth()
 			auth.Users = append(auth.Users, &KubernetesValkeyAclUser{
@@ -430,14 +451,6 @@ var _ = ginkgo.Describe("KubernetesValkey Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 
-		ginkgo.It("ACL user without a password should fail (required)", func() {
-			input.Spec.Auth = &KubernetesValkeyAuth{
-				Users: []*KubernetesValkeyAclUser{
-					{Name: "default"},
-				},
-			}
-			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
-		})
 
 		ginkgo.It("TLS enabled without a certificate secret should fail (enabled_needs_secret)", func() {
 			input.Spec.Tls = &KubernetesValkeyTls{Enabled: true}
