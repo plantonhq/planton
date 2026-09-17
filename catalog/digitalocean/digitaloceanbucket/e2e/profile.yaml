@@ -3,28 +3,44 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanbucket
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest
-  # covering the bucket plus its three settings satellites, import map,
-  # presets, README/catalog/GUIDE). Live dual-engine proof has not yet run.
-  # Bucket lanes need the Spaces key pair (SPACES_ACCESS_KEY_ID /
-  # SPACES_SECRET_ACCESS_KEY) alongside DIGITALOCEAN_TOKEN -- Spaces is an
-  # S3-compatible credential plane the API token cannot reach; the verifier
-  # reads the same pair. Bucket names are globally unique per region across
-  # ALL DigitalOcean customers, so both scenarios carry the run-id token.
-  # TWO scenarios: `minimal` is a name-only bucket (no region -- proves the
-  # provider's own nyc3 default); `full` proves versioning, lifecycle rules
-  # (days-based expiration, noncurrent-version expiration, multipart-upload
-  # abort), CORS through the standalone resource, a bucket policy, and
-  # force_destroy (which also guarantees teardown even if a lane writes
-  # objects). Deliberately not in the live lanes: logging (the target
-  # bucket is a same-kind fixture the framework's prerequisite chain cannot
-  # express -- a kind cannot be its own registry prerequisite; the offline
-  # plan proves the wiring; unblocks if the framework grows same-kind
-  # path-entry fixtures for this shape). Buckets create in seconds and
-  # storage bills $0.02/GB-month -- an empty-bucket sweep costs effectively
-  # nothing.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip on the Terraform lane
+  # (`{region},{bucket_name}` composite from the region and bucket_id
+  # outputs; the `full` lane re-imported THREE resources -- the bucket and
+  # its CORS-configuration and policy satellites, all on the same composite
+  # -- with a plan whose only in-place update carried the two declared
+  # config-only tolerances, force_destroy and acl; the `minimal` lane one
+  # resource with acl alone). Bucket lanes need the Spaces key pair
+  # (SPACES_ACCESS_KEY_ID / SPACES_SECRET_ACCESS_KEY) alongside
+  # DIGITALOCEAN_TOKEN -- Spaces is an S3-compatible credential plane the
+  # API token cannot reach; the verifier reads the same pair. Bucket names
+  # are globally unique per region across ALL DigitalOcean customers, so
+  # both scenarios carry the run-id token.
+  #
+  # `minimal` is a name-only bucket (no region -- proves the provider's own
+  # nyc3 default; the region output read back nyc3 and the verifier
+  # confirmed it against GetBucketLocation). `full` proves an explicit
+  # region, versioning, lifecycle rules (days-based expiration on a prefix,
+  # noncurrent-version expiration, multipart-upload abort), CORS through
+  # the standalone resource, a bucket policy, and force_destroy. The
+  # verifier asserts existence (HeadBucket), the region output against the
+  # bucket's live location, and the urn / endpoint / bucket_domain_name
+  # outputs against DigitalOcean's fixed shapes -- the region assertion is
+  # load-bearing because Spaces answers 404, not a redirect, for a bucket
+  # addressed through the wrong regional endpoint.
+  #
+  # What the live runs measured: DEPLOY 6-14 s; IDEMPOTENCY clean on both
+  # engines with every satellite present; DESTROY 3-10 s with a 404 within
+  # a second; the provider's endpoint attribute is the bare region host
+  # (nyc3.digitaloceanspaces.com), no scheme.
+  #
+  # Deliberately not in the live lanes: logging (the target bucket is a
+  # same-kind fixture the framework's prerequisite chain cannot express --
+  # a kind cannot be its own registry prerequisite; the offline plan proves
+  # the wiring; unblocks if the framework grows same-kind path-entry
+  # fixtures for this shape). Buckets create in seconds and storage bills
+  # $0.02/GB-month -- an empty-bucket sweep costs effectively nothing.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

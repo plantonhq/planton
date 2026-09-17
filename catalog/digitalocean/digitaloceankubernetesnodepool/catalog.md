@@ -82,7 +82,7 @@ These are the most important decisions when configuring a node pool. Explore the
 
 **Labels and taints** -- Labels make the pool targetable from Kubernetes (nodeSelector, affinity); taints keep untolerating pods off. Pair them for dedicated pools: a taint alone isolates, a label alone only attracts.
 
-**GPU partitioning** -- `gpuPartitionMode` splits supported AMD GPU sizes into partitions. It is create-time-only in effect: changing it replaces the pool. Currently Terraform-only (Pulumi SDK gap; the Pulumi provisioner fails loudly if set).
+**GPU partitioning** -- `gpuPartitionMode` splits supported AMD GPU sizes into partitions. It is create-time-only in effect: changing it replaces the pool. Currently Terraform-only (the Pulumi SDK has no field for it at v4.53.0, re-verified 2026-09-17; the Pulumi provisioner fails loudly if set).
 
 ## Outputs and Dependencies
 
@@ -100,10 +100,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 |--------|-------------|----------------------|
 | `node_pool_id` | The pool's UUID | Import addressing, pool-scoped automation |
 | `cluster_id` | The owning cluster's UUID (echoes the resolved `cluster` input) | Anything addressing the pool through the cluster API, which needs both ids |
-| `node_ids` | DOKS node object UUIDs of the current members | Node-level automation against the DOKS API |
-| `droplet_ids` | Integer ids of the Droplets backing the nodes | Firewall rules and other Droplet-scoped wiring |
 
-No other catalog kind consumes these outputs through typed references today -- a node pool is a leaf of the dependency graph. They exist for API addressing and Droplet-scoped automation; with autoscaling on, `node_ids` and `droplet_ids` are a snapshot from provisioning time, not a live membership list.
+No other catalog kind consumes these outputs through typed references today -- a node pool is a leaf of the dependency graph. The pool's node and Droplet ids are deliberately not outputs: DOKS replaces nodes by design (the autoscaler adds and removes them, upgrades and auto-repair recycle them), so a list captured at apply time is wrong the next time the pool changes shape, and a firewall wired to it would silently miss every later node. Droplet-scoped wiring goes through the pool's `tags`, which DigitalOcean applies to every current and future node.
 
 ## Common Patterns
 

@@ -51,8 +51,8 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 |--------|-------------|
 | `node_pool_id` | The pool's UUID (import id for `digitalocean_kubernetes_node_pool`) |
 | `cluster_id` | The owning cluster's UUID |
-| `node_ids` | DOKS node object UUIDs of the current members |
-| `droplet_ids` | Integer ids of the Droplets backing the nodes |
+
+The resource's `nodes[*].id` and `nodes[*].droplet_id` are deliberately not exported: DOKS replaces nodes by design, so an apply-time list is stale the next time the pool changes shape. Droplet-scoped wiring goes through the pool's tags.
 
 ## Behavior notes
 

@@ -50,8 +50,8 @@ Both provisioners export the identical output set:
 |---|---|
 | `node_pool_id` | The pool's UUID (import id for `digitalocean_kubernetes_node_pool`) |
 | `cluster_id` | The owning cluster's UUID — the pool's API address needs both ids |
-| `node_ids` | The DOKS node object UUIDs of the pool's current members |
-| `droplet_ids` | The integer ids of the Droplets backing the nodes — wire Droplet-scoped resources (e.g. firewalls) to the pool's machines |
+
+The pool's node and Droplet ids are deliberately not outputs: DOKS replaces nodes by design (autoscaling, upgrades, auto-repair), so any list captured at apply time is stale the next time the pool changes shape. Wire firewalls and other Droplet-scoped resources to the pool through its `tags`, which DigitalOcean applies to every current and future node.
 
 ## Behavior worth knowing
 
@@ -60,7 +60,7 @@ Both provisioners export the identical output set:
 - **With autoscaling on, the live node count drifts by design.** `nodeCount` is only the initial count; the provider suppresses the diff while the count sits between the bounds.
 - **Taints must spell their effect exactly as Kubernetes does** (`NoSchedule`, `PreferNoSchedule`, `NoExecute`), and a taint's `value` may be empty — Kubernetes allows valueless taints.
 - **A cluster's default pool cannot be managed here** — it is part of the cluster resource itself, and DigitalOcean refuses to import a default pool as a standalone one.
-- **Pulumi SDK v4.49.0 cannot express `gpuPartitionMode`.** The Pulumi module fails loudly if it is set; Terraform wires it. See the [GUIDE](GUIDE.md).
+- **The Pulumi SDK (v4.53.0, re-verified 2026-09-17) cannot express `gpuPartitionMode`.** The Pulumi module fails loudly if it is set; Terraform wires it. See the [GUIDE](GUIDE.md).
 
 ---
 

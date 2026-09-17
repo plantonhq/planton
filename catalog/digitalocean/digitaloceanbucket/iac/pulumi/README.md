@@ -1,6 +1,6 @@
 # DigitalOcean Bucket -- Pulumi Module
 
-Deploys a `digitalocean:index/spacesBucket:SpacesBucket` plus the per-bucket settings satellites (`SpacesBucketCorsConfiguration`, `SpacesBucketPolicy`, `SpacesBucketLogging`) from a `DigitalOceanBucket` stack input: region and canned ACL, versioning, lifecycle rules, CORS, a JSON policy, access logging, and force-destroy. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`.
+Deploys a `digitalocean:index/spacesBucket:SpacesBucket` plus the per-bucket settings satellites (`SpacesBucketCorsConfiguration`, `SpacesBucketPolicy`, `SpacesBucketLogging`) from a `DigitalOceanBucket` stack input: region and canned ACL, versioning, lifecycle rules, CORS, a JSON policy, access logging, and force-destroy. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.53.0`.
 
 ## Module structure
 
@@ -21,5 +21,5 @@ The provider's `urn` attribute is `BucketUrn` in the SDK (`URN()` is Pulumi's ow
 - `region` is sent only when set (the zero enum value never becomes a slug); unset lets the provider apply its own default (`nyc3`).
 - CORS, policy, and logging are created as child resources only when configured. Their `Bucket` is the created bucket's id; their `Region` is the spec's region (the spec requires it whenever a satellite is set).
 - CORS uses the standalone `SpacesBucketCorsConfiguration` resource. The bucket's deprecated inline `CorsRules` argument is never written.
-- There is no Pulumi SDK gap on this surface at v4.49.0 — every modeled argument is present.
+- There is no Pulumi SDK gap on this surface at v4.53.0 (re-verified on disk 2026-09-17: `SpacesBucketArgs`, `SpacesBucketCorsConfigurationArgs`, `SpacesBucketPolicyArgs`, and `SpacesBucketLoggingArgs` are all present) — every modeled argument is wired.
 - See the kind [GUIDE](../../GUIDE.md).

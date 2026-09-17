@@ -22,13 +22,21 @@ DOKS reapplies the pool's labels and taints to every node it creates -- includin
 
 `tags` are DigitalOcean-side: they group the pool's Droplets for billing attribution and can be targeted by DigitalOcean Cloud Firewalls. `labels` are Kubernetes-side: they drive scheduling. The provider silently filters DOKS's own machinery tags (`k8s:*`, `terraform:*`) out of state -- never author tags with those prefixes.
 
+## Wire Droplet-scoped resources to the pool through its tags, never its node ids
+
+The pool's node and Droplet ids are deliberately not outputs. DOKS replaces nodes by design: the autoscaler adds and removes them, a cluster upgrade recycles every one, and auto-repair swaps a failed node for a fresh Droplet with a new id. A firewall built from a list of Droplet ids captured at apply time would protect the nodes that existed then and silently miss every node created since. Put a tag on the pool (`tags: [web-workers]`) and target that tag from the `DigitalOceanFirewall` or load balancer: DigitalOcean applies the pool's tags to each node it creates, so the tag follows membership on its own. When you need the live node set for automation, read it from the API (`GET /v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}`) at the moment you need it; `cluster_id` and `node_pool_id` are the outputs for exactly that.
+
+## Creates and destroys take minutes, not seconds
+
+A pool is "created" only when every node reports `running`: measured 1.5–2 minutes for a one-node `s-1vcpu-2gb` pool on a fresh cluster, whichever engine applies it. A destroy takes 70–80 seconds because DigitalOcean drains and terminates the nodes before the API reports the pool gone; the nodes' Droplets then linger as members of the cluster's VPC for a further minute or two. Budget both when a pool sits inside a larger pipeline, and never treat a pool that is still `provisioning` a minute in as stuck.
+
 ## Importing an existing pool
 
 The import id is the plain pool UUID (`doctl kubernetes cluster node-pool list <cluster-id>`); the provider recovers the owning cluster by scanning the account. Two expected non-defects on a blind round-trip: the module's Planton identity labels/tags appear as additions on the first plan (they were not on the manually created pool), and a default pool import is refused outright.
 
 ## GPU pools
 
-`gpuPartitionMode` accepts the two AMD partition tokens (`AMD_PARTITION_MODE_SPX_NPS1`, `AMD_PARTITION_MODE_DPX_NPS2`) and only makes sense on AMD GPU size slugs. It is a Terraform-only arm today: the Pulumi DigitalOcean SDK v4.49.0 has no field for it, and the Pulumi provisioner fails loudly rather than silently dropping it. Re-evaluate when the SDK catches up.
+`gpuPartitionMode` accepts the two AMD partition tokens (`AMD_PARTITION_MODE_SPX_NPS1`, `AMD_PARTITION_MODE_DPX_NPS2`) and only makes sense on AMD GPU size slugs. It is a Terraform-only arm today: the Pulumi DigitalOcean SDK has no field for it (v4.53.0, re-verified on disk 2026-09-17), and the Pulumi provisioner fails loudly rather than silently dropping it. The guard is a claim about one SDK version and is re-checked on every pin bump.
 
 ## What is deliberately NOT here
 

@@ -61,7 +61,13 @@ type DigitalOceanKubernetesNodePoolSpec struct {
 	// (Optional) DigitalOcean tags applied to the pool's Droplets, in addition
 	// to the standard Planton tags both provisioners always apply. Tags drive
 	// DigitalOcean-side grouping and billing attribution; they are unrelated
-	// to Kubernetes labels.
+	// to Kubernetes labels. Tags are also the wiring surface for
+	// Droplet-scoped resources: a DigitalOceanFirewall or load balancer that
+	// targets a pool tag covers every current AND future node, because DOKS
+	// applies the pool's tags to each node it creates -- the pool's node and
+	// Droplet ids are never exported for that reason (they churn by design).
+	// Never author tags with the `k8s:` or `terraform:` prefixes; DOKS owns
+	// those and the provider filters them out of state.
 	Tags []string `protobuf:"bytes,10,rep,name=tags,proto3" json:"tags,omitempty"`
 	// (Optional) GPU partitioning mode for AMD GPU Droplet sizes. Changing it
 	// replaces the pool.

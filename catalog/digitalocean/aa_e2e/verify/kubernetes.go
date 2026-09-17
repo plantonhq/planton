@@ -113,9 +113,15 @@ func getKubernetesCluster(ctx context.Context, client *godo.Client, id string) (
 // API addresses node pools as /v2/kubernetes/clusters/{cluster_id}/node_pools/{id},
 // and the kind's stack outputs carry BOTH ids, so the outputs form addresses
 // the pool directly -- one GET validates both claimed outputs against live
-// state at once. The plain-id forms keep the account-wide cluster scan (the
-// same discovery the upstream provider's own node-pool importer performs)
-// for callers that only hold the pool UUID.
+// state at once, and the same GET carries the pool's live health: every
+// node must be running and the pool must have at least one. Health is
+// always read live, never from an output (the kind exports no node or
+// Droplet ids -- DOKS replaces nodes by design, so an apply-time list is
+// stale the next time the pool changes shape), and the node COUNT is never
+// asserted against a configured number because an autoscaled pool drifts
+// between its bounds on purpose. The plain-id forms keep the account-wide
+// cluster scan (the same discovery the upstream provider's own node-pool
+// importer performs) for callers that only hold the pool UUID.
 type kubernetesNodePoolVerifier struct{}
 
 func (*kubernetesNodePoolVerifier) IDOutputKey() string { return "node_pool_id" }
@@ -153,15 +159,33 @@ func (v *kubernetesNodePoolVerifier) VerifyExistsFromOutputs(ctx context.Context
 	}
 
 	// Direct addressing: finding the pool under the claimed cluster proves
-	// both outputs against live state in one call. Node-level assertions
-	// are deliberately absent -- with autoscaling the live node set drifts
-	// from the apply-time snapshot by design.
-	_, _, err := client.Kubernetes.GetNodePool(ctx, clusterID, poolID)
+	// both outputs against live state in one call.
+	pool, _, err := client.Kubernetes.GetNodePool(ctx, clusterID, poolID)
 	if err != nil {
 		if isNotFound(err) {
 			return pkgerrors.Errorf("digitaloceankubernetesnodepool %q not found under cluster %q after deploy", poolID, clusterID)
 		}
 		return pkgerrors.Wrapf(err, "digitaloceankubernetesnodepool verify-exists failed for %q", poolID)
+	}
+
+	// Live health: the provider's create waiter returns only once every
+	// node reports running, so a pool that is not fully running here means
+	// the engine returned early or a node failed right after -- either is a
+	// real finding. The count itself is not compared to any configured
+	// value (autoscaled pools drift by design); "at least one running node"
+	// is the invariant every pool this kind creates must satisfy.
+	if len(pool.Nodes) == 0 {
+		return pkgerrors.Errorf("digitaloceankubernetesnodepool %q has no nodes after deploy", poolID)
+	}
+	for _, node := range pool.Nodes {
+		state := ""
+		if node.Status != nil {
+			state = node.Status.State
+		}
+		if state != "running" {
+			return pkgerrors.Errorf("digitaloceankubernetesnodepool %q node %q (droplet %s) is %q, want running",
+				poolID, node.ID, node.DropletID, state)
+		}
 	}
 
 	return nil

@@ -202,7 +202,12 @@ spec:
       notes: >-
         The plain pool UUID, NOT a cluster,pool composite: the provider
         recovers cluster_id by scanning the account's clusters. It refuses to
-        import a default node pool (import the cluster instead).
+        import a default node pool (import the cluster instead). The blind
+        round-trip is lossless with no tolerance: tags read back exactly as
+        sent (the provider filters only its own k8s:/terraform: machinery
+        tags on read), labels and taints read back verbatim, and node_count
+        is diff-suppressed against actual_node_count, so an autoscaled pool
+        whose live count has drifted still plans no change.
 
     # --- Databases -----------------------------------------------------------
     - terraform_type: digitalocean_database_cluster
@@ -277,7 +282,13 @@ spec:
       id_format: "{region},{bucket_name}"
       # force_destroy is engine behavior (empty-before-delete) hardcoded to
       # false by the importer; acl is write-only -- Read never calls
-      # GetBucketAcl, so the canned ACL stays at its config value.
+      # GetBucketAcl, so the canned ACL stays at its config value. Measured
+      # live: these two are exactly the updates a blind round-trip plans
+      # (force_destroy false -> true when configured true; acl re-asserted),
+      # and both are server-side no-ops when the reconcile-apply re-sends
+      # them. Region is never a tolerance: the importer takes it from the
+      # composite and the bucket's live location must agree (the E2E
+      # verifier asserts GetBucketLocation against the region output).
       config_only_attributes: [force_destroy, acl]
     - terraform_type: digitalocean_spaces_bucket_cors_configuration
       pulumi_type: digitalocean:index/spacesBucketCorsConfiguration:SpacesBucketCorsConfiguration

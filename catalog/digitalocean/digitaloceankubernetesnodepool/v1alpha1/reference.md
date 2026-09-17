@@ -188,7 +188,13 @@ Taint effect. One of NoSchedule, PreferNoSchedule, NoExecute
 (Optional) DigitalOcean tags applied to the pool's Droplets, in addition
 to the standard Planton tags both provisioners always apply. Tags drive
 DigitalOcean-side grouping and billing attribution; they are unrelated
-to Kubernetes labels.
+to Kubernetes labels. Tags are also the wiring surface for
+Droplet-scoped resources: a DigitalOceanFirewall or load balancer that
+targets a pool tag covers every current AND future node, because DOKS
+applies the pool's tags to each node it creates -- the pool's node and
+Droplet ids are never exported for that reason (they churn by design).
+Never author tags with the `k8s:` or `terraform:` prefixes; DOKS owns
+those and the provider filters them out of state.
 
 - rule: {"repeated":{"items":{"string":{"pattern":"^[a-zA-Z0-9:\\-_]{1,255}$"}}}}
 
@@ -212,9 +218,7 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanKube
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.node_pool_id` | `string` | The unique identifier (UUID) of the created node pool. |
-| `status.outputs.node_ids` | `[]string` | The DOKS node object UUIDs of the pool's current members (the node ids the Kubernetes API reports, not the backing Droplet ids). |
 | `status.outputs.cluster_id` | `string` | The UUID of the cluster that owns this pool. The API addresses the pool as /v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}, so consumers need both ids to reach it. |
-| `status.outputs.droplet_ids` | `[]string` | The integer ids (as strings) of the Droplets backing the pool's nodes, for wiring Droplet-scoped resources (e.g. firewalls) to the pool's machines. |
 
 ## References
 

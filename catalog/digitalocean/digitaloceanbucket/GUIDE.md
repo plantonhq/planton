@@ -38,7 +38,15 @@ When true, destroy deletes every object AND every object version before removing
 
 ## Importing an existing bucket
 
-Import uses the `<region>,<name>` composite (the `region` and `bucket_id` outputs). Expect `acl` and `forceDestroy` to stay at their configured values after import: the API never reports the canned ACL, and the importer hardcodes `forceDestroy` to false. Policy JSON is normalized (whitespace, key order) on read — a formatting-only diff is suppressed by the provider.
+Import uses the `<region>,<name>` composite (the `region` and `bucket_id` outputs). Expect `acl` and `forceDestroy` to stay at their configured values after import: the API never reports the canned ACL, and the importer hardcodes `forceDestroy` to false. Measured live: the first plan after a blind import shows exactly one in-place update on the bucket — `force_destroy` (false → your configured value) and the re-asserted `acl` — and applying it changes nothing on DigitalOcean's side. CORS, versioning, and lifecycle rules import cleanly with no diff. Policy JSON is normalized (whitespace, key order) on read — a formatting-only diff is suppressed by the provider.
+
+## Get the region right — a wrong region looks like a missing bucket
+
+Spaces does not redirect. A request for a `nyc3` bucket sent to `ams3.digitaloceanspaces.com` answers `404`, the same answer a deleted bucket gives. Any tooling that checks whether a bucket exists (a health check, a cleanup script, an adoption) must address the bucket through the region in its `region` output, or it will conclude the bucket is gone while it is still there and billing. `GET ?location` (S3 `GetBucketLocation`) on the correct endpoint returns the region slug and is the cheap way to confirm.
+
+## Destroy is fast and final
+
+An empty bucket (or a `forceDestroy: true` bucket, which empties itself) tears down in 3–10 seconds and answers `404` within a second. There is no soft-delete or recovery window on Spaces: a destroyed bucket's objects are gone, and its globally unique name is free for anyone to claim.
 
 ## What is deliberately NOT here
 

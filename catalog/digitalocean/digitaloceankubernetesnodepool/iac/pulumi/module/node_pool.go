@@ -16,13 +16,14 @@ func nodePool(
 	spec := locals.DigitalOceanKubernetesNodePool.Spec
 
 	// PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform
-	// wires it; the Pulumi DigitalOcean SDK v4.49.0 has no
-	// gpu_partition_mode field on KubernetesNodePool. Fail loudly on a
-	// meaningful set (the proto zero value passes) rather than silently
-	// dropping configuration. Re-evaluate when the SDK exposes
-	// gpu_partition_mode.
+	// wires it; the Pulumi DigitalOcean SDK v4.53.0 has no
+	// gpu_partition_mode field on KubernetesNodePoolArgs (re-verified on
+	// disk at that pin). Fail loudly on a meaningful set (the proto zero
+	// value passes) rather than silently dropping configuration. A guard
+	// like this is a claim about one SDK version: re-check the args struct
+	// on every pin bump and wire the field the moment it appears.
 	if spec.GpuPartitionMode != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no gpu_partition_mode field on KubernetesNodePool. Re-evaluate when the SDK exposes gpu_partition_mode.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no gpu_partition_mode field on KubernetesNodePool. Re-evaluate when the SDK exposes gpu_partition_mode.")
 	}
 
 	// Kubernetes node labels: user labels over the standard Planton labels
@@ -99,36 +100,11 @@ func nodePool(
 	ctx.Export(OpNodePoolId, createdNodePool.ID())
 	ctx.Export(OpClusterId, createdNodePool.ClusterId)
 
-	// node_ids: the DOKS node object UUIDs (the same nodes[*].id slice the
-	// Terraform module exports).
-	nodeIds := createdNodePool.Nodes.ApplyT(
-		func(nodes []digitalocean.KubernetesNodePoolNode) []string {
-			ids := make([]string, 0, len(nodes))
-			for _, node := range nodes {
-				if node.Id != nil {
-					ids = append(ids, *node.Id)
-				}
-			}
-			return ids
-		},
-	).(pulumi.StringArrayOutput)
-	ctx.Export(OpNodeIds, nodeIds)
-
-	// droplet_ids: the integer ids of the Droplets backing the nodes, for
-	// wiring Droplet-scoped resources (e.g. firewalls) to the pool's
-	// machines.
-	dropletIds := createdNodePool.Nodes.ApplyT(
-		func(nodes []digitalocean.KubernetesNodePoolNode) []string {
-			ids := make([]string, 0, len(nodes))
-			for _, node := range nodes {
-				if node.DropletId != nil {
-					ids = append(ids, *node.DropletId)
-				}
-			}
-			return ids
-		},
-	).(pulumi.StringArrayOutput)
-	ctx.Export(OpDropletIds, dropletIds)
+	// The pool's nodes (Nodes[*].Id, Nodes[*].DropletId) are deliberately
+	// not exported: DOKS replaces them by design (autoscaling, upgrades,
+	// auto-repair), so an apply-time list is stale the next time the pool
+	// changes shape. Droplet-scoped resources target the pool's tags instead
+	// -- the same contract the Terraform module exports.
 
 	return createdNodePool, nil
 }

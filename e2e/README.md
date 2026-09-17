@@ -3620,6 +3620,66 @@ normal shape, so a verifier must not treat it as unpopulated -- the cluster
 verifier asserts it only when claimed, alongside the endpoint, URN, default
 pool id, and both subnets.
 
+**A node-pool lane is three lifecycles deep; budget ~12 minutes and run one
+scenario at a time.** Every `digitaloceankubernetesnodepool` scenario
+deploys the Vpc fixture, then the cluster fixture (the cluster kind's
+`minimal` profile, 5-5.5 minutes), then the pool. Measured on all four
+lanes: `DEPENDENCIES-UP` 5-5.5 min, pool `DEPLOY` 1.5-2 min (the provider's
+create waiter returns only once every node is `running`), pool `DESTROY`
+70-80 s (the nodes drain and terminate before the API reports the pool
+gone), `DEPENDENCIES-DOWN` ~3.5 min including the fixture VPC's one expected
+`409` retry while the cluster's droplets leave the VPC. `-timeout 75m` per
+scenario is comfortable; two scenarios in one `go test` would share that
+budget and one bad teardown loop would kill the other lane.
+
+**A node pool's members are never outputs -- verify health live instead.**
+DOKS replaces pool nodes by design (autoscaling, upgrades, auto-repair), so
+the kind exports only `node_pool_id` and `cluster_id`; the direct
+`GET /v2/kubernetes/clusters/{cluster_id}/node_pools/{id}` proves both
+outputs in one call and the same response carries every node's status,
+which the verifier asserts is `running` for every node with at least one
+present. Never assert the node COUNT against a configured number -- an
+autoscaled pool drifts between its bounds on purpose, and `node_count` is
+diff-suppressed against `actual_node_count` on read (measured: the
+autoscaling `full` pool round-tripped blind with no plan at all).
+
+**Pool tags read back exactly as sent; only DOKS's own machinery tags are
+filtered.** The `full` lane's eight tags (two user tags including a
+colon-form `env:e2e`, six Planton identity tags) all read back on both
+engines, and the provider's `FilterTags` strips only `k8s:*` and
+`terraform:*`. Sweep those four DOKS-created tags (`k8s`, `k8s:<cluster id>`,
+`k8s:worker`, `terraform:default-node-pool`) at session end as the cluster
+lanes already do; the pool adds none of its own.
+
+**Spaces: a bucket addressed through the WRONG regional endpoint answers
+404, not a redirect -- so the verifier proves the region at deploy.**
+Measured with the Spaces pair: `HEAD https://ams3.digitaloceanspaces.com/<nyc3
+bucket>` is `404`, exactly what a deleted bucket answers. A module that
+exported a wrong `region` would therefore pass VERIFY-CLN for a bucket that
+still exists. The bucket verifier closes that hole by asserting the `region`
+output against `GetBucketLocation` (Spaces returns the region slug as the
+LocationConstraint, measured `nyc3`) at VERIFY-RES; only then is the
+destroy-side 404 trustworthy. It also asserts `urn` (`do:space:<name>`),
+`endpoint`, and `bucket_domain_name` against DigitalOcean's fixed shapes.
+The provider's `endpoint` attribute is the bare region HOST
+(`nyc3.digitaloceanspaces.com`) -- no scheme, no bucket name -- and the
+kind's contract says so; the first verifier draft assumed an `https://`
+prefix and failed both Pulumi lanes on that assumption alone, which is what
+a wiring assertion is for.
+
+**Bucket satellites round-trip on the bucket's own composite, and exactly
+the declared tolerances fire.** The `full` lane re-imported three resources
+(`digitalocean_spaces_bucket`, `_cors_configuration`, `_policy`) all as
+`{region},{bucket_name}`; the post-import plan proposed one in-place update
+on the bucket carrying `force_destroy false -> true` (the importer hardcodes
+it) and the write-only `acl`, both declared config-only in
+`aa_import/catalog.yaml`, and nothing on CORS, versioning, or lifecycle. The
+declared `policy` write-normalization never fired -- the configured JSON
+already matched the provider's normalized read-back. A bucket with no
+region exported `region: nyc3` (the provider's default) and imported on it.
+Buckets create in 6-14 s and answer 404 within a second of a `DESTROY`
+that took 3-10 s.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

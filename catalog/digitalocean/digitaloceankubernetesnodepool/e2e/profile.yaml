@@ -3,20 +3,40 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceankubernetesnodepool
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios, both riding the registry prerequisite edge
-  # to DigitalOceanKubernetesCluster (the cluster's minimal scenario is its
-  # install profile, which itself composes the VPC fixture): `minimal` is a
-  # fixed one-node pool on the cheapest slug; `full` proves autoscaling
-  # bounds, node labels, a PreferNoSchedule taint, and pool tags.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip on the Terraform lane
+  # (`{node_pool_id}` bare UUID -- the provider's importer found the pool by
+  # scanning the account's clusters; both scenarios re-imported with a plan
+  # that proposed no change and tolerated nothing). `minimal` is a fixed
+  # one-node pool on the cheapest DOKS-capable slug proving the lifecycle
+  # and the two identity outputs (the verifier addresses the pool directly
+  # as /clusters/{cluster_id}/node_pools/{node_pool_id}, which proves both
+  # outputs in one call, and asserts every node running). `full` proves
+  # autoscaling 1-2, two node labels, a PreferNoSchedule taint, and pool
+  # tags including a colon-form tag. Both ride the registry prerequisite
+  # edge to DigitalOceanKubernetesCluster (its `minimal` profile is the
+  # install fixture, which itself composes the Vpc fixture).
+  #
+  # What the live runs measured: DEPENDENCIES-UP 5-5.5 min (VPC + cluster);
+  # pool DEPLOY 1.5-2 min (the provider returns only when every node is
+  # running); pool DESTROY 70-80 s (nodes drain and terminate first);
+  # DEPENDENCIES-DOWN ~3.5 min including the fixture VPC's one expected 409
+  # retry while the cluster's droplets leave the VPC. Tags read back exactly
+  # as sent (the provider filters only DOKS's own k8s:/terraform: tags);
+  # labels and the taint read back verbatim; node_count is diff-suppressed
+  # against actual_node_count, so the autoscaled pool produced no
+  # idempotency or post-import diff. The pool's node and Droplet ids are
+  # deliberately not outputs (they churn by design); Droplet-scoped wiring
+  # goes through the pool's tags.
+  #
   # Deliberately not in the live lanes: gpu_partition_mode (GPU sizes are
-  # the expensive class AND a Pulumi SDK v4.49.0 gap -- Terraform wires it,
-  # Pulumi fails loudly if set). The pool itself creates in a few minutes
-  # and bills only its nodes (~$0.018/hour on s-1vcpu-2gb); the fixture
-  # cluster dominates the lane's wall clock (~5-10 min create).
+  # the expensive class AND a Pulumi SDK gap at v4.53.0, re-verified on disk
+  # 2026-09-17 -- Terraform wires it, Pulumi fails loudly if set; unblocks
+  # when the SDK grows the field and an owner funds a GPU node). The pool
+  # bills only its nodes (~$0.018/hour on s-1vcpu-2gb); the fixture cluster
+  # dominates the lane's wall clock. Run ONE scenario per `go test` with a
+  # 75-minute budget: each lane is three lifecycles deep.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 40
