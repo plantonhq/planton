@@ -50,7 +50,10 @@ concurrency:
 
 jobs:
   manifests-fresh:
-    runs-on: linux-x64-16-core-64gb-ubuntu-22.04
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -62,7 +65,10 @@ jobs:
         run: bash ./hack/guards/ensure_operator_manifests_fresh.sh
 
   build-and-test:
-    runs-on: linux-x64-16-core-64gb-ubuntu-22.04
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     defaults:
       run:

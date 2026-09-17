@@ -136,8 +136,8 @@ test-e2e: setup-test-e2e manifests generate fmt vet ## Run the e2e tests. Expect
 # holder -- each installed, archived, destroyed, and declared again from the
 # archive with every secret read back. E2E_CONSOLE_IMAGE_TAG pins the console
 # image when its published line lags the platform version the lanes declare.
-# CI runs this post-merge (.github/workflows/e2e-operator-vault-restore.yaml),
-# never on a pull request.
+# CI runs this on manual dispatch only (.github/workflows/e2e-operator-vault-restore.yaml;
+# its post-merge trigger is paused for budget since 2026-09-17), never on a pull request.
 test-e2e-vault-restore: setup-test-e2e manifests generate fmt vet ## Run the vault restore lanes alone on the e2e Kind cluster.
 	KIND=$(KIND) KIND_CLUSTER=$(KIND_CLUSTER) KUBECONFIG=$(E2E_KUBECONFIG) go test -tags=e2e ./test/e2e/ -v -ginkgo.v -ginkgo.label-filter='vault-restore' -timeout 150m
 	$(MAKE) cleanup-test-e2e

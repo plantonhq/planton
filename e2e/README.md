@@ -1986,10 +1986,9 @@ as its execution layer. For each test scenario:
 
 ## CI Workflow
 
-The `e2e-kubernetes.yaml` GitHub Actions workflow automates E2E on a weekly
-schedule:
+The `e2e-kubernetes.yaml` GitHub Actions workflow runs the E2E pipeline. **Paused (2026-09-17, GitHub Actions budget):** every `e2e-*.yaml` workflow in this repository is manual-dispatch only; the weekly schedule and the pull-request build-check are retired verbatim in each file's header so they can be restored when the budget allows. The pipeline, when dispatched:
 
-1. **build-check** -- compiles E2E code + go vet (runs on every PR too)
+1. **build-check** -- compiles E2E code + go vet
 2. **discover** -- runs `planton e2e discover --output github-matrix` to
    generate the test matrix from profiles
 3. **e2e** -- dynamic matrix of (tier x provisioner) cells, each with its own

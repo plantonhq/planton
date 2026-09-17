@@ -23,22 +23,32 @@
 #   - Manual dispatch
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# PAUSED (founder direction 2026-09-17, GitHub Actions budget). This workflow
+# runs on manual dispatch only: its push, pull_request, and schedule triggers
+# are retired below, verbatim, so re-enabling is a restore and not a guess.
+# In the first 17 days of September 2026 the automatic E2E runs on this
+# repository cost about $25 in larger-runner minutes for proofs nobody was
+# waiting on. Restore the block under `on:` when the budget allows.
+#
+# Retired triggers:
+#    schedule:
+#      - cron: '0 5 * * 0' # Weekly Sunday 5am UTC (after Auth0)
+#    pull_request:
+#      paths:
+#        - 'catalog/aws/**'
+#        - 'e2e/aws/**'
+#        - 'e2e/framework/**'
+#        - 'pkg/iac/**'
+#        - 'go.mod'
+#        - 'go.sum'
+#        - '.github/workflows/e2e-aws.yaml'
+# -----------------------------------------------------------------------------
+
 name: e2e-aws
 
 on:
-  schedule:
-    - cron: '0 5 * * 0' # Weekly Sunday 5am UTC (after Auth0)
   workflow_dispatch:
-  pull_request:
-    paths:
-      - 'catalog/aws/**'
-      - 'e2e/aws/**'
-      - 'e2e/framework/**'
-      - 'pkg/iac/**'
-      - 'go.mod'
-      - 'go.sum'
-      - '.github/workflows/e2e-aws.yaml'
-
 concurrency:
   group: e2e-aws-${{ github.ref }}
   cancel-in-progress: true

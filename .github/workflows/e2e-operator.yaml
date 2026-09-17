@@ -35,25 +35,36 @@
 # a published chart moving under the suite), and manual dispatch.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# PAUSED (founder direction 2026-09-17, GitHub Actions budget). This workflow
+# runs on manual dispatch only: its push, pull_request, and schedule triggers
+# are retired below, verbatim, so re-enabling is a restore and not a guess.
+# In the first 17 days of September 2026 the automatic E2E runs on this
+# repository cost about $25 in larger-runner minutes for proofs nobody was
+# waiting on. Restore the block under `on:` when the budget allows.
+#
+# Retired triggers:
+#    pull_request:
+#      paths:
+#        - 'operator/**'
+#        - 'helm/planton-operator/**'
+#        - 'helm/planton/**'
+#        - '.github/workflows/e2e-operator.yaml'
+#    push:
+#      branches:
+#        - main
+#      paths:
+#        - 'operator/**'
+#        - 'helm/planton-operator/**'
+#        - 'helm/planton/**'
+#        - '.github/workflows/e2e-operator.yaml'
+#    schedule:
+#      - cron: '0 4 * * 0'
+# -----------------------------------------------------------------------------
+
 name: e2e-operator
 
 on:
-  pull_request:
-    paths:
-      - 'operator/**'
-      - 'helm/planton-operator/**'
-      - 'helm/planton/**'
-      - '.github/workflows/e2e-operator.yaml'
-  push:
-    branches:
-      - main
-    paths:
-      - 'operator/**'
-      - 'helm/planton-operator/**'
-      - 'helm/planton/**'
-      - '.github/workflows/e2e-operator.yaml'
-  schedule:
-    - cron: '0 4 * * 0'
   workflow_dispatch: {}
 
 permissions:
@@ -71,7 +82,10 @@ env:
 
 jobs:
   e2e:
-    runs-on: linux-x64-16-core-64gb-ubuntu-22.04
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -87,7 +101,10 @@ jobs:
         run: make -C operator test-e2e
 
   chart-lifecycle:
-    runs-on: linux-x64-16-core-64gb-ubuntu-22.04
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4

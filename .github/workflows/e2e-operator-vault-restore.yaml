@@ -31,19 +31,30 @@
 # Docker host's loopback.
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# PAUSED (founder direction 2026-09-17, GitHub Actions budget). This workflow
+# runs on manual dispatch only: its push, pull_request, and schedule triggers
+# are retired below, verbatim, so re-enabling is a restore and not a guess.
+# In the first 17 days of September 2026 the automatic E2E runs on this
+# repository cost about $25 in larger-runner minutes for proofs nobody was
+# waiting on. Restore the block under `on:` when the budget allows.
+#
+# Retired triggers:
+#    push:
+#      branches:
+#        - main
+#      paths:
+#        - 'operator/**'
+#        - 'helm/planton-operator/**'
+#        - 'helm/planton/**'
+#        - '.github/workflows/e2e-operator-vault-restore.yaml'
+#    schedule:
+#      - cron: '0 5 * * 0'
+# -----------------------------------------------------------------------------
+
 name: e2e-operator-vault-restore
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'operator/**'
-      - 'helm/planton-operator/**'
-      - 'helm/planton/**'
-      - '.github/workflows/e2e-operator-vault-restore.yaml'
-  schedule:
-    - cron: '0 5 * * 0'
   workflow_dispatch: {}
 
 permissions:
@@ -58,7 +69,10 @@ env:
 
 jobs:
   vault-restore:
-    runs-on: linux-x64-16-core-64gb-ubuntu-22.04
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
     # Both lanes ran in 22 minutes on a 16-core laptop that emulates the
     # control plane's amd64 image; the runner runs it natively.
     timeout-minutes: 90

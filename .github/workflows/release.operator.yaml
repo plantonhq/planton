@@ -62,7 +62,10 @@ env:
 
 jobs:
   image:
-    runs-on: linux-x64-16-core-64gb-ubuntu-22.04
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
     timeout-minutes: 45
     outputs:
       version: ${{ steps.version.outputs.version }}
