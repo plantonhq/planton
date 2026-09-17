@@ -21,6 +21,9 @@ const LEGACY_ALLOWLIST = [
   "src/components/tour/**",           // the interactive demo's decision
   "src/components/blog/**",           // the content pages' pass
   "src/components/docs/**",           // the docs rebuild
+  "src/lib/MDXRenderer.tsx",          // the docs rebuild (the markdown renderer)
+  "src/lib/mdx.ts",                   // the docs rebuild
+  "src/lib/mdx-client.ts",            // the docs rebuild
   "src/components/tutorials/**",      // the content pages' pass
   "src/components/changelog/**",      // the content pages' pass
   "src/components/common/**",         // shrinks as primitives move to components/marketing
