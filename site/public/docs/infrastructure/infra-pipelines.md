@@ -134,10 +134,10 @@ Infra Pipelines are typically created automatically when you create or update an
 planton infra project deploy <project-id>
 
 # List pipelines for a project
-planton infra-project infra-pipelines --project <project-id>
+planton infra project infra-pipelines <project-name-or-id>
 
 # Get the last pipeline for a project
-planton infra-project last-pipeline <project-id>
+planton infra project last-pipeline <project-name-or-id>
 ```
 
 ## Related Documentation
@@ -146,4 +146,4 @@ planton infra-project last-pipeline <project-id>
 - [Cloud Resources](/docs/infrastructure/cloud-resources) — The resources deployed by pipelines
 - [Stack Jobs](/docs/infrastructure/stack-jobs) — The atomic IaC execution units within pipelines
 - [Flow Control](/docs/infrastructure/flow-control) — Governance policies for approval gates
-- [Infra Charts](/docs/infrastructure/infra-charts) — Templates that define resources in chart-based projects
+- [Infra Charts](/docs/infrastructure/infra-charts) — Templates that define the resources a project deploys
