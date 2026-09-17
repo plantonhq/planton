@@ -90,7 +90,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       '/trust/rules-and-approvals',
       '/trust/the-record',
     ],
-    seeIt: { label: 'See It in Infra Hub', href: '/features/infra-hub' },
+    seeIt: { label: 'See It in Infra Hub', href: '/product/infra-hub' },
   },
   {
     path: '/trust/rules-and-approvals',
@@ -123,7 +123,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       '/trust/the-record',
       '/trust/verified-before-deploy',
     ],
-    seeIt: { label: 'See It in Infra Hub', href: '/features/infra-hub' },
+    seeIt: { label: 'See It in Infra Hub', href: '/product/infra-hub' },
   },
   {
     path: '/trust/the-record',
@@ -157,7 +157,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       '/trust/security-posture',
       '/trust/rules-and-approvals',
     ],
-    seeIt: { label: 'See It in Infra Hub', href: '/features/infra-hub' },
+    seeIt: { label: 'See It in Infra Hub', href: '/product/infra-hub' },
   },
   {
     path: '/trust/security-posture',
@@ -228,7 +228,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       '/trust/verified-before-deploy',
       '/trust/security-posture',
     ],
-    seeIt: { label: 'The Open-Source Modules', href: '/features/open-source' },
+    seeIt: { label: 'The Open-Source Modules', href: '/product/open-source' },
   },
 ] as const;
 

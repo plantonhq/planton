@@ -22,20 +22,31 @@ export interface FooterGroup {
 // Header — Product mega-menu
 // ---------------------------------------------------------------------------
 
+// The order is the order a platform engineer meets the product: the two hubs,
+// the coding agent as a first-class user, the terminal, the catalog, what you
+// already have, and the open source underneath. Sub-labels are one line each
+// and claim nothing the page does not; the page's registry entry carries the
+// full description.
 export const menuProduct: MenuItem[] = [
-  { label: 'Infra Hub', subLabel: 'Deploy any infrastructure, any cloud', href: '/features/infra-hub' },
-  { label: 'Service Hub', subLabel: 'Ship code from Git to production', href: '/features/service-hub' },
-  { label: 'Cloud Catalog', subLabel: 'Browse and deploy infrastructure modules', href: '/features/cloud-catalog' },
-  { label: 'Runner', subLabel: 'Execute in your cloud, orchestrate from ours', href: '/features/runner' },
-  { label: 'Security', subLabel: 'Secrets, IAM, and audit - built into every layer', href: '/features/security' },
-  { label: 'Agent Fleet', subLabel: 'AI agents, purpose-built for infrastructure', href: '/features/agent-fleet' },
-  { label: 'CLI', subLabel: 'Command your cloud from the terminal', href: '/features/cli' },
-  { label: 'Desktop', subLabel: 'The whole platform on your laptop, free forever', href: '/features/desktop' },
-  { label: 'Open Source', subLabel: 'The open-source core of Planton', href: '/features/open-source' },
+  { label: 'Infra Hub', subLabel: 'Cost and permissions verified before anything is created', href: '/product/infra-hub' },
+  { label: 'Service Hub', subLabel: 'Every push built, deployed, and written back to GitHub', href: '/product/service-hub' },
+  { label: 'Coding Agents', subLabel: 'Your agent deploys through the same door as everyone', href: '/product/coding-agents' },
+  { label: 'CLI', subLabel: 'Everything Planton does, from your terminal', href: '/product/cli' },
+  { label: 'Catalog', subLabel: '700+ component kinds, each with its own fact sheet', href: '/product/catalog' },
+  { label: 'Import', subLabel: 'Bring what already exists under the record', href: '/product/import' },
+  { label: 'Open Source', subLabel: 'Every module Apache 2.0; leave with your manifests', href: '/product/open-source' },
+];
+
+// Where the platform runs (one model, three shapes). The desktop entry's path
+// is the desktop landing; it moves with that page.
+export const menuDistributions: MenuItem[] = [
+  { label: 'Hosted', subLabel: 'Nothing to run; your account, your keys', href: '/distributions/hosted' },
+  { label: 'Self-Hosted', subLabel: 'Two Helm installs on your own cluster', href: '/distributions/self-hosted' },
+  { label: 'Desktop', subLabel: 'Free for individuals, commercial use included', href: '/features/desktop' },
 ];
 
 export const menuExplorer: MenuItem[] = [
-  { label: 'All Product', href: '/features' },
+  { label: 'All Product', href: '/product' },
   { label: 'Documentation', href: '/docs' },
   { label: 'Tutorials', href: '/tutorials' },
   { label: 'Blog', href: '/blog' },
@@ -87,25 +98,24 @@ export const footerGroups: FooterGroup[] = [
     title: 'Product',
     id: 'product',
     items: [
-      { title: 'Infra Hub', url: '/features/infra-hub' },
-      { title: 'Service Hub', url: '/features/service-hub' },
-      { title: 'Cloud Catalog', url: '/features/cloud-catalog' },
-      { title: 'Runner', url: '/features/runner' },
-      { title: 'Security', url: '/features/security' },
-      { title: 'Agent Fleet', url: '/features/agent-fleet' },
-      { title: 'CLI', url: '/features/cli' },
+      { title: 'Infra Hub', url: '/product/infra-hub' },
+      { title: 'Service Hub', url: '/product/service-hub' },
+      { title: 'Coding Agents', url: '/product/coding-agents' },
+      { title: 'CLI', url: '/product/cli' },
+      { title: 'Catalog', url: '/product/catalog' },
+      { title: 'Import', url: '/product/import' },
     ],
   },
   {
     title: 'Open Source',
     id: 'open_source',
     items: [
-      { title: 'Planton open source', url: '/features/open-source' },
+      { title: 'Planton Open Source', url: '/product/open-source' },
       { title: 'Infra Charts', url: 'https://github.com/plantonhq/planton/tree/main/charts' },
     ],
   },
   {
-    title: 'GET STARTED',
+    title: 'Get Started',
     id: 'get_started',
     items: [
       { title: 'Download Planton Desktop', url: '/features/desktop/download' },
@@ -128,7 +138,8 @@ export const footerGroups: FooterGroup[] = [
     title: 'Explore',
     id: 'explore',
     items: [
-      { title: 'All Product', url: '/features' },
+      { title: 'All Product', url: '/product' },
+      { title: 'Distributions', url: '/distributions' },
       { title: 'Solutions', url: '/solutions' },
       { title: 'Tour', url: '/tour' },
     ],

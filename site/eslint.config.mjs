@@ -8,7 +8,9 @@ import typescript from "eslint-config-next/typescript";
  * ever added here: a new page passes the rules or it does not ship.
  */
 const LEGACY_ALLOWLIST = [
-  "src/components/product/**",        // retired as the Product, Distributions, and Solutions pages are rebuilt from the story
+  "src/components/product/solutions/**", // the Solutions pages rebuilt from personas.ts
+  "src/components/product/shared/**",    // the 2025 product kit; dies with the Solutions pages and the invest explainer that still compose it
+  "src/components/product/desktop/**",   // the desktop landing's move onto the palette's role classes
   "src/components/pricing/**",        // the pricing page's next content pass
   "src/components/enterprise/**",     // the pricing page's next content pass
   "src/components/landing-page/v1-*/**", // dies with the 2025 hackathon

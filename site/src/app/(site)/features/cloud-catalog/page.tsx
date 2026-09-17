@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { CloudCatalogHero, CloudCatalogCapabilities, CloudCatalogCTA } from '@/components/product/cloud-catalog';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/cloud-catalog');
+export const metadata = retiredRouteMetadata('/features/cloud-catalog');
 
-export default function CloudCatalogPage() {
-  return (
-    <Box>
-      <CloudCatalogHero />
-      <CloudCatalogCapabilities />
-      <CloudCatalogCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/cloud-catalog" />;
 }

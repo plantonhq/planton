@@ -25,7 +25,7 @@ export const RunnersNote: FC = () => {
           your private network and connect outbound-only, so you never open
           an inbound firewall port.{' '}
           <Link
-            href="/features/runner"
+            href="/distributions/hosted"
             className="text-[#c0c0c0] underline underline-offset-4 hover:text-white transition-colors"
           >
             Learn About Runner

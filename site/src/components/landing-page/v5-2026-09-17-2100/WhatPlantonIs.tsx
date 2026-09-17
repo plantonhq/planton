@@ -16,8 +16,8 @@ import { ChapterSection } from './ChapterSection';
 const ch = chapter('what-planton-is');
 
 const HUBS = [
-  { ...POSITIONING.infraHub, href: '/features/infra-hub' },
-  { ...POSITIONING.serviceHub, href: '/features/service-hub' },
+  { ...POSITIONING.infraHub, href: '/product/infra-hub' },
+  { ...POSITIONING.serviceHub, href: '/product/service-hub' },
 ];
 
 export const WhatPlantonIs: FC = () => (

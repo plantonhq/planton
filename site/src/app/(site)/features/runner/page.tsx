@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { RunnerHero, RunnerCapabilities, RunnerCTA } from '@/components/product/runner';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/runner');
+export const metadata = retiredRouteMetadata('/features/runner');
 
-export default function RunnerPage() {
-  return (
-    <Box>
-      <RunnerHero />
-      <RunnerCapabilities />
-      <RunnerCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/runner" />;
 }

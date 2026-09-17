@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { ServiceHubHero, ServiceHubCapabilities, ServiceHubCTA } from '@/components/product/service-hub';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/service-hub');
+export const metadata = retiredRouteMetadata('/features/service-hub');
 
-export default function ServiceHubPage() {
-  return (
-    <Box>
-      <ServiceHubHero />
-      <ServiceHubCapabilities />
-      <ServiceHubCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/service-hub" />;
 }

@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { OpenSourceHero, OpenSourceCapabilities, OpenSourceCTA } from '@/components/product/open-source';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/open-source');
+export const metadata = retiredRouteMetadata('/features/open-source');
 
-export default function OpenSourcePage() {
-  return (
-    <Box>
-      <OpenSourceHero />
-      <OpenSourceCapabilities />
-      <OpenSourceCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/open-source" />;
 }

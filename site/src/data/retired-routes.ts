@@ -24,14 +24,26 @@ export const RETIRED_ROUTES: readonly RetiredRoute[] = [
   { from: '/terms', to: '/legal/terms', reason: 'legal pages live under /legal/' },
   { from: '/refund-policy', to: '/legal/refund-policy', reason: 'legal pages live under /legal/' },
 
-  // Retired product concepts and old entry points.
-  { from: '/agents', to: '/features/agent-fleet', reason: 'the agents page became the Agent Fleet product page' },
-  { from: '/cli', to: '/features/cli', reason: 'the CLI page moved under the product group' },
-  { from: '/features/planton-copilot', to: '/features/agent-fleet', reason: 'Planton Copilot was retired in favor of Agent Fleet' },
-  { from: '/features/iac-workflows', to: '/features/infra-hub', reason: 'IaC workflows are Infra Hub' },
-  { from: '/features/self-service-devops', to: '/features', reason: 'a retired concept page' },
-  { from: '/features/auditable-intelligence', to: '/features', reason: 'a retired concept page' },
-  { from: '/features/kubernetes-dashboard', to: '/features', reason: 'a retired concept page' },
+  // The Product group moved from /features to /product, and the pages that
+  // were not products went where their subject lives: Security to the Trust
+  // section, Runner to the hosted distribution, Agent Fleet (retired with
+  // Copilot before it) to the coding-agents page that describes what shipped.
+  { from: '/features', to: '/product', reason: 'the Product group lives at /product' },
+  { from: '/features/infra-hub', to: '/product/infra-hub', reason: 'the Product group lives at /product' },
+  { from: '/features/service-hub', to: '/product/service-hub', reason: 'the Product group lives at /product' },
+  { from: '/features/cli', to: '/product/cli', reason: 'the Product group lives at /product' },
+  { from: '/features/open-source', to: '/product/open-source', reason: 'the Product group lives at /product' },
+  { from: '/features/cloud-catalog', to: '/product/catalog', reason: 'the catalog page is /product/catalog' },
+  { from: '/features/agent-fleet', to: '/product/coding-agents', reason: 'Agent Fleet was retired; the coding-agents page describes what shipped' },
+  { from: '/features/planton-copilot', to: '/product/coding-agents', reason: 'Planton Copilot was retired; the coding-agents page describes what shipped' },
+  { from: '/features/security', to: '/trust/security-posture', reason: 'security is a Trust page, not a product' },
+  { from: '/features/runner', to: '/distributions/hosted', reason: 'the runner is how the hosted distribution reaches your cloud' },
+  { from: '/features/iac-workflows', to: '/product/infra-hub', reason: 'IaC workflows are Infra Hub' },
+  { from: '/features/self-service-devops', to: '/product', reason: 'a retired concept page' },
+  { from: '/features/auditable-intelligence', to: '/product', reason: 'a retired concept page' },
+  { from: '/features/kubernetes-dashboard', to: '/product', reason: 'a retired concept page' },
+  { from: '/agents', to: '/product/coding-agents', reason: 'the agents page became the coding-agents product page' },
+  { from: '/cli', to: '/product/cli', reason: 'the CLI page lives under the product group' },
   { from: '/docs/infrastructure/openmcf', to: '/docs/infrastructure/open-source', reason: 'the docs page was renamed' },
   { from: '/solutions/by-role/devops', to: '/solutions/by-role/platform-engineers', reason: 'the DevOps persona became the platform engineer' },
   { from: '/solutions/by-use-case/chat-ops', to: '/solutions', reason: 'a retired concept page' },

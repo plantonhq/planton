@@ -100,7 +100,7 @@ export const CHAPTERS: readonly Chapter[] = [
     proof: [
       `${POSITIONING.infraHub.name}: ${POSITIONING.infraHub.line}`,
       `${POSITIONING.serviceHub.name}: ${POSITIONING.serviceHub.line}`,
-      'Your coding agent reaches Planton through its MCP server and the planton skill, or through the CLI. It sits beside the tools you already use; nothing about how you work changes.',
+      'Your coding agent reaches Planton through the Planton skills and the Planton MCP server, or through the CLI. It sits beside the tools you already use; nothing about how you work changes.',
     ],
     neverSay: ['an analogy for the umbrella', 'either hub analogy about the whole product', '"Template" capitalized as a product name'],
   },
@@ -216,7 +216,7 @@ export const CHAPTERS: readonly Chapter[] = [
     claim:
       'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
-      'Component kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree and carried only in the platform statistics.',
+      'Component kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
       'Every testimonial is verbatim and attributed to the person who said it.',
       'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],

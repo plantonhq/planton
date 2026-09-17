@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { CliHero, CliCapabilities, CliCTA } from '@/components/product/cli';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/cli');
+export const metadata = retiredRouteMetadata('/features/cli');
 
-export default function CliPage() {
-  return (
-    <Box>
-      <CliHero />
-      <CliCapabilities />
-      <CliCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/cli" />;
 }

@@ -28,6 +28,23 @@ export const PLATFORM_STATS = {
   IN_PRODUCTION_SINCE: '2023',
 } as const;
 
+/**
+ * The providers the catalog covers, in the order the folders sit under
+ * catalog/, with the brand mark the site holds for each (under
+ * public/_site/images/providers/; a provider without one renders its name).
+ * Brand marks keep their own colors: identification, not decoration.
+ */
+export const CLOUD_PROVIDERS = [
+  { name: 'AWS', logo: 'aws.svg' },
+  { name: 'Azure', logo: 'azure.svg' },
+  { name: 'GCP', logo: 'gcp.svg' },
+  { name: 'Kubernetes', logo: 'kubernetes.svg' },
+  { name: 'Cloudflare', logo: 'cloudflare.svg' },
+  { name: 'DigitalOcean', logo: 'digital-ocean.svg' },
+  { name: 'Auth0' },
+  { name: 'OpenFGA' },
+] as const;
+
 /** Exact counts behind the printed figures, for the record and for llms.txt. */
 export const PLATFORM_COUNTS = {
   componentKinds: 719,

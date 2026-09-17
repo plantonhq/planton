@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { AgentFleetHero, AgentFleetCapabilities, AgentFleetCTA } from '@/components/product/agent-fleet';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/agent-fleet');
+export const metadata = retiredRouteMetadata('/features/agent-fleet');
 
-export default function AgentFleetPage() {
-  return (
-    <Box>
-      <AgentFleetHero />
-      <AgentFleetCapabilities />
-      <AgentFleetCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/agent-fleet" />;
 }

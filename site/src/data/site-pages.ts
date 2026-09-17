@@ -19,11 +19,14 @@
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.
  */
+import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from './pricing.ts';
+import { PLATFORM_STATS } from './platform-stats.ts';
 import type { ChapterId } from './story.ts';
 
 export type PageGroup =
   | 'home'
   | 'product'
+  | 'distributions'
   | 'trust'
   | 'solutions'
   | 'pricing'
@@ -134,18 +137,96 @@ export const SITE_PAGES: readonly SitePage[] = [
     chapters: ['runs-where-you-decide'],
   },
 
-  // Product (today's routes; the Product rebuild renames the group and retires the stale pages)
-  { path: '/features', title: 'Product', description: 'The Self-Service Cloud Platform: AI-designed infrastructure and Git-to-production deployments, in your own cloud account, on an open-source foundation.', group: 'product', chapters: ['what-planton-is'] },
-  { path: '/features/infra-hub', title: 'Infra Hub', description: 'Deploy any cloud resource, from databases to Kubernetes clusters, in minutes. 700+ resource types, Infra Charts, dependency-aware pipelines, and auditable stack jobs.', group: 'product', chapters: ['what-planton-is', 'verified-before-it-exists'] },
-  { path: '/features/service-hub', title: 'Service Hub', description: 'Ship code from Git to production. Managed CI/CD with Tekton pipelines, multi-environment promotion, deploy to Kubernetes, ECS, or Cloud Run, and Kustomize-native config.', group: 'product', chapters: ['services-ship-from-git'] },
-  { path: '/features/cloud-catalog', title: 'Cloud Catalog', description: 'Browse 700+ pre-built deployment modules across 8 cloud providers. Filter by provider, preview YAML configurations, and deploy to your cloud in minutes.', group: 'product', chapters: ['what-planton-is'] },
-  { path: '/features/runner', title: 'Runner', description: 'Self-hosted execution agent that runs in your cloud. Planton orchestrates, Runner executes; your credentials never leave your account.', group: 'product', chapters: ['runs-where-you-decide'] },
-  { path: '/features/security', title: 'Security', description: 'Built-in secrets management, identity and access control, full audit trails, and zero-trust architecture. Security is native to every layer of Planton.', group: 'product', chapters: ['runs-where-you-decide', 'every-deployment-leaves-a-record'] },
-  { path: '/features/agent-fleet', title: 'Agent Fleet', description: 'Purpose-built AI agents for DevOps. Browse the marketplace, encode your runbooks as skills, orchestrate sub-agents, and stream every action in real time.', group: 'product' },
-  { path: '/features/cli', title: 'CLI', description: 'Everything Planton does, from your terminal. Manifest-driven deployments, real-time stack job streaming, Kubernetes access, and environment config in one CLI.', group: 'product', chapters: ['runs-where-you-decide'] },
-  { path: '/features/open-source', title: 'Open Source', description: 'The open-source foundation powering Planton. Protobuf-defined APIs, Pulumi and Terraform modules, portable KRM YAML manifests, no vendor lock-in.', group: 'product', chapters: ['runs-where-you-decide'] },
-  { path: '/features/desktop', title: 'Planton Desktop', description: 'Your coding agent can already create cloud infrastructure. Planton Desktop makes it verifiable, recorded, and reusable, in your account, on your laptop, free.', group: 'product', chapters: ['runs-where-you-decide', 'the-wall'] },
-  { path: '/features/desktop/download', title: 'Download Planton Desktop', description: 'Install Planton Desktop for macOS, Windows, or Linux. Free for individuals, including commercial use.', group: 'product', chapters: ['start'] },
+  // Product: the platform engineer's half of the story, one page per thing a person uses
+  {
+    path: '/product',
+    title: 'Product',
+    description:
+      'Infra Hub, Service Hub, your coding agent, the CLI, the catalog, import, and the open source underneath: what Planton is, as a platform engineer meets it.',
+    group: 'product',
+    chapters: ['what-planton-is'],
+  },
+  {
+    path: '/product/infra-hub',
+    title: 'Infra Hub',
+    description:
+      'Describe what you need, see the monthly cost and the IAM policy before anything is created, deploy, and publish it as an Infra Chart your team reuses.',
+    group: 'product',
+    chapters: ['what-planton-is', 'verified-before-it-exists', 'your-rules-hold', 'every-deployment-leaves-a-record'],
+  },
+  {
+    path: '/product/service-hub',
+    title: 'Service Hub',
+    description:
+      'Connect a repository and every push is built, containerized, deployed, and promoted in your environments\u2019 order, with the result written back into GitHub.',
+    group: 'product',
+    chapters: ['services-ship-from-git', 'your-rules-hold', 'every-deployment-leaves-a-record'],
+  },
+  {
+    path: '/product/coding-agents',
+    title: 'Coding Agents',
+    description:
+      'Your coding agent reaches Planton through the Planton skills, the MCP server, or the CLI, and deploys through the same door as everyone else.',
+    group: 'product',
+    chapters: ['what-planton-is', 'the-wall', 'your-rules-hold'],
+  },
+  {
+    path: '/product/cli',
+    title: 'CLI',
+    description:
+      'Everything Planton does, from your terminal: validate a manifest, deploy a component or a directory in dependency order, stream the job, install an Infra Chart.',
+    group: 'product',
+    chapters: ['runs-where-you-decide', 'your-rules-hold', 'every-deployment-leaves-a-record'],
+  },
+  {
+    path: '/product/catalog',
+    title: 'Catalog',
+    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} component kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with a cost fact sheet, a control posture with evidence, and least-privilege permissions; ${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts.`,
+    group: 'product',
+    chapters: ['proof-it-works', 'verified-before-it-exists', 'your-rules-hold'],
+  },
+  {
+    path: '/product/import',
+    title: 'Import',
+    description:
+      'Bring infrastructure that already exists under Planton\u2019s record without redeploying it: adopt it, import its state in one verified step, keep the record.',
+    group: 'product',
+    chapters: ['bring-what-you-have', 'every-deployment-leaves-a-record'],
+  },
+  {
+    path: '/product/open-source',
+    title: 'Open Source',
+    description:
+      'Every infrastructure module is Apache 2.0: the catalog, the Infra Charts, the CLI and its engine. If you leave, you take your manifests and keep deploying them.',
+    group: 'product',
+    chapters: ['runs-where-you-decide', 'proof-it-works'],
+  },
+
+  // Distributions: where the platform runs (chapter 8); the desktop pages carry the desktop landing's own data
+  {
+    path: '/distributions',
+    title: 'Distributions',
+    description:
+      'Hosted at planton.ai, self-hosted on your Kubernetes cluster with a license that verifies offline, or free on your laptop as Planton Desktop. One model.',
+    group: 'distributions',
+    chapters: ['runs-where-you-decide'],
+  },
+  {
+    path: '/distributions/hosted',
+    title: 'Hosted',
+    description: `The control plane at planton.ai; every deploy in your own cloud account, under your own keys, with nothing to run. Free for up to ${FREE_TIER_SEATS} seats with no card.`,
+    group: 'distributions',
+    chapters: ['runs-where-you-decide', 'start'],
+  },
+  {
+    path: '/distributions/self-hosted',
+    title: 'Self-Hosted',
+    description: `The whole platform on your Kubernetes cluster: two Helm commands, an operator, a license that verifies offline and never bricks. Free for up to ${COMMUNITY_SEAT_LIMIT} seats.`,
+    group: 'distributions',
+    chapters: ['runs-where-you-decide', 'start'],
+  },
+  { path: '/features/desktop', title: 'Planton Desktop', description: 'The whole platform on your laptop, deploying to your own cloud with the sign-ins already on your machine. No account. Free for individuals, commercial use too.', group: 'distributions', chapters: ['runs-where-you-decide', 'the-wall'] },
+  { path: '/features/desktop/download', title: 'Download Planton Desktop', description: 'Install Planton Desktop for macOS, Windows, or Linux. Free for individuals, including commercial use.', group: 'distributions', chapters: ['start'] },
 
   // Solutions (today's routes; the persona rebuild replaces them with five pages from personas.ts)
   { path: '/solutions', title: 'Solutions', description: 'How Planton serves platform engineers, engineering leaders, consultancies, founders, and security leaders.', group: 'solutions', chapters: ['who-it-is-for'] },

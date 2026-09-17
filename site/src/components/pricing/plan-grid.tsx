@@ -234,7 +234,7 @@ export const PlanGrid: FC = () => {
         },
       ],
       ai: AI_COMING_SELF_HOSTED,
-      cta: { label: 'Run It Yourself', href: '/features/open-source', primary: false },
+      cta: { label: 'Run It Yourself', href: '/product/open-source', primary: false },
     },
     {
       name: 'Licensed',

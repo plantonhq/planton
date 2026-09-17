@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { InfraHubHero, InfraHubCapabilities, InfraHubCTA } from '@/components/product/infra-hub';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/infra-hub');
+export const metadata = retiredRouteMetadata('/features/infra-hub');
 
-export default function InfraHubPage() {
-  return (
-    <Box>
-      <InfraHubHero />
-      <InfraHubCapabilities />
-      <InfraHubCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/infra-hub" />;
 }

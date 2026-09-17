@@ -100,13 +100,32 @@ function chapterMarkdown(chapter) {
   return lines.join('\n');
 }
 
-function pageMarkdown(page, story, personas, stats, site) {
+function pageMarkdown(page, story, personas, stats, site, product, distributions) {
   const lines = [`# ${page.title}`, '', page.description, '', `Canonical URL: ${site.url}${page.path === '/' ? '' : page.path}`, ''];
   if (page.chapters?.length) {
     lines.push('## What this page says', '');
     for (const id of page.chapters) {
       const c = story.chapter(id);
       lines.push(chapterMarkdown(c), '');
+    }
+  }
+  // A Product or Distributions page states more than its chapters: the record
+  // it renders from carries the page's own proof points and steps, so the
+  // agent reads the same sentences the person does.
+  const record = product.PRODUCT_PAGES.find((p) => p.path === page.path) ?? distributions.DISTRIBUTION_PAGES.find((p) => p.path === page.path);
+  if (record) {
+    if (record.steps?.length) {
+      lines.push('## How it works', '');
+      record.steps.forEach((step, i) => lines.push(`${i + 1}. **${step.title}.** ${step.text}`));
+      lines.push('');
+    }
+    lines.push('## What you get', '');
+    for (const point of record.points) lines.push(`- **${point.label}.** ${point.text}`);
+    lines.push('');
+    if (record.yours?.length) {
+      lines.push('## What stays yours', '');
+      for (const line of record.yours) lines.push(`- ${line}`);
+      lines.push('');
     }
   }
   if (page.group === 'solutions') {
@@ -130,6 +149,8 @@ async function main() {
   const personasModule = await load('src/data/personas.ts');
   const stats = await load('src/data/platform-stats.ts');
   const pricing = await load('src/data/pricing.ts');
+  const product = await load('src/data/product.ts');
+  const distributions = await load('src/data/distributions.ts');
   const retiredModule = await load('src/data/retired-routes.ts');
 
   const site = registry.SITE;
@@ -160,7 +181,7 @@ async function main() {
   for (const page of marketing) {
     const target = page.path === '/' ? path.join(exportDir, 'index.md') : path.join(exportDir, `${page.path.slice(1)}.md`);
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    fs.writeFileSync(target, pageMarkdown(page, story, personas, stats, site));
+    fs.writeFileSync(target, pageMarkdown(page, story, personas, stats, site, product, distributions));
   }
 
   // ---- llms.txt -----------------------------------------------------------
@@ -168,6 +189,7 @@ async function main() {
   const groups = [
     ['Trust', 'trust'],
     ['Product', 'product'],
+    ['Distributions', 'distributions'],
     ['Solutions', 'solutions'],
     ['Pricing', 'pricing'],
     ['Company', 'company'],
@@ -199,7 +221,7 @@ async function main() {
 
   // ---- llms-full.txt ------------------------------------------------------
   const full = [index.join('\n'), '', '---', ''];
-  for (const page of marketing) full.push(pageMarkdown(page, story, personas, stats, site), '---', '');
+  for (const page of marketing) full.push(pageMarkdown(page, story, personas, stats, site, product, distributions), '---', '');
   for (const d of docs) full.push(`# ${d.title}`, '', d.description, '', `Canonical URL: ${site.url}${d.route}`, '', d.body, '', '---', '');
   fs.writeFileSync(path.join(exportDir, 'llms-full.txt'), full.join('\n'));
 

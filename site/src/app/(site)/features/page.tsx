@@ -1,23 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import {
-  ProductOverviewHero,
-  ProductModulesGrid,
-  ProductJourney,
-  ProductArchitecture,
-  ProductCTA,
-} from '@/components/product/overview';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features');
+export const metadata = retiredRouteMetadata('/features');
 
-export default function ProductOverviewPage() {
-  return (
-    <Box>
-      <ProductOverviewHero />
-      <ProductModulesGrid />
-      <ProductJourney />
-      <ProductArchitecture />
-      <ProductCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features" />;
 }

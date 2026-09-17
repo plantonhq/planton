@@ -1,16 +1,18 @@
 'use client';
 
 /**
- * One or more commands a person types in order, with a single copy
- * affordance for the lot, in a chrome bar above the text so the button never
- * sits on a command. What is copied is the plain text, never the markup. A
- * single command is a one-line list, so there is exactly one way a marketing
- * page shows something to paste into a terminal.
+ * One or more lines a person pastes, with a single copy affordance for the
+ * lot, in a chrome bar above the text so the button never sits on a line.
+ * What is copied is the plain text, never the markup. A single command is a
+ * one-line list and a file is its lines under the file's name, so there is
+ * exactly one way a marketing page shows something to paste.
  *
- * Long lines wrap between tokens first: each space-separated token is an
- * inline block, so a path or a flag value moves to the next line whole rather
- * than splitting at one of its own hyphens; only a token wider than the block
- * itself may break inside. Nothing is ever clipped.
+ * A command may carry its own line breaks (a shell continuation, a file's
+ * lines); each physical line is a block. Within a line, long text wraps
+ * between tokens first: each space-separated token is an inline block, so a
+ * path or a flag value moves to the next line whole rather than splitting at
+ * one of its own hyphens; only a token wider than the block itself may break
+ * inside. Nothing is ever clipped.
  *
  * This is a client module because the copy button holds two seconds of
  * state; it is the one primitive in this library with a hook.
@@ -49,10 +51,10 @@ export const CommandBlock: FC<CommandBlockProps> = ({ commands, label, title = '
         </IconButton>
       </Box>
       <Box component="pre" className="p-4 font-mono text-xs leading-relaxed text-fg-body whitespace-pre-wrap m-0">
-        {commands.map((command, i) => (
-          <span key={command} className="block">
-            {command.split(' ').map((token, j) => (
-              <span key={`${i}-${j}`} className="inline-block [overflow-wrap:anywhere]">
+        {commands.flatMap((command) => command.split('\n')).map((line, i) => (
+          <span key={i} className="block">
+            {line.split(' ').map((token, j) => (
+              <span key={`${i}-${j}`} className="inline-block whitespace-pre [overflow-wrap:anywhere]">
                 {j > 0 ? ' ' : ''}
                 {token}
               </span>

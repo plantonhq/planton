@@ -41,7 +41,7 @@ export const Proof: FC = () => (
     </Grid>
     <BodyText className="text-center text-fg-secondary">
       {ch.proof[2]}{' '}
-      <Link href="/features/open-source" className="text-fg-secondary hover:text-white underline underline-offset-4">
+      <Link href="/product/open-source" className="text-fg-secondary hover:text-white underline underline-offset-4">
         {'Open-Source Modules \u2192'}
       </Link>
     </BodyText>

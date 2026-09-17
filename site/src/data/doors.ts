@@ -17,7 +17,18 @@
 import { DESKTOP_DOWNLOAD_PATH } from './desktop-download.ts';
 import { EVALUATION_URL } from './pricing.ts';
 
-export type DoorId = 'hosted' | 'desktop' | 'demo' | 'pricing' | 'selfHostedDocs' | 'evaluation' | 'codingAgentsDocs' | 'cliDocs';
+export type DoorId =
+  | 'hosted'
+  | 'desktop'
+  | 'demo'
+  | 'pricing'
+  | 'selfHostedDocs'
+  | 'evaluation'
+  | 'codingAgentsDocs'
+  | 'cliDocs'
+  | 'catalogBrowser'
+  | 'catalogSource'
+  | 'github';
 
 export interface Door {
   /** Title Case; the button's text. */
@@ -35,6 +46,10 @@ export const DOORS: Record<DoorId, Door> = {
   evaluation: { label: 'Start an Evaluation', href: EVALUATION_URL },
   codingAgentsDocs: { label: 'Set Up Your Coding Agent', href: '/docs/coding-agents' },
   cliDocs: { label: 'Install the CLI', href: '/docs/cli' },
+  /** The live catalog browser in the console; it answers without a sign-in. */
+  catalogBrowser: { label: 'Browse the Catalog', href: '/cloud-catalog' },
+  catalogSource: { label: 'The Catalog on GitHub', href: 'https://github.com/plantonhq/planton/tree/main/catalog' },
+  github: { label: 'Planton on GitHub', href: 'https://github.com/plantonhq/planton' },
 };
 
 /** A pair of doors: the one a page leads with and the one beside it. */

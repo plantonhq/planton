@@ -26,3 +26,5 @@ export * from './proof-list';
 export * from './page-card';
 export * from './doors';
 export * from './command-block';
+export * from './page-artifact';
+export * from './provider-strip';

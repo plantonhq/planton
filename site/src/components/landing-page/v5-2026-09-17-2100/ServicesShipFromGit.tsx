@@ -32,7 +32,7 @@ export const ServicesShipFromGit: FC = () => (
     chapter={ch}
     layout="split-reverse"
     aside={<ProofList items={ITEMS} />}
-    readMore={{ href: '/features/service-hub', label: 'Service Hub' }}
+    readMore={{ href: '/product/service-hub', label: 'Service Hub' }}
   >
     <RecordWindow title="Service run" rows={ROWS} footer="An illustration of the shape; times are examples." />
   </ChapterSection>

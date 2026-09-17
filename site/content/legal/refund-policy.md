@@ -4,7 +4,7 @@
 
 *Last updated: August 20, 2026*
 
-This Refund Policy explains how refunds work for everything Planton Cloud, Inc. ("**Planton**", "**we**", or "**us**") sells: team subscriptions, self-hosted licenses, and prepaid AI credits. It supplements our [Terms of Service](/terms). Where this policy is more generous than the Terms, this policy applies.
+This Refund Policy explains how refunds work for everything Planton Cloud, Inc. ("**Planton**", "**we**", or "**us**") sells: team subscriptions, self-hosted licenses, and prepaid AI credits. It supplements our [Terms of Service](/legal/terms). Where this policy is more generous than the Terms, this policy applies.
 
 Our approach in one sentence: **the free tier never bills, prices are what they say, and if something we sold you did not work out, we would rather fix it or refund it than argue about it.**
 

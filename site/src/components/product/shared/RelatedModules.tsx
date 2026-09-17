@@ -3,18 +3,8 @@
 import { FC, ReactNode } from 'react';
 import Link from 'next/link';
 import { Box, Typography } from '@mui/material';
-import {
-  Hub as InfraHubIcon,
-  RocketLaunch as ServiceHubIcon,
-  PlayCircleOutline as RunnerIcon,
-  Shield as SecurityIcon,
-  Psychology as AgentFleetIcon,
-  Terminal as CliIcon,
-  Laptop as DesktopIcon,
-  Code as OpenSourceIcon,
-} from '@mui/icons-material';
+import { Hub as InfraHubIcon, RocketLaunch as ServiceHubIcon, Terminal as CliIcon, Code as OpenSourceIcon } from '@mui/icons-material';
 import { Section } from '@/components/marketing';
-import { DESKTOP_LANDING_PATH } from '@/data/desktop-download';
 import { PLATFORM_STATS } from '@/data/platform-stats';
 
 interface ModuleInfo {
@@ -29,49 +19,25 @@ const allModules: Record<string, ModuleInfo> = {
     icon: <InfraHubIcon sx={{ fontSize: 20 }} />,
     title: 'Infra Hub',
     description: `Deploy ${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} cloud resource types across any provider.`,
-    href: '/features/infra-hub',
+    href: '/product/infra-hub',
   },
   'service-hub': {
     icon: <ServiceHubIcon sx={{ fontSize: 20 }} />,
     title: 'Service Hub',
     description: 'Git push to production with built-in CI/CD.',
-    href: '/features/service-hub',
-  },
-  runner: {
-    icon: <RunnerIcon sx={{ fontSize: 20 }} />,
-    title: 'Runner',
-    description: 'Execute in your cloud, orchestrate from ours.',
-    href: '/features/runner',
-  },
-  security: {
-    icon: <SecurityIcon sx={{ fontSize: 20 }} />,
-    title: 'Security',
-    description: 'Secrets, IAM, audit trails, zero-trust architecture.',
-    href: '/features/security',
-  },
-  'agent-fleet': {
-    icon: <AgentFleetIcon sx={{ fontSize: 20 }} />,
-    title: 'Agent Fleet',
-    description: 'AI agents purpose-built for infrastructure.',
-    href: '/features/agent-fleet',
+    href: '/product/service-hub',
   },
   cli: {
     icon: <CliIcon sx={{ fontSize: 20 }} />,
     title: 'CLI',
     description: 'Everything Planton does, from your terminal.',
-    href: '/features/cli',
-  },
-  desktop: {
-    icon: <DesktopIcon sx={{ fontSize: 20 }} />,
-    title: 'Desktop',
-    description: 'The whole platform on your laptop, free forever.',
-    href: DESKTOP_LANDING_PATH,
+    href: '/product/cli',
   },
   'open-source': {
     icon: <OpenSourceIcon sx={{ fontSize: 20 }} />,
     title: 'Open Source',
     description: 'Planton open source: portable infrastructure definitions.',
-    href: '/features/open-source',
+    href: '/product/open-source',
   },
 };
 

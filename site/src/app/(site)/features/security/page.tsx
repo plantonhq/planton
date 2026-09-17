@@ -1,15 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { SecurityHero, SecurityCapabilities, SecurityCTA } from '@/components/product/security';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/features/security');
+export const metadata = retiredRouteMetadata('/features/security');
 
-export default function SecurityPage() {
-  return (
-    <Box>
-      <SecurityHero />
-      <SecurityCapabilities />
-      <SecurityCTA />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/features/security" />;
 }
