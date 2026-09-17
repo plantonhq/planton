@@ -1,30 +1,37 @@
-'use client';
-
-import { Box } from '@mui/material';
+import { pageMetadata } from '@/lib/page-metadata';
 import {
-  HeroSection,
-  HowItWorks,
-  TwoHubs,
-  VerifiedBeforeDeploy,
-  YourCloudYourControl,
-  OpenSource,
-  ThreeWaysToRun,
+  Hero,
+  TheWall,
+  WhatPlantonIs,
+  VerifiedBeforeItExists,
+  YourRulesHold,
+  TheRecord,
+  ServicesShipFromGit,
+  BringWhatYouHave,
+  RunsWhereYouDecide,
+  WhoItIsFor,
   Proof,
-  FinalCTA,
+  Close,
 } from '@/components/landing-page';
 
+export const metadata = pageMetadata('/');
+
+/** The home page is the story in order; the sections are the chapters. */
 export default function Home() {
   return (
-    <Box className="overflow-x-hidden">
-      <HeroSection />
-      <HowItWorks />
-      <TwoHubs />
-      <VerifiedBeforeDeploy />
-      <YourCloudYourControl />
-      <OpenSource />
-      <ThreeWaysToRun />
+    <main className="overflow-x-hidden">
+      <Hero />
+      <TheWall />
+      <WhatPlantonIs />
+      <VerifiedBeforeItExists />
+      <YourRulesHold />
+      <TheRecord />
+      <ServicesShipFromGit />
+      <BringWhatYouHave />
+      <RunsWhereYouDecide />
+      <WhoItIsFor />
       <Proof />
-      <FinalCTA />
-    </Box>
+      <Close />
+    </main>
   );
 }

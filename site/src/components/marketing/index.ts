@@ -18,3 +18,4 @@ export * from './metric';
 export * from './terminal-window';
 export * from './comparison-cell';
 export * from './step';
+export * from './record-window';

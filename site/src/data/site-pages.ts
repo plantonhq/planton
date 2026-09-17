@@ -113,7 +113,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/the-record',
     title: 'The Record',
     description:
-      'Every infrastructure change is one stack job, kept forever with its configuration, cost fact, verdicts, approvals, and the snapshot of what exists afterward.',
+      'Every infrastructure change is one stack job, kept and queryable with its configuration, cost fact, verdicts, approvals, and the snapshot of what exists afterward.',
     group: 'trust',
     chapters: ['every-deployment-leaves-a-record'],
   },

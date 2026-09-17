@@ -13,6 +13,15 @@ interface GridProps {
   className?: string;
 }
 
+/**
+ * Five cards on a three-wide page leave a hole; this lays cards out as a
+ * centered wrap instead, so the last row centers itself. Use it when the
+ * count is not a multiple of the column count.
+ */
+export const CenteredCards: FC<{ children: ReactNode; className?: string }> = ({ children, className = '' }) => (
+  <Box className={`flex flex-wrap justify-center gap-6 ${className} [&>*]:basis-full md:[&>*]:basis-[calc(50%-0.75rem)] lg:[&>*]:basis-[calc(33.333%-1rem)]`}>{children}</Box>
+);
+
 export const Grid: FC<GridProps> = ({ 
   children, 
   cols = 3, 

@@ -15,6 +15,7 @@
  * for the build-time generators (llms.txt) without a bundler.
  */
 import { POSITIONING } from './positioning.ts';
+import { COMMUNITY_SEAT_LIMIT, EVALUATION_DAYS, FREE_TIER_SEATS } from './pricing.ts';
 
 export type ChapterId =
   | 'the-wall'
@@ -56,17 +57,33 @@ export const ROADMAP_DISCLOSURE = 'Roadmap. Not yet shipped; shown so you know w
 
 /** The spine, in one sentence, for a hero or a deck cover. */
 export const STORY_SPINE =
-  'Proof at creation, not observation after: everything Planton deploys is priced before it exists, judged against a budget, held to your rules, stamped with the controls it enforces, and left behind as an immutable record.';
+  'Proof at creation, not observation after: every change Planton deploys is priced before it exists with its coverage stated, judged against a budget, held to your rules, stamped with the controls it enforces, and left behind as an immutable record.';
 
-/** The first sentence of every demo and the landing hero's first beat (chapter 1). */
+/** The first sentence of every demo (chapter 1): the desktop line in full. */
 export const OPENING_LINE = POSITIONING.desktop.line;
+
+/**
+ * The landing hero's headline: the opening line up to its dash, so the
+ * headline is two sentences and the three words after the dash (your
+ * account, your laptop, free) are said once more in the fine print under
+ * the doors rather than in the headline. Derived, never retyped.
+ */
+export const HERO_HEADLINE = `${OPENING_LINE.split(' \u2014 ')[0]}.`;
+
+/**
+ * The hero's second sentence: where Planton sits relative to the agent and
+ * the CLI the visitor already has, and the three things it adds. Answers the
+ * first objection on the first screen.
+ */
+export const HERO_SUBHEAD =
+  'It sits beside the coding agent and cloud CLI you already use. Verifiable: cost, permissions, and controls checked before anything exists. Recorded: every change kept where you can query it. Reusable: a template your team redeploys.';
 
 export const CHAPTERS: readonly Chapter[] = [
   {
     // Chapter 1
     id: 'the-wall',
     number: 1,
-    title: 'The Wall',
+    title: 'What the Agent Leaves Behind',
     claim:
       'Your coding agent can already create cloud infrastructure. What it creates is unverified, unrecorded, and unrepeatable: nobody priced it, nobody checked the permissions, nothing remembers what was made, and the next environment starts from a blank prompt.',
     proof: [
@@ -83,6 +100,7 @@ export const CHAPTERS: readonly Chapter[] = [
     proof: [
       `${POSITIONING.infraHub.name}: ${POSITIONING.infraHub.line}`,
       `${POSITIONING.serviceHub.name}: ${POSITIONING.serviceHub.line}`,
+      'Your coding agent reaches Planton through its MCP server and the planton skill, or through the CLI. It sits beside the tools you already use; nothing about how you work changes.',
     ],
     neverSay: ['an analogy for the umbrella', 'either hub analogy about the whole product', '"Template" capitalized as a product name'],
   },
@@ -94,10 +112,10 @@ export const CHAPTERS: readonly Chapter[] = [
     claim:
       'Before anything is created, Planton tells you what it will cost each month with its coverage stated honestly, which permissions it needs and no more, and which technical controls the components enforce. Proof at creation, not detection after.',
     proof: [
-      'Every deployment-changing job is born with a verified monthly cost: an exact figure with line items when the pricing rules can derive one, a range otherwise, and plainly "unpriced" when neither is possible. A zero never stands in for unknown.',
-      'The cost carries the catalog release its prices came from and, when both configurations price exactly, the signed monthly delta against what was deployed before.',
+      'Every deployment-changing job is born with a verified monthly cost: an exact figure with line items when the pricing rules can derive one, a range otherwise, and plainly \u201cunpriced\u201d when neither is possible. A zero never stands in for unknown.',
+      'The cost names the catalog release its prices came from and, when both can be priced exactly, how much more or less this will cost each month than what is deployed today.',
       'The least-privilege permission policy is derived from exactly what is composed, per component kind.',
-      'Every covered component carries a control profile citing the 17-control catalog, with evidence for each claim.',
+      'Every covered component states which of a fixed list of 17 technical controls it enforces, with evidence for each claim.',
       'The console, the CLI, and the assistant render the same server-stamped statement word for word.',
     ],
     neverSay: ['saves you $X', 'compliant', 'an estimate presented as a bill', 'estimate versus actual (not shipped)'],
@@ -112,7 +130,7 @@ export const CHAPTERS: readonly Chapter[] = [
     proof: [
       'An environment can carry a deployment budget. A deploy whose verified cost exceeds it pauses for a human decision, and who approved, when, and why is stamped on the record.',
       'Protected environments pause before anything deploys, and nobody approves work they initiated, the assistant included.',
-      'The catalog can be curated to the component kinds your organization allows, and the console, the agent, and the CLI can never disagree about it, because one resolver answers both what is shown and what is refused.',
+      'The catalog can be curated to the component kinds your organization allows. The console, the CLI, and the agent all see the same list and refuse the same things, because one answer serves both.',
       'A field the schema marks sensitive takes a managed secret. There is no way to type a raw secret into it.',
     ],
     neverSay: ['guardrails over spec content as shipped', 'policy as code', 'prevents all misconfiguration'],
@@ -125,7 +143,7 @@ export const CHAPTERS: readonly Chapter[] = [
     claim:
       'Every change to infrastructure runs as one stack job, and every stack job is kept: the exact configuration that was deployed, the cost fact, the budget verdict, who approved and why, who triggered it, what happened in every phase, and a snapshot of what exists afterward.',
     proof: [
-      'The full configuration is embedded into the job when it is created. The resource may change later; the job never does.',
+      'The full configuration is embedded into the job when it is created, and the job is immutable: the resource may change later; the job never does.',
       'Every job is retained and queryable by resource, organization, environment, time, and outcome.',
       'One event stream drives the console, the CLI, and the audit log, so every surface tells the same story.',
       'Every cloud resource Planton creates carries identity tags naming its organization, environment, kind, and id.',
@@ -136,7 +154,7 @@ export const CHAPTERS: readonly Chapter[] = [
     // Chapter 6
     id: 'services-ship-from-git',
     number: 6,
-    title: 'Services Ship From Git Onto That Infrastructure',
+    title: 'Services Ship From Git',
     claim:
       'Once the infrastructure exists, your services ship onto it straight from Git. Connect a repository; every push is built, containerized, and deployed, with the result written back into GitHub as checks and deployments.',
     proof: [
@@ -196,11 +214,11 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 10,
     title: 'Proof It Works',
     claim:
-      'Teams have run production on Planton since 2023, with one hundred percent retention and no security incidents. And named people, in their own words.',
+      'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
       'Component kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree and carried only in the platform statistics.',
       'Every testimonial is verbatim and attributed to the person who said it.',
-      'Planton runs on Planton.',
+      'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],
     neverSay: ['any savings figure', '50+ charts', 'an exact kind count in prose', 'a paraphrased or company-attributed quote'],
   },
@@ -210,10 +228,10 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 11,
     title: 'How It Compares',
     claim:
-      'Governance platforms observe your estate after the fact and tell you what to fix; Planton prevents at the moment of creation and stamps the proof on the record, alongside those tools rather than instead of them. Infrastructure-as-code tools work on Terraform you still write, field name by field name; Planton gives you typed self-service over a closed control vocabulary. Developer portals catalog what you have; Planton deploys what you need.',
+      'Governance platforms observe your estate after the fact and tell you what to fix; Planton prevents at the moment of creation and stamps the proof on the record, alongside those tools rather than instead of them. Infrastructure-as-code tools work on Terraform you still write, field name by field name; Planton gives you typed self-service with rules written once over a fixed list of controls. Developer portals catalog what you have; Planton deploys what you need.',
     proof: [
       'Prevent at creation versus observe after: a complement to posture tools, never a replacement.',
-      'A rule is written once over a handful of controls, not over a hundred field names, and the same boundary covers chart deploys and service deploys.',
+      'Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten. Rules are written once over a handful of controls, not over a hundred field names.',
       'The execution layer behind the catalog: it deploys, with the record attached.',
     ],
     neverSay: ['any vendor name', 'DevSecOps platform', 'FinOps', 'a feature table with a competitor column'],
@@ -223,8 +241,7 @@ export const CHAPTERS: readonly Chapter[] = [
     id: 'start',
     number: 12,
     title: 'Start',
-    claim:
-      'Start free, today. Planton Desktop is free for individuals forever, commercial use included. The hosted free tier needs no card. The self-hosted community edition is free forever, and an evaluation key needs only an email.',
+    claim: `Start free today. Planton Desktop is free for individuals forever, commercial use included. The hosted free tier is free for up to ${FREE_TIER_SEATS} seats with no card. The self-hosted community edition is free for up to ${COMMUNITY_SEAT_LIMIT} seats, and a ${EVALUATION_DAYS}-day evaluation of the full edition needs only an email.`,
     proof: [
       'Every number on the pricing page reads from one data file and is checked against the enforced entitlements at build time.',
       'Teams pay per seat; below the self-serve ceiling, nobody talks to sales.',

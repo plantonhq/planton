@@ -24,9 +24,10 @@ export const TerminalWindow: FC<TerminalWindowProps> = ({
     `}
   >
     <Box className="flex items-center gap-2 px-4 py-3 bg-edge border-b border-edge-hover">
-      <Box className="w-3 h-3 rounded-full bg-danger" />
-      <Box className="w-3 h-3 rounded-full bg-warn" />
-      <Box className="w-3 h-3 rounded-full bg-ok" />
+      {/* Window chrome, not status: the dots are neutral so red, amber, and green keep their meaning elsewhere. */}
+      <Box className="w-3 h-3 rounded-full bg-edge-hover" />
+      <Box className="w-3 h-3 rounded-full bg-edge-hover" />
+      <Box className="w-3 h-3 rounded-full bg-edge-hover" />
       <Typography className="ml-3 text-xs text-fg-muted">{title}</Typography>
     </Box>
     

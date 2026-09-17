@@ -9,7 +9,7 @@ import type { FC } from 'react';
 export const SectionTitle: FC<TypographyProps> = ({ className, ...props }) => (
   <Typography
     variant="h2"
-    className={`text-xl md:text-2xl lg:text-3xl font-semibold text-white leading-snug tracking-tight ${className}`}
+    className={`text-xl md:text-2xl lg:text-3xl font-semibold text-white leading-snug tracking-tight text-balance ${className}`}
     {...props}
   />
 );
