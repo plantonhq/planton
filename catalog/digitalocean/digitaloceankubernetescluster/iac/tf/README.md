@@ -24,7 +24,7 @@ module "kubernetes_cluster" {
   spec = {
     cluster_name       = "app-cluster"
     region             = "nyc3"
-    kubernetes_version = "1.33.1-do.3"
+    kubernetes_version = "1.35"
     vpc                = "b5648f9e-a28a-4760-bb87-b2fad07ae295"
     highly_available   = true
     auto_upgrade       = true
@@ -64,7 +64,7 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 | `kubeconfig` | Raw kubeconfig YAML (sensitive; not base64) |
 | `api_server_endpoint` | Kubernetes API server URL |
 | `urn` | `do:kubernetes:<cluster_id>` |
-| `ipv4_address` | Control plane public IPv4 (empty on HA clusters) |
+| `ipv4_address` | Control plane public IPv4 when DigitalOcean reports one -- empty on clusters created today, single-replica included; use `api_server_endpoint` |
 | `default_node_pool_id` | The inline default pool's UUID |
 | `cluster_subnet` / `service_subnet` | Pod and service CIDR blocks in effect |
 

@@ -9,12 +9,15 @@ import (
 
 // kubernetesClusterVerifier verifies a DigitalOceanKubernetesCluster via
 // GET /v2/kubernetes/clusters/{id}. Beyond existence, it asserts the live
-// cluster is running and checks the API endpoint the module CLAIMS in its
-// stack outputs against the live cluster -- outputs are contractually
-// identical across both engines, so one assertion protects both, and an
-// absent output simply means "not claimed" and is skipped. Status is always
-// read live, never from an output: an apply-time snapshot goes stale
-// immediately.
+// cluster is running and checks every identity and wiring value the module
+// CLAIMS in its stack outputs -- the API endpoint, the URN, the public IPv4,
+// the default pool's id, and the pod and service subnets -- against the
+// live cluster. Outputs are contractually identical across both engines, so
+// one assertion protects both, and an absent output simply means "not
+// claimed" and is skipped. Status is always read live, never from an
+// output: an apply-time snapshot goes stale immediately. The kubeconfig is
+// deliberately not compared: it is a credential whose bytes are minted per
+// fetch, so equality with anything is not a meaningful claim.
 type kubernetesClusterVerifier struct{}
 
 func (*kubernetesClusterVerifier) IDOutputKey() string { return "cluster_id" }
@@ -54,9 +57,34 @@ func (v *kubernetesClusterVerifier) VerifyExistsFromOutputs(ctx context.Context,
 		return pkgerrors.Errorf("digitaloceankubernetescluster %q status is %q, want running", id, state)
 	}
 
-	if endpoint := StringOutput(outputs, "api_server_endpoint"); endpoint != "" && cluster.Endpoint != endpoint {
-		return pkgerrors.Errorf("digitaloceankubernetescluster %q api_server_endpoint mismatch: output %q, live %q",
-			id, endpoint, cluster.Endpoint)
+	// The default pool is the one the provider marks with its own tag; a
+	// cluster this module created always has exactly one such pool. Its id
+	// is what the default_node_pool_id output claims.
+	liveDefaultPoolID := ""
+	for _, pool := range cluster.NodePools {
+		for _, t := range pool.Tags {
+			if t == "terraform:default-node-pool" {
+				liveDefaultPoolID = pool.ID
+			}
+		}
+	}
+
+	claims := []struct {
+		output string
+		live   string
+	}{
+		{"api_server_endpoint", cluster.Endpoint},
+		{"urn", cluster.URN()},
+		{"ipv4_address", cluster.IPv4},
+		{"default_node_pool_id", liveDefaultPoolID},
+		{"cluster_subnet", cluster.ClusterSubnet},
+		{"service_subnet", cluster.ServiceSubnet},
+	}
+	for _, c := range claims {
+		if claimed := StringOutput(outputs, c.output); claimed != "" && claimed != c.live {
+			return pkgerrors.Errorf("digitaloceankubernetescluster %q %s mismatch: output %q, live %q",
+				id, c.output, claimed, c.live)
+		}
 	}
 
 	return nil

@@ -22,7 +22,8 @@ spec:
   # customers whose first VPC in a region goes through Planton.
   #
   # NOTE: this kind's e2e/prerequisite.yaml is the install fixture other
-  # kinds' lanes deploy (region nyc3, 10.60.0.0/24) -- it is deliberately
+  # kinds' lanes deploy (region nyc3, 10.62.0.0/24; the fixture header says
+  # when and how the range moves) -- it is deliberately
   # separate from these scenarios and must keep its shape. The provider
   # serializes VPC creation per region internally, so parallel lanes in one
   # region queue up rather than fail.

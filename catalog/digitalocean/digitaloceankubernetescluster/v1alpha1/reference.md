@@ -39,7 +39,7 @@ metadata:
 spec:
   clusterName: example-doks-minimal
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   defaultNodePool:
@@ -53,7 +53,7 @@ metadata:
 spec:
   clusterName: example-doks-full
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   highlyAvailable: true
@@ -211,11 +211,17 @@ Allowed values (use exactly as shown):
 
 `string` · required
 
-The Kubernetes version slug to create the cluster at, e.g. "1.33.1-do.3"
-or a prefix like "1.33". This is the creation pin: patch upgrades ride
-auto_upgrade, and both provisioners ignore later drift on this field
-because DigitalOcean recreates the whole cluster when the configured
-version is lower than the live one.
+The Kubernetes version to create the cluster at, as DigitalOcean offers
+it TODAY: either a minor prefix ("1.35" -- DigitalOcean resolves it to the
+current patch) or a full slug ("1.35.7-do.5"). Prefer the prefix: patch
+slugs are retired every few weeks and a create naming a retired slug
+fails with 422, while a minor stays creatable for its whole support
+window. The live offer list is GET /v2/kubernetes/options (or `doctl
+kubernetes options versions`); on 2026-09-16 it was 1.34, 1.35, 1.36.
+This is the creation pin only: patch upgrades ride auto_upgrade, and
+both provisioners ignore later drift on this field because DigitalOcean
+recreates the whole cluster when the configured version is lower than
+the live one.
 
 - rule: {"required":true}
 
@@ -714,7 +720,7 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanKube
 | `status.outputs.kubeconfig` | `string` | The raw kubeconfig YAML for accessing the cluster (not base64-encoded); write it to a file and point KUBECONFIG at it. Contains admin credentials -- treat as a secret. |
 | `status.outputs.api_server_endpoint` | `string` | The endpoint URL of the Kubernetes API server for the cluster. |
 | `status.outputs.urn` | `string` | The uniform resource name of the cluster ("do:kubernetes:<cluster_id>"), used when attaching the cluster to a DigitalOcean project. |
-| `status.outputs.ipv4_address` | `string` | The public IPv4 address of the cluster's control plane. Empty on highly-available clusters, which have no single control-plane IP. |
+| `status.outputs.ipv4_address` | `string` | The public IPv4 address of the cluster's control plane, when DigitalOcean reports one. Clusters created today report NONE: the API server sits behind DigitalOcean's own front end and is reachable only by the api_server_endpoint hostname (measured on a single-replica 1.35 cluster, not just on HA clusters). Both provisioners export the value verbatim, so expect an empty string; anything that needs the control plane's address -- allowlists, health probes -- should use api_server_endpoint. |
 | `status.outputs.default_node_pool_id` | `string` | The unique identifier (UUID) of the cluster's inline default node pool. |
 | `status.outputs.cluster_subnet` | `string` | The CIDR block from which pod IPs are assigned. |
 | `status.outputs.service_subnet` | `string` | The CIDR block from which service ClusterIPs are assigned. |

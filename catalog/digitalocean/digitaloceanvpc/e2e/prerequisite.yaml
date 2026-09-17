@@ -6,6 +6,18 @@
 # tags resources for orphan cleanup. An explicit ip_range keeps the fixture
 # deterministic and out of the way of DigitalOcean's auto-assigned 10.x
 # ranges on long-lived accounts.
+#
+# The range is a /24 in the 10.6x.0.0 block that no other e2e VPC uses
+# (scenario and extra-instance VPCs in this catalog pin their own /24s and
+# must stay disjoint from this one). A range can become unusable without
+# anything of ours still existing: when a dependent's create fails or a
+# load balancer never leaves `new`, DigitalOcean can keep a ghost member on
+# the fixture VPC for hours, the teardown answers `409 Can not delete VPC
+# with members`, and any new VPC on the same range fails `422 This
+# range/size overlaps`. When that happens, rename the stranded VPC so this
+# fixture's name is free, move this range to the next unused /24, and
+# delete the stranded VPC once its member list empties -- never wait for
+# the ghost to clear before the next lane.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanVpc
 metadata:
@@ -23,4 +35,4 @@ metadata:
 spec:
   description: "Planton E2E fixture VPC"
   region: nyc3
-  ipRangeCidr: "10.60.0.0/24"
+  ipRangeCidr: "10.62.0.0/24"

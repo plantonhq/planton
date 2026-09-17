@@ -10,7 +10,7 @@ The spec maps one-to-one onto DigitalOcean's managed Kubernetes cluster:
 |---|---|
 | `clusterName` | The cluster's name in DigitalOcean |
 | `region` | Data-center region; create-only |
-| `kubernetesVersion` | The creation version pin (`"1.33.1-do.3"`); patch upgrades ride `autoUpgrade` — see "Behavior worth knowing" |
+| `kubernetesVersion` | The creation version pin, as a minor prefix (`"1.35"`, preferred) or a full slug DigitalOcean offers today; patch upgrades ride `autoUpgrade` — see "Behavior worth knowing" |
 | `vpc` | Required VPC placement — a literal UUID or a reference to a `DigitalOceanVpc`; create-only |
 | `highlyAvailable` | Multi-replica control plane (extra cost); one-way — cannot be turned off |
 | `autoUpgrade` | Automatic patch upgrades inside the maintenance window |
@@ -45,7 +45,7 @@ metadata:
 spec:
   clusterName: app-cluster
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     valueFrom:
       kind: DigitalOceanVpc
@@ -82,7 +82,7 @@ Both provisioners export the identical output set:
 | `kubeconfig` | Raw kubeconfig YAML (not base64) — sensitive; write it to a file and point `KUBECONFIG` at it |
 | `api_server_endpoint` | The Kubernetes API server URL |
 | `urn` | `do:kubernetes:<cluster_id>`, for project attachment |
-| `ipv4_address` | The control plane's public IPv4 (empty on HA clusters) |
+| `ipv4_address` | The control plane's public IPv4 when DigitalOcean reports one — empty on clusters created today (single-replica included); reach the API server through `api_server_endpoint` |
 | `default_node_pool_id` | The inline default pool's UUID |
 | `cluster_subnet` / `service_subnet` | The pod and service CIDR blocks in effect |
 
@@ -93,7 +93,7 @@ Both provisioners export the identical output set:
 - **HA is one-way.** Once `highlyAvailable` is true, it cannot be turned back off.
 - **`destroyAllAssociatedResources` is dangerous.** On destroy it also deletes the load balancers, volumes, and volume snapshots the cluster created. It never affects the running cluster.
 - **`surgeUpgrade` unset means ON** — DigitalOcean's default. Set it to `false` explicitly to disable surge upgrades.
-- **Several fields are Terraform-only today.** The Pulumi bridge (v4.49.0) has no counterpart for `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, or any addon toggle beyond `routingAgent`; the Pulumi module fails loudly if they are set rather than silently dropping them.
+- **Several fields are Terraform-only today.** The Pulumi bridge (SDK v4.53.0) has no counterpart for `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, or six of the nine addon toggles (`routingAgent`, `amdGpuDevicePlugin`, and `amdGpuDeviceMetricsExporterPlugin` work on both engines); the Pulumi module fails loudly if the others are set rather than silently dropping them.
 
 See `GUIDE.md` for operational judgment (upgrade practice, pool sizing, firewall posture) and `catalog.md` for the deployment-store page.
 

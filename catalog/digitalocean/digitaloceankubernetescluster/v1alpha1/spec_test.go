@@ -27,7 +27,7 @@ func validMinimalSpec() *DigitalOceanKubernetesClusterSpec {
 	return &DigitalOceanKubernetesClusterSpec{
 		ClusterName:       "test-cluster",
 		Region:            digitalocean.DigitalOceanRegion_nyc3,
-		KubernetesVersion: "1.33.1-do.3",
+		KubernetesVersion: "1.35",
 		Vpc: &foreignkeyv1.StringValueOrRef{
 			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "b5648f9e-a28a-4760-bb87-b2fad07ae295"},
 		},

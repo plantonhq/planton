@@ -2,13 +2,16 @@
 # lane leaves at defaults -- an enabled control-plane firewall, a
 # maintenance policy (the day leaf the old collapsed string could not
 # express), cluster-autoscaler tuning, an explicit surge_upgrade, the
-# routing-agent addon (the ONE addon block the Pulumi SDK v4.49.0 carries;
-# the other eight are Terraform-only until the SDK grows them), and a
-# default pool exercising labels, a taint, pool tags, and autoscaling.
-# Deliberately absent: highly_available (cost), the Pulumi-gap arms (sso,
-# isolated_workers, worker_subnet_uuid, gpu_partition_mode, non-routing
-# addons), and custom subnets (create-only CIDRs add no verify value over
-# the offline plan).
+# routing-agent addon (one of the three addon blocks the Pulumi SDK v4.53.0
+# carries -- the AMD device plugin and metrics exporter are the other two,
+# and they mean nothing on a non-GPU pool), and a default pool exercising
+# labels, a taint, pool tags, and autoscaling. Deliberately absent:
+# highly_available (cost), the Pulumi-gap arms (sso, isolated_workers,
+# worker_subnet_uuid, gpu_partition_mode, the six addons the SDK lacks),
+# GPU addons (GPU droplets are the expensive arm), and custom subnets
+# (create-only CIDRs add no verify value over the offline plan).
+# clusterName carries ${E2E_RUN_ID} and kubernetesVersion is a minor prefix
+# for the reasons the minimal scenario's header gives.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanKubernetesCluster
 metadata:
@@ -24,9 +27,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-doks-hard
+  clusterName: pltn-e2e-doks-hard-${E2E_RUN_ID}
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     valueFrom:
       kind: DigitalOceanVpc

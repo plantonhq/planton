@@ -3574,6 +3574,52 @@ one stateful verifier, with its promotion trigger in the file comment.
 `DeleteBucket` retry then answers `NoSuchBucket`. Sweep buckets last and
 re-list before calling one orphaned.
 
+**DOKS version slugs rotate; scenarios pin a MINOR prefix.**
+`GET /v2/kubernetes/options` lists three creatable minors with ONE patch
+slug each, and the patch slugs are retired every few weeks -- a scenario
+written with a full slug fails `422` a month later without anyone touching
+it (the Kubernetes cluster kind's scenarios shipped `1.33.1-do.3`; by
+first contact the offer was `1.34.10-do.5` / `1.35.7-do.5` / `1.36.3-do.5`).
+Both engines accept the minor prefix (`"1.35"`), DigitalOcean resolves it
+to the current patch, the read-back is the full slug, and both modules
+`ignore_changes` the version (the provider ForceNews a config version
+lower than live), so the prefix never diffs: idempotency and the blind
+import round-trip were both clean with it. Same rule as the database
+engine versions: point at the live offer list, date the examples, and never
+write a patch slug into a scenario, preset, or doc example.
+
+**A DOKS cluster is gone in seconds; its VPC membership clears in ~2
+minutes.** DESTROY finished in 2-10 s on both engines and the cluster
+answered 404 at once, but its worker droplets stayed listed in
+`GET /v2/vpcs/{id}/members` while DigitalOcean tore them down, so the
+fixture VPC's teardown attempt 1/6 failed `409 Can not delete VPC with
+members` on every lane and attempt 2 (one minute later) succeeded. Expect
+`DEPENDENCIES-DOWN` to take 2-3 minutes after a cluster lane and read the
+first 409 as this lag, not as the hours-long ghost class a failed database
+create leaves. Size `go test -timeout` for two cluster lifecycles plus the
+retry loop (75 minutes per scenario is comfortable); run the cluster
+scenarios one at a time.
+
+**When a ghost member holds the fixture VPC's range, MOVE the range.** A
+stranded VPC keeps its CIDR as long as DigitalOcean lists the ghost (a
+failed database create's `do:dbaas:` member was still listed 29 hours
+later), and the next fixture install on the same range fails `422 This
+range/size overlaps`. Rename the stranded VPC so the fixture's NAME is free
+(done at the time), then move the Vpc install fixture
+(`catalog/digitalocean/digitaloceanvpc/e2e/prerequisite.yaml`) to the next
+unused /24 in the 10.6x block -- every other e2e VPC in the catalog pins its
+own /24, so check them before choosing -- and delete the stranded VPC in a
+later sweep once its member list is empty. Never block a lane waiting for
+the ghost to clear; the fixture header records the rule.
+
+**DOKS clusters report no control-plane IPv4.** `ipv4_address` read back
+empty on both engines on a single-replica 1.35 cluster (not only on HA
+clusters, as the field's history suggested); the API server is reachable
+only through the endpoint hostname. An empty `ipv4_address` output is the
+normal shape, so a verifier must not treat it as unpopulated -- the cluster
+verifier asserts it only when claimed, alongside the endpoint, URN, default
+pool id, and both subnets.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

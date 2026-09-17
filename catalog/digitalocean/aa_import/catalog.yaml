@@ -182,7 +182,12 @@ spec:
         Importing MUTATES the remote cluster when the default node pool is
         untagged: the provider adds the terraform:default-node-pool tag to a
         single-pool cluster automatically and refuses multi-pool clusters
-        until one pool is tagged manually.
+        until one pool is tagged manually. A cluster the module created
+        already carries the tag, so its blind round-trip is lossless
+        (measured, both scenarios): the provider strips its own marker from
+        the pool tags on read, and the pool's node_count -- which a fresh
+        import never populates -- is diff-suppressed whenever it equals the
+        live actual_node_count, so no tolerance is needed for it.
       # destroy_all_associated_resources and kubeconfig_expire_seconds are
       # provider behavior flags with no API counterpart; registry_integration
       # is an account-level association the provider's Read never fetches

@@ -16,45 +16,43 @@ func cluster(
 ) (*digitalocean.KubernetesCluster, error) {
 	spec := locals.DigitalOceanKubernetesCluster.Spec
 
-	// Pulumi SDK v4.49.0 gaps: these spec fields are modeled and the
+	// Pulumi SDK v4.53.0 gaps: these spec fields are modeled and the
 	// Terraform module wires them, but the SDK has no matching inputs on
-	// KubernetesCluster. Fail loudly on a meaningful set (proto zero values
-	// pass) rather than silently dropping configuration.
+	// KubernetesCluster (verified against KubernetesClusterArgs and
+	// KubernetesClusterNodePoolArgs at that pin). Fail loudly on a
+	// meaningful set (proto zero values pass) rather than silently dropping
+	// configuration. Every guard names the pin it was verified against and
+	// is re-checked on every SDK bump: guards for surfaces the SDK has since
+	// grown are deleted and the arm wired, never left in place.
 	if spec.WorkerSubnetUuid != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.worker_subnet_uuid is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no worker_subnet_uuid field on KubernetesCluster. Re-evaluate when the SDK exposes worker_subnet_uuid.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.worker_subnet_uuid is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no worker_subnet_uuid field on KubernetesCluster. Re-evaluate when the SDK exposes worker_subnet_uuid.")
 	}
 	if spec.IsolatedWorkers {
-		return nil, errors.New("PARITY-EXCEPTION: spec.isolated_workers is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no isolated_workers field on KubernetesCluster. Re-evaluate when the SDK exposes isolated_workers.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.isolated_workers is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no isolated_workers field on KubernetesCluster. Re-evaluate when the SDK exposes isolated_workers.")
 	}
 	if spec.Sso != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.sso is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no sso block on KubernetesCluster. Re-evaluate when the SDK exposes sso.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.sso is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no sso block on KubernetesCluster. Re-evaluate when the SDK exposes sso.")
 	}
 	if spec.P2POciRegistryPlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.p2p_oci_registry_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no p2p_oci_registry_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes p2p_oci_registry_plugin.")
-	}
-	if spec.AmdGpuDevicePlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.amd_gpu_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no amd_gpu_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes amd_gpu_device_plugin.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.p2p_oci_registry_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no p2p_oci_registry_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes p2p_oci_registry_plugin.")
 	}
 	if spec.AmdGpuDraDriver != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.amd_gpu_dra_driver is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no amd_gpu_dra_driver block on KubernetesCluster. Re-evaluate when the SDK exposes amd_gpu_dra_driver.")
-	}
-	if spec.AmdGpuDeviceMetricsExporterPlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.amd_gpu_device_metrics_exporter_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no amd_gpu_device_metrics_exporter_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes amd_gpu_device_metrics_exporter_plugin.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.amd_gpu_dra_driver is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no amd_gpu_dra_driver block on KubernetesCluster. Re-evaluate when the SDK exposes amd_gpu_dra_driver.")
 	}
 	if spec.NvidiaGpuDevicePlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.nvidia_gpu_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no nvidia_gpu_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes nvidia_gpu_device_plugin.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.nvidia_gpu_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no nvidia_gpu_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes nvidia_gpu_device_plugin.")
 	}
 	if spec.NvidiaGpuDraDriver != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.nvidia_gpu_dra_driver is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no nvidia_gpu_dra_driver block on KubernetesCluster. Re-evaluate when the SDK exposes nvidia_gpu_dra_driver.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.nvidia_gpu_dra_driver is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no nvidia_gpu_dra_driver block on KubernetesCluster. Re-evaluate when the SDK exposes nvidia_gpu_dra_driver.")
 	}
 	if spec.RdmaSharedDevicePlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.rdma_shared_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no rdma_shared_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes rdma_shared_device_plugin.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.rdma_shared_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no rdma_shared_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes rdma_shared_device_plugin.")
 	}
 	if spec.CorednsAutoscaler != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.coredns_autoscaler is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no coredns_autoscaler block on KubernetesCluster. Re-evaluate when the SDK exposes coredns_autoscaler.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.coredns_autoscaler is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no coredns_autoscaler block on KubernetesCluster. Re-evaluate when the SDK exposes coredns_autoscaler.")
 	}
 	if spec.DefaultNodePool.GpuPartitionMode != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.default_node_pool.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no gpu_partition_mode field on the cluster's node pool. Re-evaluate when the SDK exposes gpu_partition_mode.")
+		return nil, errors.New("PARITY-EXCEPTION: spec.default_node_pool.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no gpu_partition_mode field on the cluster's node pool. Re-evaluate when the SDK exposes gpu_partition_mode.")
 	}
 
 	// User tags plus the standard Planton labels rendered as "key:value"
@@ -202,11 +200,25 @@ func cluster(
 		clusterArgs.ClusterAutoscalerConfigurations = digitalocean.KubernetesClusterClusterAutoscalerConfigurationArray{caArgs}
 	}
 
-	// routing_agent is the only addon block the SDK carries; the other eight
-	// fail loudly above.
+	// Managed addon toggles. An unset spec message sends no block, deferring
+	// to DigitalOcean's own default for that addon; a set message asserts the
+	// desired state, on or off -- the same contract as the Terraform module's
+	// dynamic blocks. The SDK carries three of the nine addon blocks (routing
+	// agent, AMD GPU device plugin, AMD GPU device metrics exporter); the
+	// other six fail loudly above.
 	if spec.RoutingAgent != nil {
 		clusterArgs.RoutingAgent = &digitalocean.KubernetesClusterRoutingAgentArgs{
 			Enabled: pulumi.Bool(spec.RoutingAgent.GetEnabled()),
+		}
+	}
+	if spec.AmdGpuDevicePlugin != nil {
+		clusterArgs.AmdGpuDevicePlugin = &digitalocean.KubernetesClusterAmdGpuDevicePluginArgs{
+			Enabled: pulumi.Bool(spec.AmdGpuDevicePlugin.GetEnabled()),
+		}
+	}
+	if spec.AmdGpuDeviceMetricsExporterPlugin != nil {
+		clusterArgs.AmdGpuDeviceMetricsExporterPlugin = &digitalocean.KubernetesClusterAmdGpuDeviceMetricsExporterPluginArgs{
+			Enabled: pulumi.Bool(spec.AmdGpuDeviceMetricsExporterPlugin.GetEnabled()),
 		}
 	}
 

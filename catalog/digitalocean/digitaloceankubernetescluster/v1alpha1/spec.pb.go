@@ -44,11 +44,17 @@ type DigitalOceanKubernetesClusterSpec struct {
 	// The DigitalOcean region where the cluster's control plane and nodes are
 	// provisioned. Cannot be changed after creation.
 	Region digitalocean.DigitalOceanRegion `protobuf:"varint,2,opt,name=region,proto3,enum=dev.planton.digitalocean.DigitalOceanRegion" json:"region,omitempty"`
-	// The Kubernetes version slug to create the cluster at, e.g. "1.33.1-do.3"
-	// or a prefix like "1.33". This is the creation pin: patch upgrades ride
-	// auto_upgrade, and both provisioners ignore later drift on this field
-	// because DigitalOcean recreates the whole cluster when the configured
-	// version is lower than the live one.
+	// The Kubernetes version to create the cluster at, as DigitalOcean offers
+	// it TODAY: either a minor prefix ("1.35" -- DigitalOcean resolves it to the
+	// current patch) or a full slug ("1.35.7-do.5"). Prefer the prefix: patch
+	// slugs are retired every few weeks and a create naming a retired slug
+	// fails with 422, while a minor stays creatable for its whole support
+	// window. The live offer list is GET /v2/kubernetes/options (or `doctl
+	// kubernetes options versions`); on 2026-09-16 it was 1.34, 1.35, 1.36.
+	// This is the creation pin only: patch upgrades ride auto_upgrade, and
+	// both provisioners ignore later drift on this field because DigitalOcean
+	// recreates the whole cluster when the configured version is lower than
+	// the live one.
 	KubernetesVersion string `protobuf:"bytes,3,opt,name=kubernetes_version,json=kubernetesVersion,proto3" json:"kubernetes_version,omitempty"`
 	// Reference to the DigitalOcean VPC where the cluster will reside. The
 	// cluster consumes the VPC's ID (a DigitalOcean UUID), so a reference

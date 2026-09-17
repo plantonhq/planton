@@ -1,6 +1,6 @@
 # Full VPC: description + explicit /24 range. The range deliberately avoids
-# the prerequisite fixture's 10.60.0.0/24 and DigitalOcean's auto-assigned
-# 10.x blocks.
+# the prerequisite fixture's range (see e2e/prerequisite.yaml) and
+# DigitalOcean's auto-assigned 10.x blocks.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanVpc
 metadata:

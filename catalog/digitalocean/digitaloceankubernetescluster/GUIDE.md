@@ -10,7 +10,14 @@ Practical consequences:
 
 - Enable `autoUpgrade` and set a `maintenancePolicy` window; patch upgrades happen there.
 - Minor/major upgrades are an operational action (DigitalOcean control panel or `doctl kubernetes cluster upgrade`), not a spec edit.
-- Use a full version slug (`"1.33.1-do.3"`) when you care about the exact starting point; a prefix (`"1.33"`) lets DigitalOcean pick the patch.
+- Prefer a minor prefix (`"1.35"`) over a full slug -- the next section says why.
+
+## The version must be one DigitalOcean offers today
+
+DigitalOcean keeps only a short list of creatable Kubernetes versions -- three minors, one patch slug each -- and rotates the patch slugs every few weeks (`GET /v2/kubernetes/options` or `doctl kubernetes options versions`; on 2026-09-16 the list was `1.34.10-do.5`, `1.35.7-do.5`, `1.36.3-do.5`). A manifest that names a retired slug fails at apply with `422`, and it fails weeks after it was written and worked. Two ways to stay creatable:
+
+- **Name the minor** (`"1.35"`). DigitalOcean resolves it to the current patch at create time, and the value stays valid for the minor's whole support window. This is what the presets and examples here do.
+- **Name the full slug** only when the exact starting patch matters, and expect to bump it. The read-back is always the full slug either way, and both provisioners ignore drift on the field, so a prefix never produces a diff.
 
 ## Size the default pool once; grow with separate pools
 
@@ -35,6 +42,14 @@ Changing the default pool's `size` (or `gpuPartitionMode`) does not resize the p
 
 `vpc`, `clusterSubnet`, `serviceSubnet`, `workerSubnetUuid`, and `isolatedWorkers` are all fixed at creation. Decide them first; retrofitting means a new cluster and a workload migration. Custom pod/service CIDRs matter when the VPC peers with networks that would collide with DigitalOcean's defaults — set them then, leave them unset otherwise.
 
+## The control plane has no public IPv4 any more
+
+`ipv4Address` is exported because the provider exposes it, but clusters DigitalOcean creates today report none -- measured on a single-replica cluster, so this is not only the HA case the field's history suggests. The Kubernetes API server is reached through the `apiServerEndpoint` hostname (`https://<cluster-id>.k8s.ondigitalocean.com`), which fronts it. Allowlist by that hostname, and treat an empty `ipv4Address` as normal, not as a failed deploy.
+
+## Destroying: the cluster is gone in seconds, the network remembers for minutes
+
+A cluster delete is accepted immediately and the cluster answers `404` within a couple of seconds -- both provisioners' destroys finish in under ten. Its worker Droplets take longer to disappear, and while they do they stay listed as members of the cluster's VPC. A VPC delete issued in that window fails `409 Can not delete VPC with members` (measured: about two minutes after the cluster was gone). Tear down in dependency order and give the network a short wait after the cluster, or let the retry that any sane teardown already has absorb it -- this is a lag, not the hours-long ghost-member class a failed database create can leave.
+
 ## The kubeconfig output is a credential
 
 `kubeconfig` is raw YAML (not base64) carrying admin credentials; write it to a file, `chmod 600` it, and point `KUBECONFIG` at it. Credentials in it expire — `kubeconfigExpireSeconds` controls the validity (0 means DigitalOcean's 7-day default); re-fetching state mints fresh ones.
@@ -49,7 +64,7 @@ Every addon field (`routingAgent`, `corednsAutoscaler`, the GPU device plugins a
 
 ## Choosing a provisioner: the Pulumi gaps
 
-The Pulumi bridge (v4.49.0) cannot express `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, or any addon toggle beyond `routingAgent`. The Pulumi module fails loudly when they are set — no silent drops. If the cluster needs those surfaces today, deploy it through Terraform.
+The Pulumi bridge (SDK v4.53.0) cannot express `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, or six of the nine addon toggles (`p2pOciRegistryPlugin`, `amdGpuDraDriver`, `nvidiaGpuDevicePlugin`, `nvidiaGpuDraDriver`, `rdmaSharedDevicePlugin`, `corednsAutoscaler`). `routingAgent`, `amdGpuDevicePlugin`, and `amdGpuDeviceMetricsExporterPlugin` work on both engines. The Pulumi module fails loudly when an unsupported field is set — no silent drops. If the cluster needs those surfaces today, deploy it through Terraform. The list shrinks as the SDK grows; each guard in the module names the pin it was checked against.
 
 ## Importing an existing cluster
 

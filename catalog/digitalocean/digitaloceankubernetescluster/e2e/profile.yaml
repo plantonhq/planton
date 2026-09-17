@@ -3,30 +3,55 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceankubernetescluster
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is a one-node cluster on the
-  # cheapest DOKS-capable slug proving the create/verify/destroy lifecycle
-  # and the cluster_id / kubeconfig / api_server_endpoint outputs (named
-  # `minimal` so it doubles as the node-pool kind's cluster fixture);
-  # `hardened` proves the control-plane firewall, a maintenance policy,
-  # cluster-autoscaler tuning, the routing-agent addon, and a default pool
-  # with labels, a taint, tags, and autoscaling. Both ride the VPC registry
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip on the Terraform lane
+  # (`{cluster_id}` UUID; both scenarios re-imported with a plan that
+  # proposed no change and tolerated nothing -- the provider's node_count
+  # diff-suppress against actual_node_count and its filtering of the
+  # terraform:default-node-pool tag both held live). `minimal` is a one-node
+  # cluster on the cheapest DOKS-capable slug proving the create/verify/
+  # destroy lifecycle and the identity outputs (the verifier asserts
+  # api_server_endpoint, urn, default_node_pool_id, cluster_subnet, and
+  # service_subnet against the live cluster; named `minimal` so it doubles
+  # as the node-pool kind's cluster fixture). `hardened` proves the
+  # control-plane firewall, a maintenance policy (read back with
+  # DigitalOcean's own 4h duration), cluster-autoscaler tuning
+  # (scale_down_unneeded_time "1m30s" read back verbatim), an explicit
+  # surge_upgrade, the routing-agent addon, and a default pool with labels,
+  # a taint, tags, and autoscaling 1-2. Both ride the VPC registry
   # prerequisite (the spec's vpc is REQUIRED, so the fixture is a registry
-  # edge, never a per-scenario annotation). Deliberately not in the live
-  # lanes: highly_available (HA control plane bills ~$40/month extra --
-  # prove after the cheap lanes are green), the Pulumi SDK v4.49.0 gap arms
-  # (sso, isolated_workers, worker_subnet_uuid, gpu_partition_mode, and the
-  # eight addon blocks beyond routing_agent -- Terraform wires them; Pulumi
-  # fails loudly if set), GPU node pools (GPU Droplets are the most
-  # expensive arm), registry_integration (needs a DOCR registry in the
-  # account), and destroy_all_associated_resources (a destroy-behavior flag
-  # that a test should never exercise against shared accounts). Clusters
-  # take ~5-10 minutes to create (the provider's create timeout class is 30
-  # minutes) and bill per node hourly; s-1vcpu-2gb is ~$0.018/hour, so a
-  # full two-scenario dual-engine sweep costs well under a dollar.
+  # edge, never a per-scenario annotation).
+  #
+  # What the live runs measured: DEPLOY 5-7 minutes per cluster; the cluster
+  # 404s within seconds of DELETE (DESTROY 2-10 s) while its worker Droplets
+  # stay VPC members for ~2 minutes, so the fixture VPC's first teardown
+  # attempt fails 409 and the runner's retry absorbs it (DEPENDENCIES-DOWN
+  # ~2-3 minutes). An explicit ha=false is honored on a 1.35 cluster (no
+  # idempotency diff). kubernetesVersion is a minor prefix in both scenarios
+  # because DigitalOcean retires patch slugs every few weeks; the read-back
+  # is the full slug and both engines ignore drift on the field.
+  # ipv4_address reads back EMPTY on clusters created today (single-replica
+  # included) -- the API server is reachable only by the endpoint hostname.
+  # Cluster names carry ${E2E_RUN_ID} because a DOKS delete runs for minutes
+  # after the API accepts it.
+  #
+  # Deliberately not in the live lanes, each with its unblock: highly_available
+  # (HA control plane bills ~$40/month extra -- prove when an owner funds it);
+  # GPU node pools and the GPU addons (gpu_partition_mode, the AMD/NVIDIA
+  # device plugins, DRA drivers, RDMA plugin -- GPU Droplets are the most
+  # expensive arm and the toggles mean nothing on a non-GPU pool; the
+  # offline plans prove the wiring on both engines where the SDK carries
+  # them); the Pulumi SDK v4.53.0 gap arms (sso, isolated_workers,
+  # worker_subnet_uuid, gpu_partition_mode, and six of the nine addon blocks
+  # -- Terraform wires them; Pulumi fails loudly if set; re-evaluate on every
+  # SDK bump); registry_integration (needs a DOCR registry in the account --
+  # a same-session fixture from the ContainerRegistry kind would prove it);
+  # destroy_all_associated_resources (a destroy-behavior flag a test should
+  # never exercise against a shared account); custom cluster/service subnets
+  # (create-only CIDRs; the offline plan proves the wiring). Clusters bill
+  # per node hourly (s-1vcpu-2gb ~$0.018/hour), so the two-scenario
+  # dual-engine sweep costs a few cents.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 40
