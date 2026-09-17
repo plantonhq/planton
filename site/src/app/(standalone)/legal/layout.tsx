@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import InvestHeader from '@/components/invest/InvestHeader';
+import { HeaderLogo } from '../_components/HeaderLogo';
 
 export const metadata: Metadata = {
   title: 'Legal - Planton',
@@ -15,14 +16,17 @@ const inter = Inter({
 
 /**
  * Layout for legal pages including investor updates.
- * Uses the parent HeaderLogo from micro-apps layout for consistent branding.
+ * Paints the standalone logo overlay in its own layout.
  * Adds InvestHeader with Home button for navigation back to /invest.
  */
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`isolate ${inter.className}`}>
-      <InvestHeader alwaysShow />
-      {children}
+    <div className="relative">
+      <HeaderLogo className="absolute top-[23px] left-8 z-[9999]" />
+      <div className={`isolate ${inter.className}`}>
+        <InvestHeader alwaysShow />
+        {children}
+      </div>
     </div>
   );
 }

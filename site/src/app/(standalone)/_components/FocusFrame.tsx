@@ -4,7 +4,12 @@ import { Box } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect, useCallback, PropsWithChildren } from 'react';
 
-export default function FocusLayout({ children }: PropsWithChildren) {
+/**
+ * A full-screen frame for one task (booking a demo, handing off to the
+ * desktop app): no header, no footer, a close button, and Escape returns to
+ * the home page. The surfaces that want it mount it in their own layout.
+ */
+export function FocusFrame({ children }: PropsWithChildren) {
   const router = useRouter();
 
   const handleClose = useCallback(() => {
@@ -22,11 +27,11 @@ export default function FocusLayout({ children }: PropsWithChildren) {
   }, [handleClose]);
 
   return (
-    <Box className="relative min-h-screen bg-[#0a0a0a]">
+    <Box className="relative min-h-screen bg-canvas">
       <button
         onClick={handleClose}
         aria-label="Close"
-        className="fixed top-5 right-5 z-50 w-10 h-10 rounded-full border border-[#2a2a2a] bg-[#111] flex items-center justify-center text-[#a0a0a0] hover:text-white hover:border-[#3a3a3a] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+        className="fixed top-5 right-5 z-50 w-10 h-10 rounded-full border border-edge bg-panel flex items-center justify-center text-fg-secondary hover:text-white hover:border-edge-hover transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
       >
         <svg
           width="18"

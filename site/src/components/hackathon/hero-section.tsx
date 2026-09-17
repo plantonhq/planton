@@ -6,7 +6,7 @@ import {
   PageSectionBackgroundContainer,
   SectionContainer,
   Pill,
-} from '@/components/landing-page';
+} from '@/components/landing-page/v1-2025-02-15-0800/components';
 
 export const HeroSection = () => {
   return (

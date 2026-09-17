@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { SearchTrigger } from '@/app/(root)/docs/components/SearchTrigger';
-import { SearchModal } from '@/app/(root)/docs/components/SearchModal';
+import { SearchTrigger } from '@/app/(site)/docs/components/SearchTrigger';
+import { SearchModal } from '@/app/(site)/docs/components/SearchModal';
 
 /**
  * Orchestrator that renders the header search trigger and controls the

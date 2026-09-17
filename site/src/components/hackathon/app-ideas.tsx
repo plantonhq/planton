@@ -4,7 +4,7 @@ import { Box, Typography, Stack } from '@mui/material';
 import {
   PageSection,
   SectionContainer,
-} from '@/components/landing-page';
+} from '@/components/landing-page/v1-2025-02-15-0800/components';
 
 export const AppIdeas = () => {
   return (

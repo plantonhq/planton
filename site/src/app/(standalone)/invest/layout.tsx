@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import InvestHeader from '@/components/invest/InvestHeader';
 import './invest.css';
+import { HeaderLogo } from '../_components/HeaderLogo';
 
 export const metadata: Metadata = {
   title: 'Invest in Planton - The Self-Service Cloud Platform',
@@ -18,15 +19,18 @@ const inter = Inter({
 /**
  * Layout for all investor-related pages.
  * 
- * Uses the parent HeaderLogo from micro-apps layout for consistent branding.
+ * Paints the standalone logo overlay in its own layout.
  * Adds InvestHeader with Home button for navigation back to /invest.
  * Provides Inter font and isolate context for all /invest/* routes.
  */
 export default function InvestLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`isolate ${inter.className}`}>
-      <InvestHeader />
-      {children}
+    <div className="relative">
+      <HeaderLogo className="absolute top-[23px] left-8 z-[9999]" />
+      <div className={`isolate ${inter.className}`}>
+        <InvestHeader />
+        {children}
+      </div>
     </div>
   );
 }

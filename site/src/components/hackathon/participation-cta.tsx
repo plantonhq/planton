@@ -5,7 +5,7 @@ import {
   PageSection,
   PageSectionBackgroundContainer,
   SectionContainer,
-} from '@/components/landing-page';
+} from '@/components/landing-page/v1-2025-02-15-0800/components';
 
 export const ParticipationCTA = () => {
   return (

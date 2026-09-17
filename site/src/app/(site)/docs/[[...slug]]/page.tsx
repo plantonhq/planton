@@ -7,10 +7,10 @@ import {
   generateStaticParamsFromStructure,
   processDocumentationSlug,
   resolveDocFilePath,
-} from '@/app/(root)/docs/utils/fileSystem';
+} from '@/app/(site)/docs/utils/fileSystem';
 import { MDXRenderer } from '@/lib/MDXRenderer';
 import { Author, MDXParser } from '@/lib/mdx';
-import { DocsLayout } from '@/app/(root)/docs/components/DocsLayout';
+import { DocsLayout } from '@/app/(site)/docs/components/DocsLayout';
 import matter from 'gray-matter';
 type DocsParams = Promise<{ slug?: string[] }>;
 

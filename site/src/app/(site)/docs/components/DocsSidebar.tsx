@@ -11,7 +11,7 @@ import {
   KeyboardArrowRight as CollapseIcon,
   KeyboardArrowDown as ExpandIcon
 } from '@mui/icons-material';
-import { DocItem } from '@/app/(root)/docs/utils/fileSystem';
+import { DocItem } from '@/app/(site)/docs/utils/fileSystem';
 import {
   SIDEBAR_BADGE_COLORS,
   SIDEBAR_BADGE_DEFAULT,

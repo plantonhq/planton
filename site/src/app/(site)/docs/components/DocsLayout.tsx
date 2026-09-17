@@ -1,19 +1,19 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import RightSidebar from '@/app/(root)/docs/components/RightSidebar';
+import RightSidebar from '@/app/(site)/docs/components/RightSidebar';
 import { Author } from '@/lib/mdx';
 import { IconButton, Typography } from '@mui/material';
 import { Stack } from '@mui/material';
-import { DocsSidebar } from '@/app/(root)/docs/components/DocsSidebar';
-import { SearchBar } from '@/app/(root)/docs/components/SearchBar';
+import { DocsSidebar } from '@/app/(site)/docs/components/DocsSidebar';
+import { SearchBar } from '@/app/(site)/docs/components/SearchBar';
 import { Drawer } from '@mui/material';
 import {
   Close as CloseIcon,
   FormatListBulleted as ListIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
-import { DocItem } from '@/app/(root)/docs/utils/fileSystem';
+import { DocItem } from '@/app/(site)/docs/utils/fileSystem';
 
 /**
  * Height of the main site header (fixed, defined in MainLayout as pt-[70px]).

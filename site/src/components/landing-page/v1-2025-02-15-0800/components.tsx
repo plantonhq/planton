@@ -1,5 +1,7 @@
 'use client';
 
+// The 2025 landing version's layout primitives. Kept only because the 2025
+// hackathon pages compose them; both retire together. Nothing new imports this.
 import {
   Box,
   BoxProps,

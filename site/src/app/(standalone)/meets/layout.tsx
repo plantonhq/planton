@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './meets.css';
+import { HeaderLogo } from '../_components/HeaderLogo';
 
 export const metadata: Metadata = {
   title: 'Planton Meets',
@@ -19,5 +20,10 @@ const inter = Inter({
 });
 
 export default function MeetsLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`isolate ${inter.className}`}>{children}</div>;
+  return (
+    <div className="relative">
+      <HeaderLogo className="absolute top-[23px] left-8 z-[9999]" />
+      <div className={`isolate ${inter.className}`}>{children}</div>
+    </div>
+  );
 }

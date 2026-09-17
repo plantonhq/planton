@@ -21,13 +21,13 @@ The page does **not** argue "convenience without losing control" as its thesis. 
 
 ## Component mapping (paths only)
 
-- `src/app/(root)/download/page.tsx` — the install page (session 1)
+- `src/app/(site)/download/page.tsx` — the install page (session 1)
 - `src/components/product/desktop/` — section components for both pages, same shape as `product/runner/` and `product/cli/`
 - `src/data/desktop-download.ts` — the single source for download URLs, platform facts, and the platform detector
-- `src/app/(root)/desktop/page.tsx` — the landing page (session 2)
+- `src/app/(site)/desktop/page.tsx` — the landing page (session 2)
 - `packages/website-shell/src/data/navigation.ts` and `header/` — nav, footer, header link
 - `src/components/landing-page/v4-2026-08-17-1700/ThreeWaysToRun.tsx` — the home tile's link
-- `src/app/(focus)/desktop/open/page.tsx` — the fallback link to `/download`
+- `src/app/(standalone)/desktop/open/page.tsx` — the fallback link to `/download`
 - `public/sitemap.xml` — hand-maintained; add both routes
 
 ## Content guidance

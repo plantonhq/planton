@@ -1275,7 +1275,7 @@ export const NewSection: React.FC = () => {
 // src/components/landing-page-v2/index.ts
 export { NewSection } from './NewSection';
 
-// src/app/(root)/page.tsx
+// src/app/(site)/page.tsx
 import { NewSection } from '@/components/landing-page-v2';
 
 // Add to page

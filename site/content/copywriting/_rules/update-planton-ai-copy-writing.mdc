@@ -167,7 +167,7 @@ flowchart TD
 
 **Common pages and their typical sections**:
 
-**Landing Page** (`src/app/(root)/page.tsx`, components in `src/components/landing-page-v2/`):
+**Landing Page** (`src/app/(site)/page.tsx`, components in `src/components/landing-page-v2/`):
 - Hero Section
 - Problem/Solution
 - Infra Hub
@@ -181,7 +181,7 @@ flowchart TD
 - Security & Compliance
 - Final CTA
 
-**Pricing Page** (`src/app/(root)/pricing/page.tsx`, components in `src/components/pricing/`):
+**Pricing Page** (`src/app/(site)/pricing/page.tsx`, components in `src/components/pricing/`):
 - Pricing tiers (Free, Plus, Pro, Enterprise)
 - Usage metering explanation
 - Cost comparison calculator
@@ -198,7 +198,7 @@ flowchart TD
 - Use cases
 - Technical specifications
 
-**Blog Posts** (`src/app/(root)/blog/`):
+**Blog Posts** (`src/app/(site)/blog/`):
 - Individual post content
 
 ## Phase 2: Staging
@@ -1022,8 +1022,8 @@ Bullet list of insights that drove the copywriting decisions.
 [Which page(s) are being updated?]
 
 Examples:
-- Landing page (`src/app/(root)/page.tsx`)
-- Pricing page (`src/app/(root)/pricing/page.tsx`)
+- Landing page (`src/app/(site)/page.tsx`)
+- Pricing page (`src/app/(site)/pricing/page.tsx`)
 - Features page
 
 ### Sections to Update
@@ -1124,7 +1124,7 @@ Examples:
 ### Where to Find Existing Code
 
 **Components**: `src/components/landing-page-v2/`  
-**Page Routes**: `src/app/(root)/`  
+**Page Routes**: `src/app/(site)/`  
 **Design System**: `src/components/landing-page-v2/shared.tsx`
 
 **Analyze these directories** to understand:
@@ -1241,7 +1241,7 @@ After implementation, verify:
 Read relevant directories:
 - `src/components/landing-page-v2/` (landing page components)
 - `src/components/pricing/` (pricing components)
-- `src/app/(root)/` (page routes)
+- `src/app/(site)/` (page routes)
 - `src/components/` (other shared components)
 
 **Step 2: Map draft sections to components**
@@ -1272,7 +1272,7 @@ Read relevant directories:
 | FAQs | `src/components/pricing/faqs.tsx` |
 
 **For New Pages**:
-- Create new route in `src/app/(root)/[page-name]/page.tsx`
+- Create new route in `src/app/(site)/[page-name]/page.tsx`
 - Create components in `src/components/[page-name]/`
 
 ### Generating the Handoff Document
