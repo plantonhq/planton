@@ -37,4 +37,17 @@ locals {
   )
 
   tags = distinct(concat(coalesce(var.spec.tags, []), local.planton_tags))
+
+  # DigitalOcean caps a database cluster's COMBINED tags -- the tag names
+  # joined by commas -- at 255 characters (measured 2026-09-17 against
+  # `POST /v2/databases`: 255 pass, 256 fail with `422 combined tags cannot
+  # exceed 255 characters`; colons count as one character and the tag count
+  # matters only through the separators). The six Planton label tags carry
+  # metadata.name and metadata.id, so a long resource name spends the budget
+  # before any spec.tags entry does. The resource's precondition checks
+  # this before anything renders, with the same number and the same message
+  # as the Pulumi module (its twin).
+  tags_combined_budget = 255
+  tags_combined        = join(",", local.tags)
+  planton_tags_length  = length(join(",", local.planton_tags))
 }

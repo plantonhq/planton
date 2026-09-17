@@ -3,61 +3,57 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabasecluster
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE), and its FIRST live attempt
-  # (2026-09-16, both engines' Pulumi lane, three scenarios, three runs) is
-  # recorded here so the next attempt starts from evidence, not from zero.
+  # Live-proven on BOTH engines, all three scenarios, full lifecycle under
+  # the idempotency gate, plus the blind import round-trip on every
+  # Terraform lane (`{cluster_id}` UUID from the stack output). `minimal` is
+  # a single-node PostgreSQL 16 on the cheapest slug proving the lifecycle
+  # and the connection outputs (host/port/database_name asserted against the
+  # live cluster; the round-trip was lossless -- nothing tolerated); it is
+  # also the install fixture the database satellite kinds reference by name.
+  # `mysql-full` composes the Vpc fixture through the e2e-prerequisites
+  # annotation and proves private networking (the verifier asserts
+  # private_host against the live private connection), custom storage (the
+  # bare-MiB string wiring -- 30720 read back), a maintenance window
+  # (`02:00` read back without seconds), sql_mode (read back verbatim), and
+  # the user-tag + label composition (all seven tags read back exactly);
+  # its round-trip tolerated exactly the two catalogued write-normalized
+  # attributes, maintenance_window and sql_mode. `valkey` proves the newer
+  # engine plus eviction_policy (engine and policy read back as sent); its
+  # round-trip tolerated eviction_policy alone, likewise catalogued.
   #
-  # What the live attempt found. Every scenario failed at DEPLOY in under
-  # ten seconds with `POST /v2/databases: 422 cluster name is not available`
-  # on a brand-new, run-scoped name. Probing the API directly (curl, same
-  # body godo sends) isolated two facts and one unknown: (1) the identical
-  # request WITHOUT tags succeeds, and any SINGLE Planton label tag
-  # succeeds, but the full seven-tag set both modules send (`planton-e2e`
-  # plus the six `planton-ai_*` labels -- ~266 characters for the e2e
-  # fixture's 47-character metadata name, whose `id` equals its `name`)
-  # fails every time; any six of the seven passed once each; (2) a FAILED
-  # create poisons the account: for a few minutes afterwards every create,
-  # tagged or not, answers the same 422, and the failed create can leave a
-  # ghost cluster (404 on GET, absent from the list, still a VPC member
-  # that blocks the VPC's deletion and its CIDR). The unknown is the exact
-  # rule -- DigitalOcean documents no per-cluster tag budget, and the 422
-  # text is wrong for what it reports. Also measured: cluster names are
-  # unique per account (`422 cluster name is not available` is ALSO the
-  # honest answer for a real duplicate), the default quota is 10 clusters
-  # (`412 maximum clusters reached`), `engineVersion` must be on the live
-  # offer list (`422 invalid cluster engine version` for MySQL "8"), a
-  # deleted cluster 404s within a second, and 30 GiB is a valid storage
-  # size for db-s-1vcpu-1gb.
+  # What the live runs measured (2026-09-17): DEPLOY 3m53s-5m21s (the
+  # provider waits for `online`); DESTROY 3-16 s and the cluster 404s within
+  # a second; the fixture VPC tore down in 10-16 s with no ghost member (a
+  # cleanly created and deleted cluster leaves its VPC at once -- the
+  # hours-long ghost member class comes only from a FAILED create).
+  # DigitalOcean caps a cluster's COMBINED tags -- every tag joined by
+  # commas -- at 255 characters (255 passes, 256 fails with `422 combined
+  # tags cannot exceed 255 characters`; colons count as one character); the
+  # first live attempt (2026-09-16) had met the same limit under a
+  # misreported `422 cluster name is not available`, which the API no longer
+  # emits for this case. Both modules check the budget before creating
+  # anything and fail with the exact arithmetic, and the scenarios' metadata
+  # names use the kind's id prefix (`dodb`) because the six Planton label
+  # tags carry metadata.name and metadata.id. An honest validation 422
+  # creates nothing and does not poison later creates (an untagged control
+  # created immediately afterwards). Every cluster that reaches `online`
+  # leaves THREE auto-created `v1/dbaas/alerts/*` policies behind after
+  # deletion (sweep class). Read back without a diff on either engine:
+  # private_network_uuid and project_id populate from the region's default
+  # VPC and the default project when unset (Optional+Computed).
   #
-  # Unblock condition, in order: (a) characterize the tag rule with a
-  # patient probe series (one create every three minutes, never two
-  # failures in one window, every probe deleted only after it reads
-  # `online`) against the exact label set the modules send; (b) decide the
-  # module's label policy from the measured rule (never from a guess) and
-  # apply it to BOTH engines at the full bar; (c) confirm the fixture VPC's
-  # CIDR is free (a ghost dbaas member held it for hours on the first
-  # attempt); then run the three scenarios on both engines. A DigitalOcean
-  # support ticket about the misreported 422 and the ghost members is the
-  # owner's call and is recorded as an open question.
-  #
-  # THREE scenarios: `minimal` is a single-node PostgreSQL on the cheapest
-  # slug proving the create/verify/destroy lifecycle and the connection
-  # outputs; `mysql-full` composes the VPC fixture and proves private
-  # networking (asserted by the verifier against `private_host`), custom
-  # storage (the bare-MiB string wiring), a maintenance window, sql_mode,
-  # and tag composition; `valkey` proves one of the newer engines plus
-  # eviction_policy. Deliberately not in the live lanes: storage_autoscale
-  # (Pulumi SDK gap at the v4.53.0 pin -- Terraform wires it; Pulumi fails
-  # loudly if set), backup_restore (needs an existing cluster backup in the
-  # account), project_id (needs an existing DigitalOcean project UUID),
-  # kafka (3-node minimum makes it the most expensive arm -- prove after
-  # the cheap lanes are green), opensearch ui_* outputs (opensearch lane
-  # deferred with kafka for the same cost reason). Managed clusters take
-  # ~5 minutes to create and bill hourly; db-s-1vcpu-1gb is ~$0.02/hour, so
-  # a full three-scenario dual-engine sweep costs well under a dollar.
+  # Deliberately not in the live lanes: storage_autoscale (Pulumi SDK gap
+  # at the v4.53.0 pin, re-verified on disk -- Terraform wires it; Pulumi
+  # fails loudly if set; unblocks when the SDK grows the field), backup_restore
+  # (needs an existing cluster backup in the account), project_id (needs an
+  # existing DigitalOcean project UUID -- the Project kind's fixture is the
+  # unblock), kafka (3-node minimum makes it the most expensive arm; the
+  # Kafka topic and schema kinds' shared fixture proves the engine live),
+  # opensearch + ui_* outputs (deferred with kafka on cost). db-s-1vcpu-1gb
+  # is ~$0.02/hour, so a three-scenario dual-engine sweep costs pennies. Run
+  # ONE scenario per `go test` with a 60-minute budget: the failure path of
+  # a VPC-attached lane is an 18-minute fixture teardown retry.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 35

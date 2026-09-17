@@ -172,6 +172,19 @@ NOTES
   kinds). Check the provider schema's `Sensitive:` flag for every attribute an
   output touches -- `terraform validate` does NOT catch this class; only a
   plan does.
+- **Provider budgets on module-derived values are `lifecycle { precondition }`
+  blocks on the resource, twins of the Pulumi module's guard.** When a service
+  caps something the module itself assembles (a derived name, the composed tag
+  set including the Planton labels), the author cannot see the final value and
+  no spec rule can compute it, so the module checks it before anything renders:
+  a `local.<thing>_budget` naming the measured number (comment carries the date
+  and the API's own error text), a local computing the FINAL value sent (after
+  `distinct()`, after label rendering), and a precondition whose
+  `error_message` interpolates the budget, the offending total, and the
+  author's levers -- the same number and the same words as the Pulumi module's
+  `errors.Errorf`. Measure the boundary live (pass at N, fail at N+1) before
+  writing the number. Exemplars: the Superset chart's name budget; the
+  DigitalOcean database cluster's 255-character combined-tags budget.
 - **Dispatch-pattern outputs coalesce PER ATTRIBUTE, never per resource.**
   When one kind count-gates between several provider resources (an
   exactly-one-of scope or mode discriminator selecting among variants with

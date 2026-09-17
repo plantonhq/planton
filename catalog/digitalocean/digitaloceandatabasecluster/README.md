@@ -1,6 +1,6 @@
 # DigitalOcean Database Cluster
 
-Managed databases on DigitalOcean: one Planton component models the full `digitalocean_database_cluster` resource — every engine DigitalOcean offers (PostgreSQL, MySQL, Redis, MongoDB, Kafka, OpenSearch, Valkey), node topology and sizing, VPC-private networking, custom storage with automatic growth, weekly maintenance windows, restore-from-backup provisioning, engine-specific tuning, project placement, and tags.
+Managed databases on DigitalOcean: one Planton component models the full `digitalocean_database_cluster` resource — every engine DigitalOcean offers (PostgreSQL, MySQL, Valkey, MongoDB, Kafka, OpenSearch — plus Redis for adopting existing clusters), node topology and sizing, VPC-private networking, custom storage with automatic growth, weekly maintenance windows, restore-from-backup provisioning, engine-specific tuning, project placement, and tags.
 
 ## What this component models
 
@@ -22,7 +22,7 @@ The spec maps one-to-one onto DigitalOcean's managed database cluster:
 | `evictionPolicy` | Redis/Valkey only: key eviction under memory pressure |
 | `sqlMode` | MySQL only: comma-separated SQL modes |
 | `projectId` | Optional DigitalOcean project placement (UUID); create-only |
-| `tags` | Your tags, applied alongside the standard Planton labels |
+| `tags` | Your tags, applied alongside the six standard Planton labels; DigitalOcean caps the comma-joined total at 255 characters and both provisioners fail fast with the arithmetic when a long `metadata.name` or `metadata.id` spends it |
 
 Engine pairing is validated at manifest time: `sqlMode` with anything but MySQL, or `evictionPolicy` with anything but Redis/Valkey, is rejected before any provisioner runs — the same rules DigitalOcean enforces server-side.
 

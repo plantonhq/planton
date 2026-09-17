@@ -48,9 +48,15 @@ spec:
   # entity no longer exists (51 found after one session of database probes).
   #
   # DATABASE LANES: the account quota is 10 clusters (`412 maximum clusters
-  # reached`), and a FAILED `POST /v2/databases` poisons the account for a
-  # few minutes -- every create then answers `422 cluster name is not
-  # available` whatever the name. Never probe-create databases while a
+  # reached`); a cluster's COMBINED tags (joined by commas) may be at most
+  # 255 characters (`422 combined tags cannot exceed 255 characters` -- an
+  # honest validation refusal that creates nothing and poisons nothing, so
+  # database scenario names use the kind's id prefix, e.g.
+  # `planton-oss-e2e-dodb-min`, because the six Planton label tags carry
+  # metadata.name twice); and a `POST /v2/databases` that fails PART-WAY
+  # poisons the account for a few minutes -- every create then answers
+  # `422 cluster name is not available` whatever the name -- and can leave
+  # the ghost VPC member above. Never probe-create databases while a
   # database lane runs, and never retry a failed create inside that window.
   #
   # OPERATOR PRECONDITION (per machine): the alert lanes (monitor alerts,

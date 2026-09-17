@@ -19,6 +19,6 @@ Exactly the kind's stack-output contract, identical to the Terraform module: `cl
 ## Behavior notes
 
 - **PARITY-EXCEPTION**: `spec.storage_autoscale` is modeled and the Terraform module wires it, but the pinned Pulumi DigitalOcean SDK (v4.53.0, re-verified against `DatabaseClusterArgs`) has no `storage_autoscale` field on DatabaseCluster — this module fails loudly when it is set rather than silently dropping it. Re-evaluate when the SDK exposes storage_autoscale.
-- Tags are the user's `spec.tags` plus the standard Planton labels rendered as `key:value` strings — the identical set the Terraform module applies.
+- Tags are the user's `spec.tags` plus the standard Planton labels rendered as `key:value` strings — the identical set the Terraform module applies. DigitalOcean caps the comma-joined tag string at 255 characters (measured 2026-09-17), so the module computes the final set, checks it against `tagsCombinedBudget`, and fails before creating anything with the same message as the Terraform module's precondition.
 - `sql_mode` and `eviction_policy` are passed only when set; the spec's validation rules enforce the engine pairing before any deploy.
 - Changing `engine_version` performs an in-place major upgrade; changing `region` performs a live migration. See the kind [GUIDE](../../GUIDE.md).

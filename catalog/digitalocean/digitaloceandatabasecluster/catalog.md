@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **Maintenance Window** -- configured only when `maintenanceWindow` is provided; pins automatic updates to a weekly slot
 - **Engine Tuning** -- `sqlMode` on MySQL clusters and `evictionPolicy` on Redis/Valkey clusters
 - **Backup Restore** -- consumed only when `backupRestore` is provided; provisions the new cluster from a backup of an existing cluster (creation-time only, never read back)
-- **DigitalOcean Tags** -- your `tags` plus resource metadata tags (organization, environment, resource kind) applied automatically for tracking
+- **DigitalOcean Tags** -- your `tags` plus six resource metadata tags (resource marker, name, kind, organization, environment, id) applied automatically for tracking; DigitalOcean caps the comma-joined total at 255 characters, and both provisioners check the budget before creating anything
 
 ## Before You Deploy
 

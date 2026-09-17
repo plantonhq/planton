@@ -166,7 +166,17 @@ type DigitalOceanDatabaseClusterSpec struct {
 	// changed after creation.
 	ProjectId string `protobuf:"bytes,14,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// (Optional) Tags applied to the cluster in DigitalOcean, in addition to
-	// the standard Planton labels both provisioners always apply.
+	// the standard Planton labels both provisioners always apply
+	// (`planton-ai_resource:true`, `planton-ai_name:<metadata.name>`,
+	// `planton-ai_kind:DigitalOceanDatabaseCluster`,
+	// `planton-ai_organization:<org>`, `planton-ai_environment:<env>`,
+	// `planton-ai_id:<metadata.id>`). DigitalOcean caps a database cluster's
+	// COMBINED tags -- every tag joined by commas -- at 255 characters
+	// (measured 2026-09-17: the API answers `422 combined tags cannot exceed
+	// 255 characters`). The label tags alone cost about 133 characters plus
+	// the length of metadata.name and metadata.id, so a long resource name
+	// leaves little room here; both provisioners check the budget before
+	// creating anything and fail with the exact arithmetic.
 	Tags          []string `protobuf:"bytes,15,rep,name=tags,proto3" json:"tags,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

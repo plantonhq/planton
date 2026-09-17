@@ -221,7 +221,14 @@ spec:
       # populates them even though they exist server-side; the first
       # post-import plan re-asserts the configured values as a server-side
       # no-op. storage_size_mib, private_network_uuid, project_id, and tags
-      # read back unconditionally and need no tolerance.
+      # read back unconditionally and need no tolerance. Live-proven
+      # 2026-09-17 on three blind round-trips: a cluster with none of these
+      # configured re-imported lossless; eviction_policy fired alone on the
+      # Valkey lane; maintenance_window and sql_mode fired together on the
+      # MySQL lane -- and nothing outside this list ever appeared in a
+      # post-import plan (the Optional+Computed private_network_uuid and
+      # project_id populate from the region's default VPC and the default
+      # project when unset, without a diff).
       write_normalized_attributes:
         - maintenance_window
         - eviction_policy

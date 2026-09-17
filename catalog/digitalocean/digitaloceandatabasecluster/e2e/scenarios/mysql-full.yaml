@@ -12,11 +12,16 @@
 # The cluster name carries the run id: cluster names are unique per account
 # (the API answers 422 "cluster name is not available"), and a delete returns
 # before the cluster is gone, so a re-run must never reuse the previous name.
+# The metadata name uses the kind's id prefix (`dodb`), the catalog's shape
+# for long kind names: DigitalOcean caps a database cluster's combined tags
+# (joined by commas) at 255 characters, and the six Planton label tags carry
+# this name twice -- the full kind name plus the user tag below would have
+# joined to 273.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
-  name: planton-oss-e2e-digitaloceandatabasecluster-mysql
-  id: planton-oss-e2e-digitaloceandatabasecluster-mysql
+  name: planton-oss-e2e-dodb-mysql
+  id: planton-oss-e2e-dodb-mysql
   org: planton-oss
   env: e2e
   labels:

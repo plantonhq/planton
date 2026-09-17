@@ -23,7 +23,7 @@ spec:
   cluster:
     valueFrom:
       kind: DigitalOceanDatabaseCluster
-      name: planton-oss-e2e-digitaloceandatabasecluster-min
+      name: planton-oss-e2e-dodb-min
       fieldPath: status.outputs.cluster_id
   replicaName: pltn-e2e-dodbrep-sized
   region: nyc3

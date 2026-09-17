@@ -3356,9 +3356,9 @@ path and kill the NEXT scenario mid-create, leaving a real orphan — size
 the timeout for the failure path (45 minutes for a two-scenario kind), and
 after any timed-out run list the account before re-running.
 
-**Managed-database engine versions are a live offer list, and the
-database API's `422 cluster name is not available` is three different
-failures.** `GET /v2/databases/options` names the versions DigitalOcean
+**Managed-database engine versions are a live offer list, the database
+API caps a cluster's combined tags at 255 characters, and its `422
+cluster name is not available` has meant three different failures.** `GET /v2/databases/options` names the versions DigitalOcean
 will create per engine today (2026-09-16: `pg` 15–18, `mysql` `8.4` only,
 `valkey` `8`, `kafka` `3.9`/`4.2`, `opensearch` `2.19`/`3.3`/`3.6`,
 `mongodb` `7.0`/`8.0`; `redis` is gone — `engine: redis` fails
@@ -3370,23 +3370,38 @@ account and the default quota is 10 clusters (`412 maximum clusters
 reached`); a deleted cluster 404s within a second. The 422 "name is not
 available" is honest for a real duplicate, but the same text comes back
 for a brand-new name in two more cases, both measured with curl against
-the exact body godo sends: (1) a request whose TAGS the database service
-will not take — the request without tags succeeds, each of Planton's label
-tags succeeds alone, and the full seven-tag label set the modules send
-(~266 characters for the e2e fixture's 47-character name, `id` == `name`)
-fails every time, while any six of the seven passed; DigitalOcean
-documents no per-cluster tag budget, and the rule is NOT yet
-characterized (the database-cluster profile carries the unblock
-sequence); (2) any create in the minutes after a FAILED create, tagged or
-not — a failed create poisons the account for a few minutes and can leave
-a ghost cluster (404 on GET, absent from the list, still listed in
-`GET /v2/vpcs/{id}/members` as a `do:dbaas:` URN with an empty name, which
-blocks the VPC's deletion and holds its CIDR — `422 This range/size
-overlaps with another VPC network` on the next fixture install even after
-the VPC is renamed). Probe the database API patiently: one create at a
-time, never a second attempt inside a failing window, and delete a probe
-only after it reads `online`; and never probe-create databases while a
-database lane is running. One more database residue class for the sweep:
+the exact body godo sends: (1) a request whose COMBINED TAGS are too long
+— on 2026-09-16 this came back as the misreported "name is not
+available"; by 2026-09-17 the API named it (`422 combined tags cannot
+exceed 255 characters`), and eight probes pinned the rule exactly: the tag
+names joined by commas may be at most 255 characters (six tags summing to
+250 pass and 251 fail; three tags summing to 253 pass and 254 fail; colons
+count as one character; the tag count matters only through the commas).
+The six Planton label tags carry `metadata.name` twice (`planton-ai_name:`
+and `planton-ai_id:`), so the `planton-oss-e2e-<kind>-<scenario>` names
+of a long kind blow the budget by themselves (the database cluster's
+`minimal` joined to 257) — database scenarios use the kind's id prefix
+instead (`planton-oss-e2e-dodb-min`, the shape the AWS catalog already
+uses for long kinds), and both database-cluster modules check the budget
+before creating anything. An honest validation 422 of this class creates
+nothing and poisons nothing (an untagged control created immediately
+after one); (2) any create in the minutes after a create that FAILED
+part-way, tagged or not — such a failure poisoned the account for a few
+minutes and left a ghost cluster (404 on GET, absent from the list, still
+listed in `GET /v2/vpcs/{id}/members` as a `do:dbaas:` URN with an empty
+name, which blocks the VPC's deletion and holds its CIDR — `422 This
+range/size overlaps with another VPC network` on the next fixture install
+even after the VPC is renamed; one such ghost was still listed 58 hours
+later). A cluster that is created and deleted cleanly leaves its VPC at
+once (the fixture VPC tore down in 10–16 s on both VPC-attached lanes).
+Probe the database API patiently: one create at a time, never a second
+attempt inside a failing window, delete a probe only after it reads
+`online`, and after any 422 list `/v2/databases` and `/v2/tags` to tell a
+validation refusal (nothing created) from a partial create; never
+probe-create databases while a database lane is running. Managed
+clusters reached `online` in 33–81 s as bare API probes and the provider's
+create wait ran 3m53s–5m21s inside the lanes. One more database residue
+class for the sweep:
 DigitalOcean auto-creates THREE alert policies for every cluster that
 reaches `online` (`v1/dbaas/alerts/cpu_alerts`, `memory_utilization_alerts`,
 `disk_utilization_alerts`, `compare: GreaterThan 90 over 5m`, emailing a
