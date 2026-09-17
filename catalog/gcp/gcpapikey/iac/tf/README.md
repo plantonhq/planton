@@ -4,7 +4,7 @@ This Terraform module provisions a Google Cloud API key (`google_apikeys_key`) w
 
 ## Overview
 
-One resource. The key's identity is the spec's `keyId` (the provider's `name`), its project, and its optional service-account binding — all immutable, so a change to any of them recreates the key and rotates the key string. Restrictions and the display name update in place. The module runs on the plain `google` provider with `user_project_override = true` — every modeled field is GA on the pinned 7.x line, and the API Keys API needs a quota project on user-credential calls.
+One resource of substance plus its API enablement: the module enables `apikeys.googleapis.com` on the project (`google_project_service`, `disable_on_destroy = false`, so destroying one key never switches the API off for the others) and the key depends on it, so a first apply on a fresh project needs nothing switched on by hand. The key's identity is the spec's `keyId` (the provider's `name`), its project, and its optional service-account binding — all immutable, so a change to any of them recreates the key and rotates the key string. Restrictions and the display name update in place. The module runs on the plain `google` provider with `user_project_override = true` — every modeled field is GA on the pinned 7.x line, and the API Keys API needs a quota project on user-credential calls.
 
 ## Usage with Planton CLI
 

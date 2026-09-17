@@ -3004,9 +3004,16 @@ file's own `quota_project_id` is NOT honored by the provider transport;
 live-verified). Kinds whose APIs carry this requirement wire
 `user_project_override = true` in their TF provider block and build their
 Pulumi provider via `pulumigoogleprovider.GetWithUserProjectOverride` —
-a module-level, customer-facing fix, never a harness export. The typed
-verifier clients are unaffected (google.golang.org/api transports honor
-the ADC quota project).
+a module-level, customer-facing fix, never a harness export. The
+verifier side takes the same posture explicitly: the harness builds every
+typed client and its REST client with `option.WithQuotaProject(<test
+project>)`. The Go client libraries would otherwise fall back to the ADC
+file's own `quota_project_id`, and a fresh `gcloud auth
+application-default login` leaves that field EMPTY whenever the account
+cannot bill quota to gcloud's configured project (live-hit 2026-09-17:
+the API Keys API answered 403 "requires a quota project" to the very
+first verifier-shaped probe) — so neither the modules nor the verifiers
+depend on what a credentials file happens to carry.
 
 **Once-only initialization singletons need an adopt arm for every lane
 after the first:** some project singletons initialize exactly once EVER —

@@ -55,8 +55,8 @@ planton apply -f firebase.yaml
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `projectId` | `StringValueOrRef` | provider default | GCP project to enable Firebase on. Can reference a GcpProject resource. Immutable. |
-| `defaultStorageLocation` | `string` | — | Create the default Cloud Storage for Firebase bucket in this Cloud Storage location (`US`, `EU`, `NAM4`, `us-central1`, ...). Once per project; immutable; needs the pay-as-you-go plan. |
-| `appCheck.serviceConfigs` | `list` | `[]` | Per-service enforcement: `serviceId` (one of `firestore`, `firebasestorage`, `firebasedatabase`, `identitytoolkit` `.googleapis.com`) and `enforcementMode` (`""` OFF, `UNENFORCED`, `ENFORCED`). Each service at most once. |
+| `defaultStorageLocation` | `string` | — | Create the default Cloud Storage for Firebase bucket in this Cloud Storage location (`US`, `EU`, `NAM4`, `us-central1`, ...). One per project at a time; immutable; needs the pay-as-you-go plan; deleted with its contents on destroy under `DELETE`. |
+| `appCheck.serviceConfigs` | `list` | `[]` | Per-service enforcement: `serviceId` (one of `firestore`, `firebasestorage`, `firebasedatabase`, `identitytoolkit` `.googleapis.com`) and `enforcementMode` (`""` OFF, `UNENFORCED`, `ENFORCED`). Each service at most once; the service must already be set up on the project (or be the default bucket this manifest declares) or the apply fails with `400 ... not yet set up`. |
 | `appCheck.resourcePolicies` | `list` | `[]` | Per-resource overrides: `serviceId` (`oauth2.googleapis.com`), `targetResource` (`//oauth2.googleapis.com/projects/{number}/oauthClients/{id}`), `enforcementMode`. |
 | `deletionPolicy` | `string` | `DELETE` | Governs ONLY the composed resources: `DELETE`, `PREVENT` (refuse), or `ABANDON`. The enablement itself is always detached. |
 

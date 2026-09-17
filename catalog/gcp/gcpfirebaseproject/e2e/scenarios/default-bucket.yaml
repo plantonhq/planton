@@ -1,0 +1,30 @@
+# Default-bucket scenario: proves the one arm the other scenarios cannot --
+# the project's default Cloud Storage for Firebase bucket. Create proves the
+# Firebase Storage API enablement, the bucket's creation in the US
+# multi-region (the GUIDE's recommendation: geo-redundant), and the
+# storage_bucket output populated from the Admin SDK config read after
+# create; destroy under deletion_policy DELETE proves that Google's
+# deleteDefaultBucket unlinks AND deletes the bucket, leaving the project
+# ready to declare one again -- a project holds one default bucket at a
+# time, not one ever. Both engines create and delete the same bucket name
+# minutes apart; Cloud Storage can hold a deleted bucket's name briefly, so
+# a name-reserved error on the second engine is a wait-and-retry, not a
+# module defect. Needs the test project on the pay-as-you-go plan (a linked
+# Cloud Billing account); the bucket is empty and costs nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseProject
+metadata:
+  name: planton-oss-e2e-gcpfbprj-defaultbucket
+  id: planton-oss-e2e-gcpfbprj-defaultbucket
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebaseproject
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  defaultStorageLocation: US
+  deletionPolicy: DELETE

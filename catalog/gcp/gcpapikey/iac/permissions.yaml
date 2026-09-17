@@ -10,6 +10,12 @@ metadata:
 spec:
   gcp:
     groups:
+      - purpose: EnableApiKeysApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling apikeys.googleapis.com on the target project -- the API every other call in this module is made against, and one a fresh project has disabled. The Terraform module pins disable_on_destroy=false and the Pulumi module leaves the field unset -- the provider's own reference states false OR UNSET leaves the service enabled on destroy (pinned 7.x line), so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted.
       - purpose: ManageApiKey
         permissions:
           - apikeys.keys.create

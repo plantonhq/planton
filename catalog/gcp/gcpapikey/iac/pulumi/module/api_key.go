@@ -1,6 +1,8 @@
 package module
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	gcpapikeyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpapikey/v1alpha1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
@@ -19,8 +21,29 @@ import (
 // arm means "no restriction of that class" to the API, and sending an
 // empty block would be rejected (each arm's list is required by the API).
 // The spec's CEL already guarantees at most one client arm.
+//
+// API enablement is module plumbing: the API Keys API is what every create,
+// read, and delete talks to, and a fresh project has it OFF -- a key
+// declared without it would fail its first apply with "API Keys API has not
+// been used in project ... before or it is disabled". disable_on_destroy is
+// left at the provider's default (which keeps the service enabled on
+// destroy): destroying one key must never switch off the API every other
+// key in the project, and the Firebase app registrations that reference
+// them, depends on.
 func apiKey(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error {
 	spec := locals.GcpApiKey.Spec
+
+	serviceArgs := &projects.ServiceArgs{
+		Service:                  pulumi.String("apikeys.googleapis.com"),
+		DisableDependentServices: pulumi.BoolPtr(true),
+	}
+	if spec.ProjectId.GetValue() != "" {
+		serviceArgs.Project = pulumi.String(spec.ProjectId.GetValue())
+	}
+	apiKeysApi, err := projects.NewService(ctx, "apikeys-api", serviceArgs, pulumi.Provider(gcpProvider))
+	if err != nil {
+		return errors.Wrap(err, "failed to enable apikeys api")
+	}
 
 	args := &projects.ApiKeyArgs{
 		Name: pulumi.String(spec.KeyId),
@@ -41,7 +64,8 @@ func apiKey(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) erro
 		args.Restrictions = restrictionsArgs(spec.Restrictions)
 	}
 
-	createdKey, err := projects.NewApiKey(ctx, spec.KeyId, args, pulumi.Provider(gcpProvider))
+	createdKey, err := projects.NewApiKey(ctx, spec.KeyId, args,
+		pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{apiKeysApi}))
 	if err != nil {
 		return errors.Wrap(err, "failed to create api key")
 	}
@@ -67,9 +91,14 @@ func restrictionsArgs(r *gcpapikeyv1alpha1.GcpApiKeyRestrictions) *projects.ApiK
 	if r.AndroidKeyRestrictions != nil {
 		apps := projects.ApiKeyRestrictionsAndroidKeyRestrictionsAllowedApplicationArray{}
 		for _, app := range r.AndroidKeyRestrictions.AllowedApplications {
+			// The API accepts a fingerprint with or without colons in any
+			// case but STORES and returns lowercase hex without colons
+			// (live-verified). Sending anything else leaves a permanent
+			// diff on every preview, so the canonical form is sent here and
+			// the spec stays free to carry the shape keytool prints.
 			apps = append(apps, &projects.ApiKeyRestrictionsAndroidKeyRestrictionsAllowedApplicationArgs{
 				PackageName:     pulumi.String(app.PackageName),
-				Sha1Fingerprint: pulumi.String(app.Sha1Fingerprint),
+				Sha1Fingerprint: pulumi.String(strings.ToLower(strings.ReplaceAll(app.Sha1Fingerprint, ":", ""))),
 			})
 		}
 		out.AndroidKeyRestrictions = &projects.ApiKeyRestrictionsAndroidKeyRestrictionsArgs{

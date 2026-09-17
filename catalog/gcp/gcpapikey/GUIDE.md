@@ -44,7 +44,9 @@ certificate, because a package name alone is trivially spoofed. List the
 package once per certificate the app ships under: the debug certificate
 developers build with, the upload certificate, and the Play App Signing
 certificate. Get fingerprints with `keytool -list -v` or from the Play
-Console's App signing page; both colon and colon-free forms are accepted.
+Console's App signing page; both colon and colon-free forms are accepted,
+and both engines send Google's stored form (lowercase, no colons) so the
+key never shows a spurious change on the next plan.
 
 ## Identity is immutable; restrictions are not
 

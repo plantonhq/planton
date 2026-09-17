@@ -54,9 +54,11 @@ type GcpFirebaseProjectSpec struct {
 	// Create the project's DEFAULT Cloud Storage for Firebase bucket in this
 	// location (a Cloud Storage location: a multi-region such as US or EU, a
 	// dual-region such as NAM4, or a region such as us-central1). The default
-	// bucket is the one the Firebase client SDKs use when no bucket is named
-	// and is created at most once per project; leave empty to skip it.
-	// Immutable: the bucket's location cannot change after creation.
+	// bucket is the one the Firebase client SDKs use when no bucket is named;
+	// a project holds at most one at a time. Leave empty to skip it.
+	// Immutable: the bucket's location cannot change after creation. Under
+	// deletion_policy DELETE, destroy unlinks and deletes the bucket (and
+	// the objects in it) -- a later manifest may declare one again.
 	//
 	// Requires the project to be on Firebase's pay-as-you-go (Blaze) plan --
 	// that is, linked to a Cloud Billing account. On a project without
@@ -150,7 +152,13 @@ type GcpFirebaseProjectAppCheck struct {
 	// in Google's default OFF state (no enforcement, no metrics). Listing a
 	// service with enforcement_mode UNENFORCED starts collecting metrics
 	// without rejecting anything -- the recommended first step before
-	// switching to ENFORCED.
+	// switching to ENFORCED. A service can be configured only once it is SET
+	// UP on the project (a Firestore database created, the default storage
+	// bucket present, a Realtime Database instance, Identity Platform
+	// initialized); configuring one before then fails the apply with 400
+	// "<service> is not yet set up for project". Declaring
+	// default_storage_location alongside firebasestorage enforcement is fine:
+	// both engines create the bucket first.
 	ServiceConfigs []*GcpFirebaseProjectAppCheckServiceConfig `protobuf:"bytes,1,rep,name=service_configs,json=serviceConfigs,proto3" json:"service_configs,omitempty"`
 	// Per-resource overrides of a service's enforcement, for the services
 	// that support them (today: individual OAuth clients under Google

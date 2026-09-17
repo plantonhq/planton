@@ -68,7 +68,12 @@ func firebaseProject(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provi
 	}
 
 	// The default Cloud Storage for Firebase bucket, when the spec asks for
-	// one. Created at most once per project; needs the pay-as-you-go plan.
+	// one. A project holds one at a time; destroy under DELETE unlinks and
+	// deletes it, so it can be declared again later. Needs the pay-as-you-go
+	// plan.
+	// The App Check configurations below wait for the bucket when the spec
+	// declares one (see appCheckDeps).
+	var defaultBucket *firebase.StorageDefaultBucket
 	if spec.DefaultStorageLocation != "" {
 		storageApi, err := enableService("firebasestorage.googleapis.com")
 		if err != nil {
@@ -83,8 +88,9 @@ func firebaseProject(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provi
 		if spec.DeletionPolicy != "" {
 			bucketArgs.DeletionPolicy = pulumi.StringPtr(spec.DeletionPolicy)
 		}
-		if _, err := firebase.NewStorageDefaultBucket(ctx, "default-bucket", bucketArgs,
-			pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{createdProject, storageApi})); err != nil {
+		defaultBucket, err = firebase.NewStorageDefaultBucket(ctx, "default-bucket", bucketArgs,
+			pulumi.Provider(gcpProvider), pulumi.DependsOn([]pulumi.Resource{createdProject, storageApi}))
+		if err != nil {
 			return errors.Wrap(err, "failed to create the default storage bucket")
 		}
 	}
@@ -97,7 +103,17 @@ func firebaseProject(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provi
 		if err != nil {
 			return err
 		}
-		deps := pulumi.DependsOn([]pulumi.Resource{createdProject, appCheckApi})
+		// A service's enforcement can be configured only once that service is
+		// set up on the project (live-verified: the API answers 400 "Cloud
+		// Firestore is not yet set up" otherwise). The one setup this module
+		// itself performs is the default bucket, so the configurations wait
+		// for it -- a manifest that declares the bucket AND Storage
+		// enforcement applies in one pass.
+		appCheckDeps := []pulumi.Resource{createdProject, appCheckApi}
+		if defaultBucket != nil {
+			appCheckDeps = append(appCheckDeps, defaultBucket)
+		}
+		deps := pulumi.DependsOn(appCheckDeps)
 
 		for _, sc := range spec.AppCheck.ServiceConfigs {
 			args := &firebase.AppCheckServiceConfigArgs{

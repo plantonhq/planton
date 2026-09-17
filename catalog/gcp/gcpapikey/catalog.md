@@ -17,7 +17,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **The APIs the key unlocks must be enabled on the project** -- a key does not enable anything; `apiTargets` names services already enabled (the Firebase kinds enable the Firebase APIs they need).
+- **The API Keys API itself is enabled by the module** -- nothing to switch on first; both engines enable `apikeys.googleapis.com` before creating the key and leave it on at destroy.
+- **The APIs the key unlocks must be enabled on the project** -- a key does not enable anything else; `apiTargets` names services already enabled (the Firebase kinds enable the Firebase APIs they need).
 - **`keyId` is immutable and reserved for 30 days after deletion** -- a deleted key is soft-deleted and recoverable; a new key cannot reuse the id in that window. Ephemeral keys need a fresh id per lifetime.
 - **IAM**: the deploying identity needs `roles/serviceusage.apiKeysAdmin` or broader (it includes `apikeys.keys.getKeyString`, which the modules need to export the key string).
 

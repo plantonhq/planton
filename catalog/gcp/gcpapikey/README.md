@@ -24,8 +24,9 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **The APIs the key unlocks must be enabled on the project.** A key enables nothing; `apiTargets` names services that are already enabled (the Firebase kinds enable the Firebase APIs they need).
-- **IAM**: the deploying identity needs `roles/serviceusage.apiKeysAdmin` or broader — it includes `apikeys.keys.getKeyString`, which both modules need to export the key string.
+- **The API Keys API itself is enabled by the module.** Nothing to switch on first: both engines enable `apikeys.googleapis.com` on the project before creating the key, and leave it enabled on destroy.
+- **The APIs the key unlocks must be enabled on the project.** A key enables nothing else; `apiTargets` names services that are already enabled (the Firebase kinds enable the Firebase APIs they need).
+- **IAM**: the deploying identity needs `roles/serviceusage.apiKeysAdmin` or broader — it includes `apikeys.keys.getKeyString`, which both modules need to export the key string — plus `serviceusage.services.enable` for the API enablement (`roles/serviceusage.serviceUsageAdmin`, or `roles/editor`).
 
 ## Deploy
 
@@ -79,7 +80,7 @@ planton apply -f api-key.yaml
 - **One client arm**: at most one of the four `*KeyRestrictions` arms on a key (Google's rule — a key identifies one kind of caller).
 - **No hollow arms**: every arm's list needs at least one entry.
 - **`keyId`**: RFC 1034 label, `^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$`.
-- **Android**: `packageName` is a dotted Java package name; `sha1Fingerprint` is 40 hex characters, optionally colon-separated in pairs.
+- **Android**: `packageName` is a dotted Java package name; `sha1Fingerprint` is 40 hex characters, optionally colon-separated in pairs (both modules send Google's stored form: lowercase, no colons).
 - **API targets**: `service` ends in `.googleapis.com`.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 

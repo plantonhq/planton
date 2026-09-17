@@ -1,3 +1,18 @@
+# API enablement is module plumbing: the API Keys API is what every create,
+# read, and delete below talks to, and a fresh project has it OFF -- a key
+# declared without this resource would fail its first apply with "API Keys
+# API has not been used in project ... before or it is disabled".
+# disable_on_destroy is false: destroying one key must never switch off the
+# API every other key in the project (and the Firebase app registrations
+# that reference them) depends on.
+resource "google_project_service" "apikeys_api" {
+  project = local.project_id
+  service = "apikeys.googleapis.com"
+
+  disable_dependent_services = true
+  disable_on_destroy         = false
+}
+
 # The API key. Its identity is the spec's key_id (the provider's `name`);
 # the project and the optional service-account binding are immutable with
 # it, so a change to any of the three destroys and recreates the key --
@@ -29,8 +44,13 @@ resource "google_apikeys_key" "this" {
           dynamic "allowed_applications" {
             for_each = android_key_restrictions.value.allowed_applications
             content {
-              package_name     = allowed_applications.value.package_name
-              sha1_fingerprint = allowed_applications.value.sha1_fingerprint
+              package_name = allowed_applications.value.package_name
+              # The API accepts a fingerprint with or without colons in any
+              # case but STORES and returns lowercase hex without colons
+              # (live-verified). Sending anything else leaves a permanent
+              # diff on every plan, so the canonical form is sent here and
+              # the spec stays free to carry the shape keytool prints.
+              sha1_fingerprint = lower(replace(allowed_applications.value.sha1_fingerprint, ":", ""))
             }
           }
         }
@@ -66,4 +86,6 @@ resource "google_apikeys_key" "this" {
       }
     }
   }
+
+  depends_on = [google_project_service.apikeys_api]
 }
