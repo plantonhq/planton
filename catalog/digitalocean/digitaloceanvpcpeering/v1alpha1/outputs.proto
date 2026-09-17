@@ -4,13 +4,20 @@ package dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1;
 
 // DigitalOceanVpcPeeringStackOutputs captures the key outputs after
 // provisioning a VPC peering connection.
+//
+// The peering's lifecycle status is deliberately NOT an output: both
+// provisioners wait for ACTIVE before the apply succeeds, so a stored
+// status could only ever say "ACTIVE" -- and it would keep saying so after
+// DigitalOcean moved the peering to DELETING or removed it. Live status is
+// read from the API by whoever needs it (GET /v2/vpcs/peerings/{id}); the
+// E2E verifier asserts existence that way.
 message DigitalOceanVpcPeeringStackOutputs {
+  // Retired: `status` (an apply-time lifecycle snapshot). Never reuse the
+  // number or the name.
+  reserved 2;
+  reserved "status";
+
   // UUID of the VPC peering connection (the resource's API identity and
   // its import id).
   string peering_id = 1;
-
-  // Lifecycle status of the peering as reported by DigitalOcean at apply
-  // time. DigitalOcean reports statuses in UPPERCASE (PROVISIONING,
-  // ACTIVE, DELETING); the module waits for ACTIVE before exporting.
-  string status = 2;
 }

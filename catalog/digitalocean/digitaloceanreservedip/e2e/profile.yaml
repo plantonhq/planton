@@ -3,23 +3,44 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanreservedip
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. THREE scenarios: `minimal` (unassigned IPv4 -- the shape
-  # that BILLS ~$5/month prorated while it exists; its destroy is the
-  # billing stop and the zero-orphan sweep is doubly binding), `assigned`
-  # (IPv4 inline assignment to a region-pinned droplet fixture -- the
-  # provider's genuinely mutable droplet_id arm), and `ipv6-assigned`
-  # (proves BOTH folded v6 resources: the reservation and the separate
-  # assignment resource). The two assignment lanes each deploy one
-  # region-pinned droplet fixture (~pennies/hour).
-  # Watch items for the proof lane: the upstream v6 delete swallows
-  # non-404 errors (inverted error check, verified in provider source), so
-  # only the verifier's live absence check proves the destroy; v4
-  # re-pointing/unassign are in-place updates the six-phase runner cannot
-  # exercise (no update phase).
+  # green: proven live on BOTH engines (2026-09-17), all three scenarios,
+  # every phase including the idempotency gate and the blind import
+  # round-trips -- all three LOSSLESS with zero tolerated updates: `minimal`
+  # and `assigned` by the bare IPv4 address (the importer restores region,
+  # urn, and the attached droplet, so the declared config-only `droplet_id`
+  # tolerance never fired), `ipv6-assigned` re-importing BOTH folded v6
+  # resources (the reservation by its address and the assignment by
+  # "{ip},{droplet_id}" -- the assignment's synthetic timestamped id does
+  # not prevent a blind import; the provider's importer parses the pair
+  # and mints a fresh id, and the post-import plan was clean). `minimal`
+  # is the shape that BILLS (~$5/month prorated while unassigned) and its
+  # destroy is the billing stop: measured DEPLOY 6-7 s, DESTROY 2-9 s, the
+  # address 404s within a second. The assignment lanes deploy the
+  # region-pinned droplet fixture (~41 s) and assign in ~20 s.
+  # LIVE-CAUGHT PROVIDER CLASS (Terraform, v2.101.0): the v6 reservation's
+  # Create reads the new address back at once and treats a 404 as "gone"
+  # (d.SetId("")), so when DigitalOcean's index lags the apply fails
+  # "Provider produced inconsistent result after apply: root object was
+  # present, but now absent" -- and the reservation EXISTS, orphaned (free,
+  # but it holds an address). One lane hit it three applies in a row
+  # (~7 s apart); the harness's eventual-consistency retry passed the
+  # lane and left three orphans, swept by hand. Not reproducible by API in
+  # isolation (four creates, six immediate GETs each, all 200) -- an
+  # intermittent index lag. A customer's plain `tofu apply` does not
+  # retry: the GUIDE carries the recovery (list, then import or delete the
+  # orphan). The upstream fix is a readability wait in Create (the shape
+  # #1563 gave the Kafka topic). The v4 Create has the same read-after-
+  # create shape but never failed here.
+  # The v6 destroy is proven by the verifier's absence check, never by the
+  # IaC destroy alone: the provider's v6 delete swallows non-404 errors
+  # (inverted error check), and its assignment Delete dereferences the
+  # reservation's droplet without a nil check (an address unassigned out of
+  # band would panic the destroy) -- both recorded on the GUIDE.
+  # Deferred arms (no runner update phase): v4 re-point/unassign are
+  # in-place updates upstream.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
   timeout_minutes: 15

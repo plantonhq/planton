@@ -1,9 +1,17 @@
 # Minimal DigitalOceanDatabaseKafkaSchema: an Avro record subject -- the
 # kind's total meaningful surface (all four arguments are required and
-# create-only). Rides the SHARED Kafka fixture that lives in the
-# DigitalOceanDatabaseKafkaTopic kind's folder (one fixture manifest
-# serves both Kafka kinds; the registry prerequisite installs a
-# PostgreSQL cluster, which has no schema registry).
+# create-only). Rides the kind's OWN General Purpose Kafka fixture (the
+# annotation below): DigitalOcean's schema registry exists only on General
+# Purpose Kafka plans, so the topic kind's cheaper Basic-plan fixture cannot
+# serve this kind, and the registry prerequisite installs a PostgreSQL
+# cluster, which has no schema registry. The lane deploys TWO clusters.
+#
+# The schema below is written the way a person writes Avro -- `type` first,
+# `name`, then `fields` -- on purpose: the registry stores every JSON schema
+# in canonical form (keys sorted, no whitespace) and the provider compares
+# the stored text with the manifest's verbatim, so this scenario proves the
+# modules' canonicalization keeps a human-ordered manifest stable under the
+# idempotency gate.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseKafkaSchema
 metadata:
@@ -16,14 +24,14 @@ metadata:
     e2e-component: digitaloceandatabasekafkaschema
   annotations:
     planton.dev/e2e: "true"
-    planton.dev/e2e-prerequisites: "catalog/digitalocean/digitaloceandatabasekafkatopic/e2e/fixtures/kafka-cluster.yaml"
+    planton.dev/e2e-prerequisites: "catalog/digitalocean/digitaloceandatabasekafkaschema/e2e/fixtures/kafka-gp-cluster.yaml"
   tags:
     - planton-e2e
 spec:
   cluster:
     valueFrom:
       kind: DigitalOceanDatabaseCluster
-      name: planton-oss-e2e-digitalocean-kafka-fixture
+      name: planton-oss-e2e-dokfs-kafka-fixture
       fieldPath: status.outputs.cluster_id
   subjectName: pltn-e2e-dokfs-min-value
   schemaType: avro

@@ -14,11 +14,10 @@ subject registered in a DigitalOcean managed Kafka cluster's schema
 registry.
 
 EVERY field is create-only. There is no update path in the provider:
-any change -- including evolving the schema definition, even a
-whitespace-only reformat (the definition is compared verbatim, never
-normalized) -- destroys the subject and re-registers it, which DROPS all
-previously registered versions of the subject. Treat schema evolution as
-a deliberate replacement, never a casual edit.
+any change -- including evolving the schema definition -- destroys the
+subject and re-registers it, which DROPS all previously registered
+versions of the subject. Treat schema evolution as a deliberate
+replacement, never a casual edit.
 
 ## Example
 
@@ -69,8 +68,13 @@ spec:
 
 The Kafka database cluster whose schema registry the subject is
 registered in. Use a literal cluster UUID or a reference to a
-DigitalOceanDatabaseCluster resource (the cluster must run the kafka
-engine). Changing it replaces the subject.
+DigitalOceanDatabaseCluster resource. The cluster must run the kafka
+engine on a GENERAL PURPOSE (dedicated-CPU, `gd-*`/`c2-*`/`m3-*`) plan:
+DigitalOcean's schema registry exists only there -- a Basic-plan Kafka
+cluster answers every registry call "412 schema registry is disabled
+for this cluster" and cannot enable it ("422 schema registry not
+supported for current plan"), measured 2026-09-17. Changing the cluster
+replaces the subject.
 
 - references: DigitalOceanDatabaseCluster (`status.outputs.cluster_id`)
 - rule: {"required":true}
@@ -99,9 +103,20 @@ Changing it replaces the subject.
 `string` · required
 
 The schema definition itself, in the language schema_type names (e.g.
-an Avro record document as JSON). Stored and compared verbatim --
-formatting is significant. Changing it replaces the subject and drops
-all prior versions.
+an Avro record document as JSON). Changing it replaces the subject and
+drops all prior versions.
+
+For avro and json, write the JSON in any key order and with any
+whitespace: the registry stores JSON schemas in canonical form (object
+keys sorted, no whitespace) and both provisioners render the definition
+into that same form before sending, so what you write and what the
+registry holds always agree and a re-apply never proposes a change. A
+definition that is not valid JSON fails at plan time. For protobuf the
+text is sent verbatim and the registry re-formats it on its side
+(measured 2026-09-17: a blank line inserted after the `syntax` line),
+so a protobuf subject re-plans a replacement on every refreshed
+Terraform plan until the provider compares normalized text -- see the
+GUIDE before managing protobuf subjects with Terraform.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 

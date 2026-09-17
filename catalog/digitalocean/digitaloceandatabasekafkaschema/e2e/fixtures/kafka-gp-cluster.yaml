@@ -1,0 +1,37 @@
+# Kafka cluster fixture for the schema kind -- a GENERAL PURPOSE
+# (dedicated-CPU, `gd-*`) plan, deployed as a manifest-path prerequisite.
+# This kind cannot ride the topic kind's cheaper shared Kafka fixture:
+# DigitalOcean's schema registry exists only on General Purpose Kafka plans
+# (measured 2026-09-17: a Basic-plan cluster answers every schema-registry
+# call `412 schema registry is disabled for this cluster`, and asking it to
+# enable the registry -- the `schema_registry` toggle in
+# `PATCH /v2/databases/{id}/config` -- answers `422 schema registry not
+# supported for current plan`; a fresh General Purpose cluster comes with
+# the registry ENABLED and its config endpoint answering 200). So the
+# fixture is the smallest General Purpose layout the 3-node minimum offers
+# (`options.kafka.layouts[num_nodes=3].sizes` from
+# `GET /v2/databases/options`); version and size are point-in-time values
+# -- re-check both when a create answers a version or layout 422. The
+# cluster name carries the run id because cluster names are account-unique
+# and a delete returns before the cluster is gone.
+apiVersion: digital-ocean.planton.dev/v1alpha1
+kind: DigitalOceanDatabaseCluster
+metadata:
+  name: planton-oss-e2e-dokfs-kafka-fixture
+  id: planton-oss-e2e-dokfs-kafka-fixture
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: digitaloceandatabasekafkaschema
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  clusterName: pltn-e2e-dokfs-kafka-fx-${E2E_RUN_ID}
+  engine: kafka
+  engineVersion: "4.2"
+  region: nyc3
+  sizeSlug: gd-2vcpu-8gb
+  nodeCount: 3

@@ -3776,6 +3776,101 @@ round-trips were lossless; the pool's omitted `user` reads back stable and
 its empty `password` output on the inbound-user shape is the documented
 contract.
 
+**Kafka fixtures: read the eligible sizes from the Kafka layouts, not the
+generic size list, and remember the schema registry is a plan feature.**
+`GET /v2/databases/options` publishes per-engine `layouts` -- Kafka's 3-node
+layout starts at `db-s-2vcpu-4gb` (the smallest generic database size,
+`db-s-2vcpu-2gb`, is not Kafka-eligible; measured 2026-09-17), and the
+version list was `3.9`/`4.2`. A Basic-plan Kafka cluster serves topics but
+has NO schema registry: every `/schema-registry` call answers `412 schema
+registry is disabled for this cluster`, and asking it to enable the toggle
+(`PATCH /v2/databases/{id}/config {"config":{"schema_registry":true}}`)
+answers `422 schema registry not supported for current plan`. A General
+Purpose cluster (`gd-2vcpu-8gb` x 3 is the smallest) comes with the registry
+ENABLED and its config endpoint answering 200. So the topic kind rides a
+Basic fixture and the schema kind rides its own General Purpose fixture --
+two differently named clusters, which also ends the serialization the two
+kinds needed while they shared one name. Each Kafka lane is two cluster
+creates (the PostgreSQL registry prerequisite ~5 min plus the Kafka fixture
+9.5-12 min) for ~12.5 min of lane; a Basic Kafka fixture is ~$0.22/hour, a
+General Purpose one ~$0.30/hour.
+
+**A create that answers `accepted` with no body is a panic in an older
+provider -- check which upstream the Pulumi bridge embeds before blaming a
+module.** DigitalOcean creates Kafka topics asynchronously and answers
+`{"id":"accepted","message":"topic is still provisioning"}` with no topic
+object; the topic is readable a moment later (the provider's Create at
+v2.99.1+ derives the id from the request and waits until GET succeeds).
+Older provider code dereferenced the response's topic and panics
+(`resource_database_kafka_topic.go:318`, a nil pointer inside the bridged
+provider -- `Bridged provider panic ... method=Create`). The Pulumi bridge
+pins its own upstream: pulumi-digitalocean v4.53.0 embeds provider v2.67.0,
+so the topic's Pulumi lane cannot pass at that pin while the Terraform lane
+(floating to v2.101.0) passes clean; the first bridge carrying the fix is
+v4.78.1. Read the bridge's release notes ("Upgrade
+terraform-provider-digitalocean to vX") to map a Pulumi pin to an upstream
+version, and record such a lane as blocked at the pin -- never as a module
+defect, never as a waiver.
+
+**The Kafka schema registry canonicalizes JSON schemas; the provider stores
+that text verbatim; the modules must canonicalize too.** A registered Avro
+or JSON Schema reads back with object keys sorted and no whitespace
+(`{"fields":[...],"name":"E2eProbe","type":"record"}` for a schema sent as
+`{"type":"record","name":...}`), and the provider's Read writes that
+canonical text into state, so a manifest in any other key order re-plans a
+REPLACE on every refreshed Terraform plan (every argument is create-only).
+Both modules render JSON-typed schemas through their JSON encoders
+(`jsonencode(jsondecode(...))` / `encoding/json`), which produce the same
+sorted-key compact form -- the scenario's schema is deliberately written in
+human key order and Terraform's refreshed idempotency plan read "No
+changes". Protobuf schemas are text: the registry reformats them (a blank
+line after the `syntax` line) and nothing module-side can absorb that -- a
+recorded provider caveat. Registering a subject whose definition the
+registry already holds answers 201 with the SAME schema id and version, so
+the `not_importable_upstream_reason` form (skip the import, let the
+reconcile-apply re-register) is safe for this type where it was not for
+the Spaces key.
+
+**The v6 reservation's read-after-create can 404 for a moment, and the
+provider treats that as "gone" -- the harness's eventual-consistency retry
+then creates ANOTHER one.** Terraform reports `Provider produced
+inconsistent result after apply: root object was present, but now absent`
+on `digitalocean_reserved_ipv6`; the reservation exists but is not in
+state, and each retried apply reserves a fresh address (one lane: three
+consecutive failures ~7 s apart, then success, three orphaned IPv6
+addresses swept by hand). Not reproducible by API alone (four creates, six
+immediate GETs each, all 200) -- an intermittent index lag. After any lane
+that logged that error, list `GET /v2/reserved_ipv6` before calling the
+sweep clean; the runner's retry is what passes the lane, and it is also what
+leaks. The v4 reservation has the same Create shape and never failed here.
+The v6 assignment DOES round-trip blind (`{ip},{droplet_id}` -- the importer
+parses the pair and mints its own id), so an assignment's synthetic
+timestamped id is not, by itself, a reason to exclude a type from the
+round-trip.
+
+**Apply-time status outputs came off two more kinds at proof time.** The
+topic's `state` and the peering's `status` were retired via `reserved`
+before their first lane (the autoscale pool's `status` precedent): a status
+captured at apply time can only ever read "active"/"ACTIVE" and goes stale
+the moment the cloud moves the resource, and both verifiers already read
+live status. A queued kind that still exports one is a pre-flight fix, not a
+lane finding.
+
+**Peering names are unique per team and a delete passes through DELETING
+before the name is free** -- the peering scenario's name carries
+`${E2E_RUN_ID}` for the same reason cluster and balancer names do. A
+dual-fixture-of-one-kind scenario (the registry prerequisite's VPC plus a
+scenario-declared second VPC) deploys in the expected order and resolves
+both references by name; nothing in the runner needed to change.
+
+**The same lane command can be launched twice by the tooling -- read the log
+for TWO `=== RUN` headers before trusting a PASS.** A duplicated launch of
+the peering lane interleaved two runs in one log: the second run's fixture
+VPC collided with the first's (`422 a VPC with the same name already
+exists`) and failed at DEPENDENCIES-UP while the first passed every phase.
+When a log shows interleaved runs, re-run the lane alone into a fresh log;
+never cite the interleaved one.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

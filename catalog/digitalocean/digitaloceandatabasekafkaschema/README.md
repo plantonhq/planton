@@ -11,7 +11,7 @@ The component covers the provider's full argument surface:
 - `cluster` -- the owning Kafka cluster, wired by reference (or a literal cluster UUID)
 - `subject_name` -- the registry subject (create-only)
 - `schema_type` -- `avro`, `json`, or `protobuf` (create-only)
-- `schema` -- the definition document (create-only; compared verbatim)
+- `schema` -- the definition document (create-only; Avro and JSON Schema are canonicalized for you, protobuf is sent verbatim)
 
 ## Quick start
 
@@ -42,9 +42,10 @@ Deploy with either provisioner; both produce identical resources and outputs.
 
 ## Behavior worth knowing
 
-- **EVERY field is create-only.** The provider has no update path: any change -- including schema evolution and even a whitespace-only reformat of the definition -- destroys the subject and re-registers it, which **drops all previously registered versions**. Treat evolution as a deliberate replacement.
-- **The definition is compared verbatim.** There is no JSON normalization; keep the document byte-stable in your manifest.
-- **Import is excluded.** The provider's importer is broken at the pinned version (it never restores the subject name); the import map records the exclusion and its re-evaluate trigger.
+- **The cluster must be a General Purpose Kafka plan.** DigitalOcean's schema registry exists only on dedicated-CPU (`gd-*`, `c2-*`, `m3-*`) Kafka clusters; a Basic-plan cluster answers every registry call `412 schema registry is disabled for this cluster` and cannot enable it (measured 2026-09-17).
+- **EVERY field is create-only.** The provider has no update path: any change -- including schema evolution -- destroys the subject and re-registers it, which **drops all previously registered versions**. Treat evolution as a deliberate replacement.
+- **Avro and JSON Schema definitions are canonicalized for you.** The registry stores JSON schemas with keys sorted and no whitespace, and both provisioners render your definition into that same form before sending, so key order and formatting in the manifest never count as a change. Protobuf text is sent verbatim, and the registry reformats it -- see the GUIDE before managing protobuf subjects with Terraform.
+- **Import is excluded.** The provider's importer is broken at the pinned version (it never restores the subject name); the import map records the exclusion and its re-evaluate trigger. Adoption re-registers the subject, which the registry treats as a no-op when the definition matches.
 
 ## Module layout
 

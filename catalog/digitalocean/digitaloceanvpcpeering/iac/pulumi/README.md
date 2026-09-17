@@ -14,7 +14,7 @@ Provisions a private-network peering between exactly two VPCs -- the complete `d
 
 ## Outputs
 
-Exactly the `DigitalOceanVpcPeeringStackOutputs` contract: `peering_id` (Pulumi's resource id), `status`.
+Exactly the `DigitalOceanVpcPeeringStackOutputs` contract: `peering_id` (Pulumi's resource id). The SDK's `Status` property is deliberately not exported (the resource waits for ACTIVE, so a stored status could only ever say ACTIVE and would go stale; live status belongs to whoever reads the API).
 
 ## Behavior notes
 

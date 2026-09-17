@@ -51,10 +51,13 @@ spec:
     - terraform_type: digitalocean_reserved_ip
       pulumi_type: digitalocean:index/reservedIp:ReservedIp
       id_format: "{reserved_ip_address}"
-      # droplet_id is only read back when it is already in state (an
+      # droplet_id is only read back by Read when it is already in state (an
       # out-of-band assignment is invisible to drift detection), and in
       # that branch region is taken from the DROPLET's region rather than
-      # the reservation's.
+      # the reservation's. The IMPORTER, however, does restore an attached
+      # droplet, so a blind round-trip of an assigned address is lossless
+      # and this tolerance never fired live (2026-09-17, both v4 scenarios);
+      # it stays declared for the Read-side branch it describes.
       config_only_attributes: [droplet_id]
     - terraform_type: digitalocean_reserved_ip_assignment
       pulumi_type: digitalocean:index/reservedIpAssignment:ReservedIpAssignment
@@ -79,11 +82,15 @@ spec:
       pulumi_type: digitalocean:index/reservedIpv6Assignment:ReservedIpv6Assignment
       id_format: "{reserved_ip_address},{droplet_id}"
       notes: >-
-        Never imported in practice: same synthetic timestamped id as the
-        v4 assignment. Unlike v4, the v6 arm of the DigitalOceanReservedIp
-        kind DOES create this resource (v6 cannot assign inline), but a
-        blind round-trip of the assignment alone is impossible by design;
-        the reservation's round-trip is the meaningful proof.
+        The v6 arm of the DigitalOceanReservedIp kind DOES create this
+        resource (v6 cannot assign inline), and it round-trips blind: the
+        importer parses "{ip},{droplet_id}", verifies the address is
+        attached to that droplet, and mints a fresh synthetic id of its own
+        -- the timestamp in the id is no obstacle because the id is never
+        compared, only the attributes (live-proven 2026-09-17: the
+        reservation and the assignment both re-imported with a clean plan).
+        The kind's import map derives droplet_id from the spec's resolved
+        droplet reference.
     - terraform_type: digitalocean_vpc_peering
       pulumi_type: digitalocean:index/vpcPeering:VpcPeering
       id_format: "{peering_id}"
@@ -285,22 +292,36 @@ spec:
       pulumi_type: digitalocean:index/databaseKafkaTopic:DatabaseKafkaTopic
       id_format: "{cluster_id},{topic_name}"
       # partition_count is deliberately never read back (partition changes
-      # apply asynchronously and the API would report a stale count), so an
-      # import lands at the schema default; min_insync_replicas is locally
-      # defaulted by the provider rather than read from the server.
+      # apply asynchronously and the API would report a stale count): the
+      # provider's Read echoes the value already in state, which after an
+      # import is empty, so the post-import plan proposes `0 -> <configured>`
+      # and the reconcile-apply's equal-count update is an API no-op
+      # (live-proven 2026-09-17 on both scenarios; the ONLY tolerated diff).
+      # Everything else -- replication_factor and the whole config block,
+      # min_insync_replicas included -- reads back from the server exactly
+      # as sent (min_insync_replicas is defaulted by the provider on the
+      # WRITE side only), so no other tolerance exists.
       config_only_attributes: [partition_count]
-      write_normalized_attributes: [config.min_insync_replicas]
     - terraform_type: digitalocean_database_kafka_schema_registry
       pulumi_type: digitalocean:index/databaseKafkaSchemaRegistry:DatabaseKafkaSchemaRegistry
-      id_format: "{cluster_id},{subject_name}"
-      notes: >-
-        Import is DEFECTIVE at the provider pin: the importer restores only
-        cluster_id, sets the resource id to the bare cluster id (not the
-        canonical "{cluster_id}/schema-registry/{subject}" form Create
-        produces), and never restores subject_name -- the post-import Read
-        addresses an empty subject and cannot round-trip. The owning kind's
-        import map records the exclusion; re-evaluate on any provider pin
-        bump.
+      # The importer is DEFECTIVE at the provider pin: it restores only
+      # cluster_id, sets the resource id to the bare cluster id (not the
+      # canonical "{cluster_id}/schema-registry/{subject}" form Create
+      # produces), and never restores subject_name, so the post-import Read
+      # addresses an empty subject and cannot round-trip. Declared not
+      # importable so the round-trip runner skips the import and lets the
+      # reconcile-apply re-CREATE the subject -- which is safe here:
+      # registering a subject whose definition the registry already holds
+      # answers 201 with the SAME schema id and version (measured
+      # 2026-09-17), so the re-create is a registry-side no-op and drops
+      # nothing (contrast the Spaces key, whose re-create would mint a second
+      # credential). A fixed importer would take "{cluster_id},{subject_name}"
+      # -- re-evaluate on any provider pin bump.
+      not_importable_upstream_reason: >-
+        The provider's importer restores only cluster_id and never the
+        subject name at the pinned version, so an imported subject reads
+        back empty; the reconcile-apply re-registers it, which the registry
+        treats as a no-op when the definition matches.
 
     # --- Spaces (S3-compatible object storage) --------------------------------
     - terraform_type: digitalocean_spaces_bucket

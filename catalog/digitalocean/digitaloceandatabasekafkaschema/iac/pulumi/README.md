@@ -19,4 +19,4 @@ Exactly the `DigitalOceanDatabaseKafkaSchemaStackOutputs` contract: `cluster_id`
 ## Behavior notes
 
 - ALL arguments are create-only upstream: any change is a replacement in Pulumi too, and it DROPS all previously registered versions of the subject.
-- The definition is compared verbatim -- keep the schema string byte-stable.
+- Avro and JSON Schema definitions are rendered into the registry's canonical form (`encoding/json` Marshal: keys sorted, no whitespace -- byte-identical to the Terraform module's `jsonencode(jsondecode(...))`) before sending, because the registry stores that form and the provider compares it verbatim. Protobuf text is sent verbatim; the registry reformats it, which Pulumi's non-refreshing preview never notices but a `pulumi refresh` would surface as a replacement (see the GUIDE).

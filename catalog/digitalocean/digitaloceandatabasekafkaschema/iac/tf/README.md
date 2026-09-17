@@ -19,5 +19,5 @@ Exactly the `DigitalOceanDatabaseKafkaSchemaStackOutputs` contract: `cluster_id`
 ## Behavior notes
 
 - ALL arguments are create-only (the resource has no update function): any change is destroy+recreate and DROPS all previously registered versions of the subject.
-- The definition is compared verbatim -- a whitespace-only reformat is a replacement.
+- Avro and JSON Schema definitions are rendered into the registry's canonical form (`jsonencode(jsondecode(...))`: keys sorted, no whitespace) before sending, because the registry stores that form and the provider's Read compares it verbatim -- without this, a human-ordered schema would re-plan a REPLACE on every refreshed plan. Protobuf text is sent verbatim and the registry reformats it, so a protobuf subject DOES re-plan a replacement on Terraform until the provider compares normalized text (see the GUIDE).
 - Import: excluded -- the provider's importer is defective at the pin (see `iac/import-map.yaml`).

@@ -67,6 +67,25 @@ spec:
   # scenario deploys its own cluster fixture (~5 min), so a satellite kind
   # with two scenarios on two engines is four cluster creates.
   #
+  # KAFKA LANES: a Kafka lane is TWO cluster creates (the PostgreSQL registry
+  # prerequisite plus the Kafka fixture, 9.5-12 min at 3 nodes) for ~12.5
+  # min of lane. Kafka's eligible sizes are its own layout list in
+  # `GET /v2/databases/options` (the smallest is `db-s-2vcpu-4gb`, one step
+  # above the smallest generic database size); the schema registry exists
+  # only on General Purpose plans, so the schema kind rides its own
+  # `gd-2vcpu-8gb` fixture (~$0.30/hour) while the topic kind rides a Basic
+  # one (~$0.22/hour). Each Kafka cluster leaves the same three
+  # `v1/dbaas/alerts/*` policies as any database -- 30 were swept after six
+  # Kafka lanes.
+  #
+  # RESERVED IPv6 LANES: a Terraform apply of `digitalocean_reserved_ipv6`
+  # can fail "Provider produced inconsistent result after apply" when
+  # DigitalOcean's index lags the create; the reservation exists anyway,
+  # and the harness's eventual-consistency retry reserves ANOTHER one. After
+  # any reserved-IP lane whose log shows that error, list
+  # `GET /v2/reserved_ipv6` (the sweep's v4 listing does not see them) and
+  # delete the orphans -- they are free but hold addresses.
+  #
   # OPERATOR PRECONDITION (per machine): the alert lanes (monitor alerts,
   # uptime alert rows) read their email recipient from
   # PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL, because DigitalOcean delivers alert
