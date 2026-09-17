@@ -1,6 +1,6 @@
 ---
 name: planton
-description: Planton's craft for cloud infrastructure and service delivery, for the Planton Assistant and coding agents (Cursor, Claude Code) inside an application repository. Infrastructure -- compose and troubleshoot Infra Charts (parameterized multi-resource architectures with Jinja templating, valueFrom wiring, a compile loop), write and apply cloud resource manifests (databases, clusters, networks) as dependency-ordered sets, modify deployed infra projects. Service delivery -- register services, push-to-deploy pipelines, deploy/promote/rollback, serving domains, keyless CI on GitHub Actions (with a Planton backend or fully offline), preview environments, local env vars. Use when a user asks for or changes infrastructure or cloud resources, fixes a failed build or deployment, registers or deploys a service, sets up CI/CD, or runs a service locally. Never mutate infrastructure uninvited, never approve a deployment gate, never leave the workspace you were given. Not for authoring component schemas.
+description: Planton's craft for cloud infrastructure, service delivery, and self-hosted Planton, for the Planton Assistant and coding agents (Cursor, Claude Code) in a repository. Infrastructure -- compose and troubleshoot Infra Charts (parameterized multi-resource architectures, Jinja templating, valueFrom wiring), apply cloud resource manifests as dependency-ordered sets, modify deployed projects. Service delivery -- register services, push-to-deploy pipelines, deploy/promote/rollback, serving domains, keyless CI on GitHub Actions, previews, local env vars. Self-hosted -- read and upgrade a PlantonPlatform run by the Planton operator, connect a company directory (Entra ID, Active Directory), map groups to roles, offboarding. Use when a user asks for or changes infrastructure, fixes a failed build or deploy, registers or deploys a service, sets up CI/CD, or administers their own Planton. Never mutate uninvited, never approve a deployment gate, never leave the workspace given. Not for authoring component schemas.
 ---
 
 # Planton
@@ -80,72 +80,48 @@ Whichever arm you are on, the arm is YOUR concern: the user never hears
 tool inventories, and when a step is genuinely impossible where you run,
 say what you DID and where the step happens -- never what you lack.
 
-## Chart anatomy
+## Chart anatomy and the folder check
 
-```
-my-chart/
-├── Chart.yaml      # identity + description (an InfraChart manifest)
-├── values.yaml     # the parameters users can set, with defaults
-└── templates/      # YAML manifests with Jinja placeholders, any nesting
-    ├── network.yaml            # multiple resources per file, separated by ---
-    └── kubernetes/addons/…     # subdirectories are fine
-```
-
-Read `references/infra.chart-format.md` before writing Chart.yaml or
-values.yaml -- it has the exact format of both files and the naming
-conventions. A minimal complete chart lives in
-`references/infra.worked-example.md`.
+A chart is `Chart.yaml` (identity, an InfraChart manifest), `values.yaml`
+(the parameters users can set, with defaults), and `templates/` (YAML
+manifests with Jinja placeholders, several per file separated by `---`,
+subdirectories fine). `references/infra.worked-example.md` shows the tree
+and a complete small chart; read `references/infra.chart-format.md` before
+writing either file.
 
 **One check before anything else: what IS this folder?** Two looks -- `ls
 .planton/ 2>/dev/null` (a hidden directory the HOST writes; its files never
 appear in the workspace tree), then whether `Chart.yaml` sits at the root.
-Four answers, four postures; `references/infra.workspace-postures.md` carries
-each one's complete choreography:
+Four answers, four postures; `references/infra.workspace-postures.md`
+carries each one's complete choreography, and you read it before the first
+file-writing command on any surface:
 
-- **`.planton/workspace.yaml` exists -- this is YOUR WORKSPACE.** Every
-  chart you compose is its own TOP-LEVEL subfolder named for the chart;
-  loose manifests and notes may live at the root; never place chart files
-  at the root itself. What already exists is checked out, never re-typed
-  (`planton chart checkout`, `planton infra project checkout`). One thing
-  gets ONE manifest; a wired set deploys as one (`planton apply -f <dir>`:
-  preflight report, then dependency order; exit 2 refused / 1 failed / 0);
-  a chart is for a parameterized architecture.
-- **`.planton/project.yaml` exists -- the working copy of a DEPLOYED
-  project.** Your edits target THAT project and saving starts a real
-  deployment pipeline -- read `references/infra.deployed-projects.md`
-  before doing anything.
-- **No marker, `Chart.yaml` at the root -- the folder itself is the
-  chart.** Compose in place at its root, exactly as the anatomy shows.
-- **No marker, no `Chart.yaml` -- an APPLICATION REPOSITORY; you are a
-  coding agent working inside it.** Infrastructure lives under
-  `infrastructure/` at the repository root with the same manifest / set /
-  chart judgment; never chart files at the root, never a `.planton/`
-  directory (no canvas here). Org and environment: `planton context get`,
-  else one question.
+- **`.planton/workspace.yaml` -- YOUR WORKSPACE.** Every chart is its own
+  TOP-LEVEL subfolder named for the chart; never chart files at the root.
+  What already exists is checked out, never re-typed (`planton chart
+  checkout`, `planton infra project checkout`). One thing gets ONE
+  manifest; a wired set deploys as one (`planton apply -f <dir>`); a chart
+  is for a parameterized architecture.
+- **`.planton/project.yaml` -- the working copy of a DEPLOYED project.**
+  Saving starts a real deployment pipeline; read
+  `references/infra.deployed-projects.md` before doing anything.
+- **No marker, `Chart.yaml` at the root -- the folder itself is the chart.**
+- **No marker, no `Chart.yaml` -- an APPLICATION REPOSITORY.** Infrastructure
+  lives under `infrastructure/`; never a `.planton/` directory here.
 
-**Where your shell starts depends on the posture.** In a repository, at its
-root. On a Planton surface (the first three postures) it starts in the HOST
-application's directory -- `cd` to the folder you were given before your
-first file-writing command (your file tools list its absolute path), or
-write workspace-absolute paths; files beside the workspace never reach the
-canvas.
-
-**Will this turn write files on a Planton surface? Then declare the span
-in the same breath as the check.** In the first three postures, when the
-turn will write any files, your very next shell command, at the root of
-the folder you were given, BEFORE grounding lookups and scaffolding:
+On a Planton surface (the first three) your shell starts in the HOST's
+directory -- `cd` to the folder you were given first -- and every turn that
+will write files opens, BEFORE grounding lookups and scaffolding, with the
+live-screen declaration at that folder's root:
 
 ```
 mkdir -p .planton && printf 'state: composing\n' > .planton/composing.yaml
 ```
 
-This is the live-screen declaration: the canvas keeps its composition
-animation alive across your thinking gaps and holds interim build errors out
-of the user's face until you declare the finish (Phase 4 rewrites it to
-`state: done`). Rewrite, never delete, never mention it in prose. It applies
-to EVERY writing turn there; a declaration written after your first chart
-file defeats it -- the user watches error flashes from half-written work you
-meant to spare them. A repository has no canvas: never write it there.
+It keeps the canvas's composition animation alive and holds interim build
+errors out of the user's face until Phase 4 rewrites it to `state: done`.
+Rewrite, never delete, never mention it in prose; written after your first
+chart file it is defeated. A repository has no canvas: never write it there.
 
 ## The workflow
 
@@ -429,6 +405,16 @@ engine -- preflight report first, dependency-ordered deploys, honest exit
 codes -- and the same published GitHub Action serves both postures, the
 mode inferred from its inputs. The complete offline journey -- authoring offline-clean trees, wiring GitHub Actions keylessly, verifying everything before declaring ready -- is `references/service.offline-deploy.md`.
 
+## Self-hosted Planton
+
+Some people run Planton on their own cluster: a **PlantonPlatform** resource the **Planton operator** converges everything from, with a **PlantonIdentityProvider** beside it when a company directory is connected. You will know from `planton instance show` (`deployment_kind: self_hosted`) or their words ("our Planton", "the operator"). Hold these:
+
+- **The declaration is the only handle.** Every fact is on the platform's status and every change is an edit to its spec, applied through the same read-then-confirm protocol as any mutation (`references/cloud.exploration.md`). Never edit, scale, or delete an object the operator rendered; it converges it back within a pass.
+- **Refusals are sentences.** A version below the operator's floor, a contradictory `spec.email`, a failed directory check: the operator names the field and nothing running changes. Relay the sentence; never guess.
+- **The local administrator is the break-glass.** It stays local, never mapped, reachable at `kc_idp_hint=local` on every surface when the directory is primary.
+- **Membership follows the directory.** Access is a mapping from a group to a role; nobody edits a mirrored team by hand; offboarding is the arm's window, never an admin's action.
+- **Say what was verified.** Each `self-hosted.*` reference names the paths proven on running installs and the few not (the desktop app's own sign-in screens, alert email delivery, a live front-door change, Entra P1 group features); confirm those on the person's install, and file a platform gap when one fails (`references/craft.filing-platform-gaps.md`).
+
 ## References
 
 Read the file whose "Read when" matches the moment; never answer from memory what a reference answers precisely.
@@ -485,6 +471,19 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/service.kustomize-authoring.md` | Moving a service's configuration into its repository (eject/init/checkout), the `_kustomize` tree conventions |
 | `references/service.preview-environments.md` | Per-pull-request preview environments: the opt-in, the previews tree, the one-call preview read, teardown |
 | `references/service.delete-cascade.md` | Retiring a service: the destroy-then-delete cascade, the retain-resources arm, the protected-environment refusal |
+
+### Self-hosted Planton (`self-hosted.*`)
+
+| File | Read when |
+|---|---|
+| `references/self-hosted.reading-a-platform.md` | The Planton is self-hosted; reading the PlantonPlatform's phase, message, columns, and component sentences before any change; what never to touch |
+| `references/self-hosted.front-doors-and-the-cli.md` | Pointing the CLI at a self-hosted Planton; `whoami` fails right after login; choosing Gateway API vs Ingress; the desktop's device sign-in |
+| `references/self-hosted.upgrading.md` | Upgrading the operator or the platform; the CRD adoption preflight; the version floor; a preview-era install |
+| `references/self-hosted.first-admin-and-seats.md` | Getting into a fresh install; "seats are all in use"; where the license key goes; keeping the local admin |
+| `references/self-hosted.identity-connecting.md` | Connecting Entra ID, Okta, or Active Directory: the manifest, the dry-run, the verdicts, the first sign-in; tenant features not exercised |
+| `references/self-hosted.identity-primary-and-break-glass.md` | Making the directory the only sign-in; `/login?local=1`, `planton login --local`; "what if Entra is down" |
+| `references/self-hosted.identity-mapping.md` | Giving a directory group access; `planton directory` and the MCP tools; the blast-radius preview; reading sync health |
+| `references/self-hosted.identity-offboarding.md` | How fast a departed person is out, per arm; the sync's laws; the email-less refusal; invited directory users; alert email |
 
 ### Working craft (`craft.*`, `catalog.*`)
 

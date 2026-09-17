@@ -5,6 +5,17 @@ description: A complete three-resource chart (VPC, internet gateway, public subn
 
 # Worked Example — A Minimal but Real Chart
 
+Every chart has this shape; the example below fills it in:
+
+```
+my-chart/
+├── Chart.yaml      # identity + description (an InfraChart manifest)
+├── values.yaml     # the parameters users can set, with defaults
+└── templates/      # YAML manifests with Jinja placeholders, any nesting
+    ├── network.yaml            # multiple resources per file, separated by ---
+    └── kubernetes/addons/…     # subdirectories are fine
+```
+
 `Chart.yaml`:
 
 ```yaml

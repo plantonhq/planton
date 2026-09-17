@@ -155,6 +155,27 @@ planton infra pipeline stream-status <id>   # status lines until terminal
 Streams block until the pipeline finishes — in a session, prefer polling
 `status` between other work over holding a stream open.
 
+## On a self-hosted instance
+
+`planton instance show` reads `deployment_kind: self_hosted`; the same CLI
+talks to it, plus the administration verbs. Read freely:
+
+```
+planton instance show | list | path          # the manifest, the roster, the credentials directory
+planton whoami                               # who the token says you are
+planton can-i <action> [--env <env>]         # exit 0 allowed, 2 denied, 1 error; a denial names the role classes
+planton access [--for <email>]               # who has access here, or what one principal holds
+planton explain-access …                     # why an access holds, path by path
+planton directory groups | preview | mappings   # the directory's groups, a rule's blast radius, the rules with sync health
+```
+
+Verbs that change access -- `grant`, `invite`, `team`, `service-account`,
+`api-key`, `directory map` / `unmap` -- are mutations (confirm, `--yes` only
+non-interactively). The craft around them is the `self-hosted.*` references:
+front doors and `login --local` (`self-hosted.front-doors-and-the-cli.md`,
+`self-hosted.identity-primary-and-break-glass.md`), mapping
+(`self-hosted.identity-mapping.md`).
+
 ## Generic escape hatches
 
 Any resource, any kind: `planton get <kind> <id> -o json` (e.g.
