@@ -823,9 +823,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "TEMPORAL_TASK_QUEUE_CLOUD_RESOURCE_PURGE", Value: "cloud-resource-purge"},
 		{Name: "TEMPORAL_TASK_QUEUE_GIT_WEBHOOKS", Value: "git-webhooks"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_HUB_CLEANUP", Value: "infra-hub-cleanup"},
-		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_BUILD_STAGE", Value: "infra-pipeline-build-stage"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_DEPLOY_STAGE", Value: "infra-pipeline-deploy-stage"},
-		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PROJECT_GIT_COMMIT", Value: "infra-project-git-commit"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PROJECT_PURGE", Value: "infra-project-purge"},
 		{Name: "TEMPORAL_TASK_QUEUE_ORGANIZATION_ESTATE_REINDEX", Value: "estate-organization-reindex"},
 		{Name: "TEMPORAL_TASK_QUEUE_PROVIDER_CONNECTION_AUTHORIZATION", Value: "provider_connection_authorization"},
@@ -940,16 +938,13 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "TUNNEL_TLS_CLIENT_CERT_PATH", Value: ""},
 		{Name: "TUNNEL_TLS_CLIENT_KEY_PATH", Value: ""},
 
-		// ── tekton build workspaces ──
+		// ── tekton build workspace ──
 		// No cluster credential here: the control plane never talks to a
 		// Tekton cluster -- builds execute on the runner named by the
 		// pipeline's resolved TektonConnection. Pipeline definitions need no
 		// coordinates at all: service builds compile at dispatch from
-		// release-pinned content the platform carries, and the infra
-		// family's git-repository lane is deliberately inert (its catalog
-		// is unset everywhere and creation refuses honestly). The only build
-		// knobs are the source workspace sizes.
-		{Name: "TEKTON_INFRA_PIPELINE_DISK_SIZE", Value: "1Gi"},
+		// release-pinned content the platform carries. The only build knob
+		// is the source workspace size.
 		{Name: "TEKTON_SERVICE_PIPELINE_DISK_SIZE", Value: "5Gi"},
 
 		// ── misc ──

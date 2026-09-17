@@ -60,9 +60,8 @@ with pull requests, refuse direct deletes, and never join promotion order —
 never propose architecture that depends on one. Their story lives in
 `references/service.preview-environments.md`.
 
-Read `infra project list` results with an eye on `env` and
-`infra_project_source` — a chart-sourced project in env `dev` means that
-chart's resources exist in dev. Caveat: the list rides the search index, so a
+Read `infra project list` results with an eye on `env` — a project in env
+`dev` means that chart's resources exist in dev. Caveat: the list rides the search index, so a
 project created seconds ago may briefly be missing; `infra project get`
 by id/name is the direct read.
 
@@ -83,9 +82,7 @@ workspace, always pass `--output-dir <subfolder>` so the checkout lands as
 its own top-level subfolder, never at the workspace root. A project checkout
 follows `references/infra.deployed-projects.md` from the moment it lands (the
 folder carries the hidden binding); re-running it against the same folder
-refreshes the managed files from server truth and leaves yours alone. Only
-chart-sourced projects can be checked out — a git-sourced project's files
-live in its repository, and the command says so with the clone URL.
+refreshes the managed files from server truth and leaves yours alone.
 
 ## The deployment chain — ids you will meet
 

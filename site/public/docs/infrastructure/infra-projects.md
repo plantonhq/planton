@@ -1,7 +1,7 @@
 ---
 title: "Infra Projects"
 sidebar_title: "Projects"
-description: "Configured instances of Infra Charts or Git repositories that deploy and manage collections of Cloud Resources through automated pipelines."
+description: "An Infra Chart rendered into one environment: the configured, versioned instance that deploys and manages a collection of Cloud Resources through deploy and undeploy pipelines."
 icon: infrastructure
 order: 40
 tags:
@@ -25,19 +25,15 @@ Before Infra Projects, the platform had Infra Charts for reusability but no pers
 - Who changed the load balancer domain in production-eu?
 - Can we redeploy production-asia with last week's configuration?
 
-Infra Projects solve this by introducing a persistent, versioned record of every template instantiation. Each project captures the source template, the exact parameter values used, the rendered Cloud Resource manifests, the dependency graph, and a link to every pipeline that deployed it. Pipelines are transient — they run and complete. Projects persist as the source of truth for what was configured and when.
+Infra Projects solve this by introducing a persistent, versioned record of every template instantiation. Each project captures the chart's templates, the exact parameter values used, the environment, the rendered Cloud Resource manifests, the dependency graph, and a link to every pipeline that deployed it. Pipelines are transient — they run and complete. Projects persist as the source of truth for what was configured and when.
 
-## Two Source Models
+## One Chart, One Environment
 
-Infra Projects support two distinct patterns for sourcing infrastructure configurations.
+You select an Infra Chart from the catalog, pick the environment it deploys into, provide parameter values, and the project renders the chart's templates into concrete Cloud Resource manifests.
 
-### Chart-Based
+When the project is created, the complete template is copied from the chart into the project. This ensures that chart updates do not break or silently change existing projects — each project is a self-contained snapshot of the template it was created from, and it can be checked out to disk and edited with no chart in reach.
 
-The most common approach. You select an Infra Chart from the catalog, provide parameter values for your target environment, and the project renders the chart templates into concrete Cloud Resource manifests.
-
-When the project is created, the complete template is copied from the chart into the project. This ensures that chart updates do not break or silently change existing projects — each project is a self-contained snapshot of the template it was created from.
-
-The web console provides a creation wizard: browse the chart catalog, fill in the parameter form (auto-generated from the chart's parameter definitions), preview the rendered output, and click "Create and Deploy."
+The web console provides a creation wizard: browse the chart catalog, pick the environment, fill in the parameter form (auto-generated from the chart's parameter definitions), preview the rendered output, and deploy.
 
 <!-- SCREENSHOT: Infra Project creation from chart
   Page: /[org]/infra-projects/create/[infraChartId]
@@ -46,21 +42,11 @@ The web console provides a creation wizard: browse the chart catalog, fill in th
   Alt: Infra Project creation wizard showing chart parameters and environment selection for an AWS ECS environment chart
 -->
 
-### Git-Based
-
-For teams that manage infrastructure definitions in version control. The project points to a Git repository containing Cloud Resource YAML manifests. Changes pushed to the repository trigger Infra Pipelines automatically via webhooks.
-
-Git-based projects support the same pipeline controls as chart-based projects — you can disable automatic pipelines, disable deployments while keeping builds, or enable pull request deployments for preview environments.
-
 ## Automatic Pipeline Triggering
 
-Creating or updating an Infra Project automatically triggers an [Infra Pipeline](/docs/infrastructure/infra-pipelines). The pipeline takes the project's Cloud Resource dependency graph and executes deployments in the correct order. There is no separate "apply" step — the platform assumes that creating a project implies intent to deploy.
+Creating or updating an Infra Project starts an [Infra Pipeline](/docs/infrastructure/infra-pipelines). The pipeline takes the project's Cloud Resource dependency graph and executes deployments in the correct order. There is no separate "apply" step — a project is the declaration of an environment's infrastructure, and the platform acts on it.
 
-For the rare cases where you want to create a project without deploying, pipeline controls let you disable automatic triggering:
-
-- **Disable pipelines**: Stop all automatic pipeline triggering entirely
-- **Disable deployments**: Allow pipelines to build and validate but skip the deployment stage
-- **Enable pull request deployments**: Create preview deployments for pull requests (Git-based projects only)
+Deploying again without changing anything, and tearing the environment down, are explicit operations on the project: `deploy` and `undeploy` are a pair, and both hand back the project with the new run's id.
 
 ## Dependency Graph Visualization
 
@@ -86,19 +72,17 @@ This visualization makes it easy to understand the deployment topology and diagn
 Create a project from a chart with the CLI:
 
 ```bash
-planton chart install my-project ./my-chart -f values.yaml
+planton chart install my-project ./my-chart -f values.yaml --org <org> --env <env> -m "why"
 ```
 
-Or from the web console's chart catalog by selecting a chart, filling in parameters, and clicking "Create and Deploy."
-
-For Git-based projects, configure the repository source through the web console or CLI.
+Or from the web console's chart catalog by selecting a chart, picking the environment, filling in parameters, and deploying. The message becomes the run's own name, so a person reading the run later knows why it happened.
 
 ### Redeploy
 
 Trigger a new pipeline without changing the project's configuration. Useful for drift correction (re-applying desired state after manual cloud console changes), retrying after a failed deployment, or re-running after fixing external issues like quota limits or permissions:
 
 ```bash
-planton infra-project run-pipeline <project-name-or-id>
+planton infra project deploy <project-name-or-id>
 ```
 
 ### Undeploy
@@ -106,7 +90,7 @@ planton infra-project run-pipeline <project-name-or-id>
 Destroy all Cloud Resources owned by the project without deleting the project record. The project configuration is preserved and can be redeployed later — useful for temporarily tearing down infrastructure to save costs:
 
 ```bash
-planton infra-project undeploy <project-name-or-id>
+planton infra project undeploy <project-name-or-id>
 ```
 
 ### Purge
@@ -114,7 +98,7 @@ planton infra-project undeploy <project-name-or-id>
 Destroy all Cloud Resources and delete the project record permanently:
 
 ```bash
-planton infra-project purge <project-name-or-id>
+planton infra project purge <project-name-or-id>
 ```
 
 Deleting a project does not automatically destroy its infrastructure. You must explicitly undeploy first if the infrastructure should be removed. This is a deliberate safety measure — deleting a configuration record should never accidentally destroy production resources.
@@ -125,23 +109,26 @@ Deleting a project does not automatically destroy its infrastructure. You must e
 # Create a project from a chart (triggers deployment automatically)
 planton chart install my-project ./chart-dir -f values.yaml
 
-# Run a pipeline for an existing project
-planton infra-project run-pipeline <project-name-or-id>
+# Deploy an existing project (starts a deploy run and follows it)
+planton infra project deploy <project-name-or-id>
 
 # List pipelines for a project
-planton infra-project infra-pipelines --project <project-id>
+planton infra project infra-pipelines <project-name-or-id>
 
 # Get the last pipeline for a project
-planton infra-project last-pipeline --project <project-id>
+planton infra project last-pipeline <project-name-or-id>
 
 # Undeploy (destroy resources, keep project)
-planton infra-project undeploy <project-name-or-id>
+planton infra project undeploy <project-name-or-id>
 
 # Purge (destroy resources and delete project)
-planton infra-project purge <project-name-or-id>
+planton infra project purge <project-name-or-id>
 
 # Get project details
-planton get infra-project <project-id>
+planton infra project get <project-name-or-id>
+
+# Check a project out as a chart-shaped folder you can edit and install again
+planton infra project checkout <project-name-or-id>
 ```
 
 ## When to Use Infra Projects vs. Direct Cloud Resources
@@ -157,7 +144,7 @@ planton get infra-project <project-id>
 
 ## Related Documentation
 
-- [Infra Charts](/docs/infrastructure/infra-charts) — The templates that chart-based projects instantiate
+- [Infra Charts](/docs/infrastructure/infra-charts) — The templates that projects instantiate
 - [Infra Pipelines](/docs/infrastructure/infra-pipelines) — How project deployments are orchestrated
 - [Cloud Resources](/docs/infrastructure/cloud-resources) — The resources that projects own and manage
 - [Stack Jobs](/docs/infrastructure/stack-jobs) — The atomic execution units within pipelines
