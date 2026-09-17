@@ -90,7 +90,7 @@ Once all information is gathered, create the meeting deck following this structu
 ### File Structure
 
 ```
-src/components/meets/guests/[guest-slug]/
+src/components/meetings/decks/[guest-slug]/
 ├── config.ts           # Slide array + metadata
 └── slides/
     ├── S01Cover.tsx
@@ -102,7 +102,7 @@ src/components/meets/guests/[guest-slug]/
 ### Step 1: Create Guest Folder
 
 ```bash
-mkdir -p src/components/meets/guests/[guest-slug]/slides
+mkdir -p src/components/meetings/decks/[guest-slug]/slides
 ```
 
 ### Step 2: Create Slide Components
@@ -144,8 +144,8 @@ export default function S01Cover() {
 ### Step 3: Create Config File
 
 ```tsx
-import { SlideConfig } from '../../MeetsDeck';
-import { GuestConfig } from '../index';
+import { SlideConfig } from '../../MeetingDeck';
+import { MeetingDeckConfig } from '../index';
 
 // Import all slides
 import S01Cover from './slides/S01Cover';
@@ -175,7 +175,7 @@ export const [guestSlug]Slides: SlideConfig[] = [
   // ... more slides
 ];
 
-export const [guestSlug]Config: GuestConfig = {
+export const [guestSlug]Config: MeetingDeckConfig = {
   slides: [guestSlug]Slides,
   guest: '[guest-slug]',
   meetingDate: 'yyyy-mm-dd-hhmm',
@@ -187,14 +187,14 @@ export const [guestSlug]Config: GuestConfig = {
 
 ### Step 4: Register in Guest Registry
 
-Update `src/components/meets/guests/index.ts`:
+Update `src/components/meetings/decks/index.ts`:
 
 ```tsx
 // Add import
 import { [guestSlug]Config } from './[guest-slug]/config';
 
 // Add to registry
-const guestRegistry: Record<string, GuestConfig> = {
+const meetingDeckRegistry: Record<string, MeetingDeckConfig> = {
   // ... existing entries
   '[guest-slug]/yyyy-mm-dd-hhmm': [guestSlug]Config,
 };
@@ -204,7 +204,7 @@ const guestRegistry: Record<string, GuestConfig> = {
 
 ## Shared Primitives Reference
 
-All slides should use components from `src/components/meets/shared/primitives.tsx`:
+All slides should use components from `src/components/deck/primitives.tsx`:
 
 ### Layout Components
 
@@ -460,7 +460,7 @@ Added entry to `guests/index.ts`:
 
 ## Example: SEP Meeting Deck
 
-The SEP deck at `src/components/meets/guests/sep/` is the reference implementation:
+The SEP deck at `src/components/meetings/decks/sep/` is the reference implementation:
 
 - 24 slides covering full sales narrative
 - Uses all major primitives

@@ -38,8 +38,8 @@ When this rule is triggered, I will:
 **Dated Meeting:** [date if specified, or latest]
 
 **Files to modify:**
-- src/components/meets/guests/[guest-slug]/config.ts
-- src/components/meets/guests/[guest-slug]/slides/[specific slides]
+- src/components/meetings/decks/[guest-slug]/config.ts
+- src/components/meetings/decks/[guest-slug]/slides/[specific slides]
 
 **Requested Changes:**
 [Summary of what you want updated]
