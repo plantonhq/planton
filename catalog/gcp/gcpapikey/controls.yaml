@@ -1,0 +1,97 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpapikey
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The API Keys service is a fully managed Google control-plane service -- the key record and its key string live in Google's infrastructure, encrypted at rest by default; the resource exposes no switch to store anything unencrypted.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: The API Keys service publishes no customer-managed encryption key integration -- neither the spec nor the underlying API carries a KMS key field to point at.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Google API that accepts an API key is served over TLS only; the key string is presented as a query parameter or header on an HTTPS request, and the API Keys management API itself is HTTPS-only.
+    - control_id: no-public-access
+      status: configurable
+      field_path: restrictions
+      evidence:
+        type: spec_default
+        reference: Omitted restrictions make an unrestricted key -- any caller anywhere that holds the string can present it (Google accepts this, and it is what Firebase auto-provisions when an app names no key). A client arm (Android package + certificate, iOS bundle ids, browser referrers, or server IPs) bounds who may present the key; api_targets bounds which APIs it unlocks.
+      notes: The key string ships inside the client by design, so restriction -- not secrecy -- is the access control. A Firebase mobile key should carry the app's package or bundle restriction and the FCM/installations api_targets; a server key should carry its caller IPs.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: restrictions.server_key_restrictions
+      evidence:
+        type: spec_default
+        reference: The server arm's allowed_ips is a caller-address allowlist (IPv4/IPv6 addresses or CIDRs) -- requests carrying the key from any other source are rejected by the API being called. The browser arm's allowed_referrers is the equivalent for web origins.
+      notes: The network-shaped restriction applies to server and browser callers; mobile callers are bounded by app identity (package + certificate, bundle id) instead, which is the right control for a device whose IP is meaningless.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: A key is a credential, not a serving surface -- there is no request path of its own to filter. Abuse protection for the APIs a key unlocks lives on those APIs (quotas on the project) and, for Firebase backends, on App Check configured through the Firebase kinds.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The management plane is IAM-governed unconditionally -- creating, reading, updating, and deleting a key authorizes against apikeys.keys.* permissions, and reading the key string against apikeys.keys.getKeyString, grantable through roles such as roles/serviceusage.apiKeysAdmin.
+      notes: The data plane is the key itself -- whoever holds the string can present it, bounded only by the restrictions above. Read access to the key string is a separate IAM permission from reading the key's metadata, so the string can be withheld from operators who only need to manage restrictions.
+    - control_id: workload-identity
+      status: configurable
+      field_path: service_account_email
+      evidence:
+        type: spec_default
+        reference: Omitted makes an ordinary client-identifying key. Set, the key becomes a service-account-bound key -- requests carrying it are authenticated as that service account, so IAM on the account governs what the caller may do (for the APIs that accept API-key authentication in place of OAuth).
+      notes: A bound key is still a bearer credential; it trades the OAuth token exchange for a static string and should be restricted by server IP. For workloads on Google Cloud, Workload Identity with no key at all remains the stronger posture -- this arm exists for callers that cannot obtain an OAuth token.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: An API key is itself the simplest credential class Google offers -- it identifies a client project, it does not authenticate a user or a workload (except in the service-account-bound form). The spec offers no weaker alternative to switch off; the posture question is WHICH APIs accept keys, which api_targets bounds.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: API keys carry no user identity; end-user authentication for a Firebase app is Firebase Authentication / Identity Platform, assessed on GcpIdentityPlatformConfig.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Administrative changes to a key (create, update restrictions, delete, undelete, and reads of the key string) land in Cloud Audit Logs as Admin Activity and Data Access events for apikeys.googleapis.com unconditionally; nothing on the resource can switch them off.
+      notes: Per-request use of the key is logged by the API being called, not by the API Keys service -- enable Data Access audit logs on those APIs to see which key presented which request.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Requests carrying the key surface in Cloud Monitoring's consumed-API metrics for the project (request counts, error rates, quota usage) with the credential id as a label, automatically and with no configuration on the resource.
+    - control_id: backup-recovery
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A deleted key enters a 30-day recoverable state -- the API Keys service keeps it and offers undelete (console or API) for the whole window, after which it is purged; the key string is unchanged on recovery.
+      notes: The key's definition is declarative and reproducible from the manifest; what recovery preserves is the key STRING every shipped client already holds.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: The 30-day recovery window is fixed by Google; the resource exposes no retention length to set.
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: API keys are a global resource (the only location is `global`) served by Google's control plane across failure domains; the resource exposes no zonal or regional deployment choice that could narrow it.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE -- the key is soft-deleted (recoverable for 30 days, the key string stops working immediately); PREVENT makes destroy fail outright -- the guard for a key baked into a shipped mobile binary you cannot rotate on demand; ABANDON unmanages the key while every client keeps working.
+      notes: Recreating a key rotates its string. Every immutable field (key_id, project_id, service_account_email) is a recreate, so PREVENT protects against an accidental identity edit as much as against destroy.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The API Keys service is fully managed -- Google operates the credential store and the enforcement of restrictions at every API frontend; the resource exposes no version, runtime, or maintenance channel to manage.

@@ -4,6 +4,7 @@ go_library(
     name = "providerparity",
     srcs = [
         "accounting.go",
+        "admissions.go",
         "baseline.go",
         "dispositions.go",
         "doc.go",

@@ -387,6 +387,7 @@ contained dev.planton.gcp.gcpalloydbinstance.v1alpha1.GcpAlloydbInstanceSpec.clu
 contained dev.planton.gcp.gcpalloydbinstance.v1alpha1.GcpAlloydbInstanceSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserSpec.cluster -> GcpAlloydbCluster
 contained dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpapikey.v1alpha1.GcpApiKeySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbackendbucket.v1alpha1.GcpBackendBucketSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.project_id -> GcpProject
@@ -438,6 +439,7 @@ contained dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusSp
 contained dev.planton.gcp.gcpeventarctrigger.v1alpha1.GcpEventarcTriggerSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceNetworkConfig.psc_endpoint_project -> GcpProject
 contained dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpfirebaseproject.v1alpha1.GcpFirebaseProjectSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpec.database -> GcpFirestoreDatabase
 contained dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpfirestoredatabase.v1alpha1.GcpFirestoreDatabaseSpec.project_id -> GcpProject

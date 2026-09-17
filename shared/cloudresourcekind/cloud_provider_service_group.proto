@@ -211,6 +211,14 @@ enum CloudProviderServiceGroup {
     provider: gcp
     display_name: "Serverless"
   }];
+  // Firebase is its own product line inside Google Cloud -- the console
+  // files it under a separate top-level entry, and its kinds (project
+  // enablement, app registrations, the mobile-facing services) belong to
+  // none of the infrastructure shelves above.
+  gcp_firebase = 313 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Firebase"
+  }];
 
   // 400–499: Kubernetes — three groups: native API objects, cluster
   // machinery, and applications deployed on the cluster.

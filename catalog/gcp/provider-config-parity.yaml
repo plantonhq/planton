@@ -20,7 +20,7 @@ mappings:
 
 moduleOwned:
   - arg: user_project_override
-    reason: quota-project attribution for APIs that bill the user project -- set by the identity-platform kinds' modules with the recorded justification in their provider.tf comments; a config-level override would silently change billing attribution for every kind
+    reason: quota-project attribution for APIs that bill the user project -- set by the modules of the kinds whose APIs demand a quota project on user-credential calls (the Identity Platform kinds on the Identity Toolkit API, GcpApiKey on the API Keys API, the Firebase kinds on the Firebase Management API), each with the recorded justification in its provider.tf comments; a config-level override would silently change billing attribution for every kind
 
 exclusions:
   - arg: project

@@ -16,6 +16,7 @@ import (
 
 	"github.com/pkg/errors"
 	"google.golang.org/api/alloydb/v1"
+	apikeys "google.golang.org/api/apikeys/v2"
 	artifactregistry "google.golang.org/api/artifactregistry/v1"
 	"google.golang.org/api/bigquery/v2"
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
@@ -31,6 +32,7 @@ import (
 	dataproc "google.golang.org/api/dataproc/v1"
 	"google.golang.org/api/dns/v1"
 	eventarc "google.golang.org/api/eventarc/v1"
+	firebase "google.golang.org/api/firebase/v1beta1"
 	firestore "google.golang.org/api/firestore/v1"
 	"google.golang.org/api/iam/v1"
 	iamv2 "google.golang.org/api/iam/v2"
@@ -92,6 +94,11 @@ type Services struct {
 	IamV2                *iamv2.Service
 	Workflows            *workflows.Service
 	Eventarc             *eventarc.Service
+	// Firebase is the Firebase Management API (firebase.googleapis.com,
+	// served at v1beta1 -- the only version Google publishes); ApiKeys the
+	// API Keys API. Both ride the pinned google.golang.org/api line.
+	Firebase *firebase.Service
+	ApiKeys  *apikeys.Service
 
 	// RestClient is an ADC-authenticated HTTP client for GCP services whose
 	// typed Go client is not yet in the pinned google.golang.org/api line
@@ -226,6 +233,8 @@ var verifiers = map[string]Verifier{
 	"gcpeventarctrigger":                     &eventarcTriggerVerifier{},
 	"gcpeventarcmessagebus":                  &eventarcMessageBusVerifier{},
 	"gcpcertificatemap":                      &certificateMapVerifier{},
+	"gcpapikey":                              &apiKeyVerifier{},
+	"gcpfirebaseproject":                     &firebaseProjectVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

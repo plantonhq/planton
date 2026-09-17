@@ -120,7 +120,7 @@ Advanced fields like certificate scope, location, and labels are equally modeled
 **The recorded-exclusion rule** (omission is a decision, and every decision is recorded):
 
 - Deprecated or superseded provider surface may be excluded -- always *with a recorded reason*, never silently; these are the only permitted exclusion categories
-- Beta-only provider capability enters the GA parity baseline only through an explicitly enumerated admission list, each entry with a recorded reason, implemented with the idiomatic per-resource beta-provider declaration inside the module -- wholesale beta parity is rejected
+- Beta-only provider capability enters the GA parity baseline only through the admission list -- `pkg/providerparity/admissions/<channel>.yaml`, one entry per resource per consuming kind, each with a recorded reason and the path where its promotion to GA is tracked -- implemented with the idiomatic per-resource beta-provider declaration inside the module (`provider = google-beta` on exactly the admitted resource blocks, the channel pinned to the baseline's line). The list is a gate, not a note: the module census records every such attachment, the accounting fails an attachment with no entry and an entry the GA provider has since made unnecessary, and `hack/guards/ensure_beta_admissions.sh` holds the two in step on every module edit. Wholesale beta parity is rejected
 - Supporting every possible deployment method remains out of scope; a component models its mapped provider resources, not every way to deploy the technology
 - Field count is never the goal for its own sake -- every covered field must be tested, parity-verified, and deploy-validated
 

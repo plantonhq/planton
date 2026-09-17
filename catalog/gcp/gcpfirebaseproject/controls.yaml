@@ -1,0 +1,92 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpfirebaseproject
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Firebase project metadata and App Check configuration live in Google's managed control plane, encrypted at rest by default; the default Cloud Storage for Firebase bucket is a standard Cloud Storage bucket, which encrypts every object at rest under Google-managed keys unconditionally.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: The Firebase Management and App Check APIs publish no customer-managed key integration, and the default bucket's create call (projects.defaultBucket) takes only a location -- no KMS key field exists on any resource this kind declares. A CMEK-protected bucket for app content is a GcpGcsBucket linked to Firebase separately.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Firebase API the client SDKs and the management plane use is served over TLS only -- the Management API, Cloud Messaging, App Check token exchange, and Cloud Storage for Firebase all reject plaintext transport.
+    - control_id: no-public-access
+      status: configurable
+      field_path: app_check.service_configs
+      evidence:
+        type: spec_default
+        reference: An unlisted service is in Google's OFF state -- any client that knows the project can call the backend, subject only to that backend's own rules. Listing a service with enforcement_mode ENFORCED makes the backend reject every request that does not carry a valid App Check token proving it came from one of the project's registered apps on a genuine device.
+      notes: App Check is the "only my apps" perimeter for Firebase backends (Firestore, Storage, Realtime Database, Authentication). UNENFORCED first -- it reports what would be rejected -- then ENFORCED once every shipped client attests. The default bucket's object-level access is governed by Firebase Security Rules on the bucket, authored outside this kind.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: Firebase backends are globally served Google APIs with no network-source restriction surface -- there is no IP allowlist or VPC perimeter to declare here. The admission control Firebase offers is identity-shaped (App Check, Authentication, Security Rules), covered under no-public-access.
+    - control_id: edge-protection
+      status: configurable
+      field_path: app_check.service_configs
+      evidence:
+        type: spec_default
+        reference: Omitted means requests to the project's Firebase backends are admitted on their own merits; ENFORCED App Check rejects traffic from scripts, emulators, and tampered clients before it reaches the backend -- the abuse filter for a mobile or web API surface.
+      notes: Per-app attestation providers (Play Integrity, App Attest, DeviceCheck, reCAPTCHA) are configured on the app registration kinds; this kind decides which backends honor them. resource_policies override enforcement per OAuth client for Google Identity for iOS.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The management plane is IAM-governed unconditionally -- enabling Firebase authorizes against firebase.projects.create, the default bucket against firebasestorage.defaultBucket.*, and App Check against firebaseappcheck.*, grantable through roles such as roles/firebase.admin and roles/firebaseappcheck.admin.
+      notes: Sending push through Cloud Messaging is its own grant -- roles/firebasemessaging.admin on the sender's identity -- declared with GcpProjectIamMember, not here.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The enablement runs no workload and holds no credential. The keyless posture for a push SENDER (a service account bound to roles/firebasemessaging.admin and to the sender's Kubernetes ServiceAccount through Workload Identity) is declared with GcpServiceAccount, GcpProjectIamMember, and GcpGkeWorkloadIdentityBinding alongside this kind; nothing here needs a key file.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The Firebase Management API and Cloud Messaging accept only OAuth 2.0 / IAM credentials; the legacy FCM server key was retired by Google in 2024 and cannot be created. Client-side, the Firebase SDKs identify with an API key that is a project identifier, not an authentication credential (see GcpApiKey).
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The enablement carries no user identity. End-user authentication for the project's apps is Firebase Authentication / Identity Platform, assessed on GcpIdentityPlatformConfig; App Check (here) attests the APP, not the user.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Enabling Firebase, creating the default bucket, and every App Check configuration change land in Cloud Audit Logs as Admin Activity events for firebase.googleapis.com, firebasestorage.googleapis.com, and firebaseappcheck.googleapis.com unconditionally; nothing on the resource can switch them off.
+      notes: Data Access logs for the default bucket's object reads and writes are Cloud Storage's own opt-in, enabled on the project's audit configuration rather than on this resource.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Traffic against the project's Firebase APIs surfaces in Cloud Monitoring's consumed-API metrics automatically; App Check additionally reports verified / unverified / outdated-client request metrics per service in the Firebase console the moment a service is listed (UNENFORCED or ENFORCED).
+      notes: The UNENFORCED mode exists precisely for monitoring -- it counts what enforcement would reject before anything is rejected.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Firebase enablement is a one-way project attribute (nothing to back up or restore -- it cannot be lost). The default bucket is a Cloud Storage bucket with no versioning or soft-delete surface on the Firebase-side create; object-level protection for app content is configured on the bucket through Cloud Storage's own controls, outside this kind.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backup exists on this resource (see backup-recovery), so there is no retention length to set.
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Firebase's management plane, Cloud Messaging, and App Check are globally served Google services replicated across failure domains invisibly. The default bucket inherits Cloud Storage's durability for its location class -- a multi-region location (US, EU) is geo-redundant; a single region is zone-redundant within it.
+      notes: default_storage_location is the one availability choice this kind makes -- pick a multi-region for content that must survive a regional outage.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE for the composed resources -- the default bucket is deleted with its objects and App Check enforcement is switched OFF for every listed service; PREVENT makes destroy fail outright -- the guard for a production project whose default bucket holds user content; ABANDON leaves the bucket and the App Check settings in place, unmanaged.
+      notes: The enablement itself needs no protection because it CANNOT be deleted -- Google offers no way to remove Firebase from a project, and destroy always detaches the resource and leaves the project enabled. What deletion_policy protects is the default bucket's contents and a live enforcement posture that would silently open when switched OFF.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Firebase is a fully managed platform -- Google operates and patches the Management API, Cloud Messaging, App Check, and Cloud Storage for Firebase invisibly; the resource exposes no version, runtime, or maintenance channel to manage.

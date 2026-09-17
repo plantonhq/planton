@@ -28,6 +28,7 @@ import (
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/alloydb/v1"
+	apikeys "google.golang.org/api/apikeys/v2"
 	artifactregistry "google.golang.org/api/artifactregistry/v1"
 	"google.golang.org/api/bigquery/v2"
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
@@ -43,6 +44,7 @@ import (
 	dataproc "google.golang.org/api/dataproc/v1"
 	"google.golang.org/api/dns/v1"
 	eventarc "google.golang.org/api/eventarc/v1"
+	firebase "google.golang.org/api/firebase/v1beta1"
 	firestore "google.golang.org/api/firestore/v1"
 	"google.golang.org/api/iam/v1"
 	iamv2 "google.golang.org/api/iam/v2"
@@ -254,6 +256,14 @@ func (h *Harness) Setup(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create eventarc client")
 	}
+	firebaseService, err := firebase.NewService(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to create firebase management client")
+	}
+	apiKeysService, err := apikeys.NewService(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to create api keys client")
+	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
 	// client is not in the pinned google.golang.org/api line (Memorystore
 	// for Valkey) — verifiers use it for REST GET probes only.
@@ -305,6 +315,8 @@ func (h *Harness) Setup(ctx context.Context) error {
 		IamV2:                iamV2Service,
 		Workflows:            workflowsService,
 		Eventarc:             eventarcService,
+		Firebase:             firebaseService,
+		ApiKeys:              apiKeysService,
 		RestClient:           restClient,
 	}
 	return nil

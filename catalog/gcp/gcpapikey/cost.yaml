@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpapikey
+spec:
+  billing_model: free
+  free_tier: "An API key is a credential record in the API Keys service with no meter of its own -- Google charges nothing to create, hold, restrict, or delete a key, at any count per project (the API Keys API has no pricing page because it has no SKU). The key's restrictions (client arms, api_targets) are stored metadata and do not change this."
+  notes: "The spend an API key can cause lives on the APIs it unlocks: every request a client makes with the key is metered by that API's own service (Maps Platform per request, Translation per character, Firebase per its product meters) and billed to THIS key's project -- which is exactly why an unrestricted key is a cost exposure, not just a security one. Restrictions are the cost control: a client arm bounds who can spend, api_targets bounds what they can spend it on. Firebase Cloud Messaging itself is free at any volume, so a key restricted to the FCM registration APIs carries no downstream meter."

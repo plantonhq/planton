@@ -1,0 +1,30 @@
+# App Check scenario: proves the surfaces minimal cannot -- App Check
+# enforcement on two backend services (one UNENFORCED, one ENFORCED) with
+# an explicit deletion_policy so destroy switches enforcement back OFF and
+# leaves nothing behind. The default storage bucket is deliberately NOT
+# exercised here: it is created at most once per project and can never be
+# re-proven on the same test project, so it is a one-time proof recorded
+# in the profile when it runs. Resource policies need a real iOS OAuth
+# client and are proven with the Apple app kind.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseProject
+metadata:
+  name: planton-oss-e2e-gcpfbprj-appcheck
+  id: planton-oss-e2e-gcpfbprj-appcheck
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebaseproject
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  appCheck:
+    serviceConfigs:
+      - serviceId: firestore.googleapis.com
+        enforcementMode: UNENFORCED
+      - serviceId: identitytoolkit.googleapis.com
+        enforcementMode: UNENFORCED
+  deletionPolicy: DELETE

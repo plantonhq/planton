@@ -93,12 +93,12 @@ func ParseReportParams(page string) (providerName, gaSchema string, err error) {
 // markdown. This is the ONE composition the CLI's --write-report and the
 // drift gate both call, so the committed page and the check can never
 // disagree.
-func GeneratePublicReport(repoRoot string, provider cloudresourcekind.CloudResourceProvider, schemas map[string]*Schema, gaSchema, dispositionsPath string) (string, error) {
+func GeneratePublicReport(repoRoot string, provider cloudresourcekind.CloudResourceProvider, schemas map[string]*Schema, gaSchema, dispositionsPath, admissionsDir string) (string, error) {
 	rep, err := BuildReport(repoRoot, provider, schemas)
 	if err != nil {
 		return "", err
 	}
-	acc, err := BuildAccounting(repoRoot, provider, schemas, gaSchema, dispositionsPath)
+	acc, err := BuildAccounting(repoRoot, provider, schemas, gaSchema, dispositionsPath, admissionsDir)
 	if err != nil {
 		return "", err
 	}
@@ -190,7 +190,26 @@ that has progressed.
 	}
 	b.WriteString("\nThe GA provider is the parity baseline. Capability that exists only in a\n")
 	b.WriteString("secondary channel (for Google, the `google-beta` provider) enters per kind\n")
-	b.WriteString("through an explicitly enumerated admission list, never wholesale.\n\n")
+	b.WriteString("through the admission list (`pkg/providerparity/admissions/`), never\n")
+	b.WriteString("wholesale: one entry per resource per kind, with the reason and where its\n")
+	b.WriteString("promotion to the baseline is tracked. The accounting reads the list -- an\n")
+	b.WriteString("admitted resource is measured against its channel's schema, an unadmitted\n")
+	b.WriteString("secondary-channel resource is a finding, and an admitted resource the\n")
+	b.WriteString("baseline serves at the pin is a stale admission.\n\n")
+
+	// The admission list, rendered only where one exists: a catalog with no
+	// secondary channel says nothing here rather than printing an empty
+	// table that reads as a claim.
+	if len(acc.Admissions) > 0 {
+		b.WriteString("## Secondary-channel admissions\n\n")
+		b.WriteString("| Resource | Channel | Kind | Reason | Promotion tracked at |\n")
+		b.WriteString("|---|---|---|---|---|\n")
+		for _, a := range acc.Admissions {
+			fmt.Fprintf(&b, "| `%s` | `%s` | %s | %s | %s |\n",
+				a.Resource, a.Provider, a.Kind, a.Reason, a.PromotionTracking)
+		}
+		b.WriteString("\n")
+	}
 
 	// The provider block, when this provider is enrolled for it.
 	if pc := acc.ProviderConfig; pc != nil {

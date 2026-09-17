@@ -59,5 +59,6 @@ go_test(
         "//shared/foreignkey/v1:foreignkey",
         "@com_github_stretchr_testify//assert",
         "@in_gopkg_yaml_v3//:yaml_v3",
+        "@org_golang_google_protobuf//proto",
     ],
 )

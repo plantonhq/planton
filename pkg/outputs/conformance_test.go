@@ -3604,6 +3604,41 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// GcpApiKey: flat scalar outputs from both engines -- the key's full
+			// resource name (the E2E verifier keys on it), the uid a Firebase
+			// app registration references, and the sensitive key string --
+			// must each land on the StackOutputs proto.
+			name: "GcpApiKey",
+			kind: cloudresourcekind.CloudResourceKind_GcpApiKey,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/my-project/locations/global/keys/firebase-android-key",
+				"uid":        "9f3a2c1e-4b5d-4e6f-8a7b-0c1d2e3f4a5b",
+				"key_string": "AIzaSyExampleKeyStringValue",
+			},
+			mustPopulate: []string{"name", "uid", "key_string"},
+		},
+		{
+			// GcpFirebaseProject: flat scalar outputs from both engines -- the
+			// project (the E2E verifier keys on project_id), its number (the
+			// FCM sender id), display name, and the three Admin SDK config
+			// values (empty until the project has an RTDB / default bucket /
+			// finalized location) -- must each land on the StackOutputs proto.
+			name: "GcpFirebaseProject",
+			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseProject,
+			rawOutputs: map[string]interface{}{
+				"project_id":     "my-project",
+				"project_number": "123456789012",
+				"display_name":   "My Project",
+				"database_url":   "https://my-project-default-rtdb.firebaseio.com",
+				"storage_bucket": "my-project.firebasestorage.app",
+				"location_id":    "us-central",
+			},
+			mustPopulate: []string{
+				"project_id", "project_number", "display_name",
+				"database_url", "storage_bucket", "location_id",
+			},
+		},
+		{
 			// AzurePlantonRunner: flat scalar outputs -- the Container App
 			// handles (the E2E verifier keys on container_app_id), the app's
 			// token secret name, the registration name, and the resource

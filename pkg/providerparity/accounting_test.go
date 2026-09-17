@@ -175,7 +175,7 @@ func kindByName(t *testing.T, acc Accounting, kind string) KindAccounting {
 
 func TestBuildAccounting_Hermetic(t *testing.T) {
 	spec, modules, schemas, manifests, ledger := accountingFixture()
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger, nil)
 
 	widget := kindByName(t, acc, "TestWidget")
 	// google_widget: name(mapped) location(matched) settings.enabled(matched)
@@ -304,7 +304,7 @@ func TestBuildAccounting_FanInMappings(t *testing.T) {
 		},
 	}}
 
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil, nil)
 	box := kindByName(t, acc, "TestBox")
 	if box.TotalArgs != 2 || box.MappedArgs != 2 || box.MatchedArgs != 0 {
 		t.Errorf("total/mapped/matched = %d/%d/%d, want 2/2/0 (the fan-in arg counts once)",
@@ -392,7 +392,7 @@ func TestBuildAccounting_CollapseMapping(t *testing.T) {
 	}}
 
 	acc := buildAccounting("aws", spec, modules, schemas, "aws",
-		map[string]*Manifest{"TestRecursive": manifest}, nil)
+		map[string]*Manifest{"TestRecursive": manifest}, nil, nil)
 	ka := kindByName(t, acc, "TestRecursive")
 	// statement.kind (mapped via subtree), statement.and.statement.kind and
 	// statement.and.statement.and.statement.kind (both collapse-mapped).
@@ -413,7 +413,7 @@ func TestBuildAccounting_CollapseMapping(t *testing.T) {
 	// proving the fold never happens implicitly.
 	manifest.Resources["aws_recursive_thing"].Mappings[1].Collapse = false
 	acc = buildAccounting("aws", spec, modules, schemas, "aws",
-		map[string]*Manifest{"TestRecursive": manifest}, nil)
+		map[string]*Manifest{"TestRecursive": manifest}, nil, nil)
 	ka = kindByName(t, acc, "TestRecursive")
 	if len(ka.UnaccountedArgs) != 2 {
 		t.Errorf("UnaccountedArgs = %v, want the two deep args", ka.UnaccountedArgs)
@@ -425,7 +425,7 @@ func TestBuildAccounting_CollapseMapping(t *testing.T) {
 		Arg: "statement.and.statement", Spec: "spec.statement", Collapse: true,
 	}
 	acc = buildAccounting("aws", spec, modules, schemas, "aws",
-		map[string]*Manifest{"TestRecursive": manifest}, nil)
+		map[string]*Manifest{"TestRecursive": manifest}, nil, nil)
 	ka = kindByName(t, acc, "TestRecursive")
 	var sawLeafStale bool
 	for _, s := range ka.ManifestStale {
@@ -444,7 +444,7 @@ func TestBuildAccounting_LedgerShadowsComputedClasses(t *testing.T) {
 		{Resource: "google_widget_iam_policy", Disposition: DispositionDeferred, Reason: "stale: the iam-covered class computes this"},
 		{Resource: "google_dead_thing", Disposition: DispositionExcludedDeprecated, Reason: "stale: the schema flag computes this"},
 	}
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger, nil)
 
 	byResource := map[string]ResourceDisposition{}
 	for _, d := range acc.Dispositions {
@@ -484,7 +484,7 @@ func TestBuildAccounting_MissingModule(t *testing.T) {
 		Kind: "TestGhost", ModuleDir: "catalog/gcp/testghost/iac/tf", MissingModule: true,
 	})
 	spec = append(spec, KindCensus{Kind: "TestGhost", SpecFieldPaths: []string{"spec.a", "spec.b"}})
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil, nil)
 
 	ghost := kindByName(t, acc, "TestGhost")
 	if !ghost.MissingModule || ghost.Accounted() {
@@ -535,7 +535,7 @@ func TestBuildAccounting_ExternalResources(t *testing.T) {
 		"azapi_resource": external,
 		"google_plain":   {Mappings: []Mapping{{Spec: "spec.plain_name", Arg: "name"}}},
 	}}
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil, nil)
 
 	arm := kindByName(t, acc, "TestArm")
 	if !arm.Accounted() {
@@ -564,6 +564,107 @@ func TestBuildAccounting_ExternalResources(t *testing.T) {
 	}
 }
 
+// TestBuildAccounting_SecondaryChannelAdmissions proves the admission gate
+// end to end against a fixture with a GA schema and a secondary channel
+// ("google-beta") that serves one resource the GA schema does not:
+//
+//   - admitted + attached: the resource is argument-walked against the
+//     channel's schema and listed as admitted; the kind is at total
+//     accounting.
+//   - consumed with no admission: an admission gap (the silent fallback
+//     this gate exists to end).
+//   - admitted but not attached through the channel's provider: a gap (the
+//     module would not actually deploy through the channel).
+//   - attached to the channel although GA serves the resource: a gap (beta
+//     reached for without need).
+//   - an admission for a resource GA serves: a stale-admission finding; an
+//     admission whose kind does not consume the resource: stale too.
+//   - an argument set in the admitted channel's provider block joins the
+//     provider-config judgment exactly like one set on the baseline block.
+func TestBuildAccounting_SecondaryChannelAdmissions(t *testing.T) {
+	spec, modules, schemas, manifests, _ := accountingFixture()
+	schemas["google-beta"] = &Schema{
+		Provider: "google-beta",
+		Version:  "6.0.0",
+		Resources: map[string]*Block{
+			// Beta-only: what the admission list is for.
+			"google_beta_only": {Attributes: map[string]*Attribute{
+				"name": {Type: json.RawMessage(`"string"`), Required: true},
+			}},
+			// Served by both channels: GA is always the yardstick.
+			"google_plain": schemas["google"].Resources["google_plain"],
+		},
+	}
+	spec = append(spec,
+		KindCensus{Kind: "TestAdmitted", SpecFieldPaths: []string{"spec.name"}},
+		KindCensus{Kind: "TestUnadmitted", SpecFieldPaths: []string{"spec.name"}},
+		KindCensus{Kind: "TestUnattached", SpecFieldPaths: []string{"spec.name"}},
+		KindCensus{Kind: "TestNeedlessBeta", SpecFieldPaths: []string{"spec.plain_name"}},
+	)
+	betaPins := map[string]string{"google": "~> 6.0", "google-beta": "~> 6.0"}
+	modules = append(modules,
+		ModuleCensus{Kind: "TestAdmitted", Resources: []string{"google_beta_only"}, Pins: betaPins,
+			ProviderAttachments: map[string]string{"google_beta_only": "google-beta"}},
+		ModuleCensus{Kind: "TestUnadmitted", Resources: []string{"google_beta_only"}, Pins: betaPins,
+			ProviderAttachments: map[string]string{"google_beta_only": "google-beta"}},
+		ModuleCensus{Kind: "TestUnattached", Resources: []string{"google_beta_only"}, Pins: betaPins},
+		ModuleCensus{Kind: "TestNeedlessBeta", Resources: []string{"google_plain"}, Pins: betaPins,
+			ProviderAttachments: map[string]string{"google_plain": "google-beta"}},
+	)
+	admissions := []AdmissionEntry{
+		{Provider: "google-beta", Resource: "google_beta_only", Kind: "TestAdmitted", Reason: "beta-only at the pin", PromotionTracking: "provider repo, services/betaonly"},
+		{Provider: "google-beta", Resource: "google_beta_only", Kind: "TestUnattached", Reason: "beta-only at the pin", PromotionTracking: "provider repo, services/betaonly"},
+		// Stale: GA serves google_plain.
+		{Provider: "google-beta", Resource: "google_plain", Kind: "TestNeedlessBeta", Reason: "was beta once", PromotionTracking: "promoted"},
+		// Stale: TestPlain's module does not consume the resource.
+		{Provider: "google-beta", Resource: "google_beta_only", Kind: "TestPlain", Reason: "nobody attaches it", PromotionTracking: "n/a"},
+	}
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil, admissions)
+
+	admitted := kindByName(t, acc, "TestAdmitted")
+	if !admitted.Accounted() {
+		t.Errorf("admitted+attached kind must be at total accounting, got %+v", admitted)
+	}
+	if !reflect.DeepEqual(admitted.AdmittedResources, []string{"google_beta_only"}) || admitted.TotalArgs != 1 || admitted.MatchedArgs != 1 {
+		t.Errorf("admitted kind must walk the channel schema: %+v", admitted)
+	}
+
+	unadmitted := kindByName(t, acc, "TestUnadmitted")
+	if unadmitted.Accounted() || len(unadmitted.AdmissionGaps) != 1 || !strings.Contains(unadmitted.AdmissionGaps[0], "carries no admission") {
+		t.Errorf("unadmitted secondary-channel consumption must be a gap, got %+v", unadmitted)
+	}
+	// The gap never hides the depth accounting behind it.
+	if unadmitted.TotalArgs != 1 {
+		t.Errorf("gap must still walk the arguments, TotalArgs=%d", unadmitted.TotalArgs)
+	}
+
+	unattached := kindByName(t, acc, "TestUnattached")
+	if unattached.Accounted() || len(unattached.AdmissionGaps) != 1 || !strings.Contains(unattached.AdmissionGaps[0], "set `provider = google-beta`") {
+		t.Errorf("admitted-but-unattached must be a gap, got %+v", unattached)
+	}
+
+	needless := kindByName(t, acc, "TestNeedlessBeta")
+	if needless.Accounted() || len(needless.AdmissionGaps) != 1 || !strings.Contains(needless.AdmissionGaps[0], "baseline schema google serves it") {
+		t.Errorf("beta attachment on a GA-served resource must be a gap, got %+v", needless)
+	}
+
+	var staleGA, staleUnconsumed bool
+	for _, f := range acc.Findings {
+		if f.BaselineKey == "admission:google_plain" && strings.Contains(f.Detail, "served by the baseline schema") {
+			staleGA = true
+		}
+		if f.BaselineKey == "admission:google_beta_only" && strings.Contains(f.Detail, "TestPlain's module does not consume") {
+			staleUnconsumed = true
+		}
+	}
+	if !staleGA || !staleUnconsumed {
+		t.Errorf("stale admissions must be findings (GA-served=%v, unconsumed=%v): %v", staleGA, staleUnconsumed, acc.Findings)
+	}
+	if !reflect.DeepEqual(acc.Admissions, admissions) {
+		t.Errorf("the accounting must carry the admission list for the report")
+	}
+}
+
 // TestBuildAccounting_ExternalJudgmentGoesStale proves the exit-to-native
 // ratchet: when a loaded schema starts serving a resource the manifest
 // still calls external, the judgment is a staleness finding, never a
@@ -575,7 +676,7 @@ func TestBuildAccounting_ExternalJudgmentGoesStale(t *testing.T) {
 	manifests["TestNative"] = &Manifest{Resources: map[string]*ResourceManifest{
 		"google_plain": {External: "stale: the schema serves this resource now"},
 	}}
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil, nil)
 
 	native := kindByName(t, acc, "TestNative")
 	if native.Accounted() {
@@ -619,7 +720,7 @@ func TestBuildAccounting_ManifestStaleness(t *testing.T) {
 			},
 		},
 	}
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil, nil)
 	plain := kindByName(t, acc, "TestPlain")
 
 	wantStale := []string{
@@ -663,7 +764,7 @@ func TestBuildAccounting_ManifestOnlyLeafIsExcludedBySchema(t *testing.T) {
 		"google_plain": {Mappings: []Mapping{{Spec: "spec.plain_name", Arg: "name"}}},
 	}}
 
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{"TestPlain": manifest}, nil)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{"TestPlain": manifest}, nil, nil)
 	plain := kindByName(t, acc, "TestPlain")
 	if len(plain.UncoveredSpecFields) != 0 {
 		t.Errorf("a manifest_only leaf needs no specExclusions entry; uncovered = %v", plain.UncoveredSpecFields)
@@ -673,7 +774,7 @@ func TestBuildAccounting_ManifestOnlyLeafIsExcludedBySchema(t *testing.T) {
 	}
 
 	manifest.SpecExclusions = []SpecExclusion{{Field: "spec.select_all", Reason: "repeats the proto"}}
-	acc = buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{"TestPlain": manifest}, nil)
+	acc = buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{"TestPlain": manifest}, nil, nil)
 	plain = kindByName(t, acc, "TestPlain")
 	found := false
 	for _, s := range plain.ManifestStale {
@@ -705,7 +806,7 @@ func TestBuildAccounting_InternalUtilityResourceNeedsNoSchema(t *testing.T) {
 			},
 		},
 	}
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, nil, nil)
 	plain := kindByName(t, acc, "TestPlain")
 	for _, s := range plain.ManifestStale {
 		if strings.Contains(s, "time_sleep") {
@@ -717,7 +818,7 @@ func TestBuildAccounting_InternalUtilityResourceNeedsNoSchema(t *testing.T) {
 	}
 
 	// Unjudged: the stale-artifact guard still fires.
-	acc = buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{}, nil)
+	acc = buildAccounting("gcp", spec, modules, schemas, "google", map[string]*Manifest{}, nil, nil)
 	plain = kindByName(t, acc, "TestPlain")
 	found := false
 	for _, s := range plain.ManifestStale {
@@ -810,6 +911,53 @@ resources:
 			t.Fatal(err)
 		}
 		if _, err := LoadLedger(path, "google"); err == nil {
+			t.Errorf("%s: want error, got nil", name)
+		}
+	}
+}
+
+func TestLoadAdmissions(t *testing.T) {
+	dir := t.TempDir()
+
+	if entries, err := LoadAdmissions(filepath.Join(dir, "absent"), "google"); err != nil || entries != nil {
+		t.Errorf("missing admissions dir must be empty, got %v / %v", entries, err)
+	}
+
+	path := filepath.Join(dir, "google-beta.yaml")
+	valid := `provider: google-beta
+gaSchema: google
+resources:
+  - resource: google_firebase_project
+    kind: GcpFirebaseProject
+    reason: published only in the beta provider at the pin
+    promotionTracking: hashicorp/terraform-provider-google, google/services/firebase/
+`
+	if err := os.WriteFile(path, []byte(valid), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	entries, err := LoadAdmissions(dir, "google")
+	if err != nil || len(entries) != 1 || entries[0].Provider != "google-beta" || entries[0].Kind != "GcpFirebaseProject" {
+		t.Fatalf("valid admissions: %+v / %v", entries, err)
+	}
+	// A list supplementing a different baseline is skipped, not an error.
+	if entries, err := LoadAdmissions(dir, "aws"); err != nil || len(entries) != 0 {
+		t.Errorf("admissions for another baseline must be skipped, got %v / %v", entries, err)
+	}
+
+	for name, bad := range map[string]string{
+		"no provider":             "gaSchema: google\nresources: []\n",
+		"no gaSchema":             "provider: google-beta\nresources: []\n",
+		"admits itself":           "provider: google\ngaSchema: google\nresources: []\n",
+		"missing kind":            "provider: google-beta\ngaSchema: google\nresources:\n  - {resource: r, reason: a, promotionTracking: p}\n",
+		"missing reason":          "provider: google-beta\ngaSchema: google\nresources:\n  - {resource: r, kind: K, promotionTracking: p}\n",
+		"missing tracking":        "provider: google-beta\ngaSchema: google\nresources:\n  - {resource: r, kind: K, reason: a}\n",
+		"duplicate resource+kind": "provider: google-beta\ngaSchema: google\nresources:\n  - {resource: r, kind: K, reason: a, promotionTracking: p}\n  - {resource: r, kind: K, reason: b, promotionTracking: p}\n",
+		"unknown field":           "provider: google-beta\ngaSchema: google\nresourcez: []\n",
+	} {
+		if err := os.WriteFile(path, []byte(bad), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := LoadAdmissions(dir, "google"); err == nil {
 			t.Errorf("%s: want error, got nil", name)
 		}
 	}

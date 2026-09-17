@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpApiKey
+metadata:
+  name: firebase-ios-key
+spec:
+  keyId: firebase-ios-key
+  displayName: Firebase iOS key
+  restrictions:
+    iosKeyRestrictions:
+      allowedBundleIds:
+        - com.example.app
+    apiTargets:
+      - service: firebaseinstallations.googleapis.com
+      - service: fcmregistrations.googleapis.com

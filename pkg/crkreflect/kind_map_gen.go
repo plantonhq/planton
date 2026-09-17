@@ -508,6 +508,7 @@ import (
 	gcpalloydbclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpalloydbcluster/v1alpha1"
 	gcpalloydbinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpalloydbinstance/v1alpha1"
 	gcpalloydbuserv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpalloydbuser/v1alpha1"
+	gcpapikeyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpapikey/v1alpha1"
 	gcpartifactregistryrepov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpartifactregistryrepo/v1alpha1"
 	gcpbackendbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbackendbucket/v1alpha1"
 	gcpbackendservicev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbackendservice/v1alpha1"
@@ -541,6 +542,7 @@ import (
 	gcpeventarcmessagebusv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarcmessagebus/v1alpha1"
 	gcpeventarctriggerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarctrigger/v1alpha1"
 	gcpfilestoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfilestoreinstance/v1alpha1"
+	gcpfirebaseprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirebaseproject/v1alpha1"
 	gcpfirestorebackupschedulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestorebackupschedule/v1alpha1"
 	gcpfirestoredatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoredatabase/v1alpha1"
 	gcpfirestoreindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoreindex/v1alpha1"
@@ -1262,6 +1264,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpAlloydbCluster:                      &gcpalloydbclusterv1alpha1.GcpAlloydbCluster{},
 	cloudresourcekind.CloudResourceKind_GcpAlloydbInstance:                     &gcpalloydbinstancev1alpha1.GcpAlloydbInstance{},
 	cloudresourcekind.CloudResourceKind_GcpAlloydbUser:                         &gcpalloydbuserv1alpha1.GcpAlloydbUser{},
+	cloudresourcekind.CloudResourceKind_GcpApiKey:                              &gcpapikeyv1alpha1.GcpApiKey{},
 	cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo:                &gcpartifactregistryrepov1alpha1.GcpArtifactRegistryRepo{},
 	cloudresourcekind.CloudResourceKind_GcpBackendBucket:                       &gcpbackendbucketv1alpha1.GcpBackendBucket{},
 	cloudresourcekind.CloudResourceKind_GcpBackendService:                      &gcpbackendservicev1alpha1.GcpBackendService{},
@@ -1295,6 +1298,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpEventarcMessageBus:                  &gcpeventarcmessagebusv1alpha1.GcpEventarcMessageBus{},
 	cloudresourcekind.CloudResourceKind_GcpEventarcTrigger:                     &gcpeventarctriggerv1alpha1.GcpEventarcTrigger{},
 	cloudresourcekind.CloudResourceKind_GcpFilestoreInstance:                   &gcpfilestoreinstancev1alpha1.GcpFilestoreInstance{},
+	cloudresourcekind.CloudResourceKind_GcpFirebaseProject:                     &gcpfirebaseprojectv1alpha1.GcpFirebaseProject{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreBackupSchedule:             &gcpfirestorebackupschedulev1alpha1.GcpFirestoreBackupSchedule{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreDatabase:                   &gcpfirestoredatabasev1alpha1.GcpFirestoreDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreIndex:                      &gcpfirestoreindexv1alpha1.GcpFirestoreIndex{},

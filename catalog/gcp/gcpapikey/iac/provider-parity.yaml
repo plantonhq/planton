@@ -1,0 +1,23 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# One kind, one resource. Every restriction block and leaf matches its spec
+# field by exact name; the two divergences are the key's identity (the
+# provider calls the key id `name`; the spec says what it is) and the
+# project (the catalog's project_id reference convention).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_apikeys_key:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider's `name` is the key's short resource id, not a display
+      # name; the spec names it for what it is and carries the RFC 1034
+      # rule the API enforces.
+      - spec: spec.key_id
+        arg: name

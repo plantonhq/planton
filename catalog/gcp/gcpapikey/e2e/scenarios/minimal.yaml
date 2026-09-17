@@ -1,0 +1,24 @@
+# Minimal GcpApiKey scenario: an unrestricted key with only the required
+# key_id -- the smallest manifest that produces a key string and a uid.
+# projectId is deliberately omitted: the module falls back to the
+# provider's default project, which the E2E harness exports as
+# GOOGLE_PROJECT from the resolved test project. The key_id carries the
+# run id: a deleted key's id is RESERVED for 30 days (soft delete), so a
+# fixed id would collide with the previous run's tombstone.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpApiKey
+metadata:
+  name: planton-oss-e2e-gcpakey-minimal
+  id: planton-oss-e2e-gcpakey-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpapikey
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  keyId: e2e-minimal-${E2E_RUN_ID}
+  displayName: planton e2e minimal key

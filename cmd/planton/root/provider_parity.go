@@ -62,6 +62,7 @@ func init() {
 	ProviderParity.Flags().String("baseline", providerparity.DefaultBaselinePath, "path to the baseline file")
 	ProviderParity.Flags().String("schema-dir", providerparity.DefaultSchemaDir, "directory of committed provider schema artifacts")
 	ProviderParity.Flags().String("dispositions", "", "path to the dispositions ledger (default <dispositions dir>/<ga-schema>.yaml)")
+	ProviderParity.Flags().String("admissions-dir", "", "directory of secondary-channel admission lists (default "+providerparity.DefaultAdmissionsDir+")")
 	ProviderParity.Flags().String("kind", "", "detail one kind's accounting")
 	ProviderParity.Flags().String("output", "text", "output format: text | json")
 	_ = ProviderParity.MarkFlagRequired("provider")
@@ -73,6 +74,7 @@ func providerParityHandler(cmd *cobra.Command, _ []string) {
 	gaSchema, _ := cmd.Flags().GetString("ga-schema")
 	schemaDir, _ := cmd.Flags().GetString("schema-dir")
 	dispositionsPath, _ := cmd.Flags().GetString("dispositions")
+	admissionsDir, _ := cmd.Flags().GetString("admissions-dir")
 	baselinePath, _ := cmd.Flags().GetString("baseline")
 
 	// Accepts the catalog directory name ("gcp", "digitalocean") as well as
@@ -128,7 +130,7 @@ func providerParityHandler(cmd *cobra.Command, _ []string) {
 			reportPath = providerparity.PublicReportPath(provider)
 		}
 		page, err := providerparity.GeneratePublicReport(".",
-			provider, schemas, gaSchema, dispositionsPath)
+			provider, schemas, gaSchema, dispositionsPath, admissionsDir)
 		if err != nil {
 			cliprint.PrintError(fmt.Sprintf("failed to render the parity page: %v", err))
 			os.Exit(1)
@@ -142,7 +144,7 @@ func providerParityHandler(cmd *cobra.Command, _ []string) {
 	}
 
 	acc, err := providerparity.BuildAccounting(".",
-		provider, schemas, gaSchema, dispositionsPath)
+		provider, schemas, gaSchema, dispositionsPath, admissionsDir)
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("accounting failed: %v", err))
 		os.Exit(1)
@@ -199,6 +201,12 @@ func printKindAccounting(acc providerparity.Accounting, kind string) {
 		}
 		for _, res := range k.ExternalResources {
 			fmt.Printf("  external resource: %s\n", res)
+		}
+		for _, res := range k.AdmittedResources {
+			fmt.Printf("  ADMITTED secondary-channel resource: %s\n", res)
+		}
+		for _, gap := range k.AdmissionGaps {
+			fmt.Printf("  ADMISSION gap: %s\n", gap)
 		}
 		for _, arg := range k.UnaccountedArgs {
 			fmt.Printf("  UNACCOUNTED arg: %s\n", arg)

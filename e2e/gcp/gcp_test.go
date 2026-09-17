@@ -955,6 +955,30 @@ func TestGcpPlantonRunner_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpplantonrunner", "terraform")
 }
 
+// --- GCP API Key (soft-deleted for 30 days after destroy, and the key id
+// stays reserved for that window — scenarios carry the run id in key_id) ---
+
+func TestGcpApiKey_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpapikey", "pulumi")
+}
+
+func TestGcpApiKey_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpapikey", "terraform")
+}
+
+// --- GCP Firebase Project (enabling Firebase is permanent by Google's
+// design: create adopts an already-enabled project, destroy detaches, and
+// the test project stays Firebase-enabled — the verifier asserts the
+// detach contract, not absence) ---
+
+func TestGcpFirebaseProject_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseproject", "pulumi")
+}
+
+func TestGcpFirebaseProject_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseproject", "terraform")
+}
+
 // --- GCP Certificate Map (SNI routing table: deploys the GcpCertManagerCert prerequisite chain) ---
 
 func TestGcpCertificateMap_Pulumi(t *testing.T) {

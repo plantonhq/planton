@@ -1,0 +1,19 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpapikey
+spec:
+  # Awaiting the live proof lane. Offline bar met: both modules build and
+  # validate, offline plans for the reference manifest and both scenarios
+  # are clean on the pinned provider, and the accounting is total. Two
+  # live facts the proof lane confirms: (1) which "absent" shape the API
+  # Keys service returns for a soft-deleted key -- 404 for the name, or the
+  # key carrying a deleteTime -- the verifier accepts either; (2) that the
+  # API Keys API needs the quota-project override under user ADC (both
+  # modules arm user_project_override on the Identity Toolkit precedent).
+  # Scenario key ids carry the run id because a deleted key's id is
+  # reserved for 30 days.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

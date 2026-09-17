@@ -1,0 +1,24 @@
+# Minimal GcpFirebaseProject scenario: enable Firebase and nothing else --
+# the smallest manifest that turns a GCP project into a Firebase project
+# with Cloud Messaging enabled. projectId is deliberately omitted: the
+# module falls back to the provider's default project, which the E2E
+# harness exports as GOOGLE_PROJECT from the resolved test project.
+# Enabling Firebase is ONE-WAY: the first live proof enables it on the test
+# project for good, and every later deploy ADOPTS the existing enablement
+# (the provider GETs first). Destroy detaches; the verifier asserts the
+# project still reads as a Firebase project afterwards.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseProject
+metadata:
+  name: planton-oss-e2e-gcpfbprj-minimal
+  id: planton-oss-e2e-gcpfbprj-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebaseproject
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec: {}

@@ -1,0 +1,21 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpapikey
+spec:
+  gcp:
+    groups:
+      - purpose: ManageApiKey
+        permissions:
+          - apikeys.keys.create
+          - apikeys.keys.get
+          - apikeys.keys.update
+          - apikeys.keys.delete
+          - apikeys.keys.getKeyString
+        provenance: derived
+        notes: Covers google_apikeys_key (Terraform) / projects.ApiKey (Pulumi) -- create on first apply, get on every refresh and import, update when display_name or restrictions change (the key's identity fields recreate instead), and delete on destroy under deletion_policy DELETE (a soft delete; ABANDON and PREVENT call no delete API). getKeyString is required because both modules export the key string as an output -- the provider reads it through keys.getKeyString after create, a separate permission from the metadata read so it can be withheld from principals that only manage restrictions. roles/serviceusage.apiKeysAdmin contains all five. Undelete is deliberately not granted -- neither module recovers a soft-deleted key; recovery is an operator act.

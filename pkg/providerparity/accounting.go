@@ -91,8 +91,9 @@ var ledgerDispositions = map[string]bool{
 // (one line per kind or resource), not a field dump.
 type Finding struct {
 	// BaselineKey is "kind:<Kind>" (depth accounting), "resource:<name>"
-	// (breadth disposition), or "provider:<cloud>" (provider-block
-	// accounting).
+	// (breadth disposition), "provider:<cloud>" (provider-block
+	// accounting), or "admission:<resource>" (a recorded secondary-channel
+	// admission that has gone stale).
 	BaselineKey string `json:"baselineKey"`
 	// Detail names the exact gap and, where possible, the fix.
 	Detail string `json:"detail"`
@@ -127,6 +128,19 @@ type KindAccounting struct {
 	// carry no argument walk, and a kind consuming ONLY external/internal
 	// resources runs no reverse spec walk either.
 	ExternalResources []string `json:"externalResources,omitempty"`
+	// AdmittedResources are consumed resources served only by a secondary
+	// channel's schema (never by the GA baseline) and admitted for this
+	// kind by the admission list. They ARE argument-walked -- against the
+	// channel's schema -- so the kind's depth is total across both
+	// channels; the admission is what makes that walk legitimate rather
+	// than an accident of which artifacts happen to be loaded.
+	AdmittedResources []string `json:"admittedResources,omitempty"`
+	// AdmissionGaps are consumed resources whose channel and admission
+	// disagree: a secondary-channel resource with no admission for this
+	// kind, an admitted resource the module does not attach through the
+	// channel's provider, or a channel attachment on a resource the GA
+	// baseline serves. Each is a Finding.
+	AdmissionGaps []string `json:"admissionGaps,omitempty"`
 	// UnaccountedArgs ("resource: arg") have no match, mapping, or
 	// exclusion -- each is a Finding.
 	UnaccountedArgs []string `json:"unaccountedArgs,omitempty"`
@@ -141,7 +155,8 @@ type KindAccounting struct {
 // Accounted reports whether the kind is at total accounting.
 func (k KindAccounting) Accounted() bool {
 	return !k.MissingModule &&
-		len(k.UnaccountedArgs) == 0 && len(k.UncoveredSpecFields) == 0 && len(k.ManifestStale) == 0
+		len(k.UnaccountedArgs) == 0 && len(k.UncoveredSpecFields) == 0 &&
+		len(k.ManifestStale) == 0 && len(k.AdmissionGaps) == 0
 }
 
 // ResourceDisposition is one GA resource's recorded breadth judgment.
@@ -159,10 +174,17 @@ type ResourceDisposition struct {
 type Accounting struct {
 	CloudProvider string `json:"cloudProvider"`
 	// GASchema/GASchemaVersion name the parity baseline the accounting ran
-	// against (google-beta capability enters per kind through the
-	// enumerated admission list, never through this accounting).
+	// against. Secondary-channel capability (google-beta) enters per kind
+	// through the admission list below; an admitted resource is
+	// argument-walked against its channel's schema, everything else against
+	// the baseline.
 	GASchema        string `json:"gaSchema"`
 	GASchemaVersion string `json:"gaSchemaVersion"`
+	// Admissions is the recorded secondary-channel admission list this
+	// accounting ran with (admissions/<channel>.yaml for this baseline),
+	// sorted by resource then kind. Rendered on the public page so every
+	// admission and its reason is a reader-visible fact.
+	Admissions []AdmissionEntry `json:"admissions,omitempty"`
 	// Kinds is the per-kind depth accounting, sorted by kind.
 	Kinds []KindAccounting `json:"kinds"`
 	// Dispositions covers every GA resource, sorted by name. Resources
@@ -183,9 +205,10 @@ type Accounting struct {
 
 // BuildAccounting runs the total-accounting check for one cloud provider's
 // catalog: censuses and manifests from the tree, schemas from the committed
-// artifacts, the dispositions ledger from dispositionsPath (empty string for
-// the default). gaSchema names the parity-baseline schema (e.g. "google").
-func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourceProvider, schemas map[string]*Schema, gaSchema, dispositionsPath string) (Accounting, error) {
+// artifacts, the dispositions ledger from dispositionsPath and the admission
+// list from admissionsDir (empty strings for the defaults). gaSchema names
+// the parity-baseline schema (e.g. "google").
+func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourceProvider, schemas map[string]*Schema, gaSchema, dispositionsPath, admissionsDir string) (Accounting, error) {
 	if _, ok := schemas[gaSchema]; !ok {
 		return Accounting{}, errors.Errorf("GA schema %q is not among the loaded schemas", gaSchema)
 	}
@@ -212,7 +235,14 @@ func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourcePr
 	if err != nil {
 		return Accounting{}, err
 	}
-	acc := buildAccounting(crkreflect.ProviderDirName(provider), spec, modules, schemas, gaSchema, manifests, ledger)
+	if admissionsDir == "" {
+		admissionsDir = filepath.Join(repoRoot, DefaultAdmissionsDir)
+	}
+	admissions, err := LoadAdmissions(admissionsDir, gaSchema)
+	if err != nil {
+		return Accounting{}, err
+	}
+	acc := buildAccounting(crkreflect.ProviderDirName(provider), spec, modules, schemas, gaSchema, manifests, ledger, admissions)
 
 	// Provider-block accounting, enrolled by manifest presence. Composed here
 	// (the I/O boundary) rather than inside the pure join so the existing
@@ -232,11 +262,31 @@ func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourcePr
 		if err != nil {
 			return Accounting{}, err
 		}
+		// Every provider block a module configures is judged: the baseline's
+		// block always, and an admitted secondary channel's block too (a
+		// module that attaches `provider = google-beta` configures that
+		// alias -- quota-project attribution, credentials -- and an argument
+		// set there is exactly as much provider behavior as one set on the
+		// baseline block). Only channels the admission list names count;
+		// an unadmitted channel's block is already a per-kind finding.
+		judgedAliases := map[string]bool{gaSchema: true}
+		for _, a := range admissions {
+			judgedAliases[a.Provider] = true
+		}
 		moduleSetArgs := map[string][]string{}
 		for _, m := range modules {
-			for _, arg := range m.ProviderBlockArgs[gaSchema] {
-				moduleSetArgs[arg] = append(moduleSetArgs[arg], m.Kind)
+			for alias, args := range m.ProviderBlockArgs {
+				if !judgedAliases[alias] {
+					continue
+				}
+				for _, arg := range args {
+					moduleSetArgs[arg] = append(moduleSetArgs[arg], m.Kind)
+				}
 			}
+		}
+		for arg, kinds := range moduleSetArgs {
+			sort.Strings(kinds)
+			moduleSetArgs[arg] = slices.Compact(kinds)
 		}
 		pc, findings := buildProviderConfigAccounting(acc.CloudProvider, configPaths,
 			schemas[gaSchema].ProviderConfig, pcManifest, moduleSetArgs)
@@ -254,7 +304,7 @@ func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourcePr
 
 // buildAccounting is the pure join -- everything I/O-free so the hermetic
 // tests can drive every accounting shape without a repo tree.
-func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCensus, schemas map[string]*Schema, gaSchema string, manifests map[string]*Manifest, ledger []LedgerEntry) Accounting {
+func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCensus, schemas map[string]*Schema, gaSchema string, manifests map[string]*Manifest, ledger []LedgerEntry, admissions []AdmissionEntry) Accounting {
 	schemaNames := make([]string, 0, len(schemas))
 	for name := range schemas {
 		schemaNames = append(schemaNames, name)
@@ -272,6 +322,7 @@ func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCe
 		CloudProvider:     cloudProvider,
 		GASchema:          gaSchema,
 		GASchemaVersion:   schemas[gaSchema].Version,
+		Admissions:        admissions,
 		DispositionTotals: map[string]int{},
 	}
 
@@ -279,6 +330,38 @@ func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCe
 	for _, m := range modules {
 		for _, res := range m.Resources {
 			consumedBy[res] = append(consumedBy[res], m.Kind)
+		}
+	}
+
+	// Admissions indexed per kind (the per-kind walk reads its own), and
+	// checked for staleness here: an admission is judgment about a
+	// resource's channel at the pin, and the two ways it goes stale are
+	// both mechanical -- the baseline now serves the resource (the
+	// promotion the entry was waiting for), or the kind no longer consumes
+	// it. Either way the entry must go; leaving it would be an exception
+	// nobody re-evaluates.
+	admittedByKind := map[string]map[string]string{}
+	ga := schemas[gaSchema]
+	for _, a := range admissions {
+		if admittedByKind[a.Kind] == nil {
+			admittedByKind[a.Kind] = map[string]string{}
+		}
+		admittedByKind[a.Kind][a.Resource] = a.Provider
+		key := "admission:" + a.Resource
+		if _, servedByBaseline := ga.Resources[a.Resource]; servedByBaseline {
+			acc.Findings = append(acc.Findings, Finding{key,
+				fmt.Sprintf("stale admission: %s is served by the baseline schema %s@%s -- move %s's module to the baseline provider and remove the entry", a.Resource, gaSchema, ga.Version, a.Kind)})
+		}
+		if channel, ok := schemas[a.Provider]; !ok {
+			acc.Findings = append(acc.Findings, Finding{key,
+				fmt.Sprintf("admission names channel %q, which has no loaded schema artifact -- distill it or fix the admissions file", a.Provider)})
+		} else if _, servedByChannel := channel.Resources[a.Resource]; !servedByChannel {
+			acc.Findings = append(acc.Findings, Finding{key,
+				fmt.Sprintf("stale admission: %s@%s does not serve %s -- the resource was removed or renamed at the pin", a.Provider, channel.Version, a.Resource)})
+		}
+		if !slices.Contains(consumedBy[a.Resource], a.Kind) {
+			acc.Findings = append(acc.Findings, Finding{key,
+				fmt.Sprintf("stale admission: %s's module does not consume %s -- remove the entry (an admission exists only for a module that attaches the resource)", a.Kind, a.Resource)})
 		}
 	}
 
@@ -293,9 +376,12 @@ func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCe
 		if manifest == nil {
 			manifest = &Manifest{}
 		}
-		ka := accountKind(m, specPaths[m.Kind], manifestOnly[m.Kind], schemas, schemaNames, manifests[m.Kind] != nil, manifest)
+		ka := accountKind(m, specPaths[m.Kind], manifestOnly[m.Kind], schemas, schemaNames, gaSchema, manifests[m.Kind] != nil, manifest, admittedByKind[m.Kind])
 		acc.Kinds = append(acc.Kinds, ka)
 		key := "kind:" + m.Kind
+		for _, gap := range ka.AdmissionGaps {
+			acc.Findings = append(acc.Findings, Finding{key, gap})
+		}
 		for _, arg := range ka.UnaccountedArgs {
 			acc.Findings = append(acc.Findings, Finding{key,
 				fmt.Sprintf("unaccounted provider argument %s -- match it, map it, or exclude it with a reason in the kind's %s", arg, ManifestFileName)})
@@ -314,7 +400,6 @@ func buildAccounting(cloudProvider string, spec []KindCensus, modules []ModuleCe
 	for _, e := range ledger {
 		ledgerByResource[e.Resource] = e
 	}
-	ga := schemas[gaSchema]
 	gaNames := make([]string, 0, len(ga.Resources))
 	for name := range ga.Resources {
 		gaNames = append(gaNames, name)
@@ -451,10 +536,35 @@ func (m argMatcher) derive(argPath string) ([]string, bool) {
 	return []string{m.specRoot + "." + argPath}, false
 }
 
+// resolveResourceSchema names the loaded schema that serves a resource type:
+// the baseline first when one is named (GA is the parity yardstick, so a
+// resource both channels serve is always accounted against GA), then every
+// other loaded schema in sorted name order. Empty means no schema knows the
+// resource. Shared by the accounting and the report so the two never
+// disagree about which artifact a resource was measured against.
+func resolveResourceSchema(schemas map[string]*Schema, schemaNames []string, baseline, resource string) (*Block, string) {
+	if baseline != "" {
+		if b, ok := schemas[baseline].Resources[resource]; ok {
+			return b, baseline
+		}
+	}
+	for _, name := range schemaNames {
+		if name == baseline {
+			continue
+		}
+		if b, ok := schemas[name].Resources[resource]; ok {
+			return b, name
+		}
+	}
+	return nil, ""
+}
+
 // accountKind runs both accounting directions for one kind. manifestOnlyPaths
 // are the spec leaves the proto marks (dev.planton.shared.options.manifest_only);
 // the reverse direction reads each as an exclusion the schema itself declares.
-func accountKind(m ModuleCensus, kindSpecPaths, manifestOnlyPaths []string, schemas map[string]*Schema, schemaNames []string, hasManifest bool, manifest *Manifest) KindAccounting {
+// admitted maps the secondary-channel resources the admission list admits
+// for THIS kind to the channel (schema name) each is admitted from.
+func accountKind(m ModuleCensus, kindSpecPaths, manifestOnlyPaths []string, schemas map[string]*Schema, schemaNames []string, gaSchema string, hasManifest bool, manifest *Manifest, admitted map[string]string) KindAccounting {
 	ka := KindAccounting{Kind: m.Kind, HasManifest: hasManifest}
 	specSet := map[string]bool{}
 	for _, p := range kindSpecPaths {
@@ -489,13 +599,46 @@ func accountKind(m ModuleCensus, kindSpecPaths, manifestOnlyPaths []string, sche
 			continue
 		}
 
-		var block *Block
-		for _, name := range schemaNames {
-			if b, ok := schemas[name].Resources[res]; ok {
-				block = b
-				break
+		block, servedBy := resolveResourceSchema(schemas, schemaNames, gaSchema, res)
+
+		// Channel discipline. A resource the baseline serves is accounted
+		// against the baseline, full stop -- an explicit attachment to a
+		// secondary channel there is a module reaching for beta it does not
+		// need. A resource only a secondary channel serves is accounted
+		// against that channel exactly when the admission list admits it
+		// for this kind AND the module attaches it through that channel's
+		// provider (the attachment is what makes the module actually
+		// deploy through the channel; the admission is what makes that a
+		// recorded decision). Any other combination is a gap, and a gap
+		// still walks the resource's arguments so one finding never hides
+		// the depth accounting behind it.
+		attachment := m.ProviderAttachments[res]
+		switch {
+		case block == nil:
+			// Unknown to every schema: judged below (internal/external) or a
+			// stale-artifact finding.
+		case servedBy == gaSchema:
+			if attachment != "" && attachment != gaSchema {
+				ka.AdmissionGaps = append(ka.AdmissionGaps,
+					fmt.Sprintf("%s attaches through provider %q but the baseline schema %s serves it at the pin -- drop the attachment and use the baseline provider", res, attachment, gaSchema))
+			}
+		default:
+			channel, isAdmitted := admitted[res]
+			switch {
+			case !isAdmitted:
+				ka.AdmissionGaps = append(ka.AdmissionGaps,
+					fmt.Sprintf("%s is served only by the %s schema and carries no admission for this kind -- record it in %s/%s.yaml (resource, kind, reason, promotionTracking) or model it without the secondary channel", res, servedBy, DefaultAdmissionsDir, servedBy))
+			case channel != servedBy:
+				ka.AdmissionGaps = append(ka.AdmissionGaps,
+					fmt.Sprintf("%s is admitted from channel %q but the %s schema is what serves it -- fix the admission's channel", res, channel, servedBy))
+			case attachment != servedBy:
+				ka.AdmissionGaps = append(ka.AdmissionGaps,
+					fmt.Sprintf("%s is admitted from %s but the module attaches it through %q -- set `provider = %s` on the resource block so the module deploys through the admitted channel", res, servedBy, attachment, servedBy))
+			default:
+				ka.AdmittedResources = append(ka.AdmittedResources, res)
 			}
 		}
+
 		if rm != nil && rm.External != "" {
 			if block != nil {
 				// The judgment claims the resource lives outside the loaded
@@ -646,6 +789,8 @@ func accountKind(m ModuleCensus, kindSpecPaths, manifestOnlyPaths []string, sche
 
 	sort.Strings(ka.InternalResources)
 	sort.Strings(ka.ExternalResources)
+	sort.Strings(ka.AdmittedResources)
+	sort.Strings(ka.AdmissionGaps)
 	sort.Strings(ka.UnaccountedArgs)
 	sort.Strings(ka.UncoveredSpecFields)
 	sort.Strings(ka.ManifestStale)

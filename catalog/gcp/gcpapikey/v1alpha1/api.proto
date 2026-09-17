@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpapikey.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpapikey/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpapikey/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-api-key
+message GcpApiKey {
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+  string kind = 2 [(buf.validate.field).string.const = 'GcpApiKey'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  GcpApiKeySpec spec = 4 [(buf.validate.field).required = true];
+  GcpApiKeyStatus status = 5;
+}
+
+message GcpApiKeyStatus {
+  GcpApiKeyStackOutputs outputs = 1;
+}

@@ -1,0 +1,4 @@
+name: gcpapikey-pulumi-project
+runtime:
+  name: go
+description: Planton GcpApiKey Pulumi module

@@ -1,0 +1,64 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# One kind, five resources: the Firebase enablement singleton and the
+# default storage bucket (both beta-only at the pin, admitted in
+# pkg/providerparity/admissions/google-beta.yaml and accounted against the
+# google-beta schema), the two App Check configurations (GA), and API
+# enablement plumbing. The enablement carries no deletion_policy (provider
+# truth -- Firebase cannot be removed from a project; destroy detaches); the
+# spec's ONE deletion_policy maps onto each composed resource.
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_firebase_project:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+
+  # The default bucket: the spec carries the one input (its location) as a
+  # kind-level field, since the resource exists once per project; the
+  # kind-level deletion_policy maps onto it.
+  google_firebase_storage_default_bucket:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.default_storage_location
+        arg: location
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+
+  # Instantiated per spec.app_check.service_configs entry -- one resource
+  # per Firebase backend service under enforcement. The kind-level
+  # deletion_policy maps onto each composed config.
+  google_firebase_app_check_service_config:
+    specRoot: spec.app_check.service_configs
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+
+  # Instantiated per spec.app_check.resource_policies entry.
+  google_firebase_app_check_resource_policy:
+    specRoot: spec.app_check.resource_policies
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables firebase.googleapis.com
+      and fcm.googleapis.com unconditionally (the enablement's API and the
+      push channel the kind exists for, declared explicitly rather than
+      assumed from :addFirebase's side effects), and
+      firebasestorage.googleapis.com / firebaseappcheck.googleapis.com
+      exactly when the spec composes those resources; disable_on_destroy
+      false so destroying this resource never disables an API other
+      resources depend on. Not spec surface.

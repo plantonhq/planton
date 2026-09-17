@@ -1,0 +1,36 @@
+# Restricted-Android scenario: proves the surfaces minimal cannot -- the
+# Android client arm (package name + signing-certificate SHA-1, the pairing
+# Google enforces), API targets with and without a method list, a display
+# name, and an explicit deletion_policy. The fingerprint is the SHA-1 of an
+# empty input (a well-known constant): Google validates the FORMAT at create,
+# not that a real certificate carries it. The key_id carries the run id
+# (soft-deleted ids stay reserved for 30 days).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpApiKey
+metadata:
+  name: planton-oss-e2e-gcpakey-android
+  id: planton-oss-e2e-gcpakey-android
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpapikey
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  keyId: e2e-android-${E2E_RUN_ID}
+  displayName: planton e2e restricted android key
+  restrictions:
+    androidKeyRestrictions:
+      allowedApplications:
+        - packageName: ai.planton.mobile
+          sha1Fingerprint: DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09
+    apiTargets:
+      - service: firebaseinstallations.googleapis.com
+      - service: fcmregistrations.googleapis.com
+      - service: translate.googleapis.com
+        methods:
+          - google.cloud.translate.v2.*
+  deletionPolicy: DELETE

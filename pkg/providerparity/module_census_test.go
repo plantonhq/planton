@@ -15,7 +15,8 @@ import (
 
 // TestScanModule_HermeticFixture proves the scan against a module that would
 // defeat a main.tf-only reader: resources split across sibling files, a
-// duplicate declaration de-duplicated, pins in provider.tf, and non-.tf
+// duplicate declaration de-duplicated, pins in provider.tf, a resource
+// attached through the secondary provider by meta-argument, and non-.tf
 // noise ignored.
 func TestScanModule_HermeticFixture(t *testing.T) {
 	dir := t.TempDir()
@@ -48,6 +49,11 @@ resource "google_storage_bucket" "again" {
   name = "duplicate-type-must-not-double-count"
 }
 `,
+		"beta.tf": `resource "google_firebase_project" "this" {
+  provider = google-beta
+  project  = "p"
+}
+`,
 		"README.md": `resource "not_terraform" "docs" -- prose, must be ignored`,
 	}
 	for name, content := range files {
@@ -60,13 +66,39 @@ resource "google_storage_bucket" "again" {
 	if err != nil {
 		t.Fatalf("scan: %v", err)
 	}
-	wantResources := []string{"google_storage_bucket", "google_storage_bucket_iam_member"}
+	wantResources := []string{"google_firebase_project", "google_storage_bucket", "google_storage_bucket_iam_member"}
 	if !reflect.DeepEqual(census.Resources, wantResources) {
 		t.Errorf("resources = %v, want %v", census.Resources, wantResources)
 	}
 	wantPins := map[string]string{"google": "~> 6.0", "google-beta": "~> 6.0"}
 	if !reflect.DeepEqual(census.Pins, wantPins) {
 		t.Errorf("pins = %v, want %v", census.Pins, wantPins)
+	}
+	// Only the explicit meta-argument is recorded: the buckets ride the
+	// implied provider and have no entry.
+	wantAttachments := map[string]string{"google_firebase_project": "google-beta"}
+	if !reflect.DeepEqual(census.ProviderAttachments, wantAttachments) {
+		t.Errorf("attachments = %v, want %v", census.ProviderAttachments, wantAttachments)
+	}
+}
+
+// TestScanModule_SplitAttachmentIsAnError: one resource type attached
+// through two providers has no single truth to account against.
+func TestScanModule_SplitAttachmentIsAnError(t *testing.T) {
+	dir := t.TempDir()
+	content := `resource "google_firebase_project" "a" {
+  provider = google-beta
+}
+
+resource "google_firebase_project" "b" {
+  provider = google
+}
+`
+	if err := os.WriteFile(filepath.Join(dir, "main.tf"), []byte(content), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ScanModule(dir); err == nil {
+		t.Fatal("expected a split-attachment error, got nil")
 	}
 }
 

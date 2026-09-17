@@ -1,0 +1,22 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpfirebaseproject
+spec:
+  # Awaiting the live proof lane. Offline bar met: both modules build and
+  # validate, offline plans for the reference manifest and both scenarios
+  # are clean on the pinned providers (google + google-beta under the
+  # recorded admission), and the accounting is total. Live facts the proof
+  # lane confirms: (1) the first deploy enables Firebase on the test
+  # project FOR GOOD (Google has no de-enable) and every later deploy
+  # adopts -- the create arm is provable once, per engine order; (2) the
+  # Firebase Management API needs the quota-project override under user
+  # ADC (both modules arm user_project_override); (3) the E2E identity
+  # holds roles/firebase.admin on the test project; (4) the Admin SDK
+  # config outputs degrade to "" on a project with no RTDB / default bucket
+  # / finalized location. The default storage bucket is a one-time proof
+  # (created at most once per project) recorded here when it runs.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

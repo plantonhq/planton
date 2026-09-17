@@ -1,0 +1,13 @@
+# GcpFirebaseProject install profile used when the enablement is an E2E
+# PREREQUISITE for another component: the GcpFirebaseAndroidApp /
+# GcpFirebaseAppleApp / GcpFirebaseWebApp lanes deploy this fixture first
+# (registry prerequisite), because an app registration exists only inside
+# a Firebase-enabled project. Enabling Firebase is ONE-WAY: the test
+# project stays enabled by design and every deploy of this fixture adopts
+# the existing enablement. metadata.name stays fixed -- prerequisite FK
+# resolution and consumer manifests key off it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseProject
+metadata:
+  name: planton-oss-e2e-gcpfbprj-prereq
+spec: {}

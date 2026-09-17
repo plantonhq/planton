@@ -97,7 +97,7 @@ func EnrolledAccountings(repoRoot string, schemas map[string]*Schema) ([]Account
 	}
 	accountings := make([]Accounting, 0, len(enrollments))
 	for _, e := range enrollments {
-		acc, err := BuildAccounting(repoRoot, e.Provider, schemas, e.GASchema, "")
+		acc, err := BuildAccounting(repoRoot, e.Provider, schemas, e.GASchema, "", "")
 		if err != nil {
 			return nil, errors.Wrapf(err, "accounting %s catalog against GA schema %q", e.Provider, e.GASchema)
 		}
