@@ -105,7 +105,33 @@ identity, individually revocable.
 | `runner.executionMode` | Execution mode: auto, grpc, temporal, dual | `"auto"` |
 
 `auto` derives the mode from the identity document the runner receives when it
-enrolls (a Temporal address means `dual`). Set an explicit mode only to override.
+enrolls and from its perimeter. A Temporal address with a tunnel endpoint means
+`dual`: deploys and builds over Temporal, live cloud operations through the tunnel.
+A Temporal address without one means `temporal`, a pure worker -- the shape of
+every runner enrolled with a self-hosted instance, because a self-hosted instance
+operates no runner tunnel (its own in-cluster runner is dialed directly; yours
+pulls work from the deploy queue the front door routes). Set an explicit mode
+only to override.
+
+### How the pod is probed
+
+Both probes are gRPC probes against `runner.port`, the one port that serves the
+standard gRPC health service in every execution mode (the CloudOps server's in
+`grpc` and `dual`, a health-only server's in `temporal`) -- so the chart probes
+every runner one way, whatever its tunnel, and exactly the way the operator's
+in-cluster runner is probed:
+
+- **Readiness** watches the IaC worker's health key (`ai.planton.runner.iac.worker`):
+  SERVING once the worker is actually polling its Temporal queue, not merely once
+  the port is bound. An explicit `runner.executionMode: grpc` runs no worker, so
+  the chart probes the overall health service instead.
+- **Liveness** watches only the overall health service: a Temporal outage reads as
+  not-ready, never as a restart loop of a healthy process.
+
+The tunnel agent's HTTP health and metrics ports (8093, 8094) are declared on the
+container for what they are; they exist only when the identity document carries a
+tunnel endpoint and are never a probe target. (Charts before 0.5.0 probed 8093 and
+restarted a tunnel-less runner every liveness window.)
 
 ### Temporal (override lane)
 
@@ -223,7 +249,10 @@ resolve secrets and variables at runtime.
 
 With builds enabled there is one additional, **cluster-internal** listener: Tekton posts
 pipeline CloudEvents to the runner's webhook through the chart's ClusterIP Service. No
-Ingress and no public exposure — the traffic never leaves the cluster.
+Ingress and no public exposure — the traffic never leaves the cluster. That Service
+exists for exactly this caller and is rendered only when builds are enabled; a runner
+without builds has no Service, because nothing in the cluster needs to dial it (health
+is probed on the pod).
 
 ### Automatic Rollouts
 

@@ -13,7 +13,10 @@ var vars = struct {
 	// DefaultChartVersion is the chart this catalog release was validated
 	// against — the version installed when spec.chart_version is unset.
 	// Bump it together with a re-validation of the values contract below
-	// (enrollment block, resources, build block).
+	// (enrollment block, resources, build block). 0.5.0 probes the pod over
+	// gRPC on the runner's port, the contract every execution mode serves;
+	// 0.4.0 probed the tunnel agent's HTTP port and restarted a runner
+	// enrolled with a tunnel-less instance every liveness window.
 	DefaultChartVersion string
 
 	// MinChartVersion is the enrollment-contract floor: charts below
@@ -33,7 +36,7 @@ var vars = struct {
 }{
 	HelmOciRepo:         "oci://ghcr.io/plantonhq/charts",
 	HelmChartName:       "planton-runner",
-	DefaultChartVersion: "0.4.0",
+	DefaultChartVersion: "0.5.0",
 	MinChartVersion:     "0.4.0",
 	TokenSecretSuffix:   "-token",
 	TokenSecretKey:      "token",
