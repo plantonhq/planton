@@ -17,12 +17,12 @@ spec:
   selector:
     {{- include "planton-runner.selectorLabels" . | nindent 4 }}
   ports:
-    # Tekton posts pipeline CloudEvents here: point default-cloud-events-sink
-    # in the tekton-pipelines/config-defaults ConfigMap at
+    # The Tekton CloudEvents webhook, kept for one more release for instances
+    # whose control plane predates the run watcher: a sink pointed at
     # http://<this-service>.<namespace>.svc.cluster.local/service-hub/tekton/cloud-event
-    # -- served on port 80 so the sink URL needs no explicit port, but the
-    # path is required (the webhook serves only that route; a bare root 404s
-    # every event and builds silently degrade to the reconcile safety net).
+    # still works and is redundant beside the watch (served on port 80 so the
+    # URL needs no explicit port; the path is required, the webhook serves
+    # only that route). Live build status no longer depends on it.
     - name: webhook
       port: 80
       targetPort: webhook

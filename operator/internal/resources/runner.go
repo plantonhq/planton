@@ -335,17 +335,20 @@ func RunnerBuildRole(cfg RunnerConfig) *rbacv1.Role {
 			Labels:    runnerLabels(cfg.CRName),
 		},
 		Rules: []rbacv1.PolicyRule{
-			// Creating a build's PipelineRun, watching the run inventory the
-			// reconcile safety net lists, and the labeled cleanup sweep.
+			// Creating a build's PipelineRun, listing the run inventory the
+			// reconcile safety net reads, watching the namespace's runs so the
+			// run watcher signals each change to the owning build as it
+			// happens (the event transport that needs no cluster-wide Tekton
+			// sink), and the labeled cleanup sweep.
 			{
 				APIGroups: []string{"tekton.dev"},
 				Resources: []string{"pipelineruns"},
-				Verbs:     []string{"create", "list", "deletecollection"},
+				Verbs:     []string{"create", "list", "watch", "deletecollection"},
 			},
 			{
 				APIGroups: []string{"tekton.dev"},
 				Resources: []string{"taskruns"},
-				Verbs:     []string{"list"},
+				Verbs:     []string{"list", "watch"},
 			},
 			// Per-build workspace objects the create activity provisions and
 			// the cleanup activity sweeps.

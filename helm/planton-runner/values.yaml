@@ -101,16 +101,11 @@ build:
 
   rbac:
     # -- Create the Role/RoleBinding the build capability needs in the build
-    # namespace (create PipelineRuns and supporting resources, reconcile by
-    # list, label-scoped cleanup, follow task pod logs), plus the read grant
-    # on Tekton's config-defaults ConfigMap that makes the events-sink
-    # readiness check conclusive.
+    # namespace: create PipelineRuns and supporting resources, reconcile by
+    # list, watch the namespace's PipelineRuns and TaskRuns (the run watcher,
+    # the build path's event transport), label-scoped cleanup, follow task pod
+    # logs. Nothing outside the build namespace is granted.
     create: true
-
-  tekton:
-    # -- Namespace of the Tekton Pipelines installation (where its cluster-wide
-    # config-defaults ConfigMap lives). Tekton's installer pins this name.
-    installNamespace: "tekton-pipelines"
 
 resources:
   requests:
