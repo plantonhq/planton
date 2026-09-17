@@ -6,7 +6,7 @@ Compute Engine API on the target project.
 
 ## Provider
 
-- **Provider**: `hashicorp/google` `~> 7.43`
+- **Provider**: `hashicorp/google` `~> 8.3`
 - Credentials via the ambient environment (Application Default Credentials
   or the runner's provider configuration)
 

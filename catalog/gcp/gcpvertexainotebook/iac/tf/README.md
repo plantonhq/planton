@@ -7,7 +7,7 @@
 
 ## Provider
 
-Requires the `hashicorp/google` provider version `~> 7.43`.
+Requires the `hashicorp/google` provider version `~> 8.3`.
 
 `spec.project_id` is optional: when empty, the instance lands in the provider's
 default project. Credentials are never module inputs: the provider block is

@@ -6,7 +6,7 @@ This Terraform module provisions a Secret Manager secret with its optional first
 
 The module creates the secret container, optionally seeds version 1 from `initial_version`, and applies additive IAM grants — so one manifest takes a consumer from nothing to a readable, access-granted secret.
 
-One kind, two API surfaces: an empty `region` creates a global secret with replication control (an omitted `replication` renders the API's `auto {}` mode); a set region creates a regional secret whose payloads never leave that region, with CMEK attached directly. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+One kind, two API surfaces: an empty `region` creates a global secret with replication control (an omitted `replication` renders the API's `auto {}` mode); a set region creates a regional secret whose payloads never leave that region, with CMEK attached directly. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

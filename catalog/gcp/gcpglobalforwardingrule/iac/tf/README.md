@@ -4,7 +4,7 @@ This Terraform module provisions a GCP Compute Engine global forwarding rule. It
 
 ## Overview
 
-The module creates `google_compute_global_forwarding_rule` — the VIP node binding an IP address and port to a target proxy, and the Private Service Connect entry point (scheme `NONE`, sent to the API as an empty scheme).
+The module creates `google_compute_global_forwarding_rule` — the VIP node binding an IP address and port to a target proxy, and the Private Service Connect entry point (scheme `NONE`, sent to the API as an empty scheme). An unset scheme is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than left to the provider, whose own default is `EXTERNAL_MANAGED`: the scheme is immutable, so a provider-chosen default would replace an existing classic frontend on its next apply. The Pulumi module does the same.
 
 `target` and `labels` update in place (`setTarget` is the zero-downtime frontend swap); every other field is ForceNew — which is why production frontends bind a reserved `GcpGlobalAddress` rather than an ephemeral IP.
 

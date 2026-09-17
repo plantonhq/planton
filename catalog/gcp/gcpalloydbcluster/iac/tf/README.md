@@ -60,4 +60,4 @@ standard `GOOGLE_*` environment chain.
 - `primary_instance.instance_id` is immutable after creation.
 - `deletion_protection` defaults to TRUE: destroy fails until the spec flips
   it false and that change is applied first (deliberately two steps).
-- Provider version `~> 7.43` (google) is required.
+- Provider version `~> 8.3` (google) is required.

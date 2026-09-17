@@ -8,7 +8,7 @@ spec:
   # scenarios (minimal, private-cluster, autopilot), batch runs with a
   # go test -timeout of at least 180m.
   tier: 1
-  # Live-proven 2026-08-12 on both engines at the full 7.43-surface spec:
+  # Live-proven 2026-08-12 on both engines at the full spec surface of the release then pinned:
   # 3 scenarios (minimal zonal, private-cluster regional incl. RBAC
   # lockdown + Secret Manager CSI rotation + DNS-endpoint token serving +
   # both read-side switches, autopilot incl. autopilot_policy +

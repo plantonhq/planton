@@ -22,12 +22,10 @@ locals {
   )
 
   # Normalize "" -> null for optional strings the provider treats as
-  # meaningfully absent. Every one of these has a GCP API default that
-  # matches the spec's proto default (protocol HTTP, scheme EXTERNAL,
-  # session_affinity NONE), so null and the middleware-applied default are
-  # behaviorally identical.
+  # meaningfully absent. Each of these has a GCP API default that matches
+  # the spec's proto default (protocol HTTP, session_affinity NONE), so
+  # null and the middleware-applied default are behaviorally identical.
   protocol                    = var.spec.protocol != "" ? var.spec.protocol : null
-  load_balancing_scheme       = var.spec.load_balancing_scheme != "" ? var.spec.load_balancing_scheme : null
   port_name                   = var.spec.port_name != "" ? var.spec.port_name : null
   session_affinity            = var.spec.session_affinity != "" ? var.spec.session_affinity : null
   locality_lb_policy          = var.spec.locality_lb_policy != "" ? var.spec.locality_lb_policy : null
@@ -37,6 +35,17 @@ locals {
   ip_address_selection_policy = var.spec.ip_address_selection_policy != "" ? var.spec.ip_address_selection_policy : null
   service_lb_policy           = var.spec.service_lb_policy != "" ? var.spec.service_lb_policy : null
   migration_state             = var.spec.external_managed_migration_state != "" ? var.spec.external_managed_migration_state : null
+
+  # The scheme is the ONE exception to the "" -> null rule: the spec's
+  # default is EXTERNAL (the classic global external ALB), but the
+  # provider's own default is EXTERNAL_MANAGED, and the scheme is immutable
+  # -- letting the provider decide would replace every existing classic
+  # backend service the next time it was applied. The module therefore
+  # sends EXTERNAL itself when the spec leaves the scheme empty (the
+  # manifest defaults applier normally fills it first; this guard covers
+  # every path that bypasses the applier). The Pulumi module makes the same
+  # choice.
+  load_balancing_scheme = var.spec.load_balancing_scheme != "" ? var.spec.load_balancing_scheme : "EXTERNAL"
 
   # The tfvars converter emits 0 for unset proto numbers; 0 is not a
   # meaningful value for these, so 0 -> null lets the API apply its

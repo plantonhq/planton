@@ -98,7 +98,8 @@ The module consumes `GcpGlobalForwardingRuleStackInput`:
 ## Behavior Notes
 
 - **Mutability**: only `target` (via `setTarget`) and `labels` update in place — everything else recreates the rule, so bind a reserved static IP for production.
-- **The PSC sentinel**: spec scheme `NONE` is sent to the API as an EMPTY scheme string — Private Service Connect's form; an unset scheme lets GCP default to `EXTERNAL`.
+- **The PSC sentinel**: spec scheme `NONE` is sent to the API as an EMPTY scheme string — Private Service Connect's form.
+- **The scheme is always sent**: an unset scheme is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than omitted. The provider's own default is `EXTERNAL_MANAGED` and the scheme is immutable, so leaving the choice to the provider would replace an existing classic frontend on its next apply. The Terraform module does the same.
 - **Ambient project**: an empty `project_id` falls back to the provider's default project.
 - **API enablement**: the module enables `compute.googleapis.com` before creating the rule (`disable_on_destroy=false`).
 

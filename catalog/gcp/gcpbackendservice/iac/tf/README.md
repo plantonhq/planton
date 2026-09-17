@@ -8,6 +8,8 @@ The module creates a `google_compute_backend_service` — the hub of the L7 load
 
 `name` and `project` are immutable (ForceNew); everything else — backends, CDN policy, affinity, IAP — updates in place, which makes this node the operational lever of a running load balancer. IAP client secrets, AWS SigV4 access keys, and signed-URL key values are secret material and never appear in outputs.
 
+An unset `load_balancing_scheme` is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than left to the provider, whose own default is `EXTERNAL_MANAGED`: the scheme is immutable, so a provider-chosen default would replace an existing classic backend service on its next apply. The Pulumi module does the same.
+
 ## Usage with Planton CLI
 
 ```shell

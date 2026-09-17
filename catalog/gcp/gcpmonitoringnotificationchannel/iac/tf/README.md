@@ -6,7 +6,7 @@ This Terraform module provisions a Cloud Monitoring notification channel (`googl
 
 The module creates one notification channel — the delivery endpoint (email, Slack, PagerDuty, SMS, webhook, or Pub/Sub) that alert policies notify when incidents open or close. Alert policies reference the channel by its resource name (the `channel_name` output).
 
-Two label surfaces exist and are never conflated: the provider's `labels` argument is the type-specific channel configuration (fed from `spec.channel_labels`), while `user_labels` is freeform metadata (fed from `spec.labels` merged with the platform attribution labels). Credentials ride the `sensitive_labels` block, stored and redacted API-side. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+Two label surfaces exist and are never conflated: the provider's `labels` argument is the type-specific channel configuration (fed from `spec.channel_labels`), while `user_labels` is freeform metadata (fed from `spec.labels` merged with the platform attribution labels). Credentials ride the `sensitive_labels` block, stored and redacted API-side. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

@@ -65,16 +65,26 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 
 	// Omitted optionals stay unset (matching the Terraform module's null)
 	// rather than being sent as empty strings the API would reject or
-	// misread. Every one of these has a GCP API default that matches the
-	// spec's proto default (protocol HTTP, scheme EXTERNAL, affinity NONE).
+	// misread. Each of these has a GCP API default that matches the spec's
+	// proto default (protocol HTTP, affinity NONE).
 	if spec.Description != "" {
 		args.Description = pulumi.String(spec.Description)
 	}
 	if spec.GetProtocol() != "" {
 		args.Protocol = pulumi.String(spec.GetProtocol())
 	}
+	// The scheme is the ONE exception: the spec's default is EXTERNAL (the
+	// classic global external ALB), but the provider's own default is
+	// EXTERNAL_MANAGED, and the scheme is immutable -- letting the provider
+	// decide would replace every existing classic backend service the next
+	// time it was applied. The module therefore sends EXTERNAL itself when
+	// the spec leaves the scheme empty (the manifest defaults applier
+	// normally fills it first; this guard covers every path that bypasses
+	// the applier). The Terraform module makes the same choice.
 	if spec.GetLoadBalancingScheme() != "" {
 		args.LoadBalancingScheme = pulumi.String(spec.GetLoadBalancingScheme())
+	} else {
+		args.LoadBalancingScheme = pulumi.String("EXTERNAL")
 	}
 	if spec.PortName != "" {
 		args.PortName = pulumi.String(spec.PortName)

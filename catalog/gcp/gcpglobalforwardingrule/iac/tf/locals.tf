@@ -32,12 +32,18 @@ locals {
 
   # The spec's NONE sentinel is the Private Service Connect form, which the
   # API expects as an EMPTY scheme — the one case where "" must be SENT
-  # rather than treated as unset. Anything else passes through verbatim;
-  # null lets the provider apply its default (EXTERNAL).
+  # rather than treated as unset. Anything else passes through verbatim.
+  # An empty spec value becomes EXTERNAL, never null: the spec's default
+  # is EXTERNAL (the classic global external ALB), the provider's own
+  # default is EXTERNAL_MANAGED, and the scheme is immutable — letting the
+  # provider decide would replace every existing classic frontend the next
+  # time it was applied. The manifest defaults applier normally fills
+  # EXTERNAL first; this guard covers every path that bypasses it. The
+  # Pulumi module makes the same choice.
   load_balancing_scheme = (
     var.spec.load_balancing_scheme == "NONE"
     ? ""
-    : (var.spec.load_balancing_scheme != "" ? var.spec.load_balancing_scheme : null)
+    : (var.spec.load_balancing_scheme != "" ? var.spec.load_balancing_scheme : "EXTERNAL")
   )
 
   port_range = var.spec.port_range != "" ? var.spec.port_range : null

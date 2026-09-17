@@ -22,7 +22,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying a Cl
 | `locals.tf` | Service-arm gating, naming, and label-merge derivations |
 | `main.tf` | API enablement + count-gated services + the SLO with the full SLI tree |
 | `outputs.tf` | Stack outputs (both derived from the SLO's resource name) |
-| `provider.tf` | google provider pin (`~> 7.43`) |
+| `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 
 ## How the module maps the spec

@@ -4,7 +4,7 @@ This Terraform module provisions a subnetwork in a custom-mode GCP VPC. It is th
 
 ## Overview
 
-The module enables the Compute Engine API (never disabling it on destroy) and creates a `google_compute_subnetwork` with the full address plan: primary IPv4 range (literal or sourced from a Network Connectivity reserved internal range), secondary (alias) ranges, purpose/role (proxy-only, PSC), dual-stack IPv6 (including BYOIP via `ip_collection` and prefix pinning), Private Google Access (v4 and v6), the secondary-range removal latch, create-time Resource Manager tags, and VPC Flow Logs. Everything runs on the GA `hashicorp/google` provider (`allow_subnet_cidr_routes_overlap` is GA on the 7.x line).
+The module enables the Compute Engine API (never disabling it on destroy) and creates a `google_compute_subnetwork` with the full address plan: primary IPv4 range (literal or sourced from a Network Connectivity reserved internal range), secondary (alias) ranges, purpose/role (proxy-only, PSC), dual-stack IPv6 (including BYOIP via `ip_collection` and prefix pinning), Private Google Access (v4 and v6), the secondary-range removal latch, create-time Resource Manager tags, and VPC Flow Logs. Everything runs on the GA `hashicorp/google` provider (`allow_subnet_cidr_routes_overlap` is GA on the 8.x line).
 
 `name`, `project`, `region`, `network`, and `description` are immutable (ForceNew). The primary range is asymmetric: expansion updates in place, shrinkage recreates.
 

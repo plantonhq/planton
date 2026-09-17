@@ -71,7 +71,7 @@ drops it from state but leaves it standing (and billing). CMEK
 
 ## Provider Requirements
 
-- `hashicorp/google` ~> 7.43
+- `hashicorp/google` ~> 8.3
 
 Note: index create/update/delete timeouts are 180 minutes — large batch
 builds are genuinely slow.

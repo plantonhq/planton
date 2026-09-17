@@ -107,6 +107,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Restrictions never rotate the key string** — tightening `apiTargets` or adding a certificate fingerprint is an in-place update; only the immutable identity fields recreate the key.
 - **Both engines set `user_project_override`** — the API Keys API attributes quota to the caller's project on user-credential calls; without the override a deploy under plain ADC fails with "requires a quota project" (the Identity Toolkit precedent).
 - **Deletion is soft** — `DELETE` keeps the key recoverable for 30 days; recovery is an operator act (console or `undelete`), not something the modules do.
+- **Not modeled yet: usage-checked deletion** — the provider's `check_existing_usage` switch and the `FORCE` deletion policy it pairs with (refuse or force a delete based on recent key usage) are GA at the pin but not yet bridged by the pinned Pulumi SDK; modeling them on one engine only would break cross-engine parity. They enter the spec when pulumi-gcp v10 (the 8.x bridge) is GA.
 
 ## Examples
 

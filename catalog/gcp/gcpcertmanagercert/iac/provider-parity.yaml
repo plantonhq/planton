@@ -19,6 +19,20 @@ resources:
         arg: name
       - spec: spec.project_id
         arg: project
+    exclusions:
+      - arg: self_managed.pem_private_key_wo
+        reason: >-
+          the write-only variant of the modeled self_managed.pem_private_key
+          -- same key material, differing only in Terraform-state hygiene;
+          adopting it would raise this one module's toolchain floor to
+          Terraform/OpenTofu >= 1.11 (write-only arguments), a divergence
+          from the catalog-wide assumption; re-evaluate when the catalog
+          declares a >= 1.11 floor
+      - arg: self_managed.pem_private_key_wo_version
+        reason: >-
+          the re-send trigger for self_managed.pem_private_key_wo; rides
+          the same judgment and re-evaluate trigger (see
+          self_managed.pem_private_key_wo)
 
   google_project_service:
     internal: >-

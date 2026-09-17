@@ -62,6 +62,13 @@ window. For a key baked into a shipped mobile binary you cannot rotate on
 demand, set `PREVENT` so a destroy fails instead of breaking installed
 apps. Ephemeral keys (test fixtures) need a fresh id per lifetime.
 
+Google also offers a usage-checked delete (refuse the delete if the key was
+used recently, or force it): the provider's `check_existing_usage` switch
+and its `FORCE` deletion policy. Neither is in the spec yet — the pinned
+Pulumi SDK cannot send them, and a field only one engine honors would break
+the promise that both engines deploy the same manifest identically. They
+arrive with the pulumi-gcp v10 bridge.
+
 ## The service-account arm is for callers that cannot use OAuth
 
 `serviceAccountEmail` makes requests carrying the key authenticate as that

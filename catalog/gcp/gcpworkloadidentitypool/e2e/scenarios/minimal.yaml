@@ -23,7 +23,7 @@ spec:
   displayName: Planton E2E Smoke Pool
   description: Ephemeral pool created by the Planton E2E harness; safe to delete
   # Explicit mode proves the formerly-beta-only argument applies cleanly on
-  # the GA provider (it is GA on the 7.x line); FEDERATION_ONLY matches the
+  # the GA provider (it is GA on the pinned line); FEDERATION_ONLY matches the
   # spec default, so the arm adds surface without changing pool behavior.
   mode: FEDERATION_ONLY
   # Explicit provider default: proves the DELETE (soft-delete) round-trip.

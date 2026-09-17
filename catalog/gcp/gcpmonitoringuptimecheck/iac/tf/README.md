@@ -6,7 +6,7 @@ This Terraform module provisions a Cloud Monitoring uptime check (`google_monito
 
 The module creates one uptime check — the probe Google runs against a public URL, monitored resource, resource group, or synthetic-monitor Cloud Function from multiple regions on a fixed cadence. A check only measures; pair it with a `GcpMonitoringAlertPolicy` filtering on `uptime_check_passed` and this check's `uptime_check_id` to actually page.
 
-Exactly one target block and — except for synthetic monitors — exactly one check block render, enforced by the spec's validations before the module runs. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+Exactly one target block and — except for synthetic monitors — exactly one check block render, enforced by the spec's validations before the module runs. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

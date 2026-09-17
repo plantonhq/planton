@@ -23,7 +23,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying an E
 | `locals.tf` | Project fallback + bus-id derivation + label merge |
 | `main.tf` | API enablement + bus + sources + pipelines + enrollments |
 | `outputs.tf` | Stack outputs |
-| `provider.tf` | google provider pin (`~> 7.43`) |
+| `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 
 ## How the module maps the spec

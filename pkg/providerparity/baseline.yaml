@@ -1,14 +1,22 @@
 # Provider-parity baseline -- the accepted backlog of parity gaps: kinds not
-# yet at total accounting against the pinned provider, and GA resources whose
-# breadth disposition is not recorded yet. This list trends to 0 and never
-# grows; the permanent record lives in each kind's iac/provider-parity.yaml
-# and in pkg/providerparity/dispositions/.
+# yet at total accounting against the pinned provider, GA resources whose
+# breadth disposition is not recorded yet, and provider blocks not yet at
+# total provider-config accounting. This list trends to 0 and never grows;
+# the permanent record lives in each kind's iac/provider-parity.yaml, each
+# provider's provider-config-parity.yaml, and pkg/providerparity/dispositions/.
 #
 # The CI guardrail (go test ./pkg/providerparity/...) fails when:
-#   - a finding appears for a kind/resource NOT listed here (new gap shipped,
-#     or a pin bump surfaced migration work), or
+#   - a finding appears for a kind/resource/provider NOT listed here (new gap
+#     shipped, or a pin bump surfaced migration work), or
 #   - a listed entry has no findings left (it was closed -- remove it here).
 #
-# Entry format: kind:<Kind> | resource:<terraform resource type>
+# Entry format: kind:<Kind> | resource:<terraform resource type> | provider:<cloud>
 # Regenerate with:  PLANTON_REGEN_PROVIDERPARITY_BASELINE=1 go test ./pkg/providerparity/
-entries: []
+entries:
+  - kind:GcpCloudRun
+  - kind:GcpCloudSql
+  - kind:GcpComputeInstance
+  - kind:GcpComputeMig
+  - kind:GcpDataprocCluster
+  - kind:GcpGkeCluster
+  - kind:GcpMemorystoreInstance

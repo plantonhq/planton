@@ -70,12 +70,20 @@ func globalForwardingRule(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.
 	if spec.IpVersion != "" {
 		args.IpVersion = pulumi.String(spec.IpVersion)
 	}
-	// The PSC form (spec NONE) must SEND the empty scheme explicitly; an
-	// unset spec omits the field and GCP applies its default (EXTERNAL).
+	// The PSC form (spec NONE) must SEND the empty scheme explicitly. An
+	// empty spec value becomes EXTERNAL, never an omission: the spec's
+	// default is EXTERNAL (the classic global external ALB), the provider's
+	// own default is EXTERNAL_MANAGED, and the scheme is immutable -- letting
+	// the provider decide would replace every existing classic frontend the
+	// next time it was applied. The manifest defaults applier normally fills
+	// EXTERNAL first; this guard covers every path that bypasses it. The
+	// Terraform module makes the same choice.
 	if locals.IsPrivateServiceConnect {
 		args.LoadBalancingScheme = pulumi.String("")
 	} else if locals.LoadBalancingScheme != "" {
 		args.LoadBalancingScheme = pulumi.String(locals.LoadBalancingScheme)
+	} else {
+		args.LoadBalancingScheme = pulumi.String("EXTERNAL")
 	}
 	if spec.PortRange != "" {
 		args.PortRange = pulumi.String(spec.PortRange)

@@ -9,7 +9,14 @@ spec:
   # rule then binds the VIP on port 443. Verify asserts the VIP and target
   # wiring via compute globalForwardingRules.get; destroy tears the whole
   # chain down in reverse, on both provisioners.
+  #
+  # Awaiting re-proof: both modules now send load_balancing_scheme
+  # EXTERNAL explicitly when the spec leaves it unset (the provider's own
+  # default moved to EXTERNAL_MANAGED, and the scheme is immutable). The
+  # earlier live proof predates that change; the next proof confirms the
+  # classic frontend deploys and re-plans clean on both engines under the
+  # apply-idempotency gate.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 30

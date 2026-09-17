@@ -35,7 +35,7 @@ module "dns_authorization" {
 | Name | Version |
 |------|---------|
 | terraform | >= 1.0 |
-| google | ~> 7.43 |
+| google | ~> 8.3 |
 
 ## Inputs
 

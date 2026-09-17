@@ -6,7 +6,7 @@ This Terraform module provisions a Google Cloud Memorystore for Redis instance (
 
 The module enables the Memorystore API (`redis.googleapis.com`) so a fresh project works first try, then creates the instance with the full released-provider surface: tier and memory, zone pinning (primary + HA replica), VPC connectivity (direct peering or private services access), AUTH and TLS, RDB persistence with a schedule anchor, read replicas with in-place address-space growth, maintenance window to the minute, self-service maintenance version, CMEK, and Redis config overrides.
 
-An empty `project_id` falls back to the provider's default project; empty optional strings become null so the provider omits them from the API payload. The module runs on the plain `google` provider — every modeled field is GA at the pinned release (`~> 7.43`).
+An empty `project_id` falls back to the provider's default project; empty optional strings become null so the provider omits them from the API payload. The module runs on the plain `google` provider — every modeled field is GA at the pinned release (`~> 8.3`).
 
 ## Usage with Planton CLI
 

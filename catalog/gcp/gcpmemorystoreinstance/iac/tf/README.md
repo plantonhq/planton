@@ -4,7 +4,7 @@ This Terraform module provisions a Memorystore (Valkey) instance (`google_memory
 
 ## Overview
 
-Connectivity is PSC-only and driven by service connectivity automation: a `GcpServiceConnectionPolicy` for the `gcp-memorystore` class must exist on each endpoint's network in the instance's region before the instance is created. The module enables the Memorystore and Network Connectivity APIs so a fresh project works first try, and runs on the plain `google` provider — every modeled field is GA at the pinned release (`~> 7.43`).
+Connectivity is PSC-only and driven by service connectivity automation: a `GcpServiceConnectionPolicy` for the `gcp-memorystore` class must exist on each endpoint's network in the instance's region before the instance is created. The module enables the Memorystore and Network Connectivity APIs so a fresh project works first try, and runs on the plain `google` provider — every modeled field is GA at the pinned release (`~> 8.3`).
 
 Deletion protection defaults TRUE in the spec and is always sent explicitly, so destroy behavior is identical on both engines. A PSC endpoint entry that omits its consumer project rides the provider's effective project (resolved via `data.google_project`, mirroring the Pulumi module's `GetClientConfig`).
 

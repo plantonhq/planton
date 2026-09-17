@@ -21,3 +21,14 @@ resources:
       # rule the API enforces.
       - spec: spec.key_id
         arg: name
+    exclusions:
+      # Cross-engine parity rules an argument out when the pinned Pulumi
+      # SDK cannot send it: a spec field one engine silently drops is worse
+      # than an honest omission. Re-evaluate at the next SDK bump.
+      - arg: check_existing_usage
+        reason: >-
+          SDK gap -- GA at the pin, but the pinned Pulumi SDK bridges an
+          earlier provider line that has no check_existing_usage (nor the
+          FORCE deletion_policy it pairs with); modeling it would break
+          cross-engine parity. Re-evaluate when pulumi-gcp v10 (the 8.x
+          bridge) is GA.

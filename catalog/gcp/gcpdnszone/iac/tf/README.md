@@ -23,6 +23,6 @@ See `variables.tf`. Key spec fields map 1:1 to the protobuf spec.
 
 ## Notes
 
-- Provider pin: `~> 7.43`
+- Provider pin: `~> 8.3`
 - `dns_name` defaults to `${metadata.name}.` when spec.dns_name is empty
 - No `google_dns_record_set` or `google_project_iam_binding` in this module

@@ -6,7 +6,7 @@ GcpBigQueryDataset component.
 ## Module Structure
 
 ```
-provider.tf    -- Google provider on the ~> 7.43 line
+provider.tf    -- Google provider on the ~> 8.3 line
 variables.tf   -- Input variables matching GcpBigQueryDatasetSpec
 locals.tf      -- Ambient-project fallback, null-mapping, label merge
 main.tf        -- BigQuery API enablement + google_bigquery_dataset resource

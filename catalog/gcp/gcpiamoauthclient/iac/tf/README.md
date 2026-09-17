@@ -4,7 +4,7 @@ This Terraform module provisions a workforce OAuth client (`google_iam_oauth_cli
 
 ## Overview
 
-The client is a Workforce Identity Federation OAuth registration — the only kind of OAuth client Google's APIs can create programmatically (consent-screen clients remain a console step; see the component README). Credential secrets are generated server-side by GCP; the first credential's secret is the `client_secret` output. GCP requires a credential to be DISABLED before it can be deleted, so `disabled` is sent explicitly on every apply. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+The client is a Workforce Identity Federation OAuth registration — the only kind of OAuth client Google's APIs can create programmatically (consent-screen clients remain a console step; see the component README). Credential secrets are generated server-side by GCP; the first credential's secret is the `client_secret` output. GCP requires a credential to be DISABLED before it can be deleted, so `disabled` is sent explicitly on every apply. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

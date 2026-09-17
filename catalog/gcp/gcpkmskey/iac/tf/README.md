@@ -21,7 +21,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 
 ## Module Layout
 
-- `provider.tf` — google provider pin (`~> 7.43`; all fields GA on the released line)
+- `provider.tf` — google provider pin (`~> 8.3`; all fields GA on the released line)
 - `variables.tf` — the converter-contract `metadata`/`spec` variables
 - `locals.tf` — optional-field null-folding + the label merge
 - `main.tf` — API enablement + the crypto key resource

@@ -48,7 +48,7 @@ variable "spec" {
     # The fully-qualified key path a GcpKmsKey reference resolves to, plus the
     # provider's two shorthand forms (<project>/<location>/<ring>/<key> and
     # <location>/<ring>/<key> riding the provider's default project).
-    condition = can(regex("^(projects/[^/]+/locations/[^/]+/keyRings/[^/]+/cryptoKeys/[^/]+|[^/]+/[^/]+/[^/]+/[^/]+|[^/]+/[^/]+/[^/]+)$", var.spec.crypto_key_id))
+    condition     = can(regex("^(projects/[^/]+/locations/[^/]+/keyRings/[^/]+/cryptoKeys/[^/]+|[^/]+/[^/]+/[^/]+/[^/]+|[^/]+/[^/]+/[^/]+)$", var.spec.crypto_key_id))
     error_message = "crypto_key_id must be a crypto key identifier (projects/<project>/locations/<location>/keyRings/<ring>/cryptoKeys/<key>)."
   }
 

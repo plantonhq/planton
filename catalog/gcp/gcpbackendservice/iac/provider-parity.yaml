@@ -44,6 +44,31 @@ resources:
           response_headers list, and cross-engine parity forbids modeling
           a field only one engine can send; re-evaluate at the next
           pulumi-gcp bump
+      - arg: iap.oauth2_client_id_wo
+        reason: >-
+          the write-only variant of the modeled iap.oauth2_client_id --
+          same OAuth client, differing only in Terraform-state hygiene;
+          adopting it would raise this one module's toolchain floor to
+          Terraform/OpenTofu >= 1.11 (write-only arguments), a divergence
+          from the catalog-wide assumption; re-evaluate when the catalog
+          declares a >= 1.11 floor
+      - arg: iap.oauth2_client_id_wo_version
+        reason: >-
+          the re-send trigger for iap.oauth2_client_id_wo; rides the same
+          judgment and re-evaluate trigger (see iap.oauth2_client_id_wo)
+      - arg: iap.oauth2_client_secret_wo
+        reason: >-
+          the write-only variant of the modeled iap.oauth2_client_secret
+          -- same secret material, differing only in Terraform-state
+          hygiene; adopting it would raise this one module's toolchain
+          floor to Terraform/OpenTofu >= 1.11 (write-only arguments), a
+          divergence from the catalog-wide assumption; re-evaluate when
+          the catalog declares a >= 1.11 floor
+      - arg: iap.oauth2_client_secret_wo_version
+        reason: >-
+          the re-send trigger for iap.oauth2_client_secret_wo; rides the
+          same judgment and re-evaluate trigger (see
+          iap.oauth2_client_secret_wo)
 
   # Signed-URL keys are modeled as a list on the spec and fanned out to one
   # companion resource per key -- the keys have no life apart from the

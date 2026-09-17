@@ -48,6 +48,8 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 
 Both engines send the same arguments and produce the same three outputs. There is no `PARITY-EXCEPTION` in this module.
 
+One provider argument is deliberately outside the spec on both engines: `check_existing_usage` (and the `FORCE` deletion policy it pairs with) is GA at the pin but not bridged by the pinned Pulumi SDK, so it is recorded as an SDK gap in `../provider-parity.yaml` rather than modeled on one engine. It enters the spec when pulumi-gcp v10 is GA.
+
 ## Notes
 
 - **Every identity field is immutable** — `key_id`, `project_id`, and `service_account_email` recreate the key (and rotate its string) when changed; restrictions and the display name update in place.

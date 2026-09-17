@@ -7,7 +7,7 @@ spec:
   # before the pool itself (~3-6 minutes), and destroys both after. Batch
   # runs with a go test -timeout of at least 180m.
   tier: 1
-  # Live-proven 2026-08-12 on both engines at the full 7.43-surface spec:
+  # Live-proven 2026-08-12 on both engines at the full spec surface of the release then pinned:
   # 2 scenarios (minimal fixed-count, autoscaling-spot incl. the kubelet
   # eviction trio with percentage-only minimum reclaim, crash-loop
   # backoff, image GC age, cgroup v2, ignore_node_count_changes) x 2

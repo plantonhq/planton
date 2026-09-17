@@ -6,7 +6,7 @@ This Terraform module provisions a GCP Workload Identity Pool (`google_iam_workl
 
 The module creates the trust boundary for keyless authentication: external identities (GitHub Actions, AWS workloads, enterprise IdPs) federate through the pool instead of holding service-account keys. `workload_identity_pool_id`, `project`, and `mode` are immutable (ForceNew; the API rejects mode updates even when a plan shows one); `display_name`, `description`, `disabled`, and the inline certificate/trust configs update in place. GCP soft-deletes pools for ~30 days, during which the pool ID cannot be reused — and a create against a soft-deleted ID fails (no undelete-on-create), so prefer `disabled = true` for temporary shutoffs.
 
-The whole surface — `mode`, attestation rules, and the inline certificate-issuance/trust-config blocks — is GA on the `hashicorp/google` 7.x line; no beta provider is involved.
+The whole surface — `mode`, attestation rules, and the inline certificate-issuance/trust-config blocks — is GA on the `hashicorp/google` 8.x line; no beta provider is involved.
 
 ## Usage with Planton CLI
 

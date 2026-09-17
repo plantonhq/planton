@@ -6,7 +6,7 @@ This Terraform module provisions a Cloud Logging sink (`google_logging_project_s
 
 The module creates one logging sink — the routing rule that exports log entries matching a filter to a destination. The destination URI is rendered by the module from whichever arm the spec sets (GCS bucket, BigQuery dataset, Pub/Sub topic, or a raw URI escape hatch), so manifests reference resources naturally instead of hand-assembling `service.googleapis.com/...` strings.
 
-The one post-create step every sink needs: grant the `writer_identity` output write access on the destination, or the sink silently exports nothing. Scope differences are modeled, not smoothed over — writer-identity controls exist only on project sinks; children routing only on folder/org sinks. The module runs on the plain `google` provider — every modeled field is GA on the pinned 7.x line.
+The one post-create step every sink needs: grant the `writer_identity` output write access on the destination, or the sink silently exports nothing. Scope differences are modeled, not smoothed over — writer-identity controls exist only on project sinks; children routing only on folder/org sinks. The module runs on the plain `google` provider — every modeled field is GA on the pinned 8.x line.
 
 ## Usage with Planton CLI
 

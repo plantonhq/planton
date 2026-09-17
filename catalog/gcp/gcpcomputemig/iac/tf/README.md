@@ -22,7 +22,7 @@ iac/tf/
 ├── locals.tf      # Names, label merge, location selector, rotation prefix
 ├── variables.tf   # GENERATED from the spec proto (planton tofu generate-variables)
 ├── outputs.tf     # one(concat()) branch-independent outputs
-├── provider.tf    # google ~> 7.43 pin
+├── provider.tf    # google ~> 8.3 pin
 ├── backend.tf     # local backend for direct runs
 └── README.md      # This file
 ```

@@ -8,7 +8,7 @@ spec:
   # runs deploy -> compute subnetworks.get verify (incl. primary-range check)
   # -> destroy -> verify 404, on both provisioners. The scenario carries
   # secondary ranges, flow logs, and the formerly-beta CIDR-routes-overlap
-  # flag (GA on the 7.x line) so the deepened surface is exercised live.
+  # flag (GA on the pinned line) so the deepened surface is exercised live.
   #
   # Live-proven 2026-08-12 on both engines under the apply-idempotency gate
   # at the total-accounting surface (deletionPolicy DELETE re-planned

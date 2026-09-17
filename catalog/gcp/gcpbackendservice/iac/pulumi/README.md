@@ -100,6 +100,7 @@ Spec fields mirror the Terraform module: protocol/scheme/timeouts, the singular 
 ## Behavior Notes
 
 - **Immutability**: `backend_service_name` and `project_id` are ForceNew; everything else — backends, CDN policy, affinity, IAP — updates in place.
+- **The scheme is always sent**: an unset `load_balancing_scheme` is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than omitted. The provider's own default is `EXTERNAL_MANAGED` and the scheme is immutable, so leaving the choice to the provider would replace an existing classic backend service on its next apply. The Terraform module does the same.
 - **Secrets**: the IAP `oauth2_client_secret`, the SigV4 `access_key`, and every signed-URL `key_value` are marked secret in Pulumi state (`pulumi.ToSecret`) and never exported.
 - **One health check**: GCP caps `health_checks` at one; the SDK flattens the one-element set to a plain string, matching the spec's singular reference.
 - **TTL semantics**: a 0 TTL in the spec means "unset — let the GCP API default"; cache-mode/TTL and scheme-applicability coherence is enforced by the spec before deploy.

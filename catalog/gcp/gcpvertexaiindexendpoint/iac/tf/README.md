@@ -65,4 +65,4 @@ destroy fail, `ABANDON` drops it from state but leaves it serving.
 
 ## Provider Requirements
 
-- `hashicorp/google` ~> 7.43
+- `hashicorp/google` ~> 8.3

@@ -6,7 +6,7 @@ This Terraform module provisions a Dataproc cluster (`google_dataproc_cluster`) 
 
 The spec carries two mutually exclusive deployment arms — `cluster_config` (GCE) and `virtual_cluster_config` (GKE) — validated pre-deploy and re-checked by a variable validation. Omitting both yields GCP's default GCE cluster. User labels merge beneath Planton's platform attribution labels (platform keys win on conflict); the Dataproc API does not support labels on virtual clusters, and the spec validation rejects that combination before the module runs.
 
-`software_config.properties` maps to the provider's `override_properties` (the API's writable properties surface; the provider's `properties` attribute is the computed resolved set). Kerberos secret fields are GCS URIs of KMS-encrypted files — paths, never inline secret material. The module runs on the plain `google` provider — every modeled field is GA on the released 7.x line.
+`software_config.properties` maps to the provider's `override_properties` (the API's writable properties surface; the provider's `properties` attribute is the computed resolved set). Kerberos secret fields are GCS URIs of KMS-encrypted files — paths, never inline secret material. The module runs on the plain `google` provider — every modeled field is GA on the released 8.x line.
 
 ## Usage with Planton CLI
 

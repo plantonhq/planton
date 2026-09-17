@@ -45,12 +45,12 @@ canonical_pins=(
   "azure|azapi|2.11.0"
   "cloudflare|cloudflare|~> 5.23"
   "digitalocean|digitalocean|~> 2.99"
-  "gcp|google|~> 7.43"
+  "gcp|google|~> 8.3"
   # google-beta enters a module only under a recorded admission
   # (pkg/providerparity/admissions/google-beta.yaml, guarded by
   # ensure_beta_admissions.sh) and rides the same line as google so both
   # channels resolve one release.
-  "gcp|google-beta|~> 7.43"
+  "gcp|google-beta|~> 8.3"
 )
 
 violations=()
