@@ -55,6 +55,34 @@ func TestInitialize_SetsAllComponents(t *testing.T) {
 	}
 }
 
+// A platform whose status an older operator wrote has that operator's slots
+// and none added since. The newer operator must allocate the missing ones
+// without touching the rest -- the controller skips a component whose slot
+// is nil, and on the 0.7.0 -> 0.18.0 upgrade path the control plane waited
+// on "openfga" forever because the slot never appeared (live, 2026-09-17).
+func TestInitialize_AllocatesSlotsAnOlderOperatorNeverKnew(t *testing.T) {
+	p := newMinimalPlanton()
+	Initialize(p)
+	// The older operator's status: every slot but OpenFGA, PostgreSQL already Ready.
+	p.Status.Components.OpenFGA = nil
+	p.Status.Components.PostgreSQL.Phase = v1.ComponentPhaseReady
+
+	changed := Initialize(p)
+
+	if !changed {
+		t.Fatal("a missing unconditional slot must be allocated (changed=true)")
+	}
+	if p.Status.Components.OpenFGA == nil || p.Status.Components.OpenFGA.Phase != v1.ComponentPhasePending {
+		t.Fatalf("OpenFGA slot = %+v, want a fresh Pending slot", p.Status.Components.OpenFGA)
+	}
+	if p.Status.Components.PostgreSQL.Phase != v1.ComponentPhaseReady {
+		t.Fatalf("the existing PostgreSQL slot must be left alone, got %s", p.Status.Components.PostgreSQL.Phase)
+	}
+	if Initialize(p) {
+		t.Fatal("a whole status must not report a change")
+	}
+}
+
 func TestInitialize_SetsReadyCondition(t *testing.T) {
 	p := newMinimalPlanton()
 	Initialize(p)
