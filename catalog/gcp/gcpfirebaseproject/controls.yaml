@@ -43,7 +43,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: The management plane is IAM-governed unconditionally -- enabling Firebase authorizes against firebase.projects.create, the default bucket against firebasestorage.defaultBucket.*, and App Check against firebaseappcheck.*, grantable through roles such as roles/firebase.admin and roles/firebaseappcheck.admin.
+        reference: The management plane is IAM-governed unconditionally -- enabling Firebase authorizes against firebase.projects.update (IAM's inventory has no firebase.projects.create -- addFirebase mutates an existing project), the default bucket against firebasestorage.defaultBucket.*, and App Check against firebaseappcheck.*, grantable through roles such as roles/firebase.admin and roles/firebaseappcheck.admin.
       notes: Sending push through Cloud Messaging is its own grant -- roles/firebasemessaging.admin on the sender's identity -- declared with GcpProjectIamMember, not here.
     - control_id: workload-identity
       status: not_applicable

@@ -1,0 +1,4 @@
+name: gcpfirebaseappleapp-pulumi-project
+runtime:
+  name: go
+description: Planton GcpFirebaseAppleApp Pulumi module

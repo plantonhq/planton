@@ -1,0 +1,28 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpfirebasewebapp
+spec:
+  # Awaiting the live proof lane. Offline bar met: both modules build and
+  # validate, offline plans for the reference manifest and every scenario
+  # are clean on the pinned providers (google + google-beta under the
+  # recorded admission), and the accounting is total. Live facts the proof
+  # lane confirms: (1) Firebase's DOCUMENTED propagation delay between a
+  # new app and its first App Check configuration -- Google's own provider
+  # examples wait 30 seconds; both modules order the configurations after
+  # the registration and add no delay, and the debug-token scenario is the
+  # instrument that decides whether one is needed; (2) an app removed under
+  # deletion_policy DELETE (immediate=true) reads back as 404 or as state
+  # DELETED -- the verifier accepts both, the lane records which; (3) the
+  # E2E identity holds roles/firebase.admin on the test project; (4) the
+  # firebaseConfig lookup (web_app_id) reads after create on both engines,
+  # the conditionally present values degrade to "" on a project with no
+  # RTDB / default bucket / finalized location / Analytics link, and the
+  # apply-idempotency re-plan is clean with the deferred data source. The
+  # reCAPTCHA arms are deliberately NOT exercised by a scenario: they need
+  # real reCAPTCHA keys registered to a real domain; they are proven by an
+  # adopter's first web app.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

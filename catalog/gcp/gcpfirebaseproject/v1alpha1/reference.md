@@ -251,6 +251,16 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpFirebaseAndroidApp | `spec.projectId` | `status.outputs.project_id` |
+| GcpFirebaseAppleApp | `spec.projectId` | `status.outputs.project_id` |
+| GcpFirebaseWebApp | `spec.projectId` | `status.outputs.project_id` |
+
 ## See Also
 
 - [Overview](../README.md)

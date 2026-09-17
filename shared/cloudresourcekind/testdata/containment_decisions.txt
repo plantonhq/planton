@@ -439,7 +439,10 @@ contained dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusSp
 contained dev.planton.gcp.gcpeventarctrigger.v1alpha1.GcpEventarcTriggerSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceNetworkConfig.psc_endpoint_project -> GcpProject
 contained dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1.GcpFirebaseAndroidAppSpec.project_id -> GcpFirebaseProject
+contained dev.planton.gcp.gcpfirebaseappleapp.v1alpha1.GcpFirebaseAppleAppSpec.project_id -> GcpFirebaseProject
 contained dev.planton.gcp.gcpfirebaseproject.v1alpha1.GcpFirebaseProjectSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpfirebasewebapp.v1alpha1.GcpFirebaseWebAppSpec.project_id -> GcpFirebaseProject
 contained dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpec.database -> GcpFirestoreDatabase
 contained dev.planton.gcp.gcpfirestorebackupschedule.v1alpha1.GcpFirestoreBackupScheduleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpfirestoredatabase.v1alpha1.GcpFirestoreDatabaseSpec.project_id -> GcpProject

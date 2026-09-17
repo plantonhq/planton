@@ -5396,6 +5396,31 @@ enum CloudResourceKind {
     container_kind: true
     service_group: gcp_firebase
   }];
+  // The three app registrations exist only inside a Firebase-enabled
+  // project, so each names GcpFirebaseProject as its prerequisite: the E2E
+  // harness deploys the enablement first, and a chart that references the
+  // enablement's project_id output orders the registration after it.
+  GcpFirebaseAndroidApp = 3251 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfband"
+    prerequisites: [GcpFirebaseProject]
+    service_group: gcp_firebase
+  }];
+  GcpFirebaseAppleApp = 3252 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfbios"
+    prerequisites: [GcpFirebaseProject]
+    service_group: gcp_firebase
+  }];
+  GcpFirebaseWebApp = 3253 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfbweb"
+    prerequisites: [GcpFirebaseProject]
+    service_group: gcp_firebase
+  }];
 
   // 4000–4999: Kubernetes resources, organized in family sub-bands
   // (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts

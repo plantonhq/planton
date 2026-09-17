@@ -53,3 +53,39 @@ resources:
       hashicorp/terraform-provider-google: the appearance of
       google/services/firebasestorage/resource_firebase_storage_default_bucket.go
       (the GA promotion of the firebasestorage service).
+  - resource: google_firebase_android_app
+    kind: GcpFirebaseAndroidApp
+    reason: >-
+      The Android app registration (projects.androidApps on the Firebase
+      Management API) is published only in the beta provider at the pin --
+      the GA provider has no code under services/firebase; the kind cannot
+      exist without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebase/resource_firebase_android_app.go (the GA
+      promotion of the firebase service); until then
+      google-beta/services/firebase/ is the only home.
+  - resource: google_firebase_apple_app
+    kind: GcpFirebaseAppleApp
+    reason: >-
+      The Apple app registration (projects.iosApps on the Firebase
+      Management API) is published only in the beta provider at the pin --
+      the GA provider has no code under services/firebase; the kind cannot
+      exist without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebase/resource_firebase_apple_app.go (the GA
+      promotion of the firebase service); until then
+      google-beta/services/firebase/ is the only home.
+  - resource: google_firebase_web_app
+    kind: GcpFirebaseWebApp
+    reason: >-
+      The web app registration (projects.webApps on the Firebase Management
+      API) is published only in the beta provider at the pin -- the GA
+      provider has no code under services/firebase; the kind cannot exist
+      without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebase/resource_firebase_web_app.go (the GA
+      promotion of the firebase service); until then
+      google-beta/services/firebase/ is the only home.

@@ -69,7 +69,7 @@ spec:
         enforcementMode: UNENFORCED
 ```
 
-The InfraPipeline deploys the project first, then the enablement, then every Firebase app whose `firebaseProject` points at it.
+The InfraPipeline deploys the project first, then the enablement, then every Firebase app whose `projectId` references it.
 
 ## Key Configuration
 
@@ -97,7 +97,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
-| `project_id` | The GCP project Firebase is enabled on | The `firebaseProject` reference on GcpFirebaseAndroidApp / AppleApp / WebApp |
+| `project_id` | The GCP project Firebase is enabled on | The `projectId` reference on GcpFirebaseAndroidApp / AppleApp / WebApp |
 | `project_number` | The project number -- the FCM sender id | `messagingSenderId` in client configuration |
 | `display_name` | The project's Firebase display name | Console and tooling |
 | `database_url` | Default Realtime Database URL (when one exists) | Client and Admin SDK initialisation |

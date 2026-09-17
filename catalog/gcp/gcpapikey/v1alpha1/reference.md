@@ -335,6 +335,16 @@ Fields that can point at another resource's outputs:
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.serviceAccountEmail` | GcpServiceAccount | `status.outputs.email` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpFirebaseAndroidApp | `spec.apiKeyId` | `status.outputs.uid` |
+| GcpFirebaseAppleApp | `spec.apiKeyId` | `status.outputs.uid` |
+| GcpFirebaseWebApp | `spec.apiKeyId` | `status.outputs.uid` |
+
 ## See Also
 
 - [Overview](../README.md)

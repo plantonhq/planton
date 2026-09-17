@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfirebasewebapp.v1alpha1;
+
+// GcpFirebaseWebAppStackOutputs captures the app registration's identity
+// and the firebaseConfig object a browser client is initialised with.
+//
+// None of these values is a secret. Every firebaseConfig value -- the API
+// key included -- is a CLIENT IDENTIFIER that ships in the page source by
+// design; that is how the Firebase web SDK works. Access to the project's
+// backends is governed by IAM, Firebase Security Rules, and App Check --
+// never by keeping these values hidden.
+message GcpFirebaseWebAppStackOutputs {
+  // The Firebase-assigned app id (firebaseConfig.appId), e.g.
+  // 1:123456789012:web:0123456789abcdef. Globally unique and immutable.
+  string app_id = 1;
+
+  // The app's full resource name, projects/{project}/webApps/{app_id}. The
+  // handle the Firebase Management API addresses the app by.
+  string name = 2;
+
+  // The Google-assigned UID of the API key associated with the app --
+  // the one from the spec, or the key Firebase associated or provisioned
+  // when none was given.
+  string api_key_id = 3;
+
+  // The URLs where the web app is hosted, as Firebase records them (set by
+  // Firebase Hosting or in the console). Empty when none are recorded.
+  repeated string app_urls = 4;
+
+  // firebaseConfig.apiKey -- the API key STRING the page presents. A
+  // client identifier that ships in the page, restricted (when the key is
+  // a GcpApiKey) by HTTP referrer and API targets.
+  string api_key = 5;
+
+  // firebaseConfig.authDomain -- the domain Firebase Authentication
+  // redirects through (e.g. my-project.firebaseapp.com).
+  string auth_domain = 6;
+
+  // firebaseConfig.databaseURL -- the default Realtime Database URL, when
+  // the project has one (empty otherwise).
+  string database_url = 7;
+
+  // firebaseConfig.storageBucket -- the default Cloud Storage for Firebase
+  // bucket, when the project has one (empty otherwise).
+  string storage_bucket = 8;
+
+  // firebaseConfig.locationId -- the project's default GCP resource
+  // location, once finalized (empty until then).
+  string location_id = 9;
+
+  // firebaseConfig.messagingSenderId -- the project number a browser
+  // client registers with to receive push.
+  string messaging_sender_id = 10;
+
+  // firebaseConfig.measurementId -- the Google Analytics stream id, when
+  // the app is linked to a Google Analytics 4 property (empty otherwise).
+  string measurement_id = 11;
+}

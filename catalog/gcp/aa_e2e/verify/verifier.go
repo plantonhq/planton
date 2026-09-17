@@ -235,6 +235,9 @@ var verifiers = map[string]Verifier{
 	"gcpcertificatemap":                      &certificateMapVerifier{},
 	"gcpapikey":                              &apiKeyVerifier{},
 	"gcpfirebaseproject":                     &firebaseProjectVerifier{},
+	"gcpfirebaseandroidapp":                  &firebaseAndroidAppVerifier{},
+	"gcpfirebaseappleapp":                    &firebaseAppleAppVerifier{},
+	"gcpfirebasewebapp":                      &firebaseWebAppVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.

@@ -542,7 +542,10 @@ import (
 	gcpeventarcmessagebusv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarcmessagebus/v1alpha1"
 	gcpeventarctriggerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarctrigger/v1alpha1"
 	gcpfilestoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfilestoreinstance/v1alpha1"
+	gcpfirebaseandroidappv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirebaseandroidapp/v1alpha1"
+	gcpfirebaseappleappv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirebaseappleapp/v1alpha1"
 	gcpfirebaseprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirebaseproject/v1alpha1"
+	gcpfirebasewebappv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirebasewebapp/v1alpha1"
 	gcpfirestorebackupschedulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestorebackupschedule/v1alpha1"
 	gcpfirestoredatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoredatabase/v1alpha1"
 	gcpfirestoreindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoreindex/v1alpha1"
@@ -1298,7 +1301,10 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpEventarcMessageBus:                  &gcpeventarcmessagebusv1alpha1.GcpEventarcMessageBus{},
 	cloudresourcekind.CloudResourceKind_GcpEventarcTrigger:                     &gcpeventarctriggerv1alpha1.GcpEventarcTrigger{},
 	cloudresourcekind.CloudResourceKind_GcpFilestoreInstance:                   &gcpfilestoreinstancev1alpha1.GcpFilestoreInstance{},
+	cloudresourcekind.CloudResourceKind_GcpFirebaseAndroidApp:                  &gcpfirebaseandroidappv1alpha1.GcpFirebaseAndroidApp{},
+	cloudresourcekind.CloudResourceKind_GcpFirebaseAppleApp:                    &gcpfirebaseappleappv1alpha1.GcpFirebaseAppleApp{},
 	cloudresourcekind.CloudResourceKind_GcpFirebaseProject:                     &gcpfirebaseprojectv1alpha1.GcpFirebaseProject{},
+	cloudresourcekind.CloudResourceKind_GcpFirebaseWebApp:                      &gcpfirebasewebappv1alpha1.GcpFirebaseWebApp{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreBackupSchedule:             &gcpfirestorebackupschedulev1alpha1.GcpFirestoreBackupSchedule{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreDatabase:                   &gcpfirestoredatabasev1alpha1.GcpFirestoreDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreIndex:                      &gcpfirestoreindexv1alpha1.GcpFirestoreIndex{},

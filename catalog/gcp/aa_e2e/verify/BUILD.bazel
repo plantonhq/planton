@@ -41,6 +41,7 @@ go_library(
         "eventarc_message_bus.go",
         "eventarc_trigger.go",
         "filestore_instance.go",
+        "firebase_app.go",
         "firebase_project.go",
         "firestore_backup_schedule.go",
         "firestore_database.go",

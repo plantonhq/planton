@@ -1,0 +1,30 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpfirebaseappleapp
+spec:
+  # Awaiting the live proof lane. Offline bar met: both modules build and
+  # validate, offline plans for the reference manifest and every scenario
+  # are clean on the pinned providers (google + google-beta under the
+  # recorded admission), and the accounting is total. Live facts the proof
+  # lane confirms: (1) Firebase's DOCUMENTED propagation delay between a
+  # new app and its first App Check configuration -- Google's own provider
+  # examples wait 30 seconds; both modules order the configurations after
+  # the registration and add no delay, and the app-attest scenario is the
+  # instrument that decides whether one is needed; (2) an app removed under
+  # deletion_policy DELETE (immediate=true) reads back as 404 or as state
+  # DELETED -- the verifier accepts both, the lane records which; (3) the
+  # E2E identity holds roles/firebase.admin on the test project; (4) the
+  # config lookup reads GoogleService-Info.plist after create on both
+  # engines and the apply-idempotency re-plan is clean with the deferred
+  # data source; (5) App Attest's configuration accepts a format-valid
+  # team id that belongs to no real Apple team (Google validates the id's
+  # shape, Apple's servers are consulted only at attestation time) -- if
+  # the lane finds otherwise, the scenario needs the founder's real Team
+  # ID through an E2E env token. DeviceCheck is deliberately NOT exercised
+  # by a scenario: it needs a real .p8 key Apple issues to a developer
+  # account; it is proven by the estate declaration.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

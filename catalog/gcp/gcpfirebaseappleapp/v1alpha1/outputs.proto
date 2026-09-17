@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfirebaseappleapp.v1alpha1;
+
+// GcpFirebaseAppleAppStackOutputs captures the app registration's identity
+// and the configuration file the Apple build consumes.
+//
+// None of these values is a secret. The app id and the API key are CLIENT
+// IDENTIFIERS that ship inside every installed app bundle by design, and
+// GoogleService-Info.plist is the file that carries them into the build.
+// Access to the project's backends is governed by IAM, Firebase Security
+// Rules, and App Check -- never by keeping these values hidden.
+message GcpFirebaseAppleAppStackOutputs {
+  // The Firebase-assigned app id (GOOGLE_APP_ID in
+  // GoogleService-Info.plist), e.g. 1:123456789012:ios:0123456789abcdef.
+  // Globally unique and immutable.
+  string app_id = 1;
+
+  // The app's full resource name, projects/{project}/iosApps/{app_id} --
+  // the Firebase Management API's path for Apple apps keeps the historical
+  // iosApps segment. The handle the API addresses the app by.
+  string name = 2;
+
+  // The Google-assigned UID of the API key associated with the app --
+  // the one from the spec, or the key Firebase associated or provisioned
+  // when none was given.
+  string api_key_id = 3;
+
+  // The configuration file's name: GoogleService-Info.plist. Add it to the
+  // Xcode project's main target so it ships in the app bundle.
+  string config_filename = 4;
+
+  // The configuration file's contents, base64-encoded. Decode and write to
+  // config_filename in the Apple build. A build input that ships in the
+  // bundle, not a secret.
+  string config_file_contents = 5;
+}

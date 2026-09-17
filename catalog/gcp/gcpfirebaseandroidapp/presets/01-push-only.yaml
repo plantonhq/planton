@@ -1,0 +1,13 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAndroidApp
+metadata:
+  name: mobile-android
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+  displayName: Mobile (Android)
+  packageName: com.example.mobile
+  deletionPolicy: PREVENT

@@ -29,11 +29,11 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@7.43.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@7.43.0` |
-| Kinds in the catalog | 101 |
-| Distinct provider resources consumed | 158 |
-| Spec fields authored across all kinds | 3713 |
-| Module pins on `google` | `~> 7.43` × 101 |
-| Module pins on `google-beta` | `~> 7.43` × 1 |
+| Kinds in the catalog | 104 |
+| Distinct provider resources consumed | 167 |
+| Spec fields authored across all kinds | 3748 |
+| Module pins on `google` | `~> 7.43` × 104 |
+| Module pins on `google-beta` | `~> 7.43` × 4 |
 
 The GA provider is the parity baseline. Capability that exists only in a
 secondary channel (for Google, the `google-beta` provider) enters per kind
@@ -48,8 +48,11 @@ baseline serves at the pin is a stale admission.
 
 | Resource | Channel | Kind | Reason | Promotion tracked at |
 |---|---|---|---|---|
+| `google_firebase_android_app` | `google-beta` | GcpFirebaseAndroidApp | The Android app registration (projects.androidApps on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_android_app.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
+| `google_firebase_apple_app` | `google-beta` | GcpFirebaseAppleApp | The Apple app registration (projects.iosApps on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_apple_app.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
 | `google_firebase_project` | `google-beta` | GcpFirebaseProject | Firebase enablement (projects.addFirebase on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_project.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
 | `google_firebase_storage_default_bucket` | `google-beta` | GcpFirebaseProject | The default Cloud Storage for Firebase bucket (projects.defaultBucket on the Firebase Storage API) is published only in the beta provider at the pin; the GA provider has no code under services/firebasestorage. | hashicorp/terraform-provider-google: the appearance of google/services/firebasestorage/resource_firebase_storage_default_bucket.go (the GA promotion of the firebasestorage service). |
+| `google_firebase_web_app` | `google-beta` | GcpFirebaseWebApp | The web app registration (projects.webApps on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_web_app.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
 
 ## The provider block
 
@@ -73,7 +76,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**101 of 101 kinds are at total accounting; 96 proven live.**
+**104 of 104 kinds are at total accounting; 96 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -115,7 +118,10 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpEventarcMessageBus | 56 | 12 | 42 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpEventarcTrigger | 35 | 22 | 12 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFilestoreInstance | 36 | 14 | 22 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpFirebaseAndroidApp | 15 | 9 | 4 | 2 | 0 | ✅ | — |
+| GcpFirebaseAppleApp | 20 | 12 | 5 | 3 | 0 | ✅ | — |
 | GcpFirebaseProject | 13 | 5 | 8 | 0 | 0 | ✅ | — |
+| GcpFirebaseWebApp | 17 | 9 | 5 | 3 | 0 | ✅ | — |
 | GcpFirestoreBackupSchedule | 5 | 4 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFirestoreDatabase | 15 | 11 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFirestoreIndex | 17 | 16 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -185,10 +191,10 @@ All resources of `google@7.43.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 156 | consumed by a kind's Terraform module today |
+| Modeled | 162 | consumed by a kind's Terraform module today |
 | IAM-covered | 407 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 8 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 2 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 680 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 76 | deprecated or superseded provider surface |
 | **Total** | **1333** | |
@@ -198,7 +204,7 @@ All resources of `google@7.43.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (156)
+### Modeled (162)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -278,6 +284,12 @@ rather than trusted.
 | `google_eventarc_pipeline` | consumed by GcpEventarcMessageBus |
 | `google_eventarc_trigger` | consumed by GcpEventarcTrigger |
 | `google_filestore_instance` | consumed by GcpFilestoreInstance |
+| `google_firebase_app_check_app_attest_config` | consumed by GcpFirebaseAppleApp |
+| `google_firebase_app_check_debug_token` | consumed by GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseWebApp |
+| `google_firebase_app_check_device_check_config` | consumed by GcpFirebaseAppleApp |
+| `google_firebase_app_check_play_integrity_config` | consumed by GcpFirebaseAndroidApp |
+| `google_firebase_app_check_recaptcha_enterprise_config` | consumed by GcpFirebaseWebApp |
+| `google_firebase_app_check_recaptcha_v3_config` | consumed by GcpFirebaseWebApp |
 | `google_firebase_app_check_resource_policy` | consumed by GcpFirebaseProject |
 | `google_firebase_app_check_service_config` | consumed by GcpFirebaseProject |
 | `google_firestore_backup_schedule` | consumed by GcpFirestoreBackupSchedule |
@@ -325,7 +337,7 @@ rather than trusted.
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseProject, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVertexAiEndpoint, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiNotebook, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVertexAiEndpoint, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiNotebook, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
@@ -782,18 +794,12 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (8)
+### Planned (2)
 
 | Resource | Recorded reason |
 |---|---|
 | `google_certificate_manager_certificate_issuance_config` | planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration) |
 | `google_certificate_manager_trust_config` | planned composition into the existing GcpCertManagerCert kind (trust and issuance configuration) |
-| `google_firebase_app_check_app_attest_config` | folds into GcpFirebaseAppleApp (App Attest attestation composed into the Apple app registration); the project-level App Check surface already ships on GcpFirebaseProject |
-| `google_firebase_app_check_debug_token` | folds into the three Firebase app registration kinds (GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseWebApp), each composing debug tokens for its app; the project-level App Check surface already ships on GcpFirebaseProject |
-| `google_firebase_app_check_device_check_config` | folds into GcpFirebaseAppleApp (DeviceCheck attestation composed into the Apple app registration); the project-level App Check surface already ships on GcpFirebaseProject |
-| `google_firebase_app_check_play_integrity_config` | folds into GcpFirebaseAndroidApp (Play Integrity attestation composed into the Android app registration); the project-level App Check surface already ships on GcpFirebaseProject |
-| `google_firebase_app_check_recaptcha_enterprise_config` | folds into GcpFirebaseWebApp (reCAPTCHA Enterprise attestation composed into the web app registration); the project-level App Check surface already ships on GcpFirebaseProject |
-| `google_firebase_app_check_recaptcha_v3_config` | folds into GcpFirebaseWebApp (reCAPTCHA v3 attestation composed into the web app registration); the project-level App Check surface already ships on GcpFirebaseProject |
 
 ### Deferred (680)
 

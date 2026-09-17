@@ -1,0 +1,16 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# Rates from https://firebase.google.com/pricing (read 2026-09-17).
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpfirebaseandroidapp
+spec:
+  billing_model: free
+  cost_drivers: []
+  estimate_exclusions:
+    - Firebase Cloud Messaging is free at any volume -- registering the app and delivering push to it adds no meter
+    - App Check with Play Integrity is free; the Play Integrity API itself is Google Play's, with a daily request quota rather than a price
+    - Debug tokens are free
+  notes: "Registering an Android app has no meter of its own: the Firebase Management API, App Check attestation with Play Integrity, and debug tokens are all free, and Cloud Messaging is free at any volume. What the app uses AFTER registration -- Firestore, Realtime Database, Authentication beyond its free tier, Cloud Storage for Firebase -- bills at each product's published rates on the components that create them, never on this one."

@@ -1253,24 +1253,6 @@ resources:
   - resource: google_filestore_snapshot
     disposition: deferred
     reason: "judged to fold into the existing GcpFilestoreInstance kind's spec (backups and snapshots); the composition is not built"
-  - resource: google_firebase_app_check_app_attest_config
-    disposition: model-planned
-    reason: "folds into GcpFirebaseAppleApp (App Attest attestation composed into the Apple app registration); the project-level App Check surface already ships on GcpFirebaseProject"
-  - resource: google_firebase_app_check_debug_token
-    disposition: model-planned
-    reason: "folds into the three Firebase app registration kinds (GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseWebApp), each composing debug tokens for its app; the project-level App Check surface already ships on GcpFirebaseProject"
-  - resource: google_firebase_app_check_device_check_config
-    disposition: model-planned
-    reason: "folds into GcpFirebaseAppleApp (DeviceCheck attestation composed into the Apple app registration); the project-level App Check surface already ships on GcpFirebaseProject"
-  - resource: google_firebase_app_check_play_integrity_config
-    disposition: model-planned
-    reason: "folds into GcpFirebaseAndroidApp (Play Integrity attestation composed into the Android app registration); the project-level App Check surface already ships on GcpFirebaseProject"
-  - resource: google_firebase_app_check_recaptcha_enterprise_config
-    disposition: model-planned
-    reason: "folds into GcpFirebaseWebApp (reCAPTCHA Enterprise attestation composed into the web app registration); the project-level App Check surface already ships on GcpFirebaseProject"
-  - resource: google_firebase_app_check_recaptcha_v3_config
-    disposition: model-planned
-    reason: "folds into GcpFirebaseWebApp (reCAPTCHA v3 attestation composed into the web app registration); the project-level App Check surface already ships on GcpFirebaseProject"
   - resource: google_firebase_app_hosting_backend
     disposition: deferred
     reason: "Firebase App Hosting judged as a backend kind (builds, traffic, and domains composed); deferred pending demand"

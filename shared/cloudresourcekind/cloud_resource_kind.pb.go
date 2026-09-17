@@ -1919,6 +1919,13 @@ const (
 	// "Firebase on this project" is the room, the Android/Apple/Web apps are
 	// what is placed inside it.
 	CloudResourceKind_GcpFirebaseProject CloudResourceKind = 3250
+	// The three app registrations exist only inside a Firebase-enabled
+	// project, so each names GcpFirebaseProject as its prerequisite: the E2E
+	// harness deploys the enablement first, and a chart that references the
+	// enablement's project_id output orders the registration after it.
+	CloudResourceKind_GcpFirebaseAndroidApp CloudResourceKind = 3251
+	CloudResourceKind_GcpFirebaseAppleApp   CloudResourceKind = 3252
+	CloudResourceKind_GcpFirebaseWebApp     CloudResourceKind = 3253
 	// 4000–4999: Kubernetes resources, organized in family sub-bands
 	// (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
 	// analytics & ML; 4190–4199 reserved for growth)
@@ -2951,6 +2958,9 @@ var (
 		3164: "GcpPlantonRunner",
 		3177: "GcpApiKey",
 		3250: "GcpFirebaseProject",
+		3251: "GcpFirebaseAndroidApp",
+		3252: "GcpFirebaseAppleApp",
+		3253: "GcpFirebaseWebApp",
 		4000: "KubernetesNamespace",
 		4001: "KubernetesDeployment",
 		4002: "KubernetesStatefulSet",
@@ -3677,6 +3687,9 @@ var (
 		"GcpPlantonRunner":                               3164,
 		"GcpApiKey":                                      3177,
 		"GcpFirebaseProject":                             3250,
+		"GcpFirebaseAndroidApp":                          3251,
+		"GcpFirebaseAppleApp":                            3252,
+		"GcpFirebaseWebApp":                              3253,
 		"KubernetesNamespace":                            4000,
 		"KubernetesDeployment":                           4001,
 		"KubernetesStatefulSet":                          4002,
@@ -4331,7 +4344,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xf5\xdc\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xac\xde\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4878,7 +4891,10 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x15GcpEventarcMessageBus\x10\xdb\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpevbusP\xb7\x02\x123\n" +
 	"\x10GcpPlantonRunner\x10\xdc\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunrP\xb6\x02\x12,\n" +
 	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x128\n" +
-	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x126\n" +
+	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
+	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
+	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +
+	"\x11GcpFirebaseWebApp\x10\xb5\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbweb:\x02\xb2\x19P\xb9\x02\x126\n" +
 	"\x13KubernetesNamespace\x10\xa0\x1f\x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\x05k8sns0\x01P\x90\x03\x128\n" +
 	"\x14KubernetesDeployment\x10\xa1\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8sdpl(\x01P\x90\x03\x129\n" +
 	"\x15KubernetesStatefulSet\x10\xa2\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8ssts(\x01P\x90\x03\x124\n" +

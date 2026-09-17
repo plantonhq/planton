@@ -1,0 +1,35 @@
+# Debug-token scenario: proves the App Check surface minimal cannot -- a
+# debug token on a web app, with the App Check API enabled as plumbing --
+# and is the instrument for Firebase's documented propagation delay between
+# a new app and its first App Check configuration (Google's own provider
+# examples wait 30 seconds; the module adds no delay). The reCAPTCHA arms
+# are deliberately absent: they need real reCAPTCHA keys registered to a
+# real domain. The debug token is a throwaway attestation bypass for an app
+# that lives minutes and is removed permanently at teardown -- committing
+# it exposes nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseWebApp
+metadata:
+  name: planton-oss-e2e-gcpfbweb-debugtoken
+  id: planton-oss-e2e-gcpfbweb-debugtoken
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebasewebapp
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: planton-oss-e2e-gcpfbprj-prereq
+      fieldPath: status.outputs.project_id
+  displayName: planton e2e web debug token ${E2E_RUN_ID}
+  appCheck:
+    debugTokens:
+      - displayName: planton-e2e-localhost
+        token: 9a1c3e5b-7d2f-4b8a-a6c4-0e2d4f6b8a1c
+  deletionPolicy: DELETE

@@ -1,0 +1,21 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# Rates from https://firebase.google.com/pricing and
+# https://cloud.google.com/recaptcha/pricing (read 2026-09-17).
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpfirebasewebapp
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: app_check.recaptcha_enterprise
+      sku_meter: reCAPTCHA Enterprise assessments
+      pricing_unit: assessments per month
+      impact: Configuring reCAPTCHA Enterprise attestation makes every App Check token exchange an Enterprise assessment against the site key's project -- free for the first 10,000 assessments a month on the Standard tier, then about $1 per 1,000 (the Enterprise tier prices differently); the meter follows how often the site's users attest, roughly once per token lifetime per active browser. reCAPTCHA v3 (the other arm) is free.
+  estimate_exclusions:
+    - Firebase Cloud Messaging is free at any volume -- registering the app and delivering push to browsers adds no meter
+    - App Check with reCAPTCHA v3 and debug tokens are free
+    - reCAPTCHA Enterprise assessments follow real attestation traffic (rates above) and bill on the reCAPTCHA service in the site key's project, not on Firebase
+  notes: "Registering a web app has no meter of its own: the Firebase Management API and Cloud Messaging are free. The one spend this kind can start is reCAPTCHA Enterprise assessments, and only when app_check.recaptcha_enterprise is configured -- reCAPTCHA v3 attests for free. What the app uses AFTER registration -- Firestore, Realtime Database, Authentication beyond its free tier, Hosting -- bills at each product's published rates on the components that create them, never on this one."

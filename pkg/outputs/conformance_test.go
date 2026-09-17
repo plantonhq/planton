@@ -3639,6 +3639,66 @@ func TestStackOutputsConformance(t *testing.T) {
 			},
 		},
 		{
+			// GcpFirebaseAndroidApp: flat scalar outputs from both engines --
+			// the app id, the resource name (the E2E verifier keys on name),
+			// the associated API key's UID, and the google-services.json
+			// filename and base64 contents from the deferred config lookup --
+			// must each land on the StackOutputs proto.
+			name: "GcpFirebaseAndroidApp",
+			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseAndroidApp,
+			rawOutputs: map[string]interface{}{
+				"app_id":               "1:123456789012:android:0123456789abcdef",
+				"name":                 "projects/my-project/androidApps/1:123456789012:android:0123456789abcdef",
+				"api_key_id":           "9f3a2c1e-4b5d-4e6f-8a7b-0c1d2e3f4a5b",
+				"config_filename":      "google-services.json",
+				"config_file_contents": "eyJwcm9qZWN0X2luZm8iOnt9fQ==",
+			},
+			mustPopulate: []string{"app_id", "name", "api_key_id", "config_filename", "config_file_contents"},
+		},
+		{
+			// GcpFirebaseAppleApp: the same five-output shape as the Android
+			// registration, with the iosApps resource path and the plist.
+			name: "GcpFirebaseAppleApp",
+			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseAppleApp,
+			rawOutputs: map[string]interface{}{
+				"app_id":               "1:123456789012:ios:0123456789abcdef",
+				"name":                 "projects/my-project/iosApps/1:123456789012:ios:0123456789abcdef",
+				"api_key_id":           "9f3a2c1e-4b5d-4e6f-8a7b-0c1d2e3f4a5b",
+				"config_filename":      "GoogleService-Info.plist",
+				"config_file_contents": "PD94bWwgdmVyc2lvbj0iMS4wIj8+",
+			},
+			mustPopulate: []string{"app_id", "name", "api_key_id", "config_filename", "config_file_contents"},
+		},
+		{
+			// GcpFirebaseWebApp: the registration's identity plus the repeated
+			// app_urls (a list from both engines) and the seven firebaseConfig
+			// values from the deferred config lookup (the conditionally
+			// present ones empty on a bare project) -- must each land on the
+			// StackOutputs proto.
+			name: "GcpFirebaseWebApp",
+			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseWebApp,
+			rawOutputs: map[string]interface{}{
+				"app_id":     "1:123456789012:web:0123456789abcdef",
+				"name":       "projects/my-project/webApps/1:123456789012:web:0123456789abcdef",
+				"api_key_id": "9f3a2c1e-4b5d-4e6f-8a7b-0c1d2e3f4a5b",
+				"app_urls": []interface{}{
+					"https://my-project.web.app",
+					"https://my-project.firebaseapp.com",
+				},
+				"api_key":             "AIzaSyExampleKeyStringValue",
+				"auth_domain":         "my-project.firebaseapp.com",
+				"database_url":        "https://my-project-default-rtdb.firebaseio.com",
+				"storage_bucket":      "my-project.firebasestorage.app",
+				"location_id":         "us-central",
+				"messaging_sender_id": "123456789012",
+				"measurement_id":      "G-ABCDEF1234",
+			},
+			mustPopulate: []string{
+				"app_id", "name", "api_key_id", "app_urls", "api_key", "auth_domain",
+				"database_url", "storage_bucket", "location_id", "messaging_sender_id", "measurement_id",
+			},
+		},
+		{
 			// AzurePlantonRunner: flat scalar outputs -- the Container App
 			// handles (the E2E verifier keys on container_app_id), the app's
 			// token secret name, the registration name, and the resource

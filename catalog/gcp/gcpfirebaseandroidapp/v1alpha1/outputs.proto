@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1;
+
+// GcpFirebaseAndroidAppStackOutputs captures the app registration's
+// identity and the configuration file the Android build consumes.
+//
+// None of these values is a secret. The app id and the API key are CLIENT
+// IDENTIFIERS that ship inside every installed APK by design, and
+// google-services.json is the file that carries them into the build. Access
+// to the project's backends is governed by IAM, Firebase Security Rules,
+// and App Check -- never by keeping these values hidden.
+message GcpFirebaseAndroidAppStackOutputs {
+  // The Firebase-assigned app id (mobilesdk_app_id in
+  // google-services.json), e.g. 1:123456789012:android:0123456789abcdef.
+  // Globally unique and immutable.
+  string app_id = 1;
+
+  // The app's full resource name,
+  // projects/{project}/androidApps/{app_id}. The handle the Firebase
+  // Management API addresses the app by.
+  string name = 2;
+
+  // The Google-assigned UID of the API key associated with the app --
+  // the one from the spec, or the key Firebase associated or provisioned
+  // when none was given.
+  string api_key_id = 3;
+
+  // The configuration file's name: google-services.json. Place it at the
+  // app module's root (app/google-services.json) for the Google Services
+  // Gradle plugin.
+  string config_filename = 4;
+
+  // The configuration file's contents, base64-encoded. Decode and write to
+  // config_filename in the Android build. A build input that ships in the
+  // APK, not a secret.
+  string config_file_contents = 5;
+}

@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseWebApp
+metadata:
+  name: console-web
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+  displayName: Console
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: browser-key
+      fieldPath: status.outputs.uid
+  appCheck:
+    recaptchaEnterprise:
+      siteKey: 6LcExampleSiteKey_ReplaceWithYours
+      tokenTtl: 3600s
+    debugTokens:
+      - displayName: localhost
+        token: $secret/firebase-app-check-localhost-token
+  deletionPolicy: PREVENT

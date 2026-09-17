@@ -23,6 +23,20 @@ three keys, each restricted to its platform and referenced by its own app
 registration. Sharing one unrestricted key across platforms is the shape
 this kind exists to replace.
 
+## What makes a key valid for a Firebase app
+
+The Firebase Management API refuses an app registration whose `api_key_id`
+names a key that is not valid for the app -- and it checks. A valid key is
+unrestricted, or restricted ONLY in ways that fit this app: an Android arm
+naming this package name (and its certificate), an iOS arm naming this
+bundle id, browser referrers covering the site's origins. Its API
+restrictions, when set, must include every Firebase API the app uses --
+for push that is Firebase Installations (`firebaseinstallations.googleapis.com`)
+and FCM Registration (`fcmregistrations.googleapis.com`); add Identity
+Toolkit for Authentication, Firestore for Firestore, and so on. A key
+restricted to the wrong platform or missing one of those APIs fails the
+app's create or update, not the key's own apply.
+
 ## Android needs the certificate, not just the package
 
 The Android arm pairs a package name with the SHA-1 of the signing
