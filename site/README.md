@@ -46,7 +46,11 @@ The site is data first. Every sentence that states what Planton is or does lives
 | `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the landing page, the Trust pages, `llms.txt` |
 | `src/data/positioning.ts` | The vocabulary law: the umbrella tagline (never an analogy) and each hub's one line and one analogy. | `story.ts`, the hero, the hub cards |
 | `src/data/personas.ts` | The five people the story is told to, with their chapter order. | the persona router and cards; the persona pages and decks when they land |
-| `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the doors. | `src/components/trust/TrustPage.tsx` |
+| `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
+| `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
+| `src/data/distributions.ts` | The hosted and self-hosted pages: lede, proof points, the record or the install, what stays yours. | `src/components/distributions/DistributionPage.tsx` |
+| `src/data/doors.ts` | Every call to action once: label and destination by key; the user's pair and the buyer's pair. | the `Doors` primitive; a record names its pair |
+| `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step. | `trust.ts`, `product.ts`, `distributions.ts` |
 | `src/data/site-pages.ts` | The route registry: every non-content page with its title, description, group, chapters, and index flag. | `sitemap.ts`, `robots.ts`, `lib/page-metadata.ts`, `generate-llms.mjs`, `check-apex-routing.mjs` |
 | `src/data/retired-routes.ts` | Every retired path and the page that answers for it. | `RetiredRoute`, the link gate, the edge redirect declared in the estate |
 | `src/data/pricing.ts` | Every price, cap, and free tier. | the pricing page and any sentence that names a price |
@@ -55,7 +59,7 @@ The site is data first. Every sentence that states what Planton is or does lives
 
 Data files import each other with `.ts` extensions so Node can run them directly (the generators do); `tsconfig.json` allows it.
 
-Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
+Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
 
 The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition; `src/components/landing-page/index.ts` points at the active one and is the rollback switch. Nothing outside a versioned folder imports from inside one.
 
@@ -69,7 +73,8 @@ Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touc
 4. **Colors come from the palette.** Role classes only; no hex in a component; semantic hues only where they carry meaning.
 5. **Every page is registered.** A new route goes into `site-pages.ts` (or `retired-routes.ts`) or the build fails.
 6. **Every new top-level path is three declarations**: the registry, the edge passthrough list, and the platform's reserved handles. The apex guard names what is missing.
-7. **Nothing merges without the founder.** Build, lint, typecheck, the guards, the screenshot compare for a zero-visual-change commit, and a design review that reads the page as the visitor and as a copywriter.
+7. **A retired route is whole.** Every retired path has an eight-line stub, forwards to a live registered page (never to another retired path), and nothing in the export links to it: the forward exists for the outside world, our own links point at the live page. The link gate enforces all three.
+8. **Nothing merges without the founder.** Build, lint, typecheck, the guards, the screenshot compare for a zero-visual-change commit, and a design review that reads the page as the visitor and as a copywriter.
 
 ## Where things live
 
@@ -81,6 +86,8 @@ src/app/robots.ts        generated
 src/components/marketing/   the primitive library
 src/components/landing-page/ the versioned landing compositions
 src/components/trust/    the Trust template and index
+src/components/product/  the Product template and index (and, until the Solutions pages are rebuilt, the 2025 solutions and desktop kits)
+src/components/distributions/ the Distributions template and index
 src/components/deck/     the deck engine and slide kit
 src/components/meetings/ meeting decks and their registry
 src/components/site/     site mechanics (RetiredRoute)
@@ -99,7 +106,7 @@ packages/website-shell/  the header, footer, navigation, palette, and theme the 
 | `scripts/check-displayed-vs-enforced.mjs` | every displayed plan limit and entitlement matches what the platform enforces |
 | `scripts/check-apex-routing.mjs` | every top-level path is passed through at the edge and reserved as a platform handle (reads the sibling `planton-platform` checkout; skips loudly without it) |
 | `next build` with `tsc --noEmit` and eslint before it | types and the accessibility and image rules hold |
-| `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page, a static file, or a retired route |
+| `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page or a static file, and every retired route is whole (stub present, target live, nothing links to it) |
 | `scripts/generate-llms.mjs` | `llms.txt`, `llms-full.txt`, and one Markdown per marketing page from the same data; fails when an exported route is unregistered |
 
 ## Proving a change
@@ -124,13 +131,15 @@ What a day-one architect would not have done, and which work retires it. Nothing
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
-| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `components/product`, `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest`, `demo`, `tour`, `hackathon` | each page group as it is rebuilt from the story |
+| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `components/product/solutions`, `components/product/shared`, `components/product/desktop`, `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest`, `demo`, `tour`, `hackathon` | each page group as it is rebuilt from the story |
 | Two landing versions kept for rollback (`v3`, `v4`) and the 2025 primitives (`v1`) used by the hackathon pages | `components/landing-page/` | v3 and v4 after v5 has held for one release; v1 with the hackathon's retirement |
 | The interactive demo and the tour, on a light palette | `components/demo`, `components/tour` | a product decision: one surface on the design system, or real product recordings |
 | The investor deck and explainer on their own primitive set | `components/invest` | invest onto the deck engine |
 | Images under `public/_site/` instead of the asset CDN; 136 literal `/_site/` paths | `public/_site/images`, `src/**` | images to R2 as pages are rebuilt; `lib/assets.ts` names the prefix once |
 | The `/_site` asset prefix and the post-build copy of the bundle | `next.config.ts`, `Makefile` | the apex routing decision |
 | Retired paths served by a client-side forward only | `RetiredRoute` | the edge redirect declared in the estate |
+| The desktop landing and download pages at `/features/desktop` | `app/(site)/features/desktop` | the founder's choice of Desktop's permanent address, which the release pipeline prints into every installer |
+| The shell's product menu holds its own sub-labels beside the registry's descriptions | `packages/website-shell/src/data/navigation.ts` | the navigation slice (the shell cannot import from `src/`) |
 
 ## Contributing
 

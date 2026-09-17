@@ -166,7 +166,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/product/coding-agents',
     title: 'Coding Agents',
     description:
-      'Your coding agent reaches Planton through the Planton skills, the MCP server, or the CLI, and deploys through the same door as everyone else.',
+      'Your coding agent reaches Planton through the Planton skills and the Planton MCP server, or through the CLI, and deploys through the same door as everyone.',
     group: 'product',
     chapters: ['what-planton-is', 'the-wall', 'your-rules-hold'],
   },

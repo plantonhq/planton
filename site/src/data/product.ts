@@ -133,7 +133,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     forWhom: 'For the developer with Cursor, Claude Code, or Codex already open, and the platform engineer who wants that agent inside the same rules as everyone else.',
     steps: [
       { title: 'Install the Skills', text: 'One command installs the two Planton skills into every coding agent on your machine, in the open Agent Skills format.' },
-      { title: 'Facts, Not Memory', text: 'Without the skills an agent writes infrastructure from memory: half-remembered field names, resources left unwired, no idea what anything costs. With them, every fact comes from the component\u2019s reference page at answer time.' },
+      { title: 'Facts, Not Memory', text: 'Without the skills, an agent writes infrastructure from memory. With them, every fact comes from the component\u2019s reference page at answer time.' },
       { title: 'The Same Door as Everyone', text: 'The agent deploys through the same door as a person in the console or a script on the CLI: the same catalog, the same rules, the same record.' },
       { title: 'The Platform Over MCP', text: 'An agent that wants to build, apply, deploy, or read your organization\u2019s estate directly reaches those operations through the hosted MCP server, with the CLI or without it.' },
     ],
@@ -277,7 +277,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'engines', value: 'Pulumi \u00b7 OpenTofu and Terraform' },
         { label: 'in production since', value: PLATFORM_STATS.IN_PRODUCTION_SINCE },
       ],
-      footer: `Counted from the open-source repository on ${PLATFORM_COUNTS.countedOn}.`,
+      footer: `Kinds, charts, controls, and crosswalks counted from the open-source repository on ${PLATFORM_COUNTS.countedOn}.`,
     },
     provenAt: ['/trust/your-cloud-your-keys'],
     next: ['/product/catalog', '/product/cli'],

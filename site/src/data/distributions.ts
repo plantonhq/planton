@@ -96,7 +96,7 @@ export const DISTRIBUTION_PAGES: readonly DistributionPage[] = [
         'helm install planton oci://ghcr.io/plantonhq/charts/planton \\\n  --namespace planton --set platform.spec.version=<release>',
       ],
       label: 'Copy the install commands',
-      caption: 'Two Helm installs, the operator first; or declare the platform as the manifest above and apply it through the CLI. The guide lists the published releases. From',
+      caption: 'Two Helm installs, the operator first; or apply the operator and platform manifests through the CLI in the same order (the platform\u2019s is shown above). The guide lists the published releases. From',
       source: { label: 'the Self-Hosting guide', href: '/docs/self-hosting' },
     },
     yours: [

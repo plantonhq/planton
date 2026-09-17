@@ -25,7 +25,7 @@ export const ProductIndex: FC = () => {
           <Metric value={PLATFORM_STATS.INFRA_CHART_COUNT} label="Infra Charts" />
           <Metric value={PLATFORM_STATS.IN_PRODUCTION_SINCE} label="In Production Since" />
         </Box>
-        <Typography className="text-xs text-fg-muted">Counted from the open-source repository on {PLATFORM_COUNTS.countedOn}.</Typography>
+        <Typography className="text-xs text-fg-muted">Kinds, providers, and charts counted from the open-source repository on {PLATFORM_COUNTS.countedOn}.</Typography>
       </PageHero>
       <Section>
         <CenteredCards className="max-w-6xl mx-auto">
