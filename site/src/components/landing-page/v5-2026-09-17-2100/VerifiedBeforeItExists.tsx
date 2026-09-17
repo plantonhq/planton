@@ -1,8 +1,7 @@
 import type { FC } from 'react';
-import { RecordWindow } from '@/components/marketing';
+import { ProofList, RecordWindow } from '@/components/marketing';
 import { chapter } from '@/data/story';
 import { ChapterSection } from './ChapterSection';
-import { ProofList } from './ProofList';
 
 /**
  * Chapter 3, the first proof moment: the three verdicts stamped before

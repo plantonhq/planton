@@ -46,8 +46,8 @@ export interface TrustPage {
   artifact: TrustArtifact;
   /** Sentence case; the honesty statements this page makes about its own words. */
   honesty: readonly string[];
-  /** The two sibling Trust pages to read next, always within the section. */
-  next: readonly { label: string; href: string }[];
+  /** The two sibling Trust pages to read next, always within the section; their titles come from the registry. */
+  next: readonly string[];
   /** Where the artifact is real: the product page that shows it. */
   seeIt: { label: string; href: string };
 }
@@ -87,8 +87,8 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       footer: 'An illustration of the shape. Figures marked est. are examples; a real deploy carries its own.',
     },
     next: [
-      { label: 'Rules and Approvals', href: '/trust/rules-and-approvals' },
-      { label: 'The Record', href: '/trust/the-record' },
+      '/trust/rules-and-approvals',
+      '/trust/the-record',
     ],
     seeIt: { label: 'See It in Infra Hub', href: '/features/infra-hub' },
   },
@@ -120,8 +120,8 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       footer: 'An illustration of the shape. Figures marked est. are examples; a real deploy carries its own.',
     },
     next: [
-      { label: 'The Record', href: '/trust/the-record' },
-      { label: 'Verified Before Deploy', href: '/trust/verified-before-deploy' },
+      '/trust/the-record',
+      '/trust/verified-before-deploy',
     ],
     seeIt: { label: 'See It in Infra Hub', href: '/features/infra-hub' },
   },
@@ -154,8 +154,8 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       footer: 'An illustration of the shape. Every deploy leaves one of these.',
     },
     next: [
-      { label: 'Security Posture', href: '/trust/security-posture' },
-      { label: 'Rules and Approvals', href: '/trust/rules-and-approvals' },
+      '/trust/security-posture',
+      '/trust/rules-and-approvals',
     ],
     seeIt: { label: 'See It in Infra Hub', href: '/features/infra-hub' },
   },
@@ -191,8 +191,8 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       'A component without a control profile is honestly uncovered, and every surface says so.',
     ],
     next: [
-      { label: 'Your Cloud, Your Keys', href: '/trust/your-cloud-your-keys' },
-      { label: 'The Record', href: '/trust/the-record' },
+      '/trust/your-cloud-your-keys',
+      '/trust/the-record',
     ],
     seeIt: { label: 'The Control Catalog on GitHub', href: 'https://github.com/plantonhq/planton/tree/main/catalog/_compliance' },
   },
@@ -225,8 +225,8 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       'The exit is concrete: your manifests, and the open-source CLI that deploys them. It is not a badge.',
     ],
     next: [
-      { label: 'Verified Before Deploy', href: '/trust/verified-before-deploy' },
-      { label: 'Security Posture', href: '/trust/security-posture' },
+      '/trust/verified-before-deploy',
+      '/trust/security-posture',
     ],
     seeIt: { label: 'The Open-Source Modules', href: '/features/open-source' },
   },

@@ -1,9 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { BodyText, FeatureTitle, Section, SectionTitle } from '@/components/marketing';
+import { BodyText, Doors, FeatureTitle, Section, SectionTitle } from '@/components/marketing';
 import { chapter } from '@/data/story';
-import { Doors } from './Doors';
 
 /**
  * Chapters 11 and 12 folded into one close: how Planton sits beside the

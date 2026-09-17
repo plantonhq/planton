@@ -5,8 +5,8 @@ import { POSITIONING } from '@/data/positioning';
 import { HERO_HEADLINE, HERO_SUBHEAD } from '@/data/story';
 import { FREE_TIER_SEATS } from '@/data/pricing';
 import { PLATFORM_STATS } from '@/data/platform-stats';
+import { Doors } from '@/components/marketing';
 import { asset } from '@/lib/assets';
-import { Doors } from './Doors';
 import { PersonaRouter } from './PersonaRouter';
 import { ProofMoment } from './ProofMoment';
 

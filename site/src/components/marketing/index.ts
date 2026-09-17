@@ -19,3 +19,10 @@ export * from './terminal-window';
 export * from './comparison-cell';
 export * from './step';
 export * from './record-window';
+// Page sections: the pieces every story page composes (a hero, proof beside a
+// record, doors to sibling pages, the doors themselves, a command to paste).
+export * from './page-hero';
+export * from './proof-list';
+export * from './page-card';
+export * from './doors';
+export * from './command-block';

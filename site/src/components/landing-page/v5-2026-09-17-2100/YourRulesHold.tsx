@@ -1,8 +1,7 @@
 import type { FC } from 'react';
-import { RecordWindow } from '@/components/marketing';
+import { ProofList, RecordWindow } from '@/components/marketing';
 import { chapter } from '@/data/story';
 import { ChapterSection } from './ChapterSection';
-import { ProofList } from './ProofList';
 
 /**
  * Chapter 4, the second proof moment: a deploy that broke a rule, paused,
