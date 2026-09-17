@@ -3,6 +3,7 @@ package keycloak
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/plantonhq/planton/operator/internal/resources"
 )
@@ -188,5 +189,19 @@ func primarySignInCheck(live redirectorState, broker *OwnedOIDCBroker) (Check, b
 	}
 	return Check{Name: primarySignInCheckName, Verdict: VerdictPassed, Message: fmt.Sprintf(
 		"every sign-in goes straight to %s; the local form stays reachable for break-glass at /login?local=1 (console), `planton login --local` (CLI), and the same hint on device sign-in",
-		broker.DisplayName)}, true
+		providerNameOf(broker.DisplayName))}, true
+}
+
+// providerNameOf turns the broker's sign-in BUTTON label ("Sign in with
+// Microsoft") into the provider's name a sentence can carry; composed as-is
+// the verdict read "goes straight to Sign in with Microsoft (lab)" on the
+// Directory tab (observed live 2026-09-17). A label shaped some other way is
+// the name.
+func providerNameOf(label string) string {
+	const prefix = "sign in with "
+	trimmed := strings.TrimSpace(label)
+	if len(trimmed) > len(prefix) && strings.EqualFold(trimmed[:len(prefix)], prefix) {
+		return strings.TrimSpace(trimmed[len(prefix):])
+	}
+	return trimmed
 }

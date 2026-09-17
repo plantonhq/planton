@@ -64,7 +64,7 @@ func TestPrimarySignInCheck(t *testing.T) {
 	if !ok || check.Verdict != VerdictPassed || check.Name != primarySignInCheckName {
 		t.Fatalf("converged: %+v", check)
 	}
-	for _, want := range []string{"Sign in with Contoso", "/login?local=1", "planton login --local"} {
+	for _, want := range []string{"goes straight to Contoso;", "/login?local=1", "planton login --local"} {
 		if !strings.Contains(check.Message, want) {
 			t.Fatalf("the passed sentence must name %q: %s", want, check.Message)
 		}
@@ -78,5 +78,20 @@ func TestPrimarySignInCheck(t *testing.T) {
 	check, _ = primarySignInCheck(redirectorState{ExecutionID: "e"}, broker)
 	if check.Verdict != VerdictUnknown || !strings.Contains(check.Message, "not yet applied") {
 		t.Fatalf("a pending write is advisory, never a pass: %+v", check)
+	}
+}
+
+// The button label becomes the provider's name inside the sentence; a label
+// that is already a name passes through.
+func TestProviderNameOf(t *testing.T) {
+	for label, want := range map[string]string{
+		"Sign in with Microsoft (lab)": "Microsoft (lab)",
+		"Sign In With Okta":            "Okta",
+		"Corporate SSO":                "Corporate SSO",
+		"":                             "",
+	} {
+		if got := providerNameOf(label); got != want {
+			t.Errorf("providerNameOf(%q) = %q, want %q", label, got, want)
+		}
 	}
 }
