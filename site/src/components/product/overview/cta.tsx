@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Box, Typography } from '@mui/material';
-import { Section, PrimaryButton, SecondaryButton } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Section, PrimaryButton, SecondaryButton } from '@/components/marketing';
 
 export const ProductCTA = () => {
   return (

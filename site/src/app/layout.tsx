@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/providers/theme';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { HANDOFF_CAPTURE_SCRIPT } from '@/components/handoff';
+import { HANDOFF_CAPTURE_SCRIPT } from '@/lib/console-handoff';
 
 const inter = Inter({
   weight: ['300', '400', '500', '600', '700'],
@@ -80,7 +80,9 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.variable} antialiased h-screen bg-cover bg-center bg-[#0a0a0a]`}>
+      {/* The body declares the canvas and the primary text color from the palette so nothing
+          inherits a theme default by accident; every surface below reads the same two tokens. */}
+      <body className={`${inter.variable} antialiased h-screen bg-cover bg-center bg-canvas text-fg`}>
         <ThemeProvider>
           {children}
         </ThemeProvider>

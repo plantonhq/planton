@@ -11,9 +11,9 @@ import {
   CpuIcon,
   PrimaryButton,
   SecondaryButton,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { useMarket } from '@/components/market';
-import { useHandoffEmail, withHandoffEmail } from '@/components/handoff';
+import { useHandoffEmail, withHandoffEmail } from '@/lib/console-handoff';
 import {
   BUY_LICENSE_URL,
   EVALUATION_DAYS,

@@ -7,7 +7,7 @@ import {
   CheckIcon,
   FeatureTitle,
   PrimaryButton,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { useMarket } from '@/components/market';
 import { MARKETS } from '@/data/pricing';
 

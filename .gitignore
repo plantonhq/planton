@@ -97,3 +97,6 @@ backend.tf
 # re-cloned on demand, never committed.
 /source_reference/
 .bin/
+
+# The website-shell workspace package compiles to dist/ on every build and dev start; never committed.
+site/packages/website-shell/dist/

@@ -8,7 +8,7 @@ import {
   Psychology as AgentFleetIcon,
   LinkOutlined as ConnectIcon,
 } from '@mui/icons-material';
-import { Section, SectionSubtitle } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Section, SectionSubtitle } from '@/components/marketing';
 import { FlowSteps } from '@/components/product/shared';
 import type { FlowStep } from '@/components/product/shared';
 

@@ -12,7 +12,7 @@ import {
   Laptop as DesktopIcon,
   Code as OpenSourceIcon,
 } from '@mui/icons-material';
-import { Section, SectionTitle, SectionSubtitle } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Section, SectionTitle, SectionSubtitle } from '@/components/marketing';
 import { ReactNode } from 'react';
 import { PLATFORM_STATS } from '@/data/platform-stats';
 import { DESKTOP_LANDING_PATH } from '@/data/desktop-download';

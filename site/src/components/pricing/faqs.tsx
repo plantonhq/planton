@@ -12,7 +12,7 @@ import { Add } from '@mui/icons-material';
 import { TypoB2Regular, TypoH2 } from '@/components/common';
 import Link from 'next/link';
 import { EVALUATION_DAYS, EVALUATION_URL, FREE_TIER_SEATS } from '@/data/pricing';
-import { useHandoffEmail, withHandoffEmail } from '@/components/handoff';
+import { useHandoffEmail, withHandoffEmail } from '@/lib/console-handoff';
 
 interface IFaq {
   title: string;

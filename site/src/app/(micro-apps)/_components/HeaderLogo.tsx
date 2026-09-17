@@ -8,7 +8,7 @@ interface IHeaderLogo {
 export const HeaderLogo = ({ className }: IHeaderLogo) => {
   return (
     <Link href="/" className={className}>
-      <SvgIcon width={32} height={32}>
+      <SvgIcon width={32} height={32} className="text-cta">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="32"

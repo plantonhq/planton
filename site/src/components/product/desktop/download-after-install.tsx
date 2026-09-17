@@ -10,7 +10,7 @@ import {
   FeatureTitle,
   BodyText,
   Grid,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { CodeTabs } from '@/components/product/shared';
 import type { CodeTab } from '@/components/product/shared';
 import { AGENT_SKILLS_INSTALL_COMMAND, type DesktopPlatform } from '@/data/desktop-download';

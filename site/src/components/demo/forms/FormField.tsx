@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Tooltip } from '../../ui/tooltip';
+import { Tooltip } from '../ui/tooltip';
 
 interface FormFieldProps {
   label: string;

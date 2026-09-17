@@ -11,7 +11,7 @@ import {
   PrimaryButton,
   SecondaryButton,
   Divider,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { RelatedModules } from '@/components/product/shared';
 import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from '@/data/pricing';
 import { DESKTOP_DOWNLOAD_PATH } from '@/data/desktop-download';

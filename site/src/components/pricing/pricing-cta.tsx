@@ -8,7 +8,7 @@ import {
   Card,
   PrimaryButton,
   SecondaryButton,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 
 /** The closing CTA: start free, or talk to a human if that helps. */
 export const PricingCta: FC = () => {

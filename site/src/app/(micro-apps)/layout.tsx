@@ -1,5 +1,5 @@
 'use client';
-import { HeaderLogo } from '@/components/layout/header/HeaderLogo';
+import { HeaderLogo } from './_components/HeaderLogo';
 
 export default function DemoLayout({ children }: { children: React.ReactNode }) {
   return (

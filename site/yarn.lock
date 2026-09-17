@@ -2719,7 +2719,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@planton/website-shell@workspace:packages/website-shell":
+"@planton/website-shell@workspace:*, @planton/website-shell@workspace:packages/website-shell":
   version: 0.0.0-use.local
   resolution: "@planton/website-shell@workspace:packages/website-shell"
   dependencies:
@@ -3611,15 +3611,6 @@ __metadata:
   dependencies:
     "@types/unist": "*"
   checksum: 20c4e9574cc409db662a35cba52b068b91eb696b3049e94321219d47d34c8ccc99a142be5c76c80a538b612457b03586bc2f6b727a3e9e7530f4c8568f6282ee
-  languageName: node
-  linkType: hard
-
-"@types/mermaid@npm:^9.2.0":
-  version: 9.2.0
-  resolution: "@types/mermaid@npm:9.2.0"
-  dependencies:
-    mermaid: "*"
-  checksum: 2ff5868e90b2fa741d5df3a317224bd2b110eb04ee2c6f184d19ac58c90abd15c8f6f30645f530f46689a1e080676e0b837b1e05254458226c265047934b92c4
   languageName: node
   linkType: hard
 
@@ -8152,7 +8143,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mermaid@npm:*, mermaid@npm:^11.10.1":
+"mermaid@npm:^11.10.1":
   version: 11.10.1
   resolution: "mermaid@npm:11.10.1"
   dependencies:
@@ -9217,6 +9208,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pixelmatch@npm:^7.1.0":
+  version: 7.2.0
+  resolution: "pixelmatch@npm:7.2.0"
+  dependencies:
+    pngjs: ^7.0.0
+  bin:
+    pixelmatch: bin/pixelmatch
+  checksum: bcd8a8787f021e0a33d4e7e5a048fb4899fabe6d0a23475867cc29f82f3151652add05a55c55bb788b36b7e98a6af6764247fbf855e7fa9ac98a9e46753f6496
+  languageName: node
+  linkType: hard
+
 "pkg-types@npm:^1.3.1":
   version: 1.3.1
   resolution: "pkg-types@npm:1.3.1"
@@ -9250,11 +9252,11 @@ __metadata:
     "@mui/material": ^6.2.1
     "@mui/material-nextjs": ^6.2.1
     "@next/third-parties": ^16.2.1
+    "@planton/website-shell": "workspace:*"
     "@svgr/webpack": ^8.1.0
     "@swc/core": ^1.13.5
     "@swc/helpers": ^0.5.17
     "@types/canvas-confetti": ^1.9.0
-    "@types/mermaid": ^9.2.0
     "@types/node": ^20
     "@types/react": ^19
     "@types/react-dom": ^19
@@ -9269,6 +9271,8 @@ __metadata:
     mermaid: ^11.10.1
     next: 16.2.1
     pagefind: ^1.4.0
+    pixelmatch: ^7.1.0
+    pngjs: ^7.0.0
     postcss: ^8
     puppeteer: ^24.36.0
     react: ^19.0.0
@@ -9277,13 +9281,19 @@ __metadata:
     rehype-highlight: ^7.0.2
     rehype-raw: ^7.0.0
     remark-gfm: ^4.0.1
-    swiper: ^11.2.4
     tailwind-merge: ^3.3.1
     tailwindcss: ^3.4.1
     typescript: ^5
     yaml: ^2.9.0
   languageName: unknown
   linkType: soft
+
+"pngjs@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "pngjs@npm:7.0.0"
+  checksum: b19a018930d27de26229c1b3ff250b3a25d09caa22cbb0b0459987d91eb0a560a18ab5d67da45a38ed7514140f26d1db58de83c31159ec101f2bb270a3c707f1
+  languageName: node
+  linkType: hard
 
 "points-on-curve@npm:0.2.0, points-on-curve@npm:^0.2.0":
   version: 0.2.0
@@ -10678,13 +10688,6 @@ __metadata:
   bin:
     svgo: ./bin/svgo
   checksum: a3f8aad597dec13ab24e679c4c218147048dc1414fe04e99447c5f42a6e077b33d712d306df84674b5253b98c9b84dfbfb41fdd08552443b04946e43d03e054e
-  languageName: node
-  linkType: hard
-
-"swiper@npm:^11.2.4":
-  version: 11.2.10
-  resolution: "swiper@npm:11.2.10"
-  checksum: a40ee5e252670d5b674f46517a2b6cb9477dff15cfccaa2dfdaf797a2de373e1c488302d1daeebe1b237c4bccc20238c3aed2c4a15f06db02be63e7936e94be5
   languageName: node
   linkType: hard
 

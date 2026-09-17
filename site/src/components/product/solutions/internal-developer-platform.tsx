@@ -15,7 +15,7 @@ import {
   Grid,
   CheckIcon,
   XIcon,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { FlowSteps, ScrollReveal } from '@/components/product/shared';
 import type { FlowStep } from '@/components/product/shared';
 import { Cloud, Route, Person, Visibility } from '@mui/icons-material';

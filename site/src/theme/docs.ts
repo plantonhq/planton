@@ -6,17 +6,12 @@
  * palette is enforced in one place and makes future palette changes
  * a single-file edit.
  *
- * Palette reference (shared with landing page / marketing site):
- *   bgPrimary    #0a0a0a
- *   bgSecondary  #111111
- *   bgTertiary   #1a1a1a
- *   textPrimary  #ededed  (Tailwind `white` is overridden to this)
- *   textSecondary #a0a0a0
- *   textMuted    #666666
- *   border       #2a2a2a
- *   borderHover  #3a3a3a
- *   semanticGreen #10b981  (functional only)
- *   semanticRed   #ef4444  (functional only)
+ * Palette: the hexes in these class strings are the website palette defined
+ * once in packages/website-shell/src/theme/tokens.ts (canvas #0a0a0a, panel
+ * #111111, raised #1a1a1a, text #ededed / #a0a0a0 / #666666, edges #2a2a2a /
+ * #3a3a3a, semantic green #10b981 and red #ef4444). This file predates the
+ * role-named Tailwind classes (bg-canvas, text-fg-secondary, border-edge) and
+ * moves onto them when the docs pages are rebuilt.
  */
 
 // ---------------------------------------------------------------------------

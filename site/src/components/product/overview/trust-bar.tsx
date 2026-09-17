@@ -7,7 +7,7 @@ import {
   CloudQueue as CloudIcon,
   Speed as SpeedIcon,
 } from '@mui/icons-material';
-import { Section } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Section } from '@/components/marketing';
 import { ReactNode } from 'react';
 
 const TrustItem = ({ icon, title, description }: { icon: ReactNode; title: string; description: string }) => (

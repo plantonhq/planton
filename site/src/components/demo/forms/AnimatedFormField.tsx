@@ -2,7 +2,7 @@
 
 import React, { useContext } from 'react';
 import { AutoFillContext } from '../../../contexts/AutoFillContext';
-import { Tooltip } from '../../ui/tooltip';
+import { Tooltip } from '../ui/tooltip';
 
 interface AnimatedFormFieldProps {
   label: string;

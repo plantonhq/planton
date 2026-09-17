@@ -10,7 +10,7 @@ R2_BUCKET := planton-assets
 R2_ENDPOINT := https://074755a78d8e8f77c119a90a125e8a06.r2.cloudflarestorage.com
 R2_PROFILE := r2
 
-.PHONY: deps install lint build run dev devs clean clean-build preview-site sync-assets process-images check-images inbox
+.PHONY: deps install lint typecheck build run dev devs clean clean-build preview-site capture sync-assets process-images check-images inbox
 
 deps: install
 
@@ -20,9 +20,21 @@ install:
 lint: install
 	$(YARN) lint
 
-build: install lint
+# The site has no test suite; the type checker is the one that catches a
+# renamed prop or a data record a page reads wrong. It runs before every build.
+typecheck: install
+	$(YARN) typecheck
+
+build: install lint typecheck
 	NODE_NO_WARNINGS=1 NEXT_TELEMETRY_DISABLED=1 $(YARN) build
 	mkdir -p out/_site && cp -r out/_next out/_site/_next
+
+# Design-review captures of the built export (see scripts/capture-pages.mjs).
+#   make capture OUT=/tmp/captures            all scenes
+#   make capture OUT=/tmp/after COMPARE=/tmp/before   and prove zero visual change
+OUT ?= /tmp/site-captures
+capture:
+	node scripts/capture-pages.mjs --out $(OUT) $(if $(COMPARE),--compare $(COMPARE),) $(if $(ONLY),--only $(ONLY),)
 
 # Development server
 devs: run

@@ -7,7 +7,7 @@ import {
   SectionSubtitle,
   FeatureTitle,
   BodyText,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import {
   Api as OpenSourceApiIcon,
   FileCopy as ManifestIcon,

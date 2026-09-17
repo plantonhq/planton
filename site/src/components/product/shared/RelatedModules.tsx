@@ -13,7 +13,7 @@ import {
   Laptop as DesktopIcon,
   Code as OpenSourceIcon,
 } from '@mui/icons-material';
-import { Section } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Section } from '@/components/marketing';
 import { DESKTOP_LANDING_PATH } from '@/data/desktop-download';
 import { PLATFORM_STATS } from '@/data/platform-stats';
 

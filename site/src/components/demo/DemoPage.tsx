@@ -8,7 +8,7 @@ import {
   Play,
 } from 'lucide-react';
 import { Button } from '@/components/tour/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from './ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Import intro components

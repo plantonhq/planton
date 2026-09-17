@@ -12,7 +12,7 @@ import {
   Badge,
   Grid,
   ArrowRightIcon,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 
 interface SolutionCardProps {
   title: string;

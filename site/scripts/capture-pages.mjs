@@ -20,6 +20,21 @@
  *   node scripts/capture-pages.mjs --out ... --tag before        # <scene>-before-dark.png
  *   node scripts/capture-pages.mjs --out ... --publish-og        # also refresh public/_site/images/og/*.png
  *   node scripts/capture-pages.mjs --out ... --base http://localhost:4175   # an already-running server
+ *   node scripts/capture-pages.mjs --out ... --export /path/to/other/out   # serve a different export (a main build)
+ *   node scripts/capture-pages.mjs --out ... --compare /path/to/before      # after capturing, diff against a prior set
+ *
+ * Determinism. Pages animate (a typing hero, framer-motion reveals), and a
+ * pixel comparison of two runs is only honest when both runs stopped the clock
+ * at the same instant. Every scene therefore renders under Chromium's virtual
+ * time: the page loads, then exactly VIRTUAL_TIME_BUDGET_MS of virtual time
+ * elapses (timers and animation frames included) before the screenshot, no
+ * matter how fast or slow the machine is. Two builds of the same page produce
+ * byte-identical PNGs; a difference is a change in the page.
+ *
+ * --compare reads <before>/<scene>-dark.png for every scene captured (the
+ * before set is captured with no --tag), diffs pixel by pixel, writes
+ * <scene>-diff.png beside the after set for any mismatch, and exits 1 when
+ * any scene differs. This is the proof behind a "zero visual change" commit.
  *
  * The website has one theme (dark), so every file is <scene>-dark.png; a
  * reviewer asking for the light pair is told the surface has none.
@@ -33,6 +48,11 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const puppeteer = require('puppeteer');
+const { PNG } = require('pngjs');
+const pixelmatch = (await import('pixelmatch')).default;
+
+/** Virtual milliseconds every scene runs before its screenshot; long enough for every entrance animation to finish. */
+const VIRTUAL_TIME_BUDGET_MS = 20000;
 
 const args = process.argv.slice(2);
 const arg = (name, fallback) => {
@@ -52,9 +72,10 @@ const ONLY = arg('only', '')
   .filter(Boolean);
 const TAG = arg('tag', '');
 const PUBLISH_OG = flag('publish-og');
+const COMPARE_DIR = arg('compare');
 
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const exportDir = path.join(siteRoot, 'out');
+const exportDir = path.resolve(arg('export', path.join(siteRoot, 'out')));
 const ogDir = path.join(siteRoot, 'public/_site/images/og');
 
 // The frozen user-agent strings browsers actually send; the page's detector
@@ -74,6 +95,22 @@ const UA = {
  * `ogTitleSize` overrides the poster's headline size for a long headline.
  */
 const SCENES = [
+  // The marketing pages a "zero visual change" commit is proven against: the
+  // landing page, one product page, one solutions page, pricing, and the four
+  // meeting decks that ride the deck engine. Two review widths each.
+  { name: 'landing-1680', route: '/', width: 1680, ua: UA.mac },
+  { name: 'landing-1280', route: '/', width: 1280, ua: UA.mac },
+  { name: 'landing-phone', route: '/', width: 390, ua: UA.iphone },
+  { name: 'infra-hub-1680', route: '/features/infra-hub', width: 1680, ua: UA.mac },
+  { name: 'infra-hub-1280', route: '/features/infra-hub', width: 1280, ua: UA.mac },
+  { name: 'platform-engineers-1680', route: '/solutions/by-role/platform-engineers', width: 1680, ua: UA.mac },
+  { name: 'platform-engineers-1280', route: '/solutions/by-role/platform-engineers', width: 1280, ua: UA.mac },
+  { name: 'pricing-1680', route: '/pricing', width: 1680, ua: UA.mac },
+  { name: 'pricing-1280', route: '/pricing', width: 1280, ua: UA.mac },
+  { name: 'deck-sep-1280', route: '/meets/sep', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-nirav-1280', route: '/meets/nirav', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-clear-route-1280', route: '/meets/clear-route', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-rahul-gulati-1280', route: '/meets/rahul-gulati', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
   { name: 'download-1680', route: '/features/desktop/download', width: 1680, ua: UA.mac, expectTab: 'macOS' },
   { name: 'download-1280', route: '/features/desktop/download', width: 1280, ua: UA.mac, expectTab: 'macOS' },
   { name: 'download-windows', route: '/features/desktop/download', width: 1280, ua: UA.windows, uaPlatform: 'Windows', expectTab: 'Windows' },
@@ -140,6 +177,77 @@ function serveExport() {
 
 // ---------------------------------------------------------------------------
 
+/**
+ * Put the page on a virtual clock with a budget of VIRTUAL_TIME_BUDGET_MS.
+ * Timers, animation frames, and JS-driven transitions all run on it, and the
+ * clock pauses while network fetches are pending, so the page reaches the
+ * same virtual instant on every run regardless of the machine. `finish()`
+ * waits for the budget to run out, then freezes the clock for the screenshot.
+ */
+async function startVirtualTime(page) {
+  const client = await page.createCDPSession();
+  const expired = new Promise((resolve) => client.once('Emulation.virtualTimeBudgetExpired', resolve));
+  await client.send('Emulation.setVirtualTimePolicy', {
+    policy: 'pauseIfNetworkFetchesPending',
+    budget: VIRTUAL_TIME_BUDGET_MS,
+    maxVirtualTimeTaskStarvationCount: 1_000_000,
+  });
+  const started = Date.now();
+  return {
+    async finish() {
+      const outcome = await Promise.race([
+        expired.then(() => 'expired'),
+        new Promise((r) => setTimeout(() => r('timed-out'), 90000)),
+      ]);
+      await client.send('Emulation.setVirtualTimePolicy', { policy: 'pause' });
+      await client.detach();
+      if (outcome !== 'expired') {
+        throw new Error(`virtual time did not reach its budget in ${Date.now() - started}ms of real time; the capture is not deterministic`);
+      }
+    },
+  };
+}
+
+/** Scroll the document in viewport-sized steps (real time), then return to the top. */
+async function scrollThrough(page) {
+  await page.evaluate(async () => {
+    // Half a viewport per step, and a real pause at each, so every
+    // IntersectionObserver (framer-motion's whileInView) is delivered and its
+    // entrance started before the next step; otherwise a reveal can be left
+    // at opacity 0 when the clock freezes.
+    const step = Math.max(200, Math.floor(window.innerHeight / 2));
+    const settle = () => new Promise((r) => setTimeout(r, 80));
+    for (let y = 0; y < document.body.scrollHeight; y += step) {
+      window.scrollTo(0, y);
+      await settle();
+    }
+    window.scrollTo(0, document.body.scrollHeight);
+    await settle();
+    window.scrollTo(0, 0);
+    await settle();
+  });
+  await page.evaluate(() => document.fonts.ready);
+}
+
+/** Diff one capture against its counterpart in the before set; returns the mismatch count or null when no before exists. */
+function compareWithBefore(scene, afterFile) {
+  const beforeFile = path.join(COMPARE_DIR, `${scene.name}-dark.png`);
+  if (!fs.existsSync(beforeFile)) return { status: 'no-before' };
+  const before = PNG.sync.read(fs.readFileSync(beforeFile));
+  const after = PNG.sync.read(fs.readFileSync(afterFile));
+  if (before.width !== after.width || before.height !== after.height) {
+    return { status: 'size', detail: `${before.width}x${before.height} -> ${after.width}x${after.height}` };
+  }
+  const diff = new PNG({ width: before.width, height: before.height });
+  const mismatched = pixelmatch(before.data, after.data, diff.data, before.width, before.height, { threshold: 0.1 });
+  if (mismatched > 0) {
+    const diffFile = path.join(OUT_DIR, `${scene.name}-diff.png`);
+    fs.writeFileSync(diffFile, PNG.sync.write(diff));
+    return { status: 'differs', detail: `${mismatched} px, see ${path.relative(process.cwd(), diffFile)}` };
+  }
+  return { status: 'identical' };
+}
+
 async function capture(browser, base, scene) {
   const page = await browser.newPage();
   await page.setViewport({ width: scene.width, height: scene.height ?? 900, deviceScaleFactor: 1 });
@@ -156,6 +264,22 @@ async function capture(browser, base, scene) {
     { name: 'prefers-reduced-motion', value: 'reduce' },
   ]);
   await page.goto(base + scene.route, { waitUntil: 'networkidle0', timeout: 45000 });
+  // CSS keyframe animations run on the compositor thread and ignore the virtual
+  // clock (a pulsing cursor was the one moving pixel between two identical
+  // builds). Stop them at their resting value; JS-driven motion still runs
+  // under virtual time and settles deterministically.
+  await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; }' });
+  // Full-page screenshots reveal the whole document at once, which fires every
+  // scroll-triggered entrance mid-frame. Walk the page first (real time) so
+  // those observers fire in order, then let virtual time finish what they
+  // started. A component that starts a long JS timeline on mount (the v4
+  // hero's typing loop) is offset by however long hydration took, which can
+  // differ between two builds; a page must reach its resting frame without
+  // depending on wall-clock phase (honor prefers-reduced-motion) to be
+  // comparable here.
+  if (!scene.og && !scene.viewportOnly) await scrollThrough(page);
+  const clock = await startVirtualTime(page);
+  await clock.finish();
   if (scene.og) {
     // A share image is a poster, not a viewport: no site chrome, no clipped
     // card, the page's own headline block centred in the 1200x630 frame.
@@ -175,8 +299,6 @@ async function capture(browser, base, scene) {
       `,
     });
   }
-  await new Promise((r) => setTimeout(r, 600));
-
   let verdict = null;
   if (scene.expectTab) {
     const selected = await page.$eval('[role="tab"][aria-selected="true"]', (el) => el.textContent?.trim()).catch(() => null);
@@ -185,7 +307,7 @@ async function capture(browser, base, scene) {
 
   const suffix = TAG ? `-${TAG}` : '';
   const file = path.join(OUT_DIR, `${scene.name}${suffix}-dark.png`);
-  await page.screenshot({ path: file, fullPage: !scene.og });
+  await page.screenshot({ path: file, fullPage: !scene.og && !scene.viewportOnly });
   if (scene.og && PUBLISH_OG) {
     fs.mkdirSync(ogDir, { recursive: true });
     fs.copyFileSync(file, path.join(ogDir, scene.og));
@@ -208,11 +330,18 @@ async function main() {
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
 
   let failed = 0;
+  let differs = 0;
   try {
     for (const scene of scenes) {
       const { file, verdict } = await capture(browser, base, scene);
       if (verdict?.startsWith('FAIL')) failed += 1;
-      console.log(`${path.relative(process.cwd(), file)}${verdict ? `  ${verdict}` : ''}`);
+      let comparison = '';
+      if (COMPARE_DIR) {
+        const result = compareWithBefore(scene, file);
+        comparison = `  [${result.status}${result.detail ? `: ${result.detail}` : ''}]`;
+        if (result.status === 'differs' || result.status === 'size') differs += 1;
+      }
+      console.log(`${path.relative(process.cwd(), file)}${verdict ? `  ${verdict}` : ''}${comparison}`);
     }
   } finally {
     await browser.close();
@@ -222,6 +351,11 @@ async function main() {
     console.error(`${failed} scene assertion(s) failed`);
     process.exit(1);
   }
+  if (differs) {
+    console.error(`${differs} scene(s) differ from ${COMPARE_DIR}; this is not a zero-visual-change build`);
+    process.exit(1);
+  }
+  if (COMPARE_DIR) console.log(`all ${scenes.length} scenes identical to ${COMPARE_DIR}`);
 }
 
 main().catch((err) => {

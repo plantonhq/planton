@@ -10,7 +10,7 @@ import {
   SecondaryButton,
   Badge,
   BodyText,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { AnimatedTerminal, ScrollReveal } from '@/components/product/shared';
 import type { TerminalLine } from '@/components/product/shared';
 import { PLATFORM_STATS } from '@/data/platform-stats';

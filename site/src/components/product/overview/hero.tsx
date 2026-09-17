@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Typography } from '@mui/material';
-import { Badge } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Badge } from '@/components/marketing';
 
 export const ProductOverviewHero = () => {
   return (

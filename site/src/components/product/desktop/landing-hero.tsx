@@ -10,7 +10,7 @@ import {
   SectionSubtitle,
   Badge,
   PrimaryButton,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { POSITIONING } from '@/data/positioning';
 import { DESKTOP_DOWNLOAD_PATH, DESKTOP_PLATFORMS } from '@/data/desktop-download';
 import { LANDING_SCREENSHOTS, type LandingScreenshot } from './landing-screenshots';

@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
+import { tailwindColors } from "./packages/website-shell/src/theme/tokens";
 
 export default {
   content: [
@@ -15,10 +16,16 @@ export default {
     extend: {
       fontFamily: {
         'inter': ['var(--font-inter)', 'Inter', 'sans-serif'],
-        'manrope': ['Manrope', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
+        // The palette, by role: bg-canvas, bg-card, text-fg-secondary,
+        // border-edge, text-ok. Defined once in the website-shell package
+        // and shared with the MUI theme; components never type a hex.
+        ...tailwindColors,
         white: '#ededed',
+        // The numeric ramps below predate the role names above. No marketing
+        // component uses them; they stay only until their last consumer is
+        // rebuilt, and nothing new may reach for them.
         primary: {
           0: "#000000",
           10: "#1a1a1a",

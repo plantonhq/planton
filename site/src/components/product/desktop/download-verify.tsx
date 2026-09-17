@@ -10,7 +10,7 @@ import {
   BodyText,
   Divider,
   Grid,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { DESKTOP_BREW_UPGRADE_COMMAND, DESKTOP_LANDING_PATH, desktopChecksumsUrl, type DesktopPlatform } from '@/data/desktop-download';
 import { CommandBlock } from './command-block';
 

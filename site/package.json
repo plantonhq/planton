@@ -7,13 +7,18 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn generate:desktop-release && next dev",
+    "dev": "yarn build:packages && yarn generate:desktop-release && next dev",
     "build:packages": "yarn workspace @planton/website-shell build",
     "generate:desktop-release": "node --experimental-strip-types scripts/generate-desktop-release.mjs",
-    "build": "node scripts/check-displayed-vs-enforced.mjs && yarn build:packages && node scripts/generate-recent-changelog.mjs && yarn generate:desktop-release && next build && pagefind --site out --output-path out/_pagefind --exclude-selectors 'pre,code'",
+    "build": "node scripts/check-displayed-vs-enforced.mjs && node scripts/check-apex-routing.mjs && yarn build:packages && node scripts/generate-recent-changelog.mjs && yarn generate:desktop-release && next build && node scripts/check-internal-links.mjs && node --experimental-strip-types scripts/generate-llms.mjs && pagefind --site out --output-path out/_pagefind --exclude-selectors 'pre,code'",
     "check:displayed-vs-enforced": "node scripts/check-displayed-vs-enforced.mjs",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "yarn build:packages && tsc --noEmit && yarn workspace @planton/website-shell typecheck",
+    "check:apex-routing": "node scripts/check-apex-routing.mjs",
+    "check:internal-links": "node scripts/check-internal-links.mjs",
+    "generate:llms": "node --experimental-strip-types scripts/generate-llms.mjs",
+    "capture": "node scripts/capture-pages.mjs"
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",
@@ -23,8 +28,8 @@
     "@mui/material": "^6.2.1",
     "@mui/material-nextjs": "^6.2.1",
     "@next/third-parties": "^16.2.1",
+    "@planton/website-shell": "workspace:*",
     "@svgr/webpack": "^8.1.0",
-    "@types/mermaid": "^9.2.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -39,7 +44,6 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "swiper": "^11.2.4",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
@@ -52,6 +56,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "pagefind": "^1.4.0",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
     "postcss": "^8",
     "puppeteer": "^24.36.0",
     "tailwindcss": "^3.4.1",

@@ -12,7 +12,7 @@ import {
   SecondaryButton,
   Badge,
   ArrowRightIcon,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { MetricsStrip, ScrollReveal } from '@/components/product/shared';
 import type { MetricItem } from '@/components/product/shared';
 import { PLATFORM_STATS } from '@/data/platform-stats';

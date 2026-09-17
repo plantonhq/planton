@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Typography } from '@mui/material';
-import { Section, SectionTitle, SectionSubtitle, BodyText, Card } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Section, SectionTitle, SectionSubtitle, BodyText, Card } from '@/components/marketing';
 
 const ArchitectureLayer = ({
   label,

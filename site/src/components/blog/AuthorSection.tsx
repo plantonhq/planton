@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Author } from '@/lib/mdx';
-import Avatar from '@/components/ui/Avatar';
+import Avatar from './Avatar';
 
 interface AuthorSectionProps {
   author: Author[];
