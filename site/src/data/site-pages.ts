@@ -29,11 +29,31 @@ export type PageGroup =
   | 'distributions'
   | 'trust'
   | 'solutions'
+  | 'compare'
   | 'pricing'
   | 'content'
   | 'company'
   | 'legal'
   | 'standalone';
+
+/**
+ * The groups the `llms.txt` index lists pages under, in reading order, with
+ * the heading each is given. Held here beside the type so a new group cannot
+ * be added to the registry and forgotten by the index: the generator walks
+ * this record and refuses a marketing page whose group is not in it. `home`
+ * is the index's own opening line, `content` is walked from markdown, and
+ * `standalone` is never listed, so none of the three has a heading.
+ */
+export const PAGE_GROUP_HEADINGS: Readonly<Partial<Record<PageGroup, string>>> = {
+  trust: 'Trust',
+  product: 'Product',
+  distributions: 'Distributions',
+  solutions: 'Solutions',
+  compare: 'Compare',
+  pricing: 'Pricing',
+  company: 'Company',
+  legal: 'Legal',
+};
 
 export interface SitePage {
   /** The route, with a leading slash and no trailing slash ("/" for the home page). */
@@ -237,6 +257,9 @@ export const SITE_PAGES: readonly SitePage[] = [
   { path: '/solutions/it-consultancy', title: 'Planton for IT Consultancies', description: 'One organization per client, a client environment from a published template, and everything handed back as manifests when the engagement ends.', group: 'solutions', chapters: ['what-planton-is', 'runs-where-you-decide', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'services-ship-from-git'] },
   { path: '/solutions/startup-founder', title: 'Planton for Startup Founders', description: 'Ship without an ops hire: push to deploy, the monthly cost before it exists, free to start, and nothing redone when you become a team.', group: 'solutions', chapters: ['what-planton-is', 'services-ship-from-git', 'verified-before-it-exists', 'runs-where-you-decide', 'every-deployment-leaves-a-record'] },
   { path: '/solutions/security-and-governance-leader', title: 'Planton for Security and Governance Leaders', description: 'Rules that hold at the moment of creation, controls stated with evidence and never called compliant, and a record of every change; a complement to your posture tools.', group: 'solutions', chapters: ['your-rules-hold', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'how-it-compares', 'runs-where-you-decide', 'what-planton-is'] },
+
+  // Compare: chapter 11, the three kinds of tool near Planton described by what they do, never by name
+  { path: '/compare', title: 'How Planton Compares', description: 'Governance platforms observe after the fact, IaC tools work on Terraform you write, portals catalog what you have. Planton proves at creation, beside all three.', group: 'compare', chapters: ['how-it-compares', 'what-planton-is'] },
 
   // Pricing
   { path: '/pricing', title: 'Pricing', description: 'Plans for every stage, on planton.ai or your own infrastructure. A free tier that never bills, one team plan, and self-hosted licenses that verify offline.', group: 'pricing', chapters: ['start'] },

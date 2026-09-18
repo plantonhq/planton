@@ -14,7 +14,7 @@
  * for the build-time generators.
  */
 import type { DoorPair } from './doors.ts';
-import type { Artifact, ProofPoint } from './page-shapes.ts';
+import { illustratedFooter, type Artifact, type ProofPoint } from './page-shapes.ts';
 import { COMMUNITY_SEAT_LIMIT, EVALUATION_DAYS, FREE_TIER_SEATS, SELF_SERVE_SEAT_CEILING } from './pricing.ts';
 import { chapter } from './story.ts';
 
@@ -61,7 +61,7 @@ export const DISTRIBUTION_PAGES: readonly DistributionPage[] = [
         { label: 'bill', value: 'your cloud invoice \u00b7 runner minutes never billed' },
         { label: 'seats', value: `${FREE_TIER_SEATS} free \u00b7 then per seat \u00b7 no sales call up to ${SELF_SERVE_SEAT_CEILING}` },
       ],
-      footer: 'The shape of a hosted organization; the identifiers are examples.',
+      footer: illustratedFooter({ note: 'The identifiers are examples.' }),
     },
     yours: [
       'The cloud account, and every resource in it, tagged with its organization, environment, kind, and id.',

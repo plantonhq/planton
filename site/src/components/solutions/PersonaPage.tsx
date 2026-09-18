@@ -14,6 +14,7 @@ import {
   PageHero,
   PlatformCounts,
   ProofSentences,
+  QuestionCard,
   Section,
   SectionSubtitle,
   SectionTitle,
@@ -180,23 +181,11 @@ const SupportingBeat: FC<{ beat: Beat }> = ({ beat }) => {
 };
 
 /**
- * An objection and its answer, with a door to the page that tells the
- * answering chapter for this person when one of their beats does.
+ * An objection and its answer: the shared question card, with the door
+ * resolved for this person (the objection's own page, or the page one of
+ * their beats proves the answering chapter at).
  */
 const ObjectionCard: FC<{ objection: Persona['objections'][number]; persona: Persona }> = ({ objection, persona }) => {
   const href = objection.readMore ?? persona.beats.find((b) => b.chapter === objection.chapter)?.provenAt;
-  const proven = href ? sitePage(href) : undefined;
-  return (
-    <Card>
-      <Box className="flex flex-col gap-3 h-full text-left">
-        <FeatureTitle className="text-balance">{objection.question}</FeatureTitle>
-        <BodyText className="flex-1">{objection.answer}</BodyText>
-        {href && proven ? (
-          <Link href={href} className="text-sm text-fg-secondary hover:text-white underline underline-offset-4">
-            {`${proven.title} \u2192`}
-          </Link>
-        ) : null}
-      </Box>
-    </Card>
-  );
+  return <QuestionCard question={objection.question} answer={objection.answer} readMore={href} />;
 };

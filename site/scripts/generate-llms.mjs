@@ -100,7 +100,7 @@ function chapterMarkdown(chapter) {
   return lines.join('\n');
 }
 
-function pageMarkdown(page, story, personas, stats, site, product, distributions) {
+function pageMarkdown(page, { story, personas, stats, site, product, distributions, compare }) {
   const lines = [`# ${page.title}`, '', page.description, '', `Canonical URL: ${site.url}${page.path === '/' ? '' : page.path}`, ''];
   if (page.chapters?.length) {
     lines.push('## What this page says', '');
@@ -151,6 +151,20 @@ function pageMarkdown(page, story, personas, stats, site, product, distributions
     for (const p of personas) lines.push(`- **${p.name}.** ${p.who} ${p.wall}`);
     lines.push('');
   }
+  // The Compare page states chapter 11 category by category: what each kind
+  // of tool does, what Planton does at the same moment, when a team runs
+  // both, and the questions a comparer asks.
+  if (page.path === '/compare') {
+    lines.push(`## ${compare.COMPARE.headline}`, '', compare.COMPARE.lede, '', compare.COMPARE.difference.claim, '');
+    for (const c of compare.COMPARE.categories) {
+      lines.push(`## Beside ${c.title}`, '', `**What they do.** ${c.theyDo}`, '', '**What Planton does at the same moment.**', '');
+      for (const point of c.planton) lines.push(`- **${point.label}.** ${point.text}`);
+      lines.push('', `**When you run both.** ${c.both}`, '', `Proven at: ${site.url}${c.provenAt}`, '');
+    }
+    lines.push('## You will ask', '');
+    for (const q of compare.COMPARE.questions) lines.push(`- **${q.question}** ${q.answer}`);
+    lines.push('');
+  }
   if (page.path === '/' || page.group === 'trust') {
     lines.push('## By the numbers', '', `- ${stats.PLATFORM_COUNTS.componentKinds} component kinds across ${stats.PLATFORM_COUNTS.providers} providers`, `- ${stats.PLATFORM_COUNTS.infraCharts} Infra Charts`, `- ${stats.PLATFORM_COUNTS.controls} technical controls in ${stats.PLATFORM_COUNTS.controlCategories} categories, ${stats.PLATFORM_COUNTS.frameworkCrosswalks} framework crosswalks`, `- Counted from the open-source repository on ${stats.PLATFORM_COUNTS.countedOn}`, '');
   }
@@ -169,6 +183,7 @@ async function main() {
   const pricing = await load('src/data/pricing.ts');
   const product = await load('src/data/product.ts');
   const distributions = await load('src/data/distributions.ts');
+  const compare = await load('src/data/compare.ts');
   const retiredModule = await load('src/data/retired-routes.ts');
 
   const site = registry.SITE;
@@ -196,23 +211,26 @@ async function main() {
 
   // ---- per-page markdown ------------------------------------------------
   const marketing = pages.filter((p) => p.index !== false && p.group !== 'content');
+  // Everything a page's markdown may quote: the story and the records the pages render from.
+  const data = { story, personas, stats, site, product, distributions, compare };
   for (const page of marketing) {
     const target = page.path === '/' ? path.join(exportDir, 'index.md') : path.join(exportDir, `${page.path.slice(1)}.md`);
     fs.mkdirSync(path.dirname(target), { recursive: true });
-    fs.writeFileSync(target, pageMarkdown(page, story, personas, stats, site, product, distributions));
+    fs.writeFileSync(target, pageMarkdown(page, data));
   }
 
   // ---- llms.txt -----------------------------------------------------------
   const docs = [...contentFiles('docs'), ...contentFiles('tutorials'), ...contentFiles('blog'), ...contentFiles('changelog')];
-  const groups = [
-    ['Trust', 'trust'],
-    ['Product', 'product'],
-    ['Distributions', 'distributions'],
-    ['Solutions', 'solutions'],
-    ['Pricing', 'pricing'],
-    ['Company', 'company'],
-    ['Legal', 'legal'],
-  ];
+  // The index lists pages under the groups the registry names, in the
+  // registry's order. A marketing page whose group has no heading would be
+  // built, exported, and silently absent from the index, so it fails here.
+  const headings = registry.PAGE_GROUP_HEADINGS;
+  const unlisted = marketing.filter((p) => p.path !== '/' && !headings[p.group]);
+  if (unlisted.length) {
+    fail(`${unlisted.length} page(s) belong to a group PAGE_GROUP_HEADINGS (src/data/site-pages.ts) does not list, so llms.txt would omit them:\n  ${unlisted.map((p) => `${p.path} (${p.group})`).join('\n  ')}`);
+    return;
+  }
+  const groups = Object.entries(headings).map(([group, label]) => [label, group]);
   const index = [];
   index.push(`# ${site.name}`, '');
   index.push(`> ${registry.sitePage('/').description}`, '');
@@ -239,7 +257,7 @@ async function main() {
 
   // ---- llms-full.txt ------------------------------------------------------
   const full = [index.join('\n'), '', '---', ''];
-  for (const page of marketing) full.push(pageMarkdown(page, story, personas, stats, site, product, distributions), '---', '');
+  for (const page of marketing) full.push(pageMarkdown(page, data), '---', '');
   for (const d of docs) full.push(`# ${d.title}`, '', d.description, '', `Canonical URL: ${site.url}${d.route}`, '', d.body, '', '---', '');
   fs.writeFileSync(path.join(exportDir, 'llms-full.txt'), full.join('\n'));
 

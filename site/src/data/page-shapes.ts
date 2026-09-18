@@ -43,6 +43,22 @@ export interface CommandsArtifact {
 
 export type Artifact = RecordArtifact | CommandsArtifact;
 
+/**
+ * The footer vocabulary every illustrated record shares, so the same fact is
+ * said the same way under every record on the site. A record's footer is the
+ * illustration sentence, then the figures sentence when any row carries an
+ * example figure marked `est.`, then one clause of its own only where the
+ * record needs one (a control profile says why it has no verdict). A record
+ * whose rows are real counts names its source and date instead.
+ */
+export const ILLUSTRATED_RECORD = 'An illustration of the record the product shows.';
+export const EXAMPLE_FIGURES = 'Figures marked est. are examples; a real record carries its own.';
+
+/** The footer of an illustrated record: the shared sentences, then the record's own clause when it has one. */
+export function illustratedFooter(options: { figures?: boolean; note?: string } = {}): string {
+  return [ILLUSTRATED_RECORD, options.figures ? EXAMPLE_FIGURES : undefined, options.note].filter(Boolean).join(' ');
+}
+
 /** Which strip of facts, if any, a page shows under its hero. */
 export type HeroStrip = 'providers' | 'counts';
 

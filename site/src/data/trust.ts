@@ -13,7 +13,7 @@
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.
  */
-import type { RecordArtifact } from './page-shapes.ts';
+import { illustratedFooter, type RecordArtifact } from './page-shapes.ts';
 import { chapter, type ChapterId } from './story.ts';
 
 export interface TrustPoint {
@@ -80,7 +80,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
         { label: 'controls', value: 'encryption at rest \u00b7 encryption in transit \u00b7 no public exposure' },
         { label: 'uncovered', value: 'none of the 6 components is without a control profile' },
       ],
-      footer: 'An illustration of the shape. Figures marked est. are examples; a real deploy carries its own.',
+      footer: illustratedFooter({ figures: true }),
     },
     next: [
       '/trust/rules-and-approvals',
@@ -114,7 +114,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
         { label: 'who may approve', value: 'anyone with approve access on prod \u00b7 never the requester' },
         { label: 'resolution', value: 'approved by a.patel \u00b7 2026-09-17 09:14 \u00b7 \u201cthe replica is intentional\u201d' },
       ],
-      footer: 'An illustration of the shape. Figures marked est. are examples; a real deploy carries its own.',
+      footer: illustratedFooter({ figures: true }),
     },
     next: [
       '/trust/the-record',
@@ -149,7 +149,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
         { label: 'phases', value: 'init \u00b7 refresh \u00b7 preview \u00b7 apply \u00b7 capture' },
         { label: 'snapshot', value: '7 resources \u00b7 tagged planton.ai/environment=prod' },
       ],
-      footer: 'An illustration of the shape. Every deploy leaves one of these.',
+      footer: illustratedFooter({ figures: true, note: 'Every deploy leaves one of these.' }),
     },
     next: [
       '/trust/security-posture',
@@ -181,7 +181,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
         { label: 'SOC 2 CC6.1', value: 'served by no public exposure, role-based access control' },
         { label: 'verdict', value: 'none' },
       ],
-      footer: 'The shape of a control profile and two crosswalk rows; evidence is quoted from the component\u2019s profile. There is no verdict that says compliant, because a component enforces controls and is never called compliant.',
+      footer: illustratedFooter({ note: 'Two crosswalk rows are shown; evidence is quoted from the component\u2019s profile. There is no verdict that says compliant, because a component enforces controls and is never called compliant.' }),
     },
     honesty: [
       'Posture never becomes \u201ccompliant.\u201d The correct sentence is: this component enforces these controls, which serve these requirements. SOC 2 reports on an organization\u2019s controls, not a product\u2019s; HIPAA compliance is a property of an entity\u2019s program.',
@@ -217,7 +217,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
         { label: 'rotation', value: 'nothing to rotate' },
         { label: 'modules', value: 'open source \u00b7 Apache 2.0 \u00b7 github.com/plantonhq/planton' },
       ],
-      footer: 'The shape of a keyless connection. Broker-issued credentials (your own vault) are the other keyless mode.',
+      footer: illustratedFooter({ note: 'Broker-issued credentials (your own vault) are the other keyless mode.' }),
     },
     honesty: [
       'Your account, your keys, your state, your bill. Planton holds the record and the manifests; the infrastructure is yours in your provider\u2019s console the whole time.',

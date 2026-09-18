@@ -46,13 +46,14 @@ The site is data first. Every sentence that states what Planton is or does lives
 | `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the landing page, the Trust pages, `llms.txt` |
 | `src/data/positioning.ts` | The vocabulary law: the umbrella tagline (never an analogy) and each hub's one line and one analogy. | `story.ts`, the hero, the hub cards |
 | `src/data/personas.ts` | The five people the story is told to: headline, wall, deciding proof, the chapters in their order and at their weight, objections, quotes by name, doors by key. | `src/components/solutions/PersonaPage.tsx`, `src/components/decks/`, the landing's persona router and cards, `llms.txt` |
-| `src/data/artifacts.ts` | The proof a page shows, found by the page's path, so a persona beat shows the record its proving page shows. | `PersonaPage`, the persona decks |
+| `src/data/artifacts.ts` | The proof a page shows, found by the page's path, so a persona beat or a Compare section shows the record its proving page shows. | `PersonaPage`, `ComparePage`, the persona decks |
 | `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
 | `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
 | `src/data/distributions.ts` | The hosted and self-hosted pages: lede, proof points, the record or the install, what stays yours. | `src/components/distributions/DistributionPage.tsx` |
+| `src/data/compare.ts` | The Compare page: three kinds of tool described and never named, what the reader keeps when they run both, what Planton does at the same moment, the proving page whose record is shown beside it, the questions a comparer asks. | `src/components/compare/ComparePage.tsx`, `llms.txt` |
 | `src/data/doors.ts` | Every call to action once: label and destination by key; the user's pair and the buyer's pair. | the `Doors` primitive; a record names its pair |
-| `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step. | `trust.ts`, `product.ts`, `distributions.ts` |
-| `src/data/site-pages.ts` | The route registry: every non-content page with its title, description, group, chapters, and index flag. | `sitemap.ts`, `robots.ts`, `lib/page-metadata.ts`, `generate-llms.mjs`, `check-apex-routing.mjs` |
+| `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step; and the one footer vocabulary every illustrated record uses (`illustratedFooter`). | `trust.ts`, `product.ts`, `distributions.ts`, `compare.ts` |
+| `src/data/site-pages.ts` | The route registry: every non-content page with its title, description, group, chapters, and index flag; and the heading each group gets in `llms.txt` (`PAGE_GROUP_HEADINGS`), so a new group cannot be forgotten by the index. | `sitemap.ts`, `robots.ts`, `lib/page-metadata.ts`, `generate-llms.mjs`, `check-apex-routing.mjs` |
 | `src/data/retired-routes.ts` | Every retired path and the page that answers for it. | `RetiredRoute`, the link gate, the edge redirect declared in the estate |
 | `src/data/pricing.ts` | Every price, cap, and free tier. | the pricing page and any sentence that names a price |
 | `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | the proof strip, `llms.txt` |
@@ -60,7 +61,7 @@ The site is data first. Every sentence that states what Planton is or does lives
 
 Data files import each other with `.ts` extensions so Node can run them directly (the generators do); `tsconfig.json` allows it.
 
-Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `PersonaCard`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
+Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `PersonaCard`, `QuestionCard`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
 
 The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition; `src/components/landing-page/index.ts` points at the active one and is the rollback switch. Nothing outside a versioned folder imports from inside one.
 
@@ -89,6 +90,7 @@ src/components/landing-page/ the versioned landing compositions
 src/components/trust/    the Trust template and index
 src/components/product/  the Product template and index (and, until the desktop landing is rebuilt, the 2025 desktop kit)
 src/components/solutions/ the persona page template and the Solutions index
+src/components/compare/  the Compare page template
 src/components/distributions/ the Distributions template and index
 src/components/deck/     the deck engine, bindSlide, the palette-native slide frame, and the meeting decks' older slide kit
 src/components/meetings/ meeting decks and their registry

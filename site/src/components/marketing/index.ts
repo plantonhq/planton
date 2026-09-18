@@ -16,7 +16,6 @@ export * from './divider';
 export * from './quote';
 export * from './metric';
 export * from './terminal-window';
-export * from './comparison-cell';
 export * from './step';
 export * from './record-window';
 // Page sections: the pieces every story page composes (a hero, proof beside a
@@ -31,3 +30,4 @@ export * from './provider-strip';
 export * from './chapter-section';
 export * from './platform-counts';
 export * from './persona-card';
+export * from './question-card';

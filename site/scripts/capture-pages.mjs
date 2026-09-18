@@ -125,6 +125,9 @@ const SCENES = [
   { name: 'it-consultancy-1280', route: '/solutions/it-consultancy', width: 1280, ua: UA.mac },
   { name: 'startup-founder-1280', route: '/solutions/startup-founder', width: 1280, ua: UA.mac },
   { name: 'security-leader-1280', route: '/solutions/security-and-governance-leader', width: 1280, ua: UA.mac },
+  { name: 'compare-1680', route: '/compare', width: 1680, ua: UA.mac },
+  { name: 'compare-1280', route: '/compare', width: 1280, ua: UA.mac },
+  { name: 'compare-phone', route: '/compare', width: 390, ua: UA.iphone },
   // The persona decks: each cover, and the roadmap slide of one deck by its
   // hash so the disclosure line is in a capture. The engine reads the hash
   // on load, inside the virtual clock.

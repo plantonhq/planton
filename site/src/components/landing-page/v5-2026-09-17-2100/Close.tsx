@@ -2,13 +2,15 @@ import { Box, Typography } from '@mui/material';
 import Link from 'next/link';
 import type { FC } from 'react';
 import { BodyText, Doors, FeatureTitle, Section, SectionTitle } from '@/components/marketing';
+import { sitePage } from '@/data/site-pages';
 import { chapter } from '@/data/story';
 
 /**
  * Chapters 11 and 12 folded into one close: how Planton sits beside the
- * tools a reader already has (categories described, never a vendor named),
- * then the same two doors the hero opened with, and the one place a demo is
- * offered. Prices are not typed here; the pricing page carries them.
+ * tools a reader already has (categories described, never a vendor named)
+ * with a door to the page that tells chapter 11 in full, then the same two
+ * doors the hero opened with, and the one place a demo is offered. Prices
+ * are not typed here; the pricing page carries them.
  */
 
 const compare = chapter('how-it-compares');
@@ -33,6 +35,9 @@ export const Close: FC = () => (
           </Box>
         ))}
       </Box>
+      <Link href="/compare" className="text-sm text-fg-secondary hover:text-white underline underline-offset-4 -mt-2">
+        {`${sitePage('/compare').title} \u2192`}
+      </Link>
       <BodyText className="text-fg">{start.claim}</BodyText>
       <Doors className="mt-2" />
       <Typography className="text-xs text-fg-faint">

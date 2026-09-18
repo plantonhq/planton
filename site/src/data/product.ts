@@ -15,7 +15,7 @@
  * for the build-time generators.
  */
 import type { DoorPair } from './doors.ts';
-import type { Artifact, HeroStrip, ProofPoint, Step } from './page-shapes.ts';
+import { illustratedFooter, type Artifact, type HeroStrip, type ProofPoint, type Step } from './page-shapes.ts';
 import { PLATFORM_COUNTS, PLATFORM_STATS } from './platform-stats.ts';
 import { POSITIONING } from './positioning.ts';
 import { chapter, type ChapterId } from './story.ts';
@@ -54,7 +54,6 @@ const bring = chapter('bring-what-you-have');
 const runs = chapter('runs-where-you-decide');
 const proof = chapter('proof-it-works');
 
-const ILLUSTRATION = 'Illustration of the record the product shows; the figures are examples.';
 
 export const PRODUCT_PAGES: readonly ProductPage[] = [
   {
@@ -87,7 +86,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'budget', value: 'within the environment\u2019s $600/mo est. deployment budget' },
         { label: 'published as', value: 'Infra Chart production-baseline \u00b7 redeployable into the next environment' },
       ],
-      footer: ILLUSTRATION,
+      footer: illustratedFooter({ figures: true }),
     },
     provenAt: ['/trust/verified-before-deploy', '/trust/rules-and-approvals', '/trust/the-record'],
     next: ['/product/service-hub', '/product/catalog'],
@@ -121,7 +120,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'github', value: 'check passed \u00b7 deployment active' },
         { label: 'record', value: 'one run, kept with its log and its revision' },
       ],
-      footer: ILLUSTRATION,
+      footer: illustratedFooter({ figures: true }),
     },
     provenAt: ['/trust/rules-and-approvals', '/trust/the-record'],
     next: ['/product/infra-hub', '/product/coding-agents'],
@@ -216,7 +215,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'permissions', value: 'least privilege \u00b7 validated against the provider\u2019s own inventory' },
         { label: 'modules', value: 'Pulumi \u00b7 Terraform \u00b7 Apache 2.0' },
       ],
-      footer: 'Illustration of a fact sheet; the kind is real, the figures are examples.',
+      footer: illustratedFooter({ note: 'The kind is real; the figures are examples.' }),
     },
     provenAt: ['/trust/verified-before-deploy', '/trust/security-posture'],
     next: ['/product/infra-hub', '/product/open-source'],
@@ -249,7 +248,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'state', value: 'written once, only what was applied' },
         { label: 'record', value: 'stack job kept \u00b7 queryable by resource, environment, time' },
       ],
-      footer: ILLUSTRATION,
+      footer: illustratedFooter(),
     },
     provenAt: ['/trust/the-record'],
     next: ['/product/infra-hub', '/product/cli'],

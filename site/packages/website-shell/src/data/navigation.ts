@@ -47,6 +47,7 @@ export const menuDistributions: MenuItem[] = [
 
 export const menuExplorer: MenuItem[] = [
   { label: 'All Product', href: '/product' },
+  { label: 'How Planton Compares', href: '/compare' },
   { label: 'Documentation', href: '/docs' },
   { label: 'Tutorials', href: '/tutorials' },
   { label: 'Blog', href: '/blog' },

@@ -228,10 +228,10 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 11,
     title: 'How It Compares',
     claim:
-      'Governance platforms observe your estate after the fact and tell you what to fix; Planton prevents at the moment of creation and stamps the proof on the record, alongside those tools rather than instead of them. Infrastructure-as-code tools work on Terraform you still write, field name by field name; Planton gives you typed self-service: every component a typed schema over an open-source module, its controls stated against one fixed list rather than a hundred field names. Developer portals catalog what you have; Planton deploys what you need.',
+      'Governance platforms observe your estate after the fact and tell you what to fix; Planton prevents at the moment of creation and stamps the proof on the record, alongside those tools rather than instead of them. Infrastructure-as-code tools work on Terraform you still write, field name by field name; Planton gives you typed self-service: every component a typed schema over an open-source module, and controls stated against one fixed list rather than a hundred field names. Developer portals catalog what you have; Planton deploys what you need.',
     proof: [
       'Prevent at creation versus observe after: a complement to posture tools, never a replacement.',
-      'Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten. Every component reports its controls against the same fixed list, so what you check is one vocabulary, not each kind\u2019s field names.',
+      'Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten. Every covered component reports its controls against the same fixed list, so what you check is one vocabulary, not each kind\u2019s field names.',
       'The execution layer behind the catalog: it deploys, with the record attached.',
     ],
     neverSay: ['any vendor name', 'DevSecOps platform', 'FinOps', 'a feature table with a competitor column'],
