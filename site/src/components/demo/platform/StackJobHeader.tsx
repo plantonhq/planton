@@ -5,6 +5,7 @@ import { CheckCircle } from 'lucide-react';
 import {
   StackJob,
   StackJobStatus,
+  Timestamp,
   WorkflowExecutionStatus,
   WorkflowExecutionResult,
 } from '../interfaces';
@@ -33,7 +34,7 @@ const StackJobHeader: React.FC<StackJobHeaderProps> = ({ stackJob, stackJobStatu
   };
 
   // Get operation time
-  const getOperationTime = (operation: any) => {
+  const getOperationTime = (operation: { startTime?: Timestamp | string; endTime?: Timestamp | string } | undefined) => {
     if (operation?.endTime && operation?.startTime) {
       const start = typeof operation.startTime === 'string' 
         ? new Date(operation.startTime).getTime()
@@ -104,6 +105,7 @@ const StackJobHeader: React.FC<StackJobHeaderProps> = ({ stackJob, stackJobStatu
                 </span>
                 <div className="flex items-center gap-1">
                   {stackJob.status.audit.specAudit?.createdBy?.avatar && (
+                    // eslint-disable-next-line @next/next/no-img-element -- the avatar is the run record's own URL, dimensions unknown; images are unoptimized on this static export
                     <img 
                       src={stackJob.status.audit.specAudit.createdBy.avatar} 
                       alt={stackJob.status.audit.specAudit.createdBy.id} 

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import { AwsAlb } from '../interfaces';
 import { AwsAlbFormElements } from './AwsAlbFormElements';
 import { AccordionSection } from './AccordionSection';
@@ -340,7 +341,7 @@ const AwsAlbFormContent = React.forwardRef<
     handleFieldComplete: handleFieldComplete,
   }));
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: unknown) => {
     setFormData((prev) => {
       const newData = { ...prev };
       const keys = field.split('.');
@@ -482,7 +483,7 @@ const AwsAlbFormContent = React.forwardRef<
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 bg-white rounded flex items-center justify-center shadow-sm">
-                <img src="/_site/images/resources/aws.svg" alt="AWS icon" className="w-4 h-4" />
+                <Image src="/_site/images/resources/aws.svg" alt="AWS icon" width={16} height={16} className="w-4 h-4" />
               </div>
               <h1 className="text-xl font-semibold text-gray-900">Deploy AWS ALB</h1>
             </div>

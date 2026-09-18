@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, CheckCircle, Loader2, ExternalLink } from 'lucide-react';
-import { AwsCredential } from '../interfaces';
+import { AwsAlb, AwsCredential } from '../interfaces';
 import { FormModalRegistry } from '../modals';
 import { useAutoModalAndFill } from '../../../hooks/useAutoModalAndFill';
 
@@ -41,9 +42,11 @@ const ProviderIcon = ({ providerId }: { providerId: string }) => {
   };
 
   return (
-    <img 
-      src={getIconPath(providerId)} 
+    <Image
+      src={getIconPath(providerId)}
       alt={`${providerId} icon`}
+      width={32}
+      height={32}
       className="w-8 h-8"
     />
   );
@@ -135,7 +138,7 @@ export default function CloudConnections() {
     setSelectedProvider(null);
   };
 
-  const handleModalSubmit = async (formData?: AwsCredential) => {
+  const handleModalSubmit = async (formData?: AwsCredential | AwsAlb) => {
     if (!selectedProvider) return;
     
     try {

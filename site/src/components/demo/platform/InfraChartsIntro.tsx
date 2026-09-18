@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Lightbulb, Package, GitBranch, Zap, ChevronRight } from 'lucide-react';
 
@@ -178,9 +179,11 @@ export default function InfraChartsIntro() {
             </p>
           </div>
           <div className="p-8 bg-gray-50">
-            <img 
-              src="/demo/_site/images/ecs-chart-dag.png" 
+            <Image
+              src="/demo/_site/images/ecs-chart-dag.png"
               alt="ECS Infra Chart DAG showing VPC, Route53, security groups, ALB, certificates, ECS cluster, IAM roles, ECR repo, and ECS service with their dependency arrows and deployment order"
+              width={2674}
+              height={1430}
               className="w-full h-auto rounded-xl border-2 border-gray-200 demo-card-shadow"
             />
           </div>

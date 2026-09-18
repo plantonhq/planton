@@ -183,13 +183,13 @@ export interface StackJobEssentials {
 // CloudResource interface (simplified for StackJob usage)
 export interface CloudResource {
   metadata: ApiResourceMetadata;
-  spec: any; // This would be the full CloudResourceSpec
-  status?: any; // This would be the full CloudResourceStatus
+  spec: Record<string, unknown>; // This would be the full CloudResourceSpec
+  status?: Record<string, unknown>; // This would be the full CloudResourceStatus
 }
 
 export interface CloudResourceMutator {
   // This would contain the mutator fields
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface StackJobSpec {
@@ -212,7 +212,7 @@ export interface StackJobProgressEvent {
   type: StackJobProgressEventType;
   stackJobId: string;
   timestamp: Timestamp;
-  data?: any;
+  data?: unknown;
 }
 
 // Input/Output interfaces

@@ -8,7 +8,7 @@ import { useAutoFill } from '../../../contexts/AutoFillContext';
 
 interface AwsAlbFormElementsProps {
   formData: AwsAlb;
-  onInputChange: (field: string, value: any) => void;
+  onInputChange: (field: string, value: unknown) => void;
   helpTextMapping?: { [key: string]: string };
   section?: 'subnets' | 'securityGroups' | 'loadBalancer' | 'dns' | 'ssl';
 }

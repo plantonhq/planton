@@ -1354,6 +1354,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.29.7":
+  version: 7.29.7
+  resolution: "@babel/runtime@npm:7.29.7"
+  checksum: bc311855c6dbf5356030979584ca0f8b6cee39fe058175b02e85a73e246fc76ae30248b0d40e70c2652101faeb43279468ed2d086a670673eb9783c1fee1df2b
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.27.1, @babel/template@npm:^7.27.2":
   version: 7.27.2
   resolution: "@babel/template@npm:7.27.2"
@@ -2360,17 +2367,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material-nextjs@npm:^6.2.1":
-  version: 6.5.0
-  resolution: "@mui/material-nextjs@npm:6.5.0"
+"@mui/material-nextjs@npm:^9.4.0":
+  version: 9.4.0
+  resolution: "@mui/material-nextjs@npm:9.4.0"
   dependencies:
-    "@babel/runtime": ^7.26.0
+    "@babel/runtime": ^7.29.7
   peerDependencies:
     "@emotion/cache": ^11.11.0
     "@emotion/react": ^11.11.4
     "@emotion/server": ^11.11.0
     "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
-    next: ^13.0.0 || ^14.0.0 || ^15.0.0
+    next: ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     react: ^17.0.0 || ^18.0.0 || ^19.0.0
   peerDependenciesMeta:
     "@emotion/cache":
@@ -2379,7 +2386,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: f46c80e5de4cb890ce60b5997a5cf8cdadd809785a3b66d7e6d1b4b58229e8357b0f3033302b2e55bc113e0d53e506b834e297ebfc52d5cec82ec721347d55ab
+  checksum: a8f68d414f69c179ad20544ad0ba64fefb0396b695bb877b8ad9e5ca4df56b478d000b0fb53a0bb1566a44dd2aaf7199c5c5b39c959425d54c02bf3ca1d1db5e
   languageName: node
   linkType: hard
 
@@ -9250,7 +9257,7 @@ __metadata:
     "@emotion/styled": ^11.14.0
     "@mui/icons-material": ^6.2.1
     "@mui/material": ^6.2.1
-    "@mui/material-nextjs": ^6.2.1
+    "@mui/material-nextjs": ^9.4.0
     "@next/third-parties": ^16.2.1
     "@planton/website-shell": "workspace:*"
     "@svgr/webpack": ^8.1.0

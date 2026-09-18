@@ -4,13 +4,14 @@ import React from 'react';
 import { AwsCredentialModal } from './AwsCredentialModal';
 import { AwsAlbModal } from './AwsAlbModal';
 import { FormModalFactory } from './FormModalFactory';
+import type { AwsAlb, AwsCredential } from '../interfaces';
 
 interface FormModalRegistryProps {
   providerId: string;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
-  initialData?: any;
+  /** The record the chosen provider's form produces; the placeholder for a provider with no form submits none. */
+  onSubmit: (data?: AwsCredential | AwsAlb) => void;
 }
 
 // Registry of available form modals
@@ -27,7 +28,6 @@ export const FormModalRegistry: React.FC<FormModalRegistryProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialData,
 }) => {
   // Check if provider is supported
   if (!(providerId in FORM_MODALS)) {
@@ -65,7 +65,7 @@ export const FormModalRegistry: React.FC<FormModalRegistryProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => onSubmit({})}
+                    onClick={() => onSubmit(undefined)}
                     className="px-4 py-2 text-sm font-medium text-white bg-[#111] rounded-lg hover:bg-[#111] focus:outline-none focus:ring-2 focus:ring-white"
                   >
                     Submit
@@ -104,7 +104,6 @@ export const FormModalRegistry: React.FC<FormModalRegistryProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={onSubmit}
-      initialData={initialData}
     />
   );
 };

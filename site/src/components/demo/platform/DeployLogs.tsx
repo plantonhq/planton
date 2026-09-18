@@ -6,11 +6,14 @@ import { Loader2, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import StackJobLogger from './StackJobLogger';
 import StackJobHeader from './StackJobHeader';
+import type { StackJob, StackJobStatus } from '../interfaces/stackjob';
 import stackJobData from '../../../../public/demo/stack-job.json';
 
 // Extract the full StackJob data and status from the imported file
-const stackJob = stackJobData;
-const stackJobStatus = stackJobData.status;
+// The fixture is a JSON record of a real run; JSON widens its string enums, so it is
+// read as the interfaces the components take.
+const stackJob = stackJobData as unknown as StackJob;
+const stackJobStatus = stackJobData.status as unknown as StackJobStatus;
 
 export default function DeployLogs() {
   const [isDeploying, setIsDeploying] = useState(true);
@@ -71,13 +74,13 @@ export default function DeployLogs() {
       </div>
 
       {/* StackJob Header */}
-      <StackJobHeader stackJob={stackJob as any} stackJobStatus={stackJobStatus as any} />
+      <StackJobHeader stackJob={stackJob} stackJobStatus={stackJobStatus} />
 
       {/* StackJobLogger */}
       <div className="flex-1 overflow-auto">
         <StackJobLogger
-          stackJobStatus={stackJobStatus as any}
-          stackJob={stackJob as any}
+          stackJobStatus={stackJobStatus}
+          stackJob={stackJob}
           loading={false}
           onAnimationComplete={handleAnimationComplete}
         />

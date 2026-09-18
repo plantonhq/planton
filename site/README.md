@@ -108,7 +108,7 @@ packages/website-shell/  the header, footer, navigation, palette, and theme the 
 |--------|--------|
 | `scripts/check-displayed-vs-enforced.mjs` | every displayed plan limit and entitlement matches what the platform enforces |
 | `scripts/check-apex-routing.mjs` | every top-level path is passed through at the edge and reserved as a platform handle (reads the sibling `planton-platform` checkout; skips loudly without it) |
-| `next build` with `tsc --noEmit` and eslint before it | types and the accessibility and image rules hold |
+| `next build` with `tsc --noEmit` and `eslint --max-warnings 0` before it | types hold, and the accessibility, image, and no-`any` rules hold everywhere with zero warnings |
 | `scripts/check-internal-links.mjs` | every internal link in `out/` resolves to a page or a static file, and every retired route is whole (stub present, target live, nothing links to it) |
 | `scripts/generate-llms.mjs` | `llms.txt`, `llms-full.txt`, and one Markdown per marketing page from the same data; fails when an exported route is unregistered |
 
@@ -130,7 +130,7 @@ Rule files live beside what they govern:
 
 ## Health ledger
 
-What a day-one architect would not have done, and which work retires it. Nothing is added to the legacy allowlist in `eslint.config.mjs`; entries leave it as their folder is rebuilt.
+What a day-one architect would not have done, and which work retires it. The build carries no warnings: lint runs with `--max-warnings 0` and there is no legacy allowlist, so a rule holds in every folder or the build fails. An image the build cannot size (a document's own picture, a record's avatar) is a plain `<img>` with a one-line exception at the site saying why; everything else here is debt the ledger names.
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|

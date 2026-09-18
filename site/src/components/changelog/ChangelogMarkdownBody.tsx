@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
 import MermaidDiagram from '@/components/common/MermaidDiagram';
+import { mermaidSource } from '@/lib/hast';
 import {
   HEADING_H1_CLASSES,
   HEADING_H2_CLASSES,
@@ -124,24 +125,10 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
               {children}
             </code>
           ),
-          pre: ({ children, node }: any) => {
-            // Detect mermaid code blocks and render as interactive diagrams
-            const codeChild = node?.children?.[0];
-            if (codeChild?.tagName === 'code') {
-              const classNames = codeChild.properties?.className || [];
-              if (
-                Array.isArray(classNames) &&
-                classNames.some((c: string) => c === 'language-mermaid')
-              ) {
-                const codeText =
-                  codeChild.children
-                    ?.map((c: any) => c.value || '')
-                    .join('') || '';
-                return (
-                  <MermaidDiagram chart={codeText.replace(/\n$/, '')} />
-                );
-              }
-            }
+          pre: ({ children, node }) => {
+            // A fenced mermaid block renders as a diagram.
+            const mermaid = mermaidSource(node);
+            if (mermaid !== undefined) return <MermaidDiagram chart={mermaid} />;
             return (
               <pre className="bg-[#1a1a1a] p-4 rounded-lg overflow-x-auto my-4 border border-[#2a2a2a]">
                 {children}
@@ -183,8 +170,11 @@ const ChangelogMarkdownBody: React.FC<ChangelogMarkdownBodyProps> = ({
           ),
 
           // ---- Misc ----
+          // The image is the entry's own, dimensions unknown at build time; images are
+          // unoptimized on this static export, so next/image would emit the same tag.
           img: ({ src, alt, ...props }) =>
             src ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={src}
                 alt={alt || ''}

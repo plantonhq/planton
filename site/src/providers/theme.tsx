@@ -1,7 +1,7 @@
 'use client';
 
 import { CssBaseline, ThemeProvider as MUIThemeProvider } from '@mui/material';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { websiteTheme } from '@planton/website-shell/theme';
 import type { PropsWithChildren } from 'react';
 

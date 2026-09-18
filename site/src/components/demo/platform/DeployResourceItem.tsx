@@ -7,9 +7,9 @@ interface DeployResourceItemProps {
   item: {
     id: string;
     name: string;
-    icon: React.ComponentType<any>;
+    icon: React.ComponentType<{ className?: string }>;
     color: string;
-    config: Record<string, any>;
+    config: Record<string, unknown>;
     cost: string;
   };
   index: number;
@@ -34,7 +34,7 @@ export default function DeployResourceItem({ item, index }: DeployResourceItemPr
             <div className="flex items-center gap-4 mt-1">
               {Object.entries(item.config).map(([key, value]) => (
                 <span key={key} className="text-sm text-gray-600">
-                  {key}: <span className="font-medium">{value}</span>
+                  {key}: <span className="font-medium">{String(value)}</span>
                 </span>
               ))}
             </div>

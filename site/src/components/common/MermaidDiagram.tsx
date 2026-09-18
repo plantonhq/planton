@@ -43,8 +43,7 @@ const MermaidDiagram: React.FC<MermaidDiagramProps> = ({ chart, className = '' }
         ];
 
         selectors.forEach(({ selector, styles }) => {
-          const elements = svgElement.querySelectorAll(selector);
-          elements.forEach((el: any) => {
+          svgElement.querySelectorAll<SVGElement>(selector).forEach((el) => {
             Object.assign(el.style, styles);
           });
         });

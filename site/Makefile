@@ -53,9 +53,11 @@ clean-build: clean install build
 
 preview: preview-site
 
-# Build and locally preview the static export from ./out
+# Build and locally preview the static export from ./out. NODE_NO_WARNINGS
+# keeps Node's own notices (an npm internal loading an ES module) out of the
+# terminal; a warning that shows here should be the site's, never the runtime's.
 preview-site: build
-	cd out && npx --yes serve -l $(PORT)
+	cd out && NODE_NO_WARNINGS=1 npx --yes serve -l $(PORT)
 
 # =============================================================================
 # Image Processing & Assets Sync

@@ -14,7 +14,7 @@ export default function ComponentConfiguration({
   selectedComponent: _selectedComponent,
   onDeploy,
 }: ComponentConfigurationProps) {
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: unknown) => {
     console.log('Component configuration submitted:', data);
     // Trigger navigation to deploy logs
     onDeploy();

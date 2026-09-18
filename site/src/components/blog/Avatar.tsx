@@ -23,7 +23,10 @@ const Avatar: React.FC<AvatarProps> = ({ src, alt, size = 'md', className = '' }
   };
 
   if (src) {
+    // An author's picture comes from the post's frontmatter, dimensions unknown at build
+    // time; images are unoptimized on this static export, so next/image would emit the same tag.
     return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={src}
         alt={alt}

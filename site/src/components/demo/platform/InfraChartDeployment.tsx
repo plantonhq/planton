@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Play, CheckCircle2, Loader2 } from 'lucide-react';
 
@@ -220,9 +221,11 @@ export default function InfraChartDeployment() {
               {/* DAG Image */}
               <div className="flex-1 p-6 flex items-center justify-center bg-gray-50">
                 <div className="w-full max-w-3xl">
-                  <img 
-                    src="/demo/_site/images/ecs-chart-dag.png" 
+                  <Image
+                    src="/demo/_site/images/ecs-chart-dag.png"
                     alt="ECS Infra Chart DAG showing 9 interconnected resources: VPC, Route53, Security Group, Certificate, ALB, ECS Cluster, IAM Role, ECR Repo, and ECS Service with dependency arrows"
+                    width={2674}
+                    height={1430}
                     className="w-full h-auto rounded-lg border-2 border-gray-200 demo-card-shadow"
                   />
                 </div>

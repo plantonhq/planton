@@ -3,28 +3,29 @@
 import React from 'react';
 import { CredentialModal } from './CredentialModal';
 
-interface FormProps {
-  onSubmit: (data: any) => void;
+/** What a form inside the modal takes; `T` is the record the form produces. */
+export interface FormProps<T> {
+  onSubmit: (data: T) => void;
   onCancel: () => void;
-  initialData?: any;
+  initialData?: Partial<T>;
 }
 
-interface FormModalFactoryProps {
+interface FormModalFactoryProps<T> {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
-  FormComponent: React.ComponentType<FormProps>;
-  formProps?: any;
+  onSubmit: (data: T) => void;
+  FormComponent: React.ComponentType<FormProps<T>>;
+  formProps?: Pick<FormProps<T>, 'initialData'>;
 }
 
-export const FormModalFactory: React.FC<FormModalFactoryProps> = ({
+export function FormModalFactory<T>({
   isOpen,
   onClose,
   onSubmit,
   FormComponent,
   formProps = {},
-}) => {
-  const handleFormSubmit = (data: any) => {
+}: FormModalFactoryProps<T>) {
+  const handleFormSubmit = (data: T) => {
     onSubmit(data);
     onClose();
   };
@@ -45,13 +46,13 @@ export const FormModalFactory: React.FC<FormModalFactoryProps> = ({
       />
     </CredentialModal>
   );
-};
+}
 
 // Factory function that creates a modal component
-export function createFormModal(
-  FormComponent: React.ComponentType<FormProps>
-): React.FC<Omit<FormModalFactoryProps, 'FormComponent'>> {
-  const ModalComponent = (props: Omit<FormModalFactoryProps, 'FormComponent'>) => (
+export function createFormModal<T>(
+  FormComponent: React.ComponentType<FormProps<T>>
+): React.FC<Omit<FormModalFactoryProps<T>, 'FormComponent'>> {
+  const ModalComponent = (props: Omit<FormModalFactoryProps<T>, 'FormComponent'>) => (
     <FormModalFactory
       {...props}
       FormComponent={FormComponent}

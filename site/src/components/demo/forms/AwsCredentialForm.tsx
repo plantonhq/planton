@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import { AwsCredential } from '../interfaces';
 import { AwsCredentialFormElements } from './AwsCredentialFormElements';
 import { AccordionSection } from './AccordionSection';
@@ -132,10 +133,8 @@ const AwsCredentialFormContent = React.forwardRef<
       if (keys.length === 2) {
         // Handle nested fields like 'metadata.name' or 'spec.accountId'
         const [parent, child] = keys;
-        newData[parent as keyof AwsCredential] = {
-          ...newData[parent as keyof AwsCredential],
-          [child]: value,
-        } as any;
+        if (parent === 'metadata') newData.metadata = { ...newData.metadata, [child]: value };
+        else if (parent === 'spec') newData.spec = { ...newData.spec, [child]: value };
       }
 
       return newData;
@@ -182,7 +181,7 @@ const AwsCredentialFormContent = React.forwardRef<
         ...formData,
         authorizedEnvironments,
       };
-      await onSubmit(formDataWithEnvironments as any);
+      await onSubmit(formDataWithEnvironments);
     } finally {
       setIsSubmitting(false);
     }
@@ -231,10 +230,8 @@ const AwsCredentialFormContent = React.forwardRef<
           if (value) {
             setFormData((prev) => {
               const newData = { ...prev };
-              newData[parent as keyof AwsCredential] = {
-                ...newData[parent as keyof AwsCredential],
-                [child]: value,
-              } as any;
+              if (parent === 'metadata') newData.metadata = { ...newData.metadata, [child]: value };
+              else if (parent === 'spec') newData.spec = { ...newData.spec, [child]: value };
               return newData;
             });
           }
@@ -275,7 +272,7 @@ const AwsCredentialFormContent = React.forwardRef<
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 bg-white rounded flex items-center justify-center shadow-sm">
-                <img src="/_site/images/resources/aws.svg" alt="AWS icon" className="w-4 h-4" />
+                <Image src="/_site/images/resources/aws.svg" alt="AWS icon" width={16} height={16} className="w-4 h-4" />
               </div>
               <h1 className="text-xl font-semibold text-gray-900">Create AWS Credentials</h1>
             </div>
