@@ -70,11 +70,11 @@ func assertAllClaims(t *testing.T, claims map[string][2]string, wantClass, wantS
 
 func TestStorageRender_Valkey(t *testing.T) {
 	pinned := renderedVolumeClaims(t, LoadValkeyChart(), "test-redis",
-		ValkeyHelmValues("test", "800Gi", "trident"))
+		ValkeyHelmValues(valkeyTestOptions("test", "800Gi", "trident")))
 	assertAllClaims(t, pinned, "trident", "800Gi")
 
 	unpinned := renderedVolumeClaims(t, LoadValkeyChart(), "test-redis",
-		ValkeyHelmValues("test", "1Gi", ""))
+		ValkeyHelmValues(valkeyTestOptions("test", "1Gi", "")))
 	assertAllClaims(t, unpinned, "", "1Gi")
 }
 

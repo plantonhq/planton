@@ -7,6 +7,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -35,6 +36,19 @@ const (
 
 	controlPlaneDefaultLogLevel          = "info"
 	controlPlaneDefaultTemporalNamespace = "default"
+
+	// The control plane's sizing, chosen here so a default install schedules
+	// honestly and is never OOM-killed by omission. Read live on a one-node
+	// install before choosing: ~3.3Gi resident under pipeline fan-out with
+	// the JVM's heap sized by the image's own -XX:MaxRAMPercentage from the
+	// container limit (so the limit IS the heap rule; a limit alone would
+	// not change the heap silently). The same request/limit pair the hosted
+	// product declares for this service -- one number in both homes. No CPU
+	// limit: a cold start and a pipeline burst must never be throttled into
+	// failing their own probes (requests-only, the house pattern).
+	controlPlaneCPURequest    = "250m"
+	controlPlaneMemoryRequest = "1Gi"
+	controlPlaneMemoryLimit   = "4Gi"
 
 	// controlPlaneIacModulesVersionEnv is the control plane's per-install
 	// OVERRIDE of the release its stack jobs download official IaC modules
@@ -639,6 +653,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 						VolumeMounts: volumeMounts,
 						Env:          envVars,
 						EnvFrom:      envFrom,
+						Resources:    controlPlaneResources(),
 						// First boot self-provisions and migrates every database, which
 						// on a cold cluster takes several minutes; allow a generous
 						// window (10s x 90 = 15m) before the kubelet gives up, so the
@@ -1418,4 +1433,18 @@ func ptrBool(b bool) *bool {
 //go:fix inline
 func int64Ptr(i int64) *int64 {
 	return new(i)
+}
+
+// controlPlaneResources is the container sizing every install gets (the
+// constants above carry the reasoning).
+func controlPlaneResources() corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: corev1.ResourceList{
+			corev1.ResourceCPU:    resource.MustParse(controlPlaneCPURequest),
+			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryRequest),
+		},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryLimit),
+		},
+	}
 }

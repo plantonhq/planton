@@ -20,7 +20,7 @@ func TestEveryShippedChartRendersOnlyOwnableObjects(t *testing.T) {
 		data   []byte
 		values map[string]any
 	}{
-		{"valkey", LoadValkeyChart(), ValkeyHelmValues(crName, "1Gi", "")},
+		{"valkey", LoadValkeyChart(), ValkeyHelmValues(valkeyTestOptions(crName, "1Gi", ""))},
 		{"temporal", LoadTemporalChart(), TemporalHelmValues(crName, namespace)},
 		{"openbao", LoadOpenBAOChart(), OpenBAOHelmValues(OpenBAOHelmOptions{CRName: crName, Namespace: namespace, StoragePasswordSecretName: PostgreSQLVaultRoleSecretName(crName)})},
 		{"neo4j", LoadNeo4jChart(), Neo4jHelmValues(crName, "10Gi", "")},

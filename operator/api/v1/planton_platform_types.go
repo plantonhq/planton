@@ -17,6 +17,7 @@ limitations under the License.
 package v1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -828,17 +829,55 @@ type PostgreSQLSpec struct {
 	RecoverFrom *PostgreSQLRecoverFromSpec `json:"recoverFrom,omitempty"`
 }
 
-// RedisSpec configures storage for the redis-protocol cache (served by Valkey).
+// RedisSpec sizes the redis-protocol store (served by Valkey). One store
+// carries two roles for the control plane: the cache (sessions, rate limits,
+// coordination) and the live build-log stream a person may be tailing until
+// the run archives it. Every field is optional; the defaults are the ones a
+// working single-tenant install needs, in the vocabulary the KubernetesValkey
+// catalog kind uses for the same knobs.
 type RedisSpec struct {
-	// storageSize is the persistent volume size for the cache instance.
-	// Defaults to spec.storage.size, then 1Gi.
+	// storageSize is the persistent volume size for the store. Defaults to
+	// spec.storage.size, then 1Gi. Read only while persistence is on.
 	// +optional
 	StorageSize resource.Quantity `json:"storageSize,omitempty"`
 
-	// storageClassName pins the cache volume to a StorageClass. Defaults to
-	// spec.storage.storageClassName, then the cluster default.
+	// storageClassName pins the store's volume to a StorageClass. Defaults to
+	// spec.storage.storageClassName, then the cluster default. Read only
+	// while persistence is on.
 	// +optional
 	StorageClassName string `json:"storageClassName,omitempty"`
+
+	// persistence keeps the dataset on a volume and replays it after a pod
+	// restart (append-only file). Defaults to true: the store holds the live
+	// build-log stream, and a restart mid-build must not blank the log a
+	// person is tailing. What is persisted always fits, because maxMemory
+	// bounds it under the container's memory limit -- a persisted store with
+	// no ceiling reloads more than it may hold after a memory kill and never
+	// comes back. Set false for a pure in-memory cache that starts empty.
+	// +optional
+	Persistence *bool `json:"persistence,omitempty"`
+
+	// maxMemory is the dataset ceiling as a Valkey size ("768mb", "1gb").
+	// Defaults to 768mb. Always below the container's memory limit: hitting
+	// the limit is an OOM kill, hitting this is an eviction.
+	// +kubebuilder:validation:Pattern=`^[0-9]+(b|kb|mb|gb|k|m|g)?$`
+	// +optional
+	MaxMemory string `json:"maxMemory,omitempty"`
+
+	// maxMemoryPolicy is what happens at maxMemory. Defaults to allkeys-lru:
+	// a finished run's log and a stale cache entry fall out first, the stream
+	// being tailed is the hot set. noeviction fails writes instead (right for
+	// a durable store, wrong for this one).
+	// +kubebuilder:validation:Enum=noeviction;allkeys-lru;volatile-lru;allkeys-lfu;volatile-lfu;allkeys-random;volatile-random;volatile-ttl
+	// +optional
+	MaxMemoryPolicy string `json:"maxMemoryPolicy,omitempty"`
+
+	// resources sizes the store's container. Defaults to requests of 100m CPU
+	// and 256Mi memory with a 1Gi memory limit and no CPU limit. Size the
+	// memory limit above maxMemory: Valkey needs headroom for its
+	// append-only-file rewrite and client buffers.
+	// +optional
+	Resources *corev1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 // IngressSpec configures external access to Planton through the cluster's
