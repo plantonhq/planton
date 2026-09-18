@@ -129,7 +129,7 @@ packages/website-shell/  the header, footer, navigation, palette, and theme the 
 Rule files live beside what they govern:
 
 - `_rules/docs/` — writing and formatting documentation pages
-- `content/copywriting/_rules/` — the two-step copywriting workflow (draft and handoff, then implementation)
+- `content/copywriting/_rules/` — changing what the site says: a draft with every sentence beside its source and a handoff, then the data edit, the build, the captures, and the review
 - `content/assets/_rules/` — images through the R2 pipeline
 - `public/docs/_rules/` — docs content rules
 - `src/app/(standalone)/meets/_rules/` — creating and updating a meeting deck
@@ -140,16 +140,14 @@ What a day-one architect would not have done, and which work retires it. The bui
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
-| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each page group as it is rebuilt from the story |
+| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each of these page groups' own rebuild (pricing and enterprise are data-driven and refreshed 2026-08-20; the content pages are the docs follow-up's; book-demo and legal are small standalone slices; invest is named below) |
 | Two landing versions kept for rollback (`v3`, `v4`) | `components/landing-page/` | v3 and v4 after v5 has held for one release |
 | The investor deck and explainer on their own primitive set (including the deck's own button, which came from the retired tour's kit), and the one Tailwind color the pricing FAQ still reads (`text.secondary`) | `components/invest`, `tailwind.config.ts`, `components/pricing/faqs.tsx` | invest onto the deck engine, by the founder's decision a later slice; the color with pricing's rebuild |
 | The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto `SlideFrame` and the marketing primitives, the way the persona decks already compose them |
-| The copywriting rules describe copy as React component updates, the pattern retired when the story became data | `content/copywriting/_rules/`, `content/copywriting/_stage-area/README.md` | the navigation-and-health slice: repoint both to `src/data/` and the capture harness as the preview |
-| Images under `public/_site/` instead of the asset CDN; 136 literal `/_site/` paths | `public/_site/images`, `src/**` | images to R2 as pages are rebuilt; `lib/assets.ts` names the prefix once |
+| Images under `public/_site/` instead of the asset CDN; 87 literal `/_site/` paths, in the rollback landings (`v3`, `v4`), the investor pages, the meeting decks, and the content pages | `public/_site/images`, `src/**` | v3 and v4 with their deletion; invest and the meeting decks with their convergence slices; the content pages with the docs follow-up; the Open Graph posters and the logo stay under the prefix `lib/assets.ts` names once |
 | The `/_site` asset prefix and the post-build copy of the bundle | `next.config.ts`, `Makefile` | the apex routing decision |
-| Retired paths served by a client-side forward only | `RetiredRoute` | the edge redirect declared in the estate |
+| Retired paths served by a client-side forward only | `RetiredRoute` | the founder's Cloudflare ruleset change, from the route list printed from `retired-routes.ts` and the registry |
 | The Windows install step that warns about SmartScreen is rendered as prose under the button it concerns; the download data's install-step shape has no warning kind | `src/data/desktop-download.ts`, `components/desktop/DownloadHero.tsx` | a `kind: 'warning'` on the step and a callout in the card, one small slice |
-| The shell's product menu holds its own sub-labels beside the registry's descriptions | `packages/website-shell/src/data/navigation.ts` | the navigation slice (the shell cannot import from `src/`) |
 
 ## Contributing
 
