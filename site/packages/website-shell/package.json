@@ -1,6 +1,6 @@
 {
   "name": "@planton/website-shell",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Planton website shell — MUI theme, layout components, and providers for rendering public pages with the planton.ai visual identity.",
   "license": "UNLICENSED",
