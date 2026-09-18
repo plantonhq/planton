@@ -15,28 +15,6 @@ func app(
 ) (*digitalocean.App, error) {
 	spec := locals.DigitalOceanApp.Spec
 
-	// Two arms Terraform wires that the Pulumi bridge still cannot express at
-	// pulumi-digitalocean v4.53.0 (re-verified against the SDK on disk: no
-	// SecureHeader on AppSpecIngressRuleArgs, no LivenessHealthCheck on the
-	// service or worker args). Failing loudly on a meaningful set keeps the two
-	// engines honest with each other -- a silent drop would deploy a different
-	// app than the manifest describes. Re-evaluate on every SDK pin bump; the
-	// maintenance, vpc, ingress authority, and alert-destination arms that used
-	// to sit in this list closed at v4.53.0 and are wired below.
-	if spec.GetIngress() != nil && spec.GetIngress().GetSecureHeader() != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.ingress.secure_header is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no secure_header on ingress rules. Re-evaluate when the SDK exposes ingress.secure_header.")
-	}
-	for _, s := range spec.GetServices() {
-		if s.GetLivenessHealthCheck() != nil {
-			return nil, errors.New("PARITY-EXCEPTION: service liveness_health_check is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no liveness_health_check on services. Re-evaluate when the SDK exposes service.liveness_health_check.")
-		}
-	}
-	for _, w := range spec.GetWorkers() {
-		if w.GetLivenessHealthCheck() != nil {
-			return nil, errors.New("PARITY-EXCEPTION: worker liveness_health_check is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no liveness_health_check on workers. Re-evaluate when the SDK exposes worker.liveness_health_check.")
-		}
-	}
-
 	appSpec := &digitalocean.AppSpecArgs{
 		Name:                         pulumi.String(spec.GetAppName()),
 		Region:                       pulumi.String(spec.GetRegion().String()),
@@ -158,6 +136,17 @@ func buildServices(in []*digitaloceanappv1alpha1.DigitalOceanAppService) (digita
 		applyServiceSource(&args, s)
 		if hc := healthCheck(s.GetHealthCheck()); hc != nil {
 			args.HealthCheck = hc
+		}
+		if lhc := s.GetLivenessHealthCheck(); lhc != nil {
+			args.LivenessHealthCheck = &digitalocean.AppSpecServiceLivenessHealthCheckArgs{
+				Port:                intPtrFromUint32(lhc.Port),
+				HttpPath:            strPtr(lhc.GetHttpPath()),
+				InitialDelaySeconds: intPtrFromUint32(lhc.InitialDelaySeconds),
+				PeriodSeconds:       intPtrFromUint32(lhc.PeriodSeconds),
+				TimeoutSeconds:      intPtrFromUint32(lhc.TimeoutSeconds),
+				SuccessThreshold:    intPtrFromUint32(lhc.SuccessThreshold),
+				FailureThreshold:    intPtrFromUint32(lhc.FailureThreshold),
+			}
 		}
 		if s.GetAutoscaling() != nil {
 			a := s.GetAutoscaling()
@@ -347,6 +336,17 @@ func buildWorkers(in []*digitaloceanappv1alpha1.DigitalOceanAppWorker) (digitalo
 		}
 		if img := w.GetImage(); img != nil {
 			args.Image = workerImage(img)
+		}
+		if lhc := w.GetLivenessHealthCheck(); lhc != nil {
+			args.LivenessHealthCheck = &digitalocean.AppSpecWorkerLivenessHealthCheckArgs{
+				Port:                intPtrFromUint32(lhc.Port),
+				HttpPath:            strPtr(lhc.GetHttpPath()),
+				InitialDelaySeconds: intPtrFromUint32(lhc.InitialDelaySeconds),
+				PeriodSeconds:       intPtrFromUint32(lhc.PeriodSeconds),
+				TimeoutSeconds:      intPtrFromUint32(lhc.TimeoutSeconds),
+				SuccessThreshold:    intPtrFromUint32(lhc.SuccessThreshold),
+				FailureThreshold:    intPtrFromUint32(lhc.FailureThreshold),
+			}
 		}
 		if w.GetAutoscaling() != nil {
 			a := w.GetAutoscaling()
@@ -818,7 +818,17 @@ func buildIngress(ing *do.DigitalOceanAppIngress) *digitalocean.AppSpecIngressAr
 		}
 		rules = append(rules, rule)
 	}
-	return &digitalocean.AppSpecIngressArgs{Rules: rules}
+	out := &digitalocean.AppSpecIngressArgs{Rules: rules}
+	// One ingress-wide response header (the provider schema caps it at one),
+	// sent only when the spec declares it -- the Terraform module's dynamic
+	// block.
+	if sh := ing.GetSecureHeader(); sh != nil {
+		out.SecureHeader = &digitalocean.AppSpecIngressSecureHeaderArgs{
+			Key:   pulumi.StringPtr(sh.GetKey()),
+			Value: pulumi.StringPtr(sh.GetValue()),
+		}
+	}
+	return out
 }
 
 func buildCors(c *do.DigitalOceanAppCors) *digitalocean.AppSpecIngressRuleCorsArgs {

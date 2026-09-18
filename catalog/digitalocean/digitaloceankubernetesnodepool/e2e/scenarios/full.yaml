@@ -2,7 +2,7 @@
 # bounds, Kubernetes node labels, a PreferNoSchedule taint (isolating
 # without blocking the fixture cluster's own workloads), and pool-level
 # Droplet tags. gpu_partition_mode is deliberately absent (deferred arm --
-# see profile.yaml: GPU cost class plus a Pulumi SDK gap at v4.53.0).
+# see profile.yaml: the GPU cost class).
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanKubernetesNodePool
 metadata:

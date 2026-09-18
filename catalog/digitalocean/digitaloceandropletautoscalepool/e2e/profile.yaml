@@ -5,7 +5,7 @@ metadata:
 spec:
   # pending_proof: the kind is NOT proven, blocked by an UPSTREAM PROVIDER
   # DEFECT on destroy (first live attempt 2026-09-16, provider v2.100.1 /
-  # Pulumi bridge v4.53.0). Everything before destroy passed on BOTH engines
+  # Pulumi bridge v4.79.1). Everything before destroy passed on BOTH engines
   # and BOTH scenarios: DEPLOY (~31-41s; DigitalOcean reports the pool
   # active at +1s and the member droplet active at ~+33s), the idempotency
   # gate (Terraform's refreshed plan clean -- the template's vpc_uuid is

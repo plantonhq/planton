@@ -15,20 +15,6 @@ func droplet(
 ) (*digitalocean.Droplet, error) {
 	spec := locals.DigitalOceanDroplet.Spec
 
-	// PARITY-EXCEPTION guards: these fields are modeled and the Terraform
-	// module wires them, but the SDK has no matching inputs on Droplet.
-	// Fail loudly on a meaningful set (proto zero values pass) rather than
-	// silently dropping configuration.
-	if spec.GpuPartitionMode != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no gpu_partition_mode field on Droplet. Re-evaluate when the SDK exposes gpu_partition_mode.")
-	}
-	// Explicit true equals the API default (public networking on), so it is
-	// honored by omission; only an explicit false expresses state the SDK
-	// cannot deliver.
-	if spec.PublicNetworking != nil && !spec.GetPublicNetworking() {
-		return nil, errors.New("PARITY-EXCEPTION: spec.public_networking=false is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no public_networking field on Droplet. Re-evaluate when the SDK exposes public_networking.")
-	}
-
 	// 1. Build Droplet arguments from the proto spec.
 	dropletArgs := &digitalocean.DropletArgs{
 		Name:             pulumi.String(spec.DropletName),
@@ -38,6 +24,20 @@ func droplet(
 		Backups:          pulumi.Bool(spec.EnableBackups),
 		Monitoring:       pulumi.Bool(spec.Monitoring),
 		GracefulShutdown: pulumi.Bool(spec.GracefulShutdown),
+	}
+
+	// Public networking is create-only and defaults to on. Sent only when the
+	// manifest states it, so an unset field defers to DigitalOcean's default
+	// and an explicit false creates a droplet with no public interface -- the
+	// same presence contract as the Terraform module.
+	if spec.PublicNetworking != nil {
+		dropletArgs.PublicNetworking = pulumi.BoolPtr(spec.GetPublicNetworking())
+	}
+
+	// GPU partitioning is create-only and only meaningful on GPU sizes; unset
+	// must arrive as null, never "" (the provider rejects it).
+	if spec.GpuPartitionMode != "" {
+		dropletArgs.GpuPartitionMode = pulumi.StringPtr(spec.GpuPartitionMode)
 	}
 
 	// Region is optional: unset (the zero enum value) lets DigitalOcean

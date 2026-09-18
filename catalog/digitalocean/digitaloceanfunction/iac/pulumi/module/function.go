@@ -120,8 +120,7 @@ func functionEnvs(envs []*do.DigitalOceanAppEnvVar) digitalocean.AppSpecFunction
 }
 
 // functionAlerts wires component alerts including their email / Slack
-// destinations (carried by the SDK since pulumi-digitalocean v4.53.0; the
-// provider applies them through a side-channel call after the app exists and
+// destinations (the provider applies them through a side-channel call after the app exists and
 // reads them back from ListAlerts). An empty destinations block is omitted so
 // the provider never issues a clearing call. Webhook URLs are (sensitive) on
 // the spec, so they are wrapped as Pulumi secrets -- the SDK does not flag

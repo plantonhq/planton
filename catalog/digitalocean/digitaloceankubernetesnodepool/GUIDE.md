@@ -36,7 +36,7 @@ The import id is the plain pool UUID (`doctl kubernetes cluster node-pool list <
 
 ## GPU pools
 
-`gpuPartitionMode` accepts the two AMD partition tokens (`AMD_PARTITION_MODE_SPX_NPS1`, `AMD_PARTITION_MODE_DPX_NPS2`) and only makes sense on AMD GPU size slugs. It is a Terraform-only arm today: the Pulumi DigitalOcean SDK has no field for it (v4.53.0, re-verified on disk 2026-09-17), and the Pulumi provisioner fails loudly rather than silently dropping it. The guard is a claim about one SDK version and is re-checked on every pin bump.
+`gpuPartitionMode` accepts the two AMD partition tokens (`AMD_PARTITION_MODE_SPX_NPS1`, `AMD_PARTITION_MODE_DPX_NPS2`) and only makes sense on AMD GPU size slugs. Both provisioners deploy it, and both replace the pool when it changes — decide the partition layout before the pool carries workloads.
 
 ## What is deliberately NOT here
 

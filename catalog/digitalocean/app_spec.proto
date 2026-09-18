@@ -217,9 +217,7 @@ message DigitalOceanAppImageSource {
 
 // HTTP/TCP health check. The same shape is used for readiness (health_check)
 // and liveness (liveness_health_check) on services; workers only have the
-// liveness variant. The Pulumi SDK (v4.53.0, verified) has no
-// liveness_health_check on services or workers - Terraform wires it; Pulumi
-// fails loudly if it is set.
+// liveness variant. Both provisioners deploy both variants.
 message DigitalOceanAppHealthCheck {
   // Port to probe. Range 1-65535. When omitted, App Platform uses the
   // component's HTTP port.
@@ -448,8 +446,7 @@ message DigitalOceanAppCors {
 message DigitalOceanAppIngressMatch {
   // Path prefix, for example /api
   string path_prefix = 1;
-  // Exact Host header to match. Both engines wire it (the Pulumi SDK carries
-  // it since v4.53.0).
+  // Exact Host header to match. Both provisioners deploy it.
   string authority_exact = 2;
 }
 
@@ -484,9 +481,8 @@ message DigitalOceanAppSecureHeader {
 
 message DigitalOceanAppIngress {
   repeated DigitalOceanAppIngressRule rules = 1;
-  // The provider schema caps this at one header. The Pulumi SDK (v4.53.0,
-  // verified) has no secure_header on ingress rules; Terraform wires it and
-  // Pulumi fails loudly if it is set.
+  // One response header added to every route of this ingress. The provider
+  // schema caps this at one header. Both provisioners deploy it.
   DigitalOceanAppSecureHeader secure_header = 2;
 }
 

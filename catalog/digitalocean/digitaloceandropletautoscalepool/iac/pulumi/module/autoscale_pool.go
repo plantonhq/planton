@@ -14,7 +14,7 @@ import (
 // DESTROYS THE MEMBERS: the API's only delete terminates every droplet
 // the pool owns.
 //
-// Known upstream defect at bridge v4.53.0 (provider v2.100.1): the delete
+// Known upstream defect at bridge v4.79.1 (provider v2.100.1): the delete
 // waiter expects the pool to answer "OK" and then 404, but the API reports
 // `deleting` while the members are terminated and the provider fails on
 // that word ("unexpected state 'deleting'") 5-6 seconds in. DigitalOcean
@@ -119,9 +119,12 @@ func autoscalePool(
 	if template.UserData != "" {
 		templateArgs.UserData = pulumi.String(template.UserData)
 	}
-	// public_networking is deliberately never rendered: the provider
-	// declares it but never copies it into any create/update request --
-	// dead on write at the pinned version (and absent from the SDK).
+	// Sent only when the manifest states it: unset defers to DigitalOcean's
+	// default (public on); an explicit false creates members with no public
+	// interface -- the Terraform module's null coalescing.
+	if template.PublicNetworking != nil {
+		templateArgs.PublicNetworking = pulumi.BoolPtr(template.GetPublicNetworking())
+	}
 
 	createdPool, err := digitalocean.NewDropletAutoscale(
 		ctx,

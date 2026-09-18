@@ -435,7 +435,10 @@ func (x *DigitalOceanDatabaseClusterBackupRestore) GetBackupCreatedAt() string {
 
 // DigitalOceanDatabaseClusterStorageAutoscale grows the cluster's disk
 // automatically when usage crosses a threshold. DigitalOcean enforces a
-// one-hour cooldown between autoscale operations.
+// one-hour cooldown between autoscale operations. Both provisioners deploy
+// it. The API refuses an increment_gib larger than the size slug's maximum
+// plan storage at create time (for example 30 GiB on db-s-1vcpu-1gb), so
+// size the increment for the smallest slug the manifest may run on.
 type DigitalOceanDatabaseClusterStorageAutoscale struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Whether automatic storage growth is enabled.

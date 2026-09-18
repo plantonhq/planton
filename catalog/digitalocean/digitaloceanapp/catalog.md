@@ -109,7 +109,7 @@ These are the most important decisions when configuring an App Platform applicat
 
 **Termination** -- `termination.drainSeconds` is a service-only HTTP connection drain; workers and jobs reject it and honor `gracePeriodSeconds` only.
 
-**Terraform-only fields at the current Pulumi SDK (v4.53.0)** -- service/worker `livenessHealthCheck` and `ingress.secureHeader` are real spec fields that Terraform wires; the Pulumi module fails the apply loudly if they are set. Deploy through Terraform when you need them. Everything else -- including `vpc`, `maintenance`, ingress `authorityExact` matches, and alert destinations -- deploys on both engines.
+**Liveness and secure headers** -- service/worker `livenessHealthCheck` is the restart probe (the service `healthCheck` is the readiness probe that gates traffic), and `ingress.secureHeader` adds one response header to every route. Both deploy on both provisioners, as does every other spec field including `vpc`, `maintenance`, ingress `authorityExact` matches, and alert destinations.
 
 **Alert destinations** -- both engines wire email and Slack destinations, but the provider never reads them back, so a Terraform apply with destinations set re-plans and redeploys the app every time (a provider defect). Set them on Pulumi stacks, or leave them unset on Terraform and manage recipients in the control panel; recipients must be verified team members.
 
@@ -127,7 +127,7 @@ These are the most important decisions when configuring an App Platform applicat
 | **DigitalOceanDnsZone** (optional) | `domains[].zone` | `status.outputs.zone_name` |
 | **DigitalOceanDatabaseCluster** (optional) | `databases[].clusterName` | `spec.cluster_name` |
 
-VPC placement is wired by both engines (the Pulumi SDK carries it since v4.53.0).
+VPC placement is wired by both provisioners.
 
 ### What This Component Provides
 

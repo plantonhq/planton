@@ -172,10 +172,12 @@ spec:
         is safe. Nested paths are written block.leaf -- the round-trip
         runner prunes them element-wise through the block list, so a `.0.`
         index segment would never match.
-      # public_networking is schema-declared but never copied into any
-      # create/update request at the pin (dead on write); Read still
-      # populates it from the API, so it round-trips as whatever the
-      # platform defaulted, never as configured intent.
+      # public_networking is propagated on create from provider v2.100.0
+      # and Read populates it from the API, so a manifest that states it
+      # round-trips losslessly; a manifest that leaves it unset imports the
+      # API's default (true) as a config-only difference. Kept until the
+      # kind's lanes can run (blocked upstream on the delete waiter) and
+      # measure whether the tolerance ever fires.
       config_only_attributes:
         - droplet_template.public_networking
       write_normalized_attributes:

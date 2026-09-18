@@ -1,6 +1,6 @@
 # DigitalOcean Firewall -- Pulumi Module
 
-Deploys a `digitalocean:index/firewall:Firewall` from a `DigitalOceanFirewall` stack input: the named rule set (both directions, all five source/destination classes), Droplet targeting by resolved reference, and tag targeting. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`, which carries the complete provider argument surface for this resource — no PARITY-EXCEPTION guards.
+Deploys a `digitalocean:index/firewall:Firewall` from a `DigitalOceanFirewall` stack input: the named rule set (both directions, all five source/destination classes), Droplet targeting by resolved reference, and tag targeting. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for this resource — no PARITY-EXCEPTION guards.
 
 ## Module structure
 

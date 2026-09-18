@@ -3421,6 +3421,15 @@ or re-plans forever. The fix landed at the spec (required `period`; the
 forced fields forbidden on the types that force them) and in both modules
 (send the API's own values), so the round trip is lossless with zero
 tolerances. Five API calls before the lane found all of it; make them.
+Two more of the class, both found by one probe cluster before a scenario
+gained the arm: the database `storage_autoscale` create refuses an
+`increment_gib` above the size slug's maximum plan storage (`422 storage
+autoscale increment 50 must not be greater than maximum plan size 30` on
+`db-s-1vcpu-1gb`), and the cluster body's `storage_autoscale` is ALWAYS
+null -- the settings live at `GET /v2/databases/{id}/autoscale` (the
+provider's Read falls back to it), reading back exactly as sent. And give
+every probe `curl` a `--max-time`: a probe loop without one hung a session
+for an hour on a stalled connection while the probe cluster kept billing.
 
 **The Uptime API's "gone" is 403, not 404.** `GET /v2/uptime/checks/{id}`
 (and its alerts) answer `403 you are not authorized to access this
@@ -3506,9 +3515,32 @@ SDK gaps at v4.49.0; four of them (`maintenance`, `vpc` as a one-element
 `vpcs` list, ingress `authority`, alert `destinations` on app-level and all
 component alerts) had closed at the v4.53.0 pin the tree carried for a
 month, so Pulumi customers got a hard error for settings Terraform
-customers had all along. Check the SDK's `pulumiTypes.go` on disk for each
-guarded field before a lane, wire what closed, and name the verified
-version in the guards that remain.
+customers had all along. At the next bump (v4.53.0 → v4.79.1) every one of
+the 21 guards then in the tree had closed -- ten on the DOKS cluster, three
+on the App, two each on the droplet and load balancer, one each on the node
+pool and database cluster -- and two of them still named a pin two bumps
+old. Check the SDK's `pulumiTypes.go` and the resource's `*Args` struct on
+disk for each guarded field before a lane, wire what closed, and name the
+verified version in the guards that remain.
+
+**Dry-run a pin bump before landing it, and know that the bump is never
+one provider's alone.** Copy `go.mod`/`go.sum` aside, `GOWORK=off go get
+-modfile=<copy> <sdk>@<version>`, `GOWORK=off go mod tidy -modfile=<copy>`,
+then build every package that imports the SDK with `GOWORK=off go build
+-modfile=<copy> -o /dev/null <pkg>` -- the live tree's sources against the
+new dependency list, nothing in the repo touched. `GOWORK=off` is required:
+the repository runs in Go workspace mode and `-modfile` is refused there
+(a fallback to a plain `go build` would silently "pass" against the OLD
+pin). Skip the tidy and every build fails `missing go.sum entry` for
+modules the new core SDK drags in. Discover the build set by grep
+(`rg -l "<sdk-import-path>" --type go`), never by counting kinds -- the
+shared provider builder under `pkg/iac/pulumi/pulumimodule/provider/`
+imports the SDK too. And read the bridge's own `sdk/go.mod` at the target
+tag: a provider SDK bump routinely raises the core `pulumi/pulumi/sdk/v3`
+shared by every provider's Pulumi module in the repo (v4.79.1 required
+v3.259.0 over the tree's v3.256.0, dragging five new indirect modules), so
+the real bump runs `make bazel-mod-tidy` and its blast radius is the whole
+Pulumi surface, not one catalog directory.
 
 **Never cap a lane's output pipeline.** `go test ... | tee log | rg ... |
 head -N` stalls the whole lane when `head` exits: the broken pipe blocks
@@ -3548,8 +3580,8 @@ before tolerating it (the autoscale pool's image slug re-send was measured
 a no-op on DigitalOcean's side -- no member roll, no history event).
 
 **`digitalocean_droplet_autoscale` destroy fails on an upstream waiter
-defect (provider v2.100.1 / bridge v4.53.0) -- the kind is NOT provable at
-this pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
+defect (provider v2.100.1 through v2.101.0 and upstream `main`; bridges
+v4.53.0 and v4.79.1) -- the kind is NOT provable at any current pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
 bare curl without it is a 400) the API reports the pool `deleting` for
 several seconds while it terminates the members, the provider's refresh
 returns that status verbatim, and its delete waiter accepts only
@@ -3805,12 +3837,15 @@ Older provider code dereferenced the response's topic and panics
 (`resource_database_kafka_topic.go:318`, a nil pointer inside the bridged
 provider -- `Bridged provider panic ... method=Create`). The Pulumi bridge
 pins its own upstream: pulumi-digitalocean v4.53.0 embeds provider v2.67.0,
-so the topic's Pulumi lane cannot pass at that pin while the Terraform lane
-(floating to v2.101.0) passes clean; the first bridge carrying the fix is
-v4.78.1. Read the bridge's release notes ("Upgrade
-terraform-provider-digitalocean to vX") to map a Pulumi pin to an upstream
-version, and record such a lane as blocked at the pin -- never as a module
-defect, never as a waiver.
+so the topic's Pulumi lane could not pass at that pin while the Terraform
+lane (floating to v2.101.0) passed clean; the first bridge carrying the fix
+is v4.78.1 (= v2.99.1) and v4.79.1 embeds v2.100.1. The definitive map from
+a bridge tag to an upstream version is the bridge's `upstream` git
+submodule commit at that tag (`gh api
+"repos/pulumi/pulumi-digitalocean/contents/upstream?ref=<tag>"`), compared
+against the provider's tags -- release notes are a readable second source.
+Record such a lane as blocked at the pin -- never as a module defect, never
+as a waiver -- and unblock it with the pin bump, not a workaround.
 
 **The Kafka schema registry canonicalizes JSON schemas; the provider stores
 that text verbatim; the modules must canonicalize too.** A registered Avro

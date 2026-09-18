@@ -99,7 +99,9 @@ These are the most important decisions when configuring a droplet autoscale pool
 
 **Target the fleet with tags, never droplet ids** -- Member droplet ids churn with every scale event; any firewall rule or load-balancer target list naming them goes stale immediately. The template's `tags` follow the membership automatically -- tag-targeted firewall rules and load-balancer tag targets are the only reliable way to address the fleet.
 
-**Template changes roll the fleet** -- Editing the template (size, image, `userData`) applies in place on the pool, and DigitalOcean replaces members to converge on the new shape. Plan template edits like deployments: capacity dips while members roll. One read-back quirk: DigitalOcean reports the image as a numeric id even when you configured a slug; the modules keep your configured value, but a freshly imported pool shows an image diff on its first plan.
+**Private members** -- `dropletTemplate.publicNetworking: false` creates members with no public interface, reachable only inside the VPC -- the right shape for a fleet behind a load balancer. Unset means DigitalOcean's default (public on).
+
+**Template changes roll the fleet** -- Editing the template (size, image, `userData`, `publicNetworking`) applies in place on the pool, and DigitalOcean replaces members to converge on the new shape. Plan template edits like deployments: capacity dips while members roll. One read-back quirk: DigitalOcean reports the image as a numeric id even when you configured a slug; the modules keep your configured value, but a freshly imported pool shows an image diff on its first plan.
 
 **Members are cattle -- keep state off them** -- The pool creates and destroys members on its own schedule. Anything on a member's local disk is one scale-in from gone. Point members at managed databases, Spaces, or volumes owned elsewhere, and use `userData` (cloud-init) to bootstrap every member identically.
 

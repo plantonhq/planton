@@ -116,8 +116,7 @@ type DigitalOceanAppSpec struct {
 	Ingress     *digitalocean.DigitalOceanAppIngress     `protobuf:"bytes,12,opt,name=ingress,proto3" json:"ingress,omitempty"`
 	Egress      digitalocean.DigitalOceanAppEgressType   `protobuf:"varint,13,opt,name=egress,proto3,enum=dev.planton.digitalocean.DigitalOceanAppEgressType" json:"egress,omitempty"`
 	Maintenance *digitalocean.DigitalOceanAppMaintenance `protobuf:"bytes,14,opt,name=maintenance,proto3" json:"maintenance,omitempty"`
-	// VPC the app's egress is placed in. Optional; both engines wire it (the
-	// Pulumi SDK carries it since v4.53.0 as a one-element vpcs list).
+	// VPC the app's egress is placed in. Optional; both provisioners deploy it.
 	Vpc *v1.StringValueOrRef `protobuf:"bytes,15,opt,name=vpc,proto3" json:"vpc,omitempty"`
 	// Feature flags App Platform accepts as free-form strings.
 	Features                     []string `protobuf:"bytes,16,rep,name=features,proto3" json:"features,omitempty"`
@@ -332,8 +331,8 @@ type DigitalOceanAppService struct {
 	HttpPort      *uint32                                  `protobuf:"varint,14,opt,name=http_port,json=httpPort,proto3,oneof" json:"http_port,omitempty"`
 	InternalPorts []uint32                                 `protobuf:"varint,15,rep,packed,name=internal_ports,json=internalPorts,proto3" json:"internal_ports,omitempty"`
 	HealthCheck   *digitalocean.DigitalOceanAppHealthCheck `protobuf:"bytes,16,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`
-	// Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
-	// has no liveness_health_check on services, so Pulumi fails loudly if set.
+	// Liveness probe: a failing check restarts the container, where the
+	// readiness health_check only gates traffic. Both provisioners deploy it.
 	LivenessHealthCheck *digitalocean.DigitalOceanAppHealthCheck      `protobuf:"bytes,17,opt,name=liveness_health_check,json=livenessHealthCheck,proto3" json:"liveness_health_check,omitempty"`
 	Autoscaling         *digitalocean.DigitalOceanAppAutoscaling      `protobuf:"bytes,18,opt,name=autoscaling,proto3" json:"autoscaling,omitempty"`
 	Termination         *digitalocean.DigitalOceanAppTermination      `protobuf:"bytes,19,opt,name=termination,proto3" json:"termination,omitempty"`
@@ -546,8 +545,8 @@ type DigitalOceanAppWorker struct {
 	RunCommand       string                                       `protobuf:"bytes,11,opt,name=run_command,json=runCommand,proto3" json:"run_command,omitempty"`
 	InstanceSizeSlug string                                       `protobuf:"bytes,12,opt,name=instance_size_slug,json=instanceSizeSlug,proto3" json:"instance_size_slug,omitempty"`
 	InstanceCount    uint32                                       `protobuf:"varint,13,opt,name=instance_count,json=instanceCount,proto3" json:"instance_count,omitempty"`
-	// Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
-	// has no liveness_health_check on workers, so Pulumi fails loudly if set.
+	// Liveness probe: a failing check restarts the container. Both provisioners
+	// deploy it.
 	LivenessHealthCheck *digitalocean.DigitalOceanAppHealthCheck      `protobuf:"bytes,14,opt,name=liveness_health_check,json=livenessHealthCheck,proto3" json:"liveness_health_check,omitempty"`
 	Autoscaling         *digitalocean.DigitalOceanAppAutoscaling      `protobuf:"bytes,15,opt,name=autoscaling,proto3" json:"autoscaling,omitempty"`
 	Termination         *digitalocean.DigitalOceanAppTermination      `protobuf:"bytes,16,opt,name=termination,proto3" json:"termination,omitempty"`

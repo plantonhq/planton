@@ -1,6 +1,6 @@
 # DigitalOcean DNS Zone -- Pulumi Module
 
-Deploys a `digitalocean:index/domain:Domain` plus one `digitalocean:index/dnsRecord:DnsRecord` per managed record value from a `DigitalOceanDnsZone` stack input: the zone itself, the create-only `ip_address` convenience, and the inline records with their per-type fields on presence semantics. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`, which carries the complete provider argument surface for both resources — no PARITY-EXCEPTION guards. (The SDK renames the domain's `urn` attribute to `DomainUrn`; the module exports it under the contract's `urn` key.)
+Deploys a `digitalocean:index/domain:Domain` plus one `digitalocean:index/dnsRecord:DnsRecord` per managed record value from a `DigitalOceanDnsZone` stack input: the zone itself, the create-only `ip_address` convenience, and the inline records with their per-type fields on presence semantics. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for both resources — no PARITY-EXCEPTION guards. (The SDK renames the domain's `urn` attribute to `DomainUrn`; the module exports it under the contract's `urn` key.)
 
 ## Module structure
 

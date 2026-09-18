@@ -29,9 +29,9 @@ spec:
   # Deliberately NOT in the live lanes: GLOBAL / domains / glb_settings
   # (needs a delegated domain), HTTPS / redirect_http_to_https /
   # tls_passthrough (need a certificate -- Let's Encrypt needs a delegated
-  # domain), BYOIP `ip` (needs a BYOIP prefix on the account), and the
-  # Pulumi SDK gap arms at the v4.53.0 pin (`subnet_uuid`, `ip` --
-  # Terraform wires them; Pulumi fails loudly if set).
+  # domain), BYOIP `ip` (needs a BYOIP prefix on the account), and
+  # `subnet_uuid` (needs a VPC subnet, which the catalog has no kind for yet
+  # -- prove when one exists). Both engines wire both.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

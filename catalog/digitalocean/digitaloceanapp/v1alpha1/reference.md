@@ -768,8 +768,8 @@ HTTP path, for example /healthz. When omitted the probe is TCP.
 
 `DigitalOceanAppHealthCheck`
 
-Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
-has no liveness_health_check on services, so Pulumi fails loudly if set.
+Liveness probe: a failing check restarts the container, where the
+readiness health_check only gates traffic. Both provisioners deploy it.
 
 ### spec.services[].livenessHealthCheck.port
 
@@ -1267,8 +1267,8 @@ honored for docr and ghcr.
 
 `DigitalOceanAppHealthCheck`
 
-Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
-has no liveness_health_check on workers, so Pulumi fails loudly if set.
+Liveness probe: a failing check restarts the container. Both provisioners
+deploy it.
 
 ### spec.workers[].livenessHealthCheck.port
 
@@ -2689,8 +2689,7 @@ Path prefix, for example /api
 
 `string`
 
-Exact Host header to match. Both engines wire it (the Pulumi SDK carries
-it since v4.53.0).
+Exact Host header to match. Both provisioners deploy it.
 
 ### spec.ingress.rules[].component
 
@@ -2787,9 +2786,8 @@ Duration string, for example 5h30m
 
 `DigitalOceanAppSecureHeader`
 
-The provider schema caps this at one header. The Pulumi SDK (v4.53.0,
-verified) has no secure_header on ingress rules; Terraform wires it and
-Pulumi fails loudly if it is set.
+One response header added to every route of this ingress. The provider
+schema caps this at one header. Both provisioners deploy it.
 
 ### spec.ingress.secureHeader.key
 
@@ -2835,8 +2833,7 @@ When true, the app is archived (and enabled is implied by the API).
 
 `string | valueFrom`
 
-VPC the app's egress is placed in. Optional; both engines wire it (the
-Pulumi SDK carries it since v4.53.0 as a one-element vpcs list).
+VPC the app's egress is placed in. Optional; both provisioners deploy it.
 
 - references: DigitalOceanVpc (`status.outputs.vpc_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanVpc, name: <that resource's name>, fieldPath: status.outputs.vpc_id}} -- a bare string does not parse

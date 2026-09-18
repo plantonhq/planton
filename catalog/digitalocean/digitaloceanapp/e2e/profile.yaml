@@ -36,14 +36,14 @@ spec:
   #   VCS account on the DigitalOcean team.
   # custom domains (spec.domains) -- need a zone the account controls
   #   (PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN, the certificate class).
-  # vpc placement -- wired on both engines since the v4.53.0 pin; the live
-  #   arm rides the Vpc fixture once its address range is free again.
-  # maintenance mode and ingress authority matches -- wired on both engines
-  #   since the v4.53.0 pin; maintenance takes the app offline by design and
-  #   authority needs a custom domain, so both stay offline-planned.
-  # Pulumi SDK gaps at the v4.53.0 pin (verified on disk): service/worker
-  #   liveness_health_check and ingress secure_header -- Terraform wires
-  #   them; Pulumi fails loudly if set.
+  # vpc placement -- wired on both engines; the live arm rides the Vpc
+  #   fixture once its address range is free again.
+  # maintenance mode and ingress authority matches -- wired on both engines;
+  #   maintenance takes the app offline by design and authority needs a
+  #   custom domain, so both stay offline-planned.
+  # service/worker liveness_health_check and ingress secure_header ride the
+  #   composed scenario on both engines (accepted and echoed unchanged by the
+  #   validate-only propose endpoint before joining the lane).
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

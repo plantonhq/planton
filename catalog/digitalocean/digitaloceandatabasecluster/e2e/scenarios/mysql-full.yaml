@@ -2,10 +2,13 @@
 # (the spec's vpc is OPTIONAL, so the fixture rides the e2e-prerequisites
 # annotation, never a registry edge) and proves private networking, custom
 # storage (the provider's bare-MiB string wiring -- the arm the old module
-# broke), a maintenance window, sql_mode on MySQL, and the user-tags +
-# Planton-labels tag composition. storage_autoscale is deliberately absent:
-# the pinned Pulumi SDK (v4.53.0) has no such field and the module fails
-# loudly. engineVersion is the version DigitalOcean offers TODAY: MySQL is
+# broke), storage_autoscale (increment_gib 10: the API refuses an increment
+# larger than the size slug's maximum plan storage, 30 GiB on
+# db-s-1vcpu-1gb, with a 422 at create; the settings read back exactly as
+# sent from GET /v2/databases/{id}/autoscale -- the cluster body's own
+# storage_autoscale field is always null), a maintenance window, sql_mode on
+# MySQL, and the user-tags + Planton-labels tag composition.
+# engineVersion is the version DigitalOcean offers TODAY: MySQL is
 # "8.4" only -- a bare "8" is rejected at create (422 "invalid cluster
 # engine version"); check `GET /v2/databases/options` when a lane fails
 # there, because DigitalOcean retires majors on a schedule.
@@ -45,6 +48,10 @@ spec:
       name: planton-oss-e2e-digitaloceanvpc-prereq
       fieldPath: status.outputs.vpc_id
   storageGib: 30
+  storageAutoscale:
+    enabled: true
+    thresholdPercent: 80
+    incrementGib: 10
   maintenanceWindow:
     day: sunday
     hour: "02:00"

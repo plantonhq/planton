@@ -61,8 +61,7 @@ message DigitalOceanAppSpec {
   DigitalOceanAppEgressType egress = 13;
   DigitalOceanAppMaintenance maintenance = 14;
 
-  // VPC the app's egress is placed in. Optional; both engines wire it (the
-  // Pulumi SDK carries it since v4.53.0 as a one-element vpcs list).
+  // VPC the app's egress is placed in. Optional; both provisioners deploy it.
   dev.planton.shared.foreignkey.v1.StringValueOrRef vpc = 15 [
     (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanVpc,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id",
@@ -134,8 +133,8 @@ message DigitalOceanAppService {
   repeated uint32 internal_ports = 15;
 
   DigitalOceanAppHealthCheck health_check = 16;
-  // Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
-  // has no liveness_health_check on services, so Pulumi fails loudly if set.
+  // Liveness probe: a failing check restarts the container, where the
+  // readiness health_check only gates traffic. Both provisioners deploy it.
   DigitalOceanAppHealthCheck liveness_health_check = 17;
   DigitalOceanAppAutoscaling autoscaling = 18;
   DigitalOceanAppTermination termination = 19;
@@ -183,8 +182,8 @@ message DigitalOceanAppWorker {
   string run_command = 11;
   string instance_size_slug = 12 [(dev.planton.shared.options.recommended_default) = "basic-xxs"];
   uint32 instance_count = 13 [(dev.planton.shared.options.recommended_default) = "1"];
-  // Liveness probe. Terraform wires this; the Pulumi SDK (v4.53.0, verified)
-  // has no liveness_health_check on workers, so Pulumi fails loudly if set.
+  // Liveness probe: a failing check restarts the container. Both provisioners
+  // deploy it.
   DigitalOceanAppHealthCheck liveness_health_check = 14;
   DigitalOceanAppAutoscaling autoscaling = 15;
   DigitalOceanAppTermination termination = 16;

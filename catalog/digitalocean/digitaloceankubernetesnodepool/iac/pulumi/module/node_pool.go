@@ -15,17 +15,6 @@ func nodePool(
 ) (*digitalocean.KubernetesNodePool, error) {
 	spec := locals.DigitalOceanKubernetesNodePool.Spec
 
-	// PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform
-	// wires it; the Pulumi DigitalOcean SDK v4.53.0 has no
-	// gpu_partition_mode field on KubernetesNodePoolArgs (re-verified on
-	// disk at that pin). Fail loudly on a meaningful set (the proto zero
-	// value passes) rather than silently dropping configuration. A guard
-	// like this is a claim about one SDK version: re-check the args struct
-	// on every pin bump and wire the field the moment it appears.
-	if spec.GpuPartitionMode != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.53.0 has no gpu_partition_mode field on KubernetesNodePool. Re-evaluate when the SDK exposes gpu_partition_mode.")
-	}
-
 	// Kubernetes node labels: user labels over the standard Planton labels
 	// (identical map in both provisioners).
 	labels := pulumi.StringMap{}
@@ -79,6 +68,12 @@ func nodePool(
 
 	if len(taints) > 0 {
 		nodePoolArgs.Taints = taints
+	}
+
+	// GPU partitioning is create-only and only meaningful on GPU sizes; unset
+	// must arrive as null, never "" (the provider rejects it).
+	if spec.GpuPartitionMode != "" {
+		nodePoolArgs.GpuPartitionMode = pulumi.StringPtr(spec.GpuPartitionMode)
 	}
 
 	if spec.AutoScale {

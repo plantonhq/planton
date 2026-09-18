@@ -101,7 +101,7 @@ Both provisioners export the identical output set:
 - **Region changes migrate live.** The cluster stays up while DigitalOcean moves it; plan for elevated latency during the move.
 - **Removing `evictionPolicy` resets to `noeviction`** rather than leaving the last policy in place.
 - **`backupRestore` acts only at creation.** DigitalOcean never reports it back; changing it on an existing cluster does nothing.
-- **`storageAutoscale` is Terraform-only today.** The pinned Pulumi bridge (v4.53.0) has no such field; the Pulumi module fails loudly if it is set rather than silently dropping it.
+- **`storageAutoscale` deploys on both provisioners.** Keep `incrementGib` at or below the size slug's maximum plan storage (30 GiB on `db-s-1vcpu-1gb`) — the API refuses a larger step at create time. See the [GUIDE](GUIDE.md).
 
 See `GUIDE.md` for operational judgment (sizing, engine selection, upgrade practice) and `catalog.md` for the deployment-store page.
 

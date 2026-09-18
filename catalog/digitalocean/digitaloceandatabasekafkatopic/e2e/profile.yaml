@@ -3,10 +3,12 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandatabasekafkatopic
 spec:
-  # pending_proof: proven on TERRAFORM only (2026-09-17), both scenarios,
-  # every phase including the idempotency gate and the blind import
-  # round-trips; the PULUMI lanes are BLOCKED AT THE TREE'S PIN by an
-  # upstream provider defect the bridge has not yet caught up with.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trips (Terraform lane).
+  # Terraform proven 2026-09-17; Pulumi proven 2026-09-18 at bridge v4.79.1
+  # (embedding provider v2.100.1): `minimal` DEPLOY 1m09s, `configured`
+  # DEPLOY 36 s, IDEMPOTENCY PASS on both (8-14 s), DESTROY 13-14 s, the
+  # topic 404s within two seconds -- every phase first run, zero re-runs.
   # Terraform (provider v2.101.0 under the ~> 2.99 float): `minimal` and
   # `configured` DEPLOY in 15-32 s, IDEMPOTENCY PASS on the refreshed plan,
   # DESTROY ~4 s, the topic 404s within two seconds; both round-trips
@@ -18,27 +20,24 @@ spec:
   # never fired: the provider DOES read it back from the server (`minimal`
   # read 1, `configured` read the 2 it sent), so the catalog note records
   # the measurement.
-  # THE PULUMI BLOCKER: the pinned bridge (pulumi-digitalocean v4.53.0)
-  # embeds terraform-provider-digitalocean v2.67.0, whose topic Create
-  # dereferences the topic in the API's create response -- and DigitalOcean
-  # now creates topics asynchronously, answering `accepted` ("topic is
-  # still provisioning") with NO topic body, so the provider panics
-  # (nil pointer, resource_database_kafka_topic.go:318) on every create.
-  # Upstream fixed it in v2.99.1 (PR #1563: derive the id from the request
-  # and wait until the topic is readable); the first bridge carrying that
-  # upstream is v4.78.1 (2026-08-07; latest v4.79.1 embeds v2.100.1).
-  # Nothing in the module can avoid a panic inside the provider's Create.
-  # UNBLOCK: bump the root go.mod pulumi-digitalocean/sdk/v4 pin to
-  # >= v4.78.1 (a queue-wide change -- one pin for all 31 kinds -- decided by
-  # the owner), re-verify every kind's PARITY-EXCEPTION guard at the new
-  # pin, then re-run `TestDigitalOceanDatabaseKafkaTopic_Pulumi`.
+  # The Pulumi lane's history is a pin lesson, not a module one: at bridge
+  # v4.53.0 (embedding provider v2.67.0) every Pulumi create panicked
+  # inside the bridged provider (nil pointer, resource_database_kafka_topic
+  # .go:318) because DigitalOcean now creates topics asynchronously and
+  # answers `accepted` with NO topic body, which that old Create
+  # dereferenced. Upstream fixed it in v2.99.1 (PR #1563); the first bridge
+  # carrying it is v4.78.1, and the tree's pin moved to v4.79.1. Nothing in
+  # a module can avoid a panic inside the provider's Create -- map the
+  # bridge to its embedded upstream (the bridge's `upstream` submodule
+  # commit at the tag) before blaming the module.
   # Both scenarios ride the shared Basic-plan Kafka fixture (`db-s-2vcpu-4gb`
-  # x 3 -- the smallest Kafka-eligible size; ~11-12 min to create) plus the
-  # PostgreSQL registry prerequisite (~5 min); each lane is ~12.5 min.
+  # x 3 -- the smallest Kafka-eligible size) plus the PostgreSQL registry
+  # prerequisite (~5 min). The fixture's create time VARIES: 11-12 min on
+  # most runs, 25 min once (DEPENDENCIES-UP 25m26s) -- the 45-minute lane
+  # timeout is sized for that tail; do not run two Kafka lanes at once.
   # Deferred arms (no runner update phase): partition growth and config
   # edits are in-place upstream.
   tier: 1
-  status: pending_proof
-  validated_provisioners:
-    - terraform
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 45

@@ -1,6 +1,6 @@
 # DigitalOcean Volume -- Pulumi Module
 
-Deploys a `digitalocean:index/volume:Volume` from a `DigitalOceanVolume` stack input: the full provider argument surface -- name, region, size, description, one-time filesystem formatting with an optional label, snapshot source, and tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`, which carries the complete argument surface -- no PARITY-EXCEPTION guards. (The SDK renames the volume's `urn` attribute to `VolumeUrn`; the module exports it under the contract's `urn` key. The SDK's `FilesystemType` input maps to the provider's DEPRECATED attribute -- this module wires `InitialFilesystemType`, never that one.)
+Deploys a `digitalocean:index/volume:Volume` from a `DigitalOceanVolume` stack input: the full provider argument surface -- name, region, size, description, one-time filesystem formatting with an optional label, snapshot source, and tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete argument surface -- no PARITY-EXCEPTION guards. (The SDK renames the volume's `urn` attribute to `VolumeUrn`; the module exports it under the contract's `urn` key. The SDK's `FilesystemType` input maps to the provider's DEPRECATED attribute -- this module wires `InitialFilesystemType`, never that one.)
 
 ## Module structure
 

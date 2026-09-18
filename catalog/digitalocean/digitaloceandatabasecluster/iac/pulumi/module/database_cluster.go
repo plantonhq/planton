@@ -33,10 +33,6 @@ func cluster(
 		return nil, errors.Errorf("database engine is required")
 	}
 
-	if spec.StorageAutoscale != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.storage_autoscale is modeled and Terraform wires it; the pinned Pulumi DigitalOcean SDK (v4.53.0, re-verified against DatabaseClusterArgs) has no storage_autoscale field on DatabaseCluster. Re-evaluate when the SDK exposes storage_autoscale.")
-	}
-
 	// User tags plus the standard Planton labels rendered as "key:value"
 	// tags — the exact set the Terraform module applies. Labels are added
 	// in key order so the rendered list is deterministic on every apply.
@@ -123,6 +119,22 @@ func cluster(
 			backupRestoreArgs.BackupCreatedAt = pulumi.StringPtr(spec.BackupRestore.BackupCreatedAt)
 		}
 		clusterArgs.BackupRestore = backupRestoreArgs
+	}
+
+	// Automatic storage growth. Zero threshold/increment mean "DigitalOcean's
+	// default" and are left null, never sent as 0 -- the Terraform module's
+	// coalescing.
+	if spec.StorageAutoscale != nil {
+		autoscaleArgs := &digitalocean.DatabaseClusterStorageAutoscaleArgs{
+			Enabled: pulumi.Bool(spec.StorageAutoscale.Enabled),
+		}
+		if spec.StorageAutoscale.ThresholdPercent > 0 {
+			autoscaleArgs.ThresholdPercent = pulumi.IntPtr(int(spec.StorageAutoscale.ThresholdPercent))
+		}
+		if spec.StorageAutoscale.IncrementGib > 0 {
+			autoscaleArgs.IncrementGib = pulumi.IntPtr(int(spec.StorageAutoscale.IncrementGib))
+		}
+		clusterArgs.StorageAutoscale = autoscaleArgs
 	}
 
 	// Engine-conditional tuning: spec CEL rules enforce the engine pairing,

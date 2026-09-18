@@ -38,7 +38,7 @@ DigitalOcean enforces these server-side; the spec only enforces the universal mi
 - Prefer `storageAutoscale` over hand-managed increments — DigitalOcean grows the disk at your threshold with a one-hour cooldown.
 - If you grow `sizeSlug` while `storageGib` is unset, the cluster adopts the new slug's (larger) default storage automatically. A stale explicit `storageGib` smaller than the new slug's default is invalid — unset it when upsizing.
 
-Note `storageAutoscale` currently deploys through the Terraform provisioner only; the Pulumi bridge rejects it loudly (no silent drop). Choose the provisioner accordingly or manage growth manually on Pulumi stacks.
+`storageAutoscale` deploys on both provisioners. Two facts DigitalOcean enforces that the field comments cannot fully carry: the API refuses an `incrementGib` larger than the size slug's maximum plan storage at create time (30 GiB on `db-s-1vcpu-1gb` — a 50 GiB step on that slug fails with `422 storage autoscale increment 50 must not be greater than maximum plan size 30`), so size the step for the smallest slug the manifest may run on; and the cluster's own API body never reports the autoscale settings (`storage_autoscale` is always `null` there) — they live at `GET /v2/databases/{id}/autoscale`, which both provisioners read, so a refreshed plan stays clean.
 
 ## Upgrades are one-way and live
 

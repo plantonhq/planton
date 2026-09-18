@@ -86,7 +86,7 @@ These are the most important decisions when configuring a database cluster. Expl
 
 **VPC placement** -- The `vpc` field places the cluster in a private network so database traffic stays off the public internet. It cannot be changed after creation: retrofitting means a new cluster plus a data migration (`backupRestore` gives you the copy), so decide network placement before the first deploy. When omitted, the cluster is reachable at its public hostname.
 
-**Storage and growth** -- `storageGib` sets custom disk space beyond the size slug's default (increase-only), and `storageAutoscale` grows it automatically when usage crosses a threshold. Autoscale is applied by the Terraform provisioner; the Pulumi bridge does not support it yet and rejects it loudly rather than dropping it.
+**Storage and growth** -- `storageGib` sets custom disk space beyond the size slug's default (increase-only), and `storageAutoscale` grows it automatically when usage crosses a threshold. Both provisioners deploy it; keep `incrementGib` at or below the size slug's maximum plan storage, or the API refuses the create.
 
 **Engine tuning** -- `sqlMode` applies only to MySQL and `evictionPolicy` only to Redis/Valkey; the manifest is rejected at validation time if they are paired with any other engine, mirroring DigitalOcean's own rules. Removing a previously set `evictionPolicy` resets the cluster to `noeviction` -- it does not keep the last value.
 

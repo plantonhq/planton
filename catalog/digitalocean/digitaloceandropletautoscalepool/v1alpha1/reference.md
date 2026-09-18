@@ -107,6 +107,7 @@ spec:
 | `spec.dropletTemplate.withDropletAgent` | `bool` |  |  |  |
 | `spec.dropletTemplate.ipv6` | `bool` |  |  |  |
 | `spec.dropletTemplate.userData` | `string` |  |  |  |
+| `spec.dropletTemplate.publicNetworking` | `bool` |  |  |  |
 
 ## Field Details
 
@@ -304,6 +305,16 @@ decides on -- leave it enabled for any dynamic pool.
 `string`
 
 (Optional) Cloud-init user data executed on each member's first boot.
+
+### spec.dropletTemplate.publicNetworking
+
+`bool` · optional (explicit presence)
+
+(Optional) Public networking is enabled on every member by default; set
+explicit false so members are created with NO public network interface
+(reachable only inside the pool's VPC -- put them behind a load balancer
+that already exists). Unset defers to DigitalOcean's default. Changing it
+replaces the pool.
 
 ## Outputs
 

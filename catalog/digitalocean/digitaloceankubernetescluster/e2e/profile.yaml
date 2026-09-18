@@ -40,11 +40,14 @@ spec:
   # GPU node pools and the GPU addons (gpu_partition_mode, the AMD/NVIDIA
   # device plugins, DRA drivers, RDMA plugin -- GPU Droplets are the most
   # expensive arm and the toggles mean nothing on a non-GPU pool; the
-  # offline plans prove the wiring on both engines where the SDK carries
-  # them); the Pulumi SDK v4.53.0 gap arms (sso, isolated_workers,
-  # worker_subnet_uuid, gpu_partition_mode, and six of the nine addon blocks
-  # -- Terraform wires them; Pulumi fails loudly if set; re-evaluate on every
-  # SDK bump); registry_integration (needs a DOCR registry in the account --
+  # offline plans prove the wiring on both engines); sso (needs a real OIDC
+  # issuer and client -- prove when an identity provider is arranged for the
+  # account); isolated_workers (the API requires a NAT gateway attached to
+  # the cluster's VPC and the nodes bill as dedicated hardware -- prove when
+  # an owner funds it); worker_subnet_uuid (needs a VPC subnet, which the
+  # catalog has no kind for yet -- prove when one exists); the peer-to-peer
+  # OCI registry plugin and the CoreDNS autoscaler ARE in the hardened lane
+  # (both engines); registry_integration (needs a DOCR registry in the account --
   # a same-session fixture from the ContainerRegistry kind would prove it);
   # destroy_all_associated_resources (a destroy-behavior flag a test should
   # never exercise against a shared account); custom cluster/service subnets

@@ -1030,9 +1030,7 @@ func (x *DigitalOceanAppImageSource) GetDeployOnPush() bool {
 
 // HTTP/TCP health check. The same shape is used for readiness (health_check)
 // and liveness (liveness_health_check) on services; workers only have the
-// liveness variant. The Pulumi SDK (v4.53.0, verified) has no
-// liveness_health_check on services or workers - Terraform wires it; Pulumi
-// fails loudly if it is set.
+// liveness variant. Both provisioners deploy both variants.
 type DigitalOceanAppHealthCheck struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Port to probe. Range 1-65535. When omitted, App Platform uses the
@@ -2002,8 +2000,7 @@ type DigitalOceanAppIngressMatch struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Path prefix, for example /api
 	PathPrefix string `protobuf:"bytes,1,opt,name=path_prefix,json=pathPrefix,proto3" json:"path_prefix,omitempty"`
-	// Exact Host header to match. Both engines wire it (the Pulumi SDK carries
-	// it since v4.53.0).
+	// Exact Host header to match. Both provisioners deploy it.
 	AuthorityExact string `protobuf:"bytes,2,opt,name=authority_exact,json=authorityExact,proto3" json:"authority_exact,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -2315,9 +2312,8 @@ func (x *DigitalOceanAppSecureHeader) GetValue() string {
 type DigitalOceanAppIngress struct {
 	state protoimpl.MessageState        `protogen:"open.v1"`
 	Rules []*DigitalOceanAppIngressRule `protobuf:"bytes,1,rep,name=rules,proto3" json:"rules,omitempty"`
-	// The provider schema caps this at one header. The Pulumi SDK (v4.53.0,
-	// verified) has no secure_header on ingress rules; Terraform wires it and
-	// Pulumi fails loudly if it is set.
+	// One response header added to every route of this ingress. The provider
+	// schema caps this at one header. Both provisioners deploy it.
 	SecureHeader  *DigitalOceanAppSecureHeader `protobuf:"bytes,2,opt,name=secure_header,json=secureHeader,proto3" json:"secure_header,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

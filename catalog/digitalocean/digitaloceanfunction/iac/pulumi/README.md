@@ -6,7 +6,7 @@ The app name is `spec.appName` (2-32 characters, unique in the account -- never 
 
 Runtime, memory, timeout, and schedules are read by App Platform from `project.yml`. They are not Pulumi args.
 
-Component alert destinations (emails, Slack webhooks) are wired -- the SDK carries them since pulumi-digitalocean v4.53.0. Webhook URLs are wrapped as Pulumi secrets because the SDK does not flag them.
+Component alert destinations (emails, Slack webhooks) are wired. Webhook URLs are wrapped as Pulumi secrets because the SDK does not flag them.
 
 ## Prerequisites
 

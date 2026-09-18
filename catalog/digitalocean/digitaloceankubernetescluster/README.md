@@ -93,7 +93,7 @@ Both provisioners export the identical output set:
 - **HA is one-way.** Once `highlyAvailable` is true, it cannot be turned back off.
 - **`destroyAllAssociatedResources` is dangerous.** On destroy it also deletes the load balancers, volumes, and volume snapshots the cluster created. It never affects the running cluster.
 - **`surgeUpgrade` unset means ON** — DigitalOcean's default. Set it to `false` explicitly to disable surge upgrades.
-- **Several fields are Terraform-only today.** The Pulumi bridge (SDK v4.53.0) has no counterpart for `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, or six of the nine addon toggles (`routingAgent`, `amdGpuDevicePlugin`, and `amdGpuDeviceMetricsExporterPlugin` work on both engines); the Pulumi module fails loudly if the others are set rather than silently dropping them.
+- **Every spec field deploys on both provisioners** — `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, and all nine addon toggles included. A few carry prerequisites DigitalOcean enforces: `isolatedWorkers` needs a NAT gateway attached to the cluster's VPC, `workerSubnetUuid` needs a subnet inside that VPC, and the GPU addons and `gpuPartitionMode` only mean anything on GPU node sizes.
 
 See `GUIDE.md` for operational judgment (upgrade practice, pool sizing, firewall posture) and `catalog.md` for the deployment-store page.
 

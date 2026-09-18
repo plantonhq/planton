@@ -60,7 +60,7 @@ The pool's node and Droplet ids are deliberately not outputs: DOKS replaces node
 - **With autoscaling on, the live node count drifts by design.** `nodeCount` is only the initial count; the provider suppresses the diff while the count sits between the bounds.
 - **Taints must spell their effect exactly as Kubernetes does** (`NoSchedule`, `PreferNoSchedule`, `NoExecute`), and a taint's `value` may be empty — Kubernetes allows valueless taints.
 - **A cluster's default pool cannot be managed here** — it is part of the cluster resource itself, and DigitalOcean refuses to import a default pool as a standalone one.
-- **The Pulumi SDK (v4.53.0, re-verified 2026-09-17) cannot express `gpuPartitionMode`.** The Pulumi module fails loudly if it is set; Terraform wires it. See the [GUIDE](GUIDE.md).
+- **`gpuPartitionMode` deploys on both provisioners** and is create-only: changing it replaces the pool. It only means anything on AMD GPU sizes. See the [GUIDE](GUIDE.md).
 
 ---
 

@@ -35,10 +35,14 @@ spec:
   #   once that kind is proven.
   # - volume_ids: needs a DigitalOceanVolume fixture (proven kind) -- an
   #   attachment scenario is the natural home, composing it by reference.
-  # - gpu_partition_mode: GPU sizes are the expensive class AND a Pulumi SDK
-  #   gap (fails loudly); Terraform wires it.
-  # - public_networking=false: Pulumi SDK gap (fails loudly), and it would
-  #   blind the verifier's public-IPv4 assertion; Terraform wires it.
+  # - gpu_partition_mode: both engines wire it; GPU sizes are the expensive
+  #   class and the field means nothing on a non-GPU size -- prove when an
+  #   owner funds a GPU droplet lane.
+  #
+  # public_networking=false rides its own `private` scenario on both
+  # engines: the ipv4_address output is empty by contract and the verifier
+  # asserts the live droplet has NO public IPv4 (an empty claim is a claim)
+  # and that ipv4_address_private matches live.
   #
   # Account residue the `minimal` scenario leaves by design: an unset region
   # lands wherever DigitalOcean has capacity, and a region with no default

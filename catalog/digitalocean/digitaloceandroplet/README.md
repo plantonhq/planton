@@ -66,7 +66,7 @@ Both provisioners export the identical output set:
 - **`enableBackups: true` re-plans on every apply (provider defect, harmless).** Backups are really enabled and the policy really applied, but the provider reads the on/off state from the droplet's `features` list, which DigitalOcean no longer populates for backups; every plan shows `backups: false → true` and every apply sends a no-op enable. Check `GET /v2/droplets/{id}/backups/policy` for the truth. Upstream: [#1525](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1525).
 - **`resizeDisk` defaults ON provider-side.** A disk-growing resize is permanent — you can never pick a smaller disk afterward. Set `false` to scale CPU/RAM reversibly.
 - **Disabling IPv6 on a running droplet recreates it**; enabling it updates in place.
-- **Pulumi SDK v4.49.0 cannot express `publicNetworking: false` or `gpuPartitionMode`.** The Pulumi module fails loudly if they are set; Terraform wires them. See the [GUIDE](GUIDE.md).
+- **`publicNetworking: false` and `gpuPartitionMode` deploy on both provisioners.** Both are create-only; `gpuPartitionMode` only means anything on a GPU size. See the [GUIDE](GUIDE.md).
 
 ---
 

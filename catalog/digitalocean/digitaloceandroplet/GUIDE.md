@@ -30,7 +30,7 @@ Expect a permanent, harmless diff while backups are on. The provider at the pinn
 
 ## IPv6 and public networking are one-way doors
 
-Enabling `enableIpv6` on a running droplet updates in place; disabling it recreates the droplet. `publicNetworking: false` creates a droplet with no public interface at all — reachable only inside its VPC — and is create-only. The verifier's public-IP checks and most bootstrap flows assume a public interface; private-only droplets belong behind a load balancer or bastion you have already built.
+Enabling `enableIpv6` on a running droplet updates in place; disabling it recreates the droplet. `publicNetworking: false` creates a droplet with no public interface at all — reachable only inside its VPC — and is create-only; its `ipv4_address` output is empty and `ipv4_address_private` is the address to wire. Most bootstrap flows assume a public interface; private-only droplets belong behind a load balancer or bastion you have already built.
 
 ## Tags are the targeting fabric
 

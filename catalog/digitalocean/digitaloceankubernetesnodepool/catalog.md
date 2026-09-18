@@ -82,7 +82,7 @@ These are the most important decisions when configuring a node pool. Explore the
 
 **Labels and taints** -- Labels make the pool targetable from Kubernetes (nodeSelector, affinity); taints keep untolerating pods off. Pair them for dedicated pools: a taint alone isolates, a label alone only attracts.
 
-**GPU partitioning** -- `gpuPartitionMode` splits supported AMD GPU sizes into partitions. It is create-time-only in effect: changing it replaces the pool. Currently Terraform-only (the Pulumi SDK has no field for it at v4.53.0, re-verified 2026-09-17; the Pulumi provisioner fails loudly if set).
+**GPU partitioning** -- `gpuPartitionMode` splits supported AMD GPU sizes into partitions. It is create-time-only in effect: changing it replaces the pool. Both provisioners deploy it.
 
 ## Outputs and Dependencies
 

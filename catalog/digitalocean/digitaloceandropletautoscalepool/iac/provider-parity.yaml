@@ -31,12 +31,7 @@ resources:
       # argument vpc_uuid.
       - spec: spec.droplet_template.vpc
         arg: droplet_template.vpc_uuid
-    exclusions:
-      - arg: droplet_template.public_networking
-        reason: >-
-          Dead on write at the pin: schema-declared but never copied into
-          any create/update request (verified in
-          resource_droplet_autoscale.go -- expandTemplate omits it), so a
-          configured value can never reach the API. Read still populates it
-          from the platform default. Representing it would be a field that
-          cannot do anything (the droplet kind's ipv6_address precedent).
+    # droplet_template.public_networking matches the spec leaf by name. It was
+    # dead on write through provider v2.99.1 (expandTemplate omitted it) and
+    # is propagated on create/update from v2.100.0 (GetOkExists -> the
+    # template's PublicNetworking), so the spec models it as a presence bool.

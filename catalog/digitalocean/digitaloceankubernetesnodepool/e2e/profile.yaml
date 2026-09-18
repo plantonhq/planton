@@ -29,10 +29,9 @@ spec:
   # deliberately not outputs (they churn by design); Droplet-scoped wiring
   # goes through the pool's tags.
   #
-  # Deliberately not in the live lanes: gpu_partition_mode (GPU sizes are
-  # the expensive class AND a Pulumi SDK gap at v4.53.0, re-verified on disk
-  # 2026-09-17 -- Terraform wires it, Pulumi fails loudly if set; unblocks
-  # when the SDK grows the field and an owner funds a GPU node). The pool
+  # Deliberately not in the live lanes: gpu_partition_mode (both engines
+  # wire it; GPU sizes are the expensive class and the field means nothing
+  # on a non-GPU size -- unblocks when an owner funds a GPU node). The pool
   # bills only its nodes (~$0.018/hour on s-1vcpu-2gb); the fixture cluster
   # dominates the lane's wall clock. Run ONE scenario per `go test` with a
   # 75-minute budget: each lane is three lifecycles deep.

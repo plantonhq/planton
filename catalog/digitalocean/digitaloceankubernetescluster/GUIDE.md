@@ -62,9 +62,9 @@ Every addon field (`routingAgent`, `corednsAutoscaler`, the GPU device plugins a
 
 `destroyAllAssociatedResources: true` makes destroy also delete every load balancer, volume, and volume snapshot the cluster created. That is the right call for ephemeral clusters and the wrong one anywhere volumes outlive the cluster. It only acts at destroy; it is invisible until then.
 
-## Choosing a provisioner: the Pulumi gaps
+## Choosing a provisioner
 
-The Pulumi bridge (SDK v4.53.0) cannot express `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, or six of the nine addon toggles (`p2pOciRegistryPlugin`, `amdGpuDraDriver`, `nvidiaGpuDevicePlugin`, `nvidiaGpuDraDriver`, `rdmaSharedDevicePlugin`, `corednsAutoscaler`). `routingAgent`, `amdGpuDevicePlugin`, and `amdGpuDeviceMetricsExporterPlugin` work on both engines. The Pulumi module fails loudly when an unsupported field is set — no silent drops. If the cluster needs those surfaces today, deploy it through Terraform. The list shrinks as the SDK grows; each guard in the module names the pin it was checked against.
+There is nothing to choose on this kind: every spec field deploys identically on Terraform and Pulumi, addon toggles included. What differs is DigitalOcean's own prerequisites, and they bind both provisioners equally: `isolatedWorkers` is refused unless the cluster's VPC has a NAT gateway attached (the nodes then run on dedicated hardware and bill accordingly, and it can only be set at creation); `workerSubnetUuid` must name a subnet inside the cluster's VPC and requires `vpc` to be set; `sso` needs a working OIDC issuer and client; the GPU device plugins, DRA drivers, and RDMA plugin are accepted only on clusters with GPU node pools, and each device-plugin/DRA-driver pair is mutually exclusive. `corednsAutoscaler` defaults ON from Kubernetes 1.36; on older versions set it explicitly.
 
 ## Importing an existing cluster
 

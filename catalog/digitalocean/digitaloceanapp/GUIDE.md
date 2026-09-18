@@ -30,9 +30,13 @@ When `autoscaling` is set, leave `instanceCount` unset. App Platform ignores a f
 
 `termination.drainSeconds` is an HTTP connection drain. Workers and jobs reject it. They honor `gracePeriodSeconds` only.
 
-## Terraform vs Pulumi at the current Pulumi SDK (v4.53.0)
+## Terraform vs Pulumi
 
-Both engines wire the whole spec except two arms the Pulumi SDK still lacks (verified against v4.53.0 on disk): service/worker `livenessHealthCheck` and `spec.ingress.secureHeader`. Pulumi fails the apply with a loud `PARITY-EXCEPTION` if either is set, so the two engines never silently deploy different apps. Use Terraform for those two arms, or omit them on Pulumi stacks. `vpc`, `maintenance`, ingress `authorityExact` matches, and alert destinations used to be on this list and are wired on both engines now.
+Both provisioners deploy the whole spec -- `vpc`, `maintenance`, ingress `authorityExact` matches, `ingress.secureHeader`, service and worker `livenessHealthCheck`, and alert destinations included. The one behavioral difference is the alert-destinations read-back below, which is a provider trait, not a wiring gap.
+
+## Readiness versus liveness
+
+A service's `healthCheck` is App Platform's readiness probe: while it fails, the component receives no traffic. `livenessHealthCheck` on a service or worker is the restart probe: when it fails `failureThreshold` times in a row, App Platform restarts the container. Point liveness at a cheap, dependency-free path -- a probe that touches the database restarts a healthy container every time the database hiccups. Both use the same field shape; `initialDelaySeconds` matters most on liveness, because a probe that starts before the process is listening restarts it in a loop.
 
 ## Alert destinations are write-only on the provider -- a perpetual diff on Terraform
 

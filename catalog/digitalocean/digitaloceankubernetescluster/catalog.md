@@ -88,7 +88,7 @@ These are the most important decisions when configuring a DOKS cluster. Explore 
 
 **Control-plane firewall** -- Provide `controlPlaneFirewall` with `enabled: true` and the IPs/CIDRs allowed to reach the Kubernetes API server. When omitted, the API server is publicly accessible. Restrict to VPN or office CIDRs for production -- and make sure the list includes wherever the provisioner runs.
 
-**Terraform-only surfaces** -- `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, and six of the nine addon toggles (`p2pOciRegistryPlugin`, `amdGpuDraDriver`, `nvidiaGpuDevicePlugin`, `nvidiaGpuDraDriver`, `rdmaSharedDevicePlugin`, `corednsAutoscaler`) have no Pulumi bridge counterpart yet (SDK v4.53.0); the Pulumi provisioner rejects them loudly rather than dropping them. `routingAgent`, `amdGpuDevicePlugin`, and `amdGpuDeviceMetricsExporterPlugin` work on both.
+**Addons and advanced placement** -- all nine addon toggles (`routingAgent`, `p2pOciRegistryPlugin`, `corednsAutoscaler`, the AMD and NVIDIA device plugins and DRA drivers, `amdGpuDeviceMetricsExporterPlugin`, `rdmaSharedDevicePlugin`), `sso`, `isolatedWorkers`, `workerSubnetUuid`, and `gpuPartitionMode` deploy on both provisioners. DigitalOcean enforces the prerequisites: a NAT gateway on the VPC for `isolatedWorkers`, a subnet in that VPC for `workerSubnetUuid`, GPU node sizes for the GPU addons and partitioning.
 
 ## Outputs and Dependencies
 

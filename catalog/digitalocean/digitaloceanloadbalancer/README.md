@@ -83,7 +83,7 @@ Both provisioners export the identical output set:
 - **GLOBAL balancers have no region and no forwarding rules.** They route through `glbSettings`, `domains`, and `targetLoadBalancerIds`.
 - **A `dropletTag` does not have to exist yet.** DigitalOcean stores it as a selector and attaches Droplets as they pick up the tag; unlike a firewall, it never rejects an unknown tag. Load-balancer names are unique per account.
 - **`network`, `networkStack`, and `tlsCipherPolicy` are write-only.** The API never reports them back, so import leaves them empty and drift on them is invisible.
-- **The pinned Pulumi SDK (v4.53.0) cannot express `subnetUuid` or BYOIP `ip`.** The Pulumi module fails loudly if they are set; Terraform wires them. See the [GUIDE](GUIDE.md).
+- **`subnetUuid` and BYOIP `ip` deploy on both provisioners.** Both are create-only; `ip` needs an unassigned BYOIP address already on the account and `subnetUuid` needs `vpc`. See the [GUIDE](GUIDE.md).
 
 ---
 

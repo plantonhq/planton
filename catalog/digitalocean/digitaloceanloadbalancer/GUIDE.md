@@ -43,9 +43,7 @@ A new balancer normally reaches `active` in one to two minutes; the provider wai
 
 `ip` assigns an unassigned BYOIP address on the account at create time. When unset, DigitalOcean allocates one. The assigned address is always the `ip` stack output.
 
-`subnetUuid` places the balancer in a DigitalOcean-managed VPC subnet and requires `vpc`. Both are create-only.
-
-The pinned Pulumi bridge (`pulumi-digitalocean/sdk/v4 v4.53.0`, re-verified against the SDK's `LoadBalancerArgs`) cannot express either. The Pulumi module fails the apply with `PARITY-EXCEPTION` if they are set. If the balancer needs them today, deploy it through Terraform.
+`subnetUuid` places the balancer in a DigitalOcean-managed VPC subnet and requires `vpc`. Both are create-only, and both deploy on either provisioner.
 
 ## Sticky sessions: cookies or none
 

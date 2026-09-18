@@ -320,9 +320,15 @@ type DigitalOceanDropletAutoscalePoolTemplate struct {
 	// (Optional) Enable IPv6 networking on every member.
 	Ipv6 bool `protobuf:"varint,9,opt,name=ipv6,proto3" json:"ipv6,omitempty"`
 	// (Optional) Cloud-init user data executed on each member's first boot.
-	UserData      string `protobuf:"bytes,10,opt,name=user_data,json=userData,proto3" json:"user_data,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	UserData string `protobuf:"bytes,10,opt,name=user_data,json=userData,proto3" json:"user_data,omitempty"`
+	// (Optional) Public networking is enabled on every member by default; set
+	// explicit false so members are created with NO public network interface
+	// (reachable only inside the pool's VPC -- put them behind a load balancer
+	// that already exists). Unset defers to DigitalOcean's default. Changing it
+	// replaces the pool.
+	PublicNetworking *bool `protobuf:"varint,11,opt,name=public_networking,json=publicNetworking,proto3,oneof" json:"public_networking,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *DigitalOceanDropletAutoscalePoolTemplate) Reset() {
@@ -425,6 +431,13 @@ func (x *DigitalOceanDropletAutoscalePoolTemplate) GetUserData() string {
 	return ""
 }
 
+func (x *DigitalOceanDropletAutoscalePoolTemplate) GetPublicNetworking() bool {
+	if x != nil && x.PublicNetworking != nil {
+		return *x.PublicNetworking
+	}
+	return false
+}
+
 var File_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_spec_proto_rawDesc = "" +
@@ -452,7 +465,7 @@ const file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_spec_p
 	"\x1bdynamic.at_least_one_target\x12Pdynamic scaling requires target_cpu_utilization and/or target_memory_utilization\x1aGhas(this.target_cpu_utilization) || has(this.target_memory_utilization)B\x19\n" +
 	"\x17_target_cpu_utilizationB\x1c\n" +
 	"\x1a_target_memory_utilizationB\x13\n" +
-	"\x11_cooldown_minutes\"\xad\x05\n" +
+	"\x11_cooldown_minutes\"\xf5\x05\n" +
 	"(DigitalOceanDropletAutoscalePoolTemplate\x12\x1e\n" +
 	"\x04size\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04size\x12L\n" +
@@ -467,7 +480,9 @@ const file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_spec_p
 	"\x12with_droplet_agent\x18\b \x01(\bR\x10withDropletAgent\x12\x12\n" +
 	"\x04ipv6\x18\t \x01(\bR\x04ipv6\x12\x1b\n" +
 	"\tuser_data\x18\n" +
-	" \x01(\tR\buserDataB\x87\x04\n" +
+	" \x01(\tR\buserData\x120\n" +
+	"\x11public_networking\x18\v \x01(\bH\x00R\x10publicNetworking\x88\x01\x01B\x14\n" +
+	"\x12_public_networkingB\x87\x04\n" +
 	"Fcom.dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1B\tSpecProtoP\x01Z\x84\x01github.com/plantonhq/planton/catalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1;digitaloceandropletautoscalepoolv1alpha1\xa2\x02\x04DPDD\xaa\x02BDev.Planton.Digitalocean.Digitaloceandropletautoscalepool.V1alpha1\xca\x02BDev\\Planton\\Digitalocean\\Digitaloceandropletautoscalepool\\V1alpha1\xe2\x02NDev\\Planton\\Digitalocean\\Digitaloceandropletautoscalepool\\V1alpha1\\GPBMetadata\xea\x02FDev::Planton::Digitalocean::Digitaloceandropletautoscalepool::V1alpha1b\x06proto3"
 
 var (
@@ -516,6 +531,7 @@ func file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_spec_pr
 		(*DigitalOceanDropletAutoscalePoolSpec_Dynamic)(nil),
 	}
 	file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
+	file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

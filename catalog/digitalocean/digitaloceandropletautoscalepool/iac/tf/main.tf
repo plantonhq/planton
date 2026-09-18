@@ -67,8 +67,9 @@ resource "digitalocean_droplet_autoscale" "pool" {
 
     user_data = try(var.spec.droplet_template.user_data, "") != "" ? var.spec.droplet_template.user_data : null
 
-    # public_networking is deliberately never rendered: the provider
-    # declares it but never copies it into any create/update request --
-    # dead on write at the pinned version.
+    # Sent only when the manifest states it: unset (null) defers to
+    # DigitalOcean's default (public on); an explicit false creates members
+    # with no public interface. Create-only on the template.
+    public_networking = var.spec.droplet_template.public_networking
   }
 }

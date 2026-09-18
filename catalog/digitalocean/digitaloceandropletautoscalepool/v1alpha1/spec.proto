@@ -167,4 +167,11 @@ message DigitalOceanDropletAutoscalePoolTemplate {
 
   // (Optional) Cloud-init user data executed on each member's first boot.
   string user_data = 10;
+
+  // (Optional) Public networking is enabled on every member by default; set
+  // explicit false so members are created with NO public network interface
+  // (reachable only inside the pool's VPC -- put them behind a load balancer
+  // that already exists). Unset defers to DigitalOcean's default. Changing it
+  // replaces the pool.
+  optional bool public_networking = 11;
 }

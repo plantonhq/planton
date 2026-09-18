@@ -42,9 +42,12 @@ spec:
   # private_network_uuid and project_id populate from the region's default
   # VPC and the default project when unset (Optional+Computed).
   #
-  # Deliberately not in the live lanes: storage_autoscale (Pulumi SDK gap
-  # at the v4.53.0 pin, re-verified on disk -- Terraform wires it; Pulumi
-  # fails loudly if set; unblocks when the SDK grows the field), backup_restore
+  # storage_autoscale rides the mysql-full scenario on both engines
+  # (increment 10 GiB -- the API refuses an increment above the slug's
+  # maximum plan storage, 30 GiB on db-s-1vcpu-1gb; the settings read back
+  # from GET /v2/databases/{id}/autoscale, never from the cluster body).
+  #
+  # Deliberately not in the live lanes: backup_restore
   # (needs an existing cluster backup in the account), project_id (needs an
   # existing DigitalOcean project UUID -- the Project kind's fixture is the
   # unblock), kafka (3-node minimum makes it the most expensive arm; the
