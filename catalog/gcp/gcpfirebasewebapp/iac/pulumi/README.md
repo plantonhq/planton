@@ -23,7 +23,7 @@ iac/pulumi/
 ├── Pulumi.yaml            # Pulumi project configuration
 ├── README.md              # This file
 └── module/
-    ├── main.go            # Module coordinator (provider with user_project_override)
+    ├── main.go            # Module coordinator (provider with user_project_override and billing_project)
     ├── web_app.go         # Registration, App Check, config lookup
     ├── locals.go          # Resolved resource
     └── outputs.go         # Stack output constants
@@ -40,7 +40,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 
 ## What the module does
 
-- Builds the Google provider with `user_project_override` set — the Firebase Management API attributes quota to the caller's project on user-credential calls, and a deploy under plain ADC fails with "requires a quota project" otherwise.
+- Builds the Google provider with `user_project_override` set and `billing_project` naming the resource's project (the data-source reads need the quota project named under a user credential) — the Firebase Management API attributes quota to the caller's project on user-credential calls, and a deploy under plain ADC fails with "requires a quota project" otherwise.
 - Registers the app with its display name, the API key UID (sent only when set — Firebase associates or provisions one otherwise), and the spec's `deletion_policy`.
 - Enables `firebaseappcheck.googleapis.com` exactly when the spec composes an App Check resource (never disabled on destroy), then creates the reCAPTCHA v3 configuration (its site secret marked secret in state), the reCAPTCHA Enterprise configuration (its site key is public), and one debug token per entry keyed by display name, each waiting on the registration and the API.
 - Reads the app's `firebaseConfig` through the created app's id (the lookup names its input `WebAppId` — the one naming divergence in the family), so the invoke waits on the registration, and exports `app_id`, `name`, `api_key_id`, `app_urls`, and the seven `firebaseConfig` values.

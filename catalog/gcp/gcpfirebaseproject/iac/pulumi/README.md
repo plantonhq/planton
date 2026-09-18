@@ -23,7 +23,7 @@ iac/pulumi/
 ├── Pulumi.yaml            # Pulumi project configuration
 ├── README.md              # This file
 └── module/
-    ├── main.go            # Module coordinator (provider with user_project_override)
+    ├── main.go            # Module coordinator (provider with user_project_override and billing_project)
     ├── firebase_project.go # Enablement, default bucket, App Check, Admin SDK read
     ├── locals.go          # Resolved resource
     └── outputs.go         # Stack output constants
@@ -40,7 +40,7 @@ Credentials are provided via stack input (by the CLI), not in the manifest `spec
 
 ## What the module does
 
-- Builds the Google provider with `user_project_override` set — the Firebase Management API attributes quota to the caller's project on user-credential calls, and a deploy under plain ADC fails with "requires a quota project" otherwise.
+- Builds the Google provider with `user_project_override` set and `billing_project` naming the resource's project (the data-source reads need the quota project named under a user credential) — the Firebase Management API attributes quota to the caller's project on user-credential calls, and a deploy under plain ADC fails with "requires a quota project" otherwise.
 - Enables `firebase.googleapis.com` and `fcm.googleapis.com` (always), then `firebasestorage.googleapis.com` / `firebaseappcheck.googleapis.com` exactly when the spec composes the default bucket / App Check. Nothing is disabled on destroy.
 - Creates the enablement (adopting an already-enabled project), the default bucket when a location is set, and one App Check resource per spec entry, each carrying the spec's `deletion_policy`.
 - Reads the Admin SDK configuration through the created resource's project output, so the invoke waits on the enablement, and exports `project_id`, `project_number` (the FCM sender id), `display_name`, `database_url`, `storage_bucket`, `location_id`.

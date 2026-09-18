@@ -53,4 +53,4 @@ The `spec` object includes: `key_id` (the immutable resource id), `project_id` (
 
 - **Deletion is soft.** `deletion_policy = DELETE` (the provider default) soft-deletes the key: recoverable for 30 days, key id reserved for the window. `PREVENT` fails the destroy; `ABANDON` leaves the key live.
 - **Restrictions never rotate the key string** — only the immutable identity fields recreate the key.
-- **Quota project.** `user_project_override = true` attributes quota to the key's own project under every credential mode; without it a deploy under plain ADC fails with "requires a quota project" (the Identity Toolkit precedent).
+- **Quota project.** `user_project_override = true` with `billing_project` naming the key's project attributes quota to the key's own project under every credential mode; without it a deploy under plain ADC fails with "requires a quota project" (the Identity Toolkit precedent).

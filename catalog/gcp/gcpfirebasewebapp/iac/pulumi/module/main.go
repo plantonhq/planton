@@ -23,7 +23,8 @@ func Resources(ctx *pulumi.Context, stackInput *gcpfirebasewebappv1alpha1.GcpFir
 	// the same instance. The Terraform module has to attach
 	// `provider = google-beta` to the beta-only resources explicitly; that
 	// asymmetry is provider packaging, not a behavioral divergence.
-	gcpProvider, err := pulumigoogleprovider.GetWithUserProjectOverride(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, stackInput.ProviderConfig,
+		stackInput.Target.GetSpec().GetProjectId().GetValue())
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

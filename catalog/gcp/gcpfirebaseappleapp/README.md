@@ -116,7 +116,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **A key referenced by `apiKeyId` must be valid for this app**: unrestricted, or restricted to this bundle id with API restrictions that include the Firebase APIs the app uses (Firebase Installations, FCM Registration for push). The GcpApiKey `firebase-ios-key` preset is that shape.
 - **`GoogleService-Info.plist` is a build input.** Decode `config_file_contents` and add it to the Xcode target. It contains the API key and app id by design; access to the project's backends is governed by IAM, Security Rules, and App Check, not by hiding it.
 - **The Terraform module uses the `google-beta` provider for the registration and its config lookup** -- Google publishes them only there, under the catalog's beta admission list; App Check and API enablement stay on the GA provider.
-- **Both engines set `user_project_override`** -- the Firebase Management API attributes quota to the caller's project on user-credential calls.
+- **Both engines set `user_project_override` and name the app's project as `billing_project`** (the override covers resource calls; the config-file read is a data source, which needs the named quota project under a user credential) -- the Firebase Management API attributes quota to the caller's project on user-credential calls.
 
 ## Examples
 
