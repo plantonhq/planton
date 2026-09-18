@@ -14,8 +14,13 @@
  * one of its own hyphens; only a token wider than the block itself may break
  * inside. Nothing is ever clipped.
  *
+ * Two densities: the framed block (a chrome bar, then the lines) for a
+ * command that is the section's subject, and `compact` (one row, the copy
+ * glyph at its end, no chrome) for a one-liner that sits inside a list of
+ * steps, where a frame would outweigh the line it holds.
+ *
  * This is a client module because the copy button holds two seconds of
- * state; it is the one primitive in this library with a hook.
+ * state; the tabs primitive that composes it is the other.
  */
 import { Box, IconButton } from '@mui/material';
 import { Check, Copy } from 'lucide-react';
@@ -28,10 +33,12 @@ export interface CommandBlockProps {
   label: string;
   /** The chrome bar's text; defaults to the terminal's. */
   title?: string;
+  /** One row with the copy glyph at its end and no chrome bar, for a one-liner inside a list of steps. */
+  compact?: boolean;
   className?: string;
 }
 
-export const CommandBlock: FC<CommandBlockProps> = ({ commands, label, title = 'Terminal', className = '' }) => {
+export const CommandBlock: FC<CommandBlockProps> = ({ commands, label, title = 'Terminal', compact = false, className = '' }) => {
   const [copied, setCopied] = useState(false);
   const text = commands.join('\n');
 
@@ -41,6 +48,17 @@ export const CommandBlock: FC<CommandBlockProps> = ({ commands, label, title = '
       setTimeout(() => setCopied(false), 2000);
     });
   }, [text]);
+
+  if (compact) {
+    return (
+      <Box className={`inline-flex items-center gap-2 max-w-full rounded-lg bg-raised border border-edge pl-3 pr-1 py-1 ${className}`}>
+        <code className="font-mono text-xs text-fg-body whitespace-pre-wrap [overflow-wrap:anywhere] text-left">{text}</code>
+        <IconButton onClick={handleCopy} size="small" aria-label={copied ? 'Copied' : label} className="!text-fg-muted hover:!text-white">
+          {copied ? <Check size={14} aria-hidden /> : <Copy size={14} aria-hidden />}
+        </IconButton>
+      </Box>
+    );
+  }
 
   return (
     <Box className={`rounded-xl bg-raised border border-edge overflow-hidden ${className}`}>

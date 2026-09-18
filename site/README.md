@@ -50,6 +50,9 @@ The site is data first. Every sentence that states what Planton is or does lives
 | `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
 | `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
 | `src/data/distributions.ts` | The hosted and self-hosted pages: lede, proof points, the record or the install, what stays yours. | `src/components/distributions/DistributionPage.tsx` |
+| `src/data/desktop.ts` | Planton Desktop's landing and download pages: every section's words, the measured figures with their provenance, the first-launch beats and follow-ons; each sentence names its chapter or document. | `src/components/desktop/`, `llms.txt` |
+| `src/data/desktop-download.ts` | The one source for what can be downloaded: platforms, installers, install steps, one-command installs, verify commands, the CDN pointers, the platform detector, and the ways line derived from them. | `src/components/desktop/`, `doors.ts` |
+| `src/data/desktop-screenshots.ts` | The desktop pages' screenshot slots: a real capture of the app or `null`, never a placeholder. | `src/components/desktop/` |
 | `src/data/compare.ts` | The Compare page: three kinds of tool described and never named, what the reader keeps when they run both, what Planton does at the same moment, the proving page whose record is shown beside it, the questions a comparer asks. | `src/components/compare/ComparePage.tsx`, `llms.txt` |
 | `src/data/doors.ts` | Every call to action once: label and destination by key; the user's pair and the buyer's pair. | the `Doors` primitive; a record names its pair |
 | `src/data/page-shapes.ts` | The shapes the page records share: a proof point, a record or commands artifact, a step; and the one footer vocabulary every illustrated record uses (`illustratedFooter`). | `trust.ts`, `product.ts`, `distributions.ts`, `compare.ts` |
@@ -61,7 +64,7 @@ The site is data first. Every sentence that states what Planton is or does lives
 
 Data files import each other with `.ts` extensions so Node can run them directly (the generators do); `tsconfig.json` allows it.
 
-Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `PersonaCard`, `QuestionCard`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
+Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `PersonaCard`, `QuestionCard`, `CommandTabs`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
 
 The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition; `src/components/landing-page/index.ts` points at the active one and is the rollback switch. Nothing outside a versioned folder imports from inside one.
 
@@ -88,9 +91,10 @@ src/app/robots.ts        generated
 src/components/marketing/   the primitive library
 src/components/landing-page/ the versioned landing compositions
 src/components/trust/    the Trust template and index
-src/components/product/  the Product template and index (and, until the desktop landing is rebuilt, the 2025 desktop kit)
+src/components/product/  the Product template and index
 src/components/solutions/ the persona page template and the Solutions index
 src/components/compare/  the Compare page template
+src/components/desktop/  the Planton Desktop landing and download templates and their sections
 src/components/distributions/ the Distributions template and index
 src/components/deck/     the deck engine, bindSlide, the palette-native slide frame, and the meeting decks' older slide kit
 src/components/meetings/ meeting decks and their registry
@@ -137,7 +141,6 @@ What a day-one architect would not have done, and which work retires it. The bui
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
 | Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each page group as it is rebuilt from the story |
-| The desktop landing and download pages carry their words and their measured figures inside components (`components/product/desktop`, on the 2025 kit in `components/product/shared`) | `components/product/desktop`, `components/product/shared` | the desktop pages rebuilt from the story: a `src/data/desktop.ts` record, thin templates in `components/desktop/` on the primitive library and the palette, the 2025 kit deleted |
 | Two landing versions kept for rollback (`v3`, `v4`) | `components/landing-page/` | v3 and v4 after v5 has held for one release |
 | The investor deck and explainer on their own primitive set (including the deck's own button, which came from the retired tour's kit), and the one Tailwind color the pricing FAQ still reads (`text.secondary`) | `components/invest`, `tailwind.config.ts`, `components/pricing/faqs.tsx` | invest onto the deck engine, by the founder's decision a later slice; the color with pricing's rebuild |
 | The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto `SlideFrame` and the marketing primitives, the way the persona decks already compose them |
@@ -145,6 +148,7 @@ What a day-one architect would not have done, and which work retires it. The bui
 | Images under `public/_site/` instead of the asset CDN; 136 literal `/_site/` paths | `public/_site/images`, `src/**` | images to R2 as pages are rebuilt; `lib/assets.ts` names the prefix once |
 | The `/_site` asset prefix and the post-build copy of the bundle | `next.config.ts`, `Makefile` | the apex routing decision |
 | Retired paths served by a client-side forward only | `RetiredRoute` | the edge redirect declared in the estate |
+| The Windows install step that warns about SmartScreen is rendered as prose under the button it concerns; the download data's install-step shape has no warning kind | `src/data/desktop-download.ts`, `components/desktop/DownloadHero.tsx` | a `kind: 'warning'` on the step and a callout in the card, one small slice |
 | The shell's product menu holds its own sub-labels beside the registry's descriptions | `packages/website-shell/src/data/navigation.ts` | the navigation slice (the shell cannot import from `src/`) |
 
 ## Contributing

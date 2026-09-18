@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { DownloadPage as DownloadPageContent } from '@/components/product/desktop';
+import { DesktopDownload } from '@/components/desktop/DesktopDownload';
 import { DESKTOP_DOWNLOAD_PATH, DESKTOP_PLATFORMS, DOWNLOADS_LATEST } from '@/data/desktop-download';
 import { DESKTOP_RELEASE } from '@/data/desktop-release';
 import { SITE, sitePage } from '@/data/site-pages';
@@ -43,7 +43,7 @@ export default function DownloadPage() {
   return (
     <Box>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplication) }} />
-      <DownloadPageContent />
+      <DesktopDownload />
     </Box>
   );
 }

@@ -100,7 +100,7 @@ function chapterMarkdown(chapter) {
   return lines.join('\n');
 }
 
-function pageMarkdown(page, { story, personas, stats, site, product, distributions, compare }) {
+function pageMarkdown(page, { story, personas, stats, site, product, distributions, compare, desktop, desktopDownload }) {
   const lines = [`# ${page.title}`, '', page.description, '', `Canonical URL: ${site.url}${page.path === '/' ? '' : page.path}`, ''];
   if (page.chapters?.length) {
     lines.push('## What this page says', '');
@@ -165,6 +165,34 @@ function pageMarkdown(page, { story, personas, stats, site, product, distributio
     for (const q of compare.COMPARE.questions) lines.push(`- **${q.question}** ${q.answer}`);
     lines.push('');
   }
+  // The desktop pages state their own record: the landing's sections in the
+  // reader's order, and the download page's first-launch beats and follow-ons
+  // (the platform-neutral parts; installers and commands are the download data's).
+  if (page.path === desktopDownload.DESKTOP_LANDING_PATH) {
+    const d = desktop.DESKTOP_LANDING;
+    lines.push(`## ${d.twoWays.title}`, '');
+    for (const w of d.twoWays.ways) lines.push(`- **${w.title}.** ${w.trade} ${w.body}`);
+    lines.push('', d.twoWays.turn, '', d.twoWays.concession, '');
+    lines.push(`## ${d.ask.title}`, '', d.ask.lede, '', `**${d.ask.agent.title}.** ${d.ask.agent.body}`, '');
+    lines.push(`**${d.ask.assistant.title}.** ${d.ask.assistant.body.join(' ')}`, '', `**${d.ask.addsTitle}.**`, '');
+    for (const a of d.ask.adds) lines.push(`- ${a}`);
+    lines.push('');
+    for (const section of [d.runs, d.infraHub, d.serviceHub]) {
+      lines.push(`## ${section.title}`, '', section.lede, '');
+      for (const t of section.tiles ?? section.points) lines.push(`- **${t.title}.** ${t.body}`);
+      lines.push('');
+    }
+    lines.push(`- Measured: ${d.serviceHub.measured.figures.map((f) => `${f.value} ${f.label}`).join(', ')}. ${d.serviceHub.measured.provenance}`, '');
+    lines.push(`## ${d.everywhere.title}`, '', d.everywhere.body, '', d.everywhere.exit, '', `## ${d.whyFree.title}`, '', ...d.whyFree.body.flatMap((p) => [p, '']));
+  }
+  if (page.path === desktopDownload.DESKTOP_DOWNLOAD_PATH) {
+    const d = desktop.DESKTOP_DOWNLOAD;
+    lines.push(`## ${d.afterInstall.title}`, '', d.afterInstall.lede, '');
+    d.afterInstall.beats.forEach((b, i) => lines.push(`${i + 1}. **${b.title}.** ${b.body}`));
+    lines.push('', `## ${d.afterInstall.thenTitle}`, '', d.afterInstall.thenLede, '');
+    for (const tab of d.followOns(desktopDownload.DESKTOP_PLATFORMS[0])) lines.push(`- **${tab.label}.** \`${tab.commands.join('; ')}\` ${tab.description}`);
+    lines.push('');
+  }
   if (page.path === '/' || page.group === 'trust') {
     lines.push('## By the numbers', '', `- ${stats.PLATFORM_COUNTS.componentKinds} component kinds across ${stats.PLATFORM_COUNTS.providers} providers`, `- ${stats.PLATFORM_COUNTS.infraCharts} Infra Charts`, `- ${stats.PLATFORM_COUNTS.controls} technical controls in ${stats.PLATFORM_COUNTS.controlCategories} categories, ${stats.PLATFORM_COUNTS.frameworkCrosswalks} framework crosswalks`, `- Counted from the open-source repository on ${stats.PLATFORM_COUNTS.countedOn}`, '');
   }
@@ -184,6 +212,8 @@ async function main() {
   const product = await load('src/data/product.ts');
   const distributions = await load('src/data/distributions.ts');
   const compare = await load('src/data/compare.ts');
+  const desktop = await load('src/data/desktop.ts');
+  const desktopDownload = await load('src/data/desktop-download.ts');
   const retiredModule = await load('src/data/retired-routes.ts');
 
   const site = registry.SITE;
@@ -212,7 +242,7 @@ async function main() {
   // ---- per-page markdown ------------------------------------------------
   const marketing = pages.filter((p) => p.index !== false && p.group !== 'content');
   // Everything a page's markdown may quote: the story and the records the pages render from.
-  const data = { story, personas, stats, site, product, distributions, compare };
+  const data = { story, personas, stats, site, product, distributions, compare, desktop, desktopDownload };
   for (const page of marketing) {
     const target = page.path === '/' ? path.join(exportDir, 'index.md') : path.join(exportDir, `${page.path.slice(1)}.md`);
     fs.mkdirSync(path.dirname(target), { recursive: true });

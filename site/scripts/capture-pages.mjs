@@ -328,6 +328,7 @@ async function capture(browser, base, scene) {
       content: `
         header, main [class*="sticky"] { display: none !important; }
         main { padding-top: 0 !important; }
+        main > div { display: none !important; }
         main section:first-of-type { min-height: 630px; display: flex; align-items: center; padding: 0 !important; }
         main section:first-of-type .mb-10 { margin-bottom: 0 !important; }
         main section:first-of-type h1 { font-size: ${scene.ogTitleSize ?? 64}px !important; line-height: 1.15 !important; margin-bottom: 24px !important; max-width: 1000px !important; }
@@ -335,7 +336,7 @@ async function capture(browser, base, scene) {
         main section:first-of-type h1 + p + p { font-size: 16px !important; margin-top: 24px !important; }
         main section:first-of-type a { text-decoration: none !important; }
         main section:first-of-type img, main section:first-of-type div:has(> img) { display: none !important; }
-        main section:first-of-type div:has(> a), main section:first-of-type div:has(> code) { display: none !important; }
+        main section:first-of-type div:has(> a):not(:has(> h1)), main section:first-of-type div:has(> code) { display: none !important; }
         [role="tablist"], div:has(> [role="tabpanel"]) { display: none !important; }
       `,
     });

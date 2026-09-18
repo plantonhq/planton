@@ -1,5 +1,4 @@
-import { Box } from '@mui/material';
-import { LandingHero, LandingCapabilities, LandingCTA } from '@/components/product/desktop';
+import { DesktopLanding } from '@/components/desktop/DesktopLanding';
 import { DESKTOP_LANDING_PATH } from '@/data/desktop-download';
 import { SITE, sitePage } from '@/data/site-pages';
 import { pageMetadata } from '@/lib/page-metadata';
@@ -20,11 +19,5 @@ export const metadata = pageMetadata(DESKTOP_LANDING_PATH, {
 });
 
 export default function DesktopPage() {
-  return (
-    <Box>
-      <LandingHero />
-      <LandingCapabilities />
-      <LandingCTA />
-    </Box>
-  );
+  return <DesktopLanding />;
 }

@@ -1,5 +1,6 @@
 /**
- * The desktop landing page's screenshots, by the scene each one shows.
+ * The desktop landing page's screenshots, by the scene each one shows. Data,
+ * not copy: a scene is a real capture of the product or nothing.
  *
  * Every image is a real capture of the app -- its own window chrome, taken
  * at 1440x900 on a Mac -- processed through the site's image pipeline and
@@ -15,7 +16,7 @@
  * machine; the bucket is public.
  */
 
-export interface LandingScreenshot {
+export interface DesktopScreenshot {
   src: string;
   alt: string;
   /** Capture dimensions; the image scales to its container. */
@@ -23,9 +24,9 @@ export interface LandingScreenshot {
   height: number;
 }
 
-export type LandingScene = 'home' | 'chooser' | 'studio';
+export type DesktopScene = 'home' | 'chooser' | 'studio';
 
-export const LANDING_SCREENSHOTS: Record<LandingScene, LandingScreenshot | null> = {
+export const DESKTOP_SCREENSHOTS: Record<DesktopScene, DesktopScreenshot | null> = {
   /** The local instance's home: one prompt, "What do you want to build?" */
   home: null,
   /** The instance chooser: this computer, planton.ai, or a self-hosted deployment. */
