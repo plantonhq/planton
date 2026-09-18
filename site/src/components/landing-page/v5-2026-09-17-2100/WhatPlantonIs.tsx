@@ -1,11 +1,9 @@
 import { Box } from '@mui/material';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { BodyText, Card, FeatureTitle, Grid } from '@/components/marketing';
+import { BodyText, Card, ChapterSection, FeatureTitle, Grid } from '@/components/marketing';
 import { POSITIONING } from '@/data/positioning';
 import { chapter } from '@/data/story';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 2. The two halves, each with its one analogy, and how the visitor's
  * agent reaches them. This is the only place on the page the Level 2

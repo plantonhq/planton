@@ -1,13 +1,11 @@
 import { Box } from '@mui/material';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { Badge, BodyText, Card, FeatureTitle, Grid } from '@/components/marketing';
+import { Badge, BodyText, Card, ChapterSection, FeatureTitle, Grid } from '@/components/marketing';
 import { chapter } from '@/data/story';
 import { POSITIONING } from '@/data/positioning';
 import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from '@/data/pricing';
 import { DESKTOP_LANDING_PATH } from '@/data/desktop-download';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 8. Three shapes, one model; then keyless connections, open source,
  * and the exit path said concretely. Prices read from the pricing data. No

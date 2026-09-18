@@ -1,8 +1,6 @@
 import type { FC } from 'react';
-import { ProofList, RecordWindow } from '@/components/marketing';
+import { ChapterSection, ProofList, RecordWindow } from '@/components/marketing';
 import { chapter } from '@/data/story';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 5. One deploy record beside what it holds. The record leads with
  * the human facts (what, where, who) and keeps the identifier last. Never a

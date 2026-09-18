@@ -1,20 +1,22 @@
+/**
+ * The frame a page gives one chapter of the story: the chapter's title as
+ * the heading, its claim as the subtitle, the section's own composition
+ * below, and an optional door to the page that tells the chapter in full.
+ * The landing renders every chapter through it; a persona page renders the
+ * chapters that person needs, in their order. Two layouts keep a page from
+ * reading as one template repeated: `center` stacks heading and content;
+ * `split` sets the heading and claim in a left column and the section's
+ * artifact on the right, so a claim and its proof share one screen. The
+ * words come from the chapter; this component adds none. Chapter numbers
+ * are the story's internal order and never appear on the page.
+ */
 import { Box } from '@mui/material';
 import Link from 'next/link';
 import type { FC, ReactNode } from 'react';
-import { Section, SectionSubtitle, SectionTitle } from '@/components/marketing';
 import type { Chapter } from '@/data/story';
+import { Section } from './section';
+import { SectionSubtitle, SectionTitle } from './typography';
 
-/**
- * The frame every chapter section shares: the chapter's title as the
- * heading, its claim as the subtitle, the section's own composition below,
- * and an optional door to the page that tells the chapter in full. Two
- * layouts keep the page from reading as one template repeated: `center`
- * stacks heading and content; `split` sets the heading and claim in a left
- * column and the section's artifact on the right, so a claim and its proof
- * share one screen. The words come from the chapter; this component adds
- * none. Chapter numbers are the story's internal order and never appear on
- * the page.
- */
 export interface ChapterSectionProps {
   chapter: Chapter;
   children?: ReactNode;

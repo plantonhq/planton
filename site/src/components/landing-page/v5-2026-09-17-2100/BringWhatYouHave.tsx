@@ -1,8 +1,6 @@
 import type { FC } from 'react';
-import { ProofList, RecordWindow } from '@/components/marketing';
+import { ChapterSection, ProofList, RecordWindow } from '@/components/marketing';
 import { chapter } from '@/data/story';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 7, short by design. Existing infrastructure joins the record
  * through adopt and verified import. The AI-assisted account scan is not

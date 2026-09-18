@@ -121,7 +121,7 @@ import {
   CardTitle,
   CardText,
   // Import other primitives as needed
-} from '../../../shared/primitives';
+} from '@/components/deck';
 
 export default function S01Cover() {
   return (
@@ -435,14 +435,14 @@ Created a new meeting presentation deck for [Guest Name] with [N] slides coverin
 
 | File | Purpose |
 |------|---------|
-| `guests/[slug]/config.ts` | Slide configuration and metadata |
-| `guests/[slug]/slides/S01Cover.tsx` | Cover slide |
-| `guests/[slug]/slides/S02[Name].tsx` | [Purpose] |
+| `decks/[slug]/config.ts` | Slide configuration and metadata |
+| `decks/[slug]/slides/S01Cover.tsx` | Cover slide |
+| `decks/[slug]/slides/S02[Name].tsx` | [Purpose] |
 | ... | ... |
 
 ## Registry Update
 
-Added entry to `guests/index.ts`:
+Added entry to `decks/index.ts`:
 - Key: `[guest-slug]/[yyyy-mm-dd-hhmm]`
 
 ## URL Routes

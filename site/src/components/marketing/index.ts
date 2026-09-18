@@ -28,3 +28,5 @@ export * from './doors';
 export * from './command-block';
 export * from './page-artifact';
 export * from './provider-strip';
+export * from './chapter-section';
+export * from './platform-counts';

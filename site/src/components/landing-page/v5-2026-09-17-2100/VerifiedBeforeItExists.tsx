@@ -1,8 +1,6 @@
 import type { FC } from 'react';
-import { ProofList, RecordWindow } from '@/components/marketing';
+import { ChapterSection, ProofList, RecordWindow } from '@/components/marketing';
 import { chapter } from '@/data/story';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 3, the first proof moment: the three verdicts stamped before
  * anything exists, beside the artifact that carries them. Never a savings

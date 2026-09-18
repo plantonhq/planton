@@ -1,12 +1,10 @@
 import { Box } from '@mui/material';
 import Link from 'next/link';
 import type { FC } from 'react';
-import { BodyText, Card, CenteredCards, FeatureTitle } from '@/components/marketing';
+import { BodyText, Card, CenteredCards, ChapterSection, FeatureTitle } from '@/components/marketing';
 import { chapter } from '@/data/story';
 import { PERSONAS } from '@/data/personas';
 import { PERSONA_ROUTES } from './PersonaRouter';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 9. Two people are named first (the user and the one who signs),
  * then the five personas as doors. Persona copy is the persona record's own

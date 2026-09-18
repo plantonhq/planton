@@ -21,8 +21,9 @@ export interface DeckProps {
   slides: SlideConfig[];
   /**
    * Optional chrome a caller lays over the deck: a meeting's guest line, a
-   * persona deck's disclosure footer. Rendered above the slide, below the
-   * navigation, and never part of any slide's own layout.
+   * persona deck's name and address. Rendered above the slide, below the
+   * navigation, and never part of any slide's own layout. What qualifies a
+   * slide's content (a roadmap disclosure) belongs on that slide, not here.
    */
   frame?: ReactNode;
 }

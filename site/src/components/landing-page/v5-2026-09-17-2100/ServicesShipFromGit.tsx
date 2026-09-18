@@ -1,8 +1,6 @@
 import type { FC } from 'react';
-import { ProofList, RecordWindow } from '@/components/marketing';
+import { ChapterSection, ProofList, RecordWindow } from '@/components/marketing';
 import { chapter } from '@/data/story';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 6. Service Hub gets its full beat: push, build, deploy, written
  * back to GitHub, through the same protected environments. The analogy for

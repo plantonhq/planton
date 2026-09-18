@@ -50,8 +50,8 @@ export const PresenterNotes: FC<PresenterNotesProps> = ({
           `}
         >
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-[#a0a0a0] text-sm">📋</span>
-            <h4 className="text-xs sm:text-sm font-semibold text-[#a0a0a0] uppercase tracking-wider">
+            <span className="text-fg-secondary text-sm">📋</span>
+            <h4 className="text-xs sm:text-sm font-semibold text-fg-secondary uppercase tracking-wider">
               Presenter Notes
             </h4>
           </div>
@@ -61,7 +61,7 @@ export const PresenterNotes: FC<PresenterNotesProps> = ({
                 key={index}
                 className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-white/70 leading-relaxed"
               >
-                <span className="text-[#a0a0a0]/60 mt-0.5 shrink-0">•</span>
+                <span className="text-fg-secondary/60 mt-0.5 shrink-0">•</span>
                 <span dangerouslySetInnerHTML={{ __html: note }} />
               </li>
             ))}
@@ -94,7 +94,7 @@ export const NotesIndicator: FC<NotesIndicatorProps> = ({ hasNotes, notesVisible
         text-xs
         transition-all
         ${notesVisible
-          ? 'bg-white/10 text-[#a0a0a0] border border-white/20'
+          ? 'bg-white/10 text-fg-secondary border border-white/20'
           : 'bg-white/10 text-white/40'}
       `}
     >
@@ -137,7 +137,7 @@ export const PresenterNotesSlot: FC<PresenterNotesSlotProps> = ({
         ${className}
       `}
     >
-      <h4 className="text-xs font-semibold text-[#a0a0a0] uppercase tracking-wider mb-3">
+      <h4 className="text-xs font-semibold text-fg-secondary uppercase tracking-wider mb-3">
         📋 Presenter Notes
       </h4>
       <ul className="space-y-2">
@@ -146,7 +146,7 @@ export const PresenterNotesSlot: FC<PresenterNotesSlotProps> = ({
             key={index}
             className="flex items-start gap-2 text-xs sm:text-sm text-white/70 leading-relaxed"
           >
-            <span className="text-[#a0a0a0]/60 mt-0.5 shrink-0">•</span>
+            <span className="text-fg-secondary/60 mt-0.5 shrink-0">•</span>
             <span dangerouslySetInnerHTML={{ __html: note }} />
           </li>
         ))}

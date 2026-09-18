@@ -167,8 +167,8 @@ I will create a changelog entry documenting all changes made during the session.
 
 | File | Change Type |
 |------|-------------|
-| `guests/[slug]/slides/S01Cover.tsx` | Modified |
-| `guests/[slug]/config.ts` | Modified |
+| `decks/[slug]/slides/S01Cover.tsx` | Modified |
+| `decks/[slug]/config.ts` | Modified |
 
 ## Review Process
 

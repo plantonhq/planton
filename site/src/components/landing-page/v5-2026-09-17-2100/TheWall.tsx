@@ -1,8 +1,6 @@
 import type { FC } from 'react';
-import { BodyText, Card, FeatureTitle, Grid } from '@/components/marketing';
+import { BodyText, Card, ChapterSection, FeatureTitle, Grid } from '@/components/marketing';
 import { chapter } from '@/data/story';
-import { ChapterSection } from './ChapterSection';
-
 /**
  * Chapter 1. The wall a developer with a coding agent hits today, said as
  * three facts about what the agent leaves behind. This section names the
