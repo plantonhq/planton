@@ -44,8 +44,9 @@ resource "google_iam_workload_identity_pool_provider" "this" {
       # canonical resource name" — the safest default; only send overrides.
       allowed_audiences = length(oidc.value.allowed_audiences) > 0 ? oidc.value.allowed_audiences : null
       # Unset JWKS means keys are fetched from the issuer's .well-known
-      # discovery document — the normal path for public issuers.
-      jwks_json = oidc.value.jwks_json
+      # discovery document — the normal path for public issuers. An empty
+      # string is unset: sending it would hand the API an empty key set.
+      jwks_json = oidc.value.jwks_json != "" ? oidc.value.jwks_json : null
     }
   }
 

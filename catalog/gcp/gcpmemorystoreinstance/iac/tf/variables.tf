@@ -1,189 +1,302 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Memorystore (Valkey) instance"
+  description = "GcpMemorystoreInstance specification"
   type = object({
-    # The GCP project for the instance. The CLI's tfvars converter
-    # resolves StringValueOrRef fields to their literal string before the
-    # module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # GCP project where the Memorystore instance will be created.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Instance ID (GCP resource name). Immutable (ForceNew).
+    # Name of the Memorystore instance. This becomes the GCP resource name.
+    # Must start with a lowercase letter, contain only lowercase letters,
+    # numbers, and hyphens, and end with a lowercase letter or number.
+    # 4-63 characters. Immutable after creation.
     instance_name = string
 
-    # Region (e.g. us-central1). Immutable (ForceNew).
+    # GCP region where the instance will be deployed (e.g., "us-central1").
+    # Immutable after creation.
     location = string
 
-    # Number of shards (>= 1). Mutable — resharding happens in place.
+    # Number of shards for the instance. Each shard handles a portion of
+    # the keyspace. Minimum 1 shard.
+    #
+    # For CLUSTER mode: multiple shards distribute data across nodes.
+    # For CLUSTER_DISABLED mode: typically 1 shard (single primary).
     shard_count = number
 
-    # CLUSTER or CLUSTER_DISABLED. Empty leaves GCP's default.
-    # Immutable (ForceNew).
+    # Instance mode controlling cluster topology.
+    # CLUSTER: sharded mode with native cluster protocol support.
+    #   Clients must use cluster-aware drivers.
+    # CLUSTER_DISABLED: standalone mode with a single primary endpoint.
+    #   Compatible with any Valkey/Redis client.
+    # Immutable after creation.
     mode = optional(string, "")
 
-    # Node type (SHARED_CORE_NANO / STANDARD_SMALL / HIGHMEM_MEDIUM /
-    # HIGHMEM_XLARGE). Empty leaves GCP's default.
+    # Predefined node type determining CPU and memory per node.
+    # Shared-core and custom (burstable, dev/test tiers, smallest first):
+    #   SHARED_CORE_NANO, CUSTOM_PICO, CUSTOM_MICRO, CUSTOM_MINI.
+    # Dedicated-core (production tiers):
+    #   STANDARD_SMALL, STANDARD_LARGE — balanced CPU:memory;
+    #   HIGHCPU_MEDIUM — compute-leaning;
+    #   HIGHMEM_MEDIUM, HIGHMEM_XLARGE, HIGHMEM_2XLARGE — memory-leaning,
+    #   for large keyspaces.
+    # If not specified, GCP selects a default.
     node_type = optional(string, "")
 
-    # Engine version (e.g. VALKEY_8_0). Empty leaves GCP's default.
+    # Engine version (e.g., "VALKEY_8_0", "VALKEY_7_2").
+    # If not specified, the latest supported version is used.
     engine_version = optional(string, "")
 
-    # Free-form engine parameters (e.g. maxmemory-policy).
+    # Engine configuration parameters as key-value pairs.
+    # See Valkey/Redis configuration reference for supported parameters
+    # (e.g., "maxmemory-policy", "notify-keyspace-events").
     engine_configs = optional(map(string), {})
 
-    # Read replicas per shard (0-5). 0 means no replicas.
+    # Number of read replicas per shard (0-5). Default: 0 (no replicas).
+    # Replicas provide read scaling and automatic failover.
     replica_count = optional(number, 0)
 
-    # PSC auto-created endpoints. network arrives as the VPC's relative
-    # resource path (projects/{p}/global/networks/{n}) — the only format
-    # the API accepts. An empty per-entry project_id resolves to the
-    # provider's effective project (see main.tf). Immutable (ForceNew).
+    # Private Service Connect (PSC) endpoints for VPC connectivity.
+    # Each entry creates a PSC endpoint in the specified consumer VPC,
+    # allowing applications in that VPC to reach the instance.
+    #
+    # A GcpServiceConnectionPolicy for the gcp-memorystore service class
+    # must exist on each network in this region before the instance is
+    # created — the connectivity automation refuses to place endpoints
+    # without it.
+    #
+    # At least one PSC connection is recommended for the instance to be
+    # reachable. Multiple connections enable cross-project or multi-VPC access.
+    # Immutable after creation.
     psc_auto_connections = optional(list(object({
-      network    = string
+      # Consumer VPC network where the PSC endpoint will be created.
+      # The API requires the relative resource path
+      # (projects/{project_id}/global/networks/{network_id}) — full https://
+      # self-link URLs are rejected, so the reference resolves to the
+      # GcpVpcNetwork's network_id output, which is already in that form.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+      network = string
+
+      # Consumer project ID where the PSC endpoint will be created.
+      # Usually the same project as the Memorystore instance, but can differ
+      # for cross-project connectivity. If omitted, both engines resolve the
+      # provider's effective project — the endpoint lands next to the
+      # instance, which is the common case.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       project_id = optional(string, "")
     })), [])
 
-    # AUTH_DISABLED or IAM_AUTH. Immutable (ForceNew).
+    # Authentication mode for client connections.
+    # AUTH_DISABLED: no authentication required (default).
+    # IAM_AUTH: clients authenticate using GCP IAM credentials.
+    # Immutable after creation.
     authorization_mode = optional(string, "")
 
-    # TRANSIT_ENCRYPTION_DISABLED or SERVER_AUTHENTICATION.
-    # Immutable (ForceNew).
+    # TLS encryption mode for client-to-server traffic.
+    # TRANSIT_ENCRYPTION_DISABLED: no encryption (default).
+    # SERVER_AUTHENTICATION: clients verify the server's identity via TLS.
+    # Immutable after creation.
     transit_encryption_mode = optional(string, "")
 
-    # CMEK key resource ID. Empty means Google-managed encryption.
-    # Immutable (ForceNew).
+    # Cloud KMS key for customer-managed encryption at rest (CMEK).
+    # Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}
+    # If not specified, data is encrypted with Google-managed keys.
+    # Immutable after creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     kms_key = optional(string, "")
 
-    # RDB / AOF persistence.
+    # Persistence configuration for data durability.
+    # Controls whether and how data is written to disk.
     persistence_config = optional(object({
+      # Persistence mode.
+      # DISABLED: no persistence, data is in-memory only.
+      # RDB: periodic point-in-time snapshots.
+      # AOF: append-only file logging every write.
       mode = string
+
+      # RDB snapshot configuration. Required when mode is RDB.
       rdb_config = optional(object({
-        rdb_snapshot_period     = string
+        # How often RDB snapshots are taken.
+        rdb_snapshot_period = string
+
+        # Optional RFC3339 timestamp for when to start the first snapshot.
+        # If not specified, GCP picks an appropriate time.
         rdb_snapshot_start_time = optional(string, "")
-      }), null)
+      }))
+
+      # AOF configuration. Required when mode is AOF.
       aof_config = optional(object({
+        # How often the AOF buffer is flushed to disk.
+        # NEVER: OS decides (best performance, risk of data loss on crash).
+        # EVERY_SEC: flush once per second (good balance).
+        # ALWAYS: flush on every write (strongest durability, lowest performance).
         append_fsync = string
-      }), null)
-    }), null)
+      }))
+    }))
 
-    # MULTI_ZONE or SINGLE_ZONE placement. Immutable (ForceNew).
+    # Zone distribution configuration.
+    # Controls how nodes are spread across availability zones.
+    # Immutable after creation.
     zone_distribution_config = optional(object({
+      # Zone distribution mode.
+      # MULTI_ZONE: nodes spread across multiple zones for high availability (default).
+      # SINGLE_ZONE: all nodes in a single zone for lowest latency.
       mode = string
+
+      # Zone for SINGLE_ZONE mode (e.g., "us-central1-a").
+      # Required when mode is SINGLE_ZONE. Ignored for MULTI_ZONE.
       zone = optional(string, "")
-    }), null)
+    }))
 
-    # Weekly maintenance window (1h, UTC; starts on the hour — the API
-    # supports no finer granularity).
+    # Maintenance policy for scheduled maintenance windows.
     maintenance_policy = optional(object({
+      # Weekly maintenance window schedule.
       weekly_maintenance_window = object({
-        day  = string
-        hour = number
+        # Day of the week for the maintenance window.
+        day = string
+
+        # Hour of day (0-23, UTC) when the maintenance window starts. The window
+        # always starts on the hour — the API supports no finer granularity.
+        hour = optional(number, 0)
       })
-    }), null)
+    }))
 
-    # Daily automated backups with retention.
+    # Automated backup configuration.
+    # When configured, GCP takes daily backups at the specified hour
+    # and retains them for the specified duration.
     automated_backup_config = optional(object({
-      start_hour = number
-      retention  = string
-    }), null)
+      # Hour of day (0-23, UTC) when the daily backup starts.
+      start_hour = optional(number, 0)
 
-    # Cross-region DR: PRIMARY replicates to secondaries; SECONDARY
-    # replicates from primary_instance. Instance references arrive as
-    # full resource paths (the other instance's name output).
+      # Backup retention duration in seconds.
+      # Minimum: 86400s (1 day). Maximum: 31536000s (365 days).
+      # Example: "3024000s" for 35 days.
+      retention = string
+    }))
+
+    # Cross-region replication for disaster recovery: make this instance a
+    # PRIMARY replicating to secondaries in other regions, or a SECONDARY
+    # continuously replicating from a primary. Omit (or role NONE) for a
+    # standalone instance.
     cross_instance_replication_config = optional(object({
+      # This instance's role in the replication topology.
+      # NONE: not participating in cross-instance replication.
+      # PRIMARY: serves writes; replicates to the listed secondaries.
+      # SECONDARY: read-only replica of primary_instance.
       instance_role = string
+
+      # The primary this instance replicates from. Required when
+      # instance_role is SECONDARY; must be unset otherwise.
       primary_instance = optional(object({
+        # Full resource path of the primary instance
+        # (projects/{project}/locations/{location}/instances/{instance}).
+        # A reference resolves to another GcpMemorystoreInstance's name output.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         instance = string
-      }), null)
+      }))
+
+      # The secondaries replicating from this instance. Set when
+      # instance_role is PRIMARY; must be empty otherwise.
       secondary_instances = optional(list(object({
+        # Full resource path of the secondary instance
+        # (projects/{project}/locations/{location}/instances/{instance}).
+        # A reference resolves to another GcpMemorystoreInstance's name output.
+        # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
         instance = string
       })), [])
-    }), null)
+    }))
 
-    # Seed data from RDB files in GCS at creation. Mutually exclusive
-    # with managed_backup_source. Immutable (ForceNew).
+    # Seed the new instance's data from RDB files in Cloud Storage at
+    # creation time. Mutually exclusive with managed_backup_source.
+    # Immutable: seeding only happens at creation.
     gcs_source = optional(object({
+      # Cloud Storage URIs of RDB files to import (gs://bucket/path.rdb).
+      # The Memorystore service agent needs read access to the objects.
       uris = list(string)
-    }), null)
+    }))
 
-    # Seed data from a managed backup at creation. Mutually exclusive
-    # with gcs_source. Immutable (ForceNew).
+    # Seed the new instance's data from an existing managed backup at
+    # creation time. Mutually exclusive with gcs_source.
+    # Immutable: seeding only happens at creation.
     managed_backup_source = optional(object({
+      # Full resource path of the backup to restore from
+      # (projects/{project}/locations/{location}/backupCollections/{collection}/backups/{backup}).
       backup = string
-    }), null)
+    }))
 
-    # User labels merged beneath Planton platform labels (platform keys
-    # win on conflict).
+    # User-defined labels to organize and track the instance. Merged
+    # beneath Planton's platform attribution labels (platform keys win on
+    # conflict).
     labels = optional(map(string), {})
 
-    # Deletion protection. The spec defaults this to true (Planton
-    # middleware materializes the default), and the module sends it
-    # explicitly so destroy behavior is identical on both engines.
-    deletion_protection_enabled = optional(bool, true)
+    # Whether deletion protection is enabled. When true (the default —
+    # matching GCP's safety posture), destroying the instance fails until
+    # this is explicitly set to false. Both IaC engines send the value
+    # explicitly so destroy behavior is identical regardless of engine.
+    deletion_protection_enabled = optional(bool)
 
-    # Which CA signs the server certificate for the TLS-enabled instance.
-    # Empty rides GCP's default (GOOGLE_MANAGED_PER_INSTANCE_CA).
-    # Immutable (ForceNew).
+    # Server certificate authority mode for the TLS-enabled instance —
+    # which CA signs the server certificate clients verify:
+    #   ""                             -- GCP default (GOOGLE_MANAGED_PER_INSTANCE_CA)
+    #   "GOOGLE_MANAGED_PER_INSTANCE_CA" -- a Google-managed CA unique to
+    #                                       this instance
+    #   "GOOGLE_MANAGED_SHARED_CA"       -- a Google-managed CA shared
+    #                                       across instances (clients trust
+    #                                       one CA for a whole fleet)
+    #   "CUSTOMER_MANAGED_CAS_CA"        -- your own CA pool in Certificate
+    #                                       Authority Service (pair with
+    #                                       server_ca_pool)
+    # Meaningful with transit_encryption_mode SERVER_AUTHENTICATION.
+    # Immutable after creation.
     server_ca_mode = optional(string, "")
 
-    # Certificate Authority Service CA pool, consumed only when
-    # server_ca_mode is CUSTOMER_MANAGED_CAS_CA. Immutable (ForceNew).
+    # The Certificate Authority Service CA pool that signs the server
+    # certificate when server_ca_mode is CUSTOMER_MANAGED_CAS_CA.
+    # Format: projects/{project}/locations/{region}/caPools/{caPoolId}.
+    # Immutable after creation.
     server_ca_pool = optional(string, "")
 
-    # Self-service maintenance version — set to a newer available version
-    # to apply maintenance on your schedule instead of GCP's rollout.
-    # Update-only; downgrades are rejected.
+    # Self-service maintenance version. Setting this to a newer available
+    # version triggers the maintenance update on your schedule instead of
+    # waiting for GCP's rollout — the lever for applying a security patch
+    # immediately. Only settable as an UPDATE to an existing instance, and
+    # only forward (downgrades are rejected). Leave unset to follow GCP's
+    # automatic rollout.
     maintenance_version = optional(string, "")
 
-    # Deletion policy: "", "DELETE" (default), "PREVENT" (destroy fails),
-    # or "ABANDON" (remove from management, leave running in GCP).
+    # Deletion policy for the instance — what happens when this resource
+    # is destroyed (evaluated only after deletion_protection_enabled allows
+    # the destroy at all):
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the instance is deleted; all in-memory data is lost
+    #   "PREVENT" -- destroy FAILS; a second, independent guard for a
+    #                cache whose loss would stampede the backing store
+    #   "ABANDON" -- the instance is removed from management but left
+    #                running (and billing) in GCP with its data intact
     deletion_policy = optional(string, "")
 
-    # Memorystore ACL policy to attach (full resource name
-    # projects/{project}/locations/{region}/aclPolicies/{id}). Empty keeps
-    # the instance's built-in default ACL. Mutable in place.
+    # The Memorystore ACL policy attached to the instance: a set of
+    # Valkey ACL rules (users, key patterns, allowed commands) authored once
+    # and shared across instances in the same region. Leave empty for the
+    # instance's built-in default ACL (the "default" user with full access,
+    # gated only by auth_enabled). Full resource name:
+    # projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}.
+    # Mutable: attaching or swapping a policy is an in-place update; the
+    # instance's is_acl_policy_in_sync status reports when the new rules
+    # have propagated to every node.
     acl_policy = optional(string, "")
   })
-
-  validation {
-    condition     = var.spec.acl_policy == "" || can(regex("^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$", var.spec.acl_policy))
-    error_message = "acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}."
-  }
-
-  validation {
-    condition     = contains(["", "DELETE", "PREVENT", "ABANDON"], var.spec.deletion_policy)
-    error_message = "deletion_policy must be one of: DELETE, PREVENT, ABANDON."
-  }
-
-  validation {
-    condition     = var.spec.instance_name != ""
-    error_message = "instance_name is required."
-  }
-
-  validation {
-    condition     = var.spec.location != ""
-    error_message = "location is required."
-  }
-
-  validation {
-    condition     = var.spec.shard_count >= 1
-    error_message = "shard_count must be at least 1."
-  }
-
-  validation {
-    condition     = !(var.spec.gcs_source != null && var.spec.managed_backup_source != null)
-    error_message = "gcs_source and managed_backup_source are mutually exclusive — choose one seed source."
-  }
 }

@@ -100,17 +100,25 @@ matching `pulumi/module/*.go`), confirm both sides agree on:
 - **Outputs shape.** Both engines export the same `StackOutputs` field set (see the
   automated conformance guard above).
 
-## variables.tf (generator-owned where migrated, curated elsewhere)
+## variables.tf (generator-owned where enrolled, curated elsewhere)
 
 `planton tofu generate-variables <Kind>` (`pkg/iac/tofu/generators`) renders
 `variables.tf` from the spec proto in the committed `optional()` convention: every
 attribute the tfvars renderer may omit (it emits populated fields only) is `optional()`
 with a zero-value default, and an attribute stays required only when the proto marks the
-field required (see the generators package doc for the full contract).
+field required (see the generators package doc for the full contract). The output is
+`tofu fmt`-clean and each nested attribute carries its proto field's documentation as a
+comment (read from the proto documentation index, so `make generate-proto-docs` runs
+before `generate-variables` when protos changed); a flattened `StringValueOrRef`
+attribute also carries the note that the CLI resolves the reference to a plain string
+before the module runs.
 
-- For kinds in the drift gate's migrated set (`TestVariablesTFDrift` in
-  `pkg/iac/tofu/generators`), the committed `variables.tf` IS the generator output —
-  regenerate with `PLANTON_REGEN_VARIABLES=1`, never hand-edit.
+- For enrolled kinds (`TestVariablesTFDrift` in `pkg/iac/tofu/generators`), the
+  committed `variables.tf` IS the generator output — regenerate with
+  `PLANTON_REGEN_VARIABLES=1`, never hand-edit. Enrollment is per provider where a whole
+  catalog is generator-owned (every GCP kind, including one registered tomorrow) and per
+  kind elsewhere (the enrolled AWS kinds); a module the generator cannot yet express is
+  named in the test's `generatorGaps` with the gap it waits on and stays hand-owned.
 - For the rest, the file is still hand-curated: when a spec field is added, add the
   matching attribute (in the `optional()` style) so partial tfvars still apply. Diffing
   against `generate-variables` output is a quick way to spot a missing field.

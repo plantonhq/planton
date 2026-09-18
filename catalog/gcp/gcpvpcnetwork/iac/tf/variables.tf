@@ -1,80 +1,98 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP VPC"
+  description = "GcpVpcNetwork specification"
   type = object({
-    # The GCP project that owns the network. The CLI's tfvars converter
-    # resolves StringValueOrRef fields to their literal string before the
-    # module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used.
+    # The GCP project that owns this VPC network.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Immutable: changing it destroys and recreates the network.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Auto (true) vs custom (false) subnet mode. Custom is the default and
-    # the production recommendation.
+    # Whether to use auto subnet mode (true) or custom subnet mode (false).
+    # **Default:** false (custom mode). Auto mode is not recommended for production.
     auto_create_subnetworks = optional(bool, false)
 
-    # Dynamic routing mode: REGIONAL (default) or GLOBAL. The converter
-    # emits the proto enum's NAME as a string.
-    routing_mode = optional(string, "REGIONAL")
+    # Dynamic routing mode for the VPC's Cloud Routers: REGIONAL or GLOBAL.
+    # **Default:** REGIONAL (Cloud Router advertises routes only in one region).
+    # Use GLOBAL only for multi-region routing needs.
+    routing_mode = optional(string)
 
-    # Name of the VPC network (RFC1035). Immutable.
+    # Name of the VPC network to create in GCP.
+    # Must be 1-63 characters, lowercase letters, numbers, or hyphens.
+    # Must start with a lowercase letter and end with a lowercase letter or number.
+    # Example: "my-vpc-network", "prod-network"
     network_name = string
 
-    # Human-readable description. Immutable on this resource.
+    # Human-readable description of the network. Immutable: changing it
+    # destroys and recreates the network.
     description = optional(string, "")
 
-    # MTU in bytes (1300-8896); null falls through to the API default (1460).
+    # Maximum Transmission Unit in bytes (1300–8896). Default 1460.
+    # Jumbo frames (up to 8896) apply within the VPC; traffic to the internet
+    # or other VPCs may still be subject to lower effective MTUs.
     mtu = optional(number)
 
-    # ULA internal IPv6 enablement and optional explicit /48 from fd20::/20.
+    # Enable ULA internal IPv6 on this network. When true, GCP assigns a /48
+    # from the fd20::/20 ULA prefix (or uses internal_ipv6_range when set).
     enable_ula_internal_ipv6 = optional(bool, false)
-    internal_ipv6_range      = optional(string, "")
 
-    # Firewall policy vs classic rule evaluation order; empty falls through
-    # to the API default (AFTER_CLASSIC_FIREWALL).
+    # When enabling ULA internal IPv6, optionally specify the /48 range from
+    # fd20::/20. Immutable. If omitted, GCP allocates one automatically.
+    internal_ipv6_range = optional(string, "")
+
+    # Order in which firewall policies and classic firewall rules are evaluated.
+    # Default AFTER_CLASSIC_FIREWALL.
     network_firewall_policy_enforcement_order = optional(string, "")
 
-    # Full or partial network profile URL. Immutable.
+    # Full or partial URL of a network profile to apply at creation time.
+    # Immutable.
     network_profile = optional(string, "")
 
-    # BGP best-path selection block; all fields mutable. No object default:
-    # absence must stay distinguishable from an all-default block, because
-    # always_compare_med is only sent when the block is present.
+    # BGP best-path selection settings for the network.
     bgp_best_path_selection = optional(object({
-      mode               = optional(string, "")
+      # The BGP best selection algorithm: LEGACY (default) or STANDARD.
+      mode = optional(string, "")
+
+      # When mode is STANDARD, enables comparison of MED across routes with
+      # different neighbor ASNs.
       always_compare_med = optional(bool, false)
-      inter_region_cost  = optional(string, "")
+
+      # When mode is STANDARD, controls inter-regional cost behavior in the BPS
+      # algorithm: DEFAULT or ADD_COST_TO_MED.
+      inter_region_cost = optional(string, "")
     }))
 
-    # Suppress automatic 0.0.0.0/0 routes at creation. Immutable.
+    # When true, default routes (0.0.0.0/0) are not created automatically.
+    # Immutable.
     delete_default_routes_on_create = optional(bool, false)
 
-    # Create-time Resource Manager tag bindings (tagKeys/{id} => tagValues/{id}).
+    # Resource Manager tags bound to the network for org-policy and IAM
+    # conditions. Keys in the form "tagKeys/{id}", values "tagValues/{id}".
+    # Create-time only: changing them later replaces the network.
     resource_manager_tags = optional(map(string), {})
 
-    # DELETE (default) / PREVENT / ABANDON; empty falls through to the
-    # provider default (DELETE).
+    # Deletion policy for the VPC network — what happens when this resource
+    # is destroyed:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the network is deleted (GCP refuses while subnets,
+    #                peerings, or attached resources remain in it)
+    #   "PREVENT" -- destroy FAILS; protects the network every subnet,
+    #                route, and peering in it depends on
+    #   "ABANDON" -- the network is removed from management but left
+    #                serving in GCP
     deletion_policy = optional(string, "")
   })
-
-  validation {
-    condition     = can(regex("^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$", var.spec.network_name))
-    error_message = "Network name must be 1-63 characters, lowercase letters, numbers, or hyphens, starting with a letter and ending with a letter or number."
-  }
-
-  validation {
-    condition     = contains(["REGIONAL", "GLOBAL"], var.spec.routing_mode)
-    error_message = "routing_mode must be REGIONAL or GLOBAL."
-  }
 }

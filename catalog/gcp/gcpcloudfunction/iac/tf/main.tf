@@ -97,10 +97,13 @@ resource "google_cloudfunctions2_function" "function" {
 
       # GCP defaults concurrency to 1 (every request its own instance);
       # values above 1 require at least 1 CPU.
-      max_instance_request_concurrency = service_config.value.max_instance_request_concurrency
+      # Zero means unset for these counts (the spec fields have no presence):
+      # the API rejects a concurrency of 0 and fills its own default when the
+      # argument is omitted.
+      max_instance_request_concurrency = service_config.value.max_instance_request_concurrency != 0 ? service_config.value.max_instance_request_concurrency : null
 
-      min_instance_count = try(service_config.value.scaling.min_instance_count, null)
-      max_instance_count = try(service_config.value.scaling.max_instance_count, null)
+      min_instance_count = try(service_config.value.scaling.min_instance_count, 0) != 0 ? service_config.value.scaling.min_instance_count : null
+      max_instance_count = try(service_config.value.scaling.max_instance_count, 0) != 0 ? service_config.value.scaling.max_instance_count : null
 
       # Runtime identity: bare service-account email.
       service_account_email = service_config.value.service_account_email != "" ? service_config.value.service_account_email : null

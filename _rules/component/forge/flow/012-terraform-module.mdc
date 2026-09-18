@@ -82,7 +82,23 @@ SEQUENTIAL STEPS
    a required field whose valid value is the empty string, which protojson omits
    -- e.g. ReferenceGrant's to[].group). Those keep the hand-written path below.
 
-2) Generate variables and read it: `echo '{"files":[]}' | python3 _rules/component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-variables | cat`. Then open the generated `variables.tf` in the module path.
+2) Generate variables and read it: first `make generate-proto-docs` if any proto
+   changed since the last run (the generator prints each field's proto
+   documentation above its attribute, read from that index, so a stale index
+   leaves the comments a version behind the schema), then
+   `echo '{"files":[]}' | python3 _rules/component/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-variables | cat`.
+   Then open the generated `variables.tf` in the module path and read it: the
+   comments are the spec's own field documentation and are what you draft
+   `main.tf` from. The file is `tofu fmt`-clean as generated; never hand-edit it.
+   The drift gate (`go test ./pkg/iac/tofu/generators/ -run TestVariablesTFDrift`)
+   compares every enrolled module's committed file byte for byte with the
+   generator: for a provider whose whole catalog is generator-owned (GCP) every
+   registered kind is enrolled automatically -- there is nothing to append, and a
+   kind whose file was not generated fails the gate until it is -- while a
+   provider enrolled kind by kind (AWS) takes a new entry in the test's
+   `migratedKinds`. A module the generator genuinely cannot express is named in
+   the test's `generatorGaps` with the gap it waits on; it is never hand-patched
+   into the generator's shape and enrolled.
 3) Draft: Consult the reference component `iac/tf/` directories. CAUTION when
    mirroring a sibling's `variables.tf` instead of using the generator: the
    proto->tfvars converter flattens every `StringValueOrRef` field to a PLAIN
@@ -118,7 +134,7 @@ OUTPUT
   documented `PARITY-EXCEPTION:` divergences.
 
 SUCCESS CRITERIA
-- `variables.tf` is generated in step 2 at the module path and matches the expected schema
+- `variables.tf` is generated in step 2 at the module path and matches the expected schema; the drift gate is green for the kind
 - Drafted files reference inputs that exist in `variables.tf`
 - Core files (`provider.tf`, `locals.tf`, `outputs.tf`, resource files) exist and `terraform validate` passes
 - Module code is richly commented to the module-comment bar (why/trade-offs/provider quirks/ordering, not narration)

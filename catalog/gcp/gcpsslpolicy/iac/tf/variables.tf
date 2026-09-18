@@ -1,92 +1,89 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Compute Engine SSL policy"
+  description = "GcpSslPolicy specification"
   type = object({
-    # The GCP project that owns the SSL policy. The CLI's tfvars converter
-    # resolves StringValueOrRef fields to their literal string before the
-    # module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # The GCP project that owns the SSL policy.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Immutable: changing it destroys and recreates the policy.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Name of the SSL policy in GCP (RFC1035). Empty defaults to
-    # metadata.name (see locals.tf). Immutable (ForceNew).
+    # Name of the SSL policy in GCP. Must be 1-63 characters: lowercase
+    # letters, digits, and hyphens; must start with a letter and end with a
+    # letter or digit. If not specified, defaults to metadata.name.
+    # Immutable: changing it destroys and recreates the policy, briefly
+    # breaking every proxy that references the old self_link.
     ssl_policy_name = optional(string, "")
 
-    # Region for a REGIONAL SSL policy; empty means GLOBAL. The scope selects
-    # which provider resource is created (see main.tf). Immutable.
+    # Region for a REGIONAL SSL policy (e.g. "us-central1"), used by regional
+    # external and internal Application Load Balancer proxies. Leave empty for
+    # a GLOBAL policy — the right scope for global external load balancers.
+    # Immutable: a policy cannot move between scopes or regions.
     region = optional(string, "")
 
-    # Why this policy exists and which proxies should use it. Immutable on
-    # this resource (a GCP API quirk — most descriptions are mutable).
+    # Why this policy exists and which proxies should use it — write it for
+    # the operator auditing TLS posture later. Immutable: changing it
+    # destroys and recreates the policy (unusual for a description — a GCP
+    # API quirk on this resource).
     description = optional(string, "")
 
-    # Cipher-suite profile: COMPATIBLE (GCP default), MODERN, RESTRICTED,
-    # CUSTOM, or FIPS_202205 (requires min_tls_version TLS_1_2). Empty falls
-    # through to the API default (COMPATIBLE). Mutable.
+    # The cipher-suite profile negotiated with clients (default COMPATIBLE).
+    # COMPATIBLE allows the widest client range; MODERN drops broken ciphers
+    # while keeping broad reach; RESTRICTED narrows to ciphers with modern
+    # security guarantees (and is required when the TLS floor is raised beyond
+    # what other profiles allow); CUSTOM hand-picks cipher suites via
+    # custom_features; FIPS_202205 pins the FIPS 140-2/3 validated suite set
+    # (and requires min_tls_version TLS_1_2 — the only floor that profile
+    # supports). Mutable — tightening the profile applies to every proxy
+    # referencing this policy on its next handshake.
     profile = optional(string, "")
 
-    # Minimum TLS version clients may negotiate: TLS_1_0 (GCP default),
-    # TLS_1_1, TLS_1_2, or TLS_1_3 (requires the RESTRICTED profile). Empty
-    # falls through to the API default. Mutable.
+    # The minimum TLS protocol version clients may negotiate (default
+    # TLS_1_0). Raise to TLS_1_2 for PCI DSS and most modern compliance
+    # regimes; TLS_1_3 is the strictest floor and requires the RESTRICTED
+    # profile. GCP has no maximum-version control — TLS 1.3 is always
+    # negotiable when the client supports it, whatever the floor. Mutable.
     min_tls_version = optional(string, "")
 
     # Exact cipher suites to allow — required with (and only valid with) the
-    # CUSTOM profile. Mutable.
+    # CUSTOM profile. Names are IANA-style suite identifiers from GCP's
+    # supported set (e.g. TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); GCP rejects
+    # unknown names at deploy time. TLS 1.3 suites are not listable — GCP
+    # always enables them regardless of this list. Mutable.
     custom_features = optional(list(string), [])
 
-    # Post-quantum key exchange (X25519MLKEM768) rollout stance: DEFAULT
-    # (follow GCP's timeline), ENABLED, or DEFERRED. Empty falls through to
-    # the API default (DEFAULT). Mutable.
+    # Post-quantum key exchange (X25519MLKEM768) posture for TLS handshakes
+    # (default DEFAULT). GCP rolls the hybrid post-quantum group out on its
+    # own schedule; this dial controls the rollout stance rather than a
+    # static on/off:
+    #   DEFAULT  -- follow GCP's rollout timeline
+    #   ENABLED  -- allow post-quantum key exchange now
+    #   DEFERRED -- opt out until GCP's later mandatory date
+    # Mutable.
     post_quantum_key_exchange = optional(string, "")
 
-    # What happens to the policy when this resource is destroyed:
-    # DELETE (default), PREVENT, or ABANDON.
+    # Deletion policy — what happens when this resource is destroyed:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the policy is deleted (GCP refuses while any proxy
+    #                still references it, so destroy fails rather than
+    #                silently loosening TLS floors)
+    #   "PREVENT" -- destroy FAILS; protects a compliance-mandated TLS
+    #                posture from accidental teardown
+    #   "ABANDON" -- the policy is removed from management but left in
+    #                GCP, still enforced by every proxy referencing it
     deletion_policy = optional(string, "")
   })
-
-  validation {
-    condition     = var.spec.profile == "" || contains(["COMPATIBLE", "MODERN", "RESTRICTED", "CUSTOM", "FIPS_202205"], var.spec.profile)
-    error_message = "profile must be COMPATIBLE, MODERN, RESTRICTED, CUSTOM, or FIPS_202205."
-  }
-
-  validation {
-    condition     = var.spec.min_tls_version == "" || contains(["TLS_1_0", "TLS_1_1", "TLS_1_2", "TLS_1_3"], var.spec.min_tls_version)
-    error_message = "min_tls_version must be TLS_1_0, TLS_1_1, TLS_1_2, or TLS_1_3."
-  }
-
-  # Mirrors the provider's own CustomizeDiff rule so the mismatch fails at
-  # plan time here instead of at apply time in GCP.
-  validation {
-    condition     = var.spec.profile == "CUSTOM" ? length(var.spec.custom_features) > 0 : length(var.spec.custom_features) == 0
-    error_message = "the CUSTOM profile requires custom_features, and custom_features is only valid with the CUSTOM profile."
-  }
-
-  # The two provider-documented pairings, failed at plan time instead of at
-  # apply time in GCP.
-  validation {
-    condition     = var.spec.profile != "FIPS_202205" || var.spec.min_tls_version == "TLS_1_2"
-    error_message = "the FIPS_202205 profile requires min_tls_version TLS_1_2."
-  }
-
-  validation {
-    condition     = var.spec.min_tls_version != "TLS_1_3" || var.spec.profile == "RESTRICTED"
-    error_message = "min_tls_version TLS_1_3 requires the RESTRICTED profile."
-  }
-
-  validation {
-    condition     = var.spec.post_quantum_key_exchange == "" || contains(["DEFAULT", "ENABLED", "DEFERRED"], var.spec.post_quantum_key_exchange)
-    error_message = "post_quantum_key_exchange must be DEFAULT, ENABLED, or DEFERRED."
-  }
 }

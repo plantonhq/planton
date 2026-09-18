@@ -1,310 +1,742 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Compute Engine global backend service"
+  description = "GcpBackendService specification"
   type = object({
-    # The GCP project that owns the backend service. The CLI's tfvars
-    # converter resolves StringValueOrRef fields to their literal string
-    # before the module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # The GCP project that owns the backend service.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Immutable: changing it destroys and recreates the backend service.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Name of the backend service in GCP (RFC1035). Empty defaults to
-    # metadata.name (see locals.tf). Immutable (ForceNew).
+    # Name of the backend service in GCP. Must be 1-63 characters: lowercase
+    # letters, digits, and hyphens; must start with a letter and end with a
+    # letter or digit. If not specified, defaults to metadata.name.
+    # Immutable: changing it destroys and recreates the backend service,
+    # briefly breaking every URL map that references the old self_link.
     backend_service_name = optional(string, "")
 
-    description = optional(string)
+    # What this backend service fronts and which URL maps route to it — write
+    # it for the operator tracing a request path later. Mutable.
+    description = optional(string, "")
 
-    # LB→backend protocol. Planton middleware applies the proto default
-    # (HTTP); empty falls through to the same GCP API default.
-    protocol = optional(string, "")
+    # The protocol the load balancer uses to talk to the backends (default
+    # HTTP). This is the LB→backend leg, independent of what clients speak to
+    # the load balancer: an HTTPS frontend commonly forwards to HTTP backends.
+    # H2C is HTTP/2 over cleartext. Must be GRPC when the backend service is
+    # referenced by a URL map bound to a target gRPC proxy. Mutable, but
+    # switching protocol families usually also means changing the health
+    # check and backend ports.
+    protocol = optional(string)
 
-    # Which load balancer family this service serves. Middleware applies the
-    # proto default (EXTERNAL); empty falls through to the same API default.
-    load_balancing_scheme = optional(string, "")
+    # Which load balancer family this backend service serves (default
+    # EXTERNAL, the classic global external Application LB). EXTERNAL_MANAGED
+    # is the newer envoy-based global external ALB; INTERNAL_MANAGED is the
+    # cross-region internal ALB; INTERNAL_SELF_MANAGED is Traffic Director /
+    # service mesh. A backend service created for one family cannot serve
+    # another — the only in-place transition GCP supports is the canary
+    # migration EXTERNAL → EXTERNAL_MANAGED driven by
+    # external_managed_migration_state.
+    load_balancing_scheme = optional(string)
 
-    # Named port on the instance groups (EXTERNAL scheme + instance-group
-    # backends).
+    # Name of the backend port to use for instance-group backends. The same
+    # named port must be defined on every instance group this service
+    # references — each group maps the logical name to its own port number.
+    # Required by GCP when the scheme is EXTERNAL and the backends are
+    # instance groups; ignored for NEG backends (endpoints carry their own
+    # ports). Mutable.
     port_name = optional(string, "")
 
-    # Backend response timeout and connection draining. Middleware applies
-    # the proto defaults (30/300); null falls through to the API defaults.
-    timeout_sec                     = optional(number)
+    # Seconds the load balancer waits for a backend to fully respond before
+    # giving up on the request (default 30). For streaming workloads
+    # (WebSockets, gRPC streams, long polling) raise this well above the
+    # longest expected stream duration. Not used by serverless NEG backends —
+    # Cloud Run/Functions manage their own request timeouts. Mutable.
+    timeout_sec = optional(number)
+
+    # Seconds an instance being removed or unhealthy keeps its existing
+    # connections open to finish in-flight requests (default 300). Lower it
+    # for fast-draining stateless services; raise it for long-lived
+    # connections. Mutable.
     connection_draining_timeout_sec = optional(number)
 
-    # Self-link of the health check (resolved from a GcpHealthCheck
-    # reference or given directly). Empty means no health check — valid
-    # only when every backend is an internet or serverless NEG.
+    # The health check that decides which backends receive traffic. GCP
+    # allows at most ONE health check per backend service, so this is a
+    # single reference, not a list. Reference a GcpHealthCheck resource or
+    # provide a health check self-link directly. Required by GCP unless every
+    # backend is an internet or serverless NEG — serverless platforms manage
+    # their own health. Mutable.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     health_check = optional(string, "")
 
-    # The backends serving traffic. group arrives as a plain string
-    # (resolved reference or literal instance-group/NEG self-link).
+    # The backends that actually serve traffic — instance groups or network
+    # endpoint groups, each with its own balancing mode and capacity dials.
+    # A backend service may mix backends of the same family but cannot mix
+    # instance groups with NEGs. May be empty: a backend service with only a
+    # health check is valid and is the natural creation order before instance
+    # groups or NEGs exist. Mutable — adding and removing backends is the
+    # normal scaling/blue-green operation.
     backends = optional(list(object({
-      group                        = string
-      balancing_mode               = optional(string, "")
-      capacity_scaler              = optional(number)
-      description                  = optional(string)
-      max_connections              = optional(number)
-      max_connections_per_instance = optional(number)
-      max_connections_per_endpoint = optional(number)
-      max_rate                     = optional(number)
-      max_rate_per_instance        = optional(number)
-      max_rate_per_endpoint        = optional(number)
-      max_utilization              = optional(number)
-      preference                   = optional(string, "")
+      # Fully-qualified URL of the instance group or network endpoint group
+      # serving this backend. Accepts an instance group (zonal or regional) or
+      # a NEG self-link; all backends of one service must be the same family —
+      # GCP rejects mixing instance groups with NEGs. Provide the URL directly
+      # or reference the resource that owns it: the default reference kind is a
+      # GcpRegionNetworkEndpointGroup (the serverless/PSC/internet backend
+      # bridge), but any group producer can be referenced explicitly by kind.
+      # For NEG backends GCP ignores utilization-based settings.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+      group = string
+
+      # How this backend's capacity is measured: UTILIZATION (instance CPU,
+      # the default — instance groups only), RATE (HTTP requests per second),
+      # CONNECTION (open connections, for TCP/SSL), CUSTOM_METRICS
+      # (backend-reported ORCA metrics), or IN_FLIGHT (concurrent in-flight
+      # requests). IN_FLIGHT's target dial is not surfaced by the pinned
+      # provider, so IN_FLIGHT backends ride the API's default target.
+      # NEG backends must use RATE (or CUSTOM_METRICS); serverless NEGs
+      # ignore balancing entirely. Mutable.
+      balancing_mode = optional(string)
+
+      # Fraction of the configured capacity this backend actually accepts
+      # (default 1.0 = 100%). 0 drains the backend without removing it — the
+      # standard lever for maintenance and gradual rollouts. Mutable.
+      capacity_scaler = optional(number)
+
+      # What this backend is (e.g. "blue pool, us-central1") — write it for
+      # the operator reading a capacity page later. Mutable.
+      description = optional(string, "")
+
+      # Max simultaneous open connections for the whole backend (CONNECTION
+      # mode target; optional ceiling in UTILIZATION mode). Mutable.
+      max_connections = optional(number, 0)
+
+      # Max simultaneous open connections per instance-group instance. Mutable.
+      max_connections_per_instance = optional(number, 0)
+
+      # Max simultaneous open connections per NEG endpoint. Mutable.
+      max_connections_per_endpoint = optional(number, 0)
+
+      # Max HTTP requests per second for the whole backend (RATE mode target;
+      # optional ceiling in UTILIZATION mode). Mutable.
+      max_rate = optional(number, 0)
+
+      # Max HTTP requests per second per instance-group instance. Fractional
+      # rates let small instances take partial shares. Mutable.
+      max_rate_per_instance = optional(number, 0)
+
+      # Max HTTP requests per second per NEG endpoint. Mutable.
+      max_rate_per_endpoint = optional(number, 0)
+
+      # Target CPU utilization (0.0-1.0) for UTILIZATION mode — the balancer
+      # shifts new requests away as instances approach it. GCP's default is
+      # 0.8. Ignored (and stripped by GCP) for NEG backends. Mutable.
+      max_utilization = optional(number, 0)
+
+      # Whether this backend is PREFERRED (filled to capacity before DEFAULT
+      # backends receive traffic) — the primary/spillover pattern. Cannot be
+      # set when the service's load_balancing_scheme is EXTERNAL. Mutable.
+      preference = optional(string, "")
+
+      # Per-backend custom metrics for CUSTOM_METRICS balancing mode, reported
+      # by this backend via ORCA. Each can run dry (reported but not acted on)
+      # while being validated.
       custom_metrics = optional(list(object({
-        name            = string
-        dry_run         = optional(bool, false)
+        # Metric name as reported by the backend in ORCA load reports (e.g. a
+        # named utilization gauge). Must match what the backend actually emits.
+        name = string
+
+        # Report the metric without acting on it — the safe first step while
+        # validating that backends emit sane values.
+        dry_run = optional(bool, false)
+
+        # Target utilization (0.0-1.0) for this metric, above which the balancer
+        # shifts new requests away. GCP's default is 0.8.
         max_utilization = optional(number)
       })), [])
     })), [])
 
-    # Session stickiness. Middleware applies the proto default (NONE);
-    # empty falls through to the same API default.
-    session_affinity        = optional(string, "")
-    affinity_cookie_ttl_sec = optional(number)
+    # How requests from the same client stick to the same backend (default
+    # NONE — every request is balanced independently). Cookie-based modes
+    # (GENERATED_COOKIE, HTTP_COOKIE, STRONG_COOKIE_AFFINITY) need an
+    # HTTP-family protocol; CLIENT_IP modes hash on network attributes.
+    # Session affinity is best-effort, not a guarantee — backends going
+    # unhealthy still break affinity. Not applicable when protocol is UDP.
+    # Mutable.
+    session_affinity = optional(string)
 
-    # Cookie for STRONG_COOKIE_AFFINITY (required with that mode — enforced
-    # by the spec's CEL before deploy).
+    # Lifetime in seconds of the cookie GCP generates for GENERATED_COOKIE
+    # session affinity (0, the default, makes it a non-persistent session
+    # cookie; max 86400 = 1 day). Only meaningful with GENERATED_COOKIE.
+    # Mutable.
+    affinity_cookie_ttl_sec = optional(number, 0)
+
+    # The cookie GCP uses for STRONG_COOKIE_AFFINITY — stronger stickiness
+    # than GENERATED_COOKIE because the cookie encodes the exact backend
+    # endpoint. Only valid with session_affinity STRONG_COOKIE_AFFINITY, and
+    # optional there: choosing that mode is the whole statement, and the
+    # modules send GCP the cookie configuration it requires (GCP's generated
+    # cookie name, whole-site path, session lifetime) when this block is
+    # absent. Declare it only to customize the cookie.
     strong_session_affinity_cookie = optional(object({
+      # Cookie name the load balancer sets and matches. Empty uses GCP's
+      # generated default name.
       name = optional(string, "")
+
+      # Path attribute of the cookie — limit affinity to a URL subtree (e.g.
+      # /app). Empty applies to the whole site.
       path = optional(string, "")
+
+      # Cookie lifetime. Zero/unset makes it a non-persistent session cookie
+      # that vanishes when the browser closes.
       ttl = optional(object({
-        seconds = optional(number)
-        nanos   = optional(number)
+        # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
+        seconds = optional(number, 0)
+
+        # Fraction of a second at nanosecond resolution (0 to 999,999,999).
+        # Durations under one second use seconds = 0 and a positive nanos.
+        nanos = optional(number, 0)
       }))
     }))
 
-    # Within-group balancing algorithm and the ordered Traffic Director
-    # policy list (custom xDS policies with fallbacks).
+    # The load balancing algorithm used within each backend group once the
+    # group is chosen (GCP default ROUND_ROBIN). LEAST_REQUEST and the
+    # hash-based policies (RING_HASH, MAGLEV) matter for uneven request
+    # costs and soft session affinity; WEIGHTED_ROUND_ROBIN balances on
+    # backend-reported custom metrics. Only ROUND_ROBIN and RING_HASH are
+    # supported for proxyless gRPC. Mutable.
     locality_lb_policy = optional(string, "")
+
+    # Ordered list of locality LB policies for Traffic Director deployments
+    # that need a custom (xDS-configured) policy with built-in fallbacks.
+    # Each entry is either a built-in policy name or a custom policy plus its
+    # opaque configuration; Traffic Director uses the first one it supports.
+    # Overrides locality_lb_policy when set. Mutable.
     locality_lb_policies = optional(list(object({
-      policy        = optional(object({ name = string }))
-      custom_policy = optional(object({ name = string, data = optional(string, "") }))
+      # A built-in locality policy by name. The WEIGHTED_* policies are not
+      # valid inside this list — use the top-level locality_lb_policy for
+      # those.
+      policy = optional(object({
+        # The built-in policy name.
+        name = string
+      }))
+
+      # A custom policy implemented in the xDS client (Envoy/gRPC), selected
+      # by name with an opaque configuration string. Traffic Director falls
+      # back to the next entry if the client does not recognize it.
+      custom_policy = optional(object({
+        # Identifier of the custom policy as registered in the xDS client (e.g.
+        # an Envoy load balancing extension name).
+        name = string
+
+        # Opaque configuration handed to the custom policy, in whatever format
+        # the policy implementation expects (commonly JSON).
+        data = optional(string, "")
+      }))
     })), [])
 
-    # Consistent-hash parameters (INTERNAL_SELF_MANAGED + MAGLEV/RING_HASH
-    # only — enforced by the spec's CEL before deploy).
+    # Parameters for consistent-hash load balancing — soft session affinity
+    # where a backend's share of the hash ring survives other backends
+    # joining or leaving. Only applies with load_balancing_scheme
+    # INTERNAL_SELF_MANAGED and locality_lb_policy MAGLEV or RING_HASH.
     consistent_hash = optional(object({
-      http_header_name  = optional(string, "")
-      minimum_ring_size = optional(number)
+      # Hash on an HTTP cookie, generating it when absent — soft session
+      # affinity for clients that keep cookies. Only applies when
+      # session_affinity is HTTP_COOKIE.
       http_cookie = optional(object({
+        # Cookie name to hash on (and to generate when absent).
         name = optional(string, "")
+
+        # Path attribute set when the cookie is generated.
         path = optional(string, "")
+
+        # Lifetime of the generated cookie. Zero/unset makes it a session
+        # cookie.
         ttl = optional(object({
-          seconds = optional(number)
-          nanos   = optional(number)
+          # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
+          seconds = optional(number, 0)
+
+          # Fraction of a second at nanosecond resolution (0 to 999,999,999).
+          # Durations under one second use seconds = 0 and a positive nanos.
+          nanos = optional(number, 0)
         }))
       }))
+
+      # Hash on the value of this request header. Only applies when
+      # session_affinity is HEADER_FIELD.
+      http_header_name = optional(string, "")
+
+      # Minimum number of virtual nodes on the hash ring (default 1024).
+      # Larger rings spread load more evenly across backends at slightly
+      # higher memory cost; must be at least the number of backend hosts.
+      minimum_ring_size = optional(number)
     }))
 
-    # Cache at Google's edge with Cloud CDN. cdn_policy only takes effect
-    # while this is true.
+    # Cache responses at Google's edge with Cloud CDN. Off by default:
+    # without it every request is proxied to a backend. Only valid on
+    # external schemes (EXTERNAL, EXTERNAL_MANAGED) — Cloud CDN does not
+    # front internal load balancers. Turning it on activates cdn_policy (or
+    # sensible CDN defaults when cdn_policy is omitted). Mutable.
     enable_cdn = optional(bool, false)
 
-    # Cloud CDN caching behavior. TTL fields left at 0 are treated as unset
-    # so the GCP API applies its own defaults (see locals.tf).
+    # How Cloud CDN caches responses from these backends. Only meaningful
+    # with enable_cdn — GCP ignores the policy while CDN is off.
     cdn_policy = optional(object({
-      cache_mode                   = optional(string, "")
-      client_ttl                   = optional(number)
-      default_ttl                  = optional(number)
-      max_ttl                      = optional(number)
-      negative_caching             = optional(bool)
-      negative_caching_policy      = optional(list(object({ code = number, ttl = optional(number) })), [])
-      serve_while_stale            = optional(number)
-      request_coalescing           = optional(bool)
+      # What gets cached. CACHE_ALL_STATIC (the GCP default) caches static
+      # content types and honors origin cache headers for the rest;
+      # USE_ORIGIN_HEADERS caches only what the backends explicitly mark
+      # cacheable (TTL fields must be unset — the origin controls lifetimes);
+      # FORCE_CACHE_ALL caches everything, ignoring origin headers (never
+      # combine with private or per-user content; max_ttl must be unset).
+      cache_mode = optional(string, "")
+
+      # Seconds a response may be cached by browsers and other downstream
+      # caches (sets the max-age clients see; GCP default 3600, max 86400).
+      # Keep it shorter than default_ttl so edge caches revalidate before
+      # clients do.
+      client_ttl = optional(number, 0)
+
+      # Seconds the edge caches a response when the origin sets no caching
+      # headers (GCP default 3600, max 31622400 = 1 year). The workhorse TTL
+      # for CACHE_ALL_STATIC and FORCE_CACHE_ALL.
+      default_ttl = optional(number, 0)
+
+      # Upper bound in seconds on any cache lifetime, capping even origin
+      # headers that ask for longer (GCP default 86400, max 31622400). Not
+      # allowed with USE_ORIGIN_HEADERS or FORCE_CACHE_ALL cache modes.
+      max_ttl = optional(number, 0)
+
+      # Cache error responses (404s, redirects) at the edge so failing paths
+      # do not hammer the backends. Pair with negative_caching_policy to set
+      # per-status TTLs; without it GCP applies default lifetimes.
+      negative_caching = optional(bool, false)
+
+      # Per-status-code TTLs for negative caching. Only effective with
+      # negative_caching enabled. Codes limited by GCP to 300, 301, 308, 404,
+      # 405, 410, 421, 451, and 501.
+      negative_caching_policy = optional(list(object({
+        # The HTTP status code to cache. GCP supports 300, 301, 308, 404, 405,
+        # 410, 421, 451, and 501.
+        code = number
+
+        # Seconds responses with this status are cached at the edge
+        # (0 to 1800 = 30 minutes).
+        ttl = optional(number, 0)
+      })), [])
+
+      # Seconds the edge may keep serving a stale response while it
+      # revalidates with the origin in the background (max 86400; 0 disables).
+      # Smooths over brief backend outages for content that tolerates slight
+      # staleness.
+      serve_while_stale = optional(number, 0)
+
+      # Collapse concurrent cache-miss requests for the same object into one
+      # origin fetch. Protects the backends from thundering herds on cache
+      # expiry of popular objects.
+      request_coalescing = optional(bool, false)
+
+      # Seconds a response to a SIGNED request stays fresh in the cache before
+      # revalidation (GCP default 3600, max 86400). Only meaningful with
+      # signed URLs or cookies; the signature's own expiry still governs
+      # access.
       signed_url_cache_max_age_sec = optional(number)
+
+      # What forms the cache key beyond the URL. The backend-service flavor is
+      # richer than a backend bucket's: host, protocol, query handling, named
+      # cookies, and headers can all join or leave the key. Leave unset for
+      # GCP's default (host + protocol + full query string).
       cache_key_policy = optional(object({
-        include_host           = optional(bool, false)
-        include_protocol       = optional(bool, false)
-        include_query_string   = optional(bool, false)
+        # Include the request host in the cache key. GCP's default is true —
+        # turn it off only when several hosts genuinely serve identical content.
+        include_host = optional(bool, false)
+
+        # Include the protocol (http/https) in the cache key. GCP's default is
+        # true — turn it off only when both schemes serve identical bytes.
+        include_protocol = optional(bool, false)
+
+        # Include the query string in the cache key. GCP's default is true.
+        # When true, narrow it with query_string_whitelist or blacklist; when
+        # false, the query string is ignored entirely (and the lists must be
+        # unset).
+        include_query_string = optional(bool, false)
+
+        # Query parameters included in the cache key, all others ignored.
+        # Include only parameters that genuinely change the response so
+        # equivalent requests share a cache entry. Mutually exclusive with
+        # query_string_blacklist.
         query_string_whitelist = optional(list(string), [])
+
+        # Query parameters excluded from the cache key, all others included —
+        # for stripping tracking parameters (utm_*) that never change the
+        # response. Mutually exclusive with query_string_whitelist.
         query_string_blacklist = optional(list(string), [])
-        include_http_headers   = optional(list(string), [])
-        include_named_cookies  = optional(list(string), [])
+
+        # Request headers whose values join the cache key — for backends that
+        # vary responses by header (e.g. Accept for image format negotiation).
+        # Each distinct value creates a separate cache entry, so keep this list
+        # short.
+        include_http_headers = optional(list(string), [])
+
+        # Cookie names whose values join the cache key — for backends that vary
+        # cached content by cookie (e.g. an A/B bucket cookie). Each distinct
+        # value creates a separate cache entry.
+        include_named_cookies = optional(list(string), [])
       }))
-      bypass_cache_on_request_headers = optional(list(object({ header_name = string })), [])
-    }))
 
-    # Self-links of Cloud Armor policies (resolved from GcpCloudArmorPolicy
-    # references or given directly): security_policy filters after the CDN
-    # cache, edge_security_policy before it.
-    security_policy      = optional(string, "")
-    edge_security_policy = optional(string, "")
-
-    # Identity-Aware Proxy. oauth2_client_secret is secret material — it
-    # never appears in outputs.
-    iap = optional(object({
-      enabled              = optional(bool, false)
-      oauth2_client_id     = optional(string, "")
-      oauth2_client_secret = optional(string, "")
-    }))
-
-    # Request logging to Cloud Logging.
-    log_config = optional(object({
-      enable          = optional(bool, false)
-      sample_rate     = optional(number)
-      optional_mode   = optional(string, "")
-      optional_fields = optional(list(string), [])
-      # Header names whose values join each log entry (enable + HTTP-family
-      # protocol required).
-      request_headers  = optional(list(string), [])
-      response_headers = optional(list(string), [])
-    }))
-
-    # Headers the load balancer adds, "Header-Name: value" form.
-    custom_request_headers  = optional(list(string), [])
-    custom_response_headers = optional(list(string), [])
-
-    # Load-balancer response compression: AUTOMATIC or DISABLED (empty keeps
-    # the GCP default of no compression).
-    compression_mode = optional(string, "")
-
-    # Traffic Director connection-volume circuit breakers
-    # (INTERNAL_SELF_MANAGED only — enforced by the spec's CEL).
-    circuit_breakers = optional(object({
-      max_connections             = optional(number)
-      max_pending_requests        = optional(number)
-      max_requests                = optional(number)
-      max_requests_per_connection = optional(number)
-      max_retries                 = optional(number)
-    }))
-
-    # Passive health checking (INTERNAL_SELF_MANAGED / EXTERNAL_MANAGED
-    # only — enforced by the spec's CEL). Zero-valued fields are treated as
-    # unset so the API applies its own defaults (see locals.tf).
-    outlier_detection = optional(object({
-      base_ejection_time = optional(object({
-        seconds = optional(number)
-        nanos   = optional(number)
-      }))
-      consecutive_errors                    = optional(number)
-      consecutive_gateway_failure           = optional(number)
-      enforcing_consecutive_errors          = optional(number)
-      enforcing_consecutive_gateway_failure = optional(number)
-      enforcing_success_rate                = optional(number)
-      interval = optional(object({
-        seconds = optional(number)
-        nanos   = optional(number)
-      }))
-      max_ejection_percent        = optional(number)
-      success_rate_minimum_hosts  = optional(number)
-      success_rate_request_volume = optional(number)
-      success_rate_stdev_factor   = optional(number)
-    }))
-
-    # Default stream timeout (INTERNAL_SELF_MANAGED only — enforced by the
-    # spec's CEL). The provider takes seconds as a string (int64 format).
-    max_stream_duration = optional(object({
-      seconds = optional(number)
-      nanos   = optional(number)
-    }))
-
-    # Traffic Director mTLS + AWS SigV4 origin authentication. access_key is
-    # secret material — it never appears in outputs.
-    security_settings = optional(object({
-      client_tls_policy = optional(string, "")
-      subject_alt_names = optional(list(string), [])
-      aws_v4_authentication = optional(object({
-        access_key_id      = optional(string, "")
-        access_key         = optional(string, "")
-        access_key_version = optional(string, "")
-        origin_region      = optional(string, "")
-      }))
-    }))
-
-    # TLS parameters toward the backends (protocol SSL/HTTPS/HTTP2 only —
-    # enforced by the spec's CEL). Each SAN entry sets exactly one of
-    # dns_name / uniform_resource_identifier (proto oneof upstream).
-    tls_settings = optional(object({
-      authentication_config = optional(string, "")
-      sni                   = optional(string, "")
-      subject_alt_names = optional(list(object({
-        dns_name                    = optional(string, "")
-        uniform_resource_identifier = optional(string, "")
+      # Skip the cache entirely for requests carrying any of these headers
+      # (at most 5) — an escape hatch for debugging or per-request freshness
+      # (e.g. a Pragma: no-cache internal tooling header).
+      bypass_cache_on_request_headers = optional(list(object({
+        # The header name to match (case-insensitive); any value triggers the
+        # bypass.
+        header_name = string
       })), [])
     }))
 
-    # IPv4/IPv6 preference toward dual-stack backends.
+    # Cloud Armor security policy evaluated on every request AFTER the CDN
+    # cache (protects the backends: WAF rules, rate limiting, geo/IP
+    # blocking). Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR —
+    # edge policies are not valid here. Mutable.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+    security_policy = optional(string, "")
+
+    # Cloud Armor EDGE security policy filtering requests BEFORE the CDN
+    # cache (protects cached content: geo/IP blocking at the edge).
+    # Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR_EDGE — standard
+    # backend policies are not valid here. Mutable.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+    edge_security_policy = optional(string, "")
+
+    # Identity-Aware Proxy: authenticate every request against Google
+    # identities before it reaches the backends — zero-trust access to
+    # internal tools without a VPN. Requests arrive with IAP assertion
+    # headers the backend can trust. HTTPS frontends only.
+    iap = optional(object({
+      # Turn IAP enforcement on. When enabled, every request must carry a
+      # valid Google identity; unauthenticated requests get a login redirect.
+      enabled = optional(bool, false)
+
+      # OAuth2 client ID of a custom IAP client. Leave both id and secret
+      # empty to use the Google-managed OAuth client.
+      oauth2_client_id = optional(string, "")
+
+      # OAuth2 client secret paired with oauth2_client_id. Handled as a
+      # secret: never stored in plaintext in the control plane, never exposed
+      # in outputs (GCP itself only ever returns its SHA-256 after creation).
+      oauth2_client_secret = optional(string, "")
+    }))
+
+    # Request logging to Cloud Logging for this backend service. Off by
+    # default. Sampling keeps log volume (and cost) proportional on
+    # high-traffic services.
+    log_config = optional(object({
+      # Write request logs to Cloud Logging. Off by default.
+      enable = optional(bool, false)
+
+      # Fraction of requests logged, 0.0-1.0 (GCP default 1.0 = everything).
+      # Sample aggressively on high-QPS services — full logging is a real
+      # cost line.
+      sample_rate = optional(number)
+
+      # Which optional fields join each log entry: INCLUDE_ALL_OPTIONAL,
+      # EXCLUDE_ALL_OPTIONAL (the GCP default), or CUSTOM (name them in
+      # optional_fields).
+      optional_mode = optional(string, "")
+
+      # Names of the optional log fields to include with optional_mode CUSTOM
+      # (e.g. tls.protocol, orca_load_report).
+      optional_fields = optional(list(string), [])
+
+      # HTTP request headers whose values join each log entry (e.g.
+      # "X-Request-Id", "User-Agent") — for tracing a request across services
+      # without instrumenting the backend. Requires enable and an HTTP-family
+      # protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+      # in HTTP; each entry is one name.
+      request_headers = optional(list(string), [])
+
+      # HTTP response headers whose values join each log entry (e.g.
+      # "Content-Type", a backend's own "X-Cache" or "X-Served-By"). Same
+      # preconditions as request_headers.
+      response_headers = optional(list(string), [])
+    }))
+
+    # Headers the load balancer ADDS to requests before forwarding them to
+    # the backends, in "Header-Name: value" form. Values may use variables
+    # like {client_ip} or {tls_version}. Typical uses: passing the client's
+    # geo data or TLS parameters to the application. Mutable.
+    custom_request_headers = optional(list(string), [])
+
+    # Headers the load balancer ADDS to responses before returning them to
+    # clients, in "Header-Name: value" form. Values may use variables like
+    # {cdn_cache_status}. Typical uses: security headers
+    # (Strict-Transport-Security) and cache observability. Mutable.
+    custom_response_headers = optional(list(string), [])
+
+    # Whether the load balancer compresses responses (gzip/brotli) for
+    # clients that ask for it. AUTOMATIC compresses compressible content
+    # types; DISABLED (the GCP default when unset) never compresses.
+    # Compression is applied by the load balancer — backends keep serving
+    # uncompressed responses. Mutable.
+    compression_mode = optional(string, "")
+
+    # Connection-volume limits protecting backends from overload — the
+    # service-mesh circuit breaker. Only applies with load_balancing_scheme
+    # INTERNAL_SELF_MANAGED (Traffic Director).
+    circuit_breakers = optional(object({
+      # Max concurrent connections to the whole backend service (GCP default
+      # 1024).
+      max_connections = optional(number)
+
+      # Max requests queued waiting for a connection (GCP default 1024).
+      max_pending_requests = optional(number)
+
+      # Max concurrent requests to the whole backend service (GCP default
+      # 1024).
+      max_requests = optional(number)
+
+      # Max requests per connection — 1 disables HTTP keep-alive. Unset means
+      # unlimited.
+      max_requests_per_connection = optional(number, 0)
+
+      # Max concurrent retries across the backend service (GCP default 3).
+      # Retries amplify load during incidents — keep this bounded.
+      max_retries = optional(number)
+    }))
+
+    # Passive health checking: eject backends that keep erroring from the
+    # load balancing pool for a cooling-off period, without waiting for the
+    # active health check to fail. Only applies with load_balancing_scheme
+    # INTERNAL_SELF_MANAGED or EXTERNAL_MANAGED.
+    outlier_detection = optional(object({
+      # Base duration a host stays ejected; actual ejection time is this
+      # multiplied by the number of times the host has been ejected (GCP
+      # default 30s).
+      base_ejection_time = optional(object({
+        # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
+        seconds = optional(number, 0)
+
+        # Fraction of a second at nanosecond resolution (0 to 999,999,999).
+        # Durations under one second use seconds = 0 and a positive nanos.
+        nanos = optional(number, 0)
+      }))
+
+      # Consecutive 5xx responses (or connection errors) before ejection (GCP
+      # default 5).
+      consecutive_errors = optional(number, 0)
+
+      # Consecutive gateway-class failures (502/503/504) before ejection (GCP
+      # default 5). Catches infrastructure failures faster than
+      # consecutive_errors on mixed error streams.
+      consecutive_gateway_failure = optional(number, 0)
+
+      # Percentage chance (0-100) that a host is ACTUALLY ejected when
+      # consecutive_errors trips (GCP default 100). Lower values ease the
+      # policy in gradually.
+      enforcing_consecutive_errors = optional(number, 0)
+
+      # Percentage chance (0-100) of ejection when consecutive_gateway_failure
+      # trips (GCP default 0 — off unless raised).
+      enforcing_consecutive_gateway_failure = optional(number, 0)
+
+      # Percentage chance (0-100) of ejection when a host's success rate falls
+      # statistically below the pool (GCP default 100).
+      enforcing_success_rate = optional(number, 0)
+
+      # How often ejection sweeps run (GCP default 1s).
+      interval = optional(object({
+        # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
+        seconds = optional(number, 0)
+
+        # Fraction of a second at nanosecond resolution (0 to 999,999,999).
+        # Durations under one second use seconds = 0 and a positive nanos.
+        nanos = optional(number, 0)
+      }))
+
+      # Max percentage (0-100) of the pool that may be ejected at once (GCP
+      # default 10) — the safety valve that keeps outlier detection from
+      # draining the whole service.
+      max_ejection_percent = optional(number, 0)
+
+      # Minimum number of hosts in the pool before success-rate ejection
+      # activates (GCP default 5) — below it the statistics are meaningless.
+      success_rate_minimum_hosts = optional(number, 0)
+
+      # Minimum requests a host must have received in the interval for its
+      # success rate to count (GCP default 100).
+      success_rate_request_volume = optional(number, 0)
+
+      # How many standard deviations below the pool mean a host's success
+      # rate must fall to be ejected, multiplied by 1000 (GCP default 1900 =
+      # 1.9 stdev). Lower is more aggressive.
+      success_rate_stdev_factor = optional(number, 0)
+    }))
+
+    # Default maximum duration for streams to this service, computed from
+    # stream start until the response is completely processed (including
+    # retries). Unset means no timeout limit. Can be overridden per-route in
+    # the URL map. Only allowed with load_balancing_scheme
+    # INTERNAL_SELF_MANAGED.
+    max_stream_duration = optional(object({
+      # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
+      seconds = optional(number, 0)
+
+      # Fraction of a second at nanosecond resolution (0 to 999,999,999).
+      # Durations under one second use seconds = 0 and a positive nanos.
+      nanos = optional(number, 0)
+    }))
+
+    # Backend authentication and TLS settings for Traffic Director
+    # (client TLS policy, SAN validation) and for AWS-hosted internet-NEG
+    # origins (Signature Version 4 request signing).
+    security_settings = optional(object({
+      # Self-link of a networksecurity ClientTlsPolicy describing how the
+      # load balancer authenticates itself to the backends (mTLS). Traffic
+      # Director only. Plain URL — the policy is a Network Security resource
+      # outside the compute family.
+      client_tls_policy = optional(string, "")
+
+      # Subject Alternative Names the backend's server certificate must
+      # present — pins backend identity for Traffic Director mTLS.
+      subject_alt_names = optional(list(string), [])
+
+      # Sign origin requests with AWS Signature Version 4 — for internet-NEG
+      # backends fronting private S3 buckets or other SigV4-authenticated AWS
+      # origins.
+      aws_v4_authentication = optional(object({
+        # AWS access key ID — the username-like identifier of the key pair (not
+        # itself a secret).
+        access_key_id = optional(string, "")
+
+        # AWS secret access key paired with access_key_id. Handled as a secret:
+        # never stored in plaintext in the control plane, and GCP never returns
+        # it on reads.
+        access_key = optional(string, "")
+
+        # Optional version identifier for the key, echoed in logs to trace
+        # which credential signed a request during rotation.
+        access_key_version = optional(string, "")
+
+        # AWS region of the origin (e.g. us-east-1) — part of the SigV4 signing
+        # scope.
+        origin_region = optional(string, "")
+      }))
+    }))
+
+    # TLS parameters for the load balancer's connections TO the backends:
+    # which server certificate authentication to apply and what SNI to send.
+    # Only valid when protocol is SSL, HTTPS, or HTTP2.
+    tls_settings = optional(object({
+      # Self-link of a networksecurity BackendAuthenticationConfig that
+      # validates the backend's server certificate (trust anchor + client
+      # cert). Plain URL — the config is a Network Security resource outside
+      # the compute family.
+      authentication_config = optional(string, "")
+
+      # Server Name Indication sent in the TLS handshake to the backends —
+      # for origins that route or select certificates by SNI.
+      sni = optional(string, "")
+
+      # Subject Alternative Names the backend certificate must match, each a
+      # DNS name or a URI. GCP allows at most 5.
+      subject_alt_names = optional(list(object({
+        # A DNS-name SAN (e.g. origin.example.com).
+        dns_name = optional(string)
+
+        # A URI SAN (e.g. spiffe://cluster/ns/prod/sa/web).
+        uniform_resource_identifier = optional(string)
+      })), [])
+    }))
+
+    # Whether the load balancer prefers IPv4 or IPv6 addresses when
+    # connecting to dual-stack backends. Unset uses GCP's default (IPv4).
+    # Mutable.
     ip_address_selection_policy = optional(string, "")
 
-    # EXTERNAL → EXTERNAL_MANAGED canary migration controls.
-    external_managed_migration_state              = optional(string, "")
-    external_managed_migration_testing_percentage = optional(number)
+    # Canary state for migrating this backend service from the classic
+    # EXTERNAL scheme to EXTERNAL_MANAGED without recreating it: PREPARE
+    # first, then optionally TEST_BY_PERCENTAGE, then TEST_ALL_TRAFFIC —
+    # after which load_balancing_scheme can be flipped to EXTERNAL_MANAGED.
+    # Only meaningful while the scheme is still EXTERNAL. Mutable.
+    external_managed_migration_state = optional(string, "")
 
-    # Service-level ORCA metrics for WEIGHTED_ROUND_ROBIN.
+    # Fraction of traffic (0-100) sent to the envoy-based global external
+    # ALB during a TEST_BY_PERCENTAGE canary migration. Only meaningful with
+    # external_managed_migration_state TEST_BY_PERCENTAGE. Mutable.
+    external_managed_migration_testing_percentage = optional(number, 0)
+
+    # Custom metrics the WEIGHTED_ROUND_ROBIN locality policy balances on,
+    # reported by the backends via the Open Request Cost Aggregation (ORCA)
+    # protocol. Only meaningful with locality_lb_policy
+    # WEIGHTED_ROUND_ROBIN.
     custom_metrics = optional(list(object({
-      name    = string
+      # Metric name as reported by the backends in ORCA load reports.
+      name = string
+
+      # Report the metric without acting on it — the safe first step while
+      # validating that backends emit sane values.
       dry_run = optional(bool, false)
     })), [])
 
-    # Self-link of a networkservices ServiceLbPolicy (plain URL).
+    # Self-link of a networkservices ServiceLbPolicy attaching advanced
+    # traffic-distribution features (e.g. auto-capacity failover) to this
+    # backend service. Plain URL — the service LB policy is a Network
+    # Services resource outside the compute family. Global backend services
+    # only. Mutable.
     service_lb_policy = optional(string, "")
 
-    # Cloud CDN signed-URL keys (at most 3). Each key_value is secret
-    # material — it never appears in outputs.
+    # Keys for signing Cloud CDN signed URLs and signed cookies — the
+    # mechanism for serving private content from the cache with expiring,
+    # tamper-proof links. GCP allows at most 3 keys per backend service so
+    # one can be rotated while another stays live. Each key's material is a
+    # secret; rotate by adding a new key, re-signing URLs, then removing the
+    # old one.
     signed_url_keys = optional(list(object({
-      name      = string
+      # Name of the key, referenced by the key_name parameter of signed URLs.
+      # Must be 1-63 characters: lowercase letters, digits, and hyphens; must
+      # start with a letter and end with a letter or digit. Immutable:
+      # renaming replaces the key, invalidating URLs signed with the old name.
+      name = string
+
+      # The 128-bit signing key, base64url-encoded (RFC 4648 §5) — generate
+      # one with: head -c 16 /dev/urandom | base64 | tr '+/' '-_'. 22
+      # characters of base64url, with or without the trailing == padding.
+      # Anyone holding this value can mint valid signed URLs, so it is
+      # handled as a secret. Immutable per key name: rotating means adding a
+      # new key and removing the old. The base64url shape is taught here
+      # rather than enforced by a validation rule, because sensitive fields
+      # hold a managed-secret reference on consuming platforms and a
+      # content-shape rule would reject every reference.
       key_value = string
     })), [])
 
-    # Resource Manager tags bound at create time (tagKeys/{id} ->
-    # tagValues/{id}). Immutable.
+    # Resource Manager tags bound to the backend service for org-policy and
+    # IAM conditions. Keys in the form "tagKeys/{id}", values
+    # "tagValues/{id}". Create-time only: changing them later replaces the
+    # backend service.
     resource_manager_tags = optional(map(string), {})
 
-    # DELETE (default), PREVENT, or ABANDON — one switch governing destroy
-    # for the backend service AND its signed-URL keys.
+    # Deletion policy for the backend service AND its signed-URL keys — one
+    # switch governs both objects this kind manages:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- both are deleted (GCP refuses to delete the backend
+    #                service while a URL map or forwarding rule still
+    #                references it); the backends it pointed at — instance
+    #                groups, NEGs — are untouched
+    #   "PREVENT" -- destroy FAILS; protects the routing target of a live
+    #                load balancer
+    #   "ABANDON" -- both are removed from management but keep serving in GCP
     deletion_policy = optional(string, "")
   })
-
-  # NOTE: never guard optional strings with coalesce() here — HCL's coalesce
-  # skips empty strings as well as nulls, so coalesce("", "") errors and the
-  # validation fails on a legitimately-empty value.
-  validation {
-    condition     = try(var.spec.backend_service_name, "") == "" || can(regex("^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$", var.spec.backend_service_name))
-    error_message = "backend_service_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens."
-  }
-
-  validation {
-    condition     = contains(["", "HTTP", "HTTPS", "HTTP2", "H2C", "TCP", "SSL", "UDP", "GRPC"], var.spec.protocol)
-    error_message = "protocol must be one of HTTP, HTTPS, HTTP2, H2C, TCP, SSL, UDP, or GRPC."
-  }
-
-  validation {
-    condition     = contains(["", "EXTERNAL", "EXTERNAL_MANAGED", "INTERNAL_MANAGED", "INTERNAL_SELF_MANAGED"], var.spec.load_balancing_scheme)
-    error_message = "load_balancing_scheme must be one of EXTERNAL, EXTERNAL_MANAGED, INTERNAL_MANAGED, or INTERNAL_SELF_MANAGED."
-  }
-
-  validation {
-    condition     = contains(["", "AUTOMATIC", "DISABLED"], var.spec.compression_mode)
-    error_message = "compression_mode must be AUTOMATIC or DISABLED."
-  }
-
-  # HCL's && does not short-circuit, so the nullable bool is guarded with
-  # coalesce — Cloud CDN only fronts external load balancers.
-  validation {
-    condition     = !(coalesce(var.spec.enable_cdn, false) && contains(["INTERNAL_MANAGED", "INTERNAL_SELF_MANAGED"], var.spec.load_balancing_scheme))
-    error_message = "Cloud CDN can only be enabled on external backend services (scheme EXTERNAL or EXTERNAL_MANAGED)."
-  }
-
-  validation {
-    condition     = alltrue([for backend in var.spec.backends : length(backend.group) > 0])
-    error_message = "every backend must set group — the instance-group or NEG self-link."
-  }
-
-  validation {
-    condition     = length(var.spec.signed_url_keys) <= 3
-    error_message = "at most 3 signed-URL keys are supported per backend service."
-  }
 }

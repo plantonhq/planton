@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	"github.com/hashicorp/hcl/v2/hclwrite"
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/pkg/protodocs"
 	"github.com/plantonhq/planton/pkg/strings/caseconverter"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -39,11 +41,22 @@ var topLevelSkipFieldNames = map[string]bool{
 //   - Flatten wrapper types to primitives (StringValueOrRef -> string)
 //   - Handle proto maps as map(valueType) instead of misrepresenting them as objects
 //   - Mark every non-required attribute optional() with its proto zero default
+//   - Print each nested attribute's proto documentation above it as a comment
+//     (the protobuf runtime strips comments from descriptors, so the text comes
+//     from the embedded protodocs index, distilled from the same sources)
+//
+// The text is passed through the HCL formatter before it is returned, so the
+// generated file is exactly what `tofu fmt` would write: the repository's
+// formatting gate runs on every changed module, and a generator whose output
+// that gate rewrites cannot be the owner of the committed file.
 //
 // The output is fully deterministic and offline: it depends only on the compiled
-// proto descriptor (types + buf.validate constraints), never on a network call
-// or external docs source. Determinism is what lets the committed variables.tf be
-// guarded against drift by regenerating and comparing.
+// proto descriptor (types + buf.validate constraints) and the committed docs
+// index, never on a network call or external docs source. Determinism is what
+// lets the committed variables.tf be guarded against drift by regenerating and
+// comparing. The two inputs move together: regenerate the docs index
+// (`make generate-proto-docs`) before regenerating variables, or the comments
+// lag the protos until the next regeneration.
 func ProtoToVariablesTF(msg proto.Message) (string, error) {
 	md := msg.ProtoReflect().Descriptor()
 	rules := DefaultRules()
@@ -89,7 +102,12 @@ func ProtoToVariablesTF(msg proto.Message) (string, error) {
 			caseconverter.ToSnakeCase(fieldName), desc, typeStr)
 	}
 
-	return strings.TrimSpace(buf.String()), nil
+	// hclwrite.Format is the same routine `tofu fmt` runs: it aligns the `=`
+	// of consecutive single-line attributes and normalizes indentation, and
+	// leaves comments and blank lines where they are. Formatting the whole
+	// file here (rather than per object) is what keeps alignment groups
+	// identical to the formatter's own view of the file.
+	return strings.TrimSpace(string(hclwrite.Format(buf.Bytes()))), nil
 }
 
 // variableDescription returns a deterministic one-line description for a
@@ -312,11 +330,51 @@ func msgDescToTFObject(md protoreflect.MessageDescriptor, rules map[string]TypeR
 			Name:     caseconverter.ToSnakeCase(fieldName),
 			Type:     valType,
 			Optional: !isRequiredField(f),
-			Presence: f.HasOptionalKeyword(),
+			Presence: hasScalarPresence(f),
+			Doc:      protodocs.Lookup(f.FullName()),
+			Note:     flattenNote(f, rules),
 		})
 	}
 
 	return obj, nil
+}
+
+// hasScalarPresence reports whether a scalar field is a tri-state -- its
+// absence means something different from its zero value -- and therefore
+// defaults to null rather than to the zero value (see TFField.Presence). Two
+// proto shapes carry that presence: the explicit `optional` keyword, and
+// membership in a oneof. protojson emits a set oneof member even at its zero
+// value and omits it when a sibling arm is chosen, so a zero default would
+// make "0 nodes, fixed size" and "autoscaled, no fixed size" arrive as the
+// same value. Message-kind fields are excluded on purpose: a nested object
+// already defaults to null, and a wrapper message a type rule flattens to a
+// primitive (StringValueOrRef -> string) keeps the flattened primitive's
+// zero-means-unset contract that every module reads it by (`x != ""`).
+func hasScalarPresence(fd protoreflect.FieldDescriptor) bool {
+	return fd.Kind() != protoreflect.MessageKind && fd.HasPresence()
+}
+
+// flattenNote returns the FlattenNote of the type rule that collapsed this
+// field's message type to a primitive, or "" when no flattening rule applies.
+// A repeated or map-valued wrapper is flattened element by element, so the
+// same note holds for the whole attribute.
+func flattenNote(fd protoreflect.FieldDescriptor, rules map[string]TypeRule) string {
+	var md protoreflect.MessageDescriptor
+	switch {
+	case fd.IsMap():
+		if v := fd.MapValue(); v.Kind() == protoreflect.MessageKind {
+			md = v.Message()
+		}
+	case fd.Kind() == protoreflect.MessageKind:
+		md = fd.Message()
+	}
+	if md == nil {
+		return ""
+	}
+	if rule, ok := rules[string(md.FullName())]; ok && rule.FlattenTo != "" {
+		return rule.FlattenNote
+	}
+	return ""
 }
 
 // containsFreeForm reports whether a type carries free-form (`any`-typed)
@@ -350,9 +408,14 @@ func containsFreeForm(t TFType) bool {
 // rendered tfvars, and therefore must stay a bare (non-optional) attribute. The
 // source of truth is buf.validate: a field is required if it is explicitly
 // (buf.validate.field).required, or if it carries a presence-implying constraint
-// (string min_len >= 1, repeated min_items >= 1). Everything else is optional,
-// because the renderer prunes unset/zero fields and a bare attribute would then
-// fail object validation.
+// (string min_len >= 1, repeated min_items >= 1) that is evaluated on the zero
+// value. A constraint under `ignore = IGNORE_IF_ZERO_VALUE` (or IGNORE_ALWAYS)
+// is skipped when the field is unset, so the zero value is legal and the field
+// is optional however strict its rule reads -- the idiom for "if you set it,
+// it must be at least N characters", such as a password that is only set for
+// one authentication type. Everything else is optional, because the renderer
+// prunes unset/zero fields and a bare attribute would then fail object
+// validation.
 func isRequiredField(fd protoreflect.FieldDescriptor) bool {
 	opts := fd.Options()
 	if opts == nil {
@@ -367,6 +430,10 @@ func isRequiredField(fd protoreflect.FieldDescriptor) bool {
 	}
 	if rules.GetRequired() {
 		return true
+	}
+	switch rules.GetIgnore() {
+	case validate.Ignore_IGNORE_IF_ZERO_VALUE, validate.Ignore_IGNORE_ALWAYS:
+		return false
 	}
 	if s := rules.GetString(); s != nil && s.GetMinLen() >= 1 {
 		return true

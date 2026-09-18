@@ -1,57 +1,87 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Compute Engine global address"
+  description = "GcpGlobalAddress specification"
   type = object({
-    # The GCP project that owns the reservation. The CLI's tfvars converter
-    # resolves StringValueOrRef fields to their literal string before the
-    # module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # The GCP project in which to create this global address reservation.
+    # Can be a literal project ID or a reference to a GcpProject resource.
+    # If omitted, the provider's default project is used.
+    # Example: "my-prod-project-123"
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Name of the address in GCP (RFC1035). Immutable (ForceNew).
+    # Name of the global address resource in GCP.
+    # Must be 1-63 characters, lowercase letters, numbers, or hyphens.
+    # Must start with a lowercase letter and end with a letter or number.
+    # Example: "lb-external-ip", "vpc-peering-range"
     address_name = string
 
-    # Specific IP (EXTERNAL) or range start (INTERNAL); empty lets GCP
-    # assign one. Immutable.
+    # The static IP address to reserve. If omitted, GCP assigns an address automatically.
+    # For EXTERNAL addresses this is a single IP. For INTERNAL VPC_PEERING addresses
+    # this is the start of the reserved CIDR range.
     address = optional(string, "")
 
-    # EXTERNAL (public IP, the default via middleware) or INTERNAL
-    # (private range for VPC peering / PSC). Immutable.
-    address_type = optional(string, "EXTERNAL")
+    # The type of address to reserve.
+    # EXTERNAL reserves a public IP address (default). INTERNAL reserves a private IP range
+    # within a VPC network for purposes like VPC peering or Private Service Connect.
+    address_type = optional(string)
 
+    # Human-readable description of this address reservation.
+    # Example: "Static IP for production HTTPS load balancer"
     description = optional(string, "")
 
-    # IPV4 (middleware default) or IPV6. Immutable.
-    ip_version = optional(string, "IPV4")
+    # The IP version for this address. Defaults to IPV4.
+    ip_version = optional(string)
 
-    # VPC network for INTERNAL reservations; arrives as a plain self-link
-    # string. Immutable.
+    # The VPC network for internal address reservations.
+    # Required when address_type is INTERNAL. Accepts a network name or full self-link URL.
+    # The reserved IP range must be in RFC1918 space and the network cannot be deleted
+    # while reserved IP ranges refer to it.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     network = optional(string, "")
 
-    # CIDR prefix length for VPC_PEERING ranges (8-29). Immutable.
-    prefix_length = optional(number, null)
+    # The prefix length of the IP range to reserve.
+    # Required for VPC_PEERING purpose (e.g., 20 reserves a /20 range).
+    # Not applicable for single IP reservations or PRIVATE_SERVICE_CONNECT addresses.
+    # Valid range: 8 to 29.
+    prefix_length = optional(number)
 
-    # VPC_PEERING or PRIVATE_SERVICE_CONNECT (INTERNAL only). Immutable.
+    # The purpose of this address reservation. Only applicable for INTERNAL addresses,
+    # and REQUIRED for them — the GCP API rejects an internal global reservation
+    # without a purpose ("The field must be specified for reserving internal IP
+    # Addresses").
+    # VPC_PEERING — reserves a CIDR range for VPC network peering. Used by managed services
+    # like Cloud SQL, Redis, AlloyDB, and Filestore for private networking.
+    # PRIVATE_SERVICE_CONNECT — reserves an address for a Private Service Connect endpoint.
+    # Leave empty for standard external address reservations.
     purpose = optional(string, "")
 
-    # User labels merged with the platform labels (platform wins on key
-    # conflicts). The one mutable surface on this resource.
+    # User labels attached to the reserved global address, merged with
+    # Planton's platform labels (which win on key conflicts). The one mutable
+    # surface on this resource — every other change destroys and re-reserves.
     labels = optional(map(string), {})
 
-    # DELETE (default), PREVENT, or ABANDON — what destroy does to the
-    # reservation.
+    # Deletion policy for the reserved global address — what happens on
+    # destroy:
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the reservation is released (GCP refuses while a global
+    #                forwarding rule or PSA range still uses it); a released
+    #                external anycast IP is gone for good
+    #   "PREVENT" -- destroy FAILS; protects an IP that external DNS and
+    #                client allow-lists may still point at
+    #   "ABANDON" -- the reservation is removed from management but stays
+    #                reserved in GCP
     deletion_policy = optional(string, "")
   })
 }

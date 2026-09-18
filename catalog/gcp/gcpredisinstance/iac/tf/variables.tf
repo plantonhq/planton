@@ -1,129 +1,198 @@
 variable "metadata" {
-  description = "Metadata for the resource, including name and labels"
+  description = "Cloud resource metadata"
   type = object({
-    name    = string,
-    id      = optional(string),
-    org     = optional(string),
-    env     = optional(string),
-    labels  = optional(map(string)),
-    tags    = optional(list(string)),
-    version = optional(object({ id = string, message = string }))
+    name        = string
+    id          = optional(string, "")
+    org         = optional(string, "")
+    env         = optional(string, "")
+    labels      = optional(map(string), {})
+    annotations = optional(map(string), {})
+    tags        = optional(list(string), [])
   })
 }
 
 variable "spec" {
-  description = "Specification for the GCP Memorystore for Redis instance"
+  description = "GcpRedisInstance specification"
   type = object({
-    # The GCP project that owns the instance. The CLI's tfvars converter
-    # resolves StringValueOrRef fields to their literal string before the
-    # module runs, so this arrives as a plain string.
-    # If empty, the provider's default project is used (see locals.tf).
+    # GCP project where the Redis instance will be created.
+    # If not specified, the provider's default project is used.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     project_id = optional(string, "")
 
-    # Name of the Redis instance in GCP. Immutable.
+    # Name of the Redis instance. This becomes the GCP resource name.
+    # Must start with a lowercase letter, contain only lowercase letters, numbers,
+    # and hyphens, and end with a lowercase letter or number. Maximum 40 characters.
+    # Immutable after creation.
     instance_name = string
 
-    # Region hosting the instance (e.g. us-central1). Immutable.
+    # GCP region where the instance will be deployed (e.g., "us-central1").
     region = string
 
-    # BASIC (standalone, no SLA) or STANDARD_HA (primary + failover replica,
-    # 99.9% SLA). Immutable.
+    # Service tier controlling availability and replication.
+    # BASIC: standalone instance, no replication, no SLA.
+    # STANDARD_HA: primary + replica with automatic failover, 99.9% SLA.
+    # Immutable after creation.
     tier = string
 
-    # Memory in GiB. Mutable (in-place resize); STANDARD_HA and read
-    # replicas require at least 5.
+    # Memory size in GiB for the Redis instance. This is the total memory
+    # available for storing data. Minimum 1 GiB for BASIC; the GCP API requires
+    # at least 5 GiB for STANDARD_HA and for enabling read replicas.
     memory_size_gb = number
 
-    # Engine version, e.g. REDIS_7_2. Upgrades apply in place; a downgrade
-    # replaces the instance.
+    # Redis engine version (e.g., "REDIS_7_0", "REDIS_7_2", "REDIS_6_X").
+    # If not specified, the latest supported version is used. Upgrades apply
+    # in place; a version downgrade replaces the instance.
     redis_version = optional(string, "")
 
-    # Human-readable display name.
+    # Human-readable display name for the instance.
     display_name = optional(string, "")
 
-    # Primary zone within the region. Immutable.
+    # Zone within the region where the instance will be placed.
+    # For STANDARD_HA, this is the primary zone. GCP automatically selects
+    # a different zone for the replica unless alternative_location_id pins it.
+    # If not specified, GCP picks a zone. Immutable after creation.
     location_id = optional(string, "")
 
-    # Replica zone (STANDARD_HA only); must differ from location_id.
-    # Immutable.
+    # Zone for the STANDARD_HA replica. Only applicable to STANDARD_HA tier;
+    # must differ from location_id. Pinning both zones matters when co-locating
+    # the cache with zonal workloads (e.g. keeping the replica in the same zone
+    # as a standby application stack to bound cross-zone latency after
+    # failover). If not specified, GCP picks a different zone automatically.
+    # Immutable after creation.
     alternative_location_id = optional(string, "")
 
-    # VPC self link; arrives as a plain string after ref resolution.
-    # Empty means the project's default network. Immutable.
+    # VPC network to which the instance is connected.
+    # If not specified, the default network is used.
+    # Immutable after creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     authorized_network = optional(string, "")
 
-    # DIRECT_PEERING (default) or PRIVATE_SERVICE_ACCESS (requires the VPC
-    # to already carry a service networking connection). Immutable.
+    # How the instance connects to the VPC network.
+    # DIRECT_PEERING: VPC peering (default). Simpler setup.
+    # PRIVATE_SERVICE_ACCESS: uses the network's private services access
+    # connection. Required for Shared VPC and lets the instance consume an
+    # address range you allocated (compose GcpGlobalAddress +
+    # GcpServiceNetworkingConnection on the network first).
+    # Immutable after creation.
     connect_mode = optional(string, "")
 
-    # DIRECT_PEERING: /29 CIDR (or empty for auto). PRIVATE_SERVICE_ACCESS:
-    # the NAME of an allocated address range on the PSA connection.
-    # Immutable.
+    # CIDR range of internal addresses reserved for this instance.
+    # For DIRECT_PEERING: a /29 block (e.g., "10.0.0.0/29"), unique and
+    # non-overlapping with existing subnets; if not specified, GCP selects an
+    # unused /29 automatically. For PRIVATE_SERVICE_ACCESS: the NAME of an
+    # allocated address range on the private services access connection
+    # (a GcpGlobalAddress with purpose VPC_PEERING).
+    # Immutable after creation.
     reserved_ip_range = optional(string, "")
 
-    # Additional range for node placement — required when enabling read
-    # replicas on an existing instance. /28 CIDR, range name, or "auto".
-    # Mutable.
+    # Additional IP range for node placement. Required when enabling read
+    # replicas on an EXISTING instance (the original /29 has no room for the
+    # extra nodes). For DIRECT_PEERING: a /28 CIDR or "auto". For
+    # PRIVATE_SERVICE_ACCESS: the name of an allocated address range on the
+    # private services access connection, or "auto". Mutable — this is the
+    # field you set when scaling an in-place instance out to read replicas.
     secondary_ip_range = optional(string, "")
 
-    # Redis AUTH: when true GCP generates and rotates the AUTH string
-    # (exported as a sensitive output).
+    # Whether Redis AUTH is enabled. When true, clients must provide
+    # the AUTH string (exported in stack outputs) to connect.
+    # AUTH provides an additional layer of security beyond network controls.
     auth_enabled = optional(bool, false)
 
-    # DISABLED or SERVER_AUTHENTICATION (TLS; pair with the server_ca_certs
-    # output). Immutable.
+    # TLS encryption mode for client-to-server traffic.
+    # DISABLED: no encryption (default).
+    # SERVER_AUTHENTICATION: clients verify the server's identity via TLS;
+    # pair with the server_ca_certs stack output, which carries the CA
+    # certificates clients must trust.
+    # Immutable after creation.
     transit_encryption_mode = optional(string, "")
 
-    # Redis configuration parameters (e.g. maxmemory-policy).
+    # Redis configuration parameters as key-value pairs.
+    # See https://cloud.google.com/memorystore/docs/redis/reference/rest/v1/projects.locations.instances#Instance.FIELDS.redis_configs
+    # for the list of supported parameters (e.g., "maxmemory-policy", "notify-keyspace-events").
     redis_configs = optional(map(string), {})
 
-    # Weekly maintenance window start (UTC). Fixed 1-hour duration.
+    # Weekly maintenance window. If not specified, GCP schedules maintenance
+    # at its discretion.
     maintenance_window = optional(object({
-      day    = string
-      hour   = optional(number, 0)
-      minute = optional(number, 0)
-      # Human-readable description of the policy (max 512 characters).
-      description = optional(string, "")
-    }), null)
+      # Day of the week for the maintenance window.
+      day = string
 
-    # Self-service maintenance version — set to a newer available version
-    # to apply maintenance on your schedule instead of GCP's rollout.
+      # Hour of day (0-23, UTC) when the maintenance window starts.
+      hour = optional(number, 0)
+
+      # Minute of the hour (0-59, UTC) when the maintenance window starts.
+      # Combined with hour, this pins the window start to the exact minute —
+      # useful for coordinating with maintenance windows of dependent systems
+      # (e.g. start Redis maintenance 30 minutes after the database's window).
+      minute = optional(number, 0)
+
+      # Human-readable description of what this maintenance policy is for
+      # (e.g. "post-midnight window, after the nightly batch completes").
+      # Maximum 512 characters — the API rejects longer descriptions.
+      description = optional(string, "")
+    }))
+
+    # Self-service maintenance version. Setting this to a newer available
+    # version triggers the maintenance update on your schedule instead of
+    # waiting for GCP's rollout — the lever for applying a security patch
+    # immediately. Leave unset to follow GCP's automatic rollout.
     maintenance_version = optional(string, "")
 
-    # READ_REPLICAS_DISABLED or READ_REPLICAS_ENABLED (STANDARD_HA only).
-    # Set at creation time.
+    # Read replica mode. Can only be set at creation time.
+    # READ_REPLICAS_DISABLED (default): no read endpoint, no scaling.
+    # READ_REPLICAS_ENABLED: read endpoint provided, instance can scale replicas.
+    # Only available with STANDARD_HA tier.
     read_replicas_mode = optional(string, "")
 
-    # Read replica count (1-5) when read replicas are enabled.
+    # Number of read replicas. Valid range is 1-5 when read_replicas_mode is
+    # READ_REPLICAS_ENABLED and tier is STANDARD_HA.
     replica_count = optional(number, 0)
 
-    # RDB snapshot persistence.
+    # Persistence configuration for RDB snapshots.
     persistence_config = optional(object({
-      persistence_mode        = string
-      rdb_snapshot_period     = optional(string, "")
-      rdb_snapshot_start_time = optional(string, "")
-    }), null)
+      # Persistence mode. DISABLED turns off persistence entirely.
+      # RDB enables periodic RDB snapshots.
+      persistence_mode = string
 
-    # CMEK key resource id; arrives as a plain string after ref resolution.
-    # Immutable.
+      # How often RDB snapshots are taken. Required when persistence_mode is RDB.
+      rdb_snapshot_period = optional(string, "")
+
+      # Date and time the first snapshot was/will be attempted, to which all
+      # future snapshots align. RFC3339 UTC "Zulu" format (e.g.
+      # "2014-10-02T15:01:23Z"). Anchoring the schedule lets you place snapshot
+      # I/O in a low-traffic window instead of wherever instance creation time
+      # happened to fall. If not provided, GCP uses the creation time.
+      rdb_snapshot_start_time = optional(string, "")
+    }))
+
+    # Cloud KMS key for customer-managed encryption at rest (CMEK).
+    # Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{key}
+    # If not specified, data is encrypted with Google-managed keys.
+    # Immutable after creation.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     customer_managed_key = optional(string, "")
 
-    # User labels, merged beneath the platform attribution labels
-    # (see locals.tf).
+    # User-defined labels to organize and track the instance, for cost
+    # attribution and fleet queries. Merged beneath Planton's platform
+    # attribution labels (platform keys win on conflict).
     labels = optional(map(string), {})
 
-    # Destroy guard. The spec defaults this to true (Planton middleware
-    # materializes the default), and the module sends it explicitly so
-    # destroy behavior is identical on both engines.
-    deletion_protection = optional(bool, true)
+    # Whether deletion protection is enabled. When true (the default —
+    # matching GCP's safety posture for stateful stores), destroying the
+    # instance fails until this is explicitly set to false. Both IaC
+    # engines send the value explicitly so destroy behavior is identical
+    # regardless of engine.
+    deletion_protection = optional(bool)
 
-    # Deletion policy: "", "DELETE" (default), "PREVENT" (destroy fails),
-    # or "ABANDON" (remove from management, leave running in GCP).
+    # Deletion policy for the instance — what happens when this resource
+    # is destroyed (evaluated only after deletion_protection allows the
+    # destroy at all):
+    #   ""        -- same as "DELETE" (provider default)
+    #   "DELETE"  -- the instance is deleted; all in-memory data is lost
+    #   "PREVENT" -- destroy FAILS; a second, independent guard for a
+    #                cache whose loss would stampede the backing store
+    #   "ABANDON" -- the instance is removed from management but left
+    #                running (and billing) in GCP with its data intact
     deletion_policy = optional(string, "")
   })
-
-  validation {
-    condition     = contains(["", "DELETE", "PREVENT", "ABANDON"], var.spec.deletion_policy)
-    error_message = "deletion_policy must be one of: DELETE, PREVENT, ABANDON."
-  }
 }

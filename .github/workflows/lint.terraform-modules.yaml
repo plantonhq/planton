@@ -14,8 +14,10 @@
 #                       attachment is recorded in pkg/providerparity/admissions and every
 #                       admission is attached by a module (static, no Go).
 #   tf-generated-drift (PR + push, BLOCKING) -- every committed generator-owned file
-#                       (variables.tf for migrated kinds; helm_crds.tf wherever it exists)
-#                       equals the generator's output (pkg/iac/tofu/generators drift tests).
+#                       (variables.tf for enrolled kinds -- every kind of a generator-owned
+#                       provider, plus the individually enrolled ones; helm_crds.tf wherever
+#                       it exists) equals the generator's output (pkg/iac/tofu/generators
+#                       drift tests).
 #   tf-validate-changed (PR, BLOCKING)       -- tofu fmt -check + init -backend=false +
 #                       validate on the iac/tf modules changed in the PR.
 #   tf-validate-all    (nightly + manual)    -- init + validate across ALL modules, the
@@ -83,7 +85,8 @@ jobs:
       - name: Verify secondary-channel attachments are admitted
         run: bash ./hack/guards/ensure_beta_admissions.sh
 
-  # Generator ownership: a committed variables.tf (migrated kinds) or helm_crds.tf
+  # Generator ownership: a committed variables.tf (enrolled kinds: every kind of a
+  # generator-owned provider, plus the individually enrolled ones) or helm_crds.tf
   # (every module that carries one) must equal what the generator emits, so a fix
   # lands once in the generator and regenerates everywhere. Static, no network.
   tf-generated-drift:
