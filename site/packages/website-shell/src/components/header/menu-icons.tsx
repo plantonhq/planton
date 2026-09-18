@@ -4,13 +4,11 @@ import {
   Cloud as HostedIcon,
   Code as OpenSourceIcon,
   Dns as SelfHostedIcon,
-  Explore as TourIcon,
   Hub as InfraHubIcon,
   Input as ImportIcon,
   Laptop as DesktopAppIcon,
   MenuBook as DocsIcon,
   NewReleases as ChangelogIcon,
-  PlayCircle as DemoIcon,
   RocketLaunch as ServiceHubIcon,
   School as TutorialsIcon,
   SmartToy as CodingAgentsIcon,
@@ -47,8 +45,6 @@ export const resourceIcons: Record<string, React.ReactNode> = {
   Tutorials: <TutorialsIcon sx={iconSx} />,
   Blog: <BlogIcon sx={iconSx} />,
   Changelog: <ChangelogIcon sx={iconSx} />,
-  Tour: <TourIcon sx={iconSx} />,
-  Demo: <DemoIcon sx={iconSx} />,
 };
 
 /** Pair each menu item with its icon; an item without one renders without. */

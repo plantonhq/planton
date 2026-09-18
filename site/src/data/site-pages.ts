@@ -280,9 +280,6 @@ export const SITE_PAGES: readonly SitePage[] = [
   // Standalone surfaces: reachable by link, not search results
   { path: '/book-demo', title: 'Book a Demo', description: 'Pick a time to see Planton with the founder.', group: 'standalone', index: false },
   { path: '/desktop/open', title: 'Open Planton Desktop', description: 'Hands a link off to the desktop app installed on this machine.', group: 'standalone', index: false },
-  { path: '/tour', title: 'Tour', description: 'An interactive tour of Planton.', group: 'standalone', index: false },
-  { path: '/demo', title: 'Interactive Demo', description: 'A guided walk through Planton.', group: 'standalone', index: false },
-  { path: '/hackathon/mobile-vibe-2025', title: 'MobileVibe Hackathon 2025', description: 'A 2025 hackathon page.', group: 'standalone', index: false },
 
   // The persona decks: the story told for one person, with presenter notes,
   // at a stable address the founder pastes into a meeting invite. Registered

@@ -68,6 +68,13 @@ export const RETIRED_ROUTES: readonly RetiredRoute[] = [
   { from: '/solutions/by-role/developers', to: '/product/coding-agents', reason: 'the developer\u2019s door is the agent' },
   { from: '/solutions/by-use-case/chat-ops', to: '/solutions', reason: 'a retired concept page' },
   { from: '/enterprise', to: '/pricing/enterprise', reason: 'enterprise pricing lives under pricing' },
+  // The interactive demo and the tour told a 2025 story and no longer worked;
+  // both will be redone from first principles, never patched. The hackathon
+  // was a 2025 event. A past event and a broken walkthrough answer to the
+  // pages that tell the story now.
+  { from: '/demo', to: '/', reason: 'the interactive demo was retired; the landing carries the proof record and offers the live demo' },
+  { from: '/tour', to: '/product', reason: 'the console tour was retired; the product index is its map' },
+  { from: '/hackathon/mobile-vibe-2025', to: '/', reason: 'a 2025 event' },
 ] as const;
 
 export function retiredRoute(from: string): RetiredRoute {

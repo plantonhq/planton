@@ -1,23 +1,24 @@
 'use client'
 
+// The investor deck's button. It came from the retired console tour's
+// component kit; the deck overrides every color at each of its three call
+// sites, so the kit's own light palette (the `tour-*` utilities, deleted
+// with the tour) is not carried here. Sizes and structure are unchanged.
+// The investor pages stay on their own primitives by decision; this file
+// goes when they move onto the deck engine.
+
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-tour-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-tour-primary text-tour-primary-foreground shadow hover:bg-tour-primary/90",
-        destructive:
-          "bg-tour-destructive text-tour-destructive-foreground shadow-sm hover:bg-tour-destructive/90",
-        outline:
-          "border border-tour-input bg-tour-background shadow-sm hover:bg-tour-accent hover:text-tour-accent-foreground",
-        secondary:
-          "bg-tour-secondary text-tour-secondary-foreground shadow-sm hover:bg-tour-secondary/80",
-        ghost: "hover:bg-tour-accent hover:text-tour-accent-foreground",
-        link: "text-tour-primary underline-offset-4 hover:underline",
+        default: "shadow",
+        outline: "border shadow-sm",
+        ghost: "",
       },
       size: {
         default: "h-9 px-4 py-2",

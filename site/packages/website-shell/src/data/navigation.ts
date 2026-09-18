@@ -78,8 +78,6 @@ export const menuResources: MenuItem[] = [
   { label: 'Tutorials', subLabel: 'Step-by-step deployment walkthroughs', href: '/tutorials' },
   { label: 'Blog', subLabel: 'Product updates and engineering insights', href: '/blog' },
   { label: 'Changelog', subLabel: 'What shipped in every release', href: '/changelog' },
-  { label: 'Tour', subLabel: 'Interactive walkthrough of the console', href: '/tour' },
-  { label: 'Demo', subLabel: 'See Planton in action', href: '/demo' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -134,7 +132,6 @@ export const footerGroups: FooterGroup[] = [
       { title: 'All Product', url: '/product' },
       { title: 'Distributions', url: '/distributions' },
       { title: 'Solutions', url: '/solutions' },
-      { title: 'Tour', url: '/tour' },
     ],
   },
 ];
