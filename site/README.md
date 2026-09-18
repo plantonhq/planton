@@ -82,7 +82,7 @@ Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touc
 
 ```
 src/app/(site)/          pages inside the website shell (header, footer, theme)
-src/app/(standalone)/    surfaces without the shell: decks, the demo, book-demo, investor pages
+src/app/(standalone)/    surfaces without the shell: decks, book-demo, the desktop handoff, investor pages
 src/app/sitemap.ts       generated from the registry and the content folders
 src/app/robots.ts        generated
 src/components/marketing/   the primitive library
@@ -136,16 +136,15 @@ What a day-one architect would not have done, and which work retires it. The bui
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
-| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `components/product/shared`, `components/product/desktop`, `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest`, `demo`, `tour`, `hackathon` | each page group as it is rebuilt from the story |
-| Two landing versions kept for rollback (`v3`, `v4`) and the 2025 primitives (`v1`) used by the hackathon pages | `components/landing-page/` | v3 and v4 after v5 has held for one release; v1 with the hackathon's retirement |
-| The interactive demo and the tour, on a light palette | `components/demo`, `components/tour` | a product decision: one surface on the design system, or real product recordings |
-| The investor deck and explainer on their own primitive set | `components/invest` | invest onto the deck engine |
+| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest` | each page group as it is rebuilt from the story |
+| The desktop landing and download pages carry their words and their measured figures inside components (`components/product/desktop`, on the 2025 kit in `components/product/shared`) | `components/product/desktop`, `components/product/shared` | the desktop pages rebuilt from the story: a `src/data/desktop.ts` record, thin templates in `components/desktop/` on the primitive library and the palette, the 2025 kit deleted |
+| Two landing versions kept for rollback (`v3`, `v4`) | `components/landing-page/` | v3 and v4 after v5 has held for one release |
+| The investor deck and explainer on their own primitive set (including the deck's own button, which came from the retired tour's kit), and the one Tailwind color the pricing FAQ still reads (`text.secondary`) | `components/invest`, `tailwind.config.ts`, `components/pricing/faqs.tsx` | invest onto the deck engine, by the founder's decision a later slice; the color with pricing's rebuild |
 | The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto `SlideFrame` and the marketing primitives, the way the persona decks already compose them |
 | The copywriting rules describe copy as React component updates, the pattern retired when the story became data | `content/copywriting/_rules/`, `content/copywriting/_stage-area/README.md` | the navigation-and-health slice: repoint both to `src/data/` and the capture harness as the preview |
 | Images under `public/_site/` instead of the asset CDN; 136 literal `/_site/` paths | `public/_site/images`, `src/**` | images to R2 as pages are rebuilt; `lib/assets.ts` names the prefix once |
 | The `/_site` asset prefix and the post-build copy of the bundle | `next.config.ts`, `Makefile` | the apex routing decision |
 | Retired paths served by a client-side forward only | `RetiredRoute` | the edge redirect declared in the estate |
-| The desktop landing and download pages at `/features/desktop` | `app/(site)/features/desktop` | the founder's choice of Desktop's permanent address, which the release pipeline prints into every installer |
 | The shell's product menu holds its own sub-labels beside the registry's descriptions | `packages/website-shell/src/data/navigation.ts` | the navigation slice (the shell cannot import from `src/`) |
 
 ## Contributing
