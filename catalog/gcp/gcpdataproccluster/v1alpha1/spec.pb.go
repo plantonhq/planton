@@ -55,8 +55,15 @@ type GcpDataprocClusterDiskConfig struct {
 	// dial decoupled from disk size, honored by disk types that support
 	// provisioned performance (hyperdisks).
 	BootDiskProvisionedThroughput *int64 `protobuf:"varint,6,opt,name=boot_disk_provisioned_throughput,json=bootDiskProvisionedThroughput,proto3,oneof" json:"boot_disk_provisioned_throughput,omitempty"`
-	unknownFields                 protoimpl.UnknownFields
-	sizeCache                     protoimpl.SizeCache
+	// Additional persistent disks attached to every node of this role,
+	// beyond the boot disk — for HDFS data or shuffle spill that should not
+	// share the boot volume, or for Hyperdisk performance tiers the boot
+	// disk cannot use. Each entry is one disk on each node. Immutable: the
+	// whole set is fixed at cluster creation (ForceNew). Not available on
+	// auxiliary (driver) node groups.
+	AttachedDisks []*GcpDataprocClusterAttachedDisk `protobuf:"bytes,7,rep,name=attached_disks,json=attachedDisks,proto3" json:"attached_disks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpDataprocClusterDiskConfig) Reset() {
@@ -131,6 +138,91 @@ func (x *GcpDataprocClusterDiskConfig) GetBootDiskProvisionedThroughput() int64 
 	return 0
 }
 
+func (x *GcpDataprocClusterDiskConfig) GetAttachedDisks() []*GcpDataprocClusterAttachedDisk {
+	if x != nil {
+		return x.AttachedDisks
+	}
+	return nil
+}
+
+// GcpDataprocClusterAttachedDisk is one additional persistent disk
+// attached to every node of a role.
+type GcpDataprocClusterAttachedDisk struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Size of the disk in GB. Leave unset for the API's default size.
+	DiskSizeGb int32 `protobuf:"varint,1,opt,name=disk_size_gb,json=diskSizeGb,proto3" json:"disk_size_gb,omitempty"`
+	// Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+	// "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+	// dials apply). Leave empty for the API's default.
+	DiskType string `protobuf:"bytes,2,opt,name=disk_type,json=diskType,proto3" json:"disk_type,omitempty"`
+	// Provisioned I/O operations per second, honored by disk types that
+	// support provisioned performance (hyperdisks).
+	ProvisionedIops *int64 `protobuf:"varint,3,opt,name=provisioned_iops,json=provisionedIops,proto3,oneof" json:"provisioned_iops,omitempty"`
+	// Provisioned throughput in MB/s, honored by disk types that support
+	// provisioned performance (hyperdisks).
+	ProvisionedThroughput *int64 `protobuf:"varint,4,opt,name=provisioned_throughput,json=provisionedThroughput,proto3,oneof" json:"provisioned_throughput,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *GcpDataprocClusterAttachedDisk) Reset() {
+	*x = GcpDataprocClusterAttachedDisk{}
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpDataprocClusterAttachedDisk) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpDataprocClusterAttachedDisk) ProtoMessage() {}
+
+func (x *GcpDataprocClusterAttachedDisk) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpDataprocClusterAttachedDisk.ProtoReflect.Descriptor instead.
+func (*GcpDataprocClusterAttachedDisk) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GcpDataprocClusterAttachedDisk) GetDiskSizeGb() int32 {
+	if x != nil {
+		return x.DiskSizeGb
+	}
+	return 0
+}
+
+func (x *GcpDataprocClusterAttachedDisk) GetDiskType() string {
+	if x != nil {
+		return x.DiskType
+	}
+	return ""
+}
+
+func (x *GcpDataprocClusterAttachedDisk) GetProvisionedIops() int64 {
+	if x != nil && x.ProvisionedIops != nil {
+		return *x.ProvisionedIops
+	}
+	return 0
+}
+
+func (x *GcpDataprocClusterAttachedDisk) GetProvisionedThroughput() int64 {
+	if x != nil && x.ProvisionedThroughput != nil {
+		return *x.ProvisionedThroughput
+	}
+	return 0
+}
+
 // GcpDataprocClusterAccelerator configures GPU accelerators attached to
 // Dataproc cluster nodes for ML and compute workloads.
 type GcpDataprocClusterAccelerator struct {
@@ -146,7 +238,7 @@ type GcpDataprocClusterAccelerator struct {
 
 func (x *GcpDataprocClusterAccelerator) Reset() {
 	*x = GcpDataprocClusterAccelerator{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[1]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -158,7 +250,7 @@ func (x *GcpDataprocClusterAccelerator) String() string {
 func (*GcpDataprocClusterAccelerator) ProtoMessage() {}
 
 func (x *GcpDataprocClusterAccelerator) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[1]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -171,7 +263,7 @@ func (x *GcpDataprocClusterAccelerator) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterAccelerator.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterAccelerator) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GcpDataprocClusterAccelerator) GetAcceleratorType() string {
@@ -207,7 +299,7 @@ type GcpDataprocClusterShieldedInstanceConfig struct {
 
 func (x *GcpDataprocClusterShieldedInstanceConfig) Reset() {
 	*x = GcpDataprocClusterShieldedInstanceConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -219,7 +311,7 @@ func (x *GcpDataprocClusterShieldedInstanceConfig) String() string {
 func (*GcpDataprocClusterShieldedInstanceConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterShieldedInstanceConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -232,7 +324,7 @@ func (x *GcpDataprocClusterShieldedInstanceConfig) ProtoReflect() protoreflect.M
 
 // Deprecated: Use GcpDataprocClusterShieldedInstanceConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterShieldedInstanceConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GcpDataprocClusterShieldedInstanceConfig) GetEnableSecureBoot() bool {
@@ -261,15 +353,28 @@ func (x *GcpDataprocClusterShieldedInstanceConfig) GetEnableIntegrityMonitoring(
 // SEV). Requires a machine type from the N2D family.
 type GcpDataprocClusterConfidentialInstanceConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Enable Confidential Compute for all cluster nodes.
+	// Enable Confidential Compute for all cluster nodes with the AMD SEV
+	// technology. The provider marks this boolean deprecated in favor of
+	// confidential_instance_type, which names the technology explicitly;
+	// prefer that field for new clusters. Both may be set for a cluster
+	// authored before the type field existed.
 	EnableConfidentialCompute bool `protobuf:"varint,1,opt,name=enable_confidential_compute,json=enableConfidentialCompute,proto3" json:"enable_confidential_compute,omitempty"`
-	unknownFields             protoimpl.UnknownFields
-	sizeCache                 protoimpl.SizeCache
+	// Confidential Compute technology for all cluster nodes:
+	//
+	//	"SEV"     -- AMD Secure Encrypted Virtualization (N2D, C2D, C3D)
+	//	"SEV_SNP" -- AMD SEV with Secure Nested Paging: adds integrity
+	//	             protection and attestation (N2D)
+	//	"TDX"     -- Intel Trust Domain Extensions (C3)
+	//
+	// The machine type must support the chosen technology. Immutable.
+	ConfidentialInstanceType string `protobuf:"bytes,2,opt,name=confidential_instance_type,json=confidentialInstanceType,proto3" json:"confidential_instance_type,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *GcpDataprocClusterConfidentialInstanceConfig) Reset() {
 	*x = GcpDataprocClusterConfidentialInstanceConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -281,7 +386,7 @@ func (x *GcpDataprocClusterConfidentialInstanceConfig) String() string {
 func (*GcpDataprocClusterConfidentialInstanceConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterConfidentialInstanceConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -294,7 +399,7 @@ func (x *GcpDataprocClusterConfidentialInstanceConfig) ProtoReflect() protorefle
 
 // Deprecated: Use GcpDataprocClusterConfidentialInstanceConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterConfidentialInstanceConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GcpDataprocClusterConfidentialInstanceConfig) GetEnableConfidentialCompute() bool {
@@ -302,6 +407,13 @@ func (x *GcpDataprocClusterConfidentialInstanceConfig) GetEnableConfidentialComp
 		return x.EnableConfidentialCompute
 	}
 	return false
+}
+
+func (x *GcpDataprocClusterConfidentialInstanceConfig) GetConfidentialInstanceType() string {
+	if x != nil {
+		return x.ConfidentialInstanceType
+	}
+	return ""
 }
 
 // GcpDataprocClusterReservationAffinity pins the cluster's VMs to a
@@ -326,7 +438,7 @@ type GcpDataprocClusterReservationAffinity struct {
 
 func (x *GcpDataprocClusterReservationAffinity) Reset() {
 	*x = GcpDataprocClusterReservationAffinity{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -338,7 +450,7 @@ func (x *GcpDataprocClusterReservationAffinity) String() string {
 func (*GcpDataprocClusterReservationAffinity) ProtoMessage() {}
 
 func (x *GcpDataprocClusterReservationAffinity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -351,7 +463,7 @@ func (x *GcpDataprocClusterReservationAffinity) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GcpDataprocClusterReservationAffinity.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterReservationAffinity) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GcpDataprocClusterReservationAffinity) GetConsumeReservationType() string {
@@ -390,7 +502,7 @@ type GcpDataprocClusterNodeGroupAffinity struct {
 
 func (x *GcpDataprocClusterNodeGroupAffinity) Reset() {
 	*x = GcpDataprocClusterNodeGroupAffinity{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -402,7 +514,7 @@ func (x *GcpDataprocClusterNodeGroupAffinity) String() string {
 func (*GcpDataprocClusterNodeGroupAffinity) ProtoMessage() {}
 
 func (x *GcpDataprocClusterNodeGroupAffinity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -415,7 +527,7 @@ func (x *GcpDataprocClusterNodeGroupAffinity) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use GcpDataprocClusterNodeGroupAffinity.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterNodeGroupAffinity) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GcpDataprocClusterNodeGroupAffinity) GetNodeGroupUri() string {
@@ -484,7 +596,7 @@ type GcpDataprocClusterGceConfig struct {
 
 func (x *GcpDataprocClusterGceConfig) Reset() {
 	*x = GcpDataprocClusterGceConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -496,7 +608,7 @@ func (x *GcpDataprocClusterGceConfig) String() string {
 func (*GcpDataprocClusterGceConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterGceConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -509,7 +621,7 @@ func (x *GcpDataprocClusterGceConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterGceConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterGceConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GcpDataprocClusterGceConfig) GetNetwork() *v1.StringValueOrRef {
@@ -643,7 +755,7 @@ type GcpDataprocClusterMasterConfig struct {
 
 func (x *GcpDataprocClusterMasterConfig) Reset() {
 	*x = GcpDataprocClusterMasterConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -655,7 +767,7 @@ func (x *GcpDataprocClusterMasterConfig) String() string {
 func (*GcpDataprocClusterMasterConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterMasterConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -668,7 +780,7 @@ func (x *GcpDataprocClusterMasterConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterMasterConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterMasterConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GcpDataprocClusterMasterConfig) GetNumInstances() int32 {
@@ -763,7 +875,7 @@ type GcpDataprocClusterWorkerConfig struct {
 
 func (x *GcpDataprocClusterWorkerConfig) Reset() {
 	*x = GcpDataprocClusterWorkerConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -775,7 +887,7 @@ func (x *GcpDataprocClusterWorkerConfig) String() string {
 func (*GcpDataprocClusterWorkerConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterWorkerConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -788,7 +900,7 @@ func (x *GcpDataprocClusterWorkerConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterWorkerConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterWorkerConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GcpDataprocClusterWorkerConfig) GetNumInstances() int32 {
@@ -856,14 +968,20 @@ type GcpDataprocClusterInstanceSelection struct {
 	MachineTypes []string `protobuf:"bytes,1,rep,name=machine_types,json=machineTypes,proto3" json:"machine_types,omitempty"`
 	// Preference rank. Lower rank is preferred; Dataproc falls back to
 	// higher ranks when capacity for the preferred types is unavailable.
-	Rank          int32 `protobuf:"varint,2,opt,name=rank,proto3" json:"rank,omitempty"`
+	Rank int32 `protobuf:"varint,2,opt,name=rank,proto3" json:"rank,omitempty"`
+	// Disk shape for nodes provisioned from THIS selection entry —
+	// overrides the role's disk_config so, for example, the fallback
+	// machine types can carry a different boot disk or local SSD count
+	// than the preferred ones. Leave unset to inherit the role's
+	// disk_config. Immutable.
+	DiskConfig    *GcpDataprocClusterDiskConfig `protobuf:"bytes,3,opt,name=disk_config,json=diskConfig,proto3" json:"disk_config,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpDataprocClusterInstanceSelection) Reset() {
 	*x = GcpDataprocClusterInstanceSelection{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -875,7 +993,7 @@ func (x *GcpDataprocClusterInstanceSelection) String() string {
 func (*GcpDataprocClusterInstanceSelection) ProtoMessage() {}
 
 func (x *GcpDataprocClusterInstanceSelection) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -888,7 +1006,7 @@ func (x *GcpDataprocClusterInstanceSelection) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use GcpDataprocClusterInstanceSelection.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterInstanceSelection) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GcpDataprocClusterInstanceSelection) GetMachineTypes() []string {
@@ -903,6 +1021,13 @@ func (x *GcpDataprocClusterInstanceSelection) GetRank() int32 {
 		return x.Rank
 	}
 	return 0
+}
+
+func (x *GcpDataprocClusterInstanceSelection) GetDiskConfig() *GcpDataprocClusterDiskConfig {
+	if x != nil {
+		return x.DiskConfig
+	}
+	return nil
 }
 
 // GcpDataprocClusterProvisioningModelMix blends standard (on-demand)
@@ -922,7 +1047,7 @@ type GcpDataprocClusterProvisioningModelMix struct {
 
 func (x *GcpDataprocClusterProvisioningModelMix) Reset() {
 	*x = GcpDataprocClusterProvisioningModelMix{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -934,7 +1059,7 @@ func (x *GcpDataprocClusterProvisioningModelMix) String() string {
 func (*GcpDataprocClusterProvisioningModelMix) ProtoMessage() {}
 
 func (x *GcpDataprocClusterProvisioningModelMix) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -947,7 +1072,7 @@ func (x *GcpDataprocClusterProvisioningModelMix) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use GcpDataprocClusterProvisioningModelMix.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterProvisioningModelMix) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GcpDataprocClusterProvisioningModelMix) GetStandardCapacityBase() int32 {
@@ -981,7 +1106,7 @@ type GcpDataprocClusterInstanceFlexibilityPolicy struct {
 
 func (x *GcpDataprocClusterInstanceFlexibilityPolicy) Reset() {
 	*x = GcpDataprocClusterInstanceFlexibilityPolicy{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -993,7 +1118,7 @@ func (x *GcpDataprocClusterInstanceFlexibilityPolicy) String() string {
 func (*GcpDataprocClusterInstanceFlexibilityPolicy) ProtoMessage() {}
 
 func (x *GcpDataprocClusterInstanceFlexibilityPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1006,7 +1131,7 @@ func (x *GcpDataprocClusterInstanceFlexibilityPolicy) ProtoReflect() protoreflec
 
 // Deprecated: Use GcpDataprocClusterInstanceFlexibilityPolicy.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterInstanceFlexibilityPolicy) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GcpDataprocClusterInstanceFlexibilityPolicy) GetInstanceSelectionList() []*GcpDataprocClusterInstanceSelection {
@@ -1056,7 +1181,7 @@ type GcpDataprocClusterSecondaryWorkerConfig struct {
 
 func (x *GcpDataprocClusterSecondaryWorkerConfig) Reset() {
 	*x = GcpDataprocClusterSecondaryWorkerConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1068,7 +1193,7 @@ func (x *GcpDataprocClusterSecondaryWorkerConfig) String() string {
 func (*GcpDataprocClusterSecondaryWorkerConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterSecondaryWorkerConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1081,7 +1206,7 @@ func (x *GcpDataprocClusterSecondaryWorkerConfig) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use GcpDataprocClusterSecondaryWorkerConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterSecondaryWorkerConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GcpDataprocClusterSecondaryWorkerConfig) GetNumInstances() int32 {
@@ -1142,7 +1267,7 @@ type GcpDataprocClusterSoftwareConfig struct {
 
 func (x *GcpDataprocClusterSoftwareConfig) Reset() {
 	*x = GcpDataprocClusterSoftwareConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1154,7 +1279,7 @@ func (x *GcpDataprocClusterSoftwareConfig) String() string {
 func (*GcpDataprocClusterSoftwareConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterSoftwareConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1167,7 +1292,7 @@ func (x *GcpDataprocClusterSoftwareConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterSoftwareConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterSoftwareConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GcpDataprocClusterSoftwareConfig) GetImageVersion() string {
@@ -1209,7 +1334,7 @@ type GcpDataprocClusterInitAction struct {
 
 func (x *GcpDataprocClusterInitAction) Reset() {
 	*x = GcpDataprocClusterInitAction{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1221,7 +1346,7 @@ func (x *GcpDataprocClusterInitAction) String() string {
 func (*GcpDataprocClusterInitAction) ProtoMessage() {}
 
 func (x *GcpDataprocClusterInitAction) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1234,7 +1359,7 @@ func (x *GcpDataprocClusterInitAction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterInitAction.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterInitAction) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GcpDataprocClusterInitAction) GetScript() string {
@@ -1303,7 +1428,7 @@ type GcpDataprocClusterKerberosConfig struct {
 
 func (x *GcpDataprocClusterKerberosConfig) Reset() {
 	*x = GcpDataprocClusterKerberosConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1315,7 +1440,7 @@ func (x *GcpDataprocClusterKerberosConfig) String() string {
 func (*GcpDataprocClusterKerberosConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterKerberosConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1328,7 +1453,7 @@ func (x *GcpDataprocClusterKerberosConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterKerberosConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterKerberosConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GcpDataprocClusterKerberosConfig) GetEnableKerberos() bool {
@@ -1451,7 +1576,7 @@ type GcpDataprocClusterIdentityConfig struct {
 
 func (x *GcpDataprocClusterIdentityConfig) Reset() {
 	*x = GcpDataprocClusterIdentityConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1463,7 +1588,7 @@ func (x *GcpDataprocClusterIdentityConfig) String() string {
 func (*GcpDataprocClusterIdentityConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterIdentityConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1476,7 +1601,7 @@ func (x *GcpDataprocClusterIdentityConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterIdentityConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterIdentityConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GcpDataprocClusterIdentityConfig) GetUserServiceAccountMapping() map[string]string {
@@ -1501,7 +1626,7 @@ type GcpDataprocClusterSecurityConfig struct {
 
 func (x *GcpDataprocClusterSecurityConfig) Reset() {
 	*x = GcpDataprocClusterSecurityConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1513,7 +1638,7 @@ func (x *GcpDataprocClusterSecurityConfig) String() string {
 func (*GcpDataprocClusterSecurityConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterSecurityConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1526,7 +1651,7 @@ func (x *GcpDataprocClusterSecurityConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterSecurityConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterSecurityConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GcpDataprocClusterSecurityConfig) GetKerberosConfig() *GcpDataprocClusterKerberosConfig {
@@ -1560,7 +1685,7 @@ type GcpDataprocClusterEndpointConfig struct {
 
 func (x *GcpDataprocClusterEndpointConfig) Reset() {
 	*x = GcpDataprocClusterEndpointConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1572,7 +1697,7 @@ func (x *GcpDataprocClusterEndpointConfig) String() string {
 func (*GcpDataprocClusterEndpointConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterEndpointConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1585,7 +1710,7 @@ func (x *GcpDataprocClusterEndpointConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterEndpointConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterEndpointConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GcpDataprocClusterEndpointConfig) GetEnableHttpPortAccess() bool {
@@ -1629,7 +1754,7 @@ type GcpDataprocClusterLifecycleConfig struct {
 
 func (x *GcpDataprocClusterLifecycleConfig) Reset() {
 	*x = GcpDataprocClusterLifecycleConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1641,7 +1766,7 @@ func (x *GcpDataprocClusterLifecycleConfig) String() string {
 func (*GcpDataprocClusterLifecycleConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterLifecycleConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1654,7 +1779,7 @@ func (x *GcpDataprocClusterLifecycleConfig) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use GcpDataprocClusterLifecycleConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterLifecycleConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GcpDataprocClusterLifecycleConfig) GetIdleDeleteTtl() string {
@@ -1701,7 +1826,7 @@ type GcpDataprocClusterMetastoreConfig struct {
 
 func (x *GcpDataprocClusterMetastoreConfig) Reset() {
 	*x = GcpDataprocClusterMetastoreConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1713,7 +1838,7 @@ func (x *GcpDataprocClusterMetastoreConfig) String() string {
 func (*GcpDataprocClusterMetastoreConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterMetastoreConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1726,7 +1851,7 @@ func (x *GcpDataprocClusterMetastoreConfig) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use GcpDataprocClusterMetastoreConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterMetastoreConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *GcpDataprocClusterMetastoreConfig) GetDataprocMetastoreService() *v1.StringValueOrRef {
@@ -1752,7 +1877,7 @@ type GcpDataprocClusterMetric struct {
 
 func (x *GcpDataprocClusterMetric) Reset() {
 	*x = GcpDataprocClusterMetric{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1764,7 +1889,7 @@ func (x *GcpDataprocClusterMetric) String() string {
 func (*GcpDataprocClusterMetric) ProtoMessage() {}
 
 func (x *GcpDataprocClusterMetric) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1777,7 +1902,7 @@ func (x *GcpDataprocClusterMetric) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterMetric.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterMetric) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GcpDataprocClusterMetric) GetMetricSource() string {
@@ -1807,7 +1932,7 @@ type GcpDataprocClusterMetricConfig struct {
 
 func (x *GcpDataprocClusterMetricConfig) Reset() {
 	*x = GcpDataprocClusterMetricConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1819,7 +1944,7 @@ func (x *GcpDataprocClusterMetricConfig) String() string {
 func (*GcpDataprocClusterMetricConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterMetricConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1832,7 +1957,7 @@ func (x *GcpDataprocClusterMetricConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterMetricConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterMetricConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GcpDataprocClusterMetricConfig) GetMetrics() []*GcpDataprocClusterMetric {
@@ -1862,7 +1987,7 @@ type GcpDataprocClusterAuxiliaryNodeGroupConfig struct {
 
 func (x *GcpDataprocClusterAuxiliaryNodeGroupConfig) Reset() {
 	*x = GcpDataprocClusterAuxiliaryNodeGroupConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1874,7 +1999,7 @@ func (x *GcpDataprocClusterAuxiliaryNodeGroupConfig) String() string {
 func (*GcpDataprocClusterAuxiliaryNodeGroupConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterAuxiliaryNodeGroupConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1887,7 +2012,7 @@ func (x *GcpDataprocClusterAuxiliaryNodeGroupConfig) ProtoReflect() protoreflect
 
 // Deprecated: Use GcpDataprocClusterAuxiliaryNodeGroupConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterAuxiliaryNodeGroupConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GcpDataprocClusterAuxiliaryNodeGroupConfig) GetNumInstances() int32 {
@@ -1944,7 +2069,7 @@ type GcpDataprocClusterAuxiliaryNodeGroup struct {
 
 func (x *GcpDataprocClusterAuxiliaryNodeGroup) Reset() {
 	*x = GcpDataprocClusterAuxiliaryNodeGroup{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1956,7 +2081,7 @@ func (x *GcpDataprocClusterAuxiliaryNodeGroup) String() string {
 func (*GcpDataprocClusterAuxiliaryNodeGroup) ProtoMessage() {}
 
 func (x *GcpDataprocClusterAuxiliaryNodeGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1969,7 +2094,7 @@ func (x *GcpDataprocClusterAuxiliaryNodeGroup) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use GcpDataprocClusterAuxiliaryNodeGroup.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterAuxiliaryNodeGroup) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GcpDataprocClusterAuxiliaryNodeGroup) GetRoles() []string {
@@ -2074,7 +2199,7 @@ type GcpDataprocClusterConfig struct {
 
 func (x *GcpDataprocClusterConfig) Reset() {
 	*x = GcpDataprocClusterConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2086,7 +2211,7 @@ func (x *GcpDataprocClusterConfig) String() string {
 func (*GcpDataprocClusterConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2099,7 +2224,7 @@ func (x *GcpDataprocClusterConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *GcpDataprocClusterConfig) GetStagingBucket() *v1.StringValueOrRef {
@@ -2251,7 +2376,7 @@ type GcpDataprocClusterKubernetesSoftwareConfig struct {
 
 func (x *GcpDataprocClusterKubernetesSoftwareConfig) Reset() {
 	*x = GcpDataprocClusterKubernetesSoftwareConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2263,7 +2388,7 @@ func (x *GcpDataprocClusterKubernetesSoftwareConfig) String() string {
 func (*GcpDataprocClusterKubernetesSoftwareConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterKubernetesSoftwareConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2276,7 +2401,7 @@ func (x *GcpDataprocClusterKubernetesSoftwareConfig) ProtoReflect() protoreflect
 
 // Deprecated: Use GcpDataprocClusterKubernetesSoftwareConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterKubernetesSoftwareConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *GcpDataprocClusterKubernetesSoftwareConfig) GetComponentVersion() map[string]string {
@@ -2307,7 +2432,7 @@ type GcpDataprocClusterNodePoolAutoscaling struct {
 
 func (x *GcpDataprocClusterNodePoolAutoscaling) Reset() {
 	*x = GcpDataprocClusterNodePoolAutoscaling{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2319,7 +2444,7 @@ func (x *GcpDataprocClusterNodePoolAutoscaling) String() string {
 func (*GcpDataprocClusterNodePoolAutoscaling) ProtoMessage() {}
 
 func (x *GcpDataprocClusterNodePoolAutoscaling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2332,7 +2457,7 @@ func (x *GcpDataprocClusterNodePoolAutoscaling) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GcpDataprocClusterNodePoolAutoscaling.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterNodePoolAutoscaling) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GcpDataprocClusterNodePoolAutoscaling) GetMinNodeCount() int32 {
@@ -2376,7 +2501,7 @@ type GcpDataprocClusterNodePoolConfig struct {
 
 func (x *GcpDataprocClusterNodePoolConfig) Reset() {
 	*x = GcpDataprocClusterNodePoolConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2388,7 +2513,7 @@ func (x *GcpDataprocClusterNodePoolConfig) String() string {
 func (*GcpDataprocClusterNodePoolConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterNodePoolConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2401,7 +2526,7 @@ func (x *GcpDataprocClusterNodePoolConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterNodePoolConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterNodePoolConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GcpDataprocClusterNodePoolConfig) GetLocations() []string {
@@ -2478,7 +2603,7 @@ type GcpDataprocClusterNodePoolTarget struct {
 
 func (x *GcpDataprocClusterNodePoolTarget) Reset() {
 	*x = GcpDataprocClusterNodePoolTarget{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2490,7 +2615,7 @@ func (x *GcpDataprocClusterNodePoolTarget) String() string {
 func (*GcpDataprocClusterNodePoolTarget) ProtoMessage() {}
 
 func (x *GcpDataprocClusterNodePoolTarget) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2503,7 +2628,7 @@ func (x *GcpDataprocClusterNodePoolTarget) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterNodePoolTarget.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterNodePoolTarget) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GcpDataprocClusterNodePoolTarget) GetNodePool() *v1.StringValueOrRef {
@@ -2543,7 +2668,7 @@ type GcpDataprocClusterGkeClusterConfig struct {
 
 func (x *GcpDataprocClusterGkeClusterConfig) Reset() {
 	*x = GcpDataprocClusterGkeClusterConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2555,7 +2680,7 @@ func (x *GcpDataprocClusterGkeClusterConfig) String() string {
 func (*GcpDataprocClusterGkeClusterConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterGkeClusterConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2568,7 +2693,7 @@ func (x *GcpDataprocClusterGkeClusterConfig) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GcpDataprocClusterGkeClusterConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterGkeClusterConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GcpDataprocClusterGkeClusterConfig) GetGkeClusterTarget() *v1.StringValueOrRef {
@@ -2602,7 +2727,7 @@ type GcpDataprocClusterKubernetesClusterConfig struct {
 
 func (x *GcpDataprocClusterKubernetesClusterConfig) Reset() {
 	*x = GcpDataprocClusterKubernetesClusterConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2614,7 +2739,7 @@ func (x *GcpDataprocClusterKubernetesClusterConfig) String() string {
 func (*GcpDataprocClusterKubernetesClusterConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterKubernetesClusterConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2627,7 +2752,7 @@ func (x *GcpDataprocClusterKubernetesClusterConfig) ProtoReflect() protoreflect.
 
 // Deprecated: Use GcpDataprocClusterKubernetesClusterConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterKubernetesClusterConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *GcpDataprocClusterKubernetesClusterConfig) GetKubernetesNamespace() *v1.StringValueOrRef {
@@ -2666,7 +2791,7 @@ type GcpDataprocClusterSparkHistoryServerConfig struct {
 
 func (x *GcpDataprocClusterSparkHistoryServerConfig) Reset() {
 	*x = GcpDataprocClusterSparkHistoryServerConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2678,7 +2803,7 @@ func (x *GcpDataprocClusterSparkHistoryServerConfig) String() string {
 func (*GcpDataprocClusterSparkHistoryServerConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterSparkHistoryServerConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2691,7 +2816,7 @@ func (x *GcpDataprocClusterSparkHistoryServerConfig) ProtoReflect() protoreflect
 
 // Deprecated: Use GcpDataprocClusterSparkHistoryServerConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterSparkHistoryServerConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *GcpDataprocClusterSparkHistoryServerConfig) GetDataprocCluster() *v1.StringValueOrRef {
@@ -2715,7 +2840,7 @@ type GcpDataprocClusterAuxiliaryServicesConfig struct {
 
 func (x *GcpDataprocClusterAuxiliaryServicesConfig) Reset() {
 	*x = GcpDataprocClusterAuxiliaryServicesConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2727,7 +2852,7 @@ func (x *GcpDataprocClusterAuxiliaryServicesConfig) String() string {
 func (*GcpDataprocClusterAuxiliaryServicesConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterAuxiliaryServicesConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2740,7 +2865,7 @@ func (x *GcpDataprocClusterAuxiliaryServicesConfig) ProtoReflect() protoreflect.
 
 // Deprecated: Use GcpDataprocClusterAuxiliaryServicesConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterAuxiliaryServicesConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *GcpDataprocClusterAuxiliaryServicesConfig) GetMetastoreConfig() *GcpDataprocClusterMetastoreConfig {
@@ -2781,7 +2906,7 @@ type GcpDataprocClusterVirtualClusterConfig struct {
 
 func (x *GcpDataprocClusterVirtualClusterConfig) Reset() {
 	*x = GcpDataprocClusterVirtualClusterConfig{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2793,7 +2918,7 @@ func (x *GcpDataprocClusterVirtualClusterConfig) String() string {
 func (*GcpDataprocClusterVirtualClusterConfig) ProtoMessage() {}
 
 func (x *GcpDataprocClusterVirtualClusterConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2806,7 +2931,7 @@ func (x *GcpDataprocClusterVirtualClusterConfig) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use GcpDataprocClusterVirtualClusterConfig.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterVirtualClusterConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GcpDataprocClusterVirtualClusterConfig) GetStagingBucket() *v1.StringValueOrRef {
@@ -2904,7 +3029,7 @@ type GcpDataprocClusterSpec struct {
 
 func (x *GcpDataprocClusterSpec) Reset() {
 	*x = GcpDataprocClusterSpec{}
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2916,7 +3041,7 @@ func (x *GcpDataprocClusterSpec) String() string {
 func (*GcpDataprocClusterSpec) ProtoMessage() {}
 
 func (x *GcpDataprocClusterSpec) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2929,7 +3054,7 @@ func (x *GcpDataprocClusterSpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpDataprocClusterSpec.ProtoReflect.Descriptor instead.
 func (*GcpDataprocClusterSpec) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
+	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GcpDataprocClusterSpec) GetProjectId() *v1.StringValueOrRef {
@@ -2992,7 +3117,7 @@ var File_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpdataproccluster/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpdataproccluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd9\x06\n" +
+	"2catalog/gcp/gcpdataproccluster/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpdataproccluster.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xcd\a\n" +
 	"\x1cGcpDataprocClusterDiskConfig\x12\x8c\x01\n" +
 	"\x11boot_disk_size_gb\x18\x01 \x01(\x05Ba\xbaH^\xba\x01[\n" +
 	"\x19boot_disk_size_gb_minimum\x12%boot_disk_size_gb must be at least 10\x1a\x17this == 0 || this >= 10R\x0ebootDiskSizeGb\x12\xf1\x01\n" +
@@ -3002,9 +3127,20 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x13local_ssd_interface\x18\x04 \x01(\tBy\xbaHv\xba\x01s\n" +
 	"\x1flocal_ssd_interface_valid_value\x12(local_ssd_interface must be scsi or nvme\x1a&this == '' || this in ['scsi', 'nvme']R\x11localSsdInterface\x12I\n" +
 	"\x1aboot_disk_provisioned_iops\x18\x05 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x00R\x17bootDiskProvisionedIops\x88\x01\x01\x12U\n" +
-	" boot_disk_provisioned_throughput\x18\x06 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x01R\x1dbootDiskProvisionedThroughput\x88\x01\x01B\x1d\n" +
+	" boot_disk_provisioned_throughput\x18\x06 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x01R\x1dbootDiskProvisionedThroughput\x88\x01\x01\x12r\n" +
+	"\x0eattached_disks\x18\a \x03(\v2K.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAttachedDiskR\rattachedDisksB\x1d\n" +
 	"\x1b_boot_disk_provisioned_iopsB#\n" +
-	"!_boot_disk_provisioned_throughput\"\x88\x01\n" +
+	"!_boot_disk_provisioned_throughput\"\xbd\x04\n" +
+	"\x1eGcpDataprocClusterAttachedDisk\x12\x82\x01\n" +
+	"\fdisk_size_gb\x18\x01 \x01(\x05B`\xbaH]\xba\x01Z\n" +
+	"\x1dattached_disk_size_gb_minimum\x12 disk_size_gb must be at least 10\x1a\x17this == 0 || this >= 10R\n" +
+	"diskSizeGb\x12\xe7\x01\n" +
+	"\tdisk_type\x18\x02 \x01(\tB\xc9\x01\xbaH\xc5\x01\xba\x01\xc1\x01\n" +
+	"\x1eattached_disk_type_valid_value\x12Idisk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced\x1aTthis == '' || this in ['pd-standard', 'pd-ssd', 'pd-balanced', 'hyperdisk-balanced']R\bdiskType\x127\n" +
+	"\x10provisioned_iops\x18\x03 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x00R\x0fprovisionedIops\x88\x01\x01\x12C\n" +
+	"\x16provisioned_throughput\x18\x04 \x01(\x03B\a\xbaH\x04\"\x02(\x01H\x01R\x15provisionedThroughput\x88\x01\x01B\x13\n" +
+	"\x11_provisioned_iopsB\x19\n" +
+	"\x17_provisioned_throughput\"\x88\x01\n" +
 	"\x1dGcpDataprocClusterAccelerator\x121\n" +
 	"\x10accelerator_type\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0facceleratorType\x124\n" +
 	"\x11accelerator_count\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x01R\x10acceleratorCount\"\xb9\x01\n" +
@@ -3012,9 +3148,11 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12enable_secure_boot\x18\x01 \x01(\bR\x10enableSecureBoot\x12\x1f\n" +
 	"\venable_vtpm\x18\x02 \x01(\bR\n" +
 	"enableVtpm\x12>\n" +
-	"\x1benable_integrity_monitoring\x18\x03 \x01(\bR\x19enableIntegrityMonitoring\"n\n" +
+	"\x1benable_integrity_monitoring\x18\x03 \x01(\bR\x19enableIntegrityMonitoring\"\xca\x02\n" +
 	",GcpDataprocClusterConfidentialInstanceConfig\x12>\n" +
-	"\x1benable_confidential_compute\x18\x01 \x01(\bR\x19enableConfidentialCompute\"\xda\x04\n" +
+	"\x1benable_confidential_compute\x18\x01 \x01(\bR\x19enableConfidentialCompute\x12\xd9\x01\n" +
+	"\x1aconfidential_instance_type\x18\x02 \x01(\tB\x9a\x01\xbaH\x96\x01\xba\x01\x92\x01\n" +
+	"&confidential_instance_type_valid_value\x127confidential_instance_type must be SEV, SEV_SNP, or TDX\x1a/this == '' || this in ['SEV', 'SEV_SNP', 'TDX']R\x18confidentialInstanceType\"\xda\x04\n" +
 	"%GcpDataprocClusterReservationAffinity\x12\x99\x02\n" +
 	"\x18consume_reservation_type\x18\x01 \x01(\tB\xde\x01\xbaH\xda\x01\xba\x01\xd6\x01\n" +
 	"$consume_reservation_type_valid_value\x12Yconsume_reservation_type must be NO_RESERVATION, ANY_RESERVATION, or SPECIFIC_RESERVATION\x1aSthis == '' || this in ['NO_RESERVATION', 'ANY_RESERVATION', 'SPECIFIC_RESERVATION']R\x16consumeReservationType\x12\x10\n" +
@@ -3069,10 +3207,12 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x11min_num_instances\x18\a \x01(\x05R\x0fminNumInstances\x12\x98\x01\n" +
 	"\x1binstance_flexibility_policy\x18\b \x01(\v2X.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicyR\x19instanceFlexibilityPolicy:\xd5\x03\xbaH\xd1\x03\x1a\xcb\x01\n" +
 	"&worker_flexibility_no_provisioning_mix\x128provisioning_model_mix applies to secondary workers only\x1ag!has(this.instance_flexibility_policy) || !has(this.instance_flexibility_policy.provisioning_model_mix)\x1a\x80\x02\n" +
-	"#worker_machine_type_xor_flexibility\x12\x93\x01machine_type and instance_flexibility_policy are mutually exclusive; rank machine types in the flexibility policy's instance_selection_list instead\x1aC!(this.machine_type != '' && has(this.instance_flexibility_policy))\"q\n" +
+	"#worker_machine_type_xor_flexibility\x12\x93\x01machine_type and instance_flexibility_policy are mutually exclusive; rank machine types in the flexibility policy's instance_selection_list instead\x1aC!(this.machine_type != '' && has(this.instance_flexibility_policy))\"\xdd\x01\n" +
 	"#GcpDataprocClusterInstanceSelection\x12-\n" +
 	"\rmachine_types\x18\x01 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\fmachineTypes\x12\x1b\n" +
-	"\x04rank\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x04rank\"\xc2\x01\n" +
+	"\x04rank\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x04rank\x12j\n" +
+	"\vdisk_config\x18\x03 \x01(\v2I.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfigR\n" +
+	"diskConfig\"\xc2\x01\n" +
 	"&GcpDataprocClusterProvisioningModelMix\x12=\n" +
 	"\x16standard_capacity_base\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x14standardCapacityBase\x12Y\n" +
 	"$standard_capacity_percent_above_base\x18\x02 \x01(\x05B\t\xbaH\x06\x1a\x04\x18d(\x00R standardCapacityPercentAboveBase\"\xc4\x02\n" +
@@ -3140,14 +3280,15 @@ const file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\rmetric_source\x18\x01 \x01(\tBY\xbaHV\xc8\x01\x01rQR\x19MONITORING_AGENT_DEFAULTSR\x04HDFSR\x05SPARKR\x04YARNR\x14SPARK_HISTORY_SERVERR\vHIVESERVER2R\fmetricSource\x12)\n" +
 	"\x10metric_overrides\x18\x02 \x03(\tR\x0fmetricOverrides\"\x8b\x01\n" +
 	"\x1eGcpDataprocClusterMetricConfig\x12i\n" +
-	"\ametrics\x18\x01 \x03(\v2E.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricB\b\xbaH\x05\x92\x01\x02\b\x01R\ametrics\"\xfa\x02\n" +
+	"\ametrics\x18\x01 \x03(\v2E.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricB\b\xbaH\x05\x92\x01\x02\b\x01R\ametrics\"\x85\x05\n" +
 	"*GcpDataprocClusterAuxiliaryNodeGroupConfig\x12#\n" +
 	"\rnum_instances\x18\x01 \x01(\x05R\fnumInstances\x12!\n" +
 	"\fmachine_type\x18\x02 \x01(\tR\vmachineType\x12(\n" +
 	"\x10min_cpu_platform\x18\x03 \x01(\tR\x0eminCpuPlatform\x12j\n" +
 	"\vdisk_config\x18\x04 \x01(\v2I.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfigR\n" +
 	"diskConfig\x12n\n" +
-	"\faccelerators\x18\x05 \x03(\v2J.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAcceleratorR\faccelerators\"\xc5\x03\n" +
+	"\faccelerators\x18\x05 \x03(\v2J.dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAcceleratorR\faccelerators:\x88\x02\xbaH\x84\x02\x1a\x81\x02\n" +
+	" auxiliary_disk_no_attached_disks\x12\x96\x01attached_disks apply to master, worker, and secondary worker nodes only -- Dataproc does not attach additional disks to auxiliary (driver) node groups\x1aD!has(this.disk_config) || size(this.disk_config.attached_disks) == 0\"\xc5\x03\n" +
 	"$GcpDataprocClusterAuxiliaryNodeGroup\x12x\n" +
 	"\x05roles\x18\x01 \x03(\tBb\xbaH_\x92\x01\\\b\x01\"X\xba\x01U\n" +
 	"%auxiliary_node_group_role_valid_value\x12\x18each role must be DRIVER\x1a\x12this in ['DRIVER']R\x05roles\x12\x83\x01\n" +
@@ -3256,124 +3397,127 @@ func file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescGZIP() []byt
 	return file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 43)
+var file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 44)
 var file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpDataprocClusterDiskConfig)(nil),                 // 0: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
-	(*GcpDataprocClusterAccelerator)(nil),                // 1: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
-	(*GcpDataprocClusterShieldedInstanceConfig)(nil),     // 2: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterShieldedInstanceConfig
-	(*GcpDataprocClusterConfidentialInstanceConfig)(nil), // 3: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfidentialInstanceConfig
-	(*GcpDataprocClusterReservationAffinity)(nil),        // 4: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterReservationAffinity
-	(*GcpDataprocClusterNodeGroupAffinity)(nil),          // 5: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodeGroupAffinity
-	(*GcpDataprocClusterGceConfig)(nil),                  // 6: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig
-	(*GcpDataprocClusterMasterConfig)(nil),               // 7: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig
-	(*GcpDataprocClusterWorkerConfig)(nil),               // 8: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig
-	(*GcpDataprocClusterInstanceSelection)(nil),          // 9: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceSelection
-	(*GcpDataprocClusterProvisioningModelMix)(nil),       // 10: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterProvisioningModelMix
-	(*GcpDataprocClusterInstanceFlexibilityPolicy)(nil),  // 11: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
-	(*GcpDataprocClusterSecondaryWorkerConfig)(nil),      // 12: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig
-	(*GcpDataprocClusterSoftwareConfig)(nil),             // 13: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig
-	(*GcpDataprocClusterInitAction)(nil),                 // 14: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInitAction
-	(*GcpDataprocClusterKerberosConfig)(nil),             // 15: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKerberosConfig
-	(*GcpDataprocClusterIdentityConfig)(nil),             // 16: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig
-	(*GcpDataprocClusterSecurityConfig)(nil),             // 17: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig
-	(*GcpDataprocClusterEndpointConfig)(nil),             // 18: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterEndpointConfig
-	(*GcpDataprocClusterLifecycleConfig)(nil),            // 19: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterLifecycleConfig
-	(*GcpDataprocClusterMetastoreConfig)(nil),            // 20: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
-	(*GcpDataprocClusterMetric)(nil),                     // 21: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetric
-	(*GcpDataprocClusterMetricConfig)(nil),               // 22: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig
-	(*GcpDataprocClusterAuxiliaryNodeGroupConfig)(nil),   // 23: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig
-	(*GcpDataprocClusterAuxiliaryNodeGroup)(nil),         // 24: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup
-	(*GcpDataprocClusterConfig)(nil),                     // 25: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig
-	(*GcpDataprocClusterKubernetesSoftwareConfig)(nil),   // 26: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig
-	(*GcpDataprocClusterNodePoolAutoscaling)(nil),        // 27: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolAutoscaling
-	(*GcpDataprocClusterNodePoolConfig)(nil),             // 28: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig
-	(*GcpDataprocClusterNodePoolTarget)(nil),             // 29: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget
-	(*GcpDataprocClusterGkeClusterConfig)(nil),           // 30: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig
-	(*GcpDataprocClusterKubernetesClusterConfig)(nil),    // 31: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig
-	(*GcpDataprocClusterSparkHistoryServerConfig)(nil),   // 32: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig
-	(*GcpDataprocClusterAuxiliaryServicesConfig)(nil),    // 33: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig
-	(*GcpDataprocClusterVirtualClusterConfig)(nil),       // 34: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig
-	(*GcpDataprocClusterSpec)(nil),                       // 35: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec
-	nil,                                                  // 36: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.MetadataEntry
-	nil,                                                  // 37: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.ResourceManagerTagsEntry
-	nil,                                                  // 38: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig.PropertiesEntry
-	nil,                                                  // 39: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.UserServiceAccountMappingEntry
-	nil,                                                  // 40: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.ComponentVersionEntry
-	nil,                                                  // 41: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.PropertiesEntry
-	nil,                                                  // 42: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.LabelsEntry
-	(*v1.StringValueOrRef)(nil),                          // 43: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*GcpDataprocClusterAttachedDisk)(nil),               // 1: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAttachedDisk
+	(*GcpDataprocClusterAccelerator)(nil),                // 2: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
+	(*GcpDataprocClusterShieldedInstanceConfig)(nil),     // 3: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterShieldedInstanceConfig
+	(*GcpDataprocClusterConfidentialInstanceConfig)(nil), // 4: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfidentialInstanceConfig
+	(*GcpDataprocClusterReservationAffinity)(nil),        // 5: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterReservationAffinity
+	(*GcpDataprocClusterNodeGroupAffinity)(nil),          // 6: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodeGroupAffinity
+	(*GcpDataprocClusterGceConfig)(nil),                  // 7: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig
+	(*GcpDataprocClusterMasterConfig)(nil),               // 8: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig
+	(*GcpDataprocClusterWorkerConfig)(nil),               // 9: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig
+	(*GcpDataprocClusterInstanceSelection)(nil),          // 10: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceSelection
+	(*GcpDataprocClusterProvisioningModelMix)(nil),       // 11: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterProvisioningModelMix
+	(*GcpDataprocClusterInstanceFlexibilityPolicy)(nil),  // 12: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
+	(*GcpDataprocClusterSecondaryWorkerConfig)(nil),      // 13: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig
+	(*GcpDataprocClusterSoftwareConfig)(nil),             // 14: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig
+	(*GcpDataprocClusterInitAction)(nil),                 // 15: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInitAction
+	(*GcpDataprocClusterKerberosConfig)(nil),             // 16: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKerberosConfig
+	(*GcpDataprocClusterIdentityConfig)(nil),             // 17: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig
+	(*GcpDataprocClusterSecurityConfig)(nil),             // 18: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig
+	(*GcpDataprocClusterEndpointConfig)(nil),             // 19: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterEndpointConfig
+	(*GcpDataprocClusterLifecycleConfig)(nil),            // 20: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterLifecycleConfig
+	(*GcpDataprocClusterMetastoreConfig)(nil),            // 21: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
+	(*GcpDataprocClusterMetric)(nil),                     // 22: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetric
+	(*GcpDataprocClusterMetricConfig)(nil),               // 23: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig
+	(*GcpDataprocClusterAuxiliaryNodeGroupConfig)(nil),   // 24: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig
+	(*GcpDataprocClusterAuxiliaryNodeGroup)(nil),         // 25: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup
+	(*GcpDataprocClusterConfig)(nil),                     // 26: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig
+	(*GcpDataprocClusterKubernetesSoftwareConfig)(nil),   // 27: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig
+	(*GcpDataprocClusterNodePoolAutoscaling)(nil),        // 28: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolAutoscaling
+	(*GcpDataprocClusterNodePoolConfig)(nil),             // 29: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig
+	(*GcpDataprocClusterNodePoolTarget)(nil),             // 30: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget
+	(*GcpDataprocClusterGkeClusterConfig)(nil),           // 31: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig
+	(*GcpDataprocClusterKubernetesClusterConfig)(nil),    // 32: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig
+	(*GcpDataprocClusterSparkHistoryServerConfig)(nil),   // 33: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig
+	(*GcpDataprocClusterAuxiliaryServicesConfig)(nil),    // 34: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig
+	(*GcpDataprocClusterVirtualClusterConfig)(nil),       // 35: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig
+	(*GcpDataprocClusterSpec)(nil),                       // 36: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec
+	nil,                                                  // 37: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.MetadataEntry
+	nil,                                                  // 38: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.ResourceManagerTagsEntry
+	nil,                                                  // 39: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig.PropertiesEntry
+	nil,                                                  // 40: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.UserServiceAccountMappingEntry
+	nil,                                                  // 41: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.ComponentVersionEntry
+	nil,                                                  // 42: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.PropertiesEntry
+	nil,                                                  // 43: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.LabelsEntry
+	(*v1.StringValueOrRef)(nil),                          // 44: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_depIdxs = []int32{
-	43, // 0: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	43, // 1: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	43, // 2: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	36, // 3: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.metadata:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.MetadataEntry
-	2,  // 4: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.shielded_instance_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterShieldedInstanceConfig
-	4,  // 5: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.reservation_affinity:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterReservationAffinity
-	5,  // 6: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.node_group_affinity:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodeGroupAffinity
-	3,  // 7: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.confidential_instance_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfidentialInstanceConfig
-	37, // 8: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.resource_manager_tags:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.ResourceManagerTagsEntry
-	0,  // 9: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
-	1,  // 10: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
-	11, // 11: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
-	0,  // 12: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
-	1,  // 13: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
-	11, // 14: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
-	9,  // 15: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy.instance_selection_list:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceSelection
-	10, // 16: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy.provisioning_model_mix:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterProvisioningModelMix
-	0,  // 17: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
-	11, // 18: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
-	38, // 19: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig.properties:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig.PropertiesEntry
-	43, // 20: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKerberosConfig.kms_key_uri:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	39, // 21: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.user_service_account_mapping:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.UserServiceAccountMappingEntry
-	15, // 22: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig.kerberos_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKerberosConfig
-	16, // 23: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig.identity_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig
-	43, // 24: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig.dataproc_metastore_service:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	21, // 25: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig.metrics:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetric
-	0,  // 26: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
-	1,  // 27: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
-	23, // 28: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup.node_group_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig
-	43, // 29: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	43, // 30: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.temp_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	6,  // 31: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.gce_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig
-	7,  // 32: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.master_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig
-	8,  // 33: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig
-	12, // 34: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.secondary_worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig
-	13, // 35: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig
-	14, // 36: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.initialization_actions:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInitAction
-	43, // 37: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.autoscaling_policy_uri:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	43, // 38: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.encryption_kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	17, // 39: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.security_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig
-	18, // 40: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.endpoint_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterEndpointConfig
-	19, // 41: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.lifecycle_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterLifecycleConfig
-	20, // 42: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
-	22, // 43: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.dataproc_metric_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig
-	24, // 44: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.auxiliary_node_groups:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup
-	40, // 45: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.component_version:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.ComponentVersionEntry
-	41, // 46: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.properties:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.PropertiesEntry
-	27, // 47: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig.autoscaling:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolAutoscaling
-	43, // 48: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	28, // 49: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig
-	43, // 50: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.gke_cluster_target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 51: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.node_pool_target:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget
-	43, // 52: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	30, // 53: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.gke_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig
-	26, // 54: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig
-	43, // 55: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig.dataproc_cluster:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	20, // 56: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
-	32, // 57: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.spark_history_server_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig
-	43, // 58: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	31, // 59: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.kubernetes_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig
-	33, // 60: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.auxiliary_services_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig
-	43, // 61: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 62: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig
-	34, // 63: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.virtual_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig
-	42, // 64: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.labels:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.LabelsEntry
-	65, // [65:65] is the sub-list for method output_type
-	65, // [65:65] is the sub-list for method input_type
-	65, // [65:65] is the sub-list for extension type_name
-	65, // [65:65] is the sub-list for extension extendee
-	0,  // [0:65] is the sub-list for field type_name
+	1,  // 0: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig.attached_disks:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAttachedDisk
+	44, // 1: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 2: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 3: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	37, // 4: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.metadata:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.MetadataEntry
+	3,  // 5: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.shielded_instance_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterShieldedInstanceConfig
+	5,  // 6: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.reservation_affinity:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterReservationAffinity
+	6,  // 7: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.node_group_affinity:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodeGroupAffinity
+	4,  // 8: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.confidential_instance_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfidentialInstanceConfig
+	38, // 9: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.resource_manager_tags:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.ResourceManagerTagsEntry
+	0,  // 10: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
+	2,  // 11: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
+	12, // 12: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
+	0,  // 13: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
+	2,  // 14: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
+	12, // 15: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
+	0,  // 16: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceSelection.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
+	10, // 17: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy.instance_selection_list:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceSelection
+	11, // 18: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy.provisioning_model_mix:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterProvisioningModelMix
+	0,  // 19: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
+	12, // 20: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInstanceFlexibilityPolicy
+	39, // 21: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig.properties:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig.PropertiesEntry
+	44, // 22: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKerberosConfig.kms_key_uri:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	40, // 23: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.user_service_account_mapping:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig.UserServiceAccountMappingEntry
+	16, // 24: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig.kerberos_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKerberosConfig
+	17, // 25: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig.identity_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterIdentityConfig
+	44, // 26: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig.dataproc_metastore_service:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	22, // 27: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig.metrics:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetric
+	0,  // 28: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.disk_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterDiskConfig
+	2,  // 29: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig.accelerators:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAccelerator
+	24, // 30: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup.node_group_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroupConfig
+	44, // 31: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 32: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.temp_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 33: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.gce_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig
+	8,  // 34: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.master_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMasterConfig
+	9,  // 35: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterWorkerConfig
+	13, // 36: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.secondary_worker_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecondaryWorkerConfig
+	14, // 37: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSoftwareConfig
+	15, // 38: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.initialization_actions:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterInitAction
+	44, // 39: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.autoscaling_policy_uri:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 40: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.encryption_kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 41: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.security_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSecurityConfig
+	19, // 42: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.endpoint_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterEndpointConfig
+	20, // 43: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.lifecycle_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterLifecycleConfig
+	21, // 44: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
+	23, // 45: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.dataproc_metric_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetricConfig
+	25, // 46: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig.auxiliary_node_groups:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryNodeGroup
+	41, // 47: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.component_version:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.ComponentVersionEntry
+	42, // 48: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.properties:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig.PropertiesEntry
+	28, // 49: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig.autoscaling:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolAutoscaling
+	44, // 50: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	29, // 51: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget.node_pool_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolConfig
+	44, // 52: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.gke_cluster_target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	30, // 53: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.node_pool_target:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterNodePoolTarget
+	44, // 54: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	31, // 55: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.gke_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig
+	27, // 56: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_software_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesSoftwareConfig
+	44, // 57: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig.dataproc_cluster:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	21, // 58: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.metastore_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterMetastoreConfig
+	33, // 59: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig.spark_history_server_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSparkHistoryServerConfig
+	44, // 60: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.staging_bucket:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 61: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.kubernetes_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig
+	34, // 62: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig.auxiliary_services_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterAuxiliaryServicesConfig
+	44, // 63: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	26, // 64: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterConfig
+	35, // 65: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.virtual_cluster_config:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterVirtualClusterConfig
+	43, // 66: dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.labels:type_name -> dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.LabelsEntry
+	67, // [67:67] is the sub-list for method output_type
+	67, // [67:67] is the sub-list for method input_type
+	67, // [67:67] is the sub-list for extension type_name
+	67, // [67:67] is the sub-list for extension extendee
+	0,  // [0:67] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_init() }
@@ -3382,13 +3526,14 @@ func file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpdataproccluster_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   43,
+			NumMessages:   44,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

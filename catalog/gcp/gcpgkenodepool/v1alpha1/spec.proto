@@ -194,6 +194,16 @@ message GcpGkeNodePoolSpec {
   // enabled for this project, please contact your account manager or open
   // a support case to enable it".
   GcpGkeNodePoolNodeDrainConfig node_drain_config = 20;
+
+  // Holds this pool on its current Kubernetes version until that
+  // version's end-of-support date, exempting it from GKE's automatic
+  // upgrades (the cluster's maintenance windows and exclusions still
+  // govern everything else). For a workload that must not move minor
+  // versions until it has been re-qualified. GKE reports the resulting
+  // exclusion window (start and end) in the node pool's status; when the
+  // version reaches end of support the exclusion lapses and upgrades
+  // resume.
+  bool exclude_upgrades_until_end_of_support = 21;
 }
 
 // GcpGkeNodePoolNodeDrainConfig controls draining behavior when the pool
@@ -1256,6 +1266,33 @@ message GcpGkeNodePoolKubeletConfig {
   // NUMA placement per pod or per container — for latency-critical and
   // HPC workloads that suffer on cross-NUMA access.
   GcpGkeNodePoolTopologyManager topology_manager = 21;
+
+  // Graceful node shutdown: the total time, in seconds, a node delays its
+  // shutdown so every pod (critical and non-critical) can terminate
+  // cleanly when the VM is reclaimed. Only configurable on Spot or
+  // preemptible pools (the ones that get reclaimed). Between 10 and
+  // 10000. Leave unset for GKE's default; sent only when set because the
+  // API fills the value itself.
+  optional int64 shutdown_grace_period_seconds = 22 [(buf.validate.field).int64 = {
+    gte: 10
+    lte: 10000
+  }];
+
+  // The portion of shutdown_grace_period_seconds reserved for critical
+  // pods (system-node-critical and system-cluster-critical priority
+  // classes) after ordinary pods have been given their share. Must not
+  // exceed shutdown_grace_period_seconds. Spot or preemptible pools only.
+  // Sent only when set because the API fills the value itself.
+  optional int64 shutdown_grace_period_critical_pods_seconds = 23 [(buf.validate.field).int64 = {
+    gte: 0
+    lte: 10000
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "critical_grace_within_total"
+    message: "shutdown_grace_period_critical_pods_seconds cannot exceed shutdown_grace_period_seconds"
+    expression: "!has(this.shutdown_grace_period_critical_pods_seconds) || !has(this.shutdown_grace_period_seconds) || this.shutdown_grace_period_critical_pods_seconds <= this.shutdown_grace_period_seconds"
+  };
 }
 
 // GcpGkeNodePoolEvictionSignals holds per-signal soft-eviction thresholds.
@@ -1449,6 +1486,53 @@ message GcpGkeNodePoolLinuxNodeConfig {
   // encryption. Swap trades OOM kills for latency under memory pressure;
   // pair with kubelet eviction tuning.
   GcpGkeNodePoolSwapConfig swap_config = 8;
+
+  // A custom initialization script GKE runs on every node at boot,
+  // before the node joins the cluster — for host-level setup that no
+  // DaemonSet can do (kernel parameters that need a reboot-free apply,
+  // vendor agents, custom certificates). Sourced from Cloud Storage or
+  // Secret Manager; exactly one source.
+  GcpGkeNodePoolCustomNodeInit custom_node_init = 9;
+}
+
+// GcpGkeNodePoolCustomNodeInit is the node's boot-time init script.
+message GcpGkeNodePoolCustomNodeInit {
+  option (buf.validate.message).cel = {
+    id: "exactly_one_init_script_source"
+    message: "set exactly one of gcs_uri or secret_manager_secret_uri for the init script"
+    expression: "(this.gcs_uri != '') != (this.secret_manager_secret_uri != '')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "gcs_generation_requires_gcs_uri"
+    message: "gcs_generation pins a Cloud Storage object version — set gcs_uri alongside it"
+    expression: "!has(this.gcs_generation) || this.gcs_uri != ''"
+  };
+
+  // Cloud Storage object holding the script, e.g.
+  // "gs://my-bucket/node-init.sh". The node's service account needs read
+  // access to the object.
+  string gcs_uri = 1 [(buf.validate.field).cel = {
+    id: "gcs_uri_format"
+    message: "gcs_uri must be a gs:// object URI"
+    expression: "this == '' || this.startsWith('gs://')"
+  }];
+
+  // Pin the Cloud Storage object to one generation so a later upload
+  // does not silently change what new nodes run. Leave unset to always
+  // fetch the current object; sent only when set because the API records
+  // the generation it resolved.
+  optional int64 gcs_generation = 2 [(buf.validate.field).int64.gte = 1];
+
+  // Secret Manager secret version holding the script, e.g.
+  // "projects/P/secrets/node-init/versions/latest" — for scripts that
+  // embed credentials. The node's service account needs
+  // secretmanager.versions.access on it.
+  string secret_manager_secret_uri = 3 [(buf.validate.field).cel = {
+    id: "secret_uri_format"
+    message: "secret_manager_secret_uri must be a Secret Manager version resource name: projects/{project}/secrets/{secret}/versions/{version}"
+    expression: "this == '' || this.matches('^projects/[^/]+/secrets/[^/]+/versions/[^/]+$')"
+  }];
 }
 
 // GcpGkeNodePoolSwapConfig provisions and encrypts node swap space.

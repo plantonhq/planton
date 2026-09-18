@@ -21,6 +21,13 @@ spec:
   # boot/data-disk types (need hyperdisk-capable machine series in the
   # scenario; the widened CELs carry the provider ValidateEnum evidence).
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the notebook gained min_cpu_platform,
+  # enable_deletion_protection, and data-disk resource policies; the earlier
+  # live proof predates them. All three are API-computed when unset, so the
+  # next proof confirms the untouched shape re-plans clean; deletion
+  # protection is not armed live (it would block the harness's destroy) and
+  # stays offline-proven.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 20

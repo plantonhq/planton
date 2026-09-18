@@ -162,6 +162,22 @@ variable "spec" {
         end_time   = string
         recurrence = string
       }), null)
+      # Time-of-day + duration form of the recurring window, optionally
+      # delayed until a calendar date.
+      recurring_time_window = optional(object({
+        window_start_time = object({
+          hours   = optional(number, 0)
+          minutes = optional(number, 0)
+          seconds = optional(number, 0)
+        })
+        window_duration = string
+        recurrence      = string
+        delay_until = optional(object({
+          year  = number
+          month = number
+          day   = number
+        }), null)
+      }), null)
       exclusions = optional(list(object({
         exclusion_name    = string
         start_time        = string
@@ -270,6 +286,14 @@ variable "spec" {
       rotation_interval = optional(string, "")
     }), null)
 
+    # Two-step (rollback-safe) control-plane upgrades: soak duration in
+    # seconds format ("21600s".."604800s"); desired_emulated_version
+    # ("major.minor") completes the upgrade after the soak.
+    rollback_safe_upgrade = optional(object({
+      control_plane_soak_duration = optional(string, "")
+    }), null)
+    desired_emulated_version = optional(string, "")
+
     # Confidential GKE nodes (hardware memory encryption). Immutable.
     confidential_nodes = optional(object({
       enabled                    = optional(bool, false)
@@ -339,6 +363,8 @@ variable "spec" {
       agent_sandbox_enabled                  = optional(bool, false)
       slice_controller_enabled               = optional(bool, false)
       slurm_operator_enabled                 = optional(bool, false)
+      high_scale_checkpointing_enabled       = optional(bool, false)
+      node_readiness_controller_enabled      = optional(bool, false)
     }), null)
 
     # Autopilot mode (GKE manages nodes; no GcpGkeNodePool resources).
@@ -445,4 +471,14 @@ variable "spec" {
       service_account_verification_keys = optional(list(string), [])
     }), null)
   })
+
+  validation {
+    condition     = var.spec.maintenance_policy == null || ((var.spec.maintenance_policy.daily_window != null ? 1 : 0) + (var.spec.maintenance_policy.recurring_window != null ? 1 : 0) + (var.spec.maintenance_policy.recurring_time_window != null ? 1 : 0) == 1)
+    error_message = "maintenance_policy must set exactly one of daily_window, recurring_window, or recurring_time_window."
+  }
+
+  validation {
+    condition     = var.spec.desired_emulated_version == "" || can(regex("^[0-9]+\\.[0-9]+$", var.spec.desired_emulated_version))
+    error_message = "desired_emulated_version must be in major.minor format, e.g. \"1.33\"."
+  }
 }

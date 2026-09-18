@@ -152,5 +152,9 @@ variable "spec" {
 
     # Destroy stance: "", DELETE (default), PREVENT, or ABANDON.
     deletion_policy = optional(string, "")
+
+    # Resource Manager tags bound at creation (tagKeys/* -> tagValues/*).
+    # Immutable: a change replaces the job.
+    resource_manager_tags = optional(map(string), {})
   })
 }

@@ -52,6 +52,8 @@ resources:
         arg: key_revocation_action_type
       - spec: spec.template.resource_policies
         arg: resource_policies
+      - spec: spec.template.workload_identity_config
+        arg: workload_identity_config
       # The disk subtree: children match name-for-name below the prefix
       # except the renames recorded here.
       - spec: spec.template.disks
@@ -172,16 +174,6 @@ resources:
         reason: >-
           Sub-second precision excluded (the seconds/nanos class); the
           spec models local_ssd_recovery_timeout_seconds.
-      - arg: workload_identity_config.identity
-        reason: >-
-          SDK gap at pulumi-gcp v9.29.0: the bridge does not carry
-          workload_identity_config on either instance-template resource,
-          and cross-engine parity forbids one-engine spec surface.
-          Re-evaluate when a pulumi-gcp release bridges the block.
-      - arg: workload_identity_config.identity_certificate_enabled
-        reason: >-
-          SDK gap at pulumi-gcp v9.29.0 (see workload_identity_config.identity);
-          re-evaluate when the bridge ships the block.
 
   # --------------------------------------------------------------------
   # Regional instance template: mirrors the zonal block; region is real
@@ -217,6 +209,8 @@ resources:
         arg: key_revocation_action_type
       - spec: spec.template.resource_policies
         arg: resource_policies
+      - spec: spec.template.workload_identity_config
+        arg: workload_identity_config
       - spec: spec.template.disks
         arg: disk
       - spec: spec.template.disks.size_gb
@@ -306,14 +300,6 @@ resources:
       - arg: scheduling.local_ssd_recovery_timeout.nanos
         reason: >-
           Sub-second precision excluded (the seconds/nanos class).
-      - arg: workload_identity_config.identity
-        reason: >-
-          SDK gap at pulumi-gcp v9.29.0 (see the zonal template's entry);
-          re-evaluate when the bridge ships the block.
-      - arg: workload_identity_config.identity_certificate_enabled
-        reason: >-
-          SDK gap at pulumi-gcp v9.29.0; re-evaluate when the bridge
-          ships the block.
 
   # --------------------------------------------------------------------
   # Instance group manager (zonal). The version block references the

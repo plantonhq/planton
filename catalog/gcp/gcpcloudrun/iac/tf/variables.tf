@@ -140,6 +140,10 @@ variable "spec" {
           service = optional(string, "")
         }), null)
       }), null)
+
+      # Marks the sandbox supervisor: the container allowed to launch the
+      # sandbox_templates declared on the service.
+      sandbox_launcher = optional(bool, false)
     }))
 
     # Named volumes; each carries exactly one source arm (proto oneof).
@@ -304,5 +308,33 @@ variable "spec" {
 
     # Destroy stance: "", DELETE (default), PREVENT, or ABANDON.
     deletion_policy = optional(string, "")
+
+    # Sandbox templates the supervisor container may launch: isolated
+    # containers for untrusted or model-generated code. Literal env only.
+    sandbox_templates = optional(list(object({
+      name    = string
+      image   = string
+      command = optional(list(string), [])
+      args    = optional(list(string), [])
+      env = optional(list(object({
+        name  = string
+        value = optional(string, "")
+      })), [])
+      volume_mounts = optional(list(object({
+        name       = string
+        mount_path = string
+        sub_path   = optional(string, "")
+      })), [])
+      working_dir = optional(string, "")
+    })), [])
+
+    # Resource Manager tags bound at creation (tagKeys/* -> tagValues/*).
+    # Immutable: a change replaces the service.
+    resource_manager_tags = optional(map(string), {})
   })
+
+  validation {
+    condition     = length(var.spec.sandbox_templates) == 0 || length([for c in var.spec.containers : c if c.sandbox_launcher]) == 1
+    error_message = "sandbox_templates need a supervisor: set sandbox_launcher on exactly one container."
+  }
 }

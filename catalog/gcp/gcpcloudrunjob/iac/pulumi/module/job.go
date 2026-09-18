@@ -87,6 +87,12 @@ func job(
 		args.DeletionPolicy = pulumi.String(spec.DeletionPolicy)
 	}
 
+	// Resource Manager tags, bound at creation only (ForceNew): omitted
+	// when empty so a job without tags carries no tag surface.
+	if len(spec.ResourceManagerTags) > 0 {
+		args.Tags = pulumi.ToStringMap(spec.ResourceManagerTags)
+	}
+
 	// Declarative run-on-deploy tokens (mutually exclusive —
 	// proto-enforced): start_* counts the job ready when the triggered
 	// execution STARTS; run_* when it COMPLETES.

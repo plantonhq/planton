@@ -29,4 +29,4 @@ spec:
           - memorystore.instances.delete
           - memorystore.operations.get
         provenance: derived
-        notes: Covers google_memorystore_instance -- create, read/refresh, in-place updates (shards, replicas, persistence, backups, maintenance), and destroy. Instance mutations are long-running operations (creates commonly run tens of minutes) the provider polls as memorystore.operations.get, a real dotted permission in IAM's testable-permissions inventory.
+        notes: Covers google_memorystore_instance -- create, read/refresh, in-place updates (shards, replicas, persistence, backups, maintenance, and attaching or swapping an ACL policy through acl_policy, which the API applies as an instance update with no separate permission on the module's side), and destroy. Instance mutations are long-running operations (creates commonly run tens of minutes) the provider polls as memorystore.operations.get, a real dotted permission in IAM's testable-permissions inventory.

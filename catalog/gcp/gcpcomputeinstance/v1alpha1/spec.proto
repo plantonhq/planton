@@ -166,7 +166,11 @@ message GcpComputeInstanceSpec {
   GcpComputeInstanceAdvancedMachineFeatures advanced_machine_features = 15;
 
   // GPU accelerator cards attached to the instance. Requires a
-  // GPU-capable zone and on_host_maintenance = "TERMINATE".
+  // GPU-capable zone and on_host_maintenance = "TERMINATE". Each entry
+  // attaches at least one card (count >= 1). Removing every entry from an
+  // existing VM leaves its GPUs attached (the provider preserves the
+  // current accelerators when the block is absent); detaching GPUs
+  // replaces the VM, so plan it as a recreate rather than an edit.
   repeated GcpComputeInstanceGuestAccelerator guest_accelerators = 16;
 
   // Reservation affinity — whether this VM consumes capacity from any
@@ -281,6 +285,35 @@ message GcpComputeInstanceSpec {
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
   }];
+
+  // Managed workload identity for the VM: a SPIFFE identity issued to the
+  // instance (and, optionally, X.509 identity certificates) so workloads
+  // on it authenticate to each other by identity instead of shared
+  // secrets or network position. Create-time only: both fields are
+  // immutable, so changing them replaces the VM.
+  GcpComputeInstanceWorkloadIdentityConfig workload_identity_config = 35;
+}
+
+// GcpComputeInstanceWorkloadIdentityConfig is the VM's managed workload
+// identity.
+message GcpComputeInstanceWorkloadIdentityConfig {
+  // The SPIFFE ID Compute Engine issues to the instance, e.g.
+  // "spiffe://PROJECT.svc.id.goog/ns/NAMESPACE/sa/SERVICE_ACCOUNT" or a
+  // workload-identity-pool identity of the form
+  // "spiffe://POOL.global.PROJECT_NUMBER.workload.id.goog/ns/NS/sa/SA".
+  // Immutable.
+  string identity = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      prefix: "spiffe://"
+    }
+  ];
+
+  // Whether Compute Engine also issues and rotates X.509 certificates
+  // bound to the identity, made available on the VM for mutual TLS.
+  // Immutable.
+  bool identity_certificate_enabled = 2;
 }
 
 // GcpComputeInstanceBootDisk defines the disk the instance boots from.
@@ -854,6 +887,24 @@ message GcpComputeInstanceScheduling {
     gte: 0
     lte: 604800
   }];
+
+  // How long Compute Engine waits, in seconds, before declaring the host
+  // failed and starting host-error recovery (restart or termination per
+  // automatic_restart). A lower value recovers faster from a hung host at
+  // the cost of more false positives; leave unset for Compute Engine's
+  // default recovery timing. Must be 90..330 in steps of 30 (90, 120, ...,
+  // 330).
+  optional int32 host_error_timeout_seconds = 12 [
+    (buf.validate.field).int32 = {
+      gte: 90
+      lte: 330
+    },
+    (buf.validate.field).cel = {
+      id: "host_error_timeout_step_30"
+      message: "host_error_timeout_seconds must be a multiple of 30 between 90 and 330"
+      expression: "this % 30 == 0"
+    }
+  ];
 }
 
 // GcpComputeInstanceNodeAffinity selects sole-tenant node groups.

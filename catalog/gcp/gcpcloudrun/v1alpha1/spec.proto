@@ -325,6 +325,91 @@ message GcpCloudRunSpec {
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
   }];
+
+  // Sandbox templates the instance's supervisor container (the one with
+  // sandbox_launcher) may launch on demand: isolated, short-lived
+  // containers for executing untrusted or model-generated code beside
+  // the serving container without exposing it. Each template names the
+  // image and startup shape a sandbox runs with; the supervisor picks a
+  // template by name at launch time. Requires exactly one container with
+  // sandbox_launcher set.
+  repeated GcpCloudRunSandboxTemplate sandbox_templates = 37;
+
+  // Resource Manager tags bound to the service at creation, as a map of
+  // tagKeys/{tag_key_id} to tagValues/{tag_value_id} — the tag bindings
+  // that organization policies, IAM conditions, and cost reports key on.
+  // Immutable: changing the map replaces the service (Cloud Run applies
+  // tags only at create), so plan tag changes as a redeploy.
+  map<string, string> resource_manager_tags = 38 [(buf.validate.field).map = {
+    keys: {
+      string: {pattern: "^tagKeys/[0-9]+$"}
+    }
+    values: {
+      string: {pattern: "^tagValues/[0-9]+$"}
+    }
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "sandbox_templates_require_launcher"
+    message: "sandbox_templates need a supervisor -- set sandbox_launcher on exactly one container"
+    expression: "size(this.sandbox_templates) == 0 || this.containers.filter(c, c.sandbox_launcher).size() == 1"
+  };
+}
+
+// GcpCloudRunSandboxTemplate is one launchable sandbox shape: an image
+// and the startup settings (entrypoint, arguments, environment, mounts)
+// a sandbox instance runs with. Sandboxes share the instance's declared
+// volumes but have no secret-backed environment: pass secrets through
+// the supervisor, never into the sandbox's environment.
+message GcpCloudRunSandboxTemplate {
+  // Template name the supervisor launches by, a DNS label (RFC 1123):
+  // lowercase letters, digits, hyphens; starts and ends alphanumeric.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // Container image the sandbox runs, e.g.
+  // "us-docker.pkg.dev/project/repo/sandbox:1.0.0". A bare name without a
+  // registry host is pulled from Docker Hub.
+  string image = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Entrypoint array, not run through a shell. Empty uses the image's
+  // ENTRYPOINT.
+  repeated string command = 3;
+
+  // Arguments to the entrypoint. Empty uses the image's CMD.
+  repeated string args = 4;
+
+  // Environment variables set in the sandbox: literal values only.
+  repeated GcpCloudRunSandboxEnvVar env = 5;
+
+  // Volumes (declared in spec.volumes) mounted into the sandbox's
+  // filesystem.
+  repeated GcpCloudRunVolumeMount volume_mounts = 6;
+
+  // Working directory for the entrypoint. Empty uses the image's WORKDIR.
+  string working_dir = 7;
+}
+
+// GcpCloudRunSandboxEnvVar is one literal environment variable of a
+// sandbox. Unlike the serving container's environment there is no Secret
+// Manager arm: a sandbox runs untrusted code and must not hold secrets.
+message GcpCloudRunSandboxEnvVar {
+  // Variable name, e.g. "PYTHONUNBUFFERED". Must not start with a digit.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {pattern: "^[A-Za-z_][A-Za-z0-9_.-]*$"}
+  ];
+
+  // Literal value (up to 32768 characters). Never place credentials here.
+  string value = 2 [(buf.validate.field).string.max_len = 32768];
 }
 
 // GcpCloudRunContainer is one container of the instance: the serving
@@ -428,6 +513,13 @@ message GcpCloudRunContainer {
   // checks only, and unlike the other probes has no initial delay — it
   // starts with the container and runs for the instance's lifetime.
   GcpCloudRunReadinessProbe readiness_probe = 14;
+
+  // Marks this container as the sandbox supervisor: the one process in
+  // the instance allowed to launch the isolated sandboxes declared in
+  // spec.sandbox_templates (through the Cloud Run sandbox CLI/API). The
+  // pattern for agent workloads that run untrusted, model-generated code:
+  // the supervisor orchestrates, each sandbox executes in isolation.
+  bool sandbox_launcher = 15;
 }
 
 // GcpCloudRunEnvVar is one environment variable: a literal value or a

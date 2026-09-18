@@ -25,6 +25,12 @@ spec:
           - run.operations.get
         provenance: derived
         notes: Covers google_cloud_run_v2_job -- create, read/refresh, in-place updates (template, task_count, parallelism, binary authorization, execution tokens), and destroy. Job mutations on the Cloud Run Admin API v2 return long-running operations the provider polls, which authorize as run.operations.get. The committed action-inventory snapshot (pkg/iac/actioninventory/gcp.yaml) carries the run service prefix and lists every run.* permission here; the list was also verified live against Google's Cloud Run IAM documentation (https://cloud.google.com/run/docs/reference/iam/roles, which lists run.jobs.create/get/update/delete and run.operations.get and states run.operations.get is required "to read the status" of a deploy).
+      - purpose: ApplyResourceManagerTags
+        permissions:
+          - run.jobs.createTagBinding
+          - resourcemanager.tagValueBindings.create
+        provenance: derived
+        notes: Required only when resource_manager_tags is set -- attaching a tag at create time authorizes on both sides, the binding on the job (run.jobs.createTagBinding) and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there, typically through roles/resourcemanager.tagUser on the tag's scope). Tags bind at create time only; a tag change replaces the job, re-running these checks. Not needed for untagged jobs.
       - purpose: ActAsRuntimeServiceAccount
         permissions:
           - iam.serviceAccounts.actAs

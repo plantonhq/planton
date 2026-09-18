@@ -351,6 +351,26 @@ func backendService(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provid
 			}
 			logConfig.OptionalFields = optionalFields
 		}
+		// Each logged header is its own block in the provider; the spec
+		// holds a flat name list.
+		if len(spec.LogConfig.RequestHeaders) > 0 {
+			requestHeaders := compute.BackendServiceLogConfigRequestHeaderArray{}
+			for _, headerName := range spec.LogConfig.RequestHeaders {
+				requestHeaders = append(requestHeaders, &compute.BackendServiceLogConfigRequestHeaderArgs{
+					HeaderName: pulumi.String(headerName),
+				})
+			}
+			logConfig.RequestHeaders = requestHeaders
+		}
+		if len(spec.LogConfig.ResponseHeaders) > 0 {
+			responseHeaders := compute.BackendServiceLogConfigResponseHeaderArray{}
+			for _, headerName := range spec.LogConfig.ResponseHeaders {
+				responseHeaders = append(responseHeaders, &compute.BackendServiceLogConfigResponseHeaderArgs{
+					HeaderName: pulumi.String(headerName),
+				})
+			}
+			logConfig.ResponseHeaders = responseHeaders
+		}
 		args.LogConfig = logConfig
 	}
 

@@ -1000,4 +1000,37 @@ var _ = Describe("GcpComputeInstanceSpec validations", func() {
 			Expect(protovalidate.Validate(spec)).To(BeNil())
 		})
 	})
+
+	Context("host error timeout and workload identity", func() {
+		It("accepts host_error_timeout_seconds on the 30-second grid", func() {
+			for _, v := range []int32{90, 120, 330} {
+				spec := makeValidSpec()
+				spec.Scheduling = &GcpComputeInstanceScheduling{HostErrorTimeoutSeconds: proto.Int32(v)}
+				Expect(protovalidate.Validate(spec)).To(BeNil())
+			}
+		})
+
+		It("rejects host_error_timeout_seconds off the grid or out of range", func() {
+			for _, v := range []int32{100, 60, 360} {
+				spec := makeValidSpec()
+				spec.Scheduling = &GcpComputeInstanceScheduling{HostErrorTimeoutSeconds: proto.Int32(v)}
+				Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+			}
+		})
+
+		It("accepts a SPIFFE workload identity", func() {
+			spec := makeValidSpec()
+			spec.WorkloadIdentityConfig = &GcpComputeInstanceWorkloadIdentityConfig{
+				Identity:                   "spiffe://my-project.svc.id.goog/ns/default/sa/app",
+				IdentityCertificateEnabled: true,
+			}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a workload identity that is not a SPIFFE ID", func() {
+			spec := makeValidSpec()
+			spec.WorkloadIdentityConfig = &GcpComputeInstanceWorkloadIdentityConfig{Identity: "app@my-project.iam.gserviceaccount.com"}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+	})
 })

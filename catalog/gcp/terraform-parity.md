@@ -31,7 +31,7 @@ that has progressed.
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
 | Kinds in the catalog | 104 |
 | Distinct provider resources consumed | 167 |
-| Spec fields authored across all kinds | 3748 |
+| Spec fields authored across all kinds | 3844 |
 | Module pins on `google` | `~> 8.3` × 104 |
 | Module pins on `google-beta` | `~> 8.3` × 4 |
 
@@ -76,7 +76,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**97 of 104 kinds are at total accounting; 94 proven live.**
+**104 of 104 kinds are at total accounting; 83 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -87,7 +87,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpApiKey | 13 | 10 | 2 | 1 | 0 | ✅ | — |
 | GcpArtifactRegistryRepo | 52 | 33 | 12 | 7 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBackendBucket | 29 | 22 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpBackendService | 120 | 91 | 22 | 7 | 0 | ✅ | — |
+| GcpBackendService | 120 | 91 | 24 | 5 | 0 | ✅ | — |
 | GcpBigQueryDataset | 39 | 33 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigQueryTable | 98 | 86 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigtableInstance | 19 | 6 | 13 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -100,19 +100,19 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpCloudComposerUserWorkloadsConfigMap | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudComposerUserWorkloadsSecret | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudFunction | 65 | 43 | 15 | 7 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudRun | 139 | 27 | 89 | 13 | 10 | ❌ | ✅ pulumi, terraform |
+| GcpCloudRun | 139 | 27 | 101 | 11 | 0 | ✅ | — |
 | GcpCloudRunDomainMapping | 10 | 1 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudRunJob | 74 | 10 | 61 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudRunJob | 74 | 10 | 62 | 2 | 0 | ✅ | — |
 | GcpCloudSchedulerJob | 32 | 29 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudSql | 148 | 40 | 97 | 10 | 1 | ❌ | ✅ pulumi, terraform |
+| GcpCloudSql | 148 | 43 | 99 | 6 | 0 | ✅ | — |
 | GcpCloudSqlDatabase | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudSqlUser | 14 | 10 | 2 | 2 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudSqlUser | 14 | 10 | 2 | 2 | 0 | ✅ | — |
 | GcpCloudTasksQueue | 29 | 22 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpComputeDisk | 36 | 18 | 14 | 4 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpComputeInstance | 125 | 47 | 64 | 13 | 1 | ❌ | ✅ pulumi, terraform |
-| GcpComputeMig | 415 | 70 | 310 | 33 | 2 | ❌ | ✅ pulumi, terraform |
+| GcpComputeInstance | 125 | 50 | 64 | 11 | 0 | ✅ | — |
+| GcpComputeMig | 415 | 70 | 316 | 29 | 0 | ✅ | — |
 | GcpDataprocAutoscalingPolicy | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpDataprocCluster | 172 | 77 | 52 | 31 | 12 | ❌ | ✅ pulumi, terraform |
+| GcpDataprocCluster | 172 | 89 | 83 | 0 | 0 | ✅ | — |
 | GcpDnsRecord | 49 | 43 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpDnsZone | 23 | 18 | 2 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpEventarcMessageBus | 56 | 12 | 42 | 2 | 0 | ✅ | ✅ pulumi, terraform |
@@ -127,8 +127,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpFirestoreIndex | 17 | 16 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFirewallRule | 20 | 13 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGcsBucket | 78 | 39 | 31 | 8 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpGkeCluster | 538 | 61 | 137 | 339 | 1 | ❌ | ✅ pulumi, terraform |
-| GcpGkeNodePool | 184 | 127 | 51 | 6 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpGkeCluster | 538 | 63 | 147 | 328 | 0 | ✅ | — |
+| GcpGkeNodePool | 184 | 129 | 55 | 0 | 0 | ✅ | — |
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalForwardingRule | 23 | 18 | 4 | 1 | 0 | ✅ | — |
@@ -145,7 +145,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpLogMetric | 23 | 21 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpLoggingSink | 54 | 38 | 16 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpManagedSslCertificate | 6 | 2 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpMemorystoreInstance | 39 | 29 | 6 | 3 | 1 | ❌ | ✅ pulumi, terraform |
+| GcpMemorystoreInstance | 39 | 30 | 6 | 3 | 0 | ✅ | — |
 | GcpMonitoringAlertPolicy | 70 | 68 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringDashboard | 3 | 2 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringNotificationChannel | 18 | 9 | 3 | 6 | 0 | ✅ | ✅ pulumi, terraform |
@@ -179,7 +179,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpVertexAiEndpoint | 19 | 8 | 9 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiIndex | 17 | 5 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiIndexEndpoint | 13 | 10 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpVertexAiNotebook | 46 | 8 | 34 | 4 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiNotebook | 46 | 9 | 36 | 1 | 0 | ✅ | — |
 | GcpVpcNetwork | 17 | 10 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkflow | 15 | 10 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPool | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |

@@ -1,7 +1,10 @@
 package module
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
+	gcpcloudsqluserv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqluser/v1alpha1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/sql"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -24,7 +27,7 @@ func user(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error 
 	spec := locals.GcpCloudSqlUser.Spec
 
 	args := &sql.UserArgs{
-		Name:     pulumi.String(spec.UserName),
+		Name:     pulumi.String(databaseUserName(spec)),
 		Instance: pulumi.String(spec.Instance.GetValue()),
 		Type:     pulumi.StringPtr(spec.GetType()),
 	}
@@ -82,4 +85,26 @@ func user(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) error 
 	ctx.Export(OpInstanceName, createdUser.Instance)
 
 	return nil
+}
+
+// serviceAccountEmailSuffix is the part of a service account's email Cloud
+// SQL does not store in an IAM database username.
+const serviceAccountEmailSuffix = ".gserviceaccount.com"
+
+// databaseUserName derives the username Cloud SQL expects. A service-account
+// user (wired through service_account, or a literal user_name with the
+// CLOUD_IAM_SERVICE_ACCOUNT type) is the account's email with the
+// ".gserviceaccount.com" suffix dropped: PostgreSQL stores exactly that
+// form, and MySQL keeps only the part before "@" -- one rule serves both
+// engines (identical in the Terraform module). Every other type passes
+// user_name through untouched.
+func databaseUserName(spec *gcpcloudsqluserv1alpha1.GcpCloudSqlUserSpec) string {
+	name := spec.UserName
+	if spec.ServiceAccount.GetValue() != "" {
+		name = spec.ServiceAccount.GetValue()
+	}
+	if spec.GetType() == "CLOUD_IAM_SERVICE_ACCOUNT" {
+		return strings.TrimSuffix(name, serviceAccountEmailSuffix)
+	}
+	return name
 }

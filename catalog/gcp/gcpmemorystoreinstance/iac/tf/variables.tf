@@ -150,7 +150,17 @@ variable "spec" {
     # Deletion policy: "", "DELETE" (default), "PREVENT" (destroy fails),
     # or "ABANDON" (remove from management, leave running in GCP).
     deletion_policy = optional(string, "")
+
+    # Memorystore ACL policy to attach (full resource name
+    # projects/{project}/locations/{region}/aclPolicies/{id}). Empty keeps
+    # the instance's built-in default ACL. Mutable in place.
+    acl_policy = optional(string, "")
   })
+
+  validation {
+    condition     = var.spec.acl_policy == "" || can(regex("^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$", var.spec.acl_policy))
+    error_message = "acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}."
+  }
 
   validation {
     condition     = contains(["", "DELETE", "PREVENT", "ABANDON"], var.spec.deletion_policy)

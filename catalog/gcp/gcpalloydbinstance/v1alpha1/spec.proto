@@ -176,7 +176,7 @@ message GcpAlloydbInstanceSpec {
   // ZONAL, 2+ nodes = REGIONAL spread across zones) and the AlloyDB API
   // does not store a sent value — the stored object omits the field, so
   // any explicit value produces a perpetual re-plan diff (live-verified
-  // against a single-node pool at google@7.43.0).
+  // against a single-node read pool).
   string availability_type = 8 [(buf.validate.field).cel = {
     id: "availability_type_valid"
     message: "availability_type must be ZONAL, REGIONAL, or AVAILABILITY_TYPE_UNSPECIFIED"

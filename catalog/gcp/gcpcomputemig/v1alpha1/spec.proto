@@ -464,6 +464,33 @@ message GcpComputeMigTemplate {
   // an instance schedule). GCP currently allows at most one policy per
   // instance. Changing it rotates the template.
   repeated string resource_policies = 22 [(buf.validate.field).repeated.max_items = 1];
+
+  // Managed workload identity for every VM in the group: a SPIFFE
+  // identity issued to each instance (and, optionally, X.509 identity
+  // certificates) so workloads authenticate to each other by identity
+  // instead of shared secrets or network position. Part of the template,
+  // so changing it rotates the template and rolls the group.
+  GcpComputeMigWorkloadIdentityConfig workload_identity_config = 23;
+}
+
+// GcpComputeMigWorkloadIdentityConfig is the fleet's managed workload
+// identity.
+message GcpComputeMigWorkloadIdentityConfig {
+  // The SPIFFE ID Compute Engine issues to each instance, e.g.
+  // "spiffe://PROJECT.svc.id.goog/ns/NAMESPACE/sa/SERVICE_ACCOUNT" or a
+  // workload-identity-pool identity of the form
+  // "spiffe://POOL.global.PROJECT_NUMBER.workload.id.goog/ns/NS/sa/SA".
+  string identity = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      prefix: "spiffe://"
+    }
+  ];
+
+  // Whether Compute Engine also issues and rotates X.509 certificates
+  // bound to the identity, made available on each VM for mutual TLS.
+  bool identity_certificate_enabled = 2;
 }
 
 // GcpComputeMigTemplateDisk defines one disk in the template. Each VM
@@ -915,6 +942,23 @@ message GcpComputeMigScheduling {
     gte: 0
     lte: 604800
   }];
+
+  // How long Compute Engine waits, in seconds, before declaring a host
+  // failed and starting host-error recovery for the VM on it. A lower
+  // value recovers a hung host faster at the cost of more false
+  // positives; leave unset for Compute Engine's default recovery timing.
+  // Must be 90..330 in steps of 30 (90, 120, ..., 330).
+  optional int32 host_error_timeout_seconds = 12 [
+    (buf.validate.field).int32 = {
+      gte: 90
+      lte: 330
+    },
+    (buf.validate.field).cel = {
+      id: "host_error_timeout_step_30"
+      message: "host_error_timeout_seconds must be a multiple of 30 between 90 and 330"
+      expression: "this % 30 == 0"
+    }
+  ];
 }
 
 // GcpComputeMigNodeAffinity selects sole-tenant node groups.

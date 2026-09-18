@@ -24,6 +24,13 @@ spec:
   # First contact also caught machine_type + instance_flexibility_policy
   # as API-mutually-exclusive (silent machineTypeUri drop -> perpetual
   # replacement re-plan) — now a spec CEL wall on master and worker.
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the cluster gained additional attached disks on every
+  # node role (the autoscaling scenario attaches one 50 GB pd-standard per
+  # worker), per-selection disk shapes inside the flexibility policy, and
+  # confidential_instance_type; the earlier live proof predates them.
+  # Confidential type needs N2D/C3 capacity and stays offline-proven; the next
+  # proof confirms the attached disk provisions and re-plans clean.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 60

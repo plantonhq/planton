@@ -157,6 +157,13 @@ func memorystoreInstance(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.P
 		args.MaintenanceVersion = pulumi.StringPtr(spec.MaintenanceVersion)
 	}
 
+	// Shared Valkey ACL policy attached by full resource name. Sent only
+	// when set so an instance without one keeps its built-in default ACL
+	// (identical to the Terraform module); swapping is an in-place update.
+	if spec.AclPolicy != "" {
+		args.AclPolicy = pulumi.StringPtr(spec.AclPolicy)
+	}
+
 	// Client-side destroy behavior: DELETE (default), PREVENT, or ABANDON.
 	// Sent only when set so the provider default stays in charge otherwise.
 	// Evaluated only after deletion_protection_enabled allows the destroy.

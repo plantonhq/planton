@@ -163,6 +163,7 @@ spec:
 | `spec.clusterConfig.gceConfig.nodeGroupAffinity.nodeGroupUri` | `string` | yes |  |  |
 | `spec.clusterConfig.gceConfig.confidentialInstanceConfig` | `GcpDataprocClusterConfidentialInstanceConfig` |  |  |  |
 | `spec.clusterConfig.gceConfig.confidentialInstanceConfig.enableConfidentialCompute` | `bool` |  |  |  |
+| `spec.clusterConfig.gceConfig.confidentialInstanceConfig.confidentialInstanceType` | `string` |  |  |  |
 | `spec.clusterConfig.gceConfig.resourceManagerTags` | `map<string, string>` |  |  |  |
 | `spec.clusterConfig.masterConfig` | `GcpDataprocClusterMasterConfig` |  |  |  |
 | `spec.clusterConfig.masterConfig.numInstances` | `int32` |  |  |  |
@@ -174,6 +175,11 @@ spec:
 | `spec.clusterConfig.masterConfig.diskConfig.localSsdInterface` | `string` |  |  |  |
 | `spec.clusterConfig.masterConfig.diskConfig.bootDiskProvisionedIops` | `int64` |  |  |  |
 | `spec.clusterConfig.masterConfig.diskConfig.bootDiskProvisionedThroughput` | `int64` |  |  |  |
+| `spec.clusterConfig.masterConfig.diskConfig.attachedDisks` | `[]GcpDataprocClusterAttachedDisk` |  |  |  |
+| `spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].diskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].diskType` | `string` |  |  |  |
+| `spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].provisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].provisionedThroughput` | `int64` |  |  |  |
 | `spec.clusterConfig.masterConfig.accelerators` | `[]GcpDataprocClusterAccelerator` |  |  |  |
 | `spec.clusterConfig.masterConfig.accelerators[].acceleratorType` | `string` | yes |  |  |
 | `spec.clusterConfig.masterConfig.accelerators[].acceleratorCount` | `int32` |  |  |  |
@@ -183,6 +189,18 @@ spec:
 | `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList` | `[]GcpDataprocClusterInstanceSelection` |  |  |  |
 | `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].machineTypes` | `[]string` | yes |  |  |
 | `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].rank` | `int32` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig` | `GcpDataprocClusterDiskConfig` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskType` | `string` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.numLocalSsds` | `int32` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.localSsdInterface` | `string` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedThroughput` | `int64` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks` | `[]GcpDataprocClusterAttachedDisk` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskType` | `string` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedThroughput` | `int64` |  |  |  |
 | `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.provisioningModelMix` | `GcpDataprocClusterProvisioningModelMix` |  |  |  |
 | `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.provisioningModelMix.standardCapacityBase` | `int32` |  |  |  |
 | `spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.provisioningModelMix.standardCapacityPercentAboveBase` | `int32` |  |  |  |
@@ -196,6 +214,11 @@ spec:
 | `spec.clusterConfig.workerConfig.diskConfig.localSsdInterface` | `string` |  |  |  |
 | `spec.clusterConfig.workerConfig.diskConfig.bootDiskProvisionedIops` | `int64` |  |  |  |
 | `spec.clusterConfig.workerConfig.diskConfig.bootDiskProvisionedThroughput` | `int64` |  |  |  |
+| `spec.clusterConfig.workerConfig.diskConfig.attachedDisks` | `[]GcpDataprocClusterAttachedDisk` |  |  |  |
+| `spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].diskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].diskType` | `string` |  |  |  |
+| `spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].provisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].provisionedThroughput` | `int64` |  |  |  |
 | `spec.clusterConfig.workerConfig.accelerators` | `[]GcpDataprocClusterAccelerator` |  |  |  |
 | `spec.clusterConfig.workerConfig.accelerators[].acceleratorType` | `string` | yes |  |  |
 | `spec.clusterConfig.workerConfig.accelerators[].acceleratorCount` | `int32` |  |  |  |
@@ -206,6 +229,18 @@ spec:
 | `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList` | `[]GcpDataprocClusterInstanceSelection` |  |  |  |
 | `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].machineTypes` | `[]string` | yes |  |  |
 | `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].rank` | `int32` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig` | `GcpDataprocClusterDiskConfig` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskType` | `string` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.numLocalSsds` | `int32` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.localSsdInterface` | `string` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedThroughput` | `int64` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks` | `[]GcpDataprocClusterAttachedDisk` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskType` | `string` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedThroughput` | `int64` |  |  |  |
 | `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.provisioningModelMix` | `GcpDataprocClusterProvisioningModelMix` |  |  |  |
 | `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.provisioningModelMix.standardCapacityBase` | `int32` |  |  |  |
 | `spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.provisioningModelMix.standardCapacityPercentAboveBase` | `int32` |  |  |  |
@@ -219,10 +254,27 @@ spec:
 | `spec.clusterConfig.secondaryWorkerConfig.diskConfig.localSsdInterface` | `string` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.diskConfig.bootDiskProvisionedIops` | `int64` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.diskConfig.bootDiskProvisionedThroughput` | `int64` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks` | `[]GcpDataprocClusterAttachedDisk` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].diskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].diskType` | `string` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].provisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].provisionedThroughput` | `int64` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy` | `GcpDataprocClusterInstanceFlexibilityPolicy` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList` | `[]GcpDataprocClusterInstanceSelection` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].machineTypes` | `[]string` | yes |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].rank` | `int32` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig` | `GcpDataprocClusterDiskConfig` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskType` | `string` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.numLocalSsds` | `int32` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.localSsdInterface` | `string` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedThroughput` | `int64` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks` | `[]GcpDataprocClusterAttachedDisk` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskType` | `string` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedThroughput` | `int64` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.provisioningModelMix` | `GcpDataprocClusterProvisioningModelMix` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.provisioningModelMix.standardCapacityBase` | `int32` |  |  |  |
 | `spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.provisioningModelMix.standardCapacityPercentAboveBase` | `int32` |  |  |  |
@@ -280,6 +332,11 @@ spec:
 | `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.localSsdInterface` | `string` |  |  |  |
 | `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.bootDiskProvisionedIops` | `int64` |  |  |  |
 | `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.bootDiskProvisionedThroughput` | `int64` |  |  |  |
+| `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks` | `[]GcpDataprocClusterAttachedDisk` |  |  |  |
+| `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].diskSizeGb` | `int32` |  |  |  |
+| `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].diskType` | `string` |  |  |  |
+| `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].provisionedIops` | `int64` |  |  |  |
+| `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].provisionedThroughput` | `int64` |  |  |  |
 | `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.accelerators` | `[]GcpDataprocClusterAccelerator` |  |  |  |
 | `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.accelerators[].acceleratorType` | `string` | yes |  |  |
 | `spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.accelerators[].acceleratorCount` | `int32` |  |  |  |
@@ -557,7 +614,24 @@ Requires an N2D machine type.
 
 `bool`
 
-Enable Confidential Compute for all cluster nodes.
+Enable Confidential Compute for all cluster nodes with the AMD SEV
+technology. The provider marks this boolean deprecated in favor of
+confidential_instance_type, which names the technology explicitly;
+prefer that field for new clusters. Both may be set for a cluster
+authored before the type field existed.
+
+### spec.clusterConfig.gceConfig.confidentialInstanceConfig.confidentialInstanceType
+
+`string`
+
+Confidential Compute technology for all cluster nodes:
+  "SEV"     -- AMD Secure Encrypted Virtualization (N2D, C2D, C3D)
+  "SEV_SNP" -- AMD SEV with Secure Nested Paging: adds integrity
+               protection and attestation (N2D)
+  "TDX"     -- Intel Trust Domain Extensions (C3)
+The machine type must support the chosen technology. Immutable.
+
+- rule: confidential_instance_type must be SEV, SEV_SNP, or TDX
 
 ### spec.clusterConfig.gceConfig.resourceManagerTags
 
@@ -658,6 +732,53 @@ provisioned performance (hyperdisks).
 
 - rule: {"int64":{"gte":"1"}}
 
+### spec.clusterConfig.masterConfig.diskConfig.attachedDisks
+
+`[]GcpDataprocClusterAttachedDisk`
+
+Additional persistent disks attached to every node of this role,
+beyond the boot disk — for HDFS data or shuffle spill that should not
+share the boot volume, or for Hyperdisk performance tiers the boot
+disk cannot use. Each entry is one disk on each node. Immutable: the
+whole set is fixed at cluster creation (ForceNew). Not available on
+auxiliary (driver) node groups.
+
+### spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].diskSizeGb
+
+`int32`
+
+Size of the disk in GB. Leave unset for the API's default size.
+
+- rule: disk_size_gb must be at least 10
+
+### spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].diskType
+
+`string`
+
+Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). Leave empty for the API's default.
+
+- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].provisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second, honored by disk types that
+support provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.masterConfig.diskConfig.attachedDisks[].provisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
 ### spec.clusterConfig.masterConfig.accelerators
 
 `[]GcpDataprocClusterAccelerator`
@@ -732,6 +853,121 @@ Preference rank. Lower rank is preferred; Dataproc falls back to
 higher ranks when capacity for the preferred types is unavailable.
 
 - rule: {"int32":{"gte":0}}
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig
+
+`GcpDataprocClusterDiskConfig`
+
+Disk shape for nodes provisioned from THIS selection entry —
+overrides the role's disk_config so, for example, the fallback
+machine types can carry a different boot disk or local SSD count
+than the preferred ones. Leave unset to inherit the role's
+disk_config. Immutable.
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskSizeGb
+
+`int32`
+
+Size of the boot disk in GB. Minimum 10 GB.
+If not specified, GCP defaults to 500 GB for master and worker nodes.
+
+- rule: boot_disk_size_gb must be at least 10
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskType
+
+`string`
+
+Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
+or "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). The API validates availability per image version and
+machine family at deploy time.
+
+- rule: boot_disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.numLocalSsds
+
+`int32`
+
+Number of local SSDs to attach. Each local SSD is 375 GB.
+Default: 0 (no local SSDs).
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.localSsdInterface
+
+`string`
+
+Interface used to attach local SSDs: "scsi" (default) or "nvme".
+NVMe offers higher throughput for shuffle-heavy Spark workloads but
+requires an image that ships NVMe drivers (all current Dataproc
+images do).
+
+- rule: local_ssd_interface must be scsi or nvme
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second for the boot disk — the IOPS
+dial decoupled from disk size, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s for the boot disk — the bandwidth
+dial decoupled from disk size, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks
+
+`[]GcpDataprocClusterAttachedDisk`
+
+Additional persistent disks attached to every node of this role,
+beyond the boot disk — for HDFS data or shuffle spill that should not
+share the boot volume, or for Hyperdisk performance tiers the boot
+disk cannot use. Each entry is one disk on each node. Immutable: the
+whole set is fixed at cluster creation (ForceNew). Not available on
+auxiliary (driver) node groups.
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskSizeGb
+
+`int32`
+
+Size of the disk in GB. Leave unset for the API's default size.
+
+- rule: disk_size_gb must be at least 10
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskType
+
+`string`
+
+Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). Leave empty for the API's default.
+
+- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second, honored by disk types that
+support provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
 
 ### spec.clusterConfig.masterConfig.instanceFlexibilityPolicy.provisioningModelMix
 
@@ -850,6 +1086,53 @@ provisioned performance (hyperdisks).
 
 - rule: {"int64":{"gte":"1"}}
 
+### spec.clusterConfig.workerConfig.diskConfig.attachedDisks
+
+`[]GcpDataprocClusterAttachedDisk`
+
+Additional persistent disks attached to every node of this role,
+beyond the boot disk — for HDFS data or shuffle spill that should not
+share the boot volume, or for Hyperdisk performance tiers the boot
+disk cannot use. Each entry is one disk on each node. Immutable: the
+whole set is fixed at cluster creation (ForceNew). Not available on
+auxiliary (driver) node groups.
+
+### spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].diskSizeGb
+
+`int32`
+
+Size of the disk in GB. Leave unset for the API's default size.
+
+- rule: disk_size_gb must be at least 10
+
+### spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].diskType
+
+`string`
+
+Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). Leave empty for the API's default.
+
+- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].provisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second, honored by disk types that
+support provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.workerConfig.diskConfig.attachedDisks[].provisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
 ### spec.clusterConfig.workerConfig.accelerators
 
 `[]GcpDataprocClusterAccelerator`
@@ -929,6 +1212,121 @@ Preference rank. Lower rank is preferred; Dataproc falls back to
 higher ranks when capacity for the preferred types is unavailable.
 
 - rule: {"int32":{"gte":0}}
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig
+
+`GcpDataprocClusterDiskConfig`
+
+Disk shape for nodes provisioned from THIS selection entry —
+overrides the role's disk_config so, for example, the fallback
+machine types can carry a different boot disk or local SSD count
+than the preferred ones. Leave unset to inherit the role's
+disk_config. Immutable.
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskSizeGb
+
+`int32`
+
+Size of the boot disk in GB. Minimum 10 GB.
+If not specified, GCP defaults to 500 GB for master and worker nodes.
+
+- rule: boot_disk_size_gb must be at least 10
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskType
+
+`string`
+
+Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
+or "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). The API validates availability per image version and
+machine family at deploy time.
+
+- rule: boot_disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.numLocalSsds
+
+`int32`
+
+Number of local SSDs to attach. Each local SSD is 375 GB.
+Default: 0 (no local SSDs).
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.localSsdInterface
+
+`string`
+
+Interface used to attach local SSDs: "scsi" (default) or "nvme".
+NVMe offers higher throughput for shuffle-heavy Spark workloads but
+requires an image that ships NVMe drivers (all current Dataproc
+images do).
+
+- rule: local_ssd_interface must be scsi or nvme
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second for the boot disk — the IOPS
+dial decoupled from disk size, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s for the boot disk — the bandwidth
+dial decoupled from disk size, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks
+
+`[]GcpDataprocClusterAttachedDisk`
+
+Additional persistent disks attached to every node of this role,
+beyond the boot disk — for HDFS data or shuffle spill that should not
+share the boot volume, or for Hyperdisk performance tiers the boot
+disk cannot use. Each entry is one disk on each node. Immutable: the
+whole set is fixed at cluster creation (ForceNew). Not available on
+auxiliary (driver) node groups.
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskSizeGb
+
+`int32`
+
+Size of the disk in GB. Leave unset for the API's default size.
+
+- rule: disk_size_gb must be at least 10
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskType
+
+`string`
+
+Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). Leave empty for the API's default.
+
+- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second, honored by disk types that
+support provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
 
 ### spec.clusterConfig.workerConfig.instanceFlexibilityPolicy.provisioningModelMix
 
@@ -1048,6 +1446,53 @@ provisioned performance (hyperdisks).
 
 - rule: {"int64":{"gte":"1"}}
 
+### spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks
+
+`[]GcpDataprocClusterAttachedDisk`
+
+Additional persistent disks attached to every node of this role,
+beyond the boot disk — for HDFS data or shuffle spill that should not
+share the boot volume, or for Hyperdisk performance tiers the boot
+disk cannot use. Each entry is one disk on each node. Immutable: the
+whole set is fixed at cluster creation (ForceNew). Not available on
+auxiliary (driver) node groups.
+
+### spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].diskSizeGb
+
+`int32`
+
+Size of the disk in GB. Leave unset for the API's default size.
+
+- rule: disk_size_gb must be at least 10
+
+### spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].diskType
+
+`string`
+
+Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). Leave empty for the API's default.
+
+- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].provisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second, honored by disk types that
+support provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.secondaryWorkerConfig.diskConfig.attachedDisks[].provisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
 ### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy
 
 `GcpDataprocClusterInstanceFlexibilityPolicy`
@@ -1079,6 +1524,121 @@ Preference rank. Lower rank is preferred; Dataproc falls back to
 higher ranks when capacity for the preferred types is unavailable.
 
 - rule: {"int32":{"gte":0}}
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig
+
+`GcpDataprocClusterDiskConfig`
+
+Disk shape for nodes provisioned from THIS selection entry —
+overrides the role's disk_config so, for example, the fallback
+machine types can carry a different boot disk or local SSD count
+than the preferred ones. Leave unset to inherit the role's
+disk_config. Immutable.
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskSizeGb
+
+`int32`
+
+Size of the boot disk in GB. Minimum 10 GB.
+If not specified, GCP defaults to 500 GB for master and worker nodes.
+
+- rule: boot_disk_size_gb must be at least 10
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskType
+
+`string`
+
+Boot disk type: "pd-standard" (GCP default), "pd-ssd", "pd-balanced",
+or "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). The API validates availability per image version and
+machine family at deploy time.
+
+- rule: boot_disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.numLocalSsds
+
+`int32`
+
+Number of local SSDs to attach. Each local SSD is 375 GB.
+Default: 0 (no local SSDs).
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.localSsdInterface
+
+`string`
+
+Interface used to attach local SSDs: "scsi" (default) or "nvme".
+NVMe offers higher throughput for shuffle-heavy Spark workloads but
+requires an image that ships NVMe drivers (all current Dataproc
+images do).
+
+- rule: local_ssd_interface must be scsi or nvme
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second for the boot disk — the IOPS
+dial decoupled from disk size, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.bootDiskProvisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s for the boot disk — the bandwidth
+dial decoupled from disk size, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks
+
+`[]GcpDataprocClusterAttachedDisk`
+
+Additional persistent disks attached to every node of this role,
+beyond the boot disk — for HDFS data or shuffle spill that should not
+share the boot volume, or for Hyperdisk performance tiers the boot
+disk cannot use. Each entry is one disk on each node. Immutable: the
+whole set is fixed at cluster creation (ForceNew). Not available on
+auxiliary (driver) node groups.
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskSizeGb
+
+`int32`
+
+Size of the disk in GB. Leave unset for the API's default size.
+
+- rule: disk_size_gb must be at least 10
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].diskType
+
+`string`
+
+Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). Leave empty for the API's default.
+
+- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second, honored by disk types that
+support provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.instanceSelectionList[].diskConfig.attachedDisks[].provisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
 
 ### spec.clusterConfig.secondaryWorkerConfig.instanceFlexibilityPolicy.provisioningModelMix
 
@@ -1445,6 +2005,8 @@ Roles assigned to the group. The API currently supports DRIVER.
 
 VM sizing for the group.
 
+- rule: attached_disks apply to master, worker, and secondary worker nodes only -- Dataproc does not attach additional disks to auxiliary (driver) node groups
+
 ### spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.numInstances
 
 `int32`
@@ -1523,6 +2085,53 @@ provisioned performance (hyperdisks).
 
 Provisioned throughput in MB/s for the boot disk — the bandwidth
 dial decoupled from disk size, honored by disk types that support
+provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks
+
+`[]GcpDataprocClusterAttachedDisk`
+
+Additional persistent disks attached to every node of this role,
+beyond the boot disk — for HDFS data or shuffle spill that should not
+share the boot volume, or for Hyperdisk performance tiers the boot
+disk cannot use. Each entry is one disk on each node. Immutable: the
+whole set is fixed at cluster creation (ForceNew). Not available on
+auxiliary (driver) node groups.
+
+### spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].diskSizeGb
+
+`int32`
+
+Size of the disk in GB. Leave unset for the API's default size.
+
+- rule: disk_size_gb must be at least 10
+
+### spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].diskType
+
+`string`
+
+Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+"hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+dials apply). Leave empty for the API's default.
+
+- rule: disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced
+
+### spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].provisionedIops
+
+`int64` · optional (explicit presence)
+
+Provisioned I/O operations per second, honored by disk types that
+support provisioned performance (hyperdisks).
+
+- rule: {"int64":{"gte":"1"}}
+
+### spec.clusterConfig.auxiliaryNodeGroups[].nodeGroupConfig.diskConfig.attachedDisks[].provisionedThroughput
+
+`int64` · optional (explicit presence)
+
+Provisioned throughput in MB/s, honored by disk types that support
 provisioned performance (hyperdisks).
 
 - rule: {"int64":{"gte":"1"}}

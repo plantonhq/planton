@@ -53,6 +53,42 @@ message GcpDataprocClusterDiskConfig {
   // dial decoupled from disk size, honored by disk types that support
   // provisioned performance (hyperdisks).
   optional int64 boot_disk_provisioned_throughput = 6 [(buf.validate.field).int64.gte = 1];
+
+  // Additional persistent disks attached to every node of this role,
+  // beyond the boot disk — for HDFS data or shuffle spill that should not
+  // share the boot volume, or for Hyperdisk performance tiers the boot
+  // disk cannot use. Each entry is one disk on each node. Immutable: the
+  // whole set is fixed at cluster creation (ForceNew). Not available on
+  // auxiliary (driver) node groups.
+  repeated GcpDataprocClusterAttachedDisk attached_disks = 7;
+}
+
+// GcpDataprocClusterAttachedDisk is one additional persistent disk
+// attached to every node of a role.
+message GcpDataprocClusterAttachedDisk {
+  // Size of the disk in GB. Leave unset for the API's default size.
+  int32 disk_size_gb = 1 [(buf.validate.field).cel = {
+    id: "attached_disk_size_gb_minimum"
+    expression: "this == 0 || this >= 10"
+    message: "disk_size_gb must be at least 10"
+  }];
+
+  // Disk type: "pd-standard", "pd-ssd", "pd-balanced", or
+  // "hyperdisk-balanced" (the class whose provisioned IOPS/throughput
+  // dials apply). Leave empty for the API's default.
+  string disk_type = 2 [(buf.validate.field).cel = {
+    id: "attached_disk_type_valid_value"
+    expression: "this == '' || this in ['pd-standard', 'pd-ssd', 'pd-balanced', 'hyperdisk-balanced']"
+    message: "disk_type must be pd-standard, pd-ssd, pd-balanced, or hyperdisk-balanced"
+  }];
+
+  // Provisioned I/O operations per second, honored by disk types that
+  // support provisioned performance (hyperdisks).
+  optional int64 provisioned_iops = 3 [(buf.validate.field).int64.gte = 1];
+
+  // Provisioned throughput in MB/s, honored by disk types that support
+  // provisioned performance (hyperdisks).
+  optional int64 provisioned_throughput = 4 [(buf.validate.field).int64.gte = 1];
 }
 
 // GcpDataprocClusterAccelerator configures GPU accelerators attached to
@@ -86,8 +122,24 @@ message GcpDataprocClusterShieldedInstanceConfig {
 // Confidential VMs, encrypting data in use (memory encryption via AMD
 // SEV). Requires a machine type from the N2D family.
 message GcpDataprocClusterConfidentialInstanceConfig {
-  // Enable Confidential Compute for all cluster nodes.
+  // Enable Confidential Compute for all cluster nodes with the AMD SEV
+  // technology. The provider marks this boolean deprecated in favor of
+  // confidential_instance_type, which names the technology explicitly;
+  // prefer that field for new clusters. Both may be set for a cluster
+  // authored before the type field existed.
   bool enable_confidential_compute = 1;
+
+  // Confidential Compute technology for all cluster nodes:
+  //   "SEV"     -- AMD Secure Encrypted Virtualization (N2D, C2D, C3D)
+  //   "SEV_SNP" -- AMD SEV with Secure Nested Paging: adds integrity
+  //                protection and attestation (N2D)
+  //   "TDX"     -- Intel Trust Domain Extensions (C3)
+  // The machine type must support the chosen technology. Immutable.
+  string confidential_instance_type = 2 [(buf.validate.field).cel = {
+    id: "confidential_instance_type_valid_value"
+    expression: "this == '' || this in ['SEV', 'SEV_SNP', 'TDX']"
+    message: "confidential_instance_type must be SEV, SEV_SNP, or TDX"
+  }];
 }
 
 // GcpDataprocClusterReservationAffinity pins the cluster's VMs to a
@@ -348,6 +400,13 @@ message GcpDataprocClusterInstanceSelection {
   // Preference rank. Lower rank is preferred; Dataproc falls back to
   // higher ranks when capacity for the preferred types is unavailable.
   int32 rank = 2 [(buf.validate.field).int32.gte = 0];
+
+  // Disk shape for nodes provisioned from THIS selection entry —
+  // overrides the role's disk_config so, for example, the fallback
+  // machine types can carry a different boot disk or local SSD count
+  // than the preferred ones. Leave unset to inherit the role's
+  // disk_config. Immutable.
+  GcpDataprocClusterDiskConfig disk_config = 3;
 }
 
 // GcpDataprocClusterProvisioningModelMix blends standard (on-demand)
@@ -643,6 +702,12 @@ message GcpDataprocClusterMetricConfig {
 // GcpDataprocClusterAuxiliaryNodeGroupConfig sizes the VMs of an
 // auxiliary node group.
 message GcpDataprocClusterAuxiliaryNodeGroupConfig {
+  option (buf.validate.message).cel = {
+    id: "auxiliary_disk_no_attached_disks"
+    message: "attached_disks apply to master, worker, and secondary worker nodes only -- Dataproc does not attach additional disks to auxiliary (driver) node groups"
+    expression: "!has(this.disk_config) || size(this.disk_config.attached_disks) == 0"
+  };
+
   // Number of instances in the group.
   int32 num_instances = 1;
 

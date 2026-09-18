@@ -16,6 +16,21 @@ grants a whole team through one node. Prefer IAM types everywhere the
 client library stack supports them; BUILT_IN is for engines and tools
 that genuinely need a password.
 
+## Service-account users are wired by reference
+
+For `CLOUD_IAM_SERVICE_ACCOUNT` users, set `serviceAccount` to the
+`GcpServiceAccount` (a `valueFrom` on its `email` output, or a literal
+email) instead of `userName`. Both engines derive the database username
+Cloud SQL expects — the email with `.gserviceaccount.com` dropped, which
+PostgreSQL stores exactly and MySQL truncates before the `@` — so a chart
+never hand-builds `sa-id@project.iam` from parameters, and a wrong project
+id or account id cannot silently produce a user nobody can log in as.
+The account still needs `roles/cloudsql.instanceUser` (and
+`roles/cloudsql.client` to connect) on the project, granted through
+`GcpProjectIamMember`, and the instance needs
+`cloudsql.iam_authentication = "on"`. Exactly one of `userName` or
+`serviceAccount` is set.
+
 ## Passwords rotate in place; roles land at creation
 
 For BUILT_IN users, updating `password` rotates the credential without

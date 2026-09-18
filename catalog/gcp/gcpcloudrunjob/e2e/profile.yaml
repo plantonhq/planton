@@ -16,6 +16,11 @@ spec:
   # COMPLETED (~2m33s — deploy-and-verify semantics confirmed); destroying
   # the job with a completed execution removed both cleanly.
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the job gained Resource Manager tags; the earlier live
+  # proof predates the change. Tags need org-level tagKeys/tagValues (the
+  # standing org-fixture unblock condition), so the committed scenario stays
+  # untagged and the next proof confirms the shape still re-plans clean.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 30

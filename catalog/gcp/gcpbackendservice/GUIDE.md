@@ -29,13 +29,14 @@ models the reference singular where the provider inherits the API's list
 shape. Share one health check across many services — it is its own
 composable node, which is exactly why it is not created here.
 
-## Logging headers wait on the SDK
+## Logging headers for request tracing
 
-`logConfig` enables per-request logs with sampling; the newer
-request/response header capture lists are recorded exclusions — the
-Pulumi bridge at the pinned SDK does not carry them, and this catalog
-never models intent only one engine honors (re-evaluate at the next
-pulumi-gcp bump; the reason lives in the parity manifest).
+`logConfig` enables per-request logs with sampling. `requestHeaders` and
+`responseHeaders` name the HTTP headers whose values join each log entry
+(for example `X-Request-Id` to trace a request across services without
+instrumenting the backend, or a backend's own `X-Cache` on the response).
+Both need `enable: true` and an HTTP-family protocol (HTTP, HTTPS, HTTP2,
+GRPC); each entry is one header name.
 
 ## Signed-URL key rotation is add-then-remove
 

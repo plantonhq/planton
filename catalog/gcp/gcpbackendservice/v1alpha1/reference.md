@@ -201,6 +201,8 @@ spec:
 | `spec.logConfig.sampleRate` | `double` |  | `1.0` |  |
 | `spec.logConfig.optionalMode` | `string` |  |  |  |
 | `spec.logConfig.optionalFields` | `[]string` |  |  |  |
+| `spec.logConfig.requestHeaders` | `[]string` |  |  |  |
+| `spec.logConfig.responseHeaders` | `[]string` |  |  |  |
 | `spec.customRequestHeaders` | `[]string` |  |  |  |
 | `spec.customResponseHeaders` | `[]string` |  |  |  |
 | `spec.compressionMode` | `string` |  |  |  |
@@ -1068,6 +1070,7 @@ high-traffic services.
 
 - rule: optional_fields only applies with optional_mode CUSTOM
 - rule: optional_mode configures log entries and only applies with enable true
+- rule: request_headers and response_headers name headers to log and only apply with enable true
 
 ### spec.logConfig.enable
 
@@ -1104,6 +1107,28 @@ Names of the optional log fields to include with optional_mode CUSTOM
 (e.g. tls.protocol, orca_load_report).
 
 - rule: {"repeated":{"items":{"string":{"minLen":"1"}}}}
+
+### spec.logConfig.requestHeaders
+
+`[]string`
+
+HTTP request headers whose values join each log entry (e.g.
+"X-Request-Id", "User-Agent") — for tracing a request across services
+without instrumenting the backend. Requires enable and an HTTP-family
+protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+in HTTP; each entry is one name.
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","repeated":{"unique":true,"items":{"string":{"minLen":"1"}}}}
+
+### spec.logConfig.responseHeaders
+
+`[]string`
+
+HTTP response headers whose values join each log entry (e.g.
+"Content-Type", a backend's own "X-Cache" or "X-Served-By"). Same
+preconditions as request_headers.
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","repeated":{"unique":true,"items":{"string":{"minLen":"1"}}}}
 
 ### spec.customRequestHeaders
 

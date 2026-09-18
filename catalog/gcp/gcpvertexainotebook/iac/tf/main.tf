@@ -41,6 +41,10 @@ resource "google_workbench_instance" "this" {
   enable_managed_euc          = var.spec.enable_managed_euc ? true : null
   enable_third_party_identity = var.spec.enable_third_party_identity ? true : null
 
+  # API-side deletion protection. API-computed, so sent only when the
+  # spec sets it (null otherwise).
+  enable_deletion_protection = var.spec.enable_deletion_protection
+
   # Client-side destroy behavior (DELETE deletes the instance and its
   # disks; PREVENT refuses; ABANDON drops from state but keeps the VM
   # running). Empty follows the provider default (DELETE).
@@ -48,6 +52,9 @@ resource "google_workbench_instance" "this" {
 
   gce_setup {
     machine_type = var.spec.machine_type
+
+    # Minimum CPU generation. API-computed, so sent only when set.
+    min_cpu_platform = var.spec.min_cpu_platform != "" ? var.spec.min_cpu_platform : null
 
     # Boot disk. disk_encryption is derived, never spec-set: presence of a
     # KMS key means CMEK, absence means Google-managed encryption.
@@ -69,6 +76,10 @@ resource "google_workbench_instance" "this" {
         disk_size_gb    = data_disks.value.disk_size_gb != 0 ? tostring(data_disks.value.disk_size_gb) : null
         disk_encryption = data_disks.value.kms_key != "" ? "CMEK" : null
         kms_key         = data_disks.value.kms_key != "" ? data_disks.value.kms_key : null
+
+        # Attached resource policies (e.g. a snapshot schedule).
+        # API-computed, so sent only when set.
+        resource_policies = length(data_disks.value.resource_policies) > 0 ? data_disks.value.resource_policies : null
       }
     }
 

@@ -459,7 +459,22 @@ func computeInstance(
 				Seconds: pulumi.Int(int(spec.Scheduling.GetLocalSsdRecoveryTimeoutSeconds())),
 			}
 		}
+		// Host-error detection timeout (90..330 s, steps of 30). Sent only
+		// when set so an unset spec keeps Compute Engine's default recovery.
+		if spec.Scheduling.HostErrorTimeoutSeconds != nil {
+			schedulingArgs.HostErrorTimeoutSeconds = pulumi.IntPtr(int(spec.Scheduling.GetHostErrorTimeoutSeconds()))
+		}
 		args.Scheduling = schedulingArgs
+	}
+
+	// Managed workload identity: a SPIFFE ID issued to the VM, optionally
+	// with X.509 identity certificates for mutual TLS. Immutable (replaces
+	// the VM on change).
+	if spec.WorkloadIdentityConfig != nil {
+		args.WorkloadIdentityConfig = &compute.InstanceWorkloadIdentityConfigArgs{
+			Identity:                   pulumi.StringPtr(spec.WorkloadIdentityConfig.Identity),
+			IdentityCertificateEnabled: pulumi.BoolPtr(spec.WorkloadIdentityConfig.IdentityCertificateEnabled),
+		}
 	}
 
 	// Shielded VM: unset booleans follow GCP defaults (secure boot off,

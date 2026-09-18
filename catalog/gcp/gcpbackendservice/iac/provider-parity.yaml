@@ -29,21 +29,13 @@ resources:
       # uses the catalog-wide resource_manager_tags vocabulary.
       - spec: spec.resource_manager_tags
         arg: params.resource_manager_tags
+      # Logged headers: the provider wraps each name in a one-field block;
+      # the spec holds flat name lists.
+      - spec: spec.log_config.request_headers
+        arg: log_config.request_headers.header_name
+      - spec: spec.log_config.response_headers
+        arg: log_config.response_headers.header_name
     exclusions:
-      - arg: log_config.request_headers.header_name
-        reason: >-
-          SDK gap -- pulumi-gcp v9.29.0's BackendServiceLogConfig bridges
-          enable/sample_rate/optional_mode/optional_fields but not the
-          request_headers list, and cross-engine parity forbids modeling a
-          field only one engine can send; re-evaluate at the next
-          pulumi-gcp bump
-      - arg: log_config.response_headers.header_name
-        reason: >-
-          SDK gap -- pulumi-gcp v9.29.0's BackendServiceLogConfig bridges
-          enable/sample_rate/optional_mode/optional_fields but not the
-          response_headers list, and cross-engine parity forbids modeling
-          a field only one engine can send; re-evaluate at the next
-          pulumi-gcp bump
       - arg: iap.oauth2_client_id_wo
         reason: >-
           the write-only variant of the modeled iap.oauth2_client_id --

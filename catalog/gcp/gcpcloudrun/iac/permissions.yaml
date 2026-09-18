@@ -31,6 +31,12 @@ spec:
           - run.services.getIamPolicy
         provenance: derived
         notes: Covers google_cloud_run_v2_service_iam_member -- the roles/run.invoker grant to allUsers, created only when spec.allow_unauthenticated is true (the 01-public-api-service preset). IAM member resources read the current policy before modifying it, so getIamPolicy rides along. Not needed for authenticated-only services.
+      - purpose: ApplyResourceManagerTags
+        permissions:
+          - run.services.createTagBinding
+          - resourcemanager.tagValueBindings.create
+        provenance: derived
+        notes: Required only when resource_manager_tags is set -- attaching a tag at create time authorizes on both sides, the binding on the service (run.services.createTagBinding) and the use of each named tag value (tag values are org-level resources, so the tagValueBindings grant lives there, typically through roles/resourcemanager.tagUser on the tag's scope). Tags bind at create time only; a tag change replaces the service, re-running these checks. Not needed for untagged services.
       - purpose: ActAsRuntimeServiceAccount
         permissions:
           - iam.serviceAccounts.actAs

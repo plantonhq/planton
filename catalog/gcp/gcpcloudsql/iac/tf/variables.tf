@@ -99,6 +99,9 @@ variable "spec" {
         })), [])
         auto_dns_enabled           = optional(bool, false)
         write_endpoint_dns_enabled = optional(bool, false)
+        # Also create a Service Connection Policy for the auto connections.
+        # Sent only when set (API-computed).
+        auto_connection_policy_enabled = optional(bool, null)
       }), null)
 
       # Automatic server certificate rotation (CAS CA modes only).
@@ -313,5 +316,26 @@ variable "spec" {
       retention_days = optional(number, null)
       description    = optional(string, "")
     }), null)
+
+    # Input-only opt-in: move PITR transaction logs from the data disk to
+    # Cloud Storage (longer retention, freed disk). Never stored by the API.
+    switch_transaction_logs_to_cloud_storage_enabled = optional(bool, false)
+
+    # Input-only opt-in: upgrade read replicas in place alongside the
+    # primary on a major database_version change.
+    include_replicas_for_major_version_upgrade = optional(bool, false)
+
+    # Irreversible opt-in to the new SQL network architecture for
+    # pre-August-2021 projects. Sent only when set (API-computed).
+    enforce_new_sql_network_architecture = optional(bool, null)
+
+    # Read replicas only: replication lag (seconds, 300..31536000) beyond
+    # which the replica recreates itself. Sent only when set (API-computed).
+    replication_lag_max_seconds = optional(number, null)
   })
+
+  validation {
+    condition     = var.spec.replication_lag_max_seconds == null || (var.spec.replication_lag_max_seconds >= 300 && var.spec.replication_lag_max_seconds <= 31536000)
+    error_message = "replication_lag_max_seconds must be between 300 (five minutes) and 31536000 (one year)."
+  }
 }

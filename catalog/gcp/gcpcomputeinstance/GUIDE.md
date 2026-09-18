@@ -119,7 +119,19 @@ reference a dedicated least-privilege `GcpServiceAccount` with the single
 `cloud-platform` scope and control access entirely through IAM roles.
 Scopes are a legacy coarse filter; IAM is the real boundary. SSH access
 follows the same logic — prefer OS Login (metadata `enable-oslogin`) over
-static `sshKeys`, which OS Login ignores anyway.
+static `sshKeys`, which OS Login ignores anyway. `workloadIdentityConfig`
+goes one step further: Compute Engine issues the VM a SPIFFE identity
+(and, with `identityCertificateEnabled`, rotated X.509 certificates) so
+services authenticate to each other by identity rather than by shared
+secret or network position. Both fields are create-time only — changing
+them replaces the VM.
+
+## Host failure is a timing decision
+
+`scheduling.hostErrorTimeoutSeconds` (90..330 in steps of 30) sets how
+long Compute Engine waits before declaring the host failed and starting
+recovery. Lower recovers a hung host faster at the cost of more false
+positives; leave it unset for the default timing.
 
 ## On the diagram
 

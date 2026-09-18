@@ -109,7 +109,11 @@ type GcpComputeInstanceSpec struct {
 	// mode.
 	AdvancedMachineFeatures *GcpComputeInstanceAdvancedMachineFeatures `protobuf:"bytes,15,opt,name=advanced_machine_features,json=advancedMachineFeatures,proto3" json:"advanced_machine_features,omitempty"`
 	// GPU accelerator cards attached to the instance. Requires a
-	// GPU-capable zone and on_host_maintenance = "TERMINATE".
+	// GPU-capable zone and on_host_maintenance = "TERMINATE". Each entry
+	// attaches at least one card (count >= 1). Removing every entry from an
+	// existing VM leaves its GPUs attached (the provider preserves the
+	// current accelerators when the block is absent); detaching GPUs
+	// replaces the VM, so plan it as a recreate rather than an edit.
 	GuestAccelerators []*GcpComputeInstanceGuestAccelerator `protobuf:"bytes,16,rep,name=guest_accelerators,json=guestAccelerators,proto3" json:"guest_accelerators,omitempty"`
 	// Reservation affinity — whether this VM consumes capacity from any
 	// matching reservation, a specific reservation, or none.
@@ -193,8 +197,14 @@ type GcpComputeInstanceSpec struct {
 	//	"ABANDON" -- the instance is removed from management but left
 	//	             running in GCP
 	DeletionPolicy string `protobuf:"bytes,34,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// Managed workload identity for the VM: a SPIFFE identity issued to the
+	// instance (and, optionally, X.509 identity certificates) so workloads
+	// on it authenticate to each other by identity instead of shared
+	// secrets or network position. Create-time only: both fields are
+	// immutable, so changing them replaces the VM.
+	WorkloadIdentityConfig *GcpComputeInstanceWorkloadIdentityConfig `protobuf:"bytes,35,opt,name=workload_identity_config,json=workloadIdentityConfig,proto3" json:"workload_identity_config,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *GcpComputeInstanceSpec) Reset() {
@@ -465,6 +475,75 @@ func (x *GcpComputeInstanceSpec) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpComputeInstanceSpec) GetWorkloadIdentityConfig() *GcpComputeInstanceWorkloadIdentityConfig {
+	if x != nil {
+		return x.WorkloadIdentityConfig
+	}
+	return nil
+}
+
+// GcpComputeInstanceWorkloadIdentityConfig is the VM's managed workload
+// identity.
+type GcpComputeInstanceWorkloadIdentityConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SPIFFE ID Compute Engine issues to the instance, e.g.
+	// "spiffe://PROJECT.svc.id.goog/ns/NAMESPACE/sa/SERVICE_ACCOUNT" or a
+	// workload-identity-pool identity of the form
+	// "spiffe://POOL.global.PROJECT_NUMBER.workload.id.goog/ns/NS/sa/SA".
+	// Immutable.
+	Identity string `protobuf:"bytes,1,opt,name=identity,proto3" json:"identity,omitempty"`
+	// Whether Compute Engine also issues and rotates X.509 certificates
+	// bound to the identity, made available on the VM for mutual TLS.
+	// Immutable.
+	IdentityCertificateEnabled bool `protobuf:"varint,2,opt,name=identity_certificate_enabled,json=identityCertificateEnabled,proto3" json:"identity_certificate_enabled,omitempty"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
+}
+
+func (x *GcpComputeInstanceWorkloadIdentityConfig) Reset() {
+	*x = GcpComputeInstanceWorkloadIdentityConfig{}
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpComputeInstanceWorkloadIdentityConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpComputeInstanceWorkloadIdentityConfig) ProtoMessage() {}
+
+func (x *GcpComputeInstanceWorkloadIdentityConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpComputeInstanceWorkloadIdentityConfig.ProtoReflect.Descriptor instead.
+func (*GcpComputeInstanceWorkloadIdentityConfig) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GcpComputeInstanceWorkloadIdentityConfig) GetIdentity() string {
+	if x != nil {
+		return x.Identity
+	}
+	return ""
+}
+
+func (x *GcpComputeInstanceWorkloadIdentityConfig) GetIdentityCertificateEnabled() bool {
+	if x != nil {
+		return x.IdentityCertificateEnabled
+	}
+	return false
+}
+
 // GcpComputeInstanceBootDisk defines the disk the instance boots from.
 // Exactly one source must be set: an image (fresh install), a snapshot
 // (restore), or an existing bootable GcpComputeDisk.
@@ -588,7 +667,7 @@ type GcpComputeInstanceBootDisk struct {
 
 func (x *GcpComputeInstanceBootDisk) Reset() {
 	*x = GcpComputeInstanceBootDisk{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[1]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -600,7 +679,7 @@ func (x *GcpComputeInstanceBootDisk) String() string {
 func (*GcpComputeInstanceBootDisk) ProtoMessage() {}
 
 func (x *GcpComputeInstanceBootDisk) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[1]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -613,7 +692,7 @@ func (x *GcpComputeInstanceBootDisk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceBootDisk.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceBootDisk) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{1}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GcpComputeInstanceBootDisk) GetImage() string {
@@ -815,7 +894,7 @@ type GcpComputeInstanceAttachedDisk struct {
 
 func (x *GcpComputeInstanceAttachedDisk) Reset() {
 	*x = GcpComputeInstanceAttachedDisk{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -827,7 +906,7 @@ func (x *GcpComputeInstanceAttachedDisk) String() string {
 func (*GcpComputeInstanceAttachedDisk) ProtoMessage() {}
 
 func (x *GcpComputeInstanceAttachedDisk) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -840,7 +919,7 @@ func (x *GcpComputeInstanceAttachedDisk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceAttachedDisk.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceAttachedDisk) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GcpComputeInstanceAttachedDisk) GetSource() *v1.StringValueOrRef {
@@ -901,7 +980,7 @@ type GcpComputeInstanceScratchDisk struct {
 
 func (x *GcpComputeInstanceScratchDisk) Reset() {
 	*x = GcpComputeInstanceScratchDisk{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -913,7 +992,7 @@ func (x *GcpComputeInstanceScratchDisk) String() string {
 func (*GcpComputeInstanceScratchDisk) ProtoMessage() {}
 
 func (x *GcpComputeInstanceScratchDisk) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -926,7 +1005,7 @@ func (x *GcpComputeInstanceScratchDisk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceScratchDisk.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceScratchDisk) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GcpComputeInstanceScratchDisk) GetInterface() string {
@@ -1024,7 +1103,7 @@ type GcpComputeInstanceNetworkInterface struct {
 
 func (x *GcpComputeInstanceNetworkInterface) Reset() {
 	*x = GcpComputeInstanceNetworkInterface{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1036,7 +1115,7 @@ func (x *GcpComputeInstanceNetworkInterface) String() string {
 func (*GcpComputeInstanceNetworkInterface) ProtoMessage() {}
 
 func (x *GcpComputeInstanceNetworkInterface) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1049,7 +1128,7 @@ func (x *GcpComputeInstanceNetworkInterface) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GcpComputeInstanceNetworkInterface.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceNetworkInterface) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GcpComputeInstanceNetworkInterface) GetNetwork() *v1.StringValueOrRef {
@@ -1182,7 +1261,7 @@ type GcpComputeInstanceAccessConfig struct {
 
 func (x *GcpComputeInstanceAccessConfig) Reset() {
 	*x = GcpComputeInstanceAccessConfig{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1194,7 +1273,7 @@ func (x *GcpComputeInstanceAccessConfig) String() string {
 func (*GcpComputeInstanceAccessConfig) ProtoMessage() {}
 
 func (x *GcpComputeInstanceAccessConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1207,7 +1286,7 @@ func (x *GcpComputeInstanceAccessConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceAccessConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceAccessConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GcpComputeInstanceAccessConfig) GetNatIp() *v1.StringValueOrRef {
@@ -1266,7 +1345,7 @@ type GcpComputeInstanceIpv6AccessConfig struct {
 
 func (x *GcpComputeInstanceIpv6AccessConfig) Reset() {
 	*x = GcpComputeInstanceIpv6AccessConfig{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1278,7 +1357,7 @@ func (x *GcpComputeInstanceIpv6AccessConfig) String() string {
 func (*GcpComputeInstanceIpv6AccessConfig) ProtoMessage() {}
 
 func (x *GcpComputeInstanceIpv6AccessConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1291,7 +1370,7 @@ func (x *GcpComputeInstanceIpv6AccessConfig) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GcpComputeInstanceIpv6AccessConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceIpv6AccessConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GcpComputeInstanceIpv6AccessConfig) GetNetworkTier() string {
@@ -1345,7 +1424,7 @@ type GcpComputeInstanceAliasIpRange struct {
 
 func (x *GcpComputeInstanceAliasIpRange) Reset() {
 	*x = GcpComputeInstanceAliasIpRange{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1357,7 +1436,7 @@ func (x *GcpComputeInstanceAliasIpRange) String() string {
 func (*GcpComputeInstanceAliasIpRange) ProtoMessage() {}
 
 func (x *GcpComputeInstanceAliasIpRange) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1370,7 +1449,7 @@ func (x *GcpComputeInstanceAliasIpRange) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceAliasIpRange.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceAliasIpRange) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GcpComputeInstanceAliasIpRange) GetIpCidrRange() string {
@@ -1405,7 +1484,7 @@ type GcpComputeInstanceServiceAccount struct {
 
 func (x *GcpComputeInstanceServiceAccount) Reset() {
 	*x = GcpComputeInstanceServiceAccount{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1417,7 +1496,7 @@ func (x *GcpComputeInstanceServiceAccount) String() string {
 func (*GcpComputeInstanceServiceAccount) ProtoMessage() {}
 
 func (x *GcpComputeInstanceServiceAccount) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1430,7 +1509,7 @@ func (x *GcpComputeInstanceServiceAccount) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceServiceAccount.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceServiceAccount) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GcpComputeInstanceServiceAccount) GetEmail() *v1.StringValueOrRef {
@@ -1510,13 +1589,20 @@ type GcpComputeInstanceScheduling struct {
 	// when the host fails, in seconds, before falling back to default
 	// recovery.
 	LocalSsdRecoveryTimeoutSeconds *int64 `protobuf:"varint,11,opt,name=local_ssd_recovery_timeout_seconds,json=localSsdRecoveryTimeoutSeconds,proto3,oneof" json:"local_ssd_recovery_timeout_seconds,omitempty"`
-	unknownFields                  protoimpl.UnknownFields
-	sizeCache                      protoimpl.SizeCache
+	// How long Compute Engine waits, in seconds, before declaring the host
+	// failed and starting host-error recovery (restart or termination per
+	// automatic_restart). A lower value recovers faster from a hung host at
+	// the cost of more false positives; leave unset for Compute Engine's
+	// default recovery timing. Must be 90..330 in steps of 30 (90, 120, ...,
+	// 330).
+	HostErrorTimeoutSeconds *int32 `protobuf:"varint,12,opt,name=host_error_timeout_seconds,json=hostErrorTimeoutSeconds,proto3,oneof" json:"host_error_timeout_seconds,omitempty"`
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GcpComputeInstanceScheduling) Reset() {
 	*x = GcpComputeInstanceScheduling{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1528,7 +1614,7 @@ func (x *GcpComputeInstanceScheduling) String() string {
 func (*GcpComputeInstanceScheduling) ProtoMessage() {}
 
 func (x *GcpComputeInstanceScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1541,7 +1627,7 @@ func (x *GcpComputeInstanceScheduling) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceScheduling.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GcpComputeInstanceScheduling) GetProvisioningModel() string {
@@ -1621,6 +1707,13 @@ func (x *GcpComputeInstanceScheduling) GetLocalSsdRecoveryTimeoutSeconds() int64
 	return 0
 }
 
+func (x *GcpComputeInstanceScheduling) GetHostErrorTimeoutSeconds() int32 {
+	if x != nil && x.HostErrorTimeoutSeconds != nil {
+		return *x.HostErrorTimeoutSeconds
+	}
+	return 0
+}
+
 // GcpComputeInstanceNodeAffinity selects sole-tenant node groups.
 type GcpComputeInstanceNodeAffinity struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -1637,7 +1730,7 @@ type GcpComputeInstanceNodeAffinity struct {
 
 func (x *GcpComputeInstanceNodeAffinity) Reset() {
 	*x = GcpComputeInstanceNodeAffinity{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1649,7 +1742,7 @@ func (x *GcpComputeInstanceNodeAffinity) String() string {
 func (*GcpComputeInstanceNodeAffinity) ProtoMessage() {}
 
 func (x *GcpComputeInstanceNodeAffinity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1662,7 +1755,7 @@ func (x *GcpComputeInstanceNodeAffinity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceNodeAffinity.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceNodeAffinity) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GcpComputeInstanceNodeAffinity) GetKey() string {
@@ -1703,7 +1796,7 @@ type GcpComputeInstanceShieldedConfig struct {
 
 func (x *GcpComputeInstanceShieldedConfig) Reset() {
 	*x = GcpComputeInstanceShieldedConfig{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1715,7 +1808,7 @@ func (x *GcpComputeInstanceShieldedConfig) String() string {
 func (*GcpComputeInstanceShieldedConfig) ProtoMessage() {}
 
 func (x *GcpComputeInstanceShieldedConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1728,7 +1821,7 @@ func (x *GcpComputeInstanceShieldedConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceShieldedConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceShieldedConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GcpComputeInstanceShieldedConfig) GetEnableSecureBoot() bool {
@@ -1769,7 +1862,7 @@ type GcpComputeInstanceConfidentialConfig struct {
 
 func (x *GcpComputeInstanceConfidentialConfig) Reset() {
 	*x = GcpComputeInstanceConfidentialConfig{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1781,7 +1874,7 @@ func (x *GcpComputeInstanceConfidentialConfig) String() string {
 func (*GcpComputeInstanceConfidentialConfig) ProtoMessage() {}
 
 func (x *GcpComputeInstanceConfidentialConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1794,7 +1887,7 @@ func (x *GcpComputeInstanceConfidentialConfig) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use GcpComputeInstanceConfidentialConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceConfidentialConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GcpComputeInstanceConfidentialConfig) GetConfidentialInstanceType() string {
@@ -1831,7 +1924,7 @@ type GcpComputeInstanceAdvancedMachineFeatures struct {
 
 func (x *GcpComputeInstanceAdvancedMachineFeatures) Reset() {
 	*x = GcpComputeInstanceAdvancedMachineFeatures{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1843,7 +1936,7 @@ func (x *GcpComputeInstanceAdvancedMachineFeatures) String() string {
 func (*GcpComputeInstanceAdvancedMachineFeatures) ProtoMessage() {}
 
 func (x *GcpComputeInstanceAdvancedMachineFeatures) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1856,7 +1949,7 @@ func (x *GcpComputeInstanceAdvancedMachineFeatures) ProtoReflect() protoreflect.
 
 // Deprecated: Use GcpComputeInstanceAdvancedMachineFeatures.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceAdvancedMachineFeatures) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GcpComputeInstanceAdvancedMachineFeatures) GetEnableNestedVirtualization() bool {
@@ -1915,7 +2008,7 @@ type GcpComputeInstanceGuestAccelerator struct {
 
 func (x *GcpComputeInstanceGuestAccelerator) Reset() {
 	*x = GcpComputeInstanceGuestAccelerator{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1927,7 +2020,7 @@ func (x *GcpComputeInstanceGuestAccelerator) String() string {
 func (*GcpComputeInstanceGuestAccelerator) ProtoMessage() {}
 
 func (x *GcpComputeInstanceGuestAccelerator) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1940,7 +2033,7 @@ func (x *GcpComputeInstanceGuestAccelerator) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GcpComputeInstanceGuestAccelerator.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceGuestAccelerator) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GcpComputeInstanceGuestAccelerator) GetType() string {
@@ -1976,7 +2069,7 @@ type GcpComputeInstanceReservationAffinity struct {
 
 func (x *GcpComputeInstanceReservationAffinity) Reset() {
 	*x = GcpComputeInstanceReservationAffinity{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1988,7 +2081,7 @@ func (x *GcpComputeInstanceReservationAffinity) String() string {
 func (*GcpComputeInstanceReservationAffinity) ProtoMessage() {}
 
 func (x *GcpComputeInstanceReservationAffinity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2001,7 +2094,7 @@ func (x *GcpComputeInstanceReservationAffinity) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GcpComputeInstanceReservationAffinity.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceReservationAffinity) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GcpComputeInstanceReservationAffinity) GetType() string {
@@ -2033,7 +2126,7 @@ type GcpComputeInstanceSpecificReservation struct {
 
 func (x *GcpComputeInstanceSpecificReservation) Reset() {
 	*x = GcpComputeInstanceSpecificReservation{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2045,7 +2138,7 @@ func (x *GcpComputeInstanceSpecificReservation) String() string {
 func (*GcpComputeInstanceSpecificReservation) ProtoMessage() {}
 
 func (x *GcpComputeInstanceSpecificReservation) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2058,7 +2151,7 @@ func (x *GcpComputeInstanceSpecificReservation) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GcpComputeInstanceSpecificReservation.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceSpecificReservation) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GcpComputeInstanceSpecificReservation) GetKey() string {
@@ -2095,7 +2188,7 @@ type GcpComputeInstanceEncryptionKey struct {
 
 func (x *GcpComputeInstanceEncryptionKey) Reset() {
 	*x = GcpComputeInstanceEncryptionKey{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2107,7 +2200,7 @@ func (x *GcpComputeInstanceEncryptionKey) String() string {
 func (*GcpComputeInstanceEncryptionKey) ProtoMessage() {}
 
 func (x *GcpComputeInstanceEncryptionKey) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2120,7 +2213,7 @@ func (x *GcpComputeInstanceEncryptionKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeInstanceEncryptionKey.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceEncryptionKey) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GcpComputeInstanceEncryptionKey) GetKmsKey() *v1.StringValueOrRef {
@@ -2156,7 +2249,7 @@ type GcpComputeInstanceSourceEncryption struct {
 
 func (x *GcpComputeInstanceSourceEncryption) Reset() {
 	*x = GcpComputeInstanceSourceEncryption{}
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2168,7 +2261,7 @@ func (x *GcpComputeInstanceSourceEncryption) String() string {
 func (*GcpComputeInstanceSourceEncryption) ProtoMessage() {}
 
 func (x *GcpComputeInstanceSourceEncryption) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2181,7 +2274,7 @@ func (x *GcpComputeInstanceSourceEncryption) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GcpComputeInstanceSourceEncryption.ProtoReflect.Descriptor instead.
 func (*GcpComputeInstanceSourceEncryption) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GcpComputeInstanceSourceEncryption) GetKmsKey() *v1.StringValueOrRef {
@@ -2202,7 +2295,7 @@ var File_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/gcp/gcpcomputeinstance/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpcomputeinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xce4\n" +
+	"2catalog/gcp/gcpcomputeinstance/v1alpha1/spec.proto\x12+dev.planton.gcp.gcpcomputeinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe05\n" +
 	"\x16GcpComputeInstanceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x88\x02\n" +
@@ -2248,7 +2341,8 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1bvalid_key_revocation_action\x12/key_revocation_action_type must be NONE or STOP\x1a&this == '' || this in ['NONE', 'STOP']R\x17keyRevocationActionType\x12\x84\x01\n" +
 	"\x17instance_encryption_key\x18! \x01(\v2L.dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKeyR\x15instanceEncryptionKey\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\" \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a;\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12\x8f\x01\n" +
+	"\x18workload_identity_config\x18# \x01(\v2U.dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceWorkloadIdentityConfigR\x16workloadIdentityConfig\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a9\n" +
@@ -2266,7 +2360,10 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"+confidential_requires_terminate_maintenance\x12\x88\x01confidential VMs cannot live-migrate — set scheduling.on_host_maintenance to TERMINATE when confidential_instance_config is configured\x1aw!has(this.confidential_instance_config) || (has(this.scheduling) && this.scheduling.on_host_maintenance == 'TERMINATE')\x1a\xb2\x02\n" +
 	"*accelerators_require_terminate_maintenance\x12\x8f\x01VMs with guest accelerators (GPUs) cannot live-migrate — set scheduling.on_host_maintenance to TERMINATE when guest_accelerators are attached\x1arsize(this.guest_accelerators) == 0 || (has(this.scheduling) && this.scheduling.on_host_maintenance == 'TERMINATE')\x1a\x85\x02\n" +
 	"0max_run_duration_conflicts_with_termination_time\x12^max_run_duration_seconds and termination_time both bound the VM's lifetime — set at most one\x1aq!has(this.scheduling) || !has(this.scheduling.max_run_duration_seconds) || this.scheduling.termination_time == ''B\x1c\n" +
-	"\x1a_allow_stopping_for_update\"\xe6\x19\n" +
+	"\x1a_allow_stopping_for_update\"\x9f\x01\n" +
+	"(GcpComputeInstanceWorkloadIdentityConfig\x121\n" +
+	"\bidentity\x18\x01 \x01(\tB\x15\xbaH\x12\xc8\x01\x01r\r\x10\x01:\tspiffe://R\bidentity\x12@\n" +
+	"\x1cidentity_certificate_enabled\x18\x02 \x01(\bR\x1aidentityCertificateEnabled\"\xe6\x19\n" +
 	"\x1aGcpComputeInstanceBootDisk\x12\x14\n" +
 	"\x05image\x18\x01 \x01(\tR\x05image\x12'\n" +
 	"\x0fsource_snapshot\x18\x02 \x01(\tR\x0esourceSnapshot\x12v\n" +
@@ -2380,7 +2477,8 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15subnetwork_range_name\x18\x02 \x01(\tR\x13subnetworkRangeName\"\xad\x01\n" +
 	" GcpComputeInstanceServiceAccount\x12g\n" +
 	"\x05email\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x05email\x12 \n" +
-	"\x06scopes\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06scopes\"\x93\t\n" +
+	"\x06scopes\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06scopes\"\xf9\n" +
+	"\n" +
 	"\x1cGcpComputeInstanceScheduling\x12\xee\x01\n" +
 	"\x12provisioning_model\x18\x01 \x01(\tB\xbe\x01\xbaH\xba\x01\xba\x01\xb6\x01\n" +
 	"\x18valid_provisioning_model\x12Kprovisioning_model must be STANDARD, SPOT, FLEX_START, or RESERVATION_BOUND\x1aMthis == '' || this in ['STANDARD', 'SPOT', 'FLEX_START', 'RESERVATION_BOUND']R\x11provisioningModel\x12:\n" +
@@ -2394,13 +2492,16 @@ const file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\rmin_node_cpus\x18\t \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x04R\vminNodeCpus\x88\x01\x01\x12t\n" +
 	"\x0fnode_affinities\x18\n" +
 	" \x03(\v2K.dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNodeAffinityR\x0enodeAffinities\x12\\\n" +
-	"\"local_ssd_recovery_timeout_seconds\x18\v \x01(\x03B\v\xbaH\b\"\x06\x18\x80\xf5$(\x00H\x05R\x1elocalSsdRecoveryTimeoutSeconds\x88\x01\x01B\x14\n" +
+	"\"local_ssd_recovery_timeout_seconds\x18\v \x01(\x03B\v\xbaH\b\"\x06\x18\x80\xf5$(\x00H\x05R\x1elocalSsdRecoveryTimeoutSeconds\x88\x01\x01\x12\xc4\x01\n" +
+	"\x1ahost_error_timeout_seconds\x18\f \x01(\x05B\x81\x01\xbaH~\xba\x01t\n" +
+	"\x1ahost_error_timeout_step_30\x12Fhost_error_timeout_seconds must be a multiple of 30 between 90 and 330\x1a\x0ethis % 30 == 0\x1a\x05\x18\xca\x02(ZH\x06R\x17hostErrorTimeoutSeconds\x88\x01\x01B\x14\n" +
 	"\x12_automatic_restartB\x1b\n" +
 	"\x19_max_run_duration_secondsB\x1d\n" +
 	"\x1b_discard_local_ssds_on_stopB\x16\n" +
 	"\x14_availability_domainB\x10\n" +
 	"\x0e_min_node_cpusB%\n" +
-	"#_local_ssd_recovery_timeout_seconds\"\x8e\x01\n" +
+	"#_local_ssd_recovery_timeout_secondsB\x1d\n" +
+	"\x1b_host_error_timeout_seconds\"\x8e\x01\n" +
 	"\x1eGcpComputeInstanceNodeAffinity\x12\x18\n" +
 	"\x03key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\x120\n" +
 	"\boperator\x18\x02 \x01(\tB\x14\xbaH\x11\xc8\x01\x01r\fR\x02INR\x06NOT_INR\boperator\x12 \n" +
@@ -2461,76 +2562,78 @@ func file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescGZIP() []byt
 	return file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpComputeInstanceSpec)(nil),                    // 0: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec
-	(*GcpComputeInstanceBootDisk)(nil),                // 1: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk
-	(*GcpComputeInstanceAttachedDisk)(nil),            // 2: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk
-	(*GcpComputeInstanceScratchDisk)(nil),             // 3: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScratchDisk
-	(*GcpComputeInstanceNetworkInterface)(nil),        // 4: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface
-	(*GcpComputeInstanceAccessConfig)(nil),            // 5: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig
-	(*GcpComputeInstanceIpv6AccessConfig)(nil),        // 6: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceIpv6AccessConfig
-	(*GcpComputeInstanceAliasIpRange)(nil),            // 7: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAliasIpRange
-	(*GcpComputeInstanceServiceAccount)(nil),          // 8: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount
-	(*GcpComputeInstanceScheduling)(nil),              // 9: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling
-	(*GcpComputeInstanceNodeAffinity)(nil),            // 10: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNodeAffinity
-	(*GcpComputeInstanceShieldedConfig)(nil),          // 11: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceShieldedConfig
-	(*GcpComputeInstanceConfidentialConfig)(nil),      // 12: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceConfidentialConfig
-	(*GcpComputeInstanceAdvancedMachineFeatures)(nil), // 13: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAdvancedMachineFeatures
-	(*GcpComputeInstanceGuestAccelerator)(nil),        // 14: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceGuestAccelerator
-	(*GcpComputeInstanceReservationAffinity)(nil),     // 15: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity
-	(*GcpComputeInstanceSpecificReservation)(nil),     // 16: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpecificReservation
-	(*GcpComputeInstanceEncryptionKey)(nil),           // 17: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey
-	(*GcpComputeInstanceSourceEncryption)(nil),        // 18: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
-	nil,                         // 19: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.MetadataEntry
-	nil,                         // 20: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.LabelsEntry
-	nil,                         // 21: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.ResourceManagerTagsEntry
-	nil,                         // 22: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.DiskLabelsEntry
-	nil,                         // 23: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.ResourceManagerTagsEntry
-	(*v1.StringValueOrRef)(nil), // 24: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*GcpComputeInstanceWorkloadIdentityConfig)(nil),  // 1: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceWorkloadIdentityConfig
+	(*GcpComputeInstanceBootDisk)(nil),                // 2: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk
+	(*GcpComputeInstanceAttachedDisk)(nil),            // 3: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk
+	(*GcpComputeInstanceScratchDisk)(nil),             // 4: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScratchDisk
+	(*GcpComputeInstanceNetworkInterface)(nil),        // 5: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface
+	(*GcpComputeInstanceAccessConfig)(nil),            // 6: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig
+	(*GcpComputeInstanceIpv6AccessConfig)(nil),        // 7: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceIpv6AccessConfig
+	(*GcpComputeInstanceAliasIpRange)(nil),            // 8: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAliasIpRange
+	(*GcpComputeInstanceServiceAccount)(nil),          // 9: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount
+	(*GcpComputeInstanceScheduling)(nil),              // 10: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling
+	(*GcpComputeInstanceNodeAffinity)(nil),            // 11: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNodeAffinity
+	(*GcpComputeInstanceShieldedConfig)(nil),          // 12: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceShieldedConfig
+	(*GcpComputeInstanceConfidentialConfig)(nil),      // 13: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceConfidentialConfig
+	(*GcpComputeInstanceAdvancedMachineFeatures)(nil), // 14: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAdvancedMachineFeatures
+	(*GcpComputeInstanceGuestAccelerator)(nil),        // 15: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceGuestAccelerator
+	(*GcpComputeInstanceReservationAffinity)(nil),     // 16: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity
+	(*GcpComputeInstanceSpecificReservation)(nil),     // 17: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpecificReservation
+	(*GcpComputeInstanceEncryptionKey)(nil),           // 18: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey
+	(*GcpComputeInstanceSourceEncryption)(nil),        // 19: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
+	nil,                         // 20: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.MetadataEntry
+	nil,                         // 21: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.LabelsEntry
+	nil,                         // 22: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.ResourceManagerTagsEntry
+	nil,                         // 23: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.DiskLabelsEntry
+	nil,                         // 24: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.ResourceManagerTagsEntry
+	(*v1.StringValueOrRef)(nil), // 25: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_depIdxs = []int32{
-	24, // 0: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 1: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.boot_disk:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk
-	2,  // 2: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.attached_disks:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk
-	3,  // 3: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.scratch_disks:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScratchDisk
-	4,  // 4: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.network_interfaces:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface
-	8,  // 5: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.service_account:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount
-	9,  // 6: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.scheduling:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling
-	11, // 7: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.shielded_instance_config:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceShieldedConfig
-	12, // 8: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.confidential_instance_config:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceConfidentialConfig
-	13, // 9: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.advanced_machine_features:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAdvancedMachineFeatures
-	14, // 10: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.guest_accelerators:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceGuestAccelerator
-	15, // 11: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.reservation_affinity:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity
-	19, // 12: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.metadata:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.MetadataEntry
-	20, // 13: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.labels:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.LabelsEntry
-	21, // 14: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.ResourceManagerTagsEntry
-	17, // 15: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.instance_encryption_key:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey
-	24, // 16: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	24, // 17: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 18: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.DiskLabelsEntry
-	23, // 19: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.ResourceManagerTagsEntry
-	18, // 20: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
-	18, // 21: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
-	24, // 22: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	24, // 23: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	24, // 24: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	24, // 25: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	24, // 26: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 27: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig
-	6,  // 28: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceIpv6AccessConfig
-	7,  // 29: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAliasIpRange
-	24, // 30: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig.nat_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	24, // 31: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 32: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNodeAffinity
-	16, // 33: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpecificReservation
-	24, // 34: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	24, // 35: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	36, // [36:36] is the sub-list for method output_type
-	36, // [36:36] is the sub-list for method input_type
-	36, // [36:36] is the sub-list for extension type_name
-	36, // [36:36] is the sub-list for extension extendee
-	0,  // [0:36] is the sub-list for field type_name
+	25, // 0: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 1: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.boot_disk:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk
+	3,  // 2: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.attached_disks:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk
+	4,  // 3: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.scratch_disks:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScratchDisk
+	5,  // 4: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.network_interfaces:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface
+	9,  // 5: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.service_account:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount
+	10, // 6: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.scheduling:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling
+	12, // 7: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.shielded_instance_config:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceShieldedConfig
+	13, // 8: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.confidential_instance_config:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceConfidentialConfig
+	14, // 9: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.advanced_machine_features:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAdvancedMachineFeatures
+	15, // 10: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.guest_accelerators:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceGuestAccelerator
+	16, // 11: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.reservation_affinity:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity
+	20, // 12: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.metadata:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.MetadataEntry
+	21, // 13: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.labels:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.LabelsEntry
+	22, // 14: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.ResourceManagerTagsEntry
+	18, // 15: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.instance_encryption_key:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey
+	1,  // 16: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpec.workload_identity_config:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceWorkloadIdentityConfig
+	25, // 17: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_disk:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 18: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 19: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.DiskLabelsEntry
+	24, // 20: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.ResourceManagerTagsEntry
+	19, // 21: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
+	19, // 22: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceBootDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption
+	25, // 23: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 24: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAttachedDisk.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 25: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 26: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 27: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6,  // 28: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig
+	7,  // 29: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceIpv6AccessConfig
+	8,  // 30: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAliasIpRange
+	25, // 31: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceAccessConfig.nat_ip:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 32: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 33: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNodeAffinity
+	17, // 34: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSpecificReservation
+	25, // 35: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 36: dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceSourceEncryption.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	37, // [37:37] is the sub-list for method output_type
+	37, // [37:37] is the sub-list for method input_type
+	37, // [37:37] is the sub-list for extension type_name
+	37, // [37:37] is the sub-list for extension extendee
+	0,  // [0:37] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_init() }
@@ -2539,19 +2642,19 @@ func file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpcomputeinstance_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   24,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

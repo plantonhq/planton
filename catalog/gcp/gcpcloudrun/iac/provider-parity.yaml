@@ -30,6 +30,14 @@ resources:
         arg: template.vpc_access
       - spec: spec.node_selector
         arg: template.node_selector
+      # The sandbox wrapper block is a single-item list around the
+      # template list; the spec names the templates directly.
+      - spec: spec.sandbox_templates
+        arg: template.sandboxes.templates
+      # The provider's bare "tags" is the Resource Manager tag map; the
+      # spec uses the catalog-wide resource_manager_tags vocabulary.
+      - spec: spec.resource_manager_tags
+        arg: tags
       - spec: spec.scaling
         arg: template.scaling
       - spec: spec.revision
@@ -96,21 +104,6 @@ resources:
           live control plane silently drops the provider-modeled value,
           leaving a perpetual re-plan diff caught by the apply-idempotency
           gate); re-admission is single-success by API design
-
-      # Not yet bridged by the pinned Pulumi SDK (pulumi-gcp v9.29.0):
-      # modeling these only in Terraform would break cross-engine parity
-      # -- a spec field one engine silently drops. Re-evaluate at the
-      # next SDK bump.
-      - arg: tags
-        reason: >-
-          resource-manager tags, GA at the pin but not yet bridged by the
-          pinned Pulumi SDK; modeling it would break cross-engine parity.
-          Re-evaluate at the next pulumi-gcp bump.
-      - arg: template.containers.sandbox_launcher
-        reason: >-
-          sandbox-supervisor flag, GA at the pin but not yet bridged by
-          the pinned Pulumi SDK; modeling it would break cross-engine
-          parity. Re-evaluate at the next pulumi-gcp bump.
 
       # API-client telemetry strings with no user-facing behavior.
       - arg: client

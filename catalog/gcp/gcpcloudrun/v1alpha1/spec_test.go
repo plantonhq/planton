@@ -954,4 +954,46 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 			Expect(protovalidate.Validate(spec)).To(BeNil())
 		})
 	})
+
+	Context("sandboxes and resource manager tags", func() {
+		It("accepts sandbox templates with exactly one supervisor container", func() {
+			spec := makeValidSpec()
+			spec.Containers[0].SandboxLauncher = true
+			spec.SandboxTemplates = []*GcpCloudRunSandboxTemplate{{
+				Name:         "python-runner",
+				Image:        "us-docker.pkg.dev/my-project/repo/sandbox:v1",
+				Command:      []string{"python3"},
+				Args:         []string{"-u", "run.py"},
+				Env:          []*GcpCloudRunSandboxEnvVar{{Name: "PYTHONUNBUFFERED", Value: "1"}},
+				VolumeMounts: []*GcpCloudRunVolumeMount{{Name: "scratch", MountPath: "/scratch"}},
+				WorkingDir:   "/work",
+			}}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects sandbox templates without a supervisor container", func() {
+			spec := makeValidSpec()
+			spec.SandboxTemplates = []*GcpCloudRunSandboxTemplate{{Name: "runner", Image: "busybox"}}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+
+		It("rejects a sandbox template whose name is not a DNS label", func() {
+			spec := makeValidSpec()
+			spec.Containers[0].SandboxLauncher = true
+			spec.SandboxTemplates = []*GcpCloudRunSandboxTemplate{{Name: "Python_Runner", Image: "busybox"}}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+
+		It("accepts resource manager tags in the tagKeys/tagValues form", func() {
+			spec := makeValidSpec()
+			spec.ResourceManagerTags = map[string]string{"tagKeys/123456789012": "tagValues/987654321098"}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects resource manager tags by short name", func() {
+			spec := makeValidSpec()
+			spec.ResourceManagerTags = map[string]string{"env": "prod"}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+	})
 })

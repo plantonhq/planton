@@ -10,6 +10,14 @@ spec:
   # minimal scenario (BUILT_IN user + database_roles [cloudsqlsuperuser]
   # accepted by the live API + explicit deletionPolicy DELETE) x 2
   # engines, all phases green under the apply-idempotency gate.
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the user gained service_account: an IAM service-account
+  # user wired by reference to a GcpServiceAccount, with both engines deriving
+  # the database username Cloud SQL expects. The new iam-service-account
+  # scenario (a new GcpServiceAccount prerequisite,
+  # cloudsql.iam_authentication=on on the prerequisite instance) proves the
+  # derived name exists under the account's identity and re-plans clean,
+  # beside the BUILT_IN smoke.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 30

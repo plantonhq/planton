@@ -95,7 +95,11 @@ resource "google_dataproc_cluster" "cluster" {
           dynamic "confidential_instance_config" {
             for_each = gce_cluster_config.value.confidential_instance_config != null ? [gce_cluster_config.value.confidential_instance_config] : []
             content {
-              enable_confidential_compute = confidential_instance_config.value.enable_confidential_compute
+              # The provider-deprecated boolean is sent only when a manifest
+              # still sets it, so a manifest on confidential_instance_type
+              # alone never trips the deprecation warning.
+              enable_confidential_compute = confidential_instance_config.value.enable_confidential_compute ? true : null
+              confidential_instance_type  = confidential_instance_config.value.confidential_instance_type != "" ? confidential_instance_config.value.confidential_instance_type : null
             }
           }
         }
@@ -124,6 +128,17 @@ resource "google_dataproc_cluster" "cluster" {
               # Provisioned-performance dials (hyperdisk classes).
               boot_disk_provisioned_iops       = disk_config.value.boot_disk_provisioned_iops
               boot_disk_provisioned_throughput = disk_config.value.boot_disk_provisioned_throughput
+
+              # Additional persistent disks on every node of this role.
+              dynamic "attached_disk_config" {
+                for_each = disk_config.value.attached_disks
+                content {
+                  disk_size_gb           = attached_disk_config.value.disk_size_gb > 0 ? attached_disk_config.value.disk_size_gb : null
+                  disk_type              = attached_disk_config.value.disk_type != "" ? attached_disk_config.value.disk_type : null
+                  provisioned_iops       = attached_disk_config.value.provisioned_iops
+                  provisioned_throughput = attached_disk_config.value.provisioned_throughput
+                }
+              }
             }
           }
 
@@ -145,6 +160,29 @@ resource "google_dataproc_cluster" "cluster" {
                 content {
                   machine_types = instance_selection_list.value.machine_types
                   rank          = instance_selection_list.value.rank
+
+                  # Per-selection disk shape overriding the role's disk_config.
+                  dynamic "disk_config" {
+                    for_each = instance_selection_list.value.disk_config != null ? [instance_selection_list.value.disk_config] : []
+                    content {
+                      boot_disk_size_gb                = disk_config.value.boot_disk_size_gb > 0 ? disk_config.value.boot_disk_size_gb : null
+                      boot_disk_type                   = disk_config.value.boot_disk_type != "" ? disk_config.value.boot_disk_type : null
+                      num_local_ssds                   = disk_config.value.num_local_ssds > 0 ? disk_config.value.num_local_ssds : null
+                      local_ssd_interface              = disk_config.value.local_ssd_interface != "" ? disk_config.value.local_ssd_interface : null
+                      boot_disk_provisioned_iops       = disk_config.value.boot_disk_provisioned_iops
+                      boot_disk_provisioned_throughput = disk_config.value.boot_disk_provisioned_throughput
+
+                      dynamic "attached_disk_config" {
+                        for_each = disk_config.value.attached_disks
+                        content {
+                          disk_size_gb           = attached_disk_config.value.disk_size_gb > 0 ? attached_disk_config.value.disk_size_gb : null
+                          disk_type              = attached_disk_config.value.disk_type != "" ? attached_disk_config.value.disk_type : null
+                          provisioned_iops       = attached_disk_config.value.provisioned_iops
+                          provisioned_throughput = attached_disk_config.value.provisioned_throughput
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -176,6 +214,17 @@ resource "google_dataproc_cluster" "cluster" {
               # Provisioned-performance dials (hyperdisk classes).
               boot_disk_provisioned_iops       = disk_config.value.boot_disk_provisioned_iops
               boot_disk_provisioned_throughput = disk_config.value.boot_disk_provisioned_throughput
+
+              # Additional persistent disks on every node of this role.
+              dynamic "attached_disk_config" {
+                for_each = disk_config.value.attached_disks
+                content {
+                  disk_size_gb           = attached_disk_config.value.disk_size_gb > 0 ? attached_disk_config.value.disk_size_gb : null
+                  disk_type              = attached_disk_config.value.disk_type != "" ? attached_disk_config.value.disk_type : null
+                  provisioned_iops       = attached_disk_config.value.provisioned_iops
+                  provisioned_throughput = attached_disk_config.value.provisioned_throughput
+                }
+              }
             }
           }
 
@@ -198,6 +247,29 @@ resource "google_dataproc_cluster" "cluster" {
                 content {
                   machine_types = instance_selection_list.value.machine_types
                   rank          = instance_selection_list.value.rank
+
+                  # Per-selection disk shape overriding the role's disk_config.
+                  dynamic "disk_config" {
+                    for_each = instance_selection_list.value.disk_config != null ? [instance_selection_list.value.disk_config] : []
+                    content {
+                      boot_disk_size_gb                = disk_config.value.boot_disk_size_gb > 0 ? disk_config.value.boot_disk_size_gb : null
+                      boot_disk_type                   = disk_config.value.boot_disk_type != "" ? disk_config.value.boot_disk_type : null
+                      num_local_ssds                   = disk_config.value.num_local_ssds > 0 ? disk_config.value.num_local_ssds : null
+                      local_ssd_interface              = disk_config.value.local_ssd_interface != "" ? disk_config.value.local_ssd_interface : null
+                      boot_disk_provisioned_iops       = disk_config.value.boot_disk_provisioned_iops
+                      boot_disk_provisioned_throughput = disk_config.value.boot_disk_provisioned_throughput
+
+                      dynamic "attached_disk_config" {
+                        for_each = disk_config.value.attached_disks
+                        content {
+                          disk_size_gb           = attached_disk_config.value.disk_size_gb > 0 ? attached_disk_config.value.disk_size_gb : null
+                          disk_type              = attached_disk_config.value.disk_type != "" ? attached_disk_config.value.disk_type : null
+                          provisioned_iops       = attached_disk_config.value.provisioned_iops
+                          provisioned_throughput = attached_disk_config.value.provisioned_throughput
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -224,6 +296,17 @@ resource "google_dataproc_cluster" "cluster" {
               # Provisioned-performance dials (hyperdisk classes).
               boot_disk_provisioned_iops       = disk_config.value.boot_disk_provisioned_iops
               boot_disk_provisioned_throughput = disk_config.value.boot_disk_provisioned_throughput
+
+              # Additional persistent disks on every node of this role.
+              dynamic "attached_disk_config" {
+                for_each = disk_config.value.attached_disks
+                content {
+                  disk_size_gb           = attached_disk_config.value.disk_size_gb > 0 ? attached_disk_config.value.disk_size_gb : null
+                  disk_type              = attached_disk_config.value.disk_type != "" ? attached_disk_config.value.disk_type : null
+                  provisioned_iops       = attached_disk_config.value.provisioned_iops
+                  provisioned_throughput = attached_disk_config.value.provisioned_throughput
+                }
+              }
             }
           }
 
@@ -235,6 +318,29 @@ resource "google_dataproc_cluster" "cluster" {
                 content {
                   machine_types = instance_selection_list.value.machine_types
                   rank          = instance_selection_list.value.rank
+
+                  # Per-selection disk shape overriding the role's disk_config.
+                  dynamic "disk_config" {
+                    for_each = instance_selection_list.value.disk_config != null ? [instance_selection_list.value.disk_config] : []
+                    content {
+                      boot_disk_size_gb                = disk_config.value.boot_disk_size_gb > 0 ? disk_config.value.boot_disk_size_gb : null
+                      boot_disk_type                   = disk_config.value.boot_disk_type != "" ? disk_config.value.boot_disk_type : null
+                      num_local_ssds                   = disk_config.value.num_local_ssds > 0 ? disk_config.value.num_local_ssds : null
+                      local_ssd_interface              = disk_config.value.local_ssd_interface != "" ? disk_config.value.local_ssd_interface : null
+                      boot_disk_provisioned_iops       = disk_config.value.boot_disk_provisioned_iops
+                      boot_disk_provisioned_throughput = disk_config.value.boot_disk_provisioned_throughput
+
+                      dynamic "attached_disk_config" {
+                        for_each = disk_config.value.attached_disks
+                        content {
+                          disk_size_gb           = attached_disk_config.value.disk_size_gb > 0 ? attached_disk_config.value.disk_size_gb : null
+                          disk_type              = attached_disk_config.value.disk_type != "" ? attached_disk_config.value.disk_type : null
+                          provisioned_iops       = attached_disk_config.value.provisioned_iops
+                          provisioned_throughput = attached_disk_config.value.provisioned_throughput
+                        }
+                      }
+                    }
+                  }
                 }
               }
 

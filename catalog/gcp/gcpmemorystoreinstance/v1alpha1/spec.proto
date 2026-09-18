@@ -561,6 +561,21 @@ message GcpMemorystoreInstanceSpec {
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
   }];
 
+  // The Memorystore ACL policy attached to the instance: a set of
+  // Valkey ACL rules (users, key patterns, allowed commands) authored once
+  // and shared across instances in the same region. Leave empty for the
+  // instance's built-in default ACL (the "default" user with full access,
+  // gated only by auth_enabled). Full resource name:
+  // projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}.
+  // Mutable: attaching or swapping a policy is an in-place update; the
+  // instance's is_acl_policy_in_sync status reports when the new rules
+  // have propagated to every node.
+  string acl_policy = 27 [(buf.validate.field).cel = {
+    id: "acl_policy_format"
+    message: "acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}"
+    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$')"
+  }];
+
   // An instance is seeded from at most one source.
   option (buf.validate.message).cel = {
     id: "at_most_one_seed_source"

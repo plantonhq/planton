@@ -180,6 +180,7 @@ spec:
 | `spec.scheduling.nodeAffinities[].operator` | `string` | yes |  |  |
 | `spec.scheduling.nodeAffinities[].values` | `[]string` | yes |  |  |
 | `spec.scheduling.localSsdRecoveryTimeoutSeconds` | `int64` |  |  |  |
+| `spec.scheduling.hostErrorTimeoutSeconds` | `int32` |  |  |  |
 | `spec.shieldedInstanceConfig` | `GcpComputeInstanceShieldedConfig` |  |  |  |
 | `spec.shieldedInstanceConfig.enableSecureBoot` | `bool` |  |  |  |
 | `spec.shieldedInstanceConfig.enableVtpm` | `bool` |  | `true` |  |
@@ -220,6 +221,9 @@ spec:
 | `spec.instanceEncryptionKey.kmsKey` | `string \| valueFrom` | yes |  | GcpKmsKey (`status.outputs.key_id`) |
 | `spec.instanceEncryptionKey.kmsKeyServiceAccount` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.workloadIdentityConfig` | `GcpComputeInstanceWorkloadIdentityConfig` |  |  |  |
+| `spec.workloadIdentityConfig.identity` | `string` | yes |  |  |
+| `spec.workloadIdentityConfig.identityCertificateEnabled` | `bool` |  |  |  |
 
 ## Field Details
 
@@ -1078,6 +1082,20 @@ recovery.
 
 - rule: {"int64":{"lte":"604800","gte":"0"}}
 
+### spec.scheduling.hostErrorTimeoutSeconds
+
+`int32` · optional (explicit presence)
+
+How long Compute Engine waits, in seconds, before declaring the host
+failed and starting host-error recovery (restart or termination per
+automatic_restart). A lower value recovers faster from a hung host at
+the cost of more false positives; leave unset for Compute Engine's
+default recovery timing. Must be 90..330 in steps of 30 (90, 120, ...,
+330).
+
+- rule: host_error_timeout_seconds must be a multiple of 30 between 90 and 330
+- rule: {"int32":{"lte":330,"gte":90}}
+
 ### spec.shieldedInstanceConfig
 
 `GcpComputeInstanceShieldedConfig`
@@ -1193,7 +1211,11 @@ frequency (supported machine families only).
 `[]GcpComputeInstanceGuestAccelerator`
 
 GPU accelerator cards attached to the instance. Requires a
-GPU-capable zone and on_host_maintenance = "TERMINATE".
+GPU-capable zone and on_host_maintenance = "TERMINATE". Each entry
+attaches at least one card (count >= 1). Removing every entry from an
+existing VM leaves its GPUs attached (the provider preserves the
+current accelerators when the block is absent); detaching GPUs
+replaces the VM, so plan it as a recreate rather than an edit.
 
 ### spec.guestAccelerators[].type
 
@@ -1431,6 +1453,36 @@ Deletion policy — what happens when this resource is destroyed:
                running in GCP
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+### spec.workloadIdentityConfig
+
+`GcpComputeInstanceWorkloadIdentityConfig`
+
+Managed workload identity for the VM: a SPIFFE identity issued to the
+instance (and, optionally, X.509 identity certificates) so workloads
+on it authenticate to each other by identity instead of shared
+secrets or network position. Create-time only: both fields are
+immutable, so changing them replaces the VM.
+
+### spec.workloadIdentityConfig.identity
+
+`string` · required
+
+The SPIFFE ID Compute Engine issues to the instance, e.g.
+"spiffe://PROJECT.svc.id.goog/ns/NAMESPACE/sa/SERVICE_ACCOUNT" or a
+workload-identity-pool identity of the form
+"spiffe://POOL.global.PROJECT_NUMBER.workload.id.goog/ns/NS/sa/SA".
+Immutable.
+
+- rule: {"required":true,"string":{"minLen":"1","prefix":"spiffe://"}}
+
+### spec.workloadIdentityConfig.identityCertificateEnabled
+
+`bool`
+
+Whether Compute Engine also issues and rotates X.509 certificates
+bound to the identity, made available on the VM for mutual TLS.
+Immutable.
 
 ## Validation Rules
 

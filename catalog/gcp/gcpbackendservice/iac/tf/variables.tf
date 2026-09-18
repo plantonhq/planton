@@ -157,6 +157,10 @@ variable "spec" {
       sample_rate     = optional(number)
       optional_mode   = optional(string, "")
       optional_fields = optional(list(string), [])
+      # Header names whose values join each log entry (enable + HTTP-family
+      # protocol required).
+      request_headers  = optional(list(string), [])
+      response_headers = optional(list(string), [])
     }))
 
     # Headers the load balancer adds, "Header-Name: value" form.

@@ -48,7 +48,7 @@ matched, mapped, or excluded with the reason recorded in
 
 | Excluded Feature | Why |
 |---|---|
-| Kubelet `shutdown_grace_period_seconds` / `shutdown_grace_period_critical_pods_seconds`, `custom_node_init`, `maintenance_policy.exclusion_until_end_of_support` | GA at the pinned provider but not yet bridged by the pinned Pulumi SDK — modeling them only in Terraform would break cross-engine parity (a spec field one engine silently drops). Re-evaluated at every SDK bump. |
+| `maintenance_policy.exclusion_until_end_of_support.start_time` / `end_time` | Computed-only in the provider: GKE derives the exclusion window from the pool's version once `excludeUpgradesUntilEndOfSupport` is set; there is no input to author. |
 
 ## Related Components
 

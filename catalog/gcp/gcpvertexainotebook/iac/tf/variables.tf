@@ -47,6 +47,8 @@ variable "spec" {
       disk_type    = optional(string, "")
       disk_size_gb = optional(number, 0)
       kms_key      = optional(string, "")
+      # Compute resource policies (snapshot schedules) attached to the disk.
+      resource_policies = optional(list(string), [])
     }), null)
 
     accelerator_config = optional(object({
@@ -101,6 +103,12 @@ variable "spec" {
 
     enable_managed_euc          = optional(bool, false)
     enable_third_party_identity = optional(bool, false)
+
+    # Minimum CPU platform for the VM (e.g. "Intel Sapphire Rapids").
+    min_cpu_platform = optional(string, "")
+
+    # API-side deletion protection. Sent only when set (API-computed).
+    enable_deletion_protection = optional(bool, null)
 
     # Client-side destroy behavior: DELETE (default), PREVENT, ABANDON.
     deletion_policy = optional(string, "")

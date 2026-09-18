@@ -88,13 +88,21 @@ the destroy outright. One provider asymmetry recorded honestly: the
 zonal instance TEMPLATE carries no deletion policy (it is always deleted
 on destroy) — the regional one participates like every other resource.
 
+## Managed workload identity and host-error recovery
+
+`template.workloadIdentityConfig` issues every VM in the group a SPIFFE
+identity (and, with `identityCertificateEnabled`, rotated X.509
+certificates) so services authenticate to each other by identity rather
+than by shared secret or network position. It is part of the template,
+so changing it rotates the template and rolls the group.
+`template.scheduling.hostErrorTimeoutSeconds` (90..330 in steps of 30)
+tightens how quickly Compute Engine declares a hung host failed and
+starts recovery; leave it unset for the default timing.
+
 ## Coverage decisions on record
 
-`workload_identity_config` (managed workload identity for the VMs) is GA
-provider surface but not bridged by the pinned Pulumi SDK — recorded as
-an SDK-gap exclusion in `iac/provider-parity.yaml`; it lands as spec
-surface when the bridge ships it. CSEK raw-key encryption arms are
-deliberately not modeled (raw key material does not belong in manifests
-or state — use CMEK). Legacy preemptible-only VMs are not modeled: set
+CSEK raw-key encryption arms are deliberately not modeled (raw key
+material does not belong in manifests or state — use CMEK). Legacy
+preemptible-only VMs are not modeled: set
 `scheduling.provisioningModel: SPOT` and both engines derive the legacy
 flag the API still requires.

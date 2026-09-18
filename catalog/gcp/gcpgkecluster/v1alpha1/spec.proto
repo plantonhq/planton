@@ -538,6 +538,41 @@ message GcpGkeClusterSpec {
   // Kubernetes Secret objects (as opposed to the CSI add-on's volume
   // mounts), with its own rotation cadence.
   GcpGkeClusterSecretSync secret_sync = 74;
+
+  // Two-step (rollback-safe) control-plane minor upgrades: the control
+  // plane moves to the new version but keeps emulating the old minor for
+  // a soak period during which the upgrade can be rolled back without
+  // data loss. Leave unset for standard one-step upgrades.
+  GcpGkeClusterRollbackSafeUpgrade rollback_safe_upgrade = 75;
+
+  // Completes a rollback-safe upgrade declaratively: set to the target
+  // minor version ("major.minor", e.g. "1.33") once the soak period has
+  // proven the new control plane, and GKE stops emulating the old minor.
+  // Removing the field does not trigger completion; only setting it does.
+  // Only meaningful with rollback_safe_upgrade.
+  string desired_emulated_version = 76 [(buf.validate.field).cel = {
+    id: "desired_emulated_version_format"
+    message: "desired_emulated_version must be in major.minor format, e.g. \"1.33\""
+    expression: "this == '' || this.matches('^[0-9]+\\\\.[0-9]+$')"
+  }];
+}
+
+// GcpGkeClusterRollbackSafeUpgrade configures two-step control-plane
+// upgrades.
+message GcpGkeClusterRollbackSafeUpgrade {
+  // How long the cluster stays in the rollbackable state after the
+  // control plane upgrades, as a seconds-format duration, e.g. "604800s"
+  // (7 days). Minimum 6 hours ("21600s"), maximum 7 days ("604800s").
+  // Leave empty to skip the two-step flow and perform a standard
+  // one-step upgrade.
+  // The bound is expressed as one pattern (21600 <= seconds <= 604800)
+  // so every validation engine, including the Java one, evaluates it
+  // without string slicing.
+  string control_plane_soak_duration = 1 [(buf.validate.field).cel = {
+    id: "soak_duration_format"
+    message: "control_plane_soak_duration must be a seconds-format duration between \"21600s\" (6 hours) and \"604800s\" (7 days)"
+    expression: "this == '' || this.matches('^((2(1[6-9]|[2-9][0-9])[0-9]{2}|[3-9][0-9]{4}|[1-5][0-9]{5}|60[0-3][0-9]{3}|604[0-7][0-9]{2})(\\\\.[0-9]+)?|604800(\\\\.0+)?)s$')"
+  }];
 }
 
 // GcpGkeClusterRbacBindingConfig restricts legacy catch-all RBAC subjects.
@@ -1032,16 +1067,24 @@ message GcpGkeClusterControlPlaneEndpoints {
 message GcpGkeClusterMaintenancePolicy {
   option (buf.validate.message).cel = {
     id: "exactly_one_window"
-    message: "set exactly one of daily_window or recurring_window"
-    expression: "has(this.daily_window) != has(this.recurring_window)"
+    message: "set exactly one of daily_window, recurring_window, or recurring_time_window"
+    expression: "(has(this.daily_window) ? 1 : 0) + (has(this.recurring_window) ? 1 : 0) + (has(this.recurring_time_window) ? 1 : 0) == 1"
   };
 
   // Same 4-hour window every day, starting at this UTC time.
   GcpGkeClusterDailyMaintenanceWindow daily_window = 1;
 
-  // RRULE-based recurring window (e.g. weekends only) — finer control than
-  // the daily window.
+  // RRULE-based recurring window anchored on an absolute first
+  // occurrence (start_time/end_time as RFC3339 timestamps) — e.g.
+  // weekends only. Finer control than the daily window.
   GcpGkeClusterRecurringMaintenanceWindow recurring_window = 2;
+
+  // RRULE-based recurring window expressed as a time of day plus a
+  // duration, with an optional date the recurrence may first start. The
+  // same recurrence power as recurring_window without committing to one
+  // absolute first timestamp — pick this when the policy is authored as
+  // "every Saturday at 02:00 for 6 hours, starting next quarter".
+  GcpGkeClusterRecurringTimeMaintenanceWindow recurring_time_window = 5;
 
   // Date ranges during which non-emergency maintenance is blocked (change
   // freezes). Maximum 20; the allowed scope/duration depends on the release
@@ -1101,6 +1144,75 @@ message GcpGkeClusterRecurringMaintenanceWindow {
     (buf.validate.field).required = true,
     (buf.validate.field).string = {min_len: 1}
   ];
+}
+
+// GcpGkeClusterRecurringTimeMaintenanceWindow is an RFC5545-recurrence
+// window authored as a time of day and a duration.
+message GcpGkeClusterRecurringTimeMaintenanceWindow {
+  // Time of day (UTC) each window instance begins.
+  GcpGkeClusterTimeOfDay window_start_time = 1 [(buf.validate.field).required = true];
+
+  // Length of each window instance as a duration string with a unit
+  // suffix, e.g. "4h", "6h30m", "21600s". Must be positive.
+  string window_duration = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|ms|s|m|h))+$"
+    }
+  ];
+
+  // RFC5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=SA,SU" for weekends.
+  string recurrence = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {min_len: 1}
+  ];
+
+  // Earliest calendar date the recurrence may start; window instances
+  // before it are skipped. Leave unset to start immediately.
+  GcpGkeClusterCalendarDate delay_until = 4;
+}
+
+// GcpGkeClusterTimeOfDay is a wall-clock time of day (UTC).
+message GcpGkeClusterTimeOfDay {
+  // Hour of the day, 0-23.
+  int32 hours = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 23
+  }];
+
+  // Minute of the hour, 0-59.
+  int32 minutes = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 59
+  }];
+
+  // Second of the minute, 0-59.
+  int32 seconds = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 59
+  }];
+}
+
+// GcpGkeClusterCalendarDate is a calendar date.
+message GcpGkeClusterCalendarDate {
+  // Four-digit year, e.g. 2027.
+  int32 year = 1 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 9999
+  }];
+
+  // Month of the year, 1-12.
+  int32 month = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 12
+  }];
+
+  // Day of the month, 1-31.
+  int32 day = 3 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 31
+  }];
 }
 
 // GcpGkeClusterMaintenanceExclusion blocks maintenance during a date range.
@@ -1678,6 +1790,18 @@ message GcpGkeClusterAddons {
 
   // The Slurm operator addon (Slurm-on-GKE for HPC scheduling).
   bool slurm_operator_enabled = 22;
+
+  // High Scale Checkpointing: the addon that lets large AI/ML training
+  // jobs checkpoint and restore state at scale (multi-tier checkpointing
+  // onto node-local and Cloud Storage tiers) so a job resumes from its
+  // last checkpoint after a preemption or failure instead of restarting.
+  bool high_scale_checkpointing_enabled = 23;
+
+  // Node Readiness Controller: the addon that holds a node out of
+  // scheduling until its readiness rules (for example, required daemon
+  // pods or device drivers) pass, so workloads never land on a node
+  // whose accelerators or networking are not yet usable.
+  bool node_readiness_controller_enabled = 24;
 }
 
 // GkeReleaseChannel selects the cluster's Kubernetes upgrade channel.

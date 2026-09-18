@@ -648,4 +648,23 @@ var _ = ginkgo.Describe("GcpVertexAiNotebookSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 		gomega.Expect(err.Error()).To(gomega.ContainSubstring("deletion_policy"))
 	})
+
+	ginkgo.It("should accept min_cpu_platform, deletion protection, and data-disk resource policies", func() {
+		msg := minimal()
+		msg.Spec.MinCpuPlatform = "Intel Sapphire Rapids"
+		msg.Spec.EnableDeletionProtection = proto.Bool(true)
+		msg.Spec.DataDisk = &GcpVertexAiNotebookDataDisk{
+			DiskType:         "PD_SSD",
+			ResourcePolicies: []string{"projects/my-gcp-project/regions/us-central1/resourcePolicies/daily-snapshots"},
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject duplicate data-disk resource policies", func() {
+		msg := minimal()
+		msg.Spec.DataDisk = &GcpVertexAiNotebookDataDisk{
+			ResourcePolicies: []string{"projects/p/regions/r/resourcePolicies/a", "projects/p/regions/r/resourcePolicies/a"},
+		}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+	})
 })

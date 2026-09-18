@@ -817,6 +817,21 @@ var _ = ginkgo.Describe("GcpMemorystoreInstanceSpec", func() {
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
 
+	ginkgo.It("should accept a full-resource-name acl_policy", func() {
+		msg := minimal()
+		msg.Spec.AclPolicy = "projects/my-gcp-project/locations/us-central1/aclPolicies/readers"
+		err := validator.Validate(msg)
+		gomega.Expect(err).ToNot(gomega.HaveOccurred())
+	})
+
+	ginkgo.It("should reject an acl_policy that is not a full resource name", func() {
+		msg := minimal()
+		msg.Spec.AclPolicy = "readers"
+		err := validator.Validate(msg)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("acl_policy"))
+	})
+
 	ginkgo.It("should reject when metadata is missing", func() {
 		msg := minimal()
 		msg.Metadata = nil

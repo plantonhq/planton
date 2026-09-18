@@ -323,6 +323,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRunJob | `spec.template.serviceAccount` | `status.outputs.email` |
 | GcpCloudSchedulerJob | `spec.httpTarget.oauthToken.serviceAccountEmail` | `status.outputs.email` |
 | GcpCloudSchedulerJob | `spec.httpTarget.oidcToken.serviceAccountEmail` | `status.outputs.email` |
+| GcpCloudSqlUser | `spec.serviceAccount` | `status.outputs.email` |
 | GcpCloudTasksQueue | `spec.httpTarget.oauthToken.serviceAccountEmail` | `status.outputs.email` |
 | GcpCloudTasksQueue | `spec.httpTarget.oidcToken.serviceAccountEmail` | `status.outputs.email` |
 | GcpComputeInstance | `spec.serviceAccount.email` | `status.outputs.email` |

@@ -28,6 +28,10 @@ resource "google_cloud_run_v2_job" "main" {
   # the job from management without deleting it in GCP.
   deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
 
+  # Resource Manager tags, bound at creation only (ForceNew): omitted when
+  # empty so a job without tags carries no tag surface.
+  tags = length(var.spec.resource_manager_tags) > 0 ? var.spec.resource_manager_tags : null
+
   # Declarative run-on-deploy tokens (mutually exclusive — proto-enforced):
   # start_* counts the job ready when the triggered execution STARTS;
   # run_* counts it ready when the execution COMPLETES.

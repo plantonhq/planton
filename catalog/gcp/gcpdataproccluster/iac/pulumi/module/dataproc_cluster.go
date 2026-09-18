@@ -137,6 +137,267 @@ func diskFields(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterDiskConfig) (boo
 	return
 }
 
+// attachedDiskFields reads one attached-disk entry into the optional
+// scalars every role's attached-disk block shares (0 / "" mean unset).
+func attachedDiskFields(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterAttachedDisk) (sizeGb *int, diskType *string, provisionedIops *int, provisionedThroughput *int) {
+	if d.DiskSizeGb > 0 {
+		v := int(d.DiskSizeGb)
+		sizeGb = &v
+	}
+	if d.DiskType != "" {
+		v := d.DiskType
+		diskType = &v
+	}
+	if d.ProvisionedIops != nil {
+		v := int(*d.ProvisionedIops)
+		provisionedIops = &v
+	}
+	if d.ProvisionedThroughput != nil {
+		v := int(*d.ProvisionedThroughput)
+		provisionedThroughput = &v
+	}
+	return
+}
+
+// The bridged SDK types every role's disk blocks separately, so each role
+// gets its own pair of builders below: the additional persistent disks on
+// every node of the role, and the per-selection disk shape inside its
+// instance flexibility policy. The bodies are identical by design.
+
+// masterAttachedDisks builds the master role's attached-disk list; nil when
+// the spec declares none so the block is omitted.
+func masterAttachedDisks(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterDiskConfig) dataproc.ClusterClusterConfigMasterConfigDiskConfigAttachedDiskConfigArrayInput {
+	if len(d.AttachedDisks) == 0 {
+		return nil
+	}
+	var disks dataproc.ClusterClusterConfigMasterConfigDiskConfigAttachedDiskConfigArray
+	for _, ad := range d.AttachedDisks {
+		sizeGb, diskType, provIops, provThroughput := attachedDiskFields(ad)
+		diskArgs := &dataproc.ClusterClusterConfigMasterConfigDiskConfigAttachedDiskConfigArgs{}
+		if sizeGb != nil {
+			diskArgs.DiskSizeGb = pulumi.IntPtr(*sizeGb)
+		}
+		if diskType != nil {
+			diskArgs.DiskType = pulumi.StringPtr(*diskType)
+		}
+		if provIops != nil {
+			diskArgs.ProvisionedIops = pulumi.IntPtr(*provIops)
+		}
+		if provThroughput != nil {
+			diskArgs.ProvisionedThroughput = pulumi.IntPtr(*provThroughput)
+		}
+		disks = append(disks, diskArgs)
+	}
+	return disks
+}
+
+// masterSelectionDiskConfig builds the per-selection disk shape for the
+// master role's instance flexibility policy; nil when the selection
+// inherits the role's disk_config.
+func masterSelectionDiskConfig(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterDiskConfig) dataproc.ClusterClusterConfigMasterConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigPtrInput {
+	if d == nil {
+		return nil
+	}
+	sizeGb, diskType, ssds, ssdIface, provIops, provThroughput := diskFields(d)
+	diskArgs := &dataproc.ClusterClusterConfigMasterConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigArgs{}
+	if sizeGb != nil {
+		diskArgs.BootDiskSizeGb = pulumi.IntPtr(*sizeGb)
+	}
+	if diskType != nil {
+		diskArgs.BootDiskType = pulumi.StringPtr(*diskType)
+	}
+	if ssds != nil {
+		diskArgs.NumLocalSsds = pulumi.IntPtr(*ssds)
+	}
+	if ssdIface != nil {
+		diskArgs.LocalSsdInterface = pulumi.StringPtr(*ssdIface)
+	}
+	if provIops != nil {
+		diskArgs.BootDiskProvisionedIops = pulumi.IntPtr(*provIops)
+	}
+	if provThroughput != nil {
+		diskArgs.BootDiskProvisionedThroughput = pulumi.IntPtr(*provThroughput)
+	}
+	if len(d.AttachedDisks) > 0 {
+		var disks dataproc.ClusterClusterConfigMasterConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigAttachedDiskConfigArray
+		for _, ad := range d.AttachedDisks {
+			adSizeGb, adDiskType, adProvIops, adProvThroughput := attachedDiskFields(ad)
+			adArgs := &dataproc.ClusterClusterConfigMasterConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigAttachedDiskConfigArgs{}
+			if adSizeGb != nil {
+				adArgs.DiskSizeGb = pulumi.IntPtr(*adSizeGb)
+			}
+			if adDiskType != nil {
+				adArgs.DiskType = pulumi.StringPtr(*adDiskType)
+			}
+			if adProvIops != nil {
+				adArgs.ProvisionedIops = pulumi.IntPtr(*adProvIops)
+			}
+			if adProvThroughput != nil {
+				adArgs.ProvisionedThroughput = pulumi.IntPtr(*adProvThroughput)
+			}
+			disks = append(disks, adArgs)
+		}
+		diskArgs.AttachedDiskConfigs = disks
+	}
+	return diskArgs
+}
+
+// workerAttachedDisks builds the worker role's attached-disk list; nil when
+// the spec declares none so the block is omitted.
+func workerAttachedDisks(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterDiskConfig) dataproc.ClusterClusterConfigWorkerConfigDiskConfigAttachedDiskConfigArrayInput {
+	if len(d.AttachedDisks) == 0 {
+		return nil
+	}
+	var disks dataproc.ClusterClusterConfigWorkerConfigDiskConfigAttachedDiskConfigArray
+	for _, ad := range d.AttachedDisks {
+		sizeGb, diskType, provIops, provThroughput := attachedDiskFields(ad)
+		diskArgs := &dataproc.ClusterClusterConfigWorkerConfigDiskConfigAttachedDiskConfigArgs{}
+		if sizeGb != nil {
+			diskArgs.DiskSizeGb = pulumi.IntPtr(*sizeGb)
+		}
+		if diskType != nil {
+			diskArgs.DiskType = pulumi.StringPtr(*diskType)
+		}
+		if provIops != nil {
+			diskArgs.ProvisionedIops = pulumi.IntPtr(*provIops)
+		}
+		if provThroughput != nil {
+			diskArgs.ProvisionedThroughput = pulumi.IntPtr(*provThroughput)
+		}
+		disks = append(disks, diskArgs)
+	}
+	return disks
+}
+
+// workerSelectionDiskConfig builds the per-selection disk shape for the
+// worker role's instance flexibility policy; nil when the selection
+// inherits the role's disk_config.
+func workerSelectionDiskConfig(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterDiskConfig) dataproc.ClusterClusterConfigWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigPtrInput {
+	if d == nil {
+		return nil
+	}
+	sizeGb, diskType, ssds, ssdIface, provIops, provThroughput := diskFields(d)
+	diskArgs := &dataproc.ClusterClusterConfigWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigArgs{}
+	if sizeGb != nil {
+		diskArgs.BootDiskSizeGb = pulumi.IntPtr(*sizeGb)
+	}
+	if diskType != nil {
+		diskArgs.BootDiskType = pulumi.StringPtr(*diskType)
+	}
+	if ssds != nil {
+		diskArgs.NumLocalSsds = pulumi.IntPtr(*ssds)
+	}
+	if ssdIface != nil {
+		diskArgs.LocalSsdInterface = pulumi.StringPtr(*ssdIface)
+	}
+	if provIops != nil {
+		diskArgs.BootDiskProvisionedIops = pulumi.IntPtr(*provIops)
+	}
+	if provThroughput != nil {
+		diskArgs.BootDiskProvisionedThroughput = pulumi.IntPtr(*provThroughput)
+	}
+	if len(d.AttachedDisks) > 0 {
+		var disks dataproc.ClusterClusterConfigWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigAttachedDiskConfigArray
+		for _, ad := range d.AttachedDisks {
+			adSizeGb, adDiskType, adProvIops, adProvThroughput := attachedDiskFields(ad)
+			adArgs := &dataproc.ClusterClusterConfigWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigAttachedDiskConfigArgs{}
+			if adSizeGb != nil {
+				adArgs.DiskSizeGb = pulumi.IntPtr(*adSizeGb)
+			}
+			if adDiskType != nil {
+				adArgs.DiskType = pulumi.StringPtr(*adDiskType)
+			}
+			if adProvIops != nil {
+				adArgs.ProvisionedIops = pulumi.IntPtr(*adProvIops)
+			}
+			if adProvThroughput != nil {
+				adArgs.ProvisionedThroughput = pulumi.IntPtr(*adProvThroughput)
+			}
+			disks = append(disks, adArgs)
+		}
+		diskArgs.AttachedDiskConfigs = disks
+	}
+	return diskArgs
+}
+
+// secondaryAttachedDisks builds the secondary role's attached-disk list; nil when
+// the spec declares none so the block is omitted.
+func secondaryAttachedDisks(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterDiskConfig) dataproc.ClusterClusterConfigPreemptibleWorkerConfigDiskConfigAttachedDiskConfigArrayInput {
+	if len(d.AttachedDisks) == 0 {
+		return nil
+	}
+	var disks dataproc.ClusterClusterConfigPreemptibleWorkerConfigDiskConfigAttachedDiskConfigArray
+	for _, ad := range d.AttachedDisks {
+		sizeGb, diskType, provIops, provThroughput := attachedDiskFields(ad)
+		diskArgs := &dataproc.ClusterClusterConfigPreemptibleWorkerConfigDiskConfigAttachedDiskConfigArgs{}
+		if sizeGb != nil {
+			diskArgs.DiskSizeGb = pulumi.IntPtr(*sizeGb)
+		}
+		if diskType != nil {
+			diskArgs.DiskType = pulumi.StringPtr(*diskType)
+		}
+		if provIops != nil {
+			diskArgs.ProvisionedIops = pulumi.IntPtr(*provIops)
+		}
+		if provThroughput != nil {
+			diskArgs.ProvisionedThroughput = pulumi.IntPtr(*provThroughput)
+		}
+		disks = append(disks, diskArgs)
+	}
+	return disks
+}
+
+// secondarySelectionDiskConfig builds the per-selection disk shape for the
+// secondary role's instance flexibility policy; nil when the selection
+// inherits the role's disk_config.
+func secondarySelectionDiskConfig(d *gcpdataprocclusterv1alpha1.GcpDataprocClusterDiskConfig) dataproc.ClusterClusterConfigPreemptibleWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigPtrInput {
+	if d == nil {
+		return nil
+	}
+	sizeGb, diskType, ssds, ssdIface, provIops, provThroughput := diskFields(d)
+	diskArgs := &dataproc.ClusterClusterConfigPreemptibleWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigArgs{}
+	if sizeGb != nil {
+		diskArgs.BootDiskSizeGb = pulumi.IntPtr(*sizeGb)
+	}
+	if diskType != nil {
+		diskArgs.BootDiskType = pulumi.StringPtr(*diskType)
+	}
+	if ssds != nil {
+		diskArgs.NumLocalSsds = pulumi.IntPtr(*ssds)
+	}
+	if ssdIface != nil {
+		diskArgs.LocalSsdInterface = pulumi.StringPtr(*ssdIface)
+	}
+	if provIops != nil {
+		diskArgs.BootDiskProvisionedIops = pulumi.IntPtr(*provIops)
+	}
+	if provThroughput != nil {
+		diskArgs.BootDiskProvisionedThroughput = pulumi.IntPtr(*provThroughput)
+	}
+	if len(d.AttachedDisks) > 0 {
+		var disks dataproc.ClusterClusterConfigPreemptibleWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigAttachedDiskConfigArray
+		for _, ad := range d.AttachedDisks {
+			adSizeGb, adDiskType, adProvIops, adProvThroughput := attachedDiskFields(ad)
+			adArgs := &dataproc.ClusterClusterConfigPreemptibleWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListDiskConfigAttachedDiskConfigArgs{}
+			if adSizeGb != nil {
+				adArgs.DiskSizeGb = pulumi.IntPtr(*adSizeGb)
+			}
+			if adDiskType != nil {
+				adArgs.DiskType = pulumi.StringPtr(*adDiskType)
+			}
+			if adProvIops != nil {
+				adArgs.ProvisionedIops = pulumi.IntPtr(*adProvIops)
+			}
+			if adProvThroughput != nil {
+				adArgs.ProvisionedThroughput = pulumi.IntPtr(*adProvThroughput)
+			}
+			disks = append(disks, adArgs)
+		}
+		diskArgs.AttachedDiskConfigs = disks
+	}
+	return diskArgs
+}
+
 // buildClusterConfig assembles the standard Compute Engine arm.
 func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig) *dataproc.ClusterClusterConfigArgs {
 	clusterConfig := &dataproc.ClusterClusterConfigArgs{}
@@ -225,9 +486,17 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 		}
 
 		if gce.ConfidentialInstanceConfig != nil {
-			gceArgs.ConfidentialInstanceConfig = &dataproc.ClusterClusterConfigGceClusterConfigConfidentialInstanceConfigArgs{
-				EnableConfidentialCompute: pulumi.BoolPtr(gce.ConfidentialInstanceConfig.EnableConfidentialCompute),
+			confidentialArgs := &dataproc.ClusterClusterConfigGceClusterConfigConfidentialInstanceConfigArgs{}
+			// The provider-deprecated boolean is sent only when a manifest
+			// still sets it, so a manifest on confidential_instance_type
+			// alone never trips the deprecation warning.
+			if gce.ConfidentialInstanceConfig.EnableConfidentialCompute {
+				confidentialArgs.EnableConfidentialCompute = pulumi.BoolPtr(true)
 			}
+			if gce.ConfidentialInstanceConfig.ConfidentialInstanceType != "" {
+				confidentialArgs.ConfidentialInstanceType = pulumi.StringPtr(gce.ConfidentialInstanceConfig.ConfidentialInstanceType)
+			}
+			gceArgs.ConfidentialInstanceConfig = confidentialArgs
 		}
 
 		clusterConfig.GceClusterConfig = gceArgs
@@ -276,6 +545,7 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 			if provThroughput != nil {
 				diskArgs.BootDiskProvisionedThroughput = pulumi.IntPtr(*provThroughput)
 			}
+			diskArgs.AttachedDiskConfigs = masterAttachedDisks(m.DiskConfig)
 			masterArgs.DiskConfig = diskArgs
 		}
 		if len(m.Accelerators) > 0 {
@@ -298,6 +568,7 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 				selections = append(selections, &dataproc.ClusterClusterConfigMasterConfigInstanceFlexibilityPolicyInstanceSelectionListArgs{
 					MachineTypes: pulumi.ToStringArray(sel.MachineTypes),
 					Rank:         pulumi.IntPtr(int(sel.Rank)),
+					DiskConfig:   masterSelectionDiskConfig(sel.DiskConfig),
 				})
 			}
 			masterArgs.InstanceFlexibilityPolicy = &dataproc.ClusterClusterConfigMasterConfigInstanceFlexibilityPolicyArgs{
@@ -355,6 +626,7 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 			if provThroughput != nil {
 				diskArgs.BootDiskProvisionedThroughput = pulumi.IntPtr(*provThroughput)
 			}
+			diskArgs.AttachedDiskConfigs = workerAttachedDisks(w.DiskConfig)
 			workerArgs.DiskConfig = diskArgs
 		}
 		if len(w.Accelerators) > 0 {
@@ -377,6 +649,7 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 				selections = append(selections, &dataproc.ClusterClusterConfigWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListArgs{
 					MachineTypes: pulumi.ToStringArray(sel.MachineTypes),
 					Rank:         pulumi.IntPtr(int(sel.Rank)),
+					DiskConfig:   workerSelectionDiskConfig(sel.DiskConfig),
 				})
 			}
 			workerArgs.InstanceFlexibilityPolicy = &dataproc.ClusterClusterConfigWorkerConfigInstanceFlexibilityPolicyArgs{
@@ -423,6 +696,7 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 			if provThroughput != nil {
 				diskArgs.BootDiskProvisionedThroughput = pulumi.IntPtr(*provThroughput)
 			}
+			diskArgs.AttachedDiskConfigs = secondaryAttachedDisks(s.DiskConfig)
 			secondaryArgs.DiskConfig = diskArgs
 		}
 
@@ -435,6 +709,7 @@ func buildClusterConfig(cfg *gcpdataprocclusterv1alpha1.GcpDataprocClusterConfig
 					selections = append(selections, &dataproc.ClusterClusterConfigPreemptibleWorkerConfigInstanceFlexibilityPolicyInstanceSelectionListArgs{
 						MachineTypes: pulumi.ToStringArray(sel.MachineTypes),
 						Rank:         pulumi.IntPtr(int(sel.Rank)),
+						DiskConfig:   secondarySelectionDiskConfig(sel.DiskConfig),
 					})
 				}
 				flexArgs.InstanceSelectionLists = selections

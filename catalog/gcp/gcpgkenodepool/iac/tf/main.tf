@@ -125,6 +125,18 @@ resource "google_container_node_pool" "this" {
     }
   }
 
+  # Hold the pool on its version until end of support: emitted only when
+  # requested, so an unset spec leaves GKE's automatic upgrades untouched.
+  # start_time and end_time are API-computed (read back, never sent).
+  dynamic "maintenance_policy" {
+    for_each = var.spec.exclude_upgrades_until_end_of_support ? [1] : []
+    content {
+      exclusion_until_end_of_support {
+        enabled = true
+      }
+    }
+  }
+
   dynamic "network_config" {
     for_each = var.spec.network_config != null ? [var.spec.network_config] : []
     content {
@@ -489,6 +501,11 @@ resource "google_container_node_pool" "this" {
         eviction_max_pod_grace_period_seconds  = kubelet_config.value.eviction_max_pod_grace_period_seconds
         single_process_oom_kill                = kubelet_config.value.single_process_oom_kill
 
+        # Graceful node shutdown (Spot/preemptible pools). API-computed, so
+        # sent only when the spec sets them (null otherwise).
+        shutdown_grace_period_seconds               = kubelet_config.value.shutdown_grace_period_seconds
+        shutdown_grace_period_critical_pods_seconds = kubelet_config.value.shutdown_grace_period_critical_pods_seconds
+
         dynamic "eviction_soft" {
           for_each = kubelet_config.value.eviction_soft != null ? [kubelet_config.value.eviction_soft] : []
           content {
@@ -612,6 +629,19 @@ resource "google_container_node_pool" "this" {
               content {
                 disabled = encryption_config.value.disabled
               }
+            }
+          }
+        }
+
+        # Boot-time init script from Cloud Storage or Secret Manager
+        # (exactly one source, spec-enforced).
+        dynamic "custom_node_init" {
+          for_each = linux_node_config.value.custom_node_init != null ? [linux_node_config.value.custom_node_init] : []
+          content {
+            init_script {
+              gcs_uri                       = custom_node_init.value.gcs_uri != "" ? custom_node_init.value.gcs_uri : null
+              gcs_generation                = custom_node_init.value.gcs_generation
+              gcp_secret_manager_secret_uri = custom_node_init.value.secret_manager_secret_uri != "" ? custom_node_init.value.secret_manager_secret_uri : null
             }
           }
         }

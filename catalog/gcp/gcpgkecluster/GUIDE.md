@@ -53,6 +53,17 @@ disruption budget spaces disruptive events regardless of windows. Pin
 wins and the pin just fights it. `gkeAutoUpgradePatchMode: ACCELERATED`
 is for fleets that want CVE patches the day they ship.
 
+Three window forms, one choice: `dailyWindow` (same four hours every
+day), `recurringWindow` (an RFC 5545 rule anchored on an absolute first
+start/end timestamp), or `recurringTimeWindow` (the same rule as a time
+of day plus a duration, optionally delayed until a calendar date) — pick
+the last when the policy reads "every Saturday at 02:00 for six hours,
+starting next quarter". `rollbackSafeUpgrade.controlPlaneSoakDuration`
+(6 hours to 7 days) turns control-plane minor upgrades into two steps:
+the control plane upgrades but keeps emulating the old minor during the
+soak, so the upgrade can be rolled back; setting
+`desiredEmulatedVersion` to the target minor completes it declaratively.
+
 ## NAP is a cost brake wearing an autoscaler's clothes
 
 Node auto-provisioning creates pools you never wrote. The spec refuses

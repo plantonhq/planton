@@ -245,9 +245,35 @@ type GcpCloudSqlSpec struct {
 	FinalBackup *GcpCloudSqlFinalBackup `protobuf:"bytes,49,opt,name=final_backup,json=finalBackup,proto3" json:"final_backup,omitempty"`
 	// SQL Server only: Microsoft Entra ID (Azure AD) authentication for the
 	// instance.
-	EntraId       *GcpCloudSqlEntraIdConfig `protobuf:"bytes,50,opt,name=entra_id,json=entraId,proto3" json:"entra_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	EntraId *GcpCloudSqlEntraIdConfig `protobuf:"bytes,50,opt,name=entra_id,json=entraId,proto3" json:"entra_id,omitempty"`
+	// Opt-in that lets the instance move point-in-time-recovery transaction
+	// logs from the data disk to Cloud Storage, freeing disk space and
+	// allowing longer transaction-log retention windows. An input-only
+	// instruction: Cloud SQL acts on it but never stores it, so it is sent
+	// exactly as written and never read back.
+	SwitchTransactionLogsToCloudStorageEnabled bool `protobuf:"varint,51,opt,name=switch_transaction_logs_to_cloud_storage_enabled,json=switchTransactionLogsToCloudStorageEnabled,proto3" json:"switch_transaction_logs_to_cloud_storage_enabled,omitempty"`
+	// Opt-in that upgrades this primary's read replicas in place, together
+	// with the primary, when database_version moves to a new major version.
+	// Without it a major-version upgrade leaves replicas on the old version
+	// to be upgraded (or recreated) separately. Input-only: consulted only
+	// during a major-version upgrade and never stored by the API.
+	IncludeReplicasForMajorVersionUpgrade bool `protobuf:"varint,52,opt,name=include_replicas_for_major_version_upgrade,json=includeReplicasForMajorVersionUpgrade,proto3" json:"include_replicas_for_major_version_upgrade,omitempty"`
+	// Irreversible opt-in to Cloud SQL's new network architecture for an
+	// instance created in a project that predates it (projects created after
+	// August 2021 already use it). Required before features such as PSC
+	// and outbound network attachments on those older projects. Once true
+	// it cannot be set back to false. Leave unset to let Cloud SQL report
+	// the instance's current architecture; sent only when set because the
+	// API fills the value itself.
+	EnforceNewSqlNetworkArchitecture *bool `protobuf:"varint,53,opt,name=enforce_new_sql_network_architecture,json=enforceNewSqlNetworkArchitecture,proto3,oneof" json:"enforce_new_sql_network_architecture,omitempty"`
+	// Read replicas only: the replication lag, in seconds, beyond which the
+	// replica recreates itself. The lag must persist for at least five
+	// minutes before recreation triggers. Between 300 (five minutes) and
+	// 31536000 (one year). Leave unset for no automatic recreation; sent
+	// only when set because the API fills the value itself.
+	ReplicationLagMaxSeconds *int32 `protobuf:"varint,54,opt,name=replication_lag_max_seconds,json=replicationLagMaxSeconds,proto3,oneof" json:"replication_lag_max_seconds,omitempty"`
+	unknownFields            protoimpl.UnknownFields
+	sizeCache                protoimpl.SizeCache
 }
 
 func (x *GcpCloudSqlSpec) Reset() {
@@ -630,6 +656,34 @@ func (x *GcpCloudSqlSpec) GetEntraId() *GcpCloudSqlEntraIdConfig {
 	return nil
 }
 
+func (x *GcpCloudSqlSpec) GetSwitchTransactionLogsToCloudStorageEnabled() bool {
+	if x != nil {
+		return x.SwitchTransactionLogsToCloudStorageEnabled
+	}
+	return false
+}
+
+func (x *GcpCloudSqlSpec) GetIncludeReplicasForMajorVersionUpgrade() bool {
+	if x != nil {
+		return x.IncludeReplicasForMajorVersionUpgrade
+	}
+	return false
+}
+
+func (x *GcpCloudSqlSpec) GetEnforceNewSqlNetworkArchitecture() bool {
+	if x != nil && x.EnforceNewSqlNetworkArchitecture != nil {
+		return *x.EnforceNewSqlNetworkArchitecture
+	}
+	return false
+}
+
+func (x *GcpCloudSqlSpec) GetReplicationLagMaxSeconds() int32 {
+	if x != nil && x.ReplicationLagMaxSeconds != nil {
+		return *x.ReplicationLagMaxSeconds
+	}
+	return 0
+}
+
 // GcpCloudSqlDisk defines the instance's data disk.
 type GcpCloudSqlDisk struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -983,8 +1037,14 @@ type GcpCloudSqlPscConfig struct {
 	// Enterprise Plus only: also create a DNS record for the PSA write
 	// endpoint, so clients follow the primary across switchovers by name.
 	WriteEndpointDnsEnabled bool `protobuf:"varint,6,opt,name=write_endpoint_dns_enabled,json=writeEndpointDnsEnabled,proto3" json:"write_endpoint_dns_enabled,omitempty"`
-	unknownFields           protoimpl.UnknownFields
-	sizeCache               protoimpl.SizeCache
+	// Whether Cloud SQL also creates a Service Connection Policy for the
+	// auto_connections above, so the consumer networks need no separately
+	// authored policy before the automatic endpoints can be provisioned.
+	// Leave unset to keep the API's own default; sent only when set because
+	// the API fills the value itself.
+	AutoConnectionPolicyEnabled *bool `protobuf:"varint,7,opt,name=auto_connection_policy_enabled,json=autoConnectionPolicyEnabled,proto3,oneof" json:"auto_connection_policy_enabled,omitempty"`
+	unknownFields               protoimpl.UnknownFields
+	sizeCache                   protoimpl.SizeCache
 }
 
 func (x *GcpCloudSqlPscConfig) Reset() {
@@ -1055,6 +1115,13 @@ func (x *GcpCloudSqlPscConfig) GetAutoDnsEnabled() bool {
 func (x *GcpCloudSqlPscConfig) GetWriteEndpointDnsEnabled() bool {
 	if x != nil {
 		return x.WriteEndpointDnsEnabled
+	}
+	return false
+}
+
+func (x *GcpCloudSqlPscConfig) GetAutoConnectionPolicyEnabled() bool {
+	if x != nil && x.AutoConnectionPolicyEnabled != nil {
+		return *x.AutoConnectionPolicyEnabled
 	}
 	return false
 }
@@ -2537,7 +2604,7 @@ var File_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/gcp/gcpcloudsql/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa2J\n" +
+	"+catalog/gcp/gcpcloudsql/v1alpha1/spec.proto\x12$dev.planton.gcp.gcpcloudsql.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd4M\n" +
 	"\x0fGcpCloudSqlSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12M\n" +
@@ -2602,7 +2669,12 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0fdata_api_access\x180 \x01(\tB\xa3\x01\xbaH\x9f\x01\xba\x01\x9b\x01\n" +
 	"\x15data_api_access_valid\x12Cdata_api_access must be empty, ALLOW_DATA_API, or DISALLOW_DATA_API\x1a=this == '' || this in ['ALLOW_DATA_API', 'DISALLOW_DATA_API']R\rdataApiAccess\x12_\n" +
 	"\ffinal_backup\x181 \x01(\v2<.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlFinalBackupR\vfinalBackup\x12Y\n" +
-	"\bentra_id\x182 \x01(\v2>.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlEntraIdConfigR\aentraId\x1a@\n" +
+	"\bentra_id\x182 \x01(\v2>.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlEntraIdConfigR\aentraId\x12d\n" +
+	"0switch_transaction_logs_to_cloud_storage_enabled\x183 \x01(\bR*switchTransactionLogsToCloudStorageEnabled\x12Y\n" +
+	"*include_replicas_for_major_version_upgrade\x184 \x01(\bR%includeReplicasForMajorVersionUpgrade\x12S\n" +
+	"$enforce_new_sql_network_architecture\x185 \x01(\bH\x05R enforceNewSqlNetworkArchitecture\x88\x01\x01\x12Q\n" +
+	"\x1breplication_lag_max_seconds\x186 \x01(\x05B\r\xbaH\n" +
+	"\x1a\b\x18\x80\xe7\x84\x0f(\xac\x02H\x06R\x18replicationLagMaxSeconds\x88\x01\x01\x1a@\n" +
 	"\x12DatabaseFlagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xe1 \xbaH\xdd \x1a\x9f\x03\n" +
@@ -2629,7 +2701,9 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\x12_availability_typeB\x14\n" +
 	"\x12_activation_policyB\x13\n" +
 	"\x11_threads_per_coreB\r\n" +
-	"\v_node_count\"\xd4\a\n" +
+	"\v_node_countB'\n" +
+	"%_enforce_new_sql_network_architectureB\x1e\n" +
+	"\x1c_replication_lag_max_seconds\"\xd4\a\n" +
 	"\x0fGcpCloudSqlDisk\x12\xa9\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\x8f\x01\xbaH\x81\x01\xba\x01~\n" +
 	"\x0fdisk_type_valid\x127disk type must be PD_SSD, PD_HDD, or HYPERDISK_BALANCED\x1a2this in ['PD_SSD', 'PD_HDD', 'HYPERDISK_BALANCED']\x8a\xa6\x1d\x06PD_SSDH\x00R\x04type\x88\x01\x01\x12/\n" +
@@ -2676,15 +2750,17 @@ const file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1cGcpCloudSqlAuthorizedNetwork\x12H\n" +
 	"\x05value\x18\x01 \x01(\tB2\xbaH/\xc8\x01\x01r*2(^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$R\x05value\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
-	"\x0fexpiration_time\x18\x03 \x01(\tR\x0eexpirationTime\"\xa8\x05\n" +
+	"\x0fexpiration_time\x18\x03 \x01(\tR\x0eexpirationTime\"\xc2\x06\n" +
 	"\x14GcpCloudSqlPscConfig\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12M\n" +
 	"\x19allowed_consumer_projects\x18\x02 \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x17allowedConsumerProjects\x124\n" +
 	"\x16network_attachment_uri\x18\x03 \x01(\tR\x14networkAttachmentUri\x12m\n" +
 	"\x10auto_connections\x18\x04 \x03(\v2B.dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlPscAutoConnectionR\x0fautoConnections\x12(\n" +
 	"\x10auto_dns_enabled\x18\x05 \x01(\bR\x0eautoDnsEnabled\x12;\n" +
-	"\x1awrite_endpoint_dns_enabled\x18\x06 \x01(\bR\x17writeEndpointDnsEnabled:\x9a\x02\xbaH\x96\x02\x1a\x93\x02\n" +
-	"\x1apsc_fields_require_enabled\x120PSC settings apply only when psc.enabled is true\x1a\xc2\x01this.enabled || (size(this.allowed_consumer_projects) == 0 && this.network_attachment_uri == '' && size(this.auto_connections) == 0 && !this.auto_dns_enabled && !this.write_endpoint_dns_enabled)\"\x94\x01\n" +
+	"\x1awrite_endpoint_dns_enabled\x18\x06 \x01(\bR\x17writeEndpointDnsEnabled\x12H\n" +
+	"\x1eauto_connection_policy_enabled\x18\a \x01(\bH\x00R\x1bautoConnectionPolicyEnabled\x88\x01\x01:\xc7\x02\xbaH\xc3\x02\x1a\xc0\x02\n" +
+	"\x1apsc_fields_require_enabled\x120PSC settings apply only when psc.enabled is true\x1a\xef\x01this.enabled || (size(this.allowed_consumer_projects) == 0 && this.network_attachment_uri == '' && size(this.auto_connections) == 0 && !this.auto_dns_enabled && !this.write_endpoint_dns_enabled && !has(this.auto_connection_policy_enabled))B!\n" +
+	"\x1f_auto_connection_policy_enabled\"\x94\x01\n" +
 	"\x1cGcpCloudSqlPscAutoConnection\x125\n" +
 	"\x10consumer_network\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fconsumerNetwork\x12=\n" +
@@ -2922,6 +2998,7 @@ func file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_init() {
 	}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[1].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[8].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcloudsql_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}

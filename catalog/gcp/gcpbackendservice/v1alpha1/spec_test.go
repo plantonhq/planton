@@ -663,4 +663,28 @@ var _ = ginkgo.Describe("GcpBackendServiceSpec", func() {
 		err := validator.Validate(target)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
+
+	ginkgo.It("should accept logged request and response headers with logging enabled", func() {
+		target := minimal()
+		target.Spec.LogConfig = &GcpBackendServiceLogConfig{
+			Enable:          true,
+			RequestHeaders:  []string{"X-Request-Id", "User-Agent"},
+			ResponseHeaders: []string{"Content-Type"},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject logged headers when logging is disabled", func() {
+		target := minimal()
+		target.Spec.LogConfig = &GcpBackendServiceLogConfig{RequestHeaders: []string{"X-Request-Id"}}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("request_headers"))
+	})
+
+	ginkgo.It("should reject duplicate logged header names", func() {
+		target := minimal()
+		target.Spec.LogConfig = &GcpBackendServiceLogConfig{Enable: true, ResponseHeaders: []string{"X-Cache", "X-Cache"}}
+		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
+	})
 })

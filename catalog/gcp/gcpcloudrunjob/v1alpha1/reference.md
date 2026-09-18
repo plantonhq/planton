@@ -203,6 +203,7 @@ spec:
 | `spec.startExecutionToken` | `string` |  |  |  |
 | `spec.runExecutionToken` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.resourceManagerTags` | `map<string, string>` |  |  |  |
 
 ## Field Details
 
@@ -999,6 +1000,18 @@ What happens to the Cloud Run job when this resource is destroyed:
                    running in GCP
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+### spec.resourceManagerTags
+
+`map<string, string>`
+
+Resource Manager tags bound to the job at creation, as a map of
+tagKeys/{tag_key_id} to tagValues/{tag_value_id} — the tag bindings
+that organization policies, IAM conditions, and cost reports key on.
+Immutable: changing the map replaces the job (Cloud Run applies tags
+only at create), so plan tag changes as a recreate.
+
+- rule: {"map":{"keys":{"string":{"pattern":"^tagKeys/[0-9]+$"}},"values":{"string":{"pattern":"^tagValues/[0-9]+$"}}}}
 
 ## Validation Rules
 

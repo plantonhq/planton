@@ -29,6 +29,8 @@ resources:
         arg: gce_setup.disable_public_ip
       - spec: spec.enable_ip_forwarding
         arg: gce_setup.enable_ip_forwarding
+      - spec: spec.min_cpu_platform
+        arg: gce_setup.min_cpu_platform
       # Singular in the spec (GCP supports exactly one accelerator
       # config, one data disk, one network interface, one service
       # account per Workbench instance -- the plural provider blocks are
@@ -76,16 +78,6 @@ resources:
       # let the two drift apart for no configuration gain.
       - arg: instance_id
         reason: vestigial user-settable duplicate of the modeled name derivation; the module names instances from instance_name (falling back to metadata.name)
-      # pulumi-gcp v9.29.0 does not bridge these workbench fields, and
-      # cross-engine parity is the contract: model them once a pin bump
-      # carries them (re-evaluate trigger: the repo-wide pulumi-gcp pin
-      # moving past v9.29.0).
-      - arg: enable_deletion_protection
-        reason: unbridged at pulumi-gcp v9.29.0 (no EnableDeletionProtection on workbench.InstanceArgs); modeling it Terraform-only would break cross-engine parity -- re-evaluate at the next pulumi-gcp pin bump
-      - arg: gce_setup.min_cpu_platform
-        reason: unbridged at pulumi-gcp v9.29.0 (no MinCpuPlatform on the workbench InstanceGceSetup type) -- re-evaluate at the next pulumi-gcp pin bump
-      - arg: gce_setup.data_disks.resource_policies
-        reason: unbridged at pulumi-gcp v9.29.0 (no ResourcePolicies on the workbench data-disk type) -- re-evaluate at the next pulumi-gcp pin bump
 
   google_project_service:
     internal: >-

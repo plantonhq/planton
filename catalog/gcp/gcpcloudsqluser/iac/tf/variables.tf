@@ -24,8 +24,14 @@ variable "spec" {
     # string after ref resolution. Immutable.
     instance = string
 
-    # Login name (BUILT_IN) or IAM principal email (IAM types). Immutable.
-    user_name = string
+    # Login name (BUILT_IN) or IAM principal (IAM types). Exactly one of
+    # user_name or service_account. Immutable.
+    user_name = optional(string, "")
+
+    # Service account email (a plain string after ref resolution) for a
+    # CLOUD_IAM_SERVICE_ACCOUNT user; the module derives the database
+    # username from it. Exactly one of user_name or service_account.
+    service_account = optional(string, "")
 
     # Password for BUILT_IN users. Mutable (rotates in place). Never set
     # for IAM types (spec CEL enforces pre-deploy).
@@ -55,4 +61,14 @@ variable "spec" {
     # database objects.
     deletion_policy = optional(string, "")
   })
+
+  validation {
+    condition     = (var.spec.user_name != "") != (var.spec.service_account != "")
+    error_message = "Set exactly one of user_name or service_account."
+  }
+
+  validation {
+    condition     = var.spec.service_account == "" || var.spec.type == "CLOUD_IAM_SERVICE_ACCOUNT"
+    error_message = "service_account requires type CLOUD_IAM_SERVICE_ACCOUNT."
+  }
 }

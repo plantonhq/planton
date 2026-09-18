@@ -12,11 +12,4 @@
 #
 # Entry format: kind:<Kind> | resource:<terraform resource type> | provider:<cloud>
 # Regenerate with:  PLANTON_REGEN_PROVIDERPARITY_BASELINE=1 go test ./pkg/providerparity/
-entries:
-  - kind:GcpCloudRun
-  - kind:GcpCloudSql
-  - kind:GcpComputeInstance
-  - kind:GcpComputeMig
-  - kind:GcpDataprocCluster
-  - kind:GcpGkeCluster
-  - kind:GcpMemorystoreInstance
+entries: []

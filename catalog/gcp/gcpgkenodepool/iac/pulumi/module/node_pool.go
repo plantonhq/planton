@@ -110,6 +110,22 @@ func nodePool(ctx *pulumi.Context,
 		args.NodeDrainConfigs = container.NodePoolNodeDrainConfigArray{drainArgs}
 	}
 
+	// Hold the pool on its version until end of support: emitted only when
+	// requested, so an unset spec leaves GKE's automatic upgrades untouched.
+	// start_time and end_time are API-computed (read back, never sent). The
+	// bridged SDK models both levels as lists.
+	if spec.ExcludeUpgradesUntilEndOfSupport {
+		args.MaintenancePolicies = container.NodePoolMaintenancePolicyArray{
+			&container.NodePoolMaintenancePolicyArgs{
+				ExclusionUntilEndOfSupports: container.NodePoolMaintenancePolicyExclusionUntilEndOfSupportArray{
+					&container.NodePoolMaintenancePolicyExclusionUntilEndOfSupportArgs{
+						Enabled: pulumi.BoolPtr(true),
+					},
+				},
+			},
+		}
+	}
+
 	// Nodes may span fewer zones than the cluster; empty inherits the
 	// cluster's node_locations.
 	if len(spec.NodeLocations) > 0 {
@@ -665,6 +681,14 @@ func buildNodeConfig(nodeConfig *gcpgkenodepoolv1alpha1.GcpGkeNodePoolNodeConfig
 			}
 			kubeletArgs.TopologyManager = topologyArgs
 		}
+		// Graceful node shutdown (Spot/preemptible pools). API-computed, so
+		// sent only when the spec sets them.
+		if kubelet.ShutdownGracePeriodSeconds != nil {
+			kubeletArgs.ShutdownGracePeriodSeconds = pulumi.IntPtr(int(kubelet.GetShutdownGracePeriodSeconds()))
+		}
+		if kubelet.ShutdownGracePeriodCriticalPodsSeconds != nil {
+			kubeletArgs.ShutdownGracePeriodCriticalPodsSeconds = pulumi.IntPtr(int(kubelet.GetShutdownGracePeriodCriticalPodsSeconds()))
+		}
 		nodeConfigArgs.KubeletConfig = kubeletArgs
 	}
 
@@ -740,6 +764,23 @@ func buildNodeConfig(nodeConfig *gcpgkenodepoolv1alpha1.GcpGkeNodePoolNodeConfig
 				}
 			}
 			linuxArgs.SwapConfig = swapArgs
+		}
+		// Boot-time init script from Cloud Storage or Secret Manager
+		// (exactly one source, spec-enforced).
+		if initCfg := linux.CustomNodeInit; initCfg != nil {
+			scriptArgs := &container.NodePoolNodeConfigLinuxNodeConfigCustomNodeInitInitScriptArgs{}
+			if initCfg.GcsUri != "" {
+				scriptArgs.GcsUri = pulumi.StringPtr(initCfg.GcsUri)
+			}
+			if initCfg.GcsGeneration != nil {
+				scriptArgs.GcsGeneration = pulumi.IntPtr(int(initCfg.GetGcsGeneration()))
+			}
+			if initCfg.SecretManagerSecretUri != "" {
+				scriptArgs.GcpSecretManagerSecretUri = pulumi.StringPtr(initCfg.SecretManagerSecretUri)
+			}
+			linuxArgs.CustomNodeInit = &container.NodePoolNodeConfigLinuxNodeConfigCustomNodeInitArgs{
+				InitScript: scriptArgs,
+			}
 		}
 		nodeConfigArgs.LinuxNodeConfig = linuxArgs
 	}

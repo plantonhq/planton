@@ -22,6 +22,18 @@ default *.run.app URL is the second front door everyone forgets, and
 disabling it is the difference between "we route through the LB" and
 "traffic CANNOT bypass the LB".
 
+## Sandboxes: untrusted code beside the service, not inside it
+
+For agent workloads that execute model-generated code, mark one
+container `sandboxLauncher: true` (the supervisor) and declare
+`sandboxTemplates` — the images and startup shapes the supervisor may
+launch on demand as isolated, short-lived containers. Sandboxes share
+the service's declared volumes but carry only literal environment
+variables: pass secrets through the supervisor, never into a sandbox.
+`resourceManagerTags` binds tag values at creation for org-policy, IAM
+conditions, and cost reporting; it is immutable, so a tag change is a
+redeploy — plan it as one.
+
 ## Probes: three types, three jobs, three shapes
 
 Startup gates first traffic (HTTP/TCP/gRPC — its whole window is capped

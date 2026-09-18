@@ -81,9 +81,10 @@ Spot semantics: `template.scheduling.provisioning_model = "SPOT"` derives
 the API's legacy preemptible flag and forces automatic restart off —
 identically to the Terraform module.
 
-`workload_identity_config` (GA provider surface) is not bridged by
-pulumi-gcp v9.29.0 and is therefore not modeled — recorded as an
-SDK-gap exclusion; re-evaluate when the bridge ships it. Template
+`workload_identity_config` (a SPIFFE ID per VM, optional X.509
+certificates) and `scheduling.host_error_timeout_seconds` land on both
+templates — the identity block only when the spec sets it, the timeout
+only when set — identically to the Terraform module. Template
 `name`/`name_prefix` are module-internal (the rotation mechanism), and
 CSEK raw-key encryption arms are deliberately not modeled
 (secure-by-default — use CMEK).

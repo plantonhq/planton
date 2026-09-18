@@ -505,6 +505,26 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 				Recurrence: pulumi.String(spec.MaintenancePolicy.RecurringWindow.Recurrence),
 			}
 		}
+		// The time-of-day + duration form of the recurring window.
+		if rtw := spec.MaintenancePolicy.RecurringTimeWindow; rtw != nil {
+			rtwArgs := &container.ClusterMaintenancePolicyRecurringMaintenanceWindowArgs{
+				WindowDuration: pulumi.String(rtw.WindowDuration),
+				Recurrence:     pulumi.String(rtw.Recurrence),
+				WindowStartTime: &container.ClusterMaintenancePolicyRecurringMaintenanceWindowWindowStartTimeArgs{
+					Hours:   pulumi.Int(int(rtw.GetWindowStartTime().GetHours())),
+					Minutes: pulumi.Int(int(rtw.GetWindowStartTime().GetMinutes())),
+					Seconds: pulumi.Int(int(rtw.GetWindowStartTime().GetSeconds())),
+				},
+			}
+			if rtw.DelayUntil != nil {
+				rtwArgs.DelayUntil = &container.ClusterMaintenancePolicyRecurringMaintenanceWindowDelayUntilArgs{
+					Year:  pulumi.Int(int(rtw.DelayUntil.Year)),
+					Month: pulumi.Int(int(rtw.DelayUntil.Month)),
+					Day:   pulumi.Int(int(rtw.DelayUntil.Day)),
+				}
+			}
+			maintenanceArgs.RecurringMaintenanceWindow = rtwArgs
+		}
 		if len(spec.MaintenancePolicy.Exclusions) > 0 {
 			exclusions := container.ClusterMaintenancePolicyMaintenanceExclusionArray{}
 			for _, exclusion := range spec.MaintenancePolicy.Exclusions {
@@ -954,8 +974,31 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 					Enabled: pulumi.Bool(true),
 				}
 			}
+			if spec.Addons.HighScaleCheckpointingEnabled {
+				addonsArgs.HighScaleCheckpointingConfig = &container.ClusterAddonsConfigHighScaleCheckpointingConfigArgs{
+					Enabled: pulumi.Bool(true),
+				}
+			}
+			if spec.Addons.NodeReadinessControllerEnabled {
+				addonsArgs.NodeReadinessConfig = &container.ClusterAddonsConfigNodeReadinessConfigArgs{
+					Enabled: pulumi.Bool(true),
+				}
+			}
 		}
 		args.AddonsConfig = addonsArgs
+	}
+
+	// Two-step (rollback-safe) control-plane upgrades: the soak period
+	// keeps the upgrade rollbackable; desired_emulated_version completes it.
+	if rsu := spec.RollbackSafeUpgrade; rsu != nil {
+		rsuArgs := &container.ClusterRollbackSafeUpgradeArgs{}
+		if rsu.ControlPlaneSoakDuration != "" {
+			rsuArgs.ControlPlaneSoakDuration = pulumi.StringPtr(rsu.ControlPlaneSoakDuration)
+		}
+		args.RollbackSafeUpgrade = rsuArgs
+	}
+	if spec.DesiredEmulatedVersion != "" {
+		args.DesiredEmulatedVersion = pulumi.StringPtr(spec.DesiredEmulatedVersion)
 	}
 
 	if spec.FleetProject != "" || spec.FleetMembershipType != "" {

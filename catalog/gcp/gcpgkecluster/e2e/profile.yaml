@@ -16,6 +16,13 @@ spec:
   # apply-idempotency gate. Scenarios live in us-east1: a us-central1
   # regional create failed on GCE_STOCKOUT for its transient default-pool
   # instances (the recurring zonal-capacity class in e2e/README.md).
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the cluster gained the time-of-day recurring
+  # maintenance window (the private-cluster scenario now uses it), rollback-
+  # safe upgrades, and the checkpointing and node-readiness addons; the
+  # earlier live proof predates them. The next proof confirms the new window
+  # form round-trips (the provider normalizes durations, so the re-plan must
+  # be clean) while the upgrade and addon levers stay offline-proven.
+  status: pending_proof
+  validated_provisioners: []
   timeout_minutes: 180

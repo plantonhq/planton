@@ -580,8 +580,14 @@ type GcpComputeMigTemplate struct {
 	// an instance schedule). GCP currently allows at most one policy per
 	// instance. Changing it rotates the template.
 	ResourcePolicies []string `protobuf:"bytes,22,rep,name=resource_policies,json=resourcePolicies,proto3" json:"resource_policies,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// Managed workload identity for every VM in the group: a SPIFFE
+	// identity issued to each instance (and, optionally, X.509 identity
+	// certificates) so workloads authenticate to each other by identity
+	// instead of shared secrets or network position. Part of the template,
+	// so changing it rotates the template and rolls the group.
+	WorkloadIdentityConfig *GcpComputeMigWorkloadIdentityConfig `protobuf:"bytes,23,opt,name=workload_identity_config,json=workloadIdentityConfig,proto3" json:"workload_identity_config,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *GcpComputeMigTemplate) Reset() {
@@ -768,6 +774,73 @@ func (x *GcpComputeMigTemplate) GetResourcePolicies() []string {
 	return nil
 }
 
+func (x *GcpComputeMigTemplate) GetWorkloadIdentityConfig() *GcpComputeMigWorkloadIdentityConfig {
+	if x != nil {
+		return x.WorkloadIdentityConfig
+	}
+	return nil
+}
+
+// GcpComputeMigWorkloadIdentityConfig is the fleet's managed workload
+// identity.
+type GcpComputeMigWorkloadIdentityConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The SPIFFE ID Compute Engine issues to each instance, e.g.
+	// "spiffe://PROJECT.svc.id.goog/ns/NAMESPACE/sa/SERVICE_ACCOUNT" or a
+	// workload-identity-pool identity of the form
+	// "spiffe://POOL.global.PROJECT_NUMBER.workload.id.goog/ns/NS/sa/SA".
+	Identity string `protobuf:"bytes,1,opt,name=identity,proto3" json:"identity,omitempty"`
+	// Whether Compute Engine also issues and rotates X.509 certificates
+	// bound to the identity, made available on each VM for mutual TLS.
+	IdentityCertificateEnabled bool `protobuf:"varint,2,opt,name=identity_certificate_enabled,json=identityCertificateEnabled,proto3" json:"identity_certificate_enabled,omitempty"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
+}
+
+func (x *GcpComputeMigWorkloadIdentityConfig) Reset() {
+	*x = GcpComputeMigWorkloadIdentityConfig{}
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpComputeMigWorkloadIdentityConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpComputeMigWorkloadIdentityConfig) ProtoMessage() {}
+
+func (x *GcpComputeMigWorkloadIdentityConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpComputeMigWorkloadIdentityConfig.ProtoReflect.Descriptor instead.
+func (*GcpComputeMigWorkloadIdentityConfig) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GcpComputeMigWorkloadIdentityConfig) GetIdentity() string {
+	if x != nil {
+		return x.Identity
+	}
+	return ""
+}
+
+func (x *GcpComputeMigWorkloadIdentityConfig) GetIdentityCertificateEnabled() bool {
+	if x != nil {
+		return x.IdentityCertificateEnabled
+	}
+	return false
+}
+
 // GcpComputeMigTemplateDisk defines one disk in the template. Each VM
 // created from the template gets its own copy of "create" disks (from
 // an image, a snapshot, or blank), while a "source" disk attaches one
@@ -867,7 +940,7 @@ type GcpComputeMigTemplateDisk struct {
 
 func (x *GcpComputeMigTemplateDisk) Reset() {
 	*x = GcpComputeMigTemplateDisk{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -879,7 +952,7 @@ func (x *GcpComputeMigTemplateDisk) String() string {
 func (*GcpComputeMigTemplateDisk) ProtoMessage() {}
 
 func (x *GcpComputeMigTemplateDisk) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[2]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -892,7 +965,7 @@ func (x *GcpComputeMigTemplateDisk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigTemplateDisk.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigTemplateDisk) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GcpComputeMigTemplateDisk) GetBoot() bool {
@@ -1075,7 +1148,7 @@ type GcpComputeMigEncryptionKey struct {
 
 func (x *GcpComputeMigEncryptionKey) Reset() {
 	*x = GcpComputeMigEncryptionKey{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1087,7 +1160,7 @@ func (x *GcpComputeMigEncryptionKey) String() string {
 func (*GcpComputeMigEncryptionKey) ProtoMessage() {}
 
 func (x *GcpComputeMigEncryptionKey) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[3]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1100,7 +1173,7 @@ func (x *GcpComputeMigEncryptionKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigEncryptionKey.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigEncryptionKey) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GcpComputeMigEncryptionKey) GetKmsKey() *v1.StringValueOrRef {
@@ -1190,7 +1263,7 @@ type GcpComputeMigTemplateNetworkInterface struct {
 
 func (x *GcpComputeMigTemplateNetworkInterface) Reset() {
 	*x = GcpComputeMigTemplateNetworkInterface{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1202,7 +1275,7 @@ func (x *GcpComputeMigTemplateNetworkInterface) String() string {
 func (*GcpComputeMigTemplateNetworkInterface) ProtoMessage() {}
 
 func (x *GcpComputeMigTemplateNetworkInterface) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[4]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1215,7 +1288,7 @@ func (x *GcpComputeMigTemplateNetworkInterface) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GcpComputeMigTemplateNetworkInterface.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigTemplateNetworkInterface) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GcpComputeMigTemplateNetworkInterface) GetNetwork() *v1.StringValueOrRef {
@@ -1341,7 +1414,7 @@ type GcpComputeMigAccessConfig struct {
 
 func (x *GcpComputeMigAccessConfig) Reset() {
 	*x = GcpComputeMigAccessConfig{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1353,7 +1426,7 @@ func (x *GcpComputeMigAccessConfig) String() string {
 func (*GcpComputeMigAccessConfig) ProtoMessage() {}
 
 func (x *GcpComputeMigAccessConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[5]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1366,7 +1439,7 @@ func (x *GcpComputeMigAccessConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigAccessConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigAccessConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GcpComputeMigAccessConfig) GetNatIp() string {
@@ -1395,7 +1468,7 @@ type GcpComputeMigIpv6AccessConfig struct {
 
 func (x *GcpComputeMigIpv6AccessConfig) Reset() {
 	*x = GcpComputeMigIpv6AccessConfig{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1407,7 +1480,7 @@ func (x *GcpComputeMigIpv6AccessConfig) String() string {
 func (*GcpComputeMigIpv6AccessConfig) ProtoMessage() {}
 
 func (x *GcpComputeMigIpv6AccessConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[6]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1420,7 +1493,7 @@ func (x *GcpComputeMigIpv6AccessConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigIpv6AccessConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigIpv6AccessConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GcpComputeMigIpv6AccessConfig) GetNetworkTier() string {
@@ -1445,7 +1518,7 @@ type GcpComputeMigAliasIpRange struct {
 
 func (x *GcpComputeMigAliasIpRange) Reset() {
 	*x = GcpComputeMigAliasIpRange{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1457,7 +1530,7 @@ func (x *GcpComputeMigAliasIpRange) String() string {
 func (*GcpComputeMigAliasIpRange) ProtoMessage() {}
 
 func (x *GcpComputeMigAliasIpRange) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[7]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1470,7 +1543,7 @@ func (x *GcpComputeMigAliasIpRange) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigAliasIpRange.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigAliasIpRange) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GcpComputeMigAliasIpRange) GetIpCidrRange() string {
@@ -1504,7 +1577,7 @@ type GcpComputeMigServiceAccount struct {
 
 func (x *GcpComputeMigServiceAccount) Reset() {
 	*x = GcpComputeMigServiceAccount{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1516,7 +1589,7 @@ func (x *GcpComputeMigServiceAccount) String() string {
 func (*GcpComputeMigServiceAccount) ProtoMessage() {}
 
 func (x *GcpComputeMigServiceAccount) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[8]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1529,7 +1602,7 @@ func (x *GcpComputeMigServiceAccount) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigServiceAccount.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigServiceAccount) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GcpComputeMigServiceAccount) GetEmail() *v1.StringValueOrRef {
@@ -1606,13 +1679,19 @@ type GcpComputeMigScheduling struct {
 	// when a host fails, in seconds, before falling back to default
 	// recovery.
 	LocalSsdRecoveryTimeoutSeconds *int64 `protobuf:"varint,11,opt,name=local_ssd_recovery_timeout_seconds,json=localSsdRecoveryTimeoutSeconds,proto3,oneof" json:"local_ssd_recovery_timeout_seconds,omitempty"`
-	unknownFields                  protoimpl.UnknownFields
-	sizeCache                      protoimpl.SizeCache
+	// How long Compute Engine waits, in seconds, before declaring a host
+	// failed and starting host-error recovery for the VM on it. A lower
+	// value recovers a hung host faster at the cost of more false
+	// positives; leave unset for Compute Engine's default recovery timing.
+	// Must be 90..330 in steps of 30 (90, 120, ..., 330).
+	HostErrorTimeoutSeconds *int32 `protobuf:"varint,12,opt,name=host_error_timeout_seconds,json=hostErrorTimeoutSeconds,proto3,oneof" json:"host_error_timeout_seconds,omitempty"`
+	unknownFields           protoimpl.UnknownFields
+	sizeCache               protoimpl.SizeCache
 }
 
 func (x *GcpComputeMigScheduling) Reset() {
 	*x = GcpComputeMigScheduling{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1624,7 +1703,7 @@ func (x *GcpComputeMigScheduling) String() string {
 func (*GcpComputeMigScheduling) ProtoMessage() {}
 
 func (x *GcpComputeMigScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[9]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1637,7 +1716,7 @@ func (x *GcpComputeMigScheduling) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigScheduling.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GcpComputeMigScheduling) GetProvisioningModel() string {
@@ -1717,6 +1796,13 @@ func (x *GcpComputeMigScheduling) GetLocalSsdRecoveryTimeoutSeconds() int64 {
 	return 0
 }
 
+func (x *GcpComputeMigScheduling) GetHostErrorTimeoutSeconds() int32 {
+	if x != nil && x.HostErrorTimeoutSeconds != nil {
+		return *x.HostErrorTimeoutSeconds
+	}
+	return 0
+}
+
 // GcpComputeMigNodeAffinity selects sole-tenant node groups.
 type GcpComputeMigNodeAffinity struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -1733,7 +1819,7 @@ type GcpComputeMigNodeAffinity struct {
 
 func (x *GcpComputeMigNodeAffinity) Reset() {
 	*x = GcpComputeMigNodeAffinity{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1745,7 +1831,7 @@ func (x *GcpComputeMigNodeAffinity) String() string {
 func (*GcpComputeMigNodeAffinity) ProtoMessage() {}
 
 func (x *GcpComputeMigNodeAffinity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[10]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1758,7 +1844,7 @@ func (x *GcpComputeMigNodeAffinity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigNodeAffinity.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigNodeAffinity) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *GcpComputeMigNodeAffinity) GetKey() string {
@@ -1799,7 +1885,7 @@ type GcpComputeMigShieldedConfig struct {
 
 func (x *GcpComputeMigShieldedConfig) Reset() {
 	*x = GcpComputeMigShieldedConfig{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1811,7 +1897,7 @@ func (x *GcpComputeMigShieldedConfig) String() string {
 func (*GcpComputeMigShieldedConfig) ProtoMessage() {}
 
 func (x *GcpComputeMigShieldedConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1824,7 +1910,7 @@ func (x *GcpComputeMigShieldedConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigShieldedConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigShieldedConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GcpComputeMigShieldedConfig) GetEnableSecureBoot() bool {
@@ -1865,7 +1951,7 @@ type GcpComputeMigConfidentialConfig struct {
 
 func (x *GcpComputeMigConfidentialConfig) Reset() {
 	*x = GcpComputeMigConfidentialConfig{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1877,7 +1963,7 @@ func (x *GcpComputeMigConfidentialConfig) String() string {
 func (*GcpComputeMigConfidentialConfig) ProtoMessage() {}
 
 func (x *GcpComputeMigConfidentialConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1890,7 +1976,7 @@ func (x *GcpComputeMigConfidentialConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigConfidentialConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigConfidentialConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GcpComputeMigConfidentialConfig) GetConfidentialInstanceType() string {
@@ -1928,7 +2014,7 @@ type GcpComputeMigAdvancedMachineFeatures struct {
 
 func (x *GcpComputeMigAdvancedMachineFeatures) Reset() {
 	*x = GcpComputeMigAdvancedMachineFeatures{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1940,7 +2026,7 @@ func (x *GcpComputeMigAdvancedMachineFeatures) String() string {
 func (*GcpComputeMigAdvancedMachineFeatures) ProtoMessage() {}
 
 func (x *GcpComputeMigAdvancedMachineFeatures) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1953,7 +2039,7 @@ func (x *GcpComputeMigAdvancedMachineFeatures) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use GcpComputeMigAdvancedMachineFeatures.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigAdvancedMachineFeatures) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GcpComputeMigAdvancedMachineFeatures) GetEnableNestedVirtualization() bool {
@@ -2012,7 +2098,7 @@ type GcpComputeMigGuestAccelerator struct {
 
 func (x *GcpComputeMigGuestAccelerator) Reset() {
 	*x = GcpComputeMigGuestAccelerator{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2024,7 +2110,7 @@ func (x *GcpComputeMigGuestAccelerator) String() string {
 func (*GcpComputeMigGuestAccelerator) ProtoMessage() {}
 
 func (x *GcpComputeMigGuestAccelerator) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2037,7 +2123,7 @@ func (x *GcpComputeMigGuestAccelerator) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigGuestAccelerator.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigGuestAccelerator) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GcpComputeMigGuestAccelerator) GetType() string {
@@ -2073,7 +2159,7 @@ type GcpComputeMigReservationAffinity struct {
 
 func (x *GcpComputeMigReservationAffinity) Reset() {
 	*x = GcpComputeMigReservationAffinity{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2085,7 +2171,7 @@ func (x *GcpComputeMigReservationAffinity) String() string {
 func (*GcpComputeMigReservationAffinity) ProtoMessage() {}
 
 func (x *GcpComputeMigReservationAffinity) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2098,7 +2184,7 @@ func (x *GcpComputeMigReservationAffinity) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigReservationAffinity.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigReservationAffinity) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GcpComputeMigReservationAffinity) GetType() string {
@@ -2130,7 +2216,7 @@ type GcpComputeMigSpecificReservation struct {
 
 func (x *GcpComputeMigSpecificReservation) Reset() {
 	*x = GcpComputeMigSpecificReservation{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2142,7 +2228,7 @@ func (x *GcpComputeMigSpecificReservation) String() string {
 func (*GcpComputeMigSpecificReservation) ProtoMessage() {}
 
 func (x *GcpComputeMigSpecificReservation) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2155,7 +2241,7 @@ func (x *GcpComputeMigSpecificReservation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigSpecificReservation.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigSpecificReservation) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GcpComputeMigSpecificReservation) GetKey() string {
@@ -2199,7 +2285,7 @@ type GcpComputeMigVersion struct {
 
 func (x *GcpComputeMigVersion) Reset() {
 	*x = GcpComputeMigVersion{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2211,7 +2297,7 @@ func (x *GcpComputeMigVersion) String() string {
 func (*GcpComputeMigVersion) ProtoMessage() {}
 
 func (x *GcpComputeMigVersion) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2224,7 +2310,7 @@ func (x *GcpComputeMigVersion) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigVersion.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigVersion) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GcpComputeMigVersion) GetVersionName() string {
@@ -2270,7 +2356,7 @@ type GcpComputeMigNamedPort struct {
 
 func (x *GcpComputeMigNamedPort) Reset() {
 	*x = GcpComputeMigNamedPort{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2282,7 +2368,7 @@ func (x *GcpComputeMigNamedPort) String() string {
 func (*GcpComputeMigNamedPort) ProtoMessage() {}
 
 func (x *GcpComputeMigNamedPort) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2295,7 +2381,7 @@ func (x *GcpComputeMigNamedPort) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigNamedPort.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigNamedPort) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GcpComputeMigNamedPort) GetName() string {
@@ -2372,7 +2458,7 @@ type GcpComputeMigUpdatePolicy struct {
 
 func (x *GcpComputeMigUpdatePolicy) Reset() {
 	*x = GcpComputeMigUpdatePolicy{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2384,7 +2470,7 @@ func (x *GcpComputeMigUpdatePolicy) String() string {
 func (*GcpComputeMigUpdatePolicy) ProtoMessage() {}
 
 func (x *GcpComputeMigUpdatePolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2397,7 +2483,7 @@ func (x *GcpComputeMigUpdatePolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigUpdatePolicy.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigUpdatePolicy) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GcpComputeMigUpdatePolicy) GetMinimalAction() string {
@@ -2483,7 +2569,7 @@ type GcpComputeMigAutoHealing struct {
 
 func (x *GcpComputeMigAutoHealing) Reset() {
 	*x = GcpComputeMigAutoHealing{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2495,7 +2581,7 @@ func (x *GcpComputeMigAutoHealing) String() string {
 func (*GcpComputeMigAutoHealing) ProtoMessage() {}
 
 func (x *GcpComputeMigAutoHealing) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2508,7 +2594,7 @@ func (x *GcpComputeMigAutoHealing) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigAutoHealing.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigAutoHealing) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *GcpComputeMigAutoHealing) GetHealthCheck() *v1.StringValueOrRef {
@@ -2547,7 +2633,7 @@ type GcpComputeMigStandbyPolicy struct {
 
 func (x *GcpComputeMigStandbyPolicy) Reset() {
 	*x = GcpComputeMigStandbyPolicy{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2559,7 +2645,7 @@ func (x *GcpComputeMigStandbyPolicy) String() string {
 func (*GcpComputeMigStandbyPolicy) ProtoMessage() {}
 
 func (x *GcpComputeMigStandbyPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2572,7 +2658,7 @@ func (x *GcpComputeMigStandbyPolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigStandbyPolicy.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigStandbyPolicy) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GcpComputeMigStandbyPolicy) GetInitialDelaySec() int32 {
@@ -2610,7 +2696,7 @@ type GcpComputeMigStatefulDisk struct {
 
 func (x *GcpComputeMigStatefulDisk) Reset() {
 	*x = GcpComputeMigStatefulDisk{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2622,7 +2708,7 @@ func (x *GcpComputeMigStatefulDisk) String() string {
 func (*GcpComputeMigStatefulDisk) ProtoMessage() {}
 
 func (x *GcpComputeMigStatefulDisk) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2635,7 +2721,7 @@ func (x *GcpComputeMigStatefulDisk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigStatefulDisk.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigStatefulDisk) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GcpComputeMigStatefulDisk) GetDeviceName() string {
@@ -2674,7 +2760,7 @@ type GcpComputeMigStatefulIp struct {
 
 func (x *GcpComputeMigStatefulIp) Reset() {
 	*x = GcpComputeMigStatefulIp{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2686,7 +2772,7 @@ func (x *GcpComputeMigStatefulIp) String() string {
 func (*GcpComputeMigStatefulIp) ProtoMessage() {}
 
 func (x *GcpComputeMigStatefulIp) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2699,7 +2785,7 @@ func (x *GcpComputeMigStatefulIp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigStatefulIp.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigStatefulIp) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GcpComputeMigStatefulIp) GetInterfaceName() string {
@@ -2752,7 +2838,7 @@ type GcpComputeMigInstanceLifecyclePolicy struct {
 
 func (x *GcpComputeMigInstanceLifecyclePolicy) Reset() {
 	*x = GcpComputeMigInstanceLifecyclePolicy{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2764,7 +2850,7 @@ func (x *GcpComputeMigInstanceLifecyclePolicy) String() string {
 func (*GcpComputeMigInstanceLifecyclePolicy) ProtoMessage() {}
 
 func (x *GcpComputeMigInstanceLifecyclePolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[24]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2777,7 +2863,7 @@ func (x *GcpComputeMigInstanceLifecyclePolicy) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use GcpComputeMigInstanceLifecyclePolicy.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigInstanceLifecyclePolicy) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GcpComputeMigInstanceLifecyclePolicy) GetDefaultActionOnFailure() string {
@@ -2823,7 +2909,7 @@ type GcpComputeMigAllInstancesConfig struct {
 
 func (x *GcpComputeMigAllInstancesConfig) Reset() {
 	*x = GcpComputeMigAllInstancesConfig{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2835,7 +2921,7 @@ func (x *GcpComputeMigAllInstancesConfig) String() string {
 func (*GcpComputeMigAllInstancesConfig) ProtoMessage() {}
 
 func (x *GcpComputeMigAllInstancesConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[25]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2848,7 +2934,7 @@ func (x *GcpComputeMigAllInstancesConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigAllInstancesConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigAllInstancesConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *GcpComputeMigAllInstancesConfig) GetLabels() map[string]string {
@@ -2894,7 +2980,7 @@ type GcpComputeMigDistributionPolicy struct {
 
 func (x *GcpComputeMigDistributionPolicy) Reset() {
 	*x = GcpComputeMigDistributionPolicy{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2906,7 +2992,7 @@ func (x *GcpComputeMigDistributionPolicy) String() string {
 func (*GcpComputeMigDistributionPolicy) ProtoMessage() {}
 
 func (x *GcpComputeMigDistributionPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2919,7 +3005,7 @@ func (x *GcpComputeMigDistributionPolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigDistributionPolicy.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigDistributionPolicy) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *GcpComputeMigDistributionPolicy) GetZones() []string {
@@ -2949,7 +3035,7 @@ type GcpComputeMigInstanceFlexibilityPolicy struct {
 
 func (x *GcpComputeMigInstanceFlexibilityPolicy) Reset() {
 	*x = GcpComputeMigInstanceFlexibilityPolicy{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2961,7 +3047,7 @@ func (x *GcpComputeMigInstanceFlexibilityPolicy) String() string {
 func (*GcpComputeMigInstanceFlexibilityPolicy) ProtoMessage() {}
 
 func (x *GcpComputeMigInstanceFlexibilityPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[27]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2974,7 +3060,7 @@ func (x *GcpComputeMigInstanceFlexibilityPolicy) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use GcpComputeMigInstanceFlexibilityPolicy.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigInstanceFlexibilityPolicy) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GcpComputeMigInstanceFlexibilityPolicy) GetInstanceSelections() []*GcpComputeMigInstanceSelection {
@@ -3001,7 +3087,7 @@ type GcpComputeMigInstanceSelection struct {
 
 func (x *GcpComputeMigInstanceSelection) Reset() {
 	*x = GcpComputeMigInstanceSelection{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3013,7 +3099,7 @@ func (x *GcpComputeMigInstanceSelection) String() string {
 func (*GcpComputeMigInstanceSelection) ProtoMessage() {}
 
 func (x *GcpComputeMigInstanceSelection) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[28]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3026,7 +3112,7 @@ func (x *GcpComputeMigInstanceSelection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigInstanceSelection.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigInstanceSelection) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GcpComputeMigInstanceSelection) GetName() string {
@@ -3113,7 +3199,7 @@ type GcpComputeMigAutoscaler struct {
 
 func (x *GcpComputeMigAutoscaler) Reset() {
 	*x = GcpComputeMigAutoscaler{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3125,7 +3211,7 @@ func (x *GcpComputeMigAutoscaler) String() string {
 func (*GcpComputeMigAutoscaler) ProtoMessage() {}
 
 func (x *GcpComputeMigAutoscaler) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[29]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3138,7 +3224,7 @@ func (x *GcpComputeMigAutoscaler) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigAutoscaler.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigAutoscaler) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GcpComputeMigAutoscaler) GetAutoscalerName() string {
@@ -3266,7 +3352,7 @@ type GcpComputeMigAutoscalerMetric struct {
 
 func (x *GcpComputeMigAutoscalerMetric) Reset() {
 	*x = GcpComputeMigAutoscalerMetric{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3278,7 +3364,7 @@ func (x *GcpComputeMigAutoscalerMetric) String() string {
 func (*GcpComputeMigAutoscalerMetric) ProtoMessage() {}
 
 func (x *GcpComputeMigAutoscalerMetric) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[30]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3291,7 +3377,7 @@ func (x *GcpComputeMigAutoscalerMetric) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigAutoscalerMetric.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigAutoscalerMetric) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GcpComputeMigAutoscalerMetric) GetName() string {
@@ -3346,7 +3432,7 @@ type GcpComputeMigScaleInControl struct {
 
 func (x *GcpComputeMigScaleInControl) Reset() {
 	*x = GcpComputeMigScaleInControl{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3358,7 +3444,7 @@ func (x *GcpComputeMigScaleInControl) String() string {
 func (*GcpComputeMigScaleInControl) ProtoMessage() {}
 
 func (x *GcpComputeMigScaleInControl) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[31]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3371,7 +3457,7 @@ func (x *GcpComputeMigScaleInControl) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigScaleInControl.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigScaleInControl) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{31}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *GcpComputeMigScaleInControl) GetMaxScaledInReplicasFixed() int32 {
@@ -3421,7 +3507,7 @@ type GcpComputeMigScalingSchedule struct {
 
 func (x *GcpComputeMigScalingSchedule) Reset() {
 	*x = GcpComputeMigScalingSchedule{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3433,7 +3519,7 @@ func (x *GcpComputeMigScalingSchedule) String() string {
 func (*GcpComputeMigScalingSchedule) ProtoMessage() {}
 
 func (x *GcpComputeMigScalingSchedule) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[32]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3446,7 +3532,7 @@ func (x *GcpComputeMigScalingSchedule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigScalingSchedule.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigScalingSchedule) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{32}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *GcpComputeMigScalingSchedule) GetScheduleName() string {
@@ -3538,7 +3624,7 @@ type GcpComputeMigPerInstanceConfig struct {
 
 func (x *GcpComputeMigPerInstanceConfig) Reset() {
 	*x = GcpComputeMigPerInstanceConfig{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3550,7 +3636,7 @@ func (x *GcpComputeMigPerInstanceConfig) String() string {
 func (*GcpComputeMigPerInstanceConfig) ProtoMessage() {}
 
 func (x *GcpComputeMigPerInstanceConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[33]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3563,7 +3649,7 @@ func (x *GcpComputeMigPerInstanceConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigPerInstanceConfig.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigPerInstanceConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{33}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *GcpComputeMigPerInstanceConfig) GetConfigName() string {
@@ -3627,7 +3713,7 @@ type GcpComputeMigPreservedState struct {
 
 func (x *GcpComputeMigPreservedState) Reset() {
 	*x = GcpComputeMigPreservedState{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3639,7 +3725,7 @@ func (x *GcpComputeMigPreservedState) String() string {
 func (*GcpComputeMigPreservedState) ProtoMessage() {}
 
 func (x *GcpComputeMigPreservedState) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[34]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3652,7 +3738,7 @@ func (x *GcpComputeMigPreservedState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigPreservedState.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigPreservedState) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{34}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GcpComputeMigPreservedState) GetMetadata() map[string]string {
@@ -3707,7 +3793,7 @@ type GcpComputeMigPreservedDisk struct {
 
 func (x *GcpComputeMigPreservedDisk) Reset() {
 	*x = GcpComputeMigPreservedDisk{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3719,7 +3805,7 @@ func (x *GcpComputeMigPreservedDisk) String() string {
 func (*GcpComputeMigPreservedDisk) ProtoMessage() {}
 
 func (x *GcpComputeMigPreservedDisk) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[35]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3732,7 +3818,7 @@ func (x *GcpComputeMigPreservedDisk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigPreservedDisk.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigPreservedDisk) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GcpComputeMigPreservedDisk) GetDeviceName() string {
@@ -3787,7 +3873,7 @@ type GcpComputeMigPreservedIp struct {
 
 func (x *GcpComputeMigPreservedIp) Reset() {
 	*x = GcpComputeMigPreservedIp{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[36]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3799,7 +3885,7 @@ func (x *GcpComputeMigPreservedIp) String() string {
 func (*GcpComputeMigPreservedIp) ProtoMessage() {}
 
 func (x *GcpComputeMigPreservedIp) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[36]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3812,7 +3898,7 @@ func (x *GcpComputeMigPreservedIp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigPreservedIp.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigPreservedIp) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{36}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *GcpComputeMigPreservedIp) GetInterfaceName() string {
@@ -3862,7 +3948,7 @@ type GcpComputeMigResizeRequest struct {
 
 func (x *GcpComputeMigResizeRequest) Reset() {
 	*x = GcpComputeMigResizeRequest{}
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[37]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3874,7 +3960,7 @@ func (x *GcpComputeMigResizeRequest) String() string {
 func (*GcpComputeMigResizeRequest) ProtoMessage() {}
 
 func (x *GcpComputeMigResizeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[37]
+	mi := &file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3887,7 +3973,7 @@ func (x *GcpComputeMigResizeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpComputeMigResizeRequest.ProtoReflect.Descriptor instead.
 func (*GcpComputeMigResizeRequest) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{37}
+	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *GcpComputeMigResizeRequest) GetRequestName() string {
@@ -3978,7 +4064,7 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\f_target_sizeB\x18\n" +
 	"\x16_target_suspended_sizeB\x16\n" +
 	"\x14_target_stopped_sizeB\x15\n" +
-	"\x13_wait_for_instances\"\xa4$\n" +
+	"\x13_wait_for_instances\"\xac%\n" +
 	"\x15GcpComputeMigTemplate\x12-\n" +
 	"\fmachine_type\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vmachineType\x12 \n" +
@@ -4007,7 +4093,8 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0ecan_ip_forward\x18\x14 \x01(\bR\fcanIpForward\x12\xb9\x01\n" +
 	"\x1akey_revocation_action_type\x18\x15 \x01(\tB|\xbaHy\xba\x01v\n" +
 	"\x1bvalid_key_revocation_action\x12/key_revocation_action_type must be NONE or STOP\x1a&this == '' || this in ['NONE', 'STOP']R\x17keyRevocationActionType\x125\n" +
-	"\x11resource_policies\x18\x16 \x03(\tB\b\xbaH\x05\x92\x01\x02\x10\x01R\x10resourcePolicies\x1a;\n" +
+	"\x11resource_policies\x18\x16 \x03(\tB\b\xbaH\x05\x92\x01\x02\x10\x01R\x10resourcePolicies\x12\x85\x01\n" +
+	"\x18workload_identity_config\x18\x17 \x01(\v2K.dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigWorkloadIdentityConfigR\x16workloadIdentityConfig\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a9\n" +
@@ -4023,7 +4110,10 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"*accelerators_require_terminate_maintenance\x12\x8f\x01VMs with guest accelerators (GPUs) cannot live-migrate — set scheduling.on_host_maintenance to TERMINATE when guest_accelerators are attached\x1arsize(this.guest_accelerators) == 0 || (has(this.scheduling) && this.scheduling.on_host_maintenance == 'TERMINATE')\x1a\xef\x02\n" +
 	"/reservation_bound_requires_specific_reservation\x12\x86\x01RESERVATION_BOUND VMs consume one named reservation — set reservation_affinity.type to SPECIFIC_RESERVATION and name the reservation\x1a\xb2\x01!has(this.scheduling) || this.scheduling.provisioning_model != 'RESERVATION_BOUND' || (has(this.reservation_affinity) && this.reservation_affinity.type == 'SPECIFIC_RESERVATION')\x1a\x85\x02\n" +
 	"0max_run_duration_conflicts_with_termination_time\x12^max_run_duration_seconds and termination_time both bound the VM's lifetime — set at most one\x1aq!has(this.scheduling) || !has(this.scheduling.max_run_duration_seconds) || this.scheduling.termination_time == ''\x1a\x96\x01\n" +
-	"\x1etemplate_exactly_one_boot_disk\x12Jexactly one disk must have boot set to true — the disk the VMs boot from\x1a(this.disks.filter(d, d.boot).size() == 1\"\x9a\x18\n" +
+	"\x1etemplate_exactly_one_boot_disk\x12Jexactly one disk must have boot set to true — the disk the VMs boot from\x1a(this.disks.filter(d, d.boot).size() == 1\"\x9a\x01\n" +
+	"#GcpComputeMigWorkloadIdentityConfig\x121\n" +
+	"\bidentity\x18\x01 \x01(\tB\x15\xbaH\x12\xc8\x01\x01r\r\x10\x01:\tspiffe://R\bidentity\x12@\n" +
+	"\x1cidentity_certificate_enabled\x18\x02 \x01(\bR\x1aidentityCertificateEnabled\"\x9a\x18\n" +
 	"\x19GcpComputeMigTemplateDisk\x12\x12\n" +
 	"\x04boot\x18\x01 \x01(\bR\x04boot\x12!\n" +
 	"\fsource_image\x18\x02 \x01(\tR\vsourceImage\x12'\n" +
@@ -4114,7 +4204,8 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15subnetwork_range_name\x18\x02 \x01(\tR\x13subnetworkRangeName\"\xa8\x01\n" +
 	"\x1bGcpComputeMigServiceAccount\x12g\n" +
 	"\x05email\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1d\x88\xd4a\xc6\x17\x92\xd4a\x14status.outputs.emailR\x05email\x12 \n" +
-	"\x06scopes\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06scopes\"\x84\t\n" +
+	"\x06scopes\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06scopes\"\xea\n" +
+	"\n" +
 	"\x17GcpComputeMigScheduling\x12\xee\x01\n" +
 	"\x12provisioning_model\x18\x01 \x01(\tB\xbe\x01\xbaH\xba\x01\xba\x01\xb6\x01\n" +
 	"\x18valid_provisioning_model\x12Kprovisioning_model must be STANDARD, SPOT, FLEX_START, or RESERVATION_BOUND\x1aMthis == '' || this in ['STANDARD', 'SPOT', 'FLEX_START', 'RESERVATION_BOUND']R\x11provisioningModel\x12:\n" +
@@ -4128,13 +4219,16 @@ const file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc = "" +
 	"\rmin_node_cpus\x18\t \x01(\x05B\a\xbaH\x04\x1a\x02(\x01H\x04R\vminNodeCpus\x88\x01\x01\x12j\n" +
 	"\x0fnode_affinities\x18\n" +
 	" \x03(\v2A.dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNodeAffinityR\x0enodeAffinities\x12\\\n" +
-	"\"local_ssd_recovery_timeout_seconds\x18\v \x01(\x03B\v\xbaH\b\"\x06\x18\x80\xf5$(\x00H\x05R\x1elocalSsdRecoveryTimeoutSeconds\x88\x01\x01B\x14\n" +
+	"\"local_ssd_recovery_timeout_seconds\x18\v \x01(\x03B\v\xbaH\b\"\x06\x18\x80\xf5$(\x00H\x05R\x1elocalSsdRecoveryTimeoutSeconds\x88\x01\x01\x12\xc4\x01\n" +
+	"\x1ahost_error_timeout_seconds\x18\f \x01(\x05B\x81\x01\xbaH~\xba\x01t\n" +
+	"\x1ahost_error_timeout_step_30\x12Fhost_error_timeout_seconds must be a multiple of 30 between 90 and 330\x1a\x0ethis % 30 == 0\x1a\x05\x18\xca\x02(ZH\x06R\x17hostErrorTimeoutSeconds\x88\x01\x01B\x14\n" +
 	"\x12_automatic_restartB\x1b\n" +
 	"\x19_max_run_duration_secondsB\x1d\n" +
 	"\x1b_discard_local_ssds_on_stopB\x16\n" +
 	"\x14_availability_domainB\x10\n" +
 	"\x0e_min_node_cpusB%\n" +
-	"#_local_ssd_recovery_timeout_seconds\"\x89\x01\n" +
+	"#_local_ssd_recovery_timeout_secondsB\x1d\n" +
+	"\x1b_host_error_timeout_seconds\"\x89\x01\n" +
 	"\x19GcpComputeMigNodeAffinity\x12\x18\n" +
 	"\x03key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\x120\n" +
 	"\boperator\x18\x02 \x01(\tB\x14\xbaH\x11\xc8\x01\x01r\fR\x02INR\x06NOT_INR\boperator\x12 \n" +
@@ -4368,120 +4462,122 @@ func file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescGZIP() []byte {
 	return file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 46)
+var file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
 var file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_goTypes = []any{
 	(*GcpComputeMigSpec)(nil),                      // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec
 	(*GcpComputeMigTemplate)(nil),                  // 1: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate
-	(*GcpComputeMigTemplateDisk)(nil),              // 2: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk
-	(*GcpComputeMigEncryptionKey)(nil),             // 3: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
-	(*GcpComputeMigTemplateNetworkInterface)(nil),  // 4: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface
-	(*GcpComputeMigAccessConfig)(nil),              // 5: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAccessConfig
-	(*GcpComputeMigIpv6AccessConfig)(nil),          // 6: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigIpv6AccessConfig
-	(*GcpComputeMigAliasIpRange)(nil),              // 7: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAliasIpRange
-	(*GcpComputeMigServiceAccount)(nil),            // 8: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount
-	(*GcpComputeMigScheduling)(nil),                // 9: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling
-	(*GcpComputeMigNodeAffinity)(nil),              // 10: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNodeAffinity
-	(*GcpComputeMigShieldedConfig)(nil),            // 11: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigShieldedConfig
-	(*GcpComputeMigConfidentialConfig)(nil),        // 12: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigConfidentialConfig
-	(*GcpComputeMigAdvancedMachineFeatures)(nil),   // 13: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAdvancedMachineFeatures
-	(*GcpComputeMigGuestAccelerator)(nil),          // 14: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigGuestAccelerator
-	(*GcpComputeMigReservationAffinity)(nil),       // 15: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity
-	(*GcpComputeMigSpecificReservation)(nil),       // 16: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpecificReservation
-	(*GcpComputeMigVersion)(nil),                   // 17: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigVersion
-	(*GcpComputeMigNamedPort)(nil),                 // 18: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNamedPort
-	(*GcpComputeMigUpdatePolicy)(nil),              // 19: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigUpdatePolicy
-	(*GcpComputeMigAutoHealing)(nil),               // 20: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing
-	(*GcpComputeMigStandbyPolicy)(nil),             // 21: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStandbyPolicy
-	(*GcpComputeMigStatefulDisk)(nil),              // 22: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulDisk
-	(*GcpComputeMigStatefulIp)(nil),                // 23: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulIp
-	(*GcpComputeMigInstanceLifecyclePolicy)(nil),   // 24: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceLifecyclePolicy
-	(*GcpComputeMigAllInstancesConfig)(nil),        // 25: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig
-	(*GcpComputeMigDistributionPolicy)(nil),        // 26: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigDistributionPolicy
-	(*GcpComputeMigInstanceFlexibilityPolicy)(nil), // 27: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy
-	(*GcpComputeMigInstanceSelection)(nil),         // 28: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceSelection
-	(*GcpComputeMigAutoscaler)(nil),                // 29: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler
-	(*GcpComputeMigAutoscalerMetric)(nil),          // 30: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscalerMetric
-	(*GcpComputeMigScaleInControl)(nil),            // 31: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScaleInControl
-	(*GcpComputeMigScalingSchedule)(nil),           // 32: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScalingSchedule
-	(*GcpComputeMigPerInstanceConfig)(nil),         // 33: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig
-	(*GcpComputeMigPreservedState)(nil),            // 34: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState
-	(*GcpComputeMigPreservedDisk)(nil),             // 35: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk
-	(*GcpComputeMigPreservedIp)(nil),               // 36: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
-	(*GcpComputeMigResizeRequest)(nil),             // 37: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigResizeRequest
-	nil,                                            // 38: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.MetadataEntry
-	nil,                                            // 39: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.LabelsEntry
-	nil,                                            // 40: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.ResourceManagerTagsEntry
-	nil,                                            // 41: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.DiskLabelsEntry
-	nil,                                            // 42: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.ResourceManagerTagsEntry
-	nil,                                            // 43: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.LabelsEntry
-	nil,                                            // 44: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.MetadataEntry
-	nil,                                            // 45: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.MetadataEntry
-	(*v1.StringValueOrRef)(nil),                    // 46: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*GcpComputeMigWorkloadIdentityConfig)(nil),    // 2: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigWorkloadIdentityConfig
+	(*GcpComputeMigTemplateDisk)(nil),              // 3: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk
+	(*GcpComputeMigEncryptionKey)(nil),             // 4: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
+	(*GcpComputeMigTemplateNetworkInterface)(nil),  // 5: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface
+	(*GcpComputeMigAccessConfig)(nil),              // 6: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAccessConfig
+	(*GcpComputeMigIpv6AccessConfig)(nil),          // 7: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigIpv6AccessConfig
+	(*GcpComputeMigAliasIpRange)(nil),              // 8: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAliasIpRange
+	(*GcpComputeMigServiceAccount)(nil),            // 9: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount
+	(*GcpComputeMigScheduling)(nil),                // 10: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling
+	(*GcpComputeMigNodeAffinity)(nil),              // 11: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNodeAffinity
+	(*GcpComputeMigShieldedConfig)(nil),            // 12: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigShieldedConfig
+	(*GcpComputeMigConfidentialConfig)(nil),        // 13: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigConfidentialConfig
+	(*GcpComputeMigAdvancedMachineFeatures)(nil),   // 14: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAdvancedMachineFeatures
+	(*GcpComputeMigGuestAccelerator)(nil),          // 15: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigGuestAccelerator
+	(*GcpComputeMigReservationAffinity)(nil),       // 16: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity
+	(*GcpComputeMigSpecificReservation)(nil),       // 17: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpecificReservation
+	(*GcpComputeMigVersion)(nil),                   // 18: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigVersion
+	(*GcpComputeMigNamedPort)(nil),                 // 19: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNamedPort
+	(*GcpComputeMigUpdatePolicy)(nil),              // 20: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigUpdatePolicy
+	(*GcpComputeMigAutoHealing)(nil),               // 21: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing
+	(*GcpComputeMigStandbyPolicy)(nil),             // 22: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStandbyPolicy
+	(*GcpComputeMigStatefulDisk)(nil),              // 23: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulDisk
+	(*GcpComputeMigStatefulIp)(nil),                // 24: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulIp
+	(*GcpComputeMigInstanceLifecyclePolicy)(nil),   // 25: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceLifecyclePolicy
+	(*GcpComputeMigAllInstancesConfig)(nil),        // 26: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig
+	(*GcpComputeMigDistributionPolicy)(nil),        // 27: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigDistributionPolicy
+	(*GcpComputeMigInstanceFlexibilityPolicy)(nil), // 28: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy
+	(*GcpComputeMigInstanceSelection)(nil),         // 29: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceSelection
+	(*GcpComputeMigAutoscaler)(nil),                // 30: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler
+	(*GcpComputeMigAutoscalerMetric)(nil),          // 31: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscalerMetric
+	(*GcpComputeMigScaleInControl)(nil),            // 32: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScaleInControl
+	(*GcpComputeMigScalingSchedule)(nil),           // 33: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScalingSchedule
+	(*GcpComputeMigPerInstanceConfig)(nil),         // 34: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig
+	(*GcpComputeMigPreservedState)(nil),            // 35: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState
+	(*GcpComputeMigPreservedDisk)(nil),             // 36: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk
+	(*GcpComputeMigPreservedIp)(nil),               // 37: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
+	(*GcpComputeMigResizeRequest)(nil),             // 38: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigResizeRequest
+	nil,                                            // 39: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.MetadataEntry
+	nil,                                            // 40: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.LabelsEntry
+	nil,                                            // 41: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.ResourceManagerTagsEntry
+	nil,                                            // 42: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.DiskLabelsEntry
+	nil,                                            // 43: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.ResourceManagerTagsEntry
+	nil,                                            // 44: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.LabelsEntry
+	nil,                                            // 45: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.MetadataEntry
+	nil,                                            // 46: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.MetadataEntry
+	(*v1.StringValueOrRef)(nil),                    // 47: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_depIdxs = []int32{
-	46, // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 0: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 1: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.template:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate
-	17, // 2: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.versions:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigVersion
-	18, // 3: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.named_ports:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNamedPort
-	19, // 4: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.update_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigUpdatePolicy
-	20, // 5: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.auto_healing:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing
-	21, // 6: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.standby_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStandbyPolicy
-	22, // 7: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.stateful_disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulDisk
-	23, // 8: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.stateful_external_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulIp
-	23, // 9: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.stateful_internal_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulIp
-	24, // 10: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.instance_lifecycle_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceLifecyclePolicy
-	25, // 11: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.all_instances_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig
-	26, // 12: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.distribution_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigDistributionPolicy
-	27, // 13: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy
-	29, // 14: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.autoscaler:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler
-	33, // 15: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.per_instance_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig
-	37, // 16: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.resize_requests:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigResizeRequest
-	2,  // 17: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk
-	4,  // 18: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.network_interfaces:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface
-	8,  // 19: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.service_account:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount
-	9,  // 20: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.scheduling:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling
-	11, // 21: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.shielded_instance_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigShieldedConfig
-	12, // 22: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.confidential_instance_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigConfidentialConfig
-	13, // 23: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.advanced_machine_features:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAdvancedMachineFeatures
-	14, // 24: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.guest_accelerators:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigGuestAccelerator
-	15, // 25: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.reservation_affinity:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity
-	38, // 26: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.MetadataEntry
-	39, // 27: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.LabelsEntry
-	40, // 28: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.ResourceManagerTagsEntry
-	46, // 29: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	41, // 30: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.DiskLabelsEntry
-	42, // 31: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.ResourceManagerTagsEntry
-	3,  // 32: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
-	3,  // 33: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
-	3,  // 34: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
-	46, // 35: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	46, // 36: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	46, // 37: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5,  // 38: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAccessConfig
-	6,  // 39: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigIpv6AccessConfig
-	7,  // 40: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAliasIpRange
-	46, // 41: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	10, // 42: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNodeAffinity
-	16, // 43: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpecificReservation
-	46, // 44: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing.health_check:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	43, // 45: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.LabelsEntry
-	44, // 46: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.MetadataEntry
-	28, // 47: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy.instance_selections:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceSelection
-	30, // 48: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.metrics:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscalerMetric
-	31, // 49: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.scale_in_control:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScaleInControl
-	32, // 50: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.schedules:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScalingSchedule
-	34, // 51: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig.preserved_state:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState
-	45, // 52: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.MetadataEntry
-	35, // 53: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk
-	36, // 54: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.external_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
-	36, // 55: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.internal_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
-	46, // 56: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	46, // 57: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp.address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	58, // [58:58] is the sub-list for method output_type
-	58, // [58:58] is the sub-list for method input_type
-	58, // [58:58] is the sub-list for extension type_name
-	58, // [58:58] is the sub-list for extension extendee
-	0,  // [0:58] is the sub-list for field type_name
+	18, // 2: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.versions:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigVersion
+	19, // 3: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.named_ports:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNamedPort
+	20, // 4: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.update_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigUpdatePolicy
+	21, // 5: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.auto_healing:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing
+	22, // 6: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.standby_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStandbyPolicy
+	23, // 7: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.stateful_disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulDisk
+	24, // 8: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.stateful_external_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulIp
+	24, // 9: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.stateful_internal_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigStatefulIp
+	25, // 10: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.instance_lifecycle_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceLifecyclePolicy
+	26, // 11: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.all_instances_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig
+	27, // 12: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.distribution_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigDistributionPolicy
+	28, // 13: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.instance_flexibility_policy:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy
+	30, // 14: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.autoscaler:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler
+	34, // 15: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.per_instance_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig
+	38, // 16: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpec.resize_requests:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigResizeRequest
+	3,  // 17: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk
+	5,  // 18: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.network_interfaces:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface
+	9,  // 19: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.service_account:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount
+	10, // 20: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.scheduling:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling
+	12, // 21: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.shielded_instance_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigShieldedConfig
+	13, // 22: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.confidential_instance_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigConfidentialConfig
+	14, // 23: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.advanced_machine_features:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAdvancedMachineFeatures
+	15, // 24: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.guest_accelerators:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigGuestAccelerator
+	16, // 25: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.reservation_affinity:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity
+	39, // 26: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.MetadataEntry
+	40, // 27: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.LabelsEntry
+	41, // 28: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.ResourceManagerTagsEntry
+	2,  // 29: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplate.workload_identity_config:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigWorkloadIdentityConfig
+	47, // 30: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	42, // 31: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.DiskLabelsEntry
+	43, // 32: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.resource_manager_tags:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.ResourceManagerTagsEntry
+	4,  // 33: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.disk_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
+	4,  // 34: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_image_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
+	4,  // 35: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateDisk.source_snapshot_encryption:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey
+	47, // 36: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigEncryptionKey.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 37: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 38: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6,  // 39: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAccessConfig
+	7,  // 40: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.ipv6_access_configs:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigIpv6AccessConfig
+	8,  // 41: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigTemplateNetworkInterface.alias_ip_ranges:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAliasIpRange
+	47, // 42: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigServiceAccount.email:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 43: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScheduling.node_affinities:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigNodeAffinity
+	17, // 44: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigReservationAffinity.specific_reservation:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigSpecificReservation
+	47, // 45: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoHealing.health_check:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	44, // 46: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.labels:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.LabelsEntry
+	45, // 47: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAllInstancesConfig.MetadataEntry
+	29, // 48: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceFlexibilityPolicy.instance_selections:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigInstanceSelection
+	31, // 49: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.metrics:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscalerMetric
+	32, // 50: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.scale_in_control:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScaleInControl
+	33, // 51: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigAutoscaler.schedules:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigScalingSchedule
+	35, // 52: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPerInstanceConfig.preserved_state:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState
+	46, // 53: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.metadata:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.MetadataEntry
+	36, // 54: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.disks:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk
+	37, // 55: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.external_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
+	37, // 56: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedState.internal_ips:type_name -> dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp
+	47, // 57: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedDisk.source:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	47, // 58: dev.planton.gcp.gcpcomputemig.v1alpha1.GcpComputeMigPreservedIp.address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	59, // [59:59] is the sub-list for method output_type
+	59, // [59:59] is the sub-list for method input_type
+	59, // [59:59] is the sub-list for extension type_name
+	59, // [59:59] is the sub-list for extension extendee
+	0,  // [0:59] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_init() }
@@ -4490,28 +4586,28 @@ func file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[2].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[4].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[19].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[21].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[28].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[3].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[18].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[29].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[30].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[31].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[32].OneofWrappers = []any{}
 	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[33].OneofWrappers = []any{}
-	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[37].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[34].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_msgTypes[38].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpcomputemig_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   46,
+			NumMessages:   47,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

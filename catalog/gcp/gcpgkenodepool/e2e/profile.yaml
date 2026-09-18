@@ -13,8 +13,15 @@ spec:
   # backoff, image GC age, cgroup v2, ignore_node_count_changes) x 2
   # engines, all phases green under the apply-idempotency gate. The GKE
   # chain lives in us-east1 (see the cluster profile).
-  status: green
-  validated_provisioners: [pulumi, terraform]
+  #
+  # Awaiting re-proof: the pool gained graceful-shutdown grace periods (the
+  # autoscaling-spot scenario sets 120/30), a boot-time init script, and the
+  # end-of-support upgrade hold; the earlier live proof predates them. The
+  # next proof confirms the grace periods round-trip on a Spot pool and re-
+  # plan clean (both are API-computed when unset); the init script and the
+  # hold stay offline-proven.
+  status: pending_proof
+  validated_provisioners: []
   # Deferred arm — node_drain_config (customized node drain): GKE gates
   # the feature behind a per-project allowlist granted only via a GCP
   # support case; the live API rejects creates with "customized node drain

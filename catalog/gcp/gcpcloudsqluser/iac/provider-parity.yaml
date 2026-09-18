@@ -13,6 +13,10 @@ resources:
       # inherits terser API names.
       - spec: spec.user_name
         arg: name
+      # A service-account user names the account by reference; both
+      # engines derive the provider's name argument from its email.
+      - spec: spec.service_account
+        arg: name
       - spec: spec.project_id
         arg: project
     exclusions:

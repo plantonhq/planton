@@ -164,16 +164,6 @@ resources:
         reason: sub-second precision on a VM lifetime is meaningless; the spec models the duration as whole seconds
       - arg: scheduling.local_ssd_recovery_timeout.nanos
         reason: the provider documents this timeout at hour granularity; the spec models the duration as whole seconds
-      # SDK gap at the pinned pulumi-gcp (v9.29.0): the bridge does not
-      # carry workload_identity_config, so modeling it would break the
-      # cross-engine parity contract. Re-evaluate at the next pulumi-gcp
-      # bump -- when the bridge carries it, these come back through this
-      # manifest as modeled fields.
-      - arg: workload_identity_config.identity
-        reason: unbridged at pulumi-gcp v9.29.0 (no WorkloadIdentityConfig on compute.Instance); model when the SDK catches up
-      - arg: workload_identity_config.identity_certificate_enabled
-        reason: unbridged at pulumi-gcp v9.29.0 (no WorkloadIdentityConfig on compute.Instance); model when the SDK catches up
-
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables compute.googleapis.com

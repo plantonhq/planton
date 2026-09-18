@@ -26,6 +26,7 @@ locals {
   server_ca_mode          = var.spec.server_ca_mode != "" ? var.spec.server_ca_mode : null
   server_ca_pool          = var.spec.server_ca_pool != "" ? var.spec.server_ca_pool : null
   maintenance_version     = var.spec.maintenance_version != "" ? var.spec.maintenance_version : null
+  acl_policy              = var.spec.acl_policy != "" ? var.spec.acl_policy : null
 
   # The ambient-project data source is only instantiated when some PSC
   # endpoint entry omits its consumer project AND the spec carries no

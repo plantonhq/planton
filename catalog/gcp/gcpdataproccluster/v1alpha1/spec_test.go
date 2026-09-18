@@ -1453,4 +1453,76 @@ var _ = ginkgo.Describe("GcpDataprocClusterSpec", func() {
 		}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
+
+	ginkgo.Context("attached disks, per-selection disk shapes, and confidential type", func() {
+		ginkgo.It("accepts attached disks on the worker role and a per-selection disk shape", func() {
+			msg := minimal()
+			iops := int64(3000)
+			msg.Spec.ClusterConfig = &GcpDataprocClusterConfig{
+				WorkerConfig: &GcpDataprocClusterWorkerConfig{
+					NumInstances: 2,
+					DiskConfig: &GcpDataprocClusterDiskConfig{
+						BootDiskType: "pd-balanced",
+						AttachedDisks: []*GcpDataprocClusterAttachedDisk{
+							{DiskSizeGb: 500, DiskType: "pd-ssd"},
+							{DiskSizeGb: 1000, DiskType: "hyperdisk-balanced", ProvisionedIops: &iops},
+						},
+					},
+					InstanceFlexibilityPolicy: &GcpDataprocClusterInstanceFlexibilityPolicy{
+						InstanceSelectionList: []*GcpDataprocClusterInstanceSelection{{
+							MachineTypes: []string{"n2-standard-8"},
+							DiskConfig:   &GcpDataprocClusterDiskConfig{BootDiskSizeGb: 200, NumLocalSsds: 2, LocalSsdInterface: "nvme"},
+						}},
+					},
+				},
+			}
+			gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		})
+
+		ginkgo.It("rejects an attached disk below 10 GB or with an unknown type", func() {
+			msg := minimal()
+			msg.Spec.ClusterConfig = &GcpDataprocClusterConfig{
+				MasterConfig: &GcpDataprocClusterMasterConfig{
+					DiskConfig: &GcpDataprocClusterDiskConfig{AttachedDisks: []*GcpDataprocClusterAttachedDisk{{DiskSizeGb: 5}}},
+				},
+			}
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+			msg.Spec.ClusterConfig.MasterConfig.DiskConfig.AttachedDisks[0] = &GcpDataprocClusterAttachedDisk{DiskType: "local-ssd"}
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		})
+
+		ginkgo.It("rejects attached disks on an auxiliary node group", func() {
+			msg := minimal()
+			msg.Spec.ClusterConfig = &GcpDataprocClusterConfig{
+				AuxiliaryNodeGroups: []*GcpDataprocClusterAuxiliaryNodeGroup{{
+					Roles: []string{"DRIVER"},
+					NodeGroupConfig: &GcpDataprocClusterAuxiliaryNodeGroupConfig{
+						DiskConfig: &GcpDataprocClusterDiskConfig{AttachedDisks: []*GcpDataprocClusterAttachedDisk{{DiskSizeGb: 100}}},
+					},
+				}},
+			}
+			err := validator.Validate(msg)
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("auxiliary"))
+		})
+
+		ginkgo.It("accepts each confidential instance type and rejects an unknown one", func() {
+			for _, t := range []string{"SEV", "SEV_SNP", "TDX"} {
+				msg := minimal()
+				msg.Spec.ClusterConfig = &GcpDataprocClusterConfig{
+					GceConfig: &GcpDataprocClusterGceConfig{
+						ConfidentialInstanceConfig: &GcpDataprocClusterConfidentialInstanceConfig{ConfidentialInstanceType: t},
+					},
+				}
+				gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "type %q", t)
+			}
+			msg := minimal()
+			msg.Spec.ClusterConfig = &GcpDataprocClusterConfig{
+				GceConfig: &GcpDataprocClusterGceConfig{
+					ConfidentialInstanceConfig: &GcpDataprocClusterConfidentialInstanceConfig{ConfidentialInstanceType: "SGX"},
+				},
+			}
+			gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		})
+	})
 })

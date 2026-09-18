@@ -122,10 +122,10 @@ This creates a cluster with 1 master, 2 workers, Spark 3.5, Component Gateway en
 
 ### Deliberately not modeled (recorded reasons)
 
-Everything else on `google_dataproc_cluster` at the pinned provider is representable — including `clusterType` (SINGLE_NODE / ZERO_SCALE), the Lightning `engine`, stop-lifecycle TTLs, resource manager tags, boot-disk provisioned IOPS/throughput on every node group, master and primary-worker `instanceFlexibilityPolicy`, and `deletionPolicy`. The recorded exclusions:
+Everything else on `google_dataproc_cluster` at the pinned provider is representable — including `clusterType` (SINGLE_NODE / ZERO_SCALE), the Lightning `engine`, stop-lifecycle TTLs, resource manager tags, boot-disk provisioned IOPS/throughput and additional attached disks (`diskConfig.attachedDisks`) on every node role, master and primary-worker `instanceFlexibilityPolicy` with per-selection disk shapes, the Confidential Compute technology (`confidentialInstanceType`: SEV, SEV_SNP, TDX), and `deletionPolicy`. The recorded exclusions:
 
-- **`confidential_instance_type`** — GA at the pin but not yet bridged by the pinned Pulumi SDK (which carries only the deprecated boolean the spec models); the field enters the spec at the next SDK bump.
-- **Per-selection `disk_config` inside `instance_flexibility_policy`** — same SDK-bridge gap, on all three node-group sites.
+- **`enable_confidential_compute`** — the provider-deprecated boolean predecessor of `confidentialInstanceType`; the spec keeps it so existing manifests keep working, and sends it only when set.
+- **Attached disks on auxiliary (driver) node groups** — the provider defines additional disks on master, worker, and secondary worker nodes only; the spec rejects them on auxiliary groups.
 - **Dataproc IAM member/binding/policy trios** — resource-scoped IAM deferred.
 - **`google_dataproc_job` / `batch` / `workflow_template` / `session_template`** — workloads, not infrastructure; Serverless Batches is a future kind candidate.
 - **Dataproc Metastore service** — future kind candidate; `metastoreConfig` accepts literal resource names today.

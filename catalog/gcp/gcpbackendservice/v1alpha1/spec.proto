@@ -947,6 +947,34 @@ message GcpBackendServiceLogConfig {
   // (e.g. tls.protocol, orca_load_report).
   repeated string optional_fields = 4 [(buf.validate.field).repeated.items.string.min_len = 1];
 
+  // HTTP request headers whose values join each log entry (e.g.
+  // "X-Request-Id", "User-Agent") — for tracing a request across services
+  // without instrumenting the backend. Requires enable and an HTTP-family
+  // protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+  // in HTTP; each entry is one name.
+  repeated string request_headers = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).repeated = {
+      unique: true
+      items: {
+        string: {min_len: 1}
+      }
+    }
+  ];
+
+  // HTTP response headers whose values join each log entry (e.g.
+  // "Content-Type", a backend's own "X-Cache" or "X-Served-By"). Same
+  // preconditions as request_headers.
+  repeated string response_headers = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).repeated = {
+      unique: true
+      items: {
+        string: {min_len: 1}
+      }
+    }
+  ];
+
   option (buf.validate.message).cel = {
     id: "optional_fields_require_custom_mode"
     message: "optional_fields only applies with optional_mode CUSTOM"
@@ -957,6 +985,12 @@ message GcpBackendServiceLogConfig {
     id: "optional_mode_requires_enable"
     message: "optional_mode configures log entries and only applies with enable true"
     expression: "this.optional_mode == '' || this.enable"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "logged_headers_require_enable"
+    message: "request_headers and response_headers name headers to log and only apply with enable true"
+    expression: "(size(this.request_headers) == 0 && size(this.response_headers) == 0) || this.enable"
   };
 }
 

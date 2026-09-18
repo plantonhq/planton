@@ -926,4 +926,78 @@ var _ = ginkgo.Describe("GcpGkeNodePoolSpec Custom Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(newNodePool(spec))).ToNot(gomega.BeNil())
 		})
 	})
+
+	ginkgo.Describe("graceful shutdown, init scripts, and the end-of-support hold", func() {
+
+		kubelet := func(mutate func(*GcpGkeNodePoolKubeletConfig)) *GcpGkeNodePoolSpec {
+			spec := minimalSpec()
+			kc := &GcpGkeNodePoolKubeletConfig{}
+			mutate(kc)
+			spec.NodeConfig = &GcpGkeNodePoolNodeConfig{KubeletConfig: kc}
+			return spec
+		}
+		linux := func(mutate func(*GcpGkeNodePoolLinuxNodeConfig)) *GcpGkeNodePoolSpec {
+			spec := minimalSpec()
+			lc := &GcpGkeNodePoolLinuxNodeConfig{}
+			mutate(lc)
+			spec.NodeConfig = &GcpGkeNodePoolNodeConfig{LinuxNodeConfig: lc}
+			return spec
+		}
+
+		ginkgo.It("accepts a shutdown grace period with a smaller critical-pod share", func() {
+			total, critical := int64(120), int64(30)
+			spec := kubelet(func(kc *GcpGkeNodePoolKubeletConfig) {
+				kc.ShutdownGracePeriodSeconds = &total
+				kc.ShutdownGracePeriodCriticalPodsSeconds = &critical
+			})
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a critical-pod share above the total and a total out of range", func() {
+			total, critical := int64(60), int64(90)
+			spec := kubelet(func(kc *GcpGkeNodePoolKubeletConfig) {
+				kc.ShutdownGracePeriodSeconds = &total
+				kc.ShutdownGracePeriodCriticalPodsSeconds = &critical
+			})
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).NotTo(gomega.BeNil())
+			small := int64(5)
+			spec = kubelet(func(kc *GcpGkeNodePoolKubeletConfig) { kc.ShutdownGracePeriodSeconds = &small })
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts an init script from Cloud Storage pinned to a generation", func() {
+			gen := int64(1700000000000000)
+			spec := linux(func(lc *GcpGkeNodePoolLinuxNodeConfig) {
+				lc.CustomNodeInit = &GcpGkeNodePoolCustomNodeInit{GcsUri: "gs://my-bucket/node-init.sh", GcsGeneration: &gen}
+			})
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts an init script from Secret Manager", func() {
+			spec := linux(func(lc *GcpGkeNodePoolLinuxNodeConfig) {
+				lc.CustomNodeInit = &GcpGkeNodePoolCustomNodeInit{SecretManagerSecretUri: "projects/p/secrets/node-init/versions/latest"}
+			})
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an init script with both sources, no source, or a generation without a GCS URI", func() {
+			gen := int64(7)
+			bad := []*GcpGkeNodePoolCustomNodeInit{
+				{GcsUri: "gs://b/x.sh", SecretManagerSecretUri: "projects/p/secrets/s/versions/1"},
+				{},
+				{SecretManagerSecretUri: "projects/p/secrets/s/versions/1", GcsGeneration: &gen},
+				{GcsUri: "s3://b/x.sh"},
+			}
+			for i, cfg := range bad {
+				spec := linux(func(lc *GcpGkeNodePoolLinuxNodeConfig) { lc.CustomNodeInit = cfg })
+				gomega.Expect(protovalidate.Validate(newNodePool(spec))).NotTo(gomega.BeNil(), "case %d", i)
+			}
+		})
+
+		ginkgo.It("accepts the end-of-support upgrade hold", func() {
+			spec := minimalSpec()
+			spec.ExcludeUpgradesUntilEndOfSupport = true
+			gomega.Expect(protovalidate.Validate(newNodePool(spec))).To(gomega.BeNil())
+		})
+	})
 })

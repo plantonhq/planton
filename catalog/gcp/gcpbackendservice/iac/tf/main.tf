@@ -166,6 +166,21 @@ resource "google_compute_backend_service" "this" {
       sample_rate     = log_config.value.sample_rate
       optional_mode   = log_config.value.optional_mode
       optional_fields = log_config.value.optional_fields
+
+      # Each logged header is its own block in the provider; the spec
+      # holds a flat name list.
+      dynamic "request_headers" {
+        for_each = log_config.value.request_headers
+        content {
+          header_name = request_headers.value
+        }
+      }
+      dynamic "response_headers" {
+        for_each = log_config.value.response_headers
+        content {
+          header_name = response_headers.value
+        }
+      }
     }
   }
 

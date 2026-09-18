@@ -112,6 +112,19 @@ func databaseInstance(
 		args.MaintenanceVersion = pulumi.StringPtr(spec.MaintenanceVersion)
 	}
 
+	// Input-only instructions Cloud SQL acts on but never stores: sent as
+	// written, never read back, so an explicit false is safe (identical to
+	// the Terraform module).
+	args.SwitchTransactionLogsToCloudStorageEnabled = pulumi.BoolPtr(spec.SwitchTransactionLogsToCloudStorageEnabled)
+	args.IncludeReplicasForMajorVersionUpgrade = pulumi.BoolPtr(spec.IncludeReplicasForMajorVersionUpgrade)
+
+	// Irreversible opt-in to the new network architecture. API-computed, so
+	// sent only when the spec sets it — an explicit value where the API
+	// reports its own would re-plan forever.
+	if spec.EnforceNewSqlNetworkArchitecture != nil {
+		args.EnforceNewSqlNetworkArchitecture = pulumi.BoolPtr(spec.GetEnforceNewSqlNetworkArchitecture())
+	}
+
 	// Replicas declared from the primary's side (normally left to GCP).
 	if len(spec.ReplicaNames) > 0 {
 		args.ReplicaNames = pulumi.ToStringArray(spec.ReplicaNames)
@@ -358,6 +371,12 @@ func buildSettings(locals *Locals) *sql.DatabaseInstanceSettingsArgs {
 		settings.DataApiAccess = pulumi.StringPtr(spec.DataApiAccess)
 	}
 
+	// Read replicas: self-recreate past this lag. API-computed, so sent
+	// only when the spec sets it.
+	if spec.ReplicationLagMaxSeconds != nil {
+		settings.ReplicationLagMaxSeconds = pulumi.IntPtr(int(spec.GetReplicationLagMaxSeconds()))
+	}
+
 	// HYPERDISK_BALANCED provisioned performance (spec CEL gates the disk
 	// type).
 	if spec.Disk != nil {
@@ -580,6 +599,11 @@ func buildIpConfiguration(network *gcpcloudsqlv1alpha1.GcpCloudSqlNetwork) *sql.
 			// Enterprise Plus only).
 			PscAutoDnsEnabled:          pulumi.BoolPtr(network.Psc.AutoDnsEnabled),
 			PscWriteEndpointDnsEnabled: pulumi.BoolPtr(network.Psc.WriteEndpointDnsEnabled),
+		}
+		// Service Connection Policy for the auto connections. API-computed,
+		// so sent only when the spec sets it.
+		if network.Psc.AutoConnectionPolicyEnabled != nil {
+			pscArgs.PscAutoConnectionPolicyEnabled = pulumi.BoolPtr(network.Psc.GetAutoConnectionPolicyEnabled())
 		}
 		if len(network.Psc.AllowedConsumerProjects) > 0 {
 			pscArgs.AllowedConsumerProjects = pulumi.ToStringArray(network.Psc.AllowedConsumerProjects)

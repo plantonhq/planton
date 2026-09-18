@@ -26,7 +26,9 @@ spec:
   # default moved to EXTERNAL_MANAGED, and the scheme is immutable). The
   # earlier live proof predates that change; the next proof confirms the
   # classic backend service deploys and re-plans clean on both engines
-  # under the apply-idempotency gate.
+  # under the apply-idempotency gate. The same proof covers the logged
+  # header lists (log_config.request_headers / response_headers), which
+  # the minimal scenario now sets on its HTTP backend service.
   tier: 1
   status: pending_proof
   validated_provisioners: []

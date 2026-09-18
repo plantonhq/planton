@@ -48,9 +48,14 @@ spec:
   controlPlaneEndpoints:
     dnsEndpointAllowExternalTraffic: true
     enableK8sTokensViaDns: true
+  # The time-of-day + duration recurring window (one of the three window
+  # forms): every Saturday and Sunday at 02:00 UTC for six hours.
   maintenancePolicy:
-    dailyWindow:
-      startTime: "03:00"
+    recurringTimeWindow:
+      windowStartTime:
+        hours: 2
+      windowDuration: 6h
+      recurrence: FREQ=WEEKLY;BYDAY=SA,SU
   rbacBindingConfig:
     enableInsecureBindingSystemAuthenticated: false
     enableInsecureBindingSystemUnauthenticated: false

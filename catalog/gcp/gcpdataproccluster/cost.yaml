@@ -28,6 +28,10 @@ spec:
       sku_meter: local SSD storage
       pricing_unit: GiB-months
       description: Local SSDs attached to node groups bill per GiB-month (each device is a fixed 375 GB) for the cluster's lifetime.
+    - service_name: Compute Engine
+      sku_meter: attached persistent disk storage
+      pricing_unit: GiB-months
+      description: Additional persistent disks declared under a node role's disk_config.attached_disks bill per GiB-month at their disk class on every node of the role, plus the provisioned IOPS and throughput meters for Hyperdisk classes, for the cluster's lifetime.
   cost_drivers:
     - field_path: cluster_config.worker_config.num_instances
       sku_meter: node vCPU
@@ -57,6 +61,10 @@ spec:
       sku_meter: local SSD storage
       pricing_unit: GiB-months
       impact: Each local SSD adds a fixed 375 GB billed per GiB-month on every node in the group.
+    - field_path: cluster_config.worker_config.disk_config.attached_disks
+      sku_meter: attached persistent disk storage
+      pricing_unit: GiB-months
+      impact: Every attached disk multiplies by the worker count -- a 500 GB pd-ssd on 10 workers is 5 TB of SSD storage for the cluster's lifetime; a hyperdisk-balanced entry also bills its provisioned_iops and provisioned_throughput per node.
     - field_path: cluster_config.autoscaling_policy_uri
       sku_meter: node vCPU
       impact: Attaching an autoscaling policy hands worker counts to the policy -- the bill then follows the policy's bounds, not the manifest's counts.

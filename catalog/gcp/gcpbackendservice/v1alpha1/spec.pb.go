@@ -1808,8 +1808,18 @@ type GcpBackendServiceLogConfig struct {
 	// Names of the optional log fields to include with optional_mode CUSTOM
 	// (e.g. tls.protocol, orca_load_report).
 	OptionalFields []string `protobuf:"bytes,4,rep,name=optional_fields,json=optionalFields,proto3" json:"optional_fields,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// HTTP request headers whose values join each log entry (e.g.
+	// "X-Request-Id", "User-Agent") — for tracing a request across services
+	// without instrumenting the backend. Requires enable and an HTTP-family
+	// protocol (HTTP, HTTPS, HTTP2, GRPC). Header names are case-insensitive
+	// in HTTP; each entry is one name.
+	RequestHeaders []string `protobuf:"bytes,5,rep,name=request_headers,json=requestHeaders,proto3" json:"request_headers,omitempty"`
+	// HTTP response headers whose values join each log entry (e.g.
+	// "Content-Type", a backend's own "X-Cache" or "X-Served-By"). Same
+	// preconditions as request_headers.
+	ResponseHeaders []string `protobuf:"bytes,6,rep,name=response_headers,json=responseHeaders,proto3" json:"response_headers,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *GcpBackendServiceLogConfig) Reset() {
@@ -1866,6 +1876,20 @@ func (x *GcpBackendServiceLogConfig) GetOptionalMode() string {
 func (x *GcpBackendServiceLogConfig) GetOptionalFields() []string {
 	if x != nil {
 		return x.OptionalFields
+	}
+	return nil
+}
+
+func (x *GcpBackendServiceLogConfig) GetRequestHeaders() []string {
+	if x != nil {
+		return x.RequestHeaders
+	}
+	return nil
+}
+
+func (x *GcpBackendServiceLogConfig) GetResponseHeaders() []string {
+	if x != nil {
+		return x.ResponseHeaders
 	}
 	return nil
 }
@@ -2676,16 +2700,19 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x122\n" +
 	"\x10oauth2_client_id\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\x0eoauth2ClientId\x12>\n" +
 	"\x14oauth2_client_secret\x18\x03 \x01(\tB\f\xbaH\x05r\x03\x18\x80\x02\xa0\xa6\x1d\x01R\x12oauth2ClientSecret:\xde\x01\xbaH\xda\x01\x1a\xd7\x01\n" +
-	"\x13oauth_client_paired\x12|oauth2_client_id and oauth2_client_secret must be set together — or both left empty to use the Google-managed OAuth client\x1aB(this.oauth2_client_id == '') == (this.oauth2_client_secret == '')\"\xe3\x05\n" +
+	"\x13oauth_client_paired\x12|oauth2_client_id and oauth2_client_secret must be set together — or both left empty to use the Google-managed OAuth client\x1aB(this.oauth2_client_id == '') == (this.oauth2_client_secret == '')\"\xaf\b\n" +
 	"\x1aGcpBackendServiceLogConfig\x12\x16\n" +
 	"\x06enable\x18\x01 \x01(\bR\x06enable\x12D\n" +
 	"\vsample_rate\x18\x02 \x01(\x01B\x1e\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x00\xf0?)\x00\x00\x00\x00\x00\x00\x00\x00\x8a\xa6\x1d\x031.0H\x00R\n" +
 	"sampleRate\x88\x01\x01\x12\xe2\x01\n" +
 	"\roptional_mode\x18\x03 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xb4\x01\n" +
 	"\x13valid_optional_mode\x12Koptional_mode must be INCLUDE_ALL_OPTIONAL, EXCLUDE_ALL_OPTIONAL, or CUSTOM\x1aPthis == '' || this in ['INCLUDE_ALL_OPTIONAL', 'EXCLUDE_ALL_OPTIONAL', 'CUSTOM']R\foptionalMode\x125\n" +
-	"\x0foptional_fields\x18\x04 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x0eoptionalFields:\xba\x02\xbaH\xb6\x02\x1a\xa0\x01\n" +
+	"\x0foptional_fields\x18\x04 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x0eoptionalFields\x12:\n" +
+	"\x0frequest_headers\x18\x05 \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x0erequestHeaders\x12<\n" +
+	"\x10response_headers\x18\x06 \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\x0fresponseHeaders:\x8c\x04\xbaH\x88\x04\x1a\xa0\x01\n" +
 	"#optional_fields_require_custom_mode\x126optional_fields only applies with optional_mode CUSTOM\x1aAsize(this.optional_fields) == 0 || this.optional_mode == 'CUSTOM'\x1a\x90\x01\n" +
-	"\x1doptional_mode_requires_enable\x12Foptional_mode configures log entries and only applies with enable true\x1a'this.optional_mode == '' || this.enableB\x0e\n" +
+	"\x1doptional_mode_requires_enable\x12Foptional_mode configures log entries and only applies with enable true\x1a'this.optional_mode == '' || this.enable\x1a\xcf\x01\n" +
+	"\x1dlogged_headers_require_enable\x12Xrequest_headers and response_headers name headers to log and only apply with enable true\x1aT(size(this.request_headers) == 0 && size(this.response_headers) == 0) || this.enableB\x0e\n" +
 	"\f_sample_rate\"\xac\x03\n" +
 	" GcpBackendServiceCircuitBreakers\x12=\n" +
 	"\x0fmax_connections\x18\x01 \x01(\x05B\x0f\xbaH\x04\x1a\x02 \x00\x8a\xa6\x1d\x041024H\x00R\x0emaxConnections\x88\x01\x01\x12F\n" +

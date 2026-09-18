@@ -956,4 +956,77 @@ var _ = ginkgo.Describe("GcpGkeClusterSpec Custom Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
 		})
 	})
+
+	ginkgo.Describe("recurring time window, rollback-safe upgrades, and new addons", func() {
+
+		ginkgo.It("accepts a time-of-day recurring window with a delay date", func() {
+			spec := minimalSpec()
+			spec.MaintenancePolicy = &GcpGkeClusterMaintenancePolicy{
+				RecurringTimeWindow: &GcpGkeClusterRecurringTimeMaintenanceWindow{
+					WindowStartTime: &GcpGkeClusterTimeOfDay{Hours: 2},
+					WindowDuration:  "6h",
+					Recurrence:      "FREQ=WEEKLY;BYDAY=SA",
+					DelayUntil:      &GcpGkeClusterCalendarDate{Year: 2027, Month: 1, Day: 15},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects two window forms at once", func() {
+			spec := minimalSpec()
+			spec.MaintenancePolicy = &GcpGkeClusterMaintenancePolicy{
+				DailyWindow: &GcpGkeClusterDailyMaintenanceWindow{StartTime: "03:00"},
+				RecurringTimeWindow: &GcpGkeClusterRecurringTimeMaintenanceWindow{
+					WindowStartTime: &GcpGkeClusterTimeOfDay{Hours: 2},
+					WindowDuration:  "4h",
+					Recurrence:      "FREQ=DAILY",
+				},
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a malformed window duration and an out-of-range start hour", func() {
+			spec := minimalSpec()
+			spec.MaintenancePolicy = &GcpGkeClusterMaintenancePolicy{
+				RecurringTimeWindow: &GcpGkeClusterRecurringTimeMaintenanceWindow{
+					WindowStartTime: &GcpGkeClusterTimeOfDay{Hours: 2},
+					WindowDuration:  "four hours",
+					Recurrence:      "FREQ=DAILY",
+				},
+			}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+			spec.MaintenancePolicy.RecurringTimeWindow.WindowDuration = "4h"
+			spec.MaintenancePolicy.RecurringTimeWindow.WindowStartTime.Hours = 24
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts a rollback-safe soak within bounds and a major.minor emulated version", func() {
+			spec := minimalSpec()
+			spec.RollbackSafeUpgrade = &GcpGkeClusterRollbackSafeUpgrade{ControlPlaneSoakDuration: "604800s"}
+			spec.DesiredEmulatedVersion = "1.33"
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+			spec.RollbackSafeUpgrade.ControlPlaneSoakDuration = "21600s"
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a soak outside six hours to seven days", func() {
+			for _, d := range []string{"3600s", "700000s", "7d"} {
+				spec := minimalSpec()
+				spec.RollbackSafeUpgrade = &GcpGkeClusterRollbackSafeUpgrade{ControlPlaneSoakDuration: d}
+				gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil(), "duration %q", d)
+			}
+		})
+
+		ginkgo.It("rejects a patch-level desired_emulated_version", func() {
+			spec := minimalSpec()
+			spec.DesiredEmulatedVersion = "1.33.2"
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts the checkpointing and node-readiness addons", func() {
+			spec := minimalSpec()
+			spec.Addons = &GcpGkeClusterAddons{HighScaleCheckpointingEnabled: true, NodeReadinessControllerEnabled: true}
+			gomega.Expect(protovalidate.Validate(newCluster(spec))).To(gomega.BeNil())
+		})
+	})
 })

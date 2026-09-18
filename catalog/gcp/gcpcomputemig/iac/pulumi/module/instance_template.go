@@ -176,6 +176,15 @@ func instanceTemplate(
 		if len(template.ResourcePolicies) > 0 {
 			args.ResourcePolicies = pulumi.StringPtr(template.ResourcePolicies[0])
 		}
+		// Managed workload identity: a SPIFFE ID issued to each VM,
+		// optionally with X.509 identity certificates for mutual TLS. A
+		// template field, so changing it rotates the template.
+		if template.WorkloadIdentityConfig != nil {
+			args.WorkloadIdentityConfig = &compute.RegionInstanceTemplateWorkloadIdentityConfigArgs{
+				Identity:                   pulumi.StringPtr(template.WorkloadIdentityConfig.Identity),
+				IdentityCertificateEnabled: pulumi.BoolPtr(template.WorkloadIdentityConfig.IdentityCertificateEnabled),
+			}
+		}
 		// Destroy behavior: only the REGIONAL template carries a
 		// deletion_policy in the provider — the zonal one has none (it is
 		// always deleted on destroy). The spec's single field lands here
@@ -322,6 +331,13 @@ func instanceTemplate(
 	}
 	if len(template.ResourcePolicies) > 0 {
 		args.ResourcePolicies = pulumi.StringPtr(template.ResourcePolicies[0])
+	}
+	// Managed workload identity (see the regional builder above).
+	if template.WorkloadIdentityConfig != nil {
+		args.WorkloadIdentityConfig = &compute.InstanceTemplateWorkloadIdentityConfigArgs{
+			Identity:                   pulumi.StringPtr(template.WorkloadIdentityConfig.Identity),
+			IdentityCertificateEnabled: pulumi.BoolPtr(template.WorkloadIdentityConfig.IdentityCertificateEnabled),
+		}
 	}
 	createdTemplate, err := compute.NewInstanceTemplate(ctx,
 		locals.MigName,
@@ -775,6 +791,11 @@ func zonalTemplateScheduling(scheduling *gcpcomputemigv1alpha1.GcpComputeMigSche
 			},
 		}
 	}
+	// Host-error detection timeout (90..330 s, steps of 30). Sent only
+	// when set so an unset spec keeps Compute Engine's default recovery.
+	if scheduling.HostErrorTimeoutSeconds != nil {
+		args.HostErrorTimeoutSeconds = pulumi.IntPtr(int(scheduling.GetHostErrorTimeoutSeconds()))
+	}
 	return args
 }
 
@@ -837,6 +858,11 @@ func regionalTemplateScheduling(scheduling *gcpcomputemigv1alpha1.GcpComputeMigS
 				Seconds: pulumi.Int(int(scheduling.GetLocalSsdRecoveryTimeoutSeconds())),
 			},
 		}
+	}
+	// Host-error detection timeout (90..330 s, steps of 30). Sent only
+	// when set so an unset spec keeps Compute Engine's default recovery.
+	if scheduling.HostErrorTimeoutSeconds != nil {
+		args.HostErrorTimeoutSeconds = pulumi.IntPtr(int(scheduling.GetHostErrorTimeoutSeconds()))
 	}
 	return args
 }

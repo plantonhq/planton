@@ -73,6 +73,9 @@ variable "spec" {
         }), null)
         confidential_instance_config = optional(object({
           enable_confidential_compute = optional(bool, false)
+          # SEV, SEV_SNP, or TDX; the current shape (the boolean is the
+          # provider-deprecated predecessor).
+          confidential_instance_type = optional(string, "")
         }), null)
         # IAM-governed secure tags (tagKeys/... = tagValues/...).
         resource_manager_tags = optional(map(string), {})
@@ -97,6 +100,13 @@ variable "spec" {
           # Provisioned-performance dials (hyperdisk classes).
           boot_disk_provisioned_iops       = optional(number, null)
           boot_disk_provisioned_throughput = optional(number, null)
+          # Additional persistent disks on every node (ForceNew).
+          attached_disks = optional(list(object({
+            disk_size_gb           = optional(number, 0)
+            disk_type              = optional(string, "")
+            provisioned_iops       = optional(number, null)
+            provisioned_throughput = optional(number, null)
+          })), [])
         }), null)
         accelerators = optional(list(object({
           accelerator_type  = string
@@ -108,6 +118,21 @@ variable "spec" {
           instance_selection_list = optional(list(object({
             machine_types = list(string)
             rank          = optional(number, 0)
+            # Per-selection disk shape overriding the role's disk_config.
+            disk_config = optional(object({
+              boot_disk_size_gb                = optional(number, 0)
+              boot_disk_type                   = optional(string, "")
+              num_local_ssds                   = optional(number, 0)
+              local_ssd_interface              = optional(string, "")
+              boot_disk_provisioned_iops       = optional(number, null)
+              boot_disk_provisioned_throughput = optional(number, null)
+              attached_disks = optional(list(object({
+                disk_size_gb           = optional(number, 0)
+                disk_type              = optional(string, "")
+                provisioned_iops       = optional(number, null)
+                provisioned_throughput = optional(number, null)
+              })), [])
+            }), null)
           })), [])
         }), null)
       }), null)
@@ -128,6 +153,13 @@ variable "spec" {
           # Provisioned-performance dials (hyperdisk classes).
           boot_disk_provisioned_iops       = optional(number, null)
           boot_disk_provisioned_throughput = optional(number, null)
+          # Additional persistent disks on every node (ForceNew).
+          attached_disks = optional(list(object({
+            disk_size_gb           = optional(number, 0)
+            disk_type              = optional(string, "")
+            provisioned_iops       = optional(number, null)
+            provisioned_throughput = optional(number, null)
+          })), [])
         }), null)
         accelerators = optional(list(object({
           accelerator_type  = string
@@ -139,6 +171,21 @@ variable "spec" {
           instance_selection_list = optional(list(object({
             machine_types = list(string)
             rank          = optional(number, 0)
+            # Per-selection disk shape overriding the role's disk_config.
+            disk_config = optional(object({
+              boot_disk_size_gb                = optional(number, 0)
+              boot_disk_type                   = optional(string, "")
+              num_local_ssds                   = optional(number, 0)
+              local_ssd_interface              = optional(string, "")
+              boot_disk_provisioned_iops       = optional(number, null)
+              boot_disk_provisioned_throughput = optional(number, null)
+              attached_disks = optional(list(object({
+                disk_size_gb           = optional(number, 0)
+                disk_type              = optional(string, "")
+                provisioned_iops       = optional(number, null)
+                provisioned_throughput = optional(number, null)
+              })), [])
+            }), null)
           })), [])
         }), null)
       }), null)
@@ -154,6 +201,13 @@ variable "spec" {
           # Provisioned-performance dials (hyperdisk classes).
           boot_disk_provisioned_iops       = optional(number, null)
           boot_disk_provisioned_throughput = optional(number, null)
+          # Additional persistent disks on every node (ForceNew).
+          attached_disks = optional(list(object({
+            disk_size_gb           = optional(number, 0)
+            disk_type              = optional(string, "")
+            provisioned_iops       = optional(number, null)
+            provisioned_throughput = optional(number, null)
+          })), [])
         }), null)
         # Machine-type flexibility + standard/spot mix — only the secondary
         # group supports flexible provisioning on the released line.
@@ -161,6 +215,21 @@ variable "spec" {
           instance_selection_list = optional(list(object({
             machine_types = list(string)
             rank          = optional(number, 0)
+            # Per-selection disk shape overriding the role's disk_config.
+            disk_config = optional(object({
+              boot_disk_size_gb                = optional(number, 0)
+              boot_disk_type                   = optional(string, "")
+              num_local_ssds                   = optional(number, 0)
+              local_ssd_interface              = optional(string, "")
+              boot_disk_provisioned_iops       = optional(number, null)
+              boot_disk_provisioned_throughput = optional(number, null)
+              attached_disks = optional(list(object({
+                disk_size_gb           = optional(number, 0)
+                disk_type              = optional(string, "")
+                provisioned_iops       = optional(number, null)
+                provisioned_throughput = optional(number, null)
+              })), [])
+            }), null)
           })), [])
           provisioning_model_mix = optional(object({
             standard_capacity_base               = optional(number, 0)
@@ -256,6 +325,15 @@ variable "spec" {
             # Provisioned-performance dials (hyperdisk classes).
             boot_disk_provisioned_iops       = optional(number, null)
             boot_disk_provisioned_throughput = optional(number, null)
+            # Present for shape parity with the shared disk message; the
+            # spec rejects attached disks on auxiliary groups and the
+            # provider has no argument for them here.
+            attached_disks = optional(list(object({
+              disk_size_gb           = optional(number, 0)
+              disk_type              = optional(string, "")
+              provisioned_iops       = optional(number, null)
+              provisioned_throughput = optional(number, null)
+            })), [])
           }), null)
           accelerators = optional(list(object({
             accelerator_type  = string

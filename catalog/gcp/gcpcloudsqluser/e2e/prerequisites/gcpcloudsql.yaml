@@ -23,3 +23,7 @@ spec:
   tier: db-f1-micro
   deletionProtection: false
   deletionProtectionEnabled: false
+  # IAM database authentication, so the IAM service-account user scenario can
+  # bind an identity to this instance.
+  databaseFlags:
+    cloudsql.iam_authentication: "on"

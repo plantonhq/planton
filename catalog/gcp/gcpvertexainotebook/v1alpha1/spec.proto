@@ -72,6 +72,24 @@ message GcpVertexAiNotebookDataDisk {
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
   ];
+
+  // Compute Engine resource policies attached to the data disk — most
+  // usefully a snapshot schedule, so the notebook's working data is
+  // backed up on a cadence without any agent inside the VM. Each entry is
+  // a policy's full resource name or self link
+  // (projects/{project}/regions/{region}/resourcePolicies/{name}); the
+  // policy must live in the instance's region. Leave empty for no
+  // attached policies; sent only when set because the API reports the
+  // attached set itself.
+  repeated string resource_policies = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).repeated = {
+      unique: true
+      items: {
+        string: {min_len: 1}
+      }
+    }
+  ];
 }
 
 // GcpVertexAiNotebookAcceleratorConfig defines a GPU accelerator attached
@@ -475,4 +493,21 @@ message GcpVertexAiNotebookSpec {
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
   }];
+
+  // Minimum CPU platform for the VM, e.g. "Intel Cascade Lake" or
+  // "Intel Sapphire Rapids": pins the instance to at least this CPU
+  // generation so notebook code that relies on newer instruction sets
+  // (AVX-512, AMX) is never scheduled on older hardware. The platform
+  // must be offered for the machine type in the instance's zone. Leave
+  // empty to let Compute Engine choose; sent only when set because the
+  // API reports the platform it picked.
+  string min_cpu_platform = 26;
+
+  // Workbench-side deletion protection: while true, the API refuses to
+  // delete the instance from any client (console, gcloud, either IaC
+  // engine) until the flag is lifted — a guard for a workstation whose
+  // local disks hold work not yet pushed anywhere else. Off unless set;
+  // pair with deletion_policy PREVENT for an engine-side guard too.
+  // Sent only when set because the API reports its current value.
+  optional bool enable_deletion_protection = 27;
 }

@@ -4864,7 +4864,10 @@ enum CloudResourceKind {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcpsqlu"
-    prerequisites: [GcpCloudSql]
+    prerequisites: [
+      GcpCloudSql,
+      GcpServiceAccount
+    ]
     service_group: gcp_databases
   }];
   GcpAlloydbInstance = 3039 [(kind_meta) = {

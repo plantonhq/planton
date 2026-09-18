@@ -54,10 +54,15 @@ Empty/`DELETE` deletes the instance INCLUDING boot and data disks —
 unsynced notebook work is gone. `deletionPolicy: PREVENT` makes destroy
 fail and is the right posture for any notebook whose data disk is not
 continuously synced to git/GCS. `ABANDON` keeps the VM running (and
-billing) outside management. The provider also carries a server-side
-`enable_deletion_protection` flag; it is deliberately not modeled until
-the Pulumi SDK bridges it (a recorded exclusion) — `PREVENT` covers the
-same risk from the client side today.
+billing) outside management. `enableDeletionProtection` adds the
+API-side guard: while true, Workbench refuses to delete the instance from
+any client (console, gcloud, either engine) until the flag is lifted.
+Pair it with `deletionPolicy: PREVENT` for a workstation whose disks hold
+work not yet pushed anywhere else — one guard on the API, one on the
+engine. `dataDisk.resourcePolicies` attaches Compute Engine snapshot
+schedules to the data disk, the agentless way to back up that work on a
+cadence, and `minCpuPlatform` pins the VM to a CPU generation when
+notebook code depends on newer instruction sets.
 
 ## What is deliberately absent
 

@@ -488,4 +488,18 @@ var _ = Describe("GcpCloudRunJobSpec validations", func() {
 			Expect(protovalidate.Validate(spec)).To(BeNil())
 		})
 	})
+
+	Context("resource manager tags", func() {
+		It("accepts tags in the tagKeys/tagValues form", func() {
+			spec := makeValidSpec()
+			spec.ResourceManagerTags = map[string]string{"tagKeys/123456789012": "tagValues/987654321098"}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects tags by short name", func() {
+			spec := makeValidSpec()
+			spec.ResourceManagerTags = map[string]string{"env": "prod"}
+			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+	})
 })

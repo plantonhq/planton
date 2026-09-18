@@ -162,6 +162,9 @@ variable "spec" {
         values   = list(string)
       })), [])
       local_ssd_recovery_timeout_seconds = optional(number)
+      # Host-error detection timeout in seconds: 90..330 in steps of 30.
+      # Unset keeps Compute Engine's default recovery timing.
+      host_error_timeout_seconds = optional(number)
     }), null)
 
     shielded_instance_config = optional(object({
@@ -223,5 +226,22 @@ variable "spec" {
 
     # Destroy behavior: "" (DELETE) / DELETE / PREVENT / ABANDON.
     deletion_policy = optional(string, "")
+
+    # Managed workload identity: the SPIFFE ID issued to the VM and whether
+    # X.509 identity certificates are issued alongside it. Immutable.
+    workload_identity_config = optional(object({
+      identity                     = string
+      identity_certificate_enabled = optional(bool, false)
+    }), null)
   })
+
+  validation {
+    condition     = var.spec.scheduling == null || var.spec.scheduling.host_error_timeout_seconds == null || (var.spec.scheduling.host_error_timeout_seconds >= 90 && var.spec.scheduling.host_error_timeout_seconds <= 330 && var.spec.scheduling.host_error_timeout_seconds % 30 == 0)
+    error_message = "scheduling.host_error_timeout_seconds must be a multiple of 30 between 90 and 330."
+  }
+
+  validation {
+    condition     = var.spec.workload_identity_config == null || startswith(var.spec.workload_identity_config.identity, "spiffe://")
+    error_message = "workload_identity_config.identity must be a SPIFFE ID starting with spiffe://."
+  }
 }

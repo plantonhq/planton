@@ -92,9 +92,20 @@ func workbenchInstance(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pro
 		args.EnableThirdPartyIdentity = pulumi.BoolPtr(true)
 	}
 
+	// API-side deletion protection. API-computed, so sent only when the
+	// spec sets it.
+	if spec.EnableDeletionProtection != nil {
+		args.EnableDeletionProtection = pulumi.BoolPtr(spec.GetEnableDeletionProtection())
+	}
+
 	// Build the GCE setup block from our flattened spec fields.
 	gceSetup := &workbench.InstanceGceSetupArgs{
 		MachineType: pulumi.StringPtr(spec.MachineType),
+	}
+
+	// Minimum CPU generation. API-computed, so sent only when set.
+	if spec.MinCpuPlatform != "" {
+		gceSetup.MinCpuPlatform = pulumi.StringPtr(spec.MinCpuPlatform)
 	}
 
 	// Boot disk. Disk encryption is derived, never spec-set: presence of
@@ -126,6 +137,11 @@ func workbenchInstance(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Pro
 		if spec.DataDisk.KmsKey != nil && spec.DataDisk.KmsKey.GetValue() != "" {
 			dataDiskArgs.DiskEncryption = pulumi.StringPtr("CMEK")
 			dataDiskArgs.KmsKey = pulumi.StringPtr(spec.DataDisk.KmsKey.GetValue())
+		}
+		// Attached resource policies (e.g. a snapshot schedule).
+		// API-computed, so sent only when set.
+		if len(spec.DataDisk.ResourcePolicies) > 0 {
+			dataDiskArgs.ResourcePolicies = pulumi.ToStringArray(spec.DataDisk.ResourcePolicies)
 		}
 		gceSetup.DataDisks = dataDiskArgs
 	}

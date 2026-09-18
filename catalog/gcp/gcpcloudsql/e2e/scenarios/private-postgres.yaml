@@ -27,6 +27,10 @@ spec:
   deletionProtection: false
   deletionProtectionEnabled: false
   deletionPolicy: DELETE
+  # Input-only opt-in: replicas (none here) would upgrade in place with the
+  # primary on a major-version change. Never stored by the API, so the proof
+  # is that it is accepted and re-plans clean.
+  includeReplicasForMajorVersionUpgrade: true
   network:
     ipv4Enabled: false
     privateNetwork:

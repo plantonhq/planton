@@ -970,8 +970,18 @@ type GcpMemorystoreInstanceSpec struct {
 	//	"ABANDON" -- the instance is removed from management but left
 	//	             running (and billing) in GCP with its data intact
 	DeletionPolicy string `protobuf:"bytes,26,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The Memorystore ACL policy attached to the instance: a set of
+	// Valkey ACL rules (users, key patterns, allowed commands) authored once
+	// and shared across instances in the same region. Leave empty for the
+	// instance's built-in default ACL (the "default" user with full access,
+	// gated only by auth_enabled). Full resource name:
+	// projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}.
+	// Mutable: attaching or swapping a policy is an in-place update; the
+	// instance's is_acl_policy_in_sync status reports when the new rules
+	// have propagated to every node.
+	AclPolicy     string `protobuf:"bytes,27,opt,name=acl_policy,json=aclPolicy,proto3" json:"acl_policy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpMemorystoreInstanceSpec) Reset() {
@@ -1186,6 +1196,13 @@ func (x *GcpMemorystoreInstanceSpec) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpMemorystoreInstanceSpec) GetAclPolicy() string {
+	if x != nil {
+		return x.AclPolicy
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
@@ -1237,7 +1254,7 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04uris\x18\x01 \x03(\tBr\xbaHo\x92\x01l\b\x01\"h\xba\x01e\n" +
 	"\x0egcs_uri_format\x129each URI must be a Cloud Storage path starting with gs://\x1a\x18this.startsWith('gs://')R\x04uris\"K\n" +
 	")GcpMemorystoreInstanceManagedBackupSource\x12\x1e\n" +
-	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\xd0 \n" +
+	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\xde\"\n" +
 	"\x1aGcpMemorystoreInstanceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12Q\n" +
@@ -1275,7 +1292,10 @@ const file_catalog_gcp_gcpmemorystoreinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0eserver_ca_pool\x18\x18 \x01(\tR\fserverCaPool\x12/\n" +
 	"\x13maintenance_version\x18\x19 \x01(\tR\x12maintenanceVersion\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x1a \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a@\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12\x8b\x02\n" +
+	"\n" +
+	"acl_policy\x18\x1b \x01(\tB\xeb\x01\xbaH\xe7\x01\xba\x01\xe3\x01\n" +
+	"\x11acl_policy_format\x12|acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}\x1aPthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$')R\taclPolicy\x1a@\n" +
 	"\x12EngineConfigsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a9\n" +

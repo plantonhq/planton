@@ -452,7 +452,7 @@ type GcpAlloydbInstanceSpec struct {
 	// ZONAL, 2+ nodes = REGIONAL spread across zones) and the AlloyDB API
 	// does not store a sent value — the stored object omits the field, so
 	// any explicit value produces a perpetual re-plan diff (live-verified
-	// against a single-node pool at google@7.43.0).
+	// against a single-node read pool).
 	AvailabilityType string `protobuf:"bytes,8,opt,name=availability_type,json=availabilityType,proto3" json:"availability_type,omitempty"`
 	// PostgreSQL database flags as key-value pairs.
 	DatabaseFlags map[string]string `protobuf:"bytes,9,rep,name=database_flags,json=databaseFlags,proto3" json:"database_flags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`

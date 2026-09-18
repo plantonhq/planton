@@ -236,6 +236,10 @@ resource "google_cloud_run_v2_service" "main" {
         working_dir = containers.value.working_dir != "" ? containers.value.working_dir : null
         depends_on  = length(containers.value.depends_on) > 0 ? containers.value.depends_on : null
 
+        # Sandbox supervisor flag; omitted when false so the provider
+        # default applies cleanly.
+        sandbox_launcher = containers.value.sandbox_launcher ? true : null
+
         # Base image for automatic base-image updates on source deploys
         # (pairs with build_config.enable_automatic_updates).
         base_image_uri = containers.value.base_image_uri != "" ? containers.value.base_image_uri : null
@@ -407,7 +411,47 @@ resource "google_cloud_run_v2_service" "main" {
         }
       }
     }
+
+    # Sandbox templates the supervisor container launches on demand.
+    # Emitted only when declared: the provider's wrapper block is a
+    # single-item list around the template list.
+    dynamic "sandboxes" {
+      for_each = length(var.spec.sandbox_templates) > 0 ? [1] : []
+      content {
+        dynamic "templates" {
+          for_each = var.spec.sandbox_templates
+          content {
+            name        = templates.value.name
+            image       = templates.value.image
+            command     = length(templates.value.command) > 0 ? templates.value.command : null
+            args        = length(templates.value.args) > 0 ? templates.value.args : null
+            working_dir = templates.value.working_dir != "" ? templates.value.working_dir : null
+
+            dynamic "env" {
+              for_each = templates.value.env
+              content {
+                name  = env.value.name
+                value = env.value.value
+              }
+            }
+
+            dynamic "volume_mounts" {
+              for_each = templates.value.volume_mounts
+              content {
+                name       = volume_mounts.value.name
+                mount_path = volume_mounts.value.mount_path
+                sub_path   = volume_mounts.value.sub_path != "" ? volume_mounts.value.sub_path : null
+              }
+            }
+          }
+        }
+      }
+    }
   }
+
+  # Resource Manager tags, bound at creation only (ForceNew): omitted when
+  # empty so a service without tags carries no tag surface.
+  tags = length(var.spec.resource_manager_tags) > 0 ? var.spec.resource_manager_tags : null
 
   # Traffic split across revisions. An empty spec list means "100% to the
   # latest ready revision" — achieved by omitting the block entirely so the

@@ -505,4 +505,37 @@ var _ = ginkgo.Describe("GcpComputeMigSpec", func() {
 			}
 		})
 	})
+
+	ginkgo.Context("host error timeout and workload identity", func() {
+		ginkgo.It("accepts host_error_timeout_seconds on the 30-second grid", func() {
+			for _, v := range []int32{90, 210, 330} {
+				m := minimal()
+				m.Spec.Template.Scheduling = &GcpComputeMigScheduling{HostErrorTimeoutSeconds: proto.Int32(v)}
+				gomega.Expect(validator.Validate(m)).To(gomega.Succeed(), "value %d", v)
+			}
+		})
+
+		ginkgo.It("rejects host_error_timeout_seconds off the grid or out of range", func() {
+			for _, v := range []int32{95, 60, 360} {
+				m := minimal()
+				m.Spec.Template.Scheduling = &GcpComputeMigScheduling{HostErrorTimeoutSeconds: proto.Int32(v)}
+				gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed(), "value %d", v)
+			}
+		})
+
+		ginkgo.It("accepts a SPIFFE workload identity on the template", func() {
+			m := minimal()
+			m.Spec.Template.WorkloadIdentityConfig = &GcpComputeMigWorkloadIdentityConfig{
+				Identity:                   "spiffe://my-project.svc.id.goog/ns/default/sa/app",
+				IdentityCertificateEnabled: true,
+			}
+			gomega.Expect(validator.Validate(m)).To(gomega.Succeed())
+		})
+
+		ginkgo.It("rejects a workload identity that is not a SPIFFE ID", func() {
+			m := minimal()
+			m.Spec.Template.WorkloadIdentityConfig = &GcpComputeMigWorkloadIdentityConfig{Identity: "app@my-project.iam.gserviceaccount.com"}
+			gomega.Expect(validator.Validate(m)).ToNot(gomega.Succeed())
+		})
+	})
 })

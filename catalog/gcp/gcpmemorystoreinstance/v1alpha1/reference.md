@@ -145,6 +145,7 @@ spec:
 | `spec.serverCaPool` | `string` |  |  |  |
 | `spec.maintenanceVersion` | `string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.aclPolicy` | `string` |  |  |  |
 
 ## Field Details
 
@@ -633,6 +634,22 @@ the destroy at all):
                running (and billing) in GCP with its data intact
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
+
+### spec.aclPolicy
+
+`string`
+
+The Memorystore ACL policy attached to the instance: a set of
+Valkey ACL rules (users, key patterns, allowed commands) authored once
+and shared across instances in the same region. Leave empty for the
+instance's built-in default ACL (the "default" user with full access,
+gated only by auth_enabled). Full resource name:
+projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}.
+Mutable: attaching or swapping a policy is an in-place update; the
+instance's is_acl_policy_in_sync status reports when the new rules
+have propagated to every node.
+
+- rule: acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{aclPolicyId}
 
 ## Validation Rules
 

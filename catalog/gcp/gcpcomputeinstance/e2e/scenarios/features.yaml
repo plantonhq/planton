@@ -68,6 +68,9 @@ spec:
     provisioningModel: SPOT
     onHostMaintenance: TERMINATE
     instanceTerminationAction: DELETE
+    # Host-error detection tightened to two minutes (the 30-second grid);
+    # proves the dial round-trips and re-plans clean.
+    hostErrorTimeoutSeconds: 120
   shieldedInstanceConfig:
     enableSecureBoot: true
   deletionPolicy: DELETE

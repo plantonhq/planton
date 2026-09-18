@@ -103,6 +103,8 @@ variable "spec" {
           values   = list(string)
         })), [])
         local_ssd_recovery_timeout_seconds = optional(number)
+        # Host-error detection timeout in seconds: 90..330 in steps of 30.
+        host_error_timeout_seconds = optional(number)
       }))
       shielded_instance_config = optional(object({
         enable_secure_boot          = optional(bool)
@@ -141,6 +143,11 @@ variable "spec" {
       can_ip_forward              = optional(bool, false)
       key_revocation_action_type  = optional(string, "")
       resource_policies           = optional(list(string), [])
+      # Managed workload identity (SPIFFE ID, optional X.509 certificates).
+      workload_identity_config = optional(object({
+        identity                     = string
+        identity_certificate_enabled = optional(bool, false)
+      }), null)
     })
     versions = optional(list(object({
       version_name        = optional(string, "")
@@ -280,4 +287,14 @@ variable "spec" {
     })), [])
     deletion_policy = optional(string, "")
   })
+
+  validation {
+    condition     = var.spec.template.scheduling == null || var.spec.template.scheduling.host_error_timeout_seconds == null || (var.spec.template.scheduling.host_error_timeout_seconds >= 90 && var.spec.template.scheduling.host_error_timeout_seconds <= 330 && var.spec.template.scheduling.host_error_timeout_seconds % 30 == 0)
+    error_message = "template.scheduling.host_error_timeout_seconds must be a multiple of 30 between 90 and 330."
+  }
+
+  validation {
+    condition     = var.spec.template.workload_identity_config == null || startswith(var.spec.template.workload_identity_config.identity, "spiffe://")
+    error_message = "template.workload_identity_config.identity must be a SPIFFE ID starting with spiffe://."
+  }
 }

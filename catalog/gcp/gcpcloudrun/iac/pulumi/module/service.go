@@ -98,6 +98,12 @@ func service(
 		args.DeletionPolicy = pulumi.String(spec.DeletionPolicy)
 	}
 
+	// Resource Manager tags, bound at creation only (ForceNew): omitted
+	// when empty so a service without tags carries no tag surface.
+	if len(spec.ResourceManagerTags) > 0 {
+		args.Tags = pulumi.ToStringMap(spec.ResourceManagerTags)
+	}
+
 	// Deploy-from-source: Cloud Build produces the serving image (the
 	// Cloud Run functions build path) instead of a prebuilt image.
 	if spec.BuildConfig != nil {
@@ -427,6 +433,54 @@ func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec) *cloudrunv2.Servic
 		template.Volumes = volumes
 	}
 
+	// Sandbox templates the supervisor container launches on demand.
+	// Emitted only when declared: the provider's wrapper block is a
+	// single-item list around the template list.
+	if len(spec.SandboxTemplates) > 0 {
+		templates := cloudrunv2.ServiceTemplateSandboxesTemplateArray{}
+		for _, sandbox := range spec.SandboxTemplates {
+			sandboxArgs := &cloudrunv2.ServiceTemplateSandboxesTemplateArgs{
+				Name:  pulumi.String(sandbox.Name),
+				Image: pulumi.String(sandbox.Image),
+			}
+			if len(sandbox.Command) > 0 {
+				sandboxArgs.Commands = pulumi.ToStringArray(sandbox.Command)
+			}
+			if len(sandbox.Args) > 0 {
+				sandboxArgs.Args = pulumi.ToStringArray(sandbox.Args)
+			}
+			if sandbox.WorkingDir != "" {
+				sandboxArgs.WorkingDir = pulumi.StringPtr(sandbox.WorkingDir)
+			}
+			if len(sandbox.Env) > 0 {
+				envs := cloudrunv2.ServiceTemplateSandboxesTemplateEnvArray{}
+				for _, env := range sandbox.Env {
+					envs = append(envs, &cloudrunv2.ServiceTemplateSandboxesTemplateEnvArgs{
+						Name:  pulumi.String(env.Name),
+						Value: pulumi.StringPtr(env.Value),
+					})
+				}
+				sandboxArgs.Envs = envs
+			}
+			if len(sandbox.VolumeMounts) > 0 {
+				mounts := cloudrunv2.ServiceTemplateSandboxesTemplateVolumeMountArray{}
+				for _, mount := range sandbox.VolumeMounts {
+					mountArgs := &cloudrunv2.ServiceTemplateSandboxesTemplateVolumeMountArgs{
+						Name:      pulumi.String(mount.Name),
+						MountPath: pulumi.String(mount.MountPath),
+					}
+					if mount.SubPath != "" {
+						mountArgs.SubPath = pulumi.StringPtr(mount.SubPath)
+					}
+					mounts = append(mounts, mountArgs)
+				}
+				sandboxArgs.VolumeMounts = mounts
+			}
+			templates = append(templates, sandboxArgs)
+		}
+		template.Sandboxes = &cloudrunv2.ServiceTemplateSandboxesArgs{Templates: templates}
+	}
+
 	return template
 }
 
@@ -454,6 +508,12 @@ func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec) cloudrunv2.Servi
 		}
 		if len(container.DependsOn) > 0 {
 			containerArgs.DependsOns = pulumi.ToStringArray(container.DependsOn)
+		}
+
+		// Sandbox supervisor flag; omitted when false so the provider
+		// default applies cleanly.
+		if container.SandboxLauncher {
+			containerArgs.SandboxLauncher = pulumi.BoolPtr(true)
 		}
 
 		// Base image for automatic base-image updates on source deploys

@@ -164,6 +164,7 @@ spec:
 | `spec.template.scheduling.nodeAffinities[].operator` | `string` | yes |  |  |
 | `spec.template.scheduling.nodeAffinities[].values` | `[]string` | yes |  |  |
 | `spec.template.scheduling.localSsdRecoveryTimeoutSeconds` | `int64` |  |  |  |
+| `spec.template.scheduling.hostErrorTimeoutSeconds` | `int32` |  |  |  |
 | `spec.template.shieldedInstanceConfig` | `GcpComputeMigShieldedConfig` |  |  |  |
 | `spec.template.shieldedInstanceConfig.enableSecureBoot` | `bool` |  |  |  |
 | `spec.template.shieldedInstanceConfig.enableVtpm` | `bool` |  | `true` |  |
@@ -195,6 +196,9 @@ spec:
 | `spec.template.canIpForward` | `bool` |  |  |  |
 | `spec.template.keyRevocationActionType` | `string` |  |  |  |
 | `spec.template.resourcePolicies` | `[]string` |  |  |  |
+| `spec.template.workloadIdentityConfig` | `GcpComputeMigWorkloadIdentityConfig` |  |  |  |
+| `spec.template.workloadIdentityConfig.identity` | `string` | yes |  |  |
+| `spec.template.workloadIdentityConfig.identityCertificateEnabled` | `bool` |  |  |  |
 | `spec.versions` | `[]GcpComputeMigVersion` |  |  |  |
 | `spec.versions[].versionName` | `string` |  |  |  |
 | `spec.versions[].templateSelfLink` | `string` |  |  |  |
@@ -1061,6 +1065,19 @@ recovery.
 
 - rule: {"int64":{"lte":"604800","gte":"0"}}
 
+### spec.template.scheduling.hostErrorTimeoutSeconds
+
+`int32` · optional (explicit presence)
+
+How long Compute Engine waits, in seconds, before declaring a host
+failed and starting host-error recovery for the VM on it. A lower
+value recovers a hung host faster at the cost of more false
+positives; leave unset for Compute Engine's default recovery timing.
+Must be 90..330 in steps of 30 (90, 120, ..., 330).
+
+- rule: host_error_timeout_seconds must be a multiple of 30 between 90 and 330
+- rule: {"int32":{"lte":330,"gte":90}}
+
 ### spec.template.shieldedInstanceConfig
 
 `GcpComputeMigShieldedConfig`
@@ -1328,6 +1345,34 @@ an instance schedule). GCP currently allows at most one policy per
 instance. Changing it rotates the template.
 
 - rule: {"repeated":{"maxItems":"1"}}
+
+### spec.template.workloadIdentityConfig
+
+`GcpComputeMigWorkloadIdentityConfig`
+
+Managed workload identity for every VM in the group: a SPIFFE
+identity issued to each instance (and, optionally, X.509 identity
+certificates) so workloads authenticate to each other by identity
+instead of shared secrets or network position. Part of the template,
+so changing it rotates the template and rolls the group.
+
+### spec.template.workloadIdentityConfig.identity
+
+`string` · required
+
+The SPIFFE ID Compute Engine issues to each instance, e.g.
+"spiffe://PROJECT.svc.id.goog/ns/NAMESPACE/sa/SERVICE_ACCOUNT" or a
+workload-identity-pool identity of the form
+"spiffe://POOL.global.PROJECT_NUMBER.workload.id.goog/ns/NS/sa/SA".
+
+- rule: {"required":true,"string":{"minLen":"1","prefix":"spiffe://"}}
+
+### spec.template.workloadIdentityConfig.identityCertificateEnabled
+
+`bool`
+
+Whether Compute Engine also issues and rotates X.509 certificates
+bound to the identity, made available on each VM for mutual TLS.
 
 ### spec.versions
 

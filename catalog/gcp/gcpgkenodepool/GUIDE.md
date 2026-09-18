@@ -43,6 +43,25 @@ become production outages. `maxRunDuration` and flex-start extend the
 same economics to hard-to-get GPU capacity; `reservationAffinity` with
 ANY_RESERVATION_THEN_FAIL is the opposite stance — consume committed
 capacity or fail loudly rather than fall back to on-demand billing.
+Give reclaimed nodes a graceful exit:
+`kubeletConfig.shutdownGracePeriodSeconds` (10..10000, Spot and
+preemptible pools only) is the total time a node delays shutdown so pods
+terminate cleanly, and `shutdownGracePeriodCriticalPodsSeconds` reserves
+part of it for system-critical pods after ordinary pods have had their
+share.
+
+## Holding a version, and preparing the host
+
+`excludeUpgradesUntilEndOfSupport: true` pins the pool on its current
+Kubernetes version until that version's end-of-support date — the lever
+for a workload that must be re-qualified before it moves minors (GKE
+reports the resulting window in the pool's status; the cluster's own
+maintenance windows still govern everything else).
+`linuxNodeConfig.customNodeInit` runs a boot-time script from Cloud
+Storage (pin it with `gcsGeneration` so a later upload does not silently
+change what new nodes run) or Secret Manager (for scripts that embed
+credentials) before the node joins the cluster — host-level setup no
+DaemonSet can do.
 
 ## Kubelet tuning: set only what you can defend
 

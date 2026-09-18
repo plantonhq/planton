@@ -97,6 +97,9 @@ variable "spec" {
     # Skip node-count drift queries against the Instance Group Managers.
     ignore_node_count_changes = optional(bool, false)
 
+    # Hold the pool on its current version until end of support.
+    exclude_upgrades_until_end_of_support = optional(bool, false)
+
     # Drain behavior when the pool itself is deleted or replaced.
     # Allowlist-gated: GCP support must enable customized node drain on the
     # project or the API rejects the create.
@@ -265,6 +268,9 @@ variable "spec" {
           policy = optional(string, "")
           scope  = optional(string, "")
         }), null)
+        # Graceful node shutdown (Spot/preemptible pools), seconds.
+        shutdown_grace_period_seconds               = optional(number, null)
+        shutdown_grace_period_critical_pods_seconds = optional(number, null)
       }), null)
 
       linux_node_config = optional(object({
@@ -294,6 +300,13 @@ variable "spec" {
           encryption_config = optional(object({
             disabled = optional(bool, null)
           }), null)
+        }), null)
+        # Boot-time init script: one of gcs_uri (optionally pinned to a
+        # generation) or secret_manager_secret_uri.
+        custom_node_init = optional(object({
+          gcs_uri                   = optional(string, "")
+          gcs_generation            = optional(number, null)
+          secret_manager_secret_uri = optional(string, "")
         }), null)
       }), null)
 
@@ -366,4 +379,19 @@ variable "spec" {
       }), null)
     }), null)
   })
+
+  validation {
+    condition     = try(var.spec.node_config.kubelet_config.shutdown_grace_period_seconds, null) == null || (var.spec.node_config.kubelet_config.shutdown_grace_period_seconds >= 10 && var.spec.node_config.kubelet_config.shutdown_grace_period_seconds <= 10000)
+    error_message = "node_config.kubelet_config.shutdown_grace_period_seconds must be between 10 and 10000."
+  }
+
+  validation {
+    condition     = try(var.spec.node_config.kubelet_config.shutdown_grace_period_critical_pods_seconds, null) == null || try(var.spec.node_config.kubelet_config.shutdown_grace_period_seconds, null) == null || var.spec.node_config.kubelet_config.shutdown_grace_period_critical_pods_seconds <= var.spec.node_config.kubelet_config.shutdown_grace_period_seconds
+    error_message = "node_config.kubelet_config.shutdown_grace_period_critical_pods_seconds cannot exceed shutdown_grace_period_seconds."
+  }
+
+  validation {
+    condition     = try(var.spec.node_config.linux_node_config.custom_node_init, null) == null || ((var.spec.node_config.linux_node_config.custom_node_init.gcs_uri != "") != (var.spec.node_config.linux_node_config.custom_node_init.secret_manager_secret_uri != ""))
+    error_message = "node_config.linux_node_config.custom_node_init must set exactly one of gcs_uri or secret_manager_secret_uri."
+  }
 }

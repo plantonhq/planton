@@ -213,6 +213,7 @@ spec:
 | `spec.containers[].readinessProbe.grpc` | `GcpCloudRunGrpcAction` |  |  |  |
 | `spec.containers[].readinessProbe.grpc.port` | `int32` |  |  |  |
 | `spec.containers[].readinessProbe.grpc.service` | `string` |  |  |  |
+| `spec.containers[].sandboxLauncher` | `bool` |  |  |  |
 | `spec.volumes` | `[]GcpCloudRunVolume` |  |  |  |
 | `spec.volumes[].name` | `string` | yes |  |  |
 | `spec.volumes[].cloudSqlInstance` | `GcpCloudRunVolumeCloudSql` |  |  |  |
@@ -293,6 +294,20 @@ spec:
 | `spec.multiRegionSettings` | `GcpCloudRunMultiRegionSettings` |  |  |  |
 | `spec.multiRegionSettings.regions` | `[]string` | yes |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.sandboxTemplates` | `[]GcpCloudRunSandboxTemplate` |  |  |  |
+| `spec.sandboxTemplates[].name` | `string` | yes |  |  |
+| `spec.sandboxTemplates[].image` | `string` | yes |  |  |
+| `spec.sandboxTemplates[].command` | `[]string` |  |  |  |
+| `spec.sandboxTemplates[].args` | `[]string` |  |  |  |
+| `spec.sandboxTemplates[].env` | `[]GcpCloudRunSandboxEnvVar` |  |  |  |
+| `spec.sandboxTemplates[].env[].name` | `string` | yes |  |  |
+| `spec.sandboxTemplates[].env[].value` | `string` |  |  |  |
+| `spec.sandboxTemplates[].volumeMounts` | `[]GcpCloudRunVolumeMount` |  |  |  |
+| `spec.sandboxTemplates[].volumeMounts[].name` | `string` | yes |  |  |
+| `spec.sandboxTemplates[].volumeMounts[].mountPath` | `string` | yes |  |  |
+| `spec.sandboxTemplates[].volumeMounts[].subPath` | `string` |  |  |  |
+| `spec.sandboxTemplates[].workingDir` | `string` |  |  |  |
+| `spec.resourceManagerTags` | `map<string, string>` |  |  |  |
 
 ## Field Details
 
@@ -904,6 +919,16 @@ serving port is used.
 
 Service name passed to the health check, letting one server report
 per-service health. If empty, overall server health is checked.
+
+### spec.containers[].sandboxLauncher
+
+`bool`
+
+Marks this container as the sandbox supervisor: the one process in
+the instance allowed to launch the isolated sandboxes declared in
+spec.sandbox_templates (through the Cloud Run sandbox CLI/API). The
+pattern for agent workloads that run untrusted, model-generated code:
+the supervisor orchestrates, each sandbox executes in isolation.
 
 ### spec.volumes
 
@@ -1661,11 +1686,128 @@ destroyed:
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
+### spec.sandboxTemplates
+
+`[]GcpCloudRunSandboxTemplate`
+
+Sandbox templates the instance's supervisor container (the one with
+sandbox_launcher) may launch on demand: isolated, short-lived
+containers for executing untrusted or model-generated code beside
+the serving container without exposing it. Each template names the
+image and startup shape a sandbox runs with; the supervisor picks a
+template by name at launch time. Requires exactly one container with
+sandbox_launcher set.
+
+### spec.sandboxTemplates[].name
+
+`string` · required
+
+Template name the supervisor launches by, a DNS label (RFC 1123):
+lowercase letters, digits, hyphens; starts and ends alphanumeric.
+
+- rule: {"required":true,"string":{"maxLen":"63","pattern":"^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"}}
+
+### spec.sandboxTemplates[].image
+
+`string` · required
+
+Container image the sandbox runs, e.g.
+"us-docker.pkg.dev/project/repo/sandbox:1.0.0". A bare name without a
+registry host is pulled from Docker Hub.
+
+- rule: {"required":true,"string":{"minLen":"1"}}
+
+### spec.sandboxTemplates[].command
+
+`[]string`
+
+Entrypoint array, not run through a shell. Empty uses the image's
+ENTRYPOINT.
+
+### spec.sandboxTemplates[].args
+
+`[]string`
+
+Arguments to the entrypoint. Empty uses the image's CMD.
+
+### spec.sandboxTemplates[].env
+
+`[]GcpCloudRunSandboxEnvVar`
+
+Environment variables set in the sandbox: literal values only.
+
+### spec.sandboxTemplates[].env[].name
+
+`string` · required
+
+Variable name, e.g. "PYTHONUNBUFFERED". Must not start with a digit.
+
+- rule: {"required":true,"string":{"pattern":"^[A-Za-z_][A-Za-z0-9_.-]*$"}}
+
+### spec.sandboxTemplates[].env[].value
+
+`string`
+
+Literal value (up to 32768 characters). Never place credentials here.
+
+- rule: {"string":{"maxLen":"32768"}}
+
+### spec.sandboxTemplates[].volumeMounts
+
+`[]GcpCloudRunVolumeMount`
+
+Volumes (declared in spec.volumes) mounted into the sandbox's
+filesystem.
+
+### spec.sandboxTemplates[].volumeMounts[].name
+
+`string` · required
+
+Name of a volume declared in spec.volumes.
+
+- rule: {"required":true,"string":{"minLen":"1"}}
+
+### spec.sandboxTemplates[].volumeMounts[].mountPath
+
+`string` · required
+
+Absolute path in the container to mount at. Cloud SQL volumes must
+mount at "/cloudsql".
+
+- rule: {"required":true,"string":{"pattern":"^/.*$"}}
+
+### spec.sandboxTemplates[].volumeMounts[].subPath
+
+`string`
+
+Path WITHIN the volume to mount instead of its root — e.g. mount only
+one secret item or one bucket directory. Relative path; empty mounts
+the volume root.
+
+### spec.sandboxTemplates[].workingDir
+
+`string`
+
+Working directory for the entrypoint. Empty uses the image's WORKDIR.
+
+### spec.resourceManagerTags
+
+`map<string, string>`
+
+Resource Manager tags bound to the service at creation, as a map of
+tagKeys/{tag_key_id} to tagValues/{tag_value_id} — the tag bindings
+that organization policies, IAM conditions, and cost reports key on.
+Immutable: changing the map replaces the service (Cloud Run applies
+tags only at create), so plan tag changes as a redeploy.
+
+- rule: {"map":{"keys":{"string":{"pattern":"^tagKeys/[0-9]+$"}},"values":{"string":{"pattern":"^tagValues/[0-9]+$"}}}}
+
 ## Validation Rules
 
 - `auth.allow_unauthenticated_xor_invoker_disabled`: allow_unauthenticated grants public access through IAM; invoker_iam_disabled turns the IAM check off entirely — set at most one
 - `gpu.redundancy_requires_accelerator`: gpu_zonal_redundancy_disabled only applies to GPU services — set node_selector.accelerator
 - `multi_region.requires_global_region`: multi-region services deploy through the global endpoint — set region to "global" when using multi_region_settings
+- `sandbox_templates_require_launcher`: sandbox_templates need a supervisor -- set sandbox_launcher on exactly one container
 
 ## Outputs
 

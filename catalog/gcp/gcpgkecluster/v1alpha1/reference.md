@@ -211,6 +211,17 @@ spec:
 | `spec.maintenancePolicy.recurringWindow.startTime` | `string` | yes |  |  |
 | `spec.maintenancePolicy.recurringWindow.endTime` | `string` | yes |  |  |
 | `spec.maintenancePolicy.recurringWindow.recurrence` | `string` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow` | `GcpGkeClusterRecurringTimeMaintenanceWindow` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime` | `GcpGkeClusterTimeOfDay` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime.hours` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime.minutes` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowStartTime.seconds` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.windowDuration` | `string` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.recurrence` | `string` | yes |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil` | `GcpGkeClusterCalendarDate` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil.year` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil.month` | `int32` |  |  |  |
+| `spec.maintenancePolicy.recurringTimeWindow.delayUntil.day` | `int32` |  |  |  |
 | `spec.maintenancePolicy.exclusions` | `[]GcpGkeClusterMaintenanceExclusion` |  |  |  |
 | `spec.maintenancePolicy.exclusions[].exclusionName` | `string` | yes |  |  |
 | `spec.maintenancePolicy.exclusions[].startTime` | `string` | yes |  |  |
@@ -312,6 +323,8 @@ spec:
 | `spec.addons.agentSandboxEnabled` | `bool` |  |  |  |
 | `spec.addons.sliceControllerEnabled` | `bool` |  |  |  |
 | `spec.addons.slurmOperatorEnabled` | `bool` |  |  |  |
+| `spec.addons.highScaleCheckpointingEnabled` | `bool` |  |  |  |
+| `spec.addons.nodeReadinessControllerEnabled` | `bool` |  |  |  |
 | `spec.enableAutopilot` | `bool` |  |  |  |
 | `spec.allowNetAdmin` | `bool` |  |  |  |
 | `spec.fleetProject` | `string` |  |  |  |
@@ -378,6 +391,9 @@ spec:
 | `spec.secretSync.enabled` | `bool` |  |  |  |
 | `spec.secretSync.rotationEnabled` | `bool` |  |  |  |
 | `spec.secretSync.rotationInterval` | `string` |  |  |  |
+| `spec.rollbackSafeUpgrade` | `GcpGkeClusterRollbackSafeUpgrade` |  |  |  |
+| `spec.rollbackSafeUpgrade.controlPlaneSoakDuration` | `string` |  |  |  |
+| `spec.desiredEmulatedVersion` | `string` |  |  |  |
 
 ## Field Details
 
@@ -957,7 +973,7 @@ the channel drive versions.
 Maintenance windows and exclusions controlling WHEN GKE may perform
 automatic control-plane and node maintenance.
 
-- rule: set exactly one of daily_window or recurring_window
+- rule: set exactly one of daily_window, recurring_window, or recurring_time_window
 
 ### spec.maintenancePolicy.dailyWindow
 
@@ -977,8 +993,9 @@ Start of the daily 4-hour window, "HH:MM" (UTC), e.g. "03:00".
 
 `GcpGkeClusterRecurringMaintenanceWindow`
 
-RRULE-based recurring window (e.g. weekends only) — finer control than
-the daily window.
+RRULE-based recurring window anchored on an absolute first
+occurrence (start_time/end_time as RFC3339 timestamps) — e.g.
+weekends only. Finer control than the daily window.
 
 ### spec.maintenancePolicy.recurringWindow.startTime
 
@@ -1004,6 +1021,96 @@ RFC3339.
 RFC5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=SA,SU" for weekends.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
+
+### spec.maintenancePolicy.recurringTimeWindow
+
+`GcpGkeClusterRecurringTimeMaintenanceWindow`
+
+RRULE-based recurring window expressed as a time of day plus a
+duration, with an optional date the recurrence may first start. The
+same recurrence power as recurring_window without committing to one
+absolute first timestamp — pick this when the policy is authored as
+"every Saturday at 02:00 for 6 hours, starting next quarter".
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime
+
+`GcpGkeClusterTimeOfDay` · required
+
+Time of day (UTC) each window instance begins.
+
+- rule: {"required":true}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime.hours
+
+`int32`
+
+Hour of the day, 0-23.
+
+- rule: {"int32":{"lte":23,"gte":0}}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime.minutes
+
+`int32`
+
+Minute of the hour, 0-59.
+
+- rule: {"int32":{"lte":59,"gte":0}}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowStartTime.seconds
+
+`int32`
+
+Second of the minute, 0-59.
+
+- rule: {"int32":{"lte":59,"gte":0}}
+
+### spec.maintenancePolicy.recurringTimeWindow.windowDuration
+
+`string` · required
+
+Length of each window instance as a duration string with a unit
+suffix, e.g. "4h", "6h30m", "21600s". Must be positive.
+
+- rule: {"required":true,"string":{"minLen":"1","pattern":"^([0-9]+(\\.[0-9]+)?(ns|us|ms|s|m|h))+$"}}
+
+### spec.maintenancePolicy.recurringTimeWindow.recurrence
+
+`string` · required
+
+RFC5545 RRULE, e.g. "FREQ=WEEKLY;BYDAY=SA,SU" for weekends.
+
+- rule: {"required":true,"string":{"minLen":"1"}}
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil
+
+`GcpGkeClusterCalendarDate`
+
+Earliest calendar date the recurrence may start; window instances
+before it are skipped. Leave unset to start immediately.
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil.year
+
+`int32`
+
+Four-digit year, e.g. 2027.
+
+- rule: {"int32":{"lte":9999,"gte":1}}
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil.month
+
+`int32`
+
+Month of the year, 1-12.
+
+- rule: {"int32":{"lte":12,"gte":1}}
+
+### spec.maintenancePolicy.recurringTimeWindow.delayUntil.day
+
+`int32`
+
+Day of the month, 1-31.
+
+- rule: {"int32":{"lte":31,"gte":1}}
 
 ### spec.maintenancePolicy.exclusions
 
@@ -1828,6 +1935,24 @@ The slice controller addon (TPU slice management).
 
 The Slurm operator addon (Slurm-on-GKE for HPC scheduling).
 
+### spec.addons.highScaleCheckpointingEnabled
+
+`bool`
+
+High Scale Checkpointing: the addon that lets large AI/ML training
+jobs checkpoint and restore state at scale (multi-tier checkpointing
+onto node-local and Cloud Storage tiers) so a job resumes from its
+last checkpoint after a preemption or failure instead of restarting.
+
+### spec.addons.nodeReadinessControllerEnabled
+
+`bool`
+
+Node Readiness Controller: the addon that holds a node out of
+scheduling until its readiness rules (for example, required daemon
+pods or device drivers) pass, so workloads never land on a node
+whose accelerators or networking are not yet usable.
+
 ### spec.enableAutopilot
 
 `bool`
@@ -2342,6 +2467,42 @@ Whether synced secrets are periodically refreshed.
 Refresh cadence, seconds format (e.g. "120s").
 
 - rule: rotation_interval must be a seconds-format duration like "120s"
+
+### spec.rollbackSafeUpgrade
+
+`GcpGkeClusterRollbackSafeUpgrade`
+
+Two-step (rollback-safe) control-plane minor upgrades: the control
+plane moves to the new version but keeps emulating the old minor for
+a soak period during which the upgrade can be rolled back without
+data loss. Leave unset for standard one-step upgrades.
+
+### spec.rollbackSafeUpgrade.controlPlaneSoakDuration
+
+`string`
+
+How long the cluster stays in the rollbackable state after the
+control plane upgrades, as a seconds-format duration, e.g. "604800s"
+(7 days). Minimum 6 hours ("21600s"), maximum 7 days ("604800s").
+Leave empty to skip the two-step flow and perform a standard
+one-step upgrade.
+The bound is expressed as one pattern (21600 <= seconds <= 604800)
+so every validation engine, including the Java one, evaluates it
+without string slicing.
+
+- rule: control_plane_soak_duration must be a seconds-format duration between "21600s" (6 hours) and "604800s" (7 days)
+
+### spec.desiredEmulatedVersion
+
+`string`
+
+Completes a rollback-safe upgrade declaratively: set to the target
+minor version ("major.minor", e.g. "1.33") once the soak period has
+proven the new control plane, and GKE stops emulating the old minor.
+Removing the field does not trigger completion; only setting it does.
+Only meaningful with rollback_safe_upgrade.
+
+- rule: desired_emulated_version must be in major.minor format, e.g. "1.33"
 
 ## Validation Rules
 

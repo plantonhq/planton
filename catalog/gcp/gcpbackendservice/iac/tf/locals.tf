@@ -120,6 +120,9 @@ locals {
     sample_rate     = try(var.spec.log_config.sample_rate, 0) != 0 ? var.spec.log_config.sample_rate : null
     optional_mode   = try(var.spec.log_config.optional_mode, "") != "" ? var.spec.log_config.optional_mode : null
     optional_fields = try(var.spec.log_config.optional_fields, [])
+    # Header names whose values join each log entry (HTTP-family protocols).
+    request_headers  = try(var.spec.log_config.request_headers, [])
+    response_headers = try(var.spec.log_config.response_headers, [])
   }
 
   # Circuit breakers: 0 -> null so the API defaults (1024/1024/1024/-/3)

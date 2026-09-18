@@ -135,12 +135,11 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 ### Deliberately not modeled (recorded reasons)
 
-Everything else on `google_sql_database_instance` at the pinned provider is representable — including clones, backup-run and Backup-and-DR restores, read pools with auto scaling, DR replica pairing, final backups, Entra ID / customer-managed Active Directory, hyperdisk performance dials, and `deletionPolicy`. The recorded exclusions:
+Everything else on `google_sql_database_instance` at the pinned provider is representable — including clones, backup-run and Backup-and-DR restores, read pools with auto scaling, DR replica pairing, final backups, Entra ID / customer-managed Active Directory, hyperdisk performance dials, the replica self-recreation threshold (`replicationLagMaxSeconds`), the input-only major-version and transaction-log opt-ins, the new-network-architecture switch, the PSC auto-connection policy, and `deletionPolicy`. The recorded exclusions:
 
 | Excluded Feature | Why |
 |---|---|
 | `root_password_wo` / `root_password_wo_version` | Write-only variants of the modeled `rootPassword` — same capability through engine-side ergonomics; the spec field is secret-annotated and encrypted in state on both engines. |
-| `switch_transaction_logs_to_cloud_storage_enabled`, `include_replicas_for_major_version_upgrade`, `enforce_new_sql_network_architecture`, PSC `psc_auto_connection_policy_enabled` | GA at the pin but not yet bridged by the pinned Pulumi SDK — modeling them on one engine only would break cross-engine parity; they enter the spec at the next SDK bump. |
 | `pricing_plan` | `PER_USE` is the only accepted value on second-generation instances — no reachable capability. |
 | `follow_gae_application` | Legacy App Engine zone-following; `locationPreference.zone` is the direct modern placement control. |
 | `replication_cluster.psa_write_endpoint` | Documented read-only field; DR pairing is driven through `failoverDrReplicaName`. |
