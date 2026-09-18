@@ -43,6 +43,11 @@ export const RETIRED_ROUTES: readonly RetiredRoute[] = [
   { from: '/features/auditable-intelligence', to: '/product', reason: 'a retired concept page' },
   { from: '/features/kubernetes-dashboard', to: '/product', reason: 'a retired concept page' },
   { from: '/agents', to: '/product/coding-agents', reason: 'the agents page became the coding-agents product page' },
+  // Planton Desktop's permanent address is /desktop. The release pipeline printed
+  // the old address into every installed cask and installer, so these two
+  // forwards are kept for as long as any of those exist.
+  { from: '/features/desktop', to: '/desktop', reason: 'Planton Desktop lives at /desktop' },
+  { from: '/features/desktop/download', to: '/desktop/download', reason: 'Planton Desktop lives at /desktop' },
   { from: '/cli', to: '/product/cli', reason: 'the CLI page lives under the product group' },
   { from: '/docs/infrastructure/openmcf', to: '/docs/infrastructure/open-source', reason: 'the docs page was renamed' },
   // The Solutions section became five persona pages. Each old page forwards

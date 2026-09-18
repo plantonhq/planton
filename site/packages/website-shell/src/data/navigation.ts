@@ -37,12 +37,11 @@ export const menuProduct: MenuItem[] = [
   { label: 'Open Source', subLabel: 'Every module Apache 2.0; leave with your manifests', href: '/product/open-source' },
 ];
 
-// Where the platform runs (one model, three shapes). The desktop entry's path
-// is the desktop landing; it moves with that page.
+// Where the platform runs (one model, three shapes).
 export const menuDistributions: MenuItem[] = [
   { label: 'Hosted', subLabel: 'Nothing to run; your account, your keys', href: '/distributions/hosted' },
   { label: 'Self-Hosted', subLabel: 'Two Helm installs on your own cluster', href: '/distributions/self-hosted' },
-  { label: 'Desktop', subLabel: 'Free for individuals, commercial use included', href: '/features/desktop' },
+  { label: 'Desktop', subLabel: 'Free for individuals, commercial use included', href: '/desktop' },
 ];
 
 export const menuExplorer: MenuItem[] = [
@@ -112,7 +111,7 @@ export const footerGroups: FooterGroup[] = [
     title: 'Get Started',
     id: 'get_started',
     items: [
-      { title: 'Download Planton Desktop', url: '/features/desktop/download' },
+      { title: 'Download Planton Desktop', url: '/desktop/download' },
       { title: 'Sign Up', url: '/signup' },
       { title: 'Pricing', url: '/pricing' },
       { title: 'Book a Demo', url: '/book-demo' },

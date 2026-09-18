@@ -222,7 +222,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     chapters: ['runs-where-you-decide', 'proof-it-works'],
   },
 
-  // Distributions: where the platform runs (chapter 8); the desktop pages carry the desktop landing's own data
+  // Distributions: where the platform runs (chapter 8); the desktop pages carry the desktop landing's own data at Planton Desktop's permanent address
   {
     path: '/distributions',
     title: 'Distributions',
@@ -245,8 +245,8 @@ export const SITE_PAGES: readonly SitePage[] = [
     group: 'distributions',
     chapters: ['runs-where-you-decide', 'start'],
   },
-  { path: '/features/desktop', title: 'Planton Desktop', description: 'The whole platform on your laptop, deploying to your own cloud with the sign-ins already on your machine. No account. Free for individuals, commercial use too.', group: 'distributions', chapters: ['runs-where-you-decide', 'the-wall'] },
-  { path: '/features/desktop/download', title: 'Download Planton Desktop', description: 'Install Planton Desktop for macOS, Windows, or Linux. Free for individuals, including commercial use.', group: 'distributions', chapters: ['start'] },
+  { path: '/desktop', title: 'Planton Desktop', description: 'The whole platform on your laptop, deploying to your own cloud with the sign-ins already on your machine. No account. Free for individuals, commercial use too.', group: 'distributions', chapters: ['runs-where-you-decide', 'the-wall'] },
+  { path: '/desktop/download', title: 'Download Planton Desktop', description: 'Install Planton Desktop for macOS, Windows, or Linux. Free for individuals, including commercial use.', group: 'distributions', chapters: ['start'] },
 
   // Solutions: chapter 9 as the index, then one page per persona. The five
   // slugs are the personas' own (src/data/personas.ts); a page's chapters are

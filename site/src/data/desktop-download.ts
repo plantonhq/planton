@@ -80,15 +80,18 @@ export interface DesktopPlatform {
 }
 
 /**
- * Where the desktop pages live on the website. Both sit under /features
- * because the edge currently routes the short paths (/desktop, /download) to
- * the console; those short paths are the intended final homes, and moving
- * back is a folder rename plus these two constants. Every site component
- * reads them from here; the shell package's navigation keeps literal hrefs
- * like every other entry because it cannot import from src/.
+ * Where the desktop pages live on the website: Planton Desktop's permanent
+ * address. The release pipeline prints it into every Homebrew cask, winget
+ * manifest, and the Linux installer, so it changes only on the founder's word
+ * and the pipeline's scripts change in the same commit. The download page
+ * sits under the landing (one prefix at the edge, one reserved handle, and
+ * the download read as the desktop's own page). Every site component reads
+ * these two constants; the shell package's navigation keeps literal hrefs
+ * like every other entry because it cannot import from src/. The pages'
+ * earlier address under /features is a retired route.
  */
-export const DESKTOP_LANDING_PATH = '/features/desktop';
-export const DESKTOP_DOWNLOAD_PATH = '/features/desktop/download';
+export const DESKTOP_LANDING_PATH = '/desktop';
+export const DESKTOP_DOWNLOAD_PATH = '/desktop/download';
 
 export const DOWNLOADS_BASE = 'https://downloads.planton.app/desktop';
 
