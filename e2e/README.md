@@ -3521,7 +3521,40 @@ on the App, two each on the droplet and load balancer, one each on the node
 pool and database cluster -- and two of them still named a pin two bumps
 old. Check the SDK's `pulumiTypes.go` and the resource's `*Args` struct on
 disk for each guarded field before a lane, wire what closed, and name the
-verified version in the guards that remain.
+verified version in the guards that remain. And a bridge bump UN-PROVES
+every Pulumi lane until it re-runs: the bridge and the provider it embeds
+are exactly what changed under every Pulumi module, while the Terraform
+lanes prove provider logic the bump never touched. After the bump, re-run
+at least one flagship scenario per proven kind on Pulumi, and the full
+dual-engine lane (round-trip included) for every scenario that gained a
+newly wired arm -- the re-proof of 20 kinds at v4.79.1 ran green first
+time on 19 and caught a real class on the 20th (the project below).
+
+**A provider's declared timeout is a knob the module sizes from measured
+behavior, never a constant to trust.** `digitalocean_project`'s Delete
+relocates members to the default project and then retries the DELETE
+through `412 cannot delete a project with resources` -- but only for the
+resource's delete timeout, whose provider default is three minutes.
+DigitalOcean applies the relocation asynchronously with a lag that varies:
+four destroys in one session read the project empty in ~6 s, ~14 s, ~30 s,
+and once NOT within 180 s, so that destroy failed with the member already
+moved and an empty, free project left behind (a second destroy deletes it
+in seconds). The provider's code is identical from v2.67.0 through
+v2.101.0; the lag is the API's. Both modules now carry a ten-minute delete
+timeout (Terraform `timeouts { delete = "10m" }`, Pulumi
+`CustomTimeouts{Delete: "10m"}` -- the bridge honors it for SDKv2
+resources that declare `Timeouts`), and the Terraform round-trip stayed
+lossless because a timeouts block is not an imported attribute. When a
+lane fails inside a provider's retry loop, read the resource's
+`Timeouts` before blaming the module or the API: if the timeout is
+declared, sizing it is the module's job.
+
+**The default project's membership list can name resources that no longer
+exist.** `GET /v2/projects/{default}/resources` listed two
+`do:loadbalancer:<id>` URNs whose balancers answered 404 -- ghosts of
+balancers deleted days earlier. Nothing bills and nothing can be deleted;
+the sweep counts real resources from their own endpoints and treats a
+membership URN as a claim to verify, never as an orphan.
 
 **Dry-run a pin bump before landing it, and know that the bump is never
 one provider's alone.** Copy `go.mod`/`go.sum` aside, `GOWORK=off go get

@@ -41,7 +41,7 @@ Deploy with either provisioner; both produce identical resources and outputs.
 
 ## Behavior worth knowing
 
-- **Destroy evacuates, never destroys.** Deleting the project relocates every member resource to the account's default project and retries while the asynchronous moves settle. Nothing inside is ever destroyed.
+- **Destroy evacuates, never destroys.** Deleting the project relocates every member resource to the account's default project and retries while the asynchronous moves settle. Nothing inside is ever destroyed. The moves can take minutes (measured: seconds on most destroys, over three minutes once), so both provisioners give the delete ten minutes instead of the provider's three; a destroy that still reports `cannot delete a project with resources` has already moved the members -- run it again.
 - **Membership moves resources.** A resource belongs to exactly one project: listing it here moves it from wherever it was; removing it from the list moves it to the default project. An empty list means membership is not managed at all.
 - **The `Other:` purpose trap is unrepresentable.** DigitalOcean prefixes non-standard purposes with `Other: ` (keeping exactly one prefix and re-capitalizing the rest) and the provider strips it on read; a user-supplied value already carrying the prefix would drift forever, so validation rejects it.
 - **Never adopt the account's default project.** It reads back `is_default: true` against a manifest that leaves the flag unset, so the first apply would try to un-default it.

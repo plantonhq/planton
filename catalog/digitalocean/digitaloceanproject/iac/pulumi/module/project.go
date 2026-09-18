@@ -63,6 +63,16 @@ func project(
 		"project",
 		projectArgs,
 		pulumi.Provider(digitalOceanProvider),
+		// The relocation of members is asynchronous on DigitalOcean's side
+		// and the provider retries the DELETE through "412 cannot delete a
+		// project with resources" only until this timeout. Its 3-minute
+		// default was exceeded live: a one-member project stayed non-empty
+		// for over 180 seconds after the relocation was accepted, the
+		// destroy failed, and a second destroy of the by-then-empty project
+		// succeeded. Ten minutes covers the measured lag with room; a retry
+		// that ends earlier costs nothing. Twin of the Terraform module's
+		// timeouts block.
+		pulumi.Timeouts(&pulumi.CustomTimeouts{Delete: "10m"}),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create digitalocean project")

@@ -24,6 +24,11 @@ spec:
   # Deferred arms (the six-phase runner has no update phase): rename and
   # grant-list replacement, both in-place upstream. Unblock: a runner update
   # phase.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `per-bucket`: bucket fixture 21 s, DEPLOY 11 s, IDEMPOTENCY
+  # PASS, the signed S3 call proving the secret in 1.4 s, DESTROY 16 s --
+  # every phase first run; the bridge bump changed nothing this kind's lane
+  # can observe.
   tier: 1
   status: green
   validated_provisioners:

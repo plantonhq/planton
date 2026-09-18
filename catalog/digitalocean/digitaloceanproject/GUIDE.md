@@ -6,6 +6,10 @@ What experience with this component teaches that the field reference cannot.
 
 Deleting a project never deletes its contents: DigitalOcean requires the project to be empty, so everything inside is moved to the account's DEFAULT project first, then the empty project is deleted (with retries while the asynchronous moves settle). If you tear down a project as part of an environment teardown, destroy the member resources first -- otherwise they keep running, and billing, from the default project.
 
+## The relocation is slow sometimes -- the destroy waits ten minutes for it
+
+DigitalOcean accepts the "move these members to the default project" request at once but applies it asynchronously, and the wait is not predictable: measured live, a one-member project read empty within seconds on one destroy, within about thirty seconds on another, and NOT within three minutes on a third. The provider retries the delete through `412 cannot delete a project with resources` only for its delete timeout, whose default is three minutes -- so that third destroy failed although the members had already been moved. Both provisioners therefore give the delete ten minutes. If a destroy still reports that error, nothing is wrong with the members: they are in the default project. Confirm the project reads empty (`GET /v2/projects/{id}/resources`) and run the destroy again; the empty project deletes in seconds. A project is a free object, so the retry costs nothing.
+
 ## One project per resource
 
 A resource belongs to exactly one project. Declaring it in this project's `resources` list MOVES it -- including out of another project that also claims it. Two projects listing the same resource will fight forever. Give each resource one home, and prefer wiring membership by reference (`valueFrom` on the producing kind's `urn` output) so the graph is visible in code.

@@ -29,6 +29,11 @@ spec:
   # forever), and the custom-TTL arm sits on a uniquely named record because
   # DigitalOcean harmonizes TTLs per hostname and the ip_address seed record
   # joins the apex A set.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: DEPLOY 16 s with the eight inline records serialized
+  # through the dependency chain, IDEMPOTENCY PASS, DESTROY 15 s -- every
+  # phase first run; the bridge bump changed nothing this kind's lane can
+  # observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

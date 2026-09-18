@@ -20,5 +20,5 @@ Exactly the `DigitalOceanProjectStackOutputs` contract: `project_id`, `owner_uui
 
 - Empty optional strings become null so the provider's defaults apply (purpose defaults to "Web Application" upstream).
 - An empty `resources` list stays null: membership is then unmanaged and out-of-band assignments are left alone (the attribute is Optional+Computed upstream).
-- Destroy relocates member resources to the account's default project and retries through the API's 412 responses while the moves settle -- nothing inside is destroyed.
+- Destroy relocates member resources to the account's default project and retries through the API's 412 responses while the moves settle -- nothing inside is destroyed. The resource carries `timeouts { delete = "10m" }` because the moves were measured to outlast the provider's 3-minute default once; a destroy that still fails on the 412 has moved the members already and succeeds when run again.
 - Import: `terraform import ... <project_id>` (see `iac/import-map.yaml`).

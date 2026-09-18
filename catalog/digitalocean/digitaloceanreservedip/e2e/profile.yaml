@@ -38,6 +38,11 @@ spec:
   # band would panic the destroy) -- both recorded on the GUIDE.
   # Deferred arms (no runner update phase): v4 re-point/unassign are
   # in-place updates upstream.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `ipv6-assigned`: droplet fixture 43 s, DEPLOY 21 s for both
+  # folded v6 resources, IDEMPOTENCY PASS, DESTROY 23 s, no reservation left
+  # behind -- every phase first run; the bridge bump changed nothing this
+  # kind's lane can observe.
   tier: 1
   status: green
   validated_provisioners:

@@ -40,6 +40,10 @@ spec:
   # the wiring; unblocks if the framework grows same-kind path-entry
   # fixtures for this shape). Buckets create in seconds and storage bills
   # $0.02/GB-month -- an empty-bucket sweep costs effectively nothing.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: DEPLOY 12 s, IDEMPOTENCY PASS, DESTROY 11 s -- every
+  # phase first run; the bridge bump changed nothing this kind's lane can
+  # observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

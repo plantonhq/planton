@@ -143,6 +143,10 @@ spec:
       # true. Semantically "grow the disk on resize", textually different.
       write_normalized_attributes:
         - resize_disk
+      # public_networking needs NO tolerance although it is ForceNew: Read
+      # sets it from the live droplet (true when a public IPv4 exists), so a
+      # droplet created with public_networking=false imports blind with
+      # `false` in state and a clean plan -- measured lossless live.
     - terraform_type: digitalocean_volume
       pulumi_type: digitalocean:index/volume:Volume
       id_format: "{volume_id}"

@@ -41,9 +41,15 @@ spec:
   # maintenance mode and ingress authority matches -- wired on both engines;
   #   maintenance takes the app offline by design and authority needs a
   #   custom domain, so both stay offline-planned.
-  # service/worker liveness_health_check and ingress secure_header ride the
-  #   composed scenario on both engines (accepted and echoed unchanged by the
-  #   validate-only propose endpoint before joining the lane).
+  # service/worker liveness_health_check and ingress secure_header are
+  #   PROVEN by the `composed` scenario on both engines (2026-09-18, Pulumi
+  #   at bridge v4.79.1 / provider v2.100.1, Terraform at v2.101.0): DEPLOY
+  #   42 s / 29 s to ACTIVE, IDEMPOTENCY PASS on both, the refreshed plan
+  #   reading back the service's seven-leaf liveness check, the worker's
+  #   three-leaf one (unset leaves as zero, no diff), and the ingress-level
+  #   X-Frame-Options header exactly as sent; the blind round-trip tolerated
+  #   exactly `deployment_per_page` and nothing else. That lane is also the
+  #   App's Pulumi re-proof at the v4.79.1 bridge -- every phase first run.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

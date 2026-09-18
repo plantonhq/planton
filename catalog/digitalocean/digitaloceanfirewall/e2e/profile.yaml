@@ -28,6 +28,10 @@ spec:
   # proves), kubernetes ids (needs a DOKS fixture -- ~10-minute creates, the
   # slow class; identical SVOR wiring), and load balancer uids (needs an LB
   # fixture; identical SVOR wiring).
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: droplet fixture 32 s, DEPLOY 8 s, IDEMPOTENCY PASS,
+  # DESTROY 11 s -- every phase first run; the bridge bump changed nothing
+  # this kind's lane can observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

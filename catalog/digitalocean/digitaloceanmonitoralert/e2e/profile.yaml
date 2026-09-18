@@ -32,6 +32,10 @@ spec:
   #   code path -- exercised whenever a lane pays for those fixtures anyway.
   # - in-place edits (threshold, window, channels): the runner has no update
   #   phase.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `minimal`: droplet fixture 42 s, DEPLOY 11 s, IDEMPOTENCY
+  # PASS, DESTROY 17 s -- every phase first run; the bridge bump changed
+  # nothing this kind's lane can observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

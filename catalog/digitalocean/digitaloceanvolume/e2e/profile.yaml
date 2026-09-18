@@ -24,6 +24,10 @@ spec:
   # DEFERRED ARM: snapshot_id needs a pre-existing volume snapshot in the
   # account (the snapshot resource's own kind is a recorded deferred
   # disposition). Unblock condition: a snapshot fixture.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: DEPLOY 12 s, IDEMPOTENCY PASS, DESTROY 12 s -- every
+  # phase first run; the bridge bump changed nothing this kind's lane can
+  # observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

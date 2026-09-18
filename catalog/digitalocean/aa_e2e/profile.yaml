@@ -86,6 +86,17 @@ spec:
   # `GET /v2/reserved_ipv6` (the sweep's v4 listing does not see them) and
   # delete the orphans -- they are free but hold addresses.
   #
+  # PROJECT LANES: destroying a project relocates its members to the default
+  # project asynchronously, and DigitalOcean's lag varies from seconds to
+  # more than the provider's 3-minute default delete timeout (measured once
+  # in four destroys). The modules size that timeout to ten minutes; a
+  # destroy that still fails on `412 cannot delete a project with resources`
+  # has moved the members and left an EMPTY, free project -- delete it by
+  # API (`DELETE /v2/projects/{id}` needs a JSON content type or answers
+  # 415). The default project's membership list may also name
+  # `do:loadbalancer:` URNs of balancers deleted days earlier; each 404s,
+  # nothing bills, and the sweep counts resources from their own endpoints.
+  #
   # OPERATOR PRECONDITION (per machine): the alert lanes (monitor alerts,
   # uptime alert rows) read their email recipient from
   # PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL, because DigitalOcean delivers alert

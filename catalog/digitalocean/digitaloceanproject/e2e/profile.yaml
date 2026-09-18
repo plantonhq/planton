@@ -20,6 +20,23 @@ spec:
   # are free API objects (~3-10s); the droplet fixture (~40s, ~$0.009/hour)
   # dominates lane time.
   #
+  # Re-proven on both engines 2026-09-18 (Pulumi at bridge v4.79.1 /
+  # provider v2.100.1, Terraform at v2.101.0) on `full` -- and the re-proof
+  # caught a class the first proof had not met: the relocation of members
+  # to the default project is asynchronous on DigitalOcean's side and its
+  # lag varies. Across four destroys that day the project read empty in
+  # ~6 s (Terraform), ~30 s (Pulumi), ~14 s (Pulumi), and once NOT within
+  # 180 seconds -- the provider's default delete timeout, during which it
+  # retries the DELETE through `412 cannot delete a project with resources`
+  # -- so that destroy failed with the member already moved and the empty
+  # project left behind (deleted by hand; a second destroy would have done
+  # the same). Both modules now size the delete timeout to ten minutes
+  # (Terraform `timeouts { delete }`, Pulumi `CustomTimeouts`), and the
+  # lanes passed on both engines with the change (DESTROY 14 s / 6 s, the
+  # Terraform round-trip still lossless -- a timeouts block is not an
+  # imported attribute). The provider's Delete code is identical from
+  # v2.67.0 through v2.101.0; the lag is the API's, not the pin's.
+  #
   # Deliberately NOT in the live lanes:
   # - is_default: flipping the shared test account's default project mutates
   #   state every other lane inherits (the shared-live-state deferral

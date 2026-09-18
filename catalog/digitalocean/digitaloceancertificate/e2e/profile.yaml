@@ -28,6 +28,11 @@ spec:
   # apex and the arm runs unchanged, which also gives the import map its
   # PEM-free live proof. Until then the branch's wiring is proven by the
   # offline plan only.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `minimal`: DEPLOY 18 s, IDEMPOTENCY PASS, DESTROY 11 s;
+  # `lets-encrypt` still skips honestly while the delegated-domain variable is
+  # unset -- every phase first run; the bridge bump changed nothing this
+  # kind's lane can observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

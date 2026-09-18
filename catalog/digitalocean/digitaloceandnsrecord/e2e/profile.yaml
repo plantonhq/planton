@@ -28,6 +28,10 @@ spec:
   # found"). One standalone record is never affected; many applied at once
   # against the same zone can be -- the GUIDE points such sets at the zone
   # kind's serialized inline records.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: zone fixture 9 s, DEPLOY 8 s, IDEMPOTENCY PASS,
+  # DESTROY 11 s -- every phase first run; the bridge bump changed nothing
+  # this kind's lane can observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

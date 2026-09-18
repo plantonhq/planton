@@ -20,6 +20,10 @@ spec:
   # answers 404 before starting, and know that any pre-existing registry in
   # the account collides with all of them. Registry names are globally unique
   # across ALL DigitalOcean accounts, so scenario names carry ${E2E_RUN_ID}.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: DEPLOY 17 s, IDEMPOTENCY PASS, DESTROY 12 s, GET
+  # /v2/registry 404 before and after -- every phase first run; the bridge
+  # bump changed nothing this kind's lane can observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

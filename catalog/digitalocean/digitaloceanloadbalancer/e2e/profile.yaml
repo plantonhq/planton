@@ -32,6 +32,11 @@ spec:
   # domain), BYOIP `ip` (needs a BYOIP prefix on the account), and
   # `subnet_uuid` (needs a VPC subnet, which the catalog has no kind for yet
   # -- prove when one exists). Both engines wire both.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: VPC and droplet fixtures 50 s, DEPLOY 1m40s with the
+  # balancer active on the first wait, IDEMPOTENCY PASS, DESTROY 12 s, no
+  # ghost VPC member on teardown -- every phase first run; the bridge bump
+  # changed nothing this kind's lane can observe.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]
