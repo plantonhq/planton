@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import type { MenuItem } from '../../data/navigation';
 import { tokens } from '../../theme/tokens';
 
-export function MegaMenuItem({ label, subLabel, icon, href, onClick }: MenuItem & { onClick?: () => void }) {
+/** The description under a label reads at the secondary role at rest and rises to primary under the pointer; it is the line that says what the page is, never fine print. */
+export function MegaMenuItem({ label, subLabel, icon, href, onClick, alignWithMarks = false }: MenuItem & { onClick?: () => void; alignWithMarks?: boolean }) {
   return (
     <Link href={href ?? ''} onClick={onClick} style={{ width: '100%', textDecoration: 'none', color: 'inherit' }}>
       <Stack
@@ -21,7 +22,7 @@ export function MegaMenuItem({ label, subLabel, icon, href, onClick }: MenuItem 
           '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
         }}
       >
-        {icon}
+        {icon ?? (alignWithMarks ? <Box sx={{ width: { xs: 16, md: 24 }, flexShrink: 0 }} aria-hidden /> : null)}
         <Stack sx={{ justifyContent: 'flex-start' }}>
           <Typography sx={{ color: tokens.text.primary, fontWeight: subLabel ? 600 : 400, fontSize: '0.875rem' }}>
             {label}
@@ -29,11 +30,11 @@ export function MegaMenuItem({ label, subLabel, icon, href, onClick }: MenuItem 
           {subLabel && (
             <Typography
               sx={{
-                color: tokens.text.muted,
+                color: tokens.text.secondary,
                 fontSize: '0.875rem',
                 fontWeight: 400,
                 transition: 'color 150ms ease',
-                '.MuiStack-root:hover &': { color: tokens.text.secondary },
+                '.MuiStack-root:hover &': { color: tokens.text.primary },
               }}
             >
               {subLabel}

@@ -45,10 +45,10 @@ export interface FooterGroup {
 export const menuProduct: MenuItem[] = [
   { label: 'Infra Hub', subLabel: 'Cost and permissions verified before anything is created', href: '/product/infra-hub' },
   { label: 'Service Hub', subLabel: 'Every push built, deployed, and written back to GitHub', href: '/product/service-hub' },
-  { label: 'Coding Agents', subLabel: 'Your agent deploys through the same door as everyone', href: '/product/coding-agents' },
+  { label: 'Coding Agents', subLabel: 'Cursor, Claude Code, or Codex deploys under the same rules as everyone', href: '/product/coding-agents' },
   { label: 'CLI', subLabel: 'Everything Planton does, from your terminal', href: '/product/cli' },
   { label: 'Catalog', subLabel: '700+ component kinds, each with its own fact sheet', href: '/product/catalog' },
-  { label: 'Import', subLabel: 'Bring what already exists under the record', href: '/product/import' },
+  { label: 'Import', subLabel: 'Adopt the cloud resources you already run, without redeploying them', href: '/product/import' },
   { label: 'Open Source', subLabel: 'Every module Apache 2.0; leave with your manifests', href: '/product/open-source' },
 ];
 
@@ -63,7 +63,7 @@ export const menuDistributions: MenuItem[] = [
 // compares Planton with what a reader already runs. The header's Explore
 // column and the footer's Explore group both read this list.
 export const menuExplore: MenuItem[] = [
-  { label: 'All Product', href: '/product' },
+  { label: 'Product Overview', href: '/product' },
   { label: 'Distributions', href: '/distributions' },
   { label: 'Solutions', href: '/solutions' },
   { label: 'How Planton Compares', href: '/compare' },

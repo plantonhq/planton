@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, Paper, Stack, Typography } from '@mui/material';
+import { Menu, Stack, Typography } from '@mui/material';
 import { NavigateNext, KeyboardArrowDown } from '@mui/icons-material';
 import { MegaMenuItem } from './MegaMenuItem';
 import type { MenuSection, MenuItem } from '../../data/navigation';
@@ -13,7 +13,9 @@ interface MegaMenuProps {
   leftMenu: MenuSection[];
   rightMenu?: MenuSection[];
   footerMenu?: MenuItem;
+  /** Column widths in px. A column with sub-labels beside icons needs about 240 for a sub-label to hold to two lines. */
   leftWidth?: number;
+  rightWidth?: number;
 }
 
 export function MegaMenu({
@@ -22,6 +24,7 @@ export function MegaMenu({
   rightMenu,
   footerMenu,
   leftWidth = 270,
+  rightWidth = 170,
 }: MegaMenuProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -33,6 +36,7 @@ export function MegaMenu({
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const rightHasMarks = Boolean(rightMenu?.some((section) => section.items.some((item) => item.icon)));
 
   return (
     <>
@@ -62,6 +66,8 @@ export function MegaMenu({
           sx={{
             fontSize: '20px !important',
             fontVariationSettings: "'FILL' 1, 'wght' 500, 'GRAD' 200, 'opsz' 48",
+            // The open menu's trigger is the one whose caret points up.
+            transform: open ? 'rotate(180deg)' : 'none',
           }}
         />
       </Stack>
@@ -72,27 +78,26 @@ export function MegaMenu({
         onClose={handleClose}
         MenuListProps={{ sx: { padding: 0 } }}
         slotProps={{
+          // One frame: the menu's own paper carries the fill, the border, the
+          // radius, and the shadow, so there is one edge and one corner. The
+          // border is an inline style, not sx: the website's Tailwind preflight
+          // zeroes every border with an unlayered rule that beats MUI's layered
+          // styles, and an inline style is the one declaration that beats both
+          // (the same reason the shell's colors are inline where a host's CSS
+          // would otherwise win).
           paper: {
+            style: { border: `1px solid ${tokens.edge.hover}` },
             sx: {
               mt: 1.5,
-              backgroundColor: 'transparent',
+              backgroundColor: tokens.surface.raised,
               backgroundImage: 'none',
-              boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 8px 30px rgba(0,0,0,0.5)',
+              borderRadius: 3,
+              boxShadow: '0 8px 30px rgba(0,0,0,0.5)',
             },
           },
         }}
       >
-        <Stack
-          component={Paper}
-          onClick={handleClose}
-          sx={{
-            gap: 2,
-            justifyContent: 'space-between',
-            borderRadius: 3,
-            bgcolor: tokens.surface.raised,
-            border: `1px solid ${tokens.edge.hover}`,
-          }}
-        >
+        <Stack onClick={handleClose} sx={{ gap: 2, justifyContent: 'space-between' }}>
           <Stack direction="row" sx={{ p: 2.5 }}>
             <Stack sx={{ width: leftWidth, mr: 2 }}>
               {leftMenu.map((section, index) => (
@@ -120,7 +125,8 @@ export function MegaMenu({
             </Stack>
 
             {rightMenu && (
-              <Stack sx={{ width: 170, pl: 2, borderLeft: `1px solid ${tokens.edge.hover}` }}>
+              <Stack sx={{ width: rightWidth, pl: 2 }} style={{ borderLeft: `1px solid ${tokens.edge.hover}` }}>
+                {/* A column is one list of links; an entry without a mark keeps the mark's width so every label shares one edge. */}
                 {rightMenu.map((section, index) => (
                   <Stack key={index} sx={{ mb: 3, '&:last-child': { mb: 0 } }}>
                     {section.title && (
@@ -138,7 +144,7 @@ export function MegaMenu({
                     )}
                     <Stack gap={section.title ? 0.5 : 1}>
                       {section.items.map((item) => (
-                        <MegaMenuItem key={item.label} {...item} />
+                        <MegaMenuItem key={item.label} {...item} alignWithMarks={rightHasMarks} />
                       ))}
                     </Stack>
                   </Stack>
@@ -161,8 +167,8 @@ export function MegaMenu({
                   '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
                   transition: 'background-color 150ms ease',
                   borderRadius: '0 0 12px 12px',
-                  borderTop: `1px solid ${tokens.edge.hover}`,
                 }}
+                style={{ borderTop: `1px solid ${tokens.edge.hover}` }}
               >
                 <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: tokens.text.secondary }}>
                   {footerMenu.label}

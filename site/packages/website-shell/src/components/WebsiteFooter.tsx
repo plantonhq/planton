@@ -67,7 +67,7 @@ export function WebsiteFooter() {
               .filter((g) => ['product', 'explore'].includes(g.id))
               .map((group, index) => (
                 <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && <Divider sx={{ borderColor: tokens.edge.default }} />}
+                  {index !== 0 && <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />}
                   <FooterLinkGroup {...group} />
                 </Stack>
               ))}
@@ -77,7 +77,7 @@ export function WebsiteFooter() {
               .filter((g) => ['open_source', 'get_started'].includes(g.id))
               .map((group, index) => (
                 <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && <Divider sx={{ borderColor: tokens.edge.default }} />}
+                  {index !== 0 && <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />}
                   <FooterLinkGroup {...group} />
                 </Stack>
               ))}
@@ -106,7 +106,7 @@ export function WebsiteFooter() {
         </Box>
       </Stack>
 
-      <Divider sx={{ borderColor: tokens.edge.default }} />
+      <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />
 
       {/* Bottom bar: terms + copyright */}
       <Stack

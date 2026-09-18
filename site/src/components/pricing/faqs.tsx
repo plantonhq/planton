@@ -206,8 +206,10 @@ export const Faqs: FC = () => {
                   key={index}
                   expanded={expanded === index}
                   onChange={handleChange(index)}
-                  variant="outlined"
-                  className="bg-inherit before:content-none after:content-[''] after:block after:border-t after:border-[1px] after:border-solid after:border-[#373737]"
+                  // One hairline under each question, drawn once: MUI's own top
+                  // divider (the ::before) is hidden and its outlined frame not
+                  // used, so the row has exactly one rule on the palette's edge.
+                  className="bg-inherit rounded-none shadow-none border-b border-edge before:hidden"
                 >
                   <AccordionSummary className="px-0">
                     <Stack className="flex flex-row gap-2">

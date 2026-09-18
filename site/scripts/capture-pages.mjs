@@ -92,7 +92,9 @@ const UA = {
  * One row per scene. `expectTab` is the platform tab the page must have
  * selected on load (asserted); `og` marks a 1200x630 first-screen capture
  * that is also the page's Open Graph image when --publish-og is given;
- * `ogTitleSize` overrides the poster's headline size for a long headline.
+ * `ogTitleSize` overrides the poster's headline size for a long headline;
+ * `open` is a selector clicked after load, in real time, so a menu or a
+ * drawer is captured open (with `viewportOnly` and a `height`).
  */
 const SCENES = [
   // The marketing pages a "zero visual change" commit is proven against: the
@@ -102,6 +104,9 @@ const SCENES = [
   { name: 'landing-1680', route: '/', width: 1680, ua: UA.mac },
   { name: 'landing-1280', route: '/', width: 1280, ua: UA.mac },
   { name: 'landing-phone', route: '/', width: 390, ua: UA.iphone },
+  // The header's Product mega-menu open: the one place the shell's menu data
+  // is seen, and the only way a menu change is graded rather than eyeballed.
+  { name: 'menu-product-1280', route: '/', width: 1280, height: 800, ua: UA.mac, viewportOnly: true, open: '[aria-haspopup="true"]' },
   { name: 'product-1280', route: '/product', width: 1280, ua: UA.mac },
   { name: 'infra-hub-1680', route: '/product/infra-hub', width: 1680, ua: UA.mac },
   { name: 'infra-hub-1280', route: '/product/infra-hub', width: 1280, ua: UA.mac },
@@ -305,11 +310,18 @@ async function capture(browser, base, scene) {
     { name: 'prefers-reduced-motion', value: 'reduce' },
   ]);
   await page.goto(base + scene.route, { waitUntil: 'networkidle0', timeout: 45000 });
-  // CSS keyframe animations run on the compositor thread and ignore the virtual
-  // clock (a pulsing cursor was the one moving pixel between two identical
-  // builds). Stop them at their resting value; JS-driven motion still runs
-  // under virtual time and settles deterministically.
-  await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; }' });
+  // CSS keyframe animations and transitions run on the compositor thread and
+  // ignore the virtual clock (a pulsing cursor was the one moving pixel between
+  // two identical builds; a menu's opening is a transition). Stop both at their
+  // resting value; JS-driven motion still runs under virtual time and settles
+  // deterministically.
+  await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; transition: none !important; }' });
+  if (scene.open) {
+    // Open a menu or drawer in real time, before the clock starts, and wait
+    // for its panel to be in the document; the frozen clock then holds it open.
+    await page.click(scene.open);
+    await page.waitForSelector('[role="menu"], [role="dialog"], .MuiDrawer-paper', { visible: true, timeout: 5000 });
+  }
   // Full-page screenshots reveal the whole document at once, which fires every
   // scroll-triggered entrance mid-frame. Walk the page first (real time) so
   // those observers fire in order, then let virtual time finish what they

@@ -31,9 +31,11 @@ export function DesktopNav() {
         leftMenu={[{ items: withIcons(menuProduct, productIcons) }]}
         rightMenu={[
           { title: 'Distributions', items: withIcons(menuDistributions, distributionIcons) },
-          { title: 'Explore', items: menuExplore },
+          // The Distributions section is listed above this column, so its index is not repeated here; the footer's Explore group keeps it.
+          { title: 'Explore', items: menuExplore.filter((item) => item.href !== '/distributions') },
         ]}
         leftWidth={320}
+        rightWidth={240}
       />
       <MegaMenu
         title="Solutions"
