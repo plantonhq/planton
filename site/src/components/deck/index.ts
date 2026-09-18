@@ -9,4 +9,5 @@
 export { Deck } from './Deck';
 export type { DeckProps, SlideConfig, SlideComponentProps } from './Deck';
 export { bindSlide } from './bind-slide';
+export { SlideFrame } from './slide-frame';
 export * from './primitives';

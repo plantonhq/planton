@@ -13,6 +13,7 @@
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.
  */
+import type { RecordArtifact } from './page-shapes.ts';
 import { chapter, type ChapterId } from './story.ts';
 
 export interface TrustPoint {
@@ -20,12 +21,6 @@ export interface TrustPoint {
   label: string;
   /** The chapter's sentence. */
   text: string;
-}
-
-export interface TrustArtifact {
-  title: string;
-  rows: readonly { label: string; value: string }[];
-  footer: string;
 }
 
 export interface TrustPage {
@@ -43,7 +38,7 @@ export interface TrustPage {
   forWhom: string;
   points: readonly TrustPoint[];
   /** The proof beside the claims: what the product shows, as a record of labeled facts. */
-  artifact: TrustArtifact;
+  artifact: RecordArtifact;
   /** Sentence case; the honesty statements this page makes about its own words. */
   honesty: readonly string[];
   /** The two sibling Trust pages to read next, always within the section; their titles come from the registry. */
@@ -75,6 +70,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       'Planton does not tell you what you will save. It tells you what this will cost before it exists.',
     ],
     artifact: {
+      kind: 'record',
       title: 'Before deploy',
       rows: [
         { label: 'verified cost', value: `~$172/mo est.${'\u00a0\u00b7\u00a0'}5 of 6 components priced, 1 usage-based` },
@@ -108,6 +104,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       'A pause is a pause for a person. Nothing here approves itself.',
     ],
     artifact: {
+      kind: 'record',
       title: 'Deploy paused',
       rows: [
         { label: 'requested by', value: 'coding agent, on behalf of s.rao' },
@@ -141,6 +138,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       'This page states no retention period, because the platform does not publish one: every job is kept and queryable today, and a retention policy is not a setting you can change.',
     ],
     artifact: {
+      kind: 'record',
       title: 'Deploy record',
       rows: [
         { label: 'deploy', value: 'production environment \u00b7 prod \u00b7 succeeded' },
@@ -172,6 +170,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       { label: 'Least-Privilege Runners', text: 'The deploy runs under an identity built from the component kind\u2019s own permissions file: exactly the actions that kind needs to create and manage itself, and nothing else.' },
     ],
     artifact: {
+      kind: 'record',
       title: 'Control profile \u00b7 S3 bucket',
       rows: [
         { label: 'encryption at rest', value: 'enforced \u00b7 every new object is encrypted at rest by default; an unencrypted object is not representable' },
@@ -208,6 +207,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       { label: 'Hosted, Self-Hosted, or Desktop: One Model', text: runs.proof[3] },
     ],
     artifact: {
+      kind: 'record',
       title: 'Connection \u00b7 AWS production',
       rows: [
         { label: 'mode', value: 'keyless' },

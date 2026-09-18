@@ -9,9 +9,7 @@ import {
   menuProduct,
   menuDistributions,
   menuExplorer,
-  menuByUseCases,
-  menuBySize,
-  menuByRole,
+  menuSolutions,
   menuResources,
 } from '../../data/navigation';
 
@@ -38,11 +36,7 @@ export function DesktopNav() {
       />
       <MegaMenu
         title="Solutions"
-        leftMenu={[
-          { title: 'By Use Case', items: menuByUseCases },
-          { title: 'By Size', items: menuBySize },
-        ]}
-        rightMenu={[{ title: 'By Role', items: menuByRole }]}
+        leftMenu={[{ items: menuSolutions }]}
         footerMenu={{ label: 'View all Solutions', href: '/solutions' }}
       />
       <MegaMenu

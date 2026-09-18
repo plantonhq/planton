@@ -128,7 +128,25 @@ function pageMarkdown(page, story, personas, stats, site, product, distributions
       lines.push('');
     }
   }
-  if (page.group === 'solutions') {
+  // A persona page states the story through one person's framing: the agent
+  // reads that person's record, not all five. The Solutions index names the
+  // five people.
+  const persona = personas.find((p) => `/solutions/${p.slug}` === page.path);
+  if (persona) {
+    lines.push(`## ${persona.headline}`, '', `**Who.** ${persona.who}`, '', `**The wall.** ${persona.wall}`, '');
+    lines.push('## What decides it', '');
+    for (const point of persona.decidingProof) lines.push(`- **${point.label}.** ${point.text}`);
+    lines.push('', '## The story, in this order', '');
+    for (const beat of persona.beats) {
+      const c = story.chapter(beat.chapter);
+      lines.push(`### ${c.title}`, '', beat.angle, '');
+      for (const i of beat.proof) lines.push(`- ${c.proof[i]}`);
+      lines.push('');
+    }
+    lines.push('## You will ask', '');
+    for (const o of persona.objections) lines.push(`- **${o.question}** ${o.answer}`);
+    lines.push('');
+  } else if (page.group === 'solutions') {
     lines.push('## Who Planton is for', '');
     for (const p of personas) lines.push(`- **${p.name}.** ${p.who} ${p.wall}`);
     lines.push('');

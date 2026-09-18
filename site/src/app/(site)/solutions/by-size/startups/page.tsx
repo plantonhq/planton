@@ -1,8 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import StartupsPage from '@/components/product/solutions/startups';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/solutions/by-size/startups');
+export const metadata = retiredRouteMetadata('/solutions/by-size/startups');
 
 export default function Page() {
-  return <StartupsPage />;
+  return <RetiredRoute from="/solutions/by-size/startups" />;
 }

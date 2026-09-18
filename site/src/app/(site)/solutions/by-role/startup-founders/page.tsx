@@ -1,12 +1,8 @@
-import { Metadata } from 'next';
-import StartupFoundersPage from '@/components/product/solutions/startup-founders';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata: Metadata = {
-  title: 'For Startup Founders | Planton',
-  description:
-    "Your CTO's first infrastructure decision. Production in an afternoon, free tier, no lock-in.",
-};
+export const metadata = retiredRouteMetadata('/solutions/by-role/startup-founders');
 
 export default function Page() {
-  return <StartupFoundersPage />;
+  return <RetiredRoute from="/solutions/by-role/startup-founders" />;
 }

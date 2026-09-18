@@ -6,10 +6,10 @@ import {
   Card,
   Doors,
   Grid,
+  PageArtifact,
   PageCard,
   PageHero,
   ProofList,
-  RecordWindow,
   Section,
   SectionSubtitle,
   SectionTitle,
@@ -50,7 +50,7 @@ export const TrustPage: FC<{ path: string }> = ({ path }) => {
             </Link>
           </Box>
           <Box className="lg:col-span-7">
-            <RecordWindow title={record.artifact.title} rows={record.artifact.rows} footer={record.artifact.footer} />
+            <PageArtifact artifact={record.artifact} />
           </Box>
         </Box>
       </Section>

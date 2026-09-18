@@ -96,8 +96,9 @@ const UA = {
  */
 const SCENES = [
   // The marketing pages a "zero visual change" commit is proven against: the
-  // landing page, one product page, one solutions page, pricing, and the four
-  // meeting decks that ride the deck engine. Two review widths each.
+  // landing page, the Product, Distributions, Trust, and Solutions groups,
+  // pricing, and the decks that ride the deck engine. Two review widths for
+  // a group's first page, one for its siblings.
   { name: 'landing-1680', route: '/', width: 1680, ua: UA.mac },
   { name: 'landing-1280', route: '/', width: 1280, ua: UA.mac },
   { name: 'landing-phone', route: '/', width: 390, ua: UA.iphone },
@@ -114,8 +115,26 @@ const SCENES = [
   { name: 'hosted-1680', route: '/distributions/hosted', width: 1680, ua: UA.mac },
   { name: 'hosted-1280', route: '/distributions/hosted', width: 1280, ua: UA.mac },
   { name: 'self-hosted-1280', route: '/distributions/self-hosted', width: 1280, ua: UA.mac },
-  { name: 'platform-engineers-1680', route: '/solutions/by-role/platform-engineers', width: 1680, ua: UA.mac },
-  { name: 'platform-engineers-1280', route: '/solutions/by-role/platform-engineers', width: 1280, ua: UA.mac },
+  { name: 'solutions-1680', route: '/solutions', width: 1680, ua: UA.mac },
+  { name: 'solutions-1280', route: '/solutions', width: 1280, ua: UA.mac },
+  { name: 'platform-engineer-1680', route: '/solutions/platform-engineer', width: 1680, ua: UA.mac },
+  { name: 'platform-engineer-1280', route: '/solutions/platform-engineer', width: 1280, ua: UA.mac },
+  { name: 'platform-engineer-phone', route: '/solutions/platform-engineer', width: 390, ua: UA.iphone },
+  { name: 'engineering-leader-1680', route: '/solutions/engineering-leader', width: 1680, ua: UA.mac },
+  { name: 'engineering-leader-1280', route: '/solutions/engineering-leader', width: 1280, ua: UA.mac },
+  { name: 'it-consultancy-1280', route: '/solutions/it-consultancy', width: 1280, ua: UA.mac },
+  { name: 'startup-founder-1280', route: '/solutions/startup-founder', width: 1280, ua: UA.mac },
+  { name: 'security-leader-1280', route: '/solutions/security-and-governance-leader', width: 1280, ua: UA.mac },
+  // The persona decks: each cover, and the roadmap slide of one deck by its
+  // hash so the disclosure line is in a capture. The engine reads the hash
+  // on load, inside the virtual clock.
+  { name: 'deck-platform-engineer-1280', route: '/decks/platform-engineer', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-platform-engineer-rules-1280', route: '/decks/platform-engineer#your-rules-hold', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-platform-engineer-next-1280', route: '/decks/platform-engineer#what-is-next', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-engineering-leader-1280', route: '/decks/engineering-leader', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-it-consultancy-1280', route: '/decks/it-consultancy', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-startup-founder-1280', route: '/decks/startup-founder', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
+  { name: 'deck-security-leader-1280', route: '/decks/security-and-governance-leader', width: 1280, height: 800, ua: UA.mac, viewportOnly: true },
   { name: 'pricing-1680', route: '/pricing', width: 1680, ua: UA.mac },
   { name: 'pricing-1280', route: '/pricing', width: 1280, ua: UA.mac },
   { name: 'trust-1680', route: '/trust', width: 1680, ua: UA.mac },

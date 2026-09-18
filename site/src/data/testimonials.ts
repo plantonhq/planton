@@ -50,3 +50,10 @@ export const TESTIMONIALS: readonly Testimonial[] = [
       "The dot-env file generation for services feature in Planton's ServiceHub been super helpful for me. I can now update service configurations without having to ping Balaji every time. Even better, creating new services and deploying them to dev, staging, or prod is completely self-service. I don't need to wait for DevOps anymore.",
   },
 ] as const;
+
+/** Look up a quote by the person's name; throws at build time if a page names someone who is not on record. */
+export function testimonial(name: string): Testimonial {
+  const found = TESTIMONIALS.find((t) => t.name === name);
+  if (!found) throw new Error(`no testimonial on record from "${name}"`);
+  return found;
+}

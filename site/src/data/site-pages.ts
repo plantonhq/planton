@@ -228,18 +228,15 @@ export const SITE_PAGES: readonly SitePage[] = [
   { path: '/features/desktop', title: 'Planton Desktop', description: 'The whole platform on your laptop, deploying to your own cloud with the sign-ins already on your machine. No account. Free for individuals, commercial use too.', group: 'distributions', chapters: ['runs-where-you-decide', 'the-wall'] },
   { path: '/features/desktop/download', title: 'Download Planton Desktop', description: 'Install Planton Desktop for macOS, Windows, or Linux. Free for individuals, including commercial use.', group: 'distributions', chapters: ['start'] },
 
-  // Solutions (today's routes; the persona rebuild replaces them with five pages from personas.ts)
-  { path: '/solutions', title: 'Solutions', description: 'How Planton serves platform engineers, engineering leaders, consultancies, founders, and security leaders.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-role/developers', title: 'For Developers', description: 'Deploy your code, not your weekend. Git-to-deploy, self-service infrastructure, without deep Kubernetes expertise.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-role/engineering-leader', title: 'For Engineering Leaders', description: 'Visibility without micromanagement. Audit trails, team autonomy with guardrails, and the proof of what was deployed.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-role/platform-engineers', title: 'For Platform Engineers', description: 'Build golden paths, not bottleneck queues. Define standards, govern credentials, and let developers self-serve.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-role/startup-founders', title: 'For Startup Founders', description: 'Ship production infrastructure without an ops hire, and redo nothing when you become a team.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-size/enterprises', title: 'Enterprises', description: 'Enterprise controls without enterprise friction. Runner security, honest control posture, multi-cloud governance.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-size/growing-teams', title: 'Growing Teams', description: 'Scale your infrastructure without scaling your ops team. Self-service, standards enforcement, and team visibility.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-size/startups', title: 'Startups', description: 'Ship production infrastructure without growing your ops team. Free tier, open-source foundation, no lock-in.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-use-case/internal-developer-platform', title: 'Internal Developer Platform', description: 'Build an IDP without building an IDP. Self-service infrastructure, managed CI/CD, access control, and AI assistance, out of the box.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-use-case/multi-cloud', title: 'Multi-Cloud', description: 'Same workflow, every cloud. One YAML manifest format, one CLI, one console, for AWS, GCP, Azure, and beyond.', group: 'solutions', chapters: ['who-it-is-for'] },
-  { path: '/solutions/by-use-case/self-hosted-devops', title: 'Self-Hosted DevOps', description: 'Enterprise security with SaaS convenience. Your credentials never leave your cloud boundary.', group: 'solutions', chapters: ['who-it-is-for'] },
+  // Solutions: chapter 9 as the index, then one page per persona. The five
+  // slugs are the personas' own (src/data/personas.ts); a page's chapters are
+  // its persona's beats, in that person's order.
+  { path: '/solutions', title: 'Solutions', description: 'Planton for the platform engineer who runs the platform, the leader who signs for it, the consultancy that delivers it, the founder who ships on it, and the security leader who governs it.', group: 'solutions', chapters: ['who-it-is-for'] },
+  { path: '/solutions/platform-engineer', title: 'Planton for Platform Engineers', description: 'Self-service your developers and their coding agents cannot break: rules written once, cost and permissions verified before anything exists, a record of every deploy.', group: 'solutions', chapters: ['your-rules-hold', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'what-planton-is', 'runs-where-you-decide', 'services-ship-from-git', 'bring-what-you-have'] },
+  { path: '/solutions/engineering-leader', title: 'Planton for Engineering Leaders', description: 'What your team deploys, proven before it exists: the cost, the rule that held, and the record, without a new team and without opening a console.', group: 'solutions', chapters: ['verified-before-it-exists', 'your-rules-hold', 'every-deployment-leaves-a-record', 'who-it-is-for', 'what-planton-is', 'runs-where-you-decide'] },
+  { path: '/solutions/it-consultancy', title: 'Planton for IT Consultancies', description: 'One organization per client, a client environment from a published template, and everything handed back as manifests when the engagement ends.', group: 'solutions', chapters: ['what-planton-is', 'runs-where-you-decide', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'services-ship-from-git'] },
+  { path: '/solutions/startup-founder', title: 'Planton for Startup Founders', description: 'Ship without an ops hire: push to deploy, the monthly cost before it exists, free to start, and nothing redone when you become a team.', group: 'solutions', chapters: ['what-planton-is', 'services-ship-from-git', 'verified-before-it-exists', 'runs-where-you-decide', 'every-deployment-leaves-a-record'] },
+  { path: '/solutions/security-and-governance-leader', title: 'Planton for Security and Governance Leaders', description: 'Rules that hold at the moment of creation, controls stated with evidence and never called compliant, and a record of every change; a complement to your posture tools.', group: 'solutions', chapters: ['your-rules-hold', 'verified-before-it-exists', 'every-deployment-leaves-a-record', 'how-it-compares', 'runs-where-you-decide', 'what-planton-is'] },
 
   // Pricing
   { path: '/pricing', title: 'Pricing', description: 'Plans for every stage, on planton.ai or your own infrastructure. A free tier that never bills, one team plan, and self-hosted licenses that verify offline.', group: 'pricing', chapters: ['start'] },
@@ -263,6 +260,16 @@ export const SITE_PAGES: readonly SitePage[] = [
   { path: '/tour', title: 'Tour', description: 'An interactive tour of Planton.', group: 'standalone', index: false },
   { path: '/demo', title: 'Interactive Demo', description: 'A guided walk through Planton.', group: 'standalone', index: false },
   { path: '/hackathon/mobile-vibe-2025', title: 'MobileVibe Hackathon 2025', description: 'A 2025 hackathon page.', group: 'standalone', index: false },
+
+  // The persona decks: the story told for one person, with presenter notes,
+  // at a stable address the founder pastes into a meeting invite. Registered
+  // so one helper gives each its title, canonical, and noindex; unindexed
+  // because a deck is opened by the person it was sent to, not found.
+  { path: '/decks/platform-engineer', title: 'The Planton Story for Platform Engineers', description: 'The Planton story told for platform engineers, with presenter notes under every slide.', group: 'standalone', index: false },
+  { path: '/decks/engineering-leader', title: 'The Planton Story for Engineering Leaders', description: 'The Planton story told for engineering leaders, with presenter notes under every slide.', group: 'standalone', index: false },
+  { path: '/decks/it-consultancy', title: 'The Planton Story for IT Consultancies', description: 'The Planton story told for IT consultancies, with presenter notes under every slide.', group: 'standalone', index: false },
+  { path: '/decks/startup-founder', title: 'The Planton Story for Startup Founders', description: 'The Planton story told for startup founders, with presenter notes under every slide.', group: 'standalone', index: false },
+  { path: '/decks/security-and-governance-leader', title: 'The Planton Story for Security and Governance Leaders', description: 'The Planton story told for security and governance leaders, with presenter notes under every slide.', group: 'standalone', index: false },
 ] as const;
 
 export function sitePage(path: string): SitePage {

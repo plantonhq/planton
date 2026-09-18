@@ -1,13 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { SelfHostedDevOps } from '@/components/product/solutions/self-hosted-devops';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/solutions/by-use-case/self-hosted-devops');
+export const metadata = retiredRouteMetadata('/solutions/by-use-case/self-hosted-devops');
 
-export default function SelfHostedDevOpsPage() {
-  return (
-    <Box>
-      <SelfHostedDevOps />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/solutions/by-use-case/self-hosted-devops" />;
 }

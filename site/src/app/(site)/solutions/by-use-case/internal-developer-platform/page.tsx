@@ -1,13 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import { Box } from '@mui/material';
-import { InternalDeveloperPlatform } from '@/components/product/solutions/internal-developer-platform';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/solutions/by-use-case/internal-developer-platform');
+export const metadata = retiredRouteMetadata('/solutions/by-use-case/internal-developer-platform');
 
-export default function InternalDeveloperPlatformPage() {
-  return (
-    <Box>
-      <InternalDeveloperPlatform />
-    </Box>
-  );
+export default function Page() {
+  return <RetiredRoute from="/solutions/by-use-case/internal-developer-platform" />;
 }

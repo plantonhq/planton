@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef, type ComponentType, type ReactNode } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Navigation } from './navigation';
 import { PresenterNotes } from './presenter-notes';
 
@@ -40,6 +40,11 @@ export interface DeckProps {
  */
 export function Deck({ slides, frame }: DeckProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  // A person who asked their system for less motion gets an instant slide
+  // change; so does the capture harness, which emulates that preference so a
+  // deep-linked slide reaches its resting frame instead of being caught
+  // mid cross-fade.
+  const reduceMotion = useReducedMotion();
   const [notesVisible, setNotesVisible] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
@@ -210,10 +215,10 @@ export function Deck({ slides, frame }: DeckProps) {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide.id}
-            initial={{ opacity: 0, x: 50 }}
+            initial={reduceMotion ? false : { opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
+            exit={reduceMotion ? undefined : { opacity: 0, x: -50 }}
+            transition={{ duration: reduceMotion ? 0 : 0.3 }}
             className="w-full h-full"
           >
             <CurrentSlideComponent notesVisible={notesVisible} />

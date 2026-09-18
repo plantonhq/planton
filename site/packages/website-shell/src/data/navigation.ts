@@ -57,23 +57,16 @@ export const menuExplorer: MenuItem[] = [
 // Header — Solutions mega-menu
 // ---------------------------------------------------------------------------
 
-export const menuByUseCases: MenuItem[] = [
-  { label: 'Internal Developer Platform', href: '/solutions/by-use-case/internal-developer-platform' },
-  { label: 'Multi-Cloud', href: '/solutions/by-use-case/multi-cloud' },
-  { label: 'Self-Hosted DevOps', href: '/solutions/by-use-case/self-hosted-devops' },
-];
-
-export const menuBySize: MenuItem[] = [
-  { label: 'Startups', href: '/solutions/by-size/startups' },
-  { label: 'Growing Teams', href: '/solutions/by-size/growing-teams' },
-  { label: 'Enterprises', href: '/solutions/by-size/enterprises' },
-];
-
-export const menuByRole: MenuItem[] = [
-  { label: 'Developer', href: '/solutions/by-role/developers' },
-  { label: 'Platform Engineer', href: '/solutions/by-role/platform-engineers' },
-  { label: 'Startup Founder', href: '/solutions/by-role/startup-founders' },
-  { label: 'Engineering Leader', href: '/solutions/by-role/engineering-leader' },
+// The five people the story is told to, one page each, in the story's own
+// order (the user first, then the one who signs). The labels are the persona
+// names exactly as the site's persona records spell them; a person's name
+// needs no sub-label and no icon.
+export const menuSolutions: MenuItem[] = [
+  { label: 'Platform Engineer', href: '/solutions/platform-engineer' },
+  { label: 'Engineering Leader', href: '/solutions/engineering-leader' },
+  { label: 'IT Consultancy', href: '/solutions/it-consultancy' },
+  { label: 'Startup Founder', href: '/solutions/startup-founder' },
+  { label: 'Security and Governance Leader', href: '/solutions/security-and-governance-leader' },
 ];
 
 // ---------------------------------------------------------------------------

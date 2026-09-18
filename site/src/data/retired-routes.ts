@@ -45,7 +45,22 @@ export const RETIRED_ROUTES: readonly RetiredRoute[] = [
   { from: '/agents', to: '/product/coding-agents', reason: 'the agents page became the coding-agents product page' },
   { from: '/cli', to: '/product/cli', reason: 'the CLI page lives under the product group' },
   { from: '/docs/infrastructure/openmcf', to: '/docs/infrastructure/open-source', reason: 'the docs page was renamed' },
-  { from: '/solutions/by-role/devops', to: '/solutions/by-role/platform-engineers', reason: 'the DevOps persona became the platform engineer' },
+  // The Solutions section became five persona pages. Each old page forwards
+  // to the person who would have read it; the ones that were about a shape
+  // or a product go where that subject lives. Developers go to the coding
+  // agents page: the developer's door in 2026 is the agent, and the story
+  // never headlines "built for developers".
+  { from: '/solutions/by-role/devops', to: '/solutions/platform-engineer', reason: 'the DevOps persona became the platform engineer' },
+  { from: '/solutions/by-role/platform-engineers', to: '/solutions/platform-engineer', reason: 'the persona page replaced the role page' },
+  { from: '/solutions/by-use-case/internal-developer-platform', to: '/solutions/platform-engineer', reason: 'the platform engineer builds the platform' },
+  { from: '/solutions/by-role/engineering-leader', to: '/solutions/engineering-leader', reason: 'the persona page replaced the role page' },
+  { from: '/solutions/by-size/growing-teams', to: '/solutions/engineering-leader', reason: 'the page argued no new team; that is the leader\u2019s chapter' },
+  { from: '/solutions/by-size/enterprises', to: '/solutions/security-and-governance-leader', reason: 'the page was about security posture' },
+  { from: '/solutions/by-role/startup-founders', to: '/solutions/startup-founder', reason: 'the persona page replaced the role page' },
+  { from: '/solutions/by-size/startups', to: '/solutions/startup-founder', reason: 'a startup is its founder\u2019s page' },
+  { from: '/solutions/by-use-case/multi-cloud', to: '/solutions/it-consultancy', reason: 'many clouds is the consultancy\u2019s wall' },
+  { from: '/solutions/by-use-case/self-hosted-devops', to: '/distributions/self-hosted', reason: 'a distribution, not a persona' },
+  { from: '/solutions/by-role/developers', to: '/product/coding-agents', reason: 'the developer\u2019s door is the agent' },
   { from: '/solutions/by-use-case/chat-ops', to: '/solutions', reason: 'a retired concept page' },
   { from: '/enterprise', to: '/pricing/enterprise', reason: 'enterprise pricing lives under pricing' },
 ] as const;

@@ -22,3 +22,18 @@ export const ProofList: FC<{ items: readonly ProofItem[]; className?: string }> 
     ))}
   </Box>
 );
+
+/**
+ * The same list without labels: a chapter's proof sentences as the story
+ * states them, for a page that shows a chapter through someone else's angle
+ * (a persona's beat) and has no label to add.
+ */
+export const ProofSentences: FC<{ items: readonly string[]; className?: string }> = ({ items, className = '' }) => (
+  <Box className={`flex flex-col gap-3 mt-2 ${className}`}>
+    {items.map((text) => (
+      <Box key={text} className="border-l-2 border-edge-hover pl-4">
+        <BodyText>{text}</BodyText>
+      </Box>
+    ))}
+  </Box>
+);

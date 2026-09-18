@@ -16,9 +16,7 @@ import {
   menuProduct,
   menuDistributions,
   menuExplorer,
-  menuByUseCases,
-  menuBySize,
-  menuByRole,
+  menuSolutions,
   menuResources,
 } from '../../data/navigation';
 
@@ -89,28 +87,11 @@ export function MobileNav() {
               title="Solutions"
               onChange={handlePanelChange('solutions')}
             >
-              <Stack sx={{ gap: 3 }}>
-                <Stack sx={{ gap: 2 }}>
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 400 }}>By Use Case</Typography>
-                  {menuByUseCases.map((item) => (
-                    <MegaMenuItem key={item.label} {...item} />
-                  ))}
-                  <Divider sx={{ ...dividerSx, mt: -0.5 }} />
-                </Stack>
-                <Stack sx={{ gap: 2 }}>
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 400 }}>By Size</Typography>
-                  {menuBySize.map((item) => (
-                    <MegaMenuItem key={item.label} {...item} />
-                  ))}
-                  <Divider sx={{ ...dividerSx, mt: -0.5 }} />
-                </Stack>
-                <Stack sx={{ gap: 2 }}>
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 400 }}>By Role</Typography>
-                  {menuByRole.map((item) => (
-                    <MegaMenuItem key={item.label} {...item} />
-                  ))}
-                  <Divider sx={{ ...dividerSx, mt: -0.5 }} />
-                </Stack>
+              <Stack sx={{ gap: 2 }}>
+                {menuSolutions.map((item) => (
+                  <MegaMenuItem key={item.label} {...item} />
+                ))}
+                <Divider sx={{ ...dividerSx, mt: -0.5 }} />
               </Stack>
             </MenuAccordion>
 

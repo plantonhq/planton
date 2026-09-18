@@ -1,8 +1,8 @@
-import { pageMetadata } from '@/lib/page-metadata';
-import PlatformEngineersPage from '@/components/product/solutions/platform-engineers';
+import { RetiredRoute } from '@/components/site/RetiredRoute';
+import { retiredRouteMetadata } from '@/lib/page-metadata';
 
-export const metadata = pageMetadata('/solutions/by-role/platform-engineers');
+export const metadata = retiredRouteMetadata('/solutions/by-role/platform-engineers');
 
 export default function Page() {
-  return <PlatformEngineersPage />;
+  return <RetiredRoute from="/solutions/by-role/platform-engineers" />;
 }

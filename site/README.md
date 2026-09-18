@@ -45,7 +45,8 @@ The site is data first. Every sentence that states what Planton is or does lives
 |------|-------|---------|
 | `src/data/story.ts` | The thirteen chapters of the Planton story: claim, proof, never-say. Mirrors `company/marketing/positioning/the-planton-story.md` in the company repository. | the landing page, the Trust pages, `llms.txt` |
 | `src/data/positioning.ts` | The vocabulary law: the umbrella tagline (never an analogy) and each hub's one line and one analogy. | `story.ts`, the hero, the hub cards |
-| `src/data/personas.ts` | The five people the story is told to, with their chapter order. | the persona router and cards; the persona pages and decks when they land |
+| `src/data/personas.ts` | The five people the story is told to: headline, wall, deciding proof, the chapters in their order and at their weight, objections, quotes by name, doors by key. | `src/components/solutions/PersonaPage.tsx`, `src/components/decks/`, the landing's persona router and cards, `llms.txt` |
+| `src/data/artifacts.ts` | The proof a page shows, found by the page's path, so a persona beat shows the record its proving page shows. | `PersonaPage`, the persona decks |
 | `src/data/trust.ts` | The five Trust pages: lede, proof points, the illustrated record, the honesty statements, the sibling pages. | `src/components/trust/TrustPage.tsx` |
 | `src/data/product.ts` | The seven Product pages: lede, how it works, proof points, the record or the commands, the Trust pages that prove them, the siblings. | `src/components/product/ProductPage.tsx` |
 | `src/data/distributions.ts` | The hosted and self-hosted pages: lede, proof points, the record or the install, what stays yours. | `src/components/distributions/DistributionPage.tsx` |
@@ -55,15 +56,15 @@ The site is data first. Every sentence that states what Planton is or does lives
 | `src/data/retired-routes.ts` | Every retired path and the page that answers for it. | `RetiredRoute`, the link gate, the edge redirect declared in the estate |
 | `src/data/pricing.ts` | Every price, cap, and free tier. | the pricing page and any sentence that names a price |
 | `src/data/platform-stats.ts` | The counts a page prints, with how each was counted. | the proof strip, `llms.txt` |
-| `src/data/testimonials.ts` | Customer quotes, verbatim, attributed, with approval on record. | the proof section |
+| `src/data/testimonials.ts` | Customer quotes, verbatim, attributed, with approval on record; `testimonial(name)` throws on a name not on record. | the proof section, the persona pages and decks |
 
 Data files import each other with `.ts` extensions so Node can run them directly (the generators do); `tsconfig.json` allows it.
 
-Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
+Components come from one library, `src/components/marketing/`, on the palette's role classes (`bg-canvas`, `bg-card`, `text-fg-secondary`, `border-edge`, `text-ok`). The library holds the primitives (card, badge, buttons, record window) and the page sections every story page composes (`PageHero`, `ProofList`, `PageCard`, `PageArtifact`, `Doors`, `CommandBlock`, `ProviderStrip`, `ChapterSection`, `PlatformCounts`, `PersonaCard`); a page template is a thin composition of those in its reader's order and states nothing. The palette is defined once in `packages/website-shell/src/theme/tokens.ts` and projected into the MUI theme and Tailwind; a component never types a hex. The published law is `public/branding/design-system.md`.
 
 The landing page is versioned: `src/components/landing-page/v<N>-<date>/` holds only that version's section composition; `src/components/landing-page/index.ts` points at the active one and is the rollback switch. Nothing outside a versioned folder imports from inside one.
 
-Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touch, presenter notes, the slide kit). Meeting decks compose it from `src/components/meetings/`; persona decks will sit beside them.
+Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touch, presenter notes). Meeting decks are hand-written slides on the engine's older slide kit, filed under `src/components/meetings/`. Persona decks are data: `src/components/decks/registry.ts` builds each persona's slides once from its record with `bindSlide`, six generic slides in `slides.tsx` compose the marketing primitives inside the engine's palette-native `SlideFrame`, and the presenter notes are derived (the chapter's claim to say, the proof on the slide, the chapter's never-say list as what not to say). A chapter edit in `story.ts` changes five pages, five decks, and what the presenter is told to say, in one commit. The roadmap chapter renders only on the deck's `What Is Next` slide, with its disclosure line beside it.
 
 ## The laws
 
@@ -86,10 +87,12 @@ src/app/robots.ts        generated
 src/components/marketing/   the primitive library
 src/components/landing-page/ the versioned landing compositions
 src/components/trust/    the Trust template and index
-src/components/product/  the Product template and index (and, until the Solutions pages are rebuilt, the 2025 solutions and desktop kits)
+src/components/product/  the Product template and index (and, until the desktop landing is rebuilt, the 2025 desktop kit)
+src/components/solutions/ the persona page template and the Solutions index
 src/components/distributions/ the Distributions template and index
-src/components/deck/     the deck engine and slide kit
+src/components/deck/     the deck engine, bindSlide, the palette-native slide frame, and the meeting decks' older slide kit
 src/components/meetings/ meeting decks and their registry
+src/components/decks/    the persona decks: six generic slides and the registry that binds each persona's record to them
 src/components/site/     site mechanics (RetiredRoute)
 src/data/                every claim, price, count, route
 src/lib/                 page-metadata, content-routes, assets, console-handoff
@@ -131,10 +134,12 @@ What a day-one architect would not have done, and which work retires it. Nothing
 
 | Legacy | Where | Retired by |
 |--------|-------|-----------|
-| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `components/product/solutions`, `components/product/shared`, `components/product/desktop`, `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest`, `demo`, `tour`, `hackathon` | each page group as it is rebuilt from the story |
+| Hex literals in components; MUI icons beside lucide; `'use client'` on components with no hooks | `components/product/shared`, `components/product/desktop`, `pricing`, `enterprise`, `blog`, `docs`, `tutorials`, `changelog`, `common`, `book-demo`, `legal`, `branding`, `invest`, `demo`, `tour`, `hackathon` | each page group as it is rebuilt from the story |
 | Two landing versions kept for rollback (`v3`, `v4`) and the 2025 primitives (`v1`) used by the hackathon pages | `components/landing-page/` | v3 and v4 after v5 has held for one release; v1 with the hackathon's retirement |
 | The interactive demo and the tour, on a light palette | `components/demo`, `components/tour` | a product decision: one surface on the design system, or real product recordings |
 | The investor deck and explainer on their own primitive set | `components/invest` | invest onto the deck engine |
+| The meeting decks' slide kit types its own colors and gradients (`deck/primitives.tsx`, `meets/meets.css`) | `components/deck/primitives.tsx`, `app/(standalone)/meets/meets.css` | the meeting decks' convergence onto `SlideFrame` and the marketing primitives, the way the persona decks already compose them |
+| The copywriting rules describe copy as React component updates, the pattern retired when the story became data | `content/copywriting/_rules/`, `content/copywriting/_stage-area/README.md` | the navigation-and-health slice: repoint both to `src/data/` and the capture harness as the preview |
 | Images under `public/_site/` instead of the asset CDN; 136 literal `/_site/` paths | `public/_site/images`, `src/**` | images to R2 as pages are rebuilt; `lib/assets.ts` names the prefix once |
 | The `/_site` asset prefix and the post-build copy of the bundle | `next.config.ts`, `Makefile` | the apex routing decision |
 | Retired paths served by a client-side forward only | `RetiredRoute` | the edge redirect declared in the estate |
