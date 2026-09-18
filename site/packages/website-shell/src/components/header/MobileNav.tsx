@@ -15,12 +15,13 @@ import { DiscordButton } from '../shared/DiscordButton';
 import {
   menuProduct,
   menuDistributions,
-  menuExplorer,
+  menuExplore,
   menuSolutions,
   menuResources,
 } from '../../data/navigation';
+import { tokens } from '../../theme/tokens';
 
-const dividerSx = { borderColor: '#232323' } as const;
+const dividerSx = { borderColor: tokens.edge.default } as const;
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -73,7 +74,7 @@ export function MobileNav() {
                 </Stack>
                 <Stack sx={{ gap: 2 }}>
                   <Typography sx={{ fontSize: '0.875rem', fontWeight: 400 }}>Explore</Typography>
-                  {menuExplorer.map((item) => (
+                  {menuExplore.map((item) => (
                     <MegaMenuItem key={item.label} {...item} />
                   ))}
                   <Divider sx={{ ...dividerSx, mt: -0.5 }} />

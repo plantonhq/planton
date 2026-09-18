@@ -1,5 +1,22 @@
 import type { ReactNode } from 'react';
 
+/**
+ * The website's navigation as data: the header's menus are the source, and
+ * the footer is a projection of them. A link appears here once, and every
+ * surface that shows it reads it, so the header and the footer can never
+ * disagree about where a page lives or what it is called.
+ *
+ * Every href is a path the site's route registry knows (or a console path
+ * the link gate allows, or an absolute URL); the site's build proves each
+ * one resolves, because the header and footer render on every exported
+ * page. This package cannot import the registry (the console consumes the
+ * shell too), so the hrefs are literal and the gate is the proof. Labels
+ * are Title Case (they are chrome); a sub-label is one line of menu copy,
+ * distinct from the paragraph the registry holds as the page's description.
+ * The call to action for /signup is "Start Free" here as it is on every
+ * door on the site.
+ */
+
 export interface MenuItem {
   label: string;
   subLabel?: string;
@@ -15,18 +32,16 @@ export interface MenuSection {
 export interface FooterGroup {
   id: string;
   title: string;
-  items: { title: string; url: string }[];
+  items: MenuItem[];
 }
 
 // ---------------------------------------------------------------------------
-// Header — Product mega-menu
+// Header: the Product mega-menu
 // ---------------------------------------------------------------------------
 
 // The order is the order a platform engineer meets the product: the two hubs,
 // the coding agent as a first-class user, the terminal, the catalog, what you
-// already have, and the open source underneath. Sub-labels are one line each
-// and claim nothing the page does not; the page's registry entry carries the
-// full description.
+// already have, and the open source underneath.
 export const menuProduct: MenuItem[] = [
   { label: 'Infra Hub', subLabel: 'Cost and permissions verified before anything is created', href: '/product/infra-hub' },
   { label: 'Service Hub', subLabel: 'Every push built, deployed, and written back to GitHub', href: '/product/service-hub' },
@@ -44,17 +59,18 @@ export const menuDistributions: MenuItem[] = [
   { label: 'Desktop', subLabel: 'Free for individuals, commercial use included', href: '/desktop' },
 ];
 
-export const menuExplorer: MenuItem[] = [
+// The site's map in one column: the section indexes and the page that
+// compares Planton with what a reader already runs. The header's Explore
+// column and the footer's Explore group both read this list.
+export const menuExplore: MenuItem[] = [
   { label: 'All Product', href: '/product' },
+  { label: 'Distributions', href: '/distributions' },
+  { label: 'Solutions', href: '/solutions' },
   { label: 'How Planton Compares', href: '/compare' },
-  { label: 'Documentation', href: '/docs' },
-  { label: 'Tutorials', href: '/tutorials' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Changelog', href: '/changelog' },
 ];
 
 // ---------------------------------------------------------------------------
-// Header — Solutions mega-menu
+// Header: the Solutions mega-menu
 // ---------------------------------------------------------------------------
 
 // The five people the story is told to, one page each, in the story's own
@@ -70,7 +86,7 @@ export const menuSolutions: MenuItem[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Header — Resources mega-menu
+// Header: the Resources mega-menu
 // ---------------------------------------------------------------------------
 
 export const menuResources: MenuItem[] = [
@@ -81,66 +97,51 @@ export const menuResources: MenuItem[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Footer link groups — canonical URLs (aligned with header)
+// The doors the header and footer share
 // ---------------------------------------------------------------------------
 
+export const START_FREE: MenuItem = { label: 'Start Free', href: '/signup' };
+export const SIGN_IN: MenuItem = { label: 'Sign In', href: '/login' };
+export const DOWNLOAD_DESKTOP: MenuItem = { label: 'Download Planton Desktop', href: '/desktop/download' };
+
+// ---------------------------------------------------------------------------
+// Footer: a projection of the menus, plus the two groups no menu holds
+// ---------------------------------------------------------------------------
+
+/** A menu as a footer group: labels and hrefs only, the sub-labels are the header's. */
+const asGroup = (id: string, title: string, items: MenuItem[]): FooterGroup => ({
+  id,
+  title,
+  items: items.map(({ label, href }) => ({ label, href })),
+});
+
 export const footerGroups: FooterGroup[] = [
+  asGroup('product', 'Product', menuProduct),
   {
-    title: 'Product',
-    id: 'product',
-    items: [
-      { title: 'Infra Hub', url: '/product/infra-hub' },
-      { title: 'Service Hub', url: '/product/service-hub' },
-      { title: 'Coding Agents', url: '/product/coding-agents' },
-      { title: 'CLI', url: '/product/cli' },
-      { title: 'Catalog', url: '/product/catalog' },
-      { title: 'Import', url: '/product/import' },
-    ],
-  },
-  {
-    title: 'Open Source',
+    // What is on GitHub, for the reader who wants the source rather than the page about it.
     id: 'open_source',
+    title: 'Open Source',
     items: [
-      { title: 'Planton Open Source', url: '/product/open-source' },
-      { title: 'Infra Charts', url: 'https://github.com/plantonhq/planton/tree/main/charts' },
+      { label: 'Planton on GitHub', href: 'https://github.com/plantonhq/planton' },
+      { label: 'The Catalog', href: 'https://github.com/plantonhq/planton/tree/main/catalog' },
+      { label: 'Infra Charts', href: 'https://github.com/plantonhq/planton/tree/main/charts' },
     ],
   },
   {
-    title: 'Get Started',
     id: 'get_started',
-    items: [
-      { title: 'Download Planton Desktop', url: '/desktop/download' },
-      { title: 'Sign Up', url: '/signup' },
-      { title: 'Pricing', url: '/pricing' },
-      { title: 'Book a Demo', url: '/book-demo' },
-    ],
+    title: 'Get Started',
+    items: [DOWNLOAD_DESKTOP, START_FREE, { label: 'Pricing', href: '/pricing' }, { label: 'Book a Demo', href: '/book-demo' }],
   },
-  {
-    title: 'Resources',
-    id: 'resources',
-    items: [
-      { title: 'Documentation', url: '/docs' },
-      { title: 'Tutorials', url: '/tutorials' },
-      { title: 'Blog', url: '/blog' },
-      { title: 'Changelog', url: '/changelog' },
-    ],
-  },
-  {
-    title: 'Explore',
-    id: 'explore',
-    items: [
-      { title: 'All Product', url: '/product' },
-      { title: 'Distributions', url: '/distributions' },
-      { title: 'Solutions', url: '/solutions' },
-    ],
-  },
+  asGroup('resources', 'Resources', menuResources),
+  asGroup('explore', 'Explore', menuExplore),
 ];
 
-export const footerTermsLinks = [
-  { title: 'Status', url: '/' },
-  { title: 'Privacy', url: '/legal/privacy' },
-  { title: 'Terms', url: '/legal/terms' },
-  { title: 'Refunds', url: '/legal/refund-policy' },
+// The legal pages live under /legal/. A status page joins this line the day
+// one exists; a link to nothing is not a promise.
+export const footerTermsLinks: MenuItem[] = [
+  { label: 'Privacy', href: '/legal/privacy' },
+  { label: 'Terms', href: '/legal/terms' },
+  { label: 'Refunds', href: '/legal/refund-policy' },
 ];
 
 export const DISCORD_URL = 'https://discord.gg/pwcSapdQAp';

@@ -4,6 +4,8 @@ import type { FC } from 'react';
 import Link from 'next/link';
 import { Button } from '@mui/material';
 import { useLoggedIn } from '../../hooks/useLoggedIn';
+import { SIGN_IN, START_FREE } from '../../data/navigation';
+import { tokens } from '../../theme/tokens';
 
 const ctaSx = {
   height: 32,
@@ -16,10 +18,12 @@ const ctaSx = {
   textTransform: 'none',
 } as const;
 
+// The one true-white fill in the header: the primary door, the same as every primary button on the site.
 const whiteButtonStyle: React.CSSProperties = {
-  backgroundColor: '#ffffff',
-  color: '#000000',
+  backgroundColor: tokens.cta.background,
+  color: tokens.cta.text,
 };
+const quietLinkStyle: React.CSSProperties = { color: tokens.text.secondary };
 
 export const DesktopAuthButtons: FC = () => {
   const loggedIn = useLoggedIn();
@@ -36,8 +40,8 @@ export const DesktopAuthButtons: FC = () => {
     <>
       <Button
         LinkComponent={Link}
-        href="/login"
-        style={{ color: '#a0a0a0' }}
+        href={SIGN_IN.href}
+        style={quietLinkStyle}
         sx={{
           display: { xs: 'none', sm: 'inline-flex' },
           fontSize: '0.875rem',
@@ -46,10 +50,10 @@ export const DesktopAuthButtons: FC = () => {
           borderRadius: '10px',
         }}
       >
-        Sign in
+        {SIGN_IN.label}
       </Button>
-      <Button LinkComponent={Link} href="/signup" style={whiteButtonStyle} sx={ctaSx}>
-        Sign up
+      <Button LinkComponent={Link} href={START_FREE.href} style={whiteButtonStyle} sx={ctaSx}>
+        {START_FREE.label}
       </Button>
     </>
   );
@@ -77,8 +81,8 @@ export const MobileAuthButtons: FC = () => {
     <>
       <Button
         LinkComponent={Link}
-        href="/login"
-        style={{ color: '#a0a0a0' }}
+        href={SIGN_IN.href}
+        style={quietLinkStyle}
         sx={{
           width: '100%',
           justifyContent: 'center',
@@ -87,10 +91,10 @@ export const MobileAuthButtons: FC = () => {
           fontWeight: 500,
         }}
       >
-        Sign in
+        {SIGN_IN.label}
       </Button>
-      <Button LinkComponent={Link} href="/signup" style={whiteButtonStyle} sx={ctaFullWidthSx}>
-        Sign up
+      <Button LinkComponent={Link} href={START_FREE.href} style={whiteButtonStyle} sx={ctaFullWidthSx}>
+        {START_FREE.label}
       </Button>
     </>
   );

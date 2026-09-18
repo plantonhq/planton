@@ -6,6 +6,7 @@ import { Menu, Paper, Stack, Typography } from '@mui/material';
 import { NavigateNext, KeyboardArrowDown } from '@mui/icons-material';
 import { MegaMenuItem } from './MegaMenuItem';
 import type { MenuSection, MenuItem } from '../../data/navigation';
+import { tokens } from '../../theme/tokens';
 
 interface MegaMenuProps {
   title: string;
@@ -44,7 +45,7 @@ export function MegaMenu({
         sx={{
           cursor: 'pointer',
           alignItems: 'center',
-          '&:hover': { color: '#fff' },
+          '&:hover': { color: tokens.text.primary },
         }}
       >
         <Typography
@@ -88,8 +89,8 @@ export function MegaMenu({
             gap: 2,
             justifyContent: 'space-between',
             borderRadius: 3,
-            bgcolor: '#1a1a1a',
-            border: '1px solid #3a3a3a',
+            bgcolor: tokens.surface.raised,
+            border: `1px solid ${tokens.edge.hover}`,
           }}
         >
           <Stack direction="row" sx={{ p: 2.5 }}>
@@ -101,10 +102,9 @@ export function MegaMenu({
                       sx={{
                         fontWeight: 600,
                         mb: 1.5,
-                        color: '#666',
+                        color: tokens.text.muted,
                         fontSize: '0.75rem',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.05em',
+                        letterSpacing: '0.02em',
                       }}
                     >
                       {section.title}
@@ -120,7 +120,7 @@ export function MegaMenu({
             </Stack>
 
             {rightMenu && (
-              <Stack sx={{ width: 170, pl: 2, borderLeft: '1px solid #3a3a3a' }}>
+              <Stack sx={{ width: 170, pl: 2, borderLeft: `1px solid ${tokens.edge.hover}` }}>
                 {rightMenu.map((section, index) => (
                   <Stack key={index} sx={{ mb: 3, '&:last-child': { mb: 0 } }}>
                     {section.title && (
@@ -128,10 +128,9 @@ export function MegaMenu({
                         sx={{
                           fontWeight: 600,
                           mb: 1.5,
-                          color: '#666',
+                          color: tokens.text.muted,
                           fontSize: '0.75rem',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
+                          letterSpacing: '0.02em',
                         }}
                       >
                         {section.title}
@@ -162,13 +161,13 @@ export function MegaMenu({
                   '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
                   transition: 'background-color 150ms ease',
                   borderRadius: '0 0 12px 12px',
-                  borderTop: '1px solid #3a3a3a',
+                  borderTop: `1px solid ${tokens.edge.hover}`,
                 }}
               >
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: '#a0a0a0' }}>
+                <Typography sx={{ fontSize: '0.875rem', fontWeight: 500, color: tokens.text.secondary }}>
                   {footerMenu.label}
                 </Typography>
-                <NavigateNext sx={{ color: '#666' }} />
+                <NavigateNext sx={{ color: tokens.text.muted }} />
               </Stack>
             </Link>
           )}

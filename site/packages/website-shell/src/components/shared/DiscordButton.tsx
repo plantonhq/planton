@@ -4,6 +4,7 @@ import type { ComponentProps, FC } from 'react';
 import { SvgIcon, type ButtonProps } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { ShellButton } from './ShellButton';
+import { tokens } from '../../theme/tokens';
 import { DISCORD_URL } from '../../data/navigation';
 
 const DiscordIcon: FC = () => (
@@ -30,7 +31,7 @@ export const DiscordButton: FC<ButtonProps & ComponentProps<'a'> & { compact?: b
       startIcon={<DiscordIcon />}
       href={DISCORD_URL}
       target="_blank"
-      style={{ color: '#a0a0a0' }}
+      style={{ color: tokens.text.secondary }}
       sx={[compactSx, ...(Array.isArray(sx) ? sx : [sx])] as SxProps<Theme>}
       {...props}
     >

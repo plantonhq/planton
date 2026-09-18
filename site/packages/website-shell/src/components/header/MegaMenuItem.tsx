@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Stack, Typography } from '@mui/material';
 import type { MenuItem } from '../../data/navigation';
+import { tokens } from '../../theme/tokens';
 
 export function MegaMenuItem({ label, subLabel, icon, href, onClick }: MenuItem & { onClick?: () => void }) {
   return (
@@ -22,17 +23,17 @@ export function MegaMenuItem({ label, subLabel, icon, href, onClick }: MenuItem 
       >
         {icon}
         <Stack sx={{ justifyContent: 'flex-start' }}>
-          <Typography sx={{ color: '#fff', fontWeight: subLabel ? 600 : 400, fontSize: '0.875rem' }}>
+          <Typography sx={{ color: tokens.text.primary, fontWeight: subLabel ? 600 : 400, fontSize: '0.875rem' }}>
             {label}
           </Typography>
           {subLabel && (
             <Typography
               sx={{
-                color: '#666',
+                color: tokens.text.muted,
                 fontSize: '0.875rem',
                 fontWeight: 400,
                 transition: 'color 150ms ease',
-                '.MuiStack-root:hover &': { color: '#a0a0a0' },
+                '.MuiStack-root:hover &': { color: tokens.text.secondary },
               }}
             >
               {subLabel}

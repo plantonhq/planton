@@ -8,10 +8,11 @@ import { distributionIcons, productIcons, resourceIcons, withIcons } from './men
 import {
   menuProduct,
   menuDistributions,
-  menuExplorer,
+  menuExplore,
   menuSolutions,
   menuResources,
 } from '../../data/navigation';
+import { tokens } from '../../theme/tokens';
 
 export function DesktopNav() {
   return (
@@ -30,7 +31,7 @@ export function DesktopNav() {
         leftMenu={[{ items: withIcons(menuProduct, productIcons) }]}
         rightMenu={[
           { title: 'Distributions', items: withIcons(menuDistributions, distributionIcons) },
-          { title: 'Explore', items: menuExplorer },
+          { title: 'Explore', items: menuExplore },
         ]}
         leftWidth={320}
       />
@@ -51,7 +52,7 @@ export function DesktopNav() {
             fontWeight: 500,
             color: 'grey.100',
             transition: 'color 150ms ease',
-            '&:hover': { color: '#fff' },
+            '&:hover': { color: tokens.text.primary },
           }}
         >
           Pricing
