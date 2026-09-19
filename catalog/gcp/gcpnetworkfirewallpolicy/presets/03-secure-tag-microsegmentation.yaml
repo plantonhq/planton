@@ -1,0 +1,68 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: tier-segmentation
+spec:
+  description: Tiers talk only to the tiers they should, keyed on secure tags instead of addresses
+  rules:
+    - priority: 1000
+      action: allow
+      direction: INGRESS
+      ruleName: frontend-to-backend
+      description: Frontend-tagged VMs may reach backend-tagged VMs on 8080
+      match:
+        srcSecureTags:
+          - valueFrom:
+              kind: GcpTagValue
+              name: tier-frontend
+              fieldPath: status.outputs.name
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["8080"]
+      targetSecureTags:
+        - valueFrom:
+            kind: GcpTagValue
+            name: tier-backend
+            fieldPath: status.outputs.name
+    - priority: 1100
+      action: allow
+      direction: INGRESS
+      ruleName: backend-to-database
+      description: Backend-tagged VMs may reach database-tagged VMs on 5432
+      match:
+        srcSecureTags:
+          - valueFrom:
+              kind: GcpTagValue
+              name: tier-backend
+              fieldPath: status.outputs.name
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["5432"]
+      targetSecureTags:
+        - valueFrom:
+            kind: GcpTagValue
+            name: tier-database
+            fieldPath: status.outputs.name
+    - priority: 2000
+      action: deny
+      direction: INGRESS
+      ruleName: deny-to-database
+      description: Nothing else reaches the database tier
+      enableLogging: true
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: all
+      targetSecureTags:
+        - valueFrom:
+            kind: GcpTagValue
+            name: tier-database
+            fieldPath: status.outputs.name
+  associations:
+    - name: tier-segmentation-main
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: main
+          fieldPath: status.outputs.network_self_link
+  deletionPolicy: DELETE

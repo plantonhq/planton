@@ -271,7 +271,11 @@ Fields on other kinds that can point at this resource:
 | GcpGlobalAddress | `spec.network` | `status.outputs.network_self_link` |
 | GcpGlobalForwardingRule | `spec.network` | `status.outputs.network_self_link` |
 | GcpHaVpnGateway | `spec.network` | `status.outputs.network_self_link` |
+| GcpHierarchicalFirewallPolicy | `spec.rules[].match.srcNetworks` | `status.outputs.network_self_link` |
+| GcpHierarchicalFirewallPolicy | `spec.rules[].targetResources` | `status.outputs.network_self_link` |
 | GcpMemorystoreInstance | `spec.pscAutoConnections[].network` | `status.outputs.network_id` |
+| GcpNetworkFirewallPolicy | `spec.rules[].match.srcNetworks` | `status.outputs.network_self_link` |
+| GcpNetworkFirewallPolicy | `spec.associations[].network` | `status.outputs.network_self_link` |
 | GcpPlantonRunner | `spec.vpcAccess.network` | `status.outputs.network_name` |
 | GcpRedisInstance | `spec.authorizedNetwork` | `status.outputs.network_self_link` |
 | GcpRegionNetworkEndpointGroup | `spec.network` | `status.outputs.network_self_link` |

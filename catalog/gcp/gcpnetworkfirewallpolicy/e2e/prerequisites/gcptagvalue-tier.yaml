@@ -1,0 +1,27 @@
+# The secure tag value the secure-tags scenario keys its rules on: an extra
+# GcpTagValue instance under the GCE_FIREWALL fixture key. Its `name` output
+# (tagValues/{id}) is what the rule's src_secure_tags and target_secure_tags
+# reference. The short name carries ${E2E_RUN_ID}; metadata.name stays
+# fixed.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagValue
+metadata:
+  name: planton-oss-e2e-gcpnfwp-tagvalue
+  id: planton-oss-e2e-gcpnfwp-tagvalue
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  tagKey:
+    valueFrom:
+      kind: GcpTagKey
+      name: planton-oss-e2e-gcpnfwp-tagkey
+      fieldPath: status.outputs.name
+  shortName: tier-backend-${E2E_RUN_ID}
+  description: Planton E2E secure-tag value for firewall policy rules; safe to delete

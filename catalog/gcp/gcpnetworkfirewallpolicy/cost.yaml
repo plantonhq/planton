@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpnetworkfirewallpolicy
+spec:
+  billing_model: free
+  free_tier: "Network firewall policies -- global and regional -- their rules, and their associations have no meter in Google Cloud's pricing: Cloud Firewall's policy-based rules are included with the VPC. The one adjacent charge is optional -- a rule with enable_logging writes firewall-rules logs to Cloud Logging, billed as log ingestion after the project's free allotment."
+  notes: "No field of this spec buys anything by itself. Cloud NGFW Enterprise features a rule can point at -- a security profile group with TLS inspection (action apply_security_profile_group) -- are billed through the firewall endpoint and the inspected traffic, both declared outside this kind."

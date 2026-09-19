@@ -623,18 +623,9 @@ resources:
   - resource: google_compute_disk_resource_policy_attachment
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built"
-  - resource: google_compute_firewall_policy
-    disposition: model-planned
-    reason: "planned GcpHierarchicalFirewallPolicy kind (hierarchical firewall policies)"
-  - resource: google_compute_firewall_policy_association
-    disposition: model-planned
-    reason: "planned composition into the planned GcpHierarchicalFirewallPolicy kind (associations)"
-  - resource: google_compute_firewall_policy_rule
-    disposition: model-planned
-    reason: "planned composition into the planned GcpHierarchicalFirewallPolicy kind (rules)"
   - resource: google_compute_firewall_policy_with_rules
     disposition: deferred
-    reason: "the all-in-one variant of a policy the planned GcpHierarchicalFirewallPolicy kind composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
+    reason: "the all-in-one variant of the policy GcpHierarchicalFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
   - resource: google_compute_forwarding_rule
     disposition: model-planned
     reason: "planned composition into the existing GcpGlobalForwardingRule kind (the regional arm)"
@@ -701,18 +692,9 @@ resources:
   - resource: google_compute_network_endpoints
     disposition: deferred
     reason: "network-endpoint-group surface for VM and hybrid backends; deferred pending demand — the serverless path is modeled by GcpRegionNetworkEndpointGroup, and the productized HTTPS-to-Cloud-Run composition ships as an infra chart over the modeled kinds rather than a facade kind"
-  - resource: google_compute_network_firewall_policy
-    disposition: model-planned
-    reason: "planned GcpNetworkFirewallPolicy kind (network firewall policies, global and regional)"
-  - resource: google_compute_network_firewall_policy_association
-    disposition: model-planned
-    reason: "planned composition into the planned GcpNetworkFirewallPolicy kind (associations)"
-  - resource: google_compute_network_firewall_policy_rule
-    disposition: model-planned
-    reason: "planned composition into the planned GcpNetworkFirewallPolicy kind (rules)"
   - resource: google_compute_network_firewall_policy_with_rules
     disposition: deferred
-    reason: "the all-in-one variant of a policy the planned GcpNetworkFirewallPolicy kind composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
+    reason: "the all-in-one variant of the policy GcpNetworkFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
   - resource: google_compute_node_group
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"
@@ -779,18 +761,9 @@ resources:
   - resource: google_compute_region_network_endpoint
     disposition: deferred
     reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
-  - resource: google_compute_region_network_firewall_policy
-    disposition: model-planned
-    reason: "planned GcpNetworkFirewallPolicy kind (network firewall policies, global and regional)"
-  - resource: google_compute_region_network_firewall_policy_association
-    disposition: model-planned
-    reason: "planned composition into the planned GcpNetworkFirewallPolicy kind (associations on the regional arm)"
-  - resource: google_compute_region_network_firewall_policy_rule
-    disposition: model-planned
-    reason: "planned composition into the planned GcpNetworkFirewallPolicy kind (rules on the regional arm)"
   - resource: google_compute_region_network_firewall_policy_with_rules
     disposition: deferred
-    reason: "the all-in-one variant of a policy the planned GcpNetworkFirewallPolicy kind composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
+    reason: "the all-in-one variant of the policy GcpNetworkFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
   - resource: google_compute_region_security_policy
     disposition: deferred
     reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
@@ -1687,7 +1660,7 @@ resources:
     reason: "judged to fold into the VPC network family's specs (VPC flow-logs configuration); the composition is not built"
   - resource: google_network_security_address_group
     disposition: deferred
-    reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"
+    reason: "its own kind on the first ask: GcpHierarchicalFirewallPolicy and GcpNetworkFirewallPolicy rules name address groups by their resource name as literals (match.src_address_groups / dest_address_groups), which becomes a reference the day the kind exists"
   - resource: google_network_security_authz_policy
     disposition: deferred
     reason: "authorization and backend-authentication policies attach to the modeled load-balancer chain; judged to fold into the owning kinds (GcpBackendService and its proxy family) when demand appears; deferred"
@@ -1744,7 +1717,7 @@ resources:
     reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"
   - resource: google_network_security_security_profile_group
     disposition: deferred
-    reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"
+    reason: "its own kind on the first ask: GcpHierarchicalFirewallPolicy and GcpNetworkFirewallPolicy rules with action apply_security_profile_group name the group by its resource URL as a literal (security_profile_group), which becomes a reference the day the kind exists"
   - resource: google_network_security_server_tls_policy
     disposition: deferred
     reason: "NGFW and TLS policy surface judged as firewall-endpoint, security-profile, address-group, and TLS-policy kinds; deferred pending demand"

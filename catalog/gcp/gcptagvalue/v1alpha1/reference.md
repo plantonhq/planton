@@ -135,6 +135,10 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpHierarchicalFirewallPolicy | `spec.rules[].match.srcSecureTags` | `status.outputs.name` |
+| GcpHierarchicalFirewallPolicy | `spec.rules[].targetSecureTags` | `status.outputs.name` |
+| GcpNetworkFirewallPolicy | `spec.rules[].match.srcSecureTags` | `status.outputs.name` |
+| GcpNetworkFirewallPolicy | `spec.rules[].targetSecureTags` | `status.outputs.name` |
 | GcpTagBinding | `spec.tagValue` | `status.outputs.name` |
 
 ## See Also

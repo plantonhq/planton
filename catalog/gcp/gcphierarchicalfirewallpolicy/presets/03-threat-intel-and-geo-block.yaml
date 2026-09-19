@@ -1,0 +1,56 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHierarchicalFirewallPolicy
+metadata:
+  name: org-threat-block
+spec:
+  parent:
+    organizationId: "123456789012"
+  description: Deny known-malicious sources and unwanted geographies before any project sees them
+  rules:
+    - priority: 100
+      action: deny
+      direction: INGRESS
+      description: Google Threat Intelligence -- known-malicious IPs and Tor exit nodes
+      enableLogging: true
+      match:
+        srcThreatIntelligences:
+          - iplist-known-malicious-ips
+          - iplist-tor-exit-nodes
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 200
+      action: deny
+      direction: INGRESS
+      description: Countries the organization does not serve
+      enableLogging: true
+      match:
+        srcRegionCodes: ["KP", "IR"]
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 300
+      action: deny
+      direction: EGRESS
+      description: Nothing inside may reach a known-malicious destination
+      enableLogging: true
+      match:
+        destThreatIntelligences:
+          - iplist-known-malicious-ips
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 2000
+      action: goto_next
+      direction: INGRESS
+      match:
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 2100
+      action: goto_next
+      direction: EGRESS
+      match:
+        layer4Configs:
+          - ipProtocol: all
+  associations:
+    - name: org-threat-block-org
+      target:
+        organizationId: "123456789012"
+  deletionPolicy: PREVENT

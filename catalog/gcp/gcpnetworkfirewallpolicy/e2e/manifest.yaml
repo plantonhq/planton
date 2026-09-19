@@ -1,0 +1,66 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcpnfwp
+  id: planton-oss-e2e-gcpnfwp
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  # The policy's name in GCP; defaults to metadata.name. Project-scoped with
+  # no soft-delete reservation, so it stays fixed.
+  policyName: planton-oss-e2e-gcpnfwp
+
+  # Empty region = a GLOBAL policy governing every region of the attached
+  # network (the everyday choice). See the `regional` scenario for the other
+  # resource family.
+  region: ""
+
+  description: Planton E2E network firewall policy; safe to delete
+
+  # Evaluated lowest priority first. Each rule is its own resource keyed by
+  # priority.
+  rules:
+    # Identity-Aware Proxy TCP forwarding may reach SSH.
+    - priority: 1000
+      action: allow
+      direction: INGRESS
+      ruleName: allow-iap-ssh
+      description: IAP TCP forwarding to SSH
+      match:
+        srcIpRanges: ["35.235.240.0/20"]
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["22"]
+
+    # Everything else is dropped and logged.
+    - priority: 65000
+      action: deny
+      direction: INGRESS
+      ruleName: deny-all-ingress
+      description: Default deny, logged
+      enableLogging: true
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: all
+
+  # Attached to the registry's prerequisite network (a custom-mode VPC with
+  # no subnets, so the deny reaches nothing that exists).
+  associations:
+    - name: planton-oss-e2e-gcpnfwp-prereq
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_self_link
+
+  # DELETE (default), PREVENT, ABANDON -- fans to the policy, every rule,
+  # and every association.
+  deletionPolicy: DELETE

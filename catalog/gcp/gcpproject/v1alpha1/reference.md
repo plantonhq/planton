@@ -279,6 +279,7 @@ Fields on other kinds that can point at this resource:
 | GcpMonitoringNotificationChannel | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringSlo | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringUptimeCheck | `spec.projectId` | `status.outputs.project_id` |
+| GcpNetworkFirewallPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpOrgPolicy | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpPlantonRunner | `spec.projectId` | `status.outputs.project_id` |
 | GcpProjectIamMember | `spec.projectId` | `status.outputs.project_id` |

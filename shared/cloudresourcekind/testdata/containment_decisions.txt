@@ -475,6 +475,7 @@ contained dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.pro
 contained dev.planton.gcp.gcphavpngateway.v1alpha1.GcpHaVpnGatewaySpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcphavpngateway.v1alpha1.GcpHaVpnGatewaySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyParent.folder_id -> GcpFolder
 contained dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent.project_id -> GcpProject
 contained dev.planton.gcp.gcpiamoauthclient.v1alpha1.GcpIamOauthClientSpec.project_id -> GcpProject
@@ -493,6 +494,7 @@ contained dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboard
 contained dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringslo.v1alpha1.GcpMonitoringSloSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1.GcpMonitoringUptimeCheckSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyScope.folder_id -> GcpFolder
 contained dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyScope.project_id -> GcpProject
 contained dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerSpec.project_id -> GcpProject
@@ -868,8 +870,13 @@ exempt    dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceNfsE
 exempt    dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketIpFilterVpcNetworkSource.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterResourceUsageExport.bigquery_dataset_id -> GcpBigQueryDataset
 exempt    dev.planton.gcp.gcpgkenodepool.v1alpha1.GcpGkeNodePoolSpec.location -> GcpGkeCluster
+exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyAttachmentTarget.folder_id -> GcpFolder
+exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyRule.target_resources -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyRuleMatch.src_networks -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.bigquery_dataset -> GcpBigQueryDataset
 exempt    dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstancePscAutoConnection.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicyAssociation.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicyRuleMatch.src_networks -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerVpcAccess.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerVpcAccess.subnetwork -> GcpSubnetwork
 exempt    dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceSpec.authorized_network -> GcpVpcNetwork

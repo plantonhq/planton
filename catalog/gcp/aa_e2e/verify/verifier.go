@@ -253,6 +253,8 @@ var verifiers = map[string]Verifier{
 	"gcpvpcpeering":                          &vpcPeeringVerifier{},
 	"gcphavpngateway":                        &haVpnGatewayVerifier{},
 	"gcphavpnconnection":                     &haVpnConnectionVerifier{},
+	"gcphierarchicalfirewallpolicy":          &hierarchicalFirewallPolicyVerifier{},
+	"gcpnetworkfirewallpolicy":               &networkFirewallPolicyVerifier{},
 	"gcpfirebaseproject":                     &firebaseProjectVerifier{},
 	"gcpfirebaseandroidapp":                  &firebaseAndroidAppVerifier{},
 	"gcpfirebaseappleapp":                    &firebaseAppleAppVerifier{},

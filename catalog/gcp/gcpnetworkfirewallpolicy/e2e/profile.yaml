@@ -1,0 +1,26 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpnetworkfirewallpolicy
+spec:
+  # Awaiting the live proof lane. Both resource families prove in the
+  # harness project with project-level roles/compute.securityAdmin: the
+  # global reference manifest and the `regional` scenario, attached to the
+  # registry's prerequisite network; the `secure-tags` scenario adds a
+  # GCE_FIREWALL tag key and value as fixtures (tagAdmin on the project);
+  # the `goto-next-and-logging` scenario adds a GcpServiceAccount fixture.
+  # Offline bar met: both modules build and validate, offline plans for the
+  # reference manifest and every scenario are clean on the pinned provider,
+  # and the accounting is total. Live facts the proof lane confirms: (1)
+  # policy_type, target_type, and the network-context enums left unset show
+  # no re-plan diff under the apply-idempotency gate on both engines, and
+  # an explicit VPC_POLICY round-trips; (2) every rule renders one resource
+  # keyed by priority and rule_tuple_count is populated on both engines;
+  # (3) the tagValues/{id} handles render identically on both engines and
+  # the harness destroys the policy before the tag value and key; (4) the
+  # INTERNAL_MANAGED_LB arm stays offline-only until the catalog carries a
+  # regional forwarding rule the harness can create.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

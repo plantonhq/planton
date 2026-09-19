@@ -1,0 +1,85 @@
+# GcpNetworkFirewallPolicy scenario exercising the rule knobs the reference
+# manifest leaves unset: goto_next delegation, network-context classes on
+# both sides, region codes, FQDNs, threat-intelligence lists, target service
+# accounts (a GcpServiceAccount fixture by reference), and a rule with
+# several layer4 entries. Every list renders on
+# both engines and the policy re-plans clean under the apply-idempotency
+# gate (the Optional+Computed contexts are sent, so they read back as sent).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcpnfwp-knobs
+  id: planton-oss-e2e-gcpnfwp-knobs
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+    # The target service account is the GcpServiceAccount install profile,
+    # deployed as an extra fixture through the kind-name entry.
+    planton.dev/e2e-prerequisites: "GcpServiceAccount"
+  tags:
+    - planton-e2e
+spec:
+  policyName: planton-oss-e2e-gcpnfwp-knobs
+  description: Planton E2E network firewall policy knobs; safe to delete
+  rules:
+    - priority: 100
+      action: deny
+      direction: INGRESS
+      ruleName: deny-threat-intel
+      enableLogging: true
+      match:
+        srcThreatIntelligences: ["iplist-known-malicious-ips", "iplist-tor-exit-nodes"]
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 200
+      action: deny
+      direction: INGRESS
+      ruleName: deny-geo
+      match:
+        srcRegionCodes: ["KP"]
+        srcNetworkContext: INTERNET
+        layer4Configs:
+          - ipProtocol: tcp
+          - ipProtocol: udp
+    - priority: 300
+      action: allow
+      direction: EGRESS
+      ruleName: allow-fqdn-out
+      match:
+        destFqdns: ["www.googleapis.com", "oauth2.googleapis.com"]
+        destNetworkContext: INTERNET
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["443"]
+    - priority: 400
+      action: allow
+      direction: INGRESS
+      ruleName: allow-intra-vpc
+      match:
+        srcNetworkContext: INTRA_VPC
+        layer4Configs:
+          - ipProtocol: all
+      targetServiceAccounts:
+        - valueFrom:
+            kind: GcpServiceAccount
+            name: planton-oss-e2e-gsa-prereq
+            fieldPath: status.outputs.email
+    - priority: 65000
+      action: goto_next
+      direction: INGRESS
+      ruleName: delegate
+      match:
+        layer4Configs:
+          - ipProtocol: all
+  associations:
+    - name: planton-oss-e2e-gcpnfwp-knobs-prereq
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_self_link
+  deletionPolicy: DELETE

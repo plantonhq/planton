@@ -336,7 +336,9 @@ Fields on other kinds that can point at this resource:
 | GcpGkeCluster | `spec.clusterAutoscaling.autoProvisioningDefaults.serviceAccount` | `status.outputs.email` |
 | GcpGkeNodePool | `spec.nodeConfig.serviceAccount` | `status.outputs.email` |
 | GcpGkeWorkloadIdentityBinding | `spec.serviceAccountEmail` | `status.outputs.email` |
+| GcpHierarchicalFirewallPolicy | `spec.rules[].targetServiceAccounts` | `status.outputs.email` |
 | GcpKmsKeyIamMember | `spec.member` | `status.outputs.member` |
+| GcpNetworkFirewallPolicy | `spec.rules[].targetServiceAccounts` | `status.outputs.email` |
 | GcpPlantonRunner | `spec.serviceAccount` | `status.outputs.email` |
 | GcpProjectIamMember | `spec.member` | `status.outputs.member` |
 | GcpPubSubSubscription | `spec.pushConfig.oidcToken.serviceAccountEmail` | `status.outputs.email` |

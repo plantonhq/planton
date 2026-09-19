@@ -1,0 +1,53 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkFirewallPolicy
+metadata:
+  name: main-baseline
+spec:
+  description: Baseline for the main VPC -- IAP SSH and health checks in, everything else denied and logged
+  rules:
+    - priority: 1000
+      action: allow
+      direction: INGRESS
+      ruleName: allow-iap-ssh
+      description: Identity-Aware Proxy TCP forwarding may reach SSH
+      match:
+        srcIpRanges: ["35.235.240.0/20"]
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["22"]
+    - priority: 1100
+      action: allow
+      direction: INGRESS
+      ruleName: allow-health-checks
+      description: Google Cloud health-check probers may reach every backend
+      match:
+        srcIpRanges: ["35.191.0.0/16", "130.211.0.0/22"]
+        layer4Configs:
+          - ipProtocol: tcp
+    - priority: 1200
+      action: allow
+      direction: INGRESS
+      ruleName: allow-internal
+      description: The VPC may talk to itself
+      match:
+        srcNetworkContext: INTRA_VPC
+        layer4Configs:
+          - ipProtocol: all
+    - priority: 65000
+      action: deny
+      direction: INGRESS
+      ruleName: deny-all-ingress
+      description: Everything not allowed above is dropped and logged
+      enableLogging: true
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: all
+  associations:
+    - name: main-baseline-main
+      network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: main
+          fieldPath: status.outputs.network_self_link
+  deletionPolicy: PREVENT

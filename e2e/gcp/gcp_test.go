@@ -1120,6 +1120,24 @@ func TestGcpHaVpnConnection_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcphavpnconnection", "terraform")
 }
 
+// --- GCP firewall policies (hierarchical: organization-scoped, deferred; network: both families prove in the harness project) ---
+
+func TestGcpHierarchicalFirewallPolicy_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcphierarchicalfirewallpolicy", "pulumi")
+}
+
+func TestGcpHierarchicalFirewallPolicy_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcphierarchicalfirewallpolicy", "terraform")
+}
+
+func TestGcpNetworkFirewallPolicy_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpnetworkfirewallpolicy", "pulumi")
+}
+
+func TestGcpNetworkFirewallPolicy_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpnetworkfirewallpolicy", "terraform")
+}
+
 // --- GCP Certificate Map (SNI routing table: deploys the GcpCertManagerCert prerequisite chain) ---
 
 func TestGcpCertificateMap_Pulumi(t *testing.T) {

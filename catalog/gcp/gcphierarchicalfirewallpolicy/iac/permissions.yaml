@@ -1,0 +1,34 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcphierarchicalfirewallpolicy
+spec:
+  gcp:
+    groups:
+      - purpose: ManageHierarchicalFirewallPolicy
+        permissions:
+          - compute.firewallPolicies.create
+          - compute.firewallPolicies.get
+          - compute.firewallPolicies.update
+          - compute.firewallPolicies.delete
+          - compute.firewallPolicies.use
+        provenance: derived
+        notes: "Covers google_compute_firewall_policy (Pulumi compute.FirewallPolicy) and its rules (google_compute_firewall_policy_rule -- addRule, patchRule, removeRule, getRule are all firewallPolicies.update/get on the policy). create on first apply; get on every refresh and import; update when the description changes or any rule is added, changed, or removed; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION (or on the parent folder) -- these are organization-level resources; roles/compute.orgFirewallPolicyAdmin contains all of these."
+      - purpose: AssociateHierarchicalFirewallPolicy
+        permissions:
+          - compute.firewallPolicies.addAssociation
+          - compute.firewallPolicies.removeAssociation
+          - compute.organizations.setFirewallPolicy
+        provenance: derived
+        notes: "Covers google_compute_firewall_policy_association (Pulumi compute.FirewallPolicyAssociation): addAssociation on create, removeAssociation on destroy, and setFirewallPolicy on every organization or folder the policy is attached to (Google checks it on the attachment target). roles/compute.orgFirewallPolicyAdmin on the organization contains all three; a folder-scoped grant must cover both the policy's parent and every association target."
+      - purpose: ResolveReferencedResources
+        permissions:
+          - resourcemanager.folders.get
+          - compute.networks.get
+        provenance: derived
+        notes: "Only when the spec references them: folders.get when parent or an association target names a folder (Google validates the folder exists); networks.get when a rule's target_resources or match.src_networks names VPC networks. Secure tags (tag values) and service accounts are passed by name and validated by the API without a read permission on this identity."

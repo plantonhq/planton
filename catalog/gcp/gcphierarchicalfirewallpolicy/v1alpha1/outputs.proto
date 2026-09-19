@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1;
+
+// GcpHierarchicalFirewallPolicyStackOutputs captures the policy's identity
+// after provisioning.
+message GcpHierarchicalFirewallPolicyStackOutputs {
+  // The policy's server-assigned numeric ID -- Google's `name` for a
+  // hierarchical policy, and what `gcloud compute firewall-policies
+  // describe` and the firewall logs identify it by.
+  string policy_id = 1;
+
+  // The policy's user-facing short name, as declared (or defaulted from
+  // metadata.name).
+  string short_name = 2;
+
+  // The policy's self-link URL,
+  // `https://www.googleapis.com/compute/v1/locations/global/firewallPolicies/{policy_id}`.
+  string self_link = 3;
+
+  // The node the policy lives under, `organizations/{id}` or
+  // `folders/{id}`.
+  string parent = 4;
+
+  // Google's complexity measure for the whole rule set -- the sum of each
+  // rule's tuple count (protocols x ports x sources x targets). An
+  // organization has a quota of tuples across its hierarchical policies;
+  // watch this before adding wide rules.
+  int64 rule_tuple_count = 5;
+
+  // The association names, in the order declared -- what
+  // `gcloud compute firewall-policies associations list` shows and what a
+  // detach targets.
+  repeated string association_names = 6;
+}

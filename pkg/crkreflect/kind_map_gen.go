@@ -560,6 +560,7 @@ import (
 	gcphavpnconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpnconnection/v1alpha1"
 	gcphavpngatewayv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpngateway/v1alpha1"
 	gcphealthcheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphealthcheck/v1alpha1"
+	gcphierarchicalfirewallpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphierarchicalfirewallpolicy/v1alpha1"
 	gcpiamcustomrolev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamcustomrole/v1alpha1"
 	gcpiamdenypolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamdenypolicy/v1alpha1"
 	gcpiamoauthclientv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamoauthclient/v1alpha1"
@@ -578,6 +579,7 @@ import (
 	gcpmonitoringnotificationchannelv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1"
 	gcpmonitoringslov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringslo/v1alpha1"
 	gcpmonitoringuptimecheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringuptimecheck/v1alpha1"
+	gcpnetworkfirewallpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1"
 	gcporgpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicy/v1alpha1"
 	gcporgpolicycustomconstraintv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicycustomconstraint/v1alpha1"
 	gcpplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpplantonrunner/v1alpha1"
@@ -1330,6 +1332,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpHaVpnConnection:                     &gcphavpnconnectionv1alpha1.GcpHaVpnConnection{},
 	cloudresourcekind.CloudResourceKind_GcpHaVpnGateway:                        &gcphavpngatewayv1alpha1.GcpHaVpnGateway{},
 	cloudresourcekind.CloudResourceKind_GcpHealthCheck:                         &gcphealthcheckv1alpha1.GcpHealthCheck{},
+	cloudresourcekind.CloudResourceKind_GcpHierarchicalFirewallPolicy:          &gcphierarchicalfirewallpolicyv1alpha1.GcpHierarchicalFirewallPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpIamCustomRole:                       &gcpiamcustomrolev1alpha1.GcpIamCustomRole{},
 	cloudresourcekind.CloudResourceKind_GcpIamDenyPolicy:                       &gcpiamdenypolicyv1alpha1.GcpIamDenyPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpIamOauthClient:                      &gcpiamoauthclientv1alpha1.GcpIamOauthClient{},
@@ -1348,6 +1351,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpMonitoringNotificationChannel:       &gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannel{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringSlo:                       &gcpmonitoringslov1alpha1.GcpMonitoringSlo{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringUptimeCheck:               &gcpmonitoringuptimecheckv1alpha1.GcpMonitoringUptimeCheck{},
+	cloudresourcekind.CloudResourceKind_GcpNetworkFirewallPolicy:               &gcpnetworkfirewallpolicyv1alpha1.GcpNetworkFirewallPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpOrgPolicy:                           &gcporgpolicyv1alpha1.GcpOrgPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint:           &gcporgpolicycustomconstraintv1alpha1.GcpOrgPolicyCustomConstraint{},
 	cloudresourcekind.CloudResourceKind_GcpPlantonRunner:                       &gcpplantonrunnerv1alpha1.GcpPlantonRunner{},

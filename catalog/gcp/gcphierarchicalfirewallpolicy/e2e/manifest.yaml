@@ -1,0 +1,59 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHierarchicalFirewallPolicy
+metadata:
+  name: planton-oss-e2e-gcphfwp
+  id: planton-oss-e2e-gcphfwp
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphierarchicalfirewallpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  # Where the policy lives: exactly one of organizationId or folderId (a
+  # GcpFolder reference or numeric literal). Immutable. The reference
+  # manifest names a placeholder organization (the kind is organization-
+  # scoped and its profile is deferred); the scenarios take the real one
+  # from the harness token.
+  parent:
+    organizationId: "123456789012"
+
+  # Unique in the organization; defaults to metadata.name.
+  shortName: planton-oss-e2e-gcphfwp
+
+  description: Planton E2E hierarchical firewall policy; safe to delete
+
+  # Evaluated lowest priority first. Each rule is its own resource keyed by
+  # priority. A logged deny nobody beneath can undo, then delegation.
+  rules:
+    - priority: 1000
+      action: deny
+      direction: INGRESS
+      description: No SSH from the internet, organization-wide
+      enableLogging: true
+      match:
+        srcIpRanges: ["0.0.0.0/0"]
+        layer4Configs:
+          - ipProtocol: tcp
+            ports: ["22"]
+    - priority: 2000
+      action: goto_next
+      direction: INGRESS
+      description: Everything else is decided lower down
+      match:
+        layer4Configs:
+          - ipProtocol: all
+
+  # Where the policy is enforced: the organization itself. A node carries
+  # one hierarchical policy association at a time.
+  associations:
+    - name: planton-oss-e2e-gcphfwp-org
+      target:
+        organizationId: "123456789012"
+
+  # DELETE (default), PREVENT, ABANDON -- fans to the policy, every rule,
+  # and every association.
+  deletionPolicy: DELETE

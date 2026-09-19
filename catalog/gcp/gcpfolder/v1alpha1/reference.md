@@ -209,6 +209,8 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpFolder | `spec.parent.folderId` | `status.outputs.folder_id` |
+| GcpHierarchicalFirewallPolicy | `spec.parent.folderId` | `status.outputs.folder_id` |
+| GcpHierarchicalFirewallPolicy | `spec.associations[].target.folderId` | `status.outputs.folder_id` |
 | GcpOrgPolicy | `spec.scope.folderId` | `status.outputs.folder_id` |
 | GcpProject | `spec.folderId` | `status.outputs.folder_id` |
 | GcpTagBinding | `spec.parent.folderId` | `status.outputs.folder_id` |

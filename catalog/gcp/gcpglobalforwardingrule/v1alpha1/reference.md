@@ -423,6 +423,14 @@ Fields that can point at another resource's outputs:
 | `spec.network` | GcpVpcNetwork | `status.outputs.network_self_link` |
 | `spec.subnetwork` | GcpSubnetwork | `status.outputs.subnetwork_self_link` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpNetworkFirewallPolicy | `spec.rules[].targetForwardingRules` | `status.outputs.self_link` |
+
 ## See Also
 
 - [Overview](../README.md)
