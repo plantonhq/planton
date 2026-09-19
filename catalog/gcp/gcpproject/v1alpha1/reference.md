@@ -47,6 +47,7 @@ spec:
 | `spec.autoCreateNetwork` | `bool` |  | `false` |  |
 | `spec.enabledApis` | `[]string` |  |  |  |
 | `spec.deletionPolicy` | `string` |  |  |  |
+| `spec.folderId` | `string \| valueFrom` |  |  | GcpFolder (`status.outputs.folder_id`) |
 
 ## Field Details
 
@@ -75,7 +76,8 @@ metadata.name.
 `enum`
 
 The type of parent node the project is created under. Changing the
-parent migrates the project within the hierarchy.
+parent migrates the project within the hierarchy. May be left empty
+when folder_id names the parent.
 
 Allowed values (use exactly as shown):
 
@@ -88,6 +90,8 @@ Allowed values (use exactly as shown):
 `string`
 
 Organization ID or Folder ID (numeric string) matching parent_type.
+For a folder declared in the same chart, prefer folder_id (a
+reference) and leave this empty.
 
 - rule: parent_id must be the numeric organization/folder ID
 
@@ -115,9 +119,11 @@ Keys/values: lowercase letters, digits, underscores, hyphens.
 `map<string, string>`
 
 Resource Manager tags bound to the project at CREATE TIME only
-(tagKeys/{id} -> tagValues/{id}). Tags drive org policies and IAM
-conditions. Changing this after creation recreates the project — for
-tags on an existing project, bind tag values out-of-band instead.
+(tagKeys/{id} -> tagValues/{id}, the `name` outputs of GcpTagKey and
+GcpTagValue). Tags drive org policies and IAM conditions. Changing this
+after creation recreates the project — for tags on an existing project,
+bind tag values with GcpTagBinding instead, which attaches and detaches
+without touching the project.
 
 ### spec.autoCreateNetwork
 
@@ -155,6 +161,26 @@ What destroying this resource does to the project:
 
 - rule: deletion_policy must be DELETE, PREVENT, or ABANDON
 
+### spec.folderId
+
+`string | valueFrom`
+
+The folder the project lives in, by reference: a GcpFolder resource
+(its folder_id output) or the folder's numeric ID as a literal. This is
+how a chart places a project inside a folder it also declares -- the
+project waits for the folder to exist. When set it IS the parent:
+leave parent_id empty and parent_type empty (or `folder`). Changing it
+moves the project into the new folder in place; nothing is recreated,
+but the IAM and organization policies inherited from the old folder
+stop applying and the new folder's start.
+
+- references: GcpFolder (`status.outputs.folder_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpFolder, name: <that resource's name>, fieldPath: status.outputs.folder_id}} -- a bare string does not parse
+
+## Validation Rules
+
+- `folder_id_is_the_parent`: when folder_id is set it IS the parent: leave parent_id empty and parent_type either empty or folder
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: GcpProject, name: <resource-name>, fieldPath: status.outputs.<output>}`.
@@ -164,6 +190,14 @@ Reference an output from another manifest as `valueFrom: {kind: GcpProject, name
 | `status.outputs.name` | `string` | Display name of the project (mirrors spec.name). |
 | `status.outputs.project_id` | `string` | Immutable project ID (mirrors spec.project_id). |
 | `status.outputs.project_number` | `string` | Numeric project number assigned by Google. |
+
+## References
+
+Fields that can point at another resource's outputs:
+
+| Field | Kind | Output |
+|---|---|---|
+| `spec.folderId` | GcpFolder | `status.outputs.folder_id` |
 
 ## Referenced By
 
@@ -243,6 +277,7 @@ Fields on other kinds that can point at this resource:
 | GcpMonitoringNotificationChannel | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringSlo | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringUptimeCheck | `spec.projectId` | `status.outputs.project_id` |
+| GcpOrgPolicy | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpPlantonRunner | `spec.projectId` | `status.outputs.project_id` |
 | GcpProjectIamMember | `spec.projectId` | `status.outputs.project_id` |
 | GcpPubSubSchema | `spec.projectId` | `status.outputs.project_id` |
@@ -262,6 +297,8 @@ Fields on other kinds that can point at this resource:
 | GcpSslCertificate | `spec.projectId` | `status.outputs.project_id` |
 | GcpSslPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpSubnetwork | `spec.projectId` | `status.outputs.project_id` |
+| GcpTagBinding | `spec.parent.projectId` | `status.outputs.project_number` |
+| GcpTagKey | `spec.parent.projectId` | `status.outputs.project_id` |
 | GcpTargetHttpProxy | `spec.projectId` | `status.outputs.project_id` |
 | GcpTargetHttpsProxy | `spec.projectId` | `status.outputs.project_id` |
 | GcpUrlMap | `spec.projectId` | `status.outputs.project_id` |

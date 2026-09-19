@@ -1,0 +1,27 @@
+# GcpTagValue install profile used when the value is an E2E PREREQUISITE for
+# another component (a GcpTagBinding). Its key is the GcpTagKey prerequisite
+# profile by reference, so the whole chain lives in the harness project. The
+# short name carries ${E2E_RUN_ID} (30-day reservation under the key);
+# metadata.name stays fixed (prerequisite FK resolution is kind-keyed).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagValue
+metadata:
+  name: planton-oss-e2e-gcptagv-prereq
+  id: planton-oss-e2e-gcptagv-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptagvalue
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  tagKey:
+    valueFrom:
+      kind: GcpTagKey
+      name: planton-oss-e2e-gcptagk-prereq
+      fieldPath: status.outputs.name
+  shortName: planton-e2e-prereq-${E2E_RUN_ID}
+  description: Planton E2E fixture value; safe to delete

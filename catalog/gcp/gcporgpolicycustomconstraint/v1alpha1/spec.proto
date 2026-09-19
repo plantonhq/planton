@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// GcpOrgPolicyCustomConstraintSpec defines ONE custom organization-policy
+// constraint: a rule the organization writes itself, in Common Expression
+// Language, over the fields of a Google Cloud resource -- "GKE node pools
+// must have auto-upgrade on", "Cloud SQL instances must not have a public
+// IP", "Compute instances must use Shielded VM". Google's predefined
+// constraints cover the common guardrails; a custom constraint covers the
+// ones specific to your organization.
+//
+// A custom constraint is a DEFINITION, not an enforcement. It lives at the
+// organization (the only parent Google allows) and does nothing until a
+// GcpOrgPolicy enforces it -- at the organization, at a folder, or at a
+// project -- by referencing this resource's `constraint` output. Define
+// the rule once here; enforce it from as many policies as the hierarchy
+// needs. That split is why this is its own kind: the constraint outlives
+// any single policy, and deleting one policy must not delete the rule
+// two other folders rely on.
+//
+// Which resources and fields a constraint can test is Google's list
+// ("Custom constraints supported services"): each service publishes the
+// resource types and the CEL-visible fields, and which methods (create,
+// update, ...) it evaluates. A constraint over an unsupported resource
+// type or field is rejected at apply time.
+message GcpOrgPolicyCustomConstraintSpec {
+  // The organization that owns the constraint: the numeric organization
+  // ID (from `gcloud organizations list`), without the `organizations/`
+  // prefix. Immutable -- a constraint cannot move between organizations.
+  string organization_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[0-9]+$"
+  ];
+
+  // The constraint's name WITHOUT the `custom.` prefix -- the module adds
+  // it, so Google knows the constraint as `custom.<constraint_name>` and
+  // that full handle is the `constraint` output a GcpOrgPolicy references.
+  // Defaults to metadata.name when empty. Google's rule: starts with a
+  // letter, then letters and digits, at most 62 characters in all;
+  // unique within the organization. Immutable: a rename is a delete and a
+  // create, and every policy enforcing the old name would lapse.
+  string constraint_name = 2 [(buf.validate.field).cel = {
+    id: "valid_constraint_name"
+    message: "constraint_name must start with a letter and contain only letters and digits (at most 62 characters), written WITHOUT the custom. prefix -- e.g. disableGkeAutoUpgrade"
+    expression: "this == '' || this.matches('^[A-Za-z][A-Za-z0-9]{0,61}$')"
+  }];
+
+  // A human-friendly name for the constraint, shown in the console's
+  // organization-policy pages. Mutable.
+  string display_name = 3 [(buf.validate.field).string.max_len = 200];
+
+  // What Google shows a user whose request the constraint blocks -- the
+  // violation message. Write it as the instruction the blocked engineer
+  // needs ("Node pools must enable auto-upgrade; set
+  // management.autoUpgrade to true"). Mutable.
+  string description = 4 [(buf.validate.field).string.max_len = 2000];
+
+  // The Google Cloud REST resource types the condition is evaluated
+  // against, fully qualified: `container.googleapis.com/NodePool`,
+  // `compute.googleapis.com/Instance`, `sqladmin.googleapis.com/Instance`,
+  // `storage.googleapis.com/Bucket`. At least one; every type in one
+  // constraint must belong to the same service. Immutable: changing the
+  // list recreates the constraint.
+  repeated string resource_types = 5 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.string.pattern = "^[a-z][a-z0-9]*\\.googleapis\\.com/[A-Za-z][A-Za-z0-9]*$"
+  ];
+
+  // The operations the constraint is evaluated on. CREATE and UPDATE are
+  // supported by every service that supports custom constraints; DELETE,
+  // REMOVE_GRANT, and GOVERN_TAGS are supported by a few (the supported
+  // services list says which). Google rejects a method a service does not
+  // support at apply time. Mutable.
+  repeated string method_types = 6 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).cel = {
+      id: "valid_method_types"
+      message: "method_types entries must each be one of: CREATE, UPDATE, DELETE, REMOVE_GRANT, GOVERN_TAGS"
+      expression: "this.all(m, m in ['CREATE', 'UPDATE', 'DELETE', 'REMOVE_GRANT', 'GOVERN_TAGS'])"
+    }
+  ];
+
+  // The Common Expression Language test over the resource, evaluated on
+  // each method in method_types: `resource.management.autoUpgrade == false`,
+  // `resource.settings.ipConfiguration.ipv4Enabled == true`,
+  // `!has(resource.shieldedInstanceConfig) || resource.shieldedInstanceConfig.enableSecureBoot == false`.
+  // The fields are the service's own REST resource fields; Google's per-
+  // service pages list the ones the constraint engine can see. Together
+  // with action_type it reads: "when this is true, ALLOW or DENY the
+  // request". Mutable.
+  string condition = 7 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // What happens when the condition is true for a request: DENY blocks it
+  // (the usual guardrail -- the condition describes the forbidden shape),
+  // ALLOW permits it and implicitly denies everything the condition does
+  // not match (an allow-list -- the condition describes the only
+  // acceptable shape). Mutable.
+  string action_type = 8 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_action_type"
+      message: "action_type must be one of: ALLOW, DENY"
+      expression: "this in ['ALLOW', 'DENY']"
+    }
+  ];
+
+  // What destroying this resource does to the constraint in GCP:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the constraint is deleted; every GcpOrgPolicy still
+  //                enforcing it starts failing to apply, so destroy the
+  //                policies first (a chart's dependency order does this
+  //                when the policies reference this resource)
+  //   "PREVENT" -- destroy FAILS; the guard for a rule many policies rely on
+  //   "ABANDON" -- the constraint is removed from management but keeps
+  //                existing in GCP, still enforceable by policies
+  string deletion_policy = 9 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}

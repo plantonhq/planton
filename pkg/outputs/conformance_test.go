@@ -3618,6 +3618,91 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "uid", "key_string"},
 		},
 		{
+			// GcpFolder: flat scalar outputs from both engines -- the numeric
+			// folder id every child references (the E2E verifier keys on it),
+			// the folders/{id} resource name, the lifecycle state, and the
+			// creation time -- must each land on the StackOutputs proto.
+			name: "GcpFolder",
+			kind: cloudresourcekind.CloudResourceKind_GcpFolder,
+			rawOutputs: map[string]interface{}{
+				"folder_id":       "987654321098",
+				"name":            "folders/987654321098",
+				"lifecycle_state": "ACTIVE",
+				"create_time":     "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"folder_id", "name", "lifecycle_state", "create_time"},
+		},
+		{
+			// GcpOrgPolicy: flat scalar outputs from both engines -- the
+			// policy's full name (the E2E verifier keys on it) and its etag --
+			// must each land on the StackOutputs proto.
+			name: "GcpOrgPolicy",
+			kind: cloudresourcekind.CloudResourceKind_GcpOrgPolicy,
+			rawOutputs: map[string]interface{}{
+				"name": "projects/123456789012/policies/compute.disableSerialPortAccess",
+				"etag": "BwXeTbBV0Mg=",
+			},
+			mustPopulate: []string{"name", "etag"},
+		},
+		{
+			// GcpOrgPolicyCustomConstraint: flat scalar outputs from both
+			// engines -- the constraint's full resource name (the E2E verifier
+			// keys on it), the custom.{name} handle a policy references, and
+			// the update time -- must each land on the StackOutputs proto.
+			name: "GcpOrgPolicyCustomConstraint",
+			kind: cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint,
+			rawOutputs: map[string]interface{}{
+				"name":        "organizations/123456789012/customConstraints/custom.disableGkeAutoUpgrade",
+				"constraint":  "custom.disableGkeAutoUpgrade",
+				"update_time": "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"name", "constraint", "update_time"},
+		},
+		{
+			// GcpTagKey: flat scalar outputs from both engines -- the
+			// tagKeys/{id} name (the E2E verifier keys on it), the namespaced
+			// name, the bare numeric id, and the creation time -- must each
+			// land on the StackOutputs proto.
+			name: "GcpTagKey",
+			kind: cloudresourcekind.CloudResourceKind_GcpTagKey,
+			rawOutputs: map[string]interface{}{
+				"name":            "tagKeys/281475647562788",
+				"namespaced_name": "123456789012/environment",
+				"tag_key_id":      "281475647562788",
+				"create_time":     "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"name", "namespaced_name", "tag_key_id", "create_time"},
+		},
+		{
+			// GcpTagValue: flat scalar outputs from both engines -- the
+			// tagValues/{id} name (the E2E verifier keys on it), the namespaced
+			// name, the bare numeric id, and the creation time -- must each
+			// land on the StackOutputs proto.
+			name: "GcpTagValue",
+			kind: cloudresourcekind.CloudResourceKind_GcpTagValue,
+			rawOutputs: map[string]interface{}{
+				"name":            "tagValues/281476102962987",
+				"namespaced_name": "123456789012/environment/prod",
+				"tag_value_id":    "281476102962987",
+				"create_time":     "2026-09-18T10:00:00Z",
+			},
+			mustPopulate: []string{"name", "namespaced_name", "tag_value_id", "create_time"},
+		},
+		{
+			// GcpTagBinding: flat scalar outputs from both engines -- the
+			// binding's name (the E2E verifier keys on it), the full resource
+			// name it is bound to, and the bound value -- must each land on the
+			// StackOutputs proto.
+			name: "GcpTagBinding",
+			kind: cloudresourcekind.CloudResourceKind_GcpTagBinding,
+			rawOutputs: map[string]interface{}{
+				"name":      "tagBindings/%2F%2Fcloudresourcemanager.googleapis.com%2Fprojects%2F123456789012/tagValues/281476102962987",
+				"parent":    "//cloudresourcemanager.googleapis.com/projects/123456789012",
+				"tag_value": "tagValues/281476102962987",
+			},
+			mustPopulate: []string{"name", "parent", "tag_value"},
+		},
+		{
 			// GcpFirebaseProject: flat scalar outputs from both engines -- the
 			// project (the E2E verifier keys on project_id), its number (the
 			// FCM sender id), display name, and the three Admin SDK config

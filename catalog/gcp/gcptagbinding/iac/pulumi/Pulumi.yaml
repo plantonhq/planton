@@ -1,0 +1,4 @@
+name: gcptagbinding-pulumi-project
+runtime:
+  name: go
+description: Planton GcpTagBinding Pulumi module

@@ -24,6 +24,7 @@ import (
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
 	cloudkms "google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
+	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
 	cloudscheduler "google.golang.org/api/cloudscheduler/v1"
 	cloudtasks "google.golang.org/api/cloudtasks/v2"
 	composer "google.golang.org/api/composer/v1"
@@ -41,6 +42,7 @@ import (
 	monitoringv1 "google.golang.org/api/monitoring/v1"
 	monitoring "google.golang.org/api/monitoring/v3"
 	"google.golang.org/api/networkconnectivity/v1"
+	orgpolicy "google.golang.org/api/orgpolicy/v2"
 	pubsub "google.golang.org/api/pubsub/v1"
 	"google.golang.org/api/redis/v1"
 	run "google.golang.org/api/run/v2"
@@ -99,6 +101,12 @@ type Services struct {
 	// API Keys API. Both ride the pinned google.golang.org/api line.
 	Firebase *firebase.Service
 	ApiKeys  *apikeys.Service
+	// CrmV3 is the Resource Manager API's v3 surface -- a DIFFERENT API
+	// version from the v1 client above; folders and the tag family (keys,
+	// values, bindings) are served there. OrgPolicy is the Organization
+	// Policy API (policies and custom constraints).
+	CrmV3     *crmv3.Service
+	OrgPolicy *orgpolicy.Service
 
 	// RestClient is an ADC-authenticated HTTP client for GCP services whose
 	// typed Go client is not yet in the pinned google.golang.org/api line
@@ -234,6 +242,12 @@ var verifiers = map[string]Verifier{
 	"gcpeventarcmessagebus":                  &eventarcMessageBusVerifier{},
 	"gcpcertificatemap":                      &certificateMapVerifier{},
 	"gcpapikey":                              &apiKeyVerifier{},
+	"gcpfolder":                              &folderVerifier{},
+	"gcporgpolicy":                           &orgPolicyVerifier{},
+	"gcporgpolicycustomconstraint":           &orgPolicyCustomConstraintVerifier{},
+	"gcptagkey":                              &tagKeyVerifier{},
+	"gcptagvalue":                            &tagValueVerifier{},
+	"gcptagbinding":                          &tagBindingVerifier{},
 	"gcpfirebaseproject":                     &firebaseProjectVerifier{},
 	"gcpfirebaseandroidapp":                  &firebaseAndroidAppVerifier{},
 	"gcpfirebaseappleapp":                    &firebaseAppleAppVerifier{},

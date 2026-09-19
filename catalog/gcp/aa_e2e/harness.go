@@ -36,6 +36,7 @@ import (
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
 	cloudkms "google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
+	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
 	cloudscheduler "google.golang.org/api/cloudscheduler/v1"
 	cloudtasks "google.golang.org/api/cloudtasks/v2"
 	composer "google.golang.org/api/composer/v1"
@@ -53,6 +54,7 @@ import (
 	monitoringv1 "google.golang.org/api/monitoring/v1"
 	monitoring "google.golang.org/api/monitoring/v3"
 	"google.golang.org/api/networkconnectivity/v1"
+	orgpolicy "google.golang.org/api/orgpolicy/v2"
 	pubsub "google.golang.org/api/pubsub/v1"
 	"google.golang.org/api/redis/v1"
 	run "google.golang.org/api/run/v2"
@@ -102,6 +104,15 @@ func (h *Harness) Setup(ctx context.Context) error {
 	// export is what lets scenario manifests omit spec.project_id.
 	if err := os.Setenv("GOOGLE_PROJECT", project); err != nil {
 		return errors.Wrap(err, "failed to export GOOGLE_PROJECT")
+	}
+	// A few kinds must NAME the project in the spec rather than inherit it
+	// from the provider -- a tag key's owner is "exactly one of organization
+	// or project", so a project-owned key cannot leave the arm empty. Those
+	// fixtures reference the resolved project through the
+	// ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID} token (the env-token prefix the
+	// scenario loader admits), the same mechanism as the GCS agent below.
+	if err := os.Setenv("PLANTON_E2E_GCP_PROJECT_ID", project); err != nil {
+		return errors.Wrap(err, "failed to export PLANTON_E2E_GCP_PROJECT_ID")
 	}
 
 	crmService, err := cloudresourcemanager.NewService(ctx)
@@ -264,6 +275,17 @@ func (h *Harness) Setup(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create api keys client")
 	}
+	// Resource Manager v3 serves folders and the tag family (keys, values,
+	// bindings), which the v1 client above predates; Organization Policy v2
+	// serves policies and custom constraints.
+	crmV3Service, err := crmv3.NewService(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudresourcemanager v3 client")
+	}
+	orgPolicyService, err := orgpolicy.NewService(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to create orgpolicy client")
+	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
 	// client is not in the pinned google.golang.org/api line (Memorystore
 	// for Valkey) — verifiers use it for REST GET probes only.
@@ -317,6 +339,8 @@ func (h *Harness) Setup(ctx context.Context) error {
 		Eventarc:             eventarcService,
 		Firebase:             firebaseService,
 		ApiKeys:              apiKeysService,
+		CrmV3:                crmV3Service,
+		OrgPolicy:            orgPolicyService,
 		RestClient:           restClient,
 	}
 	return nil

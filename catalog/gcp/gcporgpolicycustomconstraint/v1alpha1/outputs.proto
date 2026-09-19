@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1;
+
+// GcpOrgPolicyCustomConstraintStackOutputs captures the constraint's
+// identity after provisioning.
+message GcpOrgPolicyCustomConstraintStackOutputs {
+  // The constraint's full resource name,
+  // `organizations/{org_id}/customConstraints/custom.{constraint_name}`.
+  string name = 1;
+
+  // The handle a policy enforces the constraint by: `custom.{constraint_name}`.
+  // This is what a GcpOrgPolicy's `custom_constraint` references, and what
+  // `gcloud org-policies` and the console call the constraint.
+  string constraint = 2;
+
+  // When the constraint was last updated (RFC 3339 UTC).
+  string update_time = 3;
+}

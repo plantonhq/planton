@@ -1,0 +1,37 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicy
+metadata:
+  name: disable-serial-port
+spec:
+  # Where the policy applies: at most one of projectId (a literal or a
+  # GcpProject reference), folderId (a GcpFolder reference), organizationId.
+  # Omit the whole block to use the provider's default project. Immutable.
+  scope:
+    projectId:
+      value: my-gcp-project-123
+
+  # Exactly one of constraint (a predefined or managed constraint by name)
+  # or customConstraint (a reference to a GcpOrgPolicyCustomConstraint's
+  # constraint output). Immutable. A boolean constraint takes `enforce`; a
+  # list constraint takes `values`, `allowAll`, or `denyAll`.
+  constraint: compute.disableSerialPortAccess
+
+  # The ENFORCED rules. A boolean constraint needs exactly one unconditional
+  # rule; conditional rules (by tag) set the opposite and refine it.
+  policy:
+    rules:
+      - enforce: true
+      - enforce: false
+        condition:
+          title: sandbox exemption
+          expression: resource.matchTag('123456789012/environment', 'sandbox')
+
+  # The same shape in AUDIT mode: violations are logged, nothing is blocked.
+  # Roll a new guardrail out here first.
+  dryRunPolicy:
+    rules:
+      - enforce: true
+
+  # DELETE (default), PREVENT (destroy fails), ABANDON (unmanaged, stays
+  # enforced).
+  deletionPolicy: DELETE

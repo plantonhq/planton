@@ -1,0 +1,41 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# Two provider resources, exactly one per instance, selected by
+# spec.location: the global binding for organizations, folders, projects,
+# and other global resources; the location-scoped binding for a regional or
+# zonal resource. Both take the same parent, rendered from the spec's parent
+# message.
+
+resources:
+  google_tags_tag_binding:
+    mappings:
+      # The parent: the provider takes one full resource name
+      # (//cloudresourcemanager.googleapis.com/projects/{number}, ...); the
+      # spec models it as a message with one arm per hierarchy node (each a
+      # reference where a catalog kind exists) plus a full-resource-name
+      # escape hatch for everything else. An empty parent resolves the
+      # provider's default project; a project ID is resolved to its number.
+      - spec: spec.parent.project_id
+        arg: parent
+      - spec: spec.parent.folder_id
+        arg: parent
+      - spec: spec.parent.organization_id
+        arg: parent
+      - spec: spec.parent.resource_name
+        arg: parent
+  google_tags_location_tag_binding:
+    mappings:
+      - spec: spec.parent.project_id
+        arg: parent
+      - spec: spec.parent.folder_id
+        arg: parent
+      - spec: spec.parent.organization_id
+        arg: parent
+      - spec: spec.parent.resource_name
+        arg: parent

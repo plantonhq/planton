@@ -31,9 +31,14 @@ locals {
     local.id_label,
   )
 
-  # Exactly one of org_id / folder_id is sent, selected by parent_type.
-  parent_org_id    = var.spec.parent_type == "organization" ? var.spec.parent_id : null
-  parent_folder_id = var.spec.parent_type == "folder" ? var.spec.parent_id : null
+  # Exactly one of org_id / folder_id is sent. A folder_id reference (a
+  # GcpFolder's folder_id output, or a literal folder id) IS the parent and
+  # wins; otherwise parent_type selects which argument parent_id fills. The
+  # spec's CEL keeps the two forms from being combined. The same rule lives in
+  # the Pulumi module's project.go.
+  folder_ref       = trimprefix(var.spec.folder_id, "folders/")
+  parent_org_id    = local.folder_ref == "" && var.spec.parent_type == "organization" ? var.spec.parent_id : null
+  parent_folder_id = local.folder_ref != "" ? local.folder_ref : (var.spec.parent_type == "folder" ? var.spec.parent_id : null)
 
   billing_account_id = var.spec.billing_account_id != "" ? var.spec.billing_account_id : null
 

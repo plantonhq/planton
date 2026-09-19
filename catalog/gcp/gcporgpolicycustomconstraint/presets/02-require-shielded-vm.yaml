@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicyCustomConstraint
+metadata:
+  name: require-shielded-vm
+spec:
+  organizationId: "123456789012"
+  constraintName: requireShieldedVm
+  displayName: Compute instances must be Shielded VMs
+  description: Instances must enable Secure Boot; set shieldedInstanceConfig.enableSecureBoot to true
+  resourceTypes:
+    - compute.googleapis.com/Instance
+  methodTypes:
+    - CREATE
+    - UPDATE
+  condition: resource.shieldedInstanceConfig.enableSecureBoot == true
+  actionType: ALLOW

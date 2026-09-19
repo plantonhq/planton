@@ -1012,6 +1012,72 @@ func TestGcpFirebaseWebApp_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpfirebasewebapp", "terraform")
 }
 
+// --- GCP Folder (organization-level: needs roles/resourcemanager.folderAdmin
+// on the organization; plan-only until the org-scoped test identity exists;
+// soft-deleted for 30 days with the display name reserved -- scenarios carry
+// the run id and set deletion_protection: false so the harness can destroy) ---
+
+func TestGcpFolder_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfolder", "pulumi")
+}
+
+func TestGcpFolder_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfolder", "terraform")
+}
+
+// --- GCP Organization Policy (the project-scoped arm proves live with
+// roles/orgpolicy.policyAdmin on the test project; folder and organization
+// arms are plan-only until the org-scoped identity exists) ---
+
+func TestGcpOrgPolicy_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcporgpolicy", "pulumi")
+}
+
+func TestGcpOrgPolicy_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcporgpolicy", "terraform")
+}
+
+// --- GCP Organization Policy Custom Constraint (organization-scoped by
+// Google's design: plan-only until the org-scoped test identity exists) ---
+
+func TestGcpOrgPolicyCustomConstraint_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcporgpolicycustomconstraint", "pulumi")
+}
+
+func TestGcpOrgPolicyCustomConstraint_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcporgpolicycustomconstraint", "terraform")
+}
+
+// --- GCP Tag Key / Tag Value / Tag Binding (the project-owned chain proves
+// live with roles/resourcemanager.tagAdmin + tagUser on the test project;
+// short names are reserved for 30 days after deletion -- fixtures carry the
+// run id; Google requires bindings destroyed before values before keys, the
+// harness dependency order) ---
+
+func TestGcpTagKey_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptagkey", "pulumi")
+}
+
+func TestGcpTagKey_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptagkey", "terraform")
+}
+
+func TestGcpTagValue_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptagvalue", "pulumi")
+}
+
+func TestGcpTagValue_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptagvalue", "terraform")
+}
+
+func TestGcpTagBinding_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptagbinding", "pulumi")
+}
+
+func TestGcpTagBinding_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptagbinding", "terraform")
+}
+
 // --- GCP Certificate Map (SNI routing table: deploys the GcpCertManagerCert prerequisite chain) ---
 
 func TestGcpCertificateMap_Pulumi(t *testing.T) {

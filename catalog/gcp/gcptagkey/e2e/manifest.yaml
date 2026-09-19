@@ -1,0 +1,29 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: environment
+spec:
+  # Who owns the key: exactly one of organizationId (values bindable
+  # estate-wide) or projectId (a literal or GcpProject reference; values
+  # bindable only inside that project). A folder cannot own a key.
+  # Immutable.
+  parent:
+    organizationId: "123456789012"
+
+  # The name written in tag conditions; defaults to metadata.name. 1-256
+  # characters, none of / \ ' ". Immutable; reserved 30 days after deletion.
+  shortName: environment
+
+  description: The environment a resource belongs to
+
+  # Optional system purpose: GCE_FIREWALL (secure tags for firewall policy
+  # rules; needs purposeData.network) or DATA_GOVERNANCE. Immutable.
+  # purpose: GCE_FIREWALL
+  # purposeData:
+  #   network: my-gcp-project-123/shared-vpc
+
+  # RE2 every value must match; also makes the key dynamic.
+  # allowedValuesRegex: ^(prod|staging|dev)$
+
+  # DELETE (default; refused while values exist), PREVENT, ABANDON.
+  deletionPolicy: DELETE

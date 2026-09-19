@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: network-role
+spec:
+  parent:
+    organizationId: "123456789012"
+  shortName: network-role
+  description: Secure tag for network firewall policy rules on the shared VPC
+  purpose: GCE_FIREWALL
+  purposeData:
+    network: my-gcp-project-123/shared-vpc

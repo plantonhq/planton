@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcptagbinding
+spec:
+  # Awaiting the live proof lane on the PROJECT arm: the prerequisite
+  # key/value chain and the binding all live in the harness project and
+  # need roles/resourcemanager.tagAdmin (key, value) plus
+  # roles/resourcemanager.tagUser (binding) on it. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest
+  # and both scenarios are clean on the pinned provider, and the accounting
+  # is total. Live facts the proof lane confirms: (1) the empty-parent and
+  # project-ID arms both resolve the project NUMBER and RE-PLAN CLEAN under
+  # the apply-idempotency gate on both engines; (2) the binding is
+  # destroyed before the value and the value before the key (the harness
+  # dependency order); (3) the name output's encoded form matches between
+  # engines. The folder, organization, and location-scoped arms stay
+  # offline-only until the organization-scoped test identity and a regional
+  # fixture exist.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 15

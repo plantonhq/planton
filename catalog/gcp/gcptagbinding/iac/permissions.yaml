@@ -1,0 +1,22 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcptagbinding
+spec:
+  gcp:
+    groups:
+      - purpose: BindTagValue
+        permissions:
+          - resourcemanager.tagValues.use
+        provenance: derived
+        notes: "Covers google_tags_tag_binding and google_tags_location_tag_binding (Pulumi tags.TagBinding / tags.LocationTagBinding) -- exactly one per instance, selected by spec.location. Google authorizes a binding by checking the caller may USE the tag value: tagValues.use on the value (or inherited from its key), which roles/resourcemanager.tagUser carries. create on first apply, list-by-parent on refresh and import, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API); a binding has no update -- every change recreates it."
+      - purpose: TagTheResource
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        notes: "Google also requires roles/resourcemanager.tagUser (or the equivalent tag-binding permission the tagged service defines, e.g. compute.instances.createTagBinding) on the RESOURCE being tagged. For a project parent that is tagUser on the project. projects.get is additionally needed when the manifest names the project by ID or names no parent at all: both modules read the project once to resolve its NUMBER (data.google_project on Terraform, organizations.LookupProject on Pulumi); a GcpProject reference or a numeric literal performs no read."

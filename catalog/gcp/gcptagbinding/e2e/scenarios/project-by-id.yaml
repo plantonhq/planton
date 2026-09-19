@@ -1,0 +1,32 @@
+# Project-by-ID GcpTagBinding scenario: the parent names the harness project
+# by its ID literal, exercising the ID-to-NUMBER resolution both modules
+# perform (data.google_project on Terraform, organizations.LookupProject on
+# Pulumi) and the provider's number-vs-id diff suppression on re-plan. Same
+# project-scoped chain and roles as the minimal scenario. Two bindings of the
+# same value on one project would collide, so this scenario binds the value
+# to the project only when the minimal one is not also live -- the harness
+# runs scenarios sequentially per component and destroys between them.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagBinding
+metadata:
+  name: planton-oss-e2e-gcptagb-project-id
+  id: planton-oss-e2e-gcptagb-project-id
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptagbinding
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  tagValue:
+    valueFrom:
+      kind: GcpTagValue
+      name: planton-oss-e2e-gcptagv-prereq
+      fieldPath: status.outputs.name
+  parent:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  deletionPolicy: DELETE

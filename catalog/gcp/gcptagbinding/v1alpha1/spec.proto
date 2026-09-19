@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptagbinding.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpTagBindingSpec attaches ONE tag value to ONE resource: it is the act
+// of tagging. The value (GcpTagValue, e.g. `environment/prod`) already
+// exists; the binding says "this project / this folder / this VM carries
+// it", and from that moment every organization policy conditioned on the
+// tag (`resource.matchTag`), every IAM condition, and every firewall
+// policy rule that targets it applies to the resource -- and, for
+// projects and folders, to everything beneath them, because tags are
+// inherited down the hierarchy.
+//
+// A binding is REPLACED, never edited: every field is immutable, so a
+// change destroys the old binding and creates the new one. A resource can
+// carry at most one value per key -- binding `environment/staging` to a
+// project that already has `environment/prod` is rejected by Google, not
+// swapped; destroy the old binding first. Deleting a binding is instant
+// and has no soft-delete window.
+//
+// Two Google resources sit behind this kind. Organizations, folders,
+// projects, and other GLOBAL resources use the global binding; a REGIONAL
+// or ZONAL resource (a Compute instance, a Cloud SQL instance, a GKE
+// cluster) must be bound through the location-scoped binding, which is why
+// `location` exists: set it and the module switches resource.
+message GcpTagBindingSpec {
+  option (buf.validate.message).cel = {
+    id: "location_needs_resource_name"
+    message: "location applies only to a regional or zonal resource named in parent.resource_name -- organizations, folders, and projects are global"
+    expression: "this.location == '' || (has(this.parent) && this.parent.resource_name != '')"
+  };
+
+  // The tag value to bind: a reference to a GcpTagValue resource (its
+  // `name` output, `tagValues/{id}`) or, as a literal, that name or the
+  // namespaced form `{org_id}/{key_short_name}/{value_short_name}`.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef tag_value = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpTagValue,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name",
+    (buf.validate.field).cel = {
+      id: "tag_value_name_form"
+      message: "tag_value must be tagValues/{numeric_id} (a GcpTagValue's name output) or the namespaced form {parent}/{key}/{value}, or a reference to a GcpTagValue"
+      expression: "!has(this.value) || this.value == '' || this.value.matches('^tagValues/[0-9]+$') || this.value.matches('^[^/]+/[^/]+/[^/]+$')"
+    }
+  ];
+
+  // The resource that carries the tag. At most one arm; all empty means
+  // the provider's default project (the project the deploying credentials
+  // are configured for) -- the common "tag the project I am deploying
+  // into" needs no parent at all. Immutable.
+  GcpTagBindingParent parent = 2;
+
+  // For a REGIONAL or ZONAL resource named in parent.resource_name: its
+  // region (`us-central1`) or zone (`us-central1-a`). Required for such
+  // resources -- Google serves their bindings from a regional endpoint --
+  // and must stay empty for organizations, folders, projects, and other
+  // global resources. Immutable.
+  string location = 3 [(buf.validate.field).cel = {
+    id: "valid_location"
+    message: "location must be a region such as us-central1 or a zone such as us-central1-a"
+    expression: "this == '' || this.matches('^[a-z]+-[a-z]+[0-9]+(-[a-z])?$')"
+  }];
+
+  // What destroying this resource does to the binding in GCP:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the binding is removed; the resource no longer carries
+  //                the tag (immediate, no recovery window)
+  //   "PREVENT" -- destroy FAILS; the guard for a tag a policy depends on
+  //   "ABANDON" -- the binding is removed from management but the resource
+  //                keeps the tag
+  string deletion_policy = 4 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// The tagged resource. At most one arm; all empty means the provider's
+// default project. Google addresses the resource by its FULL resource name
+// (`//cloudresourcemanager.googleapis.com/projects/{number}`); the module
+// renders that from whichever arm is set, so a manifest names resources
+// the way the catalog does everywhere else.
+message GcpTagBindingParent {
+  option (buf.validate.message).cel = {
+    id: "at_most_one_parent"
+    message: "set at most one of project_id, folder_id, organization_id, or resource_name (empty means the provider's default project)"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != '', this.resource_name != ''].filter(x, x).size() <= 1"
+  };
+
+  // A project: a reference to a GcpProject resource (its project_number
+  // output) or, as a literal, the project's NUMBER or ID. Google requires
+  // the number in a binding's parent; when a literal is not numeric the
+  // module looks the number up once at apply time (a read of the project,
+  // which the deploying identity can already see).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_number"
+  ];
+
+  // A folder: the folder's numeric ID -- a literal, or a reference to a
+  // GcpFolder resource (its folder_id output). Every project and folder
+  // beneath it inherits the tag.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+
+  // The organization: the numeric organization ID, without the
+  // `organizations/` prefix. Everything in the estate inherits the tag.
+  string organization_id = 3 [(buf.validate.field).cel = {
+    id: "organization_id.numeric"
+    message: "organization_id must be the numeric organization ID, without the organizations/ prefix"
+    expression: "this == '' || this.matches('^[0-9]+$')"
+  }];
+
+  // Any other taggable resource, by its full resource name -- the
+  // `//{service}.googleapis.com/...` form Google's "full resource name"
+  // convention defines. Common shapes:
+  //   //compute.googleapis.com/projects/{project}/zones/{zone}/instances/{name}
+  //     (set location to the zone)
+  //   //compute.googleapis.com/projects/{project}/global/networks/{name}
+  //   //sqladmin.googleapis.com/projects/{project}/instances/{name}
+  //     (set location to the region)
+  //   //container.googleapis.com/projects/{project}/locations/{location}/clusters/{name}
+  //     (set location to the cluster's location)
+  //   //storage.googleapis.com/projects/_/buckets/{name}
+  //   //bigquery.googleapis.com/projects/{project}/datasets/{name}
+  // Set `location` for every regional or zonal resource.
+  string resource_name = 4 [(buf.validate.field).cel = {
+    id: "valid_resource_name"
+    message: "resource_name must be a full resource name beginning with //{service}.googleapis.com/ -- e.g. //compute.googleapis.com/projects/p/zones/us-central1-a/instances/vm1"
+    expression: "this == '' || this.matches('^//[a-z][a-z0-9-]*\\\\.googleapis\\\\.com/.+$')"
+  }];
+}

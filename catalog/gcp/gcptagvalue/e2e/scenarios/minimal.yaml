@@ -1,0 +1,26 @@
+# Minimal GcpTagValue scenario: a value under the prerequisite project-owned
+# key, by reference -- the chain proves live with only
+# roles/resourcemanager.tagAdmin on the harness project. The short name
+# carries the run id (30-day reservation under the key).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagValue
+metadata:
+  name: planton-oss-e2e-gcptagv-minimal
+  id: planton-oss-e2e-gcptagv-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptagvalue
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  tagKey:
+    valueFrom:
+      kind: GcpTagKey
+      name: planton-oss-e2e-gcptagk-prereq
+      fieldPath: status.outputs.name
+  shortName: planton-e2e-min-${E2E_RUN_ID}
+  description: Planton E2E minimal value; safe to delete

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcptagbinding.v1alpha1;
+
+import "catalog/gcp/gcptagbinding/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+message GcpTagBindingStackInput {
+  GcpTagBinding target = 1;
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

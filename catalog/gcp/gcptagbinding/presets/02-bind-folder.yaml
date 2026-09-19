@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagBinding
+metadata:
+  name: production-folder-environment-prod
+spec:
+  tagValue:
+    valueFrom:
+      kind: GcpTagValue
+      name: environment-prod
+      fieldPath: status.outputs.name
+  parent:
+    folderId:
+      valueFrom:
+        kind: GcpFolder
+        name: production
+        fieldPath: status.outputs.folder_id
+  deletionPolicy: PREVENT

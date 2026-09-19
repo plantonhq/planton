@@ -1,0 +1,25 @@
+# Minimal GcpFolder scenario: a top-level folder under the organization with
+# the destroy guard OFF (the harness must be able to destroy it) and a
+# run-id-suffixed display name (a deleted folder's name is reserved for 30
+# days under its parent). Organization-level: needs
+# roles/resourcemanager.folderAdmin on the organization.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFolder
+metadata:
+  name: planton-oss-e2e-gcpfldr-minimal
+  id: planton-oss-e2e-gcpfldr-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfolder
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    organizationId: ${E2E_ENV:PLANTON_E2E_GCP_ORGANIZATION_ID}
+  displayName: planton-e2e-min-${E2E_RUN_ID}
+  deletionProtection: false

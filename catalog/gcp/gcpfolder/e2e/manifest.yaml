@@ -1,0 +1,27 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFolder
+metadata:
+  name: production
+spec:
+  # Where the folder sits: exactly one of organizationId (a top-level folder)
+  # or folderId (nested; a literal or a reference to another GcpFolder's
+  # folder_id output). Changing the parent MOVES the folder in place.
+  parent:
+    organizationId: "123456789012"
+
+  # Console name; defaults to metadata.name. 3-30 characters, unique among
+  # siblings, reserved for 30 days after deletion.
+  displayName: production
+
+  # Client-side destroy guard (Google's default is true). A destroy fails
+  # until this is false and applied first. ABANDON bypasses it.
+  deletionProtection: true
+
+  # Create-time tags (tagKeys/{id} -> tagValues/{id}). IMMUTABLE -- changing
+  # them recreates the folder. Prefer GcpTagBinding after creation.
+  # tags:
+  #   tagKeys/281475647562788: tagValues/281476102962987
+
+  # DELETE (default; soft-delete, 30-day recovery, refused while non-empty),
+  # PREVENT (destroy fails), ABANDON (unmanaged, stays live).
+  deletionPolicy: PREVENT

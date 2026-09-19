@@ -1319,9 +1319,6 @@ resources:
   - resource: google_firestore_user_creds
     disposition: deferred
     reason: "Firestore user credentials are data-plane auth material, not infrastructure; deferred"
-  - resource: google_folder
-    disposition: model-planned
-    reason: "planned GcpFolder kind (resource hierarchy folders)"
   - resource: google_folder_access_approval_settings
     disposition: deferred
     reason: "Access Approval settings judged as one kind with project/folder/organization scope; deferred pending demand"
@@ -1922,12 +1919,6 @@ resources:
   - resource: google_oracle_database_odb_subnet
     disposition: deferred
     reason: "Oracle Database at Google Cloud is a named niche family (an eventual ~6 kind family); deferred pending demand"
-  - resource: google_org_policy_custom_constraint
-    disposition: model-planned
-    reason: "planned composition into the planned GcpOrgPolicy kind (custom constraints)"
-  - resource: google_org_policy_policy
-    disposition: model-planned
-    reason: "planned GcpOrgPolicy kind (organization policy)"
   - resource: google_organization_access_approval_settings
     disposition: deferred
     reason: "Access Approval settings judged as one kind with project/folder/organization scope; deferred pending demand"
@@ -2222,18 +2213,6 @@ resources:
   - resource: google_storage_transfer_job
     disposition: deferred
     reason: "judged to deserve a GcpStorageTransferJob kind (agent pools composed); deferred pending demand"
-  - resource: google_tags_location_tag_binding
-    disposition: model-planned
-    reason: "planned composition into the planned GcpTagBinding kind (the location-scoped binding arm)"
-  - resource: google_tags_tag_binding
-    disposition: model-planned
-    reason: "planned GcpTagBinding kind (resource tag bindings)"
-  - resource: google_tags_tag_key
-    disposition: model-planned
-    reason: "planned GcpTagKey kind (resource tag keys)"
-  - resource: google_tags_tag_value
-    disposition: model-planned
-    reason: "planned GcpTagValue kind (resource tag values)"
   - resource: google_transcoder_job
     disposition: deferred
     reason: "media transcoding jobs are imperative and a niche; deferred"

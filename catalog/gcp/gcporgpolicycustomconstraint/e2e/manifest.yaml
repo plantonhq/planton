@@ -1,0 +1,37 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpOrgPolicyCustomConstraint
+metadata:
+  name: disable-gke-auto-upgrade-off
+spec:
+  # The owning organization (numeric). A custom constraint's parent is
+  # always the organization. Immutable.
+  organizationId: "123456789012"
+
+  # The bare name; the module adds Google's `custom.` prefix and the
+  # `constraint` output is `custom.disableGkeAutoUpgradeOff` -- what a
+  # GcpOrgPolicy's customConstraint references. Defaults to metadata.name.
+  # Immutable.
+  constraintName: disableGkeAutoUpgradeOff
+
+  displayName: GKE node pools must auto-upgrade
+  # The violation message a blocked engineer reads.
+  description: Node pools must enable auto-upgrade; set management.autoUpgrade to true
+
+  # The REST resource types the condition is evaluated against (one
+  # service). Immutable.
+  resourceTypes:
+    - container.googleapis.com/NodePool
+
+  # The operations evaluated: CREATE, UPDATE (all services); DELETE,
+  # REMOVE_GRANT, GOVERN_TAGS (some).
+  methodTypes:
+    - CREATE
+    - UPDATE
+
+  # CEL over the resource's fields; with DENY, true means "blocked".
+  condition: resource.management.autoUpgrade == false
+  actionType: DENY
+
+  # DELETE (default; policies still enforcing it start failing), PREVENT,
+  # ABANDON.
+  deletionPolicy: DELETE

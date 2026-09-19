@@ -96,6 +96,13 @@ const (
 	// enablement, app registrations, the mobile-facing services) belong to
 	// none of the infrastructure shelves above.
 	CloudProviderServiceGroup_gcp_firebase CloudProviderServiceGroup = 313
+	// Resource Manager governance: the hierarchy (projects, folders), the
+	// guardrails on it (organization policies and custom constraints), and
+	// the tags policies key on. IAM roles and bindings stay under Identity &
+	// Access; a project is filed here because it is the unit governance acts
+	// on. Same label as the AWS shelf so the console groups both clouds'
+	// governance blocks under one word.
+	CloudProviderServiceGroup_gcp_management_governance CloudProviderServiceGroup = 314
 	// 400–499: Kubernetes — three groups: native API objects, cluster
 	// machinery, and applications deployed on the cluster.
 	CloudProviderServiceGroup_kubernetes_core_workloads_apis   CloudProviderServiceGroup = 400
@@ -171,6 +178,7 @@ var (
 		311: "gcp_integration",
 		312: "gcp_serverless",
 		313: "gcp_firebase",
+		314: "gcp_management_governance",
 		400: "kubernetes_core_workloads_apis",
 		401: "kubernetes_operators_controllers",
 		402: "kubernetes_open_source_software",
@@ -237,6 +245,7 @@ var (
 		"gcp_integration":                  311,
 		"gcp_serverless":                   312,
 		"gcp_firebase":                     313,
+		"gcp_management_governance":        314,
 		"kubernetes_core_workloads_apis":   400,
 		"kubernetes_operators_controllers": 401,
 		"kubernetes_open_source_software":  402,
@@ -378,7 +387,7 @@ const file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc =
 	";shared/cloudresourcekind/cloud_provider_service_group.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\x9b\x01\n" +
 	"\x1dCloudProviderServiceGroupMeta\x12W\n" +
 	"\bprovider\x18\x01 \x01(\x0e2;.dev.planton.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12!\n" +
-	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\x93\x18\n" +
+	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName*\xd4\x18\n" +
 	"\x19CloudProviderServiceGroup\x12,\n" +
 	"(cloud_provider_service_group_unspecified\x10\x00\x12 \n" +
 	"\vaws_compute\x10d\x1a\x0f\xf2\xcc'\v\b\f\x12\aCompute\x12&\n" +
@@ -425,7 +434,8 @@ const file_shared_cloudresourcekind_cloud_provider_service_group_proto_rawDesc =
 	"\x0fgcp_integration\x10\xb7\x02\x1a\x1c\xf2\xcc'\x18\b\x12\x12\x14Integration Services\x12'\n" +
 	"\x0egcp_serverless\x10\xb8\x02\x1a\x12\xf2\xcc'\x0e\b\x12\x12\n" +
 	"Serverless\x12#\n" +
-	"\fgcp_firebase\x10\xb9\x02\x1a\x10\xf2\xcc'\f\b\x12\x12\bFirebase\x12B\n" +
+	"\fgcp_firebase\x10\xb9\x02\x1a\x10\xf2\xcc'\f\b\x12\x12\bFirebase\x12?\n" +
+	"\x19gcp_management_governance\x10\xba\x02\x1a\x1f\xf2\xcc'\x1b\b\x12\x12\x17Management & Governance\x12B\n" +
 	"\x1ekubernetes_core_workloads_apis\x10\x90\x03\x1a\x1d\xf2\xcc'\x19\b\x13\x12\x15Core Workloads & APIs\x12F\n" +
 	" kubernetes_operators_controllers\x10\x91\x03\x1a\x1f\xf2\xcc'\x1b\b\x13\x12\x17Operators & Controllers\x12B\n" +
 	"\x1fkubernetes_open_source_software\x10\x92\x03\x1a\x1c\xf2\xcc'\x18\b\x13\x12\x14Open-Source Software\x12+\n" +

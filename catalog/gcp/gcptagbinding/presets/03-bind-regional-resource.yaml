@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagBinding
+metadata:
+  name: orders-db-data-classification-pci
+spec:
+  tagValue:
+    value: tagValues/281476102962987
+  parent:
+    resourceName: //sqladmin.googleapis.com/projects/my-gcp-project-123/instances/orders-db
+  location: us-central1

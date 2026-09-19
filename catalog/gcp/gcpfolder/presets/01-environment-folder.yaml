@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFolder
+metadata:
+  name: production
+spec:
+  parent:
+    organizationId: "123456789012"
+  displayName: production
+  deletionProtection: true
+  deletionPolicy: PREVENT

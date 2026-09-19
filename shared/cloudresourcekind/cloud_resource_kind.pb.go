@@ -1912,7 +1912,18 @@ const (
 	CloudResourceKind_GcpPlantonRunner      CloudResourceKind = 3164
 	// 3170–3179: GCP organization & governance (folders, org policies, tags,
 	// budgets, identity groups, API keys)
-	CloudResourceKind_GcpApiKey CloudResourceKind = 3177
+	// GcpFolder is a container: the hierarchy node projects, sub-folders,
+	// policies, and tag bindings are placed inside.
+	CloudResourceKind_GcpFolder     CloudResourceKind = 3170
+	CloudResourceKind_GcpOrgPolicy  CloudResourceKind = 3171
+	CloudResourceKind_GcpTagKey     CloudResourceKind = 3172
+	CloudResourceKind_GcpTagValue   CloudResourceKind = 3173
+	CloudResourceKind_GcpTagBinding CloudResourceKind = 3174
+	CloudResourceKind_GcpApiKey     CloudResourceKind = 3177
+	// A custom constraint is a DEFINITION the organization owns; the
+	// GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
+	// bindings reference a custom role.
+	CloudResourceKind_GcpOrgPolicyCustomConstraint CloudResourceKind = 3179
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -2956,7 +2967,13 @@ var (
 		3162: "GcpEventarcTrigger",
 		3163: "GcpEventarcMessageBus",
 		3164: "GcpPlantonRunner",
+		3170: "GcpFolder",
+		3171: "GcpOrgPolicy",
+		3172: "GcpTagKey",
+		3173: "GcpTagValue",
+		3174: "GcpTagBinding",
 		3177: "GcpApiKey",
+		3179: "GcpOrgPolicyCustomConstraint",
 		3250: "GcpFirebaseProject",
 		3251: "GcpFirebaseAndroidApp",
 		3252: "GcpFirebaseAppleApp",
@@ -3685,7 +3702,13 @@ var (
 		"GcpEventarcTrigger":                             3162,
 		"GcpEventarcMessageBus":                          3163,
 		"GcpPlantonRunner":                               3164,
+		"GcpFolder":                                      3170,
+		"GcpOrgPolicy":                                   3171,
+		"GcpTagKey":                                      3172,
+		"GcpTagValue":                                    3173,
+		"GcpTagBinding":                                  3174,
 		"GcpApiKey":                                      3177,
+		"GcpOrgPolicyCustomConstraint":                   3179,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4344,7 +4367,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xae\xde\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xe7\xe0\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4798,7 +4821,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\rGcpGkeCluster\x10\xbf\x17\x1a%\xa2\xf7\x04!\b\x12\x12\bv1alpha1\"\x06gcpgke0\x01:\x04\xc2\x17\xc3\x17P\xad\x02X\x01\x123\n" +
 	"\x10GcpIamCustomRole\x10\xc0\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcproleP\xb4\x02\x12.\n" +
 	"\n" +
-	"GcpProject\x10\xc1\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpprj0\x01P\xb4\x02\x121\n" +
+	"GcpProject\x10\xc1\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpprj0\x01P\xba\x02\x121\n" +
 	"\rGcpVpcNetwork\x10\xc2\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpvpc0\x01P\xb0\x02\x125\n" +
 	"\rGcpSubnetwork\x10\xc3\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpsnw0\x01:\x02\xc2\x17P\xb0\x02\x124\n" +
 	"\fGcpRouterNat\x10\xc4\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpnat:\x04\xc2\x17\xaa\x18P\xb0\x02\x126\n" +
@@ -4889,8 +4912,14 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\vGcpWorkflow\x10\xd9\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpwflowP\xb7\x02\x12:\n" +
 	"\x12GcpEventarcTrigger\x10\xda\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpevtrg:\x02\xbb\x17P\xb7\x02\x129\n" +
 	"\x15GcpEventarcMessageBus\x10\xdb\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpevbusP\xb7\x02\x123\n" +
-	"\x10GcpPlantonRunner\x10\xdc\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunrP\xb6\x02\x12,\n" +
-	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x128\n" +
+	"\x10GcpPlantonRunner\x10\xdc\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunrP\xb6\x02\x12.\n" +
+	"\tGcpFolder\x10\xe2\x18\x1a\x1e\xa2\xf7\x04\x1a\b\x12\x12\bv1alpha1\"\agcpfldr0\x01P\xba\x02\x12/\n" +
+	"\fGcpOrgPolicy\x10\xe3\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcporgpP\xba\x02\x12,\n" +
+	"\tGcpTagKey\x10\xe4\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptagkP\xba\x02\x122\n" +
+	"\vGcpTagValue\x10\xe5\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagv:\x02\xe4\x18P\xba\x02\x124\n" +
+	"\rGcpTagBinding\x10\xe6\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagb:\x02\xe5\x18P\xba\x02\x12,\n" +
+	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x12>\n" +
+	"\x1cGcpOrgPolicyCustomConstraint\x10\xeb\x18\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpoccP\xba\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

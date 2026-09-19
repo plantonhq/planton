@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcporgpolicy.v1alpha1;
+
+// GcpOrgPolicyStackOutputs captures the policy's identity after
+// provisioning.
+message GcpOrgPolicyStackOutputs {
+  // The policy's full resource name, `{scope}/policies/{constraint}` --
+  // e.g. `projects/123456789012/policies/compute.disableSerialPortAccess`.
+  // Google returns the project scope as the project NUMBER even when the
+  // policy was created with the project ID.
+  string name = 1;
+
+  // The policy's etag: an opaque version marker Google changes on every
+  // update, useful for detecting out-of-band edits.
+  string etag = 2;
+}

@@ -450,6 +450,7 @@ contained dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexSpec.datab
 contained dev.planton.gcp.gcpfirestoreindex.v1alpha1.GcpFirestoreIndexSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpfirewallrule.v1alpha1.GcpFirewallRuleSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpfirewallrule.v1alpha1.GcpFirewallRuleSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpfolder.v1alpha1.GcpFolderParent.folder_id -> GcpFolder
 contained dev.planton.gcp.gcpgcsbucket.v1alpha1.GcpGcsBucketSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterAdditionalIpRange.subnetwork -> GcpSubnetwork
 contained dev.planton.gcp.gcpgkecluster.v1alpha1.GcpGkeClusterIpAllocation.cluster_secondary_range_name -> GcpSubnetwork
@@ -489,7 +490,10 @@ contained dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboard
 contained dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringslo.v1alpha1.GcpMonitoringSloSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1.GcpMonitoringUptimeCheckSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyScope.folder_id -> GcpFolder
+contained dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyScope.project_id -> GcpProject
 contained dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.folder_id -> GcpFolder
 contained dev.planton.gcp.gcpprojectiammember.v1alpha1.GcpProjectIamMemberSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionSpec.project_id -> GcpProject
@@ -521,6 +525,9 @@ contained dev.planton.gcp.gcpsslcertificate.v1alpha1.GcpSslCertificateSpec.proje
 contained dev.planton.gcp.gcpsslpolicy.v1alpha1.GcpSslPolicySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpsubnetwork.v1alpha1.GcpSubnetworkSpec.vpc_self_link -> GcpVpcNetwork
+contained dev.planton.gcp.gcptagbinding.v1alpha1.GcpTagBindingParent.folder_id -> GcpFolder
+contained dev.planton.gcp.gcptagbinding.v1alpha1.GcpTagBindingParent.project_id -> GcpProject
+contained dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyParent.project_id -> GcpProject
 contained dev.planton.gcp.gcptargethttpproxy.v1alpha1.GcpTargetHttpProxySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapSpec.project_id -> GcpProject

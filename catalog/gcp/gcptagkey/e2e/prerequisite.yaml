@@ -1,0 +1,28 @@
+# GcpTagKey install profile used when the key is an E2E PREREQUISITE for
+# another component (a GcpTagValue, and through it a GcpTagBinding). Owned
+# by the harness PROJECT so the whole tag chain proves live with only
+# roles/resourcemanager.tagAdmin on the project; the owner is named through
+# the harness-exported PLANTON_E2E_GCP_PROJECT_ID token (the owner arm
+# cannot be left empty). The short name carries ${E2E_RUN_ID}: a deleted
+# key's name is reserved under its owner for 30 days. metadata.name stays
+# fixed (prerequisite FK resolution is kind-keyed).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: planton-oss-e2e-gcptagk-prereq
+  id: planton-oss-e2e-gcptagk-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptagkey
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  shortName: planton-e2e-prereq-${E2E_RUN_ID}
+  description: Planton E2E fixture key; safe to delete

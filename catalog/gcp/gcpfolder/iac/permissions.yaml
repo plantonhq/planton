@@ -1,0 +1,26 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpfolder
+spec:
+  gcp:
+    groups:
+      - purpose: ManageFolder
+        permissions:
+          - resourcemanager.folders.create
+          - resourcemanager.folders.get
+          - resourcemanager.folders.update
+          - resourcemanager.folders.move
+          - resourcemanager.folders.delete
+        provenance: derived
+        notes: "Covers google_folder (Pulumi organizations.Folder) -- the modules' only resource. create on first apply; get on every refresh and import; update when display_name changes; move when the parent changes (the provider calls folders.move, an in-place operation); delete on destroy under deletion_policy DELETE (a soft delete; ABANDON and PREVENT call no delete API, and the client-side deletion_protection guard fails the destroy before any call). Granted on the PARENT organization or folder -- folder permissions are never project-scoped. roles/resourcemanager.folderAdmin contains all five; folderCreator plus folderEditor is the narrower pair."
+      - purpose: BindCreateTimeTags
+        permissions:
+          - resourcemanager.tagValues.use
+        provenance: derived
+        notes: "Needed only when spec.tags is set: Google checks the caller may USE each tag value bound at create time. roles/resourcemanager.tagUser on the tag value (or its key) carries it. Omit this group for folders without create-time tags."

@@ -1,0 +1,30 @@
+# Nested GcpFolder scenario: a folder whose parent is ANOTHER folder by
+# reference -- the hierarchy joint this kind exists for. The parent is the
+# prerequisite install profile (GcpFolder is its own prerequisite here; the
+# harness installs e2e/prerequisite.yaml first). Guard OFF for teardown.
+# Organization-level: needs roles/resourcemanager.folderAdmin.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFolder
+metadata:
+  name: planton-oss-e2e-gcpfldr-nested
+  id: planton-oss-e2e-gcpfldr-nested
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfolder
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    folderId:
+      valueFrom:
+        kind: GcpFolder
+        name: planton-oss-e2e-gcpfldr-prereq
+        fieldPath: status.outputs.folder_id
+  displayName: planton-e2e-nested-${E2E_RUN_ID}
+  deletionProtection: false
+  deletionPolicy: DELETE

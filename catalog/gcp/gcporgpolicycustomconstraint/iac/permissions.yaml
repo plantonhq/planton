@@ -1,0 +1,20 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcporgpolicycustomconstraint
+spec:
+  gcp:
+    groups:
+      - purpose: ManageCustomConstraint
+        permissions:
+          - orgpolicy.customConstraints.create
+          - orgpolicy.customConstraints.get
+          - orgpolicy.customConstraints.update
+          - orgpolicy.customConstraints.delete
+        provenance: derived
+        notes: "Covers google_org_policy_custom_constraint (Pulumi orgpolicy.CustomConstraint) -- the modules' only resource. create on first apply; get on every refresh and import; update when the condition, action, methods, display name, or description change (name, parent, and resource_types are ForceNew and recreate instead); delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Granted on the ORGANIZATION -- a custom constraint's parent is always the organization, so there is no project-scoped form of this grant. roles/orgpolicy.policyAdmin contains all four."

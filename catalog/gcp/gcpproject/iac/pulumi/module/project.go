@@ -1,6 +1,8 @@
 package module
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 	gcpprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpproject/v1alpha1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
@@ -30,16 +32,22 @@ func project(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) (*o
 	}
 
 	// Resource Manager tags bind at create time only; changing them
-	// afterwards forces recreation (bind tag values out-of-band instead).
+	// afterwards forces recreation (bind tag values to an existing project
+	// with GcpTagBinding instead).
 	if len(spec.Tags) > 0 {
 		projectArgs.Tags = pulumi.ToStringMap(spec.Tags)
 	}
 
-	// Exactly one of org_id / folder_id is sent, selected by parent_type.
-	if spec.ParentType == gcpprojectv1alpha1.GcpProjectParentType_organization {
+	// Exactly one of org_id / folder_id is sent. A folder_id reference (a
+	// GcpFolder's folder_id output, or a literal folder id) IS the parent
+	// and wins; otherwise parent_type selects which argument parent_id
+	// fills. The spec's CEL keeps the two forms from being combined. The
+	// same rule lives in the Terraform module's locals.tf.
+	if folder := strings.TrimPrefix(spec.FolderId.GetValue(), "folders/"); folder != "" {
+		projectArgs.FolderId = pulumi.String(folder)
+	} else if spec.ParentType == gcpprojectv1alpha1.GcpProjectParentType_organization {
 		projectArgs.OrgId = pulumi.String(spec.ParentId)
-	}
-	if spec.ParentType == gcpprojectv1alpha1.GcpProjectParentType_folder {
+	} else if spec.ParentType == gcpprojectv1alpha1.GcpProjectParentType_folder {
 		projectArgs.FolderId = pulumi.String(spec.ParentId)
 	}
 

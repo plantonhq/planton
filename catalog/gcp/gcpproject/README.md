@@ -16,8 +16,9 @@ deliberately NOT bundled here — model each grant as a first-class
 
 ## Key Features
 
-- **Hierarchy placement**: create under an organization or a folder;
-  changing the parent migrates the project.
+- **Hierarchy placement**: create under an organization or a folder --
+  by numeric ID, or by referencing a `GcpFolder` declared in the same
+  chart (`folderId`); changing the parent migrates the project.
 - **Billing linkage**: attach a billing account at creation
   ([`iac/permissions.yaml`](iac/permissions.yaml) lists the exact
   least-privilege grants, including the billing-account-scoped one).
@@ -32,7 +33,8 @@ deliberately NOT bundled here — model each grant as a first-class
   attribution labels identically on both engines; labels are the primary
   cost-allocation dimension in billing exports.
 - **Create-time tags**: resource-manager tags (`tagKeys/… → tagValues/…`)
-  bind at creation for org-policy and IAM-condition targeting.
+  bind at creation for org-policy and IAM-condition targeting; tag an
+  existing project with `GcpTagBinding` instead.
 
 ## Example Usage
 
@@ -103,6 +105,9 @@ planton tofu apply --manifest project.yaml
 
 ## Related Components
 
+- **GcpFolder** — the folder the project is placed in by reference
+- **GcpOrgPolicy** — guardrails scoped to the project
+- **GcpTagBinding** — tags on an existing project
 - **GcpProjectIamMember** — additive IAM grants on the project
 - **GcpVpcNetwork** — explicit networks (instead of the default network)
 - **GcpServiceAccount** — workload identities inside the project

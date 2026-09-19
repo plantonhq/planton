@@ -8,6 +8,7 @@ package gcpprojectv1alpha1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -95,9 +96,12 @@ type GcpProjectSpec struct {
 	// metadata.name.
 	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	// The type of parent node the project is created under. Changing the
-	// parent migrates the project within the hierarchy.
+	// parent migrates the project within the hierarchy. May be left empty
+	// when folder_id names the parent.
 	ParentType GcpProjectParentType `protobuf:"varint,3,opt,name=parent_type,json=parentType,proto3,enum=dev.planton.gcp.gcpproject.v1alpha1.GcpProjectParentType" json:"parent_type,omitempty"`
 	// Organization ID or Folder ID (numeric string) matching parent_type.
+	// For a folder declared in the same chart, prefer folder_id (a
+	// reference) and leave this empty.
 	ParentId string `protobuf:"bytes,4,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
 	// Billing account ID in the form "0123AB-4567CD-89EFGH".
 	// Strongly recommended for any project that will use billable services.
@@ -109,9 +113,11 @@ type GcpProjectSpec struct {
 	// Keys/values: lowercase letters, digits, underscores, hyphens.
 	Labels map[string]string `protobuf:"bytes,6,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Resource Manager tags bound to the project at CREATE TIME only
-	// (tagKeys/{id} -> tagValues/{id}). Tags drive org policies and IAM
-	// conditions. Changing this after creation recreates the project — for
-	// tags on an existing project, bind tag values out-of-band instead.
+	// (tagKeys/{id} -> tagValues/{id}, the `name` outputs of GcpTagKey and
+	// GcpTagValue). Tags drive org policies and IAM conditions. Changing this
+	// after creation recreates the project — for tags on an existing project,
+	// bind tag values with GcpTagBinding instead, which attaches and detaches
+	// without touching the project.
 	Tags map[string]string `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Whether GCP auto-creates the "default" VPC network in the new project.
 	// Defaults to false: deleting the auto-created network is a standard
@@ -132,8 +138,17 @@ type GcpProjectSpec struct {
 	//	ABANDON: the resource is removed from state and the project lives
 	//	  on unmanaged — the safe hand-off when ownership moves elsewhere.
 	DeletionPolicy string `protobuf:"bytes,10,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The folder the project lives in, by reference: a GcpFolder resource
+	// (its folder_id output) or the folder's numeric ID as a literal. This is
+	// how a chart places a project inside a folder it also declares -- the
+	// project waits for the folder to exist. When set it IS the parent:
+	// leave parent_id empty and parent_type empty (or `folder`). Changing it
+	// moves the project into the new folder in place; nothing is recreated,
+	// but the IAM and organization policies inherited from the old folder
+	// stop applying and the new folder's start.
+	FolderId      *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=folder_id,json=folderId,proto3" json:"folder_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpProjectSpec) Reset() {
@@ -236,11 +251,18 @@ func (x *GcpProjectSpec) GetDeletionPolicy() string {
 	return ""
 }
 
+func (x *GcpProjectSpec) GetFolderId() *v1.StringValueOrRef {
+	if x != nil {
+		return x.FolderId
+	}
+	return nil
+}
+
 var File_catalog_gcp_gcpproject_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpproject_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"*catalog/gcp/gcpproject/v1alpha1/spec.proto\x12#dev.planton.gcp.gcpproject.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cshared/options/options.proto\"\xcb\b\n" +
+	"*catalog/gcp/gcpproject/v1alpha1/spec.proto\x12#dev.planton.gcp.gcpproject.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdb\v\n" +
 	"\x0eGcpProjectSpec\x12F\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tB'\xbaH$\xc8\x01\x01r\x1f\x10\x06\x18\x1e2\x19^[a-z][a-z0-9-]*[a-z0-9]$R\tprojectId\x12!\n" +
@@ -256,13 +278,15 @@ const file_catalog_gcp_gcpproject_v1alpha1_spec_proto_rawDesc = "" +
 	"\fenabled_apis\x18\t \x03(\tB(\xbaH%\x92\x01\"\" r\x1e2\x1c^[a-z0-9]+\\.googleapis\\.com$R\venabledApis\x12\xb6\x01\n" +
 	"\x0fdeletion_policy\x18\n" +
 	" \x01(\tB\x8c\x01\xbaH\x88\x01\xba\x01\x84\x01\n" +
-	"\x15deletion_policy.valid\x123deletion_policy must be DELETE, PREVENT, or ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
+	"\x15deletion_policy.valid\x123deletion_policy must be DELETE, PREVENT, or ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12r\n" +
+	"\tfolder_id\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xe2\x18\x92\xd4a\x18status.outputs.folder_idR\bfolderId\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x16\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x99\x02\xbaH\x95\x02\x1a\x92\x02\n" +
+	"\x17folder_id_is_the_parent\x12dwhen folder_id is set it IS the parent: leave parent_id empty and parent_type either empty or folder\x1a\x90\x01!(has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from))) || (this.parent_id == '' && this.parent_type in [0, 2])B\x16\n" +
 	"\x14_auto_create_network*]\n" +
 	"\x14GcpProjectParentType\x12'\n" +
 	"#gcp_project_parent_type_unspecified\x10\x00\x12\x10\n" +
@@ -286,20 +310,22 @@ func file_catalog_gcp_gcpproject_v1alpha1_spec_proto_rawDescGZIP() []byte {
 var file_catalog_gcp_gcpproject_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_catalog_gcp_gcpproject_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_catalog_gcp_gcpproject_v1alpha1_spec_proto_goTypes = []any{
-	(GcpProjectParentType)(0), // 0: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectParentType
-	(*GcpProjectSpec)(nil),    // 1: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec
-	nil,                       // 2: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.LabelsEntry
-	nil,                       // 3: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.TagsEntry
+	(GcpProjectParentType)(0),   // 0: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectParentType
+	(*GcpProjectSpec)(nil),      // 1: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec
+	nil,                         // 2: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.LabelsEntry
+	nil,                         // 3: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.TagsEntry
+	(*v1.StringValueOrRef)(nil), // 4: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpproject_v1alpha1_spec_proto_depIdxs = []int32{
 	0, // 0: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.parent_type:type_name -> dev.planton.gcp.gcpproject.v1alpha1.GcpProjectParentType
 	2, // 1: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.labels:type_name -> dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.LabelsEntry
 	3, // 2: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.tags:type_name -> dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.TagsEntry
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	4, // 3: dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.folder_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpproject_v1alpha1_spec_proto_init() }

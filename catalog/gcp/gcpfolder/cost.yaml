@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpfolder
+spec:
+  billing_model: free
+  free_tier: "A folder is a node in the Resource Manager hierarchy, and Google's Resource Manager pricing states that all use of the Cloud Resource Manager API is free of charge -- no meter counts folders, their depth, their moves, or the projects they hold. A folder costs nothing whether it is empty or holds an entire production estate."
+  notes: "No field of this spec buys anything. The spend a folder governs is the resources created in the projects beneath it, each billing as its own catalog kind; the folder only groups them and carries the IAM and organization policies they inherit. tags bind Resource Manager tags at no charge (Google's one tag caveat, a per-tag monthly fee, applies to tags attached to Cloud Storage BUCKETS, not to folders). deletion_protection and deletion_policy change what a destroy does, never what is billed."

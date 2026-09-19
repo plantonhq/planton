@@ -27,10 +27,13 @@ variable "spec" {
     display_name = optional(string, "")
 
     # The type of parent node the project is created under. Changing the
-    # parent migrates the project within the hierarchy.
+    # parent migrates the project within the hierarchy. May be left empty
+    # when folder_id names the parent.
     parent_type = optional(string, "")
 
     # Organization ID or Folder ID (numeric string) matching parent_type.
+    # For a folder declared in the same chart, prefer folder_id (a
+    # reference) and leave this empty.
     parent_id = optional(string, "")
 
     # Billing account ID in the form "0123AB-4567CD-89EFGH".
@@ -45,9 +48,11 @@ variable "spec" {
     labels = optional(map(string), {})
 
     # Resource Manager tags bound to the project at CREATE TIME only
-    # (tagKeys/{id} -> tagValues/{id}). Tags drive org policies and IAM
-    # conditions. Changing this after creation recreates the project — for
-    # tags on an existing project, bind tag values out-of-band instead.
+    # (tagKeys/{id} -> tagValues/{id}, the `name` outputs of GcpTagKey and
+    # GcpTagValue). Tags drive org policies and IAM conditions. Changing this
+    # after creation recreates the project — for tags on an existing project,
+    # bind tag values with GcpTagBinding instead, which attaches and detaches
+    # without touching the project.
     tags = optional(map(string), {})
 
     # Whether GCP auto-creates the "default" VPC network in the new project.
@@ -70,5 +75,16 @@ variable "spec" {
     #   ABANDON: the resource is removed from state and the project lives
     #     on unmanaged — the safe hand-off when ownership moves elsewhere.
     deletion_policy = optional(string, "")
+
+    # The folder the project lives in, by reference: a GcpFolder resource
+    # (its folder_id output) or the folder's numeric ID as a literal. This is
+    # how a chart places a project inside a folder it also declares -- the
+    # project waits for the folder to exist. When set it IS the parent:
+    # leave parent_id empty and parent_type empty (or `folder`). Changing it
+    # moves the project into the new folder in place; nothing is recreated,
+    # but the IAM and organization policies inherited from the old folder
+    # stop applying and the new folder's start.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+    folder_id = optional(string, "")
   })
 }

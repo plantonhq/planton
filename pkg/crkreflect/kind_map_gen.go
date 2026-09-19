@@ -550,6 +550,7 @@ import (
 	gcpfirestoredatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoredatabase/v1alpha1"
 	gcpfirestoreindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirestoreindex/v1alpha1"
 	gcpfirewallrulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfirewallrule/v1alpha1"
+	gcpfolderv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfolder/v1alpha1"
 	gcpgcsbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucket/v1alpha1"
 	gcpgkeclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkecluster/v1alpha1"
 	gcpgkenodepoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkenodepool/v1alpha1"
@@ -575,6 +576,8 @@ import (
 	gcpmonitoringnotificationchannelv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1"
 	gcpmonitoringslov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringslo/v1alpha1"
 	gcpmonitoringuptimecheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringuptimecheck/v1alpha1"
+	gcporgpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicy/v1alpha1"
+	gcporgpolicycustomconstraintv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicycustomconstraint/v1alpha1"
 	gcpplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpplantonrunner/v1alpha1"
 	gcpprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpproject/v1alpha1"
 	gcpprojectiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprojectiammember/v1alpha1"
@@ -596,6 +599,9 @@ import (
 	gcpsslcertificatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsslcertificate/v1alpha1"
 	gcpsslpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsslpolicy/v1alpha1"
 	gcpsubnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsubnetwork/v1alpha1"
+	gcptagbindingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptagbinding/v1alpha1"
+	gcptagkeyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptagkey/v1alpha1"
+	gcptagvaluev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptagvalue/v1alpha1"
 	gcptargethttpproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpproxy/v1alpha1"
 	gcptargethttpsproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpsproxy/v1alpha1"
 	gcpurlmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpurlmap/v1alpha1"
@@ -1309,6 +1315,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpFirestoreDatabase:                   &gcpfirestoredatabasev1alpha1.GcpFirestoreDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpFirestoreIndex:                      &gcpfirestoreindexv1alpha1.GcpFirestoreIndex{},
 	cloudresourcekind.CloudResourceKind_GcpFirewallRule:                        &gcpfirewallrulev1alpha1.GcpFirewallRule{},
+	cloudresourcekind.CloudResourceKind_GcpFolder:                              &gcpfolderv1alpha1.GcpFolder{},
 	cloudresourcekind.CloudResourceKind_GcpGcsBucket:                           &gcpgcsbucketv1alpha1.GcpGcsBucket{},
 	cloudresourcekind.CloudResourceKind_GcpGkeCluster:                          &gcpgkeclusterv1alpha1.GcpGkeCluster{},
 	cloudresourcekind.CloudResourceKind_GcpGkeNodePool:                         &gcpgkenodepoolv1alpha1.GcpGkeNodePool{},
@@ -1334,6 +1341,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpMonitoringNotificationChannel:       &gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannel{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringSlo:                       &gcpmonitoringslov1alpha1.GcpMonitoringSlo{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringUptimeCheck:               &gcpmonitoringuptimecheckv1alpha1.GcpMonitoringUptimeCheck{},
+	cloudresourcekind.CloudResourceKind_GcpOrgPolicy:                           &gcporgpolicyv1alpha1.GcpOrgPolicy{},
+	cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint:           &gcporgpolicycustomconstraintv1alpha1.GcpOrgPolicyCustomConstraint{},
 	cloudresourcekind.CloudResourceKind_GcpPlantonRunner:                       &gcpplantonrunnerv1alpha1.GcpPlantonRunner{},
 	cloudresourcekind.CloudResourceKind_GcpProject:                             &gcpprojectv1alpha1.GcpProject{},
 	cloudresourcekind.CloudResourceKind_GcpProjectIamMember:                    &gcpprojectiammemberv1alpha1.GcpProjectIamMember{},
@@ -1355,6 +1364,9 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpSslCertificate:                      &gcpsslcertificatev1alpha1.GcpSslCertificate{},
 	cloudresourcekind.CloudResourceKind_GcpSslPolicy:                           &gcpsslpolicyv1alpha1.GcpSslPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpSubnetwork:                          &gcpsubnetworkv1alpha1.GcpSubnetwork{},
+	cloudresourcekind.CloudResourceKind_GcpTagBinding:                          &gcptagbindingv1alpha1.GcpTagBinding{},
+	cloudresourcekind.CloudResourceKind_GcpTagKey:                              &gcptagkeyv1alpha1.GcpTagKey{},
+	cloudresourcekind.CloudResourceKind_GcpTagValue:                            &gcptagvaluev1alpha1.GcpTagValue{},
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpProxy:                     &gcptargethttpproxyv1alpha1.GcpTargetHttpProxy{},
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpsProxy:                    &gcptargethttpsproxyv1alpha1.GcpTargetHttpsProxy{},
 	cloudresourcekind.CloudResourceKind_GcpUrlMap:                              &gcpurlmapv1alpha1.GcpUrlMap{},

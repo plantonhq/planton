@@ -49,6 +49,7 @@ module "project" {
 | spec.project_id | Globally-unique project ID (immutable) | string | yes |
 | spec.display_name | Console display name (defaults to metadata.name) | string | no |
 | spec.parent_type / spec.parent_id | "organization" or "folder" + numeric ID | string | no |
+| spec.folder_id | The parent folder by reference (a `GcpFolder`'s `folder_id` output, or a numeric folder ID); when set, `parent_type` and `parent_id` stay empty | string | no |
 | spec.billing_account_id | Billing account to link | string | no |
 | spec.labels | User labels (platform attribution labels win on conflicts) | map(string) | no |
 | spec.tags | Resource-manager tags, create-time only | map(string) | no |

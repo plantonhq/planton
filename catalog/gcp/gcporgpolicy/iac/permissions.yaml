@@ -1,0 +1,26 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcporgpolicy
+spec:
+  gcp:
+    groups:
+      - purpose: ManagePolicy
+        permissions:
+          - orgpolicy.policy.get
+          - orgpolicy.policies.create
+          - orgpolicy.policies.update
+          - orgpolicy.policies.delete
+          - orgpolicy.constraints.list
+        provenance: derived
+        notes: "Covers google_org_policy_policy (Pulumi orgpolicy.Policy) -- the modules' only resource. create on first apply; get on every refresh and import (the provider reads the policy by name); update when the enforced or dry-run rule set changes; delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). constraints.list is what the provider needs to validate a constraint name exists at the scope. Granted on the SCOPE the policy applies to -- the project for a project-scoped policy (the one shape that needs no organization-level grant), the folder or organization otherwise. roles/orgpolicy.policyAdmin contains all five."
+      - purpose: ResolveDefaultProject
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        notes: "Needed only when spec.scope is empty: both modules read the provider's default project once to render the policy parent (data.google_project on Terraform, the provider client config on Pulumi). Every project-level predefined role carries it."

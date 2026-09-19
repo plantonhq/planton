@@ -1695,7 +1695,13 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpApiKey`
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -2587,7 +2593,13 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpApiKey`
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -4663,7 +4675,13 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpApiKey`
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -5555,7 +5573,13 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpApiKey`
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -7747,7 +7771,13 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpApiKey`
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -8639,7 +8669,13 @@ Allowed values (use exactly as shown):
 - `GcpEventarcTrigger` -- GcpCloudRun is a prerequisite because the canonical trigger routes a Pub/Sub messagePublished event to a Cloud Run service — the destination story the kind exists to model.
 - `GcpEventarcMessageBus`
 - `GcpPlantonRunner`
-- `GcpApiKey` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys)
+- `GcpFolder` -- 3170–3179: GCP organization & governance (folders, org policies, tags, budgets, identity groups, API keys) GcpFolder is a container: the hierarchy node projects, sub-folders, policies, and tag bindings are placed inside.
+- `GcpOrgPolicy`
+- `GcpTagKey`
+- `GcpTagValue`
+- `GcpTagBinding`
+- `GcpApiKey`
+- `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`

@@ -1,0 +1,26 @@
+# Dynamic GcpTagKey scenario: a project-owned key with a description and an
+# allowed-values regex (which also makes the key dynamic), plus an explicit
+# deletion policy -- the two mutable fields and the regex Google compiles on
+# apply. Project scope; needs only roles/resourcemanager.tagAdmin on it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTagKey
+metadata:
+  name: planton-oss-e2e-gcptagk-dynamic
+  id: planton-oss-e2e-gcptagk-dynamic
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptagkey
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  parent:
+    projectId:
+      value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  shortName: planton-e2e-dyn-${E2E_RUN_ID}
+  description: Planton E2E dynamic key; values are CC-nnnn cost center codes
+  allowedValuesRegex: ^CC-[0-9]{4}$
+  deletionPolicy: DELETE

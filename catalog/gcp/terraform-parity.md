@@ -29,10 +29,10 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 104 |
-| Distinct provider resources consumed | 167 |
-| Spec fields authored across all kinds | 3844 |
-| Module pins on `google` | `~> 8.3` × 104 |
+| Kinds in the catalog | 110 |
+| Distinct provider resources consumed | 174 |
+| Spec fields authored across all kinds | 3909 |
+| Module pins on `google` | `~> 8.3` × 110 |
 | Module pins on `google-beta` | `~> 8.3` × 4 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -76,7 +76,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**104 of 104 kinds are at total accounting; 83 proven live.**
+**110 of 110 kinds are at total accounting; 83 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -126,6 +126,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpFirestoreDatabase | 15 | 11 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFirestoreIndex | 17 | 16 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFirewallRule | 20 | 13 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpFolder | 5 | 4 | 1 | 0 | 0 | ✅ | — |
 | GcpGcsBucket | 78 | 39 | 31 | 8 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGkeCluster | 538 | 63 | 147 | 328 | 0 | ✅ | — |
 | GcpGkeNodePool | 184 | 129 | 55 | 0 | 0 | ✅ | — |
@@ -151,6 +152,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpMonitoringNotificationChannel | 18 | 9 | 3 | 6 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringSlo | 53 | 9 | 44 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringUptimeCheck | 38 | 33 | 3 | 2 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpOrgPolicy | 27 | 1 | 26 | 0 | 0 | ✅ | — |
+| GcpOrgPolicyCustomConstraint | 9 | 7 | 2 | 0 | 0 | ✅ | — |
 | GcpPlantonRunner | 0 | 0 | 0 | 0 | 0 | ✅ | — |
 | GcpProject | 14 | 5 | 5 | 4 | 0 | ✅ | — |
 | GcpProjectIamMember | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -172,6 +175,9 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpSslCertificate | 19 | 9 | 4 | 6 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSslPolicy | 17 | 13 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSubnetwork | 29 | 22 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpTagBinding | 7 | 5 | 2 | 0 | 0 | ✅ | — |
+| GcpTagKey | 7 | 6 | 1 | 0 | 0 | ✅ | — |
+| GcpTagValue | 4 | 3 | 1 | 0 | 0 | ✅ | — |
 | GcpTargetHttpProxy | 7 | 5 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpTargetHttpsProxy | 14 | 12 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpUrlMap | 333 | 74 | 259 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -191,10 +197,10 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 162 | consumed by a kind's Terraform module today |
+| Modeled | 169 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 125 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 118 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 586 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 69 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
@@ -204,7 +210,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (162)
+### Modeled (169)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -295,6 +301,7 @@ rather than trusted.
 | `google_firestore_backup_schedule` | consumed by GcpFirestoreBackupSchedule |
 | `google_firestore_database` | consumed by GcpFirestoreDatabase |
 | `google_firestore_index` | consumed by GcpFirestoreIndex |
+| `google_folder` | consumed by GcpFolder |
 | `google_iam_deny_policy` | consumed by GcpIamDenyPolicy |
 | `google_iam_oauth_client` | consumed by GcpIamOauthClient |
 | `google_iam_oauth_client_credential` | consumed by GcpIamOauthClient |
@@ -333,6 +340,8 @@ rather than trusted.
 | `google_monitoring_slo` | consumed by GcpMonitoringSlo |
 | `google_monitoring_uptime_check_config` | consumed by GcpMonitoringUptimeCheck |
 | `google_network_connectivity_service_connection_policy` | consumed by GcpServiceConnectionPolicy |
+| `google_org_policy_custom_constraint` | consumed by GcpOrgPolicyCustomConstraint |
+| `google_org_policy_policy` | consumed by GcpOrgPolicy |
 | `google_organization_iam_member` | consumed by GcpServiceAccount |
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
@@ -363,6 +372,10 @@ rather than trusted.
 | `google_storage_folder` | consumed by GcpGcsBucket |
 | `google_storage_managed_folder` | consumed by GcpGcsBucket |
 | `google_storage_notification` | consumed by GcpGcsBucket |
+| `google_tags_location_tag_binding` | consumed by GcpTagBinding |
+| `google_tags_tag_binding` | consumed by GcpTagBinding |
+| `google_tags_tag_key` | consumed by GcpTagKey |
+| `google_tags_tag_value` | consumed by GcpTagValue |
 | `google_vertex_ai_endpoint` | consumed by GcpVertexAiEndpoint |
 | `google_vertex_ai_index` | consumed by GcpVertexAiIndex |
 | `google_vertex_ai_index_endpoint` | consumed by GcpVertexAiIndexEndpoint |
@@ -803,7 +816,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (125)
+### Planned (118)
 
 | Resource | Recorded reason |
 |---|---|
@@ -880,7 +893,6 @@ rather than trusted.
 | `google_discovery_engine_target_site` | planned composition into the planned GcpVertexAiSearchDataStore kind (target sites) |
 | `google_document_ai_processor` | planned GcpDocumentAiProcessor kind (Document AI processors) |
 | `google_document_ai_processor_default_version` | planned composition into the planned GcpDocumentAiProcessor kind (the default version) |
-| `google_folder` | planned GcpFolder kind (resource hierarchy folders) |
 | `google_gke_hub_feature` | planned GcpGkeFleetFeature kind (GKE fleet features) |
 | `google_gke_hub_fleet` | planned GcpGkeFleet kind (GKE fleets) |
 | `google_gke_hub_membership` | planned GcpGkeFleetMembership kind (GKE fleet memberships) |
@@ -896,8 +908,6 @@ rather than trusted.
 | `google_managed_kafka_connector` | planned composition into the planned GcpManagedKafkaConnectCluster kind (connectors) |
 | `google_managed_kafka_topic` | planned GcpManagedKafkaTopic kind (Managed Kafka topics) |
 | `google_model_armor_template` | planned GcpModelArmorTemplate kind (Model Armor templates) |
-| `google_org_policy_custom_constraint` | planned composition into the planned GcpOrgPolicy kind (custom constraints) |
-| `google_org_policy_policy` | planned GcpOrgPolicy kind (organization policy) |
 | `google_privateca_ca_pool` | planned GcpPrivateCaPool kind (Certificate Authority Service CA pools) |
 | `google_privateca_certificate` | planned composition into the planned GcpPrivateCaPool kind (issued certificates) |
 | `google_privateca_certificate_authority` | planned composition into the planned GcpPrivateCaPool kind (certificate authorities) |
@@ -913,10 +923,6 @@ rather than trusted.
 | `google_scc_v2_project_mute_config` | planned GcpSccMuteConfig kind (Security Command Center mute configs at project, folder, or organization scope) |
 | `google_scc_v2_project_notification_config` | planned GcpSccNotificationConfig kind (Security Command Center notification configs at project, folder, or organization scope) |
 | `google_scc_v2_project_scc_big_query_export` | planned GcpSccBigQueryExport kind (Security Command Center BigQuery exports at project, folder, or organization scope) |
-| `google_tags_location_tag_binding` | planned composition into the planned GcpTagBinding kind (the location-scoped binding arm) |
-| `google_tags_tag_binding` | planned GcpTagBinding kind (resource tag bindings) |
-| `google_tags_tag_key` | planned GcpTagKey kind (resource tag keys) |
-| `google_tags_tag_value` | planned GcpTagValue kind (resource tag values) |
 | `google_vector_search_collection` | planned GcpVectorSearchCollection kind (Vector Search collections) |
 | `google_vector_search_index` | planned composition into the planned GcpVectorSearchCollection kind (indexes) |
 | `google_vertex_ai_dataset` | planned GcpVertexAiDataset kind (Vertex AI datasets) |

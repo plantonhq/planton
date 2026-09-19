@@ -4652,7 +4652,7 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "gcpprj"
     container_kind: true
-    service_group: gcp_identity_access
+    service_group: gcp_management_governance
   }];
   GcpVpcNetwork = 3010 [(kind_meta) = {
     provider: gcp
@@ -5380,11 +5380,55 @@ enum CloudResourceKind {
 
   // 3170–3179: GCP organization & governance (folders, org policies, tags,
   // budgets, identity groups, API keys)
+  // GcpFolder is a container: the hierarchy node projects, sub-folders,
+  // policies, and tag bindings are placed inside.
+  GcpFolder = 3170 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfldr"
+    container_kind: true
+    service_group: gcp_management_governance
+  }];
+  GcpOrgPolicy = 3171 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcporgp"
+    service_group: gcp_management_governance
+  }];
+  GcpTagKey = 3172 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptagk"
+    service_group: gcp_management_governance
+  }];
+  GcpTagValue = 3173 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptagv"
+    prerequisites: [GcpTagKey]
+    service_group: gcp_management_governance
+  }];
+  GcpTagBinding = 3174 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptagb"
+    prerequisites: [GcpTagValue]
+    service_group: gcp_management_governance
+  }];
   GcpApiKey = 3177 [(kind_meta) = {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcpakey"
     service_group: gcp_identity_access
+  }];
+  // A custom constraint is a DEFINITION the organization owns; the
+  // GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
+  // bindings reference a custom role.
+  GcpOrgPolicyCustomConstraint = 3179 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpocc"
+    service_group: gcp_management_governance
   }];
 
   // 3250–3259: GCP Firebase (project enablement, app registrations, and

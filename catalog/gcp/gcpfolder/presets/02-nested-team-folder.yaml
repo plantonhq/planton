@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFolder
+metadata:
+  name: payments
+spec:
+  parent:
+    folderId:
+      valueFrom:
+        kind: GcpFolder
+        name: production
+        fieldPath: status.outputs.folder_id
+  displayName: payments
