@@ -45,7 +45,6 @@ spec:
   cluster:
     value: "fb7d9b81-fe06-4ee5-87f1-b9efc5af46fd"
   size: s-4vcpu-8gb
-  nodeCount: 3
   autoScale: true
   minNodes: 2
   maxNodes: 6
@@ -78,7 +77,7 @@ These are the most important decisions when configuring a node pool. Explore the
 
 **Sizing** -- The `size` field sets every node's CPU and memory. Changing it later replaces the whole pool (nodes are recreated), so plan capacity classes as separate pools rather than resizing one in place.
 
-**Fixed vs. autoscaled** -- A fixed pool holds exactly `nodeCount` nodes. With `autoScale: true`, `nodeCount` is only the initial count and DigitalOcean's cluster-autoscaler moves it between `minNodes` and `maxNodes`; the live count drifting is normal and produces no configuration diff.
+**Fixed vs. autoscaled** -- A fixed pool holds exactly `nodeCount` nodes. With `autoScale: true`, leave `nodeCount` out (the manifest is rejected if you set both): the pool starts at `minNodes` and DigitalOcean's cluster-autoscaler moves the count between `minNodes` and `maxNodes`. The provider writes the live count back into `node_count` on every read, so a stated count would be re-applied against the autoscaler on every update; sending none is what keeps the drift diff-free.
 
 **Labels and taints** -- Labels make the pool targetable from Kubernetes (nodeSelector, affinity); taints keep untolerating pods off. Pair them for dedicated pools: a taint alone isolates, a label alone only attracts.
 

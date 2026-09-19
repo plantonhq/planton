@@ -37,6 +37,12 @@ spec:
   # Deferred arms: schema evolution is destroy+recreate upstream and drops
   # all versions -- the GUIDE steers customers to their producers' registry
   # client for evolution; the runner has no update phase.
+  #
+  # Pulumi re-proven 2026-09-19 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `minimal`: the GP Kafka fixture and the PG registry
+  # prerequisite 10m27s, DEPLOY 20 s, IDEMPOTENCY PASS (the canonicalized
+  # JSON schema stable at the new bridge), VERIFY-RES PASS, DESTROY 13 s,
+  # VERIFY-CLN PASS, first run.
   tier: 1
   status: green
   validated_provisioners:

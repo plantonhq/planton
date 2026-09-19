@@ -20,7 +20,7 @@ spec:
     - field_path: default_node_pool.node_count
       sku_meter: worker nodes
       pricing_unit: months
-      impact: "Each node is a full billed droplet; the bill scales linearly with the count. With auto_scale enabled this is only the initial count."
+      impact: "Each node is a full billed droplet; the bill scales linearly with the count. Set only on a fixed pool -- with auto_scale enabled it is left unset and the committed floor is min_nodes."
     - field_path: highly_available
       sku_meter: HA control plane
       pricing_unit: months

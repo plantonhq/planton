@@ -23,9 +23,18 @@ spec:
   # DEPENDENCIES-DOWN ~3.5 min including the fixture VPC's one expected 409
   # retry while the cluster's droplets leave the VPC. Tags read back exactly
   # as sent (the provider filters only DOKS's own k8s:/terraform: tags);
-  # labels and the taint read back verbatim; node_count is diff-suppressed
-  # against actual_node_count, so the autoscaled pool produced no
-  # idempotency or post-import diff. The pool's node and Droplet ids are
+  # labels and the taint read back verbatim; the autoscaled pool produced
+  # no idempotency or post-import diff -- but only because the autoscaler
+  # had not acted before the gate ran. The cluster kind's inline pool,
+  # which shares this schema, later autoscaled to two nodes within minutes
+  # of creation and both provisioners planned `node_count 2 -> 1` against
+  # its stated count (the provider writes the live count back into
+  # node_count on every read and re-sends a stated one on update; its
+  # diff-suppress hides the difference only while stated equals live). The
+  # contract is now the provider's own: an autoscaled pool states NO
+  # node_count (the spec rejects both together), both engines send none,
+  # and the pool starts at min_nodes; `full` carries that shape. The pool's
+  # node and Droplet ids are
   # deliberately not outputs (they churn by design); Droplet-scoped wiring
   # goes through the pool's tags.
   #
@@ -35,6 +44,11 @@ spec:
   # bills only its nodes (~$0.018/hour on s-1vcpu-2gb); the fixture cluster
   # dominates the lane's wall clock. Run ONE scenario per `go test` with a
   # 75-minute budget: each lane is three lifecycles deep.
+  #
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full` under the no-node_count contract: cluster fixture
+  # 5m51s, DEPLOY 1m39s, IDEMPOTENCY PASS, VERIFY-RES PASS (every node
+  # running), DESTROY 1m31s, VERIFY-CLN PASS, first run.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

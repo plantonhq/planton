@@ -162,6 +162,10 @@ message DigitalOceanKubernetesClusterSpec {
 
   // (Optional) Peer-to-peer OCI registry mirror addon for faster image pulls
   // across nodes. Unset leaves the addon at DigitalOcean's default.
+  // Requires kubernetes_version 1.36.0-do.2 or later: on an older version
+  // DigitalOcean rejects the whole cluster create with a validation 422
+  // ("p2p-oci-registry is only supported on DOKS v1.36.0-do.2 or later")
+  // and creates nothing.
   DigitalOceanKubernetesClusterFeatureToggle p2p_oci_registry_plugin = 25;
 
   // (Optional) AMD GPU device plugin addon (mutually exclusive with the AMD
@@ -192,7 +196,9 @@ message DigitalOceanKubernetesClusterSpec {
   DigitalOceanKubernetesClusterFeatureToggle rdma_shared_device_plugin = 31;
 
   // (Optional) CoreDNS horizontal autoscaler addon. Unset leaves the addon
-  // at DigitalOcean's default.
+  // at DigitalOcean's default, which depends on the Kubernetes version: off
+  // through 1.35, on from 1.36. Set it explicitly when the cluster's
+  // behavior must not change across a version upgrade.
   DigitalOceanKubernetesClusterFeatureToggle coredns_autoscaler = 32;
 }
 
@@ -209,18 +215,30 @@ message DigitalOceanKubernetesClusterDefaultNodePool {
     message: "auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes"
     expression: "!this.auto_scale || (this.min_nodes >= 1u && this.max_nodes >= this.min_nodes)"
   };
+  // Exactly one of the two sizing modes owns the count. A fixed pool states
+  // node_count; an autoscaled pool leaves it unset, because DigitalOcean's
+  // provider writes the LIVE count back into node_count on every read and
+  // re-applies the stated one on every update -- a stated count and a
+  // running autoscaler fight each other forever (measured: a pool that
+  // autoscaled to two nodes planned `node_count 2 -> 1` on both
+  // provisioners).
+  option (buf.validate.message).cel = {
+    id: "node_count_by_mode"
+    message: "node_count is required when auto_scale is off and must be left unset when auto_scale is on (the pool starts at min_nodes and the autoscaler owns the count)"
+    expression: "this.auto_scale ? this.node_count == 0u : this.node_count >= 1u"
+  };
 
   // The slug identifier for the Droplet size of each node (e.g.
   // "s-2vcpu-4gb"). Changing it replaces the whole cluster.
   string size = 1 [(buf.validate.field).required = true];
 
-  // The number of nodes in the pool. With auto_scale enabled this is the
-  // initial count; the live count then drifts freely between min_nodes and
-  // max_nodes without producing configuration diffs.
-  uint32 node_count = 2 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).uint32.gt = 0
-  ];
+  // The fixed number of nodes in the pool. Required when auto_scale is off;
+  // must be left unset when auto_scale is on -- the pool then starts at
+  // min_nodes and DigitalOcean's autoscaler owns the count from there, and
+  // both provisioners send no count at all (a stated count would be written
+  // back from the live pool on every read and re-applied on every update,
+  // fighting the autoscaler).
+  uint32 node_count = 2;
 
   // Whether DigitalOcean's cluster-autoscaler manages this pool's node count
   // between min_nodes and max_nodes.

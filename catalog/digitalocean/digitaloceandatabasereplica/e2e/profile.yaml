@@ -45,6 +45,12 @@ spec:
   # phase); cross-region + VPC placement (needs a second-region VPC
   # fixture). Replica tags are create-only upstream (a retag REPLACES the
   # replica -- never "fix" that as if it were drift).
+  #
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `sized`: primary fixture 4m49s, DEPLOY 6m12s (the replica
+  # forking then online), IDEMPOTENCY PASS, VERIFY-RES PASS (11/11
+  # outputs), DESTROY 23 s, VERIFY-CLN PASS, first run; the replica's own
+  # three alert policies swept with the primary's.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

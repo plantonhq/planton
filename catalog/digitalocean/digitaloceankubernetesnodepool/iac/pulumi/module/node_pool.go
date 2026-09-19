@@ -59,11 +59,20 @@ func nodePool(
 		ClusterId: pulumi.String(spec.Cluster.GetValue()),
 		Name:      pulumi.String(spec.NodePoolName),
 		Size:      pulumi.String(spec.Size),
-		// With auto_scale enabled this is the initial count; the provider
-		// then suppresses diffs while the live count drifts.
-		NodeCount: pulumi.IntPtr(int(spec.NodeCount)),
 		Labels:    labels,
 		Tags:      tags,
+	}
+
+	// Exactly one sizing mode owns the count -- matching the Terraform
+	// module. A fixed pool sends node_count; an autoscaled pool sends only
+	// the bounds and NO count, because the provider writes the live count
+	// back into node_count on every read and re-applies a stated one on
+	// every update, so a stated count and the autoscaler would fight forever
+	// (measured on the cluster kind's inline pool, which shares this schema:
+	// a pool that autoscaled to two nodes planned `2 -> 1`). Without a count
+	// the API starts the pool at min_nodes.
+	if !spec.AutoScale {
+		nodePoolArgs.NodeCount = pulumi.IntPtr(int(spec.NodeCount))
 	}
 
 	if len(taints) > 0 {

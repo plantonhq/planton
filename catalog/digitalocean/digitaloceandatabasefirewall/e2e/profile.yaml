@@ -40,6 +40,11 @@ spec:
   # cluster fixture (4m30s-5m16s, ~$0.02/hour) plus the full lane's droplet
   # (~40 s, ~$0.009/hour) dominate; DEPENDENCIES-DOWN with the droplet is
   # ~40 s.
+  #
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: cluster and droplet fixtures 5m07s, DEPLOY 9 s,
+  # IDEMPOTENCY PASS, VERIFY-RES PASS, DESTROY 15 s, VERIFY-CLN PASS (the
+  # EMPTY-list destroy contract held), first run.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

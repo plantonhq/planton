@@ -65,7 +65,8 @@ spec:
     - env:example
   defaultNodePool:
     size: s-2vcpu-4gb
-    nodeCount: 3
+    # No nodeCount: with autoScale on, the pool starts at minNodes and the
+    # autoscaler owns the count (a stated count would fight it).
     autoScale: true
     minNodes: 2
     maxNodes: 5

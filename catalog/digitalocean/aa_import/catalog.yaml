@@ -198,9 +198,14 @@ spec:
         until one pool is tagged manually. A cluster the module created
         already carries the tag, so its blind round-trip is lossless
         (measured, both scenarios): the provider strips its own marker from
-        the pool tags on read, and the pool's node_count -- which a fresh
+        the pool tags on read; a fixed pool's node_count -- which a fresh
         import never populates -- is diff-suppressed whenever it equals the
-        live actual_node_count, so no tolerance is needed for it.
+        live actual_node_count, and an autoscaled pool states no node_count
+        at all (the module sends none, so there is nothing to re-import),
+        so no tolerance is needed for it either way. The addon blocks
+        (routing agent, P2P OCI registry plugin, CoreDNS autoscaler) are
+        set unconditionally from the live cluster on read, so an asserted
+        `enabled` -- true or false -- round-trips losslessly.
       # destroy_all_associated_resources and kubeconfig_expire_seconds are
       # provider behavior flags with no API counterpart; registry_integration
       # is an account-level association the provider's Read never fetches
@@ -219,8 +224,9 @@ spec:
         round-trip is lossless with no tolerance: tags read back exactly as
         sent (the provider filters only its own k8s:/terraform: machinery
         tags on read), labels and taints read back verbatim, and node_count
-        is diff-suppressed against actual_node_count, so an autoscaled pool
-        whose live count has drifted still plans no change.
+        is either a fixed pool's stated count (diff-suppressed against
+        actual_node_count) or absent on an autoscaled pool (the module
+        sends none, so a drifted live count has nothing to disagree with).
 
     # --- Databases -----------------------------------------------------------
     - terraform_type: digitalocean_database_cluster

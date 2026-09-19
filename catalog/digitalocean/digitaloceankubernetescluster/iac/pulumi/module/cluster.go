@@ -50,15 +50,21 @@ func cluster(
 	poolArgs := &digitalocean.KubernetesClusterNodePoolArgs{
 		Name:      pulumi.String("default"),
 		Size:      pulumi.String(spec.DefaultNodePool.Size),
-		NodeCount: pulumi.IntPtr(int(spec.DefaultNodePool.NodeCount)),
 		AutoScale: pulumi.BoolPtr(spec.DefaultNodePool.AutoScale),
 		Labels:    poolLabels,
 	}
-	// Autoscaler bounds only travel with autoscaling on -- matching the
-	// Terraform module, which nulls them otherwise.
+	// Exactly one sizing mode owns the count -- matching the Terraform
+	// module. A fixed pool sends node_count; an autoscaled pool sends only
+	// the bounds and NO count, because the provider writes the live count
+	// back into node_count on every read and re-applies a stated one on
+	// every update, so a stated count and the autoscaler would fight forever
+	// (measured: a pool that autoscaled to two nodes planned `2 -> 1`).
+	// Without a count the API starts the pool at min_nodes.
 	if spec.DefaultNodePool.AutoScale {
 		poolArgs.MinNodes = pulumi.IntPtr(int(spec.DefaultNodePool.MinNodes))
 		poolArgs.MaxNodes = pulumi.IntPtr(int(spec.DefaultNodePool.MaxNodes))
+	} else {
+		poolArgs.NodeCount = pulumi.IntPtr(int(spec.DefaultNodePool.NodeCount))
 	}
 	if len(spec.DefaultNodePool.Tags) > 0 {
 		var poolTags pulumi.StringArray
@@ -196,7 +202,12 @@ func cluster(
 	// desired state, on or off -- the same contract as the Terraform module's
 	// dynamic blocks. All nine addon blocks are wired; the GPU-family blocks
 	// (AMD/NVIDIA device plugins and DRA drivers, RDMA) are accepted by the
-	// API only on clusters with GPU node pools.
+	// API only on clusters with GPU node pools, and the P2P OCI registry
+	// plugin only on Kubernetes 1.36.0-do.2 or later -- an older version
+	// fails the whole create with a validation 422 that creates nothing.
+	// The module sends what the manifest states and lets DigitalOcean's own
+	// validation speak, because the version floor moves with DigitalOcean's
+	// release train and a module-side check would go stale.
 	if spec.RoutingAgent != nil {
 		clusterArgs.RoutingAgent = &digitalocean.KubernetesClusterRoutingAgentArgs{
 			Enabled: pulumi.Bool(spec.RoutingAgent.GetEnabled()),

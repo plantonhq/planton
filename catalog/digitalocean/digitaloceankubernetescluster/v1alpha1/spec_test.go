@@ -100,7 +100,6 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesClusterSpec Custom Validation Tes
 				spec.CorednsAutoscaler = &DigitalOceanKubernetesClusterFeatureToggle{Enabled: boolPtr(true)}
 				spec.DefaultNodePool = &DigitalOceanKubernetesClusterDefaultNodePool{
 					Size:      "s-2vcpu-4gb",
-					NodeCount: 3,
 					AutoScale: true,
 					MinNodes:  1,
 					MaxNodes:  5,
@@ -194,10 +193,28 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesClusterSpec Custom Validation Tes
 
 		ginkgo.Context("default node pool", func() {
 
-			ginkgo.It("should return an error when node_count is zero", func() {
+			ginkgo.It("should return an error when node_count is zero on a fixed pool", func() {
 				spec := validMinimalSpec()
 				spec.DefaultNodePool.NodeCount = 0
 				gomega.Expect(protovalidate.Validate(wrap(spec))).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("should reject node_count together with auto_scale", func() {
+				spec := validMinimalSpec()
+				spec.DefaultNodePool.AutoScale = true
+				spec.DefaultNodePool.MinNodes = 1
+				spec.DefaultNodePool.MaxNodes = 3
+				spec.DefaultNodePool.NodeCount = 2
+				gomega.Expect(protovalidate.Validate(wrap(spec))).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("should accept auto_scale with bounds and no node_count", func() {
+				spec := validMinimalSpec()
+				spec.DefaultNodePool.AutoScale = true
+				spec.DefaultNodePool.MinNodes = 1
+				spec.DefaultNodePool.MaxNodes = 3
+				spec.DefaultNodePool.NodeCount = 0
+				gomega.Expect(protovalidate.Validate(wrap(spec))).To(gomega.BeNil())
 			})
 
 			ginkgo.It("should reject auto_scale without min_nodes", func() {

@@ -88,7 +88,7 @@ These are the most important decisions when configuring a DOKS cluster. Explore 
 
 **Control-plane firewall** -- Provide `controlPlaneFirewall` with `enabled: true` and the IPs/CIDRs allowed to reach the Kubernetes API server. When omitted, the API server is publicly accessible. Restrict to VPN or office CIDRs for production -- and make sure the list includes wherever the provisioner runs.
 
-**Addons and advanced placement** -- all nine addon toggles (`routingAgent`, `p2pOciRegistryPlugin`, `corednsAutoscaler`, the AMD and NVIDIA device plugins and DRA drivers, `amdGpuDeviceMetricsExporterPlugin`, `rdmaSharedDevicePlugin`), `sso`, `isolatedWorkers`, `workerSubnetUuid`, and `gpuPartitionMode` deploy on both provisioners. DigitalOcean enforces the prerequisites: a NAT gateway on the VPC for `isolatedWorkers`, a subnet in that VPC for `workerSubnetUuid`, GPU node sizes for the GPU addons and partitioning.
+**Addons and advanced placement** -- all nine addon toggles (`routingAgent`, `p2pOciRegistryPlugin`, `corednsAutoscaler`, the AMD and NVIDIA device plugins and DRA drivers, `amdGpuDeviceMetricsExporterPlugin`, `rdmaSharedDevicePlugin`), `sso`, `isolatedWorkers`, `workerSubnetUuid`, and `gpuPartitionMode` deploy on both provisioners. DigitalOcean enforces the prerequisites: a NAT gateway on the VPC for `isolatedWorkers`, a subnet in that VPC for `workerSubnetUuid`, GPU node sizes for the GPU addons and partitioning, and Kubernetes 1.36.0-do.2 or later for `p2pOciRegistryPlugin` (an older version fails the create with a validation 422). `corednsAutoscaler` defaults off through 1.35 and on from 1.36.
 
 ## Outputs and Dependencies
 

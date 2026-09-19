@@ -40,6 +40,11 @@ spec:
   # User operations are 2-10 s; cluster fixtures (4m43s-5m45s each,
   # ~$0.02/hour) dominate. Every cluster that reaches `online` leaves three
   # `v1/dbaas/alerts/*` policies behind after deletion -- sweep them.
+  #
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `mysql-auth`: the two cluster fixtures 10m52s, DEPLOY 37 s,
+  # IDEMPOTENCY PASS (the MySQL no-settings rule holds at the new bridge),
+  # VERIFY-RES PASS, DESTROY 23 s, VERIFY-CLN PASS, first run.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

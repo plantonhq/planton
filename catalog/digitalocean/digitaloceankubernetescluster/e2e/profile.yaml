@@ -17,10 +17,35 @@ spec:
   # control-plane firewall, a maintenance policy (read back with
   # DigitalOcean's own 4h duration), cluster-autoscaler tuning
   # (scale_down_unneeded_time "1m30s" read back verbatim), an explicit
-  # surge_upgrade, the routing-agent addon, and a default pool with labels,
-  # a taint, tags, and autoscaling 1-2. Both ride the VPC registry
-  # prerequisite (the spec's vpc is REQUIRED, so the fixture is a registry
-  # edge, never a per-scenario annotation).
+  # surge_upgrade, the three non-GPU addon toggles each asserting the value
+  # that DIFFERS from the version's default (routing agent ON, P2P OCI
+  # registry plugin ON, CoreDNS autoscaler OFF on 1.36 where it defaults
+  # on), and a default pool with labels, a taint, tags, and autoscaling 1-2
+  # with NO nodeCount. Both ride the VPC registry prerequisite (the spec's
+  # vpc is REQUIRED, so the fixture is a registry edge, never a per-scenario
+  # annotation).
+  #
+  # Re-proven 2026-09-18 at bridge v4.79.1 (embedding provider v2.100.1)
+  # after two live catches on `hardened`, both fixed at the full bar. (1)
+  # The P2P OCI registry plugin exists only on Kubernetes 1.36.0-do.2 or
+  # later: a 1.35 create carrying it fails with an honest validation 422
+  # that creates nothing, so the scenario moved to "1.36" (spec field
+  # comment, GUIDE, README, catalog.md, both IaC READMEs carry the floor).
+  # (2) An autoscaled pool must state NO node_count: on 1.36 the addon pods
+  # did not fit one s-1vcpu-2gb node and the autoscaler grew the pool to
+  # two within minutes of creation; the provider writes the live count back
+  # into node_count on every read, its diff-suppress hides the difference
+  # only while the stated count equals the live one, and Update re-sends
+  # the stated count -- so `nodeCount: 1` + `autoScale: true` planned
+  # `node_count 2 -> 1` on Pulumi (measured with `pulumi preview --diff`)
+  # and would on Terraform (same provider logic). The contract is now the
+  # provider's own: the spec rejects node_count together with auto_scale,
+  # both engines send no count on an autoscaled pool, and the pool starts
+  # at min_nodes. With that contract the Pulumi lane ran DEPLOY 7m50s,
+  # IDEMPOTENCY PASS while the pool sat at two nodes, VERIFY-RES PASS,
+  # DESTROY 15 s; the live API read back routing_agent {enabled: true},
+  # p2p_oci_registry_plugin {enabled: true}, coredns_autoscaler {enabled:
+  # false} (an object, never absent), isolated_workers false.
   #
   # What the live runs measured: DEPLOY 5-7 minutes per cluster; the cluster
   # 404s within seconds of DELETE (DESTROY 2-10 s) while its worker Droplets
@@ -47,7 +72,7 @@ spec:
   # an owner funds it); worker_subnet_uuid (needs a VPC subnet, which the
   # catalog has no kind for yet -- prove when one exists); the peer-to-peer
   # OCI registry plugin and the CoreDNS autoscaler ARE in the hardened lane
-  # (both engines); registry_integration (needs a DOCR registry in the account --
+  # (both engines, see above); registry_integration (needs a DOCR registry in the account --
   # a same-session fixture from the ContainerRegistry kind would prove it);
   # destroy_all_associated_resources (a destroy-behavior flag a test should
   # never exercise against a shared account); custom cluster/service subnets

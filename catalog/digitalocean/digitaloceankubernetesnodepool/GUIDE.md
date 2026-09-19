@@ -12,7 +12,7 @@ Every DOKS cluster carries an inline default pool that belongs to the `DigitalOc
 
 ## Autoscaling drift is by design
 
-With `autoScale: true`, the live node count moves between `minNodes` and `maxNodes` without touching your manifest -- the provider suppresses the diff by comparing against the pool's actual count. `nodeCount` only seeds the pool. The spec enforces the bounds' coherence early (`minNodes >= 1`, `maxNodes >= minNodes`); DigitalOcean would reject incoherent bounds only at apply time.
+With `autoScale: true`, leave `nodeCount` out — the manifest is rejected if you set both. The pool starts at `minNodes` and the live count moves between `minNodes` and `maxNodes` without touching your manifest. The reason is the provider's own behavior: it writes the live count back into `node_count` on every read and re-applies a stated one on every update, so a stated count and a running autoscaler fight each other on every apply (measured on the cluster kind's inline pool, which shares this schema: a pool that autoscaled to two nodes planned `node_count 2 -> 1` on both provisioners). The spec enforces the bounds' coherence early (`minNodes >= 1`, `maxNodes >= minNodes`); DigitalOcean would reject incoherent bounds only at apply time.
 
 ## Labels and taints travel with the pool, not the nodes
 

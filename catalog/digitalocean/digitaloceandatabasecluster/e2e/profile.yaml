@@ -16,8 +16,9 @@ spec:
   # bare-MiB string wiring -- 30720 read back), a maintenance window
   # (`02:00` read back without seconds), sql_mode (read back verbatim), and
   # the user-tag + label composition (all seven tags read back exactly);
-  # its round-trip tolerated exactly the two catalogued write-normalized
-  # attributes, maintenance_window and sql_mode. `valkey` proves the newer
+  # its round-trip tolerated exactly the catalogued write-normalized
+  # attributes, maintenance_window and sql_mode (and storage_autoscale once
+  # the scenario gained it -- see below). `valkey` proves the newer
   # engine plus eviction_policy (engine and policy read back as sent); its
   # round-trip tolerated eviction_policy alone, likewise catalogued.
   #
@@ -46,6 +47,18 @@ spec:
   # (increment 10 GiB -- the API refuses an increment above the slug's
   # maximum plan storage, 30 GiB on db-s-1vcpu-1gb; the settings read back
   # from GET /v2/databases/{id}/autoscale, never from the cluster body).
+  # Proven 2026-09-18 on both engines at bridge v4.79.1 (embedding
+  # provider v2.100.1): Pulumi DEPLOY 4m45s, IDEMPOTENCY PASS, DESTROY
+  # 12 s; Terraform DEPLOY 4m43s, IDEMPOTENCY PASS on the refreshed plan,
+  # DESTROY 4.6 s; the autoscale endpoint read `{"enabled":true,
+  # "threshold_percent":80,"increment_gib":10}` exactly as sent while the
+  # cluster body's own storage_autoscale stayed null. The blind round-trip
+  # tolerated exactly maintenance_window, sql_mode, AND storage_autoscale
+  # -- the third is the same GetOk-guarded Read class as the first two (a
+  # fresh import never populates it; the first plan re-asserts the
+  # configured block as a server-side no-op) and is catalogued with them.
+  # Also measured: the maintenance window is applied AFTER the cluster
+  # reaches online (during `creating` the API reports a default slot).
   #
   # Deliberately not in the live lanes: backup_restore
   # (needs an existing cluster backup in the account), project_id (needs an

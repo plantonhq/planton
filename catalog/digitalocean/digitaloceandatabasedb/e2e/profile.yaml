@@ -17,6 +17,10 @@ spec:
   # that reaches `online` leaves three `v1/dbaas/alerts/*` policies behind
   # after deletion, and they can appear minutes after the cluster is online
   # -- sweep them at session end, not only between lanes.
+  #
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `minimal`: cluster fixture 5m27s, DEPLOY 26 s, IDEMPOTENCY
+  # PASS, VERIFY-RES PASS, DESTROY 20 s, VERIFY-CLN PASS, first run.
   tier: 1
   status: green
   validated_provisioners: [pulumi, terraform]

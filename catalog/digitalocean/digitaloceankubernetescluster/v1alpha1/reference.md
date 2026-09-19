@@ -90,7 +90,8 @@ spec:
     - env:example
   defaultNodePool:
     size: s-2vcpu-4gb
-    nodeCount: 3
+    # No nodeCount: with autoScale on, the pool starts at minNodes and the
+    # autoscaler owns the count (a stated count would fight it).
     autoScale: true
     minNodes: 2
     maxNodes: 5
@@ -118,7 +119,7 @@ spec:
 | `spec.tags` | `[]string` |  |  |  |
 | `spec.defaultNodePool` | `DigitalOceanKubernetesClusterDefaultNodePool` | yes |  |  |
 | `spec.defaultNodePool.size` | `string` | yes |  |  |
-| `spec.defaultNodePool.nodeCount` | `uint32` | yes |  |  |
+| `spec.defaultNodePool.nodeCount` | `uint32` |  |  |  |
 | `spec.defaultNodePool.autoScale` | `bool` |  |  |  |
 | `spec.defaultNodePool.minNodes` | `uint32` |  |  |  |
 | `spec.defaultNodePool.maxNodes` | `uint32` |  |  |  |
@@ -287,6 +288,7 @@ resources.
 
 - rule: {"required":true}
 - rule: auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes
+- rule: node_count is required when auto_scale is off and must be left unset when auto_scale is on (the pool starts at min_nodes and the autoscaler owns the count)
 
 ### spec.defaultNodePool.size
 
@@ -299,13 +301,14 @@ The slug identifier for the Droplet size of each node (e.g.
 
 ### spec.defaultNodePool.nodeCount
 
-`uint32` · required
+`uint32`
 
-The number of nodes in the pool. With auto_scale enabled this is the
-initial count; the live count then drifts freely between min_nodes and
-max_nodes without producing configuration diffs.
-
-- rule: {"required":true,"uint32":{"gt":0}}
+The fixed number of nodes in the pool. Required when auto_scale is off;
+must be left unset when auto_scale is on -- the pool then starts at
+min_nodes and DigitalOcean's autoscaler owns the count from there, and
+both provisioners send no count at all (a stated count would be written
+back from the live pool on every read and re-applied on every update,
+fighting the autoscaler).
 
 ### spec.defaultNodePool.autoScale
 
@@ -580,6 +583,10 @@ explicit false (assert OFF) is valid, not just true.
 
 (Optional) Peer-to-peer OCI registry mirror addon for faster image pulls
 across nodes. Unset leaves the addon at DigitalOcean's default.
+Requires kubernetes_version 1.36.0-do.2 or later: on an older version
+DigitalOcean rejects the whole cluster create with a validation 422
+("p2p-oci-registry is only supported on DOKS v1.36.0-do.2 or later")
+and creates nothing.
 
 ### spec.p2pOciRegistryPlugin.enabled
 
@@ -694,7 +701,9 @@ explicit false (assert OFF) is valid, not just true.
 `DigitalOceanKubernetesClusterFeatureToggle`
 
 (Optional) CoreDNS horizontal autoscaler addon. Unset leaves the addon
-at DigitalOcean's default.
+at DigitalOcean's default, which depends on the Kubernetes version: off
+through 1.35, on from 1.36. Set it explicitly when the cluster's
+behavior must not change across a version upgrade.
 
 ### spec.corednsAutoscaler.enabled
 

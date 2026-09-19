@@ -27,7 +27,7 @@ The spec maps one-to-one onto DigitalOcean's managed Kubernetes cluster:
 | `sso` | OpenID Connect single sign-on for the Kubernetes API |
 | `routingAgent`, `corednsAutoscaler`, GPU/RDMA addon toggles | Managed addons; unset defers to DigitalOcean's default per addon |
 | `tags` | Your tags, applied alongside the standard Planton labels |
-| `defaultNodePool` | The inline pool: size, count, autoscaling bounds, node labels, taints, pool tags, GPU partition mode |
+| `defaultNodePool` | The inline pool: size, a fixed count OR autoscaling bounds (never both), node labels, taints, pool tags, GPU partition mode |
 
 Additional node pools beyond the inline default are separate `DigitalOceanKubernetesNodePool` resources with their own lifecycles.
 
@@ -62,7 +62,6 @@ spec:
       - "203.0.113.0/24"
   defaultNodePool:
     size: s-4vcpu-8gb
-    nodeCount: 3
     autoScale: true
     minNodes: 2
     maxNodes: 5
@@ -93,7 +92,8 @@ Both provisioners export the identical output set:
 - **HA is one-way.** Once `highlyAvailable` is true, it cannot be turned back off.
 - **`destroyAllAssociatedResources` is dangerous.** On destroy it also deletes the load balancers, volumes, and volume snapshots the cluster created. It never affects the running cluster.
 - **`surgeUpgrade` unset means ON** — DigitalOcean's default. Set it to `false` explicitly to disable surge upgrades.
-- **Every spec field deploys on both provisioners** — `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, and all nine addon toggles included. A few carry prerequisites DigitalOcean enforces: `isolatedWorkers` needs a NAT gateway attached to the cluster's VPC, `workerSubnetUuid` needs a subnet inside that VPC, and the GPU addons and `gpuPartitionMode` only mean anything on GPU node sizes.
+- **Every spec field deploys on both provisioners** — `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, and all nine addon toggles included. A few carry prerequisites DigitalOcean enforces: `isolatedWorkers` needs a NAT gateway attached to the cluster's VPC, `workerSubnetUuid` needs a subnet inside that VPC, the GPU addons and `gpuPartitionMode` only mean anything on GPU node sizes, and `p2pOciRegistryPlugin` needs `kubernetesVersion` 1.36.0-do.2 or later (an older version fails the whole create with a validation 422 and creates nothing).
+- **`corednsAutoscaler` unset follows the version** — DigitalOcean's default is off through 1.35 and on from 1.36; set it explicitly to pin the behavior across upgrades.
 
 See `GUIDE.md` for operational judgment (upgrade practice, pool sizing, firewall posture) and `catalog.md` for the deployment-store page.
 

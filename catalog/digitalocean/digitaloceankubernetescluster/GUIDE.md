@@ -25,7 +25,7 @@ Changing the default pool's `size` (or `gpuPartitionMode`) does not resize the p
 
 - Pick a size with headroom for system pods plus your steady-state base load.
 - Add capacity classes (bigger nodes, GPU nodes, tainted dedicated pools) as separate `DigitalOceanKubernetesNodePool` resources — those resize and replace independently without touching the cluster.
-- With `autoScale: true`, `nodeCount` is only the starting count; the live count drifts between `minNodes` and `maxNodes` without producing configuration diffs.
+- With `autoScale: true`, leave `nodeCount` out — the manifest is rejected if you set both. The pool starts at `minNodes` and DigitalOcean's cluster-autoscaler owns the count between `minNodes` and `maxNodes` from then on. The reason is the provider's own behavior: it writes the live count back into `node_count` on every read and re-applies a stated one on every update, so a stated count and a running autoscaler fight each other on every apply (measured: a pool that autoscaled to two nodes planned `node_count 2 -> 1` on both provisioners). A fixed pool (`autoScale` off) states `nodeCount` and scales by editing it.
 
 ## HA is a one-way door with a price tag
 
@@ -56,7 +56,9 @@ A cluster delete is accepted immediately and the cluster answers `404` within a 
 
 ## Addon toggles: unset means DigitalOcean decides
 
-Every addon field (`routingAgent`, `corednsAutoscaler`, the GPU device plugins and DRA drivers, `rdmaSharedDevicePlugin`, `p2pOciRegistryPlugin`) is a message with one `enabled` leaf. Leaving the field out defers to DigitalOcean's own default for that addon; setting it asserts the state, on or off. The AMD and NVIDIA device plugins are each mutually exclusive with their DRA drivers — the manifest rejects both together before any provisioner runs.
+Every addon field (`routingAgent`, `corednsAutoscaler`, the GPU device plugins and DRA drivers, `rdmaSharedDevicePlugin`, `p2pOciRegistryPlugin`) is a message with one `enabled` leaf. Leaving the field out defers to DigitalOcean's own default for that addon; setting it asserts the state, on or off (both directions are live-proven: an explicit `false` on a version whose default is on reads back off). The AMD and NVIDIA device plugins are each mutually exclusive with their DRA drivers — the manifest rejects both together before any provisioner runs.
+
+Two addons carry version facts worth knowing before you set them. `p2pOciRegistryPlugin` needs Kubernetes 1.36.0-do.2 or later — on an older version DigitalOcean refuses the whole cluster create with a validation 422 ("p2p-oci-registry is only supported on DOKS v1.36.0-do.2 or later") and creates nothing, so a manifest that enables it must pin `kubernetesVersion` at `"1.36"` or newer. `corednsAutoscaler`'s default flips with the version — off through 1.35, on from 1.36 — so a cluster that leaves it unset changes behavior when it upgrades across that line; set it explicitly if that matters to you.
 
 ## Destroy-time cleanup: read before you set it
 

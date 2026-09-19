@@ -92,7 +92,13 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
 
   # Managed addon toggles. An unset spec message emits no block, deferring
   # to DigitalOcean's own default for that addon; a set message asserts the
-  # desired state, on or off.
+  # desired state, on or off. The GPU-family blocks are accepted by the API
+  # only on clusters with GPU node pools, and the P2P OCI registry plugin
+  # only on Kubernetes 1.36.0-do.2 or later -- an older version fails the
+  # whole create with a validation 422 that creates nothing. The module
+  # sends what the manifest states and lets DigitalOcean's own validation
+  # speak, because the version floor moves with DigitalOcean's release train
+  # and a module-side check would go stale.
   dynamic "routing_agent" {
     for_each = var.spec.routing_agent != null ? [var.spec.routing_agent] : []
     content {
@@ -160,9 +166,16 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
   # independent identity. Changing size or gpu_partition_mode replaces the
   # ENTIRE cluster (provider ForceNew inside this block).
   node_pool {
-    name       = "default"
-    size       = var.spec.default_node_pool.size
-    node_count = var.spec.default_node_pool.node_count
+    name = "default"
+    size = var.spec.default_node_pool.size
+    # Exactly one sizing mode owns the count -- matching the Pulumi module.
+    # A fixed pool sends node_count; an autoscaled pool sends only the
+    # bounds and NO count, because the provider writes the live count back
+    # into node_count on every read and re-applies a stated one on every
+    # update, so a stated count and the autoscaler would fight forever
+    # (measured: a pool that autoscaled to two nodes planned `2 -> 1`).
+    # Without a count the API starts the pool at min_nodes.
+    node_count = var.spec.default_node_pool.auto_scale ? null : var.spec.default_node_pool.node_count
     auto_scale = var.spec.default_node_pool.auto_scale
     min_nodes  = var.spec.default_node_pool.auto_scale ? var.spec.default_node_pool.min_nodes : null
     max_nodes  = var.spec.default_node_pool.auto_scale ? var.spec.default_node_pool.max_nodes : null

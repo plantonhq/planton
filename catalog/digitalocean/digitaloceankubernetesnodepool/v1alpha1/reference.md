@@ -45,7 +45,8 @@ spec:
   cluster:
     value: fb7d9b81-fe06-4ee5-87f1-b9efc5af46fd
   size: gpu-mi300x1-192gb
-  nodeCount: 1
+  # No nodeCount: with autoScale on, the pool starts at minNodes and the
+  # autoscaler owns the count (a stated count would fight it).
   autoScale: true
   minNodes: 1
   maxNodes: 3
@@ -68,7 +69,7 @@ spec:
 | `spec.nodePoolName` | `string` | yes |  |  |
 | `spec.cluster` | `string \| valueFrom` | yes |  | DigitalOceanKubernetesCluster (`status.outputs.cluster_id`) |
 | `spec.size` | `string` | yes |  |  |
-| `spec.nodeCount` | `uint32` | yes |  |  |
+| `spec.nodeCount` | `uint32` |  |  |  |
 | `spec.autoScale` | `bool` |  |  |  |
 | `spec.minNodes` | `uint32` |  |  |  |
 | `spec.maxNodes` | `uint32` |  |  |  |
@@ -113,13 +114,14 @@ The slug identifier for the Droplet size of each node (e.g.
 
 ### spec.nodeCount
 
-`uint32` · required
+`uint32`
 
-The number of nodes in the pool. With auto_scale enabled this is the
-initial count; the live count then drifts freely between min_nodes and
-max_nodes without producing configuration diffs.
-
-- rule: {"required":true,"uint32":{"gt":0}}
+The fixed number of nodes in the pool. Required when auto_scale is off;
+must be left unset when auto_scale is on -- the pool then starts at
+min_nodes and DigitalOcean's autoscaler owns the count from there, and
+both provisioners send no count at all (a stated count would be written
+back from the live pool on every read and re-applied on every update,
+fighting the autoscaler).
 
 ### spec.autoScale
 
@@ -210,6 +212,7 @@ replaces the pool.
 ## Validation Rules
 
 - `autoscale_bounds`: auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes
+- `node_count_by_mode`: node_count is required when auto_scale is off and must be left unset when auto_scale is on (the pool starts at min_nodes and the autoscaler owns the count)
 
 ## Outputs
 

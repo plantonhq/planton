@@ -3549,6 +3549,36 @@ lane fails inside a provider's retry loop, read the resource's
 `Timeouts` before blaming the module or the API: if the timeout is
 declared, sizing it is the module's job.
 
+**An attribute a controller owns after creation must not be in the
+configuration, and a fresh resource cannot prove that.** DOKS's
+`node_count` on an autoscaled pool is the class: the provider writes the
+LIVE count back into `node_count` on every read (whenever the attribute is
+in config), its `DiffSuppressFunc` hides the difference only while the
+stated count equals the live one, and Update re-sends the stated count --
+so a manifest that states `nodeCount: 1` with `autoScale: true` fights the
+autoscaler on every apply. Both DOKS kinds were live-proven idempotent with
+exactly that shape, because on every earlier lane the autoscaler had not
+acted before the gate ran; the first cluster whose addons overflowed one
+node scaled to two within minutes and both engines planned `node_count
+2 -> 1`. The contract is now the provider's own: an autoscaled pool sends
+no count (the spec rejects both together; the pool starts at `min_nodes`).
+The harness lesson: when a provider's Read copies a live value into a
+configurable attribute, the idempotency gate on a freshly created resource
+is blind until the controller moves the value -- read the resource's Read
+and `DiffSuppressFunc` for live-value write-backs at pre-flight, and treat
+"passed on a fresh resource" as no proof for controller-owned attributes.
+
+**A version-gated addon fails the WHOLE create, honestly.** DigitalOcean
+refuses a DOKS cluster create that enables the P2P OCI registry plugin on
+a version below 1.36.0-do.2 with a validation 422 naming the floor; nothing
+is created and the fixture tears down clean. Probe `GET
+/v2/kubernetes/options` for the offered lines and read the API's
+per-feature floors before pinning a scenario's version; a scenario that
+asserts an addon toggle pins a version where the asserted value DIFFERS
+from that version's default (the CoreDNS autoscaler defaults off through
+1.35 and on from 1.36), or a module that silently dropped the block would
+still read back the default and pass.
+
 **The default project's membership list can name resources that no longer
 exist.** `GET /v2/projects/{default}/resources` listed two
 `do:loadbalancer:<id>` URNs whose balancers answered 404 -- ghosts of
