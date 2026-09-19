@@ -1,0 +1,42 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: planton-oss-e2e-gcpvpngw
+  id: planton-oss-e2e-gcpvpngw
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpngateway
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  # Gateway and router names are project+region-scoped with no soft-delete
+  # reservation, so they stay fixed; gateway_name defaults to metadata.name.
+  region: us-central1
+
+  # The prerequisite GcpVpcNetwork, by reference.
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+
+  description: Planton E2E HA VPN gateway; safe to delete
+
+  # Two public IPv4 interfaces (the defaults), IPv4-only tunnels.
+  labels:
+    purpose: e2e
+
+  # The Cloud Router the tunnels' BGP sessions run on: a 16-bit private ASN,
+  # default advertisement (every subnet).
+  router:
+    description: Planton E2E HA VPN router; safe to delete
+    bgp:
+      asn: 64514
+
+  # DELETE (default; refused while tunnels reference the gateway), PREVENT,
+  # ABANDON.
+  deletionPolicy: DELETE

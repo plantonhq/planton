@@ -1,0 +1,46 @@
+# GcpHaVpnGateway scenario exercising the router's CUSTOM advertisement (a
+# group plus a range), a 32-bit private ASN, a slower keepalive, an explicit
+# identifier range, and explicit IPv4 gateway_ip_version / IPV4_ONLY stack
+# type -- every mutable and immutable knob the reference manifest leaves at
+# its default, on the same prerequisite network.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: planton-oss-e2e-gcpvpngw-custom
+  id: planton-oss-e2e-gcpvpngw-custom
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpngateway
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  gatewayName: planton-oss-e2e-gcpvpngw-custom
+  region: us-central1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  gatewayIpVersion: IPV4
+  stackType: IPV4_ONLY
+  labels:
+    purpose: e2e
+    arm: custom-advertisement
+  router:
+    name: planton-oss-e2e-gcpvpngw-custom-rtr
+    description: Planton E2E router with custom advertisement; safe to delete
+    bgp:
+      asn: 4200000001
+      advertiseMode: CUSTOM
+      advertisedGroups:
+        - ALL_SUBNETS
+      advertisedIpRanges:
+        - range: 10.250.0.0/16
+          description: Planton E2E advertised range
+      keepaliveInterval: 30
+      identifierRange: 169.254.250.0/30
+  deletionPolicy: DELETE

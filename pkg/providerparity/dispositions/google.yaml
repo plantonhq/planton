@@ -623,9 +623,6 @@ resources:
   - resource: google_compute_disk_resource_policy_attachment
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built"
-  - resource: google_compute_external_vpn_gateway
-    disposition: model-planned
-    reason: "planned composition into the planned GcpHaVpn kind (the external peer gateway)"
   - resource: google_compute_firewall_policy
     disposition: model-planned
     reason: "planned GcpHierarchicalFirewallPolicy kind (hierarchical firewall policies)"
@@ -650,9 +647,6 @@ resources:
   - resource: google_compute_global_vm_extension_policy
     disposition: deferred
     reason: "VM extension policies are emerging fleet tooling; deferred pending demand"
-  - resource: google_compute_ha_vpn_gateway
-    disposition: model-planned
-    reason: "planned GcpHaVpn kind (HA VPN)"
   - resource: google_compute_http_health_check
     disposition: excluded-deprecated
     reason: "legacy HTTP/HTTPS health checks, superseded by google_compute_health_check (modeled by GcpHealthCheck)"
@@ -719,12 +713,6 @@ resources:
   - resource: google_compute_network_firewall_policy_with_rules
     disposition: deferred
     reason: "the all-in-one variant of a policy the planned GcpNetworkFirewallPolicy kind composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
-  - resource: google_compute_network_peering
-    disposition: model-planned
-    reason: "planned GcpVpcPeering kind (VPC network peering)"
-  - resource: google_compute_network_peering_routes_config
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVpcPeering kind (route exchange configuration)"
   - resource: google_compute_node_group
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"
@@ -836,33 +824,21 @@ resources:
   - resource: google_compute_route
     disposition: deferred
     reason: "judged to fold into the existing GcpVpcNetwork kind's spec (static routes and network attachments); the composition is not built"
-  - resource: google_compute_router_interface
-    disposition: deferred
-    reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
   - resource: google_compute_router_named_set
     disposition: deferred
     reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
   - resource: google_compute_router_nat_address
     disposition: deferred
     reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
-  - resource: google_compute_router_peer
-    disposition: deferred
-    reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
   - resource: google_compute_router_route_policy
     disposition: deferred
-    reason: "judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built"
+    reason: "BGP import/export route policies on a Cloud Router; GcpHaVpnConnection sessions reference policies by name (import_policies / export_policies) and the policy resource itself is its own kind on the first ask"
   - resource: google_compute_security_policy_rule
     disposition: deferred
     reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
   - resource: google_compute_service_attachment
     disposition: model-planned
     reason: "planned GcpPscServiceAttachment kind (Private Service Connect service attachments)"
-  - resource: google_compute_shared_vpc_host_project
-    disposition: model-planned
-    reason: "planned GcpSharedVpcHost kind (Shared VPC host projects)"
-  - resource: google_compute_shared_vpc_service_project
-    disposition: model-planned
-    reason: "planned GcpSharedVpcServiceProject kind (Shared VPC service projects)"
   - resource: google_compute_snapshot
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built"
@@ -890,9 +866,6 @@ resources:
   - resource: google_compute_vpn_gateway
     disposition: excluded-deprecated
     reason: "Classic VPN gateway, superseded by HA VPN"
-  - resource: google_compute_vpn_tunnel
-    disposition: model-planned
-    reason: "planned composition into the planned GcpHaVpn kind (tunnels)"
   - resource: google_compute_wire_group
     disposition: deferred
     reason: "Cross-Site Interconnect (cross-site networks, wire groups) is specialty networking; deferred pending demand"

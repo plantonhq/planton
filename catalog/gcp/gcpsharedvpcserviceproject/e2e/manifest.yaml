@@ -1,0 +1,32 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcServiceProject
+metadata:
+  name: planton-oss-e2e-gcpsvps
+  id: planton-oss-e2e-gcpsvps
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsharedvpcserviceproject
+  annotations:
+    planton.dev/e2e: "true"
+    # A second project under the same organization, arranged by the owner
+    # and exported to the harness; the lane skips honestly when it is unset.
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  # The host: the prerequisite GcpSharedVpcHost (the harness project), by
+  # reference -- the host KIND, which orders host-enable -> attach.
+  hostProjectId:
+    valueFrom:
+      kind: GcpSharedVpcHost
+      name: planton-oss-e2e-gcpsvph-prereq
+      fieldPath: status.outputs.host_project_id
+
+  # The service project: a second project the harness identity may attach.
+  serviceProjectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+
+  # Empty detaches on destroy; ABANDON leaves the attachment. No other value.
+  deletionPolicy: ""

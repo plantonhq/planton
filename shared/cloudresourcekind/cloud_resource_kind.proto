@@ -5431,6 +5431,47 @@ enum CloudResourceKind {
     service_group: gcp_management_governance
   }];
 
+  // 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN,
+  // firewall policies, PSC, network endpoint groups).
+  // HA VPN is two kinds: the gateway (with its Cloud Router) is declared
+  // once per VPC and region and referenced by every site connection, so
+  // two Google Cloud VPCs can point their connections at each other's
+  // gateway without a dependency cycle.
+  GcpSharedVpcHost = 3180 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsvph"
+    service_group: gcp_networking
+  }];
+  GcpSharedVpcServiceProject = 3181 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpsvps"
+    prerequisites: [GcpSharedVpcHost]
+    service_group: gcp_networking
+  }];
+  GcpVpcPeering = 3182 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppeer"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+  GcpHaVpnGateway = 3183 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvpngw"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+  GcpHaVpnConnection = 3188 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvpncn"
+    prerequisites: [GcpHaVpnGateway]
+    service_group: gcp_networking
+  }];
+
   // 3250–3259: GCP Firebase (project enablement, app registrations, and
   // the Firebase-adjacent products that follow)
   // GcpFirebaseProject is the container the app registrations live in:

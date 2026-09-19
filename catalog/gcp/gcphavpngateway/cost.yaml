@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcphavpngateway
+spec:
+  billing_model: free
+  free_tier: "An HA VPN gateway and its Cloud Router have no meter of their own in Google's Cloud VPN pricing: the gateway's two public addresses are not billed as static IPs, and Cloud Router is free -- Google bills VPN per TUNNEL-hour and per GiB of tunnel egress, both of which are declared on the GcpHaVpnConnection."
+  notes: "No field of this spec buys anything by itself. The gateway exists so tunnels can attach to it; every tunnel-hour and every GiB through the tunnels bills through the GcpHaVpnConnection that declares them (see that kind's cost profile). A gateway with no connections costs nothing."

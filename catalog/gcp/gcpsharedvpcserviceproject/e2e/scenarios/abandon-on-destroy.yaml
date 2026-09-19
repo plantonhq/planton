@@ -1,0 +1,28 @@
+# GcpSharedVpcServiceProject scenario with deletion_policy ABANDON: destroy
+# unmanages the attachment and leaves the project attached. Both projects by
+# literal -- the shape for a host and project created outside the chart.
+# The live lane's destroy therefore leaves an attachment behind by design;
+# the lane records it and the host prerequisite's own destroy detaches
+# nothing (Google refuses to disable a host with attachments), so this
+# scenario is offline-only until the proof lane adds a detach step.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcServiceProject
+metadata:
+  name: planton-oss-e2e-gcpsvps-abandon
+  id: planton-oss-e2e-gcpsvps-abandon
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsharedvpcserviceproject
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID
+  tags:
+    - planton-e2e
+spec:
+  hostProjectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+  serviceProjectId:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SECOND_PROJECT_ID}
+  deletionPolicy: ABANDON

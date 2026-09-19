@@ -1,0 +1,21 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpsharedvpcserviceproject
+spec:
+  # Attaching a service project needs two things the shared test identity does
+  # not have: roles/compute.xpnAdmin on the organization (Google checks
+  # compute.organizations.enableXpnResource there) and a SECOND project under
+  # the same organization to attach (the harness project is the host). Offline
+  # bar met: both modules build and validate, offline plans for the reference
+  # manifest (host by reference, service project through the owner-arranged
+  # PLANTON_E2E_GCP_SECOND_PROJECT_ID token) and the abandon scenario are clean
+  # on the pinned provider, and the accounting is total. Live proof waits for
+  # the organization-scoped identity and the second project; the abandon
+  # scenario additionally leaves an attachment behind by design and needs a
+  # detach step in the proof lane before the host prerequisite can be disabled.
+  tier: 2
+  status: deferred
+  deferred_reason: attaching a service project requires organization-level roles/compute.xpnAdmin credentials and a second project under the organization, neither of which the E2E test identity has; offline plans only
+  validated_provisioners: []
+  timeout_minutes: 10

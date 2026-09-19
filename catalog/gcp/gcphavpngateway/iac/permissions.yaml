@@ -1,0 +1,41 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcphavpngateway
+spec:
+  gcp:
+    groups:
+      - purpose: EnableComputeApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: "Covers google_project_service (Pulumi projects.Service) for compute.googleapis.com -- enable on first apply, get on every refresh. disable_on_destroy is false, so no disable permission is ever exercised."
+      - purpose: ManageHaVpnGateway
+        permissions:
+          - compute.vpnGateways.create
+          - compute.vpnGateways.get
+          - compute.vpnGateways.delete
+          - compute.vpnGateways.setLabels
+          - compute.networks.get
+        provenance: derived
+        notes: "Covers google_compute_ha_vpn_gateway (Pulumi compute.HaVpnGateway). create on first apply; get on every refresh and import; setLabels when labels change (every other argument is ForceNew and recreates instead); delete on destroy under deletion_policy DELETE (refused by Google while tunnels reference the gateway; ABANDON and PREVENT call no delete API); networks.get to resolve the network reference. roles/compute.networkAdmin contains all of these."
+      - purpose: ManageCloudRouter
+        permissions:
+          - compute.routers.create
+          - compute.routers.get
+          - compute.routers.update
+          - compute.routers.delete
+        provenance: derived
+        notes: "Covers google_compute_router (Pulumi compute.Router). create on first apply; get on refresh and import; update when the description or BGP advertisement changes (the ASN and encrypted_interconnect_router are ForceNew); delete on destroy under deletion_policy DELETE. roles/compute.networkAdmin contains all four."
+      - purpose: ReadInterconnectAttachments
+        permissions:
+          - compute.interconnectAttachments.get
+          - compute.interconnectAttachments.use
+        provenance: derived
+        notes: "Only when spec.vpn_interfaces pins the gateway to Cloud Interconnect VLAN attachments (HA VPN over Interconnect): Google validates and binds the attachments at gateway create."

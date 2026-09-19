@@ -1,0 +1,43 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: planton-oss-e2e-gcppeer
+  id: planton-oss-e2e-gcppeer
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvpcpeering
+  annotations:
+    planton.dev/e2e: "true"
+    # Side A under test needs a second network and the side-B peering on it
+    # so the pair goes ACTIVE; both are extra fixture instances (path entries
+    # deploy after the registry chain, in this order).
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b.yaml"
+  tags:
+    - planton-e2e
+spec:
+  # The peering entry's name on this side; defaults to metadata.name.
+  peeringName: planton-oss-e2e-gcppeer-side-a
+
+  # This side's network: the registry's prerequisite GcpVpcNetwork.
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+
+  # The other network: the second fixture network. Set, so this side CREATES
+  # the peering.
+  peerNetwork:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcppeer-peer-vpc
+      fieldPath: status.outputs.network_self_link
+
+  # Offer this side's custom routes to the peer (side B imports them).
+  exportCustomRoutes: true
+  importCustomRoutes: false
+
+  # DELETE (default), PREVENT, ABANDON -- create form only.
+  deletionPolicy: DELETE

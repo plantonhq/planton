@@ -471,6 +471,9 @@ contained dev.planton.gcp.gcpglobaladdress.v1alpha1.GcpGlobalAddressSpec.project
 contained dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.subnetwork -> GcpSubnetwork
+contained dev.planton.gcp.gcphavpnconnection.v1alpha1.GcpHaVpnConnectionSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcphavpngateway.v1alpha1.GcpHaVpnGatewaySpec.network -> GcpVpcNetwork
+contained dev.planton.gcp.gcphavpngateway.v1alpha1.GcpHaVpnGatewaySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcphealthcheck.v1alpha1.GcpHealthCheckSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpiamcustomrole.v1alpha1.GcpIamCustomRoleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpiamdenypolicy.v1alpha1.GcpIamDenyPolicyParent.project_id -> GcpProject
@@ -515,6 +518,8 @@ contained dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1.GcpServiceConnecti
 contained dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1.GcpServiceConnectionPolicySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpservicenetworkingconnection.v1alpha1.GcpServiceNetworkingConnectionSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpsharedvpchost.v1alpha1.GcpSharedVpcHostSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1.GcpSharedVpcServiceProjectSpec.service_project_id -> GcpProject
 contained dev.planton.gcp.gcpspannerbackupschedule.v1alpha1.GcpSpannerBackupScheduleSpec.database -> GcpSpannerDatabase
 contained dev.planton.gcp.gcpspannerbackupschedule.v1alpha1.GcpSpannerBackupScheduleSpec.instance -> GcpSpannerInstance
 contained dev.planton.gcp.gcpspannerbackupschedule.v1alpha1.GcpSpannerBackupScheduleSpec.project_id -> GcpProject
@@ -541,6 +546,7 @@ contained dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookNetwor
 contained dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookNetworkInterface.subnet -> GcpSubnetwork
 contained dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpvpcnetwork.v1alpha1.GcpVpcNetworkSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpworkloadidentitypool.v1alpha1.GcpWorkloadIdentityPoolSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1.GcpWorkloadIdentityPoolProviderSpec.project_id -> GcpProject
@@ -874,6 +880,7 @@ exempt    dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointPscAut
 exempt    dev.planton.gcp.gcpvertexaiendpoint.v1alpha1.GcpVertexAiEndpointSpec.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointPscAutomationConfig.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1.GcpVertexAiIndexEndpointSpec.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringSpec.peer_network -> GcpVpcNetwork
 exempt    dev.planton.kubernetes.ExternalSecretsStoreAzure.vault_url -> AzureKeyVault
 exempt    dev.planton.kubernetes.ExternalSecretsStoreGcp.project_id -> GcpProject
 exempt    dev.planton.kubernetes.StrimziKafkaClientTrustedCertificate.secret_name -> KubernetesKafka

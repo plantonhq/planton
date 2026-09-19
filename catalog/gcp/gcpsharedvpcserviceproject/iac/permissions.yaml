@@ -1,0 +1,19 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpsharedvpcserviceproject
+spec:
+  gcp:
+    groups:
+      - purpose: ManageSharedVpcServiceProject
+        permissions:
+          - compute.organizations.enableXpnResource
+          - compute.organizations.disableXpnResource
+          - compute.projects.get
+        provenance: derived
+        notes: "Covers google_compute_shared_vpc_service_project (Pulumi compute.SharedVPCServiceProject) -- the modules' only resource. enableXpnResource on first apply; projects.get on the HOST project on every refresh and import (the provider lists the host's xpnResources to find the attachment); disableXpnResource on destroy when deletion_policy is empty (refused by Google while resources in the service project still use a host subnetwork; ABANDON calls no disable API). Both organizations.* permissions are granted on the organization or a folder above BOTH projects; roles/compute.xpnAdmin contains them."

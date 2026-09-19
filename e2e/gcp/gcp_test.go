@@ -1078,6 +1078,48 @@ func TestGcpTagBinding_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcptagbinding", "terraform")
 }
 
+// --- GCP networking fabric (Shared VPC, VPC peering, HA VPN) ---
+
+func TestGcpSharedVpcHost_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsharedvpchost", "pulumi")
+}
+
+func TestGcpSharedVpcHost_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsharedvpchost", "terraform")
+}
+
+func TestGcpSharedVpcServiceProject_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsharedvpcserviceproject", "pulumi")
+}
+
+func TestGcpSharedVpcServiceProject_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpsharedvpcserviceproject", "terraform")
+}
+
+func TestGcpVpcPeering_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvpcpeering", "pulumi")
+}
+
+func TestGcpVpcPeering_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvpcpeering", "terraform")
+}
+
+func TestGcpHaVpnGateway_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcphavpngateway", "pulumi")
+}
+
+func TestGcpHaVpnGateway_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcphavpngateway", "terraform")
+}
+
+func TestGcpHaVpnConnection_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcphavpnconnection", "pulumi")
+}
+
+func TestGcpHaVpnConnection_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcphavpnconnection", "terraform")
+}
+
 // --- GCP Certificate Map (SNI routing table: deploys the GcpCertManagerCert prerequisite chain) ---
 
 func TestGcpCertificateMap_Pulumi(t *testing.T) {

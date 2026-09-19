@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: hub-vpn-v6
+spec:
+  region: europe-west1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: hub
+      fieldPath: status.outputs.network_self_link
+  stackType: IPV4_IPV6
+  labels:
+    team: network
+  router:
+    bgp:
+      asn: 4200000001
+      advertiseMode: CUSTOM
+      advertisedGroups:
+        - ALL_SUBNETS
+      advertisedIpRanges:
+        - range: 10.100.0.0/16
+          description: Shared services reachable through the hub
+      keepaliveInterval: 30

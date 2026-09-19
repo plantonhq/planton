@@ -1,0 +1,92 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcphavpnconnection
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The only secrets the connection holds -- each tunnel's IKE pre-shared key and any BGP MD5 key -- are spec fields marked sensitive; the Pulumi module stores them as Pulumi secrets (encrypted in state) and the Terraform module keeps only the shared_secret hash in state, as the provider does. Google holds the keys on its encrypted control plane.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: The pre-shared keys are held by Google's Cloud VPN control plane with no customer-managed key option; the spec exposes no Cloud KMS surface.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: tunnels.cipher_suite
+      evidence:
+        type: spec_default
+        reference: Every tunnel is IPsec -- cleartext is unrepresentable -- and negotiates from Google's default cipher set (IKEv2, AES-GCM and AES-CBC with SHA-2, DH groups 14-21) when cipher_suite is left unset; setting phase1 / phase2 restricts the set to a compliance baseline, and ike_version (2 by default) drops to 1 only for a legacy device.
+      notes: The default set already excludes broken algorithms; cipher_suite exists for baselines that forbid specific suites.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A tunnel admits only IKE/IPsec traffic from the peer address it was created for (the external gateway interface or the peer Google gateway) that proves possession of the tunnel's pre-shared key; the connection exposes no workload endpoint.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: tunnels.bgp_session.advertise_mode
+      evidence:
+        type: spec_default
+        reference: What the peer can reach is what the session advertises -- empty inherits the router's default (every VPC subnet); CUSTOM with advertised_ip_ranges advertises only the listed ranges to this peer, so it learns routes to nothing else. import_policies filter what the peer may advertise INTO the VPC.
+      notes: Which sources may reach the workloads is still the network's firewall posture; the advertisement decides which destinations the peer has a route to.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No HTTP requests are served; the tunnels carry IPsec, not application traffic, so a WAF has nothing to inspect.
+    - control_id: rbac
+      status: not_applicable
+      notes: Management access is project IAM posture (roles/compute.networkAdmin), not a component choice; the peer authenticates with the pre-shared key (enc-at-rest) and optionally BGP MD5, not with IAM.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The connection runs no workloads and holds no Google credentials; its secrets are the IKE pre-shared keys shared with the peer device.
+    - control_id: no-legacy-auth
+      status: configurable
+      field_path: tunnels.ike_version
+      evidence:
+        type: spec_default
+        reference: ike_version defaults to 2 (IKEv2 -- the only version supporting IPv6, modern ciphers, and mobility) and both engines send it explicitly; 1 is accepted only for a device that cannot speak IKEv2.
+      notes: BGP MD5 (md5_authentication_key) is optional and guards against a misconfigured peer, not an attacker; IPsec already protects the session.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; the peer device authenticates with a pre-shared key, whose handling no-legacy-auth and enc-at-rest carry.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Tunnel, router interface, BGP peer, and external gateway create, update, and delete land in Cloud Audit Logs (Admin Activity) unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud VPN publishes per-tunnel metrics (tunnel established, sent/received bytes and packets, dropped packets) and Cloud Router publishes per-peer BGP session status and route counts to Cloud Monitoring automatically; Cloud VPN tunnel logs land in Cloud Logging with no configuration. The bgp_peer_names output names the peers `gcloud compute routers get-status` reports on.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Stateless forwarding -- no data to back up; the configuration is declarative and re-creatable from the manifest with the same pre-shared keys.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: tunnels
+      evidence:
+        type: spec_default
+        reference: Google's 99.99% availability SLA requires a tunnel from EACH of the gateway's two interfaces to redundant peer addresses -- two tunnels with vpn_gateway_interface 0 and 1 (the 01-two-tunnel-to-onprem and 03-gcp-to-gcp presets, and the E2E manifest); a single tunnel is a single point of failure on Google's side and earns at most 99.9%.
+      notes: BFD (bgp_session.bfd) shortens failover from three BGP keepalives (60 s by default) to about a second.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE for every tunnel, interface, peer, and the external gateway (the site is disconnected); PREVENT makes destroy fail outright; ABANDON unmanages the resources while the tunnels stay live.
+      notes: PREVENT is the guard for a production site link; every tunnel field except labels is immutable, so an in-place edit to a secret or cipher is itself a delete-and-recreate that PREVENT also blocks.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Fully managed service -- Google operates and patches the VPN tunnel and Cloud Router data planes; no customer-visible patch surface exists.

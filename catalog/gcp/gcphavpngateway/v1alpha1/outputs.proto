@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcphavpngateway.v1alpha1;
+
+// GcpHaVpnGatewayStackOutputs captures the gateway and router identities a
+// GcpHaVpnConnection references and the two public addresses the other
+// side of every tunnel is configured to reach.
+message GcpHaVpnGatewayStackOutputs {
+  // The gateway's self link -- what a GcpHaVpnConnection's `gateway`
+  // references (its tunnels attach here), and what another Google Cloud
+  // gateway's connection names as its `peer.gcp_gateway`.
+  string gateway_self_link = 1;
+
+  // The gateway's name in GCP (the resolved value: metadata.name when the
+  // spec left gateway_name empty).
+  string gateway_name = 2;
+
+  // The region the gateway and router live in -- what a
+  // GcpHaVpnConnection's `region` references so the two can never disagree.
+  string region = 3;
+
+  // The public IP of gateway interface 0. Configure the on-premises device's
+  // first tunnel toward this address.
+  string interface_0_ip_address = 4;
+
+  // The public IP of gateway interface 1. Configure the on-premises device's
+  // second tunnel toward this address; a tunnel on each interface is what
+  // earns the 99.99% SLA.
+  string interface_1_ip_address = 5;
+
+  // The Cloud Router's name -- what a GcpHaVpnConnection's `router`
+  // references so its interfaces and BGP peers land on this router.
+  string router_name = 6;
+
+  // The Cloud Router's self link.
+  string router_self_link = 7;
+
+  // The ASN the router speaks as -- the number the on-premises side
+  // configures as its BGP neighbor's ASN.
+  uint32 router_asn = 8;
+}

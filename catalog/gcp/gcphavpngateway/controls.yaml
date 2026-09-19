@@ -1,0 +1,83 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcphavpngateway
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A VPN gateway and its router store no customer data at rest -- they forward and route; the tunnels' pre-shared keys live on the GcpHaVpnConnection.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every byte that leaves through an HA VPN gateway is IPsec-encrypted (IKEv2 by default, AES-GCM / AES-CBC suites) -- the gateway exists to encrypt traffic between networks and cannot pass cleartext; the cipher set per tunnel is chosen on the GcpHaVpnConnection.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The gateway's two public addresses accept only IKE/IPsec (UDP 500, UDP 4500, ESP) from peers that prove possession of a tunnel's pre-shared key; no other traffic is admitted and no workload endpoint is exposed. Interfaces pinned to Cloud Interconnect (vpn_interfaces) have no public address at all.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: router.bgp.advertise_mode
+      evidence:
+        type: spec_default
+        reference: What the other side can reach is what the router advertises -- DEFAULT (the value when empty) advertises every subnet of the VPC to every peer; CUSTOM with advertised_ip_ranges advertises only the listed ranges, so a peer learns routes to nothing else.
+      notes: Which sources may reach the workloads is still the network's firewall posture; the advertisement decides which destinations a peer has a route to. Each GcpHaVpnConnection session may override the advertisement per peer.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No HTTP requests are served; the gateway terminates IPsec, not application traffic, so a WAF has nothing to inspect.
+    - control_id: rbac
+      status: not_applicable
+      notes: Management access is project IAM posture (roles/compute.networkAdmin), not a component choice; the gateway exposes no authentication plane of its own beyond the tunnels' pre-shared keys, which live on the connection.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The gateway runs no workloads and holds no credentials of its own.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths of its own; the IKE version per tunnel (2 by default, 1 for legacy devices) is chosen on the GcpHaVpnConnection.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Gateway and router create, update, and delete land in Cloud Audit Logs (Admin Activity) unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud VPN publishes gateway and tunnel metrics (tunnel status, sent/received bytes and packets, dropped packets) and Cloud Router publishes BGP session state and route counts to Cloud Monitoring for every gateway automatically; Cloud VPN logs land in Cloud Logging with no configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Stateless forwarding -- no data to back up; the configuration is declarative and re-creatable from the manifest (a recreated gateway has new public IPs, which the peers must be told).
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: An HA VPN gateway is a regional resource with two interfaces on independent Google infrastructure; a tunnel from each interface to redundant peer addresses earns Google's 99.99% availability SLA. Single-interface (Classic VPN) operation is unrepresentable in this kind.
+      notes: The 99.99% figure requires the GcpHaVpnConnection to place a tunnel on each interface; the gateway alone provides the two interfaces.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE for the gateway and router (refused by Google while any connection's tunnels still reference the gateway); PREVENT makes destroy fail outright; ABANDON unmanages both while they stay live.
+      notes: Google's own guard -- no delete while tunnels exist -- bounds the blast radius; PREVENT is the guard for the gateway every site's device is configured against, because a recreated gateway has new public IPs.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Fully managed service -- Google operates and patches the VPN gateway and Cloud Router data planes; no customer-visible patch surface exists.

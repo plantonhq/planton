@@ -1,0 +1,35 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcphavpnconnection
+spec:
+  # Awaiting the live proof lane. Offline bar met: both modules build and
+  # validate, offline plans for the reference manifest, both scenarios, and
+  # the three fixture manifests are clean on the pinned provider, and the
+  # accounting is total. The live shape is Google-to-Google in one project:
+  # the hub gateway (registry prerequisite), a spoke network and gateway, the
+  # connection under test hub -> spoke, and a reverse fixture spoke -> hub.
+  # Live facts the proof lane confirms: (1) both tunnels reach ESTABLISHED and
+  # both BGP sessions reach Established on the hub router (the verifier polls
+  # the router status API by the bgp_peer_names outputs); (2) the four
+  # index-aligned list outputs are populated on both engines; (3) the
+  # Optional+Computed session fields (ip_address, peer_ip_address, enable_ipv4,
+  # the next hops) RE-PLAN CLEAN under the apply-idempotency gate when unset;
+  # (4) the knobs scenario's BFD, MD5, CUSTOM advertisement, cipher suite, and
+  # priorities round-trip -- and whether Google establishes a session with BFD
+  # and MD5 on one side only (the reverse fixture has neither; a watch item);
+  # (5) the harness destroys the connection before the gateway (Google refuses
+  # the other order). Project-scoped; needs roles/compute.networkAdmin on the
+  # harness project. Cost: four tunnel-hours per hour while the chain lives
+  # (two tunnels each way), about fifteen minutes per lane.
+  #
+  # Offline-proven-only arm (skips honestly through its required-env token):
+  #   - external-peer-two-tunnels: an on-premises device with two public
+  #     addresses. The harness has no device; the offline plan proves the
+  #     external VPN gateway, the interface pairing, and the selector. Unblock:
+  #     a peer device the owner arranges, exported as
+  #     PLANTON_E2E_GCP_VPN_PEER_IP_0 / _1.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

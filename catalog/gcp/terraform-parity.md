@@ -29,10 +29,10 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 110 |
-| Distinct provider resources consumed | 174 |
-| Spec fields authored across all kinds | 3909 |
-| Module pins on `google` | `~> 8.3` × 110 |
+| Kinds in the catalog | 115 |
+| Distinct provider resources consumed | 183 |
+| Spec fields authored across all kinds | 4004 |
+| Module pins on `google` | `~> 8.3` × 115 |
 | Module pins on `google-beta` | `~> 8.3` × 4 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -76,7 +76,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**110 of 110 kinds are at total accounting; 83 proven live.**
+**115 of 115 kinds are at total accounting; 83 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -133,6 +133,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalForwardingRule | 23 | 18 | 4 | 1 | 0 | ✅ | — |
+| GcpHaVpnConnection | 84 | 46 | 23 | 15 | 0 | ✅ | — |
+| GcpHaVpnGateway | 30 | 11 | 16 | 3 | 0 | ✅ | — |
 | GcpHealthCheck | 100 | 14 | 86 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIamCustomRole | 7 | 6 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpIamDenyPolicy | 13 | 11 | 2 | 0 | 0 | ✅ | — |
@@ -169,6 +171,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpServiceAccountIamMember | 6 | 6 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpServiceConnectionPolicy | 12 | 9 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpServiceNetworkingConnection | 5 | 5 | 0 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpSharedVpcHost | 2 | 1 | 1 | 0 | 0 | ✅ | — |
+| GcpSharedVpcServiceProject | 3 | 1 | 2 | 0 | 0 | ✅ | — |
 | GcpSpannerBackupSchedule | 10 | 7 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSpannerDatabase | 12 | 10 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpSpannerInstance | 28 | 21 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -187,6 +191,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpVertexAiIndexEndpoint | 13 | 10 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiNotebook | 46 | 9 | 36 | 1 | 0 | ✅ | — |
 | GcpVpcNetwork | 17 | 10 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVpcPeering | 17 | 14 | 2 | 1 | 0 | ✅ | — |
 | GcpWorkflow | 15 | 10 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPool | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpWorkloadIdentityPoolProvider | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -197,11 +202,11 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 169 | consumed by a kind's Terraform module today |
+| Modeled | 178 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 118 | judged to be covered by a planned kind or planned composition, not built yet |
-| Deferred | 586 | deliberately not offered, each with the recorded reason |
+| Planned | 111 | judged to be covered by a planned kind or planned composition, not built yet |
+| Deferred | 584 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 69 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
 
@@ -210,7 +215,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (169)
+### Modeled (178)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -247,15 +252,19 @@ rather than trusted.
 | `google_compute_backend_service` | consumed by GcpBackendService |
 | `google_compute_backend_service_signed_url_key` | consumed by GcpBackendService |
 | `google_compute_disk` | consumed by GcpComputeDisk |
+| `google_compute_external_vpn_gateway` | consumed by GcpHaVpnConnection |
 | `google_compute_firewall` | consumed by GcpFirewallRule |
 | `google_compute_global_address` | consumed by GcpGlobalAddress |
 | `google_compute_global_forwarding_rule` | consumed by GcpGlobalForwardingRule |
+| `google_compute_ha_vpn_gateway` | consumed by GcpHaVpnGateway |
 | `google_compute_health_check` | consumed by GcpHealthCheck |
 | `google_compute_instance` | consumed by GcpComputeInstance |
 | `google_compute_instance_group_manager` | consumed by GcpComputeMig |
 | `google_compute_instance_template` | consumed by GcpComputeMig |
 | `google_compute_managed_ssl_certificate` | consumed by GcpManagedSslCertificate |
 | `google_compute_network` | consumed by GcpVpcNetwork |
+| `google_compute_network_peering` | consumed by GcpVpcPeering |
+| `google_compute_network_peering_routes_config` | consumed by GcpVpcPeering |
 | `google_compute_per_instance_config` | consumed by GcpComputeMig |
 | `google_compute_region_autoscaler` | consumed by GcpComputeMig |
 | `google_compute_region_health_check` | consumed by GcpHealthCheck |
@@ -267,15 +276,20 @@ rather than trusted.
 | `google_compute_region_ssl_certificate` | consumed by GcpSslCertificate |
 | `google_compute_region_ssl_policy` | consumed by GcpSslPolicy |
 | `google_compute_resize_request` | consumed by GcpComputeMig |
-| `google_compute_router` | consumed by GcpRouterNat |
+| `google_compute_router` | consumed by GcpHaVpnGateway, GcpRouterNat |
+| `google_compute_router_interface` | consumed by GcpHaVpnConnection |
 | `google_compute_router_nat` | consumed by GcpRouterNat |
+| `google_compute_router_peer` | consumed by GcpHaVpnConnection |
 | `google_compute_security_policy` | consumed by GcpCloudArmorPolicy |
+| `google_compute_shared_vpc_host_project` | consumed by GcpSharedVpcHost |
+| `google_compute_shared_vpc_service_project` | consumed by GcpSharedVpcServiceProject |
 | `google_compute_ssl_certificate` | consumed by GcpSslCertificate |
 | `google_compute_ssl_policy` | consumed by GcpSslPolicy |
 | `google_compute_subnetwork` | consumed by GcpSubnetwork |
 | `google_compute_target_http_proxy` | consumed by GcpTargetHttpProxy |
 | `google_compute_target_https_proxy` | consumed by GcpTargetHttpsProxy |
 | `google_compute_url_map` | consumed by GcpUrlMap |
+| `google_compute_vpn_tunnel` | consumed by GcpHaVpnConnection |
 | `google_container_cluster` | consumed by GcpGkeCluster |
 | `google_container_node_pool` | consumed by GcpGkeNodePool |
 | `google_dataproc_autoscaling_policy` | consumed by GcpDataprocAutoscalingPolicy |
@@ -346,7 +360,7 @@ rather than trusted.
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVertexAiEndpoint, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiNotebook, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVertexAiEndpoint, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiNotebook, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
@@ -816,7 +830,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (118)
+### Planned (111)
 
 | Resource | Recorded reason |
 |---|---|
@@ -844,22 +858,18 @@ rather than trusted.
 | `google_colab_runtime` | planned GcpColabRuntime kind (Colab Enterprise runtimes) |
 | `google_colab_runtime_template` | planned GcpColabRuntimeTemplate kind (Colab Enterprise runtime templates) |
 | `google_colab_schedule` | planned GcpColabSchedule kind (Colab Enterprise schedules) |
-| `google_compute_external_vpn_gateway` | planned composition into the planned GcpHaVpn kind (the external peer gateway) |
 | `google_compute_firewall_policy` | planned GcpHierarchicalFirewallPolicy kind (hierarchical firewall policies) |
 | `google_compute_firewall_policy_association` | planned composition into the planned GcpHierarchicalFirewallPolicy kind (associations) |
 | `google_compute_firewall_policy_rule` | planned composition into the planned GcpHierarchicalFirewallPolicy kind (rules) |
 | `google_compute_forwarding_rule` | planned composition into the existing GcpGlobalForwardingRule kind (the regional arm) |
 | `google_compute_global_network_endpoint` | planned composition into the planned GcpNetworkEndpointGroup kind (global endpoints) |
 | `google_compute_global_network_endpoint_group` | planned GcpNetworkEndpointGroup kind (zonal and global network endpoint groups) |
-| `google_compute_ha_vpn_gateway` | planned GcpHaVpn kind (HA VPN) |
 | `google_compute_image` | planned GcpComputeImage kind (Compute Engine images) |
 | `google_compute_network_endpoint` | planned composition into the planned GcpNetworkEndpointGroup kind (zonal endpoints) |
 | `google_compute_network_endpoint_group` | planned GcpNetworkEndpointGroup kind (zonal and global network endpoint groups) |
 | `google_compute_network_firewall_policy` | planned GcpNetworkFirewallPolicy kind (network firewall policies, global and regional) |
 | `google_compute_network_firewall_policy_association` | planned composition into the planned GcpNetworkFirewallPolicy kind (associations) |
 | `google_compute_network_firewall_policy_rule` | planned composition into the planned GcpNetworkFirewallPolicy kind (rules) |
-| `google_compute_network_peering` | planned GcpVpcPeering kind (VPC network peering) |
-| `google_compute_network_peering_routes_config` | planned composition into the planned GcpVpcPeering kind (route exchange configuration) |
 | `google_compute_region_backend_service` | planned composition into the existing GcpBackendService kind (the regional arm) |
 | `google_compute_region_network_firewall_policy` | planned GcpNetworkFirewallPolicy kind (network firewall policies, global and regional) |
 | `google_compute_region_network_firewall_policy_association` | planned composition into the planned GcpNetworkFirewallPolicy kind (associations on the regional arm) |
@@ -868,9 +878,6 @@ rather than trusted.
 | `google_compute_region_target_https_proxy` | planned composition into the existing GcpTargetHttpsProxy kind (the regional arm) |
 | `google_compute_region_url_map` | planned composition into the existing GcpUrlMap kind (the regional arm) |
 | `google_compute_service_attachment` | planned GcpPscServiceAttachment kind (Private Service Connect service attachments) |
-| `google_compute_shared_vpc_host_project` | planned GcpSharedVpcHost kind (Shared VPC host projects) |
-| `google_compute_shared_vpc_service_project` | planned GcpSharedVpcServiceProject kind (Shared VPC service projects) |
-| `google_compute_vpn_tunnel` | planned composition into the planned GcpHaVpn kind (tunnels) |
 | `google_datastream_connection_profile` | planned composition into the planned GcpDatastreamStream kind (source and destination connection profiles) |
 | `google_datastream_private_connection` | planned composition into the planned GcpDatastreamStream kind (private connectivity) |
 | `google_datastream_stream` | planned GcpDatastreamStream kind (Datastream streams) |
@@ -939,7 +946,7 @@ rather than trusted.
 | `google_vertex_ai_tensorboard_experiment` | planned composition into the planned GcpVertexAiTensorboard kind (experiments) |
 | `google_vertex_ai_tensorboard_run` | planned composition into the planned GcpVertexAiTensorboard kind (runs) |
 
-### Deferred (586)
+### Deferred (584)
 
 | Resource | Recorded reason |
 |---|---|
@@ -1152,11 +1159,9 @@ rather than trusted.
 | `google_compute_resource_policy_attachment` | judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built |
 | `google_compute_rollout_plan` | compute rollout plans are emerging release tooling; deferred pending demand |
 | `google_compute_route` | judged to fold into the existing GcpVpcNetwork kind's spec (static routes and network attachments); the composition is not built |
-| `google_compute_router_interface` | judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built |
 | `google_compute_router_named_set` | judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built |
 | `google_compute_router_nat_address` | judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built |
-| `google_compute_router_peer` | judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built |
-| `google_compute_router_route_policy` | judged to fold into the existing GcpRouterNat kind and the router family's specs; the composition is not built |
+| `google_compute_router_route_policy` | BGP import/export route policies on a Cloud Router; GcpHaVpnConnection sessions reference policies by name (import_policies / export_policies) and the policy resource itself is its own kind on the first ask |
 | `google_compute_security_policy_rule` | judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built |
 | `google_compute_snapshot` | judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built |
 | `google_compute_snapshot_settings` | judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built |

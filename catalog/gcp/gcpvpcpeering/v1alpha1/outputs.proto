@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvpcpeering.v1alpha1;
+
+// GcpVpcPeeringStackOutputs captures this side of the peering after
+// provisioning.
+message GcpVpcPeeringStackOutputs {
+  // The peering entry's name on this side's network -- the resolved value
+  // (metadata.name when the spec left peering_name empty).
+  string peering_name = 1;
+
+  // This side's network, as a self link.
+  string network = 2;
+
+  // The peering's state as GCP reports it on this side: `ACTIVE` when both
+  // sides exist and point at each other, `INACTIVE` while the other side is
+  // missing or mismatched. Populated only in the CREATE form; empty for the
+  // routes-config form, which does not own the peering entry.
+  string state = 3;
+
+  // GCP's explanation of the state -- why a peering is INACTIVE (`Peering
+  // is not active because the peer network does not have a matching
+  // peering`), or the timestamp it went active. Populated only in the
+  // CREATE form.
+  string state_details = 4;
+}

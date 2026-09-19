@@ -1,0 +1,659 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcphavpnconnection.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpHaVpnConnectionExternalGatewayInterface is one public address of the
+// on-premises (or other-cloud) VPN device. A tunnel names the interface it
+// terminates on by its id.
+message GcpHaVpnConnectionExternalGatewayInterface {
+  // The interface's numeric id. Which ids are legal depends on the
+  // gateway's redundancy_type: 0 for SINGLE_IP_INTERNALLY_REDUNDANT; 0 and
+  // 1 for TWO_IPS_REDUNDANCY; 0-3 for FOUR_IPS_REDUNDANCY. Each id appears
+  // once.
+  int32 id = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 3
+  }];
+
+  // The public IPv4 address of the device's interface. Cannot be a Google
+  // Compute Engine address (use peer.gcp_gateway for Google-to-Google).
+  // Set this or ipv6_address, matching the gateway's gateway_ip_version.
+  string ip_address = 2 [(buf.validate.field).cel = {
+    id: "valid_ipv4"
+    message: "ip_address must be an IPv4 address"
+    expression: "this == '' || this.isIp(4)"
+  }];
+
+  // The public IPv6 address of the device's interface, in any RFC 4291
+  // form (e.g. 2001:db8::2d9:51:0:0). Cannot be a Compute Engine address.
+  string ipv6_address = 3 [(buf.validate.field).cel = {
+    id: "valid_ipv6"
+    message: "ipv6_address must be an IPv6 address"
+    expression: "this == '' || this.isIp(6)"
+  }];
+
+  option (buf.validate.message).cel = {
+    id: "interface_has_one_address"
+    message: "each external gateway interface sets exactly one of ip_address or ipv6_address"
+    expression: "(this.ip_address != '') != (this.ipv6_address != '')"
+  };
+}
+
+// GcpHaVpnConnectionExternalGateway describes the device on the other side
+// of the tunnels when it is NOT a Google Cloud HA VPN gateway: an
+// on-premises appliance or another cloud's VPN endpoint. Google models it
+// as an "external VPN gateway" resource holding the device's public
+// addresses; the tunnels reference its interfaces. The resource is free
+// metadata, immutable except labels, and this connection owns it -- two
+// connections to the same device (two regions to one HQ) each declare it.
+message GcpHaVpnConnectionExternalGateway {
+  option (buf.validate.message).cel = {
+    id: "interface_count_matches_redundancy"
+    message: "interfaces must match redundancy_type: 1 interface for SINGLE_IP_INTERNALLY_REDUNDANT, 2 for TWO_IPS_REDUNDANCY, 4 for FOUR_IPS_REDUNDANCY"
+    expression: "(this.redundancy_type == 'SINGLE_IP_INTERNALLY_REDUNDANT' && this.interfaces.size() == 1) || (this.redundancy_type == 'TWO_IPS_REDUNDANCY' && this.interfaces.size() == 2) || (this.redundancy_type == 'FOUR_IPS_REDUNDANCY' && this.interfaces.size() == 4)"
+  };
+  option (buf.validate.message).cel = {
+    id: "interface_ids_unique_and_in_range"
+    message: "interface ids must be unique and below the interface count (0, 0-1, or 0-3)"
+    expression: "this.interfaces.map(i, i.id).unique() && this.interfaces.all(i, i.id < this.interfaces.size())"
+  };
+
+  // Name of the external VPN gateway resource in GCP. Defaults to the
+  // connection's metadata.name when empty. 1-63 characters, lowercase
+  // letters, digits, and hyphens, starting with a letter. Immutable.
+  string name = 1 [(buf.validate.field).cel = {
+    id: "valid_external_gateway_name"
+    message: "external gateway name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
+  }];
+
+  // How many public addresses the device exposes, which fixes how many
+  // interfaces it has and which HA topology the tunnels form:
+  //   "SINGLE_IP_INTERNALLY_REDUNDANT" -- one address (the device is
+  //       redundant behind it); two tunnels from the two gateway
+  //       interfaces to that one address earn 99.9%
+  //   "TWO_IPS_REDUNDANCY"  -- two addresses (two devices or one with two
+  //       uplinks); one tunnel per gateway interface to each address --
+  //       two tunnels -- earn Google's 99.99% SLA. The recommended shape.
+  //   "FOUR_IPS_REDUNDANCY" -- four addresses; two tunnels per gateway
+  //       interface, four in all, also 99.99%
+  // Immutable.
+  string redundancy_type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_redundancy_type"
+      message: "redundancy_type must be SINGLE_IP_INTERNALLY_REDUNDANT, TWO_IPS_REDUNDANCY, or FOUR_IPS_REDUNDANCY"
+      expression: "this in ['SINGLE_IP_INTERNALLY_REDUNDANT', 'TWO_IPS_REDUNDANCY', 'FOUR_IPS_REDUNDANCY']"
+    }
+  ];
+
+  // The device's public addresses, one per interface, ids 0..n-1. The
+  // count must match redundancy_type. Immutable.
+  repeated GcpHaVpnConnectionExternalGatewayInterface interfaces = 3 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 4
+  ];
+
+  // Human-readable description of the device. Immutable.
+  string description = 4;
+
+  // User labels on the external gateway resource, merged with Planton's
+  // platform labels (which win on key conflicts). Mutable.
+  map<string, string> labels = 5;
+}
+
+// GcpHaVpnConnectionPeer names what the tunnels connect TO: exactly one of
+// an external device or another Google Cloud HA VPN gateway.
+message GcpHaVpnConnectionPeer {
+  option (buf.validate.message).cel = {
+    id: "exactly_one_peer"
+    message: "set exactly one of external_gateway (an on-premises or other-cloud device) or gcp_gateway (another Google Cloud HA VPN gateway)"
+    expression: "[has(this.external_gateway), has(this.gcp_gateway) && (this.gcp_gateway.value != '' || has(this.gcp_gateway.value_from))].filter(x, x).size() == 1"
+  };
+
+  // The other side is an on-premises appliance or another cloud's VPN
+  // endpoint, described by its public addresses. This connection creates
+  // the external VPN gateway resource for it.
+  GcpHaVpnConnectionExternalGateway external_gateway = 1;
+
+  // The other side is another Google Cloud HA VPN gateway -- VPN between
+  // two VPCs, in the same or different projects or organizations: a
+  // reference to a GcpHaVpnGateway (its gateway_self_link output) or the
+  // gateway's self link as a literal. Google pairs interfaces
+  // automatically (tunnel on interface 0 here connects to interface 0
+  // there), so tunnels leave peer_external_gateway_interface empty. The
+  // other VPC declares its own GcpHaVpnConnection pointing back at this
+  // side's gateway; the two together form the link.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef gcp_gateway = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpHaVpnGateway,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.gateway_self_link"
+  ];
+}
+
+// GcpHaVpnConnectionCipherSuitePhase1 restricts the IKE phase-1 (key
+// exchange) algorithms a tunnel negotiates. Each list is a set of Google's
+// algorithm names (e.g. AES-GCM-16-256, AES-CBC-256; SHA2-256; PRF-SHA2-256;
+// GROUP-14 / GROUP-20 / GROUP-21 for DH). Leave a list empty to accept
+// Google's default set for that class; set them to satisfy a device or a
+// compliance baseline that forbids weaker suites. The current accepted
+// names are Google's to publish (Cloud VPN "supported IKE ciphers"), so no
+// list is walled here.
+message GcpHaVpnConnectionCipherSuitePhase1 {
+  // Encryption algorithms.
+  repeated string encryption = 1;
+  // Integrity algorithms.
+  repeated string integrity = 2;
+  // Pseudo-random functions.
+  repeated string prf = 3;
+  // Diffie-Hellman groups.
+  repeated string dh = 4;
+}
+
+// GcpHaVpnConnectionCipherSuitePhase2 restricts the IKE phase-2 (IPsec
+// data) algorithms. Same conventions as phase 1.
+message GcpHaVpnConnectionCipherSuitePhase2 {
+  // Encryption algorithms.
+  repeated string encryption = 1;
+  // Integrity algorithms.
+  repeated string integrity = 2;
+  // Perfect-forward-secrecy groups.
+  repeated string pfs = 3;
+}
+
+// GcpHaVpnConnectionCipherSuite is the tunnel's allowed IKE cipher set.
+// Immutable: a change recreates the tunnel.
+message GcpHaVpnConnectionCipherSuite {
+  // Phase-1 (IKE SA) ciphers.
+  GcpHaVpnConnectionCipherSuitePhase1 phase1 = 1;
+  // Phase-2 (child / IPsec SA) ciphers.
+  GcpHaVpnConnectionCipherSuitePhase2 phase2 = 2;
+}
+
+// GcpHaVpnConnectionBgpAdvertisedIpRange is one custom IP range this
+// session advertises to its peer, overriding the router's default list.
+message GcpHaVpnConnectionBgpAdvertisedIpRange {
+  // The IP range to advertise, in CIDR form (e.g. "10.10.0.0/16").
+  string range = 1 [(buf.validate.field).required = true];
+
+  // Human-readable description of this advertised range.
+  string description = 2;
+}
+
+// GcpHaVpnConnectionBgpCustomLearnedIpRange is one range this session
+// accepts from the peer as if the peer had advertised it -- for devices
+// that cannot advertise everything they should.
+message GcpHaVpnConnectionBgpCustomLearnedIpRange {
+  // A CIDR prefix (an address without a mask is /32 or /128).
+  string range = 1 [(buf.validate.field).required = true];
+}
+
+// GcpHaVpnConnectionBgpBfd enables Bidirectional Forwarding Detection on
+// the session: sub-second detection of a dead tunnel, far faster than BGP
+// keepalives (which take three keepalive intervals, 60 s by default).
+// Both sides must support BFD.
+message GcpHaVpnConnectionBgpBfd {
+  // Who starts the BFD session:
+  //   "ACTIVE"   -- Cloud Router initiates (the usual choice)
+  //   "PASSIVE"  -- Cloud Router waits for the peer to initiate
+  //   "DISABLED" -- BFD off for this session
+  string session_initialization_mode = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_bfd_mode"
+      message: "session_initialization_mode must be ACTIVE, PASSIVE, or DISABLED"
+      expression: "this in ['ACTIVE', 'PASSIVE', 'DISABLED']"
+    }
+  ];
+
+  // Minimum interval in milliseconds between BFD packets RECEIVED from the
+  // peer; the negotiated value is the greater of this and the peer's
+  // transmit interval. 1000-30000; 1000 when empty.
+  int32 min_receive_interval = 2 [(buf.validate.field).cel = {
+    id: "bfd_receive_interval_range"
+    message: "min_receive_interval must be between 1000 and 30000 milliseconds"
+    expression: "this == 0 || (this >= 1000 && this <= 30000)"
+  }];
+
+  // Minimum interval in milliseconds between BFD packets TRANSMITTED to
+  // the peer; negotiated the same way. 1000-30000; 1000 when empty.
+  int32 min_transmit_interval = 3 [(buf.validate.field).cel = {
+    id: "bfd_transmit_interval_range"
+    message: "min_transmit_interval must be between 1000 and 30000 milliseconds"
+    expression: "this == 0 || (this >= 1000 && this <= 30000)"
+  }];
+
+  // How many consecutive BFD packets may be missed before the peer is
+  // declared down. 5-16; 5 when empty. Detection time is roughly the
+  // negotiated interval times this multiplier.
+  int32 multiplier = 4 [(buf.validate.field).cel = {
+    id: "bfd_multiplier_range"
+    message: "multiplier must be between 5 and 16"
+    expression: "this == 0 || (this >= 5 && this <= 16)"
+  }];
+}
+
+// GcpHaVpnConnectionBgpMd5AuthenticationKey authenticates the BGP session
+// with a shared MD5 key both routers know. The key is stored on the Cloud
+// Router's key table under `name` and attached to this session; Google
+// requires each key to be used by exactly one session, so every session
+// that wants MD5 declares its own key.
+message GcpHaVpnConnectionBgpMd5AuthenticationKey {
+  // Name of the key. RFC 1035, 1-63 characters. Defaults to the tunnel's
+  // name with a `-md5` suffix when empty.
+  string name = 1 [(buf.validate.field).cel = {
+    id: "valid_md5_key_name"
+    message: "md5 key name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
+  }];
+
+  // The key material -- the same string configured on the peer router.
+  // Sensitive: never logged or exported. No content rule, because sensitive
+  // fields hold a managed-secret reference on consuming platforms and a
+  // content-shape rule would reject every reference.
+  string key = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// GcpHaVpnConnectionBgpSession is the BGP session that runs INSIDE one
+// tunnel: the Cloud Router interface on the tunnel (a link-local /30) and
+// the BGP peer on the other end of it. Google's own shape is one
+// interface and one peer per tunnel, so the session is declared inline on
+// the tunnel rather than as separately indexed lists an agent would have
+// to keep aligned. Without a session a tunnel carries no routes.
+//
+// Everything about the session that is not BGP policy (name, interface
+// range, IP version) is immutable; the peer ASN, advertisement, BFD, MD5,
+// enable flags, and policies change in place.
+message GcpHaVpnConnectionBgpSession {
+  option (buf.validate.message).cel = {
+    id: "advertised_groups_require_custom_mode"
+    expression: "this.advertised_groups.size() == 0 || this.advertise_mode == 'CUSTOM'"
+    message: "advertised_groups can only be set when advertise_mode is CUSTOM"
+  };
+  option (buf.validate.message).cel = {
+    id: "advertised_ip_ranges_require_custom_mode"
+    expression: "this.advertised_ip_ranges.size() == 0 || this.advertise_mode == 'CUSTOM'"
+    message: "advertised_ip_ranges can only be set when advertise_mode is CUSTOM"
+  };
+  option (buf.validate.message).cel = {
+    id: "peer_ip_in_interface_range"
+    message: "peer_ip_address, when set, must be a link-local address in 169.254.0.0/16 like interface_ip_range (Google requires both ends of an IPv4 session in the same /30)"
+    expression: "!has(this.peer_ip_address) || this.peer_ip_address == '' || this.peer_ip_address.startsWith('169.254.')"
+  };
+
+  // Name of the Cloud Router interface and BGP peer this session creates
+  // (both take the same name). Defaults to the tunnel's name when empty.
+  // RFC 1035, 1-63 characters; unique on the router. Immutable.
+  string name = 1 [(buf.validate.field).cel = {
+    id: "valid_session_name"
+    message: "session name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
+  }];
+
+  // The Cloud Router's address on the tunnel, as a link-local CIDR from
+  // 169.254.0.0/16 with a /30 mask (e.g. "169.254.10.1/30"): Google takes
+  // the address as its own end and the peer takes the other usable address
+  // of the /30. Every session on the router needs a different /30 and it
+  // must not overlap the router's identifier_range. Required for IPv4
+  // sessions; Google assigns one when empty only for IPv6-only sessions.
+  // Immutable.
+  string interface_ip_range = 2 [(buf.validate.field).cel = {
+    id: "valid_interface_ip_range"
+    message: "interface_ip_range must be a link-local IPv4 CIDR from 169.254.0.0/16 with a /30 mask, e.g. 169.254.10.1/30"
+    expression: "this == '' || this.matches('^169\\\\.254\\\\.([0-9]{1,3})\\\\.([0-9]{1,3})/30$')"
+  }];
+
+  // The IP version of the router interface:
+  //   ""     -- Google infers it from interface_ip_range (IPv4) or from the
+  //             gateway's stack type
+  //   "IPV4"
+  //   "IPV6" -- for IPv6-only sessions on an IPV6_ONLY or dual-stack
+  //             gateway; Google assigns the link-local addresses
+  // Sent only when set. Immutable.
+  optional string ip_version = 3 [(buf.validate.field).cel = {
+    id: "valid_ip_version"
+    message: "ip_version must be IPV4 or IPV6"
+    expression: "this == '' || this in ['IPV4', 'IPV6']"
+  }];
+
+  // The peer router's ASN -- the number the on-premises device (or the
+  // other Google Cloud router) speaks as. Must differ from this router's
+  // ASN. Any public or private ASN. Required. Mutable.
+  uint32 peer_asn = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).uint32 = {gte: 1}
+  ];
+
+  // The peer's address on the tunnel: the other usable address of
+  // interface_ip_range (e.g. "169.254.10.2" for 169.254.10.1/30). Google
+  // derives it from the interface range when empty, so it is normally left
+  // unset; set it only when the device insists on a specific address.
+  // Sent only when set. Immutable.
+  optional string peer_ip_address = 5 [(buf.validate.field).cel = {
+    id: "valid_peer_ip_address"
+    message: "peer_ip_address must be an IPv4 address"
+    expression: "this == '' || this.isIp(4)"
+  }];
+
+  // The priority (MED) of routes advertised to this peer: where the peer
+  // has more than one matching route of equal length, the LOWEST value
+  // wins. Set different priorities on the tunnels of one connection to
+  // make the peer prefer one tunnel (active/passive) instead of splitting
+  // traffic (active/active, the default when equal). 0-65535; sent only
+  // when set, so 0 is a real priority distinct from "let Google choose".
+  // Mutable.
+  optional int32 advertised_route_priority = 6 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 65535
+  }];
+
+  // Per-session override of the router's advertisement mode. Empty
+  // inherits the router's; DEFAULT advertises every subnet; CUSTOM
+  // advertises only advertised_groups and advertised_ip_ranges below.
+  // Mutable.
+  string advertise_mode = 7 [(buf.validate.field).cel = {
+    id: "advertise_mode_valid_value"
+    expression: "this == '' || this in ['DEFAULT', 'CUSTOM']"
+    message: "advertise_mode must be DEFAULT or CUSTOM"
+  }];
+
+  // Prefix groups to advertise to this peer in CUSTOM mode; the API
+  // accepts exactly ALL_SUBNETS. Overrides the router's list for this
+  // session.
+  repeated string advertised_groups = 8 [(buf.validate.field).repeated.items.string = {
+    in: ["ALL_SUBNETS"]
+  }];
+
+  // Individual ranges to advertise to this peer in CUSTOM mode, in
+  // addition to any advertised_groups. Overrides the router's list for
+  // this session.
+  repeated GcpHaVpnConnectionBgpAdvertisedIpRange advertised_ip_ranges = 9;
+
+  // Whether the session is up. Default true. Setting false tears the
+  // session down and withdraws its routes without deleting anything -- the
+  // switch for draining a tunnel before maintenance. Always sent. Mutable.
+  optional bool enable = 10 [(dev.planton.shared.options.default) = "true"];
+
+  // Carry IPv4 routes over this session. Google enables it by default when
+  // the peer address is IPv4, so it is sent only when set -- set false on
+  // a dual-stack gateway to make a session IPv6-only. Mutable.
+  optional bool enable_ipv4 = 11;
+
+  // Carry IPv6 routes over this session. Default false. Requires a gateway
+  // with stack_type IPV4_IPV6 or IPV6_ONLY and a VPC with an internal IPv6
+  // range. Mutable.
+  bool enable_ipv6 = 12;
+
+  // Google Cloud's IPv6 next-hop address for the session, from
+  // 2600:2d00:0:2::/64 or 2600:2d00:0:3::/64. Google assigns one when
+  // empty; sent only when set. Mutable.
+  optional string ipv6_nexthop_address = 13 [(buf.validate.field).cel = {
+    id: "valid_ipv6_nexthop"
+    message: "ipv6_nexthop_address must be an IPv6 address"
+    expression: "this == '' || this.isIp(6)"
+  }];
+
+  // The peer's IPv6 next-hop address, same range and rules as
+  // ipv6_nexthop_address. Sent only when set. Mutable.
+  optional string peer_ipv6_nexthop_address = 14 [(buf.validate.field).cel = {
+    id: "valid_peer_ipv6_nexthop"
+    message: "peer_ipv6_nexthop_address must be an IPv6 address"
+    expression: "this == '' || this.isIp(6)"
+  }];
+
+  // Google Cloud's IPv4 next-hop address for an IPv4-over-IPv6 session
+  // (IPv4 routes exchanged over an IPv6 BGP session). Google assigns one
+  // when empty; sent only when set. Mutable.
+  optional string ipv4_nexthop_address = 15 [(buf.validate.field).cel = {
+    id: "valid_ipv4_nexthop"
+    message: "ipv4_nexthop_address must be an IPv4 address"
+    expression: "this == '' || this.isIp(4)"
+  }];
+
+  // The peer's IPv4 next-hop address for an IPv4-over-IPv6 session. Sent
+  // only when set. Mutable.
+  optional string peer_ipv4_nexthop_address = 16 [(buf.validate.field).cel = {
+    id: "valid_peer_ipv4_nexthop"
+    message: "peer_ipv4_nexthop_address must be an IPv4 address"
+    expression: "this == '' || this.isIp(4)"
+  }];
+
+  // Ranges to treat as learned from this peer even though it did not
+  // advertise them -- for devices that cannot advertise everything behind
+  // them. Mutable.
+  repeated GcpHaVpnConnectionBgpCustomLearnedIpRange custom_learned_ip_ranges = 17;
+
+  // Priority applied to every custom learned range of this session.
+  // 0-65335; Google uses 100 when empty. Sent only when set, so 0 is a real
+  // priority. Mutable.
+  optional int32 custom_learned_route_priority = 18 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 65335
+  }];
+
+  // BFD for fast failure detection on this session. Leave unset to rely
+  // on BGP keepalives alone.
+  GcpHaVpnConnectionBgpBfd bfd = 19;
+
+  // MD5 authentication of the BGP session. Leave unset for an
+  // unauthenticated session (the tunnel's IPsec already protects the
+  // control traffic; MD5 defends against a misconfigured peer, not an
+  // attacker).
+  GcpHaVpnConnectionBgpMd5AuthenticationKey md5_authentication_key = 20;
+
+  // Names of route policies (ROUTE_POLICY_TYPE_IMPORT) on the router,
+  // applied to routes learned from this peer in order. Route policies are
+  // created outside this kind (`gcloud compute routers update-route-policy`
+  // or the provider's router route-policy resource) and referenced here by
+  // name. Mutable.
+  repeated string import_policies = 21;
+
+  // Names of route policies (ROUTE_POLICY_TYPE_EXPORT) on the router,
+  // applied to routes advertised to this peer in order. Same provenance as
+  // import_policies. Mutable.
+  repeated string export_policies = 22;
+}
+
+// GcpHaVpnConnectionTunnel is one IPsec tunnel from one interface of the
+// Google Cloud gateway to one interface of the peer, with the BGP session
+// inside it. Every field except labels is IMMUTABLE: a new pre-shared key,
+// cipher set, or interface pairing recreates the tunnel and drops its
+// traffic for the duration, so rotate a secret by adding a tunnel with the
+// new key and removing the old one, never by editing in place.
+message GcpHaVpnConnectionTunnel {
+  // Name of the tunnel in GCP. Required; unique in the region. 1-63
+  // characters, lowercase letters, digits, and hyphens, starting with a
+  // letter. Also the default name of the tunnel's BGP session. Immutable.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$"
+  ];
+
+  // Which of the Google gateway's two interfaces this tunnel leaves from:
+  // 0 or 1. For the 99.99% SLA put at least one tunnel on each. Immutable.
+  int32 vpn_gateway_interface = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 1
+  }];
+
+  // Which interface of the EXTERNAL gateway this tunnel lands on (its id
+  // in peer.external_gateway.interfaces). Set when the peer is an external
+  // device; leave empty when the peer is a Google Cloud gateway (Google
+  // pairs interfaces itself). Sent only when set. Immutable.
+  optional int32 peer_external_gateway_interface = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 3
+  }];
+
+  // The IKE pre-shared key both ends authenticate with. Sensitive: never
+  // logged or exported; in Terraform state only its hash is kept. No
+  // content rule, because sensitive fields hold a managed-secret reference
+  // on consuming platforms and a content-shape rule would reject every
+  // reference. Google accepts 1-63 printable characters. Immutable: a
+  // rotation recreates the tunnel.
+  string shared_secret = 4 [
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+
+  // IKE protocol version: 1 or 2. 2 when empty (Google's default and the
+  // only version that supports IPv6, BFD-friendly rekeying, and modern
+  // ciphers). Use 1 only for a legacy device. Always sent. Immutable.
+  optional int32 ike_version = 5 [
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 2
+    },
+    (dev.planton.shared.options.default) = "2"
+  ];
+
+  // Local traffic selectors -- the IPv4 CIDRs on the Google side the
+  // tunnel carries when the tunnel is used in ROUTE-BASED (policy-less)
+  // mode without BGP. With a BGP session (the normal HA VPN shape) Google
+  // sets 0.0.0.0/0 and this stays empty; sent only when set. The ranges
+  // must be disjoint. Immutable.
+  repeated string local_traffic_selector = 6 [(buf.validate.field).repeated.items.cel = {
+    id: "valid_cidr"
+    message: "each traffic selector must be an IPv4 CIDR like 10.0.0.0/16"
+    expression: "this.isIpPrefix(4)"
+  }];
+
+  // Remote traffic selectors -- the IPv4 CIDRs on the peer side, same
+  // rules as local_traffic_selector. Immutable.
+  repeated string remote_traffic_selector = 7 [(buf.validate.field).repeated.items.cel = {
+    id: "valid_cidr"
+    message: "each traffic selector must be an IPv4 CIDR like 192.168.0.0/16"
+    expression: "this.isIpPrefix(4)"
+  }];
+
+  // Restrict the IKE ciphers this tunnel negotiates. Leave unset to accept
+  // Google's defaults (which already exclude broken algorithms). Immutable.
+  GcpHaVpnConnectionCipherSuite cipher_suite = 8;
+
+  // User labels on the tunnel, merged with Planton's platform labels
+  // (which win on key conflicts). The one mutable field on a tunnel.
+  map<string, string> labels = 9;
+
+  // The BGP session inside this tunnel: the router interface and peer.
+  // Required -- an HA VPN tunnel without BGP carries no routes.
+  GcpHaVpnConnectionBgpSession bgp_session = 10 [(buf.validate.field).required = true];
+
+  // Human-readable description of the tunnel. Immutable (Google keeps it
+  // create-time on this resource).
+  string description = 11;
+}
+
+// GcpHaVpnConnectionSpec connects one HA VPN gateway (GcpHaVpnGateway) to
+// ONE peer -- an on-premises site, another cloud, or another Google Cloud
+// VPC -- with one to four IPsec tunnels, each carrying a BGP session on the
+// gateway's Cloud Router. Declare one connection per site; add or remove
+// sites without touching the gateway.
+//
+// The recommended 99.99% topology is TWO tunnels: one from each gateway
+// interface, to two addresses of the peer (redundancy_type
+// TWO_IPS_REDUNDANCY, or a Google peer, which always has two). Each tunnel
+// gets its own link-local /30 and BGP session; both advertise the same
+// routes so traffic fails over in seconds (or sub-second with BFD).
+//
+// Composition: this kind creates the tunnels, one Cloud Router interface
+// and one BGP peer per tunnel on the gateway's router, and -- when the
+// peer is an external device -- the external VPN gateway resource that
+// holds its addresses. Nothing here has a life apart from the connection.
+//
+// Cost: Google bills each tunnel per hour while it exists (a two-tunnel
+// connection is two tunnel-hours per hour) plus the traffic that leaves
+// Google through the tunnels at internet egress rates. Tunnels bill from
+// creation, whether or not the peer is up.
+message GcpHaVpnConnectionSpec {
+  option (buf.validate.message).cel = {
+    id: "tunnel_names_unique"
+    message: "each tunnel must have a distinct name"
+    expression: "this.tunnels.map(t, t.name).unique()"
+  };
+  option (buf.validate.message).cel = {
+    id: "session_ranges_unique"
+    message: "each tunnel's bgp_session.interface_ip_range must be a different /30"
+    expression: "this.tunnels.filter(t, has(t.bgp_session) && t.bgp_session.interface_ip_range != '').map(t, t.bgp_session.interface_ip_range).unique()"
+  };
+  option (buf.validate.message).cel = {
+    id: "external_peer_tunnels_name_their_interface"
+    message: "with peer.external_gateway every tunnel sets peer_external_gateway_interface; with peer.gcp_gateway none does (Google pairs the interfaces)"
+    expression: "!has(this.peer) || (has(this.peer.external_gateway) ? this.tunnels.all(t, has(t.peer_external_gateway_interface)) : this.tunnels.all(t, !has(t.peer_external_gateway_interface)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "external_interface_ids_exist"
+    message: "each tunnel's peer_external_gateway_interface must name an interface declared in peer.external_gateway.interfaces"
+    expression: "!has(this.peer) || !has(this.peer.external_gateway) || this.tunnels.all(t, !has(t.peer_external_gateway_interface) || t.peer_external_gateway_interface in this.peer.external_gateway.interfaces.map(i, i.id))"
+  };
+
+  // The GCP project the tunnels and router interfaces are created in: a
+  // reference to a GcpProject or the project ID as a literal. Must be the
+  // gateway's project. Empty means the provider's default project.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The HA VPN gateway the tunnels leave from: a reference to a
+  // GcpHaVpnGateway (its gateway_self_link output) or the gateway's self
+  // link as a literal. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef gateway = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpHaVpnGateway,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.gateway_self_link"
+  ];
+
+  // The Cloud Router the BGP sessions run on -- the gateway's router: a
+  // reference to the same GcpHaVpnGateway (its router_name output) or the
+  // router's name as a literal. Must be in the gateway's region and
+  // network. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef router = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpHaVpnGateway,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.router_name"
+  ];
+
+  // The region of the gateway and router -- a reference to the same
+  // GcpHaVpnGateway (its region output) or the region as a literal, so a
+  // connection can never name a region its gateway is not in. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef region = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpHaVpnGateway,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.region"
+  ];
+
+  // What the tunnels connect to: an external device or another Google
+  // Cloud HA VPN gateway. Required.
+  GcpHaVpnConnectionPeer peer = 5 [(buf.validate.field).required = true];
+
+  // The tunnels, one to four, each with its BGP session. Two -- one per
+  // gateway interface -- is the recommended HA shape.
+  repeated GcpHaVpnConnectionTunnel tunnels = 6 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 4
+  ];
+
+  // Resource Manager tags bound to every tunnel (and the external gateway,
+  // when created) for org-policy and IAM conditions. Keys `tagKeys/{id}`,
+  // values `tagValues/{id}`. Create-time only: a change replaces the
+  // tunnels.
+  map<string, string> resource_manager_tags = 7;
+
+  // What destroying this resource does to the tunnels, router interfaces,
+  // BGP peers, and external gateway in GCP:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- all are deleted; the site is disconnected
+  //   "PREVENT" -- destroy FAILS; the guard for a production site link
+  //   "ABANDON" -- the resources leave management but stay live in GCP
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}

@@ -1,0 +1,24 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpsharedvpchost
+spec:
+  gcp:
+    groups:
+      - purpose: ManageSharedVpcHost
+        permissions:
+          - compute.organizations.enableXpnHost
+          - compute.organizations.disableXpnHost
+          - compute.projects.get
+        provenance: derived
+        notes: "Covers google_compute_shared_vpc_host_project (Pulumi compute.SharedVPCHostProject) -- the modules' only resource. enableXpnHost on first apply; projects.get on every refresh and import (the provider reads the project's xpnProjectStatus); disableXpnHost on destroy under deletion_policy DELETE (refused by Google while service projects are attached; ABANDON and PREVENT call no disable API). Both organizations.* permissions are granted on the ORGANIZATION or a folder above the project, never on the project alone; roles/compute.xpnAdmin contains them."
+      - purpose: ResolveDefaultProject
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        notes: "Only when spec.project_id is empty: the Terraform module reads data.google_client_config (count-gated on that case) and the Pulumi module calls organizations.GetClientConfig to make the provider's default project explicit, because this resource requires the project argument. Reading the client config itself needs no permission; projects.get is what the provider's project resolution may call."

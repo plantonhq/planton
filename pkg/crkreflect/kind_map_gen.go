@@ -557,6 +557,8 @@ import (
 	gcpgkeworkloadidentitybindingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkeworkloadidentitybinding/v1alpha1"
 	gcpglobaladdressv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpglobaladdress/v1alpha1"
 	gcpglobalforwardingrulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpglobalforwardingrule/v1alpha1"
+	gcphavpnconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpnconnection/v1alpha1"
+	gcphavpngatewayv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpngateway/v1alpha1"
 	gcphealthcheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphealthcheck/v1alpha1"
 	gcpiamcustomrolev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamcustomrole/v1alpha1"
 	gcpiamdenypolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpiamdenypolicy/v1alpha1"
@@ -593,6 +595,8 @@ import (
 	gcpserviceaccountiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserviceaccountiammember/v1alpha1"
 	gcpserviceconnectionpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserviceconnectionpolicy/v1alpha1"
 	gcpservicenetworkingconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpservicenetworkingconnection/v1alpha1"
+	gcpsharedvpchostv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsharedvpchost/v1alpha1"
+	gcpsharedvpcserviceprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpsharedvpcserviceproject/v1alpha1"
 	gcpspannerbackupschedulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpspannerbackupschedule/v1alpha1"
 	gcpspannerdatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpspannerdatabase/v1alpha1"
 	gcpspannerinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpspannerinstance/v1alpha1"
@@ -611,6 +615,7 @@ import (
 	gcpvertexaiindexendpointv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindexendpoint/v1alpha1"
 	gcpvertexainotebookv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexainotebook/v1alpha1"
 	gcpvpcnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcnetwork/v1alpha1"
+	gcpvpcpeeringv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcpeering/v1alpha1"
 	gcpworkflowv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkflow/v1alpha1"
 	gcpworkloadidentitypoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkloadidentitypool/v1alpha1"
 	gcpworkloadidentitypoolproviderv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkloadidentitypoolprovider/v1alpha1"
@@ -1322,6 +1327,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpGkeWorkloadIdentityBinding:          &gcpgkeworkloadidentitybindingv1alpha1.GcpGkeWorkloadIdentityBinding{},
 	cloudresourcekind.CloudResourceKind_GcpGlobalAddress:                       &gcpglobaladdressv1alpha1.GcpGlobalAddress{},
 	cloudresourcekind.CloudResourceKind_GcpGlobalForwardingRule:                &gcpglobalforwardingrulev1alpha1.GcpGlobalForwardingRule{},
+	cloudresourcekind.CloudResourceKind_GcpHaVpnConnection:                     &gcphavpnconnectionv1alpha1.GcpHaVpnConnection{},
+	cloudresourcekind.CloudResourceKind_GcpHaVpnGateway:                        &gcphavpngatewayv1alpha1.GcpHaVpnGateway{},
 	cloudresourcekind.CloudResourceKind_GcpHealthCheck:                         &gcphealthcheckv1alpha1.GcpHealthCheck{},
 	cloudresourcekind.CloudResourceKind_GcpIamCustomRole:                       &gcpiamcustomrolev1alpha1.GcpIamCustomRole{},
 	cloudresourcekind.CloudResourceKind_GcpIamDenyPolicy:                       &gcpiamdenypolicyv1alpha1.GcpIamDenyPolicy{},
@@ -1358,6 +1365,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpServiceAccountIamMember:             &gcpserviceaccountiammemberv1alpha1.GcpServiceAccountIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpServiceConnectionPolicy:             &gcpserviceconnectionpolicyv1alpha1.GcpServiceConnectionPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpServiceNetworkingConnection:         &gcpservicenetworkingconnectionv1alpha1.GcpServiceNetworkingConnection{},
+	cloudresourcekind.CloudResourceKind_GcpSharedVpcHost:                       &gcpsharedvpchostv1alpha1.GcpSharedVpcHost{},
+	cloudresourcekind.CloudResourceKind_GcpSharedVpcServiceProject:             &gcpsharedvpcserviceprojectv1alpha1.GcpSharedVpcServiceProject{},
 	cloudresourcekind.CloudResourceKind_GcpSpannerBackupSchedule:               &gcpspannerbackupschedulev1alpha1.GcpSpannerBackupSchedule{},
 	cloudresourcekind.CloudResourceKind_GcpSpannerDatabase:                     &gcpspannerdatabasev1alpha1.GcpSpannerDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpSpannerInstance:                     &gcpspannerinstancev1alpha1.GcpSpannerInstance{},
@@ -1376,6 +1385,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpVertexAiIndexEndpoint:               &gcpvertexaiindexendpointv1alpha1.GcpVertexAiIndexEndpoint{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiNotebook:                    &gcpvertexainotebookv1alpha1.GcpVertexAiNotebook{},
 	cloudresourcekind.CloudResourceKind_GcpVpcNetwork:                          &gcpvpcnetworkv1alpha1.GcpVpcNetwork{},
+	cloudresourcekind.CloudResourceKind_GcpVpcPeering:                          &gcpvpcpeeringv1alpha1.GcpVpcPeering{},
 	cloudresourcekind.CloudResourceKind_GcpWorkflow:                            &gcpworkflowv1alpha1.GcpWorkflow{},
 	cloudresourcekind.CloudResourceKind_GcpWorkloadIdentityPool:                &gcpworkloadidentitypoolv1alpha1.GcpWorkloadIdentityPool{},
 	cloudresourcekind.CloudResourceKind_GcpWorkloadIdentityPoolProvider:        &gcpworkloadidentitypoolproviderv1alpha1.GcpWorkloadIdentityPoolProvider{},

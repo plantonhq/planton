@@ -1,0 +1,167 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# Four resources composed into one site connection: the external VPN
+# gateway (count-gated by peer.external_gateway), and per tunnels[] entry
+# one tunnel, one Cloud Router interface, and one BGP peer -- Google's own
+# 1:1:1 shape, declared inline on the tunnel as bgp_session.
+
+resources:
+  google_compute_vpn_tunnel:
+    # Instantiated per entry of spec.tunnels.
+    specRoot: spec.tunnels
+    mappings:
+      # The gateway trio is spec-level: every tunnel leaves from the
+      # connection's gateway, in its region, on its router.
+      - spec: spec.gateway
+        arg: vpn_gateway
+      - spec: spec.region
+        arg: region
+      - spec: spec.router
+        arg: router
+      - spec: spec.project_id
+        arg: project
+      # The peer is spec-level too: exactly one arm (spec CEL, provider
+      # ConflictsWith). The Google arm maps onto the peer gateway's self
+      # link; the external arm is wired to the external gateway resource the
+      # module creates from peer.external_gateway (excluded below).
+      - spec: spec.peer.gcp_gateway
+        arg: peer_gcp_gateway
+      # The provider nests create-time tags under a params block; the spec
+      # uses the catalog-wide resource_manager_tags vocabulary, once for
+      # every tunnel of the connection.
+      - spec: spec.resource_manager_tags
+        arg: params.resource_manager_tags
+      # The kind-level deletion_policy fans to every tunnel.
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: peer_external_gateway
+        reason: >-
+          wired by the module to the external VPN gateway it creates from
+          peer.external_gateway -- the device's addresses are declared once
+          on the connection, never as a per-tunnel self link
+      - arg: target_vpn_gateway
+        reason: >-
+          Classic VPN (google_compute_vpn_gateway) is excluded-deprecated in
+          the dispositions ledger -- Google has announced its shutdown and
+          HA VPN is the successor; a tunnel here always attaches to an HA
+          VPN gateway through vpn_gateway
+      - arg: peer_ip
+        reason: >-
+          the peer address of a Classic VPN tunnel ("Only IPv4 is supported"
+          in the provider's description); an HA VPN tunnel names its peer
+          through peer_external_gateway + peer_external_gateway_interface or
+          peer_gcp_gateway, and Google derives the address from the named
+          interface
+      - arg: shared_secret_wo
+        reason: >-
+          the write-only variant of the modeled shared_secret -- same key
+          material, differing only in Terraform-state hygiene; adopting it
+          would raise this one module's toolchain floor to Terraform/OpenTofu
+          >= 1.11 while the rest of the catalog declares no such floor
+      - arg: shared_secret_wo_version
+        reason: >-
+          the re-send trigger for shared_secret_wo; rides the same judgment
+          and re-evaluate trigger (see shared_secret_wo)
+
+  google_compute_router_interface:
+    # Instantiated per tunnel, from the tunnel's bgp_session message.
+    specRoot: spec.tunnels.bgp_session
+    mappings:
+      - spec: spec.tunnels.bgp_session.name
+        arg: name
+      - spec: spec.tunnels.bgp_session.interface_ip_range
+        arg: ip_range
+      - spec: spec.region
+        arg: region
+      - spec: spec.router
+        arg: router
+      - spec: spec.project_id
+        arg: project
+      # The kind-level deletion_policy fans to every interface.
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: vpn_tunnel
+        reason: wired by the module to the tunnel it creates -- the session rides its tunnel
+      - arg: subnetwork
+        reason: >-
+          the Router Appliance form of an interface (a subnetwork-backed
+          interface toward a VM acting as a router); the interface here is
+          always tunnel-backed -- the provider's AtLeastOneOf names the four
+          backings and this kind takes exactly one
+      - arg: interconnect_attachment
+        reason: >-
+          the Cloud Interconnect form of an interface (a VLAN attachment
+          backing); the interface here is always tunnel-backed (see
+          subnetwork)
+      - arg: private_ip_address
+        reason: >-
+          the regional private address of a Router Appliance interface, set
+          together with subnetwork; not a property of a tunnel-backed
+          interface
+      - arg: redundant_interface
+        reason: >-
+          pairs two Router Appliance interfaces for redundancy; a VPN
+          tunnel's redundancy is its second tunnel on the other gateway
+          interface, not a redundant router interface
+
+  google_compute_router_peer:
+    # Instantiated per tunnel, from the tunnel's bgp_session message.
+    specRoot: spec.tunnels.bgp_session
+    mappings:
+      - spec: spec.region
+        arg: region
+      - spec: spec.router
+        arg: router
+      - spec: spec.project_id
+        arg: project
+      # The kind-level deletion_policy fans to every peer.
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: interface
+        reason: wired by the module to the router interface it creates for the same tunnel
+      - arg: ip_address
+        reason: >-
+          the router's own address on the session -- derived by Google from
+          the interface's ip_range (the first usable address of the /30) and
+          Optional+Computed; setting it separately could only contradict the
+          range the spec already names
+      - arg: router_appliance_instance
+        reason: >-
+          names the VM acting as a Router Appliance behind a
+          subnetwork-backed interface (Network Connectivity Center); a VPN
+          session's peer is the device at the other end of the tunnel, not a
+          Compute Engine instance
+      - arg: zero_advertised_route_priority
+        reason: >-
+          the provider's escape hatch for sending an explicit 0 where a Go
+          zero would read as unset; the spec's advertised_route_priority is
+          an optional integer that already distinguishes 0 from unset
+      - arg: zero_custom_learned_route_priority
+        reason: >-
+          the same escape hatch for custom_learned_route_priority; the
+          spec's optional integer already distinguishes 0 from unset
+
+  google_compute_external_vpn_gateway:
+    # Instantiated by the presence of the peer.external_gateway message
+    # (the peer is an on-premises or other-cloud device).
+    specRoot: spec.peer.external_gateway
+    mappings:
+      # The provider's singular block name; the spec pluralizes the list.
+      - spec: spec.peer.external_gateway.interfaces
+        arg: interface
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.resource_manager_tags
+        arg: params.resource_manager_tags
+      # The kind-level deletion_policy fans to the external gateway.
+      - spec: spec.deletion_policy
+        arg: deletion_policy

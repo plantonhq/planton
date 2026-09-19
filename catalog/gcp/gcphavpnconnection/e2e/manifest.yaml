@@ -1,0 +1,66 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnConnection
+metadata:
+  name: planton-oss-e2e-gcpvpncn
+  id: planton-oss-e2e-gcpvpncn
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpnconnection
+  annotations:
+    planton.dev/e2e: "true"
+    # Google-to-Google in one project: the hub gateway is the registry
+    # prerequisite; the spoke network, spoke gateway, and the reverse
+    # connection are extra fixture instances, in deploy order. BGP establishes
+    # only when both directions exist.
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcpvpcnetwork-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpngateway-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpnconnection-spoke-to-hub.yaml"
+  tags:
+    - planton-e2e
+spec:
+  # The hub gateway, its router, and its region: three references to the same
+  # prerequisite GcpHaVpnGateway.
+  gateway:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.gateway_self_link
+  router:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.router_name
+  region:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.region
+
+  # The peer: the spoke fixture gateway. Google pairs interfaces itself.
+  peer:
+    gcpGateway:
+      valueFrom:
+        kind: GcpHaVpnGateway
+        name: planton-oss-e2e-gcpvpncn-spoke-gw
+        fieldPath: status.outputs.gateway_self_link
+
+  # Two tunnels, one per gateway interface -- the 99.99% shape. The secrets
+  # are fixture literals (the peer is our own fixture); a real manifest wires
+  # them from a secrets manager. Tunnel names are project+region-scoped with
+  # no soft-delete reservation.
+  tunnels:
+    - name: planton-oss-e2e-gcpvpncn-h2s-0
+      vpnGatewayInterface: 0
+      sharedSecret: planton-e2e-psk-0-not-a-real-secret
+      bgpSession:
+        interfaceIpRange: 169.254.100.1/30
+        peerAsn: 64515
+    - name: planton-oss-e2e-gcpvpncn-h2s-1
+      vpnGatewayInterface: 1
+      sharedSecret: planton-e2e-psk-1-not-a-real-secret
+      bgpSession:
+        interfaceIpRange: 169.254.101.1/30
+        peerAsn: 64515
+
+  # DELETE (default), PREVENT, ABANDON -- fanned to every resource.
+  deletionPolicy: DELETE

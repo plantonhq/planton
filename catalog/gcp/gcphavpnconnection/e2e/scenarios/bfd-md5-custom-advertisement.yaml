@@ -1,0 +1,99 @@
+# GcpHaVpnConnection scenario exercising the BGP-session knobs the reference
+# manifest leaves at their defaults: BFD (ACTIVE, explicit intervals), an MD5
+# key per session, CUSTOM advertisement with a range, distinct route
+# priorities (active/passive), explicit IKE version, explicit peer address,
+# a cipher-suite restriction, tunnel labels and descriptions, and a named
+# session. Same Google-to-Google chain and fixtures as the reference manifest;
+# the reverse fixture runs without MD5/BFD, so the sessions establish only if
+# Google tolerates the asymmetry -- the proof lane records which (a watch
+# item). Names differ from the reference so both can plan side by side.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnConnection
+metadata:
+  name: planton-oss-e2e-gcpvpncn-knobs
+  id: planton-oss-e2e-gcpvpncn-knobs
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpnconnection
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcpvpcnetwork-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpngateway-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpnconnection-spoke-to-hub.yaml"
+  tags:
+    - planton-e2e
+spec:
+  gateway:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.gateway_self_link
+  router:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.router_name
+  region:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.region
+  peer:
+    gcpGateway:
+      valueFrom:
+        kind: GcpHaVpnGateway
+        name: planton-oss-e2e-gcpvpncn-spoke-gw
+        fieldPath: status.outputs.gateway_self_link
+  tunnels:
+    - name: planton-oss-e2e-gcpvpncn-knobs-0
+      description: Planton E2E tunnel with every knob; safe to delete
+      vpnGatewayInterface: 0
+      sharedSecret: planton-e2e-psk-0-not-a-real-secret
+      ikeVersion: 2
+      cipherSuite:
+        phase1:
+          encryption:
+            - AES-GCM-16-256
+          integrity:
+            - HMAC-SHA2-256-128
+          prf:
+            - PRF-HMAC-SHA2-256
+          dh:
+            - GROUP-14
+        phase2:
+          encryption:
+            - AES-GCM-16-256
+          integrity:
+            - HMAC-SHA2-256-128
+          pfs:
+            - GROUP-14
+      labels:
+        tunnel: primary
+      bgpSession:
+        name: planton-oss-e2e-gcpvpncn-knobs-s0
+        interfaceIpRange: 169.254.100.1/30
+        peerIpAddress: 169.254.100.2
+        peerAsn: 64515
+        advertisedRoutePriority: 100
+        advertiseMode: CUSTOM
+        advertisedGroups:
+          - ALL_SUBNETS
+        advertisedIpRanges:
+          - range: 10.251.0.0/16
+            description: Planton E2E per-session range
+        enable: true
+        bfd:
+          sessionInitializationMode: ACTIVE
+          minReceiveInterval: 1000
+          minTransmitInterval: 1000
+          multiplier: 5
+        md5AuthenticationKey:
+          key: planton-e2e-md5-not-a-real-key
+    - name: planton-oss-e2e-gcpvpncn-knobs-1
+      vpnGatewayInterface: 1
+      sharedSecret: planton-e2e-psk-1-not-a-real-secret
+      bgpSession:
+        interfaceIpRange: 169.254.101.1/30
+        peerAsn: 64515
+        advertisedRoutePriority: 200
+  deletionPolicy: DELETE

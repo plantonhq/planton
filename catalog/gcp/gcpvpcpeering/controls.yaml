@@ -1,0 +1,83 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpvpcpeering
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A peering stores no customer data -- it is routing configuration between two networks.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Traffic between peered VPC networks stays on Google's network and is encrypted at the physical layer by Google's infrastructure like all intra-VPC traffic; it never crosses the public internet. Application-layer TLS remains the workloads' responsibility.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A peering exchanges routes between two private networks over internal IP addresses only; it creates no public endpoint and admits no traffic from outside the two networks.
+      notes: The public-IP subnet-route flags (export/import_subnet_routes_with_public_ip) govern privately-used public ranges routed INSIDE the networks, not internet exposure.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: import_custom_routes
+      evidence:
+        type: spec_default
+        reference: Only the peer's subnet routes cross by default; its custom routes (static routes and dynamic routes learned over VPN or Interconnect, which may cover on-premises or third-party ranges) enter this network only when import_custom_routes is true (default false) AND the peer exports them.
+      notes: Which sources can reach the workloads is still each network's firewall posture (GcpFirewallRule, GcpNetworkFirewallPolicy); the peering decides which routes exist for traffic to follow.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served at an edge; the peering carries private traffic between two networks with no request-filtering surface.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating this side authorizes against compute.networks.addPeering on this network AND on the peer network -- both projects' network administrators must consent -- and the pair goes ACTIVE only when the other side creates its matching entry, so neither party can peer into the other's network alone.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through a peering -- it carries no credentials and calls no APIs.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: addPeering, updatePeering, and removePeering land in Cloud Audit Logs (Admin Activity) unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The peering's state (ACTIVE / INACTIVE) and state_details are exported as stack outputs and readable from the network resource; traffic over the peering appears in VPC Flow Logs when the subnetworks enable them (GcpSubnetwork).
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: VPC Network Peering is a property of two global VPC networks with no zonal or regional component to fail; Google's SDN carries peered traffic across every zone and region the networks span.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE (this side's entry is removed and the pair goes INACTIVE -- traffic stops); PREVENT makes destroy fail outright; ABANDON unmanages the entry while it stays live. On the routes-config form destroy is a no-op in GCP and the field must stay empty.
+      notes: PREVENT is the guard for a peering production traffic depends on; removing one side is enough to break the pair.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; Google's SDN implements peering.

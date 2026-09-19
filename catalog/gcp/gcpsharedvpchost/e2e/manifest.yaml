@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcHost
+metadata:
+  name: planton-oss-e2e-gcpsvph
+  id: planton-oss-e2e-gcpsvph
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsharedvpchost
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  # No project named: the provider's default project -- the harness project
+  # exported as GOOGLE_PROJECT -- becomes the host. Enabling it needs
+  # roles/compute.xpnAdmin on the ORGANIZATION, which the shared test identity
+  # does not hold; the profile records the deferral. The reference and
+  # literal forms are in e2e/scenarios/.
+
+  # DELETE (default; refused while service projects are attached), PREVENT,
+  # ABANDON.
+  deletionPolicy: DELETE

@@ -1,0 +1,32 @@
+# GcpVpcPeering ROUTES-CONFIG form: peer_network empty, so this instance
+# manages only the route exchange of a peering that already exists on the
+# network under peering_name. Offline-only: the form's real target is the
+# Google-managed servicenetworking-googleapis-com peering, which exists only
+# once a private-services-access connection and a Cloud SQL or Memorystore
+# instance have been created -- a fixture the harness does not carry. The
+# offline plan proves the selector (no peering resource, one routes-config
+# resource) and the required custom-route flags; live proof waits for a
+# private-IP fixture. The profile names this arm.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcPeering
+metadata:
+  name: planton-oss-e2e-gcppeer-routes
+  id: planton-oss-e2e-gcppeer-routes
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvpcpeering
+  annotations:
+    planton.dev/e2e: "true"
+    # The Google-managed peering exists only with a private-services fixture
+    # the harness lacks; the token gates the lane to skip honestly.
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC
+  tags:
+    - planton-e2e
+spec:
+  peeringName: servicenetworking-googleapis-com
+  network:
+    value: ${E2E_ENV:PLANTON_E2E_GCP_SERVICE_NETWORKING_VPC}
+  exportCustomRoutes: true
+  importCustomRoutes: false

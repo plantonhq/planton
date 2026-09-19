@@ -1924,6 +1924,17 @@ const (
 	// GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
 	// bindings reference a custom role.
 	CloudResourceKind_GcpOrgPolicyCustomConstraint CloudResourceKind = 3179
+	// 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN,
+	// firewall policies, PSC, network endpoint groups).
+	// HA VPN is two kinds: the gateway (with its Cloud Router) is declared
+	// once per VPC and region and referenced by every site connection, so
+	// two Google Cloud VPCs can point their connections at each other's
+	// gateway without a dependency cycle.
+	CloudResourceKind_GcpSharedVpcHost           CloudResourceKind = 3180
+	CloudResourceKind_GcpSharedVpcServiceProject CloudResourceKind = 3181
+	CloudResourceKind_GcpVpcPeering              CloudResourceKind = 3182
+	CloudResourceKind_GcpHaVpnGateway            CloudResourceKind = 3183
+	CloudResourceKind_GcpHaVpnConnection         CloudResourceKind = 3188
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -2974,6 +2985,11 @@ var (
 		3174: "GcpTagBinding",
 		3177: "GcpApiKey",
 		3179: "GcpOrgPolicyCustomConstraint",
+		3180: "GcpSharedVpcHost",
+		3181: "GcpSharedVpcServiceProject",
+		3182: "GcpVpcPeering",
+		3183: "GcpHaVpnGateway",
+		3188: "GcpHaVpnConnection",
 		3250: "GcpFirebaseProject",
 		3251: "GcpFirebaseAndroidApp",
 		3252: "GcpFirebaseAppleApp",
@@ -3709,6 +3725,11 @@ var (
 		"GcpTagBinding":                                  3174,
 		"GcpApiKey":                                      3177,
 		"GcpOrgPolicyCustomConstraint":                   3179,
+		"GcpSharedVpcHost":                               3180,
+		"GcpSharedVpcServiceProject":                     3181,
+		"GcpVpcPeering":                                  3182,
+		"GcpHaVpnGateway":                                3183,
+		"GcpHaVpnConnection":                             3188,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4367,7 +4388,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xe7\xe0\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x8a\xe3\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4919,7 +4940,12 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\vGcpTagValue\x10\xe5\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagv:\x02\xe4\x18P\xba\x02\x124\n" +
 	"\rGcpTagBinding\x10\xe6\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagb:\x02\xe5\x18P\xba\x02\x12,\n" +
 	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x12>\n" +
-	"\x1cGcpOrgPolicyCustomConstraint\x10\xeb\x18\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpoccP\xba\x02\x128\n" +
+	"\x1cGcpOrgPolicyCustomConstraint\x10\xeb\x18\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpoccP\xba\x02\x123\n" +
+	"\x10GcpSharedVpcHost\x10\xec\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsvphP\xb0\x02\x12A\n" +
+	"\x1aGcpSharedVpcServiceProject\x10\xed\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpsvps:\x02\xec\x18P\xb0\x02\x124\n" +
+	"\rGcpVpcPeering\x10\xee\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppeer:\x02\xc2\x17P\xb0\x02\x127\n" +
+	"\x0fGcpHaVpnGateway\x10\xef\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpngw:\x02\xc2\x17P\xb0\x02\x12:\n" +
+	"\x12GcpHaVpnConnection\x10\xf4\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpncn:\x02\xef\x18P\xb0\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

@@ -1,0 +1,13 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvpcpeering
+spec:
+  billing_model: free
+  free_tier: "VPC Network Peering has no charge of its own in Google's VPC pricing -- no per-peering fee and no per-hour meter; the peering entry and its route-exchange flags cost nothing."
+  notes: "No field of this spec buys anything. Traffic that crosses the peering bills as the sending workload's VPC egress at Google's same-zone (free), cross-zone, or cross-region rates -- the same rates as traffic inside one network, which is the reason peering is preferred over VPN between two VPCs."
+  estimate_exclusions:
+    - traffic between the peered networks bills on the workloads that send it, at intra-VPC rates; the volume is unknowable from this manifest

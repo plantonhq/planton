@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcServiceProject
+metadata:
+  name: platform-attach
+spec:
+  hostProjectId:
+    value: acme-network-host
+  serviceProjectId:
+    value: acme-platform-shared
+  deletionPolicy: ABANDON

@@ -259,6 +259,8 @@ Fields on other kinds that can point at this resource:
 | GcpGkeWorkloadIdentityBinding | `spec.projectId` | `status.outputs.project_id` |
 | GcpGlobalAddress | `spec.projectId` | `status.outputs.project_id` |
 | GcpGlobalForwardingRule | `spec.projectId` | `status.outputs.project_id` |
+| GcpHaVpnConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpHaVpnGateway | `spec.projectId` | `status.outputs.project_id` |
 | GcpHealthCheck | `spec.projectId` | `status.outputs.project_id` |
 | GcpIamCustomRole | `spec.projectId` | `status.outputs.project_id` |
 | GcpIamDenyPolicy | `spec.parent.projectId` | `status.outputs.project_id` |
@@ -291,6 +293,8 @@ Fields on other kinds that can point at this resource:
 | GcpServiceAccount | `spec.projectId` | `status.outputs.project_id` |
 | GcpServiceConnectionPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpServiceNetworkingConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpSharedVpcHost | `spec.projectId` | `status.outputs.project_id` |
+| GcpSharedVpcServiceProject | `spec.serviceProjectId` | `status.outputs.project_id` |
 | GcpSpannerBackupSchedule | `spec.projectId` | `status.outputs.project_id` |
 | GcpSpannerDatabase | `spec.projectId` | `status.outputs.project_id` |
 | GcpSpannerInstance | `spec.projectId` | `status.outputs.project_id` |

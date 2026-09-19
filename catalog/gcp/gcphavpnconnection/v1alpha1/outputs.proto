@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcphavpnconnection.v1alpha1;
+
+// GcpHaVpnConnectionStackOutputs captures the identities of everything the
+// connection created. The tunnel lists are index-aligned with spec.tunnels
+// -- the one place a repeated output is right, because the tunnels are the
+// connection's own many.
+message GcpHaVpnConnectionStackOutputs {
+  // The self links of the tunnels, in spec order.
+  repeated string tunnel_self_links = 1;
+
+  // The tunnel names in GCP, in spec order.
+  repeated string tunnel_names = 2;
+
+  // The names of the Cloud Router interfaces created for the sessions, in
+  // spec order (one per tunnel).
+  repeated string router_interface_names = 3;
+
+  // The names of the BGP peers created for the sessions, in spec order (one
+  // per tunnel). `gcloud compute routers get-status` reports each peer's
+  // BGP state under this name.
+  repeated string bgp_peer_names = 4;
+
+  // The external VPN gateway's self link, when the peer is an external
+  // device; empty for a Google-to-Google connection.
+  string external_gateway_self_link = 5;
+
+  // The gateway the tunnels leave from, as a self link (the resolved
+  // reference).
+  string gateway_self_link = 6;
+
+  // The Cloud Router the sessions run on, by name (the resolved reference).
+  string router_name = 7;
+}

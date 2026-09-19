@@ -1,0 +1,56 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnConnection
+metadata:
+  name: dc1
+spec:
+  gateway:
+    value: projects/acme-net/regions/us-central1/vpnGateways/hub-vpn
+  router:
+    value: hub-vpn
+  region:
+    value: us-central1
+  peer:
+    externalGateway:
+      redundancyType: FOUR_IPS_REDUNDANCY
+      interfaces:
+        - id: 0
+          ipAddress: 198.51.100.10
+        - id: 1
+          ipAddress: 198.51.100.11
+        - id: 2
+          ipAddress: 198.51.100.12
+        - id: 3
+          ipAddress: 198.51.100.13
+  tunnels:
+    - name: dc1-tunnel-0
+      vpnGatewayInterface: 0
+      peerExternalGatewayInterface: 0
+      sharedSecret: ${secrets-group.dc1-vpn.psk-0}
+      bgpSession:
+        interfaceIpRange: 169.254.20.1/30
+        peerAsn: 65010
+        advertisedRoutePriority: 100
+    - name: dc1-tunnel-1
+      vpnGatewayInterface: 0
+      peerExternalGatewayInterface: 1
+      sharedSecret: ${secrets-group.dc1-vpn.psk-1}
+      bgpSession:
+        interfaceIpRange: 169.254.21.1/30
+        peerAsn: 65010
+        advertisedRoutePriority: 200
+    - name: dc1-tunnel-2
+      vpnGatewayInterface: 1
+      peerExternalGatewayInterface: 2
+      sharedSecret: ${secrets-group.dc1-vpn.psk-2}
+      bgpSession:
+        interfaceIpRange: 169.254.22.1/30
+        peerAsn: 65010
+        advertisedRoutePriority: 100
+    - name: dc1-tunnel-3
+      vpnGatewayInterface: 1
+      peerExternalGatewayInterface: 3
+      sharedSecret: ${secrets-group.dc1-vpn.psk-3}
+      bgpSession:
+        interfaceIpRange: 169.254.23.1/30
+        peerAsn: 65010
+        advertisedRoutePriority: 200

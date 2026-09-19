@@ -270,6 +270,7 @@ Fields on other kinds that can point at this resource:
 | GcpGkeNodePool | `spec.networkConfig.additionalNodeNetworks[].network` | `status.outputs.network_self_link` |
 | GcpGlobalAddress | `spec.network` | `status.outputs.network_self_link` |
 | GcpGlobalForwardingRule | `spec.network` | `status.outputs.network_self_link` |
+| GcpHaVpnGateway | `spec.network` | `status.outputs.network_self_link` |
 | GcpMemorystoreInstance | `spec.pscAutoConnections[].network` | `status.outputs.network_id` |
 | GcpPlantonRunner | `spec.vpcAccess.network` | `status.outputs.network_name` |
 | GcpRedisInstance | `spec.authorizedNetwork` | `status.outputs.network_self_link` |
@@ -284,6 +285,8 @@ Fields on other kinds that can point at this resource:
 | GcpVertexAiIndexEndpoint | `spec.network` | `status.outputs.network_self_link` |
 | GcpVertexAiIndexEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
 | GcpVertexAiNotebook | `spec.networkInterface.network` | `status.outputs.network_self_link` |
+| GcpVpcPeering | `spec.network` | `status.outputs.network_self_link` |
+| GcpVpcPeering | `spec.peerNetwork` | `status.outputs.network_self_link` |
 
 ## See Also
 

@@ -1,0 +1,68 @@
+# GcpHaVpnConnection external-peer arm: an on-premises device with two
+# public addresses (TWO_IPS_REDUNDANCY), two tunnels, two BGP sessions. The
+# harness has no on-premises device, so the addresses are TEST-NET literals
+# and the arm is offline-only: the offline plan proves the external VPN
+# gateway is created with two interfaces, every tunnel names its device
+# interface, and the selector picks peer_external_gateway over
+# peer_gcp_gateway. Live proof needs a device the owner arranges; the
+# required-env token gates the lane to skip honestly.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnConnection
+metadata:
+  name: planton-oss-e2e-gcpvpncn-onprem
+  id: planton-oss-e2e-gcpvpncn-onprem
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpnconnection
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_VPN_PEER_IP_0
+  tags:
+    - planton-e2e
+spec:
+  gateway:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.gateway_self_link
+  router:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.router_name
+  region:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpngw-prereq
+      fieldPath: status.outputs.region
+  peer:
+    externalGateway:
+      name: planton-oss-e2e-gcpvpncn-onprem-dev
+      redundancyType: TWO_IPS_REDUNDANCY
+      description: Planton E2E external peer; safe to delete
+      labels:
+        site: e2e
+      interfaces:
+        - id: 0
+          ipAddress: ${E2E_ENV:PLANTON_E2E_GCP_VPN_PEER_IP_0}
+        - id: 1
+          ipAddress: ${E2E_ENV:PLANTON_E2E_GCP_VPN_PEER_IP_1}
+  tunnels:
+    - name: planton-oss-e2e-gcpvpncn-onprem-0
+      vpnGatewayInterface: 0
+      peerExternalGatewayInterface: 0
+      sharedSecret: planton-e2e-psk-0-not-a-real-secret
+      bgpSession:
+        interfaceIpRange: 169.254.110.1/30
+        peerAsn: 65001
+    - name: planton-oss-e2e-gcpvpncn-onprem-1
+      vpnGatewayInterface: 1
+      peerExternalGatewayInterface: 1
+      sharedSecret: planton-e2e-psk-1-not-a-real-secret
+      bgpSession:
+        interfaceIpRange: 169.254.111.1/30
+        peerAsn: 65001
+  resourceManagerTags: {}
+  deletionPolicy: DELETE

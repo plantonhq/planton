@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpsharedvpchost
+spec:
+  billing_model: free
+  free_tier: "Enabling a project as a Shared VPC host is a Compute Engine control-plane setting; Google's VPC pricing lists no charge for Shared VPC itself -- the host's networks, subnetworks, and their traffic bill exactly as they did before the project was a host."
+  notes: "No field of this spec buys anything. Traffic between a service project's workloads and the host's networks bills as ordinary VPC egress on the workloads, never on the host role."

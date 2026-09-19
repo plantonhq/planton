@@ -1,0 +1,56 @@
+# The REVERSE connection of the Google-to-Google VPN chain: an extra
+# GcpHaVpnConnection instance from the spoke gateway back to the hub
+# prerequisite gateway, with the same two pre-shared keys and the mirror
+# link-local addresses (the .2 of each /30 the hub side uses as .1). The
+# tunnels come up and BGP establishes only when both directions exist, so the
+# scenarios declare this fixture and the verifier asserts the hub side's
+# sessions reach ESTABLISHED.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnConnection
+metadata:
+  name: planton-oss-e2e-gcpvpncn-spoke-to-hub
+  id: planton-oss-e2e-gcpvpncn-spoke-to-hub
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcphavpnconnection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  gateway:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpncn-spoke-gw
+      fieldPath: status.outputs.gateway_self_link
+  router:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpncn-spoke-gw
+      fieldPath: status.outputs.router_name
+  region:
+    valueFrom:
+      kind: GcpHaVpnGateway
+      name: planton-oss-e2e-gcpvpncn-spoke-gw
+      fieldPath: status.outputs.region
+  peer:
+    gcpGateway:
+      valueFrom:
+        kind: GcpHaVpnGateway
+        name: planton-oss-e2e-gcpvpngw-prereq
+        fieldPath: status.outputs.gateway_self_link
+  tunnels:
+    - name: planton-oss-e2e-gcpvpncn-s2h-0
+      vpnGatewayInterface: 0
+      sharedSecret: planton-e2e-psk-0-not-a-real-secret
+      bgpSession:
+        interfaceIpRange: 169.254.100.2/30
+        peerAsn: 64514
+    - name: planton-oss-e2e-gcpvpncn-s2h-1
+      vpnGatewayInterface: 1
+      sharedSecret: planton-e2e-psk-1-not-a-real-secret
+      bgpSession:
+        interfaceIpRange: 169.254.101.2/30
+        peerAsn: 64514

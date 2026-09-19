@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpHaVpnGateway
+metadata:
+  name: hub-vpn-interconnect
+spec:
+  region: us-east4
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: hub
+      fieldPath: status.outputs.network_self_link
+  description: HA VPN over Cloud Interconnect - encrypts the VLAN attachments
+  vpnInterfaces:
+    - id: 0
+      interconnectAttachment: projects/acme-net/regions/us-east4/interconnectAttachments/dc1-attach-a
+    - id: 1
+      interconnectAttachment: projects/acme-net/regions/us-east4/interconnectAttachments/dc1-attach-b
+  router:
+    encryptedInterconnectRouter: true
+    bgp:
+      asn: 64520

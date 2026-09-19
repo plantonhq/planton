@@ -1702,6 +1702,11 @@ Allowed values (use exactly as shown):
 - `GcpTagBinding`
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHaVpnConnection`
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -2600,6 +2605,11 @@ Allowed values (use exactly as shown):
 - `GcpTagBinding`
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHaVpnConnection`
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -4682,6 +4692,11 @@ Allowed values (use exactly as shown):
 - `GcpTagBinding`
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHaVpnConnection`
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -5580,6 +5595,11 @@ Allowed values (use exactly as shown):
 - `GcpTagBinding`
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHaVpnConnection`
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -7778,6 +7798,11 @@ Allowed values (use exactly as shown):
 - `GcpTagBinding`
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHaVpnConnection`
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -8676,6 +8701,11 @@ Allowed values (use exactly as shown):
 - `GcpTagBinding`
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
+- `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle.
+- `GcpSharedVpcServiceProject`
+- `GcpVpcPeering`
+- `GcpHaVpnGateway`
+- `GcpHaVpnConnection`
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`

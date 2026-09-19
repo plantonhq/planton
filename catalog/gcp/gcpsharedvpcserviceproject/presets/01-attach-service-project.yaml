@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSharedVpcServiceProject
+metadata:
+  name: payments-attach
+spec:
+  hostProjectId:
+    valueFrom:
+      kind: GcpSharedVpcHost
+      name: network-host
+      fieldPath: status.outputs.host_project_id
+  serviceProjectId:
+    valueFrom:
+      kind: GcpProject
+      name: payments-prod
+      fieldPath: status.outputs.project_id

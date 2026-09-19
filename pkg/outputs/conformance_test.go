@@ -3703,6 +3703,90 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "parent", "tag_value"},
 		},
 		{
+			// GcpSharedVpcHost: the one resolved output -- the host project id
+			// (the E2E verifier keys on it) -- must land on the StackOutputs
+			// proto even when the spec named no project.
+			name: "GcpSharedVpcHost",
+			kind: cloudresourcekind.CloudResourceKind_GcpSharedVpcHost,
+			rawOutputs: map[string]interface{}{
+				"host_project_id": "acme-network-host",
+			},
+			mustPopulate: []string{"host_project_id"},
+		},
+		{
+			// GcpSharedVpcServiceProject: the attachment's two ends, flat
+			// scalars from both engines.
+			name: "GcpSharedVpcServiceProject",
+			kind: cloudresourcekind.CloudResourceKind_GcpSharedVpcServiceProject,
+			rawOutputs: map[string]interface{}{
+				"service_project_id": "acme-payments-prod",
+				"host_project_id":    "acme-network-host",
+			},
+			mustPopulate: []string{"service_project_id", "host_project_id"},
+		},
+		{
+			// GcpVpcPeering: the peering name (the E2E verifier keys on it), this
+			// side's network, and the ACTIVE/INACTIVE state with its detail --
+			// flat scalars from both engines, empty state on the routes-config
+			// form.
+			name: "GcpVpcPeering",
+			kind: cloudresourcekind.CloudResourceKind_GcpVpcPeering,
+			rawOutputs: map[string]interface{}{
+				"peering_name":  "hub-to-spoke",
+				"network":       "https://www.googleapis.com/compute/v1/projects/my-project/global/networks/hub",
+				"state":         "ACTIVE",
+				"state_details": "[2026-09-19T10:00:00.000-07:00]: Connected.",
+			},
+			mustPopulate: []string{"peering_name", "network", "state", "state_details"},
+		},
+		{
+			// GcpHaVpnGateway: the gateway and router handles a GcpHaVpnConnection
+			// references (self link, router name, region), the two public
+			// interface addresses, and the router's ASN -- the one numeric
+			// output, which arrives as a JSON number from both engines.
+			name: "GcpHaVpnGateway",
+			kind: cloudresourcekind.CloudResourceKind_GcpHaVpnGateway,
+			rawOutputs: map[string]interface{}{
+				"gateway_self_link":      "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnGateways/hub-vpn",
+				"gateway_name":           "hub-vpn",
+				"region":                 "us-central1",
+				"interface_0_ip_address": "35.242.0.10",
+				"interface_1_ip_address": "35.220.0.11",
+				"router_name":            "hub-vpn",
+				"router_self_link":       "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/routers/hub-vpn",
+				"router_asn":             float64(64514),
+			},
+			mustPopulate: []string{
+				"gateway_self_link", "gateway_name", "region",
+				"interface_0_ip_address", "interface_1_ip_address",
+				"router_name", "router_self_link", "router_asn",
+			},
+		},
+		{
+			// GcpHaVpnConnection: four index-aligned repeated string outputs
+			// (tunnels, interfaces, peers) plus the external gateway's self link
+			// (empty for a Google-to-Google connection) and the resolved gateway
+			// trio -- the E2E verifier keys on the first tunnel name.
+			name: "GcpHaVpnConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpHaVpnConnection,
+			rawOutputs: map[string]interface{}{
+				"tunnel_self_links": []interface{}{
+					"https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnTunnels/hq-tunnel-0",
+					"https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnTunnels/hq-tunnel-1",
+				},
+				"tunnel_names":               []interface{}{"hq-tunnel-0", "hq-tunnel-1"},
+				"router_interface_names":     []interface{}{"hq-tunnel-0", "hq-tunnel-1"},
+				"bgp_peer_names":             []interface{}{"hq-tunnel-0", "hq-tunnel-1"},
+				"external_gateway_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/global/externalVpnGateways/hq",
+				"gateway_self_link":          "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnGateways/hub-vpn",
+				"router_name":                "hub-vpn",
+			},
+			mustPopulate: []string{
+				"tunnel_self_links", "tunnel_names", "router_interface_names", "bgp_peer_names",
+				"external_gateway_self_link", "gateway_self_link", "router_name",
+			},
+		},
+		{
 			// GcpFirebaseProject: flat scalar outputs from both engines -- the
 			// project (the E2E verifier keys on project_id), its number (the
 			// FCM sender id), display name, and the three Admin SDK config
