@@ -3643,16 +3643,25 @@ before tolerating it (the autoscale pool's image slug re-send was measured
 a no-op on DigitalOcean's side -- no member roll, no history event).
 
 **`digitalocean_droplet_autoscale` destroy fails on an upstream waiter
-defect (provider v2.100.1 through v2.101.0 and upstream `main`; bridges
-v4.53.0 and v4.79.1) -- the kind is NOT provable at any current pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
+defect (provider v2.100.1 through v2.101.1 and upstream `main`; bridges
+v4.53.0 through v4.80.1) -- the kind is NOT provable at any current pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
 bare curl without it is a 400) the API reports the pool `deleting` for
 several seconds while it terminates the members, the provider's refresh
 returns that status verbatim, and its delete waiter accepts only
 `OK` -> `Not Found`, so `unexpected state 'deleting'` fails every destroy
-5-6 seconds in (4 of 4 lanes, both engines, both scenarios). DigitalOcean
-completes the deletion anyway: pool and member droplet both answer a real
-HTTP 404 within ~10 seconds (the body reads "autoscale group with id ...
-not found"). Everything before destroy is green on both engines. The lane
+5-7 seconds in (5 of 5 lanes, both engines, both scenarios; the fifth
+re-measured on Terraform at v2.101.1 on 2026-09-19 with every earlier
+phase green). DigitalOcean completes the deletion anyway: pool and member
+droplet both answer a real HTTP 404 (the body reads "autoscale group with
+id ... not found") -- within ~10 seconds on four lanes, ~70 seconds on the
+fifth, so the deletion's own duration is variable and can approach the
+waiter's one-minute timeout. Check a new provider release against the
+waiter's source (`Pending`/`Target` in the delete `StateChangeConf` of
+`digitalocean/dropletautoscale/resource_droplet_autoscale.go`), never
+against its release notes: v2.101.0 and v2.101.1 each shipped an unrelated
+change and left the waiter byte-identical, and a bridge bump that embeds
+such a release un-proves every Pulumi lane while buying this kind nothing.
+Everything before destroy is green on both engines. The lane
 consequence: a failed DESTROY skips VERIFY-CLN, the dependency teardown
 then deletes the fixture SSH key while the deleting pool's template still
 references it, and the NEXT scenario's fixture create of the SAME key
