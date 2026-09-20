@@ -229,4 +229,81 @@ var _ = ginkgo.Describe("GcpTargetHttpsProxySpec", func() {
 		target.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
 	})
+
+	// ──────────────── Regional arm ────────────────
+
+	regional := func() *GcpTargetHttpsProxy {
+		target := minimal()
+		target.Spec.Region = "us-central1"
+		target.Spec.UrlMap = literalRef("https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/urlMaps/web-routing")
+		target.Spec.SslCertificates = []*foreignkeyv1.StringValueOrRef{
+			literalRef("https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/sslCertificates/web-cert"),
+		}
+		return target
+	}
+
+	ginkgo.It("should accept a regional proxy with a regional certificate", func() {
+		gomega.Expect(validator.Validate(regional())).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept a regional proxy with Certificate Manager certificates and a regional SSL policy", func() {
+		target := regional()
+		target.Spec.SslCertificates = nil
+		target.Spec.CertificateManagerCertificates = []*foreignkeyv1.StringValueOrRef{
+			literalRef("projects/p/locations/us-central1/certificates/web"),
+		}
+		target.Spec.SslPolicy = literalRef("https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/sslPolicies/modern")
+		target.Spec.ServerTlsPolicy = literalRef("projects/p/locations/us-central1/serverTlsPolicies/mtls")
+		target.Spec.HttpKeepAliveTimeoutSec = 610
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed region", func() {
+		target := regional()
+		target.Spec.Region = "us central1"
+		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject certificate_map on a regional proxy", func() {
+		target := regional()
+		target.Spec.SslCertificates = nil
+		target.Spec.CertificateMap = "//certificatemanager.googleapis.com/projects/p/locations/global/certificateMaps/saas-domains"
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "certificate_map is a global-proxy")).To(gomega.BeTrue())
+	})
+
+	ginkgo.It("should reject quic_override on a regional proxy", func() {
+		target := regional()
+		mode := "ENABLE"
+		target.Spec.QuicOverride = &mode
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "quic_override is a global-proxy")).To(gomega.BeTrue())
+	})
+
+	ginkgo.It("should reject tls_early_data on a regional proxy", func() {
+		target := regional()
+		target.Spec.TlsEarlyData = "STRICT"
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "tls_early_data is a global-proxy")).To(gomega.BeTrue())
+	})
+
+	ginkgo.It("should reject proxy_bind on a regional proxy", func() {
+		target := regional()
+		target.Spec.ProxyBind = true
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "proxy_bind is a global-proxy")).To(gomega.BeTrue())
+	})
+
+	ginkgo.It("should still accept the global-only levers on a global proxy", func() {
+		target := minimal()
+		mode := "DISABLE"
+		target.Spec.QuicOverride = &mode
+		target.Spec.TlsEarlyData = "STRICT"
+		target.Spec.ProxyBind = true
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
 })

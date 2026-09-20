@@ -30,8 +30,8 @@ that has progressed.
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
 | Kinds in the catalog | 117 |
-| Distinct provider resources consumed | 192 |
-| Spec fields authored across all kinds | 4076 |
+| Distinct provider resources consumed | 197 |
+| Spec fields authored across all kinds | 4106 |
 | Module pins on `google` | `~> 8.3` × 117 |
 | Module pins on `google-beta` | `~> 8.3` × 4 |
 
@@ -76,7 +76,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**117 of 117 kinds are at total accounting; 83 proven live.**
+**117 of 117 kinds are at total accounting; 80 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -87,7 +87,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpApiKey | 13 | 10 | 2 | 1 | 0 | ✅ | — |
 | GcpArtifactRegistryRepo | 52 | 33 | 12 | 7 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBackendBucket | 29 | 22 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpBackendService | 120 | 91 | 24 | 5 | 0 | ✅ | — |
+| GcpBackendService | 223 | 173 | 45 | 5 | 0 | ✅ | — |
 | GcpBigQueryDataset | 39 | 33 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigQueryTable | 98 | 86 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpBigtableInstance | 19 | 6 | 13 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -132,7 +132,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpGkeNodePool | 184 | 129 | 55 | 0 | 0 | ✅ | — |
 | GcpGkeWorkloadIdentityBinding | 6 | 3 | 0 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpGlobalAddress | 11 | 9 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpGlobalForwardingRule | 23 | 18 | 4 | 1 | 0 | ✅ | — |
+| GcpGlobalForwardingRule | 51 | 43 | 8 | 0 | 0 | ✅ | — |
 | GcpHaVpnConnection | 84 | 46 | 23 | 15 | 0 | ✅ | — |
 | GcpHaVpnGateway | 30 | 11 | 16 | 3 | 0 | ✅ | — |
 | GcpHealthCheck | 100 | 14 | 86 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -184,9 +184,9 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpTagBinding | 7 | 5 | 2 | 0 | 0 | ✅ | — |
 | GcpTagKey | 7 | 6 | 1 | 0 | 0 | ✅ | — |
 | GcpTagValue | 4 | 3 | 1 | 0 | 0 | ✅ | — |
-| GcpTargetHttpProxy | 7 | 5 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpTargetHttpsProxy | 14 | 12 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpUrlMap | 333 | 74 | 259 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpTargetHttpProxy | 14 | 10 | 4 | 0 | 0 | ✅ | — |
+| GcpTargetHttpsProxy | 25 | 21 | 4 | 0 | 0 | ✅ | — |
+| GcpUrlMap | 554 | 124 | 430 | 0 | 0 | ✅ | — |
 | GcpVertexAiDeployedIndex | 16 | 12 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiEndpoint | 19 | 8 | 9 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiIndex | 17 | 5 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -204,10 +204,10 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 187 | consumed by a kind's Terraform module today |
+| Modeled | 192 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 102 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 97 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 584 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 69 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
@@ -217,7 +217,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (187)
+### Modeled (192)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -259,6 +259,7 @@ rather than trusted.
 | `google_compute_firewall_policy` | consumed by GcpHierarchicalFirewallPolicy |
 | `google_compute_firewall_policy_association` | consumed by GcpHierarchicalFirewallPolicy |
 | `google_compute_firewall_policy_rule` | consumed by GcpHierarchicalFirewallPolicy |
+| `google_compute_forwarding_rule` | consumed by GcpGlobalForwardingRule |
 | `google_compute_global_address` | consumed by GcpGlobalAddress |
 | `google_compute_global_forwarding_rule` | consumed by GcpGlobalForwardingRule |
 | `google_compute_ha_vpn_gateway` | consumed by GcpHaVpnGateway |
@@ -275,6 +276,7 @@ rather than trusted.
 | `google_compute_network_peering_routes_config` | consumed by GcpVpcPeering |
 | `google_compute_per_instance_config` | consumed by GcpComputeMig |
 | `google_compute_region_autoscaler` | consumed by GcpComputeMig |
+| `google_compute_region_backend_service` | consumed by GcpBackendService |
 | `google_compute_region_health_check` | consumed by GcpHealthCheck |
 | `google_compute_region_instance_group_manager` | consumed by GcpComputeMig |
 | `google_compute_region_instance_template` | consumed by GcpComputeMig |
@@ -286,6 +288,9 @@ rather than trusted.
 | `google_compute_region_resize_request` | consumed by GcpComputeMig |
 | `google_compute_region_ssl_certificate` | consumed by GcpSslCertificate |
 | `google_compute_region_ssl_policy` | consumed by GcpSslPolicy |
+| `google_compute_region_target_http_proxy` | consumed by GcpTargetHttpProxy |
+| `google_compute_region_target_https_proxy` | consumed by GcpTargetHttpsProxy |
+| `google_compute_region_url_map` | consumed by GcpUrlMap |
 | `google_compute_resize_request` | consumed by GcpComputeMig |
 | `google_compute_router` | consumed by GcpHaVpnGateway, GcpRouterNat |
 | `google_compute_router_interface` | consumed by GcpHaVpnConnection |
@@ -841,7 +846,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (102)
+### Planned (97)
 
 | Resource | Recorded reason |
 |---|---|
@@ -869,16 +874,11 @@ rather than trusted.
 | `google_colab_runtime` | planned GcpColabRuntime kind (Colab Enterprise runtimes) |
 | `google_colab_runtime_template` | planned GcpColabRuntimeTemplate kind (Colab Enterprise runtime templates) |
 | `google_colab_schedule` | planned GcpColabSchedule kind (Colab Enterprise schedules) |
-| `google_compute_forwarding_rule` | planned composition into the existing GcpGlobalForwardingRule kind (the regional arm) |
 | `google_compute_global_network_endpoint` | planned composition into the planned GcpNetworkEndpointGroup kind (global endpoints) |
 | `google_compute_global_network_endpoint_group` | planned GcpNetworkEndpointGroup kind (zonal and global network endpoint groups) |
 | `google_compute_image` | planned GcpComputeImage kind (Compute Engine images) |
 | `google_compute_network_endpoint` | planned composition into the planned GcpNetworkEndpointGroup kind (zonal endpoints) |
 | `google_compute_network_endpoint_group` | planned GcpNetworkEndpointGroup kind (zonal and global network endpoint groups) |
-| `google_compute_region_backend_service` | planned composition into the existing GcpBackendService kind (the regional arm) |
-| `google_compute_region_target_http_proxy` | planned composition into the existing GcpTargetHttpProxy kind (the regional arm) |
-| `google_compute_region_target_https_proxy` | planned composition into the existing GcpTargetHttpsProxy kind (the regional arm) |
-| `google_compute_region_url_map` | planned composition into the existing GcpUrlMap kind (the regional arm) |
 | `google_compute_service_attachment` | planned GcpPscServiceAttachment kind (Private Service Connect service attachments) |
 | `google_datastream_connection_profile` | planned composition into the planned GcpDatastreamStream kind (source and destination connection profiles) |
 | `google_datastream_private_connection` | planned composition into the planned GcpDatastreamStream kind (private connectivity) |

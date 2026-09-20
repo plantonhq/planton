@@ -1,0 +1,72 @@
+# Extra-instance GcpSslCertificate fixture: a REGIONAL self-managed
+# certificate, the only classic certificate form a regional target HTTPS
+# proxy accepts (Google-managed compute certificates are global only).
+# Uploads the same THROWAWAY self-signed keypair as the kind's own install
+# profile (CN=e2e-test.invalid, trusted by nothing -- NOT a real secret).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSslCertificate
+metadata:
+  name: planton-oss-e2e-gcpthsp-rcert
+  id: planton-oss-e2e-gcpthsp-rcert
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptargethttpsproxy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional self-managed certificate for the gcptargethttpsproxy regional E2E chain; safe to delete
+  region: us-central1
+  certificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIDNDCCAhygAwIBAgIUYIKLPDuIarXycSz6rx3SRFmvf1swDQYJKoZIhvcNAQEL
+    BQAwGzEZMBcGA1UEAwwQZTJlLXRlc3QuaW52YWxpZDAeFw0yNjA3MDMxMjM2Mjda
+    Fw0zNjA2MzAxMjM2MjdaMBsxGTAXBgNVBAMMEGUyZS10ZXN0LmludmFsaWQwggEi
+    MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCO53WppNv9zZyXpUH5f+V1OXs6
+    XcxoDsllHN4IiDiZ1BbLhVMUM6z1cC8equXXdN3ngY9SUeNXbhJxm91MThIr+Sym
+    kTzZKR50TK7NUXKtVs0Fmgn8bs4EJ9CZWKhLsnEYxXgjxid2I1u60ui0RUjuJ8Ci
+    VOdCZUCmpxlns6e0AFoCK+zW8akqyBFbv/0pdjTXRMqOjG7v2lGOIYg7sA4pDtYr
+    ZPkQdflWgnIt+LjLUlOlhk+r06M+oyh25NvrK5u4YBFRid3pB2Bury2qv262QsEA
+    h4slDFpXRn8CX3fvFOBjYYkhZD3oXNPC8EAV+8gKcDF56NAD57UUzK28qYRlAgMB
+    AAGjcDBuMB0GA1UdDgQWBBS4KxWIaaUL66edh24eRgYgGHPEuTAfBgNVHSMEGDAW
+    gBS4KxWIaaUL66edh24eRgYgGHPEuTAPBgNVHRMBAf8EBTADAQH/MBsGA1UdEQQU
+    MBKCEGUyZS10ZXN0LmludmFsaWQwDQYJKoZIhvcNAQELBQADggEBADfwJLhYuN1f
+    BMATSy0fGz0fLc0Wt/41I24FGMdi6DdnemnQ+wKOKw/gw8l7neN4Wg+8yv7iWNdW
+    Ib+uFl9Ua6ALxDQSciMjoPKVxZ7mfeg2iO6iRu+ozckJIf7wLtLbDb1st5sj78ZL
+    5c5KFACkh0zp7yfGNQInzCs+lPz3qFqqv9aY6YzQJ7H/wSzMMsgJZyZiWE6oTFvK
+    PvYEJJb8Q3Uw8TF0ABMvc8U5lUGqZtmtI+i8MIHY/XTIQizZdjgUXnHmCwOG6wM+
+    +Jf9De4XMfo7gtzA7dcYU0ONb07Ylfv7EfqdFb6MkwhIpLm5KyTeS1dFJSzWFDcR
+    WSukHyAQgzg=
+    -----END CERTIFICATE-----
+  privateKey: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCO53WppNv9zZyX
+    pUH5f+V1OXs6XcxoDsllHN4IiDiZ1BbLhVMUM6z1cC8equXXdN3ngY9SUeNXbhJx
+    m91MThIr+SymkTzZKR50TK7NUXKtVs0Fmgn8bs4EJ9CZWKhLsnEYxXgjxid2I1u6
+    0ui0RUjuJ8CiVOdCZUCmpxlns6e0AFoCK+zW8akqyBFbv/0pdjTXRMqOjG7v2lGO
+    IYg7sA4pDtYrZPkQdflWgnIt+LjLUlOlhk+r06M+oyh25NvrK5u4YBFRid3pB2Bu
+    ry2qv262QsEAh4slDFpXRn8CX3fvFOBjYYkhZD3oXNPC8EAV+8gKcDF56NAD57UU
+    zK28qYRlAgMBAAECggEANCYrPhk3Xstl1cEs7kvKBJlRat9H9MFQpWF/dUWgwiIv
+    n12sD7c76uVhjKN49MNlJ1KUZsoTWJiGiocCnxHud7Waob5moijrQC2rrKmIW9FN
+    SDoKYuBctg+BhDRiVh1sQEnvqb5qMCZ/FxJYcVDHaIGBPrwVGJmymh5omvtou7rJ
+    YPlJrqV5j9Dmy9jCjpEy+21arDcvJ5oPWZqT550Gniz1sX1Ja/5tSr0Kg5B9Yfvn
+    B4e5casYvIAE2/1Vzkq//rWikfbWWJKOMfMZsPt1KHw+YzqB5Yn8/lwFsTtQNNA3
+    mmH3jBQ81K50l/Nd/KxnZLYEiBKGFDN2ODoRyvwTkQKBgQDIBMVJi8a32h2t8IW5
+    26sfltD8eW4GVOlYYUFlic725DbdMhb+fP7k7MZUjrUDOE/8F/p+AY70croe2/Fp
+    ubYTBL7mB657qt2BE+nrz0zVTLg3WCA/gLo/JEIGDiIl9PxHK5p3ISazpkN7vCiu
+    D88SjxonQ1llih8ET8HbnkbKwwKBgQC25nct7yn/mhzEIiUAC9vDzttFI3FD7KpA
+    bPOD6F/ur/mgs+jxhy2trwehcp4VtrRRx1yf8LIYmbij6nsG2y2I8WV4Gwse8QqW
+    N/JjxFt0lzYdmDWSzW0Cv1D8LFx5qp/EDKUCsYvBkTtIoS0nPUEA07G9VciYhGLN
+    2G9gC0/xtwKBgH4Ns5/T/Rpk1YuHJ1+oNsIjs/VJObO3048lS6eIH+ysin8AUEl1
+    0NXI+nzTqvQqiw3etriulr8rhmxoRE5TAZIezYf+k1HQruPn/uXjsRJD1Vzbpwce
+    Q0IDwbA7O/4b1Nmtex1UwSU6xRC31hNMVz3k/aB861v4ne+DrDKSHx8tAoGAZs6o
+    0xMKQnh4Du86aQpBX5EYw4Ymlo2jLU+Qmea2dc5IvMIkAA+B54zo9yEcJwxp00YC
+    lIyRLy7JEKouuS3eLIm0BYz99Uh8MPAFuXqYBbMxYfU6t+fsjIzJktXErUbxQxvw
+    bNErw4RFFJA0d0gBD9vunoRnmwNfHmG4SP5S04UCgYBPOGnkhyP8fdb4uX2zlL/C
+    Tmek77ijRd6QUxzR9+zj0Ez7AILotS3Xz9drjfT4ZyUANURPA27BAXO8Kr7Z7w5L
+    zKbqDydM8ncIk1Kvqog5k8Zqb2Y6Co+XRVagvwmnyoCHVDewZbR+GF+R+mdailTF
+    Xw2qlSb0EUhTQTMHRcz0sA==
+    -----END PRIVATE KEY-----

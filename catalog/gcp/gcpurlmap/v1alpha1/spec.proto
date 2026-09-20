@@ -5,12 +5,11 @@ package dev.planton.gcp.gcpurlmap.v1alpha1;
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
 
-// GcpUrlMapSpec defines a global Compute Engine URL map — the L7 routing brain
-// of a global external Application Load Balancer (and of Traffic Director /
-// cross-region internal ALBs). A URL map matches each request's host and path
-// and decides what happens: send it to a backend service or backend bucket,
-// split it across weighted backends, rewrite or redirect it, inject faults, or
-// return a custom error page.
+// GcpUrlMapSpec defines a Compute Engine URL map — the L7 routing brain of an
+// Application Load Balancer (and of Traffic Director meshes). A URL map
+// matches each request's host and path and decides what happens: send it to
+// a backend service or backend bucket, split it across weighted backends,
+// rewrite or redirect it, inject faults, or return a custom error page.
 //
 // Routing is evaluated in this order:
 //   1. host_rules match the request Host header to a named path_matcher.
@@ -24,9 +23,15 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // across backends and rewrite/retry/mirror). Target proxies reference this URL
 // map; forwarding rules and addresses sit in front of the proxy.
 //
-// This models the GLOBAL URL map. The regional URL map is a separate GCP
-// resource (region-scoped, no custom error response policies) reserved for the
-// regional-LB wave.
+// One kind, two scopes. With region empty the map is GLOBAL (the global
+// external ALB, the cross-region internal ALB, Traffic Director); with region
+// set it is REGIONAL (the regional external ALB and the regional internal
+// ALB), routing only to regional backend services in that region. The two
+// scopes share the whole routing surface except Cloud CDN route caching,
+// custom error pages, stream-duration limits, and header-driven routing
+// tests, which exist only on the global map (and are rejected when region is
+// set); the regional map alone honors a path_template_rewrite in a path
+// matcher's default route action. A URL map cannot move between scopes.
 message GcpUrlMapSpec {
   // The GCP project that owns the URL map.
   // Can be a literal project ID or a reference to a GcpProject resource.
@@ -52,9 +57,27 @@ message GcpUrlMapSpec {
   // reading a routing incident later. Mutable.
   string description = 3 [(buf.validate.field).string.max_len = 2048];
 
+  // The scope selector. Empty builds a GLOBAL URL map (the global external
+  // ALB, the cross-region internal ALB, Traffic Director); a region name
+  // such as us-central1 builds a REGIONAL one (the regional external ALB and
+  // the regional internal ALB). A regional map routes only to regional
+  // backend services in its own region — never to a backend bucket, which
+  // is a global-only resource — and is referenced only by regional target
+  // proxies. Cloud CDN route caching (cache_policy), custom error pages
+  // (custom_error_response_policy), max_stream_duration, and the
+  // header-driven routing-test fields exist only on the global map and are
+  // rejected when region is set. Immutable: a URL map cannot move between
+  // scopes or regions.
+  string region = 13 [(buf.validate.field).cel = {
+    id: "valid_region"
+    message: "region must be a valid GCP region name such as us-central1, or empty for a global URL map"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')"
+  }];
+
   // The default target when no host/path rule matches — a backend service or
   // backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-  // provide a self-link directly. Exactly one of default_service,
+  // provide a self-link directly (a regional map takes only a regional
+  // GcpBackendService in its region). Exactly one of default_service,
   // default_url_redirect, or default_route_action must be set. Mutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef default_service = 4;
 
@@ -70,7 +93,8 @@ message GcpUrlMapSpec {
   GcpUrlMapRouteAction default_route_action = 6;
 
   // Return a custom error page (from a backend bucket) for chosen response
-  // codes at the top level. Global external Application Load Balancers only.
+  // codes at the top level. Global external Application Load Balancers only
+  // — rejected when region is set.
   GcpUrlMapCustomErrorResponsePolicy default_custom_error_response_policy = 7;
 
   // Headers added to or removed from every request/response at the URL-map
@@ -89,7 +113,9 @@ message GcpUrlMapSpec {
   // Routing self-tests evaluated by GCP at create/update time: each asserts
   // that a given host+path resolves to an expected service or redirect. A
   // failing test blocks the update — a guard against a routing change that
-  // silently breaks a path. Mutable.
+  // silently breaks a path. On a regional map every test names its expected
+  // service and carries no headers or redirect expectations (those forms
+  // exist only on the global map). Mutable.
   repeated GcpUrlMapTest tests = 11;
 
   // What `terraform destroy` (or a stack teardown) may do to the URL map.
@@ -118,8 +144,45 @@ message GcpUrlMapSpec {
 
   option (buf.validate.message).cel = {
     id: "default_no_path_template_rewrite"
-    message: "path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in the URL map's default route action"
+    message: "path_template_rewrite is honored only inside a route rule's route_action (and, on a regional map, a path matcher's default route action) — GCP rejects it in the URL map's default route action"
     expression: "!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''"
+  };
+
+  // A path matcher's default route action honors path_template_rewrite on
+  // the regional map only; the rule lives here rather than on the path
+  // matcher because only the spec knows the scope.
+  option (buf.validate.message).cel = {
+    id: "path_matcher_path_template_rewrite_regional_only"
+    message: "path_template_rewrite in a path matcher's default route action is honored only by a regional URL map — set region, move the rewrite into a route rule, or use path_prefix_rewrite"
+    expression: "this.region != '' || !this.path_matchers.exists(p, has(p.default_route_action) && has(p.default_route_action.url_rewrite) && p.default_route_action.url_rewrite.path_template_rewrite != '')"
+  };
+
+  // The regional URL map carries no Cloud CDN route caching, no custom
+  // error pages, no stream-duration limit, and no header-driven routing
+  // tests. Each wall walks every site the surface appears at, so a manifest
+  // fails before the API sees it and the message names the lever.
+  option (buf.validate.message).cel = {
+    id: "cache_policy_global_only"
+    message: "cache_policy (Cloud CDN route caching) exists only on a global URL map — a regional Application Load Balancer has no Cloud CDN; clear region or remove every cache_policy"
+    expression: "this.region == '' || (!(has(this.default_route_action) && has(this.default_route_action.cache_policy)) && !this.path_matchers.exists(p, (has(p.default_route_action) && has(p.default_route_action.cache_policy)) || p.path_rules.exists(r, has(r.route_action) && has(r.route_action.cache_policy)) || p.route_rules.exists(r, has(r.route_action) && has(r.route_action.cache_policy))))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "custom_error_response_policy_global_only"
+    message: "custom error response policies exist only on a global URL map — the regional map has no error-page surface; clear region or remove every custom_error_response_policy and default_custom_error_response_policy"
+    expression: "this.region == '' || (!has(this.default_custom_error_response_policy) && !this.path_matchers.exists(p, has(p.default_custom_error_response_policy) || p.path_rules.exists(r, has(r.custom_error_response_policy)) || p.route_rules.exists(r, has(r.custom_error_response_policy))))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "max_stream_duration_global_only"
+    message: "max_stream_duration exists only on a global URL map (Traffic Director) at the map's default route action and inside path rules and route rules — a regional map carries none; clear region or remove it"
+    expression: "this.region == '' || (!(has(this.default_route_action) && has(this.default_route_action.max_stream_duration)) && !this.path_matchers.exists(p, p.path_rules.exists(r, has(r.route_action) && has(r.route_action.max_stream_duration)) || p.route_rules.exists(r, has(r.route_action) && has(r.route_action.max_stream_duration))))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "regional_tests_are_service_only"
+    message: "on a regional URL map every routing test names its expected service and carries no headers, expected_output_url, or expected_redirect_response_code — those test forms exist only on the global map"
+    expression: "this.region == '' || this.tests.all(t, has(t.service) && size(t.headers) == 0 && t.expected_output_url == '' && t.expected_redirect_response_code == 0)"
   };
 }
 
@@ -253,13 +316,16 @@ message GcpUrlMapRouteAction {
   // (Traffic Director) load-balancing scheme ("Max stream duration is
   // only supported when UrlMap is used with BackendService whose Load
   // Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-  // external application load balancers.
+  // external application load balancers. Global maps only: the regional
+  // map has no such argument (except in a path matcher's default route
+  // action, which carries it on both scopes).
   GcpUrlMapDuration max_stream_duration = 8;
 
   // Cloud CDN caching for the routes using this action — overrides the
   // backend service's cdn_policy for matching traffic only. Takes effect
   // only when the target backend service (or bucket) has CDN enabled;
-  // GCP ignores it otherwise.
+  // GCP ignores it otherwise. Global maps only — regional Application Load
+  // Balancers have no Cloud CDN, and the regional map has no such argument.
   GcpUrlMapCachePolicy cache_policy = 9;
 }
 
@@ -298,9 +364,10 @@ message GcpUrlMapUrlRewrite {
 
   // Rewrite the path using a template that references named path variables
   // captured by a route rule's path_template_match (e.g. "/v2/{country}").
-  // Honored only inside a route_rule's route_action — GCP rejects it in
-  // default and path-rule route actions. Mutually exclusive with
-  // path_prefix_rewrite.
+  // Honored inside a route_rule's route_action on both scopes and, on a
+  // REGIONAL map only, in a path matcher's default route action — GCP
+  // rejects it in the map's default route action and in path-rule route
+  // actions everywhere. Mutually exclusive with path_prefix_rewrite.
   string path_template_rewrite = 3 [(buf.validate.field).string.max_len = 1024];
 
   option (buf.validate.message).cel = {
@@ -632,10 +699,12 @@ message GcpUrlMapPathMatcher {
   GcpUrlMapUrlRedirect default_url_redirect = 3;
 
   // Advanced default handling (weighted split / rewrite) for the path matcher.
+  // On a regional map this is the one place besides route rules where a
+  // url_rewrite may carry path_template_rewrite.
   GcpUrlMapRouteAction default_route_action = 4;
 
   // Custom error pages for this path matcher's default. Global external ALBs
-  // only.
+  // only — rejected when the map's region is set.
   GcpUrlMapCustomErrorResponsePolicy default_custom_error_response_policy = 5;
 
   // What this path matcher covers.
@@ -663,12 +732,6 @@ message GcpUrlMapPathMatcher {
     id: "path_matcher_route_action_conflicts_redirect"
     message: "default_route_action and default_url_redirect are mutually exclusive — a redirect never reaches a backend"
     expression: "!(has(this.default_route_action) && has(this.default_url_redirect))"
-  };
-
-  option (buf.validate.message).cel = {
-    id: "path_matcher_no_path_template_rewrite"
-    message: "path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in a path matcher's default route action"
-    expression: "!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''"
   };
 
   option (buf.validate.message).cel = {
@@ -914,21 +977,22 @@ message GcpUrlMapTest {
   // The backend service or backend bucket the request is expected to resolve
   // to. Reference a GcpBackendService or GcpBackendBucket, or provide a
   // self-link. Leave empty when asserting a redirect via
-  // expected_redirect_response_code.
+  // expected_redirect_response_code. Required on a regional map, whose
+  // tests can only assert a service.
   dev.planton.shared.foreignkey.v1.StringValueOrRef service = 3;
 
   // What this test guards — write it for whoever reads a failed-test error.
   string description = 4 [(buf.validate.field).string.max_len = 1024];
 
   // The URL the request is expected to be redirected/rewritten to. Optional
-  // when service is set.
+  // when service is set. Global maps only.
   string expected_output_url = 5 [(buf.validate.field).string.max_len = 1024];
 
   // The redirect status code the request is expected to produce. Cannot be set
-  // together with service.
+  // together with service. Global maps only.
   int32 expected_redirect_response_code = 6 [(buf.validate.field).int32.gte = 0];
 
-  // Request headers the test sends.
+  // Request headers the test sends. Global maps only.
   repeated GcpUrlMapTestHeader headers = 7;
 }
 

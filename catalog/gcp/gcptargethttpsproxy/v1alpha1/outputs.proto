@@ -4,10 +4,11 @@ package dev.planton.gcp.gcptargethttpsproxy.v1alpha1;
 
 // Outputs produced after provisioning a GCP target HTTPS proxy.
 message GcpTargetHttpsProxyStackOutputs {
-  // Self-link URI of the target HTTPS proxy. This is the value a global
+  // Self-link URI of the target HTTPS proxy. This is the value a
   // forwarding rule references as its target — the composition handle that
   // puts a VIP in front of this proxy.
   // Format: https://www.googleapis.com/compute/v1/projects/{project}/global/targetHttpsProxies/{name}
+  // (a regional proxy's link carries regions/{region} in place of global).
   string self_link = 1;
 
   // Name of the proxy as it exists in GCP.
@@ -18,4 +19,10 @@ message GcpTargetHttpsProxyStackOutputs {
 
   // Server-computed fingerprint for optimistic concurrency control.
   string fingerprint = 4;
+
+  // Region of a regional target HTTPS proxy; empty for a global one. Downstream blocks
+  // read it to confirm scope compatibility (a regional link must point at a
+  // regional target in the same region), and the E2E verifier picks the
+  // regional or global API by it.
+  string region = 5;
 }

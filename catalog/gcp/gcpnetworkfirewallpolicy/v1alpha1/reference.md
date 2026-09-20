@@ -530,9 +530,9 @@ target_type is INTERNAL_MANAGED_LB -- references to forwarding-rule
 resources (a GcpGlobalForwardingRule's self_link output) or
 forwarding-rule self-links as literals. Required for that target
 type, forbidden for INSTANCES. An internal managed load balancer's
-forwarding rule is REGIONAL, so today the reference form resolves
-fully once the referenced kind carries its regional arm; until then
-give the regional forwarding rule's self-link as a literal.
+forwarding rule is REGIONAL: reference a GcpGlobalForwardingRule
+declared with a region (the kind builds the regional rule behind its
+region selector; its name records the global rule it began as).
 
 - references: GcpGlobalForwardingRule (`status.outputs.self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpGlobalForwardingRule, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse

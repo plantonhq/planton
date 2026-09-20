@@ -804,4 +804,126 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 		err := validator.Validate(target)
 		gomega.Expect(err).To(gomega.HaveOccurred())
 	})
+
+	// ──────────────── Regional arm ────────────────
+
+	regionalBackend := func() *foreignkeyv1.StringValueOrRef {
+		return &foreignkeyv1.StringValueOrRef{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+				Value: "https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/backendServices/web",
+			},
+		}
+	}
+
+	regional := func() *GcpUrlMap {
+		target := minimal()
+		target.Spec.Region = "us-central1"
+		target.Spec.DefaultService = regionalBackend()
+		return target
+	}
+
+	ginkgo.It("should accept a minimal regional URL map", func() {
+		gomega.Expect(validator.Validate(regional())).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept path_template_rewrite in a path matcher default route action on a regional map", func() {
+		target := regional()
+		target.Spec.HostRules = []*GcpUrlMapHostRule{{Hosts: []string{"api.example.com"}, PathMatcher: "api"}}
+		target.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
+			{
+				Name:           "api",
+				DefaultService: regionalBackend(),
+				DefaultRouteAction: &GcpUrlMapRouteAction{
+					UrlRewrite: &GcpUrlMapUrlRewrite{PathTemplateRewrite: "/v2/{id}"},
+				},
+			},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept a regional routing test that names its service", func() {
+		target := regional()
+		target.Spec.Tests = []*GcpUrlMapTest{
+			{Host: "api.example.com", Path: "/v1/users", Service: regionalBackend()},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed region", func() {
+		target := regional()
+		target.Spec.Region = "US-CENTRAL1"
+		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject cache_policy anywhere on a regional map", func() {
+		top := regional()
+		top.Spec.DefaultRouteAction = &GcpUrlMapRouteAction{
+			CachePolicy: &GcpUrlMapCachePolicy{CacheMode: "CACHE_ALL_STATIC"},
+		}
+		err := validator.Validate(top)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "cache_policy (Cloud CDN route caching) exists only on a global")).To(gomega.BeTrue())
+
+		nested := regional()
+		nested.Spec.PathMatchers = []*GcpUrlMapPathMatcher{
+			{
+				Name:           "cached",
+				DefaultService: regionalBackend(),
+				RouteRules: []*GcpUrlMapRouteRule{
+					{
+						Priority:   1,
+						Service:    regionalBackend(),
+						MatchRules: []*GcpUrlMapRouteRuleMatchRule{{PrefixMatch: "/static"}},
+						RouteAction: &GcpUrlMapRouteAction{
+							CachePolicy: &GcpUrlMapCachePolicy{CacheMode: "FORCE_CACHE_ALL"},
+						},
+					},
+				},
+			},
+		}
+		gomega.Expect(validator.Validate(nested)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject custom error response policies on a regional map", func() {
+		target := regional()
+		target.Spec.DefaultCustomErrorResponsePolicy = &GcpUrlMapCustomErrorResponsePolicy{
+			ErrorResponseRules: []*GcpUrlMapCustomErrorResponseRule{
+				{MatchResponseCodes: []string{"5xx"}, Path: "/errors/5xx.html"},
+			},
+		}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "custom error response policies exist only on a global")).To(gomega.BeTrue())
+	})
+
+	ginkgo.It("should reject max_stream_duration on a regional map's default route action", func() {
+		target := regional()
+		target.Spec.DefaultRouteAction = &GcpUrlMapRouteAction{
+			MaxStreamDuration: &GcpUrlMapDuration{Seconds: proto.Int64(60)},
+		}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "max_stream_duration exists only on a global")).To(gomega.BeTrue())
+	})
+
+	ginkgo.It("should reject a regional routing test with headers or without a service", func() {
+		withHeaders := regional()
+		withHeaders.Spec.Tests = []*GcpUrlMapTest{
+			{
+				Host:    "api.example.com",
+				Path:    "/v1",
+				Service: regionalBackend(),
+				Headers: []*GcpUrlMapTestHeader{{Name: "X-Debug", Value: "1"}},
+			},
+		}
+		err := validator.Validate(withHeaders)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "regional URL map every routing test")).To(gomega.BeTrue())
+
+		redirectOnly := regional()
+		redirectOnly.Spec.Tests = []*GcpUrlMapTest{
+			{Host: "api.example.com", Path: "/old", ExpectedRedirectResponseCode: 301},
+		}
+		gomega.Expect(validator.Validate(redirectOnly)).ToNot(gomega.Succeed())
+	})
 })

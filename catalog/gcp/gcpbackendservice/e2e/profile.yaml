@@ -29,7 +29,19 @@ spec:
   # under the apply-idempotency gate. The same proof covers the logged
   # header lists (log_config.request_headers / response_headers), which
   # the minimal scenario now sets on its HTTP backend service.
+  #
+  # Regional arm: the regional-external-managed scenario proves the
+  # regional resource family (google_compute_region_backend_service) as a
+  # regional ALB backend against a regional health-check fixture, and the
+  # internal-passthrough-nlb scenario proves the INTERNAL scheme with the
+  # passthrough-only levers (connection tracking, failover policy, zonal
+  # affinity) on the prerequisite network. Both engines send EXTERNAL
+  # explicitly when the scheme is unset on the regional arm too (the
+  # regional provider default is INTERNAL), so the classic scenarios also
+  # prove that a regional service with no scheme named re-plans clean.
+  # ha_policy stays offline-proven: it needs a zonal NEG with an attached
+  # instance as the leader, a fixture chain the harness does not carry.
   tier: 1
   status: pending_proof
   validated_provisioners: []
-  timeout_minutes: 15
+  timeout_minutes: 20

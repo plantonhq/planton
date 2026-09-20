@@ -8,13 +8,19 @@
 
 **Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
 
-GcpTargetHttpProxySpec defines a global Compute Engine target HTTP proxy —
-the plaintext-HTTP frontend adapter of a global external Application Load
-Balancer (and of Traffic Director meshes). A target HTTP proxy binds a
-global forwarding rule (the VIP) to a URL map (the routing brain): the
-forwarding rule delivers client connections to the proxy, and the proxy
-consults the URL map to pick the backend service or bucket for each
-request.
+GcpTargetHttpProxySpec defines a Compute Engine target HTTP proxy — the
+plaintext-HTTP frontend adapter of an Application Load Balancer (and of
+Traffic Director meshes). A target HTTP proxy binds a forwarding rule (the
+VIP) to a URL map (the routing brain): the forwarding rule delivers client
+connections to the proxy, and the proxy consults the URL map to pick the
+backend service or bucket for each request.
+
+One kind, two scopes. With region empty the proxy is GLOBAL (the global
+external ALB, the cross-region internal ALB, Traffic Director); with
+region set it is REGIONAL (the regional external ALB and the regional
+internal ALB), and every link in its chain must be regional too: a
+regional URL map in front of regional backend services, and a regional
+forwarding rule pointing at it. A proxy cannot move between scopes.
 
 The proxy itself is deliberately thin — TLS termination lives on the
 target HTTPS proxy, routing lives on the URL map, and traffic policy lives
@@ -65,6 +71,7 @@ spec:
 | `spec.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.proxyName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
+| `spec.region` | `string` |  |  |  |
 | `spec.urlMap` | `string \| valueFrom` | yes |  | GcpUrlMap (`status.outputs.self_link`) |
 | `spec.httpKeepAliveTimeoutSec` | `int32` |  |  |  |
 | `spec.proxyBind` | `bool` |  |  |  |
@@ -105,15 +112,31 @@ for the operator tracing a request path later. Immutable.
 
 - rule: {"string":{"maxLen":"2048"}}
 
+### spec.region
+
+`string`
+
+The scope selector. Empty builds a GLOBAL target HTTP proxy (the global
+external ALB, the cross-region internal ALB, Traffic Director); a region
+name such as us-central1 builds a REGIONAL one (the regional external
+ALB and the regional internal ALB). The URL map it references must live
+in the same scope — and, for a regional proxy, the same region — and so
+must the forwarding rule in front of it. Immutable: a proxy cannot move
+between scopes or regions.
+
+- rule: region must be a valid GCP region name such as us-central1, or empty for a global target HTTP proxy
+
 ### spec.urlMap
 
 `string | valueFrom` · required
 
 The URL map that decides where each request goes — the proxy's single
 routing dependency. Reference a GcpUrlMap resource or provide a URL map
-self-link directly. Required. Mutable: GCP swaps it in place (a
-dedicated setUrlMap call), so repointing a live frontend at a new
-routing table causes no downtime.
+self-link directly. Required. A regional proxy can only point at a
+regional URL map in its own region (a GcpUrlMap declared with the same
+region). Mutable: GCP swaps it in place (a dedicated setUrlMap call),
+so repointing a live frontend at a new routing table causes no
+downtime.
 
 - references: GcpUrlMap (`status.outputs.self_link`)
 - rule: {"required":true}
@@ -125,11 +148,12 @@ routing table causes no downtime.
 
 Seconds an idle client connection is kept open after a response while no
 matching traffic flows (5-1200). Only honored by load balancers with the
-EXTERNAL_MANAGED scheme (the envoy-based global external ALB), where the
-GCP default is 610; the classic EXTERNAL ALB ignores it. Raise it above
-your clients' own keep-alive to avoid the load balancer closing
-connections first. 0 means unset (GCP applies its default). Immutable:
-changing it destroys and recreates the proxy.
+EXTERNAL_MANAGED scheme (the envoy-based external ALBs, global and
+regional), where the GCP default is 610; the classic EXTERNAL ALB
+ignores it. Raise it above your clients' own keep-alive to avoid the
+load balancer closing connections first. 0 means unset (GCP applies its
+default). Immutable on both scopes: changing it destroys and recreates
+the proxy.
 
 - rule: http_keep_alive_timeout_sec must be between 5 and 1200 seconds (or 0 to let GCP apply its default)
 
@@ -140,7 +164,9 @@ changing it destroys and recreates the proxy.
 Bind the proxy to the private IPs of the Traffic Director mesh instead
 of Google's edge. Only meaningful when the forwarding rule that
 references this proxy uses the INTERNAL_SELF_MANAGED scheme (Traffic
-Director); leave false for internet-facing load balancers. Immutable.
+Director); leave false for internet-facing load balancers. Global
+proxies only — Traffic Director has no regional proxy, and the regional
+resource carries no such argument. Immutable.
 
 ### spec.deletionPolicy
 
@@ -159,16 +185,21 @@ destroyed:
 
 - rule: deletion_policy must be one of: DELETE, PREVENT, ABANDON
 
+## Validation Rules
+
+- `proxy_bind_global_only`: proxy_bind is a global-proxy (Traffic Director) lever — a regional target HTTP proxy has no mesh to bind to; clear region or remove proxy_bind
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: GcpTargetHttpProxy, name: <resource-name>, fieldPath: status.outputs.<output>}`.
 
 | Output | Type | Description |
 |---|---|---|
-| `status.outputs.self_link` | `string` | Self-link URI of the target HTTP proxy. This is the value a global forwarding rule references as its target — the composition handle that puts a VIP in front of this proxy. Format: https://www.googleapis.com/compute/v1/projects/{project}/global/targetHttpProxies/{name} |
+| `status.outputs.self_link` | `string` | Self-link URI of the target HTTP proxy. This is the value a forwarding rule references as its target — the composition handle that puts a VIP in front of this proxy. Format: https://www.googleapis.com/compute/v1/projects/{project}/global/targetHttpProxies/{name} (a regional proxy's link carries regions/{region} in place of global). |
 | `status.outputs.proxy_name` | `string` | Name of the proxy as it exists in GCP. |
 | `status.outputs.proxy_id` | `string` | Server-assigned numeric ID of the proxy. |
 | `status.outputs.fingerprint` | `string` | Server-computed fingerprint for optimistic concurrency control. |
+| `status.outputs.region` | `string` | Region of a regional target HTTP proxy; empty for a global one. Downstream blocks read it to confirm scope compatibility (a regional link must point at a regional target in the same region), and the E2E verifier picks the regional or global API by it. |
 
 ## References
 

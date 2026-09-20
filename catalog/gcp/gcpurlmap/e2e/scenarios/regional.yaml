@@ -1,0 +1,64 @@
+# GcpUrlMap scenario: the REGIONAL arm (google_compute_region_url_map) -- a
+# set region routes the module down the regional branch, every backend is a
+# regional backend service fixture in the same region, and the path matcher
+# exercises the one knob only the regional map honors: a pathTemplateRewrite
+# in its DEFAULT route action, paired (as Google requires) with a route rule
+# whose pathTemplateMatch declares the variable. A service-only routing test
+# proves the regional test shape.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpUrlMap
+metadata:
+  name: planton-oss-e2e-gcpum-regional
+  id: planton-oss-e2e-gcpum-regional
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpurlmap
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpurlmap/e2e/prerequisites/gcphealthcheck-regional.yaml,catalog/gcp/gcpurlmap/e2e/prerequisites/gcpbackendservice-regional.yaml"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional URL map created by the Planton E2E harness; safe to delete
+  region: us-central1
+  defaultService:
+    valueFrom:
+      kind: GcpBackendService
+      name: planton-oss-e2e-gcpum-rbs
+      fieldPath: status.outputs.self_link
+  hostRules:
+    - hosts: ["api.e2e-test.invalid"]
+      pathMatcher: api
+  pathMatchers:
+    - name: api
+      defaultService:
+        valueFrom:
+          kind: GcpBackendService
+          name: planton-oss-e2e-gcpum-rbs
+          fieldPath: status.outputs.self_link
+      defaultRouteAction:
+        urlRewrite:
+          pathTemplateRewrite: "/v2/{path}"
+        timeout:
+          seconds: 30
+      routeRules:
+        - priority: 1
+          service:
+            valueFrom:
+              kind: GcpBackendService
+              name: planton-oss-e2e-gcpum-rbs
+              fieldPath: status.outputs.self_link
+          matchRules:
+            - pathTemplateMatch: "/v1/{path=**}"
+  tests:
+    - host: api.e2e-test.invalid
+      path: /healthz
+      service:
+        valueFrom:
+          kind: GcpBackendService
+          name: planton-oss-e2e-gcpum-rbs
+          fieldPath: status.outputs.self_link
+      description: default route resolves to the regional backend
+  deletionPolicy: DELETE

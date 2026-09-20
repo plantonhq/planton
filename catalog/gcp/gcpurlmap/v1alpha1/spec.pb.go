@@ -23,12 +23,11 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpUrlMapSpec defines a global Compute Engine URL map — the L7 routing brain
-// of a global external Application Load Balancer (and of Traffic Director /
-// cross-region internal ALBs). A URL map matches each request's host and path
-// and decides what happens: send it to a backend service or backend bucket,
-// split it across weighted backends, rewrite or redirect it, inject faults, or
-// return a custom error page.
+// GcpUrlMapSpec defines a Compute Engine URL map — the L7 routing brain of an
+// Application Load Balancer (and of Traffic Director meshes). A URL map
+// matches each request's host and path and decides what happens: send it to
+// a backend service or backend bucket, split it across weighted backends,
+// rewrite or redirect it, inject faults, or return a custom error page.
 //
 // Routing is evaluated in this order:
 //  1. host_rules match the request Host header to a named path_matcher.
@@ -42,9 +41,15 @@ const (
 // across backends and rewrite/retry/mirror). Target proxies reference this URL
 // map; forwarding rules and addresses sit in front of the proxy.
 //
-// This models the GLOBAL URL map. The regional URL map is a separate GCP
-// resource (region-scoped, no custom error response policies) reserved for the
-// regional-LB wave.
+// One kind, two scopes. With region empty the map is GLOBAL (the global
+// external ALB, the cross-region internal ALB, Traffic Director); with region
+// set it is REGIONAL (the regional external ALB and the regional internal
+// ALB), routing only to regional backend services in that region. The two
+// scopes share the whole routing surface except Cloud CDN route caching,
+// custom error pages, stream-duration limits, and header-driven routing
+// tests, which exist only on the global map (and are rejected when region is
+// set); the regional map alone honors a path_template_rewrite in a path
+// matcher's default route action. A URL map cannot move between scopes.
 type GcpUrlMapSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project that owns the URL map.
@@ -61,9 +66,22 @@ type GcpUrlMapSpec struct {
 	// What this URL map fronts and how it routes — write it for the operator
 	// reading a routing incident later. Mutable.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// The scope selector. Empty builds a GLOBAL URL map (the global external
+	// ALB, the cross-region internal ALB, Traffic Director); a region name
+	// such as us-central1 builds a REGIONAL one (the regional external ALB and
+	// the regional internal ALB). A regional map routes only to regional
+	// backend services in its own region — never to a backend bucket, which
+	// is a global-only resource — and is referenced only by regional target
+	// proxies. Cloud CDN route caching (cache_policy), custom error pages
+	// (custom_error_response_policy), max_stream_duration, and the
+	// header-driven routing-test fields exist only on the global map and are
+	// rejected when region is set. Immutable: a URL map cannot move between
+	// scopes or regions.
+	Region string `protobuf:"bytes,13,opt,name=region,proto3" json:"region,omitempty"`
 	// The default target when no host/path rule matches — a backend service or
 	// backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-	// provide a self-link directly. Exactly one of default_service,
+	// provide a self-link directly (a regional map takes only a regional
+	// GcpBackendService in its region). Exactly one of default_service,
 	// default_url_redirect, or default_route_action must be set. Mutable.
 	DefaultService *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=default_service,json=defaultService,proto3" json:"default_service,omitempty"`
 	// Redirect unmatched requests instead of serving them (e.g. an
@@ -76,7 +94,8 @@ type GcpUrlMapSpec struct {
 	// the default-target choice).
 	DefaultRouteAction *GcpUrlMapRouteAction `protobuf:"bytes,6,opt,name=default_route_action,json=defaultRouteAction,proto3" json:"default_route_action,omitempty"`
 	// Return a custom error page (from a backend bucket) for chosen response
-	// codes at the top level. Global external Application Load Balancers only.
+	// codes at the top level. Global external Application Load Balancers only
+	// — rejected when region is set.
 	DefaultCustomErrorResponsePolicy *GcpUrlMapCustomErrorResponsePolicy `protobuf:"bytes,7,opt,name=default_custom_error_response_policy,json=defaultCustomErrorResponsePolicy,proto3" json:"default_custom_error_response_policy,omitempty"`
 	// Headers added to or removed from every request/response at the URL-map
 	// level, before any per-route header action. Mutable.
@@ -91,7 +110,9 @@ type GcpUrlMapSpec struct {
 	// Routing self-tests evaluated by GCP at create/update time: each asserts
 	// that a given host+path resolves to an expected service or redirect. A
 	// failing test blocks the update — a guard against a routing change that
-	// silently breaks a path. Mutable.
+	// silently breaks a path. On a regional map every test names its expected
+	// service and carries no headers or redirect expectations (those forms
+	// exist only on the global map). Mutable.
 	Tests []*GcpUrlMapTest `protobuf:"bytes,11,rep,name=tests,proto3" json:"tests,omitempty"`
 	// What `terraform destroy` (or a stack teardown) may do to the URL map.
 	// DELETE (the default when empty) allows deletion; PREVENT fails the
@@ -151,6 +172,13 @@ func (x *GcpUrlMapSpec) GetUrlMapName() string {
 func (x *GcpUrlMapSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
+	}
+	return ""
+}
+
+func (x *GcpUrlMapSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
 	}
 	return ""
 }
@@ -506,12 +534,15 @@ type GcpUrlMapRouteAction struct {
 	// (Traffic Director) load-balancing scheme ("Max stream duration is
 	// only supported when UrlMap is used with BackendService whose Load
 	// Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-	// external application load balancers.
+	// external application load balancers. Global maps only: the regional
+	// map has no such argument (except in a path matcher's default route
+	// action, which carries it on both scopes).
 	MaxStreamDuration *GcpUrlMapDuration `protobuf:"bytes,8,opt,name=max_stream_duration,json=maxStreamDuration,proto3" json:"max_stream_duration,omitempty"`
 	// Cloud CDN caching for the routes using this action — overrides the
 	// backend service's cdn_policy for matching traffic only. Takes effect
 	// only when the target backend service (or bucket) has CDN enabled;
-	// GCP ignores it otherwise.
+	// GCP ignores it otherwise. Global maps only — regional Application Load
+	// Balancers have no Cloud CDN, and the regional map has no such argument.
 	CachePolicy   *GcpUrlMapCachePolicy `protobuf:"bytes,9,opt,name=cache_policy,json=cachePolicy,proto3" json:"cache_policy,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -689,9 +720,10 @@ type GcpUrlMapUrlRewrite struct {
 	PathPrefixRewrite string `protobuf:"bytes,2,opt,name=path_prefix_rewrite,json=pathPrefixRewrite,proto3" json:"path_prefix_rewrite,omitempty"`
 	// Rewrite the path using a template that references named path variables
 	// captured by a route rule's path_template_match (e.g. "/v2/{country}").
-	// Honored only inside a route_rule's route_action — GCP rejects it in
-	// default and path-rule route actions. Mutually exclusive with
-	// path_prefix_rewrite.
+	// Honored inside a route_rule's route_action on both scopes and, on a
+	// REGIONAL map only, in a path matcher's default route action — GCP
+	// rejects it in the map's default route action and in path-rule route
+	// actions everywhere. Mutually exclusive with path_prefix_rewrite.
 	PathTemplateRewrite string `protobuf:"bytes,3,opt,name=path_template_rewrite,json=pathTemplateRewrite,proto3" json:"path_template_rewrite,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
@@ -1724,9 +1756,11 @@ type GcpUrlMapPathMatcher struct {
 	// Redirect as the path matcher's default instead of serving.
 	DefaultUrlRedirect *GcpUrlMapUrlRedirect `protobuf:"bytes,3,opt,name=default_url_redirect,json=defaultUrlRedirect,proto3" json:"default_url_redirect,omitempty"`
 	// Advanced default handling (weighted split / rewrite) for the path matcher.
+	// On a regional map this is the one place besides route rules where a
+	// url_rewrite may carry path_template_rewrite.
 	DefaultRouteAction *GcpUrlMapRouteAction `protobuf:"bytes,4,opt,name=default_route_action,json=defaultRouteAction,proto3" json:"default_route_action,omitempty"`
 	// Custom error pages for this path matcher's default. Global external ALBs
-	// only.
+	// only — rejected when the map's region is set.
 	DefaultCustomErrorResponsePolicy *GcpUrlMapCustomErrorResponsePolicy `protobuf:"bytes,5,opt,name=default_custom_error_response_policy,json=defaultCustomErrorResponsePolicy,proto3" json:"default_custom_error_response_policy,omitempty"`
 	// What this path matcher covers.
 	Description string `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
@@ -2501,17 +2535,18 @@ type GcpUrlMapTest struct {
 	// The backend service or backend bucket the request is expected to resolve
 	// to. Reference a GcpBackendService or GcpBackendBucket, or provide a
 	// self-link. Leave empty when asserting a redirect via
-	// expected_redirect_response_code.
+	// expected_redirect_response_code. Required on a regional map, whose
+	// tests can only assert a service.
 	Service *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=service,proto3" json:"service,omitempty"`
 	// What this test guards — write it for whoever reads a failed-test error.
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// The URL the request is expected to be redirected/rewritten to. Optional
-	// when service is set.
+	// when service is set. Global maps only.
 	ExpectedOutputUrl string `protobuf:"bytes,5,opt,name=expected_output_url,json=expectedOutputUrl,proto3" json:"expected_output_url,omitempty"`
 	// The redirect status code the request is expected to produce. Cannot be set
-	// together with service.
+	// together with service. Global maps only.
 	ExpectedRedirectResponseCode int32 `protobuf:"varint,6,opt,name=expected_redirect_response_code,json=expectedRedirectResponseCode,proto3" json:"expected_redirect_response_code,omitempty"`
-	// Request headers the test sends.
+	// Request headers the test sends. Global maps only.
 	Headers       []*GcpUrlMapTestHeader `protobuf:"bytes,7,rep,name=headers,proto3" json:"headers,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -2655,14 +2690,16 @@ var File_catalog_gcp_gcpurlmap_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	")catalog/gcp/gcpurlmap/v1alpha1/spec.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x8c\x12\n" +
+	")catalog/gcp/gcpurlmap/v1alpha1/spec.proto\x12\"dev.planton.gcp.gcpurlmap.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xd8'\n" +
 	"\rGcpUrlMapSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x8e\x02\n" +
 	"\furl_map_name\x18\x02 \x01(\tB\xeb\x01\xbaH\xe7\x01\xba\x01\xe3\x01\n" +
 	"\x12valid_url_map_name\x12\x8b\x01url_map_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\n" +
 	"urlMapName\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12[\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xc6\x01\n" +
+	"\x06region\x18\r \x01(\tB\xad\x01\xbaH\xa9\x01\xba\x01\xa5\x01\n" +
+	"\fvalid_region\x12Yregion must be a valid GCP region name such as us-central1, or empty for a global URL map\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12[\n" +
 	"\x0fdefault_service\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x0edefaultService\x12j\n" +
 	"\x14default_url_redirect\x18\x05 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapUrlRedirectR\x12defaultUrlRedirect\x12j\n" +
 	"\x14default_route_action\x18\x06 \x01(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapRouteActionR\x12defaultRouteAction\x12\x96\x01\n" +
@@ -2674,10 +2711,15 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	" \x03(\v28.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapPathMatcherR\fpathMatchers\x12G\n" +
 	"\x05tests\x18\v \x03(\v21.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapTestR\x05tests\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\f \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xdc\x06\xbaH\xd8\x06\x1a\xdf\x02\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\xdf\x1a\xbaH\xdb\x1a\x1a\xdf\x02\n" +
 	"\x1aexactly_one_default_target\x12\x7fset exactly one default target: default_service, default_url_redirect, or default_route_action (with weighted_backend_services)\x1a\xbf\x01(has(this.default_service) ? 1 : 0) + (has(this.default_url_redirect) ? 1 : 0) + (has(this.default_route_action) && size(this.default_route_action.weighted_backend_services) > 0 ? 1 : 0) == 1\x1a\xb4\x01\n" +
-	"'default_route_action_conflicts_redirect\x12Ddefault_route_action and default_url_redirect are mutually exclusive\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\xbc\x02\n" +
-	" default_no_path_template_rewrite\x12\x81\x01path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in the URL map's default route action\x1a\x93\x01!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''\"\xf7\x05\n" +
+	"'default_route_action_conflicts_redirect\x12Ddefault_route_action and default_url_redirect are mutually exclusive\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\xfc\x02\n" +
+	" default_no_path_template_rewrite\x12\xc1\x01path_template_rewrite is honored only inside a route rule's route_action (and, on a regional map, a path matcher's default route action) — GCP rejects it in the URL map's default route action\x1a\x93\x01!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''\x1a\xa7\x03\n" +
+	"0path_matcher_path_template_rewrite_regional_only\x12\xb3\x01path_template_rewrite in a path matcher's default route action is honored only by a regional URL map — set region, move the rewrite into a route rule, or use path_prefix_rewrite\x1a\xbc\x01this.region != '' || !this.path_matchers.exists(p, has(p.default_route_action) && has(p.default_route_action.url_rewrite) && p.default_route_action.url_rewrite.path_template_rewrite != '')\x1a\xc5\x04\n" +
+	"\x18cache_policy_global_only\x12\xab\x01cache_policy (Cloud CDN route caching) exists only on a global URL map — a regional Application Load Balancer has no Cloud CDN; clear region or remove every cache_policy\x1a\xfa\x02this.region == '' || (!(has(this.default_route_action) && has(this.default_route_action.cache_policy)) && !this.path_matchers.exists(p, (has(p.default_route_action) && has(p.default_route_action.cache_policy)) || p.path_rules.exists(r, has(r.route_action) && has(r.route_action.cache_policy)) || p.route_rules.exists(r, has(r.route_action) && has(r.route_action.cache_policy))))\x1a\x93\x04\n" +
+	"(custom_error_response_policy_global_only\x12\xd0\x01custom error response policies exist only on a global URL map — the regional map has no error-page surface; clear region or remove every custom_error_response_policy and default_custom_error_response_policy\x1a\x93\x02this.region == '' || (!has(this.default_custom_error_response_policy) && !this.path_matchers.exists(p, has(p.default_custom_error_response_policy) || p.path_rules.exists(r, has(r.custom_error_response_policy)) || p.route_rules.exists(r, has(r.custom_error_response_policy))))\x1a\xb2\x04\n" +
+	"\x1fmax_stream_duration_global_only\x12\xc9\x01max_stream_duration exists only on a global URL map (Traffic Director) at the map's default route action and inside path rules and route rules — a regional map carries none; clear region or remove it\x1a\xc2\x02this.region == '' || (!(has(this.default_route_action) && has(this.default_route_action.max_stream_duration)) && !this.path_matchers.exists(p, p.path_rules.exists(r, has(r.route_action) && has(r.route_action.max_stream_duration)) || p.route_rules.exists(r, has(r.route_action) && has(r.route_action.max_stream_duration))))\x1a\x83\x03\n" +
+	"\x1fregional_tests_are_service_only\x12\xc5\x01on a regional URL map every routing test names its expected service and carries no headers, expected_output_url, or expected_redirect_response_code — those test forms exist only on the global map\x1a\x97\x01this.region == '' || this.tests.all(t, has(t.service) && size(t.headers) == 0 && t.expected_output_url == '' && t.expected_redirect_response_code == 0)\"\xf7\x05\n" +
 	"\x14GcpUrlMapUrlRedirect\x12-\n" +
 	"\rhost_redirect\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\fhostRedirect\x12%\n" +
 	"\x0ehttps_redirect\x18\x02 \x01(\bR\rhttpsRedirect\x12-\n" +
@@ -2804,7 +2846,7 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05hosts\x18\x01 \x03(\tB\x0e\xbaH\v\x92\x01\b\b\x01\"\x04r\x02\x10\x01R\x05hosts\x12-\n" +
 	"\fpath_matcher\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\vpathMatcher\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\"\xd9\x0f\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\vdescription\"\x92\r\n" +
 	"\x14GcpUrlMapPathMatcher\x12 \n" +
 	"\x04name\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x18?R\x04name\x12[\n" +
 	"\x0fdefault_service\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x0edefaultService\x12j\n" +
@@ -2816,10 +2858,9 @@ const file_catalog_gcp_gcpurlmap_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"path_rules\x18\b \x03(\v25.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapPathRuleR\tpathRules\x12W\n" +
 	"\vroute_rules\x18\t \x03(\v26.dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapRouteRuleR\n" +
-	"routeRules:\x95\t\xbaH\x91\t\x1a\xc8\x03\n" +
+	"routeRules:\xce\x06\xbaH\xca\x06\x1a\xc8\x03\n" +
 	"'path_matcher_default_target_at_most_one\x12\xda\x01a path matcher may set at most one default target: default_service, default_url_redirect, or default_route_action with weighted_backend_services (a route action carrying only sub-policies may accompany default_service)\x1a\xbf\x01(has(this.default_service) ? 1 : 0) + (has(this.default_url_redirect) ? 1 : 0) + (has(this.default_route_action) && size(this.default_route_action.weighted_backend_services) > 0 ? 1 : 0) <= 1\x1a\xe0\x01\n" +
-	",path_matcher_route_action_conflicts_redirect\x12kdefault_route_action and default_url_redirect are mutually exclusive — a redirect never reaches a backend\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\xc4\x02\n" +
-	"%path_matcher_no_path_template_rewrite\x12\x84\x01path_template_rewrite is honored only inside a route rule's route_action — GCP rejects it in a path matcher's default route action\x1a\x93\x01!has(this.default_route_action) || !has(this.default_route_action.url_rewrite) || this.default_route_action.url_rewrite.path_template_rewrite == ''\x1a\x99\x01\n" +
+	",path_matcher_route_action_conflicts_redirect\x12kdefault_route_action and default_url_redirect are mutually exclusive — a redirect never reaches a backend\x1aC!(has(this.default_route_action) && has(this.default_url_redirect))\x1a\x99\x01\n" +
 	"\x1cpath_matcher_rules_exclusive\x12>a path matcher uses either path_rules or route_rules, not both\x1a9size(this.path_rules) == 0 || size(this.route_rules) == 0\"\xa8\n" +
 	"\n" +
 	"\x11GcpUrlMapPathRule\x12$\n" +

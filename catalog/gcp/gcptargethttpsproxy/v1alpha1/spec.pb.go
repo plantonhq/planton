@@ -23,30 +23,40 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpTargetHttpsProxySpec defines a global Compute Engine target HTTPS proxy
-// — the TLS-termination node of a global external Application Load Balancer
-// (and of Traffic Director meshes). A target HTTPS proxy binds a global
-// forwarding rule (the VIP) to a URL map (the routing brain) and owns
-// everything about the client-facing TLS handshake: which certificates are
-// presented, which TLS policy constrains ciphers and versions, whether QUIC
-// (HTTP/3) is negotiated, and whether TLS 1.3 0-RTT early data is accepted.
+// GcpTargetHttpsProxySpec defines a Compute Engine target HTTPS proxy — the
+// TLS-termination node of an Application Load Balancer (and of Traffic
+// Director meshes). A target HTTPS proxy binds a forwarding rule (the VIP)
+// to a URL map (the routing brain) and owns everything about the
+// client-facing TLS handshake: which certificates are presented, which TLS
+// policy constrains ciphers and versions, whether QUIC (HTTP/3) is
+// negotiated, and whether TLS 1.3 0-RTT early data is accepted.
+//
+// One kind, two scopes. With region empty the proxy is GLOBAL (the global
+// external ALB, the cross-region internal ALB, Traffic Director); with
+// region set it is REGIONAL (the regional external ALB and the regional
+// internal ALB), and every link in its chain must be regional too: a
+// regional URL map, regional certificates, a regional SSL policy, and a
+// regional forwarding rule in front. A proxy cannot move between scopes.
 //
 // Certificates attach through exactly one of three mechanisms:
 //   - ssl_certificates: classic Compute Engine SSL certificates (the
 //     Google-managed GcpManagedSslCertificate kind, or self-managed compute
-//     certificates), up to 15 per proxy.
+//     certificates), up to 15 per proxy. On a regional proxy these must be
+//     regional self-managed certificates (GcpSslCertificate with region).
 //   - certificate_manager_certificates: Certificate Manager certificates —
-//     only honored by the cross-region internal ALB (INTERNAL_MANAGED).
+//     honored by the cross-region internal ALB (INTERNAL_MANAGED) and by
+//     the regional ALBs (regional certificates in the proxy's region).
 //   - certificate_map: a Certificate Manager certificate map that selects
-//     the certificate by SNI hostname at scale — only honored by external
-//     ALBs (EXTERNAL / EXTERNAL_MANAGED); required beyond ~15 certs.
+//     the certificate by SNI hostname at scale — only honored by GLOBAL
+//     external ALBs (EXTERNAL / EXTERNAL_MANAGED); required beyond ~15 certs.
 //
 // Traffic Director proxies (INTERNAL_SELF_MANAGED) skip client certificates
 // entirely and drive TLS through server_tls_policy instead.
 //
 // url_map, certificates, certificate_map, ssl_policy, server_tls_policy, and
 // quic_override all update in place via dedicated API calls; name,
-// description, keep-alive, early data, and proxy_bind are immutable.
+// description, keep-alive, early data, proxy_bind, and region are
+// immutable.
 type GcpTargetHttpsProxySpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project that owns the target HTTPS proxy.
@@ -63,11 +73,23 @@ type GcpTargetHttpsProxySpec struct {
 	// What this proxy fronts and which forwarding rule points at it — write it
 	// for the operator tracing a TLS incident later. Immutable.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// The scope selector. Empty builds a GLOBAL target HTTPS proxy (the
+	// global external ALB, the cross-region internal ALB, Traffic Director);
+	// a region name such as us-central1 builds a REGIONAL one (the regional
+	// external ALB and the regional internal ALB). Everything it references
+	// must then be regional in the same region: the URL map, the certificates
+	// (regional GcpSslCertificate or regional Certificate Manager
+	// certificates), and the SSL policy — and the forwarding rule in front of
+	// it. The global-only levers (certificate_map, quic_override,
+	// tls_early_data, proxy_bind) are rejected when region is set. Immutable:
+	// a proxy cannot move between scopes or regions.
+	Region string `protobuf:"bytes,15,opt,name=region,proto3" json:"region,omitempty"`
 	// The URL map that decides where each decrypted request goes — the proxy's
 	// single routing dependency. Reference a GcpUrlMap resource or provide a
-	// URL map self-link directly. Required. Mutable: GCP swaps it in place (a
-	// dedicated setUrlMap call), so repointing a live frontend at a new
-	// routing table causes no downtime.
+	// URL map self-link directly. Required. A regional proxy can only point at
+	// a regional URL map in its own region (a GcpUrlMap declared with the same
+	// region). Mutable: GCP swaps it in place (a dedicated setUrlMap call), so
+	// repointing a live frontend at a new routing table causes no downtime.
 	UrlMap *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=url_map,json=urlMap,proto3" json:"url_map,omitempty"`
 	// Compute Engine SSL certificates presented to clients (1-15). Reference
 	// GcpManagedSslCertificate resources (the default kind), self-managed
@@ -75,6 +97,10 @@ type GcpTargetHttpsProxySpec struct {
 	// SSL certificate self-links directly — both certificate kinds share one
 	// API collection and attach identically. The load balancer picks the
 	// certificate matching the client's SNI hostname.
+	// On a REGIONAL proxy the certificates must be regional self-managed
+	// certificates in the proxy's region (a GcpSslCertificate declared with
+	// the same region, attached with valueFrom.kind: GcpSslCertificate) —
+	// Google-managed compute certificates are global only.
 	// Not honored by Traffic Director (INTERNAL_SELF_MANAGED) proxies — use
 	// server_tls_policy there. Mutually exclusive with
 	// certificate_manager_certificates and certificate_map. Mutable: GCP swaps
@@ -82,10 +108,12 @@ type GcpTargetHttpsProxySpec struct {
 	// certificate rotation works — attach the replacement before detaching the
 	// old one.
 	SslCertificates []*v1.StringValueOrRef `protobuf:"bytes,5,rep,name=ssl_certificates,json=sslCertificates,proto3" json:"ssl_certificates,omitempty"`
-	// Certificate Manager certificates presented to clients — only honored by
-	// the cross-region internal ALB (INTERNAL_MANAGED); external ALBs use
-	// certificate_map instead. Reference GcpCertManagerCert resources or
-	// provide certificate resource names directly, in the form
+	// Certificate Manager certificates presented to clients — honored by the
+	// cross-region internal ALB (INTERNAL_MANAGED) on a global proxy and by
+	// the regional ALBs on a regional proxy (regional certificates in the
+	// proxy's region); global external ALBs use certificate_map instead.
+	// Reference GcpCertManagerCert resources or provide certificate resource
+	// names directly, in the form
 	// projects/{project}/locations/{location}/certificates/{name} (a
 	// //certificatemanager.googleapis.com/ prefix is also accepted). Mutually
 	// exclusive with ssl_certificates and certificate_map. Mutable.
@@ -93,7 +121,9 @@ type GcpTargetHttpsProxySpec struct {
 	// A Certificate Manager certificate map that selects the served
 	// certificate by SNI hostname — the mechanism for serving many domains
 	// (SaaS custom domains) beyond the 15-certificate list limit. Only honored
-	// by external ALBs (EXTERNAL / EXTERNAL_MANAGED). Format:
+	// by GLOBAL external ALBs (EXTERNAL / EXTERNAL_MANAGED); the regional
+	// proxy carries no such argument, so it is rejected when region is set.
+	// Format:
 	// //certificatemanager.googleapis.com/projects/{project}/locations/{location}/certificateMaps/{name}.
 	// Mutually exclusive with ssl_certificates and
 	// certificate_manager_certificates. Mutable.
@@ -102,22 +132,26 @@ type GcpTargetHttpsProxySpec struct {
 	// handshakes. Reference a GcpSslPolicy resource or provide an SSL policy
 	// self-link directly (e.g.
 	// https://www.googleapis.com/compute/v1/projects/{project}/global/sslPolicies/{name}).
-	// If not set, GCP applies its permissive default policy (min TLS 1.0,
-	// COMPATIBLE profile) — set one to enforce modern TLS for compliance.
-	// Mutable: GCP swaps it in place (setSslPolicy).
+	// A regional proxy takes a regional SSL policy in its own region (a
+	// GcpSslPolicy declared with the same region). If not set, GCP applies
+	// its permissive default policy (min TLS 1.0, COMPATIBLE profile) — set
+	// one to enforce modern TLS for compliance. Mutable: GCP swaps it in place
+	// (setSslPolicy).
 	SslPolicy *v1.StringValueOrRef `protobuf:"bytes,8,opt,name=ssl_policy,json=sslPolicy,proto3" json:"ssl_policy,omitempty"`
 	// A network security ServerTlsPolicy resource that configures server-side
 	// TLS — the mTLS mechanism: it can demand and validate client
 	// certificates. Applies to global proxies behind EXTERNAL /
-	// EXTERNAL_MANAGED / INTERNAL_SELF_MANAGED forwarding rules; for Traffic
+	// EXTERNAL_MANAGED / INTERNAL_SELF_MANAGED forwarding rules and to
+	// regional proxies (a regional policy in the proxy's region); for Traffic
 	// Director this is the ONLY TLS lever (ssl_certificates are ignored).
-	// Format: projects/{project}/locations/global/serverTlsPolicies/{name}.
+	// Format: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
 	// If left blank, no server-side TLS policy applies. Mutable — and
 	// clearable: removing it PATCHes the proxy back to no policy.
 	ServerTlsPolicy *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=server_tls_policy,json=serverTlsPolicy,proto3" json:"server_tls_policy,omitempty"`
 	// QUIC (HTTP/3) negotiation policy. NONE lets Google decide (currently
 	// enables QUIC), ENABLE forces QUIC negotiation on, DISABLE turns it off.
-	// GCP default: NONE. Mutable.
+	// GCP default: NONE. Global proxies only — regional ALBs do not negotiate
+	// QUIC, and the regional resource carries no such argument. Mutable.
 	QuicOverride *string `protobuf:"bytes,10,opt,name=quic_override,json=quicOverride,proto3,oneof" json:"quic_override,omitempty"`
 	// TLS 1.3 0-RTT "early data" policy — lets a resuming client send the
 	// first HTTP request inside the TLS handshake itself (zero effective round
@@ -126,21 +160,24 @@ type GcpTargetHttpsProxySpec struct {
 	// for safe methods (GET/HEAD) with no query parameters, PERMISSIVE for all
 	// requests, UNRESTRICTED additionally skips rejecting non-idempotent
 	// replays (only for services that tolerate replays), DISABLED turns it
-	// off. Empty lets GCP apply its default (DISABLED). Immutable: changing it
-	// destroys and recreates the proxy.
+	// off. Empty lets GCP apply its default (DISABLED). Global proxies only.
+	// Immutable: changing it destroys and recreates the proxy.
 	TlsEarlyData string `protobuf:"bytes,11,opt,name=tls_early_data,json=tlsEarlyData,proto3" json:"tls_early_data,omitempty"`
 	// Seconds an idle client connection is kept open after a response while no
 	// matching traffic flows (5-1200). Only honored by load balancers with the
-	// EXTERNAL_MANAGED scheme (the envoy-based global external ALB), where the
-	// GCP default is 610; the classic EXTERNAL ALB ignores it. Raise it above
-	// your clients' own keep-alive to avoid the load balancer closing
-	// connections first. 0 means unset (GCP applies its default). Immutable:
-	// changing it destroys and recreates the proxy.
+	// EXTERNAL_MANAGED scheme (the envoy-based external ALBs, global and
+	// regional), where the GCP default is 610; the classic EXTERNAL ALB
+	// ignores it. Raise it above your clients' own keep-alive to avoid the
+	// load balancer closing connections first. 0 means unset (GCP applies its
+	// default). Immutable on both scopes: changing it destroys and recreates
+	// the proxy.
 	HttpKeepAliveTimeoutSec int32 `protobuf:"varint,12,opt,name=http_keep_alive_timeout_sec,json=httpKeepAliveTimeoutSec,proto3" json:"http_keep_alive_timeout_sec,omitempty"`
 	// Bind the proxy to the private IPs of the Traffic Director mesh instead
 	// of Google's edge. Only meaningful when the forwarding rule that
 	// references this proxy uses the INTERNAL_SELF_MANAGED scheme (Traffic
-	// Director); leave false for internet-facing load balancers. Immutable.
+	// Director); leave false for internet-facing load balancers. Global
+	// proxies only — Traffic Director has no regional proxy, and the regional
+	// resource carries no such argument. Immutable.
 	ProxyBind bool `protobuf:"varint,13,opt,name=proxy_bind,json=proxyBind,proto3" json:"proxy_bind,omitempty"`
 	// Deletion policy for the proxy — what happens when this resource is
 	// destroyed:
@@ -205,6 +242,13 @@ func (x *GcpTargetHttpsProxySpec) GetProxyName() string {
 func (x *GcpTargetHttpsProxySpec) GetDescription() string {
 	if x != nil {
 		return x.Description
+	}
+	return ""
+}
+
+func (x *GcpTargetHttpsProxySpec) GetRegion() string {
+	if x != nil {
+		return x.Region
 	}
 	return ""
 }
@@ -290,14 +334,16 @@ var File_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto protoreflect.FileDe
 
 const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/gcp/gcptargethttpsproxy/v1alpha1/spec.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x90\x13\n" +
+	"3catalog/gcp/gcptargethttpsproxy/v1alpha1/spec.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xea\x1c\n" +
 	"\x17GcpTargetHttpsProxySpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x87\x02\n" +
 	"\n" +
 	"proxy_name\x18\x02 \x01(\tB\xe7\x01\xbaH\xe3\x01\xba\x01\xdf\x01\n" +
 	"\x10valid_proxy_name\x12\x89\x01proxy_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\tproxyName\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12t\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xd1\x01\n" +
+	"\x06region\x18\x0f \x01(\tB\xb8\x01\xbaH\xb4\x01\xba\x01\xb0\x01\n" +
+	"\fvalid_region\x12dregion must be a valid GCP region name such as us-central1, or empty for a global target HTTPS proxy\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12t\n" +
 	"\aurl_map\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd3\x17\x92\xd4a\x18status.outputs.self_linkR\x06urlMap\x12\x88\x01\n" +
 	"\x10ssl_certificates\x18\x05 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\xbaH\x05\x92\x01\x02\x10\x0f\x88\xd4a\xd4\x17\x92\xd4a\x18status.outputs.self_linkR\x0fsslCertificates\x12\xa6\x01\n" +
 	" certificate_manager_certificates\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\xc8\x17\x92\xd4a\x1fstatus.outputs.certificate_nameR\x1ecertificateManagerCertificates\x121\n" +
@@ -315,8 +361,12 @@ const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"proxy_bind\x18\r \x01(\bR\tproxyBind\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\x0e \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\x92\x03\xbaH\x8e\x03\x1a\x8b\x03\n" +
-	"\x19single_certificate_source\x12\xd9\x01choose one certificate mechanism: ssl_certificates (classic compute certificates), certificate_manager_certificates (cross-region internal ALB), or certificate_map (SNI-scale external ALB) — GCP rejects combinations\x1a\x91\x01(size(this.ssl_certificates) > 0 ? 1 : 0) + (size(this.certificate_manager_certificates) > 0 ? 1 : 0) + (this.certificate_map != '' ? 1 : 0) <= 1B\x10\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy:\x98\v\xbaH\x94\v\x1a\xa1\x03\n" +
+	"\x19single_certificate_source\x12\xef\x01choose one certificate mechanism: ssl_certificates (classic compute certificates), certificate_manager_certificates (cross-region internal ALB, regional ALBs), or certificate_map (SNI-scale global external ALB) — GCP rejects combinations\x1a\x91\x01(size(this.ssl_certificates) > 0 ? 1 : 0) + (size(this.certificate_manager_certificates) > 0 ? 1 : 0) + (this.certificate_map != '' ? 1 : 0) <= 1\x1a\xc6\x02\n" +
+	"\x1bcertificate_map_global_only\x12\xf5\x01certificate_map is a global-proxy lever — a regional target HTTPS proxy takes ssl_certificates (regional GcpSslCertificate) or certificate_manager_certificates (regional Certificate Manager certificates); clear region or remove certificate_map\x1a/this.certificate_map == '' || this.region == ''\x1a\xf2\x01\n" +
+	"\x19quic_override_global_only\x12\x89\x01quic_override is a global-proxy lever — regional Application Load Balancers do not negotiate QUIC; clear region or remove quic_override\x1aI!has(this.quic_override) || this.quic_override == '' || this.region == ''\x1a\xd9\x01\n" +
+	"\x1atls_early_data_global_only\x12\x8a\x01tls_early_data is a global-proxy lever — the regional target HTTPS proxy has no early-data policy; clear region or remove tls_early_data\x1a.this.tls_early_data == '' || this.region == ''\x1a\xd3\x01\n" +
+	"\x16proxy_bind_global_only\x12\x91\x01proxy_bind is a global-proxy (Traffic Director) lever — a regional target HTTPS proxy has no mesh to bind to; clear region or remove proxy_bind\x1a%!this.proxy_bind || this.region == ''B\x10\n" +
 	"\x0e_quic_overrideB\xf5\x02\n" +
 	"0com.dev.planton.gcp.gcptargethttpsproxy.v1alpha1B\tSpecProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcptargethttpsproxy/v1alpha1;gcptargethttpsproxyv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcptargethttpsproxy.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcptargethttpsproxy\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcptargethttpsproxy\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcptargethttpsproxy::V1alpha1b\x06proto3"
 

@@ -24,26 +24,41 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpGlobalForwardingRuleSpec defines a global Compute Engine forwarding rule
-// — the VIP node of a global load balancer. The forwarding rule is where
-// traffic enters: it binds an IP address and port to a target proxy, and
-// everything behind it (proxy → URL map → backend service → backends) is
-// wiring that decides what happens to the connection.
+// GcpGlobalForwardingRuleSpec defines a Compute Engine forwarding rule — the
+// VIP node of a load balancer. The forwarding rule is where traffic enters:
+// it binds an IP address and port to a target (a proxy, or for passthrough
+// load balancers a backend service directly), and everything behind it
+// (proxy → URL map → backend service → backends) is wiring that decides what
+// happens to the connection.
+//
+// One kind, two scopes. The kind is named for the GLOBAL forwarding rule it
+// began as; with region empty it builds exactly that (the global external
+// ALB, the cross-region internal ALB, Traffic Director, PSC to Google APIs).
+// With region set it builds the REGIONAL forwarding rule — the front door of
+// the regional external and internal Application Load Balancers (target = a
+// regional proxy), of the internal and external passthrough Network Load
+// Balancers (backend_service = a regional backend service, no proxy at
+// all), and of a Private Service Connect consumer endpoint (target = a
+// producer's service attachment). Everything the rule points at must live in
+// the same scope, and for a regional rule in the same region. A rule cannot
+// move between scopes.
 //
 // One frontend commonly runs a PAIR of rules sharing a single static IP: a
 // port-80 rule pointing at a target HTTP proxy (serving an http→https
 // redirect URL map) and a port-443 rule pointing at the target HTTPS proxy
 // that serves the application.
 //
-// Beyond load balancing, the global forwarding rule is also the entry point
-// for Private Service Connect: with the load-balancing scheme set to NONE it
-// can forward a VPC's traffic privately to Google APIs (target "all-apis" /
-// "vpc-sc") or to a producer's published service attachment.
+// Beyond load balancing, the forwarding rule is also the entry point for
+// Private Service Connect: with the load-balancing scheme set to NONE it can
+// forward a VPC's traffic privately to Google APIs (a global rule with target
+// "all-apis" / "vpc-sc") or to a producer's published service attachment (a
+// regional rule whose target is the attachment).
 //
-// target and labels update in place; everything else — name, IP, protocol,
-// port range, scheme, network wiring — is immutable and forces
-// destroy-and-recreate. Because target is mutable, the standard blue/green
-// frontend move is to repoint the rule at a new proxy with zero VIP churn.
+// target, labels, and allow_global_access update in place; everything else —
+// name, IP, protocol, ports, scheme, network wiring, region — is immutable
+// and forces destroy-and-recreate. Because target is mutable, the standard
+// blue/green frontend move is to repoint the rule at a new proxy with zero
+// VIP churn.
 type GcpGlobalForwardingRuleSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The GCP project that owns the forwarding rule.
@@ -63,75 +78,180 @@ type GcpGlobalForwardingRuleSpec struct {
 	// What this frontend serves and which proxy chain sits behind it — write
 	// it for the operator tracing an incident from the VIP inward. Immutable.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	// The target that receives matched traffic. Reference a
-	// GcpTargetHttpsProxy (the default) or a GcpTargetHttpProxy resource, or
-	// provide a target URI directly — other global targets (target SSL/TCP
-	// proxies, target gRPC proxies) attach by self-link until they exist as
+	// The scope selector. Empty builds a GLOBAL forwarding rule (the global
+	// external ALB, the cross-region internal ALB, Traffic Director, PSC to
+	// Google APIs); a region name such as us-central1 builds a REGIONAL one —
+	// the front door of the regional external and internal Application Load
+	// Balancers (target = a regional proxy), of the internal and external
+	// passthrough Network Load Balancers (backend_service instead of target),
+	// and of a Private Service Connect consumer endpoint (target = a service
+	// attachment). Everything the rule points at must be in the same scope and
+	// region: a regional proxy, a regional backend service, a regional
+	// address (GcpAddress) rather than a GcpGlobalAddress. The regional-only
+	// levers (backend_service, ports, all_ports, allow_global_access,
+	// allow_psc_global_access, service_label, is_mirroring_collector,
+	// ip_collection, recreate_closed_psc, source_ip_ranges, the L3_DEFAULT
+	// protocol, the INTERNAL scheme, the STANDARD tier) are rejected when
+	// region is empty; the global-only levers (metadata_filters, the
+	// INTERNAL_SELF_MANAGED scheme, the backend-bucket migration canary, the
+	// Service Directory region) are rejected when it is set. Immutable: a
+	// rule cannot move between scopes or regions.
+	Region string `protobuf:"bytes,20,opt,name=region,proto3" json:"region,omitempty"`
+	// The target that receives matched traffic — every proxy-based load
+	// balancer's form. Reference a GcpTargetHttpsProxy (the default) or a
+	// GcpTargetHttpProxy resource (a regional rule takes the regional arm of
+	// the same kinds, in its own region), or provide a target URI directly —
+	// other targets (target SSL/TCP proxies, target gRPC proxies, target
+	// instances, target pools) attach by self-link until they exist as
 	// Planton kinds. For Private Service Connect, pass the literal bundle name
-	// "all-apis" or "vpc-sc" (Google APIs) or a service attachment URI
-	// (producer services). Required. Mutable: GCP repoints it in place (a
-	// dedicated setTarget call), enabling zero-downtime frontend swaps.
+	// "all-apis" or "vpc-sc" (Google APIs, global rule) or a service
+	// attachment URI (a producer's service, regional rule). Exactly one of
+	// target and backend_service is set: a passthrough Network Load Balancer
+	// has no proxy and names its backend service instead. Mutable: GCP
+	// repoints it in place (a dedicated setTarget call), enabling
+	// zero-downtime frontend swaps.
 	Target *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=target,proto3" json:"target,omitempty"`
+	// The regional backend service that receives matched traffic directly,
+	// with no proxy in between — the form of the internal passthrough Network
+	// Load Balancer (scheme INTERNAL) and of the backend-service-based
+	// external passthrough Network Load Balancer (scheme EXTERNAL). Reference
+	// a GcpBackendService declared with the same region, or provide its
+	// self-link. Regional rules only, and exactly one of backend_service and
+	// target: Google requires the backend service for the passthrough load
+	// balancers and rejects it for every proxy-based one. Immutable.
+	BackendService *v1.StringValueOrRef `protobuf:"bytes,21,opt,name=backend_service,json=backendService,proto3" json:"backend_service,omitempty"`
 	// The IP address this rule accepts traffic on. Reference a
-	// GcpGlobalAddress resource (its reserved IP), provide a literal IP
-	// ("34.120.1.2"), or an address resource URL. When omitted, Google Cloud
-	// assigns an ephemeral IP — fine for testing, but production frontends
-	// should reserve a static address so DNS never has to chase a new VIP.
-	// Required for Private Service Connect rules. Immutable.
+	// GcpGlobalAddress resource (the default kind, for a global rule) or a
+	// regional GcpAddress resource in the rule's region (for a regional rule,
+	// with valueFrom.kind: GcpAddress), provide a literal IP ("34.120.1.2"),
+	// or an address resource URL. When omitted, Google Cloud assigns an
+	// ephemeral IP — fine for testing, but production frontends should
+	// reserve a static address so DNS never has to chase a new VIP. Required
+	// for Private Service Connect rules to Google APIs. Immutable.
 	IpAddress *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
-	// The IP protocol this rule matches (default TCP). All proxy-based global
-	// load balancers and Private Service Connect use TCP; the other protocols
-	// exist for protocol forwarding. Immutable.
+	// The IP protocol this rule matches (default TCP). All proxy-based load
+	// balancers and Private Service Connect use TCP; UDP, ESP, AH, SCTP, and
+	// ICMP exist for passthrough load balancing and protocol forwarding.
+	// L3_DEFAULT — regional rules only — forwards every IP protocol at once
+	// (the passthrough Network Load Balancer's multi-protocol form); it
+	// requires all_ports and a backend service whose protocol is UNSPECIFIED.
+	// Immutable.
 	IpProtocol *string `protobuf:"bytes,6,opt,name=ip_protocol,json=ipProtocol,proto3,oneof" json:"ip_protocol,omitempty"`
 	// IP version for the auto-assigned ephemeral address (IPV4 or IPV6; GCP
 	// default IPV4). Only meaningful when ip_address is omitted — a referenced
 	// static address already fixes the version. Immutable.
 	IpVersion string `protobuf:"bytes,7,opt,name=ip_version,json=ipVersion,proto3" json:"ip_version,omitempty"`
-	// Which load balancer family this frontend belongs to (default EXTERNAL,
-	// the classic global external Application LB). EXTERNAL_MANAGED is the
-	// newer envoy-based global external ALB; INTERNAL_MANAGED is the
-	// cross-region internal ALB; INTERNAL_SELF_MANAGED is Traffic Director /
-	// service mesh; NONE (sent to GCP as an empty scheme) is Private Service
-	// Connect. The scheme must match the family the target proxy's backend
-	// services were created for. Immutable — except the EXTERNAL →
-	// EXTERNAL_MANAGED canary migration driven by
-	// external_managed_backend_bucket_migration_state.
+	// Which load balancer family this frontend belongs to (default EXTERNAL
+	// on both scopes: the classic global external ALB, or the external
+	// passthrough Network Load Balancer on a regional rule). EXTERNAL_MANAGED
+	// is the envoy-based external ALB (global, or regional with region set);
+	// INTERNAL_MANAGED is the internal ALB (cross-region on a global rule,
+	// regional with region set); INTERNAL — regional rules only — is the
+	// internal passthrough Network Load Balancer, which names a
+	// backend_service instead of a target; INTERNAL_SELF_MANAGED — global
+	// rules only — is Traffic Director / service mesh; NONE (sent to GCP as
+	// an empty scheme) is Private Service Connect: to Google APIs on a global
+	// rule, to a producer's service attachment on a regional one. The scheme
+	// must match the family the target's backend services were created for.
+	// Both engines send EXTERNAL explicitly when this is left empty, on both
+	// scopes, so an unset scheme means the same thing wherever the rule
+	// lives. Immutable — except the EXTERNAL → EXTERNAL_MANAGED canary
+	// migration driven by external_managed_backend_bucket_migration_state.
 	LoadBalancingScheme *string `protobuf:"bytes,8,opt,name=load_balancing_scheme,json=loadBalancingScheme,proto3,oneof" json:"load_balancing_scheme,omitempty"`
 	// The port or contiguous port range ("443" or "8080-8090") this rule
-	// matches. Requires a TCP/UDP/SCTP protocol. Proxy-based global load
-	// balancers accept only specific ports (80/8080/443 for HTTP(S)); two
-	// external rules on the same IP+protocol cannot overlap ranges — which is
-	// exactly how the port-80 redirect rule and the port-443 serving rule
-	// share one VIP. Not used by Private Service Connect rules. Immutable.
+	// matches. Requires a TCP/UDP/SCTP protocol. Proxy-based load balancers
+	// accept only specific ports (80/8080/443 for HTTP(S)); two external
+	// rules on the same IP+protocol cannot overlap ranges — which is exactly
+	// how the port-80 redirect rule and the port-443 serving rule share one
+	// VIP. Not used by Private Service Connect rules. On a regional rule, at
+	// most one of port_range, ports, and all_ports is set. Immutable.
 	PortRange string `protobuf:"bytes,9,opt,name=port_range,json=portRange,proto3" json:"port_range,omitempty"`
-	// The VPC network this frontend belongs to. Only used by internal-facing
-	// schemes and Private Service Connect (INTERNAL_MANAGED,
-	// INTERNAL_SELF_MANAGED, NONE); external load balancers live on Google's
-	// edge, not in a VPC. Reference a GcpVpcNetwork resource or provide a network
-	// self-link. For PSC rules a network is required. If omitted where
-	// applicable, GCP uses the default network. Immutable.
+	// Up to five individual ports or ranges ("80", "443", "8080-8090") this
+	// rule matches — the passthrough Network Load Balancer's form (internal
+	// passthrough, backend-service-based external passthrough, internal
+	// protocol forwarding), where the ports need not be contiguous. Requires
+	// a TCP, UDP, or SCTP protocol; regional rules only; mutually exclusive
+	// with port_range and all_ports. Immutable.
+	Ports []string `protobuf:"bytes,22,rep,name=ports,proto3" json:"ports,omitempty"`
+	// Forward packets addressed to ANY port — and packets lacking a
+	// destination port, such as UDP fragments after the first — to the
+	// backends. The passthrough Network Load Balancer's form for services
+	// that listen on many ports or for protocol forwarding; required by the
+	// L3_DEFAULT protocol. Requires TCP, UDP, SCTP, or L3_DEFAULT; regional
+	// rules only; mutually exclusive with port_range and ports. Immutable.
+	AllPorts bool `protobuf:"varint,23,opt,name=all_ports,json=allPorts,proto3" json:"all_ports,omitempty"`
+	// The VPC network this frontend belongs to. Reference a GcpVpcNetwork
+	// resource or provide a network self-link. Used by the internal-facing
+	// schemes (INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED), by Private
+	// Service Connect (NONE — required, on both scopes), and by the REGIONAL
+	// external ALB (EXTERNAL_MANAGED with region set, whose proxy-only subnet
+	// lives in this network); the global external load balancers and the
+	// external passthrough Network Load Balancer live on Google's edge and
+	// reject it. If omitted where applicable, GCP uses the default network.
+	// Immutable.
 	Network *v1.StringValueOrRef `protobuf:"bytes,10,opt,name=network,proto3" json:"network,omitempty"`
 	// The subnetwork the load-balanced IP belongs to, for internal load
-	// balancing. Optional when the network is auto-mode; required when it is
-	// custom-mode. Reference a GcpSubnetwork resource or provide a subnetwork
-	// self-link. Immutable.
+	// balancing and for IPv6 external passthrough Network Load Balancers.
+	// Optional when the network is auto-mode; required when it is custom-mode
+	// (and for an IPv6 external passthrough rule). Reference a GcpSubnetwork
+	// resource or provide a subnetwork self-link. Immutable.
 	Subnetwork *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=subnetwork,proto3" json:"subnetwork,omitempty"`
-	// Networking tier. Global forwarding rules only support PREMIUM (Google's
-	// global backbone); STANDARD tier exists only on regional forwarding
-	// rules. Empty means PREMIUM. If ip_address references a reserved
-	// address, the tiers must match. Immutable.
+	// Networking tier. PREMIUM (Google's global backbone; the default when
+	// empty) on both scopes; STANDARD (regional ISP transit, cheaper egress)
+	// only on a regional rule — a global rule is PREMIUM by definition. If
+	// ip_address references a reserved address, the tiers must match.
+	// Immutable.
 	NetworkTier string `protobuf:"bytes,12,opt,name=network_tier,json=networkTier,proto3" json:"network_tier,omitempty"`
 	// Traffic Director metadata filters: restrict which xDS clients receive
 	// this forwarding rule's configuration, by matching labels the clients
 	// present in their node metadata. Only applies to INTERNAL_SELF_MANAGED
-	// frontends. Filters set here can be overridden by the URL map's own
-	// metadata filters. Immutable.
+	// frontends, which are global rules. Filters set here can be overridden
+	// by the URL map's own metadata filters. Immutable.
 	MetadataFilters []*GcpGlobalForwardingRuleMetadataFilter `protobuf:"bytes,13,rep,name=metadata_filters,json=metadataFilters,proto3" json:"metadata_filters,omitempty"`
 	// Register this Private Service Connect frontend in Service Directory so
-	// VPC workloads can discover the private Google-APIs endpoint by name.
-	// Only used by PSC-for-Google-APIs rules (scheme NONE with an "all-apis" /
-	// "vpc-sc" target). Immutable.
+	// VPC workloads can discover the private endpoint by name. Used by PSC
+	// rules (scheme NONE): a Google-APIs bundle rule names the registration
+	// region, a regional consumer-endpoint rule names the service. Immutable.
 	ServiceDirectoryRegistration *GcpGlobalForwardingRuleServiceDirectoryRegistration `protobuf:"bytes,14,opt,name=service_directory_registration,json=serviceDirectoryRegistration,proto3" json:"service_directory_registration,omitempty"`
+	// Let clients in EVERY region reach this internal load balancer, instead
+	// of only clients in the rule's own region (Google's default). For the
+	// internal passthrough Network Load Balancer (scheme INTERNAL) and for
+	// internal target-instance forwarding. Regional rules only. Mutable.
+	AllowGlobalAccess bool `protobuf:"varint,24,opt,name=allow_global_access,json=allowGlobalAccess,proto3" json:"allow_global_access,omitempty"`
+	// Let clients in every region reach this Private Service Connect consumer
+	// endpoint (a regional rule with scheme NONE whose target is a service
+	// attachment), instead of only clients in the endpoint's region. Regional
+	// rules only. Mutable.
+	AllowPscGlobalAccess bool `protobuf:"varint,25,opt,name=allow_psc_global_access,json=allowPscGlobalAccess,proto3" json:"allow_psc_global_access,omitempty"`
+	// A DNS label (RFC 1035, 1-63 characters) prepended to the internal
+	// passthrough Network Load Balancer's service name, giving the VIP a
+	// stable internal name like
+	// <service_label>.<name>.il4.<region>.lb.<project>.internal (exposed as
+	// the service_name output). INTERNAL scheme, regional rules only.
+	// Immutable.
+	ServiceLabel string `protobuf:"bytes,26,opt,name=service_label,json=serviceLabel,proto3" json:"service_label,omitempty"`
+	// Mark this internal passthrough Network Load Balancer as a Packet
+	// Mirroring collector: mirrored traffic is delivered to its backends, and
+	// to prevent mirroring loops those backends are never mirrored themselves
+	// even when a PacketMirroring rule applies to them. INTERNAL scheme,
+	// regional rules only. Immutable.
+	IsMirroringCollector bool `protobuf:"varint,27,opt,name=is_mirroring_collector,json=isMirroringCollector,proto3" json:"is_mirroring_collector,omitempty"`
+	// Bring your own IPv6 range: the PublicDelegatedPrefix (a sub-PDP in
+	// EXTERNAL_IPV6_FORWARDING_RULE_CREATION mode) the external passthrough
+	// Network Load Balancer's IPv6 address is drawn from, as a resource URL or
+	// partial path (projects/{p}/regions/{r}/publicDelegatedPrefixes/{name}).
+	// Regional rules only. Immutable.
+	IpCollection string `protobuf:"bytes,28,opt,name=ip_collection,json=ipCollection,proto3" json:"ip_collection,omitempty"`
+	// Recreate this Private Service Connect consumer endpoint when Google
+	// reports its connection CLOSED (the producer removed or rejected it) —
+	// the engines otherwise leave a closed endpoint in place until it is
+	// changed by hand. Default false. Regional PSC rules only. Mutable.
+	RecreateClosedPsc bool `protobuf:"varint,29,opt,name=recreate_closed_psc,json=recreateClosedPsc,proto3" json:"recreate_closed_psc,omitempty"`
+	// Forward only traffic whose SOURCE address matches one of these IP
+	// addresses ("1.2.3.4") or CIDR ranges ("1.2.3.0/24"), up to 64 — a
+	// coarse allowlist at the VIP for the external passthrough Network Load
+	// Balancer. Regional rules with scheme EXTERNAL only. Immutable.
+	SourceIpRanges []string `protobuf:"bytes,30,rep,name=source_ip_ranges,json=sourceIpRanges,proto3" json:"source_ip_ranges,omitempty"`
 	// Skip the DNS zone Google normally auto-creates for a Private Service
 	// Connect Google-APIs frontend (the zone that maps googleapis.com names to
 	// the private VIP). Set true when you manage that DNS yourself. Only
@@ -220,9 +340,23 @@ func (x *GcpGlobalForwardingRuleSpec) GetDescription() string {
 	return ""
 }
 
+func (x *GcpGlobalForwardingRuleSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *GcpGlobalForwardingRuleSpec) GetTarget() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Target
+	}
+	return nil
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetBackendService() *v1.StringValueOrRef {
+	if x != nil {
+		return x.BackendService
 	}
 	return nil
 }
@@ -262,6 +396,20 @@ func (x *GcpGlobalForwardingRuleSpec) GetPortRange() string {
 	return ""
 }
 
+func (x *GcpGlobalForwardingRuleSpec) GetPorts() []string {
+	if x != nil {
+		return x.Ports
+	}
+	return nil
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetAllPorts() bool {
+	if x != nil {
+		return x.AllPorts
+	}
+	return false
+}
+
 func (x *GcpGlobalForwardingRuleSpec) GetNetwork() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Network
@@ -293,6 +441,55 @@ func (x *GcpGlobalForwardingRuleSpec) GetMetadataFilters() []*GcpGlobalForwardin
 func (x *GcpGlobalForwardingRuleSpec) GetServiceDirectoryRegistration() *GcpGlobalForwardingRuleServiceDirectoryRegistration {
 	if x != nil {
 		return x.ServiceDirectoryRegistration
+	}
+	return nil
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetAllowGlobalAccess() bool {
+	if x != nil {
+		return x.AllowGlobalAccess
+	}
+	return false
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetAllowPscGlobalAccess() bool {
+	if x != nil {
+		return x.AllowPscGlobalAccess
+	}
+	return false
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetServiceLabel() string {
+	if x != nil {
+		return x.ServiceLabel
+	}
+	return ""
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetIsMirroringCollector() bool {
+	if x != nil {
+		return x.IsMirroringCollector
+	}
+	return false
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetIpCollection() string {
+	if x != nil {
+		return x.IpCollection
+	}
+	return ""
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetRecreateClosedPsc() bool {
+	if x != nil {
+		return x.RecreateClosedPsc
+	}
+	return false
+}
+
+func (x *GcpGlobalForwardingRuleSpec) GetSourceIpRanges() []string {
+	if x != nil {
+		return x.SourceIpRanges
 	}
 	return nil
 }
@@ -452,10 +649,14 @@ type GcpGlobalForwardingRuleServiceDirectoryRegistration struct {
 	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	// Service Directory region to register this global rule under (GCP
 	// default us-central1). All PSC-for-Google-APIs rules on one network
-	// should use the same region.
+	// should use the same region. Global rules only — a regional rule is
+	// registered in its own region.
 	ServiceDirectoryRegion string `protobuf:"bytes,2,opt,name=service_directory_region,json=serviceDirectoryRegion,proto3" json:"service_directory_region,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
+	// Service Directory service to register this regional consumer endpoint
+	// under, inside the namespace. Regional rules only.
+	Service       string `protobuf:"bytes,3,opt,name=service,proto3" json:"service,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpGlobalForwardingRuleServiceDirectoryRegistration) Reset() {
@@ -502,40 +703,62 @@ func (x *GcpGlobalForwardingRuleServiceDirectoryRegistration) GetServiceDirector
 	return ""
 }
 
+func (x *GcpGlobalForwardingRuleServiceDirectoryRegistration) GetService() string {
+	if x != nil {
+		return x.Service
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"7catalog/gcp/gcpglobalforwardingrule/v1alpha1/spec.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdc&\n" +
+	"7catalog/gcp/gcpglobalforwardingrule/v1alpha1/spec.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x93U\n" +
 	"\x1bGcpGlobalForwardingRuleSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x94\x03\n" +
 	"\x14forwarding_rule_name\x18\x02 \x01(\tB\xe1\x02\xbaH\xdd\x02\xba\x01\xd9\x02\n" +
 	"\x1avalid_forwarding_rule_name\x12\xf9\x01forwarding_rule_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit (Private Service Connect rules for Google APIs are limited to 20 characters, letters and digits only)\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x12forwardingRuleName\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12s\n" +
-	"\x06target\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xb9\x17\x92\xd4a\x18status.outputs.self_linkR\x06target\x12r\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xce\x01\n" +
+	"\x06region\x18\x14 \x01(\tB\xb5\x01\xbaH\xb1\x01\xba\x01\xad\x01\n" +
+	"\fvalid_region\x12aregion must be a valid GCP region name such as us-central1, or empty for a global forwarding rule\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12m\n" +
+	"\x06target\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xb9\x17\x92\xd4a\x18status.outputs.self_linkR\x06target\x12~\n" +
+	"\x0fbackend_service\x18\x15 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xd1\x17\x92\xd4a\x18status.outputs.self_linkR\x0ebackendService\x12r\n" +
 	"\n" +
-	"ip_address\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xcd\x17\x92\xd4a\x16status.outputs.addressR\tipAddress\x12\xc9\x01\n" +
-	"\vip_protocol\x18\x06 \x01(\tB\xa2\x01\xbaH\x97\x01\xba\x01\x93\x01\n" +
-	"\x11valid_ip_protocol\x12;ip_protocol must be one of TCP, UDP, ESP, AH, SCTP, or ICMP\x1aAthis == '' || this in ['TCP', 'UDP', 'ESP', 'AH', 'SCTP', 'ICMP']\x8a\xa6\x1d\x03TCPH\x00R\n" +
+	"ip_address\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1f\x88\xd4a\xcd\x17\x92\xd4a\x16status.outputs.addressR\tipAddress\x12\x8c\x02\n" +
+	"\vip_protocol\x18\x06 \x01(\tB\xe5\x01\xbaH\xda\x01\xba\x01\xd6\x01\n" +
+	"\x11valid_ip_protocol\x12pip_protocol must be one of TCP, UDP, ESP, AH, SCTP, ICMP, or L3_DEFAULT (L3_DEFAULT is a regional-rule protocol)\x1aOthis == '' || this in ['TCP', 'UDP', 'ESP', 'AH', 'SCTP', 'ICMP', 'L3_DEFAULT']\x8a\xa6\x1d\x03TCPH\x00R\n" +
 	"ipProtocol\x88\x01\x01\x12\x80\x01\n" +
 	"\n" +
 	"ip_version\x18\a \x01(\tBa\xbaH^\xba\x01[\n" +
-	"\x10valid_ip_version\x12\x1fip_version must be IPV4 or IPV6\x1a&this == '' || this in ['IPV4', 'IPV6']R\tipVersion\x12\xf7\x02\n" +
-	"\x15load_balancing_scheme\x18\b \x01(\tB\xbd\x02\xbaH\xad\x02\xba\x01\xa9\x02\n" +
-	"\x1bvalid_load_balancing_scheme\x12\x9c\x01load_balancing_scheme must be one of EXTERNAL, EXTERNAL_MANAGED, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, or NONE (NONE is the Private Service Connect form)\x1akthis == '' || this in ['EXTERNAL', 'EXTERNAL_MANAGED', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED', 'NONE']\x8a\xa6\x1d\bEXTERNALH\x01R\x13loadBalancingScheme\x88\x01\x01\x12\xb3\x01\n" +
+	"\x10valid_ip_version\x12\x1fip_version must be IPV4 or IPV6\x1a&this == '' || this in ['IPV4', 'IPV6']R\tipVersion\x12\xcb\x03\n" +
+	"\x15load_balancing_scheme\x18\b \x01(\tB\x91\x03\xbaH\x81\x03\xba\x01\xfd\x02\n" +
+	"\x1bvalid_load_balancing_scheme\x12\xe4\x01load_balancing_scheme must be one of EXTERNAL, EXTERNAL_MANAGED, INTERNAL, INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, or NONE (NONE is the Private Service Connect form; INTERNAL is regional-only, INTERNAL_SELF_MANAGED global-only)\x1awthis == '' || this in ['EXTERNAL', 'EXTERNAL_MANAGED', 'INTERNAL', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED', 'NONE']\x8a\xa6\x1d\bEXTERNALH\x01R\x13loadBalancingScheme\x88\x01\x01\x12\xb3\x01\n" +
 	"\n" +
 	"port_range\x18\t \x01(\tB\x93\x01\xbaH\x8f\x01\xba\x01\x8b\x01\n" +
-	"\x10valid_port_range\x12Eport_range must be a port (\"443\") or a contiguous range (\"8080-8090\")\x1a0this == '' || this.matches('^[0-9]+(-[0-9]+)?$')R\tportRange\x12w\n" +
+	"\x10valid_port_range\x12Eport_range must be a port (\"443\") or a contiguous range (\"8080-8090\")\x1a0this == '' || this.matches('^[0-9]+(-[0-9]+)?$')R\tportRange\x12\xae\x01\n" +
+	"\x05ports\x18\x16 \x03(\tB\x97\x01\xbaH\x93\x01\x92\x01\x8f\x01\x10\x05\"\x8a\x01\xba\x01\x86\x01\n" +
+	"\x10valid_port_entry\x12Neach entry in ports must be a port (\"443\") or a contiguous range (\"8080-8090\")\x1a\"this.matches('^[0-9]+(-[0-9]+)?$')R\x05ports\x12\x1b\n" +
+	"\tall_ports\x18\x17 \x01(\bR\ballPorts\x12w\n" +
 	"\anetwork\x18\n" +
 	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xc2\x17\x92\xd4a status.outputs.network_self_linkR\anetwork\x12\x80\x01\n" +
 	"\n" +
 	"subnetwork\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB,\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\n" +
-	"subnetwork\x12\xf3\x01\n" +
-	"\fnetwork_tier\x18\f \x01(\tB\xcf\x01\xbaH\xcb\x01\xba\x01\xc7\x01\n" +
-	"\x1dglobal_rules_are_premium_tier\x12\x84\x01global forwarding rules only support the PREMIUM network tier — STANDARD tier load balancing is a regional forwarding rule feature\x1a\x1fthis == '' || this == 'PREMIUM'R\vnetworkTier\x12\x82\x01\n" +
+	"subnetwork\x12\xbc\x01\n" +
+	"\fnetwork_tier\x18\f \x01(\tB\x98\x01\xbaH\x94\x01\xba\x01\x90\x01\n" +
+	"\x12valid_network_tier\x12Knetwork_tier must be PREMIUM or STANDARD (STANDARD is a regional-rule tier)\x1a-this == '' || this in ['PREMIUM', 'STANDARD']R\vnetworkTier\x12\x82\x01\n" +
 	"\x10metadata_filters\x18\r \x03(\v2W.dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleMetadataFilterR\x0fmetadataFilters\x12\xab\x01\n" +
-	"\x1eservice_directory_registration\x18\x0e \x01(\v2e.dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleServiceDirectoryRegistrationR\x1cserviceDirectoryRegistration\x12/\n" +
+	"\x1eservice_directory_registration\x18\x0e \x01(\v2e.dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleServiceDirectoryRegistrationR\x1cserviceDirectoryRegistration\x12.\n" +
+	"\x13allow_global_access\x18\x18 \x01(\bR\x11allowGlobalAccess\x125\n" +
+	"\x17allow_psc_global_access\x18\x19 \x01(\bR\x14allowPscGlobalAccess\x12\x93\x02\n" +
+	"\rservice_label\x18\x1a \x01(\tB\xed\x01\xbaH\xe9\x01\xba\x01\xe5\x01\n" +
+	"\x13valid_service_label\x12\x8c\x01service_label must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\fserviceLabel\x124\n" +
+	"\x16is_mirroring_collector\x18\x1b \x01(\bR\x14isMirroringCollector\x12-\n" +
+	"\rip_collection\x18\x1c \x01(\tB\b\xbaH\x05r\x03\x18\x80\bR\fipCollection\x12.\n" +
+	"\x13recreate_closed_psc\x18\x1d \x01(\bR\x11recreateClosedPsc\x12\xd2\x01\n" +
+	"\x10source_ip_ranges\x18\x1e \x03(\tB\xa7\x01\xbaH\xa3\x01\x92\x01\x9f\x01\x10@\"\x9a\x01\xba\x01\x96\x01\n" +
+	"\x15valid_source_ip_range\x12[each entry in source_ip_ranges must be an IP address (1.2.3.4) or a CIDR range (1.2.3.0/24)\x1a this.isIp() || this.isIpPrefix()R\x0esourceIpRanges\x12/\n" +
 	"\x14no_automate_dns_zone\x18\x0f \x01(\bR\x11noAutomateDnsZone\x12q\n" +
 	"\x06labels\x18\x10 \x03(\v2Y.dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.LabelsEntryR\x06labels\x12\xd2\x02\n" +
 	"/external_managed_backend_bucket_migration_state\x18\x11 \x01(\tB\xec\x01\xbaH\xe8\x01\xba\x01\xe4\x01\n" +
@@ -545,10 +768,23 @@ const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_rawDesc = "" 
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xc1\v\xbaH\xbd\v\x1a\xf0\x02\n" +
-	"'network_requires_internal_or_psc_scheme\x12\xe7\x01network only applies to internal or Private Service Connect frontends — external load balancers live on Google's edge, not in a VPC; set load_balancing_scheme to INTERNAL_MANAGED, INTERNAL_SELF_MANAGED, or NONE, or remove network\x1a[!has(this.network) || !(this.load_balancing_scheme in ['', 'EXTERNAL', 'EXTERNAL_MANAGED'])\x1a\x84\x02\n" +
-	")metadata_filters_require_traffic_director\x12|metadata_filters only apply to Traffic Director frontends — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove them\x1aYsize(this.metadata_filters) == 0 || this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED'\x1a\xf6\x01\n" +
-	"\x1eservice_directory_requires_psc\x12\x80\x01service_directory_registration only applies to Private Service Connect frontends — set load_balancing_scheme NONE or remove it\x1aQ!has(this.service_directory_registration) || this.load_balancing_scheme == 'NONE'\x1a\xdf\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x98/\xbaH\x94/\x1a\xa9\x02\n" +
+	"(exactly_one_of_target_or_backend_service\x12\xb5\x01set exactly one of target (proxy-based load balancers and Private Service Connect) or backend_service (internal and external passthrough Network Load Balancers, regional rules only)\x1aE(has(this.target) ? 1 : 0) + (has(this.backend_service) ? 1 : 0) == 1\x1a\xf9\x01\n" +
+	"\x1dbackend_service_regional_only\x12\xa6\x01backend_service is the passthrough Network Load Balancer's form and exists only on a regional forwarding rule — set region, or point a global rule at a target proxy\x1a/!has(this.backend_service) || this.region != ''\x1a\xb7\x04\n" +
+	"\x13ports_regional_only\x12\x86\x02ports, all_ports, source_ip_ranges, service_label, allow_global_access, allow_psc_global_access, is_mirroring_collector, ip_collection, and recreate_closed_psc exist only on a regional forwarding rule — set region or remove them (a global rule uses port_range)\x1a\x96\x02this.region != '' || (size(this.ports) == 0 && !this.all_ports && size(this.source_ip_ranges) == 0 && this.service_label == '' && !this.allow_global_access && !this.allow_psc_global_access && !this.is_mirroring_collector && this.ip_collection == '' && !this.recreate_closed_psc)\x1a\xa0\x02\n" +
+	"$ports_port_range_all_ports_exclusive\x12\x95\x01port_range, ports, and all_ports are mutually exclusive — a rule matches one contiguous range, up to five individual ports or ranges, or every port\x1a`(this.port_range != '' ? 1 : 0) + (size(this.ports) > 0 ? 1 : 0) + (this.all_ports ? 1 : 0) <= 1\x1a\xbb\x02\n" +
+	"&l3_default_regional_only_and_all_ports\x12\xab\x01the L3_DEFAULT protocol exists only on a regional forwarding rule and forwards every port — set region and all_ports (Google rejects L3_DEFAULT with port_range or ports)\x1ac!has(this.ip_protocol) || this.ip_protocol != 'L3_DEFAULT' || (this.region != '' && this.all_ports)\x1a\xd3\x02\n" +
+	"\x1dinternal_scheme_regional_only\x12\xce\x01the INTERNAL scheme (the internal passthrough Network Load Balancer) exists only on a regional forwarding rule — set region, or use INTERNAL_MANAGED for the cross-region internal Application Load Balancer\x1aa!has(this.load_balancing_scheme) || this.load_balancing_scheme != 'INTERNAL' || this.region != ''\x1a\xfb\x01\n" +
+	"\x1bstandard_tier_regional_only\x12\xa5\x01the STANDARD network tier exists only on a regional forwarding rule — a global rule rides Google's PREMIUM backbone by definition; set region or clear network_tier\x1a4this.network_tier != 'STANDARD' || this.region != ''\x1a\xff\x01\n" +
+	"\x1fself_managed_scheme_global_only\x12lthe INTERNAL_SELF_MANAGED scheme (Traffic Director) exists only on a global forwarding rule — clear region\x1an!has(this.load_balancing_scheme) || this.load_balancing_scheme != 'INTERNAL_SELF_MANAGED' || this.region == ''\x1a\x93\x03\n" +
+	"$backend_bucket_migration_global_only\x12\xca\x01external_managed_backend_bucket_migration_state and its testing percentage belong to the global external Application Load Balancer — a regional rule has no backend buckets; clear region or remove them\x1a\x9d\x01this.region == '' || (this.external_managed_backend_bucket_migration_state == '' && this.external_managed_backend_bucket_migration_testing_percentage == 0.0)\x1a\x9b\x03\n" +
+	"\x1cservice_directory_arm_fields\x12\xbe\x01service_directory_registration.service_directory_region exists only on a global rule and service_directory_registration.service only on a regional rule — use the field for the rule's scope\x1a\xb9\x01!has(this.service_directory_registration) || (this.region == '' ? this.service_directory_registration.service == '' : this.service_directory_registration.service_directory_region == '')\x1a\xae\x04\n" +
+	"8network_requires_internal_psc_or_regional_managed_scheme\x12\xc9\x02network applies to internal and Private Service Connect frontends and to the regional external Application Load Balancer (EXTERNAL_MANAGED with region set) — the global external load balancers and the external passthrough Network Load Balancer live on Google's edge, not in a VPC; change load_balancing_scheme or remove network\x1a\xa5\x01!has(this.network) || (this.region == '' ? !(this.load_balancing_scheme in ['', 'EXTERNAL', 'EXTERNAL_MANAGED']) : !(this.load_balancing_scheme in ['', 'EXTERNAL']))\x1a\xac\x02\n" +
+	")metadata_filters_require_traffic_director\x12\x8c\x01metadata_filters only apply to Traffic Director frontends — set load_balancing_scheme INTERNAL_SELF_MANAGED (a global rule) or remove them\x1apsize(this.metadata_filters) == 0 || (this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED' && this.region == '')\x1a\xf6\x01\n" +
+	"\x1eservice_directory_requires_psc\x12\x80\x01service_directory_registration only applies to Private Service Connect frontends — set load_balancing_scheme NONE or remove it\x1aQ!has(this.service_directory_registration) || this.load_balancing_scheme == 'NONE'\x1a\xe4\x02\n" +
+	",internal_only_levers_require_internal_scheme\x12\xad\x01allow_global_access, service_label, and is_mirroring_collector belong to the internal passthrough Network Load Balancer — set load_balancing_scheme INTERNAL or remove them\x1a\x83\x01(!this.allow_global_access && this.service_label == '' && !this.is_mirroring_collector) || this.load_balancing_scheme == 'INTERNAL'\x1a\xa8\x02\n" +
+	"&psc_consumer_levers_require_psc_scheme\x12\x97\x01allow_psc_global_access and recreate_closed_psc belong to a Private Service Connect consumer endpoint — set load_balancing_scheme NONE or remove them\x1ad(!this.allow_psc_global_access && !this.recreate_closed_psc) || this.load_balancing_scheme == 'NONE'\x1a\x8f\x02\n" +
+	"(source_ip_ranges_require_external_scheme\x12\x8e\x01source_ip_ranges filters the external passthrough Network Load Balancer only — set load_balancing_scheme EXTERNAL (with region) or remove it\x1aRsize(this.source_ip_ranges) == 0 || this.load_balancing_scheme in ['', 'EXTERNAL']\x1a\xdf\x01\n" +
 	"!no_automate_dns_zone_requires_psc\x12vno_automate_dns_zone only applies to Private Service Connect frontends — set load_balancing_scheme NONE or remove it\x1aB!this.no_automate_dns_zone || this.load_balancing_scheme == 'NONE'\x1a\xe5\x02\n" +
 	"0migration_percentage_requires_test_by_percentage\x12\x95\x01external_managed_backend_bucket_migration_testing_percentage only applies while external_managed_backend_bucket_migration_state is TEST_BY_PERCENTAGE\x1a\x98\x01this.external_managed_backend_bucket_migration_testing_percentage == 0.0 || this.external_managed_backend_bucket_migration_state == 'TEST_BY_PERCENTAGE'B\x0e\n" +
 	"\f_ip_protocolB\x18\n" +
@@ -562,10 +798,11 @@ const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_rawDesc = "" 
 	"\x04name\x18\x01 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x01\x18\x80\bR\x04name\x12#\n" +
 	"\x05value\x18\x02 \x01(\tB\r\xbaH\n" +
-	"\xc8\x01\x01r\x05\x10\x01\x18\x80\bR\x05value\"\xa0\x01\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\x80\bR\x05value\"\xc3\x01\n" +
 	"3GcpGlobalForwardingRuleServiceDirectoryRegistration\x12&\n" +
 	"\tnamespace\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\xff\x01R\tnamespace\x12A\n" +
-	"\x18service_directory_region\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x18?R\x16serviceDirectoryRegionB\x91\x03\n" +
+	"\x18service_directory_region\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x18?R\x16serviceDirectoryRegion\x12!\n" +
+	"\aservice\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x18?R\aserviceB\x91\x03\n" +
 	"4com.dev.planton.gcp.gcpglobalforwardingrule.v1alpha1B\tSpecProtoP\x01Zigithub.com/plantonhq/planton/catalog/gcp/gcpglobalforwardingrule/v1alpha1;gcpglobalforwardingrulev1alpha1\xa2\x02\x04DPGG\xaa\x020Dev.Planton.Gcp.Gcpglobalforwardingrule.V1alpha1\xca\x020Dev\\Planton\\Gcp\\Gcpglobalforwardingrule\\V1alpha1\xe2\x02<Dev\\Planton\\Gcp\\Gcpglobalforwardingrule\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Gcp::Gcpglobalforwardingrule::V1alpha1b\x06proto3"
 
 var (
@@ -590,20 +827,21 @@ var file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_goTypes = []any
 	(*v1.StringValueOrRef)(nil), // 5: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_depIdxs = []int32{
-	5, // 0: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // 1: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // 2: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.ip_address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // 3: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // 4: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1, // 5: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.metadata_filters:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleMetadataFilter
-	3, // 6: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.service_directory_registration:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleServiceDirectoryRegistration
-	4, // 7: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.labels:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.LabelsEntry
-	2, // 8: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleMetadataFilter.filter_labels:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleMetadataFilterLabel
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	5,  // 0: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 1: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 2: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.backend_service:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 3: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.ip_address:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 4: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5,  // 5: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.subnetwork:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 6: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.metadata_filters:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleMetadataFilter
+	3,  // 7: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.service_directory_registration:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleServiceDirectoryRegistration
+	4,  // 8: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.labels:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleSpec.LabelsEntry
+	2,  // 9: dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleMetadataFilter.filter_labels:type_name -> dev.planton.gcp.gcpglobalforwardingrule.v1alpha1.GcpGlobalForwardingRuleMetadataFilterLabel
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_spec_proto_init() }

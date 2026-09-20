@@ -18,8 +18,11 @@ spec:
   # keyed by priority and rule_tuple_count is populated on both engines;
   # (3) the tagValues/{id} handles render identically on both engines and
   # the harness destroys the policy before the tag value and key; (4) the
-  # INTERNAL_MANAGED_LB arm stays offline-only until the catalog carries a
-  # regional forwarding rule the harness can create.
+  # INTERNAL_MANAGED_LB arm stays offline-only: it needs a regional
+  # INTERNAL_MANAGED forwarding rule (a regional internal ALB chain with a
+  # proxy-only subnet) as its target, a fixture chain this kind's lane does
+  # not carry; GcpGlobalForwardingRule's regional arm makes it buildable
+  # the day a scenario wants it.
   tier: 1
   status: pending_proof
   validated_provisioners: []

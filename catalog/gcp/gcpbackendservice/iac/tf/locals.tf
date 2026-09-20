@@ -13,6 +13,12 @@ locals {
   # verbatim and rejected by the API.
   project_id = var.spec.project_id != "" ? var.spec.project_id : null
 
+  # The scope selector. An empty region builds the global backend service; a
+  # region name builds the regional one. Exactly one of the two resources
+  # in main.tf exists (count guards), and outputs.tf picks whichever was
+  # created.
+  is_regional = var.spec.region != null && var.spec.region != ""
+
   # The cloud-side name defaults to metadata.name when the spec leaves
   # backend_service_name empty — the same naming basis every kind uses.
   backend_service_name = (
@@ -25,9 +31,13 @@ locals {
   # meaningfully absent. Each of these has a GCP API default that matches
   # the spec's proto default (protocol HTTP, session_affinity NONE), so
   # null and the middleware-applied default are behaviorally identical.
-  protocol                    = var.spec.protocol != "" ? var.spec.protocol : null
-  port_name                   = var.spec.port_name != "" ? var.spec.port_name : null
-  session_affinity            = var.spec.session_affinity != "" ? var.spec.session_affinity : null
+  protocol  = var.spec.protocol != "" ? var.spec.protocol : null
+  port_name = var.spec.port_name != "" ? var.spec.port_name : null
+  # With an HA policy the leader IS the routing decision, and the provider
+  # rejects session_affinity beside it even at the spec's NONE default (the
+  # manifest loader fills NONE before the module runs), so the affinity is
+  # dropped entirely on that arm. The Pulumi module makes the same choice.
+  session_affinity            = var.spec.session_affinity != "" && var.spec.ha_policy == null ? var.spec.session_affinity : null
   locality_lb_policy          = var.spec.locality_lb_policy != "" ? var.spec.locality_lb_policy : null
   compression_mode            = var.spec.compression_mode != "" ? var.spec.compression_mode : null
   security_policy             = var.spec.security_policy != "" ? var.spec.security_policy : null
@@ -37,15 +47,20 @@ locals {
   migration_state             = var.spec.external_managed_migration_state != "" ? var.spec.external_managed_migration_state : null
 
   # The scheme is the ONE exception to the "" -> null rule: the spec's
-  # default is EXTERNAL (the classic global external ALB), but the
-  # provider's own default is EXTERNAL_MANAGED, and the scheme is immutable
-  # -- letting the provider decide would replace every existing classic
-  # backend service the next time it was applied. The module therefore
-  # sends EXTERNAL itself when the spec leaves the scheme empty (the
-  # manifest defaults applier normally fills it first; this guard covers
-  # every path that bypasses the applier). The Pulumi module makes the same
-  # choice.
+  # default is EXTERNAL (the classic global external ALB, or the external
+  # passthrough NLB on a regional service), but the provider's own default
+  # differs per scope (EXTERNAL_MANAGED globally, INTERNAL regionally), and
+  # the scheme is immutable -- letting the provider decide would replace
+  # every existing classic backend service the next time it was applied,
+  # and would give a manifest a different meaning depending on where it
+  # lives. The module therefore sends EXTERNAL itself when the spec leaves
+  # the scheme empty, on BOTH scopes (the manifest defaults applier normally
+  # fills it first; this guard covers every path that bypasses the applier).
+  # The Pulumi module makes the same choice.
   load_balancing_scheme = var.spec.load_balancing_scheme != "" ? var.spec.load_balancing_scheme : "EXTERNAL"
+
+  # Regional-only: the VPC network of a passthrough Network Load Balancer.
+  network = var.spec.network != "" ? var.spec.network : null
 
   # The tfvars converter emits 0 for unset proto numbers; 0 is not a
   # meaningful value for these, so 0 -> null lets the API apply its
@@ -81,6 +96,9 @@ locals {
       max_utilization              = try(backend.max_utilization, 0) != 0 ? backend.max_utilization : null
       preference                   = backend.preference != "" ? backend.preference : null
       custom_metrics               = try(backend.custom_metrics, [])
+      # Regional-only (the failover pool of a passthrough NLB); the API
+      # default is false, so only an explicit true is sent.
+      failover = try(backend.failover, false) ? true : null
     }
   ]
 
@@ -203,5 +221,45 @@ locals {
   max_stream_duration = var.spec.max_stream_duration == null ? null : {
     seconds = tostring(coalesce(var.spec.max_stream_duration.seconds, 0))
     nanos   = try(var.spec.max_stream_duration.nanos, 0) != 0 ? var.spec.max_stream_duration.nanos : null
+  }
+
+  # ---- Regional-only policies (the passthrough Network Load Balancers) ----
+  # Every field below carries presence in the spec (optional), so null means
+  # "not set" and the API default stands; the spec's CEL keeps these blocks
+  # off a global manifest, whose resource has no such arguments.
+
+  # Failover policy: the three fields pass through with their presence
+  # intact (Google requires at least one; the spec enforces it).
+  failover_policy = var.spec.failover_policy == null ? null : {
+    disable_connection_drain_on_failover = try(var.spec.failover_policy.disable_connection_drain_on_failover, null)
+    drop_traffic_if_unhealthy            = try(var.spec.failover_policy.drop_traffic_if_unhealthy, null)
+    failover_ratio                       = try(var.spec.failover_policy.failover_ratio, null)
+  }
+
+  # Connection tracking: the two mode strings carry spec defaults that
+  # match Google's, so they are sent explicitly (a re-plan stays clean);
+  # idle_timeout_sec is Optional+Computed on the API and sent only when set.
+  connection_tracking_policy = var.spec.connection_tracking_policy == null ? null : {
+    tracking_mode                                = try(var.spec.connection_tracking_policy.tracking_mode, "") != "" ? var.spec.connection_tracking_policy.tracking_mode : "PER_CONNECTION"
+    connection_persistence_on_unhealthy_backends = try(var.spec.connection_tracking_policy.connection_persistence_on_unhealthy_backends, "") != "" ? var.spec.connection_tracking_policy.connection_persistence_on_unhealthy_backends : "DEFAULT_FOR_PROTOCOL"
+    idle_timeout_sec                             = try(var.spec.connection_tracking_policy.idle_timeout_sec, null)
+    enable_strong_affinity                       = try(var.spec.connection_tracking_policy.enable_strong_affinity, false) ? true : null
+  }
+
+  # HA policy: "" -> null on the strings; the leader block renders only when
+  # declared.
+  ha_policy = var.spec.ha_policy == null ? null : {
+    fast_ip_move = try(var.spec.ha_policy.fast_ip_move, "") != "" ? var.spec.ha_policy.fast_ip_move : null
+    leader = var.spec.ha_policy.leader == null ? null : {
+      backend_group = try(var.spec.ha_policy.leader.backend_group, "") != "" ? var.spec.ha_policy.leader.backend_group : null
+      instance      = try(var.spec.ha_policy.leader.network_endpoint.instance, "") != "" ? var.spec.ha_policy.leader.network_endpoint.instance : null
+    }
+  }
+
+  # Zonal affinity: the mode carries a spec default matching Google's and
+  # is sent explicitly; the ratio is sent only when set.
+  zonal_affinity = var.spec.network_pass_through_lb_traffic_policy == null || var.spec.network_pass_through_lb_traffic_policy.zonal_affinity == null ? null : {
+    spillover       = try(var.spec.network_pass_through_lb_traffic_policy.zonal_affinity.spillover, "") != "" ? var.spec.network_pass_through_lb_traffic_policy.zonal_affinity.spillover : "ZONAL_AFFINITY_DISABLED"
+    spillover_ratio = try(var.spec.network_pass_through_lb_traffic_policy.zonal_affinity.spillover_ratio, null)
   }
 }

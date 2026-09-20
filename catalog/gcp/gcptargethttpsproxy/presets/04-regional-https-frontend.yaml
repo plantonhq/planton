@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTargetHttpsProxy
+metadata:
+  name: regional-https-frontend
+spec:
+  projectId:
+    value: "<gcp-project-id>"
+  description: Regional TLS front door for the us-central1 external Application Load Balancer
+  region: us-central1
+  urlMap:
+    value: "<regional-url-map-self-link>" # replace: a GcpUrlMap declared with the same region
+  sslCertificates:
+    - value: "<regional-ssl-certificate-self-link>" # replace: a GcpSslCertificate declared with the same region
+  sslPolicy:
+    value: "<regional-ssl-policy-self-link>" # replace: a GcpSslPolicy declared with the same region

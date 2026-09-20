@@ -5,12 +5,26 @@
 # Only divergences are recorded -- an argument absent from this file must
 # match its spec field by exact name. Every exclusion carries its reason:
 # omission is a decision, never an accident.
+#
+# One kind, two provider resources: GCP models the global and regional
+# target HTTPS proxy as separate API collections with one shared surface, so the
+# two resource blocks below mirror each other. spec.region is the scope
+# selector -- it name-matches the regional resource's own region argument;
+# the arguments only one collection carries are walled to that scope by
+# the spec's CEL rules, so each resource sees exactly the fields it has.
 
 resources:
   google_compute_target_https_proxy:
     mappings:
       # Renames: the spec says what each field IS, where the provider
       # inherits terser API names.
+      - spec: spec.proxy_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+
+  google_compute_region_target_https_proxy:
+    mappings:
       - spec: spec.proxy_name
         arg: name
       - spec: spec.project_id

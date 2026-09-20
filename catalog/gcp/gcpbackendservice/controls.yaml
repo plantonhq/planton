@@ -81,7 +81,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: A global backend service is served by Google's global load-balancing fabric -- no single zone or region embodies it, and it balances across every healthy backend it references, shifting traffic away from unhealthy zones automatically via health checks.
+        reference: A global backend service is served by Google's global load-balancing fabric -- no single zone or region embodies it -- and a regional one (region set) by the region's fabric across its zones; either balances across every healthy backend it references, shifting traffic away from unhealthy zones automatically via health checks (a regional passthrough service can additionally split primary and failover pools and pin traffic to the client's zone).
       notes: The redundancy of the service as a whole follows the backends attached -- one zonal instance group is one zone of capacity behind a fabric that could balance across many; outlier_detection (EXTERNAL_MANAGED and Traffic Director) additionally ejects erroring hosts without waiting for the health check.
     - control_id: deletion-protection
       status: configurable
@@ -92,4 +92,4 @@ spec:
       notes: One switch governs both objects this kind manages -- the backend service and its signed-URL keys. The backends it points at (instance groups, NEGs) are untouched either way.
     - control_id: managed-patching
       status: not_applicable
-      notes: There is no software surface here to patch; the global load-balancing data plane and Cloud CDN edge are Google-managed infrastructure maintained invisibly, and the backend workloads' patch posture belongs to their own kinds.
+      notes: There is no software surface here to patch; the load-balancing data plane (global or regional) and Cloud CDN edge are Google-managed infrastructure maintained invisibly, and the backend workloads' patch posture belongs to their own kinds.

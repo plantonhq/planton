@@ -20,4 +20,10 @@ message GcpBackendServiceStackOutputs {
   // optimistic concurrency control when updating the service outside of
   // IaC.
   string fingerprint = 4;
+
+  // Region of a regional backend service; empty for a global one. Downstream blocks
+  // read it to confirm scope compatibility (a regional link must point at a
+  // regional target in the same region), and the E2E verifier picks the
+  // regional or global API by it.
+  string region = 5;
 }

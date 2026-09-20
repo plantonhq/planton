@@ -9,16 +9,30 @@ resource "google_project_service" "compute_api" {
   disable_on_destroy         = false
 }
 
-# A global Compute Engine backend service — the hub of the L7 load balancing
-# family. It owns how traffic reaches a set of backends: the backend list,
-# health checking, session affinity, Cloud CDN policy, IAP, Cloud Armor
-# attachment, and logging. URL maps route host/path patterns here.
+# A Compute Engine backend service — the hub of the load balancing family.
+# It owns how traffic reaches a set of backends: the backend list, health
+# checking, session affinity, Cloud CDN policy, IAP, Cloud Armor attachment,
+# and logging. URL maps route host/path patterns here; passthrough
+# forwarding rules name it directly.
 #
-# name and project are immutable (ForceNew): changing either destroys and
-# recreates the backend service, briefly breaking every URL map referencing
-# the old self_link. Everything else — backends, CDN policy, affinity, IAP —
-# updates in place, which is what makes this node the operational lever of a
-# running load balancer.
+# GCP models the global and regional backend services as two API
+# collections. They share the core surface (backends, health check,
+# affinity, protocol, logging, IAP, circuit breaking, outlier detection,
+# consistent hashing); the regional one adds the passthrough Network Load
+# Balancer levers (network, backend failover, failover policy, connection
+# tracking, HA policy, zonal affinity) and lacks the global edge features
+# (compression, custom headers, edge Cloud Armor, service LB policy, the
+# migration canary, backend preference, Traffic Director policies, signed
+# URL keys, and Cloud CDN's advanced knobs). spec.region selects which
+# resource below is created; the regional block mirrors this one minus the
+# surfaces its API lacks, and the spec's CEL walls keep those surfaces off a
+# regional manifest before the API ever sees it.
+#
+# name, project, and region are immutable (ForceNew): changing any destroys
+# and recreates the backend service, briefly breaking every URL map
+# referencing the old self_link. Everything else — backends, CDN policy,
+# affinity, IAP — updates in place, which is what makes this node the
+# operational lever of a running load balancer.
 #
 # Two provider subtleties worth knowing when comparing plans to API calls:
 # the provider applies security_policy and edge_security_policy via
@@ -29,9 +43,12 @@ resource "google_project_service" "compute_api" {
 #
 # Cross-field applicability (CDN only on external schemes, circuit breakers /
 # max_stream_duration only on INTERNAL_SELF_MANAGED, consistent_hash only
-# with MAGLEV/RING_HASH, cache-mode/TTL coherence) is enforced by the spec's
-# CEL rules before deploy, so this module stays declarative.
+# with MAGLEV/RING_HASH, cache-mode/TTL coherence, ha_policy's conflicts) is
+# enforced by the spec's CEL rules before deploy, so this module stays
+# declarative.
 resource "google_compute_backend_service" "this" {
+  count = local.is_regional ? 0 : 1
+
   name        = local.backend_service_name
   project     = local.project_id
   description = var.spec.description
@@ -358,6 +375,320 @@ resource "google_compute_backend_service" "this" {
   depends_on = [google_project_service.compute_api]
 }
 
+# The regional twin: the backend of the regional external and internal
+# Application Load Balancers and of the internal and external passthrough
+# Network Load Balancers. A regional ALB needs a regional health check in
+# the same region; the passthrough forms take the network, failover,
+# connection-tracking, HA, and zonal-affinity policies below and are named
+# directly by a regional forwarding rule.
+resource "google_compute_region_backend_service" "this" {
+  count = local.is_regional ? 1 : 0
+
+  name        = local.backend_service_name
+  project     = local.project_id
+  region      = var.spec.region
+  description = var.spec.description
+
+  protocol = local.protocol
+  # Sent explicitly (see locals.tf): the regional provider default is
+  # INTERNAL, and the spec's contract is EXTERNAL on both scopes.
+  load_balancing_scheme = local.load_balancing_scheme
+  port_name             = local.port_name
+
+  timeout_sec                     = local.timeout_sec
+  connection_draining_timeout_sec = local.connection_draining_timeout_sec
+
+  # At most one health check; a regional ALB requires a regional one. Not
+  # allowed together with ha_policy (spec CEL).
+  health_checks = local.health_checks
+
+  session_affinity        = local.session_affinity
+  affinity_cookie_ttl_sec = local.affinity_cookie_ttl_sec
+
+  locality_lb_policy = local.locality_lb_policy
+
+  # The regional API carries the CDN switch and policy although regional
+  # Application Load Balancers have no Cloud CDN; the spec's CEL confines
+  # enable_cdn to the external schemes and the GUIDE says plainly it does
+  # nothing here.
+  enable_cdn = var.spec.enable_cdn
+
+  # A regional Cloud Armor policy in the same region (the reference is
+  # scope-matched by the caller; GCP rejects a global policy here).
+  security_policy = local.security_policy
+
+  ip_address_selection_policy = local.ip_address_selection_policy
+
+  # The VPC network of a passthrough NLB (required with an HA policy).
+  network = local.network
+
+  dynamic "backend" {
+    for_each = local.backends
+    content {
+      group                        = backend.value.group
+      balancing_mode               = backend.value.balancing_mode
+      capacity_scaler              = backend.value.capacity_scaler
+      description                  = backend.value.description
+      max_connections              = backend.value.max_connections
+      max_connections_per_instance = backend.value.max_connections_per_instance
+      max_connections_per_endpoint = backend.value.max_connections_per_endpoint
+      max_rate                     = backend.value.max_rate
+      max_rate_per_instance        = backend.value.max_rate_per_instance
+      max_rate_per_endpoint        = backend.value.max_rate_per_endpoint
+      max_utilization              = backend.value.max_utilization
+      # The failover pool of a passthrough NLB (regional-only; preference is
+      # the global service's counterpart and never reaches this arm).
+      failover = backend.value.failover
+
+      dynamic "custom_metrics" {
+        for_each = backend.value.custom_metrics
+        content {
+          name            = custom_metrics.value.name
+          dry_run         = custom_metrics.value.dry_run
+          max_utilization = custom_metrics.value.max_utilization
+        }
+      }
+    }
+  }
+
+  # The regional CDN policy lacks request_coalescing, header-driven cache
+  # bypass, header-keyed cache keys, and per-code negative TTLs; the spec
+  # CEL keeps those off a regional manifest, and this block renders only
+  # what the regional API accepts.
+  dynamic "cdn_policy" {
+    for_each = local.cdn_policy != null ? [local.cdn_policy] : []
+    content {
+      cache_mode                   = cdn_policy.value.cache_mode
+      client_ttl                   = cdn_policy.value.client_ttl
+      default_ttl                  = cdn_policy.value.default_ttl
+      max_ttl                      = cdn_policy.value.max_ttl
+      negative_caching             = cdn_policy.value.negative_caching
+      serve_while_stale            = cdn_policy.value.serve_while_stale
+      signed_url_cache_max_age_sec = cdn_policy.value.signed_url_cache_max_age_sec
+
+      dynamic "negative_caching_policy" {
+        for_each = cdn_policy.value.negative_caching_policy
+        content {
+          code = negative_caching_policy.value.code
+        }
+      }
+
+      dynamic "cache_key_policy" {
+        for_each = cdn_policy.value.cache_key_policy != null ? [cdn_policy.value.cache_key_policy] : []
+        content {
+          include_host           = cache_key_policy.value.include_host
+          include_protocol       = cache_key_policy.value.include_protocol
+          include_query_string   = cache_key_policy.value.include_query_string
+          query_string_whitelist = cache_key_policy.value.query_string_whitelist
+          query_string_blacklist = cache_key_policy.value.query_string_blacklist
+          include_named_cookies  = cache_key_policy.value.include_named_cookies
+        }
+      }
+    }
+  }
+
+  dynamic "iap" {
+    for_each = local.iap != null ? [local.iap] : []
+    content {
+      enabled              = iap.value.enabled
+      oauth2_client_id     = iap.value.oauth2_client_id
+      oauth2_client_secret = iap.value.oauth2_client_secret
+    }
+  }
+
+  dynamic "log_config" {
+    for_each = local.log_config != null ? [local.log_config] : []
+    content {
+      enable          = log_config.value.enable
+      sample_rate     = log_config.value.sample_rate
+      optional_mode   = log_config.value.optional_mode
+      optional_fields = log_config.value.optional_fields
+
+      dynamic "request_headers" {
+        for_each = log_config.value.request_headers
+        content {
+          header_name = request_headers.value
+        }
+      }
+      dynamic "response_headers" {
+        for_each = log_config.value.response_headers
+        content {
+          header_name = response_headers.value
+        }
+      }
+    }
+  }
+
+  dynamic "strong_session_affinity_cookie" {
+    for_each = local.strong_session_affinity_cookie != null ? [local.strong_session_affinity_cookie] : []
+    content {
+      name = strong_session_affinity_cookie.value.name
+      path = strong_session_affinity_cookie.value.path
+
+      dynamic "ttl" {
+        for_each = strong_session_affinity_cookie.value.ttl != null ? [strong_session_affinity_cookie.value.ttl] : []
+        content {
+          seconds = coalesce(ttl.value.seconds, 0)
+          nanos   = try(ttl.value.nanos, 0) != 0 ? ttl.value.nanos : null
+        }
+      }
+    }
+  }
+
+  dynamic "consistent_hash" {
+    for_each = local.consistent_hash != null ? [local.consistent_hash] : []
+    content {
+      http_header_name  = consistent_hash.value.http_header_name
+      minimum_ring_size = consistent_hash.value.minimum_ring_size
+
+      dynamic "http_cookie" {
+        for_each = consistent_hash.value.http_cookie != null ? [consistent_hash.value.http_cookie] : []
+        content {
+          name = try(http_cookie.value.name, "") != "" ? http_cookie.value.name : null
+          path = try(http_cookie.value.path, "") != "" ? http_cookie.value.path : null
+
+          dynamic "ttl" {
+            for_each = http_cookie.value.ttl != null ? [http_cookie.value.ttl] : []
+            content {
+              seconds = coalesce(ttl.value.seconds, 0)
+              nanos   = try(ttl.value.nanos, 0) != 0 ? ttl.value.nanos : null
+            }
+          }
+        }
+      }
+    }
+  }
+
+  dynamic "circuit_breakers" {
+    for_each = local.circuit_breakers != null ? [local.circuit_breakers] : []
+    content {
+      max_connections             = circuit_breakers.value.max_connections
+      max_pending_requests        = circuit_breakers.value.max_pending_requests
+      max_requests                = circuit_breakers.value.max_requests
+      max_requests_per_connection = circuit_breakers.value.max_requests_per_connection
+      max_retries                 = circuit_breakers.value.max_retries
+    }
+  }
+
+  dynamic "outlier_detection" {
+    for_each = local.outlier_detection != null ? [local.outlier_detection] : []
+    content {
+      consecutive_errors                    = outlier_detection.value.consecutive_errors
+      consecutive_gateway_failure           = outlier_detection.value.consecutive_gateway_failure
+      enforcing_consecutive_errors          = outlier_detection.value.enforcing_consecutive_errors
+      enforcing_consecutive_gateway_failure = outlier_detection.value.enforcing_consecutive_gateway_failure
+      enforcing_success_rate                = outlier_detection.value.enforcing_success_rate
+      max_ejection_percent                  = outlier_detection.value.max_ejection_percent
+      success_rate_minimum_hosts            = outlier_detection.value.success_rate_minimum_hosts
+      success_rate_request_volume           = outlier_detection.value.success_rate_request_volume
+      success_rate_stdev_factor             = outlier_detection.value.success_rate_stdev_factor
+
+      dynamic "base_ejection_time" {
+        for_each = outlier_detection.value.base_ejection_time != null ? [outlier_detection.value.base_ejection_time] : []
+        content {
+          seconds = coalesce(base_ejection_time.value.seconds, 0)
+          nanos   = try(base_ejection_time.value.nanos, 0) != 0 ? base_ejection_time.value.nanos : null
+        }
+      }
+
+      dynamic "interval" {
+        for_each = outlier_detection.value.interval != null ? [outlier_detection.value.interval] : []
+        content {
+          seconds = coalesce(interval.value.seconds, 0)
+          nanos   = try(interval.value.nanos, 0) != 0 ? interval.value.nanos : null
+        }
+      }
+    }
+  }
+
+  dynamic "tls_settings" {
+    for_each = local.tls_settings != null ? [local.tls_settings] : []
+    content {
+      authentication_config = tls_settings.value.authentication_config
+      sni                   = tls_settings.value.sni
+
+      dynamic "subject_alt_names" {
+        for_each = tls_settings.value.subject_alt_names
+        content {
+          dns_name                    = subject_alt_names.value.dns_name
+          uniform_resource_identifier = subject_alt_names.value.uniform_resource_identifier
+        }
+      }
+    }
+  }
+
+  dynamic "custom_metrics" {
+    for_each = var.spec.custom_metrics
+    content {
+      name    = custom_metrics.value.name
+      dry_run = custom_metrics.value.dry_run
+    }
+  }
+
+  # ---- The passthrough Network Load Balancer policies (regional-only) ----
+
+  dynamic "failover_policy" {
+    for_each = local.failover_policy != null ? [local.failover_policy] : []
+    content {
+      disable_connection_drain_on_failover = failover_policy.value.disable_connection_drain_on_failover
+      drop_traffic_if_unhealthy            = failover_policy.value.drop_traffic_if_unhealthy
+      failover_ratio                       = failover_policy.value.failover_ratio
+    }
+  }
+
+  dynamic "connection_tracking_policy" {
+    for_each = local.connection_tracking_policy != null ? [local.connection_tracking_policy] : []
+    content {
+      tracking_mode                                = connection_tracking_policy.value.tracking_mode
+      connection_persistence_on_unhealthy_backends = connection_tracking_policy.value.connection_persistence_on_unhealthy_backends
+      idle_timeout_sec                             = connection_tracking_policy.value.idle_timeout_sec
+      enable_strong_affinity                       = connection_tracking_policy.value.enable_strong_affinity
+    }
+  }
+
+  dynamic "ha_policy" {
+    for_each = local.ha_policy != null ? [local.ha_policy] : []
+    content {
+      fast_ip_move = ha_policy.value.fast_ip_move
+
+      dynamic "leader" {
+        for_each = ha_policy.value.leader != null ? [ha_policy.value.leader] : []
+        content {
+          backend_group = leader.value.backend_group
+
+          dynamic "network_endpoint" {
+            for_each = leader.value.instance != null ? [leader.value.instance] : []
+            content {
+              instance = network_endpoint.value
+            }
+          }
+        }
+      }
+    }
+  }
+
+  dynamic "network_pass_through_lb_traffic_policy" {
+    for_each = local.zonal_affinity != null ? [local.zonal_affinity] : []
+    content {
+      zonal_affinity {
+        spillover       = network_pass_through_lb_traffic_policy.value.spillover
+        spillover_ratio = network_pass_through_lb_traffic_policy.value.spillover_ratio
+      }
+    }
+  }
+
+  dynamic "params" {
+    for_each = length(var.spec.resource_manager_tags) > 0 ? [1] : []
+    content {
+      resource_manager_tags = var.spec.resource_manager_tags
+    }
+  }
+
+  deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
+
+  depends_on = [google_project_service.compute_api]
+}
+
 # Cloud CDN signed-URL keys — folded into this kind rather than modeled as a
 # separate node: keys are never referenced by other resources, GCP caps them
 # at 3 per service, and their lifecycle is the service's. Each key is
@@ -367,9 +698,11 @@ resource "google_compute_backend_service" "this" {
 resource "google_compute_backend_service_signed_url_key" "this" {
   for_each = { for signed_url_key in var.spec.signed_url_keys : signed_url_key.name => signed_url_key }
 
-  name            = each.value.name
-  key_value       = each.value.key_value # secret material; never surfaced in outputs
-  backend_service = google_compute_backend_service.this.name
+  name      = each.value.name
+  key_value = each.value.key_value # secret material; never surfaced in outputs
+  # Keys exist on the global service alone (the spec CEL rejects them on a
+  # regional manifest), so the reference resolves the single global element.
+  backend_service = one(google_compute_backend_service.this[*].name)
   project         = local.project_id
 
   # The kind-level deletion_policy fans out to every key — the keys have no

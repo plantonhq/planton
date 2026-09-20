@@ -1,13 +1,15 @@
 # GCP Backend Service
 
-Deploys a global Compute Engine backend service (`google_compute_backend_service`) — the hub of GCP's L7 load balancing family. A backend service owns HOW traffic reaches a set of backends: which instance groups or network endpoint groups receive requests, how they are health-checked, how sessions stick, whether responses are cached by Cloud CDN, whether Identity-Aware Proxy gates access, and how requests are logged. URL maps route host/path patterns to backend services; target proxies and forwarding rules sit in front of the URL map.
+Deploys a Compute Engine backend service — the hub of GCP's load balancing family. A backend service owns HOW traffic reaches a set of backends: which instance groups or network endpoint groups receive requests, how they are health-checked, how sessions stick, whether responses are cached by Cloud CDN, whether Identity-Aware Proxy gates access, and how requests are logged. URL maps route host/path patterns to backend services; target proxies and forwarding rules sit in front of the URL map.
+
+One kind, two scopes: leave `region` empty for the GLOBAL backend service (`google_compute_backend_service` — the global external ALB, the cross-region internal ALB, Traffic Director), or set it for the REGIONAL one (`google_compute_region_backend_service` — the regional external and internal ALBs, and the internal and external passthrough Network Load Balancers a forwarding rule names directly). The regional service adds the passthrough levers (`network`, `backends[].failover`, `failoverPolicy`, `connectionTrackingPolicy`, `haPolicy`, `networkPassThroughLbTrafficPolicy`, the `INTERNAL` scheme); the global service alone carries the edge features (compression, custom headers, edge Cloud Armor, service LB policy, the migration canary, backend preference, Traffic Director policies, signed URL keys, and Cloud CDN's advanced knobs).
 
 ## What Gets Created
 
 When you deploy a GcpBackendService resource, Planton provisions:
 
-- **Backend Service** — a global `google_compute_backend_service` with its backends, health check, session affinity, CDN policy, IAP, Cloud Armor attachments, logging, and traffic policy
-- **Signed-URL Keys** (optional) — one `google_compute_backend_service_signed_url_key` per entry in `signedUrlKeys`, for serving private CDN content with expiring, tamper-proof links
+- **Backend Service** — a global `google_compute_backend_service`, or a `google_compute_region_backend_service` when `region` is set, with its backends, health check, session affinity, CDN policy, IAP, Cloud Armor attachment, logging, and traffic policy
+- **Signed-URL Keys** (optional, global only) — one `google_compute_backend_service_signed_url_key` per entry in `signedUrlKeys`, for serving private CDN content with expiring, tamper-proof links
 
 The health check, Cloud Armor policies, and backend groups are deliberately NOT created here — they are their own composable nodes, attached by reference. One health check is commonly shared by many backend services; one Cloud Armor policy protects many backends.
 
@@ -56,8 +58,10 @@ planton apply -f backend-service.yaml
 | `projectId` | `StringValueOrRef` | provider default project | Project that owns the backend service. Immutable. |
 | `backendServiceName` | `string` | `metadata.name` | Cloud-side name (RFC1035). Immutable. |
 | `description` | `string` | `""` | What this service fronts and which URL maps route to it. |
+| `region` | `string` | `""` | Empty for a global backend service; a region name (`us-central1`) for a regional one, whose health check (for the ALB schemes), URL maps, forwarding rules, and Cloud Armor policy must be regional in the same region. Immutable. |
+| `network` | `StringValueOrRef` | none | The VPC of a passthrough Network Load Balancer (required with `haPolicy`). Regional only. Immutable. |
 | `protocol` | `string` | `HTTP` | LB→backend protocol: `HTTP`, `HTTPS`, `HTTP2`, `H2C`, `TCP`, `SSL`, `UDP`, `GRPC`. |
-| `loadBalancingScheme` | `string` | `EXTERNAL` | `EXTERNAL`, `EXTERNAL_MANAGED`, `INTERNAL_MANAGED`, or `INTERNAL_SELF_MANAGED` (Traffic Director). Immutable except the EXTERNAL→EXTERNAL_MANAGED canary. |
+| `loadBalancingScheme` | `string` | `EXTERNAL` | `EXTERNAL`, `EXTERNAL_MANAGED`, `INTERNAL_MANAGED`, `INTERNAL` (internal passthrough NLB, regional only), or `INTERNAL_SELF_MANAGED` (Traffic Director, global only). Both engines send `EXTERNAL` explicitly when unset, on both scopes. Immutable except the EXTERNAL→EXTERNAL_MANAGED canary. |
 | `portName` | `string` | none | Named port on the instance groups (EXTERNAL + instance-group backends). |
 | `timeoutSec` | `int` | `30` | Backend response timeout; raise well above the longest stream for WebSockets/gRPC. |
 | `connectionDrainingTimeoutSec` | `int` | `300` | Seconds draining instances keep existing connections. |
@@ -100,8 +104,18 @@ planton apply -f backend-service.yaml
 | `maxRate` / `maxRatePerInstance` / `maxRatePerEndpoint` | — | RATE-mode targets (one required in RATE mode). |
 | `maxConnections` / `...PerInstance` / `...PerEndpoint` | — | CONNECTION-mode targets (one required in CONNECTION mode). |
 | `maxUtilization` | `0.8` | UTILIZATION-mode CPU target (instance groups only — GCP strips it from NEG backends). |
-| `preference` | `DEFAULT` | `PREFERRED` backends fill before `DEFAULT` ones (not valid on EXTERNAL scheme). |
+| `preference` | `DEFAULT` | `PREFERRED` backends fill before `DEFAULT` ones (not valid on EXTERNAL scheme; global only). |
 | `customMetrics` | `[]` | Per-backend ORCA metrics for CUSTOM_METRICS mode. |
+| `failover` | `false` | Marks a passthrough NLB failover-pool backend (regional only; pair with `failoverPolicy`). |
+
+### Passthrough Network Load Balancer policies (regional only)
+
+| Field | Description |
+|-------|-------------|
+| `failoverPolicy` | When to shift to the failover pool (`failoverRatio`), whether to drop traffic when both pools are unhealthy, whether to skip connection draining on failover. At least one field. |
+| `connectionTrackingPolicy` | `trackingMode` (`PER_CONNECTION` default / `PER_SESSION`), `connectionPersistenceOnUnhealthyBackends` (`DEFAULT_FOR_PROTOCOL` default / `NEVER_PERSIST` / `ALWAYS_PERSIST`), `idleTimeoutSec`, `enableStrongAffinity`. |
+| `haPolicy` | One leader backend at a time: `fastIpMove` (`DISABLED` / `GARP_RA`) and the `leader` (zonal NEG + instance). Cannot be combined with `healthCheck`, `sessionAffinity`, `failoverPolicy`, or `connectionTrackingPolicy`. |
+| `networkPassThroughLbTrafficPolicy.zonalAffinity` | Keep connections in the client's zone: `spillover` (`ZONAL_AFFINITY_DISABLED` default / `_SPILL_CROSS_ZONE` / `_STAY_WITHIN_ZONE`) and `spilloverRatio`. |
 
 ### CDN Policy
 
@@ -113,10 +127,11 @@ After deployment, the following outputs are available in `status.outputs`:
 
 | Output | Type | Description |
 |--------|------|-------------|
-| `self_link` | `string` | Self-link URI — the value URL maps reference as a default service or path-rule target |
+| `self_link` | `string` | Self-link URI — the value URL maps (and passthrough forwarding rules) reference (`regions/{region}` in place of `global` for a regional service) |
 | `backend_service_name` | `string` | Name of the backend service in GCP |
 | `generated_id` | `string` | Server-assigned numeric ID |
 | `fingerprint` | `string` | Optimistic-concurrency fingerprint for out-of-band updates |
+| `region` | `string` | Region of a regional backend service; empty for a global one |
 
 ## Deployment Methods
 
@@ -132,7 +147,8 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 ## Important Notes
 
-- **Immutability**: `backendServiceName` and `projectId` are ForceNew; `loadBalancingScheme` cannot change in place except via the EXTERNAL→EXTERNAL_MANAGED canary migration. Everything else — backends, CDN policy, affinity, IAP — updates in place.
+- **Scope is immutable and chain-wide**: a backend service cannot move between global and regional; a regional service behind an ALB needs a regional health check, is routed to by regional URL maps and forwarding rules, and attaches only a regional Cloud Armor policy. The spec rejects the global edge levers (`compressionMode`, custom headers, `edgeSecurityPolicy`, `serviceLbPolicy`, the migration canary, backend `preference`, `localityLbPolicies`, `maxStreamDuration`, `securitySettings`, `signedUrlKeys`, and the CDN knobs the regional API lacks) when `region` is set, and the passthrough levers when it is empty.
+- **Immutability**: `backendServiceName`, `projectId`, and `region` are ForceNew; `loadBalancingScheme` cannot change in place except via the EXTERNAL→EXTERNAL_MANAGED canary migration. Everything else — backends, CDN policy, affinity, IAP — updates in place.
 - **One health check**: GCP allows at most one health check per backend service, so the spec models it singular. A service with no health check is only valid when every backend is an internet or serverless NEG.
 - **Instance groups and NEGs don't mix**: all backends of one service must be the same family; GCP rejects mixed backend lists.
 - **Secrets**: `iap.oauth2ClientSecret`, `securitySettings.awsV4Authentication.accessKey`, and each `signedUrlKeys[].keyValue` are secret material — reference-only in the control plane, marked secret in Pulumi state, never in stack outputs.

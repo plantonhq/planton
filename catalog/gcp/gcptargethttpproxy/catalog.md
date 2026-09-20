@@ -1,12 +1,12 @@
 # GCP Target HTTP Proxy
 
-Deploys a global Compute Engine target HTTP proxy — the plaintext-HTTP frontend adapter of a global external Application Load Balancer. The proxy binds a global forwarding rule (the VIP) to a URL map (the routing brain): the rule delivers client connections, the proxy consults the map for every request. It is deliberately thin — TLS lives on the target HTTPS proxy, routing on the URL map, traffic policy on the backend service. The standard production pattern is a PAIR sharing one static IP: this proxy serves a redirect-only URL map (http→https 301) while the HTTPS proxy serves the application.
+Deploys a Compute Engine target HTTP proxy — the plaintext-HTTP frontend adapter of an Application Load Balancer, global (the default) or regional when `region` is set. The proxy binds a forwarding rule (the VIP) to a URL map (the routing brain): the rule delivers client connections, the proxy consults the map for every request. It is deliberately thin — TLS lives on the target HTTPS proxy, routing on the URL map, traffic policy on the backend service. The standard production pattern is a PAIR sharing one static IP: this proxy serves a redirect-only URL map (http→https 301) while the HTTPS proxy serves the application.
 
 ## What Gets Created
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
-- **Compute Engine Target HTTP Proxy (global)** -- bound to the configured URL map, with optional keep-alive tuning and Traffic Director bind
+- **Compute Engine Target HTTP Proxy** -- global, or regional when `region` is set; bound to the configured URL map, with optional keep-alive tuning and (global only) Traffic Director bind
 - **Compute Engine API enablement** -- `compute.googleapis.com` is enabled in the target project; tearing down the proxy never disables the API
 
 ## Before You Deploy
@@ -72,6 +72,8 @@ These are the most important decisions when configuring a target HTTP proxy. Exp
 
 **URL map** -- The one REQUIRED field, and the ONLY mutable one: GCP swaps it in place (a dedicated setUrlMap call), so repointing a live frontend at a new routing table causes zero downtime — the blue/green lever for whole routing schemes.
 
+**Scope** -- `region` empty builds the global proxy (global external ALB, cross-region internal ALB, Traffic Director); a region name builds the regional proxy (regional external and internal ALBs), whose URL map and forwarding rule must be regional in the same region. Immutable.
+
 **Keep-alive timeout** -- 5-1200 seconds; only honored by the envoy-based EXTERNAL_MANAGED scheme (GCP default 610s). Raise it above your clients' own keep-alive so the LB never closes first. Immutable.
 
 **Traffic Director bind** -- `proxyBind` attaches the proxy to the mesh's private IPs instead of Google's edge; only meaningful behind an INTERNAL_SELF_MANAGED forwarding rule. Immutable.
@@ -94,7 +96,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `self_link` | Self-link URI of the proxy | GcpGlobalForwardingRule `target` |
 | `proxy_name` | Name as it exists in GCP | Audit, fleet inventory |
 | `proxy_id` | Server-assigned numeric ID | Diagnostics |
-| `fingerprint` | Optimistic-concurrency token | Out-of-band gcloud updates |
+| `fingerprint` | Optimistic-concurrency token (empty for a regional proxy) | Out-of-band gcloud updates |
+| `region` | Region of a regional proxy; empty for global | Scope checks on downstream blocks |
 
 ## Common Patterns
 
@@ -105,6 +108,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 **Plain HTTP frontend** -- Serving an application over plain HTTP (internal tools, pre-TLS testing). Start from the **Plain HTTP Frontend** preset.
 
 **Traffic Director mesh** -- The proxy bound to mesh-private IPs for INTERNAL_SELF_MANAGED frontends. Start from the **Traffic Director Mesh Frontend** preset.
+
+**Regional HTTP frontend** -- The regional proxy of a regional external Application Load Balancer, pointing at a regional URL map. Start from the **Regional HTTP Frontend** preset.
 
 ## Works With
 

@@ -16,7 +16,21 @@ spec:
   # earlier live proof predates that change; the next proof confirms the
   # classic frontend deploys and re-plans clean on both engines under the
   # apply-idempotency gate.
+  #
+  # Regional arm: the regional-external-alb scenario proves the regional
+  # resource family (google_compute_forwarding_rule) as the front door of a
+  # regional external ALB -- a proxy-only subnet fixture first, then a
+  # regional health check, backend service, URL map, and target HTTP proxy,
+  # EXTERNAL_MANAGED with the STANDARD tier and the network set; the
+  # internal-passthrough-nlb scenario proves the backend_service target
+  # form on the INTERNAL scheme with ports, global access, and a service
+  # label (service_name populated). The PSC consumer-endpoint form
+  # (empty scheme, service-attachment target) stays offline-proven until a
+  # producer service attachment exists in the catalog; source_ip_ranges,
+  # ip_collection, is_mirroring_collector, and L3_DEFAULT stay offline-
+  # proven (an external passthrough NLB with backends, a BYOIP prefix, and
+  # a mirroring policy are fixtures the harness does not carry).
   tier: 1
   status: pending_proof
   validated_provisioners: []
-  timeout_minutes: 30
+  timeout_minutes: 40

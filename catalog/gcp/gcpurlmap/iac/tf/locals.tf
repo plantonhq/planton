@@ -12,6 +12,12 @@ locals {
   # verbatim and rejected by the API.
   project_id = var.spec.project_id != "" ? var.spec.project_id : null
 
+  # The scope selector. An empty region builds the global URL map; a region
+  # name builds the regional one. Exactly one of the two resources in
+  # main.tf exists (count guards), and outputs.tf picks whichever was
+  # created.
+  is_regional = var.spec.region != null && var.spec.region != ""
+
   # The cloud-side name defaults to metadata.name when the spec leaves
   # url_map_name empty — the same naming basis every kind uses.
   url_map_name = (
@@ -117,9 +123,13 @@ locals {
             header_action   = w.header_action
           }
         ]
+        # path_template_rewrite is honored here by the regional map alone (the
+        # spec CEL rejects it on a global map); the global resource block
+        # never reads the key.
         url_rewrite = matcher.default_route_action.url_rewrite == null ? null : {
-          host_rewrite        = try(matcher.default_route_action.url_rewrite.host_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.host_rewrite : null
-          path_prefix_rewrite = try(matcher.default_route_action.url_rewrite.path_prefix_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.path_prefix_rewrite : null
+          host_rewrite          = try(matcher.default_route_action.url_rewrite.host_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.host_rewrite : null
+          path_prefix_rewrite   = try(matcher.default_route_action.url_rewrite.path_prefix_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.path_prefix_rewrite : null
+          path_template_rewrite = try(matcher.default_route_action.url_rewrite.path_template_rewrite, "") != "" ? matcher.default_route_action.url_rewrite.path_template_rewrite : null
         }
         timeout                = matcher.default_route_action.timeout
         retry_policy           = matcher.default_route_action.retry_policy

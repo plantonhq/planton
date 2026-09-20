@@ -390,6 +390,7 @@ contained dev.planton.gcp.gcpalloydbuser.v1alpha1.GcpAlloydbUserSpec.project_id 
 contained dev.planton.gcp.gcpapikey.v1alpha1.GcpApiKeySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRepoSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbackendbucket.v1alpha1.GcpBackendBucketSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableSpec.dataset_id -> GcpBigQueryDataset

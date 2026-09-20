@@ -32,9 +32,23 @@ variable "spec" {
     # reading a routing incident later. Mutable.
     description = optional(string, "")
 
+    # The scope selector. Empty builds a GLOBAL URL map (the global external
+    # ALB, the cross-region internal ALB, Traffic Director); a region name
+    # such as us-central1 builds a REGIONAL one (the regional external ALB and
+    # the regional internal ALB). A regional map routes only to regional
+    # backend services in its own region — never to a backend bucket, which
+    # is a global-only resource — and is referenced only by regional target
+    # proxies. Cloud CDN route caching (cache_policy), custom error pages
+    # (custom_error_response_policy), max_stream_duration, and the
+    # header-driven routing-test fields exist only on the global map and are
+    # rejected when region is set. Immutable: a URL map cannot move between
+    # scopes or regions.
+    region = optional(string, "")
+
     # The default target when no host/path rule matches — a backend service or
     # backend bucket. Reference a GcpBackendService or GcpBackendBucket, or
-    # provide a self-link directly. Exactly one of default_service,
+    # provide a self-link directly (a regional map takes only a regional
+    # GcpBackendService in its region). Exactly one of default_service,
     # default_url_redirect, or default_route_action must be set. Mutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     default_service = optional(string, "")
@@ -136,9 +150,10 @@ variable "spec" {
 
         # Rewrite the path using a template that references named path variables
         # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-        # Honored only inside a route_rule's route_action — GCP rejects it in
-        # default and path-rule route actions. Mutually exclusive with
-        # path_prefix_rewrite.
+        # Honored inside a route_rule's route_action on both scopes and, on a
+        # REGIONAL map only, in a path matcher's default route action — GCP
+        # rejects it in the map's default route action and in path-rule route
+        # actions everywhere. Mutually exclusive with path_prefix_rewrite.
         path_template_rewrite = optional(string, "")
       }))
 
@@ -269,7 +284,9 @@ variable "spec" {
       # (Traffic Director) load-balancing scheme ("Max stream duration is
       # only supported when UrlMap is used with BackendService whose Load
       # Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-      # external application load balancers.
+      # external application load balancers. Global maps only: the regional
+      # map has no such argument (except in a path matcher's default route
+      # action, which carries it on both scopes).
       max_stream_duration = optional(object({
         # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
         seconds = optional(number)
@@ -282,7 +299,8 @@ variable "spec" {
       # Cloud CDN caching for the routes using this action — overrides the
       # backend service's cdn_policy for matching traffic only. Takes effect
       # only when the target backend service (or bucket) has CDN enabled;
-      # GCP ignores it otherwise.
+      # GCP ignores it otherwise. Global maps only — regional Application Load
+      # Balancers have no Cloud CDN, and the regional map has no such argument.
       cache_policy = optional(object({
         # What gets cached. CACHE_ALL_STATIC (the GCP default) caches static
         # content types and honors origin cache headers for the rest;
@@ -400,7 +418,8 @@ variable "spec" {
     }))
 
     # Return a custom error page (from a backend bucket) for chosen response
-    # codes at the top level. Global external Application Load Balancers only.
+    # codes at the top level. Global external Application Load Balancers only
+    # — rejected when region is set.
     default_custom_error_response_policy = optional(object({
       # The backend bucket serving the error pages. Reference a GcpBackendBucket
       # or provide a self-link directly.
@@ -517,6 +536,8 @@ variable "spec" {
       }))
 
       # Advanced default handling (weighted split / rewrite) for the path matcher.
+      # On a regional map this is the one place besides route rules where a
+      # url_rewrite may carry path_template_rewrite.
       default_route_action = optional(object({
         # Split traffic across multiple backend services by weight — the mechanism
         # for weighted canary and blue/green rollouts. The weights are relative; a
@@ -581,9 +602,10 @@ variable "spec" {
 
           # Rewrite the path using a template that references named path variables
           # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-          # Honored only inside a route_rule's route_action — GCP rejects it in
-          # default and path-rule route actions. Mutually exclusive with
-          # path_prefix_rewrite.
+          # Honored inside a route_rule's route_action on both scopes and, on a
+          # REGIONAL map only, in a path matcher's default route action — GCP
+          # rejects it in the map's default route action and in path-rule route
+          # actions everywhere. Mutually exclusive with path_prefix_rewrite.
           path_template_rewrite = optional(string, "")
         }))
 
@@ -714,7 +736,9 @@ variable "spec" {
         # (Traffic Director) load-balancing scheme ("Max stream duration is
         # only supported when UrlMap is used with BackendService whose Load
         # Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-        # external application load balancers.
+        # external application load balancers. Global maps only: the regional
+        # map has no such argument (except in a path matcher's default route
+        # action, which carries it on both scopes).
         max_stream_duration = optional(object({
           # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
           seconds = optional(number)
@@ -727,7 +751,8 @@ variable "spec" {
         # Cloud CDN caching for the routes using this action — overrides the
         # backend service's cdn_policy for matching traffic only. Takes effect
         # only when the target backend service (or bucket) has CDN enabled;
-        # GCP ignores it otherwise.
+        # GCP ignores it otherwise. Global maps only — regional Application Load
+        # Balancers have no Cloud CDN, and the regional map has no such argument.
         cache_policy = optional(object({
           # What gets cached. CACHE_ALL_STATIC (the GCP default) caches static
           # content types and honors origin cache headers for the rest;
@@ -845,7 +870,7 @@ variable "spec" {
       }))
 
       # Custom error pages for this path matcher's default. Global external ALBs
-      # only.
+      # only — rejected when the map's region is set.
       default_custom_error_response_policy = optional(object({
         # The backend bucket serving the error pages. Reference a GcpBackendBucket
         # or provide a self-link directly.
@@ -985,9 +1010,10 @@ variable "spec" {
 
             # Rewrite the path using a template that references named path variables
             # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-            # Honored only inside a route_rule's route_action — GCP rejects it in
-            # default and path-rule route actions. Mutually exclusive with
-            # path_prefix_rewrite.
+            # Honored inside a route_rule's route_action on both scopes and, on a
+            # REGIONAL map only, in a path matcher's default route action — GCP
+            # rejects it in the map's default route action and in path-rule route
+            # actions everywhere. Mutually exclusive with path_prefix_rewrite.
             path_template_rewrite = optional(string, "")
           }))
 
@@ -1118,7 +1144,9 @@ variable "spec" {
           # (Traffic Director) load-balancing scheme ("Max stream duration is
           # only supported when UrlMap is used with BackendService whose Load
           # Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-          # external application load balancers.
+          # external application load balancers. Global maps only: the regional
+          # map has no such argument (except in a path matcher's default route
+          # action, which carries it on both scopes).
           max_stream_duration = optional(object({
             # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
             seconds = optional(number)
@@ -1131,7 +1159,8 @@ variable "spec" {
           # Cloud CDN caching for the routes using this action — overrides the
           # backend service's cdn_policy for matching traffic only. Takes effect
           # only when the target backend service (or bucket) has CDN enabled;
-          # GCP ignores it otherwise.
+          # GCP ignores it otherwise. Global maps only — regional Application Load
+          # Balancers have no Cloud CDN, and the regional map has no such argument.
           cache_policy = optional(object({
             # What gets cached. CACHE_ALL_STATIC (the GCP default) caches static
             # content types and honors origin cache headers for the rest;
@@ -1471,9 +1500,10 @@ variable "spec" {
 
             # Rewrite the path using a template that references named path variables
             # captured by a route rule's path_template_match (e.g. "/v2/{country}").
-            # Honored only inside a route_rule's route_action — GCP rejects it in
-            # default and path-rule route actions. Mutually exclusive with
-            # path_prefix_rewrite.
+            # Honored inside a route_rule's route_action on both scopes and, on a
+            # REGIONAL map only, in a path matcher's default route action — GCP
+            # rejects it in the map's default route action and in path-rule route
+            # actions everywhere. Mutually exclusive with path_prefix_rewrite.
             path_template_rewrite = optional(string, "")
           }))
 
@@ -1604,7 +1634,9 @@ variable "spec" {
           # (Traffic Director) load-balancing scheme ("Max stream duration is
           # only supported when UrlMap is used with BackendService whose Load
           # Balancing Scheme is INTERNAL_SELF_MANAGED") — leave it unset on
-          # external application load balancers.
+          # external application load balancers. Global maps only: the regional
+          # map has no such argument (except in a path matcher's default route
+          # action, which carries it on both scopes).
           max_stream_duration = optional(object({
             # Whole seconds (0 to 315,576,000,000 — GCP's int64 Duration bound).
             seconds = optional(number)
@@ -1617,7 +1649,8 @@ variable "spec" {
           # Cloud CDN caching for the routes using this action — overrides the
           # backend service's cdn_policy for matching traffic only. Takes effect
           # only when the target backend service (or bucket) has CDN enabled;
-          # GCP ignores it otherwise.
+          # GCP ignores it otherwise. Global maps only — regional Application Load
+          # Balancers have no Cloud CDN, and the regional map has no such argument.
           cache_policy = optional(object({
             # What gets cached. CACHE_ALL_STATIC (the GCP default) caches static
             # content types and honors origin cache headers for the rest;
@@ -1825,7 +1858,9 @@ variable "spec" {
     # Routing self-tests evaluated by GCP at create/update time: each asserts
     # that a given host+path resolves to an expected service or redirect. A
     # failing test blocks the update — a guard against a routing change that
-    # silently breaks a path. Mutable.
+    # silently breaks a path. On a regional map every test names its expected
+    # service and carries no headers or redirect expectations (those forms
+    # exist only on the global map). Mutable.
     tests = optional(list(object({
       # The request Host header the test sends.
       host = string
@@ -1836,7 +1871,8 @@ variable "spec" {
       # The backend service or backend bucket the request is expected to resolve
       # to. Reference a GcpBackendService or GcpBackendBucket, or provide a
       # self-link. Leave empty when asserting a redirect via
-      # expected_redirect_response_code.
+      # expected_redirect_response_code. Required on a regional map, whose
+      # tests can only assert a service.
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       service = optional(string, "")
 
@@ -1844,14 +1880,14 @@ variable "spec" {
       description = optional(string, "")
 
       # The URL the request is expected to be redirected/rewritten to. Optional
-      # when service is set.
+      # when service is set. Global maps only.
       expected_output_url = optional(string, "")
 
       # The redirect status code the request is expected to produce. Cannot be set
-      # together with service.
+      # together with service. Global maps only.
       expected_redirect_response_code = optional(number, 0)
 
-      # Request headers the test sends.
+      # Request headers the test sends. Global maps only.
       headers = optional(list(object({
         # Header name.
         name = string

@@ -6,6 +6,7 @@ go_library(
         "locals.go",
         "main.go",
         "outputs.go",
+        "region_url_map.go",
         "url_map.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/gcp/gcpurlmap/iac/pulumi/module",

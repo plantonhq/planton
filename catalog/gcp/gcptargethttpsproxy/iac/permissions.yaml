@@ -30,6 +30,18 @@ spec:
           - compute.globalOperations.get
         provenance: derived
         notes: Covers google_compute_target_https_proxy -- create, read/refresh, destroy, and polling the global operation every mutation returns. The provider mutates each in-place field through its dedicated RPC (setUrlMap, setSslCertificates, setSslPolicy, setQuicOverride, setCertificateMap), while server_tls_policy and certificate_manager_certificates changes PATCH the proxy, which authorizes as update.
+      - purpose: ManageRegionalTargetHttpsProxy
+        permissions:
+          - compute.regionTargetHttpsProxies.create
+          - compute.regionTargetHttpsProxies.get
+          - compute.regionTargetHttpsProxies.delete
+          - compute.regionTargetHttpsProxies.update
+          - compute.regionTargetHttpsProxies.setUrlMap
+          - compute.regionTargetHttpsProxies.setSslCertificates
+          - compute.regionTargetHttpsProxies.setSslPolicy
+          - compute.regionOperations.get
+        provenance: derived
+        notes: Covers google_compute_region_target_https_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpsProxies family (no certificate-map or QUIC RPCs exist there) and return region operations the provider polls. Referenced regional certificates and SSL policies authorize with compute.regionSslCertificates.get and compute.regionSslPolicies.use on the referenced resources.
       - purpose: UseReferencedFrontendResources
         permissions:
           - compute.urlMaps.use

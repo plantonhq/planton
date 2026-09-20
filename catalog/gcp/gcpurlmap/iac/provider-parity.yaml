@@ -5,6 +5,17 @@
 # Only divergences are recorded -- an argument absent from this file must
 # match its spec field by exact name. Every exclusion carries its reason:
 # omission is a decision, never an accident.
+#
+# One kind, two provider resources: GCP models the global and regional URL
+# maps as separate API collections sharing the routing surface; the global
+# one alone carries Cloud CDN route caching, custom error pages,
+# stream-duration limits outside a path matcher's default action, and
+# header-driven routing tests, and the regional one alone honors a
+# path_template_rewrite in a path matcher's default route action.
+# spec.region is the scope selector -- it name-matches the regional
+# resource's own region argument; every argument only one collection
+# carries is walled to that scope by the spec's CEL rules, so each resource
+# sees exactly the fields it has.
 
 resources:
   google_compute_url_map:
@@ -37,6 +48,21 @@ resources:
       - spec: spec.path_matchers.route_rules.custom_error_response_policy.error_response_rules
         arg: path_matcher.route_rules.custom_error_response_policy.error_response_rule
 
+  google_compute_region_url_map:
+    mappings:
+      - spec: spec.url_map_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.host_rules
+        arg: host_rule
+      - spec: spec.path_matchers
+        arg: path_matcher
+      - spec: spec.tests
+        arg: test
+      - spec: spec.path_matchers.path_rules
+        arg: path_matcher.path_rule
+
   google_project_service:
     internal: >-
       API enablement plumbing -- the module enables compute.googleapis.com
@@ -44,22 +70,19 @@ resources:
       map never disables the API project-wide); not spec surface.
 
 specExclusions:
-  # path_template_rewrite is provider surface ONLY at the route-rules site;
-  # the spec reuses one route-action message at all four routing levels
-  # (default, path-matcher default, path rules, route rules), so the leaf
-  # exists at three sites the provider has no argument for. Site-level CEL
-  # rules reject it there, making these leaves unreachable by valid
-  # manifests.
+  # path_template_rewrite is provider surface at the route-rules site on
+  # both collections and at a path matcher's default route action on the
+  # regional one; the spec reuses one route-action message at all four
+  # routing levels (default, path-matcher default, path rules, route rules),
+  # so the leaf exists at two sites neither provider resource has an argument
+  # for. Site-level CEL rules reject it there, making these leaves
+  # unreachable by valid manifests (the path-matcher site is walled to the
+  # regional scope and matches by name on that resource).
   - field: spec.default_route_action.url_rewrite.path_template_rewrite
     reason: >-
       provider carries path_template_rewrite only inside route rules; the
       spec's default_no_path_template_rewrite CEL rejects it at the URL
       map's default route action
-  - field: spec.path_matchers.default_route_action.url_rewrite.path_template_rewrite
-    reason: >-
-      provider carries path_template_rewrite only inside route rules; the
-      spec's path_matcher_no_path_template_rewrite CEL rejects it at a path
-      matcher's default route action
   - field: spec.path_matchers.path_rules.route_action.url_rewrite.path_template_rewrite
     reason: >-
       provider carries path_template_rewrite only inside route rules; the

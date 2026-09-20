@@ -9,24 +9,33 @@ resource "google_project_service" "compute_api" {
   disable_on_destroy         = false
 }
 
-# A global Compute Engine target HTTPS proxy — the TLS-termination node that
-# binds a global forwarding rule (the VIP) to a URL map (the routing brain)
-# and owns the client-facing handshake: certificates, SSL policy, QUIC
-# negotiation, and TLS 1.3 early data.
+# A Compute Engine target HTTPS proxy — the TLS-termination node that binds
+# a forwarding rule (the VIP) to a URL map (the routing brain) and owns the
+# client-facing handshake: certificates, SSL policy, QUIC negotiation, and
+# TLS 1.3 early data.
+#
+# GCP models the global and regional proxies as two API collections that
+# share the certificate, URL-map, SSL-policy, and keep-alive surface; the
+# regional one lacks the certificate map, QUIC, early-data, and mesh-binding
+# levers, which the spec keeps off that arm. spec.region selects which
+# resource below is created; the two blocks mirror each other so a manifest
+# reads the same on either scope.
 #
 # Certificates attach through exactly one of three mechanisms (enforced
 # pre-deploy by the spec's CEL): the classic ssl_certificates list, the
-# cross-region-internal-ALB certificate_manager_certificates list, or an
-# SNI-scale certificate_map. Traffic Director proxies skip certificates and
-# drive TLS through server_tls_policy instead.
+# certificate_manager_certificates list, or an SNI-scale certificate_map.
+# Traffic Director proxies skip certificates and drive TLS through
+# server_tls_policy instead.
 #
 # url_map, the certificate wiring, ssl_policy, server_tls_policy, and
 # quic_override update in place via dedicated API calls — certificate
 # rotation is attach-new-then-detach-old with zero VIP churn. name,
-# description, keep-alive, tls_early_data, and proxy_bind are immutable
-# (ForceNew) and briefly break any forwarding rule referencing the old
-# self_link on recreate.
+# description, keep-alive, tls_early_data, proxy_bind, and region are
+# immutable (ForceNew) and briefly break any forwarding rule referencing
+# the old self_link on recreate.
 resource "google_compute_target_https_proxy" "this" {
+  count = local.is_regional ? 0 : 1
+
   name        = local.proxy_name
   project     = local.project_id
   description = local.description
@@ -52,7 +61,34 @@ resource "google_compute_target_https_proxy" "this" {
   # Traffic Director binding; null lets the API compute its default (false).
   proxy_bind = local.proxy_bind
 
-  deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
+  deletion_policy = local.deletion_policy
+
+  depends_on = [google_project_service.compute_api]
+}
+
+# The regional twin: the TLS front door of the regional external and
+# regional internal Application Load Balancers. Its URL map, certificates,
+# and SSL policy must all be regional resources in the same region.
+resource "google_compute_region_target_https_proxy" "this" {
+  count = local.is_regional ? 1 : 0
+
+  name        = local.proxy_name
+  project     = local.project_id
+  region      = var.spec.region
+  description = local.description
+
+  url_map = var.spec.url_map
+
+  ssl_certificates                 = local.ssl_certificates
+  certificate_manager_certificates = local.certificate_manager_certificates
+
+  ssl_policy        = local.ssl_policy
+  server_tls_policy = local.server_tls_policy
+
+  # Immutable on the regional resource (mutable on the global one).
+  http_keep_alive_timeout_sec = local.http_keep_alive_timeout_sec
+
+  deletion_policy = local.deletion_policy
 
   depends_on = [google_project_service.compute_api]
 }

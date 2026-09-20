@@ -1,0 +1,37 @@
+# GcpTargetHttpsProxy scenario: the REGIONAL arm
+# (google_compute_region_target_https_proxy) -- a set region routes the
+# module down the regional branch; the URL map and the certificate are
+# regional fixtures in the same region (a regional proxy accepts only
+# regional self-managed certificates, attached with an explicit valueFrom
+# kind because sslCertificates defaults to the global managed-certificate
+# kind). The whole fixture chain is declared here because a path-declared
+# fixture's own annotation is never read.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTargetHttpsProxy
+metadata:
+  name: planton-oss-e2e-gcpthsp-regional
+  id: planton-oss-e2e-gcpthsp-regional
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptargethttpsproxy
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcptargethttpsproxy/e2e/prerequisites/gcphealthcheck-regional.yaml,catalog/gcp/gcptargethttpsproxy/e2e/prerequisites/gcpbackendservice-regional.yaml,catalog/gcp/gcptargethttpsproxy/e2e/prerequisites/gcpurlmap-regional.yaml,catalog/gcp/gcptargethttpsproxy/e2e/prerequisites/gcpsslcertificate-regional.yaml"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional target HTTPS proxy created by the Planton E2E harness; safe to delete
+  region: us-central1
+  urlMap:
+    valueFrom:
+      kind: GcpUrlMap
+      name: planton-oss-e2e-gcpthsp-rum
+      fieldPath: status.outputs.self_link
+  sslCertificates:
+    - valueFrom:
+        kind: GcpSslCertificate
+        name: planton-oss-e2e-gcpthsp-rcert
+        fieldPath: status.outputs.self_link
+  deletionPolicy: DELETE

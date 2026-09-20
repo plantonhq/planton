@@ -24,17 +24,23 @@ const (
 // Outputs produced after provisioning a GCP target HTTPS proxy.
 type GcpTargetHttpsProxyStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Self-link URI of the target HTTPS proxy. This is the value a global
+	// Self-link URI of the target HTTPS proxy. This is the value a
 	// forwarding rule references as its target — the composition handle that
 	// puts a VIP in front of this proxy.
 	// Format: https://www.googleapis.com/compute/v1/projects/{project}/global/targetHttpsProxies/{name}
+	// (a regional proxy's link carries regions/{region} in place of global).
 	SelfLink string `protobuf:"bytes,1,opt,name=self_link,json=selfLink,proto3" json:"self_link,omitempty"`
 	// Name of the proxy as it exists in GCP.
 	ProxyName string `protobuf:"bytes,2,opt,name=proxy_name,json=proxyName,proto3" json:"proxy_name,omitempty"`
 	// Server-assigned numeric ID of the proxy.
 	ProxyId string `protobuf:"bytes,3,opt,name=proxy_id,json=proxyId,proto3" json:"proxy_id,omitempty"`
 	// Server-computed fingerprint for optimistic concurrency control.
-	Fingerprint   string `protobuf:"bytes,4,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	Fingerprint string `protobuf:"bytes,4,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	// Region of a regional target HTTPS proxy; empty for a global one. Downstream blocks
+	// read it to confirm scope compatibility (a regional link must point at a
+	// regional target in the same region), and the E2E verifier picks the
+	// regional or global API by it.
+	Region        string `protobuf:"bytes,5,opt,name=region,proto3" json:"region,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -97,17 +103,25 @@ func (x *GcpTargetHttpsProxyStackOutputs) GetFingerprint() string {
 	return ""
 }
 
+func (x *GcpTargetHttpsProxyStackOutputs) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcptargethttpsproxy_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"6catalog/gcp/gcptargethttpsproxy/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\"\x9a\x01\n" +
+	"6catalog/gcp/gcptargethttpsproxy/v1alpha1/outputs.proto\x12,dev.planton.gcp.gcptargethttpsproxy.v1alpha1\"\xb2\x01\n" +
 	"\x1fGcpTargetHttpsProxyStackOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x12\x1d\n" +
 	"\n" +
 	"proxy_name\x18\x02 \x01(\tR\tproxyName\x12\x19\n" +
 	"\bproxy_id\x18\x03 \x01(\tR\aproxyId\x12 \n" +
-	"\vfingerprint\x18\x04 \x01(\tR\vfingerprintB\xf8\x02\n" +
+	"\vfingerprint\x18\x04 \x01(\tR\vfingerprint\x12\x16\n" +
+	"\x06region\x18\x05 \x01(\tR\x06regionB\xf8\x02\n" +
 	"0com.dev.planton.gcp.gcptargethttpsproxy.v1alpha1B\fOutputsProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcptargethttpsproxy/v1alpha1;gcptargethttpsproxyv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcptargethttpsproxy.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcptargethttpsproxy\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcptargethttpsproxy\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcptargethttpsproxy::V1alpha1b\x06proto3"
 
 var (

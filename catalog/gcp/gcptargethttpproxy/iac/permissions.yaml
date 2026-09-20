@@ -25,6 +25,15 @@ spec:
           - compute.globalOperations.get
         provenance: derived
         notes: Covers google_compute_target_http_proxy -- create, read/refresh, destroy, and polling the global operation every mutation returns. url_map is the only mutable field and the provider repoints it through the dedicated setUrlMap RPC; every other change is delete-plus-create, so compute.targetHttpProxies.update is deliberately omitted.
+      - purpose: ManageRegionalTargetHttpProxy
+        permissions:
+          - compute.regionTargetHttpProxies.create
+          - compute.regionTargetHttpProxies.get
+          - compute.regionTargetHttpProxies.delete
+          - compute.regionTargetHttpProxies.setUrlMap
+          - compute.regionOperations.get
+        provenance: derived
+        notes: Covers google_compute_region_target_http_proxy (created when spec.region is set). Regional proxies authorize against their own compute.regionTargetHttpProxies family and return region operations the provider polls. Not needed for global proxies; the global family is not needed for regional ones.
       - purpose: UseUrlMap
         permissions:
           - compute.urlMaps.use

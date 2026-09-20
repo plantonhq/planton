@@ -43,8 +43,18 @@ type GcpGlobalForwardingRuleStackOutputs struct {
 	// REJECTED, or CLOSED), populated only for PSC frontends. ACCEPTED means
 	// the producer side admitted this consumer connection.
 	PscConnectionStatus string `protobuf:"bytes,6,opt,name=psc_connection_status,json=pscConnectionStatus,proto3" json:"psc_connection_status,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// Region of a regional forwarding rule; empty for a global one. Downstream blocks
+	// read it to confirm scope compatibility (a regional link must point at a
+	// regional target in the same region), and the E2E verifier picks the
+	// regional or global API by it.
+	Region string `protobuf:"bytes,7,opt,name=region,proto3" json:"region,omitempty"`
+	// The internal DNS name of an internal passthrough Network Load Balancer
+	// that set service_label, in the form
+	// <service_label>.<name>.il4.<region>.lb.<project>.internal — the stable
+	// name VPC clients resolve instead of the VIP. Empty otherwise.
+	ServiceName   string `protobuf:"bytes,8,opt,name=service_name,json=serviceName,proto3" json:"service_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpGlobalForwardingRuleStackOutputs) Reset() {
@@ -119,11 +129,25 @@ func (x *GcpGlobalForwardingRuleStackOutputs) GetPscConnectionStatus() string {
 	return ""
 }
 
+func (x *GcpGlobalForwardingRuleStackOutputs) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *GcpGlobalForwardingRuleStackOutputs) GetServiceName() string {
+	if x != nil {
+		return x.ServiceName
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	":catalog/gcp/gcpglobalforwardingrule/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\"\xa1\x02\n" +
+	":catalog/gcp/gcpglobalforwardingrule/v1alpha1/outputs.proto\x120dev.planton.gcp.gcpglobalforwardingrule.v1alpha1\"\xdc\x02\n" +
 	"#GcpGlobalForwardingRuleStackOutputs\x12\x1d\n" +
 	"\n" +
 	"ip_address\x18\x01 \x01(\tR\tipAddress\x12\x1b\n" +
@@ -131,7 +155,9 @@ const file_catalog_gcp_gcpglobalforwardingrule_v1alpha1_outputs_proto_rawDesc = 
 	"\x14forwarding_rule_name\x18\x03 \x01(\tR\x12forwardingRuleName\x12,\n" +
 	"\x12forwarding_rule_id\x18\x04 \x01(\tR\x10forwardingRuleId\x12*\n" +
 	"\x11psc_connection_id\x18\x05 \x01(\tR\x0fpscConnectionId\x122\n" +
-	"\x15psc_connection_status\x18\x06 \x01(\tR\x13pscConnectionStatusB\x94\x03\n" +
+	"\x15psc_connection_status\x18\x06 \x01(\tR\x13pscConnectionStatus\x12\x16\n" +
+	"\x06region\x18\a \x01(\tR\x06region\x12!\n" +
+	"\fservice_name\x18\b \x01(\tR\vserviceNameB\x94\x03\n" +
 	"4com.dev.planton.gcp.gcpglobalforwardingrule.v1alpha1B\fOutputsProtoP\x01Zigithub.com/plantonhq/planton/catalog/gcp/gcpglobalforwardingrule/v1alpha1;gcpglobalforwardingrulev1alpha1\xa2\x02\x04DPGG\xaa\x020Dev.Planton.Gcp.Gcpglobalforwardingrule.V1alpha1\xca\x020Dev\\Planton\\Gcp\\Gcpglobalforwardingrule\\V1alpha1\xe2\x02<Dev\\Planton\\Gcp\\Gcpglobalforwardingrule\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Gcp::Gcpglobalforwardingrule::V1alpha1b\x06proto3"
 
 var (

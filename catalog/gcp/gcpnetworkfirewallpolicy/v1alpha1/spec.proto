@@ -283,9 +283,9 @@ message GcpNetworkFirewallPolicyRule {
   // resources (a GcpGlobalForwardingRule's self_link output) or
   // forwarding-rule self-links as literals. Required for that target
   // type, forbidden for INSTANCES. An internal managed load balancer's
-  // forwarding rule is REGIONAL, so today the reference form resolves
-  // fully once the referenced kind carries its regional arm; until then
-  // give the regional forwarding rule's self-link as a literal.
+  // forwarding rule is REGIONAL: reference a GcpGlobalForwardingRule
+  // declared with a region (the kind builds the regional rule behind its
+  // region selector; its name records the global rule it began as).
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef target_forwarding_rules = 10 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpGlobalForwardingRule,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"

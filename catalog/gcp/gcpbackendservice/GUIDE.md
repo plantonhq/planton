@@ -5,6 +5,30 @@ target every other LB piece exists to reach, and its power dials
 (balancing modes, affinity, draining) interact — change one at a time,
 watch the metrics, then the next.
 
+## One kind, two scopes
+
+`region` empty builds the GLOBAL backend service — the backend of the
+global external ALB, the cross-region internal ALB, and Traffic Director.
+`region` set builds the REGIONAL one — the backend of the regional external
+ALB (`EXTERNAL_MANAGED`), the regional internal ALB (`INTERNAL_MANAGED`),
+and the internal and external passthrough Network Load Balancers
+(`INTERNAL`, `EXTERNAL`), which a regional `GcpGlobalForwardingRule` names
+directly through `backendService` with no proxy in between. The regional
+service adds the passthrough levers — `network`, `backends[].failover` with
+`failoverPolicy`, `connectionTrackingPolicy`, `haPolicy`, and zonal
+affinity — and lacks the global edge features: compression, custom headers,
+`edgeSecurityPolicy`, `serviceLbPolicy`, the migration canary, backend
+`preference`, `localityLbPolicies`, `maxStreamDuration`, `securitySettings`,
+`signedUrlKeys`, and Cloud CDN's advanced knobs (`requestCoalescing`,
+header-driven bypass, header-keyed cache keys, per-code negative TTLs). The
+spec rejects each on the wrong scope. Two things to know: the regional API
+carries `enableCdn` and `cdnPolicy` although regional ALBs have no Cloud
+CDN — leave them off; and an unset `loadBalancingScheme` is `EXTERNAL` on
+both scopes (both engines send it), so name `INTERNAL` outright for an
+internal passthrough NLB. A regional ALB needs a regional `GcpHealthCheck`;
+a regional service attaches only a regional Cloud Armor policy. `region`
+is immutable.
+
 ## Scheme first, everything else second
 
 `loadBalancingScheme` is immutable and decides which protocols, affinity

@@ -1,0 +1,45 @@
+# GcpGlobalForwardingRule scenario: the REGIONAL arm
+# (google_compute_forwarding_rule) as the front door of a regional external
+# Application Load Balancer -- scheme EXTERNAL_MANAGED with a region, the
+# STANDARD network tier only regional rules offer, the network holding the
+# region's proxy-only subnet (the one external scheme that takes network),
+# and a regional target HTTP proxy over a regional URL map, backend service,
+# and health check. The proxy-only subnet is deployed first: Google rejects
+# the forwarding rule until the region has one. The whole fixture chain is
+# declared here because a path-declared fixture's own annotation is never
+# read; the VIP is ephemeral (no address fixture) to keep the lane free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGlobalForwardingRule
+metadata:
+  name: planton-oss-e2e-gcpgfr-regional
+  id: planton-oss-e2e-gcpgfr-regional
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpglobalforwardingrule
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpsubnetwork-proxy-only.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcphealthcheck-regional.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpbackendservice-regional.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpurlmap-regional.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcptargethttpproxy-regional.yaml"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional external ALB forwarding rule created by the Planton E2E harness; safe to delete
+  region: us-central1
+  target:
+    valueFrom:
+      kind: GcpTargetHttpProxy
+      name: planton-oss-e2e-gcpgfr-rthp
+      fieldPath: status.outputs.self_link
+  loadBalancingScheme: EXTERNAL_MANAGED
+  ipProtocol: TCP
+  portRange: "80"
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  networkTier: STANDARD
+  labels:
+    e2e: regional-external-alb
+  deletionPolicy: DELETE

@@ -1,10 +1,10 @@
 # GcpGlobalForwardingRule - Terraform Module
 
-This Terraform module provisions a GCP Compute Engine global forwarding rule. It is the Terraform-side implementation of the Planton `GcpGlobalForwardingRule` resource kind and has feature parity with the Pulumi module.
+This Terraform module provisions a GCP Compute Engine forwarding rule — global, or regional when `spec.region` is set. It is the Terraform-side implementation of the Planton `GcpGlobalForwardingRule` resource kind and has feature parity with the Pulumi module.
 
 ## Overview
 
-The module creates `google_compute_global_forwarding_rule` — the VIP node binding an IP address and port to a target proxy, and the Private Service Connect entry point (scheme `NONE`, sent to the API as an empty scheme). An unset scheme is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than left to the provider, whose own default is `EXTERNAL_MANAGED`: the scheme is immutable, so a provider-chosen default would replace an existing classic frontend on its next apply. The Pulumi module does the same.
+The module creates exactly one of `google_compute_global_forwarding_rule` (global; `spec.region` empty) or `google_compute_forwarding_rule` (regional; `spec.region` set) — the VIP node binding an IP address and port to a target proxy or, on a regional passthrough Network Load Balancer, straight to a backend service, and the Private Service Connect entry point (scheme `NONE`, sent to the API as an empty scheme). The two resources are count-gated on one `is_regional` local and mirror each other; the regional block adds the passthrough and PSC-consumer levers and omits the Traffic Director and backend-bucket-migration ones; outputs select whichever resource was created. An unset scheme is sent as `EXTERNAL` (the spec's default, the classic global external ALB) rather than left to the provider, whose own default is `EXTERNAL_MANAGED`: the scheme is immutable, so a provider-chosen default would replace an existing classic frontend on its next apply. The Pulumi module does the same.
 
 `target` and `labels` update in place (`setTarget` is the zero-downtime frontend swap); every other field is ForceNew — which is why production frontends bind a reserved `GcpGlobalAddress` rather than an ephemeral IP.
 
@@ -47,3 +47,5 @@ The `spec` object includes: the required `target` (plain string after ref resolu
 | `forwarding_rule_id` | Server-assigned numeric ID |
 | `psc_connection_id` | PSC connection id (PSC frontends only) |
 | `psc_connection_status` | PSC connection status (PSC frontends only) |
+| `region` | Region of a regional rule; empty for global |
+| `service_name` | Internal DNS name of an internal passthrough NLB with `service_label` (empty otherwise) |

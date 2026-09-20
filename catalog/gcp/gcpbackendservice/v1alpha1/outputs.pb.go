@@ -36,7 +36,12 @@ type GcpBackendServiceStackOutputs struct {
 	// Server-computed fingerprint of the backend service. Used for
 	// optimistic concurrency control when updating the service outside of
 	// IaC.
-	Fingerprint   string `protobuf:"bytes,4,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	Fingerprint string `protobuf:"bytes,4,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	// Region of a regional backend service; empty for a global one. Downstream blocks
+	// read it to confirm scope compatibility (a regional link must point at a
+	// regional target in the same region), and the E2E verifier picks the
+	// regional or global API by it.
+	Region        string `protobuf:"bytes,5,opt,name=region,proto3" json:"region,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -99,16 +104,24 @@ func (x *GcpBackendServiceStackOutputs) GetFingerprint() string {
 	return ""
 }
 
+func (x *GcpBackendServiceStackOutputs) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 var File_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_gcp_gcpbackendservice_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/gcp/gcpbackendservice/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\"\xb3\x01\n" +
+	"4catalog/gcp/gcpbackendservice/v1alpha1/outputs.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\"\xcb\x01\n" +
 	"\x1dGcpBackendServiceStackOutputs\x12\x1b\n" +
 	"\tself_link\x18\x01 \x01(\tR\bselfLink\x120\n" +
 	"\x14backend_service_name\x18\x02 \x01(\tR\x12backendServiceName\x12!\n" +
 	"\fgenerated_id\x18\x03 \x01(\tR\vgeneratedId\x12 \n" +
-	"\vfingerprint\x18\x04 \x01(\tR\vfingerprintB\xea\x02\n" +
+	"\vfingerprint\x18\x04 \x01(\tR\vfingerprint\x12\x16\n" +
+	"\x06region\x18\x05 \x01(\tR\x06regionB\xea\x02\n" +
 	".com.dev.planton.gcp.gcpbackendservice.v1alpha1B\fOutputsProtoP\x01Z]github.com/plantonhq/planton/catalog/gcp/gcpbackendservice/v1alpha1;gcpbackendservicev1alpha1\xa2\x02\x04DPGG\xaa\x02*Dev.Planton.Gcp.Gcpbackendservice.V1alpha1\xca\x02*Dev\\Planton\\Gcp\\Gcpbackendservice\\V1alpha1\xe2\x026Dev\\Planton\\Gcp\\Gcpbackendservice\\V1alpha1\\GPBMetadata\xea\x02.Dev::Planton::Gcp::Gcpbackendservice::V1alpha1b\x06proto3"
 
 var (

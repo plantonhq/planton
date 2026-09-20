@@ -1,12 +1,12 @@
 # GCP URL Map
 
-Deploys a global Compute Engine URL map — the L7 routing brain of a global external Application Load Balancer. The URL map matches each request's Host and path and decides what happens: send it to a backend service or backend bucket, split it across weighted backends (canary/blue-green), redirect, or rewrite. Target proxies bind this map's self link; the forwarding rule and its IP sit in front of the proxy.
+Deploys a Compute Engine URL map — the L7 routing brain of an Application Load Balancer, global (the default) or regional when `region` is set. The URL map matches each request's Host and path and decides what happens: send it to a backend service or backend bucket, split it across weighted backends (canary/blue-green), redirect, or rewrite. Target proxies bind this map's self link; the forwarding rule and its IP sit in front of the proxy.
 
 ## What Gets Created
 
 When you deploy this Cloud Resource, the IaC module provisions:
 
-- **Compute Engine URL Map (global)** -- host rules, path matchers with path or route rules, default targets at every level, header policies, custom error pages, routing self-tests, and per-route traffic management (timeouts, retries, mirroring, CORS, fault injection, route-scoped CDN caching)
+- **Compute Engine URL Map** -- global, or regional when `region` is set; host rules, path matchers with path or route rules, default targets at every level, header policies, routing self-tests, and per-route traffic management (timeouts, retries, mirroring, CORS, fault injection); on the global map also custom error pages, stream-duration limits, and route-scoped CDN caching
 - **Compute Engine API enablement** -- `compute.googleapis.com` is enabled in the target project; tearing down the URL map never disables the API
 
 ## Before You Deploy
@@ -81,6 +81,8 @@ The InfraPipeline resolves the dependency graph — backends first, then this UR
 
 These are the most important decisions when configuring a URL map. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
+**Scope** -- `region` empty builds the global map (global external ALB, cross-region internal ALB, Traffic Director); a region name builds the regional map (regional external and internal ALBs), which routes only to regional backend services in that region and is referenced only by regional proxies. Immutable.
+
 **Default target** -- Exactly one of: a backend service/bucket, a URL redirect (the http→https front half), or a weighted split across backend services. All of it is MUTABLE — repointing a live map is an in-place, zero-downtime update, which is the canary lever. On the backend arm, a host/path rewrite may accompany the service.
 
 **Path matchers and rules** -- Named routing tables host rules point at. Each matcher uses path rules (longest prefix — the simple choice) OR route rules (priority-ordered with header/query matching), never both. Every rule target is the same three-arm choice, so a weighted canary can be scoped to exactly one path.
@@ -113,6 +115,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `url_map_name` | Name as it exists in GCP | Audit, fleet inventory |
 | `map_id` | Server-assigned numeric ID | Diagnostics |
 | `fingerprint` | Optimistic-concurrency token | Out-of-band gcloud updates |
+| `region` | Region of a regional URL map; empty for global | Scope checks on downstream blocks |
 
 ## Common Patterns
 
@@ -125,6 +128,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 **Apex redirect** -- The redirect-only map a port-80 HTTP proxy serves (http→https 301), or the apex-to-www bounce. Start from the **Apex-to-WWW HTTPS Redirect** preset.
 
 **Traffic-managed canary** -- A weighted split hardened with bounded timeouts, deliberate retries, load-balancer CORS, and an attribution response header. Start from the **Traffic-Managed Canary** preset.
+
+**Regional routing table** -- A regional URL map fronting a regional backend service, with a path template rewrite in the path matcher's default action (the regional map's own knob). Start from the **Regional Routing Table** preset.
 
 ## Works With
 

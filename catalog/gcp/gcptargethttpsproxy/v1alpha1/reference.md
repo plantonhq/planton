@@ -8,30 +8,40 @@
 
 **Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
 
-GcpTargetHttpsProxySpec defines a global Compute Engine target HTTPS proxy
-— the TLS-termination node of a global external Application Load Balancer
-(and of Traffic Director meshes). A target HTTPS proxy binds a global
-forwarding rule (the VIP) to a URL map (the routing brain) and owns
-everything about the client-facing TLS handshake: which certificates are
-presented, which TLS policy constrains ciphers and versions, whether QUIC
-(HTTP/3) is negotiated, and whether TLS 1.3 0-RTT early data is accepted.
+GcpTargetHttpsProxySpec defines a Compute Engine target HTTPS proxy — the
+TLS-termination node of an Application Load Balancer (and of Traffic
+Director meshes). A target HTTPS proxy binds a forwarding rule (the VIP)
+to a URL map (the routing brain) and owns everything about the
+client-facing TLS handshake: which certificates are presented, which TLS
+policy constrains ciphers and versions, whether QUIC (HTTP/3) is
+negotiated, and whether TLS 1.3 0-RTT early data is accepted.
+
+One kind, two scopes. With region empty the proxy is GLOBAL (the global
+external ALB, the cross-region internal ALB, Traffic Director); with
+region set it is REGIONAL (the regional external ALB and the regional
+internal ALB), and every link in its chain must be regional too: a
+regional URL map, regional certificates, a regional SSL policy, and a
+regional forwarding rule in front. A proxy cannot move between scopes.
 
 Certificates attach through exactly one of three mechanisms:
   - ssl_certificates: classic Compute Engine SSL certificates (the
     Google-managed GcpManagedSslCertificate kind, or self-managed compute
-    certificates), up to 15 per proxy.
+    certificates), up to 15 per proxy. On a regional proxy these must be
+    regional self-managed certificates (GcpSslCertificate with region).
   - certificate_manager_certificates: Certificate Manager certificates —
-    only honored by the cross-region internal ALB (INTERNAL_MANAGED).
+    honored by the cross-region internal ALB (INTERNAL_MANAGED) and by
+    the regional ALBs (regional certificates in the proxy's region).
   - certificate_map: a Certificate Manager certificate map that selects
-    the certificate by SNI hostname at scale — only honored by external
-    ALBs (EXTERNAL / EXTERNAL_MANAGED); required beyond ~15 certs.
+    the certificate by SNI hostname at scale — only honored by GLOBAL
+    external ALBs (EXTERNAL / EXTERNAL_MANAGED); required beyond ~15 certs.
 
 Traffic Director proxies (INTERNAL_SELF_MANAGED) skip client certificates
 entirely and drive TLS through server_tls_policy instead.
 
 url_map, certificates, certificate_map, ssl_policy, server_tls_policy, and
 quic_override all update in place via dedicated API calls; name,
-description, keep-alive, early data, and proxy_bind are immutable.
+description, keep-alive, early data, proxy_bind, and region are
+immutable.
 
 ## Example
 
@@ -81,6 +91,7 @@ spec:
 | `spec.projectId` | `string \| valueFrom` |  |  | GcpProject (`status.outputs.project_id`) |
 | `spec.proxyName` | `string` |  |  |  |
 | `spec.description` | `string` |  |  |  |
+| `spec.region` | `string` |  |  |  |
 | `spec.urlMap` | `string \| valueFrom` | yes |  | GcpUrlMap (`status.outputs.self_link`) |
 | `spec.sslCertificates` | `[]string \| valueFrom` |  |  | GcpManagedSslCertificate (`status.outputs.self_link`) |
 | `spec.certificateManagerCertificates` | `[]string \| valueFrom` |  |  | GcpCertManagerCert (`status.outputs.certificate_name`) |
@@ -128,15 +139,33 @@ for the operator tracing a TLS incident later. Immutable.
 
 - rule: {"string":{"maxLen":"2048"}}
 
+### spec.region
+
+`string`
+
+The scope selector. Empty builds a GLOBAL target HTTPS proxy (the
+global external ALB, the cross-region internal ALB, Traffic Director);
+a region name such as us-central1 builds a REGIONAL one (the regional
+external ALB and the regional internal ALB). Everything it references
+must then be regional in the same region: the URL map, the certificates
+(regional GcpSslCertificate or regional Certificate Manager
+certificates), and the SSL policy — and the forwarding rule in front of
+it. The global-only levers (certificate_map, quic_override,
+tls_early_data, proxy_bind) are rejected when region is set. Immutable:
+a proxy cannot move between scopes or regions.
+
+- rule: region must be a valid GCP region name such as us-central1, or empty for a global target HTTPS proxy
+
 ### spec.urlMap
 
 `string | valueFrom` · required
 
 The URL map that decides where each decrypted request goes — the proxy's
 single routing dependency. Reference a GcpUrlMap resource or provide a
-URL map self-link directly. Required. Mutable: GCP swaps it in place (a
-dedicated setUrlMap call), so repointing a live frontend at a new
-routing table causes no downtime.
+URL map self-link directly. Required. A regional proxy can only point at
+a regional URL map in its own region (a GcpUrlMap declared with the same
+region). Mutable: GCP swaps it in place (a dedicated setUrlMap call), so
+repointing a live frontend at a new routing table causes no downtime.
 
 - references: GcpUrlMap (`status.outputs.self_link`)
 - rule: {"required":true}
@@ -152,6 +181,10 @@ GcpSslCertificate resources via an explicit valueFrom.kind, or provide
 SSL certificate self-links directly — both certificate kinds share one
 API collection and attach identically. The load balancer picks the
 certificate matching the client's SNI hostname.
+On a REGIONAL proxy the certificates must be regional self-managed
+certificates in the proxy's region (a GcpSslCertificate declared with
+the same region, attached with valueFrom.kind: GcpSslCertificate) —
+Google-managed compute certificates are global only.
 Not honored by Traffic Director (INTERNAL_SELF_MANAGED) proxies — use
 server_tls_policy there. Mutually exclusive with
 certificate_manager_certificates and certificate_map. Mutable: GCP swaps
@@ -167,10 +200,12 @@ old one.
 
 `[]string | valueFrom`
 
-Certificate Manager certificates presented to clients — only honored by
-the cross-region internal ALB (INTERNAL_MANAGED); external ALBs use
-certificate_map instead. Reference GcpCertManagerCert resources or
-provide certificate resource names directly, in the form
+Certificate Manager certificates presented to clients — honored by the
+cross-region internal ALB (INTERNAL_MANAGED) on a global proxy and by
+the regional ALBs on a regional proxy (regional certificates in the
+proxy's region); global external ALBs use certificate_map instead.
+Reference GcpCertManagerCert resources or provide certificate resource
+names directly, in the form
 projects/{project}/locations/{location}/certificates/{name} (a
 //certificatemanager.googleapis.com/ prefix is also accepted). Mutually
 exclusive with ssl_certificates and certificate_map. Mutable.
@@ -185,7 +220,9 @@ exclusive with ssl_certificates and certificate_map. Mutable.
 A Certificate Manager certificate map that selects the served
 certificate by SNI hostname — the mechanism for serving many domains
 (SaaS custom domains) beyond the 15-certificate list limit. Only honored
-by external ALBs (EXTERNAL / EXTERNAL_MANAGED). Format:
+by GLOBAL external ALBs (EXTERNAL / EXTERNAL_MANAGED); the regional
+proxy carries no such argument, so it is rejected when region is set.
+Format:
 //certificatemanager.googleapis.com/projects/{project}/locations/{location}/certificateMaps/{name}.
 Mutually exclusive with ssl_certificates and
 certificate_manager_certificates. Mutable.
@@ -200,9 +237,11 @@ The SSL policy constraining TLS versions and cipher suites for client
 handshakes. Reference a GcpSslPolicy resource or provide an SSL policy
 self-link directly (e.g.
 https://www.googleapis.com/compute/v1/projects/{project}/global/sslPolicies/{name}).
-If not set, GCP applies its permissive default policy (min TLS 1.0,
-COMPATIBLE profile) — set one to enforce modern TLS for compliance.
-Mutable: GCP swaps it in place (setSslPolicy).
+A regional proxy takes a regional SSL policy in its own region (a
+GcpSslPolicy declared with the same region). If not set, GCP applies
+its permissive default policy (min TLS 1.0, COMPATIBLE profile) — set
+one to enforce modern TLS for compliance. Mutable: GCP swaps it in place
+(setSslPolicy).
 
 - references: GcpSslPolicy (`status.outputs.self_link`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: GcpSslPolicy, name: <that resource's name>, fieldPath: status.outputs.self_link}} -- a bare string does not parse
@@ -214,9 +253,10 @@ Mutable: GCP swaps it in place (setSslPolicy).
 A network security ServerTlsPolicy resource that configures server-side
 TLS — the mTLS mechanism: it can demand and validate client
 certificates. Applies to global proxies behind EXTERNAL /
-EXTERNAL_MANAGED / INTERNAL_SELF_MANAGED forwarding rules; for Traffic
+EXTERNAL_MANAGED / INTERNAL_SELF_MANAGED forwarding rules and to
+regional proxies (a regional policy in the proxy's region); for Traffic
 Director this is the ONLY TLS lever (ssl_certificates are ignored).
-Format: projects/{project}/locations/global/serverTlsPolicies/{name}.
+Format: projects/{project}/locations/{global|region}/serverTlsPolicies/{name}.
 If left blank, no server-side TLS policy applies. Mutable — and
 clearable: removing it PATCHes the proxy back to no policy.
 
@@ -228,7 +268,8 @@ clearable: removing it PATCHes the proxy back to no policy.
 
 QUIC (HTTP/3) negotiation policy. NONE lets Google decide (currently
 enables QUIC), ENABLE forces QUIC negotiation on, DISABLE turns it off.
-GCP default: NONE. Mutable.
+GCP default: NONE. Global proxies only — regional ALBs do not negotiate
+QUIC, and the regional resource carries no such argument. Mutable.
 
 - rule: quic_override must be one of NONE, ENABLE, or DISABLE
 
@@ -243,8 +284,8 @@ the modes trade latency against replay safety: STRICT accepts it only
 for safe methods (GET/HEAD) with no query parameters, PERMISSIVE for all
 requests, UNRESTRICTED additionally skips rejecting non-idempotent
 replays (only for services that tolerate replays), DISABLED turns it
-off. Empty lets GCP apply its default (DISABLED). Immutable: changing it
-destroys and recreates the proxy.
+off. Empty lets GCP apply its default (DISABLED). Global proxies only.
+Immutable: changing it destroys and recreates the proxy.
 
 - rule: tls_early_data must be one of STRICT, PERMISSIVE, UNRESTRICTED, or DISABLED
 
@@ -254,11 +295,12 @@ destroys and recreates the proxy.
 
 Seconds an idle client connection is kept open after a response while no
 matching traffic flows (5-1200). Only honored by load balancers with the
-EXTERNAL_MANAGED scheme (the envoy-based global external ALB), where the
-GCP default is 610; the classic EXTERNAL ALB ignores it. Raise it above
-your clients' own keep-alive to avoid the load balancer closing
-connections first. 0 means unset (GCP applies its default). Immutable:
-changing it destroys and recreates the proxy.
+EXTERNAL_MANAGED scheme (the envoy-based external ALBs, global and
+regional), where the GCP default is 610; the classic EXTERNAL ALB
+ignores it. Raise it above your clients' own keep-alive to avoid the
+load balancer closing connections first. 0 means unset (GCP applies its
+default). Immutable on both scopes: changing it destroys and recreates
+the proxy.
 
 - rule: http_keep_alive_timeout_sec must be between 5 and 1200 seconds (or 0 to let GCP apply its default)
 
@@ -269,7 +311,9 @@ changing it destroys and recreates the proxy.
 Bind the proxy to the private IPs of the Traffic Director mesh instead
 of Google's edge. Only meaningful when the forwarding rule that
 references this proxy uses the INTERNAL_SELF_MANAGED scheme (Traffic
-Director); leave false for internet-facing load balancers. Immutable.
+Director); leave false for internet-facing load balancers. Global
+proxies only — Traffic Director has no regional proxy, and the regional
+resource carries no such argument. Immutable.
 
 ### spec.deletionPolicy
 
@@ -290,7 +334,11 @@ destroyed:
 
 ## Validation Rules
 
-- `single_certificate_source`: choose one certificate mechanism: ssl_certificates (classic compute certificates), certificate_manager_certificates (cross-region internal ALB), or certificate_map (SNI-scale external ALB) — GCP rejects combinations
+- `single_certificate_source`: choose one certificate mechanism: ssl_certificates (classic compute certificates), certificate_manager_certificates (cross-region internal ALB, regional ALBs), or certificate_map (SNI-scale global external ALB) — GCP rejects combinations
+- `certificate_map_global_only`: certificate_map is a global-proxy lever — a regional target HTTPS proxy takes ssl_certificates (regional GcpSslCertificate) or certificate_manager_certificates (regional Certificate Manager certificates); clear region or remove certificate_map
+- `quic_override_global_only`: quic_override is a global-proxy lever — regional Application Load Balancers do not negotiate QUIC; clear region or remove quic_override
+- `tls_early_data_global_only`: tls_early_data is a global-proxy lever — the regional target HTTPS proxy has no early-data policy; clear region or remove tls_early_data
+- `proxy_bind_global_only`: proxy_bind is a global-proxy (Traffic Director) lever — a regional target HTTPS proxy has no mesh to bind to; clear region or remove proxy_bind
 
 ## Outputs
 
@@ -298,10 +346,11 @@ Reference an output from another manifest as `valueFrom: {kind: GcpTargetHttpsPr
 
 | Output | Type | Description |
 |---|---|---|
-| `status.outputs.self_link` | `string` | Self-link URI of the target HTTPS proxy. This is the value a global forwarding rule references as its target — the composition handle that puts a VIP in front of this proxy. Format: https://www.googleapis.com/compute/v1/projects/{project}/global/targetHttpsProxies/{name} |
+| `status.outputs.self_link` | `string` | Self-link URI of the target HTTPS proxy. This is the value a forwarding rule references as its target — the composition handle that puts a VIP in front of this proxy. Format: https://www.googleapis.com/compute/v1/projects/{project}/global/targetHttpsProxies/{name} (a regional proxy's link carries regions/{region} in place of global). |
 | `status.outputs.proxy_name` | `string` | Name of the proxy as it exists in GCP. |
 | `status.outputs.proxy_id` | `string` | Server-assigned numeric ID of the proxy. |
 | `status.outputs.fingerprint` | `string` | Server-computed fingerprint for optimistic concurrency control. |
+| `status.outputs.region` | `string` | Region of a regional target HTTPS proxy; empty for a global one. Downstream blocks read it to confirm scope compatibility (a regional link must point at a regional target in the same region), and the E2E verifier picks the regional or global API by it. |
 
 ## References
 

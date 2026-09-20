@@ -5,6 +5,17 @@
 # Only divergences are recorded -- an argument absent from this file must
 # match its spec field by exact name. Every exclusion carries its reason:
 # omission is a decision, never an accident.
+#
+# One kind, two provider resources: GCP models the global and regional
+# backend services as separate API collections sharing the core surface;
+# the regional one adds the passthrough Network Load Balancer levers
+# (network, backend failover, failover policy, connection tracking, HA
+# policy, zonal affinity) and lacks the global edge features. spec.region is
+# the scope selector -- it name-matches the regional resource's own region
+# argument; every argument only one collection carries is walled to that
+# scope by the spec's CEL rules, so each resource sees exactly the fields it
+# has. The regional IAP block carries no write-only twins, so the regional
+# resource needs no exclusions.
 
 resources:
   google_compute_backend_service:
@@ -61,6 +72,23 @@ resources:
           the re-send trigger for iap.oauth2_client_secret_wo; rides the
           same judgment and re-evaluate trigger (see
           iap.oauth2_client_secret_wo)
+
+  google_compute_region_backend_service:
+    mappings:
+      - spec: spec.backend_service_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.backends
+        arg: backend
+      - spec: spec.health_check
+        arg: health_checks
+      - spec: spec.resource_manager_tags
+        arg: params.resource_manager_tags
+      - spec: spec.log_config.request_headers
+        arg: log_config.request_headers.header_name
+      - spec: spec.log_config.response_headers
+        arg: log_config.response_headers.header_name
 
   # Signed-URL keys are modeled as a list on the spec and fanned out to one
   # companion resource per key -- the keys have no life apart from the

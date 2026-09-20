@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains the Pulumi implementation for deploying global GCP Compute Engine backend services using Planton's `GcpBackendService` API. The module is written in Go and creates a `compute.BackendService` (backed by `google_compute_backend_service`) plus one `compute.BackendServiceSignedUrlKey` per configured signing key.
+This directory contains the Pulumi implementation for deploying GCP Compute Engine backend services using Planton's `GcpBackendService` API. The module is written in Go and creates exactly one of `compute.BackendService` (global; `spec.region` empty) or `compute.RegionBackendService` (regional; `spec.region` set, in `region_backend_service.go`), the same switch the Terraform module makes with its count guards, plus — on the global arm — one `compute.BackendServiceSignedUrlKey` per configured signing key.
 
 A backend service is the hub of the L7 load balancing family: it owns the backend list, health checking, session affinity, Cloud CDN policy, IAP, Cloud Armor attachment, and request logging. URL maps route traffic to it by self-link.
 
@@ -92,10 +92,11 @@ Spec fields mirror the Terraform module: protocol/scheme/timeouts, the singular 
 
 | Output Key | Type | Description |
 |------------|------|-------------|
-| `self_link` | string | Self-link URI — the value URL maps reference |
+| `self_link` | string | Self-link URI — the value URL maps and passthrough forwarding rules reference (`regions/{region}` in place of `global` for a regional service) |
 | `backend_service_name` | string | Name of the backend service in GCP |
 | `generated_id` | string | Server-assigned numeric ID |
 | `fingerprint` | string | Optimistic-concurrency fingerprint |
+| `region` | string | Region of a regional backend service; empty for global |
 
 ## Behavior Notes
 

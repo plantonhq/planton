@@ -25,6 +25,15 @@ spec:
           - compute.globalOperations.get
         provenance: derived
         notes: Covers google_compute_url_map -- create, read/refresh, in-place updates (description, defaults, host rules, path matchers, tests are all mutable), destroy, and polling the global operation every mutation returns.
+      - purpose: ManageRegionalUrlMap
+        permissions:
+          - compute.regionUrlMaps.create
+          - compute.regionUrlMaps.get
+          - compute.regionUrlMaps.update
+          - compute.regionUrlMaps.delete
+          - compute.regionOperations.get
+        provenance: derived
+        notes: Covers google_compute_region_url_map (created when spec.region is set). Regional maps authorize against their own compute.regionUrlMaps family and return region operations the provider polls; the referenced regional backend services authorize with compute.regionBackendServices.use.
       - purpose: UseReferencedBackends
         permissions:
           - compute.backendServices.use

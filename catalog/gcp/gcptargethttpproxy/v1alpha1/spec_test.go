@@ -196,4 +196,41 @@ var _ = ginkgo.Describe("GcpTargetHttpProxySpec", func() {
 		target.Spec.DeletionPolicy = "KEEP"
 		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
 	})
+
+	// ──────────────── Regional arm ────────────────
+
+	ginkgo.It("should accept a regional proxy pointing at a regional URL map", func() {
+		target := minimal()
+		target.Spec.Region = "us-central1"
+		target.Spec.UrlMap = &foreignkeyv1.StringValueOrRef{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
+				Value: "https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/urlMaps/web-routing",
+			},
+		}
+		target.Spec.HttpKeepAliveTimeoutSec = 610
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed region", func() {
+		target := minimal()
+		target.Spec.Region = "US_Central"
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "region must be")).To(gomega.BeTrue())
+	})
+
+	ginkgo.It("should accept proxy_bind on a global proxy", func() {
+		target := minimal()
+		target.Spec.ProxyBind = true
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject proxy_bind on a regional proxy", func() {
+		target := minimal()
+		target.Spec.Region = "us-central1"
+		target.Spec.ProxyBind = true
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(strings.Contains(err.Error(), "proxy_bind is a global-proxy")).To(gomega.BeTrue())
+	})
 })

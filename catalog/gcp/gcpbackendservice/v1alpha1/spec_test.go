@@ -687,4 +687,242 @@ var _ = ginkgo.Describe("GcpBackendServiceSpec", func() {
 		target.Spec.LogConfig = &GcpBackendServiceLogConfig{Enable: true, ResponseHeaders: []string{"X-Cache", "X-Cache"}}
 		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
 	})
+
+	// ──────────────── Regional arm ────────────────
+
+	literal := func(v string) *foreignkeyv1.StringValueOrRef {
+		return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
+	}
+	f64 := func(v float64) *float64 { return &v }
+	boolPtr := func(v bool) *bool { return &v }
+
+	// A regional backend service for a regional external ALB: the everyday
+	// regional shape, with a regional health check.
+	regionalAlb := func() *GcpBackendService {
+		target := minimal()
+		target.Spec.Region = "us-central1"
+		target.Spec.LoadBalancingScheme = str("EXTERNAL_MANAGED")
+		target.Spec.HealthCheck = literal("https://www.googleapis.com/compute/v1/projects/p/regions/us-central1/healthChecks/hc")
+		return target
+	}
+
+	// An internal passthrough Network Load Balancer backend service with the
+	// passthrough levers.
+	internalNlb := func() *GcpBackendService {
+		target := regionalAlb()
+		target.Spec.LoadBalancingScheme = str("INTERNAL")
+		target.Spec.Protocol = str("TCP")
+		target.Spec.Network = literal("https://www.googleapis.com/compute/v1/projects/p/global/networks/vpc")
+		return target
+	}
+
+	ginkgo.It("should accept a regional external managed ALB backend service", func() {
+		gomega.Expect(validator.Validate(regionalAlb())).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept an internal passthrough NLB with failover, connection tracking, and zonal affinity", func() {
+		target := internalNlb()
+		primary := instanceGroupBackend()
+		failover := instanceGroupBackend()
+		failover.Failover = true
+		target.Spec.Backends = []*GcpBackendServiceBackend{primary, failover}
+		target.Spec.FailoverPolicy = &GcpBackendServiceFailoverPolicy{
+			DropTrafficIfUnhealthy: boolPtr(true),
+			FailoverRatio:          f64(0.5),
+		}
+		target.Spec.ConnectionTrackingPolicy = &GcpBackendServiceConnectionTrackingPolicy{
+			TrackingMode:                            str("PER_SESSION"),
+			ConnectionPersistenceOnUnhealthyBackends: str("NEVER_PERSIST"),
+		}
+		idle := int32(900)
+		target.Spec.ConnectionTrackingPolicy.IdleTimeoutSec = &idle
+		target.Spec.NetworkPassThroughLbTrafficPolicy = &GcpBackendServiceNetworkPassThroughLbTrafficPolicy{
+			ZonalAffinity: &GcpBackendServiceZonalAffinity{
+				Spillover:      str("ZONAL_AFFINITY_SPILL_CROSS_ZONE"),
+				SpilloverRatio: f64(0.7),
+			},
+		}
+		target.Spec.SessionAffinity = str("CLIENT_IP_NO_DESTINATION")
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should accept an HA-policy passthrough NLB without a health check or affinity", func() {
+		target := internalNlb()
+		target.Spec.HealthCheck = nil
+		target.Spec.HaPolicy = &GcpBackendServiceHaPolicy{
+			FastIpMove: "GARP_RA",
+			Leader: &GcpBackendServiceHaPolicyLeader{
+				BackendGroup:    "https://www.googleapis.com/compute/v1/projects/p/zones/us-central1-a/networkEndpointGroups/leader-neg",
+				NetworkEndpoint: &GcpBackendServiceHaPolicyLeaderNetworkEndpoint{Instance: "router-a"},
+			},
+		}
+		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject a malformed region", func() {
+		target := regionalAlb()
+		target.Spec.Region = "US-CENTRAL1"
+		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject the passthrough levers on a global backend service", func() {
+		for _, mutate := range []func(*GcpBackendServiceSpec){
+			func(s *GcpBackendServiceSpec) {
+				s.Network = literal("https://www.googleapis.com/compute/v1/projects/p/global/networks/vpc")
+			},
+			func(s *GcpBackendServiceSpec) {
+				s.FailoverPolicy = &GcpBackendServiceFailoverPolicy{DropTrafficIfUnhealthy: boolPtr(true)}
+			},
+			func(s *GcpBackendServiceSpec) {
+				s.ConnectionTrackingPolicy = &GcpBackendServiceConnectionTrackingPolicy{}
+			},
+			func(s *GcpBackendServiceSpec) {
+				s.NetworkPassThroughLbTrafficPolicy = &GcpBackendServiceNetworkPassThroughLbTrafficPolicy{}
+			},
+			func(s *GcpBackendServiceSpec) {
+				b := instanceGroupBackend()
+				b.Failover = true
+				s.Backends = []*GcpBackendServiceBackend{b}
+			},
+		} {
+			target := minimal()
+			mutate(target.Spec)
+			err := validator.Validate(target)
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("exist only on a regional backend service"))
+		}
+	})
+
+	ginkgo.It("should reject the INTERNAL scheme on a global backend service", func() {
+		target := minimal()
+		target.Spec.LoadBalancingScheme = str("INTERNAL")
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("INTERNAL scheme"))
+	})
+
+	ginkgo.It("should reject CLIENT_IP_NO_DESTINATION affinity on a global backend service", func() {
+		target := minimal()
+		target.Spec.SessionAffinity = str("CLIENT_IP_NO_DESTINATION")
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("CLIENT_IP_NO_DESTINATION exists only"))
+	})
+
+	ginkgo.It("should reject the global edge levers on a regional backend service", func() {
+		for _, mutate := range []func(*GcpBackendServiceSpec){
+			func(s *GcpBackendServiceSpec) { s.CompressionMode = "AUTOMATIC" },
+			func(s *GcpBackendServiceSpec) { s.CustomRequestHeaders = []string{"X-Client-Geo: {client_region}"} },
+			func(s *GcpBackendServiceSpec) { s.CustomResponseHeaders = []string{"X-Cache: {cdn_cache_status}"} },
+			func(s *GcpBackendServiceSpec) {
+				s.EdgeSecurityPolicy = literal("https://www.googleapis.com/compute/v1/projects/p/global/securityPolicies/edge")
+			},
+			func(s *GcpBackendServiceSpec) { s.ServiceLbPolicy = "projects/p/locations/global/serviceLbPolicies/x" },
+			func(s *GcpBackendServiceSpec) {
+				s.SignedUrlKeys = []*GcpBackendServiceSignedUrlKey{{Name: "k1", KeyValue: "c2lnbmluZ2tleXNlY3JldA=="}}
+			},
+		} {
+			target := regionalAlb()
+			mutate(target.Spec)
+			err := validator.Validate(target)
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("global edge features"))
+		}
+	})
+
+	ginkgo.It("should reject the Traffic Director levers on a regional backend service", func() {
+		target := regionalAlb()
+		target.Spec.SecuritySettings = &GcpBackendServiceSecuritySettings{SubjectAltNames: []string{"origin.example.com"}}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("Traffic Director / cross-region levers"))
+	})
+
+	ginkgo.It("should reject the migration canary and backend preference on a regional backend service", func() {
+		canary := regionalAlb()
+		canary.Spec.LoadBalancingScheme = str("EXTERNAL")
+		canary.Spec.ExternalManagedMigrationState = "PREPARE"
+		err := validator.Validate(canary)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("migration canary"))
+
+		preferred := regionalAlb()
+		b := instanceGroupBackend()
+		b.Preference = "PREFERRED"
+		preferred.Spec.Backends = []*GcpBackendServiceBackend{b}
+		err = validator.Validate(preferred)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("backends[].preference"))
+	})
+
+	ginkgo.It("should reject the CDN knobs the regional resource lacks", func() {
+		target := regionalAlb()
+		target.Spec.EnableCdn = true
+		target.Spec.CdnPolicy = &GcpBackendServiceCdnPolicy{
+			CacheMode:         "CACHE_ALL_STATIC",
+			RequestCoalescing: true,
+		}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("Cloud CDN's advanced knobs"))
+
+		plain := regionalAlb()
+		plain.Spec.EnableCdn = true
+		plain.Spec.CdnPolicy = &GcpBackendServiceCdnPolicy{CacheMode: "CACHE_ALL_STATIC", DefaultTtl: 600}
+		gomega.Expect(validator.Validate(plain)).To(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject Cloud CDN on the INTERNAL scheme", func() {
+		target := internalNlb()
+		target.Spec.EnableCdn = true
+		gomega.Expect(validator.Validate(target)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject ha_policy together with a health check, affinity, failover, or connection tracking", func() {
+		target := internalNlb()
+		target.Spec.HaPolicy = &GcpBackendServiceHaPolicy{FastIpMove: "DISABLED"}
+		err := validator.Validate(target)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("ha_policy cannot be combined"))
+
+		noHealth := internalNlb()
+		noHealth.Spec.HealthCheck = nil
+		noHealth.Spec.HaPolicy = &GcpBackendServiceHaPolicy{FastIpMove: "DISABLED"}
+		noHealth.Spec.ConnectionTrackingPolicy = &GcpBackendServiceConnectionTrackingPolicy{}
+		gomega.Expect(validator.Validate(noHealth)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject an empty failover_policy and out-of-range ratios", func() {
+		empty := internalNlb()
+		empty.Spec.FailoverPolicy = &GcpBackendServiceFailoverPolicy{}
+		err := validator.Validate(empty)
+		gomega.Expect(err).To(gomega.HaveOccurred())
+		gomega.Expect(err.Error()).To(gomega.ContainSubstring("at least one of"))
+
+		ratio := internalNlb()
+		ratio.Spec.FailoverPolicy = &GcpBackendServiceFailoverPolicy{FailoverRatio: f64(1.5)}
+		gomega.Expect(validator.Validate(ratio)).ToNot(gomega.Succeed())
+	})
+
+	ginkgo.It("should reject invalid connection-tracking, fast-ip-move, and spillover values", func() {
+		tracking := internalNlb()
+		tracking.Spec.ConnectionTrackingPolicy = &GcpBackendServiceConnectionTrackingPolicy{TrackingMode: str("PER_FLOW")}
+		gomega.Expect(validator.Validate(tracking)).ToNot(gomega.Succeed())
+
+		idle := internalNlb()
+		short := int32(30)
+		idle.Spec.ConnectionTrackingPolicy = &GcpBackendServiceConnectionTrackingPolicy{IdleTimeoutSec: &short}
+		gomega.Expect(validator.Validate(idle)).ToNot(gomega.Succeed())
+
+		ha := internalNlb()
+		ha.Spec.HealthCheck = nil
+		ha.Spec.HaPolicy = &GcpBackendServiceHaPolicy{FastIpMove: "INSTANT"}
+		gomega.Expect(validator.Validate(ha)).ToNot(gomega.Succeed())
+
+		spill := internalNlb()
+		spill.Spec.NetworkPassThroughLbTrafficPolicy = &GcpBackendServiceNetworkPassThroughLbTrafficPolicy{
+			ZonalAffinity: &GcpBackendServiceZonalAffinity{Spillover: str("ZONAL_AFFINITY_ALWAYS")},
+		}
+		gomega.Expect(validator.Validate(spill)).ToNot(gomega.Succeed())
+	})
 })

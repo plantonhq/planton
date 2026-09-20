@@ -2,9 +2,9 @@
 
 ## Overview
 
-This directory contains the Pulumi implementation for deploying GCP Compute Engine global forwarding rules using Planton's `GcpGlobalForwardingRule` API. The module is written in Go and creates `compute.GlobalForwardingRule`.
+This directory contains the Pulumi implementation for deploying GCP Compute Engine forwarding rules using Planton's `GcpGlobalForwardingRule` API. The module is written in Go and creates exactly one of `compute.GlobalForwardingRule` (global; `spec.region` empty) or `compute.ForwardingRule` (regional; `spec.region` set), the same switch the Terraform module makes with its count guards.
 
-The forwarding rule is the VIP node of a global load balancer — it binds an IP address and port to a target proxy — and doubles as the Private Service Connect entry point.
+The forwarding rule is the VIP node of a load balancer — it binds an IP address and port to a target proxy or, on a regional passthrough Network Load Balancer, straight to a backend service — and doubles as the Private Service Connect entry point.
 
 ## Prerequisites
 
@@ -94,6 +94,8 @@ The module consumes `GcpGlobalForwardingRuleStackInput`:
 | `forwarding_rule_id` | string | Server-assigned numeric ID |
 | `psc_connection_id` | string | PSC connection id (PSC frontends only) |
 | `psc_connection_status` | string | PSC connection status (PSC frontends only) |
+| `region` | string | Region of a regional rule; empty for global |
+| `service_name` | string | Internal DNS name of an internal passthrough NLB with `service_label` (empty otherwise) |
 
 ## Behavior Notes
 

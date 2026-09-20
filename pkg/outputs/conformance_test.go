@@ -2093,9 +2093,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"backend_service_name": "web-backend",
 				"generated_id":         "1234567890123456789",
 				"fingerprint":          "BwYn2FQlJeM=",
+				"region":               "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "backend_service_name", "generated_id", "fingerprint",
+				"self_link", "backend_service_name", "generated_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2123,9 +2124,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"url_map_name": "my-map",
 				"map_id":       "1234567890123456789",
 				"fingerprint":  "BwYn2FQlJeM=",
+				"region":       "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "url_map_name", "map_id", "fingerprint",
+				"self_link", "url_map_name", "map_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2153,9 +2155,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"proxy_name":  "my-proxy",
 				"proxy_id":    "1234567890123456789",
 				"fingerprint": "BwYn2FQlJeM=",
+				"region":      "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "proxy_name", "proxy_id", "fingerprint",
+				"self_link", "proxy_name", "proxy_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2168,9 +2171,10 @@ func TestStackOutputsConformance(t *testing.T) {
 				"proxy_name":  "my-proxy",
 				"proxy_id":    "1234567890123456789",
 				"fingerprint": "BwYn2FQlJeM=",
+				"region":      "us-central1",
 			},
 			mustPopulate: []string{
-				"self_link", "proxy_name", "proxy_id", "fingerprint",
+				"self_link", "proxy_name", "proxy_id", "fingerprint", "region",
 			},
 		},
 		{
@@ -2186,10 +2190,13 @@ func TestStackOutputsConformance(t *testing.T) {
 				"forwarding_rule_id":    "1234567890123456789",
 				"psc_connection_id":     "1111222233334444",
 				"psc_connection_status": "ACCEPTED",
+				"region":                "us-central1",
+				"service_name":          "orders.ilb-frontend.il4.us-central1.lb.my-project.internal",
 			},
 			mustPopulate: []string{
 				"ip_address", "self_link", "forwarding_rule_name",
 				"forwarding_rule_id", "psc_connection_id", "psc_connection_status",
+				"region", "service_name",
 			},
 		},
 		{

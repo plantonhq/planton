@@ -1,0 +1,28 @@
+# Extra-instance GcpUrlMap fixture: the REGIONAL URL map a regional target
+# proxy routes through, defaulting every request to the regional backend
+# service fixture. Declared through the consuming scenario's
+# e2e-prerequisites annotation; the registry's standard URL map
+# prerequisite is global.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpUrlMap
+metadata:
+  name: planton-oss-e2e-gcpthsp-rum
+  id: planton-oss-e2e-gcpthsp-rum
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptargethttpsproxy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional URL map for the gcptargethttpsproxy regional E2E chain; safe to delete
+  region: us-central1
+  defaultService:
+    valueFrom:
+      kind: GcpBackendService
+      name: planton-oss-e2e-gcpthsp-rbs
+      fieldPath: status.outputs.self_link
+  deletionPolicy: DELETE

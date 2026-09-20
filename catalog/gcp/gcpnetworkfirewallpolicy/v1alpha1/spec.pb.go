@@ -335,9 +335,9 @@ type GcpNetworkFirewallPolicyRule struct {
 	// resources (a GcpGlobalForwardingRule's self_link output) or
 	// forwarding-rule self-links as literals. Required for that target
 	// type, forbidden for INSTANCES. An internal managed load balancer's
-	// forwarding rule is REGIONAL, so today the reference form resolves
-	// fully once the referenced kind carries its regional arm; until then
-	// give the regional forwarding rule's self-link as a literal.
+	// forwarding rule is REGIONAL: reference a GcpGlobalForwardingRule
+	// declared with a region (the kind builds the regional rule behind its
+	// region selector; its name records the global rule it began as).
 	TargetForwardingRules []*v1.StringValueOrRef `protobuf:"bytes,10,rep,name=target_forwarding_rules,json=targetForwardingRules,proto3" json:"target_forwarding_rules,omitempty"`
 	// Restrict the rule to VMs carrying one of these secure tags --
 	// references to GcpTagValue resources (their `name` output,

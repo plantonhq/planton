@@ -1,0 +1,50 @@
+# GcpBackendService scenario: the internal passthrough Network Load Balancer
+# form of the REGIONAL arm -- scheme INTERNAL over TCP on the registry's
+# prerequisite network, with the passthrough-only levers no global service
+# carries: connection tracking (per-session, never persist to an unhealthy
+# backend), a failover policy (drop traffic when both pools are down, fail
+# over at half health), and zonal affinity. No backends: the policies are
+# accepted against an empty pool and the proof is that the regional API
+# round-trips each lever and re-plans clean.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBackendService
+metadata:
+  name: planton-oss-e2e-gcpbs-ilb
+  id: planton-oss-e2e-gcpbs-ilb
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbackendservice
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpbackendservice/e2e/prerequisites/gcphealthcheck-regional-tcp.yaml"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral internal passthrough NLB backend service created by the Planton E2E harness; safe to delete
+  region: us-central1
+  loadBalancingScheme: INTERNAL
+  protocol: TCP
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  healthCheck:
+    valueFrom:
+      kind: GcpHealthCheck
+      name: planton-oss-e2e-gcpbs-tcp-rhc
+      fieldPath: status.outputs.self_link
+  sessionAffinity: CLIENT_IP
+  connectionTrackingPolicy:
+    trackingMode: PER_SESSION
+    connectionPersistenceOnUnhealthyBackends: NEVER_PERSIST
+  failoverPolicy:
+    dropTrafficIfUnhealthy: true
+    failoverRatio: 0.5
+  networkPassThroughLbTrafficPolicy:
+    zonalAffinity:
+      spillover: ZONAL_AFFINITY_SPILL_CROSS_ZONE
+      spilloverRatio: 0.7
+  deletionPolicy: DELETE

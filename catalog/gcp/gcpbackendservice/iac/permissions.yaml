@@ -25,6 +25,16 @@ spec:
           - compute.globalOperations.get
         provenance: derived
         notes: Covers google_compute_backend_service -- create, read/refresh, in-place updates (backends, health check, affinity, CDN, IAP, logging, headers are all mutable; name and project changes replace), and destroy. Global backend services return global operations the provider polls. service_lb_policy attaches a Network Services ServiceLbPolicy by URL through this same compute mutation -- Google's networkservices role reference defines no serviceLbPolicies.use permission (only create/get/list/update/delete, verified live), so no extra grant is listed here; reading the referenced policy in its own project requires networkservices.serviceLbPolicies.get there.
+      - purpose: ManageRegionalBackendService
+        permissions:
+          - compute.regionBackendServices.create
+          - compute.regionBackendServices.get
+          - compute.regionBackendServices.update
+          - compute.regionBackendServices.delete
+          - compute.regionBackendServices.setSecurityPolicy
+          - compute.regionOperations.get
+        provenance: derived
+        notes: Covers google_compute_region_backend_service (created when spec.region is set). Regional services authorize against their own compute.regionBackendServices family and return region operations the provider polls; a referenced regional health check authorizes with compute.regionHealthChecks.useReadOnly, a regional Cloud Armor policy with compute.regionSecurityPolicies.use, and the VPC network of a passthrough Network Load Balancer with compute.networks.use. Signed-URL keys exist on the global service alone.
       - purpose: UseReferencedBackendsAndHealthCheck
         permissions:
           - compute.healthChecks.useReadOnly

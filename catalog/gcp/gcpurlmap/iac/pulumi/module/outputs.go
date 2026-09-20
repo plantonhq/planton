@@ -7,4 +7,5 @@ const (
 	OpUrlMapName  = "url_map_name"
 	OpMapId       = "map_id"
 	OpFingerprint = "fingerprint"
+	OpRegion      = "region"
 )

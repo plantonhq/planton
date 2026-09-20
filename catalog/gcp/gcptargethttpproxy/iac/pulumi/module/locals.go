@@ -13,6 +13,11 @@ type Locals struct {
 	// The cloud-side name defaults to metadata.name when the spec leaves
 	// proxy_name empty — the same naming basis every kind uses.
 	ProxyName string
+
+	// The scope selector: a set spec.region builds the regional proxy, an
+	// empty one the global proxy — the same switch the Terraform module's
+	// count guards make.
+	IsRegional bool
 }
 
 func initializeLocals(ctx *pulumi.Context, stackInput *gcptargethttpproxyv1alpha1.GcpTargetHttpProxyStackInput) *Locals {
@@ -26,5 +31,6 @@ func initializeLocals(ctx *pulumi.Context, stackInput *gcptargethttpproxyv1alpha
 	return &Locals{
 		GcpTargetHttpProxy: target,
 		ProxyName:          proxyName,
+		IsRegional:         target.Spec.Region != "",
 	}
 }

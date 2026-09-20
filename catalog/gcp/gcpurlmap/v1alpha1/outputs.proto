@@ -19,4 +19,10 @@ message GcpUrlMapStackOutputs {
   // Server-computed fingerprint of the URL map. Used for optimistic
   // concurrency control when updating the map outside of IaC.
   string fingerprint = 4;
+
+  // Region of a regional URL map; empty for a global one. Downstream blocks
+  // read it to confirm scope compatibility (a regional link must point at a
+  // regional target in the same region), and the E2E verifier picks the
+  // regional or global API by it.
+  string region = 5;
 }

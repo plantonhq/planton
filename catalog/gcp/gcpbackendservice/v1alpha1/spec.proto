@@ -6,21 +6,29 @@ import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
 import "shared/options/options.proto";
 
-// GcpBackendServiceSpec defines a global Compute Engine backend service — the
-// hub of GCP's L7 load balancing family. A backend service owns HOW traffic
-// reaches a set of backends: which instance groups or network endpoint groups
-// receive requests, how they are health-checked, how sessions stick, whether
+// GcpBackendServiceSpec defines a Compute Engine backend service — the hub of
+// GCP's load balancing family. A backend service owns HOW traffic reaches a
+// set of backends: which instance groups or network endpoint groups receive
+// requests, how they are health-checked, how sessions stick, whether
 // responses are cached by Cloud CDN, whether Identity-Aware Proxy gates
 // access, and how requests are logged. URL maps route host/path patterns to
 // backend services; target proxies and forwarding rules sit in front of the
 // URL map. Each piece is its own resource, referenced by self-link.
 //
-// This kind models the GLOBAL backend service — the backend of the global
-// external Application Load Balancer, Traffic Director / service-mesh
-// (INTERNAL_SELF_MANAGED), and the cross-region internal ALB
-// (INTERNAL_MANAGED). The regional backend service is a different GCP
-// resource with different capabilities (failover policy, connection
-// tracking, network scoping) and is deliberately not folded in here.
+// One kind, two scopes. With region empty this is the GLOBAL backend service
+// — the backend of the global external Application Load Balancer, Traffic
+// Director / service mesh (INTERNAL_SELF_MANAGED), and the cross-region
+// internal ALB (INTERNAL_MANAGED). With region set it is the REGIONAL backend
+// service — the backend of the regional external ALB (EXTERNAL_MANAGED), the
+// regional internal ALB (INTERNAL_MANAGED), and the internal and external
+// passthrough Network Load Balancers (INTERNAL and EXTERNAL, which a
+// forwarding rule names directly with no proxy in between). The regional
+// resource adds the passthrough levers — a VPC network, backend failover,
+// connection tracking, high-availability IP failover, zonal affinity — and
+// lacks the global edge features (Cloud CDN's advanced knobs, signed URLs,
+// response compression, custom headers, Traffic Director policies), each of
+// which is rejected when region is set so a manifest fails before the API
+// sees it. A backend service cannot move between scopes.
 //
 // Cloud CDN is a policy ON this resource, not a separate GCP object:
 // enable_cdn turns edge caching on and cdn_policy tunes how responses are
@@ -51,13 +59,39 @@ message GcpBackendServiceSpec {
   // it for the operator tracing a request path later. Mutable.
   string description = 3 [(buf.validate.field).string.max_len = 2048];
 
+  // The scope selector. Empty builds a GLOBAL backend service (the global
+  // external ALB, the cross-region internal ALB, Traffic Director); a region
+  // name such as us-central1 builds a REGIONAL one (the regional external
+  // and internal ALBs, and the internal and external passthrough Network
+  // Load Balancers). A regional backend service takes a regional health
+  // check for the ALB schemes, is routed to only by regional URL maps and
+  // regional forwarding rules, and attaches only a regional Cloud Armor
+  // policy. The passthrough levers (network, backend failover,
+  // failover_policy, connection_tracking_policy, ha_policy,
+  // network_pass_through_lb_traffic_policy, the INTERNAL scheme) exist only
+  // here and are rejected when region is empty; the global edge levers
+  // (compression_mode, custom request/response headers, edge_security_policy,
+  // service_lb_policy, the EXTERNAL_MANAGED migration canary, backend
+  // preference, locality_lb_policies, max_stream_duration,
+  // security_settings, signed_url_keys, and the CDN knobs the regional
+  // resource lacks) are rejected when it is set. Immutable: a backend
+  // service cannot move between scopes or regions.
+  string region = 39 [(buf.validate.field).cel = {
+    id: "valid_region"
+    message: "region must be a valid GCP region name such as us-central1, or empty for a global backend service"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')"
+  }];
+
   // The protocol the load balancer uses to talk to the backends (default
   // HTTP). This is the LB→backend leg, independent of what clients speak to
   // the load balancer: an HTTPS frontend commonly forwards to HTTP backends.
   // H2C is HTTP/2 over cleartext. Must be GRPC when the backend service is
-  // referenced by a URL map bound to a target gRPC proxy. Mutable, but
-  // switching protocol families usually also means changing the health
-  // check and backend ports.
+  // referenced by a URL map bound to a target gRPC proxy. For the
+  // passthrough Network Load Balancers (regional, scheme INTERNAL or
+  // EXTERNAL) use TCP, UDP, or UNSPECIFIED — UNSPECIFIED forwards every IP
+  // protocol and is what a forwarding rule with ip_protocol L3_DEFAULT
+  // requires. Mutable, but switching protocol families usually also means
+  // changing the health check and backend ports.
   optional string protocol = 4 [
     (dev.planton.shared.options.default) = "HTTP",
     (buf.validate.field).cel = {
@@ -68,19 +102,27 @@ message GcpBackendServiceSpec {
   ];
 
   // Which load balancer family this backend service serves (default
-  // EXTERNAL, the classic global external Application LB). EXTERNAL_MANAGED
-  // is the newer envoy-based global external ALB; INTERNAL_MANAGED is the
-  // cross-region internal ALB; INTERNAL_SELF_MANAGED is Traffic Director /
-  // service mesh. A backend service created for one family cannot serve
+  // EXTERNAL on both scopes: the classic global external Application LB, or
+  // the backend-service-based external passthrough Network Load Balancer on
+  // a regional service). EXTERNAL_MANAGED is the envoy-based external ALB
+  // (global, or regional with region set); INTERNAL_MANAGED is the internal
+  // ALB (cross-region on a global service, regional with region set);
+  // INTERNAL — regional services only — is the internal passthrough Network
+  // Load Balancer; INTERNAL_SELF_MANAGED is Traffic Director / service mesh.
+  // Both engines send EXTERNAL explicitly when this is left empty, on both
+  // scopes, so an unset scheme means the same thing wherever the service
+  // lives (Google's own default differs per scope: EXTERNAL_MANAGED
+  // globally, INTERNAL regionally). Regional presets therefore name the
+  // scheme outright. A backend service created for one family cannot serve
   // another — the only in-place transition GCP supports is the canary
   // migration EXTERNAL → EXTERNAL_MANAGED driven by
-  // external_managed_migration_state.
+  // external_managed_migration_state, on the global service.
   optional string load_balancing_scheme = 5 [
     (dev.planton.shared.options.default) = "EXTERNAL",
     (buf.validate.field).cel = {
       id: "valid_load_balancing_scheme"
-      message: "load_balancing_scheme must be one of EXTERNAL, EXTERNAL_MANAGED, INTERNAL_MANAGED, or INTERNAL_SELF_MANAGED"
-      expression: "this == '' || this in ['EXTERNAL', 'EXTERNAL_MANAGED', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED']"
+      message: "load_balancing_scheme must be one of EXTERNAL, EXTERNAL_MANAGED, INTERNAL, INTERNAL_MANAGED, or INTERNAL_SELF_MANAGED (INTERNAL is the regional passthrough scheme)"
+      expression: "this == '' || this in ['EXTERNAL', 'EXTERNAL_MANAGED', 'INTERNAL', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED']"
     }
   ];
 
@@ -120,10 +162,24 @@ message GcpBackendServiceSpec {
   // single reference, not a list. Reference a GcpHealthCheck resource or
   // provide a health check self-link directly. Required by GCP unless every
   // backend is an internet or serverless NEG — serverless platforms manage
-  // their own health. Mutable.
+  // their own health. A regional backend service behind an Application Load
+  // Balancer needs a REGIONAL health check in its own region (a
+  // GcpHealthCheck declared with the same region); the passthrough Network
+  // Load Balancers accept a global or regional one. Not allowed together
+  // with ha_policy. Mutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef health_check = 9 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpHealthCheck,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
+
+  // The VPC network the backends live in — used by the internal passthrough
+  // Network Load Balancer, and by an external passthrough one only when it
+  // carries an ha_policy with fast IP move. Reference a GcpVpcNetwork
+  // resource or provide a network self-link. Regional backend services
+  // only. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 40 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
   ];
 
   // The backends that actually serve traffic — instance groups or network
@@ -139,15 +195,18 @@ message GcpBackendServiceSpec {
   // NONE — every request is balanced independently). Cookie-based modes
   // (GENERATED_COOKIE, HTTP_COOKIE, STRONG_COOKIE_AFFINITY) need an
   // HTTP-family protocol; CLIENT_IP modes hash on network attributes.
-  // Session affinity is best-effort, not a guarantee — backends going
-  // unhealthy still break affinity. Not applicable when protocol is UDP.
+  // CLIENT_IP_NO_DESTINATION — regional services only — hashes on the
+  // client IP alone, the mode for an internal passthrough Network Load
+  // Balancer used as a next hop. Session affinity is best-effort, not a
+  // guarantee — backends going unhealthy still break affinity. Not
+  // applicable when protocol is UDP; not allowed together with ha_policy.
   // Mutable.
   optional string session_affinity = 11 [
     (dev.planton.shared.options.default) = "NONE",
     (buf.validate.field).cel = {
       id: "valid_session_affinity"
-      message: "session_affinity must be one of NONE, CLIENT_IP, CLIENT_IP_PORT_PROTO, CLIENT_IP_PROTO, GENERATED_COOKIE, HEADER_FIELD, HTTP_COOKIE, or STRONG_COOKIE_AFFINITY"
-      expression: "this == '' || this in ['NONE', 'CLIENT_IP', 'CLIENT_IP_PORT_PROTO', 'CLIENT_IP_PROTO', 'GENERATED_COOKIE', 'HEADER_FIELD', 'HTTP_COOKIE', 'STRONG_COOKIE_AFFINITY']"
+      message: "session_affinity must be one of NONE, CLIENT_IP, CLIENT_IP_PORT_PROTO, CLIENT_IP_PROTO, CLIENT_IP_NO_DESTINATION, GENERATED_COOKIE, HEADER_FIELD, HTTP_COOKIE, or STRONG_COOKIE_AFFINITY (CLIENT_IP_NO_DESTINATION is regional-only)"
+      expression: "this == '' || this in ['NONE', 'CLIENT_IP', 'CLIENT_IP_PORT_PROTO', 'CLIENT_IP_PROTO', 'CLIENT_IP_NO_DESTINATION', 'GENERATED_COOKIE', 'HEADER_FIELD', 'HTTP_COOKIE', 'STRONG_COOKIE_AFFINITY']"
     }
   ];
 
@@ -209,7 +268,9 @@ message GcpBackendServiceSpec {
   // Cloud Armor security policy evaluated on every request AFTER the CDN
   // cache (protects the backends: WAF rules, rate limiting, geo/IP
   // blocking). Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR —
-  // edge policies are not valid here. Mutable.
+  // edge policies are not valid here. The scopes must match: a regional
+  // backend service attaches only a regional Cloud Armor policy in its own
+  // region, a global one only a global policy. Mutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef security_policy = 19 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudArmorPolicy,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_self_link"
@@ -218,7 +279,8 @@ message GcpBackendServiceSpec {
   // Cloud Armor EDGE security policy filtering requests BEFORE the CDN
   // cache (protects cached content: geo/IP blocking at the edge).
   // Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR_EDGE — standard
-  // backend policies are not valid here. Mutable.
+  // backend policies are not valid here. Global backend services only (the
+  // edge is Google's global CDN). Mutable.
   dev.planton.shared.foreignkey.v1.StringValueOrRef edge_security_policy = 20 [
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudArmorPolicy,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.policy_self_link"
@@ -235,10 +297,42 @@ message GcpBackendServiceSpec {
   // high-traffic services.
   GcpBackendServiceLogConfig log_config = 22;
 
+  // Failover behavior for a passthrough Network Load Balancer whose
+  // backends are split into primary and failover pools (backends[].failover
+  // marks the failover pool): when to shift to the failover pool, whether
+  // to drop traffic if both pools are unhealthy, and whether to drain
+  // existing connections on failover. Regional backend services only; not
+  // allowed together with ha_policy.
+  GcpBackendServiceFailoverPolicy failover_policy = 41;
+
+  // How a passthrough Network Load Balancer tracks connections for session
+  // consistency: per connection or per session, whether tracked flows
+  // persist to a backend that turned unhealthy, and how long idle entries
+  // live. Regional backend services only; not allowed together with
+  // ha_policy.
+  GcpBackendServiceConnectionTrackingPolicy connection_tracking_policy = 42;
+
+  // High-availability IP failover for an internal (or external) passthrough
+  // Network Load Balancer with exactly one leader backend at a time: a
+  // single backend group (or one endpoint inside it) holds the VIP, and
+  // fast_ip_move lets the VIP move with a gratuitous ARP / router
+  // advertisement instead of waiting on health checks. Regional backend
+  // services only. Google forbids it together with health_check,
+  // session_affinity, failover_policy, and connection_tracking_policy — the
+  // leader IS the routing decision.
+  GcpBackendServiceHaPolicy ha_policy = 43;
+
+  // Zonal affinity for a passthrough Network Load Balancer: keep traffic
+  // inside the client's zone and decide whether it may spill to other zones
+  // when the local zone's healthy capacity drops below a ratio. Regional
+  // backend services only.
+  GcpBackendServiceNetworkPassThroughLbTrafficPolicy network_pass_through_lb_traffic_policy = 44;
+
   // Headers the load balancer ADDS to requests before forwarding them to
   // the backends, in "Header-Name: value" form. Values may use variables
   // like {client_ip} or {tls_version}. Typical uses: passing the client's
-  // geo data or TLS parameters to the application. Mutable.
+  // geo data or TLS parameters to the application. Global backend services
+  // only. Mutable.
   repeated string custom_request_headers = 23 [
     (buf.validate.field).repeated.max_items = 25,
     (buf.validate.field).repeated.items.string.pattern = "^[^:]+:.*$"
@@ -247,7 +341,8 @@ message GcpBackendServiceSpec {
   // Headers the load balancer ADDS to responses before returning them to
   // clients, in "Header-Name: value" form. Values may use variables like
   // {cdn_cache_status}. Typical uses: security headers
-  // (Strict-Transport-Security) and cache observability. Mutable.
+  // (Strict-Transport-Security) and cache observability. Global backend
+  // services only. Mutable.
   repeated string custom_response_headers = 24 [
     (buf.validate.field).repeated.max_items = 25,
     (buf.validate.field).repeated.items.string.pattern = "^[^:]+:.*$"
@@ -257,7 +352,7 @@ message GcpBackendServiceSpec {
   // clients that ask for it. AUTOMATIC compresses compressible content
   // types; DISABLED (the GCP default when unset) never compresses.
   // Compression is applied by the load balancer — backends keep serving
-  // uncompressed responses. Mutable.
+  // uncompressed responses. Global backend services only. Mutable.
   string compression_mode = 25 [(buf.validate.field).cel = {
     id: "valid_compression_mode"
     message: "compression_mode must be AUTOMATIC or DISABLED"
@@ -366,7 +461,13 @@ message GcpBackendServiceSpec {
   option (buf.validate.message).cel = {
     id: "cdn_requires_external_scheme"
     message: "Cloud CDN can only be enabled on external backend services (scheme EXTERNAL or EXTERNAL_MANAGED) — it does not front internal load balancers"
-    expression: "!this.enable_cdn || !(this.load_balancing_scheme in ['INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED'])"
+    expression: "!this.enable_cdn || !(this.load_balancing_scheme in ['INTERNAL', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED'])"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "client_ip_no_destination_regional_only"
+    message: "session_affinity CLIENT_IP_NO_DESTINATION exists only on a regional backend service (the internal passthrough Network Load Balancer as a next hop) — set region or choose another affinity"
+    expression: "!has(this.session_affinity) || this.session_affinity != 'CLIENT_IP_NO_DESTINATION' || this.region != ''"
   };
 
   option (buf.validate.message).cel = {
@@ -439,6 +540,67 @@ message GcpBackendServiceSpec {
     id: "backend_preference_not_external"
     message: "backend preference cannot be set when load_balancing_scheme is EXTERNAL (the default) — use EXTERNAL_MANAGED or an internal scheme"
     expression: "!this.backends.exists(b, b.preference != '') || (has(this.load_balancing_scheme) && this.load_balancing_scheme != 'EXTERNAL' && this.load_balancing_scheme != '')"
+  };
+
+  // The regional-only levers, walled to region != ''. The global backend
+  // service has no VPC network, no failover pools, no connection tracking,
+  // no HA policy, no zonal affinity, and no INTERNAL (passthrough) scheme.
+  option (buf.validate.message).cel = {
+    id: "passthrough_levers_regional_only"
+    message: "network, failover_policy, connection_tracking_policy, ha_policy, network_pass_through_lb_traffic_policy, and backends[].failover belong to the passthrough Network Load Balancers and exist only on a regional backend service — set region or remove them"
+    expression: "this.region != '' || (!has(this.network) && !has(this.failover_policy) && !has(this.connection_tracking_policy) && !has(this.ha_policy) && !has(this.network_pass_through_lb_traffic_policy) && !this.backends.exists(b, b.failover))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "internal_scheme_regional_only"
+    message: "the INTERNAL scheme (the internal passthrough Network Load Balancer) exists only on a regional backend service — set region, or use INTERNAL_MANAGED for the cross-region internal Application Load Balancer"
+    expression: "!has(this.load_balancing_scheme) || this.load_balancing_scheme != 'INTERNAL' || this.region != ''"
+  };
+
+  // The global-only levers, walled to region == ''. Each names the argument
+  // the regional resource lacks so a manifest author learns the boundary
+  // from the error rather than from the API.
+  option (buf.validate.message).cel = {
+    id: "edge_levers_global_only"
+    message: "compression_mode, custom_request_headers, custom_response_headers, edge_security_policy, service_lb_policy, and signed_url_keys are global edge features (Cloud CDN, Google's global front end) — a regional backend service carries none; clear region or remove them"
+    expression: "this.region == '' || (this.compression_mode == '' && size(this.custom_request_headers) == 0 && size(this.custom_response_headers) == 0 && !has(this.edge_security_policy) && this.service_lb_policy == '' && size(this.signed_url_keys) == 0)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "traffic_director_levers_global_only"
+    message: "locality_lb_policies, max_stream_duration, and security_settings are Traffic Director / cross-region levers that exist only on a global backend service — clear region or remove them"
+    expression: "this.region == '' || (size(this.locality_lb_policies) == 0 && !has(this.max_stream_duration) && !has(this.security_settings))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "migration_canary_global_only"
+    message: "the EXTERNAL → EXTERNAL_MANAGED migration canary (external_managed_migration_state and its testing percentage) exists only on a global backend service — clear region or remove it"
+    expression: "this.region == '' || (this.external_managed_migration_state == '' && this.external_managed_migration_testing_percentage == 0.0)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "backend_preference_global_only"
+    message: "backends[].preference (preferred/spillover pools) exists only on a global backend service — clear region or remove it (a regional passthrough service uses backends[].failover instead)"
+    expression: "this.region == '' || !this.backends.exists(b, b.preference != '')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "cdn_knobs_global_only"
+    message: "cdn_policy.request_coalescing, cdn_policy.bypass_cache_on_request_headers, cdn_policy.cache_key_policy.include_http_headers, and cdn_policy.negative_caching_policy[].ttl exist only on a global backend service — Cloud CDN's advanced knobs have no regional form; clear region or remove them"
+    expression: "this.region == '' || !has(this.cdn_policy) || (!this.cdn_policy.request_coalescing && size(this.cdn_policy.bypass_cache_on_request_headers) == 0 && (!has(this.cdn_policy.cache_key_policy) || size(this.cdn_policy.cache_key_policy.include_http_headers) == 0) && !this.cdn_policy.negative_caching_policy.exists(n, n.ttl != 0))"
+  };
+
+  // Google's own coupling rules on the regional resource, made fail-fast.
+  option (buf.validate.message).cel = {
+    id: "ha_policy_conflicts"
+    message: "ha_policy cannot be combined with health_check, session_affinity, failover_policy, or connection_tracking_policy — with an HA policy the leader backend IS the routing decision"
+    expression: "!has(this.ha_policy) || (!has(this.health_check) && (!has(this.session_affinity) || this.session_affinity in ['', 'NONE']) && !has(this.failover_policy) && !has(this.connection_tracking_policy))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "failover_policy_at_least_one"
+    message: "failover_policy must set at least one of disable_connection_drain_on_failover, drop_traffic_if_unhealthy, or failover_ratio"
+    expression: "!has(this.failover_policy) || has(this.failover_policy.disable_connection_drain_on_failover) || has(this.failover_policy.drop_traffic_if_unhealthy) || has(this.failover_policy.failover_ratio)"
   };
 }
 
@@ -524,7 +686,9 @@ message GcpBackendServiceBackend {
 
   // Whether this backend is PREFERRED (filled to capacity before DEFAULT
   // backends receive traffic) — the primary/spillover pattern. Cannot be
-  // set when the service's load_balancing_scheme is EXTERNAL. Mutable.
+  // set when the service's load_balancing_scheme is EXTERNAL. Global
+  // backend services only (a regional passthrough service splits pools with
+  // failover instead). Mutable.
   string preference = 12 [(buf.validate.field).cel = {
     id: "valid_preference"
     message: "preference must be PREFERRED or DEFAULT"
@@ -535,6 +699,13 @@ message GcpBackendServiceBackend {
   // by this backend via ORCA. Each can run dry (reported but not acted on)
   // while being validated.
   repeated GcpBackendServiceBackendCustomMetric custom_metrics = 13;
+
+  // Mark this backend as part of the FAILOVER pool of a passthrough Network
+  // Load Balancer: it receives traffic only when the primary pool's healthy
+  // ratio drops to failover_policy.failover_ratio (or every primary backend
+  // is unhealthy). Several backends may be failover backends. Regional
+  // backend services only. Mutable.
+  bool failover = 14;
 
   option (buf.validate.message).cel = {
     id: "rate_mode_requires_rate_target"
@@ -918,6 +1089,156 @@ message GcpBackendServiceIap {
     message: "oauth2_client_id and oauth2_client_secret must be set together — or both left empty to use the Google-managed OAuth client"
     expression: "(this.oauth2_client_id == '') == (this.oauth2_client_secret == '')"
   };
+}
+
+// Failover behavior for a passthrough Network Load Balancer whose backends
+// are split into a primary pool and a failover pool (backends[].failover).
+// Regional backend services only. Google requires at least one of the three
+// fields when the block is present; every field carries presence so an
+// explicit false is a statement and an omitted field is not sent.
+message GcpBackendServiceFailoverPolicy {
+  // Skip connection draining when traffic fails over (or back): existing
+  // connections to the old active pool are cut rather than drained for the
+  // fixed 10-minute window. TCP only. GCP default false.
+  optional bool disable_connection_drain_on_failover = 1;
+
+  // When NO backend in either pool is healthy, drop new connections (true)
+  // instead of spraying them across every primary backend in the hope one
+  // answers (false, GCP's default).
+  optional bool drop_traffic_if_unhealthy = 2;
+
+  // The healthy ratio (0.0-1.0) of the primary pool at or below which
+  // traffic moves to the failover pool. Unset means traffic fails over only
+  // when every primary backend is unhealthy. When the failover pool is
+  // itself all-unhealthy, traffic returns to the primary pool best-effort.
+  optional double failover_ratio = 3 [
+    (buf.validate.field).double.gte = 0,
+    (buf.validate.field).double.lte = 1
+  ];
+}
+
+// Connection tracking for a passthrough Network Load Balancer — the rules
+// that decide whether a flow keeps landing on the backend it started on.
+// Regional backend services only.
+message GcpBackendServiceConnectionTrackingPolicy {
+  // What identifies a tracked flow: PER_CONNECTION (the GCP default) keys on
+  // the protocol's full connection tuple; PER_SESSION keys on the configured
+  // session_affinity, so a client's whole session sticks together. Both
+  // engines send the default explicitly when this is empty.
+  optional string tracking_mode = 1 [
+    (dev.planton.shared.options.default) = "PER_CONNECTION",
+    (buf.validate.field).cel = {
+      id: "valid_tracking_mode"
+      message: "tracking_mode must be PER_CONNECTION or PER_SESSION"
+      expression: "this == '' || this in ['PER_CONNECTION', 'PER_SESSION']"
+    }
+  ];
+
+  // What happens to tracked flows when their backend turns unhealthy:
+  // DEFAULT_FOR_PROTOCOL (the GCP default) keeps TCP/SCTP connections on the
+  // unhealthy backend when tracking is per-connection or 5-tuple affinity,
+  // never UDP; NEVER_PERSIST always diverts them to healthy backends;
+  // ALWAYS_PERSIST keeps them where they are. Both engines send the default
+  // explicitly when this is empty.
+  optional string connection_persistence_on_unhealthy_backends = 2 [
+    (dev.planton.shared.options.default) = "DEFAULT_FOR_PROTOCOL",
+    (buf.validate.field).cel = {
+      id: "valid_connection_persistence"
+      message: "connection_persistence_on_unhealthy_backends must be DEFAULT_FOR_PROTOCOL, NEVER_PERSIST, or ALWAYS_PERSIST"
+      expression: "this == '' || this in ['DEFAULT_FOR_PROTOCOL', 'NEVER_PERSIST', 'ALWAYS_PERSIST']"
+    }
+  ];
+
+  // Seconds a connection-tracking entry lives with no matching traffic. For
+  // the internal passthrough NLB the minimum (and GCP default) is 600 and
+  // the maximum 57600; for the external passthrough NLB it must be 60 when
+  // tracking per session with CLIENT_IP or CLIENT_IP_PROTO affinity, and
+  // the default otherwise. Left unset, GCP computes the default and the
+  // engines send nothing (the argument is computed by the API), so an
+  // untouched value never shows as drift.
+  optional int32 idle_timeout_sec = 3 [
+    (buf.validate.field).int32.gte = 60,
+    (buf.validate.field).int32.lte = 57600
+  ];
+
+  // Strong session affinity for the external passthrough Network Load
+  // Balancer: track flows so a session keeps its backend across connection
+  // churn. Google documents this option as not yet publicly available; it
+  // is here so the spec matches the provider surface. Default false.
+  bool enable_strong_affinity = 4;
+}
+
+// High-availability IP failover for a passthrough Network Load Balancer with
+// one leader backend at a time. Regional backend services only.
+message GcpBackendServiceHaPolicy {
+  // How the VIP moves to a new leader: DISABLED (the leader changes only
+  // through the haPolicy.leader API, i.e. by editing leader below) or
+  // GARP_RA (the VM that should become leader announces itself with a
+  // gratuitous ARP for IPv4 or a Router Advertisement for IPv6 and Google
+  // moves the VIP within seconds — the mechanism for keepalived-style
+  // active/passive pairs). Immutable: changing it recreates the backend
+  // service.
+  string fast_ip_move = 1 [(buf.validate.field).cel = {
+    id: "valid_fast_ip_move"
+    message: "fast_ip_move must be DISABLED or GARP_RA"
+    expression: "this == '' || this in ['DISABLED', 'GARP_RA']"
+  }];
+
+  // The current leader: the zonal network endpoint group holding the VIP
+  // and, optionally, the exact instance inside it. Mutable — editing this
+  // is the API-driven leader change.
+  GcpBackendServiceHaPolicyLeader leader = 2;
+}
+
+// The leader of an HA policy.
+message GcpBackendServiceHaPolicyLeader {
+  // Fully-qualified URL of the zonal network endpoint group the leader is
+  // attached to. Must be one of this service's backends.
+  string backend_group = 1 [(buf.validate.field).string.max_len = 2048];
+
+  // The leader endpoint inside that group.
+  GcpBackendServiceHaPolicyLeaderNetworkEndpoint network_endpoint = 2;
+}
+
+// The leader endpoint of an HA policy.
+message GcpBackendServiceHaPolicyLeaderNetworkEndpoint {
+  // Name of the VM instance serving as the leader. The instance must
+  // already be attached to the leader's backend_group NEG.
+  string instance = 1 [(buf.validate.field).string.max_len = 63];
+}
+
+// Traffic policy for a passthrough Network Load Balancer. Regional backend
+// services only.
+message GcpBackendServiceNetworkPassThroughLbTrafficPolicy {
+  // Keep new connections inside the client's zone while that zone has
+  // enough healthy backends, spilling to other zones only below a ratio.
+  GcpBackendServiceZonalAffinity zonal_affinity = 1;
+}
+
+// Zonal affinity for a passthrough Network Load Balancer.
+message GcpBackendServiceZonalAffinity {
+  // The mode: ZONAL_AFFINITY_DISABLED (the GCP default — connections spread
+  // across all zones), ZONAL_AFFINITY_SPILL_CROSS_ZONE (stay in the
+  // client's zone while its healthy ratio is at or above spillover_ratio,
+  // otherwise use every zone), or ZONAL_AFFINITY_STAY_WITHIN_ZONE (never
+  // leave the zone, even when it has no healthy backend). Both engines send
+  // the default explicitly when this is empty.
+  optional string spillover = 1 [
+    (dev.planton.shared.options.default) = "ZONAL_AFFINITY_DISABLED",
+    (buf.validate.field).cel = {
+      id: "valid_spillover"
+      message: "spillover must be ZONAL_AFFINITY_DISABLED, ZONAL_AFFINITY_SPILL_CROSS_ZONE, or ZONAL_AFFINITY_STAY_WITHIN_ZONE"
+      expression: "this == '' || this in ['ZONAL_AFFINITY_DISABLED', 'ZONAL_AFFINITY_SPILL_CROSS_ZONE', 'ZONAL_AFFINITY_STAY_WITHIN_ZONE']"
+    }
+  ];
+
+  // The healthy ratio (0.0-1.0) of the client's zone at or above which new
+  // connections stay local; below it they spread across all zones (SPILL
+  // mode only). Unset lets GCP apply its default.
+  optional double spillover_ratio = 2 [
+    (buf.validate.field).double.gte = 0,
+    (buf.validate.field).double.lte = 1
+  ];
 }
 
 // Request logging for this backend service.

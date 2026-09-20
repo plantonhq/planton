@@ -215,9 +215,9 @@ variable "spec" {
       # resources (a GcpGlobalForwardingRule's self_link output) or
       # forwarding-rule self-links as literals. Required for that target
       # type, forbidden for INSTANCES. An internal managed load balancer's
-      # forwarding rule is REGIONAL, so today the reference form resolves
-      # fully once the referenced kind carries its regional arm; until then
-      # give the regional forwarding rule's self-link as a literal.
+      # forwarding rule is REGIONAL: reference a GcpGlobalForwardingRule
+      # declared with a region (the kind builds the regional rule behind its
+      # region selector; its name records the global rule it began as).
       # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       target_forwarding_rules = optional(list(string), [])
 

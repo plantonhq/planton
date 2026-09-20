@@ -24,21 +24,29 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GcpBackendServiceSpec defines a global Compute Engine backend service — the
-// hub of GCP's L7 load balancing family. A backend service owns HOW traffic
-// reaches a set of backends: which instance groups or network endpoint groups
-// receive requests, how they are health-checked, how sessions stick, whether
+// GcpBackendServiceSpec defines a Compute Engine backend service — the hub of
+// GCP's load balancing family. A backend service owns HOW traffic reaches a
+// set of backends: which instance groups or network endpoint groups receive
+// requests, how they are health-checked, how sessions stick, whether
 // responses are cached by Cloud CDN, whether Identity-Aware Proxy gates
 // access, and how requests are logged. URL maps route host/path patterns to
 // backend services; target proxies and forwarding rules sit in front of the
 // URL map. Each piece is its own resource, referenced by self-link.
 //
-// This kind models the GLOBAL backend service — the backend of the global
-// external Application Load Balancer, Traffic Director / service-mesh
-// (INTERNAL_SELF_MANAGED), and the cross-region internal ALB
-// (INTERNAL_MANAGED). The regional backend service is a different GCP
-// resource with different capabilities (failover policy, connection
-// tracking, network scoping) and is deliberately not folded in here.
+// One kind, two scopes. With region empty this is the GLOBAL backend service
+// — the backend of the global external Application Load Balancer, Traffic
+// Director / service mesh (INTERNAL_SELF_MANAGED), and the cross-region
+// internal ALB (INTERNAL_MANAGED). With region set it is the REGIONAL backend
+// service — the backend of the regional external ALB (EXTERNAL_MANAGED), the
+// regional internal ALB (INTERNAL_MANAGED), and the internal and external
+// passthrough Network Load Balancers (INTERNAL and EXTERNAL, which a
+// forwarding rule names directly with no proxy in between). The regional
+// resource adds the passthrough levers — a VPC network, backend failover,
+// connection tracking, high-availability IP failover, zonal affinity — and
+// lacks the global edge features (Cloud CDN's advanced knobs, signed URLs,
+// response compression, custom headers, Traffic Director policies), each of
+// which is rejected when region is set so a manifest fails before the API
+// sees it. A backend service cannot move between scopes.
 //
 // Cloud CDN is a policy ON this resource, not a separate GCP object:
 // enable_cdn turns edge caching on and cdn_policy tunes how responses are
@@ -60,22 +68,51 @@ type GcpBackendServiceSpec struct {
 	// What this backend service fronts and which URL maps route to it — write
 	// it for the operator tracing a request path later. Mutable.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	// The scope selector. Empty builds a GLOBAL backend service (the global
+	// external ALB, the cross-region internal ALB, Traffic Director); a region
+	// name such as us-central1 builds a REGIONAL one (the regional external
+	// and internal ALBs, and the internal and external passthrough Network
+	// Load Balancers). A regional backend service takes a regional health
+	// check for the ALB schemes, is routed to only by regional URL maps and
+	// regional forwarding rules, and attaches only a regional Cloud Armor
+	// policy. The passthrough levers (network, backend failover,
+	// failover_policy, connection_tracking_policy, ha_policy,
+	// network_pass_through_lb_traffic_policy, the INTERNAL scheme) exist only
+	// here and are rejected when region is empty; the global edge levers
+	// (compression_mode, custom request/response headers, edge_security_policy,
+	// service_lb_policy, the EXTERNAL_MANAGED migration canary, backend
+	// preference, locality_lb_policies, max_stream_duration,
+	// security_settings, signed_url_keys, and the CDN knobs the regional
+	// resource lacks) are rejected when it is set. Immutable: a backend
+	// service cannot move between scopes or regions.
+	Region string `protobuf:"bytes,39,opt,name=region,proto3" json:"region,omitempty"`
 	// The protocol the load balancer uses to talk to the backends (default
 	// HTTP). This is the LB→backend leg, independent of what clients speak to
 	// the load balancer: an HTTPS frontend commonly forwards to HTTP backends.
 	// H2C is HTTP/2 over cleartext. Must be GRPC when the backend service is
-	// referenced by a URL map bound to a target gRPC proxy. Mutable, but
-	// switching protocol families usually also means changing the health
-	// check and backend ports.
+	// referenced by a URL map bound to a target gRPC proxy. For the
+	// passthrough Network Load Balancers (regional, scheme INTERNAL or
+	// EXTERNAL) use TCP, UDP, or UNSPECIFIED — UNSPECIFIED forwards every IP
+	// protocol and is what a forwarding rule with ip_protocol L3_DEFAULT
+	// requires. Mutable, but switching protocol families usually also means
+	// changing the health check and backend ports.
 	Protocol *string `protobuf:"bytes,4,opt,name=protocol,proto3,oneof" json:"protocol,omitempty"`
 	// Which load balancer family this backend service serves (default
-	// EXTERNAL, the classic global external Application LB). EXTERNAL_MANAGED
-	// is the newer envoy-based global external ALB; INTERNAL_MANAGED is the
-	// cross-region internal ALB; INTERNAL_SELF_MANAGED is Traffic Director /
-	// service mesh. A backend service created for one family cannot serve
+	// EXTERNAL on both scopes: the classic global external Application LB, or
+	// the backend-service-based external passthrough Network Load Balancer on
+	// a regional service). EXTERNAL_MANAGED is the envoy-based external ALB
+	// (global, or regional with region set); INTERNAL_MANAGED is the internal
+	// ALB (cross-region on a global service, regional with region set);
+	// INTERNAL — regional services only — is the internal passthrough Network
+	// Load Balancer; INTERNAL_SELF_MANAGED is Traffic Director / service mesh.
+	// Both engines send EXTERNAL explicitly when this is left empty, on both
+	// scopes, so an unset scheme means the same thing wherever the service
+	// lives (Google's own default differs per scope: EXTERNAL_MANAGED
+	// globally, INTERNAL regionally). Regional presets therefore name the
+	// scheme outright. A backend service created for one family cannot serve
 	// another — the only in-place transition GCP supports is the canary
 	// migration EXTERNAL → EXTERNAL_MANAGED driven by
-	// external_managed_migration_state.
+	// external_managed_migration_state, on the global service.
 	LoadBalancingScheme *string `protobuf:"bytes,5,opt,name=load_balancing_scheme,json=loadBalancingScheme,proto3,oneof" json:"load_balancing_scheme,omitempty"`
 	// Name of the backend port to use for instance-group backends. The same
 	// named port must be defined on every instance group this service
@@ -100,8 +137,18 @@ type GcpBackendServiceSpec struct {
 	// single reference, not a list. Reference a GcpHealthCheck resource or
 	// provide a health check self-link directly. Required by GCP unless every
 	// backend is an internet or serverless NEG — serverless platforms manage
-	// their own health. Mutable.
+	// their own health. A regional backend service behind an Application Load
+	// Balancer needs a REGIONAL health check in its own region (a
+	// GcpHealthCheck declared with the same region); the passthrough Network
+	// Load Balancers accept a global or regional one. Not allowed together
+	// with ha_policy. Mutable.
 	HealthCheck *v1.StringValueOrRef `protobuf:"bytes,9,opt,name=health_check,json=healthCheck,proto3" json:"health_check,omitempty"`
+	// The VPC network the backends live in — used by the internal passthrough
+	// Network Load Balancer, and by an external passthrough one only when it
+	// carries an ha_policy with fast IP move. Reference a GcpVpcNetwork
+	// resource or provide a network self-link. Regional backend services
+	// only. Immutable.
+	Network *v1.StringValueOrRef `protobuf:"bytes,40,opt,name=network,proto3" json:"network,omitempty"`
 	// The backends that actually serve traffic — instance groups or network
 	// endpoint groups, each with its own balancing mode and capacity dials.
 	// A backend service may mix backends of the same family but cannot mix
@@ -114,8 +161,11 @@ type GcpBackendServiceSpec struct {
 	// NONE — every request is balanced independently). Cookie-based modes
 	// (GENERATED_COOKIE, HTTP_COOKIE, STRONG_COOKIE_AFFINITY) need an
 	// HTTP-family protocol; CLIENT_IP modes hash on network attributes.
-	// Session affinity is best-effort, not a guarantee — backends going
-	// unhealthy still break affinity. Not applicable when protocol is UDP.
+	// CLIENT_IP_NO_DESTINATION — regional services only — hashes on the
+	// client IP alone, the mode for an internal passthrough Network Load
+	// Balancer used as a next hop. Session affinity is best-effort, not a
+	// guarantee — backends going unhealthy still break affinity. Not
+	// applicable when protocol is UDP; not allowed together with ha_policy.
 	// Mutable.
 	SessionAffinity *string `protobuf:"bytes,11,opt,name=session_affinity,json=sessionAffinity,proto3,oneof" json:"session_affinity,omitempty"`
 	// Lifetime in seconds of the cookie GCP generates for GENERATED_COOKIE
@@ -161,12 +211,15 @@ type GcpBackendServiceSpec struct {
 	// Cloud Armor security policy evaluated on every request AFTER the CDN
 	// cache (protects the backends: WAF rules, rate limiting, geo/IP
 	// blocking). Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR —
-	// edge policies are not valid here. Mutable.
+	// edge policies are not valid here. The scopes must match: a regional
+	// backend service attaches only a regional Cloud Armor policy in its own
+	// region, a global one only a global policy. Mutable.
 	SecurityPolicy *v1.StringValueOrRef `protobuf:"bytes,19,opt,name=security_policy,json=securityPolicy,proto3" json:"security_policy,omitempty"`
 	// Cloud Armor EDGE security policy filtering requests BEFORE the CDN
 	// cache (protects cached content: geo/IP blocking at the edge).
 	// Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR_EDGE — standard
-	// backend policies are not valid here. Mutable.
+	// backend policies are not valid here. Global backend services only (the
+	// edge is Google's global CDN). Mutable.
 	EdgeSecurityPolicy *v1.StringValueOrRef `protobuf:"bytes,20,opt,name=edge_security_policy,json=edgeSecurityPolicy,proto3" json:"edge_security_policy,omitempty"`
 	// Identity-Aware Proxy: authenticate every request against Google
 	// identities before it reaches the backends — zero-trust access to
@@ -177,21 +230,50 @@ type GcpBackendServiceSpec struct {
 	// default. Sampling keeps log volume (and cost) proportional on
 	// high-traffic services.
 	LogConfig *GcpBackendServiceLogConfig `protobuf:"bytes,22,opt,name=log_config,json=logConfig,proto3" json:"log_config,omitempty"`
+	// Failover behavior for a passthrough Network Load Balancer whose
+	// backends are split into primary and failover pools (backends[].failover
+	// marks the failover pool): when to shift to the failover pool, whether
+	// to drop traffic if both pools are unhealthy, and whether to drain
+	// existing connections on failover. Regional backend services only; not
+	// allowed together with ha_policy.
+	FailoverPolicy *GcpBackendServiceFailoverPolicy `protobuf:"bytes,41,opt,name=failover_policy,json=failoverPolicy,proto3" json:"failover_policy,omitempty"`
+	// How a passthrough Network Load Balancer tracks connections for session
+	// consistency: per connection or per session, whether tracked flows
+	// persist to a backend that turned unhealthy, and how long idle entries
+	// live. Regional backend services only; not allowed together with
+	// ha_policy.
+	ConnectionTrackingPolicy *GcpBackendServiceConnectionTrackingPolicy `protobuf:"bytes,42,opt,name=connection_tracking_policy,json=connectionTrackingPolicy,proto3" json:"connection_tracking_policy,omitempty"`
+	// High-availability IP failover for an internal (or external) passthrough
+	// Network Load Balancer with exactly one leader backend at a time: a
+	// single backend group (or one endpoint inside it) holds the VIP, and
+	// fast_ip_move lets the VIP move with a gratuitous ARP / router
+	// advertisement instead of waiting on health checks. Regional backend
+	// services only. Google forbids it together with health_check,
+	// session_affinity, failover_policy, and connection_tracking_policy — the
+	// leader IS the routing decision.
+	HaPolicy *GcpBackendServiceHaPolicy `protobuf:"bytes,43,opt,name=ha_policy,json=haPolicy,proto3" json:"ha_policy,omitempty"`
+	// Zonal affinity for a passthrough Network Load Balancer: keep traffic
+	// inside the client's zone and decide whether it may spill to other zones
+	// when the local zone's healthy capacity drops below a ratio. Regional
+	// backend services only.
+	NetworkPassThroughLbTrafficPolicy *GcpBackendServiceNetworkPassThroughLbTrafficPolicy `protobuf:"bytes,44,opt,name=network_pass_through_lb_traffic_policy,json=networkPassThroughLbTrafficPolicy,proto3" json:"network_pass_through_lb_traffic_policy,omitempty"`
 	// Headers the load balancer ADDS to requests before forwarding them to
 	// the backends, in "Header-Name: value" form. Values may use variables
 	// like {client_ip} or {tls_version}. Typical uses: passing the client's
-	// geo data or TLS parameters to the application. Mutable.
+	// geo data or TLS parameters to the application. Global backend services
+	// only. Mutable.
 	CustomRequestHeaders []string `protobuf:"bytes,23,rep,name=custom_request_headers,json=customRequestHeaders,proto3" json:"custom_request_headers,omitempty"`
 	// Headers the load balancer ADDS to responses before returning them to
 	// clients, in "Header-Name: value" form. Values may use variables like
 	// {cdn_cache_status}. Typical uses: security headers
-	// (Strict-Transport-Security) and cache observability. Mutable.
+	// (Strict-Transport-Security) and cache observability. Global backend
+	// services only. Mutable.
 	CustomResponseHeaders []string `protobuf:"bytes,24,rep,name=custom_response_headers,json=customResponseHeaders,proto3" json:"custom_response_headers,omitempty"`
 	// Whether the load balancer compresses responses (gzip/brotli) for
 	// clients that ask for it. AUTOMATIC compresses compressible content
 	// types; DISABLED (the GCP default when unset) never compresses.
 	// Compression is applied by the load balancer — backends keep serving
-	// uncompressed responses. Mutable.
+	// uncompressed responses. Global backend services only. Mutable.
 	CompressionMode string `protobuf:"bytes,25,opt,name=compression_mode,json=compressionMode,proto3" json:"compression_mode,omitempty"`
 	// Connection-volume limits protecting backends from overload — the
 	// service-mesh circuit breaker. Only applies with load_balancing_scheme
@@ -320,6 +402,13 @@ func (x *GcpBackendServiceSpec) GetDescription() string {
 	return ""
 }
 
+func (x *GcpBackendServiceSpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 func (x *GcpBackendServiceSpec) GetProtocol() string {
 	if x != nil && x.Protocol != nil {
 		return *x.Protocol
@@ -358,6 +447,13 @@ func (x *GcpBackendServiceSpec) GetConnectionDrainingTimeoutSec() int32 {
 func (x *GcpBackendServiceSpec) GetHealthCheck() *v1.StringValueOrRef {
 	if x != nil {
 		return x.HealthCheck
+	}
+	return nil
+}
+
+func (x *GcpBackendServiceSpec) GetNetwork() *v1.StringValueOrRef {
+	if x != nil {
+		return x.Network
 	}
 	return nil
 }
@@ -449,6 +545,34 @@ func (x *GcpBackendServiceSpec) GetIap() *GcpBackendServiceIap {
 func (x *GcpBackendServiceSpec) GetLogConfig() *GcpBackendServiceLogConfig {
 	if x != nil {
 		return x.LogConfig
+	}
+	return nil
+}
+
+func (x *GcpBackendServiceSpec) GetFailoverPolicy() *GcpBackendServiceFailoverPolicy {
+	if x != nil {
+		return x.FailoverPolicy
+	}
+	return nil
+}
+
+func (x *GcpBackendServiceSpec) GetConnectionTrackingPolicy() *GcpBackendServiceConnectionTrackingPolicy {
+	if x != nil {
+		return x.ConnectionTrackingPolicy
+	}
+	return nil
+}
+
+func (x *GcpBackendServiceSpec) GetHaPolicy() *GcpBackendServiceHaPolicy {
+	if x != nil {
+		return x.HaPolicy
+	}
+	return nil
+}
+
+func (x *GcpBackendServiceSpec) GetNetworkPassThroughLbTrafficPolicy() *GcpBackendServiceNetworkPassThroughLbTrafficPolicy {
+	if x != nil {
+		return x.NetworkPassThroughLbTrafficPolicy
 	}
 	return nil
 }
@@ -619,12 +743,20 @@ type GcpBackendServiceBackend struct {
 	MaxUtilization float64 `protobuf:"fixed64,11,opt,name=max_utilization,json=maxUtilization,proto3" json:"max_utilization,omitempty"`
 	// Whether this backend is PREFERRED (filled to capacity before DEFAULT
 	// backends receive traffic) — the primary/spillover pattern. Cannot be
-	// set when the service's load_balancing_scheme is EXTERNAL. Mutable.
+	// set when the service's load_balancing_scheme is EXTERNAL. Global
+	// backend services only (a regional passthrough service splits pools with
+	// failover instead). Mutable.
 	Preference string `protobuf:"bytes,12,opt,name=preference,proto3" json:"preference,omitempty"`
 	// Per-backend custom metrics for CUSTOM_METRICS balancing mode, reported
 	// by this backend via ORCA. Each can run dry (reported but not acted on)
 	// while being validated.
 	CustomMetrics []*GcpBackendServiceBackendCustomMetric `protobuf:"bytes,13,rep,name=custom_metrics,json=customMetrics,proto3" json:"custom_metrics,omitempty"`
+	// Mark this backend as part of the FAILOVER pool of a passthrough Network
+	// Load Balancer: it receives traffic only when the primary pool's healthy
+	// ratio drops to failover_policy.failover_ratio (or every primary backend
+	// is unhealthy). Several backends may be failover backends. Regional
+	// backend services only. Mutable.
+	Failover      bool `protobuf:"varint,14,opt,name=failover,proto3" json:"failover,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -748,6 +880,13 @@ func (x *GcpBackendServiceBackend) GetCustomMetrics() []*GcpBackendServiceBacken
 		return x.CustomMetrics
 	}
 	return nil
+}
+
+func (x *GcpBackendServiceBackend) GetFailover() bool {
+	if x != nil {
+		return x.Failover
+	}
+	return false
 }
 
 // One ORCA-reported metric a backend's capacity is judged by in
@@ -1792,6 +1931,450 @@ func (x *GcpBackendServiceIap) GetOauth2ClientSecret() string {
 	return ""
 }
 
+// Failover behavior for a passthrough Network Load Balancer whose backends
+// are split into a primary pool and a failover pool (backends[].failover).
+// Regional backend services only. Google requires at least one of the three
+// fields when the block is present; every field carries presence so an
+// explicit false is a statement and an omitted field is not sent.
+type GcpBackendServiceFailoverPolicy struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Skip connection draining when traffic fails over (or back): existing
+	// connections to the old active pool are cut rather than drained for the
+	// fixed 10-minute window. TCP only. GCP default false.
+	DisableConnectionDrainOnFailover *bool `protobuf:"varint,1,opt,name=disable_connection_drain_on_failover,json=disableConnectionDrainOnFailover,proto3,oneof" json:"disable_connection_drain_on_failover,omitempty"`
+	// When NO backend in either pool is healthy, drop new connections (true)
+	// instead of spraying them across every primary backend in the hope one
+	// answers (false, GCP's default).
+	DropTrafficIfUnhealthy *bool `protobuf:"varint,2,opt,name=drop_traffic_if_unhealthy,json=dropTrafficIfUnhealthy,proto3,oneof" json:"drop_traffic_if_unhealthy,omitempty"`
+	// The healthy ratio (0.0-1.0) of the primary pool at or below which
+	// traffic moves to the failover pool. Unset means traffic fails over only
+	// when every primary backend is unhealthy. When the failover pool is
+	// itself all-unhealthy, traffic returns to the primary pool best-effort.
+	FailoverRatio *float64 `protobuf:"fixed64,3,opt,name=failover_ratio,json=failoverRatio,proto3,oneof" json:"failover_ratio,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpBackendServiceFailoverPolicy) Reset() {
+	*x = GcpBackendServiceFailoverPolicy{}
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpBackendServiceFailoverPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpBackendServiceFailoverPolicy) ProtoMessage() {}
+
+func (x *GcpBackendServiceFailoverPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpBackendServiceFailoverPolicy.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceFailoverPolicy) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GcpBackendServiceFailoverPolicy) GetDisableConnectionDrainOnFailover() bool {
+	if x != nil && x.DisableConnectionDrainOnFailover != nil {
+		return *x.DisableConnectionDrainOnFailover
+	}
+	return false
+}
+
+func (x *GcpBackendServiceFailoverPolicy) GetDropTrafficIfUnhealthy() bool {
+	if x != nil && x.DropTrafficIfUnhealthy != nil {
+		return *x.DropTrafficIfUnhealthy
+	}
+	return false
+}
+
+func (x *GcpBackendServiceFailoverPolicy) GetFailoverRatio() float64 {
+	if x != nil && x.FailoverRatio != nil {
+		return *x.FailoverRatio
+	}
+	return 0
+}
+
+// Connection tracking for a passthrough Network Load Balancer — the rules
+// that decide whether a flow keeps landing on the backend it started on.
+// Regional backend services only.
+type GcpBackendServiceConnectionTrackingPolicy struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// What identifies a tracked flow: PER_CONNECTION (the GCP default) keys on
+	// the protocol's full connection tuple; PER_SESSION keys on the configured
+	// session_affinity, so a client's whole session sticks together. Both
+	// engines send the default explicitly when this is empty.
+	TrackingMode *string `protobuf:"bytes,1,opt,name=tracking_mode,json=trackingMode,proto3,oneof" json:"tracking_mode,omitempty"`
+	// What happens to tracked flows when their backend turns unhealthy:
+	// DEFAULT_FOR_PROTOCOL (the GCP default) keeps TCP/SCTP connections on the
+	// unhealthy backend when tracking is per-connection or 5-tuple affinity,
+	// never UDP; NEVER_PERSIST always diverts them to healthy backends;
+	// ALWAYS_PERSIST keeps them where they are. Both engines send the default
+	// explicitly when this is empty.
+	ConnectionPersistenceOnUnhealthyBackends *string `protobuf:"bytes,2,opt,name=connection_persistence_on_unhealthy_backends,json=connectionPersistenceOnUnhealthyBackends,proto3,oneof" json:"connection_persistence_on_unhealthy_backends,omitempty"`
+	// Seconds a connection-tracking entry lives with no matching traffic. For
+	// the internal passthrough NLB the minimum (and GCP default) is 600 and
+	// the maximum 57600; for the external passthrough NLB it must be 60 when
+	// tracking per session with CLIENT_IP or CLIENT_IP_PROTO affinity, and
+	// the default otherwise. Left unset, GCP computes the default and the
+	// engines send nothing (the argument is computed by the API), so an
+	// untouched value never shows as drift.
+	IdleTimeoutSec *int32 `protobuf:"varint,3,opt,name=idle_timeout_sec,json=idleTimeoutSec,proto3,oneof" json:"idle_timeout_sec,omitempty"`
+	// Strong session affinity for the external passthrough Network Load
+	// Balancer: track flows so a session keeps its backend across connection
+	// churn. Google documents this option as not yet publicly available; it
+	// is here so the spec matches the provider surface. Default false.
+	EnableStrongAffinity bool `protobuf:"varint,4,opt,name=enable_strong_affinity,json=enableStrongAffinity,proto3" json:"enable_strong_affinity,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *GcpBackendServiceConnectionTrackingPolicy) Reset() {
+	*x = GcpBackendServiceConnectionTrackingPolicy{}
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpBackendServiceConnectionTrackingPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpBackendServiceConnectionTrackingPolicy) ProtoMessage() {}
+
+func (x *GcpBackendServiceConnectionTrackingPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpBackendServiceConnectionTrackingPolicy.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceConnectionTrackingPolicy) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GcpBackendServiceConnectionTrackingPolicy) GetTrackingMode() string {
+	if x != nil && x.TrackingMode != nil {
+		return *x.TrackingMode
+	}
+	return ""
+}
+
+func (x *GcpBackendServiceConnectionTrackingPolicy) GetConnectionPersistenceOnUnhealthyBackends() string {
+	if x != nil && x.ConnectionPersistenceOnUnhealthyBackends != nil {
+		return *x.ConnectionPersistenceOnUnhealthyBackends
+	}
+	return ""
+}
+
+func (x *GcpBackendServiceConnectionTrackingPolicy) GetIdleTimeoutSec() int32 {
+	if x != nil && x.IdleTimeoutSec != nil {
+		return *x.IdleTimeoutSec
+	}
+	return 0
+}
+
+func (x *GcpBackendServiceConnectionTrackingPolicy) GetEnableStrongAffinity() bool {
+	if x != nil {
+		return x.EnableStrongAffinity
+	}
+	return false
+}
+
+// High-availability IP failover for a passthrough Network Load Balancer with
+// one leader backend at a time. Regional backend services only.
+type GcpBackendServiceHaPolicy struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// How the VIP moves to a new leader: DISABLED (the leader changes only
+	// through the haPolicy.leader API, i.e. by editing leader below) or
+	// GARP_RA (the VM that should become leader announces itself with a
+	// gratuitous ARP for IPv4 or a Router Advertisement for IPv6 and Google
+	// moves the VIP within seconds — the mechanism for keepalived-style
+	// active/passive pairs). Immutable: changing it recreates the backend
+	// service.
+	FastIpMove string `protobuf:"bytes,1,opt,name=fast_ip_move,json=fastIpMove,proto3" json:"fast_ip_move,omitempty"`
+	// The current leader: the zonal network endpoint group holding the VIP
+	// and, optionally, the exact instance inside it. Mutable — editing this
+	// is the API-driven leader change.
+	Leader        *GcpBackendServiceHaPolicyLeader `protobuf:"bytes,2,opt,name=leader,proto3" json:"leader,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpBackendServiceHaPolicy) Reset() {
+	*x = GcpBackendServiceHaPolicy{}
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpBackendServiceHaPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpBackendServiceHaPolicy) ProtoMessage() {}
+
+func (x *GcpBackendServiceHaPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpBackendServiceHaPolicy.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceHaPolicy) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *GcpBackendServiceHaPolicy) GetFastIpMove() string {
+	if x != nil {
+		return x.FastIpMove
+	}
+	return ""
+}
+
+func (x *GcpBackendServiceHaPolicy) GetLeader() *GcpBackendServiceHaPolicyLeader {
+	if x != nil {
+		return x.Leader
+	}
+	return nil
+}
+
+// The leader of an HA policy.
+type GcpBackendServiceHaPolicyLeader struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Fully-qualified URL of the zonal network endpoint group the leader is
+	// attached to. Must be one of this service's backends.
+	BackendGroup string `protobuf:"bytes,1,opt,name=backend_group,json=backendGroup,proto3" json:"backend_group,omitempty"`
+	// The leader endpoint inside that group.
+	NetworkEndpoint *GcpBackendServiceHaPolicyLeaderNetworkEndpoint `protobuf:"bytes,2,opt,name=network_endpoint,json=networkEndpoint,proto3" json:"network_endpoint,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GcpBackendServiceHaPolicyLeader) Reset() {
+	*x = GcpBackendServiceHaPolicyLeader{}
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpBackendServiceHaPolicyLeader) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpBackendServiceHaPolicyLeader) ProtoMessage() {}
+
+func (x *GcpBackendServiceHaPolicyLeader) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpBackendServiceHaPolicyLeader.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceHaPolicyLeader) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GcpBackendServiceHaPolicyLeader) GetBackendGroup() string {
+	if x != nil {
+		return x.BackendGroup
+	}
+	return ""
+}
+
+func (x *GcpBackendServiceHaPolicyLeader) GetNetworkEndpoint() *GcpBackendServiceHaPolicyLeaderNetworkEndpoint {
+	if x != nil {
+		return x.NetworkEndpoint
+	}
+	return nil
+}
+
+// The leader endpoint of an HA policy.
+type GcpBackendServiceHaPolicyLeaderNetworkEndpoint struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Name of the VM instance serving as the leader. The instance must
+	// already be attached to the leader's backend_group NEG.
+	Instance      string `protobuf:"bytes,1,opt,name=instance,proto3" json:"instance,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpBackendServiceHaPolicyLeaderNetworkEndpoint) Reset() {
+	*x = GcpBackendServiceHaPolicyLeaderNetworkEndpoint{}
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpBackendServiceHaPolicyLeaderNetworkEndpoint) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpBackendServiceHaPolicyLeaderNetworkEndpoint) ProtoMessage() {}
+
+func (x *GcpBackendServiceHaPolicyLeaderNetworkEndpoint) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpBackendServiceHaPolicyLeaderNetworkEndpoint.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceHaPolicyLeaderNetworkEndpoint) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GcpBackendServiceHaPolicyLeaderNetworkEndpoint) GetInstance() string {
+	if x != nil {
+		return x.Instance
+	}
+	return ""
+}
+
+// Traffic policy for a passthrough Network Load Balancer. Regional backend
+// services only.
+type GcpBackendServiceNetworkPassThroughLbTrafficPolicy struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Keep new connections inside the client's zone while that zone has
+	// enough healthy backends, spilling to other zones only below a ratio.
+	ZonalAffinity *GcpBackendServiceZonalAffinity `protobuf:"bytes,1,opt,name=zonal_affinity,json=zonalAffinity,proto3" json:"zonal_affinity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpBackendServiceNetworkPassThroughLbTrafficPolicy) Reset() {
+	*x = GcpBackendServiceNetworkPassThroughLbTrafficPolicy{}
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpBackendServiceNetworkPassThroughLbTrafficPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpBackendServiceNetworkPassThroughLbTrafficPolicy) ProtoMessage() {}
+
+func (x *GcpBackendServiceNetworkPassThroughLbTrafficPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpBackendServiceNetworkPassThroughLbTrafficPolicy.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceNetworkPassThroughLbTrafficPolicy) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GcpBackendServiceNetworkPassThroughLbTrafficPolicy) GetZonalAffinity() *GcpBackendServiceZonalAffinity {
+	if x != nil {
+		return x.ZonalAffinity
+	}
+	return nil
+}
+
+// Zonal affinity for a passthrough Network Load Balancer.
+type GcpBackendServiceZonalAffinity struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The mode: ZONAL_AFFINITY_DISABLED (the GCP default — connections spread
+	// across all zones), ZONAL_AFFINITY_SPILL_CROSS_ZONE (stay in the
+	// client's zone while its healthy ratio is at or above spillover_ratio,
+	// otherwise use every zone), or ZONAL_AFFINITY_STAY_WITHIN_ZONE (never
+	// leave the zone, even when it has no healthy backend). Both engines send
+	// the default explicitly when this is empty.
+	Spillover *string `protobuf:"bytes,1,opt,name=spillover,proto3,oneof" json:"spillover,omitempty"`
+	// The healthy ratio (0.0-1.0) of the client's zone at or above which new
+	// connections stay local; below it they spread across all zones (SPILL
+	// mode only). Unset lets GCP apply its default.
+	SpilloverRatio *float64 `protobuf:"fixed64,2,opt,name=spillover_ratio,json=spilloverRatio,proto3,oneof" json:"spillover_ratio,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GcpBackendServiceZonalAffinity) Reset() {
+	*x = GcpBackendServiceZonalAffinity{}
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpBackendServiceZonalAffinity) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpBackendServiceZonalAffinity) ProtoMessage() {}
+
+func (x *GcpBackendServiceZonalAffinity) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpBackendServiceZonalAffinity.ProtoReflect.Descriptor instead.
+func (*GcpBackendServiceZonalAffinity) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GcpBackendServiceZonalAffinity) GetSpillover() string {
+	if x != nil && x.Spillover != nil {
+		return *x.Spillover
+	}
+	return ""
+}
+
+func (x *GcpBackendServiceZonalAffinity) GetSpilloverRatio() float64 {
+	if x != nil && x.SpilloverRatio != nil {
+		return *x.SpilloverRatio
+	}
+	return 0
+}
+
 // Request logging for this backend service.
 type GcpBackendServiceLogConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -1824,7 +2407,7 @@ type GcpBackendServiceLogConfig struct {
 
 func (x *GcpBackendServiceLogConfig) Reset() {
 	*x = GcpBackendServiceLogConfig{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1836,7 +2419,7 @@ func (x *GcpBackendServiceLogConfig) String() string {
 func (*GcpBackendServiceLogConfig) ProtoMessage() {}
 
 func (x *GcpBackendServiceLogConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1849,7 +2432,7 @@ func (x *GcpBackendServiceLogConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpBackendServiceLogConfig.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceLogConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GcpBackendServiceLogConfig) GetEnable() bool {
@@ -1919,7 +2502,7 @@ type GcpBackendServiceCircuitBreakers struct {
 
 func (x *GcpBackendServiceCircuitBreakers) Reset() {
 	*x = GcpBackendServiceCircuitBreakers{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1931,7 +2514,7 @@ func (x *GcpBackendServiceCircuitBreakers) String() string {
 func (*GcpBackendServiceCircuitBreakers) ProtoMessage() {}
 
 func (x *GcpBackendServiceCircuitBreakers) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1944,7 +2527,7 @@ func (x *GcpBackendServiceCircuitBreakers) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpBackendServiceCircuitBreakers.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceCircuitBreakers) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GcpBackendServiceCircuitBreakers) GetMaxConnections() int32 {
@@ -2031,7 +2614,7 @@ type GcpBackendServiceOutlierDetection struct {
 
 func (x *GcpBackendServiceOutlierDetection) Reset() {
 	*x = GcpBackendServiceOutlierDetection{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2043,7 +2626,7 @@ func (x *GcpBackendServiceOutlierDetection) String() string {
 func (*GcpBackendServiceOutlierDetection) ProtoMessage() {}
 
 func (x *GcpBackendServiceOutlierDetection) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2056,7 +2639,7 @@ func (x *GcpBackendServiceOutlierDetection) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use GcpBackendServiceOutlierDetection.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceOutlierDetection) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GcpBackendServiceOutlierDetection) GetBaseEjectionTime() *GcpBackendServiceDuration {
@@ -2159,7 +2742,7 @@ type GcpBackendServiceSecuritySettings struct {
 
 func (x *GcpBackendServiceSecuritySettings) Reset() {
 	*x = GcpBackendServiceSecuritySettings{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2171,7 +2754,7 @@ func (x *GcpBackendServiceSecuritySettings) String() string {
 func (*GcpBackendServiceSecuritySettings) ProtoMessage() {}
 
 func (x *GcpBackendServiceSecuritySettings) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[19]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2184,7 +2767,7 @@ func (x *GcpBackendServiceSecuritySettings) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use GcpBackendServiceSecuritySettings.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceSecuritySettings) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *GcpBackendServiceSecuritySettings) GetClientTlsPolicy() string {
@@ -2231,7 +2814,7 @@ type GcpBackendServiceAwsV4Authentication struct {
 
 func (x *GcpBackendServiceAwsV4Authentication) Reset() {
 	*x = GcpBackendServiceAwsV4Authentication{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2243,7 +2826,7 @@ func (x *GcpBackendServiceAwsV4Authentication) String() string {
 func (*GcpBackendServiceAwsV4Authentication) ProtoMessage() {}
 
 func (x *GcpBackendServiceAwsV4Authentication) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[20]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2256,7 +2839,7 @@ func (x *GcpBackendServiceAwsV4Authentication) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use GcpBackendServiceAwsV4Authentication.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceAwsV4Authentication) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *GcpBackendServiceAwsV4Authentication) GetAccessKeyId() string {
@@ -2308,7 +2891,7 @@ type GcpBackendServiceTlsSettings struct {
 
 func (x *GcpBackendServiceTlsSettings) Reset() {
 	*x = GcpBackendServiceTlsSettings{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2320,7 +2903,7 @@ func (x *GcpBackendServiceTlsSettings) String() string {
 func (*GcpBackendServiceTlsSettings) ProtoMessage() {}
 
 func (x *GcpBackendServiceTlsSettings) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[21]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2333,7 +2916,7 @@ func (x *GcpBackendServiceTlsSettings) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpBackendServiceTlsSettings.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceTlsSettings) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GcpBackendServiceTlsSettings) GetAuthenticationConfig() string {
@@ -2372,7 +2955,7 @@ type GcpBackendServiceTlsSubjectAltName struct {
 
 func (x *GcpBackendServiceTlsSubjectAltName) Reset() {
 	*x = GcpBackendServiceTlsSubjectAltName{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2384,7 +2967,7 @@ func (x *GcpBackendServiceTlsSubjectAltName) String() string {
 func (*GcpBackendServiceTlsSubjectAltName) ProtoMessage() {}
 
 func (x *GcpBackendServiceTlsSubjectAltName) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[22]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2397,7 +2980,7 @@ func (x *GcpBackendServiceTlsSubjectAltName) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GcpBackendServiceTlsSubjectAltName.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceTlsSubjectAltName) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GcpBackendServiceTlsSubjectAltName) GetSan() isGcpBackendServiceTlsSubjectAltName_San {
@@ -2468,7 +3051,7 @@ type GcpBackendServiceSignedUrlKey struct {
 
 func (x *GcpBackendServiceSignedUrlKey) Reset() {
 	*x = GcpBackendServiceSignedUrlKey{}
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2480,7 +3063,7 @@ func (x *GcpBackendServiceSignedUrlKey) String() string {
 func (*GcpBackendServiceSignedUrlKey) ProtoMessage() {}
 
 func (x *GcpBackendServiceSignedUrlKey) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[23]
+	mi := &file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2493,7 +3076,7 @@ func (x *GcpBackendServiceSignedUrlKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpBackendServiceSignedUrlKey.ProtoReflect.Descriptor instead.
 func (*GcpBackendServiceSignedUrlKey) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
+	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GcpBackendServiceSignedUrlKey) GetName() string {
@@ -2514,27 +3097,30 @@ var File_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto protoreflect.FileDesc
 
 const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/gcp/gcpbackendservice/v1alpha1/spec.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xa5J\n" +
+	"1catalog/gcp/gcpbackendservice/v1alpha1/spec.proto\x12*dev.planton.gcp.gcpbackendservice.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe6r\n" +
 	"\x15GcpBackendServiceSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\xae\x02\n" +
 	"\x14backend_service_name\x18\x02 \x01(\tB\xfb\x01\xbaH\xf7\x01\xba\x01\xf3\x01\n" +
 	"\x1avalid_backend_service_name\x12\x93\x01backend_service_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\x12backendServiceName\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xfd\x01\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xce\x01\n" +
+	"\x06region\x18' \x01(\tB\xb5\x01\xbaH\xb1\x01\xba\x01\xad\x01\n" +
+	"\fvalid_region\x12aregion must be a valid GCP region name such as us-central1, or empty for a global backend service\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12\xfd\x01\n" +
 	"\bprotocol\x18\x04 \x01(\tB\xdb\x01\xbaH\xcf\x01\xba\x01\xcb\x01\n" +
-	"\x0evalid_protocol\x12Tprotocol must be one of HTTP, HTTPS, HTTP2, H2C, TCP, SSL, UDP, GRPC, or UNSPECIFIED\x1acthis == '' || this in ['HTTP', 'HTTPS', 'HTTP2', 'H2C', 'TCP', 'SSL', 'UDP', 'GRPC', 'UNSPECIFIED']\x8a\xa6\x1d\x04HTTPH\x00R\bprotocol\x88\x01\x01\x12\xbd\x02\n" +
-	"\x15load_balancing_scheme\x18\x05 \x01(\tB\x83\x02\xbaH\xf3\x01\xba\x01\xef\x01\n" +
-	"\x1bvalid_load_balancing_scheme\x12kload_balancing_scheme must be one of EXTERNAL, EXTERNAL_MANAGED, INTERNAL_MANAGED, or INTERNAL_SELF_MANAGED\x1acthis == '' || this in ['EXTERNAL', 'EXTERNAL_MANAGED', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED']\x8a\xa6\x1d\bEXTERNALH\x01R\x13loadBalancingScheme\x88\x01\x01\x12\x83\x02\n" +
+	"\x0evalid_protocol\x12Tprotocol must be one of HTTP, HTTPS, HTTP2, H2C, TCP, SSL, UDP, GRPC, or UNSPECIFIED\x1acthis == '' || this in ['HTTP', 'HTTPS', 'HTTP2', 'H2C', 'TCP', 'SSL', 'UDP', 'GRPC', 'UNSPECIFIED']\x8a\xa6\x1d\x04HTTPH\x00R\bprotocol\x88\x01\x01\x12\x82\x03\n" +
+	"\x15load_balancing_scheme\x18\x05 \x01(\tB\xc8\x02\xbaH\xb8\x02\xba\x01\xb4\x02\n" +
+	"\x1bvalid_load_balancing_scheme\x12\xa3\x01load_balancing_scheme must be one of EXTERNAL, EXTERNAL_MANAGED, INTERNAL, INTERNAL_MANAGED, or INTERNAL_SELF_MANAGED (INTERNAL is the regional passthrough scheme)\x1aothis == '' || this in ['EXTERNAL', 'EXTERNAL_MANAGED', 'INTERNAL', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED']\x8a\xa6\x1d\bEXTERNALH\x01R\x13loadBalancingScheme\x88\x01\x01\x12\x83\x02\n" +
 	"\tport_name\x18\x06 \x01(\tB\xe5\x01\xbaH\xe1\x01\xba\x01\xdd\x01\n" +
 	"\x0fvalid_port_name\x12\x88\x01port_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')R\bportName\x123\n" +
 	"\vtimeout_sec\x18\a \x01(\x05B\r\xbaH\x04\x1a\x02 \x00\x8a\xa6\x1d\x0230H\x02R\n" +
 	"timeoutSec\x88\x01\x01\x12Z\n" +
 	"\x1fconnection_draining_timeout_sec\x18\b \x01(\x05B\x0e\xbaH\x04\x1a\x02(\x00\x8a\xa6\x1d\x03300H\x03R\x1cconnectionDrainingTimeoutSec\x88\x01\x01\x12x\n" +
-	"\fhealth_check\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xcf\x17\x92\xd4a\x18status.outputs.self_linkR\vhealthCheck\x12`\n" +
+	"\fhealth_check\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xcf\x17\x92\xd4a\x18status.outputs.self_linkR\vhealthCheck\x12w\n" +
+	"\anetwork\x18( \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xc2\x17\x92\xd4a status.outputs.network_self_linkR\anetwork\x12`\n" +
 	"\bbackends\x18\n" +
-	" \x03(\v2D.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendR\bbackends\x12\xa0\x03\n" +
-	"\x10session_affinity\x18\v \x01(\tB\xef\x02\xbaH\xe3\x02\xba\x01\xdf\x02\n" +
-	"\x16valid_session_affinity\x12\x9e\x01session_affinity must be one of NONE, CLIENT_IP, CLIENT_IP_PORT_PROTO, CLIENT_IP_PROTO, GENERATED_COOKIE, HEADER_FIELD, HTTP_COOKIE, or STRONG_COOKIE_AFFINITY\x1a\xa3\x01this == '' || this in ['NONE', 'CLIENT_IP', 'CLIENT_IP_PORT_PROTO', 'CLIENT_IP_PROTO', 'GENERATED_COOKIE', 'HEADER_FIELD', 'HTTP_COOKIE', 'STRONG_COOKIE_AFFINITY']\x8a\xa6\x1d\x04NONEH\x04R\x0fsessionAffinity\x88\x01\x01\x12\xba\x01\n" +
+	" \x03(\v2D.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendR\bbackends\x12\x82\x04\n" +
+	"\x10session_affinity\x18\v \x01(\tB\xd1\x03\xbaH\xc5\x03\xba\x01\xc1\x03\n" +
+	"\x16valid_session_affinity\x12\xe4\x01session_affinity must be one of NONE, CLIENT_IP, CLIENT_IP_PORT_PROTO, CLIENT_IP_PROTO, CLIENT_IP_NO_DESTINATION, GENERATED_COOKIE, HEADER_FIELD, HTTP_COOKIE, or STRONG_COOKIE_AFFINITY (CLIENT_IP_NO_DESTINATION is regional-only)\x1a\xbf\x01this == '' || this in ['NONE', 'CLIENT_IP', 'CLIENT_IP_PORT_PROTO', 'CLIENT_IP_PROTO', 'CLIENT_IP_NO_DESTINATION', 'GENERATED_COOKIE', 'HEADER_FIELD', 'HTTP_COOKIE', 'STRONG_COOKIE_AFFINITY']\x8a\xa6\x1d\x04NONEH\x04R\x0fsessionAffinity\x88\x01\x01\x12\xba\x01\n" +
 	"\x17affinity_cookie_ttl_sec\x18\f \x01(\x05B\x82\x01\xbaH\x7f\xba\x01|\n" +
 	"\x19valid_affinity_cookie_ttl\x12Caffinity_cookie_ttl_sec must be between 0 and 86400 seconds (1 day)\x1a\x1athis >= 0 && this <= 86400R\x14affinityCookieTtlSec\x12\x9d\x01\n" +
 	"\x1estrong_session_affinity_cookie\x18\r \x01(\v2X.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStrongSessionAffinityCookieR\x1bstrongSessionAffinityCookie\x12\x88\x03\n" +
@@ -2550,7 +3136,11 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\x14edge_security_policy\x18\x14 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\x88\xd4a\xce\x17\x92\xd4a\x1fstatus.outputs.policy_self_linkR\x12edgeSecurityPolicy\x12R\n" +
 	"\x03iap\x18\x15 \x01(\v2@.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceIapR\x03iap\x12e\n" +
 	"\n" +
-	"log_config\x18\x16 \x01(\v2F.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLogConfigR\tlogConfig\x12N\n" +
+	"log_config\x18\x16 \x01(\v2F.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLogConfigR\tlogConfig\x12t\n" +
+	"\x0ffailover_policy\x18) \x01(\v2K.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceFailoverPolicyR\x0efailoverPolicy\x12\x93\x01\n" +
+	"\x1aconnection_tracking_policy\x18* \x01(\v2U.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConnectionTrackingPolicyR\x18connectionTrackingPolicy\x12b\n" +
+	"\tha_policy\x18+ \x01(\v2E.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyR\bhaPolicy\x12\xb1\x01\n" +
+	"&network_pass_through_lb_traffic_policy\x18, \x01(\v2^.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNetworkPassThroughLbTrafficPolicyR!networkPassThroughLbTrafficPolicy\x12N\n" +
 	"\x16custom_request_headers\x18\x17 \x03(\tB\x18\xbaH\x15\x92\x01\x12\x10\x19\"\x0er\f2\n" +
 	"^[^:]+:.*$R\x14customRequestHeaders\x12P\n" +
 	"\x17custom_response_headers\x18\x18 \x03(\tB\x18\xbaH\x15\x92\x01\x12\x10\x19\"\x0er\f2\n" +
@@ -2575,8 +3165,9 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1aF\n" +
 	"\x18ResourceManagerTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xaa\x1a\xbaH\xa6\x1a\x1a\x93\x02\n" +
-	"\x1ccdn_requires_external_scheme\x12\x8e\x01Cloud CDN can only be enabled on external backend services (scheme EXTERNAL or EXTERNAL_MANAGED) — it does not front internal load balancers\x1ab!this.enable_cdn || !(this.load_balancing_scheme in ['INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED'])\x1a\xf5\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd6:\xbaH\xd2:\x1a\x9f\x02\n" +
+	"\x1ccdn_requires_external_scheme\x12\x8e\x01Cloud CDN can only be enabled on external backend services (scheme EXTERNAL or EXTERNAL_MANAGED) — it does not front internal load balancers\x1an!this.enable_cdn || !(this.load_balancing_scheme in ['INTERNAL', 'INTERNAL_MANAGED', 'INTERNAL_SELF_MANAGED'])\x1a\xd0\x02\n" +
+	"&client_ip_no_destination_regional_only\x12\xbc\x01session_affinity CLIENT_IP_NO_DESTINATION exists only on a regional backend service (the internal passthrough Network Load Balancer as a next hop) — set region or choose another affinity\x1ag!has(this.session_affinity) || this.session_affinity != 'CLIENT_IP_NO_DESTINATION' || this.region != ''\x1a\xf5\x01\n" +
 	"\x17circuit_breakers_scheme\x12\x83\x01circuit_breakers only applies to Traffic Director backend services — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove it\x1aT!has(this.circuit_breakers) || this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED'\x1a\xfe\x01\n" +
 	"\x1amax_stream_duration_scheme\x12\x86\x01max_stream_duration only applies to Traffic Director backend services — set load_balancing_scheme INTERNAL_SELF_MANAGED or remove it\x1aW!has(this.max_stream_duration) || this.load_balancing_scheme == 'INTERNAL_SELF_MANAGED'\x1a\xec\x01\n" +
 	"\x18outlier_detection_scheme\x12coutlier_detection only applies with load_balancing_scheme INTERNAL_SELF_MANAGED or EXTERNAL_MANAGED\x1ak!has(this.outlier_detection) || this.load_balancing_scheme in ['INTERNAL_SELF_MANAGED', 'EXTERNAL_MANAGED']\x1a\x9a\x02\n" +
@@ -2588,12 +3179,21 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\x1ecustom_metrics_locality_policy\x12Ptop-level custom_metrics only apply with locality_lb_policy WEIGHTED_ROUND_ROBIN\x1aSsize(this.custom_metrics) == 0 || this.locality_lb_policy == 'WEIGHTED_ROUND_ROBIN'\x1a\x96\x02\n" +
 	"#migration_percentage_requires_state\x12sexternal_managed_migration_testing_percentage only applies with external_managed_migration_state TEST_BY_PERCENTAGE\x1azthis.external_managed_migration_testing_percentage == 0.0 || this.external_managed_migration_state == 'TEST_BY_PERCENTAGE'\x1a\xdd\x02\n" +
 	"\"migration_requires_external_scheme\x12\xb0\x01external_managed_migration_state drives the EXTERNAL → EXTERNAL_MANAGED canary and only applies while load_balancing_scheme is EXTERNAL (or unset, which defaults to EXTERNAL)\x1a\x83\x01this.external_managed_migration_state == '' || (!has(this.load_balancing_scheme) || this.load_balancing_scheme in ['', 'EXTERNAL'])\x1a\xcc\x02\n" +
-	"\x1fbackend_preference_not_external\x12\x84\x01backend preference cannot be set when load_balancing_scheme is EXTERNAL (the default) — use EXTERNAL_MANAGED or an internal scheme\x1a\xa1\x01!this.backends.exists(b, b.preference != '') || (has(this.load_balancing_scheme) && this.load_balancing_scheme != 'EXTERNAL' && this.load_balancing_scheme != '')B\v\n" +
+	"\x1fbackend_preference_not_external\x12\x84\x01backend preference cannot be set when load_balancing_scheme is EXTERNAL (the default) — use EXTERNAL_MANAGED or an internal scheme\x1a\xa1\x01!this.backends.exists(b, b.preference != '') || (has(this.load_balancing_scheme) && this.load_balancing_scheme != 'EXTERNAL' && this.load_balancing_scheme != '')\x1a\x89\x04\n" +
+	" passthrough_levers_regional_only\x12\xfc\x01network, failover_policy, connection_tracking_policy, ha_policy, network_pass_through_lb_traffic_policy, and backends[].failover belong to the passthrough Network Load Balancers and exist only on a regional backend service — set region or remove them\x1a\xe5\x01this.region != '' || (!has(this.network) && !has(this.failover_policy) && !has(this.connection_tracking_policy) && !has(this.ha_policy) && !has(this.network_pass_through_lb_traffic_policy) && !this.backends.exists(b, b.failover))\x1a\xd3\x02\n" +
+	"\x1dinternal_scheme_regional_only\x12\xce\x01the INTERNAL scheme (the internal passthrough Network Load Balancer) exists only on a regional backend service — set region, or use INTERNAL_MANAGED for the cross-region internal Application Load Balancer\x1aa!has(this.load_balancing_scheme) || this.load_balancing_scheme != 'INTERNAL' || this.region != ''\x1a\x94\x04\n" +
+	"\x17edge_levers_global_only\x12\x88\x02compression_mode, custom_request_headers, custom_response_headers, edge_security_policy, service_lb_policy, and signed_url_keys are global edge features (Cloud CDN, Google's global front end) — a regional backend service carries none; clear region or remove them\x1a\xed\x01this.region == '' || (this.compression_mode == '' && size(this.custom_request_headers) == 0 && size(this.custom_response_headers) == 0 && !has(this.edge_security_policy) && this.service_lb_policy == '' && size(this.signed_url_keys) == 0)\x1a\xde\x02\n" +
+	"#traffic_director_levers_global_only\x12\xb7\x01locality_lb_policies, max_stream_duration, and security_settings are Traffic Director / cross-region levers that exist only on a global backend service — clear region or remove them\x1a}this.region == '' || (size(this.locality_lb_policies) == 0 && !has(this.max_stream_duration) && !has(this.security_settings))\x1a\xd8\x02\n" +
+	"\x1cmigration_canary_global_only\x12\xb6\x01the EXTERNAL → EXTERNAL_MANAGED migration canary (external_managed_migration_state and its testing percentage) exists only on a global backend service — clear region or remove it\x1a\x7fthis.region == '' || (this.external_managed_migration_state == '' && this.external_managed_migration_testing_percentage == 0.0)\x1a\x9f\x02\n" +
+	"\x1ebackend_preference_global_only\x12\xb9\x01backends[].preference (preferred/spillover pools) exists only on a global backend service — clear region or remove it (a regional passthrough service uses backends[].failover instead)\x1aAthis.region == '' || !this.backends.exists(b, b.preference != '')\x1a\x82\x05\n" +
+	"\x15cdn_knobs_global_only\x12\xa2\x02cdn_policy.request_coalescing, cdn_policy.bypass_cache_on_request_headers, cdn_policy.cache_key_policy.include_http_headers, and cdn_policy.negative_caching_policy[].ttl exist only on a global backend service — Cloud CDN's advanced knobs have no regional form; clear region or remove them\x1a\xc3\x02this.region == '' || !has(this.cdn_policy) || (!this.cdn_policy.request_coalescing && size(this.cdn_policy.bypass_cache_on_request_headers) == 0 && (!has(this.cdn_policy.cache_key_policy) || size(this.cdn_policy.cache_key_policy.include_http_headers) == 0) && !this.cdn_policy.negative_caching_policy.exists(n, n.ttl != 0))\x1a\x8e\x03\n" +
+	"\x13ha_policy_conflicts\x12\xb1\x01ha_policy cannot be combined with health_check, session_affinity, failover_policy, or connection_tracking_policy — with an HA policy the leader backend IS the routing decision\x1a\xc2\x01!has(this.ha_policy) || (!has(this.health_check) && (!has(this.session_affinity) || this.session_affinity in ['', 'NONE']) && !has(this.failover_policy) && !has(this.connection_tracking_policy))\x1a\xdd\x02\n" +
+	"\x1cfailover_policy_at_least_one\x12{failover_policy must set at least one of disable_connection_drain_on_failover, drop_traffic_if_unhealthy, or failover_ratio\x1a\xbf\x01!has(this.failover_policy) || has(this.failover_policy.disable_connection_drain_on_failover) || has(this.failover_policy.drop_traffic_if_unhealthy) || has(this.failover_policy.failover_ratio)B\v\n" +
 	"\t_protocolB\x18\n" +
 	"\x16_load_balancing_schemeB\x0e\n" +
 	"\f_timeout_secB\"\n" +
 	" _connection_draining_timeout_secB\x13\n" +
-	"\x11_session_affinity\"\xa3\x11\n" +
+	"\x11_session_affinity\"\xbf\x11\n" +
 	"\x18GcpBackendServiceBackend\x12q\n" +
 	"\x05group\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\xbaH\x03\xc8\x01\x01\x88\xd4a\xd2\x17\x92\xd4a\x18status.outputs.self_linkR\x05group\x12\x91\x02\n" +
 	"\x0ebalancing_mode\x18\x02 \x01(\tB\xe4\x01\xbaH\xd1\x01\xba\x01\xcd\x01\n" +
@@ -2612,7 +3212,8 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"preference\x18\f \x01(\tBq\xbaHn\xba\x01k\n" +
 	"\x10valid_preference\x12'preference must be PREFERRED or DEFAULT\x1a.this == '' || this in ['PREFERRED', 'DEFAULT']R\n" +
 	"preference\x12w\n" +
-	"\x0ecustom_metrics\x18\r \x03(\v2P.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendCustomMetricR\rcustomMetrics:\x9f\a\xbaH\x9b\a\x1a\xac\x02\n" +
+	"\x0ecustom_metrics\x18\r \x03(\v2P.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendCustomMetricR\rcustomMetrics\x12\x1a\n" +
+	"\bfailover\x18\x0e \x01(\bR\bfailover:\x9f\a\xbaH\x9b\a\x1a\xac\x02\n" +
 	"\x1erate_mode_requires_rate_target\x12^with balancing_mode RATE, set one of max_rate, max_rate_per_instance, or max_rate_per_endpoint\x1a\xa9\x01(has(this.balancing_mode) ? this.balancing_mode : 'UTILIZATION') != 'RATE' || (this.max_rate > 0 || this.max_rate_per_instance > 0.0 || this.max_rate_per_endpoint > 0.0)\x1a\xea\x02\n" +
 	"*connection_mode_requires_connection_target\x12ywith balancing_mode CONNECTION, set one of max_connections, max_connections_per_instance, or max_connections_per_endpoint\x1a\xc0\x01(has(this.balancing_mode) ? this.balancing_mode : 'UTILIZATION') != 'CONNECTION' || (this.max_connections > 0 || this.max_connections_per_instance > 0 || this.max_connections_per_endpoint > 0)\x1a\xfc\x01\n" +
 	"$custom_metrics_mode_requires_metrics\x12]with balancing_mode CUSTOM_METRICS, define at least one entry in the backend's custom_metrics\x1au(has(this.balancing_mode) ? this.balancing_mode : 'UTILIZATION') != 'CUSTOM_METRICS' || size(this.custom_metrics) > 0B\x11\n" +
@@ -2700,7 +3301,43 @@ const file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc = "" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x122\n" +
 	"\x10oauth2_client_id\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\x0eoauth2ClientId\x12>\n" +
 	"\x14oauth2_client_secret\x18\x03 \x01(\tB\f\xbaH\x05r\x03\x18\x80\x02\xa0\xa6\x1d\x01R\x12oauth2ClientSecret:\xde\x01\xbaH\xda\x01\x1a\xd7\x01\n" +
-	"\x13oauth_client_paired\x12|oauth2_client_id and oauth2_client_secret must be set together — or both left empty to use the Google-managed OAuth client\x1aB(this.oauth2_client_id == '') == (this.oauth2_client_secret == '')\"\xaf\b\n" +
+	"\x13oauth_client_paired\x12|oauth2_client_id and oauth2_client_secret must be set together — or both left empty to use the Google-managed OAuth client\x1aB(this.oauth2_client_id == '') == (this.oauth2_client_secret == '')\"\xd5\x02\n" +
+	"\x1fGcpBackendServiceFailoverPolicy\x12S\n" +
+	"$disable_connection_drain_on_failover\x18\x01 \x01(\bH\x00R disableConnectionDrainOnFailover\x88\x01\x01\x12>\n" +
+	"\x19drop_traffic_if_unhealthy\x18\x02 \x01(\bH\x01R\x16dropTrafficIfUnhealthy\x88\x01\x01\x12C\n" +
+	"\x0efailover_ratio\x18\x03 \x01(\x01B\x17\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x00\xf0?)\x00\x00\x00\x00\x00\x00\x00\x00H\x02R\rfailoverRatio\x88\x01\x01B'\n" +
+	"%_disable_connection_drain_on_failoverB\x1c\n" +
+	"\x1a_drop_traffic_if_unhealthyB\x11\n" +
+	"\x0f_failover_ratio\"\xa7\x06\n" +
+	")GcpBackendServiceConnectionTrackingPolicy\x12\xc8\x01\n" +
+	"\rtracking_mode\x18\x01 \x01(\tB\x9d\x01\xbaH\x87\x01\xba\x01\x83\x01\n" +
+	"\x13valid_tracking_mode\x123tracking_mode must be PER_CONNECTION or PER_SESSION\x1a7this == '' || this in ['PER_CONNECTION', 'PER_SESSION']\x8a\xa6\x1d\x0ePER_CONNECTIONH\x00R\ftrackingMode\x88\x01\x01\x12\xe4\x02\n" +
+	",connection_persistence_on_unhealthy_backends\x18\x02 \x01(\tB\xfe\x01\xbaH\xe2\x01\xba\x01\xde\x01\n" +
+	"\x1cvalid_connection_persistence\x12kconnection_persistence_on_unhealthy_backends must be DEFAULT_FOR_PROTOCOL, NEVER_PERSIST, or ALWAYS_PERSIST\x1aQthis == '' || this in ['DEFAULT_FOR_PROTOCOL', 'NEVER_PERSIST', 'ALWAYS_PERSIST']\x8a\xa6\x1d\x14DEFAULT_FOR_PROTOCOLH\x01R(connectionPersistenceOnUnhealthyBackends\x88\x01\x01\x12:\n" +
+	"\x10idle_timeout_sec\x18\x03 \x01(\x05B\v\xbaH\b\x1a\x06\x18\x80\xc2\x03(<H\x02R\x0eidleTimeoutSec\x88\x01\x01\x124\n" +
+	"\x16enable_strong_affinity\x18\x04 \x01(\bR\x14enableStrongAffinityB\x10\n" +
+	"\x0e_tracking_modeB/\n" +
+	"-_connection_persistence_on_unhealthy_backendsB\x13\n" +
+	"\x11_idle_timeout_sec\"\x98\x02\n" +
+	"\x19GcpBackendServiceHaPolicy\x12\x95\x01\n" +
+	"\ffast_ip_move\x18\x01 \x01(\tBs\xbaHp\xba\x01m\n" +
+	"\x12valid_fast_ip_move\x12(fast_ip_move must be DISABLED or GARP_RA\x1a-this == '' || this in ['DISABLED', 'GARP_RA']R\n" +
+	"fastIpMove\x12c\n" +
+	"\x06leader\x18\x02 \x01(\v2K.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyLeaderR\x06leader\"\xd8\x01\n" +
+	"\x1fGcpBackendServiceHaPolicyLeader\x12-\n" +
+	"\rbackend_group\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\fbackendGroup\x12\x85\x01\n" +
+	"\x10network_endpoint\x18\x02 \x01(\v2Z.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyLeaderNetworkEndpointR\x0fnetworkEndpoint\"U\n" +
+	".GcpBackendServiceHaPolicyLeaderNetworkEndpoint\x12#\n" +
+	"\binstance\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x18?R\binstance\"\xa7\x01\n" +
+	"2GcpBackendServiceNetworkPassThroughLbTrafficPolicy\x12q\n" +
+	"\x0ezonal_affinity\x18\x01 \x01(\v2J.dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceZonalAffinityR\rzonalAffinity\"\xcd\x03\n" +
+	"\x1eGcpBackendServiceZonalAffinity\x12\xc1\x02\n" +
+	"\tspillover\x18\x01 \x01(\tB\x9d\x02\xbaH\xfe\x01\xba\x01\xfa\x01\n" +
+	"\x0fvalid_spillover\x12nspillover must be ZONAL_AFFINITY_DISABLED, ZONAL_AFFINITY_SPILL_CROSS_ZONE, or ZONAL_AFFINITY_STAY_WITHIN_ZONE\x1awthis == '' || this in ['ZONAL_AFFINITY_DISABLED', 'ZONAL_AFFINITY_SPILL_CROSS_ZONE', 'ZONAL_AFFINITY_STAY_WITHIN_ZONE']\x8a\xa6\x1d\x17ZONAL_AFFINITY_DISABLEDH\x00R\tspillover\x88\x01\x01\x12E\n" +
+	"\x0fspillover_ratio\x18\x02 \x01(\x01B\x17\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x00\xf0?)\x00\x00\x00\x00\x00\x00\x00\x00H\x01R\x0espilloverRatio\x88\x01\x01B\f\n" +
+	"\n" +
+	"_spilloverB\x12\n" +
+	"\x10_spillover_ratio\"\xaf\b\n" +
 	"\x1aGcpBackendServiceLogConfig\x12\x16\n" +
 	"\x06enable\x18\x01 \x01(\bR\x06enable\x12D\n" +
 	"\vsample_rate\x18\x02 \x01(\x01B\x1e\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x00\xf0?)\x00\x00\x00\x00\x00\x00\x00\x00\x8a\xa6\x1d\x031.0H\x00R\n" +
@@ -2774,74 +3411,89 @@ func file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescGZIP() []byte
 	return file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_goTypes = []any{
-	(*GcpBackendServiceSpec)(nil),                        // 0: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec
-	(*GcpBackendServiceBackend)(nil),                     // 1: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend
-	(*GcpBackendServiceBackendCustomMetric)(nil),         // 2: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendCustomMetric
-	(*GcpBackendServiceCustomMetric)(nil),                // 3: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCustomMetric
-	(*GcpBackendServiceStrongSessionAffinityCookie)(nil), // 4: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStrongSessionAffinityCookie
-	(*GcpBackendServiceLocalityLbPolicyConfig)(nil),      // 5: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig
-	(*GcpBackendServiceLocalityLbPolicy)(nil),            // 6: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicy
-	(*GcpBackendServiceLocalityLbCustomPolicy)(nil),      // 7: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbCustomPolicy
-	(*GcpBackendServiceConsistentHash)(nil),              // 8: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHash
-	(*GcpBackendServiceConsistentHashHttpCookie)(nil),    // 9: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHashHttpCookie
-	(*GcpBackendServiceDuration)(nil),                    // 10: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
-	(*GcpBackendServiceCdnPolicy)(nil),                   // 11: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy
-	(*GcpBackendServiceNegativeCachingPolicy)(nil),       // 12: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNegativeCachingPolicy
-	(*GcpBackendServiceCdnCacheKeyPolicy)(nil),           // 13: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnCacheKeyPolicy
-	(*GcpBackendServiceBypassCacheOnRequestHeader)(nil),  // 14: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBypassCacheOnRequestHeader
-	(*GcpBackendServiceIap)(nil),                         // 15: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceIap
-	(*GcpBackendServiceLogConfig)(nil),                   // 16: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLogConfig
-	(*GcpBackendServiceCircuitBreakers)(nil),             // 17: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCircuitBreakers
-	(*GcpBackendServiceOutlierDetection)(nil),            // 18: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection
-	(*GcpBackendServiceSecuritySettings)(nil),            // 19: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSecuritySettings
-	(*GcpBackendServiceAwsV4Authentication)(nil),         // 20: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceAwsV4Authentication
-	(*GcpBackendServiceTlsSettings)(nil),                 // 21: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSettings
-	(*GcpBackendServiceTlsSubjectAltName)(nil),           // 22: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSubjectAltName
-	(*GcpBackendServiceSignedUrlKey)(nil),                // 23: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSignedUrlKey
-	nil,                                                  // 24: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.ResourceManagerTagsEntry
-	(*v1.StringValueOrRef)(nil),                          // 25: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*GcpBackendServiceSpec)(nil),                              // 0: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec
+	(*GcpBackendServiceBackend)(nil),                           // 1: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend
+	(*GcpBackendServiceBackendCustomMetric)(nil),               // 2: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendCustomMetric
+	(*GcpBackendServiceCustomMetric)(nil),                      // 3: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCustomMetric
+	(*GcpBackendServiceStrongSessionAffinityCookie)(nil),       // 4: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStrongSessionAffinityCookie
+	(*GcpBackendServiceLocalityLbPolicyConfig)(nil),            // 5: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig
+	(*GcpBackendServiceLocalityLbPolicy)(nil),                  // 6: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicy
+	(*GcpBackendServiceLocalityLbCustomPolicy)(nil),            // 7: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbCustomPolicy
+	(*GcpBackendServiceConsistentHash)(nil),                    // 8: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHash
+	(*GcpBackendServiceConsistentHashHttpCookie)(nil),          // 9: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHashHttpCookie
+	(*GcpBackendServiceDuration)(nil),                          // 10: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
+	(*GcpBackendServiceCdnPolicy)(nil),                         // 11: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy
+	(*GcpBackendServiceNegativeCachingPolicy)(nil),             // 12: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNegativeCachingPolicy
+	(*GcpBackendServiceCdnCacheKeyPolicy)(nil),                 // 13: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnCacheKeyPolicy
+	(*GcpBackendServiceBypassCacheOnRequestHeader)(nil),        // 14: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBypassCacheOnRequestHeader
+	(*GcpBackendServiceIap)(nil),                               // 15: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceIap
+	(*GcpBackendServiceFailoverPolicy)(nil),                    // 16: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceFailoverPolicy
+	(*GcpBackendServiceConnectionTrackingPolicy)(nil),          // 17: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConnectionTrackingPolicy
+	(*GcpBackendServiceHaPolicy)(nil),                          // 18: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicy
+	(*GcpBackendServiceHaPolicyLeader)(nil),                    // 19: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyLeader
+	(*GcpBackendServiceHaPolicyLeaderNetworkEndpoint)(nil),     // 20: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyLeaderNetworkEndpoint
+	(*GcpBackendServiceNetworkPassThroughLbTrafficPolicy)(nil), // 21: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNetworkPassThroughLbTrafficPolicy
+	(*GcpBackendServiceZonalAffinity)(nil),                     // 22: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceZonalAffinity
+	(*GcpBackendServiceLogConfig)(nil),                         // 23: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLogConfig
+	(*GcpBackendServiceCircuitBreakers)(nil),                   // 24: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCircuitBreakers
+	(*GcpBackendServiceOutlierDetection)(nil),                  // 25: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection
+	(*GcpBackendServiceSecuritySettings)(nil),                  // 26: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSecuritySettings
+	(*GcpBackendServiceAwsV4Authentication)(nil),               // 27: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceAwsV4Authentication
+	(*GcpBackendServiceTlsSettings)(nil),                       // 28: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSettings
+	(*GcpBackendServiceTlsSubjectAltName)(nil),                 // 29: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSubjectAltName
+	(*GcpBackendServiceSignedUrlKey)(nil),                      // 30: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSignedUrlKey
+	nil,                                                        // 31: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.ResourceManagerTagsEntry
+	(*v1.StringValueOrRef)(nil),                                // 32: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_depIdxs = []int32{
-	25, // 0: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 1: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.health_check:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 2: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.backends:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend
-	4,  // 3: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.strong_session_affinity_cookie:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStrongSessionAffinityCookie
-	5,  // 4: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.locality_lb_policies:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig
-	8,  // 5: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.consistent_hash:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHash
-	11, // 6: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.cdn_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy
-	25, // 7: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.security_policy:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 8: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.edge_security_policy:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	15, // 9: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.iap:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceIap
-	16, // 10: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.log_config:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLogConfig
-	17, // 11: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.circuit_breakers:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCircuitBreakers
-	18, // 12: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.outlier_detection:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection
-	10, // 13: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.max_stream_duration:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
-	19, // 14: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.security_settings:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSecuritySettings
-	21, // 15: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.tls_settings:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSettings
-	3,  // 16: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.custom_metrics:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCustomMetric
-	23, // 17: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.signed_url_keys:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSignedUrlKey
-	24, // 18: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.ResourceManagerTagsEntry
-	25, // 19: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend.group:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 20: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend.custom_metrics:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendCustomMetric
-	10, // 21: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStrongSessionAffinityCookie.ttl:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
-	6,  // 22: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig.policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicy
-	7,  // 23: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig.custom_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbCustomPolicy
-	9,  // 24: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHash.http_cookie:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHashHttpCookie
-	10, // 25: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHashHttpCookie.ttl:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
-	12, // 26: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy.negative_caching_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNegativeCachingPolicy
-	13, // 27: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy.cache_key_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnCacheKeyPolicy
-	14, // 28: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy.bypass_cache_on_request_headers:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBypassCacheOnRequestHeader
-	10, // 29: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection.base_ejection_time:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
-	10, // 30: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection.interval:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
-	20, // 31: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSecuritySettings.aws_v4_authentication:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceAwsV4Authentication
-	22, // 32: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSettings.subject_alt_names:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSubjectAltName
-	33, // [33:33] is the sub-list for method output_type
-	33, // [33:33] is the sub-list for method input_type
-	33, // [33:33] is the sub-list for extension type_name
-	33, // [33:33] is the sub-list for extension extendee
-	0,  // [0:33] is the sub-list for field type_name
+	32, // 0: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 1: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.health_check:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 2: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.network:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 3: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.backends:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend
+	4,  // 4: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.strong_session_affinity_cookie:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStrongSessionAffinityCookie
+	5,  // 5: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.locality_lb_policies:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig
+	8,  // 6: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.consistent_hash:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHash
+	11, // 7: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.cdn_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy
+	32, // 8: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.security_policy:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	32, // 9: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.edge_security_policy:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	15, // 10: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.iap:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceIap
+	23, // 11: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.log_config:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLogConfig
+	16, // 12: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.failover_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceFailoverPolicy
+	17, // 13: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.connection_tracking_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConnectionTrackingPolicy
+	18, // 14: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.ha_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicy
+	21, // 15: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.network_pass_through_lb_traffic_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNetworkPassThroughLbTrafficPolicy
+	24, // 16: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.circuit_breakers:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCircuitBreakers
+	25, // 17: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.outlier_detection:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection
+	10, // 18: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.max_stream_duration:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
+	26, // 19: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.security_settings:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSecuritySettings
+	28, // 20: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.tls_settings:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSettings
+	3,  // 21: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.custom_metrics:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCustomMetric
+	30, // 22: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.signed_url_keys:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSignedUrlKey
+	31, // 23: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.resource_manager_tags:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.ResourceManagerTagsEntry
+	32, // 24: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend.group:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 25: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackend.custom_metrics:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBackendCustomMetric
+	10, // 26: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceStrongSessionAffinityCookie.ttl:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
+	6,  // 27: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig.policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicy
+	7,  // 28: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbPolicyConfig.custom_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceLocalityLbCustomPolicy
+	9,  // 29: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHash.http_cookie:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHashHttpCookie
+	10, // 30: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceConsistentHashHttpCookie.ttl:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
+	12, // 31: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy.negative_caching_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNegativeCachingPolicy
+	13, // 32: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy.cache_key_policy:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnCacheKeyPolicy
+	14, // 33: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceCdnPolicy.bypass_cache_on_request_headers:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceBypassCacheOnRequestHeader
+	19, // 34: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicy.leader:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyLeader
+	20, // 35: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyLeader.network_endpoint:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceHaPolicyLeaderNetworkEndpoint
+	22, // 36: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceNetworkPassThroughLbTrafficPolicy.zonal_affinity:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceZonalAffinity
+	10, // 37: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection.base_ejection_time:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
+	10, // 38: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceOutlierDetection.interval:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceDuration
+	27, // 39: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSecuritySettings.aws_v4_authentication:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceAwsV4Authentication
+	29, // 40: dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSettings.subject_alt_names:type_name -> dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceTlsSubjectAltName
+	41, // [41:41] is the sub-list for method output_type
+	41, // [41:41] is the sub-list for method input_type
+	41, // [41:41] is the sub-list for extension type_name
+	41, // [41:41] is the sub-list for extension extendee
+	0,  // [0:41] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_init() }
@@ -2860,7 +3512,10 @@ func file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_init() {
 	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
 	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[16].OneofWrappers = []any{}
 	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[17].OneofWrappers = []any{}
-	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{
+	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[22].OneofWrappers = []any{}
+	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[23].OneofWrappers = []any{}
+	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[24].OneofWrappers = []any{}
+	file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_msgTypes[29].OneofWrappers = []any{
 		(*GcpBackendServiceTlsSubjectAltName_DnsName)(nil),
 		(*GcpBackendServiceTlsSubjectAltName_UniformResourceIdentifier)(nil),
 	}
@@ -2870,7 +3525,7 @@ func file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpbackendservice_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

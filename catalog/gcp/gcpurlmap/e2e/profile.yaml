@@ -19,7 +19,16 @@ spec:
   #     INTERNAL_SELF_MANAGED (Traffic Director), and the harness has no
   #     Traffic Director fixture chain. Unblock: an INTERNAL_SELF_MANAGED
   #     backend + URL map lane.
+  #
+  # Awaiting re-proof: the kind gained its regional arm
+  # (google_compute_region_url_map behind spec.region), and the module now
+  # count-gates two resources. The regional scenario proves the regional
+  # family over a regional backend-service fixture, with the one knob only
+  # the regional map honors (path_template_rewrite in a path matcher's
+  # default route action, paired with a path_template_match route rule) and
+  # a service-only routing test. The classic scenarios re-prove the global
+  # arm unchanged (offline plan equivalence already shows identical plans).
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
-  timeout_minutes: 20
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

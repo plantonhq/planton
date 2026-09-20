@@ -65,7 +65,7 @@ spec:
       notes: No backups exist to retain (see backup-recovery).
     - control_id: multi-zone-ha
       status: not_applicable
-      notes: No zonal placement exists to configure -- the global URL map is evaluated by Google's global frontend fabric; availability is the platform's, not a spec choice.
+      notes: No zonal placement exists to configure -- a global URL map is evaluated by Google's global frontend fabric and a regional one (region set) by the region's Envoy-based frontend spread across its zones; availability is the platform's, not a spec choice.
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_policy

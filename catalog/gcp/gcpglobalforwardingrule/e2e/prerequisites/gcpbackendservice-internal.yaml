@@ -1,0 +1,34 @@
+# Extra-instance GcpBackendService fixture: the REGIONAL backend service a
+# regional load-balancer chain routes to (scheme INTERNAL), with a regional
+# health check. Declared through the consuming scenario's e2e-prerequisites
+# annotation; the registry's standard backend prerequisite is global.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBackendService
+metadata:
+  name: planton-oss-e2e-gcpgfr-ilb-rbs
+  id: planton-oss-e2e-gcpgfr-ilb-rbs
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpglobalforwardingrule
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional backend service for the gcpglobalforwardingrule regional E2E chain; safe to delete
+  region: us-central1
+  loadBalancingScheme: INTERNAL
+  protocol: TCP
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  healthCheck:
+    valueFrom:
+      kind: GcpHealthCheck
+      name: planton-oss-e2e-gcpgfr-tcp-rhc
+      fieldPath: status.outputs.self_link
+  deletionPolicy: DELETE

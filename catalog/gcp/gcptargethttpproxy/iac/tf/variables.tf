@@ -32,27 +32,41 @@ variable "spec" {
     # for the operator tracing a request path later. Immutable.
     description = optional(string, "")
 
+    # The scope selector. Empty builds a GLOBAL target HTTP proxy (the global
+    # external ALB, the cross-region internal ALB, Traffic Director); a region
+    # name such as us-central1 builds a REGIONAL one (the regional external
+    # ALB and the regional internal ALB). The URL map it references must live
+    # in the same scope — and, for a regional proxy, the same region — and so
+    # must the forwarding rule in front of it. Immutable: a proxy cannot move
+    # between scopes or regions.
+    region = optional(string, "")
+
     # The URL map that decides where each request goes — the proxy's single
     # routing dependency. Reference a GcpUrlMap resource or provide a URL map
-    # self-link directly. Required. Mutable: GCP swaps it in place (a
-    # dedicated setUrlMap call), so repointing a live frontend at a new
-    # routing table causes no downtime.
+    # self-link directly. Required. A regional proxy can only point at a
+    # regional URL map in its own region (a GcpUrlMap declared with the same
+    # region). Mutable: GCP swaps it in place (a dedicated setUrlMap call),
+    # so repointing a live frontend at a new routing table causes no
+    # downtime.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     url_map = string
 
     # Seconds an idle client connection is kept open after a response while no
     # matching traffic flows (5-1200). Only honored by load balancers with the
-    # EXTERNAL_MANAGED scheme (the envoy-based global external ALB), where the
-    # GCP default is 610; the classic EXTERNAL ALB ignores it. Raise it above
-    # your clients' own keep-alive to avoid the load balancer closing
-    # connections first. 0 means unset (GCP applies its default). Immutable:
-    # changing it destroys and recreates the proxy.
+    # EXTERNAL_MANAGED scheme (the envoy-based external ALBs, global and
+    # regional), where the GCP default is 610; the classic EXTERNAL ALB
+    # ignores it. Raise it above your clients' own keep-alive to avoid the
+    # load balancer closing connections first. 0 means unset (GCP applies its
+    # default). Immutable on both scopes: changing it destroys and recreates
+    # the proxy.
     http_keep_alive_timeout_sec = optional(number, 0)
 
     # Bind the proxy to the private IPs of the Traffic Director mesh instead
     # of Google's edge. Only meaningful when the forwarding rule that
     # references this proxy uses the INTERNAL_SELF_MANAGED scheme (Traffic
-    # Director); leave false for internet-facing load balancers. Immutable.
+    # Director); leave false for internet-facing load balancers. Global
+    # proxies only — Traffic Director has no regional proxy, and the regional
+    # resource carries no such argument. Immutable.
     proxy_bind = optional(bool, false)
 
     # Deletion policy for the proxy — what happens when this resource is

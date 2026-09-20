@@ -34,6 +34,21 @@ spec:
           - compute.globalForwardingRules.pscDelete
         provenance: derived
         notes: "IAM defines a parallel psc* permission set on global forwarding rules (verified live in the testable-permissions inventory) governing the Private Service Connect form -- the scheme-NONE rules the 03-psc-google-apis preset creates. Included so PSC frontends authorize; which of the two sets a given mutation actually exercises is for the live capture lane to prove."
+      - purpose: ManageRegionalForwardingRule
+        permissions:
+          - compute.forwardingRules.create
+          - compute.forwardingRules.get
+          - compute.forwardingRules.update
+          - compute.forwardingRules.setTarget
+          - compute.forwardingRules.setLabels
+          - compute.forwardingRules.delete
+          - compute.forwardingRules.pscCreate
+          - compute.forwardingRules.pscUpdate
+          - compute.forwardingRules.pscSetLabels
+          - compute.forwardingRules.pscDelete
+          - compute.regionOperations.get
+        provenance: derived
+        notes: "Covers google_compute_forwarding_rule (created when spec.region is set) across create, read/refresh, the setTarget and setLabels mutations, destroy, and the parallel psc* set the PSC consumer-endpoint form exercises; regional rules return region operations the provider polls. Referenced regional resources authorize on their own families: compute.regionTargetHttpProxies.use / compute.regionTargetHttpsProxies.use for the proxy target, compute.regionBackendServices.use for a passthrough backend_service, compute.addresses.use for a regional reserved address."
       - purpose: UseReferencedFrontendResources
         permissions:
           - compute.targetHttpProxies.use

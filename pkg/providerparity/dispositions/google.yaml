@@ -626,9 +626,6 @@ resources:
   - resource: google_compute_firewall_policy_with_rules
     disposition: deferred
     reason: "the all-in-one variant of the policy GcpHierarchicalFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
-  - resource: google_compute_forwarding_rule
-    disposition: model-planned
-    reason: "planned composition into the existing GcpGlobalForwardingRule kind (the regional arm)"
   - resource: google_compute_global_network_endpoint
     disposition: model-planned
     reason: "planned composition into the planned GcpNetworkEndpointGroup kind (global endpoints)"
@@ -734,9 +731,6 @@ resources:
   - resource: google_compute_public_delegated_prefix
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"
-  - resource: google_compute_region_backend_service
-    disposition: model-planned
-    reason: "planned composition into the existing GcpBackendService kind (the regional arm)"
   - resource: google_compute_region_commitment
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"
@@ -770,18 +764,9 @@ resources:
   - resource: google_compute_region_security_policy_rule
     disposition: deferred
     reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
-  - resource: google_compute_region_target_http_proxy
-    disposition: model-planned
-    reason: "planned composition into the existing GcpTargetHttpProxy kind (the regional arm)"
-  - resource: google_compute_region_target_https_proxy
-    disposition: model-planned
-    reason: "planned composition into the existing GcpTargetHttpsProxy kind (the regional arm)"
   - resource: google_compute_region_target_tcp_proxy
     disposition: deferred
     reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
-  - resource: google_compute_region_url_map
-    disposition: model-planned
-    reason: "planned composition into the existing GcpUrlMap kind (the regional arm)"
   - resource: google_compute_reservation
     disposition: deferred
     reason: "physical interconnects, sole-tenancy nodes, capacity reservations, packet mirroring, and public IP prefixes are niche surfaces; deferred"

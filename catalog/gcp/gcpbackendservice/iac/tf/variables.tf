@@ -32,23 +32,53 @@ variable "spec" {
     # it for the operator tracing a request path later. Mutable.
     description = optional(string, "")
 
+    # The scope selector. Empty builds a GLOBAL backend service (the global
+    # external ALB, the cross-region internal ALB, Traffic Director); a region
+    # name such as us-central1 builds a REGIONAL one (the regional external
+    # and internal ALBs, and the internal and external passthrough Network
+    # Load Balancers). A regional backend service takes a regional health
+    # check for the ALB schemes, is routed to only by regional URL maps and
+    # regional forwarding rules, and attaches only a regional Cloud Armor
+    # policy. The passthrough levers (network, backend failover,
+    # failover_policy, connection_tracking_policy, ha_policy,
+    # network_pass_through_lb_traffic_policy, the INTERNAL scheme) exist only
+    # here and are rejected when region is empty; the global edge levers
+    # (compression_mode, custom request/response headers, edge_security_policy,
+    # service_lb_policy, the EXTERNAL_MANAGED migration canary, backend
+    # preference, locality_lb_policies, max_stream_duration,
+    # security_settings, signed_url_keys, and the CDN knobs the regional
+    # resource lacks) are rejected when it is set. Immutable: a backend
+    # service cannot move between scopes or regions.
+    region = optional(string, "")
+
     # The protocol the load balancer uses to talk to the backends (default
     # HTTP). This is the LB→backend leg, independent of what clients speak to
     # the load balancer: an HTTPS frontend commonly forwards to HTTP backends.
     # H2C is HTTP/2 over cleartext. Must be GRPC when the backend service is
-    # referenced by a URL map bound to a target gRPC proxy. Mutable, but
-    # switching protocol families usually also means changing the health
-    # check and backend ports.
+    # referenced by a URL map bound to a target gRPC proxy. For the
+    # passthrough Network Load Balancers (regional, scheme INTERNAL or
+    # EXTERNAL) use TCP, UDP, or UNSPECIFIED — UNSPECIFIED forwards every IP
+    # protocol and is what a forwarding rule with ip_protocol L3_DEFAULT
+    # requires. Mutable, but switching protocol families usually also means
+    # changing the health check and backend ports.
     protocol = optional(string)
 
     # Which load balancer family this backend service serves (default
-    # EXTERNAL, the classic global external Application LB). EXTERNAL_MANAGED
-    # is the newer envoy-based global external ALB; INTERNAL_MANAGED is the
-    # cross-region internal ALB; INTERNAL_SELF_MANAGED is Traffic Director /
-    # service mesh. A backend service created for one family cannot serve
+    # EXTERNAL on both scopes: the classic global external Application LB, or
+    # the backend-service-based external passthrough Network Load Balancer on
+    # a regional service). EXTERNAL_MANAGED is the envoy-based external ALB
+    # (global, or regional with region set); INTERNAL_MANAGED is the internal
+    # ALB (cross-region on a global service, regional with region set);
+    # INTERNAL — regional services only — is the internal passthrough Network
+    # Load Balancer; INTERNAL_SELF_MANAGED is Traffic Director / service mesh.
+    # Both engines send EXTERNAL explicitly when this is left empty, on both
+    # scopes, so an unset scheme means the same thing wherever the service
+    # lives (Google's own default differs per scope: EXTERNAL_MANAGED
+    # globally, INTERNAL regionally). Regional presets therefore name the
+    # scheme outright. A backend service created for one family cannot serve
     # another — the only in-place transition GCP supports is the canary
     # migration EXTERNAL → EXTERNAL_MANAGED driven by
-    # external_managed_migration_state.
+    # external_managed_migration_state, on the global service.
     load_balancing_scheme = optional(string)
 
     # Name of the backend port to use for instance-group backends. The same
@@ -77,9 +107,21 @@ variable "spec" {
     # single reference, not a list. Reference a GcpHealthCheck resource or
     # provide a health check self-link directly. Required by GCP unless every
     # backend is an internet or serverless NEG — serverless platforms manage
-    # their own health. Mutable.
+    # their own health. A regional backend service behind an Application Load
+    # Balancer needs a REGIONAL health check in its own region (a
+    # GcpHealthCheck declared with the same region); the passthrough Network
+    # Load Balancers accept a global or regional one. Not allowed together
+    # with ha_policy. Mutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     health_check = optional(string, "")
+
+    # The VPC network the backends live in — used by the internal passthrough
+    # Network Load Balancer, and by an external passthrough one only when it
+    # carries an ha_policy with fast IP move. Reference a GcpVpcNetwork
+    # resource or provide a network self-link. Regional backend services
+    # only. Immutable.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
+    network = optional(string, "")
 
     # The backends that actually serve traffic — instance groups or network
     # endpoint groups, each with its own balancing mode and capacity dials.
@@ -147,7 +189,9 @@ variable "spec" {
 
       # Whether this backend is PREFERRED (filled to capacity before DEFAULT
       # backends receive traffic) — the primary/spillover pattern. Cannot be
-      # set when the service's load_balancing_scheme is EXTERNAL. Mutable.
+      # set when the service's load_balancing_scheme is EXTERNAL. Global
+      # backend services only (a regional passthrough service splits pools with
+      # failover instead). Mutable.
       preference = optional(string, "")
 
       # Per-backend custom metrics for CUSTOM_METRICS balancing mode, reported
@@ -166,14 +210,24 @@ variable "spec" {
         # shifts new requests away. GCP's default is 0.8.
         max_utilization = optional(number)
       })), [])
+
+      # Mark this backend as part of the FAILOVER pool of a passthrough Network
+      # Load Balancer: it receives traffic only when the primary pool's healthy
+      # ratio drops to failover_policy.failover_ratio (or every primary backend
+      # is unhealthy). Several backends may be failover backends. Regional
+      # backend services only. Mutable.
+      failover = optional(bool, false)
     })), [])
 
     # How requests from the same client stick to the same backend (default
     # NONE — every request is balanced independently). Cookie-based modes
     # (GENERATED_COOKIE, HTTP_COOKIE, STRONG_COOKIE_AFFINITY) need an
     # HTTP-family protocol; CLIENT_IP modes hash on network attributes.
-    # Session affinity is best-effort, not a guarantee — backends going
-    # unhealthy still break affinity. Not applicable when protocol is UDP.
+    # CLIENT_IP_NO_DESTINATION — regional services only — hashes on the
+    # client IP alone, the mode for an internal passthrough Network Load
+    # Balancer used as a next hop. Session affinity is best-effort, not a
+    # guarantee — backends going unhealthy still break affinity. Not
+    # applicable when protocol is UDP; not allowed together with ha_policy.
     # Mutable.
     session_affinity = optional(string)
 
@@ -408,14 +462,17 @@ variable "spec" {
     # Cloud Armor security policy evaluated on every request AFTER the CDN
     # cache (protects the backends: WAF rules, rate limiting, geo/IP
     # blocking). Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR —
-    # edge policies are not valid here. Mutable.
+    # edge policies are not valid here. The scopes must match: a regional
+    # backend service attaches only a regional Cloud Armor policy in its own
+    # region, a global one only a global policy. Mutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     security_policy = optional(string, "")
 
     # Cloud Armor EDGE security policy filtering requests BEFORE the CDN
     # cache (protects cached content: geo/IP blocking at the edge).
     # Reference a GcpCloudArmorPolicy of type CLOUD_ARMOR_EDGE — standard
-    # backend policies are not valid here. Mutable.
+    # backend policies are not valid here. Global backend services only (the
+    # edge is Google's global CDN). Mutable.
     # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     edge_security_policy = optional(string, "")
 
@@ -472,23 +529,143 @@ variable "spec" {
       response_headers = optional(list(string), [])
     }))
 
+    # Failover behavior for a passthrough Network Load Balancer whose
+    # backends are split into primary and failover pools (backends[].failover
+    # marks the failover pool): when to shift to the failover pool, whether
+    # to drop traffic if both pools are unhealthy, and whether to drain
+    # existing connections on failover. Regional backend services only; not
+    # allowed together with ha_policy.
+    failover_policy = optional(object({
+      # Skip connection draining when traffic fails over (or back): existing
+      # connections to the old active pool are cut rather than drained for the
+      # fixed 10-minute window. TCP only. GCP default false.
+      disable_connection_drain_on_failover = optional(bool)
+
+      # When NO backend in either pool is healthy, drop new connections (true)
+      # instead of spraying them across every primary backend in the hope one
+      # answers (false, GCP's default).
+      drop_traffic_if_unhealthy = optional(bool)
+
+      # The healthy ratio (0.0-1.0) of the primary pool at or below which
+      # traffic moves to the failover pool. Unset means traffic fails over only
+      # when every primary backend is unhealthy. When the failover pool is
+      # itself all-unhealthy, traffic returns to the primary pool best-effort.
+      failover_ratio = optional(number)
+    }))
+
+    # How a passthrough Network Load Balancer tracks connections for session
+    # consistency: per connection or per session, whether tracked flows
+    # persist to a backend that turned unhealthy, and how long idle entries
+    # live. Regional backend services only; not allowed together with
+    # ha_policy.
+    connection_tracking_policy = optional(object({
+      # What identifies a tracked flow: PER_CONNECTION (the GCP default) keys on
+      # the protocol's full connection tuple; PER_SESSION keys on the configured
+      # session_affinity, so a client's whole session sticks together. Both
+      # engines send the default explicitly when this is empty.
+      tracking_mode = optional(string)
+
+      # What happens to tracked flows when their backend turns unhealthy:
+      # DEFAULT_FOR_PROTOCOL (the GCP default) keeps TCP/SCTP connections on the
+      # unhealthy backend when tracking is per-connection or 5-tuple affinity,
+      # never UDP; NEVER_PERSIST always diverts them to healthy backends;
+      # ALWAYS_PERSIST keeps them where they are. Both engines send the default
+      # explicitly when this is empty.
+      connection_persistence_on_unhealthy_backends = optional(string)
+
+      # Seconds a connection-tracking entry lives with no matching traffic. For
+      # the internal passthrough NLB the minimum (and GCP default) is 600 and
+      # the maximum 57600; for the external passthrough NLB it must be 60 when
+      # tracking per session with CLIENT_IP or CLIENT_IP_PROTO affinity, and
+      # the default otherwise. Left unset, GCP computes the default and the
+      # engines send nothing (the argument is computed by the API), so an
+      # untouched value never shows as drift.
+      idle_timeout_sec = optional(number)
+
+      # Strong session affinity for the external passthrough Network Load
+      # Balancer: track flows so a session keeps its backend across connection
+      # churn. Google documents this option as not yet publicly available; it
+      # is here so the spec matches the provider surface. Default false.
+      enable_strong_affinity = optional(bool, false)
+    }))
+
+    # High-availability IP failover for an internal (or external) passthrough
+    # Network Load Balancer with exactly one leader backend at a time: a
+    # single backend group (or one endpoint inside it) holds the VIP, and
+    # fast_ip_move lets the VIP move with a gratuitous ARP / router
+    # advertisement instead of waiting on health checks. Regional backend
+    # services only. Google forbids it together with health_check,
+    # session_affinity, failover_policy, and connection_tracking_policy — the
+    # leader IS the routing decision.
+    ha_policy = optional(object({
+      # How the VIP moves to a new leader: DISABLED (the leader changes only
+      # through the haPolicy.leader API, i.e. by editing leader below) or
+      # GARP_RA (the VM that should become leader announces itself with a
+      # gratuitous ARP for IPv4 or a Router Advertisement for IPv6 and Google
+      # moves the VIP within seconds — the mechanism for keepalived-style
+      # active/passive pairs). Immutable: changing it recreates the backend
+      # service.
+      fast_ip_move = optional(string, "")
+
+      # The current leader: the zonal network endpoint group holding the VIP
+      # and, optionally, the exact instance inside it. Mutable — editing this
+      # is the API-driven leader change.
+      leader = optional(object({
+        # Fully-qualified URL of the zonal network endpoint group the leader is
+        # attached to. Must be one of this service's backends.
+        backend_group = optional(string, "")
+
+        # The leader endpoint inside that group.
+        network_endpoint = optional(object({
+          # Name of the VM instance serving as the leader. The instance must
+          # already be attached to the leader's backend_group NEG.
+          instance = optional(string, "")
+        }))
+      }))
+    }))
+
+    # Zonal affinity for a passthrough Network Load Balancer: keep traffic
+    # inside the client's zone and decide whether it may spill to other zones
+    # when the local zone's healthy capacity drops below a ratio. Regional
+    # backend services only.
+    network_pass_through_lb_traffic_policy = optional(object({
+      # Keep new connections inside the client's zone while that zone has
+      # enough healthy backends, spilling to other zones only below a ratio.
+      zonal_affinity = optional(object({
+        # The mode: ZONAL_AFFINITY_DISABLED (the GCP default — connections spread
+        # across all zones), ZONAL_AFFINITY_SPILL_CROSS_ZONE (stay in the
+        # client's zone while its healthy ratio is at or above spillover_ratio,
+        # otherwise use every zone), or ZONAL_AFFINITY_STAY_WITHIN_ZONE (never
+        # leave the zone, even when it has no healthy backend). Both engines send
+        # the default explicitly when this is empty.
+        spillover = optional(string)
+
+        # The healthy ratio (0.0-1.0) of the client's zone at or above which new
+        # connections stay local; below it they spread across all zones (SPILL
+        # mode only). Unset lets GCP apply its default.
+        spillover_ratio = optional(number)
+      }))
+    }))
+
     # Headers the load balancer ADDS to requests before forwarding them to
     # the backends, in "Header-Name: value" form. Values may use variables
     # like {client_ip} or {tls_version}. Typical uses: passing the client's
-    # geo data or TLS parameters to the application. Mutable.
+    # geo data or TLS parameters to the application. Global backend services
+    # only. Mutable.
     custom_request_headers = optional(list(string), [])
 
     # Headers the load balancer ADDS to responses before returning them to
     # clients, in "Header-Name: value" form. Values may use variables like
     # {cdn_cache_status}. Typical uses: security headers
-    # (Strict-Transport-Security) and cache observability. Mutable.
+    # (Strict-Transport-Security) and cache observability. Global backend
+    # services only. Mutable.
     custom_response_headers = optional(list(string), [])
 
     # Whether the load balancer compresses responses (gzip/brotli) for
     # clients that ask for it. AUTOMATIC compresses compressible content
     # types; DISABLED (the GCP default when unset) never compresses.
     # Compression is applied by the load balancer — backends keep serving
-    # uncompressed responses. Mutable.
+    # uncompressed responses. Global backend services only. Mutable.
     compression_mode = optional(string, "")
 
     # Connection-volume limits protecting backends from overload — the

@@ -31,13 +31,44 @@ frontends — the module translates it, so never write the empty string
 yourself. The Service Directory registration is PSC-only; the spec
 enforces the pairing pre-deploy.
 
-## Source-filtered rules are regional
+## One kind, two scopes
 
-The provider carries `source_ip_ranges` on this resource, but documents
-it as usable only on REGIONAL EXTERNAL rules — on the global rule it is
-a dead lever, which is why this kind deliberately does not model it
-(recorded in the parity manifest). Needing source filtering on a global
-frontend means Cloud Armor, not the forwarding rule.
+The kind is named for the GLOBAL forwarding rule it began as; `region`
+empty still builds exactly that — the global external ALB, the
+cross-region internal ALB, Traffic Director, PSC to Google APIs. `region`
+set builds the REGIONAL rule, which is three products in one resource:
+the front door of the regional external and internal Application Load
+Balancers (`target` = a regional proxy), of the internal and external
+passthrough Network Load Balancers (`backendService` = a regional backend
+service, no proxy at all — set the scheme to `INTERNAL` or `EXTERNAL`
+outright), and of a Private Service Connect consumer endpoint (`target` =
+a producer's service attachment, scheme `NONE`). Everything the rule
+points at must be regional in the same region: a regional proxy, a
+regional backend service, a regional `GcpAddress` (attached with an
+explicit `valueFrom.kind`, since `ipAddress` defaults to the global
+address kind). A regional external ALB also needs a proxy-only subnet
+(`GcpSubnetwork` with `purpose: REGIONAL_MANAGED_PROXY`) in the region
+before the rule can be created, and takes `network` — the one external
+scheme that does. `region` is immutable.
+
+## Source filtering is a regional EXTERNAL lever
+
+`sourceIpRanges` (up to 64 IPs or CIDRs) forwards only traffic from those
+sources — the external passthrough Network Load Balancer's coarse
+allowlist at the VIP. Google honors it only on a REGIONAL rule with
+scheme `EXTERNAL`, and the spec admits it there alone. Needing source
+filtering on a global frontend means Cloud Armor, not the forwarding
+rule.
+
+## Ports come in three shapes
+
+`portRange` (one contiguous range) is the proxy-based load balancers'
+form on both scopes. `ports` (up to five individual ports or ranges) and
+`allPorts` (every port, plus port-less packets such as UDP fragments) are
+the passthrough Network Load Balancers' forms and exist only on a
+regional rule; `L3_DEFAULT` — forward every IP protocol at once — requires
+`allPorts` and a backend service whose protocol is `UNSPECIFIED`. The
+three are mutually exclusive and the spec rejects two at once.
 
 ## Teardown discipline
 

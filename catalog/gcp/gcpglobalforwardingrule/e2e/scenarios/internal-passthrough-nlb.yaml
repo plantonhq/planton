@@ -1,0 +1,47 @@
+# GcpGlobalForwardingRule scenario: the internal passthrough Network Load
+# Balancer form of the REGIONAL arm -- scheme INTERNAL naming a regional
+# INTERNAL backend service directly through backendService (no proxy), a
+# list of individual ports, global access, and a service label that gives
+# the VIP a stable internal DNS name (the service_name output the verifier
+# checks). The VIP is drawn from a private subnet fixture on the registry's
+# prerequisite network. The whole fixture chain is declared here because a
+# path-declared fixture's own annotation is never read.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGlobalForwardingRule
+metadata:
+  name: planton-oss-e2e-gcpgfr-ilb
+  id: planton-oss-e2e-gcpgfr-ilb
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpglobalforwardingrule
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpsubnetwork-private.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcphealthcheck-regional-tcp.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpbackendservice-internal.yaml"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral internal passthrough NLB forwarding rule created by the Planton E2E harness; safe to delete
+  region: us-central1
+  backendService:
+    valueFrom:
+      kind: GcpBackendService
+      name: planton-oss-e2e-gcpgfr-ilb-rbs
+      fieldPath: status.outputs.self_link
+  loadBalancingScheme: INTERNAL
+  ipProtocol: TCP
+  ports: ["80", "443"]
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcpgfr-subnet
+      fieldPath: status.outputs.subnetwork_self_link
+  allowGlobalAccess: true
+  serviceLabel: orders
+  deletionPolicy: DELETE

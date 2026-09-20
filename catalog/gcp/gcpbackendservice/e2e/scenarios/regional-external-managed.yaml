@@ -1,0 +1,37 @@
+# GcpBackendService scenario: the REGIONAL arm (google_compute_region_backend_service)
+# as a regional external Application Load Balancer's backend -- a set region
+# routes the module down the regional branch, the scheme is named outright
+# (EXTERNAL_MANAGED; an unset scheme means EXTERNAL on both scopes), and the
+# health check is a regional fixture because Google rejects a global one
+# behind a regional ALB. No backends: a health-checked service with none is
+# the natural creation order and a valid proof of the resource family.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBackendService
+metadata:
+  name: planton-oss-e2e-gcpbs-regional
+  id: planton-oss-e2e-gcpbs-regional
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbackendservice
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpbackendservice/e2e/prerequisites/gcphealthcheck-regional.yaml"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral regional EXTERNAL_MANAGED backend service created by the Planton E2E harness; safe to delete
+  region: us-central1
+  loadBalancingScheme: EXTERNAL_MANAGED
+  protocol: HTTP
+  timeoutSec: 30
+  healthCheck:
+    valueFrom:
+      kind: GcpHealthCheck
+      name: planton-oss-e2e-gcpbs-rhc
+      fieldPath: status.outputs.self_link
+  logConfig:
+    enable: true
+    sampleRate: 1.0
+  deletionPolicy: DELETE
