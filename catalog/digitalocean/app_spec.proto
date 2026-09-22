@@ -331,7 +331,8 @@ message DigitalOceanAppSlackWebhook {
 // Email and Slack destinations for an alert. Both engines wire them, and the
 // provider applies them via a side-channel API call after the app spec is
 // saved -- but it never reads them back into state (provider defect at
-// v2.99.1, measured live 2026-09-16). Consequences: a Terraform plan with
+// v2.99.1, measured live 2026-09-16, unchanged through v2.101.1; tracked as
+// digitalocean/terraform-provider-digitalocean#1606). Consequences: a Terraform plan with
 // refresh proposes the destinations again on every run, and because any spec
 // diff is an App update, every apply triggers a new deployment; Pulumi shows
 // the same diff only after a refresh; an import never restores them. Until

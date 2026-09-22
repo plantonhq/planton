@@ -26,7 +26,8 @@ spec:
   # account, so every scenario's appName carries ${E2E_RUN_ID}.
   #
   # Deliberately NOT in the live lanes, each with its unblock condition:
-  # alert destinations (emails / Slack) -- a PROVIDER DEFECT at v2.99.1:
+  # alert destinations (emails / Slack) -- a PROVIDER DEFECT at v2.99.1,
+  #   unchanged through v2.101.1, tracked as digitalocean/terraform-provider-digitalocean#1606:
   #   both engines wire them and the API applies them, but the provider
   #   never reads them back, so a refreshed plan proposes them again forever
   #   and every apply redeploys the app (measured live 2026-09-16). Unblocks

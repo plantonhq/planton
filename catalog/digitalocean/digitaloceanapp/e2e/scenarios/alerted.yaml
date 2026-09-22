@@ -6,7 +6,8 @@
 # Deliberately NO alert destinations. The provider applies them through a
 # side call after the app exists but never reads them back into state
 # (measured 2026-09-16: a refreshed plan proposed `+ destinations` on both
-# alerts forever, and any spec diff triggers a new deployment), so a lane
+# alerts forever, and any spec diff triggers a new deployment; tracked as
+# digitalocean/terraform-provider-digitalocean#1606), so a lane
 # that set them could never pass the gate honestly. The arm is a recorded
 # provider-defect deferral on the profile; both modules still wire it.
 #

@@ -39,7 +39,7 @@ The webhook URL lets anyone post to your channel. The spec marks it sensitive, s
 
 ## A check deleted in the console breaks the next plan -- remove it from state by hand
 
-DigitalOcean's Uptime API answers **403 "not authorized"**, not 404, for any check the account no longer owns -- deleted a moment ago or never created. The provider only treats 404 as "gone", so a check someone deleted in the control panel makes every later plan fail with `Error retrieving check: ... 403` instead of quietly dropping the resource from state. The remedy is a manual state removal of the check (and its alert rows) before the next apply recreates them. Every other DigitalOcean API in this catalog 404s normally; this one is the exception.
+DigitalOcean's Uptime API answers **403 "not authorized"**, not 404, for any check the account no longer owns -- deleted a moment ago or never created. The provider only treats 404 as "gone", so a check someone deleted in the control panel makes every later plan fail with `Error retrieving check: ... 403` instead of quietly dropping the resource from state. The remedy is a manual state removal of the check (and its alert rows) before the next apply recreates them. Every other DigitalOcean API in this catalog 404s normally; this one is the exception. Reported upstream as [digitalocean/terraform-provider-digitalocean#1609](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1609) (reproduced 2026-09-22 at provider v2.101.1).
 
 ## What is deliberately NOT here
 

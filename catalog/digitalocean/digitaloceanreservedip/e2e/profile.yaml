@@ -29,7 +29,9 @@ spec:
   # intermittent index lag. A customer's plain `tofu apply` does not
   # retry: the GUIDE carries the recovery (list, then import or delete the
   # orphan). The upstream fix is a readability wait in Create (the shape
-  # #1563 gave the Kafka topic). The v4 Create has the same read-after-
+  # #1563 gave the Kafka topic); tracked for the v6 resource as
+  # digitalocean/terraform-provider-digitalocean#1607 -- upstream PR #1600 adds that
+  # wait to the v4 resource only. The v4 Create has the same read-after-
   # create shape but never failed here.
   # The v6 destroy is proven by the verifier's absence check, never by the
   # IaC destroy alone: the provider's v6 delete swallows non-404 errors

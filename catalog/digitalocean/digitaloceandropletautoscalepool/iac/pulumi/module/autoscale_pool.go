@@ -23,7 +23,7 @@ import (
 // state) and then destroy; a second destroy without the refresh calls
 // delete on a gone pool and the provider errors on the 404 too. Nothing in
 // this module can change the waiter; the fix is upstream (accept `deleting`
-// as a pending state).
+// as a pending state), tracked as digitalocean/terraform-provider-digitalocean#1605.
 func autoscalePool(
 	ctx *pulumi.Context,
 	locals *Locals,

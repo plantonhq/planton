@@ -30,7 +30,8 @@ spec:
   # retries the DELETE through `412 cannot delete a project with resources`
   # -- so that destroy failed with the member already moved and the empty
   # project left behind (deleted by hand; a second destroy would have done
-  # the same). Both modules now size the delete timeout to ten minutes
+  # the same; reported upstream as digitalocean/terraform-provider-digitalocean#1608). Both
+  # modules now size the delete timeout to ten minutes
   # (Terraform `timeouts { delete }`, Pulumi `CustomTimeouts`), and the
   # lanes passed on both engines with the change (DESTROY 14 s / 6 s, the
   # Terraform round-trip still lossless -- a timeouts block is not an

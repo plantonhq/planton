@@ -48,7 +48,7 @@ Use `envs[].plaintext` for ordinary values and `envs[].secret` for credentials. 
 
 ## Alert destinations are write-only on the provider
 
-Both engines wire `alerts[].destinations`, but the provider never reads destinations back into state (a provider defect at v2.99.1, measured live on the App kind). On Terraform a refreshed plan proposes them again forever and every apply redeploys the app; Pulumi shows the diff only after a refresh. Set destinations on Pulumi stacks, or leave them unset and manage recipients in the control panel. Recipients must be verified team members.
+Both engines wire `alerts[].destinations`, but the provider never reads destinations back into state (a provider defect at v2.99.1, measured live on the App kind; tracked as [digitalocean/terraform-provider-digitalocean#1606](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1606)). On Terraform a refreshed plan proposes them again forever and every apply redeploys the app; Pulumi shows the diff only after a refresh. Set destinations on Pulumi stacks, or leave them unset and manage recipients in the control panel. Recipients must be verified team members.
 
 ## When this kind is the wrong shape
 

@@ -23,7 +23,8 @@ import (
 // hour ago, or never created -- answers 403 "you are not authorized to
 // access this resource" on both the check and the alert endpoints (measured
 // live; the monitoring API's alert policies 404 normally). isUptimeGone
-// reads that signal for this verifier alone. It is safe to treat as
+// reads that signal for this verifier alone (the provider's own Read does
+// not -- digitalocean/terraform-provider-digitalocean#1609). It is safe to treat as
 // absence here because the lane created the very id it probes: a genuinely
 // unauthorized token would have failed DEPLOY, never reached this probe.
 type uptimeCheckVerifier struct{}

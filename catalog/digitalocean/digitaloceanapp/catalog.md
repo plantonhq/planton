@@ -111,7 +111,7 @@ These are the most important decisions when configuring an App Platform applicat
 
 **Liveness and secure headers** -- service/worker `livenessHealthCheck` is the restart probe (the service `healthCheck` is the readiness probe that gates traffic), and `ingress.secureHeader` adds one response header to every route. Both deploy on both provisioners, as does every other spec field including `vpc`, `maintenance`, ingress `authorityExact` matches, and alert destinations.
 
-**Alert destinations** -- both engines wire email and Slack destinations, but the provider never reads them back, so a Terraform apply with destinations set re-plans and redeploys the app every time (a provider defect). Set them on Pulumi stacks, or leave them unset on Terraform and manage recipients in the control panel; recipients must be verified team members.
+**Alert destinations** -- both engines wire email and Slack destinations, but the provider never reads them back, so a Terraform apply with destinations set re-plans and redeploys the app every time (a provider defect, tracked as [digitalocean/terraform-provider-digitalocean#1606](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1606)). Set them on Pulumi stacks, or leave them unset on Terraform and manage recipients in the control panel; recipients must be verified team members.
 
 **Project** -- `projectId` is create-only: changing it destroys and recreates the app. Leave it unset to use the account's default project.
 

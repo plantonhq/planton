@@ -31,7 +31,8 @@ spec:
   # import). The modules cannot know the engine from a cluster UUID, so the
   # manifest carries it: PostgreSQL users declare `settings: {}`, MySQL
   # users leave it out -- the scenarios, the preset, and every doc surface
-  # say so, and both lanes pass the gate with that shape.
+  # say so, and both lanes pass the gate with that shape. Reported upstream
+  # as digitalocean/terraform-provider-digitalocean#1610.
   #
   # Deliberately not in the live lanes: kafka_acls / opensearch_acls (the
   # kafka fixture is the program's most expensive class -- 3-node minimum

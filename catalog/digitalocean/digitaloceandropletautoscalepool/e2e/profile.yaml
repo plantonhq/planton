@@ -37,7 +37,7 @@ spec:
   # the DELETE this time (four earlier lanes: ~10 seconds), so the deletion
   # itself is variable and can approach the waiter's one-minute timeout.
   # The waiter's source is unchanged on upstream main; the defect is
-  # reported upstream (the issue link replaces this sentence once filed).
+  # tracked upstream as digitalocean/terraform-provider-digitalocean#1605.
   # UNBLOCK: a provider release carrying that fix AND a Pulumi bridge that
   # embeds it, then the pin bump; re-run the four lanes.
   # Watch items still standing: the dynamic lane's scale-up needs sustained

@@ -43,7 +43,8 @@ resource "digitalocean_project" "project" {
   # the relocation was accepted, the destroy failed, and a second destroy of
   # the by-then-empty project succeeded. Ten minutes covers the measured lag
   # with room; a retry that ends earlier costs nothing. Twin of the Pulumi
-  # module's CustomTimeouts.
+  # module's CustomTimeouts. The tight default and the undocumented knob are
+  # reported upstream as digitalocean/terraform-provider-digitalocean#1608.
   timeouts {
     delete = "10m"
   }

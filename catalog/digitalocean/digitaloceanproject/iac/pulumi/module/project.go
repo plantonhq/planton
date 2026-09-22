@@ -71,7 +71,8 @@ func project(
 		// destroy failed, and a second destroy of the by-then-empty project
 		// succeeded. Ten minutes covers the measured lag with room; a retry
 		// that ends earlier costs nothing. Twin of the Terraform module's
-		// timeouts block.
+		// timeouts block. The tight default and the undocumented knob are
+		// reported upstream as digitalocean/terraform-provider-digitalocean#1608.
 		pulumi.Timeouts(&pulumi.CustomTimeouts{Delete: "10m"}),
 	)
 	if err != nil {

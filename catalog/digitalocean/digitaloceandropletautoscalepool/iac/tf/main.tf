@@ -18,7 +18,7 @@
 # regardless (pool and members 404 within ~10 seconds); a second destroy
 # refreshes, reads the 404, and drops the pool from state. Nothing in this
 # module can change the waiter; the fix is upstream (accept `deleting` as a
-# pending state).
+# pending state), tracked as digitalocean/terraform-provider-digitalocean#1605.
 
 # The region's default VPC, looked up only when the spec leaves the template's
 # vpc unset (see locals.vpc_uuid for why it is always sent explicitly).

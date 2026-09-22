@@ -3439,7 +3439,9 @@ The uptime verifier reads 403 as absence, scoped to that API only, and it
 is safe because the lane created the very id it probes (a bad token would
 have failed DEPLOY). The provider handles only 404, so a check deleted out
 of band errors every subsequent plan until removed from state by hand —
-recorded in the kind's GUIDE as the customer-facing consequence.
+recorded in the kind's GUIDE as the customer-facing consequence, and
+reported upstream as digitalocean/terraform-provider-digitalocean#1609 after a
+first-hand `tofu plan` reproduction at v2.101.1.
 
 **SSH key material is the account-level identity — a fixture and a
 scenario must not share a key body.** `POST /v2/account/keys` deduplicates
@@ -3494,7 +3496,8 @@ omit it rather than send an empty string. A git-source build reached
 ACTIVE in ~80 seconds on both engines; image deploys in 25–50 seconds.
 
 **Alert destinations on `digitalocean_app` are write-only at v2.99.1 — a
-provider defect, recorded, never tolerated.** The provider applies email /
+provider defect (unchanged through v2.101.1; tracked as
+digitalocean/terraform-provider-digitalocean#1606), recorded, never tolerated.** The provider applies email /
 Slack destinations through `UpdateAlertDestinations` after the spec is
 saved, but `flattenAppAlerts` never reads them back, so a refreshed plan
 proposes `+ destinations` on every alert forever, and because any `spec`
@@ -3540,7 +3543,9 @@ four destroys in one session read the project empty in ~6 s, ~14 s, ~30 s,
 and once NOT within 180 s, so that destroy failed with the member already
 moved and an empty, free project left behind (a second destroy deletes it
 in seconds). The provider's code is identical from v2.67.0 through
-v2.101.0; the lag is the API's. Both modules now carry a ten-minute delete
+v2.101.1; the lag is the API's (reported upstream as
+digitalocean/terraform-provider-digitalocean#1608 -- the default is tight and
+the resource docs never mention the `timeouts` block). Both modules now carry a ten-minute delete
 timeout (Terraform `timeouts { delete = "10m" }`, Pulumi
 `CustomTimeouts{Delete: "10m"}` -- the bridge honors it for SDKv2
 resources that declare `Timeouts`), and the Terraform round-trip stayed
@@ -3644,7 +3649,9 @@ a no-op on DigitalOcean's side -- no member roll, no history event).
 
 **`digitalocean_droplet_autoscale` destroy fails on an upstream waiter
 defect (provider v2.100.1 through v2.101.1 and upstream `main`; bridges
-v4.53.0 through v4.80.1) -- the kind is NOT provable at any current pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
+v4.53.0 through v4.80.1; tracked as
+digitalocean/terraform-provider-digitalocean#1605) -- the kind is NOT
+provable at any current pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
 bare curl without it is a 400) the API reports the pool `deleting` for
 several seconds while it terminates the members, the provider's refresh
 returns that status verbatim, and its delete waiter accepts only
@@ -3871,7 +3878,8 @@ tolerates exactly the declared config-only `settings` (the re-assert is a
 201 no-op on PostgreSQL), the MySQL round-trip is lossless. The API's GET
 does return `settings` for PostgreSQL users -- it is the provider's Read
 that ignores it, so this is an upstream read-back defect with an
-engine-dependent shape, not something a module can hide.
+engine-dependent shape, not something a module can hide (reported as
+digitalocean/terraform-provider-digitalocean#1610).
 
 **Idempotency-gate diffs on the satellites were all first-contact
 read-back classes, none of them module wiring.** Db, connection pool, and
@@ -3950,6 +3958,8 @@ immediate GETs each, all 200) -- an intermittent index lag. After any lane
 that logged that error, list `GET /v2/reserved_ipv6` before calling the
 sweep clean; the runner's retry is what passes the lane, and it is also what
 leaks. The v4 reservation has the same Create shape and never failed here.
+Tracked upstream as digitalocean/terraform-provider-digitalocean#1607; upstream PR
+#1600 adds the readability wait to the v4 resource only, so watch both.
 The v6 assignment DOES round-trip blind (`{ip},{droplet_id}` -- the importer
 parses the pair and mints its own id), so an assignment's synthetic
 timestamped id is not, by itself, a reason to exclude a type from the

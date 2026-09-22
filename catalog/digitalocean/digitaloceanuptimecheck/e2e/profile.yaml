@@ -22,7 +22,9 @@ spec:
   # the API's own values, which is why the idempotency gate and the round
   # trip are clean without a single tolerance. The Uptime API answers 403,
   # not 404, for a check the account does not own (deleted or never
-  # created); the verifier reads that as absence.
+  # created); the verifier reads that as absence. The provider does not
+  # (its Read clears state on 404 only), reported upstream as
+  # digitalocean/terraform-provider-digitalocean#1609.
   #
   # Alert email goes only to VERIFIED team members (the API rejects any
   # other address), so the `alerted` scenario reads its recipient from

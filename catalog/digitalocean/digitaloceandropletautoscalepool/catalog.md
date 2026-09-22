@@ -21,7 +21,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### DigitalOcean Account
 
 - **Droplet quota and budget** -- the pool needs quota for its maximum size, and every member is a real droplet billing its size's hourly rate from the moment the pool provisions it.
-- **Destroy needs a second pass at the current provider** -- the first destroy reports `unexpected state 'deleting'` after DigitalOcean has already accepted the deletion; the pool and its members are removed within seconds. Terraform: destroy again. Pulumi: refresh, then destroy. The GUIDE explains the upstream defect.
+- **Destroy needs a second pass at the current provider** -- the first destroy reports `unexpected state 'deleting'` after DigitalOcean has already accepted the deletion; the pool and its members are removed within seconds. Terraform: destroy again. Pulumi: refresh, then destroy. The GUIDE explains the upstream defect, tracked as [digitalocean/terraform-provider-digitalocean#1605](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1605).
 
 ## Deploy
 
