@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1;
+
+import "catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-vertex-ai-model-garden-deployment stack-input
+message GcpVertexAiModelGardenDeploymentStackInput {
+  //target cloud-resource
+  GcpVertexAiModelGardenDeployment target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

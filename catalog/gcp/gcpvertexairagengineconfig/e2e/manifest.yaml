@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiRagEngineConfig
+metadata:
+  name: rag-engine-us-central1
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  # BASIC is the experimentation tier; SCALED is production grade with
+  # autoscaling; UNPROVISIONED disables the managed database AND deletes
+  # its data. Destroying this block also unprovisions -- ABANDON keeps
+  # the data.
+  tier: BASIC
+  deletionPolicy: DELETE

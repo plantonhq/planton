@@ -1,0 +1,96 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpvertexaiagentengine
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Agent Engine encrypts the agent's artifacts, sessions, and memories at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key_name
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; a Cloud KMS key encrypts the agent's data under the customer-managed key. Immutable for the agent's life.
+      notes: No preset sets it. The Vertex AI service agent needs encrypt/decrypt on the key as a prerequisite.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every query to the agent is TLS over the regional Vertex AI host; a PSC interface keeps the agent's own outbound traffic on Google's network.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The agent has no anonymous surface -- every query is authenticated against aiplatform.reasoningEngines.query; nothing listens on a public address.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: spec.deployment_spec.agent_gateway_config
+      evidence:
+        type: spec_default
+        reference: Unset means clients reach the agent through the Vertex AI API under IAM; client_to_agent_config routes inbound traffic through an Agent Gateway, and agent_to_anywhere_config routes the agent's outbound calls through one.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: Vertex AI's API front end is Google-operated; no customer-configurable edge exists.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Managing the agent is governed by aiplatform.reasoningEngines.* permissions and querying it by aiplatform.reasoningEngines.query, on every agent; the agent's own calls carry its identity's IAM.
+    - control_id: workload-identity
+      status: configurable
+      field_path: spec.identity_type
+      evidence:
+        type: spec_default
+        reference: Unset runs the agent as the project's Vertex AI Reasoning Engine service agent (or the custom service_account when set); AGENT_IDENTITY gives the agent its own Agent Identity. In every case the agent authenticates to Google APIs with a Google-managed identity and holds no long-lived key.
+      notes: The 02-container-agent-with-memory-bank preset runs as a referenced GcpServiceAccount.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is service and administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating, updating, and deleting the agent land in Cloud Audit Logs (Admin Activity) unconditionally; queries are Data Access logs enabled at the project.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Agent Engine emits request counts, latency, and instance CPU and memory metrics per agent to Cloud Monitoring, and the agent's logs to Cloud Logging, without configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The agent is declarative and re-creatable from its source archive or image in source control; sessions and memories are conversational state that the memory bank's TTLs expire by design.
+    - control_id: backup-retention-policy
+      status: configurable
+      field_path: context_spec.memory_bank_config.ttl_config
+      evidence:
+        type: spec_default
+        reference: Unset means memories live until deleted; default_ttl or granular_ttl_config expires them automatically, and memory_revision_default_ttl bounds the revision history.
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Agent Engine is a regional Google-managed service; instances are placed across the location's zones and there is no zonal placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the agent and its sessions and memories are deleted; PREVENT makes any destroying plan fail; ABANDON removes the agent from management while it keeps running.
+      notes: The 02-container-agent-with-memory-bank preset sets PREVENT.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The runtime hosts are Google-operated; the agent's own code changes only when a new source archive or image is declared.

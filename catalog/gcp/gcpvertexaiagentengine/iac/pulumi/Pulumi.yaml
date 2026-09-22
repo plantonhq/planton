@@ -1,0 +1,4 @@
+name: gcpvertexaiagentengine-pulumi-project
+runtime:
+  name: go
+description: Planton GcpVertexAiAgentEngine Pulumi module

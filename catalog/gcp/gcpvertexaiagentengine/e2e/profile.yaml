@@ -1,0 +1,33 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexaiagentengine
+spec:
+  # Awaiting the live proof lane. The minimal scenario proves in the
+  # harness project with roles/aiplatform.admin and Cloud Build enabled: the
+  # smallest ADK agent built from an inline source archive (the readable
+  # copy is e2e/fixtures/agent-source/), the shape Google's own provider
+  # test deploys; the memory-bank scenario adds a Memory Bank on the
+  # project's Gemini and embedding models, a secret env var from the
+  # prerequisite secret, and the prerequisite service account as identity.
+  # Offline bar
+  # met: both modules build and validate, offline plans for the reference
+  # manifest and both scenarios are clean on the pinned provider, and the
+  # accounting is total. Live facts the proof lane confirms: (1) the build
+  # from source succeeds (a Cloud Build in the project; a failure naming
+  # the requirements file is a fixture defect, not a module one) and the
+  # agent reaches a running state on both engines; (2) name is the full
+  # resource path and reasoning_engine_id its numeric last segment, the
+  # same on both engines; (3) the inline source_archive is input-only --
+  # Google never reads it back -- so the agent RE-PLANS CLEAN under the
+  # apply-idempotency gate on both engines (the provider ignores it on
+  # read); (4) display_name defaulted from metadata.name lands and the
+  # platform attribution labels are present; (5) the memory bank's two
+  # publisher-model paths are accepted in us-central1 -- a 400 naming a
+  # model means the project lacks access to that Gemini or embedding
+  # model, not a module defect; (6) a destroy deletes the agent and any
+  # memories, and the verifier sees 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 45

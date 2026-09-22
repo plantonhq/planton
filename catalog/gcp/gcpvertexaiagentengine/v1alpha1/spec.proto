@@ -1,0 +1,1000 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaiagentengine.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// ---------------------------------------------------------------------------
+// Where the agent's code comes from
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiAgentEngineContainerSpec runs the agent from a prebuilt
+// container image (bring-your-own-container): the image serves the Agent
+// Engine protocol on port and Vertex AI runs it as-is.
+message GcpVertexAiAgentEngineContainerSpec {
+  // Container image URI in Artifact Registry, e.g.
+  // us-central1-docker.pkg.dev/{project}/{repo}/agent:latest. The image
+  // must implement the Agent Engine serving contract.
+  string image_uri = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Port the container listens on (Google's default 8080). Sent only when
+  // set.
+  optional int32 port = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// GcpVertexAiAgentEngineInlineSource is the agent's source code uploaded
+// inline: a base64-encoded .tar.gz of the project root. Input only --
+// Google never reads it back, so a changed archive is detected by the
+// manifest diff, not by the provider.
+message GcpVertexAiAgentEngineInlineSource {
+  // The source archive: a gzip-compressed tarball of the source root,
+  // base64-encoded (`tar czf - -C agent-source . | base64`).
+  string source_archive = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// GcpVertexAiAgentEngineDeveloperConnectSourceConfig points at a
+// repository linked through Developer Connect.
+message GcpVertexAiAgentEngineDeveloperConnectSourceConfig {
+  // The Developer Connect Git repository link, as
+  // projects/*/locations/*/connections/*/gitRepositoryLinks/*. A literal
+  // today: no catalog block produces one yet.
+  string git_repository_link = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/locations/[^/]+/connections/[^/]+/gitRepositoryLinks/[^/]+$"
+  ];
+
+  // Directory, relative to the repository root, that is the source root.
+  string dir = 2 [(buf.validate.field).required = true];
+
+  // The Git ref to fetch: a branch, a tag, a commit SHA, or any ref.
+  string revision = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// GcpVertexAiAgentEngineDeveloperConnectSource pulls the agent's source
+// from a Developer Connect repository at a Git ref.
+message GcpVertexAiAgentEngineDeveloperConnectSource {
+  // The repository, directory, and ref.
+  GcpVertexAiAgentEngineDeveloperConnectSourceConfig config = 1 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiAgentEngineAdkConfig is an Agent Development Kit agent
+// described entirely by configuration, no Python.
+message GcpVertexAiAgentEngineAdkConfig {
+  // The ADK agent config as a JSON string (write it compact; Google
+  // normalizes it).
+  string json_config = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 2
+  ];
+}
+
+// GcpVertexAiAgentEngineAgentConfigSource builds the agent from an ADK
+// config, optionally with supporting source files.
+message GcpVertexAiAgentEngineAgentConfigSource {
+  // The ADK agent config.
+  GcpVertexAiAgentEngineAdkConfig adk_config = 1 [(buf.validate.field).required = true];
+
+  // Supporting source files (tools, callbacks) the config refers to, as an
+  // inline archive.
+  GcpVertexAiAgentEngineInlineSource inline_source = 2;
+}
+
+// GcpVertexAiAgentEnginePythonSpec builds the agent from Python source with
+// Vertex AI's own build: it installs the requirements file and imports
+// entrypoint_object from entrypoint_module.
+message GcpVertexAiAgentEnginePythonSpec {
+  // Python version: 3.9, 3.10 (Google's default), 3.11, 3.12, or 3.13.
+  string version = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12",
+        "3.13"
+      ]
+    }
+  ];
+
+  // Fully qualified module that defines the agent, relative to the source
+  // root (which is on sys.path), e.g. "path.to.agent". Google's default
+  // "agent".
+  string entrypoint_module = 2;
+
+  // The callable in entrypoint_module that IS the agent. Google's default
+  // "root_agent" (the ADK convention).
+  string entrypoint_object = 3;
+
+  // Path of the requirements file relative to the source root. Google's
+  // default "requirements.txt".
+  string requirements_file = 4;
+}
+
+// GcpVertexAiAgentEngineImageSpec builds the agent from a Dockerfile at the
+// source root instead of Vertex AI's Python build.
+message GcpVertexAiAgentEngineImageSpec {
+  // Build arguments passed as --build-arg flags.
+  map<string, string> build_args = 1;
+}
+
+// GcpVertexAiAgentEngineSourceCodeSpec has Vertex AI build the agent from
+// source: exactly one source (inline archive, Developer Connect repository,
+// or ADK config) and exactly one build recipe (Python or Dockerfile).
+message GcpVertexAiAgentEngineSourceCodeSpec {
+  option (buf.validate.message).cel = {
+    id: "source_code_spec.exactly_one_source"
+    message: "set exactly one of inline_source, developer_connect_source, or agent_config_source"
+    expression: "[has(this.inline_source), has(this.developer_connect_source), has(this.agent_config_source)].filter(x, x).size() == 1"
+  };
+  option (buf.validate.message).cel = {
+    id: "source_code_spec.exactly_one_build"
+    message: "set exactly one of python_spec or image_spec"
+    expression: "has(this.python_spec) != has(this.image_spec)"
+  };
+
+  // Source uploaded inline as a base64 .tar.gz.
+  GcpVertexAiAgentEngineInlineSource inline_source = 1;
+
+  // Source pulled from a Developer Connect repository.
+  GcpVertexAiAgentEngineDeveloperConnectSource developer_connect_source = 2;
+
+  // An ADK agent described by configuration.
+  GcpVertexAiAgentEngineAgentConfigSource agent_config_source = 3;
+
+  // Build with Vertex AI's Python build (requirements + entrypoint).
+  GcpVertexAiAgentEnginePythonSpec python_spec = 4;
+
+  // Build from the Dockerfile at the source root.
+  GcpVertexAiAgentEngineImageSpec image_spec = 5;
+}
+
+// GcpVertexAiAgentEnginePackageSpec is the legacy pickled-object shape: a
+// Python object serialized with cloudpickle in Cloud Storage, plus its
+// requirements and dependency files. The source_code_spec build is the
+// current path; this remains for agents packaged by the Vertex AI SDK's
+// older flow.
+message GcpVertexAiAgentEnginePackageSpec {
+  // Cloud Storage URI (gs://...) of the pickled Python object.
+  string pickle_object_gcs_uri = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^gs://.+"
+  ];
+
+  // Cloud Storage URI of the dependency files, as a .tar.gz.
+  string dependency_files_gcs_uri = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^gs://.+"
+  ];
+
+  // Cloud Storage URI of the requirements.txt.
+  string requirements_gcs_uri = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^gs://.+"
+  ];
+
+  // Python version: 3.8 through 3.13 (Google's default 3.10).
+  string python_version = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "3.8",
+        "3.9",
+        "3.10",
+        "3.11",
+        "3.12",
+        "3.13"
+      ]
+    }
+  ];
+}
+
+// GcpVertexAiAgentEngineBuildSpec tunes the Cloud Build that compiles a
+// source_code_spec agent.
+message GcpVertexAiAgentEngineBuildSpec {
+  // The Cloud Build private worker pool the build runs in, as
+  // projects/{project}/locations/{location}/workerPools/{pool}. A literal
+  // today: the catalog's Cloud Build blocks arrive with their own family.
+  string worker_pool = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/locations/[^/]+/workerPools/[^/]+$"
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// How the agent runs
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiAgentEngineEnvVar is one literal environment variable on the
+// agent's container.
+message GcpVertexAiAgentEngineEnvVar {
+  // Variable name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[A-Za-z_][A-Za-z0-9_.-]*$"
+  ];
+
+  // Literal value. Never a credential -- use secret_env for those.
+  string value = 2 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiAgentEngineSecretRef names a Secret Manager secret version.
+message GcpVertexAiAgentEngineSecretRef {
+  // The secret, by name in the agent's project: a GcpSecretManagerSecret
+  // reference (resolving to its secret_id output) or a literal short name.
+  // The agent's identity needs roles/secretmanager.secretAccessor on it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef secret = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSecretManagerSecret,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.secret_id",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret NAME/identifier only -- the secret material itself never appears in the spec"
+  ];
+
+  // The version to resolve: a version number or "latest" (Google's
+  // default when empty).
+  string version = 2;
+}
+
+// GcpVertexAiAgentEngineSecretEnvVar is one environment variable filled
+// from Secret Manager at instance start.
+message GcpVertexAiAgentEngineSecretEnvVar {
+  // Variable name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[A-Za-z_][A-Za-z0-9_.-]*$"
+  ];
+
+  // The secret version the value comes from.
+  GcpVertexAiAgentEngineSecretRef secret_ref = 2 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiAgentEngineDnsPeeringConfig lets the agent resolve a private
+// DNS zone of another project over the PSC interface.
+message GcpVertexAiAgentEngineDnsPeeringConfig {
+  // DNS suffix of the peered zone, ending with a dot, e.g.
+  // "my-internal-domain.corp.".
+  string domain = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^([a-z0-9-]+\\.)+$"
+  ];
+
+  // The project hosting the Cloud DNS zone: a GcpProject reference or a
+  // literal project ID. The Vertex AI service agent needs roles/dns.peer
+  // there.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_project = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The VPC network in target_project where the zone is visible, by bare
+  // name: a GcpVpcNetwork reference (resolving to its network_name output)
+  // or a literal.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_network = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_name"
+  ];
+}
+
+// GcpVertexAiAgentEnginePscInterfaceConfig gives the agent a Private
+// Service Connect interface into a VPC, so it reaches private resources
+// (databases, internal APIs) without public egress.
+message GcpVertexAiAgentEnginePscInterfaceConfig {
+  // Bare name of a Compute Engine network attachment in the agent's region
+  // and project, created beforehand.
+  string network_attachment = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-z]([-a-z0-9]*[a-z0-9])?$"
+  ];
+
+  // Private DNS zones of other projects the agent may resolve.
+  repeated GcpVertexAiAgentEngineDnsPeeringConfig dns_peering_configs = 2;
+}
+
+// GcpVertexAiAgentEngineGatewayTarget names the Agent Gateway one traffic
+// direction passes through.
+message GcpVertexAiAgentEngineGatewayTarget {
+  // The Agent Gateway resource name.
+  string agent_gateway = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// GcpVertexAiAgentEngineAgentGatewayConfig routes the agent's traffic
+// through Agent Gateway -- inbound (clients calling the agent) and
+// outbound (the agent calling anything else) independently.
+message GcpVertexAiAgentEngineAgentGatewayConfig {
+  // Gateway for traffic targeting the agent.
+  GcpVertexAiAgentEngineGatewayTarget client_to_agent_config = 1;
+
+  // Gateway for traffic originating from the agent.
+  GcpVertexAiAgentEngineGatewayTarget agent_to_anywhere_config = 2;
+}
+
+// GcpVertexAiAgentEngineDeploymentSpec sizes and wires the running agent:
+// instances, concurrency, per-container resources, environment, secrets,
+// private networking, and the gateway.
+message GcpVertexAiAgentEngineDeploymentSpec {
+  option (buf.validate.message).cel = {
+    id: "deployment_spec.max_gte_min"
+    message: "max_instances must be at least min_instances"
+    expression: "!has(this.min_instances) || !has(this.max_instances) || this.max_instances >= this.min_instances"
+  };
+  option (buf.validate.message).cel = {
+    id: "deployment_spec.resource_limits_keys"
+    message: "resource_limits accepts only the keys cpu and memory"
+    expression: "this.resource_limits.all(k, k in ['cpu', 'memory'])"
+  };
+
+  // Literal environment variables.
+  repeated GcpVertexAiAgentEngineEnvVar env = 1;
+
+  // Environment variables filled from Secret Manager.
+  repeated GcpVertexAiAgentEngineSecretEnvVar secret_env = 2;
+
+  // Instances kept running at all times (0-10; Google's default 1). Zero
+  // scales the agent to nothing between requests at the cost of cold
+  // starts. Sent only when set.
+  optional int32 min_instances = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 10
+  }];
+
+  // Most instances the agent may scale to (1-1000; 1-100 when VPC Service
+  // Controls or a PSC interface is on; Google's default 100). Sent only
+  // when set.
+  optional int32 max_instances = 4 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 1000
+  }];
+
+  // Concurrent requests one instance handles (Google's default 9;
+  // recommended 2 x cpu + 1). Sent only when set.
+  optional int32 container_concurrency = 5 [(buf.validate.field).int32.gte = 1];
+
+  // Per-container limits, keys "cpu" (1, 2, 4, 6, 8) and "memory" (1Gi
+  // ... 32Gi); Google's default {cpu: "4", memory: "4Gi"}. Sent only when
+  // set.
+  map<string, string> resource_limits = 6;
+
+  // Private Service Connect interface into a VPC.
+  GcpVertexAiAgentEnginePscInterfaceConfig psc_interface_config = 7;
+
+  // Route traffic through Agent Gateway.
+  GcpVertexAiAgentEngineAgentGatewayConfig agent_gateway_config = 8;
+}
+
+// GcpVertexAiAgentEngineSpecConfig is the agent itself: where its code
+// comes from (a container XOR a source build XOR a pickled package),
+// which identity it runs as, and how it is deployed.
+message GcpVertexAiAgentEngineSpecConfig {
+  option (buf.validate.message).cel = {
+    id: "spec.container_xor_source"
+    message: "container_spec and source_code_spec cannot both be set"
+    expression: "!(has(this.container_spec) && has(this.source_code_spec))"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.agent_identity_forbids_service_account"
+    message: "service_account must not be set when identity_type is AGENT_IDENTITY"
+    expression: "this.identity_type != 'AGENT_IDENTITY' || !has(this.service_account)"
+  };
+
+  // The open-source framework the agent is built with (e.g. "google-adk",
+  // "langchain", "langgraph", "llama-index", "ag2"); tells Agent Engine
+  // which framework integration to load.
+  string agent_framework = 1;
+
+  // Declarations of the agent object's class methods, as ONE OpenAPI JSON
+  // string (write it compact; Google normalizes it). Required by Google
+  // when deploying through infrastructure-as-code rather than the SDK,
+  // which infers them from the object.
+  string class_methods = 2;
+
+  // Which identity the agent runs as: "" or SERVICE_ACCOUNT uses
+  // service_account when set and the project's Vertex AI Reasoning Engine
+  // service agent otherwise; AGENT_IDENTITY gives the agent its own
+  // Agent Identity (service_account must then be unset).
+  string identity_type = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "SERVICE_ACCOUNT",
+        "AGENT_IDENTITY"
+      ]
+    }
+  ];
+
+  // Custom service account the agent runs as: a GcpServiceAccount
+  // reference (resolving to its email) or a literal email. Empty runs as
+  // the project's Vertex AI Reasoning Engine service agent.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 4 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // Run a prebuilt container image. Mutually exclusive with
+  // source_code_spec.
+  GcpVertexAiAgentEngineContainerSpec container_spec = 5;
+
+  // Build the agent from source. Mutually exclusive with container_spec.
+  GcpVertexAiAgentEngineSourceCodeSpec source_code_spec = 6;
+
+  // The legacy pickled-object package.
+  GcpVertexAiAgentEnginePackageSpec package_spec = 7;
+
+  // Cloud Build settings for the source build.
+  GcpVertexAiAgentEngineBuildSpec build_spec = 8;
+
+  // Instances, resources, environment, secrets, networking, gateway.
+  GcpVertexAiAgentEngineDeploymentSpec deployment_spec = 9;
+}
+
+// ---------------------------------------------------------------------------
+// The memory bank
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiAgentEngineGenerationRule decides when buffered conversation
+// events are flushed into memory generation. Set at most one trigger;
+// with none, every request is flushed immediately.
+message GcpVertexAiAgentEngineGenerationRule {
+  option (buf.validate.message).cel = {
+    id: "generation_rule.at_most_one_trigger"
+    message: "set at most one of event_count, fixed_interval, or idle_duration"
+    expression: "[has(this.event_count), this.fixed_interval != '', this.idle_duration != ''].filter(x, x).size() <= 1"
+  };
+
+  // Generate when this many events have accumulated.
+  optional int32 event_count = 1 [(buf.validate.field).int32.gte = 1];
+
+  // Generate at a fixed interval, as a duration string with minute
+  // granularity (e.g. "300s").
+  string fixed_interval = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // Generate when the stream has been idle this long after its last
+  // event, as a duration string with minute granularity.
+  string idle_duration = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // Re-include the last N already-processed events in the next window
+  // for context continuity.
+  optional int32 overlap_event_count = 4 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpVertexAiAgentEngineGenerationTriggerConfig wraps the active
+// generation rule.
+message GcpVertexAiAgentEngineGenerationTriggerConfig {
+  // The active rule; omit to flush immediately.
+  GcpVertexAiAgentEngineGenerationRule generation_rule = 1;
+}
+
+// GcpVertexAiAgentEngineGenerationConfig says how memories are generated.
+message GcpVertexAiAgentEngineGenerationConfig {
+  // The generation model, as
+  // projects/{project}/locations/{location}/publishers/google/models/{model}.
+  string model = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/locations/[^/]+/publishers/[^/]+/models/[^/]+$"
+  ];
+
+  // When buffered events are turned into memories.
+  GcpVertexAiAgentEngineGenerationTriggerConfig generation_trigger_config = 2;
+}
+
+// GcpVertexAiAgentEngineSimilaritySearchConfig says how memories are
+// looked up.
+message GcpVertexAiAgentEngineSimilaritySearchConfig {
+  // The embedding model used to find similar memories, as
+  // projects/{project}/locations/{location}/publishers/google/models/{model}.
+  string embedding_model = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/locations/[^/]+/publishers/[^/]+/models/[^/]+$"
+  ];
+}
+
+// GcpVertexAiAgentEngineGranularTtlConfig sets separate lifetimes by how a
+// memory came to be.
+message GcpVertexAiAgentEngineGranularTtlConfig {
+  // Lifetime of memories uploaded through CreateMemory, as a duration.
+  string create_ttl = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // Lifetime of memories newly generated by GenerateMemories.
+  string generate_created_ttl = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // Lifetime reset for memories updated by GenerateMemories.
+  string generate_updated_ttl = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+}
+
+// GcpVertexAiAgentEngineTtlConfig expires memories automatically: one
+// default lifetime, or lifetimes by origin.
+message GcpVertexAiAgentEngineTtlConfig {
+  option (buf.validate.message).cel = {
+    id: "ttl_config.default_xor_granular"
+    message: "set exactly one of default_ttl or granular_ttl_config"
+    expression: "(this.default_ttl != '') != has(this.granular_ttl_config)"
+  };
+
+  // Default lifetime of every memory, as a duration (e.g. "7776000s").
+  string default_ttl = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // Lifetimes by how the memory came to be.
+  GcpVertexAiAgentEngineGranularTtlConfig granular_ttl_config = 2;
+
+  // Default lifetime of memory REVISIONS (the history behind each memory).
+  string memory_revision_default_ttl = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+}
+
+// GcpVertexAiAgentEngineSchemaConfig is one structured-memory schema.
+message GcpVertexAiAgentEngineSchemaConfig {
+  // The schema's identifier.
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The memory schema as an OpenAPI Schema Object JSON string (write it
+  // compact).
+  string memory_schema = 2;
+}
+
+// GcpVertexAiAgentEngineStructuredMemoryConfig generates memories into a
+// fixed schema for a set of scopes.
+message GcpVertexAiAgentEngineStructuredMemoryConfig {
+  // Scope keys (e.g. "user_id") this config applies to.
+  repeated string scope_keys = 1;
+
+  // The schemas memories are generated into.
+  repeated GcpVertexAiAgentEngineSchemaConfig schema_configs = 2;
+}
+
+// GcpVertexAiAgentEngineCustomMemoryTopic is a topic the operator defines.
+message GcpVertexAiAgentEngineCustomMemoryTopic {
+  // The topic's label.
+  string label = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // What the topic covers, for the generation model.
+  string description = 2;
+}
+
+// GcpVertexAiAgentEngineManagedMemoryTopic is one of Google's built-in
+// topics.
+message GcpVertexAiAgentEngineManagedMemoryTopic {
+  // USER_PERSONAL_INFO, USER_PREFERENCES, KEY_CONVERSATION_DETAILS, or
+  // EXPLICIT_INSTRUCTIONS.
+  string managed_topic_enum = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "USER_PERSONAL_INFO",
+        "USER_PREFERENCES",
+        "KEY_CONVERSATION_DETAILS",
+        "EXPLICIT_INSTRUCTIONS"
+      ]
+    }
+  ];
+}
+
+// GcpVertexAiAgentEngineMemoryTopic is one topic memories are associated
+// with: custom or managed, exactly one.
+message GcpVertexAiAgentEngineMemoryTopic {
+  option (buf.validate.message).cel = {
+    id: "memory_topic.exactly_one"
+    message: "set exactly one of custom_memory_topic or managed_memory_topic"
+    expression: "has(this.custom_memory_topic) != has(this.managed_memory_topic)"
+  };
+
+  // An operator-defined topic.
+  GcpVertexAiAgentEngineCustomMemoryTopic custom_memory_topic = 1;
+
+  // A Google-managed topic.
+  GcpVertexAiAgentEngineManagedMemoryTopic managed_memory_topic = 2;
+}
+
+// GcpVertexAiAgentEngineInlineData is raw media inline in a conversation
+// part.
+message GcpVertexAiAgentEngineInlineData {
+  // IANA MIME type of the data.
+  string mime_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The bytes, base64-encoded.
+  string data = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// GcpVertexAiAgentEngineFileData is media referenced from Cloud Storage.
+message GcpVertexAiAgentEngineFileData {
+  // IANA MIME type of the file.
+  string mime_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The file's gs:// URI.
+  string file_uri = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^gs://.+"
+  ];
+}
+
+// GcpVertexAiAgentEngineFunctionCall is a tool call the model made.
+message GcpVertexAiAgentEngineFunctionCall {
+  // Correlates the call with its response.
+  string id = 1;
+
+  // The function's name.
+  string name = 2;
+
+  // The arguments as a JSON object string.
+  string args = 3;
+}
+
+// GcpVertexAiAgentEngineFunctionResponse is a tool's answer to a call.
+message GcpVertexAiAgentEngineFunctionResponse {
+  // The id of the call this answers.
+  string id = 1;
+
+  // The function's name.
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The response as a JSON object string.
+  string response = 3;
+}
+
+// GcpVertexAiAgentEngineExecutableCode is code the model produced to run.
+message GcpVertexAiAgentEngineExecutableCode {
+  // Identifier the execution result refers back to.
+  string id = 1;
+
+  // PYTHON or BASH.
+  string language = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "PYTHON",
+        "BASH"
+      ]
+    }
+  ];
+
+  // The code.
+  string code = 3 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiAgentEngineCodeExecutionResult is the outcome of running
+// executable code.
+message GcpVertexAiAgentEngineCodeExecutionResult {
+  // The executable_code part this result is for.
+  string id = 1;
+
+  // OUTCOME_OK, OUTCOME_FAILED, or OUTCOME_DEADLINE_EXCEEDED.
+  string outcome = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "OUTCOME_OK",
+        "OUTCOME_FAILED",
+        "OUTCOME_DEADLINE_EXCEEDED"
+      ]
+    }
+  ];
+
+  // Captured stdout (on success) or stderr (on failure).
+  string output = 3;
+}
+
+// GcpVertexAiAgentEngineVideoMetadata clips a video part.
+message GcpVertexAiAgentEngineVideoMetadata {
+  // Start offset into the video, as a duration (e.g. "3.5s").
+  string start_offset = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // End offset into the video, as a duration.
+  string end_offset = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+}
+
+// GcpVertexAiAgentEngineContentPart is one part of a conversation turn in
+// Gemini's Content shape: exactly one payload (text, inline data, file
+// data, a function call, a function response, executable code, or a code
+// execution result), with thought and video_metadata as companions.
+//
+// Google's audio_transcription payload is not offered here: the pinned
+// Pulumi SDK does not carry it, and an argument one engine cannot send is
+// never a one-engine field. It joins when the SDK bridges provider 8.x.
+message GcpVertexAiAgentEngineContentPart {
+  option (buf.validate.message).cel = {
+    id: "content_part.exactly_one_payload"
+    message: "a part carries exactly one of text, inline_data, file_data, function_call, function_response, executable_code, or code_execution_result"
+    expression: "[this.text != '', has(this.inline_data), has(this.file_data), has(this.function_call), has(this.function_response), has(this.executable_code), has(this.code_execution_result)].filter(x, x).size() == 1"
+  };
+
+  // Plain text.
+  string text = 1;
+
+  // Marks the part as the model's reasoning rather than its answer.
+  bool thought = 2;
+
+  // Raw media inline.
+  GcpVertexAiAgentEngineInlineData inline_data = 3;
+
+  // Media in Cloud Storage.
+  GcpVertexAiAgentEngineFileData file_data = 4;
+
+  // A tool call the model made.
+  GcpVertexAiAgentEngineFunctionCall function_call = 5;
+
+  // A tool's response.
+  GcpVertexAiAgentEngineFunctionResponse function_response = 6;
+
+  // Code the model produced to run.
+  GcpVertexAiAgentEngineExecutableCode executable_code = 7;
+
+  // The result of running code.
+  GcpVertexAiAgentEngineCodeExecutionResult code_execution_result = 8;
+
+  // Clip bounds when the payload is a video.
+  GcpVertexAiAgentEngineVideoMetadata video_metadata = 9;
+}
+
+// GcpVertexAiAgentEngineContent is one conversation turn.
+message GcpVertexAiAgentEngineContent {
+  // Who produced the turn: "user" or "model" (Google's default "user").
+  string role = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "user",
+        "model"
+      ]
+    }
+  ];
+
+  // The turn's parts.
+  repeated GcpVertexAiAgentEngineContentPart parts = 2 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpVertexAiAgentEngineConversationEvent is one event of an example
+// conversation.
+message GcpVertexAiAgentEngineConversationEvent {
+  // The turn's content.
+  GcpVertexAiAgentEngineContent content = 1 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiAgentEngineConversationSource is the example's input
+// conversation.
+message GcpVertexAiAgentEngineConversationSource {
+  // The conversation, in order.
+  repeated GcpVertexAiAgentEngineConversationEvent events = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpVertexAiAgentEngineGeneratedMemoryTopic tags an expected memory with a
+// topic: a custom label or a managed topic, exactly one.
+message GcpVertexAiAgentEngineGeneratedMemoryTopic {
+  option (buf.validate.message).cel = {
+    id: "generated_memory_topic.exactly_one"
+    message: "set exactly one of custom_memory_topic_label or managed_memory_topic"
+    expression: "(this.custom_memory_topic_label != '') != (this.managed_memory_topic != '')"
+  };
+
+  // The label of a custom topic declared in memory_topics.
+  string custom_memory_topic_label = 1;
+
+  // A managed topic: USER_PERSONAL_INFO, USER_PREFERENCES,
+  // KEY_CONVERSATION_DETAILS, or EXPLICIT_INSTRUCTIONS.
+  string managed_memory_topic = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "USER_PERSONAL_INFO",
+        "USER_PREFERENCES",
+        "KEY_CONVERSATION_DETAILS",
+        "EXPLICIT_INSTRUCTIONS"
+      ]
+    }
+  ];
+}
+
+// GcpVertexAiAgentEngineGeneratedMemory is one memory the example expects
+// to be generated.
+message GcpVertexAiAgentEngineGeneratedMemory {
+  // The fact the memory records.
+  string fact = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Topics the memory belongs to.
+  repeated GcpVertexAiAgentEngineGeneratedMemoryTopic topics = 2;
+}
+
+// GcpVertexAiAgentEngineGenerateMemoriesExample teaches the generation
+// model by example: this conversation should yield these memories.
+message GcpVertexAiAgentEngineGenerateMemoriesExample {
+  // The input conversation.
+  GcpVertexAiAgentEngineConversationSource conversation_source = 1;
+
+  // The memories expected from it.
+  repeated GcpVertexAiAgentEngineGeneratedMemory generated_memories = 2;
+}
+
+// GcpVertexAiAgentEngineConsolidationConfig tunes how memory revisions are
+// merged.
+message GcpVertexAiAgentEngineConsolidationConfig {
+  // Revisions considered per memory candidate when consolidating.
+  optional int32 revisions_per_candidate_count = 1 [(buf.validate.field).int32.gte = 1];
+}
+
+// GcpVertexAiAgentEngineCustomizationConfig tailors memory generation for
+// a set of scopes: topics, examples, consolidation, and generation flags.
+message GcpVertexAiAgentEngineCustomizationConfig {
+  // Scope keys (e.g. "user_id", "session_id") this config applies to.
+  repeated string scope_keys = 1;
+
+  // Topics memories should be associated with.
+  repeated GcpVertexAiAgentEngineMemoryTopic memory_topics = 2;
+
+  // Worked examples for the generation model.
+  repeated GcpVertexAiAgentEngineGenerateMemoriesExample generate_memories_examples = 3;
+
+  // Revision-merging behavior.
+  GcpVertexAiAgentEngineConsolidationConfig consolidation_config = 4;
+
+  // Turn off natural-language memory generation (structured memories
+  // only).
+  bool disable_natural_language_memories = 5;
+
+  // Write memories in the third person ("The user prefers...").
+  bool enable_third_person_memories = 6;
+}
+
+// GcpVertexAiAgentEngineMemoryBankConfig turns on Agent Engine's Memory
+// Bank -- long-term memories generated from conversations, scoped by keys
+// such as user_id, retrieved by similarity. Both models must be Vertex AI
+// publisher models in the agent's location.
+message GcpVertexAiAgentEngineMemoryBankConfig {
+  // How memories are generated.
+  GcpVertexAiAgentEngineGenerationConfig generation_config = 1;
+
+  // How memories are looked up.
+  GcpVertexAiAgentEngineSimilaritySearchConfig similarity_search_config = 2;
+
+  // Automatic expiry.
+  GcpVertexAiAgentEngineTtlConfig ttl_config = 3;
+
+  // Do not keep memory revisions (the history behind each memory).
+  bool disable_memory_revisions = 4;
+
+  // Generate memories into fixed schemas.
+  repeated GcpVertexAiAgentEngineStructuredMemoryConfig structured_memory_configs = 5;
+
+  // Per-scope generation tuning.
+  repeated GcpVertexAiAgentEngineCustomizationConfig customization_configs = 6;
+}
+
+// GcpVertexAiAgentEngineContextSpec holds the agent's context services.
+message GcpVertexAiAgentEngineContextSpec {
+  // The Memory Bank.
+  GcpVertexAiAgentEngineMemoryBankConfig memory_bank_config = 1;
+}
+
+// ---------------------------------------------------------------------------
+// The spec
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiAgentEngineSpec defines a Vertex AI Agent Engine instance
+// (`google_vertex_ai_reasoning_engine`) -- the managed runtime an AI agent
+// runs in. Agent Engine builds the agent from source (or runs a container
+// you bring), hosts it as an autoscaled service with its own identity, and
+// optionally gives it a Memory Bank of long-term memories.
+//
+// The shape a manifest usually takes: `spec.source_code_spec` with an
+// inline source archive and a `python_spec` naming the ADK root agent;
+// `spec.deployment_spec` for environment, secrets, and instance bounds;
+// `context_spec.memory_bank_config` when the agent should remember across
+// sessions. Deployments from source run a Cloud Build in the project.
+//
+// Immutable: location and the encryption key. Everything else -- the
+// source, the deployment shape, the memory bank -- updates in place; a
+// new source archive redeploys the agent's code.
+message GcpVertexAiAgentEngineSpec {
+  // The GCP project the agent lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) the agent runs in, e.g. "us-central1".
+  // Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // Human-readable name of the agent. Defaults to metadata.name.
+  string display_name = 3;
+
+  // Free-text description of the agent.
+  string description = 4;
+
+  // Labels on the agent.
+  map<string, string> labels = 5;
+
+  // Customer-managed encryption key protecting the agent's data: a
+  // GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
+  // Omit to use Google-managed encryption. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // The agent: its code, identity, and deployment shape.
+  GcpVertexAiAgentEngineSpecConfig spec = 7;
+
+  // Context services -- the Memory Bank.
+  GcpVertexAiAgentEngineContextSpec context_spec = 8;
+
+  // What happens to the agent when this resource is destroyed:
+  //   "" / "DELETE" -- the agent and its memories are deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the agent leaves management and keeps running
+  string deletion_policy = 9 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

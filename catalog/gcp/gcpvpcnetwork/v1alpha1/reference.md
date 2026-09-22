@@ -290,10 +290,12 @@ Fields on other kinds that can point at this resource:
 | GcpServiceConnectionPolicy | `spec.network` | `status.outputs.network_id` |
 | GcpServiceNetworkingConnection | `spec.network` | `status.outputs.network_self_link` |
 | GcpSubnetwork | `spec.vpcSelfLink` | `status.outputs.network_self_link` |
+| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | GcpVertexAiEndpoint | `spec.network` | `status.outputs.network_self_link` |
 | GcpVertexAiEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
 | GcpVertexAiIndexEndpoint | `spec.network` | `status.outputs.network_self_link` |
 | GcpVertexAiIndexEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
+| GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.pscAutomationConfig.network` | `status.outputs.network_id` |
 | GcpVertexAiNotebook | `spec.networkInterface.network` | `status.outputs.network_self_link` |
 | GcpVpcPeering | `spec.network` | `status.outputs.network_self_link` |
 | GcpVpcPeering | `spec.peerNetwork` | `status.outputs.network_self_link` |

@@ -1,0 +1,26 @@
+# GcpVertexAiModelGardenDeployment scenario: the smallest real deployment
+# -- a small open Hugging Face model on Model Garden's recommended shape
+# (deployConfig omitted, so Google picks the machine; the recommended shape
+# for this model carries one GPU). project_id is deliberately omitted: the
+# deployment rides the provider's default project, which the harness
+# exports as GOOGLE_PROJECT. The model download is the long pole; expect
+# twenty to thirty minutes to a ready endpoint.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiModelGardenDeployment
+metadata:
+  name: planton-oss-e2e-gcpmgdep-minimal
+  id: planton-oss-e2e-gcpmgdep-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaimodelgardendeployment
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  huggingFaceModelId: Qwen/Qwen3-0.6B
+  modelConfig:
+    acceptEula: true

@@ -1,0 +1,31 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvertexaiagentengine
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageAgentEngine
+        permissions:
+          - aiplatform.reasoningEngines.create
+          - aiplatform.reasoningEngines.get
+          - aiplatform.reasoningEngines.update
+          - aiplatform.reasoningEngines.delete
+        provenance: derived
+        notes: Covers google_vertex_ai_reasoning_engine (Pulumi vertex.AiReasoningEngine) -- create, read/refresh, in-place PATCHes (display name, description, labels, the whole spec, the memory bank), and destroy under deletion_policy DELETE (ABANDON and PREVENT call no API). GCP defines no aiplatform.operations.get permission; polling the long-running operations needs nothing beyond these. roles/aiplatform.admin contains them all.
+      - purpose: ActAsAgentIdentity
+        permissions:
+          - iam.serviceAccounts.actAs
+        provenance: derived
+        notes: Needed only when spec.service_account names a custom service account -- Vertex AI requires the deploying principal to act as the identity the agent runs as. A source_code_spec build also runs a Cloud Build in the project as Google's Vertex AI service agent, which needs its own default roles; that is a project prerequisite, not a runner permission.

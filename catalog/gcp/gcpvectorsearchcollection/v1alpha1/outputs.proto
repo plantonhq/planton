@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvectorsearchcollection.v1alpha1;
+
+// GcpVectorSearchCollectionStackOutputs captures what the Vector Search
+// collection and its indexes resolved to.
+message GcpVectorSearchCollectionStackOutputs {
+  // Full resource name of the collection:
+  // projects/{project}/locations/{location}/collections/{collection_id}.
+  string name = 1;
+
+  // The collection's ID -- the segment applications address data objects
+  // and searches by.
+  string collection_id = 2;
+
+  // The collection's location, for rebuilding resource paths.
+  string location = 3;
+
+  // Full resource names of the indexes declared on the collection
+  // (projects/{project}/locations/{location}/collections/{collection}/indexes/{index_id}),
+  // in manifest order.
+  repeated string index_names = 4;
+
+  // Number of indexes declared on the collection.
+  int32 index_count = 5;
+}

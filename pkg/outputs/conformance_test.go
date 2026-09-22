@@ -3948,6 +3948,66 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "worker_pool_name", "uid", "location", "project_id", "latest_created_revision", "latest_ready_revision", "observed_generation", "etag"},
 		},
 		{
+			// GcpVertexAiRagEngineConfig: the singleton's full resource name
+			// (the verifier's key) and the location it governs.
+			name: "GcpVertexAiRagEngineConfig",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiRagEngineConfig,
+			rawOutputs: map[string]interface{}{
+				"name":     "projects/my-project/locations/us-central1/ragEngineConfig",
+				"location": "us-central1",
+			},
+			mustPopulate: []string{"name", "location"},
+		},
+		{
+			// GcpVectorSearchCollection: the collection's full name (the
+			// verifier's key), its id and location, the folded indexes' names
+			// in manifest order (a list output, as the DNS zone's nameservers
+			// are), and the declared index count.
+			name: "GcpVectorSearchCollection",
+			kind: cloudresourcekind.CloudResourceKind_GcpVectorSearchCollection,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/my-project/locations/us-central1/collections/product-docs",
+				"collection_id": "product-docs",
+				"location":      "us-central1",
+				"index_names": []interface{}{
+					"projects/my-project/locations/us-central1/collections/product-docs/indexes/docs-ann",
+				},
+				"index_count": "1",
+			},
+			mustPopulate: []string{"name", "collection_id", "location", "index_names", "index_count"},
+		},
+		{
+			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
+			// name in GcpVertexAiEndpoint's shape (the verifier keys on
+			// endpoint_id), the deployed model's id and display name, and the
+			// location.
+			name: "GcpVertexAiModelGardenDeployment",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiModelGardenDeployment,
+			rawOutputs: map[string]interface{}{
+				"endpoint_id":                 "projects/my-project/locations/us-central1/endpoints/1234567890123456789",
+				"endpoint_name":               "1234567890123456789",
+				"deployed_model_id":           "9876543210987654321",
+				"deployed_model_display_name": "qwen-small",
+				"location":                    "us-central1",
+			},
+			mustPopulate: []string{"endpoint_id", "endpoint_name", "deployed_model_id", "deployed_model_display_name", "location"},
+		},
+		{
+			// GcpVertexAiAgentEngine: the agent's full resource name (the
+			// verifier's key), its numeric id, location, and the two
+			// timestamps.
+			name: "GcpVertexAiAgentEngine",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiAgentEngine,
+			rawOutputs: map[string]interface{}{
+				"name":                "projects/my-project/locations/us-central1/reasoningEngines/1234567890123456789",
+				"reasoning_engine_id": "1234567890123456789",
+				"location":            "us-central1",
+				"create_time":         "2026-09-22T10:00:00Z",
+				"update_time":         "2026-09-22T10:05:00Z",
+			},
+			mustPopulate: []string{"name", "reasoning_engine_id", "location", "create_time", "update_time"},
+		},
+		{
 			// GcpFirebaseProject: flat scalar outputs from both engines -- the
 			// project (the E2E verifier keys on project_id), its number (the
 			// FCM sender id), display name, and the three Admin SDK config

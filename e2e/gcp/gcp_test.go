@@ -1172,6 +1172,38 @@ func TestGcpCloudRunWorkerPool_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpcloudrunworkerpool", "terraform")
 }
 
+func TestGcpVertexAiRagEngineConfig_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexairagengineconfig", "pulumi")
+}
+
+func TestGcpVertexAiRagEngineConfig_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexairagengineconfig", "terraform")
+}
+
+func TestGcpVectorSearchCollection_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvectorsearchcollection", "pulumi")
+}
+
+func TestGcpVectorSearchCollection_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvectorsearchcollection", "terraform")
+}
+
+func TestGcpVertexAiModelGardenDeployment_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaimodelgardendeployment", "pulumi")
+}
+
+func TestGcpVertexAiModelGardenDeployment_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaimodelgardendeployment", "terraform")
+}
+
+func TestGcpVertexAiAgentEngine_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaiagentengine", "pulumi")
+}
+
+func TestGcpVertexAiAgentEngine_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaiagentengine", "terraform")
+}
+
 func TestGcpNetworkEndpointGroup_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpnetworkendpointgroup", "pulumi")
 }

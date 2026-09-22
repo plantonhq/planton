@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaiagentengine.v1alpha1;
+
+// GcpVertexAiAgentEngineStackOutputs captures what the Agent Engine
+// instance resolved to.
+message GcpVertexAiAgentEngineStackOutputs {
+  // Full resource name of the agent:
+  // projects/{project}/locations/{location}/reasoningEngines/{id} -- what
+  // the Vertex AI SDK's `agent_engines.get()` and a `:query` call take.
+  string name = 1;
+
+  // The numeric ID Vertex AI assigned to the agent (the last segment of
+  // name).
+  string reasoning_engine_id = 2;
+
+  // The location the agent runs in, for rebuilding resource paths and
+  // the regional API host.
+  string location = 3;
+
+  // RFC 3339 timestamp of the agent's creation.
+  string create_time = 4;
+
+  // RFC 3339 timestamp of the agent's last update.
+  string update_time = 5;
+}

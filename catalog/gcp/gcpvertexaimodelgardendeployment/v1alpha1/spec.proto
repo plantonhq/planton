@@ -1,0 +1,533 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpVertexAiModelGardenDeploymentEnvVar is one environment variable set
+// on the serving container.
+message GcpVertexAiModelGardenDeploymentEnvVar {
+  // Variable name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[A-Za-z_][A-Za-z0-9_.-]*$"
+  ];
+
+  // Literal value. Variables may reference each other as $(VAR_NAME);
+  // the reference is expanded regardless of declaration order.
+  string value = 2 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiModelGardenDeploymentPort is one port the serving container
+// listens on.
+message GcpVertexAiModelGardenDeploymentPort {
+  // The port number (1-65535).
+  optional int32 container_port = 1 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// GcpVertexAiModelGardenDeploymentExecAction runs a command inside the
+// container; exit status 0 is healthy.
+message GcpVertexAiModelGardenDeploymentExecAction {
+  // The command and its arguments, run without a shell (no variable
+  // expansion, no pipes).
+  repeated string command = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpVertexAiModelGardenDeploymentGrpcAction calls the standard gRPC
+// health-checking service (grpc.health.v1.Health/Check).
+message GcpVertexAiModelGardenDeploymentGrpcAction {
+  // Port of the gRPC service (1-65535).
+  optional int32 port = 1 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Service name placed in the check request; empty checks the server's
+  // overall health.
+  string service = 2;
+}
+
+// GcpVertexAiModelGardenDeploymentHttpHeader is one custom header on an
+// HTTP probe request.
+message GcpVertexAiModelGardenDeploymentHttpHeader {
+  // Header name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Header value.
+  string value = 2;
+}
+
+// GcpVertexAiModelGardenDeploymentHttpGetAction probes with an HTTP GET;
+// a 2xx or 3xx status is healthy.
+message GcpVertexAiModelGardenDeploymentHttpGetAction {
+  // Path to probe, e.g. "/health".
+  string path = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^/.*$"
+  ];
+
+  // Port to probe (1-65535).
+  optional int32 port = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Host header to send; defaults to the container's IP.
+  string host = 3;
+
+  // HTTP or HTTPS (Google's default HTTP).
+  string scheme = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "HTTP",
+        "HTTPS"
+      ]
+    }
+  ];
+
+  // Custom headers sent with the probe request.
+  repeated GcpVertexAiModelGardenDeploymentHttpHeader http_headers = 5;
+}
+
+// GcpVertexAiModelGardenDeploymentTcpSocketAction probes by opening a TCP
+// connection; a successful connect is healthy.
+message GcpVertexAiModelGardenDeploymentTcpSocketAction {
+  // Port to connect to (1-65535).
+  optional int32 port = 1 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Host to connect to; defaults to the container's IP.
+  string host = 2;
+}
+
+// GcpVertexAiModelGardenDeploymentProbe is one health probe on the serving
+// container -- the same shape for startup, liveness, and health probes.
+// Exactly one check handler is set.
+message GcpVertexAiModelGardenDeploymentProbe {
+  option (buf.validate.message).cel = {
+    id: "probe.timeout_lte_period"
+    message: "probe timeout_seconds cannot exceed period_seconds"
+    expression: "!has(this.timeout_seconds) || !has(this.period_seconds) || this.timeout_seconds <= this.period_seconds"
+  };
+
+  // Seconds after container start before the first probe (0-3600).
+  optional int32 initial_delay_seconds = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 3600
+  }];
+
+  // Seconds after which one probe attempt times out (1-3600; Google's
+  // default 1). Must not exceed period_seconds.
+  optional int32 timeout_seconds = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 3600
+  }];
+
+  // Seconds between probe attempts (1-3600; Google's default 10).
+  optional int32 period_seconds = 3 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 3600
+  }];
+
+  // Consecutive successes after a failure before the probe counts as
+  // healthy again (Google's default 1).
+  optional int32 success_threshold = 4 [(buf.validate.field).int32.gte = 1];
+
+  // Consecutive failures before the container counts as unhealthy
+  // (Google's default 3).
+  optional int32 failure_threshold = 5 [(buf.validate.field).int32.gte = 1];
+
+  // The check to perform.
+  oneof handler {
+    option (buf.validate.oneof).required = true;
+
+    // Run a command inside the container.
+    GcpVertexAiModelGardenDeploymentExecAction exec = 6;
+
+    // Call the standard gRPC health service.
+    GcpVertexAiModelGardenDeploymentGrpcAction grpc = 7;
+
+    // HTTP GET against a path.
+    GcpVertexAiModelGardenDeploymentHttpGetAction http_get = 8;
+
+    // Open a TCP connection.
+    GcpVertexAiModelGardenDeploymentTcpSocketAction tcp_socket = 9;
+  }
+}
+
+// GcpVertexAiModelGardenDeploymentContainerSpec overrides the serving
+// container of the deployed model -- the image and how Vertex AI talks to
+// it. Most Model Garden models ship a serving container and need none of
+// this; set it for a custom or Hugging Face model whose container the
+// deployment must describe.
+message GcpVertexAiModelGardenDeploymentContainerSpec {
+  // Container image URI in Artifact Registry (or Container Registry), e.g.
+  // us-docker.pkg.dev/vertex-ai/prediction/tf2-cpu.2-13:latest.
+  string image_uri = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Entrypoint override (the image's ENTRYPOINT is replaced).
+  repeated string command = 2;
+
+  // Arguments to the entrypoint (the image's CMD is replaced).
+  repeated string args = 3;
+
+  // Environment variables for the container.
+  repeated GcpVertexAiModelGardenDeploymentEnvVar env = 4;
+
+  // HTTP ports the container listens on; Vertex AI sends predictions and
+  // health checks to the FIRST one (defaults to 8080 when empty).
+  repeated GcpVertexAiModelGardenDeploymentPort ports = 5;
+
+  // gRPC ports the container listens on, for models served over gRPC.
+  repeated GcpVertexAiModelGardenDeploymentPort grpc_ports = 6;
+
+  // HTTP path Vertex AI forwards prediction requests to, e.g. "/predict";
+  // Google's default is its AIP_PREDICT_ROUTE convention.
+  string predict_route = 7 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^/.*$"
+  ];
+
+  // HTTP path Vertex AI GETs to check the container's health, e.g.
+  // "/health"; Google's default is its AIP_HEALTH_ROUTE convention.
+  string health_route = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^/.*$"
+  ];
+
+  // How long the deployment may take before it fails, as a duration string
+  // (e.g. "1800s"); Google caps it at two hours.
+  string deployment_timeout = 9 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // VM memory reserved as /dev/shm for the model, in megabytes -- large
+  // models loaded across GPUs need it.
+  optional int64 shared_memory_size_mb = 10 [(buf.validate.field).int64.gte = 1];
+
+  // Probe that gates the container being considered started; liveness
+  // and health probes wait for it.
+  GcpVertexAiModelGardenDeploymentProbe startup_probe = 11;
+
+  // Probe that restarts the container when it fails repeatedly.
+  GcpVertexAiModelGardenDeploymentProbe liveness_probe = 12;
+
+  // Probe that decides whether the container receives traffic.
+  GcpVertexAiModelGardenDeploymentProbe health_probe = 13;
+}
+
+// GcpVertexAiModelGardenDeploymentModelConfig describes the model being
+// deployed: license acceptance, Hugging Face access, and an optional
+// serving-container override.
+message GcpVertexAiModelGardenDeploymentModelConfig {
+  // Accept the model's End User License Agreement. Gated models (Gemma,
+  // Llama, and every Hugging Face model with a license gate) refuse to
+  // deploy until this is true.
+  bool accept_eula = 1;
+
+  // Hugging Face read token used to pull the artifacts of a gated Hugging
+  // Face model. Stored as a secret; never logged.
+  string hugging_face_access_token = 2 [(dev.planton.shared.options.sensitive) = true];
+
+  // Deploy from Google's cached copy of the Hugging Face model instead of
+  // downloading from Hugging Face -- for VPC Service Controls perimeters
+  // with limited internet egress.
+  bool hugging_face_cache_enabled = 3;
+
+  // Display name of the uploaded Model resource; Google picks one when
+  // empty.
+  string model_display_name = 4;
+
+  // Override the model's serving container.
+  GcpVertexAiModelGardenDeploymentContainerSpec container_spec = 5;
+}
+
+// GcpVertexAiModelGardenDeploymentReservationAffinity pins the deployment
+// to Compute Engine reservations.
+message GcpVertexAiModelGardenDeploymentReservationAffinity {
+  option (buf.validate.message).cel = {
+    id: "reservation_affinity.specific_requires_key_and_values"
+    message: "key and values are set when (and only when) reservation_affinity_type is SPECIFIC_RESERVATION"
+    expression: "this.reservation_affinity_type == 'SPECIFIC_RESERVATION' ? (this.key != '' && this.values.size() > 0) : (this.key == '' && this.values.size() == 0)"
+  };
+
+  // NO_RESERVATION never consumes a reservation; ANY_RESERVATION consumes
+  // any matching one; SPECIFIC_RESERVATION consumes the reservation named
+  // by key and values.
+  string reservation_affinity_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "NO_RESERVATION",
+        "ANY_RESERVATION",
+        "SPECIFIC_RESERVATION"
+      ]
+    }
+  ];
+
+  // For SPECIFIC_RESERVATION: the label key
+  // "compute.googleapis.com/reservation-name".
+  string key = 2;
+
+  // For SPECIFIC_RESERVATION: the full resource name(s) of the reservation
+  // or reservation block.
+  repeated string values = 3;
+}
+
+// GcpVertexAiModelGardenDeploymentMachineSpec is the machine each replica
+// runs on.
+message GcpVertexAiModelGardenDeploymentMachineSpec {
+  option (buf.validate.message).cel = {
+    id: "machine_spec.accelerator_pair"
+    message: "accelerator_type and accelerator_count are set together"
+    expression: "(this.accelerator_type != '') == (has(this.accelerator_count) && this.accelerator_count > 0)"
+  };
+
+  // Compute Engine machine type, e.g. "g2-standard-12" (with an L4) or
+  // "a2-highgpu-1g" (with an A100). Google picks a default for the model
+  // when the whole deploy_config is omitted.
+  string machine_type = 1;
+
+  // Accelerator attached to each replica, e.g. "NVIDIA_L4",
+  // "NVIDIA_TESLA_A100", "NVIDIA_H100_80GB", "TPU_V5_LITEPOD". Set together
+  // with accelerator_count.
+  string accelerator_type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[A-Z0-9_]+$"
+  ];
+
+  // Accelerators per replica.
+  optional int32 accelerator_count = 3 [(buf.validate.field).int32.gte = 1];
+
+  // TPU topology for TPU machine types, e.g. "2x2x1".
+  string tpu_topology = 4;
+
+  // Nodes per replica for multi-host GPU deployments.
+  optional int32 multihost_gpu_node_count = 5 [(buf.validate.field).int32.gte = 1];
+
+  // Consume Compute Engine reservations for the replicas.
+  GcpVertexAiModelGardenDeploymentReservationAffinity reservation_affinity = 6;
+}
+
+// GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec is one metric the
+// replica count follows.
+message GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec {
+  // The metric:
+  // "aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle"
+  // or "aiplatform.googleapis.com/prediction/online/cpu/utilization".
+  string metric_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Target utilization percentage (1-100; Google's default 60).
+  optional int32 target = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 100
+  }];
+}
+
+// GcpVertexAiModelGardenDeploymentDedicatedResources is the compute the
+// deployed model gets: a machine shape and replica bounds.
+message GcpVertexAiModelGardenDeploymentDedicatedResources {
+  option (buf.validate.message).cel = {
+    id: "dedicated_resources.max_gte_min"
+    message: "max_replica_count must be at least min_replica_count"
+    expression: "!has(this.max_replica_count) || this.max_replica_count >= this.min_replica_count"
+  };
+
+  // The machine each replica runs on.
+  GcpVertexAiModelGardenDeploymentMachineSpec machine_spec = 1;
+
+  // Replicas always kept serving (at least 1 -- a deployed model never
+  // scales to zero, so this is the committed spend).
+  int32 min_replica_count = 2 [(buf.validate.field).int32.gte = 1];
+
+  // Ceiling the replica count may autoscale to; Google defaults it to
+  // min_replica_count. Sent only when set.
+  optional int32 max_replica_count = 3 [(buf.validate.field).int32.gte = 1];
+
+  // Replicas that must be available for the deployment to succeed; the
+  // rest are retried. Google defaults it to min_replica_count.
+  optional int32 required_replica_count = 4 [(buf.validate.field).int32.gte = 1];
+
+  // Run the replicas on Spot VMs -- much cheaper, preemptible at any
+  // time.
+  bool spot = 5;
+
+  // Metrics that drive autoscaling between the replica bounds.
+  repeated GcpVertexAiModelGardenDeploymentAutoscalingMetricSpec autoscaling_metric_specs = 6;
+}
+
+// GcpVertexAiModelGardenDeploymentDeployConfig decides the compute the
+// model is deployed on. Omit it entirely to let Model Garden pick the
+// model's recommended machine shape and one replica.
+message GcpVertexAiModelGardenDeploymentDeployConfig {
+  // Machine shape and replica bounds.
+  GcpVertexAiModelGardenDeploymentDedicatedResources dedicated_resources = 1;
+
+  // Enable Model Garden's fast-tryout serving path for the model when it
+  // supports one.
+  bool fast_tryout_enabled = 2;
+
+  // Google-managed system labels for Model Garden tracking.
+  map<string, string> system_labels = 3;
+}
+
+// GcpVertexAiModelGardenDeploymentPscAutomationConfig has Vertex AI create
+// the Private Service Connect endpoint in a consumer project and network
+// automatically.
+message GcpVertexAiModelGardenDeploymentPscAutomationConfig {
+  // The consumer project the endpoint is created in: a GcpProject
+  // reference or a literal project ID.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The consumer VPC network the endpoint is created in, as
+  // projects/{project}/global/networks/{name}. A GcpVpcNetwork reference
+  // resolves to its network_id output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+}
+
+// GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig exposes the
+// endpoint through Private Service Connect instead of the public API host.
+message GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig {
+  // Publish the endpoint through Private Service Connect.
+  bool enable_private_service_connect = 1;
+
+  // Consumer projects allowed to create forwarding rules to the endpoint's
+  // service attachment: GcpProject references or literal project IDs.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef project_allowlist = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // One consumer network Vertex AI creates the PSC endpoint in
+  // automatically (Google's resource takes exactly one; more consumers
+  // build their own forwarding rules against the service attachment).
+  GcpVertexAiModelGardenDeploymentPscAutomationConfig psc_automation_config = 3;
+}
+
+// GcpVertexAiModelGardenDeploymentEndpointConfig shapes the Vertex AI
+// endpoint the deployment creates to serve the model.
+message GcpVertexAiModelGardenDeploymentEndpointConfig {
+  // Display name of the created endpoint; Google picks one when empty.
+  string endpoint_display_name = 1;
+
+  // Give the endpoint its own DNS name
+  // ({endpoint}.{region}-{project}.prediction.vertexai.goog) isolated from
+  // the shared regional host. Once on, the shared host no longer serves
+  // it.
+  bool dedicated_endpoint_enabled = 2;
+
+  // Expose the endpoint through Private Service Connect.
+  GcpVertexAiModelGardenDeploymentPrivateServiceConnectConfig private_service_connect_config = 3;
+}
+
+// GcpVertexAiModelGardenDeploymentSpec deploys a Model Garden or Hugging
+// Face model to a Vertex AI endpoint in one step
+// (`google_vertex_ai_endpoint_with_model_garden_deployment`): Vertex AI
+// uploads the model, creates an endpoint, and deploys the model to it on
+// the compute declared here.
+//
+// EVERYTHING in this spec is immutable. Google offers no in-place update
+// on this resource, so any change -- a new model version, a bigger
+// machine, an extra replica -- undeploys the model, deletes the endpoint,
+// and redeploys from scratch; the endpoint ID changes and clients pointed
+// at the old one break. Treat a deployment as a versioned artifact: roll
+// forward by declaring a second block and cutting traffic over, not by
+// editing this one in place. deletion_policy is the only mutable lever.
+//
+// A deployed model bills its machine (and accelerator) hours from the
+// moment it is ready until it is undeployed, whether or not it serves a
+// request.
+message GcpVertexAiModelGardenDeploymentSpec {
+  option (buf.validate.message).cel = {
+    id: "deployment.exactly_one_model"
+    message: "set exactly one of publisher_model_name or hugging_face_model_id"
+    expression: "(this.publisher_model_name != '') != (this.hugging_face_model_id != '')"
+  };
+
+  // The GCP project the endpoint and model live in: a literal project ID
+  // or a GcpProject reference. If omitted, the provider's default project
+  // is used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) the model is deployed in, e.g.
+  // "us-central1". Accelerator availability differs by region. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // A Model Garden model, as
+  // publishers/{publisher}/models/{model}@{version}, e.g.
+  // "publishers/google/models/gemma@gemma-1.1-2b-it" or
+  // "publishers/hf-google/models/gemma-2-2b-it@001" for a Hugging Face
+  // model Model Garden lists. Exactly one of this or
+  // hugging_face_model_id.
+  string publisher_model_name = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^publishers/[^/]+/models/[^/@]+(@[^/]+)?$"
+  ];
+
+  // A Hugging Face model by its hub ID, e.g. "Qwen/Qwen3-0.6B" or
+  // "google/gemma-2-2b-it"; gated models also need accept_eula and,
+  // when the gate requires it, a hugging_face_access_token. Exactly one
+  // of this or publisher_model_name.
+  string hugging_face_model_id = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[^/\\s]+/[^/\\s]+$"
+  ];
+
+  // License acceptance, Hugging Face access, and the serving-container
+  // override.
+  GcpVertexAiModelGardenDeploymentModelConfig model_config = 5;
+
+  // The compute the model is deployed on. Omit to accept Model Garden's
+  // recommended shape for the model.
+  GcpVertexAiModelGardenDeploymentDeployConfig deploy_config = 6;
+
+  // The endpoint the model is served from.
+  GcpVertexAiModelGardenDeploymentEndpointConfig endpoint_config = 7;
+
+  // What happens to the deployment when this resource is destroyed:
+  //   "" / "DELETE" -- the model is undeployed and the endpoint and model
+  //                    are deleted
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the deployment leaves management and keeps serving
+  //                    (and billing)
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

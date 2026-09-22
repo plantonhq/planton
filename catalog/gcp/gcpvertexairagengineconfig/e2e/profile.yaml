@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexairagengineconfig
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness
+  # project with roles/aiplatform.admin: the Basic tier set on us-central1
+  # -- a per-location singleton Google already owns, so the create is a
+  # PATCH and a re-run cannot hit "already exists". Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest,
+  # the scenario, and the SCALED / UNPROVISIONED arms are clean on the
+  # pinned provider, and the accounting is total. Live facts the proof
+  # lane confirms: (1) the tier lands as BASIC and RE-PLANS CLEAN under the
+  # apply-idempotency gate on both engines (three exclusive empty blocks,
+  # compared as a set); (2) the resource name is
+  # projects/{project}/locations/us-central1/ragEngineConfig on both
+  # engines; (3) the destroy PATCHes the location to UNPROVISIONED and the
+  # verifier reads that tier back -- there is no 404, because the
+  # singleton never goes away.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

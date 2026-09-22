@@ -1,0 +1,23 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexairagengineconfig
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Vertex AI
+      sku_meter: RAG Engine managed database
+      pricing_unit: hours
+      description: The managed vector database (RagManagedDb) behind RAG Engine bills for the tier's provisioned capacity around the clock in the configured location, whether or not a corpus holds data -- a small flat meter on the Basic tier, a larger autoscaled one on Scaled (per cloud.google.com/vertex-ai/generative-ai/pricing, read 2026-09-22). UNPROVISIONED halts the meter by deleting the database.
+  cost_drivers:
+    - field_path: tier
+      sku_meter: RAG Engine managed database
+      pricing_unit: hours
+      impact: The whole bill. BASIC is the low, flat experimentation tier; SCALED adds production capacity and autoscaling at a multiple of the Basic rate; UNPROVISIONED stops billing and deletes the data. Corpora that use an external vector database are unaffected by the tier.
+  estimate_exclusions:
+    - ingestion and retrieval calls bill per request under RAG Engine, not under this configuration
+    - embedding generation during ingestion bills the embedding model's tokens
+    - corpora on external vector databases bill under those databases

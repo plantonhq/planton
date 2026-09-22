@@ -1,0 +1,65 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiModelGardenDeployment
+metadata:
+  name: gemma-2b
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  publisherModelName: publishers/google/models/gemma@gemma-1.1-2b-it
+  modelConfig:
+    acceptEula: true
+    modelDisplayName: gemma-2b
+    # Serve with vLLM from Model Garden's serving image; the routes and
+    # probes match the container.
+    containerSpec:
+      imageUri: us-docker.pkg.dev/vertex-ai/vertex-vision-model-garden-dockers/pytorch-vllm-serve:latest
+      args:
+        - python
+        - -m
+        - vllm.entrypoints.api_server
+      env:
+        - name: MODEL_ID
+          value: google/gemma-1.1-2b-it
+      ports:
+        - containerPort: 8080
+      predictRoute: /generate
+      healthRoute: /ping
+      deploymentTimeout: 3600s
+      sharedMemorySizeMb: 16384
+      startupProbe:
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 30
+        tcpSocket:
+          port: 8080
+      livenessProbe:
+        periodSeconds: 30
+        timeoutSeconds: 5
+        failureThreshold: 3
+        httpGet:
+          path: /ping
+          port: 8080
+      healthProbe:
+        periodSeconds: 10
+        timeoutSeconds: 5
+        failureThreshold: 3
+        httpGet:
+          path: /ping
+          port: 8080
+  deployConfig:
+    dedicatedResources:
+      machineSpec:
+        machineType: g2-standard-12
+        acceleratorType: NVIDIA_L4
+        acceleratorCount: 1
+      minReplicaCount: 1
+      maxReplicaCount: 2
+      spot: true
+      autoscalingMetricSpecs:
+        - metricName: aiplatform.googleapis.com/prediction/online/accelerator/duty_cycle
+          target: 70
+  endpointConfig:
+    endpointDisplayName: gemma-2b
+    dedicatedEndpointEnabled: true
+  deletionPolicy: PREVENT

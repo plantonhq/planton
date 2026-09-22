@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiRagEngineConfig
+metadata:
+  name: rag-engine-us-central1
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  tier: BASIC
+  # Destroying the block would unprovision the location and delete its
+  # data; ABANDON keeps the corpora when the block leaves management.
+  deletionPolicy: ABANDON

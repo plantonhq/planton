@@ -355,6 +355,7 @@ Fields on other kinds that can point at this resource:
 | GcpSecretManagerSecret | `spec.iamMembers[].member` | `status.outputs.member` |
 | GcpServiceAccountIamMember | `spec.serviceAccountId` | `status.outputs.name` |
 | GcpServiceAccountIamMember | `spec.member` | `status.outputs.member` |
+| GcpVertexAiAgentEngine | `spec.spec.serviceAccount` | `status.outputs.email` |
 | GcpVertexAiDeployedIndex | `spec.authConfig.allowedIssuers` | `status.outputs.email` |
 | GcpVertexAiNotebook | `spec.serviceAccount` | `status.outputs.email` |
 | GcpWorkflow | `spec.serviceAccount` | `status.outputs.email` |

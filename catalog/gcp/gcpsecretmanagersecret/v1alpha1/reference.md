@@ -572,6 +572,14 @@ Fields that can point at another resource's outputs:
 | `spec.topics` | GcpPubSubTopic | `status.outputs.topic_id` |
 | `spec.iamMembers[].member` | GcpServiceAccount | `status.outputs.member` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
+
 ## See Also
 
 - [Overview](../README.md)

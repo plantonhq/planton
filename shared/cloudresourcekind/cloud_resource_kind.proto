@@ -5580,6 +5580,48 @@ enum CloudResourceKind {
     service_group: gcp_databases
   }];
 
+  // 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine,
+  // Vector Search, and the rest of the Vertex AI and generative-AI
+  // building blocks). The pre-existing Vertex AI kinds -- endpoint, index,
+  // index endpoint, deployed index, notebook -- live in the 3070s.
+  //
+  // Vertex AI Agent Engine: the managed runtime an AI agent runs in --
+  // built from source or a container, hosted with its own identity and
+  // autoscaling, with an optional Memory Bank of long-term memories.
+  GcpVertexAiAgentEngine = 3200 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpagent"
+    service_group: gcp_ai_ml
+  }];
+  // A Model Garden or Hugging Face model deployed to a Vertex AI endpoint
+  // in one step; every argument is immutable, so a change redeploys.
+  GcpVertexAiModelGardenDeployment = 3201 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpmgdep"
+    service_group: gcp_ai_ml
+  }];
+  // The per-project, per-location tier of Vertex AI RAG Engine's managed
+  // vector database: a singleton Google owns, updated in place.
+  GcpVertexAiRagEngineConfig = 3202 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpragcf"
+    service_group: gcp_ai_ml
+  }];
+  // 3203 is reserved for GcpVertexAiRagCorpus, forged when pulumi-gcp
+  // bridges provider 8.x (the resource has no SDK type today).
+  // A Vector Search collection -- a schema'd store of data objects with
+  // vector fields -- together with the approximate-nearest-neighbor indexes
+  // built over those fields (folded: one collection owns them).
+  GcpVectorSearchCollection = 3204 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvsc"
+    service_group: gcp_ai_ml
+  }];
+
   // 3250–3259: GCP Firebase (project enablement, app registrations, and
   // the Firebase-adjacent products that follow)
   // GcpFirebaseProject is the container the app registrations live in:

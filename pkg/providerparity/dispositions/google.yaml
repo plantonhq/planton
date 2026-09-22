@@ -2111,15 +2111,9 @@ resources:
   - resource: google_transcoder_job_template
     disposition: deferred
     reason: "media transcoding jobs are imperative and a niche; deferred"
-  - resource: google_vector_search_collection
-    disposition: model-planned
-    reason: "planned GcpVectorSearchCollection kind (Vector Search collections)"
   - resource: google_vector_search_data_object
     disposition: deferred
-    reason: "data-plane writes into a collection (rows, not infrastructure); the collection and its indexes are a planned GcpVectorSearchCollection kind"
-  - resource: google_vector_search_index
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVectorSearchCollection kind (indexes)"
+    reason: "data-plane writes into a collection (rows, not infrastructure); the collection and its indexes are GcpVectorSearchCollection, and applications write objects through the Vector Search API"
   - resource: google_vertex_ai_cache_config
     disposition: deferred
     reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
@@ -2129,9 +2123,6 @@ resources:
   - resource: google_vertex_ai_deployment_resource_pool
     disposition: deferred
     reason: "judged to fold into the existing GcpVertexAiEndpoint kind's spec (deployment resource pools and Model Garden deployments); the composition is not built"
-  - resource: google_vertex_ai_endpoint_with_model_garden_deployment
-    disposition: model-planned
-    reason: "planned GcpVertexAiModelGardenDeployment kind (Model Garden deployments)"
   - resource: google_vertex_ai_evaluation_metric
     disposition: deferred
     reason: "Vertex AI custom evaluation metrics are an ML-evaluation specialty; deferred pending demand"
@@ -2160,14 +2151,8 @@ resources:
     disposition: model-planned
     reason: "planned GcpVertexAiPersistentResource kind (Vertex AI persistent resources)"
   - resource: google_vertex_ai_rag_corpus
-    disposition: model-planned
-    reason: "planned GcpVertexAiRagCorpus kind (RAG Engine corpora)"
-  - resource: google_vertex_ai_rag_engine_config
-    disposition: model-planned
-    reason: "planned GcpVertexAiRagEngineConfig kind (RAG Engine configuration)"
-  - resource: google_vertex_ai_reasoning_engine
-    disposition: model-planned
-    reason: "planned GcpVertexAiAgentEngine kind (Vertex AI Agent Engine runtimes)"
+    disposition: deferred
+    reason: "a RAG Engine corpus is its own kind (GcpVertexAiRagCorpus), built the day pulumi-gcp bridges provider 8.x: the resource arrived in provider 8.3 and has no type in the pinned pulumi-gcp SDK, and a kind is never one-engine; its registry number and prefix are reserved"
   - resource: google_vertex_ai_semantic_governance_policy_engine
     disposition: deferred
     reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"

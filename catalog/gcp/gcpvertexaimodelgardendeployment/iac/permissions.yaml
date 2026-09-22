@@ -1,0 +1,31 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvertexaimodelgardendeployment
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: DeployModelGardenModel
+        permissions:
+          - aiplatform.endpoints.create
+          - aiplatform.endpoints.get
+          - aiplatform.endpoints.deploy
+          - aiplatform.endpoints.undeploy
+          - aiplatform.endpoints.delete
+          - aiplatform.models.upload
+          - aiplatform.models.get
+          - aiplatform.models.delete
+          - aiplatform.publisherModels.get
+        provenance: derived
+        notes: Covers google_vertex_ai_endpoint_with_model_garden_deployment (Pulumi vertex.AiEndpointWithModelGardenDeployment) -- the one-step deploy uploads a Model, creates an Endpoint, and deploys to it; read/refresh reads the endpoint and its deployed models; destroy under deletion_policy DELETE undeploys, then deletes the endpoint and the model (ABANDON and PREVENT call no API). Publisher models are read to resolve the Model Garden entry. GCP defines no aiplatform.operations.get permission; polling the long-running operations needs nothing beyond these. roles/aiplatform.admin contains them all.

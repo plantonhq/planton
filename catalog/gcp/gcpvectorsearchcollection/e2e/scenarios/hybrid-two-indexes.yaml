@@ -1,0 +1,52 @@
+# GcpVectorSearchCollection scenario: a hybrid collection -- one dense field
+# with precomputed vectors (no embedding config) and one sparse field --
+# with two indexes: cosine over unit-normalized dense vectors with inline
+# filter and store fields, and a second index over the sparse field. Every
+# Optional+Computed index lever (metric, ScaNN norm, dedicated
+# infrastructure) is set here so the sweep sees it on the wire.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVectorSearchCollection
+metadata:
+  name: planton-oss-e2e-gcpvsc-hybrid
+  id: planton-oss-e2e-gcpvsc-hybrid
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvectorsearchcollection
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  displayName: Hybrid search
+  description: Dense and sparse fields side by side
+  labels:
+    team: search
+  dataSchema: '{"type":"object","properties":{"title":{"type":"string"},"category":{"type":"string"}}}'
+  vectorSchemas:
+    - fieldName: dense
+      denseVector:
+        dimensions: 768
+    - fieldName: lexical
+      sparseVector: true
+  indexes:
+    - indexId: dense-cosine
+      indexField: dense
+      displayName: Dense cosine
+      distanceMetric: COSINE_DISTANCE
+      featureNormType: UNIT_L2_NORM
+      filterFields:
+        - category
+      storeFields:
+        - title
+      labels:
+        tier: dev
+      dedicatedInfrastructure:
+        mode: STORAGE_OPTIMIZED
+        autoscalingSpec:
+          minReplicaCount: 1
+          maxReplicaCount: 2
+    - indexId: lexical-ann
+      indexField: lexical

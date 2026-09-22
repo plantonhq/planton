@@ -618,11 +618,15 @@ import (
 	gcptargethttpproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpproxy/v1alpha1"
 	gcptargethttpsproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpsproxy/v1alpha1"
 	gcpurlmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpurlmap/v1alpha1"
+	gcpvectorsearchcollectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvectorsearchcollection/v1alpha1"
+	gcpvertexaiagentenginev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiagentengine/v1alpha1"
 	gcpvertexaideployedindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaideployedindex/v1alpha1"
 	gcpvertexaiendpointv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiendpoint/v1alpha1"
 	gcpvertexaiindexv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindex/v1alpha1"
 	gcpvertexaiindexendpointv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindexendpoint/v1alpha1"
+	gcpvertexaimodelgardendeploymentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1"
 	gcpvertexainotebookv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexainotebook/v1alpha1"
+	gcpvertexairagengineconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexairagengineconfig/v1alpha1"
 	gcpvpcnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcnetwork/v1alpha1"
 	gcpvpcpeeringv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcpeering/v1alpha1"
 	gcpworkflowv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkflow/v1alpha1"
@@ -1397,11 +1401,15 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpProxy:                     &gcptargethttpproxyv1alpha1.GcpTargetHttpProxy{},
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpsProxy:                    &gcptargethttpsproxyv1alpha1.GcpTargetHttpsProxy{},
 	cloudresourcekind.CloudResourceKind_GcpUrlMap:                              &gcpurlmapv1alpha1.GcpUrlMap{},
+	cloudresourcekind.CloudResourceKind_GcpVectorSearchCollection:              &gcpvectorsearchcollectionv1alpha1.GcpVectorSearchCollection{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiAgentEngine:                 &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngine{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiDeployedIndex:               &gcpvertexaideployedindexv1alpha1.GcpVertexAiDeployedIndex{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiEndpoint:                    &gcpvertexaiendpointv1alpha1.GcpVertexAiEndpoint{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiIndex:                       &gcpvertexaiindexv1alpha1.GcpVertexAiIndex{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiIndexEndpoint:               &gcpvertexaiindexendpointv1alpha1.GcpVertexAiIndexEndpoint{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiModelGardenDeployment:       &gcpvertexaimodelgardendeploymentv1alpha1.GcpVertexAiModelGardenDeployment{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiNotebook:                    &gcpvertexainotebookv1alpha1.GcpVertexAiNotebook{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiRagEngineConfig:             &gcpvertexairagengineconfigv1alpha1.GcpVertexAiRagEngineConfig{},
 	cloudresourcekind.CloudResourceKind_GcpVpcNetwork:                          &gcpvpcnetworkv1alpha1.GcpVpcNetwork{},
 	cloudresourcekind.CloudResourceKind_GcpVpcPeering:                          &gcpvpcpeeringv1alpha1.GcpVpcPeering{},
 	cloudresourcekind.CloudResourceKind_GcpWorkflow:                            &gcpworkflowv1alpha1.GcpWorkflow{},

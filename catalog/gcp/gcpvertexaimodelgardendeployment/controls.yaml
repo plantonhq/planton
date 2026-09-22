@@ -1,0 +1,89 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpvertexaimodelgardendeployment
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Vertex AI encrypts the uploaded model artifacts, the endpoint, and the deployed model's metadata at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: Google's one-step Model Garden deployment offers no customer-managed key; a CMEK endpoint is built from GcpVertexAiEndpoint with a model deployed through the Vertex AI API.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Prediction requests reach the endpoint over TLS on the regional Vertex AI host or the dedicated endpoint DNS; there is no plaintext path.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The endpoint has no anonymous surface -- every prediction call is authenticated against aiplatform.endpoints.predict; the private_service_connect_config arm removes even the public host.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: endpoint_config.private_service_connect_config
+      evidence:
+        type: spec_default
+        reference: Unset means the endpoint is reached through Google's public API host under IAM; enabling Private Service Connect publishes it only to the allowlisted consumer projects, and psc_automation_config places the consumer endpoint in a chosen VPC.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: Vertex AI's prediction front end is Google-operated; no customer-configurable edge exists.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Deploying, reading, and undeploying are governed by aiplatform.endpoints.* and aiplatform.models.* permissions, and predictions by aiplatform.endpoints.predict, on every deployment.
+    - control_id: workload-identity
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The serving container runs as Google's Vertex AI service agent; the deployment carries no credential of its own, and gated Hugging Face access uses the read token held as a secret in the spec.
+      notes: Google's provider does not mark hugging_face_access_token sensitive, so both engines' state carries it in plain text; Planton never logs or displays the spec field, and the state backend's encryption protects it at rest. Use a read-only, model-scoped token.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is service and administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The model upload, endpoint creation, deploy, and undeploy land in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Vertex AI emits prediction request counts, latency, error rates, and replica CPU and accelerator utilization per deployed model to Cloud Monitoring without configuration -- the same metrics autoscaling_metric_specs scale on.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The deployment is declarative and fully re-creatable from source control; the model artifacts come from Model Garden or Hugging Face, not from the deployment.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: deploy_config.dedicated_resources.min_replica_count
+      evidence:
+        type: spec_default
+        reference: Replicas are placed by Google across the location's zones; one replica (the default shape) is a single point of failure, two or more spread across zones.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the model is undeployed and the endpoint and uploaded model deleted; PREVENT makes any destroying plan fail; ABANDON removes the deployment from management while it keeps serving and billing.
+      notes: The 02-gemma-l4-vllm-dedicated-endpoint preset sets PREVENT. Because every field is immutable, ANY change is a destroy-and-recreate and is subject to this policy.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The replica hosts are Google-operated; the serving container is Model Garden's (or the declared image) and is replaced only by a new deployment.

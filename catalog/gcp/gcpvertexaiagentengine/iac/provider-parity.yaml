@@ -1,0 +1,58 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_vertex_ai_reasoning_engine:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider names the axis region; every Vertex kind in the
+      # catalog calls it location, and the modules pin one to the other.
+      - spec: spec.location
+        arg: region
+      - spec: spec.kms_key_name
+        arg: encryption_spec.kms_key_name
+    exclusions:
+      # SDK gap at pulumi-gcp v9.37.0 (bridges provider 7.46.1): the
+      # pinned SDK's build spec carries worker_pool only. An argument one
+      # engine cannot send is never a one-engine field; re-evaluate at the
+      # trigger "pulumi-gcp v10 GA".
+      - arg: spec.build_spec.service_account
+        reason: >-
+          SDK gap -- absent from AiReasoningEngineSpecBuildSpecArgs at
+          pulumi-gcp v9.37.0; held out of the spec on both engines until
+          pulumi-gcp v10 GA
+      # SDK gap at pulumi-gcp v9.37.0: the audio_transcription payload of
+      # an example-conversation part (provider 8.2) has no SDK type; the
+      # spec's Content.Part union offers every other payload. Re-evaluate
+      # at the trigger "pulumi-gcp v10 GA".
+      - arg: context_spec.memory_bank_config.customization_configs.generate_memories_examples.conversation_source.events.content.parts.audio_transcription.speaker_label
+        reason: >-
+          SDK gap -- the audio_transcription part has no type in pulumi-gcp
+          v9.37.0; held out on both engines until pulumi-gcp v10 GA
+      - arg: context_spec.memory_bank_config.customization_configs.generate_memories_examples.conversation_source.events.content.parts.audio_transcription.text
+        reason: >-
+          SDK gap -- the audio_transcription part has no type in pulumi-gcp
+          v9.37.0; held out on both engines until pulumi-gcp v10 GA
+      - arg: context_spec.memory_bank_config.customization_configs.generate_memories_examples.conversation_source.events.content.parts.audio_transcription.words.word
+        reason: >-
+          SDK gap -- the audio_transcription part has no type in pulumi-gcp
+          v9.37.0; held out on both engines until pulumi-gcp v10 GA
+      - arg: context_spec.memory_bank_config.customization_configs.generate_memories_examples.conversation_source.events.content.parts.audio_transcription.words.start_offset
+        reason: >-
+          SDK gap -- the audio_transcription part has no type in pulumi-gcp
+          v9.37.0; held out on both engines until pulumi-gcp v10 GA
+      - arg: context_spec.memory_bank_config.customization_configs.generate_memories_examples.conversation_source.events.content.parts.audio_transcription.words.end_offset
+        reason: >-
+          SDK gap -- the audio_transcription part has no type in pulumi-gcp
+          v9.37.0; held out on both engines until pulumi-gcp v10 GA
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.
+

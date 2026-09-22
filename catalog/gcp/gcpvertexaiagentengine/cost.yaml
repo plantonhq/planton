@@ -1,0 +1,44 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaiagentengine
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Vertex AI
+      sku_meter: Agent Engine vCPU
+      pricing_unit: vCPU-hours
+      description: Every running agent instance bills its allocated vCPUs per hour (per cloud.google.com/vertex-ai/generative-ai/pricing, Agent Engine, read 2026-09-22); with min_instances at Google's default of 1, one instance of the default 4-vCPU shape runs around the clock.
+    - service_name: Vertex AI
+      sku_meter: Agent Engine memory
+      pricing_unit: GiB-hours
+      description: The same instances bill their allocated memory per GiB-hour (4 GiB in the default shape).
+  cost_drivers:
+    - field_path: spec.deployment_spec.min_instances
+      sku_meter: Agent Engine vCPU
+      pricing_unit: vCPU-hours
+      impact: The committed spend -- this many instances run around the clock; 0 scales the agent to nothing between requests at the cost of cold starts. The ceiling is max_instances.
+    - field_path: spec.deployment_spec.resource_limits
+      sku_meter: Agent Engine vCPU
+      pricing_unit: vCPU-hours
+      impact: The cpu and memory keys size every instance-hour; Google's default is 4 CPU and 4Gi.
+    - field_path: spec.deployment_spec.container_concurrency
+      sku_meter: Agent Engine vCPU
+      pricing_unit: vCPU-hours
+      impact: Requests one instance handles at once; lower concurrency means more instances for the same traffic.
+    - field_path: context_spec.memory_bank_config.generation_config.model
+      sku_meter: generative model tokens
+      pricing_unit: tokens
+      impact: When the memory bank is on, every memory generation bills the named Gemini model's input and output tokens; generation_trigger_config decides how often.
+    - field_path: context_spec.memory_bank_config.similarity_search_config.embedding_model
+      sku_meter: embedding characters
+      pricing_unit: characters
+      impact: Every memory write and lookup bills the embedding model's characters.
+  estimate_exclusions:
+    - the Cloud Build that compiles a source_code_spec agent bills build minutes under Cloud Build
+    - the models the agent itself calls at runtime bill under their own meters
+    - a Private Service Connect interface bills the network attachment's forwarding hours in the VPC project
+    - Cloud KMS key operations bill under the referenced key when kms_key_name is set

@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiModelGardenDeployment
+metadata:
+  name: qwen-small
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  # A small open Hugging Face model. Exactly one of huggingFaceModelId or
+  # publisherModelName is set.
+  huggingFaceModelId: Qwen/Qwen3-0.6B
+  modelConfig:
+    # Gated and licensed models refuse to deploy until the EULA is
+    # accepted.
+    acceptEula: true
+  # deployConfig omitted: Model Garden picks the model's recommended
+  # machine shape and one replica. Every field is immutable -- a change
+  # redeploys.
+  endpointConfig:
+    endpointDisplayName: qwen-small
+  deletionPolicy: DELETE

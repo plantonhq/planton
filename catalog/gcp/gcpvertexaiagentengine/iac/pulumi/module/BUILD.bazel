@@ -1,0 +1,26 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = [
+        "agent_engine.go",
+        "locals.go",
+        "main.go",
+        "memory_bank.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiagentengine/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/gcp",
+        "//catalog/gcp/gcpvertexaiagentengine/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "//shared/cloudresourcekind",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/vertex",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

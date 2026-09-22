@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvectorsearchcollection
+spec:
+  gcp:
+    groups:
+      - purpose: EnableVectorSearchApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling vectorsearch.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageCollection
+        permissions:
+          - vectorsearch.collections.create
+          - vectorsearch.collections.get
+          - vectorsearch.collections.update
+          - vectorsearch.collections.delete
+          - vectorsearch.operations.get
+        provenance: derived
+        notes: Covers google_vector_search_collection (Pulumi vectorsearch.Collection) -- create, read/refresh, in-place PATCHes (data schema, display name, description, labels), destroy under deletion_policy DELETE (ABANDON and PREVENT call no API), and the long-running operations the provider polls.
+      - purpose: ManageIndexes
+        permissions:
+          - vectorsearch.indexes.create
+          - vectorsearch.indexes.get
+          - vectorsearch.indexes.update
+          - vectorsearch.indexes.delete
+        provenance: derived
+        notes: Covers google_vector_search_index (Pulumi vectorsearch.Index), one per spec.indexes[] entry -- create, read/refresh, the label PATCH (the only in-place update; every other change replaces the index), and destroy.
