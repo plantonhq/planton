@@ -837,9 +837,8 @@ func TestControlPlaneDeployment_RunnerTaskQueueFollowsOrg(t *testing.T) {
 		t.Errorf("TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT = %q, want %q",
 			envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT"], want)
 	}
-	if envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS"] != want {
-		t.Errorf("TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS = %q, want %q",
-			envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS"], want)
+	if _, set := envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS"]; set {
+		t.Errorf("TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS is set, but the control plane binds no per-provider queue variable; it belongs to nothing")
 	}
 }
 

@@ -857,8 +857,9 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "PLANTON_INFRA_HUB_STORED_DOCUMENT_MIGRATION_AUTO_RUN", Value: "true"},
 		// Derived from the bootstrap org -- the SAME derivation the runner
 		// resources use for the worker's queue, so dispatcher and poller
-		// cannot drift apart on a renamed org.
-		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
+		// cannot drift apart on a renamed org. One queue: the control plane's
+		// per-provider overrides are a map with no entries, so a provider
+		// variable here would bind to nothing.
 		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
 
 		// Auth0-path FGA bindings: never used with the bundled identity
@@ -1344,7 +1345,9 @@ func identityEnvVars(binding *IdentityBinding) []corev1.EnvVar {
 
 		// ── first-boot seeds (planton.bootstrap.* via Spring relaxed binding) ──
 		// Presence of the org slug is what activates the control plane's
-		// seeder; a hosted deployment never sets these.
+		// seeder. A hosted deployment never sets these -- it declares its
+		// shared fleet (PLANTON_FLEET_RUNNER_SLUG / _NAMESPACE) instead, and
+		// its control plane refuses the organization-scoped bootstrap facts.
 		{Name: "PLANTON_BOOTSTRAP_ORGANIZATION_SLUG", Value: binding.Bootstrap.OrgSlug},
 		{Name: "PLANTON_BOOTSTRAP_ORGANIZATION_NAME", Value: binding.Bootstrap.OrgName},
 		{Name: "PLANTON_BOOTSTRAP_ENVIRONMENT_SLUG", Value: binding.Bootstrap.EnvSlug},
