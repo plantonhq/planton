@@ -15,7 +15,7 @@
     "check:displayed-vs-enforced": "node scripts/check-displayed-vs-enforced.mjs",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
-    "typecheck": "yarn build:packages && tsc --noEmit && yarn workspace @planton/website-shell typecheck",
+    "typecheck": "yarn build:packages && yarn generate:desktop-release && tsc --noEmit && yarn workspace @planton/website-shell typecheck",
     "check:apex-routing": "node --experimental-strip-types scripts/check-apex-routing.mjs",
     "check:internal-links": "node --experimental-strip-types scripts/check-internal-links.mjs",
     "generate:llms": "node --experimental-strip-types scripts/generate-llms.mjs",
