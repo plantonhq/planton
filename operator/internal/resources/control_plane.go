@@ -321,7 +321,7 @@ type RunnerBinding struct {
 
 	// BuildEnabled activates the build-routing boot seed: the control plane
 	// creates this install's build-cluster connection (create-once, pointing
-	// at the in-cluster runner) and the platform-scoped default referencing
+	// at the in-cluster runner) and its organization's default referencing
 	// it, so the first service pipeline resolves a build destination with
 	// zero registration ceremony. Follows the effective build toggle
 	// (spec.build AND spec.runner).
@@ -1046,9 +1046,12 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 			secretEnv("RUNNER_DIRECT_AUTH_TOKEN", cfg.Runner.CloudOpsSecretName, RunnerCloudOpsSecretKeyToken),
 		)
 		// Build-routing boot seed: create-once records making this cluster
-		// the platform's build destination (the build-cluster connection
-		// under its well-known slug + the platform-scoped default referencing
-		// it). Presence of the RUNNER value is the seeders' activation gate;
+		// the installation's one organization's build destination (the
+		// build-cluster connection under its well-known slug + that
+		// organization's default build connection referencing it). A
+		// self-hosted installation declares no platform fleet, so its
+		// organization's default is the whole routing chain below a service's
+		// own override. Presence of the RUNNER value is the seeders' activation gate;
 		// builds off means NO variables, not empty ones. The env names are
 		// the canonical relaxed-binding forms of
 		// planton.bootstrap.tekton-connection.* -- hyphens STRIPPED, not
