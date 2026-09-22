@@ -21,6 +21,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### Auth0 Account
 
 - **A database or passwordless connection** the user is created in -- an `Auth0Connection` with strategy `auth0`, `email`, or `sms`. Auth0 can only create users in connections it holds the credential for; users of social and enterprise connections arrive at first sign-in and cannot be declared.
+- **The connection enabled for the deployment credential.** Auth0 creates a user "as" the calling application, so the connection's enabled clients must include the client id of the Machine-to-Machine application behind your Auth0 Provider Connection -- otherwise the create is refused with "Connection must be enabled for this client". A connection enabled only for your consoles needs that one more client added.
 - **Existing roles and scopes** for anything you assign. Roles are referenced by id (an `Auth0Role`); each direct permission names a scope on a Resource Server identifier (an `Auth0ResourceServer`). Both can be added later -- a user deploys fine with neither.
 
 ## Deploy

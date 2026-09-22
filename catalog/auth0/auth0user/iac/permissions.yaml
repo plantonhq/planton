@@ -45,7 +45,13 @@
 # The modules (iac/tf/main.tf and iac/pulumi/module/user.go) manage the
 # user and, when declared, the authoritative auth0_user_roles and
 # auth0_user_permissions -- all three operate on the same user object, so
-# the scopes above are the complete set. The modules never create roles,
+# the scopes above are the complete set. One requirement is not a scope at
+# all and is easy to miss: Auth0 creates a user "as" the calling
+# application, so the target connection must be ENABLED for this M2M
+# client (its client id in the connection's enabled clients) -- without
+# that the create is refused with "Connection must be enabled for this
+# client to perform single user creation and signup operations" no matter
+# which scopes the token carries. The modules never create roles,
 # resource servers, or connections (those must already exist), never read
 # a connection's options, and never touch another user. All entries are
 # derived from static analysis of the modules against the endpoint docs;

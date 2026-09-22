@@ -11,6 +11,7 @@ metadata:
   org: e2e-org
   env: testing
   annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CLIENT_ID
     planton.dev/e2e-prerequisites: "Auth0Role,Auth0ResourceServer"
 spec:
   connection_name:
