@@ -12,7 +12,7 @@ import { Add } from '@mui/icons-material';
 import { TypoB2Regular, TypoH2 } from '@/components/common';
 import Link from 'next/link';
 import { EVALUATION_DAYS, EVALUATION_URL, FREE_TIER_SEATS } from '@/data/pricing';
-import { useHandoffEmail, withHandoffEmail } from '@/components/handoff';
+import { useHandoffEmail, withHandoffEmail } from '@/lib/console-handoff';
 
 interface IFaq {
   title: string;
@@ -177,7 +177,7 @@ const faqs: IFaq[] = [
             support@planton.ai
           </Link>{' '}
           from your purchase email. The full details live in our{' '}
-          <Link className="text-white underline" href="/refund-policy">
+          <Link className="text-white underline" href="/legal/refund-policy">
             refund policy
           </Link>
           .
@@ -206,8 +206,10 @@ export const Faqs: FC = () => {
                   key={index}
                   expanded={expanded === index}
                   onChange={handleChange(index)}
-                  variant="outlined"
-                  className="bg-inherit before:content-none after:content-[''] after:block after:border-t after:border-[1px] after:border-solid after:border-[#373737]"
+                  // One hairline under each question, drawn once: MUI's own top
+                  // divider (the ::before) is hidden and its outlined frame not
+                  // used, so the row has exactly one rule on the palette's edge.
+                  className="bg-inherit rounded-none shadow-none border-b border-edge before:hidden"
                 >
                   <AccordionSummary className="px-0">
                     <Stack className="flex flex-row gap-2">

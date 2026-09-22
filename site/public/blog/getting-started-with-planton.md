@@ -110,14 +110,13 @@ Now that you have your first application running:
 - Explore the [documentation](/docs)
 - Join our [Discord community](https://discord.gg/planton)
 - Check out our [tutorials](/tutorials)
-- Learn about [advanced features](/features)
+- Learn about [advanced features](/product)
 
 ## Need Help?
 
 If you run into any issues:
 
-- Check our [troubleshooting guide](/docs/troubleshooting)
-- Search our [knowledge base](/docs/kb)
+- Read the [documentation](/docs)
 - Reach out to our support team
 - Ask questions in our community forums
 

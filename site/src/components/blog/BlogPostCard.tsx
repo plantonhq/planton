@@ -12,6 +12,8 @@ const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
     <article className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden hover:border-[#3a3a3a] transition-all duration-300">
       {post.featuredImage && (
         <div className="aspect-video overflow-hidden">
+          {/* The post's own image, dimensions unknown at build time; images are unoptimized on this static export, so next/image would emit the same tag. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={post.featuredImage}
             alt={post.title}

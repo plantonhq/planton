@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Home } from 'lucide-react';
-import { Button } from '@/components/tour/ui/button';
+import { Button } from './ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Import slide components

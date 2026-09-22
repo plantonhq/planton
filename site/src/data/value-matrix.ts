@@ -17,7 +17,7 @@ import {
   COMMUNITY_SEAT_LIMIT,
   MARKETS,
   SELF_HOSTED_LICENSE_SEAT_CEILINGS,
-} from './pricing';
+} from './pricing.ts';
 
 export type PlanColumnId = 'free' | 'team' | 'community' | 'license' | 'enterprise';
 

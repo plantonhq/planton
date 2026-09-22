@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
+import { tailwindColors } from "./packages/website-shell/src/theme/tokens";
 
 export default {
   content: [
@@ -15,80 +16,15 @@ export default {
     extend: {
       fontFamily: {
         'inter': ['var(--font-inter)', 'Inter', 'sans-serif'],
-        'manrope': ['Manrope', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
+        // The palette, by role: bg-canvas, bg-card, text-fg-secondary,
+        // border-edge, text-ok. Defined once in the website-shell package
+        // and shared with the MUI theme; components never type a hex.
+        ...tailwindColors,
         white: '#ededed',
-        primary: {
-          0: "#000000",
-          10: "#1a1a1a",
-          20: "#2a2a2a",
-          30: "#3a3a3a",
-          40: "#555555",
-          50: "#ededed",
-          60: "#d4d4d4",
-          70: "#a0a0a0",
-          80: "#888888",
-          90: "#666666",
-          95: "#f5f5f5",
-          100: "#ededed",
-        },
-        secondary: {
-          0: "#000000",
-          10: "#1a1a1a",
-          20: "#2a2a2a",
-          30: "#3a3a3a",
-          40: "#555555",
-          50: "#666666",
-          60: "#888888",
-          70: "#a0a0a0",
-          80: "#b0b0b0",
-          90: "#d4d4d4",
-          95: "#f5f5f5",
-          100: "#ededed",
-        },
+        // One leftover the pricing FAQ still reads; it goes when pricing is rebuilt.
         text: { secondary: '#999999' },
-        
-        tour: {
-          // shadcn/ui style primary for tour components
-          primary: {
-            DEFAULT: "#171717",
-            foreground: "#ffffff",
-          },
-          // shadcn/ui style secondary for tour components
-          secondary: {
-            DEFAULT: "#f5f5f5",
-            foreground: "#171717",
-          },
-          // Base colors for tour components
-          border: "#e5e7eb",
-          input: "#e5e7eb", 
-          ring: "#171717",
-          background: "#ffffff",
-          foreground: "hsl(var(--foreground))",
-          
-          // Tour component color variants
-          destructive: {
-            DEFAULT: "#ef4444",
-            foreground: "#fefefe",
-          },
-          muted: {
-            DEFAULT: "#f5f5f5",
-            foreground: "#737373",
-          },
-          accent: {
-            DEFAULT: "#f5f5f5",
-            foreground: "#171717",
-          },
-          popover: {
-            DEFAULT: "#ffffff",
-            foreground: "#171717",
-          },
-          card: {
-            DEFAULT: "#ffffff",
-            foreground: "#171717",
-          },
-        },
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

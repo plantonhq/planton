@@ -80,15 +80,18 @@ export interface DesktopPlatform {
 }
 
 /**
- * Where the desktop pages live on the website. Both sit under /features
- * because the edge currently routes the short paths (/desktop, /download) to
- * the console; those short paths are the intended final homes, and moving
- * back is a folder rename plus these two constants. Every site component
- * reads them from here; the shell package's navigation keeps literal hrefs
- * like every other entry because it cannot import from src/.
+ * Where the desktop pages live on the website: Planton Desktop's permanent
+ * address. The release pipeline prints it into every Homebrew cask, winget
+ * manifest, and the Linux installer, so it changes only on the founder's word
+ * and the pipeline's scripts change in the same commit. The download page
+ * sits under the landing (one prefix at the edge, one reserved handle, and
+ * the download read as the desktop's own page). Every site component reads
+ * these two constants; the shell package's navigation keeps literal hrefs
+ * like every other entry because it cannot import from src/. The pages'
+ * earlier address under /features is a retired route.
  */
-export const DESKTOP_LANDING_PATH = '/features/desktop';
-export const DESKTOP_DOWNLOAD_PATH = '/features/desktop/download';
+export const DESKTOP_LANDING_PATH = '/desktop';
+export const DESKTOP_DOWNLOAD_PATH = '/desktop/download';
 
 export const DOWNLOADS_BASE = 'https://downloads.planton.app/desktop';
 
@@ -227,6 +230,30 @@ export const DESKTOP_PLATFORM_BY_ID: Readonly<Record<DesktopPlatformId, DesktopP
 
 /** Where a release's checksums live; the version carries its `v` prefix exactly as the pointer prints it. */
 export const desktopChecksumsUrl = (version: string): string => `${DOWNLOADS_BASE}/${version}/checksums.txt`;
+
+/** "a", "a and b", "a, b, and c". */
+const list = (xs: readonly string[]): string => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+
+/**
+ * The one sentence the landing page says about platforms, derived from the
+ * platform list so it can never promise a platform or a one-command install
+ * the download page does not show: which platforms have an installer today,
+ * which are off until the next release, which have a live one-command
+ * install, and the macOS signing fact.
+ */
+export const desktopWaysLine = (): string => {
+  const on = DESKTOP_PLATFORMS.filter((p) => p.available).map((p) => (p.minimum.startsWith(p.name) ? p.minimum : `${p.name} with ${p.minimum}`));
+  const off = DESKTOP_PLATFORMS.filter((p) => !p.available).map((p) => p.name);
+  const oneCommand = DESKTOP_PLATFORMS.filter((p) => p.available && p.installCommand.status === 'live').map((p) => p.name);
+  const offClause = off.length ? ` ${list(off)} returns with the next release.` : '';
+  // macOS carries the signing fact; when it is also the one-command platform the two facts are one sentence.
+  const macSigned = DESKTOP_PLATFORMS.some((p) => p.id === 'macos' && p.available);
+  const commandClause =
+    oneCommand.length === 1 && oneCommand[0] === 'macOS' && macSigned
+      ? ' macOS installs from Homebrew too, signed and notarized by Apple.'
+      : `${oneCommand.length ? ` ${list(oneCommand)} installs from the terminal too.` : ''}${macSigned ? ' Signed and notarized by Apple on macOS.' : ''}`;
+  return `Today for ${list(on)}.${offClause}${commandClause}`;
+};
 
 /**
  * Best-effort platform detection from the two signals a browser offers: the

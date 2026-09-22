@@ -1,5 +1,22 @@
 import type { ReactNode } from 'react';
 
+/**
+ * The website's navigation as data: the header's menus are the source, and
+ * the footer is a projection of them. A link appears here once, and every
+ * surface that shows it reads it, so the header and the footer can never
+ * disagree about where a page lives or what it is called.
+ *
+ * Every href is a path the site's route registry knows (or a console path
+ * the link gate allows, or an absolute URL); the site's build proves each
+ * one resolves, because the header and footer render on every exported
+ * page. This package cannot import the registry (the console consumes the
+ * shell too), so the hrefs are literal and the gate is the proof. Labels
+ * are Title Case (they are chrome); a sub-label is one line of menu copy,
+ * distinct from the paragraph the registry holds as the page's description.
+ * The call to action for /signup is "Start Free" here as it is on every
+ * door on the site.
+ */
+
 export interface MenuItem {
   label: string;
   subLabel?: string;
@@ -15,58 +32,61 @@ export interface MenuSection {
 export interface FooterGroup {
   id: string;
   title: string;
-  items: { title: string; url: string }[];
+  items: MenuItem[];
 }
 
 // ---------------------------------------------------------------------------
-// Header — Product mega-menu
+// Header: the Product mega-menu
 // ---------------------------------------------------------------------------
 
+// The order is the order a platform engineer meets the product: the two hubs,
+// the coding agent as a first-class user, the terminal, the catalog, what you
+// already have, and the open source underneath.
 export const menuProduct: MenuItem[] = [
-  { label: 'Infra Hub', subLabel: 'Deploy any infrastructure, any cloud', href: '/features/infra-hub' },
-  { label: 'Service Hub', subLabel: 'Ship code from Git to production', href: '/features/service-hub' },
-  { label: 'Cloud Catalog', subLabel: 'Browse and deploy infrastructure modules', href: '/features/cloud-catalog' },
-  { label: 'Runner', subLabel: 'Execute in your cloud, orchestrate from ours', href: '/features/runner' },
-  { label: 'Security', subLabel: 'Secrets, IAM, and audit - built into every layer', href: '/features/security' },
-  { label: 'Agent Fleet', subLabel: 'AI agents, purpose-built for infrastructure', href: '/features/agent-fleet' },
-  { label: 'CLI', subLabel: 'Command your cloud from the terminal', href: '/features/cli' },
-  { label: 'Desktop', subLabel: 'The whole platform on your laptop, free forever', href: '/features/desktop' },
-  { label: 'Open Source', subLabel: 'The open-source core of Planton', href: '/features/open-source' },
+  { label: 'Infra Hub', subLabel: 'Cost and permissions verified before anything is created', href: '/product/infra-hub' },
+  { label: 'Service Hub', subLabel: 'Every push built, deployed, and written back to GitHub', href: '/product/service-hub' },
+  { label: 'Coding Agents', subLabel: 'Cursor, Claude Code, or Codex deploys under the same rules as everyone', href: '/product/coding-agents' },
+  { label: 'CLI', subLabel: 'Everything Planton does, from your terminal', href: '/product/cli' },
+  { label: 'Catalog', subLabel: '700+ component kinds, each with its own fact sheet', href: '/product/catalog' },
+  { label: 'Import', subLabel: 'Adopt the cloud resources you already run, without redeploying them', href: '/product/import' },
+  { label: 'Open Source', subLabel: 'Every module Apache 2.0; leave with your manifests', href: '/product/open-source' },
 ];
 
-export const menuExplorer: MenuItem[] = [
-  { label: 'All Product', href: '/features' },
-  { label: 'Documentation', href: '/docs' },
-  { label: 'Tutorials', href: '/tutorials' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Changelog', href: '/changelog' },
+// Where the platform runs (one model, three shapes).
+export const menuDistributions: MenuItem[] = [
+  { label: 'Hosted', subLabel: 'Nothing to run; your account, your keys', href: '/distributions/hosted' },
+  { label: 'Self-Hosted', subLabel: 'Two Helm installs on your own cluster', href: '/distributions/self-hosted' },
+  { label: 'Desktop', subLabel: 'Free for individuals, commercial use included', href: '/desktop' },
 ];
 
-// ---------------------------------------------------------------------------
-// Header — Solutions mega-menu
-// ---------------------------------------------------------------------------
-
-export const menuByUseCases: MenuItem[] = [
-  { label: 'Internal Developer Platform', href: '/solutions/by-use-case/internal-developer-platform' },
-  { label: 'Multi-Cloud', href: '/solutions/by-use-case/multi-cloud' },
-  { label: 'Self-Hosted DevOps', href: '/solutions/by-use-case/self-hosted-devops' },
-];
-
-export const menuBySize: MenuItem[] = [
-  { label: 'Startups', href: '/solutions/by-size/startups' },
-  { label: 'Growing Teams', href: '/solutions/by-size/growing-teams' },
-  { label: 'Enterprises', href: '/solutions/by-size/enterprises' },
-];
-
-export const menuByRole: MenuItem[] = [
-  { label: 'Developer', href: '/solutions/by-role/developers' },
-  { label: 'Platform Engineer', href: '/solutions/by-role/platform-engineers' },
-  { label: 'Startup Founder', href: '/solutions/by-role/startup-founders' },
-  { label: 'Engineering Leader', href: '/solutions/by-role/engineering-leader' },
+// The site's map in one column: the section indexes and the page that
+// compares Planton with what a reader already runs. The header's Explore
+// column and the footer's Explore group both read this list.
+export const menuExplore: MenuItem[] = [
+  { label: 'Product Overview', href: '/product' },
+  { label: 'Distributions', href: '/distributions' },
+  { label: 'Solutions', href: '/solutions' },
+  { label: 'How Planton Compares', href: '/compare' },
 ];
 
 // ---------------------------------------------------------------------------
-// Header — Resources mega-menu
+// Header: the Solutions mega-menu
+// ---------------------------------------------------------------------------
+
+// The five people the story is told to, one page each, in the story's own
+// order (the user first, then the one who signs). The labels are the persona
+// names exactly as the site's persona records spell them; a person's name
+// needs no sub-label and no icon.
+export const menuSolutions: MenuItem[] = [
+  { label: 'Platform Engineer', href: '/solutions/platform-engineer' },
+  { label: 'Engineering Leader', href: '/solutions/engineering-leader' },
+  { label: 'IT Consultancy', href: '/solutions/it-consultancy' },
+  { label: 'Startup Founder', href: '/solutions/startup-founder' },
+  { label: 'Security and Governance Leader', href: '/solutions/security-and-governance-leader' },
+];
+
+// ---------------------------------------------------------------------------
+// Header: the Resources mega-menu
 // ---------------------------------------------------------------------------
 
 export const menuResources: MenuItem[] = [
@@ -74,72 +94,54 @@ export const menuResources: MenuItem[] = [
   { label: 'Tutorials', subLabel: 'Step-by-step deployment walkthroughs', href: '/tutorials' },
   { label: 'Blog', subLabel: 'Product updates and engineering insights', href: '/blog' },
   { label: 'Changelog', subLabel: 'What shipped in every release', href: '/changelog' },
-  { label: 'Tour', subLabel: 'Interactive walkthrough of the console', href: '/tour' },
-  { label: 'Demo', subLabel: 'See Planton in action', href: '/demo' },
 ];
 
 // ---------------------------------------------------------------------------
-// Footer link groups — canonical URLs (aligned with header)
+// The doors the header and footer share
 // ---------------------------------------------------------------------------
+
+export const START_FREE: MenuItem = { label: 'Start Free', href: '/signup' };
+export const SIGN_IN: MenuItem = { label: 'Sign In', href: '/login' };
+export const DOWNLOAD_DESKTOP: MenuItem = { label: 'Download Planton Desktop', href: '/desktop/download' };
+
+// ---------------------------------------------------------------------------
+// Footer: a projection of the menus, plus the two groups no menu holds
+// ---------------------------------------------------------------------------
+
+/** A menu as a footer group: labels and hrefs only, the sub-labels are the header's. */
+const asGroup = (id: string, title: string, items: MenuItem[]): FooterGroup => ({
+  id,
+  title,
+  items: items.map(({ label, href }) => ({ label, href })),
+});
 
 export const footerGroups: FooterGroup[] = [
+  asGroup('product', 'Product', menuProduct),
   {
-    title: 'Product',
-    id: 'product',
-    items: [
-      { title: 'Infra Hub', url: '/features/infra-hub' },
-      { title: 'Service Hub', url: '/features/service-hub' },
-      { title: 'Cloud Catalog', url: '/features/cloud-catalog' },
-      { title: 'Runner', url: '/features/runner' },
-      { title: 'Security', url: '/features/security' },
-      { title: 'Agent Fleet', url: '/features/agent-fleet' },
-      { title: 'CLI', url: '/features/cli' },
-    ],
-  },
-  {
-    title: 'Open Source',
+    // What is on GitHub, for the reader who wants the source rather than the page about it.
     id: 'open_source',
+    title: 'Open Source',
     items: [
-      { title: 'Planton open source', url: '/features/open-source' },
-      { title: 'Infra Charts', url: 'https://github.com/plantonhq/planton/tree/main/charts' },
+      { label: 'Planton on GitHub', href: 'https://github.com/plantonhq/planton' },
+      { label: 'The Catalog', href: 'https://github.com/plantonhq/planton/tree/main/catalog' },
+      { label: 'Infra Charts', href: 'https://github.com/plantonhq/planton/tree/main/charts' },
     ],
   },
   {
-    title: 'GET STARTED',
     id: 'get_started',
-    items: [
-      { title: 'Download Planton Desktop', url: '/features/desktop/download' },
-      { title: 'Sign Up', url: '/signup' },
-      { title: 'Pricing', url: '/pricing' },
-      { title: 'Book a Demo', url: '/book-demo' },
-    ],
+    title: 'Get Started',
+    items: [DOWNLOAD_DESKTOP, START_FREE, { label: 'Pricing', href: '/pricing' }, { label: 'Book a Demo', href: '/book-demo' }],
   },
-  {
-    title: 'Resources',
-    id: 'resources',
-    items: [
-      { title: 'Documentation', url: '/docs' },
-      { title: 'Tutorials', url: '/tutorials' },
-      { title: 'Blog', url: '/blog' },
-      { title: 'Changelog', url: '/changelog' },
-    ],
-  },
-  {
-    title: 'Explore',
-    id: 'explore',
-    items: [
-      { title: 'All Product', url: '/features' },
-      { title: 'Solutions', url: '/solutions' },
-      { title: 'Tour', url: '/tour' },
-    ],
-  },
+  asGroup('resources', 'Resources', menuResources),
+  asGroup('explore', 'Explore', menuExplore),
 ];
 
-export const footerTermsLinks = [
-  { title: 'Status', url: '/' },
-  { title: 'Privacy', url: '/privacy' },
-  { title: 'Terms', url: '/terms' },
-  { title: 'Refunds', url: '/refund-policy' },
+// The legal pages live under /legal/. A status page joins this line the day
+// one exists; a link to nothing is not a promise.
+export const footerTermsLinks: MenuItem[] = [
+  { label: 'Privacy', href: '/legal/privacy' },
+  { label: 'Terms', href: '/legal/terms' },
+  { label: 'Refunds', href: '/legal/refund-policy' },
 ];
 
 export const DISCORD_URL = 'https://discord.gg/pwcSapdQAp';

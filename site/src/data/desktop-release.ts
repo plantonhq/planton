@@ -12,7 +12,7 @@
  */
 
 import generated from '@/generated/desktop-release.json';
-import type { DesktopArtifact } from './desktop-download';
+import type { DesktopArtifact } from './desktop-download.ts';
 
 export interface DesktopRelease {
   /** The stable tag the `latest` pointer named at build time ("v0.0.56"), or null when unreadable. */

@@ -33,7 +33,7 @@ export class MDXParser {
   static reconstructMDX(input: string): string {
     const { data, content } = matter(input);
     
-    const authorYaml = (data.author || []).map((author: any) => {
+    const authorYaml = ((data.author ?? []) as (Author | string)[]).map((author) => {
       if (typeof author === 'string') {
         return `  - ${author}`;
       } else {
@@ -68,7 +68,7 @@ export class MDXParser {
     }
     
     if (data.tags && data.tags.length > 0) {
-      frontmatterFields.push(`tags:\n${data.tags.map((tag: any) => `  - ${tag}`).join('\n')}`);
+      frontmatterFields.push(`tags:\n${(data.tags as string[]).map((tag) => `  - ${tag}`).join('\n')}`);
     }
     
     if (data.excerpt) {
@@ -201,7 +201,7 @@ export function getTutorialsByTag(tag: string): Tutorial[] {
 
 export function getTutorialsByAuthor(author: string): Tutorial[] {
   const allTutorials = getAllTutorials();
-  return allTutorials.filter((tutorial) => tutorial.author.some((a: any) => a.name === author));
+  return allTutorials.filter((tutorial) => tutorial.author.some((a) => a.name === author));
 }
 
 // Utility functions to get next article

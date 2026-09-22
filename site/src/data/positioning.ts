@@ -66,7 +66,7 @@ export const POSITIONING = {
   infraHub: {
     name: 'Infra Hub',
     analogy: 'Cursor for Cloud Infrastructure',
-    line: 'Describe what you need, watch it compose on a live canvas, see the cloud bill and the IAM policy before anything is created, deploy, and publish it as an Infra Chart — a template your team reuses.',
+    line: 'Describe what you need, watch it compose on a live canvas, see the monthly cost and the IAM policy before anything is created, deploy, and publish it as an Infra Chart — a template your team reuses.',
   },
   serviceHub: {
     name: 'Service Hub',

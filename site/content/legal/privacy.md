@@ -72,9 +72,9 @@ We use personal data for the following purposes:
 - To create, manage, and administer your account, including processing payments and responding to support requests.
 - To improve and develop the Service, including debugging, performance analysis, and feature development.
 - To communicate with you about updates, changes to the Service, security alerts, and administrative messages.
-- To prevent, detect, and investigate fraud, abuse, security incidents, and violations of our [Terms of Service](/terms).
+- To prevent, detect, and investigate fraud, abuse, security incidents, and violations of our [Terms of Service](/legal/terms).
 - To comply with legal obligations and protect the rights, safety, and property of users, Planton, and third parties.
-- To enforce our [Terms of Service](/terms) and other applicable agreements.
+- To enforce our [Terms of Service](/legal/terms) and other applicable agreements.
 
 **We do not use your Inputs or Outputs to train machine learning models**, or permit third parties to use them for training, unless: (1) they are flagged for security review, (2) you explicitly report them to us as feedback, or (3) you have explicitly consented to such use.
 

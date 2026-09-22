@@ -8,7 +8,7 @@ import {
   Card,
   FeatureTitle,
   SectionTitle,
-} from '@/components/landing-page/v3-2026-01-02-1000/shared';
+} from '@/components/marketing';
 import { useMarket } from '@/components/market';
 import { EVALUATION_DAYS } from '@/data/pricing';
 

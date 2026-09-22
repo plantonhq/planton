@@ -67,22 +67,31 @@ Both surfaces share the same design principles: monochrome chrome, semantic-only
 
 ### Website Palette
 
-The website uses a three-level gray stack with Tailwind utility classes.
+The website palette is defined once, in the website-shell package's `tokens.ts`, and projected into both the MUI theme and Tailwind. Components use the role-named Tailwind classes below and never type a hex; the hex column is for the reader, not for code.
 
-| Role | Hex | Tailwind / CSS |
+| Role | Hex | Tailwind class |
 |------|-----|----------------|
-| Page background | `#0a0a0a` | `bg-[#0a0a0a]` (body) |
-| Panel / secondary | `#111111` | `bg-[#111]` |
-| Card / tertiary | `#1a1a1a` | `bg-[#1a1a1a]` |
-| Primary text | `#ededed` | `text-white` (overridden in Tailwind config) |
-| Secondary text | `#a0a0a0` | `text-[#a0a0a0]` |
-| Muted text | `#666666` | `text-[#666]` |
-| Border | `#2a2a2a` | `border-[#2a2a2a]` |
-| Border hover | `#3a3a3a` | `border-[#3a3a3a]` |
-| CTA surface | `#ffffff` | `bg-[#fff]` (true white, not the `#ededed` override) |
-| CTA text | `#000000` | `text-black` |
+| Canvas (page background) | `#0a0a0a` | `bg-canvas` |
+| Panel (header, footer, panels one step up) | `#111111` | `bg-panel` |
+| Card (marketing cards) | `#151515` | `bg-card` |
+| Card under the pointer | `#1f1f1f` | `bg-card-hover` |
+| Raised (inputs, pills, tooltips, code blocks; sits on a card) | `#1a1a1a` | `bg-raised` |
+| Primary text | `#ededed` | `text-fg` (also `text-white`, overridden in Tailwind config) |
+| Body text (inside cards) | `#b0b0b0` | `text-fg-body` |
+| Secondary text | `#a0a0a0` | `text-fg-secondary` |
+| Muted text | `#666666` | `text-fg-muted` |
+| Faint text (fine print) | `#555555` | `text-fg-faint` |
+| Border | `#2a2a2a` | `border-edge` |
+| Border hover | `#3a3a3a` | `border-edge-hover` |
+| Success (functional only) | `#10b981` | `text-ok`, `bg-ok/10` |
+| Failure (functional only) | `#ef4444` | `text-danger` |
+| Warning (functional only) | `#f59e0b` | `text-warn` |
+| CTA surface | `#ffffff` | `bg-cta` (true white, not the `#ededed` override) |
+| CTA text | `#000000` | `text-cta-text` |
 
-The Tailwind `white` token is overridden to `#ededed` for body text. Call-to-action buttons use explicit `bg-[#fff]` to retain true white contrast.
+Two card surfaces exist on purpose. Marketing cards are `#151515`, one step above the canvas, separated from it by a border rather than a fill; the lighter `#1a1a1a` is the surface that sits on a card (an input, a pill, a tooltip, a code block) so it reads as raised. An earlier revision of this table listed cards as `#1a1a1a` while every card on the site painted `#151515`; the palette now records what the pixels do.
+
+The Tailwind `white` token is overridden to `#ededed` for body text. Call-to-action buttons use `bg-cta` to retain true white contrast.
 
 ### Console Palette (Dark Mode)
 

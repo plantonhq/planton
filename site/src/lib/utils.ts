@@ -44,16 +44,6 @@ export function formatShortDate(dateString: string): string {
 } 
 
 /**
- * Checks if a slug has a markdown file extension (.md).
- * 
- * @param slug - The slug string to check
- * @returns True if the slug has a markdown extension, false otherwise
- */
-// export function hasMarkdownExtension(slug: string): boolean {
-//   return /\.md$/i.test(slug);
-// }
-
-/**
  * Removes markdown file extensions (.md) from a slug.
  * 
  * @param slug - The slug string to clean
@@ -125,16 +115,4 @@ export function generateExcerptFromContent(content: string, maxLength: number = 
   }
 
   return truncated + '...';
-} 
-
-export function createPageUrl(pageName: string): string {
-  const key = pageName.toLowerCase().replace(/[\s_-]/g, '');
-  const overrides: Record<string, string> = {
-    retailhub: '/acme/catalog/retail-hub',
-    home: '/acme',
-  };
-  if (overrides[key]) {
-    return overrides[key];
-  }
-  return '/acme/' + pageName.toLowerCase().replace(/ /g, '-');
-} 
+}
