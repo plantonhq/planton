@@ -1,0 +1,45 @@
+# GcpNetworkEndpointGroup scenario: the ZONAL group with one VM endpoint
+# written through the bulk endpoint set. The chain -- a subnet on the
+# registry's prerequisite network and a Spot VM on that subnet -- is
+# declared here because a path-declared fixture's own annotation is never
+# read. The endpoint names only its instance: Google resolves the address
+# to the VM's primary internal IP, and the port falls back to the group's
+# default_port.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkEndpointGroup
+metadata:
+  name: planton-oss-e2e-gcpneg-zonal
+  id: planton-oss-e2e-gcpneg-zonal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkendpointgroup
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpnetworkendpointgroup/e2e/prerequisites/gcpsubnetwork-vm.yaml,catalog/gcp/gcpnetworkendpointgroup/e2e/prerequisites/gcpcomputeinstance-endpoint.yaml"
+  tags:
+    - planton-e2e
+spec:
+  negName: planton-oss-e2e-gcpneg-zonal
+  description: Ephemeral zonal network endpoint group created by the Planton E2E harness; safe to delete
+  zone: us-central1-a
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcpneg-subnet
+      fieldPath: status.outputs.subnetwork_self_link
+  networkEndpointType: GCE_VM_IP_PORT
+  defaultPort: 8080
+  endpoints:
+    - instance:
+        valueFrom:
+          kind: GcpComputeInstance
+          name: planton-oss-e2e-gcpneg-vm
+          fieldPath: status.outputs.instance_name
+  deletionPolicy: DELETE

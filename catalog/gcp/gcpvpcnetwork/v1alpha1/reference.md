@@ -275,9 +275,11 @@ Fields on other kinds that can point at this resource:
 | GcpHierarchicalFirewallPolicy | `spec.rules[].match.srcNetworks` | `status.outputs.network_self_link` |
 | GcpHierarchicalFirewallPolicy | `spec.rules[].targetResources` | `status.outputs.network_self_link` |
 | GcpMemorystoreInstance | `spec.pscAutoConnections[].network` | `status.outputs.network_id` |
+| GcpNetworkEndpointGroup | `spec.network` | `status.outputs.network_self_link` |
 | GcpNetworkFirewallPolicy | `spec.rules[].match.srcNetworks` | `status.outputs.network_self_link` |
 | GcpNetworkFirewallPolicy | `spec.associations[].network` | `status.outputs.network_self_link` |
 | GcpPlantonRunner | `spec.vpcAccess.network` | `status.outputs.network_name` |
+| GcpPscServiceAttachment | `spec.consumerAcceptLists[].network` | `status.outputs.network_self_link` |
 | GcpRedisInstance | `spec.authorizedNetwork` | `status.outputs.network_self_link` |
 | GcpRegionNetworkEndpointGroup | `spec.network` | `status.outputs.network_self_link` |
 | GcpRouterNat | `spec.vpcSelfLink` | `status.outputs.network_self_link` |

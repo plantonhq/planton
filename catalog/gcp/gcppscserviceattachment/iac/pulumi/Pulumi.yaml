@@ -1,0 +1,4 @@
+name: gcppscserviceattachment-pulumi-project
+runtime:
+  name: go
+description: Planton GcpPscServiceAttachment Pulumi module

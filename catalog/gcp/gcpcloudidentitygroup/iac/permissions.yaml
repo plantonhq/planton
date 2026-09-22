@@ -1,0 +1,24 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcloudidentitygroup
+spec:
+  gcp:
+    groups:
+      - purpose: ManageGroupAndMemberships
+        permissions:
+          - cloudidentity.groups.create
+          - cloudidentity.groups.get
+          - cloudidentity.groups.update
+          - cloudidentity.groups.delete
+          - cloudidentity.groups.memberships.create
+          - cloudidentity.groups.memberships.get
+          - cloudidentity.groups.memberships.update
+          - cloudidentity.groups.memberships.delete
+        provenance: derived
+        notes: "Covers google_cloud_identity_group (Pulumi cloudidentity.Group) and one google_cloud_identity_group_membership (Pulumi cloudidentity.GroupMembership) per member: create on first apply, get on every refresh, update when the display name, description, or a membership's roles change in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). These are CLOUD IDENTITY permissions granted in the customer through the Groups Admin (or Groups Editor) admin role in the Google Admin console, or -- for organizations -- roles/cloudidentity.groupsAdmin, never a project role."

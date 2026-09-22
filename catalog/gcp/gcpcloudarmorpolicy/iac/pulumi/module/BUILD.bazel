@@ -6,6 +6,7 @@ go_library(
         "locals.go",
         "main.go",
         "outputs.go",
+        "region_security_policy.go",
         "security_policy.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/iac/pulumi/module",

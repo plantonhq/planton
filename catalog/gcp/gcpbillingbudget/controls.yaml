@@ -1,0 +1,81 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpbillingbudget
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A budget stores no customer data -- it is a threshold configuration Google evaluates against billing data it already holds.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Budget notifications reach Pub/Sub and Cloud Monitoring over Google's internal, TLS-protected service paths; the budget itself serves no traffic.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A budget has no endpoint; it is readable only through the Cloud Billing API and console by principals with billing permissions on the account.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: The budget admits no traffic; there is no ingress to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served; there is no edge.
+    - control_id: rbac
+      status: configurable
+      field_path: ownership_scope
+      evidence:
+        type: spec_default
+        reference: Unset lets Google apply its default (all principals with billing budget permissions on the account read the budget); BILLING_ACCOUNT narrows full access to billing account administrators. Creating or changing a budget requires roles/billing.costsManager or billing.admin on the account -- a project role does not reach it.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The budget holds no credentials; the Billing service agent publishes notifications under Google's own identity.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Budget create, patch, and delete land in Cloud Audit Logs (Admin Activity) on the billing account unconditionally; Admin Activity logging cannot be disabled.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: notifications
+      evidence:
+        type: spec_default
+        reference: Unset means threshold alerts go to the billing account's administrators by email only. notifications.monitoring_notification_channels routes them to Cloud Monitoring channels (email, SMS, Slack, PagerDuty) and notifications.pubsub_topic publishes the full budget state to a Pub/Sub topic on every update, the hook for automated response; disable_default_iam_recipients keeps the administrators out of a team's own alerts.
+      notes: "threshold_rules with spend_basis FORECASTED_SPEND alert before the money is spent; the 01 preset pairs a forecasted 100% with an actual 90% and routes both to a team channel."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A budget is a global object of the billing account with no zonal or regional component; Google evaluates it as part of the billing pipeline.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE -- the budget and its alerts are removed and the spend it watched goes unwatched; PREVENT makes destroy fail outright; ABANDON unmanages the budget while it keeps alerting.
+      notes: PREVENT is the guard for a production guardrail; a budget outlives the projects it filters on, so an environment teardown should remove it deliberately.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; Google's billing pipeline evaluates budgets.

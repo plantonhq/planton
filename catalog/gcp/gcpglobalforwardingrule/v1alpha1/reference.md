@@ -36,7 +36,9 @@ Beyond load balancing, the forwarding rule is also the entry point for
 Private Service Connect: with the load-balancing scheme set to NONE it can
 forward a VPC's traffic privately to Google APIs (a global rule with target
 "all-apis" / "vpc-sc") or to a producer's published service attachment (a
-regional rule whose target is the attachment).
+regional rule whose target is a GcpPscServiceAttachment's self_link -- the
+consumer half of PSC; the attachment is the producer half, and it in turn
+publishes an INTERNAL rule of this kind).
 
 target, labels, and allow_global_access update in place; everything else —
 name, IP, protocol, ports, scheme, network wiring, region — is immutable
@@ -644,6 +646,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpNetworkFirewallPolicy | `spec.rules[].targetForwardingRules` | `status.outputs.self_link` |
+| GcpPscServiceAttachment | `spec.targetService` | `status.outputs.self_link` |
 
 ## See Also
 

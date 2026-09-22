@@ -1,0 +1,28 @@
+# GcpBillingBudget scenario: the smallest budget that alerts -- a fixed
+# amount over the whole billing account, reset monthly, one threshold. The
+# billing account is owner-arranged (PLANTON_E2E_GCP_BILLING_ACCOUNT_ID);
+# the lane skips honestly when the token is unset.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBillingBudget
+metadata:
+  name: planton-oss-e2e-gcpbdgt-minimal
+  id: planton-oss-e2e-gcpbdgt-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbillingbudget
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_BILLING_ACCOUNT_ID
+  tags:
+    - planton-e2e
+spec:
+  billingAccount: ${E2E_ENV:PLANTON_E2E_GCP_BILLING_ACCOUNT_ID}
+  displayName: planton-e2e-${E2E_RUN_ID}
+  amount:
+    specifiedAmount:
+      units: 10
+  thresholdRules:
+    - thresholdPercent: 0.9
+  deletionPolicy: DELETE

@@ -5415,6 +5415,26 @@ enum CloudResourceKind {
     prerequisites: [GcpTagValue]
     service_group: gcp_management_governance
   }];
+  // A spending guardrail on a Cloud Billing account: amount, period,
+  // filters, thresholds, and where the alerts go. Lives on the billing
+  // account, so no project prerequisite; the proof lane needs a billing
+  // account the harness identity can administer.
+  GcpBillingBudget = 3175 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbdgt"
+    service_group: gcp_management_governance
+  }];
+  // A Google Group in Cloud Identity or Workspace with its memberships
+  // folded in -- the unit IAM bindings should name. Lives under a Cloud
+  // Identity customer, beside the service accounts and workload identity
+  // pools in the identity service group.
+  GcpCloudIdentityGroup = 3176 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcigrp"
+    service_group: gcp_identity_access
+  }];
   GcpApiKey = 3177 [(kind_meta) = {
     provider: gcp
     version: "v1alpha1"
@@ -5488,6 +5508,31 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "gcpvpncn"
     prerequisites: [GcpHaVpnGateway]
+    service_group: gcp_networking
+  }];
+  // The producer half of Private Service Connect: publishes an internal
+  // load balancer's regional forwarding rule through NAT subnets so
+  // consumers in other VPCs reach it over a PSC endpoint (a regional
+  // GcpGlobalForwardingRule with an empty scheme targeting this
+  // attachment). The proof chain deploys the internal passthrough load
+  // balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+  GcpPscServiceAttachment = 3186 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppsca"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_networking
+  }];
+  // Zonal (VM, hybrid, internet) and global (internet) network endpoint
+  // groups behind a `zone` selector; serverless, PSC, and regional
+  // internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof
+  // attaches a GcpComputeInstance fixture as an endpoint on the
+  // prerequisite network.
+  GcpNetworkEndpointGroup = 3187 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpneg"
+    prerequisites: [GcpVpcNetwork]
     service_group: gcp_networking
   }];
 

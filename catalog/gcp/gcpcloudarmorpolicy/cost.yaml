@@ -29,8 +29,21 @@ spec:
       sku_meter: Cloud Armor Enterprise enrollment
       pricing_unit: months
       impact: PREMIUM rule visibility is a Cloud Armor Enterprise capability -- it requires the project's paid Enterprise enrollment (subscription plus per-GiB data processing fees), an account-level commitment outside this manifest. STANDARD visibility works under the pay-as-you-go tier.
+    - field_path: region
+      sku_meter: security policy months
+      pricing_unit: policy-months
+      impact: A regional policy (region set) bills the same flat monthly policy and rule fees as a global one under Cloud Armor Standard; its request inspections follow the regional load balancer's traffic instead of the global edge's.
+    - field_path: ddos_protection_config.ddos_protection
+      sku_meter: Cloud Armor Enterprise enrollment
+      pricing_unit: months
+      impact: STANDARD network DDoS protection is included with the passthrough load balancer at no charge. ADVANCED and ADVANCED_PREVIEW are Cloud Armor Enterprise capabilities -- the project's paid Enterprise enrollment (subscription plus per-GiB data processing fees) is what makes them take effect; the API accepts the value either way.
+    - field_path: network_edge_security_service
+      sku_meter: Cloud Armor Enterprise enrollment
+      pricing_unit: months
+      impact: The network edge security service itself carries no meter; it enrolls the region in advanced network DDoS protection, which bills through the project's Enterprise subscription.
   free_tier: ""
   estimate_exclusions:
+    - advanced network DDoS mitigation -- Cloud Armor Enterprise data processing bills per GiB of mitigated traffic under the subscription, following attacks no manifest can know
     - request inspections -- every request evaluated by the policy bills per million under Cloud Armor Standard and follows traffic no manifest can know
     - reCAPTCHA evaluations -- rules that redirect to or evaluate reCAPTCHA bill under the separate reCAPTCHA pricing model
   notes: "Pricing tier is a PROJECT property invisible to this manifest: a project enrolled in Cloud Armor Enterprise pays a subscription and per-GiB data processing fees while its policies, rules, and requests bill $0.00. This profile prices Cloud Armor Standard, the default for unenrolled projects. GCP refuses to delete a policy while a backend service still attaches it."

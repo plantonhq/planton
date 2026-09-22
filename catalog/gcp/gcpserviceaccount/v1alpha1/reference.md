@@ -319,6 +319,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudFunction | `spec.buildConfig.serviceAccount` | `status.outputs.name` |
 | GcpCloudFunction | `spec.serviceConfig.serviceAccountEmail` | `status.outputs.email` |
 | GcpCloudFunction | `spec.trigger.eventTrigger.serviceAccountEmail` | `status.outputs.email` |
+| GcpCloudIdentityGroup | `spec.memberships[].member` | `status.outputs.email` |
 | GcpCloudRun | `spec.serviceAccount` | `status.outputs.email` |
 | GcpCloudRunJob | `spec.template.serviceAccount` | `status.outputs.email` |
 | GcpCloudSchedulerJob | `spec.httpTarget.oauthToken.serviceAccountEmail` | `status.outputs.email` |

@@ -5,7 +5,9 @@ package dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1;
 // Outputs produced after provisioning a GCP Cloud Armor security policy.
 message GcpCloudArmorPolicyStackOutputs {
   // Fully qualified resource ID of the security policy.
-  // Format: projects/{project}/global/securityPolicies/{name}
+  // Format: projects/{project}/global/securityPolicies/{name} for a global
+  // policy, projects/{project}/regions/{region}/securityPolicies/{name}
+  // for a regional one.
   string policy_id = 1;
 
   // Name of the security policy as it exists in GCP.
@@ -13,11 +15,22 @@ message GcpCloudArmorPolicyStackOutputs {
 
   // Self-link URI of the security policy. This is the value used when
   // attaching the policy to backend services, load balancers, or CDN
-  // configurations.
+  // configurations; a regional link carries regions/{region} where the
+  // global one says global, and a backend service accepts only a policy
+  // of its own scope.
   // Format: https://www.googleapis.com/compute/v1/projects/{project}/global/securityPolicies/{name}
   string policy_self_link = 3;
 
   // Server-computed fingerprint of the policy. Used for optimistic
   // concurrency control when updating the policy outside of IaC.
   string fingerprint = 4;
+
+  // Region of a regional security policy; empty for a global one, so a
+  // consumer can tell the scope from the outputs alone.
+  string region = 5;
+
+  // Self-link of the network edge security service created when the spec
+  // declares network_edge_security_service (the region's enrollment in
+  // advanced network DDoS protection); empty otherwise.
+  string network_edge_security_service_self_link = 6;
 }

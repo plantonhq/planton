@@ -1,0 +1,72 @@
+# GcpCloudArmorPolicy scenario exercising the REGIONAL resource family for
+# an HTTP policy: the same allowlist shape as the reference manifest plus
+# `region`, so the proof lane confirms the regional collection deploys,
+# re-plans clean, and destroys on both engines. A rule at priority 0 (the
+# highest Google accepts) proves presence-based priority end to end; the
+# throttle proves a regional rate limit exceeding to deny(STATUS).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudArmorPolicy
+metadata:
+  name: planton-oss-e2e-cap-regional-waf
+  id: planton-oss-e2e-cap-regional-waf
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudarmorpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  policyName: planton-oss-e2e-cap-rwaf-${E2E_RUN_ID}
+  description: Ephemeral regional WAF policy for Planton OSS E2E
+  region: us-central1
+  type: CLOUD_ARMOR
+
+  # The two advanced options the regional collection carries (no
+  # request_body_inspection_size here -- it is global-only).
+  advancedOptionsConfig:
+    jsonParsing: STANDARD
+    logLevel: VERBOSE
+
+  rules:
+    - action: allow
+      priority: 0
+      description: Break-glass range at the highest priority
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - 198.51.100.0/24
+    - action: allow
+      priority: 1000
+      description: Allow RFC1918 ranges
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+    - action: throttle
+      priority: 2000
+      description: Per-IP throttle
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"
+      rateLimitOptions:
+        conformAction: allow
+        exceedAction: deny(429)
+        enforceOnKey: IP
+        rateLimitThreshold:
+          count: 100
+          intervalSec: 60
+    - action: deny(403)
+      priority: 2147483647
+      description: Default deny
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"
+
+  # Ephemeral test fixture: fully delete on destroy.
+  deletionPolicy: DELETE

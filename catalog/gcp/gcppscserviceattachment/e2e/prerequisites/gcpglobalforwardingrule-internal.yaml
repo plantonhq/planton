@@ -1,0 +1,40 @@
+# Extra-instance GcpGlobalForwardingRule fixture: the producer's internal
+# passthrough Network Load Balancer (scheme INTERNAL, regional arm) whose
+# self link the service attachment publishes. Draws its VIP from the private
+# subnet fixture and routes to the INTERNAL backend service fixture.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGlobalForwardingRule
+metadata:
+  name: planton-oss-e2e-gcppsca-ilb
+  id: planton-oss-e2e-gcppsca-ilb
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcppscserviceattachment
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  description: Ephemeral internal passthrough NLB for the gcppscserviceattachment E2E chain; safe to delete
+  region: us-central1
+  backendService:
+    valueFrom:
+      kind: GcpBackendService
+      name: planton-oss-e2e-gcppsca-rbs
+      fieldPath: status.outputs.self_link
+  loadBalancingScheme: INTERNAL
+  ipProtocol: TCP
+  ports: ["5432"]
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcppsca-subnet
+      fieldPath: status.outputs.subnetwork_self_link
+  deletionPolicy: DELETE

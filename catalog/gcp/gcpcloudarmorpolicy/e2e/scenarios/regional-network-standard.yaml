@@ -1,0 +1,60 @@
+# GcpCloudArmorPolicy scenario exercising the CLOUD_ARMOR_NETWORK type:
+# a regional packet-level policy with STANDARD network DDoS protection (no
+# subscription needed), one user-defined field, a preview network-match
+# rule keyed on that field and a source range, and the default rule written
+# as an empty network match. ADVANCED protection and the network edge
+# security service stay offline-only: they need a Cloud Armor Enterprise
+# subscription the harness project does not hold.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudArmorPolicy
+metadata:
+  name: planton-oss-e2e-cap-regional-network
+  id: planton-oss-e2e-cap-regional-network
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcloudarmorpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  policyName: planton-oss-e2e-cap-rnet-${E2E_RUN_ID}
+  description: Ephemeral regional network policy for Planton OSS E2E
+  region: us-central1
+  type: CLOUD_ARMOR_NETWORK
+
+  ddosProtectionConfig:
+    ddosProtection: STANDARD
+
+  userDefinedFields:
+    - name: SIG1_AT_0
+      base: TCP
+      offset: 8
+      size: 2
+      mask: "0x8F00"
+
+  rules:
+    - action: allow
+      priority: 100
+      description: Signed partner flows (preview)
+      preview: true
+      networkMatch:
+        srcIpRanges:
+          - 10.10.0.0/16
+        ipProtocols:
+          - tcp
+        destPorts:
+          - "443"
+        userDefinedFields:
+          - name: SIG1_AT_0
+            values:
+              - "0x8F00"
+    - action: allow
+      priority: 2147483647
+      description: Default rule -- every packet
+      networkMatch: {}
+
+  # Ephemeral test fixture: fully delete on destroy.
+  deletionPolicy: DELETE

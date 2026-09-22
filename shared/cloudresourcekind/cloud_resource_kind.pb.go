@@ -1919,7 +1919,17 @@ const (
 	CloudResourceKind_GcpTagKey     CloudResourceKind = 3172
 	CloudResourceKind_GcpTagValue   CloudResourceKind = 3173
 	CloudResourceKind_GcpTagBinding CloudResourceKind = 3174
-	CloudResourceKind_GcpApiKey     CloudResourceKind = 3177
+	// A spending guardrail on a Cloud Billing account: amount, period,
+	// filters, thresholds, and where the alerts go. Lives on the billing
+	// account, so no project prerequisite; the proof lane needs a billing
+	// account the harness identity can administer.
+	CloudResourceKind_GcpBillingBudget CloudResourceKind = 3175
+	// A Google Group in Cloud Identity or Workspace with its memberships
+	// folded in -- the unit IAM bindings should name. Lives under a Cloud
+	// Identity customer, beside the service accounts and workload identity
+	// pools in the identity service group.
+	CloudResourceKind_GcpCloudIdentityGroup CloudResourceKind = 3176
+	CloudResourceKind_GcpApiKey             CloudResourceKind = 3177
 	// A custom constraint is a DEFINITION the organization owns; the
 	// GcpOrgPolicy kinds that enforce it reference it by name, the way IAM
 	// bindings reference a custom role.
@@ -1943,6 +1953,19 @@ const (
 	CloudResourceKind_GcpHierarchicalFirewallPolicy CloudResourceKind = 3184
 	CloudResourceKind_GcpNetworkFirewallPolicy      CloudResourceKind = 3185
 	CloudResourceKind_GcpHaVpnConnection            CloudResourceKind = 3188
+	// The producer half of Private Service Connect: publishes an internal
+	// load balancer's regional forwarding rule through NAT subnets so
+	// consumers in other VPCs reach it over a PSC endpoint (a regional
+	// GcpGlobalForwardingRule with an empty scheme targeting this
+	// attachment). The proof chain deploys the internal passthrough load
+	// balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+	CloudResourceKind_GcpPscServiceAttachment CloudResourceKind = 3186
+	// Zonal (VM, hybrid, internet) and global (internet) network endpoint
+	// groups behind a `zone` selector; serverless, PSC, and regional
+	// internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof
+	// attaches a GcpComputeInstance fixture as an endpoint on the
+	// prerequisite network.
+	CloudResourceKind_GcpNetworkEndpointGroup CloudResourceKind = 3187
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -2991,6 +3014,8 @@ var (
 		3172: "GcpTagKey",
 		3173: "GcpTagValue",
 		3174: "GcpTagBinding",
+		3175: "GcpBillingBudget",
+		3176: "GcpCloudIdentityGroup",
 		3177: "GcpApiKey",
 		3179: "GcpOrgPolicyCustomConstraint",
 		3180: "GcpSharedVpcHost",
@@ -3000,6 +3025,8 @@ var (
 		3184: "GcpHierarchicalFirewallPolicy",
 		3185: "GcpNetworkFirewallPolicy",
 		3188: "GcpHaVpnConnection",
+		3186: "GcpPscServiceAttachment",
+		3187: "GcpNetworkEndpointGroup",
 		3250: "GcpFirebaseProject",
 		3251: "GcpFirebaseAndroidApp",
 		3252: "GcpFirebaseAppleApp",
@@ -3733,6 +3760,8 @@ var (
 		"GcpTagKey":                                      3172,
 		"GcpTagValue":                                    3173,
 		"GcpTagBinding":                                  3174,
+		"GcpBillingBudget":                               3175,
+		"GcpCloudIdentityGroup":                          3176,
 		"GcpApiKey":                                      3177,
 		"GcpOrgPolicyCustomConstraint":                   3179,
 		"GcpSharedVpcHost":                               3180,
@@ -3742,6 +3771,8 @@ var (
 		"GcpHierarchicalFirewallPolicy":                  3184,
 		"GcpNetworkFirewallPolicy":                       3185,
 		"GcpHaVpnConnection":                             3188,
+		"GcpPscServiceAttachment":                        3186,
+		"GcpNetworkEndpointGroup":                        3187,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4400,7 +4431,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\x8d\xe4\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xfc\xe5\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4950,7 +4981,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\fGcpOrgPolicy\x10\xe3\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcporgpP\xba\x02\x12,\n" +
 	"\tGcpTagKey\x10\xe4\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptagkP\xba\x02\x122\n" +
 	"\vGcpTagValue\x10\xe5\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagv:\x02\xe4\x18P\xba\x02\x124\n" +
-	"\rGcpTagBinding\x10\xe6\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagb:\x02\xe5\x18P\xba\x02\x12,\n" +
+	"\rGcpTagBinding\x10\xe6\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcptagb:\x02\xe5\x18P\xba\x02\x123\n" +
+	"\x10GcpBillingBudget\x10\xe7\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbdgtP\xba\x02\x129\n" +
+	"\x15GcpCloudIdentityGroup\x10\xe8\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpcigrpP\xb4\x02\x12,\n" +
 	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x12>\n" +
 	"\x1cGcpOrgPolicyCustomConstraint\x10\xeb\x18\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpoccP\xba\x02\x123\n" +
 	"\x10GcpSharedVpcHost\x10\xec\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpsvphP\xb0\x02\x12A\n" +
@@ -4959,7 +4992,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x0fGcpHaVpnGateway\x10\xef\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpngw:\x02\xc2\x17P\xb0\x02\x12@\n" +
 	"\x1dGcpHierarchicalFirewallPolicy\x10\xf0\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcphfwpP\xb0\x02\x12?\n" +
 	"\x18GcpNetworkFirewallPolicy\x10\xf1\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpnfwp:\x02\xc2\x17P\xb0\x02\x12:\n" +
-	"\x12GcpHaVpnConnection\x10\xf4\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpncn:\x02\xef\x18P\xb0\x02\x128\n" +
+	"\x12GcpHaVpnConnection\x10\xf4\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpncn:\x02\xef\x18P\xb0\x02\x12>\n" +
+	"\x17GcpPscServiceAttachment\x10\xf2\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppsca:\x02\xc2\x17P\xb0\x02\x12=\n" +
+	"\x17GcpNetworkEndpointGroup\x10\xf3\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpneg:\x02\xc2\x17P\xb0\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

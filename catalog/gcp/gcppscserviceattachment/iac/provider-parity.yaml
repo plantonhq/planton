@@ -1,0 +1,37 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_compute_service_attachment:
+    mappings:
+      # Renames: the spec says what each field IS, where the provider
+      # inherits terser API names.
+      - spec: spec.attachment_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+
+      # The accept list names a consumer by exactly one of a project, a
+      # network, or an endpoint; the spec spells the project and network
+      # as references to the catalog kinds they are.
+      - spec: spec.consumer_accept_lists.project_id
+        arg: consumer_accept_lists.project_id_or_num
+      - spec: spec.consumer_accept_lists.network
+        arg: consumer_accept_lists.network_url
+    exclusions:
+      # The provider's twin for its own Optional+Computed integer: the spec
+      # carries propagated_connection_limit as a tri-state field, and both
+      # modules derive this flag from it (true exactly when the spec sets
+      # 0), so it is never a field of its own -- the GcpGcsBucket
+      # send_*_if_zero idiom.
+      - arg: send_propagated_connection_limit_if_zero
+        reason: >-
+          derived from the tri-state spec.propagated_connection_limit --
+          both modules send true exactly when the spec sets 0, so the
+          provider transmits the zero instead of falling back to the API
+          default

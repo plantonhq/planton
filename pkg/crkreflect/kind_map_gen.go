@@ -516,6 +516,7 @@ import (
 	gcpbigquerytablev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerytable/v1alpha1"
 	gcpbigtableinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtableinstance/v1alpha1"
 	gcpbigtabletablev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtabletable/v1alpha1"
+	gcpbillingbudgetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbillingbudget/v1alpha1"
 	gcpcertificatemapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertificatemap/v1alpha1"
 	gcpcertmanagercertv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagercert/v1alpha1"
 	gcpcertmanagerdnsauthorizationv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagerdnsauthorization/v1alpha1"
@@ -524,6 +525,7 @@ import (
 	gcpcloudcomposeruserworkloadsconfigmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadsconfigmap/v1alpha1"
 	gcpcloudcomposeruserworkloadssecretv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposeruserworkloadssecret/v1alpha1"
 	gcpcloudfunctionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudfunction/v1alpha1"
+	gcpcloudidentitygroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudidentitygroup/v1alpha1"
 	gcpcloudrunv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrun/v1alpha1"
 	gcpcloudrundomainmappingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrundomainmapping/v1alpha1"
 	gcpcloudrunjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunjob/v1alpha1"
@@ -579,12 +581,14 @@ import (
 	gcpmonitoringnotificationchannelv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1"
 	gcpmonitoringslov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringslo/v1alpha1"
 	gcpmonitoringuptimecheckv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringuptimecheck/v1alpha1"
+	gcpnetworkendpointgroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpnetworkendpointgroup/v1alpha1"
 	gcpnetworkfirewallpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpnetworkfirewallpolicy/v1alpha1"
 	gcporgpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicy/v1alpha1"
 	gcporgpolicycustomconstraintv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicycustomconstraint/v1alpha1"
 	gcpplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpplantonrunner/v1alpha1"
 	gcpprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpproject/v1alpha1"
 	gcpprojectiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprojectiammember/v1alpha1"
+	gcppscserviceattachmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppscserviceattachment/v1alpha1"
 	gcppubsubschemav1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubschema/v1alpha1"
 	gcppubsubsubscriptionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubsubscription/v1alpha1"
 	gcppubsubtopicv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubtopic/v1alpha1"
@@ -1288,6 +1292,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpBigQueryTable:                       &gcpbigquerytablev1alpha1.GcpBigQueryTable{},
 	cloudresourcekind.CloudResourceKind_GcpBigtableInstance:                    &gcpbigtableinstancev1alpha1.GcpBigtableInstance{},
 	cloudresourcekind.CloudResourceKind_GcpBigtableTable:                       &gcpbigtabletablev1alpha1.GcpBigtableTable{},
+	cloudresourcekind.CloudResourceKind_GcpBillingBudget:                       &gcpbillingbudgetv1alpha1.GcpBillingBudget{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerCert:                     &gcpcertmanagercertv1alpha1.GcpCertManagerCert{},
 	cloudresourcekind.CloudResourceKind_GcpCertManagerDnsAuthorization:         &gcpcertmanagerdnsauthorizationv1alpha1.GcpCertManagerDnsAuthorization{},
 	cloudresourcekind.CloudResourceKind_GcpCertificateMap:                      &gcpcertificatemapv1alpha1.GcpCertificateMap{},
@@ -1296,6 +1301,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsConfigMap: &gcpcloudcomposeruserworkloadsconfigmapv1alpha1.GcpCloudComposerUserWorkloadsConfigMap{},
 	cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsSecret:    &gcpcloudcomposeruserworkloadssecretv1alpha1.GcpCloudComposerUserWorkloadsSecret{},
 	cloudresourcekind.CloudResourceKind_GcpCloudFunction:                       &gcpcloudfunctionv1alpha1.GcpCloudFunction{},
+	cloudresourcekind.CloudResourceKind_GcpCloudIdentityGroup:                  &gcpcloudidentitygroupv1alpha1.GcpCloudIdentityGroup{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRun:                            &gcpcloudrunv1alpha1.GcpCloudRun{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRunDomainMapping:               &gcpcloudrundomainmappingv1alpha1.GcpCloudRunDomainMapping{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRunJob:                         &gcpcloudrunjobv1alpha1.GcpCloudRunJob{},
@@ -1351,12 +1357,14 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpMonitoringNotificationChannel:       &gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannel{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringSlo:                       &gcpmonitoringslov1alpha1.GcpMonitoringSlo{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringUptimeCheck:               &gcpmonitoringuptimecheckv1alpha1.GcpMonitoringUptimeCheck{},
+	cloudresourcekind.CloudResourceKind_GcpNetworkEndpointGroup:                &gcpnetworkendpointgroupv1alpha1.GcpNetworkEndpointGroup{},
 	cloudresourcekind.CloudResourceKind_GcpNetworkFirewallPolicy:               &gcpnetworkfirewallpolicyv1alpha1.GcpNetworkFirewallPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpOrgPolicy:                           &gcporgpolicyv1alpha1.GcpOrgPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint:           &gcporgpolicycustomconstraintv1alpha1.GcpOrgPolicyCustomConstraint{},
 	cloudresourcekind.CloudResourceKind_GcpPlantonRunner:                       &gcpplantonrunnerv1alpha1.GcpPlantonRunner{},
 	cloudresourcekind.CloudResourceKind_GcpProject:                             &gcpprojectv1alpha1.GcpProject{},
 	cloudresourcekind.CloudResourceKind_GcpProjectIamMember:                    &gcpprojectiammemberv1alpha1.GcpProjectIamMember{},
+	cloudresourcekind.CloudResourceKind_GcpPscServiceAttachment:                &gcppscserviceattachmentv1alpha1.GcpPscServiceAttachment{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubSchema:                        &gcppubsubschemav1alpha1.GcpPubSubSchema{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubSubscription:                  &gcppubsubsubscriptionv1alpha1.GcpPubSubSubscription{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubTopic:                         &gcppubsubtopicv1alpha1.GcpPubSubTopic{},

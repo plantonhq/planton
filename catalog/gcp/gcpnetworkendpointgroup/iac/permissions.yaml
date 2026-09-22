@@ -1,0 +1,33 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpnetworkendpointgroup
+spec:
+  gcp:
+    groups:
+      - purpose: ManageZonalNetworkEndpointGroup
+        permissions:
+          - compute.networkEndpointGroups.create
+          - compute.networkEndpointGroups.get
+          - compute.networkEndpointGroups.delete
+          - compute.networkEndpointGroups.attachNetworkEndpoints
+          - compute.networkEndpointGroups.detachNetworkEndpoints
+          - compute.instances.use
+          - compute.networks.get
+          - compute.subnetworks.get
+        provenance: derived
+        notes: "Covers google_compute_network_endpoint_group (Pulumi compute.NetworkEndpointGroup) and the bulk google_compute_network_endpoints (Pulumi compute.NetworkEndpointList), built when spec.zone is set. create on first apply, get on every refresh, attach/detach when the endpoint list changes in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API); every other group argument is immutable, so a change is a delete plus create. Naming a VM as an endpoint requires compute.instances.use on that VM; Google validates the network and subnetwork at create. roles/compute.networkAdmin contains all of them except instances.use, which roles/compute.instanceAdmin.v1 carries."
+      - purpose: ManageGlobalNetworkEndpointGroup
+        permissions:
+          - compute.globalNetworkEndpointGroups.create
+          - compute.globalNetworkEndpointGroups.get
+          - compute.globalNetworkEndpointGroups.delete
+          - compute.globalNetworkEndpointGroups.attachNetworkEndpoints
+          - compute.globalNetworkEndpointGroups.detachNetworkEndpoints
+        provenance: derived
+        notes: "Covers google_compute_global_network_endpoint_group (Pulumi compute.GlobalNetworkEndpointGroup) and its per-member google_compute_global_network_endpoint (Pulumi compute.GlobalNetworkEndpoint), built when spec.zone is empty. Every argument is immutable, so a changed endpoint is detached and re-attached. roles/compute.networkAdmin contains all five."

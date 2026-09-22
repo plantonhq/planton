@@ -1,0 +1,38 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudIdentityGroup
+metadata:
+  name: platform-admins
+spec:
+  # The group's email is its IAM identity (group:platform-admins@example.com)
+  # -- pick a stable role name; it is immutable.
+  groupEmail: platform-admins@example.com
+  customerId: customers/C01abc2de
+  displayName: Platform Admins
+  description: Owners of the platform projects; bind IAM roles to this group, never to people
+  # An access-control group: the security label cannot be removed later.
+  security: true
+  memberships:
+    - member:
+        value: alice@example.com
+      roles:
+        - name: MEMBER
+        - name: OWNER
+    - member:
+        value: bob@example.com
+      roles:
+        - name: MEMBER
+        - name: MANAGER
+    # A workload identity as a member, by reference.
+    - member:
+        valueFrom:
+          kind: GcpServiceAccount
+          name: platform-deployer
+          fieldPath: status.outputs.email
+    # A contractor whose access ends on a date.
+    - member:
+        value: contractor@example.com
+      roles:
+        - name: MEMBER
+          expireTime: "2027-03-31T00:00:00Z"
+  # IAM bindings depend on this group: destroy must fail.
+  deletionPolicy: PREVENT

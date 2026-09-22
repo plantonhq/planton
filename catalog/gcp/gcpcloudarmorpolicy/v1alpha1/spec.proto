@@ -339,6 +339,72 @@ message GcpCloudArmorPreconfiguredWafConfig {
   repeated GcpCloudArmorWafExclusion exclusions = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
+// GcpCloudArmorNetworkMatchUserDefinedField names one of the policy's
+// user_defined_fields and lists the packet values that match it. A rule
+// that lists a field the policy never defined is rejected pre-deploy.
+message GcpCloudArmorNetworkMatchUserDefinedField {
+  // Name of the user-defined field, exactly as given in the policy's
+  // user_defined_fields definition.
+  string name = 1 [(buf.validate.field).required = true];
+
+  // Matching values of the field. Each element is a 32-bit unsigned decimal
+  // or hexadecimal (0x-prefixed) number, e.g. "64" or "0x8F00", or a range
+  // such as "0x400-0x7ff". Any listed value matches.
+  repeated string values = 2 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpCloudArmorNetworkMatch is the packet-level (L3/L4) match condition a
+// CLOUD_ARMOR_NETWORK policy's rules use instead of the HTTP-level match.
+// It exists only on a REGIONAL policy of type CLOUD_ARMOR_NETWORK -- the
+// policies that filter packets in front of passthrough Network Load
+// Balancers, protocol forwarding, and VMs with public IPs.
+//
+// Every field listed must match for the packet to match (AND across
+// fields); within a field any listed value matches (OR). A field left
+// empty matches any value and need not be present in the packet. A
+// user-defined field is present only when its base header is found and
+// the whole field is in bounds. "*" matches all for string fields.
+//
+// Example -- packets from two source ranges whose IPv4 fragment offset
+// (a user-defined field named ipv4_fragment_offset) is between 1 and
+// 0x1fff: src_ip_ranges ["192.0.2.0/24", "198.51.100.0/24"] and
+// user_defined_fields [{name: ipv4_fragment_offset, values: ["1-0x1fff"]}].
+message GcpCloudArmorNetworkMatch {
+  // Source IPv4/IPv6 addresses or CIDR prefixes, in standard text format.
+  repeated string src_ip_ranges = 1;
+
+  // Destination IPv4/IPv6 addresses or CIDR prefixes, in standard text
+  // format.
+  repeated string dest_ip_ranges = 2;
+
+  // IPv4 protocol / IPv6 next header (after extension headers). Each
+  // element is an 8-bit unsigned decimal number (e.g. "6"), a range (e.g.
+  // "253-254"), or one of the names "tcp", "udp", "icmp", "esp", "ah",
+  // "ipip", "sctp".
+  repeated string ip_protocols = 3;
+
+  // Source port numbers for TCP/UDP/SCTP. Each element is a 16-bit unsigned
+  // decimal number (e.g. "80") or a range (e.g. "0-1023").
+  repeated string src_ports = 4;
+
+  // Destination port numbers for TCP/UDP/SCTP. Each element is a 16-bit
+  // unsigned decimal number (e.g. "80") or a range (e.g. "0-1023").
+  repeated string dest_ports = 5;
+
+  // Two-letter ISO 3166-1 alpha-2 country codes associated with the
+  // source IP address (e.g. "US", "DE").
+  repeated string src_region_codes = 6;
+
+  // BGP Autonomous System Numbers associated with the source IP address
+  // (e.g. 15169 for Google). 32-bit ASNs exceed the signed 32-bit range,
+  // so the type is 64-bit.
+  repeated int64 src_asns = 7;
+
+  // Matches on the policy's user-defined packet fields, each naming a field
+  // from user_defined_fields and listing the values that match it.
+  repeated GcpCloudArmorNetworkMatchUserDefinedField user_defined_fields = 8;
+}
+
 // ──────────────────────────────────────────────────────────────
 // Rule definition
 // ──────────────────────────────────────────────────────────────
@@ -350,6 +416,11 @@ message GcpCloudArmorPreconfiguredWafConfig {
 // when a policy is created with NO rules, the API adds a default "allow
 // all" rule automatically; when rules ARE provided, the set must include
 // the priority-2147483647 default explicitly (enforced pre-deploy).
+//
+// A rule matches traffic through exactly one of two arms: match (HTTP
+// request attributes -- source IP ranges or a CEL expression; every
+// CLOUD_ARMOR and CLOUD_ARMOR_EDGE policy) or network_match (packet
+// headers; only a regional CLOUD_ARMOR_NETWORK policy).
 message GcpCloudArmorRule {
   option (buf.validate.message).cel = {
     id: "rate_limit_options_coherent"
@@ -363,12 +434,19 @@ message GcpCloudArmorRule {
     message: "redirect_options is required for the redirect action and must not be set otherwise"
   };
 
+  option (buf.validate.message).cel = {
+    id: "match_arm_exactly_one"
+    expression: "has(this.match) != has(this.network_match)"
+    message: "a rule matches through exactly one arm: match (HTTP request attributes) or network_match (packet headers, CLOUD_ARMOR_NETWORK policies only)"
+  };
+
   // Action to take when the rule matches.
   // - "allow": Permit the request
   // - "deny(403)": Block with 403 Forbidden
   // - "deny(404)": Block with 404 Not Found
   // - "deny(502)": Block with 502 Bad Gateway
-  // - "redirect": Redirect to a configured target (requires redirect_options)
+  // - "redirect": Redirect to a configured target (requires redirect_options;
+  //   GLOBAL CLOUD_ARMOR policies only -- rejected when region is set)
   // - "throttle": Rate-limit the traffic (requires rate_limit_options)
   // - "rate_based_ban": Rate-limit then ban (requires rate_limit_options)
   string action = 1 [
@@ -380,16 +458,28 @@ message GcpCloudArmorRule {
     }
   ];
 
-  // Rule priority. Lower values are evaluated first.
-  // Range: 0 to 2147483647. Each rule must have a unique priority.
-  // Priority 2147483647 is the default rule (match "*").
-  int32 priority = 2 [
+  // Rule priority. Lower values are evaluated first; 0 is the HIGHEST
+  // priority Google accepts and is a legal value. Range: 0 to 2147483647.
+  // Each rule must have a unique priority. Priority 2147483647 is the
+  // default rule (match "*"). Leave gaps (100, 200, ...) so a rule can be
+  // slotted in later without renumbering.
+  optional int32 priority = 2 [
     (buf.validate.field).required = true,
-    (buf.validate.field).int32.gte = 0
+    (buf.validate.field).int32 = {
+      gte: 0
+      lte: 2147483647
+    }
   ];
 
-  // Traffic-matching condition. Defines which requests this rule applies to.
-  GcpCloudArmorRuleMatch match = 3 [(buf.validate.field).required = true];
+  // HTTP-level traffic-matching condition (source IP ranges or a CEL
+  // expression over the request). Exactly one of match / network_match
+  // is set per rule.
+  GcpCloudArmorRuleMatch match = 3;
+
+  // Packet-level (L3/L4) match condition for a regional
+  // CLOUD_ARMOR_NETWORK policy. Exactly one of match / network_match is
+  // set per rule; rejected on any other policy type or scope.
+  GcpCloudArmorNetworkMatch network_match = 10;
 
   // Human-readable description of the rule (max 64 characters).
   string description = 4 [(buf.validate.field).string.max_len = 64];
@@ -402,11 +492,13 @@ message GcpCloudArmorRule {
   // "rate_based_ban".
   GcpCloudArmorRateLimitOptions rate_limit_options = 6;
 
-  // Redirect configuration. Required when action is "redirect".
+  // Redirect configuration. Required when action is "redirect". A
+  // global-policy lever: the regional collection has no redirect action.
   GcpCloudArmorRedirectConfig redirect_options = 7;
 
   // Custom headers to inject into matching requests before forwarding
-  // to the backend. Only supported for CLOUD_ARMOR type policies.
+  // to the backend. Only supported for GLOBAL CLOUD_ARMOR type policies
+  // (rejected when region is set).
   GcpCloudArmorHeaderAction header_action = 8;
 
   // Preconfigured WAF rule exclusions. Use this to carve out exceptions
@@ -590,6 +682,101 @@ message GcpCloudArmorRecaptchaOptionsConfig {
   string redirect_site_key = 1 [(buf.validate.field).required = true];
 }
 
+// GcpCloudArmorUserDefinedField defines a custom packet field a regional
+// CLOUD_ARMOR_NETWORK policy's rules can match on: up to 4 bytes read from
+// a fixed offset relative to the IPv4, IPv6, TCP, or UDP header, optionally
+// masked to select certain bits. Rules reference the field by name in
+// network_match.user_defined_fields.
+//
+// Example -- the two-byte TCP field at offset 8 masked to its top bits:
+// {name: SIG1_AT_0, base: TCP, offset: 8, size: 2, mask: "0x8F00"}.
+message GcpCloudArmorUserDefinedField {
+  // Name of this field. Must be unique within the policy; rules name it in
+  // network_match.user_defined_fields.
+  string name = 1;
+
+  // The header the offset is measured from:
+  // - IPV4: the beginning of the IPv4 header
+  // - IPV6: the beginning of the IPv6 header
+  // - TCP: the beginning of the TCP header, skipping any IPv4 options or
+  //   IPv6 extension headers; not present for non-first fragments
+  // - UDP: the beginning of the UDP header, likewise
+  string base = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "user_defined_field_base_valid"
+      expression: "this in ['IPV4', 'IPV6', 'TCP', 'UDP']"
+      message: "base must be one of: IPV4, IPV6, TCP, UDP"
+    }
+  ];
+
+  // Offset of the first byte of the field (in network byte order) relative
+  // to base. 0 is the first byte of the header and is a real position, so
+  // presence matters: unset lets Google apply its default.
+  optional int32 offset = 3 [(buf.validate.field).int32.gte = 0];
+
+  // Size of the field in bytes, 1 to 4.
+  optional int32 size = 4 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 4
+  }];
+
+  // Bitwise-AND mask applied to the field before matching, as a
+  // hexadecimal number starting with "0x" (e.g. "0x8F00"). The last byte
+  // of the field (network byte order) corresponds to the least significant
+  // byte of the mask.
+  string mask = 5 [(buf.validate.field).cel = {
+    id: "user_defined_field_mask_hex"
+    expression: "this == '' || this.matches('^0x[0-9a-fA-F]{1,8}$')"
+    message: "mask must be a 0x-prefixed hexadecimal number of up to 4 bytes, e.g. 0x8F00"
+  }];
+}
+
+// GcpCloudArmorDdosProtectionConfig turns on Google Cloud Armor network
+// DDoS protection for the passthrough Network Load Balancers, protocol
+// forwarding rules, and public-IP VMs in the policy's region. Only on a
+// REGIONAL policy of type CLOUD_ARMOR_NETWORK.
+message GcpCloudArmorDdosProtectionConfig {
+  // Protection level:
+  // - STANDARD: basic always-on protection, included with the load
+  //   balancer -- no subscription
+  // - ADVANCED: the additional network-layer protections of Cloud Armor
+  //   Enterprise (Managed Protection Plus); the project must be enrolled
+  // - ADVANCED_PREVIEW: ADVANCED in preview mode -- Google logs what it
+  //   would mitigate without mitigating; use it to observe before enforcing
+  // ADVANCED and ADVANCED_PREVIEW take effect only once the region is
+  // enrolled through network_edge_security_service.
+  string ddos_protection = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "ddos_protection_valid"
+      expression: "this in ['STANDARD', 'ADVANCED', 'ADVANCED_PREVIEW']"
+      message: "ddos_protection must be one of: STANDARD, ADVANCED, ADVANCED_PREVIEW"
+    }
+  ];
+}
+
+// GcpCloudArmorNetworkEdgeSecurityService enrolls the policy's region in
+// advanced network DDoS protection by attaching this policy to a network
+// edge security service -- Google's per-region, per-project enablement
+// object. Declaring the block creates the service alongside the policy;
+// omitting it leaves the region unenrolled. Google allows ONE per region
+// per project, so declare it on exactly one policy per region. Only
+// meaningful with ddos_protection_config on a regional CLOUD_ARMOR_NETWORK
+// policy; the kind's deletion_policy applies to it as well.
+message GcpCloudArmorNetworkEdgeSecurityService {
+  // Name of the service in GCP (RFC 1035). Defaults to the policy's name.
+  // Immutable.
+  string name = 1 [(buf.validate.field).cel = {
+    id: "valid_edge_service_name"
+    expression: "this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')"
+    message: "name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit"
+  }];
+
+  // Free-text description of the service.
+  string description = 2 [(buf.validate.field).string.max_len = 2048];
+}
+
 // ──────────────────────────────────────────────────────────────
 // Top-level spec
 // ──────────────────────────────────────────────────────────────
@@ -603,19 +790,39 @@ message GcpCloudArmorRecaptchaOptionsConfig {
 // Rules are evaluated from highest priority (lowest number) to lowest
 // priority (highest number). The first matching rule's action is applied.
 //
-// Three policy types are available:
+// One kind, two scopes. Leave region empty for a GLOBAL policy, the one
+// a global external Application Load Balancer's backend service or a
+// backend bucket attaches; set region for a REGIONAL policy, the one a
+// regional backend service (regional external or internal ALB, or a
+// passthrough Network Load Balancer) attaches. Scopes must match: a
+// regional backend service accepts only a regional policy. A policy
+// cannot move between scopes.
 //
-//   - **CLOUD_ARMOR** (default): Backend security policies for HTTP(S)
-//     load balancers. Full WAF, rate limiting, redirect, and header
-//     injection capabilities.
+// Policy types, and where each scope allows them:
 //
-//   - **CLOUD_ARMOR_EDGE**: Edge security policies for Cloud CDN and
-//     backend buckets. Limited to IP-based and geo-based rules.
+//   - **CLOUD_ARMOR** (default; both scopes): Backend security policies
+//     for HTTP(S) load balancers. Full WAF, rate limiting; on the global
+//     scope also redirect, header injection, reCAPTCHA, and Adaptive
+//     Protection.
 //
-//   - **CLOUD_ARMOR_INTERNAL_SERVICE**: Policies for internal Traffic
-//     Director services. Limited feature set.
+//   - **CLOUD_ARMOR_EDGE** (both scopes): Edge security policies for Cloud
+//     CDN and backend buckets. Limited to IP-based and geo-based rules.
+//
+//   - **CLOUD_ARMOR_INTERNAL_SERVICE** (global only): Policies for internal
+//     Traffic Director services. Limited feature set.
+//
+//   - **CLOUD_ARMOR_NETWORK** (regional only): packet-level policies for
+//     passthrough Network Load Balancers, protocol forwarding, and VMs with
+//     public IPs -- network DDoS protection (ddos_protection_config),
+//     custom packet fields (user_defined_fields), and L3/L4 rules
+//     (rules[].network_match).
 //
 // The policy type is immutable after creation (ForceNew).
+//
+// The regional collection carries no labels, Adaptive Protection,
+// reCAPTCHA options, request-body inspection size, redirect action,
+// header injection, or reCAPTCHA token options; each is rejected when
+// region is set so a manifest fails before the API sees it.
 //
 // The default rule contract: every Cloud Armor policy carries a default
 // rule at priority 2147483647. Creating a policy with NO rules lets the
@@ -633,6 +840,106 @@ message GcpCloudArmorPolicySpec {
     id: "rule_priorities_unique"
     expression: "this.rules.size() == 0 || this.rules.all(r, this.rules.filter(x, x.priority == r.priority).size() == 1)"
     message: "each rule must have a unique priority"
+  };
+
+  // ── Scope walls: the regional collection lacks these global levers ──
+
+  option (buf.validate.message).cel = {
+    id: "labels_global_only"
+    message: "labels are a global-policy lever — the regional security policy collection carries no labels; clear region or remove labels"
+    expression: "this.region == '' || this.labels.size() == 0"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "adaptive_protection_global_only"
+    message: "adaptive_protection_config is a global-policy lever — Adaptive Protection watches global Application Load Balancers only; clear region or remove adaptive_protection_config"
+    expression: "this.region == '' || !has(this.adaptive_protection_config)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "recaptcha_options_global_only"
+    message: "recaptcha_options_config is a global-policy lever — the regional collection has no reCAPTCHA redirect; clear region or remove recaptcha_options_config"
+    expression: "this.region == '' || !has(this.recaptcha_options_config)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "request_body_inspection_size_global_only"
+    message: "advanced_options_config.request_body_inspection_size is a global-policy lever — the regional collection inspects the default 8KB only; clear region or remove request_body_inspection_size"
+    expression: "this.region == '' || !has(this.advanced_options_config) || this.advanced_options_config.request_body_inspection_size == ''"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "internal_service_type_global_only"
+    message: "type CLOUD_ARMOR_INTERNAL_SERVICE is a global-policy type (Traffic Director); clear region or choose CLOUD_ARMOR, CLOUD_ARMOR_EDGE, or CLOUD_ARMOR_NETWORK"
+    expression: "this.region == '' || this.type != 'CLOUD_ARMOR_INTERNAL_SERVICE'"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "header_action_global_only"
+    message: "rules[].header_action is a global-policy lever — the regional collection cannot inject request headers; clear region or remove header_action from every rule"
+    expression: "this.region == '' || !this.rules.exists(r, has(r.header_action))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "redirect_action_global_only"
+    message: "the redirect rule action is a global CLOUD_ARMOR lever — the regional collection has no redirect; clear region or change the action"
+    expression: "this.region == '' || !this.rules.exists(r, r.action == 'redirect')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "exceed_redirect_global_only"
+    message: "rate_limit_options.exceed_action redirect is a global-policy lever — a regional rate limit exceeds to deny(STATUS); clear region or change exceed_action"
+    expression: "this.region == '' || !this.rules.exists(r, has(r.rate_limit_options) && r.rate_limit_options.exceed_action == 'redirect')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "expr_options_global_only"
+    message: "rules[].match.expr_options (reCAPTCHA token site keys) is a global-policy lever; clear region or remove expr_options from every rule"
+    expression: "this.region == '' || !this.rules.exists(r, has(r.match) && has(r.match.expr_options))"
+  };
+
+  // ── Scope walls: the network-policy levers exist only regionally ──
+
+  option (buf.validate.message).cel = {
+    id: "network_type_regional_only"
+    message: "type CLOUD_ARMOR_NETWORK is a regional-policy type (passthrough Network Load Balancers); set region or choose CLOUD_ARMOR, CLOUD_ARMOR_EDGE, or CLOUD_ARMOR_INTERNAL_SERVICE"
+    expression: "this.region != '' || this.type != 'CLOUD_ARMOR_NETWORK'"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "ddos_protection_requires_network_type"
+    message: "ddos_protection_config applies only to a regional policy of type CLOUD_ARMOR_NETWORK"
+    expression: "!has(this.ddos_protection_config) || (this.region != '' && this.type == 'CLOUD_ARMOR_NETWORK')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "user_defined_fields_require_network_type"
+    message: "user_defined_fields apply only to a regional policy of type CLOUD_ARMOR_NETWORK"
+    expression: "this.user_defined_fields.size() == 0 || (this.region != '' && this.type == 'CLOUD_ARMOR_NETWORK')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "network_match_requires_network_type"
+    message: "rules[].network_match applies only to a regional policy of type CLOUD_ARMOR_NETWORK; HTTP policies match through rules[].match"
+    expression: "!this.rules.exists(r, has(r.network_match)) || (this.region != '' && this.type == 'CLOUD_ARMOR_NETWORK')"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "network_match_fields_defined"
+    message: "every network_match.user_defined_fields entry must name a field declared in the policy's user_defined_fields"
+    expression: "this.rules.all(r, !has(r.network_match) || r.network_match.user_defined_fields.all(u, this.user_defined_fields.exists(d, d.name == u.name)))"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "user_defined_field_names_unique"
+    message: "each user-defined field must have a unique name within the policy"
+    expression: "this.user_defined_fields.all(d, this.user_defined_fields.filter(x, x.name == d.name).size() == 1)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "edge_service_requires_ddos_protection"
+    message: "network_edge_security_service enrolls a region in advanced network DDoS protection and needs ddos_protection_config on this regional CLOUD_ARMOR_NETWORK policy"
+    expression: "!has(this.network_edge_security_service) || has(this.ddos_protection_config)"
   };
 
   // GCP project where the security policy will be created.
@@ -657,22 +964,27 @@ message GcpCloudArmorPolicySpec {
   string description = 3 [(buf.validate.field).string.max_len = 2048];
 
   // Policy type. Determines which features are available and where
-  // the policy can be attached.
+  // the policy can be attached. CLOUD_ARMOR (default) and CLOUD_ARMOR_EDGE
+  // exist on both scopes; CLOUD_ARMOR_INTERNAL_SERVICE only globally;
+  // CLOUD_ARMOR_NETWORK only regionally (set region).
   //
   // Immutable after creation (ForceNew).
   string type = 4 [(buf.validate.field).cel = {
     id: "type_valid"
-    expression: "this == '' || this in ['CLOUD_ARMOR', 'CLOUD_ARMOR_EDGE', 'CLOUD_ARMOR_INTERNAL_SERVICE']"
-    message: "type must be CLOUD_ARMOR, CLOUD_ARMOR_EDGE, or CLOUD_ARMOR_INTERNAL_SERVICE"
+    expression: "this == '' || this in ['CLOUD_ARMOR', 'CLOUD_ARMOR_EDGE', 'CLOUD_ARMOR_INTERNAL_SERVICE', 'CLOUD_ARMOR_NETWORK']"
+    message: "type must be CLOUD_ARMOR, CLOUD_ARMOR_EDGE, CLOUD_ARMOR_INTERNAL_SERVICE, or CLOUD_ARMOR_NETWORK"
   }];
 
   // Adaptive Protection configuration for automatic Layer 7 DDoS detection.
+  // A global-policy lever (rejected when region is set).
   GcpCloudArmorAdaptiveProtectionConfig adaptive_protection_config = 5;
 
-  // Advanced policy-level options: JSON parsing, logging, IP resolution.
+  // Advanced policy-level options: JSON parsing, logging, IP resolution
+  // (both scopes); request_body_inspection_size (global only).
   GcpCloudArmorAdvancedOptionsConfig advanced_options_config = 6;
 
   // Policy-level reCAPTCHA site key for GOOGLE_RECAPTCHA redirects.
+  // A global-policy lever (rejected when region is set).
   GcpCloudArmorRecaptchaOptionsConfig recaptcha_options_config = 7;
 
   // Security rules. Rules are evaluated in priority order (lowest number
@@ -683,7 +995,9 @@ message GcpCloudArmorPolicySpec {
   repeated GcpCloudArmorRule rules = 8;
 
   // User labels attached to the security policy, merged with Planton's
-  // platform labels (which win on key conflicts). Mutable.
+  // platform labels (which win on key conflicts). Mutable. A global-policy
+  // lever: the regional collection carries no labels at all (rejected when
+  // region is set; a regional policy also receives no platform labels).
   map<string, string> labels = 9;
 
   // Deletion policy for the security policy — what happens on destroy:
@@ -700,4 +1014,40 @@ message GcpCloudArmorPolicySpec {
     message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
     expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
   }];
+
+  // The scope selector. Empty builds a GLOBAL security policy (attached by
+  // a global backend service or a backend bucket in front of a global
+  // external Application Load Balancer, or by Cloud CDN); a region name
+  // such as us-central1 builds a REGIONAL one (attached by a regional
+  // backend service: the regional external and internal ALBs, and -- as a
+  // CLOUD_ARMOR_NETWORK policy -- the passthrough Network Load Balancers,
+  // protocol forwarding, and public-IP VMs in that region). Scopes must
+  // match what attaches the policy. The global-only levers (labels,
+  // adaptive_protection_config, recaptcha_options_config,
+  // request_body_inspection_size, the CLOUD_ARMOR_INTERNAL_SERVICE type,
+  // header_action, redirect, expr_options) are rejected when region is set;
+  // the network-policy levers (CLOUD_ARMOR_NETWORK, ddos_protection_config,
+  // user_defined_fields, network_match) are rejected when it is empty.
+  // Immutable: a policy cannot move between scopes or regions.
+  string region = 11 [(buf.validate.field).cel = {
+    id: "valid_region"
+    message: "region must be a valid GCP region name such as us-central1, or empty for a global security policy"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')"
+  }];
+
+  // Network DDoS protection level for a regional CLOUD_ARMOR_NETWORK
+  // policy: STANDARD is free and always on; ADVANCED and ADVANCED_PREVIEW
+  // need Cloud Armor Enterprise and the region enrolled through
+  // network_edge_security_service.
+  GcpCloudArmorDdosProtectionConfig ddos_protection_config = 12;
+
+  // Custom packet fields (up to 4 bytes at a fixed header offset) that a
+  // regional CLOUD_ARMOR_NETWORK policy's rules match through
+  // network_match.user_defined_fields. Names must be unique.
+  repeated GcpCloudArmorUserDefinedField user_defined_fields = 13;
+
+  // Enroll this policy's region in advanced network DDoS protection by
+  // creating the region's network edge security service with this policy
+  // attached. One per region per project; requires ddos_protection_config.
+  GcpCloudArmorNetworkEdgeSecurityService network_edge_security_service = 14;
 }

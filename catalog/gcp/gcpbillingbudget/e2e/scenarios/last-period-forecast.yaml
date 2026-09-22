@@ -1,0 +1,38 @@
+# GcpBillingBudget scenario: the "no worse than last month" guardrail --
+# last period's spend as the budget, a forecasted-spend threshold, the
+# harness project as the filter (by the project-ID token, which Google
+# accepts as the project's number is not known here -- the proof lane
+# watches the round-trip), gross spend (credits excluded), and the default
+# administrator emails switched off with no channel declared (the API
+# accepts it; nobody is notified except through the console). Owner-arranged
+# billing account token.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBillingBudget
+metadata:
+  name: planton-oss-e2e-gcpbdgt-lastperiod
+  id: planton-oss-e2e-gcpbdgt-lastperiod
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbillingbudget
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-required-env: PLANTON_E2E_GCP_BILLING_ACCOUNT_ID
+  tags:
+    - planton-e2e
+spec:
+  billingAccount: ${E2E_ENV:PLANTON_E2E_GCP_BILLING_ACCOUNT_ID}
+  displayName: planton-e2e-lastperiod-${E2E_RUN_ID}
+  amount:
+    lastPeriodAmount: true
+  budgetFilter:
+    calendarPeriod: MONTH
+    creditTypesTreatment: EXCLUDE_ALL_CREDITS
+    labels:
+      env: e2e
+  thresholdRules:
+    - thresholdPercent: 1.0
+      spendBasis: FORECASTED_SPEND
+  ownershipScope: BILLING_ACCOUNT
+  deletionPolicy: DELETE

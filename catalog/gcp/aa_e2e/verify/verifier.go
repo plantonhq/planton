@@ -20,8 +20,10 @@ import (
 	artifactregistry "google.golang.org/api/artifactregistry/v1"
 	"google.golang.org/api/bigquery/v2"
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
+	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	certificatemanager "google.golang.org/api/certificatemanager/v1"
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
+	cloudidentity "google.golang.org/api/cloudidentity/v1"
 	cloudkms "google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
@@ -107,6 +109,12 @@ type Services struct {
 	// Policy API (policies and custom constraints).
 	CrmV3     *crmv3.Service
 	OrgPolicy *orgpolicy.Service
+	// BillingBudgets is the Cloud Billing Budget API (budgets live on the
+	// billing account, not in a project); CloudIdentity is the Cloud
+	// Identity API (groups and memberships under a customer). Both ride the
+	// pinned google.golang.org/api line.
+	BillingBudgets *billingbudgets.Service
+	CloudIdentity  *cloudidentity.Service
 
 	// RestClient is an ADC-authenticated HTTP client for GCP services whose
 	// typed Go client is not yet in the pinned google.golang.org/api line
@@ -255,6 +263,10 @@ var verifiers = map[string]Verifier{
 	"gcphavpnconnection":                     &haVpnConnectionVerifier{},
 	"gcphierarchicalfirewallpolicy":          &hierarchicalFirewallPolicyVerifier{},
 	"gcpnetworkfirewallpolicy":               &networkFirewallPolicyVerifier{},
+	"gcppscserviceattachment":                &pscServiceAttachmentVerifier{},
+	"gcpnetworkendpointgroup":                &networkEndpointGroupVerifier{},
+	"gcpbillingbudget":                       &billingBudgetVerifier{},
+	"gcpcloudidentitygroup":                  &cloudIdentityGroupVerifier{},
 	"gcpfirebaseproject":                     &firebaseProjectVerifier{},
 	"gcpfirebaseandroidapp":                  &firebaseAndroidAppVerifier{},
 	"gcpfirebaseappleapp":                    &firebaseAppleAppVerifier{},

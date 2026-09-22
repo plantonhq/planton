@@ -495,12 +495,17 @@ contained dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboard
 contained dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringslo.v1alpha1.GcpMonitoringSloSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1.GcpMonitoringUptimeCheckSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.network -> GcpVpcNetwork
+contained dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1.GcpNetworkEndpointGroupSpec.subnetwork -> GcpSubnetwork
 contained dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyScope.folder_id -> GcpFolder
 contained dev.planton.gcp.gcporgpolicy.v1alpha1.GcpOrgPolicyScope.project_id -> GcpProject
 contained dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpproject.v1alpha1.GcpProjectSpec.folder_id -> GcpFolder
 contained dev.planton.gcp.gcpprojectiammember.v1alpha1.GcpProjectIamMemberSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentSpec.nat_subnets -> GcpSubnetwork
+contained dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicSpec.project_id -> GcpProject
@@ -850,6 +855,8 @@ exempt    dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFir
 exempt    dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1.DigitalOceanMonitorAlertSpec.database_cluster_ids -> DigitalOceanDatabaseCluster
 exempt    dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterRestoreContinuousBackupSource.cluster -> GcpAlloydbCluster
 exempt    dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterSpec.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.projects -> GcpProject
+exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.resource_ancestors -> GcpFolder
 exempt    dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.subnetwork -> GcpSubnetwork
 exempt    dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunNetworkInterface.network -> GcpVpcNetwork
@@ -880,6 +887,9 @@ exempt    dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPo
 exempt    dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicyRuleMatch.src_networks -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerVpcAccess.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerVpcAccess.subnetwork -> GcpSubnetwork
+exempt    dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentConsumer.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentConsumer.project_id -> GcpProject
+exempt    dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentSpec.consumer_reject_lists -> GcpProject
 exempt    dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceSpec.authorized_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatRuleAction.source_nat_active_ranges -> GcpSubnetwork
 exempt    dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatRuleAction.source_nat_drain_ranges -> GcpSubnetwork

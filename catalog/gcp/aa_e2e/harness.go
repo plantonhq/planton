@@ -32,8 +32,10 @@ import (
 	artifactregistry "google.golang.org/api/artifactregistry/v1"
 	"google.golang.org/api/bigquery/v2"
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
+	billingbudgets "google.golang.org/api/billingbudgets/v1"
 	certificatemanager "google.golang.org/api/certificatemanager/v1"
 	cloudfunctions "google.golang.org/api/cloudfunctions/v2"
+	cloudidentity "google.golang.org/api/cloudidentity/v1"
 	cloudkms "google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	crmv3 "google.golang.org/api/cloudresourcemanager/v3"
@@ -286,6 +288,18 @@ func (h *Harness) Setup(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to create orgpolicy client")
 	}
+	// Cloud Billing budgets live on the billing account; Cloud Identity
+	// groups live under a customer -- neither is project-scoped, and the
+	// kinds that use them stay deferred until the harness identity holds
+	// the account- and customer-level roles.
+	billingBudgetsService, err := billingbudgets.NewService(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to create billingbudgets client")
+	}
+	cloudIdentityService, err := cloudidentity.NewService(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cloudidentity client")
+	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
 	// client is not in the pinned google.golang.org/api line (Memorystore
 	// for Valkey) — verifiers use it for REST GET probes only.
@@ -341,6 +355,8 @@ func (h *Harness) Setup(ctx context.Context) error {
 		ApiKeys:              apiKeysService,
 		CrmV3:                crmV3Service,
 		OrgPolicy:            orgPolicyService,
+		BillingBudgets:       billingBudgetsService,
+		CloudIdentity:        cloudIdentityService,
 		RestClient:           restClient,
 	}
 	return nil

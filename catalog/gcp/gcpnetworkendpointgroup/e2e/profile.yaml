@@ -1,0 +1,30 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpnetworkendpointgroup
+spec:
+  # Awaiting the live proof lane. Both scopes prove in the harness project
+  # with project-level roles/compute.networkAdmin (plus instanceAdmin for
+  # the endpoint VM fixture): the zonal-vm-endpoint scenario deploys a
+  # subnet and a Spot VM on the registry's prerequisite network and writes
+  # the VM as the group's one endpoint through the bulk endpoint set; the
+  # global-internet-fqdn scenario builds an INTERNET_FQDN_PORT group with
+  # one FQDN endpoint and needs no fixture. Offline bar met: both modules
+  # build and validate, offline plans for the reference manifest and every
+  # scenario are clean on the pinned provider, and the accounting is total.
+  # Live facts the proof lane confirms: (1) the endpoint set re-plans clean
+  # under the apply-idempotency gate on both engines (the provider stores
+  # the members as a set), and an endpoint without a port inherits the
+  # group's default_port; (2) network_endpoint_type left unset on a zonal
+  # group shows no diff against Google's GCE_VM_IP_PORT default; (3) the
+  # zonal group's neg_id is populated and the global group's is empty on
+  # both engines; (4) destroy order is endpoints -> group -> VM -> subnet
+  # (Google refuses to delete a group with members, and a VM keeps its
+  # subnet alive) -- a resourceInUseByAnotherResource on teardown means the
+  # fixture chain was listed out of order. Hybrid (NON_GCP_PRIVATE_IP_PORT)
+  # and GCE_VM_IP groups ride the presets' offline plans -- a smoke fixture
+  # cannot honestly stand up an on-premises address.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

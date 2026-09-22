@@ -2907,16 +2907,19 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpCloudArmorPolicy: policy id/name/self-link/fingerprint — the
-			// self-link is the frozen composition key for backend attachments.
+			// self-link is the frozen composition key for backend attachments;
+			// region and the edge-service link tell a regional policy apart.
 			name: "GcpCloudArmorPolicy",
 			kind: cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy,
 			rawOutputs: map[string]interface{}{
-				"policy_id":        "projects/my-project/global/securityPolicies/corp-allowlist",
-				"policy_name":      "corp-allowlist",
-				"policy_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/global/securityPolicies/corp-allowlist",
-				"fingerprint":      "abc123==",
+				"policy_id":                               "projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
+				"policy_name":                             "nlb-shield",
+				"policy_self_link":                        "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
+				"fingerprint":                             "abc123==",
+				"region":                                  "us-central1",
+				"network_edge_security_service_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/networkEdgeSecurityServices/nlb-shield",
 			},
-			mustPopulate: []string{"policy_id", "policy_name", "policy_self_link", "fingerprint"},
+			mustPopulate: []string{"policy_id", "policy_name", "policy_self_link", "fingerprint", "region", "network_edge_security_service_self_link"},
 		},
 		{
 			// GcpCertManagerDnsAuthorization: authorization id/name/domain and
@@ -3831,6 +3834,62 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{
 				"policy_name", "policy_id", "self_link", "region", "rule_tuple_count", "association_names",
 			},
+		},
+		{
+			// GcpPscServiceAttachment: the self link a consumer forwarding rule
+			// targets (the verifier's key is the name), the region, the
+			// fingerprint, and the connected-endpoint count as a string.
+			name: "GcpPscServiceAttachment",
+			kind: cloudresourcekind.CloudResourceKind_GcpPscServiceAttachment,
+			rawOutputs: map[string]interface{}{
+				"self_link":                 "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/serviceAttachments/orders-db-psc",
+				"attachment_name":           "orders-db-psc",
+				"region":                    "us-central1",
+				"fingerprint":               "abc123==",
+				"connected_endpoints_count": "0",
+			},
+			mustPopulate: []string{"self_link", "attachment_name", "region", "fingerprint", "connected_endpoints_count"},
+		},
+		{
+			// GcpNetworkEndpointGroup: the self link a backend service names
+			// as its group (zonal here; a global link says global), the
+			// name (the verifier's key), the numeric id, the zone (empty for
+			// a global group), and the declared size.
+			name: "GcpNetworkEndpointGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpNetworkEndpointGroup,
+			rawOutputs: map[string]interface{}{
+				"self_link": "https://www.googleapis.com/compute/v1/projects/my-project/zones/us-central1-a/networkEndpointGroups/web-neg",
+				"neg_name":  "web-neg",
+				"neg_id":    "1234567890123456789",
+				"zone":      "us-central1-a",
+				"size":      "2",
+			},
+			mustPopulate: []string{"self_link", "neg_name", "neg_id", "zone", "size"},
+		},
+		{
+			// GcpBillingBudget: the budget's resource name (the verifier's key),
+			// the server-assigned id, and the owning billing account.
+			name: "GcpBillingBudget",
+			kind: cloudresourcekind.CloudResourceKind_GcpBillingBudget,
+			rawOutputs: map[string]interface{}{
+				"name":            "billingAccounts/012345-6789AB-CDEF01/budgets/9f8e7d6c-0000-1111-2222-333344445555",
+				"budget_id":       "9f8e7d6c-0000-1111-2222-333344445555",
+				"billing_account": "billingAccounts/012345-6789AB-CDEF01",
+			},
+			mustPopulate: []string{"name", "budget_id", "billing_account"},
+		},
+		{
+			// GcpCloudIdentityGroup: the group's resource name (the verifier's
+			// key), its email (the IAM identity), and the managed membership
+			// count as a string.
+			name: "GcpCloudIdentityGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudIdentityGroup,
+			rawOutputs: map[string]interface{}{
+				"name":             "groups/01abc2de3f4g5h6",
+				"group_email":      "platform-admins@example.com",
+				"membership_count": "4",
+			},
+			mustPopulate: []string{"name", "group_email", "membership_count"},
 		},
 		{
 			// GcpFirebaseProject: flat scalar outputs from both engines -- the

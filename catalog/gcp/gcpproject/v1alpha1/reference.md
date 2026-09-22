@@ -217,6 +217,7 @@ Fields on other kinds that can point at this resource:
 | GcpBigQueryTable | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableTable | `spec.projectId` | `status.outputs.project_id` |
+| GcpBillingBudget | `spec.budgetFilter.projects` | `status.outputs.project_number` |
 | GcpCertManagerCert | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertManagerDnsAuthorization | `spec.projectId` | `status.outputs.project_id` |
 | GcpCertificateMap | `spec.projectId` | `status.outputs.project_id` |
@@ -279,10 +280,14 @@ Fields on other kinds that can point at this resource:
 | GcpMonitoringNotificationChannel | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringSlo | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringUptimeCheck | `spec.projectId` | `status.outputs.project_id` |
+| GcpNetworkEndpointGroup | `spec.projectId` | `status.outputs.project_id` |
 | GcpNetworkFirewallPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpOrgPolicy | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpPlantonRunner | `spec.projectId` | `status.outputs.project_id` |
 | GcpProjectIamMember | `spec.projectId` | `status.outputs.project_id` |
+| GcpPscServiceAttachment | `spec.projectId` | `status.outputs.project_id` |
+| GcpPscServiceAttachment | `spec.consumerAcceptLists[].projectId` | `status.outputs.project_id` |
+| GcpPscServiceAttachment | `spec.consumerRejectLists` | `status.outputs.project_id` |
 | GcpPubSubSchema | `spec.projectId` | `status.outputs.project_id` |
 | GcpPubSubSubscription | `spec.projectId` | `status.outputs.project_id` |
 | GcpPubSubTopic | `spec.projectId` | `status.outputs.project_id` |

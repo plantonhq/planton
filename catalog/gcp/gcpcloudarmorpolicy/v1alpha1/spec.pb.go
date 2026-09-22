@@ -805,6 +805,200 @@ func (x *GcpCloudArmorPreconfiguredWafConfig) GetExclusions() []*GcpCloudArmorWa
 	return nil
 }
 
+// GcpCloudArmorNetworkMatchUserDefinedField names one of the policy's
+// user_defined_fields and lists the packet values that match it. A rule
+// that lists a field the policy never defined is rejected pre-deploy.
+type GcpCloudArmorNetworkMatchUserDefinedField struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Name of the user-defined field, exactly as given in the policy's
+	// user_defined_fields definition.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Matching values of the field. Each element is a 32-bit unsigned decimal
+	// or hexadecimal (0x-prefixed) number, e.g. "64" or "0x8F00", or a range
+	// such as "0x400-0x7ff". Any listed value matches.
+	Values        []string `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpCloudArmorNetworkMatchUserDefinedField) Reset() {
+	*x = GcpCloudArmorNetworkMatchUserDefinedField{}
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudArmorNetworkMatchUserDefinedField) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudArmorNetworkMatchUserDefinedField) ProtoMessage() {}
+
+func (x *GcpCloudArmorNetworkMatchUserDefinedField) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudArmorNetworkMatchUserDefinedField.ProtoReflect.Descriptor instead.
+func (*GcpCloudArmorNetworkMatchUserDefinedField) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GcpCloudArmorNetworkMatchUserDefinedField) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *GcpCloudArmorNetworkMatchUserDefinedField) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+// GcpCloudArmorNetworkMatch is the packet-level (L3/L4) match condition a
+// CLOUD_ARMOR_NETWORK policy's rules use instead of the HTTP-level match.
+// It exists only on a REGIONAL policy of type CLOUD_ARMOR_NETWORK -- the
+// policies that filter packets in front of passthrough Network Load
+// Balancers, protocol forwarding, and VMs with public IPs.
+//
+// Every field listed must match for the packet to match (AND across
+// fields); within a field any listed value matches (OR). A field left
+// empty matches any value and need not be present in the packet. A
+// user-defined field is present only when its base header is found and
+// the whole field is in bounds. "*" matches all for string fields.
+//
+// Example -- packets from two source ranges whose IPv4 fragment offset
+// (a user-defined field named ipv4_fragment_offset) is between 1 and
+// 0x1fff: src_ip_ranges ["192.0.2.0/24", "198.51.100.0/24"] and
+// user_defined_fields [{name: ipv4_fragment_offset, values: ["1-0x1fff"]}].
+type GcpCloudArmorNetworkMatch struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Source IPv4/IPv6 addresses or CIDR prefixes, in standard text format.
+	SrcIpRanges []string `protobuf:"bytes,1,rep,name=src_ip_ranges,json=srcIpRanges,proto3" json:"src_ip_ranges,omitempty"`
+	// Destination IPv4/IPv6 addresses or CIDR prefixes, in standard text
+	// format.
+	DestIpRanges []string `protobuf:"bytes,2,rep,name=dest_ip_ranges,json=destIpRanges,proto3" json:"dest_ip_ranges,omitempty"`
+	// IPv4 protocol / IPv6 next header (after extension headers). Each
+	// element is an 8-bit unsigned decimal number (e.g. "6"), a range (e.g.
+	// "253-254"), or one of the names "tcp", "udp", "icmp", "esp", "ah",
+	// "ipip", "sctp".
+	IpProtocols []string `protobuf:"bytes,3,rep,name=ip_protocols,json=ipProtocols,proto3" json:"ip_protocols,omitempty"`
+	// Source port numbers for TCP/UDP/SCTP. Each element is a 16-bit unsigned
+	// decimal number (e.g. "80") or a range (e.g. "0-1023").
+	SrcPorts []string `protobuf:"bytes,4,rep,name=src_ports,json=srcPorts,proto3" json:"src_ports,omitempty"`
+	// Destination port numbers for TCP/UDP/SCTP. Each element is a 16-bit
+	// unsigned decimal number (e.g. "80") or a range (e.g. "0-1023").
+	DestPorts []string `protobuf:"bytes,5,rep,name=dest_ports,json=destPorts,proto3" json:"dest_ports,omitempty"`
+	// Two-letter ISO 3166-1 alpha-2 country codes associated with the
+	// source IP address (e.g. "US", "DE").
+	SrcRegionCodes []string `protobuf:"bytes,6,rep,name=src_region_codes,json=srcRegionCodes,proto3" json:"src_region_codes,omitempty"`
+	// BGP Autonomous System Numbers associated with the source IP address
+	// (e.g. 15169 for Google). 32-bit ASNs exceed the signed 32-bit range,
+	// so the type is 64-bit.
+	SrcAsns []int64 `protobuf:"varint,7,rep,packed,name=src_asns,json=srcAsns,proto3" json:"src_asns,omitempty"`
+	// Matches on the policy's user-defined packet fields, each naming a field
+	// from user_defined_fields and listing the values that match it.
+	UserDefinedFields []*GcpCloudArmorNetworkMatchUserDefinedField `protobuf:"bytes,8,rep,name=user_defined_fields,json=userDefinedFields,proto3" json:"user_defined_fields,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GcpCloudArmorNetworkMatch) Reset() {
+	*x = GcpCloudArmorNetworkMatch{}
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudArmorNetworkMatch) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudArmorNetworkMatch) ProtoMessage() {}
+
+func (x *GcpCloudArmorNetworkMatch) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudArmorNetworkMatch.ProtoReflect.Descriptor instead.
+func (*GcpCloudArmorNetworkMatch) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetSrcIpRanges() []string {
+	if x != nil {
+		return x.SrcIpRanges
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetDestIpRanges() []string {
+	if x != nil {
+		return x.DestIpRanges
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetIpProtocols() []string {
+	if x != nil {
+		return x.IpProtocols
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetSrcPorts() []string {
+	if x != nil {
+		return x.SrcPorts
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetDestPorts() []string {
+	if x != nil {
+		return x.DestPorts
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetSrcRegionCodes() []string {
+	if x != nil {
+		return x.SrcRegionCodes
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetSrcAsns() []int64 {
+	if x != nil {
+		return x.SrcAsns
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorNetworkMatch) GetUserDefinedFields() []*GcpCloudArmorNetworkMatchUserDefinedField {
+	if x != nil {
+		return x.UserDefinedFields
+	}
+	return nil
+}
+
 // GcpCloudArmorRule defines a single security rule within the policy.
 // Rules are evaluated in priority order (lowest number = highest priority).
 //
@@ -812,23 +1006,37 @@ func (x *GcpCloudArmorPreconfiguredWafConfig) GetExclusions() []*GcpCloudArmorWa
 // when a policy is created with NO rules, the API adds a default "allow
 // all" rule automatically; when rules ARE provided, the set must include
 // the priority-2147483647 default explicitly (enforced pre-deploy).
+//
+// A rule matches traffic through exactly one of two arms: match (HTTP
+// request attributes -- source IP ranges or a CEL expression; every
+// CLOUD_ARMOR and CLOUD_ARMOR_EDGE policy) or network_match (packet
+// headers; only a regional CLOUD_ARMOR_NETWORK policy).
 type GcpCloudArmorRule struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Action to take when the rule matches.
-	// - "allow": Permit the request
-	// - "deny(403)": Block with 403 Forbidden
-	// - "deny(404)": Block with 404 Not Found
-	// - "deny(502)": Block with 502 Bad Gateway
-	// - "redirect": Redirect to a configured target (requires redirect_options)
-	// - "throttle": Rate-limit the traffic (requires rate_limit_options)
-	// - "rate_based_ban": Rate-limit then ban (requires rate_limit_options)
+	//   - "allow": Permit the request
+	//   - "deny(403)": Block with 403 Forbidden
+	//   - "deny(404)": Block with 404 Not Found
+	//   - "deny(502)": Block with 502 Bad Gateway
+	//   - "redirect": Redirect to a configured target (requires redirect_options;
+	//     GLOBAL CLOUD_ARMOR policies only -- rejected when region is set)
+	//   - "throttle": Rate-limit the traffic (requires rate_limit_options)
+	//   - "rate_based_ban": Rate-limit then ban (requires rate_limit_options)
 	Action string `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"`
-	// Rule priority. Lower values are evaluated first.
-	// Range: 0 to 2147483647. Each rule must have a unique priority.
-	// Priority 2147483647 is the default rule (match "*").
-	Priority int32 `protobuf:"varint,2,opt,name=priority,proto3" json:"priority,omitempty"`
-	// Traffic-matching condition. Defines which requests this rule applies to.
+	// Rule priority. Lower values are evaluated first; 0 is the HIGHEST
+	// priority Google accepts and is a legal value. Range: 0 to 2147483647.
+	// Each rule must have a unique priority. Priority 2147483647 is the
+	// default rule (match "*"). Leave gaps (100, 200, ...) so a rule can be
+	// slotted in later without renumbering.
+	Priority *int32 `protobuf:"varint,2,opt,name=priority,proto3,oneof" json:"priority,omitempty"`
+	// HTTP-level traffic-matching condition (source IP ranges or a CEL
+	// expression over the request). Exactly one of match / network_match
+	// is set per rule.
 	Match *GcpCloudArmorRuleMatch `protobuf:"bytes,3,opt,name=match,proto3" json:"match,omitempty"`
+	// Packet-level (L3/L4) match condition for a regional
+	// CLOUD_ARMOR_NETWORK policy. Exactly one of match / network_match is
+	// set per rule; rejected on any other policy type or scope.
+	NetworkMatch *GcpCloudArmorNetworkMatch `protobuf:"bytes,10,opt,name=network_match,json=networkMatch,proto3" json:"network_match,omitempty"`
 	// Human-readable description of the rule (max 64 characters).
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	// If true, the rule is in preview mode: matched traffic is logged but
@@ -837,10 +1045,12 @@ type GcpCloudArmorRule struct {
 	// Rate limit configuration. Required when action is "throttle" or
 	// "rate_based_ban".
 	RateLimitOptions *GcpCloudArmorRateLimitOptions `protobuf:"bytes,6,opt,name=rate_limit_options,json=rateLimitOptions,proto3" json:"rate_limit_options,omitempty"`
-	// Redirect configuration. Required when action is "redirect".
+	// Redirect configuration. Required when action is "redirect". A
+	// global-policy lever: the regional collection has no redirect action.
 	RedirectOptions *GcpCloudArmorRedirectConfig `protobuf:"bytes,7,opt,name=redirect_options,json=redirectOptions,proto3" json:"redirect_options,omitempty"`
 	// Custom headers to inject into matching requests before forwarding
-	// to the backend. Only supported for CLOUD_ARMOR type policies.
+	// to the backend. Only supported for GLOBAL CLOUD_ARMOR type policies
+	// (rejected when region is set).
 	HeaderAction *GcpCloudArmorHeaderAction `protobuf:"bytes,8,opt,name=header_action,json=headerAction,proto3" json:"header_action,omitempty"`
 	// Preconfigured WAF rule exclusions. Use this to carve out exceptions
 	// for specific request fields that trigger false positives in WAF rules.
@@ -852,7 +1062,7 @@ type GcpCloudArmorRule struct {
 
 func (x *GcpCloudArmorRule) Reset() {
 	*x = GcpCloudArmorRule{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -864,7 +1074,7 @@ func (x *GcpCloudArmorRule) String() string {
 func (*GcpCloudArmorRule) ProtoMessage() {}
 
 func (x *GcpCloudArmorRule) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[11]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -877,7 +1087,7 @@ func (x *GcpCloudArmorRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpCloudArmorRule.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorRule) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GcpCloudArmorRule) GetAction() string {
@@ -888,8 +1098,8 @@ func (x *GcpCloudArmorRule) GetAction() string {
 }
 
 func (x *GcpCloudArmorRule) GetPriority() int32 {
-	if x != nil {
-		return x.Priority
+	if x != nil && x.Priority != nil {
+		return *x.Priority
 	}
 	return 0
 }
@@ -897,6 +1107,13 @@ func (x *GcpCloudArmorRule) GetPriority() int32 {
 func (x *GcpCloudArmorRule) GetMatch() *GcpCloudArmorRuleMatch {
 	if x != nil {
 		return x.Match
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorRule) GetNetworkMatch() *GcpCloudArmorNetworkMatch {
+	if x != nil {
+		return x.NetworkMatch
 	}
 	return nil
 }
@@ -964,7 +1181,7 @@ type GcpCloudArmorTrafficGranularityConfig struct {
 
 func (x *GcpCloudArmorTrafficGranularityConfig) Reset() {
 	*x = GcpCloudArmorTrafficGranularityConfig{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -976,7 +1193,7 @@ func (x *GcpCloudArmorTrafficGranularityConfig) String() string {
 func (*GcpCloudArmorTrafficGranularityConfig) ProtoMessage() {}
 
 func (x *GcpCloudArmorTrafficGranularityConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[12]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -989,7 +1206,7 @@ func (x *GcpCloudArmorTrafficGranularityConfig) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GcpCloudArmorTrafficGranularityConfig.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorTrafficGranularityConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GcpCloudArmorTrafficGranularityConfig) GetType() string {
@@ -1045,7 +1262,7 @@ type GcpCloudArmorThresholdConfig struct {
 
 func (x *GcpCloudArmorThresholdConfig) Reset() {
 	*x = GcpCloudArmorThresholdConfig{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1057,7 +1274,7 @@ func (x *GcpCloudArmorThresholdConfig) String() string {
 func (*GcpCloudArmorThresholdConfig) ProtoMessage() {}
 
 func (x *GcpCloudArmorThresholdConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[13]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1070,7 +1287,7 @@ func (x *GcpCloudArmorThresholdConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpCloudArmorThresholdConfig.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorThresholdConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *GcpCloudArmorThresholdConfig) GetName() string {
@@ -1158,7 +1375,7 @@ type GcpCloudArmorAdaptiveProtectionConfig struct {
 
 func (x *GcpCloudArmorAdaptiveProtectionConfig) Reset() {
 	*x = GcpCloudArmorAdaptiveProtectionConfig{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1170,7 +1387,7 @@ func (x *GcpCloudArmorAdaptiveProtectionConfig) String() string {
 func (*GcpCloudArmorAdaptiveProtectionConfig) ProtoMessage() {}
 
 func (x *GcpCloudArmorAdaptiveProtectionConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[14]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1183,7 +1400,7 @@ func (x *GcpCloudArmorAdaptiveProtectionConfig) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use GcpCloudArmorAdaptiveProtectionConfig.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorAdaptiveProtectionConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GcpCloudArmorAdaptiveProtectionConfig) GetEnableLayer_7DdosDefense() bool {
@@ -1220,7 +1437,7 @@ type GcpCloudArmorJsonCustomConfig struct {
 
 func (x *GcpCloudArmorJsonCustomConfig) Reset() {
 	*x = GcpCloudArmorJsonCustomConfig{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1232,7 +1449,7 @@ func (x *GcpCloudArmorJsonCustomConfig) String() string {
 func (*GcpCloudArmorJsonCustomConfig) ProtoMessage() {}
 
 func (x *GcpCloudArmorJsonCustomConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[15]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1245,7 +1462,7 @@ func (x *GcpCloudArmorJsonCustomConfig) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpCloudArmorJsonCustomConfig.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorJsonCustomConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{15}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GcpCloudArmorJsonCustomConfig) GetContentTypes() []string {
@@ -1288,7 +1505,7 @@ type GcpCloudArmorAdvancedOptionsConfig struct {
 
 func (x *GcpCloudArmorAdvancedOptionsConfig) Reset() {
 	*x = GcpCloudArmorAdvancedOptionsConfig{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1300,7 +1517,7 @@ func (x *GcpCloudArmorAdvancedOptionsConfig) String() string {
 func (*GcpCloudArmorAdvancedOptionsConfig) ProtoMessage() {}
 
 func (x *GcpCloudArmorAdvancedOptionsConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[16]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1313,7 +1530,7 @@ func (x *GcpCloudArmorAdvancedOptionsConfig) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use GcpCloudArmorAdvancedOptionsConfig.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorAdvancedOptionsConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{16}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GcpCloudArmorAdvancedOptionsConfig) GetJsonParsing() string {
@@ -1365,7 +1582,7 @@ type GcpCloudArmorRecaptchaOptionsConfig struct {
 
 func (x *GcpCloudArmorRecaptchaOptionsConfig) Reset() {
 	*x = GcpCloudArmorRecaptchaOptionsConfig{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1377,7 +1594,7 @@ func (x *GcpCloudArmorRecaptchaOptionsConfig) String() string {
 func (*GcpCloudArmorRecaptchaOptionsConfig) ProtoMessage() {}
 
 func (x *GcpCloudArmorRecaptchaOptionsConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[17]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1390,12 +1607,233 @@ func (x *GcpCloudArmorRecaptchaOptionsConfig) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use GcpCloudArmorRecaptchaOptionsConfig.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorRecaptchaOptionsConfig) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{17}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GcpCloudArmorRecaptchaOptionsConfig) GetRedirectSiteKey() string {
 	if x != nil {
 		return x.RedirectSiteKey
+	}
+	return ""
+}
+
+// GcpCloudArmorUserDefinedField defines a custom packet field a regional
+// CLOUD_ARMOR_NETWORK policy's rules can match on: up to 4 bytes read from
+// a fixed offset relative to the IPv4, IPv6, TCP, or UDP header, optionally
+// masked to select certain bits. Rules reference the field by name in
+// network_match.user_defined_fields.
+//
+// Example -- the two-byte TCP field at offset 8 masked to its top bits:
+// {name: SIG1_AT_0, base: TCP, offset: 8, size: 2, mask: "0x8F00"}.
+type GcpCloudArmorUserDefinedField struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Name of this field. Must be unique within the policy; rules name it in
+	// network_match.user_defined_fields.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The header the offset is measured from:
+	//   - IPV4: the beginning of the IPv4 header
+	//   - IPV6: the beginning of the IPv6 header
+	//   - TCP: the beginning of the TCP header, skipping any IPv4 options or
+	//     IPv6 extension headers; not present for non-first fragments
+	//   - UDP: the beginning of the UDP header, likewise
+	Base string `protobuf:"bytes,2,opt,name=base,proto3" json:"base,omitempty"`
+	// Offset of the first byte of the field (in network byte order) relative
+	// to base. 0 is the first byte of the header and is a real position, so
+	// presence matters: unset lets Google apply its default.
+	Offset *int32 `protobuf:"varint,3,opt,name=offset,proto3,oneof" json:"offset,omitempty"`
+	// Size of the field in bytes, 1 to 4.
+	Size *int32 `protobuf:"varint,4,opt,name=size,proto3,oneof" json:"size,omitempty"`
+	// Bitwise-AND mask applied to the field before matching, as a
+	// hexadecimal number starting with "0x" (e.g. "0x8F00"). The last byte
+	// of the field (network byte order) corresponds to the least significant
+	// byte of the mask.
+	Mask          string `protobuf:"bytes,5,opt,name=mask,proto3" json:"mask,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpCloudArmorUserDefinedField) Reset() {
+	*x = GcpCloudArmorUserDefinedField{}
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudArmorUserDefinedField) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudArmorUserDefinedField) ProtoMessage() {}
+
+func (x *GcpCloudArmorUserDefinedField) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudArmorUserDefinedField.ProtoReflect.Descriptor instead.
+func (*GcpCloudArmorUserDefinedField) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GcpCloudArmorUserDefinedField) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *GcpCloudArmorUserDefinedField) GetBase() string {
+	if x != nil {
+		return x.Base
+	}
+	return ""
+}
+
+func (x *GcpCloudArmorUserDefinedField) GetOffset() int32 {
+	if x != nil && x.Offset != nil {
+		return *x.Offset
+	}
+	return 0
+}
+
+func (x *GcpCloudArmorUserDefinedField) GetSize() int32 {
+	if x != nil && x.Size != nil {
+		return *x.Size
+	}
+	return 0
+}
+
+func (x *GcpCloudArmorUserDefinedField) GetMask() string {
+	if x != nil {
+		return x.Mask
+	}
+	return ""
+}
+
+// GcpCloudArmorDdosProtectionConfig turns on Google Cloud Armor network
+// DDoS protection for the passthrough Network Load Balancers, protocol
+// forwarding rules, and public-IP VMs in the policy's region. Only on a
+// REGIONAL policy of type CLOUD_ARMOR_NETWORK.
+type GcpCloudArmorDdosProtectionConfig struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Protection level:
+	//   - STANDARD: basic always-on protection, included with the load
+	//     balancer -- no subscription
+	//   - ADVANCED: the additional network-layer protections of Cloud Armor
+	//     Enterprise (Managed Protection Plus); the project must be enrolled
+	//   - ADVANCED_PREVIEW: ADVANCED in preview mode -- Google logs what it
+	//     would mitigate without mitigating; use it to observe before enforcing
+	//
+	// ADVANCED and ADVANCED_PREVIEW take effect only once the region is
+	// enrolled through network_edge_security_service.
+	DdosProtection string `protobuf:"bytes,1,opt,name=ddos_protection,json=ddosProtection,proto3" json:"ddos_protection,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GcpCloudArmorDdosProtectionConfig) Reset() {
+	*x = GcpCloudArmorDdosProtectionConfig{}
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudArmorDdosProtectionConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudArmorDdosProtectionConfig) ProtoMessage() {}
+
+func (x *GcpCloudArmorDdosProtectionConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudArmorDdosProtectionConfig.ProtoReflect.Descriptor instead.
+func (*GcpCloudArmorDdosProtectionConfig) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GcpCloudArmorDdosProtectionConfig) GetDdosProtection() string {
+	if x != nil {
+		return x.DdosProtection
+	}
+	return ""
+}
+
+// GcpCloudArmorNetworkEdgeSecurityService enrolls the policy's region in
+// advanced network DDoS protection by attaching this policy to a network
+// edge security service -- Google's per-region, per-project enablement
+// object. Declaring the block creates the service alongside the policy;
+// omitting it leaves the region unenrolled. Google allows ONE per region
+// per project, so declare it on exactly one policy per region. Only
+// meaningful with ddos_protection_config on a regional CLOUD_ARMOR_NETWORK
+// policy; the kind's deletion_policy applies to it as well.
+type GcpCloudArmorNetworkEdgeSecurityService struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Name of the service in GCP (RFC 1035). Defaults to the policy's name.
+	// Immutable.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Free-text description of the service.
+	Description   string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GcpCloudArmorNetworkEdgeSecurityService) Reset() {
+	*x = GcpCloudArmorNetworkEdgeSecurityService{}
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GcpCloudArmorNetworkEdgeSecurityService) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GcpCloudArmorNetworkEdgeSecurityService) ProtoMessage() {}
+
+func (x *GcpCloudArmorNetworkEdgeSecurityService) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GcpCloudArmorNetworkEdgeSecurityService.ProtoReflect.Descriptor instead.
+func (*GcpCloudArmorNetworkEdgeSecurityService) Descriptor() ([]byte, []int) {
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GcpCloudArmorNetworkEdgeSecurityService) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *GcpCloudArmorNetworkEdgeSecurityService) GetDescription() string {
+	if x != nil {
+		return x.Description
 	}
 	return ""
 }
@@ -1409,19 +1847,39 @@ func (x *GcpCloudArmorRecaptchaOptionsConfig) GetRedirectSiteKey() string {
 // Rules are evaluated from highest priority (lowest number) to lowest
 // priority (highest number). The first matching rule's action is applied.
 //
-// Three policy types are available:
+// One kind, two scopes. Leave region empty for a GLOBAL policy, the one
+// a global external Application Load Balancer's backend service or a
+// backend bucket attaches; set region for a REGIONAL policy, the one a
+// regional backend service (regional external or internal ALB, or a
+// passthrough Network Load Balancer) attaches. Scopes must match: a
+// regional backend service accepts only a regional policy. A policy
+// cannot move between scopes.
 //
-//   - **CLOUD_ARMOR** (default): Backend security policies for HTTP(S)
-//     load balancers. Full WAF, rate limiting, redirect, and header
-//     injection capabilities.
+// Policy types, and where each scope allows them:
 //
-//   - **CLOUD_ARMOR_EDGE**: Edge security policies for Cloud CDN and
-//     backend buckets. Limited to IP-based and geo-based rules.
+//   - **CLOUD_ARMOR** (default; both scopes): Backend security policies
+//     for HTTP(S) load balancers. Full WAF, rate limiting; on the global
+//     scope also redirect, header injection, reCAPTCHA, and Adaptive
+//     Protection.
 //
-//   - **CLOUD_ARMOR_INTERNAL_SERVICE**: Policies for internal Traffic
-//     Director services. Limited feature set.
+//   - **CLOUD_ARMOR_EDGE** (both scopes): Edge security policies for Cloud
+//     CDN and backend buckets. Limited to IP-based and geo-based rules.
+//
+//   - **CLOUD_ARMOR_INTERNAL_SERVICE** (global only): Policies for internal
+//     Traffic Director services. Limited feature set.
+//
+//   - **CLOUD_ARMOR_NETWORK** (regional only): packet-level policies for
+//     passthrough Network Load Balancers, protocol forwarding, and VMs with
+//     public IPs -- network DDoS protection (ddos_protection_config),
+//     custom packet fields (user_defined_fields), and L3/L4 rules
+//     (rules[].network_match).
 //
 // The policy type is immutable after creation (ForceNew).
+//
+// The regional collection carries no labels, Adaptive Protection,
+// reCAPTCHA options, request-body inspection size, redirect action,
+// header injection, or reCAPTCHA token options; each is rejected when
+// region is set so a manifest fails before the API sees it.
 //
 // The default rule contract: every Cloud Armor policy carries a default
 // rule at priority 2147483647. Creating a policy with NO rules lets the
@@ -1442,15 +1900,20 @@ type GcpCloudArmorPolicySpec struct {
 	// Description of the security policy. Max 2048 characters.
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	// Policy type. Determines which features are available and where
-	// the policy can be attached.
+	// the policy can be attached. CLOUD_ARMOR (default) and CLOUD_ARMOR_EDGE
+	// exist on both scopes; CLOUD_ARMOR_INTERNAL_SERVICE only globally;
+	// CLOUD_ARMOR_NETWORK only regionally (set region).
 	//
 	// Immutable after creation (ForceNew).
 	Type string `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`
 	// Adaptive Protection configuration for automatic Layer 7 DDoS detection.
+	// A global-policy lever (rejected when region is set).
 	AdaptiveProtectionConfig *GcpCloudArmorAdaptiveProtectionConfig `protobuf:"bytes,5,opt,name=adaptive_protection_config,json=adaptiveProtectionConfig,proto3" json:"adaptive_protection_config,omitempty"`
-	// Advanced policy-level options: JSON parsing, logging, IP resolution.
+	// Advanced policy-level options: JSON parsing, logging, IP resolution
+	// (both scopes); request_body_inspection_size (global only).
 	AdvancedOptionsConfig *GcpCloudArmorAdvancedOptionsConfig `protobuf:"bytes,6,opt,name=advanced_options_config,json=advancedOptionsConfig,proto3" json:"advanced_options_config,omitempty"`
 	// Policy-level reCAPTCHA site key for GOOGLE_RECAPTCHA redirects.
+	// A global-policy lever (rejected when region is set).
 	RecaptchaOptionsConfig *GcpCloudArmorRecaptchaOptionsConfig `protobuf:"bytes,7,opt,name=recaptcha_options_config,json=recaptchaOptionsConfig,proto3" json:"recaptcha_options_config,omitempty"`
 	// Security rules. Rules are evaluated in priority order (lowest number
 	// first). Each rule matches traffic and applies an action.
@@ -1459,7 +1922,9 @@ type GcpCloudArmorPolicySpec struct {
 	// non-empty set must include the priority-2147483647 default rule.
 	Rules []*GcpCloudArmorRule `protobuf:"bytes,8,rep,name=rules,proto3" json:"rules,omitempty"`
 	// User labels attached to the security policy, merged with Planton's
-	// platform labels (which win on key conflicts). Mutable.
+	// platform labels (which win on key conflicts). Mutable. A global-policy
+	// lever: the regional collection carries no labels at all (rejected when
+	// region is set; a regional policy also receives no platform labels).
 	Labels map[string]string `protobuf:"bytes,9,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Deletion policy for the security policy — what happens on destroy:
 	//
@@ -1472,13 +1937,41 @@ type GcpCloudArmorPolicySpec struct {
 	//	"ABANDON" -- the policy is removed from management but keeps
 	//	             enforcing in GCP
 	DeletionPolicy string `protobuf:"bytes,10,opt,name=deletion_policy,json=deletionPolicy,proto3" json:"deletion_policy,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The scope selector. Empty builds a GLOBAL security policy (attached by
+	// a global backend service or a backend bucket in front of a global
+	// external Application Load Balancer, or by Cloud CDN); a region name
+	// such as us-central1 builds a REGIONAL one (attached by a regional
+	// backend service: the regional external and internal ALBs, and -- as a
+	// CLOUD_ARMOR_NETWORK policy -- the passthrough Network Load Balancers,
+	// protocol forwarding, and public-IP VMs in that region). Scopes must
+	// match what attaches the policy. The global-only levers (labels,
+	// adaptive_protection_config, recaptcha_options_config,
+	// request_body_inspection_size, the CLOUD_ARMOR_INTERNAL_SERVICE type,
+	// header_action, redirect, expr_options) are rejected when region is set;
+	// the network-policy levers (CLOUD_ARMOR_NETWORK, ddos_protection_config,
+	// user_defined_fields, network_match) are rejected when it is empty.
+	// Immutable: a policy cannot move between scopes or regions.
+	Region string `protobuf:"bytes,11,opt,name=region,proto3" json:"region,omitempty"`
+	// Network DDoS protection level for a regional CLOUD_ARMOR_NETWORK
+	// policy: STANDARD is free and always on; ADVANCED and ADVANCED_PREVIEW
+	// need Cloud Armor Enterprise and the region enrolled through
+	// network_edge_security_service.
+	DdosProtectionConfig *GcpCloudArmorDdosProtectionConfig `protobuf:"bytes,12,opt,name=ddos_protection_config,json=ddosProtectionConfig,proto3" json:"ddos_protection_config,omitempty"`
+	// Custom packet fields (up to 4 bytes at a fixed header offset) that a
+	// regional CLOUD_ARMOR_NETWORK policy's rules match through
+	// network_match.user_defined_fields. Names must be unique.
+	UserDefinedFields []*GcpCloudArmorUserDefinedField `protobuf:"bytes,13,rep,name=user_defined_fields,json=userDefinedFields,proto3" json:"user_defined_fields,omitempty"`
+	// Enroll this policy's region in advanced network DDoS protection by
+	// creating the region's network edge security service with this policy
+	// attached. One per region per project; requires ddos_protection_config.
+	NetworkEdgeSecurityService *GcpCloudArmorNetworkEdgeSecurityService `protobuf:"bytes,14,opt,name=network_edge_security_service,json=networkEdgeSecurityService,proto3" json:"network_edge_security_service,omitempty"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *GcpCloudArmorPolicySpec) Reset() {
 	*x = GcpCloudArmorPolicySpec{}
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1490,7 +1983,7 @@ func (x *GcpCloudArmorPolicySpec) String() string {
 func (*GcpCloudArmorPolicySpec) ProtoMessage() {}
 
 func (x *GcpCloudArmorPolicySpec) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[18]
+	mi := &file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1503,7 +1996,7 @@ func (x *GcpCloudArmorPolicySpec) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpCloudArmorPolicySpec.ProtoReflect.Descriptor instead.
 func (*GcpCloudArmorPolicySpec) Descriptor() ([]byte, []int) {
-	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{18}
+	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *GcpCloudArmorPolicySpec) GetProjectId() *v1.StringValueOrRef {
@@ -1574,6 +2067,34 @@ func (x *GcpCloudArmorPolicySpec) GetDeletionPolicy() string {
 		return x.DeletionPolicy
 	}
 	return ""
+}
+
+func (x *GcpCloudArmorPolicySpec) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *GcpCloudArmorPolicySpec) GetDdosProtectionConfig() *GcpCloudArmorDdosProtectionConfig {
+	if x != nil {
+		return x.DdosProtectionConfig
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorPolicySpec) GetUserDefinedFields() []*GcpCloudArmorUserDefinedField {
+	if x != nil {
+		return x.UserDefinedFields
+	}
+	return nil
+}
+
+func (x *GcpCloudArmorPolicySpec) GetNetworkEdgeSecurityService() *GcpCloudArmorNetworkEdgeSecurityService {
+	if x != nil {
+		return x.NetworkEdgeSecurityService
+	}
+	return nil
 }
 
 var File_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto protoreflect.FileDescriptor
@@ -1650,22 +2171,37 @@ const file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"#GcpCloudArmorPreconfiguredWafConfig\x12q\n" +
 	"\n" +
 	"exclusions\x18\x01 \x03(\v2G.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusionB\b\xbaH\x05\x92\x01\x02\b\x01R\n" +
-	"exclusions\"\xd9\n" +
+	"exclusions\"i\n" +
+	")GcpCloudArmorNetworkMatchUserDefinedField\x12\x1a\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12 \n" +
+	"\x06values\x18\x02 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06values\"\x93\x03\n" +
+	"\x19GcpCloudArmorNetworkMatch\x12\"\n" +
+	"\rsrc_ip_ranges\x18\x01 \x03(\tR\vsrcIpRanges\x12$\n" +
+	"\x0edest_ip_ranges\x18\x02 \x03(\tR\fdestIpRanges\x12!\n" +
+	"\fip_protocols\x18\x03 \x03(\tR\vipProtocols\x12\x1b\n" +
+	"\tsrc_ports\x18\x04 \x03(\tR\bsrcPorts\x12\x1d\n" +
 	"\n" +
+	"dest_ports\x18\x05 \x03(\tR\tdestPorts\x12(\n" +
+	"\x10src_region_codes\x18\x06 \x03(\tR\x0esrcRegionCodes\x12\x19\n" +
+	"\bsrc_asns\x18\a \x03(\x03R\asrcAsns\x12\x87\x01\n" +
+	"\x13user_defined_fields\x18\b \x03(\v2W.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkMatchUserDefinedFieldR\x11userDefinedFields\"\xac\r\n" +
 	"\x11GcpCloudArmorRule\x12\xfe\x01\n" +
 	"\x06action\x18\x01 \x01(\tB\xe5\x01\xbaH\xe1\x01\xba\x01\xda\x01\n" +
-	"\x11rule_action_valid\x12aaction must be one of: allow, deny(403), deny(404), deny(502), redirect, throttle, rate_based_ban\x1abthis in ['allow', 'deny(403)', 'deny(404)', 'deny(502)', 'redirect', 'throttle', 'rate_based_ban']\xc8\x01\x01R\x06action\x12&\n" +
-	"\bpriority\x18\x02 \x01(\x05B\n" +
-	"\xbaH\a\xc8\x01\x01\x1a\x02(\x00R\bpriority\x12b\n" +
-	"\x05match\x18\x03 \x01(\v2D.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRuleMatchB\x06\xbaH\x03\xc8\x01\x01R\x05match\x12)\n" +
+	"\x11rule_action_valid\x12aaction must be one of: allow, deny(403), deny(404), deny(502), redirect, throttle, rate_based_ban\x1abthis in ['allow', 'deny(403)', 'deny(404)', 'deny(502)', 'redirect', 'throttle', 'rate_based_ban']\xc8\x01\x01R\x06action\x121\n" +
+	"\bpriority\x18\x02 \x01(\x05B\x10\xbaH\r\xc8\x01\x01\x1a\b\x18\xff\xff\xff\xff\a(\x00H\x00R\bpriority\x88\x01\x01\x12Z\n" +
+	"\x05match\x18\x03 \x01(\v2D.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRuleMatchR\x05match\x12l\n" +
+	"\rnetwork_match\x18\n" +
+	" \x01(\v2G.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkMatchR\fnetworkMatch\x12)\n" +
 	"\vdescription\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x18@R\vdescription\x12\x18\n" +
 	"\apreview\x18\x05 \x01(\bR\apreview\x12y\n" +
 	"\x12rate_limit_options\x18\x06 \x01(\v2K.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRateLimitOptionsR\x10rateLimitOptions\x12t\n" +
 	"\x10redirect_options\x18\a \x01(\v2I.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRedirectConfigR\x0fredirectOptions\x12l\n" +
 	"\rheader_action\x18\b \x01(\v2G.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorHeaderActionR\fheaderAction\x12\x8b\x01\n" +
-	"\x18preconfigured_waf_config\x18\t \x01(\v2Q.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPreconfiguredWafConfigR\x16preconfiguredWafConfig:\x84\x03\xbaH\x80\x03\x1a\xd0\x01\n" +
+	"\x18preconfigured_waf_config\x18\t \x01(\v2Q.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPreconfiguredWafConfigR\x16preconfiguredWafConfig:\xd9\x04\xbaH\xd5\x04\x1a\xd0\x01\n" +
 	"\x1brate_limit_options_coherent\x12`rate_limit_options is required for throttle/rate_based_ban actions and must not be set otherwise\x1aO(this.action in ['throttle', 'rate_based_ban']) == has(this.rate_limit_options)\x1a\xaa\x01\n" +
-	"\x19redirect_options_coherent\x12Rredirect_options is required for the redirect action and must not be set otherwise\x1a9(this.action == 'redirect') == has(this.redirect_options)\"\xa1\x03\n" +
+	"\x19redirect_options_coherent\x12Rredirect_options is required for the redirect action and must not be set otherwise\x1a9(this.action == 'redirect') == has(this.redirect_options)\x1a\xd2\x01\n" +
+	"\x15match_arm_exactly_one\x12\x8c\x01a rule matches through exactly one arm: match (HTTP request attributes) or network_match (packet headers, CLOUD_ARMOR_NETWORK policies only)\x1a*has(this.match) != has(this.network_match)B\v\n" +
+	"\t_priority\"\xa1\x03\n" +
 	"%GcpCloudArmorTrafficGranularityConfig\x12\x8c\x01\n" +
 	"\x04type\x18\x01 \x01(\tBx\xbaHu\xba\x01o\n" +
 	"\x16granularity_type_valid\x12*type must be HTTP_HEADER_HOST or HTTP_PATH\x1a)this in ['HTTP_HEADER_HOST', 'HTTP_PATH']\xc8\x01\x01R\x04type\x12\x14\n" +
@@ -1708,17 +2244,34 @@ const file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\"request_body_inspection_size_valid\x12Hrequest_body_inspection_size must be one of: 8KB, 16KB, 32KB, 48KB, 64KB\x1a=this == '' || this in ['8KB', '16KB', '32KB', '48KB', '64KB']R\x19requestBodyInspectionSize:\xda\x01\xbaH\xd6\x01\x1a\xd3\x01\n" +
 	"\x1cjson_custom_requires_parsing\x12Vjson_custom_config applies only when json_parsing is STANDARD or STANDARD_WITH_GRAPHQL\x1a[!has(this.json_custom_config) || this.json_parsing in ['STANDARD', 'STANDARD_WITH_GRAPHQL']\"Y\n" +
 	"#GcpCloudArmorRecaptchaOptionsConfig\x122\n" +
-	"\x11redirect_site_key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fredirectSiteKey\"\xf3\x0e\n" +
+	"\x11redirect_site_key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x0fredirectSiteKey\"\xe1\x03\n" +
+	"\x1dGcpCloudArmorUserDefinedField\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x8f\x01\n" +
+	"\x04base\x18\x02 \x01(\tB{\xbaHx\xba\x01r\n" +
+	"\x1duser_defined_field_base_valid\x12)base must be one of: IPV4, IPV6, TCP, UDP\x1a&this in ['IPV4', 'IPV6', 'TCP', 'UDP']\xc8\x01\x01R\x04base\x12$\n" +
+	"\x06offset\x18\x03 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00H\x00R\x06offset\x88\x01\x01\x12\"\n" +
+	"\x04size\x18\x04 \x01(\x05B\t\xbaH\x06\x1a\x04\x18\x04(\x01H\x01R\x04size\x88\x01\x01\x12\xbb\x01\n" +
+	"\x04mask\x18\x05 \x01(\tB\xa6\x01\xbaH\xa2\x01\xba\x01\x9e\x01\n" +
+	"\x1buser_defined_field_mask_hex\x12Kmask must be a 0x-prefixed hexadecimal number of up to 4 bytes, e.g. 0x8F00\x1a2this == '' || this.matches('^0x[0-9a-fA-F]{1,8}$')R\x04maskB\t\n" +
+	"\a_offsetB\a\n" +
+	"\x05_size\"\xee\x01\n" +
+	"!GcpCloudArmorDdosProtectionConfig\x12\xc8\x01\n" +
+	"\x0fddos_protection\x18\x01 \x01(\tB\x9e\x01\xbaH\x9a\x01\xba\x01\x93\x01\n" +
+	"\x15ddos_protection_valid\x12Dddos_protection must be one of: STANDARD, ADVANCED, ADVANCED_PREVIEW\x1a4this in ['STANDARD', 'ADVANCED', 'ADVANCED_PREVIEW']\xc8\x01\x01R\x0eddosProtection\"\xd5\x02\n" +
+	"'GcpCloudArmorNetworkEdgeSecurityService\x12\xfd\x01\n" +
+	"\x04name\x18\x01 \x01(\tB\xe8\x01\xbaH\xe4\x01\xba\x01\xe0\x01\n" +
+	"\x17valid_edge_service_name\x12\x83\x01name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')R\x04name\x12*\n" +
+	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\"\xc44\n" +
 	"\x17GcpCloudArmorPolicySpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12\x8b\x02\n" +
 	"\vpolicy_name\x18\x02 \x01(\tB\xe9\x01\xbaH\xe5\x01\xba\x01\xe1\x01\n" +
 	"\x11valid_policy_name\x12\x8a\x01policy_name must be RFC1035-compliant: 1-63 lowercase letters, digits, or hyphens; must start with a letter and end with a letter or digit\x1a?this == '' || this.matches('^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$')R\n" +
 	"policyName\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xd1\x01\n" +
-	"\x04type\x18\x04 \x01(\tB\xbc\x01\xbaH\xb8\x01\xba\x01\xb4\x01\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x10R\vdescription\x12\xfd\x01\n" +
+	"\x04type\x18\x04 \x01(\tB\xe8\x01\xbaH\xe4\x01\xba\x01\xe0\x01\n" +
 	"\n" +
-	"type_valid\x12Ktype must be CLOUD_ARMOR, CLOUD_ARMOR_EDGE, or CLOUD_ARMOR_INTERNAL_SERVICE\x1aYthis == '' || this in ['CLOUD_ARMOR', 'CLOUD_ARMOR_EDGE', 'CLOUD_ARMOR_INTERNAL_SERVICE']R\x04type\x12\x91\x01\n" +
+	"type_valid\x12`type must be CLOUD_ARMOR, CLOUD_ARMOR_EDGE, CLOUD_ARMOR_INTERNAL_SERVICE, or CLOUD_ARMOR_NETWORK\x1apthis == '' || this in ['CLOUD_ARMOR', 'CLOUD_ARMOR_EDGE', 'CLOUD_ARMOR_INTERNAL_SERVICE', 'CLOUD_ARMOR_NETWORK']R\x04type\x12\x91\x01\n" +
 	"\x1aadaptive_protection_config\x18\x05 \x01(\v2S.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdaptiveProtectionConfigR\x18adaptiveProtectionConfig\x12\x88\x01\n" +
 	"\x17advanced_options_config\x18\x06 \x01(\v2P.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdvancedOptionsConfigR\x15advancedOptionsConfig\x12\x8b\x01\n" +
 	"\x18recaptcha_options_config\x18\a \x01(\v2Q.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptionsConfigR\x16recaptchaOptionsConfig\x12U\n" +
@@ -1726,12 +2279,33 @@ const file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDesc = "" +
 	"\x06labels\x18\t \x03(\v2Q.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.LabelsEntryR\x06labels\x12\xbb\x01\n" +
 	"\x0fdeletion_policy\x18\n" +
 	" \x01(\tB\x91\x01\xbaH\x8d\x01\xba\x01\x89\x01\n" +
-	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x1a9\n" +
+	"\x15valid_deletion_policy\x128deletion_policy must be one of: DELETE, PREVENT, ABANDON\x1a6this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']R\x0edeletionPolicy\x12\xce\x01\n" +
+	"\x06region\x18\v \x01(\tB\xb5\x01\xbaH\xb1\x01\xba\x01\xad\x01\n" +
+	"\fvalid_region\x12aregion must be a valid GCP region name such as us-central1, or empty for a global security policy\x1a:this == '' || this.matches('^[a-z]([-a-z0-9]*[a-z0-9])?$')R\x06region\x12\x85\x01\n" +
+	"\x16ddos_protection_config\x18\f \x01(\v2O.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorDdosProtectionConfigR\x14ddosProtectionConfig\x12{\n" +
+	"\x13user_defined_fields\x18\r \x03(\v2K.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorUserDefinedFieldR\x11userDefinedFields\x12\x98\x01\n" +
+	"\x1dnetwork_edge_security_service\x18\x0e \x01(\v2U.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkEdgeSecurityServiceR\x1anetworkEdgeSecurityService\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xea\x02\xbaH\xe6\x02\x1a\xb8\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9e#\xbaH\x9a#\x1a\xb8\x01\n" +
 	"\x15rules_include_default\x12Ua non-empty rule set must include the default rule at priority 2147483647 (match '*')\x1aHthis.rules.size() == 0 || this.rules.exists(r, r.priority == 2147483647)\x1a\xa8\x01\n" +
-	"\x16rule_priorities_unique\x12%each rule must have a unique priority\x1agthis.rules.size() == 0 || this.rules.all(r, this.rules.filter(x, x.priority == r.priority).size() == 1)B\xf5\x02\n" +
+	"\x16rule_priorities_unique\x12%each rule must have a unique priority\x1agthis.rules.size() == 0 || this.rules.all(r, this.rules.filter(x, x.priority == r.priority).size() == 1)\x1a\xc1\x01\n" +
+	"\x12labels_global_only\x12}labels are a global-policy lever — the regional security policy collection carries no labels; clear region or remove labels\x1a,this.region == '' || this.labels.size() == 0\x1a\x8d\x02\n" +
+	"\x1fadaptive_protection_global_only\x12\xad\x01adaptive_protection_config is a global-policy lever — Adaptive Protection watches global Application Load Balancers only; clear region or remove adaptive_protection_config\x1a:this.region == '' || !has(this.adaptive_protection_config)\x1a\xf4\x01\n" +
+	"\x1drecaptcha_options_global_only\x12\x98\x01recaptcha_options_config is a global-policy lever — the regional collection has no reCAPTCHA redirect; clear region or remove recaptcha_options_config\x1a8this.region == '' || !has(this.recaptcha_options_config)\x1a\xe5\x02\n" +
+	"(request_body_inspection_size_global_only\x12\xbc\x01advanced_options_config.request_body_inspection_size is a global-policy lever — the regional collection inspects the default 8KB only; clear region or remove request_body_inspection_size\x1azthis.region == '' || !has(this.advanced_options_config) || this.advanced_options_config.request_body_inspection_size == ''\x1a\x82\x02\n" +
+	"!internal_service_type_global_only\x12\x9a\x01type CLOUD_ARMOR_INTERNAL_SERVICE is a global-policy type (Traffic Director); clear region or choose CLOUD_ARMOR, CLOUD_ARMOR_EDGE, or CLOUD_ARMOR_NETWORK\x1a@this.region == '' || this.type != 'CLOUD_ARMOR_INTERNAL_SERVICE'\x1a\xfe\x01\n" +
+	"\x19header_action_global_only\x12\x9e\x01rules[].header_action is a global-policy lever — the regional collection cannot inject request headers; clear region or remove header_action from every rule\x1a@this.region == '' || !this.rules.exists(r, has(r.header_action))\x1a\xe9\x01\n" +
+	"\x1bredirect_action_global_only\x12\x85\x01the redirect rule action is a global CLOUD_ARMOR lever — the regional collection has no redirect; clear region or change the action\x1aBthis.region == '' || !this.rules.exists(r, r.action == 'redirect')\x1a\xb5\x02\n" +
+	"\x1bexceed_redirect_global_only\x12\x9a\x01rate_limit_options.exceed_action redirect is a global-policy lever — a regional rate limit exceeds to deny(STATUS); clear region or change exceed_action\x1aythis.region == '' || !this.rules.exists(r, has(r.rate_limit_options) && r.rate_limit_options.exceed_action == 'redirect')\x1a\xf8\x01\n" +
+	"\x18expr_options_global_only\x12\x84\x01rules[].match.expr_options (reCAPTCHA token site keys) is a global-policy lever; clear region or remove expr_options from every rule\x1aUthis.region == '' || !this.rules.exists(r, has(r.match) && has(r.match.expr_options))\x1a\x84\x02\n" +
+	"\x1anetwork_type_regional_only\x12\xac\x01type CLOUD_ARMOR_NETWORK is a regional-policy type (passthrough Network Load Balancers); set region or choose CLOUD_ARMOR, CLOUD_ARMOR_EDGE, or CLOUD_ARMOR_INTERNAL_SERVICE\x1a7this.region != '' || this.type != 'CLOUD_ARMOR_NETWORK'\x1a\xdd\x01\n" +
+	"%ddos_protection_requires_network_type\x12Tddos_protection_config applies only to a regional policy of type CLOUD_ARMOR_NETWORK\x1a^!has(this.ddos_protection_config) || (this.region != '' && this.type == 'CLOUD_ARMOR_NETWORK')\x1a\xde\x01\n" +
+	"(user_defined_fields_require_network_type\x12Ouser_defined_fields apply only to a regional policy of type CLOUD_ARMOR_NETWORK\x1aathis.user_defined_fields.size() == 0 || (this.region != '' && this.type == 'CLOUD_ARMOR_NETWORK')\x1a\x8f\x02\n" +
+	"#network_match_requires_network_type\x12~rules[].network_match applies only to a regional policy of type CLOUD_ARMOR_NETWORK; HTTP policies match through rules[].match\x1ah!this.rules.exists(r, has(r.network_match)) || (this.region != '' && this.type == 'CLOUD_ARMOR_NETWORK')\x1a\x9b\x02\n" +
+	"\x1cnetwork_match_fields_defined\x12levery network_match.user_defined_fields entry must name a field declared in the policy's user_defined_fields\x1a\x8c\x01this.rules.all(r, !has(r.network_match) || r.network_match.user_defined_fields.all(u, this.user_defined_fields.exists(d, d.name == u.name)))\x1a\xc7\x01\n" +
+	"\x1fuser_defined_field_names_unique\x12Aeach user-defined field must have a unique name within the policy\x1aathis.user_defined_fields.all(d, this.user_defined_fields.filter(x, x.name == d.name).size() == 1)\x1a\x97\x02\n" +
+	"%edge_service_requires_ddos_protection\x12\x9f\x01network_edge_security_service enrolls a region in advanced network DDoS protection and needs ddos_protection_config on this regional CLOUD_ARMOR_NETWORK policy\x1aL!has(this.network_edge_security_service) || has(this.ddos_protection_config)B\xf5\x02\n" +
 	"0com.dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1B\tSpecProtoP\x01Zagithub.com/plantonhq/planton/catalog/gcp/gcpcloudarmorpolicy/v1alpha1;gcpcloudarmorpolicyv1alpha1\xa2\x02\x04DPGG\xaa\x02,Dev.Planton.Gcp.Gcpcloudarmorpolicy.V1alpha1\xca\x02,Dev\\Planton\\Gcp\\Gcpcloudarmorpolicy\\V1alpha1\xe2\x028Dev\\Planton\\Gcp\\Gcpcloudarmorpolicy\\V1alpha1\\GPBMetadata\xea\x020Dev::Planton::Gcp::Gcpcloudarmorpolicy::V1alpha1b\x06proto3"
 
 var (
@@ -1746,29 +2320,34 @@ func file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescGZIP() []by
 	return file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_goTypes = []any{
-	(*GcpCloudArmorRateThreshold)(nil),            // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRateThreshold
-	(*GcpCloudArmorRedirectConfig)(nil),           // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRedirectConfig
-	(*GcpCloudArmorRecaptchaOptions)(nil),         // 2: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptions
-	(*GcpCloudArmorRuleMatch)(nil),                // 3: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRuleMatch
-	(*GcpCloudArmorEnforceOnKeyConfig)(nil),       // 4: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorEnforceOnKeyConfig
-	(*GcpCloudArmorRateLimitOptions)(nil),         // 5: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRateLimitOptions
-	(*GcpCloudArmorRequestHeader)(nil),            // 6: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRequestHeader
-	(*GcpCloudArmorHeaderAction)(nil),             // 7: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorHeaderAction
-	(*GcpCloudArmorWafExclusionFieldParams)(nil),  // 8: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusionFieldParams
-	(*GcpCloudArmorWafExclusion)(nil),             // 9: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusion
-	(*GcpCloudArmorPreconfiguredWafConfig)(nil),   // 10: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPreconfiguredWafConfig
-	(*GcpCloudArmorRule)(nil),                     // 11: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule
-	(*GcpCloudArmorTrafficGranularityConfig)(nil), // 12: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorTrafficGranularityConfig
-	(*GcpCloudArmorThresholdConfig)(nil),          // 13: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorThresholdConfig
-	(*GcpCloudArmorAdaptiveProtectionConfig)(nil), // 14: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdaptiveProtectionConfig
-	(*GcpCloudArmorJsonCustomConfig)(nil),         // 15: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorJsonCustomConfig
-	(*GcpCloudArmorAdvancedOptionsConfig)(nil),    // 16: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdvancedOptionsConfig
-	(*GcpCloudArmorRecaptchaOptionsConfig)(nil),   // 17: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptionsConfig
-	(*GcpCloudArmorPolicySpec)(nil),               // 18: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec
-	nil,                                           // 19: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.LabelsEntry
-	(*v1.StringValueOrRef)(nil),                   // 20: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*GcpCloudArmorRateThreshold)(nil),                // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRateThreshold
+	(*GcpCloudArmorRedirectConfig)(nil),               // 1: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRedirectConfig
+	(*GcpCloudArmorRecaptchaOptions)(nil),             // 2: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptions
+	(*GcpCloudArmorRuleMatch)(nil),                    // 3: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRuleMatch
+	(*GcpCloudArmorEnforceOnKeyConfig)(nil),           // 4: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorEnforceOnKeyConfig
+	(*GcpCloudArmorRateLimitOptions)(nil),             // 5: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRateLimitOptions
+	(*GcpCloudArmorRequestHeader)(nil),                // 6: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRequestHeader
+	(*GcpCloudArmorHeaderAction)(nil),                 // 7: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorHeaderAction
+	(*GcpCloudArmorWafExclusionFieldParams)(nil),      // 8: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusionFieldParams
+	(*GcpCloudArmorWafExclusion)(nil),                 // 9: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusion
+	(*GcpCloudArmorPreconfiguredWafConfig)(nil),       // 10: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPreconfiguredWafConfig
+	(*GcpCloudArmorNetworkMatchUserDefinedField)(nil), // 11: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkMatchUserDefinedField
+	(*GcpCloudArmorNetworkMatch)(nil),                 // 12: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkMatch
+	(*GcpCloudArmorRule)(nil),                         // 13: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule
+	(*GcpCloudArmorTrafficGranularityConfig)(nil),     // 14: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorTrafficGranularityConfig
+	(*GcpCloudArmorThresholdConfig)(nil),              // 15: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorThresholdConfig
+	(*GcpCloudArmorAdaptiveProtectionConfig)(nil),     // 16: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdaptiveProtectionConfig
+	(*GcpCloudArmorJsonCustomConfig)(nil),             // 17: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorJsonCustomConfig
+	(*GcpCloudArmorAdvancedOptionsConfig)(nil),        // 18: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdvancedOptionsConfig
+	(*GcpCloudArmorRecaptchaOptionsConfig)(nil),       // 19: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptionsConfig
+	(*GcpCloudArmorUserDefinedField)(nil),             // 20: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorUserDefinedField
+	(*GcpCloudArmorDdosProtectionConfig)(nil),         // 21: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorDdosProtectionConfig
+	(*GcpCloudArmorNetworkEdgeSecurityService)(nil),   // 22: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkEdgeSecurityService
+	(*GcpCloudArmorPolicySpec)(nil),                   // 23: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec
+	nil,                                               // 24: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.LabelsEntry
+	(*v1.StringValueOrRef)(nil),                       // 25: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_depIdxs = []int32{
 	2,  // 0: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRuleMatch.expr_options:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptions
@@ -1782,25 +2361,30 @@ var file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_depIdxs = []int32{
 	8,  // 8: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusion.request_uris:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusionFieldParams
 	8,  // 9: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusion.request_query_params:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusionFieldParams
 	9,  // 10: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPreconfiguredWafConfig.exclusions:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorWafExclusion
-	3,  // 11: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.match:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRuleMatch
-	5,  // 12: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.rate_limit_options:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRateLimitOptions
-	1,  // 13: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.redirect_options:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRedirectConfig
-	7,  // 14: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.header_action:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorHeaderAction
-	10, // 15: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.preconfigured_waf_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPreconfiguredWafConfig
-	12, // 16: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorThresholdConfig.traffic_granularity_configs:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorTrafficGranularityConfig
-	13, // 17: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdaptiveProtectionConfig.threshold_configs:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorThresholdConfig
-	15, // 18: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdvancedOptionsConfig.json_custom_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorJsonCustomConfig
-	20, // 19: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	14, // 20: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.adaptive_protection_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdaptiveProtectionConfig
-	16, // 21: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.advanced_options_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdvancedOptionsConfig
-	17, // 22: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.recaptcha_options_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptionsConfig
-	11, // 23: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.rules:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule
-	19, // 24: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.labels:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.LabelsEntry
-	25, // [25:25] is the sub-list for method output_type
-	25, // [25:25] is the sub-list for method input_type
-	25, // [25:25] is the sub-list for extension type_name
-	25, // [25:25] is the sub-list for extension extendee
-	0,  // [0:25] is the sub-list for field type_name
+	11, // 11: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkMatch.user_defined_fields:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkMatchUserDefinedField
+	3,  // 12: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.match:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRuleMatch
+	12, // 13: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.network_match:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkMatch
+	5,  // 14: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.rate_limit_options:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRateLimitOptions
+	1,  // 15: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.redirect_options:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRedirectConfig
+	7,  // 16: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.header_action:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorHeaderAction
+	10, // 17: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule.preconfigured_waf_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPreconfiguredWafConfig
+	14, // 18: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorThresholdConfig.traffic_granularity_configs:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorTrafficGranularityConfig
+	15, // 19: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdaptiveProtectionConfig.threshold_configs:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorThresholdConfig
+	17, // 20: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdvancedOptionsConfig.json_custom_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorJsonCustomConfig
+	25, // 21: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 22: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.adaptive_protection_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdaptiveProtectionConfig
+	18, // 23: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.advanced_options_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorAdvancedOptionsConfig
+	19, // 24: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.recaptcha_options_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRecaptchaOptionsConfig
+	13, // 25: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.rules:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorRule
+	24, // 26: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.labels:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.LabelsEntry
+	21, // 27: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.ddos_protection_config:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorDdosProtectionConfig
+	20, // 28: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.user_defined_fields:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorUserDefinedField
+	22, // 29: dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorPolicySpec.network_edge_security_service:type_name -> dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1.GcpCloudArmorNetworkEdgeSecurityService
+	30, // [30:30] is the sub-list for method output_type
+	30, // [30:30] is the sub-list for method input_type
+	30, // [30:30] is the sub-list for extension type_name
+	30, // [30:30] is the sub-list for extension extendee
+	0,  // [0:30] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_init() }
@@ -1809,13 +2393,15 @@ func file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_init() {
 		return
 	}
 	file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[15].OneofWrappers = []any{}
+	file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_msgTypes[20].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDesc), len(file_catalog_gcp_gcpcloudarmorpolicy_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   20,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

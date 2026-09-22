@@ -1,0 +1,27 @@
+# GcpNetworkEndpointGroup scenario: the GLOBAL internet group
+# (INTERNET_FQDN_PORT) with one FQDN endpoint -- the backend of a global
+# external Application Load Balancer fronting an origin outside Google
+# Cloud. No network, no fixtures: an internet NEG has no VPC.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpNetworkEndpointGroup
+metadata:
+  name: planton-oss-e2e-gcpneg-global
+  id: planton-oss-e2e-gcpneg-global
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpnetworkendpointgroup
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  negName: planton-oss-e2e-gcpneg-global
+  description: Ephemeral global internet network endpoint group created by the Planton E2E harness; safe to delete
+  networkEndpointType: INTERNET_FQDN_PORT
+  defaultPort: 443
+  endpoints:
+    - fqdn: origin.example.com
+      port: 443
+  deletionPolicy: DELETE

@@ -66,13 +66,18 @@ func graphOver(msgs ...proto.Message) *Graph {
 func TestCollectLiteralUses_ReadsTheLiteralArmAtDepth(t *testing.T) {
 	uses := CollectLiteralUses(routeNamingGateway("shop-web", "dev", "public-gateway"))
 	paths := map[string]string{}
+	byPath := map[string]LiteralUse{}
 	for _, u := range uses {
 		paths[u.FieldPath] = u.Value
+		byPath[u.FieldPath] = u
 	}
 	assert.Equal(t, "public-gateway", paths["spec.parent_refs[0].name"],
 		"a literal inside a repeated message is found on the same traversal that finds references")
+	// Looked up by path, never by position: protoreflect's Range visits
+	// fields in an order protobuf-go deliberately perturbs per binary, so a
+	// positional assertion flips whenever any linked descriptor changes.
 	assert.Equal(t, cloudresourcekind.CloudResourceKind_KubernetesGateway,
-		annotatedKind(uses[len(uses)-1].Field), "the declaring field carries the default kind the literal is matched against")
+		annotatedKind(byPath["spec.parent_refs[0].name"].Field), "the declaring field carries the default kind the literal is matched against")
 }
 
 func TestLiteralSibling_MatchesTheDeclaredKindBySlugInTheSameEnv(t *testing.T) {

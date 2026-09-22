@@ -392,9 +392,6 @@ resources:
   - resource: google_bigtable_schema_bundle
     disposition: deferred
     reason: "judged to fold into the existing GcpBigtableTable kind's spec (views and schema bundles); the composition is not built"
-  - resource: google_billing_budget
-    disposition: model-planned
-    reason: "planned GcpBillingBudget kind (billing budgets)"
   - resource: google_billing_project_info
     disposition: deferred
     reason: "judged to fold into the existing GcpProject kind's spec (billing-account link); the composition is not built"
@@ -527,12 +524,6 @@ resources:
   - resource: google_cloud_asset_project_feed
     disposition: deferred
     reason: "Cloud Asset feeds judged as one feed kind with project/folder/organization scope; deferred pending demand"
-  - resource: google_cloud_identity_group
-    disposition: model-planned
-    reason: "planned GcpCloudIdentityGroup kind (Cloud Identity groups)"
-  - resource: google_cloud_identity_group_membership
-    disposition: model-planned
-    reason: "planned composition into the planned GcpCloudIdentityGroup kind (memberships)"
   - resource: google_cloud_ids_endpoint
     disposition: deferred
     reason: "Cloud IDS is superseded in practice by NGFW intrusion features; deferred"
@@ -626,12 +617,6 @@ resources:
   - resource: google_compute_firewall_policy_with_rules
     disposition: deferred
     reason: "the all-in-one variant of the policy GcpHierarchicalFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
-  - resource: google_compute_global_network_endpoint
-    disposition: model-planned
-    reason: "planned composition into the planned GcpNetworkEndpointGroup kind (global endpoints)"
-  - resource: google_compute_global_network_endpoint_group
-    disposition: model-planned
-    reason: "planned GcpNetworkEndpointGroup kind (zonal and global network endpoint groups)"
   - resource: google_compute_global_vm_extension_policy
     disposition: deferred
     reason: "VM extension policies are emerging fleet tooling; deferred pending demand"
@@ -677,18 +662,9 @@ resources:
   - resource: google_compute_network_attachment
     disposition: deferred
     reason: "judged to fold into the existing GcpVpcNetwork kind's spec (static routes and network attachments); the composition is not built"
-  - resource: google_compute_network_edge_security_service
-    disposition: deferred
-    reason: "Cloud Armor edge security services front network load balancers and are judged with the passthrough load-balancer family; deferred pending demand"
   - resource: google_compute_network_endpoint
-    disposition: model-planned
-    reason: "planned composition into the planned GcpNetworkEndpointGroup kind (zonal endpoints)"
-  - resource: google_compute_network_endpoint_group
-    disposition: model-planned
-    reason: "planned GcpNetworkEndpointGroup kind (zonal and global network endpoint groups)"
-  - resource: google_compute_network_endpoints
     disposition: deferred
-    reason: "network-endpoint-group surface for VM and hybrid backends; deferred pending demand — the serverless path is modeled by GcpRegionNetworkEndpointGroup, and the productized HTTPS-to-Cloud-Run composition ships as an infra chart over the modeled kinds rather than a facade kind"
+    reason: "superseded by composition -- GcpNetworkEndpointGroup writes a zonal group's membership as one set through google_compute_network_endpoints (the manifest's list is the membership), so the per-endpoint resource has no separate role in the catalog"
   - resource: google_compute_network_firewall_policy_with_rules
     disposition: deferred
     reason: "the all-in-one variant of the policy GcpNetworkFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
@@ -758,12 +734,9 @@ resources:
   - resource: google_compute_region_network_firewall_policy_with_rules
     disposition: deferred
     reason: "the all-in-one variant of the policy GcpNetworkFirewallPolicy composes from the policy, rule, and association resources; two shapes for one policy would give the catalog two truths"
-  - resource: google_compute_region_security_policy
-    disposition: deferred
-    reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
   - resource: google_compute_region_security_policy_rule
     disposition: deferred
-    reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
+    reason: "superseded by composition -- GcpCloudArmorPolicy carries its rules inline on both the global and the regional security policy (spec.rules), so the standalone rule resource has no separate role in the catalog"
   - resource: google_compute_region_target_tcp_proxy
     disposition: deferred
     reason: "regional/internal L7 load-balancer surface; deferred pending demand — the preferred shape is folding each regional variant into its owning global kind (the SSL-policy one-kind-both-variants grain) once those kinds' live proofs settle, never a facade kind duplicating already-consumed resources"
@@ -793,10 +766,7 @@ resources:
     reason: "BGP import/export route policies on a Cloud Router; GcpHaVpnConnection sessions reference policies by name (import_policies / export_policies) and the policy resource itself is its own kind on the first ask"
   - resource: google_compute_security_policy_rule
     disposition: deferred
-    reason: "judged to fold into the existing GcpCloudArmorPolicy kind's spec (standalone and regional rules); the composition is not built"
-  - resource: google_compute_service_attachment
-    disposition: model-planned
-    reason: "planned GcpPscServiceAttachment kind (Private Service Connect service attachments)"
+    reason: "superseded by composition -- GcpCloudArmorPolicy carries its rules inline on both the global and the regional security policy (spec.rules), so the standalone rule resource has no separate role in the catalog"
   - resource: google_compute_snapshot
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeDisk kind's spec (snapshots, regional disks, resource policies, and async replication); the composition is not built"

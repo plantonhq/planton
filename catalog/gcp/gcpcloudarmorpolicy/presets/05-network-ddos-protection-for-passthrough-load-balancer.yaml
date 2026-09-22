@@ -1,0 +1,54 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudArmorPolicy
+metadata:
+  name: nlb-network-shield
+spec:
+  projectId:
+    value: my-gcp-project
+  policyName: nlb-network-shield
+  description: Network DDoS protection and packet-level allowlist for the region's passthrough Network Load Balancers
+  # CLOUD_ARMOR_NETWORK policies exist only regionally: they filter
+  # PACKETS in front of passthrough Network Load Balancers, protocol
+  # forwarding, and public-IP VMs, so their rules use networkMatch.
+  region: us-central1
+  type: CLOUD_ARMOR_NETWORK
+  ddosProtectionConfig:
+    # STANDARD is Google's always-on protection, free with the load
+    # balancer. ADVANCED / ADVANCED_PREVIEW need Cloud Armor Enterprise and
+    # the region enrolled through networkEdgeSecurityService.
+    ddosProtection: STANDARD
+  userDefinedFields:
+    # Two bytes at offset 8 of the TCP header, masked to the bits the
+    # rule below inspects -- the shape Google's own example uses.
+    - name: SIG1_AT_0
+      base: TCP
+      offset: 8
+      size: 2
+      mask: "0x8F00"
+  rules:
+    - action: allow
+      priority: 100
+      description: Admit the partner network's signed TCP flows
+      preview: true
+      networkMatch:
+        srcIpRanges:
+          - 10.10.0.0/16
+        ipProtocols:
+          - tcp
+        destPorts:
+          - "443"
+        userDefinedFields:
+          - name: SIG1_AT_0
+            values:
+              - "0x8F00"
+    - action: deny(403)
+      priority: 200
+      description: Drop traffic from autonomous systems the service never serves
+      networkMatch:
+        srcAsns:
+          - 64496
+          - 64497
+    - action: allow
+      priority: 2147483647
+      description: Default rule -- an empty network match is every packet
+      networkMatch: {}

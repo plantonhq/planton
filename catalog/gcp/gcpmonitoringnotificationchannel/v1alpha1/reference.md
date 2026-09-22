@@ -260,6 +260,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpBillingBudget | `spec.notifications.monitoringNotificationChannels` | `status.outputs.channel_name` |
 | GcpMonitoringAlertPolicy | `spec.notificationChannels` | `status.outputs.channel_name` |
 | GcpMonitoringAlertPolicy | `spec.alertStrategy.notificationChannelStrategy[].notificationChannelNames` | `status.outputs.channel_name` |
 

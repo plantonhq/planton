@@ -1,0 +1,61 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudArmorPolicy
+metadata:
+  name: regional-api-waf
+spec:
+  projectId:
+    value: my-gcp-project
+  policyName: regional-api-waf
+  description: WAF for a regional external Application Load Balancer -- corporate allowlist, geo block, per-IP throttle
+  # A region name builds Google's REGIONAL security policy, the one a
+  # regional backend service (regional external or internal ALB) attaches;
+  # a global policy cannot be attached there. Immutable.
+  region: us-central1
+  type: CLOUD_ARMOR
+  advancedOptionsConfig:
+    jsonParsing: STANDARD
+    logLevel: VERBOSE
+  rules:
+    - action: allow
+      # 0 is Google's highest priority: the emergency slot evaluated first.
+      priority: 0
+      description: Always admit the on-call break-glass range
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - 198.51.100.0/24
+    - action: allow
+      priority: 1000
+      description: Allow corporate network (10.x and 172.16-31.x)
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+    - action: deny(403)
+      priority: 2000
+      description: Block traffic from regions the service does not serve
+      preview: true
+      match:
+        expression: "origin.region_code == 'CN' || origin.region_code == 'RU'"
+    - action: throttle
+      priority: 3000
+      description: Per-IP rate limit -- 100 requests per minute
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"
+      rateLimitOptions:
+        conformAction: allow
+        exceedAction: deny(429)
+        enforceOnKey: IP
+        rateLimitThreshold:
+          count: 100
+          intervalSec: 60
+    - action: allow
+      priority: 2147483647
+      description: Default allow -- the throttle above is the guard
+      match:
+        versionedExpr: SRC_IPS_V1
+        srcIpRanges:
+          - "*"

@@ -3,16 +3,32 @@ kind: ComponentE2EProfile
 metadata:
   name: gcpcloudarmorpolicy
 spec:
-  # Leaf security policy with explicit default rule (~1–2 minutes). The
-  # live scenario arms user labels and the flagship advanced-options pairing
-  # (STANDARD JSON parsing + 16KB request-body inspection — the
-  # Optional+Computed echo proven diff-free under the idempotency gate).
+  # Awaiting the live proof lane. The leaf global policy (~1–2 minutes) arms
+  # user labels and the flagship advanced-options pairing (STANDARD JSON
+  # parsing + 16KB request-body inspection -- the Optional+Computed echo
+  # proven diff-free under the idempotency gate in an earlier proof). Both
+  # regional scenarios are new: `regional-waf` proves the regional
+  # collection (google_compute_region_security_policy) as a CLOUD_ARMOR
+  # policy with a priority-0 rule and a throttle exceeding to deny(429);
+  # `regional-network-standard` proves the CLOUD_ARMOR_NETWORK type with
+  # STANDARD DDoS protection, a user-defined field, a network-match rule,
+  # and the default rule as an empty network match. Live facts the proof
+  # lane confirms: (1) priority 0 deploys and re-plans clean on both
+  # engines; (2) the regional rules list re-plans clean under Google's
+  # set-wise comparison regardless of manifest order; (3) the default rule
+  # shape Google returns for a network policy matches the empty
+  # network_match the manifest declares; (4) a regional policy carries no
+  # labels and the verifier does not look for the label canary there.
   #
   # Offline-proven arms: adaptive protection (L7 DDoS defense),
-  # CEL-expression matches, rate-limit/throttle rules, and redirect actions
-  # ride the canonical manifest's offline plans — niche shapes a smoke
-  # fixture cannot honestly exercise without sustained traffic.
+  # CEL-expression matches, redirect actions, and header injection ride the
+  # canonical manifest's and presets' offline plans -- niche shapes a smoke
+  # fixture cannot honestly exercise without sustained traffic. ADVANCED /
+  # ADVANCED_PREVIEW network DDoS protection and the network edge security
+  # service stay offline-only: they need a Cloud Armor Enterprise
+  # subscription the harness project does not hold (the API accepts the
+  # values without one and silently does nothing more than STANDARD).
   tier: 1
-  status: green
-  validated_provisioners: [pulumi, terraform]
-  timeout_minutes: 15
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

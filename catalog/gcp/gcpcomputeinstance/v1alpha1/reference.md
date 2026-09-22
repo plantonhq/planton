@@ -1531,6 +1531,14 @@ Fields that can point at another resource's outputs:
 | `spec.serviceAccount.email` | GcpServiceAccount | `status.outputs.email` |
 | `spec.instanceEncryptionKey.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpNetworkEndpointGroup | `spec.endpoints[].instance` | `status.outputs.instance_name` |
+
 ## See Also
 
 - [Overview](../README.md)

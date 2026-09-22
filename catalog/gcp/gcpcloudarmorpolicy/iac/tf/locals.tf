@@ -7,6 +7,28 @@ locals {
   # engines derive the identical cloud-side name.
   policy_name = var.spec.policy_name != "" ? var.spec.policy_name : var.metadata.name
 
+  # The scope selector. An empty region builds the global security policy;
+  # a region name builds the regional one. Exactly one of the two resources
+  # in main.tf exists (count guards), and outputs.tf picks whichever was
+  # created.
+  is_regional = var.spec.region != null && var.spec.region != ""
+
+  # The region's enrollment in advanced network DDoS protection is a
+  # companion resource created only when the spec declares it (and the spec
+  # CEL admits it only on a regional CLOUD_ARMOR_NETWORK policy with
+  # ddos_protection_config). Its name defaults to the policy's.
+  create_edge_service = local.is_regional && var.spec.network_edge_security_service != null
+  edge_service_name = (
+    var.spec.network_edge_security_service != null && var.spec.network_edge_security_service.name != ""
+    ? var.spec.network_edge_security_service.name
+    : local.policy_name
+  )
+
+  # What destroy does to the WAF shield: DELETE (default), PREVENT (refuse),
+  # or ABANDON (drop from state, keep enforcing). Fanned out to the edge
+  # service so the enrollment shares the policy's fate.
+  deletion_policy = var.spec.deletion_policy != "" ? var.spec.deletion_policy : null
+
   # The same planton-ai_* label set the Pulumi module applies, so a resource
   # is attributable to its Planton object regardless of the engine that
   # created it. Conditional labels appear under the same conditions on both

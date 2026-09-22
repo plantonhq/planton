@@ -1,0 +1,20 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpbillingbudget
+spec:
+  gcp:
+    groups:
+      - purpose: ManageBillingBudget
+        permissions:
+          - billing.budgets.create
+          - billing.budgets.get
+          - billing.budgets.update
+          - billing.budgets.delete
+        provenance: derived
+        notes: "Covers google_billing_budget (Pulumi billing.Budget): create on first apply, get on every refresh, update when any field but the billing account changes in place, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). These are BILLING ACCOUNT permissions -- granted on the account (roles/billing.costsManager or roles/billing.admin contain all four), never on a project. Publishing notifications to the Pub/Sub topic is the Billing service agent's permission on the topic (roles/pubsub.publisher), arranged on the topic, not the runner."

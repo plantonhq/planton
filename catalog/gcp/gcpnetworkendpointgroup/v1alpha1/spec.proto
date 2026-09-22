@@ -1,0 +1,219 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpNetworkEndpoint is one member of the group. Which fields it carries
+// follows the group's network_endpoint_type:
+//   - GCE_VM_IP_PORT (zonal): instance + ip_address (a primary or alias IP
+//     of that VM) + port (or the group's default_port)
+//   - GCE_VM_IP (zonal): instance + ip_address, no port
+//   - NON_GCP_PRIVATE_IP_PORT (zonal, hybrid): ip_address + port, no
+//     instance
+//   - INTERNET_IP_PORT (global or zonal): ip_address + port
+//   - INTERNET_FQDN_PORT (global or zonal): fqdn + port
+message GcpNetworkEndpoint {
+  option (buf.validate.message).cel = {
+    id: "endpoint_address_or_fqdn"
+    message: "an endpoint names either an ip_address or an fqdn (INTERNET_FQDN_PORT groups), never both"
+    expression: "!(this.ip_address != '' && this.fqdn != '')"
+  };
+
+  // The VM the endpoint belongs to: a reference to a GcpComputeInstance or
+  // its instance name in the group's zone. Zonal GCE_VM_IP and
+  // GCE_VM_IP_PORT groups only.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef instance = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpComputeInstance,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.instance_name"
+  ];
+
+  // The endpoint's IP address. For VM endpoints a primary or alias IP of
+  // the instance in the group's subnetwork (unset means the instance's
+  // primary internal IP); for hybrid and internet endpoints the reachable
+  // address, required.
+  string ip_address = 2 [(buf.validate.field).cel = {
+    id: "valid_ip_address"
+    message: "ip_address must be an IPv4 or IPv6 address"
+    expression: "this == '' || this.isIp()"
+  }];
+
+  // Fully qualified domain name of an INTERNET_FQDN_PORT endpoint
+  // (resolved by Google at connection time).
+  string fqdn = 3;
+
+  // Port the endpoint listens on. Unset falls back to the group's
+  // default_port; GCE_VM_IP groups carry no port at all.
+  optional int32 port = 4 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// GcpNetworkEndpointGroupSpec builds a network endpoint group (NEG): a
+// named set of IP:port endpoints a backend service points at instead of an
+// instance group. One kind, two scopes, selected by `zone`:
+//
+//   ZONAL (zone set) -- endpoints inside a VPC network: VMs by instance
+//   (GCE_VM_IP_PORT for Application and proxy load balancers, GCE_VM_IP
+//   for passthrough Network Load Balancers), on-premises or other-cloud
+//   addresses reached over VPN or Interconnect (NON_GCP_PRIVATE_IP_PORT,
+//   hybrid connectivity), or internet endpoints (INTERNET_IP_PORT,
+//   INTERNET_FQDN_PORT) for a regional external Application Load Balancer.
+//   Zonal endpoints are written as one set through Google's bulk endpoint
+//   operation, so the manifest's list IS the group's membership.
+//
+//   GLOBAL (zone empty) -- an internet NEG for a global external
+//   Application Load Balancer: INTERNET_IP_PORT or INTERNET_FQDN_PORT
+//   endpoints outside Google Cloud (an origin on another cloud or a CDN),
+//   each written as its own endpoint resource.
+//
+// Serverless (Cloud Run, Cloud Functions, App Engine), Private Service
+// Connect, and REGIONAL internet groups are a different resource family and
+// live in GcpRegionNetworkEndpointGroup. Nearly everything here is
+// immutable: the name, scope, network, subnetwork, type, default port, and
+// description recreate the group when changed; only the endpoint list
+// changes in place.
+message GcpNetworkEndpointGroupSpec {
+  option (buf.validate.message).cel = {
+    id: "zonal_type_valid"
+    message: "a zonal network endpoint group's network_endpoint_type must be one of GCE_VM_IP, GCE_VM_IP_PORT, NON_GCP_PRIVATE_IP_PORT, INTERNET_IP_PORT, INTERNET_FQDN_PORT, GCE_VM_IP_DEDICATED_BACKEND (or empty for GCE_VM_IP_PORT)"
+    expression: "this.zone == '' || this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT', 'NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT', 'INTERNET_FQDN_PORT', 'GCE_VM_IP_DEDICATED_BACKEND']"
+  };
+  option (buf.validate.message).cel = {
+    id: "global_type_valid"
+    message: "a global (internet) network endpoint group's network_endpoint_type must be INTERNET_IP_PORT or INTERNET_FQDN_PORT; set zone for VM, hybrid, or dedicated-backend groups"
+    expression: "this.zone != '' || this.network_endpoint_type in ['INTERNET_IP_PORT', 'INTERNET_FQDN_PORT']"
+  };
+  option (buf.validate.message).cel = {
+    id: "network_required_zonal"
+    message: "network is required for a zonal network endpoint group (the VPC every endpoint belongs to)"
+    expression: "this.zone == '' || (has(this.network) && (this.network.value != '' || has(this.network.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "network_global_only_absent"
+    message: "network and subnetwork apply only to a zonal network endpoint group; a global internet group has no VPC"
+    expression: "this.zone != '' || ((!has(this.network) || (this.network.value == '' && !has(this.network.value_from))) && (!has(this.subnetwork) || (this.subnetwork.value == '' && !has(this.subnetwork.value_from))))"
+  };
+  option (buf.validate.message).cel = {
+    id: "vm_endpoints_name_an_instance"
+    message: "every endpoint of a GCE_VM_IP or GCE_VM_IP_PORT group names its instance"
+    expression: "!(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, has(e.instance) && (e.instance.value != '' || has(e.instance.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "non_vm_endpoints_carry_no_instance"
+    message: "instance applies only to GCE_VM_IP and GCE_VM_IP_PORT endpoints; hybrid and internet endpoints are addresses"
+    expression: "(this.zone != '' && this.network_endpoint_type in ['', 'GCE_VM_IP', 'GCE_VM_IP_PORT']) || this.endpoints.all(e, !has(e.instance) || (e.instance.value == '' && !has(e.instance.value_from)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "gce_vm_ip_endpoints_carry_no_port"
+    message: "GCE_VM_IP endpoints carry no port (the passthrough load balancer forwards every port); remove port or use GCE_VM_IP_PORT"
+    expression: "this.network_endpoint_type != 'GCE_VM_IP' || (!has(this.default_port) && this.endpoints.all(e, !has(e.port)))"
+  };
+  option (buf.validate.message).cel = {
+    id: "fqdn_only_in_fqdn_groups"
+    message: "fqdn endpoints belong to an INTERNET_FQDN_PORT group; other groups address endpoints by ip_address"
+    expression: "this.network_endpoint_type == 'INTERNET_FQDN_PORT' || this.endpoints.all(e, e.fqdn == '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "fqdn_groups_name_fqdns"
+    message: "every endpoint of an INTERNET_FQDN_PORT group names an fqdn"
+    expression: "this.network_endpoint_type != 'INTERNET_FQDN_PORT' || this.endpoints.all(e, e.fqdn != '')"
+  };
+  option (buf.validate.message).cel = {
+    id: "address_endpoints_name_an_ip"
+    message: "every endpoint of a NON_GCP_PRIVATE_IP_PORT or INTERNET_IP_PORT group names an ip_address"
+    expression: "!(this.network_endpoint_type in ['NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT']) || this.endpoints.all(e, e.ip_address != '')"
+  };
+
+  // The GCP project that owns the group. A literal project ID or a
+  // reference to a GcpProject. If omitted, the provider's default project
+  // is used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Name of the group in GCP. 1-63 characters, lowercase letters, digits,
+  // and hyphens, starting with a letter and not ending with a hyphen.
+  // Defaults to metadata.name. Immutable.
+  string neg_name = 2 [(buf.validate.field).cel = {
+    id: "valid_neg_name"
+    message: "neg_name must be 1-63 characters of lowercase letters, digits, and hyphens, starting with a letter and not ending with a hyphen"
+    expression: "this == '' || this.matches('^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$')"
+  }];
+
+  // The scope selector. Empty builds a GLOBAL internet network endpoint
+  // group (INTERNET_IP_PORT or INTERNET_FQDN_PORT, for a global external
+  // Application Load Balancer); a zone name such as us-central1-a builds a
+  // ZONAL group in that zone (VM, hybrid, or internet endpoints, for
+  // regional and passthrough load balancers). A zonal group needs a
+  // network; a global one has none. Immutable: a group cannot move
+  // between scopes or zones.
+  string zone = 3 [(buf.validate.field).cel = {
+    id: "valid_zone"
+    message: "zone must be a valid GCP zone name such as us-central1-a, or empty for a global internet network endpoint group"
+    expression: "this == '' || this.matches('^[a-z]+-[a-z]+[0-9]+-[a-z]$')"
+  }];
+
+  // Human-readable description of the group. Immutable.
+  string description = 4 [(buf.validate.field).string.max_len = 2048];
+
+  // The kind of endpoint every member is. Zonal: GCE_VM_IP_PORT (default;
+  // VM IP and port -- Application and proxy load balancers), GCE_VM_IP
+  // (VM IP only -- passthrough Network Load Balancers), NON_GCP_PRIVATE_IP_PORT
+  // (hybrid: on-premises or other-cloud addresses reached over VPN or
+  // Interconnect; only backend services with the EXTERNAL, EXTERNAL_MANAGED,
+  // INTERNAL_MANAGED, or INTERNAL_SELF_MANAGED scheme in RATE or CONNECTION
+  // mode), INTERNET_IP_PORT, INTERNET_FQDN_PORT (internet endpoints for a
+  // regional external ALB), GCE_VM_IP_DEDICATED_BACKEND. Global:
+  // INTERNET_IP_PORT or INTERNET_FQDN_PORT (required). Immutable.
+  string network_endpoint_type = 5 [(buf.validate.field).cel = {
+    id: "network_endpoint_type_valid"
+    message: "network_endpoint_type must be one of GCE_VM_IP, GCE_VM_IP_PORT, NON_GCP_PRIVATE_IP_PORT, INTERNET_IP_PORT, INTERNET_FQDN_PORT, GCE_VM_IP_DEDICATED_BACKEND, or empty"
+    expression: "this == '' || this in ['GCE_VM_IP', 'GCE_VM_IP_PORT', 'NON_GCP_PRIVATE_IP_PORT', 'INTERNET_IP_PORT', 'INTERNET_FQDN_PORT', 'GCE_VM_IP_DEDICATED_BACKEND']"
+  }];
+
+  // The VPC network every endpoint belongs to (zonal groups; required
+  // there): a network self-link or a reference to a GcpVpcNetwork.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // The subnetwork every endpoint belongs to (zonal groups; optional): a
+  // subnetwork self-link or a reference to a GcpSubnetwork in the group's
+  // region. VM endpoints' IPs must fall inside it. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnetwork = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_self_link"
+  ];
+
+  // The port an endpoint listens on when its own port is unset. Unset
+  // sends nothing (Google records none). Not for GCE_VM_IP groups.
+  // Immutable.
+  optional int32 default_port = 8 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // The group's members. The list is the whole membership: an endpoint
+  // removed here is detached from the group in place, an endpoint added is
+  // attached. Leave empty to create the group and attach endpoints later
+  // (an autoscaler or another controller may own membership).
+  repeated GcpNetworkEndpoint endpoints = 9;
+
+  // What destroy does to the group and its endpoints:
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the group is deleted (GCP refuses while a backend
+  //                service still uses it)
+  //   "PREVENT" -- destroy FAILS
+  //   "ABANDON" -- the group leaves management but keeps serving
+  string deletion_policy = 10 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}

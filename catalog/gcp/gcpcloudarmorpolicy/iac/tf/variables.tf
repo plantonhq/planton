@@ -30,12 +30,15 @@ variable "spec" {
     description = optional(string, "")
 
     # Policy type. Determines which features are available and where
-    # the policy can be attached.
+    # the policy can be attached. CLOUD_ARMOR (default) and CLOUD_ARMOR_EDGE
+    # exist on both scopes; CLOUD_ARMOR_INTERNAL_SERVICE only globally;
+    # CLOUD_ARMOR_NETWORK only regionally (set region).
     #
     # Immutable after creation (ForceNew).
     type = optional(string, "")
 
     # Adaptive Protection configuration for automatic Layer 7 DDoS detection.
+    # A global-policy lever (rejected when region is set).
     adaptive_protection_config = optional(object({
       # Enable Cloud Armor Adaptive Protection for Layer 7 DDoS defense.
       # When true, traffic anomalies are detected and alerts are generated.
@@ -94,7 +97,8 @@ variable "spec" {
       })), [])
     }))
 
-    # Advanced policy-level options: JSON parsing, logging, IP resolution.
+    # Advanced policy-level options: JSON parsing, logging, IP resolution
+    # (both scopes); request_body_inspection_size (global only).
     advanced_options_config = optional(object({
       # JSON parsing mode for request body inspection.
       # "DISABLED" (default): No JSON parsing.
@@ -129,6 +133,7 @@ variable "spec" {
     }))
 
     # Policy-level reCAPTCHA site key for GOOGLE_RECAPTCHA redirects.
+    # A global-policy lever (rejected when region is set).
     recaptcha_options_config = optional(object({
       # The reCAPTCHA site key, created from the reCAPTCHA API. The user is
       # responsible for the key's validity.
@@ -146,18 +151,23 @@ variable "spec" {
       # - "deny(403)": Block with 403 Forbidden
       # - "deny(404)": Block with 404 Not Found
       # - "deny(502)": Block with 502 Bad Gateway
-      # - "redirect": Redirect to a configured target (requires redirect_options)
+      # - "redirect": Redirect to a configured target (requires redirect_options;
+      #   GLOBAL CLOUD_ARMOR policies only -- rejected when region is set)
       # - "throttle": Rate-limit the traffic (requires rate_limit_options)
       # - "rate_based_ban": Rate-limit then ban (requires rate_limit_options)
       action = string
 
-      # Rule priority. Lower values are evaluated first.
-      # Range: 0 to 2147483647. Each rule must have a unique priority.
-      # Priority 2147483647 is the default rule (match "*").
+      # Rule priority. Lower values are evaluated first; 0 is the HIGHEST
+      # priority Google accepts and is a legal value. Range: 0 to 2147483647.
+      # Each rule must have a unique priority. Priority 2147483647 is the
+      # default rule (match "*"). Leave gaps (100, 200, ...) so a rule can be
+      # slotted in later without renumbering.
       priority = number
 
-      # Traffic-matching condition. Defines which requests this rule applies to.
-      match = object({
+      # HTTP-level traffic-matching condition (source IP ranges or a CEL
+      # expression over the request). Exactly one of match / network_match
+      # is set per rule.
+      match = optional(object({
         # Predefined match expression. The only supported value is "SRC_IPS_V1",
         # which matches traffic based on source IP address ranges.
         # When set, src_ip_ranges must also be provided.
@@ -185,7 +195,55 @@ variable "spec" {
           # Site keys used to validate reCAPTCHA session-tokens.
           session_token_site_keys = optional(list(string), [])
         }))
-      })
+      }))
+
+      # Packet-level (L3/L4) match condition for a regional
+      # CLOUD_ARMOR_NETWORK policy. Exactly one of match / network_match is
+      # set per rule; rejected on any other policy type or scope.
+      network_match = optional(object({
+        # Source IPv4/IPv6 addresses or CIDR prefixes, in standard text format.
+        src_ip_ranges = optional(list(string), [])
+
+        # Destination IPv4/IPv6 addresses or CIDR prefixes, in standard text
+        # format.
+        dest_ip_ranges = optional(list(string), [])
+
+        # IPv4 protocol / IPv6 next header (after extension headers). Each
+        # element is an 8-bit unsigned decimal number (e.g. "6"), a range (e.g.
+        # "253-254"), or one of the names "tcp", "udp", "icmp", "esp", "ah",
+        # "ipip", "sctp".
+        ip_protocols = optional(list(string), [])
+
+        # Source port numbers for TCP/UDP/SCTP. Each element is a 16-bit unsigned
+        # decimal number (e.g. "80") or a range (e.g. "0-1023").
+        src_ports = optional(list(string), [])
+
+        # Destination port numbers for TCP/UDP/SCTP. Each element is a 16-bit
+        # unsigned decimal number (e.g. "80") or a range (e.g. "0-1023").
+        dest_ports = optional(list(string), [])
+
+        # Two-letter ISO 3166-1 alpha-2 country codes associated with the
+        # source IP address (e.g. "US", "DE").
+        src_region_codes = optional(list(string), [])
+
+        # BGP Autonomous System Numbers associated with the source IP address
+        # (e.g. 15169 for Google). 32-bit ASNs exceed the signed 32-bit range,
+        # so the type is 64-bit.
+        src_asns = optional(list(number), [])
+
+        # Matches on the policy's user-defined packet fields, each naming a field
+        # from user_defined_fields and listing the values that match it.
+        user_defined_fields = optional(list(object({
+          # Name of the user-defined field, exactly as given in the policy's
+          # user_defined_fields definition.
+          name = string
+
+          # Matching values of the field. Each element is a 32-bit unsigned decimal
+          # or hexadecimal (0x-prefixed) number, e.g. "64" or "0x8F00", or a range
+          # such as "0x400-0x7ff". Any listed value matches.
+          values = list(string)
+        })), [])
+      }))
 
       # Human-readable description of the rule (max 64 characters).
       description = optional(string, "")
@@ -277,7 +335,8 @@ variable "spec" {
         }))
       }))
 
-      # Redirect configuration. Required when action is "redirect".
+      # Redirect configuration. Required when action is "redirect". A
+      # global-policy lever: the regional collection has no redirect action.
       redirect_options = optional(object({
         # Redirect type. EXTERNAL_302 sends a 302 redirect to the target URL.
         # GOOGLE_RECAPTCHA redirects to a Google reCAPTCHA challenge page
@@ -290,7 +349,8 @@ variable "spec" {
       }))
 
       # Custom headers to inject into matching requests before forwarding
-      # to the backend. Only supported for CLOUD_ARMOR type policies.
+      # to the backend. Only supported for GLOBAL CLOUD_ARMOR type policies
+      # (rejected when region is set).
       header_action = optional(object({
         # Headers to add to matching requests.
         request_headers_to_adds = list(object({
@@ -361,7 +421,9 @@ variable "spec" {
     })), [])
 
     # User labels attached to the security policy, merged with Planton's
-    # platform labels (which win on key conflicts). Mutable.
+    # platform labels (which win on key conflicts). Mutable. A global-policy
+    # lever: the regional collection carries no labels at all (rejected when
+    # region is set; a regional policy also receives no platform labels).
     labels = optional(map(string), {})
 
     # Deletion policy for the security policy — what happens on destroy:
@@ -374,5 +436,81 @@ variable "spec" {
     #   "ABANDON" -- the policy is removed from management but keeps
     #                enforcing in GCP
     deletion_policy = optional(string, "")
+
+    # The scope selector. Empty builds a GLOBAL security policy (attached by
+    # a global backend service or a backend bucket in front of a global
+    # external Application Load Balancer, or by Cloud CDN); a region name
+    # such as us-central1 builds a REGIONAL one (attached by a regional
+    # backend service: the regional external and internal ALBs, and -- as a
+    # CLOUD_ARMOR_NETWORK policy -- the passthrough Network Load Balancers,
+    # protocol forwarding, and public-IP VMs in that region). Scopes must
+    # match what attaches the policy. The global-only levers (labels,
+    # adaptive_protection_config, recaptcha_options_config,
+    # request_body_inspection_size, the CLOUD_ARMOR_INTERNAL_SERVICE type,
+    # header_action, redirect, expr_options) are rejected when region is set;
+    # the network-policy levers (CLOUD_ARMOR_NETWORK, ddos_protection_config,
+    # user_defined_fields, network_match) are rejected when it is empty.
+    # Immutable: a policy cannot move between scopes or regions.
+    region = optional(string, "")
+
+    # Network DDoS protection level for a regional CLOUD_ARMOR_NETWORK
+    # policy: STANDARD is free and always on; ADVANCED and ADVANCED_PREVIEW
+    # need Cloud Armor Enterprise and the region enrolled through
+    # network_edge_security_service.
+    ddos_protection_config = optional(object({
+      # Protection level:
+      # - STANDARD: basic always-on protection, included with the load
+      #   balancer -- no subscription
+      # - ADVANCED: the additional network-layer protections of Cloud Armor
+      #   Enterprise (Managed Protection Plus); the project must be enrolled
+      # - ADVANCED_PREVIEW: ADVANCED in preview mode -- Google logs what it
+      #   would mitigate without mitigating; use it to observe before enforcing
+      # ADVANCED and ADVANCED_PREVIEW take effect only once the region is
+      # enrolled through network_edge_security_service.
+      ddos_protection = string
+    }))
+
+    # Custom packet fields (up to 4 bytes at a fixed header offset) that a
+    # regional CLOUD_ARMOR_NETWORK policy's rules match through
+    # network_match.user_defined_fields. Names must be unique.
+    user_defined_fields = optional(list(object({
+      # Name of this field. Must be unique within the policy; rules name it in
+      # network_match.user_defined_fields.
+      name = optional(string, "")
+
+      # The header the offset is measured from:
+      # - IPV4: the beginning of the IPv4 header
+      # - IPV6: the beginning of the IPv6 header
+      # - TCP: the beginning of the TCP header, skipping any IPv4 options or
+      #   IPv6 extension headers; not present for non-first fragments
+      # - UDP: the beginning of the UDP header, likewise
+      base = string
+
+      # Offset of the first byte of the field (in network byte order) relative
+      # to base. 0 is the first byte of the header and is a real position, so
+      # presence matters: unset lets Google apply its default.
+      offset = optional(number)
+
+      # Size of the field in bytes, 1 to 4.
+      size = optional(number)
+
+      # Bitwise-AND mask applied to the field before matching, as a
+      # hexadecimal number starting with "0x" (e.g. "0x8F00"). The last byte
+      # of the field (network byte order) corresponds to the least significant
+      # byte of the mask.
+      mask = optional(string, "")
+    })), [])
+
+    # Enroll this policy's region in advanced network DDoS protection by
+    # creating the region's network edge security service with this policy
+    # attached. One per region per project; requires ddos_protection_config.
+    network_edge_security_service = optional(object({
+      # Name of the service in GCP (RFC 1035). Defaults to the policy's name.
+      # Immutable.
+      name = optional(string, "")
+
+      # Free-text description of the service.
+      description = optional(string, "")
+    }))
   })
 }

@@ -1,0 +1,75 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpnetworkendpointgroup
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A network endpoint group stores no customer data -- it is a list of IP:port members a load balancer points at.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No data at rest exists to key (see enc-at-rest).
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: Transport encryption is the load balancer's and the endpoints' control -- the group names where traffic goes and carries none itself; internet and hybrid endpoints are reached over whatever transport the load balancer negotiates.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The group has no address and admits no traffic; which clients reach the endpoints is decided by the forwarding rule and backend service in front of it and by the endpoints' own firewall posture.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: Ingress restriction is the forwarding rule's, Cloud Armor's, and the VPC firewall's control; the group is a membership list.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served at an edge; the group is the destination list of a load balancer whose Cloud Armor policy carries request filtering.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating a group and writing its endpoints authorize against compute.networkEndpointGroups.* (zonal) or compute.globalNetworkEndpointGroups.* (global) on the project, and attaching a VM as an endpoint requires compute.instances.use on that VM -- project IAM, not a component choice.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: Nothing authenticates through a group -- it carries no credentials and calls no APIs.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; any credentials involved are administrative access, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Group insert and delete and every attachNetworkEndpoints / detachNetworkEndpoints call land in Cloud Audit Logs (Admin Activity) unconditionally; Admin Activity logging cannot be disabled and is retained free in the _Required log bucket.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Google reports the group's size and, through the consuming backend service, per-endpoint health; the size output records the declared membership so a live count that disagrees is visible.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Declarative configuration fully re-creatable from source control; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: zone
+      evidence:
+        type: spec_default
+        reference: A zonal group lives in ONE zone by design (zone set); zone-level resilience comes from a backend service that names one group per zone. A global internet group (zone empty) has no zonal footprint at all.
+      notes: Declare one GcpNetworkEndpointGroup per zone and list them all on the backend service; a single zonal group is a single-zone backend.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE -- the group and its endpoint set are removed (Google refuses while a backend service still uses the group); PREVENT makes destroy fail outright; ABANDON unmanages the group while it keeps serving.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: There is no software surface to patch; Google's load-balancing fabric implements endpoint groups.

@@ -1,0 +1,4 @@
+name: gcpcloudidentitygroup-pulumi-project
+runtime:
+  name: go
+description: Planton GcpCloudIdentityGroup Pulumi module

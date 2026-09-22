@@ -1,0 +1,13 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcloudidentitygroup
+spec:
+  billing_model: free
+  free_tier: "Google Groups in Cloud Identity Free and Google Workspace carry no charge -- no per-group fee, no per-member fee, and no meter on membership changes; a group and its memberships cost nothing."
+  notes: "No field of this spec buys anything. Cloud Identity itself is licensed per user (the Free edition covers groups; Premium adds device and security features) under the customer's account, an account-level commitment outside this manifest; the group does not change that licence."
+  estimate_exclusions:
+    - the Cloud Identity or Google Workspace licences of the customer's users are an account-level commitment no manifest sets

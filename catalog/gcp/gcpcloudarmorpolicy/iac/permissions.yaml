@@ -25,3 +25,19 @@ spec:
           - compute.securityPolicies.setLabels
         provenance: derived
         notes: Covers google_compute_security_policy (Terraform) / compute.SecurityPolicy (Pulumi) -- create, read/refresh, in-place updates, and destroy under deletion_policy DELETE. GCP defines NO compute.securityPolicyRules.* IAM permissions (verified against IAM's testable-permissions inventory) -- the rules live inside the policy resource, and every rule add, patch, and remove authorizes as compute.securityPolicies.update on the parent policy. Labels are applied through the dedicated setLabels method, which carries its own permission.
+      - purpose: ManageRegionalSecurityPolicy
+        permissions:
+          - compute.regionSecurityPolicies.create
+          - compute.regionSecurityPolicies.get
+          - compute.regionSecurityPolicies.update
+          - compute.regionSecurityPolicies.delete
+        provenance: derived
+        notes: Covers google_compute_region_security_policy (Terraform) / compute.RegionSecurityPolicy (Pulumi), built instead of the global policy when spec.region is set -- create, read/refresh, in-place updates (the rules list, user_defined_fields, ddos_protection_config, advanced_options_config), and destroy under deletion_policy DELETE. The regional collection has no labels, so no setLabels permission applies.
+      - purpose: ManageNetworkEdgeSecurityService
+        permissions:
+          - compute.networkEdgeSecurityServices.create
+          - compute.networkEdgeSecurityServices.get
+          - compute.networkEdgeSecurityServices.update
+          - compute.networkEdgeSecurityServices.delete
+        provenance: derived
+        notes: Covers google_compute_network_edge_security_service (Terraform) / compute.NetworkEdgeSecurityService (Pulumi), created only when a regional CLOUD_ARMOR_NETWORK policy declares spec.network_edge_security_service -- the region's enrollment in advanced network DDoS protection with this policy attached.

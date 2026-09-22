@@ -1,0 +1,14 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcppscserviceattachment
+spec:
+  billing_model: free
+  free_tier: "A service attachment has no charge of its own in Google's Private Service Connect pricing -- no per-attachment fee and no per-hour meter on the producer side; the attachment, its NAT subnets, and its connection policy cost nothing at rest."
+  notes: "No field of this spec buys anything on the producer side. Private Service Connect bills on the CONSUMER side: each connected consumer endpoint (a regional forwarding rule with an empty scheme) bills forwarding-rule hours in the consumer project's band, and the traffic through it bills PSC data processing per GiB to the consumer project. The producer's own meters are the internal load balancer behind target_service (GcpGlobalForwardingRule, GcpBackendService) and the backends, which exist whether or not the service is published."
+  estimate_exclusions:
+    - consumer endpoint hours and PSC data processing bill to the consumer projects, whose count and traffic are unknowable from this manifest
+    - the producer's internal load balancer and backends bill under their own kinds

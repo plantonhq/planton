@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpnetworkendpointgroup.v1alpha1;
+
+// GcpNetworkEndpointGroupStackOutputs captures the group after
+// provisioning -- above all the self_link a backend service names in its
+// backends[].group.
+message GcpNetworkEndpointGroupStackOutputs {
+  // Self-link URI of the group: the value a GcpBackendService backend
+  // names. A zonal link carries zones/{zone}, a global one says global.
+  string self_link = 1;
+
+  // Name of the group as it exists in GCP -- the resolved value
+  // (metadata.name when the spec left neg_name empty).
+  string neg_name = 2;
+
+  // Google's unique identifier for the group.
+  string neg_id = 3;
+
+  // Zone of a zonal group; empty for a global one, so a consumer can tell
+  // the scope from the outputs alone.
+  string zone = 4;
+
+  // Number of endpoints declared in the group -- the manifest's list is
+  // the whole membership on both scopes.
+  string size = 5;
+}

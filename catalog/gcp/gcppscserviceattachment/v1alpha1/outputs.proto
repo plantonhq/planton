@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcppscserviceattachment.v1alpha1;
+
+// GcpPscServiceAttachmentStackOutputs captures the published service after
+// provisioning -- above all the self_link a consumer's PSC endpoint (a
+// regional GcpGlobalForwardingRule with an empty scheme) targets.
+message GcpPscServiceAttachmentStackOutputs {
+  // Self-link URI of the service attachment: the value a consumer
+  // forwarding rule names as its target.
+  // Format: https://www.googleapis.com/compute/v1/projects/{project}/regions/{region}/serviceAttachments/{name}
+  string self_link = 1;
+
+  // Name of the attachment as it exists in GCP -- the resolved value
+  // (metadata.name when the spec left attachment_name empty).
+  string attachment_name = 2;
+
+  // Region of the attachment.
+  string region = 3;
+
+  // Server-computed fingerprint for optimistic concurrency control.
+  string fingerprint = 4;
+
+  // Number of consumer endpoints connected to the attachment at
+  // provisioning time (in any status); "0" for a freshly published service.
+  string connected_endpoints_count = 5;
+}

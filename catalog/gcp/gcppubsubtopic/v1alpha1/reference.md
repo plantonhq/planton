@@ -672,6 +672,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpBillingBudget | `spec.notifications.pubsubTopic` | `status.outputs.topic_id` |
 | GcpCloudFunction | `spec.trigger.eventTrigger.pubsubTopic` | `status.outputs.topic_id` |
 | GcpCloudSchedulerJob | `spec.pubsubTarget.topicName` | `status.outputs.topic_id` |
 | GcpEventarcMessageBus | `spec.pipelines[].destination.topic` | `status.outputs.topic_id` |

@@ -1,17 +1,35 @@
 # GcpCloudArmorPolicy — Pulumi Implementation
 
 This directory contains the Pulumi implementation for provisioning a GCP
-Cloud Armor security policy from the Planton spec. It also enables the
-Compute Engine API on the target project.
+Cloud Armor security policy from the Planton spec -- global when
+`spec.region` is empty, regional when it is set -- plus, on a regional
+network policy that declares it, the region's network edge security
+service. It also enables the Compute Engine API on the target project.
 
 ## File Organization
 
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, API enablement, and `security_policy` |
-| `module/locals.go` | Ambient project fallback, policy name (spec or metadata.name fallback) |
-| `module/security_policy.go` | Maps spec to `gcp.compute.SecurityPolicy`; contains rule mapping logic |
-| `module/outputs.go` | Output key constants (`policy_id`, `policy_name`, `policy_self_link`, `fingerprint`) |
+| `module/locals.go` | Ambient project fallback, policy name (spec or metadata.name fallback), the `IsRegional` scope selector |
+| `module/security_policy.go` | The GLOBAL arm: maps spec to `gcp.compute.SecurityPolicy`; contains the global rule mapping logic |
+| `module/region_security_policy.go` | The REGIONAL arm: maps spec to `gcp.compute.RegionSecurityPolicy` (its own rule types, plus `network_match`, `user_defined_fields`, `ddos_protection_config`) and the count-gated `gcp.compute.NetworkEdgeSecurityService` |
+| `module/outputs.go` | Output key constants (`policy_id`, `policy_name`, `policy_self_link`, `fingerprint`, `region`, `network_edge_security_service_self_link`) |
+
+## One Kind, Two Scopes
+
+`main.go` branches on `spec.region`: empty calls `securityPolicy` (global),
+a region name calls `regionSecurityPolicy`. Pulumi's nested Args types are
+per resource, so the regional file carries its own rule, match, rate-limit,
+and WAF-exclusion mappers (`mapRegionRules`, `mapRegionMatch`,
+`mapNetworkMatch`, `mapRegionRateLimitOptions`,
+`mapRegionPreconfiguredWafConfig`) -- the same duplication the Terraform
+module carries as two resource blocks. The regional arm wires none of the
+global-only levers (labels, Adaptive Protection, reCAPTCHA, request-body
+inspection size, redirect, header injection, exceed redirect, token
+options) because the spec rejects them when `region` is set; both arms
+export the same six outputs, with `region` and the edge-service link empty
+on the global one.
 
 ## Rule Mapping
 
@@ -34,8 +52,12 @@ explicitly — the spec enforces this before the module ever runs.
 
 - **Labels** — user labels from `spec.labels` are merged with the platform
   attribution labels (platform wins on key conflicts), the identical merge
-  order the Terraform module uses.
+  order the Terraform module uses. Global policies only: the regional
+  collection carries no labels.
 - **`deletion_policy`** — DELETE (default), PREVENT, or ABANDON decides
-  what a destroy does to the policy; sent only when set on both engines.
+  what a destroy does to the policy and to its network edge security
+  service; sent only when set on both engines.
+- **`rules[].priority`** — read through `GetPriority()`; 0 (Google's
+  highest priority) is a legal value and is sent as 0.
 - **`advanced_options_config.request_body_inspection_size`** — how much of
   each request body the WAF inspects (8KB default, up to 64KB).

@@ -1675,6 +1675,8 @@ Allowed values (use exactly as shown):
 - `GcpTagKey`
 - `GcpTagValue`
 - `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
@@ -1684,6 +1686,8 @@ Allowed values (use exactly as shown):
 - `GcpHierarchicalFirewallPolicy`
 - `GcpNetworkFirewallPolicy`
 - `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -2580,6 +2584,8 @@ Allowed values (use exactly as shown):
 - `GcpTagKey`
 - `GcpTagValue`
 - `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
@@ -2589,6 +2595,8 @@ Allowed values (use exactly as shown):
 - `GcpHierarchicalFirewallPolicy`
 - `GcpNetworkFirewallPolicy`
 - `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -4666,6 +4674,8 @@ Allowed values (use exactly as shown):
 - `GcpTagKey`
 - `GcpTagValue`
 - `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
@@ -4675,6 +4685,8 @@ Allowed values (use exactly as shown):
 - `GcpHierarchicalFirewallPolicy`
 - `GcpNetworkFirewallPolicy`
 - `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -5571,6 +5583,8 @@ Allowed values (use exactly as shown):
 - `GcpTagKey`
 - `GcpTagValue`
 - `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
@@ -5580,6 +5594,8 @@ Allowed values (use exactly as shown):
 - `GcpHierarchicalFirewallPolicy`
 - `GcpNetworkFirewallPolicy`
 - `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -7778,6 +7794,8 @@ Allowed values (use exactly as shown):
 - `GcpTagKey`
 - `GcpTagValue`
 - `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
@@ -7787,6 +7805,8 @@ Allowed values (use exactly as shown):
 - `GcpHierarchicalFirewallPolicy`
 - `GcpNetworkFirewallPolicy`
 - `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -8683,6 +8703,8 @@ Allowed values (use exactly as shown):
 - `GcpTagKey`
 - `GcpTagValue`
 - `GcpTagBinding`
+- `GcpBillingBudget` -- A spending guardrail on a Cloud Billing account: amount, period, filters, thresholds, and where the alerts go. Lives on the billing account, so no project prerequisite; the proof lane needs a billing account the harness identity can administer.
+- `GcpCloudIdentityGroup` -- A Google Group in Cloud Identity or Workspace with its memberships folded in -- the unit IAM bindings should name. Lives under a Cloud Identity customer, beside the service accounts and workload identity pools in the identity service group.
 - `GcpApiKey`
 - `GcpOrgPolicyCustomConstraint` -- A custom constraint is a DEFINITION the organization owns; the GcpOrgPolicy kinds that enforce it reference it by name, the way IAM bindings reference a custom role.
 - `GcpSharedVpcHost` -- 3180–3189: GCP networking fabric (Shared VPC, VPC peering, HA VPN, firewall policies, PSC, network endpoint groups). HA VPN is two kinds: the gateway (with its Cloud Router) is declared once per VPC and region and referenced by every site connection, so two Google Cloud VPCs can point their connections at each other's gateway without a dependency cycle. Firewall policies are two kinds by scope: the hierarchical policy lives on the organization or a folder and is inherited by every network beneath its association; the network policy lives in a project and is attached to that project's VPC networks (globally or per region). Each folds its rules and associations -- a rule is keyed by priority inside its policy and an association is the edge that makes the policy act.
@@ -8692,6 +8714,8 @@ Allowed values (use exactly as shown):
 - `GcpHierarchicalFirewallPolicy`
 - `GcpNetworkFirewallPolicy`
 - `GcpHaVpnConnection`
+- `GcpPscServiceAttachment` -- The producer half of Private Service Connect: publishes an internal load balancer's regional forwarding rule through NAT subnets so consumers in other VPCs reach it over a PSC endpoint (a regional GcpGlobalForwardingRule with an empty scheme targeting this attachment). The proof chain deploys the internal passthrough load balancer and the PSC NAT subnet as fixtures on the prerequisite network.
+- `GcpNetworkEndpointGroup` -- Zonal (VM, hybrid, internet) and global (internet) network endpoint groups behind a `zone` selector; serverless, PSC, and regional internet groups stay in GcpRegionNetworkEndpointGroup. The zonal proof attaches a GcpComputeInstance fixture as an endpoint on the prerequisite network.
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`

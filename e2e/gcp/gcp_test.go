@@ -1138,6 +1138,42 @@ func TestGcpNetworkFirewallPolicy_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpnetworkfirewallpolicy", "terraform")
 }
 
+// --- GCP Private Service Connect producer (publishes an internal passthrough load balancer fixture chain) and network endpoint groups (zonal with a VM fixture; global internet) ---
+
+func TestGcpPscServiceAttachment_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcppscserviceattachment", "pulumi")
+}
+
+func TestGcpPscServiceAttachment_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcppscserviceattachment", "terraform")
+}
+
+func TestGcpNetworkEndpointGroup_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpnetworkendpointgroup", "pulumi")
+}
+
+func TestGcpNetworkEndpointGroup_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpnetworkendpointgroup", "terraform")
+}
+
+// --- GCP billing budget (deferred: needs a billing account the harness identity administers) and Cloud Identity group (deferred: needs a Cloud Identity customer with Groups Admin) ---
+
+func TestGcpBillingBudget_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbillingbudget", "pulumi")
+}
+
+func TestGcpBillingBudget_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbillingbudget", "terraform")
+}
+
+func TestGcpCloudIdentityGroup_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudidentitygroup", "pulumi")
+}
+
+func TestGcpCloudIdentityGroup_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudidentitygroup", "terraform")
+}
+
 // --- GCP Certificate Map (SNI routing table: deploys the GcpCertManagerCert prerequisite chain) ---
 
 func TestGcpCertificateMap_Pulumi(t *testing.T) {
