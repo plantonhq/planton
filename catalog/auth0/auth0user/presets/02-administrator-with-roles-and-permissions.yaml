@@ -1,0 +1,32 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0User
+metadata:
+  name: ops-administrator
+  org: example-org
+  env: production
+spec:
+  connectionName:
+    valueFrom:
+      kind: Auth0Connection
+      name: users
+      fieldPath: status.outputs.name
+  email: ops-admin@example.com
+  name: Operations administrator
+  givenName: Operations
+  familyName: Administrator
+  emailVerified: true
+  verifyEmail: false
+  appMetadata:
+    team: operations
+  roles:
+    - valueFrom:
+        kind: Auth0Role
+        name: administrator
+        fieldPath: status.outputs.id
+  permissions:
+    - name: read:audit-log
+      resourceServerIdentifier:
+        valueFrom:
+          kind: Auth0ResourceServer
+          name: api
+          fieldPath: status.outputs.identifier

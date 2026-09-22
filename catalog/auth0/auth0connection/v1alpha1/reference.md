@@ -649,6 +649,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | Auth0Client | `spec.enabledConnections` | `status.outputs.name` |
+| Auth0User | `spec.connectionName` | `status.outputs.name` |
 
 ## See Also
 

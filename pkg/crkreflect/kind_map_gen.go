@@ -17,6 +17,7 @@ import (
 	auth0eventstreamv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0eventstream/v1alpha1"
 	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	auth0rolev1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0role/v1alpha1"
+	auth0userv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0user/v1alpha1"
 	awsalbv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsalb/v1alpha1"
 	awsapigatewayaccountsettingsv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsapigatewayaccountsettings/v1alpha1"
 	awsapprunnerautoscalingconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1"
@@ -761,6 +762,7 @@ var ProviderAuth0Map = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_Auth0EventStream:    &auth0eventstreamv1alpha1.Auth0EventStream{},
 	cloudresourcekind.CloudResourceKind_Auth0ResourceServer: &auth0resourceserverv1alpha1.Auth0ResourceServer{},
 	cloudresourcekind.CloudResourceKind_Auth0Role:           &auth0rolev1alpha1.Auth0Role{},
+	cloudresourcekind.CloudResourceKind_Auth0User:           &auth0userv1alpha1.Auth0User{},
 }
 
 var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

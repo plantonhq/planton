@@ -1,0 +1,39 @@
+# The user with standing: an authoritative role (the Auth0Role kind's own
+# minimal fixture) and a direct permission on a resource server (the
+# Auth0ResourceServer kind's own minimal fixture, whose scopes include
+# read:items). Both fixtures are added through the prerequisites annotation
+# so the minimal scenario stays one fixture, and both are resolved here by
+# reference -- no id or audience is retyped.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0User
+metadata:
+  name: e2e-user-with-standing
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-prerequisites: "Auth0Role,Auth0ResourceServer"
+spec:
+  connection_name:
+    value_from:
+      kind: Auth0Connection
+      name: e2e-database
+      field_path: status.outputs.name
+  email: e2e-user-standing-${E2E_RUN_ID}@e2e.planton.dev
+  name: E2E User With Standing
+  nickname: e2e-standing
+  email_verified: true
+  verify_email: false
+  app_metadata:
+    plan: e2e
+  roles:
+    - value_from:
+        kind: Auth0Role
+        name: e2e-viewer
+        field_path: status.outputs.id
+  permissions:
+    - name: read:items
+      resource_server_identifier:
+        value_from:
+          kind: Auth0ResourceServer
+          name: e2e-api
+          field_path: status.outputs.identifier

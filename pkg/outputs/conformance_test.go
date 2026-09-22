@@ -8591,6 +8591,29 @@ func TestStackOutputsConformance(t *testing.T) {
 				"token_id", "value", "r2_access_key_id", "r2_secret_access_key",
 			},
 		},
+		{
+			// Auth0User: the identity-provider subject (the full, prefixed
+			// user id), the profile as stored, the connection, and the
+			// module-minted password -- present only in this arm; a declared
+			// password is never echoed, so username-less and password-less
+			// shapes populate fewer fields by design.
+			name: "Auth0User",
+			kind: cloudresourcekind.CloudResourceKind_Auth0User,
+			rawOutputs: map[string]interface{}{
+				"user_id":         "auth0|66f1c2d3e4a5b6c7d8e9f0a1",
+				"email":           "platform-root@example.com",
+				"username":        "platform-root",
+				"name":            "Platform root",
+				"nickname":        "platform-root",
+				"picture":         "https://s.gravatar.com/avatar/1a2b3c",
+				"connection_name": "users",
+				"password":        "Xk9mQ2pL7nR4tV8wB3yH6zJ1",
+			},
+			mustPopulate: []string{
+				"user_id", "email", "username", "name", "nickname", "picture",
+				"connection_name", "password",
+			},
+		},
 	}
 
 	for _, tc := range cases {

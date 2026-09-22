@@ -1,0 +1,57 @@
+# Least-privilege permissions the IaC runner's Auth0 credential needs to
+# provision, update, and destroy this component with the official modules.
+# Schema: iac/componentpermissions/v1.
+#
+# Auth0 authenticates with a tenant-scoped Management API token, not
+# IAM-statement policies, so none of the schema's provider sections
+# (aws/gcp/azure/kubernetes) applies -- their absence is the schema's own
+# claim that the modules touch no such API. The credential is a
+# machine-to-machine (M2M) application authorized for the tenant's
+# Management API (client-credentials grant): the auth0/auth0 Terraform
+# provider (~> 1.0 per iac/tf/provider.tf) and the pulumi-auth0 SDK take a
+# domain plus client_id/client_secret and exchange them for a Management
+# API access token carrying the scopes granted to that M2M application.
+#
+# Least privilege therefore means granting the M2M application ONLY the
+# scopes below -- scope names verbatim from Auth0's published Management
+# API endpoint docs, retrieved 2026-09-22:
+# auth0.com/docs/api/management/v2/users/post-users (create:users),
+# auth0.com/docs/api/management/v2/users/get-users-by-id (read:users),
+# auth0.com/docs/api/management/v2/users/patch-users-by-id (update:users),
+# auth0.com/docs/api/management/v2/users/delete-users-by-id (delete:users),
+# auth0.com/docs/api/management/v2/users/post-user-roles and
+# get-user-roles (update:users to assign and remove roles; read:users AND
+# read:roles to list them back), auth0.com/docs/api/management/v2/users/
+# post-permissions and get-permissions (update:users; read:users).
+# Should the schema grow an auth0 section, this inventory converts
+# mechanically:
+#
+#   User lifecycle (provenance: derived):
+#     create:users  -- create the user (POST /api/v2/users)
+#     read:users    -- read the user back on refresh (GET /api/v2/users/{id})
+#                      AND list its roles and permissions
+#                      (GET /api/v2/users/{id}/roles, /permissions)
+#     update:users  -- change the profile, flags, metadata, or password
+#                      (PATCH /api/v2/users/{id}) AND manage the authoritative
+#                      role and permission sets (POST and DELETE on
+#                      /api/v2/users/{id}/roles and /permissions)
+#     delete:users  -- destroy the user (DELETE /api/v2/users/{id})
+#   Role lookup (provenance: derived; needed only when spec.roles is set):
+#     read:roles    -- the roles listing endpoint returns role names and
+#                      descriptions the provider reads back, and the
+#                      documented scope inventory for GET /users/{id}/roles
+#                      names read:roles beside read:users
+#
+# The modules (iac/tf/main.tf and iac/pulumi/module/user.go) manage the
+# user and, when declared, the authoritative auth0_user_roles and
+# auth0_user_permissions -- all three operate on the same user object, so
+# the scopes above are the complete set. The modules never create roles,
+# resource servers, or connections (those must already exist), never read
+# a connection's options, and never touch another user. All entries are
+# derived from static analysis of the modules against the endpoint docs;
+# the live capture lane upgrades them to proven.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: auth0user
+spec: {}

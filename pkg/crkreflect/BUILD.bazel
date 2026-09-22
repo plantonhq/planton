@@ -37,6 +37,7 @@ go_library(
         "//catalog/auth0/auth0eventstream/v1alpha1",
         "//catalog/auth0/auth0resourceserver/v1alpha1",
         "//catalog/auth0/auth0role/v1alpha1",
+        "//catalog/auth0/auth0user/v1alpha1",
         "//catalog/aws/awsalb/v1alpha1",
         "//catalog/aws/awsapigatewayaccountsettings/v1alpha1",
         "//catalog/aws/awsapprunnerautoscalingconfiguration/v1alpha1",

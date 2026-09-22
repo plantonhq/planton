@@ -1,0 +1,263 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0user.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// Auth0UserSpec defines the configuration for an Auth0 User.
+// In Auth0, a user is an identity that signs in through exactly one connection.
+// The Management API can create users only in connections Auth0 itself holds
+// the credential for: a database connection (email and password, optionally a
+// username) or a passwordless connection (email or SMS one-time codes). Users
+// of social and enterprise connections are created by the identity provider
+// at first sign-in and cannot be declared here.
+//
+// Declared users are the identities an operator owns rather than a person who
+// signed up: a staff root account, a support or service account, a seeded test
+// identity, a break-glass administrator. The user's stable identity-provider
+// subject (the `auth0|...` user id, exactly the `sub` claim in every token
+// issued for the user) is an output, so other declarations reference the
+// identity by output instead of copying a value someone read from a dashboard.
+//
+// Roles and API permissions are folded into this component: the IaC modules
+// create the user AND set its complete role list and permission list in one
+// deployment, and both sets are authoritative -- a role or permission removed
+// from the manifest is removed from the user on the next apply.
+//
+// https://auth0.com/docs/manage-users/user-accounts/create-users
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user
+// https://www.pulumi.com/registry/packages/auth0/api-docs/user/
+message Auth0UserSpec {
+  // CEL: a user must have an identifier the connection can sign in with.
+  option (buf.validate.message).cel = {
+    id: "identifier_required"
+    message: "A user needs at least one sign-in identifier: an email address, a username (on a connection that requires usernames), or a phone number (on an SMS connection)."
+    expression: "this.email != '' || this.username != '' || this.phone_number != ''"
+  };
+  // CEL: a phone number can only be marked verified when there is one.
+  option (buf.validate.message).cel = {
+    id: "phone_verified_requires_phone_number"
+    message: "phone_verified can only be set when phone_number is provided."
+    expression: "!this.phone_verified || this.phone_number != ''"
+  };
+  // CEL: a password has no meaning on a passwordless connection.
+  option (buf.validate.message).cel = {
+    id: "password_and_passwordless_exclusive"
+    message: "A passwordless connection (email or SMS one-time codes) has no password to set -- remove the password, or clear passwordless for a database connection."
+    expression: "!(this.passwordless && this.password != '')"
+  };
+
+  // connection_name is the connection the user belongs to, by name.
+  // Auth0 creates users only in connections it holds the credential for: a
+  // database connection (strategy auth0) or a passwordless connection (email
+  // or sms). Reference an Auth0Connection's status.outputs.name so the connection
+  // is created first and its name is never retyped. Immutable after creation: a
+  // user cannot be moved between connections, and the modules replace the user
+  // when this changes.
+  //
+  // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user#connection_name
+  dev.planton.shared.foreignkey.v1.StringValueOrRef connection_name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = Auth0Connection,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // email is the user's email address. The sign-in identifier for database
+  // connections that do not require a username, and for passwordless email
+  // connections. Auth0 stores it lowercase.
+  // Example: "platform-root@example.com".
+  string email = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.email = true
+  ];
+
+  // email_verified marks the email address as already verified, so the user
+  // is never asked to confirm it. Set it for identities an operator owns and
+  // vouches for (a staff account, a service identity); leave it false for a
+  // person who should confirm their own address. Independent of verify_email,
+  // which controls whether a verification message is sent at creation.
+  bool email_verified = 3;
+
+  // verify_email controls whether Auth0 sends a verification email when the
+  // user is created. Auth0's own behavior when this is not set is to send the
+  // message unless the address is already marked verified, so leave it unset
+  // to keep that behavior and state false only to deliberately suppress the
+  // message for an address that is not yet verified. Overrides the implicit
+  // behavior of email_verified.
+  optional bool verify_email = 4;
+
+  // username is the user's login name. Valid only when the connection is a
+  // database connection configured to require usernames
+  // (database_options.requires_username on Auth0Connection); Auth0 refuses it
+  // on every other connection. 1 to 15 characters unless the connection's
+  // username policy widens the range.
+  string username = 5;
+
+  // name is the user's full display name, shown in the Auth0 dashboard and
+  // carried in the profile's "name" claim. Defaults to the email address when
+  // omitted on a database connection. Example: "Planton dev root".
+  string name = 6;
+
+  // given_name is the user's first name, carried in the profile's "given_name"
+  // claim. Purely descriptive; Auth0 never derives it from name.
+  string given_name = 7;
+
+  // family_name is the user's last name, carried in the profile's
+  // "family_name" claim. Purely descriptive; Auth0 never derives it from name.
+  string family_name = 8;
+
+  // nickname is the user's preferred short name, carried in the profile's
+  // "nickname" claim. Defaults to the local part of the email address when
+  // omitted on a database connection.
+  string nickname = 9;
+
+  // picture is the URL of the user's avatar, carried in the profile's
+  // "picture" claim. Defaults to a Gravatar-style placeholder when omitted.
+  // Example: "https://www.example.com/avatar.png".
+  string picture = 10 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // phone_number is the user's phone number in E.164 form (a leading "+", the
+  // country code, then the number with no spaces). The sign-in identifier for
+  // passwordless SMS connections; descriptive on every other connection.
+  // Example: "+14155550123".
+  string phone_number = 11 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^\\+[1-9][0-9]{6,14}$"
+  ];
+
+  // phone_verified marks the phone number as already verified. Requires
+  // phone_number.
+  bool phone_verified = 12;
+
+  // blocked disables the user: every sign-in attempt is refused until the flag
+  // is cleared. The account and its profile remain; this is a suspension, not
+  // a deletion. Independent of the brute-force blocks Auth0 applies on its own.
+  bool blocked = 13;
+
+  // user_id is the identifier Auth0 stores for the user, WITHOUT the
+  // connection prefix: a user declared with user_id "root-dev" on a database
+  // connection is "auth0|root-dev" in every token. Leave it empty and Auth0
+  // assigns a random identifier, which is the right choice for almost every
+  // user; declare it only when the subject must be known before the user
+  // exists (a fixture another system is configured against). Immutable after
+  // creation: the modules replace the user when this changes.
+  string user_id = 14;
+
+  // password is the user's initial password, as a managed-secret reference
+  // (`$secret/<slug>`) -- never plaintext. Leave it empty and the modules
+  // generate one that satisfies the connection's password policy (24
+  // characters, upper- and lower-case letters and digits) and report it in
+  // status.outputs.password, so a declared user is usable without anyone
+  // typing or escrowing a value up front. A declared password is used as
+  // given and is never echoed back in the outputs. Meaningless on a
+  // passwordless connection: set passwordless instead. Changing this field
+  // resets the user's password on the next apply.
+  //
+  // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user#password
+  string password = 15 [(dev.planton.shared.options.sensitive) = true];
+
+  // passwordless declares that the connection is a passwordless one (strategy
+  // email or sms), where users sign in with a one-time code and Auth0 refuses
+  // a password at creation. When set, the modules send no password and mint
+  // none. Leave it false for a database connection.
+  bool passwordless = 16;
+
+  // user_metadata is free-form profile data the user themselves may read and
+  // change through a profile screen: display preferences, a work address, a
+  // locale. Stored as a JSON object on the user; never influences what the
+  // user can do. Keys and nesting are the application's to define.
+  //
+  // Example:
+  //   user_metadata:
+  //     locale: en-US
+  //     theme: dark
+  //
+  // https://auth0.com/docs/manage-users/user-accounts/metadata
+  google.protobuf.Struct user_metadata = 17;
+
+  // app_metadata is data that affects what the user can do or how the
+  // application behaves for them -- a support plan, an external account id, a
+  // tenant assignment -- and that the user cannot change themselves. Stored
+  // as a JSON object on the user and available to Actions and rules at
+  // sign-in. Keys and nesting are the application's to define. Roles and
+  // permissions have first-class fields below; do not encode them here.
+  //
+  // Example:
+  //   app_metadata:
+  //     plan: enterprise
+  //     crm_account_id: acct_01H...
+  //
+  // https://auth0.com/docs/manage-users/user-accounts/metadata
+  google.protobuf.Struct app_metadata = 18;
+
+  // custom_domain_header sets the Auth0-Custom-Domain header on every
+  // Management API request the modules make for this user, so the request is
+  // handled under that custom domain (which matters for emails Auth0 sends on
+  // the user's behalf, such as the verification message, whose links then
+  // carry the custom domain). A custom domain configured on the provider
+  // takes precedence when both are set. Example: "login.example.com".
+  string custom_domain_header = 19;
+
+  // roles is the authoritative set of Auth0 roles assigned to the user, each
+  // by role id. Reference an Auth0Role's status.outputs.id so the role is
+  // created first and its id is never retyped. The set is authoritative: the
+  // deployment manages the complete role list, and a role omitted from the
+  // manifest is removed from the user on the next apply. Leave it empty for a
+  // user with no roles.
+  //
+  // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user_roles
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef roles = 20 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = Auth0Role,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.id"
+  ];
+
+  // permissions is the authoritative set of API permissions (scopes) granted
+  // directly to the user, beside whatever the user's roles grant. Each entry
+  // names a scope and the resource server (API) that defines it. The set is
+  // authoritative: a permission omitted from the manifest is removed from the
+  // user on the next apply. Prefer roles for anything more than a one-off
+  // grant; direct permissions exist for the exceptions.
+  //
+  // Example:
+  //   permissions:
+  //     - name: read:reports
+  //       resource_server_identifier: https://api.example.com/
+  //
+  // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user_permissions
+  repeated Auth0UserPermission permissions = 21;
+}
+
+// Auth0UserPermission is a single API permission (scope) granted directly to a
+// user. The scope must already exist on the referenced resource server
+// (created through the Auth0ResourceServer component or directly in Auth0).
+message Auth0UserPermission {
+  // CEL: a permission must name the scope it grants.
+  option (buf.validate.message).cel = {
+    id: "permission_name_required"
+    message: "Each permission needs a name -- the scope as defined on the resource server, e.g. 'read:reports'."
+    expression: "this.name != ''"
+  };
+
+  // name is the permission (scope) name as defined on the resource server --
+  // the same value that appears in an access token's "scope" or "permissions"
+  // claim. Example: "read:reports", "manage:billing".
+  string name = 1 [(buf.validate.field).required = true];
+
+  // resource_server_identifier is the identifier (audience) of the Auth0
+  // Resource Server that defines this permission -- the API's unique
+  // identifier, typically a URI, the same value used as the "audience" in
+  // authorization requests. Reference an Auth0ResourceServer's
+  // status.outputs.identifier so the API is created first and its identifier
+  // is never retyped. Example: "https://api.example.com/".
+  dev.planton.shared.foreignkey.v1.StringValueOrRef resource_server_identifier = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = Auth0ResourceServer,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.identifier"
+  ];
+}

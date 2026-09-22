@@ -1,0 +1,66 @@
+# Auth0 User Test Manifest
+# This file is used for testing the Auth0User component
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: Your Auth0 tenant domain (e.g., your-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - create:users
+#    - read:users
+#    - update:users
+#    - delete:users
+#    - read:roles (when roles are assigned)
+#
+# 3. The connection must be a database (auth0) or passwordless (email, sms)
+#    connection that already exists in the tenant (e.g., created via the
+#    Auth0Connection component); the referenced role and resource server
+#    must exist too.
+
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0User
+metadata:
+  name: test-staff-root
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # The connection the user is created in, by reference to an Auth0Connection
+  connection_name:
+    value_from:
+      kind: Auth0Connection
+      name: users
+      field_path: status.outputs.name
+
+  # Who the person is
+  email: test-staff-root@test.planton.dev
+  name: Test Staff Root
+  given_name: Test
+  family_name: Root
+
+  # An identity the operator vouches for: verified, no confirmation email
+  email_verified: true
+  verify_email: false
+
+  # No password: the modules mint one and report it in status.outputs.password
+
+  # Data the application reads at sign-in; the user cannot change it
+  app_metadata:
+    plan: internal
+
+  # Authoritative roles and a direct permission, by reference
+  roles:
+    - value_from:
+        kind: Auth0Role
+        name: administrator
+        field_path: status.outputs.id
+  permissions:
+    - name: read:items
+      resource_server_identifier:
+        value_from:
+          kind: Auth0ResourceServer
+          name: api
+          field_path: status.outputs.identifier

@@ -1,0 +1,6 @@
+# Auth0User Pulumi Module
+# This module creates and manages Auth0 Users, their roles, and their direct permissions.
+name: auth0-user
+runtime:
+  name: go
+description: Pulumi module for Auth0User component
