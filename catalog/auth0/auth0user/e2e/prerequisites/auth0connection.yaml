@@ -1,0 +1,30 @@
+# The connection a declared user is created in, in the shape Auth0 requires
+# for user creation: Auth0 refuses to create a user in a connection no
+# application is enabled for ("400 Bad Request: The connection is disabled"),
+# so this consumer-scoped install profile enables the Auth0Client kind's own
+# minimal fixture on the connection -- installed first through the annotation
+# edge and referenced here, never retyped. The Auth0Connection kind's own
+# minimal scenario enables no client, which is right for that kind's proof
+# and wrong for a user's.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Connection
+metadata:
+  name: e2e-database
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-prerequisites: "Auth0Client"
+spec:
+  strategy: auth0
+  display_name: E2E Database Connection
+  show_as_button: true
+  enabled_clients:
+    - value_from:
+        kind: Auth0Client
+        name: e2e-spa-minimal
+        field_path: status.outputs.client_id
+  database_options:
+    password_policy: good
+    requires_username: false
+    disable_signup: false
+    brute_force_protection: true
