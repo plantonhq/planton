@@ -44,4 +44,5 @@ jobs:
       skill: ${{ inputs.skill }}
       version: ${{ inputs.tag }}
     secrets:
-      STIGMER_API_KEY: ${{ secrets.STIGMER_API_KEY }}
+      STIGMER_API_KEY_PLANTON_PROD: ${{ secrets.STIGMER_API_KEY_PLANTON_PROD }}
+      STIGMER_API_KEY_PLANTON_PREPROD: ${{ secrets.STIGMER_API_KEY_PLANTON_PREPROD }}
