@@ -5216,6 +5216,20 @@ enum CloudResourceKind {
     ]
     service_group: gcp_serverless
   }];
+  // Cloud Run's no-ingress shape: a pool of always-running container
+  // instances (queue consumers, schedulers, background workers) that
+  // scales manually or by the owner's own signal instead of by requests.
+  // The proof deploys direct-VPC egress onto the prerequisite network.
+  GcpCloudRunWorkerPool = 3122 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcprunwp"
+    prerequisites: [
+      GcpVpcNetwork,
+      GcpSubnetwork
+    ]
+    service_group: gcp_serverless
+  }];
 
   // 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that
   // holds GcpComputeInstance is fully allocated)
@@ -5534,6 +5548,36 @@ enum CloudResourceKind {
     id_prefix: "gcpneg"
     prerequisites: [GcpVpcNetwork]
     service_group: gcp_networking
+  }];
+
+  // 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka,
+  // BigQuery connections and reservations, Datastream)
+  // Memorystore for Redis Cluster: the sharded, horizontally scaled Redis.
+  // Connectivity is Private Service Connect, placed by service connectivity
+  // automation through a GcpServiceConnectionPolicy for the
+  // gcp-memorystore-redis class on the network in the cluster's region --
+  // the prerequisite; its proof pin carries that class beside the network
+  // and subnet pins.
+  GcpRedisCluster = 3190 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcprcl"
+    prerequisites: [GcpServiceConnectionPolicy]
+    service_group: gcp_databases
+  }];
+  // The Private Service Connect connections a consumer builds by hand
+  // (forwarding rules in other VPCs or projects) registered on a Redis
+  // Cluster, as one set: Google's resource replaces the cluster's whole
+  // user-created endpoint list in one write, so exactly one set per
+  // cluster is the honest grain. Its own kind because every connection
+  // names a forwarding rule that targets one of the cluster's service
+  // attachments -- a fold would depend on its own output.
+  GcpRedisClusterEndpointSet = 3197 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcprclep"
+    prerequisites: [GcpRedisCluster]
+    service_group: gcp_databases
   }];
 
   // 3250–3259: GCP Firebase (project enablement, app registrations, and

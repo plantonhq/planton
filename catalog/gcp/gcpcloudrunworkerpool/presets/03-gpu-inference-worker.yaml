@@ -1,0 +1,56 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudRunWorkerPool
+metadata:
+  name: embeddings-worker
+spec:
+  projectId:
+    value: my-gcp-project
+  workerPoolName: embeddings-worker
+  description: Computes embeddings for queued documents on an L4 GPU
+  region: us-central1
+  containers:
+    - name: embedder
+      image: us-docker.pkg.dev/my-gcp-project/ml/embeddings-worker:0.9.0
+      env:
+        - name: QUEUE
+          value: projects/my-gcp-project/subscriptions/documents-to-embed
+        - name: MODEL_BUCKET
+          value: ml-models
+      # Cloud Run's GPU minimums: 4 CPU and 16 GiB.
+      resources:
+        cpu: "4"
+        memory: 16Gi
+      volumeMounts:
+        - name: models
+          mountPath: /models
+      # Model loading is slow; the probe waits up to four minutes.
+      startupProbe:
+        tcpSocket:
+          port: 8081
+        periodSeconds: 20
+        failureThreshold: 12
+  volumes:
+    - name: models
+      gcs:
+        bucket:
+          valueFrom:
+            kind: GcpGcsBucket
+            name: ml-models
+            fieldPath: status.outputs.bucket_id
+        readOnly: true
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: embeddings-worker-sa
+      fieldPath: status.outputs.email
+  # One NVIDIA L4 per instance; single-zone capacity for the lower GPU rate.
+  nodeSelector:
+    accelerator: nvidia-l4
+  gpuZonalRedundancyDisabled: true
+  scaling:
+    scalingMode: MANUAL
+    manualInstanceCount: 1
+  labels:
+    tier: ml
+  deletionProtection: false
+  deletionPolicy: DELETE

@@ -1683,6 +1683,7 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | GcpCloudRun | `spec.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
 | GcpCloudRunJob | `spec.template.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
+| GcpCloudRunWorkerPool | `spec.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
 | GcpCloudSql | `spec.masterInstanceName` | `status.outputs.instance_name` |
 | GcpCloudSqlDatabase | `spec.instance` | `status.outputs.instance_name` |
 | GcpCloudSqlUser | `spec.instance` | `status.outputs.instance_name` |

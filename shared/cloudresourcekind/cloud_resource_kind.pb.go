@@ -1862,6 +1862,11 @@ const (
 	// 3120–3129: GCP serverless overflow
 	CloudResourceKind_GcpCloudRunJob            CloudResourceKind = 3120
 	CloudResourceKind_GcpServerlessVpcConnector CloudResourceKind = 3121
+	// Cloud Run's no-ingress shape: a pool of always-running container
+	// instances (queue consumers, schedulers, background workers) that
+	// scales manually or by the owner's own signal instead of by requests.
+	// The proof deploys direct-VPC egress onto the prerequisite network.
+	CloudResourceKind_GcpCloudRunWorkerPool CloudResourceKind = 3122
 	// 3130–3139: GCP compute overflow (the 3000–3022 foundation sub-band that
 	// holds GcpComputeInstance is fully allocated)
 	CloudResourceKind_GcpComputeDisk CloudResourceKind = 3130
@@ -1966,6 +1971,23 @@ const (
 	// attaches a GcpComputeInstance fixture as an endpoint on the
 	// prerequisite network.
 	CloudResourceKind_GcpNetworkEndpointGroup CloudResourceKind = 3187
+	// 3190–3199: GCP data (Memorystore for Redis Cluster, Managed Kafka,
+	// BigQuery connections and reservations, Datastream)
+	// Memorystore for Redis Cluster: the sharded, horizontally scaled Redis.
+	// Connectivity is Private Service Connect, placed by service connectivity
+	// automation through a GcpServiceConnectionPolicy for the
+	// gcp-memorystore-redis class on the network in the cluster's region --
+	// the prerequisite; its proof pin carries that class beside the network
+	// and subnet pins.
+	CloudResourceKind_GcpRedisCluster CloudResourceKind = 3190
+	// The Private Service Connect connections a consumer builds by hand
+	// (forwarding rules in other VPCs or projects) registered on a Redis
+	// Cluster, as one set: Google's resource replaces the cluster's whole
+	// user-created endpoint list in one write, so exactly one set per
+	// cluster is the honest grain. Its own kind because every connection
+	// names a forwarding rule that targets one of the cluster's service
+	// attachments -- a fold would depend on its own output.
+	CloudResourceKind_GcpRedisClusterEndpointSet CloudResourceKind = 3197
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -2989,6 +3011,7 @@ var (
 		3117: "GcpCertificateMap",
 		3120: "GcpCloudRunJob",
 		3121: "GcpServerlessVpcConnector",
+		3122: "GcpCloudRunWorkerPool",
 		3130: "GcpComputeDisk",
 		3131: "GcpComputeMig",
 		3140: "GcpMonitoringNotificationChannel",
@@ -3027,6 +3050,8 @@ var (
 		3188: "GcpHaVpnConnection",
 		3186: "GcpPscServiceAttachment",
 		3187: "GcpNetworkEndpointGroup",
+		3190: "GcpRedisCluster",
+		3197: "GcpRedisClusterEndpointSet",
 		3250: "GcpFirebaseProject",
 		3251: "GcpFirebaseAndroidApp",
 		3252: "GcpFirebaseAppleApp",
@@ -3735,6 +3760,7 @@ var (
 		"GcpCertificateMap":                              3117,
 		"GcpCloudRunJob":                                 3120,
 		"GcpServerlessVpcConnector":                      3121,
+		"GcpCloudRunWorkerPool":                          3122,
 		"GcpComputeDisk":                                 3130,
 		"GcpComputeMig":                                  3131,
 		"GcpMonitoringNotificationChannel":               3140,
@@ -3773,6 +3799,8 @@ var (
 		"GcpHaVpnConnection":                             3188,
 		"GcpPscServiceAttachment":                        3186,
 		"GcpNetworkEndpointGroup":                        3187,
+		"GcpRedisCluster":                                3190,
+		"GcpRedisClusterEndpointSet":                     3197,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4431,7 +4459,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xfc\xe5\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xb8\xe7\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4956,7 +4984,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1eGcpCertManagerDnsAuthorization\x10\xac\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcmdaP\xb3\x02\x128\n" +
 	"\x11GcpCertificateMap\x10\xad\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpcmap:\x02\xc8\x17P\xb3\x02\x121\n" +
 	"\x0eGcpCloudRunJob\x10\xb0\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunjP\xb8\x02\x12B\n" +
-	"\x19GcpServerlessVpcConnector\x10\xb1\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpvpcc:\x04\xc2\x17\xc3\x17P\xb8\x02\x121\n" +
+	"\x19GcpServerlessVpcConnector\x10\xb1\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpvpcc:\x04\xc2\x17\xc3\x17P\xb8\x02\x12?\n" +
+	"\x15GcpCloudRunWorkerPool\x10\xb2\x18\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\bgcprunwp:\x04\xc2\x17\xc3\x17P\xb8\x02\x121\n" +
 	"\x0eGcpComputeDisk\x10\xba\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpdiskP\xac\x02\x123\n" +
 	"\rGcpComputeMig\x10\xbb\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpmig:\x02\xc2\x17P\xac\x02\x12D\n" +
 	" GcpMonitoringNotificationChannel\x10\xc4\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpntfchP\xb5\x02\x12?\n" +
@@ -4994,7 +5023,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x18GcpNetworkFirewallPolicy\x10\xf1\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpnfwp:\x02\xc2\x17P\xb0\x02\x12:\n" +
 	"\x12GcpHaVpnConnection\x10\xf4\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpncn:\x02\xef\x18P\xb0\x02\x12>\n" +
 	"\x17GcpPscServiceAttachment\x10\xf2\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppsca:\x02\xc2\x17P\xb0\x02\x12=\n" +
-	"\x17GcpNetworkEndpointGroup\x10\xf3\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpneg:\x02\xc2\x17P\xb0\x02\x128\n" +
+	"\x17GcpNetworkEndpointGroup\x10\xf3\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpneg:\x02\xc2\x17P\xb0\x02\x125\n" +
+	"\x0fGcpRedisCluster\x10\xf6\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcprcl:\x02\xab\x18P\xaf\x02\x12B\n" +
+	"\x1aGcpRedisClusterEndpointSet\x10\xfd\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcprclep:\x02\xf6\x18P\xaf\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

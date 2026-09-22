@@ -229,6 +229,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRun | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudRunDomainMapping | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudRunJob | `spec.projectId` | `status.outputs.project_id` |
+| GcpCloudRunWorkerPool | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSchedulerJob | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSql | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSqlDatabase | `spec.projectId` | `status.outputs.project_id` |
@@ -291,6 +292,9 @@ Fields on other kinds that can point at this resource:
 | GcpPubSubSchema | `spec.projectId` | `status.outputs.project_id` |
 | GcpPubSubSubscription | `spec.projectId` | `status.outputs.project_id` |
 | GcpPubSubTopic | `spec.projectId` | `status.outputs.project_id` |
+| GcpRedisCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpRedisClusterEndpointSet | `spec.projectId` | `status.outputs.project_id` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].projectId` | `status.outputs.project_id` |
 | GcpRedisInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpRegionNetworkEndpointGroup | `spec.projectId` | `status.outputs.project_id` |
 | GcpRouterNat | `spec.projectId` | `status.outputs.project_id` |

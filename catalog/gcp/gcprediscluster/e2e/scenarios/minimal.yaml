@@ -1,0 +1,36 @@
+# GcpRedisCluster scenario: the smallest cluster Google sells -- one
+# shared-core shard, no replicas, plaintext -- reaching the prerequisite
+# VPC through the prerequisite service connection policy (pinned to the
+# gcp-memorystore-redis class). project_id is deliberately omitted: the
+# cluster rides the provider's default project, which the harness exports
+# as GOOGLE_PROJECT. The cloud-side name carries ${E2E_RUN_ID}; deletion
+# protection is explicitly disabled so the ephemeral create -> verify ->
+# destroy cycle tears down without a two-step disable.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisCluster
+metadata:
+  name: planton-oss-e2e-gcprcl-smoke
+  id: planton-oss-e2e-gcprcl-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcprediscluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  clusterName: e2e-rcl-${E2E_RUN_ID}
+  region: us-central1
+  shardCount: 1
+  replicaCount: 0
+  nodeType: REDIS_SHARED_CORE_NANO
+  pscConfigs:
+    - network:
+        valueFrom:
+          kind: GcpVpcNetwork
+          name: planton-oss-e2e-gcpvpcnetwork-prereq
+          fieldPath: status.outputs.network_id
+  deletionProtectionEnabled: false
+  deletionPolicy: DELETE

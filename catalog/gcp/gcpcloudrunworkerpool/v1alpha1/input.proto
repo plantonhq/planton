@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1;
+
+import "catalog/gcp/gcpcloudrunworkerpool/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-cloud-run-worker-pool stack-input
+message GcpCloudRunWorkerPoolStackInput {
+  //target cloud-resource
+  GcpCloudRunWorkerPool target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

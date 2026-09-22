@@ -1,0 +1,14 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpredisclusterendpointset
+spec:
+  billing_model: free
+  free_tier: "Registering user-created connections on a Memorystore for Redis Cluster has no charge of its own -- it is metadata on the cluster, with no per-connection fee and no hourly meter."
+  notes: "No field of this spec buys anything. The meters live on the blocks the connections are built from: each consumer forwarding rule (GcpGlobalForwardingRule, the PSC consumer endpoint) bills forwarding-rule hours and Private Service Connect data processing per GiB in the consumer project, and the cluster's nodes bill under GcpRedisCluster whether or not any connection is registered."
+  estimate_exclusions:
+    - consumer endpoint hours and PSC data processing bill under each consumer forwarding rule
+    - the cluster's node hours bill under GcpRedisCluster

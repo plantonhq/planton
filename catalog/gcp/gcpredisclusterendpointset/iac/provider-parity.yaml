@@ -1,0 +1,35 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_redis_cluster_user_created_connections:
+    mappings:
+      # The provider keys the registration by the cluster's bare name; the
+      # spec names the cluster as the reference it is (a GcpRedisCluster's
+      # full resource path), and both modules derive the bare name.
+      - spec: spec.cluster
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      # The spec drops the provider's psc_connection wrapper: a connection
+      # IS its PSC connection, so the spec's connection fields sit one
+      # level up. Matching resumes exactly below the subtree.
+      - spec: spec.endpoints
+        arg: cluster_endpoints
+      - spec: spec.endpoints.connections.forwarding_rule
+        arg: cluster_endpoints.connections.psc_connection.forwarding_rule
+      - spec: spec.endpoints.connections.psc_connection_id
+        arg: cluster_endpoints.connections.psc_connection.psc_connection_id
+      - spec: spec.endpoints.connections.address
+        arg: cluster_endpoints.connections.psc_connection.address
+      - spec: spec.endpoints.connections.network
+        arg: cluster_endpoints.connections.psc_connection.network
+      - spec: spec.endpoints.connections.service_attachment
+        arg: cluster_endpoints.connections.psc_connection.service_attachment
+      - spec: spec.endpoints.connections.project_id
+        arg: cluster_endpoints.connections.psc_connection.project_id

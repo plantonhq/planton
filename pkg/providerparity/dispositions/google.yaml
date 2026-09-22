@@ -536,9 +536,6 @@ resources:
   - resource: google_cloud_run_service
     disposition: excluded-deprecated
     reason: "first-generation Knative-serving Cloud Run resource, superseded by the v2 API (modeled by GcpCloudRun)"
-  - resource: google_cloud_run_v2_worker_pool
-    disposition: model-planned
-    reason: "planned GcpCloudRunWorkerPool kind (Cloud Run worker pools)"
   - resource: google_cloud_security_compliance_cloud_control
     disposition: deferred
     reason: "Compliance Manager frameworks are org-governance surface; deferred pending demand"
@@ -1489,7 +1486,7 @@ resources:
     reason: "a Memorystore ACL policy is a standalone object instances attach by name and share; the instance's acl_policy argument is the reference, the policy itself is a candidate kind on the first ask"
   - resource: google_memorystore_instance_desired_user_created_endpoints
     disposition: deferred
-    reason: "judged to fold into the existing GcpMemorystoreInstance kind's spec (user-created endpoint connections); the composition is not built"
+    reason: "registers consumer-built PSC connections on a Memorystore (Valkey) instance; it cannot fold into GcpMemorystoreInstance because every connection names a forwarding rule that targets the instance's own service attachment (a fold would depend on its own output) -- the companion-kind shape is GcpRedisClusterEndpointSet, and the Valkey twin is a candidate kind on the first ask"
   - resource: google_migration_center_assets_export_job
     disposition: deferred
     reason: "Migration Center assessment tooling is episodic; deferred"
@@ -1904,15 +1901,9 @@ resources:
   - resource: google_recaptcha_enterprise_key
     disposition: deferred
     reason: "judged to deserve a GcpRecaptchaKey kind; deferred pending demand"
-  - resource: google_redis_cluster
-    disposition: model-planned
-    reason: "planned GcpRedisCluster kind (Memorystore for Redis Cluster)"
   - resource: google_redis_cluster_acl_policy
     disposition: deferred
-    reason: "a Memorystore for Redis Cluster ACL policy is a standalone object clusters attach by name and share; the planned GcpRedisCluster kind carries the reference, the policy itself is a candidate kind on the first ask"
-  - resource: google_redis_cluster_user_created_connections
-    disposition: model-planned
-    reason: "planned composition into the planned GcpRedisCluster kind (user-created connections)"
+    reason: "a Memorystore for Redis Cluster ACL policy is a standalone object clusters attach by name and share; GcpRedisCluster's acl_policy field is the reference (a validated resource name), and the policy itself is a candidate kind on the first ask -- built together with google_memorystore_acl_policy, its Valkey twin"
   - resource: google_resource_manager_capability
     disposition: deferred
     reason: "Resource Manager capabilities are org-admin toggles; deferred pending demand"

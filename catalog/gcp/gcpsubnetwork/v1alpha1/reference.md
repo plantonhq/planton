@@ -513,6 +513,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudFunction | `spec.serviceConfig.directVpcNetworkInterface.subnetwork` | `status.outputs.subnetwork_name` |
 | GcpCloudRun | `spec.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
 | GcpCloudRunJob | `spec.template.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
+| GcpCloudRunWorkerPool | `spec.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
 | GcpComputeInstance | `spec.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpComputeMig | `spec.template.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.subnetwork` | `status.outputs.subnetwork_self_link` |

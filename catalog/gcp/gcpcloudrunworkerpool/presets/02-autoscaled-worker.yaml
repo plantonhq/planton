@@ -1,0 +1,49 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpCloudRunWorkerPool
+metadata:
+  name: media-transcoder
+spec:
+  projectId:
+    value: my-gcp-project
+  workerPoolName: media-transcoder
+  description: Transcodes uploaded media from a queue; scaled by queue depth
+  region: us-central1
+  containers:
+    - name: transcoder
+      image: us-docker.pkg.dev/my-gcp-project/apps/media-transcoder:2.1.0
+      env:
+        - name: QUEUE
+          value: projects/my-gcp-project/subscriptions/media-uploads
+        - name: OUTPUT_BUCKET
+          value: media-transcoded
+      resources:
+        cpu: "2"
+        memory: 2Gi
+      volumeMounts:
+        - name: scratch
+          mountPath: /tmp/work
+      startupProbe:
+        tcpSocket:
+          port: 8081
+        periodSeconds: 10
+        failureThreshold: 6
+  volumes:
+    - name: scratch
+      emptyDir:
+        medium: MEMORY
+        sizeLimit: 1Gi
+  serviceAccount:
+    valueFrom:
+      kind: GcpServiceAccount
+      name: media-transcoder-sa
+      fieldPath: status.outputs.email
+  # Cloud Run moves the count between the bounds on a signal you drive
+  # (for example a queue-depth metric through Cloud Monitoring).
+  scaling:
+    scalingMode: AUTOMATIC
+    minInstanceCount: 1
+    maxInstanceCount: 20
+  labels:
+    tier: production
+  deletionProtection: true
+  deletionPolicy: DELETE

@@ -529,6 +529,7 @@ import (
 	gcpcloudrunv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrun/v1alpha1"
 	gcpcloudrundomainmappingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrundomainmapping/v1alpha1"
 	gcpcloudrunjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunjob/v1alpha1"
+	gcpcloudrunworkerpoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunworkerpool/v1alpha1"
 	gcpcloudschedulerjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudschedulerjob/v1alpha1"
 	gcpcloudsqlv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsql/v1alpha1"
 	gcpcloudsqldatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqldatabase/v1alpha1"
@@ -592,6 +593,8 @@ import (
 	gcppubsubschemav1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubschema/v1alpha1"
 	gcppubsubsubscriptionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubsubscription/v1alpha1"
 	gcppubsubtopicv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppubsubtopic/v1alpha1"
+	gcpredisclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcprediscluster/v1alpha1"
+	gcpredisclusterendpointsetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpredisclusterendpointset/v1alpha1"
 	gcpredisinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpredisinstance/v1alpha1"
 	gcpregionnetworkendpointgroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpregionnetworkendpointgroup/v1alpha1"
 	gcprouternatv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcprouternat/v1alpha1"
@@ -1305,6 +1308,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpCloudRun:                            &gcpcloudrunv1alpha1.GcpCloudRun{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRunDomainMapping:               &gcpcloudrundomainmappingv1alpha1.GcpCloudRunDomainMapping{},
 	cloudresourcekind.CloudResourceKind_GcpCloudRunJob:                         &gcpcloudrunjobv1alpha1.GcpCloudRunJob{},
+	cloudresourcekind.CloudResourceKind_GcpCloudRunWorkerPool:                  &gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPool{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSchedulerJob:                   &gcpcloudschedulerjobv1alpha1.GcpCloudSchedulerJob{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSql:                            &gcpcloudsqlv1alpha1.GcpCloudSql{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSqlDatabase:                    &gcpcloudsqldatabasev1alpha1.GcpCloudSqlDatabase{},
@@ -1368,6 +1372,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpPubSubSchema:                        &gcppubsubschemav1alpha1.GcpPubSubSchema{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubSubscription:                  &gcppubsubsubscriptionv1alpha1.GcpPubSubSubscription{},
 	cloudresourcekind.CloudResourceKind_GcpPubSubTopic:                         &gcppubsubtopicv1alpha1.GcpPubSubTopic{},
+	cloudresourcekind.CloudResourceKind_GcpRedisCluster:                        &gcpredisclusterv1alpha1.GcpRedisCluster{},
+	cloudresourcekind.CloudResourceKind_GcpRedisClusterEndpointSet:             &gcpredisclusterendpointsetv1alpha1.GcpRedisClusterEndpointSet{},
 	cloudresourcekind.CloudResourceKind_GcpRedisInstance:                       &gcpredisinstancev1alpha1.GcpRedisInstance{},
 	cloudresourcekind.CloudResourceKind_GcpRegionNetworkEndpointGroup:          &gcpregionnetworkendpointgroupv1alpha1.GcpRegionNetworkEndpointGroup{},
 	cloudresourcekind.CloudResourceKind_GcpRouterNat:                           &gcprouternatv1alpha1.GcpRouterNat{},

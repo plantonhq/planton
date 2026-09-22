@@ -1,0 +1,44 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_redis_cluster:
+    mappings:
+      # Renames: the spec says what each field IS, where the provider
+      # inherits terser API names.
+      - spec: spec.cluster_name
+        arg: name
+      - spec: spec.project_id
+        arg: project
+      # The spec flattens the provider's start_time nesting: a window
+      # start is one hour-of-day field, and a daily backup start is one
+      # hour-of-day field.
+      - spec: spec.maintenance_policy.weekly_maintenance_window.hour
+        arg: maintenance_policy.weekly_maintenance_window.start_time.hours
+      - spec: spec.automated_backup_config.start_hour
+        arg: automated_backup_config.fixed_frequency_schedule.start_time.hours
+    exclusions:
+      # Google exposes the Redis Cluster maintenance window start by the
+      # hour only (gcloud redis clusters update --maintenance-window-hour;
+      # there is no minute flag), and the sibling Memorystore service
+      # rejects a start time carrying minutes with 400 "Invalid start time,
+      # only hours are supported". The provider passes the whole TimeOfDay
+      # through; the spec models the start hour-only.
+      - arg: maintenance_policy.weekly_maintenance_window.start_time.minutes
+        reason: Google exposes the Redis Cluster window start by the hour only (no minute lever in gcloud or the console); the spec models the start hour-only
+      - arg: maintenance_policy.weekly_maintenance_window.start_time.seconds
+        reason: sub-minute precision on an hour-anchored 1-hour maintenance window; the service supports whole hours only
+      - arg: maintenance_policy.weekly_maintenance_window.start_time.nanos
+        reason: sub-second precision on an hour-anchored 1-hour maintenance window; the service supports whole hours only
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables redis.googleapis.com
+      and networkconnectivity.googleapis.com with fixed arguments
+      (disable_on_destroy false so destroying one cluster never disables
+      the APIs project-wide); not spec surface.

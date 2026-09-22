@@ -253,6 +253,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudFunction | `spec.serviceConfig.directVpcNetworkInterface.network` | `status.outputs.network_name` |
 | GcpCloudRun | `spec.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | GcpCloudRunJob | `spec.template.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
+| GcpCloudRunWorkerPool | `spec.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | GcpCloudSql | `spec.network.privateNetwork` | `status.outputs.network_id` |
 | GcpComputeInstance | `spec.networkInterfaces[].network` | `status.outputs.network_self_link` |
 | GcpComputeMig | `spec.template.networkInterfaces[].network` | `status.outputs.network_self_link` |
@@ -280,6 +281,8 @@ Fields on other kinds that can point at this resource:
 | GcpNetworkFirewallPolicy | `spec.associations[].network` | `status.outputs.network_self_link` |
 | GcpPlantonRunner | `spec.vpcAccess.network` | `status.outputs.network_name` |
 | GcpPscServiceAttachment | `spec.consumerAcceptLists[].network` | `status.outputs.network_self_link` |
+| GcpRedisCluster | `spec.pscConfigs[].network` | `status.outputs.network_id` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].network` | `status.outputs.network_id` |
 | GcpRedisInstance | `spec.authorizedNetwork` | `status.outputs.network_self_link` |
 | GcpRegionNetworkEndpointGroup | `spec.network` | `status.outputs.network_self_link` |
 | GcpRouterNat | `spec.vpcSelfLink` | `status.outputs.network_self_link` |

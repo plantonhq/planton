@@ -1,0 +1,105 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_cloud_run_v2_worker_pool:
+    mappings:
+      # Renames: the spec says what each field IS, where the provider
+      # inherits terser API names.
+      - spec: spec.worker_pool_name
+        arg: name
+      - spec: spec.region
+        arg: location
+      - spec: spec.project_id
+        arg: project
+
+      # The spec flattens the provider's single-item template block: the
+      # revision template IS the worker pool's configuration, so its
+      # fields sit at the spec root (the GcpCloudRun posture).
+      - spec: spec.containers
+        arg: template.containers
+      - spec: spec.volumes
+        arg: template.volumes
+      - spec: spec.service_account
+        arg: template.service_account
+      - spec: spec.encryption_key
+        arg: template.encryption_key
+      - spec: spec.encryption_key_revocation_action
+        arg: template.encryption_key_revocation_action
+      - spec: spec.encryption_key_shutdown_duration
+        arg: template.encryption_key_shutdown_duration
+      - spec: spec.revision
+        arg: template.revision
+      - spec: spec.revision_labels
+        arg: template.labels
+      - spec: spec.revision_annotations
+        arg: template.annotations
+      - spec: spec.vpc_access
+        arg: template.vpc_access
+      - spec: spec.node_selector
+        arg: template.node_selector
+      - spec: spec.gpu_zonal_redundancy_disabled
+        arg: template.gpu_zonal_redundancy_disabled
+
+      # An environment variable's Secret Manager arm: the spec drops the
+      # provider's value_source wrapper (a variable takes a literal value
+      # or a secret reference).
+      - spec: spec.containers.env.value_from_secret
+        arg: template.containers.env.value_source.secret_key_ref
+
+      # CPU and memory are the two keys of the API's limits map; the spec
+      # names them as the fields they are.
+      - spec: spec.containers.resources.cpu
+        arg: template.containers.resources.limits
+      - spec: spec.containers.resources.memory
+        arg: template.containers.resources.limits
+    exclusions:
+      # The provider schema mirrors the API's shared Probe message, but
+      # Cloud Run itself rejects TCP liveness probes (liveness supports
+      # HTTP and gRPC only) -- the spec deliberately has no TCP arm on
+      # liveness, encoding the API truth the schema misses.
+      - arg: template.containers.liveness_probe.tcp_socket.port
+        reason: >-
+          Cloud Run rejects TCP liveness probes (liveness supports HTTP
+          and gRPC only); the schema exposes the arm only because the API
+          proto shares one Probe message across probe types
+
+      # SDK gap at the pinned pulumi-gcp v9.37.0 (which bridges provider
+      # 7.46.1): the worker-pool container type carries no sandbox_launcher
+      # field, so the argument cannot be honored on both engines. Modeled
+      # the day the SDK carries it.
+      - arg: template.containers.sandbox_launcher
+        reason: >-
+          SDK gap -- pulumi-gcp v9.37.0's WorkerPoolTemplateContainer has
+          no sandbox_launcher (the argument arrived in provider 8.1); a
+          one-engine field would break cross-engine parity. Re-evaluate at
+          the trigger "pulumi-gcp v10 GA"
+
+      # API-client telemetry strings with no user-facing behavior.
+      - arg: client
+        reason: >-
+          API-client telemetry label (which tool created the resource);
+          no user-facing behavior
+      - arg: client_version
+        reason: >-
+          API-client telemetry version accompanying client; no
+          user-facing behavior
+      - arg: template.client
+        reason: >-
+          API-client telemetry label on the revision template; no
+          user-facing behavior
+      - arg: template.client_version
+        reason: >-
+          API-client telemetry version accompanying template.client; no
+          user-facing behavior
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables run.googleapis.com
+      with fixed arguments (disable_on_destroy false so destroying one
+      pool never disables the API project-wide); not spec surface.

@@ -1,0 +1,24 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpcloudrunworkerpool
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/run.admin and iam.serviceAccounts.actAs on the
+  # Compute default service account: a one-instance MANUAL pool on Google's
+  # public worker-pool sample image, and an AUTOMATIC pool between bounds
+  # with direct VPC egress into the registry's prerequisite subnet. Offline
+  # bar met: both modules build and validate, offline plans for the
+  # reference manifest and every scenario are clean on the pinned provider,
+  # and the accounting is total. Live facts the proof lane confirms: (1)
+  # the pool reaches a ready revision with the declared instance count on
+  # both engines; (2) scaling left in Google's default (MANUAL) and every
+  # unset Optional+Computed lever RE-PLAN CLEAN under the apply-idempotency
+  # gate; (3) instance_splits left empty shows no diff against Google's
+  # all-on-latest default; (4) direct VPC egress places instances in the
+  # subnet; (5) the REST-read verifier (the pinned client library predates
+  # worker pools) sees the same latest_ready_revision both engines export.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 25

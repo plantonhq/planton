@@ -413,6 +413,7 @@ contained dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionSpec.project
 contained dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1.GcpCloudRunDomainMappingSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudschedulerjob.v1alpha1.GcpCloudSchedulerJobSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudsqldatabase.v1alpha1.GcpCloudSqlDatabaseSpec.instance -> GcpCloudSql
@@ -509,6 +510,8 @@ contained dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachme
 contained dev.planton.gcp.gcppubsubschema.v1alpha1.GcpPubSubSchemaSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcppubsubsubscription.v1alpha1.GcpPubSubSubscriptionSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcppubsubtopic.v1alpha1.GcpPubSubTopicSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1.GcpRegionNetworkEndpointGroupSpec.project_id -> GcpProject
@@ -865,6 +868,9 @@ exempt    dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunVolumeCloudSql.instanc
 exempt    dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobNetworkInterface.subnetwork -> GcpSubnetwork
 exempt    dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobVolumeCloudSql.instances -> GcpCloudSql
+exempt    dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolNetworkInterface.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolNetworkInterface.subnetwork -> GcpSubnetwork
+exempt    dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolVolumeCloudSql.instances -> GcpCloudSql
 exempt    dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.private_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlSpec.master_instance_name -> GcpCloudSql
 exempt    dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_namespace -> KubernetesNamespace
@@ -890,6 +896,9 @@ exempt    dev.planton.gcp.gcpplantonrunner.v1alpha1.GcpPlantonRunnerVpcAccess.su
 exempt    dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentConsumer.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentConsumer.project_id -> GcpProject
 exempt    dev.planton.gcp.gcppscserviceattachment.v1alpha1.GcpPscServiceAttachmentSpec.consumer_reject_lists -> GcpProject
+exempt    dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterPscConfig.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetConnection.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpredisclusterendpointset.v1alpha1.GcpRedisClusterEndpointSetConnection.project_id -> GcpProject
 exempt    dev.planton.gcp.gcpredisinstance.v1alpha1.GcpRedisInstanceSpec.authorized_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatRuleAction.source_nat_active_ranges -> GcpSubnetwork
 exempt    dev.planton.gcp.gcprouternat.v1alpha1.GcpRouterNatRuleAction.source_nat_drain_ranges -> GcpSubnetwork

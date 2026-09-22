@@ -1,0 +1,45 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcprediscluster
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Cloud Memorystore
+      sku_meter: node hours
+      pricing_unit: node-hours
+      description: Every node bills hourly from creation, serving or idle -- the cluster runs shard_count primary nodes plus replica_count replicas per shard, each at the node_type's hourly rate.
+  cost_drivers:
+    - field_path: shard_count
+      sku_meter: node hours
+      pricing_unit: node-hours
+      impact: Each shard is at least one full node -- shard_count multiplies the node bill directly, and again through every replica.
+    - field_path: node_type
+      sku_meter: node hours
+      pricing_unit: node-hours
+      impact: The node type keys the hourly rate -- from the shared-core REDIS_SHARED_CORE_NANO dev tier to REDIS_HIGHMEM_2XLARGE, the per-node rate spans well over an order of magnitude.
+    - field_path: replica_count
+      sku_meter: node hours
+      pricing_unit: node-hours
+      impact: Each replica per shard (0-5) is another full node at the same rate -- shard_count x replica_count additional nodes for read scaling and failover.
+    - field_path: persistence_config.mode
+      sku_meter: AOF storage
+      pricing_unit: GB-hours
+      impact: AOF persistence bills the append-only log's storage per GB-hour on top of the nodes; RDB snapshots and DISABLED add no storage meter.
+    - field_path: automated_backup_config.retention
+      sku_meter: backup storage
+      pricing_unit: GB-hours
+      impact: Daily backups bill per GB-hour of backup data held -- longer retention holds more backup generations.
+    - field_path: cross_cluster_replication_config.cluster_role
+      sku_meter: node hours
+      pricing_unit: node-hours
+      impact: A cross-region pair is two fully billed clusters -- the SECONDARY's nodes bill in its own region, plus inter-region replication traffic between them.
+  free_tier: ""
+  estimate_exclusions:
+    - AOF persistence storage and backup storage bill per GB actually held, which follows the keyspace and write churn
+    - network egress follows client placement; cross-region replication traffic bills per GiB of replicated writes
+    - consumer-side Private Service Connect endpoints (forwarding-rule hours, PSC data processing) bill under the consumer's forwarding rules, not this cluster
+  notes: "The nodes are the whole committed spend: shard_count x (1 + replica_count) nodes at the node_type's hourly rate, around the clock. Memory is not a separate meter -- the node_type fixes each node's memory. When node_type is unset Google selects REDIS_HIGHMEM_MEDIUM, so pinning it is what makes the bill predictable; REDIS_SHARED_CORE_NANO with one shard and no replicas is the cheapest shape for development."

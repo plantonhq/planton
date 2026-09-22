@@ -647,6 +647,8 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | GcpNetworkFirewallPolicy | `spec.rules[].targetForwardingRules` | `status.outputs.self_link` |
 | GcpPscServiceAttachment | `spec.targetService` | `status.outputs.self_link` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].forwardingRule` | `status.outputs.self_link` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].pscConnectionId` | `status.outputs.psc_connection_id` |
 
 ## See Also
 

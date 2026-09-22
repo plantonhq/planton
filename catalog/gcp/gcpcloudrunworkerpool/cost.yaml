@@ -1,0 +1,48 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcloudrunworkerpool
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Cloud Run
+      sku_meter: instance vCPU
+      pricing_unit: vCPU-seconds
+      description: A worker pool bills instance-based -- every running instance bills its allocated vCPUs for its whole lifetime, serving or idle ($0.000018 per vCPU-second in Tier 1 regions, per cloud.google.com/run/pricing read 2026-08-22); there is no request-based mode and no idle rate, because CPU is always allocated.
+    - service_name: Cloud Run
+      sku_meter: instance memory
+      pricing_unit: GiB-seconds
+      description: The same instances bill their allocated memory for their whole lifetime ($0.000002 per GiB-second in Tier 1, same source).
+  cost_drivers:
+    - field_path: scaling.manual_instance_count
+      sku_meter: instance vCPU
+      pricing_unit: vCPU-seconds
+      impact: The committed-spend dial in MANUAL mode -- exactly this many instances run around the clock, each billing its full vCPU and memory allocation. Zero parks the pool and owes nothing.
+    - field_path: scaling.min_instance_count
+      sku_meter: instance vCPU
+      pricing_unit: vCPU-seconds
+      impact: The floor in AUTOMATIC mode -- the pool never runs fewer instances than this, so the floor is the committed spend; the ceiling is max_instance_count.
+    - field_path: containers.resources.cpu
+      sku_meter: instance vCPU
+      pricing_unit: vCPU-seconds
+      impact: Each container's CPU limit multiplies every instance-second; sidecars add their limits to the instance total.
+    - field_path: containers.resources.memory
+      sku_meter: instance memory
+      pricing_unit: GiB-seconds
+      impact: Each container's memory limit bills alongside the CPU for every instance-second.
+    - field_path: node_selector.accelerator
+      sku_meter: GPU seconds
+      pricing_unit: GPU-seconds
+      impact: One GPU per instance for the instance's entire lifetime -- NVIDIA L4 without zonal redundancy bills $0.0001867 per second in us-central1 (read 2026-08-22), roughly 10x the CPU meter of a 4-vCPU instance; the dominant meter whenever it is set.
+    - field_path: gpu_zonal_redundancy_disabled
+      sku_meter: GPU seconds
+      pricing_unit: GPU-seconds
+      impact: True buys the cheaper single-zone GPU rate; false (the default) keeps zonal redundancy at the higher rate.
+  free_tier: ""
+  estimate_exclusions:
+    - network egress follows what the workers talk to; direct VPC egress and Serverless VPC Access connectors bill under their own meters
+    - Secret Manager access, Cloud SQL, GCS FUSE reads, and the queues the workers pull from bill under those components
+  notes: "The instances are the whole committed spend: instance count x (cpu + memory) at the instance-based rates, around the clock, because a worker pool allocates CPU for the instance's whole lifetime -- an idle worker bills like a busy one. Size the count for the work and park the pool (manual_instance_count 0) when nothing needs doing."

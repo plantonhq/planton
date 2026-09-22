@@ -1,0 +1,35 @@
+# Consumer-scoped GcpServiceConnectionPolicy install profile for the rclep
+# chain: authorizes the gcp-memorystore-redis service class (Memorystore
+# for Redis Cluster) on the chain's VPC -- Google honors only this class
+# for a Redis Cluster, so the policy's default install profile (the Valkey
+# class) cannot serve here. The cloud-side policy name carries
+# ${E2E_RUN_ID}; metadata.name stays fixed.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpServiceConnectionPolicy
+metadata:
+  name: planton-oss-e2e-gcpscp-prereq
+  id: planton-oss-e2e-gcpscp-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpserviceconnectionpolicy
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  policyName: e2e-scp-redis-${E2E_RUN_ID}
+  location: us-central1
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_id
+  serviceClass: gcp-memorystore-redis
+  pscConfig:
+    subnetworks:
+      - valueFrom:
+          kind: GcpSubnetwork
+          name: planton-oss-e2e-gcpsnw-scp-prereq
+          fieldPath: status.outputs.subnetwork_self_link

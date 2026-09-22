@@ -1,0 +1,69 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpRedisClusterEndpointSet
+metadata:
+  name: orders-cache-endpoints
+spec:
+  projectId:
+    value: my-gcp-project
+  # The cluster, created without pscConfigs so it publishes attachments.
+  cluster:
+    valueFrom:
+      kind: GcpRedisCluster
+      name: orders-cache
+      fieldPath: status.outputs.name
+  region: us-central1
+  endpoints:
+    # One consumer VPC: a connection for the discovery attachment and one
+    # for the primary (a cluster with replicas adds a reader connection).
+    - connections:
+        - forwardingRule:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: orders-cache-disc
+              fieldPath: status.outputs.self_link
+          pscConnectionId:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: orders-cache-disc
+              fieldPath: status.outputs.psc_connection_id
+          address:
+            valueFrom:
+              kind: GcpAddress
+              name: orders-cache-disc-ip
+              fieldPath: status.outputs.address
+          network:
+            valueFrom:
+              kind: GcpVpcNetwork
+              name: consumer-vpc
+              fieldPath: status.outputs.network_id
+          serviceAttachment:
+            valueFrom:
+              kind: GcpRedisCluster
+              name: orders-cache
+              fieldPath: status.outputs.discovery_service_attachment
+        - forwardingRule:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: orders-cache-prim
+              fieldPath: status.outputs.self_link
+          pscConnectionId:
+            valueFrom:
+              kind: GcpGlobalForwardingRule
+              name: orders-cache-prim
+              fieldPath: status.outputs.psc_connection_id
+          address:
+            valueFrom:
+              kind: GcpAddress
+              name: orders-cache-prim-ip
+              fieldPath: status.outputs.address
+          network:
+            valueFrom:
+              kind: GcpVpcNetwork
+              name: consumer-vpc
+              fieldPath: status.outputs.network_id
+          serviceAttachment:
+            valueFrom:
+              kind: GcpRedisCluster
+              name: orders-cache
+              fieldPath: status.outputs.primary_service_attachment
+  deletionPolicy: DELETE

@@ -1,0 +1,905 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpCloudRunWorkerPoolSpec defines a Cloud Run worker pool
+// (`google_cloud_run_v2_worker_pool`): a pool of always-running container
+// instances with no HTTP front door -- queue consumers, schedulers, event
+// pullers, and background workers that do their own work instead of
+// answering requests.
+//
+// A worker pool is a Cloud Run service with the request path removed. It
+// keeps the revision template (containers, volumes, VPC egress, GPU) and the
+// revision model (every template change stamps out a new immutable
+// revision, instance_splits decides how many instances each revision runs),
+// but it has no port, no ingress, no invoker IAM, no URL, and no
+// request-driven autoscaling: instances scale MANUALLY to a count you set,
+// or AUTOMATICALLY between bounds by a signal you drive (for example a
+// Pub/Sub backlog metric through Cloud Monitoring), never by traffic. CPU is
+// always allocated, so billing is per instance-hour, not per request.
+//
+// Choose GcpCloudRun for anything that serves HTTP; GcpCloudRunJob for work
+// that runs to completion and exits; this kind for a process that should be
+// up all the time and pull its own work.
+message GcpCloudRunWorkerPoolSpec {
+  option (buf.validate.message).cel = {
+    id: "gpu.redundancy_requires_accelerator"
+    message: "gpu_zonal_redundancy_disabled only applies to GPU worker pools -- set node_selector.accelerator"
+    expression: "!this.gpu_zonal_redundancy_disabled || has(this.node_selector)"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "encryption.shutdown_duration_requires_shutdown_action"
+    message: "encryption_key_shutdown_duration only applies when encryption_key_revocation_action is SHUTDOWN"
+    expression: "this.encryption_key_shutdown_duration == '' || this.encryption_key_revocation_action == 'SHUTDOWN'"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "encryption.revocation_action_requires_key"
+    message: "encryption_key_revocation_action only applies to a worker pool with an encryption_key"
+    expression: "this.encryption_key_revocation_action == '' || (has(this.encryption_key.value) && this.encryption_key.value != '') || has(this.encryption_key.value_from)"
+  };
+
+  // The GCP project the worker pool is created in. Accepts a literal
+  // project ID or a reference to a GcpProject resource. If omitted, the
+  // provider's default project is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Region the worker pool runs in, e.g. "us-central1". Immutable.
+  string region = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // Name of the worker pool in GCP. Immutable. Defaults to metadata.name.
+  // 1-63 characters: lowercase letters, digits, and hyphens, starting with
+  // a letter and ending alphanumeric.
+  string worker_pool_name = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      pattern: "^[a-z]([-a-z0-9]*[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // Human-readable description, shown in the console.
+  string description = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.max_len = 512
+  ];
+
+  // Labels on the worker pool object, shared with Google's billing system
+  // for cost breakdowns. Keys in the `run.googleapis.com`,
+  // `cloud.googleapis.com`, `serving.knative.dev`, and
+  // `autoscaling.knative.dev` namespaces are rejected by the API.
+  map<string, string> labels = 5;
+
+  // Annotations on the worker pool object: unstructured metadata for
+  // external tools, never behavioral for Cloud Run. Same namespace
+  // restrictions as labels. For metadata stamped on each REVISION use
+  // revision_annotations.
+  map<string, string> annotations = 6;
+
+  // The containers that make up one instance. The first container
+  // conventionally does the work; additional containers are sidecars
+  // (collectors, proxies) sharing the instance's localhost and volumes,
+  // ordered by depends_on. No container exposes a port -- a worker pool
+  // receives no requests. Deployment pipelines inject the built image into
+  // containers whose image is left BLANK (the image-slot contract);
+  // authored images are untouched.
+  repeated GcpCloudRunWorkerPoolContainer containers = 7 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.options.artifact_image_slot) = "image"
+  ];
+
+  // Named volumes instances can mount: Cloud SQL sockets, Secret Manager
+  // material, scratch space, GCS buckets (FUSE), and NFS shares. A volume
+  // is inert until a container mounts it by name.
+  repeated GcpCloudRunWorkerPoolVolume volumes = 8;
+
+  // Email of the IAM service account the instances run as -- the identity
+  // whose permissions the code exercises. Accepts a literal email or a
+  // GcpServiceAccount reference. If omitted, the project's Compute Engine
+  // default service account is used -- fine for experiments, too broad for
+  // production; give real workers a dedicated least-privilege identity.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // How many instances run. MANUAL (Google's default) pins the total to
+  // manual_instance_count; AUTOMATIC lets Cloud Run move between
+  // min_instance_count and max_instance_count on a signal you drive.
+  // If omitted, Google runs the pool in MANUAL mode at its default count.
+  GcpCloudRunWorkerPoolScaling scaling = 10;
+
+  // How instances are split across revisions. If empty, every instance
+  // runs the latest ready revision -- the right default. Populate for a
+  // gradual rollout: percentages must sum to 100 (enforced by the API at
+  // deploy time).
+  repeated GcpCloudRunWorkerPoolInstanceSplit instance_splits = 11;
+
+  // Customer-managed encryption key (CMEK) that encrypts the deployed
+  // container images: a full crypto key ID
+  // (projects/*/locations/*/keyRings/*/cryptoKeys/*) or a GcpKmsKey
+  // reference. The key must be in the worker pool's region and the Cloud
+  // Run service agent needs encrypter/decrypter on it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef encryption_key = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "KMS crypto key resource ID/reference only -- never key material"
+  ];
+
+  // What Cloud Run does with running instances if the CMEK is revoked:
+  //   PREVENT_NEW -- no new instances start; running ones keep going
+  //   SHUTDOWN    -- every instance is stopped after
+  //                  encryption_key_shutdown_duration
+  // Only meaningful with encryption_key.
+  string encryption_key_revocation_action = 13 [
+    (buf.validate.field).cel = {
+      id: "encryption_key_revocation_action_valid_value"
+      expression: "this == '' || this in ['PREVENT_NEW', 'SHUTDOWN']"
+      message: "encryption_key_revocation_action must be PREVENT_NEW or SHUTDOWN"
+    },
+    (dev.planton.shared.options.sensitive_exempt_reason) = "an enum naming what happens on key revocation (PREVENT_NEW or SHUTDOWN) -- never key material"
+  ];
+
+  // Grace period before instances are shut down after a key revocation
+  // under SHUTDOWN, as a seconds duration in whole hours (e.g. "3600s").
+  string encryption_key_shutdown_duration = 14 [
+    (buf.validate.field).cel = {
+      id: "encryption_key_shutdown_duration_format"
+      expression: "this == '' || this.matches('^[0-9]+s$')"
+      message: "encryption_key_shutdown_duration must be a seconds duration such as \"3600s\""
+    },
+    (dev.planton.shared.options.sensitive_exempt_reason) = "a grace-period duration (e.g. \"3600s\") -- never key material"
+  ];
+
+  // Explicit name for the next revision, prefixed with the worker pool
+  // name (e.g. "orders-worker-v42"). If omitted (recommended), Cloud Run
+  // generates one. Pin names only when instance_splits routes by
+  // revision; each template change then REQUIRES a new value here.
+  string revision = 15 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      pattern: "^[a-z]([-a-z0-9]*[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // Labels stamped on every REVISION the template creates, as opposed to
+  // `labels` on the worker pool object. Same namespace restrictions.
+  map<string, string> revision_labels = 16;
+
+  // Annotations stamped on every REVISION the template creates, as
+  // opposed to `annotations` on the worker pool object.
+  map<string, string> revision_annotations = 17;
+
+  // Private networking for OUTBOUND traffic: Direct VPC egress
+  // (network_interfaces -- recommended) or a Serverless VPC Access
+  // connector. A worker pool that pulls from Memorystore, Cloud SQL private
+  // IP, or an internal service needs this.
+  GcpCloudRunWorkerPoolVpcAccess vpc_access = 18;
+
+  // Hardware requirement for GPU workers. Setting an accelerator (e.g.
+  // "nvidia-l4") gives every instance one GPU; the containers' resource
+  // limits must then meet Cloud Run's GPU minimums (4 CPU / 16Gi).
+  GcpCloudRunWorkerPoolNodeSelector node_selector = 19;
+
+  // Opts a GPU worker pool out of zonal redundancy: instances may be
+  // served from a single zone, lowering GPU capacity cost for zonal-failure
+  // risk. Only meaningful with node_selector.
+  bool gpu_zonal_redundancy_disabled = 20;
+
+  // Launch-stage gate. Set BETA (or ALPHA) only when the spec uses preview
+  // Cloud Run features the default GA stage rejects; the value is a
+  // declaration, not a feature switch. The provider enum admits more
+  // values, but Cloud Run supports only ALPHA, BETA, and GA -- this list
+  // encodes the API truth.
+  string launch_stage = 21 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "ALPHA",
+        "BETA",
+        "GA"
+      ]
+    }
+  ];
+
+  // Binary Authorization: only images that pass the policy's attestation
+  // checks may deploy. The project default policy or a named one.
+  GcpCloudRunWorkerPoolBinaryAuthorization binary_authorization = 22;
+
+  // Prevents the worker pool from being destroyed while true. Defaults to
+  // true (Google's posture): a destroy fails until this is set to false.
+  // Both engines send the value explicitly so a manifest that never
+  // mentions it behaves the same everywhere.
+  optional bool deletion_protection = 23 [(dev.planton.shared.options.default) = "true"];
+
+  // What happens to the worker pool when this resource is destroyed
+  // (after deletion_protection allows the destroy):
+  //   "" / "DELETE" -- the worker pool is deleted (default)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the worker pool leaves management but keeps running
+  string deletion_policy = 24 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// GcpCloudRunWorkerPoolScaling decides how many instances the pool runs.
+message GcpCloudRunWorkerPoolScaling {
+  option (buf.validate.message).cel = {
+    id: "scaling.manual_count_requires_manual_mode"
+    message: "manual_instance_count only applies when scaling_mode is MANUAL (or unset, which is MANUAL)"
+    expression: "!has(this.manual_instance_count) || this.scaling_mode != 'AUTOMATIC'"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "scaling.bounds_require_automatic_mode"
+    message: "min_instance_count and max_instance_count only apply when scaling_mode is AUTOMATIC"
+    expression: "(!has(this.min_instance_count) && !has(this.max_instance_count)) || this.scaling_mode == 'AUTOMATIC'"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "scaling.min_lte_max"
+    message: "min_instance_count cannot exceed max_instance_count"
+    expression: "!has(this.min_instance_count) || !has(this.max_instance_count) || this.min_instance_count <= this.max_instance_count"
+  };
+
+  // MANUAL (Google's default): the pool runs exactly manual_instance_count
+  // instances. AUTOMATIC: Cloud Run moves the count between
+  // min_instance_count and max_instance_count on a signal you drive.
+  string scaling_mode = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "AUTOMATIC",
+        "MANUAL"
+      ]
+    }
+  ];
+
+  // Total instances across all revisions in MANUAL mode. 0 parks the pool
+  // (no instances, no bill) without deleting it.
+  optional int32 manual_instance_count = 2 [(buf.validate.field).int32.gte = 0];
+
+  // Lower bound on instances in AUTOMATIC mode, distributed across
+  // revisions by instance_splits.
+  optional int32 min_instance_count = 3 [(buf.validate.field).int32.gte = 0];
+
+  // Upper bound on instances in AUTOMATIC mode -- the cost circuit
+  // breaker.
+  optional int32 max_instance_count = 4 [(buf.validate.field).int32.gte = 1];
+}
+
+// GcpCloudRunWorkerPoolInstanceSplit assigns a share of the pool's
+// instances to a revision -- the worker-pool analogue of a service's
+// traffic split, for gradual rollouts of a new worker image.
+message GcpCloudRunWorkerPoolInstanceSplit {
+  option (buf.validate.message).cel = {
+    id: "instance_split.revision_type_coherence"
+    message: "REVISION splits must name a revision; LATEST splits must not"
+    expression: "(this.type == 'INSTANCE_SPLIT_ALLOCATION_TYPE_REVISION' && this.revision != '') || (this.type != 'INSTANCE_SPLIT_ALLOCATION_TYPE_REVISION' && this.revision == '')"
+  };
+
+  // Assign to the latest ready revision (LATEST) or a named revision
+  // (REVISION).
+  string type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "INSTANCE_SPLIT_ALLOCATION_TYPE_LATEST",
+        "INSTANCE_SPLIT_ALLOCATION_TYPE_REVISION"
+      ]
+    }
+  ];
+
+  // Revision name for REVISION splits (see spec.revision for deterministic
+  // naming).
+  string revision = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      pattern: "^[a-z]([-a-z0-9]*[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // Percent of instances for this revision (0-100). All percents in the
+  // list must sum to 100 -- enforced by the API at deploy time. Unset
+  // means 0.
+  optional int32 percent = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+}
+
+// GcpCloudRunWorkerPoolContainer is one container of the instance: the
+// worker or a sidecar. Containers in one instance share the network
+// namespace (localhost) and any mounted volumes. Unlike a Cloud Run
+// service's container it exposes no port.
+message GcpCloudRunWorkerPoolContainer {
+  // Name of the container. Required when the pool runs more than one
+  // container (depends_on refers to these names). If omitted for a single
+  // container, Cloud Run assigns one.
+  string name = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      pattern: "^[a-z]([-a-z0-9]*[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // Container image URL, e.g. "us-docker.pkg.dev/project/repo/worker:1.0.0".
+  // Pin a digest or immutable tag for repeatable deploys -- Cloud Run
+  // resolves the image to a digest at revision creation. Private images
+  // are pulled only from Artifact Registry (or the legacy Container
+  // Registry) the Cloud Run service agent can read; public Docker Hub and
+  // GHCR images deploy directly.
+  string image = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Entrypoint array -- overrides the image's ENTRYPOINT. Not executed in
+  // a shell; variable references are not expanded.
+  repeated string command = 3;
+
+  // Arguments to the entrypoint -- overrides the image's CMD.
+  repeated string args = 4;
+
+  // Environment variables. Each entry carries a literal value or a Secret
+  // Manager reference resolved at instance start.
+  repeated GcpCloudRunWorkerPoolEnvVar env = 5;
+
+  // CPU and memory for this container. If omitted, Cloud Run defaults
+  // apply (1 CPU, 512Mi). CPU is always allocated on a worker pool.
+  GcpCloudRunWorkerPoolContainerResources resources = 6;
+
+  // Volumes (declared at the pool level) mounted into this container's
+  // filesystem.
+  repeated GcpCloudRunWorkerPoolVolumeMount volume_mounts = 7;
+
+  // Working directory for the entrypoint. If omitted, the image's WORKDIR
+  // is used.
+  string working_dir = 8;
+
+  // Probe that gates instance start: depends_on waiters stay blocked until
+  // this succeeds, and an instance that never passes is killed. HTTP, TCP,
+  // or gRPC. If omitted, Cloud Run considers the container started once
+  // its process is running.
+  GcpCloudRunWorkerPoolStartupProbe startup_probe = 9;
+
+  // Probe that monitors a running instance: on failure_threshold
+  // consecutive failures the container is restarted. HTTP and gRPC only --
+  // Cloud Run rejects TCP liveness probes. If omitted, instances are never
+  // health-restarted.
+  GcpCloudRunWorkerPoolLivenessProbe liveness_probe = 10;
+
+  // Names of containers this one waits for: this container starts only
+  // after the listed containers pass their startup probes. Immutable --
+  // changing the order replaces the worker pool.
+  repeated string depends_on = 11 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).repeated = {
+      unique: true
+      items: {
+        string: {min_len: 1}
+      }
+    }
+  ];
+}
+
+// GcpCloudRunWorkerPoolEnvVar is one environment variable: a literal value
+// or a Secret Manager reference, never both.
+message GcpCloudRunWorkerPoolEnvVar {
+  option (buf.validate.message).cel = {
+    id: "env.value_xor_secret"
+    message: "an environment variable takes a literal value or a Secret Manager reference, not both"
+    expression: "!(this.value != '' && has(this.value_from_secret))"
+  };
+
+  // Variable name, e.g. "QUEUE_SUBSCRIPTION". Must not start with a digit.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {pattern: "^[A-Za-z_][A-Za-z0-9_.-]*$"}
+  ];
+
+  // Literal value. Fine for configuration; never place credentials here --
+  // use value_from_secret so the material stays in Secret Manager.
+  string value = 2;
+
+  // Secret Manager reference resolved into the variable at instance start.
+  GcpCloudRunWorkerPoolSecretEnvSource value_from_secret = 3;
+}
+
+// GcpCloudRunWorkerPoolSecretEnvSource points an environment variable at a
+// Secret Manager secret version. The instance's service account needs
+// roles/secretmanager.secretAccessor on the secret.
+message GcpCloudRunWorkerPoolSecretEnvSource {
+  // The secret: a short name for a secret in the same project
+  // ("db-password") or a full resource name (projects/*/secrets/*) for
+  // cross-project reads.
+  string secret = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret NAME/identifier only -- the secret material itself never appears in the spec"
+  ];
+
+  // Secret version to resolve: a version number or "latest". GCP requires
+  // an explicit version for env vars -- "latest" is the common choice, at
+  // the cost of new instances silently picking up rotations.
+  string version = 2 [(dev.planton.shared.options.recommended_default) = "latest"];
+}
+
+// GcpCloudRunWorkerPoolContainerResources sets this container's share of
+// the instance's CPU and memory. A worker pool allocates CPU for the whole
+// instance lifetime, so there is no idle-CPU lever here.
+message GcpCloudRunWorkerPoolContainerResources {
+  // CPU limit: "1", "2", "4", "6", "8" or a fraction like "0.5"/"500m".
+  // 4 CPU needs at least 2Gi of memory; 6 or more need 4Gi. GPU workers
+  // need at least "4".
+  string cpu = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^([0-9]+m|[0-9]+(\\.[0-9]+)?)$"}
+  ];
+
+  // Memory limit with unit suffix, e.g. "512Mi", "2Gi". Minimums scale
+  // with CPU; GPU workers need at least "16Gi".
+  string memory = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^[0-9]+(Ki|Mi|Gi|Ti|K|M|G|T)$"}
+  ];
+}
+
+// GcpCloudRunWorkerPoolStartupProbe gates instance start. Its own message
+// because startup is the one probe type Cloud Run accepts a TCP check on,
+// and the only one whose whole window (failure_threshold x period_seconds)
+// is capped at 240 seconds.
+message GcpCloudRunWorkerPoolStartupProbe {
+  option (buf.validate.message).cel = {
+    id: "probe.timeout_lte_period"
+    message: "probe timeout_seconds cannot exceed period_seconds"
+    expression: "!has(this.timeout_seconds) || !has(this.period_seconds) || this.timeout_seconds <= this.period_seconds"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "startup_probe.window_max_240"
+    message: "the startup window (failure_threshold x period_seconds, defaults 3 x 10) cannot exceed 240 seconds"
+    expression: "(has(this.failure_threshold) ? this.failure_threshold : 3) * (has(this.period_seconds) ? this.period_seconds : 10) <= 240"
+  };
+
+  // Seconds to wait after container start before the first probe (0-240).
+  optional int32 initial_delay_seconds = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 240
+  }];
+
+  // Seconds after which a single probe attempt times out (1-240; GCP
+  // default 1). Must not exceed period_seconds.
+  optional int32 timeout_seconds = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 240
+  }];
+
+  // Seconds between probe attempts (1-240; GCP default 10).
+  optional int32 period_seconds = 3 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 240
+  }];
+
+  // Consecutive failures after which startup is considered failed and the
+  // instance is killed (GCP default 3).
+  optional int32 failure_threshold = 4 [(buf.validate.field).int32.gte = 1];
+
+  // The check to perform.
+  oneof handler {
+    option (buf.validate.oneof).required = true;
+
+    // HTTP GET against a path on a port the container listens on; 2xx is
+    // success. A worker has no serving port, so name the port explicitly.
+    GcpCloudRunWorkerPoolHttpGetAction http_get = 5;
+
+    // TCP connect to a port; a successful connection is success.
+    GcpCloudRunWorkerPoolTcpSocketAction tcp_socket = 6;
+
+    // Standard gRPC health-check protocol (grpc.health.v1.Health/Check).
+    GcpCloudRunWorkerPoolGrpcAction grpc = 7;
+  }
+}
+
+// GcpCloudRunWorkerPoolLivenessProbe monitors a running instance: on
+// failure_threshold consecutive failures the container is restarted. No
+// TCP arm -- Cloud Run rejects TCP liveness probes -- and the API's wider
+// 3600-second timing ceiling.
+message GcpCloudRunWorkerPoolLivenessProbe {
+  option (buf.validate.message).cel = {
+    id: "probe.timeout_lte_period"
+    message: "probe timeout_seconds cannot exceed period_seconds"
+    expression: "!has(this.timeout_seconds) || !has(this.period_seconds) || this.timeout_seconds <= this.period_seconds"
+  };
+
+  // Seconds to wait after container start before the first probe
+  // (0-3600).
+  optional int32 initial_delay_seconds = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 3600
+  }];
+
+  // Seconds after which a single probe attempt times out (1-3600; GCP
+  // default 1). Must not exceed period_seconds.
+  optional int32 timeout_seconds = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 3600
+  }];
+
+  // Seconds between probe attempts (1-3600; GCP default 10).
+  optional int32 period_seconds = 3 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 3600
+  }];
+
+  // Consecutive failures after which the container is restarted (GCP
+  // default 3).
+  optional int32 failure_threshold = 4 [(buf.validate.field).int32.gte = 1];
+
+  // The check to perform. HTTP and gRPC only.
+  oneof handler {
+    option (buf.validate.oneof).required = true;
+
+    // HTTP GET against a path on a port the container listens on; 2xx is
+    // success.
+    GcpCloudRunWorkerPoolHttpGetAction http_get = 5;
+
+    // Standard gRPC health-check protocol (grpc.health.v1.Health/Check).
+    GcpCloudRunWorkerPoolGrpcAction grpc = 6;
+  }
+}
+
+// GcpCloudRunWorkerPoolHttpGetAction is an HTTP GET probe check.
+message GcpCloudRunWorkerPoolHttpGetAction {
+  // Path to probe, e.g. "/healthz". Defaults to "/".
+  string path = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^/.*$"
+  ];
+
+  // Port to probe. A worker pool has no serving port to fall back to, so
+  // set the port the worker's health listener binds.
+  optional int32 port = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Custom header sent with the probe request (e.g. an auth header for a
+  // protected health endpoint). At most one header: the pinned Pulumi SDK
+  // models a worker-pool probe's headers as a single header, so both
+  // engines accept the same manifests; the list widens when the SDK does.
+  repeated GcpCloudRunWorkerPoolHttpHeader http_headers = 3 [(buf.validate.field).repeated.max_items = 1];
+}
+
+// GcpCloudRunWorkerPoolHttpHeader is one custom header on an HTTP probe.
+message GcpCloudRunWorkerPoolHttpHeader {
+  // Header name.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Header value.
+  string value = 2;
+}
+
+// GcpCloudRunWorkerPoolTcpSocketAction is a TCP connect probe check.
+message GcpCloudRunWorkerPoolTcpSocketAction {
+  // Port to connect to.
+  optional int32 port = 1 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// GcpCloudRunWorkerPoolGrpcAction is a gRPC health-check probe.
+message GcpCloudRunWorkerPoolGrpcAction {
+  // Port the gRPC health service listens on.
+  optional int32 port = 1 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+
+  // Service name passed to the health check, letting one server report
+  // per-service health. If empty, overall server health is checked.
+  string service = 2;
+}
+
+// GcpCloudRunWorkerPoolVolume is a named volume with exactly one source.
+// Mount it into containers via volume_mounts.
+message GcpCloudRunWorkerPoolVolume {
+  // Volume name referenced by volume_mounts entries.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // The volume's backing source.
+  oneof source {
+    option (buf.validate.oneof).required = true;
+
+    // Cloud SQL Unix sockets, one per instance, under the mount path
+    // (mount at "/cloudsql"; connect via
+    // "/cloudsql/<project:region:instance>"). GCP manages the proxying.
+    GcpCloudRunWorkerPoolVolumeCloudSql cloud_sql_instance = 2;
+
+    // Secret Manager secret versions exposed as files.
+    GcpCloudRunWorkerPoolVolumeSecret secret = 3;
+
+    // Ephemeral scratch space, in-memory (counts against the instance's
+    // memory limit) or disk-backed.
+    GcpCloudRunWorkerPoolVolumeEmptyDir empty_dir = 4;
+
+    // A GCS bucket mounted via Cloud Storage FUSE; object storage
+    // semantics apply (no POSIX locking; renames are copies).
+    GcpCloudRunWorkerPoolVolumeGcs gcs = 5;
+
+    // An NFS share (e.g. Filestore) mounted into the instance. Needs VPC
+    // access to reach the server.
+    GcpCloudRunWorkerPoolVolumeNfs nfs = 6;
+  }
+}
+
+// GcpCloudRunWorkerPoolVolumeCloudSql exposes Cloud SQL instances as Unix
+// sockets.
+message GcpCloudRunWorkerPoolVolumeCloudSql {
+  // Cloud SQL instance connection names (project:region:instance).
+  // Accepts literal values or references to GcpCloudSql resources.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef instances = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudSql,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.connection_name"
+  ];
+}
+
+// GcpCloudRunWorkerPoolVolumeSecret projects Secret Manager secret versions
+// as files under the mount path. The instance's service account needs
+// roles/secretmanager.secretAccessor on the secret.
+message GcpCloudRunWorkerPoolVolumeSecret {
+  // The secret: a short name for a secret in the same project or a full
+  // resource name (projects/*/secrets/*).
+  string secret = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret NAME/identifier only -- the secret material itself never appears in the spec"
+  ];
+
+  // Default Unix permission mode for projected files, in decimal (e.g. 292
+  // = 0444). If unset, GCP defaults to 0444.
+  optional int32 default_mode = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 511
+  }];
+
+  // Which versions land at which relative paths. If empty, the "latest"
+  // version is projected at a file named after the secret.
+  repeated GcpCloudRunWorkerPoolVolumeSecretItem items = 3;
+}
+
+// GcpCloudRunWorkerPoolVolumeSecretItem maps one secret version to one file.
+message GcpCloudRunWorkerPoolVolumeSecretItem {
+  // Relative path of the file under the volume's mount path.
+  string path = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Secret version to project: a version number or "latest".
+  string version = 2 [(dev.planton.shared.options.recommended_default) = "latest"];
+
+  // Unix permission mode for this file, in decimal. Overrides
+  // default_mode.
+  optional int32 mode = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 511
+  }];
+}
+
+// GcpCloudRunWorkerPoolVolumeEmptyDir is per-instance ephemeral scratch
+// space, gone when the instance stops.
+message GcpCloudRunWorkerPoolVolumeEmptyDir {
+  // Backing medium: MEMORY (default -- tmpfs; usage counts against the
+  // containers' memory limits) or DISK.
+  string medium = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "MEMORY",
+        "DISK"
+      ]
+    }
+  ];
+
+  // Capacity limit with unit suffix, e.g. "512Mi", "2Gi".
+  string size_limit = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {pattern: "^[0-9]+(Ki|Mi|Gi|Ti|K|M|G|T)$"}
+  ];
+}
+
+// GcpCloudRunWorkerPoolVolumeGcs mounts a GCS bucket via Cloud Storage
+// FUSE.
+message GcpCloudRunWorkerPoolVolumeGcs {
+  // The bucket to mount. Accepts a literal bucket name or a reference to a
+  // GcpGcsBucket resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_id"
+  ];
+
+  // Mount read-only. Recommended unless the worker genuinely writes --
+  // concurrent writers through FUSE are easy to get wrong.
+  bool read_only = 2;
+
+  // Flags passed to the gcsfuse command mounting this volume, without
+  // leading dashes (e.g. "implicit-dirs", "only-dir=media").
+  repeated string mount_options = 3 [(buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE];
+}
+
+// GcpCloudRunWorkerPoolVolumeNfs mounts an NFS share (e.g. a Filestore
+// instance).
+message GcpCloudRunWorkerPoolVolumeNfs {
+  // Hostname or IP of the NFS server.
+  string server = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Exported path on the server, e.g. "/share1".
+  string path = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^/.*$"
+  ];
+
+  // Mount read-only.
+  bool read_only = 3;
+}
+
+// GcpCloudRunWorkerPoolVolumeMount attaches a declared volume to a
+// container path.
+message GcpCloudRunWorkerPoolVolumeMount {
+  // Name of a volume declared in spec.volumes.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Absolute path in the container to mount at. Cloud SQL volumes must
+  // mount at "/cloudsql".
+  string mount_path = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^/.*$"
+  ];
+
+  // Path WITHIN the volume to mount instead of its root. Relative; empty
+  // mounts the volume root.
+  string sub_path = 3;
+}
+
+// GcpCloudRunWorkerPoolVpcAccess routes the pool's OUTBOUND traffic into a
+// VPC -- directly (recommended) or through a Serverless VPC Access
+// connector. Exactly one mechanism.
+message GcpCloudRunWorkerPoolVpcAccess {
+  option (buf.validate.message).cel = {
+    id: "vpc_access.connector_xor_interfaces"
+    message: "use direct VPC egress (network_interfaces) or a Serverless VPC Access connector, not both"
+    expression: "!(((has(this.connector.value) && this.connector.value != '') || has(this.connector.value_from)) && size(this.network_interfaces) > 0)"
+  };
+
+  // Serverless VPC Access connector to route egress through. Full resource
+  // name (projects/*/locations/*/connectors/*) or a reference to a
+  // GcpServerlessVpcConnector resource.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef connector = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServerlessVpcConnector,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
+
+  // Direct VPC egress: instances get IPs in the subnetwork and reach VPC
+  // resources with no connector infrastructure. The subnetwork needs free
+  // address space for the instance fleet.
+  repeated GcpCloudRunWorkerPoolNetworkInterface network_interfaces = 2;
+
+  // Which egress traffic uses the VPC path: everything (ALL_TRAFFIC) or
+  // only RFC1918/private destinations (PRIVATE_RANGES_ONLY -- the
+  // default; public egress keeps Cloud Run's own path).
+  string egress = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "",
+        "ALL_TRAFFIC",
+        "PRIVATE_RANGES_ONLY"
+      ]
+    }
+  ];
+}
+
+// GcpCloudRunWorkerPoolNetworkInterface places instances into a VPC
+// subnetwork for direct VPC egress.
+message GcpCloudRunWorkerPoolNetworkInterface {
+  // The VPC network. Accepts a literal network name or a reference to a
+  // GcpVpcNetwork resource. May be omitted when subnetwork is set (the
+  // network is inferred).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_name"
+  ];
+
+  // The subnetwork instances draw IPs from. Accepts a literal subnetwork
+  // name or a reference to a GcpSubnetwork resource. Must be in the pool's
+  // region.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnetwork = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_name"
+  ];
+
+  // Network tags applied to the instances -- how VPC firewall rules select
+  // the pool's egress traffic.
+  repeated string tags = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).repeated = {
+      unique: true
+      items: {
+        string: {pattern: "^[a-z]([-a-z0-9]*[a-z0-9])?$"}
+      }
+    }
+  ];
+}
+
+// GcpCloudRunWorkerPoolNodeSelector states the hardware the pool's
+// instances need.
+message GcpCloudRunWorkerPoolNodeSelector {
+  // GPU accelerator type each instance gets, e.g. "nvidia-l4". GPU pools
+  // need at least "4" CPU / "16Gi" memory and regional GPU quota.
+  string accelerator = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// GcpCloudRunWorkerPoolBinaryAuthorization gates deploys on image
+// attestation policy.
+message GcpCloudRunWorkerPoolBinaryAuthorization {
+  option (buf.validate.message).cel = {
+    id: "binary_authorization.default_xor_policy"
+    message: "use the project default policy (use_default) or name a specific policy, not both"
+    expression: "!(this.use_default && this.policy != '')"
+  };
+
+  // Evaluate deploys against the project's default Binary Authorization
+  // policy.
+  bool use_default = 1;
+
+  // Evaluate deploys against a specific platform policy
+  // (projects/*/platforms/cloudRun/policies/*).
+  string policy = 2 [(buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE];
+
+  // Justification recorded when a break-glass deploy bypasses the policy.
+  string breakglass_justification = 3;
+}

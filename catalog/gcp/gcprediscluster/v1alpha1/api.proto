@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcprediscluster.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcprediscluster/v1alpha1/outputs.proto";
+import "catalog/gcp/gcprediscluster/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-redis-cluster
+message GcpRedisCluster {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpRedisCluster'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpRedisClusterSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpRedisClusterStatus status = 5;
+}
+
+//gcp-redis-cluster status
+message GcpRedisClusterStatus {
+  //stack-outputs
+  GcpRedisClusterStackOutputs outputs = 1;
+}

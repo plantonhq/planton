@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1;
+
+// GcpCloudRunWorkerPoolStackOutputs captures the observable values of a
+// Cloud Run worker pool after provisioning. A worker pool has no URL: it
+// receives no requests, so there is nothing to reach it at -- the outputs
+// identify it and report the revision that is running.
+message GcpCloudRunWorkerPoolStackOutputs {
+  // Full resource name
+  // (projects/{project}/locations/{region}/workerPools/{name}).
+  string name = 1;
+
+  // Bare worker pool name in GCP -- the segment the API is keyed by.
+  string worker_pool_name = 2;
+
+  // Server-generated unique identifier, stable across updates.
+  string uid = 3;
+
+  // Region the worker pool runs in.
+  string location = 4;
+
+  // The GCP project the worker pool lives in.
+  string project_id = 5;
+
+  // Name of the most recently created revision (may still be rolling out).
+  string latest_created_revision = 6;
+
+  // Name of the newest revision that is serving instances -- what a
+  // rollout has actually reached.
+  string latest_ready_revision = 7;
+
+  // The generation Cloud Run's controller has reconciled (a decimal
+  // string, as Google reports it); equal to the pool's generation once a
+  // rollout is complete.
+  string observed_generation = 8;
+
+  // Opaque version token for optimistic concurrency on the API.
+  string etag = 9;
+}

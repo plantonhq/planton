@@ -308,6 +308,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudFunction | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpCloudRun | `spec.encryptionKey` | `status.outputs.key_id` |
 | GcpCloudRunJob | `spec.template.encryptionKey` | `status.outputs.key_id` |
+| GcpCloudRunWorkerPool | `spec.encryptionKey` | `status.outputs.key_id` |
 | GcpCloudSql | `spec.encryptionKeyName` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
@@ -340,6 +341,7 @@ Fields on other kinds that can point at this resource:
 | GcpLogBucket | `spec.scopeSettings.kmsKey` | `status.outputs.key_id` |
 | GcpMemorystoreInstance | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpPubSubTopic | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpRedisCluster | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpRedisInstance | `spec.customerManagedKey` | `status.outputs.key_id` |
 | GcpSecretManagerSecret | `spec.replication.auto.customerManagedEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpSecretManagerSecret | `spec.replication.userManaged.replicas[].customerManagedEncryption.kmsKey` | `status.outputs.key_id` |

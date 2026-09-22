@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcprediscluster.v1alpha1;
+
+// GcpRedisClusterStackOutputs captures the observable values of a
+// Memorystore for Redis Cluster after provisioning.
+//
+// A cluster is reached over Private Service Connect. With psc_configs set,
+// Google places the endpoints and discovery_endpoint_address is what clients
+// connect to. Without psc_configs, the three *_service_attachment handles
+// are what a consumer's forwarding rules target, and GcpRedisClusterEndpointSet
+// registers those rules on the cluster.
+message GcpRedisClusterStackOutputs {
+  // Full resource path of the cluster
+  // (projects/{project}/locations/{region}/clusters/{cluster}). The
+  // composition key: a SECONDARY's primary_cluster reference and a
+  // GcpRedisClusterEndpointSet's cluster reference resolve to it.
+  string name = 1;
+
+  // Server-generated unique identifier, stable across updates.
+  string uid = 2;
+
+  // The cluster's lifecycle state at the end of provisioning: CREATING,
+  // READY, UPDATING, DELETING, or SUSPENDED.
+  string state = 3;
+
+  // IP address of the Google-placed discovery endpoint -- the address a
+  // Cluster-protocol client bootstraps from. Empty when psc_configs is
+  // unset (consumers build their own endpoints).
+  string discovery_endpoint_address = 4;
+
+  // Port of the discovery endpoint (6379 unless configured otherwise).
+  // 0 when psc_configs is unset.
+  int32 discovery_endpoint_port = 5;
+
+  // Service attachment a consumer's own forwarding rule targets to reach
+  // the DISCOVERY endpoint
+  // (projects/{project}/regions/{region}/serviceAttachments/{id}). The
+  // handle GcpRedisClusterEndpointSet registers a discovery connection
+  // against.
+  string discovery_service_attachment = 6;
+
+  // Service attachment for the PRIMARY endpoint (writes). Empty when Google
+  // publishes no separate primary attachment for this cluster shape.
+  string primary_service_attachment = 7;
+
+  // Service attachment for the READER endpoint (replica reads). Empty when
+  // the cluster has no replicas.
+  string reader_service_attachment = 8;
+
+  // Redis memory across the whole cluster in GB, as Google reports it.
+  int32 size_gb = 9;
+
+  // The shard count in effect after provisioning.
+  int32 shard_count = 10;
+
+  // The replica count per shard in effect after provisioning.
+  int32 replica_count = 11;
+
+  // Full resource path of the managed backup collection Google keeps for
+  // this cluster once automated backups are configured -- the source of
+  // managed_backup_source paths for seeding new clusters.
+  string backup_collection = 12;
+}

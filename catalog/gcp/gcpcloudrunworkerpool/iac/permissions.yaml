@@ -1,0 +1,32 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcloudrunworkerpool
+spec:
+  gcp:
+    groups:
+      - purpose: EnableRunApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling run.googleapis.com on the target project so a fresh project works on the first deploy. disable_on_destroy is false in both modules -- tearing down one pool must never disable the API for everything else -- so the disable permission is never needed.
+      - purpose: ManageWorkerPool
+        permissions:
+          - run.workerpools.create
+          - run.workerpools.get
+          - run.workerpools.update
+          - run.workerpools.delete
+          - run.operations.get
+        provenance: derived
+        notes: Covers google_cloud_run_v2_worker_pool -- create, read/refresh, in-place updates (revision template, containers, scaling, instance splits, deletion protection), and destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). Worker pool mutations on the Cloud Run Admin API v2 return long-running operations the provider polls, which authorize as run.operations.get. roles/run.admin contains all five.
+      - purpose: ActAsRuntimeServiceAccount
+        permissions:
+          - iam.serviceAccounts.actAs
+        provenance: derived
+        notes: Cloud Run's deployment-permissions contract requires iam.serviceAccounts.actAs on the pool's identity for every create or update of google_cloud_run_v2_worker_pool -- on the referenced spec.service_account when one is named, or on the project's Compute Engine default service account when it is not. There is no shape of this component that escapes the requirement.

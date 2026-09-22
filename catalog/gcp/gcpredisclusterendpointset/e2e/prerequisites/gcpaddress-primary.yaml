@@ -1,0 +1,30 @@
+# Extra-instance GcpAddress fixture: the reserved internal address the
+# consumer's primary forwarding rule serves on, drawn from the chain's
+# prerequisite subnet. Declared through the consuming scenario's
+# e2e-prerequisites annotation.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpAddress
+metadata:
+  name: planton-oss-e2e-gcprclep-ip-prim
+  id: planton-oss-e2e-gcprclep-ip-prim
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpredisclusterendpointset
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  addressName: e2e-rclep-ip-prim-${E2E_RUN_ID}
+  region: us-central1
+  addressType: INTERNAL
+  purpose: GCE_ENDPOINT
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcpsnw-scp-prereq
+      fieldPath: status.outputs.subnetwork_self_link
+  description: Ephemeral PSC endpoint address for the gcpredisclusterendpointset E2E chain; safe to delete
+  deletionPolicy: DELETE

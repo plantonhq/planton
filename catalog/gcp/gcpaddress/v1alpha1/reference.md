@@ -292,6 +292,7 @@ Fields on other kinds that can point at this resource:
 | GcpDnsRecord | `spec.routingPolicy.geo[].healthCheckedTargets.internalLoadBalancers[].ipAddress` | `status.outputs.address` |
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.primary.internalLoadBalancers[].ipAddress` | `status.outputs.address` |
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.backupGeo[].healthCheckedTargets.internalLoadBalancers[].ipAddress` | `status.outputs.address` |
+| GcpRedisClusterEndpointSet | `spec.endpoints[].connections[].address` | `status.outputs.address` |
 | GcpRouterNat | `spec.natIps` | `status.outputs.self_link` |
 | GcpRouterNat | `spec.drainNatIps` | `status.outputs.self_link` |
 | GcpRouterNat | `spec.rules[].action.sourceNatActiveIps` | `status.outputs.self_link` |

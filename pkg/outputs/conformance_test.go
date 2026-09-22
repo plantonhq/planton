@@ -2912,11 +2912,11 @@ func TestStackOutputsConformance(t *testing.T) {
 			name: "GcpCloudArmorPolicy",
 			kind: cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy,
 			rawOutputs: map[string]interface{}{
-				"policy_id":                               "projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
-				"policy_name":                             "nlb-shield",
-				"policy_self_link":                        "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
-				"fingerprint":                             "abc123==",
-				"region":                                  "us-central1",
+				"policy_id":        "projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
+				"policy_name":      "nlb-shield",
+				"policy_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
+				"fingerprint":      "abc123==",
+				"region":           "us-central1",
 				"network_edge_security_service_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/networkEdgeSecurityServices/nlb-shield",
 			},
 			mustPopulate: []string{"policy_id", "policy_name", "policy_self_link", "fingerprint", "region", "network_edge_security_service_self_link"},
@@ -3890,6 +3890,62 @@ func TestStackOutputsConformance(t *testing.T) {
 				"membership_count": "4",
 			},
 			mustPopulate: []string{"name", "group_email", "membership_count"},
+		},
+		{
+			// GcpRedisCluster: the full resource path (the verifier's key and
+			// the composition key), the lifecycle state, the Google-placed
+			// discovery endpoint, the three per-connection-type service
+			// attachment handles a consumer forwarding rule targets (reader
+			// empty without replicas), and the sizes as strings.
+			name: "GcpRedisCluster",
+			kind: cloudresourcekind.CloudResourceKind_GcpRedisCluster,
+			rawOutputs: map[string]interface{}{
+				"name":                         "projects/my-project/locations/us-central1/clusters/orders-cache",
+				"uid":                          "0123456789abcdef",
+				"state":                        "READY",
+				"discovery_endpoint_address":   "10.0.0.5",
+				"discovery_endpoint_port":      "6379",
+				"discovery_service_attachment": "projects/p/regions/us-central1/serviceAttachments/gcp-memorystore-auto-disc",
+				"primary_service_attachment":   "projects/p/regions/us-central1/serviceAttachments/gcp-memorystore-auto-prim",
+				"reader_service_attachment":    "",
+				"size_gb":                      "1",
+				"shard_count":                  "1",
+				"replica_count":                "0",
+				"backup_collection":            "projects/my-project/locations/us-central1/backupCollections/abcd",
+			},
+			mustPopulate: []string{"name", "uid", "state", "discovery_endpoint_address", "discovery_endpoint_port", "discovery_service_attachment", "primary_service_attachment", "size_gb", "shard_count", "backup_collection"},
+		},
+		{
+			// GcpRedisClusterEndpointSet: the bare cluster name the set is
+			// keyed by (the verifier's key) and the two declared counts.
+			name: "GcpRedisClusterEndpointSet",
+			kind: cloudresourcekind.CloudResourceKind_GcpRedisClusterEndpointSet,
+			rawOutputs: map[string]interface{}{
+				"cluster_name":     "orders-cache",
+				"endpoint_count":   "1",
+				"connection_count": "2",
+				"region":           "us-central1",
+			},
+			mustPopulate: []string{"cluster_name", "endpoint_count", "connection_count", "region"},
+		},
+		{
+			// GcpCloudRunWorkerPool: the full resource name (the verifier's
+			// key), the bare name, the identity fields, and the two revision
+			// pointers a rollout is read from.
+			name: "GcpCloudRunWorkerPool",
+			kind: cloudresourcekind.CloudResourceKind_GcpCloudRunWorkerPool,
+			rawOutputs: map[string]interface{}{
+				"name":                    "projects/my-project/locations/us-central1/workerPools/orders-worker",
+				"worker_pool_name":        "orders-worker",
+				"uid":                     "0123456789abcdef",
+				"location":                "us-central1",
+				"project_id":              "my-project",
+				"latest_created_revision": "orders-worker-00001-abc",
+				"latest_ready_revision":   "orders-worker-00001-abc",
+				"observed_generation":     "1",
+				"etag":                    "\"abc123\"",
+			},
+			mustPopulate: []string{"name", "worker_pool_name", "uid", "location", "project_id", "latest_created_revision", "latest_ready_revision", "observed_generation", "etag"},
 		},
 		{
 			// GcpFirebaseProject: flat scalar outputs from both engines -- the

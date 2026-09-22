@@ -1148,6 +1148,30 @@ func TestGcpPscServiceAttachment_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcppscserviceattachment", "terraform")
 }
 
+func TestGcpRedisCluster_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcprediscluster", "pulumi")
+}
+
+func TestGcpRedisCluster_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcprediscluster", "terraform")
+}
+
+func TestGcpRedisClusterEndpointSet_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpredisclusterendpointset", "pulumi")
+}
+
+func TestGcpRedisClusterEndpointSet_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpredisclusterendpointset", "terraform")
+}
+
+func TestGcpCloudRunWorkerPool_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudrunworkerpool", "pulumi")
+}
+
+func TestGcpCloudRunWorkerPool_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcloudrunworkerpool", "terraform")
+}
+
 func TestGcpNetworkEndpointGroup_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpnetworkendpointgroup", "pulumi")
 }

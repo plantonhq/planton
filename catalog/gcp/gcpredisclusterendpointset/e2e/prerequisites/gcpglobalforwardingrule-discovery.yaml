@@ -1,0 +1,44 @@
+# Extra-instance GcpGlobalForwardingRule fixture: the consumer's Private
+# Service Connect endpoint for the cluster's discovery service attachment --
+# the regional arm in the PSC form (scheme NONE, the attachment handle as
+# target, the reserved address as the VIP, in the chain's VPC).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGlobalForwardingRule
+metadata:
+  name: planton-oss-e2e-gcprclep-fr-disc
+  id: planton-oss-e2e-gcprclep-fr-disc
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpredisclusterendpointset
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  forwardingRuleName: e2e-rclep-fr-disc-${E2E_RUN_ID}
+  description: Ephemeral PSC consumer endpoint (discovery) for the gcpredisclusterendpointset E2E chain; safe to delete
+  region: us-central1
+  loadBalancingScheme: NONE
+  target:
+    valueFrom:
+      kind: GcpRedisCluster
+      name: planton-oss-e2e-gcprcl-prereq
+      fieldPath: status.outputs.discovery_service_attachment
+  ipAddress:
+    valueFrom:
+      kind: GcpAddress
+      name: planton-oss-e2e-gcprclep-ip-disc
+      fieldPath: status.outputs.address
+  network:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpvpcnetwork-prereq
+      fieldPath: status.outputs.network_self_link
+  subnetwork:
+    valueFrom:
+      kind: GcpSubnetwork
+      name: planton-oss-e2e-gcpsnw-scp-prereq
+      fieldPath: status.outputs.subnetwork_self_link
+  deletionPolicy: DELETE

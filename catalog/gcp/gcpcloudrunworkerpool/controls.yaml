@@ -1,0 +1,94 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcloudrunworkerpool
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Everything the pool stores -- the deployed container image copy, revision configuration, and secret references -- is encrypted at rest with Google-managed keys without configuration. The instances themselves are stateless; durable data lives on the components the code writes to.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: encryption_key
+      evidence:
+        type: spec_default
+        reference: Unset (the default) leaves the deployed container image under Google-managed keys; naming a Cloud KMS key (or referencing a GcpKmsKey) encrypts it with the customer-managed key, and encryption_key_revocation_action decides what running instances do if the key is revoked.
+      notes: No preset enables CMEK. It covers the image copy Cloud Run deploys; data the code writes elsewhere is keyed by those components.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A worker pool receives no requests, so there is no inbound path to encrypt; its outbound calls to Google APIs use TLS, and direct VPC egress traffic stays on Google's network. TLS to the systems the code talks to is the code's responsibility.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A worker pool has no port, no URL, and no ingress -- nothing can reach it from the internet or from a VPC; its containers open outbound connections only.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: There is no ingress to restrict; the pool receives no traffic by design (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No requests are served, so there is no edge and no WAF attachment point.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Management-plane operations (deploy, update, delete, instance-split changes) authorize against Cloud Run IAM roles unconditionally, and deploying requires iam.serviceAccounts.actAs on the runtime identity; there is no invoker surface because nothing invokes a worker pool.
+    - control_id: workload-identity
+      status: configurable
+      field_path: service_account
+      evidence:
+        type: spec_default
+        reference: Instances authenticate to Google APIs as the spec's service account through short-lived credentials from the metadata server -- no static key is ever provisioned. Unset defaults to the project's Compute Engine default service account; naming a dedicated GcpServiceAccount is the least-privilege posture.
+      notes: Presets 01 and 02 pin a dedicated runtime identity; the default compute account is broader than any single worker needs.
+    - control_id: no-legacy-auth
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Runtime credentials are exclusively the metadata server's short-lived tokens, and there is no inbound authentication path at all -- the pool exposes no legacy authentication surface and offers no switch to weaken one.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Worker pool create, update, and delete land in Cloud Audit Logs (Admin Activity) unconditionally; container stdout and stderr stream to Cloud Logging for every revision without configuration.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud Run publishes per-revision instance count, CPU and memory utilization, and container restart metrics to Cloud Monitoring for every worker pool without configuration; the same metrics are what an AUTOMATIC scaling signal is built from.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The pool is declarative configuration fully re-creatable from the manifest, and revisions are immutable snapshots Cloud Run retains for rollback. Instances are stateless -- whatever data the code produces lives in the systems it writes to, backed up there.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain -- see backup-recovery.
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: gpu_zonal_redundancy_disabled
+      evidence:
+        type: spec_default
+        reference: False (the default) keeps instances -- GPU included -- zonally redundant across the region; true opts a GPU pool into single-zone capacity, trading zonal-failure tolerance for cheaper GPUs. Non-GPU pools run on Cloud Run's regional infrastructure with no placement choice exposed.
+      notes: The 03-gpu-inference-worker preset disables zonal redundancy deliberately -- a stated cost trade-off.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_protection
+      evidence:
+        type: spec_default
+        reference: Defaults to true -- destroying the pool fails until the flag is explicitly set false; both engines send the value explicitly so the spec is the single source of truth.
+      notes: Presets 01 and 02 keep it on; deletion_policy PREVENT is a second, independent guard. Parking the pool (manual_instance_count 0) is the way to stop work without destroying anything.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Cloud Run patches the serverless platform under the containers continuously with no operator action; the container image's own OS and runtime layers are the image owner's to rebuild.

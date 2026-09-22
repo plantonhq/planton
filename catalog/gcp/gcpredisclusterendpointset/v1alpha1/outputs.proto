@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpredisclusterendpointset.v1alpha1;
+
+// GcpRedisClusterEndpointSetStackOutputs captures what the registration of
+// user-created connections on a Memorystore for Redis Cluster produced.
+message GcpRedisClusterEndpointSetStackOutputs {
+  // Bare name of the cluster the connections were registered on -- the
+  // segment Google's resource is keyed by.
+  string cluster_name = 1;
+
+  // Number of consumer-network endpoints registered (one per VPC).
+  int32 endpoint_count = 2;
+
+  // Number of individual PSC connections registered across every
+  // endpoint.
+  int32 connection_count = 3;
+
+  // The cluster's region -- with cluster_name, what rebuilds the cluster's
+  // full resource path.
+  string region = 4;
+}

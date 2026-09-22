@@ -1,0 +1,545 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcprediscluster.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpRedisClusterPscConfig names the consumer VPC network Google places the
+// cluster's Private Service Connect endpoints in automatically: two
+// addresses per cluster (discovery and primary, plus a reader endpoint when
+// replicas exist), created and managed by service connectivity automation.
+//
+// The automation only acts when a GcpServiceConnectionPolicy for the
+// gcp-memorystore-redis service class already exists on this network in the
+// cluster's region -- deploy the policy before the cluster. Leave psc_configs
+// empty to skip automatic connectivity and register hand-built connections
+// through GcpRedisClusterEndpointSet instead (the multi-VPC pattern).
+message GcpRedisClusterPscConfig {
+  // Consumer VPC network the automatic endpoints land in. The API takes
+  // the relative resource path (projects/{project}/global/networks/{name});
+  // a GcpVpcNetwork reference resolves to its network_id output, which is
+  // already in that form.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+}
+
+// GcpRedisClusterRdbConfig controls RDB snapshot persistence: point-in-time
+// snapshots of the whole keyspace at a fixed interval.
+message GcpRedisClusterRdbConfig {
+  // How often RDB snapshots are taken. If unset, Google defaults to
+  // TWENTY_FOUR_HOURS.
+  string rdb_snapshot_period = 1 [(buf.validate.field).cel = {
+    id: "rdb_snapshot_period_valid_value"
+    expression: "this == '' || this in ['ONE_HOUR', 'SIX_HOURS', 'TWELVE_HOURS', 'TWENTY_FOUR_HOURS']"
+    message: "rdb_snapshot_period must be ONE_HOUR, SIX_HOURS, TWELVE_HOURS, or TWENTY_FOUR_HOURS"
+  }];
+
+  // RFC 3339 timestamp the snapshot schedule is anchored to (the first
+  // snapshot happens at this time, then every rdb_snapshot_period). If
+  // unset, Google anchors the schedule at creation.
+  string rdb_snapshot_start_time = 2;
+}
+
+// GcpRedisClusterAofConfig controls Append-Only File persistence: every
+// write is logged, giving stronger durability than RDB at the cost of more
+// disk I/O.
+message GcpRedisClusterAofConfig {
+  // How often the AOF buffer is flushed to disk (Redis appendfsync):
+  //   NO       -- the OS decides (fastest; risks the last seconds of writes)
+  //   EVERYSEC -- once per second (Google's default; the usual balance)
+  //   ALWAYS   -- on every write (strongest durability, slowest)
+  string append_fsync = 1 [(buf.validate.field).cel = {
+    id: "append_fsync_valid_value"
+    expression: "this == '' || this in ['NO', 'EVERYSEC', 'ALWAYS']"
+    message: "append_fsync must be NO, EVERYSEC, or ALWAYS"
+  }];
+}
+
+// GcpRedisClusterPersistenceConfig decides whether the cluster's data
+// survives a node restart, and how.
+message GcpRedisClusterPersistenceConfig {
+  // Persistence mode:
+  //   DISABLED -- in-memory only (Google's default); a restart loses data
+  //   RDB      -- periodic point-in-time snapshots (rdb_config)
+  //   AOF      -- append-only write log (aof_config)
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "persistence_mode_valid_value"
+    expression: "this == '' || this in ['DISABLED', 'RDB', 'AOF']"
+    message: "mode must be DISABLED, RDB, or AOF"
+  }];
+
+  // Snapshot schedule. Only meaningful when mode is RDB.
+  GcpRedisClusterRdbConfig rdb_config = 2;
+
+  // Flush policy. Only meaningful when mode is AOF.
+  GcpRedisClusterAofConfig aof_config = 3;
+
+  option (buf.validate.message).cel = {
+    id: "rdb_config_only_for_rdb_mode"
+    expression: "!has(this.rdb_config) || this.mode == 'RDB'"
+    message: "rdb_config is only set when mode is RDB"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "aof_config_only_for_aof_mode"
+    expression: "!has(this.aof_config) || this.mode == 'AOF'"
+    message: "aof_config is only set when mode is AOF"
+  };
+}
+
+// GcpRedisClusterZoneDistributionConfig decides how the cluster's nodes
+// spread across the region's zones. Immutable after creation.
+message GcpRedisClusterZoneDistributionConfig {
+  // MULTI_ZONE (Google's default) spreads primaries and replicas across
+  // zones so a zonal outage keeps the cluster serving; SINGLE_ZONE puts
+  // every node in `zone` for the lowest latency at the cost of zonal
+  // failure.
+  string mode = 1 [(buf.validate.field).cel = {
+    id: "zone_distribution_mode_valid_value"
+    expression: "this == '' || this in ['MULTI_ZONE', 'SINGLE_ZONE']"
+    message: "mode must be MULTI_ZONE or SINGLE_ZONE"
+  }];
+
+  // The zone every node lives in (e.g. "us-central1-a"). Required for
+  // SINGLE_ZONE; must be empty for MULTI_ZONE.
+  string zone = 2;
+
+  option (buf.validate.message).cel = {
+    id: "zone_required_for_single_zone"
+    expression: "this.mode != 'SINGLE_ZONE' || this.zone != ''"
+    message: "zone is required when mode is SINGLE_ZONE"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "zone_only_for_single_zone"
+    expression: "this.zone == '' || this.mode == 'SINGLE_ZONE'"
+    message: "zone is only set when mode is SINGLE_ZONE"
+  };
+}
+
+// GcpRedisClusterMaintenanceWindow is the weekly one-hour window Google may
+// apply maintenance in. Google exposes the window start by the hour only
+// (the API's TimeOfDay carries finer fields the service does not honor), so
+// the window starts on the hour.
+message GcpRedisClusterMaintenanceWindow {
+  // Day of the week (UTC).
+  string day = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    }
+  ];
+
+  // Hour of day (0-23, UTC) the one-hour window starts.
+  int32 hour = 2 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 23
+  }];
+}
+
+// GcpRedisClusterMaintenancePolicy schedules Google's maintenance. Without
+// it Google picks the window.
+message GcpRedisClusterMaintenancePolicy {
+  // The weekly window.
+  GcpRedisClusterMaintenanceWindow weekly_maintenance_window = 1 [(buf.validate.field).required = true];
+}
+
+// GcpRedisClusterAutomatedBackupConfig takes a daily backup into the
+// cluster's managed backup collection (see the backup_collection output),
+// which managed_backup_source can seed a new cluster from.
+message GcpRedisClusterAutomatedBackupConfig {
+  // Hour of day (0-23, UTC) the daily backup starts.
+  int32 start_hour = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 23
+  }];
+
+  // How long backups are kept, as a seconds duration between one day
+  // ("86400s") and 365 days ("31536000s"), e.g. "3024000s" for 35 days.
+  string retention = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[0-9]+s$"
+  ];
+}
+
+// GcpRedisClusterPrimaryCluster names the primary of a cross-region
+// replication pair, as seen from a SECONDARY.
+message GcpRedisClusterPrimaryCluster {
+  // Full resource path of the primary
+  // (projects/{project}/locations/{region}/clusters/{cluster}). A
+  // reference resolves to another GcpRedisCluster's name output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpRedisCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+}
+
+// GcpRedisClusterSecondaryCluster names one secondary of a cross-region
+// replication topology, as seen from the PRIMARY.
+message GcpRedisClusterSecondaryCluster {
+  // Full resource path of the secondary
+  // (projects/{project}/locations/{region}/clusters/{cluster}). A
+  // reference resolves to another GcpRedisCluster's name output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpRedisCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+}
+
+// GcpRedisClusterCrossClusterReplicationConfig makes this cluster part of a
+// cross-region disaster-recovery topology: a SECONDARY continuously
+// replicates from a PRIMARY in another region and serves reads until it is
+// promoted.
+//
+// Deploy the primary first (role PRIMARY, optionally listing its
+// secondaries), then each secondary (role SECONDARY, naming the primary).
+// Roles are exchanged by an in-place update during a planned switchover.
+message GcpRedisClusterCrossClusterReplicationConfig {
+  // This cluster's role:
+  //   NONE      -- not replicating across regions (Google's default)
+  //   PRIMARY   -- serves writes and replicates to the secondaries
+  //   SECONDARY -- read-only replica of primary_cluster
+  string cluster_role = 1 [(buf.validate.field).cel = {
+    id: "cluster_role_valid_value"
+    expression: "this == '' || this in ['NONE', 'PRIMARY', 'SECONDARY']"
+    message: "cluster_role must be NONE, PRIMARY, or SECONDARY"
+  }];
+
+  // The primary this cluster replicates from. Required for SECONDARY;
+  // must be unset otherwise.
+  GcpRedisClusterPrimaryCluster primary_cluster = 2;
+
+  // The secondaries replicating from this cluster. Only for PRIMARY.
+  repeated GcpRedisClusterSecondaryCluster secondary_clusters = 3;
+
+  option (buf.validate.message).cel = {
+    id: "secondary_requires_primary_cluster"
+    expression: "this.cluster_role != 'SECONDARY' || has(this.primary_cluster)"
+    message: "a SECONDARY cluster must name its primary through primary_cluster"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "primary_cluster_only_for_secondary"
+    expression: "!has(this.primary_cluster) || this.cluster_role == 'SECONDARY'"
+    message: "primary_cluster is only set when cluster_role is SECONDARY"
+  };
+
+  option (buf.validate.message).cel = {
+    id: "secondaries_only_for_primary"
+    expression: "size(this.secondary_clusters) == 0 || this.cluster_role == 'PRIMARY'"
+    message: "secondary_clusters is only set when cluster_role is PRIMARY"
+  };
+}
+
+// GcpRedisClusterGcsSource seeds the new cluster from RDB files in Cloud
+// Storage at creation. Immutable: seeding happens once.
+message GcpRedisClusterGcsSource {
+  // Cloud Storage URIs of the RDB files (gs://bucket/path.rdb). The
+  // Memorystore service agent needs read access to the objects.
+  repeated string uris = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items = {
+      cel: {
+        id: "gcs_uri_format"
+        expression: "this.startsWith('gs://')"
+        message: "each URI must be a Cloud Storage path starting with gs://"
+      }
+    }
+  ];
+}
+
+// GcpRedisClusterManagedBackupSource seeds the new cluster from a managed
+// backup at creation. Immutable: seeding happens once.
+message GcpRedisClusterManagedBackupSource {
+  // Full resource path of the backup
+  // (projects/{project}/locations/{region}/backupCollections/{collection}/backups/{backup});
+  // backup collections are listed in another cluster's backup_collection
+  // output.
+  string backup = 1 [(buf.validate.field).required = true];
+}
+
+// GcpRedisClusterSpec describes a Memorystore for Redis Cluster
+// (`google_redis_cluster`): Google's fully managed, sharded Redis with
+// OSS Cluster protocol compatibility, horizontal scale across shards and
+// replicas, and Private Service Connect networking.
+//
+// Choose this over GcpRedisInstance (the legacy single-instance Memorystore
+// for Redis, reached over VPC peering) when the keyspace or throughput
+// outgrows one node, when zero-downtime resizing matters, or when the
+// clients speak the Cluster protocol. Choose GcpMemorystoreInstance when the
+// engine should be Valkey rather than Redis.
+//
+// Behavior an operator must know:
+//
+//   - Immutable after creation: cluster_name, region, authorization_mode,
+//     transit_encryption_mode, zone_distribution_config, and the seed
+//     sources (gcs_source / managed_backup_source). Everything else --
+//     shard_count, replica_count, node_type, redis_configs, kms_key,
+//     persistence, backups, maintenance, the replication role -- updates in
+//     place; shard and replica changes resize the cluster without downtime.
+//
+//   - Connectivity is Private Service Connect only. With psc_configs set,
+//     service connectivity automation places the endpoints, and it acts
+//     only when a GcpServiceConnectionPolicy for the gcp-memorystore-redis
+//     class exists on that network in this region -- deploy the policy
+//     first or creation fails with a connectivity error. With psc_configs
+//     empty, the cluster publishes service attachments (see the
+//     *_service_attachment outputs) and consumers build their own
+//     forwarding rules, registered through GcpRedisClusterEndpointSet.
+//
+//   - Creating a cluster is a long-running operation (typically ten to
+//     fifteen minutes; more for many shards). Budget deploy windows for it.
+//
+//   - Every node bills by the hour from creation, serving or idle; the
+//     smallest shape is one REDIS_SHARED_CORE_NANO shard with no replicas.
+message GcpRedisClusterSpec {
+  // The GCP project the cluster is created in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The cluster's name in GCP. Defaults to metadata.name. 1-63
+  // characters: lowercase letters, digits, and hyphens, starting with a
+  // letter and ending alphanumeric. Immutable.
+  string cluster_name = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      pattern: "^[a-z]([-a-z0-9]*[a-z0-9])?$"
+      max_len: 63
+    }
+  ];
+
+  // The region the cluster lives in (e.g. "us-central1"). Immutable.
+  string region = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // Number of shards. Each shard owns a slice of the keyspace and is at
+  // least one node; Google caps shards per cluster at 250. Resizes in
+  // place without downtime -- Google rebalances slots across the new
+  // shard count.
+  int32 shard_count = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = {
+      gte: 1
+      lte: 250
+    }
+  ];
+
+  // Replica nodes per shard (0-5). Replicas serve reads and take over on
+  // primary failure; 0 (Google's default) means a shard outage loses that
+  // shard's data until it recovers. Resizes in place. Always sent, so the
+  // manifest value is authoritative on both engines.
+  int32 replica_count = 5 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 5
+  }];
+
+  // Node shape for every node in the cluster -- the per-node hourly rate
+  // and the memory each shard holds:
+  //   REDIS_SHARED_CORE_NANO -- shared-core, ~1.4 GB (dev and test)
+  //   REDIS_STANDARD_SMALL   -- ~6.5 GB, balanced
+  //   REDIS_HIGHCPU_MEDIUM   -- ~13 GB, compute-leaning
+  //   REDIS_HIGHMEM_MEDIUM   -- ~13 GB, memory-leaning
+  //   REDIS_STANDARD_LARGE   -- ~13 GB, balanced
+  //   REDIS_HIGHMEM_XLARGE   -- ~58 GB
+  //   REDIS_HIGHMEM_2XLARGE  -- ~116 GB
+  // If unset, Google picks REDIS_HIGHMEM_MEDIUM. Updates in place.
+  string node_type = 6 [(buf.validate.field).cel = {
+    id: "node_type_valid_value"
+    expression: "this == '' || this in ['REDIS_SHARED_CORE_NANO', 'REDIS_STANDARD_SMALL', 'REDIS_HIGHCPU_MEDIUM', 'REDIS_HIGHMEM_MEDIUM', 'REDIS_STANDARD_LARGE', 'REDIS_HIGHMEM_XLARGE', 'REDIS_HIGHMEM_2XLARGE']"
+    message: "node_type must be one of: REDIS_SHARED_CORE_NANO, REDIS_STANDARD_SMALL, REDIS_HIGHCPU_MEDIUM, REDIS_HIGHMEM_MEDIUM, REDIS_STANDARD_LARGE, REDIS_HIGHMEM_XLARGE, REDIS_HIGHMEM_2XLARGE"
+  }];
+
+  // Native Redis configuration parameters Google lets a cluster tune, as
+  // key-value pairs (e.g. "maxmemory-policy": "allkeys-lru",
+  // "notify-keyspace-events": "Ex"). Only the parameters in Google's
+  // supported subset are accepted. Updates in place.
+  map<string, string> redis_configs = 7;
+
+  // Consumer networks for Google-managed Private Service Connect
+  // endpoints. Google supports one entry today. Leave empty to publish
+  // service attachments only and register hand-built connections through
+  // GcpRedisClusterEndpointSet. Updates in place.
+  repeated GcpRedisClusterPscConfig psc_configs = 8 [(buf.validate.field).repeated.max_items = 1];
+
+  // How clients authenticate:
+  //   AUTH_MODE_DISABLED -- no authentication (Google's default; the
+  //                         network is the boundary)
+  //   AUTH_MODE_IAM_AUTH -- clients present an IAM access token as the
+  //                         Redis password; access is governed by IAM
+  // Immutable. Sent explicitly on both engines so the choice never
+  // depends on a provider default.
+  string authorization_mode = 9 [(buf.validate.field).cel = {
+    id: "authorization_mode_valid_value"
+    expression: "this == '' || this in ['AUTH_MODE_DISABLED', 'AUTH_MODE_IAM_AUTH']"
+    message: "authorization_mode must be AUTH_MODE_DISABLED or AUTH_MODE_IAM_AUTH"
+  }];
+
+  // TLS for client connections:
+  //   TRANSIT_ENCRYPTION_MODE_DISABLED              -- plaintext (Google's
+  //                                                    default)
+  //   TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION -- TLS; clients verify
+  //                                                    the server's
+  //                                                    certificate
+  // Immutable. Sent explicitly on both engines.
+  string transit_encryption_mode = 10 [(buf.validate.field).cel = {
+    id: "transit_encryption_mode_valid_value"
+    expression: "this == '' || this in ['TRANSIT_ENCRYPTION_MODE_DISABLED', 'TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION']"
+    message: "transit_encryption_mode must be TRANSIT_ENCRYPTION_MODE_DISABLED or TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION"
+  }];
+
+  // Which certificate authority signs the server certificate when TLS is
+  // on:
+  //   SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA -- a Google CA unique
+  //                                                    to this cluster
+  //                                                    (Google's default)
+  //   SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA       -- a Google CA shared
+  //                                                    across clusters, so
+  //                                                    a fleet trusts one
+  //                                                    CA
+  //   SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA        -- your own CA pool in
+  //                                                    Certificate
+  //                                                    Authority Service
+  //                                                    (server_ca_pool)
+  // Meaningful only with TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION.
+  string server_ca_mode = 11 [(buf.validate.field).cel = {
+    id: "server_ca_mode_valid_value"
+    expression: "this == '' || this in ['SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA', 'SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA', 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA']"
+    message: "server_ca_mode must be SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA, SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA, or SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA"
+  }];
+
+  // The Certificate Authority Service pool that signs the server
+  // certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA, as
+  // projects/{project}/locations/{region}/caPools/{pool}.
+  string server_ca_pool = 12 [(buf.validate.field).cel = {
+    id: "server_ca_pool_format"
+    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+    message: "server_ca_pool must be empty or of the form projects/{project}/locations/{region}/caPools/{pool}"
+  }];
+
+  // Customer-managed encryption key (CMEK) for data at rest: a full
+  // crypto key ID (projects/*/locations/*/keyRings/*/cryptoKeys/*) or a
+  // GcpKmsKey reference. The key must be in the cluster's region and the
+  // Memorystore service agent needs encrypter/decrypter on it. If unset,
+  // Google-managed keys encrypt the data.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key = 13 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Whether and how data survives a restart. Unset means in-memory only.
+  GcpRedisClusterPersistenceConfig persistence_config = 14;
+
+  // How nodes spread across the region's zones. Unset means MULTI_ZONE.
+  // Immutable.
+  GcpRedisClusterZoneDistributionConfig zone_distribution_config = 15;
+
+  // The weekly window Google may apply maintenance in. Unset lets Google
+  // choose.
+  GcpRedisClusterMaintenancePolicy maintenance_policy = 16;
+
+  // Daily backups into the cluster's managed backup collection. Unset
+  // means no automated backups (on-demand backups stay available through
+  // the console and gcloud).
+  GcpRedisClusterAutomatedBackupConfig automated_backup_config = 17;
+
+  // Cross-region disaster recovery: make this cluster a PRIMARY that
+  // replicates to secondaries in other regions, or a SECONDARY that
+  // replicates from a primary. Unset (or role NONE) is a standalone
+  // cluster.
+  GcpRedisClusterCrossClusterReplicationConfig cross_cluster_replication_config = 18;
+
+  // Seed the new cluster from RDB files in Cloud Storage at creation.
+  // Mutually exclusive with managed_backup_source. Immutable.
+  GcpRedisClusterGcsSource gcs_source = 19;
+
+  // Seed the new cluster from a managed backup at creation. Mutually
+  // exclusive with gcs_source. Immutable.
+  GcpRedisClusterManagedBackupSource managed_backup_source = 20;
+
+  // User labels on the cluster, merged beneath Planton's platform
+  // attribution labels (platform keys win on conflict).
+  map<string, string> labels = 21;
+
+  // Whether deletion protection is on. Defaults to true (Google's own
+  // posture): destroying the cluster fails until this is set to false.
+  // Both engines send the value explicitly so a manifest that never
+  // mentions it behaves the same everywhere. Updates in place.
+  optional bool deletion_protection_enabled = 22 [(dev.planton.shared.options.default) = "true"];
+
+  // Self-service maintenance: setting this to a newer version from the
+  // cluster's available maintenance versions applies the update on your
+  // schedule instead of waiting for Google's rollout. Update-only and
+  // forward-only; leave unset to follow Google's rollout.
+  string maintenance_version = 23;
+
+  // A Memorystore for Redis Cluster ACL policy attached to the cluster:
+  // Redis ACL rules (users, key patterns, allowed commands) authored once
+  // and shared by clusters in the same region, as
+  // projects/{project}/locations/{region}/aclPolicies/{policy}. Leave
+  // empty for the built-in default ACL. Updates in place; the cluster's
+  // is_acl_policy_in_sync status reports when the rules have reached
+  // every node.
+  string acl_policy = 24 [(buf.validate.field).cel = {
+    id: "acl_policy_format"
+    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/aclPolicies/[^/]+$')"
+    message: "acl_policy must be empty or a full resource name of the form projects/{project}/locations/{region}/aclPolicies/{policy}"
+  }];
+
+  // What happens to the cluster when this resource is destroyed
+  // (evaluated after deletion_protection_enabled allows the destroy):
+  //   "" / "DELETE" -- the cluster is deleted and its data lost
+  //   "PREVENT"     -- destroy fails; a second guard for a cache whose
+  //                    loss would stampede the backing store
+  //   "ABANDON"     -- the cluster leaves management but keeps running
+  //                    (and billing) in GCP
+  string deletion_policy = 25 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+
+  // A cluster is seeded from at most one source.
+  option (buf.validate.message).cel = {
+    id: "at_most_one_seed_source"
+    expression: "!(has(this.gcs_source) && has(this.managed_backup_source))"
+    message: "gcs_source and managed_backup_source are mutually exclusive -- choose one seed source"
+  };
+
+  // A customer-managed CA pool is consumed only in
+  // SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA mode; a mismatch is always a
+  // configuration mistake.
+  option (buf.validate.message).cel = {
+    id: "server_ca_pool_requires_customer_managed_cas"
+    expression: "this.server_ca_pool == '' || this.server_ca_mode == 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA'"
+    message: "server_ca_pool requires server_ca_mode SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA"
+  };
+
+  // A server CA mode means nothing on a plaintext cluster.
+  option (buf.validate.message).cel = {
+    id: "server_ca_mode_requires_tls"
+    expression: "this.server_ca_mode == '' || this.transit_encryption_mode == 'TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION'"
+    message: "server_ca_mode requires transit_encryption_mode TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION"
+  };
+}

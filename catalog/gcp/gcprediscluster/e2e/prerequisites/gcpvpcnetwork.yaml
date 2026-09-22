@@ -1,0 +1,21 @@
+# Consumer-scoped GcpVpcNetwork install profile for the rcl chain (shared
+# by the transitive service-connection-policy prerequisite). Cloud-side
+# network names carry ${E2E_RUN_ID}; metadata.name stays fixed for FK
+# resolution across the chain.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVpcNetwork
+metadata:
+  name: planton-oss-e2e-gcpvpcnetwork-prereq
+  id: planton-oss-e2e-gcpvpcnetwork-prereq
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvpcnetwork
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  networkName: e2e-rcl-vpc-${E2E_RUN_ID}
+  autoCreateSubnetworks: false
