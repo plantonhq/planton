@@ -110,6 +110,11 @@ func TestAuth0EventStream_Terraform(t *testing.T) {
 func TestAuth0Role_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0role", "pulumi") }
 func TestAuth0Role_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0role", "terraform") }
 
+// --- Auth0 User ---
+
+func TestAuth0User_Pulumi(t *testing.T)    { runAllScenariosForComponent(t, "auth0user", "pulumi") }
+func TestAuth0User_Terraform(t *testing.T) { runAllScenariosForComponent(t, "auth0user", "terraform") }
+
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an Auth0 component.
 func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	t.Helper()

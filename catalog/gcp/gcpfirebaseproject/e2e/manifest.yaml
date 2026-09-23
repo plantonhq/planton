@@ -11,8 +11,9 @@ spec:
     value: my-gcp-project-123
 
   # Create the project's default Cloud Storage for Firebase bucket in this
-  # location (US, EU, NAM4, us-central1, ...). Once per project; immutable;
-  # needs the pay-as-you-go (Blaze) plan. Omit to skip.
+  # location (US, EU, NAM4, us-central1, ...). One per project at a time;
+  # location immutable; needs the pay-as-you-go (Blaze) plan; deleted with
+  # its contents on destroy under DELETE. Omit to skip.
   defaultStorageLocation: US
 
   # Project-level App Check: which Firebase backends enforce genuine-app

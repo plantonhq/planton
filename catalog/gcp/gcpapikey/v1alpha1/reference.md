@@ -217,7 +217,8 @@ The SHA-1 fingerprint of the certificate the app is signed with, as 40
 hex characters with or without colon separators
 (DA:39:A3:EE:... or DA39A3EE...). Get it with
 `keytool -list -v -keystore <keystore>` or from the Play Console's App
-signing page. Google stores and returns the colon-free form.
+signing page. Google stores and returns lowercase hex without colons;
+both modules send that form, so declare it in whichever shape you have.
 
 - rule: sha1_fingerprint must be 40 hex characters, optionally colon-separated in pairs -- e.g. DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09
 - rule: {"required":true}

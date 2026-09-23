@@ -12,6 +12,7 @@ import { Author } from '@/lib/types-client';
 import { PageActions } from '@/components/common/PageActions';
 import CloudflareVideo, { getEmbedInfoFromUrl } from '@/components/media/CloudflareVideo';
 import { CodeBlock, MermaidDiagram } from '@/components/common';
+import { attribute, contentChildren, elementChildren, isElement, mermaidSource, textOf } from '@/lib/hast';
 import { HeadingWithAnchor, generateHeadingId } from '@/components/docs';
 import {
   HEADING_H1_CLASSES,
@@ -185,6 +186,8 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
           {/* Featured Image */}
           {metadata.featuredImage && (
             <div className="mb-6">
+              {/* The image and its dimensions come from the document's frontmatter, unknown at build time; images are unoptimized on this static export, so next/image would emit the same tag. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={metadata.featuredImage}
                 alt={metadata.title}
@@ -211,34 +214,18 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw, rehypeHighlight]}
             components={{
-              p: ({ children, node }: any) => {
-                try {
-                  const rawChildren = Array.isArray(node?.children) ? node.children : [];
-                  const nonWhitespace = rawChildren.filter((c: any) => {
-                    if (c.type === 'text') {
-                      return (c.value || '').trim().length > 0;
-                    }
-                    return true;
-                  });
-
-                  if (nonWhitespace.length === 1) {
-                    const only = nonWhitespace[0] as any;
-                    // react-markdown provides HAST nodes here: links are type 'element', tagName 'a'
-                    if (
-                      (only.type === 'element' || only.type === 'elementData') &&
-                      (only.tagName === 'a' || only.tagName === 'A') &&
-                      typeof only.properties?.href === 'string'
-                    ) {
-                      const linkText = only.children?.[0]?.value as string | undefined;
-                      const href = only.properties.href as string;
-                      const shouldEmbed = !linkText || linkText.trim() === href.trim();
-                      const embed = getEmbedInfoFromUrl(href);
-                      if (shouldEmbed && embed) {
-                        return <CloudflareVideo url={href} title={metadata.title} />;
-                      }
-                    }
+              p: ({ children, node }) => {
+                // A paragraph that is only a bare link to a video becomes the embed.
+                const content = contentChildren(node);
+                const only = content.length === 1 ? content[0] : undefined;
+                const href = isElement(only) && only.tagName === 'a' ? attribute(only, 'href') : undefined;
+                if (only && href) {
+                  const linkText = textOf(only);
+                  const shouldEmbed = !linkText || linkText.trim() === href.trim();
+                  if (shouldEmbed && getEmbedInfoFromUrl(href)) {
+                    return <CloudflareVideo url={href} title={metadata.title} />;
                   }
-                } catch {}
+                }
                 return <p className={PARAGRAPH_CLASSES}>{children}</p>;
               },
               h1: ({ children }) => (
@@ -281,22 +268,15 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
               ),
               li: ({ children }) => <li className="text-[#a0a0a0]">{children}</li>,
               strong: ({ children }) => <strong className="font-semibold text-[#b0b0b0]">{children}</strong>,
-              blockquote: ({ children, node }: any) => {
+              blockquote: ({ children, node }) => {
                 // Detect callout type from the HAST tree. Blockquotes
                 // starting with **Tip:**, **Note:**, **Warning:** etc.
                 // get the appropriate treatment. Warning/Caution get a
                 // semantic red border; all others get the neutral style.
-                let isWarning = false;
-                const firstPara = node?.children?.find(
-                  (c: any) => c.tagName === 'p',
-                );
-                const firstChild = firstPara?.children?.[0];
-                if (firstChild?.tagName === 'strong') {
-                  const text = (firstChild.children?.[0]?.value || '').toLowerCase();
-                  if (text.startsWith('warning') || text.startsWith('caution')) {
-                    isWarning = true;
-                  }
-                }
+                const firstPara = elementChildren(node).find((c) => c.tagName === 'p');
+                const firstChild = elementChildren(firstPara)[0];
+                const lead = firstChild?.tagName === 'strong' ? textOf(firstChild).toLowerCase() : '';
+                const isWarning = lead.startsWith('warning') || lead.startsWith('caution');
 
                 return (
                   <blockquote
@@ -321,24 +301,10 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
                   </code>
                 );
               },
-              pre: ({ children, node }: any) => {
-                // Detect mermaid code blocks and render as interactive diagrams
-                const codeChild = node?.children?.[0];
-                if (codeChild?.tagName === 'code') {
-                  const classNames = codeChild.properties?.className || [];
-                  if (
-                    Array.isArray(classNames) &&
-                    classNames.some((c: string) => c === 'language-mermaid')
-                  ) {
-                    const codeText =
-                      codeChild.children
-                        ?.map((c: any) => c.value || '')
-                        .join('') || '';
-                    return (
-                      <MermaidDiagram chart={codeText.replace(/\n$/, '')} />
-                    );
-                  }
-                }
+              pre: ({ children, node }) => {
+                // A fenced mermaid block renders as a diagram.
+                const mermaid = mermaidSource(node);
+                if (mermaid !== undefined) return <MermaidDiagram chart={mermaid} />;
                 return <CodeBlock>{children}</CodeBlock>;
               },
               a: ({ href, children }) => {
@@ -366,8 +332,11 @@ export const MDXRenderer: React.FC<MDXRendererProps> = ({
               },
               img: ({ src, alt }) => {
                 if (!src) return null;
-                // Avoid wrapping with a div to prevent <div> inside <p> which breaks hydration
+                // Avoid wrapping with a div to prevent <div> inside <p> which breaks hydration.
+                // The image is the document's own, dimensions unknown at build time; images are
+                // unoptimized on this static export, so next/image would emit the same tag.
                 return (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={src}
                     alt={alt || ''}

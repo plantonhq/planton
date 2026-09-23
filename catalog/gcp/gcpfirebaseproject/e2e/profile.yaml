@@ -3,20 +3,27 @@ kind: ComponentE2EProfile
 metadata:
   name: gcpfirebaseproject
 spec:
-  # Awaiting the live proof lane. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest and both scenarios
-  # are clean on the pinned providers (google + google-beta under the
-  # recorded admission), and the accounting is total. Live facts the proof
-  # lane confirms: (1) the first deploy enables Firebase on the test
-  # project FOR GOOD (Google has no de-enable) and every later deploy
-  # adopts -- the create arm is provable once, per engine order; (2) the
-  # Firebase Management API needs the quota-project override under user
-  # ADC (both modules arm user_project_override); (3) the E2E identity
-  # holds roles/firebase.admin on the test project; (4) the Admin SDK
-  # config outputs degrade to "" on a project with no RTDB / default bucket
-  # / finalized location. The default storage bucket is a one-time proof
-  # (created at most once per project) recorded here when it runs.
+  # PROVEN live 6/6 lanes (three scenarios x both engines), IDEMPOTENCY
+  # clean, on 2026-09-17. Live truths the lane settled: (1) the test
+  # project was ALREADY Firebase-enabled, so every lane exercised the
+  # provider's adopt path (GET first, no second :addFirebase) and the
+  # verifier's detach contract (the project reads ACTIVE after destroy) --
+  # the :addFirebase create arm itself is provable only on a
+  # never-enabled project; (2) the default Cloud Storage for Firebase
+  # bucket is an ordinary create-and-destroy resource: both engines
+  # created planton-e2e.firebasestorage.app, populated the storage_bucket
+  # output from the deferred Admin SDK read, and deleted it through
+  # deleteDefaultBucket minutes apart with no bucket-name reservation in
+  # between -- a project holds one at a time, not one ever; (3) App Check
+  # enforcement can be configured only for a service that is SET UP on the
+  # project (400 "Cloud Firestore is not yet set up" on a project with no
+  # database), so the app-check scenario stands on Identity Platform and
+  # on the default bucket the same manifest declares, and both modules
+  # order the configurations after the bucket; (4) the Admin SDK config
+  # outputs degrade to "" for whatever the project lacks (no RTDB, no
+  # finalized location here); (5) the Firebase Management API needs the
+  # quota-project override under user ADC (both modules arm it).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20

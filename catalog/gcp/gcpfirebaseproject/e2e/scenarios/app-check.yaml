@@ -1,11 +1,15 @@
 # App Check scenario: proves the surfaces minimal cannot -- App Check
-# enforcement on two backend services (one UNENFORCED, one ENFORCED) with
-# an explicit deletion_policy so destroy switches enforcement back OFF and
-# leaves nothing behind. The default storage bucket is deliberately NOT
-# exercised here: it is created at most once per project and can never be
-# re-proven on the same test project, so it is a one-time proof recorded
-# in the profile when it runs. Resource policies need a real iOS OAuth
-# client and are proven with the Apple app kind.
+# enforcement on two backend services with an explicit deletion_policy so
+# destroy switches enforcement back OFF and leaves nothing behind. A service
+# can be configured only once it is SET UP on the project (live-verified:
+# the API answers 400 "Cloud Firestore is not yet set up" for a project
+# with no Firestore database), so the two services here are the ones this
+# lane can stand on: Identity Platform, permanently initialized on the test
+# project by its own kind's proof, and Cloud Storage for Firebase, whose
+# default bucket this very manifest declares -- which also proves the
+# module orders the enforcement after the bucket it depends on. Both stay
+# UNENFORCED: metrics only, nothing rejected. Resource policies need a real
+# iOS OAuth client and are proven with the Apple app kind.
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpFirebaseProject
 metadata:
@@ -21,9 +25,10 @@ metadata:
   tags:
     - planton-e2e
 spec:
+  defaultStorageLocation: US
   appCheck:
     serviceConfigs:
-      - serviceId: firestore.googleapis.com
+      - serviceId: firebasestorage.googleapis.com
         enforcementMode: UNENFORCED
       - serviceId: identitytoolkit.googleapis.com
         enforcementMode: UNENFORCED

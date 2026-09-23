@@ -3,17 +3,21 @@ kind: ComponentE2EProfile
 metadata:
   name: gcpapikey
 spec:
-  # Awaiting the live proof lane. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest and both scenarios
-  # are clean on the pinned provider, and the accounting is total. Two
-  # live facts the proof lane confirms: (1) which "absent" shape the API
-  # Keys service returns for a soft-deleted key -- 404 for the name, or the
-  # key carrying a deleteTime -- the verifier accepts either; (2) that the
-  # API Keys API needs the quota-project override under user ADC (both
-  # modules arm user_project_override on the Identity Toolkit precedent).
-  # Scenario key ids carry the run id because a deleted key's id is
-  # reserved for 30 days.
+  # PROVEN live 4/4 lanes (both scenarios x both engines), IDEMPOTENCY
+  # clean, on 2026-09-17. Live truths the lane settled: (1) a deleted key
+  # is SOFT-deleted -- the API keeps answering 200 for its name with a
+  # deleteTime set (never a 404), and the key_id stays reserved for the
+  # 30-day window, which is why every scenario id carries the run id;
+  # (2) the API STORES the Android SHA-1 fingerprint as lowercase hex
+  # without colons whatever shape it was given, so both modules send that
+  # canonical form -- the first run drifted on every re-plan until they
+  # did; (3) the API Keys API is OFF on a fresh project, so both modules
+  # enable apikeys.googleapis.com as plumbing before the key -- the first
+  # run found the test project without it; (4) the API requires a quota
+  # project on user-credential calls, satisfied by user_project_override
+  # in both modules for the deploy and by the harness naming the test
+  # project for the verifier's probe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

@@ -142,7 +142,15 @@ API uses for `data` in YAML manifests. Use this for payloads that are not valid 
 (keystores, certificates in binary form, serialized blobs). Keys must not overlap with
 `data` keys: both maps merge into the same underlying Secret data.
 
-- rule: {"map":{"keys":{"string":{"maxLen":"253","pattern":"^[-._a-zA-Z0-9]+$"}},"values":{"string":{"pattern":"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"}}}}
+A value may also be a downstream platform's secret or variable reference token
+(`$secret/...`, `$var/...`) in place of the literal: the platform resolves the token to
+the stored value before the module runs, and the stored value is then the base64 the
+module writes. Without this arm a private key or a CA bundle held in the platform's
+secret store could never reach this field, because a reference is the only form a
+secret is ever allowed to take in a manifest. The literal arm keeps refusing malformed
+base64 before any apply.
+
+- rule: {"map":{"keys":{"string":{"maxLen":"253","pattern":"^[-._a-zA-Z0-9]+$"}},"values":{"string":{"pattern":"^(?:\\$(?:secret|var)/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$"}}}}
 
 ### spec.tls
 

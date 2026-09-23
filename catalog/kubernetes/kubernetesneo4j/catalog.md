@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
   - the always-created **default Service** (named after the resource) carrying bolt 7687, http 7474 and https 7473 — what in-cluster clients use, and what the exported endpoints point at
   - the **exposure Service** `<name>-lb-neo4j`, ClusterIP by this component's deliberate default (the chart's own default is LoadBalancer)
   - a PersistentVolumeClaim for the data volume (10Gi on the cluster's default StorageClass unless configured)
-- **Auth Secret** — when a password is declared, the module materializes it as the `<name>-auth` Secret (key `NEO4J_AUTH`, the chart's contract); the password never lands in rendered Helm values
+- **Auth Secret** — the module materializes the admin password (declared, or generated when `auth` is empty) as the `<name>-auth` Secret (key `NEO4J_AUTH`, the chart's contract, plus a bare `password` key); the password never lands in rendered Helm values
 - **ServiceMonitor** — only when `serviceMonitorEnabled` is `true` (requires the Prometheus Operator CRDs on the cluster)
 
 ## Before You Deploy
@@ -94,7 +94,7 @@ These are the most important decisions when configuring Neo4j. Explore the full 
 
 **Edition and clustering** — `edition` defaults to `community` (GPLv3, single-instance **by license** — no replicas, no failover; availability is the StatefulSet rescheduling the pod and the PVC surviving it). `enterprise` requires `acceptLicenseAgreement: true` and a valid commercial license, and unlocks clustering: multiple KubernetesNeo4j resources sharing a `clusterName` form one cluster. `clusterName` on community fails validation.
 
-**Admin credentials** — the `auth` block takes at most one arm: `password` (declared, sensitive; materialized as the `<name>-auth` Secret) or `existingSecret` (a Secret already carrying `NEO4J_AUTH: neo4j/<password>`, existing before the install). Empty means the chart generates a random password and logs it once at first startup — fine for experiments, declare a credential for anything real.
+**Admin credentials are minted, never required** — leave `auth` empty and the module generates the password and materializes it as the `<name>-auth` Secret exactly as it would a declared one; `auth_secret_name` and `password_secret` tell workloads where to read it. The `auth` block takes at most one arm to bring your own: `password` (a managed-secret reference, materialized the same way) or `existingSecret` (a Secret already carrying `NEO4J_AUTH: neo4j/<password>`, existing before the install).
 
 **Sizing** — the chart's own minimum is **500m CPU / 2Gi memory, and it rejects installs below that floor**. The `memory` block renders an explicit heap/page-cache split into `neo4j.conf`; empty lets Neo4j auto-compute from the container memory (usually right — set it explicitly on shared or memory-tight nodes). Keep initial heap = max heap; give the page cache what remains after heap and OS overhead.
 
@@ -127,7 +127,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `service_name` | Name of the main Neo4j Service (bolt/http/https ports) | Ingress/Gateway backends, NetworkPolicies |
 | `bolt_endpoint` | In-cluster bolt endpoint drivers connect to (e.g. `neo4j://main.graph.svc.cluster.local:7687`) | Application driver connection strings |
 | `http_endpoint` | In-cluster HTTP API endpoint (e.g. `http://main.graph.svc.cluster.local:7474`) | Neo4j Browser access and REST calls |
-| `auth_secret_name` | Secret holding the admin credentials (the module-materialized `<name>-auth`, or the referenced existing Secret); empty when the chart generated a random password | Workload env wiring — read the password from the Secret, never an env literal |
+| `auth_secret_name` | Secret holding the admin credentials in the chart's contract (the module-materialized `<name>-auth`, declared or generated, or the referenced existing Secret); always set | Workload env wiring — read the password from the Secret, never an env literal |
+| `password_secret` | Secret name + key of the admin user's bare password (the module-materialized `<name>-auth`, key `password`); unset when `existingSecret` is declared | Workloads that take a password rather than the `neo4j/<password>` pair |
 | `port_forward_command` | Command to port-forward bolt to a developer laptop | Local development |
 
 ## Common Patterns

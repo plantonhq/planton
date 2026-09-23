@@ -3,28 +3,24 @@ kind: ComponentE2EProfile
 metadata:
   name: gcpfirebaseappleapp
 spec:
-  # Awaiting the live proof lane. Offline bar met: both modules build and
-  # validate, offline plans for the reference manifest and every scenario
-  # are clean on the pinned providers (google + google-beta under the
-  # recorded admission), and the accounting is total. Live facts the proof
-  # lane confirms: (1) Firebase's DOCUMENTED propagation delay between a
-  # new app and its first App Check configuration -- Google's own provider
-  # examples wait 30 seconds; both modules order the configurations after
-  # the registration and add no delay, and the app-attest scenario is the
-  # instrument that decides whether one is needed; (2) an app removed under
-  # deletion_policy DELETE (immediate=true) reads back as 404 or as state
-  # DELETED -- the verifier accepts both, the lane records which; (3) the
-  # E2E identity holds roles/firebase.admin on the test project; (4) the
-  # config lookup reads GoogleService-Info.plist after create on both
-  # engines and the apply-idempotency re-plan is clean with the deferred
-  # data source; (5) App Attest's configuration accepts a format-valid
-  # team id that belongs to no real Apple team (Google validates the id's
-  # shape, Apple's servers are consulted only at attestation time) -- if
-  # the lane finds otherwise, the scenario needs the founder's real Team
-  # ID through an E2E env token. DeviceCheck is deliberately NOT exercised
-  # by a scenario: it needs a real .p8 key Apple issues to a developer
-  # account; it is proven by the estate declaration.
+  # PROVEN live 4/4 lanes (both scenarios x both engines), IDEMPOTENCY
+  # clean, on 2026-09-18. Live truths the lane settled: (1) Firebase's
+  # documented propagation delay between a new app and its first App Check
+  # configuration did NOT bite: the App Attest configuration and the debug
+  # token were created within seconds of the registration on both engines
+  # with no settle -- the modules stay delay-free; (2) an app removed under
+  # deletion_policy DELETE (immediate=true) reads back as a plain 404 "App
+  # not found" -- never the DELETED state -- so the verifier's 404 arm is
+  # the one exercised; (3) the GoogleService-Info.plist lookup runs after
+  # create on both engines and the re-plan is clean; (4) App Attest's
+  # configuration accepts a format-valid team id that belongs to no real
+  # Apple team (Google validates the shape; Apple is consulted only when a
+  # device attests), so the scenario needs no real Team ID; (5) every lane
+  # deploys the GcpFirebaseProject prerequisite, which adopts the test
+  # project's permanent enablement. DeviceCheck is deliberately NOT
+  # exercised by a scenario: it needs a real .p8 key Apple issues to a
+  # developer account; it is proven by the estate declaration.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25

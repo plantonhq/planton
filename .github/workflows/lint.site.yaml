@@ -1,0 +1,34 @@
+name: lint.site
+on:
+  pull_request:
+    paths:
+      - 'site/**'
+      - '.github/workflows/lint.site.yaml'
+      - '.github/workflows/release.site.yaml'
+permissions:
+  contents: read
+jobs:
+  site-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: site/.nvmrc
+      - name: Build and validate static site
+        run: |
+          corepack enable
+          make -C site build
+      - name: Responsive and mocked booking acceptance
+        working-directory: site
+        env:
+          HOMEPAGE_CAPTURES: ${{ runner.temp }}/homepage-captures
+          # Ubuntu's AppArmor profile permits the runner's system Chrome sandbox.
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
+        run: node scripts/check-homepage.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: homepage-review
+          path: ${{ runner.temp }}/homepage-captures

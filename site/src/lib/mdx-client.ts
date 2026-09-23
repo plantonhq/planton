@@ -1,11 +1,12 @@
 // Client-safe MDX utilities (no Node.js imports)
 import matter from 'gray-matter';
+import type { Author } from '@/lib/types-client';
 
 export class MDXParserClient {
   static reconstructMDX(input: string): string {
     const { data, content } = matter(input);
     
-    const authorYaml = (data.author || []).map((author: any) => {
+    const authorYaml = ((data.author ?? []) as (Author | string)[]).map((author) => {
       if (typeof author === 'string') {
         return `  - ${author}`;
       } else {
@@ -40,7 +41,7 @@ export class MDXParserClient {
     }
     
     if (data.tags && data.tags.length > 0) {
-      frontmatterFields.push(`tags:\n${data.tags.map((tag: any) => `  - ${tag}`).join('\n')}`);
+      frontmatterFields.push(`tags:\n${(data.tags as string[]).map((tag) => `  - ${tag}`).join('\n')}`);
     }
     
     if (data.excerpt) {

@@ -24,6 +24,19 @@ Service can read and write (the mechanics are on
 workloads should declare ACL users from the first manifest; retrofitting
 auth later means coordinating every client's rollout.
 
+## Declare the user, never the password
+
+An ACL user needs only a name. The module generates a password for
+every user declared without one, keeps it stable across re-applies,
+and materializes every user's credential in the `<name>-auth` Secret
+under the username key — so a manifest carries no secret and no
+placeholder, and nobody escrows a value the module can mint. Declare a
+password only to bring your own, and then as a managed-secret
+reference, never a literal. Clients never read the manifest: the
+`password_secret` output names the Secret and key for the `default`
+user, and a workload mounts it as an env var (the same reference every
+consumer kind — Airflow, Superset, Ray — already takes).
+
 ## Pick the topology by durability need, not by habit
 
 Standalone suits caches — data that can vanish. The replication topology

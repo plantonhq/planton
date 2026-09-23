@@ -4,7 +4,7 @@ This Terraform module provisions a Google Cloud API key (`google_apikeys_key`) w
 
 ## Overview
 
-One resource. The key's identity is the spec's `keyId` (the provider's `name`), its project, and its optional service-account binding — all immutable, so a change to any of them recreates the key and rotates the key string. Restrictions and the display name update in place. The module runs on the plain `google` provider with `user_project_override = true` — every modeled field is GA on the pinned 8.x line, and the API Keys API needs a quota project on user-credential calls.
+One resource of substance plus its API enablement: the module enables `apikeys.googleapis.com` on the project (`google_project_service`, `disable_on_destroy = false`, so destroying one key never switches the API off for the others) and the key depends on it, so a first apply on a fresh project needs nothing switched on by hand. The key's identity is the spec's `keyId` (the provider's `name`), its project, and its optional service-account binding — all immutable, so a change to any of them recreates the key and rotates the key string. Restrictions and the display name update in place. The module runs on the plain `google` provider with `user_project_override = true` — every modeled field is GA on the pinned 8.x line, and the API Keys API needs a quota project on user-credential calls.
 
 ## Usage with Planton CLI
 
@@ -53,4 +53,4 @@ The `spec` object includes: `key_id` (the immutable resource id), `project_id` (
 
 - **Deletion is soft.** `deletion_policy = DELETE` (the provider default) soft-deletes the key: recoverable for 30 days, key id reserved for the window. `PREVENT` fails the destroy; `ABANDON` leaves the key live. The provider's usage-checked delete (`check_existing_usage`, and the `FORCE` policy it pairs with) is deliberately not wired: the pinned Pulumi SDK cannot send it, and cross-engine parity forbids a Terraform-only lever. Recorded as an SDK gap in `../provider-parity.yaml`; it enters the spec when pulumi-gcp v10 is GA.
 - **Restrictions never rotate the key string** — only the immutable identity fields recreate the key.
-- **Quota project.** `user_project_override = true` attributes quota to the key's own project under every credential mode; without it a deploy under plain ADC fails with "requires a quota project" (the Identity Toolkit precedent).
+- **Quota project.** `user_project_override = true` with `billing_project` naming the key's project attributes quota to the key's own project under every credential mode; without it a deploy under plain ADC fails with "requires a quota project" (the Identity Toolkit precedent).

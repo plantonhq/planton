@@ -77,9 +77,9 @@ These are the most important decisions when configuring a Firebase project. Expl
 
 **The project** -- one Firebase project per GCP project, permanently. Environments that share a GCP project share the Firebase project and separate by identity (which control plane may send push), not by Firebase project.
 
-**Default storage location** -- creates the default Cloud Storage for Firebase bucket the client SDKs use when no bucket is named. Created at most once per project, immutable, and it moves the project onto the pay-as-you-go plan. A multi-region (US, EU) is geo-redundant; a region is not.
+**Default storage location** -- creates the default Cloud Storage for Firebase bucket the client SDKs use when no bucket is named. One per project at a time, immutable in location, and it moves the project onto the pay-as-you-go plan; under `DELETE` a destroy unlinks and deletes it with its contents. A multi-region (US, EU) is geo-redundant; a region is not.
 
-**App Check enforcement** -- `serviceConfigs` decides which Firebase backends (Firestore, Storage, Realtime Database, Authentication) reject requests that do not prove they came from a genuine registered app. `UNENFORCED` first (metrics only), `ENFORCED` once every shipped client attests. Per-app attestation providers are configured on the app registration kinds.
+**App Check enforcement** -- `serviceConfigs` decides which Firebase backends (Firestore, Storage, Realtime Database, Authentication) reject requests that do not prove they came from a genuine registered app. `UNENFORCED` first (metrics only), `ENFORCED` once every shipped client attests. A service must already be set up on the project (a Firestore database, the default bucket, an RTDB instance, Identity Platform initialized) or the apply fails with `400 ... not yet set up`; the bucket this same manifest declares counts, because both engines create it first. Per-app attestation providers are configured on the app registration kinds.
 
 **Deletion policy** -- governs ONLY the composed resources: `DELETE` removes the default bucket (with its objects) and switches App Check OFF; `PREVENT` fails the destroy; `ABANDON` leaves them unmanaged. The enablement itself is always detached.
 

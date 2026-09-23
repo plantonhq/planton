@@ -1,7 +1,9 @@
-# The dev shape: community edition, declared credentials (materialized
-# by the module as the <name>-auth Secret), the chart's resource floor
-# (it REJECTS installs below 500m/2Gi). The verifier proves a live
-# Cypher write/read round-trip with those credentials.
+# The dev shape: community edition, NO auth declared — the module mints
+# the admin password and materializes it as the <name>-auth Secret — and
+# the chart's resource floor (it REJECTS installs below 500m/2Gi). The
+# verifier reads the minted credential from that Secret and proves a live
+# Cypher write/read round-trip with it, so the smallest honest shape is
+# also the proof of generation.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesNeo4j
 metadata:
@@ -11,8 +13,6 @@ spec:
     value: e2e-neo-min
   create_namespace: true
   edition: community
-  auth:
-    password: E2ePassword-1
   resources:
     requests:
       cpu: 500m

@@ -3,6 +3,7 @@
 import React from 'react';
 import { MDXRenderer } from '@/lib/MDXRenderer';
 import { MDXParserClient } from '@/lib/mdx-client';
+import type { BlogPost } from '@/lib/mdx';
 
 interface NextArticle {
   title: string;
@@ -13,7 +14,7 @@ interface NextArticle {
 interface BlogPostContentProps {
   slug: string;
   post: string;
-  allPosts: any[];
+  allPosts: BlogPost[];
   nextArticle?: NextArticle;
 }
 

@@ -46,8 +46,9 @@ spec:
     value: my-gcp-project-123
 
   # Create the project's default Cloud Storage for Firebase bucket in this
-  # location (US, EU, NAM4, us-central1, ...). Once per project; immutable;
-  # needs the pay-as-you-go (Blaze) plan. Omit to skip.
+  # location (US, EU, NAM4, us-central1, ...). One per project at a time;
+  # location immutable; needs the pay-as-you-go (Blaze) plan; deleted with
+  # its contents on destroy under DELETE. Omit to skip.
   defaultStorageLocation: US
 
   # Project-level App Check: which Firebase backends enforce genuine-app
@@ -113,9 +114,11 @@ project itself.
 Create the project's DEFAULT Cloud Storage for Firebase bucket in this
 location (a Cloud Storage location: a multi-region such as US or EU, a
 dual-region such as NAM4, or a region such as us-central1). The default
-bucket is the one the Firebase client SDKs use when no bucket is named
-and is created at most once per project; leave empty to skip it.
-Immutable: the bucket's location cannot change after creation.
+bucket is the one the Firebase client SDKs use when no bucket is named;
+a project holds at most one at a time. Leave empty to skip it.
+Immutable: the bucket's location cannot change after creation. Under
+deletion_policy DELETE, destroy unlinks and deletes the bucket (and
+the objects in it) -- a later manifest may declare one again.
 
 Requires the project to be on Firebase's pay-as-you-go (Blaze) plan --
 that is, linked to a Cloud Billing account. On a project without
@@ -143,7 +146,13 @@ Enforcement per Firebase backend service. A service not listed here is
 in Google's default OFF state (no enforcement, no metrics). Listing a
 service with enforcement_mode UNENFORCED starts collecting metrics
 without rejecting anything -- the recommended first step before
-switching to ENFORCED.
+switching to ENFORCED. A service can be configured only once it is SET
+UP on the project (a Firestore database created, the default storage
+bucket present, a Realtime Database instance, Identity Platform
+initialized); configuring one before then fails the apply with 400
+"<service> is not yet set up for project". Declaring
+default_storage_location alongside firebasestorage enforcement is fine:
+both engines create the bucket first.
 
 ### spec.appCheck.serviceConfigs[].serviceId
 

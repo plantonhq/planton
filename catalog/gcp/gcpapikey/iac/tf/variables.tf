@@ -65,7 +65,8 @@ variable "spec" {
           # hex characters with or without colon separators
           # (DA:39:A3:EE:... or DA39A3EE...). Get it with
           # `keytool -list -v -keystore <keystore>` or from the Play Console's App
-          # signing page. Google stores and returns the colon-free form.
+          # signing page. Google stores and returns lowercase hex without colons;
+          # both modules send that form, so declare it in whichever shape you have.
           sha1_fingerprint = string
         }))
       }))

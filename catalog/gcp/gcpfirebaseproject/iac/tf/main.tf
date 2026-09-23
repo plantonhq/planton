@@ -36,10 +36,11 @@ resource "google_firebase_project" "this" {
 }
 
 # The default Cloud Storage for Firebase bucket, when the spec asks for one.
-# Created at most once per project (the API path is
-# projects/{project}/defaultBucket) and needs the pay-as-you-go plan. Beta
-# provider, admitted alongside the enablement. The storage API is enabled
-# only when the bucket is wanted.
+# A project holds one at a time (the API path is
+# projects/{project}/defaultBucket); destroy under DELETE unlinks and
+# deletes it, so it can be declared again later. Needs the pay-as-you-go
+# plan. Beta provider, admitted alongside the enablement. The storage API is
+# enabled only when the bucket is wanted.
 resource "google_project_service" "firebasestorage_api" {
   count = local.wants_default_bucket ? 1 : 0
 
@@ -85,7 +86,12 @@ resource "google_firebase_app_check_service_config" "this" {
   enforcement_mode = each.value.enforcement_mode != "" ? each.value.enforcement_mode : null
   deletion_policy  = local.deletion_policy
 
-  depends_on = [google_firebase_project.this, google_project_service.firebaseappcheck_api]
+  # A service's enforcement can be configured only once that service is set
+  # up on the project (live-verified: the API answers 400 "Cloud Firestore
+  # is not yet set up" otherwise). The one setup this module itself performs
+  # is the default bucket, so the configurations wait for it -- a manifest
+  # that declares the bucket AND Storage enforcement applies in one pass.
+  depends_on = [google_firebase_project.this, google_project_service.firebaseappcheck_api, google_firebase_storage_default_bucket.this]
 }
 
 resource "google_firebase_app_check_resource_policy" "this" {

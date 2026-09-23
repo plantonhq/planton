@@ -5,18 +5,19 @@ import Link from 'next/link';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { WebsiteLogo } from './WebsiteLogo';
 import { footerGroups, footerTermsLinks, type FooterGroup } from '../data/navigation';
+import { scopedTokens as tokens } from '../theme/tokens';
 
 function FooterLinkGroup({ title, items }: FooterGroup) {
   return (
     <Stack sx={{ gap: 1.5 }}>
-      <Typography sx={{ fontSize: '0.75rem', fontWeight: 400, color: '#484848' }}>{title}</Typography>
-      {items.map((menu, index) => (
+      <Typography sx={{ fontSize: '0.75rem', fontWeight: 400, color: tokens.text.faint }}>{title}</Typography>
+      {items.map((item) => (
         <Link
-          href={menu.url}
-          key={index}
+          href={item.href}
+          key={item.href}
           style={{ fontSize: '0.75rem', fontWeight: 400, textDecoration: 'none', color: 'inherit' }}
         >
-          {menu.title}
+          {item.label}
         </Link>
       ))}
     </Stack>
@@ -35,7 +36,7 @@ export function WebsiteFooter() {
         px: { md: 12 },
         py: { md: 5 },
         gap: { md: 3 },
-        bgcolor: '#0a0a0a',
+        bgcolor: tokens.surface.canvas,
       }}
     >
       {/* Main content row */}
@@ -66,7 +67,7 @@ export function WebsiteFooter() {
               .filter((g) => ['product', 'explore'].includes(g.id))
               .map((group, index) => (
                 <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && <Divider sx={{ borderColor: '#303030' }} />}
+                  {index !== 0 && <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />}
                   <FooterLinkGroup {...group} />
                 </Stack>
               ))}
@@ -76,7 +77,7 @@ export function WebsiteFooter() {
               .filter((g) => ['open_source', 'get_started'].includes(g.id))
               .map((group, index) => (
                 <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && <Divider sx={{ borderColor: '#303030' }} />}
+                  {index !== 0 && <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />}
                   <FooterLinkGroup {...group} />
                 </Stack>
               ))}
@@ -105,7 +106,7 @@ export function WebsiteFooter() {
         </Box>
       </Stack>
 
-      <Divider sx={{ borderColor: '#303030' }} />
+      <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />
 
       {/* Bottom bar: terms + copyright */}
       <Stack
@@ -129,7 +130,7 @@ export function WebsiteFooter() {
           }}
         >
           {footerTermsLinks.map((term, index) => (
-            <Fragment key={term.title}>
+            <Fragment key={term.href}>
               {index > 0 && (
                 <Box
                   sx={{
@@ -137,15 +138,15 @@ export function WebsiteFooter() {
                     width: 4,
                     aspectRatio: '1',
                     borderRadius: '50%',
-                    bgcolor: 'white',
+                    bgcolor: tokens.text.primary,
                   }}
                 />
               )}
               <Link
-                href={term.url}
+                href={term.href}
                 style={{ fontSize: '0.75rem', fontWeight: 400, whiteSpace: 'nowrap', textDecoration: 'none', color: 'inherit' }}
               >
-                {term.title}
+                {term.label}
               </Link>
             </Fragment>
           ))}

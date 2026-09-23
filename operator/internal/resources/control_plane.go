@@ -7,6 +7,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
@@ -35,6 +36,19 @@ const (
 
 	controlPlaneDefaultLogLevel          = "info"
 	controlPlaneDefaultTemporalNamespace = "default"
+
+	// The control plane's sizing, chosen here so a default install schedules
+	// honestly and is never OOM-killed by omission. Read live on a one-node
+	// install before choosing: ~3.3Gi resident under pipeline fan-out with
+	// the JVM's heap sized by the image's own -XX:MaxRAMPercentage from the
+	// container limit (so the limit IS the heap rule; a limit alone would
+	// not change the heap silently). The same request/limit pair the hosted
+	// product declares for this service -- one number in both homes. No CPU
+	// limit: a cold start and a pipeline burst must never be throttled into
+	// failing their own probes (requests-only, the house pattern).
+	controlPlaneCPURequest    = "250m"
+	controlPlaneMemoryRequest = "1Gi"
+	controlPlaneMemoryLimit   = "4Gi"
 
 	// controlPlaneIacModulesVersionEnv is the control plane's per-install
 	// OVERRIDE of the release its stack jobs download official IaC modules
@@ -307,7 +321,7 @@ type RunnerBinding struct {
 
 	// BuildEnabled activates the build-routing boot seed: the control plane
 	// creates this install's build-cluster connection (create-once, pointing
-	// at the in-cluster runner) and the platform-scoped default referencing
+	// at the in-cluster runner) and its organization's default referencing
 	// it, so the first service pipeline resolves a build destination with
 	// zero registration ceremony. Follows the effective build toggle
 	// (spec.build AND spec.runner).
@@ -639,6 +653,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 						VolumeMounts: volumeMounts,
 						Env:          envVars,
 						EnvFrom:      envFrom,
+						Resources:    controlPlaneResources(),
 						// First boot self-provisions and migrates every database, which
 						// on a cold cluster takes several minutes; allow a generous
 						// window (10s x 90 = 15m) before the kubelet gives up, so the
@@ -842,8 +857,9 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "PLANTON_INFRA_HUB_STORED_DOCUMENT_MIGRATION_AUTO_RUN", Value: "true"},
 		// Derived from the bootstrap org -- the SAME derivation the runner
 		// resources use for the worker's queue, so dispatcher and poller
-		// cannot drift apart on a renamed org.
-		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
+		// cannot drift apart on a renamed org. One queue: the control plane's
+		// per-provider overrides are a map with no entries, so a provider
+		// variable here would bind to nothing.
 		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
 
 		// Auth0-path FGA bindings: never used with the bundled identity
@@ -1030,9 +1046,12 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 			secretEnv("RUNNER_DIRECT_AUTH_TOKEN", cfg.Runner.CloudOpsSecretName, RunnerCloudOpsSecretKeyToken),
 		)
 		// Build-routing boot seed: create-once records making this cluster
-		// the platform's build destination (the build-cluster connection
-		// under its well-known slug + the platform-scoped default referencing
-		// it). Presence of the RUNNER value is the seeders' activation gate;
+		// the installation's one organization's build destination (the
+		// build-cluster connection under its well-known slug + that
+		// organization's default build connection referencing it). A
+		// self-hosted installation declares no platform fleet, so its
+		// organization's default is the whole routing chain below a service's
+		// own override. Presence of the RUNNER value is the seeders' activation gate;
 		// builds off means NO variables, not empty ones. The env names are
 		// the canonical relaxed-binding forms of
 		// planton.bootstrap.tekton-connection.* -- hyphens STRIPPED, not
@@ -1329,7 +1348,9 @@ func identityEnvVars(binding *IdentityBinding) []corev1.EnvVar {
 
 		// ── first-boot seeds (planton.bootstrap.* via Spring relaxed binding) ──
 		// Presence of the org slug is what activates the control plane's
-		// seeder; a hosted deployment never sets these.
+		// seeder. A hosted deployment never sets these -- it declares its
+		// shared fleet (PLANTON_FLEET_RUNNER_SLUG / _NAMESPACE) instead, and
+		// its control plane refuses the organization-scoped bootstrap facts.
 		{Name: "PLANTON_BOOTSTRAP_ORGANIZATION_SLUG", Value: binding.Bootstrap.OrgSlug},
 		{Name: "PLANTON_BOOTSTRAP_ORGANIZATION_NAME", Value: binding.Bootstrap.OrgName},
 		{Name: "PLANTON_BOOTSTRAP_ENVIRONMENT_SLUG", Value: binding.Bootstrap.EnvSlug},
@@ -1418,4 +1439,18 @@ func ptrBool(b bool) *bool {
 //go:fix inline
 func int64Ptr(i int64) *int64 {
 	return new(i)
+}
+
+// controlPlaneResources is the container sizing every install gets (the
+// constants above carry the reasoning).
+func controlPlaneResources() corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: corev1.ResourceList{
+			corev1.ResourceCPU:    resource.MustParse(controlPlaneCPURequest),
+			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryRequest),
+		},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryLimit),
+		},
+	}
 }

@@ -18,12 +18,15 @@ standalone or primary/replica topology.
   the spec's `helm_values` escape hatch is passed as a SECOND values
   document that the provider merges over the first with Helm `-f`
   semantics — the exact semantic twin of the Pulumi module.
-- **Declared ACL passwords materialize as the `<name>-auth` Secret** (one
-  key per username), which the chart consumes via
-  `auth.usersExistingSecret` — its init script reads each user's password
-  from the Secret key named after the user. The rendered `aclUsers` carry
-  permissions only, never passwords, so credentials never appear in chart
-  values.
+- **ACL passwords materialize as the `<name>-auth` Secret** (one key per
+  username), which the chart consumes via `auth.usersExistingSecret` — its
+  init script reads each user's password from the Secret key named after
+  the user. A user declared without a password gets one from
+  `random_password.user` (keyed by username, so a spec reorder never swaps
+  credentials; the generation shape is `ignore_changes` so an imported
+  credential never regenerates); a declared password is used as given.
+  The rendered `aclUsers` carry permissions only, never passwords, so
+  credentials never appear in chart values.
 - **The module owns `valkey.conf` rendering**: the typed `config` block
   becomes the chart's single `valkeyConfig` string, deterministically
   ordered (`appendonly`, `save` points or the disable directive,
@@ -46,6 +49,7 @@ standalone or primary/replica topology.
 | Resource | Condition |
 |---|---|
 | `kubernetes_namespace_v1.valkey` | `spec.create_namespace` |
+| `random_password.user` | one per ACL user declared without a password |
 | `kubernetes_secret_v1.auth` | `spec.auth` declared |
 | `helm_release.valkey` | always |
 
@@ -60,7 +64,7 @@ standalone or primary/replica topology.
 | `kube_endpoint` | In-cluster endpoint of the write Service |
 | `port_forward_command` | kubectl one-liner for workstation access |
 | `username` | `default` when auth is declared, empty otherwise |
-| `password_secret` | `{name, key}` handle into the `<name>-auth` Secret (key = `default`), unset when auth is off |
+| `password_secret` | `{name, key}` handle into the `<name>-auth` Secret (key = `default`), the same whether that password was declared or generated; unset when auth is off |
 
 ## Parity
 

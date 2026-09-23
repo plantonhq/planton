@@ -1,7 +1,17 @@
+'use client';
+
 import { ComponentProps, FC } from 'react';
-import { Button, ButtonProps, Typography, TypographyProps } from '@mui/material';
-import { SvgIconSizeResponsive } from '@/components/layout/header/styled';
+import { Button, ButtonProps, SvgIcon, SvgIconProps, Typography, TypographyProps } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import DiscordIcon from 'public/_site/images/discord.svg';
+
+/** An icon that grows from 16px to 24px past the tablet breakpoint; used by the Discord button below. */
+const SvgIconSizeResponsive = styled(SvgIcon)<SvgIconProps>(({ theme }) => ({
+  fontSize: 16,
+  [theme.breakpoints.up(767)]: {
+    fontSize: 24,
+  },
+}));
 
 export const TypoH1: FC<TypographyProps> = ({ className, ...props }) => {
   return (

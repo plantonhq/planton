@@ -31,14 +31,18 @@ grant (`GcpProjectIamMember` with `roles/firebasemessaging.admin`). Bind
 that identity to the control plane through Workload Identity and the sender
 runs keyless -- no service-account key file anywhere.
 
-## The default bucket is a one-time, billing-changing act
+## The default bucket is a billing-changing act, and destroy deletes it
 
 `defaultStorageLocation` creates the project's default Cloud Storage for
-Firebase bucket. It can be created once per project, its location is
-immutable, and it requires the pay-as-you-go plan: the project must be
-linked to a Cloud Billing account. Set it when app content needs Firebase
-Storage; leave it empty on a push-only project or one without billing. A
-multi-region location (`US`, `EU`) is geo-redundant; a region is not.
+Firebase bucket. A project holds one default bucket at a time, its
+location is immutable, and it requires the pay-as-you-go plan: the project
+must be linked to a Cloud Billing account. Set it when app content needs
+Firebase Storage; leave it empty on a push-only project or one without
+billing. A multi-region location (`US`, `EU`) is geo-redundant; a region
+is not. Under `deletionPolicy: DELETE`, destroying this resource unlinks
+and DELETES the bucket with everything in it -- carry `PREVENT` once
+clients store content there, or `ABANDON` to keep the bucket and drop it
+from management. A deleted default bucket can be declared again later.
 
 ## App Check: UNENFORCED first, ENFORCED second
 
@@ -50,6 +54,13 @@ Attest, DeviceCheck, reCAPTCHA). Always start a service at `UNENFORCED`:
 it collects metrics on what would be rejected while rejecting nothing.
 Switch to `ENFORCED` only when every shipped client attests, or you lock
 out your own users.
+
+A service can be configured only once it is set up on the project: a
+Firestore database created, the default storage bucket present, a
+Realtime Database instance, Identity Platform initialized. Configure one
+before then and the apply fails with `400 <service> is not yet set up for
+project`. Declaring `defaultStorageLocation` and Storage enforcement in
+the same manifest is fine -- both engines create the bucket first.
 
 ## deletionPolicy protects the composed resources, never the enablement
 

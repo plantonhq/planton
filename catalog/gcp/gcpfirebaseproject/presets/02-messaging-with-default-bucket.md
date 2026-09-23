@@ -8,7 +8,7 @@ destroy.
 
 - `defaultStorageLocation: US` — creates the default bucket the Firebase
   client SDKs use when no bucket is named, geo-redundant across the US
-  multi-region. Created once per project; immutable.
+  multi-region. One per project at a time; location immutable.
 - `deletionPolicy: PREVENT` — a destroy fails rather than deleting the
   bucket with its objects.
 

@@ -1,51 +1,25 @@
 # Least-privilege permissions the IaC runner's Auth0 credential needs to
 # provision, update, and destroy this component with the official modules.
-# Schema: iac/componentpermissions/v1.
-#
-# Auth0 authenticates with a tenant-scoped Management API token, not
-# IAM-statement policies, so none of the schema's provider sections
-# (aws/gcp/azure/kubernetes) applies -- their absence is the schema's own
-# claim that the modules touch no such API. The credential is a
-# machine-to-machine (M2M) application authorized for the tenant's
-# Management API (client-credentials grant): the auth0/auth0 Terraform
-# provider (~> 1.0 per iac/tf/provider.tf) and the pulumi-auth0 SDK take a
-# domain plus client_id/client_secret (or a pre-issued api_token) and
-# exchange them for a Management API access token carrying the scopes
-# granted to that M2M application.
-#
-# Least privilege therefore means granting the M2M application ONLY the
-# scopes below -- scope names verbatim from Auth0's published Management
-# API endpoint docs, retrieved 2026-08-22:
-# auth0.com/docs/api/management/v2/roles/post-roles (scope inventory lists
-# create:roles, read:roles, update:roles, delete:roles; the POST endpoint
-# rejects tokens without create:roles) and
-# auth0.com/docs/api/management/v2/roles/post-role-permission-assignment
-# (associating permissions with a role requires update:roles). Should the
-# schema grow an auth0 section, this inventory converts mechanically:
-#
-#   Role lifecycle (provenance: derived):
-#     create:roles  -- create the role (POST /api/v2/roles)
-#     read:roles    -- read the role AND its permission list back on refresh
-#                      (GET /api/v2/roles/{id}, GET /api/v2/roles/{id}/permissions)
-#     update:roles  -- rename/redescribe the role (PATCH /api/v2/roles/{id})
-#                      AND manage its authoritative permission set: adding
-#                      permissions (POST /api/v2/roles/{id}/permissions) is
-#                      documented as requiring update:roles; removing them
-#                      (DELETE /api/v2/roles/{id}/permissions) is the same
-#                      endpoint family and is derived to ride the same scope
-#     delete:roles  -- destroy the role (DELETE /api/v2/roles/{id})
-#
-# The modules (iac/tf/main.tf and iac/pulumi/module/role.go) manage two
-# resources: auth0_role and, when spec.permissions is non-empty, the
-# authoritative auth0_role_permissions -- both operate on the same role
-# object, so the four roles scopes above are the complete set. The modules
-# never assign the role to users (no read:role_members or user-scope
-# needs), and the scopes a role references must already exist on their
-# resource servers -- this component does not create them. All entries are
-# derived from static analysis of the modules against the endpoint docs;
-# the live capture lane upgrades them to proven.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.0 per iac/tf/provider.tf) and the
+# pulumi-auth0 SDK exchange its client id and secret for a token through
+# the client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
 apiVersion: iac.planton.dev/v1
 kind: ComponentPermissions
 metadata:
   name: auth0role
-spec: {}
+spec:
+  auth0:
+    groups:
+      - purpose: ManageRole
+        scopes:
+          - create:roles
+          - read:roles
+          - update:roles
+          - delete:roles
+        provenance: derived
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/role.go) manage auth0_role and, when spec.permissions is non-empty, the authoritative auth0_role_permissions — both on the same role object. Create via POST /api/v2/roles; read the role AND its permission list back via GET /api/v2/roles/{id} and GET /api/v2/roles/{id}/permissions (read:roles); rename or redescribe via PATCH /api/v2/roles/{id} and manage the permission set via POST and DELETE on /api/v2/roles/{id}/permissions (update:roles — documented for adding by post-role-permission-assignment, derived for removal on the same endpoint family); destroy via DELETE /api/v2/roles/{id}. Scope names verbatim from the post-roles doc's scope inventory (auth0.com/docs/api/management/v2/roles/post-roles, read 2026-08-22). The modules never assign the role to users, so no role-members or user scope is needed, and the scopes a role references must already exist on their resource servers.

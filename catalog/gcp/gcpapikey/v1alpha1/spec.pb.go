@@ -312,7 +312,8 @@ type GcpApiKeyAndroidApplication struct {
 	// hex characters with or without colon separators
 	// (DA:39:A3:EE:... or DA39A3EE...). Get it with
 	// `keytool -list -v -keystore <keystore>` or from the Play Console's App
-	// signing page. Google stores and returns the colon-free form.
+	// signing page. Google stores and returns lowercase hex without colons;
+	// both modules send that form, so declare it in whichever shape you have.
 	Sha1Fingerprint string `protobuf:"bytes,2,opt,name=sha1_fingerprint,json=sha1Fingerprint,proto3" json:"sha1_fingerprint,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache

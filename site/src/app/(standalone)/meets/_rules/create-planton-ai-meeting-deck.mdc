@@ -1,0 +1,580 @@
+---
+description: Create a new meeting presentation deck for planton.ai/meets from preparation materials
+alwaysApply: false
+---
+
+# Rule: Create Planton.ai Meeting Deck
+
+Purpose: Transform meeting preparation materials into a polished, production-ready presentation deck for the planton.ai/meets micro-app. Use this when you have a folder of research, notes, and draft presentations ready to convert into a live web presentation.
+
+Usage: Invoke as `@create-planton-ai-meeting-deck` with a reference to the preparation folder.
+
+## Overview
+
+The Meets micro-app at `planton.ai/meets` hosts tailored presentations for guest meetings. Each guest (company, investor, partner, or individual) gets their own URL-friendly slug, and meetings are organized by date with timestamps.
+
+**URL Structure:**
+- `/meets/[guest]` - Always shows the upcoming/latest meeting (primary shareable URL)
+- `/meets/[guest]/[date]` - Specific dated meeting (e.g., `/meets/sep/2026-01-23-1400`)
+
+**Key Principle:** URLs should be easy to remember and type. `planton.ai/meets/acme` is what you share with guests.
+
+---
+
+## Phase 1: Information Gathering
+
+When this rule is triggered, first analyze the provided preparation materials and then gather missing information through questions.
+
+### Required Information
+
+**Guest Profile:**
+| Field | Description | Example |
+|-------|-------------|---------|
+| Guest Slug | URL-safe identifier (lowercase, hyphens) | `sep`, `acme-corp`, `john-smith` |
+| Guest Name | Full display name | `SEP`, `Acme Corporation`, `John Smith` |
+| Guest Type | Category for context | Company, Investor, Partner, Advisor, Individual |
+| Guest Context | What they do, industry, relevant background | `IT consulting firm specializing in regulated industries` |
+
+**Meeting Details:**
+| Field | Description | Example |
+|-------|-------------|---------|
+| Meeting Date | Format: `yyyy-mm-dd-hhmm` | `2026-01-23-1400` |
+| Location | Virtual or physical location | `Westfield, Indiana` or `Zoom` |
+| Presenter | Name and title | `Presenter Name, Company` |
+| Meeting Objectives | What we want to achieve | `Product demo, partnership discussion` |
+
+**Presentation Content:**
+| Field | Description |
+|-------|-------------|
+| Narrative Arc | Problem → Solution → Proof → Ask flow |
+| Key Pain Points | Specific challenges to address |
+| Demo Sections | Which product areas to demonstrate |
+| Call-to-Action | Desired next steps |
+| Guest-Specific Hooks | Research/facts about the guest to personalize |
+
+### Questionnaire Template
+
+After reviewing the preparation materials, ask clarifying questions for any missing information:
+
+```markdown
+## Meeting Deck Creation: [Guest Name]
+
+I've reviewed the preparation materials. Here's what I understand:
+
+**Guest Profile:**
+- Slug: [inferred or ask]
+- Name: [from materials]
+- Type: [inferred]
+- Context: [summary from research]
+
+**Meeting Details:**
+- Date/Time: [from materials or ask]
+- Location: [from materials or ask]
+- Presenter: [from materials or ask]
+
+**Presentation Flow:**
+[Summarize the narrative arc from the draft presentation]
+
+**Questions I Need Answered:**
+1. [Question about missing information]
+2. [Question about ambiguous content]
+3. [Question about preferences]
+```
+
+---
+
+## Phase 2: Implementation
+
+Once all information is gathered, create the meeting deck following this structure.
+
+### File Structure
+
+```
+src/components/meetings/decks/[guest-slug]/
+├── config.ts           # Slide array + metadata
+└── slides/
+    ├── S01Cover.tsx
+    ├── S02[Topic].tsx
+    ├── S03[Topic].tsx
+    └── ... (as many slides as needed)
+```
+
+### Step 1: Create Guest Folder
+
+```bash
+mkdir -p src/components/meetings/decks/[guest-slug]/slides
+```
+
+### Step 2: Create Slide Components
+
+Each slide is a separate React component using shared primitives.
+
+**Slide Component Template:**
+
+```tsx
+'use client';
+
+import {
+  Slide,
+  SlideHeader,
+  Card,
+  CardTitle,
+  CardText,
+  // Import other primitives as needed
+} from '@/components/deck';
+
+export default function S01Cover() {
+  return (
+    <Slide variant="cover">
+      <div className="text-center max-w-3xl mx-auto">
+        {/* Slide content */}
+      </div>
+    </Slide>
+  );
+}
+```
+
+**Slide Variants:**
+- `default` - Standard dark background
+- `cover` - Title/cover slides with gradient
+- `problem` - Red-tinted for problem slides
+- `solution` - Green-tinted for solution slides
+- `gradient` - Purple gradient for emphasis
+
+### Step 3: Create Config File
+
+```tsx
+import { SlideConfig } from '../../MeetingDeck';
+import { MeetingDeckConfig } from '../index';
+
+// Import all slides
+import S01Cover from './slides/S01Cover';
+import S02Topic from './slides/S02Topic';
+// ... more imports
+
+export const [guestSlug]Slides: SlideConfig[] = [
+  {
+    id: 'cover',
+    name: 'Cover',
+    component: S01Cover,
+    presenterNotes: [
+      'Opening talking point',
+      'Key message to emphasize',
+      'Timing note: 30 seconds max',
+    ],
+  },
+  {
+    id: 'topic-slug',
+    name: 'Display Name',
+    component: S02Topic,
+    presenterNotes: [
+      'Note 1',
+      'Note 2',
+    ],
+  },
+  // ... more slides
+];
+
+export const [guestSlug]Config: MeetingDeckConfig = {
+  slides: [guestSlug]Slides,
+  guest: '[guest-slug]',
+  meetingDate: 'yyyy-mm-dd-hhmm',
+  presenter: 'Presenter Name',
+  company: 'Presenter Company',
+  location: 'Meeting Location',
+};
+```
+
+### Step 4: Register in Guest Registry
+
+Update `src/components/meetings/decks/index.ts`:
+
+```tsx
+// Add import
+import { [guestSlug]Config } from './[guest-slug]/config';
+
+// Add to registry
+const meetingDeckRegistry: Record<string, MeetingDeckConfig> = {
+  // ... existing entries
+  '[guest-slug]/yyyy-mm-dd-hhmm': [guestSlug]Config,
+};
+```
+
+---
+
+## Shared Primitives Reference
+
+All slides should use components from `src/components/deck/primitives.tsx`:
+
+### Layout Components
+
+| Component | Purpose | Props |
+|-----------|---------|-------|
+| `Slide` | Base wrapper | `variant`, `className` |
+| `SlideHeader` | Section tag + title + subtitle | `sectionTag`, `title`, `subtitle` |
+| `Grid` | Multi-column grid | `cols` (2-4), `gap` |
+| `TwoCol` | Two-column layout | `className` |
+
+### Typography
+
+| Component | Purpose |
+|-----------|---------|
+| `SlideTitle` | Main heading (responsive) |
+| `SlideSubtitle` | Secondary heading |
+| `SectionTag` | Colored category label |
+| `CardTitle` | Card heading |
+| `CardText` | Card body text |
+
+### Content Containers
+
+| Component | Purpose | Props |
+|-----------|---------|-------|
+| `Card` | Content container | `variant` (default, highlight, success, danger, purple, pink) |
+| `QuoteBox` | Blockquote with attribution | `attribution` |
+| `Callout` | Highlighted message | `variant` (default, success, highlight, warning) |
+
+### Data Display
+
+| Component | Purpose | Props |
+|-----------|---------|-------|
+| `Metric` | Large number + label | `value`, `label`, `sublabel`, `highlight` |
+| `StatsGrid` | Multiple stats in grid | `stats` array |
+| `Comparison` | Before/after display | `before`, `after` objects |
+| `FlowDiagram` | Step-by-step flow | `steps` array |
+
+### Lists
+
+| Component | Purpose | Props |
+|-----------|---------|-------|
+| `Checklist` | Checkmark items | `items` array |
+| `IconList` | Icon + title + description | `items` array with `icon`, `title`, `description` |
+
+### Badges
+
+| Component | Purpose |
+|-----------|---------|
+| `Badge` | Status label with variants |
+| `DemoBadge` | Live demo indicator |
+
+---
+
+## Presenter Notes Guidelines
+
+Every slide MUST have presenter notes. Follow these patterns:
+
+**Format:**
+- Array of strings
+- Each string is one talking point or instruction
+- Use quotes for exact phrases to say
+- Use `<strong>` for emphasis in notes
+- Include timing cues where relevant
+
+**Good Notes:**
+```typescript
+presenterNotes: [
+  '"Good afternoon, thank you for having me here today."',
+  'Read through key facts confidently',
+  '<strong>Pause</strong>: Let the number sink in',
+  'Ask: "Does this resonate with your team?"',
+  'Keep it brief: 30 seconds max',
+],
+```
+
+**Note Categories:**
+1. **Openers** - Exact phrases to start the slide
+2. **Emphasis** - What to stress or pause on
+3. **Questions** - Questions to ask the audience
+4. **Timing** - How long to spend
+5. **Fallbacks** - What to do if something fails (especially demos)
+
+---
+
+## Slide Naming Convention
+
+- `S01Cover.tsx` - Two-digit number + descriptive name
+- Numbers allow reordering without renaming
+- Use PascalCase for component names
+- Descriptive suffixes: `S12DemoInfraHub.tsx`, `S19ROI.tsx`
+
+---
+
+## Quality Checklist
+
+Before completing the implementation:
+
+- [ ] All slides use shared primitives (no custom inline styles)
+- [ ] Every slide has meaningful presenter notes
+- [ ] Config file exports both slides array and config object
+- [ ] Registry entry added with correct key format (`guest/yyyy-mm-dd-hhmm`)
+- [ ] Imports use correct relative paths
+- [ ] Component names match file names
+- [ ] Slide IDs are unique and URL-friendly (kebab-case)
+- [ ] Guest-specific content is accurate and relevant
+- [ ] Narrative flows logically from problem to solution to ask
+
+---
+
+## Phase 3: Review and Iteration
+
+Once all slides are created, enter the review phase.
+
+### Start the Dev Server
+
+If not already running, start the Yarn dev server:
+
+```bash
+cd /Users/swarup/scm/github.com/plantonhq/planton.ai
+make run
+```
+
+### Review in Browser
+
+Open the presentation in your browser:
+
+```
+http://localhost:3000/meets/[guest-slug]
+```
+
+**Keyboard shortcuts for review:**
+| Key | Action |
+|-----|--------|
+| → / Space | Next slide |
+| ← / Backspace | Previous slide |
+| N | Toggle presenter notes |
+| F | Toggle fullscreen |
+| H / Home | First slide |
+| End | Last slide |
+
+### Provide Feedback
+
+As you review:
+- Note any content that needs adjustment
+- Check slide flow and narrative
+- Verify presenter notes make sense
+- Test responsiveness (resize browser)
+
+I will iterate on your feedback until you approve the deck.
+
+---
+
+## Phase 4: Build Verification
+
+Once you approve the deck, I will verify the production build.
+
+### Stop Dev Server (if running)
+
+If the dev server is running, stop it first (Ctrl+C).
+
+### Run Build Iteratively
+
+I will run `make build` and iterate until it succeeds:
+
+```bash
+cd /Users/swarup/scm/github.com/plantonhq/planton.ai
+make build
+```
+
+**Build iteration process:**
+1. Run `make build`
+2. If errors occur, fix them
+3. Repeat until build succeeds
+4. Report success
+
+### Verify URLs Work
+
+After successful build:
+- Primary: `http://localhost:3000/meets/[guest-slug]`
+- Dated: `http://localhost:3000/meets/[guest-slug]/yyyy-mm-dd-hhmm`
+
+**Verification checklist:**
+- [ ] Build completes without errors
+- [ ] Primary URL loads the presentation
+- [ ] Navigation works (keyboard arrows, touch swipe)
+- [ ] Presenter notes toggle with 'N' key
+- [ ] Hash navigation works (e.g., `#slide-id`)
+
+---
+
+## Phase 5: Generate Changelog
+
+After successful build, I will create a changelog entry documenting the new deck.
+
+**Changelog Location:** `_changelog/[year]-[month]/[timestamp]-meets-[guest-slug]-creation.md`
+
+**Changelog Template:**
+
+```markdown
+# Meets Deck Creation: [Guest Name]
+
+**Date:** [Current date]
+**Type:** Feature
+**Components:** Meets Micro-App, [Guest Slug] Presentation
+
+## Summary
+
+Created a new meeting presentation deck for [Guest Name] with [N] slides covering [brief narrative description].
+
+## Guest Information
+
+- **Slug:** [guest-slug]
+- **Name:** [Full Name]
+- **Type:** [Company/Investor/Partner/Individual]
+- **Meeting Date:** [yyyy-mm-dd-hhmm]
+- **Presenter:** [Name, Company]
+- **Location:** [Location]
+
+## Slides Created
+
+| # | Slide Name | Purpose |
+|---|------------|---------|
+| S01 | Cover | Title slide with meeting details |
+| S02 | [Name] | [Purpose] |
+| ... | ... | ... |
+
+## Files Created
+
+| File | Purpose |
+|------|---------|
+| `decks/[slug]/config.ts` | Slide configuration and metadata |
+| `decks/[slug]/slides/S01Cover.tsx` | Cover slide |
+| `decks/[slug]/slides/S02[Name].tsx` | [Purpose] |
+| ... | ... |
+
+## Registry Update
+
+Added entry to `decks/index.ts`:
+- Key: `[guest-slug]/[yyyy-mm-dd-hhmm]`
+
+## URL Routes
+
+- Primary: `/meets/[guest-slug]`
+- Dated: `/meets/[guest-slug]/[yyyy-mm-dd-hhmm]`
+
+---
+
+**Status:** ✅ Live
+**URL:** https://planton.ai/meets/[guest-slug]
+```
+
+---
+
+## Example: SEP Meeting Deck
+
+The SEP deck at `src/components/meetings/decks/sep/` is the reference implementation:
+
+- 24 slides covering full sales narrative
+- Uses all major primitives
+- Comprehensive presenter notes
+- Registered at `sep/2026-01-23-1400`
+
+Study this implementation for patterns and conventions.
+
+---
+
+## Common Patterns
+
+### Cover Slide Pattern
+
+```tsx
+<Slide variant="cover">
+  <div className="text-center max-w-3xl mx-auto">
+    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4">
+      <span className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
+        Planton
+      </span>
+      <span className="text-white"> for [Guest]</span>
+    </h1>
+    <p className="text-xl sm:text-2xl md:text-3xl text-white/80 font-medium mb-3">
+      [Tagline]
+    </p>
+    <div className="space-y-2 text-sm sm:text-base text-white/50">
+      <p><span className="text-white/70 font-medium">Presenter:</span> [Name]</p>
+      <p><span className="text-white/70 font-medium">Date:</span> [Date]</p>
+      <p><span className="text-white/70 font-medium">Location:</span> [Location]</p>
+    </div>
+  </div>
+</Slide>
+```
+
+### Problem Slide Pattern
+
+```tsx
+<Slide variant="problem">
+  <SlideHeader
+    sectionTag="The Challenge"
+    title="[Problem Statement]"
+    subtitle="[Supporting context]"
+  />
+  <Grid cols={2}>
+    <Card variant="danger">
+      <CardTitle>[Pain Point]</CardTitle>
+      <CardText>[Description]</CardText>
+    </Card>
+    {/* More cards */}
+  </Grid>
+</Slide>
+```
+
+### Solution Slide Pattern
+
+```tsx
+<Slide variant="solution">
+  <SlideHeader
+    sectionTag="The Solution"
+    title="[Solution Name]"
+  />
+  <Checklist items={[
+    'Benefit one',
+    'Benefit two',
+    'Benefit three',
+  ]} />
+</Slide>
+```
+
+### Demo Slide Pattern
+
+```tsx
+<Slide>
+  <SlideHeader
+    sectionTag="Live Demo"
+    title="[Demo Topic]"
+  />
+  <div className="text-center mb-6">
+    <DemoBadge />
+  </div>
+  <FlowDiagram steps={[
+    { icon: '1️⃣', label: 'Step One' },
+    { icon: '2️⃣', label: 'Step Two' },
+    { icon: '3️⃣', label: 'Step Three' },
+  ]} />
+</Slide>
+```
+
+---
+
+## Summary
+
+This rule transforms meeting preparation materials into production-ready web presentations through a complete workflow:
+
+1. **Phase 1: Information Gathering** - Understanding guest context, meeting details, and presentation goals
+2. **Phase 2: Implementation** - Creating guest folder, slide components, config, and registry entry
+3. **Phase 3: Review and Iteration** - Using dev server (`make run`) for live preview and iterating on feedback
+4. **Phase 4: Build Verification** - Running `make build` iteratively until it succeeds
+5. **Phase 5: Changelog** - Documenting the new deck creation
+
+The result is a memorable URL (`planton.ai/meets/guest-name`) that hosts a polished, interactive presentation with keyboard navigation, touch support, and presenter notes.
+
+---
+
+## Dev Server Quick Reference
+
+```bash
+# Start dev server for review
+make run
+
+# Access the deck
+open http://localhost:3000/meets/[guest-slug]
+
+# When review is complete, stop dev server (Ctrl+C) and build
+make build
+```

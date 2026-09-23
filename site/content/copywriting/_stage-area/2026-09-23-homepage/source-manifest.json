@@ -1,0 +1,1497 @@
+[
+  {
+    "path": "wiki/architecture.observability.java-tracing-and-logging.md",
+    "title": "Telemetry Instrumentation in the Control Plane: Tracing and Log Correlation",
+    "sha256": "5928f34c62707aa16480868e8c8a6f74183416417c15b181f30efad5d844bfa1",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Telemetry Instrumentation in the Control Plane: Tracing and Log Correlation",
+    "sections": [
+      "Mental Model",
+      "Observability Is Opt-In",
+      "The Single Signal: `SpanContext.isValid()`",
+      "Inbound Request Identity",
+      "Outbound Propagation to Runners",
+      "Asynchronous Contexts: Temporal and Event-Log Listeners",
+      "Log Correlation Through MDC",
+      "Enabling Real Tracing",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/architecture.planton-resource-model.md",
+    "title": "The Planton Resource Model",
+    "sha256": "2a1626f5628cfa680daa3c0d8f641a399689294bef0b94f7f92c010ea61af830",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Planton Resource Model",
+    "sections": [
+      "The Mental Model: Contract First",
+      "Terminology",
+      "Scope: Which Resources the Laws Bind",
+      "The Resource Envelope",
+      "Two Classes of Kinds, One Versioning Model",
+      "The Eleven Laws",
+      "The Maturity Bootstrap order",
+      "Conversion Machinery",
+      "The Two-Tier Client Experience",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/architecture.role-of-temporal.md",
+    "title": "Role of Temporal",
+    "sha256": "4b7adbfb96d26b556b540f501715eafa674aca41876b3cb5cb45bfb56fd6ff60",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Role of Temporal",
+    "sections": [
+      "Mental Model",
+      "Why Durable Execution",
+      "Namespaces as Domain Isolation",
+      "The Cross-Namespace Constraint",
+      "Polyglot Workers",
+      "Integration Patterns",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/architecture.runner.local-mode.md",
+    "title": "Runner Architecture in Local Mode",
+    "sha256": "bc2a292bd84f39096458a87992c5e22e91f06b7b6e1efad9fdf76d7ebdf2a415",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Runner Architecture in Local Mode",
+    "sections": [
+      "The Mental Model",
+      "The Single Local Switch",
+      "Identity Without Ceremony",
+      "Two Surfaces, One Process, No Tunnel",
+      "State Stays on the Machine",
+      "One Machine, Several Accounts",
+      "The Loopback Bind Is a Security Boundary",
+      "Supervised Like Everything Else",
+      "Why This Shape",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/architecture.security.anonymous-installs-identity-and-control.md",
+    "title": "Anonymous Installs: Identity, Public Surfaces, and Remote Control",
+    "sha256": "68f07dbec42f4335b2cb315664575f3245eb19a91f5afbfcdb3bae16d6c245a3",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Anonymous Installs: Identity, Public Surfaces, and Remote Control",
+    "sections": [
+      "The Mental Model",
+      "The Device Identity",
+      "The Public Surface Discipline",
+      "Install Telemetry: The Adoption Beacon Channel",
+      "Rollout Control: Cohorts, Kill Switch, Enforcement",
+      "Privacy Posture",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/architecture.security.broker-issued-credentials.md",
+    "title": "Broker-Issued Credentials",
+    "sha256": "493bd4f18378f82763010eed74a7fbf487995b74fe5e59c4224b905effe49381",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Short-lived credentials from Vault/OpenBAO at execution; do not generalize to every connection.",
+    "sections": [
+      "The Mental Model",
+      "Why the Exchange Lives on the Runner",
+      "Logging Into the Broker",
+      "Session Hygiene: Leave Nothing Behind",
+      "What Each Cloud's Engine Issues",
+      "What a Customer's Vault Team Grants",
+      "Authorization: the Broker Is Checked in Its Own Right",
+      "Verify: the Trust Chain Made Legible Before Anything Runs",
+      "What the User Sees",
+      "Failing Loud, in the User's Terms",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/architecture.security.keyless-connections-and-oidc-issuer.md",
+    "title": "Keyless Connections and the Planton OIDC Issuer",
+    "sha256": "f388e0a570041042f7cf2a2d7ce41a9acffe8aaae0abfd33d8aa733f73ee83d3",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Connection-scoped federation; do not offer keyless on an unreachable local issuer.",
+    "sections": [
+      "The Mental Model: Trust, Not a Stored Secret",
+      "The Three Parties",
+      "The Planton OIDC Issuer",
+      "The Token",
+      "How the Cloud Grants Credentials",
+      "How the Execution Agent Uses Tokens",
+      "Provider Construction",
+      "Proving a Connection Works",
+      "Security Model",
+      "The Federation Landscape",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/architecture.security.kubernetes-cluster-credentials.md",
+    "title": "Kubernetes Cluster Credentials",
+    "sha256": "34317036e79b98f19eac92e5f697c04258f7e6008e31ac0090359e08bac543cd",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Kubernetes Cluster Credentials",
+    "sections": [
+      "The Mental Model: Identity Is Public, Tokens Are Minted",
+      "Why Minting Is Forced, Not Chosen",
+      "Two Consumer Classes, Two Mechanisms",
+      "Per-Platform Arms",
+      "How Delegation Reaches the Minter",
+      "What Died to Make This Work",
+      "Security Properties",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/company.branding.email-avatar.md",
+    "title": "Email Sender Avatar (Brand Logo in Email Clients)",
+    "sha256": "355f04a1e36f7a637237a7dd3c20d44011f50407c1c09ab7891363f147b58e0e",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Email Sender Avatar (Brand Logo in Email Clients)",
+    "sections": [
+      "The Problem",
+      "Systems Involved",
+      "Email Authentication Chain",
+      "Options Evaluated",
+      "Decision: Google Workspace + BIMI + Apple Business Connect",
+      "Implementation Details",
+      "Email Template Dark Mode Considerations",
+      "Cost Summary",
+      "References"
+    ]
+  },
+  {
+    "path": "wiki/company.operating-model.small-team-large-platform.md",
+    "title": "Running a Large Platform with a Very Small Team",
+    "sha256": "34e5492ce1d64eb68276d29887ad454d6e295f2ba4aac8dd9c0afb37cdb7fb80",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Running a Large Platform with a Very Small Team",
+    "sections": [
+      "Section 0: The North Star",
+      "Section 1: The Mental Model",
+      "Section 2: One Home per Kind of Record",
+      "Section 3: Flat Where Possible, Hierarchical Where a Tool Insists",
+      "Section 4: Provisioning and Operations Are One Subject",
+      "Section 5: Declared in Git, Running in Planton, Explained in Planton OS",
+      "Section 6: Designed for the Handoff",
+      "Section 7: The Partnership Between the Founder and the Agent Teammates",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/infrastructure.estate.bootstrap-order.md",
+    "title": "The Bootstrap Order: How Planton Runs Its Own Estate on Planton",
+    "sha256": "49de2328f699f42f85deadf9c0120f5796d36dc76672f417358b3bc470e45a36",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Bootstrap Order: How Planton Runs Its Own Estate on Planton",
+    "sections": [
+      "Section 1: The Chicken-and-Egg Problem",
+      "Section 2: The Bootstrap Order, Instance by Instance",
+      "Section 3: Where State Lives -- the Recovery-Path Doctrine",
+      "Section 4: Slugs Are the Recovery Coordinate System",
+      "Section 5: The Lost-Machine Replay",
+      "Section 6: The Discipline -- Cattle, Not Pets",
+      "Section 7: A Second Estate in the Same Project",
+      "Section 8: What the Bootstrap order Requires -- and Does Not Promise",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/infrastructure.estate.management-cluster.md",
+    "title": "The Management Cluster: How Planton Runs Planton on GKE",
+    "sha256": "a142a30997a8c2cfa30a2e62f68912086f2f1e09fc58c0a6c0c66c0f49178fcf",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Management Cluster: How Planton Runs Planton on GKE",
+    "sections": [
+      "Section 1: The Mental Model",
+      "Section 2: The Layers and Why Each Is There",
+      "Section 3: Names",
+      "Section 4: The Identities Born at First Boot",
+      "Section 5: Sizing and Maintenance",
+      "Section 6: Destroy and Recreate",
+      "Section 7: Proof",
+      "Section 8: What Is Deliberately Not Here Yet"
+    ]
+  },
+  {
+    "path": "wiki/infrastructure.estate.operating-doctrine.md",
+    "title": "The Declared Estate: How Planton's Own Infrastructure Is Recorded and Operated",
+    "sha256": "6704cfb3a4a7ce56b2d3709a7effd61ec9de00b894cfb233015bd5d43a18c7e8",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Declared Estate: How Planton's Own Infrastructure Is Recorded and Operated",
+    "sections": [
+      "Section 1: The Mental Model",
+      "Section 2: One Home, and What Belongs in It",
+      "Section 3: Organized by Who Applies It",
+      "Section 4: The Naming Law -- a File Is Its Category and Its State Key",
+      "Section 5: Charts Are Libraries, Projects Are One File",
+      "Section 6: Vendors Translate into Configuration",
+      "Section 7: The Rules That Keep the Record Honest",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/infrastructure.operations.reliability-doctrine.md",
+    "title": "The Reliability Doctrine: Operating Planton's Estate Without Losing Calm",
+    "sha256": "2574101273d7471e96e4c6a5e3071ae41aa8132c3386bc0414a768cb7e7507f6",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Reliability Doctrine: Operating Planton's Estate Without Losing Calm",
+    "sections": [
+      "Section 0: The North Star",
+      "Section 1: The Mental Model -- Four Questions",
+      "Section 2: Service Level Objectives and the Paging Rule",
+      "Section 3: Monitoring Proven by a Test Alert",
+      "Section 4: Severities and the Incident Lifecycle",
+      "Section 5: Change Management -- Classes, the Record, and Maintenance Windows",
+      "Section 6: Backups and the Restore Proof",
+      "Section 7: The Security Baseline",
+      "Section 8: What Each Distribution Is Owed",
+      "Section 9: The Status Page",
+      "Section 10: The Cadence -- Scheduled Proof",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.assistant.rooms-and-opening-briefs.md",
+    "title": "Assistant Rooms: One Assistant, Many Rooms, and the Turn It Opens With",
+    "sha256": "f474f27461f267eb7dae3ebc9defbf69a3991d2b627c78a2d0be88c65c1268c2",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Assistant Rooms: One Assistant, Many Rooms, and the Turn It Opens With",
+    "sections": [
+      "The Mental Model",
+      "The Silent Facts",
+      "The Visible Opening",
+      "Two Invitations: the Quiet Offer and the Fix-It Call",
+      "The Two Consoles Are Twins With Different Hands",
+      "What a Room Must Never Do",
+      "The Docking Pattern",
+      "Designed Before Built, Proven After",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.billing.prepaid-ai-credits.md",
+    "title": "Prepaid AI Credits",
+    "sha256": "bb100b3b12b3c1a39711f15d594f1821fbabe3511ee91f15520a5cb068f59f1e",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Prepaid AI Credits",
+    "sections": [
+      "The Mental Model",
+      "Where a Wallet Lives",
+      "Buying Credits",
+      "The Joining Gift",
+      "The Ledger Laws",
+      "The Engine Mirror",
+      "Auto-Top-Up: Bounded Standing Permission",
+      "Trust Posture",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.client-apps.planton-web.configuration-injection.md",
+    "title": "Web Console: Configuration Injection Architecture",
+    "sha256": "f594377e34457a48c9ef0bb48a59d92cb160d4ca36d5267174478aeb5acc9aa4",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Web Console: Configuration Injection Architecture",
+    "sections": [
+      "The Two Tiers",
+      "How Client Components Receive Runtime Config",
+      "Desktop App: No Environment Variables",
+      "The `.env` File",
+      "The `@planton/platform-constants` Package",
+      "Adding a New Configurable Value"
+    ]
+  },
+  {
+    "path": "wiki/product.config-manager.md",
+    "title": "Config Manager",
+    "sha256": "bac57748a168fd177e4a0c781c8f5b883bd4a3e17bf845ff4f639a89fde799fe",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Config Manager",
+    "sections": [
+      "Mental Model",
+      "Variables and Secrets",
+      "Two Ways to Reference Configuration",
+      "Just-in-Time Resolution",
+      "Scope and Tenancy",
+      "Secret Storage",
+      "The Read Story",
+      "A Note on Refresh-From-Source",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.connect.connection-methods-by-deployment.md",
+    "title": "Connection Methods by Deployment",
+    "sha256": "d38ff61eed22b3bfd89390f4ac851d3a39e5517404bc36e654a58c08d292ae96",
+    "classification": "Public claim source",
+    "qualification": "Methods vary by deployment and issuer reachability.",
+    "sections": [
+      "The Mental Model: One Declared Posture, Everything Derives",
+      "The Doors: One-Click and Script",
+      "Desktop Local Instance",
+      "Self-Hosted Install, Public Front Door",
+      "Self-Hosted Install, Private Front Door",
+      "Hosted Planton",
+      "Kinds the Catalog Leaves Out",
+      "How to Read a Card",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.connect.connection-verification.md",
+    "title": "Connection Verification",
+    "sha256": "a950f62d3c2fb2d86ca0c7d36760f7a89703ac9c56588dbca9309e47de22b1fc",
+    "classification": "Public claim source",
+    "qualification": "Connection Verification",
+    "sections": [
+      "The Mental Model",
+      "Presented vs Granted",
+      "How the Probe Travels",
+      "The Broker Chain: Two Verdicts, Zero Overlap",
+      "Honest Limits Are Verdicts Too",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.connect.github-host-login.md",
+    "title": "GitHub From the Sign-In Your Machine Already Holds",
+    "sha256": "363d505efca81fc10add4fb35a12952dda8a3f1700f6254b843045fc09547508",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "GitHub From the Sign-In Your Machine Already Holds",
+    "sections": [
+      "Two families of GitHub connection",
+      "From the desktop app",
+      "From the CLI",
+      "Verifying a connection",
+      "What it is used for",
+      "The container registry that trusts it",
+      "What the platform says when something is wrong",
+      "Where it is offered",
+      "Related"
+    ]
+  },
+  {
+    "path": "wiki/product.connect.local-aws-autodetect.md",
+    "title": "Local AWS Cloud-Credential Autodetection",
+    "sha256": "06b9e6814cb3983fb38dfc94584c99ef0b018434ec25d015fa03f9702af578e9",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Local AWS Cloud-Credential Autodetection",
+    "sections": [
+      "How it works",
+      "Using it from the CLI",
+      "From the desktop app",
+      "When detection can't find credentials",
+      "What gets created",
+      "Related"
+    ]
+  },
+  {
+    "path": "wiki/product.deploy.local-iac-toolchain.md",
+    "title": "Your IaC Toolchain on a Local Instance",
+    "sha256": "0f5b4fca3565be7ff5e7f9c2125dc97869ab23e0833589bf10ee73abb3343394",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Local HCL execution uses OpenTofu, not the HashiCorp Terraform binary.",
+    "sections": [
+      "Nothing to choose at setup",
+      "Readiness: yours first, install only if needed",
+      "Why it's done this way"
+    ]
+  },
+  {
+    "path": "wiki/product.desktop.configuration-architecture.md",
+    "title": "Desktop Configuration Architecture",
+    "sha256": "3bf699b334032654928d388a05cccb2b6680acef52554099d8dc74f735dc0e9d",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Desktop Configuration Architecture",
+    "sections": [
+      "The Two Layers",
+      "Why Two Layers",
+      "How the Layers Compose",
+      "Env File Conventions and Git",
+      "Adding New Configuration",
+      "Relationship to Web"
+    ]
+  },
+  {
+    "path": "wiki/product.desktop.feature-availability.md",
+    "title": "What's Available in a Local Instance",
+    "sha256": "eb15814937f275e6e1d5b8025cff14409c90c9eff74781894a88a10cbf917557",
+    "classification": "Public claim source",
+    "qualification": "Desktop is single-owner; individual local use is separate from AI-credit billing.",
+    "sections": [
+      "Fully available locally",
+      "Available on Planton.ai and free self-hosted",
+      "Not shown locally",
+      "Why it works this way"
+    ]
+  },
+  {
+    "path": "wiki/product.desktop.local-data-location.md",
+    "title": "Choosing Where a Local Instance Stores Its Data",
+    "sha256": "cc3152378f5539b5d4f3d36a696af42019320e72d3fa2f0c7318ab5ac5129e8b",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Choosing Where a Local Instance Stores Its Data",
+    "sections": [
+      "From the desktop app",
+      "Using your own PostgreSQL server instead",
+      "From the CLI",
+      "Notes",
+      "Related"
+    ]
+  },
+  {
+    "path": "wiki/product.desktop.startup-and-shutdown.md",
+    "title": "Starting and Stopping a Local Instance",
+    "sha256": "b8e477213c725d6eda2e434044a24be3f68c33099ad48c97c54f37c8714daf23",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Starting and Stopping a Local Instance",
+    "sections": [
+      "Starting",
+      "Stopping",
+      "Closing the window vs. quitting"
+    ]
+  },
+  {
+    "path": "wiki/product.desktop.windows-releases.md",
+    "title": "Desktop Release Versioning and Windows Installers",
+    "sha256": "8d28fa51a72182f51faacc7aaefde9d94584b16681ff417c3b8e479e10ea345e",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Desktop Release Versioning and Windows Installers",
+    "sections": [
+      "The Mental Model",
+      "Versioning: Pre-Release vs GA",
+      "Windows Artifacts: NSIS vs MSI",
+      "Why MSI Is GA-Only",
+      "The Update Channel",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.estate.organization-estate.md",
+    "title": "The Organization Estate",
+    "sha256": "c5181b0f52abf16887f6def6bf9f27e45412bfb373ce1961d73bbf0145d37345",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Organization Estate",
+    "sections": [
+      "One Estate, Pluggable Storage",
+      "How Indexing Works",
+      "What You Get",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.iam.identity-account-deletion.md",
+    "title": "Identity Account Deletion",
+    "sha256": "b37d7558739716451ea00c97b250dcb85ee745d6a2fc97f5d22954f9858e9e28",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Identity Account Deletion",
+    "sections": [
+      "Mental Model",
+      "The Line: Whose Data Is It",
+      "Guards and the Preflight",
+      "The Cascade",
+      "Watching It Happen",
+      "The Exit Experience",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.iam.invitations.md",
+    "title": "Bringing People into Planton: Invitations",
+    "sha256": "5912ee4c636d4bdd64bbf0281dea7acb24af6fa6978ff943e2241f6958bac692",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Bringing People into Planton: Invitations",
+    "sections": [
+      "The Mental Model",
+      "Two Shapes, One Record",
+      "The Join Journey",
+      "Where a Sign-In Account Comes From",
+      "Seats, and How a Seat Remembers",
+      "Platform Operators",
+      "The Admin's Surfaces",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.catalog-curation.md",
+    "title": "Catalog Curation \u2014 the Organization-Governed Catalog",
+    "sha256": "1d3561bb36e1e2bf0185d5e307253df88475397ffac01d021c88e32ae9b11e1d",
+    "classification": "Public claim source",
+    "qualification": "Creation restrictions only; disabling a kind does not strand existing infrastructure.",
+    "sections": [
+      "The mental model",
+      "The policy resource",
+      "Enforcement \u2014 every door, one guard",
+      "Advertisement \u2014 every surface subtracts the same answer",
+      "What is deliberately not filtered",
+      "Curation of the org's surface vs. curation of catalog breadth",
+      "Future considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.cloud-object.md",
+    "title": "Cloud Object",
+    "sha256": "fe7953a5a42613984954d05cb65389984c87edd4cbcf08a5dd6c8ce4c38d3315",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Cloud Object",
+    "sections": [
+      "Mental Model",
+      "Why a Structured Payload, Not a Union",
+      "Cloud Object versus Cloud Resource",
+      "From Cloud Object to Execution: the Stack Input",
+      "Two Paths, One Specification",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.cloud-resource-import.md",
+    "title": "Cloud Resource Import",
+    "sha256": "133f497b141a64459de9e347d094fac8393cbd723028b5ee4dc58a12669939e3",
+    "classification": "Public claim source",
+    "qualification": "Import is kind- and provisioner-specific; do not imply universal import.",
+    "sections": [
+      "Mental Model",
+      "When to Import",
+      "Provisioner Differences: Pulumi vs Terraform/OpenTofu",
+      "The Import Pipeline",
+      "Runner Architecture for Pulumi Import",
+      "State Backend Awareness",
+      "Discovery and Derived Import IDs",
+      "Import via CLI",
+      "Import Progress Tracking",
+      "Error Safety",
+      "Account Browsing: Import Discovery from the Connected Account",
+      "The Whole-Account Import Journey: Consent-First Scanning",
+      "Mapping Quality Is Machine-Scored",
+      "Environment Partitioning Is Deterministic and Taught Once",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.cloud-resource-write-path.md",
+    "title": "The Cloud-Resource Write Path",
+    "sha256": "ba250f9d071796536386b7f2e8fb8261e336d7492aee6d29eac234021ea2ef64",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Cloud-Resource Write Path",
+    "sections": [
+      "The Mental Model",
+      "The Residue Law",
+      "Shaping Rules: The Only Per-Kind Code",
+      "Holds: When the Catalog Cannot Yet Carry the Statement",
+      "The Write Registry Is Rendered From File Existence",
+      "How the Fleet Is Proven",
+      "Where the Nets Actually Stop a Save",
+      "How the Forge Inherits the Guarantee",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.cloud-resource.md",
+    "title": "Cloud Resource",
+    "sha256": "efe4f44c4e452fe1178194e017202c25896cec54d9fd43079e9786142487877c",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Cloud Resource",
+    "sections": [
+      "Mental Model",
+      "The KRM Shape",
+      "One Spec for Every Kind",
+      "The Kind Taxonomy",
+      "Identity",
+      "Lifecycle Operations",
+      "Beyond Lifecycle: State Operations",
+      "Dependencies and the Dependency Graph",
+      "Two Deployment Paths",
+      "Open Foundation",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.cloudflare-static-and-fullstack-hosting.md",
+    "title": "Deploying Cloudflare Static Sites and Full-Stack Apps on Planton",
+    "sha256": "b235686baa560bf27e005c7db218c5a61210fb6fe1892698f3e6f6fdb186a1f9",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Deploying Cloudflare Static Sites and Full-Stack Apps on Planton",
+    "sections": [
+      "The one thing to understand first: Cloudflare has two hosting models",
+      "Model 1: `CloudflareWorker` with Workers Static Assets (build-and-upload)",
+      "Model 2: `CloudflarePagesProject` (git-connected, and direct-upload)",
+      "Why two kinds instead of one (the design rationale)",
+      "Composition",
+      "Non-obvious provider behaviors (learned from live deploys)",
+      "Which model should a user choose?",
+      "Summary"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.cloudflare.md",
+    "title": "The Cloudflare Resource Surface on Planton",
+    "sha256": "e930f75b037c29bbb5bb8a0d48f1e4a342eb77dacf4da4b2a378c84ee2d931bb",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Cloudflare Resource Surface on Planton",
+    "sections": [
+      "The mental model",
+      "The catalog, grouped into families",
+      "How the kinds connect (the reference graph)",
+      "Connections and secrets",
+      "Validation and immutability",
+      "Proactive insights",
+      "Future considerations",
+      "Cross-references"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.control-posture.md",
+    "title": "Control Posture and Compliance Crosswalks",
+    "sha256": "8fd900e285afd3c15fd7f18f2e7f87d6abdd3f1b9559d7e168bf66403964bff1",
+    "classification": "Public claim source",
+    "qualification": "Proven, declared, and not evaluable are different; no certification claim.",
+    "sections": [
+      "The Mental Model",
+      "Provider Scope Is Part of a Framework's Truth",
+      "The Honesty Grammar",
+      "Where the Answers Surface",
+      "Declared Is Never Presented as Proven",
+      "How a Claim Is Fixed",
+      "Related"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.diagram-visual-language.md",
+    "title": "Infra Hub: The Diagram Visual Language",
+    "sha256": "14e043362a831b16289d05d15582d771d0534ede65d4a48b1cd3f283f577409f",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Infra Hub: The Diagram Visual Language",
+    "sections": [
+      "The mental model",
+      "A profile's three axes",
+      "Facts \u2014 what a card says",
+      "Coverage as a build invariant",
+      "Judging at scale",
+      "Where identity flows",
+      "The logo beside the plinth",
+      "Future considerations",
+      "Cross-references"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.helm-charts-with-crds.md",
+    "title": "How Planton Installs Helm Charts That Carry CRDs",
+    "sha256": "b59e1456958311f619fd0c0bf67d3aa65b6b6964f60c3211e94a35a8db406c47",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "How Planton Installs Helm Charts That Carry CRDs",
+    "sections": [
+      "The mental model: Helm's hole, and why wrappers inherit it",
+      "The decision tree: three shapes, no fourth",
+      "When Planton is the chart author: the operator chart on branch 1",
+      "The lifecycle Planton promises on the derive branch",
+      "How the promise is kept once per engine",
+      "Every failure explains itself",
+      "How a kind is proven",
+      "Where this diverges from what others do, and why",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.iac-management-experience.md",
+    "title": "IaC Management Experience",
+    "sha256": "febee9dbc35d58b8136d84e0b2509199f9022cbb1a57ffa2a0d2aac803e3fdad",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "IaC Management Experience",
+    "sections": [
+      "Mental Model",
+      "The Three Sub-Tabs",
+      "State Operation Wizards",
+      "Stack Job IaC Resources",
+      "Architecture: Thin Shell and Shared Packages",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.iac-state-operations.md",
+    "title": "IaC State Operations",
+    "sha256": "22ff45df0b565ec56ebf99de35b00d2b71eb23a9f843370b4eee2767cfbe22f2",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "IaC State Operations",
+    "sections": [
+      "Mental Model",
+      "The Operation Catalog",
+      "Pre-Step Execution Model",
+      "Provisioner Support",
+      "Refresh Semantics",
+      "Capturing the Resource Snapshot",
+      "Inspecting State: list and show",
+      "Secret-Safe File Transfer: download and upload",
+      "Backend Operations: migrate and rotate",
+      "The Two-Enum Model",
+      "Common Workflows",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.infra-chart.cloud-object-manifest.md",
+    "title": "InfraChart Cloud Object Manifest",
+    "sha256": "1e9c40823657f405b83d4097d7febb66327e49c43552b732afd038529d9456bd",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "InfraChart Cloud Object Manifest",
+    "sections": [
+      "Relationship to Cloud Objects",
+      "Mental Model",
+      "The Problem It Solves",
+      "Proto Design",
+      "Storage Strategy",
+      "The Immutability Contract",
+      "The Stripping Principle",
+      "Client Consumption Pattern",
+      "Design Decisions",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.infra-chart.one-run-cluster-composition.md",
+    "title": "One-Run Cluster Composition",
+    "sha256": "a94b64e4be598ab1f0e1046599fc9ce5ac73d67f3328770e8d3a7d89f2c70357",
+    "classification": "Public claim source",
+    "qualification": "One-Run Cluster Composition",
+    "sections": [
+      "Mental Model",
+      "The Three Frozen Contracts",
+      "Ordering Is Structural, Never Timed",
+      "The Private-Endpoint Composition",
+      "Form-Factor Matrix",
+      "What This Replaces",
+      "Authoring Checklist",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.infra-chart.platform-catalog.md",
+    "title": "Platform Charts Come Ready on a Local Instance",
+    "sha256": "0c9ed7acafa762bbf956058cf70ddeb4c4db2cd6ad63967d67ccd0a8205a7748",
+    "classification": "Public claim source",
+    "qualification": "Platform Charts Come Ready on a Local Instance",
+    "sections": [
+      "Where the charts come from",
+      "How it behaves",
+      "Using a chart"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.infra-chart.rendering-pipeline.md",
+    "title": "Chart Rendering Pipeline",
+    "sha256": "89ca4f343b738da02cb6a39365c714204ad4817ea480dfee482629be70370321",
+    "classification": "Public claim source",
+    "qualification": "Chart Rendering Pipeline",
+    "sections": [
+      "Mental Model",
+      "Design Principles",
+      "The Rendering Stages",
+      "Trigger Contexts",
+      "Invariants",
+      "Failure Modes",
+      "Dry-run build: errors as data",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.infra-pipeline.data-flow.md",
+    "title": "InfraPipeline Data Flow",
+    "sha256": "b42cafd536976565199a1258131b4908cc9c6ac03124e5a484a2050d7af4479a",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "InfraPipeline Data Flow",
+    "sections": [
+      "Mental Model",
+      "The Spec vs Status Separation",
+      "Pipeline Creation",
+      "Real-Time Status Flow",
+      "Client Consumption: Two Channels",
+      "The Stripping Pattern",
+      "Invariants",
+      "Technology Stack",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.planton.md",
+    "title": "Planton open source",
+    "sha256": "b123abf728314dc5b1a68d21f06b77d407d80bfa57e0fbc0b5260445d1f3b6d4",
+    "classification": "Public claim source",
+    "qualification": "Planton open source",
+    "sections": [
+      "Mental Model",
+      "The Three Pillars",
+      "Not an Abstraction Layer",
+      "The Open-Source / Commercial Boundary",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.private-image-pulls.md",
+    "title": "How a Private Image Gets Pulled",
+    "sha256": "f0d02dcd4dfac0dcb322dec78fe9f0b510defd9fdd2f795439f586376276ec6e",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "How a Private Image Gets Pulled",
+    "sections": [
+      "The three ways a workload pulls",
+      "What the deploy lane fills for you",
+      "The GHCR pull token",
+      "Targets that pull only from their own cloud's registry",
+      "When it cannot work, it says so",
+      "Previews and rotation",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.stack-job.md",
+    "title": "Stack Job",
+    "sha256": "773e63d1e2e984f63f5bdac5b9e37de155a0b7724a074e467111edcb1b0d002d",
+    "classification": "Public claim source",
+    "qualification": "Capture immutable configuration and phase outcomes; cost coverage is explicit.",
+    "sections": [
+      "Mental Model",
+      "The Phase Sequence",
+      "State Operations as Pre-Steps",
+      "Resolving the Essentials",
+      "Platform-Record Materialization",
+      "Durability and Locking",
+      "Real-Time Progress",
+      "The Immutable Record",
+      "Completion",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.state-backend-migration.md",
+    "title": "State Backend Migration and Passphrase Rotation",
+    "sha256": "d6b5ef03e1642a77a172ffc6da9d14c9d87bd469c7e76be84a5b38860fe93be0",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "State Backend Migration and Passphrase Rotation",
+    "sections": [
+      "Why a Wrapper Workflow",
+      "Backend Migration: the Pulumi path",
+      "Backend Migration: the OpenTofu path",
+      "Passphrase Rotation",
+      "Eligibility and Just-in-Time Secrets",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.infra-hub.state-backends.md",
+    "title": "State Backends",
+    "sha256": "de73f2ef2329c2a13a56abe73e28768f415bd726e53147f419b6d1479d7b8e1b",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Managed and customer-supplied state backends exist; avoid claiming every state store is always customer-owned.",
+    "sections": [
+      "Why State Exists",
+      "A State Backend Is an API Resource",
+      "Binding a Resource to a Backend",
+      "Backend Types",
+      "Configuration, Values, and Secrets",
+      "Secrets and Encryption",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.integrations.demo-request.md",
+    "title": "Demo Request Ingestion",
+    "sha256": "b90a37ddb4692a78f8604d4cd88e16b91d070cc9fa3c31c91534b21931ec4144",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Submission acknowledgment is not a calendar booking or a guarantee of CRM persistence.",
+    "sections": [
+      "Mental Model",
+      "Two Flavors of Webhook: Server-to-Server vs Browser-Origin",
+      "CORS and Abuse Protection",
+      "The CRM Footprint",
+      "Resilient Lead Capture",
+      "Configuration",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.integrations.github.md",
+    "title": "GitHub Integration",
+    "sha256": "7e998f88c017ffaa05e1c9cce3733f250c505fb4ddf5ecf661790848925d1244",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "GitHub Integration",
+    "sections": [
+      "Two Families, and Why Each Exists",
+      "GitHub App Configuration",
+      "Three Modes, Two Families",
+      "GitHub Enterprise Server Support",
+      "Credential Resolution",
+      "App-Level Webhooks",
+      "Webhook Pipeline",
+      "Webhook Signature Verification",
+      "Writeback: Planton's Facts on GitHub's Own Surfaces",
+      "Repository Discovery",
+      "Installation Flow",
+      "Post-Installation Update Flow",
+      "Migration Pattern: Existing Apps as Customer-Managed",
+      "Uniqueness Invariant",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.integrations.github.webhook-event-routing.md",
+    "title": "GitHub Webhook Event Routing",
+    "sha256": "d251045e9dff83455516007615b7873c34ce6352e5143d35d6b9710a89c8b9c9",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Document explicitly flags service-side routing as stale; not authority for current service triggers.",
+    "sections": [
+      "The Routing Problem",
+      "Installation-Based Routing",
+      "Monorepo Support",
+      "Skip Verification",
+      "Orphan Detection",
+      "Query Performance",
+      "GitLab Consideration",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.integrations.github.webhook-signature-verification.md",
+    "title": "GitHub Webhook Signature Verification",
+    "sha256": "04e6923afceb22da986a5b6ddb153944b7bd0daa59874e8b7e5c5707b8b20f4d",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "GitHub Webhook Signature Verification",
+    "sections": [
+      "Why Signature Verification",
+      "Verification Flow",
+      "Where Verification Happens",
+      "Graceful Degradation",
+      "Security Properties",
+      "Failure Modes",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.integrations.github.webhooks.md",
+    "title": "GitHub Webhook Event Delivery",
+    "sha256": "f9b91782d0031a1919d89de747c9b60470e0c6365a67771787c89255e99bdbd6",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "GitHub Webhook Event Delivery",
+    "sections": [
+      "Mental Model",
+      "App-Level Subscriptions",
+      "Stage 1: Reception (Connect webhook handler)",
+      "Stage 2: Transformation (Temporal Workflow)",
+      "Stage 3: Manifest Registration and Pipeline Triggering",
+      "One-Workflow-Per-Webhook Pattern",
+      "Debugging Missing Pipelines",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.integrations.stripe.webhooks.md",
+    "title": "Stripe Billing Webhook Ingestion",
+    "sha256": "6e05e817154fa8b5c45ddf2cc39c3c5cd63e9bc49105356c851d6d0325ceef39",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Stripe Billing Webhook Ingestion",
+    "sections": [
+      "Mental Model",
+      "The Public Webhook Gateway",
+      "The Second HTTP Port",
+      "The Stripe Handler",
+      "Idempotency and Delivery Semantics",
+      "Configuration",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.licensing.self-hosted-license-lifecycle.md",
+    "title": "The Self-Hosted License Lifecycle",
+    "sha256": "a8a8599a22610a77773feb4609ab6bcba199202c57b8db60f17e0e8d4e9df35e",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Offline license verification is not a blanket air-gap product claim.",
+    "sections": [
+      "The Mental Model",
+      "Two Doors Mint Every Key",
+      "How a Key Reaches a Deployment",
+      "The Fairness Bootstrap order: Expiry Never Bricks",
+      "Renewal Trust: the Buyer's Self-Serve Lifecycle",
+      "What the Console Shows",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.local-instance-teardown.md",
+    "title": "Tearing Down a Local Instance",
+    "sha256": "775da993eea72bc9a15c45b734ddedb78d9c2d1c797a9535b3dd24c367a236f9",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Tearing Down a Local Instance",
+    "sections": [
+      "What gets removed",
+      "From the desktop app",
+      "From the CLI",
+      "Automatic recovery on relaunch",
+      "Notes",
+      "Related"
+    ]
+  },
+  {
+    "path": "wiki/product.pipelines.build-clusters.md",
+    "title": "Build Clusters and Build Routing",
+    "sha256": "8579952c2ee48ef313d040a4ebc162b85d9ee00442bbbdb13bf30d4c687c0173",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Build Clusters and Build Routing",
+    "sections": [
+      "The Mental Model",
+      "The Routing Chain",
+      "What the Runner Executes",
+      "Events In, Logs Out",
+      "Readiness: Recorded, Not Claimed",
+      "Responsibility Boundaries",
+      "The Two Deployment Shapes",
+      "Operating Build Clusters from the Console",
+      "Operating from the CLI",
+      "Installing a Customer Build Cluster",
+      "Self-Hosted Installs Build by Default",
+      "A Laptop Builds in Its Own Build Cluster",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.release-pipeline.md",
+    "title": "The Release Pipeline",
+    "sha256": "d6b00267c90a10341a63fad6760cf4dcb6731f155513c979b6e58a394210f0f4",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Release Pipeline",
+    "sections": [
+      "The invariant: releases are hermetic",
+      "Tag taxonomy (two independent axes per tag)",
+      "The workflow map",
+      "CDN artifact layout",
+      "How the desktop acquires its runtime (first launch)",
+      "How to cut each kind of release",
+      "Where the macOS release leg runs",
+      "What a desktop binary says about itself (the build stamp)",
+      "Verifying a release",
+      "Failure modes and how they surface",
+      "Rules for future agents"
+    ]
+  },
+  {
+    "path": "wiki/product.release.candidates.md",
+    "title": "Release Candidates and Channels",
+    "sha256": "629d1b7b50ad19eddd59d14c4365c7b3aaac73020b22bfa9fe6bd80cec0ee893",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Release Candidates and Channels",
+    "sections": [
+      "The Mental Model",
+      "The Channels",
+      "Why Channels Are Isolated at Build Time",
+      "Promotion: Re-tag the Candidate's Commit as the Release",
+      "Why This Shape",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.release.runbook.md",
+    "title": "Release Runbook (What to Run, and When)",
+    "sha256": "d62217d745d8e59e5b03404961013e3f6916e79a896320f8282616983915dbcc",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Release Runbook (What to Run, and When)",
+    "sections": [
+      "Before you start (one-time)",
+      "Scenario 1 \u2014 Ship just the CLI (or just the desktop app) after a change",
+      "Scenario 2 \u2014 Release the next version to customers",
+      "One thing the release does NOT do: deploy",
+      "Quick reference",
+      "Cross-references"
+    ]
+  },
+  {
+    "path": "wiki/product.reporting.md",
+    "title": "Reporting",
+    "sha256": "fda8f286a26abf6fef90a6e2420db463e28c2a080281b34c2f593eaf138fb074",
+    "classification": "Qualification / supporting evidence",
+    "qualification": "Hosted opt-in analytics; not universal application monitoring.",
+    "sections": [
+      "A hosted capability, off by default elsewhere",
+      "Turning it on"
+    ]
+  },
+  {
+    "path": "wiki/product.resource-manager.organization-deletion.md",
+    "title": "Organization Deletion",
+    "sha256": "68f726a91159940bb8ccc637e26251e1e37e49f9c54382ecf83619fa8ba5dcaa",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Organization Deletion",
+    "sections": [
+      "Mental Model",
+      "Deletion Settles the Money",
+      "The Cascade",
+      "Watching It Happen",
+      "The Exit Experience",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.search.adding-new-resource-to-search.md",
+    "title": "Adding a New Resource to Search",
+    "sha256": "790f134bc3d47ac25057ad35d5b162d9ac1d793533ebcfc4705539ccaa9dd47d",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Adding a New Resource to Search",
+    "sections": [
+      "Prerequisites",
+      "Step 1: Annotate Proto Spec Fields",
+      "Step 2: Give the Field a Home in the Record",
+      "Step 3: Ensure Event Recording Works",
+      "Step 4: Nothing Else \u2014 the Surfaces Are Universal",
+      "Step 5: Prove It",
+      "Common Mistakes",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.search.querying-the-directory.md",
+    "title": "Querying the Directory",
+    "sha256": "3d2eeab1139bb4dbe39e5b4aa8271c69faebd6765aac953f32dc370149444c90",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Querying the Directory",
+    "sections": [
+      "The Mental Model",
+      "The Universal Query",
+      "The Point Read and the Resolve Family",
+      "One Law on Every Read",
+      "Capability Verdicts: Action-Aware Answers for Agents",
+      "The Anonymous Catalog Surface",
+      "The Operator Surface",
+      "Paging and Honesty Conventions",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.search.search-infrastructure.md",
+    "title": "Search Infrastructure",
+    "sha256": "745f42f3010c091b28da16efec98d3ead0a414aa7079e0694ab5d9c1bb0ca5a2",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Search Infrastructure",
+    "sections": [
+      "The Mental Model",
+      "One Engine, Every Shape",
+      "Event-Driven Indexing",
+      "Self-Healing (There Is No Reindex)",
+      "Ranking",
+      "One Visibility Law",
+      "Freshness Honesty",
+      "Troubleshooting",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.self-hosted.backup-and-recovery.md",
+    "title": "How Self-Hosted Planton Backs Up Its Database and Comes Back From It",
+    "sha256": "d021ced06ac6e44c50df5d6e71b3a5f8a2f6038aa8ec641ec16aae58aa32797b",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "How Self-Hosted Planton Backs Up Its Database and Comes Back From It",
+    "sections": [
+      "The mental model",
+      "The plugin is shared cluster machinery, like the database operator itself",
+      "Declaring where the platform's backups go",
+      "Every install's archive is its own",
+      "What the status says, and when",
+      "Declaring a backup on a fresh install versus a running one",
+      "Restoring a platform",
+      "Removal",
+      "How the promise is proven",
+      "Where this diverges from what others do, and why",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.self-hosted.email-delivery.md",
+    "title": "Email Delivery on a Self-Hosted Planton",
+    "sha256": "68470abfc5409ae77fa853dc60faf78bed982347241a7f0c964aba3f2bb5326e",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Email Delivery on a Self-Hosted Planton",
+    "sections": [
+      "The mental model",
+      "What needs email, and what does not",
+      "The declaration",
+      "How the declaration reaches the senders",
+      "The Email settings page",
+      "What the emails look like",
+      "Every failure explains itself",
+      "Why the design is this way",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.self-hosted.install-and-upgrade-lifecycle.md",
+    "title": "How Self-Hosted Planton Installs and Upgrades",
+    "sha256": "79a2266b1f09c2b006303c391fb62ef594e7fa3b68e8d30da2de47bd0657caf9",
+    "classification": "Public claim source",
+    "qualification": "How Self-Hosted Planton Installs and Upgrades",
+    "sections": [
+      "The mental model",
+      "The operator's schema rides its chart",
+      "The platform chart declares a platform and follows the operator chart",
+      "The floor: which platform releases an operator runs",
+      "What an upgrade carries by construction",
+      "Ready means the rollout finished",
+      "The two upgrade levers",
+      "How the promise is proven",
+      "Every failure explains itself",
+      "Where this diverges from what others do, and why",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.self-hosted.troubleshooting.md",
+    "title": "Troubleshooting a Self-Hosted Planton",
+    "sha256": "0b027a3b9d13aed86400630f34011a511e67146e278e43d606b07bd95ee1da59",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Troubleshooting a Self-Hosted Planton",
+    "sections": [
+      "The mental model",
+      "Where to look, in order",
+      "Every reason, its cause, and its fix",
+      "Failures the operator cannot see",
+      "Asking the platform whether its integrations answer",
+      "Why the design is this way",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.assistant-repository-access.md",
+    "title": "How the Assistant Reads and Writes a Service's Repository",
+    "sha256": "8f6fc58d826e9ac7b2cfcc47f34b678ef345cc6793df446caeb9753865a78d7e",
+    "classification": "Public claim source",
+    "qualification": "Repository access follows caller access; writes through a reviewed PR.",
+    "sections": [
+      "The Mental Model",
+      "Which Commit a Read Is Pinned To",
+      "Who May Read",
+      "The Write Lane: a Pull Request, Never a Commit",
+      "What the Platform Refuses, and What It Says",
+      "What Is Deliberately Never Done",
+      "How the Two Arms Differ",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.console-creating-a-service.md",
+    "title": "Creating a Service: The Platform Reads, You Confirm",
+    "sha256": "5ea9b64bfb9b3be6f07cb9721c2dc005accd8432f50fb699072a00ab95a3e13f",
+    "classification": "Public claim source",
+    "qualification": "Registration alone starts no build; preview availability depends on configuration posture.",
+    "sections": [
+      "Three Beats, Not a Form March",
+      "Detection Happens Server-Side, Once, For Every Surface",
+      "What the Repository Answers, and What It Cannot",
+      "Three Deployment Postures, All Live",
+      "Configure Here: One Decision, a Few Dials",
+      "One Declaration, One Door",
+      "When the Repository Cannot Be Read",
+      "Design Evidence"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.console-directory.md",
+    "title": "The Services Directory: The Console's Answer to \"What Is on Fire, What Is Live, What Just Shipped?\"",
+    "sha256": "affbb96c72be33e3963cfc7341b31554d4b2f477784a6db85ca9fb1837ac682a",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Services Directory: The Console's Answer to \"What Is on Fire, What Is Live, What Just Shipped?\"",
+    "sections": [
+      "The Page, Top to Bottom",
+      "How the Page Gets Its Facts: A Fixed Number of Reads",
+      "Designed States",
+      "The Registration Teaching Surface",
+      "Where Doors Go",
+      "Availability",
+      "Design Evidence"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.console-run-view.md",
+    "title": "The Run View: One Run's Whole Story",
+    "sha256": "53501691a13d3c15bb99c51d5078fa198d7a6b3e1df1b2d063a0763a71b2afb9",
+    "classification": "Public claim source",
+    "qualification": "The Run View: One Run's Whole Story",
+    "sections": [
+      "Two Story Shapes, One Page",
+      "The Header, the Callouts, and the Stage Strip",
+      "The Build Narrative",
+      "Reading the Logs",
+      "The Deploy Story",
+      "Gates: The Human Decision, Honestly Carried",
+      "The Details Drawer",
+      "The Runs Section: History and the Approval Queue",
+      "The External Run Page: The Repository's Own CI, on the One Template",
+      "The Assistant Room: Help Me Fix It, and the Quiet Brief",
+      "Designed States",
+      "Availability",
+      "Design Evidence"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.console-service-detail.md",
+    "title": "The Service Detail Page: One Service, Fully Answered",
+    "sha256": "9f71112aa4c08ea131fe69466dfcdd2c4082571d9c0ee816de9e34406ed9c1fe",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Service Detail Page: One Service, Fully Answered",
+    "sections": [
+      "Sections Are Data: The Page's Plugin Contract",
+      "How Overview Composes \"What Runs Where\"",
+      "Previews Are First-Class Ephemerals",
+      "The Page Renders the Record's Own Honesty",
+      "Deployments: The Audit Trail, and Where the Delivery Verbs Live",
+      "Runs: What Ran, What Broke, and Where It Landed",
+      "Configuration: How the Service Builds and Deploys, Who Writes It, and the Dials to Change It",
+      "Map: What the Service Actually Runs As",
+      "Designed States",
+      "Availability",
+      "The Assistant Room",
+      "Design Evidence"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.pipeline-materialization.md",
+    "title": "Pipeline Materialization: Compile-at-Dispatch for Service Builds",
+    "sha256": "9990a3def97ae7b7fe5906792872175b3630cafae976d440a2a6bdd47c2d6610",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Pipeline Materialization: Compile-at-Dispatch for Service Builds",
+    "sections": [
+      "Mental Model",
+      "The Three Sources and Their Pins",
+      "What a Repository Pipeline Is",
+      "What an Organization Publishes",
+      "What the Compiler Verifies",
+      "What the Compiler Rewrites",
+      "The Laws",
+      "How a Compile Failure Lands on the Record",
+      "The Compile-Error Vocabulary",
+      "What This Model Retires",
+      "Related Articles"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.repository-watch.md",
+    "title": "The Repository Watch: Pushes Without Webhooks",
+    "sha256": "421fd6fec00af8c694877079375be69239db8fa97a2aaad6df192b3fec4d73ed",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "The Repository Watch: Pushes Without Webhooks",
+    "sections": [
+      "The Mental Model",
+      "When a Control Plane Watches",
+      "The Second Question: GitHub Actions Runs",
+      "The Cadence and Its Cost",
+      "Catching Up",
+      "Pull Requests and Tags",
+      "Recording After Delivery",
+      "What a Person Sees",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.run-notifications.md",
+    "title": "Run Notifications: Who Is Told, When, and What the Push Says",
+    "sha256": "290ed9a8ae39627843ab5fcc06c0990d8af70d21a919695c827dedc24047ae09",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Run Notifications: Who Is Told, When, and What the Push Says",
+    "sections": [
+      "The Mental Model",
+      "Who Is Involved",
+      "Which Outcomes Produce a Push",
+      "What the Push Says",
+      "How a Notification Reaches a Person",
+      "The Person's Own Control",
+      "Where the Gate Ask Reads \"Waiting\"",
+      "What Is Deliberately Not Sent",
+      "Future Considerations",
+      "Cross-References"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.service-records-and-build-lane.md",
+    "title": "The Service Domain: Records and the Engine's Lanes",
+    "sha256": "79ac3e9fe1b52c631e3c238bde80dc512c2b84cffccbb167960566f93eac0504",
+    "classification": "Public claim source",
+    "qualification": "Use current trigger and delivery rules instead of the stale webhook-routing article.",
+    "sections": [
+      "The Three Records",
+      "Push-to-Register: The Manifest in the Repository",
+      "How a Run Is Born",
+      "The Build Lane, End to End",
+      "The Deploy Lane",
+      "The Delivery Verbs: Deploy, Promote, and Rollback",
+      "Status and Logs: The Two Streams",
+      "Cancellation",
+      "Preview Environments: A Real Environment per Pull Request",
+      "Deleting a Service: The Cleanup Cascade",
+      "Credentials: Scoped to the Work",
+      "External CI Without Secrets: The Trust Binding and Keyless Registration",
+      "Local Development: The Derived Environment",
+      "The Driving Surfaces: CLI and Agent Tools",
+      "Where the Deeper Truths Live"
+    ]
+  },
+  {
+    "path": "wiki/product.service-hub.visual-language.md",
+    "title": "Service Hub: The Visual Language",
+    "sha256": "f823bd96ee2cb817c4e20f30d382c547675668040def457068f1d7ae87a91a21",
+    "classification": "Internal context; not used as a homepage claim",
+    "qualification": "Service Hub: The Visual Language",
+    "sections": [
+      "The mental model",
+      "The delivery vocabulary",
+      "The frame",
+      "One run-page template",
+      "The designed states",
+      "Notifications",
+      "How the build keeps the language true",
+      "Future considerations",
+      "Cross-references"
+    ]
+  }
+]

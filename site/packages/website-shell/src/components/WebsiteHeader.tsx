@@ -33,9 +33,9 @@ export function WebsiteHeader() {
           alignItems: 'center',
           px: { xs: 2.5, md: 4 },
           py: { xs: 1.5, md: 1.25 },
-          bgcolor: 'rgba(10, 10, 10, 0.8)',
+          bgcolor: 'var(--website-header-background, rgba(10, 10, 10, 0.8))',
           backdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(42, 42, 42, 0.2)',
+          borderBottom: '1px solid var(--website-header-border, rgba(42, 42, 42, 0.2))',
         }}
       >
         {/* Mobile: logo on the left */}

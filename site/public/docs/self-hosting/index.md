@@ -56,7 +56,7 @@ metadata:
 spec:
   namespace:
     value: planton-operator
-  create_namespace: true
+  createNamespace: true
 ---
 # planton.yaml
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -68,7 +68,7 @@ metadata:
 spec:
   namespace:
     value: planton
-  create_namespace: true
+  createNamespace: true
   version: v0.0.59
 ```
 

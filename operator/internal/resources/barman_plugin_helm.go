@@ -1,6 +1,21 @@
 package resources
 
-import "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+import (
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+)
+
+const (
+	// The plugin's sizing, chosen here rather than left to the chart (which
+	// ships none): a gRPC sidecar-orchestrator that idles between backups
+	// and moves WAL segments when it works. A request so it schedules
+	// honestly, a memory limit so a leak cannot take the node, no CPU limit
+	// so a base backup is never throttled (requests-only, the house pattern).
+	barmanPluginCPURequest    = "50m"
+	barmanPluginMemoryRequest = "64Mi"
+	barmanPluginMemoryLimit   = "256Mi"
+)
 
 // The Barman Cloud plugin is CloudNativePG's backup engine: it archives WAL
 // continuously, takes base backups on a schedule, and restores a cluster from
@@ -86,6 +101,7 @@ func BarmanCloudPluginHelmValues() map[string]any {
 		"service": map[string]any{
 			"name": BarmanCloudPluginServiceName,
 		},
+		"resources": helmResourceValues(barmanPluginResources()),
 	}
 }
 
@@ -103,4 +119,18 @@ func BarmanCloudPluginHelmValues() map[string]any {
 // what an install put on the cluster.
 func LoadBarmanCloudPluginManifests() ([]*unstructured.Unstructured, error) {
 	return RenderHelmChart(barmanPluginChartData, BarmanCloudPluginReleaseName, CloudNativePGNamespace, BarmanCloudPluginHelmValues())
+}
+
+// barmanPluginResources is the container sizing every install gets (the constants
+// above carry the reasoning).
+func barmanPluginResources() corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: corev1.ResourceList{
+			corev1.ResourceCPU:    resource.MustParse(barmanPluginCPURequest),
+			corev1.ResourceMemory: resource.MustParse(barmanPluginMemoryRequest),
+		},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse(barmanPluginMemoryLimit),
+		},
+	}
 }

@@ -9,7 +9,7 @@ interface WebsiteLogoProps {
 
 export function WebsiteLogo({ className }: WebsiteLogoProps) {
   return (
-    <Link href="/" className={className} style={{ display: 'inline-flex' }}>
+    <Link href="/" aria-label="Planton home" className={className} style={{ display: 'inline-flex' }}>
       <SvgIcon sx={{ color: 'grey.100' }} width={32} height={32}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

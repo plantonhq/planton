@@ -2582,6 +2582,7 @@ const (
 	CloudResourceKind_Auth0ResourceServer CloudResourceKind = 8003
 	CloudResourceKind_Auth0Action         CloudResourceKind = 8004
 	CloudResourceKind_Auth0Role           CloudResourceKind = 8005
+	CloudResourceKind_Auth0User           CloudResourceKind = 8006
 	// 9000–9999: OpenFGA resources
 	// Note: OpenFGA is Terraform-only - there is no Pulumi provider available.
 	// Pulumi modules for OpenFGA resources are pass-through placeholders.
@@ -3349,6 +3350,7 @@ var (
 		8003: "Auth0ResourceServer",
 		8004: "Auth0Action",
 		8005: "Auth0Role",
+		8006: "Auth0User",
 		9000: "OpenFgaStore",
 		9001: "OpenFgaAuthorizationModel",
 		9002: "OpenFgaRelationshipTuple",
@@ -4110,6 +4112,7 @@ var (
 		"Auth0ResourceServer":                            8003,
 		"Auth0Action":                                    8004,
 		"Auth0Role":                                      8005,
+		"Auth0User":                                      8006,
 		"OpenFgaStore":                                   9000,
 		"OpenFgaAuthorizationModel":                      9001,
 		"OpenFgaRelationshipTuple":                       9002,
@@ -4537,7 +4540,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xa8\xed\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xd6\xed\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5368,7 +5371,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x10Auth0EventStream\x10\xc2>\x1a\x16\xa2\xf7\x04\x12\b\x15\x12\bv1alpha1\"\x04a0es\x120\n" +
 	"\x13Auth0ResourceServer\x10\xc3>\x1a\x16\xa2\xf7\x04\x12\b\x15\x12\bv1alpha1\"\x04a0rs\x12)\n" +
 	"\vAuth0Action\x10\xc4>\x1a\x17\xa2\xf7\x04\x13\b\x15\x12\bv1alpha1\"\x05a0act\x12(\n" +
-	"\tAuth0Role\x10\xc5>\x1a\x18\xa2\xf7\x04\x14\b\x15\x12\bv1alpha1\"\x06a0role\x12/\n" +
+	"\tAuth0Role\x10\xc5>\x1a\x18\xa2\xf7\x04\x14\b\x15\x12\bv1alpha1\"\x06a0role\x12,\n" +
+	"\tAuth0User\x10\xc6>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0user:\x02\xc0>\x12/\n" +
 	"\fOpenFgaStore\x10\xa8F\x1a\x1c\xa2\xf7\x04\x18\b\x16\x12\bv1alpha1\"\bfgastore0\x01\x12:\n" +
 	"\x19OpenFgaAuthorizationModel\x10\xa9F\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgamodel\x129\n" +
 	"\x18OpenFgaRelationshipTuple\x10\xaaF\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgatuple:|\n" +

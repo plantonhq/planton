@@ -268,6 +268,14 @@ type KubernetesSecretOpaqueData struct {
 	// API uses for `data` in YAML manifests. Use this for payloads that are not valid UTF-8
 	// (keystores, certificates in binary form, serialized blobs). Keys must not overlap with
 	// `data` keys: both maps merge into the same underlying Secret data.
+	//
+	// A value may also be a downstream platform's secret or variable reference token
+	// (`$secret/...`, `$var/...`) in place of the literal: the platform resolves the token to
+	// the stored value before the module runs, and the stored value is then the base64 the
+	// module writes. Without this arm a private key or a CA bundle held in the platform's
+	// secret store could never reach this field, because a reference is the only form a
+	// secret is ever allowed to take in a manifest. The literal arm keeps refusing malformed
+	// base64 before any apply.
 	BinaryData    map[string]string `protobuf:"bytes,2,rep,name=binary_data,json=binaryData,proto3" json:"binary_data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -658,10 +666,10 @@ const file_catalog_kubernetes_kubernetessecret_v1alpha1_spec_proto_rawDesc = "" 
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xb3\x02\xbaH\xaf\x02\x1a\xac\x02\n" +
 	"\x14secret_data_required\x12\x7fExactly one secret data type must be provided (opaque, tls, docker_config_json, basic_auth, ssh_auth, or service_account_token)\x1a\x92\x01has(this.opaque) || has(this.tls) || has(this.docker_config_json) || has(this.basic_auth) || has(this.ssh_auth) || has(this.service_account_token)B\r\n" +
-	"\vsecret_data\"\xec\x05\n" +
+	"\vsecret_data\"\x84\x06\n" +
 	"\x1aKubernetesSecretOpaqueData\x12j\n" +
-	"\x04data\x18\x01 \x03(\v2V.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.DataEntryR\x04data\x12\xe5\x01\n" +
-	"\vbinary_data\x18\x02 \x03(\v2\\.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.BinaryDataEntryBf\xbaHc\x9a\x01`\"\x18r\x16\x18\xfd\x012\x11^[-._a-zA-Z0-9]+$*DrB2@^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$R\n" +
+	"\x04data\x18\x01 \x03(\v2V.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.DataEntryR\x04data\x12\xfd\x01\n" +
+	"\vbinary_data\x18\x02 \x03(\v2\\.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.BinaryDataEntryB~\xbaH{\x9a\x01x\"\x18r\x16\x18\xfd\x012\x11^[-._a-zA-Z0-9]+$*\\rZ2X^(?:\\$(?:secret|var)/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$R\n" +
 	"binaryData\x1a7\n" +
 	"\tDataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +

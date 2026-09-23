@@ -35,9 +35,12 @@ rules:
   - apiGroups: [""]
     resources: ["secrets", "serviceaccounts"]
     verbs: ["create", "get", "deletecollection"]
+  # A build's export ConfigMaps: created empty (and emptied on a rerun), granted
+  # to the build by name (get/update/patch), read, and swept. Kubernetes refuses
+  # a grant of any permission the granter does not hold.
   - apiGroups: [""]
     resources: ["configmaps"]
-    verbs: ["get", "deletecollection"]
+    verbs: ["get", "create", "update", "patch", "deletecollection"]
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["roles", "rolebindings"]
     verbs: ["create", "deletecollection"]

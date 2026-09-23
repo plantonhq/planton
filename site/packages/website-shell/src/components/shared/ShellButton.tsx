@@ -3,6 +3,7 @@
 import type { ComponentProps, FC } from 'react';
 import { Button, type ButtonProps } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 const btnBaseSx: SxProps<Theme> = {
   px: { xs: 1.5, md: 2.5 },
@@ -20,8 +21,8 @@ export const ShellButton: FC<ButtonProps & ComponentProps<'a'>> = ({ sx, ...prop
 };
 
 const primaryOverlaySx: SxProps<Theme> = {
-  bgcolor: '#ffffff',
-  color: '#000000',
+  bgcolor: tokens.cta.background,
+  color: tokens.cta.text,
   '&:hover': { bgcolor: 'grey.200' },
   transition: 'background-color 150ms ease',
 };

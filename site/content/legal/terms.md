@@ -6,7 +6,7 @@
 
 Welcome, and thank you for your interest in Planton Cloud, Inc. ("**Planton**", "**we**", or "**us**"). These Terms of Service ("**Terms**") govern your access to and use of Planton's platform, APIs, documentation, and related tools, including the website at [planton.ai](https://planton.ai) and all related software made available by Planton to deploy infrastructure, manage services, and automate DevOps workflows (collectively, the "**Service**").
 
-By using the Service, you agree to these Terms. Please also read our [Privacy Policy](/privacy), which explains how we collect, use, and process personal data.
+By using the Service, you agree to these Terms. Please also read our [Privacy Policy](/legal/privacy), which explains how we collect, use, and process personal data.
 
 If you are using the Service under a Master Services Agreement ("**MSA**") or other enterprise agreement with Planton, that agreement governs to the extent it conflicts with these Terms.
 
@@ -80,7 +80,7 @@ Certain features of the Service require payment. Current pricing is available on
 
 ### 3.2 Subscriptions
 
-Paid plans are billed in advance on a monthly or annual basis ("**Subscription Period**") and renew automatically unless cancelled before the renewal date. Free-tier organizations carry no payment method and are never charged: when a free-tier limit is reached, the affected action pauses rather than incurring a charge. Refunds are governed by our [Refund Policy](/refund-policy) and Section 8.
+Paid plans are billed in advance on a monthly or annual basis ("**Subscription Period**") and renew automatically unless cancelled before the renewal date. Free-tier organizations carry no payment method and are never charged: when a free-tier limit is reached, the affected action pauses rather than incurring a charge. Refunds are governed by our [Refund Policy](/legal/refund-policy) and Section 8.
 
 ### 3.3 Self-Hosted Licenses
 
@@ -94,7 +94,7 @@ A self-hosted license is a yearly purchase that unlocks org-scale capabilities o
 
 ### 3.4 Prepaid AI Credits
 
-AI-powered features consume prepaid credits purchased as packs. Credits fund AI usage on Planton-hosted organizations and the Planton desktop app; Self-Hosted Platform deployments do not use credits. Credits are dollar-denominated, drawn down as AI usage occurs, and do not expire while your account exists. Spend protection is on by default: automatic top-up occurs only if you enable it, at the threshold and amount you configure. Credit purchases are refundable as described in the [Refund Policy](/refund-policy); consumed credits are not refundable. Credits carry no cash value and are not transferable between accounts.
+AI-powered features consume prepaid credits purchased as packs. Credits fund AI usage on Planton-hosted organizations and the Planton desktop app; Self-Hosted Platform deployments do not use credits. Credits are dollar-denominated, drawn down as AI usage occurs, and do not expire while your account exists. Spend protection is on by default: automatic top-up occurs only if you enable it, at the threshold and amount you configure. Credit purchases are refundable as described in the [Refund Policy](/legal/refund-policy); consumed credits are not refundable. Credits carry no cash value and are not transferable between accounts.
 
 ### 3.5 Payment Processing
 
@@ -150,7 +150,7 @@ You are responsible for selecting the security model appropriate for your compli
 
 ### 5.3 Secret Management
 
-Planton's platform stores sensitive credentials as references to entries in an organization-level secrets manager, never as plaintext values. Secrets are resolved just-in-time during execution and discarded after use. For details, see the "How Your Infrastructure Credentials Are Handled" section of our [Privacy Policy](/privacy).
+Planton's platform stores sensitive credentials as references to entries in an organization-level secrets manager, never as plaintext values. Secrets are resolved just-in-time during execution and discarded after use. For details, see the "How Your Infrastructure Credentials Are Handled" section of our [Privacy Policy](/legal/privacy).
 
 ## 6. Acceptable Use
 

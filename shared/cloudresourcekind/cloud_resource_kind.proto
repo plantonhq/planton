@@ -7649,6 +7649,14 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "a0role"
   }];
+  Auth0User = 8006 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0user"
+    // A user is created inside a connection Auth0 holds the credential for,
+    // and its name must resolve before the user exists.
+    prerequisites: [Auth0Connection]
+  }];
 
   // 9000–9999: OpenFGA resources
   // Note: OpenFGA is Terraform-only - there is no Pulumi provider available.

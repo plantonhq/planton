@@ -19,7 +19,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ children }) => {
 
   const checkForMermaid = () => {
     if (React.isValidElement(children)) {
-      const codeElement = children as React.ReactElement<any>;
+      const codeElement = children as React.ReactElement<{ className?: string; children?: React.ReactNode }>;
       if (codeElement.props?.className) {
         const className = codeElement.props.className;
         if (typeof className === 'string' && className.includes('language-mermaid')) {

@@ -551,3 +551,33 @@ questions:
         pattern: 'recoverFrom:\n        objectStore:'
       - catalog: _patterns/stateful-kind-disaster-recovery.md
         pattern: 'what stays with the operator is the key that opens it'
+
+  - id: q23
+    class: wisdom
+    question: >
+      An agent must turn on authentication for a Valkey cache in a shared
+      namespace, and for a Neo4j server beside it. What does it declare
+      for the credentials, and where does each client read its password?
+    answer: >
+      Declare the user, never the password. For Valkey, declare `auth.users`
+      with the `default` user and no password: the module generates one,
+      materializes it in the `<name>-auth` Secret under the username key,
+      and the `password_secret` output names that Secret and key. For
+      Neo4j, declare no `auth` at all: the module generates the admin
+      password into `<name>-auth` and reports `password_secret` (the bare
+      password) and `auth_secret_name` (the chart's `neo4j/<password>`
+      pair). A password is declared only to bring your own, and then as a
+      managed-secret reference; nobody escrows a value the module can mint.
+    checks:
+      - kind: KubernetesValkey
+        file: GUIDE.md
+        pattern: '## Declare the user, never the password'
+      - kind: KubernetesValkey
+        file: reference.md
+        pattern: 'leave it empty and the module generates one'
+      - kind: KubernetesNeo4j
+        file: GUIDE.md
+        pattern: '## Leave the credential to the module'
+      - kind: KubernetesNeo4j
+        file: reference.md
+        pattern: 'CREDENTIALS ARE MINTED, NEVER REQUIRED'

@@ -87,13 +87,14 @@ func (Provenance) EnumDescriptor() ([]byte, []int) {
 // Two permission vocabularies live here. The IAM-statement providers
 // (aws/gcp/azure) and Kubernetes express least privilege as policy
 // material -- statements, permission groups, RBAC rules. The
-// token-scoped providers (cloudflare/digital_ocean) authenticate with a
-// bearer API token whose least-privilege story is the token's OWN
-// composition: Cloudflare tokens are built from named permission groups,
-// DigitalOcean tokens from named scopes. Their sections declare exactly
-// what a least-privilege runner token is built from, in the provider's
-// own vocabulary, held to the provider's own published inventory by the
-// conformance gates.
+// token-scoped providers (cloudflare/digital_ocean/auth0) authenticate
+// with a bearer credential whose least-privilege story is the credential's
+// OWN composition: Cloudflare tokens are built from named permission
+// groups, DigitalOcean tokens from named scopes, and an Auth0
+// machine-to-machine client from the Management API scopes its grant
+// carries. Their sections declare exactly what a least-privilege runner
+// credential is built from, in the provider's own vocabulary, held to the
+// provider's own inventory by the conformance gates.
 type ComponentPermissionsSpec struct {
 	state         protoimpl.MessageState   `protogen:"open.v1"`
 	Aws           *AwsPermissions          `protobuf:"bytes,1,opt,name=aws,proto3" json:"aws,omitempty"`
@@ -102,6 +103,7 @@ type ComponentPermissionsSpec struct {
 	Kubernetes    *KubernetesPermissions   `protobuf:"bytes,4,opt,name=kubernetes,proto3" json:"kubernetes,omitempty"`
 	Cloudflare    *CloudflarePermissions   `protobuf:"bytes,5,opt,name=cloudflare,proto3" json:"cloudflare,omitempty"`
 	DigitalOcean  *DigitalOceanPermissions `protobuf:"bytes,6,opt,name=digital_ocean,json=digitalOcean,proto3" json:"digital_ocean,omitempty"`
+	Auth0         *Auth0Permissions        `protobuf:"bytes,7,opt,name=auth0,proto3" json:"auth0,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -178,6 +180,69 @@ func (x *ComponentPermissionsSpec) GetDigitalOcean() *DigitalOceanPermissions {
 	return nil
 }
 
+func (x *ComponentPermissionsSpec) GetAuth0() *Auth0Permissions {
+	if x != nil {
+		return x.Auth0
+	}
+	return nil
+}
+
+// PermissionCondition says an entry is needed only when the component's
+// manifest sets a field of its spec. An entry without one is needed by
+// every deployment of the component. The condition is data so every reader
+// decides it the same way -- a catalog page marks the entry optional, a
+// chart unions it only when one of its manifests sets the field, a
+// connection check does not report its absence as a gap -- rather than each
+// reading a sentence in the notes. The permissions gate proves the field
+// exists in the component's own spec.
+type PermissionCondition struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Path of the spec field, in the proto field names a manifest uses,
+	// dot-separated for a nested field (e.g. "roles", "enabled_clients").
+	// "Set" means a repeated or map field is non-empty, a message field is
+	// present, and a scalar holds a non-default value.
+	SpecFieldSet  string `protobuf:"bytes,1,opt,name=spec_field_set,json=specFieldSet,proto3" json:"spec_field_set,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PermissionCondition) Reset() {
+	*x = PermissionCondition{}
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PermissionCondition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PermissionCondition) ProtoMessage() {}
+
+func (x *PermissionCondition) ProtoReflect() protoreflect.Message {
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PermissionCondition.ProtoReflect.Descriptor instead.
+func (*PermissionCondition) Descriptor() ([]byte, []int) {
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *PermissionCondition) GetSpecFieldSet() string {
+	if x != nil {
+		return x.SpecFieldSet
+	}
+	return ""
+}
+
 // AwsPermissions is the least-privilege IAM policy material for the runner's
 // AWS principal, expressed as policy-ready statements.
 type AwsPermissions struct {
@@ -189,7 +254,7 @@ type AwsPermissions struct {
 
 func (x *AwsPermissions) Reset() {
 	*x = AwsPermissions{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[1]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -201,7 +266,7 @@ func (x *AwsPermissions) String() string {
 func (*AwsPermissions) ProtoMessage() {}
 
 func (x *AwsPermissions) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[1]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -214,7 +279,7 @@ func (x *AwsPermissions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AwsPermissions.ProtoReflect.Descriptor instead.
 func (*AwsPermissions) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{1}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *AwsPermissions) GetStatements() []*AwsStatement {
@@ -246,14 +311,16 @@ type AwsStatement struct {
 	// For derived entries: which module resources this statement covers
 	// (terraform type names are the useful vocabulary). Also the home for
 	// wildcard defenses.
-	Notes         string `protobuf:"bytes,5,opt,name=notes,proto3" json:"notes,omitempty"`
+	Notes string `protobuf:"bytes,5,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,6,opt,name=condition,proto3" json:"condition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AwsStatement) Reset() {
 	*x = AwsStatement{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[2]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -265,7 +332,7 @@ func (x *AwsStatement) String() string {
 func (*AwsStatement) ProtoMessage() {}
 
 func (x *AwsStatement) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[2]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -278,7 +345,7 @@ func (x *AwsStatement) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AwsStatement.ProtoReflect.Descriptor instead.
 func (*AwsStatement) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{2}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *AwsStatement) GetSid() string {
@@ -316,6 +383,13 @@ func (x *AwsStatement) GetNotes() string {
 	return ""
 }
 
+func (x *AwsStatement) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
 // GcpPermissions is the least-privilege permission material for the
 // runner's GCP principal.
 type GcpPermissions struct {
@@ -327,7 +401,7 @@ type GcpPermissions struct {
 
 func (x *GcpPermissions) Reset() {
 	*x = GcpPermissions{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[3]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -339,7 +413,7 @@ func (x *GcpPermissions) String() string {
 func (*GcpPermissions) ProtoMessage() {}
 
 func (x *GcpPermissions) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[3]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -352,7 +426,7 @@ func (x *GcpPermissions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpPermissions.ProtoReflect.Descriptor instead.
 func (*GcpPermissions) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{3}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GcpPermissions) GetGroups() []*GcpPermissionGroup {
@@ -374,14 +448,16 @@ type GcpPermissionGroup struct {
 	Permissions []string   `protobuf:"bytes,2,rep,name=permissions,proto3" json:"permissions,omitempty"`
 	Provenance  Provenance `protobuf:"varint,3,opt,name=provenance,proto3,enum=dev.planton.iac.componentpermissions.v1.Provenance" json:"provenance,omitempty"`
 	// For derived entries: which module resources this group covers.
-	Notes         string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
+	Notes string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,5,opt,name=condition,proto3" json:"condition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpPermissionGroup) Reset() {
 	*x = GcpPermissionGroup{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[4]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -393,7 +469,7 @@ func (x *GcpPermissionGroup) String() string {
 func (*GcpPermissionGroup) ProtoMessage() {}
 
 func (x *GcpPermissionGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[4]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -406,7 +482,7 @@ func (x *GcpPermissionGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GcpPermissionGroup.ProtoReflect.Descriptor instead.
 func (*GcpPermissionGroup) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{4}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GcpPermissionGroup) GetPurpose() string {
@@ -437,6 +513,13 @@ func (x *GcpPermissionGroup) GetNotes() string {
 	return ""
 }
 
+func (x *GcpPermissionGroup) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
 // AzurePermissions is the least-privilege RBAC material for the runner's
 // Azure principal.
 type AzurePermissions struct {
@@ -448,7 +531,7 @@ type AzurePermissions struct {
 
 func (x *AzurePermissions) Reset() {
 	*x = AzurePermissions{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[5]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -460,7 +543,7 @@ func (x *AzurePermissions) String() string {
 func (*AzurePermissions) ProtoMessage() {}
 
 func (x *AzurePermissions) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[5]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -473,7 +556,7 @@ func (x *AzurePermissions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AzurePermissions.ProtoReflect.Descriptor instead.
 func (*AzurePermissions) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{5}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *AzurePermissions) GetGroups() []*AzureActionGroup {
@@ -497,14 +580,16 @@ type AzureActionGroup struct {
 	DataActions []string   `protobuf:"bytes,3,rep,name=data_actions,json=dataActions,proto3" json:"data_actions,omitempty"`
 	Provenance  Provenance `protobuf:"varint,4,opt,name=provenance,proto3,enum=dev.planton.iac.componentpermissions.v1.Provenance" json:"provenance,omitempty"`
 	// For derived entries: which module resources this group covers.
-	Notes         string `protobuf:"bytes,5,opt,name=notes,proto3" json:"notes,omitempty"`
+	Notes string `protobuf:"bytes,5,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,6,opt,name=condition,proto3" json:"condition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *AzureActionGroup) Reset() {
 	*x = AzureActionGroup{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[6]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -516,7 +601,7 @@ func (x *AzureActionGroup) String() string {
 func (*AzureActionGroup) ProtoMessage() {}
 
 func (x *AzureActionGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[6]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -529,7 +614,7 @@ func (x *AzureActionGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AzureActionGroup.ProtoReflect.Descriptor instead.
 func (*AzureActionGroup) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{6}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *AzureActionGroup) GetPurpose() string {
@@ -567,6 +652,13 @@ func (x *AzureActionGroup) GetNotes() string {
 	return ""
 }
 
+func (x *AzureActionGroup) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
 // CloudflarePermissions is the least-privilege API-token material for the
 // runner's Cloudflare credential. Cloudflare has no IAM-statement
 // policies: a token IS the policy, assembled from named permission groups
@@ -583,7 +675,7 @@ type CloudflarePermissions struct {
 
 func (x *CloudflarePermissions) Reset() {
 	*x = CloudflarePermissions{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[7]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -595,7 +687,7 @@ func (x *CloudflarePermissions) String() string {
 func (*CloudflarePermissions) ProtoMessage() {}
 
 func (x *CloudflarePermissions) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[7]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -608,7 +700,7 @@ func (x *CloudflarePermissions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflarePermissions.ProtoReflect.Descriptor instead.
 func (*CloudflarePermissions) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{7}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CloudflarePermissions) GetGroups() []*CloudflareTokenGroup {
@@ -645,14 +737,16 @@ type CloudflareTokenGroup struct {
 	// For derived entries: which module resources this group covers, plus
 	// any conditionality (e.g. a group needed only when a spec field is
 	// set) and the endpoint evidence the derivation stands on.
-	Notes         string `protobuf:"bytes,5,opt,name=notes,proto3" json:"notes,omitempty"`
+	Notes string `protobuf:"bytes,5,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,6,opt,name=condition,proto3" json:"condition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CloudflareTokenGroup) Reset() {
 	*x = CloudflareTokenGroup{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[8]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -664,7 +758,7 @@ func (x *CloudflareTokenGroup) String() string {
 func (*CloudflareTokenGroup) ProtoMessage() {}
 
 func (x *CloudflareTokenGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[8]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -677,7 +771,7 @@ func (x *CloudflareTokenGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CloudflareTokenGroup.ProtoReflect.Descriptor instead.
 func (*CloudflareTokenGroup) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{8}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CloudflareTokenGroup) GetPurpose() string {
@@ -715,6 +809,13 @@ func (x *CloudflareTokenGroup) GetNotes() string {
 	return ""
 }
 
+func (x *CloudflareTokenGroup) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
 // DigitalOceanPermissions is the least-privilege credential material for
 // the runner's DigitalOcean access, across the provider's TWO credential
 // planes. The REST API plane authenticates with a personal access token
@@ -734,7 +835,7 @@ type DigitalOceanPermissions struct {
 
 func (x *DigitalOceanPermissions) Reset() {
 	*x = DigitalOceanPermissions{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[9]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -746,7 +847,7 @@ func (x *DigitalOceanPermissions) String() string {
 func (*DigitalOceanPermissions) ProtoMessage() {}
 
 func (x *DigitalOceanPermissions) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[9]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -759,7 +860,7 @@ func (x *DigitalOceanPermissions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DigitalOceanPermissions.ProtoReflect.Descriptor instead.
 func (*DigitalOceanPermissions) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{9}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DigitalOceanPermissions) GetGroups() []*DigitalOceanScopeGroup {
@@ -795,14 +896,16 @@ type DigitalOceanScopeGroup struct {
 	// For derived entries: which module resources this group covers, plus
 	// any conditionality (e.g. a scope needed only when a spec field is
 	// set) and the endpoint evidence the derivation stands on.
-	Notes         string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
+	Notes string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,5,opt,name=condition,proto3" json:"condition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *DigitalOceanScopeGroup) Reset() {
 	*x = DigitalOceanScopeGroup{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[10]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -814,7 +917,7 @@ func (x *DigitalOceanScopeGroup) String() string {
 func (*DigitalOceanScopeGroup) ProtoMessage() {}
 
 func (x *DigitalOceanScopeGroup) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[10]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -827,7 +930,7 @@ func (x *DigitalOceanScopeGroup) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DigitalOceanScopeGroup.ProtoReflect.Descriptor instead.
 func (*DigitalOceanScopeGroup) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{10}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DigitalOceanScopeGroup) GetPurpose() string {
@@ -858,6 +961,13 @@ func (x *DigitalOceanScopeGroup) GetNotes() string {
 	return ""
 }
 
+func (x *DigitalOceanScopeGroup) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
 // DigitalOceanSpacesGrant is one grant the runner's Spaces key needs, at
 // DigitalOcean's own per-bucket grant vocabulary: a Spaces key carries
 // grants of {bucket, permission} where permission is "read", "readwrite",
@@ -878,14 +988,16 @@ type DigitalOceanSpacesGrant struct {
 	// For derived entries: which module resources this grant covers, the
 	// S3-compatible calls the modules issue, and the least-privilege bucket
 	// scoping the operator should apply when minting the key.
-	Notes         string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
+	Notes string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,5,opt,name=condition,proto3" json:"condition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *DigitalOceanSpacesGrant) Reset() {
 	*x = DigitalOceanSpacesGrant{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[11]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -897,7 +1009,7 @@ func (x *DigitalOceanSpacesGrant) String() string {
 func (*DigitalOceanSpacesGrant) ProtoMessage() {}
 
 func (x *DigitalOceanSpacesGrant) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[11]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -910,7 +1022,7 @@ func (x *DigitalOceanSpacesGrant) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DigitalOceanSpacesGrant.ProtoReflect.Descriptor instead.
 func (*DigitalOceanSpacesGrant) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{11}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DigitalOceanSpacesGrant) GetPurpose() string {
@@ -941,6 +1053,159 @@ func (x *DigitalOceanSpacesGrant) GetNotes() string {
 	return ""
 }
 
+func (x *DigitalOceanSpacesGrant) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
+// Auth0Permissions is the least-privilege credential material for the
+// runner's Auth0 access: a machine-to-machine application in the target
+// tenant, authorized for the tenant's Management API audience
+// (https://{tenant-domain}/api/v2/) with a grant that carries named
+// scopes. The modules exchange the application's client id and secret for
+// a token through the client-credentials flow, and Auth0 refuses any call
+// whose token lacks the endpoint's scope. The entries here are the scopes
+// a least-privilege grant is built from.
+type Auth0Permissions struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Groups        []*Auth0ScopeGroup     `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0Permissions) Reset() {
+	*x = Auth0Permissions{}
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0Permissions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0Permissions) ProtoMessage() {}
+
+func (x *Auth0Permissions) ProtoReflect() protoreflect.Message {
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0Permissions.ProtoReflect.Descriptor instead.
+func (*Auth0Permissions) Descriptor() ([]byte, []int) {
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *Auth0Permissions) GetGroups() []*Auth0ScopeGroup {
+	if x != nil {
+		return x.Groups
+	}
+	return nil
+}
+
+// Auth0ScopeGroup is one coherent set of Management API scopes (the units
+// the application's API grant is assembled from).
+type Auth0ScopeGroup struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// What the group covers, in the same spirit as a GCP group purpose
+	// (e.g. "ManageConnection", "WriteConnectionOptions").
+	Purpose string `protobuf:"bytes,1,opt,name=purpose,proto3" json:"purpose,omitempty"`
+	// Management API scopes in Auth0's exact "verb:resource" spelling
+	// (e.g. "create:clients", "read:client_keys"). The verb comes FIRST --
+	// the reverse of DigitalOcean's "resource:action" -- and goes beyond
+	// CRUD ("blacklist:tokens"). The conformance gate proves each scope
+	// exists in the tenant's own Management API definition, which is the set
+	// Auth0 checks a grant against. The published API reference is not that
+	// set: it omits scopes the tenant enforces, among them the
+	// "connections_options" pair a connection's options tree needs.
+	Scopes     []string   `protobuf:"bytes,2,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	Provenance Provenance `protobuf:"varint,3,opt,name=provenance,proto3,enum=dev.planton.iac.componentpermissions.v1.Provenance" json:"provenance,omitempty"`
+	// For derived entries: which module resources this group covers and the
+	// endpoint evidence the derivation stands on. Whether the group is needed
+	// at all is its condition, never a sentence here: a credential missing a
+	// conditional group is least privilege, not a defect, for a deployment
+	// that never sets the field.
+	Notes string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,5,opt,name=condition,proto3" json:"condition,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ScopeGroup) Reset() {
+	*x = Auth0ScopeGroup{}
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ScopeGroup) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ScopeGroup) ProtoMessage() {}
+
+func (x *Auth0ScopeGroup) ProtoReflect() protoreflect.Message {
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ScopeGroup.ProtoReflect.Descriptor instead.
+func (*Auth0ScopeGroup) Descriptor() ([]byte, []int) {
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *Auth0ScopeGroup) GetPurpose() string {
+	if x != nil {
+		return x.Purpose
+	}
+	return ""
+}
+
+func (x *Auth0ScopeGroup) GetScopes() []string {
+	if x != nil {
+		return x.Scopes
+	}
+	return nil
+}
+
+func (x *Auth0ScopeGroup) GetProvenance() Provenance {
+	if x != nil {
+		return x.Provenance
+	}
+	return Provenance_provenance_unspecified
+}
+
+func (x *Auth0ScopeGroup) GetNotes() string {
+	if x != nil {
+		return x.Notes
+	}
+	return ""
+}
+
+func (x *Auth0ScopeGroup) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
 // KubernetesPermissions is the least-privilege RBAC material for the
 // runner's cluster credential, expressed as policy rules (the units a Role
 // or ClusterRole is built from).
@@ -953,7 +1218,7 @@ type KubernetesPermissions struct {
 
 func (x *KubernetesPermissions) Reset() {
 	*x = KubernetesPermissions{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[12]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -965,7 +1230,7 @@ func (x *KubernetesPermissions) String() string {
 func (*KubernetesPermissions) ProtoMessage() {}
 
 func (x *KubernetesPermissions) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[12]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -978,7 +1243,7 @@ func (x *KubernetesPermissions) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesPermissions.ProtoReflect.Descriptor instead.
 func (*KubernetesPermissions) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{12}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *KubernetesPermissions) GetRules() []*KubernetesRule {
@@ -1004,14 +1269,16 @@ type KubernetesRule struct {
 	ClusterScoped bool       `protobuf:"varint,4,opt,name=cluster_scoped,json=clusterScoped,proto3" json:"cluster_scoped,omitempty"`
 	Provenance    Provenance `protobuf:"varint,5,opt,name=provenance,proto3,enum=dev.planton.iac.componentpermissions.v1.Provenance" json:"provenance,omitempty"`
 	// For derived entries: which module resources this rule covers.
-	Notes         string `protobuf:"bytes,6,opt,name=notes,proto3" json:"notes,omitempty"`
+	Notes string `protobuf:"bytes,6,opt,name=notes,proto3" json:"notes,omitempty"`
+	// Absent: every deployment of the component needs this entry.
+	Condition     *PermissionCondition `protobuf:"bytes,7,opt,name=condition,proto3" json:"condition,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesRule) Reset() {
 	*x = KubernetesRule{}
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[13]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1023,7 +1290,7 @@ func (x *KubernetesRule) String() string {
 func (*KubernetesRule) ProtoMessage() {}
 
 func (x *KubernetesRule) ProtoReflect() protoreflect.Message {
-	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[13]
+	mi := &file_iac_componentpermissions_v1_spec_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1036,7 +1303,7 @@ func (x *KubernetesRule) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use KubernetesRule.ProtoReflect.Descriptor instead.
 func (*KubernetesRule) Descriptor() ([]byte, []int) {
-	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{13}
+	return file_iac_componentpermissions_v1_spec_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *KubernetesRule) GetApiGroups() []string {
@@ -1081,11 +1348,18 @@ func (x *KubernetesRule) GetNotes() string {
 	return ""
 }
 
+func (x *KubernetesRule) GetCondition() *PermissionCondition {
+	if x != nil {
+		return x.Condition
+	}
+	return nil
+}
+
 var File_iac_componentpermissions_v1_spec_proto protoreflect.FileDescriptor
 
 const file_iac_componentpermissions_v1_spec_proto_rawDesc = "" +
 	"\n" +
-	"&iac/componentpermissions/v1/spec.proto\x12'dev.planton.iac.componentpermissions.v1\"\xa8\x04\n" +
+	"&iac/componentpermissions/v1/spec.proto\x12'dev.planton.iac.componentpermissions.v1\"\xf9\x04\n" +
 	"\x18ComponentPermissionsSpec\x12I\n" +
 	"\x03aws\x18\x01 \x01(\v27.dev.planton.iac.componentpermissions.v1.AwsPermissionsR\x03aws\x12I\n" +
 	"\x03gcp\x18\x02 \x01(\v27.dev.planton.iac.componentpermissions.v1.GcpPermissionsR\x03gcp\x12O\n" +
@@ -1096,11 +1370,14 @@ const file_iac_componentpermissions_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"cloudflare\x18\x05 \x01(\v2>.dev.planton.iac.componentpermissions.v1.CloudflarePermissionsR\n" +
 	"cloudflare\x12e\n" +
-	"\rdigital_ocean\x18\x06 \x01(\v2@.dev.planton.iac.componentpermissions.v1.DigitalOceanPermissionsR\fdigitalOcean\"g\n" +
+	"\rdigital_ocean\x18\x06 \x01(\v2@.dev.planton.iac.componentpermissions.v1.DigitalOceanPermissionsR\fdigitalOcean\x12O\n" +
+	"\x05auth0\x18\a \x01(\v29.dev.planton.iac.componentpermissions.v1.Auth0PermissionsR\x05auth0\";\n" +
+	"\x13PermissionCondition\x12$\n" +
+	"\x0espec_field_set\x18\x01 \x01(\tR\fspecFieldSet\"g\n" +
 	"\x0eAwsPermissions\x12U\n" +
 	"\n" +
 	"statements\x18\x01 \x03(\v25.dev.planton.iac.componentpermissions.v1.AwsStatementR\n" +
-	"statements\"\xc3\x01\n" +
+	"statements\"\x9f\x02\n" +
 	"\fAwsStatement\x12\x10\n" +
 	"\x03sid\x18\x01 \x01(\tR\x03sid\x12\x18\n" +
 	"\aactions\x18\x02 \x03(\tR\aactions\x12\x1c\n" +
@@ -1108,18 +1385,20 @@ const file_iac_componentpermissions_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"provenance\x18\x04 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
 	"provenance\x12\x14\n" +
-	"\x05notes\x18\x05 \x01(\tR\x05notes\"e\n" +
+	"\x05notes\x18\x05 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\x06 \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition\"e\n" +
 	"\x0eGcpPermissions\x12S\n" +
-	"\x06groups\x18\x01 \x03(\v2;.dev.planton.iac.componentpermissions.v1.GcpPermissionGroupR\x06groups\"\xbb\x01\n" +
+	"\x06groups\x18\x01 \x03(\v2;.dev.planton.iac.componentpermissions.v1.GcpPermissionGroupR\x06groups\"\x97\x02\n" +
 	"\x12GcpPermissionGroup\x12\x18\n" +
 	"\apurpose\x18\x01 \x01(\tR\apurpose\x12 \n" +
 	"\vpermissions\x18\x02 \x03(\tR\vpermissions\x12S\n" +
 	"\n" +
 	"provenance\x18\x03 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
 	"provenance\x12\x14\n" +
-	"\x05notes\x18\x04 \x01(\tR\x05notes\"e\n" +
+	"\x05notes\x18\x04 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\x05 \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition\"e\n" +
 	"\x10AzurePermissions\x12Q\n" +
-	"\x06groups\x18\x01 \x03(\v29.dev.planton.iac.componentpermissions.v1.AzureActionGroupR\x06groups\"\xd4\x01\n" +
+	"\x06groups\x18\x01 \x03(\v29.dev.planton.iac.componentpermissions.v1.AzureActionGroupR\x06groups\"\xb0\x02\n" +
 	"\x10AzureActionGroup\x12\x18\n" +
 	"\apurpose\x18\x01 \x01(\tR\apurpose\x12\x18\n" +
 	"\aactions\x18\x02 \x03(\tR\aactions\x12!\n" +
@@ -1127,9 +1406,10 @@ const file_iac_componentpermissions_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"provenance\x18\x04 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
 	"provenance\x12\x14\n" +
-	"\x05notes\x18\x05 \x01(\tR\x05notes\"n\n" +
+	"\x05notes\x18\x05 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\x06 \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition\"n\n" +
 	"\x15CloudflarePermissions\x12U\n" +
-	"\x06groups\x18\x01 \x03(\v2=.dev.planton.iac.componentpermissions.v1.CloudflareTokenGroupR\x06groups\"\xc5\x01\n" +
+	"\x06groups\x18\x01 \x03(\v2=.dev.planton.iac.componentpermissions.v1.CloudflareTokenGroupR\x06groups\"\xa1\x02\n" +
 	"\x14CloudflareTokenGroup\x12\x18\n" +
 	"\apurpose\x18\x01 \x01(\tR\apurpose\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
@@ -1137,17 +1417,19 @@ const file_iac_componentpermissions_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"provenance\x18\x04 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
 	"provenance\x12\x14\n" +
-	"\x05notes\x18\x05 \x01(\tR\x05notes\"\xd9\x01\n" +
+	"\x05notes\x18\x05 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\x06 \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition\"\xd9\x01\n" +
 	"\x17DigitalOceanPermissions\x12W\n" +
 	"\x06groups\x18\x01 \x03(\v2?.dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroupR\x06groups\x12e\n" +
-	"\rspaces_grants\x18\x02 \x03(\v2@.dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrantR\fspacesGrants\"\xb5\x01\n" +
+	"\rspaces_grants\x18\x02 \x03(\v2@.dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrantR\fspacesGrants\"\x91\x02\n" +
 	"\x16DigitalOceanScopeGroup\x12\x18\n" +
 	"\apurpose\x18\x01 \x01(\tR\apurpose\x12\x16\n" +
 	"\x06scopes\x18\x02 \x03(\tR\x06scopes\x12S\n" +
 	"\n" +
 	"provenance\x18\x03 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
 	"provenance\x12\x14\n" +
-	"\x05notes\x18\x04 \x01(\tR\x05notes\"\xbe\x01\n" +
+	"\x05notes\x18\x04 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\x05 \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition\"\x9a\x02\n" +
 	"\x17DigitalOceanSpacesGrant\x12\x18\n" +
 	"\apurpose\x18\x01 \x01(\tR\apurpose\x12\x1e\n" +
 	"\n" +
@@ -1156,9 +1438,20 @@ const file_iac_componentpermissions_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"provenance\x18\x03 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
 	"provenance\x12\x14\n" +
-	"\x05notes\x18\x04 \x01(\tR\x05notes\"f\n" +
+	"\x05notes\x18\x04 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\x05 \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition\"d\n" +
+	"\x10Auth0Permissions\x12P\n" +
+	"\x06groups\x18\x01 \x03(\v28.dev.planton.iac.componentpermissions.v1.Auth0ScopeGroupR\x06groups\"\x8a\x02\n" +
+	"\x0fAuth0ScopeGroup\x12\x18\n" +
+	"\apurpose\x18\x01 \x01(\tR\apurpose\x12\x16\n" +
+	"\x06scopes\x18\x02 \x03(\tR\x06scopes\x12S\n" +
+	"\n" +
+	"provenance\x18\x03 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
+	"provenance\x12\x14\n" +
+	"\x05notes\x18\x04 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\x05 \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition\"f\n" +
 	"\x15KubernetesPermissions\x12M\n" +
-	"\x05rules\x18\x01 \x03(\v27.dev.planton.iac.componentpermissions.v1.KubernetesRuleR\x05rules\"\xf5\x01\n" +
+	"\x05rules\x18\x01 \x03(\v27.dev.planton.iac.componentpermissions.v1.KubernetesRuleR\x05rules\"\xd1\x02\n" +
 	"\x0eKubernetesRule\x12\x1d\n" +
 	"\n" +
 	"api_groups\x18\x01 \x03(\tR\tapiGroups\x12\x1c\n" +
@@ -1168,7 +1461,8 @@ const file_iac_componentpermissions_v1_spec_proto_rawDesc = "" +
 	"\n" +
 	"provenance\x18\x05 \x01(\x0e23.dev.planton.iac.componentpermissions.v1.ProvenanceR\n" +
 	"provenance\x12\x14\n" +
-	"\x05notes\x18\x06 \x01(\tR\x05notes*A\n" +
+	"\x05notes\x18\x06 \x01(\tR\x05notes\x12Z\n" +
+	"\tcondition\x18\a \x01(\v2<.dev.planton.iac.componentpermissions.v1.PermissionConditionR\tcondition*A\n" +
 	"\n" +
 	"Provenance\x12\x1a\n" +
 	"\x16provenance_unspecified\x10\x00\x12\v\n" +
@@ -1190,50 +1484,64 @@ func file_iac_componentpermissions_v1_spec_proto_rawDescGZIP() []byte {
 }
 
 var file_iac_componentpermissions_v1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_iac_componentpermissions_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_iac_componentpermissions_v1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_iac_componentpermissions_v1_spec_proto_goTypes = []any{
 	(Provenance)(0),                  // 0: dev.planton.iac.componentpermissions.v1.Provenance
 	(*ComponentPermissionsSpec)(nil), // 1: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec
-	(*AwsPermissions)(nil),           // 2: dev.planton.iac.componentpermissions.v1.AwsPermissions
-	(*AwsStatement)(nil),             // 3: dev.planton.iac.componentpermissions.v1.AwsStatement
-	(*GcpPermissions)(nil),           // 4: dev.planton.iac.componentpermissions.v1.GcpPermissions
-	(*GcpPermissionGroup)(nil),       // 5: dev.planton.iac.componentpermissions.v1.GcpPermissionGroup
-	(*AzurePermissions)(nil),         // 6: dev.planton.iac.componentpermissions.v1.AzurePermissions
-	(*AzureActionGroup)(nil),         // 7: dev.planton.iac.componentpermissions.v1.AzureActionGroup
-	(*CloudflarePermissions)(nil),    // 8: dev.planton.iac.componentpermissions.v1.CloudflarePermissions
-	(*CloudflareTokenGroup)(nil),     // 9: dev.planton.iac.componentpermissions.v1.CloudflareTokenGroup
-	(*DigitalOceanPermissions)(nil),  // 10: dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions
-	(*DigitalOceanScopeGroup)(nil),   // 11: dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroup
-	(*DigitalOceanSpacesGrant)(nil),  // 12: dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrant
-	(*KubernetesPermissions)(nil),    // 13: dev.planton.iac.componentpermissions.v1.KubernetesPermissions
-	(*KubernetesRule)(nil),           // 14: dev.planton.iac.componentpermissions.v1.KubernetesRule
+	(*PermissionCondition)(nil),      // 2: dev.planton.iac.componentpermissions.v1.PermissionCondition
+	(*AwsPermissions)(nil),           // 3: dev.planton.iac.componentpermissions.v1.AwsPermissions
+	(*AwsStatement)(nil),             // 4: dev.planton.iac.componentpermissions.v1.AwsStatement
+	(*GcpPermissions)(nil),           // 5: dev.planton.iac.componentpermissions.v1.GcpPermissions
+	(*GcpPermissionGroup)(nil),       // 6: dev.planton.iac.componentpermissions.v1.GcpPermissionGroup
+	(*AzurePermissions)(nil),         // 7: dev.planton.iac.componentpermissions.v1.AzurePermissions
+	(*AzureActionGroup)(nil),         // 8: dev.planton.iac.componentpermissions.v1.AzureActionGroup
+	(*CloudflarePermissions)(nil),    // 9: dev.planton.iac.componentpermissions.v1.CloudflarePermissions
+	(*CloudflareTokenGroup)(nil),     // 10: dev.planton.iac.componentpermissions.v1.CloudflareTokenGroup
+	(*DigitalOceanPermissions)(nil),  // 11: dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions
+	(*DigitalOceanScopeGroup)(nil),   // 12: dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroup
+	(*DigitalOceanSpacesGrant)(nil),  // 13: dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrant
+	(*Auth0Permissions)(nil),         // 14: dev.planton.iac.componentpermissions.v1.Auth0Permissions
+	(*Auth0ScopeGroup)(nil),          // 15: dev.planton.iac.componentpermissions.v1.Auth0ScopeGroup
+	(*KubernetesPermissions)(nil),    // 16: dev.planton.iac.componentpermissions.v1.KubernetesPermissions
+	(*KubernetesRule)(nil),           // 17: dev.planton.iac.componentpermissions.v1.KubernetesRule
 }
 var file_iac_componentpermissions_v1_spec_proto_depIdxs = []int32{
-	2,  // 0: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.aws:type_name -> dev.planton.iac.componentpermissions.v1.AwsPermissions
-	4,  // 1: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.gcp:type_name -> dev.planton.iac.componentpermissions.v1.GcpPermissions
-	6,  // 2: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.azure:type_name -> dev.planton.iac.componentpermissions.v1.AzurePermissions
-	13, // 3: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.kubernetes:type_name -> dev.planton.iac.componentpermissions.v1.KubernetesPermissions
-	8,  // 4: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.cloudflare:type_name -> dev.planton.iac.componentpermissions.v1.CloudflarePermissions
-	10, // 5: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.digital_ocean:type_name -> dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions
-	3,  // 6: dev.planton.iac.componentpermissions.v1.AwsPermissions.statements:type_name -> dev.planton.iac.componentpermissions.v1.AwsStatement
-	0,  // 7: dev.planton.iac.componentpermissions.v1.AwsStatement.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
-	5,  // 8: dev.planton.iac.componentpermissions.v1.GcpPermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.GcpPermissionGroup
-	0,  // 9: dev.planton.iac.componentpermissions.v1.GcpPermissionGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
-	7,  // 10: dev.planton.iac.componentpermissions.v1.AzurePermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.AzureActionGroup
-	0,  // 11: dev.planton.iac.componentpermissions.v1.AzureActionGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
-	9,  // 12: dev.planton.iac.componentpermissions.v1.CloudflarePermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.CloudflareTokenGroup
-	0,  // 13: dev.planton.iac.componentpermissions.v1.CloudflareTokenGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
-	11, // 14: dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroup
-	12, // 15: dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions.spaces_grants:type_name -> dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrant
-	0,  // 16: dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
-	0,  // 17: dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrant.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
-	14, // 18: dev.planton.iac.componentpermissions.v1.KubernetesPermissions.rules:type_name -> dev.planton.iac.componentpermissions.v1.KubernetesRule
-	0,  // 19: dev.planton.iac.componentpermissions.v1.KubernetesRule.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	3,  // 0: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.aws:type_name -> dev.planton.iac.componentpermissions.v1.AwsPermissions
+	5,  // 1: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.gcp:type_name -> dev.planton.iac.componentpermissions.v1.GcpPermissions
+	7,  // 2: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.azure:type_name -> dev.planton.iac.componentpermissions.v1.AzurePermissions
+	16, // 3: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.kubernetes:type_name -> dev.planton.iac.componentpermissions.v1.KubernetesPermissions
+	9,  // 4: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.cloudflare:type_name -> dev.planton.iac.componentpermissions.v1.CloudflarePermissions
+	11, // 5: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.digital_ocean:type_name -> dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions
+	14, // 6: dev.planton.iac.componentpermissions.v1.ComponentPermissionsSpec.auth0:type_name -> dev.planton.iac.componentpermissions.v1.Auth0Permissions
+	4,  // 7: dev.planton.iac.componentpermissions.v1.AwsPermissions.statements:type_name -> dev.planton.iac.componentpermissions.v1.AwsStatement
+	0,  // 8: dev.planton.iac.componentpermissions.v1.AwsStatement.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 9: dev.planton.iac.componentpermissions.v1.AwsStatement.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	6,  // 10: dev.planton.iac.componentpermissions.v1.GcpPermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.GcpPermissionGroup
+	0,  // 11: dev.planton.iac.componentpermissions.v1.GcpPermissionGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 12: dev.planton.iac.componentpermissions.v1.GcpPermissionGroup.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	8,  // 13: dev.planton.iac.componentpermissions.v1.AzurePermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.AzureActionGroup
+	0,  // 14: dev.planton.iac.componentpermissions.v1.AzureActionGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 15: dev.planton.iac.componentpermissions.v1.AzureActionGroup.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	10, // 16: dev.planton.iac.componentpermissions.v1.CloudflarePermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.CloudflareTokenGroup
+	0,  // 17: dev.planton.iac.componentpermissions.v1.CloudflareTokenGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 18: dev.planton.iac.componentpermissions.v1.CloudflareTokenGroup.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	12, // 19: dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroup
+	13, // 20: dev.planton.iac.componentpermissions.v1.DigitalOceanPermissions.spaces_grants:type_name -> dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrant
+	0,  // 21: dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 22: dev.planton.iac.componentpermissions.v1.DigitalOceanScopeGroup.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	0,  // 23: dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrant.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 24: dev.planton.iac.componentpermissions.v1.DigitalOceanSpacesGrant.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	15, // 25: dev.planton.iac.componentpermissions.v1.Auth0Permissions.groups:type_name -> dev.planton.iac.componentpermissions.v1.Auth0ScopeGroup
+	0,  // 26: dev.planton.iac.componentpermissions.v1.Auth0ScopeGroup.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 27: dev.planton.iac.componentpermissions.v1.Auth0ScopeGroup.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	17, // 28: dev.planton.iac.componentpermissions.v1.KubernetesPermissions.rules:type_name -> dev.planton.iac.componentpermissions.v1.KubernetesRule
+	0,  // 29: dev.planton.iac.componentpermissions.v1.KubernetesRule.provenance:type_name -> dev.planton.iac.componentpermissions.v1.Provenance
+	2,  // 30: dev.planton.iac.componentpermissions.v1.KubernetesRule.condition:type_name -> dev.planton.iac.componentpermissions.v1.PermissionCondition
+	31, // [31:31] is the sub-list for method output_type
+	31, // [31:31] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_iac_componentpermissions_v1_spec_proto_init() }
@@ -1247,7 +1555,7 @@ func file_iac_componentpermissions_v1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_iac_componentpermissions_v1_spec_proto_rawDesc), len(file_iac_componentpermissions_v1_spec_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

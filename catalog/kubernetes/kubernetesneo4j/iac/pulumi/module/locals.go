@@ -49,18 +49,23 @@ type Locals struct {
 	// Edition resolved to the chart/spec default (community) when unset.
 	Edition string
 
-	// Whether the module materializes the auth Secret (spec.auth.password
-	// arm declared).
+	// Whether the module materializes the auth Secret: every arm but
+	// existing_secret, which references a Secret the user owns. The chart
+	// is never left to mint a credential nobody can find afterwards.
 	CreateAuthSecret bool
 
-	// The admin password when the password arm is declared. Lands ONLY in
-	// the module-materialized Secret — never in rendered chart values.
+	// Whether the module generates the admin password (auth absent). With
+	// the password arm the declared value is used instead.
+	GenerateAdminPassword bool
+
+	// The admin password when the password arm is declared; empty when the
+	// module generates it. Lands ONLY in the module-materialized Secret —
+	// never in rendered chart values.
 	AdminPassword string
 
 	// Name of the Secret the chart's neo4j.passwordFromSecret points at:
-	// the module-materialized "<metadata.name>-auth" (password arm), the
-	// referenced existing Secret, or "" when auth is absent (the chart
-	// then generates a random password).
+	// the module-materialized "<metadata.name>-auth" (declared or
+	// generated password), or the referenced existing Secret. Never empty.
 	AuthSecretName string
 
 	// Name of the main ClusterIP Service the chart always creates —
@@ -119,13 +124,13 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesneo4jv1alpha1.Kub
 	releaseName := target.Metadata.Name
 
 	adminPassword := spec.GetAuth().GetPassword()
-	createAuthSecret := adminPassword != ""
+	existingSecret := spec.GetAuth().GetExistingSecret()
+	createAuthSecret := existingSecret == ""
+	generateAdminPassword := createAuthSecret && adminPassword == ""
 
-	authSecretName := ""
+	authSecretName := existingSecret
 	if createAuthSecret {
 		authSecretName = releaseName + "-auth"
-	} else if spec.GetAuth().GetExistingSecret() != "" {
-		authSecretName = spec.GetAuth().GetExistingSecret()
 	}
 
 	// The chart's always-created ClusterIP Service is named after
@@ -134,17 +139,18 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesneo4jv1alpha1.Kub
 	serviceName := releaseName
 
 	return &Locals{
-		Spec:             spec,
-		Labels:           labels,
-		Namespace:        namespace,
-		ReleaseName:      releaseName,
-		ChartVersion:     chartVersion,
-		Neo4JName:        neo4jName,
-		Edition:          edition,
-		CreateAuthSecret: createAuthSecret,
-		AdminPassword:    adminPassword,
-		AuthSecretName:   authSecretName,
-		ServiceName:      serviceName,
+		Spec:                  spec,
+		Labels:                labels,
+		Namespace:             namespace,
+		ReleaseName:           releaseName,
+		ChartVersion:          chartVersion,
+		Neo4JName:             neo4jName,
+		Edition:               edition,
+		CreateAuthSecret:      createAuthSecret,
+		GenerateAdminPassword: generateAdminPassword,
+		AdminPassword:         adminPassword,
+		AuthSecretName:        authSecretName,
+		ServiceName:           serviceName,
 		BoltEndpoint: fmt.Sprintf("neo4j://%s.%s.svc.cluster.local:7687",
 			serviceName, namespace),
 		HttpEndpoint: fmt.Sprintf("http://%s.%s.svc.cluster.local:7474",

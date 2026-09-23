@@ -2,10 +2,11 @@
 # google provider (checked by `planton provider-parity --check` and the
 # lint.provider-parity CI lane; format documented in pkg/providerparity).
 #
-# One kind, one resource. Every restriction block and leaf matches its spec
-# field by exact name; the two divergences are the key's identity (the
-# provider calls the key id `name`; the spec says what it is) and the
-# project (the catalog's project_id reference convention).
+# One kind, one resource of substance plus its API enablement. Every
+# restriction block and leaf matches its spec field by exact name; the two
+# divergences are the key's identity (the provider calls the key id `name`;
+# the spec says what it is) and the project (the catalog's project_id
+# reference convention).
 #
 # Only divergences are recorded -- an argument absent from this file must
 # match its spec field by exact name. Every exclusion carries its reason:
@@ -32,3 +33,10 @@ resources:
           FORCE deletion_policy it pairs with); modeling it would break
           cross-engine parity. Re-evaluate when pulumi-gcp v10 (the 8.x
           bridge) is GA.
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables apikeys.googleapis.com,
+      the API every create, read, and delete of the key talks to and one a
+      fresh project has OFF; disable_on_destroy is false so destroying one
+      key never switches off the API the project's other keys depend on.

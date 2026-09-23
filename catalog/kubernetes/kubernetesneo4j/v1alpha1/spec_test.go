@@ -82,6 +82,11 @@ var _ = ginkgo.Describe("KubernetesNeo4j Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
+		ginkgo.It("no auth declared should be valid (the module generates the admin password)", func() {
+			input.Spec.Auth = nil
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
 		ginkgo.It("a declared admin password should be valid", func() {
 			input.Spec.Auth = &KubernetesNeo4JAuth{
 				Source: &KubernetesNeo4JAuth_Password{Password: "super-secret"},

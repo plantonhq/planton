@@ -173,7 +173,7 @@ export const EVALUATION_DAYS = 30;
 // Where a self-hosted license purchase starts (the console's public
 // buy page; no account required). It accepts `?email=` to open its form
 // prefilled -- the links here carry a console's email handoff into it
-// (see components/handoff).
+// (see lib/console-handoff).
 export const BUY_LICENSE_URL = 'https://planton.ai/license/buy';
 
 // Where the free evaluation key is claimed: the same public page, its

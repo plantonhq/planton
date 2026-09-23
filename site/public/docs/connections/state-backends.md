@@ -264,7 +264,7 @@ To move from the platform-managed default to your own storage:
 3. Choose the authentication mode and provide credentials if using Provide Credentials.
 4. Mark the new connection as the default for your organization.
 
-New deployments use the new default backend. The platform-managed connection remains in your organization but is no longer used for new stack jobs. Existing state files in the platform-managed backend are not migrated automatically — state migration is a manual operation if you need to consolidate.
+New deployments use the new default backend. The platform-managed connection remains in your organization but is no longer used for new stack jobs. Existing resources keep their state in the platform-managed backend until you move them, one resource at a time, with `planton tofu state migrate-backend <kind> <name> --destination-state-backend <slug>` (or `planton pulumi state migrate-backend` for Pulumi). Moving every resource off platform-managed state is what lets a runner of your own carry your deploys (see [Planton-Hosted Runners](/docs/runner/planton-hosted-runners#running-deploys-on-your-own-runner)).
 
 ## Related Documentation
 

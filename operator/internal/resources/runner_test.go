@@ -214,7 +214,7 @@ func TestRunnerBuildRole_ExactVerbs(t *testing.T) {
 		{"tekton.dev", "taskruns", "list,watch"},
 		{"", "secrets", "create,get,deletecollection"},
 		{"", "serviceaccounts", "create,get,deletecollection"},
-		{"", "configmaps", "get,deletecollection"},
+		{"", "configmaps", "get,create,update,patch,deletecollection"},
 		{"rbac.authorization.k8s.io", "roles", "create,deletecollection"},
 		{"rbac.authorization.k8s.io", "rolebindings", "create,deletecollection"},
 		{"", "pods", "get,list,watch"},

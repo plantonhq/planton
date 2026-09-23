@@ -1,0 +1,78 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: auth0user
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A user is a record inside Auth0's SaaS user store -- its profile, metadata documents, and hashed password rest in Auth0's provider-managed storage, with no encryption seam in this spec. The modules never hold the password after creation; a minted one is reported once as a sensitive output.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest at this component's level to key (see enc-at-rest); Auth0 exposes no customer-managed-key surface on user records in the spec or the modules.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: A user terminates no connections of its own. The Management API calls that create and manage it travel to Auth0's HTTPS-only API; the user's own sign-ins ride Auth0's authentication endpoints, outside this spec.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: A user has no network endpoint to expose; it is a record addressed only through Auth0's Management API and dashboard.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network surface exists to filter (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The record receives no HTTP requests -- there is no request path to put a filter in front of; Auth0's own API edge is Auth0's provider-managed posture.
+    - control_id: rbac
+      status: configurable
+      field_path: roles
+      evidence:
+        type: spec_default
+        reference: Unset roles and permissions leave the user with no standing beyond authentication; each declared entry is set authoritatively by auth0_user_roles / auth0_user_permissions (iac/tf/main.tf, iac/pulumi/module/user.go), and an entry removed from the manifest is removed from the user on apply.
+      notes: "The user's standing is exactly the roles and direct permissions the spec declares: spec.roles (role ids, by reference to Auth0Role) and spec.permissions (scopes on resource servers, by reference to Auth0ResourceServer). Both sets are AUTHORITATIVE in the modules (auth0_user_roles, auth0_user_permissions) -- a role or permission removed from the manifest is removed from the user on apply, so the manifest is the complete statement of what the user may do. Enforcement happens on the resource server side (the auth0resourceserver kind's enforce_policies). WHO may manage the user record itself is governed at the tenant level -- Management API tokens scoped with the users scopes (iac/permissions.yaml) and dashboard admin roles."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: A user is a human-shaped identity, not a workload; it authenticates with a password or a one-time code, never a federated token. The credential the IaC runner presents is the provider connection's concern, documented in iac/permissions.yaml.
+    - control_id: no-legacy-auth
+      status: configurable
+      field_path: passwordless
+      evidence:
+        type: spec_default
+        reference: "Unset passwordless means a database connection with a password: declared as a managed-secret reference, or minted by the modules as 24 characters from three classes; passwordless true sends no password and the user signs in with a one-time code."
+      notes: "The user's sign-in method is the connection's: a database connection (password) or a passwordless connection (spec.passwordless, a one-time code by email or SMS, no password at all). On a database connection the password policy and brute-force protection are the connection's posture (the auth0connection kind's database_options); a minted password is 24 characters from three classes, above every built-in policy."
+    - control_id: strong-user-auth
+      status: configurable
+      field_path: email_verified
+      evidence:
+        type: spec_default
+        reference: Unset email_verified leaves the address unverified so Auth0 asks the person to confirm it; unset verify_email leaves Auth0 to send the confirmation unless the address is already verified; both are stated explicitly to change.
+      notes: "Two dials shape how much the user must prove: spec.email_verified marks the address as vouched for by the operator (skip verification for an identity the operator owns; leave false so a person confirms their own address), and spec.verify_email decides whether Auth0 sends the confirmation message. Multi-factor enrollment is a tenant-level posture (Auth0 Guardian) the user completes at first sign-in; no Management API surface enrolls a factor for a user, so it is a recorded operational step, not a spec field."
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Changes to the user, its password, and its role and permission lists are Management API operations captured in Auth0's tenant logs, whose retention and streaming are tenant-plan posture (exported, where wanted, by the auth0eventstream kind).
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the modules expose a metrics surface for this object; sign-in activity is visible only through Auth0's tenant-level logs and dashboard.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "The user, its profile, its metadata, and its complete role and permission lists are declaratively re-creatable from the manifest -- the recovery point is the manifest. What is NOT recoverable from it is the identity itself: a recreated user receives a new identity-provider subject unless spec.user_id pins it, and a minted password is minted anew (the output reports the new value). Systems that granted standing to the old subject must be re-pointed; that is the honest cost of recreating an identity."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure -- availability of the user store during sign-in is Auth0's SaaS platform posture.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: blocked
+      evidence:
+        type: spec_default
+        reference: Unset blocked leaves the user able to sign in; blocked true refuses every sign-in while keeping the record and its subject, a reversible suspension the modules apply through the auth0_user resource.
+      notes: "Neither the Auth0 Management API's users endpoints nor the auth0 provider exposes a deletion-protection flag: a delete request proceeds when issued, removing the user, its role and permission assignments, and its subject for good. The reversible neighbour is spec.blocked -- a blocked user is refused every sign-in but keeps its record and subject, so suspending is the safe first step and deleting is a separate, deliberate act."
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure data record with no software of its own to patch; the authentication engine that signs the user in is Auth0's SaaS, patched by Auth0.

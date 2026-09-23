@@ -31,10 +31,17 @@ terraform {
 # a quota project". The override attributes quota to the project being
 # enabled under every credential mode. Both provider blocks carry it so
 # behavior never depends on which channel a resource rides.
+# billing_project NAMES the quota project beside the override: the override attributes a
+# resource call to the resource's own project, but a data-source read carries no project the
+# header can borrow, so under a user credential Google attributes it to its shared ADC project
+# (API disabled there) and the read fails with 403 "requires a quota project" after the create
+# succeeded (live-verified 2026-09-18). Service-account and keyless credentials are unaffected.
 provider "google" {
   user_project_override = true
+  billing_project       = local.project_id
 }
 
 provider "google-beta" {
   user_project_override = true
+  billing_project       = local.project_id
 }

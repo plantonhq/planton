@@ -1,6 +1,8 @@
 # The baseline: a standalone in-memory cache with a memory ceiling and an
-# eviction policy — the pure-cache posture (no volume, no auth: development
-# or NetworkPolicy-fenced usage). Deliberately the smallest honest shape.
+# eviction policy — the pure-cache posture (no volume). Auth is on with the
+# `default` user declared and NO password, so the smallest honest shape is
+# also the proof that the module mints the credential into the `<name>-auth`
+# Secret and the verifier can authenticate with it.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesValkey
 metadata:
@@ -13,3 +15,6 @@ spec:
     max_memory: 64mb
     max_memory_policy: allkeys-lru
     snapshots_disabled: true
+  auth:
+    users:
+      - name: default

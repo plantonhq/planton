@@ -1,0 +1,28 @@
+# The connection a declared user is created in, in the shape Auth0 requires
+# for user creation through the Management API: the connection must be
+# enabled for THE CLIENT MAKING THE CALL -- the Machine-to-Machine application
+# whose credential the provider holds -- or Auth0 refuses with "400 Bad
+# Request: Connection must be enabled for this client to perform single user
+# creation and signup operations". A connection enabled for no client is
+# refused earlier as "The connection is disabled". So this consumer-scoped
+# install profile enables the harness's own M2M client, read from the lane's
+# environment (the credential the provider already authenticates with, never
+# a second secret); the Auth0Connection kind's own minimal scenario enables no
+# client, which is right for that kind's proof and wrong for a user's.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Connection
+metadata:
+  name: e2e-database
+  org: e2e-org
+  env: testing
+spec:
+  strategy: auth0
+  display_name: E2E Database Connection
+  show_as_button: true
+  enabled_clients:
+    - value: ${E2E_ENV:PLANTON_E2E_AUTH0_CLIENT_ID}
+  database_options:
+    password_policy: good
+    requires_username: false
+    disable_signup: false
+    brute_force_protection: true

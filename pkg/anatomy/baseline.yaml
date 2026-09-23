@@ -191,7 +191,6 @@ violations:
   - catalog/kubernetes/kubernetestemporal/iac/tf:missing-iac-readme
   - catalog/kubernetes/kubernetestrino/iac/pulumi:missing-iac-readme
   - catalog/kubernetes/kubernetestrino/iac/tf:missing-iac-readme
-  - catalog/kubernetes/kubernetesvalkey/iac/pulumi:missing-iac-readme
   - catalog/openfga/openfgaauthorizationmodel/v1alpha1:missing-spec-test
   - catalog/openfga/openfgarelationshiptuple/v1alpha1:missing-spec-test
   - catalog/openfga/openfgastore/v1alpha1:missing-spec-test

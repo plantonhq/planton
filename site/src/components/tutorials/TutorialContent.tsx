@@ -3,6 +3,7 @@
 import React from 'react';
 import { MDXRenderer } from '@/lib/MDXRenderer';
 import { MDXParserClient } from '@/lib/mdx-client';
+import type { Tutorial } from '@/lib/tutorials';
 
 interface NextArticle {
   title: string;
@@ -13,7 +14,7 @@ interface NextArticle {
 interface TutorialContentProps {
   slug: string;
   tutorialContent: string;
-  allTutorials: any[];
+  allTutorials: Tutorial[];
   nextArticle?: NextArticle;
 }
 

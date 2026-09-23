@@ -1,65 +1,48 @@
 # Least-privilege permissions the IaC runner's Auth0 credential needs to
 # provision, update, and destroy this component with the official modules.
-# Schema: iac/componentpermissions/v1.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider and the Pulumi module exchange its client
+# id and secret for a token through the client-credentials flow, and the
+# grant's scopes are the policy. Every group is `derived` (static analysis
+# of the module sources against Auth0's endpoint docs, cited in notes)
+# until a live capture upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
 #
-# Auth0 authenticates with a tenant-scoped Management API token, not
-# IAM-statement policies, so none of the schema's provider sections
-# (aws/gcp/azure/kubernetes) applies -- their absence is the schema's own
-# claim that the modules touch no such API. The credential model: a
-# machine-to-machine (M2M) application in the target tenant, authorized for
-# the Auth0 Management API audience (https://{tenant-domain}/api/v2/) and
-# granted the scopes below; the auth0/auth0 Terraform provider (per
-# iac/tf/provider.tf) and the Pulumi module exchange its client id/secret
-# for a token via the client-credentials flow.
-#
-# The modules manage two surfaces: auth0_connection (the identity-provider
-# connection with its full options tree -- password policy, MFA, dictionary
-# and history settings, upstream IdP credentials) and auth0_connection_clients
-# (the connection's enabled-clients list, written only when the spec names
-# clients). Should the schema grow an auth0 section, this inventory converts
-# mechanically:
-#
-#   Connection lifecycle (purpose: create/read/update/delete the connection
-#   and its options tree):
-#     create:connections        -- POST /api/v2/connections (proven: the
-#                                  endpoint doc's insufficient-scope contract
-#                                  names it verbatim; auth0.com/docs/api/
-#                                  management/v2/connections/post-connections,
-#                                  retrieved 2026-08-22).
-#     read:connections          -- GET /api/v2/connections/{id} on refresh.
-#                                  Derived: follows Auth0's documented
-#                                  create:/read:/update:/delete: scope naming
-#                                  per endpoint family; the get-by-id page was
-#                                  not fetched this session.
-#     read:connections_options  -- reading the connection's options tree back
-#                                  on refresh (proven: the post-connections
-#                                  page states the scope must be present for
-#                                  options to be returned; same citation and
-#                                  date as create:connections).
-#     update:connections        -- PATCH /api/v2/connections/{id} on config
-#                                  change, and the enabled-clients write the
-#                                  auth0_connection_clients resource performs
-#                                  against the connection. Derived, same
-#                                  naming basis as read:connections.
-#     delete:connections        -- DELETE /api/v2/connections/{id} on destroy.
-#                                  Derived, same basis.
-#
-#   Enabled-clients read-back (purpose: the auth0_connection_clients resource
-#   resolves the client ids it enables):
-#     read:clients              -- listing/validating the clients named in
-#                                  enabled_clients. Derived from the resource's
-#                                  documented behavior; scope name follows the
-#                                  clients endpoint family (see the
-#                                  auth0client manifest, where read:clients is
-#                                  proven against the get-clients-by-id page).
-#
-# Honest boundary: upstream IdP credentials (social/OIDC/AzureAD
-# client_id/client_secret in the options tree) are VALUES the connection
-# carries, not extra Management API scopes -- provisioning needs no
-# permission at the external provider; the operator supplies those
-# credentials in the spec.
+# Auth0 scopes are per resource family, not per object: a credential
+# holding them manages EVERY connection in the tenant, so the trust
+# boundary is the tenant. Upstream identity-provider credentials (a social,
+# OIDC, or Azure AD client id and secret inside the options tree) are
+# values the connection carries, not extra Management API scopes.
 apiVersion: iac.planton.dev/v1
 kind: ComponentPermissions
 metadata:
   name: auth0connection
-spec: {}
+spec:
+  auth0:
+    groups:
+      - purpose: ManageConnection
+        scopes:
+          - create:connections
+          - read:connections
+          - update:connections
+          - delete:connections
+        provenance: derived
+        notes: Covers auth0_connection's lifecycle — create via POST /api/v2/connections (create:connections, named verbatim by the endpoint doc's insufficient-scope contract, auth0.com/docs/api/management/v2/connections/post-connections, read 2026-08-22), read back on refresh via GET /api/v2/connections/{id} (read:connections), change in place via PATCH /api/v2/connections/{id} (update:connections, which also covers the enabled-clients write below), and destroy via DELETE /api/v2/connections/{id} (delete:connections). The read, update, and delete names follow Auth0's per-endpoint-family scope naming; their pages were not fetched.
+      - purpose: ReadConnectionOptions
+        scopes:
+          - read:connections_options
+        provenance: derived
+        notes: Reading the connection's options tree back on refresh — password policy, MFA, dictionary and history settings, upstream identity-provider settings. The post-connections doc states the scope must be present for options to be returned (read 2026-08-22). Without it the provider reads an options-less connection and plans a change on every refresh.
+      - purpose: WriteConnectionOptions
+        scopes:
+          - update:connections_options
+        provenance: derived
+        notes: Writing the options tree on update. iac/tf/main.tf declares the auth0_connection options block unconditionally, so every apply after the first sends options in the PATCH, and Auth0 refuses that write without this scope — "Updating the options property requires the update:connections_options scope" (a 403 observed against a live tenant on a re-apply). The first create does not need it, which is why a credential missing it installs a connection green and fails on the next apply. Auth0's published API reference lists update:connections alone for this endpoint; the tenant's own Management API definition carries this scope, and the snapshot is drawn from that definition.
+      - purpose: ResolveEnabledClients
+        scopes:
+          - read:clients
+        provenance: derived
+        condition:
+          spec_field_set: enabled_clients
+        notes: The auth0_connection_clients resource the modules add for a connection that enables clients resolves and validates the client ids it enables. The scope name follows the clients endpoint family (the auth0client manifest cites read:clients against the get-clients-by-id page).

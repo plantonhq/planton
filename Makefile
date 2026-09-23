@@ -420,7 +420,7 @@ generate-price-book:
 	go run ./pkg/finops/pricebook/fetcher
 
 # Refreshes the committed action-inventory snapshots
-# (pkg/iac/actioninventory/{aws,azure,gcp,cloudflare,digitalocean}.yaml)
+# (pkg/iac/actioninventory/{aws,azure,gcp,cloudflare,digitalocean,auth0}.yaml)
 # from each provider's own published inventory -- AWS's machine-readable
 # service reference (including each action's resource-scopability, which
 # the scopability gate holds statements to), ARM's provider-operations
@@ -432,16 +432,22 @@ generate-price-book:
 # whose results union), Cloudflare's permission-group inventory (the
 # Cloudflare arm needs CLOUDFLARE_API_TOKEN -- an account-owned token
 # that can read the account's token permission groups; the catalog is
-# global, so any account works), and DigitalOcean's published token-scope
+# global, so any account works), DigitalOcean's published token-scope
 # reference (no credential -- the docs site serves it as machine-readable
-# markdown; DigitalOcean exposes no scope-inventory API) -- scoped to the
-# services, groups, and scopes the committed runner permissions manifests
-# reference. Requires network access; CI never fetches -- it validates
-# every manifest action against the committed snapshots (an invented or
-# misspelled action name cannot ship).
+# markdown; DigitalOcean exposes no scope-inventory API), and a tenant's
+# own Auth0 Management API definition (the Auth0 arm needs AUTH0_DOMAIN,
+# AUTH0_CLIENT_ID, and AUTH0_CLIENT_SECRET -- the catalog's Auth0 E2E
+# credential, granted read:resource_servers) -- scoped to the services,
+# groups, and scopes the committed runner permissions manifests reference.
+# ARMS names the arms to refresh (e.g. ARMS=auth0), so refreshing one
+# provider needs only its credential and leaves the other snapshots
+# untouched; empty refreshes every arm. Requires network access; CI never
+# fetches -- it validates every manifest action against the committed
+# snapshots (an invented or misspelled action name cannot ship).
+ARMS ?=
 .PHONY: generate-action-inventory
 generate-action-inventory:
-	go run ./pkg/iac/actioninventory/fetcher
+	go run ./pkg/iac/actioninventory/fetcher $(ARMS)
 
 .PHONY: build-go
 build-go: fmt deps vet

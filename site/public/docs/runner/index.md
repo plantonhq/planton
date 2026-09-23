@@ -14,6 +14,8 @@ tags:
 
 Planton Runner is a lightweight agent you deploy in your own infrastructure — a Kubernetes cluster, an AWS ECS task, a GCP Cloud Run service, or an Azure Container App. It enables Planton to execute infrastructure-as-code operations and real-time cloud operations on your behalf, without you ever sharing cloud credentials with Planton or opening inbound firewall rules.
 
+On Planton's hosted product you do not need one to start: until you add a runner of your own, your work runs on a [Planton-hosted runner](/docs/runner/planton-hosted-runners). This page is about the runner you run yourself.
+
 ## Why Runner Exists
 
 Any platform that manages infrastructure on your behalf faces a fundamental tension: it needs to act in your cloud accounts, but you cannot simply hand over your AWS keys, GCP service accounts, or Azure credentials to a SaaS vendor. And even if you were willing to share credentials, the platform still needs network access to your private Kubernetes clusters, VPCs, and cloud resources — access that typically requires VPN tunnels, IP allowlisting, or inbound firewall rules.
@@ -110,12 +112,13 @@ Deploying a runner takes three steps:
 
 1. **Create a runner token** in the console (Organization Settings → Runner Tokens) or with `planton runner token create`. The token authorizes runners to join your organization — it is never a runner's identity.
 2. **Start or deploy** a runner with the token — Kubernetes, AWS ECS, GCP Cloud Run, or Azure Container Apps. Each runner enrolls itself on arrival and receives its own individually revocable identity.
-3. **Set as default** (optional) so your organization's connections automatically route through this runner.
+3. **Name it on your connections**, or set it as your organization's default runner for live cloud operations (optional). See [Where Your Work Runs](/docs/runner/planton-hosted-runners#where-your-work-runs).
 
 See [Deployment](/docs/runner/deployment) for the complete walkthrough.
 
 ## Related Documentation
 
+- [Planton-Hosted Runners](/docs/runner/planton-hosted-runners) — Where your work runs before you add a runner, and how to move it onto yours
 - [Deployment](/docs/runner/deployment) — Generating credentials, installing, and deploying runners to your infrastructure
 - [Security Model](/docs/runner/security-model) — Credential isolation, service account identity, authentication modes, and trust boundaries
 - [Authentication and Authorization](/docs/security/authentication-and-authorization) — Service accounts, API keys, and the permission model

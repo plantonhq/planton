@@ -157,6 +157,14 @@ Reference an output from another manifest as `valueFrom: {kind: Auth0Role, name:
 | `status.outputs.name` | `string` | name is the human-readable name of the role. Reflects spec.name, or metadata.name when spec.name is omitted. |
 | `status.outputs.description` | `string` | description is the human-readable description of the role. |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| Auth0User | `spec.roles` | `status.outputs.id` |
+
 ## See Also
 
 - [Overview](../README.md)
