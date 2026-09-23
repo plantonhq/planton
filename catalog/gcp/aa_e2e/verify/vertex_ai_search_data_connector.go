@@ -56,7 +56,7 @@ func (v *vertexAiSearchDataConnectorVerifier) VerifyAbsent(ctx context.Context, 
 		return nil
 	}
 	_, status, err := discoveryEngineGet(ctx, svc, name)
-	return discoveryEngineAbsent("vertex ai search data connector", name, status, err)
+	return restAbsent("vertex ai search data connector", name, status, err)
 }
 
 // discoveryEngineCollection extracts the collection id from a Discovery

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcolabschedule.v1alpha1;
+
+// GcpColabScheduleStackOutputs carries the schedule's identity.
+message GcpColabScheduleStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/schedules/{schedule_id}.
+  string name = 1;
+
+  // The id Google assigned the schedule (the last segment of name).
+  string schedule_id = 2;
+
+  // The region the schedule lives in.
+  string location = 3;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1;
+
+import "catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-model-armor-floor-setting stack-input
+message GcpModelArmorFloorSettingStackInput {
+  //target cloud-resource
+  GcpModelArmorFloorSetting target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

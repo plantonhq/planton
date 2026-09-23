@@ -2,10 +2,7 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/pkg/errors"
 )
@@ -31,30 +28,12 @@ type vertexAiReasoningEngine struct {
 }
 
 func (v *vertexAiAgentEngineVerifier) get(ctx context.Context, svc *Services, name string) (*vertexAiReasoningEngine, int, error) {
-	url := fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(name), name)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build agent engine GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "agent engine GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read agent engine response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("agent engine GET %s returned %d: %s", name, resp.StatusCode, string(body))
-	}
-
 	engine := &vertexAiReasoningEngine{}
-	if err := json.Unmarshal(body, engine); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode agent engine")
+	status, err := googleRestGet(ctx, svc, "agent engine", fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(name), name), engine)
+	if err != nil {
+		return nil, status, err
 	}
-	return engine, resp.StatusCode, nil
+	return engine, status, nil
 }
 
 // VerifyExists confirms the agent exists under the exported name with the
@@ -90,11 +69,5 @@ func (v *vertexAiAgentEngineVerifier) VerifyAbsent(ctx context.Context, svc *Ser
 	}
 
 	_, status, err := v.get(ctx, svc, name)
-	if err != nil {
-		if status == http.StatusNotFound {
-			return nil
-		}
-		return errors.Wrapf(err, "unexpected error probing agent engine %s after destroy", name)
-	}
-	return errors.Errorf("agent engine %s still exists after destroy", name)
+	return restAbsent("agent engine", name, status, err)
 }

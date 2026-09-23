@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpcolabruntimetemplate/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpcolabruntimetemplate/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-colab-runtime-template
+message GcpColabRuntimeTemplate {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpColabRuntimeTemplate'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpColabRuntimeTemplateSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpColabRuntimeTemplateStatus status = 5;
+}
+
+//gcp-colab-runtime-template status
+message GcpColabRuntimeTemplateStatus {
+  //stack-outputs
+  GcpColabRuntimeTemplateStackOutputs outputs = 1;
+}

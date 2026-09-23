@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1;
+
+// GcpModelArmorFloorSettingStackOutputs carries the floor's identity.
+message GcpModelArmorFloorSettingStackOutputs {
+  // Full resource name: {parent}/locations/{location}/floorSetting.
+  string name = 1;
+
+  // The parent the floor governs: projects/{id}, folders/{id}, or
+  // organizations/{id}.
+  string parent = 2;
+}

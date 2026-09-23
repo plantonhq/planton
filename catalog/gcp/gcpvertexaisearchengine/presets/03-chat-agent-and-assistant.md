@@ -20,7 +20,7 @@ A support chat app: a CHAT engine that has Google create its Dialogflow CX agent
 | Field | Default | Why Change |
 |-------|---------|------------|
 | `chatEngineConfig` | create an agent | `dialogflowAgentToLink` (with `allowCrossRegion` if the agent lives elsewhere) to reuse an existing Dialogflow CX agent instead. |
-| `assistants[].customerPolicy.modelArmorConfig` | two templates | Your Model Armor templates (`projects/{project}/locations/{location}/templates/{id}`); `FAIL_OPEN` to answer even when sanitization fails. |
+| `assistants[].customerPolicy.modelArmorConfig` | two templates | Your `GcpModelArmorTemplate` resources (references, or literal `projects/{project}/locations/{location}/templates/{id}` names); `FAIL_OPEN` to answer even when sanitization fails. |
 | `assistants[].webGroundingType` | Google Search | `WEB_GROUNDING_TYPE_ENTERPRISE_WEB_SEARCH` for enterprise web search, `WEB_GROUNDING_TYPE_DISABLED` to ground on your documents alone. |
 | `assistants` | one | Remove the block when the project has no Gemini Enterprise license. |
 

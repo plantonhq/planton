@@ -1,0 +1,21 @@
+# The runtime template the schedule's notebook runs would use.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntimeTemplate
+metadata:
+  name: planton-oss-e2e-gcpcols-template
+  id: planton-oss-e2e-gcpcols-template
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcolabschedule
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  runtimeTemplateId: pln-e2e-cols-${E2E_RUN_ID}
+  machineSpec:
+    machineType: e2-standard-4
+  deletionPolicy: DELETE

@@ -32,7 +32,7 @@ Controls belong to one engine and nothing else references them, so they are fold
 
 ## Assistants
 
-`assistants[]` are Gemini Enterprise assistants on the engine: a content policy (banned phrases), Model Armor sanitization of prompts and responses (templates by resource name, fail open or closed), web grounding, and generation settings. They need Gemini Enterprise seats licensed on the project.
+`assistants[]` are Gemini Enterprise assistants on the engine: a content policy (banned phrases), Model Armor sanitization of prompts and responses (each template a `GcpModelArmorTemplate` reference or a literal resource name; fail open or closed), web grounding, and generation settings. They need Gemini Enterprise seats licensed on the project.
 
 ## Encryption, the chat agent, and destroy
 

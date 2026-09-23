@@ -1,0 +1,38 @@
+# GcpColabRuntimeTemplate scenario: a CPU template with a machine type, a
+# balanced disk, internet access, a ten-minute idle shutdown, and Secure
+# Boot (the lifted wrappers), plus one environment variable and the
+# post-startup behavior. Templates are free; nothing runs until a runtime
+# is created from one.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntimeTemplate
+metadata:
+  name: planton-oss-e2e-gcpcolt-minimal
+  id: planton-oss-e2e-gcpcolt-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcolabruntimetemplate
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  machineSpec:
+    machineType: e2-standard-4
+  dataPersistentDiskSpec:
+    diskType: pd-balanced
+    diskSizeGb: 50
+  networkSpec:
+    enableInternetAccess: true
+  idleTimeout: 600s
+  enableSecureBoot: true
+  softwareConfig:
+    env:
+      - name: PLANTON_E2E
+        value: "true"
+    postStartupScriptConfig:
+      postStartupScript: echo planton-e2e
+      postStartupScriptBehavior: RUN_ONCE
+  deletionPolicy: DELETE

@@ -544,10 +544,15 @@ variable "spec" {
 
         # Model Armor sanitization.
         model_armor_config = optional(object({
-          # The template applied to user prompts.
+          # The template applied to user prompts: a GcpModelArmorTemplate
+          # reference or a literal
+          # projects/{project}/locations/{location}/templates/{template}.
+          # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           user_prompt_template = string
 
-          # The template applied to assistant responses.
+          # The template applied to assistant responses: a GcpModelArmorTemplate
+          # reference or a literal template name.
+          # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           response_template = string
 
           # FAIL_OPEN (answer anyway when sanitization fails) or FAIL_CLOSED

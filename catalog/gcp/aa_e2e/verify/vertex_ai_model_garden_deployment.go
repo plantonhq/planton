@@ -2,10 +2,7 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/pkg/errors"
 )
@@ -34,30 +31,12 @@ type vertexAiDeployedEndpoint struct {
 }
 
 func (v *vertexAiModelGardenDeploymentVerifier) get(ctx context.Context, svc *Services, endpointID string) (*vertexAiDeployedEndpoint, int, error) {
-	url := fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(endpointID), endpointID)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build model garden endpoint GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "model garden endpoint GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read model garden endpoint response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("model garden endpoint GET %s returned %d: %s", endpointID, resp.StatusCode, string(body))
-	}
-
 	endpoint := &vertexAiDeployedEndpoint{}
-	if err := json.Unmarshal(body, endpoint); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode model garden endpoint")
+	status, err := googleRestGet(ctx, svc, "model garden endpoint", fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(endpointID), endpointID), endpoint)
+	if err != nil {
+		return nil, status, err
 	}
-	return endpoint, resp.StatusCode, nil
+	return endpoint, status, nil
 }
 
 // VerifyExists confirms the endpoint exists under the exported path, that
@@ -102,11 +81,5 @@ func (v *vertexAiModelGardenDeploymentVerifier) VerifyAbsent(ctx context.Context
 	}
 
 	_, status, err := v.get(ctx, svc, endpointID)
-	if err != nil {
-		if status == http.StatusNotFound {
-			return nil
-		}
-		return errors.Wrapf(err, "unexpected error probing model garden endpoint %s after destroy", endpointID)
-	}
-	return errors.Errorf("model garden endpoint %s still exists after destroy", endpointID)
+	return restAbsent("model garden endpoint", endpointID, status, err)
 }

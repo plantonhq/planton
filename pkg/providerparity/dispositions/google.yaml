@@ -586,16 +586,7 @@ resources:
     reason: "first-generation Cloud Functions, superseded by Cloud Functions 2nd gen (modeled by GcpCloudFunction)"
   - resource: google_colab_notebook_execution
     disposition: deferred
-    reason: "Colab Enterprise runtimes are a specialty; Workbench covers the mainstream need"
-  - resource: google_colab_runtime
-    disposition: model-planned
-    reason: "planned GcpColabRuntime kind (Colab Enterprise runtimes)"
-  - resource: google_colab_runtime_template
-    disposition: model-planned
-    reason: "planned GcpColabRuntimeTemplate kind (Colab Enterprise runtime templates)"
-  - resource: google_colab_schedule
-    disposition: model-planned
-    reason: "planned GcpColabSchedule kind (Colab Enterprise schedules)"
+    reason: "a one-shot notebook run: every argument is immutable and the resource completes rather than lives, so it is an action, not infrastructure -- the recurring form is GcpColabSchedule's notebook_execution_job arm"
   - resource: google_compute_attached_disk
     disposition: deferred
     reason: "judged to fold into the existing GcpComputeInstance kind's spec (attached disks, from-template creation, and instance settings); the composition is not built"
@@ -1097,15 +1088,9 @@ resources:
   - resource: google_dns_response_policy_rule
     disposition: deferred
     reason: "judged to deserve a GcpDnsResponsePolicy kind (DNS firewall, rules composed); deferred pending demand"
-  - resource: google_document_ai_processor
-    disposition: model-planned
-    reason: "planned GcpDocumentAiProcessor kind (Document AI processors)"
-  - resource: google_document_ai_processor_default_version
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDocumentAiProcessor kind (the default version)"
   - resource: google_document_ai_schema
     disposition: deferred
-    reason: "Document AI processors are a specialty; deferred"
+    reason: "a Document AI schema is only a container (display name and labels) for the schema versions a custom extractor is trained against, and those versions have no resource at the pin -- a candidate companion of GcpDocumentAiProcessor when they arrive"
   - resource: google_document_ai_warehouse_document_schema
     disposition: excluded-deprecated
     reason: "Document AI Warehouse is deprecated by Google"
@@ -1481,12 +1466,6 @@ resources:
   - resource: google_migration_center_source
     disposition: deferred
     reason: "Migration Center assessment tooling is episodic; deferred"
-  - resource: google_model_armor_floorsetting
-    disposition: deferred
-    reason: "Model Armor prompt-safety templates are new; deferred"
-  - resource: google_model_armor_template
-    disposition: model-planned
-    reason: "planned GcpModelArmorTemplate kind (Model Armor templates)"
   - resource: google_monitoring_group
     disposition: deferred
     reason: "monitoring groups are a separate grouping resource with no adopter ask; GcpMonitoringAlertPolicy and GcpMonitoringUptimeCheck reference existing groups by ID -- revisit with a grouping-focused ask"

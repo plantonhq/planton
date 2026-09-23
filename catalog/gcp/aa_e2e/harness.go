@@ -321,10 +321,11 @@ func (h *Harness) Setup(ctx context.Context) error {
 		return errors.Wrap(err, "failed to create cloudidentity client")
 	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
-	// client is not in the pinned google.golang.org/api line (Memorystore
-	// for Valkey) — verifiers use it for REST GET probes only. Built through
-	// the same transport the typed clients use so it carries the same quota
-	// project header.
+	// client is not in the pinned google.golang.org/api line (Vertex AI,
+	// Discovery Engine, Model Armor, Document AI, Cloud TPU, Memorystore for
+	// Valkey, ...) -- verifiers reach it only through googleRestGet, for
+	// GET probes. Built through the same transport the typed clients use so
+	// it carries the same quota project header.
 	restClient, _, err := htransport.NewClient(ctx,
 		append([]option.ClientOption{option.WithScopes(cloudresourcemanager.CloudPlatformScope)}, clientOpts...)...)
 	if err != nil {

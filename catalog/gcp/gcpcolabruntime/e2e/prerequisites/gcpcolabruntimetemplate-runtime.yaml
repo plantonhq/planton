@@ -1,0 +1,26 @@
+# The runtime template the runtime scenario is assigned from: the smallest
+# CPU machine with a ten-minute idle shutdown, so a runtime the lane leaves
+# running stops itself. The template id carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntimeTemplate
+metadata:
+  name: planton-oss-e2e-gcpcolr-template
+  id: planton-oss-e2e-gcpcolr-template
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcolabruntime
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  runtimeTemplateId: pln-e2e-colr-${E2E_RUN_ID}
+  machineSpec:
+    machineType: e2-standard-4
+  networkSpec:
+    enableInternetAccess: true
+  idleTimeout: 600s
+  deletionPolicy: DELETE

@@ -1,0 +1,27 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorTemplate
+metadata:
+  name: prompt-guard
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  labels:
+    team: platform
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: MEDIUM_AND_ABOVE
+    maliciousUriFilterSettings:
+      filterEnforcement: ENABLED
+    raiSettings:
+      raiFilters:
+        - filterType: DANGEROUS
+          confidenceLevel: MEDIUM_AND_ABOVE
+        - filterType: HARASSMENT
+          confidenceLevel: MEDIUM_AND_ABOVE
+  templateMetadata:
+    # Report first, block once the thresholds are tuned.
+    enforcementType: INSPECT_ONLY
+    logSanitizeOperations: true
+  deletionPolicy: DELETE

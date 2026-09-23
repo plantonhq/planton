@@ -1,0 +1,28 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_tpu_v2_vm:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider's `name` is the TPU's id.
+      - spec: spec.node_id
+        arg: name
+      # Google's scope list, named for what it holds (Pulumi calls it
+      # scopes too).
+      - spec: spec.service_account.scopes
+        arg: service_account.scope
+      # The shielded_instance_config wrapper holds one leaf; the spec lifts
+      # it and the modules send the block only when it is true.
+      - spec: spec.enable_secure_boot
+        arg: shielded_instance_config.enable_secure_boot
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

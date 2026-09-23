@@ -1,0 +1,20 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpmodelarmortemplate
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: filter_config
+      sku_meter: Model Armor sanitization
+      pricing_unit: tokens screened
+      impact: The template itself is free; every sanitize call that names it bills the text screened, beyond Google's monthly free allowance (per Google's Model Armor pricing page, read 2026-09-23). More filters do not multiply the meter; more traffic does.
+    - field_path: filter_config.sdp_settings.advanced_config
+      sku_meter: Sensitive Data Protection inspection
+      pricing_unit: bytes inspected
+      impact: Your own inspect and de-identify templates run Sensitive Data Protection on the screened text, which can bill under Sensitive Data Protection as well.
+  free_tier: Model Armor includes a monthly allowance of screened tokens per billing account before usage bills.
+  notes: "Logging every sanitize call (template_metadata.log_sanitize_operations) writes each prompt and response to Cloud Logging, which bills ingestion and retention there."

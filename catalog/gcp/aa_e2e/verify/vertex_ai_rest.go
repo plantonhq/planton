@@ -2,46 +2,24 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/pkg/errors"
 )
 
-// vertexAiGet reads one Vertex AI resource by its full name through the
-// REST API on the regional host Google's provider uses
-// (https://{region}-aiplatform.googleapis.com/v1/). The decoded body is
-// returned as a generic map so each verifier asserts the fields it cares
-// about; the status code is returned so callers can tell a 404 from any
-// other error. Shared by the Vertex AI kinds whose resources the pinned
-// client library has no typed client for at the harness's granularity.
+// vertexAiGet reads one Vertex AI resource by its full name on the regional
+// host Google's provider uses (https://{region}-aiplatform.googleapis.com/v1/)
+// and returns the decoded body as a generic map, so each verifier asserts
+// the fields it cares about. Shared by the Vertex AI and Colab Enterprise
+// kinds; the status code tells a 404 from any other error.
 func vertexAiGet(ctx context.Context, svc *Services, name string) (map[string]interface{}, int, error) {
-	url := fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(name), name)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build vertex ai GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "vertex ai GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read vertex ai response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("vertex ai GET %s returned %d: %s", name, resp.StatusCode, string(body))
-	}
-
 	obj := map[string]interface{}{}
-	if err := json.Unmarshal(body, &obj); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode vertex ai resource")
+	status, err := googleRestGet(ctx, svc, "vertex ai resource",
+		fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(name), name), &obj)
+	if err != nil {
+		return nil, status, err
 	}
-	return obj, resp.StatusCode, nil
+	return obj, status, nil
 }
 
 // vertexAiExistsWithLabel reads a Vertex AI resource and asserts the
@@ -67,11 +45,5 @@ func vertexAiAbsent(ctx context.Context, svc *Services, what, name string) error
 		return nil
 	}
 	_, status, err := vertexAiGet(ctx, svc, name)
-	if err != nil {
-		if status == http.StatusNotFound {
-			return nil
-		}
-		return errors.Wrapf(err, "unexpected error probing %s %s after destroy", what, name)
-	}
-	return errors.Errorf("%s %s still exists after destroy", what, name)
+	return restAbsent(what, name, status, err)
 }

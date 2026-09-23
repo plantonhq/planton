@@ -514,6 +514,8 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRun | `spec.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
 | GcpCloudRunJob | `spec.template.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
 | GcpCloudRunWorkerPool | `spec.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
+| GcpColabRuntimeTemplate | `spec.networkSpec.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpColabSchedule | `spec.notebookExecutionJob.customEnvironmentSpec.networkSpec.subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpComputeInstance | `spec.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpComputeMig | `spec.template.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
@@ -536,6 +538,9 @@ Fields on other kinds that can point at this resource:
 | GcpRouterNat | `spec.nat64Subnetworks` | `status.outputs.subnetwork_self_link` |
 | GcpServerlessVpcConnector | `spec.subnet.name` | `status.outputs.subnetwork_name` |
 | GcpServiceConnectionPolicy | `spec.pscConfig.subnetworks` | `status.outputs.subnetwork_self_link` |
+| GcpTpuQueuedResource | `spec.nodeSpecs[].node.networkConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpTpuVm | `spec.networkConfig.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpTpuVm | `spec.networkConfigs[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpVertexAiNotebook | `spec.networkInterface.subnet` | `status.outputs.subnetwork_self_link` |
 
 ## See Also

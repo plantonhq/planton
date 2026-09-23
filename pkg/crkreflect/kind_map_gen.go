@@ -536,6 +536,9 @@ import (
 	gcpcloudsqldatabasev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqldatabase/v1alpha1"
 	gcpcloudsqluserv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudsqluser/v1alpha1"
 	gcpcloudtasksqueuev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudtasksqueue/v1alpha1"
+	gcpcolabruntimev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabruntime/v1alpha1"
+	gcpcolabruntimetemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabruntimetemplate/v1alpha1"
+	gcpcolabschedulev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcolabschedule/v1alpha1"
 	gcpcomputediskv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputedisk/v1alpha1"
 	gcpcomputeinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputeinstance/v1alpha1"
 	gcpcomputemigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputemig/v1alpha1"
@@ -543,6 +546,7 @@ import (
 	gcpdataprocclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdataproccluster/v1alpha1"
 	gcpdnsrecordv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnsrecord/v1alpha1"
 	gcpdnszonev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnszone/v1alpha1"
+	gcpdocumentaiprocessorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdocumentaiprocessor/v1alpha1"
 	gcpeventarcmessagebusv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarcmessagebus/v1alpha1"
 	gcpeventarctriggerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarctrigger/v1alpha1"
 	gcpfilestoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpfilestoreinstance/v1alpha1"
@@ -578,6 +582,8 @@ import (
 	gcplogmetricv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcplogmetric/v1alpha1"
 	gcpmanagedsslcertificatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedsslcertificate/v1alpha1"
 	gcpmemorystoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmemorystoreinstance/v1alpha1"
+	gcpmodelarmorfloorsettingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1"
+	gcpmodelarmortemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmodelarmortemplate/v1alpha1"
 	gcpmonitoringalertpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringalertpolicy/v1alpha1"
 	gcpmonitoringdashboardv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringdashboard/v1alpha1"
 	gcpmonitoringnotificationchannelv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmonitoringnotificationchannel/v1alpha1"
@@ -618,6 +624,8 @@ import (
 	gcptagvaluev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptagvalue/v1alpha1"
 	gcptargethttpproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpproxy/v1alpha1"
 	gcptargethttpsproxyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptargethttpsproxy/v1alpha1"
+	gcptpuqueuedresourcev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptpuqueuedresource/v1alpha1"
+	gcptpuvmv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcptpuvm/v1alpha1"
 	gcpurlmapv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpurlmap/v1alpha1"
 	gcpvectorsearchcollectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvectorsearchcollection/v1alpha1"
 	gcpvertexaiagentenginev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiagentengine/v1alpha1"
@@ -1328,6 +1336,9 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpCloudSqlDatabase:                    &gcpcloudsqldatabasev1alpha1.GcpCloudSqlDatabase{},
 	cloudresourcekind.CloudResourceKind_GcpCloudSqlUser:                        &gcpcloudsqluserv1alpha1.GcpCloudSqlUser{},
 	cloudresourcekind.CloudResourceKind_GcpCloudTasksQueue:                     &gcpcloudtasksqueuev1alpha1.GcpCloudTasksQueue{},
+	cloudresourcekind.CloudResourceKind_GcpColabRuntime:                        &gcpcolabruntimev1alpha1.GcpColabRuntime{},
+	cloudresourcekind.CloudResourceKind_GcpColabRuntimeTemplate:                &gcpcolabruntimetemplatev1alpha1.GcpColabRuntimeTemplate{},
+	cloudresourcekind.CloudResourceKind_GcpColabSchedule:                       &gcpcolabschedulev1alpha1.GcpColabSchedule{},
 	cloudresourcekind.CloudResourceKind_GcpComputeDisk:                         &gcpcomputediskv1alpha1.GcpComputeDisk{},
 	cloudresourcekind.CloudResourceKind_GcpComputeInstance:                     &gcpcomputeinstancev1alpha1.GcpComputeInstance{},
 	cloudresourcekind.CloudResourceKind_GcpComputeMig:                          &gcpcomputemigv1alpha1.GcpComputeMig{},
@@ -1335,6 +1346,7 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpDataprocCluster:                     &gcpdataprocclusterv1alpha1.GcpDataprocCluster{},
 	cloudresourcekind.CloudResourceKind_GcpDnsRecord:                           &gcpdnsrecordv1alpha1.GcpDnsRecord{},
 	cloudresourcekind.CloudResourceKind_GcpDnsZone:                             &gcpdnszonev1alpha1.GcpDnsZone{},
+	cloudresourcekind.CloudResourceKind_GcpDocumentAiProcessor:                 &gcpdocumentaiprocessorv1alpha1.GcpDocumentAiProcessor{},
 	cloudresourcekind.CloudResourceKind_GcpEventarcMessageBus:                  &gcpeventarcmessagebusv1alpha1.GcpEventarcMessageBus{},
 	cloudresourcekind.CloudResourceKind_GcpEventarcTrigger:                     &gcpeventarctriggerv1alpha1.GcpEventarcTrigger{},
 	cloudresourcekind.CloudResourceKind_GcpFilestoreInstance:                   &gcpfilestoreinstancev1alpha1.GcpFilestoreInstance{},
@@ -1370,6 +1382,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpLoggingSink:                         &gcploggingsinkv1alpha1.GcpLoggingSink{},
 	cloudresourcekind.CloudResourceKind_GcpManagedSslCertificate:               &gcpmanagedsslcertificatev1alpha1.GcpManagedSslCertificate{},
 	cloudresourcekind.CloudResourceKind_GcpMemorystoreInstance:                 &gcpmemorystoreinstancev1alpha1.GcpMemorystoreInstance{},
+	cloudresourcekind.CloudResourceKind_GcpModelArmorFloorSetting:              &gcpmodelarmorfloorsettingv1alpha1.GcpModelArmorFloorSetting{},
+	cloudresourcekind.CloudResourceKind_GcpModelArmorTemplate:                  &gcpmodelarmortemplatev1alpha1.GcpModelArmorTemplate{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringAlertPolicy:               &gcpmonitoringalertpolicyv1alpha1.GcpMonitoringAlertPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringDashboard:                 &gcpmonitoringdashboardv1alpha1.GcpMonitoringDashboard{},
 	cloudresourcekind.CloudResourceKind_GcpMonitoringNotificationChannel:       &gcpmonitoringnotificationchannelv1alpha1.GcpMonitoringNotificationChannel{},
@@ -1410,6 +1424,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpTagValue:                            &gcptagvaluev1alpha1.GcpTagValue{},
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpProxy:                     &gcptargethttpproxyv1alpha1.GcpTargetHttpProxy{},
 	cloudresourcekind.CloudResourceKind_GcpTargetHttpsProxy:                    &gcptargethttpsproxyv1alpha1.GcpTargetHttpsProxy{},
+	cloudresourcekind.CloudResourceKind_GcpTpuQueuedResource:                   &gcptpuqueuedresourcev1alpha1.GcpTpuQueuedResource{},
+	cloudresourcekind.CloudResourceKind_GcpTpuVm:                               &gcptpuvmv1alpha1.GcpTpuVm{},
 	cloudresourcekind.CloudResourceKind_GcpUrlMap:                              &gcpurlmapv1alpha1.GcpUrlMap{},
 	cloudresourcekind.CloudResourceKind_GcpVectorSearchCollection:              &gcpvectorsearchcollectionv1alpha1.GcpVectorSearchCollection{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiAgentEngine:                 &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngine{},

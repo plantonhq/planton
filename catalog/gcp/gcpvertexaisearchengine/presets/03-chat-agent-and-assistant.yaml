@@ -32,8 +32,16 @@ spec:
             matchType: WORD_BOUNDARY_STRING_MATCH
             ignoreDiacritics: true
         modelArmorConfig:
-          userPromptTemplate: projects/my-gcp-project/locations/global/templates/prompt-guard
-          responseTemplate: projects/my-gcp-project/locations/global/templates/response-guard
+          userPromptTemplate:
+            valueFrom:
+              kind: GcpModelArmorTemplate
+              name: prompt-guard
+              fieldPath: status.outputs.name
+          responseTemplate:
+            valueFrom:
+              kind: GcpModelArmorTemplate
+              name: response-guard
+              fieldPath: status.outputs.name
           failureMode: FAIL_CLOSED
       generationConfig:
         defaultLanguage: en

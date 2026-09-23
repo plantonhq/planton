@@ -1,0 +1,21 @@
+# The bucket the schedule's notebook runs would write to (and read the
+# notebook from). force_destroy lets the lane tear it down.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGcsBucket
+metadata:
+  name: planton-oss-e2e-gcpcols-bucket
+  id: planton-oss-e2e-gcpcols-bucket
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcolabschedule
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  bucketName: pln-e2e-cols-${E2E_RUN_ID}
+  location: US-CENTRAL1
+  uniformBucketLevelAccessEnabled: true
+  forceDestroy: true

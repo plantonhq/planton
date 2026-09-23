@@ -2,9 +2,7 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -46,30 +44,12 @@ func (c *vertexAiRagEngineConfig) tier() string {
 }
 
 func (v *vertexAiRagEngineConfigVerifier) get(ctx context.Context, svc *Services, name string) (*vertexAiRagEngineConfig, int, error) {
-	url := fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(name), name)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build rag engine config GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "rag engine config GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read rag engine config response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("rag engine config GET %s returned %d: %s", name, resp.StatusCode, string(body))
-	}
-
 	cfg := &vertexAiRagEngineConfig{}
-	if err := json.Unmarshal(body, cfg); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode rag engine config")
+	status, err := googleRestGet(ctx, svc, "rag engine config", fmt.Sprintf("https://%s-aiplatform.googleapis.com/v1/%s", regionFromVertexResource(name), name), cfg)
+	if err != nil {
+		return nil, status, err
 	}
-	return cfg, resp.StatusCode, nil
+	return cfg, status, nil
 }
 
 // VerifyExists confirms the configuration reads back at a provisioned tier

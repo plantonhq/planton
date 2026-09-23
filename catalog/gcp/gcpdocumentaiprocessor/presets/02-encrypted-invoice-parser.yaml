@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDocumentAiProcessor
+metadata:
+  name: invoice-parser
+spec:
+  projectId:
+    value: my-gcp-project
+  location: eu
+  type: INVOICE_PROCESSOR
+  displayName: Invoice parser
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: documents-key
+      fieldPath: status.outputs.key_id
+  # A concrete version keeps extraction results stable across Google's
+  # releases; never the stable or rc alias.
+  defaultVersion: pretrained-invoice-v2.0-2023-12-06
+  deletionPolicy: PREVENT

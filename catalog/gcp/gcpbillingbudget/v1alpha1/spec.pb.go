@@ -30,8 +30,9 @@ type GcpBillingBudgetSpecifiedAmount struct {
 	// The 3-letter ISO 4217 currency code. Must match the billing account's
 	// currency; unset takes the account's currency.
 	CurrencyCode string `protobuf:"bytes,1,opt,name=currency_code,json=currencyCode,proto3" json:"currency_code,omitempty"`
-	// The whole units of the amount, e.g. 1000 for $1,000 when the currency is
-	// USD. 0 with a non-zero nanos is a sub-unit budget.
+	// The whole units of the amount in currency_code, e.g. 1000 for a budget
+	// of one thousand US dollars when the currency is USD. 0 with a non-zero
+	// nanos is a sub-unit budget.
 	Units int64 `protobuf:"varint,2,opt,name=units,proto3" json:"units,omitempty"`
 	// Fractional part of the amount in nano units (10^-9), 0 to 999,999,999.
 	// 750,000,000 with units 1 is 1.75 in the currency.

@@ -1244,6 +1244,70 @@ func TestGcpVertexAiTensorboard_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvertexaitensorboard", "terraform")
 }
 
+func TestGcpModelArmorTemplate_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmodelarmortemplate", "pulumi")
+}
+
+func TestGcpModelArmorTemplate_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmodelarmortemplate", "terraform")
+}
+
+func TestGcpModelArmorFloorSetting_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmodelarmorfloorsetting", "pulumi")
+}
+
+func TestGcpModelArmorFloorSetting_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmodelarmorfloorsetting", "terraform")
+}
+
+func TestGcpDocumentAiProcessor_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdocumentaiprocessor", "pulumi")
+}
+
+func TestGcpDocumentAiProcessor_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdocumentaiprocessor", "terraform")
+}
+
+func TestGcpColabRuntimeTemplate_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcolabruntimetemplate", "pulumi")
+}
+
+func TestGcpColabRuntimeTemplate_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcolabruntimetemplate", "terraform")
+}
+
+func TestGcpColabRuntime_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcolabruntime", "pulumi")
+}
+
+func TestGcpColabRuntime_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcolabruntime", "terraform")
+}
+
+func TestGcpColabSchedule_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcolabschedule", "pulumi")
+}
+
+func TestGcpColabSchedule_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpcolabschedule", "terraform")
+}
+
+func TestGcpTpuVm_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptpuvm", "pulumi")
+}
+
+func TestGcpTpuVm_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptpuvm", "terraform")
+}
+
+func TestGcpTpuQueuedResource_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptpuqueuedresource", "pulumi")
+}
+
+func TestGcpTpuQueuedResource_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcptpuqueuedresource", "terraform")
+}
+
 func TestGcpVertexAiPersistentResource_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvertexaipersistentresource", "pulumi")
 }

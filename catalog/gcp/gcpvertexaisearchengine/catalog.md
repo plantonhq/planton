@@ -94,6 +94,7 @@ These are the most important decisions when configuring an engine. Explore the f
 | **GcpVertexAiSearchDataStore** | `controls[].*Action.dataStore`, `widgetConfig.uiSettings.dataStoreUiConfigs[].name` | `status.outputs.name` |
 | **GcpVertexAiSearchDataConnector** | `collectionId` | `status.outputs.collection_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
+| **GcpModelArmorTemplate** | `assistants[].customerPolicy.modelArmorConfig.userPromptTemplate`, `.responseTemplate` | `status.outputs.name` |
 
 ### What This Component Provides
 
@@ -124,3 +125,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**GCP Vertex AI Search Data Store**](/cloud-catalog/gcp-vertex-ai-search-data-store) -- the stores the engine reads
 - [**GCP Vertex AI Search Data Connector**](/cloud-catalog/gcp-vertex-ai-search-data-connector) -- connector-synced stores in their own collection
 - [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Model Armor Template**](/cloud-catalog/gcp-model-armor-template) -- the safety templates assistants screen prompts and responses through

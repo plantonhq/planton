@@ -1,0 +1,33 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpdocumentaiprocessor
+spec:
+  gcp:
+    groups:
+      - purpose: EnableDocumentAiApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling documentai.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageProcessor
+        permissions:
+          - documentai.processors.create
+          - documentai.processors.get
+          - documentai.processors.delete
+          - documentai.operations.getLegacy
+        provenance: derived
+        notes: Covers google_document_ai_processor (Pulumi essentialcontacts.DocumentAiProcessor) -- every argument is immutable, so there is no update path; delete runs a long-running operation the provider polls. roles/documentai.admin contains all four.
+      - purpose: SetDefaultVersion
+        permissions:
+          - documentai.processors.update
+        provenance: derived
+        condition:
+          spec_field_set: default_version
+        notes: Covers google_document_ai_processor_default_version (Pulumi essentialcontacts.DocumentAiProcessorDefaultVersion) -- create calls processors.setDefaultProcessorVersion; delete makes no API call.

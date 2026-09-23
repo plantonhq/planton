@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorFloorSetting
+metadata:
+  name: project-floor
+spec:
+  scope:
+    projectId:
+      value: my-gcp-project
+  enableFloorSettingEnforcement: true
+  integratedServices:
+    - AI_PLATFORM
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: HIGH
+  aiPlatformFloorSetting:
+    # Record verdicts on every Vertex AI model call without blocking any.
+    enforcementType: INSPECT_ONLY
+    enableCloudLogging: true

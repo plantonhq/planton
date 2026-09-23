@@ -255,6 +255,10 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRunJob | `spec.template.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | GcpCloudRunWorkerPool | `spec.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | GcpCloudSql | `spec.network.privateNetwork` | `status.outputs.network_id` |
+| GcpColabRuntimeTemplate | `spec.networkSpec.network` | `status.outputs.network_id` |
+| GcpColabSchedule | `spec.notebookExecutionJob.customEnvironmentSpec.networkSpec.network` | `status.outputs.network_id` |
+| GcpColabSchedule | `spec.pipelineJob.network` | `status.outputs.network_self_link` |
+| GcpColabSchedule | `spec.pipelineJob.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | GcpComputeInstance | `spec.networkInterfaces[].network` | `status.outputs.network_self_link` |
 | GcpComputeMig | `spec.template.networkInterfaces[].network` | `status.outputs.network_self_link` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.network` | `status.outputs.network_self_link` |
@@ -290,6 +294,9 @@ Fields on other kinds that can point at this resource:
 | GcpServiceConnectionPolicy | `spec.network` | `status.outputs.network_id` |
 | GcpServiceNetworkingConnection | `spec.network` | `status.outputs.network_self_link` |
 | GcpSubnetwork | `spec.vpcSelfLink` | `status.outputs.network_self_link` |
+| GcpTpuQueuedResource | `spec.nodeSpecs[].node.networkConfig.network` | `status.outputs.network_id` |
+| GcpTpuVm | `spec.networkConfig.network` | `status.outputs.network_id` |
+| GcpTpuVm | `spec.networkConfigs[].network` | `status.outputs.network_id` |
 | GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | GcpVertexAiEndpoint | `spec.network` | `status.outputs.network_self_link` |
 | GcpVertexAiEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |

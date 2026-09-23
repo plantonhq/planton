@@ -254,8 +254,8 @@ spec:
 | `spec.assistants[].customerPolicy.bannedPhrases[].matchType` | `string` |  |  |  |
 | `spec.assistants[].customerPolicy.bannedPhrases[].ignoreDiacritics` | `bool` |  |  |  |
 | `spec.assistants[].customerPolicy.modelArmorConfig` | `GcpVertexAiSearchEngineModelArmorConfig` |  |  |  |
-| `spec.assistants[].customerPolicy.modelArmorConfig.userPromptTemplate` | `string` | yes |  |  |
-| `spec.assistants[].customerPolicy.modelArmorConfig.responseTemplate` | `string` | yes |  |  |
+| `spec.assistants[].customerPolicy.modelArmorConfig.userPromptTemplate` | `string \| valueFrom` | yes |  | GcpModelArmorTemplate (`status.outputs.name`) |
+| `spec.assistants[].customerPolicy.modelArmorConfig.responseTemplate` | `string \| valueFrom` | yes |  | GcpModelArmorTemplate (`status.outputs.name`) |
 | `spec.assistants[].customerPolicy.modelArmorConfig.failureMode` | `string` |  |  |  |
 | `spec.assistants[].generationConfig` | `GcpVertexAiSearchEngineGenerationConfig` |  |  |  |
 | `spec.assistants[].generationConfig.defaultLanguage` | `string` |  |  |  |
@@ -1386,19 +1386,26 @@ Model Armor sanitization.
 
 ### spec.assistants[].customerPolicy.modelArmorConfig.userPromptTemplate
 
-`string` · required
+`string | valueFrom` · required
 
-The template applied to user prompts.
+The template applied to user prompts: a GcpModelArmorTemplate
+reference or a literal
+projects/{project}/locations/{location}/templates/{template}.
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+- references: GcpModelArmorTemplate (`status.outputs.name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpModelArmorTemplate, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.assistants[].customerPolicy.modelArmorConfig.responseTemplate
 
-`string` · required
+`string | valueFrom` · required
 
-The template applied to assistant responses.
+The template applied to assistant responses: a GcpModelArmorTemplate
+reference or a literal template name.
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+- references: GcpModelArmorTemplate (`status.outputs.name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpModelArmorTemplate, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.assistants[].customerPolicy.modelArmorConfig.failureMode
 
@@ -1484,6 +1491,8 @@ Fields that can point at another resource's outputs:
 | `spec.controls[].filterAction.dataStore` | GcpVertexAiSearchDataStore | `status.outputs.name` |
 | `spec.controls[].promoteAction.dataStore` | GcpVertexAiSearchDataStore | `status.outputs.name` |
 | `spec.widgetConfig.uiSettings.dataStoreUiConfigs[].name` | GcpVertexAiSearchDataStore | `status.outputs.name` |
+| `spec.assistants[].customerPolicy.modelArmorConfig.userPromptTemplate` | GcpModelArmorTemplate | `status.outputs.name` |
+| `spec.assistants[].customerPolicy.modelArmorConfig.responseTemplate` | GcpModelArmorTemplate | `status.outputs.name` |
 
 ## See Also
 

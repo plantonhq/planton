@@ -235,6 +235,10 @@ Fields on other kinds that can point at this resource:
 | GcpCloudSqlDatabase | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudSqlUser | `spec.projectId` | `status.outputs.project_id` |
 | GcpCloudTasksQueue | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabRuntime | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabRuntimeTemplate | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabSchedule | `spec.projectId` | `status.outputs.project_id` |
+| GcpColabSchedule | `spec.pipelineJob.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
 | GcpComputeDisk | `spec.projectId` | `status.outputs.project_id` |
 | GcpComputeInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpComputeMig | `spec.projectId` | `status.outputs.project_id` |
@@ -246,6 +250,7 @@ Fields on other kinds that can point at this resource:
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.primary.internalLoadBalancers[].project` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.backupGeo[].healthCheckedTargets.internalLoadBalancers[].project` | `status.outputs.project_id` |
 | GcpDnsZone | `spec.projectId` | `status.outputs.project_id` |
+| GcpDocumentAiProcessor | `spec.projectId` | `status.outputs.project_id` |
 | GcpEventarcMessageBus | `spec.projectId` | `status.outputs.project_id` |
 | GcpEventarcTrigger | `spec.projectId` | `status.outputs.project_id` |
 | GcpFilestoreInstance | `spec.projectId` | `status.outputs.project_id` |
@@ -276,6 +281,8 @@ Fields on other kinds that can point at this resource:
 | GcpManagedSslCertificate | `spec.projectId` | `status.outputs.project_id` |
 | GcpMemorystoreInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpMemorystoreInstance | `spec.pscAutoConnections[].projectId` | `status.outputs.project_id` |
+| GcpModelArmorFloorSetting | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpModelArmorTemplate | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringAlertPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringDashboard | `spec.projectId` | `status.outputs.project_id` |
 | GcpMonitoringNotificationChannel | `spec.projectId` | `status.outputs.project_id` |
@@ -315,6 +322,8 @@ Fields on other kinds that can point at this resource:
 | GcpTagKey | `spec.parent.projectId` | `status.outputs.project_id` |
 | GcpTargetHttpProxy | `spec.projectId` | `status.outputs.project_id` |
 | GcpTargetHttpsProxy | `spec.projectId` | `status.outputs.project_id` |
+| GcpTpuQueuedResource | `spec.projectId` | `status.outputs.project_id` |
+| GcpTpuVm | `spec.projectId` | `status.outputs.project_id` |
 | GcpUrlMap | `spec.projectId` | `status.outputs.project_id` |
 | GcpVectorSearchCollection | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiAgentEngine | `spec.projectId` | `status.outputs.project_id` |

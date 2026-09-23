@@ -1759,7 +1759,15 @@ Allowed values (use exactly as shown):
 - `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
 - `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
 - `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -2684,7 +2692,15 @@ Allowed values (use exactly as shown):
 - `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
 - `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
 - `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -4791,7 +4807,15 @@ Allowed values (use exactly as shown):
 - `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
 - `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
 - `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -5716,7 +5740,15 @@ Allowed values (use exactly as shown):
 - `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
 - `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
 - `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -7942,7 +7974,15 @@ Allowed values (use exactly as shown):
 - `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
 - `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
 - `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`
@@ -8867,7 +8907,15 @@ Allowed values (use exactly as shown):
 - `GcpVertexAiDataset` -- A Vertex AI managed dataset: the registered container training, AutoML, labeling, and evaluation read their examples from.
 - `GcpVertexAiTensorboard` -- A managed Vertex AI TensorBoard training jobs stream metrics into, with the experiments and runs declared in it folded in.
 - `GcpVertexAiPersistentResource` -- A long-running cluster Vertex AI keeps provisioned so training jobs and Ray on Vertex AI start in seconds and scarce accelerators stay held between jobs.
+- `GcpModelArmorTemplate` -- A Model Armor template: the named safety filters (prompt injection and jailbreak, Responsible AI content, sensitive data, malicious URLs) an AI application screens prompts and responses through.
+- `GcpDocumentAiProcessor` -- A Document AI processor: a managed model that turns documents into structured data (OCR, forms, invoices, IDs), with its default version.
+- `GcpColabRuntimeTemplate` -- A Colab Enterprise runtime template: the machine, network, image, and security settings every notebook runtime created from it gets.
+- `GcpColabRuntime` -- A Colab Enterprise runtime: a notebook VM assigned to one user, built from a runtime template and started or stopped on purpose.
+- `GcpColabSchedule` -- A Vertex AI schedule: a cron that launches a Colab Enterprise notebook run or a Vertex AI Pipelines run.
+- `GcpTpuVm` -- A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpVertexAiSearchDataConnector` -- A data connector is a COLLECTION of data stores Google syncs from a source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google Drive, ...) on a schedule -- a different root from a data store, which is why it is its own kind. Engines search its stores by naming the collection.
+- `GcpModelArmorFloorSetting` -- A Model Armor floor setting: the minimum safety screening a project, folder, or organization enforces on its templates and directly on Vertex AI and Google MCP server traffic. A different parent from a template (and a singleton Google never deletes), which is why it is its own kind.
+- `GcpTpuQueuedResource` -- A Cloud TPU queued resource: a request that waits for TPU capacity and then provisions the nodes it describes. A different root from a TPU VM that owns many nodes, which is why it is its own kind. Beta-only in Google's provider (a recorded google-beta admission).
 - `GcpFirebaseProject` -- 3250–3259: GCP Firebase (project enablement, app registrations, and the Firebase-adjacent products that follow) GcpFirebaseProject is the container the app registrations live in: "Firebase on this project" is the room, the Android/Apple/Web apps are what is placed inside it.
 - `GcpFirebaseAndroidApp` -- The three app registrations exist only inside a Firebase-enabled project, so each names GcpFirebaseProject as its prerequisite: the E2E harness deploys the enablement first, and a chart that references the enablement's project_id output orders the registration after it.
 - `GcpFirebaseAppleApp`

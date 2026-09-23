@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpModelArmorTemplate
+metadata:
+  name: prompt-guard
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  filterConfig:
+    piAndJailbreakFilterSettings:
+      filterEnforcement: ENABLED
+      confidenceLevel: MEDIUM_AND_ABOVE
+    maliciousUriFilterSettings:
+      filterEnforcement: ENABLED
+  templateMetadata:
+    enforcementType: INSPECT_ONLY
+    logSanitizeOperations: true

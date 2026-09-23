@@ -2036,12 +2036,42 @@ const (
 	// Ray on Vertex AI start in seconds and scarce accelerators stay held
 	// between jobs.
 	CloudResourceKind_GcpVertexAiPersistentResource CloudResourceKind = 3211
+	// A Model Armor template: the named safety filters (prompt injection and
+	// jailbreak, Responsible AI content, sensitive data, malicious URLs) an
+	// AI application screens prompts and responses through.
+	CloudResourceKind_GcpModelArmorTemplate CloudResourceKind = 3212
+	// A Document AI processor: a managed model that turns documents into
+	// structured data (OCR, forms, invoices, IDs), with its default version.
+	CloudResourceKind_GcpDocumentAiProcessor CloudResourceKind = 3213
+	// A Colab Enterprise runtime template: the machine, network, image, and
+	// security settings every notebook runtime created from it gets.
+	CloudResourceKind_GcpColabRuntimeTemplate CloudResourceKind = 3214
+	// A Colab Enterprise runtime: a notebook VM assigned to one user, built
+	// from a runtime template and started or stopped on purpose.
+	CloudResourceKind_GcpColabRuntime CloudResourceKind = 3215
+	// A Vertex AI schedule: a cron that launches a Colab Enterprise notebook
+	// run or a Vertex AI Pipelines run.
+	CloudResourceKind_GcpColabSchedule CloudResourceKind = 3216
+	// A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs.
+	// Beta-only in Google's provider (a recorded google-beta admission).
+	CloudResourceKind_GcpTpuVm CloudResourceKind = 3217
 	// A data connector is a COLLECTION of data stores Google syncs from a
 	// source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
 	// Drive, ...) on a schedule -- a different root from a data store, which
 	// is why it is its own kind. Engines search its stores by naming the
 	// collection.
 	CloudResourceKind_GcpVertexAiSearchDataConnector CloudResourceKind = 3219
+	// A Model Armor floor setting: the minimum safety screening a project,
+	// folder, or organization enforces on its templates and directly on
+	// Vertex AI and Google MCP server traffic. A different parent from a
+	// template (and a singleton Google never deletes), which is why it is
+	// its own kind.
+	CloudResourceKind_GcpModelArmorFloorSetting CloudResourceKind = 3220
+	// A Cloud TPU queued resource: a request that waits for TPU capacity and
+	// then provisions the nodes it describes. A different root from a TPU VM
+	// that owns many nodes, which is why it is its own kind. Beta-only in
+	// Google's provider (a recorded google-beta admission).
+	CloudResourceKind_GcpTpuQueuedResource CloudResourceKind = 3221
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -3118,7 +3148,15 @@ var (
 		3209: "GcpVertexAiDataset",
 		3210: "GcpVertexAiTensorboard",
 		3211: "GcpVertexAiPersistentResource",
+		3212: "GcpModelArmorTemplate",
+		3213: "GcpDocumentAiProcessor",
+		3214: "GcpColabRuntimeTemplate",
+		3215: "GcpColabRuntime",
+		3216: "GcpColabSchedule",
+		3217: "GcpTpuVm",
 		3219: "GcpVertexAiSearchDataConnector",
+		3220: "GcpModelArmorFloorSetting",
+		3221: "GcpTpuQueuedResource",
 		3250: "GcpFirebaseProject",
 		3251: "GcpFirebaseAndroidApp",
 		3252: "GcpFirebaseAppleApp",
@@ -3880,7 +3918,15 @@ var (
 		"GcpVertexAiDataset":                             3209,
 		"GcpVertexAiTensorboard":                         3210,
 		"GcpVertexAiPersistentResource":                  3211,
+		"GcpModelArmorTemplate":                          3212,
+		"GcpDocumentAiProcessor":                         3213,
+		"GcpColabRuntimeTemplate":                        3214,
+		"GcpColabRuntime":                                3215,
+		"GcpColabSchedule":                               3216,
+		"GcpTpuVm":                                       3217,
 		"GcpVertexAiSearchDataConnector":                 3219,
+		"GcpModelArmorFloorSetting":                      3220,
+		"GcpTpuQueuedResource":                           3221,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4540,7 +4586,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xd6\xed\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x94\xf1\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5117,8 +5163,16 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1dGcpVertexAiFeatureOnlineStore\x10\x88\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvfosP\xb2\x02\x124\n" +
 	"\x12GcpVertexAiDataset\x10\x89\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvdsP\xb2\x02\x128\n" +
 	"\x16GcpVertexAiTensorboard\x10\x8a\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvtbP\xb2\x02\x12?\n" +
-	"\x1dGcpVertexAiPersistentResource\x10\x8b\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvprP\xb2\x02\x12A\n" +
-	"\x1eGcpVertexAiSearchDataConnector\x10\x93\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvsdcP\xb2\x02\x128\n" +
+	"\x1dGcpVertexAiPersistentResource\x10\x8b\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvprP\xb2\x02\x128\n" +
+	"\x15GcpModelArmorTemplate\x10\x8c\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpmarmP\xb2\x02\x12:\n" +
+	"\x16GcpDocumentAiProcessor\x10\x8d\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdocaiP\xb2\x02\x12:\n" +
+	"\x17GcpColabRuntimeTemplate\x10\x8e\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcoltP\xb2\x02\x122\n" +
+	"\x0fGcpColabRuntime\x10\x8f\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcolrP\xb2\x02\x123\n" +
+	"\x10GcpColabSchedule\x10\x90\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcolsP\xb2\x02\x12*\n" +
+	"\bGcpTpuVm\x10\x91\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcptpuP\xb2\x02\x12A\n" +
+	"\x1eGcpVertexAiSearchDataConnector\x10\x93\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvsdcP\xb2\x02\x12<\n" +
+	"\x19GcpModelArmorFloorSetting\x10\x94\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpmafsP\xb2\x02\x127\n" +
+	"\x14GcpTpuQueuedResource\x10\x95\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptpuqP\xb2\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

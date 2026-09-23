@@ -1,0 +1,43 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcolabruntime
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageRuntime
+        permissions:
+          - aiplatform.notebookRuntimes.assign
+          - aiplatform.notebookRuntimes.get
+          - aiplatform.notebookRuntimes.delete
+          - aiplatform.notebookRuntimeTemplates.apply
+          - aiplatform.notebookRuntimeTemplates.get
+          - aiplatform.operations.get
+        provenance: derived
+        notes: Covers google_colab_runtime (Pulumi colab.Runtime) -- created through notebookRuntimes.assign from the template (which needs apply on it), read on every refresh, deleted through a long-running operation the provider polls.
+      - purpose: StartAndStopRuntime
+        permissions:
+          - aiplatform.notebookRuntimes.start
+          - aiplatform.notebookRuntimes.stop
+        provenance: derived
+        condition:
+          spec_field_set: desired_state
+        notes: The client-side desired_state control calls start or stop to match on every apply.
+      - purpose: UpgradeRuntime
+        permissions:
+          - aiplatform.notebookRuntimes.upgrade
+        provenance: derived
+        condition:
+          spec_field_set: auto_upgrade
+        notes: auto_upgrade calls upgrade when Google reports the runtime upgradable.

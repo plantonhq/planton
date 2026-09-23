@@ -165,8 +165,9 @@ currency; unset takes the account's currency.
 
 `int64`
 
-The whole units of the amount, e.g. 1000 for $1,000 when the currency is
-USD. 0 with a non-zero nanos is a sub-unit budget.
+The whole units of the amount in currency_code, e.g. 1000 for a budget
+of one thousand US dollars when the currency is USD. 0 with a non-zero
+nanos is a sub-unit budget.
 
 - rule: {"int64":{"gte":"0"}}
 

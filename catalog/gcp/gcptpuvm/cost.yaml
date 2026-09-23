@@ -1,0 +1,32 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcptpuvm
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Cloud TPU
+      sku_meter: TPU chip time
+      pricing_unit: chip-hours
+      description: Every chip of the slice bills from creation until deletion, whether or not a job is running, at the generation's rate (per cloud.google.com/tpu/pricing, read 2026-09-23).
+  cost_drivers:
+    - field_path: accelerator_type
+      sku_meter: TPU chip time
+      pricing_unit: chip-hours
+      impact: The generation sets the per-chip rate and the size sets the chip count -- the cost scales with both.
+    - field_path: accelerator_config
+      sku_meter: TPU chip time
+      pricing_unit: chip-hours
+      impact: The same lever as accelerator_type, expressed as generation and topology.
+    - field_path: scheduling_config.spot
+      sku_meter: TPU chip time
+      pricing_unit: chip-hours
+      impact: Spot capacity bills a steep discount off the on-demand rate, at the risk of being reclaimed at any time.
+    - field_path: scheduling_config.reserved
+      sku_meter: TPU chip time
+      pricing_unit: chip-hours
+      impact: Drawing from a reservation bills against the reservation's committed rate instead of on-demand.
+  notes: "Attached data disks bill under Compute Engine for as long as they exist, independent of the TPU."

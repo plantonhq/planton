@@ -1,0 +1,20 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpmodelarmorfloorsetting
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: integrated_services
+      sku_meter: Model Armor sanitization
+      pricing_unit: tokens screened
+      impact: The floor itself is free; integrating a service screens every one of its calls in scope (every Vertex AI model call with AI_PLATFORM), and the screened text bills Model Armor usage beyond the monthly free allowance (per Google's Model Armor pricing page, read 2026-09-23). An organization floor with AI_PLATFORM screens every project's model traffic.
+    - field_path: ai_platform_floor_setting.enable_cloud_logging
+      sku_meter: Cloud Logging ingestion
+      pricing_unit: GiB ingested
+      impact: Logging verdicts for high-volume model traffic writes a log entry per call, billed by Cloud Logging.
+  free_tier: Model Armor includes a monthly allowance of screened tokens per billing account before usage bills.
+  notes: "With no integrated services the floor only governs templates and bills nothing."

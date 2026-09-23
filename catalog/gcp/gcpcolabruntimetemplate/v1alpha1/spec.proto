@@ -1,0 +1,241 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpColabRuntimeTemplateSpec defines a Colab Enterprise runtime template
+// (`google_colab_runtime_template`) -- the machine, disk, network, image,
+// and security settings every notebook runtime created from it gets. Admins
+// publish templates; data scientists pick one in Colab Enterprise (or a
+// GcpColabRuntime / GcpColabSchedule names it) and get a runtime that
+// already meets the team's rules: the right machine and GPU, a private
+// network, customer-managed encryption, idle shutdown to cap spend.
+//
+// Immutable: location, runtime_template_id, description, labels (a label
+// change REPLACES the template -- Google fixes a template's labels at
+// creation), network_tags, and every machine, disk, network, idle,
+// end-user-credential, and Shielded VM setting. Mutable in place:
+// display_name, kms_key_name, and software_config.
+message GcpColabRuntimeTemplateSpec {
+  // The GCP project the template lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Colab Enterprise region, e.g. "us-central1". Runtimes created from
+  // the template run here. Changing it needs a new template.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The template's id -- the last segment of its resource name. Lowercase
+  // letters, digits, and hyphens. Defaults to metadata.name. Immutable.
+  string runtime_template_id = 3 [(buf.validate.field).cel = {
+    id: "runtime_template_id.format"
+    message: "runtime_template_id must be lowercase letters, digits, and hyphens, starting with a letter or digit, up to 128 characters"
+    expression: "this == '' || this.matches('^[a-z0-9]([a-z0-9-]{0,126}[a-z0-9])?$')"
+  }];
+
+  // The name users see when they pick a runtime template -- up to 128
+  // characters. Defaults to metadata.name. Mutable.
+  string display_name = 4 [(buf.validate.field).string.max_len = 128];
+
+  // What the template is for (e.g. "GPU runtime for the vision team").
+  // Immutable.
+  string description = 5;
+
+  // Labels on the template. The platform attribution labels are merged in
+  // and win on key conflicts. A label change replaces the template.
+  map<string, string> labels = 6;
+
+  // The machine every runtime gets. Omit for Google's default machine.
+  GcpColabRuntimeTemplateMachineSpec machine_spec = 7;
+
+  // The runtime's data disk (mounted as the home directory). Omit for
+  // Google's default disk.
+  GcpColabRuntimeTemplateDataPersistentDiskSpec data_persistent_disk_spec = 8;
+
+  // The network the runtime joins. Omit for Google's default network with
+  // internet access.
+  GcpColabRuntimeTemplateNetworkSpec network_spec = 9;
+
+  // Shut an idle runtime down after this long -- the main cost control for
+  // interactive notebooks. A duration in seconds ending in "s": "0s"
+  // disables idle shutdown; otherwise between 600s (10 minutes) and 86400s
+  // (24 hours). Unset keeps Google's default idle shutdown.
+  string idle_timeout = 10 [(buf.validate.field).cel = {
+    id: "idle_timeout.format"
+    message: "idle_timeout must be a duration in seconds such as 3600s"
+    expression: "this == '' || this.matches('^[0-9]+s$')"
+  }];
+
+  // Block the user's own Google credentials inside the runtime, so
+  // notebooks act only as the runtime's service identity. Sent only when
+  // set.
+  bool euc_disabled = 11;
+
+  // Boot runtimes with Secure Boot (Shielded VM), refusing unsigned boot
+  // components. Sent only when true.
+  bool enable_secure_boot = 12;
+
+  // Compute Engine network tags applied to every runtime -- the handle VPC
+  // firewall rules target. Immutable.
+  repeated string network_tags = 13 [(buf.validate.field).repeated.unique = true];
+
+  // Customer-managed encryption key protecting the runtimes' disks: a
+  // GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // in the template's region. The Compute Engine and Vertex AI service
+  // agents need roles/cloudkms.cryptoKeyEncrypterDecrypter on it. Mutable
+  // (applies to runtimes created afterwards).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 14 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // The notebook software: environment variables, a post-startup script,
+  // and the Colab image release. Mutable.
+  GcpColabRuntimeTemplateSoftwareConfig software_config = 15;
+
+  // What happens to the template when this resource is destroyed:
+  //   "" / "DELETE" -- the template is deleted (runtimes already created
+  //                    from it keep running)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the template leaves management and stays in GCP
+  string deletion_policy = 16 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}
+
+// GcpColabRuntimeTemplateMachineSpec is the runtime's machine and
+// accelerators.
+message GcpColabRuntimeTemplateMachineSpec {
+  option (buf.validate.message).cel = {
+    id: "machine_spec.accelerator_pair"
+    message: "accelerator_type needs accelerator_count"
+    expression: "this.accelerator_type == '' || this.accelerator_count > 0"
+  };
+
+  // The Compute Engine machine type, e.g. "e2-standard-4" or
+  // "n1-standard-8" (GPUs attach to N1 and the accelerator-optimized
+  // families). Unset keeps Google's default.
+  string machine_type = 1;
+
+  // The accelerator, e.g. "NVIDIA_TESLA_T4", "NVIDIA_L4",
+  // "NVIDIA_TESLA_A100". Needs accelerator_count.
+  string accelerator_type = 2;
+
+  // How many accelerators each runtime gets.
+  int32 accelerator_count = 3 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpColabRuntimeTemplateDataPersistentDiskSpec is the runtime's data
+// disk.
+message GcpColabRuntimeTemplateDataPersistentDiskSpec {
+  option (buf.validate.message).cel = {
+    id: "data_persistent_disk_spec.size_needs_type"
+    message: "disk_size_gb needs disk_type"
+    expression: "this.disk_size_gb == 0 || this.disk_type != ''"
+  };
+
+  // "pd-standard", "pd-balanced", "pd-ssd", or "pd-extreme". Unset keeps
+  // Google's default.
+  string disk_type = 1 [(buf.validate.field).cel = {
+    id: "disk_type.valid"
+    message: "disk_type must be pd-standard, pd-balanced, pd-ssd, or pd-extreme"
+    expression: "this == '' || this in ['pd-standard', 'pd-balanced', 'pd-ssd', 'pd-extreme']"
+  }];
+
+  // Disk size in GB, 10 to 65536. Needs disk_type.
+  int64 disk_size_gb = 2 [(buf.validate.field).cel = {
+    id: "disk_size_gb.range"
+    message: "disk_size_gb must be between 10 and 65536"
+    expression: "this == 0 || (this >= 10 && this <= 65536)"
+  }];
+}
+
+// GcpColabRuntimeTemplateNetworkSpec is the network a runtime joins.
+message GcpColabRuntimeTemplateNetworkSpec {
+  // Give runtimes a public internet path. Turn off for runtimes that must
+  // stay private; then the subnetwork needs Private Google Access.
+  bool enable_internet_access = 1;
+
+  // The VPC network: a GcpVpcNetwork reference or a literal
+  // projects/{project}/global/networks/{name}. Unset: the project's
+  // default network.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // The subnetwork in the template's region: a GcpSubnetwork reference or
+  // a literal projects/{project}/regions/{region}/subnetworks/{name}.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef subnetwork = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpSubnetwork,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnetwork_self_link"
+  ];
+}
+
+// GcpColabRuntimeTemplateSoftwareConfig is the runtime's notebook
+// software.
+message GcpColabRuntimeTemplateSoftwareConfig {
+  // Environment variables set in the notebook container.
+  repeated GcpColabRuntimeTemplateEnvVar env = 1;
+
+  // A script run after the runtime starts (installing packages, mounting
+  // data, configuring proxies).
+  GcpColabRuntimeTemplatePostStartupScriptConfig post_startup_script_config = 2;
+
+  // Which Colab image release the runtime boots.
+  GcpColabRuntimeTemplateColabImage colab_image = 3;
+}
+
+// GcpColabRuntimeTemplateEnvVar is one environment variable.
+message GcpColabRuntimeTemplateEnvVar {
+  // The variable name -- a valid C identifier.
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[A-Za-z_][A-Za-z0-9_]*$"
+  ];
+
+  // The value. $(VAR_NAME) expands a previously defined variable; $$(...)
+  // escapes the expansion. Do not put secrets here -- the value is stored
+  // in the template in plain text.
+  string value = 2;
+}
+
+// GcpColabRuntimeTemplatePostStartupScriptConfig is the post-startup
+// script and when it runs.
+message GcpColabRuntimeTemplatePostStartupScriptConfig {
+  // The script itself, inline.
+  string post_startup_script = 1;
+
+  // A URL the script is downloaded from, e.g.
+  // gs://bucket/setup.sh or https://example.com/setup.sh.
+  string post_startup_script_url = 2;
+
+  // When the script runs:
+  //   "RUN_ONCE"                     -- on the first start only
+  //   "RUN_EVERY_START"              -- on every start
+  //   "DOWNLOAD_AND_RUN_EVERY_START" -- re-downloaded and run on every
+  //                                     start (picks up script changes)
+  string post_startup_script_behavior = 3 [(buf.validate.field).cel = {
+    id: "post_startup_script_behavior.valid"
+    message: "post_startup_script_behavior must be RUN_ONCE, RUN_EVERY_START, or DOWNLOAD_AND_RUN_EVERY_START"
+    expression: "this == '' || this in ['RUN_ONCE', 'RUN_EVERY_START', 'DOWNLOAD_AND_RUN_EVERY_START']"
+  }];
+}
+
+// GcpColabRuntimeTemplateColabImage picks the Colab image.
+message GcpColabRuntimeTemplateColabImage {
+  // The image release, e.g. "py310". Unset: the latest release.
+  string release_name = 1;
+}

@@ -1,0 +1,29 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_tpu_v2_queued_resource:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider's `name` is the request's id.
+      - spec: spec.queued_resource_id
+        arg: name
+      # The tpu wrapper holds one field; the spec lifts it.
+      - spec: spec.node_specs
+        arg: tpu.node_spec
+    exclusions:
+      - arg: tpu.node_spec.parent
+        reason: >-
+          derived by both modules as projects/{project}/locations/{zone} from
+          the request's own project and zone -- a node is always created
+          where its request lives
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

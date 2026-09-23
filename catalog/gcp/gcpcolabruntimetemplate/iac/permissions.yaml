@@ -1,0 +1,34 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcolabruntimetemplate
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageRuntimeTemplate
+        permissions:
+          - aiplatform.notebookRuntimeTemplates.create
+          - aiplatform.notebookRuntimeTemplates.get
+          - aiplatform.notebookRuntimeTemplates.update
+          - aiplatform.notebookRuntimeTemplates.delete
+          - aiplatform.operations.get
+        provenance: derived
+        notes: Covers google_colab_runtime_template (Pulumi colab.RuntimeTemplate) -- created and deleted through long-running operations the provider polls, patched for the display name, the key, and the software config. roles/aiplatform.admin contains all five.
+      - purpose: UsePrivateNetwork
+        permissions:
+          - compute.subnetworks.use
+        provenance: derived
+        condition:
+          spec_field_set: network_spec
+        notes: Placing runtimes on a declared network and subnetwork requires using the subnetwork; the default network needs no grant.

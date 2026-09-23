@@ -1,0 +1,29 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcptpuqueuedresource
+spec:
+  gcp:
+    groups:
+      - purpose: EnableTpuApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling tpu.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageQueuedResource
+        permissions:
+          - tpu.queuedResources.create
+          - tpu.queuedResources.get
+          - tpu.queuedResources.delete
+          - tpu.nodes.create
+          - tpu.nodes.get
+          - tpu.nodes.delete
+          - tpu.operations.get
+        provenance: derived
+        notes: Covers google_tpu_v2_queued_resource (google-beta; Pulumi tpu.V2QueuedResource) -- created and deleted through long-running operations the provider polls; the request provisions and deletes its nodes on the caller's behalf, which is why the node permissions travel with it. The provider-default project read for the node parent uses provider configuration only. roles/tpu.admin contains all seven.

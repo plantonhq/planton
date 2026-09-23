@@ -1,0 +1,4 @@
+name: gcpcolabruntime-pulumi-project
+runtime:
+  name: go
+description: Planton GcpColabRuntime Pulumi module

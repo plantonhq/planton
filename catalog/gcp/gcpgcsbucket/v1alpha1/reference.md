@@ -1062,6 +1062,7 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRun | `spec.volumes[].gcs.bucket` | `status.outputs.bucket_id` |
 | GcpCloudRunJob | `spec.template.volumes[].gcs.bucket` | `status.outputs.bucket_id` |
 | GcpCloudRunWorkerPool | `spec.volumes[].gcs.bucket` | `status.outputs.bucket_id` |
+| GcpColabSchedule | `spec.notebookExecutionJob.gcsOutputUri` | `status.outputs.url` |
 | GcpDataprocCluster | `spec.clusterConfig.stagingBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.clusterConfig.tempBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.virtualClusterConfig.stagingBucket` | `status.outputs.bucket_id` |

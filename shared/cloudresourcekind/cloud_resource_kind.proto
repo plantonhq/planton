@@ -5684,6 +5684,55 @@ enum CloudResourceKind {
     id_prefix: "gcpvpr"
     service_group: gcp_ai_ml
   }];
+  // A Model Armor template: the named safety filters (prompt injection and
+  // jailbreak, Responsible AI content, sensitive data, malicious URLs) an
+  // AI application screens prompts and responses through.
+  GcpModelArmorTemplate = 3212 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpmarm"
+    service_group: gcp_ai_ml
+  }];
+  // A Document AI processor: a managed model that turns documents into
+  // structured data (OCR, forms, invoices, IDs), with its default version.
+  GcpDocumentAiProcessor = 3213 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdocai"
+    service_group: gcp_ai_ml
+  }];
+  // A Colab Enterprise runtime template: the machine, network, image, and
+  // security settings every notebook runtime created from it gets.
+  GcpColabRuntimeTemplate = 3214 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcolt"
+    service_group: gcp_ai_ml
+  }];
+  // A Colab Enterprise runtime: a notebook VM assigned to one user, built
+  // from a runtime template and started or stopped on purpose.
+  GcpColabRuntime = 3215 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcolr"
+    service_group: gcp_ai_ml
+  }];
+  // A Vertex AI schedule: a cron that launches a Colab Enterprise notebook
+  // run or a Vertex AI Pipelines run.
+  GcpColabSchedule = 3216 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpcols"
+    service_group: gcp_ai_ml
+  }];
+  // A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs.
+  // Beta-only in Google's provider (a recorded google-beta admission).
+  GcpTpuVm = 3217 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptpu"
+    service_group: gcp_ai_ml
+  }];
   // A data connector is a COLLECTION of data stores Google syncs from a
   // source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
   // Drive, ...) on a schedule -- a different root from a data store, which
@@ -5693,6 +5742,27 @@ enum CloudResourceKind {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcpvsdc"
+    service_group: gcp_ai_ml
+  }];
+  // A Model Armor floor setting: the minimum safety screening a project,
+  // folder, or organization enforces on its templates and directly on
+  // Vertex AI and Google MCP server traffic. A different parent from a
+  // template (and a singleton Google never deletes), which is why it is
+  // its own kind.
+  GcpModelArmorFloorSetting = 3220 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpmafs"
+    service_group: gcp_ai_ml
+  }];
+  // A Cloud TPU queued resource: a request that waits for TPU capacity and
+  // then provisions the nodes it describes. A different root from a TPU VM
+  // that owns many nodes, which is why it is its own kind. Beta-only in
+  // Google's provider (a recorded google-beta admission).
+  GcpTpuQueuedResource = 3221 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcptpuq"
     service_group: gcp_ai_ml
   }];
 

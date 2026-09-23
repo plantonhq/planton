@@ -1,0 +1,24 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpmodelarmorfloorsetting
+spec:
+  gcp:
+    groups:
+      - purpose: EnableModelArmorApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling modelarmor.googleapis.com on the floor's project; the module creates it only for a project floor (scope.project_id, or no scope at all), never for a folder or organization floor. disable_on_destroy is false, so the disable permission is never needed.
+      - purpose: ManageFloorSetting
+        permissions:
+          - modelarmor.floorSettings.get
+          - modelarmor.floorSettings.update
+        provenance: derived
+        notes: Covers google_model_armor_floorsetting (Pulumi modelarmor.Floorsetting) -- create and update are the same PATCH on the scope's singleton, read on every refresh; delete makes no API call. Held at the floor's scope -- the project, the folder, or the organization (roles/modelarmor.floorSettingsAdmin there). The provider-default project lookup reads provider configuration only and needs no permission.

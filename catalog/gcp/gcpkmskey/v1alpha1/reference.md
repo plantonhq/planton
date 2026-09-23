@@ -310,6 +310,9 @@ Fields on other kinds that can point at this resource:
 | GcpCloudRunJob | `spec.template.encryptionKey` | `status.outputs.key_id` |
 | GcpCloudRunWorkerPool | `spec.encryptionKey` | `status.outputs.key_id` |
 | GcpCloudSql | `spec.encryptionKeyName` | `status.outputs.key_id` |
+| GcpColabRuntimeTemplate | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpColabSchedule | `spec.notebookExecutionJob.kmsKeyName` | `status.outputs.key_id` |
+| GcpColabSchedule | `spec.pipelineJob.kmsKeyName` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.sourceImageEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpComputeDisk | `spec.sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
@@ -323,6 +326,7 @@ Fields on other kinds that can point at this resource:
 | GcpComputeMig | `spec.template.disks[].sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpDataprocCluster | `spec.clusterConfig.encryptionKmsKeyName` | `status.outputs.key_id` |
 | GcpDataprocCluster | `spec.clusterConfig.securityConfig.kerberosConfig.kmsKeyUri` | `status.outputs.key_id` |
+| GcpDocumentAiProcessor | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.cryptoKey` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.googleApiSources[].cryptoKey` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.pipelines[].cryptoKey` | `status.outputs.key_id` |

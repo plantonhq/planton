@@ -1,0 +1,82 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpmodelarmorfloorsetting
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Model Armor stores the floor configuration encrypted at rest with Google-managed keys.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: A floor setting is configuration with no customer data to encrypt; Model Armor offers no customer-managed key for it.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Model Armor call is TLS over Google's endpoint.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A floor setting has no address of its own; it is changed only through the Model Armor API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The floor is itself a content-safety control on AI traffic; it serves no edge.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Reading or changing a floor requires modelarmor.floorSettings.* permissions at the floor's project, folder, or organization.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The floor authenticates nothing.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every floor change is a Model Armor admin write recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: ai_platform_floor_setting.enable_cloud_logging
+      evidence:
+        type: spec_default
+        reference: Off by default; when on, the floor's verdicts on Vertex AI traffic (and google_mcp_server_floor_setting's on MCP traffic) are written to Cloud Logging.
+      notes: Both presets turn it on.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A floor is declarative configuration; the manifest is its recovery path.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Floor settings are global Google-managed configuration; there is no placement to choose.
+    - control_id: deletion-protection
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Google cannot delete a floor setting -- destroy only stops managing it, and the last applied floor stays in force; relaxing a floor takes an explicit apply.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Model Armor is fully Google-operated.

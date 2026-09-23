@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1;
+
+import "catalog/gcp/gcpdocumentaiprocessor/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-document-ai-processor stack-input
+message GcpDocumentAiProcessorStackInput {
+  //target cloud-resource
+  GcpDocumentAiProcessor target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

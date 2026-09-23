@@ -53,8 +53,8 @@ func assistants(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider,
 			}
 			if armor := policy.ModelArmorConfig; armor != nil {
 				armorArgs := &discoveryengine.AssistantCustomerPolicyModelArmorConfigArgs{
-					UserPromptTemplate: pulumi.String(armor.UserPromptTemplate),
-					ResponseTemplate:   pulumi.String(armor.ResponseTemplate),
+					UserPromptTemplate: pulumi.String(armor.UserPromptTemplate.GetValue()),
+					ResponseTemplate:   pulumi.String(armor.ResponseTemplate.GetValue()),
 				}
 				if armor.FailureMode != "" {
 					armorArgs.FailureMode = pulumi.String(armor.FailureMode)

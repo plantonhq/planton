@@ -29,11 +29,11 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 136 |
-| Distinct provider resources consumed | 236 |
-| Spec fields authored across all kinds | 4806 |
-| Module pins on `google` | `~> 8.3` × 136 |
-| Module pins on `google-beta` | `~> 8.3` × 4 |
+| Kinds in the catalog | 144 |
+| Distinct provider resources consumed | 245 |
+| Spec fields authored across all kinds | 4992 |
+| Module pins on `google` | `~> 8.3` × 144 |
+| Module pins on `google-beta` | `~> 8.3` × 6 |
 
 The GA provider is the parity baseline. Capability that exists only in a
 secondary channel (for Google, the `google-beta` provider) enters per kind
@@ -53,6 +53,8 @@ baseline serves at the pin is a stale admission.
 | `google_firebase_project` | `google-beta` | GcpFirebaseProject | Firebase enablement (projects.addFirebase on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_project.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
 | `google_firebase_storage_default_bucket` | `google-beta` | GcpFirebaseProject | The default Cloud Storage for Firebase bucket (projects.defaultBucket on the Firebase Storage API) is published only in the beta provider at the pin; the GA provider has no code under services/firebasestorage. | hashicorp/terraform-provider-google: the appearance of google/services/firebasestorage/resource_firebase_storage_default_bucket.go (the GA promotion of the firebasestorage service). |
 | `google_firebase_web_app` | `google-beta` | GcpFirebaseWebApp | The web app registration (projects.webApps on the Firebase Management API) is published only in the beta provider at the pin -- the GA provider has no code under services/firebase; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/firebase/resource_firebase_web_app.go (the GA promotion of the firebase service); until then google-beta/services/firebase/ is the only home. |
+| `google_tpu_v2_queued_resource` | `google-beta` | GcpTpuQueuedResource | The Cloud TPU queued resource (projects.locations.queuedResources on the Cloud TPU API) -- Google's way to wait for scarce TPU capacity -- is published only in the beta provider at the pin; the GA provider has no code under services/tpuv2. | hashicorp/terraform-provider-google: the appearance of google/services/tpuv2/resource_tpu_v2_queued_resource.go (the GA promotion of the tpuv2 service); until then google-beta/services/tpuv2/ is the only home. |
+| `google_tpu_v2_vm` | `google-beta` | GcpTpuVm | The Cloud TPU VM (projects.locations.nodes on the Cloud TPU API) is published only in the beta provider at the pin -- the GA provider has no code under services/tpuv2, and the GA google_tpu_node it once had was removed in 7.0.0; the kind cannot exist without it. | hashicorp/terraform-provider-google: the appearance of google/services/tpuv2/resource_tpu_v2_vm.go (the GA promotion of the tpuv2 service); until then google-beta/services/tpuv2/ is the only home. |
 
 ## The provider block
 
@@ -76,7 +78,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**136 of 136 kinds are at total accounting; 84 proven live.**
+**144 of 144 kinds are at total accounting; 84 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -111,6 +113,9 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpCloudSqlDatabase | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudSqlUser | 14 | 10 | 2 | 2 | 0 | ✅ | — |
 | GcpCloudTasksQueue | 29 | 22 | 7 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpColabRuntime | 10 | 7 | 3 | 0 | 0 | ✅ | — |
+| GcpColabRuntimeTemplate | 26 | 20 | 6 | 0 | 0 | ✅ | — |
+| GcpColabSchedule | 57 | 11 | 44 | 2 | 0 | ✅ | — |
 | GcpComputeDisk | 36 | 18 | 14 | 4 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpComputeInstance | 125 | 50 | 64 | 11 | 0 | ✅ | — |
 | GcpComputeMig | 415 | 70 | 316 | 29 | 0 | ✅ | — |
@@ -118,6 +123,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpDataprocCluster | 172 | 89 | 83 | 0 | 0 | ✅ | — |
 | GcpDnsRecord | 49 | 43 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpDnsZone | 23 | 18 | 2 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpDocumentAiProcessor | 8 | 5 | 2 | 1 | 0 | ✅ | — |
 | GcpEventarcMessageBus | 56 | 12 | 42 | 2 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpEventarcTrigger | 35 | 22 | 12 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpFilestoreInstance | 36 | 14 | 22 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -153,6 +159,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpLoggingSink | 54 | 38 | 16 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpManagedSslCertificate | 6 | 2 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMemorystoreInstance | 39 | 30 | 6 | 3 | 0 | ✅ | — |
+| GcpModelArmorFloorSetting | 19 | 13 | 6 | 0 | 0 | ✅ | — |
+| GcpModelArmorTemplate | 24 | 22 | 2 | 0 | 0 | ✅ | — |
 | GcpMonitoringAlertPolicy | 70 | 68 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringDashboard | 3 | 2 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpMonitoringNotificationChannel | 18 | 9 | 3 | 6 | 0 | ✅ | ✅ pulumi, terraform |
@@ -193,6 +201,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpTagValue | 4 | 3 | 1 | 0 | 0 | ✅ | — |
 | GcpTargetHttpProxy | 14 | 10 | 4 | 0 | 0 | ✅ | — |
 | GcpTargetHttpsProxy | 25 | 21 | 4 | 0 | 0 | ✅ | — |
+| GcpTpuQueuedResource | 14 | 2 | 11 | 1 | 0 | ✅ | — |
+| GcpTpuVm | 31 | 27 | 4 | 0 | 0 | ✅ | — |
 | GcpUrlMap | 554 | 124 | 430 | 0 | 0 | ✅ | — |
 | GcpVectorSearchCollection | 30 | 18 | 12 | 0 | 0 | ✅ | — |
 | GcpVertexAiAgentEngine | 96 | 87 | 3 | 6 | 0 | ✅ | — |
@@ -223,11 +233,11 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 231 | consumed by a kind's Terraform module today |
+| Modeled | 238 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 61 | judged to be covered by a planned kind or planned composition, not built yet |
-| Deferred | 581 | deliberately not offered, each with the recorded reason |
+| Planned | 55 | judged to be covered by a planned kind or planned composition, not built yet |
+| Deferred | 580 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 69 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
 
@@ -236,7 +246,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (231)
+### Modeled (238)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -267,6 +277,9 @@ rather than trusted.
 | `google_cloud_scheduler_job` | consumed by GcpCloudSchedulerJob |
 | `google_cloud_tasks_queue` | consumed by GcpCloudTasksQueue |
 | `google_cloudfunctions2_function` | consumed by GcpCloudFunction |
+| `google_colab_runtime` | consumed by GcpColabRuntime |
+| `google_colab_runtime_template` | consumed by GcpColabRuntimeTemplate |
+| `google_colab_schedule` | consumed by GcpColabSchedule |
 | `google_composer_environment` | consumed by GcpCloudComposerEnvironment |
 | `google_composer_user_workloads_config_map` | consumed by GcpCloudComposerUserWorkloadsConfigMap |
 | `google_composer_user_workloads_secret` | consumed by GcpCloudComposerUserWorkloadsSecret |
@@ -354,6 +367,8 @@ rather than trusted.
 | `google_discovery_engine_widget_config` | consumed by GcpVertexAiSearchEngine |
 | `google_dns_managed_zone` | consumed by GcpDnsZone |
 | `google_dns_record_set` | consumed by GcpDnsRecord |
+| `google_document_ai_processor` | consumed by GcpDocumentAiProcessor |
+| `google_document_ai_processor_default_version` | consumed by GcpDocumentAiProcessor |
 | `google_eventarc_channel` | consumed by GcpEventarcTrigger |
 | `google_eventarc_enrollment` | consumed by GcpEventarcMessageBus |
 | `google_eventarc_google_api_source` | consumed by GcpEventarcMessageBus |
@@ -404,6 +419,8 @@ rather than trusted.
 | `google_logging_project_bucket_config` | consumed by GcpLogBucket |
 | `google_logging_project_sink` | consumed by GcpLoggingSink |
 | `google_memorystore_instance` | consumed by GcpMemorystoreInstance |
+| `google_model_armor_floorsetting` | consumed by GcpModelArmorFloorSetting |
+| `google_model_armor_template` | consumed by GcpModelArmorTemplate |
 | `google_monitoring_alert_policy` | consumed by GcpMonitoringAlertPolicy |
 | `google_monitoring_custom_service` | consumed by GcpMonitoringSlo |
 | `google_monitoring_dashboard` | consumed by GcpMonitoringDashboard |
@@ -418,7 +435,7 @@ rather than trusted.
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpColabRuntime, GcpColabRuntimeTemplate, GcpColabSchedule, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpDocumentAiProcessor, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpModelArmorFloorSetting, GcpModelArmorTemplate, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpTpuQueuedResource, GcpTpuVm, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
@@ -904,7 +921,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (61)
+### Planned (55)
 
 | Resource | Recorded reason |
 |---|---|
@@ -925,9 +942,6 @@ rather than trusted.
 | `google_clouddeploy_delivery_pipeline` | planned GcpDeliveryPipeline kind (Cloud Deploy delivery pipelines) |
 | `google_clouddeploy_deploy_policy` | planned composition into the planned GcpDeliveryPipeline kind (deploy policies) |
 | `google_clouddeploy_target` | planned GcpDeployTarget kind (Cloud Deploy targets) |
-| `google_colab_runtime` | planned GcpColabRuntime kind (Colab Enterprise runtimes) |
-| `google_colab_runtime_template` | planned GcpColabRuntimeTemplate kind (Colab Enterprise runtime templates) |
-| `google_colab_schedule` | planned GcpColabSchedule kind (Colab Enterprise schedules) |
 | `google_compute_image` | planned GcpComputeImage kind (Compute Engine images) |
 | `google_datastream_connection_profile` | planned composition into the planned GcpDatastreamStream kind (source and destination connection profiles) |
 | `google_datastream_private_connection` | planned composition into the planned GcpDatastreamStream kind (private connectivity) |
@@ -939,8 +953,6 @@ rather than trusted.
 | `google_dialogflow_cx_tool` | planned composition into the planned GcpDialogflowCxAgent kind (tools) |
 | `google_dialogflow_cx_version` | planned composition into the planned GcpDialogflowCxAgent kind (versions) |
 | `google_dialogflow_cx_webhook` | planned composition into the planned GcpDialogflowCxAgent kind (webhooks) |
-| `google_document_ai_processor` | planned GcpDocumentAiProcessor kind (Document AI processors) |
-| `google_document_ai_processor_default_version` | planned composition into the planned GcpDocumentAiProcessor kind (the default version) |
 | `google_gke_hub_feature` | planned GcpGkeFleetFeature kind (GKE fleet features) |
 | `google_gke_hub_fleet` | planned GcpGkeFleet kind (GKE fleets) |
 | `google_gke_hub_membership` | planned GcpGkeFleetMembership kind (GKE fleet memberships) |
@@ -955,7 +967,6 @@ rather than trusted.
 | `google_managed_kafka_connect_cluster` | planned GcpManagedKafkaConnectCluster kind (Managed Kafka Connect clusters) |
 | `google_managed_kafka_connector` | planned composition into the planned GcpManagedKafkaConnectCluster kind (connectors) |
 | `google_managed_kafka_topic` | planned GcpManagedKafkaTopic kind (Managed Kafka topics) |
-| `google_model_armor_template` | planned GcpModelArmorTemplate kind (Model Armor templates) |
 | `google_privateca_ca_pool` | planned GcpPrivateCaPool kind (Certificate Authority Service CA pools) |
 | `google_privateca_certificate` | planned composition into the planned GcpPrivateCaPool kind (issued certificates) |
 | `google_privateca_certificate_authority` | planned composition into the planned GcpPrivateCaPool kind (certificate authorities) |
@@ -970,7 +981,7 @@ rather than trusted.
 | `google_scc_v2_project_notification_config` | planned GcpSccNotificationConfig kind (Security Command Center notification configs at project, folder, or organization scope) |
 | `google_scc_v2_project_scc_big_query_export` | planned GcpSccBigQueryExport kind (Security Command Center BigQuery exports at project, folder, or organization scope) |
 
-### Deferred (581)
+### Deferred (580)
 
 | Resource | Recorded reason |
 |---|---|
@@ -1131,7 +1142,7 @@ rather than trusted.
 | `google_cloud_security_compliance_framework_deployment` | Compliance Manager frameworks are org-governance surface; deferred pending demand |
 | `google_cloud_support_support_event_subscription` | Cloud Support event subscriptions are operational tooling, not provisioned infrastructure; deferred |
 | `google_clouddomains_registration` | domain registration through IaC is rare; deferred |
-| `google_colab_notebook_execution` | Colab Enterprise runtimes are a specialty; Workbench covers the mainstream need |
+| `google_colab_notebook_execution` | a one-shot notebook run: every argument is immutable and the resource completes rather than lives, so it is an action, not infrastructure -- the recurring form is GcpColabSchedule's notebook_execution_job arm |
 | `google_compute_attached_disk` | judged to fold into the existing GcpComputeInstance kind's spec (attached disks, from-template creation, and instance settings); the composition is not built |
 | `google_compute_bulk_per_instance_config` | batch-stamping named instances into a managed instance group is not bridged by the pinned Pulumi SDK, and the capability is reachable through the per-instance configuration surface the managed-instance-group kind models; re-evaluate when the Pulumi bridge ships the resource |
 | `google_compute_cross_site_network` | Cross-Site Interconnect (cross-site networks, wire groups) is specialty networking; deferred pending demand |
@@ -1271,7 +1282,7 @@ rather than trusted.
 | `google_dns_policy` | judged to fold into the existing GcpVpcNetwork kind's spec (per-network DNS server policy); the composition is not built |
 | `google_dns_response_policy` | judged to deserve a GcpDnsResponsePolicy kind (DNS firewall, rules composed); deferred pending demand |
 | `google_dns_response_policy_rule` | judged to deserve a GcpDnsResponsePolicy kind (DNS firewall, rules composed); deferred pending demand |
-| `google_document_ai_schema` | Document AI processors are a specialty; deferred |
+| `google_document_ai_schema` | a Document AI schema is only a container (display name and labels) for the schema versions a custom extractor is trained against, and those versions have no resource at the pin -- a candidate companion of GcpDocumentAiProcessor when they arrive |
 | `google_edgecontainer_cluster` | Distributed Cloud Edge is a niche; deferred |
 | `google_edgecontainer_node_pool` | Distributed Cloud Edge is a niche; deferred |
 | `google_edgecontainer_vpn_connection` | Distributed Cloud Edge is a niche; deferred |
@@ -1374,7 +1385,6 @@ rather than trusted.
 | `google_migration_center_report_config` | Migration Center assessment tooling is episodic; deferred |
 | `google_migration_center_settings` | Migration Center assessment tooling is episodic; deferred |
 | `google_migration_center_source` | Migration Center assessment tooling is episodic; deferred |
-| `google_model_armor_floorsetting` | Model Armor prompt-safety templates are new; deferred |
 | `google_monitoring_group` | monitoring groups are a separate grouping resource with no adopter ask; GcpMonitoringAlertPolicy and GcpMonitoringUptimeCheck reference existing groups by ID -- revisit with a grouping-focused ask |
 | `google_monitoring_metric_descriptor` | metric descriptors are rarely hand-managed; deferred |
 | `google_monitoring_monitored_project` | metrics-scope membership is organization-level observability plumbing with no adopter ask; revisit with a multi-project-monitoring ask |

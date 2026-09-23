@@ -1,0 +1,87 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcptpuqueuedresource
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The provisioned nodes' boot disks are encrypted at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: A queued request offers no customer-managed key at the pin.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Cloud TPU API call is TLS; traffic between TPU hosts stays on Google's network.
+    - control_id: no-public-access
+      status: configurable
+      field_path: node_specs.node.network_config
+      evidence:
+        type: spec_default
+        reference: A node's workers get no external IP unless its network_config.enable_external_ips is true.
+      notes: The 02-two-private-nodes preset keeps external IPs off.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: node_specs.node.network_config
+      evidence:
+        type: spec_default
+        reference: Each node joins its declared subnetwork (default "default"), where VPC firewall rules apply.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: TPU nodes serve no edge.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Managing queued resources and their nodes requires tpu.queuedResources.* and tpu.nodes.* permissions on the project.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: A queued request carries no service account at the pin; nodes run as the Compute Engine default account (use GcpTpuVm for a dedicated identity).
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No legacy authentication path exists on a TPU node.
+    - control_id: strong-user-auth
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: SSH to TPU workers goes through gcloud with the user's Google identity.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Queued resource create and delete, and node provisioning, are Admin Activity audit records unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Provisioned nodes report chip utilization and host metrics to Cloud Monitoring without configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The request is recreated from the manifest; training state belongs in checkpoints outside the nodes.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: A request targets one zone by design.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the request and its nodes are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves them running.
+    - control_id: managed-patching
+      status: configurable
+      field_path: node_specs.node.runtime_version
+      evidence:
+        type: spec_default
+        reference: Each node's runtime_version pins a Google-maintained TPU image.

@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabRuntime
+metadata:
+  name: research-gpu
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  runtimeTemplate:
+    valueFrom:
+      kind: GcpColabRuntimeTemplate
+      name: private-gpu-t4
+      fieldPath: status.outputs.name
+  runtimeUser: researcher@example.com
+  displayName: Research GPU
+  # Kept stopped by the manifest: only the disk bills until it is needed.
+  desiredState: STOPPED
+  autoUpgrade: true
+  deletionPolicy: PREVENT

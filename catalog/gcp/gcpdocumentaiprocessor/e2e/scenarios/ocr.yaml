@@ -1,0 +1,21 @@
+# GcpDocumentAiProcessor scenario: an Enterprise OCR processor in the us
+# multi-region with the display name defaulted from metadata.name.
+# project_id is deliberately omitted. Creating a processor is free; pages
+# processed would bill, and the scenario processes none.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDocumentAiProcessor
+metadata:
+  name: planton-oss-e2e-gcpdocai-ocr
+  id: planton-oss-e2e-gcpdocai-ocr
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdocumentaiprocessor
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us
+  type: OCR_PROCESSOR

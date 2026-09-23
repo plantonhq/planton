@@ -1,0 +1,84 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpmodelarmortemplate
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Model Armor stores the template configuration encrypted at rest with Google-managed keys; screened text is not stored by the template.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: A template is configuration with no customer data to encrypt; Model Armor offers no customer-managed key for templates.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Model Armor call is TLS over Google's regional endpoint; there is no plaintext path.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A template has no address of its own; it is used only through the Model Armor API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict; access is API-level and governed by IAM.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The template is itself a content-safety control for AI traffic; it serves no edge.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Using or changing a template requires modelarmor.templates.* permissions on the project.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The template authenticates nothing; callers use their own identities.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is administrative, whose posture rbac carries.
+    - control_id: audit-logging
+      status: configurable
+      field_path: template_metadata.log_template_operations
+      evidence:
+        type: spec_default
+        reference: Template changes are Admin Activity audit records unconditionally; template_metadata.log_template_operations and log_sanitize_operations add Model Armor's own operation and verdict logs.
+      notes: The 02-strict-customer-chat preset turns both on.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: template_metadata.log_sanitize_operations
+      evidence:
+        type: spec_default
+        reference: Off by default; when on, every sanitize verdict is written to Cloud Logging for dashboards and alerting.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A template is declarative configuration; the manifest is its recovery path.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Model Armor serves templates from Google-managed regional or multi-regional infrastructure; there is no zonal placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the template is deleted on destroy and callers that still name it fail; PREVENT makes destroy fail; ABANDON leaves it in place.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Model Armor is fully Google-operated; filter_version_selector chooses whether the template follows Google's filter updates or pins a version.

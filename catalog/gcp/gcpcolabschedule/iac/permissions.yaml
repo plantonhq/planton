@@ -1,0 +1,55 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpcolabschedule
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageSchedule
+        permissions:
+          - aiplatform.schedules.create
+          - aiplatform.schedules.get
+          - aiplatform.schedules.update
+          - aiplatform.schedules.delete
+        provenance: derived
+        notes: Covers google_colab_schedule (Pulumi colab.Schedule) -- created, patched for the timing fields and the pipeline request, read on every refresh, deleted.
+      - purpose: PauseAndResumeSchedule
+        permissions:
+          - aiplatform.schedules.pause
+          - aiplatform.schedules.resume
+        provenance: derived
+        condition:
+          spec_field_set: desired_state
+        notes: The client-side desired_state control calls pause or resume to match on every apply.
+      - purpose: ActAsNotebookRunIdentity
+        permissions:
+          - iam.serviceAccounts.actAs
+        provenance: derived
+        condition:
+          spec_field_set: notebook_execution_job.service_account
+        notes: Naming a service account for notebook runs requires acting as it (held on the account).
+      - purpose: ActAsPipelineRunIdentity
+        permissions:
+          - iam.serviceAccounts.actAs
+        provenance: derived
+        condition:
+          spec_field_set: pipeline_job.service_account
+        notes: Naming a service account for pipeline runs requires acting as it (held on the account).
+      - purpose: ResolvePipelineNetworkProjectNumber
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        condition:
+          spec_field_set: pipeline_job.network
+        notes: When the pipeline network's path carries a project ID, both modules read the project once to build the project-number path Google requires; a numeric path performs no read.

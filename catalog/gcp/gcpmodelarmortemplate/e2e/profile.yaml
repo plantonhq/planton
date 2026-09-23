@@ -1,0 +1,24 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpmodelarmortemplate
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/modelarmor.admin; the module enables
+  # modelarmor.googleapis.com itself: the smallest injection-and-URL
+  # template and one exercising every filter family and the metadata
+  # block. Offline bar met: both modules build and validate, offline plans
+  # for the reference manifest, both scenarios, and the advanced
+  # Sensitive Data Protection arm are clean on the pinned provider, and
+  # the accounting is total. Live facts the proof lane confirms: (1) the
+  # regional rep endpoint accepts the template in us-central1 and the
+  # template id charset the spec allows; (2) each template RE-PLANS CLEAN
+  # under the apply-idempotency gate on both engines -- the Optional+
+  # Computed template_metadata left unset and the lifted multi-language
+  # bool show no diff; (3) the exported name is the full path the
+  # verifier reads, with the attribution labels; (4) destroy deletes the
+  # template and the verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

@@ -2,10 +2,7 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/pkg/errors"
 )
@@ -27,30 +24,12 @@ type vertexAiNotebook struct {
 }
 
 func (v *vertexAiNotebookVerifier) get(ctx context.Context, svc *Services, instanceID string) (*vertexAiNotebook, int, error) {
-	url := fmt.Sprintf("https://notebooks.googleapis.com/v2/%s", instanceID)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build workbench instance GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "workbench instance GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read workbench instance response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("workbench instance GET %s returned %d: %s", instanceID, resp.StatusCode, string(body))
-	}
-
 	instance := &vertexAiNotebook{}
-	if err := json.Unmarshal(body, instance); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode workbench instance")
+	status, err := googleRestGet(ctx, svc, "workbench instance", fmt.Sprintf("https://notebooks.googleapis.com/v2/%s", instanceID), instance)
+	if err != nil {
+		return nil, status, err
 	}
-	return instance, resp.StatusCode, nil
+	return instance, status, nil
 }
 
 func (v *vertexAiNotebookVerifier) VerifyExists(ctx context.Context, svc *Services, outputs map[string]string) error {
@@ -92,11 +71,5 @@ func (v *vertexAiNotebookVerifier) VerifyAbsent(ctx context.Context, svc *Servic
 	}
 
 	_, status, err := v.get(ctx, svc, instanceID)
-	if err != nil {
-		if status == http.StatusNotFound {
-			return nil
-		}
-		return errors.Wrapf(err, "unexpected error probing workbench instance %s after destroy", instanceID)
-	}
-	return errors.Errorf("workbench instance %s still exists after destroy", instanceID)
+	return restAbsent("workbench instance", instanceID, status, err)
 }

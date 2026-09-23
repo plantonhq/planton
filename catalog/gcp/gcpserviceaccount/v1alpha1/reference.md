@@ -328,6 +328,8 @@ Fields on other kinds that can point at this resource:
 | GcpCloudSqlUser | `spec.serviceAccount` | `status.outputs.email` |
 | GcpCloudTasksQueue | `spec.httpTarget.oauthToken.serviceAccountEmail` | `status.outputs.email` |
 | GcpCloudTasksQueue | `spec.httpTarget.oidcToken.serviceAccountEmail` | `status.outputs.email` |
+| GcpColabSchedule | `spec.notebookExecutionJob.serviceAccount` | `status.outputs.email` |
+| GcpColabSchedule | `spec.pipelineJob.serviceAccount` | `status.outputs.email` |
 | GcpComputeInstance | `spec.serviceAccount.email` | `status.outputs.email` |
 | GcpComputeMig | `spec.template.serviceAccount.email` | `status.outputs.email` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.serviceAccount` | `status.outputs.email` |
@@ -355,6 +357,7 @@ Fields on other kinds that can point at this resource:
 | GcpSecretManagerSecret | `spec.iamMembers[].member` | `status.outputs.member` |
 | GcpServiceAccountIamMember | `spec.serviceAccountId` | `status.outputs.name` |
 | GcpServiceAccountIamMember | `spec.member` | `status.outputs.member` |
+| GcpTpuVm | `spec.serviceAccount.email` | `status.outputs.email` |
 | GcpVertexAiAgentEngine | `spec.spec.serviceAccount` | `status.outputs.email` |
 | GcpVertexAiDeployedIndex | `spec.authConfig.allowedIssuers` | `status.outputs.email` |
 | GcpVertexAiNotebook | `spec.serviceAccount` | `status.outputs.email` |

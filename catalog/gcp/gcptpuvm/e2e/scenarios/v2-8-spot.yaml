@@ -1,0 +1,26 @@
+# GcpTpuVm scenario: the smallest TPU -- a v2-8 on spot capacity in
+# us-central1-f with the base Ubuntu runtime. project_id is deliberately
+# omitted; the node id defaults to metadata.name. Spot keeps the lane's
+# bill to minutes at the lowest TPU rate; a spot stock-out in the zone is a
+# capacity event, not a module defect (watch list).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpTpuVm
+metadata:
+  name: planton-oss-e2e-gcptpu-v2
+  id: planton-oss-e2e-gcptpu-v2
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcptpuvm
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  zone: us-central1-f
+  acceleratorType: v2-8
+  runtimeVersion: tpu-ubuntu2204-base
+  schedulingConfig:
+    spot: true
+  deletionPolicy: DELETE

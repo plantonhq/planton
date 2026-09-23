@@ -4125,6 +4125,105 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "persistent_resource_id", "location", "state"},
 		},
 		{
+			// GcpModelArmorTemplate: the template's full name (the verifier's
+			// key and what sanitize calls and search assistants take), its id,
+			// and its location.
+			name: "GcpModelArmorTemplate",
+			kind: cloudresourcekind.CloudResourceKind_GcpModelArmorTemplate,
+			rawOutputs: map[string]interface{}{
+				"name":        "projects/my-project/locations/us-central1/templates/prompt-guard",
+				"template_id": "prompt-guard",
+				"location":    "us-central1",
+			},
+			mustPopulate: []string{"name", "template_id", "location"},
+		},
+		{
+			// GcpModelArmorFloorSetting: the floor's full name (the
+			// verifier's key) and the parent it governs.
+			name: "GcpModelArmorFloorSetting",
+			kind: cloudresourcekind.CloudResourceKind_GcpModelArmorFloorSetting,
+			rawOutputs: map[string]interface{}{
+				"name":   "projects/my-project/locations/global/floorSetting",
+				"parent": "projects/my-project",
+			},
+			mustPopulate: []string{"name", "parent"},
+		},
+		{
+			// GcpDocumentAiProcessor: the processor's full name (the
+			// verifier's key), the id Google assigned, its location, and the
+			// endpoint documents are posted to.
+			name: "GcpDocumentAiProcessor",
+			kind: cloudresourcekind.CloudResourceKind_GcpDocumentAiProcessor,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/my-project/locations/us/processors/a1b2c3d4e5f6a7b8",
+				"processor_id":     "a1b2c3d4e5f6a7b8",
+				"location":         "us",
+				"process_endpoint": "https://us-documentai.googleapis.com/v1/projects/my-project/locations/us/processors/a1b2c3d4e5f6a7b8:process",
+			},
+			mustPopulate: []string{"name", "processor_id", "location", "process_endpoint"},
+		},
+		{
+			// GcpColabRuntimeTemplate: the template's full name (the
+			// verifier's key and what runtimes and schedules take), its id,
+			// and its region.
+			name: "GcpColabRuntimeTemplate",
+			kind: cloudresourcekind.CloudResourceKind_GcpColabRuntimeTemplate,
+			rawOutputs: map[string]interface{}{
+				"name":                "projects/my-project/locations/us-central1/notebookRuntimeTemplates/standard-cpu",
+				"runtime_template_id": "standard-cpu",
+				"location":            "us-central1",
+			},
+			mustPopulate: []string{"name", "runtime_template_id", "location"},
+		},
+		{
+			// GcpColabRuntime: the runtime's full name (the verifier's key),
+			// its id, and its region.
+			name: "GcpColabRuntime",
+			kind: cloudresourcekind.CloudResourceKind_GcpColabRuntime,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/my-project/locations/us-central1/notebookRuntimes/alice-notebooks",
+				"runtime_id": "alice-notebooks",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "runtime_id", "location"},
+		},
+		{
+			// GcpColabSchedule: the schedule's full name (the verifier's key),
+			// the id Google assigned, and its region.
+			name: "GcpColabSchedule",
+			kind: cloudresourcekind.CloudResourceKind_GcpColabSchedule,
+			rawOutputs: map[string]interface{}{
+				"name":        "projects/my-project/locations/us-central1/schedules/1234567890",
+				"schedule_id": "1234567890",
+				"location":    "us-central1",
+			},
+			mustPopulate: []string{"name", "schedule_id", "location"},
+		},
+		{
+			// GcpTpuVm: the TPU's full name (the verifier's key), its id, and
+			// its zone.
+			name: "GcpTpuVm",
+			kind: cloudresourcekind.CloudResourceKind_GcpTpuVm,
+			rawOutputs: map[string]interface{}{
+				"name":    "projects/my-project/locations/us-central1-f/nodes/train-v2",
+				"node_id": "train-v2",
+				"zone":    "us-central1-f",
+			},
+			mustPopulate: []string{"name", "node_id", "zone"},
+		},
+		{
+			// GcpTpuQueuedResource: the request's full name (the verifier's
+			// key), its id, and its zone.
+			name: "GcpTpuQueuedResource",
+			kind: cloudresourcekind.CloudResourceKind_GcpTpuQueuedResource,
+			rawOutputs: map[string]interface{}{
+				"name":               "projects/my-project/locations/us-central1-f/queuedResources/train-request",
+				"queued_resource_id": "train-request",
+				"zone":               "us-central1-f",
+			},
+			mustPopulate: []string{"name", "queued_resource_id", "zone"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

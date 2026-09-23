@@ -1,0 +1,94 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpcolabruntimetemplate
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Runtime disks are encrypted at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key_name
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; a Cloud KMS key encrypts the disks of runtimes created from the template under the customer-managed key.
+      notes: The 02-private-gpu preset sets it.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Colab Enterprise notebook connections and every Vertex AI API call are TLS.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Runtimes are reached only through Colab Enterprise by the runtime's assigned user under IAM; they expose no public address for inbound traffic.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: network_spec
+      evidence:
+        type: spec_default
+        reference: Unset places runtimes on the default network with internet access; network_spec with enable_internet_access false puts them on a private subnetwork, and network_tags let firewall rules target them.
+      notes: The 02-private-gpu preset sets a private subnetwork with no internet access.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: Runtimes serve no edge; they are interactive notebook machines.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Using a template requires aiplatform.notebookRuntimeTemplates.apply; managing it requires aiplatform.notebookRuntimeTemplates.*.
+    - control_id: workload-identity
+      status: configurable
+      field_path: euc_disabled
+      evidence:
+        type: spec_default
+        reference: Unset lets notebooks use the user's own credentials; euc_disabled true restricts them to the runtime's service identity.
+      notes: The 02-private-gpu preset sets it.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No legacy authentication path exists on a Colab Enterprise runtime.
+    - control_id: strong-user-auth
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Users reach runtimes through Colab Enterprise with their Google identity, under the organization's sign-in policy.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Template create, update, and delete are Vertex AI admin writes recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Runtimes created from the template report VM metrics to Cloud Monitoring without configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A template is declarative configuration; the manifest is its recovery path. Notebook files belong in source control or Cloud Storage.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: Notebook runtimes are single interactive VMs; high availability does not apply.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the template is deleted on destroy (runtimes already created keep running); PREVENT makes destroy fail; ABANDON leaves it in place.
+    - control_id: managed-patching
+      status: configurable
+      field_path: software_config
+      evidence:
+        type: spec_default
+        reference: Colab images are Google-maintained; software_config.colab_image.release_name pins a release, and unset follows the latest.

@@ -1,0 +1,259 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpModelArmorFloorSettingSpec defines the Model Armor floor setting of a
+// project, folder, or organization (`google_model_armor_floorsetting`) --
+// the minimum safety screening everything beneath it must meet, and the
+// switch that makes Google's own AI services enforce it.
+//
+// A floor does two things. It sets the weakest filters any Model Armor
+// template in its scope may carry (a template below the floor is flagged
+// or refused once enforcement is on). And through integrated_services it
+// screens traffic to Vertex AI (Gemini generateContent calls) and Google's
+// MCP servers directly, with no application change -- the way to put every
+// model call in a project behind Model Armor at once.
+//
+// Google keeps exactly one floor setting per project, folder, and
+// organization. Applying this block overwrites that setting. Destroying it
+// does NOT remove it: Google cannot delete a floor setting, so destroy only
+// stops managing it and the last applied floor stays in force. To relax a
+// floor, apply it with enable_floor_setting_enforcement false first.
+message GcpModelArmorFloorSettingSpec {
+  // Whose floor this is. Omit for the provider's default project.
+  GcpModelArmorFloorSettingScope scope = 1;
+
+  // The location of the floor setting. Google manages floor settings at
+  // "global", the default; set a region only if Google documents a
+  // regional floor for your case.
+  string location = 2 [(buf.validate.field).cel = {
+    id: "location.format"
+    message: "location must be global, a region, or a multi-region"
+    expression: "this == '' || this.matches('^[a-z]+(-[a-z]+[0-9]+)?$')"
+  }];
+
+  // Turn the floor on. While false the floor is recorded but nothing is
+  // checked or screened -- the state to apply before walking away from a
+  // floor, since destroy leaves the last applied floor in force.
+  bool enable_floor_setting_enforcement = 3;
+
+  // The Google services whose traffic the floor screens directly:
+  //   "AI_PLATFORM"       -- Vertex AI model calls (configure the behavior
+  //                          in ai_platform_floor_setting)
+  //   "GOOGLE_MCP_SERVER" -- Google-hosted MCP servers (configure it in
+  //                          google_mcp_server_floor_setting)
+  // Empty: the floor only governs templates.
+  repeated string integrated_services = 4 [
+    (buf.validate.field).repeated.unique = true,
+    (buf.validate.field).repeated.items.string = {
+      in: [
+        "AI_PLATFORM",
+        "GOOGLE_MCP_SERVER"
+      ]
+    }
+  ];
+
+  // The minimum filters. Required: a floor with no filters sets no
+  // minimum.
+  GcpModelArmorFloorSettingFilterConfig filter_config = 5 [(buf.validate.field).required = true];
+
+  // How the floor treats Vertex AI traffic when AI_PLATFORM is integrated.
+  GcpModelArmorFloorSettingServiceSetting ai_platform_floor_setting = 6;
+
+  // How the floor treats Google MCP server traffic when GOOGLE_MCP_SERVER
+  // is integrated.
+  GcpModelArmorFloorSettingServiceSetting google_mcp_server_floor_setting = 7;
+
+  // Screen prompts in languages other than English under the floor. Sent
+  // only when true.
+  bool enable_multi_language_detection = 8;
+}
+
+// GcpModelArmorFloorSettingScope names the project, folder, or
+// organization the floor belongs to. At most one arm; all empty means the
+// provider's default project. The module renders Google's parent
+// (projects/{id} | folders/{id} | organizations/{id}).
+message GcpModelArmorFloorSettingScope {
+  option (buf.validate.message).cel = {
+    id: "at_most_one_scope"
+    message: "set at most one of project_id, folder_id, or organization_id (empty means the provider's default project)"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() <= 1"
+  };
+
+  // Project floor: a literal project ID or a GcpProject reference.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Folder floor: the folder's numeric ID -- a literal or a GcpFolder
+  // reference. Every project and folder beneath it inherits the floor.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+
+  // Organization floor: the numeric organization ID, without the
+  // organizations/ prefix. The floor for the whole estate.
+  string organization_id = 3 [(buf.validate.field).cel = {
+    id: "organization_id.numeric"
+    message: "organization_id must be the numeric organization ID, without the organizations/ prefix"
+    expression: "this == '' || this.matches('^[0-9]+$')"
+  }];
+}
+
+// GcpModelArmorFloorSettingServiceSetting is the floor's behavior for one
+// integrated Google service.
+message GcpModelArmorFloorSettingServiceSetting {
+  // What happens when the floor's filters trip on the service's traffic:
+  //   "INSPECT_ONLY"      -- the verdict is recorded and the call proceeds
+  //                          (the safe way to roll a floor out)
+  //   "INSPECT_AND_BLOCK" -- the call is blocked
+  // Required: Google needs exactly one of the two.
+  string enforcement_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "INSPECT_ONLY",
+        "INSPECT_AND_BLOCK"
+      ]
+    }
+  ];
+
+  // Write the floor's verdicts for this service to Cloud Logging.
+  bool enable_cloud_logging = 2;
+}
+
+// GcpModelArmorFloorSettingFilterConfig selects the minimum filters. Each
+// filter is unconstrained unless its message is set.
+message GcpModelArmorFloorSettingFilterConfig {
+  // Malicious URL detection.
+  GcpModelArmorFloorSettingMaliciousUriFilterSettings malicious_uri_filter_settings = 1;
+
+  // Prompt injection and jailbreak detection.
+  GcpModelArmorFloorSettingPiAndJailbreakFilterSettings pi_and_jailbreak_filter_settings = 2;
+
+  // Responsible AI content filters.
+  GcpModelArmorFloorSettingRaiSettings rai_settings = 3;
+
+  // Sensitive Data Protection.
+  GcpModelArmorFloorSettingSdpSettings sdp_settings = 4;
+}
+
+// GcpModelArmorFloorSettingMaliciousUriFilterSettings requires or relaxes
+// the malicious URL filter.
+message GcpModelArmorFloorSettingMaliciousUriFilterSettings {
+  // "ENABLED" or "DISABLED".
+  string filter_enforcement = 1 [(buf.validate.field).cel = {
+    id: "filter_enforcement.valid"
+    message: "filter_enforcement must be ENABLED or DISABLED"
+    expression: "this == '' || this in ['ENABLED', 'DISABLED']"
+  }];
+}
+
+// GcpModelArmorFloorSettingPiAndJailbreakFilterSettings requires the
+// prompt injection and jailbreak filter at a minimum threshold.
+message GcpModelArmorFloorSettingPiAndJailbreakFilterSettings {
+  // "ENABLED" or "DISABLED".
+  string filter_enforcement = 1 [(buf.validate.field).cel = {
+    id: "filter_enforcement.valid"
+    message: "filter_enforcement must be ENABLED or DISABLED"
+    expression: "this == '' || this in ['ENABLED', 'DISABLED']"
+  }];
+
+  // The weakest threshold a template may use: "LOW_AND_ABOVE" (strictest),
+  // "MEDIUM_AND_ABOVE", or "HIGH".
+  string confidence_level = 2 [(buf.validate.field).cel = {
+    id: "confidence_level.valid"
+    message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
+    expression: "this == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']"
+  }];
+}
+
+// GcpModelArmorFloorSettingRaiSettings lists the Responsible AI filters
+// every template must run.
+message GcpModelArmorFloorSettingRaiSettings {
+  // One entry per required content category.
+  repeated GcpModelArmorFloorSettingRaiFilter rai_filters = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).cel = {
+      id: "rai_filters.unique_filter_type"
+      message: "each filter_type may appear only once"
+      expression: "this.map(f, f.filter_type).unique()"
+    }
+  ];
+}
+
+// GcpModelArmorFloorSettingRaiFilter is one required content filter.
+message GcpModelArmorFloorSettingRaiFilter {
+  // "SEXUALLY_EXPLICIT", "HATE_SPEECH", "HARASSMENT", or "DANGEROUS".
+  string filter_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "SEXUALLY_EXPLICIT",
+        "HATE_SPEECH",
+        "HARASSMENT",
+        "DANGEROUS"
+      ]
+    }
+  ];
+
+  // The weakest threshold a template may use for this category:
+  // "LOW_AND_ABOVE" (strictest), "MEDIUM_AND_ABOVE", or "HIGH".
+  string confidence_level = 2 [(buf.validate.field).cel = {
+    id: "confidence_level.valid"
+    message: "confidence_level must be LOW_AND_ABOVE, MEDIUM_AND_ABOVE, or HIGH"
+    expression: "this == '' || this in ['LOW_AND_ABOVE', 'MEDIUM_AND_ABOVE', 'HIGH']"
+  }];
+}
+
+// GcpModelArmorFloorSettingSdpSettings requires Sensitive Data Protection
+// screening -- Google's basic detectors or your own templates, never both.
+message GcpModelArmorFloorSettingSdpSettings {
+  option (buf.validate.message).cel = {
+    id: "sdp_settings.basic_xor_advanced"
+    message: "set at most one of basic_config or advanced_config"
+    expression: "!(has(this.basic_config) && has(this.advanced_config))"
+  };
+
+  // Google's predefined sensitive-data detectors.
+  GcpModelArmorFloorSettingSdpBasicConfig basic_config = 1;
+
+  // Your own Sensitive Data Protection templates.
+  GcpModelArmorFloorSettingSdpAdvancedConfig advanced_config = 2;
+}
+
+// GcpModelArmorFloorSettingSdpBasicConfig switches the basic detectors.
+message GcpModelArmorFloorSettingSdpBasicConfig {
+  // "ENABLED" or "DISABLED".
+  string filter_enforcement = 1 [(buf.validate.field).cel = {
+    id: "filter_enforcement.valid"
+    message: "filter_enforcement must be ENABLED or DISABLED"
+    expression: "this == '' || this in ['ENABLED', 'DISABLED']"
+  }];
+}
+
+// GcpModelArmorFloorSettingSdpAdvancedConfig names Sensitive Data
+// Protection templates.
+message GcpModelArmorFloorSettingSdpAdvancedConfig {
+  // Inspect template:
+  // projects/{project}/locations/{location}/inspectTemplates/{template}.
+  string inspect_template = 1 [(buf.validate.field).cel = {
+    id: "inspect_template.format"
+    message: "inspect_template must be projects/{project}/locations/{location}/inspectTemplates/{template}"
+    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/inspectTemplates/[^/]+$')"
+  }];
+
+  // De-identify template:
+  // projects/{project}/locations/{location}/deidentifyTemplates/{template}.
+  // Every info type it names must also be in the inspect template.
+  string deidentify_template = 2 [(buf.validate.field).cel = {
+    id: "deidentify_template.format"
+    message: "deidentify_template must be projects/{project}/locations/{location}/deidentifyTemplates/{template}"
+    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/deidentifyTemplates/[^/]+$')"
+  }];
+}

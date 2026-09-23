@@ -1,0 +1,47 @@
+# GcpColabSchedule scenario: a notebook schedule over three fixtures -- a
+# runtime template, a bucket for the notebook and its executed output, and
+# a service account the runs execute as -- created PAUSED (the client-side
+# desired_state control), so it never launches a run and the lane bills
+# nothing. Proves the notebook arm, the three references, the run-count
+# strings, and the pause control on both engines.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpColabSchedule
+metadata:
+  name: planton-oss-e2e-gcpcols-notebook
+  id: planton-oss-e2e-gcpcols-notebook
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpcolabschedule
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpcolabruntimetemplate-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpgcsbucket-schedule.yaml,catalog/gcp/gcpcolabschedule/e2e/prerequisites/gcpserviceaccount-schedule.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  cron: "0 6 * * *"
+  maxConcurrentRunCount: 1
+  maxRunCount: 10
+  desiredState: PAUSED
+  notebookExecutionJob:
+    gcsNotebookSource:
+      uri: gs://pln-e2e-cols-${E2E_RUN_ID}/report.ipynb
+    notebookRuntimeTemplateResourceName:
+      valueFrom:
+        kind: GcpColabRuntimeTemplate
+        name: planton-oss-e2e-gcpcols-template
+        fieldPath: status.outputs.name
+    gcsOutputUri:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: planton-oss-e2e-gcpcols-bucket
+        fieldPath: status.outputs.url
+    serviceAccount:
+      valueFrom:
+        kind: GcpServiceAccount
+        name: planton-oss-e2e-gcpcols-sa
+        fieldPath: status.outputs.email
+    executionTimeout: 1800s
+  deletionPolicy: DELETE

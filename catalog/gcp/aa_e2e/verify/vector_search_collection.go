@@ -2,10 +2,7 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -31,30 +28,12 @@ type vectorSearchNamed struct {
 }
 
 func (v *vectorSearchCollectionVerifier) get(ctx context.Context, svc *Services, name string) (*vectorSearchNamed, int, error) {
-	url := fmt.Sprintf("https://vectorsearch.googleapis.com/v1/%s", name)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build vector search GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "vector search GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read vector search response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("vector search GET %s returned %d: %s", name, resp.StatusCode, string(body))
-	}
-
 	obj := &vectorSearchNamed{}
-	if err := json.Unmarshal(body, obj); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode vector search resource")
+	status, err := googleRestGet(ctx, svc, "vector search resource", fmt.Sprintf("https://vectorsearch.googleapis.com/v1/%s", name), obj)
+	if err != nil {
+		return nil, status, err
 	}
-	return obj, resp.StatusCode, nil
+	return obj, status, nil
 }
 
 // indexNames collects the index_names list output as the outputs
@@ -121,11 +100,5 @@ func (v *vectorSearchCollectionVerifier) VerifyAbsent(ctx context.Context, svc *
 	}
 
 	_, status, err := v.get(ctx, svc, name)
-	if err != nil {
-		if status == http.StatusNotFound {
-			return nil
-		}
-		return errors.Wrapf(err, "unexpected error probing vector search collection %s after destroy", name)
-	}
-	return errors.Errorf("vector search collection %s still exists after destroy", name)
+	return restAbsent("vector search collection", name, status, err)
 }

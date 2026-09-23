@@ -1,0 +1,20 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "pulumi_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/plantonhq/planton/catalog/gcp/gcpcolabruntime/iac/pulumi",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//catalog/gcp/gcpcolabruntime/iac/pulumi/module",
+        "//catalog/gcp/gcpcolabruntime/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/stackinput",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_binary(
+    name = "pulumi",
+    embed = [":pulumi_lib"],
+    visibility = ["//visibility:public"],
+)

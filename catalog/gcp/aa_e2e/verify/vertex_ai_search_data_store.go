@@ -66,5 +66,5 @@ func (v *vertexAiSearchDataStoreVerifier) VerifyAbsent(ctx context.Context, svc 
 		return nil
 	}
 	_, status, err := discoveryEngineGet(ctx, svc, name)
-	return discoveryEngineAbsent("vertex ai search data store", name, status, err)
+	return restAbsent("vertex ai search data store", name, status, err)
 }

@@ -1,0 +1,24 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpcolabschedule
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness
+  # project with roles/aiplatform.admin, bucket creation, and service
+  # account creation (for the three fixtures); the module enables
+  # aiplatform.googleapis.com itself. Created PAUSED, the schedule never
+  # launches a run. Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest, the scenario (references
+  # substituted), and throwaway custom-environment, Dataform, and pipeline
+  # (PSC-I, project-number network) arms are clean on the pinned provider,
+  # and the accounting is total. Live facts the proof lane confirms: (1)
+  # Google accepts a notebook schedule whose notebook does not exist yet
+  # (it is read only when a run launches); (2) the schedule RE-PLANS CLEAN
+  # on both engines -- the run counts round-trip as strings and the
+  # provider-filled request parent shows no diff; (3) the verifier reads it
+  # PAUSED; (4) destroy deletes it and its fixtures, and the verifier reads
+  # 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

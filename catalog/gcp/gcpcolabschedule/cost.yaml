@@ -1,0 +1,27 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpcolabschedule
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: cron
+      sku_meter: notebook execution and pipeline compute
+      pricing_unit: vCPU-hours, GiB-hours, GPU-hours
+      impact: The schedule itself is free; every run it launches bills the compute it uses for as long as it runs (per cloud.google.com/colab/pricing and cloud.google.com/vertex-ai/pricing, read 2026-09-23). The cron's frequency multiplies that cost.
+    - field_path: notebook_execution_job.custom_environment_spec
+      sku_meter: notebook execution compute
+      pricing_unit: vCPU-hours, GiB-hours, GPU-hours
+      impact: The machine and accelerators each notebook run gets -- or the runtime template's, when a template is named.
+    - field_path: max_run_count
+      sku_meter: notebook execution and pipeline compute
+      pricing_unit: runs
+      impact: Bounds how many runs the schedule ever launches; unset keeps launching until paused or deleted.
+    - field_path: desired_state
+      sku_meter: notebook execution and pipeline compute
+      pricing_unit: runs
+      impact: PAUSED launches nothing and bills nothing.
+  notes: "Executed notebooks and pipeline artifacts are stored in Cloud Storage and bill there. Vertex AI Pipelines adds a small per-run fee on top of the compute the pipeline's steps use."

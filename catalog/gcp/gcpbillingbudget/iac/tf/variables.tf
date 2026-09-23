@@ -31,8 +31,9 @@ variable "spec" {
         # currency; unset takes the account's currency.
         currency_code = optional(string, "")
 
-        # The whole units of the amount, e.g. 1000 for $1,000 when the currency is
-        # USD. 0 with a non-zero nanos is a sub-unit budget.
+        # The whole units of the amount in currency_code, e.g. 1000 for a budget
+        # of one thousand US dollars when the currency is USD. 0 with a non-zero
+        # nanos is a sub-unit budget.
         units = optional(number, 0)
 
         # Fractional part of the amount in nano units (10^-9), 0 to 999,999,999.

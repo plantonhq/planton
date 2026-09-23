@@ -2503,14 +2503,16 @@ func (x *GcpVertexAiSearchEngineBannedPhrase) GetIgnoreDiacritics() bool {
 }
 
 // GcpVertexAiSearchEngineModelArmorConfig sanitizes prompts and responses
-// through Model Armor templates
-// (projects/{project}/locations/{location}/templates/{template}).
+// through Model Armor templates.
 type GcpVertexAiSearchEngineModelArmorConfig struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// The template applied to user prompts.
-	UserPromptTemplate string `protobuf:"bytes,1,opt,name=user_prompt_template,json=userPromptTemplate,proto3" json:"user_prompt_template,omitempty"`
-	// The template applied to assistant responses.
-	ResponseTemplate string `protobuf:"bytes,2,opt,name=response_template,json=responseTemplate,proto3" json:"response_template,omitempty"`
+	// The template applied to user prompts: a GcpModelArmorTemplate
+	// reference or a literal
+	// projects/{project}/locations/{location}/templates/{template}.
+	UserPromptTemplate *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=user_prompt_template,json=userPromptTemplate,proto3" json:"user_prompt_template,omitempty"`
+	// The template applied to assistant responses: a GcpModelArmorTemplate
+	// reference or a literal template name.
+	ResponseTemplate *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=response_template,json=responseTemplate,proto3" json:"response_template,omitempty"`
 	// FAIL_OPEN (answer anyway when sanitization fails) or FAIL_CLOSED
 	// (refuse). Sent only when set.
 	FailureMode   string `protobuf:"bytes,3,opt,name=failure_mode,json=failureMode,proto3" json:"failure_mode,omitempty"`
@@ -2548,18 +2550,18 @@ func (*GcpVertexAiSearchEngineModelArmorConfig) Descriptor() ([]byte, []int) {
 	return file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_spec_proto_rawDescGZIP(), []int{35}
 }
 
-func (x *GcpVertexAiSearchEngineModelArmorConfig) GetUserPromptTemplate() string {
+func (x *GcpVertexAiSearchEngineModelArmorConfig) GetUserPromptTemplate() *v1.StringValueOrRef {
 	if x != nil {
 		return x.UserPromptTemplate
 	}
-	return ""
+	return nil
 }
 
-func (x *GcpVertexAiSearchEngineModelArmorConfig) GetResponseTemplate() string {
+func (x *GcpVertexAiSearchEngineModelArmorConfig) GetResponseTemplate() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ResponseTemplate
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpVertexAiSearchEngineModelArmorConfig) GetFailureMode() string {
@@ -3281,12 +3283,10 @@ const file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_spec_proto_rawDesc = "" 
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06phrase\x12X\n" +
 	"\n" +
 	"match_type\x18\x02 \x01(\tB9\xbaH6\xd8\x01\x01r1R\x13SIMPLE_STRING_MATCHR\x1aWORD_BOUNDARY_STRING_MATCHR\tmatchType\x12+\n" +
-	"\x11ignore_diacritics\x18\x03 \x01(\bR\x10ignoreDiacritics\"\xe5\x01\n" +
-	"'GcpVertexAiSearchEngineModelArmorConfig\x12<\n" +
-	"\x14user_prompt_template\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x12userPromptTemplate\x127\n" +
-	"\x11response_template\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x10responseTemplate\x12C\n" +
+	"\x11ignore_diacritics\x18\x03 \x01(\bR\x10ignoreDiacritics\"\xff\x02\n" +
+	"'GcpVertexAiSearchEngineModelArmorConfig\x12\x88\x01\n" +
+	"\x14user_prompt_template\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\x8c\x19\x92\xd4a\x13status.outputs.nameR\x12userPromptTemplate\x12\x83\x01\n" +
+	"\x11response_template\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\xbaH\x03\xc8\x01\x01\x88\xd4a\x8c\x19\x92\xd4a\x13status.outputs.nameR\x10responseTemplate\x12C\n" +
 	"\ffailure_mode\x18\x03 \x01(\tB \xbaH\x1d\xd8\x01\x01r\x18R\tFAIL_OPENR\vFAIL_CLOSEDR\vfailureMode\"\xaf\x02\n" +
 	"%GcpVertexAiSearchEngineCustomerPolicy\x12|\n" +
 	"\x0ebanned_phrases\x18\x01 \x03(\v2U.dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineBannedPhraseR\rbannedPhrases\x12\x87\x01\n" +
@@ -3434,29 +3434,31 @@ var file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_spec_proto_depIdxs = []int
 	26, // 27: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetConfig.homepage_setting:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetHomepageSetting
 	27, // 28: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetConfig.ui_branding:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetUiBranding
 	32, // 29: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetConfig.ui_settings:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetUiSettings
-	34, // 30: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCustomerPolicy.banned_phrases:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineBannedPhrase
-	35, // 31: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCustomerPolicy.model_armor_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineModelArmorConfig
-	36, // 32: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineAssistant.customer_policy:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCustomerPolicy
-	37, // 33: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineAssistant.generation_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineGenerationConfig
-	41, // 34: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	41, // 35: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.collection_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	41, // 36: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.data_store_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0,  // 37: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.common_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCommonConfig
-	1,  // 38: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.search_engine_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSearchEngineConfig
-	40, // 39: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.features:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.FeaturesEntry
-	41, // 40: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 41: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.knowledge_graph_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineKnowledgeGraphConfig
-	5,  // 42: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.chat_engine_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineChatEngineConfig
-	10, // 43: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.media_recommendation_engine_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineMediaRecommendationEngineConfig
-	22, // 44: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.controls:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineControl
-	23, // 45: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.serving_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineServingConfig
-	33, // 46: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.widget_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetConfig
-	38, // 47: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.assistants:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineAssistant
-	48, // [48:48] is the sub-list for method output_type
-	48, // [48:48] is the sub-list for method input_type
-	48, // [48:48] is the sub-list for extension type_name
-	48, // [48:48] is the sub-list for extension extendee
-	0,  // [0:48] is the sub-list for field type_name
+	41, // 30: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineModelArmorConfig.user_prompt_template:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	41, // 31: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineModelArmorConfig.response_template:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	34, // 32: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCustomerPolicy.banned_phrases:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineBannedPhrase
+	35, // 33: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCustomerPolicy.model_armor_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineModelArmorConfig
+	36, // 34: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineAssistant.customer_policy:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCustomerPolicy
+	37, // 35: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineAssistant.generation_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineGenerationConfig
+	41, // 36: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	41, // 37: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.collection_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	41, // 38: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.data_store_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0,  // 39: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.common_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineCommonConfig
+	1,  // 40: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.search_engine_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSearchEngineConfig
+	40, // 41: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.features:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.FeaturesEntry
+	41, // 42: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.kms_key_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3,  // 43: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.knowledge_graph_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineKnowledgeGraphConfig
+	5,  // 44: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.chat_engine_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineChatEngineConfig
+	10, // 45: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.media_recommendation_engine_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineMediaRecommendationEngineConfig
+	22, // 46: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.controls:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineControl
+	23, // 47: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.serving_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineServingConfig
+	33, // 48: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.widget_config:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineWidgetConfig
+	38, // 49: dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.assistants:type_name -> dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineAssistant
+	50, // [50:50] is the sub-list for method output_type
+	50, // [50:50] is the sub-list for method input_type
+	50, // [50:50] is the sub-list for extension type_name
+	50, // [50:50] is the sub-list for extension extendee
+	0,  // [0:50] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpvertexaisearchengine_v1alpha1_spec_proto_init() }

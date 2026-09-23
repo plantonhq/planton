@@ -421,6 +421,13 @@ contained dev.planton.gcp.gcpcloudsqldatabase.v1alpha1.GcpCloudSqlDatabaseSpec.p
 contained dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserSpec.instance -> GcpCloudSql
 contained dev.planton.gcp.gcpcloudsqluser.v1alpha1.GcpCloudSqlUserSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcloudtasksqueue.v1alpha1.GcpCloudTasksQueueSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcolabruntime.v1alpha1.GcpColabRuntimeSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateNetworkSpec.network -> GcpVpcNetwork
+contained dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateNetworkSpec.subnetwork -> GcpSubnetwork
+contained dev.planton.gcp.gcpcolabruntimetemplate.v1alpha1.GcpColabRuntimeTemplateSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleNetworkSpec.network -> GcpVpcNetwork
+contained dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleNetworkSpec.subnetwork -> GcpSubnetwork
+contained dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcomputedisk.v1alpha1.GcpComputeDiskSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpcomputeinstance.v1alpha1.GcpComputeInstanceNetworkInterface.subnetwork -> GcpSubnetwork
@@ -437,6 +444,7 @@ contained dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancer
 contained dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordSpec.managed_zone -> GcpDnsZone
 contained dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZoneSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpdocumentaiprocessor.v1alpha1.GcpDocumentAiProcessorSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpeventarcmessagebus.v1alpha1.GcpEventarcMessageBusSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpeventarctrigger.v1alpha1.GcpEventarcTriggerSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpfilestoreinstance.v1alpha1.GcpFilestoreInstanceNetworkConfig.psc_endpoint_project -> GcpProject
@@ -491,6 +499,9 @@ contained dev.planton.gcp.gcplogmetric.v1alpha1.GcpLogMetricSpec.project_id -> G
 contained dev.planton.gcp.gcpmanagedsslcertificate.v1alpha1.GcpManagedSslCertificateSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstancePscAutoConnection.project_id -> GcpProject
 contained dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingScope.folder_id -> GcpFolder
+contained dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1.GcpModelArmorFloorSettingScope.project_id -> GcpProject
+contained dev.planton.gcp.gcpmodelarmortemplate.v1alpha1.GcpModelArmorTemplateSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringalertpolicy.v1alpha1.GcpMonitoringAlertPolicySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringdashboard.v1alpha1.GcpMonitoringDashboardSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmonitoringnotificationchannel.v1alpha1.GcpMonitoringNotificationChannelSpec.project_id -> GcpProject
@@ -546,6 +557,12 @@ contained dev.planton.gcp.gcptagbinding.v1alpha1.GcpTagBindingParent.project_id 
 contained dev.planton.gcp.gcptagkey.v1alpha1.GcpTagKeyParent.project_id -> GcpProject
 contained dev.planton.gcp.gcptargethttpproxy.v1alpha1.GcpTargetHttpProxySpec.project_id -> GcpProject
 contained dev.planton.gcp.gcptargethttpsproxy.v1alpha1.GcpTargetHttpsProxySpec.project_id -> GcpProject
+contained dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceNetworkConfig.network -> GcpVpcNetwork
+contained dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceNetworkConfig.subnetwork -> GcpSubnetwork
+contained dev.planton.gcp.gcptpuqueuedresource.v1alpha1.GcpTpuQueuedResourceSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmNetworkConfig.network -> GcpVpcNetwork
+contained dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmNetworkConfig.subnetwork -> GcpSubnetwork
+contained dev.planton.gcp.gcptpuvm.v1alpha1.GcpTpuVmSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpurlmap.v1alpha1.GcpUrlMapSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpvectorsearchcollection.v1alpha1.GcpVectorSearchCollectionSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpvertexaiagentengine.v1alpha1.GcpVertexAiAgentEngineSpec.project_id -> GcpProject
@@ -885,6 +902,9 @@ exempt    dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolNe
 exempt    dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolVolumeCloudSql.instances -> GcpCloudSql
 exempt    dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlNetwork.private_network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpcloudsql.v1alpha1.GcpCloudSqlSpec.master_instance_name -> GcpCloudSql
+exempt    dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleDnsPeeringConfig.target_network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabScheduleDnsPeeringConfig.target_project -> GcpProject
+exempt    dev.planton.gcp.gcpcolabschedule.v1alpha1.GcpColabSchedulePipelineJob.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterKubernetesClusterConfig.kubernetes_namespace -> KubernetesNamespace
 exempt    dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.network_url -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpdnszone.v1alpha1.GcpDnsZonePeeringConfig.target_network -> GcpVpcNetwork

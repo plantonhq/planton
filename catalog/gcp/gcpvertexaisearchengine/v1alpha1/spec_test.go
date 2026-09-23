@@ -200,8 +200,8 @@ var _ = ginkgo.Describe("GcpVertexAiSearchEngineSpec", func() {
 			CustomerPolicy: &GcpVertexAiSearchEngineCustomerPolicy{
 				BannedPhrases: []*GcpVertexAiSearchEngineBannedPhrase{{Phrase: "confidential", MatchType: "WORD_BOUNDARY_STRING_MATCH"}},
 				ModelArmorConfig: &GcpVertexAiSearchEngineModelArmorConfig{
-					UserPromptTemplate: "projects/ai-project/locations/global/templates/prompts",
-					ResponseTemplate:   "projects/ai-project/locations/global/templates/responses",
+					UserPromptTemplate: litRef("projects/ai-project/locations/global/templates/prompts"),
+					ResponseTemplate:   litRef("projects/ai-project/locations/global/templates/responses"),
 					FailureMode:        "FAIL_CLOSED",
 				},
 			},

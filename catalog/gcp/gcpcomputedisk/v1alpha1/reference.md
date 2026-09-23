@@ -451,6 +451,7 @@ Fields on other kinds that can point at this resource:
 | GcpComputeInstance | `spec.attachedDisks[].source` | `status.outputs.self_link` |
 | GcpComputeMig | `spec.template.disks[].source` | `status.outputs.self_link` |
 | GcpComputeMig | `spec.perInstanceConfigs[].preservedState.disks[].source` | `status.outputs.self_link` |
+| GcpTpuVm | `spec.dataDisks[].sourceDisk` | `status.outputs.self_link` |
 
 ## See Also
 

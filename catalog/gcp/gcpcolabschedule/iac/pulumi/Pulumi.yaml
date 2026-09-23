@@ -1,0 +1,4 @@
+name: gcpcolabschedule-pulumi-project
+runtime:
+  name: go
+description: Planton GcpColabSchedule Pulumi module

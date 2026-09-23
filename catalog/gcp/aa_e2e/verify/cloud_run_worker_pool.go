@@ -2,10 +2,7 @@ package verify
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 
 	"github.com/pkg/errors"
 )
@@ -37,30 +34,12 @@ type cloudRunWorkerPool struct {
 }
 
 func (v *cloudRunWorkerPoolVerifier) get(ctx context.Context, svc *Services, name string) (*cloudRunWorkerPool, int, error) {
-	url := fmt.Sprintf("https://run.googleapis.com/v2/%s", name)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to build run worker pool GET request")
-	}
-	resp, err := svc.RestClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "run worker pool GET request failed")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to read run worker pool response")
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, resp.StatusCode, errors.Errorf("run worker pool GET %s returned %d: %s", name, resp.StatusCode, string(body))
-	}
-
 	pool := &cloudRunWorkerPool{}
-	if err := json.Unmarshal(body, pool); err != nil {
-		return nil, resp.StatusCode, errors.Wrap(err, "failed to decode run worker pool")
+	status, err := googleRestGet(ctx, svc, "run worker pool", fmt.Sprintf("https://run.googleapis.com/v2/%s", name), pool)
+	if err != nil {
+		return nil, status, err
 	}
-	return pool, resp.StatusCode, nil
+	return pool, status, nil
 }
 
 func (v *cloudRunWorkerPoolVerifier) VerifyExists(ctx context.Context, svc *Services, outputs map[string]string) error {
@@ -95,11 +74,5 @@ func (v *cloudRunWorkerPoolVerifier) VerifyAbsent(ctx context.Context, svc *Serv
 	}
 
 	_, status, err := v.get(ctx, svc, name)
-	if err != nil {
-		if status == http.StatusNotFound {
-			return nil
-		}
-		return errors.Wrapf(err, "unexpected error probing run worker pool %s after destroy", name)
-	}
-	return errors.Errorf("run worker pool %s still exists after destroy", name)
+	return restAbsent("run worker pool", name, status, err)
 }

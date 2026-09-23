@@ -816,19 +816,23 @@ message GcpVertexAiSearchEngineBannedPhrase {
 }
 
 // GcpVertexAiSearchEngineModelArmorConfig sanitizes prompts and responses
-// through Model Armor templates
-// (projects/{project}/locations/{location}/templates/{template}).
+// through Model Armor templates.
 message GcpVertexAiSearchEngineModelArmorConfig {
-  // The template applied to user prompts.
-  string user_prompt_template = 1 [
+  // The template applied to user prompts: a GcpModelArmorTemplate
+  // reference or a literal
+  // projects/{project}/locations/{location}/templates/{template}.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef user_prompt_template = 1 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 1
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpModelArmorTemplate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
   ];
 
-  // The template applied to assistant responses.
-  string response_template = 2 [
+  // The template applied to assistant responses: a GcpModelArmorTemplate
+  // reference or a literal template name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef response_template = 2 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 1
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpModelArmorTemplate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
   ];
 
   // FAIL_OPEN (answer anyway when sanitization fails) or FAIL_CLOSED

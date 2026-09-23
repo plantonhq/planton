@@ -142,6 +142,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpVertexAiSearchDataStore** -- the stores the engine reads
 - **GcpVertexAiSearchDataConnector** -- a connector-built collection of stores
 - **GcpKmsKey** -- customer-managed encryption for a search engine
+- **GcpModelArmorTemplate** -- the templates an assistant screens prompts and responses through
 
 ---
 
