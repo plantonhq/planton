@@ -1,0 +1,114 @@
+.section{scroll-margin-top:100px;padding-block:88px;border-top:1px solid var(--hp-line)}
+.heading{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-bottom:40px;align-items:start}
+.copy{color:var(--hp-secondary);font-size:15px;line-height:1.85;max-width:540px}
+.copy p+p{margin-top:16px!important}
+/* Both explainers share one dark canvas and transport. Desktop scene height
+   responds to the viewport; compact/mobile layouts retain readable text and
+   natural page scrolling instead of shrinking the entire diagram to fit. */
+.figure{container-type:inline-size;border:1px solid var(--hp-line);border-radius:12px;background:var(--hp-panel);overflow:hidden;margin:0;scroll-margin-top:88px}
+.dark{color:var(--hp-ink)}
+.top{padding:20px 28px 0}
+.context,.phaseNumber,.stepIndex{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.context{display:block;color:var(--hp-secondary);font-size:11px;letter-spacing:.06em;margin-bottom:8px}
+.top h3{font-size:clamp(22px,2.1vw,28px);letter-spacing:-.025em;font-weight:500;line-height:1.3}
+.setup{padding:10px 28px 0;color:var(--hp-secondary);font-size:14px;line-height:1.6}
+.scene{padding:18px 24px 12px;font-family:var(--font-inter),Arial,sans-serif}
+.wide svg{height:clamp(220px,calc(100svh - 525px),310px)}
+.figure[data-kind=sequence] .wide svg{height:clamp(270px,calc(100svh - 470px),340px)}
+.compact{display:none}
+.readout{display:flex;gap:20px;margin-inline:28px;padding:16px 0;min-height:106px;border-top:1px solid var(--hp-line)}
+.phaseNumber{white-space:nowrap;font-size:12px;padding-top:3px;color:var(--hp-secondary)}
+.notes{display:grid;min-width:0}
+.phaseNote{grid-area:1/1;visibility:hidden}
+.phaseNote[data-active=true]{visibility:visible}
+.readout strong{font-size:16px;font-weight:500}
+.readout p{font-size:13px;line-height:1.65;color:var(--hp-secondary);margin-top:6px!important;max-width:940px}
+.caption{display:flex;align-items:center;gap:24px;padding:8px 28px 16px;color:var(--hp-secondary);font-size:11px;line-height:1.6}
+.phases{display:grid;flex:0 0 220px;gap:8px;margin:0!important;padding:0;list-style:none}
+.phases button{display:flex;justify-content:center;align-items:center;width:100%;position:relative;border-top:2px solid var(--hp-line);min-height:44px;color:var(--hp-secondary)}
+.phases button[aria-pressed=true]{color:var(--hp-ink)}
+.phases button:disabled{cursor:default}
+.phases button:not(:disabled):hover{background:var(--hp-line)}
+.stepIndex{font-size:10px}
+.stepName{display:none}
+.stepProgress{position:absolute;left:0;right:0;height:2px;top:-2px;background:var(--workflow-flow);transform-origin:left}
+.legend{display:flex;flex-direction:column;gap:3px;margin-left:auto}
+.legend>span:first-child{display:flex;align-items:center;gap:8px}
+.legend i{width:6px;height:6px;border-radius:50%;background:var(--workflow-flow);flex-shrink:0}
+.controls{display:flex;align-items:center;gap:8px;flex:0 1 auto;max-width:100%;min-width:0}
+.controls button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 12px;font-size:13px;border:1px solid var(--hp-line);border-radius:6px;background:transparent;color:var(--hp-ink)}
+.controls button:last-child{border-color:transparent;color:var(--hp-secondary)}
+.controls button:hover{color:var(--hp-ink);border-color:var(--hp-secondary)}
+.static{font-size:12px;color:var(--hp-secondary)}
+.transcript{border-top:1px solid var(--hp-line);padding:0 28px;color:var(--hp-secondary);font-size:12px;line-height:1.8}
+.transcript summary{cursor:pointer;min-height:40px;padding-block:9px;color:var(--hp-ink)}
+.transcript ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;column-gap:40px;row-gap:16px;margin-block:12px 24px}
+.transcript strong{color:var(--hp-ink);font-weight:500}
+.transcript>p{padding-bottom:24px}
+@container (max-width:900px){
+  .figure[data-kind=sequence] .wide{display:none}
+  .figure[data-kind=sequence] .compact{display:block;max-width:380px;margin-inline:auto}
+  .caption{flex-wrap:wrap;gap:12px 20px}
+  .legend{margin-left:0}
+  .controls{margin-left:auto}
+}
+@container (max-width:700px){
+  .top{padding:20px 20px 0}.top h3{font-size:24px}
+  .setup{padding:12px 20px 0}
+  .wide{display:none}.compact{display:block;max-width:400px;margin-inline:auto}
+  .scene{padding:20px 6px 12px}
+  .readout{margin-inline:20px;gap:10px;flex-direction:column;min-height:180px}
+  .caption{padding:8px 20px 16px}.phases{flex-basis:100%}
+  .legend{flex:1 1 100%}.controls{margin-left:0}
+  .transcript{padding-inline:20px}.transcript ol{grid-template-columns:1fr}
+}
+@media(max-width:760px){.section{padding-block:60px}.heading{grid-template-columns:1fr;gap:24px;margin-bottom:28px}}
+
+/* Full detail is user-opened, independent of the viewport-sized explainer. */
+.resourceExplorer{padding-block:8px 24px}
+.resourceSelect{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-block:16px;color:var(--hp-ink)}
+.resourceSelect select{max-width:100%;padding:10px 12px;border:1px solid var(--hp-line);border-radius:6px;background:var(--hp-canvas);color:var(--hp-ink);font:inherit}
+.resourceSelection{min-height:56px}
+.resourceCanvas{overflow:auto;max-width:100%;margin-block:16px;border:1px solid var(--hp-line);border-radius:8px}
+.resourceCanvas svg{display:block;max-width:none}
+.resourceInventory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:20px}
+.resourceInventory h4{font-size:14px;color:var(--hp-ink);margin-bottom:10px}
+.resourceInventory ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.resourceInventory li span{display:block;font-size:11px;line-height:1.6}
+@container(max-width:700px){.resourceInventory{grid-template-columns:1fr}}
+
+.architectures{scroll-margin-top:90px}
+.providerTabs{display:flex;width:max-content;max-width:100%;gap:4px;margin:0 auto 16px;padding:5px;border:1px solid var(--hp-line);border-radius:12px;background:var(--hp-panel);overflow-x:auto;scrollbar-width:thin}
+.providerTabs button{display:flex;flex:0 0 auto;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:8px 20px;border:1px solid transparent;border-radius:8px;color:var(--hp-secondary);font-size:14px;white-space:nowrap}
+.providerTabs button:hover{background:var(--hp-canvas);color:var(--hp-ink)}
+.providerTabs button[aria-selected=true]{color:var(--hp-ink);background:var(--hp-canvas);border-color:var(--hp-line);box-shadow:0 1px 3px #0000000a}
+.providerTabs button:focus-visible{outline:2px solid #3978d3;outline-offset:-2px}
+.providerTabs img{object-fit:contain;flex:none}
+.panelEnter{animation:panel-enter 180ms ease-out}
+.staticArchitectures{display:grid;gap:24px}
+.figure[data-kind=architecture] .top h3{min-height:37px}
+.figure[data-kind=architecture] .setup{min-height:42px}
+.figure[data-kind=architecture] .readout{min-height:84px}
+@keyframes panel-enter{from{opacity:.15}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.panelEnter{animation:none}}
+@media(max-width:760px){.providerTabs{width:100%;justify-content:flex-start}.providerTabs button{padding-inline:14px}.figure[data-kind=architecture] .setup{min-height:0}.controls{flex-wrap:wrap}}
+
+.panelStack{position:relative}
+.panelExit{position:absolute;inset:0;pointer-events:none;animation:panel-exit 180ms ease-out forwards;z-index:1}
+@keyframes panel-exit{from{opacity:1}to{opacity:0}}
+@media(prefers-reduced-motion:reduce){.panelExit{display:none}}
+
+/* Laptop-height canvases keep the graph readable. Recover space from chrome,
+   never by reducing resource labels to miniature text. */
+@media (min-width:1000px) and (max-height:800px){
+  .top{padding:16px 24px 0}.context{line-height:1.4;margin-bottom:6px}
+  .top h3{font-size:24px;line-height:1.2}
+  .figure[data-kind=architecture] .top h3{min-height:29px}
+  .setup{font-size:13px;line-height:1.5;padding:6px 24px 0}
+  .figure[data-kind=architecture] .setup{min-height:32px}
+  .scene{padding:10px 24px 8px}.wide svg{height:300px}
+  .readout{margin-inline:24px;padding:12px 0;min-height:68px}
+  .figure[data-kind=architecture] .readout{min-height:68px}
+  .readout strong{font-size:15px}.readout p{font-size:12px;line-height:1.5}
+  .caption{padding:4px 24px 10px;gap:16px}.phases{flex-basis:180px}
+}

@@ -39,7 +39,7 @@ try {
   await page.goto(base,{waitUntil:'networkidle0'});await page.evaluate(()=>document.fonts.ready);
   check(`${width}: light-only homepage`,await page.$eval('[data-homepage-appearance]',e=>e.dataset.homepageAppearance==='light') && !(await page.$('[aria-label="Light appearance"]')));
   check(`${width}: one h1`,await page.$$eval('h1',es=>es.length===1));
-  check(`${width}: no overflowing content`,await page.evaluate(()=>{const w=innerWidth;return [...document.querySelectorAll('main *')].filter(e=>!(e instanceof SVGElement)).every(e=>{const r=e.getBoundingClientRect();return r.width===0||(r.left>=-1&&r.right<=w+1)});}));
+  check(`${width}: no overflowing content`,await page.evaluate(()=>{const w=innerWidth;return [...document.querySelectorAll('main *')].filter(e=>!(e instanceof SVGElement)&&!e.parentElement?.closest('[role=tablist]')).every(e=>{const r=e.getBoundingClientRect();return r.width===0||(r.left>=-1&&r.right<=w+1)});}));
   check(`${width}: coding-agent workflow present`,await page.$eval('#agents-title',e=>e.textContent.includes('coding agent')));
   check(`${width}: three demo CTAs`,await page.$$eval('main a[href="/book-demo"]',es=>es.length===3));
   for(const theme of ['light']) {
