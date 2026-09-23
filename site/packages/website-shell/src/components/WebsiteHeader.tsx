@@ -16,7 +16,16 @@ import { WebsiteLogo } from './WebsiteLogo';
  * Mobile: logo on the left, hamburger on the right (matches stigmer.ai).
  * Desktop: full mega-menu nav on the left, actions on the right.
  */
-export function WebsiteHeader() {
+export interface WebsiteHeaderProps {
+  variant?: 'default' | 'homepage';
+  onPrimaryAction?: () => void;
+  onSelfServiceAction?: () => void;
+}
+export function WebsiteHeader({
+  variant = 'default',
+  onPrimaryAction,
+  onSelfServiceAction,
+}: WebsiteHeaderProps) {
   return (
     <>
       <Stack
@@ -44,18 +53,38 @@ export function WebsiteHeader() {
         </Box>
 
         {/* Desktop: full nav on the left */}
-        <DesktopNav />
+        <DesktopNav variant={variant} />
 
         {/* Desktop: right-side actions */}
-        <Stack direction="row" sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5, fontSize: '0.875rem' }}>
-          <DiscordButton compact />
-          <DesktopDownloadLink />
-          <DesktopAuthButtons />
+        <Stack
+          direction="row"
+          sx={{
+            display: { xs: 'none', md: 'flex' },
+            alignItems: 'center',
+            gap: 1.5,
+            fontSize: '0.875rem',
+          }}
+        >
+          {variant === 'default' && (
+            <>
+              <DiscordButton compact />
+              <DesktopDownloadLink />
+            </>
+          )}
+          <DesktopAuthButtons
+            variant={variant}
+            onPrimaryAction={onPrimaryAction}
+            onSelfServiceAction={onSelfServiceAction}
+          />
         </Stack>
 
         {/* Mobile: hamburger on the right */}
         <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-          <MobileNav />
+          <MobileNav
+            variant={variant}
+            onPrimaryAction={onPrimaryAction}
+            onSelfServiceAction={onSelfServiceAction}
+          />
         </Box>
       </Stack>
     </>

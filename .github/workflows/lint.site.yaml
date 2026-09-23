@@ -29,6 +29,7 @@ jobs:
         run: |
           node scripts/check-homepage.mjs
           node scripts/check-workflows.mjs
+          node scripts/check-homepage-experience.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

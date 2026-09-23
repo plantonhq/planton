@@ -11,10 +11,11 @@ import {
   menuExplore,
   menuSolutions,
   menuResources,
+  homepageUtilities,
 } from '../../data/navigation';
 import { scopedTokens as tokens } from '../../theme/tokens';
 
-export function DesktopNav() {
+export function DesktopNav({ variant = 'default' }: { variant?: 'default' | 'homepage' }) {
   return (
     <Stack
       direction="row"
@@ -44,7 +45,14 @@ export function DesktopNav() {
       />
       <MegaMenu
         title="Resources"
-        leftMenu={[{ items: withIcons(menuResources, resourceIcons) }]}
+        leftMenu={[
+          {
+            items: withIcons(
+              variant === 'homepage' ? [...menuResources, ...homepageUtilities] : menuResources,
+              resourceIcons
+            ),
+          },
+        ]}
         leftWidth={300}
       />
       <Link href="/pricing" style={{ textDecoration: 'none', color: 'inherit' }}>

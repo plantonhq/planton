@@ -4,7 +4,7 @@ import type { FC } from 'react';
 import Link from 'next/link';
 import { Button } from '@mui/material';
 import { useLoggedIn } from '../../hooks/useLoggedIn';
-import { SIGN_IN, START_FREE } from '../../data/navigation';
+import { BOOK_DEMO, SIGN_IN, START_FREE } from '../../data/navigation';
 import { scopedTokens as tokens } from '../../theme/tokens';
 
 const ctaSx = {
@@ -25,7 +25,16 @@ const whiteButtonStyle: React.CSSProperties = {
 };
 const quietLinkStyle: React.CSSProperties = { color: tokens.text.secondary };
 
-export const DesktopAuthButtons: FC = () => {
+type ActionProps = {
+  variant?: 'default' | 'homepage';
+  onPrimaryAction?: () => void;
+  onSelfServiceAction?: () => void;
+};
+export const DesktopAuthButtons: FC<ActionProps> = ({
+  variant = 'default',
+  onPrimaryAction,
+  onSelfServiceAction,
+}) => {
   const loggedIn = useLoggedIn();
 
   if (loggedIn) {
@@ -52,9 +61,26 @@ export const DesktopAuthButtons: FC = () => {
       >
         {SIGN_IN.label}
       </Button>
-      <Button LinkComponent={Link} href={START_FREE.href} style={whiteButtonStyle} sx={ctaSx}>
+      <Button
+        LinkComponent={Link}
+        href={START_FREE.href}
+        onClick={onSelfServiceAction}
+        style={variant === 'homepage' ? quietLinkStyle : whiteButtonStyle}
+        sx={ctaSx}
+      >
         {START_FREE.label}
       </Button>
+      {variant === 'homepage' && (
+        <Button
+          LinkComponent={Link}
+          href={BOOK_DEMO.href}
+          onClick={onPrimaryAction}
+          style={whiteButtonStyle}
+          sx={ctaSx}
+        >
+          {BOOK_DEMO.label}
+        </Button>
+      )}
     </>
   );
 };
@@ -66,7 +92,11 @@ const ctaFullWidthSx = {
   justifyContent: 'center',
 } as const;
 
-export const MobileAuthButtons: FC = () => {
+export const MobileAuthButtons: FC<ActionProps> = ({
+  variant = 'default',
+  onPrimaryAction,
+  onSelfServiceAction,
+}) => {
   const loggedIn = useLoggedIn();
 
   if (loggedIn) {
@@ -93,9 +123,26 @@ export const MobileAuthButtons: FC = () => {
       >
         {SIGN_IN.label}
       </Button>
-      <Button LinkComponent={Link} href={START_FREE.href} style={whiteButtonStyle} sx={ctaFullWidthSx}>
+      <Button
+        LinkComponent={Link}
+        href={START_FREE.href}
+        onClick={onSelfServiceAction}
+        style={variant === 'homepage' ? quietLinkStyle : whiteButtonStyle}
+        sx={ctaFullWidthSx}
+      >
         {START_FREE.label}
       </Button>
+      {variant === 'homepage' && (
+        <Button
+          LinkComponent={Link}
+          href={BOOK_DEMO.href}
+          onClick={onPrimaryAction}
+          style={whiteButtonStyle}
+          sx={ctaFullWidthSx}
+        >
+          {BOOK_DEMO.label}
+        </Button>
+      )}
     </>
   );
 };

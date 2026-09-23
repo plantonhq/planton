@@ -1,6 +1,6 @@
-.section{scroll-margin-top:100px;padding-block:88px;border-top:1px solid var(--hp-line)}
+.section{scroll-margin-top:100px;padding-block:72px;border-top:1px solid var(--hp-line)}
 .heading{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-bottom:40px;align-items:start}
-.copy{color:var(--hp-secondary);font-size:15px;line-height:1.85;max-width:540px}
+.copy{color:var(--hp-secondary);font-size:17px;line-height:1.85;max-width:540px}
 .copy p+p{margin-top:16px!important}
 /* Both explainers share one dark canvas and transport. Desktop scene height
    responds to the viewport; compact/mobile layouts retain readable text and

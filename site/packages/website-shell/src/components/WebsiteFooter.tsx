@@ -10,7 +10,9 @@ import { scopedTokens as tokens } from '../theme/tokens';
 function FooterLinkGroup({ title, items }: FooterGroup) {
   return (
     <Stack sx={{ gap: 1.5 }}>
-      <Typography sx={{ fontSize: '0.75rem', fontWeight: 400, color: tokens.text.faint }}>{title}</Typography>
+      <Typography sx={{ fontSize: '0.75rem', fontWeight: 400, color: tokens.text.faint }}>
+        {title}
+      </Typography>
       {items.map((item) => (
         <Link
           href={item.href}
@@ -28,7 +30,7 @@ function FooterLinkGroup({ title, items }: FooterGroup) {
  * Full-width website footer with link groups, terms links, and copyright.
  * Renders a responsive grid: 3-column on mobile, 5-column on desktop.
  */
-export function WebsiteFooter() {
+export function WebsiteFooter({ variant = 'default' }: { variant?: 'default' | 'homepage' }) {
   return (
     <Stack
       component="footer"
@@ -37,6 +39,12 @@ export function WebsiteFooter() {
         py: { md: 5 },
         gap: { md: 3 },
         bgcolor: tokens.surface.canvas,
+        ...(variant === 'homepage'
+          ? {
+              '& a': { fontSize: '0.875rem !important', lineHeight: 1.6 },
+              borderTop: `1px solid ${tokens.edge.default}`,
+            }
+          : {}),
       }}
     >
       {/* Main content row */}
@@ -67,7 +75,9 @@ export function WebsiteFooter() {
               .filter((g) => ['product', 'explore'].includes(g.id))
               .map((group, index) => (
                 <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />}
+                  {index !== 0 && (
+                    <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />
+                  )}
                   <FooterLinkGroup {...group} />
                 </Stack>
               ))}
@@ -77,7 +87,9 @@ export function WebsiteFooter() {
               .filter((g) => ['open_source', 'get_started'].includes(g.id))
               .map((group, index) => (
                 <Stack sx={{ gap: 1.5 }} key={group.id}>
-                  {index !== 0 && <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />}
+                  {index !== 0 && (
+                    <Divider style={{ borderBottom: `1px solid ${tokens.edge.default}` }} />
+                  )}
                   <FooterLinkGroup {...group} />
                 </Stack>
               ))}
@@ -144,7 +156,13 @@ export function WebsiteFooter() {
               )}
               <Link
                 href={term.href}
-                style={{ fontSize: '0.75rem', fontWeight: 400, whiteSpace: 'nowrap', textDecoration: 'none', color: 'inherit' }}
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 400,
+                  whiteSpace: 'nowrap',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                }}
               >
                 {term.label}
               </Link>
