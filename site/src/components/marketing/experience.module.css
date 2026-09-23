@@ -357,3 +357,113 @@
   font-weight: 500;
   margin-bottom: 4px;
 }
+
+/* Full-screen image inspection is separate from the page's animation clocks. */
+.imageDialog {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--ex-bg);
+  color: var(--ex-text);
+}
+.imageDialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.imageDialog::backdrop {
+  background: #111;
+}
+.viewerToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--ex-line);
+  flex-shrink: 0;
+}
+.viewerToolbar h2 {
+  font-size: 18px;
+  font-weight: 500;
+}
+.viewerToolbar p {
+  font-size: 13px;
+  color: var(--ex-muted);
+  margin-top: 4px;
+}
+.viewerActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.viewerActions button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--ex-line);
+  border-radius: 7px;
+  font-size: 16px;
+}
+.viewerActions button:hover {
+  background: var(--ex-panel);
+}
+.viewerActions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.viewerClose {
+  margin-left: 12px;
+}
+.viewerClose span {
+  margin-left: 8px;
+}
+.viewerViewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.viewerImage {
+  min-width: 100%;
+  min-height: 100%;
+  padding: 16px;
+}
+.viewerImage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.viewerHint {
+  padding: 10px 24px;
+  font-size: 13px;
+  color: var(--ex-muted);
+  flex-shrink: 0;
+}
+.imageDialog :focus-visible {
+  outline: 2px solid var(--ex-flow);
+  outline-offset: -2px;
+}
+@media (max-width: 760px) {
+  .viewerToolbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .viewerToolbar > div {
+    width: 100%;
+  }
+  .viewerClose {
+    margin-left: auto;
+  }
+  .viewerImage {
+    padding: 8px;
+  }
+  .viewerHint {
+    padding-inline: 16px;
+  }
+}

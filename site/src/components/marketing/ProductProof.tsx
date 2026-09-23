@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
-import { useId, useState } from 'react';
+import { useId, useState, type MouseEvent } from 'react';
+import { ArchitectureViewer } from './ArchitectureViewer';
 import { PRODUCT_PROOF as P } from '@/data/homepage-experience';
 import { trackExperience } from '@/lib/demo-analytics';
 import styles from './experience.module.css';
@@ -10,6 +11,12 @@ import { experienceTheme } from './HeroExperience';
 export function ProductProof() {
   const [selected, setSelected] = useState(0),
     id = useId();
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const openViewer = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.currentTarget.focus();
+    setViewerOpen(true);
+  };
   const note = P.notes[selected];
   return (
     <div className={styles.product} style={experienceTheme}>
@@ -20,8 +27,8 @@ export function ProductProof() {
         </div>
         <a
           href={P.image}
-          target="_blank"
-          rel="noopener noreferrer"
+          onClick={openViewer}
+          aria-haspopup="dialog"
           aria-label="Open the full architecture screenshot"
         >
           <Image
@@ -41,11 +48,11 @@ export function ProductProof() {
           </p>
           <a
             href={P.image}
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={openViewer}
+            aria-haspopup="dialog"
             className={styles.fullImageLink}
           >
-            Open Full-Size Diagram <span aria-hidden="true">↗</span>
+            Open Full-Screen Diagram <span aria-hidden="true">⤢</span>
           </a>
         </figcaption>
       </figure>
@@ -70,6 +77,7 @@ export function ProductProof() {
         <p>{note.text}</p>
         <span>{note.detail}</span>
       </div>
+      {viewerOpen && <ArchitectureViewer onClose={() => setViewerOpen(false)} />}
       <noscript>
         <ul>
           {P.notes.map((item) => (

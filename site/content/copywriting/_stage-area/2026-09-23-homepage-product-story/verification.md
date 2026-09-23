@@ -9,3 +9,10 @@
 - The complete light-mode product export is preserved unchanged. Desktop/mobile show the original aspect ratio, with a full-size inspection link.
 - Performance evidence is local headless Chrome with no network/CPU throttling and external scripts blocked. After: LCP 124–224 ms, CLS 0; sampled interactions 24–32 ms. Initial decoded JS declined from 1,805,441 to 1,709,190 bytes on desktop and 1,055,057 to 1,035,622 on mobile. These are lab comparisons, not field LCP/INP or conversion evidence.
 - Browser preview and representative screenshots presented before PR creation/merge. Deployment verification follows the merge.
+
+## Full-screen viewer follow-up
+
+- Full build passed; experience acceptance now passes 80 checks.
+- At 320 and 1366px: both image triggers open the dialog without navigation, dialog fills viewport, Close receives focus, Tab wraps inside, Escape restores opener focus, page scrolling is restored, zoom permits scrolling, and reopening resets zoom.
+- Native dialog makes the background inert; explicit keyboard wrapping also prevents Tab escaping to browser chrome. Image aspect ratio remains intact at every zoom.
+- Founder authorized a direct main follow-up. The image link remains a progressive fallback without JavaScript.

@@ -204,6 +204,67 @@ try {
   await page.evaluate(() => {
     document.documentElement.style.zoom = '';
   });
+  for (const width of [320, 1366]) {
+    await page.setViewport({ width, height: 768 });
+    const opener = '#living-architecture figcaption a';
+    const url = page.url();
+    await page.click(opener);
+    await page.waitForSelector('dialog[open]');
+    check(`${width}: diagram opens without navigation`, page.url() === url);
+    check(
+      `${width}: viewer fills viewport`,
+      await page.$eval('dialog', (e) => {
+        const r = e.getBoundingClientRect();
+        return Math.abs(r.width - innerWidth) < 1 && Math.abs(r.height - innerHeight) < 1;
+      })
+    );
+    check(
+      `${width}: close receives initial focus`,
+      await page.$eval(
+        '[aria-label="Close full-screen diagram"]',
+        (e) => e === document.activeElement
+      )
+    );
+    check(
+      `${width}: modal locks page scroll`,
+      await page.evaluate(() => document.body.style.overflow === 'hidden')
+    );
+    await page.$eval('dialog img', (e) => e.decode());
+    await page.screenshot({ path: path.join(output, `viewer-${width}.png`) });
+    await page.click('[aria-label="Zoom in"]');
+    check(
+      `${width}: zoom creates scrollable inspection surface`,
+      await page.$eval(
+        '[aria-label^="Architecture diagram."]',
+        (e) => e.scrollWidth > e.clientWidth || e.scrollHeight > e.clientHeight
+      )
+    );
+    for (let i = 0; i < 8; i++) {
+      await page.keyboard.press('Tab');
+      check(
+        `${width}: modal contains keyboard focus ${i}`,
+        await page.evaluate(() => Boolean(document.activeElement.closest('dialog')))
+      );
+    }
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('dialog', { hidden: true });
+    check(
+      `${width}: escape restores focus`,
+      await page.$eval(opener, (e) => e === document.activeElement)
+    );
+    check(
+      `${width}: page scroll restored`,
+      await page.evaluate(() => document.body.style.overflow !== 'hidden')
+    );
+    await page.click('#living-architecture figure > a');
+    await page.waitForSelector('dialog[open]');
+    check(
+      `${width}: reopening resets zoom`,
+      await page.$eval('[aria-label="Zoom out"]', (e) => e.disabled)
+    );
+    await page.click('[aria-label="Close full-screen diagram"]');
+    await page.waitForSelector('dialog', { hidden: true });
+  }
   await page.setJavaScriptEnabled(false);
   await page.goto(base, { waitUntil: 'networkidle0' });
   check(
