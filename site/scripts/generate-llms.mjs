@@ -25,6 +25,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import matter from 'gray-matter';
+import { WORKFLOWS, WORKFLOW_COPY } from '../src/data/workflow-explainers.ts';
+import { ARCHITECTURES } from '../src/data/architecture-stories.ts';
 
 const GENERATOR = 'llms generator';
 const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -108,7 +110,20 @@ function pageMarkdown(page, { story, personas, stats, site, product, distributio
     for (const key of ['overview', 'agents', 'infrastructure', 'delivery', 'controls', 'adoption']) {
       const section = h[key];
       lines.push(`## ${section.title.replaceAll('\n', ' ')}`, '', section.intro, '');
-      for (const p of section.paragraphs ?? []) lines.push(p, '');
+      if (!WORKFLOWS[key]) for (const p of section.paragraphs ?? []) lines.push(p, '');
+      for (const workflow of key === 'infrastructure' ? Object.values(ARCHITECTURES) : WORKFLOWS[key] ? [WORKFLOWS[key]] : []) {
+        lines.push(`### ${workflow.title}`, '', workflow.setup ?? '', '');
+        for (const phase of workflow.phases) lines.push(`- **${phase.title}** ${phase.text}`);
+        lines.push('', workflow.scope, '');
+        if (workflow.architecture) {
+          lines.push(`#### ${WORKFLOW_COPY.explore}`, '');
+          for (const resource of workflow.architecture.resources) {
+            const prerequisites = resource.requires.map(id => workflow.architecture.resources.find(node => node.id === id).label).join(', ') || WORKFLOW_COPY.resourceNone;
+            lines.push(`- **${resource.label}** (${resource.kind}). ${WORKFLOW_COPY.resourceRequires} ${prerequisites}${resource.note ? `. ${resource.note}` : ''}`);
+          }
+          lines.push('');
+        }
+      }
       for (const point of section.steps ?? section.points ?? []) lines.push(`- **${point.title}.** ${point.text}`);
       if (section.setup) lines.push('', section.setup, '', `[${section.link}](${site.url}${section.href})`, '');
       if (section.note) lines.push('', section.note, '');

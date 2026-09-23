@@ -26,7 +26,9 @@ jobs:
           HOMEPAGE_CAPTURES: ${{ runner.temp }}/homepage-captures
           # Ubuntu's AppArmor profile permits the runner's system Chrome sandbox.
           PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
-        run: node scripts/check-homepage.mjs
+        run: |
+          node scripts/check-homepage.mjs
+          node scripts/check-workflows.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

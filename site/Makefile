@@ -20,12 +20,13 @@ install:
 lint: install
 	$(YARN) lint
 
-# The site has no test suite; the type checker is the one that catches a
-# renamed prop or a data record a page reads wrong. It runs before every build.
+# Type and workflow contracts run before export; browser acceptance runs on out/.
 typecheck: install
 	$(YARN) typecheck
 
 build: install lint typecheck
+	node --experimental-strip-types scripts/generate-workflow-icons.mjs --check
+	node --experimental-strip-types scripts/check-workflow-timeline.mjs
 	NODE_NO_WARNINGS=1 NEXT_TELEMETRY_DISABLED=1 $(YARN) build
 	mkdir -p out/_site && cp -r out/_next out/_site/_next
 

@@ -154,6 +154,26 @@ What a day-one architect would not have done, and which work retires it. The bui
 
 Contributions big and small are welcome. Follow the quick start to run the site locally; for a content edit, open the file on GitHub and use the edit icon; for bugs or content ideas, open an issue at `https://github.com/plantonhq/planton/issues/new`. Keep a change focused, say what it does in the PR description, and for docs and blog posts prefer copy-pastable examples with exact paths or commands. Commit and PR conventions follow the repository-wide rules under `_rules/git/` and `_rules/pull-requests/`.
 
+## Homepage workflow explainers
+
+The infrastructure, delivery, and coding-agent sections use shared dark explainers. Five provider stories in `src/data/architecture-stories.ts` cycle AWS → GCP → Azure → Cloudflare → DigitalOcean after each complete story and four-second hold. Manual selection, phase inspection, disclosure, or keyboard focus disables cycling; Pause survives selection. Hidden/offscreen time is suspended. Pointer movement never pauses playback; visitors use Pause or phase inspection. Reduced motion uses static diagrams; without JavaScript all five architectures remain readable. `workflow-explainers.ts` owns the sequence stories and shared copy. Public resource inventories describe illustrative composition, not deployed customer stacks. `ResourceGraph` accepts the selected story, while `SequenceScene` uses a folded six-stage path with generous curved handoffs.
+
+`src/components/marketing/workflows/` separates three responsibilities:
+
+- `WorkflowScene.tsx` selects the authored resource or delivery scene and renders desktop/mobile SVG layouts from a story and a time in seconds. It has no browser APIs, timers, random state, or video dependencies.
+- `timeline.ts` samples deterministic phases. It is shared by browser playback, contract tests, and video exports. Editorial duration is not a product performance claim.
+- `useWorkflowPlayback.ts` owns visibility, reduced motion, manual inspection, and the only animation clock. Hidden and offscreen time is excluded. `WorkflowExplainer.tsx` supplies accessible controls and a complete text transcript. All notes occupy the same grid cell so phase changes cannot shift the page.
+
+The layouts are deliberately authored, not a generic graph engine. `InfrastructureScene.tsx` keeps resource cards, labeled output transfers, and deployment progress distinct; its precomputed arc-length samples give moving packets a steady speed around curves. Infrastructure runs for 24 seconds, delivery for 28 seconds. New stories should establish a real need before adding a new abstraction. Explain the ordering invariant in the content/evidence record; do not import platform execution code into the public client.
+
+Run `yarn check:workflows` against a built export. The timeline contract also runs inside `make build`; CI runs browser acceptance after export. It tests ordering, pause/replay, keyboard inspection, visibility suspension, reduced motion, responsive captures, text exports, and the no-JavaScript fallback. The browser harness owns its clock; no test API ships in the application.
+
+Export social video with `yarn export:workflow aws /tmp/planton-aws.mp4` (also `gcp`, `azure`, `cloudflare`, and `digitalocean`) , `yarn export:workflow delivery /tmp/planton-delivery.mp4`, or `yarn export:workflow agents /tmp/planton-agents.mp4`. `video/workflows.tsx` is the export-only Remotion adapter: 1080-square, 30 fps, H.264, with a PNG poster. The three Remotion packages are pinned together as development dependencies and are absent from the website import graph. The exporter uses Puppeteer's installed Chrome (or `PUPPETEER_EXECUTABLE_PATH`) and removes its temporary bundle.
+
+Commit source, not generated videos. The existing R2 `site/` prefix is a deletion-enabled mirror: do not upload untracked generated exports there. Video publishing is a separate explicit step. Native web playback needs no CDN video download.
+
+Analytics use the existing GA transport: `workflow_explainer_view` after one second of visible exposure and `workflow_explainer_cycle_complete` after a full timeline, each once per mounted story. Payloads contain only story id/version and motion mode. Seeking invalidates the current cycle for completion reporting; replay begins a new eligible cycle. Static views never emit completion. These events measure exposure, not comprehension or attributable conversion lift.
+
 ## Media management
 
 We store screenshots and image assets in Cloudflare R2, mirrored from the `content/` folder. This keeps the repo lean, provides CDN delivery, and ensures predictable URLs.
@@ -270,3 +290,5 @@ The `/book-demo` payload and Cal.com destination are unchanged. The form now cle
 After `make build`, run `node scripts/check-homepage.mjs` for responsive captures and mocked conversion checks, and `node scripts/preview-homepage.mjs` for a local preview at port 4177. `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs`; commit that PNG along with its editable source components. The browser checks mock all external traffic, including form submission and the scheduler.
 
 The landing index can switch the visual composition back to v5's retained `Homepage` export. A complete copy rollback also restores the homepage registry metadata and discovery generator changes. Other pages do not import version-specific components.
+
+Canonical icons are selected from `catalog/<provider>/<kind>/logo.svg` and the existing provider marks. Run `node --experimental-strip-types scripts/generate-workflow-icons.mjs` after changing a story inventory; the build checks the generated `workflow-icons.ts` registry for drift. Embedded SVG bytes are shared with video exports; no runtime catalog or CDN request is needed. The layout module keeps authored positions separate from relationships. Any new relationship needs a source-backed explanation: typed output reference, explicit prerequisite, or grouped configuration dependency.
