@@ -15,7 +15,11 @@ version: 0.0.0-dev
 # derives a pure-worker mode for an instance without a runner tunnel; this
 # chart's gRPC probes assume it (an older runner on a tunnel-less instance
 # binds its webhook to loopback and is not made whole by the probes alone).
-appVersion: "v0.0.69"
+# v0.0.75 is the first line that carries its jobs to their end through the
+# control plane's door, the only road this chart's instances now route a
+# remote runner's work calls on, and that pre-creates a build's ConfigMaps
+# under the verbs this chart's build Role grants.
+appVersion: "v0.0.75"
 home: https://github.com/plantonhq/planton
 sources:
   - https://github.com/plantonhq/planton

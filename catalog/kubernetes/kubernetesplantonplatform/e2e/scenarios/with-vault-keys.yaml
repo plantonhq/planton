@@ -21,6 +21,6 @@ spec:
   namespace:
     value: planton
   create_namespace: true
-  version: v0.0.65
+  version: v0.0.75
   vault:
     init_secret_name: planton-vault-keys

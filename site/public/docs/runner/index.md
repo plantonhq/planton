@@ -112,7 +112,7 @@ Deploying a runner takes three steps:
 
 1. **Create a runner token** in the console (Organization Settings → Runner Tokens) or with `planton runner token create`. The token authorizes runners to join your organization — it is never a runner's identity.
 2. **Start or deploy** a runner with the token — Kubernetes, AWS ECS, GCP Cloud Run, or Azure Container Apps. Each runner enrolls itself on arrival and receives its own individually revocable identity.
-3. **Name it on your connections**, or set it as your organization's default runner for live cloud operations (optional). See [Where Your Work Runs](/docs/runner/planton-hosted-runners#where-your-work-runs).
+3. **Name it on your connections**, or set it as your organization's default runner for every connection that names none (optional). See [Where Your Work Runs](/docs/runner/planton-hosted-runners#where-your-work-runs).
 
 See [Deployment](/docs/runner/deployment) for the complete walkthrough.
 

@@ -212,14 +212,6 @@ func RunnerChannelIdentifier(crName, orgSlug string) string {
 	return fmt.Sprintf("org.%s.runner.%s", orgSlug, RunnerSlug(crName))
 }
 
-// RunnerTaskQueue returns the Temporal task queue the runner polls and the
-// control plane dispatches to: "iac-operation." + channel identifier. The
-// prefix mirrors the runner binary's temporal.TaskQueuePrefix and infra-hub's
-// producer-side convention -- deterministic on both sides, no shared state.
-func RunnerTaskQueue(crName, orgSlug string) string {
-	return "iac-operation." + RunnerChannelIdentifier(crName, orgSlug)
-}
-
 // GenerateRunnerCloudOpsToken mints the CloudOps direct-dial bearer:
 // "pcot_" + Base64URL(32 random bytes).
 func GenerateRunnerCloudOpsToken() (string, error) {

@@ -857,21 +857,22 @@ func TestControlPlaneDeployment_TektonBuildEnv(t *testing.T) {
 	}
 }
 
-// The dispatcher's queue and the worker's queue are one derivation: renaming
-// the bootstrap org moves both or neither.
-func TestControlPlaneDeployment_RunnerTaskQueueFollowsOrg(t *testing.T) {
+// The control plane sends a default deploy to the runner its seeded binding
+// names and derives that queue itself, so no queue is handed to it: a typed
+// queue is a second truth that once disagreed with the runner's own and left
+// a job unpolled. The platform release this operator's floor names reads none.
+func TestControlPlaneDeployment_SetsNoRunnerTaskQueue(t *testing.T) {
 	cfg := testControlPlaneConfig()
 	cfg.Identity.Bootstrap.OrgSlug = "acme"
-	deploy := ControlPlaneDeployment(cfg)
-	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
+	envMap := envVarMap(ControlPlaneDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
 
-	want := "iac-operation.org.acme.runner." + RunnerSlug(cfg.CRName)
-	if envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT"] != want {
-		t.Errorf("TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT = %q, want %q",
-			envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT"], want)
-	}
-	if _, set := envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS"]; set {
-		t.Errorf("TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS is set, but the control plane binds no per-provider queue variable; it belongs to nothing")
+	for _, retired := range []string{
+		"TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT",
+		"TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS",
+	} {
+		if _, set := envMap[retired]; set {
+			t.Errorf("%s must not be set: the control plane derives the runner's queue from its seeded binding", retired)
+		}
 	}
 }
 

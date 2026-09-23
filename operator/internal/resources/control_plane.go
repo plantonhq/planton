@@ -859,12 +859,6 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// stored-document migrations start automatically at boot when a release
 		// changes storage versions.
 		{Name: "PLANTON_INFRA_HUB_STORED_DOCUMENT_MIGRATION_AUTO_RUN", Value: "true"},
-		// Derived from the bootstrap org -- the SAME derivation the runner
-		// resources use for the worker's queue, so dispatcher and poller
-		// cannot drift apart on a renamed org. One queue: the control plane's
-		// per-provider overrides are a map with no entries, so a provider
-		// variable here would bind to nothing.
-		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
 
 		// Auth0-path FGA bindings: never used with the bundled identity
 		// server (they serve the auth0 provider only) but part of the

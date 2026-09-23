@@ -63,16 +63,13 @@ func TestRunnerNames(t *testing.T) {
 	}
 }
 
-// The task queue is derived identically on both sides of the dispatch: the
-// control plane env and the runner's identity document must agree or deploys
-// sit pending forever. The derivation mirrors the runner binary's
-// TaskQueuePrefix + channel-identifier convention.
-func TestRunnerTaskQueueDerivation(t *testing.T) {
+// The channel identifier is the one fact both sides derive the runner's queues
+// from: the runner binary from its identity document, the control plane from
+// the registration it seeds. A different spelling here leaves deploys pending
+// on a queue nothing polls.
+func TestRunnerChannelIdentifier(t *testing.T) {
 	if got := RunnerChannelIdentifier("planton", "acme"); got != "org.acme.runner.planton-runner" {
 		t.Errorf("channel = %s, want org.acme.runner.planton-runner", got)
-	}
-	if got := RunnerTaskQueue("planton", "acme"); got != "iac-operation.org.acme.runner.planton-runner" {
-		t.Errorf("queue = %s, want iac-operation.org.acme.runner.planton-runner", got)
 	}
 }
 

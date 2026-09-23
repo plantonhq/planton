@@ -168,18 +168,18 @@ The deployed runner enrolls itself on first boot and appears in your Runners lis
 
 ## Default Runner
 
-Once a runner is deployed, you can make it your organization's default runner. The default serves live cloud operations (a connection's verify, `planton kubectl`, resource browsing) for every [connection](/docs/connections) that names no runner of its own.
+Once a runner is deployed, you can make it your organization's default runner. The default carries deploys and live cloud operations (a connection's verify, `planton kubectl`, resource browsing) for every [connection](/docs/connections) that names no runner of its own.
 
 ```bash
 planton runner set-default prod-runner
 ```
 
-Deploys do not consult the default: a deploy runs on the runner its connection names, else on a Planton-hosted runner. To run deploys on this runner, name it on the connection and keep your organization's state in a backend the runner can reach. [Where Your Work Runs](/docs/runner/planton-hosted-runners#where-your-work-runs) lays out every order, and [Running Deploys on Your Own Runner](/docs/runner/planton-hosted-runners#running-deploys-on-your-own-runner) walks through the move.
+A runner of your own cannot reach Planton-managed state, so Planton refuses the default while any of your organization's state is still kept there, and names what is left. [Where Your Work Runs](/docs/runner/planton-hosted-runners#where-your-work-runs) lays out every order, and [Running Deploys on Your Own Runner](/docs/runner/planton-hosted-runners#running-deploys-on-your-own-runner) walks through the move.
 
 ### Managing the Default
 
 ```bash
-# Show where live cloud operations run for your organization
+# Show where deploys and live cloud operations run for your organization
 planton runner get-default
 
 # Clear the default
