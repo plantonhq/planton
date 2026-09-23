@@ -85,3 +85,8 @@ export const tailwindColors = {
   warn: tokens.semantic.warn,
   cta: { DEFAULT: tokens.cta.background, text: tokens.cta.text },
 } as const;
+
+/** Opt-in route palette. Without CSS variables, every consumer keeps the existing dark pixels. */
+export const scopedTokens = Object.fromEntries(Object.entries(tokens).map(([group, roles]) => [group,
+  Object.fromEntries(Object.entries(roles).map(([role, value]) => [role, `var(--website-${group}-${role}, ${value})`])),
+])) as { [G in keyof typeof tokens]: { [R in keyof typeof tokens[G]]: string } };

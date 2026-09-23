@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Box, Stack, Typography } from '@mui/material';
 import type { MenuItem } from '../../data/navigation';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 /** The description under a label reads at the secondary role at rest and rises to primary under the pointer; it is the line that says what the page is, never fine print. */
 export function MegaMenuItem({ label, subLabel, icon, href, onClick, alignWithMarks = false }: MenuItem & { onClick?: () => void; alignWithMarks?: boolean }) {

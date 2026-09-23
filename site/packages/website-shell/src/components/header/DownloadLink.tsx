@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@mui/material';
 import { Download as DownloadIcon } from '@mui/icons-material';
 import { DOWNLOAD_DESKTOP } from '../../data/navigation';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 // The persistent way to the desktop app from any page. A quiet text link, not
 // a second primary: the header's one white button stays "Sign up", and the

@@ -34,3 +34,5 @@ export { RunsWhereYouDecide } from './RunsWhereYouDecide';
 export { WhoItIsFor } from './WhoItIsFor';
 export { Proof } from './Proof';
 export { Close } from './Close';
+
+export { Homepage } from './Homepage';

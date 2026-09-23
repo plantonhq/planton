@@ -100,8 +100,26 @@ function chapterMarkdown(chapter) {
   return lines.join('\n');
 }
 
-function pageMarkdown(page, { story, personas, stats, site, product, distributions, compare, desktop, desktopDownload }) {
+function pageMarkdown(page, { story, personas, stats, site, product, distributions, compare, desktop, desktopDownload, homepage }) {
   const lines = [`# ${page.title}`, '', page.description, '', `Canonical URL: ${site.url}${page.path === '/' ? '' : page.path}`, ''];
+  if (page.path === '/') {
+    const h = homepage.HOMEPAGE;
+    lines.push(`## ${h.headline.join(' ')}`, '', h.intro, '', h.caption, '');
+    for (const key of ['overview', 'agents', 'infrastructure', 'delivery', 'controls', 'adoption']) {
+      const section = h[key];
+      lines.push(`## ${section.title.replaceAll('\n', ' ')}`, '', section.intro, '');
+      for (const p of section.paragraphs ?? []) lines.push(p, '');
+      for (const point of section.steps ?? section.points ?? []) lines.push(`- **${point.title}.** ${point.text}`);
+      if (section.setup) lines.push('', section.setup, '', `[${section.link}](${site.url}${section.href})`, '');
+      if (section.note) lines.push('', section.note, '');
+    }
+    lines.push(`## ${h.proof.title.replaceAll('\n', ' ')}`, '');
+    for (const q of h.proof.quotes) lines.push(`> ${q.quote}`, '', `${q.name}, ${q.role}, ${q.company}`, '');
+    lines.push(`## ${h.faq.title}`, '');
+    for (const q of h.faq.questions) lines.push(`### ${q.question}`, '', q.answer, '');
+    lines.push(`## ${h.close.title.replaceAll('\n', ' ')}`, '', h.close.text, '', `[Book a Demo](${site.url}/book-demo)`, '');
+    return lines.join('\n');
+  }
   if (page.chapters?.length) {
     lines.push('## What this page says', '');
     for (const id of page.chapters) {
@@ -206,6 +224,7 @@ async function main() {
   }
   const registry = await load('src/data/site-pages.ts');
   const story = await load('src/data/story.ts');
+  const homepage = await load('src/data/homepage.ts');
   const personasModule = await load('src/data/personas.ts');
   const stats = await load('src/data/platform-stats.ts');
   const pricing = await load('src/data/pricing.ts');
@@ -242,7 +261,7 @@ async function main() {
   // ---- per-page markdown ------------------------------------------------
   const marketing = pages.filter((p) => p.index !== false && p.group !== 'content');
   // Everything a page's markdown may quote: the story and the records the pages render from.
-  const data = { story, personas, stats, site, product, distributions, compare, desktop, desktopDownload };
+  const data = { story, personas, stats, site, product, distributions, compare, desktop, desktopDownload, homepage };
   for (const page of marketing) {
     const target = page.path === '/' ? path.join(exportDir, 'index.md') : path.join(exportDir, `${page.path.slice(1)}.md`);
     fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -264,9 +283,9 @@ async function main() {
   const index = [];
   index.push(`# ${site.name}`, '');
   index.push(`> ${registry.sitePage('/').description}`, '');
-  index.push(story.STORY_SPINE, '');
-  index.push('## The story, in order', '');
-  for (const c of story.SITE_CHAPTERS) index.push(`- ${c.number}. ${c.title}: ${c.claim}`);
+  index.push(homepage.HOMEPAGE.intro, '');
+  index.push('## From infrastructure to application', '');
+  for (const step of homepage.HOMEPAGE.overview.steps) index.push(`- **${step.title}.** ${step.text}`);
   index.push('');
   index.push('## Who it is for', '');
   for (const p of personas) index.push(`- ${p.name}: ${p.who}`);

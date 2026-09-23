@@ -1,53 +1,47 @@
 'use client';
 
-import { Box, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { DemoFormData } from './types';
+import { DEMO_COPY as C } from '@/data/homepage';
+import { trackDemo } from '@/lib/demo-analytics';
 
-const Cal = dynamic(
-  () => import('@calcom/embed-react').then((mod) => mod.default),
-  {
-    ssr: false,
-    loading: () => (
-      <Box className="w-full min-h-[500px] md:min-h-[600px] rounded-xl bg-[#111] border border-[#2a2a2a] flex items-center justify-center">
-        <Box className="flex flex-col items-center gap-3">
-          <Box className="w-8 h-8 border-2 border-[#2a2a2a] border-t-white/60 rounded-full animate-spin" />
-          <Typography className="text-sm text-[#555]">
-            Loading scheduler...
-          </Typography>
-        </Box>
-      </Box>
-    ),
-  },
-);
+const Cal = dynamic(() => import('@calcom/embed-react').then(mod => mod.default), {
+  ssr: false,
+  loading: () => <div className="min-h-[600px] flex items-center justify-center text-sm text-fg-secondary" role="status">{C.loading}</div>,
+});
 
-interface BookDemoSchedulerProps {
-  formData: DemoFormData;
-}
+interface BookDemoSchedulerProps { formData: DemoFormData; onBooked: () => void }
 
-export function BookDemoScheduler({ formData }: BookDemoSchedulerProps) {
+export function BookDemoScheduler({ formData, onBooked }: BookDemoSchedulerProps) {
+  const viewed = useRef(false);
+  const confirmed = useRef(false);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
-    (async function () {
-      const { getCalApi: api } = await import('@calcom/embed-react');
-      const cal = await api({ namespace: '60min' });
-      cal('ui', { hideEventTypeDetails: false, layout: 'month_view' });
-    })();
-  }, []);
+    let active = true;
+    let dispose: (() => void) | undefined;
+    if (!viewed.current) { trackDemo('demo_scheduler_view'); viewed.current = true; }
+    void import('@calcom/embed-react').then(async ({ getCalApi }) => {
+      const cal = await getCalApi({ namespace: '60min' });
+      if (!active) return;
+      // SDK event data remains local. Pending/payment-required bookings are not confirmations.
+      const booked = (event: CustomEvent<{ data: { status?: string; paymentRequired: boolean } }>) => {
+        if (!active || confirmed.current || event.detail.data.status !== 'ACCEPTED' || event.detail.data.paymentRequired) return;
+        confirmed.current = true;
+        trackDemo('demo_booking_confirmed');
+        onBooked();
+      };
+      const linkFailed = () => { if (active) setFailed(true); };
+      cal('on', { action: 'bookingSuccessfulV2', callback: booked });
+      cal('on', { action: 'linkFailed', callback: linkFailed });
+      cal('ui', { hideEventTypeDetails: false, layout: 'month_view', theme: 'light' });
+      dispose = () => { cal('off', { action: 'bookingSuccessfulV2', callback: booked }); cal('off', { action: 'linkFailed', callback: linkFailed }); };
+    }).catch(() => { if (active) setFailed(true); });
+    return () => { active = false; dispose?.(); };
+  }, [onBooked]);
 
-  return (
-    <Box className="rounded-xl bg-[#111] border border-[#2a2a2a]">
-      <Cal
-        namespace="60min"
-        calLink="swarup-donepudi/60min"
-        style={{ width: '100%', minHeight: '600px' }}
-        config={{
-          layout: 'month_view',
-          useSlotsViewOnSmallScreen: 'true',
-          name: `${formData.firstName} ${formData.lastName}`.trim(),
-          email: formData.workEmail,
-        }}
-      />
-    </Box>
-  );
+  return <div>
+    {!failed && <div className="rounded border border-edge bg-panel"><Cal namespace="60min" calLink={C.calLink} style={{ width: '100%', minHeight: '600px' }} config={{ layout: 'month_view', theme: 'light', useSlotsViewOnSmallScreen: 'true', name: `${formData.firstName} ${formData.lastName}`.trim(), email: formData.workEmail }}/></div>}
+    <p className="mt-5 text-xs text-fg-secondary leading-relaxed" role={failed ? 'alert' : undefined}>{C.fallback} <a href={C.calUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 text-fg focus-visible:outline focus-visible:outline-2">{C.calendarLink} ↗</a></p>
+  </div>;
 }

@@ -4,7 +4,7 @@ import type { ComponentProps, FC } from 'react';
 import { SvgIcon, type ButtonProps } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 import { ShellButton } from './ShellButton';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 import { DISCORD_URL } from '../../data/navigation';
 
 const DiscordIcon: FC = () => (

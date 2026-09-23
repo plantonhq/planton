@@ -30,7 +30,7 @@ export function WebsiteShell({ theme, children }: WebsiteShellProps) {
     <WebsiteThemeProvider theme={theme}>
       <Box sx={{ minHeight: '100%', bgcolor: 'background.default' }}>
         <WebsiteHeader />
-        <Box component="main" sx={{ pt: '70px' }}>
+        <Box component="div" sx={{ pt: '70px' }}>
           {children}
         </Box>
         <WebsiteFooter />

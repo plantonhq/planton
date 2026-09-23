@@ -19,6 +19,7 @@
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.
  */
+import { HOMEPAGE } from './homepage.ts';
 import { COMMUNITY_SEAT_LIMIT, FREE_TIER_SEATS } from './pricing.ts';
 import { PLATFORM_STATS } from './platform-stats.ts';
 import type { ChapterId } from './story.ts';
@@ -87,9 +88,8 @@ export const SITE_PAGES: readonly SitePage[] = [
   // Home
   {
     path: '/',
-    title: 'The Self-Service Cloud Platform',
-    description:
-      'Planton turns your own cloud account into a self-service platform. Cost, permissions, and controls are verified before anything is created, and every deployment leaves an immutable record.',
+    title: HOMEPAGE.title,
+    description: HOMEPAGE.description,
     group: 'home',
     chapters: [
       'the-wall',
@@ -278,7 +278,7 @@ export const SITE_PAGES: readonly SitePage[] = [
   { path: '/legal/refund-policy', title: 'Refund Policy', description: 'How refunds work for Planton team subscriptions, self-hosted licenses, and prepaid AI credits.', group: 'legal' },
 
   // Standalone surfaces: reachable by link, not search results
-  { path: '/book-demo', title: 'Book a Demo', description: 'Pick a time to see Planton with the founder.', group: 'standalone', index: false },
+  { path: '/book-demo', title: 'Book a Demo', description: 'See how Planton connects cloud infrastructure and application delivery. Share your details, then choose a time for a walkthrough.', group: 'standalone', index: false },
   { path: '/desktop/open', title: 'Open Planton Desktop', description: 'Hands a link off to the desktop app installed on this machine.', group: 'standalone', index: false },
 
   // The persona decks: the story told for one person, with presenter notes,

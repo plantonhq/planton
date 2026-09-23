@@ -11,7 +11,7 @@ import {
   type SvgIconProps,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 export const SvgIconSizeResponsive = styled(SvgIcon)<SvgIconProps>(({ theme }) => ({
   fontSize: 16,

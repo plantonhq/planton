@@ -1,37 +1,10 @@
 import { pageMetadata } from '@/lib/page-metadata';
-import {
-  Hero,
-  TheWall,
-  WhatPlantonIs,
-  VerifiedBeforeItExists,
-  YourRulesHold,
-  TheRecord,
-  ServicesShipFromGit,
-  BringWhatYouHave,
-  RunsWhereYouDecide,
-  WhoItIsFor,
-  Proof,
-  Close,
-} from '@/components/landing-page';
+import { Homepage } from '@/components/landing-page';
+import { HOMEPAGE } from '@/data/homepage';
 
-export const metadata = pageMetadata('/');
+export const metadata = pageMetadata('/', {
+  openGraph: { type: 'website', url: 'https://planton.ai', siteName: 'Planton', title: HOMEPAGE.title, description: HOMEPAGE.description, images: [{ url: 'https://planton.ai/_site/images/og/homepage.png', width: 1200, height: 630 }] },
+  twitter: { card: 'summary_large_image', title: HOMEPAGE.title, description: HOMEPAGE.description, images: ['https://planton.ai/_site/images/og/homepage.png'] },
+});
 
-/** The home page is the story in order; the sections are the chapters. */
-export default function Home() {
-  return (
-    <main className="overflow-x-hidden">
-      <Hero />
-      <TheWall />
-      <WhatPlantonIs />
-      <VerifiedBeforeItExists />
-      <YourRulesHold />
-      <TheRecord />
-      <ServicesShipFromGit />
-      <BringWhatYouHave />
-      <RunsWhereYouDecide />
-      <WhoItIsFor />
-      <Proof />
-      <Close />
-    </main>
-  );
-}
+export default Homepage;

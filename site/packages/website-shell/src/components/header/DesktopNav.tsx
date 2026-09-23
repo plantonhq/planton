@@ -12,7 +12,7 @@ import {
   menuSolutions,
   menuResources,
 } from '../../data/navigation';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 export function DesktopNav() {
   return (

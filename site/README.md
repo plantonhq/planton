@@ -257,3 +257,16 @@ Examples:
 - **No images found**: Ensure images are in `content/assets/_inbox/` (not a subdirectory)
 
 For detailed documentation, see `content/assets/_rules/README.md`.
+
+
+## Homepage v6 — engineering-leader demo journey
+
+The active homepage is `v6-2026-09-23`, with copy and internal source attribution in `src/data/homepage.ts`. Its source inventory, draft, handoff, and verification record live in `content/copywriting/_stage-area/2026-09-23-homepage/`. Homepage markdown and the llms.txt introduction render the same record; the older story remains the source for other story pages.
+
+The reusable illustrations are `ArchitecturePlanes` and the exports of `WorkflowVisuals`. `DemoLink` reads the existing demo door and records only a fixed placement label. `HomepageAppearance` is light-only. `MarketingShell` opts only `/` into light chrome; `LightMarketingSurface` scopes the demo journey. Other routes remain dark. New appearance colors live in `src/theme/homepage.ts`, while dark colors read website-shell tokens. No provider logo is recolored and no illustrative record is described as a product capture.
+
+The `/book-demo` payload and Cal.com destination are unchanged. The form now clearly hands off to scheduling; analytics count a booking only on the SDK's accepted, non-payment-required booking event. No customer details or calendar event payloads enter analytics.
+
+After `make build`, run `node scripts/check-homepage.mjs` for responsive captures and mocked conversion checks, and `node scripts/preview-homepage.mjs` for a local preview at port 4177. `HOMEPAGE_CAPTURES` changes the capture directory. Generate the social card with `node scripts/capture-homepage-og.mjs`; commit that PNG along with its editable source components. The browser checks mock all external traffic, including form submission and the scheduler.
+
+The landing index can switch the visual composition back to v5's retained `Homepage` export. A complete copy rollback also restores the homepage registry metadata and discovery generator changes. Other pages do not import version-specific components.
