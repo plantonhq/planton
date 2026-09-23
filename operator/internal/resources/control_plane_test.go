@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -579,7 +580,8 @@ func TestControlPlaneDeployment_RunnerBinding(t *testing.T) {
 	// pods resolve. With remote runners closed (this binding) it stays unset,
 	// which is what makes the control plane refuse a remote enrollment
 	// honestly.
-	for _, absent := range []string{"CONNECT_RUNNER_TEMPORAL_ENDPOINT", "CONNECT_RUNNER_TEMPORAL_NAMESPACE"} {
+	for _, absent := range []string{"CONNECT_RUNNER_TEMPORAL_ENDPOINT", "CONNECT_RUNNER_TEMPORAL_NAMESPACE",
+		"CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"} {
 		if v, ok := envMap[absent]; ok {
 			t.Errorf("%s = %q; the queue must not be advertised to remote runners while the capability is closed", absent, v)
 		}
@@ -655,6 +657,38 @@ func TestControlPlaneDeployment_RemoteRunnersAdvertiseTheFrontDoor(t *testing.T)
 	// Never the in-cluster queue name on the remote advertisement.
 	if v := envMap["CONNECT_RUNNER_TEMPORAL_ENDPOINT"]; strings.Contains(v, "svc.cluster.local") {
 		t.Errorf("the remote advertisement must never be an in-cluster name, got %s", v)
+	}
+	if envMap["CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"] != "1" {
+		t.Errorf("CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS = %q, want 1 for an install that declares no replicas",
+			envMap["CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"])
+	}
+}
+
+// The work door's limit on held polls is one install-wide total that each
+// replica shares, so the operator tells the control plane how many replicas
+// it runs -- the same count the Deployment declares, never a second truth.
+func TestControlPlaneDeployment_RemoteRunnersShareTheDoorAcrossReplicas(t *testing.T) {
+	cfg := testControlPlaneConfig()
+	cfg.Replicas = 3
+	cfg.RemoteRunners = &RemoteRunnersBinding{PlantonAPIEndpoint: "planton.example.com:443"}
+	deploy := ControlPlaneDeployment(cfg)
+	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
+
+	if got := envMap["CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"]; got != fmt.Sprint(*deploy.Spec.Replicas) {
+		t.Errorf("CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS = %q, want the Deployment's own %d replicas",
+			got, *deploy.Spec.Replicas)
+	}
+}
+
+// A stopping control plane drains before the kubelet's kill: the pod's grace
+// period outlasts the gRPC server's own shutdown grace plus the Temporal
+// workers' stop, where Kubernetes' default of 30 seconds would cut it.
+func TestControlPlaneDeployment_PodOutlastsItsOwnDrain(t *testing.T) {
+	deploy := ControlPlaneDeployment(testControlPlaneConfig())
+
+	grace := deploy.Spec.Template.Spec.TerminationGracePeriodSeconds
+	if grace == nil || *grace < 40 {
+		t.Fatalf("terminationGracePeriodSeconds = %v, want at least the 30-second server drain plus the 10-second worker stop", grace)
 	}
 }
 

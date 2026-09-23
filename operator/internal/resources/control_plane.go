@@ -50,6 +50,13 @@ const (
 	controlPlaneMemoryRequest = "1Gi"
 	controlPlaneMemoryLimit   = "4Gi"
 
+	// A stopping pod drains before the kubelet's kill: the gRPC server's
+	// 30-second shutdown grace (longer than any poll a remote runner holds
+	// through the work door) plus the Temporal workers' 10-second stop. The
+	// same number the hosted product declares; Kubernetes' default of 30
+	// would cut the drain short.
+	controlPlaneTerminationGracePeriodSeconds = 60
+
 	// controlPlaneIacModulesVersionEnv is the control plane's per-install
 	// OVERRIDE of the release its stack jobs download official IaC modules
 	// from. Rendered only when the platform resource declares
@@ -558,10 +565,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 	if imageTag == "" {
 		imageTag = cfg.Version
 	}
-	replicas := cfg.Replicas
-	if replicas <= 0 {
-		replicas = 1
-	}
+	replicas := controlPlaneReplicas(cfg)
 
 	labels := map[string]string{
 		"app.kubernetes.io/name":       "control-plane",
@@ -638,7 +642,8 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{Labels: labels, Annotations: controlPlanePodAnnotations(cfg)},
 				Spec: corev1.PodSpec{
-					ServiceAccountName: ControlPlaneServiceAccountName(cfg.CRName),
+					TerminationGracePeriodSeconds: int64Ptr(controlPlaneTerminationGracePeriodSeconds),
+					ServiceAccountName:            ControlPlaneServiceAccountName(cfg.CRName),
 					Volumes:            volumes,
 					Containers: []corev1.Container{{
 						Name:  "control-plane",
@@ -1009,10 +1014,16 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	// control plane refuse a laptop honestly ("this instance doesn't support
 	// deploying from your own machine yet") instead of handing it an address
 	// only this cluster's pods resolve.
+	//
+	// The replica count rides with it: the door's limit on polls it holds is
+	// one install-wide total, and each control-plane replica holds its share,
+	// so scaling the control plane never multiplies what remote runners may
+	// take from the job queue the platform's own work shares.
 	if cfg.RemoteRunners != nil {
 		envs = append(envs,
 			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.PlantonAPIEndpoint},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_NAMESPACE", Value: runnerTemporalNamespace},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS", Value: fmt.Sprint(controlPlaneReplicas(cfg))},
 		)
 	}
 
@@ -1440,6 +1451,15 @@ func ptrBool(b bool) *bool {
 //go:fix inline
 func int64Ptr(i int64) *int64 {
 	return new(i)
+}
+
+// controlPlaneReplicas is the number of control-plane pods the install runs:
+// the declared count, one when none is declared.
+func controlPlaneReplicas(cfg ControlPlaneConfig) int32 {
+	if cfg.Replicas <= 0 {
+		return 1
+	}
+	return cfg.Replicas
 }
 
 // controlPlaneResources is the container sizing every install gets (the
