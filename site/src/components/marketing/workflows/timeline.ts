@@ -3,7 +3,8 @@ import type { WorkflowStory } from '../../../data/workflow-explainers.ts';
 export const PHASE_SECONDS = 4;
 export const HOLD_SECONDS = 4;
 export const FPS = 30;
-export const duration = (story: WorkflowStory) => story.phases.length * PHASE_SECONDS + HOLD_SECONDS;
+export const duration = (story: { phases: readonly unknown[] }) =>
+  story.phases.length * PHASE_SECONDS + HOLD_SECONDS;
 
 /** Pure sampling is the seam between browser playback, paused inspection and video.
  * Never read wall time or randomness in a scene: every frame must be reproducible. */
