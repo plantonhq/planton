@@ -287,6 +287,67 @@ func TestDigitalOceanScopesExist(t *testing.T) {
 	}
 }
 
+// auth0RefreshHint is the one command that refreshes the Auth0 snapshot
+// alone; it needs the tenant credential the fetcher's Auth0 arm names.
+const auth0RefreshHint = "run `make generate-action-inventory ARMS=auth0` with AUTH0_DOMAIN, AUTH0_CLIENT_ID, and AUTH0_CLIENT_SECRET set"
+
+// TestAuth0ScopesExist is the Auth0 arm of the gate: every Management API
+// scope every committed permissions manifest names must exist in the
+// tenant's own Management API definition. An Auth0 scope is
+// "verb:resource", so the snapshot is keyed by the resource and the verb
+// is matched exactly -- Auth0 grants no wildcards. The structural regex in
+// pkg/iac/permissions would accept "update:connection_options" (one letter
+// short of the real resource); this gate refuses it, which is the
+// difference between a manifest that installs and a grant Auth0 refuses on
+// the first write.
+func TestAuth0ScopesExist(t *testing.T) {
+	root := repoRoot(t)
+	inv, err := LoadAuth0(packageDir(t))
+	if err != nil {
+		t.Fatalf("loading inventory: %v", err)
+	}
+
+	discovered, err := permissions.Discover(root)
+	if err != nil {
+		t.Fatalf("discovering permissions manifests: %v", err)
+	}
+
+	referenced := map[string]bool{}
+	for provider, components := range discovered {
+		for _, component := range components {
+			manifest, err := permissions.Load(root, provider, component)
+			if err != nil {
+				t.Fatalf("loading %s/%s: %v", provider, component, err)
+			}
+			for _, group := range manifest.GetSpec().GetAuth0().GetGroups() {
+				for _, scope := range group.GetScopes() {
+					verb, resource, found := strings.Cut(scope, ":")
+					if !found {
+						t.Errorf("%s/%s: scope %q has no resource segment", provider, component, scope)
+						continue
+					}
+					referenced[resource] = true
+					published := inv.ServiceActions(resource)
+					if published == nil {
+						t.Errorf("%s/%s: scope %q names resource %q, which the tenant's Management API definition does not list -- the resource is invented or misspelled (if Auth0 added it since the snapshot, %s)", provider, component, scope, resource, auth0RefreshHint)
+						continue
+					}
+					if !containsExact(published, verb) {
+						t.Errorf("%s/%s: scope %q does not exist in the tenant's Management API definition (the verbs for %q are %s) -- the name is invented or misspelled", provider, component, scope, resource, strings.Join(published, ", "))
+					}
+				}
+			}
+		}
+	}
+
+	// The dead-weight rule, as on every arm.
+	for _, svc := range inv.Services {
+		if !referenced[svc.Prefix] {
+			t.Errorf("inventory covers resource %q which no permissions manifest references -- %s", svc.Prefix, auth0RefreshHint)
+		}
+	}
+}
+
 // TestCloudflareGroupsExist is the Cloudflare arm of the gate: every
 // (permission-group name, scope) pair every committed permissions
 // manifest names must exist in Cloudflare's own permission-group
@@ -681,6 +742,28 @@ func TestLoadDigitalOceanRefusals(t *testing.T) {
 	}
 	if _, err := LoadDigitalOcean(dir); err == nil || !strings.Contains(err.Error(), "provider") {
 		t.Errorf("LoadDigitalOcean error = %v, want a provider identity refusal", err)
+	}
+}
+
+// TestLoadAuth0Refusals pins the Auth0 loader's identity invariant on the
+// shared Service shape: a DigitalOcean snapshot saved under Auth0's name
+// has the same prefix-and-verbs look and must still be refused.
+func TestLoadAuth0Refusals(t *testing.T) {
+	inv := &Inventory{
+		Provider: "digitalocean",
+		Services: []Service{{
+			Prefix:      "connections",
+			SourceURL:   "https://example.invalid/definition",
+			RetrievedOn: "2026-09-23",
+			Actions:     []string{"create", "read"},
+		}},
+	}
+	dir := t.TempDir()
+	if err := writeFile(t, filepath.Join(dir, Auth0FileName), renderRaw(inv)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := LoadAuth0(dir); err == nil || !strings.Contains(err.Error(), "provider") {
+		t.Errorf("LoadAuth0 error = %v, want a provider identity refusal", err)
 	}
 }
 

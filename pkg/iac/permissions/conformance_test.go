@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"google.golang.org/protobuf/reflect/protoreflect"
+
 	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
 )
 
@@ -58,27 +60,25 @@ var (
 	// the existence check, stated here rather than silently absent from
 	// the inventory gates.
 	digitalOceanSpacesPermissions = map[string]bool{"read": true, "readwrite": true, "fullaccess": true}
+	// auth0ScopePattern is Auth0's Management API "verb:resource" scope
+	// spelling -- the verb FIRST, the reverse of DigitalOcean's. Verbs go
+	// beyond CRUD ("blacklist:tokens"), so the verb is not a closed set
+	// here; existence against the tenant's own Management API definition
+	// is the real check (pkg/iac/actioninventory).
+	auth0ScopePattern = regexp.MustCompile(`^[a-z]+:[a-z_]+$`)
 	// tokenScopedProviders are catalog providers whose modules authenticate
-	// with a bearer credential and touch NONE of the schema's modeled
-	// provider APIs -- so, per the schema's own absence semantics, their
-	// manifests may legally carry no provider section. Two distinct
-	// tenures live here:
+	// with a bearer credential that offers NO finer-grained vocabulary --
+	// so, per the schema's own absence semantics, their manifests may
+	// legally carry no provider section. openfga is the one tenant: a
+	// pre-shared key grants the server's entire API, so there is nothing
+	// a manifest could truthfully declare. The exemption is the honest
+	// model, not a schema gap.
 	//
-	//   - auth0: exempt only until the schema grows its arm. Auth0's
-	//     Management API scopes are DigitalOcean's flat-scope class; the
-	//     arm lands with Auth0's coverage, and auth0 leaves this map in
-	//     the same change.
-	//   - openfga: exempt as long as the provider offers no scope
-	//     vocabulary at all -- a pre-shared key grants the server's
-	//     entire API, so there is nothing finer-grained a manifest could
-	//     truthfully declare. The exemption is the honest model, not a
-	//     schema gap.
-	//
-	// Cloudflare and DigitalOcean left this map when their arms landed:
-	// their manifests declare token permission groups / scopes as
+	// Cloudflare, DigitalOcean, and Auth0 left this map when their arms
+	// landed: their manifests declare token permission groups / scopes as
 	// first-class sections, held to the providers' own inventories.
 	tokenScopedProviders = map[string]bool{
-		"auth0": true, "openfga": true,
+		"openfga": true,
 	}
 )
 
@@ -128,11 +128,16 @@ func TestPermissionsConformance(t *testing.T) {
 				}
 
 				spec := manifest.GetSpec()
-				if spec.GetAws() == nil && spec.GetGcp() == nil && spec.GetAzure() == nil && spec.GetKubernetes() == nil &&
-					spec.GetCloudflare() == nil && spec.GetDigitalOcean() == nil {
-					if !tokenScopedProviders[provider] {
-						t.Fatal("manifest declares no provider section -- a permissions file that grants nothing describes no module")
-					}
+				// Counted from the schema's own populated fields, never a
+				// hand-written list of sections: a provider section added
+				// to the schema counts here the day it lands.
+				declared := 0
+				spec.ProtoReflect().Range(func(protoreflect.FieldDescriptor, protoreflect.Value) bool {
+					declared++
+					return true
+				})
+				if declared == 0 && !tokenScopedProviders[provider] {
+					t.Fatal("manifest declares no provider section -- a permissions file that grants nothing describes no module")
 				}
 
 				checkAws(t, spec.GetAws())
@@ -141,6 +146,7 @@ func TestPermissionsConformance(t *testing.T) {
 				checkKubernetes(t, spec.GetKubernetes())
 				checkCloudflare(t, spec.GetCloudflare())
 				checkDigitalOcean(t, spec.GetDigitalOcean())
+				checkAuth0(t, spec.GetAuth0())
 			})
 		}
 	}
@@ -329,6 +335,36 @@ func checkDigitalOcean(t *testing.T, digitalOcean *permissionsv1.DigitalOceanPer
 			}
 		}
 		checkProvenance(t, "digitalocean "+group.GetPurpose(), group.GetProvenance(), group.GetNotes())
+	}
+}
+
+func checkAuth0(t *testing.T, auth0 *permissionsv1.Auth0Permissions) {
+	t.Helper()
+	if auth0 == nil {
+		return
+	}
+	if len(auth0.GetGroups()) == 0 {
+		t.Error("auth0 section is present but declares no groups")
+	}
+	purposes := map[string]bool{}
+	for _, group := range auth0.GetGroups() {
+		purpose := group.GetPurpose()
+		if strings.TrimSpace(purpose) == "" {
+			t.Error("auth0 group with empty purpose")
+		}
+		if purposes[purpose] {
+			t.Errorf("auth0: duplicate purpose %q -- a reader tells groups apart by purpose, so one purpose is one group", purpose)
+		}
+		purposes[purpose] = true
+		if len(group.GetScopes()) == 0 {
+			t.Errorf("auth0 %s: no scopes", purpose)
+		}
+		for _, scope := range group.GetScopes() {
+			if !auth0ScopePattern.MatchString(scope) {
+				t.Errorf("auth0 %s: scope %q is not verb:resource spelling (Auth0 puts the verb first, e.g. \"update:connections\")", purpose, scope)
+			}
+		}
+		checkProvenance(t, "auth0 "+purpose, group.GetProvenance(), group.GetNotes())
 	}
 }
 

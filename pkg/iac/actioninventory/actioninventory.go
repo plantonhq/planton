@@ -77,9 +77,22 @@
 // global -- every account sees the same list). Group names are NOT
 // unique across scopes, so the gate proves each manifest's (name, scope)
 // pair; a group renamed by Cloudflare surfaces as a gate failure at the
-// next refresh, which is the staleness detection working. Providers
-// without a machine-readable inventory arm (kubernetes) are exempt from
-// existence checking (their structural validation lives in
+// next refresh, which is the staleness detection working.
+//
+// Auth0 is the sixth arm, back on the Service shape. A Management API
+// scope is "verb:resource" -- DigitalOcean's grammar reversed -- so the
+// prefix is the RESOURCE (the segment after the colon, e.g.
+// "connections_options") and the actions are its verbs ("read",
+// "update"). The inventory is the tenant's own definition of its
+// Management API (the system resource server, which a tenant cannot
+// edit), because that is the set Auth0 checks a grant against. Auth0's
+// published API reference is deliberately not the source: it omits scopes
+// the tenant enforces, so a snapshot drawn from it would refuse a correct
+// manifest. Matching is exact; the definition publishes no modification
+// stamp, so provenance is the route plus the retrieval date.
+//
+// Providers without a machine-readable inventory arm (kubernetes) are
+// exempt from existence checking (their structural validation lives in
 // pkg/iac/permissions) -- exemption is stated here, never silent.
 package actioninventory
 
@@ -114,6 +127,10 @@ const DigitalOceanFileName = "digitalocean.yaml"
 // CloudflareFileName is the Cloudflare permission-group inventory
 // snapshot's name inside this package's directory.
 const CloudflareFileName = "cloudflare.yaml"
+
+// Auth0FileName is the Auth0 Management API scope inventory snapshot's
+// name inside this package's directory.
+const Auth0FileName = "auth0.yaml"
 
 // Inventory is one provider's committed action-inventory snapshot.
 type Inventory struct {
@@ -195,6 +212,16 @@ func LoadGcp(dir string) (*Inventory, error) {
 // services carry only the retrieval date.
 func LoadDigitalOcean(dir string) (*Inventory, error) {
 	return load(dir, DigitalOceanFileName, "digitalocean", false)
+}
+
+// LoadAuth0 reads and strictly parses the committed Auth0 inventory
+// snapshot under the same structural invariants. An Auth0 scope is
+// "verb:resource", so a Service's prefix is the scope's resource segment
+// and its actions are the verbs. The tenant's Management API definition
+// publishes no modification stamp, so Auth0 services carry only the
+// retrieval date.
+func LoadAuth0(dir string) (*Inventory, error) {
+	return load(dir, Auth0FileName, "auth0", false)
 }
 
 func load(dir, fileName, provider string, requireSourceModified bool) (*Inventory, error) {

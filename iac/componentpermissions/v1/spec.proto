@@ -13,13 +13,14 @@ package dev.planton.iac.componentpermissions.v1;
 // Two permission vocabularies live here. The IAM-statement providers
 // (aws/gcp/azure) and Kubernetes express least privilege as policy
 // material -- statements, permission groups, RBAC rules. The
-// token-scoped providers (cloudflare/digital_ocean) authenticate with a
-// bearer API token whose least-privilege story is the token's OWN
-// composition: Cloudflare tokens are built from named permission groups,
-// DigitalOcean tokens from named scopes. Their sections declare exactly
-// what a least-privilege runner token is built from, in the provider's
-// own vocabulary, held to the provider's own published inventory by the
-// conformance gates.
+// token-scoped providers (cloudflare/digital_ocean/auth0) authenticate
+// with a bearer credential whose least-privilege story is the credential's
+// OWN composition: Cloudflare tokens are built from named permission
+// groups, DigitalOcean tokens from named scopes, and an Auth0
+// machine-to-machine client from the Management API scopes its grant
+// carries. Their sections declare exactly what a least-privilege runner
+// credential is built from, in the provider's own vocabulary, held to the
+// provider's own inventory by the conformance gates.
 message ComponentPermissionsSpec {
   AwsPermissions aws = 1;
   GcpPermissions gcp = 2;
@@ -27,6 +28,7 @@ message ComponentPermissionsSpec {
   KubernetesPermissions kubernetes = 4;
   CloudflarePermissions cloudflare = 5;
   DigitalOceanPermissions digital_ocean = 6;
+  Auth0Permissions auth0 = 7;
 }
 
 // Provenance says how a permission entry was established.
@@ -207,6 +209,43 @@ message DigitalOceanSpacesGrant {
   // For derived entries: which module resources this grant covers, the
   // S3-compatible calls the modules issue, and the least-privilege bucket
   // scoping the operator should apply when minting the key.
+  string notes = 4;
+}
+
+// Auth0Permissions is the least-privilege credential material for the
+// runner's Auth0 access: a machine-to-machine application in the target
+// tenant, authorized for the tenant's Management API audience
+// (https://{tenant-domain}/api/v2/) with a grant that carries named
+// scopes. The modules exchange the application's client id and secret for
+// a token through the client-credentials flow, and Auth0 refuses any call
+// whose token lacks the endpoint's scope. The entries here are the scopes
+// a least-privilege grant is built from.
+message Auth0Permissions {
+  repeated Auth0ScopeGroup groups = 1;
+}
+
+// Auth0ScopeGroup is one coherent set of Management API scopes (the units
+// the application's API grant is assembled from).
+message Auth0ScopeGroup {
+  // What the group covers, in the same spirit as a GCP group purpose
+  // (e.g. "ManageConnection", "WriteConnectionOptions").
+  string purpose = 1;
+  // Management API scopes in Auth0's exact "verb:resource" spelling
+  // (e.g. "create:clients", "read:client_keys"). The verb comes FIRST --
+  // the reverse of DigitalOcean's "resource:action" -- and goes beyond
+  // CRUD ("blacklist:tokens"). The conformance gate proves each scope
+  // exists in the tenant's own Management API definition, which is the set
+  // Auth0 checks a grant against. The published API reference is not that
+  // set: it omits scopes the tenant enforces, among them the
+  // "connections_options" pair a connection's options tree needs.
+  repeated string scopes = 2;
+  Provenance provenance = 3;
+  // For derived entries: which module resources this group covers, plus
+  // any conditionality (e.g. scopes needed only when a spec field is set)
+  // and the endpoint evidence the derivation stands on. A credential
+  // missing a conditional group is least privilege, not a defect, for a
+  // deployment that never sets the field -- the notes are where a reader
+  // learns which is which.
   string notes = 4;
 }
 

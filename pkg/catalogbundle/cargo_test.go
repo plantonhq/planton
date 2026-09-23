@@ -7,9 +7,11 @@ import (
 	"strings"
 	"testing"
 
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"sigs.k8s.io/yaml"
 
 	costestimatev1 "github.com/plantonhq/planton/finops/componentcostestimate/v1"
+	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 )
 
@@ -139,10 +141,10 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 
 	// The token-scoped providers' arms fold into the provenance summary
 	// like every IAM arm: a component whose manifest declares only a
-	// cloudflare or digital_ocean section still summarizes as derived --
-	// an empty summary here would mean the fold silently skips the new
-	// sections.
-	for _, tokenExemplar := range []string{"CloudflareDnsRecord", "DigitalOceanDatabaseUser"} {
+	// cloudflare, digital_ocean, or auth0 section still summarizes as
+	// derived -- an empty summary here would mean the fold silently skips
+	// the section.
+	for _, tokenExemplar := range []string{"CloudflareDnsRecord", "DigitalOceanDatabaseUser", "Auth0Connection"} {
 		found := false
 		for _, entry := range bundle.CatalogEntries() {
 			if entry.Kind != tokenExemplar {
@@ -189,6 +191,54 @@ func TestFactSheetCargoRoundTrip(t *testing.T) {
 		if _, present := uncovered[key]; present {
 			t.Errorf("%s ships no fact-sheets but its entry document carries %q", uncoveredName, key)
 		}
+	}
+}
+
+// The provenance summary folds every kind of entry the permissions schema
+// can hold, read from the schema's own descriptor rather than a list kept
+// here. computePermissionsProvenance names each section's entries by hand
+// for readability, and a section added to the schema without a matching
+// fold would summarize a manifest that declares only that section as "no
+// claim" -- silently, since nothing else reads the summary's inputs. This
+// walks every section and every repeated entry field whose elements carry
+// provenance, builds a spec holding exactly one derived entry there, and
+// demands the summary see it; a new section fails here until it is folded.
+func TestPermissionsProvenanceFoldsEverySection(t *testing.T) {
+	sections := (&permissionsv1.ComponentPermissionsSpec{}).ProtoReflect().Descriptor().Fields()
+	lists := 0
+	for i := 0; i < sections.Len(); i++ {
+		section := sections.Get(i)
+		if section.Message() == nil {
+			t.Errorf("spec field %s is not a section message -- the permissions spec holds only per-provider sections", section.Name())
+			continue
+		}
+		entryFields := section.Message().Fields()
+		for j := 0; j < entryFields.Len(); j++ {
+			field := entryFields.Get(j)
+			if !field.IsList() || field.Message() == nil {
+				continue
+			}
+			provenanceField := field.Message().Fields().ByName("provenance")
+			if provenanceField == nil {
+				continue
+			}
+			lists++
+			name := string(section.Name()) + "." + string(field.Name())
+			t.Run(name, func(t *testing.T) {
+				spec := &permissionsv1.ComponentPermissionsSpec{}
+				entries := spec.ProtoReflect().Mutable(section).Message().Mutable(field).List()
+				entry := entries.NewElement()
+				entry.Message().Set(provenanceField, protoreflect.ValueOfEnum(permissionsv1.Provenance_derived.Number()))
+				entries.Append(entry)
+				got := computePermissionsProvenance(&permissionsv1.ComponentPermissions{Spec: spec})
+				if got != "derived" {
+					t.Errorf("a manifest whose only entry is one derived %s summarizes as %q, want derived -- computePermissionsProvenance does not fold %s", name, got, name)
+				}
+			})
+		}
+	}
+	if lists == 0 {
+		t.Fatal("found no entry lists carrying provenance in the permissions spec -- the walk no longer matches the schema's shape")
 	}
 }
 
