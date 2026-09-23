@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import { WebsiteLogo } from './WebsiteLogo';
 import { footerGroups, footerTermsLinks, type FooterGroup } from '../data/navigation';
-import { tokens } from '../theme/tokens';
+import { scopedTokens as tokens } from '../theme/tokens';
 
 function FooterLinkGroup({ title, items }: FooterGroup) {
   return (

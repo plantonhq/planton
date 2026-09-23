@@ -3,7 +3,7 @@
 import type { ComponentProps, FC } from 'react';
 import { Button, type ButtonProps } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 const btnBaseSx: SxProps<Theme> = {
   px: { xs: 1.5, md: 2.5 },

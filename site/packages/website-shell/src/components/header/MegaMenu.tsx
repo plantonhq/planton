@@ -6,7 +6,7 @@ import { Menu, Stack, Typography } from '@mui/material';
 import { NavigateNext, KeyboardArrowDown } from '@mui/icons-material';
 import { MegaMenuItem } from './MegaMenuItem';
 import type { MenuSection, MenuItem } from '../../data/navigation';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 interface MegaMenuProps {
   title: string;
@@ -29,7 +29,7 @@ export function MegaMenu({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -41,6 +41,8 @@ export function MegaMenu({
   return (
     <>
       <Stack
+        component="button"
+        type="button"
         aria-controls={open ? 'mega-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
@@ -48,6 +50,8 @@ export function MegaMenu({
         onClick={handleClick}
         sx={{
           cursor: 'pointer',
+          background: 'transparent', border: 0, padding: 0, color: 'inherit',
+          '&:focus-visible': { outline: '2px solid currentColor', outlineOffset: 4 },
           alignItems: 'center',
           '&:hover': { color: tokens.text.primary },
         }}

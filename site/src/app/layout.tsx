@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/providers/theme';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { HANDOFF_CAPTURE_SCRIPT } from '@/lib/console-handoff';
 import { SITE, sitePage } from '@/data/site-pages';
-import { POSITIONING } from '@/data/positioning';
+import { HOMEPAGE } from '@/data/homepage';
 
 const inter = Inter({
   weight: ['300', '400', '500', '600', '700'],
@@ -55,7 +55,7 @@ const structuredData = [
     '@type': 'SoftwareApplication',
     name: SITE.name,
     url: SITE.url,
-    description: POSITIONING.umbrella.sentence,
+    description: HOMEPAGE.intro,
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Web, macOS, Windows, Linux',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },

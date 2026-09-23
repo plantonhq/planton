@@ -21,8 +21,11 @@ export default {
         // The palette, by role: bg-canvas, bg-card, text-fg-secondary,
         // border-edge, text-ok. Defined once in the website-shell package
         // and shared with the MUI theme; components never type a hex.
-        ...tailwindColors,
-        white: '#ededed',
+        ...Object.fromEntries(Object.entries(tailwindColors).map(([key, value]) => {
+          const color = (name: string, hex: string) => `rgb(var(--marketing-${name}, ${[1,3,5].map(i => parseInt(hex.slice(i,i+2),16)).join(' ')}) / <alpha-value>)`;
+          return [key, typeof value === 'string' ? color(key, value) : Object.fromEntries(Object.entries(value).map(([role, hex]) => [role, color(role === 'DEFAULT' ? key : `${key}-${role}`, hex)]))];
+        })),
+        white: 'rgb(var(--marketing-fg, 237 237 237) / <alpha-value>)',
         // One leftover the pricing FAQ still reads; it goes when pricing is rebuilt.
         text: { secondary: '#999999' },
       },

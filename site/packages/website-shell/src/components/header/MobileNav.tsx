@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Divider, Stack, Typography } from '@mui/material';
+import { Divider, Stack, Typography, IconButton } from '@mui/material';
 import { DensityMedium, Close } from '@mui/icons-material';
 import { WebsiteLogo } from '../WebsiteLogo';
 import { ShellDrawer } from './styled';
@@ -19,7 +19,7 @@ import {
   menuSolutions,
   menuResources,
 } from '../../data/navigation';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 const dividerSx = { borderColor: tokens.edge.default } as const;
 
@@ -35,11 +35,7 @@ export function MobileNav() {
 
   return (
     <>
-      <DensityMedium
-        fontSize="small"
-        onClick={toggleDrawer}
-        sx={{ position: 'relative', zIndex: 10, cursor: 'pointer' }}
-      />
+      <IconButton aria-label="Open navigation" onClick={toggleDrawer} size="small" sx={{color:'text.primary'}}><DensityMedium fontSize="small" /></IconButton>
 
       <ShellDrawer open={open} onClose={toggleDrawer}>
         <Stack
@@ -50,7 +46,7 @@ export function MobileNav() {
         >
           <Stack direction="row" sx={{ alignItems: 'center', gap: 4, justifyContent: 'space-between' }}>
             <WebsiteLogo />
-            <Close onClick={toggleDrawer} sx={{ cursor: 'pointer' }} />
+            <IconButton aria-label="Close navigation" onClick={toggleDrawer} sx={{color:'text.primary'}}><Close /></IconButton>
           </Stack>
 
           <Stack sx={{ gap: 4 }}>

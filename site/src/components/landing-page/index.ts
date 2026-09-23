@@ -4,4 +4,4 @@
  * primitives every version composes live in `@/components/marketing` and are
  * never versioned. To roll back, point this one line at the previous folder.
  */
-export * from './v5-2026-09-17-2100';
+export * from './v6-2026-09-23';

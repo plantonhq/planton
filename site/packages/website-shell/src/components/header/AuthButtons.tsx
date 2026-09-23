@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@mui/material';
 import { useLoggedIn } from '../../hooks/useLoggedIn';
 import { SIGN_IN, START_FREE } from '../../data/navigation';
-import { tokens } from '../../theme/tokens';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 const ctaSx = {
   height: 32,
