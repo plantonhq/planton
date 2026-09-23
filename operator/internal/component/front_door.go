@@ -174,7 +174,7 @@ func frontDoorRoutesNativeGRPC(planton *v1.PlantonPlatform) bool {
 
 // remoteRunnersEnabled reports whether the install asked for runners outside
 // the cluster to pull its deploy work (spec.remoteRunners.enabled). Off by
-// default: opening the deploy queue to other networks is the operator's
+// default: admitting runners from other networks is the operator's
 // deliberate act.
 func remoteRunnersEnabled(planton *v1.PlantonPlatform) bool {
 	return planton.Spec.RemoteRunners != nil &&
@@ -182,12 +182,12 @@ func remoteRunnersEnabled(planton *v1.PlantonPlatform) bool {
 }
 
 // remoteRunnersCarried reports whether the remote-runners capability is
-// actually served: asked for AND on a front door that carries native gRPC
-// (the deploy queue speaks nothing else). The two callers that act on it --
-// the queue route on the door, the addresses advertised by the control plane
-// -- read this one fact so they can never disagree; an install that asked on
-// a door that cannot carry it is told so in the ingress component's status
-// (remoteRunnersClosedReason).
+// actually served: asked for AND on a front door that carries native gRPC (a
+// runner speaks nothing else, to the API or for its work). The two callers
+// that act on it -- the address advertised by the control plane, the ingress
+// status that names it -- read this one fact so they can never disagree; an
+// install that asked on a door that cannot carry it is told so in the ingress
+// component's status (remoteRunnersClosedReason).
 func remoteRunnersCarried(planton *v1.PlantonPlatform) bool {
 	return remoteRunnersEnabled(planton) && frontDoorRoutesNativeGRPC(planton)
 }
@@ -199,7 +199,7 @@ func remoteRunnersClosedReason(planton *v1.PlantonPlatform) string {
 	if !remoteRunnersEnabled(planton) || remoteRunnersCarried(planton) {
 		return ""
 	}
-	return "Remote runners are not served through this front door: the deploy queue speaks native gRPC, which only a Gateway API front door carries. Attach the platform to a Gateway (ingress.gatewayRef) to open it, or leave remoteRunners off."
+	return "Remote runners are not served through this front door: a runner speaks native gRPC, which only a Gateway API front door carries. Attach the platform to a Gateway (ingress.gatewayRef) to open it, or leave remoteRunners off."
 }
 
 // gatewayLocalPort returns the workstation port sign-in URLs are pinned to in

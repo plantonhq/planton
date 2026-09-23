@@ -110,8 +110,9 @@ enrolls and from its perimeter. A Temporal address with a tunnel endpoint means
 A Temporal address without one means `temporal`, a pure worker -- the shape of
 every runner enrolled with a self-hosted instance, because a self-hosted instance
 operates no runner tunnel (its own in-cluster runner is dialed directly; yours
-pulls work from the deploy queue the front door routes). Set an explicit mode
-only to override.
+pulls work through the control plane, which serves a runner's work calls at the
+same front-door address as its API calls). Set an explicit mode only to
+override.
 
 ### How the pod is probed
 

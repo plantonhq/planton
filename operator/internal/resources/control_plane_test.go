@@ -626,17 +626,16 @@ func TestControlPlaneDeployment_RunnerBinding(t *testing.T) {
 	}
 }
 
-// With remote runners open, the addresses stamped into enrolling runners'
-// identity documents are the FRONT DOOR's -- what a laptop dials -- for both
-// the queue and the API, while platform-scoped credentials keep the in-cluster
-// Service. The in-cluster runner is untouched either way: its document is
-// rendered by the operator (see RunnerIdentityDocumentJSON), never minted.
+// With remote runners open, the address stamped into enrolling runners'
+// identity documents is the FRONT DOOR's -- what a laptop dials -- and it is
+// ONE address for the API and for work alike, because the control plane
+// serves a remote runner's work calls itself. Platform-scoped credentials
+// keep the in-cluster Service. The in-cluster runner is untouched either way:
+// its document is rendered by the operator (see RunnerIdentityDocumentJSON),
+// never minted.
 func TestControlPlaneDeployment_RemoteRunnersAdvertiseTheFrontDoor(t *testing.T) {
 	cfg := testControlPlaneConfig()
-	cfg.RemoteRunners = &RemoteRunnersBinding{
-		PlantonAPIEndpoint: "planton.example.com:443",
-		TemporalEndpoint:   "planton.example.com:443",
-	}
+	cfg.RemoteRunners = &RemoteRunnersBinding{PlantonAPIEndpoint: "planton.example.com:443"}
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 

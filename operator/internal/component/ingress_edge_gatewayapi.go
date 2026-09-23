@@ -156,7 +156,6 @@ func (i *Ingress) reconcileGatewayEdge(ctx context.Context, c client.Client, pla
 		GatewayName:      ref.Name,
 		GatewayNamespace: gatewayNamespace,
 		SectionName:      ref.SectionName,
-		RemoteRunners:    remoteRunnersCarried(planton),
 	})
 	if err := i.ApplyManifests(ctx, c, planton, []*unstructured.Unstructured{route}); err != nil {
 		return Result{}, err

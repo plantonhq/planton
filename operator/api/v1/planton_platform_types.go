@@ -363,24 +363,26 @@ type BuildSpec struct {
 
 // RemoteRunnersSpec configures the remote-runners capability: runners in other
 // networks (developer laptops, appliances) pulling this install's deploy work.
-// The capability rides the front door: the operator routes the deploy queue's
-// service through the platform hostname, beside the native gRPC API, and
-// advertises that address to runners that enroll from outside. It needs a
-// Gateway API front door serving the hostname (the queue speaks native gRPC,
-// which only that door carries) -- on any other door the capability stays
-// closed and the ingress component's status says why. Named for the
-// CAPABILITY (remote runners), not the mechanism (a queue route).
+// The capability rides the front door: a runner that enrolls from outside is
+// advertised the platform hostname's native gRPC address, and the control
+// plane serves it both its API calls and its work there. It needs a Gateway
+// API front door serving the hostname (a runner speaks native gRPC, which only
+// that door carries) -- on any other door the capability stays closed and the
+// ingress component's status says why. Named for the CAPABILITY (remote
+// runners), not the mechanism.
 //
-// What is exposed: the deploy queue's WorkflowService, over TLS, without
-// authentication of its own -- the same posture the hosted platform carries
-// for its remote runners. Only the queue's workflow service is routed; its
-// administrative service never leaves the cluster.
+// What is exposed: nothing of the deploy queue itself, which never leaves the
+// cluster. The control plane answers a remote runner's work calls on the
+// queue's behalf, authenticating the runner's own key on every call and
+// admitting it only to its own organization's queues, the work dispatched to
+// it, and the tasks it polled; any other caller, and any other queue method,
+// is refused.
 type RemoteRunnersSpec struct {
-	// enabled opens the deploy queue to runners outside this cluster and
-	// advertises the front door's address to them. Default false: an install
-	// that has not chosen this keeps its queue in-cluster, and a runner that
-	// asks to enroll from outside is refused with the reason -- never handed
-	// an address it cannot reach.
+	// enabled admits runners outside this cluster and advertises the front
+	// door's address to them. Default false: an install that has not chosen
+	// this admits only its in-cluster runner, and a runner that asks to enroll
+	// from outside is refused with the reason -- never handed an address it
+	// cannot reach.
 	// +kubebuilder:default=false
 	// +optional
 	Enabled *bool `json:"enabled,omitempty"`
@@ -389,7 +391,7 @@ type RemoteRunnersSpec struct {
 // PlantonPlatformSpec defines the desired state of a self-hosted Planton deployment.
 // A minimal spec requires only the version field; all other fields have sensible defaults.
 // +kubebuilder:validation:XValidation:rule="!has(self.bootstrap) || !has(self.bootstrap.secretBackend) || self.bootstrap.secretBackend.type != 'platform' || !has(self.vault) || !has(self.vault.enabled) || self.vault.enabled",message="bootstrap.secretBackend type 'platform' stores secrets in the bundled vault, which spec.vault.enabled: false has opted out of; re-enable the vault or use type awsSecretsManager"
-// +kubebuilder:validation:XValidation:rule="!has(self.remoteRunners) || !has(self.remoteRunners.enabled) || !self.remoteRunners.enabled || (has(self.ingress) && self.ingress.enabled)",message="remoteRunners.enabled opens the deploy queue to runners outside the cluster through the front door, but with ingress disabled there is no front door a laptop could reach; set ingress.enabled: true with a gatewayRef, or leave remoteRunners off"
+// +kubebuilder:validation:XValidation:rule="!has(self.remoteRunners) || !has(self.remoteRunners.enabled) || !self.remoteRunners.enabled || (has(self.ingress) && self.ingress.enabled)",message="remoteRunners.enabled admits runners outside the cluster through the front door, but with ingress disabled there is no front door a laptop could reach; set ingress.enabled: true with a gatewayRef, or leave remoteRunners off"
 // +kubebuilder:validation:XValidation:rule="!has(self.database) || !has(self.database.postgresql) || !has(self.database.postgresql.backup) || (has(self.vault) && has(self.vault.enabled) && !self.vault.enabled) || (has(self.vault) && (has(self.vault.autoUnseal) || (has(self.vault.initSecretName) && size(self.vault.initSecretName) > 0)))",message="a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform; set vault.initSecretName to a Secret you own (and keep a copy outside the cluster), or declare vault.autoUnseal so a restored vault opens from your cloud key"
 type PlantonPlatformSpec struct {
 	// version is the Planton platform release to deploy, as vMAJOR.MINOR.PATCH

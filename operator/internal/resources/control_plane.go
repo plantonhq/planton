@@ -330,22 +330,21 @@ type RunnerBinding struct {
 
 // RemoteRunnersBinding is what the install advertises to runners that enroll
 // from OUTSIDE the cluster (developer laptops, appliances in other networks):
-// the two addresses stamped into their identity documents. Present exactly
-// when the remote-runners capability is on AND the front door carries it;
-// nil otherwise, which leaves the deploy-queue advertisement UNSET so the
-// control plane refuses remote enrollment with the reason instead of minting
-// an address only this cluster's pods resolve. The in-cluster runner never
-// reads these: the operator renders its identity document itself, with the
-// in-cluster addresses.
+// the address stamped into their identity documents. Present exactly when the
+// remote-runners capability is on AND the front door carries it; nil
+// otherwise, which leaves the work advertisement UNSET so the control plane
+// refuses remote enrollment with the reason instead of minting an address only
+// this cluster's pods resolve. The in-cluster runner never reads it: the
+// operator renders its identity document itself, with the in-cluster
+// addresses.
 type RemoteRunnersBinding struct {
 	// PlantonAPIEndpoint is the control plane's native gRPC address as a
 	// runner outside the cluster dials it (host:port; :443 means TLS) -- the
-	// front door's gRPC endpoint.
+	// front door's gRPC endpoint. It is the runner's one address, for its API
+	// calls and its work alike: the control plane serves Temporal's worker
+	// methods itself, so the API endpoint and the work endpoint the control
+	// plane advertises are this one string and can never disagree.
 	PlantonAPIEndpoint string
-	// TemporalEndpoint is the deploy queue's address as a runner outside the
-	// cluster dials it -- the same front door, which routes the queue's
-	// workflow service beside the API.
-	TemporalEndpoint string
 }
 
 // IdentityBinding carries what the control plane needs to validate browser
@@ -998,19 +997,21 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	envs = append(envs, emailEnvVars(cfg.Email)...)
 	envs = append(envs, emailSetupHintEnvVars(cfg.CRName, cfg.Namespace)...)
 
-	// Remote-runners capability: the deploy-queue advertisement
-	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents and the
-	// materializer's capability gate both read. Set ONLY when the install
-	// opened remote runners and the front door carries the queue -- every
-	// reader of this variable on the platform is a remote-runner gate or
-	// minter (the in-cluster runner gets its queue address from its own
-	// Deployment, never from here), so leaving it unset is what makes the
+	// Remote-runners capability: the work advertisement
+	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents, the control
+	// plane's work door, and the materializer's capability gate all read. Its
+	// address is the control plane's own front-door endpoint, because the
+	// control plane serves a remote runner's work calls itself. Set ONLY when
+	// the install opened remote runners and the front door carries native
+	// gRPC -- every reader of this variable on the platform is a remote-runner
+	// gate or minter (the in-cluster runner gets its queue address from its
+	// own Deployment, never from here), so leaving it unset is what makes the
 	// control plane refuse a laptop honestly ("this instance doesn't support
 	// deploying from your own machine yet") instead of handing it an address
 	// only this cluster's pods resolve.
 	if cfg.RemoteRunners != nil {
 		envs = append(envs,
-			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.TemporalEndpoint},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.PlantonAPIEndpoint},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_NAMESPACE", Value: runnerTemporalNamespace},
 		)
 	}
