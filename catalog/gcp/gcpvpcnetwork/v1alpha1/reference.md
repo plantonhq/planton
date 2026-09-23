@@ -297,6 +297,8 @@ Fields on other kinds that can point at this resource:
 | GcpVertexAiIndexEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
 | GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.pscAutomationConfig.network` | `status.outputs.network_id` |
 | GcpVertexAiNotebook | `spec.networkInterface.network` | `status.outputs.network_self_link` |
+| GcpVertexAiPersistentResource | `spec.network` | `status.outputs.network_self_link` |
+| GcpVertexAiPersistentResource | `spec.pscInterfaceConfig.dnsPeeringConfigs[].targetNetwork` | `status.outputs.network_name` |
 | GcpVpcPeering | `spec.network` | `status.outputs.network_self_link` |
 | GcpVpcPeering | `spec.peerNetwork` | `status.outputs.network_self_link` |
 

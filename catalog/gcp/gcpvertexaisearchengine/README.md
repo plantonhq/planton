@@ -142,3 +142,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpVertexAiSearchDataStore** -- the stores the engine reads
 - **GcpVertexAiSearchDataConnector** -- a connector-built collection of stores
 - **GcpKmsKey** -- customer-managed encryption for a search engine
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

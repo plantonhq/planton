@@ -1,0 +1,40 @@
+# GcpVertexAiFeatureGroup scenario: a feature group over a BigQuery table
+# fixture, referenced by kind (its qualified name; the modules add the
+# bq:// prefix), with the entity ID column named and two features
+# registered -- one reading the column named like it, one with a labelled
+# description. Registering features copies nothing; the scenario costs
+# nothing beyond an empty BigQuery table. The group id carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureGroup
+metadata:
+  name: planton-oss-e2e-gcpvfg-bigquery
+  id: planton-oss-e2e-gcpvfg-bigquery
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaifeaturegroup
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaifeaturegroup/e2e/prerequisites/gcpbigquerytable-features.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  featureGroupId: pln_e2e_vfg_${E2E_RUN_ID_UNDERSCORE}
+  description: Planton OSS E2E feature group
+  bigQuery:
+    inputUri:
+      valueFrom:
+        kind: GcpBigQueryTable
+        name: planton-oss-e2e-gcpvfg-source
+        fieldPath: status.outputs.qualified_name
+    entityIdColumns:
+      - entity_id
+  features:
+    - featureId: age
+      description: Age in years
+      labels:
+        pii: "false"
+    - featureId: lifetime_value
+  deletionPolicy: DELETE

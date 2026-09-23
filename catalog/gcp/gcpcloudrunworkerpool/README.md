@@ -135,3 +135,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpVpcNetwork** / **GcpSubnetwork** -- direct VPC egress; **GcpServerlessVpcConnector** -- the connector alternative
 - **GcpRedisCluster**, **GcpCloudSql**, **GcpPubSubSubscription** -- what a worker typically talks to
 - **GcpSecretManagerSecret** -- secret env vars and volumes; **GcpKmsKey** -- CMEK
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

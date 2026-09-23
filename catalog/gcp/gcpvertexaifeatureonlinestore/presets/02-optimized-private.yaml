@@ -1,0 +1,35 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureOnlineStore
+metadata:
+  name: realtime-store
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  featureOnlineStoreId: realtime_store
+  labels:
+    team: fraud
+  optimized: true
+  # Serve only over Private Service Connect: consumers in the allowlisted
+  # projects target the store's service attachment with a forwarding rule.
+  dedicatedServingEndpoint:
+    privateServiceConnectConfig:
+      enablePrivateServiceConnect: true
+      projectAllowlist:
+        - my-gcp-project
+        - payments-serving-project
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: vertex-ai-key
+      fieldPath: status.outputs.key_id
+  featureViews:
+    - featureViewId: merchant_risk
+      bigQuerySource:
+        uri:
+          value: my-gcp-project.features.merchant_risk_latest
+        entityIdColumns:
+          - merchant_id
+      syncConfig:
+        continuous: true
+  deletionPolicy: PREVENT

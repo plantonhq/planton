@@ -1212,6 +1212,46 @@ func TestGcpVertexAiSearchDataConnector_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvertexaisearchdataconnector", "terraform")
 }
 
+func TestGcpVertexAiFeatureGroup_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaifeaturegroup", "pulumi")
+}
+
+func TestGcpVertexAiFeatureGroup_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaifeaturegroup", "terraform")
+}
+
+func TestGcpVertexAiFeatureOnlineStore_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaifeatureonlinestore", "pulumi")
+}
+
+func TestGcpVertexAiFeatureOnlineStore_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaifeatureonlinestore", "terraform")
+}
+
+func TestGcpVertexAiDataset_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaidataset", "pulumi")
+}
+
+func TestGcpVertexAiDataset_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaidataset", "terraform")
+}
+
+func TestGcpVertexAiTensorboard_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaitensorboard", "pulumi")
+}
+
+func TestGcpVertexAiTensorboard_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaitensorboard", "terraform")
+}
+
+func TestGcpVertexAiPersistentResource_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaipersistentresource", "pulumi")
+}
+
+func TestGcpVertexAiPersistentResource_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaipersistentresource", "terraform")
+}
+
 func TestGcpVertexAiModelGardenDeployment_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvertexaimodelgardendeployment", "pulumi")
 }

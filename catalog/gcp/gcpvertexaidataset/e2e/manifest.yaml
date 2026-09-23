@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiDataset
+metadata:
+  name: product-images
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Product images
+  # The schema fixes the dataset's data type: image, text, tabular, video,
+  # or time series. It cannot change after creation.
+  metadataSchemaUri: gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml
+  labels:
+    team: vision
+  deletionPolicy: DELETE

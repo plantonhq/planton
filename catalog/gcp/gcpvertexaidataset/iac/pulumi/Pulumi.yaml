@@ -1,0 +1,4 @@
+name: gcpvertexaidataset-pulumi-project
+runtime:
+  name: go
+description: Planton GcpVertexAiDataset Pulumi module

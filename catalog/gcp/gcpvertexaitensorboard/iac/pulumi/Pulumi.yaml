@@ -1,0 +1,4 @@
+name: gcpvertexaitensorboard-pulumi-project
+runtime:
+  name: go
+description: Planton GcpVertexAiTensorboard Pulumi module

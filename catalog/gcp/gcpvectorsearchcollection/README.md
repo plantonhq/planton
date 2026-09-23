@@ -114,3 +114,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpKmsKey** -- customer-managed encryption for the collection
 - **GcpVertexAiRagEngineConfig** -- RAG Engine, which can use a collection as its vector database
 - **GcpVertexAiAgentEngine** -- an agent runtime whose tools can search the collection
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

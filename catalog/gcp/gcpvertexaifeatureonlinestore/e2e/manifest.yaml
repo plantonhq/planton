@@ -1,0 +1,31 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureOnlineStore
+metadata:
+  name: serving-store
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  # Lowercase letters, digits, and underscores -- Google's rule for online
+  # store and feature view ids.
+  featureOnlineStoreId: serving_store
+  labels:
+    team: ml
+  # Exactly one storage kind: a managed Bigtable instance (large feature
+  # sets, autoscaling) or optimized: true (lowest latency).
+  bigtable:
+    autoScaling:
+      minNodeCount: 1
+      maxNodeCount: 3
+  featureViews:
+    - featureViewId: customer_view
+      featureRegistrySource:
+        featureGroups:
+          - featureGroupId:
+              value: customer_features
+            featureIds:
+              - age
+              - lifetime_value
+      syncConfig:
+        cron: "0 */6 * * *"
+  deletionPolicy: DELETE

@@ -1,0 +1,28 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureGroup
+metadata:
+  name: customer-features
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  # Lowercase letters, digits, and underscores -- Google's rule for
+  # feature group ids.
+  featureGroupId: customer_features
+  description: Customer features for churn and ranking models
+  labels:
+    team: growth
+  bigQuery:
+    # The source must have an entity ID column and a TIMESTAMP column named
+    # feature_timestamp. A GcpBigQueryTable reference works here too.
+    inputUri:
+      value: bq://my-gcp-project.features.customers
+    entityIdColumns:
+      - customer_id
+  features:
+    - featureId: age
+      description: Age in years
+    - featureId: lifetime_value
+      description: Lifetime value in USD
+      versionColumnName: ltv_usd
+  deletionPolicy: DELETE

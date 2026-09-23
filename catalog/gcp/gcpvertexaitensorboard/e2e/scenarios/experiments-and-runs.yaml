@@ -1,0 +1,41 @@
+# GcpVertexAiTensorboard scenario: two experiments declared up front, one
+# with two runs (one defaulting its display name to its id, one named),
+# each carrying labels merged under the attribution set. Proves the
+# experiments and runs address the numeric TensorBoard id both engines
+# derive, and that the folded children create and destroy with their
+# parent. The ids live inside a fresh TensorBoard, so they never collide
+# across runs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiTensorboard
+metadata:
+  name: planton-oss-e2e-gcpvtb-experiments
+  id: planton-oss-e2e-gcpvtb-experiments
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaitensorboard
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  displayName: Planton OSS E2E TensorBoard
+  description: Experiments and runs declared up front
+  experiments:
+    - experimentId: churn-model
+      displayName: Churn model
+      source: custom training job
+      labels:
+        model: churn
+      runs:
+        - runId: baseline
+        - runId: lr-sweep-1
+          displayName: Learning-rate sweep 1
+          description: First learning-rate sweep
+          labels:
+            sweep: lr
+    - experimentId: ranking-v2
+      description: Second-generation ranking model
+  deletionPolicy: DELETE

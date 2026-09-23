@@ -2080,28 +2080,13 @@ resources:
     reason: "data-plane writes into a collection (rows, not infrastructure); the collection and its indexes are GcpVectorSearchCollection, and applications write objects through the Vector Search API"
   - resource: google_vertex_ai_cache_config
     disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_dataset
-    disposition: model-planned
-    reason: "planned GcpVertexAiDataset kind (Vertex AI datasets)"
+    reason: "a per-project singleton with one switch (disable Gemini context caching); a candidate for a project-level Vertex AI settings kind, not a building block of its own"
   - resource: google_vertex_ai_deployment_resource_pool
     disposition: deferred
     reason: "judged to fold into the existing GcpVertexAiEndpoint kind's spec (deployment resource pools and Model Garden deployments); the composition is not built"
   - resource: google_vertex_ai_evaluation_metric
     disposition: deferred
     reason: "Vertex AI custom evaluation metrics are an ML-evaluation specialty; deferred pending demand"
-  - resource: google_vertex_ai_feature_group
-    disposition: model-planned
-    reason: "planned GcpVertexAiFeatureGroup kind (Vertex AI feature groups)"
-  - resource: google_vertex_ai_feature_group_feature
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiFeatureGroup kind (features)"
-  - resource: google_vertex_ai_feature_online_store
-    disposition: model-planned
-    reason: "planned GcpVertexAiFeatureOnlineStore kind (Vertex AI feature online stores)"
-  - resource: google_vertex_ai_feature_online_store_featureview
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiFeatureOnlineStore kind (feature views)"
   - resource: google_vertex_ai_featurestore
     disposition: excluded-deprecated
     reason: "legacy Vertex AI Featurestore, superseded by feature groups and feature online stores"
@@ -2111,24 +2096,12 @@ resources:
   - resource: google_vertex_ai_featurestore_entitytype_feature
     disposition: excluded-deprecated
     reason: "legacy Vertex AI Featurestore, superseded by feature groups and feature online stores"
-  - resource: google_vertex_ai_persistent_resource
-    disposition: model-planned
-    reason: "planned GcpVertexAiPersistentResource kind (Vertex AI persistent resources)"
   - resource: google_vertex_ai_rag_corpus
     disposition: deferred
     reason: "a RAG Engine corpus is its own kind (GcpVertexAiRagCorpus), built the day pulumi-gcp bridges provider 8.x: the resource arrived in provider 8.3 and has no type in the pinned pulumi-gcp SDK, and a kind is never one-engine; its registry number and prefix are reserved"
   - resource: google_vertex_ai_semantic_governance_policy_engine
     disposition: deferred
-    reason: "Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred"
-  - resource: google_vertex_ai_tensorboard
-    disposition: model-planned
-    reason: "planned GcpVertexAiTensorboard kind (Vertex AI TensorBoards)"
-  - resource: google_vertex_ai_tensorboard_experiment
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiTensorboard kind (experiments)"
-  - resource: google_vertex_ai_tensorboard_run
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiTensorboard kind (runs)"
+    reason: "a per-location singleton that places agent-governance gateways behind Private Service Connect; a candidate kind of its own once agent governance has demand, shaped like the RAG Engine config (location-scoped, PATCH-created)"
   - resource: google_vmwareengine_cluster
     disposition: deferred
     reason: "VMware Engine is a named niche family (an eventual ~5 kind family); deferred pending demand"

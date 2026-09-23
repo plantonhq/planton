@@ -129,3 +129,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpVertexAiSearchDataStore** -- a store you fill yourself, in `default_collection`
 - **GcpSecretManagerSecret** -- the secrets the connector's parameters name
 - **GcpKmsKey** -- customer-managed encryption for the created stores
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

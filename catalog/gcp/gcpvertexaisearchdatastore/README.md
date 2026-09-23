@@ -124,3 +124,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpVertexAiSearchEngine** -- the search, chat, or recommendation app over one or more stores
 - **GcpVertexAiSearchDataConnector** -- a collection of stores synced from Jira, Confluence, ServiceNow, and other sources
 - **GcpKmsKey** -- customer-managed encryption for the store
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

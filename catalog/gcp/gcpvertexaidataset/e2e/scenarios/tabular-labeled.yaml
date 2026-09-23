@@ -1,0 +1,25 @@
+# GcpVertexAiDataset scenario: a tabular dataset with an explicit display
+# name and user labels merged under the attribution set -- the second data
+# type, proving the schema URI is passed through untouched and labels
+# update in place on a re-plan.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiDataset
+metadata:
+  name: planton-oss-e2e-gcpvds-tabular
+  id: planton-oss-e2e-gcpvds-tabular
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaidataset
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  displayName: Planton OSS E2E tabular dataset
+  metadataSchemaUri: gs://google-cloud-aiplatform/schema/dataset/metadata/tabular_1.0.0.yaml
+  labels:
+    data-domain: churn
+  deletionPolicy: DELETE

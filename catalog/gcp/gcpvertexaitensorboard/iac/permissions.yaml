@@ -1,0 +1,39 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvertexaitensorboard
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageTensorboard
+        permissions:
+          - aiplatform.tensorboards.create
+          - aiplatform.tensorboards.get
+          - aiplatform.tensorboards.update
+          - aiplatform.tensorboards.delete
+          - aiplatform.operations.get
+        provenance: derived
+        notes: Covers google_vertex_ai_tensorboard (Pulumi vertex.AiTensorboard) -- created and deleted through long-running operations the provider polls, patched for display name, description, and labels, read on every refresh.
+      - purpose: ManageTensorboardExperimentsAndRuns
+        permissions:
+          - aiplatform.tensorboardExperiments.create
+          - aiplatform.tensorboardExperiments.get
+          - aiplatform.tensorboardExperiments.update
+          - aiplatform.tensorboardExperiments.delete
+          - aiplatform.tensorboardRuns.create
+          - aiplatform.tensorboardRuns.get
+          - aiplatform.tensorboardRuns.update
+          - aiplatform.tensorboardRuns.delete
+        provenance: derived
+        notes: Covers google_vertex_ai_tensorboard_experiment and google_vertex_ai_tensorboard_run (Pulumi vertex.AiTensorboardExperiment / AiTensorboardRun) for every declared experiment and run. roles/aiplatform.admin contains every permission in the three groups.

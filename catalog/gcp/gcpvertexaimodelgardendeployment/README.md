@@ -109,3 +109,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpVertexAiEndpoint** -- an endpoint created on its own, for models deployed through the Vertex AI API
 - **GcpVertexAiAgentEngine** -- an agent that calls the deployed model
 - **GcpProject**, **GcpVpcNetwork** -- the consumer projects and network of a Private Service Connect endpoint
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

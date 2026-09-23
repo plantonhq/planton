@@ -319,8 +319,12 @@ Fields on other kinds that can point at this resource:
 | GcpVectorSearchCollection | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiAgentEngine | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
+| GcpVertexAiDataset | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiEndpoint | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].projectId` | `status.outputs.project_id` |
+| GcpVertexAiFeatureGroup | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiFeatureOnlineStore | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiFeatureOnlineStore | `spec.featureViews[].featureRegistrySource.projectNumber` | `status.outputs.project_number` |
 | GcpVertexAiIndex | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiIndexEndpoint | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiIndexEndpoint | `spec.privateServiceConnectConfig.pscAutomationConfigs[].projectId` | `status.outputs.project_id` |
@@ -328,10 +332,13 @@ Fields on other kinds that can point at this resource:
 | GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.projectAllowlist` | `status.outputs.project_id` |
 | GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.pscAutomationConfig.projectId` | `status.outputs.project_id` |
 | GcpVertexAiNotebook | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiPersistentResource | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiPersistentResource | `spec.pscInterfaceConfig.dnsPeeringConfigs[].targetProject` | `status.outputs.project_id` |
 | GcpVertexAiRagEngineConfig | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiSearchDataConnector | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiSearchDataStore | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiSearchEngine | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiTensorboard | `spec.projectId` | `status.outputs.project_id` |
 | GcpVpcNetwork | `spec.projectId` | `status.outputs.project_id` |
 | GcpWorkflow | `spec.projectId` | `status.outputs.project_id` |
 | GcpWorkloadIdentityPool | `spec.projectId` | `status.outputs.project_id` |

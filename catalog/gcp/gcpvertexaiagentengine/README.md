@@ -120,3 +120,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpKmsKey** -- customer-managed encryption
 - **GcpVertexAiModelGardenDeployment** -- a model the agent calls
 - **GcpVectorSearchCollection** -- a vector store the agent's tools search
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

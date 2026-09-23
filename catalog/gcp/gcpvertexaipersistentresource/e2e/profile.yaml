@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexaipersistentresource
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness
+  # project with roles/aiplatform.admin and custom-training CPU quota in
+  # us-central1; the module enables aiplatform.googleapis.com itself: one
+  # pool of one n1-standard-4 replica. Offline bar met: both modules build
+  # and validate, offline plans for the reference manifest, the scenario,
+  # and the GPU-autoscaling, VPC-peering, PSC-I, and CMEK arms are clean on
+  # the pinned provider, and the accounting is total. Live facts the proof
+  # lane confirms: (1) the resource reaches RUNNING and RE-PLANS CLEAN
+  # under the apply-idempotency gate on both engines -- the generated pool
+  # id and the boot disk defaults (Optional+Computed) show no diff, and the
+  # replica count travels as the decimal string Google returns; (2) the
+  # persistent_resource_id output matches the name; (3) destroy releases
+  # the machines and the verifier reads 404. Provisioning is the long pole
+  # (Google allocates the VM before RUNNING).
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 60

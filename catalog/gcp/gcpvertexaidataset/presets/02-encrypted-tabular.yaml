@@ -1,0 +1,19 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiDataset
+metadata:
+  name: churn-training-data
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Churn training data
+  metadataSchemaUri: gs://google-cloud-aiplatform/schema/dataset/metadata/tabular_1.0.0.yaml
+  labels:
+    data-classification: confidential
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: vertex-ai-key
+      fieldPath: status.outputs.key_id
+  # Regulated training data: a destroy must never take it.
+  deletionPolicy: PREVENT

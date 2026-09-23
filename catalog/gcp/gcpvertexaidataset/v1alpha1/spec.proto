@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaidataset.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiDatasetSpec defines a Vertex AI managed dataset
+// (`google_vertex_ai_dataset`) -- the registered container Vertex AI
+// training, AutoML, labeling, and evaluation read their examples from.
+// The block declares the dataset itself: its data type (through
+// metadata_schema_uri), its name, its labels, and its encryption. The data
+// items inside it (images, text snippets, rows, annotations) are imported
+// through the Vertex AI API, the console, or the SDK and are deliberately
+// not part of this block.
+//
+// Google assigns the dataset a numeric id at creation; the stack outputs
+// carry it and the full resource name for the training jobs and pipelines
+// that consume the dataset.
+//
+// Immutable: location, metadata_schema_uri, and the encryption key (a
+// change replaces the dataset and everything imported into it). The
+// display name and labels update in place.
+message GcpVertexAiDatasetSpec {
+  // The GCP project the dataset lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) the dataset lives in, e.g.
+  // "us-central1". Training jobs that read the dataset must run in the same
+  // location. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // Human-readable name shown in the console -- up to 128 UTF-8
+  // characters. Defaults to metadata.name. Mutable in place.
+  string display_name = 3 [(buf.validate.field).string.max_len = 128];
+
+  // The Cloud Storage YAML file that fixes what kind of data the dataset
+  // holds -- one of Google's published schemas under
+  // gs://google-cloud-aiplatform/schema/dataset/metadata/:
+  //   image_1.0.0.yaml       images (classification, object detection,
+  //                          segmentation)
+  //   text_1.0.0.yaml        text (classification, entity extraction,
+  //                          sentiment)
+  //   tabular_1.0.0.yaml     rows from BigQuery or Cloud Storage CSV
+  //   video_1.0.0.yaml       video (classification, action recognition,
+  //                          object tracking)
+  //   time_series_1.0.0.yaml forecasting data
+  // e.g. "gs://google-cloud-aiplatform/schema/dataset/metadata/image_1.0.0.yaml".
+  // Immutable.
+  string metadata_schema_uri = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^gs://[^/]+/.+\\.yaml$"
+  ];
+
+  // Labels on the dataset. The platform attribution labels are merged in
+  // and win on key conflicts.
+  map<string, string> labels = 5;
+
+  // Customer-managed encryption key protecting the dataset and everything
+  // imported into it: a GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // in the same region. The Vertex AI Service Agent needs
+  // roles/cloudkms.cryptoKeyEncrypterDecrypter on the key. Omit to use
+  // Google-managed encryption. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // What happens to the dataset when this resource is destroyed:
+  //   "" / "DELETE" -- the dataset is deleted, imported data items and
+  //                    annotations included
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the dataset leaves management and stays in GCP
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

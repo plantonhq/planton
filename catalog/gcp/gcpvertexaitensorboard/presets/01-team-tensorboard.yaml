@@ -1,0 +1,12 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiTensorboard
+metadata:
+  name: training-metrics
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Training metrics
+  description: Shared TensorBoard the team's training jobs stream into
+  labels:
+    team: ml

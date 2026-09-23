@@ -1,0 +1,294 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiFeatureOnlineStoreBigtableAutoScaling bounds the Bigtable
+// nodes Google runs behind the store.
+message GcpVertexAiFeatureOnlineStoreBigtableAutoScaling {
+  option (buf.validate.message).cel = {
+    id: "auto_scaling.max_bounds"
+    expression: "this.max_node_count >= this.min_node_count && this.max_node_count <= 10 * this.min_node_count"
+    message: "max_node_count must be at least min_node_count and at most 10 times min_node_count"
+  };
+
+  // Fewest nodes kept running -- at least 1. Each node bills around the
+  // clock.
+  int32 min_node_count = 1 [(buf.validate.field).int32.gte = 1];
+
+  // Most nodes Google may scale to -- at least min_node_count and at most
+  // ten times it.
+  int32 max_node_count = 2 [(buf.validate.field).int32.gte = 1];
+
+  // The CPU utilization (10-80 percent) Bigtable scales to hold: above it
+  // nodes are added, well below it nodes are removed. Google defaults to
+  // 50. Sent only when set.
+  optional int32 cpu_utilization_target = 3 [(buf.validate.field).int32 = {
+    gte: 10
+    lte: 80
+  }];
+}
+
+// GcpVertexAiFeatureOnlineStoreBigtable serves the store's feature views
+// from a Cloud Bigtable instance Google creates and manages for the store
+// -- the storage for large feature sets served by entity key with
+// autoscaling capacity.
+message GcpVertexAiFeatureOnlineStoreBigtable {
+  // Node bounds for the managed Bigtable instance.
+  GcpVertexAiFeatureOnlineStoreBigtableAutoScaling auto_scaling = 1 [(buf.validate.field).required = true];
+
+  // True lets clients read the managed Bigtable instance directly, beside
+  // the Feature Store serving API.
+  bool enable_direct_bigtable_access = 2;
+
+  // The zone the Bigtable instance is created in, e.g. "us-central1-a".
+  // Google picks one in the store's region when empty. Sent only when set.
+  string zone = 3;
+}
+
+// GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig serves the
+// store's dedicated endpoint over Private Service Connect instead of the
+// public internet.
+message GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig {
+  // True serves the dedicated endpoint only through a PSC service
+  // attachment (the `service_attachment` output) that consumers target
+  // with a forwarding rule; false keeps the public endpoint.
+  bool enable_private_service_connect = 1;
+
+  // Projects (IDs or numbers) allowed to create forwarding rules that
+  // target the service attachment.
+  repeated string project_allowlist = 2 [(buf.validate.field).repeated.items.string.min_len = 1];
+}
+
+// GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint shapes the
+// store's own serving endpoint, separate from the shared Vertex AI
+// endpoint. Optimized stores always get one (public by default); set this
+// block to put it behind Private Service Connect.
+message GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint {
+  // Private Service Connect for the dedicated endpoint.
+  GcpVertexAiFeatureOnlineStorePrivateServiceConnectConfig private_service_connect_config = 1;
+}
+
+// GcpVertexAiFeatureOnlineStoreBigQuerySource makes a feature view
+// materialize a BigQuery table or view directly, without going through the
+// feature registry.
+message GcpVertexAiFeatureOnlineStoreBigQuerySource {
+  // The BigQuery table or view materialized on each sync: a
+  // GcpBigQueryTable reference (its {project}.{dataset}.{table} name), a
+  // literal "project.dataset.table", or the bq:// form Google stores. The
+  // modules add the bq:// prefix when it is missing.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef uri = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBigQueryTable,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.qualified_name"
+  ];
+
+  // The columns that form the entity ID the view serves by. Google
+  // supports exactly one today.
+  repeated string entity_id_columns = 2 [(buf.validate.field).repeated = {
+    min_items: 1
+    items: {
+      string: {min_len: 1}
+    }
+  }];
+}
+
+// GcpVertexAiFeatureOnlineStoreFeatureGroupSelection picks features from
+// one feature group.
+message GcpVertexAiFeatureOnlineStoreFeatureGroupSelection {
+  // The feature group: a GcpVertexAiFeatureGroup reference or its literal
+  // id. The group must be in the store's location.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef feature_group_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiFeatureGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.feature_group_id"
+  ];
+
+  // The features to serve, by feature_id within the group.
+  repeated string feature_ids = 2 [(buf.validate.field).repeated = {
+    min_items: 1
+    items: {
+      string: {min_len: 1}
+    }
+  }];
+}
+
+// GcpVertexAiFeatureOnlineStoreFeatureRegistrySource makes a feature view
+// serve features registered in feature groups.
+message GcpVertexAiFeatureOnlineStoreFeatureRegistrySource {
+  // The feature groups and features the view serves.
+  repeated GcpVertexAiFeatureOnlineStoreFeatureGroupSelection feature_groups = 1 [(buf.validate.field).repeated.min_items = 1];
+
+  // The number of the project that owns the feature groups, when it is not
+  // the store's project: a GcpProject reference (its project number) or a
+  // literal number.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_number = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_number"
+  ];
+}
+
+// GcpVertexAiFeatureOnlineStoreSyncConfig says when a feature view copies
+// fresh values from its source into the store.
+message GcpVertexAiFeatureOnlineStoreSyncConfig {
+  option (buf.validate.message).cel = {
+    id: "sync_config.one_mode"
+    expression: "!(this.cron != '' && this.continuous)"
+    message: "a feature view syncs on a cron schedule or continuously, not both"
+  };
+
+  // A cron schedule for batch syncs, e.g. "0 */6 * * *"; prefix
+  // "CRON_TZ=America/New_York " (or "TZ=") to pin a time zone. Sent only
+  // when set.
+  string cron = 1;
+
+  // True syncs continuously as the source changes instead of on a
+  // schedule.
+  bool continuous = 2;
+}
+
+// GcpVertexAiFeatureOnlineStoreFeatureView is one feature view
+// (`google_vertex_ai_feature_online_store_featureview`) -- the set of
+// features the store serves together, keyed by entity ID, and the unit
+// clients query (FetchFeatureValues names the view).
+//
+// Immutable: feature_view_id (a change replaces the view and resyncs it).
+// The sources, sync schedule, and labels update in place.
+message GcpVertexAiFeatureOnlineStoreFeatureView {
+  option (buf.validate.message).cel = {
+    id: "feature_view.exactly_one_source"
+    expression: "has(this.big_query_source) != has(this.feature_registry_source)"
+    message: "a feature view has exactly one of big_query_source or feature_registry_source"
+  };
+
+  // The view's id -- what serving clients name. Up to 60 characters of
+  // lowercase letters, digits, and underscores; the first character cannot
+  // be a digit. Unique within the store. Immutable.
+  string feature_view_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z_][a-z0-9_]{0,59}$"
+  ];
+
+  // Labels on the view. The platform attribution labels are merged in and
+  // win on key conflicts.
+  map<string, string> labels = 2;
+
+  // Materialize a BigQuery table or view directly.
+  GcpVertexAiFeatureOnlineStoreBigQuerySource big_query_source = 3;
+
+  // Serve features registered in feature groups.
+  GcpVertexAiFeatureOnlineStoreFeatureRegistrySource feature_registry_source = 4;
+
+  // When the view copies fresh values in. Omit for Google's default.
+  GcpVertexAiFeatureOnlineStoreSyncConfig sync_config = 5;
+}
+
+// GcpVertexAiFeatureOnlineStoreSpec defines a Vertex AI Feature Store
+// online store (`google_vertex_ai_feature_online_store`) -- the low-latency
+// serving layer that answers "give me this entity's features now" for
+// models in production -- together with the feature views it serves
+// (`google_vertex_ai_feature_online_store_featureview`). Feature views are
+// folded in because they belong to exactly one store and nothing else in
+// the catalog references a view.
+//
+// Storage is exactly one of two kinds: `bigtable` (a managed Bigtable
+// instance with autoscaling, for large feature sets) or `optimized` (Google's
+// serving infrastructure behind a dedicated endpoint, for the lowest
+// latency). Both bill for capacity around the clock.
+//
+// Immutable: feature_online_store_id, location, and the storage kind (a
+// change replaces the store and every view). Bigtable scaling, the
+// dedicated endpoint, the encryption key, labels, and the views update in
+// place.
+message GcpVertexAiFeatureOnlineStoreSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_storage"
+    expression: "has(this.bigtable) != this.optimized"
+    message: "an online store has exactly one storage kind: bigtable or optimized"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_feature_view_ids"
+    expression: "this.feature_views.map(v, v.feature_view_id).unique()"
+    message: "feature_view_id must be unique within the online store"
+  };
+
+  // The GCP project the store lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) the store lives in, e.g.
+  // "us-central1". Feature groups its views serve must be in the same
+  // location. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The store's id -- the last segment of its resource name. Up to 60
+  // characters of lowercase letters, digits, and underscores; the first
+  // character cannot be a digit (hyphens are not allowed, so
+  // metadata.name cannot stand in). Unique within the project and
+  // location. Immutable.
+  string feature_online_store_id = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z_][a-z0-9_]{0,59}$"
+  ];
+
+  // Labels on the store. The platform attribution labels are merged in and
+  // win on key conflicts.
+  map<string, string> labels = 4;
+
+  // Serve from a managed Bigtable instance. Exactly one of bigtable or
+  // optimized.
+  GcpVertexAiFeatureOnlineStoreBigtable bigtable = 5;
+
+  // True serves from Google's Optimized online serving (a dedicated
+  // endpoint, the lowest latency). Google's optimized block carries no
+  // settings, so the choice is a flag. Exactly one of bigtable or
+  // optimized.
+  bool optimized = 6;
+
+  // The store's dedicated serving endpoint. Set it to serve over Private
+  // Service Connect; omit to keep Google's default (a public dedicated
+  // endpoint on Optimized stores). Sent only when set.
+  GcpVertexAiFeatureOnlineStoreDedicatedServingEndpoint dedicated_serving_endpoint = 7;
+
+  // Customer-managed encryption key protecting both the online and the
+  // offline data: a GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // in the store's region. Omit to use Google-managed encryption.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 8 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // True lets a destroy delete the store even when it still holds feature
+  // views and features the block does not manage (views created outside
+  // this block, for example). Without it Google refuses to delete a
+  // non-empty store. The views declared below are deleted first either
+  // way.
+  bool force_destroy = 9;
+
+  // The feature views the store serves, each keyed by feature_view_id.
+  repeated GcpVertexAiFeatureOnlineStoreFeatureView feature_views = 10;
+
+  // What happens to the store and its feature views when this resource is
+  // destroyed:
+  //   "" / "DELETE" -- the views and the store are deleted (the sources are
+  //                    never touched)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and keeps serving (and
+  //                    billing)
+  string deletion_policy = 11 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

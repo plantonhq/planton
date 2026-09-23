@@ -1,0 +1,166 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaitensorboard.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiTensorboardRun is one run inside an experiment
+// (`google_vertex_ai_tensorboard_run`) -- the series a single training
+// execution writes its scalars, histograms, and images to. Training jobs
+// create their own runs as they log; declare a run here only when it must
+// exist before any job writes to it (a fixed baseline, a run a dashboard
+// or an evaluation pipeline points at by id). Runs created by jobs never
+// conflict with declared ones.
+//
+// Immutable: run_id (a change replaces the run and the data logged to
+// it). The display name, description, and labels update in place.
+message GcpVertexAiTensorboardRun {
+  // The run's id -- the last segment of its resource name. 1-128
+  // characters: lowercase letters, digits, and hyphens. Unique within its
+  // experiment. Immutable.
+  string run_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9][a-z0-9-]{0,127}$"
+  ];
+
+  // Human-readable name -- Google requires one and requires it unique
+  // among the experiment's runs. Defaults to run_id. Mutable in place.
+  string display_name = 2;
+
+  // Free-text description of the run.
+  string description = 3;
+
+  // Labels on the run. The platform attribution labels are merged in and
+  // win on key conflicts.
+  map<string, string> labels = 4;
+}
+
+// GcpVertexAiTensorboardExperiment is one experiment inside the
+// TensorBoard (`google_vertex_ai_tensorboard_experiment`) -- the grouping
+// Vertex AI Experiments and training jobs log related runs under, compared
+// side by side in the TensorBoard UI.
+//
+// Immutable: experiment_id and source (a change replaces the experiment
+// and every run in it). The display name, description, and labels update
+// in place.
+message GcpVertexAiTensorboardExperiment {
+  option (buf.validate.message).cel = {
+    id: "experiment.unique_run_ids"
+    expression: "this.runs.map(r, r.run_id).unique()"
+    message: "run_id must be unique within an experiment"
+  };
+  option (buf.validate.message).cel = {
+    id: "experiment.unique_run_display_names"
+    expression: "this.runs.map(r, r.display_name != '' ? r.display_name : r.run_id).unique()"
+    message: "run display names (run_id when display_name is empty) must be unique within an experiment -- Google rejects duplicates"
+  };
+
+  // The experiment's id -- the last segment of its resource name and the
+  // name a training job or the Vertex AI SDK
+  // (aiplatform.init(experiment=...)) logs under. 1-128 characters:
+  // lowercase letters, digits, and hyphens. Unique within the TensorBoard.
+  // Immutable.
+  string experiment_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9][a-z0-9-]{0,127}$"
+  ];
+
+  // Human-readable name shown in the TensorBoard UI.
+  string display_name = 2;
+
+  // Free-text description of the experiment.
+  string description = 3;
+
+  // Labels on the experiment. The platform attribution labels are merged
+  // in and win on key conflicts.
+  map<string, string> labels = 4;
+
+  // Where the experiment's data comes from, recorded as metadata -- e.g.
+  // "custom training job" or a pipeline name. Informational; Google does
+  // not act on it. Immutable.
+  string source = 5;
+
+  // Runs declared up front, each keyed by run_id. Leave empty to let
+  // training jobs create the runs they log to.
+  repeated GcpVertexAiTensorboardRun runs = 6;
+}
+
+// GcpVertexAiTensorboardSpec defines a Vertex AI TensorBoard instance
+// (`google_vertex_ai_tensorboard`) -- the managed, regional TensorBoard
+// that Vertex AI training jobs, pipelines, and Vertex AI Experiments stream
+// training metrics into, shared by a team and kept after the jobs end --
+// together with the experiments (`google_vertex_ai_tensorboard_experiment`)
+// and runs (`google_vertex_ai_tensorboard_run`) declared in it. Experiments
+// and runs are folded in because they live and die with their TensorBoard
+// and nothing else in the catalog refers to one.
+//
+// A training job attaches by naming the TensorBoard's full resource name
+// (the `name` output) in its `tensorboard` field, together with a service
+// account and a Cloud Storage staging bucket. Google assigns the
+// TensorBoard a numeric id at creation.
+//
+// Immutable: location and the encryption key (a change replaces the
+// TensorBoard and every experiment, run, and logged series in it). The
+// display name, description, and labels update in place.
+message GcpVertexAiTensorboardSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.unique_experiment_ids"
+    expression: "this.experiments.map(e, e.experiment_id).unique()"
+    message: "experiment_id must be unique within the TensorBoard"
+  };
+
+  // The GCP project the TensorBoard lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) the TensorBoard lives in, e.g.
+  // "us-central1". Training jobs that stream into it must run in the same
+  // location. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // Human-readable name shown in the console. Defaults to metadata.name.
+  // Mutable in place.
+  string display_name = 3;
+
+  // Free-text description of the TensorBoard.
+  string description = 4;
+
+  // Labels on the TensorBoard. The platform attribution labels are merged
+  // in and win on key conflicts.
+  map<string, string> labels = 5;
+
+  // Customer-managed encryption key protecting the TensorBoard and every
+  // series logged to it: a GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // in the same region. The Vertex AI Service Agent needs
+  // roles/cloudkms.cryptoKeyEncrypterDecrypter on the key. Omit to use
+  // Google-managed encryption. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Experiments declared in the TensorBoard, each keyed by experiment_id.
+  // Leave empty to let training jobs and the Vertex AI SDK create the
+  // experiments they log to.
+  repeated GcpVertexAiTensorboardExperiment experiments = 7;
+
+  // What happens to the TensorBoard, its experiments, and its runs when
+  // this resource is destroyed:
+  //   "" / "DELETE" -- everything is deleted, logged series included
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in GCP
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

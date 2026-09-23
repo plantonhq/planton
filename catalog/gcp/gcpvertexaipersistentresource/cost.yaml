@@ -1,0 +1,42 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaipersistentresource
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Vertex AI
+      sku_meter: custom training machines
+      pricing_unit: node-hours
+      description: Every provisioned replica of every pool bills Vertex AI custom-training machine rates -- the machine type's vCPU and memory, plus each attached accelerator -- from the moment it is provisioned until the resource is deleted, whether or not a job is running (per cloud.google.com/vertex-ai/pricing, custom training section, read 2026-09-23).
+    - service_name: Vertex AI
+      sku_meter: custom training boot disks
+      pricing_unit: GiB-months
+      description: Each replica's boot disk bills per GiB-month at its disk type's rate for as long as the replica exists.
+  cost_drivers:
+    - field_path: resource_pools.replica_count
+      sku_meter: custom training machines
+      pricing_unit: node-hours
+      impact: The standing spend -- this many machines per pool run around the clock. With autoscaling the running count moves between the bounds.
+    - field_path: resource_pools.autoscaling_spec.min_replica_count
+      sku_meter: custom training machines
+      pricing_unit: node-hours
+      impact: The committed floor of an autoscaling pool; at least one machine always runs.
+    - field_path: resource_pools.machine_spec.machine_type
+      sku_meter: custom training machines
+      pricing_unit: node-hours
+      impact: The per-hour rate of every replica in the pool.
+    - field_path: resource_pools.machine_spec.accelerator_type
+      sku_meter: custom training machines
+      pricing_unit: node-hours
+      impact: GPUs and TPUs dominate the bill -- an accelerator commonly costs several times the machine it is attached to, times accelerator_count.
+    - field_path: resource_pools.disk_spec.boot_disk_size_gb
+      sku_meter: custom training boot disks
+      pricing_unit: GiB-months
+      impact: Disk cost scales with size times replicas; pd-ssd costs more per GiB than pd-standard.
+  estimate_exclusions:
+    - the training jobs that run on the resource add no machine charge beyond it, but their outputs bill under Cloud Storage
+    - a peered network's private services access allocation bills nothing; egress from jobs bills under the network

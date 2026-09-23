@@ -1,0 +1,26 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiTensorboard
+metadata:
+  name: ranking-metrics
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Ranking metrics
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: vertex-ai-key
+      fieldPath: status.outputs.key_id
+  experiments:
+    - experimentId: ranking-v2
+      displayName: Ranking v2
+      source: vertex ai pipeline
+      runs:
+        - runId: production-baseline
+          displayName: Production baseline
+          description: The model currently serving; every candidate is compared against it
+    - experimentId: ranking-v3
+      displayName: Ranking v3
+  # Shared history: a destroy must never take it.
+  deletionPolicy: PREVENT

@@ -1,0 +1,93 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpvertexaifeatureonlinestore
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Vertex AI encrypts the online store's served values and its offline copies at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key_name
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; a Cloud KMS key in the store's region encrypts both the online and the offline data under the customer-managed key. Both modules emit the block only when set.
+      notes: The 02-optimized-private preset references a GcpKmsKey.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every serving request and API call is TLS, on the shared Vertex AI endpoint, the dedicated endpoint, or over Private Service Connect.
+    - control_id: no-public-access
+      status: configurable
+      field_path: dedicated_serving_endpoint
+      evidence:
+        type: spec_default
+        reference: Unset keeps Google's default -- a Bigtable store serves through the Vertex AI API under IAM, an Optimized store through a public dedicated endpoint that still requires IAM-authenticated calls; private_service_connect_config with enable_private_service_connect true serves only through a PSC service attachment.
+      notes: The 02-optimized-private preset enables PSC.
+    - control_id: restricted-ingress
+      status: configurable
+      field_path: dedicated_serving_endpoint.private_service_connect_config.project_allowlist
+      evidence:
+        type: spec_default
+        reference: With PSC enabled, only the listed projects may create forwarding rules that target the store's service attachment.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The store serves machine-to-machine feature reads, never a public web edge.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Serving reads require aiplatform.featureViews.fetchFeatureValues (or searchNearestEntities); managing the store and views requires aiplatform.featureOnlineStores.* and aiplatform.featureViews.* permissions.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The store authenticates nothing itself; serving clients call with their own identities and syncs run as the Vertex AI Service Agent.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable; every call is IAM-authenticated.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; access is service-to-service under IAM, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every store and view create, update, and delete is a Vertex AI admin write recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Online stores emit serving latency, request count, node count, and sync metrics to Cloud Monitoring under the Vertex AI resource types without configuration.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The served values are a copy of BigQuery; recovery is a resync from the source, and the store's definition is re-creatable from source control.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: configurable
+      field_path: bigtable.zone
+      evidence:
+        type: provider_default
+        reference: Optimized serving is a regional Google-managed service; a Bigtable store's managed instance runs in one zone Google picks unless zone names one.
+      notes: Recovery from a zonal outage on a Bigtable store is a resync into a store elsewhere; the GUIDE covers the storage choice.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the views and the store (with its managed Bigtable instance) are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves the store serving. Fanned to every view.
+      notes: The 02-optimized-private preset sets PREVENT.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The store and its managed Bigtable instance are fully Google-operated; there is no software surface the customer patches.

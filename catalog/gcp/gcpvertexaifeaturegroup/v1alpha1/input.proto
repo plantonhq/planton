@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1;
+
+import "catalog/gcp/gcpvertexaifeaturegroup/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-vertex-ai-feature-group stack-input
+message GcpVertexAiFeatureGroupStackInput {
+  //target cloud-resource
+  GcpVertexAiFeatureGroup target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

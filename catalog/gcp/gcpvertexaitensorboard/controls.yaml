@@ -1,0 +1,84 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpvertexaitensorboard
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Vertex AI encrypts every TensorBoard and its logged series at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: configurable
+      field_path: kms_key_name
+      evidence:
+        type: spec_default
+        reference: Unset means Google-managed encryption; a Cloud KMS key in the TensorBoard's region encrypts it and every logged series under the customer-managed key. Both modules emit the block only when set. Fixed at creation.
+      notes: The 02-encrypted-with-experiments preset references a GcpKmsKey.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every TensorBoard read and write is TLS over Google's regional Vertex AI endpoint; there is no plaintext path.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The TensorBoard UI and API are reached only through Google's console and the Vertex AI API under IAM; nothing is served anonymously.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict; access is API-level and governed by IAM.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No edge is served; the TensorBoard is reached through Google's own endpoints.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Reading or writing a TensorBoard, its experiments, and its runs requires aiplatform.tensorboards.*, tensorboardExperiments.*, and tensorboardRuns.* permissions on the project.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The TensorBoard authenticates nothing; the training jobs that write to it run under their own service accounts.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; console access is Google sign-in under IAM, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every TensorBoard, experiment, and run create, update, and delete is a Vertex AI admin write recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: A TensorBoard is itself the metrics surface for training; it has no runtime of its own to monitor.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: Vertex AI keeps no backups of a TensorBoard; logged series can be exported through the Vertex AI API. The GUIDE says a destroy removes every series.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: A TensorBoard is a regional Google-managed resource stored across the region's zones; there is no zonal placement to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the TensorBoard and every series in it are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves everything when the block leaves management. Fanned to every declared experiment and run.
+      notes: The 02-encrypted-with-experiments preset sets PREVENT.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The TensorBoard service is fully Google-operated; there is no software surface the customer patches.

@@ -1,0 +1,4 @@
+name: gcpvertexaifeaturegroup-pulumi-project
+runtime:
+  name: go
+description: Planton GcpVertexAiFeatureGroup Pulumi module

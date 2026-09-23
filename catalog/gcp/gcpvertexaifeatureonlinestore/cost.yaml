@@ -1,0 +1,46 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpvertexaifeatureonlinestore
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Vertex AI
+      sku_meter: Feature Store online serving
+      pricing_unit: node-hours
+      description: An online store bills its serving capacity around the clock from creation, requests or not -- Bigtable online serving per node-hour at the running node count (never below min_node_count), Optimized online serving per node-hour of its dedicated serving nodes (per cloud.google.com/vertex-ai/pricing, Vertex AI Feature Store section, read 2026-09-23).
+    - service_name: Vertex AI
+      sku_meter: Feature Store data processing
+      pricing_unit: node-hours
+      description: Every feature view sync bills data-processing node-hours while it copies values from BigQuery into the store; continuous sync keeps that meter running.
+    - service_name: Vertex AI
+      sku_meter: Feature Store online storage
+      pricing_unit: GiB-months
+      description: The synced feature values bill per GiB-month stored in the online store.
+  cost_drivers:
+    - field_path: bigtable.auto_scaling.min_node_count
+      sku_meter: Feature Store online serving
+      pricing_unit: node-hours
+      impact: The committed spend of a Bigtable store -- this many nodes run around the clock; max_node_count is the ceiling autoscaling may reach.
+    - field_path: bigtable.auto_scaling.max_node_count
+      sku_meter: Feature Store online serving
+      pricing_unit: node-hours
+      impact: The worst-case serving spend under load; Google caps it at ten times the floor.
+    - field_path: optimized
+      sku_meter: Feature Store online serving
+      pricing_unit: node-hours
+      impact: Optimized serving bills its dedicated serving nodes around the clock; it buys the lowest latency, not the lowest cost.
+    - field_path: feature_views.sync_config.continuous
+      sku_meter: Feature Store data processing
+      pricing_unit: node-hours
+      impact: Continuous sync keeps data processing running; a cron sync bills only while each scheduled run copies data.
+    - field_path: feature_views
+      sku_meter: Feature Store online storage
+      pricing_unit: GiB-months
+      impact: Every view stores its features' latest values for every entity; storage grows with entities times features served.
+  estimate_exclusions:
+    - BigQuery bills the reads each sync performs under BigQuery
+    - a consumer's Private Service Connect forwarding rule bills under the consumer project

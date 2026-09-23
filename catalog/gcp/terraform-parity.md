@@ -29,10 +29,10 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 131 |
-| Distinct provider resources consumed | 227 |
-| Spec fields authored across all kinds | 4724 |
-| Module pins on `google` | `~> 8.3` × 131 |
+| Kinds in the catalog | 136 |
+| Distinct provider resources consumed | 236 |
+| Spec fields authored across all kinds | 4806 |
+| Module pins on `google` | `~> 8.3` × 136 |
 | Module pins on `google-beta` | `~> 8.3` × 4 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -76,7 +76,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**131 of 131 kinds are at total accounting; 79 proven live.**
+**136 of 136 kinds are at total accounting; 79 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -196,16 +196,21 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpUrlMap | 554 | 124 | 430 | 0 | 0 | ✅ | — |
 | GcpVectorSearchCollection | 30 | 18 | 12 | 0 | 0 | ✅ | — |
 | GcpVertexAiAgentEngine | 96 | 87 | 3 | 6 | 0 | ✅ | — |
+| GcpVertexAiDataset | 7 | 4 | 3 | 0 | 0 | ✅ | — |
 | GcpVertexAiDeployedIndex | 16 | 12 | 4 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiEndpoint | 19 | 8 | 9 | 2 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpVertexAiFeatureGroup | 16 | 7 | 9 | 0 | 0 | ✅ | — |
+| GcpVertexAiFeatureOnlineStore | 27 | 18 | 9 | 0 | 0 | ✅ | — |
 | GcpVertexAiIndex | 17 | 5 | 12 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiIndexEndpoint | 13 | 10 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVertexAiModelGardenDeployment | 90 | 87 | 3 | 0 | 0 | ✅ | — |
 | GcpVertexAiNotebook | 46 | 9 | 36 | 1 | 0 | ✅ | — |
+| GcpVertexAiPersistentResource | 23 | 19 | 4 | 0 | 0 | ✅ | — |
 | GcpVertexAiRagEngineConfig | 3 | 1 | 2 | 0 | 0 | ✅ | — |
 | GcpVertexAiSearchDataConnector | 28 | 27 | 1 | 0 | 0 | ✅ | — |
 | GcpVertexAiSearchDataStore | 53 | 23 | 30 | 0 | 0 | ✅ | — |
 | GcpVertexAiSearchEngine | 155 | 124 | 29 | 2 | 0 | ✅ | — |
+| GcpVertexAiTensorboard | 25 | 11 | 12 | 2 | 0 | ✅ | — |
 | GcpVpcNetwork | 17 | 10 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVpcPeering | 17 | 14 | 2 | 1 | 0 | ✅ | — |
 | GcpWorkflow | 15 | 10 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
@@ -218,10 +223,10 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 222 | consumed by a kind's Terraform module today |
+| Modeled | 231 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 70 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 61 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 581 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 69 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
@@ -231,7 +236,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (222)
+### Modeled (231)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -413,7 +418,7 @@ rather than trusted.
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiEndpoint, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
@@ -447,13 +452,22 @@ rather than trusted.
 | `google_tags_tag_value` | consumed by GcpTagValue |
 | `google_vector_search_collection` | consumed by GcpVectorSearchCollection |
 | `google_vector_search_index` | consumed by GcpVectorSearchCollection |
+| `google_vertex_ai_dataset` | consumed by GcpVertexAiDataset |
 | `google_vertex_ai_endpoint` | consumed by GcpVertexAiEndpoint |
 | `google_vertex_ai_endpoint_with_model_garden_deployment` | consumed by GcpVertexAiModelGardenDeployment |
+| `google_vertex_ai_feature_group` | consumed by GcpVertexAiFeatureGroup |
+| `google_vertex_ai_feature_group_feature` | consumed by GcpVertexAiFeatureGroup |
+| `google_vertex_ai_feature_online_store` | consumed by GcpVertexAiFeatureOnlineStore |
+| `google_vertex_ai_feature_online_store_featureview` | consumed by GcpVertexAiFeatureOnlineStore |
 | `google_vertex_ai_index` | consumed by GcpVertexAiIndex |
 | `google_vertex_ai_index_endpoint` | consumed by GcpVertexAiIndexEndpoint |
 | `google_vertex_ai_index_endpoint_deployed_index` | consumed by GcpVertexAiDeployedIndex |
+| `google_vertex_ai_persistent_resource` | consumed by GcpVertexAiPersistentResource |
 | `google_vertex_ai_rag_engine_config` | consumed by GcpVertexAiRagEngineConfig |
 | `google_vertex_ai_reasoning_engine` | consumed by GcpVertexAiAgentEngine |
+| `google_vertex_ai_tensorboard` | consumed by GcpVertexAiTensorboard |
+| `google_vertex_ai_tensorboard_experiment` | consumed by GcpVertexAiTensorboard |
+| `google_vertex_ai_tensorboard_run` | consumed by GcpVertexAiTensorboard |
 | `google_vpc_access_connector` | consumed by GcpServerlessVpcConnector |
 | `google_workbench_instance` | consumed by GcpVertexAiNotebook |
 | `google_workflows_workflow` | consumed by GcpWorkflow |
@@ -890,7 +904,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (70)
+### Planned (61)
 
 | Resource | Recorded reason |
 |---|---|
@@ -955,15 +969,6 @@ rather than trusted.
 | `google_scc_v2_project_mute_config` | planned GcpSccMuteConfig kind (Security Command Center mute configs at project, folder, or organization scope) |
 | `google_scc_v2_project_notification_config` | planned GcpSccNotificationConfig kind (Security Command Center notification configs at project, folder, or organization scope) |
 | `google_scc_v2_project_scc_big_query_export` | planned GcpSccBigQueryExport kind (Security Command Center BigQuery exports at project, folder, or organization scope) |
-| `google_vertex_ai_dataset` | planned GcpVertexAiDataset kind (Vertex AI datasets) |
-| `google_vertex_ai_feature_group` | planned GcpVertexAiFeatureGroup kind (Vertex AI feature groups) |
-| `google_vertex_ai_feature_group_feature` | planned composition into the planned GcpVertexAiFeatureGroup kind (features) |
-| `google_vertex_ai_feature_online_store` | planned GcpVertexAiFeatureOnlineStore kind (Vertex AI feature online stores) |
-| `google_vertex_ai_feature_online_store_featureview` | planned composition into the planned GcpVertexAiFeatureOnlineStore kind (feature views) |
-| `google_vertex_ai_persistent_resource` | planned GcpVertexAiPersistentResource kind (Vertex AI persistent resources) |
-| `google_vertex_ai_tensorboard` | planned GcpVertexAiTensorboard kind (Vertex AI TensorBoards) |
-| `google_vertex_ai_tensorboard_experiment` | planned composition into the planned GcpVertexAiTensorboard kind (experiments) |
-| `google_vertex_ai_tensorboard_run` | planned composition into the planned GcpVertexAiTensorboard kind (runs) |
 
 ### Deferred (581)
 
@@ -1532,11 +1537,11 @@ rather than trusted.
 | `google_transcoder_job` | media transcoding jobs are imperative and a niche; deferred |
 | `google_transcoder_job_template` | media transcoding jobs are imperative and a niche; deferred |
 | `google_vector_search_data_object` | data-plane writes into a collection (rows, not infrastructure); the collection and its indexes are GcpVectorSearchCollection, and applications write objects through the Vector Search API |
-| `google_vertex_ai_cache_config` | Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred |
+| `google_vertex_ai_cache_config` | a per-project singleton with one switch (disable Gemini context caching); a candidate for a project-level Vertex AI settings kind, not a building block of its own |
 | `google_vertex_ai_deployment_resource_pool` | judged to fold into the existing GcpVertexAiEndpoint kind's spec (deployment resource pools and Model Garden deployments); the composition is not built |
 | `google_vertex_ai_evaluation_metric` | Vertex AI custom evaluation metrics are an ML-evaluation specialty; deferred pending demand |
 | `google_vertex_ai_rag_corpus` | a RAG Engine corpus is its own kind (GcpVertexAiRagCorpus), built the day pulumi-gcp bridges provider 8.x: the resource arrived in provider 8.3 and has no type in the pinned pulumi-gcp SDK, and a kind is never one-engine; its registry number and prefix are reserved |
-| `google_vertex_ai_semantic_governance_policy_engine` | Vertex AI datasets, tensorboards, and RAG engine configuration are specialty surfaces; deferred |
+| `google_vertex_ai_semantic_governance_policy_engine` | a per-location singleton that places agent-governance gateways behind Private Service Connect; a candidate kind of its own once agent governance has demand, shaped like the RAG Engine config (location-scoped, PATCH-created) |
 | `google_vmwareengine_cluster` | VMware Engine is a named niche family (an eventual ~5 kind family); deferred pending demand |
 | `google_vmwareengine_datastore` | VMware Engine is a named niche family (an eventual ~5 kind family); deferred pending demand |
 | `google_vmwareengine_external_access_rule` | VMware Engine is a named niche family (an eventual ~5 kind family); deferred pending demand |

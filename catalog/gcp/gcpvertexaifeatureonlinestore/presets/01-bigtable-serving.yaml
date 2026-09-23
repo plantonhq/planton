@@ -1,0 +1,29 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureOnlineStore
+metadata:
+  name: serving-store
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  featureOnlineStoreId: serving_store
+  bigtable:
+    autoScaling:
+      minNodeCount: 1
+      maxNodeCount: 3
+      cpuUtilizationTarget: 60
+  featureViews:
+    - featureViewId: customer_view
+      featureRegistrySource:
+        featureGroups:
+          - featureGroupId:
+              valueFrom:
+                kind: GcpVertexAiFeatureGroup
+                name: customer-features
+                fieldPath: status.outputs.feature_group_id
+            featureIds:
+              - age
+              - tenure_days
+              - orders_last_30d
+      syncConfig:
+        cron: "CRON_TZ=America/New_York 0 2 * * *"

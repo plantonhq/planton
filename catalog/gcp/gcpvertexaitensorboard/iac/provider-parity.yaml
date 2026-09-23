@@ -1,0 +1,59 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_vertex_ai_tensorboard:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider names the axis `region`; every Vertex kind names it
+      # `location`.
+      - spec: spec.location
+        arg: region
+      - spec: spec.kms_key_name
+        arg: encryption_spec.kms_key_name
+  # The experiments are folded: they live and die with their TensorBoard
+  # and nothing else in the catalog references one.
+  google_vertex_ai_tensorboard_experiment:
+    specRoot: spec.experiments
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # Derived from the parent: the TensorBoard's location, never
+      # declared twice.
+      - spec: spec.location
+        arg: location
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      - spec: spec.experiments.experiment_id
+        arg: tensorboard_experiment_id
+    exclusions:
+      - arg: tensorboard
+        reason: wired by the module to the numeric id Google assigns the TensorBoard it creates -- an experiment belongs to this TensorBoard and no other
+  # The runs are folded under their experiment.
+  google_vertex_ai_tensorboard_run:
+    specRoot: spec.experiments.runs
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.location
+        arg: location
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      - spec: spec.experiments.runs.run_id
+        arg: tensorboard_run_id
+      # The run's parent experiment is the entry it is declared under.
+      - spec: spec.experiments.experiment_id
+        arg: experiment
+    exclusions:
+      - arg: tensorboard
+        reason: wired by the module to the numeric id Google assigns the TensorBoard it creates -- a run belongs to this TensorBoard and no other
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

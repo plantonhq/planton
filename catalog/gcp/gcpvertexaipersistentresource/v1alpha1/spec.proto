@@ -1,0 +1,263 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiPersistentResourceMachineSpec is the machine every replica of
+// a pool runs on.
+message GcpVertexAiPersistentResourceMachineSpec {
+  // The Compute Engine machine type, e.g. "n1-standard-4", "a2-highgpu-1g",
+  // "ct5lp-hightpu-4t" -- any type Vertex AI custom training supports.
+  // Immutable.
+  string machine_type = 1;
+
+  // The accelerator attached to every replica (NVIDIA_TESLA_T4,
+  // NVIDIA_L4, NVIDIA_TESLA_A100, NVIDIA_A100_80GB, NVIDIA_H100_80GB,
+  // NVIDIA_H100_MEGA_80GB, NVIDIA_H200_141GB, NVIDIA_B200, NVIDIA_GB200,
+  // NVIDIA_RTX_PRO_6000, the older NVIDIA_TESLA_K80 / P100 / V100 / P4,
+  // or TPU_V2 / TPU_V3 / TPU_V4_POD / TPU_V5_LITEPOD). The machine type
+  // must be one Google pairs with it. Empty attaches none. Immutable.
+  string accelerator_type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NVIDIA_TESLA_K80",
+        "NVIDIA_TESLA_P100",
+        "NVIDIA_TESLA_V100",
+        "NVIDIA_TESLA_P4",
+        "NVIDIA_TESLA_T4",
+        "NVIDIA_TESLA_A100",
+        "NVIDIA_A100_80GB",
+        "NVIDIA_L4",
+        "NVIDIA_H100_80GB",
+        "NVIDIA_H100_MEGA_80GB",
+        "NVIDIA_H200_141GB",
+        "NVIDIA_B200",
+        "NVIDIA_GB200",
+        "NVIDIA_RTX_PRO_6000",
+        "TPU_V2",
+        "TPU_V3",
+        "TPU_V4_POD",
+        "TPU_V5_LITEPOD"
+      ]
+    }
+  ];
+
+  // How many accelerators each replica carries, set together with
+  // accelerator_type. Sent only when set. Immutable.
+  int32 accelerator_count = 3 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpVertexAiPersistentResourceAutoscalingSpec lets a pool grow and shrink
+// with the jobs running on it.
+message GcpVertexAiPersistentResourceAutoscalingSpec {
+  // Fewest replicas kept running -- at least 1 on a persistent resource
+  // (Google rejects 0 here), and at most the pool's replica_count. Sent as
+  // a decimal string. Immutable.
+  optional int64 min_replica_count = 1 [(buf.validate.field).int64.gte = 1];
+
+  // Most replicas the pool may scale to -- more than min_replica_count and
+  // at least the pool's replica_count. Sent as a decimal string.
+  // Immutable.
+  optional int64 max_replica_count = 2 [(buf.validate.field).int64.gte = 1];
+}
+
+// GcpVertexAiPersistentResourceDiskSpec sizes each replica's boot disk.
+message GcpVertexAiPersistentResourceDiskSpec {
+  // Boot disk size in GB. Google defaults to 100. Sent only when set.
+  // Immutable.
+  optional int32 boot_disk_size_gb = 1 [(buf.validate.field).int32.gte = 1];
+
+  // Boot disk type: "pd-ssd" (Google's default on most machines),
+  // "pd-standard", or "hyperdisk-balanced" (the default on A3 Ultra). Sent
+  // only when set. Immutable.
+  string boot_disk_type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "pd-ssd",
+        "pd-standard",
+        "hyperdisk-balanced"
+      ]
+    }
+  ];
+}
+
+// GcpVertexAiPersistentResourceResourcePool is one pool of identical
+// machines the persistent resource keeps provisioned. A training job
+// running on the resource names the pools its worker pools land on.
+//
+// Immutable: the pool's id, machine, disk, and autoscaling bounds (a
+// change replaces the whole persistent resource). replica_count updates in
+// place.
+message GcpVertexAiPersistentResourceResourcePool {
+  // The pool's id within the resource -- what a job's worker pool spec
+  // refers to. Google generates one when empty. Sent only when set.
+  // Immutable.
+  string id = 1;
+
+  // The machine every replica runs on.
+  GcpVertexAiPersistentResourceMachineSpec machine_spec = 2 [(buf.validate.field).required = true];
+
+  // How many replicas the pool runs (and bills) whether or not a job is
+  // using them. Sent as a decimal string. Mutable in place.
+  optional int64 replica_count = 3 [(buf.validate.field).int64.gte = 1];
+
+  // Autoscaling bounds for the pool. Omit for a fixed replica_count.
+  GcpVertexAiPersistentResourceAutoscalingSpec autoscaling_spec = 4;
+
+  // Boot disk options. Omit for Google's defaults. Sent only when set.
+  GcpVertexAiPersistentResourceDiskSpec disk_spec = 5;
+}
+
+// GcpVertexAiPersistentResourceDnsPeeringConfig resolves one DNS domain in
+// Google's tenant VPC through a Cloud DNS zone in your network, so jobs
+// on the resource reach private hostnames over PSC-I.
+message GcpVertexAiPersistentResourceDnsPeeringConfig {
+  // The DNS suffix peered to, ending with a dot, e.g.
+  // "corp.example.com.". Immutable.
+  string domain = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^.+\\.$"
+  ];
+
+  // The project hosting the Cloud DNS zone for the domain: a GcpProject
+  // reference or a literal project ID. The Vertex AI Service Agent needs
+  // roles/dns.peer on it. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_project = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The VPC network, in target_project, where the zone is visible: a
+  // GcpVpcNetwork reference (its name) or a literal network name.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_network = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_name"
+  ];
+}
+
+// GcpVertexAiPersistentResourcePscInterfaceConfig gives jobs on the
+// resource a Private Service Connect interface into your VPC (PSC-I) --
+// the alternative to VPC peering that needs no reserved peering range.
+message GcpVertexAiPersistentResourcePscInterfaceConfig {
+  // The Compute Engine network attachment in the resource's region the
+  // interface joins, as its name or its full
+  // projects/{project}/regions/{region}/networkAttachments/{name} path.
+  // Create the attachment first. Immutable.
+  string network_attachment = 1;
+
+  // Domains Google's tenant VPC resolves through Cloud DNS zones in your
+  // networks.
+  repeated GcpVertexAiPersistentResourceDnsPeeringConfig dns_peering_configs = 2;
+}
+
+// GcpVertexAiPersistentResourceSpec defines a Vertex AI persistent
+// resource (`google_vertex_ai_persistent_resource`) -- a long-running
+// cluster of machines Vertex AI keeps provisioned so custom training jobs
+// (and Ray on Vertex AI) start in seconds instead of waiting minutes for
+// capacity, and so scarce accelerators stay reserved between jobs. A job
+// runs on it by naming its id in `persistent_resource_id`; the job's
+// network and encryption must match the resource's.
+//
+// Every replica bills from the moment it is provisioned until the resource
+// is deleted, whether or not a job is running.
+//
+// Immutable: everything except the display name, labels, and each pool's
+// replica_count -- a change to any other setting replaces the resource.
+message GcpVertexAiPersistentResourceSpec {
+  // The GCP project the resource lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Vertex AI location (region) the resource runs in, e.g.
+  // "us-central1". Jobs that use it must run in the same location.
+  // Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The resource's id -- what a job's persistent_resource_id names. Up to
+  // 63 characters: lowercase letters, digits, and hyphens, starting with a
+  // letter and not ending with a hyphen. Defaults to metadata.name.
+  // Immutable.
+  string persistent_resource_id = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$"
+  ];
+
+  // Human-readable name shown in the console -- up to 128 UTF-8
+  // characters. Mutable in place.
+  string display_name = 4 [(buf.validate.field).string.max_len = 128];
+
+  // Labels on the resource. The platform attribution labels are merged in
+  // and win on key conflicts. Mutable in place.
+  map<string, string> labels = 5;
+
+  // The pools of machines the resource keeps provisioned. At least one.
+  repeated GcpVertexAiPersistentResourceResourcePool resource_pools = 6 [(buf.validate.field).repeated.min_items = 1];
+
+  // A VPC network to peer the resource with, so jobs reach private
+  // services: a GcpVpcNetwork reference or a literal
+  // projects/{project}/global/networks/{name}. Google requires the project
+  // NUMBER in that path; both modules resolve a project ID to its number
+  // (one project lookup at plan time). The network must already have VPC
+  // Network Peering for Vertex AI (private services access) configured.
+  // Omit for no peering. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef network = 7 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_self_link"
+  ];
+
+  // Names of the private-services-access ranges on the peered network the
+  // resource's machines take addresses from, e.g. ["vertex-ai-range"]
+  // (the name of a GcpGlobalAddress with purpose VPC_PEERING). Empty lets
+  // Google use any range allocated to the peering. Requires network.
+  // Immutable.
+  repeated string reserved_ip_ranges = 8 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // A Private Service Connect interface into your VPC -- the alternative
+  // to network (peering); Google's documentation treats the two as
+  // alternatives and its API is the authority when both are set.
+  // Immutable.
+  GcpVertexAiPersistentResourcePscInterfaceConfig psc_interface_config = 9;
+
+  // True requires every job on the resource to run as a custom,
+  // user-managed service account (the job names it); false runs jobs as
+  // the Vertex AI Custom Code Service Agent. Immutable.
+  bool enable_custom_service_account = 10;
+
+  // Customer-managed encryption key protecting the resource's disks: a
+  // GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}
+  // in the same region. Jobs on the resource must use the same key. Omit to
+  // use Google-managed encryption. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 11 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // What happens to the resource when this block is destroyed:
+  //   "" / "DELETE" -- the machines are released and billing stops
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the resource leaves management and keeps running
+  //                    (and billing)
+  string deletion_policy = 12 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

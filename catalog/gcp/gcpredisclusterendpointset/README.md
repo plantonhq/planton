@@ -125,3 +125,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpGlobalForwardingRule** -- the consumer endpoint (regional, empty scheme, targeting an attachment)
 - **GcpAddress** -- the reserved internal address each rule serves on
 - **GcpVpcNetwork** -- the consumer network
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

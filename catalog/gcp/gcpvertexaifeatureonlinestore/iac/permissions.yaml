@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvertexaifeatureonlinestore
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageFeatureOnlineStore
+        permissions:
+          - aiplatform.featureOnlineStores.create
+          - aiplatform.featureOnlineStores.get
+          - aiplatform.featureOnlineStores.update
+          - aiplatform.featureOnlineStores.delete
+          - aiplatform.operations.get
+        provenance: derived
+        notes: Covers google_vertex_ai_feature_online_store (Pulumi vertex.AiFeatureOnlineStore) -- created and deleted through long-running operations the provider polls, patched for Bigtable scaling, the dedicated endpoint, the key, and labels, read on every refresh.
+      - purpose: ManageFeatureViews
+        permissions:
+          - aiplatform.featureViews.create
+          - aiplatform.featureViews.get
+          - aiplatform.featureViews.update
+          - aiplatform.featureViews.delete
+        provenance: derived
+        notes: Covers google_vertex_ai_feature_online_store_featureview (Pulumi vertex.AiFeatureOnlineStoreFeatureview) for every declared view. Creating a registry-sourced view reads the referenced feature groups (aiplatform.featureGroups.get, in roles/aiplatform.admin with everything above).

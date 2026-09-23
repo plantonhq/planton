@@ -5642,6 +5642,48 @@ enum CloudResourceKind {
     service_group: gcp_ai_ml
     prerequisites: [GcpVertexAiSearchDataStore]
   }];
+  // Vertex AI Feature Store: a feature group registers the features of
+  // some entities that live in a BigQuery table or view -- the features
+  // themselves folded in. Online stores serve them through feature views.
+  GcpVertexAiFeatureGroup = 3207 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvfg"
+    service_group: gcp_ai_ml
+  }];
+  // The low-latency serving layer of Vertex AI Feature Store (Bigtable or
+  // Optimized storage), with the feature views it serves folded in.
+  GcpVertexAiFeatureOnlineStore = 3208 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvfos"
+    service_group: gcp_ai_ml
+  }];
+  // A Vertex AI managed dataset: the registered container training,
+  // AutoML, labeling, and evaluation read their examples from.
+  GcpVertexAiDataset = 3209 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvds"
+    service_group: gcp_ai_ml
+  }];
+  // A managed Vertex AI TensorBoard training jobs stream metrics into, with
+  // the experiments and runs declared in it folded in.
+  GcpVertexAiTensorboard = 3210 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvtb"
+    service_group: gcp_ai_ml
+  }];
+  // A long-running cluster Vertex AI keeps provisioned so training jobs and
+  // Ray on Vertex AI start in seconds and scarce accelerators stay held
+  // between jobs.
+  GcpVertexAiPersistentResource = 3211 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvpr"
+    service_group: gcp_ai_ml
+  }];
   // A data connector is a COLLECTION of data stores Google syncs from a
   // source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
   // Drive, ...) on a schedule -- a different root from a data store, which

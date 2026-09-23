@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvertexaifeaturegroup
+spec:
+  gcp:
+    groups:
+      - purpose: EnableAiplatformApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling aiplatform.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageFeatureGroup
+        permissions:
+          - aiplatform.featureGroups.create
+          - aiplatform.featureGroups.get
+          - aiplatform.featureGroups.update
+          - aiplatform.featureGroups.delete
+          - aiplatform.operations.get
+        provenance: derived
+        notes: Covers google_vertex_ai_feature_group (Pulumi vertex.AiFeatureGroup) -- created and deleted through long-running operations the provider polls, patched for description, labels, and entity ID columns, read on every refresh.
+      - purpose: ManageFeatures
+        permissions:
+          - aiplatform.features.create
+          - aiplatform.features.get
+          - aiplatform.features.update
+          - aiplatform.features.delete
+        provenance: derived
+        notes: Covers google_vertex_ai_feature_group_feature (Pulumi vertex.AiFeatureGroupFeature) for every registered feature. roles/aiplatform.admin contains every permission in the three groups.

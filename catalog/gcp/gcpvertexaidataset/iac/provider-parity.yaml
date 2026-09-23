@@ -1,0 +1,23 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_vertex_ai_dataset:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider names the axis `region`; every Vertex kind names it
+      # `location`.
+      - spec: spec.location
+        arg: region
+      - spec: spec.kms_key_name
+        arg: encryption_spec.kms_key_name
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

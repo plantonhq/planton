@@ -137,3 +137,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpVpcNetwork** -- the consumer network the endpoints land in
 - **GcpKmsKey** -- customer-managed encryption at rest
 - **GcpMemorystoreInstance** -- the Valkey-engine sibling; **GcpRedisInstance** -- the legacy single-node Redis
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

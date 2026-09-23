@@ -1,0 +1,45 @@
+# GcpVertexAiFeatureOnlineStore scenario: a Bigtable store at one node
+# (autoscaling bound at one to two) serving one feature view over a
+# feature group fixture, referenced by kind, with a six-hourly cron sync.
+# The fixtures -- a BigQuery table on the dataset install profile, then the
+# feature group over it -- deploy first and tear down last. The store and
+# group ids carry the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureOnlineStore
+metadata:
+  name: planton-oss-e2e-gcpvfos-bigtable
+  id: planton-oss-e2e-gcpvfos-bigtable
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaifeatureonlinestore
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpbigquerytable-features.yaml,catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpvertexaifeaturegroup-customers.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  featureOnlineStoreId: pln_e2e_vfos_bt_${E2E_RUN_ID_UNDERSCORE}
+  bigtable:
+    autoScaling:
+      minNodeCount: 1
+      maxNodeCount: 2
+  featureViews:
+    - featureViewId: customer_view
+      labels:
+        tier: e2e
+      featureRegistrySource:
+        featureGroups:
+          - featureGroupId:
+              valueFrom:
+                kind: GcpVertexAiFeatureGroup
+                name: planton-oss-e2e-gcpvfos-group
+                fieldPath: status.outputs.feature_group_id
+            featureIds:
+              - age
+              - lifetime_value
+      syncConfig:
+        cron: "0 */6 * * *"
+  deletionPolicy: DELETE

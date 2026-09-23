@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpvertexaipersistentresource/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpvertexaipersistentresource/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-vertex-ai-persistent-resource
+message GcpVertexAiPersistentResource {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpVertexAiPersistentResource'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpVertexAiPersistentResourceSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpVertexAiPersistentResourceStatus status = 5;
+}
+
+//gcp-vertex-ai-persistent-resource status
+message GcpVertexAiPersistentResourceStatus {
+  //stack-outputs
+  GcpVertexAiPersistentResourceStackOutputs outputs = 1;
+}

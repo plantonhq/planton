@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1;
+
+// GcpVertexAiFeatureOnlineStoreStackOutputs captures the store's identity,
+// where clients reach it, and the feature views it serves.
+message GcpVertexAiFeatureOnlineStoreStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store_id}.
+  string name = 1;
+
+  // The store's id.
+  string feature_online_store_id = 2;
+
+  // The location the store lives in.
+  string location = 3;
+
+  // The dedicated endpoint's public domain name (Optimized stores); empty
+  // on Bigtable stores and behind Private Service Connect.
+  string public_endpoint_domain_name = 4;
+
+  // The Private Service Connect service attachment consumers target, once
+  // PSC is enabled and a view has synced; empty otherwise.
+  string service_attachment = 5;
+
+  // Full resource names of the declared feature views, in manifest order.
+  repeated string feature_view_names = 6;
+}

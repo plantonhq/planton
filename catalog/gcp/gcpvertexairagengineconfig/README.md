@@ -91,3 +91,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 
 - **GcpVectorSearchCollection** -- an external vector database RAG Engine can use instead of its managed one
 - **GcpVertexAiAgentEngine** -- the agent runtime that typically consumes a RAG corpus
+
+---
+
+© Planton. Licensed under [Apache-2.0](https://github.com/plantonhq/planton/blob/main/LICENSE).

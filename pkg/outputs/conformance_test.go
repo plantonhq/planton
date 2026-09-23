@@ -4043,6 +4043,88 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "collection_id", "location", "state", "entity_data_stores", "static_ip_addresses"},
 		},
 		{
+			// GcpVertexAiFeatureGroup: the group's full name (the verifier's
+			// key), its id and location, and the registered features' names
+			// in manifest order (a list output).
+			name: "GcpVertexAiFeatureGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureGroup,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/my-project/locations/us-central1/featureGroups/customer_features",
+				"feature_group_id": "customer_features",
+				"location":         "us-central1",
+				"feature_names": []interface{}{
+					"projects/my-project/locations/us-central1/featureGroups/customer_features/features/age",
+				},
+			},
+			mustPopulate: []string{"name", "feature_group_id", "location", "feature_names"},
+		},
+		{
+			// GcpVertexAiFeatureOnlineStore: the store's full name (the
+			// verifier's key), its id and location, the dedicated endpoint's
+			// domain and PSC attachment (empty on a Bigtable store), and the
+			// feature views' names in manifest order (a list output).
+			name: "GcpVertexAiFeatureOnlineStore",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureOnlineStore,
+			rawOutputs: map[string]interface{}{
+				"name":                        "projects/my-project/locations/us-central1/featureOnlineStores/serving_store",
+				"feature_online_store_id":     "serving_store",
+				"location":                    "us-central1",
+				"public_endpoint_domain_name": "1234567890.us-central1-123456789012.featurestore.vertexai.goog",
+				"service_attachment":          "",
+				"feature_view_names": []interface{}{
+					"projects/my-project/locations/us-central1/featureOnlineStores/serving_store/featureViews/customer_view",
+				},
+			},
+			mustPopulate: []string{"name", "feature_online_store_id", "location", "public_endpoint_domain_name", "feature_view_names"},
+		},
+		{
+			// GcpVertexAiDataset: the dataset's full name (the verifier's
+			// key), the numeric id Google assigned, and the location.
+			name: "GcpVertexAiDataset",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiDataset,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/123456789012/locations/us-central1/datasets/1234567890123456789",
+				"dataset_id": "1234567890123456789",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "dataset_id", "location"},
+		},
+		{
+			// GcpVertexAiTensorboard: the TensorBoard's full name (the
+			// verifier's key and what a training job names), its numeric id,
+			// location, blob storage prefix, and the declared experiments'
+			// and runs' names in manifest order (list outputs).
+			name: "GcpVertexAiTensorboard",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiTensorboard,
+			rawOutputs: map[string]interface{}{
+				"name":                     "projects/123456789012/locations/us-central1/tensorboards/1234567890123456789",
+				"tensorboard_id":           "1234567890123456789",
+				"location":                 "us-central1",
+				"blob_storage_path_prefix": "cloud-ai-platform-00000000-0000-0000-0000-000000000000",
+				"experiment_names": []interface{}{
+					"projects/my-project/locations/us-central1/tensorboards/1234567890123456789/experiments/churn-model",
+				},
+				"run_names": []interface{}{
+					"projects/my-project/locations/us-central1/tensorboards/1234567890123456789/experiments/churn-model/runs/baseline",
+				},
+			},
+			mustPopulate: []string{"name", "tensorboard_id", "location", "blob_storage_path_prefix", "experiment_names", "run_names"},
+		},
+		{
+			// GcpVertexAiPersistentResource: the resource's full name (the
+			// verifier's key), the id a training job's persistent_resource_id
+			// takes, the location, and the state.
+			name: "GcpVertexAiPersistentResource",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiPersistentResource,
+			rawOutputs: map[string]interface{}{
+				"name":                   "projects/my-project/locations/us-central1/persistentResources/training-pool",
+				"persistent_resource_id": "training-pool",
+				"location":               "us-central1",
+				"state":                  "RUNNING",
+			},
+			mustPopulate: []string{"name", "persistent_resource_id", "location", "state"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

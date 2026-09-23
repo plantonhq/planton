@@ -1,0 +1,44 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_vertex_ai_feature_group:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider names the axis `region`; every Vertex kind names it
+      # `location`.
+      - spec: spec.location
+        arg: region
+      # The provider's `name` is the group's id.
+      - spec: spec.feature_group_id
+        arg: name
+      # The big_query_source wrapper holds one leaf; the spec lifts it.
+      - spec: spec.big_query.input_uri
+        arg: big_query.big_query_source.input_uri
+  # The features are folded: they belong to exactly one group and nothing
+  # else in the catalog references a feature as a resource.
+  google_vertex_ai_feature_group_feature:
+    specRoot: spec.features
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # Derived from the parent: the group's location and id, never
+      # declared twice.
+      - spec: spec.location
+        arg: region
+      - spec: spec.feature_group_id
+        arg: feature_group
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      - spec: spec.features.feature_id
+        arg: name
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

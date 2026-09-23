@@ -1,0 +1,34 @@
+# The feature group the bigtable-registry-view scenario's feature view
+# serves: an extra GcpVertexAiFeatureGroup instance over the table fixture
+# declared before it, with the two features the view selects. Its
+# feature_group_id output is what the view's featureGroupId references.
+# The group id carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiFeatureGroup
+metadata:
+  name: planton-oss-e2e-gcpvfos-group
+  id: planton-oss-e2e-gcpvfos-group
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaifeatureonlinestore
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  featureGroupId: pln_e2e_vfos_grp_${E2E_RUN_ID_UNDERSCORE}
+  bigQuery:
+    inputUri:
+      valueFrom:
+        kind: GcpBigQueryTable
+        name: planton-oss-e2e-gcpvfos-source
+        fieldPath: status.outputs.qualified_name
+    entityIdColumns:
+      - entity_id
+  features:
+    - featureId: age
+    - featureId: lifetime_value
+  deletionPolicy: DELETE

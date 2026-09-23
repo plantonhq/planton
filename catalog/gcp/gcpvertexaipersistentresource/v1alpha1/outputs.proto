@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaipersistentresource.v1alpha1;
+
+// GcpVertexAiPersistentResourceStackOutputs captures the resource's
+// identity -- what a training job's persistent_resource_id names -- and
+// its state.
+message GcpVertexAiPersistentResourceStackOutputs {
+  // Full resource name:
+  // projects/{project}/locations/{location}/persistentResources/{persistent_resource_id}.
+  string name = 1;
+
+  // The resource's id -- what a job's persistent_resource_id takes.
+  string persistent_resource_id = 2;
+
+  // The location the resource runs in.
+  string location = 3;
+
+  // The resource's state as last read (RUNNING once every pool is
+  // provisioned).
+  string state = 4;
+}
