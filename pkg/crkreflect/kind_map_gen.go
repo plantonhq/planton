@@ -627,6 +627,9 @@ import (
 	gcpvertexaimodelgardendeploymentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaimodelgardendeployment/v1alpha1"
 	gcpvertexainotebookv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexainotebook/v1alpha1"
 	gcpvertexairagengineconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexairagengineconfig/v1alpha1"
+	gcpvertexaisearchdataconnectorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchdataconnector/v1alpha1"
+	gcpvertexaisearchdatastorev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchdatastore/v1alpha1"
+	gcpvertexaisearchenginev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaisearchengine/v1alpha1"
 	gcpvpcnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcnetwork/v1alpha1"
 	gcpvpcpeeringv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcpeering/v1alpha1"
 	gcpworkflowv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpworkflow/v1alpha1"
@@ -1410,6 +1413,9 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpVertexAiModelGardenDeployment:       &gcpvertexaimodelgardendeploymentv1alpha1.GcpVertexAiModelGardenDeployment{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiNotebook:                    &gcpvertexainotebookv1alpha1.GcpVertexAiNotebook{},
 	cloudresourcekind.CloudResourceKind_GcpVertexAiRagEngineConfig:             &gcpvertexairagengineconfigv1alpha1.GcpVertexAiRagEngineConfig{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataConnector:         &gcpvertexaisearchdataconnectorv1alpha1.GcpVertexAiSearchDataConnector{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataStore:             &gcpvertexaisearchdatastorev1alpha1.GcpVertexAiSearchDataStore{},
+	cloudresourcekind.CloudResourceKind_GcpVertexAiSearchEngine:                &gcpvertexaisearchenginev1alpha1.GcpVertexAiSearchEngine{},
 	cloudresourcekind.CloudResourceKind_GcpVpcNetwork:                          &gcpvpcnetworkv1alpha1.GcpVpcNetwork{},
 	cloudresourcekind.CloudResourceKind_GcpVpcPeering:                          &gcpvpcpeeringv1alpha1.GcpVpcPeering{},
 	cloudresourcekind.CloudResourceKind_GcpWorkflow:                            &gcpworkflowv1alpha1.GcpWorkflow{},

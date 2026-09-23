@@ -1,0 +1,40 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: support-chat
+spec:
+  location: global
+  engineType: CHAT
+  displayName: Support chat
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: contracts-rag
+        fieldPath: status.outputs.data_store_id
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Acme
+  # Google creates the Dialogflow CX agent the chat engine answers through.
+  chatEngineConfig:
+    agentCreationConfig:
+      business: Acme
+      defaultLanguageCode: en
+      timeZone: America/New_York
+  # A Gemini Enterprise assistant with a content policy, Model Armor
+  # sanitization, and Google Search grounding.
+  assistants:
+    - assistantId: default_assistant
+      displayName: Acme support assistant
+      webGroundingType: WEB_GROUNDING_TYPE_GOOGLE_SEARCH
+      customerPolicy:
+        bannedPhrases:
+          - phrase: internal only
+            matchType: WORD_BOUNDARY_STRING_MATCH
+            ignoreDiacritics: true
+        modelArmorConfig:
+          userPromptTemplate: projects/my-gcp-project/locations/global/templates/prompt-guard
+          responseTemplate: projects/my-gcp-project/locations/global/templates/response-guard
+          failureMode: FAIL_CLOSED
+      generationConfig:
+        defaultLanguage: en
+        additionalSystemInstruction: Answer only from Acme's documents; when unsure, say so and point to support.

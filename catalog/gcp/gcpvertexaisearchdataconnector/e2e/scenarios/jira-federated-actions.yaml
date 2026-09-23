@@ -1,0 +1,71 @@
+# GcpVertexAiSearchDataConnector scenario: a Jira connector in FEDERATED
+# and ACTIONS modes -- the provider's own example -- with the action side
+# configured, a BAP connection, enabled actions, a private destination, a
+# static egress IP, and full syncs paused. Planned offline only: the
+# profile is deferred because a connector authenticates to a third-party
+# tenant through Secret Manager secrets the harness project does not hold.
+# The secret names below are placeholders shaped like real ones.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataConnector
+metadata:
+  name: planton-oss-e2e-gcpvsdc-jira
+  id: planton-oss-e2e-gcpvsdc-jira
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchdataconnector
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  collectionId: planton-oss-e2e-vsdc-jira-${E2E_RUN_ID}
+  collectionDisplayName: Planton OSS E2E Jira collection
+  dataSource: jira
+  dataSourceVersion: 3
+  params:
+    instance_uri: https://example.atlassian.net
+    instance_id: projects/planton-oss-e2e/secrets/jira-instance-id
+    client_id: projects/planton-oss-e2e/secrets/jira-client-id
+    client_secret: projects/planton-oss-e2e/secrets/jira-client-secret
+    refresh_token: projects/planton-oss-e2e/secrets/jira-refresh-token
+    auth_type: OAUTH
+  refreshInterval: 86400s
+  incrementalSyncDisabled: true
+  autoRunDisabled: true
+  syncMode: PERIODIC
+  connectorModes:
+    - FEDERATED
+    - ACTIONS
+  staticIpEnabled: true
+  entities:
+    - entityName: project
+    - entityName: issue
+    - entityName: comment
+    - entityName: attachment
+  destinationConfigs:
+    - key: url
+      destinations:
+        - host: https://example.atlassian.net
+          port: 443
+      params: '{"destination_type":"private"}'
+  actionConfig:
+    actionParams:
+      instance_uri: https://example.atlassian.net
+      instance_id: projects/planton-oss-e2e/secrets/jira-instance-id
+      client_id: projects/planton-oss-e2e/secrets/jira-client-id
+      client_secret: projects/planton-oss-e2e/secrets/jira-client-secret
+      auth_type: OAUTH
+    createBapConnection: true
+  bapConfig:
+    supportedConnectorModes:
+      - ACTIONS
+    enabledActions:
+      - create_issue
+      - update_issue
+      - change_issue_status
+      - create_comment
+      - update_comment
+      - upload_attachment

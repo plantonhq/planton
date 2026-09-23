@@ -1,0 +1,31 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexaisearchdatastore
+spec:
+  # Awaiting the live proof lane. All three scenarios prove in the harness
+  # project with roles/discoveryengine.admin (or the owner role); the
+  # module enables discoveryengine.googleapis.com itself: a structured
+  # search store, a website store with one basic-site-search target site
+  # (no domain verification), and an unstructured store with the default
+  # schema skipped, a custom schema, layout parsing with chunking, and an
+  # OCR override. Offline bar met: both modules build and validate, offline
+  # plans for the reference manifest and every scenario are clean on the
+  # pinned provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) a store creates in the global location and RE-PLANS
+  # CLEAN under the apply-idempotency gate, including the two virtual
+  # inputs (create_advanced_site_search, skip_default_schema_creation)
+  # Google never reads back; (2) default_schema_id populates on the stores
+  # that keep the default schema and is empty on the one that skipped it;
+  # (3) the compact json_schema RE-PLANS CLEAN (Google normalizes it);
+  # (4) the target site reaches an indexing status without ownership proof
+  # and exports its name; (5) the digital_parsing marker renders as an
+  # empty block on both engines and the layout/OCR arms round-trip;
+  # (6) destroy order is target sites and schema -> store, and a store with
+  # an engine attached refuses deletion (the engine goes first); (7) Google
+  # may reserve a deleted store's id for a while -- the ids carry the run
+  # id for that reason.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 45

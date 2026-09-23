@@ -1188,6 +1188,30 @@ func TestGcpVectorSearchCollection_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvectorsearchcollection", "terraform")
 }
 
+func TestGcpVertexAiSearchDataStore_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaisearchdatastore", "pulumi")
+}
+
+func TestGcpVertexAiSearchDataStore_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaisearchdatastore", "terraform")
+}
+
+func TestGcpVertexAiSearchEngine_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaisearchengine", "pulumi")
+}
+
+func TestGcpVertexAiSearchEngine_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaisearchengine", "terraform")
+}
+
+func TestGcpVertexAiSearchDataConnector_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaisearchdataconnector", "pulumi")
+}
+
+func TestGcpVertexAiSearchDataConnector_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpvertexaisearchdataconnector", "terraform")
+}
+
 func TestGcpVertexAiModelGardenDeployment_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvertexaimodelgardendeployment", "pulumi")
 }

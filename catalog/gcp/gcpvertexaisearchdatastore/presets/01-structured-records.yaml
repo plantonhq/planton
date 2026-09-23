@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: product-catalog
+spec:
+  location: global
+  displayName: Product catalog
+  industryVertical: GENERIC
+  # Structured JSON records; Google infers the default schema from the
+  # first import.
+  contentConfig: NO_CONTENT
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH
+    - SOLUTION_TYPE_RECOMMENDATION

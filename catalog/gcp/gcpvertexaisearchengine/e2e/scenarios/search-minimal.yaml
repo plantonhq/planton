@@ -1,0 +1,28 @@
+# GcpVertexAiSearchEngine scenario: the smallest search engine -- one data
+# store by reference (the registry-installed prerequisite store), the
+# Standard tier by default, nothing else. project_id is deliberately
+# omitted: the engine rides the provider's default project, which the
+# harness exports as GOOGLE_PROJECT. The engine id carries ${E2E_RUN_ID}
+# because Google reserves a deleted engine's id for a while.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: planton-oss-e2e-gcpvseng-minimal
+  id: planton-oss-e2e-gcpvseng-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchengine
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  engineId: planton-oss-e2e-vseng-minimal-${E2E_RUN_ID}
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: planton-oss-e2e-gcpvsds-prereq
+        fieldPath: status.outputs.data_store_id

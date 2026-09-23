@@ -1,0 +1,140 @@
+# GcpVertexAiSearchEngine scenario: a search engine with all five control
+# actions (synonyms, boost with a fixed amount, boost with a freshness
+# curve, filter, promote, redirect) wired through the default serving
+# config, and the embeddable widget configured with public access, an
+# allowlisted domain, a snippet under each result, and autocomplete. The
+# data store is the registry-installed prerequisite; the boost, filter,
+# and promote actions name it by its full name. Creating controls, the
+# serving config PATCH, and the widget config PATCH are free.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchEngine
+metadata:
+  name: planton-oss-e2e-gcpvseng-controls
+  id: planton-oss-e2e-gcpvseng-controls
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchengine
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  engineId: planton-oss-e2e-vseng-controls-${E2E_RUN_ID}
+  displayName: Planton OSS E2E search with controls
+  industryVertical: GENERIC
+  commonConfig:
+    companyName: Planton
+  dataStoreIds:
+    - valueFrom:
+        kind: GcpVertexAiSearchDataStore
+        name: planton-oss-e2e-gcpvsds-prereq
+        fieldPath: status.outputs.data_store_id
+  searchEngineConfig:
+    searchTier: SEARCH_TIER_STANDARD
+  controls:
+    - controlId: synonyms-laptop
+      displayName: Laptop synonyms
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      synonymsAction:
+        synonyms:
+          - laptop
+          - notebook
+    - controlId: boost-docs
+      displayName: Boost documentation
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      conditions:
+        - queryTerms:
+            - value: install
+              fullMatch: false
+      boostAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: planton-oss-e2e-gcpvsds-prereq
+            fieldPath: status.outputs.name
+        filter: '(category: ANY("docs"))'
+        fixedBoost: 0.5
+    - controlId: boost-fresh
+      displayName: Fresh content first
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      boostAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: planton-oss-e2e-gcpvsds-prereq
+            fieldPath: status.outputs.name
+        filter: '(category: ANY("news"))'
+        interpolationBoostSpec:
+          fieldName: published
+          attributeType: FRESHNESS
+          interpolationType: LINEAR
+          controlPoint:
+            attributeValue: 7d
+            boostAmount: 0.8
+    - controlId: only-public
+      displayName: Only public content
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+        - SEARCH_USE_CASE_BROWSE
+      filterAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: planton-oss-e2e-gcpvsds-prereq
+            fieldPath: status.outputs.name
+        filter: '(visibility: ANY("public"))'
+    - controlId: promote-start
+      displayName: Promote getting started
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      conditions:
+        - queryTerms:
+            - value: getting started
+              fullMatch: true
+      promoteAction:
+        dataStore:
+          valueFrom:
+            kind: GcpVertexAiSearchDataStore
+            name: planton-oss-e2e-gcpvsds-prereq
+            fieldPath: status.outputs.name
+        searchLinkPromotion:
+          title: Getting started
+          uri: https://www.example.com/start
+          description: Start here
+          enabled: true
+    - controlId: redirect-pricing
+      displayName: Redirect pricing
+      useCases:
+        - SEARCH_USE_CASE_SEARCH
+      conditions:
+        - queryRegex: "^pricing$"
+      redirectAction:
+        redirectUri: https://www.example.com/pricing
+  servingConfig:
+    synonymsControlIds:
+      - synonyms-laptop
+    boostControlIds:
+      - boost-docs
+      - boost-fresh
+    filterControlIds:
+      - only-public
+    promoteControlIds:
+      - promote-start
+    redirectControlIds:
+      - redirect-pricing
+  widgetConfig:
+    accessSettings:
+      allowPublicAccess: true
+      allowlistedDomains:
+        - www.example.com
+    uiSettings:
+      interactionType: SEARCH_ONLY
+      resultDescriptionType: SNIPPET
+      enableAutocomplete: true
+      enableSafeSearch: true

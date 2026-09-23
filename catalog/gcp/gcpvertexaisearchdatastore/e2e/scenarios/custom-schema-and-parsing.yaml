@@ -1,0 +1,54 @@
+# GcpVertexAiSearchDataStore scenario: an unstructured (CONTENT_REQUIRED)
+# store with the default schema skipped and a custom schema declared (the
+# provider's own schema test shape), layout parsing with chunking as the
+# default parser, and an OCR override for PDFs. Exercises the folded schema
+# and the whole document-processing tree; the store enrolls in search and
+# chat so a chat engine could use it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: planton-oss-e2e-gcpvsds-schema
+  id: planton-oss-e2e-gcpvsds-schema
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchdatastore
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  dataStoreId: planton-oss-e2e-vsds-schema-${E2E_RUN_ID}
+  displayName: Planton OSS E2E documents store
+  industryVertical: GENERIC
+  contentConfig: CONTENT_REQUIRED
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH
+    - SOLUTION_TYPE_CHAT
+  skipDefaultSchemaCreation: true
+  schema:
+    schemaId: planton-docs-schema
+    # Compact JSON: Google normalizes it, so a compact string re-plans
+    # clean under the apply-idempotency gate.
+    jsonSchema: '{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","datetime_detection":true,"geolocation_detection":true,"properties":{"title":{"type":"string","keyPropertyMapping":"title","retrievable":true},"category":{"type":"string","indexable":true,"searchable":true,"retrievable":true,"dynamicFacetable":true},"published":{"type":"datetime","indexable":true,"retrievable":true}}}'
+  documentProcessingConfig:
+    chunkingConfig:
+      chunkSize: 400
+      includeAncestorHeadings: true
+    defaultParsingConfig:
+      layoutParsingConfig:
+        enableTableAnnotation: true
+        enableImageAnnotation: false
+        excludeHtmlElements:
+          - nav
+          - footer
+    parsingConfigOverrides:
+      - fileType: pdf
+        parsingConfig:
+          ocrParsingConfig:
+            useNativeText: true
+      - fileType: html
+        parsingConfig:
+          digitalParsing: true

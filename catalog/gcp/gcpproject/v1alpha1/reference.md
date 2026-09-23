@@ -329,6 +329,9 @@ Fields on other kinds that can point at this resource:
 | GcpVertexAiModelGardenDeployment | `spec.endpointConfig.privateServiceConnectConfig.pscAutomationConfig.projectId` | `status.outputs.project_id` |
 | GcpVertexAiNotebook | `spec.projectId` | `status.outputs.project_id` |
 | GcpVertexAiRagEngineConfig | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiSearchDataConnector | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiSearchDataStore | `spec.projectId` | `status.outputs.project_id` |
+| GcpVertexAiSearchEngine | `spec.projectId` | `status.outputs.project_id` |
 | GcpVpcNetwork | `spec.projectId` | `status.outputs.project_id` |
 | GcpWorkflow | `spec.projectId` | `status.outputs.project_id` |
 | GcpWorkloadIdentityPool | `spec.projectId` | `status.outputs.project_id` |

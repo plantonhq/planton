@@ -5621,6 +5621,38 @@ enum CloudResourceKind {
     id_prefix: "gcpvsc"
     service_group: gcp_ai_ml
   }];
+  // Vertex AI Search (the Discovery Engine API behind the console's AI
+  // Applications / Gemini Enterprise): a data store is the corpus --
+  // structured records, unstructured documents, or a public website --
+  // with its schema, crawl patterns, and sitemaps folded in.
+  GcpVertexAiSearchDataStore = 3205 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvsds"
+    service_group: gcp_ai_ml
+  }];
+  // The app over one or more data stores -- a search, chat, or
+  // recommendation engine -- with its serving controls, serving config,
+  // search widget, and assistants folded in. Its data stores are
+  // prerequisites: an engine cannot exist without one.
+  GcpVertexAiSearchEngine = 3206 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvseng"
+    service_group: gcp_ai_ml
+    prerequisites: [GcpVertexAiSearchDataStore]
+  }];
+  // A data connector is a COLLECTION of data stores Google syncs from a
+  // source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
+  // Drive, ...) on a schedule -- a different root from a data store, which
+  // is why it is its own kind. Engines search its stores by naming the
+  // collection.
+  GcpVertexAiSearchDataConnector = 3219 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpvsdc"
+    service_group: gcp_ai_ml
+  }];
 
   // 3250–3259: GCP Firebase (project enablement, app registrations, and
   // the Firebase-adjacent products that follow)

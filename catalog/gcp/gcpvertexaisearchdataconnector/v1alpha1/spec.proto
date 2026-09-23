@@ -1,0 +1,251 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpVertexAiSearchDataConnectorEntity is one entity (object type) of the
+// source the connector ingests -- a Jira "issue", a Salesforce "Account",
+// a Confluence "Space". Google creates one data store per entity in the
+// connector's collection; that data store's name is in the outputs.
+message GcpVertexAiSearchDataConnectorEntity {
+  // The entity's name as the source names it. Supported values depend on
+  // the source: Jira -- project, issue, attachment, comment, worklog;
+  // Confluence -- Content, Space; Salesforce -- Lead, Opportunity, Contact,
+  // Account, Case, Contract, Campaign; ServiceNow -- catalog, incident,
+  // knowledge_base. Immutable.
+  string entity_name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Entity-specific ingestion parameters as a compact JSON string (Google
+  // normalizes it), e.g. {"inclusion_filters":{"knowledgeBaseSysId":["123"]}}.
+  string params = 2;
+
+  // Source field -> key property (title, description, ...) so results
+  // render a title and description from the right fields.
+  map<string, string> key_property_mappings = 3;
+}
+
+// GcpVertexAiSearchDataConnectorDestination is one host the connector
+// reaches the source at.
+message GcpVertexAiSearchDataConnectorDestination {
+  // The destination host, e.g. "https://example.atlassian.net".
+  string host = 1;
+
+  // The port the destination accepts.
+  optional int32 port = 2 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 65535
+  }];
+}
+
+// GcpVertexAiSearchDataConnectorDestinationConfig configures where the
+// connector serves or reaches data for one destination key.
+message GcpVertexAiSearchDataConnectorDestinationConfig {
+  // The configuration's key, e.g. "url".
+  string key = 1;
+
+  // The destinations for this key.
+  repeated GcpVertexAiSearchDataConnectorDestination destinations = 2;
+
+  // Destination parameters as a compact JSON string, e.g.
+  // {"destination_type":"private"}.
+  string params = 3;
+}
+
+// GcpVertexAiSearchDataConnectorActionConfig lets an ACTIONS-mode
+// connector act on the source (create a Jira issue, post a comment).
+message GcpVertexAiSearchDataConnectorActionConfig {
+  // Connection parameters for the action side, as string pairs. Credentials
+  // are named as Secret Manager secret resource names, never pasted.
+  map<string, string> action_params = 1;
+
+  // Create a Business Application Platform connection for the actions.
+  bool create_bap_connection = 2;
+}
+
+// GcpVertexAiSearchDataConnectorBapConfig decides which actions an
+// ACTIONS-mode connector exposes.
+message GcpVertexAiSearchDataConnectorBapConfig {
+  // Connector modes the BAP connection supports; Google offers ACTIONS.
+  repeated string supported_connector_modes = 1 [(buf.validate.field).repeated.items.string = {
+    in: ["ACTIONS"]
+  }];
+
+  // Actions enabled on the source, e.g. create_issue, update_issue,
+  // change_issue_status, create_comment, update_comment, upload_attachment.
+  repeated string enabled_actions = 2 [(buf.validate.field).repeated.items.string.min_len = 1];
+}
+
+// GcpVertexAiSearchDataConnectorSpec defines a Vertex AI Search data
+// connector (`google_discovery_engine_data_connector`, the Discovery Engine
+// API behind the console's AI Applications / Gemini Enterprise): a
+// COLLECTION of data stores that Google syncs from a source -- Jira,
+// Confluence, ServiceNow, SharePoint, OneDrive, Outlook, Salesforce,
+// Slack, BigQuery, Google Drive, and the rest -- on a schedule. The
+// connector is the collection: setting it up creates the collection and
+// one data store per entity below. An engine searches those stores by
+// naming this collection (GcpVertexAiSearchEngine.collection_id) and the
+// created stores (the outputs' entity_data_stores).
+//
+// Credentials never appear in this spec. Google's connectors read them
+// from Secret Manager: the params values that carry a secret (client
+// secrets, passwords, refresh tokens) are Secret Manager secret RESOURCE
+// NAMES, and the Discovery Engine service agent needs accessor rights on
+// those secrets.
+//
+// Immutable: location, collection_id, collection_display_name,
+// data_source, kms_key_name, static_ip_enabled, and each entity's name.
+// Everything else updates in place.
+message GcpVertexAiSearchDataConnectorSpec {
+  option (buf.validate.message).cel = {
+    id: "connector.params_xor_json_params"
+    expression: "(size(this.params) > 0) != (this.json_params != '')"
+    message: "a connector's source parameters are exactly one of params (string pairs) or json_params (a JSON string)"
+  };
+
+  // The GCP project the collection lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where the collection lives: "global", "us", or "eu". Engines over its
+  // stores must match. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "global",
+        "us",
+        "eu"
+      ]
+    }
+  ];
+
+  // The collection's id -- 1-63 characters, RFC 1034 (lowercase letters,
+  // digits, hyphens; starts with a letter). Defaults to metadata.name.
+  // Immutable.
+  string collection_id = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"
+  ];
+
+  // The collection's name in the console (up to 1024 characters). Defaults
+  // to metadata.name. Immutable.
+  string collection_display_name = 4 [(buf.validate.field).string.max_len = 1024];
+
+  // The source, as Google names it: first-party "bigquery", "gcp_fhir",
+  // "google_mail", "google_drive", "google_calendar", "google_chat";
+  // third-party "jira", "confluence", "servicenow", "sharepoint",
+  // "onedrive", "outlook", "salesforce", "slack", "notion", "github",
+  // "gitlab", "zendesk", "box", "dropbox", "workday", and more (Google's
+  // connector documentation is the full list). Immutable.
+  string data_source = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z][a-z0-9_]*$"
+  ];
+
+  // The source's API version where the connector supports several, e.g.
+  // 3 for Jira v3. Sent only when set.
+  optional int32 data_source_version = 6 [(buf.validate.field).int32.gte = 1];
+
+  // Source connection parameters as string pairs -- instance URI, auth
+  // type, client id, and the Secret Manager resource names of the secrets
+  // (client_secret, password, refresh_token). Exactly one of params or
+  // json_params.
+  map<string, string> params = 7;
+
+  // The same parameters as one compact JSON string, for sources whose
+  // parameters nest. Exactly one of params or json_params.
+  string json_params = 8;
+
+  // How often a full sync runs, as a duration string ("86400s" for daily);
+  // 30 minutes to 7 days. Equal to incremental_refresh_interval disables
+  // incremental sync.
+  string refresh_interval = 9 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // How often an incremental sync runs (third-party sources), as a
+  // duration string; 30 minutes to 7 days. Empty lets Google default
+  // (3 hours).
+  string incremental_refresh_interval = 10 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // Pause incremental syncs.
+  bool incremental_sync_disabled = 11;
+
+  // Pause full syncs.
+  bool auto_run_disabled = 12;
+
+  // PERIODIC (Google's default) or STREAMING. Sent only when set.
+  string sync_mode = 13 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "PERIODIC",
+        "STREAMING"
+      ]
+    }
+  ];
+
+  // What the connector does: DATA_INGESTION (index the source), FEDERATED
+  // (search the source live without indexing), ACTIONS (act on the source),
+  // EUA (end-user authentication), FEDERATED_AND_EUA. Empty lets Google
+  // default.
+  repeated string connector_modes = 14 [(buf.validate.field).repeated.items.string = {
+    in: [
+      "DATA_INGESTION",
+      "ACTIONS",
+      "FEDERATED",
+      "EUA",
+      "FEDERATED_AND_EUA"
+    ]
+  }];
+
+  // Give the connector static egress IP addresses (for sources behind an
+  // allowlist); the addresses appear in the outputs. Immutable.
+  bool static_ip_enabled = 15;
+
+  // Customer-managed encryption key protecting every data store the
+  // connector creates: a GcpKmsKey reference or a literal key path. Omit
+  // for Google-managed encryption. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 16 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // The source entities to ingest; Google creates one data store per
+  // entity. Add or remove an entity by editing the list; an entity's name
+  // is immutable.
+  repeated GcpVertexAiSearchDataConnectorEntity entities = 17;
+
+  // Where the connector reaches or serves data, keyed by destination.
+  repeated GcpVertexAiSearchDataConnectorDestinationConfig destination_configs = 18;
+
+  // The action side of an ACTIONS-mode connector.
+  GcpVertexAiSearchDataConnectorActionConfig action_config = 19;
+
+  // Which actions an ACTIONS-mode connector exposes.
+  GcpVertexAiSearchDataConnectorBapConfig bap_config = 20;
+
+  // What happens to the connector, its collection, and the data stores it
+  // created when this resource is destroyed:
+  //   "" / "DELETE" -- deleted, indexed data included
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in GCP
+  string deletion_policy = 21 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

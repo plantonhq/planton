@@ -560,6 +560,9 @@ contained dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookNetwor
 contained dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookNetworkInterface.subnet -> GcpSubnetwork
 contained dev.planton.gcp.gcpvertexainotebook.v1alpha1.GcpVertexAiNotebookSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpvertexairagengineconfig.v1alpha1.GcpVertexAiRagEngineConfigSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1.GcpVertexAiSearchDataConnectorSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1.GcpVertexAiSearchDataStoreSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpvertexaisearchengine.v1alpha1.GcpVertexAiSearchEngineSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpvpcnetwork.v1alpha1.GcpVpcNetworkSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpvpcpeering.v1alpha1.GcpVpcPeeringSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpworkflow.v1alpha1.GcpWorkflowSpec.project_id -> GcpProject

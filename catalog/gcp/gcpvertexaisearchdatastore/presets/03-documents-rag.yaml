@@ -1,0 +1,35 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: contracts-rag
+spec:
+  location: us
+  displayName: Contracts for RAG
+  industryVertical: GENERIC
+  # Unstructured documents (PDF, DOCX, HTML) with metadata.
+  contentConfig: CONTENT_REQUIRED
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH
+    - SOLUTION_TYPE_CHAT
+  # Layout-aware parsing and passage chunking: the shape RAG wants.
+  documentProcessingConfig:
+    chunkingConfig:
+      chunkSize: 500
+      includeAncestorHeadings: true
+    defaultParsingConfig:
+      layoutParsingConfig:
+        enableTableAnnotation: true
+        enableImageAnnotation: true
+        enableGetProcessedDocument: true
+    parsingConfigOverrides:
+      - fileType: pdf
+        parsingConfig:
+          ocrParsingConfig:
+            useNativeText: true
+  # Customer-managed encryption in the store's location.
+  kmsKeyName:
+    valueFrom:
+      kind: GcpKmsKey
+      name: search-us-key
+      fieldPath: status.outputs.key_id
+  deletionPolicy: PREVENT

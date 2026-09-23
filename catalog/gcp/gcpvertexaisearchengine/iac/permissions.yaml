@@ -1,0 +1,51 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvertexaisearchengine
+spec:
+  gcp:
+    groups:
+      - purpose: EnableDiscoveryEngineApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling discoveryengine.googleapis.com on the target project, and dialogflow.googleapis.com on the CHAT arm. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageEngine
+        permissions:
+          - discoveryengine.engines.create
+          - discoveryengine.engines.get
+          - discoveryengine.engines.update
+          - discoveryengine.engines.delete
+          - discoveryengine.operations.get
+        provenance: derived
+        notes: Covers whichever of google_discovery_engine_search_engine, google_discovery_engine_chat_engine, and google_discovery_engine_recommendation_engine (Pulumi discoveryengine.SearchEngine / ChatEngine / RecommendationEngine) the engine_type selects -- create, read/refresh, the in-place PATCHes (display_name, data_store_ids, the search config, features, the knowledge graph, the media config), destroy under deletion_policy DELETE, and the long-running operations the provider polls. A CHAT engine that creates its agent does so through the Discovery Engine service agent, which holds the Dialogflow permissions itself.
+      - purpose: ManageControls
+        permissions:
+          - discoveryengine.controls.create
+          - discoveryengine.controls.get
+          - discoveryengine.controls.update
+          - discoveryengine.controls.delete
+        provenance: derived
+        notes: Covers google_discovery_engine_control (Pulumi discoveryengine.Control), one per spec.controls[] entry -- create, read/refresh, the in-place PATCH of the action and conditions, destroy.
+      - purpose: ConfigureServingAndWidget
+        permissions:
+          - discoveryengine.servingConfigs.get
+          - discoveryengine.servingConfigs.update
+          - discoveryengine.widgetConfigs.get
+          - discoveryengine.widgetConfigs.update
+        provenance: derived
+        notes: Covers google_discovery_engine_serving_config and google_discovery_engine_widget_config (Pulumi discoveryengine.ServingConfig / WidgetConfig) -- both are PATCHes on the engine's own default serving config and widget config, which Google creates with the engine and the modules never create or delete.
+      - purpose: ManageAssistants
+        permissions:
+          - discoveryengine.assistants.create
+          - discoveryengine.assistants.get
+          - discoveryengine.assistants.update
+          - discoveryengine.assistants.delete
+        provenance: derived
+        notes: Covers google_discovery_engine_assistant (Pulumi discoveryengine.Assistant), one per spec.assistants[] entry -- create, read/refresh, the in-place PATCH, destroy.

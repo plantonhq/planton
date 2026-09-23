@@ -1,0 +1,1142 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaisearchengine.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// ---------------------------------------------------------------------------
+// The engine's own configuration, one block per arm
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiSearchEngineCommonConfig is metadata every engine type
+// carries.
+message GcpVertexAiSearchEngineCommonConfig {
+  // The company, business, or entity the engine represents; improves
+  // LLM features (summaries, answers) that mention it. Immutable.
+  string company_name = 1;
+}
+
+// GcpVertexAiSearchEngineSearchEngineConfig is the search arm's own
+// configuration (`google_discovery_engine_search_engine.search_engine_config`).
+// Google requires the block even when empty, so the module always sends
+// it on the search arm.
+message GcpVertexAiSearchEngineSearchEngineConfig {
+  // SEARCH_TIER_STANDARD (Google's default when empty) or
+  // SEARCH_TIER_ENTERPRISE, which unlocks website search with extractive
+  // answers, structured data search enrichment, and the LLM add-on. The
+  // Enterprise tier bills a higher per-query rate. Mutable.
+  string search_tier = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "SEARCH_TIER_STANDARD",
+        "SEARCH_TIER_ENTERPRISE"
+      ]
+    }
+  ];
+
+  // Add-ons: SEARCH_ADD_ON_LLM turns on generative answers and summaries
+  // (requires the Enterprise tier). Sent only when set.
+  repeated string search_add_ons = 2 [(buf.validate.field).repeated.items.string = {
+    in: ["SEARCH_ADD_ON_LLM"]
+  }];
+
+  // The Gemini Enterprise license tier a user needs to open this app.
+  // Empty lets Google default. Sent only when set.
+  string required_subscription_tier = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "SUBSCRIPTION_TIER_UNSPECIFIED",
+        "SUBSCRIPTION_TIER_SEARCH",
+        "SUBSCRIPTION_TIER_SEARCH_AND_ASSISTANT",
+        "SUBSCRIPTION_TIER_FRONTLINE_WORKER",
+        "SUBSCRIPTION_TIER_AGENTSPACE_STARTER",
+        "SUBSCRIPTION_TIER_AGENTSPACE_BUSINESS",
+        "SUBSCRIPTION_TIER_ENTERPRISE",
+        "SUBSCRIPTION_TIER_ENTERPRISE_EMERGING",
+        "SUBSCRIPTION_TIER_EDU",
+        "SUBSCRIPTION_TIER_EDU_PRO",
+        "SUBSCRIPTION_TIER_EDU_EMERGING",
+        "SUBSCRIPTION_TIER_EDU_PRO_EMERGING",
+        "SUBSCRIPTION_TIER_FRONTLINE_STARTER"
+      ]
+    }
+  ];
+}
+
+// GcpVertexAiSearchEngineKnowledgeGraphFeatureConfig switches off parts
+// of the private knowledge graph.
+message GcpVertexAiSearchEngineKnowledgeGraphFeatureConfig {
+  // Do not use the private knowledge graph for query auto-complete.
+  bool disable_private_kg_auto_complete = 1;
+
+  // Do not enrich results with private knowledge graph entities.
+  bool disable_private_kg_enrichment = 2;
+
+  // Do not show private knowledge graph entities as query UI chips.
+  bool disable_private_kg_query_ui_chips = 3;
+
+  // Do not use the private knowledge graph for query understanding.
+  bool disable_private_kg_query_understanding = 4;
+}
+
+// GcpVertexAiSearchEngineKnowledgeGraphConfig turns the Cloud (public)
+// and private knowledge graphs on for a search engine. Every field is
+// Optional+Computed on Google's side, so each is sent only when set.
+message GcpVertexAiSearchEngineKnowledgeGraphConfig {
+  // Use Google's Cloud Knowledge Graph (public entities) for the engine.
+  optional bool enable_cloud_knowledge_graph = 1;
+
+  // Build and use a private knowledge graph over the engine's data.
+  optional bool enable_private_knowledge_graph = 2;
+
+  // Cloud Knowledge Graph entity types to support.
+  repeated string cloud_knowledge_graph_types = 3 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // Private knowledge graph features to switch off.
+  GcpVertexAiSearchEngineKnowledgeGraphFeatureConfig feature_config = 4;
+}
+
+// GcpVertexAiSearchEngineAgentCreationConfig has Google create the
+// Dialogflow CX agent a chat engine answers through.
+message GcpVertexAiSearchEngineAgentCreationConfig {
+  // The company, organization, or entity the agent represents; used in the
+  // knowledge connector's LLM prompt.
+  string business = 1;
+
+  // The agent's default language as a language tag, e.g. "en".
+  string default_language_code = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The agent's IANA time zone, e.g. "America/New_York".
+  string time_zone = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The Dialogflow location the agent is created in, e.g. "global" or
+  // "us-central1". Empty lets Google pick; a location other than the
+  // engine's needs allow_cross_region.
+  string location = 4;
+}
+
+// GcpVertexAiSearchEngineChatEngineConfig is the chat arm's own
+// configuration (`google_discovery_engine_chat_engine.chat_engine_config`):
+// exactly one of "create an agent" or "link an existing agent". Immutable.
+message GcpVertexAiSearchEngineChatEngineConfig {
+  option (buf.validate.message).cel = {
+    id: "chat_engine_config.exactly_one_agent_source"
+    expression: "has(this.agent_creation_config) != (this.dialogflow_agent_to_link != '')"
+    message: "a chat engine is exactly one of agent_creation_config or dialogflow_agent_to_link"
+  };
+
+  // Create a new Dialogflow CX agent for this engine.
+  GcpVertexAiSearchEngineAgentCreationConfig agent_creation_config = 1;
+
+  // Link an existing Dialogflow CX agent:
+  // projects/{project}/locations/{location}/agents/{agent}.
+  string dialogflow_agent_to_link = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[a-zA-Z0-9-]+(?:/locations/[a-zA-Z0-9-]+)?/agents/[a-zA-Z0-9-]+$"
+  ];
+
+  // Allow the agent and the engine to live in different locations
+  // (Google's default requires the same location). Consumed once at
+  // creation; Google does not read it back.
+  bool allow_cross_region = 3;
+}
+
+// GcpVertexAiSearchEngineOptimizationObjectiveConfig sets the custom
+// threshold a cvr (conversion rate) objective optimizes toward.
+message GcpVertexAiSearchEngineOptimizationObjectiveConfig {
+  // "watch-percentage" (a fraction in (0, 1]) or "watch-time" (seconds in
+  // (0, 86400]).
+  string target_field = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "watch-percentage",
+        "watch-time"
+      ]
+    }
+  ];
+
+  // The threshold for the target field, e.g. 0.5 for half the media
+  // watched, or 90 for ninety seconds.
+  optional float target_field_value_float = 2;
+}
+
+// GcpVertexAiSearchEngineMostPopularConfig configures a
+// "most-popular-items" engine.
+message GcpVertexAiSearchEngineMostPopularConfig {
+  // How many days of events the engine trains and predicts on. Required
+  // for most-popular-items.
+  optional int32 time_window_days = 1 [(buf.validate.field).int32.gte = 1];
+}
+
+// GcpVertexAiSearchEngineRecommendedForYouConfig configures a
+// "recommended-for-you" engine.
+message GcpVertexAiSearchEngineRecommendedForYouConfig {
+  // The event the engine is queried with at prediction time: "generic"
+  // (view-item, media-play, media-complete) or "view-home-page" (those
+  // plus the home-page view).
+  string context_event_type = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "generic",
+        "view-home-page"
+      ]
+    }
+  ];
+}
+
+// GcpVertexAiSearchEngineEngineFeaturesConfig carries the feature config
+// the chosen recommendation type needs.
+message GcpVertexAiSearchEngineEngineFeaturesConfig {
+  option (buf.validate.message).cel = {
+    id: "engine_features_config.at_most_one"
+    expression: "!(has(this.most_popular_config) && has(this.recommended_for_you_config))"
+    message: "engine_features_config is at most one of most_popular_config or recommended_for_you_config"
+  };
+
+  // For type "most-popular-items".
+  GcpVertexAiSearchEngineMostPopularConfig most_popular_config = 1;
+
+  // For type "recommended-for-you".
+  GcpVertexAiSearchEngineRecommendedForYouConfig recommended_for_you_config = 2;
+}
+
+// GcpVertexAiSearchEngineMediaRecommendationEngineConfig is the
+// recommendation arm's own configuration
+// (`google_discovery_engine_recommendation_engine.media_recommendation_engine_config`),
+// for stores with SOLUTION_TYPE_RECOMMENDATION and the MEDIA vertical.
+message GcpVertexAiSearchEngineMediaRecommendationEngineConfig {
+  // The recommendation model: "recommended-for-you", "others-you-may-like",
+  // "more-like-this", or "most-popular-items". With optimization_objective
+  // it decides how the engine trains and serves.
+  string type = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "recommended-for-you",
+        "others-you-may-like",
+        "more-like-this",
+        "most-popular-items"
+      ]
+    }
+  ];
+
+  // What the model optimizes: "ctr" (click-through) or "cvr" (conversion,
+  // e.g. watch time). Empty lets Google default by type (ctr for
+  // recommended-for-you and others-you-may-like, and for more-like-this
+  // and most-popular-items).
+  string optimization_objective = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "ctr",
+        "cvr"
+      ]
+    }
+  ];
+
+  // The threshold a cvr objective optimizes toward.
+  GcpVertexAiSearchEngineOptimizationObjectiveConfig optimization_objective_config = 3;
+
+  // TRAINING (Google's default at creation) or PAUSED. Training is part of
+  // the engine's cost; pause it to hold a model still. Mutable.
+  string training_state = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "PAUSED",
+        "TRAINING"
+      ]
+    }
+  ];
+
+  // Feature config the chosen type needs.
+  GcpVertexAiSearchEngineEngineFeaturesConfig engine_features_config = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Controls and the serving config that applies them
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiSearchEngineQueryTerm is one term a query must contain for a
+// control's condition to hold.
+message GcpVertexAiSearchEngineQueryTerm {
+  // The term.
+  string value = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // True requires the query to match the term exactly; false allows a
+  // partial match.
+  bool full_match = 2;
+}
+
+// GcpVertexAiSearchEngineActiveTimeRange is a window during which a
+// control's condition holds (RFC 3339 timestamps).
+message GcpVertexAiSearchEngineActiveTimeRange {
+  // Start of the window, e.g. "2026-11-20T00:00:00Z".
+  string start_time = 1;
+
+  // End of the window.
+  string end_time = 2;
+}
+
+// GcpVertexAiSearchEngineControlCondition says when a control is active.
+// All conditions on a control must hold.
+message GcpVertexAiSearchEngineControlCondition {
+  // Terms the query must contain.
+  repeated GcpVertexAiSearchEngineQueryTerm query_terms = 1;
+
+  // Time windows the control is active in (any one holding satisfies the
+  // condition).
+  repeated GcpVertexAiSearchEngineActiveTimeRange active_time_ranges = 2;
+
+  // A regular expression the whole query must match.
+  string query_regex = 3;
+}
+
+// GcpVertexAiSearchEngineControlPoint is one point of an interpolation
+// boost curve.
+message GcpVertexAiSearchEngineControlPoint {
+  // The attribute value at this point (a number for NUMERICAL, a duration
+  // like "7d" or "24h" for FRESHNESS).
+  string attribute_value = 1;
+
+  // The boost at this point, -1 to 1.
+  optional float boost_amount = 2 [(buf.validate.field).float = {
+    gte: -1
+    lte: 1
+  }];
+}
+
+// GcpVertexAiSearchEngineInterpolationBoostSpec boosts by a curve over a
+// numeric or freshness field instead of a fixed amount.
+message GcpVertexAiSearchEngineInterpolationBoostSpec {
+  // The document field the curve reads.
+  string field_name = 1;
+
+  // NUMERICAL (a numeric field) or FRESHNESS (a datetime field, boosted by
+  // age). Sent only when set.
+  string attribute_type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NUMERICAL",
+        "FRESHNESS"
+      ]
+    }
+  ];
+
+  // LINEAR is the only interpolation Google offers. Sent only when set.
+  string interpolation_type = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: ["LINEAR"]
+    }
+  ];
+
+  // The curve's control point.
+  GcpVertexAiSearchEngineControlPoint control_point = 4;
+}
+
+// GcpVertexAiSearchEngineBoostAction changes the order of results that
+// match a filter.
+message GcpVertexAiSearchEngineBoostAction {
+  option (buf.validate.message).cel = {
+    id: "boost_action.exactly_one_boost"
+    expression: "has(this.fixed_boost) != has(this.interpolation_boost_spec)"
+    message: "a boost action is exactly one of fixed_boost or interpolation_boost_spec"
+  };
+
+  // The data store whose documents are boosted: a GcpVertexAiSearchDataStore
+  // reference (its full name) or a literal
+  // projects/{project}/locations/{location}/collections/{collection}/dataStores/{store}.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef data_store = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The filter selecting the documents to boost, in Vertex AI Search filter
+  // syntax, e.g. "(category: ANY(\"docs\"))".
+  string filter = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // A fixed boost, -1 (bury) to 1 (promote).
+  optional float fixed_boost = 3 [(buf.validate.field).float = {
+    gte: -1
+    lte: 1
+  }];
+
+  // A curve-based boost instead of a fixed one.
+  GcpVertexAiSearchEngineInterpolationBoostSpec interpolation_boost_spec = 4;
+}
+
+// GcpVertexAiSearchEngineFilterAction removes documents that do not match
+// a filter from the results.
+message GcpVertexAiSearchEngineFilterAction {
+  // The data store the filter applies to (a GcpVertexAiSearchDataStore
+  // reference or a literal full name).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef data_store = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The filter results must match, in Vertex AI Search filter syntax.
+  string filter = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// GcpVertexAiSearchEngineSearchLinkPromotion is the link a promote action
+// pins to the top of results.
+message GcpVertexAiSearchEngineSearchLinkPromotion {
+  // The promoted link's title.
+  string title = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The URI to promote (website stores).
+  string uri = 2;
+
+  // The document to promote (non-website stores), as a document resource
+  // name.
+  string document = 3;
+
+  // A description shown with the link.
+  string description = 4;
+
+  // An image shown with the link.
+  string image_uri = 5;
+
+  // Return the promotion on basic site search results.
+  bool enabled = 6;
+}
+
+// GcpVertexAiSearchEnginePromoteAction pins a link for matching queries.
+message GcpVertexAiSearchEnginePromoteAction {
+  // The data store the promotion applies to (a GcpVertexAiSearchDataStore
+  // reference or a literal full name).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef data_store = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The promoted link.
+  GcpVertexAiSearchEngineSearchLinkPromotion search_link_promotion = 2 [(buf.validate.field).required = true];
+}
+
+// GcpVertexAiSearchEngineRedirectAction sends matching queries to a URI
+// instead of returning results.
+message GcpVertexAiSearchEngineRedirectAction {
+  // The URI to redirect to.
+  string redirect_uri = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+}
+
+// GcpVertexAiSearchEngineSynonymsAction treats a group of terms as
+// equivalent in queries.
+message GcpVertexAiSearchEngineSynonymsAction {
+  // The synonyms, e.g. ["laptop", "notebook"].
+  repeated string synonyms = 1 [
+    (buf.validate.field).repeated.min_items = 2,
+    (buf.validate.field).repeated.items.string.min_len = 1
+  ];
+}
+
+// GcpVertexAiSearchEngineControl is one serving control
+// (`google_discovery_engine_control`): exactly one action -- boost, filter,
+// promote, redirect, or synonyms -- applied when its conditions hold and
+// the engine's serving config lists it. Controls belong to one engine and
+// are folded here; the serving config below decides which are live.
+message GcpVertexAiSearchEngineControl {
+  option (buf.validate.message).cel = {
+    id: "control.exactly_one_action"
+    expression: "(has(this.boost_action) ? 1 : 0) + (has(this.filter_action) ? 1 : 0) + (has(this.promote_action) ? 1 : 0) + (has(this.redirect_action) ? 1 : 0) + (has(this.synonyms_action) ? 1 : 0) == 1"
+    message: "a control is exactly one of boost_action, filter_action, promote_action, redirect_action, or synonyms_action"
+  };
+
+  // The control's id within the engine -- 1-63 characters, RFC 1034.
+  // Immutable.
+  string control_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"
+  ];
+
+  // Human-readable name (up to 128 characters).
+  string display_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 128
+    }
+  ];
+
+  // Where the control applies: SEARCH_USE_CASE_SEARCH (queries) and/or
+  // SEARCH_USE_CASE_BROWSE (empty-query browsing).
+  repeated string use_cases = 3 [(buf.validate.field).repeated.items.string = {
+    in: [
+      "SEARCH_USE_CASE_SEARCH",
+      "SEARCH_USE_CASE_BROWSE"
+    ]
+  }];
+
+  // When the control is active; empty means always.
+  repeated GcpVertexAiSearchEngineControlCondition conditions = 4;
+
+  // Reorder matching results.
+  GcpVertexAiSearchEngineBoostAction boost_action = 5;
+
+  // Drop non-matching results.
+  GcpVertexAiSearchEngineFilterAction filter_action = 6;
+
+  // Pin a link.
+  GcpVertexAiSearchEnginePromoteAction promote_action = 7;
+
+  // Redirect the query.
+  GcpVertexAiSearchEngineRedirectAction redirect_action = 8;
+
+  // Treat terms as synonyms.
+  GcpVertexAiSearchEngineSynonymsAction synonyms_action = 9;
+}
+
+// GcpVertexAiSearchEngineServingConfig lists which controls the engine's
+// default serving config applies (`google_discovery_engine_serving_config`
+// PATCHes the engine's own "default_search" serving config; Google creates
+// it with the engine and never deletes it). Every id must name a control
+// declared on this engine with the matching action.
+message GcpVertexAiSearchEngineServingConfig {
+  // Ids of boost controls to apply.
+  repeated string boost_control_ids = 1 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // Ids of filter controls to apply.
+  repeated string filter_control_ids = 2 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // Ids of promote controls to apply.
+  repeated string promote_control_ids = 3 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // Ids of redirect controls to apply.
+  repeated string redirect_control_ids = 4 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // Ids of synonyms controls to apply.
+  repeated string synonyms_control_ids = 5 [(buf.validate.field).repeated.items.string.min_len = 1];
+}
+
+// ---------------------------------------------------------------------------
+// The search widget
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiSearchEngineWidgetAccessSettings decides who may load the
+// embeddable search widget.
+message GcpVertexAiSearchEngineWidgetAccessSettings {
+  // Allow unauthenticated public access to the widget.
+  bool allow_public_access = 1;
+
+  // Domains allowed to embed the widget, e.g. "www.example.com".
+  repeated string allowlisted_domains = 2 [(buf.validate.field).repeated.items.string.min_len = 1];
+
+  // Serve Google's hosted web app for the engine.
+  bool enable_web_app = 3;
+
+  // UI language as a BCP 47 tag; Google defaults to "en-US".
+  string language_code = 4;
+
+  // The workforce identity pool provider users sign in through:
+  // locations/global/workforcePools/{pool}/providers/{provider}.
+  string workforce_identity_pool_provider = 5;
+}
+
+// GcpVertexAiSearchEngineWidgetShortcut is a homepage shortcut.
+message GcpVertexAiSearchEngineWidgetShortcut {
+  // The shortcut's title.
+  string title = 1;
+
+  // Where the shortcut goes.
+  string destination_uri = 2;
+
+  // The shortcut's icon URL.
+  string icon_url = 3;
+}
+
+// GcpVertexAiSearchEngineWidgetHomepageSetting configures the widget's
+// homepage.
+message GcpVertexAiSearchEngineWidgetHomepageSetting {
+  // Shortcuts shown on the homepage.
+  repeated GcpVertexAiSearchEngineWidgetShortcut shortcuts = 1;
+}
+
+// GcpVertexAiSearchEngineWidgetUiBranding brands the widget.
+message GcpVertexAiSearchEngineWidgetUiBranding {
+  // The logo image URL.
+  string logo_url = 1;
+}
+
+// GcpVertexAiSearchEngineWidgetFacetField is a field shown as a facet.
+message GcpVertexAiSearchEngineWidgetFacetField {
+  // The registered field name, e.g. "category".
+  string field = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The name end users see.
+  string display_name = 2;
+}
+
+// GcpVertexAiSearchEngineWidgetFieldUiComponent maps a UI component to a
+// document field.
+message GcpVertexAiSearchEngineWidgetFieldUiComponent {
+  // The component: "title", "thumbnail", "url", "custom1", "custom2", or
+  // "custom3".
+  string ui_component = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "title",
+        "thumbnail",
+        "url",
+        "custom1",
+        "custom2",
+        "custom3"
+      ]
+    }
+  ];
+
+  // The field shown in the component.
+  string field = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // Devices the component shows on: MOBILE and/or DESKTOP.
+  repeated string device_visibility = 3 [(buf.validate.field).repeated.items.string = {
+    in: [
+      "MOBILE",
+      "DESKTOP"
+    ]
+  }];
+
+  // A template around the value, e.g. "Price: {value}".
+  string display_template = 4;
+}
+
+// GcpVertexAiSearchEngineWidgetDataStoreUiConfig configures how one data
+// store's results render in the widget.
+message GcpVertexAiSearchEngineWidgetDataStoreUiConfig {
+  // The data store: a GcpVertexAiSearchDataStore reference (its full name)
+  // or a literal full name.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // Fields offered as facets.
+  repeated GcpVertexAiSearchEngineWidgetFacetField facet_fields = 2;
+
+  // Which document field each result component shows.
+  repeated GcpVertexAiSearchEngineWidgetFieldUiComponent fields_ui_components_map = 3;
+}
+
+// GcpVertexAiSearchEngineWidgetGenerativeAnswerConfig tunes the answer the
+// widget generates above results.
+message GcpVertexAiSearchEngineWidgetGenerativeAnswerConfig {
+  // Do not suggest related questions with the answer.
+  bool disable_related_questions = 1;
+
+  // Skip answering queries classified as adversarial.
+  bool ignore_adversarial_query = 2;
+
+  // Skip answering when the results are not relevant to the query.
+  bool ignore_low_relevant_content = 3;
+
+  // Skip answering queries that do not seek an answer (navigational or
+  // browsing queries).
+  bool ignore_non_answer_seeking_query = 4;
+
+  // Where answer images come from: ALL_AVAILABLE_SOURCES, CORPUS_IMAGE_ONLY,
+  // or FIGURE_GENERATION_ONLY. Sent only when set.
+  string image_source = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "ALL_AVAILABLE_SOURCES",
+        "CORPUS_IMAGE_ONLY",
+        "FIGURE_GENERATION_ONLY"
+      ]
+    }
+  ];
+
+  // The answer's language as a BCP 47 tag (experimental).
+  string language_code = 6;
+
+  // How many times the query may be rephrased, 1-5 (Google defaults to 1).
+  optional int32 max_rephrase_steps = 7 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 5
+  }];
+
+  // Text placed before the prompt to steer the answer model.
+  string model_prompt_preamble = 8;
+
+  // The answer model version.
+  string model_version = 9;
+
+  // Top results the answer is generated from, up to 10.
+  optional int32 result_count = 10 [(buf.validate.field).int32 = {
+    gte: 1
+    lte: 10
+  }];
+}
+
+// GcpVertexAiSearchEngineWidgetUiSettings is the widget's general UI
+// behavior.
+message GcpVertexAiSearchEngineWidgetUiSettings {
+  // SEARCH_ONLY, SEARCH_WITH_ANSWER (a generated answer above results), or
+  // SEARCH_WITH_FOLLOW_UPS (conversational). Sent only when set.
+  string interaction_type = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "SEARCH_ONLY",
+        "SEARCH_WITH_ANSWER",
+        "SEARCH_WITH_FOLLOW_UPS"
+      ]
+    }
+  ];
+
+  // SNIPPET or EXTRACTIVE_ANSWER under each result; empty shows none.
+  string result_description_type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "SNIPPET",
+        "EXTRACTIVE_ANSWER"
+      ]
+    }
+  ];
+
+  // The default order of results (a SearchRequest orderBy expression).
+  string default_search_request_order_by = 3;
+
+  // Do not collect user events from the widget.
+  bool disable_user_events_collection = 4;
+
+  // Offer query auto-complete.
+  bool enable_autocomplete = 5;
+
+  // Show the "create agent" button.
+  bool enable_create_agent_button = 6;
+
+  // Enable people search.
+  bool enable_people_search = 7;
+
+  // Collect result-quality feedback from end users.
+  bool enable_quality_feedback = 8;
+
+  // Enable safe search.
+  bool enable_safe_search = 9;
+
+  // Search as the user types.
+  bool enable_search_as_you_type = 10;
+
+  // Visual content summaries on applicable searches (healthcare search).
+  bool enable_visual_content_summary = 11;
+
+  // Per-data-store result rendering.
+  repeated GcpVertexAiSearchEngineWidgetDataStoreUiConfig data_store_ui_configs = 12;
+
+  // The generated answer's settings.
+  GcpVertexAiSearchEngineWidgetGenerativeAnswerConfig generative_answer_config = 13;
+}
+
+// GcpVertexAiSearchEngineWidgetConfig configures the engine's embeddable
+// search widget and hosted web app
+// (`google_discovery_engine_widget_config`). Google creates the engine's
+// default widget config with the engine; this block PATCHes it and destroy
+// leaves it in place -- a widget config cannot be deleted.
+message GcpVertexAiSearchEngineWidgetConfig {
+  // Who may load the widget.
+  GcpVertexAiSearchEngineWidgetAccessSettings access_settings = 1;
+
+  // The homepage.
+  GcpVertexAiSearchEngineWidgetHomepageSetting homepage_setting = 2;
+
+  // Branding.
+  GcpVertexAiSearchEngineWidgetUiBranding ui_branding = 3;
+
+  // UI behavior.
+  GcpVertexAiSearchEngineWidgetUiSettings ui_settings = 4;
+}
+
+// ---------------------------------------------------------------------------
+// Assistants
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiSearchEngineBannedPhrase is a phrase the assistant refuses.
+message GcpVertexAiSearchEngineBannedPhrase {
+  // The phrase.
+  string phrase = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // SIMPLE_STRING_MATCH or WORD_BOUNDARY_STRING_MATCH. Sent only when set.
+  string match_type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "SIMPLE_STRING_MATCH",
+        "WORD_BOUNDARY_STRING_MATCH"
+      ]
+    }
+  ];
+
+  // Ignore accents and umlauts when matching ("cafe" matches "café").
+  bool ignore_diacritics = 3;
+}
+
+// GcpVertexAiSearchEngineModelArmorConfig sanitizes prompts and responses
+// through Model Armor templates
+// (projects/{project}/locations/{location}/templates/{template}).
+message GcpVertexAiSearchEngineModelArmorConfig {
+  // The template applied to user prompts.
+  string user_prompt_template = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // The template applied to assistant responses.
+  string response_template = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.min_len = 1
+  ];
+
+  // FAIL_OPEN (answer anyway when sanitization fails) or FAIL_CLOSED
+  // (refuse). Sent only when set.
+  string failure_mode = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "FAIL_OPEN",
+        "FAIL_CLOSED"
+      ]
+    }
+  ];
+}
+
+// GcpVertexAiSearchEngineCustomerPolicy is the assistant's content policy.
+message GcpVertexAiSearchEngineCustomerPolicy {
+  // Phrases the assistant refuses to engage with.
+  repeated GcpVertexAiSearchEngineBannedPhrase banned_phrases = 1;
+
+  // Model Armor sanitization.
+  GcpVertexAiSearchEngineModelArmorConfig model_armor_config = 2;
+}
+
+// GcpVertexAiSearchEngineGenerationConfig steers the assistant's answers.
+message GcpVertexAiSearchEngineGenerationConfig {
+  // Default answer language (ISO 639-1, e.g. "en"); empty auto-detects.
+  string default_language = 1;
+
+  // Text appended to the default system instruction.
+  string additional_system_instruction = 2;
+}
+
+// GcpVertexAiSearchEngineAssistant is a Gemini Enterprise assistant on the
+// engine (`google_discovery_engine_assistant`): its policy, generation
+// settings, and web grounding. Assistants live under one engine and are
+// folded here.
+message GcpVertexAiSearchEngineAssistant {
+  // The assistant's id within the engine, e.g. "default_assistant".
+  // Immutable.
+  string assistant_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z0-9](?:[-a-z0-9_]{0,61}[a-z0-9])?$"
+  ];
+
+  // Human-readable name (up to 128 characters).
+  string display_name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1
+      max_len: 128
+    }
+  ];
+
+  // Notes shown on the configuration UI, not to end users.
+  string description = 3;
+
+  // WEB_GROUNDING_TYPE_DISABLED, WEB_GROUNDING_TYPE_GOOGLE_SEARCH, or
+  // WEB_GROUNDING_TYPE_ENTERPRISE_WEB_SEARCH. Sent only when set.
+  string web_grounding_type = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "WEB_GROUNDING_TYPE_DISABLED",
+        "WEB_GROUNDING_TYPE_GOOGLE_SEARCH",
+        "WEB_GROUNDING_TYPE_ENTERPRISE_WEB_SEARCH"
+      ]
+    }
+  ];
+
+  // Content policy.
+  GcpVertexAiSearchEngineCustomerPolicy customer_policy = 5;
+
+  // Answer generation.
+  GcpVertexAiSearchEngineGenerationConfig generation_config = 6;
+}
+
+// ---------------------------------------------------------------------------
+// The spec
+// ---------------------------------------------------------------------------
+
+// GcpVertexAiSearchEngineSpec defines a Vertex AI Search engine -- the app
+// over one or more data stores, on the Discovery Engine API behind the
+// console's AI Applications / Gemini Enterprise. One kind builds one of
+// three provider resources, chosen by engine_type:
+//
+//   SEARCH (default)  `google_discovery_engine_search_engine`: a search
+//                     app with tiers, add-ons, a knowledge graph, and the
+//                     embeddable widget
+//   CHAT              `google_discovery_engine_chat_engine`: a chat app that
+//                     creates or links a Dialogflow CX agent
+//   RECOMMENDATION    `google_discovery_engine_recommendation_engine`: a
+//                     generic or media recommendation model
+//
+// Folded in, because each lives under exactly one engine and nothing else
+// references it: the serving controls and the serving config that applies
+// them, the search widget's configuration, and the engine's assistants.
+// Every data store an engine uses must be in the engine's location and
+// enrolled in the engine's solution.
+//
+// Immutable: engine_type, engine_id, location, collection_id,
+// industry_vertical, common_config, app_type, chat_engine_config.
+// Everything else updates in place.
+message GcpVertexAiSearchEngineSpec {
+  option (buf.validate.message).cel = {
+    id: "engine.chat_config_on_chat_arm"
+    expression: "(this.engine_type == 'CHAT') == has(this.chat_engine_config)"
+    message: "chat_engine_config is required on a CHAT engine and applies only there"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.recommendation_config_on_recommendation_arm"
+    expression: "this.engine_type == 'RECOMMENDATION' || !has(this.media_recommendation_engine_config)"
+    message: "media_recommendation_engine_config applies only to a RECOMMENDATION engine"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.search_only_fields"
+    expression: "this.engine_type in ['', 'SEARCH'] || (!has(this.search_engine_config) && this.app_type == '' && !this.disable_analytics && size(this.features) == 0 && !has(this.knowledge_graph_config) && (!has(this.kms_key_name) || (this.kms_key_name.value == '' && !has(this.kms_key_name.value_from))))"
+    message: "search_engine_config, app_type, disable_analytics, features, kms_key_name, and knowledge_graph_config exist only on a SEARCH engine"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.recommendation_default_collection"
+    expression: "this.engine_type != 'RECOMMENDATION' || !has(this.collection_id) || ((this.collection_id.value == '' || this.collection_id.value == 'default_collection') && !has(this.collection_id.value_from))"
+    message: "a RECOMMENDATION engine lives in default_collection; collection_id must be empty"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.recommendation_one_data_store"
+    expression: "this.engine_type != 'RECOMMENDATION' || size(this.data_store_ids) <= 1"
+    message: "a RECOMMENDATION engine uses at most one data store"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.industry_vertical_per_arm"
+    expression: "this.industry_vertical == '' || (this.engine_type == 'CHAT' ? this.industry_vertical == 'GENERIC' : (this.engine_type == 'RECOMMENDATION' ? this.industry_vertical != 'HEALTHCARE_FHIR' : true))"
+    message: "a CHAT engine is GENERIC; a RECOMMENDATION engine is GENERIC or MEDIA"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.controls_unique_ids"
+    expression: "this.controls.all(c, size(this.controls.filter(o, o.control_id == c.control_id)) == 1)"
+    message: "control_id must be unique within the engine"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.assistants_unique_ids"
+    expression: "this.assistants.all(a, size(this.assistants.filter(o, o.assistant_id == a.assistant_id)) == 1)"
+    message: "assistant_id must be unique within the engine"
+  };
+  option (buf.validate.message).cel = {
+    id: "engine.serving_config_names_declared_controls"
+    expression: "!has(this.serving_config) || (this.serving_config.boost_control_ids.all(id, this.controls.exists(c, c.control_id == id && has(c.boost_action))) && this.serving_config.filter_control_ids.all(id, this.controls.exists(c, c.control_id == id && has(c.filter_action))) && this.serving_config.promote_control_ids.all(id, this.controls.exists(c, c.control_id == id && has(c.promote_action))) && this.serving_config.redirect_control_ids.all(id, this.controls.exists(c, c.control_id == id && has(c.redirect_action))) && this.serving_config.synonyms_control_ids.all(id, this.controls.exists(c, c.control_id == id && has(c.synonyms_action))))"
+    message: "every id in serving_config must name a control declared on this engine with the matching action"
+  };
+
+  // The GCP project the engine lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where the engine lives: "global", "us", or "eu" -- the same location as
+  // its data stores. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "global",
+        "us",
+        "eu"
+      ]
+    }
+  ];
+
+  // Which app this engine is. Empty or SEARCH builds a search engine; CHAT
+  // a chat engine over a Dialogflow CX agent; RECOMMENDATION a
+  // recommendation engine. Immutable: a change replaces the engine.
+  string engine_type = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "SEARCH",
+        "CHAT",
+        "RECOMMENDATION"
+      ]
+    }
+  ];
+
+  // The engine's id -- 1-63 characters, RFC 1034 (lowercase letters,
+  // digits, hyphens; starts with a letter). Defaults to metadata.name.
+  // Immutable.
+  string engine_id = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?$"
+  ];
+
+  // Human-readable name shown in the console (up to 1024 characters).
+  // Defaults to metadata.name. Mutable.
+  string display_name = 5 [(buf.validate.field).string.max_len = 1024];
+
+  // The collection the engine and its data stores live in. Empty is
+  // Google's "default_collection", where every GcpVertexAiSearchDataStore
+  // lives; a GcpVertexAiSearchDataConnector reference (or its literal
+  // collection id) puts the engine over the data stores a connector syncs.
+  // A RECOMMENDATION engine always lives in default_collection. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef collection_id = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataConnector,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.collection_id"
+  ];
+
+  // The data stores the engine answers from, as GcpVertexAiSearchDataStore
+  // references (their data_store_id) or literal ids, all in the engine's
+  // collection and location and enrolled in its solution (SOLUTION_TYPE_CHAT
+  // for a chat engine). A recommendation engine takes at most one. Mutable.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef data_store_ids = 7 [
+    (buf.validate.field).repeated.min_items = 1,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.data_store_id"
+  ];
+
+  // The industry vertical, matching the data stores': GENERIC (Google's
+  // default when empty), MEDIA (search or recommendation over media), or
+  // HEALTHCARE_FHIR (search only). A chat engine is always GENERIC.
+  // Immutable.
+  string industry_vertical = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "GENERIC",
+        "MEDIA",
+        "HEALTHCARE_FHIR"
+      ]
+    }
+  ];
+
+  // Metadata common to every engine type. Immutable.
+  GcpVertexAiSearchEngineCommonConfig common_config = 9;
+
+  // The search arm's tier, add-ons, and license tier (SEARCH only). Google
+  // requires the block, so the module sends it even when omitted here.
+  GcpVertexAiSearchEngineSearchEngineConfig search_engine_config = 10;
+
+  // APP_TYPE_INTRANET marks a Gemini Enterprise (intranet) app; empty is a
+  // standalone search app (SEARCH only). Immutable.
+  string app_type = 11 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: ["APP_TYPE_INTRANET"]
+    }
+  ];
+
+  // Do not record search analytics for this engine (SEARCH only).
+  bool disable_analytics = 12;
+
+  // Feature opt-ins and opt-outs by name, each "FEATURE_STATE_ON" or
+  // "FEATURE_STATE_OFF" -- e.g. "agent-sharing-without-admin-approval",
+  // "disable-agent-sharing", "enable-end-user-sharing-with-groups" (SEARCH
+  // only). Sent only when set.
+  map<string, string> features = 13 [(buf.validate.field).map.values.string = {
+    in: [
+      "FEATURE_STATE_ON",
+      "FEATURE_STATE_OFF"
+    ]
+  }];
+
+  // Customer-managed encryption key protecting the engine (SEARCH only):
+  // a GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
+  // Omit for Google-managed encryption. Mutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 14 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // Cloud and private knowledge graphs (SEARCH only). Sent only when set.
+  GcpVertexAiSearchEngineKnowledgeGraphConfig knowledge_graph_config = 15;
+
+  // The chat arm's agent (CHAT only; required there). Immutable.
+  GcpVertexAiSearchEngineChatEngineConfig chat_engine_config = 16;
+
+  // The recommendation arm's model (RECOMMENDATION only; MEDIA vertical).
+  GcpVertexAiSearchEngineMediaRecommendationEngineConfig media_recommendation_engine_config = 17;
+
+  // Serving controls on the engine, each keyed by control_id. A control
+  // takes effect only when serving_config lists it.
+  repeated GcpVertexAiSearchEngineControl controls = 18;
+
+  // Which controls the engine's default serving config ("default_search",
+  // which Google creates with a search engine) applies. Every id must name
+  // a control above with the matching action.
+  GcpVertexAiSearchEngineServingConfig serving_config = 19;
+
+  // The embeddable search widget and hosted web app. Google creates a
+  // search engine's default widget config with the engine; this PATCHes
+  // it, and destroy leaves it in place.
+  GcpVertexAiSearchEngineWidgetConfig widget_config = 20;
+
+  // Gemini Enterprise assistants on the engine, keyed by assistant_id
+  // (a Gemini Enterprise license on the project is Google's prerequisite).
+  repeated GcpVertexAiSearchEngineAssistant assistants = 21;
+
+  // What happens to the engine, its controls, and its assistants when this
+  // resource is destroyed:
+  //   "" / "DELETE" -- deleted (the widget config and serving config are
+  //                    Google's own and stay with the engine's deletion)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in GCP
+  // The data stores are separate resources and are not touched.
+  string deletion_policy = 22 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

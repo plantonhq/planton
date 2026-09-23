@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1;
+
+// GcpVertexAiSearchDataConnectorStackOutputs captures what the connector
+// and the collection it created resolved to.
+message GcpVertexAiSearchDataConnectorStackOutputs {
+  // Full resource name of the connector:
+  // projects/{project}/locations/{location}/collections/{collection_id}/dataConnector.
+  string name = 1;
+
+  // The collection's id -- what an engine's collection_id names to search
+  // the connector's stores.
+  string collection_id = 2;
+
+  // The collection's location (global, us, or eu).
+  string location = 3;
+
+  // The connector's state: CREATING, ACTIVE, RUNNING, WARNING, FAILED,
+  // INITIALIZATION_FAILED, or UPDATING.
+  string state = 4;
+
+  // Full resource names of the data stores Google created, one per entity,
+  // in manifest order -- what an engine's data_store_ids (by their last
+  // segment) or a control's data_store names.
+  repeated string entity_data_stores = 5;
+
+  // The static egress IP addresses when static_ip_enabled; allowlist them
+  // at the source.
+  repeated string static_ip_addresses = 6;
+
+  // The tenant project behind a private-connectivity connector, to be
+  // allowlisted at the source.
+  string private_connectivity_project_id = 7;
+}

@@ -1,0 +1,110 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_discovery_engine_data_store:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The provider nests the chunking levers one block deeper
+      # (chunking_config.layout_based_chunking_config); the spec lifts them,
+      # layout-based chunking being the only kind Google offers.
+      - spec: spec.document_processing_config.chunking_config.chunk_size
+        arg: document_processing_config.chunking_config.layout_based_chunking_config.chunk_size
+      - spec: spec.document_processing_config.chunking_config.include_ancestor_headings
+        arg: document_processing_config.chunking_config.layout_based_chunking_config.include_ancestor_headings
+      # A per-file-type override is the same parsing-config shape as the
+      # default parser; the spec reuses one message under parsing_config,
+      # the provider inlines the three parser blocks beside file_type.
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.enable_get_processed_document
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.enable_get_processed_document
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.enable_image_annotation
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.enable_image_annotation
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.enable_llm_layout_parsing
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.enable_llm_layout_parsing
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.enable_table_annotation
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.enable_table_annotation
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.exclude_html_classes
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.exclude_html_classes
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.exclude_html_elements
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.exclude_html_elements
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.exclude_html_ids
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.exclude_html_ids
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.layout_parsing_config.structured_content_types
+        arg: document_processing_config.parsing_config_overrides.layout_parsing_config.structured_content_types
+      - spec: spec.document_processing_config.parsing_config_overrides.parsing_config.ocr_parsing_config.use_native_text
+        arg: document_processing_config.parsing_config_overrides.ocr_parsing_config.use_native_text
+  # The schema is folded: one per store (Google keeps exactly one), nothing
+  # else in the catalog references it, and it shares the store's lifecycle.
+  google_discovery_engine_schema:
+    specRoot: spec.schema
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # Derived from the parent: the store's location and id, never
+      # declared twice; the destroy stance fanned from the spec.
+      - spec: spec.location
+        arg: location
+      - spec: spec.data_store_id
+        arg: data_store_id
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      - spec: spec.schema.schema_id
+        arg: schema_id
+      - spec: spec.schema.json_schema
+        arg: json_schema
+  # Target sites are folded: they belong to one website store and share its
+  # lifecycle.
+  google_discovery_engine_target_site:
+    specRoot: spec.target_sites
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.location
+        arg: location
+      - spec: spec.data_store_id
+        arg: data_store_id
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      - spec: spec.target_sites.provided_uri_pattern
+        arg: provided_uri_pattern
+      - spec: spec.target_sites.type
+        arg: type
+      - spec: spec.target_sites.exact_match
+        arg: exact_match
+  # Sitemaps are folded: a sitemap carries one URI and belongs to one
+  # advanced site search store, so the spec lists the URIs.
+  google_discovery_engine_sitemap:
+    specRoot: spec.sitemap_uris
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.location
+        arg: location
+      - spec: spec.data_store_id
+        arg: data_store_id
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+      - spec: spec.sitemap_uris
+        arg: uri
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.
+
+specExclusions:
+  - field: spec.document_processing_config.default_parsing_config.digital_parsing
+    reason: >-
+      the provider expresses the digital parser as an EMPTY marker block
+      (digital_parsing_config {}) beside the configured layout and OCR
+      parsers; the spec carries it as a presence bool and the modules emit
+      the marker block from it (the established marker-block judgment)
+  - field: spec.document_processing_config.parsing_config_overrides.parsing_config.digital_parsing
+    reason: >-
+      the same empty digital_parsing_config marker block, inside a
+      per-file-type override

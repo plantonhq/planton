@@ -1,0 +1,17 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_discovery_engine_data_connector:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

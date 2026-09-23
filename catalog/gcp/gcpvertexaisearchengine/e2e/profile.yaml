@@ -1,0 +1,35 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpvertexaisearchengine
+spec:
+  # Awaiting the live proof lane. All four scenarios prove in the harness
+  # project with roles/discoveryengine.admin (or the owner role); the
+  # module enables discoveryengine.googleapis.com itself and
+  # dialogflow.googleapis.com on the chat arm: the smallest search engine
+  # over the registry-installed prerequisite store, a search engine with
+  # every control action wired through the default serving config and the
+  # widget configured, a chat engine that creates its Dialogflow CX agent
+  # over a chat-solution store fixture, and a generic recommendation engine
+  # over a recommendation-solution store fixture. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest
+  # and every scenario are clean on the pinned provider, and the accounting
+  # is total. Live facts the proof lane confirms: (1) each arm creates and
+  # RE-PLANS CLEAN under the apply-idempotency gate -- search_engine_config
+  # sent empty lands as the Standard tier, and features and the knowledge
+  # graph left unset (Optional+Computed) show no diff; (2) the serving
+  # config PATCH on default_search lands after the controls it lists and
+  # re-plans clean; (3) default_search_widget_config exists on a fresh
+  # search engine before the PATCH -- a 404 there is Google's fact and the
+  # widget block moves to a preset; (4) the chat engine reports its
+  # Dialogflow agent under chat_engine_metadata and the dialogflow_agent
+  # output populates, and whether that agent outlives the engine at destroy
+  # is recorded; (5) the recommendation engine accepts a GENERIC store
+  # without a media config; (6) destroy order is assistants and controls ->
+  # engine, then the fixture stores (a store with an engine attached refuses
+  # deletion); (7) Google may reserve a deleted engine's id for a while --
+  # the ids carry the run id for that reason.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 60

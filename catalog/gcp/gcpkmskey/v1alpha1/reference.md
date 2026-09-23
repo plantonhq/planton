@@ -357,6 +357,9 @@ Fields on other kinds that can point at this resource:
 | GcpVertexAiIndexEndpoint | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpVertexAiNotebook | `spec.bootDisk.kmsKey` | `status.outputs.key_id` |
 | GcpVertexAiNotebook | `spec.dataDisk.kmsKey` | `status.outputs.key_id` |
+| GcpVertexAiSearchDataConnector | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiSearchDataStore | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpVertexAiSearchEngine | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpWorkflow | `spec.cryptoKey` | `status.outputs.key_id` |
 | KubernetesOpenBao | `spec.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |
 | KubernetesPlantonPlatform | `spec.vault.autoUnseal.gcpKms.cryptoKey` | `status.outputs.key_name` |

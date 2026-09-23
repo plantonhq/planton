@@ -1,0 +1,45 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataConnector
+metadata:
+  name: jira-federated
+spec:
+  location: global
+  collectionDisplayName: Jira
+  dataSource: jira
+  dataSourceVersion: 3
+  # Credentials are Secret Manager resource names, never the material.
+  params:
+    instance_uri: https://example.atlassian.net
+    instance_id: projects/my-gcp-project/secrets/jira-instance-id
+    client_id: projects/my-gcp-project/secrets/jira-client-id
+    client_secret: projects/my-gcp-project/secrets/jira-client-secret
+    refresh_token: projects/my-gcp-project/secrets/jira-refresh-token
+    auth_type: OAUTH
+  refreshInterval: 86400s
+  syncMode: PERIODIC
+  # Search Jira live and let the assistant act on it.
+  connectorModes:
+    - FEDERATED
+    - ACTIONS
+  staticIpEnabled: true
+  entities:
+    - entityName: project
+    - entityName: issue
+    - entityName: comment
+    - entityName: attachment
+  actionConfig:
+    actionParams:
+      instance_uri: https://example.atlassian.net
+      instance_id: projects/my-gcp-project/secrets/jira-instance-id
+      client_id: projects/my-gcp-project/secrets/jira-client-id
+      client_secret: projects/my-gcp-project/secrets/jira-client-secret
+      auth_type: OAUTH
+    createBapConnection: true
+  bapConfig:
+    supportedConnectorModes:
+      - ACTIONS
+    enabledActions:
+      - create_issue
+      - update_issue
+      - change_issue_status
+      - create_comment

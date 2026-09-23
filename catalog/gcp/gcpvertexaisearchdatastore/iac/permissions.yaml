@@ -1,0 +1,48 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpvertexaisearchdatastore
+spec:
+  gcp:
+    groups:
+      - purpose: EnableDiscoveryEngineApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling discoveryengine.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageDataStore
+        permissions:
+          - discoveryengine.dataStores.create
+          - discoveryengine.dataStores.get
+          - discoveryengine.dataStores.update
+          - discoveryengine.dataStores.delete
+          - discoveryengine.operations.get
+        provenance: derived
+        notes: Covers google_discovery_engine_data_store (Pulumi discoveryengine.DataStore) -- create, read/refresh, the in-place PATCHes (display_name, kms_key_name), destroy under deletion_policy DELETE (ABANDON and PREVENT call no API), and the long-running operations the provider polls.
+      - purpose: ManageSchema
+        permissions:
+          - discoveryengine.schemas.create
+          - discoveryengine.schemas.get
+          - discoveryengine.schemas.delete
+        provenance: derived
+        notes: Covers google_discovery_engine_schema (Pulumi discoveryengine.Schema) when spec.schema is declared -- create, read/refresh, destroy; every field is immutable, so there is no update.
+      - purpose: ManageTargetSites
+        permissions:
+          - discoveryengine.targetSites.create
+          - discoveryengine.targetSites.get
+          - discoveryengine.targetSites.delete
+        provenance: derived
+        notes: Covers google_discovery_engine_target_site (Pulumi discoveryengine.TargetSite), one per spec.target_sites[] entry on a website store -- create, read/refresh, destroy; every field is immutable.
+      - purpose: ManageSitemaps
+        permissions:
+          - discoveryengine.sitemaps.create
+          - discoveryengine.sitemaps.get
+          - discoveryengine.sitemaps.delete
+        provenance: derived
+        notes: Covers google_discovery_engine_sitemap (Pulumi discoveryengine.Sitemap), one per spec.sitemap_uris[] entry on an advanced site search store -- create, read/refresh, destroy.

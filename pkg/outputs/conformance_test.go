@@ -3977,6 +3977,72 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "collection_id", "location", "index_names", "index_count"},
 		},
 		{
+			// GcpVertexAiSearchDataStore: the store's full name (the verifier's
+			// key), its id and location, the default schema Google created, the
+			// declared schema's name, and the folded target sites' and sitemaps'
+			// names in manifest order (list outputs).
+			name: "GcpVertexAiSearchDataStore",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataStore,
+			rawOutputs: map[string]interface{}{
+				"name":              "projects/my-project/locations/global/collections/default_collection/dataStores/product-docs",
+				"data_store_id":     "product-docs",
+				"location":          "global",
+				"default_schema_id": "default_schema",
+				"schema_name":       "",
+				"target_site_names": []interface{}{
+					"projects/my-project/locations/global/collections/default_collection/dataStores/product-docs/siteSearchEngine/targetSites/1234",
+				},
+				"sitemap_names": []interface{}{},
+			},
+			mustPopulate: []string{"name", "data_store_id", "location", "default_schema_id", "target_site_names"},
+		},
+		{
+			// GcpVertexAiSearchEngine: the engine's full name (the verifier's
+			// key), its id, location, collection, and arm, the default serving
+			// and widget configs' names when configured, a chat engine's
+			// Dialogflow agent, and the folded controls' and assistants' names
+			// in manifest order (list outputs).
+			name: "GcpVertexAiSearchEngine",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchEngine,
+			rawOutputs: map[string]interface{}{
+				"name":                "projects/my-project/locations/global/collections/default_collection/engines/product-search",
+				"engine_id":           "product-search",
+				"location":            "global",
+				"collection_id":       "default_collection",
+				"engine_type":         "SEARCH",
+				"serving_config_name": "projects/my-project/locations/global/collections/default_collection/engines/product-search/servingConfigs/default_search",
+				"widget_config_name":  "projects/my-project/locations/global/collections/default_collection/engines/product-search/widgetConfigs/default_search_widget_config",
+				"dialogflow_agent":    "",
+				"control_names": []interface{}{
+					"projects/my-project/locations/global/collections/default_collection/engines/product-search/controls/synonyms-laptop",
+				},
+				"assistant_names": []interface{}{},
+			},
+			mustPopulate: []string{"name", "engine_id", "location", "collection_id", "engine_type", "serving_config_name", "widget_config_name", "control_names"},
+		},
+		{
+			// GcpVertexAiSearchDataConnector: the connector's full name (the
+			// verifier's key), the collection it created and its location, the
+			// connector's state, the data stores Google created per entity in
+			// manifest order (a list output), the static egress addresses, and
+			// the private connectivity tenant project.
+			name: "GcpVertexAiSearchDataConnector",
+			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataConnector,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/my-project/locations/global/collections/jira-federated/dataConnector",
+				"collection_id": "jira-federated",
+				"location":      "global",
+				"state":         "ACTIVE",
+				"entity_data_stores": []interface{}{
+					"projects/my-project/locations/global/collections/jira-federated/dataStores/jira-federated-project",
+					"projects/my-project/locations/global/collections/jira-federated/dataStores/jira-federated-issue",
+				},
+				"static_ip_addresses":             []interface{}{"34.1.2.3"},
+				"private_connectivity_project_id": "",
+			},
+			mustPopulate: []string{"name", "collection_id", "location", "state", "entity_data_stores", "static_ip_addresses"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

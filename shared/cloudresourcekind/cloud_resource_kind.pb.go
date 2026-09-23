@@ -2009,6 +2009,22 @@ const (
 	// vector fields -- together with the approximate-nearest-neighbor indexes
 	// built over those fields (folded: one collection owns them).
 	CloudResourceKind_GcpVectorSearchCollection CloudResourceKind = 3204
+	// Vertex AI Search (the Discovery Engine API behind the console's AI
+	// Applications / Gemini Enterprise): a data store is the corpus --
+	// structured records, unstructured documents, or a public website --
+	// with its schema, crawl patterns, and sitemaps folded in.
+	CloudResourceKind_GcpVertexAiSearchDataStore CloudResourceKind = 3205
+	// The app over one or more data stores -- a search, chat, or
+	// recommendation engine -- with its serving controls, serving config,
+	// search widget, and assistants folded in. Its data stores are
+	// prerequisites: an engine cannot exist without one.
+	CloudResourceKind_GcpVertexAiSearchEngine CloudResourceKind = 3206
+	// A data connector is a COLLECTION of data stores Google syncs from a
+	// source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
+	// Drive, ...) on a schedule -- a different root from a data store, which
+	// is why it is its own kind. Engines search its stores by naming the
+	// collection.
+	CloudResourceKind_GcpVertexAiSearchDataConnector CloudResourceKind = 3219
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -3077,6 +3093,9 @@ var (
 		3201: "GcpVertexAiModelGardenDeployment",
 		3202: "GcpVertexAiRagEngineConfig",
 		3204: "GcpVectorSearchCollection",
+		3205: "GcpVertexAiSearchDataStore",
+		3206: "GcpVertexAiSearchEngine",
+		3219: "GcpVertexAiSearchDataConnector",
 		3250: "GcpFirebaseProject",
 		3251: "GcpFirebaseAndroidApp",
 		3252: "GcpFirebaseAppleApp",
@@ -3830,6 +3849,9 @@ var (
 		"GcpVertexAiModelGardenDeployment":               3201,
 		"GcpVertexAiRagEngineConfig":                     3202,
 		"GcpVectorSearchCollection":                      3204,
+		"GcpVertexAiSearchDataStore":                     3205,
+		"GcpVertexAiSearchEngine":                        3206,
+		"GcpVertexAiSearchDataConnector":                 3219,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4488,7 +4510,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xb7\xe9\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xfa\xea\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5058,7 +5080,10 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x16GcpVertexAiAgentEngine\x10\x80\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpagentP\xb2\x02\x12D\n" +
 	" GcpVertexAiModelGardenDeployment\x10\x81\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpmgdepP\xb2\x02\x12>\n" +
 	"\x1aGcpVertexAiRagEngineConfig\x10\x82\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpragcfP\xb2\x02\x12;\n" +
-	"\x19GcpVectorSearchCollection\x10\x84\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvscP\xb2\x02\x128\n" +
+	"\x19GcpVectorSearchCollection\x10\x84\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcpvscP\xb2\x02\x12=\n" +
+	"\x1aGcpVertexAiSearchDataStore\x10\x85\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvsdsP\xb2\x02\x12?\n" +
+	"\x17GcpVertexAiSearchEngine\x10\x86\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvseng:\x02\x85\x19P\xb2\x02\x12A\n" +
+	"\x1eGcpVertexAiSearchDataConnector\x10\x93\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvsdcP\xb2\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

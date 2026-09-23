@@ -1,0 +1,44 @@
+# GcpVertexAiSearchDataConnector scenario: a ServiceNow connector in
+# DATA_INGESTION mode with daily full and six-hourly incremental syncs and
+# per-entity inclusion filters -- the provider's own example. Planned
+# offline only (the profile is deferred; see jira-federated-actions).
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataConnector
+metadata:
+  name: planton-oss-e2e-gcpvsdc-servicenow
+  id: planton-oss-e2e-gcpvsdc-servicenow
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchdataconnector
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  collectionId: planton-oss-e2e-vsdc-snow-${E2E_RUN_ID}
+  collectionDisplayName: Planton OSS E2E ServiceNow collection
+  dataSource: servicenow
+  params:
+    auth_type: OAUTH_PASSWORD_GRANT
+    instance_uri: https://example.service-now.com/
+    client_id: projects/planton-oss-e2e/secrets/servicenow-client-id
+    client_secret: projects/planton-oss-e2e/secrets/servicenow-client-secret
+    user_account: connector@example.com
+    password: projects/planton-oss-e2e/secrets/servicenow-password
+  refreshInterval: 86400s
+  incrementalRefreshInterval: 21600s
+  syncMode: PERIODIC
+  connectorModes:
+    - DATA_INGESTION
+  entities:
+    - entityName: catalog
+      params: '{"inclusion_filters":{"knowledgeBaseSysId":["123"]}}'
+    - entityName: incident
+      params: '{"inclusion_filters":{"knowledgeBaseSysId":["123"]}}'
+      keyPropertyMappings:
+        short_description: title
+        description: description
+    - entityName: knowledge_base

@@ -1,0 +1,31 @@
+# GcpVertexAiSearchDataStore scenario: a PUBLIC_WEBSITE store with basic
+# site search over one included URL pattern -- Google's own provider test
+# shape. Basic site search indexes public pages without domain
+# verification, so the pattern needs no ownership proof; advanced site
+# search (which does) is an offline-only preset arm.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpVertexAiSearchDataStore
+metadata:
+  name: planton-oss-e2e-gcpvsds-website
+  id: planton-oss-e2e-gcpvsds-website
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpvertexaisearchdatastore
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  dataStoreId: planton-oss-e2e-vsds-website-${E2E_RUN_ID}
+  displayName: Planton OSS E2E website store
+  industryVertical: GENERIC
+  contentConfig: PUBLIC_WEBSITE
+  solutionTypes:
+    - SOLUTION_TYPE_SEARCH
+  targetSites:
+    - providedUriPattern: cloud.google.com/docs/*
+      type: INCLUDE
+      exactMatch: false

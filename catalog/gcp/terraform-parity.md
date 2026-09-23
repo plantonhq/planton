@@ -29,10 +29,10 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 128 |
-| Distinct provider resources consumed | 215 |
-| Spec fields authored across all kinds | 4535 |
-| Module pins on `google` | `~> 8.3` × 128 |
+| Kinds in the catalog | 131 |
+| Distinct provider resources consumed | 227 |
+| Spec fields authored across all kinds | 4724 |
+| Module pins on `google` | `~> 8.3` × 131 |
 | Module pins on `google-beta` | `~> 8.3` × 4 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -76,7 +76,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**128 of 128 kinds are at total accounting; 79 proven live.**
+**131 of 131 kinds are at total accounting; 79 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -203,6 +203,9 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpVertexAiModelGardenDeployment | 90 | 87 | 3 | 0 | 0 | ✅ | — |
 | GcpVertexAiNotebook | 46 | 9 | 36 | 1 | 0 | ✅ | — |
 | GcpVertexAiRagEngineConfig | 3 | 1 | 2 | 0 | 0 | ✅ | — |
+| GcpVertexAiSearchDataConnector | 28 | 27 | 1 | 0 | 0 | ✅ | — |
+| GcpVertexAiSearchDataStore | 53 | 23 | 30 | 0 | 0 | ✅ | — |
+| GcpVertexAiSearchEngine | 155 | 124 | 29 | 2 | 0 | ✅ | — |
 | GcpVpcNetwork | 17 | 10 | 6 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpVpcPeering | 17 | 14 | 2 | 1 | 0 | ✅ | — |
 | GcpWorkflow | 15 | 10 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
@@ -215,11 +218,11 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 210 | consumed by a kind's Terraform module today |
+| Modeled | 222 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 80 | judged to be covered by a planned kind or planned composition, not built yet |
-| Deferred | 583 | deliberately not offered, each with the recorded reason |
+| Planned | 70 | judged to be covered by a planned kind or planned composition, not built yet |
+| Deferred | 581 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 69 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
 
@@ -228,7 +231,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (210)
+### Modeled (222)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -332,6 +335,18 @@ rather than trusted.
 | `google_container_node_pool` | consumed by GcpGkeNodePool |
 | `google_dataproc_autoscaling_policy` | consumed by GcpDataprocAutoscalingPolicy |
 | `google_dataproc_cluster` | consumed by GcpDataprocCluster |
+| `google_discovery_engine_assistant` | consumed by GcpVertexAiSearchEngine |
+| `google_discovery_engine_chat_engine` | consumed by GcpVertexAiSearchEngine |
+| `google_discovery_engine_control` | consumed by GcpVertexAiSearchEngine |
+| `google_discovery_engine_data_connector` | consumed by GcpVertexAiSearchDataConnector |
+| `google_discovery_engine_data_store` | consumed by GcpVertexAiSearchDataStore |
+| `google_discovery_engine_recommendation_engine` | consumed by GcpVertexAiSearchEngine |
+| `google_discovery_engine_schema` | consumed by GcpVertexAiSearchDataStore |
+| `google_discovery_engine_search_engine` | consumed by GcpVertexAiSearchEngine |
+| `google_discovery_engine_serving_config` | consumed by GcpVertexAiSearchEngine |
+| `google_discovery_engine_sitemap` | consumed by GcpVertexAiSearchDataStore |
+| `google_discovery_engine_target_site` | consumed by GcpVertexAiSearchDataStore |
+| `google_discovery_engine_widget_config` | consumed by GcpVertexAiSearchEngine |
 | `google_dns_managed_zone` | consumed by GcpDnsZone |
 | `google_dns_record_set` | consumed by GcpDnsRecord |
 | `google_eventarc_channel` | consumed by GcpEventarcTrigger |
@@ -398,7 +413,7 @@ rather than trusted.
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiEndpoint, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiRagEngineConfig, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiEndpoint, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
@@ -875,7 +890,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (80)
+### Planned (70)
 
 | Resource | Recorded reason |
 |---|---|
@@ -910,16 +925,6 @@ rather than trusted.
 | `google_dialogflow_cx_tool` | planned composition into the planned GcpDialogflowCxAgent kind (tools) |
 | `google_dialogflow_cx_version` | planned composition into the planned GcpDialogflowCxAgent kind (versions) |
 | `google_dialogflow_cx_webhook` | planned composition into the planned GcpDialogflowCxAgent kind (webhooks) |
-| `google_discovery_engine_chat_engine` | planned composition into the planned GcpVertexAiSearchEngine kind (the chat engine arm) |
-| `google_discovery_engine_control` | planned composition into the planned GcpVertexAiSearchEngine kind (controls) |
-| `google_discovery_engine_data_connector` | planned composition into the planned GcpVertexAiSearchDataStore kind (data connectors) |
-| `google_discovery_engine_data_store` | planned GcpVertexAiSearchDataStore kind (Vertex AI Search data stores) |
-| `google_discovery_engine_recommendation_engine` | planned composition into the planned GcpVertexAiSearchEngine kind (the recommendation engine arm) |
-| `google_discovery_engine_schema` | planned composition into the planned GcpVertexAiSearchDataStore kind (schema) |
-| `google_discovery_engine_search_engine` | planned GcpVertexAiSearchEngine kind (Vertex AI Search engines) |
-| `google_discovery_engine_serving_config` | planned composition into the planned GcpVertexAiSearchEngine kind (serving configs) |
-| `google_discovery_engine_sitemap` | planned composition into the planned GcpVertexAiSearchDataStore kind (sitemaps) |
-| `google_discovery_engine_target_site` | planned composition into the planned GcpVertexAiSearchDataStore kind (target sites) |
 | `google_document_ai_processor` | planned GcpDocumentAiProcessor kind (Document AI processors) |
 | `google_document_ai_processor_default_version` | planned composition into the planned GcpDocumentAiProcessor kind (the default version) |
 | `google_gke_hub_feature` | planned GcpGkeFleetFeature kind (GKE fleet features) |
@@ -960,7 +965,7 @@ rather than trusted.
 | `google_vertex_ai_tensorboard_experiment` | planned composition into the planned GcpVertexAiTensorboard kind (experiments) |
 | `google_vertex_ai_tensorboard_run` | planned composition into the planned GcpVertexAiTensorboard kind (runs) |
 
-### Deferred (583)
+### Deferred (581)
 
 | Resource | Recorded reason |
 |---|---|
@@ -1254,12 +1259,10 @@ rather than trusted.
 | `google_dialogflow_cx_playbook` | conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind |
 | `google_dialogflow_cx_test_case` | Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand |
 | `google_dialogflow_cx_tool_version` | Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand |
-| `google_discovery_engine_acl_config` | Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral |
-| `google_discovery_engine_assistant` | Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral |
-| `google_discovery_engine_cmek_config` | Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral |
-| `google_discovery_engine_license_config` | Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral |
-| `google_discovery_engine_user_store` | Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral |
-| `google_discovery_engine_widget_config` | Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral |
+| `google_discovery_engine_acl_config` | a per-location singleton that names the identity provider ACL-enabled data stores enforce (GcpVertexAiSearchDataStore.acl_enabled); PATCH-only and never deleted; a candidate kind of its own -- a location-scoped identity setting, not a property of any one store |
+| `google_discovery_engine_cmek_config` | a per-location CMEK registration that data stores and engines then reference by kms_key_name (both modeled as GcpKmsKey references); a candidate kind of its own -- a location-scoped key registration, not a property of any one store or engine |
+| `google_discovery_engine_license_config` | Gemini Enterprise licensing -- a per-location subscription (tier, seat count, term) with one argument the pinned pulumi-gcp SDK lacks (last_user_update_time); a candidate kind beside google_discovery_engine_user_store, forged together when license administration is demanded |
+| `google_discovery_engine_user_store` | Gemini Enterprise licensing -- the per-location user store that assigns license configs to users; PATCH-only and never deleted; a candidate kind beside google_discovery_engine_license_config, forged together when license administration is demanded |
 | `google_dns_policy` | judged to fold into the existing GcpVpcNetwork kind's spec (per-network DNS server policy); the composition is not built |
 | `google_dns_response_policy` | judged to deserve a GcpDnsResponsePolicy kind (DNS firewall, rules composed); deferred pending demand |
 | `google_dns_response_policy_rule` | judged to deserve a GcpDnsResponsePolicy kind (DNS firewall, rules composed); deferred pending demand |

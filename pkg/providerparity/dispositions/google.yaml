@@ -1078,52 +1078,16 @@ resources:
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
   - resource: google_discovery_engine_acl_config
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_assistant
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_chat_engine
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchEngine kind (the chat engine arm)"
+    reason: "a per-location singleton that names the identity provider ACL-enabled data stores enforce (GcpVertexAiSearchDataStore.acl_enabled); PATCH-only and never deleted; a candidate kind of its own -- a location-scoped identity setting, not a property of any one store"
   - resource: google_discovery_engine_cmek_config
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_control
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchEngine kind (controls)"
-  - resource: google_discovery_engine_data_connector
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchDataStore kind (data connectors)"
-  - resource: google_discovery_engine_data_store
-    disposition: model-planned
-    reason: "planned GcpVertexAiSearchDataStore kind (Vertex AI Search data stores)"
+    reason: "a per-location CMEK registration that data stores and engines then reference by kms_key_name (both modeled as GcpKmsKey references); a candidate kind of its own -- a location-scoped key registration, not a property of any one store or engine"
   - resource: google_discovery_engine_license_config
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_recommendation_engine
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchEngine kind (the recommendation engine arm)"
-  - resource: google_discovery_engine_schema
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchDataStore kind (schema)"
-  - resource: google_discovery_engine_search_engine
-    disposition: model-planned
-    reason: "planned GcpVertexAiSearchEngine kind (Vertex AI Search engines)"
-  - resource: google_discovery_engine_serving_config
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchEngine kind (serving configs)"
-  - resource: google_discovery_engine_sitemap
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchDataStore kind (sitemaps)"
-  - resource: google_discovery_engine_target_site
-    disposition: model-planned
-    reason: "planned composition into the planned GcpVertexAiSearchDataStore kind (target sites)"
+    reason: "Gemini Enterprise licensing -- a per-location subscription (tier, seat count, term) with one argument the pinned pulumi-gcp SDK lacks (last_user_update_time); a candidate kind beside google_discovery_engine_user_store, forged together when license administration is demanded"
   - resource: google_discovery_engine_user_store
     disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
-  - resource: google_discovery_engine_widget_config
-    disposition: deferred
-    reason: "Vertex AI Search (Discovery Engine) is growing but a specialty; first candidate to promote out of deferral"
+    reason: "Gemini Enterprise licensing -- the per-location user store that assigns license configs to users; PATCH-only and never deleted; a candidate kind beside google_discovery_engine_license_config, forged together when license administration is demanded"
   - resource: google_dns_policy
     disposition: deferred
     reason: "judged to fold into the existing GcpVpcNetwork kind's spec (per-network DNS server policy); the composition is not built"
