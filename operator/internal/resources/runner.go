@@ -367,10 +367,14 @@ func RunnerBuildRole(cfg RunnerConfig) *rbacv1.Role {
 				Resources: []string{"secrets", "serviceaccounts"},
 				Verbs:     []string{"create", "get", "deletecollection"},
 			},
+			// A build's export ConfigMaps: the runner creates each one empty
+			// (and empties it on a rerun), grants the build get/update/patch on
+			// exactly those names, reads the result, and sweeps it. Kubernetes
+			// refuses a grant of any permission the granter does not hold.
 			{
 				APIGroups: []string{""},
 				Resources: []string{"configmaps"},
-				Verbs:     []string{"get", "deletecollection"},
+				Verbs:     []string{"get", "create", "update", "patch", "deletecollection"},
 			},
 			{
 				APIGroups: []string{"rbac.authorization.k8s.io"},
