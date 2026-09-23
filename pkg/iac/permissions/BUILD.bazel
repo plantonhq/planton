@@ -18,6 +18,8 @@ go_test(
     embed = [":permissions"],
     deps = [
         "//iac/componentpermissions/v1:componentpermissions",
+        "//pkg/crkreflect",
+        "//shared/cloudresourcekind",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )

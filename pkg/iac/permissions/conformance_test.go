@@ -1,6 +1,7 @@
 package permissions
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -11,6 +12,8 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 
 	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
+	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
 )
 
 var (
@@ -147,6 +150,7 @@ func TestPermissionsConformance(t *testing.T) {
 				checkCloudflare(t, spec.GetCloudflare())
 				checkDigitalOcean(t, spec.GetDigitalOcean())
 				checkAuth0(t, spec.GetAuth0())
+				checkConditions(t, component, spec)
 			})
 		}
 	}
@@ -386,4 +390,86 @@ func repoRoot(t *testing.T) string {
 		}
 		dir = parent
 	}
+}
+
+// checkConditions proves every entry's condition names a field that exists
+// in the component's own spec. A condition naming a field the spec does not
+// have would mark an entry optional forever -- no manifest could ever set
+// it -- so a typo here silently drops a required grant from every chart that
+// unions it. The walk reads the permissions schema's own descriptor (every
+// section, every repeated entry list, every entry's `condition`), so an
+// entry type added to the schema is covered the day it lands.
+func checkConditions(t *testing.T, component string, spec *permissionsv1.ComponentPermissionsSpec) {
+	t.Helper()
+	var specFields protoreflect.MessageDescriptor
+	resolveSpec := func() protoreflect.MessageDescriptor {
+		if specFields != nil {
+			return specFields
+		}
+		// The component directory's name, normalized to its kind the way the
+		// catalog locates a component's directory (crkreflect.ComponentVersionDir).
+		kind := crkreflect.KindFromString(component)
+		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+			t.Fatalf("an entry carries a condition, but component %q resolves to no kind", component)
+		}
+		instance, err := crkreflect.NewInstance(kind)
+		if err != nil {
+			t.Fatalf("an entry carries a condition, but kind %s has no message: %v", kind, err)
+		}
+		specField := instance.ProtoReflect().Descriptor().Fields().ByName("spec")
+		if specField == nil || specField.Message() == nil {
+			t.Fatalf("kind %s's message has no spec to hold a condition's field", kind)
+		}
+		specFields = specField.Message()
+		return specFields
+	}
+
+	spec.ProtoReflect().Range(func(_ protoreflect.FieldDescriptor, section protoreflect.Value) bool {
+		section.Message().Range(func(listField protoreflect.FieldDescriptor, entries protoreflect.Value) bool {
+			if !listField.IsList() || listField.Message() == nil {
+				return true
+			}
+			conditionField := listField.Message().Fields().ByName("condition")
+			if conditionField == nil {
+				return true
+			}
+			list := entries.List()
+			for i := 0; i < list.Len(); i++ {
+				entry := list.Get(i).Message()
+				if !entry.Has(conditionField) {
+					continue
+				}
+				path := entry.Get(conditionField).Message().Interface().(*permissionsv1.PermissionCondition).GetSpecFieldSet()
+				where := fmt.Sprintf("%s entry %d", listField.FullName(), i)
+				if strings.TrimSpace(path) == "" {
+					t.Errorf("%s: condition names no spec field -- an entry needed by every deployment carries no condition at all", where)
+					continue
+				}
+				if err := specFieldExists(resolveSpec(), path); err != nil {
+					t.Errorf("%s: condition names spec field %q, which %s does not have (%v) -- no manifest could ever set it, so the entry would never be granted", where, path, resolveSpec().FullName(), err)
+				}
+			}
+			return true
+		})
+		return true
+	})
+}
+
+// specFieldExists walks a dot-separated path of proto field names through a
+// message descriptor.
+func specFieldExists(message protoreflect.MessageDescriptor, path string) error {
+	segments := strings.Split(path, ".")
+	for i, segment := range segments {
+		field := message.Fields().ByName(protoreflect.Name(segment))
+		if field == nil {
+			return fmt.Errorf("no field %q in %s", segment, message.FullName())
+		}
+		if i < len(segments)-1 {
+			if field.Message() == nil || field.IsList() || field.IsMap() {
+				return fmt.Errorf("%q is not a singular message, so %q cannot be walked", segment, segments[i+1])
+			}
+			message = field.Message()
+		}
+	}
+	return nil
 }

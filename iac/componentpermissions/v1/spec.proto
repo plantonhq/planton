@@ -43,6 +43,22 @@ enum Provenance {
   proven = 2;
 }
 
+// PermissionCondition says an entry is needed only when the component's
+// manifest sets a field of its spec. An entry without one is needed by
+// every deployment of the component. The condition is data so every reader
+// decides it the same way -- a catalog page marks the entry optional, a
+// chart unions it only when one of its manifests sets the field, a
+// connection check does not report its absence as a gap -- rather than each
+// reading a sentence in the notes. The permissions gate proves the field
+// exists in the component's own spec.
+message PermissionCondition {
+  // Path of the spec field, in the proto field names a manifest uses,
+  // dot-separated for a nested field (e.g. "roles", "enabled_clients").
+  // "Set" means a repeated or map field is non-empty, a message field is
+  // present, and a scalar holds a non-default value.
+  string spec_field_set = 1;
+}
+
 // AwsPermissions is the least-privilege IAM policy material for the runner's
 // AWS principal, expressed as policy-ready statements.
 message AwsPermissions {
@@ -71,6 +87,8 @@ message AwsStatement {
   // (terraform type names are the useful vocabulary). Also the home for
   // wildcard defenses.
   string notes = 5;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 6;
 }
 
 // GcpPermissions is the least-privilege permission material for the
@@ -91,6 +109,8 @@ message GcpPermissionGroup {
   Provenance provenance = 3;
   // For derived entries: which module resources this group covers.
   string notes = 4;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 5;
 }
 
 // AzurePermissions is the least-privilege RBAC material for the runner's
@@ -113,6 +133,8 @@ message AzureActionGroup {
   Provenance provenance = 4;
   // For derived entries: which module resources this group covers.
   string notes = 5;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 6;
 }
 
 // CloudflarePermissions is the least-privilege API-token material for the
@@ -153,6 +175,8 @@ message CloudflareTokenGroup {
   // any conditionality (e.g. a group needed only when a spec field is
   // set) and the endpoint evidence the derivation stands on.
   string notes = 5;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 6;
 }
 
 // DigitalOceanPermissions is the least-privilege credential material for
@@ -188,6 +212,8 @@ message DigitalOceanScopeGroup {
   // any conditionality (e.g. a scope needed only when a spec field is
   // set) and the endpoint evidence the derivation stands on.
   string notes = 4;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 5;
 }
 
 // DigitalOceanSpacesGrant is one grant the runner's Spaces key needs, at
@@ -210,6 +236,8 @@ message DigitalOceanSpacesGrant {
   // S3-compatible calls the modules issue, and the least-privilege bucket
   // scoping the operator should apply when minting the key.
   string notes = 4;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 5;
 }
 
 // Auth0Permissions is the least-privilege credential material for the
@@ -240,13 +268,14 @@ message Auth0ScopeGroup {
   // "connections_options" pair a connection's options tree needs.
   repeated string scopes = 2;
   Provenance provenance = 3;
-  // For derived entries: which module resources this group covers, plus
-  // any conditionality (e.g. scopes needed only when a spec field is set)
-  // and the endpoint evidence the derivation stands on. A credential
-  // missing a conditional group is least privilege, not a defect, for a
-  // deployment that never sets the field -- the notes are where a reader
-  // learns which is which.
+  // For derived entries: which module resources this group covers and the
+  // endpoint evidence the derivation stands on. Whether the group is needed
+  // at all is its condition, never a sentence here: a credential missing a
+  // conditional group is least privilege, not a defect, for a deployment
+  // that never sets the field.
   string notes = 4;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 5;
 }
 
 // KubernetesPermissions is the least-privilege RBAC material for the
@@ -272,4 +301,6 @@ message KubernetesRule {
   Provenance provenance = 5;
   // For derived entries: which module resources this rule covers.
   string notes = 6;
+  // Absent: every deployment of the component needs this entry.
+  PermissionCondition condition = 7;
 }

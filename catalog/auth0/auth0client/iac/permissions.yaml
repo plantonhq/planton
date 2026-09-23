@@ -28,12 +28,12 @@ spec:
           - update:clients
           - delete:clients
         provenance: derived
-        notes: Covers auth0_client, the application registration -- create via POST /api/v2/clients (create:clients, named by the endpoint doc's insufficient-scope contract, auth0.com/docs/api/management/v2/clients/post-clients, read 2026-08-22), read back on refresh via GET /api/v2/clients/{id} (read:clients, listed in get-clients-by-id's accepted scopes, read 2026-08-22), change in place via PATCH /api/v2/clients/{id} (update:clients), and destroy via DELETE /api/v2/clients/{id} (delete:clients). The update and delete names follow Auth0's per-endpoint-family naming; the patch-clients page was not fetched.
+        notes: Covers auth0_client, the application registration — create via POST /api/v2/clients (create:clients, named by the endpoint doc's insufficient-scope contract, auth0.com/docs/api/management/v2/clients/post-clients, read 2026-08-22), read back on refresh via GET /api/v2/clients/{id} (read:clients, listed in get-clients-by-id's accepted scopes, read 2026-08-22), change in place via PATCH /api/v2/clients/{id} (update:clients), and destroy via DELETE /api/v2/clients/{id} (delete:clients). The update and delete names follow Auth0's per-endpoint-family naming; the patch-clients page was not fetched.
       - purpose: ReadClientSecret
         scopes:
           - read:client_keys
         provenance: derived
-        notes: The data.auth0_client read-back that surfaces client_secret and token_endpoint_auth_method as outputs (iac/tf/main.tf names the requirement). GET /api/v2/clients/{id} returns secret material only to tokens holding this scope (get-clients-by-id's accepted scopes, read 2026-08-22). It fails silently when missing -- the client installs green and its client_secret output is empty -- so a credential for any deployment that reads the secret needs it.
+        notes: The data.auth0_client read-back that surfaces client_secret and token_endpoint_auth_method as outputs (iac/tf/main.tf names the requirement). GET /api/v2/clients/{id} returns secret material only to tokens holding this scope (get-clients-by-id's accepted scopes, read 2026-08-22). It fails silently when missing — the client installs green and its client_secret output is empty — so a credential for any deployment that reads the secret needs it.
       - purpose: ManageApiGrants
         scopes:
           - create:client_grants
@@ -41,4 +41,6 @@ spec:
           - update:client_grants
           - delete:client_grants
         provenance: derived
-        notes: Needed only when spec.api_grants is non-empty -- one auth0_client_grant per entry authorizes the client against an API. Create via POST /api/v2/client-grants (create:client_grants, auth0.com/docs/api/management/v2/client-grants/post-client-grants, read 2026-08-22), read back via GET /api/v2/client-grants (read:client_grants), change scopes via PATCH /api/v2/client-grants/{id} (update:client_grants), and remove on destroy or grant removal via DELETE /api/v2/client-grants/{id} (delete:client_grants); the last three follow the same family naming.
+        condition:
+          spec_field_set: api_grants
+        notes: One auth0_client_grant per api_grants entry authorizes the client against an API. Create via POST /api/v2/client-grants (create:client_grants, auth0.com/docs/api/management/v2/client-grants/post-client-grants, read 2026-08-22), read back via GET /api/v2/client-grants (read:client_grants), change scopes via PATCH /api/v2/client-grants/{id} (update:client_grants), and remove on destroy or grant removal via DELETE /api/v2/client-grants/{id} (delete:client_grants); the last three follow the same family naming.

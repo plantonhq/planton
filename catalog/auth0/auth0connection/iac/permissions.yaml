@@ -28,19 +28,21 @@ spec:
           - update:connections
           - delete:connections
         provenance: derived
-        notes: Covers auth0_connection's lifecycle -- create via POST /api/v2/connections (create:connections, named verbatim by the endpoint doc's insufficient-scope contract, auth0.com/docs/api/management/v2/connections/post-connections, read 2026-08-22), read back on refresh via GET /api/v2/connections/{id} (read:connections), change in place via PATCH /api/v2/connections/{id} (update:connections, which also covers the enabled-clients write below), and destroy via DELETE /api/v2/connections/{id} (delete:connections). The read, update, and delete names follow Auth0's per-endpoint-family scope naming; their pages were not fetched.
+        notes: Covers auth0_connection's lifecycle — create via POST /api/v2/connections (create:connections, named verbatim by the endpoint doc's insufficient-scope contract, auth0.com/docs/api/management/v2/connections/post-connections, read 2026-08-22), read back on refresh via GET /api/v2/connections/{id} (read:connections), change in place via PATCH /api/v2/connections/{id} (update:connections, which also covers the enabled-clients write below), and destroy via DELETE /api/v2/connections/{id} (delete:connections). The read, update, and delete names follow Auth0's per-endpoint-family scope naming; their pages were not fetched.
       - purpose: ReadConnectionOptions
         scopes:
           - read:connections_options
         provenance: derived
-        notes: Reading the connection's options tree back on refresh -- password policy, MFA, dictionary and history settings, upstream identity-provider settings. The post-connections doc states the scope must be present for options to be returned (read 2026-08-22). Without it the provider reads an options-less connection and plans a change on every refresh.
+        notes: Reading the connection's options tree back on refresh — password policy, MFA, dictionary and history settings, upstream identity-provider settings. The post-connections doc states the scope must be present for options to be returned (read 2026-08-22). Without it the provider reads an options-less connection and plans a change on every refresh.
       - purpose: WriteConnectionOptions
         scopes:
           - update:connections_options
         provenance: derived
-        notes: Writing the options tree on update. iac/tf/main.tf declares the auth0_connection options block unconditionally, so every apply after the first sends options in the PATCH, and Auth0 refuses that write without this scope -- "Updating the options property requires the update:connections_options scope" (a 403 observed against a live tenant on a re-apply). The first create does not need it, which is why a credential missing it installs a connection green and fails on the next apply. Auth0's published API reference lists update:connections alone for this endpoint; the tenant's own Management API definition carries this scope, and the snapshot is drawn from that definition.
+        notes: Writing the options tree on update. iac/tf/main.tf declares the auth0_connection options block unconditionally, so every apply after the first sends options in the PATCH, and Auth0 refuses that write without this scope — "Updating the options property requires the update:connections_options scope" (a 403 observed against a live tenant on a re-apply). The first create does not need it, which is why a credential missing it installs a connection green and fails on the next apply. Auth0's published API reference lists update:connections alone for this endpoint; the tenant's own Management API definition carries this scope, and the snapshot is drawn from that definition.
       - purpose: ResolveEnabledClients
         scopes:
           - read:clients
         provenance: derived
-        notes: Needed only when spec.enabled_clients is non-empty -- the auth0_connection_clients resource the modules add in that case resolves and validates the client ids it enables. The scope name follows the clients endpoint family (the auth0client manifest cites read:clients against the get-clients-by-id page). A credential without it is least privilege for a connection that enables no clients.
+        condition:
+          spec_field_set: enabled_clients
+        notes: The auth0_connection_clients resource the modules add for a connection that enables clients resolves and validates the client ids it enables. The scope name follows the clients endpoint family (the auth0client manifest cites read:clients against the get-clients-by-id page).
