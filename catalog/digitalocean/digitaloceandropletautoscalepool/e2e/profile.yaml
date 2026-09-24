@@ -3,7 +3,7 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandropletautoscalepool
 spec:
-  # pending_proof: the kind is NOT proven, blocked by an UPSTREAM PROVIDER
+  # deferred: the kind is NOT proven, blocked by an UPSTREAM PROVIDER
   # DEFECT on destroy (first live attempt 2026-09-16, provider v2.100.1 /
   # Pulumi bridge v4.79.1). Everything before destroy passed on BOTH engines
   # and BOTH scenarios: DEPLOY (~31-41s; DigitalOcean reports the pool
@@ -36,8 +36,9 @@ spec:
   # round-trip all passed; the pool and its member 404'd ~70 seconds after
   # the DELETE this time (four earlier lanes: ~10 seconds), so the deletion
   # itself is variable and can approach the waiter's one-minute timeout.
-  # The waiter's source is unchanged on upstream main; the defect is
-  # tracked upstream as digitalocean/terraform-provider-digitalocean#1605.
+  # The waiter's source is unchanged on upstream main and in v2.102.0; the
+  # defect is tracked upstream as
+  # digitalocean/terraform-provider-digitalocean#1605.
   # UNBLOCK: a provider release carrying that fix AND a Pulumi bridge that
   # embeds it, then the pin bump; re-run the four lanes.
   # Watch items still standing: the dynamic lane's scale-up needs sustained
@@ -45,6 +46,7 @@ spec:
   # phase): template and scaling edits, in-place upstream. BILLING: each
   # lane runs one real s-1vcpu-1gb member (~$0.009/hr) for ~1-2 minutes.
   tier: 1
-  status: pending_proof
+  status: deferred
+  deferred_reason: every phase passes on both engines except destroy, which fails in the upstream provider's delete waiter (digitalocean/terraform-provider-digitalocean#1605) although DigitalOcean completes the deletion; unblock = a provider release with the fix, embedded by a Pulumi bridge, then the pin bump and the four lanes
   validated_provisioners: []
   timeout_minutes: 20
