@@ -564,6 +564,8 @@ go_library(
         "//catalog/gcp/gcpcomputemig/v1alpha1",
         "//catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1",
         "//catalog/gcp/gcpdataproccluster/v1alpha1",
+        "//catalog/gcp/gcpdialogflowcxagent/v1alpha1",
+        "//catalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1",
         "//catalog/gcp/gcpdnsrecord/v1alpha1",
         "//catalog/gcp/gcpdnszone/v1alpha1",
         "//catalog/gcp/gcpdocumentaiprocessor/v1alpha1",

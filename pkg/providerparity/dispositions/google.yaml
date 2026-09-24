@@ -998,54 +998,30 @@ resources:
   - resource: google_dialogflow_conversation_profile
     disposition: excluded-deprecated
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
-  - resource: google_dialogflow_cx_agent
-    disposition: model-planned
-    reason: "planned GcpDialogflowCxAgent kind (Dialogflow CX agents and their infrastructure companions)"
   - resource: google_dialogflow_cx_entity_type
     disposition: deferred
-    reason: "conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind"
-  - resource: google_dialogflow_cx_environment
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDialogflowCxAgent kind (environments)"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_flow
     disposition: deferred
-    reason: "conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind"
-  - resource: google_dialogflow_cx_generative_settings
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDialogflowCxAgent kind (generative settings)"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_generator
     disposition: deferred
-    reason: "conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_intent
     disposition: deferred
-    reason: "conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_page
     disposition: deferred
-    reason: "conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_playbook
     disposition: deferred
-    reason: "conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind"
-  - resource: google_dialogflow_cx_security_settings
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDialogflowCxAgent kind (security settings)"
+    reason: "conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings"
   - resource: google_dialogflow_cx_test_case
     disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_tool
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDialogflowCxAgent kind (tools)"
-  - resource: google_dialogflow_cx_tool_version
-    disposition: deferred
-    reason: "Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand"
-  - resource: google_dialogflow_cx_version
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDialogflowCxAgent kind (versions)"
-  - resource: google_dialogflow_cx_webhook
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDialogflowCxAgent kind (webhooks)"
+    reason: "a conversation test case replays turns against console-authored flows and pages and records the results; it exercises conversation content, not infrastructure, and lives with that content"
   - resource: google_dialogflow_encryption_spec
-    disposition: excluded-deprecated
-    reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"
+    disposition: deferred
+    reason: "the per-project, per-location customer-managed encryption key for Dialogflow -- CX agents included -- initialized once through the v2 encryptionSpec API; a candidate kind of its own (a location singleton holding one immutable kms_key), outside GcpDialogflowCxAgent, whose agents inherit it"
   - resource: google_dialogflow_entity_type
     disposition: excluded-deprecated
     reason: "Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance"

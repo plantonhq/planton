@@ -1,0 +1,4 @@
+name: gcpdialogflowcxagent-pulumi-project
+runtime:
+  name: go
+description: Planton GcpDialogflowCxAgent Pulumi module

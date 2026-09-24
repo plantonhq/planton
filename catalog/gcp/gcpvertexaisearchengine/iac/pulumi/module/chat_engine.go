@@ -33,8 +33,8 @@ func chatEngine(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider,
 		}
 		chatConfig.AgentCreationConfig = agentArgs
 	}
-	if cfg.DialogflowAgentToLink != "" {
-		chatConfig.DialogflowAgentToLink = pulumi.String(cfg.DialogflowAgentToLink)
+	if cfg.DialogflowAgentToLink.GetValue() != "" {
+		chatConfig.DialogflowAgentToLink = pulumi.String(cfg.DialogflowAgentToLink.GetValue())
 	}
 
 	args := &discoveryengine.ChatEngineArgs{

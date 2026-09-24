@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1;
+
+// GcpDialogflowCxSecuritySettingsStackOutputs captures the identity Google
+// assigned the security settings.
+message GcpDialogflowCxSecuritySettingsStackOutputs {
+  // Full resource name -- what an agent's security_settings field takes:
+  // projects/{project}/locations/{location}/securitySettings/{id}.
+  string name = 1;
+
+  // The id Google assigned at creation (the last segment of name).
+  string security_settings_id = 2;
+
+  // The location the settings live in; only agents here can use them.
+  string location = 3;
+}

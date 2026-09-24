@@ -1,0 +1,84 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpdialogflowcxsecuritysettings
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Dialogflow encrypts the settings and the conversation data they govern at rest with Google-managed keys without configuration.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: Dialogflow's customer-managed key is a per-project, per-location encryption spec outside this block; exported audio follows the Cloud Storage bucket's own encryption.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The Dialogflow API is TLS-only, and audio export writes to Cloud Storage over Google's internal TLS paths.
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Security settings have no address of their own; they are reached only through the Dialogflow API under IAM.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No network listener exists to restrict.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: No edge is served.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Reading or changing the settings requires dialogflow.securitySettings.* permissions on the project.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The settings authenticate nothing; the Dialogflow service agent writes exported audio under the object-creator grant Google makes on the bucket.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: No authentication paths exist to disable.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The component enforces no end-user sign-in; console access is Google sign-in under IAM, whose posture rbac carries.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every create, update, and delete of the settings is a Dialogflow admin write recorded in Cloud Audit Logs (Admin Activity) unconditionally.
+    - control_id: monitoring-integration
+      status: configurable
+      field_path: enable_insights_export
+      evidence:
+        type: spec_default
+        reference: Unset sends nothing to Conversational Insights; set, every finished conversation of the agents using the settings is exported to Insights and its analyzers run (ignored under REMOVE_AFTER_CONVERSATION).
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The settings are a small policy object redeclared from the spec; there is no data in them to back up.
+    - control_id: backup-retention-policy
+      status: configurable
+      field_path: retention_window_days
+      evidence:
+        type: spec_default
+        reference: Unset keeps conversation data for Dialogflow's default TTL (365 days; 30 for Agent Assist traffic); retention_window_days shortens it, and retention_strategy REMOVE_AFTER_CONVERSATION removes sensitive data when the conversation ends. This control governs how long conversation data is kept, which is what this block exists to set.
+      notes: The 01-pii-redaction preset keeps 30 days.
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The settings are a location-scoped policy object with no runtime of their own.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Unset means DELETE -- the settings are deleted on destroy; PREVENT makes destroy fail; ABANDON leaves them in GCP when the block leaves management.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Dialogflow is fully Google-operated; there is no software surface the customer patches.

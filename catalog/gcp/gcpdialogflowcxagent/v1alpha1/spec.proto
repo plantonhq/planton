@@ -1,0 +1,1019 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdialogflowcxagent.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// ---------------------------------------------------------------------------
+// Agent-level settings
+// ---------------------------------------------------------------------------
+
+// GcpDialogflowCxAgentAudioExportGcsDestination exports incoming audio to
+// Cloud Storage (`advanced_settings.audio_export_gcs_destination`).
+message GcpDialogflowCxAgentAudioExportGcsDestination {
+  // The Cloud Storage URI, gs://bucket/object-name-or-prefix. Whether it is
+  // a full object name or a prefix depends on the Dialogflow operation.
+  string uri = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^gs://[^/]+(/.*)?$"
+  ];
+}
+
+// GcpDialogflowCxAgentDtmfSettings configures touch-tone (DTMF) detection
+// (`advanced_settings.dtmf_settings`). Settings at the agent, flow, page,
+// and parameter levels run in parallel rather than overriding each other.
+message GcpDialogflowCxAgentDtmfSettings {
+  // Process incoming audio for key presses: a caller pressing "3" becomes
+  // an event the agent's flows can route on.
+  bool enabled = 1;
+
+  // The digit that ends a digit sequence, e.g. "#".
+  string finish_digit = 2;
+
+  // The longest digit sequence collected.
+  int32 max_digits = 3 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpDialogflowCxAgentLoggingSettings controls conversation logging
+// (`advanced_settings.logging_settings`). Google does not read these three
+// back, so a change made in the console is not detected.
+message GcpDialogflowCxAgentLoggingSettings {
+  // Redact end-user input when the session parameter
+  // $session.params.conversation-redaction is true -- consent-based
+  // redaction.
+  bool enable_consent_based_redaction = 1;
+
+  // Log interactions to Dialogflow's interaction history (needed for answer
+  // feedback and conversation history in the console).
+  bool enable_interaction_logging = 2;
+
+  // Log conversation queries to Cloud Logging.
+  bool enable_stackdriver_logging = 3;
+}
+
+// GcpDialogflowCxAgentSpeechSettings tunes speech-to-text detection
+// (`advanced_settings.speech_settings`).
+message GcpDialogflowCxAgentSpeechSettings {
+  // How eagerly the end of speech is detected, 0 (least) to 100 (most).
+  // Read as seconds of timeout when use_timeout_based_endpointing is set.
+  int32 endpointer_sensitivity = 1 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 100
+  }];
+
+  // The Speech-to-Text model per language, e.g. {"en": "phone_call"}.
+  map<string, string> models = 2;
+
+  // How long to wait for speech before a no-speech event: seconds with up
+  // to nine fractional digits and a trailing "s", e.g. "3.5s".
+  string no_speech_timeout = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]{1,9})?s$"
+  ];
+
+  // Interpret endpointer_sensitivity as a timeout in seconds instead of a
+  // sensitivity score.
+  bool use_timeout_based_endpointing = 4;
+}
+
+// GcpDialogflowCxAgentAdvancedSettings holds the agent-level defaults of
+// Dialogflow's hierarchical advanced settings (`advanced_settings`); a
+// flow, page, or parameter authored in the console overrides them.
+// Optional and computed: an unset block leaves Google's values alone.
+message GcpDialogflowCxAgentAdvancedSettings {
+  // Export incoming audio to Cloud Storage.
+  GcpDialogflowCxAgentAudioExportGcsDestination audio_export_gcs_destination = 1;
+
+  // Touch-tone detection.
+  GcpDialogflowCxAgentDtmfSettings dtmf_settings = 2;
+
+  // Conversation logging.
+  GcpDialogflowCxAgentLoggingSettings logging_settings = 3;
+
+  // Speech-to-text detection.
+  GcpDialogflowCxAgentSpeechSettings speech_settings = 4;
+}
+
+// GcpDialogflowCxAgentClientCertificateSettings presents a custom client
+// certificate on the agent's outgoing calls (`client_certificate_settings`).
+message GcpDialogflowCxAgentClientCertificateSettings {
+  // The certificate, PEM-encoded, including the BEGIN and END lines.
+  string ssl_certificate = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The Secret Manager secret version holding the PEM private key:
+  // projects/{project}/secrets/{secret}/versions/{version}. Dialogflow
+  // reads the key from Secret Manager; the key never appears here.
+  string private_key = 2 [
+    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the private key itself never appears in the spec"
+  ];
+
+  // The Secret Manager secret version holding the key's passphrase, same
+  // format. Leave empty when the private key is not encrypted.
+  string passphrase = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the passphrase itself never appears in the spec"
+  ];
+}
+
+// GcpDialogflowCxAgentGenAppBuilderSettings links the agent to a Vertex AI
+// Search engine (`gen_app_builder_settings`). Google fills it in when a
+// chat engine is created over the agent or a data store is connected in
+// the console; declare it only to pin that link. Link from one side: a
+// GcpVertexAiSearchEngine that already names this agent in
+// dialogflow_agent_to_link needs nothing here.
+message GcpDialogflowCxAgentGenAppBuilderSettings {
+  // The engine: a GcpVertexAiSearchEngine reference or a literal
+  // projects/{project}/locations/{location}/collections/{collection}/engines/{engine}.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef engine = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchEngine,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+}
+
+// GcpDialogflowCxAgentGithubSettings connects the agent to a GitHub
+// repository for exporting and restoring agent content
+// (`git_integration_settings.github_settings`).
+message GcpDialogflowCxAgentGithubSettings {
+  // The repository's display name in Dialogflow, unique among the agent's
+  // repositories.
+  string display_name = 1;
+
+  // The repository URI, e.g. https://api.github.com/repos/acme/support-bot.
+  string repository_uri = 2;
+
+  // The branch Dialogflow tracks for the agent.
+  string tracking_branch = 3;
+
+  // Every branch Dialogflow may use.
+  repeated string branches = 4;
+
+  // The GitHub access token Dialogflow authenticates with. Google returns
+  // it redacted, so the declared value is always what the engines send.
+  string access_token = 5 [(dev.planton.shared.options.sensitive) = true];
+}
+
+// GcpDialogflowCxAgentGitIntegrationSettings holds the agent's git
+// integrations (`git_integration_settings`); GitHub is the one Google
+// offers.
+message GcpDialogflowCxAgentGitIntegrationSettings {
+  // The GitHub integration.
+  GcpDialogflowCxAgentGithubSettings github_settings = 1;
+}
+
+// ---------------------------------------------------------------------------
+// Webhooks
+// ---------------------------------------------------------------------------
+
+// GcpDialogflowCxAgentOauthConfig authenticates a webhook call with the
+// OAuth client-credentials flow against a third-party token endpoint.
+message GcpDialogflowCxAgentOauthConfig {
+  // The client id the third party issued.
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The endpoint Dialogflow exchanges the client credentials at for an
+  // access token.
+  string token_endpoint = 2 [(buf.validate.field).string.min_len = 1];
+
+  // The client secret. Ignored when secret_version_for_client_secret is set
+  // -- prefer that, so the secret stays in Secret Manager. Google never
+  // returns it, so the declared value is always what the engines send.
+  string client_secret = 3 [(dev.planton.shared.options.sensitive) = true];
+
+  // The OAuth scopes to request.
+  repeated string scopes = 4;
+
+  // The Secret Manager secret version holding the client secret:
+  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
+  // client_secret.
+  string secret_version_for_client_secret = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the client secret itself never appears in the spec"
+  ];
+}
+
+// GcpDialogflowCxAgentSecretHeader is one request header whose value lives
+// in Secret Manager.
+message GcpDialogflowCxAgentSecretHeader {
+  // The header name, e.g. "X-Api-Key".
+  string key = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The Secret Manager secret version holding the header value:
+  // projects/{project}/secrets/{secret}/versions/{version}.
+  string secret_version = 2 [(buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$"];
+}
+
+// GcpDialogflowCxAgentGenericWebService is an HTTPS endpoint a webhook
+// calls (`generic_web_service`), reached directly or through Service
+// Directory. Authentication is whichever of these is set: HTTP Basic from
+// Secret Manager, request headers, OAuth client credentials, a token the
+// Dialogflow service agent mints, or a service account's access token.
+message GcpDialogflowCxAgentGenericWebService {
+  // The endpoint, https only.
+  string uri = 1 [(buf.validate.field).string.pattern = "^https://.+"];
+
+  // What Dialogflow sends and expects:
+  //   STANDARD -- Dialogflow's WebhookRequest / WebhookResponse over POST
+  //   FLEXIBLE -- any method and body you define (http_method,
+  //               request_body), with parameter_mapping lifting response
+  //               fields into session parameters
+  // Empty leaves Google's default (STANDARD).
+  string webhook_type = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "STANDARD",
+        "FLEXIBLE"
+      ]
+    }
+  ];
+
+  // The HTTP method of a FLEXIBLE webhook; a STANDARD webhook always POSTs.
+  string http_method = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "POST",
+        "GET",
+        "HEAD",
+        "PUT",
+        "DELETE",
+        "PATCH",
+        "OPTIONS"
+      ]
+    }
+  ];
+
+  // The JSON request body of a FLEXIBLE webhook; session parameters may be
+  // referenced as $session.params.<name>.
+  string request_body = 4;
+
+  // FLEXIBLE webhooks: session parameter name -> field path in the webhook
+  // response, e.g. {"order_status": "$.status"}.
+  map<string, string> parameter_mapping = 5;
+
+  // Plain request headers sent with every call. Put secrets in
+  // secret_versions_for_request_headers instead -- these values are stored
+  // in the agent as written.
+  map<string, string> request_headers = 6;
+
+  // Request headers whose values live in Secret Manager. A header named
+  // here and in request_headers takes this value.
+  repeated GcpDialogflowCxAgentSecretHeader secret_versions_for_request_headers = 7;
+
+  // The Secret Manager secret version holding "username:password" for HTTP
+  // Basic authentication: projects/{project}/secrets/{secret}/versions/{version}.
+  string secret_version_for_username_password = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the credentials themselves never appear in the spec"
+  ];
+
+  // Authenticate with the OAuth client-credentials flow.
+  GcpDialogflowCxAgentOauthConfig oauth_config = 9;
+
+  // Have the Dialogflow service agent mint a token for the Authorization
+  // header:
+  //   NONE         -- no token
+  //   ID_TOKEN     -- a Google ID token (for Cloud Run and Cloud Functions
+  //                   behind IAM)
+  //   ACCESS_TOKEN -- a Google OAuth access token (for Google APIs)
+  // Empty leaves Google's default (NONE).
+  string service_agent_auth = 10 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NONE",
+        "ID_TOKEN",
+        "ACCESS_TOKEN"
+      ]
+    }
+  ];
+
+  // Send an access token of this service account in the Authorization
+  // header: a GcpServiceAccount reference or a literal email. The Dialogflow
+  // service agent needs roles/iam.serviceAccountTokenCreator on it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_account = 11 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpServiceAccount,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.email"
+  ];
+
+  // Custom CA certificates (DER, base64) trusted for this endpoint in place
+  // of Google's default trust store. The server certificate must carry a
+  // subject alternative name.
+  repeated string allowed_ca_certs = 12;
+}
+
+// GcpDialogflowCxAgentServiceDirectory reaches a webhook through a Service
+// Directory service -- typically a private endpoint in a VPC.
+message GcpDialogflowCxAgentServiceDirectory {
+  // The service:
+  // projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.
+  string service = 1 [(buf.validate.field).string.pattern = "^projects/[^/]+/locations/[^/]+/namespaces/[^/]+/services/[^/]+$"];
+
+  // How the endpoint behind the service is called.
+  GcpDialogflowCxAgentGenericWebService generic_web_service = 2;
+}
+
+// GcpDialogflowCxAgentWebhook is one webhook the agent's flows and pages
+// call for fulfillment (`google_dialogflow_cx_webhook`) -- your code that
+// looks up an order, books an appointment, or computes an answer. Console
+// content refers to a webhook by its full resource name (the
+// webhook_names output).
+//
+// Keyed by display_name, which Google requires unique within the agent.
+// Google renames a webhook in place, but here the display name is the
+// webhook's identity: renaming one replaces it and gives it a new resource
+// name, so console content that calls it must be re-pointed.
+message GcpDialogflowCxAgentWebhook {
+  option (buf.validate.message).cel = {
+    id: "webhook.exactly_one_endpoint"
+    expression: "has(this.generic_web_service) != has(this.service_directory)"
+    message: "a webhook is exactly one of generic_web_service or service_directory"
+  };
+
+  // The webhook's human-readable name, unique within the agent.
+  string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Keep the webhook but stop calling it.
+  bool disabled = 2;
+
+  // How long Dialogflow waits for the webhook, e.g. "5s". Empty leaves
+  // Google's default.
+  string timeout = 3;
+
+  // Call an HTTPS endpoint directly.
+  GcpDialogflowCxAgentGenericWebService generic_web_service = 4;
+
+  // Call an endpoint registered in Service Directory.
+  GcpDialogflowCxAgentServiceDirectory service_directory = 5;
+}
+
+// ---------------------------------------------------------------------------
+// Tools
+// ---------------------------------------------------------------------------
+
+// GcpDialogflowCxAgentToolApiKeyConfig sends an API key with each call.
+message GcpDialogflowCxAgentToolApiKeyConfig {
+  // The header or query parameter the key travels in, e.g. "X-Api-Key".
+  string key_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Where the key goes: "HEADER" or "QUERY_STRING" (Google's
+  // RequestLocation values).
+  string request_location = 2 [(buf.validate.field).string.min_len = 1];
+
+  // The key itself. Ignored when secret_version_for_api_key is set --
+  // prefer that. Google never returns it.
+  string api_key = 3 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret version holding the key:
+  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
+  // api_key.
+  string secret_version_for_api_key = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the API key itself never appears in the spec"
+  ];
+}
+
+// GcpDialogflowCxAgentToolBearerTokenConfig sends "Authorization: Bearer
+// <token>" with each call.
+message GcpDialogflowCxAgentToolBearerTokenConfig {
+  // The token. A session parameter reference such as
+  // $session.params.user-token passes it per conversation. Ignored when
+  // secret_version_for_token is set. Google never returns it.
+  string token = 1 [(dev.planton.shared.options.sensitive) = true];
+
+  // The Secret Manager secret version holding the token:
+  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
+  // token.
+  string secret_version_for_token = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the bearer token itself never appears in the spec"
+  ];
+}
+
+// GcpDialogflowCxAgentToolOauthConfig authenticates a tool call with OAuth.
+message GcpDialogflowCxAgentToolOauthConfig {
+  // The client id the OAuth provider issued.
+  string client_id = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The grant type: "CLIENT_CREDENTIAL" (Google's OauthGrantType values).
+  string oauth_grant_type = 2 [(buf.validate.field).string.min_len = 1];
+
+  // The provider's token endpoint.
+  string token_endpoint = 3 [(buf.validate.field).string.min_len = 1];
+
+  // The client secret. Ignored when secret_version_for_client_secret is
+  // set -- prefer that. Google never returns it.
+  string client_secret = 4 [(dev.planton.shared.options.sensitive) = true];
+
+  // The OAuth scopes to request.
+  repeated string scopes = 5;
+
+  // The Secret Manager secret version holding the client secret:
+  // projects/{project}/secrets/{secret}/versions/{version}. Wins over
+  // client_secret.
+  string secret_version_for_client_secret = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/secrets/[^/]+/versions/[^/]+$",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "Secret Manager secret version NAME only -- the client secret itself never appears in the spec"
+  ];
+}
+
+// GcpDialogflowCxAgentToolServiceAgentAuthConfig has the Dialogflow service
+// agent mint the Authorization token.
+message GcpDialogflowCxAgentToolServiceAgentAuthConfig {
+  // The token type: "ID_TOKEN" or "ACCESS_TOKEN" (Google's ServiceAgentAuth
+  // values). Empty leaves Google's default.
+  string service_agent_auth = 1;
+}
+
+// GcpDialogflowCxAgentToolAuthentication is how an OpenAPI tool
+// authenticates -- at most one method.
+message GcpDialogflowCxAgentToolAuthentication {
+  option (buf.validate.message).cel = {
+    id: "authentication.at_most_one_method"
+    expression: "(has(this.api_key_config) ? 1 : 0) + (has(this.bearer_token_config) ? 1 : 0) + (has(this.oauth_config) ? 1 : 0) + (has(this.service_agent_auth_config) ? 1 : 0) <= 1"
+    message: "set at most one of api_key_config, bearer_token_config, oauth_config, service_agent_auth_config -- Google accepts one authentication method"
+  };
+
+  // An API key in a header or query parameter.
+  GcpDialogflowCxAgentToolApiKeyConfig api_key_config = 1;
+
+  // A bearer token.
+  GcpDialogflowCxAgentToolBearerTokenConfig bearer_token_config = 2;
+
+  // OAuth.
+  GcpDialogflowCxAgentToolOauthConfig oauth_config = 3;
+
+  // A token the Dialogflow service agent mints.
+  GcpDialogflowCxAgentToolServiceAgentAuthConfig service_agent_auth_config = 4;
+}
+
+// GcpDialogflowCxAgentToolServiceDirectoryConfig reaches an OpenAPI tool's
+// server through Service Directory.
+message GcpDialogflowCxAgentToolServiceDirectoryConfig {
+  // The service, in the agent's location:
+  // projects/{project}/locations/{location}/namespaces/{namespace}/services/{service}.
+  string service = 1 [(buf.validate.field).string.pattern = "^projects/[^/]+/locations/[^/]+/namespaces/[^/]+/services/[^/]+$"];
+}
+
+// GcpDialogflowCxAgentToolCaCert is one custom CA certificate trusted for
+// an OpenAPI tool's server.
+message GcpDialogflowCxAgentToolCaCert {
+  // A name that tells the certificates apart.
+  string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The certificate, DER and base64-encoded. It replaces Google's default
+  // trust store; the server certificate must carry a subject alternative
+  // name.
+  string cert = 2 [(buf.validate.field).string.min_len = 1];
+}
+
+// GcpDialogflowCxAgentToolTlsConfig replaces the default trust store for an
+// OpenAPI tool's server.
+message GcpDialogflowCxAgentToolTlsConfig {
+  // The trusted certificates.
+  repeated GcpDialogflowCxAgentToolCaCert ca_certs = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDialogflowCxAgentToolOpenApiSpec is a tool described by an OpenAPI
+// schema: the playbook's model reads the schema and calls the operations.
+message GcpDialogflowCxAgentToolOpenApiSpec {
+  // The OpenAPI 3 schema as text (YAML or JSON).
+  string text_schema = 1 [(buf.validate.field).string.min_len = 1];
+
+  // How calls authenticate. Omit for an unauthenticated API.
+  GcpDialogflowCxAgentToolAuthentication authentication = 2;
+
+  // Reach the server through Service Directory.
+  GcpDialogflowCxAgentToolServiceDirectoryConfig service_directory_config = 3;
+
+  // Trust custom CA certificates for the server.
+  GcpDialogflowCxAgentToolTlsConfig tls_config = 4;
+}
+
+// GcpDialogflowCxAgentToolDataStoreConnection is one Vertex AI Search data
+// store a data store tool searches.
+message GcpDialogflowCxAgentToolDataStoreConnection {
+  // The data store: a GcpVertexAiSearchDataStore reference or a literal
+  // projects/{project}/locations/{location}/collections/{collection}/dataStores/{store}
+  // (or the form without collections/).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef data_store = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVertexAiSearchDataStore,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The kind of store: "PUBLIC_WEB", "UNSTRUCTURED", or "STRUCTURED"
+  // (Google's DataStoreType values).
+  string data_store_type = 2;
+
+  // For PUBLIC_WEB and UNSTRUCTURED stores: "DOCUMENTS" (Google's default)
+  // or "CHUNKS" (Google's DocumentProcessingMode values).
+  string document_processing_mode = 3;
+}
+
+// GcpDialogflowCxAgentToolDataStoreSpec is a tool that answers from Vertex
+// AI Search data stores. Google's required fallback prompt block carries no
+// settings; both modules always send it empty.
+message GcpDialogflowCxAgentToolDataStoreSpec {
+  // The data stores searched.
+  repeated GcpDialogflowCxAgentToolDataStoreConnection data_store_connections = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDialogflowCxAgentToolFunctionSpec is a tool your client executes: the
+// model decides to call it and returns the arguments; your code runs it.
+message GcpDialogflowCxAgentToolFunctionSpec {
+  // The JSON schema of the function's input, as a JSON object string.
+  string input_schema = 1;
+
+  // The JSON schema of the function's output, as a JSON object string.
+  string output_schema = 2;
+}
+
+// GcpDialogflowCxAgentToolSnapshot is a tool's definition as frozen in a
+// tool version -- the tool's own shape, written out in full.
+message GcpDialogflowCxAgentToolSnapshot {
+  option (buf.validate.message).cel = {
+    id: "tool_snapshot.exactly_one_specification"
+    expression: "(has(this.open_api_spec) ? 1 : 0) + (has(this.data_store_spec) ? 1 : 0) + (has(this.function_spec) ? 1 : 0) == 1"
+    message: "a tool is exactly one of open_api_spec, data_store_spec, function_spec"
+  };
+
+  // The tool's display name at the time of the snapshot.
+  string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // What the tool does and when to use it -- the model reads this.
+  string description = 2 [(buf.validate.field).string.min_len = 1];
+
+  // An OpenAPI tool.
+  GcpDialogflowCxAgentToolOpenApiSpec open_api_spec = 3;
+
+  // A data store tool.
+  GcpDialogflowCxAgentToolDataStoreSpec data_store_spec = 4;
+
+  // A client-executed function tool.
+  GcpDialogflowCxAgentToolFunctionSpec function_spec = 5;
+}
+
+// GcpDialogflowCxAgentToolVersion freezes a tool at one definition
+// (`google_dialogflow_cx_tool_version`) so a playbook can pin it while the
+// tool keeps changing. A version is immutable: any change replaces it. Its
+// definition is written out in full rather than copied from the tool -- a
+// copy would be re-created every time the tool changed and would stop
+// being a snapshot.
+message GcpDialogflowCxAgentToolVersion {
+  // The version's display name. Google does not require it unique; the
+  // kind keys a tool's versions by it, so it must be unique within the
+  // tool. A rename replaces the version.
+  string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The frozen definition.
+  GcpDialogflowCxAgentToolSnapshot tool = 2 [(buf.validate.field).required = true];
+}
+
+// GcpDialogflowCxAgentTool is one tool the agent's generative playbooks
+// can use (`google_dialogflow_cx_tool`) -- an OpenAPI API, a Vertex AI
+// Search data store, or a function your client runs -- with its frozen
+// versions. Playbooks authored in the console refer to it by its full
+// resource name (the tool_names output).
+//
+// Keyed by display_name, which Google requires unique within the agent; a
+// rename replaces the tool and its versions and gives it a new resource
+// name.
+message GcpDialogflowCxAgentTool {
+  option (buf.validate.message).cel = {
+    id: "tool.exactly_one_specification"
+    expression: "(has(this.open_api_spec) ? 1 : 0) + (has(this.data_store_spec) ? 1 : 0) + (has(this.function_spec) ? 1 : 0) == 1"
+    message: "a tool is exactly one of open_api_spec, data_store_spec, function_spec"
+  };
+  option (buf.validate.message).cel = {
+    id: "tool.unique_version_display_names"
+    expression: "this.versions.map(v, v.display_name).unique()"
+    message: "tool version display names must be unique within the tool -- the kind keys versions by them"
+  };
+
+  // The tool's human-readable name, unique within the agent.
+  string display_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // What the tool does and when to use it -- the model reads this to decide
+  // when to call the tool, so write it for the model.
+  string description = 2 [(buf.validate.field).string.min_len = 1];
+
+  // An OpenAPI tool.
+  GcpDialogflowCxAgentToolOpenApiSpec open_api_spec = 3;
+
+  // A data store tool.
+  GcpDialogflowCxAgentToolDataStoreSpec data_store_spec = 4;
+
+  // A client-executed function tool.
+  GcpDialogflowCxAgentToolFunctionSpec function_spec = 5;
+
+  // Frozen versions of this tool, keyed by display name.
+  repeated GcpDialogflowCxAgentToolVersion versions = 6;
+}
+
+// ---------------------------------------------------------------------------
+// Versions and environments
+// ---------------------------------------------------------------------------
+
+// GcpDialogflowCxAgentVersion is a snapshot of one flow
+// (`google_dialogflow_cx_version`): its pages, routes, and NLU model at the
+// moment of creation, trained and ready to serve. Environments pin
+// versions so production keeps answering from a known snapshot while the
+// draft changes. Creating a version waits for its model to train.
+message GcpDialogflowCxAgentVersion {
+  // The id of the flow to snapshot, the last segment of its resource name.
+  // Empty is the agent's start flow (00000000-0000-0000-0000-000000000000),
+  // the one flow every agent has; other flows are authored in the console
+  // and named by id here, because a full flow path contains the agent's
+  // id, which does not exist before the first apply.
+  string flow_id = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[A-Za-z0-9-]+$"
+  ];
+
+  // The version's name, at most 64 characters. Google does not require it
+  // unique; the kind keys a flow's versions by it, so it must be unique per
+  // flow. A rename replaces the version.
+  string display_name = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 64
+  }];
+
+  // What changed in this version, at most 500 characters.
+  string description = 3 [(buf.validate.field).string.max_len = 500];
+}
+
+// GcpDialogflowCxAgentEnvironmentVersionConfig pins one flow to one
+// version in an environment: a version declared in this spec (by display
+// name) or one made outside it (by id).
+message GcpDialogflowCxAgentEnvironmentVersionConfig {
+  option (buf.validate.message).cel = {
+    id: "version_config.exactly_one_version"
+    expression: "(this.version != '') != (this.version_id != '')"
+    message: "a version config names exactly one of version (a declared version's display name) or version_id"
+  };
+
+  // The flow, by id. Empty is the agent's start flow.
+  string flow_id = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[A-Za-z0-9-]+$"
+  ];
+
+  // The display name of a version declared in spec.versions for this flow.
+  string version = 2;
+
+  // The numeric id of a version made outside this spec (in the console or
+  // by another tool), the last segment of its resource name.
+  string version_id = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+$"
+  ];
+}
+
+// GcpDialogflowCxAgentEnvironment is a named deployment target such as
+// "staging" or "production" (`google_dialogflow_cx_environment`) that
+// serves a fixed set of flow versions. Traffic addressed to the
+// environment gets those versions no matter what changes in the draft.
+//
+// Keyed by display_name, which Google requires unique within the agent; a
+// rename replaces the environment.
+message GcpDialogflowCxAgentEnvironment {
+  // The environment's name, unique within the agent, at most 64
+  // characters.
+  string display_name = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 64
+  }];
+
+  // What the environment is for, at most 500 characters.
+  string description = 2 [(buf.validate.field).string.max_len = 500];
+
+  // The version pinned for each flow. Google requires a version for every
+  // flow reachable from the start flow; a missing one fails the apply.
+  repeated GcpDialogflowCxAgentEnvironmentVersionConfig version_configs = 3 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// ---------------------------------------------------------------------------
+// Generative settings
+// ---------------------------------------------------------------------------
+
+// GcpDialogflowCxAgentPromptTemplate is one stored generative-fallback
+// prompt. Google does not read these back, so the declared list is always
+// what the engines send.
+message GcpDialogflowCxAgentPromptTemplate {
+  // The prompt's name, e.g. "conservative" or "chatty".
+  string display_name = 1;
+
+  // Freeze the prompt against edits in the console.
+  bool frozen = 2;
+
+  // The prompt sent to the model on a no-match, with placeholders Google
+  // fills, e.g. "Here is a conversation $conversation, a response is: ".
+  string prompt_text = 3;
+}
+
+// GcpDialogflowCxAgentFallbackSettings configures generative fallback --
+// the model's answer when no intent or route matches.
+message GcpDialogflowCxAgentFallbackSettings {
+  // The display name of the prompt template in use.
+  string selected_prompt = 1;
+
+  // The stored prompt templates.
+  repeated GcpDialogflowCxAgentPromptTemplate prompt_templates = 2;
+}
+
+// GcpDialogflowCxAgentBannedPhrase is one phrase generated text must never
+// contain.
+message GcpDialogflowCxAgentBannedPhrase {
+  // The phrase's language code, e.g. "en".
+  string language_code = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The phrase.
+  string text = 2 [(buf.validate.field).string.min_len = 1];
+}
+
+// GcpDialogflowCxAgentGenerativeSafetySettings filters generated text.
+message GcpDialogflowCxAgentGenerativeSafetySettings {
+  // How banned phrases match: "PARTIAL_MATCH" or "WORD_MATCH" (Google's
+  // PhraseMatchStrategy values). Empty leaves Google's default.
+  string default_banned_phrase_match_strategy = 1;
+
+  // Phrases generated text must never contain.
+  repeated GcpDialogflowCxAgentBannedPhrase banned_phrases = 2;
+}
+
+// GcpDialogflowCxAgentKnowledgeConnectorSettings gives the knowledge
+// connector's model its persona and scope.
+message GcpDialogflowCxAgentKnowledgeConnectorSettings {
+  // The virtual agent's name, used in the prompt. May be empty.
+  string agent = 1;
+
+  // What the agent is, e.g. "virtual agent" or "AI assistant".
+  string agent_identity = 2;
+
+  // Where the agent operates, e.g. "Example company website".
+  string agent_scope = 3;
+
+  // The company or organization the agent represents -- used in the prompt
+  // and in knowledge search.
+  string business = 4;
+
+  // A description of the business, e.g. "a family company selling freshly
+  // roasted coffee beans".
+  string business_description = 5;
+
+  // Stop falling back to raw data store search results when the model
+  // cannot pick an answer (the fallback is on by default).
+  bool disable_data_store_fallback = 6;
+}
+
+// GcpDialogflowCxAgentLlmModelSettings picks the model and prompt for
+// generative features.
+message GcpDialogflowCxAgentLlmModelSettings {
+  // The model, by the id Dialogflow lists for generative features (a
+  // Gemini model). Empty leaves Google's default.
+  string model = 1;
+
+  // A custom prompt for the model.
+  string prompt_text = 2;
+}
+
+// GcpDialogflowCxAgentGenerativeSettings is the agent's generative AI
+// configuration for one language (`google_dialogflow_cx_generative_settings`):
+// fallback prompts, safety filters, the knowledge connector's persona, and
+// the model. Google keeps one per agent and language; declaring it
+// overwrites Google's defaults for that language. Destroying it only stops
+// managing it -- Google keeps the last settings, so re-declare Google's
+// defaults to reset them.
+message GcpDialogflowCxAgentGenerativeSettings {
+  // The language these settings apply to -- the agent's default language
+  // or one of its supported languages. Keyed by it: changing it declares
+  // settings for another language and leaves the old language's settings
+  // in place.
+  string language_code = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Generative fallback.
+  GcpDialogflowCxAgentFallbackSettings fallback_settings = 2;
+
+  // Filters on generated text.
+  GcpDialogflowCxAgentGenerativeSafetySettings generative_safety_settings = 3;
+
+  // The knowledge connector's persona and scope.
+  GcpDialogflowCxAgentKnowledgeConnectorSettings knowledge_connector_settings = 4;
+
+  // The model and prompt.
+  GcpDialogflowCxAgentLlmModelSettings llm_model_settings = 5;
+}
+
+// ---------------------------------------------------------------------------
+// The agent
+// ---------------------------------------------------------------------------
+
+// GcpDialogflowCxAgentSpec defines a Dialogflow CX agent
+// (`google_dialogflow_cx_agent`) -- a virtual agent that holds
+// conversations over chat, voice, and telephony -- together with the
+// infrastructure its conversation content uses:
+//   - webhooks (`google_dialogflow_cx_webhook`) its flows call for
+//     fulfillment
+//   - tools (`google_dialogflow_cx_tool`) its generative playbooks call,
+//     each with frozen versions (`google_dialogflow_cx_tool_version`)
+//   - flow versions (`google_dialogflow_cx_version`) and the environments
+//     (`google_dialogflow_cx_environment`) that pin them
+//   - generative settings per language
+//     (`google_dialogflow_cx_generative_settings`)
+// Each is folded in because it lives under exactly one agent and has no
+// other root. The conversation content itself -- flows, pages, intents,
+// entity types, playbooks, generators -- is authored in the Dialogflow
+// console (or restored from GitHub) and refers to these by the names in
+// the outputs.
+//
+// Google creates every agent with a default start flow and a default
+// playbook; start_with_default_playbook chooses which one conversations
+// begin in. Security settings (redaction, retention, audio export) are a
+// block of their own, GcpDialogflowCxSecuritySettings, shared by agents in
+// the same location.
+//
+// Immutable: project_id, location, and default_language_code (a change
+// replaces the agent and everything in it). Everything else updates in
+// place.
+message GcpDialogflowCxAgentSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.supported_languages_exclude_default"
+    expression: "!(this.default_language_code in this.supported_language_codes)"
+    message: "supported_language_codes lists the agent's languages other than default_language_code -- Google's rule"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.delete_chat_engine_only_for_a_literal_engine"
+    expression: "!(this.delete_chat_engine_on_destroy && has(this.gen_app_builder_settings) && has(this.gen_app_builder_settings.engine) && has(this.gen_app_builder_settings.engine.value_from))"
+    message: "delete_chat_engine_on_destroy cannot delete an engine referenced by kind -- that GcpVertexAiSearchEngine owns its own lifecycle; name the engine literally or leave the flag off"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_webhook_display_names"
+    expression: "this.webhooks.map(w, w.display_name).unique()"
+    message: "webhook display names must be unique within the agent -- Google's rule"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_tool_display_names"
+    expression: "this.tools.map(t, t.display_name).unique()"
+    message: "tool display names must be unique within the agent -- Google's rule"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_environment_display_names"
+    expression: "this.environments.map(e, e.display_name).unique()"
+    message: "environment display names must be unique within the agent -- Google's rule"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_version_display_names_per_flow"
+    expression: "this.versions.map(v, (v.flow_id == '' ? '00000000-0000-0000-0000-000000000000' : v.flow_id) + '/' + v.display_name).unique()"
+    message: "version display names must be unique per flow -- the kind keys versions by them"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.unique_generative_settings_languages"
+    expression: "this.generative_settings.map(g, g.language_code).unique()"
+    message: "generative settings are declared once per language"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.environment_versions_declared"
+    expression: "this.environments.all(e, e.version_configs.all(c, c.version == '' || this.versions.exists(v, v.display_name == c.version && (v.flow_id == '' ? '00000000-0000-0000-0000-000000000000' : v.flow_id) == (c.flow_id == '' ? '00000000-0000-0000-0000-000000000000' : c.flow_id))))"
+    message: "every version an environment names must be declared in versions for the same flow"
+  };
+
+  // The GCP project the agent lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Dialogflow CX location: "global" or a region such as "us-central1"
+  // (data residency). A project's first regional agent needs Google's
+  // one-time location settings, which only the Dialogflow console can set;
+  // "global" needs none. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^(global|[a-z]+(-[a-z]+[0-9]+)?)$"
+  ];
+
+  // Human-readable name, unique within the location. Defaults to
+  // metadata.name. Mutable in place.
+  string display_name = 3;
+
+  // The agent's default language as a language tag, e.g. "en". Immutable.
+  string default_language_code = 4 [(buf.validate.field).string.min_len = 1];
+
+  // The agent's time zone from the IANA database, e.g. "America/New_York".
+  string time_zone = 5 [(buf.validate.field).string.min_len = 1];
+
+  // What the agent is for, at most 500 characters.
+  string description = 6 [(buf.validate.field).string.max_len = 500];
+
+  // The avatar shown in the console and the web demo integration.
+  string avatar_uri = 7;
+
+  // The agent's languages other than default_language_code, e.g. ["es",
+  // "fr"].
+  repeated string supported_language_codes = 8;
+
+  // Train one multilingual model over every supported language instead of
+  // one per language.
+  bool enable_multi_language_training = 9;
+
+  // Correct spelling in end-user input before matching.
+  bool enable_spell_correction = 10;
+
+  // Lock the agent: Google rejects every change except a restore. Unlock
+  // (set false) before changing anything else.
+  bool locked = 11;
+
+  // The security settings applied to every conversation: a
+  // GcpDialogflowCxSecuritySettings reference or a literal
+  // projects/{project}/locations/{location}/securitySettings/{id} in the
+  // agent's location.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef security_settings = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDialogflowCxSecuritySettings,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // Begin conversations in the agent's default playbook (a generative,
+  // instruction-driven agent) instead of its default start flow (a
+  // state-machine agent). Google allows only the default playbook as a
+  // start playbook. Google does not read this back.
+  bool start_with_default_playbook = 13;
+
+  // Agent-level advanced settings: audio export, touch-tone, logging,
+  // speech.
+  GcpDialogflowCxAgentAdvancedSettings advanced_settings = 14;
+
+  // Let end users rate responses. Works only with interaction logging on
+  // (advanced_settings.logging_settings.enable_interaction_logging). Google
+  // does not read this back.
+  bool enable_answer_feedback = 15;
+
+  // A custom client certificate for the agent's outgoing calls.
+  GcpDialogflowCxAgentClientCertificateSettings client_certificate_settings = 16;
+
+  // The Vertex AI Search engine linked to the agent.
+  GcpDialogflowCxAgentGenAppBuilderSettings gen_app_builder_settings = 17;
+
+  // Delete the linked Vertex AI Search engine (gen_app_builder_settings)
+  // when the agent is destroyed. Google creates that engine when a data
+  // store is connected to the agent, outside any declaration; this is the
+  // only way it goes away with the agent. Refused when the engine is a
+  // kind reference, because that block owns the engine's lifecycle.
+  bool delete_chat_engine_on_destroy = 18;
+
+  // Git integration for exporting and restoring agent content.
+  GcpDialogflowCxAgentGitIntegrationSettings git_integration_settings = 19;
+
+  // Default end-user metadata merged into every DetectIntent request, as a
+  // JSON object string. Prefer templates over constants, e.g.
+  // {"age": "$session.params.age"}.
+  string default_end_user_metadata = 20;
+
+  // Use speech adaptation (phrase hints from the agent's content) in speech
+  // recognition.
+  bool enable_speech_adaptation = 21;
+
+  // Speech synthesis per language, as a JSON object string mapping a
+  // language code to a SynthesizeSpeechConfig, e.g.
+  // {"en": {"voice": {"name": "en-US-Neural2-C"}}}. Applies to the phone
+  // gateway and to DetectIntent responses that request audio.
+  string synthesize_speech_configs = 22;
+
+  // Webhooks, keyed by display name.
+  repeated GcpDialogflowCxAgentWebhook webhooks = 23;
+
+  // Tools, keyed by display name.
+  repeated GcpDialogflowCxAgentTool tools = 24;
+
+  // Flow versions, keyed by flow and display name.
+  repeated GcpDialogflowCxAgentVersion versions = 25;
+
+  // Environments, keyed by display name.
+  repeated GcpDialogflowCxAgentEnvironment environments = 26;
+
+  // Generative settings, one per language.
+  repeated GcpDialogflowCxAgentGenerativeSettings generative_settings = 27;
+
+  // What happens to the agent and everything folded into it when this
+  // resource is destroyed:
+  //   "" / "DELETE" -- deleted, conversation content included
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- everything leaves management and stays in GCP
+  // Generative settings are never deleted in Google either way.
+  string deletion_policy = 28 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

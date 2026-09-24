@@ -1,0 +1,40 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpdialogflowcxagent
+spec:
+  billing_model: usage_based
+  baseline_charges:
+    - service_name: Conversational Agents (Dialogflow CX)
+      sku_meter: chat requests
+      pricing_unit: requests
+      description: A chat agent bills per request -- any runtime API call to the agent, direct or through an integration -- at the Flows rate for turns served only by flows and the higher Playbooks rate for turns that use a playbook, a data store, a generator, or generative fallback (per cloud.google.com/dialogflow/pricing, "Pricing Details", read 2026-09-24). Design-time requests are free, and creating an agent, its webhooks, tools, versions, environments, and generative settings bills nothing until conversations arrive.
+    - service_name: Conversational Agents (Dialogflow CX)
+      sku_meter: voice audio
+      pricing_unit: seconds
+      description: A voice agent bills per second of audio in each turn -- the seconds the agent listens plus the seconds of its spoken reply -- at the Flows or Playbooks rate by the same rule (same page).
+  cost_drivers:
+    - field_path: start_with_default_playbook
+      sku_meter: chat requests
+      pricing_unit: requests
+      impact: Starting conversations in the default playbook makes the agent a playbook agent -- when a playbook calls a flow, Google bills every turn of the conversation at the Playbooks rate, not only the playbook turns.
+    - field_path: tools
+      sku_meter: chat requests
+      pricing_unit: requests
+      impact: Tools are called by playbooks, and a data store tool answers from Vertex AI Search -- turns that use either bill at the Playbooks rate.
+    - field_path: generative_settings
+      sku_meter: chat requests
+      pricing_unit: requests
+      impact: Generative fallback and the knowledge connector's answers are generative turns and bill at the Playbooks rate; an agent that never falls back to generation stays on the Flows rate.
+    - field_path: advanced_settings.audio_export_gcs_destination
+      sku_meter: audio export storage
+      pricing_unit: GiB-months
+      impact: Exported audio lands in your Cloud Storage bucket and bills there as storage.
+  estimate_exclusions:
+    - the webhooks' own endpoints bill wherever they run (Cloud Run, Cloud Functions, or elsewhere)
+    - data stores a data store tool searches bill index storage under Vertex AI Search (or the agent's data store quota)
+    - telephony carriers and contact-center integrations bill under their own products
+    - Cloud Logging bills ingested conversation logs when logging is enabled

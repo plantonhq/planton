@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxSecuritySettings
+metadata:
+  name: contact-center
+spec:
+  location: us-central1
+  displayName: Contact center recording and insights
+  redactionStrategy: REDACT_WITH_SERVICE
+  redactionScope: REDACT_DISK_STORAGE
+  retentionWindowDays: 90
+  audioExportSettings:
+    gcsBucket:
+      valueFrom:
+        kind: GcpGcsBucket
+        name: call-recordings
+        fieldPath: status.outputs.bucket_name
+    audioExportPattern: calls
+    audioFormat: MP3
+    enableAudioRedaction: true
+  enableInsightsExport: true
+  deletionPolicy: PREVENT

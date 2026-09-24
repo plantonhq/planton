@@ -440,6 +440,8 @@ contained dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfi
 contained dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGceConfig.subnetwork -> GcpSubnetwork
 contained dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterGkeClusterConfig.gke_cluster_target -> GcpGkeCluster
 contained dev.planton.gcp.gcpdataproccluster.v1alpha1.GcpDataprocClusterSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpdialogflowcxagent.v1alpha1.GcpDialogflowCxAgentSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1.GcpDialogflowCxSecuritySettingsSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordInternalLoadBalancerTarget.project -> GcpProject
 contained dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordSpec.managed_zone -> GcpDnsZone
 contained dev.planton.gcp.gcpdnsrecord.v1alpha1.GcpDnsRecordSpec.project_id -> GcpProject

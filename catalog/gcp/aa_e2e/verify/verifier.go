@@ -221,6 +221,8 @@ var verifiers = map[string]Verifier{
 	"gcpcolabschedule":                       &colabScheduleVerifier{},
 	"gcptpuvm":                               &tpuVmVerifier{},
 	"gcptpuqueuedresource":                   &tpuQueuedResourceVerifier{},
+	"gcpdialogflowcxagent":                   &dialogflowCxAgentVerifier{},
+	"gcpdialogflowcxsecuritysettings":        &dialogflowCxSecuritySettingsVerifier{},
 	"gcpfirestoredatabase":                   &firestoreDatabaseVerifier{},
 	"gcpfirestorebackupschedule":             &firestoreBackupScheduleVerifier{},
 	"gcpfirestoreindex":                      &firestoreIndexVerifier{},

@@ -5733,6 +5733,16 @@ enum CloudResourceKind {
     id_prefix: "gcptpu"
     service_group: gcp_ai_ml
   }];
+  // A Dialogflow CX conversational agent with the infrastructure its
+  // console-authored content uses folded in: webhooks, tools and their
+  // frozen versions, flow versions, the environments that pin them, and
+  // generative settings per language.
+  GcpDialogflowCxAgent = 3218 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdfcx"
+    service_group: gcp_ai_ml
+  }];
   // A data connector is a COLLECTION of data stores Google syncs from a
   // source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
   // Drive, ...) on a schedule -- a different root from a data store, which
@@ -5763,6 +5773,16 @@ enum CloudResourceKind {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcptpuq"
+    service_group: gcp_ai_ml
+  }];
+  // Dialogflow CX security settings: the redaction, retention, audio-export,
+  // and Insights-export policy agents in one project and location apply to
+  // their conversations. A different root from an agent, referenced by
+  // agents and shared among them, which is why it is its own kind.
+  GcpDialogflowCxSecuritySettings = 3222 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdfcxs"
     service_group: gcp_ai_ml
   }];
 

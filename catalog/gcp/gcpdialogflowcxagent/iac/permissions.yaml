@@ -1,0 +1,76 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpdialogflowcxagent
+spec:
+  gcp:
+    groups:
+      - purpose: EnableDialogflowApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling dialogflow.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageAgent
+        permissions:
+          - dialogflow.agents.create
+          - dialogflow.agents.get
+          - dialogflow.agents.update
+          - dialogflow.agents.delete
+        provenance: derived
+        notes: Covers google_dialogflow_cx_agent (Pulumi diagflow.CxAgent) -- created, patched with a field mask, read on every refresh, deleted. Also covers the folded generative settings (google_dialogflow_cx_generative_settings / diagflow.CxGenerativeSettings), which Google serves as the agent methods getGenerativeSettings and updateGenerativeSettings; Dialogflow defines no separate generative-settings permission.
+      - purpose: ManageWebhooks
+        permissions:
+          - dialogflow.webhooks.create
+          - dialogflow.webhooks.get
+          - dialogflow.webhooks.update
+          - dialogflow.webhooks.delete
+        provenance: derived
+        condition:
+          spec_field_set: webhooks
+        notes: Covers google_dialogflow_cx_webhook (Pulumi diagflow.CxWebhook) for every declared webhook. A webhook that authenticates with a service account also needs roles/iam.serviceAccountTokenCreator granted to the Dialogflow service agent on that account -- a grant on the account, not a permission of the runner.
+      - purpose: ManageToolsAndToolVersions
+        permissions:
+          - dialogflow.tools.create
+          - dialogflow.tools.get
+          - dialogflow.tools.update
+          - dialogflow.tools.delete
+        provenance: derived
+        condition:
+          spec_field_set: tools
+        notes: Covers google_dialogflow_cx_tool and google_dialogflow_cx_tool_version (Pulumi diagflow.CxTool / CxToolVersion). Tool versions are a sub-resource of their tool; Dialogflow defines no separate tool-version permission, so the tool permissions cover creating, reading, and deleting them.
+      - purpose: ManageFlowVersions
+        permissions:
+          - dialogflow.versions.create
+          - dialogflow.versions.get
+          - dialogflow.versions.update
+          - dialogflow.versions.delete
+          - dialogflow.operations.get
+        provenance: derived
+        condition:
+          spec_field_set: versions
+        notes: Covers google_dialogflow_cx_version (Pulumi diagflow.CxVersion) -- created through a long-running operation the provider polls while the flow's model trains.
+      - purpose: ManageEnvironments
+        permissions:
+          - dialogflow.environments.create
+          - dialogflow.environments.get
+          - dialogflow.environments.update
+          - dialogflow.environments.delete
+          - dialogflow.operations.get
+        provenance: derived
+        condition:
+          spec_field_set: environments
+        notes: Covers google_dialogflow_cx_environment (Pulumi diagflow.CxEnvironment) -- created and updated through long-running operations the provider polls.
+      - purpose: DeleteLinkedChatEngine
+        permissions:
+          - discoveryengine.engines.get
+          - discoveryengine.engines.delete
+        provenance: derived
+        condition:
+          spec_field_set: delete_chat_engine_on_destroy
+        notes: On destroy the provider reads the Vertex AI Search engine named in gen_app_builder_settings and deletes it. roles/dialogflow.admin contains every Dialogflow permission above; the engine delete needs roles/discoveryengine.admin or an equivalent.

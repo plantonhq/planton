@@ -1,0 +1,91 @@
+# GcpDialogflowCxAgent scenario: a playbook-first agent with the
+# infrastructure a generative agent uses -- a generic web service webhook
+# authenticated by a service-agent ID token (creating a webhook never calls
+# its URI), an OpenAPI tool, a function tool frozen as a version, a data
+# store tool over a Vertex AI Search data store fixture referenced by kind,
+# and English generative settings. The fixture deploys first and tears down
+# last. Nothing here bills until a conversation runs.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: planton-oss-e2e-gcpdfcx-tools
+  id: planton-oss-e2e-gcpdfcx-tools
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdialogflowcxagent
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdialogflowcxagent/e2e/prerequisites/gcpvertexaisearchdatastore-tools.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcx-tools-${E2E_RUN_ID}
+  defaultLanguageCode: en
+  timeZone: America/Los_Angeles
+  startWithDefaultPlaybook: true
+  webhooks:
+    - displayName: order-lookup
+      timeout: 5s
+      genericWebService:
+        uri: https://example.com/dialogflow-webhook
+        webhookType: STANDARD
+        serviceAgentAuth: ID_TOKEN
+        requestHeaders:
+          X-Source: planton-e2e
+  tools:
+    - displayName: order-status
+      description: Looks up an order's status by order number.
+      openApiSpec:
+        textSchema: |
+          openapi: 3.0.0
+          info:
+            title: Orders
+            version: "1.0"
+          servers:
+            - url: https://example.com
+          paths:
+            /orders/{id}:
+              get:
+                operationId: getOrder
+                parameters:
+                  - name: id
+                    in: path
+                    required: true
+                    schema:
+                      type: string
+                responses:
+                  "200":
+                    description: The order
+    - displayName: escalate
+      description: Hands the conversation to a human; the client runs it.
+      functionSpec:
+        inputSchema: '{"type": "object", "properties": {"reason": {"type": "string"}}}'
+      versions:
+        - displayName: v1
+          tool:
+            displayName: escalate
+            description: Hands the conversation to a human; the client runs it.
+            functionSpec:
+              inputSchema: '{"type": "object", "properties": {"reason": {"type": "string"}}}'
+    - displayName: policy-search
+      description: Searches the policy handbook.
+      dataStoreSpec:
+        dataStoreConnections:
+          - dataStore:
+              valueFrom:
+                kind: GcpVertexAiSearchDataStore
+                name: planton-oss-e2e-gcpdfcx-store
+                fieldPath: status.outputs.name
+            dataStoreType: UNSTRUCTURED
+  generativeSettings:
+    - languageCode: en
+      knowledgeConnectorSettings:
+        business: Planton
+        agentIdentity: AI assistant
+      generativeSafetySettings:
+        bannedPhrases:
+          - languageCode: en
+            text: internal only

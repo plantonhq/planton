@@ -84,7 +84,7 @@ planton apply -f vertex-ai-search-engine.yaml
 | `commonConfig.companyName` | `string` | none | The company the engine represents. Immutable. |
 | `searchEngineConfig` | `object` | Standard tier | SEARCH only: `searchTier`, `searchAddOns` (`SEARCH_ADD_ON_LLM`), `requiredSubscriptionTier`. Always sent (Google requires the block). |
 | `appType`, `disableAnalytics`, `features`, `kmsKeyName`, `knowledgeGraphConfig` | | | SEARCH only: `APP_TYPE_INTRANET`, analytics off, feature opt-ins (`FEATURE_STATE_ON` / `OFF`), CMEK, the Cloud and private knowledge graphs. |
-| `chatEngineConfig` | `object` | | CHAT only, required there: exactly one of `agentCreationConfig { business, defaultLanguageCode, timeZone, location }` or `dialogflowAgentToLink`; `allowCrossRegion`. Immutable. |
+| `chatEngineConfig` | `object` | | CHAT only, required there: exactly one of `agentCreationConfig { business, defaultLanguageCode, timeZone, location }` or `dialogflowAgentToLink` (a `GcpDialogflowCxAgent` reference or a literal agent name); `allowCrossRegion`. Immutable. |
 | `mediaRecommendationEngineConfig` | `object` | | RECOMMENDATION only: `type`, `optimizationObjective`, `optimizationObjectiveConfig`, `trainingState`, `engineFeaturesConfig`. |
 | `controls[]` | `[]object` | none | `controlId`, `displayName`, `useCases`, `conditions[]`, and exactly one of `boostAction`, `filterAction`, `promoteAction`, `redirectAction`, `synonymsAction`. |
 | `servingConfig` | `object` | none | `boostControlIds`, `filterControlIds`, `promoteControlIds`, `redirectControlIds`, `synonymsControlIds` -- each id a declared control with that action. |

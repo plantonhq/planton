@@ -137,7 +137,7 @@ spec:
 | `spec.chatEngineConfig.agentCreationConfig.defaultLanguageCode` | `string` | yes |  |  |
 | `spec.chatEngineConfig.agentCreationConfig.timeZone` | `string` | yes |  |  |
 | `spec.chatEngineConfig.agentCreationConfig.location` | `string` |  |  |  |
-| `spec.chatEngineConfig.dialogflowAgentToLink` | `string` |  |  |  |
+| `spec.chatEngineConfig.dialogflowAgentToLink` | `string \| valueFrom` |  |  | GcpDialogflowCxAgent (`status.outputs.name`) |
 | `spec.chatEngineConfig.allowCrossRegion` | `bool` |  |  |  |
 | `spec.mediaRecommendationEngineConfig` | `GcpVertexAiSearchEngineMediaRecommendationEngineConfig` |  |  |  |
 | `spec.mediaRecommendationEngineConfig.type` | `string` |  |  |  |
@@ -540,12 +540,15 @@ engine's needs allow_cross_region.
 
 ### spec.chatEngineConfig.dialogflowAgentToLink
 
-`string`
+`string | valueFrom`
 
-Link an existing Dialogflow CX agent:
-projects/{project}/locations/{location}/agents/{agent}.
+Link an existing Dialogflow CX agent: a GcpDialogflowCxAgent reference
+or a literal projects/{project}/locations/{location}/agents/{agent}.
+Link from one side: the agent's own gen_app_builder_settings stays
+unset. Destroying the engine asks Google to delete the engine alone.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^projects/[a-zA-Z0-9-]+(?:/locations/[a-zA-Z0-9-]+)?/agents/[a-zA-Z0-9-]+$"}}
+- references: GcpDialogflowCxAgent (`status.outputs.name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpDialogflowCxAgent, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.chatEngineConfig.allowCrossRegion
 
@@ -1487,12 +1490,21 @@ Fields that can point at another resource's outputs:
 | `spec.collectionId` | GcpVertexAiSearchDataConnector | `status.outputs.collection_id` |
 | `spec.dataStoreIds` | GcpVertexAiSearchDataStore | `status.outputs.data_store_id` |
 | `spec.kmsKeyName` | GcpKmsKey | `status.outputs.key_id` |
+| `spec.chatEngineConfig.dialogflowAgentToLink` | GcpDialogflowCxAgent | `status.outputs.name` |
 | `spec.controls[].boostAction.dataStore` | GcpVertexAiSearchDataStore | `status.outputs.name` |
 | `spec.controls[].filterAction.dataStore` | GcpVertexAiSearchDataStore | `status.outputs.name` |
 | `spec.controls[].promoteAction.dataStore` | GcpVertexAiSearchDataStore | `status.outputs.name` |
 | `spec.widgetConfig.uiSettings.dataStoreUiConfigs[].name` | GcpVertexAiSearchDataStore | `status.outputs.name` |
 | `spec.assistants[].customerPolicy.modelArmorConfig.userPromptTemplate` | GcpModelArmorTemplate | `status.outputs.name` |
 | `spec.assistants[].customerPolicy.modelArmorConfig.responseTemplate` | GcpModelArmorTemplate | `status.outputs.name` |
+
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| GcpDialogflowCxAgent | `spec.genAppBuilderSettings.engine` | `status.outputs.name` |
 
 ## See Also
 

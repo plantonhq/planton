@@ -4224,6 +4224,51 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "queued_resource_id", "zone"},
 		},
 		{
+			// GcpDialogflowCxAgent: the agent's full name (the verifier's key
+			// and what a chat engine links), its id, location, start flow, and
+			// the declared children's names in manifest order (list outputs).
+			name: "GcpDialogflowCxAgent",
+			kind: cloudresourcekind.CloudResourceKind_GcpDialogflowCxAgent,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001",
+				"agent_id":   "1b2c3d4e-0000-4000-8000-000000000001",
+				"location":   "global",
+				"start_flow": "projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/flows/00000000-0000-0000-0000-000000000000",
+				"webhook_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/webhooks/5a6b7c8d-0000-4000-8000-000000000002",
+				},
+				"tool_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/tools/6b7c8d9e-0000-4000-8000-000000000003",
+				},
+				"tool_version_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/tools/6b7c8d9e-0000-4000-8000-000000000003/versions/7c8d9e0f-0000-4000-8000-000000000004",
+				},
+				"version_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/flows/00000000-0000-0000-0000-000000000000/versions/1",
+				},
+				"environment_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/environments/8d9e0f1a-0000-4000-8000-000000000005",
+				},
+				"generative_settings_names": []interface{}{
+					"projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001/generativeSettings?languageCode=en",
+				},
+			},
+			mustPopulate: []string{"name", "agent_id", "location", "start_flow", "webhook_names", "tool_names", "tool_version_names", "version_names", "environment_names", "generative_settings_names"},
+		},
+		{
+			// GcpDialogflowCxSecuritySettings: the settings' full name (the
+			// verifier's key and what an agent's security_settings takes), id,
+			// and location.
+			name: "GcpDialogflowCxSecuritySettings",
+			kind: cloudresourcekind.CloudResourceKind_GcpDialogflowCxSecuritySettings,
+			rawOutputs: map[string]interface{}{
+				"name":                 "projects/my-project/locations/global/securitySettings/1234567890123456789",
+				"security_settings_id": "1234567890123456789",
+				"location":             "global",
+			},
+			mustPopulate: []string{"name", "security_settings_id", "location"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

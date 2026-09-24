@@ -631,6 +631,8 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpDialogflowCxAgent | `spec.tools[].dataStoreSpec.dataStoreConnections[].dataStore` | `status.outputs.name` |
+| GcpDialogflowCxAgent | `spec.tools[].versions[].tool.dataStoreSpec.dataStoreConnections[].dataStore` | `status.outputs.name` |
 | GcpVertexAiSearchEngine | `spec.dataStoreIds` | `status.outputs.data_store_id` |
 | GcpVertexAiSearchEngine | `spec.controls[].boostAction.dataStore` | `status.outputs.name` |
 | GcpVertexAiSearchEngine | `spec.controls[].filterAction.dataStore` | `status.outputs.name` |

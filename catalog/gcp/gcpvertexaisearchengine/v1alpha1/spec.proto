@@ -130,18 +130,20 @@ message GcpVertexAiSearchEngineAgentCreationConfig {
 message GcpVertexAiSearchEngineChatEngineConfig {
   option (buf.validate.message).cel = {
     id: "chat_engine_config.exactly_one_agent_source"
-    expression: "has(this.agent_creation_config) != (this.dialogflow_agent_to_link != '')"
+    expression: "has(this.agent_creation_config) != (has(this.dialogflow_agent_to_link) && (has(this.dialogflow_agent_to_link.value) || has(this.dialogflow_agent_to_link.value_from)))"
     message: "a chat engine is exactly one of agent_creation_config or dialogflow_agent_to_link"
   };
 
   // Create a new Dialogflow CX agent for this engine.
   GcpVertexAiSearchEngineAgentCreationConfig agent_creation_config = 1;
 
-  // Link an existing Dialogflow CX agent:
-  // projects/{project}/locations/{location}/agents/{agent}.
-  string dialogflow_agent_to_link = 2 [
-    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
-    (buf.validate.field).string.pattern = "^projects/[a-zA-Z0-9-]+(?:/locations/[a-zA-Z0-9-]+)?/agents/[a-zA-Z0-9-]+$"
+  // Link an existing Dialogflow CX agent: a GcpDialogflowCxAgent reference
+  // or a literal projects/{project}/locations/{location}/agents/{agent}.
+  // Link from one side: the agent's own gen_app_builder_settings stays
+  // unset. Destroying the engine asks Google to delete the engine alone.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dialogflow_agent_to_link = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDialogflowCxAgent,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
   ];
 
   // Allow the agent and the engine to live in different locations

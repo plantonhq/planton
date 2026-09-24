@@ -211,12 +211,17 @@ var _ = ginkgo.Describe("GcpVertexAiSearchEngineSpec", func() {
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
 
-	ginkgo.It("should accept a chat engine that creates its agent, or links one", func() {
+	ginkgo.It("should accept a chat engine that creates its agent, or links one by name or by kind", func() {
 		gomega.Expect(validator.Validate(chat())).To(gomega.Succeed())
 		msg := chat()
 		msg.Spec.ChatEngineConfig = &GcpVertexAiSearchEngineChatEngineConfig{
-			DialogflowAgentToLink: "projects/ai-project/locations/global/agents/abc-123",
+			DialogflowAgentToLink: litRef("projects/ai-project/locations/global/agents/abc-123"),
 			AllowCrossRegion:      true,
+		}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
+		msg = chat()
+		msg.Spec.ChatEngineConfig = &GcpVertexAiSearchEngineChatEngineConfig{
+			DialogflowAgentToLink: nameRef("support-agent"),
 		}
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 	})
@@ -252,15 +257,15 @@ var _ = ginkgo.Describe("GcpVertexAiSearchEngineSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 	})
 
-	ginkgo.It("should require exactly one agent source on the chat arm and a well-formed agent name", func() {
+	ginkgo.It("should require exactly one agent source on the chat arm, never an empty link", func() {
 		msg := chat()
-		msg.Spec.ChatEngineConfig.DialogflowAgentToLink = "projects/ai-project/locations/global/agents/abc-123"
+		msg.Spec.ChatEngineConfig.DialogflowAgentToLink = litRef("projects/ai-project/locations/global/agents/abc-123")
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = chat()
 		msg.Spec.ChatEngineConfig = &GcpVertexAiSearchEngineChatEngineConfig{}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = chat()
-		msg.Spec.ChatEngineConfig = &GcpVertexAiSearchEngineChatEngineConfig{DialogflowAgentToLink: "abc-123"}
+		msg.Spec.ChatEngineConfig = &GcpVertexAiSearchEngineChatEngineConfig{DialogflowAgentToLink: &foreignkeyv1.StringValueOrRef{}}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = chat()
 		msg.Spec.ChatEngineConfig.AgentCreationConfig.TimeZone = ""

@@ -17,7 +17,7 @@ import (
 // decoded body is a generic map; the status code tells a 404 from any
 // other error.
 func discoveryEngineGet(ctx context.Context, svc *Services, name string) (map[string]interface{}, int, error) {
-	location := discoveryEngineLocation(name)
+	location := resourceLocation(name)
 	if location == "" {
 		return nil, 0, errors.Errorf("discovery engine resource name %q carries no location segment", name)
 	}
@@ -28,18 +28,6 @@ func discoveryEngineGet(ctx context.Context, svc *Services, name string) (map[st
 		return nil, status, err
 	}
 	return obj, status, nil
-}
-
-// discoveryEngineLocation extracts the location from a Discovery Engine
-// resource name (projects/{p}/locations/{l}/...).
-func discoveryEngineLocation(name string) string {
-	parts := strings.Split(name, "/")
-	for i := 0; i+1 < len(parts); i++ {
-		if parts[i] == "locations" {
-			return parts[i+1]
-		}
-	}
-	return ""
 }
 
 // listOutput collects a list output as the outputs transformer flattens it

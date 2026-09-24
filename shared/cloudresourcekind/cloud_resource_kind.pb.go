@@ -2055,6 +2055,11 @@ const (
 	// A Cloud TPU VM: a slice of Google's AI accelerators with its host VMs.
 	// Beta-only in Google's provider (a recorded google-beta admission).
 	CloudResourceKind_GcpTpuVm CloudResourceKind = 3217
+	// A Dialogflow CX conversational agent with the infrastructure its
+	// console-authored content uses folded in: webhooks, tools and their
+	// frozen versions, flow versions, the environments that pin them, and
+	// generative settings per language.
+	CloudResourceKind_GcpDialogflowCxAgent CloudResourceKind = 3218
 	// A data connector is a COLLECTION of data stores Google syncs from a
 	// source (Jira, Confluence, ServiceNow, SharePoint, BigQuery, Google
 	// Drive, ...) on a schedule -- a different root from a data store, which
@@ -2072,6 +2077,11 @@ const (
 	// that owns many nodes, which is why it is its own kind. Beta-only in
 	// Google's provider (a recorded google-beta admission).
 	CloudResourceKind_GcpTpuQueuedResource CloudResourceKind = 3221
+	// Dialogflow CX security settings: the redaction, retention, audio-export,
+	// and Insights-export policy agents in one project and location apply to
+	// their conversations. A different root from an agent, referenced by
+	// agents and shared among them, which is why it is its own kind.
+	CloudResourceKind_GcpDialogflowCxSecuritySettings CloudResourceKind = 3222
 	// 3250–3259: GCP Firebase (project enablement, app registrations, and
 	// the Firebase-adjacent products that follow)
 	// GcpFirebaseProject is the container the app registrations live in:
@@ -3154,9 +3164,11 @@ var (
 		3215: "GcpColabRuntime",
 		3216: "GcpColabSchedule",
 		3217: "GcpTpuVm",
+		3218: "GcpDialogflowCxAgent",
 		3219: "GcpVertexAiSearchDataConnector",
 		3220: "GcpModelArmorFloorSetting",
 		3221: "GcpTpuQueuedResource",
+		3222: "GcpDialogflowCxSecuritySettings",
 		3250: "GcpFirebaseProject",
 		3251: "GcpFirebaseAndroidApp",
 		3252: "GcpFirebaseAppleApp",
@@ -3924,9 +3936,11 @@ var (
 		"GcpColabRuntime":                                3215,
 		"GcpColabSchedule":                               3216,
 		"GcpTpuVm":                                       3217,
+		"GcpDialogflowCxAgent":                           3218,
 		"GcpVertexAiSearchDataConnector":                 3219,
 		"GcpModelArmorFloorSetting":                      3220,
 		"GcpTpuQueuedResource":                           3221,
+		"GcpDialogflowCxSecuritySettings":                3222,
 		"GcpFirebaseProject":                             3250,
 		"GcpFirebaseAndroidApp":                          3251,
 		"GcpFirebaseAppleApp":                            3252,
@@ -4586,7 +4600,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\x94\xf1\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x92\xf2\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5169,10 +5183,12 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x17GcpColabRuntimeTemplate\x10\x8e\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcoltP\xb2\x02\x122\n" +
 	"\x0fGcpColabRuntime\x10\x8f\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcolrP\xb2\x02\x123\n" +
 	"\x10GcpColabSchedule\x10\x90\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpcolsP\xb2\x02\x12*\n" +
-	"\bGcpTpuVm\x10\x91\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcptpuP\xb2\x02\x12A\n" +
+	"\bGcpTpuVm\x10\x91\x19\x1a\x1b\xa2\xf7\x04\x17\b\x12\x12\bv1alpha1\"\x06gcptpuP\xb2\x02\x127\n" +
+	"\x14GcpDialogflowCxAgent\x10\x92\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpdfcxP\xb2\x02\x12A\n" +
 	"\x1eGcpVertexAiSearchDataConnector\x10\x93\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpvsdcP\xb2\x02\x12<\n" +
 	"\x19GcpModelArmorFloorSetting\x10\x94\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpmafsP\xb2\x02\x127\n" +
-	"\x14GcpTpuQueuedResource\x10\x95\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptpuqP\xb2\x02\x128\n" +
+	"\x14GcpTpuQueuedResource\x10\x95\x19\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcptpuqP\xb2\x02\x12C\n" +
+	"\x1fGcpDialogflowCxSecuritySettings\x10\x96\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdfcxsP\xb2\x02\x128\n" +
 	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
 	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
 	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +

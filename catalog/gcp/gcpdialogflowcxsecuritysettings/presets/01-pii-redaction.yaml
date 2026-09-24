@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxSecuritySettings
+metadata:
+  name: pii-redaction
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: PII redaction
+  redactionStrategy: REDACT_WITH_SERVICE
+  redactionScope: REDACT_DISK_STORAGE
+  retentionWindowDays: 30
+  purgeDataTypes:
+    - DIALOGFLOW_HISTORY

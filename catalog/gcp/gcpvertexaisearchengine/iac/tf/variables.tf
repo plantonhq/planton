@@ -151,8 +151,11 @@ variable "spec" {
         location = optional(string, "")
       }))
 
-      # Link an existing Dialogflow CX agent:
-      # projects/{project}/locations/{location}/agents/{agent}.
+      # Link an existing Dialogflow CX agent: a GcpDialogflowCxAgent reference
+      # or a literal projects/{project}/locations/{location}/agents/{agent}.
+      # Link from one side: the agent's own gen_app_builder_settings stays
+      # unset. Destroying the engine asks Google to delete the engine alone.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       dialogflow_agent_to_link = optional(string, "")
 
       # Allow the agent and the engine to live in different locations

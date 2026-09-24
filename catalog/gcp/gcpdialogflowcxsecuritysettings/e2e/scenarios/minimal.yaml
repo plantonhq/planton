@@ -1,0 +1,28 @@
+# GcpDialogflowCxSecuritySettings scenario: redaction with Sensitive Data
+# Protection's default detectors plus a 7-day retention window, in the
+# global location. project_id is deliberately omitted: the settings ride
+# the provider's default project, which the harness exports as
+# GOOGLE_PROJECT. Google requires the display name unique within the
+# location, so it carries the run id. The settings bill nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxSecuritySettings
+metadata:
+  name: planton-oss-e2e-gcpdfcxs-minimal
+  id: planton-oss-e2e-gcpdfcxs-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdialogflowcxsecuritysettings
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcxs-minimal-${E2E_RUN_ID}
+  redactionStrategy: REDACT_WITH_SERVICE
+  redactionScope: REDACT_DISK_STORAGE
+  retentionWindowDays: 7
+  purgeDataTypes:
+    - DIALOGFLOW_HISTORY

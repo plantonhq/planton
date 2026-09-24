@@ -1,0 +1,43 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: support-agent
+spec:
+  location: us-central1
+  displayName: Support agent
+  defaultLanguageCode: en
+  supportedLanguageCodes:
+    - es
+  timeZone: America/Chicago
+  # Redaction and retention for every conversation, shared with the
+  # project's other agents in this location.
+  securitySettings:
+    valueFrom:
+      kind: GcpDialogflowCxSecuritySettings
+      name: pii-redaction
+      fieldPath: status.outputs.name
+  advancedSettings:
+    loggingSettings:
+      enableInteractionLogging: true
+      enableStackdriverLogging: true
+  webhooks:
+    - displayName: order-lookup
+      timeout: 10s
+      genericWebService:
+        uri: https://orders-webhook-abc123-uc.a.run.app/dialogflow
+        serviceAgentAuth: ID_TOKEN
+  # Freeze the start flow as a release and serve it from production while
+  # the draft keeps changing; staging tracks the next release.
+  versions:
+    - displayName: release-2026-09
+      description: September release
+  environments:
+    - displayName: production
+      description: Live traffic
+      versionConfigs:
+        - version: release-2026-09
+    - displayName: staging
+      description: Pre-release checks
+      versionConfigs:
+        - version: release-2026-09
+  deletionPolicy: PREVENT

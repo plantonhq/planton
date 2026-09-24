@@ -1,0 +1,35 @@
+# GcpDialogflowCxAgent scenario: an agent attached to security settings by
+# kind reference, with interaction and Cloud Logging on -- the privacy
+# shape the catalog recommends. The settings fixture (same location)
+# deploys first and tears down last, after the agent that references it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: planton-oss-e2e-gcpdfcx-secure
+  id: planton-oss-e2e-gcpdfcx-secure
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdialogflowcxagent
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpdialogflowcxagent/e2e/prerequisites/gcpdialogflowcxsecuritysettings-agent.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: global
+  displayName: planton-oss-e2e-dfcx-secure-${E2E_RUN_ID}
+  defaultLanguageCode: en
+  supportedLanguageCodes:
+    - es
+  timeZone: America/Los_Angeles
+  securitySettings:
+    valueFrom:
+      kind: GcpDialogflowCxSecuritySettings
+      name: planton-oss-e2e-gcpdfcx-settings
+      fieldPath: status.outputs.name
+  advancedSettings:
+    loggingSettings:
+      enableInteractionLogging: true
+      enableStackdriverLogging: true

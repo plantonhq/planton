@@ -29,10 +29,10 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 144 |
-| Distinct provider resources consumed | 245 |
-| Spec fields authored across all kinds | 4992 |
-| Module pins on `google` | `~> 8.3` × 144 |
+| Kinds in the catalog | 146 |
+| Distinct provider resources consumed | 253 |
+| Spec fields authored across all kinds | 5158 |
+| Module pins on `google` | `~> 8.3` × 146 |
 | Module pins on `google-beta` | `~> 8.3` × 6 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -78,7 +78,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**144 of 144 kinds are at total accounting; 84 proven live.**
+**146 of 146 kinds are at total accounting; 84 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -121,6 +121,8 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpComputeMig | 415 | 70 | 316 | 29 | 0 | ✅ | — |
 | GcpDataprocAutoscalingPolicy | 16 | 15 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpDataprocCluster | 172 | 89 | 83 | 0 | 0 | ✅ | — |
+| GcpDialogflowCxAgent | 161 | 138 | 15 | 8 | 0 | ✅ | — |
+| GcpDialogflowCxSecuritySettings | 16 | 14 | 2 | 0 | 0 | ✅ | — |
 | GcpDnsRecord | 49 | 43 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpDnsZone | 23 | 18 | 2 | 3 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpDocumentAiProcessor | 8 | 5 | 2 | 1 | 0 | ✅ | — |
@@ -233,12 +235,12 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 238 | consumed by a kind's Terraform module today |
+| Modeled | 246 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 55 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 48 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 580 | deliberately not offered, each with the recorded reason |
-| Excluded as deprecated | 69 | deprecated or superseded provider surface |
+| Excluded as deprecated | 68 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
 
 ## The enumerated record
@@ -246,7 +248,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (238)
+### Modeled (246)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -353,6 +355,14 @@ rather than trusted.
 | `google_container_node_pool` | consumed by GcpGkeNodePool |
 | `google_dataproc_autoscaling_policy` | consumed by GcpDataprocAutoscalingPolicy |
 | `google_dataproc_cluster` | consumed by GcpDataprocCluster |
+| `google_dialogflow_cx_agent` | consumed by GcpDialogflowCxAgent |
+| `google_dialogflow_cx_environment` | consumed by GcpDialogflowCxAgent |
+| `google_dialogflow_cx_generative_settings` | consumed by GcpDialogflowCxAgent |
+| `google_dialogflow_cx_security_settings` | consumed by GcpDialogflowCxSecuritySettings |
+| `google_dialogflow_cx_tool` | consumed by GcpDialogflowCxAgent |
+| `google_dialogflow_cx_tool_version` | consumed by GcpDialogflowCxAgent |
+| `google_dialogflow_cx_version` | consumed by GcpDialogflowCxAgent |
+| `google_dialogflow_cx_webhook` | consumed by GcpDialogflowCxAgent |
 | `google_discovery_engine_assistant` | consumed by GcpVertexAiSearchEngine |
 | `google_discovery_engine_chat_engine` | consumed by GcpVertexAiSearchEngine |
 | `google_discovery_engine_control` | consumed by GcpVertexAiSearchEngine |
@@ -435,7 +445,7 @@ rather than trusted.
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpColabRuntime, GcpColabRuntimeTemplate, GcpColabSchedule, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDnsRecord, GcpDnsZone, GcpDocumentAiProcessor, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpModelArmorFloorSetting, GcpModelArmorTemplate, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpTpuQueuedResource, GcpTpuVm, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryDataset, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpColabRuntime, GcpColabRuntimeTemplate, GcpColabSchedule, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDialogflowCxAgent, GcpDialogflowCxSecuritySettings, GcpDnsRecord, GcpDnsZone, GcpDocumentAiProcessor, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpModelArmorFloorSetting, GcpModelArmorTemplate, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpTpuQueuedResource, GcpTpuVm, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
@@ -921,7 +931,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (55)
+### Planned (48)
 
 | Resource | Recorded reason |
 |---|---|
@@ -946,13 +956,6 @@ rather than trusted.
 | `google_datastream_connection_profile` | planned composition into the planned GcpDatastreamStream kind (source and destination connection profiles) |
 | `google_datastream_private_connection` | planned composition into the planned GcpDatastreamStream kind (private connectivity) |
 | `google_datastream_stream` | planned GcpDatastreamStream kind (Datastream streams) |
-| `google_dialogflow_cx_agent` | planned GcpDialogflowCxAgent kind (Dialogflow CX agents and their infrastructure companions) |
-| `google_dialogflow_cx_environment` | planned composition into the planned GcpDialogflowCxAgent kind (environments) |
-| `google_dialogflow_cx_generative_settings` | planned composition into the planned GcpDialogflowCxAgent kind (generative settings) |
-| `google_dialogflow_cx_security_settings` | planned composition into the planned GcpDialogflowCxAgent kind (security settings) |
-| `google_dialogflow_cx_tool` | planned composition into the planned GcpDialogflowCxAgent kind (tools) |
-| `google_dialogflow_cx_version` | planned composition into the planned GcpDialogflowCxAgent kind (versions) |
-| `google_dialogflow_cx_webhook` | planned composition into the planned GcpDialogflowCxAgent kind (webhooks) |
 | `google_gke_hub_feature` | planned GcpGkeFleetFeature kind (GKE fleet features) |
 | `google_gke_hub_fleet` | planned GcpGkeFleet kind (GKE fleets) |
 | `google_gke_hub_membership` | planned GcpGkeFleetMembership kind (GKE fleet memberships) |
@@ -1267,14 +1270,14 @@ rather than trusted.
 | `google_developer_connect_connection` | Developer Connect is new; revisit with Cloud Build v2 adoption |
 | `google_developer_connect_git_repository_link` | Developer Connect is new; revisit with Cloud Build v2 adoption |
 | `google_developer_connect_insights_config` | Developer Connect is new; revisit with Cloud Build v2 adoption |
-| `google_dialogflow_cx_entity_type` | conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind |
-| `google_dialogflow_cx_flow` | conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind |
-| `google_dialogflow_cx_generator` | conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind |
-| `google_dialogflow_cx_intent` | conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind |
-| `google_dialogflow_cx_page` | conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind |
-| `google_dialogflow_cx_playbook` | conversation content authored in the Dialogflow CX console, not infrastructure; the agent and its infrastructure companions are a planned GcpDialogflowCxAgent kind |
-| `google_dialogflow_cx_test_case` | Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand |
-| `google_dialogflow_cx_tool_version` | Dialogflow CX conversational AI is a specialty (an eventual ~5 kind family); deferred pending demand |
+| `google_dialogflow_cx_entity_type` | conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings |
+| `google_dialogflow_cx_flow` | conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings |
+| `google_dialogflow_cx_generator` | conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings |
+| `google_dialogflow_cx_intent` | conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings |
+| `google_dialogflow_cx_page` | conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings |
+| `google_dialogflow_cx_playbook` | conversation content authored in the Dialogflow CX console (or restored from GitHub), not infrastructure; GcpDialogflowCxAgent models the agent and the infrastructure this content refers to by name -- webhooks, tools, versions, environments, generative settings |
+| `google_dialogflow_cx_test_case` | a conversation test case replays turns against console-authored flows and pages and records the results; it exercises conversation content, not infrastructure, and lives with that content |
+| `google_dialogflow_encryption_spec` | the per-project, per-location customer-managed encryption key for Dialogflow -- CX agents included -- initialized once through the v2 encryptionSpec API; a candidate kind of its own (a location singleton holding one immutable kms_key), outside GcpDialogflowCxAgent, whose agents inherit it |
 | `google_discovery_engine_acl_config` | a per-location singleton that names the identity provider ACL-enabled data stores enforce (GcpVertexAiSearchDataStore.acl_enabled); PATCH-only and never deleted; a candidate kind of its own -- a location-scoped identity setting, not a property of any one store |
 | `google_discovery_engine_cmek_config` | a per-location CMEK registration that data stores and engines then reference by kms_key_name (both modeled as GcpKmsKey references); a candidate kind of its own -- a location-scoped key registration, not a property of any one store or engine |
 | `google_discovery_engine_license_config` | Gemini Enterprise licensing -- a per-location subscription (tier, seat count, term) with one argument the pinned pulumi-gcp SDK lacks (last_user_update_time); a candidate kind beside google_discovery_engine_user_store, forged together when license administration is demanded |
@@ -1566,7 +1569,7 @@ rather than trusted.
 | `google_workstations_workstation_cluster` | Cloud Workstations judged as workstation-cluster (with config) and workstation kinds; deferred pending demand |
 | `google_workstations_workstation_config` | Cloud Workstations judged as workstation-cluster (with config) and workstation kinds; deferred pending demand |
 
-### Excluded as deprecated (69)
+### Excluded as deprecated (68)
 
 | Resource | Recorded reason |
 |---|---|
@@ -1597,7 +1600,6 @@ rather than trusted.
 | `google_deployment_manager_deployment` | Deployment Manager is legacy and sunsetting; competing IaC deployment engines are out of scope by design |
 | `google_dialogflow_agent` | Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance |
 | `google_dialogflow_conversation_profile` | Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance |
-| `google_dialogflow_encryption_spec` | Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance |
 | `google_dialogflow_entity_type` | Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance |
 | `google_dialogflow_environment` | Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance |
 | `google_dialogflow_fulfillment` | Dialogflow ES is superseded by Dialogflow CX; the ES API is in maintenance |

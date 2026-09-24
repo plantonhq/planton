@@ -1,0 +1,33 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpdialogflowcxsecuritysettings
+spec:
+  gcp:
+    groups:
+      - purpose: EnableDialogflowApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling dialogflow.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageSecuritySettings
+        permissions:
+          - dialogflow.securitySettings.create
+          - dialogflow.securitySettings.get
+          - dialogflow.securitySettings.update
+          - dialogflow.securitySettings.delete
+        provenance: derived
+        notes: Covers google_dialogflow_cx_security_settings (Pulumi diagflow.CxSecuritySettings) -- created, patched with a field mask, read on every refresh, deleted. roles/dialogflow.admin contains all four.
+      - purpose: GrantAudioBucketToDialogflow
+        permissions:
+          - storage.buckets.setIamPolicy
+        provenance: derived
+        condition:
+          spec_field_set: audio_export_settings
+        notes: Setting audio_export_settings.gcs_bucket makes Google grant the Dialogflow service agent roles/storage.objectCreator on the bucket on the caller's behalf, which Google's provider documents as requiring storage.buckets.setIamPolicy on that bucket.

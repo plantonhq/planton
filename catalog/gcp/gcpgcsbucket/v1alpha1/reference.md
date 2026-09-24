@@ -1066,6 +1066,7 @@ Fields on other kinds that can point at this resource:
 | GcpDataprocCluster | `spec.clusterConfig.stagingBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.clusterConfig.tempBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.virtualClusterConfig.stagingBucket` | `status.outputs.bucket_id` |
+| GcpDialogflowCxSecuritySettings | `spec.audioExportSettings.gcsBucket` | `status.outputs.bucket_name` |
 | GcpGcsBucket | `spec.logging.logBucket` | `status.outputs.bucket_id` |
 | GcpLoggingSink | `spec.destination.gcsBucket` | `status.outputs.bucket_id` |
 | GcpPubSubSubscription | `spec.cloudStorageConfig.bucket` | `status.outputs.bucket_id` |

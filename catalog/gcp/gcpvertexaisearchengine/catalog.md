@@ -95,6 +95,7 @@ These are the most important decisions when configuring an engine. Explore the f
 | **GcpVertexAiSearchDataConnector** | `collectionId` | `status.outputs.collection_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 | **GcpModelArmorTemplate** | `assistants[].customerPolicy.modelArmorConfig.userPromptTemplate`, `.responseTemplate` | `status.outputs.name` |
+| **GcpDialogflowCxAgent** | `chatEngineConfig.dialogflowAgentToLink` | `status.outputs.name` |
 
 ### What This Component Provides
 
@@ -120,9 +121,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Media recommendations** -- A recommended-for-you engine over a media catalog, optimizing watch time. Start from the **Media Recommendations** preset.
 
+**Chat over a managed agent** -- A chat engine that answers through a `GcpDialogflowCxAgent` you manage as its own block. Start from the **Chat Over a Managed Agent** preset.
+
 ## Works With
 
 - [**GCP Vertex AI Search Data Store**](/cloud-catalog/gcp-vertex-ai-search-data-store) -- the stores the engine reads
 - [**GCP Vertex AI Search Data Connector**](/cloud-catalog/gcp-vertex-ai-search-data-connector) -- connector-synced stores in their own collection
 - [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
 - [**GCP Model Armor Template**](/cloud-catalog/gcp-model-armor-template) -- the safety templates assistants screen prompts and responses through
+- [**GCP Dialogflow CX Agent**](/cloud-catalog/gcp-dialogflow-cx-agent) -- the conversational agent a chat engine answers through, managed as its own block

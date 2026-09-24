@@ -244,6 +244,8 @@ Fields on other kinds that can point at this resource:
 | GcpComputeMig | `spec.projectId` | `status.outputs.project_id` |
 | GcpDataprocAutoscalingPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpDataprocCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpDialogflowCxAgent | `spec.projectId` | `status.outputs.project_id` |
+| GcpDialogflowCxSecuritySettings | `spec.projectId` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.projectId` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.routingPolicy.wrr[].healthCheckedTargets.internalLoadBalancers[].project` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.routingPolicy.geo[].healthCheckedTargets.internalLoadBalancers[].project` | `status.outputs.project_id` |

@@ -1308,6 +1308,22 @@ func TestGcpTpuQueuedResource_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcptpuqueuedresource", "terraform")
 }
 
+func TestGcpDialogflowCxAgent_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdialogflowcxagent", "pulumi")
+}
+
+func TestGcpDialogflowCxAgent_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdialogflowcxagent", "terraform")
+}
+
+func TestGcpDialogflowCxSecuritySettings_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdialogflowcxsecuritysettings", "pulumi")
+}
+
+func TestGcpDialogflowCxSecuritySettings_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdialogflowcxsecuritysettings", "terraform")
+}
+
 func TestGcpVertexAiPersistentResource_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvertexaipersistentresource", "pulumi")
 }

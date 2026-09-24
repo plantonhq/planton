@@ -544,6 +544,8 @@ import (
 	gcpcomputemigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputemig/v1alpha1"
 	gcpdataprocautoscalingpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdataprocautoscalingpolicy/v1alpha1"
 	gcpdataprocclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdataproccluster/v1alpha1"
+	gcpdialogflowcxagentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdialogflowcxagent/v1alpha1"
+	gcpdialogflowcxsecuritysettingsv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1"
 	gcpdnsrecordv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnsrecord/v1alpha1"
 	gcpdnszonev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnszone/v1alpha1"
 	gcpdocumentaiprocessorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdocumentaiprocessor/v1alpha1"
@@ -1344,6 +1346,8 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpComputeMig:                          &gcpcomputemigv1alpha1.GcpComputeMig{},
 	cloudresourcekind.CloudResourceKind_GcpDataprocAutoscalingPolicy:           &gcpdataprocautoscalingpolicyv1alpha1.GcpDataprocAutoscalingPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpDataprocCluster:                     &gcpdataprocclusterv1alpha1.GcpDataprocCluster{},
+	cloudresourcekind.CloudResourceKind_GcpDialogflowCxAgent:                   &gcpdialogflowcxagentv1alpha1.GcpDialogflowCxAgent{},
+	cloudresourcekind.CloudResourceKind_GcpDialogflowCxSecuritySettings:        &gcpdialogflowcxsecuritysettingsv1alpha1.GcpDialogflowCxSecuritySettings{},
 	cloudresourcekind.CloudResourceKind_GcpDnsRecord:                           &gcpdnsrecordv1alpha1.GcpDnsRecord{},
 	cloudresourcekind.CloudResourceKind_GcpDnsZone:                             &gcpdnszonev1alpha1.GcpDnsZone{},
 	cloudresourcekind.CloudResourceKind_GcpDocumentAiProcessor:                 &gcpdocumentaiprocessorv1alpha1.GcpDocumentAiProcessor{},

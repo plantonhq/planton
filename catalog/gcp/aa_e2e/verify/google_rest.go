@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -39,6 +40,20 @@ func googleRestGet(ctx context.Context, svc *Services, what, url string, out int
 		return resp.StatusCode, errors.Wrapf(err, "failed to decode %s", what)
 	}
 	return resp.StatusCode, nil
+}
+
+// resourceLocation extracts the location segment from a Google resource
+// name (projects/{p}/locations/{l}/...) -- the part location-prefixed hosts
+// such as Discovery Engine's and Dialogflow's are built from. Empty when
+// the name carries no location.
+func resourceLocation(name string) string {
+	parts := strings.Split(name, "/")
+	for i := 0; i+1 < len(parts); i++ {
+		if parts[i] == "locations" {
+			return parts[i+1]
+		}
+	}
+	return ""
 }
 
 // restAbsent turns a googleRestGet result into the destroy verdict every

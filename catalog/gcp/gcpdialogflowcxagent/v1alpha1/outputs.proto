@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdialogflowcxagent.v1alpha1;
+
+// GcpDialogflowCxAgentStackOutputs captures the identity Google assigned
+// the agent and the names of everything declared in it -- the names
+// console-authored flows, pages, and playbooks refer to.
+message GcpDialogflowCxAgentStackOutputs {
+  // Full resource name -- what a GcpVertexAiSearchEngine's
+  // dialogflow_agent_to_link takes:
+  // projects/{project}/locations/{location}/agents/{agent_id}.
+  string name = 1;
+
+  // The id Google assigned at creation (the last segment of name).
+  string agent_id = 2;
+
+  // The location the agent lives in.
+  string location = 3;
+
+  // Full resource name of the agent's default start flow.
+  string start_flow = 4;
+
+  // Full resource names of the declared webhooks, in manifest order.
+  repeated string webhook_names = 5;
+
+  // Full resource names of the declared tools, in manifest order.
+  repeated string tool_names = 6;
+
+  // Full resource names of the declared tool versions, tool by tool in
+  // manifest order.
+  repeated string tool_version_names = 7;
+
+  // Full resource names of the declared flow versions, in manifest order.
+  repeated string version_names = 8;
+
+  // Full resource names of the declared environments, in manifest order.
+  repeated string environment_names = 9;
+
+  // Resource names of the declared generative settings, in manifest order
+  // ({agent}/generativeSettings?languageCode={language}).
+  repeated string generative_settings_names = 10;
+}

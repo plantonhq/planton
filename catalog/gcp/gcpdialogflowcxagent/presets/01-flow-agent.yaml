@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDialogflowCxAgent
+metadata:
+  name: support-agent
+spec:
+  projectId:
+    value: my-gcp-project
+  location: global
+  displayName: Support agent
+  description: Answers order and shipping questions
+  defaultLanguageCode: en
+  timeZone: America/New_York
+  enableSpellCorrection: true
+  advancedSettings:
+    loggingSettings:
+      enableInteractionLogging: true
