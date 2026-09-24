@@ -338,11 +338,12 @@ shared state and needs the user's explicit go-ahead:
   (`references/infra.dependencies.md`). A `vpc_id`-shaped param asks the
   user to hand-copy what the platform already knows.
 - **Sensitive fields hold `$secret/` references -- never plaintext, never
-  a paste-your-credential param.** Scope lives in the reference itself
-  (`$secret/<slug>` org-wide, `$secret/@<env>/<slug>` per environment) --
-  look up the real slug before writing (`planton secret list -o json`),
-  and when the secret does not exist yet, write the reference anyway and
-  hand the user the create command
+  a paste-your-credential param -- and a field marked `(no secrets: use
+  <field>)` never holds one: it is read by every viewer, so the reference
+  goes in the home it names.** Scope lives in the reference itself
+  (`$secret/<slug>`, `$secret/@<env>/<slug>`); look up the real slug
+  (`planton secret list -o json`), and when the secret does not exist yet,
+  write the reference and hand the user the create command
   (`references/infra.config-references.md`).
 - **Cluster-scoped, shared-by-design components live in the shared chart**
   -- operators, CRDs, controllers (Istio, cert-manager, external-dns)
@@ -426,7 +427,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.chart-format.md` | Writing Chart.yaml or values.yaml; naming things |
 | `references/infra.templating.md` | Writing template expressions, conditionals, loops |
 | `references/infra.dependencies.md` | Wiring resources together, in-chart and ACROSS charts; the references-before-params check; valueFrom or relationships |
-| `references/infra.config-references.md` | A field needs a credential or operator-managed config value; the `$var`/`$secret` grammar; looking up or creating secrets and variables |
+| `references/infra.config-references.md` | A field needs a credential or operator-managed config value; the `$var`/`$secret` grammar; which field a secret reference may go in (sensitive fields, and the secret home a viewer-readable field names) and why; looking up or creating secrets and variables |
 | `references/infra.kubernetes-on-cluster.md` | The chart has Kubernetes-kind resources; wiring workloads to a cluster |
 | `references/infra.environments.md` | The user mentions environments; how many clusters; cross-env connection authorization |
 | `references/infra.build-contract.md` | Parsing build output; exit codes; CI usage; endpoint pinning; the wire channel |

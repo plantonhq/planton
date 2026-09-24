@@ -45,8 +45,13 @@ spec:
     - field_path: vpc_access.connector
       sku_meter: Serverless VPC Access connector
       impact: A connector's own instances bill on the GcpServerlessVpcConnector component around the clock whether or not this service sees traffic; direct VPC egress (vpc_access.network_interfaces) avoids that standing cost and bills only the VPC data transfer the service actually moves.
+    - field_path: containers.env.secret_value
+      sku_meter: Secret Manager active secret versions
+      pricing_unit: versions per location per month
+      impact: Each variable set through secret_value keeps one Secret Manager secret with one active version in each replica region (the service's region, or every multi-region region) -- $0.06 per active version per location per month, prorated by the hour, with the first 6 active versions per billing account free (cloud.google.com/secret-manager/pricing, read 2026-09-24). A replaced version is destroyed, and destroyed versions are free; access operations bill $0.03 per 10,000 beyond the first 10,000 a month, one read per instance start.
   free_tier: Under request-based billing Google zero-rates the first 180,000 vCPU-seconds and 360,000 GiB-seconds of active time plus the first 2,000,000 requests each month, aggregated per billing account (instance-based billing gets 240,000 vCPU-seconds and 450,000 GiB-seconds instead); applied as a spend-based discount at Tier 1 pricing per cloud.google.com/run/pricing (read 2026-08-22). Estimates state list prices and never net the free tier out.
   estimate_exclusions:
+    - Secret Manager active versions for secret_value variables -- one per variable per replica region at $0.06 a month (first 6 per billing account free); cents at most, and the count of variables is the manifest's, the free allowance the billing account's
     - requests -- $0.40 per million beyond the free 2 million under request-based billing, billed only for requests that pass authentication; volume is the workload's, not the manifest's
     - active-time upcharge on warm instances -- every second a min instance actually serves swaps the $0.0000025 idle vCPU rate for the $0.000024 active rate, so real traffic bills above the committed idle floor
     - GPU seconds -- billed per instance lifetime; a GPU service that scales to zero owes nothing between requests, and instance counts follow traffic

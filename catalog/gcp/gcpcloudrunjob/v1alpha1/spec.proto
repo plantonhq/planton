@@ -423,13 +423,14 @@ message GcpCloudRunJobGrpcAction {
   string service = 2;
 }
 
-// GcpCloudRunJobEnvVar is one environment variable: a literal value or a
-// Secret Manager reference, never both.
+// GcpCloudRunJobEnvVar is one environment variable, given its value one of
+// three ways: a literal, a Secret Manager secret you already own, or a
+// secret value this component stores in Secret Manager for you. Only one.
 message GcpCloudRunJobEnvVar {
   option (buf.validate.message).cel = {
     id: "env.value_xor_secret"
-    message: "an environment variable takes a literal value or a Secret Manager reference, not both"
-    expression: "!(this.value != '' && has(this.value_from_secret))"
+    message: "an environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value"
+    expression: "(this.value != '' ? 1 : 0) + (has(this.value_from_secret) ? 1 : 0) + (this.secret_value != '' ? 1 : 0) <= 1"
   };
 
   // Variable name, e.g. "BATCH_SIZE". Must not start with a digit.
@@ -438,11 +439,22 @@ message GcpCloudRunJobEnvVar {
     (buf.validate.field).string = {pattern: "^[A-Za-z_][A-Za-z0-9_.-]*$"}
   ];
 
-  // Literal value. Never place credentials here — use value_from_secret.
-  string value = 2;
+  // Literal value, written into the job's task template where anyone who
+  // can view the job reads it. Fine for configuration; never a credential
+  // -- a credential goes in secret_value (or value_from_secret).
+  string value = 2 [(dev.planton.shared.options.secret_home) = "secret_value"];
 
-  // Secret Manager reference resolved at task start.
+  // A Secret Manager secret you already own, resolved at task start.
   GcpCloudRunJobSecretEnvSource value_from_secret = 3;
+
+  // A secret value this component keeps in Secret Manager for you. It
+  // creates one secret for this variable, replicated only in the job's
+  // region, stores the value as a version, grants the job's runtime
+  // identity secretAccessor on that secret alone, and points the variable at
+  // that exact version -- the task template carries a reference, never the
+  // value. A changed value adds a version and updates the template, so
+  // rotation is a deploy; destroying the job removes the secret.
+  string secret_value = 4 [(dev.planton.shared.options.sensitive) = true];
 }
 
 // GcpCloudRunJobSecretEnvSource points an environment variable at a Secret

@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "cloudrunenv",
+    srcs = [
+        "naming.go",
+        "secrets.go",
+    ],
+    importpath = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/organizations",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/projects",
+        "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/secretmanager",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "cloudrunenv_test",
+    srcs = ["naming_test.go"],
+    embed = [":cloudrunenv"],
+)

@@ -1,6 +1,7 @@
 package gcpcloudrunjobv1alpha1
 
 import (
+	"errors"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -13,6 +14,20 @@ import (
 func TestGcpCloudRunJobSpec(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "GcpCloudRunJobSpec Validation Suite")
+}
+
+// violatedRules lists the rule ids a validation error names, so a case pins
+// the rule it exists for rather than any failure at all.
+func violatedRules(err error) []string {
+	var validationErr *protovalidate.ValidationError
+	if !errors.As(err, &validationErr) {
+		return nil
+	}
+	ids := make([]string, 0, len(validationErr.Violations))
+	for _, violation := range validationErr.Violations {
+		ids = append(ids, violation.Proto.GetRuleId())
+	}
+	return ids
 }
 
 var _ = Describe("GcpCloudRunJobSpec validations", func() {
@@ -150,6 +165,20 @@ var _ = Describe("GcpCloudRunJobSpec validations", func() {
 				ValueFromSecret: &GcpCloudRunJobSecretEnvSource{Secret: "db-password", Version: "latest"},
 			}}
 			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("accepts a secret value the component stores", func() {
+			spec := makeValidSpec()
+			spec.Template.Containers[0].Env = []*GcpCloudRunJobEnvVar{{Name: "API_TOKEN", SecretValue: "$secret/api-token"}}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a secret value beside a literal value", func() {
+			spec := makeValidSpec()
+			spec.Template.Containers[0].Env = []*GcpCloudRunJobEnvVar{{Name: "API_TOKEN", Value: "plain", SecretValue: "$secret/api-token"}}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+			Expect(violatedRules(err)).To(ContainElement("env.value_xor_secret"))
 		})
 
 		It("rejects env var with both value and secret", func() {

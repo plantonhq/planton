@@ -90,13 +90,15 @@ locals {
           }
         ]
       } : {},
-      # Secrets are name -> ARN pairs; the agent resolves them at task start
-      # via the execution role, so no secret material passes through here.
-      length(container.secrets) > 0 ? {
+      # Secrets are name -> ARN pairs -- the author's own, plus the pinned
+      # ARNs of the secret_environment values secrets.tf stored; the agent
+      # resolves them at task start via the execution role, so no secret
+      # material passes through here.
+      length(merge(container.secrets, local.stored_secret_value_from[container.name])) > 0 ? {
         secrets = [
-          for secret_name in sort(keys(container.secrets)) : {
+          for secret_name in sort(keys(merge(container.secrets, local.stored_secret_value_from[container.name]))) : {
             name      = secret_name
-            valueFrom = container.secrets[secret_name]
+            valueFrom = merge(container.secrets, local.stored_secret_value_from[container.name])[secret_name]
           }
         ]
       } : {},

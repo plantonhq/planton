@@ -79,6 +79,9 @@ func renderFieldTree(b *strings.Builder, f Field, depth int, expandEnumDocs bool
 	if f.Sensitive {
 		markers = append(markers, "(sensitive)")
 	}
+	if f.SecretHome != "" {
+		markers = append(markers, "(no secrets: use "+f.SecretHome+")")
+	}
 	if f.Provenance != "" {
 		markers = append(markers, "("+f.Provenance+")")
 	}
@@ -91,6 +94,9 @@ func renderFieldTree(b *strings.Builder, f Field, depth int, expandEnumDocs bool
 	body := depth + 1
 	if f.Doc != "" {
 		writeIndented(b, f.Doc, body)
+	}
+	if f.SecretHome != "" {
+		writeIndented(b, "secrets: stored where anyone who can view the resource reads it, so a secret reference ($secret/...) here is refused -- put a secret in "+f.SecretHome, body)
 	}
 	if f.RecommendedDefault != "" {
 		writeIndented(b, "default: "+f.RecommendedDefault, body)

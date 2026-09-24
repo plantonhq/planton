@@ -13,13 +13,13 @@ Custom domains compose rather than embed: a serverless network endpoint group (`
 ## Purpose
 
 - **The serverless request-serving primitive**: public APIs, internal backends, and GPU inference endpoints share one honest resource shape.
-- **Pre-deploy coherence**: the API's cross-field rules (public-grant XOR invoker-check-off, connector XOR direct VPC, value XOR secret reference per env var, exactly one volume source, no TCP liveness probes, GPU-flag-needs-accelerator) are enforced by validation before any cloud call.
+- **Pre-deploy coherence**: the API's cross-field rules (public-grant XOR invoker-check-off, connector XOR direct VPC, exactly one of value, secret reference, or secret value per env var, exactly one volume source, no TCP liveness probes, GPU-flag-needs-accelerator) are enforced by validation before any cloud call.
 - **Cost levers as first-class fields**: scale-to-zero, request-based vs instance-based billing (`cpu_idle`), startup CPU boost, MANUAL scaling mode, and per-revision instance caps are all modeled.
 
 ## Key Features
 
 - **Containers**: multiple containers per instance with `depends_on` startup ordering, command/args overrides, working dir, single serving port with `h2c` (end-to-end HTTP/2 for gRPC), CPU/memory limits with `cpu_idle` and `startup_cpu_boost`, `base_image_uri` for managed base-image patching
-- **Environment**: literal values and Secret Manager references (secret + version) per variable
+- **Environment**: per variable, a literal value, a Secret Manager secret you own (secret + version), or a `secret_value` the module keeps in a Secret Manager secret of its own -- replicated in the service's regions, readable only by the runtime identity, pinned to the stored version
 - **Probes**: startup (HTTP/TCP/gRPC), liveness (HTTP/gRPC), and readiness (HTTP/gRPC, traffic-gating without restart) with delays, periods, timeouts, thresholds, and custom headers — each probe type modeled with exactly the shape the API accepts
 - **Volumes**: Cloud SQL Unix sockets (by `GcpCloudSql` reference), Secret Manager files with per-item paths/modes, in-memory or disk `empty_dir`, GCS FUSE buckets (by `GcpGcsBucket` reference) with gcsfuse `mount_options`, NFS shares; `sub_path` mounts into any volume
 - **Scaling**: per-revision min/max instances (scale-to-zero), service-level scaling across revisions including MANUAL mode with a pinned instance count and a service-wide max, per-instance request concurrency

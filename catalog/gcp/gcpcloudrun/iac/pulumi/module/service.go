@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	gcpcloudrunv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrun/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -40,6 +41,13 @@ func service(
 		return nil, errors.Wrap(err, "failed to enable run.googleapis.com api")
 	}
 
+	// Secret values the env carries are stored in Secret Manager before the
+	// service exists, and the service reads each one by reference.
+	storedSecrets, err := cloudrunenv.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to store the environment's secret values")
+	}
+
 	// Deletion guard, honest by default: an unset spec field means true, so
 	// a destroy fails until the manifest explicitly opts out.
 	deletionProtection := true
@@ -50,7 +58,7 @@ func service(
 	args := &cloudrunv2.ServiceArgs{
 		Name:               pulumi.String(locals.ServiceName),
 		Location:           pulumi.String(spec.Region),
-		Template:           buildTemplate(spec),
+		Template:           buildTemplate(spec, storedSecrets.Refs),
 		Labels:             pulumi.ToStringMap(locals.GcpLabels),
 		DeletionProtection: pulumi.Bool(deletionProtection),
 	}
@@ -211,7 +219,9 @@ func service(
 		locals.GcpCloudRun.Metadata.Name,
 		args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdProjectService}),
+		// Cloud Run checks the runtime identity's access to every secret a
+		// revision reads when it creates the revision, so the grants land first.
+		pulumi.DependsOn(append([]pulumi.Resource{createdProjectService}, storedSecrets.Grants...)),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create Cloud Run v2 service")
@@ -245,9 +255,9 @@ func service(
 
 // buildTemplate maps the spec's revision-level surface onto the v2 revision
 // template: containers, volumes, scaling, networking, and hardware.
-func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec) *cloudrunv2.ServiceTemplateArgs {
+func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) *cloudrunv2.ServiceTemplateArgs {
 	template := &cloudrunv2.ServiceTemplateArgs{
-		Containers: buildContainers(spec),
+		Containers: buildContainers(spec, secretRefs),
 	}
 
 	// Explicit revision naming makes declarative blue/green possible; unset
@@ -432,10 +442,10 @@ func buildTemplate(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec) *cloudrunv2.Servic
 
 // buildContainers maps the spec's containers — the serving container plus
 // any sidecars sharing localhost and volumes, ordered by depends_on.
-func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec) cloudrunv2.ServiceTemplateContainerArray {
+func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) cloudrunv2.ServiceTemplateContainerArray {
 	containers := cloudrunv2.ServiceTemplateContainerArray{}
 
-	for _, container := range spec.Containers {
+	for containerIndex, container := range spec.Containers {
 		containerArgs := &cloudrunv2.ServiceTemplateContainerArgs{
 			Image: pulumi.String(container.Image),
 		}
@@ -462,15 +472,22 @@ func buildContainers(spec *gcpcloudrunv1alpha1.GcpCloudRunSpec) cloudrunv2.Servi
 			containerArgs.BaseImageUri = pulumi.String(container.BaseImageUri)
 		}
 
-		// Environment: a literal value or a Secret Manager reference
-		// resolved at instance start (never both — proto-enforced).
+		// Environment: a literal, a Secret Manager secret the author owns, or
+		// a secret value this module stored (one of the three -- proto-enforced).
 		if len(container.Env) > 0 {
 			envs := cloudrunv2.ServiceTemplateContainerEnvArray{}
 			for _, envVar := range container.Env {
 				envArgs := &cloudrunv2.ServiceTemplateContainerEnvArgs{
 					Name: pulumi.String(envVar.Name),
 				}
-				if envVar.ValueFromSecret != nil {
+				if ref, stored := secretRefs[cloudrunenv.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
+					envArgs.ValueSource = &cloudrunv2.ServiceTemplateContainerEnvValueSourceArgs{
+						SecretKeyRef: &cloudrunv2.ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs{
+							Secret:  ref.Secret,
+							Version: ref.Version,
+						},
+					}
+				} else if envVar.ValueFromSecret != nil {
 					secretKeyRef := &cloudrunv2.ServiceTemplateContainerEnvValueSourceSecretKeyRefArgs{
 						Secret: pulumi.String(envVar.ValueFromSecret.Secret),
 					}

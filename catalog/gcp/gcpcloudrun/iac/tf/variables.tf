@@ -40,8 +40,9 @@ variable "spec" {
       command = optional(list(string), [])
       args    = optional(list(string), [])
 
-      # Environment variables: a literal value XOR a Secret Manager
-      # reference (the proto guarantees never both).
+      # Environment variables: exactly one of a literal value, a Secret
+      # Manager reference the author owns, or a secret value this module
+      # stores in Secret Manager (the proto guarantees only one).
       env = optional(list(object({
         name  = string
         value = optional(string, "")
@@ -49,6 +50,7 @@ variable "spec" {
           secret  = string
           version = optional(string, "")
         }), null)
+        secret_value = optional(string, "")
       })), [])
 
       # The single traffic-serving port (at most one container sets it).

@@ -101,6 +101,22 @@ resources:
       - arg: tags_all
         reason: provider-side merge of resource and provider-default tags -- reflects tags, carries no configuration of its own
 
+  # One Secrets Manager secret per containers[].secret_environment entry,
+  # rendered wholly by the module from that map (the container subtree is a
+  # spec exclusion below: it renders into the opaque definitions document).
+  aws_secretsmanager_secret:
+    internal: >-
+      created by the module per containers[].secret_environment entry -- its
+      name (<family>/<container>/<name>), zero recovery window, resource
+      policy naming the execution role, and tags are all derived, never
+      authored.
+  aws_secretsmanager_secret_version:
+    internal: >-
+      the stored value of each containers[].secret_environment entry; the
+      container definitions pin its version id into valueFrom -- the value
+      is the only authored input, and it arrives through the excluded
+      container subtree.
+
 specExclusions:
   # The provider models container definitions as ONE opaque JSON-string
   # argument; the module renders the whole document from this structured

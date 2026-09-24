@@ -60,6 +60,10 @@ spec:
             valueFromSecret:
               secret: hack-db-password
               version: latest
+          # A Planton secret: the component keeps it in a Secret Manager
+          # secret of its own, readable only by the task identity.
+          - name: API_TOKEN
+            secretValue: $secret/hack-api-token
         resources:
           cpu: "2"
           memory: 2Gi
@@ -121,10 +125,11 @@ spec:
 | `spec.template.containers[].args` | `[]string` |  |  |  |
 | `spec.template.containers[].env` | `[]GcpCloudRunJobEnvVar` |  |  |  |
 | `spec.template.containers[].env[].name` | `string` | yes |  |  |
-| `spec.template.containers[].env[].value` | `string` |  |  |  |
+| `spec.template.containers[].env[].value` | `string` (no secrets: use `secretValue`) |  |  |  |
 | `spec.template.containers[].env[].valueFromSecret` | `GcpCloudRunJobSecretEnvSource` |  |  |  |
 | `spec.template.containers[].env[].valueFromSecret.secret` | `string` | yes |  |  |
 | `spec.template.containers[].env[].valueFromSecret.version` | `string` |  | `latest` |  |
+| `spec.template.containers[].env[].secretValue` | `string` (sensitive) |  |  |  |
 | `spec.template.containers[].resources` | `GcpCloudRunJobContainerResources` |  |  |  |
 | `spec.template.containers[].resources.cpu` | `string` |  |  |  |
 | `spec.template.containers[].resources.memory` | `string` |  |  |  |
@@ -315,7 +320,7 @@ Arguments to the entrypoint — overrides the image's CMD.
 Environment variables. Each entry carries either a literal value or a
 Secret Manager reference resolved at task start.
 
-- rule: an environment variable takes a literal value or a Secret Manager reference, not both
+- rule: an environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value
 
 ### spec.template.containers[].env[].name
 
@@ -327,15 +332,18 @@ Variable name, e.g. "BATCH_SIZE". Must not start with a digit.
 
 ### spec.template.containers[].env[].value
 
-`string`
+`string` · no secrets
 
-Literal value. Never place credentials here — use value_from_secret.
+Literal value, written into the job's task template where anyone who
+can view the job reads it. Fine for configuration; never a credential
+-- a credential goes in secret_value (or value_from_secret).
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretValue`, which keeps it in a secret store the workload reads by reference
 ### spec.template.containers[].env[].valueFromSecret
 
 `GcpCloudRunJobSecretEnvSource`
 
-Secret Manager reference resolved at task start.
+A Secret Manager secret you already own, resolved at task start.
 
 ### spec.template.containers[].env[].valueFromSecret.secret
 
@@ -352,6 +360,18 @@ The secret: a short name or full resource name (projects/*/secrets/*).
 Secret version: a version number or "latest".
 
 - default: `latest`
+
+### spec.template.containers[].env[].secretValue
+
+`string` · sensitive
+
+A secret value this component keeps in Secret Manager for you. It
+creates one secret for this variable, replicated only in the job's
+region, stores the value as a version, grants the job's runtime
+identity secretAccessor on that secret alone, and points the variable at
+that exact version -- the task template carries a reference, never the
+value. A changed value adds a version and updates the template, so
+rotation is a deploy; destroying the job removes the secret.
 
 ### spec.template.containers[].resources
 

@@ -47,6 +47,23 @@ docs, validation rules, and allowed enum values. Enum lists sit BELOW the
 field's doc prose -- when a list looks truncated, widen `-A` rather than
 concluding the values are missing.
 
+## Where a secret goes
+
+```
+rg "\(sensitive\)|no secrets: use" <page>
+```
+
+Two marks answer it. `(sensitive)` rows hold secret material; on Planton
+they take only a `$secret/...` reference. `(no secrets: use <field>)` rows
+are written where every viewer reads them, so a secret reference there is
+refused before anything deploys -- write the secret into the named field
+instead (a Cloud Run variable's `secretValue`, an ECS container's
+`secretEnvironment`, a Kubernetes workload's `env.secrets`). The platform
+resolves a reference to its plain value before the module runs, which is
+why the FIELD decides whether a secret stays secret. When a row carries
+neither mark, read the field's detail before putting a secret there, and
+say what you found.
+
 ## What a component exports
 
 ```

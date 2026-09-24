@@ -23,6 +23,10 @@ and a read-only root filesystem. Reference this task definition's
 - **`secrets` by ARN** -- the ECS agent resolves Secrets Manager / SSM
   references at task start via the execution role; no secret material
   lives in the task definition
+- **`secretEnvironment` for a Planton secret** -- the component stores the
+  value in a Secrets Manager secret only the execution role can read and
+  injects it by ARN; a `$secret/` reference in `environment` would be
+  registered in plain text, so the platform refuses it
 - **Two roles by design** -- the execution role pulls images and writes
   logs; the task role is the application's own AWS identity
 - **`readonlyRootFilesystem: true`** -- a strong hardening default for
@@ -41,6 +45,7 @@ and a read-only root filesystem. Reference this task definition's
 | `<execution-role-resource-name>` | Name of the AwsIamRole for the ECS agent | Your role manifest's `metadata.name` |
 | `<task-role-resource-name>` | Name of the AwsIamRole for the application | Your role manifest's `metadata.name` |
 | `<secret-name>` | The Secrets Manager secret holding the value | Secrets Manager console |
+| `<payments-api-key-slug>` | The Planton secret holding the payments API key | `planton secret list -o json` |
 
 ## Common Additions
 

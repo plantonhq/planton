@@ -110,6 +110,11 @@ type Field struct {
 	// leaving the field unset is semantically different from the zero value.
 	Optional  bool `json:"optional,omitempty"`
 	Sensitive bool `json:"sensitive,omitempty"`
+	// SecretHome is set on a field whose value is written where anyone who
+	// can view the resource reads it: it names (in the authored spelling)
+	// the sibling field where the kind keeps a secret instead. A platform
+	// that resolves secret references refuses one anywhere within this field.
+	SecretHome string `json:"secretHome,omitempty"`
 	// RecommendedDefault is the value the platform recommends when the
 	// field is left unset.
 	RecommendedDefault string `json:"recommendedDefault,omitempty"`

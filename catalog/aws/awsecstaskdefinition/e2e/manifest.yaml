@@ -17,6 +17,10 @@ spec:
           appProtocol: http
       environment:
         APP_ENV: demo
+      # A Planton secret: the component keeps it in a Secrets Manager secret
+      # only the execution role reads, and injects it by ARN.
+      secretEnvironment:
+        API_TOKEN: $secret/demo-api-token
       mountPoints:
         - sourceVolume: data
           containerPath: /var/data

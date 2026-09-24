@@ -456,7 +456,9 @@ func checkConditions(t *testing.T, component string, spec *permissionsv1.Compone
 }
 
 // specFieldExists walks a dot-separated path of proto field names through a
-// message descriptor.
+// message descriptor. A repeated message field may be crossed (the condition
+// then reads "any element sets the rest"); a map or a scalar may not, because
+// no reader can say which entry the rest of the path would mean.
 func specFieldExists(message protoreflect.MessageDescriptor, path string) error {
 	segments := strings.Split(path, ".")
 	for i, segment := range segments {
@@ -465,8 +467,8 @@ func specFieldExists(message protoreflect.MessageDescriptor, path string) error 
 			return fmt.Errorf("no field %q in %s", segment, message.FullName())
 		}
 		if i < len(segments)-1 {
-			if field.Message() == nil || field.IsList() || field.IsMap() {
-				return fmt.Errorf("%q is not a singular message, so %q cannot be walked", segment, segments[i+1])
+			if field.Message() == nil || field.IsMap() {
+				return fmt.Errorf("%q is not a message or a list of messages, so %q cannot be walked", segment, segments[i+1])
 			}
 			message = field.Message()
 		}

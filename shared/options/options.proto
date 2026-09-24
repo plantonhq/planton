@@ -102,6 +102,28 @@ extend google.protobuf.FieldOptions {
   // refuses the block that names neither. The marker says nothing about
   // validation; it only says "this word is the manifest's, not the wire's".
   bool manifest_only = 60009;
+
+  // Marks a field whose value is written where anyone who can VIEW the
+  // resource reads it -- an environment variable in a Cloud Run revision, an
+  // ECS task definition, a Kubernetes pod spec -- and names the sibling field,
+  // in the same message, where the kind keeps a secret instead.
+  //
+  // The hazard it records: a platform that resolves secret references before
+  // a module runs (Planton's `$secret/...`) hands the module a plain value,
+  // and the module writes it wherever the manifest put it. In a field like
+  // this one, that is the revision or the task definition itself, readable by
+  // every viewer and, on ECS, kept forever in immutable revisions. The home
+  // field is the one the module turns into a secret in a store (a Kubernetes
+  // Secret, a Secret Manager secret, a Secrets Manager secret) that the
+  // workload reads by reference.
+  //
+  // Downstream platforms refuse a secret reference anywhere within the marked
+  // field (its nested messages, list elements and map values included) and
+  // name the home in the refusal, so the fix is one move. Documentation and
+  // the explain report render the home beside the field. The value is the
+  // home's proto field name (e.g. "secret_value", "secrets"); a catalog test
+  // proves every home names a field that exists beside the marked one.
+  string secret_home = 60010;
 }
 
 extend google.protobuf.EnumValueOptions {

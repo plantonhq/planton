@@ -412,16 +412,29 @@ type AwsEcsTaskDefinitionContainer struct {
 	Command []string `protobuf:"bytes,9,rep,name=command,proto3" json:"command,omitempty"`
 	// Working directory override for the command.
 	WorkingDirectory string `protobuf:"bytes,10,opt,name=working_directory,json=workingDirectory,proto3" json:"working_directory,omitempty"`
-	// Plain-text environment variables (name -> value). For anything
-	// sensitive use secrets instead -- environment values are visible in the
-	// task definition to anyone who can describe it.
+	// Plain-text environment variables (name -> value), written into the task
+	// definition where anyone who can describe it reads them -- and kept in
+	// every revision for good, since revisions are immutable. Configuration
+	// only; a credential goes in secret_environment (or secrets).
 	Environment map[string]string `protobuf:"bytes,11,rep,name=environment,proto3" json:"environment,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	// Secret environment variables (name -> the ARN of an AWS Secrets
-	// Manager secret or SSM Parameter Store parameter). The ECS agent
-	// resolves each reference at task start using execution_role, so the
-	// value never appears in the task definition. Append ":<json-key>::" to
-	// a Secrets Manager ARN to inject one key of a JSON secret.
+	// Secret environment variables backed by secrets YOU already own (name ->
+	// the ARN of an AWS Secrets Manager secret or SSM Parameter Store
+	// parameter). The ECS agent resolves each reference at task start using
+	// execution_role, so the value never appears in the task definition.
+	// Append ":<json-key>::" to a Secrets Manager ARN to inject one key of a
+	// JSON secret.
 	Secrets map[string]string `protobuf:"bytes,12,rep,name=secrets,proto3" json:"secrets,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// Secret environment variables whose VALUES this component keeps in AWS
+	// Secrets Manager for you (name -> value). Per entry it creates one secret
+	// named "<family>/<container>/<name>", stores the value, and attaches a
+	// resource policy that lets only execution_role read it; the container's
+	// secrets list then carries that secret's ARN pinned to the stored
+	// version, so the task definition holds a reference, never the value. A
+	// changed value registers a new revision (a deploy is the rotation), and
+	// destroying the task definition deletes the secrets with no recovery
+	// window -- the value's source of truth is whoever supplied it here.
+	// Requires execution_role.
+	SecretEnvironment map[string]string `protobuf:"bytes,30,rep,name=secret_environment,json=secretEnvironment,proto3" json:"secret_environment,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Environment files loaded from S3 (each entry an S3 object ARN of a
 	// .env file). Applied before environment/secrets; later sources win.
 	// execution_role must be able to read the objects.
@@ -600,6 +613,13 @@ func (x *AwsEcsTaskDefinitionContainer) GetEnvironment() map[string]string {
 func (x *AwsEcsTaskDefinitionContainer) GetSecrets() map[string]string {
 	if x != nil {
 		return x.Secrets
+	}
+	return nil
+}
+
+func (x *AwsEcsTaskDefinitionContainer) GetSecretEnvironment() map[string]string {
+	if x != nil {
+		return x.SecretEnvironment
 	}
 	return nil
 }
@@ -1777,7 +1797,7 @@ var File_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto protoreflect.FileD
 
 const file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"4catalog/aws/awsecstaskdefinition/v1alpha1/spec.proto\x12-dev.planton.aws.awsecstaskdefinition.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x85 \n" +
+	"4catalog/aws/awsecstaskdefinition/v1alpha1/spec.proto\x12-dev.planton.aws.awsecstaskdefinition.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9b\"\n" +
 	"\x18AwsEcsTaskDefinitionSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x7f\n" +
 	"\n" +
@@ -1800,7 +1820,7 @@ const file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDesc = "" +
 	"\bipc_mode\x18\x0f \x01(\tR\aipcMode\x12\x19\n" +
 	"\bpid_mode\x18\x10 \x01(\tR\apidMode\x12\x95\x01\n" +
 	"\x15placement_constraints\x18\x11 \x03(\v2V.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionPlacementConstraintB\b\xbaH\x05\x92\x01\x02\x10\n" +
-	"R\x14placementConstraints:\xe4\x15\xbaH\xe0\x15\x1a\xba\x02\n" +
+	"R\x14placementConstraints:\xfa\x17\xbaH\xf6\x17\x1a\xba\x02\n" +
 	"\x17fargate_requires_awsvpc\x12\x85\x01Fargate task definitions must use the 'awsvpc' network mode -- leave network_mode unset (it defaults to awsvpc) or set it to 'awsvpc'\x1a\x96\x01(size(this.requires_compatibilities) > 0 && !('FARGATE' in this.requires_compatibilities)) || this.network_mode == '' || this.network_mode == 'awsvpc'\x1a\xf9\x01\n" +
 	"\x1cfargate_requires_task_sizing\x12XFargate task definitions must set task-level cpu and memory (e.g. cpu: 256, memory: 512)\x1a\x7f(size(this.requires_compatibilities) > 0 && !('FARGATE' in this.requires_compatibilities)) || (this.cpu > 0 && this.memory > 0)\x1a\xa3\x01\n" +
 	"\x12network_mode_valid\x127network_mode must be one of: awsvpc, bridge, host, none\x1aTthis.network_mode == '' || this.network_mode in ['awsvpc', 'bridge', 'host', 'none']\x1a\xe5\x01\n" +
@@ -1810,14 +1830,15 @@ const file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0eipc_mode_valid\x123ipc_mode must be 'host', 'task', or 'none' when set\x1a@this.ipc_mode == '' || this.ipc_mode in ['host', 'task', 'none']\x1av\n" +
 	"\x0epid_mode_valid\x12*pid_mode must be 'host' or 'task' when set\x1a8this.pid_mode == '' || this.pid_mode in ['host', 'task']\x1a\xce\x01\n" +
 	"\x18fargate_forbids_ipc_mode\x12?ipc_mode is EC2-only -- Fargate task definitions may not set it\x1aq(size(this.requires_compatibilities) > 0 && !('FARGATE' in this.requires_compatibilities)) || this.ipc_mode == ''\x1a\x82\x02\n" +
-	"\x1afargate_pid_mode_task_only\x12Uon Fargate pid_mode may only be 'task' -- 'host' requires an EC2-only task definition\x1a\x8c\x01(size(this.requires_compatibilities) > 0 && !('FARGATE' in this.requires_compatibilities)) || this.pid_mode == '' || this.pid_mode == 'task'\x1a\x82\x02\n" +
+	"\x1afargate_pid_mode_task_only\x12Uon Fargate pid_mode may only be 'task' -- 'host' requires an EC2-only task definition\x1a\x8c\x01(size(this.requires_compatibilities) > 0 && !('FARGATE' in this.requires_compatibilities)) || this.pid_mode == '' || this.pid_mode == 'task'\x1a\x93\x02\n" +
+	"*secret_environment_requires_execution_role\x12\x8c\x01a container sets secret_environment, which the ECS agent reads as the task's execution_role -- set execution_role (an AwsIamRole's role_arn)\x1aV!this.containers.exists(c, size(c.secret_environment) > 0) || has(this.execution_role)\x1a\x82\x02\n" +
 	"%fargate_forbids_placement_constraints\x12Splacement_constraints are EC2-only -- Fargate task definitions may not declare them\x1a\x83\x01(size(this.requires_compatibilities) > 0 && !('FARGATE' in this.requires_compatibilities)) || size(this.placement_constraints) == 0\"v\n" +
 	"'AwsEcsTaskDefinitionPlacementConstraint\x12#\n" +
 	"\x04type\x18\x01 \x01(\tB\x0f\xbaH\fr\n" +
 	"R\bmemberOfR\x04type\x12&\n" +
 	"\n" +
 	"expression\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
-	"expression\"\xbf\x14\n" +
+	"expression\"\xb3\x18\n" +
 	"\x1dAwsEcsTaskDefinitionContainer\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x1c\n" +
 	"\x05image\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05image\x12!\n" +
@@ -1830,9 +1851,10 @@ const file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDesc = "" +
 	"entryPoint\x12\x18\n" +
 	"\acommand\x18\t \x03(\tR\acommand\x12+\n" +
 	"\x11working_directory\x18\n" +
-	" \x01(\tR\x10workingDirectory\x12\x7f\n" +
-	"\venvironment\x18\v \x03(\v2].dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.EnvironmentEntryR\venvironment\x12\xed\x01\n" +
-	"\asecrets\x18\f \x03(\v2Y.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.SecretsEntryBx\xaa\xa6\x1dtvalues are Secrets Manager / SSM Parameter Store ARNs resolved by the ECS agent at task start, never secret materialR\asecrets\x125\n" +
+	" \x01(\tR\x10workingDirectory\x12\x97\x01\n" +
+	"\venvironment\x18\v \x03(\v2].dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.EnvironmentEntryB\x16Ҧ\x1d\x12secret_environmentR\venvironment\x12\xed\x01\n" +
+	"\asecrets\x18\f \x03(\v2Y.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.SecretsEntryBx\xaa\xa6\x1dtvalues are Secrets Manager / SSM Parameter Store ARNs resolved by the ECS agent at task start, never secret materialR\asecrets\x12\x98\x01\n" +
+	"\x12secret_environment\x18\x1e \x03(\v2c.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.SecretEnvironmentEntryB\x04\xa0\xa6\x1d\x01R\x11secretEnvironment\x125\n" +
 	"\x11environment_files\x18\r \x03(\tB\b\xbaH\x05\x92\x01\x02\x18\x01R\x10environmentFiles\x12q\n" +
 	"\fhealth_check\x18\x0e \x01(\v2N.dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionHealthCheckR\vhealthCheck\x12u\n" +
 	"\n" +
@@ -1858,11 +1880,15 @@ const file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a:\n" +
 	"\fSecretsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aD\n" +
+	"\x16SecretEnvironmentEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a?\n" +
 	"\x11DockerLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd6\x01\xbaH\xd2\x01\x1a\xcf\x01\n" +
-	"\x1ememory_reservation_below_limit\x12Qmemory_reservation (the soft reservation) must not exceed memory (the hard limit)\x1aZthis.memory == 0 || this.memory_reservation == 0 || this.memory_reservation <= this.memoryB\f\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xd0\x03\xbaH\xcc\x03\x1a\xcf\x01\n" +
+	"\x1ememory_reservation_below_limit\x12Qmemory_reservation (the soft reservation) must not exceed memory (the hard limit)\x1aZthis.memory == 0 || this.memory_reservation == 0 || this.memory_reservation <= this.memory\x1a\xf7\x01\n" +
+	"\x1fsecret_environment_names_unique\x12\x81\x01a variable in secret_environment is also named in environment or secrets -- give each variable its value from exactly one of them\x1aPthis.secret_environment.all(k, !(k in this.environment) && !(k in this.secrets))B\f\n" +
 	"\n" +
 	"_essential\"\xc8\x04\n" +
 	"\x1fAwsEcsTaskDefinitionPortMapping\x122\n" +
@@ -1974,7 +2000,7 @@ func file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDescGZIP() []b
 	return file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 26)
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_goTypes = []any{
 	(*AwsEcsTaskDefinitionSpec)(nil),                // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec
 	(*AwsEcsTaskDefinitionPlacementConstraint)(nil), // 1: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionPlacementConstraint
@@ -1995,18 +2021,19 @@ var file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_goTypes = []any{
 	(*AwsEcsTaskDefinitionRestartPolicy)(nil),       // 16: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionRestartPolicy
 	nil,                         // 17: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.EnvironmentEntry
 	nil,                         // 18: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.SecretsEntry
-	nil,                         // 19: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.DockerLabelsEntry
-	nil,                         // 20: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.DriverOptsEntry
-	nil,                         // 21: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.LabelsEntry
-	nil,                         // 22: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.OptionsEntry
-	nil,                         // 23: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.SecretOptionsEntry
-	nil,                         // 24: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens.OptionsEntry
-	(*v1.StringValueOrRef)(nil), // 25: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	nil,                         // 19: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.SecretEnvironmentEntry
+	nil,                         // 20: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.DockerLabelsEntry
+	nil,                         // 21: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.DriverOptsEntry
+	nil,                         // 22: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.LabelsEntry
+	nil,                         // 23: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.OptionsEntry
+	nil,                         // 24: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.SecretOptionsEntry
+	nil,                         // 25: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens.OptionsEntry
+	(*v1.StringValueOrRef)(nil), // 26: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_depIdxs = []int32{
 	2,  // 0: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.containers:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer
-	25, // 1: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.execution_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 2: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.task_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	26, // 1: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.execution_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	26, // 2: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.task_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	11, // 3: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.runtime_platform:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionRuntimePlatform
 	7,  // 4: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.volumes:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionVolume
 	12, // 5: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionSpec.logging:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogging
@@ -2014,31 +2041,32 @@ var file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_depIdxs = []int32{
 	3,  // 7: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.port_mappings:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionPortMapping
 	17, // 8: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.environment:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.EnvironmentEntry
 	18, // 9: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.secrets:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.SecretsEntry
-	4,  // 10: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.health_check:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionHealthCheck
-	5,  // 11: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.depends_on:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainerDependency
-	6,  // 12: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.mount_points:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionMountPoint
-	13, // 13: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.log_configuration:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration
-	14, // 14: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.firelens_configuration:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens
-	15, // 15: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.ulimits:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionUlimit
-	19, // 16: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.docker_labels:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.DockerLabelsEntry
-	16, // 17: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.restart_policy:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionRestartPolicy
-	10, // 18: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionVolume.efs:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsVolume
-	8,  // 19: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionVolume.docker:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume
-	9,  // 20: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionVolume.s3files:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionS3FilesVolume
-	20, // 21: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.driver_opts:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.DriverOptsEntry
-	21, // 22: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.labels:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.LabelsEntry
-	25, // 23: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionS3FilesVolume.file_system_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 24: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsVolume.file_system_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 25: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsVolume.access_point_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 26: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogging.log_group:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	22, // 27: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.options:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.OptionsEntry
-	23, // 28: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.secret_options:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.SecretOptionsEntry
-	24, // 29: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens.options:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens.OptionsEntry
-	30, // [30:30] is the sub-list for method output_type
-	30, // [30:30] is the sub-list for method input_type
-	30, // [30:30] is the sub-list for extension type_name
-	30, // [30:30] is the sub-list for extension extendee
-	0,  // [0:30] is the sub-list for field type_name
+	19, // 10: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.secret_environment:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.SecretEnvironmentEntry
+	4,  // 11: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.health_check:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionHealthCheck
+	5,  // 12: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.depends_on:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainerDependency
+	6,  // 13: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.mount_points:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionMountPoint
+	13, // 14: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.log_configuration:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration
+	14, // 15: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.firelens_configuration:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens
+	15, // 16: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.ulimits:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionUlimit
+	20, // 17: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.docker_labels:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.DockerLabelsEntry
+	16, // 18: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionContainer.restart_policy:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionRestartPolicy
+	10, // 19: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionVolume.efs:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsVolume
+	8,  // 20: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionVolume.docker:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume
+	9,  // 21: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionVolume.s3files:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionS3FilesVolume
+	21, // 22: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.driver_opts:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.DriverOptsEntry
+	22, // 23: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.labels:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionDockerVolume.LabelsEntry
+	26, // 24: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionS3FilesVolume.file_system_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	26, // 25: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsVolume.file_system_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	26, // 26: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionEfsVolume.access_point_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	26, // 27: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogging.log_group:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 28: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.options:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.OptionsEntry
+	24, // 29: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.secret_options:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionLogConfiguration.SecretOptionsEntry
+	25, // 30: dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens.options:type_name -> dev.planton.aws.awsecstaskdefinition.v1alpha1.AwsEcsTaskDefinitionFirelens.OptionsEntry
+	31, // [31:31] is the sub-list for method output_type
+	31, // [31:31] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_init() }
@@ -2054,7 +2082,7 @@ func file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDesc), len(file_catalog_aws_awsecstaskdefinition_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   26,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -22,7 +22,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### AWS Account
 
 - **ECS permissions** -- the credentials used by the Provider Connection must have `ecs:RegisterTaskDefinition`, `ecs:DeregisterTaskDefinition`, and `ecs:DescribeTaskDefinition`, plus `iam:PassRole` on the execution and task roles and `logs:CreateLogGroup`/`logs:PutRetentionPolicy` for the default log wiring.
-- **Secret access** -- when containers inject secrets, the execution role must be able to read those Secrets Manager secrets / SSM parameters; the values never appear in the task definition.
+- **Secret access** -- when containers inject `secrets` you own, the execution role must be able to read those Secrets Manager secrets / SSM parameters; the values never appear in the task definition. A container's `secretEnvironment` needs no grant from you: the component stores each value in a secret whose resource policy lets only the execution role read it.
 - **Image availability** -- images must be pullable from the task's region (ECR via the execution role; other private registries via a repository-credentials secret).
 
 ## Deploy

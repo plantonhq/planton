@@ -9,6 +9,7 @@ package kubernetes
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -449,7 +450,10 @@ func (*EnvFromSource_SecretRef) isEnvFromSource_Source() {}
 // field supports bulk import of all keys from ConfigMaps or Secrets.
 type ContainerEnv struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Individual environment variables (non-sensitive).
+	// Individual environment variables (non-sensitive). Their values are
+	// written into the pod spec, where anyone who can read the workload sees
+	// them; a secret belongs in `secrets`, which the module keeps in a
+	// Kubernetes Secret the container reads by reference.
 	Variables []*EnvVar `protobuf:"bytes,1,rep,name=variables,proto3" json:"variables,omitempty"`
 	// Individual secret environment variables (sensitive).
 	Secrets []*SecretEnvVar `protobuf:"bytes,2,rep,name=secrets,proto3" json:"secrets,omitempty"`
@@ -825,7 +829,7 @@ var File_catalog_kubernetes_container_env_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_container_env_proto_rawDesc = "" +
 	"\n" +
-	"&catalog/kubernetes/container_env.proto\x12\x16dev.planton.kubernetes\x1a\x1bbuf/validate/validate.proto\x1a*catalog/kubernetes/kubernetes_secret.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xbe\x04\n" +
+	"&catalog/kubernetes/container_env.proto\x12\x16dev.planton.kubernetes\x1a\x1bbuf/validate/validate.proto\x1a*catalog/kubernetes/kubernetes_secret.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbe\x04\n" +
 	"\x06EnvVar\x12\xc7\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xb2\x01\xbaH\xae\x01\xba\x01\xa7\x01\n" +
 	"\x13env.var.name.format\x12fMust be a valid C_IDENTIFIER (start with letter/underscore, contain only letters, digits, underscores)\x1a(this.matches('^[A-Za-z_][A-Za-z0-9_]*$')\xc8\x01\x01R\x04name\x12\x16\n" +
@@ -850,9 +854,9 @@ const file_catalog_kubernetes_container_env_proto_rawDesc = "" +
 	"\x0econfig_map_ref\x18\x02 \x01(\v2$.dev.planton.kubernetes.ConfigMapRefH\x00R\fconfigMapRef\x12B\n" +
 	"\n" +
 	"secret_ref\x18\x03 \x01(\v2!.dev.planton.kubernetes.SecretRefH\x00R\tsecretRefB\b\n" +
-	"\x06source\"\xce\x01\n" +
-	"\fContainerEnv\x12<\n" +
-	"\tvariables\x18\x01 \x03(\v2\x1e.dev.planton.kubernetes.EnvVarR\tvariables\x12>\n" +
+	"\x06source\"\xdb\x01\n" +
+	"\fContainerEnv\x12I\n" +
+	"\tvariables\x18\x01 \x03(\v2\x1e.dev.planton.kubernetes.EnvVarB\vҦ\x1d\asecretsR\tvariables\x12>\n" +
 	"\asecrets\x18\x02 \x03(\v2$.dev.planton.kubernetes.SecretEnvVarR\asecrets\x12@\n" +
 	"\benv_from\x18\x03 \x03(\v2%.dev.planton.kubernetes.EnvFromSourceR\aenvFrom\"c\n" +
 	"\x0fConfigMapKeyRef\x12\x1a\n" +

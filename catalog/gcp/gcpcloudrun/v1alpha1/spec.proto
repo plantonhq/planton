@@ -430,13 +430,14 @@ message GcpCloudRunContainer {
   GcpCloudRunReadinessProbe readiness_probe = 14;
 }
 
-// GcpCloudRunEnvVar is one environment variable: a literal value or a
-// Secret Manager reference, never both.
+// GcpCloudRunEnvVar is one environment variable, given its value one of
+// three ways: a literal, a Secret Manager secret you already own, or a
+// secret value this component stores in Secret Manager for you. Only one.
 message GcpCloudRunEnvVar {
   option (buf.validate.message).cel = {
     id: "env.value_xor_secret"
-    message: "an environment variable takes a literal value or a Secret Manager reference, not both"
-    expression: "!(this.value != '' && has(this.value_from_secret))"
+    message: "an environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value"
+    expression: "(this.value != '' ? 1 : 0) + (has(this.value_from_secret) ? 1 : 0) + (this.secret_value != '' ? 1 : 0) <= 1"
   };
 
   // Variable name, e.g. "DATABASE_URL". Must not start with a digit.
@@ -445,12 +446,24 @@ message GcpCloudRunEnvVar {
     (buf.validate.field).string = {pattern: "^[A-Za-z_][A-Za-z0-9_.-]*$"}
   ];
 
-  // Literal value. Fine for configuration; never place credentials here —
-  // use value_from_secret so the material stays in Secret Manager.
-  string value = 2;
+  // Literal value, written into the revision where anyone who can view the
+  // service reads it. Fine for configuration; never a credential -- a
+  // credential goes in secret_value (or value_from_secret).
+  string value = 2 [(dev.planton.shared.options.secret_home) = "secret_value"];
 
-  // Secret Manager reference resolved into the variable at instance start.
+  // A Secret Manager secret you already own, resolved into the variable at
+  // instance start. Rotation is Secret Manager's: with version "latest",
+  // new instances pick up a new version without a deploy.
   GcpCloudRunSecretEnvSource value_from_secret = 3;
+
+  // A secret value this component keeps in Secret Manager for you. It
+  // creates one secret for this variable, replicated only in the service's
+  // region(s), stores the value as a version, grants the service's runtime
+  // identity secretAccessor on that secret alone, and points the variable at
+  // that exact version -- the revision carries a reference, never the value.
+  // A changed value adds a version and stamps a new revision, so rotation is
+  // a deploy; destroying the service removes the secret.
+  string secret_value = 4 [(dev.planton.shared.options.sensitive) = true];
 }
 
 // GcpCloudRunSecretEnvSource points an environment variable at a Secret

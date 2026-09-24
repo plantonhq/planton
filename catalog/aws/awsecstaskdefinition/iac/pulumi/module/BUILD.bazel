@@ -6,6 +6,7 @@ go_library(
         "locals.go",
         "main.go",
         "outputs.go",
+        "secret_environment.go",
     ],
     importpath = "github.com/plantonhq/planton/catalog/aws/awsecstaskdefinition/iac/pulumi/module",
     visibility = ["//visibility:public"],
@@ -17,6 +18,7 @@ go_library(
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/cloudwatch",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/ecs",
+        "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/secretsmanager",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
 )

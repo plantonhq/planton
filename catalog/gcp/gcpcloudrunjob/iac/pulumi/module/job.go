@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	gcpcloudrunjobv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunjob/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -37,12 +38,19 @@ func job(
 		return nil, errors.Wrap(err, "failed to enable run.googleapis.com api")
 	}
 
+	// Secret values the env carries are stored in Secret Manager before the
+	// job exists, and each task reads them by reference.
+	storedSecrets, err := cloudrunenv.Store(ctx, secretPlacement(locals), secretVariables(tmpl), gcpProvider)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to store the environment's secret values")
+	}
+
 	deletionProtection := true
 	if spec.DeletionProtection != nil {
 		deletionProtection = spec.GetDeletionProtection()
 	}
 
-	taskTemplate := buildTaskTemplate(spec, tmpl)
+	taskTemplate := buildTaskTemplate(spec, tmpl, storedSecrets.Refs)
 
 	executionTemplate := &cloudrunv2.JobTemplateArgs{
 		Template: taskTemplate,
@@ -115,7 +123,9 @@ func job(
 		locals.GcpCloudRunJob.Metadata.Name,
 		args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdProjectService}),
+		// The runtime identity must already read every secret the task
+		// template references, so the grants land first.
+		pulumi.DependsOn(append([]pulumi.Resource{createdProjectService}, storedSecrets.Grants...)),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create Cloud Run v2 job")
@@ -127,9 +137,10 @@ func job(
 func buildTaskTemplate(
 	spec *gcpcloudrunjobv1alpha1.GcpCloudRunJobSpec,
 	tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate,
+	secretRefs map[cloudrunenv.Key]cloudrunenv.Ref,
 ) *cloudrunv2.JobTemplateTemplateArgs {
 	taskTemplate := &cloudrunv2.JobTemplateTemplateArgs{
-		Containers: buildContainers(tmpl),
+		Containers: buildContainers(tmpl, secretRefs),
 	}
 
 	if tmpl.ServiceAccount.GetValue() != "" {
@@ -262,10 +273,10 @@ func buildTaskTemplate(
 	return taskTemplate
 }
 
-func buildContainers(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate) cloudrunv2.JobTemplateTemplateContainerArray {
+func buildContainers(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate, secretRefs map[cloudrunenv.Key]cloudrunenv.Ref) cloudrunv2.JobTemplateTemplateContainerArray {
 	containers := cloudrunv2.JobTemplateTemplateContainerArray{}
 
-	for _, container := range tmpl.Containers {
+	for containerIndex, container := range tmpl.Containers {
 		containerArgs := &cloudrunv2.JobTemplateTemplateContainerArgs{
 			Image: pulumi.String(container.Image),
 		}
@@ -292,7 +303,16 @@ func buildContainers(tmpl *gcpcloudrunjobv1alpha1.GcpCloudRunJobTemplate) cloudr
 				envArgs := &cloudrunv2.JobTemplateTemplateContainerEnvArgs{
 					Name: pulumi.String(envVar.Name),
 				}
-				if envVar.ValueFromSecret != nil {
+				// A literal, a Secret Manager secret the author owns, or a
+				// secret value this module stored (one of the three).
+				if ref, stored := secretRefs[cloudrunenv.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
+					envArgs.ValueSource = &cloudrunv2.JobTemplateTemplateContainerEnvValueSourceArgs{
+						SecretKeyRef: &cloudrunv2.JobTemplateTemplateContainerEnvValueSourceSecretKeyRefArgs{
+							Secret:  ref.Secret,
+							Version: ref.Version,
+						},
+					}
+				} else if envVar.ValueFromSecret != nil {
 					secretKeyRef := &cloudrunv2.JobTemplateTemplateContainerEnvValueSourceSecretKeyRefArgs{
 						Secret: pulumi.String(envVar.ValueFromSecret.Secret),
 					}

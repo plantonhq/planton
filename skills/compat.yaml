@@ -8,5 +8,5 @@
 # which capability in the commit message.
 #
 # v0.0.0 means "no floor": the content works with every released consumer.
-minimum_daemon_version: v0.0.0
-minimum_cli_version: v0.0.0
+minimum_daemon_version: v0.0.76
+minimum_cli_version: v0.0.76

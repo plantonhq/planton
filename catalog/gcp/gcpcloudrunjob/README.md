@@ -18,7 +18,7 @@ Individual executions (`gcloud run jobs execute`, Cloud Scheduler, Eventarc) are
 - **A container image** built for batch/CLI work ([GcpArtifactRegistryRepo](/docs/catalog/gcp/gcpartifactregistryrepo))
 - **A service account** ([GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount)) when tasks call other GCP APIs
 - **VPC and subnetwork** ([GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork), [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork)) for direct VPC egress
-- **Secret Manager secrets** if referencing them in env vars or volumes
+- **Secret Manager secrets** if referencing them in env vars (`value_from_secret`) or volumes; a variable's `secret_value` needs none -- the module creates its secret, replicated in the job's region and readable only by the task identity
 
 ## Quick Start
 

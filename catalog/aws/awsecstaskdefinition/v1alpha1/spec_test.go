@@ -1,6 +1,7 @@
 package awsecstaskdefinitionv1alpha1
 
 import (
+	"errors"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -45,6 +46,20 @@ func minimalValidTaskDefinition() *AwsEcsTaskDefinition {
 			},
 		},
 	}
+}
+
+// violatedRules lists the rule ids a validation error names, so a case pins
+// the rule it exists for rather than any failure at all.
+func violatedRules(err error) []string {
+	var validationErr *protovalidate.ValidationError
+	if !errors.As(err, &validationErr) {
+		return nil
+	}
+	ids := make([]string, 0, len(validationErr.Violations))
+	for _, violation := range validationErr.Violations {
+		ids = append(ids, violation.Proto.GetRuleId())
+	}
+	return ids
 }
 
 var _ = ginkgo.Describe("AwsEcsTaskDefinitionSpec Validation Tests", func() {
@@ -199,6 +214,40 @@ var _ = ginkgo.Describe("AwsEcsTaskDefinitionSpec Validation Tests", func() {
 				input.Spec.Memory = 0
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("should accept secret_environment with an execution role", func() {
+				input := minimalValidTaskDefinition()
+				input.Spec.Containers[0].SecretEnvironment = map[string]string{"STRIPE_KEY": "$secret/stripe-key"}
+				gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should reject secret_environment without an execution role", func() {
+				input := minimalValidTaskDefinition()
+				input.Spec.ExecutionRole = nil
+				input.Spec.Logging = &AwsEcsTaskDefinitionLogging{Disabled: true}
+				input.Spec.Containers[0].SecretEnvironment = map[string]string{"STRIPE_KEY": "$secret/stripe-key"}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+				gomega.Expect(violatedRules(err)).To(gomega.ContainElement("secret_environment_requires_execution_role"))
+			})
+
+			ginkgo.It("should reject a secret_environment name that environment also sets", func() {
+				input := minimalValidTaskDefinition()
+				input.Spec.Containers[0].Environment = map[string]string{"STRIPE_KEY": "x"}
+				input.Spec.Containers[0].SecretEnvironment = map[string]string{"STRIPE_KEY": "$secret/stripe-key"}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+				gomega.Expect(violatedRules(err)).To(gomega.ContainElement("secret_environment_names_unique"))
+			})
+
+			ginkgo.It("should reject a secret_environment name that secrets also sets", func() {
+				input := minimalValidTaskDefinition()
+				input.Spec.Containers[0].Secrets = map[string]string{"STRIPE_KEY": "arn:aws:secretsmanager:us-west-2:123456789012:secret:stripe"}
+				input.Spec.Containers[0].SecretEnvironment = map[string]string{"STRIPE_KEY": "$secret/stripe-key"}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil())
+				gomega.Expect(violatedRules(err)).To(gomega.ContainElement("secret_environment_names_unique"))
 			})
 
 			ginkgo.It("should reject a Fargate task on the awslogs default without an execution role", func() {

@@ -198,9 +198,13 @@ func (x *ComponentPermissionsSpec) GetAuth0() *Auth0Permissions {
 type PermissionCondition struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Path of the spec field, in the proto field names a manifest uses,
-	// dot-separated for a nested field (e.g. "roles", "enabled_clients").
+	// dot-separated for a nested field (e.g. "roles", "enabled_clients",
+	// "containers.env.secret_value").
 	// "Set" means a repeated or map field is non-empty, a message field is
-	// present, and a scalar holds a non-default value.
+	// present, and a scalar holds a non-default value. A path that crosses a
+	// repeated message field is set when ANY element sets the rest of the path
+	// -- a permission one container's variable needs is needed by the
+	// component.
 	SpecFieldSet  string `protobuf:"bytes,1,opt,name=spec_field_set,json=specFieldSet,proto3" json:"spec_field_set,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
