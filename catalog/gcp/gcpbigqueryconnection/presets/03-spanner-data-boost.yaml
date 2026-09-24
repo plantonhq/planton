@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryConnection
+metadata:
+  name: ledger-spanner
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  friendlyName: Ledger (Spanner, Data Boost)
+  cloudSpanner:
+    database: my-gcp-project/ledger/ledger-db
+    databaseRole: analyst
+    useParallelism: true
+    useDataBoost: true
+    maxParallelism: 8

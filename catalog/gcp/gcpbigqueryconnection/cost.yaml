@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpbigqueryconnection
+spec:
+  billing_model: free
+  free_tier: "A connection is configuration. Google's BigQuery pricing (cloud.google.com/bigquery/pricing, read 2026-09-24) bills the queries and storage that use a connection, not the connection itself."
+  notes: "Queries through a connection bill as BigQuery compute (on-demand bytes or reservation slots); federated sources bill their own side -- Spanner Data Boost compute, Cloud SQL instance load, Omni compute in the other cloud, Vertex AI predictions for remote models, and egress where data crosses regions or clouds."

@@ -513,7 +513,11 @@ import (
 	gcpartifactregistryrepov1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpartifactregistryrepo/v1alpha1"
 	gcpbackendbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbackendbucket/v1alpha1"
 	gcpbackendservicev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbackendservice/v1alpha1"
+	gcpbigquerycapacitycommitmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerycapacitycommitment/v1alpha1"
+	gcpbigqueryconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigqueryconnection/v1alpha1"
 	gcpbigquerydatasetv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerydataset/v1alpha1"
+	gcpbigqueryreservationv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigqueryreservation/v1alpha1"
+	gcpbigqueryreservationgroupv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigqueryreservationgroup/v1alpha1"
 	gcpbigquerytablev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigquerytable/v1alpha1"
 	gcpbigtableinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtableinstance/v1alpha1"
 	gcpbigtabletablev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpbigtabletable/v1alpha1"
@@ -582,6 +586,11 @@ import (
 	gcplogbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcplogbucket/v1alpha1"
 	gcploggingsinkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcploggingsink/v1alpha1"
 	gcplogmetricv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcplogmetric/v1alpha1"
+	gcpmanagedkafkaaclv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaacl/v1alpha1"
+	gcpmanagedkafkaclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkacluster/v1alpha1"
+	gcpmanagedkafkaconnectclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1"
+	gcpmanagedkafkaconnectorv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkaconnector/v1alpha1"
+	gcpmanagedkafkatopicv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkatopic/v1alpha1"
 	gcpmanagedsslcertificatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedsslcertificate/v1alpha1"
 	gcpmemorystoreinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmemorystoreinstance/v1alpha1"
 	gcpmodelarmorfloorsettingv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmodelarmorfloorsetting/v1alpha1"
@@ -1315,7 +1324,11 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo:                &gcpartifactregistryrepov1alpha1.GcpArtifactRegistryRepo{},
 	cloudresourcekind.CloudResourceKind_GcpBackendBucket:                       &gcpbackendbucketv1alpha1.GcpBackendBucket{},
 	cloudresourcekind.CloudResourceKind_GcpBackendService:                      &gcpbackendservicev1alpha1.GcpBackendService{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryCapacityCommitment:          &gcpbigquerycapacitycommitmentv1alpha1.GcpBigQueryCapacityCommitment{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryConnection:                  &gcpbigqueryconnectionv1alpha1.GcpBigQueryConnection{},
 	cloudresourcekind.CloudResourceKind_GcpBigQueryDataset:                     &gcpbigquerydatasetv1alpha1.GcpBigQueryDataset{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryReservation:                 &gcpbigqueryreservationv1alpha1.GcpBigQueryReservation{},
+	cloudresourcekind.CloudResourceKind_GcpBigQueryReservationGroup:            &gcpbigqueryreservationgroupv1alpha1.GcpBigQueryReservationGroup{},
 	cloudresourcekind.CloudResourceKind_GcpBigQueryTable:                       &gcpbigquerytablev1alpha1.GcpBigQueryTable{},
 	cloudresourcekind.CloudResourceKind_GcpBigtableInstance:                    &gcpbigtableinstancev1alpha1.GcpBigtableInstance{},
 	cloudresourcekind.CloudResourceKind_GcpBigtableTable:                       &gcpbigtabletablev1alpha1.GcpBigtableTable{},
@@ -1384,6 +1397,11 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpLogBucket:                           &gcplogbucketv1alpha1.GcpLogBucket{},
 	cloudresourcekind.CloudResourceKind_GcpLogMetric:                           &gcplogmetricv1alpha1.GcpLogMetric{},
 	cloudresourcekind.CloudResourceKind_GcpLoggingSink:                         &gcploggingsinkv1alpha1.GcpLoggingSink{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaAcl:                     &gcpmanagedkafkaaclv1alpha1.GcpManagedKafkaAcl{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaCluster:                 &gcpmanagedkafkaclusterv1alpha1.GcpManagedKafkaCluster{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnectCluster:          &gcpmanagedkafkaconnectclusterv1alpha1.GcpManagedKafkaConnectCluster{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnector:               &gcpmanagedkafkaconnectorv1alpha1.GcpManagedKafkaConnector{},
+	cloudresourcekind.CloudResourceKind_GcpManagedKafkaTopic:                   &gcpmanagedkafkatopicv1alpha1.GcpManagedKafkaTopic{},
 	cloudresourcekind.CloudResourceKind_GcpManagedSslCertificate:               &gcpmanagedsslcertificatev1alpha1.GcpManagedSslCertificate{},
 	cloudresourcekind.CloudResourceKind_GcpMemorystoreInstance:                 &gcpmemorystoreinstancev1alpha1.GcpMemorystoreInstance{},
 	cloudresourcekind.CloudResourceKind_GcpModelArmorFloorSetting:              &gcpmodelarmorfloorsettingv1alpha1.GcpModelArmorFloorSetting{},

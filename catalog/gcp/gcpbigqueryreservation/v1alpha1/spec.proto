@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigqueryreservation.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpBigQueryReservationAssignee is the project, folder, or organization
+// whose jobs use the reservation. Exactly one is set; a folder or
+// organization assignment covers everything beneath it unless a lower
+// level has its own.
+message GcpBigQueryReservationAssignee {
+  option (buf.validate.message).cel = {
+    id: "exactly_one_assignee"
+    message: "set exactly one of project_id, folder_id, or organization_id"
+    expression: "[has(this.project_id) && (this.project_id.value != '' || has(this.project_id.value_from)), has(this.folder_id) && (this.folder_id.value != '' || has(this.folder_id.value_from)), this.organization_id != ''].filter(x, x).size() == 1"
+  };
+
+  // A project: a literal project ID or a GcpProject reference. The modules
+  // send projects/{id}.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // A folder: its numeric ID, literal or a GcpFolder reference. The
+  // modules send folders/{id}.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef folder_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFolder,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.folder_id"
+  ];
+
+  // An organization: the numeric organization ID, without the
+  // organizations/ prefix. The modules send organizations/{id}.
+  string organization_id = 3 [(buf.validate.field).cel = {
+    id: "organization_id.numeric"
+    message: "organization_id must be the numeric organization ID, without the organizations/ prefix"
+    expression: "this == '' || this.matches('^[0-9]+$')"
+  }];
+}
+
+// GcpBigQueryReservationAssignment routes one kind of job from an assignee
+// to this reservation (`google_bigquery_reservation_assignment`). Every
+// field is immutable: a change replaces the assignment. Jobs of an
+// assignee with no assignment for their job type run on on-demand
+// capacity.
+message GcpBigQueryReservationAssignment {
+  // Whose jobs use the reservation.
+  GcpBigQueryReservationAssignee assignee = 1 [(buf.validate.field).required = true];
+
+  // Which jobs:
+  //   QUERY      -- interactive and batch queries, and scripts
+  //   PIPELINE   -- load, export, and copy jobs
+  //   CONTINUOUS -- continuous queries
+  string job_type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "QUERY",
+        "PIPELINE",
+        "CONTINUOUS"
+      ]
+    }
+  ];
+
+  // Narrow the assignment to one principal's jobs: jobs that principal
+  // runs use this reservation, everyone else's fall back to the
+  // project/folder/organization assignment (then on-demand). Formats:
+  //   principal://goog/subject/USER_EMAIL
+  //   principal://iam.googleapis.com/projects/-/serviceAccounts/SA_EMAIL
+  //   principal://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/subject/SUBJECT
+  // Empty covers every principal.
+  string principal = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^principal://.+$"
+  ];
+}
+
+// GcpBigQueryReservationSpec defines a BigQuery slot reservation
+// (`google_bigquery_reservation`) -- dedicated query capacity in an
+// administration project, with the assignments that route projects,
+// folders, or an organization onto it folded in (they live under exactly
+// one reservation).
+//
+// Capacity model: slot_capacity is the baseline billed around the clock;
+// autoscale_max_slots adds slots only while queries need them, billed
+// while in use. Idle baseline slots are shared with other reservations in
+// the same admin project unless ignore_idle_slots is set. Slots bought as
+// a GcpBigQueryCapacityCommitment in the same admin project and location
+// lower the price of the baseline; a reservation group
+// (GcpBigQueryReservationGroup) pools idle slots among its members first.
+//
+// Immutable: project_id, location, reservation_name, edition (a change
+// replaces the reservation). Capacity, autoscaling, concurrency, idle-slot
+// sharing, the group, the secondary location, and labels update in place.
+message GcpBigQueryReservationSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.assignments_unique"
+    expression: "this.assignments.all(a, this.assignments.filter(b, b.job_type == a.job_type && b.principal == a.principal && b.assignee.organization_id == a.assignee.organization_id && b.assignee.project_id.value == a.assignee.project_id.value && b.assignee.project_id.value_from.name == a.assignee.project_id.value_from.name && b.assignee.folder_id.value == a.assignee.folder_id.value && b.assignee.folder_id.value_from.name == a.assignee.folder_id.value_from.name).size() == 1)"
+    message: "each assignment must be unique by assignee, job_type, and principal"
+  };
+
+  // The administration project the reservation lives in and bills to: a
+  // literal project ID or a GcpProject reference. If omitted, the
+  // provider's default project is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where the slots are: a multi-region (US, EU) or a region
+  // (asia-northeast1). Assigned projects' jobs use the reservation only
+  // for data in this location. Empty means US (Google's default).
+  // Immutable.
+  string location = 2;
+
+  // The reservation's name -- letters, digits, and dashes. Defaults to
+  // metadata.name. Immutable.
+  string reservation_name = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-zA-Z0-9-]+$"
+  ];
+
+  // Baseline slots, always allocated and billed -- 0 is valid with
+  // autoscaling, for pay-while-used capacity. Queries may exceed it by
+  // borrowing idle slots unless ignore_idle_slots is set. Mutable in
+  // place.
+  int64 slot_capacity = 4 [(buf.validate.field).int64.gte = 0];
+
+  // The BigQuery edition, which sets the features and the per-slot price:
+  //   STANDARD        -- autoscaling only, no commitments, fewer features
+  //   ENTERPRISE      -- commitments, BigQuery ML, BI Engine, and more
+  //   ENTERPRISE_PLUS -- adds managed disaster recovery and compliance
+  //                      controls
+  // Empty lets Google choose. Immutable.
+  string edition = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "STANDARD",
+        "ENTERPRISE",
+        "ENTERPRISE_PLUS"
+      ]
+    }
+  ];
+
+  // The most slots autoscaling may add on top of slot_capacity (a
+  // multiple of 50). 0 or empty turns autoscaling off.
+  int64 autoscale_max_slots = 6 [(buf.validate.field).int64.gte = 0];
+
+  // true caps queries at this reservation's own slots; false (Google's
+  // default) lets them borrow idle slots from other reservations in the
+  // same admin project.
+  bool ignore_idle_slots = 7;
+
+  // The soft limit on queries running at once. 0 (Google's default) sizes
+  // it automatically from the reservation's slots.
+  int64 concurrency = 8 [(buf.validate.field).int64.gte = 0];
+
+  // The group the reservation belongs to, which pools idle slots among its
+  // members before other reservations: a GcpBigQueryReservationGroup
+  // reference (its name output) or a literal group name or full path.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef reservation_group = 9 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBigQueryReservationGroup,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // Managed disaster recovery: the location of a secondary replica
+  // (Enterprise Plus). Setting it on create makes a failover reservation;
+  // setting or clearing it later converts one way or the other. Failover
+  // itself is an operational action outside the spec.
+  string secondary_location = 10;
+
+  // Labels on the reservation. The platform attribution labels are added
+  // on top and win on a key conflict.
+  map<string, string> labels = 11;
+
+  // The projects, folders, or organization whose jobs use the
+  // reservation, each for one job type. Each is unique by assignee,
+  // job_type, and principal. An assignment is PENDING until the
+  // reservation has capacity to give.
+  repeated GcpBigQueryReservationAssignment assignments = 12;
+
+  // What happens to the reservation and its assignments when this
+  // resource is destroyed:
+  //   "" / "DELETE" -- deleted (assigned jobs fall back to on-demand)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- they leave management and keep running (and
+  //                    billing) in GCP
+  string deletion_policy = 13 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

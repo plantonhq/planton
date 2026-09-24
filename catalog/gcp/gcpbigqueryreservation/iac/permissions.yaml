@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpbigqueryreservation
+spec:
+  gcp:
+    groups:
+      - purpose: EnableApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling bigqueryreservation.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageReservation
+        permissions:
+          - bigquery.reservations.create
+          - bigquery.reservations.get
+          - bigquery.reservations.update
+          - bigquery.reservations.delete
+        provenance: derived
+        notes: Covers google_bigquery_reservation (Pulumi bigquery.Reservation) on the admin project -- created, patched, read on every refresh, deleted. Names grounded in Google's BigQuery roles page; roles/bigquery.resourceAdmin contains all four.
+      - purpose: ManageAssignments
+        permissions:
+          - bigquery.reservationAssignments.create
+          - bigquery.reservationAssignments.list
+          - bigquery.reservationAssignments.delete
+        provenance: derived
+        condition:
+          spec_field_set: assignments
+        notes: Covers google_bigquery_reservation_assignment -- Google checks create on both the admin project and the assignee project, folder, or organization; the provider reads assignments by listing the reservation's (the API has no single-assignment GET).

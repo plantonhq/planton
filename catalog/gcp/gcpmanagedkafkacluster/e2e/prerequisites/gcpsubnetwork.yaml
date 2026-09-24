@@ -1,0 +1,28 @@
+# Consumer-scoped GcpSubnetwork install profile for the gcpkafka chain: the
+# private /22 the Kafka cluster's bootstrap and broker addresses (and a
+# Connect cluster's worker interface) are allocated from, in the cluster's
+# region.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpSubnetwork
+metadata:
+  name: planton-oss-e2e-gcpkafka-subnet
+  id: planton-oss-e2e-gcpkafka-subnet
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpsubnetwork
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  vpcSelfLink:
+    valueFrom:
+      kind: GcpVpcNetwork
+      name: planton-oss-e2e-gcpkafka-vpc
+      fieldPath: status.outputs.network_self_link
+  subnetworkName: e2e-gcpkafka-subnet-${E2E_RUN_ID}
+  region: us-central1
+  ipCidrRange: 10.9.20.0/22
+  description: Ephemeral /22 for the gcpkafka E2E chain; safe to delete

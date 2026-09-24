@@ -1,0 +1,32 @@
+# GcpManagedKafkaTopic scenario: a log-compacted topic with topic-level
+# config overrides (cleanup policy, retention, compression), proving the
+# configs map reaches Google and re-plans clean.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaTopic
+metadata:
+  name: planton-oss-e2e-gcpktpc-compacted
+  id: planton-oss-e2e-gcpktpc-compacted
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkatopic
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  cluster:
+    valueFrom:
+      kind: GcpManagedKafkaCluster
+      name: planton-oss-e2e-gcpktpc-kafka
+      fieldPath: status.outputs.name
+  topicId: e2e-customers.v1-${E2E_RUN_ID}
+  partitionCount: 6
+  replicationFactor: 3
+  configs:
+    cleanup.policy: compact
+    min.compaction.lag.ms: "3600000"
+    compression.type: producer
+  deletionPolicy: DELETE

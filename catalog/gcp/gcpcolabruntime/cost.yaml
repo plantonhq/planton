@@ -21,3 +21,5 @@ spec:
       sku_meter: runtime compute
       pricing_unit: vCPU-hours, GiB-hours, GPU-hours
       impact: The template's machine type, GPUs, and idle shutdown decide the hourly rate and how long an unattended runtime keeps billing.
+  estimate_exclusions:
+    - how long the runtime runs follows its users and its template's idle shutdown, not any spec field

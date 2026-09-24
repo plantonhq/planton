@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1;
+
+// GcpManagedKafkaAclStackOutputs captures the ACL's identity and the
+// resource pattern Google derived from its ID.
+message GcpManagedKafkaAclStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/clusters/{cluster}/acls/{acl_id}.
+  string name = 1;
+
+  // The resource type Google derived from acl_id: CLUSTER, TOPIC, GROUP,
+  // or TRANSACTIONAL_ID.
+  string resource_type = 2;
+
+  // The resource name Google derived from acl_id ("kafka-cluster" for the
+  // cluster pattern; may be the wildcard "*").
+  string resource_name = 3;
+
+  // LITERAL or PREFIXED.
+  string pattern_type = 4;
+}

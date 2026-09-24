@@ -1822,14 +1822,21 @@ const (
 	CloudResourceKind_GcpDataprocCluster            CloudResourceKind = 3051
 	CloudResourceKind_GcpDataprocAutoscalingPolicy  CloudResourceKind = 3052
 	CloudResourceKind_GcpBigQueryTable              CloudResourceKind = 3053
-	CloudResourceKind_GcpPubSubTopic                CloudResourceKind = 3060
-	CloudResourceKind_GcpPubSubSubscription         CloudResourceKind = 3061
-	CloudResourceKind_GcpCloudTasksQueue            CloudResourceKind = 3062
-	CloudResourceKind_GcpCloudSchedulerJob          CloudResourceKind = 3063
-	CloudResourceKind_GcpPubSubSchema               CloudResourceKind = 3064
-	CloudResourceKind_GcpVertexAiNotebook           CloudResourceKind = 3070
-	CloudResourceKind_GcpVertexAiEndpoint           CloudResourceKind = 3071
-	CloudResourceKind_GcpVertexAiIndex              CloudResourceKind = 3072
+	// A BigQuery capacity commitment: slots bought for a fixed term in an
+	// administration project and location, pooled across every reservation
+	// there. A purchase Google will not delete before its term ends.
+	CloudResourceKind_GcpBigQueryCapacityCommitment CloudResourceKind = 3054
+	// A BigQuery reservation group: reservations that share idle slots with
+	// each other first. Reservations reference it.
+	CloudResourceKind_GcpBigQueryReservationGroup CloudResourceKind = 3055
+	CloudResourceKind_GcpPubSubTopic              CloudResourceKind = 3060
+	CloudResourceKind_GcpPubSubSubscription       CloudResourceKind = 3061
+	CloudResourceKind_GcpCloudTasksQueue          CloudResourceKind = 3062
+	CloudResourceKind_GcpCloudSchedulerJob        CloudResourceKind = 3063
+	CloudResourceKind_GcpPubSubSchema             CloudResourceKind = 3064
+	CloudResourceKind_GcpVertexAiNotebook         CloudResourceKind = 3070
+	CloudResourceKind_GcpVertexAiEndpoint         CloudResourceKind = 3071
+	CloudResourceKind_GcpVertexAiIndex            CloudResourceKind = 3072
 	// Vector Search IndexEndpoint — distinct from the online-prediction
 	// GcpVertexAiEndpoint (671); different GCP resources, different kinds.
 	CloudResourceKind_GcpVertexAiIndexEndpoint               CloudResourceKind = 3073
@@ -1980,6 +1987,22 @@ const (
 	// the prerequisite; its proof pin carries that class beside the network
 	// and subnet pins.
 	CloudResourceKind_GcpRedisCluster CloudResourceKind = 3190
+	// Managed Service for Apache Kafka: a Google-operated broker fleet in one
+	// region, reachable from the VPC subnets it is attached to -- the
+	// prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so
+	// the teams that own them declare them without editing the cluster.
+	CloudResourceKind_GcpManagedKafkaCluster CloudResourceKind = 3191
+	CloudResourceKind_GcpManagedKafkaTopic   CloudResourceKind = 3192
+	// Kafka Connect workers attached to a Kafka cluster: a separate
+	// project-and-location root that names the cluster it serves.
+	CloudResourceKind_GcpManagedKafkaConnectCluster CloudResourceKind = 3193
+	// BigQuery's link to data outside its own storage (Cloud SQL, Spanner,
+	// AWS and Azure through Omni, Google resources through a managed service
+	// account, the Connector framework, Spark procedures).
+	CloudResourceKind_GcpBigQueryConnection CloudResourceKind = 3194
+	// A BigQuery slot reservation with the assignments that route projects,
+	// folders, or an organization onto it.
+	CloudResourceKind_GcpBigQueryReservation CloudResourceKind = 3195
 	// The Private Service Connect connections a consumer builds by hand
 	// (forwarding rules in other VPCs or projects) registered on a Redis
 	// Cluster, as one set: Google's resource replaces the cluster's whole
@@ -1988,6 +2011,11 @@ const (
 	// names a forwarding rule that targets one of the cluster's service
 	// attachments -- a fold would depend on its own output.
 	CloudResourceKind_GcpRedisClusterEndpointSet CloudResourceKind = 3197
+	// The access rules for one resource pattern (a topic, a consumer group,
+	// a prefix, the cluster) on a Kafka cluster.
+	CloudResourceKind_GcpManagedKafkaAcl CloudResourceKind = 3198
+	// One data pipeline running on a Kafka Connect cluster.
+	CloudResourceKind_GcpManagedKafkaConnector CloudResourceKind = 3199
 	// 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine,
 	// Vector Search, and the rest of the Vertex AI and generative-AI
 	// building blocks). The pre-existing Vertex AI kinds -- endpoint, index,
@@ -3076,6 +3104,8 @@ var (
 		3051: "GcpDataprocCluster",
 		3052: "GcpDataprocAutoscalingPolicy",
 		3053: "GcpBigQueryTable",
+		3054: "GcpBigQueryCapacityCommitment",
+		3055: "GcpBigQueryReservationGroup",
 		3060: "GcpPubSubTopic",
 		3061: "GcpPubSubSubscription",
 		3062: "GcpCloudTasksQueue",
@@ -3146,7 +3176,14 @@ var (
 		3186: "GcpPscServiceAttachment",
 		3187: "GcpNetworkEndpointGroup",
 		3190: "GcpRedisCluster",
+		3191: "GcpManagedKafkaCluster",
+		3192: "GcpManagedKafkaTopic",
+		3193: "GcpManagedKafkaConnectCluster",
+		3194: "GcpBigQueryConnection",
+		3195: "GcpBigQueryReservation",
 		3197: "GcpRedisClusterEndpointSet",
+		3198: "GcpManagedKafkaAcl",
+		3199: "GcpManagedKafkaConnector",
 		3200: "GcpVertexAiAgentEngine",
 		3201: "GcpVertexAiModelGardenDeployment",
 		3202: "GcpVertexAiRagEngineConfig",
@@ -3848,6 +3885,8 @@ var (
 		"GcpDataprocCluster":                             3051,
 		"GcpDataprocAutoscalingPolicy":                   3052,
 		"GcpBigQueryTable":                               3053,
+		"GcpBigQueryCapacityCommitment":                  3054,
+		"GcpBigQueryReservationGroup":                    3055,
 		"GcpPubSubTopic":                                 3060,
 		"GcpPubSubSubscription":                          3061,
 		"GcpCloudTasksQueue":                             3062,
@@ -3918,7 +3957,14 @@ var (
 		"GcpPscServiceAttachment":                        3186,
 		"GcpNetworkEndpointGroup":                        3187,
 		"GcpRedisCluster":                                3190,
+		"GcpManagedKafkaCluster":                         3191,
+		"GcpManagedKafkaTopic":                           3192,
+		"GcpManagedKafkaConnectCluster":                  3193,
+		"GcpBigQueryConnection":                          3194,
+		"GcpBigQueryReservation":                         3195,
 		"GcpRedisClusterEndpointSet":                     3197,
+		"GcpManagedKafkaAcl":                             3198,
+		"GcpManagedKafkaConnector":                       3199,
 		"GcpVertexAiAgentEngine":                         3200,
 		"GcpVertexAiModelGardenDeployment":               3201,
 		"GcpVertexAiRagEngineConfig":                     3202,
@@ -4600,7 +4646,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\x92\xf2\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xcc\xf6\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5094,7 +5140,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x12GcpDataprocCluster\x10\xeb\x17\x1a'\xa2\xf7\x04#\b\x12\x12\bv1alpha1\"\x06gcpdpc:\n" +
 	"\xc2\x17\xc3\x17\xcc\x17\xc6\x17\xec\x17P\xb1\x02\x12@\n" +
 	"\x1cGcpDataprocAutoscalingPolicy\x10\xec\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdpaspP\xb1\x02\x128\n" +
-	"\x10GcpBigQueryTable\x10\xed\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpbqtbl:\x02\xea\x17P\xb1\x02\x124\n" +
+	"\x10GcpBigQueryTable\x10\xed\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpbqtbl:\x02\xea\x17P\xb1\x02\x12@\n" +
+	"\x1dGcpBigQueryCapacityCommitment\x10\xee\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqccP\xb1\x02\x12>\n" +
+	"\x1bGcpBigQueryReservationGroup\x10\xef\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrgP\xb1\x02\x124\n" +
 	"\x0eGcpPubSubTopic\x10\xf4\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcppst:\x02\xf8\x17P\xb1\x02\x12;\n" +
 	"\x15GcpPubSubSubscription\x10\xf5\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcppss:\x02\xf4\x17P\xb1\x02\x127\n" +
 	"\x12GcpCloudTasksQueue\x10\xf6\x17\x1a\x1e\xa2\xf7\x04\x1a\b\x12\x12\bv1alpha1\"\x05gcptq:\x02\xc6\x17P\xb7\x02\x12<\n" +
@@ -5165,8 +5213,15 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x12GcpHaVpnConnection\x10\xf4\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpvpncn:\x02\xef\x18P\xb0\x02\x12>\n" +
 	"\x17GcpPscServiceAttachment\x10\xf2\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcppsca:\x02\xc2\x17P\xb0\x02\x12=\n" +
 	"\x17GcpNetworkEndpointGroup\x10\xf3\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpneg:\x02\xc2\x17P\xb0\x02\x125\n" +
-	"\x0fGcpRedisCluster\x10\xf6\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcprcl:\x02\xab\x18P\xaf\x02\x12B\n" +
-	"\x1aGcpRedisClusterEndpointSet\x10\xfd\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcprclep:\x02\xf6\x18P\xaf\x02\x12:\n" +
+	"\x0fGcpRedisCluster\x10\xf6\x18\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcprcl:\x02\xab\x18P\xaf\x02\x12@\n" +
+	"\x16GcpManagedKafkaCluster\x10\xf7\x18\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\bgcpkafka0\x01:\x02\xc3\x17P\xb1\x02\x12;\n" +
+	"\x14GcpManagedKafkaTopic\x10\xf8\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpktpc:\x02\xf7\x18P\xb1\x02\x12F\n" +
+	"\x1dGcpManagedKafkaConnectCluster\x10\xf9\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpkcon0\x01:\x02\xf7\x18P\xb1\x02\x128\n" +
+	"\x15GcpBigQueryConnection\x10\xfa\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqcnP\xb1\x02\x129\n" +
+	"\x16GcpBigQueryReservation\x10\xfb\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrsP\xb1\x02\x12B\n" +
+	"\x1aGcpRedisClusterEndpointSet\x10\xfd\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcprclep:\x02\xf6\x18P\xaf\x02\x129\n" +
+	"\x12GcpManagedKafkaAcl\x10\xfe\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkacl:\x02\xf7\x18P\xb1\x02\x12?\n" +
+	"\x18GcpManagedKafkaConnector\x10\xff\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkcnr:\x02\xf9\x18P\xb1\x02\x12:\n" +
 	"\x16GcpVertexAiAgentEngine\x10\x80\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpagentP\xb2\x02\x12D\n" +
 	" GcpVertexAiModelGardenDeployment\x10\x81\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpmgdepP\xb2\x02\x12>\n" +
 	"\x1aGcpVertexAiRagEngineConfig\x10\x82\x19\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpragcfP\xb2\x02\x12;\n" +

@@ -1,0 +1,36 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpbigqueryreservation
+spec:
+  billing_model: hybrid
+  baseline_charges:
+    - service_name: BigQuery
+      sku_meter: edition slots
+      pricing_unit: slot-hours
+      description: slot_capacity baseline slots bill every hour from creation at the edition's slot rate, busy or idle.
+  cost_drivers:
+    - field_path: slot_capacity
+      sku_meter: edition slots
+      pricing_unit: slot-hours
+      impact: The committed spend -- every baseline slot bills around the clock; 0 leaves only autoscaled usage.
+    - field_path: autoscale_max_slots
+      sku_meter: edition slots
+      pricing_unit: slot-hours
+      impact: Caps the usage-based part -- autoscaled slots bill only while queries use them, up to this many.
+    - field_path: edition
+      sku_meter: edition slots
+      pricing_unit: slot-hours
+      impact: The edition keys the slot rate -- Standard below Enterprise below Enterprise Plus.
+    - field_path: secondary_location
+      sku_meter: edition slots
+      pricing_unit: slot-hours
+      impact: A disaster-recovery replica adds the secondary's slots and cross-region replication.
+  free_tier: ""
+  estimate_exclusions:
+    - autoscaled slot-hours follow query load
+    - capacity commitments in the same admin project lower the baseline's rate and bill under GcpBigQueryCapacityCommitment
+  notes: "Google's BigQuery pricing (cloud.google.com/bigquery/pricing, read 2026-09-24) bills editions by slot-hour: baseline slots always, autoscaled slots while used. Assigned projects stop paying on-demand bytes for the job types assigned."

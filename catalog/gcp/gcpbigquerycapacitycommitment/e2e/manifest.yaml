@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryCapacityCommitment
+metadata:
+  name: enterprise-annual-500
+spec:
+  projectId:
+    value: bq-admin-project
+  location: US
+  slotCount: 500
+  plan: ANNUAL
+  renewalPlan: ANNUAL
+  edition: ENTERPRISE
+  enforceSingleAdminProjectPerOrg: true
+  # Google refuses to delete a commitment before its term ends.
+  deletionPolicy: ABANDON

@@ -4269,6 +4269,128 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "security_settings_id", "location"},
 		},
 		{
+			// GcpManagedKafkaCluster: the cluster's full name (what topics,
+			// ACLs, and Connect clusters reference), id, and region.
+			name: "GcpManagedKafkaCluster",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaCluster,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/my-project/locations/us-central1/clusters/events",
+				"cluster_id": "events",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "cluster_id", "location"},
+		},
+		{
+			// GcpManagedKafkaTopic: the topic's full name and the Kafka topic
+			// name clients use.
+			name: "GcpManagedKafkaTopic",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaTopic,
+			rawOutputs: map[string]interface{}{
+				"name":     "projects/my-project/locations/us-central1/clusters/events/topics/orders",
+				"topic_id": "orders",
+			},
+			mustPopulate: []string{"name", "topic_id"},
+		},
+		{
+			// GcpManagedKafkaAcl: the ACL's full name and the resource pattern
+			// Google derived from its id.
+			name: "GcpManagedKafkaAcl",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaAcl,
+			rawOutputs: map[string]interface{}{
+				"name":          "projects/my-project/locations/us-central1/clusters/events/acls/topic/orders",
+				"resource_type": "TOPIC",
+				"resource_name": "orders",
+				"pattern_type":  "LITERAL",
+			},
+			mustPopulate: []string{"name", "resource_type", "resource_name", "pattern_type"},
+		},
+		{
+			// GcpManagedKafkaConnectCluster: the Connect cluster's full name
+			// (what connectors reference), id, and region.
+			name: "GcpManagedKafkaConnectCluster",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnectCluster,
+			rawOutputs: map[string]interface{}{
+				"name":               "projects/my-project/locations/us-central1/connectClusters/events-connect",
+				"connect_cluster_id": "events-connect",
+				"location":           "us-central1",
+			},
+			mustPopulate: []string{"name", "connect_cluster_id", "location"},
+		},
+		{
+			// GcpManagedKafkaConnector: the connector's full name and id.
+			name: "GcpManagedKafkaConnector",
+			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnector,
+			rawOutputs: map[string]interface{}{
+				"name":         "projects/my-project/locations/us-central1/connectClusters/events-connect/connectors/orders-to-pubsub",
+				"connector_id": "orders-to-pubsub",
+			},
+			mustPopulate: []string{"name", "connector_id"},
+		},
+		{
+			// GcpBigQueryConnection: the connection's name, id, and location
+			// plus the cloud_resource arm's service account (the principal a
+			// user grants bucket access to); the other arms' identities are
+			// empty when their arm is not declared.
+			name: "GcpBigQueryConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryConnection,
+			rawOutputs: map[string]interface{}{
+				"name":                              "projects/my-project/locations/us/connections/lake",
+				"connection_id":                     "lake",
+				"location":                          "us",
+				"cloud_resource_service_account_id": "bqcx-123456789012-abcd@gcp-sa-bigquery-condel.iam.gserviceaccount.com",
+				"spark_service_account_id":          "",
+				"cloud_sql_service_account_id":      "",
+				"connector_service_account":         "",
+				"aws_identity":                      "",
+				"azure_identity":                    "",
+				"azure_application":                 "",
+				"azure_client_id":                   "",
+				"azure_object_id":                   "",
+				"azure_redirect_uri":                "",
+			},
+			mustPopulate: []string{"name", "connection_id", "location", "cloud_resource_service_account_id"},
+		},
+		{
+			// GcpBigQueryReservation: the reservation's name, short name,
+			// location, and its assignments' names in declared order.
+			name: "GcpBigQueryReservation",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryReservation,
+			rawOutputs: map[string]interface{}{
+				"name":             "projects/bq-admin/locations/US/reservations/analytics",
+				"reservation_name": "analytics",
+				"location":         "US",
+				"assignment_names": []interface{}{
+					"projects/bq-admin/locations/US/reservations/analytics/assignments/1234567890123456789",
+				},
+			},
+			mustPopulate: []string{"name", "reservation_name", "location", "assignment_names"},
+		},
+		{
+			// GcpBigQueryCapacityCommitment: the commitment's name, state, and
+			// term.
+			name: "GcpBigQueryCapacityCommitment",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryCapacityCommitment,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/bq-admin/locations/US/capacityCommitments/annual-100",
+				"state":                 "ACTIVE",
+				"commitment_start_time": "2026-09-24T00:00:00Z",
+				"commitment_end_time":   "2027-09-24T00:00:00Z",
+			},
+			mustPopulate: []string{"name", "state", "commitment_start_time", "commitment_end_time"},
+		},
+		{
+			// GcpBigQueryReservationGroup: the group's full name (what a
+			// reservation's reservation_group takes), short name, and location.
+			name: "GcpBigQueryReservationGroup",
+			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryReservationGroup,
+			rawOutputs: map[string]interface{}{
+				"name":                   "projects/bq-admin/locations/US/reservationGroups/tier-1",
+				"reservation_group_name": "tier-1",
+				"location":               "US",
+			},
+			mustPopulate: []string{"name", "reservation_group_name", "location"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

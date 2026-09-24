@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaAcl
+metadata:
+  name: billing-consumer-group
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  cluster:
+    value: events
+  aclId: consumerGroup/billing
+  aclEntries:
+    - principal: User:billing-worker@my-gcp-project.iam.gserviceaccount.com
+      operation: READ

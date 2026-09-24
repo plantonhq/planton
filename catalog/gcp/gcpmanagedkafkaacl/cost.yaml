@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpmanagedkafkaacl
+spec:
+  billing_model: free
+  free_tier: "ACLs are configuration of the cluster. Google's Managed Service for Apache Kafka pricing (read 2026-09-24) bills a cluster's vCPUs, memory, storage, and data transfer and names no meter for ACLs."
+  notes: "An ACL costs nothing; the cluster it applies to bills under GcpManagedKafkaCluster."

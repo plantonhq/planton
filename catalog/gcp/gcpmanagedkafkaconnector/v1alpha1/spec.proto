@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpManagedKafkaConnectorTaskRestartPolicy restarts failed connector tasks
+// with exponential backoff (`task_restart_policy`). Without it, a failed
+// task stays failed until someone restarts it.
+message GcpManagedKafkaConnectorTaskRestartPolicy {
+  // The shortest wait before retrying a failed task -- a duration in
+  // seconds with up to nine fractional digits and an "s" suffix, e.g.
+  // "60s". Empty leaves Google's default.
+  string minimum_backoff = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]{1,9})?s$"
+  ];
+
+  // The longest wait between retries -- the backoff's upper bound, same
+  // format, e.g. "1800s". Empty leaves Google's default.
+  string maximum_backoff = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]{1,9})?s$"
+  ];
+}
+
+// GcpManagedKafkaConnectorSpec defines one connector on a Managed Service
+// for Apache Kafka Connect cluster (`google_managed_kafka_connector`) -- a
+// single pipeline moving data between Kafka and another system: a
+// MirrorMaker 2 source replicating another Kafka cluster, a Pub/Sub source
+// or sink, a BigQuery sink, a Cloud Storage sink. Connectors are their own
+// block so the team whose data a pipeline moves owns it in its own
+// manifest.
+//
+// Immutable: project_id, location, connect_cluster, connector_id (a change
+// replaces the connector). configs and the restart policy update in place.
+message GcpManagedKafkaConnectorSpec {
+  // The GCP project the Connect cluster lives in: a literal project ID or
+  // a GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Connect cluster's region, e.g. "us-central1". Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The Connect cluster that runs the connector. A
+  // GcpManagedKafkaConnectCluster reference resolves to its full resource
+  // path (name output); a literal takes the full path or the bare Connect
+  // cluster ID. The modules derive the bare ID Google's resource expects.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef connect_cluster = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpManagedKafkaConnectCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The connector's ID, the name Kafka Connect shows for it. Defaults to
+  // metadata.name. Immutable.
+  string connector_id = 4;
+
+  // The connector's Kafka Connect configuration, keyed by property:
+  // "connector.class" picks the plugin (for example
+  // com.google.pubsub.kafka.sink.CloudPubSubSinkConnector,
+  // com.wepay.kafka.connect.bigquery.BigQuerySinkConnector,
+  // io.aiven.kafka.connect.gcs.GcsSinkConnector,
+  // org.apache.kafka.connect.mirror.MirrorSourceConnector), "tasks.max"
+  // its parallelism, "topics" what a sink reads, plus the plugin's own
+  // keys and converters. The values are stored in plain text on the
+  // Connect cluster; keep credentials out of them where the plugin offers
+  // Google IAM authentication instead.
+  map<string, string> configs = 5;
+
+  // Automatic restarts for failed tasks. Omit to leave failed tasks
+  // stopped.
+  GcpManagedKafkaConnectorTaskRestartPolicy task_restart_policy = 6;
+
+  // What happens to the connector when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (the pipeline stops)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- it leaves management and keeps running
+  string deletion_policy = 7 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

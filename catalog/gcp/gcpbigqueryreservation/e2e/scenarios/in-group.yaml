@@ -1,0 +1,31 @@
+# GcpBigQueryReservation scenario: a zero-baseline Enterprise reservation
+# that joins the prerequisite reservation group by reference (its full name)
+# and caps itself at its own slots.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservation
+metadata:
+  name: planton-oss-e2e-gcpbqrs-grouped
+  id: planton-oss-e2e-gcpbqrs-grouped
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigqueryreservation
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpbigqueryreservation/e2e/prerequisites/gcpbigqueryreservationgroup-tier.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  reservationName: e2e-bqrs-grouped-${E2E_RUN_ID}
+  edition: ENTERPRISE
+  slotCapacity: 0
+  autoscaleMaxSlots: 50
+  ignoreIdleSlots: true
+  reservationGroup:
+    valueFrom:
+      kind: GcpBigQueryReservationGroup
+      name: planton-oss-e2e-gcpbqrs-group
+      fieldPath: status.outputs.name
+  deletionPolicy: DELETE

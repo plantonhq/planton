@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaTopic
+metadata:
+  name: orders
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  cluster:
+    value: projects/my-gcp-project/locations/us-central1/clusters/events
+  topicId: orders.v1
+  partitionCount: 12
+  replicationFactor: 3
+  configs:
+    retention.ms: "604800000"
+  deletionPolicy: PREVENT

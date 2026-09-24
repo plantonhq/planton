@@ -1,0 +1,28 @@
+# GcpManagedKafkaTopic scenario: a three-partition topic replicated three
+# times on the prerequisite cluster, referenced by kind (its full name; both
+# modules take the bare id). The topic name carries the run id.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaTopic
+metadata:
+  name: planton-oss-e2e-gcpktpc-smoke
+  id: planton-oss-e2e-gcpktpc-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkatopic
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  cluster:
+    valueFrom:
+      kind: GcpManagedKafkaCluster
+      name: planton-oss-e2e-gcpktpc-kafka
+      fieldPath: status.outputs.name
+  topicId: e2e-orders-${E2E_RUN_ID}
+  partitionCount: 3
+  replicationFactor: 3
+  deletionPolicy: DELETE

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpmanagedkafkaconnectcluster/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-managed-kafka-connect-cluster
+message GcpManagedKafkaConnectCluster {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpManagedKafkaConnectCluster'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpManagedKafkaConnectClusterSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpManagedKafkaConnectClusterStatus status = 5;
+}
+
+//gcp-managed-kafka-connect-cluster status
+message GcpManagedKafkaConnectClusterStatus {
+  //stack-outputs
+  GcpManagedKafkaConnectClusterStackOutputs outputs = 1;
+}

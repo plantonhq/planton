@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaCluster
+metadata:
+  name: partner-events
+spec:
+  projectId:
+    value: my-gcp-project
+  location: europe-west1
+  capacityConfig:
+    vcpuCount: 3
+    memoryBytes: 12884901888
+  networkConfigs:
+    - subnet:
+        value: projects/my-gcp-project/regions/europe-west1/subnetworks/kafka
+  tlsConfig:
+    # Map CN=orders-api,O=Acme to the short principal "orders-api" that
+    # Kafka ACLs name.
+    sslPrincipalMappingRules: RULE:^CN=([^,]+),.*$/$1/,DEFAULT
+    caPools:
+      - projects/pki-project/locations/europe-west1/caPools/kafka-clients

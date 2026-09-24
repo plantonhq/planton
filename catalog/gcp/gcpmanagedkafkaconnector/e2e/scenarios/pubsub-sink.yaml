@@ -1,0 +1,41 @@
+# GcpManagedKafkaConnector scenario: Google's Pub/Sub sink connector (the
+# provider's own test shape) reading the prerequisite Kafka topic and
+# publishing into the prerequisite Pub/Sub topic, with a task restart
+# policy. Connector configs are plain strings, so the topic names repeat the
+# fixtures' run-scoped names and the project comes from the harness-exported
+# token.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnector
+metadata:
+  name: planton-oss-e2e-gcpkcnr-smoke
+  id: planton-oss-e2e-gcpkcnr-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkaconnector
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "catalog/gcp/gcpmanagedkafkaconnector/e2e/prerequisites/gcpmanagedkafkatopic-source.yaml,catalog/gcp/gcpmanagedkafkaconnector/e2e/prerequisites/gcppubsubtopic-sink.yaml"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectCluster:
+    valueFrom:
+      kind: GcpManagedKafkaConnectCluster
+      name: planton-oss-e2e-gcpkcnr-connect
+      fieldPath: status.outputs.name
+  connectorId: e2e-pubsub-sink-${E2E_RUN_ID}
+  configs:
+    connector.class: com.google.pubsub.kafka.sink.CloudPubSubSinkConnector
+    tasks.max: "3"
+    topics: e2e-kcnr-orders-${E2E_RUN_ID}
+    cps.topic: e2e-kcnr-sink-${E2E_RUN_ID}
+    cps.project: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+  taskRestartPolicy:
+    minimumBackoff: 60s
+    maximumBackoff: 1800s
+  deletionPolicy: DELETE

@@ -4954,6 +4954,23 @@ enum CloudResourceKind {
     prerequisites: [GcpBigQueryDataset]
     service_group: gcp_data_analytics
   }];
+  // A BigQuery capacity commitment: slots bought for a fixed term in an
+  // administration project and location, pooled across every reservation
+  // there. A purchase Google will not delete before its term ends.
+  GcpBigQueryCapacityCommitment = 3054 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqcc"
+    service_group: gcp_data_analytics
+  }];
+  // A BigQuery reservation group: reservations that share idle slots with
+  // each other first. Reservations reference it.
+  GcpBigQueryReservationGroup = 3055 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqrg"
+    service_group: gcp_data_analytics
+  }];
   GcpPubSubTopic = 3060 [(kind_meta) = {
     provider: gcp
     version: "v1alpha1"
@@ -5565,6 +5582,52 @@ enum CloudResourceKind {
     prerequisites: [GcpServiceConnectionPolicy]
     service_group: gcp_databases
   }];
+  // Managed Service for Apache Kafka: a Google-operated broker fleet in one
+  // region, reachable from the VPC subnets it is attached to -- the
+  // prerequisite. Topics, ACLs, and Kafka Connect are their own kinds so
+  // the teams that own them declare them without editing the cluster.
+  GcpManagedKafkaCluster = 3191 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkafka"
+    prerequisites: [GcpSubnetwork]
+    container_kind: true
+    service_group: gcp_data_analytics
+  }];
+  GcpManagedKafkaTopic = 3192 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpktpc"
+    prerequisites: [GcpManagedKafkaCluster]
+    service_group: gcp_data_analytics
+  }];
+  // Kafka Connect workers attached to a Kafka cluster: a separate
+  // project-and-location root that names the cluster it serves.
+  GcpManagedKafkaConnectCluster = 3193 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkcon"
+    prerequisites: [GcpManagedKafkaCluster]
+    container_kind: true
+    service_group: gcp_data_analytics
+  }];
+  // BigQuery's link to data outside its own storage (Cloud SQL, Spanner,
+  // AWS and Azure through Omni, Google resources through a managed service
+  // account, the Connector framework, Spark procedures).
+  GcpBigQueryConnection = 3194 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqcn"
+    service_group: gcp_data_analytics
+  }];
+  // A BigQuery slot reservation with the assignments that route projects,
+  // folders, or an organization onto it.
+  GcpBigQueryReservation = 3195 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpbqrs"
+    service_group: gcp_data_analytics
+  }];
   // The Private Service Connect connections a consumer builds by hand
   // (forwarding rules in other VPCs or projects) registered on a Redis
   // Cluster, as one set: Google's resource replaces the cluster's whole
@@ -5578,6 +5641,23 @@ enum CloudResourceKind {
     id_prefix: "gcprclep"
     prerequisites: [GcpRedisCluster]
     service_group: gcp_databases
+  }];
+  // The access rules for one resource pattern (a topic, a consumer group,
+  // a prefix, the cluster) on a Kafka cluster.
+  GcpManagedKafkaAcl = 3198 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkacl"
+    prerequisites: [GcpManagedKafkaCluster]
+    service_group: gcp_data_analytics
+  }];
+  // One data pipeline running on a Kafka Connect cluster.
+  GcpManagedKafkaConnector = 3199 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpkcnr"
+    prerequisites: [GcpManagedKafkaConnectCluster]
+    service_group: gcp_data_analytics
   }];
 
   // 3200–3229: GCP AI (Vertex AI agents and model deployments, RAG Engine,

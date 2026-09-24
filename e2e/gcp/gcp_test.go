@@ -1324,6 +1324,78 @@ func TestGcpDialogflowCxSecuritySettings_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpdialogflowcxsecuritysettings", "terraform")
 }
 
+func TestGcpManagedKafkaCluster_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkacluster", "pulumi")
+}
+
+func TestGcpManagedKafkaCluster_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkacluster", "terraform")
+}
+
+func TestGcpManagedKafkaTopic_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkatopic", "pulumi")
+}
+
+func TestGcpManagedKafkaTopic_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkatopic", "terraform")
+}
+
+func TestGcpManagedKafkaAcl_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkaacl", "pulumi")
+}
+
+func TestGcpManagedKafkaAcl_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkaacl", "terraform")
+}
+
+func TestGcpManagedKafkaConnectCluster_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkaconnectcluster", "pulumi")
+}
+
+func TestGcpManagedKafkaConnectCluster_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkaconnectcluster", "terraform")
+}
+
+func TestGcpManagedKafkaConnector_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkaconnector", "pulumi")
+}
+
+func TestGcpManagedKafkaConnector_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpmanagedkafkaconnector", "terraform")
+}
+
+func TestGcpBigQueryConnection_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigqueryconnection", "pulumi")
+}
+
+func TestGcpBigQueryConnection_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigqueryconnection", "terraform")
+}
+
+func TestGcpBigQueryReservation_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigqueryreservation", "pulumi")
+}
+
+func TestGcpBigQueryReservation_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigqueryreservation", "terraform")
+}
+
+func TestGcpBigQueryCapacityCommitment_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigquerycapacitycommitment", "pulumi")
+}
+
+func TestGcpBigQueryCapacityCommitment_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigquerycapacitycommitment", "terraform")
+}
+
+func TestGcpBigQueryReservationGroup_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigqueryreservationgroup", "pulumi")
+}
+
+func TestGcpBigQueryReservationGroup_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpbigqueryreservationgroup", "terraform")
+}
+
 func TestGcpVertexAiPersistentResource_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpvertexaipersistentresource", "pulumi")
 }

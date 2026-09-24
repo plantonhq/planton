@@ -1,0 +1,20 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpmanagedkafkatopic
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/managedkafka.admin: the consumer-scoped chain (VPC,
+  # subnet, and a 3 vCPU cluster) deploys first, then the topic -- a plain
+  # three-partition topic and a compacted one with config overrides. Offline
+  # bar met: both modules build and validate, offline plans for the
+  # reference manifest, every scenario, and every fixture are clean on the
+  # pinned provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) the topic creates on the bare cluster id both modules
+  # derive from the reference, and re-plans clean with the configs map; (2)
+  # the name and topic_id outputs read back; (3) destroy deletes the topic,
+  # then the chain; the cluster's creation dominates the timeout.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 120

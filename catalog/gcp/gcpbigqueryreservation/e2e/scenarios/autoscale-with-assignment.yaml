@@ -1,0 +1,33 @@
+# GcpBigQueryReservation scenario: a zero-baseline Standard reservation that
+# autoscales to 50 slots, with the harness project assigned for QUERY jobs
+# -- pay-while-used capacity that bills only slots a query actually uses.
+# While it exists, the harness project's queries in the US multi-region run
+# on it.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservation
+metadata:
+  name: planton-oss-e2e-gcpbqrs-autoscale
+  id: planton-oss-e2e-gcpbqrs-autoscale
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigqueryreservation
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  reservationName: e2e-bqrs-${E2E_RUN_ID}
+  edition: STANDARD
+  slotCapacity: 0
+  autoscaleMaxSlots: 50
+  labels:
+    team: platform-e2e
+  assignments:
+    - assignee:
+        projectId:
+          value: ${E2E_ENV:PLANTON_E2E_GCP_PROJECT_ID}
+      jobType: QUERY
+  deletionPolicy: DELETE

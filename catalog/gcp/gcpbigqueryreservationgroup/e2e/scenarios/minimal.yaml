@@ -1,0 +1,20 @@
+# GcpBigQueryReservationGroup scenario: a group in the US multi-region.
+# Free: a group holds no capacity.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservationGroup
+metadata:
+  name: planton-oss-e2e-gcpbqrg-smoke
+  id: planton-oss-e2e-gcpbqrg-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpbigqueryreservationgroup
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: US
+  reservationGroupName: e2e-bqrg-${E2E_RUN_ID}
+  deletionPolicy: DELETE

@@ -1,0 +1,24 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpmanagedkafkacluster
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/managedkafka.admin: the registry's prerequisite chain
+  # (a VPC and a /22 subnet) deploys first, then the cluster -- the smallest
+  # shape, and a tuned one with a larger broker disk, rebalance on scale-up,
+  # and user labels. Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest, every scenario, and every
+  # fixture are clean on the pinned provider, and the accounting is total.
+  # Live facts the proof lane confirms: (1) the cluster creates (Google
+  # quotes up to about 30 minutes) and RE-PLANS CLEAN on both engines --
+  # capacity sent as decimal strings, the subnet trimmed from the
+  # GcpSubnetwork self link, broker_capacity_config and rebalance_config
+  # sent only when set; (2) the platform attribution labels land; (3) the
+  # bootstrap address (not an output until pulumi-gcp v10) reads back from
+  # the API for the record; (4) destroy deletes the cluster and the verifier
+  # reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 120

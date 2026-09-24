@@ -1,0 +1,42 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_managed_kafka_cluster:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # One-leaf wrappers lifted: the broker disk, the rebalance mode, and
+      # the TLS trust config's CA pools.
+      - spec: spec.broker_disk_size_gib
+        arg: broker_capacity_config.disk_size_gib
+      - spec: spec.rebalance_mode
+        arg: rebalance_config.mode
+      - spec: spec.tls_config.ca_pools
+        arg: tls_config.trust_config.cas_configs.ca_pool
+      # The gcp_config and access_config wrappers carry nothing else the
+      # spec needs to name.
+      - spec: spec.kms_key
+        arg: gcp_config.kms_key
+      - spec: spec.network_configs.subnet
+        arg: gcp_config.access_config.network_configs.subnet
+    exclusions:
+      # SDK gap at the pinned pulumi-gcp v9.37.0 (which bridges provider
+      # 7.46.1): the cluster's access-config type carries no
+      # public_cluster_config, so the argument cannot be honored on both
+      # engines. Modeled the day the SDK carries it.
+      - arg: gcp_config.access_config.public_cluster_config.allowed_source_ip_ranges
+        reason: >-
+          SDK gap -- pulumi-gcp v9.37.0's ClusterGcpConfigAccessConfig has
+          no publicClusterConfig (the block arrived in provider 8.3); a
+          one-engine field would break cross-engine parity. Re-evaluate at
+          the trigger "pulumi-gcp v10 GA"
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.

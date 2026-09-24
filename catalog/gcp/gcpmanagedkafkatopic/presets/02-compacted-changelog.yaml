@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaTopic
+metadata:
+  name: customer-profiles
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  cluster:
+    value: events
+  topicId: customer-profiles.v1
+  partitionCount: 6
+  replicationFactor: 3
+  configs:
+    cleanup.policy: compact
+    min.compaction.lag.ms: "3600000"

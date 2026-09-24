@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpBigQueryReservationGroupSpec defines a BigQuery reservation group
+// (`google_bigquery_reservation_group`) -- a named set of reservations in
+// one administration project and location that share idle slots with each
+// other before any other reservation. Reservations join by referencing
+// this group from their reservation_group field; the group itself has no
+// capacity and costs nothing.
+//
+// Immutable: project_id, location, reservation_group_name (a change
+// replaces the group).
+message GcpBigQueryReservationGroupSpec {
+  // The administration project the group lives in (the same one as its
+  // reservations): a literal project ID or a GcpProject reference. If
+  // omitted, the provider's default project is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The location of the group and its reservations: a multi-region (US,
+  // EU) or a region. Empty means US (Google's default). Immutable.
+  string location = 2;
+
+  // The group's name -- letters, digits, and dashes. Defaults to
+  // metadata.name. Immutable.
+  string reservation_group_name = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-zA-Z0-9-]+$"
+  ];
+
+  // What happens to the group when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (remove its reservations from it first)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the group leaves management and stays in GCP
+  string deletion_policy = 4 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

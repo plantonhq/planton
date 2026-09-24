@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpBigQueryCapacityCommitmentSpec defines a BigQuery capacity commitment
+// (`google_bigquery_capacity_commitment`) -- a purchase of slots for a
+// fixed term at a discount, in an administration project and location.
+// Commitments are pooled: every reservation (GcpBigQueryReservation) in
+// the same admin project and location draws on them, so a commitment
+// belongs to no single reservation.
+//
+// THIS IS A PURCHASE. Creating one starts a billed term. Google refuses to
+// delete a commitment before its term ends, so destroying this resource
+// fails until then -- set deletion_policy to ABANDON when the block should
+// be able to leave management early, and plan renewals with renewal_plan.
+//
+// Immutable: project_id, location, capacity_commitment_id, slot_count,
+// edition, enforce_single_admin_project_per_org (a change would buy a new
+// commitment). plan (to a longer one) and renewal_plan update in place.
+message GcpBigQueryCapacityCommitmentSpec {
+  // The administration project the commitment is bought in: a literal
+  // project ID or a GcpProject reference. If omitted, the provider's
+  // default project is used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where the slots are: a multi-region (US, EU) or a region. Only
+  // reservations in the same location use them. Empty means US (Google's
+  // default). Immutable.
+  string location = 2;
+
+  // The commitment's ID -- lowercase letters, digits, and dashes, not
+  // starting or ending with a dash, at most 64 characters. Defaults to
+  // metadata.name. Google does not keep the ID if the commitment is later
+  // split or merged. Immutable.
+  string capacity_commitment_id = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-z0-9](?:[-a-z0-9]{0,62}[a-z0-9])?$"
+  ];
+
+  // Slots committed. Immutable.
+  int64 slot_count = 4 [(buf.validate.field).int64.gte = 1];
+
+  // The commitment plan (Google's CommitmentPlan values). With BigQuery
+  // editions the plans on offer are ANNUAL (one year) and THREE_YEAR; the
+  // FLEX, MONTHLY, TRIAL, and *_FLAT_RATE plans belong to the legacy
+  // flat-rate model. A plan can move to a longer term in place, never a
+  // shorter one.
+  string plan = 5 [(buf.validate.field).required = true];
+
+  // The plan the commitment converts to when its term ends (for plans
+  // that renew), e.g. ANNUAL to renew for another year. Changing it
+  // extends the committed period. Empty leaves Google's default.
+  string renewal_plan = 6;
+
+  // The edition the slots are for: STANDARD, ENTERPRISE, or
+  // ENTERPRISE_PLUS -- it must match the reservations that draw on the
+  // commitment. Empty lets Google choose. Immutable.
+  string edition = 7 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "STANDARD",
+        "ENTERPRISE",
+        "ENTERPRISE_PLUS"
+      ]
+    }
+  ];
+
+  // Fail the purchase if another project in the organization already
+  // holds a capacity commitment -- a guard for organizations that keep
+  // every commitment in one admin project. Immutable.
+  bool enforce_single_admin_project_per_org = 8;
+
+  // What happens to the commitment when this resource is destroyed:
+  //   "" / "DELETE" -- deleted, which Google refuses before the term ends
+  //                    (the destroy then fails)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the commitment leaves management and runs out its
+  //                    term (and billing) in GCP
+  string deletion_policy = 9 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

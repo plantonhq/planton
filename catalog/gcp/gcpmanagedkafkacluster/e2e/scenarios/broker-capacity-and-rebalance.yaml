@@ -1,0 +1,34 @@
+# GcpManagedKafkaCluster scenario: the lifted one-leaf blocks -- a 200 GiB
+# broker disk and automatic rebalancing on scale-up -- plus user labels
+# merged under the platform attribution labels, on a 3 vCPU / 6 GiB cluster.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaCluster
+metadata:
+  name: planton-oss-e2e-gcpkafka-tuned
+  id: planton-oss-e2e-gcpkafka-tuned
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkacluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  clusterId: e2e-kafka-tuned-${E2E_RUN_ID}
+  capacityConfig:
+    vcpuCount: 3
+    memoryBytes: 6442450944
+  brokerDiskSizeGib: 200
+  rebalanceMode: AUTO_REBALANCE_ON_SCALE_UP
+  networkConfigs:
+    - subnet:
+        valueFrom:
+          kind: GcpSubnetwork
+          name: planton-oss-e2e-gcpkafka-subnet
+          fieldPath: status.outputs.subnetwork_self_link
+  labels:
+    team: platform-e2e
+  deletionPolicy: DELETE

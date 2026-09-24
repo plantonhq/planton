@@ -1,0 +1,294 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigqueryconnection.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpBigQueryConnectionAws lets BigQuery Omni query data in AWS by assuming
+// your IAM role (`aws`). After creation, add the connection's aws_identity
+// output to the role's trust policy.
+message GcpBigQueryConnectionAws {
+  // The ARN of the AWS IAM role BigQuery assumes, e.g.
+  // arn:aws:iam::123456789012:role/bigquery-omni. The role must trust the
+  // Google-owned identity the connection outputs.
+  string iam_role_id = 1 [(buf.validate.field).required = true];
+}
+
+// GcpBigQueryConnectionAzure lets BigQuery Omni query data in Azure Storage
+// through an Azure AD application (`azure`).
+message GcpBigQueryConnectionAzure {
+  // Your Azure AD (Entra ID) tenant ID -- the directory that holds the
+  // data.
+  string customer_tenant_id = 1 [(buf.validate.field).required = true];
+
+  // The client ID of YOUR Azure application that hosts a federated
+  // credential for the connection's Google identity (the recommended,
+  // secretless setup). Empty makes Google create a multi-tenant Azure
+  // application you grant consent to (see the azure_* outputs).
+  string federated_application_client_id = 2;
+}
+
+// GcpBigQueryConnectionCloudSpanner runs federated queries against a Cloud
+// Spanner database (`cloud_spanner`).
+message GcpBigQueryConnectionCloudSpanner {
+  // The database, as project/instance/database (slashes, no
+  // "projects/" prefix).
+  string database = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[^/]+/[^/]+/[^/]+$"
+  ];
+
+  // A Spanner fine-grained access control role the queries run as (it
+  // must start with a letter; letters, digits, underscores). Empty reads
+  // with the caller's database-level permissions.
+  string database_role = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[a-zA-Z][a-zA-Z0-9_]*$"
+  ];
+
+  // Read with Spanner parallelism. Required by use_data_boost and
+  // max_parallelism.
+  bool use_parallelism = 3;
+
+  // Run the queries on Spanner Data Boost -- independent compute that
+  // leaves the instance's serving capacity untouched (billed separately
+  // by Spanner). Requires use_parallelism.
+  bool use_data_boost = 4;
+
+  // The most parallel reads per query on Data Boost. Requires both
+  // use_parallelism and use_data_boost. Empty lets Spanner pick from the
+  // instance configuration.
+  int32 max_parallelism = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).int32.gte = 1
+  ];
+}
+
+// GcpBigQueryConnectionCloudSqlCredential is the database user BigQuery
+// connects as (`cloud_sql.credential`).
+message GcpBigQueryConnectionCloudSqlCredential {
+  // The database username.
+  string username = 1 [(buf.validate.field).required = true];
+
+  // The database user's password. Stored by BigQuery and never returned.
+  string password = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// GcpBigQueryConnectionCloudSql runs federated queries (EXTERNAL_QUERY)
+// against a Cloud SQL database (`cloud_sql`). The instance must be in the
+// connection's location, except that Cloud SQL us-central1 pairs with
+// BigQuery US and europe-west1 with EU.
+message GcpBigQueryConnectionCloudSql {
+  // The Cloud SQL instance, as project:region:instance -- a GcpCloudSql
+  // reference (its connection_name output) or a literal in that form.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef instance_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpCloudSql,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.connection_name"
+  ];
+
+  // The database name inside the instance.
+  string database = 2 [(buf.validate.field).required = true];
+
+  // The engine: POSTGRES or MYSQL.
+  string type = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "POSTGRES",
+        "MYSQL"
+      ]
+    }
+  ];
+
+  // The database user and password.
+  GcpBigQueryConnectionCloudSqlCredential credential = 4 [(buf.validate.field).required = true];
+}
+
+// GcpBigQueryConnectionUsernamePassword authenticates a connector-framework
+// connection with a database user
+// (`configuration.authentication.username_password`).
+message GcpBigQueryConnectionUsernamePassword {
+  // The database username.
+  string username = 1 [(buf.validate.field).required = true];
+
+  // The database user's password, sent as Google's plaintext secret form
+  // and stored by BigQuery; never returned.
+  string password = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}
+
+// GcpBigQueryConnectionConnectorAsset names the data source a
+// connector-framework connection reads (`configuration.asset`).
+message GcpBigQueryConnectionConnectorAsset {
+  // The database name.
+  string database = 1;
+
+  // The full resource name of the Google Cloud resource -- for AlloyDB,
+  // //alloydb.googleapis.com/projects/{project}/locations/{region}/clusters/{cluster}/instances/{instance}.
+  string google_cloud_resource = 2;
+}
+
+// GcpBigQueryConnectionConfiguration uses the BigQuery Connector framework
+// (`configuration`) -- the generic path to AlloyDB, Cloud SQL for MySQL and
+// PostgreSQL, and other sources Google adds to the framework.
+message GcpBigQueryConnectionConfiguration {
+  // The connector, e.g. google-alloydb, google-cloudsql-mysql,
+  // google-cloudsql-postgres. Immutable.
+  string connector_id = 1 [(buf.validate.field).required = true];
+
+  // The data source the connector reads.
+  GcpBigQueryConnectionConnectorAsset asset = 2 [(buf.validate.field).required = true];
+
+  // Database-user authentication. The connection outputs the service
+  // account the connector uses (connector_service_account).
+  GcpBigQueryConnectionUsernamePassword username_password = 3;
+
+  // The endpoint to connect to, as host:port, when the connector needs one
+  // spelled out.
+  string host_port = 4;
+
+  // A Private Service Connect network attachment the connector reaches a
+  // private endpoint through, as
+  // projects/{project}/regions/{region}/networkAttachments/{attachment}.
+  string network_attachment = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/regions/[^/]+/networkAttachments/[^/]+$"
+  ];
+}
+
+// GcpBigQueryConnectionSpark lets BigQuery run stored procedures for Apache
+// Spark (`spark`). The connection outputs the service account the Spark
+// code runs as (spark_service_account_id); grant it what the code reads
+// and writes.
+message GcpBigQueryConnectionSpark {
+  // An existing Dataproc Metastore service the Spark code uses as its Hive
+  // metastore, as projects/{project}/locations/{region}/services/{service}.
+  string metastore_service = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/locations/[^/]+/services/[^/]+$"
+  ];
+
+  // An existing Dataproc cluster that serves as the Spark History Server
+  // for the procedures' runs, as
+  // projects/{project}/regions/{region}/clusters/{cluster}.
+  string history_server_dataproc_cluster = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/regions/[^/]+/clusters/[^/]+$"
+  ];
+}
+
+// GcpBigQueryConnectionSpec defines a BigQuery connection
+// (`google_bigquery_connection`) -- the credential-carrying link BigQuery
+// uses to reach data outside its own storage: Cloud SQL and Spanner for
+// federated queries, Cloud Storage and other Google resources through a
+// Google-managed service account (BigLake tables, remote models and
+// functions on Vertex AI), AWS and Azure through BigQuery Omni, the
+// Connector framework for AlloyDB and friends, and Spark stored
+// procedures.
+//
+// Set exactly ONE arm: aws, azure, cloud_resource, cloud_spanner,
+// cloud_sql, configuration, or spark.
+//
+// Most arms create an identity Google owns that you must then grant
+// access to -- the cloud_resource and Spark service accounts, the AWS
+// identity, the Azure application -- all of them outputs.
+//
+// Immutable: project_id, location, connection_id, the connector id (a
+// change replaces the connection). Descriptions, the key, and each arm's
+// settings update in place.
+message GcpBigQueryConnectionSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_arm"
+    expression: "[has(this.aws), has(this.azure), this.cloud_resource, has(this.cloud_spanner), has(this.cloud_sql), has(this.configuration), has(this.spark)].filter(x, x).size() == 1"
+    message: "set exactly one of aws, azure, cloud_resource, cloud_spanner, cloud_sql, configuration, spark"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.spanner_data_boost_needs_parallelism"
+    expression: "!has(this.cloud_spanner) || !this.cloud_spanner.use_data_boost || this.cloud_spanner.use_parallelism"
+    message: "cloud_spanner.use_data_boost requires cloud_spanner.use_parallelism"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.spanner_max_parallelism_needs_data_boost"
+    expression: "!has(this.cloud_spanner) || this.cloud_spanner.max_parallelism == 0 || (this.cloud_spanner.use_data_boost && this.cloud_spanner.use_parallelism)"
+    message: "cloud_spanner.max_parallelism requires both cloud_spanner.use_data_boost and cloud_spanner.use_parallelism"
+  };
+
+  // The GCP project the connection lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // Where the connection lives, and so which datasets can use it: a
+  // BigQuery multi-region (US, EU) or a region (us-central1,
+  // europe-west1). Each arm has its own rule -- Cloud SQL must match (with
+  // us-central1 -> US and europe-west1 -> EU allowed), Spanner matches the
+  // instance's region, AWS uses aws-{region} (e.g. aws-us-east-1) and
+  // Azure azure-{region} (e.g. azure-eastus2). Empty leaves Google's
+  // default. Immutable.
+  string location = 2;
+
+  // The connection's ID. Defaults to metadata.name. Immutable.
+  string connection_id = 3;
+
+  // A human-readable name shown in the console.
+  string friendly_name = 4;
+
+  // A free-text description.
+  string description = 5;
+
+  // A Cloud KMS key encrypting the connection's stored credential (CMEK):
+  // a GcpKmsKey reference or a literal
+  // projects/{project}/locations/{location}/keyRings/{ring}/cryptoKeys/{key}.
+  // Empty uses Google-managed keys.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+
+  // AWS through BigQuery Omni.
+  GcpBigQueryConnectionAws aws = 7;
+
+  // Azure through BigQuery Omni.
+  GcpBigQueryConnectionAzure azure = 8;
+
+  // A Google-managed service account BigQuery acts as when it reads Cloud
+  // Storage (BigLake and object tables), calls Vertex AI (remote models),
+  // or invokes Cloud Run functions (remote functions). Google's arm has no
+  // settings: true declares it. Grant the cloud_resource_service_account_id
+  // output access to what it reads.
+  bool cloud_resource = 9;
+
+  // A Cloud Spanner database.
+  GcpBigQueryConnectionCloudSpanner cloud_spanner = 10;
+
+  // A Cloud SQL database.
+  GcpBigQueryConnectionCloudSql cloud_sql = 11;
+
+  // The BigQuery Connector framework.
+  GcpBigQueryConnectionConfiguration configuration = 12;
+
+  // Stored procedures for Apache Spark.
+  GcpBigQueryConnectionSpark spark = 13;
+
+  // What happens to the connection when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (tables and routines using it stop working)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- it leaves management and stays in GCP
+  string deletion_policy = 14 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

@@ -16,5 +16,7 @@ spec:
       sku_meter: Cloud Logging ingestion
       pricing_unit: GiB ingested
       impact: Logging verdicts for high-volume model traffic writes a log entry per call, billed by Cloud Logging.
+  estimate_exclusions:
+    - tokens screened follow the traffic of the integrated services, not any spec field
   free_tier: Model Armor includes a monthly allowance of screened tokens per billing account before usage bills.
   notes: "With no integrated services the floor only governs templates and bills nothing."

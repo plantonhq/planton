@@ -392,7 +392,11 @@ contained dev.planton.gcp.gcpartifactregistryrepo.v1alpha1.GcpArtifactRegistryRe
 contained dev.planton.gcp.gcpbackendbucket.v1alpha1.GcpBackendBucketSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.network -> GcpVpcNetwork
 contained dev.planton.gcp.gcpbackendservice.v1alpha1.GcpBackendServiceSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1.GcpBigQueryCapacityCommitmentSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpbigqueryconnection.v1alpha1.GcpBigQueryConnectionSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbigquerydataset.v1alpha1.GcpBigQueryDatasetSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1.GcpBigQueryReservationGroupSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableSpec.dataset_id -> GcpBigQueryDataset
 contained dev.planton.gcp.gcpbigquerytable.v1alpha1.GcpBigQueryTableSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpbigtableinstance.v1alpha1.GcpBigtableInstanceSpec.project_id -> GcpProject
@@ -498,6 +502,16 @@ contained dev.planton.gcp.gcpkmskeyring.v1alpha1.GcpKmsKeyRingSpec.project_id ->
 contained dev.planton.gcp.gcplogbucket.v1alpha1.GcpLogBucketScope.project_id -> GcpProject
 contained dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkScope.project_id -> GcpProject
 contained dev.planton.gcp.gcplogmetric.v1alpha1.GcpLogMetricSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1.GcpManagedKafkaAclSpec.cluster -> GcpManagedKafkaCluster
+contained dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1.GcpManagedKafkaAclSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterNetworkConfig.subnet -> GcpSubnetwork
+contained dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterNetworkConfig.primary_subnet -> GcpSubnetwork
+contained dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorSpec.connect_cluster -> GcpManagedKafkaConnectCluster
+contained dev.planton.gcp.gcpmanagedkafkaconnector.v1alpha1.GcpManagedKafkaConnectorSpec.project_id -> GcpProject
+contained dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicSpec.cluster -> GcpManagedKafkaCluster
+contained dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1.GcpManagedKafkaTopicSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmanagedsslcertificate.v1alpha1.GcpManagedSslCertificateSpec.project_id -> GcpProject
 contained dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstancePscAutoConnection.project_id -> GcpProject
 contained dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstanceSpec.project_id -> GcpProject
@@ -889,6 +903,9 @@ exempt    dev.planton.digitalocean.digitaloceanfirewall.v1alpha1.DigitalOceanFir
 exempt    dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1.DigitalOceanMonitorAlertSpec.database_cluster_ids -> DigitalOceanDatabaseCluster
 exempt    dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterRestoreContinuousBackupSource.cluster -> GcpAlloydbCluster
 exempt    dev.planton.gcp.gcpalloydbcluster.v1alpha1.GcpAlloydbClusterSpec.network -> GcpVpcNetwork
+exempt    dev.planton.gcp.gcpbigqueryconnection.v1alpha1.GcpBigQueryConnectionCloudSql.instance_id -> GcpCloudSql
+exempt    dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationAssignee.folder_id -> GcpFolder
+exempt    dev.planton.gcp.gcpbigqueryreservation.v1alpha1.GcpBigQueryReservationAssignee.project_id -> GcpProject
 exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.projects -> GcpProject
 exempt    dev.planton.gcp.gcpbillingbudget.v1alpha1.GcpBillingBudgetFilter.resource_ancestors -> GcpFolder
 exempt    dev.planton.gcp.gcpcloudfunction.v1alpha1.GcpCloudFunctionDirectVpcNetworkInterface.network -> GcpVpcNetwork
@@ -922,6 +939,7 @@ exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchical
 exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyRule.target_resources -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcphierarchicalfirewallpolicy.v1alpha1.GcpHierarchicalFirewallPolicyRuleMatch.src_networks -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcploggingsink.v1alpha1.GcpLoggingSinkDestination.bigquery_dataset -> GcpBigQueryDataset
+exempt    dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1.GcpManagedKafkaConnectClusterSpec.kafka_cluster -> GcpManagedKafkaCluster
 exempt    dev.planton.gcp.gcpmemorystoreinstance.v1alpha1.GcpMemorystoreInstancePscAutoConnection.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicyAssociation.network -> GcpVpcNetwork
 exempt    dev.planton.gcp.gcpnetworkfirewallpolicy.v1alpha1.GcpNetworkFirewallPolicyRuleMatch.src_networks -> GcpVpcNetwork

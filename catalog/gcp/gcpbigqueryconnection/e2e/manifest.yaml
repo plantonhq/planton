@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryConnection
+metadata:
+  name: orders-postgres
+spec:
+  projectId:
+    value: my-gcp-project
+  # Cloud SQL us-central1 pairs with BigQuery US.
+  location: US
+  friendlyName: Orders database
+  description: Federated queries against the orders Postgres
+  cloudSql:
+    instanceId:
+      value: my-gcp-project:us-central1:orders
+    database: orders
+    type: POSTGRES
+    credential:
+      username: bigquery_reader
+      password: change-me-immediately # replace before applying
+  deletionPolicy: DELETE

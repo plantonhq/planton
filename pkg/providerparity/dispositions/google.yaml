@@ -337,13 +337,7 @@ resources:
     reason: "Analytics Hub judged as data-exchange and listing kinds (subscriptions composed); deferred pending demand"
   - resource: google_bigquery_bi_reservation
     disposition: deferred
-    reason: "BigQuery Reservations judged as one reservation kind (assignments, commitments, and BI reservation composed); deferred pending demand"
-  - resource: google_bigquery_capacity_commitment
-    disposition: model-planned
-    reason: "planned composition into the planned GcpBigQueryReservation kind (capacity commitments)"
-  - resource: google_bigquery_connection
-    disposition: model-planned
-    reason: "planned GcpBigQueryConnection kind (BigQuery external connections)"
+    reason: "candidate kind -- BI Engine's in-memory acceleration capacity, a singleton per project and location billed per GiB, a different product from slot reservations (GcpBigQueryReservation); nothing in the catalog references it, so it would be its own small kind (size, preferred tables) when demand appears"
   - resource: google_bigquery_data_transfer_config
     disposition: deferred
     reason: "judged to deserve a GcpBigQueryDataTransfer kind (scheduled queries and SaaS ingestion); deferred pending demand"
@@ -362,15 +356,6 @@ resources:
   - resource: google_bigquery_job
     disposition: deferred
     reason: "BigQuery jobs are imperative one-shot operations, a poor declarative fit"
-  - resource: google_bigquery_reservation
-    disposition: model-planned
-    reason: "planned GcpBigQueryReservation kind (BigQuery slot reservations)"
-  - resource: google_bigquery_reservation_assignment
-    disposition: model-planned
-    reason: "planned composition into the planned GcpBigQueryReservation kind (assignments)"
-  - resource: google_bigquery_reservation_group
-    disposition: deferred
-    reason: "BigQuery Reservations judged as one reservation kind (assignments, commitments, and BI reservation composed); deferred pending demand"
   - resource: google_bigquery_routine
     disposition: deferred
     reason: "judged to fold into the existing GcpBigQueryDataset kind's spec (stored routines); the composition is not built"
@@ -1388,21 +1373,6 @@ resources:
   - resource: google_lustre_instance
     disposition: deferred
     reason: "Managed Lustre is an HPC niche; deferred"
-  - resource: google_managed_kafka_acl
-    disposition: model-planned
-    reason: "planned composition into the planned GcpManagedKafkaCluster kind (ACLs)"
-  - resource: google_managed_kafka_cluster
-    disposition: model-planned
-    reason: "planned GcpManagedKafkaCluster kind (Managed Service for Apache Kafka clusters)"
-  - resource: google_managed_kafka_connect_cluster
-    disposition: model-planned
-    reason: "planned GcpManagedKafkaConnectCluster kind (Managed Kafka Connect clusters)"
-  - resource: google_managed_kafka_connector
-    disposition: model-planned
-    reason: "planned composition into the planned GcpManagedKafkaConnectCluster kind (connectors)"
-  - resource: google_managed_kafka_topic
-    disposition: model-planned
-    reason: "planned GcpManagedKafkaTopic kind (Managed Kafka topics)"
   - resource: google_memcache_instance
     disposition: deferred
     reason: "Memorystore Memcached is fading relative to Redis/Valkey; deferred"

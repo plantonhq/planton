@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkaconnectcluster.v1alpha1;
+
+// GcpManagedKafkaConnectClusterStackOutputs captures the Connect cluster's
+// identity.
+message GcpManagedKafkaConnectClusterStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/connectClusters/{connect_cluster_id}.
+  // What connectors reference.
+  string name = 1;
+
+  // The Connect cluster's ID (the last segment of name).
+  string connect_cluster_id = 2;
+
+  // The region the workers run in.
+  string location = 3;
+}

@@ -1,0 +1,21 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpmanagedkafkaconnectcluster
+spec:
+  # Awaiting the live proof lane. The scenario proves in the harness project
+  # with roles/managedkafka.admin: the consumer-scoped chain (VPC, subnet,
+  # cluster) deploys first, then the smallest Connect cluster attached by
+  # reference with its workers on the chain's subnet. Offline bar met: both
+  # modules build and validate, offline plans for the reference manifest,
+  # every scenario, and every fixture are clean on the pinned provider, and
+  # the accounting is total. Live facts the proof lane confirms: (1) the
+  # Connect cluster reaches ACTIVE and re-plans clean -- capacity as decimal
+  # strings, the subnet trimmed, the kafka_cluster full path from the
+  # reference; (2) sharing one subnet between the Kafka cluster and the
+  # Connect workers is accepted; (3) the attribution labels land; (4)
+  # destroy deletes it, then the chain.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 150

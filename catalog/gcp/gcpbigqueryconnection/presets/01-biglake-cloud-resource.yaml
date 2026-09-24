@@ -1,0 +1,11 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryConnection
+metadata:
+  name: lake
+spec:
+  projectId:
+    value: my-gcp-project
+  location: US
+  friendlyName: Data lake and models
+  description: BigLake tables over the raw bucket and remote Vertex AI models
+  cloudResource: true

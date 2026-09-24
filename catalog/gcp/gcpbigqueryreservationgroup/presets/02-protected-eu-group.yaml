@@ -1,0 +1,10 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservationGroup
+metadata:
+  name: eu-production-tier
+spec:
+  projectId:
+    value: bq-admin-project
+  location: EU
+  reservationGroupName: eu-production-tier
+  deletionPolicy: PREVENT

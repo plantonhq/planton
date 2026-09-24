@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnectCluster
+metadata:
+  name: migration-connect
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  kafkaCluster:
+    value: projects/my-gcp-project/locations/us-central1/clusters/events
+  capacityConfig:
+    vcpuCount: 6
+    memoryBytes: 25769803776
+  networkConfigs:
+    - primarySubnet:
+        value: projects/my-gcp-project/regions/us-central1/subnetworks/kafka
+      # The source cluster's private DNS domain, so MirrorMaker 2 can
+      # resolve its bootstrap address and brokers.
+      dnsDomainNames:
+        - legacy-events.us-central1.managedkafka.my-gcp-project.cloud.goog

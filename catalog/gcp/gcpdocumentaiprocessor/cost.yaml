@@ -16,4 +16,6 @@ spec:
       sku_meter: Document AI custom processor hosting
       pricing_unit: hours
       impact: A version you trained (custom extractors) can bill deployment hours while deployed, independent of pages processed.
+  estimate_exclusions:
+    - pages processed follow the documents sent to the processor, not any spec field
   notes: "Batch processing reads and writes documents in Cloud Storage, billed there."

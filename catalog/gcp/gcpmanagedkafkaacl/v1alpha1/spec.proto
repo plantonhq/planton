@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkaacl.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpManagedKafkaAclEntry is one grant or denial (`acl_entries`): a
+// principal allowed or denied one operation on the ACL's resource pattern.
+message GcpManagedKafkaAclEntry {
+  // Who the entry applies to, in Kafka's StandardAuthorizer form: "User:"
+  // followed by a Google account, e.g.
+  // "User:orders-api@my-project.iam.gserviceaccount.com", or "User:*" for
+  // everyone. With mTLS, the principal is the certificate's mapped name
+  // (see the cluster's ssl_principal_mapping_rules).
+  string principal = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^User:.+$"
+  ];
+
+  // The Kafka operation:
+  //   ALL, READ, WRITE, CREATE, DELETE, ALTER, DESCRIBE, CLUSTER_ACTION,
+  //   DESCRIBE_CONFIGS, ALTER_CONFIGS, IDEMPOTENT_WRITE
+  // Which operations are meaningful depends on the resource type (Kafka's
+  // operations table): a producer needs WRITE (and DESCRIBE) on its topic;
+  // a consumer needs READ on the topic and READ on its consumer group.
+  // Google accepts any letter case; the spec takes the canonical upper
+  // case.
+  string operation = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "ALL",
+        "READ",
+        "WRITE",
+        "CREATE",
+        "DELETE",
+        "ALTER",
+        "DESCRIBE",
+        "CLUSTER_ACTION",
+        "DESCRIBE_CONFIGS",
+        "ALTER_CONFIGS",
+        "IDEMPOTENT_WRITE"
+      ]
+    }
+  ];
+
+  // ALLOW (Google's default when empty) or DENY. A DENY wins over any
+  // ALLOW for the same principal and operation.
+  string permission_type = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "ALLOW",
+        "DENY"
+      ]
+    }
+  ];
+
+  // The client host the entry applies to. Managed Service for Apache Kafka
+  // accepts only "*" (every host), which is also the default when empty.
+  string host = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: ["*"]
+    }
+  ];
+}
+
+// GcpManagedKafkaAclSpec defines the access rules for ONE resource pattern
+// on a Managed Service for Apache Kafka cluster (`google_managed_kafka_acl`)
+// -- every principal allowed or denied on, say, one topic or one consumer
+// group. ACLs are their own block so the team that owns a topic or a
+// consumer group grants access to it in its own manifest, without editing
+// the cluster.
+//
+// Kafka ACLs are enforced for clients that authenticate to the cluster;
+// Google IAM still decides who may connect at all (roles/managedkafka.client).
+//
+// Immutable: project_id, location, cluster, acl_id (a change replaces the
+// ACL). The entries update in place.
+message GcpManagedKafkaAclSpec {
+  // The GCP project the cluster lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The cluster's region, e.g. "us-central1". Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The cluster the ACL applies to. A GcpManagedKafkaCluster reference
+  // resolves to its full resource path (name output); a literal takes the
+  // full path or the bare cluster ID. The modules derive the bare ID
+  // Google's resource expects. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef cluster = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpManagedKafkaCluster,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The resource pattern, which is also the ACL's ID:
+  //   cluster                          -- the cluster itself
+  //   topic/{name}                     -- one topic
+  //   consumerGroup/{name}             -- one consumer group
+  //   transactionalId/{name}           -- one transactional ID
+  //   topicPrefixed/{prefix}           -- every topic starting with prefix
+  //   consumerGroupPrefixed/{prefix}   -- every consumer group with prefix
+  //   transactionalIdPrefixed/{prefix} -- every transactional ID with prefix
+  // {name} may be the literal wildcard "*" (every resource of the type).
+  // One ACL exists per pattern on a cluster, so two manifests must never
+  // declare the same one. Immutable.
+  string acl_id = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^(cluster|(topic|consumerGroup|transactionalId)(Prefixed)?/.+)$"
+  ];
+
+  // The entries for this pattern -- at least one, at most 100.
+  repeated GcpManagedKafkaAclEntry acl_entries = 5 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.max_items = 100
+  ];
+
+  // What happens to the ACL when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (the access it granted ends)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- the ACL leaves management and stays on the cluster
+  string deletion_policy = 6 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

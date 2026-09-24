@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservation
+metadata:
+  name: critical-analytics
+spec:
+  projectId:
+    value: bq-admin-project
+  location: us-central1
+  edition: ENTERPRISE_PLUS
+  slotCapacity: 100
+  secondaryLocation: us-east4
+  assignments:
+    - assignee:
+        projectId:
+          value: reporting-project
+      jobType: QUERY
+  deletionPolicy: PREVENT

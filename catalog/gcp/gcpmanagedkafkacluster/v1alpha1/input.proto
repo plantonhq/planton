@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1;
+
+import "catalog/gcp/gcpmanagedkafkacluster/v1alpha1/api.proto";
+import "catalog/gcp/provider.proto";
+
+//gcp-managed-kafka-cluster stack-input
+message GcpManagedKafkaClusterStackInput {
+  //target cloud-resource
+  GcpManagedKafkaCluster target = 1;
+  //provider-config
+  dev.planton.gcp.GcpProviderConfig provider_config = 2;
+}

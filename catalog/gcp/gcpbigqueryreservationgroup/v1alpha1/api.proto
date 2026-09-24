@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigqueryreservationgroup.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpbigqueryreservationgroup/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-bigquery-reservation-group
+message GcpBigQueryReservationGroup {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpBigQueryReservationGroup'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpBigQueryReservationGroupSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpBigQueryReservationGroupStatus status = 5;
+}
+
+//gcp-bigquery-reservation-group status
+message GcpBigQueryReservationGroupStatus {
+  //stack-outputs
+  GcpBigQueryReservationGroupStackOutputs outputs = 1;
+}

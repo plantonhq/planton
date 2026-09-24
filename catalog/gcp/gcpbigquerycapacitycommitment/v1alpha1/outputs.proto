@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1;
+
+// GcpBigQueryCapacityCommitmentStackOutputs captures the commitment's
+// identity and term.
+message GcpBigQueryCapacityCommitmentStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/capacityCommitments/{id}.
+  string name = 1;
+
+  // The commitment's state (PENDING, ACTIVE, or FAILED).
+  string state = 2;
+
+  // When the current term started (ACTIVE commitments only).
+  string commitment_start_time = 3;
+
+  // When the current term ends (ACTIVE commitments only) -- the earliest a
+  // delete succeeds.
+  string commitment_end_time = 4;
+}

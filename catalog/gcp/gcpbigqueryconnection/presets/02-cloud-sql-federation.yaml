@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryConnection
+metadata:
+  name: orders-postgres
+spec:
+  projectId:
+    value: my-gcp-project
+  location: US
+  friendlyName: Orders database
+  cloudSql:
+    instanceId:
+      value: my-gcp-project:us-central1:orders
+    database: orders
+    type: POSTGRES
+    credential:
+      username: bigquery_reader
+      password: change-me-immediately # replace before applying

@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpBigQueryReservation
+metadata:
+  name: pay-while-used
+spec:
+  projectId:
+    value: bq-admin-project
+  location: US
+  edition: STANDARD
+  slotCapacity: 0
+  autoscaleMaxSlots: 100
+  assignments:
+    - assignee:
+        projectId:
+          value: analytics-project
+      jobType: QUERY

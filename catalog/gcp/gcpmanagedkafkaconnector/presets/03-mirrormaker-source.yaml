@@ -1,0 +1,21 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnector
+metadata:
+  name: mirror-legacy-events
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  connectCluster:
+    value: migration-connect
+  configs:
+    connector.class: org.apache.kafka.connect.mirror.MirrorSourceConnector
+    tasks.max: "3"
+    source.cluster.alias: legacy
+    target.cluster.alias: events
+    source.cluster.bootstrap.servers: bootstrap.legacy-events.us-central1.managedkafka.my-gcp-project.cloud.goog:9092
+    target.cluster.bootstrap.servers: bootstrap.events.us-central1.managedkafka.my-gcp-project.cloud.goog:9092
+    topics: orders.*
+  taskRestartPolicy:
+    minimumBackoff: 60s
+    maximumBackoff: 1800s

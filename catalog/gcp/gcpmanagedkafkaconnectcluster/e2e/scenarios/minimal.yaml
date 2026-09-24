@@ -1,0 +1,38 @@
+# GcpManagedKafkaConnectCluster scenario: the smallest Connect cluster (3
+# vCPU, 3 GiB) attached to the prerequisite Kafka cluster by reference (its
+# full name), its workers' interface on the chain's subnet, with user
+# labels.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnectCluster
+metadata:
+  name: planton-oss-e2e-gcpkcon-smoke
+  id: planton-oss-e2e-gcpkcon-smoke
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpmanagedkafkaconnectcluster
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectClusterId: e2e-connect-${E2E_RUN_ID}
+  kafkaCluster:
+    valueFrom:
+      kind: GcpManagedKafkaCluster
+      name: planton-oss-e2e-gcpkcon-kafka
+      fieldPath: status.outputs.name
+  capacityConfig:
+    vcpuCount: 3
+    memoryBytes: 3221225472
+  networkConfigs:
+    - primarySubnet:
+        valueFrom:
+          kind: GcpSubnetwork
+          name: planton-oss-e2e-gcpkcon-subnet
+          fieldPath: status.outputs.subnetwork_self_link
+  labels:
+    team: platform-e2e
+  deletionPolicy: DELETE

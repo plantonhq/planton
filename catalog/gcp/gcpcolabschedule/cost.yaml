@@ -24,4 +24,7 @@ spec:
       sku_meter: notebook execution and pipeline compute
       pricing_unit: runs
       impact: PAUSED launches nothing and bills nothing.
+  estimate_exclusions:
+    - each run's duration follows the notebook or pipeline it executes
+    - storage of executed notebooks and pipeline artifacts bills in Cloud Storage by what the runs write
   notes: "Executed notebooks and pipeline artifacts are stored in Cloud Storage and bill there. Vertex AI Pipelines adds a small per-run fee on top of the compute the pipeline's steps use."

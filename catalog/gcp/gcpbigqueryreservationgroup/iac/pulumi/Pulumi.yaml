@@ -1,0 +1,4 @@
+name: gcpbigqueryreservationgroup-pulumi-project
+runtime:
+  name: go
+description: Planton GcpBigQueryReservationGroup Pulumi module

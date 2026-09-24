@@ -1,0 +1,31 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpmanagedkafkaconnectcluster
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Managed Service for Apache Kafka
+      sku_meter: Connect vCPU
+      pricing_unit: vCPU-hours
+      description: The Connect workers' vCPUs bill every hour from creation, with or without connectors running.
+    - service_name: Managed Service for Apache Kafka
+      sku_meter: Connect memory
+      pricing_unit: GiB-hours
+      description: The workers' memory bills every hour alongside the vCPUs.
+  cost_drivers:
+    - field_path: capacity_config.vcpu_count
+      sku_meter: Connect vCPU
+      pricing_unit: vCPU-hours
+      impact: The dominant line -- every worker vCPU (at least 3) bills around the clock.
+    - field_path: capacity_config.memory_bytes
+      sku_meter: Connect memory
+      pricing_unit: GiB-hours
+      impact: Worker memory (at least 3 GiB) bills around the clock on top of the vCPUs.
+  free_tier: ""
+  estimate_exclusions:
+    - data the connectors move bills under the systems they reach (Pub/Sub, BigQuery, Cloud Storage) and as network transfer
+  notes: "Google's Managed Service for Apache Kafka pricing (read 2026-09-24) bills a Connect cluster by its vCPUs and memory per hour. The connectors themselves add no meter; they share this capacity."

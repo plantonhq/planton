@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpManagedKafkaConnectCluster
+metadata:
+  name: events-connect
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  kafkaCluster:
+    value: projects/my-gcp-project/locations/us-central1/clusters/events
+  capacityConfig:
+    vcpuCount: 3
+    memoryBytes: 12884901888
+  networkConfigs:
+    - primarySubnet:
+        value: projects/my-gcp-project/regions/us-central1/subnetworks/kafka

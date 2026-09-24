@@ -1,0 +1,4 @@
+name: gcpbigqueryconnection-pulumi-project
+runtime:
+  name: go
+description: Planton GcpBigQueryConnection Pulumi module
