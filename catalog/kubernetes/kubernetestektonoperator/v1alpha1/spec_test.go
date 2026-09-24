@@ -61,11 +61,26 @@ var _ = ginkgo.Describe("KubernetesTektonOperator Validation Tests", func() {
 			input.Spec.ImagePullSecrets = []string{"mirror-pull"}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
+
+		ginkgo.It("a registry root with a path should be valid", func() {
+			input.Spec.ImageRegistry = "asia-south1-docker.pkg.dev/example-project/ghcr"
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
 		ginkgo.It("a missing spec should fail", func() {
 			input.Spec = nil
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an image_registry with a scheme should fail", func() {
+			input.Spec.ImageRegistry = "https://mirror.example.com/ghcr"
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an image_registry with a trailing slash should fail", func() {
+			input.Spec.ImageRegistry = "mirror.example.com/ghcr/"
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 

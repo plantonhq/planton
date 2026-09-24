@@ -41,6 +41,11 @@ import (
 // their informers sync. The Terraform twin encodes the same chain with
 // depends_on.
 //
+// IMAGE REGISTRY: when set, every image Tekton publishes moves to it at
+// the same path, tag and digest — the operator's own and, through the
+// operator's IMAGE_* variables, every component it installs (see
+// images.go and deploymentTransformation).
+//
 // DESTROY SEMANTICS: every document deletes with the resource, INCLUDING
 // the CRDs — which cascade-deletes any TektonConfig on the cluster.
 // Always destroy the KubernetesTekton resource FIRST while the operator
@@ -60,9 +65,17 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetestektonoperatorv1alpha1
 		return errors.Wrap(err, "failed to fetch the tekton-operator release manifest")
 	}
 
+	var images *tektonImages
+	if locals.Spec.GetImageRegistry() != "" {
+		images, err = loadImageTable()
+		if err != nil {
+			return err
+		}
+	}
+
 	transformations := []pulumiyaml.Transformation{
 		autoInstallTransformation(),
-		deploymentTransformation(locals.Spec),
+		deploymentTransformation(locals.Spec, images),
 	}
 
 	namespaceGroup, err := pulumiyaml.NewConfigGroup(ctx, locals.ResourceName+"-namespace",

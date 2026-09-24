@@ -29,6 +29,7 @@ locals {
   namespace                       = "tekton-operator"
   operator_deployment_name        = "tekton-operator"
   webhook_deployment_name         = "tekton-operator-webhook"
+  lifecycle_container_name        = "tekton-operator-lifecycle"
   config_defaults_config_map_name = "tekton-config-defaults"
 
   # ---- manifest documents ------------------------------------------------------
@@ -162,6 +163,34 @@ locals {
     } : {}
   )
 
+  # ---- image_registry -------------------------------------------------------------
+  # Both Deployments' manifest images move to the registry unless an explicit
+  # image override is set, and the lifecycle container, the one that
+  # reconciles the components, gets its ghcr.io IMAGE_* values moved and every
+  # image table entry it does not already set appended, moved, in table order
+  # (images.tf). Pulumi twin: deploymentTransformation, mirroredImageEnv.
+  lifecycle_container = one([
+    for c in local.documents_by_id[local.operator_deployment_id].spec.template.spec.containers : c
+    if c.name == local.lifecycle_container_name
+  ])
+  lifecycle_env_names = [for e in try(local.lifecycle_container.env, []) : e.name]
+  lifecycle_env = concat(
+    [
+      for e in try(local.lifecycle_container.env, []) : merge(
+        e,
+        startswith(e.name, "IMAGE_") && startswith(try(e.value, ""), "${local.upstream_registry}/") ? {
+          value = "${local.image_registry}${trimprefix(try(e.value, ""), local.upstream_registry)}"
+        } : {}
+      )
+    ],
+    [
+      for i in local.image_table.images : {
+        name  = i.name
+        value = "${local.image_registry}${trimprefix(i.image, local.upstream_registry)}"
+      } if !contains(local.lifecycle_env_names, i.name)
+    ]
+  )
+
   original_operator_deployment = local.documents_by_id[local.operator_deployment_id]
   patched_operator_deployment = merge(
     local.original_operator_deployment,
@@ -180,7 +209,11 @@ locals {
                     merge(
                       c,
                       local.operator_image != "" ? { image = local.operator_image } : {},
-                      local.operator_resources != null ? { resources = local.operator_resources } : {}
+                      local.operator_image == "" && local.image_registry != "" && startswith(c.image, "${local.upstream_registry}/") ? {
+                        image = "${local.image_registry}${trimprefix(c.image, local.upstream_registry)}"
+                      } : {},
+                      local.operator_resources != null ? { resources = local.operator_resources } : {},
+                      local.image_registry != "" && c.name == local.lifecycle_container_name ? { env = local.lifecycle_env } : {}
                     )
                   ]
                 },
@@ -211,6 +244,9 @@ locals {
                     merge(
                       c,
                       local.webhook_image != "" ? { image = local.webhook_image } : {},
+                      local.webhook_image == "" && local.image_registry != "" && startswith(c.image, "${local.upstream_registry}/") ? {
+                        image = "${local.image_registry}${trimprefix(c.image, local.upstream_registry)}"
+                      } : {},
                       local.webhook_resources != null ? { resources = local.webhook_resources } : {}
                     )
                   ]

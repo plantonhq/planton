@@ -71,6 +71,13 @@ resource "kubectl_manifest" "tekton_operator" {
   force_conflicts   = true
   wait_for_rollout  = false
 
+  lifecycle {
+    precondition {
+      condition     = local.image_registry == "" || local.image_table_matches_release
+      error_message = local.image_table_mismatch_message
+    }
+  }
+
   depends_on = [kubectl_manifest.namespace]
 }
 

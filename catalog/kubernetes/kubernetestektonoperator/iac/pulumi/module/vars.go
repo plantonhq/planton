@@ -7,7 +7,8 @@ var vars = struct {
 	// local: the TektonConfig surface the KubernetesTekton kind renders
 	// is designed against this release's operator API. Always an exact
 	// release TAG, never a branch — tag pinning keeps installs
-	// reproducible.
+	// reproducible. Moving it moves the image table too (images.go): a
+	// test and both engines refuse a table read from another release.
 	OperatorRelease string
 
 	// Namespace is the fixed installation namespace. The release
@@ -20,6 +21,11 @@ var vars = struct {
 	// manifest's fixed Deployment names the typed overrides patch.
 	OperatorDeploymentName string
 	WebhookDeploymentName  string
+
+	// LifecycleContainerName is the operator Deployment's container that
+	// reconciles the components and reads the IMAGE_* variables naming
+	// their images; image_registry appends its entries there.
+	LifecycleContainerName string
 
 	// ConfigDefaultsConfigMapName is the manifest ConfigMap whose
 	// AUTOINSTALL_COMPONENTS key the module ALWAYS patches to "false":
@@ -38,6 +44,7 @@ var vars = struct {
 	Namespace:                   "tekton-operator",
 	OperatorDeploymentName:      "tekton-operator",
 	WebhookDeploymentName:       "tekton-operator-webhook",
+	LifecycleContainerName:      "tekton-operator-lifecycle",
 	ConfigDefaultsConfigMapName: "tekton-config-defaults",
 	TektonConfigCrdName:         "tektonconfigs.operator.tekton.dev",
 }
