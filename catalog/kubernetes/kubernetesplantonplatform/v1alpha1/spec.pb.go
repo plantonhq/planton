@@ -200,7 +200,19 @@ type KubernetesPlantonPlatformSpec struct {
 	// reports each failure in the relay's own words. Requires a
 	// planton-operator chart that knows this field (0.14.1 or newer); an
 	// older definition refuses the declaration.
-	Email         *KubernetesPlantonPlatformEmail `protobuf:"bytes,19,opt,name=email,proto3" json:"email,omitempty"`
+	Email *KubernetesPlantonPlatformEmail `protobuf:"bytes,19,opt,name=email,proto3" json:"email,omitempty"`
+	// *
+	// The registry root the control plane, console, and runner images are
+	// pulled from, as <image_registry>/<image> (control-plane,
+	// client-apps/web, runner). Empty = the operator's default,
+	// ghcr.io/plantonhq/planton. Every release is also published, byte for
+	// byte, to Google Artifact Registry at
+	// asia-south1-docker.pkg.dev/plantonhq/planton; set that to pull from
+	// Google, or name a mirror of your own. A component's image.repository,
+	// when set, wins over this root. Requires a planton-operator chart that
+	// knows this field (0.22.0 or newer); an older definition refuses the
+	// declaration.
+	ImageRegistry string `protobuf:"bytes,20,opt,name=image_registry,json=imageRegistry,proto3" json:"image_registry,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -366,6 +378,13 @@ func (x *KubernetesPlantonPlatformSpec) GetEmail() *KubernetesPlantonPlatformEma
 		return x.Email
 	}
 	return nil
+}
+
+func (x *KubernetesPlantonPlatformSpec) GetImageRegistry() string {
+	if x != nil {
+		return x.ImageRegistry
+	}
+	return ""
 }
 
 // *
@@ -2899,8 +2918,12 @@ type KubernetesPlantonPlatformRunner struct {
 	// static-credentials way the runner reaches your cloud. The platform
 	// stores nothing: rotate by updating YOUR Secret.
 	CloudCredentialsSecretName string `protobuf:"bytes,5,opt,name=cloud_credentials_secret_name,json=cloudCredentialsSecretName,proto3" json:"cloud_credentials_secret_name,omitempty"`
-	unknownFields              protoimpl.UnknownFields
-	sizeCache                  protoimpl.SizeCache
+	// *
+	// Runner image override (registry mirrors, custom builds). Empty = the
+	// image under spec.image_registry at spec.version.
+	Image         *KubernetesPlantonPlatformImage `protobuf:"bytes,6,opt,name=image,proto3" json:"image,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonPlatformRunner) Reset() {
@@ -2966,6 +2989,13 @@ func (x *KubernetesPlantonPlatformRunner) GetCloudCredentialsSecretName() string
 		return x.CloudCredentialsSecretName
 	}
 	return ""
+}
+
+func (x *KubernetesPlantonPlatformRunner) GetImage() *KubernetesPlantonPlatformImage {
+	if x != nil {
+		return x.Image
+	}
+	return nil
 }
 
 // *
@@ -4074,7 +4104,7 @@ var File_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto protor
 
 const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xfd\x18\n" +
+	"@catalog/kubernetes/kubernetesplantonplatform/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf3\x1a\n" +
 	"\x1dKubernetesPlantonPlatformSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12!\n" +
@@ -4097,7 +4127,9 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\rcontrol_plane\x18\x10 \x01(\v2`.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlaneR\fcontrolPlane\x12u\n" +
 	"\aconsole\x18\x11 \x01(\v2[.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsoleR\aconsole\x12\x88\x01\n" +
 	"\x0eremote_runners\x18\x12 \x01(\v2a.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRemoteRunnersR\rremoteRunners\x12o\n" +
-	"\x05email\x18\x13 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailR\x05email:\xf9\a\xbaH\xf5\a\x1a\xd5\x04\n" +
+	"\x05email\x18\x13 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformEmailR\x05email\x12\xf3\x01\n" +
+	"\x0eimage_registry\x18\x14 \x01(\tB\xcb\x01\xbaH\xc7\x01\xba\x01\xc0\x01\n" +
+	"\x15image_registry_format\x12yimage_registry is a registry root such as \"asia-south1-docker.pkg.dev/plantonhq/planton\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry:\xf9\a\xbaH\xf5\a\x1a\xd5\x04\n" +
 	"&spec.vault.backup_needs_surviving_keys\x12\xa7\x02a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key\x1a\x80\x02!has(this.database) || !has(this.database.postgresql) || !has(this.database.postgresql.backup) || (has(this.vault) && has(this.vault.enabled) && !this.vault.enabled) || (has(this.vault) && (has(this.vault.auto_unseal) || this.vault.init_secret_name != ''))\x1a\x9a\x03\n" +
 	".spec.vault.disabled_needs_cloud_secret_backend\x12\xaf\x01bootstrap.secret_backend.type 'platform' stores secrets in the bundled vault, which vault.enabled: false has opted out of — re-enable the vault or use type awsSecretsManager\x1a\xb5\x01!has(this.bootstrap) || !has(this.bootstrap.secret_backend) || this.bootstrap.secret_backend.type != 'platform' || !has(this.vault) || !has(this.vault.enabled) || this.vault.enabled\"\xfd\x04\n" +
 	"\x1eKubernetesPlantonPlatformEmail\x12y\n" +
@@ -4287,14 +4319,15 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"1spec.bootstrap.secret_backend.aws_requires_config\x12|awsSecretsManager needs its configuration block: aws_secrets_manager.region and aws_secrets_manager.kms_key_arn are required\x1a\x9a\x01this.type != 'awsSecretsManager' || (has(this.aws_secrets_manager) && this.aws_secrets_manager.region != '' && this.aws_secrets_manager.kms_key_arn != '')\"v\n" +
 	"*KubernetesPlantonPlatformAwsSecretsManager\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12'\n" +
-	"\vkms_key_arn\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tkmsKeyArn\"\x9e\x05\n" +
+	"\vkms_key_arn\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\tkmsKeyArn\"\x8f\x06\n" +
 	"\x1fKubernetesPlantonPlatformRunner\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12\xca\x01\n" +
 	"\fstorage_size\x18\x02 \x01(\tB\xa6\x01\xbaH\xa2\x01\xba\x01\x9b\x01\n" +
 	"\x1crunner.storage_size_quantity\x125storage_size must be a Kubernetes quantity like \"2Gi\"\x1aDthis.matches('^[0-9]+(\\\\.[0-9]+)?(Ei|Pi|Ti|Gi|Mi|Ki|E|P|T|G|M|K)?$')\xd8\x01\x01R\vstorageSize\x12,\n" +
 	"\x12storage_class_name\x18\x03 \x01(\tR\x10storageClassName\x12\xb9\x01\n" +
 	"\x1bservice_account_annotations\x18\x04 \x03(\v2y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x12A\n" +
-	"\x1dcloud_credentials_secret_name\x18\x05 \x01(\tR\x1acloudCredentialsSecretName\x1aL\n" +
+	"\x1dcloud_credentials_secret_name\x18\x05 \x01(\tR\x1acloudCredentialsSecretName\x12o\n" +
+	"\x05image\x18\x06 \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImageR\x05image\x1aL\n" +
 	"\x1eServiceAccountAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\n" +
@@ -4508,25 +4541,26 @@ var file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_depIdx
 	31, // 50: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformBootstrap.secret_backend:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend
 	32, // 51: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformSecretBackend.aws_secrets_manager:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformAwsSecretsManager
 	49, // 52: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.ServiceAccountAnnotationsEntry
-	36, // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
-	50, // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
-	37, // 55: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
-	38, // 56: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
-	39, // 57: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
-	40, // 58: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
-	52, // 59: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 60: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 61: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	52, // 62: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	42, // 63: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents.graph:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
-	46, // 64: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	51, // 65: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
-	46, // 66: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
-	67, // [67:67] is the sub-list for method output_type
-	67, // [67:67] is the sub-list for method input_type
-	67, // [67:67] is the sub-list for extension type_name
-	67, // [67:67] is the sub-list for extension extendee
-	0,  // [0:67] is the sub-list for field type_name
+	46, // 53: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformRunner.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	36, // 54: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.auto_unseal:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal
+	50, // 55: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVault.ServiceAccountAnnotationsEntry
+	37, // 56: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.aws_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAwsKmsSeal
+	38, // 57: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.gcp_kms:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal
+	39, // 58: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.azure_key_vault:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAzureKeyVaultSeal
+	40, // 59: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultAutoUnseal.transit:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultTransitSeal
+	52, // 60: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.project:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	52, // 61: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	52, // 62: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.crypto_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	52, // 63: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.workload_identity_service_account:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	42, // 64: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformComponents.graph:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformGraph
+	46, // 65: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	51, // 66: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.service_account_annotations:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntry
+	46, // 67: dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformConsole.image:type_name -> dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformImage
+	68, // [68:68] is the sub-list for method output_type
+	68, // [68:68] is the sub-list for method input_type
+	68, // [68:68] is the sub-list for extension type_name
+	68, // [68:68] is the sub-list for extension extendee
+	0,  // [0:68] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_init() }

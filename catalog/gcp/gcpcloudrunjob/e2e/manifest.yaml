@@ -32,6 +32,10 @@ spec:
             valueFromSecret:
               secret: hack-db-password
               version: latest
+          # A Planton secret: the component keeps it in a Secret Manager
+          # secret of its own, readable only by the task identity.
+          - name: API_TOKEN
+            secretValue: $secret/hack-api-token
         resources:
           cpu: "2"
           memory: 2Gi

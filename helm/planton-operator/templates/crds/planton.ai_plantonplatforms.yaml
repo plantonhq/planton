@@ -1226,6 +1226,21 @@ spec:
                       console's OIDC client.
                     type: string
                 type: object
+              imageRegistry:
+                description: |-
+                  imageRegistry is the registry root the control plane, console, and
+                  runner images are pulled from, as <imageRegistry>/<image> (the images are
+                  control-plane, client-apps/web, and runner). Defaults to
+                  ghcr.io/plantonhq/planton. Every release is also published, byte for
+                  byte, to Google Artifact Registry at
+                  asia-south1-docker.pkg.dev/plantonhq/planton; set that here to pull from
+                  Google, or name a mirror of your own. A component's image.repository, when
+                  set, wins over this root.
+                type: string
+                x-kubernetes-validations:
+                - message: 'spec.imageRegistry is a registry root such as asia-south1-docker.pkg.dev/plantonhq/planton:
+                    no scheme and no trailing slash'
+                  rule: '!self.endsWith(''/'') && !self.contains(''://'')'
               ingress:
                 description: |-
                   ingress configures external access to the Planton web console and API.
@@ -1465,11 +1480,11 @@ spec:
                   enabled:
                     default: false
                     description: |-
-                      enabled opens the deploy queue to runners outside this cluster and
-                      advertises the front door's address to them. Default false: an install
-                      that has not chosen this keeps its queue in-cluster, and a runner that
-                      asks to enroll from outside is refused with the reason -- never handed
-                      an address it cannot reach.
+                      enabled admits runners outside this cluster and advertises the front
+                      door's address to them. Default false: an install that has not chosen
+                      this admits only its in-cluster runner, and a runner that asks to enroll
+                      from outside is refused with the reason -- never handed an address it
+                      cannot reach.
                     type: boolean
                 type: object
               runner:
@@ -1803,10 +1818,10 @@ spec:
               rule: '!has(self.bootstrap) || !has(self.bootstrap.secretBackend) ||
                 self.bootstrap.secretBackend.type != ''platform'' || !has(self.vault)
                 || !has(self.vault.enabled) || self.vault.enabled'
-            - message: 'remoteRunners.enabled opens the deploy queue to runners outside
-                the cluster through the front door, but with ingress disabled there
-                is no front door a laptop could reach; set ingress.enabled: true with
-                a gatewayRef, or leave remoteRunners off'
+            - message: 'remoteRunners.enabled admits runners outside the cluster through
+                the front door, but with ingress disabled there is no front door a
+                laptop could reach; set ingress.enabled: true with a gatewayRef, or
+                leave remoteRunners off'
               rule: '!has(self.remoteRunners) || !has(self.remoteRunners.enabled)
                 || !self.remoteRunners.enabled || (has(self.ingress) && self.ingress.enabled)'
             - message: a backup carries the vault's data, but under the built-in seal

@@ -49,6 +49,15 @@ Every versioned component rolls to the release's images; the platform reads `Rea
 
 Both steps are mutations under the protocol in `cloud.exploration.md`: state the command and what it changes, get one clear yes for each step, report what happened.
 
+## Moving an install to the Google Artifact Registry mirror
+
+Every release is copied, byte for byte, from ghcr.io to Google Artifact Registry at the same path after the host: `asia-south1-docker.pkg.dev/plantonhq/planton/<image>` and `oci://asia-south1-docker.pkg.dev/plantonhq/charts/<chart>`. When an adopter's pulls from ghcr.io crawl or stall (Google Cloud clusters most often), the move is two declarations, each a mutation under the same protocol:
+
+1. The operator: `helm upgrade planton-operator oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-operator --version <chart-version> -n <operator-namespace> --reuse-values --set image.repository=asia-south1-docker.pkg.dev/plantonhq/planton/operator`. The chart must be 0.22.0 or newer, the first to carry the next field.
+2. The platform: set `spec.imageRegistry: asia-south1-docker.pkg.dev/plantonhq/planton` the way the platform was declared (`--set platform.spec.imageRegistry=...` on the `planton` chart, a `kubectl patch`, or the platform kind's `image_registry`). The control plane, console, and runner then roll to the same images from the mirror.
+
+Confirm with `crane digest` against both hosts for the running tag (they match), and with the pods' `image` fields. The bundled third-party components (PostgreSQL, Temporal, OpenFGA, OpenBao, Valkey) keep pulling from their own registries; say so rather than promising a complete move.
+
 ## The boundary: installs from before chart 0.8.0
 
 The operator moved its PostgreSQL from a StatefulSet to CloudNativePG when it moved into the open-source repository (chart 0.8.0). A platform created by chart 0.7.0 or older -- the `-selfhosted-preview` era -- keeps its data in the old StatefulSet's volume; an operator from 0.8.0 onward creates a new CloudNativePG database beside it and starts the platform on the empty one, so the realm is recreated rather than repaired and the old records are not carried across. The old volume is not deleted, but nothing reads it.

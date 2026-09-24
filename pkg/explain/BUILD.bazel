@@ -32,12 +32,15 @@ go_test(
     srcs = [
         "explain_test.go",
         "render_markdown_test.go",
+        "secret_home_test.go",
     ],
     embed = [":explain"],
     deps = [
         "//pkg/crkreflect",
         "//shared/cloudresourcekind",
+        "//shared/options",
         "@com_github_pkg_errors//:errors",
+        "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )

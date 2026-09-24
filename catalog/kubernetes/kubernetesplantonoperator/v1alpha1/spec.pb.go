@@ -83,7 +83,7 @@ type KubernetesPlantonOperatorSpec struct {
 	// and the operator image share one version line: chart 0.15.0 runs
 	// operator v0.15.0. Defaults to the version this catalog release was
 	// validated against; pin a different version only for change control.
-	// Versions must exist as published charts at oci://ghcr.io/plantonhq/charts.
+	// Versions must exist as published charts at spec.chart_repository.
 	// Charts older than 0.8.0 do not own their definitions and are refused
 	// at plan time: the `crds` dials would have nothing to act on.
 	ChartVersion *string `protobuf:"bytes,3,opt,name=chart_version,json=chartVersion,proto3,oneof" json:"chart_version,omitempty"`
@@ -148,9 +148,16 @@ type KubernetesPlantonOperatorSpec struct {
 	// *
 	// CRD lifecycle. The chart owns its two definitions as release resources;
 	// these dials map onto the chart's `crds.enabled` and `crds.keep` values.
-	Crds          *KubernetesPlantonOperatorCrds `protobuf:"bytes,16,opt,name=crds,proto3" json:"crds,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Crds *KubernetesPlantonOperatorCrds `protobuf:"bytes,16,opt,name=crds,proto3" json:"crds,omitempty"`
+	// *
+	// The OCI registry path the planton-operator chart is pulled from. Defaults
+	// to oci://ghcr.io/plantonhq/charts. Every chart release is also
+	// published, byte for byte, to Google Artifact Registry at
+	// oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+	// from Google, or name a mirror of your own holding the same charts.
+	ChartRepository *string `protobuf:"bytes,17,opt,name=chart_repository,json=chartRepository,proto3,oneof" json:"chart_repository,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonOperatorSpec) Reset() {
@@ -286,6 +293,13 @@ func (x *KubernetesPlantonOperatorSpec) GetCrds() *KubernetesPlantonOperatorCrds
 		return x.Crds
 	}
 	return nil
+}
+
+func (x *KubernetesPlantonOperatorSpec) GetChartRepository() string {
+	if x != nil && x.ChartRepository != nil {
+		return *x.ChartRepository
+	}
+	return ""
 }
 
 // *
@@ -485,7 +499,7 @@ var File_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_spec_proto protor
 
 const file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"@catalog/kubernetes/kubernetesplantonoperator/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd9\x0e\n" +
+	"@catalog/kubernetes/kubernetesplantonoperator/v1alpha1/spec.proto\x129dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x9c\x11\n" +
 	"\x1dKubernetesPlantonOperatorSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12\xd4\x01\n" +
@@ -504,7 +518,9 @@ const file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_spec_proto_rawD
 	"\x05image\x18\x0e \x01(\v2Y.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorImageR\x05image\x12\x1f\n" +
 	"\vhelm_values\x18\x0f \x01(\tR\n" +
 	"helmValues\x12l\n" +
-	"\x04crds\x18\x10 \x01(\v2X.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorCrdsR\x04crds\x1a?\n" +
+	"\x04crds\x18\x10 \x01(\v2X.dev.planton.kubernetes.kubernetesplantonoperator.v1alpha1.KubernetesPlantonOperatorCrdsR\x04crds\x12\xab\x02\n" +
+	"\x10chart_repository\x18\x11 \x01(\tB\xfa\x01\xbaH\xd4\x01\xba\x01\xd0\x01\n" +
+	"\x17chart_repository_format\x12\x82\x01chart repository must be an OCI path such as \"oci://asia-south1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash\x1a0this.startsWith('oci://') && !this.endsWith('/')\x8a\xa6\x1d\x1eoci://ghcr.io/plantonhq/chartsH\x03R\x0fchartRepository\x88\x01\x01\x1a?\n" +
 	"\x11CommonLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1aA\n" +
@@ -516,7 +532,8 @@ const file_catalog_kubernetes_kubernetesplantonoperator_v1alpha1_spec_proto_rawD
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x10\n" +
 	"\x0e_chart_versionB\v\n" +
 	"\t_replicasB\x12\n" +
-	"\x10_leader_electionJ\x04\b\x04\x10\x05R\tskip_crds\"\xa5\x01\n" +
+	"\x10_leader_electionB\x13\n" +
+	"\x11_chart_repositoryJ\x04\b\x04\x10\x05R\tskip_crds\"\xa5\x01\n" +
 	"\x1dKubernetesPlantonOperatorCrds\x12'\n" +
 	"\ainstall\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\ainstall\x88\x01\x01\x129\n" +
 	"\x11keep_on_uninstall\x18\x02 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\x0fkeepOnUninstall\x88\x01\x01B\n" +

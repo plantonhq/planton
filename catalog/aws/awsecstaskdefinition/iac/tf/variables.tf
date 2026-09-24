@@ -97,17 +97,31 @@ variable "spec" {
       # Working directory override for the command.
       working_directory = optional(string, "")
 
-      # Plain-text environment variables (name -> value). For anything
-      # sensitive use secrets instead -- environment values are visible in the
-      # task definition to anyone who can describe it.
+      # Plain-text environment variables (name -> value), written into the task
+      # definition where anyone who can describe it reads them -- and kept in
+      # every revision for good, since revisions are immutable. Configuration
+      # only; a credential goes in secret_environment (or secrets).
       environment = optional(map(string), {})
 
-      # Secret environment variables (name -> the ARN of an AWS Secrets
-      # Manager secret or SSM Parameter Store parameter). The ECS agent
-      # resolves each reference at task start using execution_role, so the
-      # value never appears in the task definition. Append ":<json-key>::" to
-      # a Secrets Manager ARN to inject one key of a JSON secret.
+      # Secret environment variables backed by secrets YOU already own (name ->
+      # the ARN of an AWS Secrets Manager secret or SSM Parameter Store
+      # parameter). The ECS agent resolves each reference at task start using
+      # execution_role, so the value never appears in the task definition.
+      # Append ":<json-key>::" to a Secrets Manager ARN to inject one key of a
+      # JSON secret.
       secrets = optional(map(string), {})
+
+      # Secret environment variables whose VALUES this component keeps in AWS
+      # Secrets Manager for you (name -> value). Per entry it creates one secret
+      # named "<family>/<container>/<name>", stores the value, and attaches a
+      # resource policy that lets only execution_role read it; the container's
+      # secrets list then carries that secret's ARN pinned to the stored
+      # version, so the task definition holds a reference, never the value. A
+      # changed value registers a new revision (a deploy is the rotation), and
+      # destroying the task definition deletes the secrets with no recovery
+      # window -- the value's source of truth is whoever supplied it here.
+      # Requires execution_role.
+      secret_environment = optional(map(string), {})
 
       # Environment files loaded from S3 (each entry an S3 object ARN of a
       # .env file). Applied before environment/secrets; later sources win.

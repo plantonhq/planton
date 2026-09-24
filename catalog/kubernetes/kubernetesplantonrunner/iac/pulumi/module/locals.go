@@ -33,6 +33,10 @@ type Locals struct {
 	// defaulting middleware ran.
 	ChartVersion string
 
+	// Chart repository resolved to the pinned default when unset, for the
+	// same reason.
+	ChartRepository string
+
 	// RunnerName is the name the runner registers itself under when it
 	// joins the control plane. spec.runner_name, falling back to
 	// "<env>-<metadata.name>" (metadata.name outside an environment) —
@@ -72,6 +76,11 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesplantonrunnerv1al
 		chartVersion = vars.DefaultChartVersion
 	}
 
+	chartRepository := spec.GetChartRepository()
+	if chartRepository == "" {
+		chartRepository = vars.DefaultChartRepository
+	}
+
 	runnerName := spec.GetRunnerName()
 	if runnerName == "" {
 		runnerName = target.Metadata.Name
@@ -86,6 +95,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesplantonrunnerv1al
 		Namespace:       spec.Namespace.GetValue(),
 		ReleaseName:     target.Metadata.Name,
 		ChartVersion:    chartVersion,
+		ChartRepository: chartRepository,
 		RunnerName:      runnerName,
 		TokenSecretName: target.Metadata.Name + vars.TokenSecretSuffix,
 	}

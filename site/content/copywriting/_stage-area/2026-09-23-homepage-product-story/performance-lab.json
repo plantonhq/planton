@@ -1,0 +1,120 @@
+{
+  "before": {
+    "environment": "Local headless Chrome; warm OS cache, no network/CPU throttling, external scripts blocked. Event Timing sample is not field INP.",
+    "runs": [
+      {
+        "width": 1366,
+        "run": 0,
+        "lcp": 252,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1805441,
+        "interactionMax": 176
+      },
+      {
+        "width": 1366,
+        "run": 1,
+        "lcp": 128,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1805441,
+        "interactionMax": 40
+      },
+      {
+        "width": 1366,
+        "run": 2,
+        "lcp": 104,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1805441,
+        "interactionMax": 32
+      },
+      {
+        "width": 390,
+        "run": 0,
+        "lcp": 164,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1055057,
+        "interactionMax": 24
+      },
+      {
+        "width": 390,
+        "run": 1,
+        "lcp": 132,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1055057,
+        "interactionMax": 24
+      },
+      {
+        "width": 390,
+        "run": 2,
+        "lcp": 140,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1055057,
+        "interactionMax": 32
+      }
+    ]
+  },
+  "after": {
+    "environment": "Local headless Chrome; warm OS cache, no network/CPU throttling, external scripts blocked. Event Timing sample is not field INP.",
+    "runs": [
+      {
+        "width": 1366,
+        "run": 0,
+        "lcp": 224,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1709190,
+        "interactionMax": 24
+      },
+      {
+        "width": 1366,
+        "run": 1,
+        "lcp": 128,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1709190,
+        "interactionMax": 24
+      },
+      {
+        "width": 1366,
+        "run": 2,
+        "lcp": 124,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1709190,
+        "interactionMax": 24
+      },
+      {
+        "width": 390,
+        "run": 0,
+        "lcp": 124,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1035622,
+        "interactionMax": 24
+      },
+      {
+        "width": 390,
+        "run": 1,
+        "lcp": 140,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1035622,
+        "interactionMax": 24
+      },
+      {
+        "width": 390,
+        "run": 2,
+        "lcp": 136,
+        "cls": 0,
+        "interactions": [],
+        "jsBytes": 1035622,
+        "interactionMax": 32
+      }
+    ]
+  }
+}

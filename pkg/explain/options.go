@@ -17,7 +17,8 @@ import (
 type OptionInterpreter func(protoreflect.FieldDescriptor, *Field)
 
 // SharedOptions interprets this repo's dev.planton.shared option family:
-// sensitivity, recommended defaults, and foreign-key reference targets.
+// sensitivity, secret homes, recommended defaults, and foreign-key reference
+// targets.
 func SharedOptions(fd protoreflect.FieldDescriptor, f *Field) {
 	opts, ok := fd.Options().(proto.Message)
 	if !ok || opts == nil {
@@ -25,6 +26,16 @@ func SharedOptions(fd protoreflect.FieldDescriptor, f *Field) {
 	}
 	if proto.HasExtension(opts, options.E_Sensitive) {
 		f.Sensitive = proto.GetExtension(opts, options.E_Sensitive).(bool)
+	}
+	if proto.HasExtension(opts, options.E_SecretHome) {
+		if home := proto.GetExtension(opts, options.E_SecretHome).(string); home != "" {
+			// Rendered in the spelling the report's paths use (the JSON name),
+			// so an author can type what the page names.
+			f.SecretHome = home
+			if sibling := fd.ContainingMessage().Fields().ByName(protoreflect.Name(home)); sibling != nil {
+				f.SecretHome = sibling.JSONName()
+			}
+		}
 	}
 	if proto.HasExtension(opts, options.E_RecommendedDefault) {
 		f.RecommendedDefault = proto.GetExtension(opts, options.E_RecommendedDefault).(string)

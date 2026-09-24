@@ -24,7 +24,7 @@ Start with:
 | Provider | Kinds | With Example | With Guide |
 |---|---|---|---|
 | [auth0](../auth0/reference-index.md) | 7 | 7 | 7 |
-| [aws](../aws/reference-index.md) | 205 | 205 | 93 |
+| [aws](../aws/reference-index.md) | 205 | 205 | 94 |
 | [azure](../azure/reference-index.md) | 185 | 185 | 76 |
 | [cloudflare](../cloudflare/reference-index.md) | 66 | 66 | 66 |
 | [digitalocean](../digitalocean/reference-index.md) | 31 | 31 | 31 |

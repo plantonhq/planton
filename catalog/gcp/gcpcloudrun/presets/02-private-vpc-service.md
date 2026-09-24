@@ -15,6 +15,7 @@ This preset creates an internal backend service wired into a VPC: IAM-authentica
 - **`egress: PRIVATE_RANGES_ONLY`** — only private-IP traffic routes through the VPC; public egress keeps Cloud Run's own path
 - **Cloud SQL volume + `/cloudsql` mount** — GCP manages the socket proxying; no sidecar and no exposed TCP port
 - **`valueFromSecret` env** — the secret name rides in the spec, the material stays in Secret Manager
+- **`secretValue` env** — a Planton secret the component keeps in a Secret Manager secret of its own, readable only by the runtime identity; a `$secret/` reference in `value` would land in the revision, so the platform refuses it
 - **`ingress: INTERNAL_LOAD_BALANCER`** — the run.app URL stops accepting public traffic; requests come through the VPC or your load balancer
 - **One warm instance (`minInstanceCount: 1`)** — no cold starts on the request path
 
@@ -25,6 +26,7 @@ This preset creates an internal backend service wired into a VPC: IAM-authentica
 | `backend-runtime` | Your `GcpServiceAccount` resource name | Your service-account manifest |
 | `backend-db` | Your `GcpCloudSql` resource name | Your Cloud SQL manifest |
 | `backend-db-password` | Secret Manager secret holding the DB password | Secret Manager |
+| `payments-api-key` | The Planton secret holding the payments API key | `planton secret list -o json` |
 | `my-vpc` / `my-subnet` | Your `GcpVpcNetwork` / `GcpSubnetwork` resource names | Your network manifests |
 | `us-docker.pkg.dev/my-project/my-repo/backend:1.0.0` | Your container image | Artifact Registry |
 

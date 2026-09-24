@@ -48,3 +48,22 @@ spec:
           - arn:aws:iam::*:role/*
         provenance: derived
         notes: RegisterTaskDefinition passes the referenced execution_role and task_role to ECS. Scope to the actual role ARNs in a hardened deployment.
+      - sid: ManageSecretEnvironment
+        actions:
+          - secretsmanager:CreateSecret
+          - secretsmanager:DescribeSecret
+          - secretsmanager:DeleteSecret
+          - secretsmanager:TagResource
+          - secretsmanager:UntagResource
+          - secretsmanager:GetResourcePolicy
+          - secretsmanager:PutResourcePolicy
+          - secretsmanager:DeleteResourcePolicy
+          - secretsmanager:PutSecretValue
+          - secretsmanager:GetSecretValue
+          - secretsmanager:UpdateSecretVersionStage
+        resources:
+          - arn:aws:secretsmanager:*:*:secret:*
+        provenance: derived
+        condition:
+          spec_field_set: containers.secret_environment
+        notes: Covers the secret the modules keep per containers[].secret_environment entry (aws_secretsmanager_secret with its inline resource policy naming the execution role, and aws_secretsmanager_secret_version holding the value) -- create, reads during plan/refresh (GetSecretValue is the provider's read of the version; GetResourcePolicy of the policy), a new version when the value changes, and teardown with a zero recovery window. Every Secrets Manager action authorizes against the secret ARN; narrow to arn:aws:secretsmanager:<region>:<account>:secret:<family>/* in a hardened deployment. The AWS-managed aws/secretsmanager key needs no caller-side KMS grant, and the execution role reads the secret through the resource policy, so no role edit is needed.

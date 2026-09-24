@@ -1,11 +1,12 @@
 package module
 
 var vars = struct {
-	// HelmOciRepo is the OCI registry path holding the planton-operator
-	// chart. Pulumi's helm.v3.Release does not resolve oci:// through
-	// RepositoryOpts the way the Terraform provider does — the chart
+	// DefaultChartRepository is the OCI registry path holding the
+	// planton-operator chart when spec.chart_repository is unset; mirrors the
+	// proto field's default. Pulumi's helm.v3.Release does not resolve
+	// oci:// through RepositoryOpts the way the Terraform provider does — the chart
 	// reference must be the JOINED "<repo>/<chart>" string (see main.go).
-	HelmOciRepo string
+	DefaultChartRepository string
 	// HelmChartName is the operator chart ("planton-operator").
 	HelmChartName string
 	// DefaultChartVersion is the chart this catalog release was validated
@@ -36,10 +37,10 @@ var vars = struct {
 }{
 	// Chart identity — MUST be identical in the Terraform module's locals
 	// (cross-engine chart drift installs different software per engine).
-	HelmOciRepo:         "oci://ghcr.io/plantonhq/charts",
-	HelmChartName:       "planton-operator",
-	DefaultChartVersion: "0.15.0",
-	MinChartVersion:     "0.8.0",
-	ReleaseName:         "planton-operator",
-	HelmTimeoutSeconds:  600,
+	DefaultChartRepository: "oci://ghcr.io/plantonhq/charts",
+	HelmChartName:          "planton-operator",
+	DefaultChartVersion:    "0.15.0",
+	MinChartVersion:        "0.8.0",
+	ReleaseName:            "planton-operator",
+	HelmTimeoutSeconds:     600,
 }

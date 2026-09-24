@@ -18,12 +18,21 @@ import {
   menuExplore,
   menuSolutions,
   menuResources,
+  homepageUtilities,
 } from '../../data/navigation';
 import { scopedTokens as tokens } from '../../theme/tokens';
 
 const dividerSx = { borderColor: tokens.edge.default } as const;
 
-export function MobileNav() {
+export function MobileNav({
+  variant = 'default',
+  onPrimaryAction,
+  onSelfServiceAction,
+}: {
+  variant?: 'default' | 'homepage';
+  onPrimaryAction?: () => void;
+  onSelfServiceAction?: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const [expandedPanel, setExpandedPanel] = useState<string | false>(false);
 
@@ -35,7 +44,14 @@ export function MobileNav() {
 
   return (
     <>
-      <IconButton aria-label="Open navigation" onClick={toggleDrawer} size="small" sx={{color:'text.primary'}}><DensityMedium fontSize="small" /></IconButton>
+      <IconButton
+        aria-label="Open navigation"
+        onClick={toggleDrawer}
+        size="small"
+        sx={{ color: 'text.primary' }}
+      >
+        <DensityMedium fontSize="small" />
+      </IconButton>
 
       <ShellDrawer open={open} onClose={toggleDrawer}>
         <Stack
@@ -44,9 +60,18 @@ export function MobileNav() {
             if ((e.target as HTMLElement).closest('a')) setOpen(false);
           }}
         >
-          <Stack direction="row" sx={{ alignItems: 'center', gap: 4, justifyContent: 'space-between' }}>
+          <Stack
+            direction="row"
+            sx={{ alignItems: 'center', gap: 4, justifyContent: 'space-between' }}
+          >
             <WebsiteLogo />
-            <IconButton aria-label="Close navigation" onClick={toggleDrawer} sx={{color:'text.primary'}}><Close /></IconButton>
+            <IconButton
+              aria-label="Close navigation"
+              onClick={toggleDrawer}
+              sx={{ color: 'text.primary' }}
+            >
+              <Close />
+            </IconButton>
           </Stack>
 
           <Stack sx={{ gap: 4 }}>
@@ -62,7 +87,9 @@ export function MobileNav() {
                 ))}
                 <Divider sx={{ ...dividerSx, mt: -1.5 }} />
                 <Stack sx={{ gap: 3 }}>
-                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 400 }}>Distributions</Typography>
+                  <Typography sx={{ fontSize: '0.875rem', fontWeight: 400 }}>
+                    Distributions
+                  </Typography>
                   {withIcons(menuDistributions, distributionIcons).map((item) => (
                     <MegaMenuItem key={item.label} {...item} />
                   ))}
@@ -99,7 +126,10 @@ export function MobileNav() {
               onChange={handlePanelChange('resources')}
             >
               <Stack sx={{ gap: 2.5 }}>
-                {withIcons(menuResources, resourceIcons).map((item) => (
+                {withIcons(
+                  variant === 'homepage' ? [...menuResources, ...homepageUtilities] : menuResources,
+                  resourceIcons
+                ).map((item) => (
                   <MegaMenuItem key={item.label} {...item} />
                 ))}
                 <Divider sx={{ ...dividerSx, mt: -1 }} />
@@ -117,9 +147,17 @@ export function MobileNav() {
 
             {/* Discord + Auth */}
             <Stack sx={{ gap: 1.5 }}>
-              <DiscordButton sx={{ color: 'text.secondary', width: '100%', justifyContent: 'center' }} />
-              <MobileDownloadLink />
-              <MobileAuthButtons />
+              {variant === 'default' && (
+                <DiscordButton
+                  sx={{ color: 'text.secondary', width: '100%', justifyContent: 'center' }}
+                />
+              )}
+              {variant === 'default' && <MobileDownloadLink />}
+              <MobileAuthButtons
+                variant={variant}
+                onPrimaryAction={onPrimaryAction}
+                onSelfServiceAction={onSelfServiceAction}
+              />
             </Stack>
           </Stack>
         </Stack>

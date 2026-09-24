@@ -271,7 +271,7 @@ spec:
 | `spec.container.app.ports[].servicePort` | `int32` |  |  |  |
 | `spec.container.app.ports[].hostPort` | `int32` |  |  |  |
 | `spec.container.app.env` | `ContainerEnv` |  |  |  |
-| `spec.container.app.env.variables` | `[]EnvVar` |  |  |  |
+| `spec.container.app.env.variables` | `[]EnvVar` (no secrets: use `secrets`) |  |  |  |
 | `spec.container.app.env.variables[].name` | `string` | yes |  |  |
 | `spec.container.app.env.variables[].value` | `string` |  |  |  |
 | `spec.container.app.env.variables[].valueFrom` | `ValueFromRef` |  |  |  |
@@ -485,7 +485,7 @@ spec:
 | `spec.container.sidecars[].ports[].servicePort` | `int32` |  |  |  |
 | `spec.container.sidecars[].ports[].hostPort` | `int32` |  |  |  |
 | `spec.container.sidecars[].env` | `ContainerEnv` |  |  |  |
-| `spec.container.sidecars[].env.variables` | `[]EnvVar` |  |  |  |
+| `spec.container.sidecars[].env.variables` | `[]EnvVar` (no secrets: use `secrets`) |  |  |  |
 | `spec.container.sidecars[].env.variables[].name` | `string` | yes |  |  |
 | `spec.container.sidecars[].env.variables[].value` | `string` |  |  |  |
 | `spec.container.sidecars[].env.variables[].valueFrom` | `ValueFromRef` |  |  |  |
@@ -708,7 +708,7 @@ spec:
 | `spec.pod.initContainers[].ports[].servicePort` | `int32` |  |  |  |
 | `spec.pod.initContainers[].ports[].hostPort` | `int32` |  |  |  |
 | `spec.pod.initContainers[].env` | `ContainerEnv` |  |  |  |
-| `spec.pod.initContainers[].env.variables` | `[]EnvVar` |  |  |  |
+| `spec.pod.initContainers[].env.variables` | `[]EnvVar` (no secrets: use `secrets`) |  |  |  |
 | `spec.pod.initContainers[].env.variables[].name` | `string` | yes |  |  |
 | `spec.pod.initContainers[].env.variables[].value` | `string` |  |  |  |
 | `spec.pod.initContainers[].env.variables[].valueFrom` | `ValueFromRef` |  |  |  |
@@ -1201,10 +1201,14 @@ managed Kubernetes Secret), and bulk envFrom imports.
 
 ### spec.container.app.env.variables
 
-`[]EnvVar`
+`[]EnvVar` · no secrets
 
-Individual environment variables (non-sensitive).
+Individual environment variables (non-sensitive). Their values are
+written into the pod spec, where anyone who can read the workload sees
+them; a secret belongs in `secrets`, which the module keeps in a
+Kubernetes Secret the container reads by reference.
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secrets`, which keeps it in a secret store the workload reads by reference
 ### spec.container.app.env.variables[].name
 
 `string` · required
@@ -4253,10 +4257,14 @@ managed Kubernetes Secret), and bulk envFrom imports.
 
 ### spec.container.sidecars[].env.variables
 
-`[]EnvVar`
+`[]EnvVar` · no secrets
 
-Individual environment variables (non-sensitive).
+Individual environment variables (non-sensitive). Their values are
+written into the pod spec, where anyone who can read the workload sees
+them; a secret belongs in `secrets`, which the module keeps in a
+Kubernetes Secret the container reads by reference.
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secrets`, which keeps it in a secret store the workload reads by reference
 ### spec.container.sidecars[].env.variables[].name
 
 `string` · required
@@ -7424,10 +7432,14 @@ managed Kubernetes Secret), and bulk envFrom imports.
 
 ### spec.pod.initContainers[].env.variables
 
-`[]EnvVar`
+`[]EnvVar` · no secrets
 
-Individual environment variables (non-sensitive).
+Individual environment variables (non-sensitive). Their values are
+written into the pod spec, where anyone who can read the workload sees
+them; a secret belongs in `secrets`, which the module keeps in a
+Kubernetes Secret the container reads by reference.
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secrets`, which keeps it in a secret store the workload reads by reference
 ### spec.pod.initContainers[].env.variables[].name
 
 `string` · required

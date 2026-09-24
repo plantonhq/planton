@@ -1044,19 +1044,31 @@ func (x *GcpCloudRunContainer) GetSandboxLauncher() bool {
 	return false
 }
 
-// GcpCloudRunEnvVar is one environment variable: a literal value or a
-// Secret Manager reference, never both.
+// GcpCloudRunEnvVar is one environment variable, given its value one of
+// three ways: a literal, a Secret Manager secret you already own, or a
+// secret value this component stores in Secret Manager for you. Only one.
 type GcpCloudRunEnvVar struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Variable name, e.g. "DATABASE_URL". Must not start with a digit.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Literal value. Fine for configuration; never place credentials here —
-	// use value_from_secret so the material stays in Secret Manager.
+	// Literal value, written into the revision where anyone who can view the
+	// service reads it. Fine for configuration; never a credential -- a
+	// credential goes in secret_value (or value_from_secret).
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
-	// Secret Manager reference resolved into the variable at instance start.
+	// A Secret Manager secret you already own, resolved into the variable at
+	// instance start. Rotation is Secret Manager's: with version "latest",
+	// new instances pick up a new version without a deploy.
 	ValueFromSecret *GcpCloudRunSecretEnvSource `protobuf:"bytes,3,opt,name=value_from_secret,json=valueFromSecret,proto3" json:"value_from_secret,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// A secret value this component keeps in Secret Manager for you. It
+	// creates one secret for this variable, replicated only in the service's
+	// region(s), stores the value as a version, grants the service's runtime
+	// identity secretAccessor on that secret alone, and points the variable at
+	// that exact version -- the revision carries a reference, never the value.
+	// A changed value adds a version and stamps a new revision, so rotation is
+	// a deploy; destroying the service removes the secret.
+	SecretValue   string `protobuf:"bytes,4,opt,name=secret_value,json=secretValue,proto3" json:"secret_value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpCloudRunEnvVar) Reset() {
@@ -1108,6 +1120,13 @@ func (x *GcpCloudRunEnvVar) GetValueFromSecret() *GcpCloudRunSecretEnvSource {
 		return x.ValueFromSecret
 	}
 	return nil
+}
+
+func (x *GcpCloudRunEnvVar) GetSecretValue() string {
+	if x != nil {
+		return x.SecretValue
+	}
+	return ""
 }
 
 // GcpCloudRunSecretEnvSource points an environment variable at a Secret
@@ -3341,12 +3360,13 @@ const file_catalog_gcp_gcpcloudrun_v1alpha1_spec_proto_rawDesc = "" +
 	"depends_on\x18\f \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\tdependsOn\x12$\n" +
 	"\x0ebase_image_uri\x18\r \x01(\tR\fbaseImageUri\x12h\n" +
 	"\x0freadiness_probe\x18\x0e \x01(\v2?.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunReadinessProbeR\x0ereadinessProbe\x12)\n" +
-	"\x10sandbox_launcher\x18\x0f \x01(\bR\x0fsandboxLauncher\"\xfc\x02\n" +
+	"\x10sandbox_launcher\x18\x0f \x01(\bR\x0fsandboxLauncher\"\x86\x04\n" +
 	"\x11GcpCloudRunEnvVar\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value\x12l\n" +
-	"\x11value_from_secret\x18\x03 \x01(\v2@.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunSecretEnvSourceR\x0fvalueFromSecret:\xa8\x01\xbaH\xa4\x01\x1a\xa1\x01\n" +
-	"\x14env.value_xor_secret\x12Uan environment variable takes a literal value or a Secret Manager reference, not both\x1a2!(this.value != '' && has(this.value_from_secret))\"\xce\x01\n" +
+	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12&\n" +
+	"\x05value\x18\x02 \x01(\tB\x10Ҧ\x1d\fsecret_valueR\x05value\x12l\n" +
+	"\x11value_from_secret\x18\x03 \x01(\v2@.dev.planton.gcp.gcpcloudrun.v1alpha1.GcpCloudRunSecretEnvSourceR\x0fvalueFromSecret\x12'\n" +
+	"\fsecret_value\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\vsecretValue:\xf7\x01\xbaH\xf3\x01\x1a\xf0\x01\n" +
+	"\x14env.value_xor_secret\x12kan environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value\x1ak(this.value != '' ? 1 : 0) + (has(this.value_from_secret) ? 1 : 0) + (this.secret_value != '' ? 1 : 0) <= 1\"\xce\x01\n" +
 	"\x1aGcpCloudRunSecretEnvSource\x12\x89\x01\n" +
 	"\x06secret\x18\x01 \x01(\tBq\xbaH\a\xc8\x01\x01r\x02\x10\x01\xaa\xa6\x1dcSecret Manager secret NAME/identifier only — the secret material itself never appears in the specR\x06secret\x12$\n" +
 	"\aversion\x18\x02 \x01(\tB\n" +

@@ -143,8 +143,8 @@ The `metadata.env` field determines which Planton environment receives this depl
 
 Overlay manifests can reference organization-scoped secrets and variables using a substitution syntax:
 
-- `$secret/<slug>` (or `$secret/@<env>/<slug>/<key>`) — Resolved at deployment time. The value is read just-in-time in the Runner from your secret backend, never stored in the platform's database.
-- `$variables-group/<group>/<key>` — Resolved at deployment time. Variables support literal values or dynamic references to infrastructure outputs.
+- `$secret/<slug>` (or `$secret/@<env>/<slug>/<key>`) — Resolved at deployment time. The value is read just-in-time in the Runner from your secret backend, never stored in the platform's database. A secret reference belongs in the workload's secret field — `env.secrets` on Kubernetes, an env entry's `secretValue` on Cloud Run, `secretEnvironment` on an ECS task definition — never in the configuration field beside it, which anyone who can view the running resource reads. A deployment whose manifests put one in a configuration field is refused before any of them is applied, naming the field to move it to ([Where a Secret Reference Goes](/docs/secrets/managing-secrets#where-a-secret-reference-goes)).
+- `$var/<slug>` (or `$var/<group>/<entry>`, and `$var/@<env>/...` for an environment's own) — Resolved at deployment time. Variables support literal values or dynamic references to infrastructure outputs.
 
 See [Secrets](/docs/secrets) for the full scoping model, backends, and lifecycle.
 

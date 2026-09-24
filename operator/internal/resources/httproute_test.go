@@ -140,63 +140,70 @@ func TestHTTPRouteRoutesNativeGRPCByContentType(t *testing.T) {
 	}
 }
 
-// The remote-runners capability adds exactly ONE rule ahead of the table: the
-// deploy queue's workflow service, by service-segment prefix, to the queue
-// frontend's gRPC port with the streaming timeout disabled (long polls). It
-// outranks the content-type gRPC root rule by path length, and nothing else
-// of Temporal -- the operator service in particular -- is routed. Without the
-// capability the route is byte-for-byte the plain table.
-func TestHTTPRouteCarriesTheDeployQueueOnlyForRemoteRunners(t *testing.T) {
-	base := HTTPRouteConfig{CRName: "planton", Namespace: "planton", Hostname: "planton.example.com", GatewayName: "main"}
-
-	closed := HTTPRoute(base)
-	closedRules, _, _ := unstructured.NestedSlice(closed.Object, "spec", "rules")
-	if len(closedRules) != len(FrontDoorRoutes()) {
-		t.Fatalf("without remote runners the route must be the plain table (%d rules), got %d", len(FrontDoorRoutes()), len(closedRules))
-	}
-	for _, raw := range closedRules {
-		backends, _, _ := unstructured.NestedSlice(raw.(map[string]any), "backendRefs")
-		if backends[0].(map[string]any)["name"] == TemporalFrontendServiceName("planton") {
-			t.Fatal("the deploy queue must never be routed while remote runners are off")
-		}
-	}
-
-	open := base
-	open.RemoteRunners = true
-	route := HTTPRoute(open)
+// Temporal never leaves the cluster. A remote runner's work calls are native
+// gRPC on Temporal's worker service, and they take the same native-gRPC row as
+// every other call, so they land on the control plane -- which authenticates
+// the runner and serves them itself. No rule names a Temporal backend or a
+// Temporal path, and the route's first matching row for a worker call is the
+// control plane's raw gRPC port, with the streaming timeout disabled for the
+// minute-long work poll.
+func TestHTTPRouteNeverRoutesToTemporal(t *testing.T) {
+	route := HTTPRoute(HTTPRouteConfig{CRName: "planton", Namespace: "planton", Hostname: "planton.example.com", GatewayName: "main"})
 	rules, _, _ := unstructured.NestedSlice(route.Object, "spec", "rules")
-	if len(rules) != len(FrontDoorRoutes())+1 {
-		t.Fatalf("remote runners add exactly one rule, got %d for %d table rows", len(rules), len(FrontDoorRoutes()))
-	}
-	queue := rules[0].(map[string]any)
-	matches, _, _ := unstructured.NestedSlice(queue, "matches")
-	path, _, _ := unstructured.NestedMap(matches[0].(map[string]any), "path")
-	if path["type"] != "PathPrefix" || path["value"] != TemporalWorkflowServicePath {
-		t.Errorf("queue rule path = %v, want PathPrefix %s (a service-segment prefix beats the content-type root rule)", path, TemporalWorkflowServicePath)
-	}
-	if _, hasHeaders, _ := unstructured.NestedSlice(matches[0].(map[string]any), "headers"); hasHeaders {
-		t.Error("the queue rule needs no header match: its path already names the one service")
-	}
-	backends, _, _ := unstructured.NestedSlice(queue, "backendRefs")
-	backend := backends[0].(map[string]any)
-	if backend["name"] != TemporalFrontendServiceName("planton") || backend["port"] != int64(TemporalFrontendGRPCPort) {
-		t.Errorf("queue rule backend = %v, want the Temporal frontend on %d", backend, TemporalFrontendGRPCPort)
-	}
-	timeouts, hasTimeout, _ := unstructured.NestedMap(queue, "timeouts")
-	if !hasTimeout || timeouts["request"] != "0s" {
-		t.Errorf("queue rule timeouts = %v; long polls hold a request for about a minute, the timeout must be disabled", timeouts)
-	}
-	for _, raw := range rules {
-		for _, m := range mustSlice(raw.(map[string]any), "matches") {
-			p, _, _ := unstructured.NestedMap(m.(map[string]any), "path")
-			if v, _ := p["value"].(string); v != TemporalWorkflowServicePath && strings.HasPrefix(v, "/temporal.") {
-				t.Errorf("only the workflow service leaves the cluster; found a route for %s", v)
+	for idx, raw := range rules {
+		rule := raw.(map[string]any)
+		for _, b := range mustSlice(rule, "backendRefs") {
+			backend := b.(map[string]any)
+			if backend["name"] == TemporalFrontendServiceName("planton") || backend["port"] == int64(TemporalFrontendGRPCPort) {
+				t.Errorf("rule %d delivers to Temporal (%v); runners reach their work only through the control plane", idx, backend)
+			}
+		}
+		for _, m := range mustSlice(rule, "matches") {
+			path, _, _ := unstructured.NestedMap(m.(map[string]any), "path")
+			if v, _ := path["value"].(string); strings.HasPrefix(v, "/temporal.") {
+				t.Errorf("rule %d routes the Temporal path %s; no Temporal surface is ever routed", idx, v)
 			}
 		}
 	}
-	if RemoteRunnerRoutes()[0].ServicePortName() != temporalFrontendGRPCPortName {
-		t.Errorf("the queue backend must target the chart's %q port by name", temporalFrontendGRPCPortName)
+
+	const workPoll = "/temporal.api.workflowservice.v1.WorkflowService/PollActivityTaskQueue"
+	winner, ok := firstMatchingRow(FrontDoorRoutes(), workPoll, "application/grpc")
+	if !ok {
+		t.Fatalf("no row serves %s", workPoll)
 	}
+	if winner.Backend != BackendControlPlaneGRPC {
+		t.Errorf("a runner's work poll lands on backend %v, want the control plane's raw gRPC port", winner.Backend)
+	}
+	if !winner.Backend.ServesStreams() {
+		t.Error("a runner's work poll holds its request for about a minute; its row must disable the request timeout")
+	}
+}
+
+// firstMatchingRow returns the row a request takes: the table is written
+// most-specific first, so the first row whose segment-wise path prefix (or
+// exact path) and header condition both match is the one every door serves.
+func firstMatchingRow(table []FrontDoorRoute, path, contentType string) (FrontDoorRoute, bool) {
+	for _, row := range table {
+		pathMatches := path == row.PathPrefix
+		if !row.Exact {
+			prefix := strings.TrimSuffix(row.PathPrefix, "/")
+			pathMatches = prefix == "" || path == prefix || strings.HasPrefix(path, prefix+"/")
+		}
+		if !pathMatches {
+			continue
+		}
+		if row.HeaderMatched() {
+			headerMatches := false
+			for _, v := range row.Header.Values {
+				headerMatches = headerMatches || (row.Header.Name == GRPCContentTypeHeader && v == contentType)
+			}
+			if !headerMatches {
+				continue
+			}
+		}
+		return row, true
+	}
+	return FrontDoorRoute{}, false
 }
 
 func mustSlice(m map[string]any, field string) []any {

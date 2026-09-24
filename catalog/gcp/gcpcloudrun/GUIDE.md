@@ -34,6 +34,43 @@ variables: pass secrets through the supervisor, never into a sandbox.
 conditions, and cost reporting; it is immutable, so a tag change is a
 redeploy — plan it as one.
 
+## Three ways a variable gets its value -- only two keep a secret
+
+Every `env` entry takes exactly one of `value`, `valueFromSecret`, or
+`secretValue`, and the choice decides who can read it:
+
+- `value` is written into the revision template. Anyone who can view the
+  service reads it in the console and the Admin API, and every past
+  revision keeps it. Configuration only. On Planton a `$secret/...`
+  reference here is refused before anything deploys, because the platform
+  resolves references to plain values before the module runs -- the
+  reference would land in the revision as the secret itself.
+- `valueFromSecret` points at a Secret Manager secret you already own
+  (cross-project with the full `projects/*/secrets/*` name). Rotation is
+  Secret Manager's: with version `latest`, new instances pick up a new
+  version without a deploy, and running instances keep the old one -- so
+  for a while two values serve at once. The runtime identity's
+  `secretAccessor` grant is yours to make.
+- `secretValue` is for a secret Planton holds -- on Planton it takes only
+  a `$secret/...` reference (outside Planton, the value itself): the
+  component creates one Secret Manager secret for the variable, replicated
+  only in the service's regions, grants the runtime identity access to
+  that secret alone, and pins the variable to the exact version it stored.
+  A new value is a new revision -- this is the revision-template line
+  again: rotating a `secretValue` is a deploy, visible in the revision
+  history, never a silent drift between instances. Changing the Planton
+  secret does not redeploy anything by itself; every deploy (a push, a
+  promotion, a rollback, a CLI deploy) resolves the reference again and
+  carries the secret's current value. Destroying the service removes the
+  copy.
+
+Pick `secretValue` for anything referenced as `$secret/...`; pick
+`valueFromSecret` when the secret's lifecycle belongs to someone else
+(another team's rotation, a secret shared across services). Give the
+service a dedicated `serviceAccount` either way: without one the grant
+goes to the project's Compute Engine default account, which every other
+default-identity workload in the project shares.
+
 ## Probes: three types, three jobs, three shapes
 
 Startup gates first traffic (HTTP/TCP/gRPC — its whole window is capped

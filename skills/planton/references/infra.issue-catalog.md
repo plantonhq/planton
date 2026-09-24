@@ -70,6 +70,32 @@ one or more sensitive fields must reference an existing org secret (use '$secret
 Scope is strict: org-scoped and env-scoped references never fall back to
 each other. The reference must encode the scope the secret actually has.
 
+## Secret reference in a field every viewer reads
+
+**Symptom** (at apply or deploy, before anything is created. On a service,
+saving the configuration is accepted and the deploy is refused before any
+of the environment's manifests applies; the run's environment row carries
+the sentence after the manifest's number, kind and name):
+
+```
+spec.containers[0].env[1].value (STRIPE_KEY) holds a secret reference, but its value is stored where anyone who can view the resource reads it -- move the reference to secretValue, the sibling field that keeps it in a secret store the workload reads by reference
+```
+
+**Cause:** the field is marked `(no secrets: use <field>)` on the
+component's page. The runner resolves a `$secret/...` to its plain value
+before the module runs, so in this field the secret itself would be written
+into the revision, task definition, or pod spec.
+
+**Fix:** move the reference, unchanged, to the field the sentence names --
+on Cloud Run the same env entry's `secretValue` (and drop its `value`), on
+ECS the container's `secretEnvironment` map (and remove the key from
+`environment`), on a Kubernetes workload an entry under `env.secrets`
+(`config-references.md`, "Where a secret reference may go"). Never replace
+the reference with a literal to make the refusal go away: a literal in a
+field every viewer reads is the same leak, typed by hand. The secret homes
+are themselves `sensitive`, so once moved, the reference must name a secret
+that exists at its scope -- "Sensitive field rejected" above.
+
 ## YAML parse error in values.yaml
 
 **Symptom:**

@@ -1046,18 +1046,29 @@ func (x *GcpCloudRunJobGrpcAction) GetService() string {
 	return ""
 }
 
-// GcpCloudRunJobEnvVar is one environment variable: a literal value or a
-// Secret Manager reference, never both.
+// GcpCloudRunJobEnvVar is one environment variable, given its value one of
+// three ways: a literal, a Secret Manager secret you already own, or a
+// secret value this component stores in Secret Manager for you. Only one.
 type GcpCloudRunJobEnvVar struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Variable name, e.g. "BATCH_SIZE". Must not start with a digit.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Literal value. Never place credentials here — use value_from_secret.
+	// Literal value, written into the job's task template where anyone who
+	// can view the job reads it. Fine for configuration; never a credential
+	// -- a credential goes in secret_value (or value_from_secret).
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
-	// Secret Manager reference resolved at task start.
+	// A Secret Manager secret you already own, resolved at task start.
 	ValueFromSecret *GcpCloudRunJobSecretEnvSource `protobuf:"bytes,3,opt,name=value_from_secret,json=valueFromSecret,proto3" json:"value_from_secret,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// A secret value this component keeps in Secret Manager for you. It
+	// creates one secret for this variable, replicated only in the job's
+	// region, stores the value as a version, grants the job's runtime
+	// identity secretAccessor on that secret alone, and points the variable at
+	// that exact version -- the task template carries a reference, never the
+	// value. A changed value adds a version and updates the template, so
+	// rotation is a deploy; destroying the job removes the secret.
+	SecretValue   string `protobuf:"bytes,4,opt,name=secret_value,json=secretValue,proto3" json:"secret_value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpCloudRunJobEnvVar) Reset() {
@@ -1109,6 +1120,13 @@ func (x *GcpCloudRunJobEnvVar) GetValueFromSecret() *GcpCloudRunJobSecretEnvSour
 		return x.ValueFromSecret
 	}
 	return nil
+}
+
+func (x *GcpCloudRunJobEnvVar) GetSecretValue() string {
+	if x != nil {
+		return x.SecretValue
+	}
+	return ""
 }
 
 // GcpCloudRunJobSecretEnvSource points an environment variable at a Secret
@@ -2155,12 +2173,13 @@ const file_catalog_gcp_gcpcloudrunjob_v1alpha1_spec_proto_rawDesc = "" +
 	"\x18GcpCloudRunJobGrpcAction\x12$\n" +
 	"\x04port\x18\x01 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01H\x00R\x04port\x88\x01\x01\x12\x18\n" +
 	"\aservice\x18\x02 \x01(\tR\aserviceB\a\n" +
-	"\x05_port\"\x85\x03\n" +
+	"\x05_port\"\x8f\x04\n" +
 	"\x14GcpCloudRunJobEnvVar\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value\x12r\n" +
-	"\x11value_from_secret\x18\x03 \x01(\v2F.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSecretEnvSourceR\x0fvalueFromSecret:\xa8\x01\xbaH\xa4\x01\x1a\xa1\x01\n" +
-	"\x14env.value_xor_secret\x12Uan environment variable takes a literal value or a Secret Manager reference, not both\x1a2!(this.value != '' && has(this.value_from_secret))\"\xd1\x01\n" +
+	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12&\n" +
+	"\x05value\x18\x02 \x01(\tB\x10Ҧ\x1d\fsecret_valueR\x05value\x12r\n" +
+	"\x11value_from_secret\x18\x03 \x01(\v2F.dev.planton.gcp.gcpcloudrunjob.v1alpha1.GcpCloudRunJobSecretEnvSourceR\x0fvalueFromSecret\x12'\n" +
+	"\fsecret_value\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\vsecretValue:\xf7\x01\xbaH\xf3\x01\x1a\xf0\x01\n" +
+	"\x14env.value_xor_secret\x12kan environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value\x1ak(this.value != '' ? 1 : 0) + (has(this.value_from_secret) ? 1 : 0) + (this.secret_value != '' ? 1 : 0) <= 1\"\xd1\x01\n" +
 	"\x1dGcpCloudRunJobSecretEnvSource\x12\x89\x01\n" +
 	"\x06secret\x18\x01 \x01(\tBq\xbaH\a\xc8\x01\x01r\x02\x10\x01\xaa\xa6\x1dcSecret Manager secret NAME/identifier only — the secret material itself never appears in the specR\x06secret\x12$\n" +
 	"\aversion\x18\x02 \x01(\tB\n" +

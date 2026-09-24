@@ -82,11 +82,14 @@ variable "spec" {
         # Variable name, e.g. "DATABASE_URL". Must not start with a digit.
         name = string
 
-        # Literal value. Fine for configuration; never place credentials here —
-        # use value_from_secret so the material stays in Secret Manager.
+        # Literal value, written into the revision where anyone who can view the
+        # service reads it. Fine for configuration; never a credential -- a
+        # credential goes in secret_value (or value_from_secret).
         value = optional(string, "")
 
-        # Secret Manager reference resolved into the variable at instance start.
+        # A Secret Manager secret you already own, resolved into the variable at
+        # instance start. Rotation is Secret Manager's: with version "latest",
+        # new instances pick up a new version without a deploy.
         value_from_secret = optional(object({
           # The secret: a short name for a secret in the same project ("my-secret")
           # or a full resource name (projects/*/secrets/*) for cross-project reads.
@@ -97,6 +100,15 @@ variable "spec" {
           # choice, at the cost of new instances silently picking up rotations.
           version = optional(string, "")
         }))
+
+        # A secret value this component keeps in Secret Manager for you. It
+        # creates one secret for this variable, replicated only in the service's
+        # region(s), stores the value as a version, grants the service's runtime
+        # identity secretAccessor on that secret alone, and points the variable at
+        # that exact version -- the revision carries a reference, never the value.
+        # A changed value adds a version and stamps a new revision, so rotation is
+        # a deploy; destroying the service removes the secret.
+        secret_value = optional(string, "")
       })), [])
 
       # The port this container listens on for requests. At most ONE container

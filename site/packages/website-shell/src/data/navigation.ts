@@ -43,19 +43,51 @@ export interface FooterGroup {
 // the coding agent as a first-class user, the terminal, the catalog, what you
 // already have, and the open source underneath.
 export const menuProduct: MenuItem[] = [
-  { label: 'Infra Hub', subLabel: 'Cost and permissions verified before anything is created', href: '/product/infra-hub' },
-  { label: 'Service Hub', subLabel: 'Every push built, deployed, and written back to GitHub', href: '/product/service-hub' },
-  { label: 'Coding Agents', subLabel: 'Cursor, Claude Code, or Codex deploys under the same rules as everyone', href: '/product/coding-agents' },
+  {
+    label: 'Infra Hub',
+    subLabel: 'Cost and permissions verified before anything is created',
+    href: '/product/infra-hub',
+  },
+  {
+    label: 'Service Hub',
+    subLabel: 'Every push built, deployed, and written back to GitHub',
+    href: '/product/service-hub',
+  },
+  {
+    label: 'Coding Agents',
+    subLabel: 'Cursor, Claude Code, or Codex deploys under the same rules as everyone',
+    href: '/product/coding-agents',
+  },
   { label: 'CLI', subLabel: 'Everything Planton does, from your terminal', href: '/product/cli' },
-  { label: 'Catalog', subLabel: '700+ component kinds, each with its own fact sheet', href: '/product/catalog' },
-  { label: 'Import', subLabel: 'Adopt the cloud resources you already run, without redeploying them', href: '/product/import' },
-  { label: 'Open Source', subLabel: 'Every module Apache 2.0; leave with your manifests', href: '/product/open-source' },
+  {
+    label: 'Catalog',
+    subLabel: '700+ component kinds, each with its own fact sheet',
+    href: '/product/catalog',
+  },
+  {
+    label: 'Import',
+    subLabel: 'Adopt the cloud resources you already run, without redeploying them',
+    href: '/product/import',
+  },
+  {
+    label: 'Open Source',
+    subLabel: 'Every module Apache 2.0; leave with your manifests',
+    href: '/product/open-source',
+  },
 ];
 
 // Where the platform runs (one model, three shapes).
 export const menuDistributions: MenuItem[] = [
-  { label: 'Hosted', subLabel: 'Nothing to run; your account, your keys', href: '/distributions/hosted' },
-  { label: 'Self-Hosted', subLabel: 'Two Helm installs on your own cluster', href: '/distributions/self-hosted' },
+  {
+    label: 'Hosted',
+    subLabel: 'Nothing to run; your account, your keys',
+    href: '/distributions/hosted',
+  },
+  {
+    label: 'Self-Hosted',
+    subLabel: 'Two Helm installs on your own cluster',
+    href: '/distributions/self-hosted',
+  },
   { label: 'Desktop', subLabel: 'Free for individuals, commercial use included', href: '/desktop' },
 ];
 
@@ -100,9 +132,13 @@ export const menuResources: MenuItem[] = [
 // The doors the header and footer share
 // ---------------------------------------------------------------------------
 
+export const BOOK_DEMO: MenuItem = { label: 'Book a Demo', href: '/book-demo' };
 export const START_FREE: MenuItem = { label: 'Start Free', href: '/signup' };
 export const SIGN_IN: MenuItem = { label: 'Sign In', href: '/login' };
-export const DOWNLOAD_DESKTOP: MenuItem = { label: 'Download Planton Desktop', href: '/desktop/download' };
+export const DOWNLOAD_DESKTOP: MenuItem = {
+  label: 'Download Planton Desktop',
+  href: '/desktop/download',
+};
 
 // ---------------------------------------------------------------------------
 // Footer: a projection of the menus, plus the two groups no menu holds
@@ -130,7 +166,12 @@ export const footerGroups: FooterGroup[] = [
   {
     id: 'get_started',
     title: 'Get Started',
-    items: [DOWNLOAD_DESKTOP, START_FREE, { label: 'Pricing', href: '/pricing' }, { label: 'Book a Demo', href: '/book-demo' }],
+    items: [
+      DOWNLOAD_DESKTOP,
+      START_FREE,
+      { label: 'Pricing', href: '/pricing' },
+      { label: 'Book a Demo', href: '/book-demo' },
+    ],
   },
   asGroup('resources', 'Resources', menuResources),
   asGroup('explore', 'Explore', menuExplore),
@@ -145,3 +186,9 @@ export const footerTermsLinks: MenuItem[] = [
 ];
 
 export const DISCORD_URL = 'https://discord.gg/pwcSapdQAp';
+
+/** Utility destinations remain available without competing with the homepage CTA. */
+export const homepageUtilities: MenuItem[] = [
+  DOWNLOAD_DESKTOP,
+  { label: 'Discord Community', href: DISCORD_URL },
+];

@@ -482,3 +482,27 @@ func TestPlatformSpecBody_GcpWorkloadIdentityBecomesTheAnnotationAndExplicitEntr
 		t.Errorf("an explicit annotation must win over the arm's identity, got %#v", got)
 	}
 }
+
+// The registry root renders only when declared, so a manifest that never
+// names one keeps producing a CR an older operator definition accepts; the
+// runner's image override renders like the control plane's and console's.
+func TestPlatformSpecBody_ImageRegistryAndRunnerImageRenderOnlyWhenDeclared(t *testing.T) {
+	spec := platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{}))
+	if _, present := spec["imageRegistry"]; present {
+		t.Errorf("imageRegistry rendered when the manifest never set it: %#v", spec)
+	}
+
+	spec = platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
+		ImageRegistry: "asia-south1-docker.pkg.dev/plantonhq/planton",
+		Runner: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformRunner{
+			Image: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformImage{Repository: "mirror.example.com/runner"},
+		},
+	}))
+	if got := spec["imageRegistry"]; got != "asia-south1-docker.pkg.dev/plantonhq/planton" {
+		t.Errorf("imageRegistry = %#v, want the declared root", got)
+	}
+	want := map[string]interface{}{"image": map[string]interface{}{"repository": "mirror.example.com/runner"}}
+	if got := spec["runner"]; !reflect.DeepEqual(got, want) {
+		t.Errorf("runner = %#v, want %#v", got, want)
+	}
+}

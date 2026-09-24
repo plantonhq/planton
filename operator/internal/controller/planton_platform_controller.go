@@ -35,6 +35,7 @@ import (
 	"github.com/plantonhq/planton/operator/internal/component"
 	"github.com/plantonhq/planton/operator/internal/janitor"
 	"github.com/plantonhq/planton/operator/internal/platformversion"
+	"github.com/plantonhq/planton/operator/internal/resources"
 	"github.com/plantonhq/planton/operator/internal/status"
 )
 
@@ -202,7 +203,8 @@ func (r *PlantonPlatformReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 // checkOperatorRequirement judges this operator against the oldest operator
 // the declared platform release says it needs. The requirement is read from
-// the registry once per declared version and remembered; a read that fails
+// the registry the platform pulls its control plane from, once per repository
+// and version, and remembered; a read that fails
 // is logged and the platform proceeds -- the guard must never make an
 // air-gapped install worse than it was without it. A development build
 // judges nothing: it cannot place itself on the release line.
@@ -212,11 +214,17 @@ func (r *PlantonPlatformReconciler) checkOperatorRequirement(ctx context.Context
 		return supported
 	}
 	version := planton.Spec.Version
+	override := ""
+	if planton.Spec.ControlPlane != nil && planton.Spec.ControlPlane.Image != nil {
+		override = planton.Spec.ControlPlane.Image.Repository
+	}
+	repository := resources.ImageRepository(override, planton.Spec.ImageRegistry, resources.ControlPlaneImageSlug)
+	key := repository + ":" + version
 	r.requirementsMu.Lock()
-	required, known := r.requirements[version]
+	required, known := r.requirements[key]
 	r.requirementsMu.Unlock()
 	if !known {
-		read, err := r.RequirementReader.RequiredOperator(ctx, version)
+		read, err := r.RequirementReader.RequiredOperator(ctx, repository, version)
 		if err != nil {
 			logf.FromContext(ctx).Info("Could not read the operator requirement the platform release declares; proceeding without the check",
 				"version", version, "error", err.Error())
@@ -227,7 +235,7 @@ func (r *PlantonPlatformReconciler) checkOperatorRequirement(ctx context.Context
 		if r.requirements == nil {
 			r.requirements = map[string]string{}
 		}
-		r.requirements[version] = required
+		r.requirements[key] = required
 		r.requirementsMu.Unlock()
 	}
 	planton.Status.RequiredOperatorVersion = required

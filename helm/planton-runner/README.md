@@ -33,6 +33,8 @@ The runner registers itself as `prod-a` (the release name) and appears in your
 organization's Runners list the moment it joins. Set `enrollment.runnerName` to use a
 name different from the release name.
 
+Every release is also copied, byte for byte, to Google Artifact Registry at the same path after the host: the chart at `oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-runner`, the runner image at `asia-south1-docker.pkg.dev/plantonhq/planton/runner` (`--set image.repository=...`).
+
 ## Installation
 
 ### Via `planton runner deploy` (recommended)
@@ -110,8 +112,9 @@ enrolls and from its perimeter. A Temporal address with a tunnel endpoint means
 A Temporal address without one means `temporal`, a pure worker -- the shape of
 every runner enrolled with a self-hosted instance, because a self-hosted instance
 operates no runner tunnel (its own in-cluster runner is dialed directly; yours
-pulls work from the deploy queue the front door routes). Set an explicit mode
-only to override.
+pulls work through the control plane, which serves a runner's work calls at the
+same front-door address as its API calls). Set an explicit mode only to
+override.
 
 ### How the pod is probed
 

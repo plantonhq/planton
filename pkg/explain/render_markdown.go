@@ -208,6 +208,9 @@ func writeFieldTable(b *strings.Builder, rows []flatField) {
 		if f.Sensitive {
 			typeCell += " (sensitive)"
 		}
+		if f.SecretHome != "" {
+			typeCell += " (no secrets: use `" + f.SecretHome + "`)"
+		}
 		required := ""
 		if f.Required {
 			required = "yes"
@@ -242,6 +245,9 @@ func writeFieldDetail(b *strings.Builder, row flatField) {
 	if f.Sensitive {
 		meta = append(meta, "sensitive")
 	}
+	if f.SecretHome != "" {
+		meta = append(meta, "no secrets")
+	}
 	if f.Provenance != "" {
 		// Provenance names who writes the field when it is not the manifest
 		// author -- surfaced so agents do not hand-author computed fields.
@@ -252,6 +258,9 @@ func writeFieldDetail(b *strings.Builder, row flatField) {
 	if f.Doc != "" {
 		b.WriteString(strings.TrimSpace(f.Doc))
 		b.WriteString("\n\n")
+	}
+	if f.SecretHome != "" {
+		fmt.Fprintf(b, "- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `%s`, which keeps it in a secret store the workload reads by reference\n", f.SecretHome)
 	}
 	if f.RecommendedDefault != "" {
 		fmt.Fprintf(b, "- default: `%s`\n", f.RecommendedDefault)

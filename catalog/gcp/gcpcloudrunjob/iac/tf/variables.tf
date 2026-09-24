@@ -72,10 +72,12 @@ variable "spec" {
           # Variable name, e.g. "BATCH_SIZE". Must not start with a digit.
           name = string
 
-          # Literal value. Never place credentials here — use value_from_secret.
+          # Literal value, written into the job's task template where anyone who
+          # can view the job reads it. Fine for configuration; never a credential
+          # -- a credential goes in secret_value (or value_from_secret).
           value = optional(string, "")
 
-          # Secret Manager reference resolved at task start.
+          # A Secret Manager secret you already own, resolved at task start.
           value_from_secret = optional(object({
             # The secret: a short name or full resource name (projects/*/secrets/*).
             secret = string
@@ -83,6 +85,15 @@ variable "spec" {
             # Secret version: a version number or "latest".
             version = optional(string, "")
           }))
+
+          # A secret value this component keeps in Secret Manager for you. It
+          # creates one secret for this variable, replicated only in the job's
+          # region, stores the value as a version, grants the job's runtime
+          # identity secretAccessor on that secret alone, and points the variable at
+          # that exact version -- the task template carries a reference, never the
+          # value. A changed value adds a version and updates the template, so
+          # rotation is a deploy; destroying the job removes the secret.
+          secret_value = optional(string, "")
         })), [])
 
         # CPU and memory limits for this container.

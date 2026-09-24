@@ -32,7 +32,12 @@ spec:
     - field_path: template.vpc_access.connector
       sku_meter: Serverless VPC Access connector
       impact: The connector's own instances bill on the GcpServerlessVpcConnector component whether or not executions run; direct VPC egress (network_interfaces) avoids that standing cost and bills only VPC data transfer for the traffic tasks actually move.
+    - field_path: template.containers.env.secret_value
+      sku_meter: Secret Manager active secret versions
+      pricing_unit: versions per location per month
+      impact: Each variable set through secret_value keeps one Secret Manager secret with one active version in each replica region (the job's region) -- $0.06 per active version per location per month, prorated by the hour, with the first 6 active versions per billing account free (cloud.google.com/secret-manager/pricing, read 2026-09-24). A replaced version is destroyed, and destroyed versions are free; access operations bill $0.03 per 10,000 beyond the first 10,000 a month, one read per instance start.
   estimate_exclusions:
+    - Secret Manager active versions for secret_value variables -- one per variable per replica region at $0.06 a month (first 6 per billing account free); cents at most, and the count of variables is the manifest's, the free allowance the billing account's
     - a job definition at rest bills nothing -- vCPU-seconds and GiB-seconds accrue only while an execution's tasks run, and executions start only when triggered (gcloud, Cloud Scheduler, Eventarc, or a deploy-time execution token)
     - container images bill as Artifact Registry storage on the repository's project, not here
     - network egress from tasks follows Google Cloud networking pricing; data transfer through direct VPC egress bills at VPC rates

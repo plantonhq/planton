@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	ControlPlaneDefaultImageRepo = "ghcr.io/plantonhq/planton/control-plane"
+	ControlPlaneDefaultImageRepo = DefaultImageRegistry + "/" + ControlPlaneImageSlug
 	controlPlaneContainerPort    = 8080
 	controlPlaneServicePort      = 80
 	// gRPC-Web listener for browser clients (the console). Serving it is opt-in
@@ -49,6 +49,13 @@ const (
 	controlPlaneCPURequest    = "250m"
 	controlPlaneMemoryRequest = "1Gi"
 	controlPlaneMemoryLimit   = "4Gi"
+
+	// A stopping pod drains before the kubelet's kill: the gRPC server's
+	// 30-second shutdown grace (longer than any poll a remote runner holds
+	// through the work door) plus the Temporal workers' 10-second stop. The
+	// same number the hosted product declares; Kubernetes' default of 30
+	// would cut the drain short.
+	controlPlaneTerminationGracePeriodSeconds = 60
 
 	// controlPlaneIacModulesVersionEnv is the control plane's per-install
 	// OVERRIDE of the release its stack jobs download official IaC modules
@@ -330,22 +337,21 @@ type RunnerBinding struct {
 
 // RemoteRunnersBinding is what the install advertises to runners that enroll
 // from OUTSIDE the cluster (developer laptops, appliances in other networks):
-// the two addresses stamped into their identity documents. Present exactly
-// when the remote-runners capability is on AND the front door carries it;
-// nil otherwise, which leaves the deploy-queue advertisement UNSET so the
-// control plane refuses remote enrollment with the reason instead of minting
-// an address only this cluster's pods resolve. The in-cluster runner never
-// reads these: the operator renders its identity document itself, with the
-// in-cluster addresses.
+// the address stamped into their identity documents. Present exactly when the
+// remote-runners capability is on AND the front door carries it; nil
+// otherwise, which leaves the work advertisement UNSET so the control plane
+// refuses remote enrollment with the reason instead of minting an address only
+// this cluster's pods resolve. The in-cluster runner never reads it: the
+// operator renders its identity document itself, with the in-cluster
+// addresses.
 type RemoteRunnersBinding struct {
 	// PlantonAPIEndpoint is the control plane's native gRPC address as a
 	// runner outside the cluster dials it (host:port; :443 means TLS) -- the
-	// front door's gRPC endpoint.
+	// front door's gRPC endpoint. It is the runner's one address, for its API
+	// calls and its work alike: the control plane serves Temporal's worker
+	// methods itself, so the API endpoint and the work endpoint the control
+	// plane advertises are this one string and can never disagree.
 	PlantonAPIEndpoint string
-	// TemporalEndpoint is the deploy queue's address as a runner outside the
-	// cluster dials it -- the same front door, which routes the queue's
-	// workflow service beside the API.
-	TemporalEndpoint string
 }
 
 // IdentityBinding carries what the control plane needs to validate browser
@@ -559,10 +565,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 	if imageTag == "" {
 		imageTag = cfg.Version
 	}
-	replicas := cfg.Replicas
-	if replicas <= 0 {
-		replicas = 1
-	}
+	replicas := controlPlaneReplicas(cfg)
 
 	labels := map[string]string{
 		"app.kubernetes.io/name":       "control-plane",
@@ -639,8 +642,9 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{Labels: labels, Annotations: controlPlanePodAnnotations(cfg)},
 				Spec: corev1.PodSpec{
-					ServiceAccountName: ControlPlaneServiceAccountName(cfg.CRName),
-					Volumes:            volumes,
+					TerminationGracePeriodSeconds: int64Ptr(controlPlaneTerminationGracePeriodSeconds),
+					ServiceAccountName:            ControlPlaneServiceAccountName(cfg.CRName),
+					Volumes:                       volumes,
 					Containers: []corev1.Container{{
 						Name:  "control-plane",
 						Image: fmt.Sprintf("%s:%s", imageRepo, imageTag),
@@ -855,12 +859,6 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// stored-document migrations start automatically at boot when a release
 		// changes storage versions.
 		{Name: "PLANTON_INFRA_HUB_STORED_DOCUMENT_MIGRATION_AUTO_RUN", Value: "true"},
-		// Derived from the bootstrap org -- the SAME derivation the runner
-		// resources use for the worker's queue, so dispatcher and poller
-		// cannot drift apart on a renamed org. One queue: the control plane's
-		// per-provider overrides are a map with no entries, so a provider
-		// variable here would bind to nothing.
-		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
 
 		// Auth0-path FGA bindings: never used with the bundled identity
 		// server (they serve the auth0 provider only) but part of the
@@ -998,20 +996,28 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	envs = append(envs, emailEnvVars(cfg.Email)...)
 	envs = append(envs, emailSetupHintEnvVars(cfg.CRName, cfg.Namespace)...)
 
-	// Remote-runners capability: the deploy-queue advertisement
-	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents and the
-	// materializer's capability gate both read. Set ONLY when the install
-	// opened remote runners and the front door carries the queue -- every
-	// reader of this variable on the platform is a remote-runner gate or
-	// minter (the in-cluster runner gets its queue address from its own
-	// Deployment, never from here), so leaving it unset is what makes the
+	// Remote-runners capability: the work advertisement
+	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents, the control
+	// plane's work door, and the materializer's capability gate all read. Its
+	// address is the control plane's own front-door endpoint, because the
+	// control plane serves a remote runner's work calls itself. Set ONLY when
+	// the install opened remote runners and the front door carries native
+	// gRPC -- every reader of this variable on the platform is a remote-runner
+	// gate or minter (the in-cluster runner gets its queue address from its
+	// own Deployment, never from here), so leaving it unset is what makes the
 	// control plane refuse a laptop honestly ("this instance doesn't support
 	// deploying from your own machine yet") instead of handing it an address
 	// only this cluster's pods resolve.
+	//
+	// The replica count rides with it: the door's limit on polls it holds is
+	// one install-wide total, and each control-plane replica holds its share,
+	// so scaling the control plane never multiplies what remote runners may
+	// take from the job queue the platform's own work shares.
 	if cfg.RemoteRunners != nil {
 		envs = append(envs,
-			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.TemporalEndpoint},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.PlantonAPIEndpoint},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_NAMESPACE", Value: runnerTemporalNamespace},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS", Value: fmt.Sprint(controlPlaneReplicas(cfg))},
 		)
 	}
 
@@ -1439,6 +1445,15 @@ func ptrBool(b bool) *bool {
 //go:fix inline
 func int64Ptr(i int64) *int64 {
 	return new(i)
+}
+
+// controlPlaneReplicas is the number of control-plane pods the install runs:
+// the declared count, one when none is declared.
+func controlPlaneReplicas(cfg ControlPlaneConfig) int32 {
+	if cfg.Replicas <= 0 {
+		return 1
+	}
+	return cfg.Replicas
 }
 
 // controlPlaneResources is the container sizing every install gets (the

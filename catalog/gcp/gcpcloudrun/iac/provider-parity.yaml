@@ -146,3 +146,38 @@ resources:
       API enablement plumbing -- the module enables run.googleapis.com
       with fixed arguments (disable_on_destroy false so destroying one
       service never disables the API project-wide); not spec surface.
+
+  # One secret per env[].secret_value: the module creates it, stores the
+  # value as a version, and grants the runtime identity read access to that
+  # secret alone. Only the value itself is spec surface.
+  google_secret_manager_secret:
+    internal: >-
+      created by the module per env[].secret_value -- its id
+      (runjob/run, region, service, container, variable), user-managed
+      replication in the service's region(s), and attribution labels are all
+      derived from the service, never authored.
+  google_secret_manager_secret_iam_member:
+    internal: >-
+      the roles/secretmanager.secretAccessor grant on each stored secret
+      for the service's runtime identity (its service account, else the
+      project's Compute Engine default) -- derived, never authored.
+  google_secret_manager_secret_version:
+    specRoot: spec.containers.env
+    mappings:
+      - spec: spec.containers.env.secret_value
+        arg: secret_data
+    exclusions:
+      - arg: secret
+        reason: the module's own secret for this variable (derived), never authored
+      - arg: project
+        reason: follows the service's project through the secret it belongs to
+      - arg: enabled
+        reason: a stored value is always the enabled version the variable is pinned to
+      - arg: is_secret_data_base64
+        reason: the stored value is the variable's text as resolved, never base64-encoded
+      - arg: secret_data_wo
+        reason: write-only arm of secret_data; the module pins the variable to the stored version, which needs the version resource's own lifecycle
+      - arg: secret_data_wo_version
+        reason: companion of the unused write-only arm (see secret_data_wo)
+      - arg: deletion_policy
+        reason: a replaced or removed version is deleted (the provider default) -- the copy is derived, and a disabled or abandoned version would outlive the value's source

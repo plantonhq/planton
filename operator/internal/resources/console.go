@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	ConsoleDefaultImageRepo = "ghcr.io/plantonhq/planton/client-apps/web"
+	ConsoleDefaultImageRepo = DefaultImageRegistry + "/" + ConsoleImageSlug
 	consoleContainerPort    = 3000
 	consoleServicePort      = 80
 

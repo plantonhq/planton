@@ -164,6 +164,22 @@ message KubernetesPlantonRunnerSpec {
    * the merge so an override can never move it into rendered values.
    */
   string helm_values = 11;
+
+  /**
+   * The OCI registry path the planton-runner chart is pulled from. Defaults
+   * to oci://ghcr.io/plantonhq/charts. Every chart release is also
+   * published, byte for byte, to Google Artifact Registry at
+   * oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+   * from Google, or name a mirror of your own holding the same charts.
+   */
+  optional string chart_repository = 12 [
+    (dev.planton.shared.options.default) = "oci://ghcr.io/plantonhq/charts",
+    (buf.validate.field).cel = {
+      id: "chart_repository_format"
+      message: "chart repository must be an OCI path such as \"oci://asia-south1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash"
+      expression: "this.startsWith('oci://') && !this.endsWith('/')"
+    }
+  ];
 }
 
 /**

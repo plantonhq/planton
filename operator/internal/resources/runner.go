@@ -18,7 +18,7 @@ const (
 	// RunnerDefaultImageRepo is the official runner image. It bundles the
 	// planton-runner binary plus the IaC toolchain (OpenTofu, Pulumi, cloud
 	// auth exec plugins), so the pod needs no init or sidecar containers.
-	RunnerDefaultImageRepo = "ghcr.io/plantonhq/planton/runner"
+	RunnerDefaultImageRepo = DefaultImageRegistry + "/" + RunnerImageSlug
 
 	// RunnerBadgeAudience is the audience the runner's projected
 	// ServiceAccount token is minted for, and the audience the control
@@ -210,14 +210,6 @@ func RunnerServiceFQDN(crName, namespace string) string {
 // control plane independently derive the Temporal task queue.
 func RunnerChannelIdentifier(crName, orgSlug string) string {
 	return fmt.Sprintf("org.%s.runner.%s", orgSlug, RunnerSlug(crName))
-}
-
-// RunnerTaskQueue returns the Temporal task queue the runner polls and the
-// control plane dispatches to: "iac-operation." + channel identifier. The
-// prefix mirrors the runner binary's temporal.TaskQueuePrefix and infra-hub's
-// producer-side convention -- deterministic on both sides, no shared state.
-func RunnerTaskQueue(crName, orgSlug string) string {
-	return "iac-operation." + RunnerChannelIdentifier(crName, orgSlug)
 }
 
 // GenerateRunnerCloudOpsToken mints the CloudOps direct-dial bearer:

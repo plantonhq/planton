@@ -27,7 +27,7 @@ The resource owns the job DEFINITION, not individual runs — trigger executions
 - **Artifact Registry or container registry** with the task image pushed and accessible to the Cloud Run service agent.
 - **Cloud Run Admin API** enabled in the target project.
 - **VPC network and subnetwork** (if using Direct VPC Egress) -- the subnetwork must be in the job's region with address headroom for `parallelism` concurrent tasks.
-- **Secret Manager secrets** (if referenced) -- the runtime service account needs `roles/secretmanager.secretAccessor` on each.
+- **Secret Manager secrets** (if referenced through `valueFromSecret`) -- the runtime service account needs `roles/secretmanager.secretAccessor` on each. A variable's `secretValue` needs neither: the component creates its secret and grants that access itself.
 
 ## Deploy
 

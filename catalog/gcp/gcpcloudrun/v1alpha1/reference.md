@@ -71,6 +71,10 @@ spec:
           valueFromSecret:
             secret: hack-db-password
             version: latest
+        # A Planton secret: the component keeps it in a Secret Manager
+        # secret of its own, readable only by the runtime identity.
+        - name: API_TOKEN
+          secretValue: $secret/hack-api-token
       ports:
         containerPort: 8080
       resources:
@@ -154,10 +158,11 @@ spec:
 | `spec.containers[].args` | `[]string` |  |  |  |
 | `spec.containers[].env` | `[]GcpCloudRunEnvVar` |  |  |  |
 | `spec.containers[].env[].name` | `string` | yes |  |  |
-| `spec.containers[].env[].value` | `string` |  |  |  |
+| `spec.containers[].env[].value` | `string` (no secrets: use `secretValue`) |  |  |  |
 | `spec.containers[].env[].valueFromSecret` | `GcpCloudRunSecretEnvSource` |  |  |  |
 | `spec.containers[].env[].valueFromSecret.secret` | `string` | yes |  |  |
 | `spec.containers[].env[].valueFromSecret.version` | `string` |  | `latest` |  |
+| `spec.containers[].env[].secretValue` | `string` (sensitive) |  |  |  |
 | `spec.containers[].ports` | `GcpCloudRunContainerPort` |  |  |  |
 | `spec.containers[].ports.containerPort` | `int32` |  | `8080` |  |
 | `spec.containers[].ports.name` | `string` |  |  |  |
@@ -425,7 +430,7 @@ Arguments to the entrypoint — overrides the image's CMD.
 Environment variables. Each entry carries either a literal value or a
 Secret Manager reference resolved at instance start.
 
-- rule: an environment variable takes a literal value or a Secret Manager reference, not both
+- rule: an environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value
 
 ### spec.containers[].env[].name
 
@@ -437,16 +442,20 @@ Variable name, e.g. "DATABASE_URL". Must not start with a digit.
 
 ### spec.containers[].env[].value
 
-`string`
+`string` · no secrets
 
-Literal value. Fine for configuration; never place credentials here —
-use value_from_secret so the material stays in Secret Manager.
+Literal value, written into the revision where anyone who can view the
+service reads it. Fine for configuration; never a credential -- a
+credential goes in secret_value (or value_from_secret).
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretValue`, which keeps it in a secret store the workload reads by reference
 ### spec.containers[].env[].valueFromSecret
 
 `GcpCloudRunSecretEnvSource`
 
-Secret Manager reference resolved into the variable at instance start.
+A Secret Manager secret you already own, resolved into the variable at
+instance start. Rotation is Secret Manager's: with version "latest",
+new instances pick up a new version without a deploy.
 
 ### spec.containers[].env[].valueFromSecret.secret
 
@@ -466,6 +475,18 @@ GCP requires an explicit version for env vars — "latest" is the common
 choice, at the cost of new instances silently picking up rotations.
 
 - default: `latest`
+
+### spec.containers[].env[].secretValue
+
+`string` · sensitive
+
+A secret value this component keeps in Secret Manager for you. It
+creates one secret for this variable, replicated only in the service's
+region(s), stores the value as a version, grants the service's runtime
+identity secretAccessor on that secret alone, and points the variable at
+that exact version -- the revision carries a reference, never the value.
+A changed value adds a version and stamps a new revision, so rotation is
+a deploy; destroying the service removes the secret.
 
 ### spec.containers[].ports
 

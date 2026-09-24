@@ -1,6 +1,7 @@
 package gcpcloudrunv1alpha1
 
 import (
+	"errors"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -13,6 +14,20 @@ import (
 func TestGcpCloudRunSpec(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "GcpCloudRunSpec Validation Suite")
+}
+
+// violatedRules lists the rule ids a validation error names, so a case pins
+// the rule it exists for rather than any failure at all.
+func violatedRules(err error) []string {
+	var validationErr *protovalidate.ValidationError
+	if !errors.As(err, &validationErr) {
+		return nil
+	}
+	ids := make([]string, 0, len(validationErr.Violations))
+	for _, violation := range validationErr.Violations {
+		ids = append(ids, violation.Proto.GetRuleId())
+	}
+	return ids
 }
 
 var _ = Describe("GcpCloudRunSpec validations", func() {
@@ -271,6 +286,32 @@ var _ = Describe("GcpCloudRunSpec validations", func() {
 				ValueFromSecret: &GcpCloudRunSecretEnvSource{},
 			}}
 			Expect(protovalidate.Validate(spec)).NotTo(BeNil())
+		})
+
+		It("accepts a secret value the component stores", func() {
+			spec := makeValidSpec()
+			spec.Containers[0].Env = []*GcpCloudRunEnvVar{{Name: "STRIPE_KEY", SecretValue: "$secret/stripe-key"}}
+			Expect(protovalidate.Validate(spec)).To(BeNil())
+		})
+
+		It("rejects a secret value beside a literal value", func() {
+			spec := makeValidSpec()
+			spec.Containers[0].Env = []*GcpCloudRunEnvVar{{Name: "STRIPE_KEY", Value: "plain", SecretValue: "$secret/stripe-key"}}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+			Expect(violatedRules(err)).To(ContainElement("env.value_xor_secret"))
+		})
+
+		It("rejects a secret value beside a Secret Manager reference", func() {
+			spec := makeValidSpec()
+			spec.Containers[0].Env = []*GcpCloudRunEnvVar{{
+				Name:            "STRIPE_KEY",
+				ValueFromSecret: &GcpCloudRunSecretEnvSource{Secret: "stripe-key"},
+				SecretValue:     "$secret/stripe-key",
+			}}
+			err := protovalidate.Validate(spec)
+			Expect(err).NotTo(BeNil())
+			Expect(violatedRules(err)).To(ContainElement("env.value_xor_secret"))
 		})
 	})
 

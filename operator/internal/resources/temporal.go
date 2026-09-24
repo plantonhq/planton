@@ -10,16 +10,11 @@ import (
 const (
 	TemporalHelmChartVersion = "0.62.0"
 	TemporalFrontendGRPCPort = 7233
-	// temporalFrontendGRPCPortName is the name the Temporal chart gives its
-	// frontend's gRPC Service port. The "grpc-" prefix is load-bearing for
-	// meshes that pick the upstream protocol from the port name: the front
-	// door's route to this port must speak HTTP/2 cleartext to the frontend.
-	temporalFrontendGRPCPortName = "grpc-rpc"
-	TemporalFrontendHTTPPort     = 7243
-	TemporalWebUIPort            = 8080
-	TemporalDefaultDB            = "temporal"
-	TemporalVisibilityDB         = "temporal_visibility"
-	TemporalPostgresDriver       = "postgres12"
+	TemporalFrontendHTTPPort = 7243
+	TemporalWebUIPort        = 8080
+	TemporalDefaultDB        = "temporal"
+	TemporalVisibilityDB     = "temporal_visibility"
+	TemporalPostgresDriver   = "postgres12"
 
 	// Temporal's sizing, chosen here rather than left to the chart (which
 	// ships none for any of its six workloads). Read live on a one-node

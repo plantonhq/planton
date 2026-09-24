@@ -129,6 +129,27 @@ func TestRenderMarkdownForeignKeys(t *testing.T) {
 	}
 }
 
+// A field every viewer can read names where a secret goes instead, on the
+// table row and in the field's detail -- the two places an agent reads before
+// writing a manifest. The home is spelled as the page spells paths.
+func TestRenderMarkdownSecretHome(t *testing.T) {
+	text := renderKindMarkdown(t, "GcpCloudRun", MarkdownOptions{})
+	for _, want := range []string{
+		"| `spec.containers[].env[].value` | `string` (no secrets: use `secretValue`) |",
+		"put a secret in `secretValue`, which keeps it in a secret store the workload reads by reference",
+		"| `spec.containers[].env[].secretValue` | `string` (sensitive) |",
+	} {
+		if !strings.Contains(text, want) {
+			t.Errorf("markdown missing %q", want)
+		}
+	}
+
+	ecs := renderKindMarkdown(t, "AwsEcsTaskDefinition", MarkdownOptions{})
+	if !strings.Contains(ecs, "(no secrets: use `secretEnvironment`)") {
+		t.Error("the ECS environment map does not name secretEnvironment as its secret home")
+	}
+}
+
 func TestRenderMarkdownReferencedBy(t *testing.T) {
 	text := renderKindMarkdown(t, "AwsVpc", MarkdownOptions{
 		ReferencedBy: []InboundRef{

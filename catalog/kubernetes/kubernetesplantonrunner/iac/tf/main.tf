@@ -60,7 +60,7 @@ resource "kubernetes_secret_v1" "runner_token" {
 
 resource "helm_release" "planton_runner" {
   name       = local.release_name
-  repository = local.helm_oci_repo
+  repository = local.chart_repository
   chart      = local.helm_chart_name
   version    = local.chart_version
   namespace  = local.namespace
