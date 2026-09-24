@@ -59,7 +59,7 @@ yourself.
   control posture with framework crosswalks (`catalog/_compliance/`), and
   least-privilege provisioning-permission manifests validated against the
   providers' own published inventories.
-- **[`charts/`](charts)** — **49 ready-made infra charts**: whole environments
+- **[`charts/`](charts)** — **18 ready-made infra charts**: whole environments
   (network + compute + data + DNS) composed from the components above and
   installed in one command — the Helm-chart idea, for cloud infrastructure.
 - **[`cmd/planton`](cmd/planton)** — the open-source CLI and IaC engine that
@@ -69,6 +69,7 @@ yourself.
   website, docs, and blog (Next.js static export, deployed to GitHub Pages on
   every `site/` change). Run it locally with `make run-site`, or build and
   preview the static export with `make preview-site`.
+
 ## The CLI
 
 The desktop app is the product; the CLI is its companion — the same deploys,
@@ -104,6 +105,37 @@ Validation catches mistakes in seconds — before anything touches your cloud �
 and the deploy streams live output from the underlying IaC module. See the
 [Getting Started guide](https://planton.ai/docs/getting-started) and the
 [CLI reference](https://planton.ai/docs/cli).
+
+## From your coding agent
+
+Planton ships its assistant's knowledge as agent skills in the open Agent
+Skills format, so Cursor, Claude Code, Codex, and any other coding agent can
+compose, validate, price, and deploy from the same craft the platform's own
+assistant uses. Install them once:
+
+```bash
+npx skills add plantonhq/skills
+```
+
+Two skills ship together: `planton` (the working craft, and the boundaries the
+agent never crosses — no mutation without your consent, never outside your
+repository) and `multi-cloud-catalog` (one reference page per component, with
+its cost, control posture, and runner permissions). Agents that want the
+platform's own operations reach them over MCP at `https://mcp.planton.ai/`.
+See [Coding Agents](https://planton.ai/docs/coding-agents).
+
+## Where it runs
+
+Planton runs where you decide: hosted at [planton.ai](https://planton.ai),
+self-hosted on your own Kubernetes cluster with a license that verifies
+offline, or free on your laptop as Planton Desktop. In every shape it is your
+cloud account, your keys, your state, and your bill. The same manifests and the
+same model run on all three, so nothing is redone when a person becomes a team.
+
+Self-hosting is two Helm installs — the operator, then the platform at the
+release you name — with the control plane, the console, the identity server,
+the secrets manager, the databases, and an in-cluster runner all inside your
+cluster. See [Self-Hosting](https://planton.ai/docs/self-hosting).
 
 ## Licensing
 

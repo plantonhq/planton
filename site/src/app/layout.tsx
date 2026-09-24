@@ -3,7 +3,9 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/providers/theme';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import { HANDOFF_CAPTURE_SCRIPT } from '@/components/handoff';
+import { HANDOFF_CAPTURE_SCRIPT } from '@/lib/console-handoff';
+import { SITE, sitePage } from '@/data/site-pages';
+import { HOMEPAGE } from '@/data/homepage';
 
 const inter = Inter({
   weight: ['300', '400', '500', '600', '700'],
@@ -12,23 +14,54 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const siteDescription =
-  'Planton is a DevOps automation platform that provides self-service infrastructure deployment across AWS, GCP, and Azure, combined with built-in CI/CD for backend services. No ops team required. No vendor lock-in.';
+// The defaults every page inherits until it sets its own (registered pages do,
+// through pageMetadata). The words are the home page's, from the route registry.
+const home = sitePage('/');
+const siteTitle = `${SITE.name}: ${home.title}`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://planton.ai'),
-  applicationName: 'Planton',
+  metadataBase: new URL(SITE.url),
+  applicationName: SITE.name,
   icons: { icon: '/favicon.ico' },
-  title: 'Planton — Deploy Production Infrastructure in Minutes, Not Weeks',
-  description: siteDescription,
+  title: siteTitle,
+  description: home.description,
   openGraph: {
-    siteName: 'Planton',
+    siteName: SITE.name,
     type: 'website',
-    url: 'https://planton.ai',
-    title: 'Planton — Deploy Production Infrastructure in Minutes, Not Weeks',
-    description: siteDescription,
+    url: SITE.url,
+    title: siteTitle,
+    description: home.description,
+    images: [{ url: SITE.defaultOgImage, width: 1200, height: 630 }],
   },
 };
+
+/**
+ * Structured data for the organization and the product, read by search
+ * engines and by agents. Facts come from the registry and the positioning
+ * vocabulary; nothing here is typed twice.
+ */
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Planton Cloud, Inc.',
+    alternateName: SITE.name,
+    url: SITE.url,
+    logo: `${SITE.url}/_site/images/og/desktop.png`,
+    sameAs: ['https://github.com/plantonhq', 'https://discord.gg/pwcSapdQAp'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: SITE.name,
+    url: SITE.url,
+    description: HOMEPAGE.intro,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Web, macOS, Windows, Linux',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    publisher: { '@type': 'Organization', name: 'Planton Cloud, Inc.', url: SITE.url },
+  },
+];
 
 export default async function RootLayout({
   children,
@@ -55,32 +88,11 @@ export default async function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=optional"
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebApplication',
-              name: 'Planton',
-              url: 'https://planton.ai',
-              description: siteDescription,
-              applicationCategory: 'DeveloperApplication',
-              operatingSystem: 'Web',
-              offers: {
-                '@type': 'Offer',
-                price: '0',
-                priceCurrency: 'USD',
-              },
-              publisher: {
-                '@type': 'Organization',
-                name: 'Planton Cloud, Inc.',
-                url: 'https://planton.ai',
-              },
-            }),
-          }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       </head>
-      <body className={`${inter.variable} antialiased h-screen bg-cover bg-center bg-[#0a0a0a]`}>
+      {/* The body declares the canvas and the primary text color from the palette so nothing
+          inherits a theme default by accident; every surface below reads the same two tokens. */}
+      <body className={`${inter.variable} antialiased h-screen bg-cover bg-center bg-canvas text-fg`}>
         <ThemeProvider>
           {children}
         </ThemeProvider>

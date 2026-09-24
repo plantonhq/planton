@@ -1,11 +1,13 @@
-# The kind-honest full surface for a shared-nothing lab cluster:
-# standalone mode with a dedicated audit volume, metrics telemetry
-# rendered into the server config (no ServiceMonitor — the kind cluster
-# runs no Prometheus Operator CRDs), the agent injector deployed with
-# its fail-open webhook, tuned logging and the auth-delegator binding.
-# TLS and auto-unseal arms are plan-proven offline (certificate material
-# and cloud KMS keys have no honest stand-ins on a kind cluster). The
-# same seal-lifecycle bootstrap + KV proof runs against this shape.
+# The kind-honest full surface for a shared-nothing lab cluster: a
+# single Raft server (the chart's required hostname anti-affinity makes
+# one replica the honest count on one node) with a dedicated audit
+# volume, metrics telemetry rendered into the server config (no
+# ServiceMonitor — the kind cluster runs no Prometheus Operator CRDs),
+# the agent injector deployed with its fail-open webhook, tuned logging
+# and the auth-delegator binding. TLS, auto-unseal, and the multi-replica
+# Raft topology are plan-proven offline (certificate material and cloud
+# KMS keys have no honest stand-ins on a kind cluster). The same
+# seal-lifecycle bootstrap + KV proof runs against this shape.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesOpenBao
 metadata:

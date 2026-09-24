@@ -209,6 +209,28 @@ NOTES
   with "Unsupported argument" on fields the current provider genuinely has.
   Keep sibling modules of one provider on the same resolved version so
   behavior never varies per kind.
+- **A secondary-channel provider (`google-beta`) enters a module only under a
+  recorded admission, and only on the resources that need it.** The GA
+  provider is the parity baseline; a resource the GA provider serves at the
+  pin is declared through it, always. When a resource exists ONLY in the
+  provider's secondary channel (Google publishes Firebase's core resources
+  in `google-beta` alone), the module: (1) declares the channel in
+  `required_providers` on the SAME constraint as the baseline (the pin guard
+  holds both to one line), (2) configures its provider block the way the
+  baseline's is configured (a `provider "google-beta" {}` block carrying the
+  same `user_project_override` judgment, so behavior never depends on which
+  channel a resource rides), (3) sets `provider = google-beta` on exactly the
+  resource blocks the channel serves -- never on a resource GA serves, never
+  on the whole module -- and (4) records each (resource, kind) in
+  `pkg/providerparity/admissions/<channel>.yaml` with the reason and the path
+  where its promotion to GA is watched. `hack/guards/ensure_beta_admissions.sh`
+  fails an attachment with no entry and an entry with no attachment; the
+  provider-parity accounting additionally fails an admitted resource the GA
+  schema has started serving (the promotion happened: move the resource back
+  to the baseline provider and remove the entry). Pulumi needs none of this:
+  the bridged SDK is built from the beta provider, so one provider instance
+  serves both channels -- say so in a module comment where the Terraform side
+  attaches the channel, so the parity walk reads as deliberate.
 - **Enum values arrive as the FULL proto enum value name -- match them
   exactly.** The tfvars pipeline serializes enum fields as the proto value's
   declared name (e.g. `LINUX_AUTOMATIC_BY_PLATFORM`, `ASSESSMENT_IMAGE_DEFAULT`),

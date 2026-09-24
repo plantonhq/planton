@@ -38,7 +38,8 @@ spec:
     - name: storage-conn
       value: "<storage-account-connection-string>"
   registries:
-    - server: mycompany.azurecr.io
+    - server:
+        value: mycompany.azurecr.io
       identity: System
   identity:
     type: SYSTEM_ASSIGNED

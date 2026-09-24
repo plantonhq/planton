@@ -2,9 +2,17 @@
 # Stigmer Skills Publish (Reusable Workflow)
 # =============================================================================
 # Publishes every skill in the definitions tree to the hosted Stigmer engine
-# (Stigmer Cloud, org "planton"), so conversations pick up released skill
-# content on their next message -- agents resolve skill references to the
-# engine's latest version at every execution, no client update required.
+# (Stigmer Cloud), so conversations pick up released skill content on their
+# next message -- agents resolve skill references to the engine's latest
+# version at every execution, no client update required.
+#
+# Planton holds TWO organizations on Stigmer Cloud, the shape of its identity
+# tenants: planton-prod serves production, planton-preprod serves every
+# environment below it (dev, demo). Both receive every skill, because dev and
+# demo are copies of production with different configuration and the same
+# skill bytes must be what every environment's conversations run. Each
+# organization has its own API key, so the caller passes both secrets and the
+# publish job selects by organization.
 #
 # The publish pushes the SAME deterministic archives the definitions release
 # uploads to the CDN (pkg/skills/defspack builds them; the engine keys a
@@ -17,7 +25,8 @@
 # Job shape -- the Actions UI shows exactly what reached the engine:
 #   package             builds the definitions release once and discovers
 #                       the skill slugs from its manifest
-#   publish (<slug>)    one job per skill, pushes and verifies that skill
+#   publish (<slug>, <org>)  one job per skill per organization, pushes and
+#                       verifies that skill there
 #
 # There is deliberately NO probe gate here: the same content already flows
 # ungated to every local desktop through the definitions channel pointer,
@@ -44,7 +53,11 @@ on:
         type: string
         default: ''
     secrets:
-      STIGMER_API_KEY:
+      STIGMER_API_KEY_PLANTON_PROD:
+        description: 'API key for the planton-prod organization on Stigmer Cloud'
+        required: true
+      STIGMER_API_KEY_PLANTON_PREPROD:
+        description: 'API key for the planton-preprod organization on Stigmer Cloud'
         required: true
 
 permissions:
@@ -106,6 +119,7 @@ jobs:
       fail-fast: false
       matrix:
         slug: ${{ fromJSON(needs.package.outputs.skills) }}
+        org: [planton-prod, planton-preprod]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -120,11 +134,22 @@ jobs:
           name: definitions-for-stigmer
           path: build/definitions
 
-      - name: Publish skill ${{ matrix.slug }} to Stigmer Cloud
+      - name: Publish skill ${{ matrix.slug }} to Stigmer Cloud (${{ matrix.org }})
         env:
-          STIGMER_API_KEY: ${{ secrets.STIGMER_API_KEY }}
+          # One key per organization; the matrix's org selects it below.
+          STIGMER_API_KEY_PLANTON_PROD: ${{ secrets.STIGMER_API_KEY_PLANTON_PROD }}
+          STIGMER_API_KEY_PLANTON_PREPROD: ${{ secrets.STIGMER_API_KEY_PLANTON_PREPROD }}
         run: |
+          case "${{ matrix.org }}" in
+            planton-prod) export STIGMER_API_KEY="${STIGMER_API_KEY_PLANTON_PROD}" ;;
+            planton-preprod) export STIGMER_API_KEY="${STIGMER_API_KEY_PLANTON_PREPROD}" ;;
+            *) echo "::error::unknown organization '${{ matrix.org }}'"; exit 1 ;;
+          esac
+          if [ -z "${STIGMER_API_KEY}" ]; then
+            echo "::error::the API key secret for ${{ matrix.org }} is not configured"
+            exit 1
+          fi
           go run ./pkg/skills/stigmerpublish \
             -dir build/definitions \
-            -org planton \
+            -org "${{ matrix.org }}" \
             -skill "${{ matrix.slug }}" | tee -a "$GITHUB_STEP_SUMMARY"

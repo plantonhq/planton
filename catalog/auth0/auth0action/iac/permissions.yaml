@@ -1,55 +1,29 @@
 # Least-privilege permissions the IaC runner's Auth0 credential needs to
 # provision, update, and destroy this component with the official modules.
-# Schema: iac/componentpermissions/v1.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.0 per iac/tf/provider.tf) and the
+# Pulumi module exchange its client id and secret for a token through the
+# client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
 #
-# Auth0 authenticates with a tenant-scoped Management API token, not
-# IAM-statement policies, so none of the schema's provider sections
-# (aws/gcp/azure/kubernetes) applies -- their absence is the schema's own
-# claim that the modules touch no such API. The credential model: a
-# machine-to-machine (M2M) application in the target tenant, authorized for
-# the Auth0 Management API audience (https://{tenant-domain}/api/v2/) and
-# granted the scopes below; the auth0/auth0 Terraform provider (~> 1.0 per
-# iac/tf/provider.tf) and the Pulumi module exchange its client id/secret
-# for a token via the client-credentials flow.
-#
-# The modules manage two resources: auth0_action (the function: code,
-# runtime, dependencies, secrets, deploy) and auth0_trigger_action (the
-# optional binding into the trigger's flow). Should the schema grow an
-# auth0 section, this inventory converts mechanically:
-#
-#   Action lifecycle (purpose: create/read/update/delete the function):
-#     create:actions   -- POST /api/v2/actions/actions (proven: the endpoint
-#                         doc's insufficient-scope contract names it;
-#                         auth0.com/docs/api/management/v2/actions/post-action,
-#                         retrieved 2026-08-22). The deploy step, POST
-#                         /api/v2/actions/actions/{id}/deploy, names the SAME
-#                         scope (auth0.com/docs/api/management/v2/actions/
-#                         post-deploy-action, retrieved 2026-08-22).
-#     read:actions     -- GET endpoints the provider refreshes state from
-#                         (get-action, get-bindings). Derived: the read
-#                         family follows Auth0's documented create:/read:/
-#                         update:/delete: scope naming per endpoint; these
-#                         endpoint pages were not fetched this session.
-#     update:actions   -- PATCH /api/v2/actions/actions/{id} on code or
-#                         config change. Derived, same basis as read:actions.
-#     delete:actions   -- DELETE /api/v2/actions/actions/{id} on destroy.
-#                         Derived, same basis as read:actions.
-#
-#   Trigger binding (purpose: attach/detach the action in the trigger flow;
-#   only exercised when spec.trigger_binding is set):
-#     update:actions   -- PATCH /api/v2/actions/triggers/{triggerId}/bindings
-#                         (proven: auth0.com/docs/api/management/v2/actions/
-#                         patch-bindings, retrieved 2026-08-22).
-#
-# Net least-privilege scope set: create:actions, read:actions,
-# update:actions, delete:actions. Auth0 scopes are per-resource-family, not
-# per-object: a token holding them can manage EVERY action in the tenant --
-# narrowing to one action is not expressible, so the trust boundary is the
-# tenant (use a dedicated tenant or dedicated M2M app per boundary). The
-# derived entries above are honest unknowns until a live capture upgrades
-# them to proven.
+# Auth0 scopes are per resource family, not per object: a credential
+# holding them manages EVERY action in the tenant, so the trust boundary is
+# the tenant.
 apiVersion: iac.planton.dev/v1
 kind: ComponentPermissions
 metadata:
   name: auth0action
-spec: {}
+spec:
+  auth0:
+    groups:
+      - purpose: ManageAction
+        scopes:
+          - create:actions
+          - read:actions
+          - update:actions
+          - delete:actions
+        provenance: derived
+        notes: Covers auth0_action, the function with its code, runtime, dependencies, and secrets — create via POST /api/v2/actions/actions (create:actions, named by the endpoint doc's insufficient-scope contract, auth0.com/docs/api/management/v2/actions/post-action, read 2026-08-22) and deploy via POST /api/v2/actions/actions/{id}/deploy (the same scope, post-deploy-action, read 2026-08-22); read back via get-action and get-bindings (read:actions); change code or config via PATCH /api/v2/actions/actions/{id} (update:actions); destroy via DELETE /api/v2/actions/actions/{id} (delete:actions). The read, update, and delete names follow Auth0's per-endpoint-family naming. The optional trigger binding (auth0_trigger_action, only when spec.trigger_binding is set) attaches and detaches through PATCH /api/v2/actions/triggers/{triggerId}/bindings, which the patch-bindings doc (read 2026-08-22) also puts under update:actions — no further scope.

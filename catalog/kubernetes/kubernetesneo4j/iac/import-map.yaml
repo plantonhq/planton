@@ -23,15 +23,31 @@ spec:
     # ── the module-materialized auth Secret (count-indexed singleton) ────
     # Deterministic name "<metadata.name>-auth"; count-indexed, so
     # from_address_key cannot serve it — the scoped suffix derivation
-    # does. Present only when auth.password is declared (the
-    # existing-secret arm references a Secret the module never owns).
+    # does. Present for every arm but existing_secret (which references a
+    # Secret the module never owns): the declared password, or the one
+    # the module generated.
     - name: secret_name
       tofu_resource_name: auth
       derivations:
         - from_metadata_name_suffix: "-auth"
       where_to_find: >-
-        Always "<resource-name>-auth" when the password arm is declared —
-        `kubectl get secrets -n <namespace>` (carries the NEO4J_AUTH key).
+        Always "<resource-name>-auth" unless existing_secret is declared —
+        `kubectl get secrets -n <namespace>` (carries the NEO4J_AUTH and
+        password keys).
+    # ── the generated-password companion (count-indexed singleton) ───────
+    # random_password.admin exists only when auth is absent; its import ID
+    # is the password VALUE, read from the auth Secret's bare `password`
+    # key (the random provider keeps no cloud state).
+    - name: password_value
+      tofu_resource_name: admin
+      derivations:
+        - from_cluster_secret_key:
+            name_suffix: "-auth"
+            key: password
+      where_to_find: >-
+        SECRET MATERIAL — handle accordingly. kubectl get secret
+        <resource-name>-auth -n <namespace> -o jsonpath='{.data.password}'
+        | base64 -d
     - name: secret_namespace
       tofu_resource_name: auth
       derivations:

@@ -1,0 +1,26 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpfirebaseandroidapp
+spec:
+  # PROVEN live 6/6 lanes (three scenarios x both engines), IDEMPOTENCY
+  # clean, on 2026-09-18. Live truths the lane settled: (1) Firebase's
+  # documented propagation delay between a new app and its first App Check
+  # configuration did NOT bite: the Play Integrity configuration and the
+  # debug token were created within seconds of the registration on both
+  # engines with no settle -- the modules stay delay-free; (2) an app
+  # removed under deletion_policy DELETE (immediate=true) reads back as a
+  # plain 404 "App not found" -- never the DELETED state -- so the
+  # verifier's 404 arm is the one exercised; (3) the google-services.json
+  # lookup runs after create on both engines (deferred data source /
+  # AppId-driven lookup) and the re-plan is clean; (4) the with-api-key
+  # scenario proved the GcpApiKey edge: an unrestricted key from the key
+  # kind's minimal fixture is accepted as api_key_id, resolved through the
+  # e2e-prerequisites annotation; (5) every lane deploys the
+  # GcpFirebaseProject prerequisite, which adopts the test project's
+  # permanent enablement -- the registry prerequisite and the project_id
+  # reference are proven together.
+  tier: 1
+  status: green
+  validated_provisioners: [pulumi, terraform]
+  timeout_minutes: 25

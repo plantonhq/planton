@@ -1058,6 +1058,12 @@ type AzureMachineLearningWorkspacePrivateEndpointOutboundRule struct {
 	// Cache, and other ML workspaces. No default reference kind -- name
 	// the kind explicitly in valueFrom when referencing (the target can
 	// be any of several kinds).
+	//
+	// Containment-exempt: an outbound rule is the managed network's door
+	// to a resource the workspace reaches; the workspace is not deployed
+	// into a Key Vault, a storage account, or a cache it merely calls.
+	// Without the exemption a workspace wired to one by reference would
+	// be drawn inside it.
 	ServiceResourceId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=service_resource_id,json=serviceResourceId,proto3" json:"service_resource_id,omitempty"`
 	// Which sub-resource of the target the private endpoint binds
 	// (the wire values). Must match the target's service: Key Vault ->
@@ -1283,12 +1289,13 @@ const file_catalog_azure_azuremachinelearningworkspace_v1alpha1_spec_proto_rawDe
 	"\x04name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x125\n" +
 	"\x10destination_fqdn\x18\x02 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fdestinationFqdn\"\xe6\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x0fdestinationFqdn\"\xea\n" +
 	"\n" +
 	"8AzureMachineLearningWorkspacePrivateEndpointOutboundRule\x12\x1e\n" +
 	"\x04name\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12j\n" +
-	"\x13service_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x11serviceResourceId\x12}\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12n\n" +
+	"\x13service_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x11serviceResourceId\x12}\n" +
 	"\x13sub_resource_target\x18\x03 \x01(\tBM\xbaHJ\xc8\x01\x01rER\famlworkspaceR\x04blobR\x03dfsR\x04fileR\x05queueR\n" +
 	"redisCacheR\x05tableR\x05vaultR\x03webR\x11subResourceTarget\x12#\n" +
 	"\rspark_enabled\x18\x04 \x01(\bR\fsparkEnabled:\xf9\a\xbaH\xf5\a\x1a\xd6\x01\n" +

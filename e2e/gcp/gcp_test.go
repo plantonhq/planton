@@ -955,6 +955,63 @@ func TestGcpPlantonRunner_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpplantonrunner", "terraform")
 }
 
+// --- GCP API Key (soft-deleted for 30 days after destroy, and the key id
+// stays reserved for that window — scenarios carry the run id in key_id) ---
+
+func TestGcpApiKey_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpapikey", "pulumi")
+}
+
+func TestGcpApiKey_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpapikey", "terraform")
+}
+
+// --- GCP Firebase Project (enabling Firebase is permanent by Google's
+// design: create adopts an already-enabled project, destroy detaches, and
+// the test project stays Firebase-enabled — the verifier asserts the
+// detach contract, not absence) ---
+
+func TestGcpFirebaseProject_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseproject", "pulumi")
+}
+
+func TestGcpFirebaseProject_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseproject", "terraform")
+}
+
+// --- GCP Firebase app registrations (Android, Apple, Web). Each deploys
+// the GcpFirebaseProject prerequisite, which ADOPTS the test project's
+// permanent enablement; identities carry the run id (a project accepts each
+// package name / bundle id once); deletion_policy DELETE removes an app
+// immediately and permanently, so the verifier accepts a 404 or a DELETED
+// state as gone. The App Check scenarios are the instrument for Firebase's
+// documented propagation delay between a new app and its first App Check
+// configuration ---
+
+func TestGcpFirebaseAndroidApp_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseandroidapp", "pulumi")
+}
+
+func TestGcpFirebaseAndroidApp_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseandroidapp", "terraform")
+}
+
+func TestGcpFirebaseAppleApp_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseappleapp", "pulumi")
+}
+
+func TestGcpFirebaseAppleApp_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebaseappleapp", "terraform")
+}
+
+func TestGcpFirebaseWebApp_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebasewebapp", "pulumi")
+}
+
+func TestGcpFirebaseWebApp_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpfirebasewebapp", "terraform")
+}
+
 // --- GCP Certificate Map (SNI routing table: deploys the GcpCertManagerCert prerequisite chain) ---
 
 func TestGcpCertificateMap_Pulumi(t *testing.T) {

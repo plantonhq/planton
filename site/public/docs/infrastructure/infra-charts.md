@@ -133,7 +133,7 @@ The chart takes about ten parameters (availability zones, domain name, service n
 
 ## Platform Charts and Custom Charts
 
-Planton provides a set of curated charts for common infrastructure patterns, hosted in the public [plantonhq/infra-charts](https://github.com/plantonhq/infra-charts) repository. These include AWS ECS environments, EKS clusters, Pulumi state backends, and Terraform/OpenTofu state backends.
+Planton provides a set of curated charts for common infrastructure patterns, shipped with every [plantonhq/planton](https://github.com/plantonhq/planton) release. These include AWS ECS environments, EKS clusters, Pulumi state backends, and Terraform/OpenTofu state backends.
 
 Organizations can also create custom charts tailored to their specific standards. The process is straightforward: follow the same directory structure (Chart.yaml, values.yaml, templates/), encode your organization's best practices into the templates, and publish the chart to Planton. Custom charts appear alongside platform charts in the catalog.
 

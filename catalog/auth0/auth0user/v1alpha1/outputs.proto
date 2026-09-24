@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0user.v1alpha1;
+
+// Auth0UserStackOutputs contains the outputs from an Auth0 User deployment.
+// These outputs identify the user to every system that must recognize it: the
+// subject other declarations grant standing to, the profile fields as Auth0
+// stored them, and the module-minted password when no password was declared.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/user#read-only
+// https://www.pulumi.com/registry/packages/auth0/api-docs/user/#outputs
+message Auth0UserStackOutputs {
+  // user_id is the user's full identity-provider subject, connection prefix
+  // included (e.g. "auth0|66f1c2d3e4a5b6c7d8e9f0a1" for a database user,
+  // "email|..." or "sms|..." for a passwordless one). This is exactly the "sub"
+  // claim in every token Auth0 issues for the user, and the value a system
+  // that grants standing by identity-provider subject reads. Stable for the
+  // life of the user.
+  string user_id = 1;
+
+  // email is the user's email address as Auth0 stored it (lowercase).
+  string email = 2;
+
+  // username is the user's login name, when the connection requires one.
+  string username = 3;
+
+  // name is the user's full display name as stored, including the default
+  // Auth0 derived when none was declared.
+  string name = 4;
+
+  // nickname is the user's short name as stored, including the default Auth0
+  // derived when none was declared.
+  string nickname = 5;
+
+  // picture is the URL of the user's avatar as stored, including the
+  // placeholder Auth0 assigned when none was declared.
+  string picture = 6;
+
+  // connection_name is the name of the connection the user belongs to.
+  string connection_name = 7;
+
+  // password is the initial password the modules generated, set ONLY when
+  // spec.password was left empty on a database connection. A declared password
+  // is never echoed back here, and a passwordless user has none. Read it once
+  // into the credential store that owns it; every later rotation happens in
+  // Auth0, and this output keeps the value the modules minted, not the current
+  // one.
+  string password = 8;
+}

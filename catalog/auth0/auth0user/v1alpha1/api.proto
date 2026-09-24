@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0user.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/auth0/auth0user/v1alpha1/outputs.proto";
+import "catalog/auth0/auth0user/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// Auth0User is a component that manages an Auth0 User: an identity in one of
+// the tenant's database or passwordless connections, with its profile, its
+// authoritative roles and direct API permissions, and -- on a database
+// connection -- a password the modules mint when none is declared.
+//
+// This component creates the user, assigns its complete role list, and grants
+// its complete permission list in a single deployment. The user's identity-
+// provider subject is an output, so systems that grant standing by subject
+// read it by reference instead of copying a value from a dashboard.
+//
+// Use cases:
+// - A staff root or break-glass administrator born from the environment's own
+//   files, whose subject the platform trusts and whose password nobody typed
+// - A service or support account with the exact roles it needs, as code
+// - Seeded test identities for end-to-end suites, recreated with the environment
+//
+// Example manifest for a root account with a minted password:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0User
+// metadata:
+//   name: staff-root
+//   org: my-organization
+//   env: production
+// spec:
+//   connectionName:
+//     valueFrom:
+//       kind: Auth0Connection
+//       name: users
+//       fieldPath: status.outputs.name
+//   email: platform-root@example.com
+//   name: Platform root
+//   emailVerified: true
+//   verifyEmail: false
+//   roles:
+//     - valueFrom:
+//         kind: Auth0Role
+//         name: administrator
+//         fieldPath: status.outputs.id
+// ```
+//
+// Example manifest for a passwordless support identity with a direct permission:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0User
+// metadata:
+//   name: support-oncall
+//   org: my-organization
+// spec:
+//   connectionName:
+//     value: email
+//   email: support-oncall@example.com
+//   passwordless: true
+//   permissions:
+//     - name: read:tickets
+//       resourceServerIdentifier:
+//         value: https://api.example.com/
+// ```
+message Auth0User {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0User" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0User'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the user within Planton (never sent to Auth0;
+  //   the email, username, or phone number is the sign-in identifier)
+  // - org: Organization that owns this user
+  // - env: Environment (development, staging, production)
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the desired configuration for the Auth0 user: the
+  // connection, the profile, the password posture, roles, and permissions.
+  Auth0UserSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the current state of the Auth0 user. This is populated by
+  // the system after deployment and includes the user's subject and profile as
+  // stored, and the minted password when the modules generated one.
+  Auth0UserStatus status = 5;
+}
+
+// Auth0UserStatus represents the current state of an Auth0 User resource.
+// This is populated by the deployment system and contains read-only outputs.
+message Auth0UserStatus {
+  // outputs contains the stack outputs from the Auth0 user deployment: the
+  // user's identity-provider subject, the profile as stored, the connection,
+  // and the module-minted password when one was generated.
+  Auth0UserStackOutputs outputs = 1;
+}

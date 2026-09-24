@@ -10,7 +10,7 @@ This preset creates a scale-to-zero GPU cluster for deep-learning training -- tw
 
 ## Key Configuration Choices
 
-- **`STANDARD_NC6S_V3`** -- one V100 per node; swap for the family your quota grants (`az vm list-usage --location <region>` shows current usage)
+- **`Standard_NC6s_v3`** -- one V100 per node; swap for the family your quota grants (`az vm list-usage --location <region>` shows current usage)
 - **`PT10M` idle duration** -- shorter than the CPU preset deliberately: warm GPU nodes bill at rates where ten idle minutes already matter
 - **`maxNodeCount: 2`** -- a promise your quota must keep; the create succeeds regardless and the failure would arrive at scale-up
 - **`SYSTEM_ASSIGNED` identity** -- grant data and registry access before jobs run

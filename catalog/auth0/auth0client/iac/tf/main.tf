@@ -35,7 +35,7 @@ resource "auth0_client" "this" {
   initiate_login_uri   = local.initiate_login_uri
 
   # Organization settings
-  organization_usage           = local.organization_usage
+  organization_usage            = local.organization_usage
   organization_require_behavior = local.organization_require_behavior
 
   # Client metadata
@@ -130,9 +130,11 @@ resource "auth0_client_grant" "api_grants" {
   audience  = each.value.audience
   scopes    = coalesce(each.value.scopes, [])
 
-  # Organization settings (optional)
-  organization_usage    = each.value.organization_usage
-  allow_any_organization = coalesce(each.value.allow_any_organization, false)
+  # Organization settings (optional). allow_any_organization arrives as true or
+  # null from locals: null keeps the attribute off the API request entirely, which
+  # is what lets a tenant without the Organizations feature accept the grant.
+  organization_usage     = each.value.organization_usage
+  allow_any_organization = each.value.allow_any_organization
 }
 
 # Data source to read back computed-only attributes (client_secret, token_endpoint_auth_method)

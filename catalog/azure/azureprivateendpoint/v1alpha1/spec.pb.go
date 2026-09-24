@@ -204,6 +204,14 @@ type AzurePrivateEndpointServiceConnection struct {
 	// default_kind; reference the service's own output id in composed
 	// environments. Set this OR connection_alias, never both. Fixed at
 	// creation.
+	//
+	// Containment-exempt: the endpoint LIVES in its subnet (the subnet
+	// reference above places it) and REACHES the service named here.
+	// Private endpoints are how Azure PaaS joins a network, and most of
+	// what they reach is itself a container (a storage account, a Key
+	// Vault, a Cosmos account, a SQL server); without the exemption an
+	// endpoint would be drawn inside the service it merely connects to,
+	// torn out of the subnet that is its real home.
 	PrivateConnectionResourceId *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=private_connection_resource_id,json=privateConnectionResourceId,proto3" json:"private_connection_resource_id,omitempty"`
 	// The Private Link Service ALIAS to connect to, when the target is
 	// exposed through an alias rather than a resource ID (typically a
@@ -399,9 +407,9 @@ const file_catalog_azure_azureprivateendpoint_v1alpha1_spec_proto_rawDesc = "" +
 	" \x03(\v2S.dev.planton.azure.azureprivateendpoint.v1alpha1.AzurePrivateEndpointSpec.TagsEntryR\x04tags\x1a7\n" +
 	"\tTagsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x85\t\n" +
-	"%AzurePrivateEndpointServiceConnection\x12w\n" +
-	"\x1eprivate_connection_resource_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x1bprivateConnectionResourceId\x12\xc1\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x8b\t\n" +
+	"%AzurePrivateEndpointServiceConnection\x12}\n" +
+	"\x1eprivate_connection_resource_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\x98\xd4a\x01R\x1bprivateConnectionResourceId\x12\xc1\x01\n" +
 	"\x10connection_alias\x18\x02 \x01(\tB\x95\x01\xbaH\x91\x01\xba\x01\x8d\x01\n" +
 	"\x17connection_alias_suffix\x128connection_alias must end with .azure.privatelinkservice\x1a8this == '' || this.endsWith('.azure.privatelinkservice')R\x0fconnectionAlias\x12+\n" +
 	"\x11subresource_names\x18\x03 \x03(\tR\x10subresourceNames\x125\n" +

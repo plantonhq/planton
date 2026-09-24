@@ -476,7 +476,16 @@ message AzureDataFactoryManagedPrivateEndpoint {
   // The resource the endpoint connects to, by ARM ID -- a storage
   // account, a SQL server, or a Private Link Service. Pass a literal
   // ID or wire a reference to the target kind's own ID output.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef target_resource_id = 2 [(buf.validate.field).required = true];
+  //
+  // Containment-exempt: a managed private endpoint is the factory's
+  // own door to a data store it reads or writes; the factory is not
+  // deployed into that store. Most such targets are containers, and a
+  // factory wired to one by reference would otherwise be drawn inside
+  // the store it merely reaches.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_resource_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // For regular ARM targets: which sub-resource the endpoint binds,
   // e.g. "blob" for a storage account or "sqlServer" for a SQL

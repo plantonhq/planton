@@ -1,0 +1,43 @@
+# App Attest scenario: proves the surfaces minimal cannot -- the App Store
+# and team identity fields, the App Attest attestation configuration with
+# an explicit token lifetime, and a debug token -- and is the instrument
+# for Firebase's documented propagation delay between a new app and its
+# first App Check configuration (Google's own provider examples wait 30
+# seconds; the module adds no delay). The team id is format-valid and
+# belongs to no real Apple team: Google validates the shape at
+# configuration time and consults Apple only when a device attests, which
+# no lane exercises. DeviceCheck is deliberately absent -- it needs a real
+# .p8 key Apple issues to a developer account -- and is proven by the estate
+# declaration. The debug token is a throwaway attestation bypass for an app
+# that lives minutes and is removed permanently at teardown.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAppleApp
+metadata:
+  name: planton-oss-e2e-gcpfbios-appattest
+  id: planton-oss-e2e-gcpfbios-appattest
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebaseappleapp
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: planton-oss-e2e-gcpfbprj-prereq
+      fieldPath: status.outputs.project_id
+  displayName: planton e2e ios app attest ${E2E_RUN_ID}
+  bundleId: ai.planton.e2e.p${E2E_RUN_ID}
+  appStoreId: "1234567890"
+  teamId: PLANTONE2E
+  appCheck:
+    appAttest:
+      tokenTtl: 1800s
+    debugTokens:
+      - displayName: planton-e2e-simulator
+        token: 7d2e9f1b-4a6c-4e8d-b0f3-1c5a7e9b2d4f
+  deletionPolicy: DELETE

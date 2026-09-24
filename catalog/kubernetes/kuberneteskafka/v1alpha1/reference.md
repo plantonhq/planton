@@ -222,12 +222,12 @@ spec:
 | `spec.nodePools[].storage` | `KubernetesKafkaStorage` | yes |  |  |
 | `spec.nodePools[].storage.type` | `string` |  | `persistent-claim` |  |
 | `spec.nodePools[].storage.size` | `string` |  |  |  |
-| `spec.nodePools[].storage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.nodePools[].storage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.nodePools[].storage.deleteClaim` | `bool` |  |  |  |
 | `spec.nodePools[].storage.volumes` | `[]KubernetesKafkaStorageVolume` |  |  |  |
 | `spec.nodePools[].storage.volumes[].id` | `int32` |  |  |  |
 | `spec.nodePools[].storage.volumes[].size` | `string` | yes |  |  |
-| `spec.nodePools[].storage.volumes[].storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.nodePools[].storage.volumes[].storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.nodePools[].storage.volumes[].deleteClaim` | `bool` |  |  |  |
 | `spec.nodePools[].storage.volumes[].kraftMetadata` | `bool` |  |  |  |
 | `spec.nodePools[].resources` | `ContainerResources` |  |  |  |
@@ -468,8 +468,8 @@ StorageClass for persistent-claim storage. Accepts a literal
 class name or a reference to a KubernetesStorageClass resource.
 Empty = the cluster default class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.nodePools[].storage.deleteClaim
 
@@ -511,8 +511,8 @@ Volume size (e.g. "500Gi").
 
 StorageClass for this volume. Empty = the cluster default class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.nodePools[].storage.volumes[].deleteClaim
 
@@ -1353,8 +1353,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.nodePools[].storage.storageClass` | KubernetesStorageClass | `metadata.name` |
-| `spec.nodePools[].storage.volumes[].storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.nodePools[].storage.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.nodePools[].storage.volumes[].storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.listeners[].configuration.brokerCertChainAndKey.secretName` | KubernetesCertificate | `status.outputs.secret_name` |
 
 ## Referenced By

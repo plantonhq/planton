@@ -10,7 +10,7 @@ R2_BUCKET := planton-assets
 R2_ENDPOINT := https://074755a78d8e8f77c119a90a125e8a06.r2.cloudflarestorage.com
 R2_PROFILE := r2
 
-.PHONY: deps install lint build run dev devs clean clean-build preview-site sync-assets process-images check-images inbox
+.PHONY: deps install lint typecheck build run dev devs clean clean-build preview-site capture sync-assets process-images check-images inbox
 
 deps: install
 
@@ -20,9 +20,22 @@ install:
 lint: install
 	$(YARN) lint
 
-build: install lint
+# Type and workflow contracts run before export; browser acceptance runs on out/.
+typecheck: install
+	$(YARN) typecheck
+
+build: install lint typecheck
+	node --experimental-strip-types scripts/generate-workflow-icons.mjs --check
+	node --experimental-strip-types scripts/check-workflow-timeline.mjs
 	NODE_NO_WARNINGS=1 NEXT_TELEMETRY_DISABLED=1 $(YARN) build
 	mkdir -p out/_site && cp -r out/_next out/_site/_next
+
+# Design-review captures of the built export (see scripts/capture-pages.mjs).
+#   make capture OUT=/tmp/captures            all scenes
+#   make capture OUT=/tmp/after COMPARE=/tmp/before   and prove zero visual change
+OUT ?= /tmp/site-captures
+capture:
+	node scripts/capture-pages.mjs --out $(OUT) $(if $(COMPARE),--compare $(COMPARE),) $(if $(ONLY),--only $(ONLY),)
 
 # Development server
 devs: run
@@ -41,9 +54,11 @@ clean-build: clean install build
 
 preview: preview-site
 
-# Build and locally preview the static export from ./out
+# Build and locally preview the static export from ./out. NODE_NO_WARNINGS
+# keeps Node's own notices (an npm internal loading an ES module) out of the
+# terminal; a warning that shows here should be the site's, never the runtime's.
 preview-site: build
-	cd out && npx --yes serve -l $(PORT)
+	cd out && NODE_NO_WARNINGS=1 npx --yes serve -l $(PORT)
 
 # =============================================================================
 # Image Processing & Assets Sync

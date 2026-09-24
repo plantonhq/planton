@@ -20,11 +20,13 @@
 //   - The catalog's contract side is a proto field census from descriptors
 //     via pkg/crkreflect (spec_census.go) -- the same registry walk as
 //     pkg/secretcoverage; a reader who knows one walk knows both.
-//   - The catalog's module side is a consumed-resource and provider-pin
-//     census over every `*.tf` file of every kind's Terraform module
-//     (module_census.go). Every file, never main.tf alone: modules may
-//     split resources across sibling files, and a main.tf-only scan
-//     undercounts silently.
+//   - The catalog's module side is a consumed-resource, provider-pin, and
+//     provider-attachment census over every `*.tf` file of every kind's
+//     Terraform module (module_census.go). Every file, never main.tf
+//     alone: modules may split resources across sibling files, and a
+//     main.tf-only scan undercounts silently. The attachment census (which
+//     resource blocks set `provider = <name>`) is what makes a secondary
+//     channel visible rather than inferred.
 //
 // Parity is always measured against a NAMED provider version -- the pin --
 // never against "latest"; that is what makes a freshness promise
@@ -41,6 +43,19 @@
 // guessed. Gaps gate through the burn-down baseline (baseline.go) in the
 // pkg/anatomy / pkg/secretcoverage grain, surfaced by the `planton
 // provider-parity` developer command and the lint.provider-parity CI lane.
+//
+// Capability a provider publishes only in a SECONDARY CHANNEL (Google's
+// google-beta) enters through the admission list (admissions.go --
+// admissions/<channel>.yaml: one entry per resource per consuming kind,
+// with the reason and the promotion-tracking path). The baseline schema is
+// always the yardstick for a resource it serves; a channel-only resource is
+// accounted against the channel's schema exactly when it is admitted for
+// the kind and the module attaches it through the channel's provider, and
+// every other combination -- unadmitted consumption, an admission the
+// module does not attach, an attachment on a GA-served resource, an
+// admission the GA schema has since made unnecessary -- is a finding. The
+// public page renders the list. hack/guards/ensure_beta_admissions.sh is
+// the dependency-free half of the same gate, in the terraform-modules lane.
 //
 // The same total-accounting rule covers the PROVIDER BLOCK itself
 // (provider_config_accounting.go): the provider's own configuration

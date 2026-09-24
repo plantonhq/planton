@@ -76,7 +76,8 @@ func (id *Identity) buildFederationState(ctx context.Context, c client.Client, p
 	provisioned := meta.FindStatusCondition(idp.Status.Conditions, v1.ConditionProvisioned)
 	build.verificationDue = provisioned == nil ||
 		provisioned.ObservedGeneration != idp.Generation ||
-		idp.Status.Verification == nil
+		idp.Status.Verification == nil ||
+		operatorSideFailure(provisioned)
 
 	switch {
 	case idp.Spec.ActiveDirectory != nil:
@@ -190,8 +191,35 @@ func (id *Identity) buildBrokerState(ctx context.Context, c client.Client, names
 		GroupsClaim:      defaultString(oidc.GroupsClaim, "groups"),
 		SubjectClaim:     defaultString(oidc.SubjectClaim, "sub"),
 		DisplayName:      defaultString(spec.SignInButtonLabel, "Sign in with your organization"),
+		Primary:          oidc.Primary,
 		Endpoints:        endpoints,
 	}}
+}
+
+// operatorSideFailure is true when the Provisioned condition records a
+// failure of the OPERATOR'S OWN pass -- the realm could not be reconciled
+// (ConvergeFailed: an admin-token 500 while the identity server rolled), or
+// verification could not run (VerificationError) -- as opposed to a
+// directory verdict (VerificationFailed: a wrong bind password) or an
+// unbuildable desired state (DesiredStateUnavailable: a Secret missing).
+//
+// Such a failure must be re-examined by the next pass that converges: the
+// finish step otherwise returns early on "verification not due, nothing
+// repaired" and the False condition -- and the facts file's provisioned:false
+// -- outlives a transient by forever (proven live 2026-09-16: a realm that
+// converged clean every 30 seconds for five hours still read ConvergeFailed
+// from one 500 during a rollout). Directory verdicts keep the cadence law:
+// a failed bind is never re-probed on every pass, only on the manifest's
+// generation, a credential rotation, or a repair.
+func operatorSideFailure(provisioned *metav1.Condition) bool {
+	if provisioned == nil || provisioned.Status != metav1.ConditionFalse {
+		return false
+	}
+	switch provisioned.Reason {
+	case "ConvergeFailed", "VerificationError":
+		return true
+	}
+	return false
 }
 
 // federationForConverge maps the binding + build outcome onto the
@@ -236,13 +264,16 @@ func (id *Identity) finishFederation(ctx context.Context, c client.Client, idp *
 	}
 
 	verification := &v1.IdentityProviderVerification{Checks: make([]v1.IdentityProviderVerificationCheck, 0, len(checks))}
-	var failed []string
+	var failed, advisory []string
 	for _, check := range checks {
 		verification.Checks = append(verification.Checks, v1.IdentityProviderVerificationCheck{
 			Name: check.Name, Verdict: string(check.Verdict), Message: check.Message,
 		})
-		if check.Verdict == keycloak.VerdictFailed {
+		switch check.Verdict {
+		case keycloak.VerdictFailed:
 			failed = append(failed, check.Name)
+		case keycloak.VerdictUnknown:
+			advisory = append(advisory, check.Name)
 		}
 	}
 
@@ -251,6 +282,12 @@ func (id *Identity) finishFederation(ctx context.Context, c client.Client, idp *
 		Reason:             "Provisioned",
 		Message:            "federation is provisioned on the identity server and every verification check passed",
 		ObservedGeneration: idp.Generation,
+	}
+	if len(advisory) > 0 {
+		// An Unknown verdict is a stated condition, not a failure -- the
+		// condition stays True, and its sentence says so instead of
+		// claiming a pass the check did not make.
+		condition.Message = fmt.Sprintf("federation is provisioned on the identity server; every verification check passed except %v, which could not be decided and states its condition in status.verification", advisory)
 	}
 	if len(failed) > 0 {
 		condition.Status = metav1.ConditionFalse
@@ -364,6 +401,7 @@ func (id *Identity) projectFederationFacts(ctx context.Context, c client.Client,
 			// The broker's default display name -- kept in lockstep with
 			// buildBrokerState so the facts and the sign-in button agree.
 			facts.ProviderLabel = defaultString(fresh.Spec.SignInButtonLabel, "Sign in with your organization")
+			facts.Primary = fresh.Spec.OIDC.Primary
 		}
 		facts.Provisioned = meta.IsStatusConditionTrue(fresh.Status.Conditions, v1.ConditionProvisioned)
 		if fresh.Status.Verification != nil {

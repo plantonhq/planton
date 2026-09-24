@@ -1,0 +1,38 @@
+# API-key scenario: proves the optional edge to GcpApiKey live. The key is
+# an OPTIONAL composition seam (an app registers fine without one), so it
+# is declared here through the e2e-prerequisites annotation rather than in
+# the registry: the harness deploys the key kind's minimal fixture (an
+# unrestricted key whose key_id carries the run id, so its 30-day
+# soft-delete reservation never collides) and resolves apiKeyId from its
+# uid output. Firebase accepts an unrestricted key for any app; a
+# restricted key must allow this package name and the Firebase APIs the
+# app uses -- the shape the key kind's firebase-android-key preset shows.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAndroidApp
+metadata:
+  name: planton-oss-e2e-gcpfband-apikey
+  id: planton-oss-e2e-gcpfband-apikey
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebaseandroidapp
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpApiKey"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: planton-oss-e2e-gcpfbprj-prereq
+      fieldPath: status.outputs.project_id
+  displayName: planton e2e android api key ${E2E_RUN_ID}
+  packageName: ai.planton.e2e.k${E2E_RUN_ID_UNDERSCORE}
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: planton-oss-e2e-gcpakey-minimal
+      fieldPath: status.outputs.uid
+  deletionPolicy: DELETE

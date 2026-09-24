@@ -175,6 +175,7 @@ Fields on other kinds that can point at this resource:
 | GcpAlloydbCluster | `spec.projectId` | `status.outputs.project_id` |
 | GcpAlloydbInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpAlloydbUser | `spec.projectId` | `status.outputs.project_id` |
+| GcpApiKey | `spec.projectId` | `status.outputs.project_id` |
 | GcpArtifactRegistryRepo | `spec.projectId` | `status.outputs.project_id` |
 | GcpBackendBucket | `spec.projectId` | `status.outputs.project_id` |
 | GcpBackendService | `spec.projectId` | `status.outputs.project_id` |
@@ -213,6 +214,7 @@ Fields on other kinds that can point at this resource:
 | GcpEventarcTrigger | `spec.projectId` | `status.outputs.project_id` |
 | GcpFilestoreInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpFilestoreInstance | `spec.networkConfig.pscEndpointProject` | `status.outputs.project_id` |
+| GcpFirebaseProject | `spec.projectId` | `status.outputs.project_id` |
 | GcpFirestoreBackupSchedule | `spec.projectId` | `status.outputs.project_id` |
 | GcpFirestoreDatabase | `spec.projectId` | `status.outputs.project_id` |
 | GcpFirestoreIndex | `spec.projectId` | `status.outputs.project_id` |

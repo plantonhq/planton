@@ -15,7 +15,7 @@ tags:
 
 Every infrastructure deployment managed by Planton uses an Infrastructure as Code (IaC) engine — Pulumi, Terraform, or OpenTofu — under the hood. These engines track the state of your infrastructure in state files: a record of what resources exist, their current configuration, and the relationships between them. Without state, the IaC engine cannot determine what to create, update, or delete on the next deployment.
 
-State backend connections tell Planton where to store these state files. Every new organization starts with platform-managed backends for both Pulumi and Terraform/OpenTofu, so you can deploy infrastructure immediately. OpenTofu uses the same state format and backend configuration as Terraform, so a single Terraform state backend serves both engines. If you need state to live in your own cloud account, you configure a self-managed backend and Planton handles reading, writing, and locking state during deployments. Import operations also write to the state backend — when you [import an existing cloud resource](/docs/infrastructure/importing-resources), the runner writes the resource's current state to the backend without modifying the actual infrastructure.
+State backend connections tell Planton where to store these state files. Every new organization starts with Planton-managed backends for both Pulumi and Terraform/OpenTofu, so you can deploy infrastructure immediately. OpenTofu uses the same state format and backend configuration as Terraform, so a single Terraform state backend serves both engines. If you need state to live in your own cloud account, you configure a self-managed backend and Planton handles reading, writing, and locking state during deployments. Import operations also write to the state backend — when you [import an existing cloud resource](/docs/infrastructure/importing-resources), the runner writes the resource's current state to the backend without modifying the actual infrastructure.
 
 ## Why State Backend Choice Matters
 
@@ -27,18 +27,18 @@ State files contain sensitive information — resource IDs, connection strings, 
 
 There is no universally right answer. The choice depends on your security requirements, compliance constraints, and operational preferences.
 
-## Platform-Managed Defaults
+## Planton-Managed Defaults
 
 Every new organization comes with two pre-configured state backends: one for Pulumi and one for Terraform/OpenTofu. Planton provisions and manages the underlying storage, so you can start deploying infrastructure without any state backend configuration.
 
-Platform-managed backends are the default for new organizations. When a stack job runs, it uses the organization's default backend automatically. You do not need to select a backend, provide credentials, or manage storage buckets.
+Planton-managed backends are the default for new organizations. When a stack job runs, it uses the organization's default backend automatically. You do not need to select a backend, provide credentials, or manage storage buckets.
 
 **Limitations:**
 
-- Platform-managed backends are only available when using Planton-hosted runners. If you deploy a runner in your own infrastructure, you need a self-managed backend (S3, GCS, Azure Blob, Cloudflare R2, Terraform Cloud/Enterprise, or Pulumi Cloud) because customer-deployed runners cannot access platform-managed storage.
+- Planton-managed backends are only available when using Planton-hosted runners. If you deploy a runner in your own infrastructure, you need a self-managed backend (S3, GCS, Azure Blob, Cloudflare R2, Terraform Cloud/Enterprise, or Pulumi Cloud) because a runner you operate cannot access Planton-managed storage. For the same reason, Planton refuses to make one of your runners the organization's default runner while any of your state lives in Planton-managed storage.
 - You do not control the storage location or encryption keys. If compliance requirements mandate that state files remain in your cloud account, configure a self-managed backend instead.
 
-To switch away from platform-managed defaults, create a new state backend connection, configure it with your preferred storage, and mark it as the default for your organization. See [Switching from Platform-Managed to Self-Managed](#switching-from-platform-managed-to-self-managed) for details.
+To switch away from Planton-managed defaults, create a new state backend connection, configure it with your preferred storage, and mark it as the default for your organization. See [Switching from Planton-Managed to Self-Managed](#switching-from-planton-managed-to-self-managed) for details.
 
 ## Authentication Mode
 
@@ -71,7 +71,7 @@ Use this mode when:
 
 ### Compatibility
 
-Platform-managed backends always handle their own authentication. The authentication mode choice applies only to self-managed backends. If you create a self-managed backend and select Runner Environment, the platform validates that the combination is valid — for example, you cannot pair a platform-managed backend with runner-provided credentials.
+Planton-managed backends always handle their own authentication. The authentication mode choice applies only to self-managed backends. If you create a self-managed backend and select Runner Environment, the platform validates that the combination is valid — for example, you cannot pair a Planton-managed backend with runner-provided credentials.
 
 ```mermaid
 flowchart TB
@@ -255,16 +255,27 @@ Planton automatically organizes state files within the backend bucket. Each depl
 
 Pulumi, Terraform, and OpenTofu all support state locking to prevent concurrent modifications. For the S3 backend with Terraform or OpenTofu, configure a DynamoDB table for locking. Pulumi handles locking differently depending on the backend (Pulumi Cloud handles it natively; DIY backends use the storage provider's conditional writes).
 
-### Switching from Platform-Managed to Self-Managed
+### Switching from Planton-Managed to Self-Managed
 
-To move from the platform-managed default to your own storage:
+To move from the Planton-managed default to your own storage:
 
 1. Create a new state backend connection (Pulumi or Terraform/OpenTofu) through the web console or CLI.
 2. Select your preferred backend type (S3, GCS, Azure Blob, Cloudflare R2, or Pulumi Cloud for Pulumi; Terraform Cloud, S3, GCS, Azure RM, or Cloudflare R2 for Terraform/OpenTofu).
 3. Choose the authentication mode and provide credentials if using Provide Credentials.
 4. Mark the new connection as the default for your organization.
 
-New deployments use the new default backend. The platform-managed connection remains in your organization but is no longer used for new stack jobs. Existing state files in the platform-managed backend are not migrated automatically — state migration is a manual operation if you need to consolidate.
+New deployments use the new default backend. The Planton-managed connection remains in your organization but is no longer used for new stack jobs. Existing resources keep their state in the Planton-managed backend until you move them. Move them all at once, from **Settings → State Backends** in the console or from the CLI:
+
+```bash
+# See what still lives in Planton-managed storage
+planton state-backend list-planton-managed
+
+# Preview the move, then run it (give --to once per provisioner)
+planton state-backend move-off-planton --to <your-backend> --dry-run
+planton state-backend move-off-planton --to <your-backend>
+```
+
+To move a single resource, use `planton tofu state migrate-backend <kind> <name> --destination-state-backend <slug>` (or `planton pulumi state migrate-backend` for Pulumi). Moving every resource off Planton-managed state is what lets a runner of your own carry your deploys (see [Planton-Hosted Runners](/docs/runner/planton-hosted-runners#running-deploys-on-your-own-runner)).
 
 ## Related Documentation
 

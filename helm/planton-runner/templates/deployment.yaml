@@ -101,9 +101,17 @@ spec:
             {{- end }}
             {{- end }}
           ports:
+            # The runner's port serves the standard gRPC health service in
+            # EVERY execution mode (the CloudOps server's in grpc/dual, a
+            # health-only server's in temporal), so it is the one probe target
+            # a chart that cannot know the runner's mode can rely on.
             - name: grpc
               containerPort: {{ .Values.runner.port }}
               protocol: TCP
+            # The tunnel agent's health and metrics ports. They exist only when
+            # the identity document carries a tunnel endpoint (an instance that
+            # operates a runner tunnel); a runner enrolled with a self-hosted
+            # instance opens neither. Declared for what they are, never probed.
             - name: health
               containerPort: 8093
               protocol: TCP
@@ -115,20 +123,36 @@ spec:
               containerPort: {{ .Values.build.webhookPort }}
               protocol: TCP
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: health
-            initialDelaySeconds: 10
-            periodSeconds: 15
-            timeoutSeconds: 5
-            failureThreshold: 3
+          # Probes ride the gRPC health service on the runner's port -- the
+          # same contract the operator's in-cluster runner uses, so every
+          # runner is probed one way whatever its tunnel. A gRPC probe names a
+          # port number, not a named port.
+          #
+          # Readiness gates on the IaC worker's health key: SERVING once the
+          # worker is actually polling its Temporal queue, not merely once the
+          # port is bound. An explicit grpc mode runs no worker and never
+          # registers that key, so it is probed on the overall service instead;
+          # auto derives grpc only from a document that names no deploy queue,
+          # which no current instance issues -- a runner meant to be grpc-only
+          # says so in runner.executionMode.
           readinessProbe:
-            httpGet:
-              path: /healthz
-              port: health
+            grpc:
+              port: {{ .Values.runner.port }}
+              {{- if ne .Values.runner.executionMode "grpc" }}
+              service: ai.planton.runner.iac.worker
+              {{- end }}
             initialDelaySeconds: 5
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          # Liveness probes only the overall health service, never the worker
+          # key: a Temporal outage must read as "not ready", never as a
+          # kill-and-restart loop of a healthy process.
+          livenessProbe:
+            grpc:
+              port: {{ .Values.runner.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 30
             timeoutSeconds: 5
             failureThreshold: 3
           resources:

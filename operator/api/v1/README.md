@@ -17,7 +17,8 @@ The CRD types are the user contract. Everything a user can configure and everyth
 A user should be able to apply a CR with only `spec.version` set and get a working deployment. All storage sizes, component toggles, and ingress settings have sensible defaults:
 
 - PostgreSQL: 10Gi per instance
-- Cache (Valkey, redis-protocol): 1Gi
+- Store (Valkey, redis-protocol): persisted on 1Gi, a 768mb dataset ceiling with `allkeys-lru` eviction under a 1Gi memory limit -- the store carries the live build-log stream beside the cache, so it persists, and the ceiling is what makes what it persists always reload
+- Every workload the operator renders carries a sizing the operator chose (requests for CPU and memory, a memory limit, never a CPU limit), declared as named constants at the top of its renderer with the reason beside them -- never a chart's smallest preset by omission
 - Ingress: disabled (use port-forward)
 - Runner and builds (Tekton): enabled -- deploying and building are the product; opting out is the explicit act
 - Optional components (Graph): disabled

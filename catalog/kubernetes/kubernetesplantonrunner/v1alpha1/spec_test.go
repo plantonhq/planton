@@ -73,6 +73,13 @@ var _ = ginkgo.Describe("KubernetesPlantonRunnerSpec Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
+			ginkgo.It("should accept a mirrored chart repository", func() {
+				input := minimalValidRunner()
+				input.Spec.ChartRepository = stringPtr("oci://asia-south1-docker.pkg.dev/plantonhq/charts")
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
 			ginkgo.It("should accept container sizing overrides", func() {
 				input := minimalValidRunner()
 				input.Spec.Resources = &kubernetes.ContainerResources{
@@ -125,6 +132,14 @@ var _ = ginkgo.Describe("KubernetesPlantonRunnerSpec Validation Tests", func() {
 				input.Spec.RunnerName = "Prod-Runner"
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("should reject a chart repository that is not an oci:// path", func() {
+				for _, repo := range []string{"ghcr.io/plantonhq/charts", "oci://ghcr.io/plantonhq/charts/"} {
+					input := minimalValidRunner()
+					input.Spec.ChartRepository = stringPtr(repo)
+					gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), repo)
+				}
 			})
 
 			ginkgo.It("should reject a chart version range", func() {

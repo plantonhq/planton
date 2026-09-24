@@ -97,7 +97,8 @@ spec:
     - name: queue-conn
       value: DefaultEndpointsProtocol=https;AccountName=test
   registries:
-    - server: testregistry.azurecr.io
+    - server:
+        value: testregistry.azurecr.io
       identity: System
   ingress:
     external_enabled: true

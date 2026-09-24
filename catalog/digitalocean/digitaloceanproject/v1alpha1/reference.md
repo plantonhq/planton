@@ -158,7 +158,11 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| DigitalOceanApp | `spec.projectId` | `status.outputs.project_id` |
+| DigitalOceanDatabaseCluster | `spec.projectId` | `status.outputs.project_id` |
 | DigitalOceanDropletAutoscalePool | `spec.dropletTemplate.projectId` | `status.outputs.project_id` |
+| DigitalOceanFunction | `spec.projectId` | `status.outputs.project_id` |
+| DigitalOceanLoadBalancer | `spec.projectId` | `status.outputs.project_id` |
 
 ## See Also
 

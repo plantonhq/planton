@@ -75,7 +75,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonoperatorv1alpha
 		// OCI chart reference — joined string, no RepositoryOpts (Pulumi's
 		// helm.v3.Release does not resolve oci:// through RepositoryOpts
 		// the way the Terraform provider does).
-		Chart:   pulumi.String(vars.HelmOciRepo + "/" + vars.HelmChartName),
+		Chart:   pulumi.String(locals.ChartRepository + "/" + vars.HelmChartName),
 		Version: pulumi.String(locals.ChartVersion),
 		Values:  pulumi.ToMap(mergedValues),
 		// The module owns namespace creation (create_namespace flag). The

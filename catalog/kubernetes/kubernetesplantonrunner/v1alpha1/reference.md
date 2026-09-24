@@ -80,6 +80,7 @@ spec:
 | `spec.build.enabled` | `bool` |  |  |  |
 | `spec.build.tektonNamespace` | `string` |  |  |  |
 | `spec.helmValues` | `string` |  |  |  |
+| `spec.chartRepository` | `string` |  | `oci://ghcr.io/plantonhq/charts` |  |
 
 ## Field Details
 
@@ -259,6 +260,19 @@ does not model (nodeSelector, tolerations, extra env) — never for
 secret material: the enrollment token is carried by the
 module-created Secret, and the enrollment block is re-pinned after
 the merge so an override can never move it into rendered values.
+
+### spec.chartRepository
+
+`string` · optional (explicit presence)
+
+The OCI registry path the planton-runner chart is pulled from. Defaults
+to oci://ghcr.io/plantonhq/charts. Every chart release is also
+published, byte for byte, to Google Artifact Registry at
+oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+from Google, or name a mirror of your own holding the same charts.
+
+- default: `oci://ghcr.io/plantonhq/charts`
+- rule: chart repository must be an OCI path such as "oci://asia-south1-docker.pkg.dev/plantonhq/charts": oci:// scheme, no trailing slash
 
 ## Outputs
 

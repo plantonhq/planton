@@ -231,11 +231,17 @@ type AzureServiceBusSubscriptionSpec struct {
 	// target's queue_name or topic_name output (no default kind: either
 	// entity type is a legal target), or pass a literal name. The target
 	// must exist before the subscription.
+	//
+	// Containment-exempt: the subscription LIVES in its own topic and
+	// forwards TO the target. When the target is another topic (a
+	// container), the subscription would otherwise be torn between the
+	// topic it belongs to and the topic it feeds; on a diagram it stays
+	// in its topic with a line out.
 	ForwardTo *v1.StringValueOrRef `protobuf:"bytes,11,opt,name=forward_to,json=forwardTo,proto3" json:"forward_to,omitempty"`
 	// Auto-forward dead-lettered messages to another queue or topic in the
 	// same namespace, by entity name -- centralize poison-message handling.
 	// Reference the target's queue_name or topic_name output, or pass a
-	// literal name.
+	// literal name. Access, not placement, like `forward_to`.
 	ForwardDeadLetteredMessagesTo *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=forward_dead_lettered_messages_to,json=forwardDeadLetteredMessagesTo,proto3" json:"forward_dead_lettered_messages_to,omitempty"`
 	// The subscription's gate state: ACTIVE (normal), DISABLED (delivery
 	// and new arrivals stopped), or RECEIVE_DISABLED (arrivals accumulate,
@@ -670,7 +676,7 @@ var File_catalog_azure_azureservicebussubscription_v1alpha1_spec_proto protorefl
 
 const file_catalog_azure_azureservicebussubscription_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureservicebussubscription/v1alpha1/spec.proto\x126dev.planton.azure.azureservicebussubscription.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xb0\x0e\n" +
+	"=catalog/azure/azureservicebussubscription/v1alpha1/spec.proto\x126dev.planton.azure.azureservicebussubscription.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbd\x0e\n" +
 	"\x1fAzureServiceBusSubscriptionSpec\x12u\n" +
 	"\btopic_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\x99\x10\x92\xd4a\x17status.outputs.topic_idR\atopicId\x12\xe8\x02\n" +
 	"\x11subscription_name\x18\x02 \x01(\tB\xba\x02\xbaH\xb6\x02\xba\x01\xa9\x02\n" +
@@ -684,10 +690,10 @@ const file_catalog_azure_azureservicebussubscription_v1alpha1_spec_proto_rawDesc
 	")dead_lettering_on_filter_evaluation_error\x18\b \x01(\bB\b\x8a\xa6\x1d\x04trueH\x04R$deadLetteringOnFilterEvaluationError\x88\x01\x01\x12.\n" +
 	"\x10requires_session\x18\t \x01(\bH\x05R\x0frequiresSession\x88\x01\x01\x12A\n" +
 	"\x1abatched_operations_enabled\x18\n" +
-	" \x01(\bH\x06R\x18batchedOperationsEnabled\x88\x01\x01\x12Q\n" +
+	" \x01(\bH\x06R\x18batchedOperationsEnabled\x88\x01\x01\x12W\n" +
 	"\n" +
-	"forward_to\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\tforwardTo\x12|\n" +
-	"!forward_dead_lettered_messages_to\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x1dforwardDeadLetteredMessagesTo\x12\x80\x01\n" +
+	"forward_to\x18\v \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\x98\xd4a\x01R\tforwardTo\x12\x82\x01\n" +
+	"!forward_dead_lettered_messages_to\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\x98\xd4a\x01R\x1dforwardDeadLetteredMessagesTo\x12\x80\x01\n" +
 	"\x06status\x18\r \x01(\x0e2^.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionStatusValueB\b\xbaH\x05\x82\x01\x02\x10\x01R\x06status\x12\x9d\x01\n" +
 	"\x1aclient_scoped_subscription\x18\x0e \x01(\v2_.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusClientScopedSubscriptionR\x18clientScopedSubscription\x12m\n" +
 	"\x05rules\x18\x0f \x03(\v2W.dev.planton.azure.azureservicebussubscription.v1alpha1.AzureServiceBusSubscriptionRuleR\x05rulesB\x10\n" +

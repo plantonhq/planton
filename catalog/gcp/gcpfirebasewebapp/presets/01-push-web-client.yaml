@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseWebApp
+metadata:
+  name: console-web
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+  displayName: Console
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: browser-key
+      fieldPath: status.outputs.uid
+  deletionPolicy: PREVENT

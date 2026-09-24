@@ -158,7 +158,7 @@ spec:
 | `spec.storage.azure.accountKeySecret.name` | `string` | yes |  |  |
 | `spec.storage.azure.accountKeySecret.key` | `string` | yes |  |  |
 | `spec.diskSize` | `string` |  | `10Gi` |  |
-| `spec.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.ephemeral` | `bool` |  |  |  |
 | `spec.retention` | `string` |  | `24h` |  |
 | `spec.jaegerReceiversEnabled` | `bool` |  | `false` |  |
@@ -454,8 +454,8 @@ Storage class for the volumes. Accepts a literal name or a
 reference to a KubernetesStorageClass resource. Empty = the
 cluster's default class. Ignored when `ephemeral` is true.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.ephemeral
 
@@ -723,7 +723,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.metricsGenerator.remoteWriteUrl` | KubernetesKubePrometheusStack | `status.outputs.prometheus_endpoint` |
 
 ## See Also

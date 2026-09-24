@@ -592,11 +592,27 @@ const (
 	// service-access resource fights the org's own argument with a
 	// perpetual diff). Deleting this deletes the entire organization.
 	// 1270 opens the Organizations sub-band (1270-1279).
+	//
+	// A container kind: the organization is the outer wall of the
+	// tenancy tree AWS's own console draws -- organizational units are
+	// rooms inside it and member accounts stand inside those. A
+	// first-level unit names the organization through its parent
+	// reference and is placed inside it; a policy attached to the root
+	// names the organization too, but a policy is a guard applied from
+	// above, never a resident, and its attachment reference is
+	// containment-exempt on its spec.
 	CloudResourceKind_AwsOrganization CloudResourceKind = 1270
 	// An organizational unit in the org's OU tree. The display name is
 	// an explicit spec field (OU names allow spaces metadata.name cannot
 	// carry); the parent reference (root or parent OU) is required and
 	// immutable, so the organization is a registry prerequisite.
+	//
+	// A container kind: a unit is a room of the tenancy tree -- nested
+	// units and member accounts name it through their parent reference
+	// and are placed inside it. A policy attached to a unit names it too
+	// and stands beside the room (containment-exempt on the policy's
+	// spec): one policy attaches to many units and cannot live in all of
+	// them.
 	CloudResourceKind_AwsOrganizationalUnit CloudResourceKind = 1271
 	// A MEMBER account of the organization: creation, OU placement, and
 	// the account-level settings satellites (alternate/primary contacts,
@@ -1894,6 +1910,22 @@ const (
 	CloudResourceKind_GcpEventarcTrigger    CloudResourceKind = 3162
 	CloudResourceKind_GcpEventarcMessageBus CloudResourceKind = 3163
 	CloudResourceKind_GcpPlantonRunner      CloudResourceKind = 3164
+	// 3170–3179: GCP organization & governance (folders, org policies, tags,
+	// budgets, identity groups, API keys)
+	CloudResourceKind_GcpApiKey CloudResourceKind = 3177
+	// 3250–3259: GCP Firebase (project enablement, app registrations, and
+	// the Firebase-adjacent products that follow)
+	// GcpFirebaseProject is the container the app registrations live in:
+	// "Firebase on this project" is the room, the Android/Apple/Web apps are
+	// what is placed inside it.
+	CloudResourceKind_GcpFirebaseProject CloudResourceKind = 3250
+	// The three app registrations exist only inside a Firebase-enabled
+	// project, so each names GcpFirebaseProject as its prerequisite: the E2E
+	// harness deploys the enablement first, and a chart that references the
+	// enablement's project_id output orders the registration after it.
+	CloudResourceKind_GcpFirebaseAndroidApp CloudResourceKind = 3251
+	CloudResourceKind_GcpFirebaseAppleApp   CloudResourceKind = 3252
+	CloudResourceKind_GcpFirebaseWebApp     CloudResourceKind = 3253
 	// 4000–4999: Kubernetes resources, organized in family sub-bands
 	// (4030–4069 also hosts CNI/autoscaling/DR addons; 4130–4149 hosts
 	// analytics & ML; 4190–4199 reserved for growth)
@@ -2421,6 +2453,7 @@ const (
 	CloudResourceKind_Auth0ResourceServer CloudResourceKind = 8003
 	CloudResourceKind_Auth0Action         CloudResourceKind = 8004
 	CloudResourceKind_Auth0Role           CloudResourceKind = 8005
+	CloudResourceKind_Auth0User           CloudResourceKind = 8006
 	// 9000–9999: OpenFGA resources
 	// Note: OpenFGA is Terraform-only - there is no Pulumi provider available.
 	// Pulumi modules for OpenFGA resources are pass-through placeholders.
@@ -2924,6 +2957,11 @@ var (
 		3162: "GcpEventarcTrigger",
 		3163: "GcpEventarcMessageBus",
 		3164: "GcpPlantonRunner",
+		3177: "GcpApiKey",
+		3250: "GcpFirebaseProject",
+		3251: "GcpFirebaseAndroidApp",
+		3252: "GcpFirebaseAppleApp",
+		3253: "GcpFirebaseWebApp",
 		4000: "KubernetesNamespace",
 		4001: "KubernetesDeployment",
 		4002: "KubernetesStatefulSet",
@@ -3151,6 +3189,7 @@ var (
 		8003: "Auth0ResourceServer",
 		8004: "Auth0Action",
 		8005: "Auth0Role",
+		8006: "Auth0User",
 		9000: "OpenFgaStore",
 		9001: "OpenFgaAuthorizationModel",
 		9002: "OpenFgaRelationshipTuple",
@@ -3648,6 +3687,11 @@ var (
 		"GcpEventarcTrigger":                             3162,
 		"GcpEventarcMessageBus":                          3163,
 		"GcpPlantonRunner":                               3164,
+		"GcpApiKey":                                      3177,
+		"GcpFirebaseProject":                             3250,
+		"GcpFirebaseAndroidApp":                          3251,
+		"GcpFirebaseAppleApp":                            3252,
+		"GcpFirebaseWebApp":                              3253,
 		"KubernetesNamespace":                            4000,
 		"KubernetesDeployment":                           4001,
 		"KubernetesStatefulSet":                          4002,
@@ -3875,6 +3919,7 @@ var (
 		"Auth0ResourceServer":                            8003,
 		"Auth0Action":                                    8004,
 		"Auth0Role":                                      8005,
+		"Auth0User":                                      8006,
 		"OpenFgaStore":                                   9000,
 		"OpenFgaAuthorizationModel":                      9001,
 		"OpenFgaRelationshipTuple":                       9002,
@@ -4018,9 +4063,23 @@ type CloudResourceKindMeta struct {
 	// for providers without a service taxonomy — the crkreflect registry tests
 	// enforce both directions, including that the group belongs to the kind's
 	// own provider.
-	ServiceGroup  CloudProviderServiceGroup `protobuf:"varint,10,opt,name=service_group,json=serviceGroup,proto3,enum=dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup" json:"service_group,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	ServiceGroup CloudProviderServiceGroup `protobuf:"varint,10,opt,name=service_group,json=serviceGroup,proto3,enum=dev.planton.shared.cloudresourcekind.CloudProviderServiceGroup" json:"service_group,omitempty"`
+	// set ONLY for cluster kinds whose deploy publishes a Kubernetes provider
+	// connection (the platform materializes one from the cluster's stack
+	// outputs, named by the manifest's planton.dev/connection-name annotation
+	// or the default <env>-<name>). the fact drives dependency ORDERING, not
+	// drawing: a Kubernetes workload whose planton.dev/connection names the
+	// connection such a cluster will publish runs on that cluster and orders
+	// after it -- an edge every lane that orders a manifest set derives from
+	// the manifests alone (pkg/manifestgraph and the platform's DAG factory),
+	// so a first deploy or a recreate never runs a workload before the cluster
+	// whose connection it needs. the platform pairs every flagged kind with a
+	// connection materializer; a kind flagged here without one would strand its
+	// workloads waiting on a connection that never comes, which is why the
+	// platform's conformance test binds the two.
+	PublishesKubernetesConnection bool `protobuf:"varint,11,opt,name=publishes_kubernetes_connection,json=publishesKubernetesConnection,proto3" json:"publishes_kubernetes_connection,omitempty"`
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
 }
 
 func (x *CloudResourceKindMeta) Reset() {
@@ -4121,6 +4180,13 @@ func (x *CloudResourceKindMeta) GetServiceGroup() CloudProviderServiceGroup {
 		return x.ServiceGroup
 	}
 	return CloudProviderServiceGroup_cloud_provider_service_group_unspecified
+}
+
+func (x *CloudResourceKindMeta) GetPublishesKubernetesConnection() bool {
+	if x != nil {
+		return x.PublishesKubernetesConnection
+	}
+	return false
 }
 
 // marks one of a kind's schema versions as deprecated. carried on
@@ -4261,7 +4327,7 @@ var File_shared_cloudresourcekind_cloud_resource_kind_proto protoreflect.FileDes
 
 const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\n" +
-	"2shared/cloudresourcekind/cloud_resource_kind.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a;shared/cloudresourcekind/cloud_provider_service_group.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\xc9\x05\n" +
+	"2shared/cloudresourcekind/cloud_resource_kind.proto\x12$dev.planton.shared.cloudresourcekind\x1a google/protobuf/descriptor.proto\x1a;shared/cloudresourcekind/cloud_provider_service_group.proto\x1a6shared/cloudresourcekind/cloud_resource_provider.proto\"\x91\x06\n" +
 	"\x15CloudResourceKindMeta\x12W\n" +
 	"\bprovider\x18\x01 \x01(\x0e2;.dev.planton.shared.cloudresourcekind.CloudResourceProviderR\bprovider\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x12\n" +
@@ -4273,14 +4339,15 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1ekubernetes_manifest_projection\x18\b \x01(\v2B.dev.planton.shared.cloudresourcekind.KubernetesManifestProjectionR\x1ckubernetesManifestProjection\x12m\n" +
 	"\fdeprecations\x18\t \x03(\v2I.dev.planton.shared.cloudresourcekind.CloudResourceKindVersionDeprecationR\fdeprecations\x12d\n" +
 	"\rservice_group\x18\n" +
-	" \x01(\x0e2?.dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupR\fserviceGroup\"S\n" +
+	" \x01(\x0e2?.dev.planton.shared.cloudresourcekind.CloudProviderServiceGroupR\fserviceGroup\x12F\n" +
+	"\x1fpublishes_kubernetes_connection\x18\v \x01(\bR\x1dpublishesKubernetesConnection\"S\n" +
 	"#CloudResourceKindVersionDeprecation\x12\x18\n" +
 	"\aversion\x18\x01 \x01(\tR\aversion\x12\x12\n" +
 	"\x04note\x18\x02 \x01(\tR\x04note\"S\n" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\x83\xdc\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xda\xde\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -4293,8 +4360,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\n" +
 	"AwsEcrRepo\x10\xec\a\x1a\x1a\xa2\xf7\x04\x16\b\f\x12\bv1alpha1\"\x06awsecrPe\x121\n" +
 	"\rAwsEcsCluster\x10\xed\a\x1a\x1d\xa2\xf7\x04\x19\b\f\x12\bv1alpha1\"\aawsecsc0\x01Pe\x127\n" +
-	"\rAwsEcsService\x10\xee\a\x1a#\xa2\xf7\x04\x1f\b\f\x12\bv1alpha1\"\aawsecss:\x06\xed\a\x8f\b\xbc\bPe\x126\n" +
-	"\rAwsEksCluster\x10\xef\a\x1a\"\xa2\xf7\x04\x1e\b\f\x12\bv1alpha1\"\x06awseks0\x01:\x04\xbc\b\xf0\aPe\x12,\n" +
+	"\rAwsEcsService\x10\xee\a\x1a#\xa2\xf7\x04\x1f\b\f\x12\bv1alpha1\"\aawsecss:\x06\xed\a\x8f\b\xbc\bPe\x128\n" +
+	"\rAwsEksCluster\x10\xef\a\x1a$\xa2\xf7\x04 \b\f\x12\bv1alpha1\"\x06awseks0\x01:\x04\xbc\b\xf0\aPeX\x01\x12,\n" +
 	"\n" +
 	"AwsIamRole\x10\xf0\a\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsiamrPi\x12.\n" +
 	"\tAwsLambda\x10\xf1\a\x1a\x1e\xa2\xf7\x04\x1a\b\f\x12\bv1alpha1\"\x06awslam:\x02\xf0\aPd\x123\n" +
@@ -4452,9 +4519,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x0eAwsSsmDocument\x10\xed\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsssmdPm\x12:\n" +
 	"\x17AwsSsmMaintenanceWindow\x10\xee\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawsssmmwPm\x126\n" +
 	"\x13AwsSsmPatchBaseline\x10\xef\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawsssmpbPm\x123\n" +
-	"\x11AwsSsmAssociation\x10\xf0\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsssmaPm\x120\n" +
-	"\x0fAwsOrganization\x10\xf6\t\x1a\x1a\xa2\xf7\x04\x16\b\f\x12\bv1alpha1\"\x06awsorgPm\x129\n" +
-	"\x15AwsOrganizationalUnit\x10\xf7\t\x1a\x1d\xa2\xf7\x04\x19\b\f\x12\bv1alpha1\"\x05awsou:\x02\xf6\tPm\x129\n" +
+	"\x11AwsSsmAssociation\x10\xf0\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsssmaPm\x122\n" +
+	"\x0fAwsOrganization\x10\xf6\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\x06awsorg0\x01Pm\x12;\n" +
+	"\x15AwsOrganizationalUnit\x10\xf7\t\x1a\x1f\xa2\xf7\x04\x1b\b\f\x12\bv1alpha1\"\x05awsou0\x01:\x02\xf6\tPm\x129\n" +
 	"\x16AwsOrganizationAccount\x10\xf8\t\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawsoacctPm\x127\n" +
 	"\x15AwsOrganizationPolicy\x10\xf9\t\x1a\x1b\xa2\xf7\x04\x17\b\f\x12\bv1alpha1\"\aawsopolPm\x12*\n" +
 	"\tAwsBudget\x10\x80\n" +
@@ -4531,8 +4598,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1a\x1a\xa2\xf7\x04\x16\b\f\x12\bv1alpha1\"\x06awspcaPi\x128\n" +
 	"\x15AwsSesAccountSettings\x10\xd0\n" +
 	"\x1a\x1c\xa2\xf7\x04\x18\b\f\x12\bv1alpha1\"\bawssesasPk\x124\n" +
-	"\x12AzureResourceGroup\x10\xd0\x0f\x1a\x1b\xa2\xf7\x04\x17\b\r\x12\bv1alpha1\"\x04azrg0\x01P\xd3\x01\x124\n" +
-	"\x0fAzureAksCluster\x10\xd1\x0f\x1a\x1e\xa2\xf7\x04\x1a\b\r\x12\bv1alpha1\"\x03aks0\x01:\x02\xd0\x0fP\xc9\x01\x125\n" +
+	"\x12AzureResourceGroup\x10\xd0\x0f\x1a\x1b\xa2\xf7\x04\x17\b\r\x12\bv1alpha1\"\x04azrg0\x01P\xd3\x01\x126\n" +
+	"\x0fAzureAksCluster\x10\xd1\x0f\x1a \xa2\xf7\x04\x1c\b\r\x12\bv1alpha1\"\x03aks0\x01:\x02\xd0\x0fP\xc9\x01X\x01\x125\n" +
 	"\x10AzureAksNodePool\x10\xd2\x0f\x1a\x1e\xa2\xf7\x04\x1a\b\r\x12\bv1alpha1\"\x05aksnp:\x02\xd1\x0fP\xc9\x01\x129\n" +
 	"\x16AzureContainerRegistry\x10\xd3\x0f\x1a\x1c\xa2\xf7\x04\x18\b\r\x12\bv1alpha1\"\x03acr:\x02\xd0\x0fP\xc9\x01\x123\n" +
 	"\fAzureDnsZone\x10\xd4\x0f\x1a \xa2\xf7\x04\x1c\b\r\x12\bv1alpha1\"\x05azdns0\x01:\x02\xd0\x0fP\xcd\x01\x123\n" +
@@ -4730,8 +4797,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\vGcpCloudSql\x10\xbc\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpsql0\x01:\x02\xa9\x18P\xaf\x02\x122\n" +
 	"\n" +
 	"GcpDnsZone\x10\xbd\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\x06gcpdns0\x01:\x02\xc2\x17P\xb0\x02\x122\n" +
-	"\fGcpGcsBucket\x10\xbe\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpgcs:\x02\xc6\x17P\xae\x02\x127\n" +
-	"\rGcpGkeCluster\x10\xbf\x17\x1a#\xa2\xf7\x04\x1f\b\x12\x12\bv1alpha1\"\x06gcpgke0\x01:\x04\xc2\x17\xc3\x17P\xad\x02\x123\n" +
+	"\fGcpGcsBucket\x10\xbe\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcpgcs:\x02\xc6\x17P\xae\x02\x129\n" +
+	"\rGcpGkeCluster\x10\xbf\x17\x1a%\xa2\xf7\x04!\b\x12\x12\bv1alpha1\"\x06gcpgke0\x01:\x04\xc2\x17\xc3\x17P\xad\x02X\x01\x123\n" +
 	"\x10GcpIamCustomRole\x10\xc0\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcproleP\xb4\x02\x12.\n" +
 	"\n" +
 	"GcpProject\x10\xc1\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\x06gcpprj0\x01P\xb4\x02\x121\n" +
@@ -4825,7 +4892,12 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\vGcpWorkflow\x10\xd9\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpwflowP\xb7\x02\x12:\n" +
 	"\x12GcpEventarcTrigger\x10\xda\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpevtrg:\x02\xbb\x17P\xb7\x02\x129\n" +
 	"\x15GcpEventarcMessageBus\x10\xdb\x18\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpevbusP\xb7\x02\x123\n" +
-	"\x10GcpPlantonRunner\x10\xdc\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunrP\xb6\x02\x126\n" +
+	"\x10GcpPlantonRunner\x10\xdc\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcprunrP\xb6\x02\x12,\n" +
+	"\tGcpApiKey\x10\xe9\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpakeyP\xb4\x02\x128\n" +
+	"\x12GcpFirebaseProject\x10\xb2\x19\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\bgcpfbprj0\x01P\xb9\x02\x12=\n" +
+	"\x15GcpFirebaseAndroidApp\x10\xb3\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfband:\x02\xb2\x19P\xb9\x02\x12;\n" +
+	"\x13GcpFirebaseAppleApp\x10\xb4\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbios:\x02\xb2\x19P\xb9\x02\x129\n" +
+	"\x11GcpFirebaseWebApp\x10\xb5\x19\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpfbweb:\x02\xb2\x19P\xb9\x02\x126\n" +
 	"\x13KubernetesNamespace\x10\xa0\x1f\x1a\x1c\xa2\xf7\x04\x18\b\x13\x12\bv1alpha1\"\x05k8sns0\x01P\x90\x03\x128\n" +
 	"\x14KubernetesDeployment\x10\xa1\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8sdpl(\x01P\x90\x03\x129\n" +
 	"\x15KubernetesStatefulSet\x10\xa2\x1f\x1a\x1d\xa2\xf7\x04\x19\b\x13\x12\bv1alpha1\"\x06k8ssts(\x01P\x90\x03\x124\n" +
@@ -5074,7 +5146,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x10Auth0EventStream\x10\xc2>\x1a\x16\xa2\xf7\x04\x12\b\x15\x12\bv1alpha1\"\x04a0es\x120\n" +
 	"\x13Auth0ResourceServer\x10\xc3>\x1a\x16\xa2\xf7\x04\x12\b\x15\x12\bv1alpha1\"\x04a0rs\x12)\n" +
 	"\vAuth0Action\x10\xc4>\x1a\x17\xa2\xf7\x04\x13\b\x15\x12\bv1alpha1\"\x05a0act\x12(\n" +
-	"\tAuth0Role\x10\xc5>\x1a\x18\xa2\xf7\x04\x14\b\x15\x12\bv1alpha1\"\x06a0role\x12/\n" +
+	"\tAuth0Role\x10\xc5>\x1a\x18\xa2\xf7\x04\x14\b\x15\x12\bv1alpha1\"\x06a0role\x12,\n" +
+	"\tAuth0User\x10\xc6>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0user:\x02\xc0>\x12/\n" +
 	"\fOpenFgaStore\x10\xa8F\x1a\x1c\xa2\xf7\x04\x18\b\x16\x12\bv1alpha1\"\bfgastore0\x01\x12:\n" +
 	"\x19OpenFgaAuthorizationModel\x10\xa9F\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgamodel\x129\n" +
 	"\x18OpenFgaRelationshipTuple\x10\xaaF\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgatuple:|\n" +

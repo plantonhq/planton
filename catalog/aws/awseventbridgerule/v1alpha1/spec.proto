@@ -181,7 +181,17 @@ message AwsEventBridgeTarget {
   // No `default_kind` is set because the target resource type varies
   // (Lambda, SQS, SNS, etc.). Use `valueFrom` to reference specific
   // Planton resources.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 2 [(buf.validate.field).required = true];
+  //
+  // Containment-exempt: a target is where matched events are DELIVERED,
+  // never where the rule lives -- the rule belongs to its event bus. A
+  // target that is itself a container (another event bus, for a
+  // cross-bus forward) would otherwise pull the rule inside the bus it
+  // forwards to; on a diagram the rule stays on its own bus with a line
+  // to each target.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef arn = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // IAM role ARN for EventBridge to assume when invoking this target.
   // Required for targets where EventBridge needs to assume a role:

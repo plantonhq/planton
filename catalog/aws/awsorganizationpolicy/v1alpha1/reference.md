@@ -142,6 +142,12 @@ root ID, a literal "ou-..." ID, a literal 12-digit account ID, or
 an AwsOrganizationAccount/AwsOrganization reference by field
 path. IMMUTABLE.
 
+Containment-exempt: a policy GOVERNS its targets from above; it is
+not a member of the unit or organization it attaches to, and one
+policy attached to several units could not live in all of them. On
+a diagram the policy stands beside the tenancy tree with a line to
+each target it governs.
+
 - references: AwsOrganizationalUnit (`status.outputs.ou_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsOrganizationalUnit, name: <that resource's name>, fieldPath: status.outputs.ou_id}} -- a bare string does not parse

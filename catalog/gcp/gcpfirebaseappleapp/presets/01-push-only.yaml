@@ -1,0 +1,14 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAppleApp
+metadata:
+  name: mobile-ios
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+  displayName: Mobile (iOS)
+  bundleId: com.example.mobile
+  teamId: ABCDE12345
+  deletionPolicy: PREVENT

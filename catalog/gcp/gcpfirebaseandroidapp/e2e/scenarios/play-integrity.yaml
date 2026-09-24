@@ -1,0 +1,44 @@
+# Play Integrity scenario: proves the surfaces minimal cannot -- the SHA
+# fingerprints, the Play Integrity attestation configuration with an
+# explicit token lifetime, and a debug token -- and is the instrument for
+# Firebase's documented propagation delay between a new app and its first
+# App Check configuration (Google's own provider examples wait 30 seconds;
+# the module adds no delay). The fingerprints are syntactically valid
+# placeholders: Play Integrity's configuration only needs a SHA-256 to be
+# REGISTERED; attestation itself is a runtime act no lane exercises. The
+# debug token is a throwaway attestation bypass for an app that lives
+# minutes and is removed permanently at teardown -- committing it exposes
+# nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAndroidApp
+metadata:
+  name: planton-oss-e2e-gcpfband-playintegrity
+  id: planton-oss-e2e-gcpfband-playintegrity
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebaseandroidapp
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: planton-oss-e2e-gcpfbprj-prereq
+      fieldPath: status.outputs.project_id
+  displayName: planton e2e android play integrity ${E2E_RUN_ID}
+  packageName: ai.planton.e2e.p${E2E_RUN_ID_UNDERSCORE}
+  sha1Hashes:
+    - da39a3ee5e6b4b0d3255bfef95601890afd80709
+  sha256Hashes:
+    - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  appCheck:
+    playIntegrity:
+      tokenTtl: 1800s
+    debugTokens:
+      - displayName: planton-e2e-emulator
+        token: 3b6c0e2a-8f4d-4c1b-9a7e-2d5f8b1c4e6a
+  deletionPolicy: DELETE

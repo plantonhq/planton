@@ -2,6 +2,7 @@ package verify
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/pkg/errors"
 )
@@ -15,12 +16,22 @@ type ResourceChecker interface {
 type Verifier interface {
 	VerifyExists(checker ResourceChecker, id string) error
 	VerifyAbsent(checker ResourceChecker, id string) error
+	// IDOutput names the stack output that carries the resource's Management
+	// API identifier. Most kinds report it as "id"; a kind whose identifier
+	// has its own name in the API (a user's user_id) says so here rather
+	// than duplicating the value under a second output.
+	IDOutput() string
 }
+
+// defaultIDOutput is the output name every kind reports its identifier
+// under unless its verifier says otherwise.
+const defaultIDOutput = "id"
 
 // apiPathVerifier is the common implementation: one Management API path template.
 type apiPathVerifier struct {
 	component  string
 	pathFormat string // e.g. "clients/%s"
+	idOutput   string // the output carrying the id; "" means defaultIDOutput
 }
 
 func (v *apiPathVerifier) VerifyExists(checker ResourceChecker, id string) error {
@@ -47,8 +58,18 @@ func (v *apiPathVerifier) VerifyAbsent(checker ResourceChecker, id string) error
 	return nil
 }
 
+func (v *apiPathVerifier) IDOutput() string {
+	if v.idOutput == "" {
+		return defaultIDOutput
+	}
+	return v.idOutput
+}
+
+// formatPath places the id into the path template as a single path segment.
+// Auth0 identifiers can carry characters a URL path reserves -- a user's id
+// is "auth0|..." -- so every id is escaped, never interpolated raw.
 func (v *apiPathVerifier) formatPath(id string) string {
-	return fmt.Sprintf(v.pathFormat, id)
+	return fmt.Sprintf(v.pathFormat, url.PathEscape(id))
 }
 
 // verifiers maps component name to the Management API path used for verification.
@@ -59,6 +80,7 @@ var verifiers = map[string]Verifier{
 	"auth0action":         &apiPathVerifier{component: "auth0action", pathFormat: "actions/actions/%s"},
 	"auth0eventstream":    &apiPathVerifier{component: "auth0eventstream", pathFormat: "event-streams/%s"},
 	"auth0role":           &apiPathVerifier{component: "auth0role", pathFormat: "roles/%s"},
+	"auth0user":           &apiPathVerifier{component: "auth0user", pathFormat: "users/%s", idOutput: "user_id"},
 }
 
 // GetVerifier returns the verifier for a component, or an error if unknown.

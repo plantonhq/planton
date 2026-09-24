@@ -4,7 +4,10 @@
 image:
   # -- Container image repository.
   repository: ghcr.io/plantonhq/planton/runner
-  # -- Container image tag (defaults to chart appVersion).
+  # -- Container image tag: the runner release this pod runs. Empty falls back
+  # to the chart's appVersion, the runner line this chart was validated
+  # against; the KubernetesPlantonRunner kind always sets it to the release
+  # the enrolling instance runs (a runner and its control plane move together).
   tag: ""
   # -- Image pull policy.
   pullPolicy: IfNotPresent
@@ -48,13 +51,20 @@ enrollment:
 
 # Runner operational settings (independent of enrollment).
 runner:
-  # -- gRPC server port. CloudOps routes to this port via the tunnel.
+  # -- The runner's gRPC port. CloudOps reaches it through the tunnel when the
+  # enrolling instance operates one, and it serves the standard gRPC health
+  # service in every execution mode, which is what the pod's probes dial.
   port: 50051
   # -- Log level: debug, info, warn, error.
   logLevel: "info"
   # -- Execution mode: auto, grpc, temporal, dual. "auto" derives the mode
-  # from the identity document the runner receives when it enrolls (a
-  # Temporal address means dual); set an explicit mode only to override.
+  # from the identity document the runner receives when it enrolls and from
+  # its perimeter: a Temporal address with a tunnel is dual (deploys and
+  # builds over Temporal, live cloud operations over the tunnel); a Temporal
+  # address without one -- every runner enrolled with a self-hosted instance,
+  # which operates no runner tunnel -- is temporal, a pure worker. Set an
+  # explicit mode only to override; "grpc" also switches the readiness probe
+  # to the overall health service, since a grpc-only runner runs no worker.
   executionMode: "auto"
 
 # Temporal worker settings -- an OVERRIDE lane only. The identity document
@@ -91,16 +101,11 @@ build:
 
   rbac:
     # -- Create the Role/RoleBinding the build capability needs in the build
-    # namespace (create PipelineRuns and supporting resources, reconcile by
-    # list, label-scoped cleanup, follow task pod logs), plus the read grant
-    # on Tekton's config-defaults ConfigMap that makes the events-sink
-    # readiness check conclusive.
+    # namespace: create PipelineRuns and supporting resources, reconcile by
+    # list, watch the namespace's PipelineRuns and TaskRuns (the run watcher,
+    # the build path's event transport), label-scoped cleanup, follow task pod
+    # logs. Nothing outside the build namespace is granted.
     create: true
-
-  tekton:
-    # -- Namespace of the Tekton Pipelines installation (where its cluster-wide
-    # config-defaults ConfigMap lives). Tekton's installer pins this name.
-    installNamespace: "tekton-pipelines"
 
 resources:
   requests:

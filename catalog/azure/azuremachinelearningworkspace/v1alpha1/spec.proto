@@ -484,7 +484,16 @@ message AzureMachineLearningWorkspacePrivateEndpointOutboundRule {
   // Cache, and other ML workspaces. No default reference kind -- name
   // the kind explicitly in valueFrom when referencing (the target can
   // be any of several kinds).
-  dev.planton.shared.foreignkey.v1.StringValueOrRef service_resource_id = 2 [(buf.validate.field).required = true];
+  //
+  // Containment-exempt: an outbound rule is the managed network's door
+  // to a resource the workspace reaches; the workspace is not deployed
+  // into a Key Vault, a storage account, or a cache it merely calls.
+  // Without the exemption a workspace wired to one by reference would
+  // be drawn inside it.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef service_resource_id = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // Which sub-resource of the target the private endpoint binds
   // (the wire values). Must match the target's service: Key Vault ->

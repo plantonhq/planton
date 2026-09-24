@@ -7,12 +7,13 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 const (
-	ControlPlaneDefaultImageRepo = "ghcr.io/plantonhq/planton/control-plane"
+	ControlPlaneDefaultImageRepo = DefaultImageRegistry + "/" + ControlPlaneImageSlug
 	controlPlaneContainerPort    = 8080
 	controlPlaneServicePort      = 80
 	// gRPC-Web listener for browser clients (the console). Serving it is opt-in
@@ -36,18 +37,40 @@ const (
 	controlPlaneDefaultLogLevel          = "info"
 	controlPlaneDefaultTemporalNamespace = "default"
 
-	// controlPlaneModuleArtifactsVersion pins PLANTON_VERSION: the version at
-	// which the control plane resolves IaC module artifacts from the public
-	// CDN (downloads URL construction), NOT the platform image version. The
-	// two release trains are independent -- a platform tag with no module
-	// artifacts published under it would make every deploy 404 at download --
-	// so this advances deliberately, when a verified artifact set exists.
-	// The CR's spec.controlPlane.iacModulesVersion overrides this default
-	// per install; the pin is the value every plain install must be able to
-	// trust, so it only ever names a tag whose artifact set was verified
-	// live against the CDN (HEAD on the module zips, not inferred from the
-	// release existing).
-	controlPlaneModuleArtifactsVersion = "v0.5.33"
+	// The control plane's sizing, chosen here so a default install schedules
+	// honestly and is never OOM-killed by omission. Read live on a one-node
+	// install before choosing: ~3.3Gi resident under pipeline fan-out with
+	// the JVM's heap sized by the image's own -XX:MaxRAMPercentage from the
+	// container limit (so the limit IS the heap rule; a limit alone would
+	// not change the heap silently). The same request/limit pair the hosted
+	// product declares for this service -- one number in both homes. No CPU
+	// limit: a cold start and a pipeline burst must never be throttled into
+	// failing their own probes (requests-only, the house pattern).
+	controlPlaneCPURequest    = "250m"
+	controlPlaneMemoryRequest = "1Gi"
+	controlPlaneMemoryLimit   = "4Gi"
+
+	// A stopping pod drains before the kubelet's kill: the gRPC server's
+	// 30-second shutdown grace (longer than any poll a remote runner holds
+	// through the work door) plus the Temporal workers' 10-second stop. The
+	// same number the hosted product declares; Kubernetes' default of 30
+	// would cut the drain short.
+	controlPlaneTerminationGracePeriodSeconds = 60
+
+	// controlPlaneIacModulesVersionEnv is the control plane's per-install
+	// OVERRIDE of the release its stack jobs download official IaC modules
+	// from. Rendered only when the platform resource declares
+	// spec.controlPlane.iacModulesVersion; absent otherwise, because the
+	// control plane resolves modules at its own catalog release -- the pin
+	// its schemas and chart bundle come from -- and needs nobody to tell it
+	// which. The operator carries no module version of its own: a version
+	// compiled in here would be a second truth beside the platform's, and
+	// it was (three weeks behind the catalog, so a kind the platform
+	// accepted 404'd at module download). The name is Spring's relaxed
+	// binding of planton.infra-hub.iac-modules.version with hyphens
+	// STRIPPED, the same shape as PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED;
+	// the underscored variant does not bind.
+	controlPlaneIacModulesVersionEnv = "PLANTON_INFRAHUB_IACMODULES_VERSION"
 )
 
 // ControlPlaneConfig bundles all inputs needed to build the ControlPlane
@@ -64,9 +87,10 @@ type ControlPlaneConfig struct {
 	ImageTag                 string
 	ExternalConfigSecretName string
 
-	// IacModulesVersion overrides controlPlaneModuleArtifactsVersion
-	// (PLANTON_VERSION) when the CR sets spec.controlPlane.iacModulesVersion.
-	// Empty means the compiled pin.
+	// IacModulesVersion is the CR's spec.controlPlane.iacModulesVersion:
+	// the release the control plane downloads official IaC modules from
+	// INSTEAD of its own catalog release. Empty -- the shape every plain
+	// install has -- renders nothing, and the control plane uses its pin.
 	IacModulesVersion string
 
 	PostgreSQL PostgreSQLConnectionInfo
@@ -304,7 +328,7 @@ type RunnerBinding struct {
 
 	// BuildEnabled activates the build-routing boot seed: the control plane
 	// creates this install's build-cluster connection (create-once, pointing
-	// at the in-cluster runner) and the platform-scoped default referencing
+	// at the in-cluster runner) and its organization's default referencing
 	// it, so the first service pipeline resolves a build destination with
 	// zero registration ceremony. Follows the effective build toggle
 	// (spec.build AND spec.runner).
@@ -313,22 +337,21 @@ type RunnerBinding struct {
 
 // RemoteRunnersBinding is what the install advertises to runners that enroll
 // from OUTSIDE the cluster (developer laptops, appliances in other networks):
-// the two addresses stamped into their identity documents. Present exactly
-// when the remote-runners capability is on AND the front door carries it;
-// nil otherwise, which leaves the deploy-queue advertisement UNSET so the
-// control plane refuses remote enrollment with the reason instead of minting
-// an address only this cluster's pods resolve. The in-cluster runner never
-// reads these: the operator renders its identity document itself, with the
-// in-cluster addresses.
+// the address stamped into their identity documents. Present exactly when the
+// remote-runners capability is on AND the front door carries it; nil
+// otherwise, which leaves the work advertisement UNSET so the control plane
+// refuses remote enrollment with the reason instead of minting an address only
+// this cluster's pods resolve. The in-cluster runner never reads it: the
+// operator renders its identity document itself, with the in-cluster
+// addresses.
 type RemoteRunnersBinding struct {
 	// PlantonAPIEndpoint is the control plane's native gRPC address as a
 	// runner outside the cluster dials it (host:port; :443 means TLS) -- the
-	// front door's gRPC endpoint.
+	// front door's gRPC endpoint. It is the runner's one address, for its API
+	// calls and its work alike: the control plane serves Temporal's worker
+	// methods itself, so the API endpoint and the work endpoint the control
+	// plane advertises are this one string and can never disagree.
 	PlantonAPIEndpoint string
-	// TemporalEndpoint is the deploy queue's address as a runner outside the
-	// cluster dials it -- the same front door, which routes the queue's
-	// workflow service beside the API.
-	TemporalEndpoint string
 }
 
 // IdentityBinding carries what the control plane needs to validate browser
@@ -542,10 +565,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 	if imageTag == "" {
 		imageTag = cfg.Version
 	}
-	replicas := cfg.Replicas
-	if replicas <= 0 {
-		replicas = 1
-	}
+	replicas := controlPlaneReplicas(cfg)
 
 	labels := map[string]string{
 		"app.kubernetes.io/name":       "control-plane",
@@ -622,8 +642,9 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{Labels: labels, Annotations: controlPlanePodAnnotations(cfg)},
 				Spec: corev1.PodSpec{
-					ServiceAccountName: ControlPlaneServiceAccountName(cfg.CRName),
-					Volumes:            volumes,
+					TerminationGracePeriodSeconds: int64Ptr(controlPlaneTerminationGracePeriodSeconds),
+					ServiceAccountName:            ControlPlaneServiceAccountName(cfg.CRName),
+					Volumes:                       volumes,
 					Containers: []corev1.Container{{
 						Name:  "control-plane",
 						Image: fmt.Sprintf("%s:%s", imageRepo, imageTag),
@@ -636,6 +657,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 						VolumeMounts: volumeMounts,
 						Env:          envVars,
 						EnvFrom:      envFrom,
+						Resources:    controlPlaneResources(),
 						// First boot self-provisions and migrates every database, which
 						// on a cold cluster takes several minutes; allow a generous
 						// window (10s x 90 = 15m) before the kubelet gives up, so the
@@ -820,9 +842,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "TEMPORAL_TASK_QUEUE_CLOUD_RESOURCE_PURGE", Value: "cloud-resource-purge"},
 		{Name: "TEMPORAL_TASK_QUEUE_GIT_WEBHOOKS", Value: "git-webhooks"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_HUB_CLEANUP", Value: "infra-hub-cleanup"},
-		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_BUILD_STAGE", Value: "infra-pipeline-build-stage"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_DEPLOY_STAGE", Value: "infra-pipeline-deploy-stage"},
-		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PROJECT_GIT_COMMIT", Value: "infra-project-git-commit"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PROJECT_PURGE", Value: "infra-project-purge"},
 		{Name: "TEMPORAL_TASK_QUEUE_ORGANIZATION_ESTATE_REINDEX", Value: "estate-organization-reindex"},
 		{Name: "TEMPORAL_TASK_QUEUE_PROVIDER_CONNECTION_AUTHORIZATION", Value: "provider_connection_authorization"},
@@ -839,11 +859,6 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// stored-document migrations start automatically at boot when a release
 		// changes storage versions.
 		{Name: "PLANTON_INFRA_HUB_STORED_DOCUMENT_MIGRATION_AUTO_RUN", Value: "true"},
-		// Derived from the bootstrap org -- the SAME derivation the runner
-		// resources use for the worker's queue, so dispatcher and poller
-		// cannot drift apart on a renamed org.
-		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
-		{Name: "TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT", Value: RunnerTaskQueue(cfg.CRName, cfg.Identity.Bootstrap.OrgSlug)},
 
 		// Auth0-path FGA bindings: never used with the bundled identity
 		// server (they serve the auth0 provider only) but part of the
@@ -937,20 +952,21 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "TUNNEL_TLS_CLIENT_CERT_PATH", Value: ""},
 		{Name: "TUNNEL_TLS_CLIENT_KEY_PATH", Value: ""},
 
-		// ── tekton build workspaces ──
+		// ── tekton build workspace ──
 		// No cluster credential here: the control plane never talks to a
 		// Tekton cluster -- builds execute on the runner named by the
 		// pipeline's resolved TektonConnection. Pipeline definitions need no
 		// coordinates at all: service builds compile at dispatch from
-		// release-pinned content the platform carries, and the infra
-		// family's git-repository lane is deliberately inert (its catalog
-		// is unset everywhere and creation refuses honestly). The only build
-		// knobs are the source workspace sizes.
-		{Name: "TEKTON_INFRA_PIPELINE_DISK_SIZE", Value: "1Gi"},
+		// release-pinned content the platform carries. The only build knob
+		// is the source workspace size.
 		{Name: "TEKTON_SERVICE_PIPELINE_DISK_SIZE", Value: "5Gi"},
 
 		// ── misc ──
-		{Name: "PLANTON_VERSION", Value: effectiveIacModulesVersion(cfg)},
+		// No module version here: the control plane downloads official IaC
+		// modules at its own catalog release, exactly as it seeds charts from
+		// it (below). The per-install override is appended after this block,
+		// by presence.
+		//
 		// The control plane seeds the InfraChart catalog from the bundle of its
 		// OWN catalog release: the charts are validated against its protos at
 		// apply, so only the release those protos came from can ever be right,
@@ -966,6 +982,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "STIGMER_ORG_ID", Value: "local"},
 	}...)
 
+	envs = append(envs, iacModulesVersionEnvVars(cfg.IacModulesVersion)...)
 	envs = append(envs, fgaEnvVars(cfg.OpenFGA)...)
 	envs = append(envs, storageEnvVars(cfg.Storage)...)
 	envs = append(envs, webIdentityEnvVars(cfg.WebIdentity)...)
@@ -979,20 +996,28 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	envs = append(envs, emailEnvVars(cfg.Email)...)
 	envs = append(envs, emailSetupHintEnvVars(cfg.CRName, cfg.Namespace)...)
 
-	// Remote-runners capability: the deploy-queue advertisement
-	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents and the
-	// materializer's capability gate both read. Set ONLY when the install
-	// opened remote runners and the front door carries the queue -- every
-	// reader of this variable on the platform is a remote-runner gate or
-	// minter (the in-cluster runner gets its queue address from its own
-	// Deployment, never from here), so leaving it unset is what makes the
+	// Remote-runners capability: the work advertisement
+	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents, the control
+	// plane's work door, and the materializer's capability gate all read. Its
+	// address is the control plane's own front-door endpoint, because the
+	// control plane serves a remote runner's work calls itself. Set ONLY when
+	// the install opened remote runners and the front door carries native
+	// gRPC -- every reader of this variable on the platform is a remote-runner
+	// gate or minter (the in-cluster runner gets its queue address from its
+	// own Deployment, never from here), so leaving it unset is what makes the
 	// control plane refuse a laptop honestly ("this instance doesn't support
 	// deploying from your own machine yet") instead of handing it an address
 	// only this cluster's pods resolve.
+	//
+	// The replica count rides with it: the door's limit on polls it holds is
+	// one install-wide total, and each control-plane replica holds its share,
+	// so scaling the control plane never multiplies what remote runners may
+	// take from the job queue the platform's own work shares.
 	if cfg.RemoteRunners != nil {
 		envs = append(envs,
-			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.TemporalEndpoint},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.PlantonAPIEndpoint},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_NAMESPACE", Value: runnerTemporalNamespace},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS", Value: fmt.Sprint(controlPlaneReplicas(cfg))},
 		)
 	}
 
@@ -1027,9 +1052,12 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 			secretEnv("RUNNER_DIRECT_AUTH_TOKEN", cfg.Runner.CloudOpsSecretName, RunnerCloudOpsSecretKeyToken),
 		)
 		// Build-routing boot seed: create-once records making this cluster
-		// the platform's build destination (the build-cluster connection
-		// under its well-known slug + the platform-scoped default referencing
-		// it). Presence of the RUNNER value is the seeders' activation gate;
+		// the installation's one organization's build destination (the
+		// build-cluster connection under its well-known slug + that
+		// organization's default build connection referencing it). A
+		// self-hosted installation declares no platform fleet, so its
+		// organization's default is the whole routing chain below a service's
+		// own override. Presence of the RUNNER value is the seeders' activation gate;
 		// builds off means NO variables, not empty ones. The env names are
 		// the canonical relaxed-binding forms of
 		// planton.bootstrap.tekton-connection.* -- hyphens STRIPPED, not
@@ -1065,17 +1093,18 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	return envs
 }
 
-// effectiveIacModulesVersion resolves PLANTON_VERSION: the CR's explicit
-// spec.controlPlane.iacModulesVersion when set, otherwise the operator's
-// verified default pin. The override exists because the module-artifact train
-// advances independently of operator releases -- an install must be able to
-// adopt a newer verified artifact set (or route around a retracted one)
-// without waiting for a new operator image.
-func effectiveIacModulesVersion(cfg ControlPlaneConfig) string {
-	if cfg.IacModulesVersion != "" {
-		return cfg.IacModulesVersion
+// iacModulesVersionEnvVars renders the module-release override by presence:
+// nothing for the plain install (the control plane resolves official modules
+// at its own catalog release), the one variable when the platform resource
+// declares spec.controlPlane.iacModulesVersion. The override exists for a
+// retracted artifact set -- an install must be able to route around one
+// without waiting for a platform release -- and for nothing else; a default
+// rendered here would be a second module version beside the platform's own.
+func iacModulesVersionEnvVars(override string) []corev1.EnvVar {
+	if override == "" {
+		return nil
 	}
-	return controlPlaneModuleArtifactsVersion
+	return []corev1.EnvVar{{Name: controlPlaneIacModulesVersionEnv, Value: override}}
 }
 
 // remoteRunnerAPIEndpoint resolves the control-plane address stamped into the
@@ -1325,7 +1354,9 @@ func identityEnvVars(binding *IdentityBinding) []corev1.EnvVar {
 
 		// ── first-boot seeds (planton.bootstrap.* via Spring relaxed binding) ──
 		// Presence of the org slug is what activates the control plane's
-		// seeder; a hosted deployment never sets these.
+		// seeder. A hosted deployment never sets these -- it declares its
+		// shared fleet (PLANTON_FLEET_RUNNER_SLUG / _NAMESPACE) instead, and
+		// its control plane refuses the organization-scoped bootstrap facts.
 		{Name: "PLANTON_BOOTSTRAP_ORGANIZATION_SLUG", Value: binding.Bootstrap.OrgSlug},
 		{Name: "PLANTON_BOOTSTRAP_ORGANIZATION_NAME", Value: binding.Bootstrap.OrgName},
 		{Name: "PLANTON_BOOTSTRAP_ENVIRONMENT_SLUG", Value: binding.Bootstrap.EnvSlug},
@@ -1414,4 +1445,27 @@ func ptrBool(b bool) *bool {
 //go:fix inline
 func int64Ptr(i int64) *int64 {
 	return new(i)
+}
+
+// controlPlaneReplicas is the number of control-plane pods the install runs:
+// the declared count, one when none is declared.
+func controlPlaneReplicas(cfg ControlPlaneConfig) int32 {
+	if cfg.Replicas <= 0 {
+		return 1
+	}
+	return cfg.Replicas
+}
+
+// controlPlaneResources is the container sizing every install gets (the
+// constants above carry the reasoning).
+func controlPlaneResources() corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: corev1.ResourceList{
+			corev1.ResourceCPU:    resource.MustParse(controlPlaneCPURequest),
+			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryRequest),
+		},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse(controlPlaneMemoryLimit),
+		},
+	}
 }

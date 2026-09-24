@@ -107,8 +107,8 @@ name that infrastructure produces, run this check in order:
    producer's `metadata.name` expression (see the naming nuance below).
 3. **The org's existing estate** — the producer was deployed by an earlier
    chart or by hand: ground it with the CLI (`planton search
-   by-resource-kind <Kind>`, `planton get <kind> <name>`, `planton
-   infra-project list`) and reference the real deployed name.
+   by-resource-kind <Kind>`, `planton get <kind> <name>`, `planton infra
+   project list`) and reference the real deployed name.
 4. **Only when all three come up empty** is a param honest — and even then,
    prefer a param that names the RESOURCE (`vpc_name`) feeding a `valueFrom`
    expression over a param that carries a raw id the user must go find.

@@ -1,0 +1,16 @@
+# The operand: its kind_meta names KubernetesCloudNativePgOperator as a
+# prerequisite (it creates postgresql.cnpg.io Cluster objects only that
+# operator admits). No field references the operator; the graph reads the
+# metadata. Authored first so the order is wrong without the rule.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPostgres
+metadata:
+  name: app-db
+  env: dev
+spec:
+  namespace:
+    value: app
+  create_namespace: true
+  instances: 1
+  storage:
+    size: 5Gi

@@ -1,0 +1,27 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpfirebasewebapp
+spec:
+  # PROVEN live 4/4 lanes (both scenarios x both engines), IDEMPOTENCY
+  # clean, on 2026-09-18. Live truths the lane settled: (1) Firebase's
+  # documented propagation delay between a new app and its first App Check
+  # configuration did NOT bite: the debug token was created within seconds
+  # of the registration on both engines with no settle -- the modules stay
+  # delay-free; (2) an app removed under deletion_policy DELETE
+  # (immediate=true) reads back as a plain 404 "App not found" -- never the
+  # DELETED state -- so the verifier's 404 arm is the one exercised; (3)
+  # the firebaseConfig lookup (web_app_id) runs after create on both
+  # engines and the re-plan is clean; the conditionally present values
+  # came back "" for what the test project lacks (no RTDB, no default
+  # bucket at that moment, no finalized location, no Analytics link) --
+  # 7 of 11 outputs populated, exactly the documented degradation; (4)
+  # every lane deploys the GcpFirebaseProject prerequisite, which adopts
+  # the test project's permanent enablement. The reCAPTCHA arms are
+  # deliberately NOT exercised by a scenario: they need real reCAPTCHA
+  # keys registered to a real domain; they are proven by an adopter's
+  # first web app.
+  tier: 1
+  status: green
+  validated_provisioners: [pulumi, terraform]
+  timeout_minutes: 25

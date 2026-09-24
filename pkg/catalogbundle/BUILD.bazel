@@ -46,6 +46,7 @@ go_test(
     deps = [
         "//catalog/_test/testcloudresourcegeneric/v1alpha1",
         "//finops/componentcostestimate/v1:componentcostestimate",
+        "//iac/componentpermissions/v1:componentpermissions",
         "//pkg/crkreflect",
         "//pkg/protobufyaml",
         "//shared/cloudresourcekind",

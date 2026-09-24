@@ -1,0 +1,4 @@
+name: gcpfirebaseproject-pulumi-project
+runtime:
+  name: go
+description: Planton GcpFirebaseProject Pulumi module

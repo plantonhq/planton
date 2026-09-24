@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Stack, Typography } from '@mui/material';
+import Image from 'next/image';
 import { FC } from 'react';
 import { Section, SectionTitle, Card, Quote, Badge, TestimonialCard } from './shared';
 
@@ -78,9 +79,11 @@ export const SocialProof: FC = () => {
             <Box className="p-4 border-b border-[#2a2a2a] bg-[#0f0f0f]">
               <Box className="flex items-center gap-4">
                 <Box className="w-10 h-10 rounded-lg bg-[#1a1a1a] p-2 flex items-center justify-center">
-                  <img
+                  <Image
                     src={customer.companyLogo}
                     alt={customer.company}
+                    width={24}
+                    height={24}
                     className="w-full h-full object-contain brightness-0 invert"
                   />
                 </Box>

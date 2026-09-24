@@ -1,0 +1,88 @@
+# GENERATED -- DO NOT EDIT. Refresh with `make generate-action-inventory`.
+# Committed snapshot of the provider's own permission-action inventory,
+# scoped to exactly the services the committed runner permissions manifests
+# (catalog/*/*/iac/permissions.yaml) reference. The conformance gate in
+# this package proves every manifest action exists here -- an action name
+# the provider never defined cannot ship. Source URLs serve latest-only
+# content; provenance is the URL plus the retrieval date and the source's
+# own modification stamp.
+provider: auth0
+services:
+  - prefix: actions
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: client_grants
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: client_keys
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: clients
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: connections
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: connections_options
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - read
+      - update
+  - prefix: event_streams
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: resource_servers
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: roles
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: users
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-23"
+    actions:
+      - create
+      - delete
+      - read
+      - update

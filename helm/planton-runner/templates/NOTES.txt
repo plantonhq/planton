@@ -12,21 +12,13 @@ Check that it is up and connected:
 
 {{- if .Values.build.enabled }}
 
-Build capability is ENABLED. Two steps remain to make this cluster a build
-cluster:
-
-1. Point Tekton's CloudEvents sink at this runner's webhook, so live build
-   status flows without waiting on the reconciliation safety net. In the
-   {{ .Values.build.tekton.installNamespace }}/config-defaults ConfigMap set
-   (the /service-hub/tekton/cloud-event path is required -- the webhook
-   serves only that route, and a bare Service root 404s every event):
-
-     default-cloud-events-sink: http://{{ include "planton-runner.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local/service-hub/tekton/cloud-event
-
-2. Register this cluster as a build connection (console: Connections -> Build,
-   or `planton apply` a TektonConnection naming this runner), then verify it --
-   the readiness check probes this exact cluster placement, from this runner,
-   over the same queue real builds ride.
+Build capability is ENABLED. One step remains to make this cluster a build
+cluster: register it as a build connection (console: Connections -> Build,
+or `planton apply` a TektonConnection naming this runner), then verify it --
+the readiness check probes this exact cluster placement, from this runner,
+over the same queue real builds ride. Its run-watch check confirms the runner
+may watch its namespace's PipelineRuns and TaskRuns, which is all live build
+status needs: no Tekton CloudEvents sink has to be configured.
 
 Builds land in namespace {{ include "planton-runner.buildNamespace" . }}.
 {{- else }}

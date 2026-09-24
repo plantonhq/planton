@@ -1,0 +1,12 @@
+# The consumer end, authored FIRST so the authored order is wrong without the
+# rule: no relationship, no valueFrom — only the connection it deploys through.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGatewayApiCrds
+metadata:
+  name: platform-cluster-gateway-api-crds
+  env: prod
+  annotations:
+    planton.dev/connection: platform-cluster
+spec:
+  installChannel:
+    channel: standard

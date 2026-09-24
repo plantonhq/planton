@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 import { Stack, Typography } from '@mui/material';
-import { Badge } from '@/components/landing-page/v3-2026-01-02-1000/shared';
+import { Badge } from '@/components/marketing';
 import { MarketSelector, useMarket } from '@/components/market';
 import { SELF_SERVE_SEAT_CEILING } from '@/data/pricing';
 

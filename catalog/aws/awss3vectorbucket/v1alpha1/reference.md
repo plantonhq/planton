@@ -217,6 +217,14 @@ Fields that can point at another resource's outputs:
 | `spec.encryption.kmsKeyArn` | AwsKmsKey | `status.outputs.key_arn` |
 | `spec.indexes[].encryption.kmsKeyArn` | AwsKmsKey | `status.outputs.key_arn` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| AwsBedrockKnowledgeBase | `spec.storage.s3Vectors.vectorBucketArn` | `status.outputs.vector_bucket_arn` |
+
 ## See Also
 
 - [Overview](../README.md)

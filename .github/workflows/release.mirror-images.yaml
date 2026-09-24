@@ -1,0 +1,78 @@
+# =============================================================================
+# Mirror released images and charts to Google Artifact Registry
+# =============================================================================
+# Copies what a release pushed to ghcr.io/plantonhq into the mirror at
+# asia-south1-docker.pkg.dev/plantonhq, at the same path, by digest, so both
+# registries hold the same bytes (tools/ci/release/mirror_images.sh). The
+# operator's image and the Helm charts publish to ghcr.io first; this is the one
+# step that writes the mirror.
+#
+# Triggers:
+#   - workflow_call from release.operator.yaml (the operator image) and
+#     release.helm.yaml (each chart it publishes).
+#   - workflow_dispatch with the paths to copy: a backfill, or a re-run after a
+#     failed copy.
+#
+# Authentication is keyless: GitHub's OIDC token is exchanged with Google's
+# workload identity pool for a short-lived token of the image publisher. The
+# pool's provider admits only this workflow file, on a tag or on main, so no
+# other workflow in this repository can push to the mirror. The provider and the
+# publisher are repository Variables (GCP_WORKLOAD_IDENTITY_PROVIDER, GCP_IMAGE_PUBLISHER).
+# =============================================================================
+name: release.mirror-images
+
+on:
+  workflow_call:
+    inputs:
+      refs:
+        description: 'Space-separated paths under ghcr.io/plantonhq, each with its tag (planton/operator:v0.21.0 charts/planton-operator:0.21.0)'
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      refs:
+        description: 'Space-separated paths under ghcr.io/plantonhq, each with its tag (planton/operator:v0.21.0 charts/planton-operator:0.21.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write # the OIDC token Google's workload identity pool exchanges
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Authenticate to Google Cloud (keyless)
+        id: gcp
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_IMAGE_PUBLISHER }}
+          token_format: access_token
+
+      - name: Install crane
+        env:
+          CRANE_VERSION: v0.22.1
+          # The release's own checksums.txt entry for the Linux x86_64 tarball.
+          CRANE_SHA256: 0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0
+        run: |
+          curl -sSfL -o /tmp/crane.tar.gz \
+            "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_Linux_x86_64.tar.gz"
+          echo "${CRANE_SHA256}  /tmp/crane.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/crane.tar.gz -C /usr/local/bin crane
+
+      - name: Log in to the mirror
+        env:
+          TOKEN: ${{ steps.gcp.outputs.access_token }}
+        run: printf '%s' "${TOKEN}" | crane auth login asia-south1-docker.pkg.dev -u oauth2accesstoken --password-stdin
+
+      - name: Mirror by digest
+        env:
+          REFS: ${{ inputs.refs }}
+        run: |
+          # shellcheck disable=SC2086
+          bash tools/ci/release/mirror_images.sh ${REFS}

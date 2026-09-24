@@ -225,6 +225,27 @@ message KubernetesPlantonPlatformSpec {
    */
   KubernetesPlantonPlatformEmail email = 19;
 
+  /**
+   * The registry root the control plane, console, and runner images are
+   * pulled from, as <image_registry>/<image> (control-plane,
+   * client-apps/web, runner). Empty = the operator's default,
+   * ghcr.io/plantonhq/planton. Every release is also published, byte for
+   * byte, to Google Artifact Registry at
+   * asia-south1-docker.pkg.dev/plantonhq/planton; set that to pull from
+   * Google, or name a mirror of your own. A component's image.repository,
+   * when set, wins over this root. Requires a planton-operator chart that
+   * knows this field (0.22.0 or newer); an older definition refuses the
+   * declaration.
+   */
+  string image_registry = 20 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "image_registry_format"
+      message: "image_registry is a registry root such as \"asia-south1-docker.pkg.dev/plantonhq/planton\": no scheme and no trailing slash"
+      expression: "!this.endsWith('/') && !this.contains('://')"
+    }
+  ];
+
   option (buf.validate.message).cel = {
     id: "spec.vault.backup_needs_surviving_keys"
     message: "a backup carries the vault's data, but under the built-in seal the vault's keys live in a Secret that is deleted with the platform — set vault.init_secret_name to a Secret you own (and keep a copy outside the cluster), or declare vault.auto_unseal so a restored vault opens from your cloud key"
@@ -1475,6 +1496,12 @@ message KubernetesPlantonPlatformRunner {
    * stores nothing: rotate by updating YOUR Secret.
    */
   string cloud_credentials_secret_name = 5;
+
+  /**
+   * Runner image override (registry mirrors, custom builds). Empty = the
+   * image under spec.image_registry at spec.version.
+   */
+  KubernetesPlantonPlatformImage image = 6;
 }
 
 /**
@@ -1897,6 +1924,20 @@ message KubernetesPlantonPlatformControlPlane {
    * DEPLOY-TIME identity.
    */
   map<string, string> service_account_annotations = 4;
+
+  /**
+   * Override of the release the platform downloads official IaC module
+   * artifacts from (vX.Y.Z; both engines ride one tag). Leave it unset:
+   * the platform resolves modules at its own catalog release — the same
+   * pin its schemas and chart bundle come from — so a kind it accepts
+   * always has its module published. Set it only to route around a
+   * retracted artifact set; it selects among published releases and
+   * controls nothing else (not the platform version, not the charts).
+   */
+  string iac_modules_version = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^v\\d+\\.\\d+\\.\\d+$"
+  ];
 }
 
 /**

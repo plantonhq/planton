@@ -104,7 +104,7 @@ spec:
 | `spec.logDestinations[].openSearch.basicAuth` | `DigitalOceanAppOpenSearchBasicAuth` |  |  |  |
 | `spec.logDestinations[].openSearch.basicAuth.user` | `string` |  |  |  |
 | `spec.logDestinations[].openSearch.basicAuth.password` | `string` (sensitive) |  |  |  |
-| `spec.projectId` | `string` |  |  |  |
+| `spec.projectId` | `string \| valueFrom` |  |  | DigitalOceanProject (`status.outputs.project_id`) |
 | `spec.appName` | `string` | yes |  |  |
 
 ## Field Details
@@ -446,12 +446,16 @@ The provider requires this block even when user and password are empty
 
 ### spec.projectId
 
-`string`
+`string | valueFrom`
 
-DigitalOcean project UUID to put the app in. Literal UUID (the FK
-upgrade to DigitalOceanProject is recorded backlog). Create-only: the
-provider marks project_id ForceNew, so changing it destroys and
-recreates the app. Unset puts the app in the account's default project.
+(Optional) The project the functions app is created in. Reference a
+DigitalOceanProject resource (the default wiring resolves its
+project_id output) or pass a literal project UUID. When unset, the app
+lands in the account's default project. Create-only: the provider marks
+project_id ForceNew, so changing it destroys and recreates the app.
+
+- references: DigitalOceanProject (`status.outputs.project_id`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse
 
 ### spec.appName
 
@@ -482,6 +486,14 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanFunc
 | `status.outputs.function_id` | `string` | App Platform app UUID that hosts the functions component. Used to import the digitalocean_app resource. |
 | `status.outputs.https_endpoint` | `string` | Public HTTPS URL of the app (the functions HTTP endpoint). |
 | `status.outputs.default_hostname` | `string` | Default ondigitalocean.app hostname assigned by the platform. |
+
+## References
+
+Fields that can point at another resource's outputs:
+
+| Field | Kind | Output |
+|---|---|---|
+| `spec.projectId` | DigitalOceanProject | `status.outputs.project_id` |
 
 ## See Also
 

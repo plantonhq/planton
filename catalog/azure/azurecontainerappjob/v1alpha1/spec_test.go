@@ -155,7 +155,7 @@ var _ = ginkgo.Describe("AzureContainerAppJobSpec Validation Tests", func() {
 				{Name: "db-password", KeyVaultSecretId: "https://vault.vault.azure.net/secrets/db-password", Identity: "System"},
 			}
 			input.Spec.Registries = []*AzureContainerAppJobRegistry{
-				{Server: "myregistry.azurecr.io", Identity: "System"},
+				{Server: literal("myregistry.azurecr.io"), Identity: "System"},
 			}
 			input.Spec.Identity = &AzureContainerAppJobIdentity{
 				Type: AzureContainerAppJobIdentityType_SYSTEM_ASSIGNED,
@@ -314,7 +314,7 @@ var _ = ginkgo.Describe("AzureContainerAppJobSpec Validation Tests", func() {
 		ginkgo.It("rejects a registry mixing identity and username/password auth", func() {
 			input := minimalSpec()
 			input.Spec.Registries = []*AzureContainerAppJobRegistry{{
-				Server:             "myregistry.azurecr.io",
+				Server:             literal("myregistry.azurecr.io"),
 				Identity:           "System",
 				Username:           "bot",
 				PasswordSecretName: "reg-password",

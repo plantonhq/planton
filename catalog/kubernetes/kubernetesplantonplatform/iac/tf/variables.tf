@@ -17,6 +17,7 @@ variable "spec" {
     namespace        = string
     create_namespace = optional(bool, false)
     version          = string
+    image_registry   = optional(string, "")
     license = optional(object({
       key = optional(string, "")
       secret_key_ref = optional(object({
@@ -166,6 +167,10 @@ variable "spec" {
       storage_class_name            = optional(string, "")
       service_account_annotations   = optional(map(string), {})
       cloud_credentials_secret_name = optional(string, "")
+      image = optional(object({
+        repository = optional(string, "")
+        tag        = optional(string, "")
+      }))
     }))
     build = optional(object({
       enabled = optional(bool)
@@ -269,6 +274,9 @@ variable "spec" {
       replicas                    = optional(number)
       external_config_secret_name = optional(string, "")
       service_account_annotations = optional(map(string), {})
+      # Override of the release official IaC modules are downloaded from; unset
+      # means the platform's own catalog release (the shape every install should have).
+      iac_modules_version = optional(string, "")
     }))
     console = optional(object({
       image = optional(object({

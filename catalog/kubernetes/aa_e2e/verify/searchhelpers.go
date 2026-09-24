@@ -71,23 +71,19 @@ func solrSecurityEnabled(spec map[string]interface{}) bool {
 }
 
 // neo4jAuthSecretName resolves the credentials Secret the verifier
-// reads: the module-materialized `<name>-auth` for the declared-password
-// arm, the referenced Secret for the existing-secret arm, empty when no
-// credentials are declared (chart-generated password — unreadable by
-// design).
+// reads: the referenced Secret for the existing-secret arm, otherwise the
+// module-materialized `<name>-auth` — which the module creates for every
+// other arm, carrying the declared password or the one it generated when
+// auth was left empty. Never empty: an absent auth block is the
+// generated-credential proof, not a skip.
 func neo4jAuthSecretName(spec map[string]interface{}, resourceName string) string {
-	auth, _ := spec["auth"].(map[string]interface{})
-	if auth == nil {
-		return ""
+	if auth, _ := spec["auth"].(map[string]interface{}); auth != nil {
+		if existing, _ := auth["existing_secret"].(string); existing != "" {
+			return existing
+		}
+		if existing, _ := auth["existingSecret"].(string); existing != "" {
+			return existing
+		}
 	}
-	if existing, _ := auth["existing_secret"].(string); existing != "" {
-		return existing
-	}
-	if existing, _ := auth["existingSecret"].(string); existing != "" {
-		return existing
-	}
-	if pw, _ := auth["password"].(string); pw != "" {
-		return resourceName + "-auth"
-	}
-	return ""
+	return resourceName + "-auth"
 }

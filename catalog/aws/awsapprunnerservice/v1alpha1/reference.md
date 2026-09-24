@@ -510,6 +510,13 @@ characters.
 
 The VPC to publish the service into.
 
+Containment-exempt: the connection lets clients INSIDE this VPC
+reach the service over PrivateLink; the service itself runs on
+App Runner's managed infrastructure and is never deployed into the
+VPC (a VPC connector, not an ingress connection, is what places a
+service's egress in a VPC). On a diagram the service stands outside
+the VPC with a line to the network it is published into.
+
 - references: AwsVpc (`status.outputs.vpc_id`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: AwsVpc, name: <that resource's name>, fieldPath: status.outputs.vpc_id}} -- a bare string does not parse

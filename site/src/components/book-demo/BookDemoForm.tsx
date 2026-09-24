@@ -1,12 +1,10 @@
 'use client';
 
 import { Box, Typography } from '@mui/material';
-import { useState, useCallback } from 'react';
-import type {
-  DemoFormData,
-  FieldErrors,
-  SubmissionStatus,
-} from './types';
+import { useState, useCallback, useRef } from 'react';
+import type { DemoFormData, FieldErrors, SubmissionStatus } from './types';
+import { DEMO_COPY } from '@/data/homepage';
+import { trackDemo } from '@/lib/demo-analytics';
 import { JOB_TITLE_OPTIONS, COMPANY_SIZE_OPTIONS, SUBMISSION_ENDPOINT } from './types';
 
 interface BookDemoFormProps {
@@ -30,8 +28,7 @@ function validateField(name: keyof DemoFormData, value: string): string | undefi
       return value.trim() ? undefined : 'Last name is required';
     case 'workEmail': {
       if (!value.trim()) return 'Work email is required';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
-        return 'Enter a valid email address';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Enter a valid email address';
       return undefined;
     }
     case 'company':
@@ -55,14 +52,15 @@ function validateAll(data: DemoFormData): FieldErrors {
 }
 
 const inputClasses =
-  'w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg px-4 py-3 text-[#ededed] text-sm placeholder-[#555] focus:border-[#3a3a3a] focus:outline-none focus:ring-1 focus:ring-white/10 transition-colors';
+  'w-full bg-raised border border-edge rounded-lg px-4 py-3 text-fg text-sm placeholder-fg-secondary focus:border-edge-hover focus:outline-none focus:ring-1 focus:ring-fg-secondary transition-colors';
 
-const selectClasses =
-  `${inputClasses} appearance-none cursor-pointer`;
+const selectClasses = `${inputClasses} appearance-none cursor-pointer`;
 
-const labelClasses = 'text-sm font-medium text-[#a0a0a0] mb-1.5 block';
+const labelClasses = 'text-sm font-medium text-fg-secondary mb-1.5 block';
 
 export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
+  const started = useRef(false);
+  const submitting = useRef(false);
   const [form, setForm] = useState<DemoFormData>(INITIAL_FORM);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [touched, setTouched] = useState<Set<keyof DemoFormData>>(new Set());
@@ -79,7 +77,7 @@ export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
         }));
       }
     },
-    [touched],
+    [touched]
   );
 
   const handleBlur = useCallback(
@@ -90,20 +88,20 @@ export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
         [field]: validateField(field, form[field]),
       }));
     },
-    [form],
+    [form]
   );
 
   const submitForm = useCallback(async () => {
+    if (submitting.current) return;
     setServerError(null);
 
     const allErrors = validateAll(form);
     setErrors(allErrors);
-    setTouched(
-      new Set(Object.keys(form) as (keyof DemoFormData)[]),
-    );
+    setTouched(new Set(Object.keys(form) as (keyof DemoFormData)[]));
 
     if (Object.values(allErrors).some(Boolean)) return;
 
+    submitting.current = true;
     setStatus('submitting');
 
     const MIN_SUBMIT_MS = 800;
@@ -123,14 +121,14 @@ export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
     }
 
     await sleep;
+    submitting.current = false;
 
     if (fetchError) {
       setStatus('error');
       setServerError(
-        fetchError instanceof TypeError &&
-          (fetchError as TypeError).message === 'Failed to fetch'
+        fetchError instanceof TypeError && (fetchError as TypeError).message === 'Failed to fetch'
           ? 'network'
-          : 'unknown',
+          : 'unknown'
       );
       return;
     }
@@ -144,6 +142,7 @@ export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
     }
 
     setStatus('success');
+    trackDemo('demo_form_submit_success');
     onSuccess(form);
   }, [form, onSuccess]);
 
@@ -152,18 +151,22 @@ export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
       e.preventDefault();
       submitForm();
     },
-    [submitForm],
+    [submitForm]
   );
 
   return (
     <form
-      className="rounded-xl bg-[#111] border border-[#2a2a2a] p-6 md:p-8"
+      className="space-y-6"
       onSubmit={handleFormSubmit}
+      onFocusCapture={() => {
+        if (!started.current) {
+          started.current = true;
+          trackDemo('demo_form_start');
+        }
+      }}
       noValidate
     >
-      <Typography className="text-lg font-semibold text-white mb-6">
-        Book a Demo
-      </Typography>
+      <Typography className="text-lg font-semibold text-fg mb-6">{DEMO_COPY.formTitle}</Typography>
 
       <Box className="flex flex-col gap-5">
         {/* First Name + Last Name — side by side */}
@@ -240,10 +243,9 @@ export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
 
         {/* Submit button */}
         <button
-          type="button"
+          type="submit"
           disabled={status === 'submitting'}
-          onClick={submitForm}
-          className="w-full bg-[#fff] hover:bg-gray-200 text-black font-medium text-sm px-5 py-3 rounded-lg transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111]"
+          className="w-full bg-cta hover:opacity-90 text-cta-text font-medium text-sm px-5 py-3 rounded-lg transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg-secondary focus-visible:ring-offset-2 focus-visible:ring-offset-panel"
         >
           {status === 'submitting' ? (
             <>
@@ -251,7 +253,7 @@ export function BookDemoForm({ onSuccess }: BookDemoFormProps) {
               Submitting...
             </>
           ) : (
-            'Book Your Demo'
+            DEMO_COPY.submit
           )}
         </button>
       </Box>
@@ -299,10 +301,11 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         aria-required={required ? 'true' : undefined}
+        aria-invalid={Boolean(error)}
         aria-describedby={error ? `${name}-error` : undefined}
       />
       {error && (
-        <span id={`${name}-error`} className="text-xs text-[#ef4444] mt-1 block">
+        <span id={`${name}-error`} className="text-xs text-danger mt-1 block">
           {error}
         </span>
       )}
@@ -346,6 +349,7 @@ function SelectField({
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
           aria-required="true"
+          aria-invalid={Boolean(error)}
           aria-describedby={error ? `${name}-error` : undefined}
         >
           <option value="" disabled>
@@ -357,7 +361,7 @@ function SelectField({
             </option>
           ))}
         </select>
-        <Box className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#555]">
+        <Box className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-fg-secondary">
           <svg
             width="16"
             height="16"
@@ -373,7 +377,7 @@ function SelectField({
         </Box>
       </Box>
       {error && (
-        <span id={`${name}-error`} className="text-xs text-[#ef4444] mt-1 block">
+        <span id={`${name}-error`} className="text-xs text-danger mt-1 block">
           {error}
         </span>
       )}
@@ -398,14 +402,17 @@ function ErrorBanner({ type }: { type: string }) {
   const copy = ERROR_COPY[type] ?? ERROR_COPY['unknown'];
 
   return (
-    <Box className="rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] px-5 py-4 flex gap-3.5 items-start animate-[fadeIn_0.3s_ease-out]">
-      <Box className="w-8 h-8 rounded-full bg-[#ef4444]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+    <Box
+      role="alert"
+      className="rounded-lg bg-raised border border-edge px-5 py-4 flex gap-3.5 items-start animate-[fadeIn_0.3s_ease-out]"
+    >
+      <Box className="w-8 h-8 rounded-full bg-danger/10 flex items-center justify-center flex-shrink-0 mt-0.5">
         <svg
           width="16"
           height="16"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#ef4444"
+          stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -416,10 +423,8 @@ function ErrorBanner({ type }: { type: string }) {
         </svg>
       </Box>
       <Box className="flex-1 min-w-0">
-        <Typography className="text-sm font-medium text-white mb-0.5">
-          {copy.heading}
-        </Typography>
-        <Typography className="text-xs text-[#a0a0a0] leading-relaxed">
+        <Typography className="text-sm font-medium text-fg mb-0.5">{copy.heading}</Typography>
+        <Typography className="text-xs text-fg-secondary leading-relaxed">
           {copy.body.split('hello@planton.ai').map((part, i, arr) =>
             i < arr.length - 1 ? (
               <span key={i}>
@@ -428,7 +433,7 @@ function ErrorBanner({ type }: { type: string }) {
               </span>
             ) : (
               part
-            ),
+            )
           )}
         </Typography>
       </Box>
@@ -442,8 +447,10 @@ function CopyEmail() {
   const [copied, setCopied] = useState(false);
 
   const copy = () => {
-    navigator.clipboard.writeText('hello@planton.ai');
-    setCopied(true);
+    void navigator.clipboard
+      .writeText('hello@planton.ai')
+      .then(() => setCopied(true))
+      .catch(() => setCopied(false));
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -452,12 +459,14 @@ function CopyEmail() {
       role="button"
       tabIndex={0}
       onClick={copy}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') copy(); }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') copy();
+      }}
       className="inline-flex items-center gap-1.5 cursor-pointer group"
     >
-      <span className="text-white font-medium">hello@planton.ai</span>
+      <span className="text-fg font-medium">hello@planton.ai</span>
       {copied ? (
-        <span className="inline-flex items-center gap-0.5 text-[#10b981]">
+        <span className="inline-flex items-center gap-0.5 text-ok">
           <svg
             width="12"
             height="12"
@@ -482,7 +491,7 @@ function CopyEmail() {
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-[#555] opacity-0 group-hover:opacity-100 transition-opacity"
+          className="text-fg-secondary opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
           <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
@@ -496,19 +505,8 @@ function CopyEmail() {
 
 function Spinner() {
   return (
-    <svg
-      className="animate-spin h-4 w-4"
-      viewBox="0 0 24 24"
-      fill="none"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"

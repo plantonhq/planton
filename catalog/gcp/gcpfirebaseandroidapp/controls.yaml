@@ -1,0 +1,89 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpfirebaseandroidapp
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The app registration, its App Check configuration, and its debug tokens live in Google's managed Firebase control plane, encrypted at rest by default; the registration stores no user data of its own.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: The Firebase Management and App Check APIs publish no customer-managed key integration -- no resource this kind declares carries a KMS key field. App content lives in the project's Firestore / Storage resources, where CMEK is decided on those kinds.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Every Firebase API the app and the management plane use -- the Management API, Cloud Messaging registration and delivery, App Check token exchange -- is served over TLS only and rejects plaintext transport.
+    - control_id: no-public-access
+      status: configurable
+      field_path: app_check.play_integrity
+      evidence:
+        type: spec_default
+        reference: Omitted means the app carries no attestation provider -- any client presenting its identifiers is indistinguishable from the genuine app to the project's backends. Configuring play_integrity lets the app prove, per request, that it is the genuine APK on a genuine Google Play device, and the project's App Check enforcement (on GcpFirebaseProject) then rejects everything that cannot.
+      notes: Attestation is configured HERE and enforced on the project -- this kind decides how the app proves itself; the GcpFirebaseProject decides which backends demand the proof. Both halves are needed to close the perimeter.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: An app registration accepts no traffic; the project's Firebase backends are globally served Google APIs with no network-source surface to restrict. The identity-shaped admission control Firebase offers (App Check) is covered under no-public-access.
+    - control_id: edge-protection
+      status: configurable
+      field_path: app_check.play_integrity
+      evidence:
+        type: spec_default
+        reference: Omitted leaves requests from this app's identifiers admitted on their own merits; Play Integrity attestation rejects traffic from scripts, emulators, rooted devices, and tampered builds before it reaches the backend -- the abuse filter for a mobile API surface -- once the project enforces App Check.
+      notes: Debug tokens deliberately punch a hole in this filter for development builds and CI; each is a secret and should be revoked (the entry removed) when the machine or lane it served is gone.
+    - control_id: rbac
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: The management plane is IAM-governed unconditionally -- registering, updating, and removing the app authorizes against firebase.clients.*, and App Check against firebaseappcheck.*, grantable through roles such as roles/firebase.admin and roles/firebaseappcheck.admin.
+      notes: The API key the app presents is a client identifier, not an authorization -- what the key MAY call is decided on the GcpApiKey (its restrictions), and what a request may do is decided by the backend's own rules and App Check.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The registration runs no workload and holds no credential. The keyless posture for a push SENDER is declared with GcpServiceAccount, GcpProjectIamMember, and GcpGkeWorkloadIdentityBinding alongside the GcpFirebaseProject; nothing here needs a key file.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The Firebase Management API accepts only OAuth 2.0 / IAM credentials. Client-side, the app identifies with an API key that is a project identifier, not an authentication credential (see GcpApiKey); the legacy FCM server key was retired by Google in 2024 and plays no part here.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The registration carries no user identity. End-user authentication for the app is Firebase Authentication / Identity Platform, assessed on GcpIdentityPlatformConfig; App Check (here) attests the APP, not the user.
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Creating, updating, and removing the app, and every App Check configuration and debug-token change, land in Cloud Audit Logs as Admin Activity events for firebase.googleapis.com and firebaseappcheck.googleapis.com unconditionally; nothing on the resource can switch them off.
+    - control_id: monitoring-integration
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Once the app attests, App Check reports verified / unverified / outdated-client request metrics per backend service in the Firebase console, and Cloud Messaging reports delivery metrics per app automatically; traffic against the project's Firebase APIs surfaces in Cloud Monitoring's consumed-API metrics.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: A registration is identity, not data -- nothing to back up. Its one recoverability lever is Firebase's 30-day trash for a removed app, which deletion_policy DELETE deliberately skips (immediate removal); PREVENT is the guard for an app that must not be lost.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backup exists on this resource (see backup-recovery), so there is no retention length to set.
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Firebase's management plane, Cloud Messaging, and App Check are globally served Google services replicated across failure domains invisibly; the registration has no location to choose.
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: Empty defaults to DELETE -- the app is removed IMMEDIATELY and PERMANENTLY (Firebase's 30-day recoverable window is skipped) and its debug tokens with it; PREVENT makes destroy fail outright -- the guard for a shipped app whose users hold its google-services.json; ABANDON leaves the app registered, unmanaged.
+      notes: The Play Integrity configuration needs no protection because Google never deletes it -- it disappears only with the app. Set PREVENT the day the app reaches users.
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: Firebase is a fully managed platform -- Google operates and patches the Management API, Cloud Messaging, and App Check invisibly; the registration exposes no version, runtime, or maintenance channel to manage.

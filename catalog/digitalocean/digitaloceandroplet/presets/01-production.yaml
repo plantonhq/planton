@@ -13,7 +13,7 @@ spec:
       name: my-production-vpc
       fieldPath: status.outputs.vpc_id
   sshKeys:
-    - "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
+    - value: "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"
   enableBackups: true
   backupPolicy:
     plan: weekly

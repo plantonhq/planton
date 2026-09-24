@@ -1,0 +1,31 @@
+# Minimal GcpFirebaseWebApp scenario: register a web app and nothing else
+# -- the smallest manifest that produces an app id and a firebaseConfig.
+# projectId resolves from the GcpFirebaseProject prerequisite's project_id
+# output (the registry prerequisite; the harness deploys the enablement
+# fixture first, which ADOPTS the test project's permanent Firebase
+# enablement), proving the reference and the ordering, not just the
+# provider default. A web app has no identity beyond its display name, so
+# only the name carries the run id. deletion_policy DELETE removes the app
+# immediately and permanently, so nothing is left behind.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseWebApp
+metadata:
+  name: planton-oss-e2e-gcpfbweb-minimal
+  id: planton-oss-e2e-gcpfbweb-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebasewebapp
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: planton-oss-e2e-gcpfbprj-prereq
+      fieldPath: status.outputs.project_id
+  displayName: planton e2e web ${E2E_RUN_ID}
+  deletionPolicy: DELETE

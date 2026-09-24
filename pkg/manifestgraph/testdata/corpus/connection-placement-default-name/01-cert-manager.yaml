@@ -1,0 +1,12 @@
+# The consumer end, against the DEFAULT published name <env>-<name>: the
+# cluster below sets no connection-name, so it publishes "prod-platform".
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCertManager
+metadata:
+  name: cert-manager
+  env: prod
+  annotations:
+    planton.dev/connection: prod-platform
+spec:
+  namespace:
+    value: cert-manager

@@ -3,10 +3,12 @@ load("@rules_go//go:def.bzl", "go_library", "go_test")
 go_library(
     name = "manifestgraph",
     srcs = [
+        "connection.go",
         "doc.go",
         "findings.go",
         "graph.go",
         "order.go",
+        "prerequisite.go",
         "refuse.go",
         "resolve.go",
         "rules.go",
@@ -31,9 +33,11 @@ go_library(
 go_test(
     name = "manifestgraph_test",
     srcs = [
+        "connection_test.go",
         "corpus_test.go",
         "order_test.go",
         "resolve_test.go",
+        "sibling_test.go",
         "slug_test.go",
     ],
     data = glob(["testdata/**"]),
@@ -41,11 +45,20 @@ go_test(
     deps = [
         "//catalog/_test/testcloudresourcekubernetes/v1alpha1",
         "//catalog/auth0/auth0connection/v1alpha1",
+        "//catalog/gcp/gcpgkecluster/v1alpha1",
+        "//catalog/gcp/gcpvpcnetwork/v1alpha1",
+        "//catalog/kubernetes",
+        "//catalog/kubernetes/kubernetescloudnativepgoperator/v1alpha1",
+        "//catalog/kubernetes/kubernetesgateway/v1alpha1",
+        "//catalog/kubernetes/kuberneteshttproute/v1alpha1",
+        "//catalog/kubernetes/kubernetesnamespace/v1alpha1",
+        "//catalog/kubernetes/kubernetespostgres/v1alpha1",
         "//internal/manifest",
         "//shared",
         "//shared/cloudresourcekind",
         "//shared/foreignkey/v1:foreignkey",
         "@com_github_stretchr_testify//assert",
         "@in_gopkg_yaml_v3//:yaml_v3",
+        "@org_golang_google_protobuf//proto",
     ],
 )

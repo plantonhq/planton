@@ -1,0 +1,91 @@
+# Admission list for the google-beta channel -- the recorded judgment that
+# lets a resource published only in Google's beta Terraform provider into
+# the GCP catalog, whose parity baseline is the GA `google` provider.
+#
+# The baseline is the yardstick: a resource the GA provider serves at the
+# pin is modeled through the GA provider, always. Capability that lives only
+# in the beta channel enters here -- per resource, per consuming kind, never
+# wholesale -- and the consuming module attaches exactly those resources
+# through `provider = google-beta` (the pin guard holds the channel to the
+# same release line as google; the admission guard holds every attachment to
+# an entry here and every entry to an attachment).
+#
+# Every entry carries:
+#   resource          -- the Terraform resource type
+#   kind              -- the registry kind whose module attaches it (one
+#                        entry per kind; two kinds, two entries, two reasons)
+#   reason            -- why the capability is worth a beta dependency: what
+#                        the GA provider does not serve at the pin
+#   promotionTracking -- where the resource's promotion to GA is watched, so
+#                        the day it lands the entry is removed and the module
+#                        moves back to the baseline provider
+#
+# The accounting (pkg/providerparity) reads this list: an admitted resource
+# is argument-walked against the google-beta schema artifact; a beta-only
+# resource a module consumes without an entry is a finding; an entry whose
+# resource the GA schema serves at the pin is a STALE admission (the
+# promotion happened) and fails the gate until the module and this file move
+# together. The public parity page renders every entry.
+
+provider: google-beta
+gaSchema: google
+resources:
+  - resource: google_firebase_project
+    kind: GcpFirebaseProject
+    reason: >-
+      Firebase enablement (projects.addFirebase on the Firebase Management
+      API) is published only in the beta provider at the pin -- the GA
+      provider has no code under services/firebase; the kind cannot exist
+      without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebase/resource_firebase_project.go (the GA
+      promotion of the firebase service); until then
+      google-beta/services/firebase/ is the only home.
+  - resource: google_firebase_storage_default_bucket
+    kind: GcpFirebaseProject
+    reason: >-
+      The default Cloud Storage for Firebase bucket
+      (projects.defaultBucket on the Firebase Storage API) is published
+      only in the beta provider at the pin; the GA provider has no code
+      under services/firebasestorage.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebasestorage/resource_firebase_storage_default_bucket.go
+      (the GA promotion of the firebasestorage service).
+  - resource: google_firebase_android_app
+    kind: GcpFirebaseAndroidApp
+    reason: >-
+      The Android app registration (projects.androidApps on the Firebase
+      Management API) is published only in the beta provider at the pin --
+      the GA provider has no code under services/firebase; the kind cannot
+      exist without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebase/resource_firebase_android_app.go (the GA
+      promotion of the firebase service); until then
+      google-beta/services/firebase/ is the only home.
+  - resource: google_firebase_apple_app
+    kind: GcpFirebaseAppleApp
+    reason: >-
+      The Apple app registration (projects.iosApps on the Firebase
+      Management API) is published only in the beta provider at the pin --
+      the GA provider has no code under services/firebase; the kind cannot
+      exist without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebase/resource_firebase_apple_app.go (the GA
+      promotion of the firebase service); until then
+      google-beta/services/firebase/ is the only home.
+  - resource: google_firebase_web_app
+    kind: GcpFirebaseWebApp
+    reason: >-
+      The web app registration (projects.webApps on the Firebase Management
+      API) is published only in the beta provider at the pin -- the GA
+      provider has no code under services/firebase; the kind cannot exist
+      without it.
+    promotionTracking: >-
+      hashicorp/terraform-provider-google: the appearance of
+      google/services/firebase/resource_firebase_web_app.go (the GA
+      promotion of the firebase service); until then
+      google-beta/services/firebase/ is the only home.

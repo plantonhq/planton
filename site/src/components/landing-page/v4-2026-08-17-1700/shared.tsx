@@ -1,6 +1,7 @@
 /**
- * v4 uses the v3 primitives unchanged — the redesign is about content and
- * restraint, not new layout machinery. Re-exported here so every v4 section
- * imports from './shared' and the version stays self-contained on paper.
+ * This landing version's primitives live in their stable, unversioned home,
+ * `@/components/marketing`. The sections beside this file import `./shared`
+ * so the version reads as self-contained; the primitives themselves are
+ * shared by every marketing page and are never versioned.
  */
-export * from '../v3-2026-01-02-1000/shared';
+export * from '@/components/marketing';

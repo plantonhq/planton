@@ -313,6 +313,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpApiKey | `spec.serviceAccountEmail` | `status.outputs.email` |
 | GcpArtifactRegistryRepo | `spec.iamMembers[].member` | `status.outputs.member` |
 | GcpCloudComposerEnvironment | `spec.nodeConfig.serviceAccount` | `status.outputs.email` |
 | GcpCloudFunction | `spec.buildConfig.serviceAccount` | `status.outputs.name` |

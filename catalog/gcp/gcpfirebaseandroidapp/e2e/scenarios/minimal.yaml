@@ -1,0 +1,33 @@
+# Minimal GcpFirebaseAndroidApp scenario: register an Android app and
+# nothing else -- the smallest manifest that produces an app id and a
+# google-services.json. projectId resolves from the GcpFirebaseProject
+# prerequisite's project_id output (the registry prerequisite; the harness
+# deploys the enablement fixture first, which ADOPTS the test project's
+# permanent Firebase enablement), proving the reference and the ordering,
+# not just the provider default. The package name carries the run id: a
+# project accepts each package name once, and two engines register in the
+# same run. deletion_policy DELETE removes the app immediately and
+# permanently, so nothing is left behind.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAndroidApp
+metadata:
+  name: planton-oss-e2e-gcpfband-minimal
+  id: planton-oss-e2e-gcpfband-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpfirebaseandroidapp
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: planton-oss-e2e-gcpfbprj-prereq
+      fieldPath: status.outputs.project_id
+  displayName: planton e2e android ${E2E_RUN_ID}
+  packageName: ai.planton.e2e.a${E2E_RUN_ID_UNDERSCORE}
+  deletionPolicy: DELETE

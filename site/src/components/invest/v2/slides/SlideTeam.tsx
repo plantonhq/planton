@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Slide, SlideTitle, SlideSubtitle, TeamMember, Callout } from '../shared';
 
 // College badge for founders who went to same college (2007-2011)
@@ -110,9 +111,11 @@ export default function SlideTeam() {
               </div>
             )}
             <div className="flex items-center gap-1.5">
-              <img 
-                src={member.avatar} 
-                alt={member.name} 
+              <Image
+                src={member.avatar}
+                alt={member.name}
+                width={24}
+                height={24}
                 className="w-6 h-6 rounded-full object-cover object-[center_25%] shrink-0"
               />
               <div className="min-w-0">

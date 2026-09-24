@@ -336,6 +336,13 @@ No `default_kind` is set because the target resource type varies
 (Lambda, SQS, SNS, etc.). Use `valueFrom` to reference specific
 Planton resources.
 
+Containment-exempt: a target is where matched events are DELIVERED,
+never where the rule lives -- the rule belongs to its event bus. A
+target that is itself a container (another event bus, for a
+cross-bus forward) would otherwise pull the rule inside the bus it
+forwards to; on a diagram the rule stays on its own bus with a line
+to each target.
+
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

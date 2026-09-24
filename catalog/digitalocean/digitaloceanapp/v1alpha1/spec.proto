@@ -75,12 +75,22 @@ message DigitalOceanAppSpec {
   bool disable_email_obfuscation = 18;
   bool enhanced_threat_control_enabled = 19;
 
-  // DigitalOcean project to put the app in. Literal project UUID (the FK
-  // upgrade to DigitalOceanProject is recorded backlog). Create-only: the
-  // provider marks project_id ForceNew, so changing it destroys and recreates
-  // the app (new UUID, new default hostname). Unset puts the app in the
-  // account's default project.
-  string project_id = 20;
+  // Retired field. project_id was a literal project UUID written before the
+  // Project kind existed. Its number must never be reused with a different
+  // meaning; the field returns below as a typed reference that also accepts
+  // a literal UUID.
+  reserved 20;
+
+  // (Optional) The project the app is created in. Reference a
+  // DigitalOceanProject resource (the default wiring resolves its
+  // project_id output) or pass a literal project UUID. When unset, the app
+  // lands in the account's default project. Create-only: the provider marks
+  // project_id ForceNew, so changing it destroys and recreates the app (new
+  // UUID, new default hostname).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 21 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
 }
 
 // HTTP service that receives external or internal traffic.

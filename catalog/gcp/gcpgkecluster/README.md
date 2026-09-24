@@ -57,7 +57,7 @@ matched, mapped, or excluded with the reason recorded in
 | `network_policy.provider` | CALICO is the only legal value — the module wires it with `enable_network_policy`. |
 | `workload_identity_config.workload_pool` | The API fixes the pool name to `PROJECT_ID.svc.id.goog`; the spec holds the on/off decision and the module composes the only possible value. |
 | `maintenance_policy.recurring_maintenance_window`, `rollback_safe_upgrade` + `desired_emulated_version`, the node-readiness addon | GA at the pinned provider but not yet bridged by the pinned Pulumi SDK — modeling them only in Terraform would break cross-engine parity. Re-evaluated at every SDK bump. |
-| `tpu_config`, `pod_security_policy_config`, `cluster_telemetry`, `protect_config` and other beta-only blocks | Exist only in the `google-beta` provider; GA is the parity baseline and the beta admission list is empty. |
+| `tpu_config`, `pod_security_policy_config`, `cluster_telemetry`, `protect_config` and other beta-only blocks | Exist only in the `google-beta` provider; GA is the parity baseline, and beta surface enters only through the catalog's admission list (`pkg/providerparity/admissions/google-beta.yaml`), which admits resources, not fields -- none of these blocks is admitted for this kind. |
 | `enterprise_config` | Deprecated on the provider at the pinned version. |
 
 ## Related Components

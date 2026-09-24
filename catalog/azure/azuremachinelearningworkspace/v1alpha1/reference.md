@@ -642,6 +642,12 @@ Cache, and other ML workspaces. No default reference kind -- name
 the kind explicitly in valueFrom when referencing (the target can
 be any of several kinds).
 
+Containment-exempt: an outbound rule is the managed network's door
+to a resource the workspace reaches; the workspace is not deployed
+into a Key Vault, a storage account, or a cache it merely calls.
+Without the exemption a workspace wired to one by reference would
+be drawn inside it.
+
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

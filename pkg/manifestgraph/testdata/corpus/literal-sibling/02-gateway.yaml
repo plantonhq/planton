@@ -1,0 +1,21 @@
+# The sibling the literal names: same kind as the field's default_kind, same
+# slug, same env. A Kubernetes name is an identity, so the match is the fact.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesGateway
+metadata:
+  name: public-gateway
+  env: dev
+spec:
+  namespace:
+    value: istio-ingress
+  gatewayClassName:
+    value: istio
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+        kinds:
+          - kind: HTTPRoute

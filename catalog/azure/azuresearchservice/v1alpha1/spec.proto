@@ -316,7 +316,16 @@ message AzureSearchServiceSharedPrivateLink {
   // default reference kind -- the target can be any of several kinds
   // (storage account, SQL server, Key Vault, Cognitive account, ...);
   // name the kind explicitly in valueFrom when referencing.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef target_resource_id = 3 [(buf.validate.field).required = true];
+  //
+  // Containment-exempt: a shared private link is the search service's
+  // outbound door to a resource it indexes or enriches from; the
+  // service is not deployed into that resource. Every listed target is
+  // a container, and a service linked by reference would otherwise be
+  // drawn inside the store it reads.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target_resource_id = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // The approval-request message shown to the target resource's
   // owner (the link sits "Pending" until they approve). Updates in

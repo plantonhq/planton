@@ -43,6 +43,7 @@ func (co *Console) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sc
 		}
 		cfg.ExternalConfigSecretName = planton.Spec.Console.ExternalConfigSecretName
 	}
+	cfg.ImageRepository = resources.ImageRepository(cfg.ImageRepository, planton.Spec.ImageRegistry, resources.ConsoleImageSlug)
 
 	publicURL, resolved := frontDoorURL(planton)
 	if !resolved {

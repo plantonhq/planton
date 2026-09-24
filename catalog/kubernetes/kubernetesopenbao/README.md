@@ -31,17 +31,38 @@ Shamir mode every restart returns a SEALED server. Auto-unseal
 initialization is always yours — with auto-unseal it produces
 RECOVERY keys instead of unseal keys.
 
-## One mode at a time
+## The storage engine and the replica count
 
-dev XOR standalone XOR ha; unset means standalone (the chart
-default): one instance, file storage on a PVC. Dev mode is in-memory,
-auto-initialized, root token literally `root` — evaluation only,
-never real secrets. HA is integrated Raft, and this module
-synthesizes the `retry_join` stanzas for every peer — the chart alone
-ships NONE, and without them a multi-replica install never forms a
-cluster. Scheduling truth: the chart's REQUIRED pod anti-affinity
-means HA replicas need as many schedulable nodes; relax it through
-`helm_values` in labs only.
+The server declares what OpenBao has: `dev`, or a storage engine and
+`replicas`. Declaring nothing means one server on integrated Raft — a
+legal Raft cluster of one, with transactions and snapshots.
+
+- `raft` — integrated storage: one volume per replica
+  (`raft.dataStorage`), leader election, and the engine `backup` and
+  `restore` exist for (Raft snapshots). This module synthesizes the
+  `retry_join` stanzas for every peer — the chart alone ships NONE,
+  and without them a multi-replica install never forms a cluster.
+- `postgresql` — OpenBao's production-ready external backend, declared
+  BY REFERENCE to a `KubernetesPostgres` (host from its `-rw` Service,
+  password from its operator-maintained Secret). No volume; HA through
+  the backend's lock table; the vault is backed up by its database's
+  own backup, so `backup` is refused on this engine. The connection
+  reaches the server as the standard `PG*` environment and the
+  password never enters a manifest or the server's configuration.
+- `dev` — in-memory, auto-initialized, root token literally `root`,
+  no volume, ServiceAccount annotations dropped (a chart behavior) —
+  evaluation only, never real secrets. Takes no engine and one replica.
+
+The Helm chart offers modes and a raw configuration string; this kind
+declares the engine and turns the chart's own knobs from it (Raft
+through the chart's Raft mode, PostgreSQL through its HA mode with Raft
+off and no data volume, dev through its dev flag). Every server on an
+engine runs the chart's HA mode, so the `-active` Service exists at
+every replica count. Scheduling truth: the chart's REQUIRED pod
+anti-affinity means replicas need as many schedulable nodes; relax it
+through `helm_values` in labs only. The chart's PodDisruptionBudget is
+disabled at one replica (its default there blocks every node drain
+while protecting nothing) and follows the count above it.
 
 ## Auto-unseal
 
@@ -70,7 +91,9 @@ the chart: it is a CLUSTER-WIDE mutating webhook on pod creation,
 fail-open by default (downtime skips injection rather than blocking
 pods). Metrics, when enabled, make /v1/sys/metrics UNAUTHENTICATED on
 the listener — that is how Prometheus scrapes. `backup` is the Raft
-disaster-recovery story: scheduled snapshots taken through OpenBao's
+disaster-recovery story (snapshots exist only for Raft — a vault stored
+in PostgreSQL is backed up by its database and refuses the block; dev
+has nothing to snapshot): scheduled snapshots taken through OpenBao's
 own API and shipped to S3, Google Cloud Storage, Azure Blob, or
 Cloudflare R2 — each in its own vocabulary, by reference to the
 catalog's bucket, identity, and token kinds, keyless where the cloud

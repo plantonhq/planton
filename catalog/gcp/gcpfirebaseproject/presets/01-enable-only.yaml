@@ -1,0 +1,5 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseProject
+metadata:
+  name: app-firebase
+spec: {}

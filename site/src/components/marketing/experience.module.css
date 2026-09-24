@@ -1,0 +1,469 @@
+/* Dark product surfaces share workflow palette roles; light content inherits the homepage. */
+.hero {
+  min-width: 0;
+  background: var(--ex-bg);
+  color: var(--ex-text);
+  border: 1px solid var(--ex-line);
+  border-radius: 16px;
+  padding: 20px 16px 14px;
+  overflow: hidden;
+}
+.heroLabel {
+  padding: 0 8px 10px;
+  font-size: 14px;
+  color: var(--ex-muted);
+}
+.hero svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.heroCaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 0 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ex-line);
+  min-height: 85px;
+}
+.heroCaption strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.heroCaption span {
+  display: block;
+  font-size: 13px;
+  color: var(--ex-muted);
+  line-height: 1.5;
+  margin-top: 5px;
+  max-width: 320px;
+}
+.playback {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.playback button {
+  min-height: 44px;
+  padding: 8px;
+  font-size: 13px;
+  border: 1px solid var(--ex-line);
+  border-radius: 7px;
+}
+.playback button:hover {
+  background: var(--ex-panel);
+}
+.hero button:focus-visible {
+  outline-color: var(--ex-flow);
+}
+.heroCompact {
+  display: none;
+}
+.product {
+  margin-top: 36px;
+}
+.productFrame {
+  border: 1px solid var(--ex-line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--ex-bg);
+  color: var(--ex-text);
+}
+.frameHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--ex-line);
+}
+.frameHeader span {
+  color: var(--ex-muted);
+  font-size: 13px;
+}
+.productFrame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.productFrame a {
+  display: block;
+}
+.productFrame figcaption {
+  padding: 16px 24px;
+  color: var(--ex-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.annotations {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 22px;
+}
+.annotations button {
+  padding: 16px;
+  text-align: left;
+  min-height: 60px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--hp-line);
+  border-radius: 9px;
+  font-size: 16px;
+}
+.annotations button span {
+  font:
+    12px ui-monospace,
+    monospace;
+  color: var(--hp-secondary);
+}
+.annotations button[aria-pressed='true'] {
+  background: var(--hp-ink);
+  color: var(--hp-canvas);
+  border-color: var(--hp-ink);
+}
+.annotations button[aria-pressed='true'] span {
+  color: inherit;
+}
+.productNote {
+  padding-top: 22px;
+  min-height: 125px;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 40px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.productNote span {
+  color: var(--hp-secondary);
+  font-size: 14px;
+}
+.controlGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 40px;
+}
+.controlCard {
+  padding: 30px;
+  border: 1px solid var(--hp-line);
+  background: var(--hp-panel);
+  border-radius: 14px;
+}
+.kicker {
+  font-size: 13px;
+  color: var(--hp-secondary);
+  margin-bottom: 24px !important;
+  letter-spacing: 0.02em;
+}
+.controlSteps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 24px;
+}
+.controlSteps li {
+  display: flex;
+  gap: 16px;
+  position: relative;
+}
+.step {
+  height: 30px;
+  width: 30px;
+  flex-shrink: 0;
+  border: 1px solid var(--hp-line);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+}
+.controlSteps li + li:before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: -22px;
+  height: 19px;
+  border-left: 1px solid var(--hp-line);
+}
+.controlCard h3 {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.controlSteps strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--hp-secondary);
+  margin: 4px 0 7px;
+}
+.controlCard p:not(.kicker) {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--hp-secondary);
+}
+.choices {
+  display: grid;
+  gap: 15px;
+}
+.choices > div {
+  display: grid;
+  grid-template-columns: 115px 1fr;
+  gap: 12px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--hp-line);
+}
+.choices h3 {
+  font-size: 16px;
+}
+.cloud {
+  border: 1px dashed var(--hp-secondary);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+}
+.cloud strong {
+  font-size: 18px;
+}
+.cloud p {
+  margin-top: 5px !important;
+}
+.ownershipNote {
+  margin-top: 16px !important;
+  font-size: 14px !important;
+}
+@media (max-width: 1000px) and (min-width: 761px) {
+  .heroLabel {
+    font-size: 13px;
+  }
+  .heroCaption {
+    flex-wrap: wrap;
+  }
+  .heroCaption span {
+    max-width: none;
+  }
+}
+@media (max-width: 760px) {
+  .hero {
+    max-width: 620px;
+    width: 100%;
+    margin: auto !important;
+    padding: 16px 10px;
+  }
+  .heroLabel {
+    font-size: 14px;
+  }
+  .heroCaption {
+    flex-wrap: wrap;
+    min-height: 125px;
+  }
+  .heroCaption strong {
+    font-size: 16px;
+  }
+  .heroCaption span {
+    font-size: 14px;
+    max-width: none;
+  }
+  .playback button {
+    font-size: 14px;
+    padding-inline: 12px;
+  }
+  .controlGrid {
+    grid-template-columns: 1fr;
+  }
+  .controlCard {
+    padding: 22px;
+  }
+  .frameHeader {
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px;
+  }
+  .productFrame figcaption {
+    padding: 16px;
+  }
+  .annotations {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .annotations button {
+    min-height: 52px;
+  }
+  .productNote {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    min-height: 225px;
+  }
+  .choices > div {
+    grid-template-columns: 100px 1fr;
+  }
+  .heroWide {
+    display: none;
+  }
+  .heroCompact {
+    display: block;
+    max-width: 350px;
+    margin: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.playback button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Preserve the complete exported architecture, including its cloud boundaries. */
+.productFrame img {
+  object-fit: contain;
+}
+.productFrame figcaption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.productFrame .fullImageLink {
+  display: inline-flex;
+  gap: 10px;
+  color: var(--ex-text);
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+@media (max-width: 760px) {
+  .productFrame figcaption {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.captionLead {
+  display: block;
+  color: var(--ex-text);
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* Full-screen image inspection is separate from the page's animation clocks. */
+.imageDialog {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--ex-bg);
+  color: var(--ex-text);
+}
+.imageDialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.imageDialog::backdrop {
+  background: #111;
+}
+.viewerToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--ex-line);
+  flex-shrink: 0;
+}
+.viewerToolbar h2 {
+  font-size: 18px;
+  font-weight: 500;
+}
+.viewerToolbar p {
+  font-size: 13px;
+  color: var(--ex-muted);
+  margin-top: 4px;
+}
+.viewerActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.viewerActions button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--ex-line);
+  border-radius: 7px;
+  font-size: 16px;
+}
+.viewerActions button:hover {
+  background: var(--ex-panel);
+}
+.viewerActions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.viewerClose {
+  margin-left: 12px;
+}
+.viewerClose span {
+  margin-left: 8px;
+}
+.viewerViewport {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.viewerImage {
+  min-width: 100%;
+  min-height: 100%;
+  padding: 16px;
+}
+.viewerImage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.viewerHint {
+  padding: 10px 24px;
+  font-size: 13px;
+  color: var(--ex-muted);
+  flex-shrink: 0;
+}
+.imageDialog :focus-visible {
+  outline: 2px solid var(--ex-flow);
+  outline-offset: -2px;
+}
+@media (max-width: 760px) {
+  .viewerToolbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .viewerToolbar > div {
+    width: 100%;
+  }
+  .viewerClose {
+    margin-left: auto;
+  }
+  .viewerImage {
+    padding: 8px;
+  }
+  .viewerHint {
+    padding-inline: 16px;
+  }
+}

@@ -110,7 +110,11 @@ The subnets Fargate launches the matched pods into. PRIVATE subnets
 only -- AWS rejects subnets whose route table carries an internet
 gateway route; give the pods outbound internet through a NAT
 gateway. Reference AwsSubnet subnet_id outputs or pass literal
-subnet IDs. Create-only in AWS.
+subnet IDs. Create-only in AWS. A Fargate profile is a member of
+its cluster and lives there on a diagram; the subnets are where its
+pods land, so the reference is access, not placement -- otherwise a
+profile on subnets its cluster does not name would be drawn outside
+the cluster it belongs to.
 
 - references: AwsSubnet (`status.outputs.subnet_id`)
 - rule: {"required":true,"repeated":{"minItems":"1"}}

@@ -1032,7 +1032,7 @@ var File_catalog_kubernetes_kubernetesclickhouse_v1alpha1_spec_proto protoreflec
 
 const file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	";catalog/kubernetes/kubernetesclickhouse/v1alpha1/spec.proto\x124dev.planton.kubernetes.kubernetesclickhouse.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd6\x18\n" +
+	";catalog/kubernetes/kubernetesclickhouse/v1alpha1/spec.proto\x124dev.planton.kubernetes.kubernetesclickhouse.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xeb\x18\n" +
 	"\x18KubernetesClickHouseSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12 \n" +
@@ -1042,9 +1042,9 @@ const file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_spec_proto_rawDesc =
 	"\x06shards\x18\x06 \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x01R\x06shards\x88\x01\x01\x12-\n" +
 	"\breplicas\x18\a \x01(\x05B\f\xbaH\x04\x1a\x02(\x01\x8a\xa6\x1d\x011H\x02R\breplicas\x88\x01\x01\x12H\n" +
 	"\tresources\x18\b \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12V\n" +
-	"\tdisk_size\x18\t \x01(\tB9\xbaH6\xc8\x01\x01r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$R\bdiskSize\x12o\n" +
+	"\tdisk_size\x18\t \x01(\tB9\xbaH6\xc8\x01\x01r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$R\bdiskSize\x12\x83\x01\n" +
 	"\rstorage_class\x18\n" +
-	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClass\x12\xdb\x01\n" +
+	" \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClass\x12\xdb\x01\n" +
 	"\rlog_disk_size\x18\v \x01(\tB\xb6\x01\xbaH\xb2\x01\xba\x01\xae\x01\n" +
 	"\x19spec.log_disk_size.format\x12>log_disk_size must be a Kubernetes quantity like 10Gi or 512Mi\x1aQthis == '' || this.matches('^\\\\d+(\\\\.\\\\d+)?\\\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$')R\vlogDiskSize\x127\n" +
 	"\x18retain_volumes_on_delete\x18\f \x01(\bR\x15retainVolumesOnDelete\x12z\n" +
@@ -1091,12 +1091,12 @@ const file_catalog_kubernetes_kubernetesclickhouse_v1alpha1_spec_proto_rawDesc =
 	"\x0fexternal_keeper\x10\x02\x12\x16\n" +
 	"\x12external_zookeeper\x10\x03\x12\b\n" +
 	"\x04none\x10\x04:\x83\x02\xbaH\xff\x01\x1a\xfc\x01\n" +
-	")spec.coordination.external.nodes_required\x12qexternal coordination (external_keeper / external_zookeeper) requires external.nodes with at least one host entry\x1a\\!(this.type == 2 || this.type == 3) || (has(this.external) && size(this.external.nodes) > 0)\"\x8e\x03\n" +
+	")spec.coordination.external.nodes_required\x12qexternal coordination (external_keeper / external_zookeeper) requires external.nodes with at least one host entry\x1a\\!(this.type == 2 || this.type == 3) || (has(this.external) && size(this.external.nodes) > 0)\"\xa3\x03\n" +
 	"!KubernetesClickHouseManagedKeeper\x121\n" +
 	"\breplicas\x18\x01 \x01(\x05B\x10\xbaH\b\x1a\x060\x010\x030\x05\x8a\xa6\x1d\x013H\x00R\breplicas\x88\x01\x01\x12H\n" +
 	"\tresources\x18\x02 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12`\n" +
-	"\tdisk_size\x18\x03 \x01(\tB>\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x0410GiH\x01R\bdiskSize\x88\x01\x01\x12o\n" +
-	"\rstorage_class\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClassB\v\n" +
+	"\tdisk_size\x18\x03 \x01(\tB>\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x0410GiH\x01R\bdiskSize\x88\x01\x01\x12\x83\x01\n" +
+	"\rstorage_class\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClassB\v\n" +
 	"\t_replicasB\f\n" +
 	"\n" +
 	"_disk_size\"\xd2\x01\n" +

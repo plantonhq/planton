@@ -1,0 +1,26 @@
+# The team that owns its vault's keys: the minimal platform plus the one
+# field a bare-metal adopter adds for disaster recovery -- a Secret they
+# name for the vault's unseal keys and root token. The operator writes into
+# it at initialization and never owns it, so deleting the platform leaves it
+# standing and a platform declared again from an archive unseals with it.
+#
+# The verifier proves the whole boot (phase Ready) and then the Secret's
+# contract as an adopter meets it: it exists in the platform's namespace,
+# holds the keys, and carries no owner reference. No backup is declared
+# here -- the kind lane has no object store for this kind -- so this is the
+# keys-Secret half of the bad-day story; the operator's own e2e suite runs
+# the destroy and the restore.
+#
+# The version is the oldest release the operator runs; the platform's four
+# app images at that release are anonymously pullable.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPlantonPlatform
+metadata:
+  name: planton
+spec:
+  namespace:
+    value: planton
+  create_namespace: true
+  version: v0.0.75
+  vault:
+    init_secret_name: planton-vault-keys

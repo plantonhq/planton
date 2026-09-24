@@ -7,8 +7,8 @@ spec:
     value: graphrag
   create_namespace: true
   edition: community
-  auth:
-    password: graphrag-change-me
+  # No auth declared: the module mints the admin password into the
+  # <name>-auth Secret; declare auth.password only to bring your own.
   resources:
     requests:
       cpu: "1"

@@ -1712,9 +1712,11 @@ func (x *AzureContainerAppSecret) GetIdentity() string {
 // 2. Managed identity: Set `identity` (system-assigned or user-assigned identity ID).
 type AzureContainerAppRegistry struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Registry server hostname.
-	// Examples: "myregistry.azurecr.io", "ghcr.io", "docker.io"
-	Server string `protobuf:"bytes,1,opt,name=server,proto3" json:"server,omitempty"`
+	// Registry server hostname. Reference an AzureContainerRegistry's
+	// login_server output (the default wiring -- the same shape the
+	// Container Instance's registry credential carries) or pass a literal
+	// such as "ghcr.io" or "docker.io".
+	Server *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=server,proto3" json:"server,omitempty"`
 	// Registry username. Required with password_secret_name.
 	Username string `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
 	// Secret name containing the registry password.
@@ -1759,11 +1761,11 @@ func (*AzureContainerAppRegistry) Descriptor() ([]byte, []int) {
 	return file_catalog_azure_azurecontainerapp_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *AzureContainerAppRegistry) GetServer() string {
+func (x *AzureContainerAppRegistry) GetServer() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Server
 	}
-	return ""
+	return nil
 }
 
 func (x *AzureContainerAppRegistry) GetUsername() string {
@@ -2842,14 +2844,13 @@ const file_catalog_azure_azurecontainerapp_v1alpha1_spec_proto_rawDesc = "" +
 	"\x13key_vault_secret_id\x18\x03 \x01(\tR\x10keyVaultSecretId\x12\x1a\n" +
 	"\bidentity\x18\x04 \x01(\tR\bidentity:\xb7\x03\xbaH\xb3\x03\x1a\xa0\x01\n" +
 	"\x1asecret_value_xor_key_vault\x12Ka secret takes either a plain-text value or a key_vault_secret_id, not both\x1a5!(this.value != '' && this.key_vault_secret_id != '')\x1a\x8d\x02\n" +
-	"\"secret_key_vault_requires_identity\x12\xab\x01key_vault_secret_id requires identity (\"System\" or a user-assigned identity ARM ID) so the app can read the vault, and identity is only meaningful with key_vault_secret_id\x1a9(this.key_vault_secret_id != '') == (this.identity != '')\"\xa2\x04\n" +
-	"\x19AzureContainerAppRegistry\x12\"\n" +
-	"\x06server\x18\x01 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06server\x12\x1a\n" +
+	"\"secret_key_vault_requires_identity\x12\xab\x01key_vault_secret_id requires identity (\"System\" or a user-assigned identity ARM ID) so the app can read the vault, and identity is only meaningful with key_vault_secret_id\x1a9(this.key_vault_secret_id != '') == (this.identity != '')\"\xfc\x04\n" +
+	"\x19AzureContainerAppRegistry\x12v\n" +
+	"\x06server\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\xd3\x0f\x92\xd4a\x1bstatus.outputs.login_serverR\x06server\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x120\n" +
 	"\x14password_secret_name\x18\x03 \x01(\tR\x12passwordSecretName\x12\x1a\n" +
 	"\bidentity\x18\x04 \x01(\tR\bidentity:\xf6\x02\xbaH\xf2\x02\x1a\xef\x02\n" +
-	"\x12registry_auth_mode\x12\xb3\x01a registry authenticates with either a managed identity or a username + password_secret_name pair -- exactly one mode, and username and password_secret_name always travel together\x1a\xa2\x01(this.identity != '' && this.username == '' && this.password_secret_name == '') || (this.identity == '' && this.username != '' && this.password_secret_name != '')\"\x84\t\n" +
+	"\x12registry_auth_mode\x12\xb3\x01a registry authenticates with either a managed identity or a username + password_secret_name pair -- exactly one mode, and username and password_secret_name always travel together\x1a\xa2\x01(this.identity != '' && this.username == '' && this.password_secret_name == '') || (this.identity == '' && this.username != '' && this.password_secret_name != '')J\x04\b\x01\x10\x02\"\x84\t\n" +
 	"\x18AzureContainerAppIngress\x129\n" +
 	"\x10external_enabled\x18\x01 \x01(\bB\t\x8a\xa6\x1d\x05falseH\x00R\x0fexternalEnabled\x88\x01\x01\x12,\n" +
 	"\vtarget_port\x18\x02 \x01(\x05B\v\xbaH\b\x1a\x06\x18\xff\xff\x03(\x01R\n" +
@@ -3064,26 +3065,27 @@ var file_catalog_azure_azurecontainerapp_v1alpha1_spec_proto_depIdxs = []int32{
 	13, // 24: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppProbe.headers:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppProbeHeader
 	2,  // 25: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppVolume.storage_type:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppVolumeStorageType
 	31, // 26: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppVolume.storage_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 27: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.transport:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngressTransport
-	4,  // 28: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.client_certificate_mode:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngressClientCertificateMode
-	19, // 29: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.traffic_weight:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppTrafficWeight
-	20, // 30: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.ip_security_restrictions:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIpSecurityRestriction
-	21, // 31: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.cors:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCors
-	5,  // 32: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIpSecurityRestriction.action:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIpRestrictionAction
-	26, // 33: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppHttpScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
-	26, // 34: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppTcpScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
-	26, // 35: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppAzureQueueScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
-	30, // 36: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.metadata:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.MetadataEntry
-	26, // 37: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
-	31, // 38: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.identity_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	6,  // 39: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppDapr.app_protocol:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppDaprProtocol
-	7,  // 40: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIdentity.type:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIdentityType
-	31, // 41: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIdentity.user_assigned_identity_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	42, // [42:42] is the sub-list for method output_type
-	42, // [42:42] is the sub-list for method input_type
-	42, // [42:42] is the sub-list for extension type_name
-	42, // [42:42] is the sub-list for extension extendee
-	0,  // [0:42] is the sub-list for field type_name
+	31, // 27: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppRegistry.server:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3,  // 28: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.transport:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngressTransport
+	4,  // 29: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.client_certificate_mode:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngressClientCertificateMode
+	19, // 30: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.traffic_weight:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppTrafficWeight
+	20, // 31: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.ip_security_restrictions:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIpSecurityRestriction
+	21, // 32: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIngress.cors:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCors
+	5,  // 33: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIpSecurityRestriction.action:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIpRestrictionAction
+	26, // 34: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppHttpScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
+	26, // 35: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppTcpScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
+	26, // 36: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppAzureQueueScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
+	30, // 37: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.metadata:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.MetadataEntry
+	26, // 38: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.authentication:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppScaleRuleAuth
+	31, // 39: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppCustomScaleRule.identity_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	6,  // 40: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppDapr.app_protocol:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppDaprProtocol
+	7,  // 41: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIdentity.type:type_name -> dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIdentityType
+	31, // 42: dev.planton.azure.azurecontainerapp.v1alpha1.AzureContainerAppIdentity.user_assigned_identity_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	43, // [43:43] is the sub-list for method output_type
+	43, // [43:43] is the sub-list for method input_type
+	43, // [43:43] is the sub-list for extension type_name
+	43, // [43:43] is the sub-list for extension extendee
+	0,  // [0:43] is the sub-list for field type_name
 }
 
 func init() { file_catalog_azure_azurecontainerapp_v1alpha1_spec_proto_init() }

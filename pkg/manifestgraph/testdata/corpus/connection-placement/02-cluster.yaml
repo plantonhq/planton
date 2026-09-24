@@ -1,0 +1,13 @@
+# The producer end: the cluster names the connection it will publish. The
+# same value on both ends is the chart-authoring contract.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpGkeCluster
+metadata:
+  name: platform-cluster
+  env: prod
+  annotations:
+    planton.dev/connection-name: platform-cluster
+spec:
+  projectId:
+    value: acme-prod
+  location: us-central1

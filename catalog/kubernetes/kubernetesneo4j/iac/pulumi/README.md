@@ -30,15 +30,19 @@ LOOKS UP AT TEMPLATE TIME — the install fails if the Secret is missing or
 lacks the key. The module therefore wires an explicit `DependsOn` so the
 Secret always exists first:
 
-- `auth.password` arm → the module materializes the `<metadata.name>-auth`
-  Secret (`secrets.go`; key `NEO4J_AUTH` = `neo4j/<password>`, value
-  wrapped with `pulumi.ToSecret` so it is encrypted in state) before the
-  Helm release, and renders `passwordFromSecret` = that name. The password
-  itself NEVER appears in rendered chart values.
+- auth absent (the default) → a `random.RandomPassword` generates the
+  password (24 letters and digits; the generation shape is `IgnoreChanges`
+  so an imported credential never regenerates), and the module
+  materializes the `<metadata.name>-auth` Secret (`secrets.go`; key
+  `NEO4J_AUTH` = `neo4j/<password>` plus a bare `password` key, both
+  secret in state) before the Helm release, rendering `passwordFromSecret`
+  = that name.
+- `auth.password` arm → the same Secret, carrying the declared value
+  (wrapped with `pulumi.ToSecret`) instead of a generated one. The
+  password itself NEVER appears in rendered chart values on either arm.
 - `auth.existing_secret` arm → `passwordFromSecret` = the given name; no
-  Secret is created (it must already exist and carry the contract).
-- auth absent → neither renders; the chart generates a random password and
-  logs it once at first startup.
+  Secret is created (it must already exist and carry the contract), and
+  `password_secret` is unset because that Secret's layout is the owner's.
 
 ### The ClusterIP override (deliberate)
 
@@ -81,7 +85,8 @@ memory) and the module never defaults below it.
 | `service_name` | The main Neo4j Service (= the release name) |
 | `bolt_endpoint` | `neo4j://<svc>.<ns>.svc.cluster.local:7687` |
 | `http_endpoint` | `http://<svc>.<ns>.svc.cluster.local:7474` |
-| `auth_secret_name` | `<name>-auth`, the existing Secret name, or empty (random password) |
+| `auth_secret_name` | `<name>-auth` (declared or generated password), or the existing Secret name; always set |
+| `password_secret` | `{name, key}` of the bare password in `<name>-auth` (key `password`); unset for the `existing_secret` arm |
 | `port_forward_command` | kubectl one-liner for reaching bolt from a workstation |
 
 ## Parity

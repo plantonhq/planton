@@ -1,6 +1,6 @@
 # OpenBao
 
-Deploys OpenBao -- the open-source secrets manager forked from HashiCorp Vault -- from the official `openbao` chart at `openbao.github.io/openbao-helm`. Three server modes cover the whole lifecycle: dev (in-memory, auto-unsealed, evaluation only), standalone (one server, file storage on a persistent volume -- the chart default), and HA (integrated Raft storage with leader election; the module synthesizes the `retry_join` stanzas the chart alone ships without, so multi-replica clusters actually form). Auto-unseal delegates master-key protection to AWS KMS, GCP Cloud KMS, Azure Key Vault, or a central instance's transit engine.
+Deploys OpenBao -- the open-source secrets manager forked from HashiCorp Vault -- from the official `openbao` chart at `openbao.github.io/openbao-helm`. The server declares what OpenBao has: a storage engine and a replica count, with dev as the lab posture. Integrated Raft (the default -- a server that declares nothing is one Raft node with transactions and snapshots) keeps its data on one volume per replica with leader election; the module synthesizes the `retry_join` stanzas the chart alone ships without, so multi-replica clusters actually form. PostgreSQL storage keeps the data in a `KubernetesPostgres` declared by reference -- no volume, HA through the backend's lock table, backed up by the database's own backup. Dev is in-memory and auto-unsealed, for evaluation only. Auto-unseal delegates master-key protection to AWS KMS, GCP Cloud KMS, Azure Key Vault, or a central instance's transit engine.
 
 Know the seal lifecycle before you deploy: a fresh OpenBao server starts UNINITIALIZED and SEALED, and reports NotReady BY DESIGN until you run `bao operator init` and unseal it -- initialization is a runtime operation no deployment tool can perform declaratively. The readiness probe is `bao status`, and the chart keeps sealed pods addressable so init and unseal can reach them.
 
@@ -10,8 +10,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Helm Release** -- the `openbao` chart, creating:
-  - StatefulSet for the server (one replica in standalone; `server.ha.replicas` Raft peers in HA, each with its own data PVC at `/openbao/data`; dev mode runs in-memory with NO PVC)
-  - The client Service (round-robins ALL server pods including sealed ones -- by design), the headless `-internal` Service for Raft peer discovery, an `-active` Service pointing at the elected leader (HA only), and a `-ui` Service when the UI is on
+  - StatefulSet for the server (`server.replicas` servers, default 1; on Raft each with its own data PVC at `/openbao/data`; on PostgreSQL storage with NO data PVC -- the database holds the data; dev runs in-memory with NO PVC)
+  - The client Service (round-robins ALL server pods including sealed ones -- by design), the headless `-internal` Service for peer discovery and cluster addresses, an `-active` Service pointing at the active node (every server on a storage engine; absent in dev), and a `-ui` Service when the UI is on
   - ConfigMap carrying the rendered HCL server configuration -- listener, storage backend, synthesized `retry_join` stanzas, and the optional seal and telemetry stanzas
   - ServiceAccount with your workload-identity annotations and, unless disabled, the `system:auth-delegator` ClusterRoleBinding OpenBao's Kubernetes auth method needs for TokenReview
 - **Optional audit volume** -- a second PVC at `/openbao/audit` when `server.auditStorage` is declared; auditing itself is enabled at runtime (`bao audit enable file ...`) after initialization
@@ -31,8 +31,9 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Kubernetes Cluster
 
-- **A storage class** for the data (and optional audit) persistent volumes -- standalone and HA modes; dev mode is in-memory and needs none.
-- **As many schedulable nodes as HA replicas** -- the chart ships a REQUIRED hostname anti-affinity, so a three-replica Raft cluster needs three nodes (relaxable through `helmValues` in labs only).
+- **A storage class** for the Raft data volume and the optional audit volume -- a PostgreSQL-stored vault claims no data volume (its audit volume, if declared, still needs one); dev is in-memory and needs none.
+- **A `KubernetesPostgres`** (only on PostgreSQL storage) with a database and owner role bootstrapped for the vault -- the host and the password Secret are declared by reference to it, so it must live in the vault's namespace (a Secret is namespace-local).
+- **As many schedulable nodes as replicas** -- the chart ships a REQUIRED hostname anti-affinity, so a three-replica cluster needs three nodes (relaxable through `helmValues` in labs only).
 - **A cloud KMS key or a central transit engine** (only when using auto-unseal) -- e.g. a GCP Cloud KMS crypto key with `roles/cloudkms.cryptoKeyEncrypterDecrypter` granted to the identity OpenBao runs as. ValueFromRef can resolve the project, key ring, and crypto key from other Cloud Resources.
 - **Prometheus Operator CRDs** (only when enabling the ServiceMonitor) -- the install FAILS without them.
 
@@ -124,7 +125,7 @@ The InfraPipeline resolves the dependency graph, deploys the GCP project, KMS ke
 
 These are the most important decisions when configuring OpenBao. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Server mode** -- `server.dev`, `server.standalone`, and `server.ha` are one choice (leave all unset for the chart's standalone default). Dev mode is evaluation only: in-memory data lost on every restart, auto-initialized and auto-unsealed, the root token literally `root` in plain text in the pod spec, no PVC -- and the chart DROPS ServiceAccount annotations, so cloud workload identity does not apply there. HA mode (`server.ha.replicas`, default 3, range 1-11) runs integrated Raft: odd counts tolerate minority loss, and the module synthesizes `retry_join` for every peer -- without it a multi-replica install never forms a cluster.
+**Storage engine and replicas** -- `server.raft` or `server.postgresql` is the engine (unset = Raft), `server.replicas` the count (default 1, range 1-11); `server.dev` is the lab posture and takes neither. Raft is integrated storage: one volume per replica, odd counts tolerate minority loss, and the module synthesizes `retry_join` for every peer -- without it a multi-replica install never forms a cluster; snapshots (the `backup` block) exist only here. PostgreSQL storage is declared by reference to a `KubernetesPostgres` (`host` from its `-rw` Service, `passwordSecret` from its operator-maintained Secret, `sslMode` defaulting to `require`): no volume, HA through the backend's lock table at any count, the vault backed up by its database -- and `maxParallel` bounds the connections EACH server opens (OpenBao's default of 128 exceeds a default PostgreSQL's 100 before the count multiplies it). Dev is evaluation only: in-memory data lost on every restart, auto-initialized and auto-unsealed, the root token literally `root` in plain text in the pod spec, no PVC -- and the chart DROPS ServiceAccount annotations, so cloud workload identity does not apply there. The chart offers modes and a configuration string; this kind declares the engine and drives the mode from it, so every server on an engine runs the chart's HA mode and exports the `-active` Service.
 
 **Auto-unseal** -- By default every restarted pod waits SEALED for a human with unseal key shares (Shamir-mode reality). Declaring one `autoUnseal` arm (`awsKms`, `gcpKms`, `azureKeyVault`, or `transit`) wraps the master key with an external KMS so servers unseal THEMSELVES at startup. Initialization stays a one-time manual step -- with auto-unseal it produces RECOVERY keys instead of unseal keys. Keyless-first: prefer ambient workload identity (IRSA / GKE Workload Identity / Azure MSI) and leave the static-credential fields empty; declared credentials are org-secret references materialized into a module-owned Secret and delivered as environment variables. Version horizon: at the pinned OpenBao 2.6.x the cloud KMS seals are built in but deprecated upstream -- v2.7 moves them to external KMS plugins.
 
@@ -136,7 +137,7 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 
 **Backups and restore** -- `backup` runs a CronJob (default hourly) that takes a Raft snapshot through OpenBao's own API and ships it with rclone to the declared store: `s3` (real S3 or any S3-compatible endpoint -- an in-cluster KubernetesSeaweedFs composes naturally), `gcs`, `azureBlob`, or `r2` (Cloudflare R2 in its own vocabulary, by reference to the catalog's bucket and token kinds). Each cloud arm is keyless through `backup.workloadIdentity` or carries declared keys the module materializes as a Secret; `retentionDays` (default 14) prunes older snapshots. Raft only (`server.raft`, the default engine); a vault stored in PostgreSQL is backed up by its database and refuses `backup`. PREREQUISITE the module cannot create: the job's login inside OpenBao is a four-command Kubernetes-auth recipe run once after initialization -- the spec prints it, and so does a failing job, with the real names. `restore` on a fresh cluster with the same seal key fetches a named or the newest snapshot and installs it; the Job waits for the operator to hand it the fresh cluster's initial root token through a Secret, and the backup schedule stays suspended until the `restore` block is removed.
 
-**Metrics are unauthenticated when enabled** -- `metrics.enabled` renders the telemetry stanza AND opens `/v1/sys/metrics` without a token; anything that can reach the Service can read operational telemetry. `metrics.serviceMonitorEnabled` additionally requires the Prometheus Operator CRDs, and in HA scrapes only the active node.
+**Metrics are unauthenticated when enabled** -- `metrics.enabled` renders the telemetry stanza AND opens `/v1/sys/metrics` without a token; anything that can reach the Service can read operational telemetry. `metrics.serviceMonitorEnabled` additionally requires the Prometheus Operator CRDs, and scrapes only the active node (every server on a storage engine runs the chart's HA mode).
 
 **Workload identity and Kubernetes auth** -- `serviceAccount.annotations` is the cloud identity seam (`eks.amazonaws.com/role-arn`, `iam.gke.io/gcp-service-account`, `azure.workload.identity/client-id`) -- the keyless path for auto-unseal KMS access. `serviceAccount.authDelegatorEnabled` (default true) binds `system:auth-delegator`, which OpenBao's Kubernetes auth method needs to validate workload tokens via TokenReview.
 
@@ -173,7 +174,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `namespace` | Namespace the server runs in | Locating the install for diagnostics |
 | `service` | The main client Service (round-robins ALL pods, sealed included -- by design, so init/unseal can reach them) | General client traffic |
 | `internal_service` | The headless `-internal` Service | Raft peer discovery and cluster addresses |
-| `active_service` | The `-active` Service pointing at the elected leader (HA only, empty otherwise) | Write-heavy clients |
+| `active_service` | The `-active` Service pointing at the active node (every server on a storage engine; empty in dev) | Write-heavy clients |
 | `ui_service` | The `-ui` Service (empty when the UI is disabled) | Exposing the web UI via Gateway API kinds |
 | `api_endpoint` | In-cluster API endpoint, scheme included (https when TLS is on) | external-secrets ClusterSecretStore, cert-manager Vault issuers |
 | `port` | API port (8200) | Connection configuration |
@@ -195,6 +196,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 **GKE production HA with backups to GCS** -- The auto-unseal shape plus disaster recovery: hourly Raft snapshots landing keylessly in a Google Cloud Storage bucket, with the seal key, the bucket, and both identities (the server's and the backup job's) by reference to the catalog's GCP kinds. A fresh vault on the same KMS key with a `restore` block brings every secret back by declaration. Start from the **GKE production HA with Cloud KMS auto-unseal and GCS backups preset**; the full resource set is in the component guide.
 
 **Production HA with backups to Cloudflare R2** -- Snapshots outside the cloud that runs the vault: the R2 bucket, its account and jurisdiction, and the writer token all by reference, the module doing the S3 translation. Runs on any cluster; pair it with an `autoUnseal` arm to make the restore declarative, or restore by hand on Shamir with the guide's runbook. Start from the **Production HA with Cloudflare R2 backups preset**.
+
+**Production on PostgreSQL storage** -- The vault stores in a `KubernetesPostgres` you already run and back up: host and password by reference, no volume, HA through the backend's lock table, and the database's backup covers the vault (no `backup` block -- snapshots exist only for Raft). Start from the **Production on PostgreSQL storage preset**.
 
 ## Works With
 

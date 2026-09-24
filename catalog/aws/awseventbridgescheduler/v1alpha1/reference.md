@@ -284,6 +284,12 @@ target API ARNs. No single kind dominates, so references here
 carry NO default kind - in manifests, a valueFrom on this field
 must state its kind explicitly.
 
+Containment-exempt: the target is what the schedule INVOKES, never
+where the schedule lives -- a schedule belongs to its schedule group.
+A target that is a container (an ECS cluster, an event bus) would
+otherwise pull the schedule inside it; on a diagram the schedule
+stands in its group with a line to what it fires.
+
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

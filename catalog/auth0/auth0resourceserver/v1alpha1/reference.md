@@ -262,6 +262,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | Auth0Client | `spec.apiGrants[].audience` | `status.outputs.identifier` |
+| Auth0User | `spec.permissions[].resourceServerIdentifier` | `status.outputs.identifier` |
 
 ## See Also
 

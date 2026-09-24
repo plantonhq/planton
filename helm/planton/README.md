@@ -49,6 +49,7 @@ platform:
   name: planton          # name of the PlantonPlatform resource
   spec:                  # the PlantonPlatform spec, passed through VERBATIM
     version: <release>   # REQUIRED: the platform release to install
+    # imageRegistry: asia-south1-docker.pkg.dev/plantonhq/planton   # pull Planton's images from Google Artifact Registry
 ```
 
 `platform.spec` is not curated by this chart: every field the

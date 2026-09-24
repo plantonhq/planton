@@ -183,8 +183,8 @@ var _ = ginkgo.Describe("AzureContainerAppSpec Validation Tests", func() {
 			input := minimalSpec()
 			input.Spec.Secrets = []*AzureContainerAppSecret{{Name: "reg-password", Value: "s3cret"}}
 			input.Spec.Registries = []*AzureContainerAppRegistry{
-				{Server: "myregistry.azurecr.io", Identity: "System"},
-				{Server: "docker.io", Username: "bot", PasswordSecretName: "reg-password"},
+				{Server: literal("myregistry.azurecr.io"), Identity: "System"},
+				{Server: literal("docker.io"), Username: "bot", PasswordSecretName: "reg-password"},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -429,7 +429,7 @@ var _ = ginkgo.Describe("AzureContainerAppSpec Validation Tests", func() {
 		ginkgo.It("rejects a registry mixing identity and username/password auth", func() {
 			input := minimalSpec()
 			input.Spec.Registries = []*AzureContainerAppRegistry{{
-				Server:             "myregistry.azurecr.io",
+				Server:             literal("myregistry.azurecr.io"),
 				Identity:           "System",
 				Username:           "bot",
 				PasswordSecretName: "reg-password",
@@ -440,7 +440,7 @@ var _ = ginkgo.Describe("AzureContainerAppSpec Validation Tests", func() {
 		ginkgo.It("rejects a registry username without a password secret", func() {
 			input := minimalSpec()
 			input.Spec.Registries = []*AzureContainerAppRegistry{{
-				Server:   "docker.io",
+				Server:   literal("docker.io"),
 				Username: "bot",
 			}}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
@@ -449,7 +449,7 @@ var _ = ginkgo.Describe("AzureContainerAppSpec Validation Tests", func() {
 		ginkgo.It("rejects a registry with no authentication at all", func() {
 			input := minimalSpec()
 			input.Spec.Registries = []*AzureContainerAppRegistry{{
-				Server: "docker.io",
+				Server: literal("docker.io"),
 			}}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})

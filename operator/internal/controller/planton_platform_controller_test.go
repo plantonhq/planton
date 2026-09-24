@@ -654,6 +654,8 @@ var _ = Describe("PlantonPlatform Controller", func() {
 			_, err = reconciler.Reconcile(ctx, reconcile.Request{NamespacedName: nn})
 			Expect(err).NotTo(HaveOccurred())
 			Expect(reader.calls).To(Equal(1), "the requirement is read once per version")
+			Expect(reader.repository).To(Equal("ghcr.io/plantonhq/planton/control-plane"),
+				"the requirement is read from the repository the platform pulls")
 
 			// A registry the operator cannot reach: the platform proceeds and
 			// VersionSupported stays True.
@@ -762,10 +764,13 @@ type fakeRequirementReader struct {
 	required string
 	err      error
 	calls    int
+	// repository is the control-plane repository the last read asked for.
+	repository string
 }
 
-func (f *fakeRequirementReader) RequiredOperator(_ context.Context, _ string) (string, error) {
+func (f *fakeRequirementReader) RequiredOperator(_ context.Context, repository, _ string) (string, error) {
 	f.calls++
+	f.repository = repository
 	return f.required, f.err
 }
 

@@ -215,6 +215,17 @@ type OIDCBrokerSpec struct {
 	// +kubebuilder:default="sub"
 	// +optional
 	SubjectClaim string `json:"subjectClaim,omitempty"`
+
+	// primary sends every sign-in straight to the upstream provider: the
+	// identity server's sign-in page is skipped and the person lands on the
+	// company directory's own sign-in. The local (username and password)
+	// form stays reachable for break-glass at the console's /login?local=1,
+	// `planton login --local`, and the same hint on device sign-in -- so an
+	// admin locked out of the directory can still sign in. Off (the default)
+	// shows the directory's sign-in button beside the local form.
+	// +kubebuilder:default=false
+	// +optional
+	Primary bool `json:"primary,omitempty"`
 }
 
 // ConditionBound is the condition tracking platform binding resolution on a

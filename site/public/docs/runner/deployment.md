@@ -166,42 +166,24 @@ spec:
 
 The deployed runner enrolls itself on first boot and appears in your Runners list the moment it joins — exactly the same arrival story as a CLI deploy. Each kind models its substrate's real placement surface (subnets and task roles on AWS, direct VPC egress and service accounts on GCP, the Container App Environment on Azure, the namespace and chart values on Kubernetes); see each component's catalog page for the full specification.
 
-## Default Runner Binding
+## Default Runner
 
-Once a runner is deployed, you can set it as the default for your organization. When a [connection](/docs/connections) does not specify an explicit runner, Planton automatically routes requests to the default runner.
-
-### Setting a Default
+Once a runner is deployed, you can make it your organization's default runner. The default carries deploys and live cloud operations (a connection's verify, `planton kubectl`, resource browsing) for every [connection](/docs/connections) that names no runner of its own.
 
 ```bash
 planton runner set-default prod-runner
 ```
 
-This sets `prod-runner` as the default runner for your current organization.
+A runner of your own cannot reach Planton-managed state, so Planton refuses the default while any of your organization's state is still kept there, and names what is left. [Where Your Work Runs](/docs/runner/planton-hosted-runners#where-your-work-runs) lays out every order, and [Running Deploys on Your Own Runner](/docs/runner/planton-hosted-runners#running-deploys-on-your-own-runner) walks through the move.
 
-### Resolution Chain
-
-When Planton needs to route a request through a runner, it resolves which runner to use in this order:
-
-1. **Explicit runner on the connection** — If the connection's configuration specifies a runner, that runner is used.
-2. **Organization default** — If no explicit runner is set, Planton looks for a default runner binding at the organization level.
-3. **Platform default** — If no organization default exists, Planton falls back to the platform-level default (set by platform operators).
-
-If no runner can be resolved at any level, the request fails with an error indicating that no runner is available.
-
-### Managing Defaults
+### Managing the Default
 
 ```bash
-# View the effective default (shows resolution: org → platform)
+# Show where deploys and live cloud operations run for your organization
 planton runner get-default
 
-# Remove the organization default
+# Clear the default
 planton runner unset-default
-
-# Set a platform-level default (requires platform operator permissions)
-planton runner set-default shared-runner --platform
-
-# View the platform default
-planton runner get-default --platform
 ```
 
 ## Verifying Connectivity
@@ -222,11 +204,8 @@ If the runner is connected and the connection is configured correctly, you will 
 # List runners in your organization
 planton runner list
 
-# Include platform runners
-planton runner list --all
-
-# List platform runners only
-planton runner list --platform
+# Include each runner's reported capabilities
+planton runner list --capabilities
 ```
 
 ### Viewing Runner Details

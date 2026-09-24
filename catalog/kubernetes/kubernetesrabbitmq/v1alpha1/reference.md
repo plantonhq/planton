@@ -153,7 +153,7 @@ spec:
 | `spec.service.labels` | `map<string, string>` |  |  |  |
 | `spec.service.ipFamilyPolicy` | `enum` |  |  |  |
 | `spec.diskSize` | `string` |  | `10Gi` |  |
-| `spec.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.ephemeral` | `bool` |  |  |  |
 | `spec.resources` | `ContainerResources` |  |  |  |
 | `spec.resources.limits` | `CpuMemory` |  |  |  |
@@ -329,8 +329,8 @@ reference to a KubernetesStorageClass resource. Empty = the
 cluster's default storage class. Ignored when `ephemeral` is
 true.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.ephemeral
 
@@ -673,7 +673,7 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.tls.secretName` | KubernetesCertificate | `status.outputs.secret_name` |
 | `spec.tls.caSecretName` | KubernetesSecret | `metadata.name` |
 

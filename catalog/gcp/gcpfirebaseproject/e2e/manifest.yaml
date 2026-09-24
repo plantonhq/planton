@@ -1,0 +1,42 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseProject
+metadata:
+  name: my-sample-firebase
+spec:
+  # GCP project to enable Firebase on. Omit to use the provider's default
+  # project. Immutable. NOTE: enabling Firebase is ONE-WAY -- Google offers
+  # no way to remove it; destroy detaches this resource and leaves the
+  # project enabled. Applying against an already-enabled project ADOPTS it.
+  projectId:
+    value: my-gcp-project-123
+
+  # Create the project's default Cloud Storage for Firebase bucket in this
+  # location (US, EU, NAM4, us-central1, ...). One per project at a time;
+  # location immutable; needs the pay-as-you-go (Blaze) plan; deleted with
+  # its contents on destroy under DELETE. Omit to skip.
+  defaultStorageLocation: US
+
+  # Project-level App Check: which Firebase backends enforce genuine-app
+  # attestation. Per-app attestation providers are configured on the app
+  # registrations (GcpFirebaseAndroidApp / AppleApp / WebApp).
+  appCheck:
+    # One entry per backend service. UNENFORCED collects metrics without
+    # rejecting -- the safe first step; ENFORCED rejects requests without a
+    # valid App Check token. Supported services: firestore, firebasestorage,
+    # firebasedatabase, identitytoolkit (.googleapis.com).
+    serviceConfigs:
+      - serviceId: firestore.googleapis.com
+        enforcementMode: UNENFORCED
+      - serviceId: firebasestorage.googleapis.com
+        enforcementMode: ENFORCED
+    # Per-resource overrides, for the services that support them (today:
+    # OAuth clients under Google Identity for iOS).
+    resourcePolicies:
+      - serviceId: oauth2.googleapis.com
+        targetResource: //oauth2.googleapis.com/projects/123456789012/oauthClients/123456789012-abc.apps.googleusercontent.com
+        enforcementMode: ENFORCED
+
+  # What destroy does to the COMPOSED settings (default bucket, App Check
+  # configs) -- the enablement itself is always detached. DELETE (default),
+  # PREVENT, or ABANDON.
+  deletionPolicy: DELETE

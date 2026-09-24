@@ -90,7 +90,7 @@ const fallbackGcpPluginVersion = "9.29.0"
 // disambiguate the provider resource name when a module needs more than one provider.
 func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 	nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, false, nameSuffixes)
+	return get(ctx, gcpProviderConfig, false, "", nameSuffixes)
 }
 
 // GetWithUserProjectOverride builds the provider like Get, additionally arming
@@ -103,11 +103,26 @@ func Get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 // by the header, so arming it is safe across every credential mode.
 func GetWithUserProjectOverride(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 	nameSuffixes ...string) (*gcp.Provider, error) {
-	return get(ctx, gcpProviderConfig, true, nameSuffixes)
+	return get(ctx, gcpProviderConfig, true, "", nameSuffixes)
+}
+
+// GetWithQuotaProject builds the provider like GetWithUserProjectOverride and additionally NAMES
+// the project every call attributes quota to (billing_project). The override alone attributes a
+// RESOURCE call to the resource's own project, but a DATA SOURCE read carries no project the
+// header can borrow -- the Firebase app-config and Admin SDK reads are the case -- so under a
+// user's gcloud sign-in the header goes unset and Google attributes the call to its shared ADC
+// project, where the API is disabled: 403 "requires a quota project" on the read-back after a
+// create that succeeded (live-verified 2026-09-18 on GcpFirebaseProject under a runner-mode
+// user credential). Service-account and keyless credentials never need it and are unaffected.
+// Kinds whose modules READ through a data source pass their resource's project here; an empty
+// quotaProject degrades to the override alone.
+func GetWithQuotaProject(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
+	quotaProject string, nameSuffixes ...string) (*gcp.Provider, error) {
+	return get(ctx, gcpProviderConfig, true, quotaProject, nameSuffixes)
 }
 
 func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
-	userProjectOverride bool, nameSuffixes []string) (*gcp.Provider, error) {
+	userProjectOverride bool, quotaProject string, nameSuffixes []string) (*gcp.Provider, error) {
 	inputs, err := buildProviderInputs(gcpProviderConfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build google provider args")
@@ -118,6 +133,13 @@ func get(ctx *pulumi.Context, gcpProviderConfig *gcpprovider.GcpProviderConfig,
 			inputs.webIdentityProps["userProjectOverride"] = pulumi.Bool(true)
 		} else {
 			inputs.args.UserProjectOverride = pulumi.Bool(true)
+		}
+	}
+	if quotaProject != "" {
+		if inputs.webIdentityProps != nil {
+			inputs.webIdentityProps["billingProject"] = pulumi.String(quotaProject)
+		} else {
+			inputs.args.BillingProject = pulumi.String(quotaProject)
 		}
 	}
 

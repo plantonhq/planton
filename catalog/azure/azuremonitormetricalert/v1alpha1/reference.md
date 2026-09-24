@@ -163,6 +163,12 @@ resource's `*_id` output explicitly with valueFrom (kind + fieldPath),
 or pass a literal ARM ID. Multiple scopes (or a group/subscription
 scope) require target_resource_type and target_resource_location.
 
+Containment-exempt: an alert EVALUATES its scopes' metrics; it is
+never deployed into one of them, and a rule over several scopes
+could not live in all of them anyway. Without the exemption an
+alert scoped to a storage account or a cluster by reference would
+be drawn inside what it watches.
+
 - rule: {"repeated":{"minItems":"1"}}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

@@ -366,8 +366,17 @@ func recoveryMarkerMeaning(marker string) string {
 
 // psqlDB is psql against a named database (peer auth as the postgres OS user).
 func (v *CnpgClusterVerifier) psqlDB(ctx context.Context, kubeconfig, podName, database, sql string) (string, error) {
+	return cnpgPsqlDB(ctx, kubeconfig, v.Namespace, podName, database, sql)
+}
+
+// cnpgPsqlDB runs a SQL string against a named database on a CloudNativePG
+// instance pod as the postgres OS user — peer auth inside the pod, the
+// same path the operator's own probes use. Shared with the verifiers of
+// kinds that store in a KubernetesPostgres and need the database's own
+// word on what landed there.
+func cnpgPsqlDB(ctx context.Context, kubeconfig, namespace, podName, database, sql string) (string, error) {
 	out, err := exec.CommandContext(ctx, "kubectl", "--kubeconfig", kubeconfig,
-		"exec", podName, "-n", v.Namespace, "-c", "postgres", "--",
+		"exec", podName, "-n", namespace, "-c", "postgres", "--",
 		"psql", "-U", "postgres", "-d", database, "-tA", "-c", sql).CombinedOutput()
 	if err != nil {
 		return "", errors.Errorf("psql on %s (%s): %v: %s", podName, database, err, string(out))
@@ -482,13 +491,25 @@ func (v *CnpgClusterVerifier) proveFailoverDurability(ctx context.Context, kubec
 // currentPrimary reads status.currentPrimary — the operator maintains it
 // through failovers and switchovers.
 func (v *CnpgClusterVerifier) currentPrimary(ctx context.Context, kubeconfig string) (string, error) {
+	return cnpgCurrentPrimary(ctx, kubeconfig, v.Namespace, v.ClusterName)
+}
+
+// cnpgCurrentPrimary reads a CloudNativePG cluster's status.currentPrimary
+// — the instance pod to open for a write or a read that must see the
+// latest state. Never assume `<cluster>-1`: the operator moves the
+// primary on failover and switchover.
+func cnpgCurrentPrimary(ctx context.Context, kubeconfig, namespace, clusterName string) (string, error) {
 	out, err := exec.CommandContext(ctx, "kubectl", "--kubeconfig", kubeconfig,
-		"get", "cluster.postgresql.cnpg.io", v.ClusterName, "-n", v.Namespace,
+		"get", "cluster.postgresql.cnpg.io", clusterName, "-n", namespace,
 		"-o", "jsonpath={.status.currentPrimary}").CombinedOutput()
 	if err != nil {
 		return "", errors.Errorf("failed to read currentPrimary: %v: %s", err, string(out))
 	}
-	return strings.TrimSpace(string(out)), nil
+	primary := strings.TrimSpace(string(out))
+	if primary == "" {
+		return "", errors.Errorf("cluster %q reports no currentPrimary", clusterName)
+	}
+	return primary, nil
 }
 
 func (v *CnpgClusterVerifier) waitForReadyInstances(ctx context.Context, kubeconfig string, timeout time.Duration) error {

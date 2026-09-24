@@ -19,7 +19,7 @@ func TestRenderPublicReport_Hermetic(t *testing.T) {
 	// Drop the fixture's deliberately-stale ledger rows: the render fixture
 	// wants a clean breadth story.
 	ledger = ledger[:1]
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger, nil)
 	rep := buildReport("gcp", spec, modules, schemas)
 	proofs := map[string]E2EProof{
 		"TestWidget": {Green: true, Engines: []string{"pulumi", "terraform"}},
@@ -67,7 +67,7 @@ func TestRenderPublicReport_BaselineListsOnlyOwnSchemas(t *testing.T) {
 	// is a yardstick for this page.
 	schemas["aws"] = &Schema{Provider: "aws", Source: "hashicorp/aws", Version: "6.58.0"}
 	schemas["google-beta"] = &Schema{Provider: "google-beta", Source: "hashicorp/google-beta", Version: "6.50.0"}
-	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger)
+	acc := buildAccounting("gcp", spec, modules, schemas, "google", manifests, ledger, nil)
 	rep := buildReport("gcp", spec, modules, schemas)
 
 	page := RenderPublicReport(rep, acc, nil)
@@ -134,7 +134,7 @@ func TestPublicReportDrift(t *testing.T) {
 			t.Errorf("%s: %v", page, err)
 			continue
 		}
-		fresh, err := GeneratePublicReport(root, provider, schemas, gaSchema, "")
+		fresh, err := GeneratePublicReport(root, provider, schemas, gaSchema, "", "")
 		if err != nil {
 			t.Errorf("%s: regenerating: %v", page, err)
 			continue

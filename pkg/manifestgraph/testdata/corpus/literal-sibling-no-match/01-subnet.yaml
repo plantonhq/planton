@@ -1,0 +1,14 @@
+# A cloud id in a default_kind field: "vpc-0abc123" slugs to nothing the set
+# holds, so no edge forms and no node is minted. The sibling VPC below is in
+# the set under its own name; a literal id never reaches it.
+apiVersion: aws.planton.dev/v1alpha1
+kind: AwsSubnet
+metadata:
+  name: app-private
+  env: dev
+spec:
+  region: us-west-2
+  vpcId:
+    value: vpc-0abc123def456
+  availabilityZone: us-west-2a
+  cidrBlock: 10.0.1.0/24

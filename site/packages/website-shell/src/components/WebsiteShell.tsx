@@ -13,6 +13,10 @@ interface WebsiteShellProps extends PropsWithChildren {
    * `createWebsiteTheme(overrides)` from `@planton/website-shell/theme`.
    */
   theme?: Theme;
+  /** Homepage conversion emphasis; default preserves console and other consumers. */
+  navigationVariant?: 'default' | 'homepage';
+  onPrimaryAction?: () => void;
+  onSelfServiceAction?: () => void;
 }
 
 /**
@@ -25,15 +29,25 @@ interface WebsiteShellProps extends PropsWithChildren {
  *
  * The content area is offset by 70px to account for the fixed header.
  */
-export function WebsiteShell({ theme, children }: WebsiteShellProps) {
+export function WebsiteShell({
+  theme,
+  children,
+  navigationVariant = 'default',
+  onPrimaryAction,
+  onSelfServiceAction,
+}: WebsiteShellProps) {
   return (
     <WebsiteThemeProvider theme={theme}>
       <Box sx={{ minHeight: '100%', bgcolor: 'background.default' }}>
-        <WebsiteHeader />
-        <Box component="main" sx={{ pt: '70px' }}>
+        <WebsiteHeader
+          variant={navigationVariant}
+          onPrimaryAction={onPrimaryAction}
+          onSelfServiceAction={onSelfServiceAction}
+        />
+        <Box component="div" sx={{ pt: '70px' }}>
           {children}
         </Box>
-        <WebsiteFooter />
+        <WebsiteFooter variant={navigationVariant} />
       </Box>
     </WebsiteThemeProvider>
   );

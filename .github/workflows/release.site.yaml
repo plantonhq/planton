@@ -46,10 +46,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # One Node pin for CI and every laptop: site/.nvmrc. Change the version there, nowhere else.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: site/.nvmrc
 
       # Enables Pages and provides metadata; safe to run in all builds
       - name: Configure Pages

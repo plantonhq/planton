@@ -23,9 +23,11 @@ import (
 type Neo4jVerifier struct {
 	Namespace string
 	Name      string
-	// AuthSecretName holds the NEO4J_AUTH credential ("neo4j/<password>").
-	// Empty = the chart generated a random password; the Cypher proof is
-	// skipped and only workload readiness is asserted.
+	// AuthSecretName holds the NEO4J_AUTH credential ("neo4j/<password>"):
+	// the module-materialized `<name>-auth` (declared or module-generated
+	// password) or the referenced existing Secret. The module always names
+	// one, so the Cypher proof always runs; the empty arm is kept only as a
+	// guard against a scenario the resolver could not read.
 	AuthSecretName string
 	Persistence    bool
 }
@@ -40,8 +42,7 @@ func (v *Neo4jVerifier) VerifyExists(ctx context.Context, kubeconfig string) err
 		return errors.Wrap(err, "neo4j service not found")
 	}
 	if v.AuthSecretName == "" {
-		fmt.Printf("  [verify] no declared credentials — readiness asserted, Cypher proof skipped\n")
-		return nil
+		return errors.New("no credentials Secret resolved for the neo4j server — the module materializes <name>-auth for every arm but existing_secret, so an empty name is a verifier defect, not a scenario shape")
 	}
 	return v.proveCypherRoundTrip(ctx, kubeconfig)
 }

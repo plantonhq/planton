@@ -304,6 +304,12 @@ locals {
   }
 
   # ---- runner / build / vault ----------------------------------------------------
+  runner_image = {
+    for k, v in {
+      repository = try(var.spec.runner.image.repository, "") != "" ? var.spec.runner.image.repository : null
+      tag        = try(var.spec.runner.image.tag, "") != "" ? var.spec.runner.image.tag : null
+    } : k => v if v != null
+  }
   runner_body = {
     for k, v in {
       enabled                    = try(var.spec.runner.enabled, null)
@@ -311,6 +317,7 @@ locals {
       storageClassName           = try(var.spec.runner.storage_class_name, "") != "" ? var.spec.runner.storage_class_name : null
       serviceAccountAnnotations  = length(try(var.spec.runner.service_account_annotations, {})) > 0 ? var.spec.runner.service_account_annotations : null
       cloudCredentialsSecretName = try(var.spec.runner.cloud_credentials_secret_name, "") != "" ? var.spec.runner.cloud_credentials_secret_name : null
+      image                      = length(local.runner_image) > 0 ? local.runner_image : null
     } : k => v if v != null
   }
   build_body = {
@@ -503,6 +510,7 @@ locals {
       replicas                  = try(var.spec.control_plane.replicas, null)
       externalConfigSecretName  = try(var.spec.control_plane.external_config_secret_name, "") != "" ? var.spec.control_plane.external_config_secret_name : null
       serviceAccountAnnotations = length(try(var.spec.control_plane.service_account_annotations, {})) > 0 ? var.spec.control_plane.service_account_annotations : null
+      iacModulesVersion         = try(var.spec.control_plane.iac_modules_version, "") != "" ? var.spec.control_plane.iac_modules_version : null
     } : k => v if v != null
   }
   console_image = {
@@ -522,7 +530,8 @@ locals {
   # ---- the CR spec (twin of the Pulumi module's platformSpecBody) -------------
   platform_spec = {
     for k, v in {
-      version = var.spec.version
+      version       = var.spec.version
+      imageRegistry = try(var.spec.image_registry, "") != "" ? var.spec.image_registry : null
 
       license       = length(local.license_body) > 0 ? local.license_body : null
       storage       = length(local.storage_body) > 0 ? local.storage_body : null

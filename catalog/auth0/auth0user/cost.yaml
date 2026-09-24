@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0user
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no per-object price for users -- no meter charges for creating a user, setting its password, or assigning it roles and permissions. A declared user is exactly what Auth0's one real meter counts, though: monthly active users. A user that never signs in costs nothing; a user that signs in during a month is one MAU, on the Free plan up to 25,000 MAUs, then per the plan (auth0.com/pricing, retrieved 2026-09-22). Role assignment presumes a tenant on Essentials or above, where Role Management is included."
+  notes: "The real spend lives in the tenant subscription that hosts this object: Auth0 bills by plan tier plus monthly active users (Free up to 25,000 MAUs; Essentials from $35/month B2C or $150/month B2B; Professional from $240/month B2C or $800/month B2B; Enterprise custom; yearly billing is 11x monthly -- auth0.com/pricing, retrieved 2026-09-22). A declared user who signs in is one MAU for that month, the same as a user who signed up. Nothing in the spec changes the meter: the password posture (declared, minted, or passwordless), the metadata documents, and the roles and permissions all cost nothing on their own; the roles a user holds change what the user may do, never what the sign-in costs."

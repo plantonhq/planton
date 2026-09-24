@@ -353,7 +353,9 @@ questions:
       have run live?
     answer: >
       With backup declared the name fits 45 characters (CronJob names cap
-      at 52); backups need Raft (server.ha) and the auth delegator; the
+      at 52); backups need Raft storage (server.raft, the default engine --
+      a vault on PostgreSQL storage is backed up by its database and
+      refuses the block) and the auth delegator; the
       in-vault policy, auth mount, and role are a four-command recipe the
       module cannot run (every failed run prints it with the real names);
       a TLS certificate must include <name>-active.<namespace>.svc; GCS on
@@ -373,7 +375,209 @@ questions:
         pattern: 'sys/storage/raft/snapshot'
       - kind: KubernetesOpenBao
         file: GUIDE.md
+        pattern: '`backup` requires `server\.raft`'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
         pattern: 'R2 has no keyless posture'
       - kind: KubernetesOpenBao
         file: GUIDE.md
         pattern: '(?i)azure blob arm and the keyless s3\s+arm \(IRSA\)'
+
+  - id: q19
+    class: wisdom
+    question: >
+      A team already runs and backs up a KubernetesPostgres and wants to add
+      OpenBao. Which storage engine should the vault use, what does each
+      engine mean for backups and for the bad day, and what stays true on
+      either engine?
+    answer: >
+      PostgreSQL storage by reference to that database when ONE backup
+      should cover the vault: the vault claims no volume, its disaster
+      recovery is the database's (the database's restore brings it back,
+      then an unseal -- never a re-init), the kind refuses a backup block
+      on it so two stories are never run by accident, availability has no
+      quorum (any live standby takes the HA lock), and a database outage is
+      a vault outage. Integrated Raft (the default) when the vault must own
+      its recovery or outlive the database: snapshots to a store, the
+      restore runbook, quorum arithmetic. Dev is never for real secrets. On
+      either engine the seal key is required on restore because the
+      barrier key wraps the data, and every pod is unsealed separately.
+    checks:
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: '## Storage engine: Raft or PostgreSQL'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'wants ONE backup to cover the vault'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'a restored database and a different\s+seal key is an unreadable vault'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'two stories to rehearse where one was wanted'
+      - kind: KubernetesOpenBao
+        file: GUIDE.md
+        pattern: 'finds it initialized and sealed'
+      - kind: KubernetesOpenBao
+        file: reference.md
+        pattern: 'one database per vault'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'ONE backup covers the database and the vault'
+
+  - id: q20
+    class: wisdom
+    question: >
+      A team self-hosts Planton on GKE and wants the whole platform -- its
+      records AND its secrets -- backed up keylessly to Cloud Storage,
+      sealed by a Cloud KMS key, and restorable by declaration. Which
+      resources do they declare, and what will bite them?
+    answer: >
+      One KubernetesPlantonPlatform with database.postgresql.backup (the gcs
+      arm, keyless: true, the backup identity's email in
+      backup.serviceAccountAnnotations) and vault.autoUnseal.gcpKms by
+      reference to a GcpKmsKeyRing, a GcpKmsKey with deletionPolicy PREVENT,
+      and a GcpServiceAccount seal identity, plus vault.initSecretName for
+      the break-glass Secret -- the bundled vault stores in the platform's
+      own database, so one archive carries records and secrets and the
+      vault has no backup block of its own. Around it: two identities (the
+      seal key and the archive bucket are different blast radii), the ring
+      and the key, TWO grants on the key (cryptoKeyEncrypterDecrypter AND
+      viewer -- the server reads the key when it configures its seal at
+      start, and without viewer the pod crash-loops on "Error configuring
+      seal"), the bucket with TWO storage roles, and TWO Workload Identity
+      bindings: the vault's on "<platform>-openbao" and the database's on
+      "<platform>-postgres". The key and grants exist BEFORE the platform.
+    checks:
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '## Disaster recovery on GKE: the resource set'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'ksaName: planton-openbao'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'the seal key and the archive bucket are different blast radii'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'role:\n    value: roles/cloudkms.viewer'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'workloadIdentityServiceAccount:\n          valueFrom:\n            kind: GcpServiceAccount'
+      - kind: KubernetesPlantonPlatform
+        file: reference.md
+        pattern: 'roles/cloudkms.viewer'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'The bundled platform: one archive for records and secrets'
+
+  - id: q21
+    class: wisdom
+    question: >
+      A team self-hosts Planton on bare metal with no cloud key service and
+      wants a backup they can actually restore from. What must their
+      platform declare, what must they keep, and what happens if they
+      declare a backup without it?
+    answer: >
+      The backup block plus vault.initSecretName naming a Secret they own:
+      the operator writes the vault's unseal keys and root token into it at
+      first boot, never deletes it, and never writes over a Secret that
+      already holds a vault's keys. A backup declared with neither a seal
+      nor that Secret is refused by the kind's own rule -- the archive would
+      carry every secret and no way to open them. The Secret is the one
+      object no archive carries: deleting the platform leaves it standing,
+      but a namespace the declaration owns is deleted with the platform and
+      takes every Secret in it, so copy the Secret out of the cluster the
+      day the platform is born. status.backup.vault names the Secret to keep.
+    checks:
+      - kind: KubernetesPlantonPlatform
+        file: reference.md
+        pattern: 'spec\.vault\.backup_needs_surviving_keys'
+      - kind: KubernetesPlantonPlatform
+        file: reference.md
+        pattern: 'keep a copy outside the cluster'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '## Disaster recovery with Cloudflare R2: the resource set'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'never writes over a Secret that already holds\s+a vault.s keys'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'Copy it out of the cluster the day the platform is born'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '`status.backup.vault` carries four facts'
+
+  - id: q22
+    class: wisdom
+    question: >
+      The cluster running a self-hosted Planton is gone; its archive is in
+      the bucket. What does the team declare to bring everything back, what
+      differs between a cloud seal and the built-in seal, what will the
+      operator say if they get the order wrong, and what can a restore
+      never bring back?
+    answer: >
+      The platform declared again with database.postgresql.recoverFrom
+      (the same store, the source's serverName), the same version and
+      hostname the source had, the same seal, and backup kept beside it.
+      Under a cloud seal the key's grants and the vault's binding must exist
+      for the new cluster, the restored vault opens itself (the operator
+      never unseals it), and the keys Secret is recreated afterwards -- until
+      then the platform works and its status says the break-glass is gone.
+      Under the built-in seal the keys Secret is recreated from the kept copy
+      BEFORE (or within minutes of) the declaration and the operator unseals
+      with it; forgotten, the vault component refuses with
+      ConfigurationRefused naming the archive, the Secret, its keys, and the
+      step, and the next pass unseals once it is back. A restore never
+      brings back the keys that open the vault, and a declaration naming a
+      different seal than the archive's is refused before anything renders.
+    checks:
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: '## Restore on the bad day'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'opens itself from your key — the operator\s+never unseals it'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'Recreate that Secret from the copy you\s+kept'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'gone until the Secret is back'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'cannot be changed on a\s+running platform'
+      - kind: KubernetesPlantonPlatform
+        file: GUIDE.md
+        pattern: 'recoverFrom:\n        objectStore:'
+      - catalog: _patterns/stateful-kind-disaster-recovery.md
+        pattern: 'what stays with the operator is the key that opens it'
+
+  - id: q23
+    class: wisdom
+    question: >
+      An agent must turn on authentication for a Valkey cache in a shared
+      namespace, and for a Neo4j server beside it. What does it declare
+      for the credentials, and where does each client read its password?
+    answer: >
+      Declare the user, never the password. For Valkey, declare `auth.users`
+      with the `default` user and no password: the module generates one,
+      materializes it in the `<name>-auth` Secret under the username key,
+      and the `password_secret` output names that Secret and key. For
+      Neo4j, declare no `auth` at all: the module generates the admin
+      password into `<name>-auth` and reports `password_secret` (the bare
+      password) and `auth_secret_name` (the chart's `neo4j/<password>`
+      pair). A password is declared only to bring your own, and then as a
+      managed-secret reference; nobody escrows a value the module can mint.
+    checks:
+      - kind: KubernetesValkey
+        file: GUIDE.md
+        pattern: '## Declare the user, never the password'
+      - kind: KubernetesValkey
+        file: reference.md
+        pattern: 'leave it empty and the module generates one'
+      - kind: KubernetesNeo4j
+        file: GUIDE.md
+        pattern: '## Leave the credential to the module'
+      - kind: KubernetesNeo4j
+        file: reference.md
+        pattern: 'CREDENTIALS ARE MINTED, NEVER REQUIRED'

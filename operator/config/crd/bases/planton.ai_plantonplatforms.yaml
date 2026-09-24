@@ -290,18 +290,18 @@ spec:
                     type: string
                   iacModulesVersion:
                     description: |-
-                      iacModulesVersion overrides the release version at which the platform
-                      resolves official IaC module artifacts (both engines: the OpenTofu
-                      module zips and the Pulumi module binaries ride the same release tag).
-                      It feeds the control plane's PLANTON_VERSION environment variable and
-                      controls nothing else -- deliberately NOT the platform image version
-                      (spec.version) and NOT the infra-charts pin (charts are validated by
-                      the control plane's own protos, so their tag stays compile-locked to
-                      the image). Unset means the operator's verified default pin; setting
-                      it is a deliberate operator act, e.g. adopting a newer module release
-                      ahead of an operator upgrade. Every value must have a published
-                      artifact set under downloads.planton.dev/releases/<version>/ or
-                      deploys fail at module download.
+                      iacModulesVersion overrides the release the platform downloads official
+                      IaC module artifacts from (both engines: the OpenTofu module zips and
+                      the Pulumi module binaries ride the same release tag). Unset -- the
+                      shape every install should have -- the platform resolves modules at its
+                      own catalog release: the same pin its schemas and chart bundle come
+                      from, so a kind the platform accepts always has its module published.
+                      Set it only to route around a retracted artifact set; it selects among
+                      published releases and controls nothing else -- deliberately NOT the
+                      platform image version (spec.version) and NOT the chart bundle. Every
+                      value must have a published artifact set under
+                      downloads.planton.dev/releases/<version>/ or deploys fail at module
+                      download.
                     pattern: ^v\d+\.\d+\.\d+$
                     type: string
                   image:
@@ -713,18 +713,115 @@ spec:
                       field keeps the protocol-role name every consumer speaks; the engine
                       serving it is Valkey (see the valkey resources for the rationale).
                     properties:
+                      maxMemory:
+                        description: |-
+                          maxMemory is the dataset ceiling as a Valkey size ("768mb", "1gb").
+                          Defaults to 768mb. Always below the container's memory limit: hitting
+                          the limit is an OOM kill, hitting this is an eviction.
+                        pattern: ^[0-9]+(b|kb|mb|gb|k|m|g)?$
+                        type: string
+                      maxMemoryPolicy:
+                        description: |-
+                          maxMemoryPolicy is what happens at maxMemory. Defaults to allkeys-lru:
+                          a finished run's log and a stale cache entry fall out first, the stream
+                          being tailed is the hot set. noeviction fails writes instead (right for
+                          a durable store, wrong for this one).
+                        enum:
+                        - noeviction
+                        - allkeys-lru
+                        - volatile-lru
+                        - allkeys-lfu
+                        - volatile-lfu
+                        - allkeys-random
+                        - volatile-random
+                        - volatile-ttl
+                        type: string
+                      persistence:
+                        description: |-
+                          persistence keeps the dataset on a volume and replays it after a pod
+                          restart (append-only file). Defaults to true: the store holds the live
+                          build-log stream, and a restart mid-build must not blank the log a
+                          person is tailing. What is persisted always fits, because maxMemory
+                          bounds it under the container's memory limit -- a persisted store with
+                          no ceiling reloads more than it may hold after a memory kill and never
+                          comes back. Set false for a pure in-memory cache that starts empty.
+                        type: boolean
+                      resources:
+                        description: |-
+                          resources sizes the store's container. Defaults to requests of 100m CPU
+                          and 256Mi memory with a 1Gi memory limit and no CPU limit. Size the
+                          memory limit above maxMemory: Valkey needs headroom for its
+                          append-only-file rewrite and client buffers.
+                        properties:
+                          claims:
+                            description: |-
+                              Claims lists the names of resources, defined in spec.resourceClaims,
+                              that are used by this container.
+
+                              This field depends on the
+                              DynamicResourceAllocation feature gate.
+
+                              This field is immutable. It can only be set for containers.
+                            items:
+                              description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                              properties:
+                                name:
+                                  description: |-
+                                    Name must match the name of one entry in pod.spec.resourceClaims of
+                                    the Pod where this field is used. It makes that resource available
+                                    inside a container.
+                                  type: string
+                                request:
+                                  description: |-
+                                    Request is the name chosen for a request in the referenced claim.
+                                    If empty, everything from the claim is made available, otherwise
+                                    only the result of this request.
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              Limits describes the maximum amount of compute resources allowed.
+                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              Requests describes the minimum amount of compute resources required.
+                              If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+                              otherwise to an implementation-defined value. Requests cannot exceed Limits.
+                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                            type: object
+                        type: object
                       storageClassName:
                         description: |-
-                          storageClassName pins the cache volume to a StorageClass. Defaults to
-                          spec.storage.storageClassName, then the cluster default.
+                          storageClassName pins the store's volume to a StorageClass. Defaults to
+                          spec.storage.storageClassName, then the cluster default. Read only
+                          while persistence is on.
                         type: string
                       storageSize:
                         anyOf:
                         - type: integer
                         - type: string
                         description: |-
-                          storageSize is the persistent volume size for the cache instance.
-                          Defaults to spec.storage.size, then 1Gi.
+                          storageSize is the persistent volume size for the store. Defaults to
+                          spec.storage.size, then 1Gi. Read only while persistence is on.
                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                         x-kubernetes-int-or-string: true
                     type: object
@@ -1118,6 +1215,21 @@ spec:
                       console's OIDC client.
                     type: string
                 type: object
+              imageRegistry:
+                description: |-
+                  imageRegistry is the registry root the control plane, console, and
+                  runner images are pulled from, as <imageRegistry>/<image> (the images are
+                  control-plane, client-apps/web, and runner). Defaults to
+                  ghcr.io/plantonhq/planton. Every release is also published, byte for
+                  byte, to Google Artifact Registry at
+                  asia-south1-docker.pkg.dev/plantonhq/planton; set that here to pull from
+                  Google, or name a mirror of your own. A component's image.repository, when
+                  set, wins over this root.
+                type: string
+                x-kubernetes-validations:
+                - message: 'spec.imageRegistry is a registry root such as asia-south1-docker.pkg.dev/plantonhq/planton:
+                    no scheme and no trailing slash'
+                  rule: '!self.endsWith(''/'') && !self.contains(''://'')'
               ingress:
                 description: |-
                   ingress configures external access to the Planton web console and API.
@@ -1357,11 +1469,11 @@ spec:
                   enabled:
                     default: false
                     description: |-
-                      enabled opens the deploy queue to runners outside this cluster and
-                      advertises the front door's address to them. Default false: an install
-                      that has not chosen this keeps its queue in-cluster, and a runner that
-                      asks to enroll from outside is refused with the reason -- never handed
-                      an address it cannot reach.
+                      enabled admits runners outside this cluster and advertises the front
+                      door's address to them. Default false: an install that has not chosen
+                      this admits only its in-cluster runner, and a runner that asks to enroll
+                      from outside is refused with the reason -- never handed an address it
+                      cannot reach.
                     type: boolean
                 type: object
               runner:
@@ -1695,10 +1807,10 @@ spec:
               rule: '!has(self.bootstrap) || !has(self.bootstrap.secretBackend) ||
                 self.bootstrap.secretBackend.type != ''platform'' || !has(self.vault)
                 || !has(self.vault.enabled) || self.vault.enabled'
-            - message: 'remoteRunners.enabled opens the deploy queue to runners outside
-                the cluster through the front door, but with ingress disabled there
-                is no front door a laptop could reach; set ingress.enabled: true with
-                a gatewayRef, or leave remoteRunners off'
+            - message: 'remoteRunners.enabled admits runners outside the cluster through
+                the front door, but with ingress disabled there is no front door a
+                laptop could reach; set ingress.enabled: true with a gatewayRef, or
+                leave remoteRunners off'
               rule: '!has(self.remoteRunners) || !has(self.remoteRunners.enabled)
                 || !self.remoteRunners.enabled || (has(self.ingress) && self.ingress.enabled)'
             - message: a backup carries the vault's data, but under the built-in seal

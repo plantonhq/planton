@@ -1,0 +1,62 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAndroidApp
+metadata:
+  name: my-android-app
+spec:
+  # The Firebase-enabled project the app is registered in. The value is the
+  # GCP project id; the natural reference is the GcpFirebaseProject that
+  # enabled Firebase on it -- referencing it orders this app after the
+  # enablement and places it inside the Firebase project on diagrams. Omit
+  # to use the provider's default project. Immutable.
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+
+  # As the Firebase console shows the app. Updatable.
+  displayName: My Android App
+
+  # The app's IDENTITY in Firebase and in google-services.json. IMMUTABLE
+  # (a change replaces the registration) and accepted once per project.
+  packageName: com.example.app
+
+  # Signing certificate fingerprints. Cloud Messaging needs none; Play
+  # Integrity needs the SHA-256 of the certificate the shipped APK is
+  # signed with (Play App Signing's for a Play release); Google Sign-In,
+  # Dynamic Links, and Phone Auth need the SHA-1.
+  sha1Hashes:
+    - DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09
+  sha256Hashes:
+    - E3:B0:C4:42:98:FC:1C:14:9A:FB:F4:C8:99:6F:B9:24:27:AE:41:E4:64:9B:93:4C:A4:95:99:1B:78:52:B8:55
+
+  # The restricted API key the app presents, by the key's UID -- a
+  # reference to a GcpApiKey (its uid output). A client identifier that
+  # ships in the APK, not a secret. Omit to let Firebase associate or
+  # provision an unrestricted key.
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: firebase-android-key
+      fieldPath: status.outputs.uid
+
+  # App Check: prove requests come from the genuine app on a genuine
+  # device. Whether backends ENFORCE it is configured on the
+  # GcpFirebaseProject.
+  appCheck:
+    # Play Integrity: Google's attestation for apps distributed through
+    # Google Play. Requires the SHA-256 fingerprint above. `enabled`
+    # defaults to true when the block is present.
+    playIntegrity:
+      enabled: true
+      tokenTtl: 3600s
+    # Debug tokens let development builds and CI emulators pass App Check.
+    # Each token is a SECRET -- a managed secret reference on the platform.
+    debugTokens:
+      - displayName: ci-emulator
+        token: $secret/firebase-app-check-ci-emulator-token
+
+  # What destroy does to the app and its debug tokens. DELETE (default) is
+  # IMMEDIATE and PERMANENT -- Firebase's 30-day recoverable window is
+  # skipped. A shipped app should carry PREVENT.
+  deletionPolicy: PREVENT

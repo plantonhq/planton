@@ -171,7 +171,7 @@ spec:
 | `spec.monolithic` | `KubernetesLokiMonolithic` |  |  |  |
 | `spec.monolithic.replicas` | `int32` |  | `1` |  |
 | `spec.monolithic.diskSize` | `string` |  | `10Gi` |  |
-| `spec.monolithic.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.monolithic.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.monolithic.resources` | `ContainerResources` |  |  |  |
 | `spec.monolithic.resources.limits` | `CpuMemory` |  |  |  |
 | `spec.monolithic.resources.limits.cpu` | `string` |  |  |  |
@@ -184,7 +184,7 @@ spec:
 | `spec.simpleScalable.readReplicas` | `int32` |  | `3` |  |
 | `spec.simpleScalable.backendReplicas` | `int32` |  | `3` |  |
 | `spec.simpleScalable.diskSize` | `string` |  | `10Gi` |  |
-| `spec.simpleScalable.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.simpleScalable.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.simpleScalable.resources` | `ContainerResources` |  |  |  |
 | `spec.simpleScalable.resources.limits` | `CpuMemory` |  |  |  |
 | `spec.simpleScalable.resources.limits.cpu` | `string` |  |  |  |
@@ -338,8 +338,8 @@ Storage class for the volumes. Accepts a literal name or a
 reference to a KubernetesStorageClass resource. Empty = the
 cluster's default class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.monolithic.resources
 
@@ -436,8 +436,8 @@ store).
 Storage class for the write/backend volumes. Empty = the cluster's
 default class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.simpleScalable.resources
 
@@ -1133,8 +1133,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.monolithic.storageClass` | KubernetesStorageClass | `metadata.name` |
-| `spec.simpleScalable.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.monolithic.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.simpleScalable.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 | `spec.ruler.alertmanagerUrl` | KubernetesKubePrometheusStack | `status.outputs.alertmanager_endpoint` |
 
 ## See Also

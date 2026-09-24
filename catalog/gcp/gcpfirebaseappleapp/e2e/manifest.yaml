@@ -1,0 +1,68 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAppleApp
+metadata:
+  name: my-ios-app
+spec:
+  # The Firebase-enabled project the app is registered in. The value is the
+  # GCP project id; the natural reference is the GcpFirebaseProject that
+  # enabled Firebase on it -- referencing it orders this app after the
+  # enablement and places it inside the Firebase project on diagrams. Omit
+  # to use the provider's default project. Immutable.
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+
+  # As the Firebase console shows the app. Updatable.
+  displayName: My iOS App
+
+  # The app's IDENTITY in Firebase and in GoogleService-Info.plist.
+  # IMMUTABLE (a change replaces the registration) and accepted once per
+  # project.
+  bundleId: com.example.app
+
+  # The numeric Apple ID from App Store Connect (Dynamic Links, App Store
+  # redirects). Leave empty until the app has an App Store record.
+  appStoreId: "1234567890"
+
+  # The Apple Developer Team ID that signs the app. REQUIRED when App Attest
+  # or DeviceCheck is configured below.
+  teamId: ABCDE12345
+
+  # The restricted API key the app presents, by the key's UID -- a
+  # reference to a GcpApiKey (its uid output). A client identifier that
+  # ships in the app bundle, not a secret. Omit to let Firebase associate
+  # or provision an unrestricted key.
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: firebase-ios-key
+      fieldPath: status.outputs.uid
+
+  # App Check: prove requests come from the genuine app on a genuine
+  # device. Whether backends ENFORCE it is configured on the
+  # GcpFirebaseProject.
+  appCheck:
+    # App Attest: Apple's attestation for iOS 14+, Google's recommended
+    # primary provider. `enabled` defaults to true when the block is present.
+    appAttest:
+      enabled: true
+      tokenTtl: 3600s
+    # DeviceCheck: the fallback for devices that cannot use App Attest. The
+    # private key is the DeviceCheck .p8 from the Apple Developer account --
+    # NOT the APNs key -- and is a managed secret reference on the platform.
+    deviceCheck:
+      keyId: ABC123DEFG
+      privateKey: $secret/firebase-devicecheck-private-key
+      tokenTtl: 3600s
+    # Debug tokens let simulators and CI pass App Check. Each token is a
+    # SECRET -- a managed secret reference on the platform.
+    debugTokens:
+      - displayName: simulator
+        token: $secret/firebase-app-check-simulator-token
+
+  # What destroy does to the app and its debug tokens. DELETE (default) is
+  # IMMEDIATE and PERMANENT -- Firebase's 30-day recoverable window is
+  # skipped. A shipped app should carry PREVENT.
+  deletionPolicy: PREVENT

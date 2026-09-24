@@ -1,0 +1,72 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# One kind, five resources: the Apple app registration (beta-only at the
+# pin, admitted in pkg/providerparity/admissions/google-beta.yaml and
+# accounted against the google-beta schema), the App Attest and DeviceCheck
+# attestation configurations and the debug tokens (GA App Check), and API
+# enablement plumbing. The spec's ONE deletion_policy maps onto the app and
+# each debug token; the attestation configurations have none (provider
+# truth -- per-app singletons Google never deletes).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_firebase_apple_app:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+
+  # Instantiated once when spec.app_check.app_attest is present and not
+  # declared off. app_id is wired from the registration this module creates.
+  google_firebase_app_check_app_attest_config:
+    specRoot: spec.app_check.app_attest
+    mappings:
+      - spec: spec.project_id
+        arg: project
+    exclusions:
+      - arg: app_id
+        reason: wired by the module to the app registration it creates -- never user surface
+
+  # Instantiated once when spec.app_check.device_check is present (its
+  # required key material is its switch).
+  google_firebase_app_check_device_check_config:
+    specRoot: spec.app_check.device_check
+    mappings:
+      - spec: spec.project_id
+        arg: project
+    exclusions:
+      - arg: app_id
+        reason: wired by the module to the app registration it creates -- never user surface
+
+  # Instantiated per spec.app_check.debug_tokens entry, keyed by display
+  # name. The kind-level deletion_policy maps onto each token.
+  google_firebase_app_check_debug_token:
+    specRoot: spec.app_check.debug_tokens
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.deletion_policy
+        arg: deletion_policy
+    exclusions:
+      - arg: app_id
+        reason: wired by the module to the app registration it creates -- never user surface
+
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables
+      firebaseappcheck.googleapis.com exactly when the spec composes an App
+      Check resource; disable_on_destroy false so destroying this app never
+      disables an API the project's other apps depend on. The Firebase
+      Management API itself is enabled by the GcpFirebaseProject the app
+      lives in. Not spec surface.
+
+specExclusions:
+  # The wire spells the switch by the configuration's existence; the manifest
+  # states it explicitly so a present-but-empty block is never the only way
+  # to say "configured".
+  - field: spec.app_check.app_attest.enabled
+    reason: manifest switch -- the module creates the App Attest configuration when true (the default) and skips it when false; the provider resource's existence is the wire's spelling

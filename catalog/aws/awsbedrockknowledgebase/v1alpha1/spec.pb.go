@@ -1528,12 +1528,17 @@ func (x *AwsBedrockKnowledgeBaseOpenSearchManagedStorage) GetFieldMapping() *Aws
 // index within it - exactly one addressing shape.
 type AwsBedrockKnowledgeBaseS3VectorsStorage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// ARN of an existing S3 vector index.
+	// ARN of an existing S3 vector index. Stays a literal: a bucket's index
+	// ARNs are a map output keyed by index name, so no single field path
+	// addresses one -- address a Planton-managed bucket through
+	// `vector_bucket_arn` + `index_name` instead.
 	IndexArn string `protobuf:"bytes,1,opt,name=index_arn,json=indexArn,proto3" json:"index_arn,omitempty"`
 	// Name of the vector index inside `vector_bucket_arn`.
 	IndexName string `protobuf:"bytes,2,opt,name=index_name,json=indexName,proto3" json:"index_name,omitempty"`
-	// ARN of the S3 vector bucket holding `index_name`.
-	VectorBucketArn string `protobuf:"bytes,3,opt,name=vector_bucket_arn,json=vectorBucketArn,proto3" json:"vector_bucket_arn,omitempty"`
+	// ARN of the S3 vector bucket holding `index_name`. Reference an
+	// AwsS3VectorBucket's vector_bucket_arn output (the default wiring) or
+	// pass a literal ARN.
+	VectorBucketArn *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=vector_bucket_arn,json=vectorBucketArn,proto3" json:"vector_bucket_arn,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -1582,11 +1587,11 @@ func (x *AwsBedrockKnowledgeBaseS3VectorsStorage) GetIndexName() string {
 	return ""
 }
 
-func (x *AwsBedrockKnowledgeBaseS3VectorsStorage) GetVectorBucketArn() string {
+func (x *AwsBedrockKnowledgeBaseS3VectorsStorage) GetVectorBucketArn() *v1.StringValueOrRef {
 	if x != nil {
 		return x.VectorBucketArn
 	}
-	return ""
+	return nil
 }
 
 // AwsBedrockKnowledgeBaseRdsStorage stores vectors in Aurora PostgreSQL
@@ -3737,13 +3742,14 @@ const file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_rawDesc = "" 
 	"domain_arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x9b\b\x92\xd4a\x19status.outputs.domain_arnR\tdomainArn\x12<\n" +
 	"\x0fdomain_endpoint\x18\x02 \x01(\tB\x13\xbaH\x10r\x0e2\f^https://.*$R\x0edomainEndpoint\x123\n" +
 	"\x11vector_index_name\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0fvectorIndexName\x12\x82\x01\n" +
-	"\rfield_mapping\x18\x04 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFieldMappingB\x06\xbaH\x03\xc8\x01\x01R\ffieldMapping\"\xf8\x02\n" +
+	"\rfield_mapping\x18\x04 \x01(\v2U.dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFieldMappingB\x06\xbaH\x03\xc8\x01\x01R\ffieldMapping\"\xdd\x03\n" +
 	"'AwsBedrockKnowledgeBaseS3VectorsStorage\x12\x1b\n" +
 	"\tindex_arn\x18\x01 \x01(\tR\bindexArn\x12\x1d\n" +
 	"\n" +
-	"index_name\x18\x02 \x01(\tR\tindexName\x12*\n" +
-	"\x11vector_bucket_arn\x18\x03 \x01(\tR\x0fvectorBucketArn:\xe4\x01\xbaH\xe0\x01\x1a\xdd\x01\n" +
-	"\x15s3_vectors_addressing\x129set index_arn alone, or vector_bucket_arn with index_name\x1a\x88\x01this.index_arn != '' ? (this.index_name == '' && this.vector_bucket_arn == '') : (this.index_name != '' && this.vector_bucket_arn != '')\"\x90\x04\n" +
+	"index_name\x18\x02 \x01(\tR\tindexName\x12\x89\x01\n" +
+	"\x11vector_bucket_arn\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xb6\n" +
+	"\x92\xd4a status.outputs.vector_bucket_arnR\x0fvectorBucketArn:\xe3\x01\xbaH\xdf\x01\x1a\xdc\x01\n" +
+	"\x15s3_vectors_addressing\x129set index_arn alone, or vector_bucket_arn with index_name\x1a\x87\x01this.index_arn != '' ? (this.index_name == '' && !has(this.vector_bucket_arn)) : (this.index_name != '' && has(this.vector_bucket_arn))J\x04\b\x03\x10\x04\"\x90\x04\n" +
 	"!AwsBedrockKnowledgeBaseRdsStorage\x12x\n" +
 	"\fresource_arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\xbaH\x03\xc8\x01\x01\x88\xd4a\xf2\a\x92\xd4a\x12status.outputs.arnR\vresourceArn\x12\x92\x01\n" +
 	"\x16credentials_secret_arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB(\xbaH\x03\xc8\x01\x01\x88\xd4a\x9c\t\x92\xd4a\x19status.outputs.secret_arnR\x14credentialsSecretArn\x12,\n" +
@@ -4014,48 +4020,49 @@ var file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_depIdxs = []int
 	18, // 34: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOpenSearchServerlessStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFieldMapping
 	49, // 35: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOpenSearchManagedStorage.domain_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	18, // 36: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseOpenSearchManagedStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFieldMapping
-	49, // 37: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsStorage.resource_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	49, // 38: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	23, // 39: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsFieldMapping
-	49, // 40: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBasePineconeStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	25, // 41: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBasePineconeStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseTextMetadataFieldMapping
-	49, // 42: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseMongoDbAtlasStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	18, // 43: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseMongoDbAtlasStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFieldMapping
-	25, // 44: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseNeptuneAnalyticsStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseTextMetadataFieldMapping
-	49, // 45: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRedisEnterpriseCloudStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	29, // 46: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRedisEnterpriseCloudStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRedisFieldMapping
-	49, // 47: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.kms_key_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	31, // 48: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.s3:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseS3DataSource
-	32, // 49: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.web:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseWebDataSource
-	34, // 50: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.confluence:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSource
-	35, // 51: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.salesforce:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSource
-	36, // 52: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.sharepoint:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSource
-	37, // 53: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.managed_connector:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource
-	40, // 54: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.vector_ingestion:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion
-	49, // 55: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseS3DataSource.bucket_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	49, // 56: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSource.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 57: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSource.filters:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCrawlFilter
-	49, // 58: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSource.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 59: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSource.filters:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCrawlFilter
-	49, // 60: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSource.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 61: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSource.filters:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCrawlFilter
-	50, // 62: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource.connector_parameters:type_name -> google.protobuf.Struct
-	38, // 63: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource.deletion_protection:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDeletionProtection
-	39, // 64: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource.media_extraction:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseMediaExtraction
-	41, // 65: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion.chunking:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking
-	46, // 66: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion.parsing:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseParsing
-	48, // 67: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion.custom_transformation:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCustomTransformation
-	42, // 68: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking.fixed_size:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFixedSizeChunking
-	43, // 69: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking.hierarchical:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseHierarchicalChunking
-	45, // 70: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking.semantic:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSemanticChunking
-	44, // 71: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseHierarchicalChunking.levels:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunkingLevel
-	47, // 72: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseParsing.foundation_model:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFoundationModelParsing
-	49, // 73: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCustomTransformation.lambda_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	74, // [74:74] is the sub-list for method output_type
-	74, // [74:74] is the sub-list for method input_type
-	74, // [74:74] is the sub-list for extension type_name
-	74, // [74:74] is the sub-list for extension extendee
-	0,  // [0:74] is the sub-list for field type_name
+	49, // 37: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseS3VectorsStorage.vector_bucket_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 38: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsStorage.resource_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 39: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	23, // 40: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRdsFieldMapping
+	49, // 41: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBasePineconeStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	25, // 42: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBasePineconeStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseTextMetadataFieldMapping
+	49, // 43: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseMongoDbAtlasStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	18, // 44: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseMongoDbAtlasStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFieldMapping
+	25, // 45: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseNeptuneAnalyticsStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseTextMetadataFieldMapping
+	49, // 46: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRedisEnterpriseCloudStorage.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	29, // 47: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRedisEnterpriseCloudStorage.field_mapping:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseRedisFieldMapping
+	49, // 48: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.kms_key_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	31, // 49: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.s3:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseS3DataSource
+	32, // 50: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.web:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseWebDataSource
+	34, // 51: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.confluence:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSource
+	35, // 52: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.salesforce:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSource
+	36, // 53: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.sharepoint:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSource
+	37, // 54: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.managed_connector:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource
+	40, // 55: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDataSource.vector_ingestion:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion
+	49, // 56: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseS3DataSource.bucket_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	49, // 57: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSource.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 58: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseConfluenceDataSource.filters:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCrawlFilter
+	49, // 59: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSource.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 60: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSalesforceDataSource.filters:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCrawlFilter
+	49, // 61: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSource.credentials_secret_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 62: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSharePointDataSource.filters:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCrawlFilter
+	50, // 63: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource.connector_parameters:type_name -> google.protobuf.Struct
+	38, // 64: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource.deletion_protection:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseDeletionProtection
+	39, // 65: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseManagedConnectorDataSource.media_extraction:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseMediaExtraction
+	41, // 66: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion.chunking:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking
+	46, // 67: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion.parsing:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseParsing
+	48, // 68: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseVectorIngestion.custom_transformation:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCustomTransformation
+	42, // 69: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking.fixed_size:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFixedSizeChunking
+	43, // 70: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking.hierarchical:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseHierarchicalChunking
+	45, // 71: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunking.semantic:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseSemanticChunking
+	44, // 72: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseHierarchicalChunking.levels:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseChunkingLevel
+	47, // 73: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseParsing.foundation_model:type_name -> dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseFoundationModelParsing
+	49, // 74: dev.planton.aws.awsbedrockknowledgebase.v1alpha1.AwsBedrockKnowledgeBaseCustomTransformation.lambda_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	75, // [75:75] is the sub-list for method output_type
+	75, // [75:75] is the sub-list for method input_type
+	75, // [75:75] is the sub-list for extension type_name
+	75, // [75:75] is the sub-list for extension extendee
+	0,  // [0:75] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsbedrockknowledgebase_v1alpha1_spec_proto_init() }

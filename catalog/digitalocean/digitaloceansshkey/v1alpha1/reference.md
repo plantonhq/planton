@@ -84,6 +84,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| DigitalOceanDroplet | `spec.sshKeys` | `status.outputs.ssh_key_id` |
 | DigitalOceanDropletAutoscalePool | `spec.dropletTemplate.sshKeys` | `status.outputs.ssh_key_id` |
 
 ## See Also

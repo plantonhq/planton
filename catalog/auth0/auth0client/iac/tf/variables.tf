@@ -179,6 +179,8 @@ variable "spec" {
       scopes = optional(list(string))
 
       # allow_any_organization determines if any organization can be used with this grant.
+      # Left unset it is never sent (see locals.tf): mentioning it at all tells Auth0 the
+      # grant uses Organizations, which tenants without that feature refuse.
       allow_any_organization = optional(bool, false)
 
       # organization_usage defines whether organizations can be used with client credentials exchanges.

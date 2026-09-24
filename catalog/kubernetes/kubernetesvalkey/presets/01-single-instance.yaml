@@ -20,12 +20,14 @@ spec:
     max_memory: 256mb
     max_memory_policy: allkeys-lru
   # The chart ships with auth OFF — declaring the "default" ACL user is
-  # what actually requires credentials. The password lands in the
-  # "<name>-auth" Secret, never in rendered chart values.
+  # what actually requires credentials. No password is declared: the
+  # module mints one and lands it in the "<name>-auth" Secret (never in
+  # rendered chart values); the password_secret output tells clients
+  # where to read it. Declare a password only to bring your own, as a
+  # managed-secret reference.
   auth:
     users:
       - name: default
-        password: "<your-password>"
   resources:
     requests:
       cpu: 50m

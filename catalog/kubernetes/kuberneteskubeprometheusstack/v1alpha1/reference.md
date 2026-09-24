@@ -259,7 +259,7 @@ spec:
 | `spec.prometheus.retention` | `string` |  | `10d` |  |
 | `spec.prometheus.retentionSize` | `string` |  |  |  |
 | `spec.prometheus.diskSize` | `string` |  | `50Gi` |  |
-| `spec.prometheus.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.prometheus.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.prometheus.ephemeral` | `bool` |  |  |  |
 | `spec.prometheus.resources` | `ContainerResources` |  |  |  |
 | `spec.prometheus.resources.limits` | `CpuMemory` |  |  |  |
@@ -311,7 +311,7 @@ spec:
 | `spec.alertmanager.replicas` | `int32` |  | `1` |  |
 | `spec.alertmanager.retention` | `string` |  | `120h` |  |
 | `spec.alertmanager.diskSize` | `string` |  | `2Gi` |  |
-| `spec.alertmanager.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.alertmanager.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.alertmanager.ephemeral` | `bool` |  |  |  |
 | `spec.alertmanager.resources` | `ContainerResources` |  |  |  |
 | `spec.alertmanager.resources.limits` | `CpuMemory` |  |  |  |
@@ -339,7 +339,7 @@ spec:
 | `spec.grafana.defaultDashboardsEnabled` | `bool` |  | `true` |  |
 | `spec.grafana.storage` | `KubernetesKubePrometheusStackGrafanaStorage` |  |  |  |
 | `spec.grafana.storage.size` | `string` |  | `10Gi` |  |
-| `spec.grafana.storage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.grafana.storage.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.grafana.resources` | `ContainerResources` |  |  |  |
 | `spec.grafana.resources.limits` | `CpuMemory` |  |  |  |
 | `spec.grafana.resources.limits.cpu` | `string` |  |  |  |
@@ -521,8 +521,8 @@ Storage class for the TSDB volumes. Accepts a literal name or a
 reference to a KubernetesStorageClass resource. Empty = the cluster's
 default storage class. Ignored when `ephemeral` is true.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.prometheus.ephemeral
 
@@ -936,8 +936,8 @@ default. Ignored when `ephemeral` is true.
 Storage class for the state volumes. Empty = the cluster's default
 class. Ignored when `ephemeral` is true.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.alertmanager.ephemeral
 
@@ -1147,8 +1147,8 @@ Volume size as a Kubernetes quantity (e.g. "10Gi").
 
 Storage class for the PVC. Empty = the cluster's default class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.grafana.resources
 
@@ -1575,9 +1575,9 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.prometheus.storageClass` | KubernetesStorageClass | `metadata.name` |
-| `spec.alertmanager.storageClass` | KubernetesStorageClass | `metadata.name` |
-| `spec.grafana.storage.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.prometheus.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.alertmanager.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
+| `spec.grafana.storage.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 
 ## Referenced By
 

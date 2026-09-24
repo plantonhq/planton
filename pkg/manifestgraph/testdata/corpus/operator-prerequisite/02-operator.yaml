@@ -1,0 +1,11 @@
+# The one instance of the prerequisite kind in the set: the edge is
+# unambiguous and the operator orders first.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCloudNativePgOperator
+metadata:
+  name: cnpg
+  env: dev
+spec:
+  namespace:
+    value: cnpg-system
+  create_namespace: true

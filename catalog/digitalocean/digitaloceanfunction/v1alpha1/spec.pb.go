@@ -9,6 +9,7 @@ package digitaloceanfunctionv1alpha1
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	digitalocean "github.com/plantonhq/planton/catalog/digitalocean"
+	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -55,11 +56,12 @@ type DigitalOceanFunctionSpec struct {
 	Envs            []*digitalocean.DigitalOceanAppEnvVar         `protobuf:"bytes,8,rep,name=envs,proto3" json:"envs,omitempty"`
 	Alerts          []*digitalocean.DigitalOceanAppComponentAlert `protobuf:"bytes,9,rep,name=alerts,proto3" json:"alerts,omitempty"`
 	LogDestinations []*digitalocean.DigitalOceanAppLogDestination `protobuf:"bytes,10,rep,name=log_destinations,json=logDestinations,proto3" json:"log_destinations,omitempty"`
-	// DigitalOcean project UUID to put the app in. Literal UUID (the FK
-	// upgrade to DigitalOceanProject is recorded backlog). Create-only: the
-	// provider marks project_id ForceNew, so changing it destroys and
-	// recreates the app. Unset puts the app in the account's default project.
-	ProjectId string `protobuf:"bytes,11,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	// (Optional) The project the functions app is created in. Reference a
+	// DigitalOceanProject resource (the default wiring resolves its
+	// project_id output) or pass a literal project UUID. When unset, the app
+	// lands in the account's default project. Create-only: the provider marks
+	// project_id ForceNew, so changing it destroys and recreates the app.
+	ProjectId *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	// Name of the App Platform app that hosts the functions component. This is
 	// spec.name on digitalocean_app: 2-32 chars, ^[a-z][a-z0-9-]{0,30}[a-z0-9]$,
 	// and unique across every app in the DigitalOcean account (the API answers
@@ -69,7 +71,7 @@ type DigitalOceanFunctionSpec struct {
 	// org/env. Renaming updates the app in place; the default
 	// <name>-<hash>.ondigitalocean.app hostname carries the name, so the URL
 	// changes with it.
-	AppName       string `protobuf:"bytes,12,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
+	AppName       string `protobuf:"bytes,13,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -174,11 +176,11 @@ func (x *DigitalOceanFunctionSpec) GetLogDestinations() []*digitalocean.DigitalO
 	return nil
 }
 
-func (x *DigitalOceanFunctionSpec) GetProjectId() string {
+func (x *DigitalOceanFunctionSpec) GetProjectId() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ProjectId
 	}
-	return ""
+	return nil
 }
 
 func (x *DigitalOceanFunctionSpec) GetAppName() string {
@@ -192,7 +194,8 @@ var File_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto protorefl
 
 const file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/digitalocean/digitaloceanfunction/v1alpha1/spec.proto\x126dev.planton.digitalocean.digitaloceanfunction.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\"\xca\t\n" +
+	"=catalog/digitalocean/digitaloceanfunction/v1alpha1/spec.proto\x126dev.planton.digitalocean.digitaloceanfunction.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/digitalocean/app_spec.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xa8\n" +
+	"\n" +
 	"\x18DigitalOceanFunctionSpec\x12Q\n" +
 	"\rfunction_name\x18\x01 \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\ffunctionName\x12O\n" +
 	"\x06region\x18\x02 \x01(\x0e2/.dev.planton.digitalocean.DigitalOceanAppRegionB\x06\xbaH\x03\xc8\x01\x01R\x06region\x12D\n" +
@@ -204,11 +207,11 @@ const file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_rawDesc
 	"\x04envs\x18\b \x03(\v2/.dev.planton.digitalocean.DigitalOceanAppEnvVarR\x04envs\x12O\n" +
 	"\x06alerts\x18\t \x03(\v27.dev.planton.digitalocean.DigitalOceanAppComponentAlertR\x06alerts\x12b\n" +
 	"\x10log_destinations\x18\n" +
-	" \x03(\v27.dev.planton.digitalocean.DigitalOceanAppLogDestinationR\x0flogDestinations\x12\x1d\n" +
+	" \x03(\v27.dev.planton.digitalocean.DigitalOceanAppLogDestinationR\x0flogDestinations\x12u\n" +
 	"\n" +
-	"project_id\x18\v \x01(\tR\tprojectId\x12G\n" +
-	"\bapp_name\x18\f \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\aappName:\xc0\x02\xbaH\xbc\x02\x1a\xb9\x02\n" +
-	"\x13function_one_source\x12\xa9\x01set exactly one source: git, github, gitlab, or bitbucket. Use git with a public clone URL when the DigitalOcean account has no linked GitHub/GitLab/Bitbucket connection\x1av(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) == 1B\xb2\x03\n" +
+	"project_id\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xa6'\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12G\n" +
+	"\bapp_name\x18\r \x01(\tB,\xbaH)\xc8\x01\x01r$\x10\x02\x18 2\x1e^[a-z][a-z0-9-]{0,30}[a-z0-9]$R\aappName:\xc0\x02\xbaH\xbc\x02\x1a\xb9\x02\n" +
+	"\x13function_one_source\x12\xa9\x01set exactly one source: git, github, gitlab, or bitbucket. Use git with a public clone URL when the DigitalOcean account has no linked GitHub/GitLab/Bitbucket connection\x1av(has(this.git) ? 1 : 0) + (has(this.github) ? 1 : 0) + (has(this.gitlab) ? 1 : 0) + (has(this.bitbucket) ? 1 : 0) == 1J\x04\b\v\x10\fB\xb2\x03\n" +
 	":com.dev.planton.digitalocean.digitaloceanfunction.v1alpha1B\tSpecProtoP\x01Zlgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanfunction/v1alpha1;digitaloceanfunctionv1alpha1\xa2\x02\x04DPDD\xaa\x026Dev.Planton.Digitalocean.Digitaloceanfunction.V1alpha1\xca\x026Dev\\Planton\\Digitalocean\\Digitaloceanfunction\\V1alpha1\xe2\x02BDev\\Planton\\Digitalocean\\Digitaloceanfunction\\V1alpha1\\GPBMetadata\xea\x02:Dev::Planton::Digitalocean::Digitaloceanfunction::V1alpha1b\x06proto3"
 
 var (
@@ -234,6 +237,7 @@ var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_goTypes =
 	(*digitalocean.DigitalOceanAppEnvVar)(nil),          // 6: dev.planton.digitalocean.DigitalOceanAppEnvVar
 	(*digitalocean.DigitalOceanAppComponentAlert)(nil),  // 7: dev.planton.digitalocean.DigitalOceanAppComponentAlert
 	(*digitalocean.DigitalOceanAppLogDestination)(nil),  // 8: dev.planton.digitalocean.DigitalOceanAppLogDestination
+	(*v1.StringValueOrRef)(nil),                         // 9: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_depIdxs = []int32{
 	1, // 0: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.region:type_name -> dev.planton.digitalocean.DigitalOceanAppRegion
@@ -244,11 +248,12 @@ var file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_depIdxs =
 	6, // 5: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.envs:type_name -> dev.planton.digitalocean.DigitalOceanAppEnvVar
 	7, // 6: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.alerts:type_name -> dev.planton.digitalocean.DigitalOceanAppComponentAlert
 	8, // 7: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.log_destinations:type_name -> dev.planton.digitalocean.DigitalOceanAppLogDestination
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	9, // 8: dev.planton.digitalocean.digitaloceanfunction.v1alpha1.DigitalOceanFunctionSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_catalog_digitalocean_digitaloceanfunction_v1alpha1_spec_proto_init() }

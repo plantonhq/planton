@@ -119,7 +119,7 @@ message KubernetesRabbitMqSpec {
    */
   dev.planton.shared.foreignkey.v1.StringValueOrRef storage_class = 8 [
     (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesStorageClass,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "metadata.name"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.storage_class_name"
   ];
 
   /**

@@ -30,9 +30,8 @@ spec:
   #   digitalocean/terraform-provider-digitalocean#1525; unblock = a provider
   #   release that reads backup state from the policy endpoint, then a pin
   #   bump. The kind's docs tell customers the noise is harmless.
-  # - ssh_keys: needs an account-registered key. The DigitalOceanSshKey kind
-  #   now exists (its own lane installs a throwaway key); compose it here
-  #   once that kind is proven.
+  # - ssh_keys: a DigitalOceanSshKey fixture (proven kind) can be composed
+  #   through the typed reference; no scenario carries one yet.
   # - volume_ids: needs a DigitalOceanVolume fixture (proven kind) -- an
   #   attachment scenario is the natural home, composing it by reference.
   # - gpu_partition_mode: both engines wire it; GPU sizes are the expensive

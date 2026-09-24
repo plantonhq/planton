@@ -109,13 +109,15 @@ func buildReport(cloudProvider string, spec []KindCensus, modules []ModuleCensus
 		}
 		for _, res := range m.Resources {
 			use := ResourceUse{Name: res}
-			for _, name := range schemaNames {
-				if block, ok := schemas[name].Resources[res]; ok {
-					use.Schema = name
-					use.ConfigurableArgs = block.ConfigurableArgCount()
-					use.Deprecated = block.Deprecated
-					break
-				}
+			// The report measures without knowing the provider's baseline
+			// (enrollment names it); sorted order places each canonical
+			// schema before its secondary channel ("google" < "google-beta"),
+			// and the accounting -- which does know the baseline -- is the
+			// arbiter of admission.
+			if block, name := resolveResourceSchema(schemas, schemaNames, "", res); block != nil {
+				use.Schema = name
+				use.ConfigurableArgs = block.ConfigurableArgCount()
+				use.Deprecated = block.Deprecated
 			}
 			kr.Resources = append(kr.Resources, use)
 			distinct[res] = use

@@ -54,6 +54,8 @@ A component that is not Ready explains itself. Every component's status carries 
 
 `PlantonIdentityProvider` has no controller of its own: a change to one re-enqueues the platforms in its namespace, and the identity component resolves the binding inside the same loop.
 
+On the brokered arm, `spec.oidc.primary: true` sends every sign-in straight to the company directory: the operator owns one authenticator config on the realm's browser flow (its Identity Provider Redirector, naming the broker as default), so the identity server's own form is skipped. The local form stays reachable for break-glass -- the console's `/login?local=1`, `planton login --local`, and the same hint on device sign-in all carry Keycloak's `kc_idp_hint=local`, which the redirector cannot route and so steps aside for. An admin's own config on that redirector is never replaced; the verification reports `primarySignIn` as a finding instead. Unsetting `primary` removes the operator's config and the sign-in button returns beside the form.
+
 ## The Front Door
 
 A platform is reached through one public origin, rendered from one route table (`internal/resources/front_door_routes.go`) onto whichever door the declaration chooses: an Ingress object, a Gateway API HTTPRoute attached to a Gateway the cluster already runs, or the built-in nginx gateway served over `kubectl port-forward`. The browser API (gRPC-Web) lives under `/rpc`, the storage relay under `/storage`, the identity server under `/idp`, the keyless identity issuer's two discovery documents (`/.well-known/openid-configuration`, `/.well-known/jwks.json`) and inbound webhooks (`/webhooks`) reach the control plane's webhook port, and the console answers everything else.
@@ -90,7 +92,9 @@ kubectl get plantonplatform -w
 | `make manifests` | Regenerate the CRDs and the manager ClusterRole into `config/` AND into the Helm chart (the chart derives both; CI fails a stale chart) |
 | `make generate` | Regenerate DeepCopy methods |
 | `make test` | Unit tests, envtest, and the chart render test |
-| `make test-e2e` | The Kind e2e suite on a dedicated cluster (`setup-test-e2e` / `cleanup-test-e2e` manage it) |
+| `make test-e2e` | The Kind e2e suite on a dedicated cluster (`setup-test-e2e` / `cleanup-test-e2e` manage it): the manager runs, serves metrics, and honors its version floor |
+| `make test-e2e-vault-restore` | The vault restore lanes on the same Kind cluster, alone: two whole platform lifecycles -- the built-in seal with an adopter-owned keys Secret, and the transit seal against an in-cluster key holder -- each installed, archived to an in-cluster object store, destroyed, and declared again from the archive, with the secrets written before the disaster read back through the control plane's own token and a signature verified on the restored OIDC signing key. About twenty-five minutes on a sixteen-core machine once images are cached; CI runs it post-merge, never on a pull request. Set `E2E_CONSOLE_IMAGE_TAG` when the console's published image line lags the platform version the lanes declare |
+| `make vet-e2e` | Compile-check both Kind suites under the `e2e` build tag (`make vet` does not see them) |
 | `make test-chart-lifecycle` | The chart lifecycle suite on its own Kind cluster: fresh install, keep, reinstall, keep off, both upgrade paths from the last published charts |
 | `make test-realm-convergence` | The Keycloak realm-convergence and federation suite (needs Docker) |
 | `make lint` / `make lint-fix` | golangci-lint |
@@ -98,6 +102,8 @@ kubectl get plantonplatform -w
 | `make generate-manifests` | Refresh the embedded third-party manifests and chart archives the operator renders at runtime |
 
 Run `make help` for every target with its description.
+
+The Kind suites never read your kubeconfig. Each Kind cluster's credentials are written to a file of their own under `bin/` (`E2E_KUBECONFIG`, `E2E_CHART_KUBECONFIG`), and every `kubectl`, `make install`, `make deploy`, and Helm SDK call a suite makes goes there -- a suite deletes namespaces and platforms and tears its cluster down, and on a machine whose current context is a live cluster those commands must have nowhere else to go.
 
 ## Package Map
 
@@ -117,7 +123,8 @@ config/                          Kubebuilder scaffolding: generated CRDs and RBA
 hack/                            Generators (the chart's CRD templates) and the lab directory fixture
 test/chart                       The chart render test (inside make test)
 test/chartlifecycle              The chart lifecycle suite (Kind)
-test/e2e                         The kubebuilder e2e suite (Kind)
+test/e2e                         The kubebuilder e2e suite and the vault restore lanes (Kind)
+test/fixtures                    The lab infrastructure the Kind suites stand a platform beside: an object store and a key holder, pinned and embedded
 ```
 
 Packages marked (README) carry their own design notes.

@@ -66,7 +66,7 @@ These are the most important decisions when configuring a Tekton installation. E
 
 **`targetNamespace` is IMMUTABLE and operator-owned** — the operator's webhook rejects changing it on an existing installation (destroy and recreate to move), and teardown DELETES the namespace with the components (Tekton Results archival finalizers can hold it Terminating for a while). Empty = `tekton-pipelines`.
 
-**One CloudEvents sink per cluster** — `pipeline.cloudEventsSinkUrl` is Tekton's single, cluster-global event destination: every run in every namespace reports there. Multi-tenant clusters put a fan-out service at that URL (each event carries its source namespace) rather than wishing for per-namespace sinks that do not exist. Must be an `http://` or `https://` URL.
+**One CloudEvents sink per cluster** — `pipeline.cloudEventsSinkUrl` is Tekton's single, cluster-global event destination: every run in every namespace reports there, and per-namespace sinks do not exist. Planton's own runners need none -- a build-capable runner watches its build namespace's PipelineRuns and TaskRuns directly and reports to its own control plane -- so a cluster serving several Planton control planes leaves this unset. Set it only for an event consumer of your own, with a fan-out service at the URL if more than one consumer needs the stream (each event carries its source namespace). Must be an `http://` or `https://` URL.
 
 **Feature flags are tri-states** — every pipeline feature flag left unset keeps Tekton's own default for the pinned release; a pinned value holds even if a future release changes its default. `keepPodOnCancel` is alpha-gated (takes effect only with `enableApiFields: alpha`); `resultsFrom: sidecar-logs` pairs with `maxResultSize`.
 

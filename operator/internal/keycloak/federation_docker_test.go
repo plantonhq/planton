@@ -14,6 +14,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -159,6 +160,40 @@ func TestFederation_LDAPProvisionVerifyAndIdempotency(t *testing.T) {
 	attrs, _ := syncedUsers[0]["attributes"].(map[string]any)
 	if ldapID, _ := attrs["LDAP_ID"].([]any); len(ldapID) == 0 || ldapID[0] == "" {
 		t.Errorf("a synced federated user must carry the LDAP_ID attribute (the objectGUID), got attributes %v", attrs)
+	}
+
+	// The person's NAMES arrive as the manifest's attributes say (givenName
+	// -> firstName, sn -> lastName), on a directory whose cn is the username.
+	// Keycloak's AD-vendor default set has no first-name mapper and a
+	// full-name mapper splitting cn; the e2e lab caught a person imported
+	// with no first name and her surname in its place. The operator now
+	// owns the name mappers -- this is the outcome that must hold.
+	if first, last := syncedUsers[0]["firstName"], syncedUsers[0]["lastName"]; first != "Ada" || last != "Lovelace" {
+		t.Errorf("synced ada.lovelace names = %v / %v, want Ada / Lovelace (the manifest's givenName/sn mapping)", first, last)
+	}
+	ldapComponentID, _ := ldapComponent["id"].(string)
+	childMappers, err := admin.ListComponents(ctx, "ldapfed", ldapComponentID, ldapStorageMapperType)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mapperNames := map[string]Representation{}
+	for _, m := range childMappers {
+		name, _ := m["name"].(string)
+		mapperNames[name] = m
+	}
+	for name, owned := range fed.LDAP.ownedAttributeMappers() {
+		live, ok := mapperNames[name]
+		if !ok {
+			t.Errorf("owned attribute mapper %q must exist on the component", name)
+			continue
+		}
+		cfg, _ := live["config"].(map[string]any)
+		if got, _ := cfg["ldap.attribute"].([]any); len(got) != 1 || got[0] != owned.ldapAttribute {
+			t.Errorf("mapper %q ldap.attribute = %v, want %s", name, got, owned.ldapAttribute)
+		}
+	}
+	if _, stillThere := mapperNames[vendorFullNameMapperName]; stillThere {
+		t.Errorf("the vendor %q mapper must be removed once first and last name are owned explicitly", vendorFullNameMapperName)
 	}
 
 	// Idempotency: a converged realm produces ZERO writes -- including the
@@ -444,6 +479,143 @@ func TestFederation_BrokerProvisionAndArmSwitch(t *testing.T) {
 	}
 }
 
+// The primary broker (DD-023) against a real identity server: the operator's
+// one config on the browser flow's redirector sends an unhinted sign-in to
+// the broker, the break-glass hint makes the redirector step aside so the
+// local form renders (the Keycloak semantics every Planton client relies
+// on -- a Keycloak upgrade that changed them fails HERE first), an admin's
+// own redirector config is never replaced, and unsetting primary removes
+// exactly the operator's config.
+func TestFederation_PrimaryBrokerRedirectorAndBreakGlass(t *testing.T) {
+	admin := authedAdmin(t)
+	createRealm(t, admin, "entra-sim-primary", nil)
+	createRealm(t, admin, "primary", nil)
+	ctx := context.Background()
+
+	issuer := "http://" + testNetworkAlias + ":8080" + resources.IdentityPathPrefix + "/realms/entra-sim-primary"
+	endpoints, _, err := DiscoverOIDC(ctx, aliasResolvingClient(), issuer)
+	if err != nil {
+		t.Fatalf("discovery: %v", err)
+	}
+	broker := &OwnedOIDCBroker{
+		IssuerURL: issuer, ClientID: "planton-app-registration", ClientSecret: "upstream-client-secret",
+		RotateCredential: true, Scopes: []string{"openid", "profile", "email"},
+		GroupsClaim: "groups", SubjectClaim: "sub", DisplayName: "Sign in with Contoso",
+		Primary: true, Endpoints: endpoints,
+	}
+	fed := &OwnedFederation{Broker: broker}
+	in := federationInput("primary", fed)
+	mustConverge(t, in)
+
+	live, err := readRedirector(ctx, admin, "primary")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if live.ConfigAlias != resources.IdentityPrimaryBrokerConfigAlias || live.DefaultProvider != resources.IdentityBrokerAlias {
+		t.Fatalf("redirector after converge = %+v, want the operator's config naming %s", live, resources.IdentityBrokerAlias)
+	}
+	broker.RotateCredential = false
+	if second := mustConverge(t, in); !second.Clean() {
+		t.Fatalf("second primary pass must write nothing, wrote %d: %v", second.Writes, second.Repairs)
+	}
+	checks, err := Verify(ctx, verifyInput("primary", fed))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c := checkNamed(checks, primarySignInCheckName); c == nil || c.Verdict != VerdictPassed {
+		t.Fatalf("primarySignIn verdict = %+v, want Passed", c)
+	}
+
+	// The sign-in semantics, observed on the wire. An authorization request
+	// from the console client with no hint is redirected into the broker;
+	// the same request carrying the break-glass hint renders the local form.
+	noRedirect := &http.Client{Timeout: 10 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error {
+		return http.ErrUseLastResponse
+	}}
+	authorize := func(hint string) *http.Response {
+		q := url.Values{}
+		q.Set("client_id", resources.IdentityConsoleClientID)
+		q.Set("response_type", "code")
+		q.Set("scope", "openid")
+		q.Set("redirect_uri", resources.IdentityConsoleRedirectURIs(testPublicURL)[0])
+		if hint != "" {
+			q.Set("kc_idp_hint", hint)
+		}
+		resp, err := noRedirect.Get(testServerRoot + "/realms/primary/protocol/openid-connect/auth?" + q.Encode())
+		if err != nil {
+			t.Fatalf("authorization request: %v", err)
+		}
+		return resp
+	}
+	unhinted := authorize("")
+	if unhinted.StatusCode < 300 || unhinted.StatusCode > 399 ||
+		!strings.Contains(unhinted.Header.Get("Location"), "/broker/"+resources.IdentityBrokerAlias+"/") {
+		t.Fatalf("an unhinted sign-in must be redirected into the broker; got %d %s", unhinted.StatusCode, unhinted.Header.Get("Location"))
+	}
+	_ = unhinted.Body.Close()
+	breakGlass := authorize(resources.IdentityBreakGlassHint)
+	body, _ := io.ReadAll(breakGlass.Body)
+	_ = breakGlass.Body.Close()
+	if breakGlass.StatusCode != http.StatusOK || !strings.Contains(string(body), `name="username"`) {
+		t.Fatalf("the break-glass hint must render the local form; got %d (form present: %v)",
+			breakGlass.StatusCode, strings.Contains(string(body), `name="username"`))
+	}
+
+	// Never-clobber: an admin's own config on the redirector stays, and the
+	// declaration becomes an advisory finding instead of a write.
+	if err := admin.DeleteAuthenticatorConfig(ctx, "primary", live.ConfigID); err != nil {
+		t.Fatal(err)
+	}
+	if err := admin.CreateExecutionConfig(ctx, "primary", live.ExecutionID, Representation{
+		"alias": "acme-redirect", "config": map[string]string{"defaultProvider": "acme"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if report := mustConverge(t, in); !report.Clean() {
+		t.Fatalf("an admin's redirector config must not be written over, wrote %d: %v", report.Writes, report.Repairs)
+	}
+	checks, err = Verify(ctx, verifyInput("primary", fed))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c := checkNamed(checks, primarySignInCheckName); c == nil || c.Verdict != VerdictUnknown || !strings.Contains(c.Message, `"acme-redirect"`) {
+		t.Fatalf("primarySignIn over an admin's config = %+v, want Unknown naming it", c)
+	}
+	after, err := readRedirector(ctx, admin, "primary")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := admin.DeleteAuthenticatorConfig(ctx, "primary", after.ConfigID); err != nil {
+		t.Fatal(err)
+	}
+
+	// Off: the operator's config is created again by the next primary pass,
+	// then removed by an unset -- and the local form is back unhinted.
+	mustConverge(t, in)
+	broker.Primary = false
+	mustConverge(t, in)
+	if off, err := readRedirector(ctx, admin, "primary"); err != nil || off.ConfigID != "" {
+		t.Fatalf("unsetting primary must remove the operator's config: %+v %v", off, err)
+	}
+	plain := authorize("")
+	_ = plain.Body.Close()
+	if plain.StatusCode != http.StatusOK {
+		t.Fatalf("with primary off an unhinted sign-in renders the form; got %d", plain.StatusCode)
+	}
+	if checks, err = Verify(ctx, verifyInput("primary", fed)); err != nil || checkNamed(checks, primarySignInCheckName) != nil {
+		t.Fatalf("no primarySignIn check when primary is off: %v %v", checks, err)
+	}
+}
+
+func checkNamed(checks []Check, name string) *Check {
+	for i := range checks {
+		if checks[i].Name == name {
+			return &checks[i]
+		}
+	}
+	return nil
+}
+
 // The seeded-admin collision: a LOCAL user holding the declared admin email
 // blocks the directory twin from ever materializing (realm emails are
 // unique). The verdict names the collision AND the remedy; the user sync
@@ -483,6 +655,46 @@ func TestFederation_SeededAdminCollisionVerdict(t *testing.T) {
 	// import past the local twin.
 	if usersCheck := checkByName(t, checks, "usersSearch"); usersCheck.Verdict != VerdictFailed {
 		t.Errorf("usersSearch = %s (%s), want Failed while the collision blocks an import", usersCheck.Verdict, usersCheck.Message)
+	}
+}
+
+// The other half of the collision law, against the real directory: a LOCAL
+// user holding an email NO directory person shares -- the shape of nearly
+// every install, whose seeded admin is rarely a lab fixture -- must NOT fail
+// the manifest. The user sync imports cleanly, so the verdict is the
+// advisory (Unknown) that still names the remedy. The e2e lab caught the old
+// Failed-on-existence shape live on the published line.
+func TestFederation_SeededAdminWithoutDirectoryTwinIsAdvisory(t *testing.T) {
+	admin := authedAdmin(t)
+	createRealm(t, admin, "no-twin", nil)
+
+	if err := admin.do(context.Background(), http.MethodPost,
+		admin.serverRoot+"/admin/realms/no-twin/users",
+		Representation{"username": "admin", "email": "nobody-in-the-directory@planton.local", "enabled": true},
+		http.StatusCreated, nil); err != nil {
+		t.Fatal(err)
+	}
+
+	fed := &OwnedFederation{LDAP: testLab.ldapFederation()}
+	fed.LDAP.RotateCredential = true
+	mustConverge(t, federationInput("no-twin", fed))
+
+	verifyIn := verifyInput("no-twin", fed)
+	verifyIn.SeededAdminEmail = "nobody-in-the-directory@planton.local"
+	checks, err := Verify(context.Background(), verifyIn)
+	if err != nil {
+		t.Fatalf("verification could not run: %v", err)
+	}
+
+	if usersCheck := checkByName(t, checks, "usersSearch"); usersCheck.Verdict != VerdictPassed {
+		t.Fatalf("usersSearch = %s (%s), want Passed -- nothing in the directory collides", usersCheck.Verdict, usersCheck.Message)
+	}
+	collision := checkByName(t, checks, "seededAdminCollision")
+	if collision.Verdict != VerdictUnknown {
+		t.Fatalf("seededAdminCollision = %s (%s), want the advisory Unknown for a local holder with a clean import", collision.Verdict, collision.Message)
+	}
+	if !strings.Contains(collision.Message, "bootstrap.admins") {
+		t.Errorf("the advisory must still name the remedy: %q", collision.Message)
 	}
 }
 

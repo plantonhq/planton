@@ -23,10 +23,12 @@ spec:
   config:
     append_only: true
     max_memory: 1gb
+  # The default user with no declared password: the module mints one into
+  # the "<name>-auth" Secret; replicas authenticate to the primary with the
+  # same ACL machinery.
   auth:
     users:
       - name: default
-        password: "<your-password>"
   # Node drains take at most one pod down at a time.
   pod_disruption_budget:
     enabled: true

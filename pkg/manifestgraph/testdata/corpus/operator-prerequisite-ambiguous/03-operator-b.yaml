@@ -1,0 +1,9 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCloudNativePgOperator
+metadata:
+  name: cnpg-b
+  env: dev
+spec:
+  namespace:
+    value: cnpg-b
+  create_namespace: true

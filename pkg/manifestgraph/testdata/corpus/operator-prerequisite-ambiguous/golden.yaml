@@ -1,0 +1,8 @@
+order:
+    - KubernetesPostgres/app-db@dev
+    - KubernetesCloudNativePgOperator/cnpg-a@dev
+    - KubernetesCloudNativePgOperator/cnpg-b@dev
+derived:
+    - KubernetesNamespace/app@dev
+    - KubernetesNamespace/cnpg-a@dev
+    - KubernetesNamespace/cnpg-b@dev

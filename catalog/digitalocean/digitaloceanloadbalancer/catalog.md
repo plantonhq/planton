@@ -115,6 +115,7 @@ These are the most important decisions when configuring a load balancer. Explore
 | **DigitalOceanDroplet** (optional) | `dropletIds` | `status.outputs.droplet_id` |
 | **DigitalOceanCertificate** (optional) | `forwardingRules[].certificateName`, `domains[].certificateName` | `status.outputs.certificate_id` (the certificate NAME) |
 | **DigitalOceanLoadBalancer** (optional) | `targetLoadBalancerIds` | `status.outputs.load_balancer_id` |
+| **DigitalOceanProject** (optional) | `projectId` | `status.outputs.project_id` |
 
 ### What This Component Provides
 

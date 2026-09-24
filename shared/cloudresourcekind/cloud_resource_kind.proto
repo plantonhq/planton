@@ -130,6 +130,21 @@ message CloudResourceKindMeta {
   //enforce both directions, including that the group belongs to the kind's
   //own provider.
   CloudProviderServiceGroup service_group = 10;
+
+  //set ONLY for cluster kinds whose deploy publishes a Kubernetes provider
+  //connection (the platform materializes one from the cluster's stack
+  //outputs, named by the manifest's planton.dev/connection-name annotation
+  //or the default <env>-<name>). the fact drives dependency ORDERING, not
+  //drawing: a Kubernetes workload whose planton.dev/connection names the
+  //connection such a cluster will publish runs on that cluster and orders
+  //after it -- an edge every lane that orders a manifest set derives from
+  //the manifests alone (pkg/manifestgraph and the platform's DAG factory),
+  //so a first deploy or a recreate never runs a workload before the cluster
+  //whose connection it needs. the platform pairs every flagged kind with a
+  //connection materializer; a kind flagged here without one would strand its
+  //workloads waiting on a connection that never comes, which is why the
+  //platform's conformance test binds the two.
+  bool publishes_kubernetes_connection = 11;
 }
 
 //marks one of a kind's schema versions as deprecated. carried on
@@ -267,6 +282,7 @@ enum CloudResourceKind {
       AwsIamRole
     ]
     service_group: aws_containers
+    publishes_kubernetes_connection: true
   }];
   AwsIamRole = 1008 [(kind_meta) = {
     provider: aws
@@ -1857,10 +1873,20 @@ enum CloudResourceKind {
   // service-access resource fights the org's own argument with a
   // perpetual diff). Deleting this deletes the entire organization.
   // 1270 opens the Organizations sub-band (1270-1279).
+  //
+  // A container kind: the organization is the outer wall of the
+  // tenancy tree AWS's own console draws -- organizational units are
+  // rooms inside it and member accounts stand inside those. A
+  // first-level unit names the organization through its parent
+  // reference and is placed inside it; a policy attached to the root
+  // names the organization too, but a policy is a guard applied from
+  // above, never a resident, and its attachment reference is
+  // containment-exempt on its spec.
   AwsOrganization = 1270 [(kind_meta) = {
     provider: aws
     version: "v1alpha1"
     id_prefix: "awsorg"
+    container_kind: true
     service_group: aws_management_governance
   }];
 
@@ -1868,11 +1894,19 @@ enum CloudResourceKind {
   // an explicit spec field (OU names allow spaces metadata.name cannot
   // carry); the parent reference (root or parent OU) is required and
   // immutable, so the organization is a registry prerequisite.
+  //
+  // A container kind: a unit is a room of the tenancy tree -- nested
+  // units and member accounts name it through their parent reference
+  // and are placed inside it. A policy attached to a unit names it too
+  // and stands beside the room (containment-exempt on the policy's
+  // spec): one policy attaches to many units and cannot live in all of
+  // them.
   AwsOrganizationalUnit = 1271 [(kind_meta) = {
     provider: aws
     version: "v1alpha1"
     id_prefix: "awsou"
     prerequisites: [AwsOrganization]
+    container_kind: true
     service_group: aws_management_governance
   }];
 
@@ -2394,6 +2428,7 @@ enum CloudResourceKind {
     container_kind: true
     prerequisites: [AzureResourceGroup]
     service_group: azure_containers
+    publishes_kubernetes_connection: true
   }];
   // AzureAksCluster is a prerequisite because a node pool attaches to an
   // existing cluster by ARM ID; the resource group chains transitively.
@@ -4604,6 +4639,7 @@ enum CloudResourceKind {
       GcpSubnetwork
     ]
     service_group: gcp_containers
+    publishes_kubernetes_connection: true
   }];
   GcpIamCustomRole = 3008 [(kind_meta) = {
     provider: gcp
@@ -5337,6 +5373,53 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "gcprunr"
     service_group: gcp_developer_tools
+  }];
+
+  // 3170–3179: GCP organization & governance (folders, org policies, tags,
+  // budgets, identity groups, API keys)
+  GcpApiKey = 3177 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpakey"
+    service_group: gcp_identity_access
+  }];
+
+  // 3250–3259: GCP Firebase (project enablement, app registrations, and
+  // the Firebase-adjacent products that follow)
+  // GcpFirebaseProject is the container the app registrations live in:
+  // "Firebase on this project" is the room, the Android/Apple/Web apps are
+  // what is placed inside it.
+  GcpFirebaseProject = 3250 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfbprj"
+    container_kind: true
+    service_group: gcp_firebase
+  }];
+  // The three app registrations exist only inside a Firebase-enabled
+  // project, so each names GcpFirebaseProject as its prerequisite: the E2E
+  // harness deploys the enablement first, and a chart that references the
+  // enablement's project_id output orders the registration after it.
+  GcpFirebaseAndroidApp = 3251 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfband"
+    prerequisites: [GcpFirebaseProject]
+    service_group: gcp_firebase
+  }];
+  GcpFirebaseAppleApp = 3252 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfbios"
+    prerequisites: [GcpFirebaseProject]
+    service_group: gcp_firebase
+  }];
+  GcpFirebaseWebApp = 3253 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpfbweb"
+    prerequisites: [GcpFirebaseProject]
+    service_group: gcp_firebase
   }];
 
   // 4000–4999: Kubernetes resources, organized in family sub-bands
@@ -7253,6 +7336,14 @@ enum CloudResourceKind {
     provider: auth0
     version: "v1alpha1"
     id_prefix: "a0role"
+  }];
+  Auth0User = 8006 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0user"
+    // A user is created inside a connection Auth0 holds the credential for,
+    // and its name must resolve before the user exists.
+    prerequisites: [Auth0Connection]
   }];
 
   // 9000–9999: OpenFGA resources

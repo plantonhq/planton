@@ -33,9 +33,10 @@ variable "spec" {
       nested_int    = optional(number)
     }))
 
-    required_ref  = string
-    optional_ref  = optional(string)
-    annotated_ref = optional(string)
+    required_ref        = string
+    optional_ref        = optional(string)
+    annotated_ref       = optional(string)
+    kindless_access_ref = optional(string)
 
     labels = optional(map(string), {})
     steps = optional(list(object({

@@ -116,6 +116,47 @@ func TestBuildFederationState_SteadyStateNoRotation(t *testing.T) {
 	}
 }
 
+// An operator-side failure on the Provisioned condition (the realm could not
+// be reconciled, verification could not run) is re-examined by the next
+// pass: verification is due even at a verified generation with an unchanged
+// credential, so one transient never outlives itself. A directory verdict
+// (VerificationFailed) and an unbuildable desired state keep the cadence law.
+func TestBuildFederationState_OperatorSideFailureIsReverified(t *testing.T) {
+	cases := []struct {
+		reason string
+		due    bool
+	}{
+		{"ConvergeFailed", true},
+		{"VerificationError", true},
+		{"VerificationFailed", false},
+		{"DesiredStateUnavailable", false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.reason, func(t *testing.T) {
+			platform := testPlatform("prime")
+			idp := ldapIdentityProvider()
+			idp.Status.Conditions = []metav1.Condition{{
+				Type: v1.ConditionProvisioned, Status: metav1.ConditionFalse,
+				Reason: tc.reason, ObservedGeneration: 1, LastTransitionTime: metav1.Now(),
+			}}
+			idp.Status.Verification = &v1.IdentityProviderVerification{
+				Checks: []v1.IdentityProviderVerificationCheck{{Name: "connection", Verdict: "Passed"}},
+			}
+			state := federationTestSecret(resources.IdentityRealmStateSecretName("prime"), map[string]string{
+				resources.IdentityRealmStateFederationCredentialKey: sha256Hex("bind-pw"),
+			})
+			c := fake.NewClientBuilder().WithScheme(bindingScheme(t)).
+				WithObjects(platform, idp, state, federationTestSecret("corp-bind", map[string]string{"password": "bind-pw"})).
+				Build()
+
+			build := buildFederation(c, platform, idp)
+			if build.verificationDue != tc.due {
+				t.Fatalf("reason %s: verificationDue = %v, want %v", tc.reason, build.verificationDue, tc.due)
+			}
+		})
+	}
+}
+
 // A rotated Secret is detected against the recorded fingerprint: the
 // credential is re-written and verification re-runs.
 func TestBuildFederationState_CredentialRotation(t *testing.T) {
@@ -227,6 +268,10 @@ func TestBuildFederationState_BrokerDiscoveryAndReplay(t *testing.T) {
 	if broker.GroupsClaim != "groups" || broker.SubjectClaim != "sub" {
 		t.Errorf("claim defaults = groups:%q subject:%q, want groups/sub", broker.GroupsClaim, broker.SubjectClaim)
 	}
+	// primary is off unless declared: the button-beside-form shape is the default.
+	if broker.Primary {
+		t.Error("primary must default to false")
+	}
 
 	// Steady state: verified generation + recorded endpoints -> zero
 	// fetches (the cadence law for the upstream's discovery document).
@@ -335,6 +380,32 @@ func TestProjectFederationFacts_BoundManifestProjectsVerdicts(t *testing.T) {
 	}
 	if facts.ObservedAt == "" {
 		t.Error("a fresh verification must stamp observedAt")
+	}
+}
+
+// The brokered arm's facts carry primary (DD-023) so the product can say
+// where sign-in goes and name the break-glass path; the LDAP arm never does.
+func TestProjectFederationFacts_BrokeredArmCarriesPrimary(t *testing.T) {
+	platform := testPlatform("prime")
+	idp := &v1.PlantonIdentityProvider{}
+	idp.Name = bindingTestIdpName
+	idp.Namespace = bindingTestNamespace
+	idp.Spec.OIDC = &v1.OIDCBrokerSpec{
+		IssuerURL:       "https://login.example.com/tenant/v2.0",
+		ClientID:        "client-id",
+		ClientSecretRef: v1.SecretKeyRef{Name: "corp-oidc", Key: "client-secret"},
+		Primary:         true,
+	}
+	c := fake.NewClientBuilder().WithScheme(bindingScheme(t)).WithObjects(platform, idp).Build()
+
+	(&Identity{}).projectFederationFacts(context.Background(), c, platform, idp, false)
+
+	facts := factsOf(t, c, "prime")
+	if facts.Arm != "oidc" || !facts.Primary {
+		t.Fatalf("facts = %+v, want the oidc arm with primary", facts)
+	}
+	if facts.ProviderLabel != "Sign in with your organization" {
+		t.Errorf("providerLabel = %q, want the brokered-arm default", facts.ProviderLabel)
 	}
 }
 

@@ -65,11 +65,16 @@ message AwsEksNodeGroupSpec {
   // subnets. One subnet is a legitimate zonal topology (e.g. a stateful
   // pool pinned to its EBS volumes' zone); use two-plus zones for fleets
   // that should survive a zone impairment. Reference AwsSubnet subnet_id
-  // outputs or pass literal subnet IDs. Create-only in AWS.
+  // outputs or pass literal subnet IDs. Create-only in AWS. A node group
+  // is a member of its cluster and lives there on a diagram; the subnets
+  // are where its nodes attach, so the reference is access, not
+  // placement -- otherwise a group on subnets its cluster does not name
+  // would be drawn outside the cluster it belongs to.
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.options.diagram_label) = "spans subnets",
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];

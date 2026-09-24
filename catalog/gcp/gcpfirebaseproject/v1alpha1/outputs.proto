@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfirebaseproject.v1alpha1;
+
+// GcpFirebaseProjectStackOutputs captures the project-level Firebase
+// identity and the Admin SDK configuration values after provisioning.
+//
+// None of these values is a secret: they are the project-level identifiers
+// the Firebase client and Admin SDKs are initialised with, and they ship in
+// client configuration files by design. Access is governed by IAM and by
+// App Check, not by keeping these values hidden.
+message GcpFirebaseProjectStackOutputs {
+  // The GCP project the enablement lives on (projects/{project}).
+  string project_id = 1;
+
+  // The project's number. This is the Firebase Cloud Messaging SENDER ID
+  // (messagingSenderId in a web firebaseConfig; project_number in
+  // google-services.json) a client registers with to receive push.
+  string project_number = 2;
+
+  // The project's display name as Firebase shows it.
+  string display_name = 3;
+
+  // The default Firebase Realtime Database URL, when the project has one
+  // (empty otherwise). From the Admin SDK configuration.
+  string database_url = 4;
+
+  // The default Cloud Storage for Firebase bucket name (e.g.
+  // my-project.firebasestorage.app), when the project has one -- created
+  // by default_storage_location or in the console. Empty otherwise.
+  string storage_bucket = 5;
+
+  // The project's default GCP resource location id (e.g. us-central), once
+  // finalized in the Firebase console or by a Firestore/RTDB/default-bucket
+  // create that pins it. Empty until then.
+  string location_id = 6;
+}

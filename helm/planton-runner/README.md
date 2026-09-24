@@ -33,6 +33,8 @@ The runner registers itself as `prod-a` (the release name) and appears in your
 organization's Runners list the moment it joins. Set `enrollment.runnerName` to use a
 name different from the release name.
 
+Every release is also copied, byte for byte, to Google Artifact Registry at the same path after the host: the chart at `oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-runner`, the runner image at `asia-south1-docker.pkg.dev/plantonhq/planton/runner` (`--set image.repository=...`).
+
 ## Installation
 
 ### Via `planton runner deploy` (recommended)
@@ -105,7 +107,34 @@ identity, individually revocable.
 | `runner.executionMode` | Execution mode: auto, grpc, temporal, dual | `"auto"` |
 
 `auto` derives the mode from the identity document the runner receives when it
-enrolls (a Temporal address means `dual`). Set an explicit mode only to override.
+enrolls and from its perimeter. A Temporal address with a tunnel endpoint means
+`dual`: deploys and builds over Temporal, live cloud operations through the tunnel.
+A Temporal address without one means `temporal`, a pure worker -- the shape of
+every runner enrolled with a self-hosted instance, because a self-hosted instance
+operates no runner tunnel (its own in-cluster runner is dialed directly; yours
+pulls work through the control plane, which serves a runner's work calls at the
+same front-door address as its API calls). Set an explicit mode only to
+override.
+
+### How the pod is probed
+
+Both probes are gRPC probes against `runner.port`, the one port that serves the
+standard gRPC health service in every execution mode (the CloudOps server's in
+`grpc` and `dual`, a health-only server's in `temporal`) -- so the chart probes
+every runner one way, whatever its tunnel, and exactly the way the operator's
+in-cluster runner is probed:
+
+- **Readiness** watches the IaC worker's health key (`ai.planton.runner.iac.worker`):
+  SERVING once the worker is actually polling its Temporal queue, not merely once
+  the port is bound. An explicit `runner.executionMode: grpc` runs no worker, so
+  the chart probes the overall health service instead.
+- **Liveness** watches only the overall health service: a Temporal outage reads as
+  not-ready, never as a restart loop of a healthy process.
+
+The tunnel agent's HTTP health and metrics ports (8093, 8094) are declared on the
+container for what they are; they exist only when the identity document carries a
+tunnel endpoint and are never a probe target. (Charts before 0.5.0 probed 8093 and
+restarted a tunnel-less runner every liveness window.)
 
 ### Temporal (override lane)
 
@@ -123,17 +152,22 @@ when `temporal.address` is set.
 ### Build capability
 
 Enable this to make the cluster a **build cluster**: the runner executes build
-pipelines on it (Tekton PipelineRuns), streams task pod logs to the control
-plane, receives Tekton CloudEvents on its webhook, and serves the readiness
-checks a registered build connection reports.
+pipelines on it (Tekton PipelineRuns), watches its build namespace's
+PipelineRuns and TaskRuns and signals each change to the owning build as it
+happens, streams task pod logs to the control plane, and serves the readiness
+checks a registered build connection reports. The watch is the build path's
+event transport: it needs no cluster-wide Tekton configuration, so any number
+of Planton control planes can build on one cluster's Tekton, each runner
+hearing only about its own namespace.
 
 Prerequisites:
 
 - **Tekton Pipelines** installed on the cluster.
 - `runner.executionMode` left at `auto` (or set to `temporal`/`dual`); the chart
   fails at render time if builds are enabled with an explicit `grpc` mode.
-- Exactly **one** build-capable runner per watched Tekton namespace (the build
-  log streamer is a singleton; the chart already pins one replica).
+- Exactly **one** build-capable runner per build namespace (the run watcher and
+  the log streamer are singletons per namespace; the chart already pins one
+  replica).
 
 ```bash
 helm install my-runner oci://ghcr.io/plantonhq/charts/planton-runner \
@@ -146,39 +180,27 @@ helm install my-runner oci://ghcr.io/plantonhq/charts/planton-runner \
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `build.enabled` | Run the pipeline-build worker and the Tekton CloudEvents webhook | `false` |
+| `build.enabled` | Run the pipeline-build worker, the run watcher, the log streamer, and the Tekton CloudEvents webhook | `false` |
 | `build.tektonNamespace` | Namespace where builds land and the log streamer watches; empty uses the runner's own namespace | `""` |
 | `build.webhookPort` | Container port for the Tekton CloudEvents webhook | `8086` |
 | `build.rbac.create` | Create the Role/RoleBinding the build capability needs | `true` |
-| `build.tekton.installNamespace` | Namespace of the Tekton Pipelines installation | `"tekton-pipelines"` |
 
-Two steps complete the build-cluster setup after install:
+One step completes the build-cluster setup after install: **register the
+cluster as a build connection** (console: Connections → Build, or `planton
+apply` a `TektonConnection` naming this runner), then verify it. The readiness
+check runs on this runner over the same queue real builds ride, so a passing
+verify also proves end-to-end routing; its `run-watch` check confirms the
+runner may watch its namespace's runs, which is all live build status needs.
 
-1. **Point Tekton's CloudEvents sink at the runner's webhook** so live build
-   status flows without waiting on the reconciliation safety net. In the
-   `tekton-pipelines/config-defaults` ConfigMap set:
+No Tekton CloudEvents sink has to be configured for Planton's builds: the
+runner observes its runs directly. (The webhook and its Service still render
+for one more release, for instances whose control plane predates the watch;
+a sink pointed at them keeps working and is simply redundant.)
 
-   ```yaml
-   default-cloud-events-sink: http://<release-fullname>.<namespace>.svc.cluster.local/service-hub/tekton/cloud-event
-   ```
-
-   (The chart's Service serves the webhook on port 80, so the URL needs no
-   explicit port -- but the `/service-hub/tekton/cloud-event` path is
-   required: the webhook serves only that route, and a sink pointed at the
-   bare Service root gets a 404 on every event, silently degrading builds to
-   the reconciliation safety net. The exact URL is printed in the
-   post-install notes.)
-
-2. **Register the cluster as a build connection** (console: Connections →
-   Build, or `planton apply` a `TektonConnection` naming this runner), then
-   verify it. The readiness check runs on this runner over the same queue real
-   builds ride, so a passing verify also proves end-to-end routing.
-
-The RBAC the chart creates mirrors exactly what the build capability performs:
-create PipelineRuns and their per-build supporting resources, reconcile by
-list, label-scoped cleanup, and follow task pod logs — plus a read grant on
-Tekton's `config-defaults` ConfigMap so the events-sink readiness check can
-report a conclusive verdict.
+The RBAC the chart creates mirrors exactly what the build capability performs,
+all of it inside the build namespace: create PipelineRuns and their per-build
+supporting resources, reconcile by list, watch PipelineRuns and TaskRuns,
+label-scoped cleanup, and follow task pod logs.
 
 ### Image
 
@@ -223,7 +245,10 @@ resolve secrets and variables at runtime.
 
 With builds enabled there is one additional, **cluster-internal** listener: Tekton posts
 pipeline CloudEvents to the runner's webhook through the chart's ClusterIP Service. No
-Ingress and no public exposure — the traffic never leaves the cluster.
+Ingress and no public exposure — the traffic never leaves the cluster. That Service
+exists for exactly this caller and is rendered only when builds are enabled; a runner
+without builds has no Service, because nothing in the cluster needs to dial it (health
+is probed on the pod).
 
 ### Automatic Rollouts
 

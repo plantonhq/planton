@@ -93,8 +93,11 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesneo4jv1alpha1.Kubernet
 // exportOutputs publishes the composition handles. The service name is the
 // chart's always-created ClusterIP Service — neo4j.fullname = the release
 // name (templates/neo4j-svc.yaml). auth_secret_name exports the
-// module-materialized "<name>-auth", the referenced existing Secret, or
-// empty when the chart generated a random password.
+// module-materialized "<name>-auth" (declared or generated password) or
+// the referenced existing Secret, never empty; password_secret names the
+// bare-password key only for the Secret this module owns — an existing
+// Secret's layout is the owner's, and the module never assumes it carries
+// a `password` key.
 func exportOutputs(ctx *pulumi.Context, locals *Locals) {
 	ctx.Export(OpNamespace, pulumi.String(locals.Namespace))
 	ctx.Export(OpReleaseName, pulumi.String(locals.ReleaseName))
@@ -103,4 +106,12 @@ func exportOutputs(ctx *pulumi.Context, locals *Locals) {
 	ctx.Export(OpHttpEndpoint, pulumi.String(locals.HttpEndpoint))
 	ctx.Export(OpAuthSecretName, pulumi.String(locals.AuthSecretName))
 	ctx.Export(OpPortForwardCommand, pulumi.String(locals.PortForwardCommand))
+	passwordSecretName := ""
+	passwordSecretKey := ""
+	if locals.CreateAuthSecret {
+		passwordSecretName = locals.AuthSecretName
+		passwordSecretKey = authSecretPasswordKey
+	}
+	ctx.Export(OpPasswordSecretName, pulumi.String(passwordSecretName))
+	ctx.Export(OpPasswordSecretKey, pulumi.String(passwordSecretKey))
 }

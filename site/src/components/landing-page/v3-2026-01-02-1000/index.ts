@@ -4,8 +4,8 @@
  * Trimmed during the positioning refresh: the ROI calculator, the
  * comparison tables, and ten dormant sections were deleted because they
  * carried retired positioning and unvalidated savings claims that must
- * not resurface. shared.tsx stays — the pricing page and v4 import its
- * primitives directly.
+ * not resurface. shared.tsx is a re-export of the shared marketing
+ * primitives (`@/components/marketing`), kept so these sections render.
  */
 export * from './HeroSection';
 export * from './SocialProofBar';

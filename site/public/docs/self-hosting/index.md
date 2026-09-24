@@ -28,10 +28,10 @@ helm install planton-operator oci://ghcr.io/plantonhq/charts/planton-operator \
 
 helm install planton oci://ghcr.io/plantonhq/charts/planton \
   --namespace planton \
-  --set platform.spec.version=v0.0.59
+  --set platform.spec.version=v0.0.75
 ```
 
-The first chart installs the Planton operator together with the `PlantonPlatform` definition it serves. The second creates one `PlantonPlatform` resource, and the operator reconciles the whole stack from that single resource: PostgreSQL, the workflow engine, the control plane, the console, the identity server, the secrets manager (OpenBAO, initialized and unsealed automatically), and the in-cluster runner. No license key, no admin account, no database, and no values file are required — the one value is the platform release, because the chart pins none of its own. The published releases are the [control-plane image's tags](https://github.com/orgs/plantonhq/packages/container/package/planton%2Fcontrol-plane); an operator runs releases from a floor upward and refuses an older one on the resource with the floor named. The Planton desktop's guided install does the same two steps for you — operator chart, then the platform declared directly — preselecting the release the desktop shipped with, and hands you the manifest and commands to keep.
+The first chart installs the Planton operator together with the `PlantonPlatform` definition it serves. The second creates one `PlantonPlatform` resource, and the operator reconciles the whole stack from that single resource: PostgreSQL, the workflow engine, the control plane, the console, the identity server, the secrets manager (OpenBAO, initialized automatically, storing in the platform's own database so one backup carries records and secrets together), and the in-cluster runner. No license key, no admin account, no database, and no values file are required — the one value is the platform release, because the chart pins none of its own. The published releases are the [control-plane image's tags](https://github.com/orgs/plantonhq/packages/container/package/planton%2Fcontrol-plane); an operator runs releases from a floor upward and refuses an older one on the resource with the floor named. The Planton desktop's guided install does the same two steps for you — operator chart, then the platform declared directly — preselecting the release the desktop shipped with, and hands you the manifest and commands to keep.
 
 Watch it converge (typically 7–11 minutes):
 
@@ -56,7 +56,7 @@ metadata:
 spec:
   namespace:
     value: planton-operator
-  create_namespace: true
+  createNamespace: true
 ---
 # planton.yaml
 apiVersion: kubernetes.planton.dev/v1alpha1
@@ -68,8 +68,8 @@ metadata:
 spec:
   namespace:
     value: planton
-  create_namespace: true
-  version: v0.0.59
+  createNamespace: true
+  version: v0.0.75
 ```
 
 ```bash
@@ -115,6 +115,39 @@ helm install planton oci://ghcr.io/plantonhq/charts/planton \
 ```
 
 Never install two operators (the operator itself refuses to start beside another and says so), and give each platform its own namespace. Two cluster-level facts are shared by design: build events (the CI event stream Tekton delivers) can feed only one platform per cluster, and all platforms ride the one installed operator version — each platform still pins its own `spec.version`.
+
+## Pull from Google Artifact Registry
+
+Every Planton release is published to ghcr.io and copied, byte for byte, to Google Artifact Registry in `asia-south1`, at the same path after the host. Both are public and need no credentials.
+
+| On ghcr.io | On Google Artifact Registry |
+|---|---|
+| `ghcr.io/plantonhq/planton/<image>` | `asia-south1-docker.pkg.dev/plantonhq/planton/<image>` |
+| `oci://ghcr.io/plantonhq/charts/<chart>` | `oci://asia-south1-docker.pkg.dev/plantonhq/charts/<chart>` |
+
+Use it when your cluster's route to ghcr.io is slow, or when you'd rather pull from Google. Clusters on Google Cloud in particular pull from it in seconds. One value on the platform, `spec.imageRegistry`, moves the control plane, the console, and the runner together:
+
+```bash
+helm install planton-operator oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-operator \
+  --namespace planton --create-namespace \
+  --set image.repository=asia-south1-docker.pkg.dev/plantonhq/planton/operator
+
+helm install planton oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton \
+  --namespace planton \
+  --set platform.spec.version=v0.0.75 \
+  --set platform.spec.imageRegistry=asia-south1-docker.pkg.dev/plantonhq/planton
+```
+
+The operator pulls each Planton image from `<imageRegistry>/<image>`. A component's own `image.repository`, when set, still wins. The same value points at a mirror of your own: copy the images keeping the path after the host, and set `spec.imageRegistry` to your root. The setting needs operator 0.22.0 or newer. The catalog kinds carry the same choice: `image_registry` on `KubernetesPlantonPlatform`, and `chart_repository` on `KubernetesPlantonOperator` and `KubernetesPlantonRunner`.
+
+To confirm the two registries hold the same image, compare digests:
+
+```bash
+crane digest ghcr.io/plantonhq/planton/control-plane:v0.0.75
+crane digest asia-south1-docker.pkg.dev/plantonhq/planton/control-plane:v0.0.75
+```
+
+The components the operator bundles (PostgreSQL, Temporal, OpenFGA, OpenBao, Valkey) still pull from their own registries.
 
 ## Upgrades and uninstall
 

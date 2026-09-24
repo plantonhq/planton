@@ -1014,9 +1014,9 @@ const file_catalog_kubernetes_kubernetesgharunnerscaleset_v1alpha1_spec_proto_ra
 	"\x04mode\x18\x01 \x01(\tB/\xbaH,\xc8\x01\x01r'R\x04dindR\n" +
 	"kubernetesR\x13kubernetes-novolumeR\x04mode\x12\x98\x01\n" +
 	"\x16kubernetes_work_volume\x18\x02 \x01(\v2b.dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1.KubernetesGhaRunnerScaleSetWorkVolumeR\x14kubernetesWorkVolume:\xf8\x01\xbaH\xf4\x01\x1a\xf1\x01\n" +
-	"\x1fspec.container_mode.work_volume\x12lkubernetes container mode requires kubernetes_work_volume (dind and kubernetes-novolume must not declare it)\x1a`this.mode == 'kubernetes' ? has(this.kubernetes_work_volume) : !has(this.kubernetes_work_volume)\"\xf3\x01\n" +
-	"%KubernetesGhaRunnerScaleSetWorkVolume\x12u\n" +
-	"\rstorage_class\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1c\xbaH\x03\xc8\x01\x01\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClass\x12S\n" +
+	"\x1fspec.container_mode.work_volume\x12lkubernetes container mode requires kubernetes_work_volume (dind and kubernetes-novolume must not declare it)\x1a`this.mode == 'kubernetes' ? has(this.kubernetes_work_volume) : !has(this.kubernetes_work_volume)\"\x88\x02\n" +
+	"%KubernetesGhaRunnerScaleSetWorkVolume\x12\x89\x01\n" +
+	"\rstorage_class\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB0\xbaH\x03\xc8\x01\x01\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClass\x12S\n" +
 	"\x04size\x18\x02 \x01(\tB?\xbaH<\xc8\x01\x01r725^[0-9]+(\\.[0-9]+)?(Ei|Pi|Ti|Gi|Mi|Ki|E|P|T|G|M|k|m)?$R\x04size\"\x83\x01\n" +
 	"!KubernetesGhaRunnerScaleSetRunner\x12\x14\n" +
 	"\x05image\x18\x01 \x01(\tR\x05image\x12H\n" +

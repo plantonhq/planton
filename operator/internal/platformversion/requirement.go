@@ -8,6 +8,7 @@ import (
 	"golang.org/x/mod/semver"
 
 	"github.com/plantonhq/planton/operator/internal/ociregistry"
+	"github.com/plantonhq/planton/operator/internal/plantonregistry"
 )
 
 // The contract between the operator and the platform is guarded in both
@@ -68,8 +69,8 @@ func CheckOperatorRequirement(platformVersion, requiredOperator string) Verdict 
 				"spec.version %s needs operator %s or newer, and this operator is %s; "+
 					"the platform depends on something this operator does not render yet. "+
 					"Nothing running was changed. "+
-					"Upgrade the operator first (helm upgrade planton-operator oci://ghcr.io/plantonhq/charts/planton-operator --version %s -n planton-operator), then declare this version",
-				platformVersion, required, normalize(OperatorRelease), chart),
+					"Upgrade the operator first (helm upgrade planton-operator %s/planton-operator --version %s -n planton-operator), then declare this version",
+				platformVersion, required, normalize(OperatorRelease), plantonregistry.DefaultChartRepository, chart),
 		}
 	}
 	return Verdict{Supported: true, Reason: ReasonSupported}
@@ -91,22 +92,22 @@ func normalize(version string) string {
 // RequirementReader reads the operator requirement a platform release
 // declares. The controller holds one and caches its answers per version.
 type RequirementReader interface {
-	RequiredOperator(ctx context.Context, platformVersion string) (string, error)
+	// RequiredOperator reads the release's control-plane image at
+	// controlPlaneRepository -- the repository the platform actually pulls
+	// from, so an install on a mirror reads its mirror, never ghcr.io.
+	RequiredOperator(ctx context.Context, controlPlaneRepository, platformVersion string) (string, error)
 }
 
 // RegistryRequirementReader reads the label off the control-plane image of a
 // release in the registry.
 type RegistryRequirementReader struct {
-	// ImageRepository is the control-plane image without a tag
-	// (ghcr.io/plantonhq/planton/control-plane).
-	ImageRepository string
-	Client          *ociregistry.Client
+	Client *ociregistry.Client
 }
 
 // RequiredOperator returns the label's value, or "" when the release carries
 // none (a platform older than the label).
-func (r *RegistryRequirementReader) RequiredOperator(ctx context.Context, platformVersion string) (string, error) {
-	labels, err := r.Client.ImageLabels(ctx, r.ImageRepository+":"+platformVersion)
+func (r *RegistryRequirementReader) RequiredOperator(ctx context.Context, controlPlaneRepository, platformVersion string) (string, error) {
+	labels, err := r.Client.ImageLabels(ctx, controlPlaneRepository+":"+platformVersion)
 	if err != nil {
 		return "", err
 	}

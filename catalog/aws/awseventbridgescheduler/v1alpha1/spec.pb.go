@@ -325,6 +325,12 @@ type AwsEventBridgeScheduleTarget struct {
 	// target API ARNs. No single kind dominates, so references here
 	// carry NO default kind - in manifests, a valueFrom on this field
 	// must state its kind explicitly.
+	//
+	// Containment-exempt: the target is what the schedule INVOKES, never
+	// where the schedule lives -- a schedule belongs to its schedule group.
+	// A target that is a container (an ECS cluster, an event bus) would
+	// otherwise pull the schedule inside it; on a diagram the schedule
+	// stands in its group with a line to what it fires.
 	Arn *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=arn,proto3" json:"arn,omitempty"`
 	// The role Scheduler assumes to invoke the target. Its trust policy
 	// must allow scheduler.amazonaws.com. Reference an AwsIamRole
@@ -1235,9 +1241,10 @@ const file_catalog_aws_awseventbridgescheduler_v1alpha1_spec_proto_rawDesc = "" 
 	"\x19maximum_window_in_minutes\x18\x02 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\xa0\v(\x01H\x00R\x16maximumWindowInMinutes\x88\x01\x01:\xba\x01\xbaH\xb6\x01\x1a\xb3\x01\n" +
 	"(flexible_time_window.mode_matches_window\x12Emode FLEXIBLE requires maximum_window_in_minutes; mode OFF forbids it\x1a@(this.mode == 'FLEXIBLE') == has(this.maximum_window_in_minutes)B\x1c\n" +
-	"\x1a_maximum_window_in_minutes\"\xc1\f\n" +
-	"\x1cAwsEventBridgeScheduleTarget\x12L\n" +
-	"\x03arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x03arn\x12u\n" +
+	"\x1a_maximum_window_in_minutes\"\xc5\f\n" +
+	"\x1cAwsEventBridgeScheduleTarget\x12P\n" +
+	"\x03arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x03arn\x12u\n" +
 	"\brole_arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x1c\n" +
 	"\x05input\x18\x03 \x01(\tB\x06\xbaH\x03\xd8\x01\x01R\x05input\x12\x88\x01\n" +
 	"\x15dead_letter_queue_arn\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x81\b\x92\xd4a\x18status.outputs.queue_arnR\x12deadLetterQueueArn\x12v\n" +

@@ -29,15 +29,19 @@ LOOKS UP AT TEMPLATE TIME — the install fails if the Secret is missing or
 lacks the key. The module therefore wires an explicit dependency so the
 Secret always exists first:
 
-- `auth.password` arm → the module materializes
-  `kubernetes_secret_v1.auth` named `<metadata.name>-auth` (key
-  `NEO4J_AUTH` = `neo4j/<password>`, value wrapped in `sensitive()`)
-  before `helm_release.neo4j`, and renders `passwordFromSecret` = that
-  name. The password itself NEVER appears in rendered chart values.
+- auth absent (the default) → `random_password.admin` generates the
+  password (24 letters and digits; the generation shape is
+  `ignore_changes` so an imported credential never regenerates), and the
+  module materializes `kubernetes_secret_v1.auth` named
+  `<metadata.name>-auth` (key `NEO4J_AUTH` = `neo4j/<password>` plus a
+  bare `password` key, both wrapped in `sensitive()`) before
+  `helm_release.neo4j`, rendering `passwordFromSecret` = that name.
+- `auth.password` arm → the same Secret, carrying the declared value
+  instead of a generated one. The password itself NEVER appears in
+  rendered chart values on either arm.
 - `auth.existing_secret` arm → `passwordFromSecret` = the given name; no
-  Secret is created (it must already exist and carry the contract).
-- auth absent → neither renders; the chart generates a random password and
-  logs it once at first startup.
+  Secret is created (it must already exist and carry the contract), and
+  `password_secret` is unset because that Secret's layout is the owner's.
 
 ### The ClusterIP override (deliberate)
 
@@ -98,7 +102,8 @@ budget — Neo4j recovers/upgrades store files on startup).
 | Resource | Condition |
 |---|---|
 | `kubernetes_namespace_v1.neo4j` | `spec.create_namespace` |
-| `kubernetes_secret_v1.auth` | `spec.auth.password` declared |
+| `random_password.admin` | `spec.auth` absent |
+| `kubernetes_secret_v1.auth` | every arm but `spec.auth.existing_secret` |
 | `helm_release.neo4j` | always |
 
 ## Outputs
@@ -110,8 +115,9 @@ budget — Neo4j recovers/upgrades store files on startup).
 | `service_name` | The main Neo4j Service (= the release name) |
 | `bolt_endpoint` | `neo4j://<svc>.<ns>.svc.cluster.local:7687` |
 | `http_endpoint` | `http://<svc>.<ns>.svc.cluster.local:7474` |
-| `auth_secret_name` | `<name>-auth`, the existing Secret name, or empty (random password) |
+| `auth_secret_name` | `<name>-auth` (declared or generated password), or the existing Secret name; always set |
 | `port_forward_command` | kubectl one-liner for reaching bolt from a workstation |
+| `password_secret` | `{name, key}` of the bare password in `<name>-auth` (key `password`); unset for the `existing_secret` arm |
 
 ## Parity
 

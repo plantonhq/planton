@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -579,7 +580,8 @@ func TestControlPlaneDeployment_RunnerBinding(t *testing.T) {
 	// pods resolve. With remote runners closed (this binding) it stays unset,
 	// which is what makes the control plane refuse a remote enrollment
 	// honestly.
-	for _, absent := range []string{"CONNECT_RUNNER_TEMPORAL_ENDPOINT", "CONNECT_RUNNER_TEMPORAL_NAMESPACE"} {
+	for _, absent := range []string{"CONNECT_RUNNER_TEMPORAL_ENDPOINT", "CONNECT_RUNNER_TEMPORAL_NAMESPACE",
+		"CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"} {
 		if v, ok := envMap[absent]; ok {
 			t.Errorf("%s = %q; the queue must not be advertised to remote runners while the capability is closed", absent, v)
 		}
@@ -626,17 +628,16 @@ func TestControlPlaneDeployment_RunnerBinding(t *testing.T) {
 	}
 }
 
-// With remote runners open, the addresses stamped into enrolling runners'
-// identity documents are the FRONT DOOR's -- what a laptop dials -- for both
-// the queue and the API, while platform-scoped credentials keep the in-cluster
-// Service. The in-cluster runner is untouched either way: its document is
-// rendered by the operator (see RunnerIdentityDocumentJSON), never minted.
+// With remote runners open, the address stamped into enrolling runners'
+// identity documents is the FRONT DOOR's -- what a laptop dials -- and it is
+// ONE address for the API and for work alike, because the control plane
+// serves a remote runner's work calls itself. Platform-scoped credentials
+// keep the in-cluster Service. The in-cluster runner is untouched either way:
+// its document is rendered by the operator (see RunnerIdentityDocumentJSON),
+// never minted.
 func TestControlPlaneDeployment_RemoteRunnersAdvertiseTheFrontDoor(t *testing.T) {
 	cfg := testControlPlaneConfig()
-	cfg.RemoteRunners = &RemoteRunnersBinding{
-		PlantonAPIEndpoint: "planton.example.com:443",
-		TemporalEndpoint:   "planton.example.com:443",
-	}
+	cfg.RemoteRunners = &RemoteRunnersBinding{PlantonAPIEndpoint: "planton.example.com:443"}
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
@@ -656,6 +657,38 @@ func TestControlPlaneDeployment_RemoteRunnersAdvertiseTheFrontDoor(t *testing.T)
 	// Never the in-cluster queue name on the remote advertisement.
 	if v := envMap["CONNECT_RUNNER_TEMPORAL_ENDPOINT"]; strings.Contains(v, "svc.cluster.local") {
 		t.Errorf("the remote advertisement must never be an in-cluster name, got %s", v)
+	}
+	if envMap["CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"] != "1" {
+		t.Errorf("CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS = %q, want 1 for an install that declares no replicas",
+			envMap["CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"])
+	}
+}
+
+// The work door's limit on held polls is one install-wide total that each
+// replica shares, so the operator tells the control plane how many replicas
+// it runs -- the same count the Deployment declares, never a second truth.
+func TestControlPlaneDeployment_RemoteRunnersShareTheDoorAcrossReplicas(t *testing.T) {
+	cfg := testControlPlaneConfig()
+	cfg.Replicas = 3
+	cfg.RemoteRunners = &RemoteRunnersBinding{PlantonAPIEndpoint: "planton.example.com:443"}
+	deploy := ControlPlaneDeployment(cfg)
+	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
+
+	if got := envMap["CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"]; got != fmt.Sprint(*deploy.Spec.Replicas) {
+		t.Errorf("CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS = %q, want the Deployment's own %d replicas",
+			got, *deploy.Spec.Replicas)
+	}
+}
+
+// A stopping control plane drains before the kubelet's kill: the pod's grace
+// period outlasts the gRPC server's own shutdown grace plus the Temporal
+// workers' stop, where Kubernetes' default of 30 seconds would cut it.
+func TestControlPlaneDeployment_PodOutlastsItsOwnDrain(t *testing.T) {
+	deploy := ControlPlaneDeployment(testControlPlaneConfig())
+
+	grace := deploy.Spec.Template.Spec.TerminationGracePeriodSeconds
+	if grace == nil || *grace < 40 {
+		t.Fatalf("terminationGracePeriodSeconds = %v, want at least the 30-second server drain plus the 10-second worker stop", grace)
 	}
 }
 
@@ -790,18 +823,16 @@ func TestControlPlaneDeployment_BuildRoutingSeedAbsentWhenBuildsOff(t *testing.T
 	}
 }
 
-// Neither pipeline family receives catalog coordinates: service builds
-// compile at dispatch from release-pinned content, and the infra family's
-// git-repository lane is deliberately inert (unset catalog, creation-time
-// refusal). The build knobs are the workspace sizes and the task queues --
-// and the retired coordinates must never reappear, or a deployment would
-// silently re-arm cluster-side git resolution.
+// Service builds receive no catalog coordinates: they compile at dispatch
+// from release-pinned content. The build knobs are the workspace size and
+// the task queues -- and the retired names must never reappear: the catalog
+// coordinates would silently re-arm cluster-side git resolution, and the
+// infra build-stage and git-commit queues name workers that do not exist.
 func TestControlPlaneDeployment_TektonBuildEnv(t *testing.T) {
 	deploy := ControlPlaneDeployment(testControlPlaneConfig())
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
 	want := map[string]string{
-		"TEKTON_INFRA_PIPELINE_DISK_SIZE":                   "1Gi",
 		"TEKTON_SERVICE_PIPELINE_DISK_SIZE":                 "5Gi",
 		"TEMPORAL_TASK_QUEUE_SERVICE_PIPELINE_BUILD_STAGE":  "service-pipeline-build-stage",
 		"TEMPORAL_TASK_QUEUE_SERVICE_PIPELINE_DEPLOY_STAGE": "service-pipeline-deploy-stage",
@@ -816,53 +847,61 @@ func TestControlPlaneDeployment_TektonBuildEnv(t *testing.T) {
 		"TEKTON_PIPELINE_GIT_REPO_URL",
 		"TEKTON_PIPELINE_GIT_REVISION",
 		"TEKTON_PIPELINE_FILE_PATH_IN_REPO_KUSTOMIZE",
+		"TEKTON_INFRA_PIPELINE_DISK_SIZE",
+		"TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_BUILD_STAGE",
+		"TEMPORAL_TASK_QUEUE_INFRA_PROJECT_GIT_COMMIT",
 	} {
 		if _, present := envMap[retired]; present {
-			t.Errorf("%s must not be set: no pipeline definition is resolved from git", retired)
+			t.Errorf("%s must not be set: the control plane reads no such variable", retired)
 		}
 	}
 }
 
-// The dispatcher's queue and the worker's queue are one derivation: renaming
-// the bootstrap org moves both or neither.
-func TestControlPlaneDeployment_RunnerTaskQueueFollowsOrg(t *testing.T) {
+// The control plane sends a default deploy to the runner its seeded binding
+// names and derives that queue itself, so no queue is handed to it: a typed
+// queue is a second truth that once disagreed with the runner's own and left
+// a job unpolled. The platform release this operator's floor names reads none.
+func TestControlPlaneDeployment_SetsNoRunnerTaskQueue(t *testing.T) {
 	cfg := testControlPlaneConfig()
 	cfg.Identity.Bootstrap.OrgSlug = "acme"
-	deploy := ControlPlaneDeployment(cfg)
-	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
+	envMap := envVarMap(ControlPlaneDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
 
-	want := "iac-operation.org.acme.runner." + RunnerSlug(cfg.CRName)
-	if envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT"] != want {
-		t.Errorf("TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT = %q, want %q",
-			envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT"], want)
-	}
-	if envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS"] != want {
-		t.Errorf("TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS = %q, want %q",
-			envMap["TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS"], want)
+	for _, retired := range []string{
+		"TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_DEFAULT",
+		"TEMPORAL_PLATFORM_RUNNER_TASK_QUEUE_AWS",
+	} {
+		if _, set := envMap[retired]; set {
+			t.Errorf("%s must not be set: the control plane derives the runner's queue from its seeded binding", retired)
+		}
 	}
 }
 
-// PLANTON_VERSION resolves IaC module artifacts from the public CDN and is
-// pinned independently of the platform image version -- a platform tag with
-// no published artifacts would make every deploy 404 at download. The CR's
-// spec.controlPlane.iacModulesVersion is the per-install override; empty
-// means the compiled pin.
-func TestControlPlaneDeployment_ModuleArtifactsVersionPinned(t *testing.T) {
+// The control plane downloads official IaC modules at its own catalog release,
+// so the operator hands it no module version: a value rendered here would be a
+// second truth beside the platform's (and once was -- a compiled-in pin three
+// weeks behind the catalog, so a kind the platform accepted 404'd at module
+// download). The CR's spec.controlPlane.iacModulesVersion is the per-install
+// override for a retracted artifact set, rendered by presence under Spring's
+// hyphen-stripped name; the platform's own version never leaks into it.
+func TestControlPlaneDeployment_IacModulesVersionRenderedOnlyAsOverride(t *testing.T) {
 	cfg := testControlPlaneConfig()
 	cfg.Version = "v99.0.0"
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
-	if envMap["PLANTON_VERSION"] != controlPlaneModuleArtifactsVersion {
-		t.Errorf("PLANTON_VERSION = %q, want the pinned %s (not the platform version)",
-			envMap["PLANTON_VERSION"], controlPlaneModuleArtifactsVersion)
+	for _, name := range []string{controlPlaneIacModulesVersionEnv, "PLANTON_VERSION", "PLANTON_INFRA_HUB_IAC_MODULES_VERSION"} {
+		if v, ok := envMap[name]; ok {
+			t.Errorf("%s = %q rendered for a plain install; the control plane resolves modules at its own catalog release", name, v)
+		}
 	}
 
 	cfg.IacModulesVersion = "v0.6.1"
 	overridden := envVarMap(ControlPlaneDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
-	if overridden["PLANTON_VERSION"] != "v0.6.1" {
-		t.Errorf("PLANTON_VERSION = %q, want the CR override v0.6.1 to beat the pin",
-			overridden["PLANTON_VERSION"])
+	if overridden[controlPlaneIacModulesVersionEnv] != "v0.6.1" {
+		t.Errorf("%s = %q, want the CR override v0.6.1", controlPlaneIacModulesVersionEnv, overridden[controlPlaneIacModulesVersionEnv])
+	}
+	if _, ok := overridden["PLANTON_VERSION"]; ok {
+		t.Error("PLANTON_VERSION must not be rendered under any shape: the platform's version is not the module release")
 	}
 	// The chart bundle's location is the control plane's to derive from its own
 	// catalog pin; the operator only switches the seed on. The hyphen-stripped

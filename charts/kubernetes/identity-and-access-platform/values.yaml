@@ -101,20 +101,44 @@ params:
     value: change-me
 
   # ── OpenBao ──────────────────────────────────────────────────────────────
+  - name: openbao_storage
+    type: string_enum
+    enumValues:
+      - raft
+      - postgresql
+    description: >
+      Where the secrets manager keeps its data. raft (default): OpenBao's
+      integrated storage — one volume per replica, leader election, and
+      the engine Raft snapshots (the kind's backup block) exist for; the
+      vault's disaster recovery is its own. postgresql: the vault stores
+      in this chart's PostgreSQL, in an `openbao` database bootstrapped
+      under the same `identity` owner as Keycloak's and OpenFGA's, with
+      host and password by reference — no volume, high availability
+      through the backend's lock table, and ONE database backup covers
+      identity, authorization, and secrets together; there are no Raft
+      snapshots, and the kind refuses a backup block on this engine.
+      Choose postgresql when the database is the platform's backed-up
+      truth and you want the vault inside that boundary; keep raft when
+      the vault must outlive the database or ship its own snapshots.
+    value: raft
+
   - name: openbao_replicas
     description: >
-      OpenBao server replicas on integrated Raft storage (leader election,
-      one volume per replica). 1 (default) is a legal Raft cluster of one
-      and the honest start; 3 is the smallest size that survives one
-      member's loss with quorum intact; 5 survives two. Even numbers buy
-      nothing — quorum math. Needs at least as many schedulable nodes as
-      replicas — the chart ships a required hostname anti-affinity.
+      OpenBao server replicas. 1 (default) is the honest start on either
+      engine. On raft, 3 is the smallest size that survives one member's
+      loss with quorum intact and 5 survives two; even numbers buy
+      nothing — quorum math. On postgresql there is no quorum: any second
+      replica is a warm standby that takes the HA lock when the active
+      one dies. Needs at least as many schedulable nodes as replicas —
+      the chart ships a required hostname anti-affinity.
     value: "1"
 
   - name: openbao_disk_size
     description: >
       Persistent volume size for OpenBao's Raft data (a Kubernetes
-      quantity; one volume per replica). Secrets are small — 10Gi is
-      generous — but the volume also carries Raft snapshots; grow it
-      before enabling aggressive audit or snapshot schedules.
+      quantity; one volume per replica). Only used when openbao_storage
+      is raft — a PostgreSQL-stored vault claims no data volume. Secrets
+      are small — 10Gi is generous — but the volume also carries Raft
+      snapshots; grow it before enabling aggressive audit or snapshot
+      schedules.
     value: 10Gi

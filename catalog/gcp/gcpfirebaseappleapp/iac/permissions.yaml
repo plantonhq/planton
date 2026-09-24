@@ -1,0 +1,36 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpfirebaseappleapp
+spec:
+  gcp:
+    groups:
+      - purpose: ManageAppRegistration
+        permissions:
+          - firebase.clients.create
+          - firebase.clients.get
+          - firebase.clients.update
+          - firebase.clients.delete
+        provenance: derived
+        notes: Covers google_firebase_apple_app (Terraform, beta provider) / firebase.AppleApp (Pulumi) and the google_firebase_apple_app_config / firebase.GetAppleAppConfig lookup. IAM's inventory files every Firebase app registration -- Android, iOS, web -- under the firebase.clients class -- projects.iosApps.create authorizes as clients.create, get and getConfig as clients.get, patch as clients.update, and :remove (deletion_policy DELETE, immediate) as clients.delete. ABANDON and PREVENT call no delete API. roles/firebase.admin (or roles/firebase.developAdmin) contains all four.
+      - purpose: EnableAppCheckApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Required only when app_check composes at least one resource. Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebaseappcheck.googleapis.com. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted. The Firebase Management API itself is enabled by the GcpFirebaseProject the app lives in.
+      - purpose: ManageAppCheckAttestation
+        permissions:
+          - firebaseappcheck.appAttestConfig.get
+          - firebaseappcheck.appAttestConfig.update
+          - firebaseappcheck.deviceCheckConfig.get
+          - firebaseappcheck.deviceCheckConfig.update
+          - firebaseappcheck.debugTokens.get
+          - firebaseappcheck.debugTokens.update
+        provenance: derived
+        notes: Required only when app_check composes an attestation configuration or debug tokens. google_firebase_app_check_app_attest_config / firebase.AppCheckAppAttestConfig and google_firebase_app_check_device_check_config / firebase.AppCheckDeviceCheckConfig are per-app singletons -- the provider's create and update are both a PATCH (Google authorizes as appAttestConfig.update / deviceCheckConfig.update), get covers refresh, and their destroy calls no API (the configurations are never deleted on Google's side). google_firebase_app_check_debug_token / firebase.AppCheckDebugToken has real create, patch, and delete methods, but IAM's inventory carries only debugTokens.get and debugTokens.update for the class -- Google authorizes creating and deleting a token as an UPDATE of the app's token set, so those two cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains all six.

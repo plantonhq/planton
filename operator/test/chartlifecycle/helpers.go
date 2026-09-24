@@ -20,11 +20,12 @@ import (
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"sigs.k8s.io/yaml"
 
+	"github.com/plantonhq/planton/operator/internal/plantonregistry"
 	"github.com/plantonhq/planton/operator/test/utils"
 )
 
 const (
-	chartRegistry = "oci://ghcr.io/plantonhq/charts"
+	chartRegistry = plantonregistry.DefaultChartRepository
 
 	// lastInstallOnceOperatorChart is the newest published operator chart that
 	// shipped its definitions through Helm's install-once crds/ directory. An

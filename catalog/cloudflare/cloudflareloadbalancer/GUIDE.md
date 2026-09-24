@@ -29,7 +29,7 @@ A `fixedResponse` rule answers at the edge and always terminates evaluation. Lea
 
 ## The rule count is a plan limit
 
-How many rules one load balancer may carry is set by the account's Load Balancing subscription tier: Basic ($5/mo) allows exactly ONE rule, and the write fails with `400` code `1002` "rule count N exceeds limit M" the moment the list exceeds the tier's cap (measured live on Basic). Design rule sets against the tier you actually pay for -- splitting behavior across multiple load balancers is the workaround when the cap binds.
+How many rules one load balancer may carry is set by the account's Load Balancing subscription tier: the entry tier allows exactly ONE rule, and the write fails with `400` code `1002` "rule count N exceeds limit M" the moment the list exceeds the tier's cap (measured live on Basic). Design rule sets against the tier you actually pay for -- splitting behavior across multiple load balancers is the workaround when the cap binds.
 
 ## The hostname is the full DNS name
 

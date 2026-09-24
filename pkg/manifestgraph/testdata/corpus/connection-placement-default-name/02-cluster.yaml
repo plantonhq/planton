@@ -1,0 +1,6 @@
+apiVersion: aws.planton.dev/v1alpha1
+kind: AwsEksCluster
+metadata:
+  name: platform
+  env: prod
+spec: {}

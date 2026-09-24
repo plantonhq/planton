@@ -21,7 +21,7 @@ Two facts make eject a calm act, not a migration:
 1. **The record's entries STAY through the flip.** Ejecting never empties anything — the tree was verified to render byte-identical to the record before the flip, so the first authoritative push converges onto the existing entries and writes nothing. Nothing redeploys because of an eject.
 2. **It is reversible.** Removing the `deploy.kustomize` declaration (edit `service.yaml`, or apply the record without it) is the deliberate authorship takeover: the configuration entries stand, sync provenance is stripped, and the caller writes again.
 
-While a service is git-maintained, manual edits to `deploy.environments` are preserved-from-record rather than accepted — the tree is the writer, so the honest way to change configuration is a commit. Relay that rather than helping someone fight the guard.
+While a service is git-maintained, manual edits to `deploy.environments` are preserved-from-record rather than accepted — the tree is the writer, so the honest way to change configuration is a commit. Relay that rather than helping someone fight the guard. The one door beside the commit is the tree itself: `planton service deploy <service> --env <env> --image <ref> --from-tree` renders the overlay from the folder the person is standing in and deploys it through the control plane, writing that one environment's entry as theirs (who, which commit, uncommitted or not); the next authoritative push with the same content hands the entry back to git. Use it for a freshly ejected or never-pushed service, or to see an overlay run before committing it — see the delivery-verbs reference for what it accepts and refuses.
 
 ## The tree layout
 

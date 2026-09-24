@@ -1,9 +1,10 @@
 {{- if and .Values.build.enabled .Values.build.rbac.create -}}
 # RBAC for the runner's build capability. The verb list mirrors exactly what
-# the build activities perform (and what the readiness probe's rbac-build and
-# rbac-logs checks assert): creating PipelineRuns and their supporting
-# resources, reconciling by list, label-scoped deletecollection cleanup, and
-# following task pod logs.
+# the build activities and followers perform (and what the readiness probe's
+# rbac-build, rbac-logs, and run-watch checks assert): creating PipelineRuns
+# and their supporting resources, reconciling by list, label-scoped
+# deletecollection cleanup, watching the namespace's runs so each change
+# reaches the owning build as it happens, and following task pod logs.
 #
 # There is no privilege-escalation hazard in the roles/rolebindings grants:
 # every permission the runner's in-build Role hands to a build's
@@ -16,22 +17,30 @@ metadata:
   labels:
     {{- include "planton-runner.labels" . | nindent 4 }}
 rules:
-  # Create PipelineRuns, reconcile by list, clean up by label selector
+  # Create PipelineRuns, reconcile by list, clean up by label selector, and
+  # watch: the run watcher follows this namespace's PipelineRuns and TaskRuns
+  # and signals each change to the owning build -- the event transport that
+  # needs no cluster-wide Tekton sink, so any number of control planes share
+  # one Tekton, each hearing only about its own namespace.
   - apiGroups: ["tekton.dev"]
     resources: ["pipelineruns"]
-    verbs: ["create", "list", "deletecollection"]
-  # Reconcile reads TaskRuns before PipelineRuns (load-bearing ordering)
+    verbs: ["create", "list", "watch", "deletecollection"]
+  # Reconcile reads TaskRuns before PipelineRuns (load-bearing ordering); the
+  # watcher follows them for per-task progress.
   - apiGroups: ["tekton.dev"]
     resources: ["taskruns"]
-    verbs: ["list"]
+    verbs: ["list", "watch"]
   # Per-build supporting resources, provisioned just-in-time and
   # label-cleaned after the build
   - apiGroups: [""]
     resources: ["secrets", "serviceaccounts"]
     verbs: ["create", "get", "deletecollection"]
+  # A build's export ConfigMaps: created empty (and emptied on a rerun), granted
+  # to the build by name (get/update/patch), read, and swept. Kubernetes refuses
+  # a grant of any permission the granter does not hold.
   - apiGroups: [""]
     resources: ["configmaps"]
-    verbs: ["get", "deletecollection"]
+    verbs: ["get", "create", "update", "patch", "deletecollection"]
   - apiGroups: ["rbac.authorization.k8s.io"]
     resources: ["roles", "rolebindings"]
     verbs: ["create", "deletecollection"]
@@ -54,39 +63,6 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: {{ include "planton-runner.fullname" . }}-build
-subjects:
-  - kind: ServiceAccount
-    name: {{ include "planton-runner.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
----
-# Tekton publishes its cluster-wide CloudEvents sink in the config-defaults
-# ConfigMap of its own install namespace. The runner's readiness probe reads
-# it to report the events-sink check; without this grant the check would
-# permanently report "could not determine" instead of a verdict.
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: {{ include "planton-runner.fullname" . }}-events-sink-read
-  namespace: {{ .Values.build.tekton.installNamespace }}
-  labels:
-    {{- include "planton-runner.labels" . | nindent 4 }}
-rules:
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    resourceNames: ["config-defaults"]
-    verbs: ["get"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: {{ include "planton-runner.fullname" . }}-events-sink-read
-  namespace: {{ .Values.build.tekton.installNamespace }}
-  labels:
-    {{- include "planton-runner.labels" . | nindent 4 }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: {{ include "planton-runner.fullname" . }}-events-sink-read
 subjects:
   - kind: ServiceAccount
     name: {{ include "planton-runner.serviceAccountName" . }}

@@ -39,6 +39,20 @@ const (
 	// provisioning interstitial among them).
 	IdentityPathPrefix = "/idp"
 
+	// The identity server's sizing (the data-layer OOM lesson): a JVM plus a
+	// first-boot realm import dies confusingly under default limits. The
+	// recovery Job runs the same image and takes the same sizing. No CPU
+	// limit so the import is never throttled (requests-only, the house
+	// pattern). The ensure-database init container is a psql client that
+	// runs for a second; a small floor so it schedules, a small limit so a
+	// stuck one cannot grow.
+	identityCPURequest        = "250m"
+	identityMemoryRequest     = "512Mi"
+	identityMemoryLimit       = "1536Mi"
+	identityInitCPURequest    = "10m"
+	identityInitMemoryRequest = "32Mi"
+	identityInitMemoryLimit   = "128Mi"
+
 	// IDPAPIAudience is the audience value stamped into access tokens by the
 	// realm's audience mapper and validated by the control plane. It is a
 	// fixed logical name, deliberately hostname-independent, so an
@@ -257,6 +271,21 @@ const (
 	// provider ({front-door}/idp/realms/{realm}/broker/{alias}/endpoint), so
 	// a rename would silently break the upstream registration.
 	IdentityBrokerAlias = "corp-directory"
+
+	// IdentityPrimaryBrokerConfigAlias names the ONE authenticator config the
+	// operator owns on the realm's browser flow: the Identity Provider
+	// Redirector's config carrying defaultProvider = IdentityBrokerAlias
+	// when the bound manifest declares oidc.primary (DD-023). Present, every
+	// sign-in goes straight to the broker; absent, the identity server's own
+	// form shows with the broker's button beside it.
+	IdentityPrimaryBrokerConfigAlias = "planton-primary-broker"
+
+	// IdentityBreakGlassHint is the kc_idp_hint value every Planton client
+	// sends to reach the local form while a primary broker is set. The
+	// redirector steps aside for a hint it cannot route, and no broker will
+	// ever carry this alias -- the sentinel is the contract, pinned against
+	// the identity server by the convergence suite.
+	IdentityBreakGlassHint = "local"
 
 	// IdentityDirectoryGroupsPath is the realm-group subtree the LDAP group
 	// mapper syncs directory groups into. Namespacing mirrored groups under
@@ -517,6 +546,10 @@ type IdentityFederationFacts struct {
 	// ProviderLabel is the name admins know the directory by (the
 	// sign-in button label, defaulted arm-appropriately).
 	ProviderLabel string `json:"providerLabel,omitempty"`
+	// Primary is true when the brokered arm sends every sign-in straight to
+	// the provider (oidc.primary) -- the product tells admins so, and names
+	// the break-glass path beside it. Always false on the LDAP arm.
+	Primary bool `json:"primary,omitempty"`
 	// Provisioned mirrors the manifest's Provisioned condition: federation
 	// exists on the identity server exactly as declared.
 	Provisioned bool `json:"provisioned,omitempty"`
@@ -1082,6 +1115,7 @@ func IdentityDeployment(cfg IdentityConfig) *appsv1.Deployment {
 						Env: []corev1.EnvVar{
 							secretEnv("PGPASSWORD", cfg.PostgreSQL.SecretName, cfg.PostgreSQL.PassKey),
 						},
+						Resources: identityInitResources(),
 					}},
 					Containers: []corev1.Container{{
 						Name:  "keycloak",
@@ -1101,19 +1135,7 @@ func IdentityDeployment(cfg IdentityConfig) *appsv1.Deployment {
 						},
 						Env:          envVars,
 						VolumeMounts: volumeMounts,
-						// Explicit floor (the data-layer OOM lesson):
-						// a JVM plus first-boot realm import dies confusingly
-						// under default limits. No CPU limit so the import is
-						// never throttled.
-						Resources: corev1.ResourceRequirements{
-							Requests: corev1.ResourceList{
-								corev1.ResourceCPU:    resource.MustParse("250m"),
-								corev1.ResourceMemory: resource.MustParse("512Mi"),
-							},
-							Limits: corev1.ResourceList{
-								corev1.ResourceMemory: resource.MustParse("1536Mi"),
-							},
-						},
+						Resources:    identityResources(),
 						// First boot runs schema migrations + the realm import;
 						// allow a generous window (10s x 60 = 10m) before the
 						// kubelet gives up, mirroring the control plane.
@@ -1244,15 +1266,7 @@ func IdentityRecoveryAdminJob(cfg IdentityConfig) *batchv1.Job {
 							"--password:env", "KC_BOOTSTRAP_ADMIN_PASSWORD"},
 						Env: append(identityDatabaseEnv(cfg),
 							secretEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", name, IdentityBootstrapAdminPasswordKey)),
-						Resources: corev1.ResourceRequirements{
-							Requests: corev1.ResourceList{
-								corev1.ResourceCPU:    resource.MustParse("250m"),
-								corev1.ResourceMemory: resource.MustParse("512Mi"),
-							},
-							Limits: corev1.ResourceList{
-								corev1.ResourceMemory: resource.MustParse("1536Mi"),
-							},
-						},
+						Resources: identityResources(),
 					}},
 				},
 			},
@@ -1299,4 +1313,31 @@ func IdentityService(crName, namespace string, ownerRef *metav1.OwnerReference) 
 	}
 
 	return svc
+}
+
+// identityResources is the identity server's container sizing, shared by the
+// Deployment and the recovery Job (the constants above carry the reasoning).
+func identityResources() corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: corev1.ResourceList{
+			corev1.ResourceCPU:    resource.MustParse(identityCPURequest),
+			corev1.ResourceMemory: resource.MustParse(identityMemoryRequest),
+		},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse(identityMemoryLimit),
+		},
+	}
+}
+
+// identityInitResources is the ensure-database init container's sizing.
+func identityInitResources() corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: corev1.ResourceList{
+			corev1.ResourceCPU:    resource.MustParse(identityInitCPURequest),
+			corev1.ResourceMemory: resource.MustParse(identityInitMemoryRequest),
+		},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse(identityInitMemoryLimit),
+		},
+	}
 }

@@ -72,7 +72,10 @@ var _ = ginkgo.Describe("DigitalOceanDropletSpec Custom Validation Tests", func(
 				spec.Tags = []string{"env:prod", "team_platform", "web"}
 				spec.UserData = "#cloud-config\npackage_update: true\n"
 				spec.Monitoring = true
-				spec.SshKeys = []string{"12345678", "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"}
+				spec.SshKeys = []*foreignkeyv1.StringValueOrRef{
+					{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "12345678"}},
+					{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"}},
+				}
 				spec.DropletAgent = boolPtr(true)
 				spec.GracefulShutdown = true
 				spec.ResizeDisk = boolPtr(false)
@@ -236,16 +239,31 @@ var _ = ginkgo.Describe("DigitalOceanDropletSpec Custom Validation Tests", func(
 
 			ginkgo.It("should return a validation error for duplicate ssh keys", func() {
 				spec := validMinimalSpec()
-				spec.SshKeys = []string{"12345678", "12345678"}
+				spec.SshKeys = []*foreignkeyv1.StringValueOrRef{
+					{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "12345678"}},
+					{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "12345678"}},
+				}
 				err := protovalidate.Validate(wrap(spec))
 				gomega.Expect(err).NotTo(gomega.BeNil())
 			})
 
 			ginkgo.It("should return a validation error for an empty ssh key entry", func() {
 				spec := validMinimalSpec()
-				spec.SshKeys = []string{""}
+				spec.SshKeys = []*foreignkeyv1.StringValueOrRef{
+					{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: ""}},
+				}
 				err := protovalidate.Validate(wrap(spec))
 				gomega.Expect(err).NotTo(gomega.BeNil())
+			})
+
+			ginkgo.It("should accept a literal key beside a reference to a DigitalOceanSshKey", func() {
+				spec := validMinimalSpec()
+				spec.SshKeys = []*foreignkeyv1.StringValueOrRef{
+					{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "3b:16:bf:e4:8b:00:8b:b8:59:8c:a9:d3:f0:19:45:fa"}},
+					{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Name: "ops-key"}}},
+				}
+				err := protovalidate.Validate(wrap(spec))
+				gomega.Expect(err).To(gomega.BeNil())
 			})
 		})
 

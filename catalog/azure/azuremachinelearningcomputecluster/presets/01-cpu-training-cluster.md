@@ -21,4 +21,4 @@ This preset creates a scale-to-zero dedicated CPU cluster -- the everyday shared
 | --- | --- | --- |
 | `<your-machine-learning-workspace-id>` | ARM ID of the parent workspace | `AzureMachineLearningWorkspace` status outputs (`machine_learning_workspace_id`), or reference it with valueFrom |
 
-The `region` and `vmSize` carry realistic examples (`eastus`, `STANDARD_DS3_V2`) -- set your own region and check the family's regional vCPU quota covers `maxNodeCount`.
+The `region` and `vmSize` carry realistic examples (`eastus`, `Standard_DS3_v2`) -- set your own region and check the family's regional vCPU quota covers `maxNodeCount`.

@@ -31,10 +31,14 @@ people can reach.
 ## One CloudEvents sink per cluster
 
 `pipeline.cloud_events_sink_url` is Tekton's single, cluster-global
-event destination — every run in every namespace reports there.
-Multi-tenant clusters put a fan-out service at that URL (each event
-carries its source namespace) rather than wishing for per-namespace
-sinks that do not exist.
+event destination — every run in every namespace reports there, and
+per-namespace sinks do not exist. Planton's own runners need none: a
+build-capable runner watches its build namespace's PipelineRuns and
+TaskRuns directly and reports to its own control plane, so a cluster
+serving several Planton control planes leaves this field unset. Set it
+only for an event consumer of your own, and put a fan-out service at
+the URL if more than one consumer needs the stream (each event carries
+its source namespace).
 
 ## Two fields you cannot change in place
 

@@ -203,21 +203,23 @@ A workload alone — a Deployment, an ECS service, a Cloud Function without a UR
 ## CLI Reference
 
 ```bash
-# Initialize a new _kustomize directory
-planton service kustomize init --new
+# Start a fresh _kustomize tree by hand: one empty overlay per environment, plus the merge schema
+planton service kustomize init --env dev --env prod
 
-# Initialize from an existing cloud resource
-planton service kustomize init <resource-kind> <resource-id>
+# Hand authorship of an existing service's configuration to the repository (writes the tree, proves it renders back identical, then declares it the writer)
+planton service kustomize eject <service>
 
-# Build and inspect the resolved manifests
-planton service kustomize build
+# Write the record's configuration out as a tree without changing who writes it
+planton service kustomize checkout <service>
 
-# Generate .env files from the local overlay
-planton service dot-env
+# Run a command with the environment variables the local overlay resolves to
+planton service env run --flavor local -- npm start
 
-# Deploy using the _kustomize configuration
-planton service deploy --project .
+# Deploy the overlay you are standing in, through the control plane, before any push has synced it
+planton service deploy <service> --env dev --image <ref> --from-tree
 ```
+
+The last line is the door for a git-maintained service that has never been pushed through a pipeline, or an overlay you want to see running before you commit it: the overlay renders on your machine, the control plane writes it onto the service's configuration for that one environment (named as yours, with the commit and whether the tree had uncommitted changes), and the deploy runs through the same gates, rollout verification, and URLs as any other. The next push to the branch that drives the environment takes the configuration back for git — with the same content, nothing redeploys.
 
 ## Related Documentation
 

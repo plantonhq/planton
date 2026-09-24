@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpApiKey
+metadata:
+  name: backend-translate-key
+spec:
+  keyId: backend-translate-key
+  displayName: Backend translation key
+  restrictions:
+    serverKeyRestrictions:
+      allowedIps:
+        - 203.0.113.0/24
+    apiTargets:
+      - service: translate.googleapis.com
+        methods:
+          - google.cloud.translate.v2.*
+  deletionPolicy: PREVENT

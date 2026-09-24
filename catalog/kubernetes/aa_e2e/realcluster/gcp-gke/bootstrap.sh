@@ -86,9 +86,42 @@ done
 # node: ADC for the GCP kinds, CLOUDFLARE_API_TOKEN for the Cloudflare
 # kinds (the set lane has no Cloudflare preflight probe — a bad token
 # surfaces at the node's apply, not at the wall).
+# The KMS key ring is permanent by GCP design: teardown.sh's destroy of its
+# node only abandons it (the ring stays in the project, the node's state
+# forgets it), so every bootstrap after the first in a project meets the
+# ring already there and its node's create fails with 409. Adopt it back
+# into the node's own workspace state before the set applies -- the same
+# `tofu import` an operator would run, on the same var file the set lane
+# wrote -- so the node converges as a no-op instead of failing. The node's
+# workspace exists only once the set lane has run here at least once; on a
+# machine that never did, the first apply fails on the ring, the adoption
+# runs against the workspace that apply created, and the apply is re-run.
+kms_ring="planton-e2e-gke-openbao-unseal"
+ring_ws="${setdeploy_root}/gcpkmskeyring/${kms_ring}"
+adopt_permanent_ring() {
+  gcloud kms keyrings describe "${kms_ring}" --location "${GCP_REGION}" --project "${GCP_PROJECT_ID}" >/dev/null 2>&1 || return 0
+  [ -f "${ring_ws}/.terraform/terraform.tfvars" ] || return 0
+  if [ -f "${ring_ws}/terraform.tfstate" ] && grep -q '"type": "google_kms_key_ring"' "${ring_ws}/terraform.tfstate"; then
+    return 0
+  fi
+  echo "==> adopting the permanent KMS key ring ${kms_ring} into its node's state (rings survive teardown by GCP design)"
+  (cd "${ring_ws}" && tofu import -no-color -input=false -var-file .terraform/terraform.tfvars \
+    google_kms_key_ring.this "projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/keyRings/${kms_ring}")
+}
+apply_set() {
+  "${PLANTON_BIN}" apply -f "${state_dir}/rendered" --yes \
+    ${PLANTON_MODULE_VERSION:+--module-version "${PLANTON_MODULE_VERSION}"}
+}
+
 echo "==> applying the gcp-gke batch set from the catalog (project ${GCP_PROJECT_ID}, region ${GCP_REGION}, Cloudflare account ${CLOUDFLARE_ACCOUNT_ID})"
-"${PLANTON_BIN}" apply -f "${state_dir}/rendered" --yes \
-  ${PLANTON_MODULE_VERSION:+--module-version "${PLANTON_MODULE_VERSION}"}
+adopt_permanent_ring
+if ! apply_set; then
+  # The one failure the batch expects on a fresh machine: the ring's 409.
+  # Adopt it now that the set lane has created the node's workspace and
+  # re-run; completed nodes re-apply as no-ops (the set lane's own contract).
+  adopt_permanent_ring
+  apply_set
+fi
 
 # The lanes read the outputs through env tokens. Emails and the bucket name
 # are deterministic from the manifests; the Mongo key is the identity node's

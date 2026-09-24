@@ -1,0 +1,39 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpfirebaseproject
+spec:
+  gcp:
+    groups:
+      - purpose: EnableFirebaseApis
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebase.googleapis.com and fcm.googleapis.com unconditionally, and firebasestorage.googleapis.com / firebaseappcheck.googleapis.com when the spec composes the default bucket / App Check. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted.
+      - purpose: EnableFirebaseOnProject
+        permissions:
+          - firebase.projects.update
+          - firebase.projects.get
+        provenance: derived
+        notes: Covers google_firebase_project (Terraform, beta provider) / firebase.Project (Pulumi). The provider's create GETs projects/{project} first (adopting an already-enabled project) and otherwise calls projects.addFirebase, which Google authorizes as firebase.projects.UPDATE on the project -- there is no firebase.projects.create permission in IAM's inventory, because enabling Firebase is a mutation of an existing GCP project, not the creation of a new resource; get covers the adoption probe, every refresh, and the Admin SDK config read (projects.getAdminSdkConfig) both modules issue for the database_url / storage_bucket / location_id outputs. No delete permission exists to need -- Firebase cannot be removed from a project, and destroy detaches state only. roles/firebase.admin (or roles/firebase.developAdmin) contains both.
+      - purpose: ManageDefaultStorageBucket
+        permissions:
+          - firebasestorage.defaultBucket.create
+          - firebasestorage.defaultBucket.get
+          - firebasestorage.defaultBucket.delete
+        provenance: derived
+        notes: Required only when default_storage_location is set. Covers google_firebase_storage_default_bucket (Terraform, beta provider) / firebase.StorageDefaultBucket (Pulumi) -- create on first apply (projects.defaultBucket.create on the Firebase Storage API), get on refresh, delete on destroy under deletion_policy DELETE (ABANDON and PREVENT call no delete API). The underlying Cloud Storage bucket is created by the Firebase Storage service on the caller's behalf; the Firebase-side permission class is what the API authorizes.
+      - purpose: ManageAppCheck
+        permissions:
+          - firebaseappcheck.services.get
+          - firebaseappcheck.services.update
+          - firebaseappcheck.resourcePolicies.get
+          - firebaseappcheck.resourcePolicies.update
+        provenance: derived
+        notes: Required only when app_check composes at least one configuration. google_firebase_app_check_service_config / firebase.AppCheckServiceConfig is a per-service singleton -- the provider's create and update are both services.patch (Google authorizes as firebaseappcheck.services.update), and its delete patches enforcement back to OFF, so no delete permission exists for it. google_firebase_app_check_resource_policy / firebase.AppCheckResourcePolicy has its own create, patch, and delete methods, but IAM's inventory carries only resourcePolicies.get and resourcePolicies.update for the class -- Google authorizes creating and deleting a policy as an UPDATE of the service's policy set, so those two permissions cover the whole lifecycle under deletion_policy DELETE. roles/firebaseappcheck.admin contains all four.

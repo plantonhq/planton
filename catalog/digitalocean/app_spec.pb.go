@@ -928,9 +928,19 @@ func (x *DigitalOceanAppBitbucketSource) GetDeployOnPush() bool {
 type DigitalOceanAppImageSource struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Which registry hosts the image. Required.
+	//
+	// With docr the image is pulled from the account's own DigitalOcean
+	// Container Registry; App Platform resolves it itself, so no field here
+	// names the registry and no reference is wired. To say that the app
+	// depends on a DigitalOceanContainerRegistry that Planton manages -- so
+	// the registry deploys first and the dependency is drawn -- declare it
+	// under metadata.relationships with type `uses`.
 	RegistryType DigitalOceanAppRegistryType `protobuf:"varint,1,opt,name=registry_type,json=registryType,proto3,enum=dev.planton.digitalocean.DigitalOceanAppRegistryType" json:"registry_type,omitempty"`
 	// Registry hostname. Required for docker_hub and ghcr (for example ghcr.io
-	// or a Docker Hub namespace). Must be empty for docr.
+	// or a Docker Hub namespace). Must be empty for docr -- DigitalOcean's own
+	// registry is addressed by the account, not by a hostname (see
+	// registry_type). A hostname is not a Planton resource, so this is a
+	// plain string, never a reference.
 	Registry string `protobuf:"bytes,2,opt,name=registry,proto3" json:"registry,omitempty"`
 	// Repository name inside the registry, for example myapp/api
 	Repository string `protobuf:"bytes,3,opt,name=repository,proto3" json:"repository,omitempty"`

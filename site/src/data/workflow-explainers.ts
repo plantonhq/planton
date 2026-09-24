@@ -1,0 +1,82 @@
+import { ARCHITECTURES } from './architecture-stories.ts';
+import type { WorkflowId, WorkflowStory } from './workflow-types.ts';
+export type { WorkflowId, WorkflowStory, WorkflowNode, WorkflowEdge, ProviderId } from './workflow-types.ts';
+
+export const WORKFLOW_COPY = {
+  explore: 'Explore This Stack',
+  autoOn: 'Auto-Cycle On', autoOff: 'Auto-Cycle Off',
+  providers: 'Choose a Cloud Architecture',
+  resourceIntro: 'Explore the resources behind this illustrative architecture. Connections describe deployment prerequisites, not application traffic.',
+  resourceFocus: 'Focus on a Resource', resourceAll: 'All Resources',
+  resourceRequires: 'Prerequisites:', resourceNone: 'No resource prerequisite in this example',
+  resourceInventory: 'Read the Resource Inventory', resourceRegion: 'Architecture Dependencies',
+  resourceHelp: 'Select a resource to see its direct prerequisites. Supporting configuration is described in the inventory.',
+  illustration: 'Illustrative workflow · time compressed',
+  pause: 'Pause', play: 'Play', replay: 'Replay',
+  explanation: 'Read the Workflow',
+  selectPhase: 'Inspect step',
+  waiting: 'Waiting', active: 'In Progress', complete: 'Complete',
+  approvalWaiting: 'Awaiting Approval', approvalComplete: 'Approved by a Person',
+  static: 'Static View', playing: 'Playing', paused: 'Paused',
+  resourceOutput: 'Dependency handoffs',
+  agentFlow: 'Request + result',
+  deliveryFlow: 'Delivery flow',
+  parallel: 'In parallel',
+  deploying: 'Deploying…',
+  ready: 'Ready',
+  deliveryBoundary: 'One Artifact · Environment-Specific Configuration',
+} as const;
+
+export const WORKFLOWS: Record<WorkflowId, WorkflowStory> = {
+  ...ARCHITECTURES,
+  agents: {
+    id: 'agents', version: 1,
+    title: 'From your editor to your cloud. And back.',
+    context: 'Planton / Coding-agent workflow',
+    setup: '“Create a development environment and deploy this service.”',
+    takeaway: 'Your agent prepares the work. Your controls govern execution.',
+    scope: 'An illustrative workflow with a connected account, cloud, and configured approval rules. Agents use Planton skills with the CLI or supported MCP tools. Human approvals remain human decisions. The result represents status the agent retrieves; it is not a claim of automatic delivery into every editor.',
+    phases: [
+      { title: 'Ask from the editor you already use.', text: 'Describe what the service needs. Your repository gives the coding agent context for the request.' },
+      { title: 'Prepare a change you can inspect.', text: 'The agent uses Planton skills with the CLI or supported MCP tools to prepare infrastructure and deployment configuration.' },
+      { title: 'Keep the human decision with you.', text: 'Review the proposed configuration. Required deployment approvals belong to an authorized person; the agent cannot approve them.' },
+      { title: 'Let Planton execute within your controls.', text: 'Authorized requests go through Planton’s access and deployment controls, using your connected cloud and environment configuration.' },
+      { title: 'Run the work in your cloud.', text: 'Planton provisions the infrastructure and carries out service deployment. The agent can follow the run’s progress.' },
+      { title: 'Bring the result back into the conversation.', text: 'The agent retrieves status and execution details to explain what happened and investigate failures with you.' },
+    ],
+    nodes: [
+      { id: 'request', label: 'Your Request', detail: 'Repository context', phase: 0 },
+      { id: 'agent', label: 'Coding Agent', detail: 'Skills · CLI / MCP', phase: 1 },
+      { id: 'approval', label: 'Human Review', detail: 'Required approvals', gate: true, phase: 2 },
+      { id: 'planton', label: 'Planton', detail: 'Controlled execution', phase: 3 },
+      { id: 'cloud', label: 'Your Cloud', detail: 'Infrastructure + app', phase: 4 },
+      { id: 'result', label: 'Back in Editor', detail: 'Status + run details', phase: 5 },
+    ],
+    edges: [{ from: 'request', to: 'agent' }, { from: 'agent', to: 'approval' }, { from: 'approval', to: 'planton' }, { from: 'planton', to: 'cloud' }, { from: 'cloud', to: 'result' }],
+  },
+  delivery: {
+    id: 'delivery', version: 2,
+    title: 'One build. A controlled path to production.',
+    context: 'Planton / Service Pipelines',
+    setup: 'Build once. Deploy with each environment’s configuration. Keep production behind a human decision.',
+    takeaway: 'Promote the artifact. Keep each environment’s configuration.',
+    scope: 'A successful delivery with a protected production environment. Repository, build, and environments are already configured. Verification observations are separate from deployment success and are not a universal promotion gate.',
+    phases: [
+      { title: 'Push a Change', text: 'A push that matches the service’s trigger rules starts a run. The source commit is captured.' },
+      { title: 'Build the Artifact', text: 'The configured build produces an artifact that the deployment stages can reference.' },
+      { title: 'Deploy to Development', text: 'Planton deploys the artifact with the configuration captured for development.' },
+      { title: 'Wait for a Person', text: 'Protected production waits for an authorized human decision. The assistant cannot approve this gate.' },
+      { title: 'Promote to Production', text: 'After approval, the same artifact deploys with the captured production configuration. Promotion does not rebuild it or copy development’s configuration.' },
+      { title: 'Keep the Delivery Record', text: 'A successful deployment records the artifact and the environment’s deployed resources. Inspect execution and verification observations separately; a deployment record is not a blanket health guarantee.' },
+    ],
+    nodes: [
+      { id: 'push', label: 'Git Push', detail: 'Matching trigger', phase: 0 },
+      { id: 'artifact', label: 'Build', detail: 'Artifact created', phase: 1 },
+      { id: 'development', label: 'Development', detail: 'Development config', phase: 2 },
+      { id: 'approval', gate: true, label: 'Human Approval', detail: 'Production gate', phase: 3 },
+      { id: 'production', label: 'Production', detail: 'Production config', phase: 4 },
+      { id: 'record', label: 'Delivery Record', detail: 'Artifact + resources', phase: 5 },
+    ],
+    edges: [{ from: 'push', to: 'artifact' }, { from: 'artifact', to: 'development' }, { from: 'development', to: 'approval' }, { from: 'approval', to: 'production' }, { from: 'production', to: 'record' }],
+  },
+};

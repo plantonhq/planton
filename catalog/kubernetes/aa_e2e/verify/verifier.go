@@ -1373,9 +1373,13 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// the real init/unseal bootstrap (readiness must FLIP), then a KV
 	// round-trip proves the server serves secrets. Dev mode skips
 	// init/unseal; an auto_unseal seal changes init to recovery shares
-	// and drops the unseal step. The behavioral-raft scenario
-	// (recognized by name) replaces pod 0, re-unseals it (restart =
-	// sealed, the Shamir truth) and re-reads the marker. with-backup
+	// and drops the unseal step. The storage engine adds its own
+	// witnesses: on PostgreSQL the verifier proves no data volume was
+	// claimed, the server reports HA on (the lock table), and the vault's
+	// tables sit in the declared database. The behavioral-raft and
+	// behavioral-postgresql scenarios (recognized by name) replace pod 0,
+	// re-unseal it (restart = sealed, the Shamir truth) and re-read the
+	// marker through the active Service. with-backup
 	// adds THE BACKUP PROOF (the login recipe verbatim, a run from the
 	// CronJob, the store listed with the job's identity, retention);
 	// *-backup-restore is THE RESTORE PROOF (the restored state read
@@ -1385,15 +1389,20 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// fallback: waiting on readiness hangs every fresh install by design.
 	case "kubernetesopenbao":
 		spec := manifestSpecMap(manifestPath)
-		mode, replicas := openBaoScenarioShape(spec)
+		shape := openBaoScenarioShape(spec)
 		rootTokenSecret, rootTokenKey := openBaoRestoreRootToken(spec)
 		slug := strings.TrimSuffix(filepath.Base(manifestPath), filepath.Ext(manifestPath))
 		return &OpenBaoVerifier{
-			Namespace:           info.Namespace,
-			Name:                info.Name,
-			Mode:                mode,
-			Replicas:            replicas,
-			Behavioral:          strings.Contains(manifestPath, "behavioral-raft"),
+			Namespace:  info.Namespace,
+			Name:       info.Name,
+			Dev:        shape.Dev,
+			Storage:    shape.Storage,
+			Replicas:   shape.Replicas,
+			PgCluster:  shape.PgCluster,
+			PgDatabase: shape.PgDatabase,
+			// The two durability lanes, one per engine; the restore lane
+			// replaces pods inside its own proof and is NOT behavioral here.
+			Behavioral:          slug == "behavioral-raft" || slug == "behavioral-postgresql",
 			AutoUnseal:          openBaoAutoUnseal(spec),
 			Fixture:             strings.HasPrefix(slug, "fixture-"),
 			TransitKeyHolder:    slug == "fixture-transit-key-holder",

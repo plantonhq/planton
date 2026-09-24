@@ -119,6 +119,7 @@ These are the most important decisions when configuring a job. Explore the full 
 | **AzureContainerAppEnvironment** | `containerAppEnvironmentId` | `status.outputs.environment_id` |
 | **AzureUserAssignedIdentity** | `identity.userAssignedIdentityIds[]`, scale-rule `identityId` | `status.outputs.identity_id` |
 | **AzureContainerAppEnvironmentStorage** | `volumes[].storageName` | `status.outputs.storage_name` |
+| **AzureContainerRegistry** | `registries[].server` | `status.outputs.login_server` |
 
 ### What This Component Provides
 

@@ -72,7 +72,7 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 		return err
 	}
 
-	id := extractResourceID(outputs)
+	id := extractResourceID(outputs, v.IDOutput())
 	if id == "" {
 		return errors.Errorf("no resource ID found in outputs for %s", component)
 	}
@@ -105,14 +105,14 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	return v.VerifyAbsent(h.client, id)
 }
 
-// extractResourceID pulls the Auth0 resource ID from stack outputs.
-// Pulumi exports "id" for all Auth0 components; Terraform outputs vary
-// but all include an "id" key.
-func extractResourceID(outputs map[string]interface{}) string {
+// extractResourceID pulls the Auth0 resource ID from stack outputs, reading
+// the output the component's verifier names (both engines export the same
+// output names for a kind, so one key serves both).
+func extractResourceID(outputs map[string]interface{}, idOutput string) string {
 	if outputs == nil {
 		return ""
 	}
-	if id, ok := outputs["id"]; ok {
+	if id, ok := outputs[idOutput]; ok {
 		switch v := id.(type) {
 		case string:
 			return v

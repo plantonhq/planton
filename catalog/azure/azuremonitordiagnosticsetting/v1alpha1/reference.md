@@ -104,6 +104,12 @@ database, a subscription). There is no default kind because no single
 kind dominates as a target: reference the resource's `*_id` output
 explicitly with valueFrom (kind + fieldPath), or pass a literal ARM ID.
 
+Containment-exempt: a diagnostic setting WATCHES its target and
+routes what it emits; it is an extension resource, not a tenant.
+Vaults, clusters, and gateways are all containers, and a setting
+wired to one by reference would otherwise be drawn inside the very
+thing it monitors.
+
 **ForceNew**: Changing this destroys and recreates the setting.
 
 - rule: {"required":true}

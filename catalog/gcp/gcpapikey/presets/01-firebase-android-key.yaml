@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpApiKey
+metadata:
+  name: firebase-android-key
+spec:
+  keyId: firebase-android-key
+  displayName: Firebase Android key
+  restrictions:
+    androidKeyRestrictions:
+      allowedApplications:
+        - packageName: com.example.app
+          sha1Fingerprint: DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09
+    apiTargets:
+      - service: firebaseinstallations.googleapis.com
+      - service: fcmregistrations.googleapis.com

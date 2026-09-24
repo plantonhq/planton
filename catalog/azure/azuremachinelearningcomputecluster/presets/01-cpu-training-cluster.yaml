@@ -9,7 +9,7 @@ spec:
   # compute target.
   name: cpu-cluster
   region: eastus
-  vmSize: STANDARD_DS3_V2
+  vmSize: Standard_DS3_v2
   vmPriority: DEDICATED
   # Scale-to-zero: free while idle; nodes provision when jobs arrive
   # and release after 30 idle minutes.

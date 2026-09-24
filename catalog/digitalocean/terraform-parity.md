@@ -30,12 +30,17 @@ that has progressed.
 | Provider schema (parity baseline) | `digitalocean@2.99.1` |
 | Kinds in the catalog | 31 |
 | Distinct provider resources consumed | 37 |
-| Spec fields authored across all kinds | 676 |
+| Spec fields authored across all kinds | 677 |
 | Module pins on `digitalocean` | `~> 2.99` × 31 |
 
 The GA provider is the parity baseline. Capability that exists only in a
 secondary channel (for Google, the `google-beta` provider) enters per kind
-through an explicitly enumerated admission list, never wholesale.
+through the admission list (`pkg/providerparity/admissions/`), never
+wholesale: one entry per resource per kind, with the reason and where its
+promotion to the baseline is tracked. The accounting reads the list -- an
+admitted resource is measured against its channel's schema, an unadmitted
+secondary-channel resource is a finding, and an admitted resource the
+baseline serves at the pin is a stale admission.
 
 ## The provider block
 
@@ -59,41 +64,41 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**31 of 31 kinds are at total accounting; 13 proven live.**
+**31 of 31 kinds are at total accounting; 30 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
-| DigitalOceanApp | 292 | 0 | 282 | 10 | 0 | ✅ | — |
-| DigitalOceanBucket | 28 | 6 | 19 | 3 | 0 | ✅ | — |
-| DigitalOceanCdn | 4 | 2 | 2 | 0 | 0 | ✅ | — |
+| DigitalOceanApp | 292 | 0 | 282 | 10 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanBucket | 28 | 6 | 19 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanCdn | 4 | 2 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanCertificate | 6 | 0 | 5 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanContainerRegistry | 6 | 2 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| DigitalOceanDatabaseCluster | 19 | 14 | 5 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseConnectionPool | 6 | 4 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseDb | 2 | 0 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseFirewall | 3 | 0 | 2 | 1 | 0 | ✅ | — |
-| DigitalOceanDatabaseKafkaSchema | 4 | 3 | 1 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseKafkaTopic | 27 | 25 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseReplica | 7 | 4 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseUser | 7 | 1 | 6 | 0 | 0 | ✅ | — |
+| DigitalOceanDatabaseCluster | 19 | 14 | 5 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseConnectionPool | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseDb | 2 | 0 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseFirewall | 3 | 0 | 2 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseKafkaSchema | 4 | 3 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseKafkaTopic | 27 | 25 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseReplica | 7 | 4 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseUser | 7 | 1 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanDnsRecord | 10 | 9 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanDnsZone | 12 | 8 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanDroplet | 21 | 16 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| DigitalOceanDropletAutoscalePool | 18 | 9 | 8 | 1 | 0 | ✅ | — |
+| DigitalOceanDropletAutoscalePool | 18 | 10 | 8 | 0 | 0 | ✅ | — |
 | DigitalOceanFirewall | 17 | 2 | 15 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| DigitalOceanFunction | 292 | 0 | 37 | 255 | 0 | ✅ | — |
-| DigitalOceanKubernetesCluster | 47 | 31 | 15 | 1 | 0 | ✅ | — |
-| DigitalOceanKubernetesNodePool | 13 | 8 | 5 | 0 | 0 | ✅ | — |
+| DigitalOceanFunction | 292 | 0 | 37 | 255 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanKubernetesCluster | 47 | 31 | 15 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanKubernetesNodePool | 13 | 8 | 5 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanLoadBalancer | 46 | 31 | 15 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanMonitorAlert | 11 | 8 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanProject | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| DigitalOceanReservedIp | 8 | 1 | 3 | 4 | 0 | ✅ | — |
-| DigitalOceanSpacesKey | 3 | 0 | 3 | 0 | 0 | ✅ | — |
+| DigitalOceanReservedIp | 8 | 1 | 3 | 4 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanSpacesKey | 3 | 0 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanSshKey | 2 | 1 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanUptimeCheck | 14 | 10 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanVolume | 8 | 5 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | DigitalOceanVpc | 4 | 2 | 1 | 1 | 0 | ✅ | ✅ pulumi, terraform |
-| DigitalOceanVpcPeering | 2 | 0 | 2 | 0 | 0 | ✅ | — |
+| DigitalOceanVpcPeering | 2 | 0 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 
 ## Breadth: every GA resource, one disposition
 

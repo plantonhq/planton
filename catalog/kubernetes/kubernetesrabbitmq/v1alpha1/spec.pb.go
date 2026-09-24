@@ -913,7 +913,7 @@ var File_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_spec_proto protoreflect.
 
 const file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/kubernetes/kubernetesrabbitmq/v1alpha1/spec.proto\x122dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xbe\x10\n" +
+	"9catalog/kubernetes/kubernetesrabbitmq/v1alpha1/spec.proto\x122dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd3\x10\n" +
 	"\x16KubernetesRabbitMqSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12-\n" +
@@ -921,8 +921,8 @@ const file_catalog_kubernetes_kubernetesrabbitmq_v1alpha1_spec_proto_rawDesc = "
 	"\x05image\x18\x04 \x01(\v2&.dev.planton.kubernetes.ContainerImageR\x05image\x12x\n" +
 	"\x12image_pull_secrets\x18\x05 \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets\x12g\n" +
 	"\aservice\x18\x06 \x01(\v2M.dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1.KubernetesRabbitMqServiceR\aservice\x12`\n" +
-	"\tdisk_size\x18\a \x01(\tB>\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x0410GiH\x01R\bdiskSize\x88\x01\x01\x12o\n" +
-	"\rstorage_class\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClass\x12\x1c\n" +
+	"\tdisk_size\x18\a \x01(\tB>\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x0410GiH\x01R\bdiskSize\x88\x01\x01\x12\x83\x01\n" +
+	"\rstorage_class\x18\b \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClass\x12\x1c\n" +
 	"\tephemeral\x18\t \x01(\bR\tephemeral\x12H\n" +
 	"\tresources\x18\n" +
 	" \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12y\n" +

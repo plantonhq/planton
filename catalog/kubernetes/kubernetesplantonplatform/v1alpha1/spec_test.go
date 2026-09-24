@@ -71,6 +71,16 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept a registry root and a runner image override", func() {
+			input := minimalValidPlatform()
+			input.Spec.ImageRegistry = "asia-south1-docker.pkg.dev/plantonhq/planton"
+			input.Spec.Runner = &KubernetesPlantonPlatformRunner{
+				Image: &KubernetesPlantonPlatformImage{Repository: "mirror.example.com/planton/runner"},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept platform-wide storage settings", func() {
 			input := minimalValidPlatform()
 			input.Spec.Storage = &KubernetesPlantonPlatformStorage{
@@ -190,6 +200,22 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			}
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept a module-release override that names a published release", func() {
+			// The one legitimate use: routing around a retracted artifact set. The
+			// platform resolves modules at its own catalog release when this is unset.
+			input := minimalValidPlatform()
+			input.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{IacModulesVersion: "v0.5.60"}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+
+			// Unset is the shape every install should have, and a controlPlane block
+			// declared for other reasons (replicas) must not trip the pattern.
+			unset := minimalValidPlatform()
+			replicas := int32(1)
+			unset.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{Replicas: &replicas}
+			gomega.Expect(protovalidate.Validate(unset)).To(gomega.BeNil())
 		})
 
 		ginkgo.It("should accept the AWS secret backend with its config", func() {
@@ -556,11 +582,30 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 
 	ginkgo.Describe("When invalid input is passed", func() {
 
+		ginkgo.It("should fail on a registry root with a scheme or a trailing slash", func() {
+			for _, root := range []string{"https://ghcr.io/plantonhq/planton", "ghcr.io/plantonhq/planton/"} {
+				input := minimalValidPlatform()
+				input.Spec.ImageRegistry = root
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), root)
+			}
+		})
+
 		ginkgo.It("should fail when version is missing", func() {
 			input := minimalValidPlatform()
 			input.Spec.Version = ""
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should refuse a module-release override that is not an exact release tag", func() {
+			// Only exact releases publish module artifacts; a pre-release, a bare
+			// number, or a branch would 404 at every module download.
+			for _, notARelease := range []string{"v0.5.60-rc.1", "0.5.60", "main", "latest"} {
+				input := minimalValidPlatform()
+				input.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{IacModulesVersion: notARelease}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).NotTo(gomega.BeNil(), notARelease)
+			}
 		})
 
 		ginkgo.It("should fail when namespace is missing", func() {

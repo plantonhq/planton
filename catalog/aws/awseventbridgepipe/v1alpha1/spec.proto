@@ -49,7 +49,16 @@ message AwsEventBridgePipeSpec {
   // broker. FIXED FOR LIFE - changing the source replaces the whole
   // pipe. References here carry no default kind: state the kind
   // explicitly in valueFrom.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef source = 3 [(buf.validate.field).required = true];
+  //
+  // Containment-exempt: a pipe is a managed integration that READS its
+  // source, transforms, and WRITES its target; none of the three ends is
+  // where the pipe lives. Whichever of them is a container (an ECS
+  // cluster, a Redshift cluster, an event bus), the pipe stands between
+  // its ends on a diagram, never inside one of them.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef source = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // Source-family tuning (batching, positions, credentials) plus the
   // event filter. The family block must match the source's service;
@@ -60,7 +69,8 @@ message AwsEventBridgePipeSpec {
   // express state machine, or API destination that transforms each
   // batch before delivery. Unset skips enrichment. References here
   // carry no default kind: state the kind explicitly in valueFrom.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef enrichment = 5;
+  // Access, not placement, like `source`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef enrichment = 5 [(dev.planton.shared.foreignkey.v1.containment_exempt) = true];
 
   // HTTP shaping (for API-destination enrichment) and the input
   // template applied before the enrichment call.
@@ -71,8 +81,11 @@ message AwsEventBridgePipeSpec {
   // Redshift cluster, SageMaker pipeline, CloudWatch log group,
   // EventBridge bus, or API destination. Swaps in place. References
   // here carry no default kind: state the kind explicitly in
-  // valueFrom.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 7 [(buf.validate.field).required = true];
+  // valueFrom. Access, not placement, like `source`.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 7 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // Target-family invocation shaping plus the input template applied
   // before delivery. The family block must match the target's service.

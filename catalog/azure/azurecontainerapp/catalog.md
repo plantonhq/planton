@@ -109,6 +109,7 @@ These are the most important decisions when configuring a Container App. Explore
 | **AzureContainerAppEnvironment** | `containerAppEnvironmentId` | `status.outputs.environment_id` |
 | **AzureUserAssignedIdentity** (optional) | `identity.userAssignedIdentityIds` | `status.outputs.identity_id` |
 | **AzureContainerAppEnvironmentStorage** (optional) | `volumes[].storageName` | `status.outputs.storage_name` |
+| **AzureContainerRegistry** (optional) | `registries[].server` | `status.outputs.login_server` |
 
 ### What This Component Provides
 

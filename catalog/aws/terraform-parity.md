@@ -36,7 +36,12 @@ that has progressed.
 
 The GA provider is the parity baseline. Capability that exists only in a
 secondary channel (for Google, the `google-beta` provider) enters per kind
-through an explicitly enumerated admission list, never wholesale.
+through the admission list (`pkg/providerparity/admissions/`), never
+wholesale: one entry per resource per kind, with the reason and where its
+promotion to the baseline is tracked. The accounting reads the list -- an
+admitted resource is measured against its channel's schema, an unadmitted
+secondary-channel resource is a finding, and an admitted resource the
+baseline serves at the pin is a stale admission.
 
 ## The provider block
 

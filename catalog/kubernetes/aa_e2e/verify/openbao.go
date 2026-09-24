@@ -33,11 +33,24 @@ import (
 // Dev mode skips init/unseal (auto-unsealed, root token "root") and
 // proves the KV round-trip on the built-in `secret/` mount.
 //
-// The behavioral-raft scenario (recognized by name) additionally deletes
-// pod 0 after the write, waits for its replacement, unseals it AGAIN
-// (restart = sealed, the Shamir-mode truth), and re-reads the marker —
-// Raft data surviving pod replacement plus the re-seal reality is the
-// durability proof.
+// THE STORAGE ENGINE decides what else is asserted. Every server that is
+// not dev runs the chart's HA mode, so the `-active` Service exists and
+// every read goes through it (the leader may move). On PostgreSQL
+// storage (provePostgresqlStorage) the engine's own promise is proven
+// before the round-trip: no data volume was claimed, the server reports
+// HA on (the lock table is live — `sys/leader` says `ha_enabled`), and
+// the vault's tables sit in the DECLARED database (read with psql on the
+// CloudNativePG primary — the PG* environment landed where the manifest
+// said).
+//
+// The behavioral-* scenarios (recognized by name) additionally delete
+// pod 0 after the write, wait for its replacement, unseal it AGAIN
+// (restart = sealed, the Shamir-mode truth), and re-read the marker —
+// data surviving pod replacement plus the re-seal reality is the
+// durability proof. On Raft the data came back from the replica's own
+// volume; on PostgreSQL there is no volume, the replacement re-acquires
+// the HA lock once the dead holder's lease expires, and the data came
+// back from the database.
 //
 // AUTO-UNSEAL changes the bootstrap, not the proof: `sys/init` on an
 // auto-unseal seal refuses `secret_shares` and takes `recovery_shares`
@@ -71,9 +84,19 @@ import (
 type OpenBaoVerifier struct {
 	Namespace string
 	Name      string
-	// Mode: dev | standalone | ha (drives which lifecycle arms run).
-	Mode     string
+	// Dev marks the in-memory lab server: no init, no unseal, no volume,
+	// no HA objects — the round-trip on the built-in mount is the proof.
+	Dev bool
+	// Storage is the declared engine (storageRaft | storagePostgresql;
+	// an unset engine is Raft). Meaningless when Dev is set.
+	Storage  string
 	Replicas int
+	// PgCluster and PgDatabase are read from the PostgreSQL arm: the
+	// referenced KubernetesPostgres (by the name its host was declared
+	// from) and the database the vault stores in — what the psql proof
+	// opens. Empty on every other engine.
+	PgCluster  string
+	PgDatabase string
 	// Behavioral enables the pod-replacement durability arm.
 	Behavioral bool
 	// AutoUnseal is set when the manifest declares an auto_unseal seal
@@ -106,18 +129,21 @@ type initResponse struct {
 }
 
 func (v *OpenBaoVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
-	fmt.Printf("  [verify] openbao %q in namespace %q (mode %s, replicas %d)\n", v.Name, v.Namespace, v.Mode, v.Replicas)
+	fmt.Printf("  [verify] openbao %q in namespace %q (%s, replicas %d)\n", v.Name, v.Namespace, v.shapeLabel(), v.Replicas)
 
-	// Every mode: the chart's Services exist.
+	// Every server: the chart's Services exist.
 	if err := KubectlResourceExists(ctx, kubeconfig, "service", v.Name, v.Namespace); err != nil {
 		return errors.Wrap(err, "openbao client service not found")
 	}
 	if err := KubectlResourceExists(ctx, kubeconfig, "service", v.Name+"-internal", v.Namespace); err != nil {
 		return errors.Wrap(err, "openbao internal (headless) service not found")
 	}
-	if v.Mode == "ha" {
+	if !v.Dev {
+		// Every server on a storage engine runs the chart's HA mode, so
+		// the `-active` Service (the module's active_service output)
+		// exists at any replica count, on either engine.
 		if err := KubectlResourceExists(ctx, kubeconfig, "service", v.Name+"-active", v.Namespace); err != nil {
-			return errors.Wrap(err, "openbao active service not found")
+			return errors.Wrap(err, "openbao active service not found (every server on a storage engine runs the chart's HA mode and exports it)")
 		}
 	}
 
@@ -127,7 +153,7 @@ func (v *OpenBaoVerifier) VerifyExists(ctx context.Context, kubeconfig string) e
 		return err
 	}
 
-	if v.Fixture && v.Mode != "dev" {
+	if v.Fixture && !v.Dev {
 		// A prerequisite vault: present and running is the whole
 		// verification. It is sealed by design; the lane's seed script
 		// initializes it once the chain is up.
@@ -135,7 +161,7 @@ func (v *OpenBaoVerifier) VerifyExists(ctx context.Context, kubeconfig string) e
 		return nil
 	}
 
-	if v.Mode == "dev" {
+	if v.Dev {
 		// Dev mode auto-initializes and auto-unseals with root token
 		// "root"; the round-trip on the built-in secret/ mount is the
 		// whole proof.
@@ -168,6 +194,12 @@ func (v *OpenBaoVerifier) VerifyExists(ctx context.Context, kubeconfig string) e
 		return errors.Wrap(err, "pods never became Ready after unseal (the readiness-tracks-seal-status contract)")
 	}
 	fmt.Printf("  [verify] SEAL LIFECYCLE: all %d pods flipped to Ready after unseal\n", v.Replicas)
+
+	if v.Storage == storagePostgresql {
+		if err := v.provePostgresqlStorage(ctx, kubeconfig, rootToken); err != nil {
+			return err
+		}
+	}
 
 	if err := v.proveKvRoundTrip(ctx, kubeconfig, rootToken, unsealKey, "e2e-proof", true); err != nil {
 		return err
@@ -329,14 +361,11 @@ func (v *OpenBaoVerifier) proveKvRoundTrip(ctx context.Context, kubeconfig, toke
 		}
 	}
 
-	// Read the marker back — through the ACTIVE service in HA (the
-	// leader may have moved after a behavioral pod loss), through pod 0
-	// otherwise.
+	// Read the marker back — through the ACTIVE service for every server
+	// on a storage engine (the active node may have moved after a
+	// behavioral pod loss), through pod 0 for dev.
 	readTarget := pod0
-	viaService := false
-	if v.Mode == "ha" {
-		viaService = true
-	}
+	viaService := !v.Dev
 	readOnce := func(base string) error {
 		_, body, err := v.httpOnce(ctx, http.MethodGet, base+"/v1/"+mount+"/data/e2e-marker", "", token, 6*time.Minute, 200)
 		if err != nil {
@@ -356,6 +385,16 @@ func (v *OpenBaoVerifier) proveKvRoundTrip(ctx context.Context, kubeconfig, toke
 		return nil
 	}
 	if viaService {
+		// The tunnel resolves the Service to a pod when it opens, and the
+		// `-active` selector matches only the pod the server labeled
+		// active — after a pod loss that label lands only once the HA lock
+		// is held again (on PostgreSQL, after the dead holder's lease
+		// expires). Wait for an endpoint before opening the tunnel; a
+		// tunnel opened early dies with "no pods found" and no HTTP retry
+		// ever gets its turn.
+		if err := v.waitForActiveEndpoint(ctx, kubeconfig, 3*time.Minute); err != nil {
+			return err
+		}
 		err = v.withServicePortForward(ctx, kubeconfig, v.Name+"-active", readOnce)
 	} else {
 		err = v.withPodPortForward(ctx, kubeconfig, readTarget, readOnce)
@@ -364,7 +403,11 @@ func (v *OpenBaoVerifier) proveKvRoundTrip(ctx context.Context, kubeconfig, toke
 		return err
 	}
 	if v.Behavioral {
-		fmt.Printf("  [verify] DURABILITY: marker read back AFTER pod replacement — Raft data survived\n")
+		if v.Storage == storagePostgresql {
+			fmt.Printf("  [verify] DURABILITY: marker read back AFTER pod replacement — the data lives in PostgreSQL, not on a volume, and the replacement re-acquired the HA lock\n")
+		} else {
+			fmt.Printf("  [verify] DURABILITY: marker read back AFTER pod replacement — Raft data survived\n")
+		}
 	} else {
 		fmt.Printf("  [verify] KV: marker read back — the server serves secrets\n")
 	}
@@ -415,8 +458,131 @@ func (v *OpenBaoVerifier) replacePod0(ctx context.Context, kubeconfig, unsealKey
 	if err := v.unsealPod(ctx, kubeconfig, pod0, unsealKey, 6*time.Minute); err != nil {
 		return errors.Wrap(err, "re-unsealing the replacement pod")
 	}
-	fmt.Printf("  [verify] DURABILITY: replacement pod re-unsealed and rejoining the Raft cluster\n")
+	if v.Storage == storagePostgresql {
+		fmt.Printf("  [verify] DURABILITY: replacement pod re-unsealed — it takes the HA lock once the dead holder's lease expires\n")
+	} else {
+		fmt.Printf("  [verify] DURABILITY: replacement pod re-unsealed and rejoining the Raft cluster\n")
+	}
 	return nil
+}
+
+// ------------------------- the PostgreSQL engine -------------------------
+
+// provePostgresqlStorage asserts what PostgreSQL storage promises, from
+// three witnesses, before any secret is written:
+//
+//   - THE CLUSTER: no data volume was claimed. The chart claims `data`
+//     only for Raft (or its standalone mode, which this kind never
+//     drives); a PVC here would mean the engine switch did not reach the
+//     chart.
+//   - THE SERVER: `sys/leader` reports `ha_enabled` and `is_self` on pod
+//     0. OpenBao runs HA only when the backend's lock table is enabled,
+//     and labels its pod active only from the HA leader path — so this is
+//     the same fact the `-active` Service depends on, in the server's own
+//     words.
+//   - THE DATABASE: the lock table holds a row and the KV table exists in
+//     the DECLARED database, read with psql on the CloudNativePG primary.
+//     The connection reaches the server as PG* environment variables, so
+//     this is the proof that PGDATABASE (and the rest) landed where the
+//     manifest said. Every lane on this engine composes a
+//     KubernetesPostgres beside the vault (the password Secret must share
+//     the vault's namespace, so the cluster does too); a host that names
+//     no such cluster is a refusal, never a silent skip — a witness that
+//     can go quiet is a proof that can die unnoticed.
+func (v *OpenBaoVerifier) provePostgresqlStorage(ctx context.Context, kubeconfig, token string) error {
+	dataClaim := "data-" + v.Name + "-0"
+	if err := KubectlResourceAbsent(ctx, kubeconfig, "persistentvolumeclaim", dataClaim, v.Namespace); err != nil {
+		return errors.Wrapf(err, "PostgreSQL storage claimed a data volume (%s) — the chart's Raft toggle must be off and dataStorage disabled for this engine", dataClaim)
+	}
+	fmt.Printf("  [verify] POSTGRESQL STORAGE: no data volume claimed (%s absent) — the database holds the data\n", dataClaim)
+
+	if err := v.waitForLeaderSelf(ctx, kubeconfig, v.Name+"-0", token, 3*time.Minute); err != nil {
+		return err
+	}
+
+	if v.PgCluster == "" || v.PgDatabase == "" {
+		return errors.Errorf("the database witness has no cluster to open: the host must be a KubernetesPostgres's read-write Service (`<cluster>-rw`, by reference or as its literal) in the vault's namespace and `database` must be declared — declare the database beside the vault, as every PostgreSQL lane does")
+	}
+	if err := KubectlResourceExists(ctx, kubeconfig, "cluster.postgresql.cnpg.io", v.PgCluster, v.Namespace); err != nil {
+		return errors.Wrapf(err, "no CloudNativePG cluster %q in namespace %q serves the declared host — the database witness needs the KubernetesPostgres the vault stores in, beside it", v.PgCluster, v.Namespace)
+	}
+	primary, err := cnpgCurrentPrimary(ctx, kubeconfig, v.Namespace, v.PgCluster)
+	if err != nil {
+		return errors.Wrapf(err, "locating the primary of the referenced KubernetesPostgres %q", v.PgCluster)
+	}
+	locks, err := cnpgPsqlDB(ctx, kubeconfig, v.Namespace, primary, v.PgDatabase,
+		"SELECT count(*) FROM openbao_ha_locks")
+	if err != nil {
+		return errors.Wrapf(err, "the HA lock table is not readable in database %q — the vault did not store where the manifest declared, or ha_enabled never rendered", v.PgDatabase)
+	}
+	if strings.TrimSpace(locks) == "0" {
+		return errors.Errorf("the HA lock table in database %q holds no row — the active server never took the lock", v.PgDatabase)
+	}
+	if _, err := cnpgPsqlDB(ctx, kubeconfig, v.Namespace, primary, v.PgDatabase,
+		"SELECT count(*) FROM openbao_kv_store"); err != nil {
+		return errors.Wrapf(err, "the KV table is not readable in database %q", v.PgDatabase)
+	}
+	fmt.Printf("  [verify] POSTGRESQL STORAGE: openbao_ha_locks holds %s row(s) and openbao_kv_store exists in database %q on %s — the PG* environment landed where the manifest declared\n",
+		strings.TrimSpace(locks), v.PgDatabase, primary)
+	return nil
+}
+
+// waitForLeaderSelf polls `sys/leader` on one pod until it reports HA on
+// and itself as the active node. Right after unseal the server still has
+// to take the lock, so this is a wait, not a one-shot read.
+func (v *OpenBaoVerifier) waitForLeaderSelf(ctx context.Context, kubeconfig, pod, token string, budget time.Duration) error {
+	return v.withPodPortForward(ctx, kubeconfig, pod, func(base string) error {
+		deadline := time.Now().Add(budget)
+		var last string
+		for time.Now().Before(deadline) {
+			_, body, err := v.httpOnce(ctx, http.MethodGet, base+"/v1/sys/leader", "", token, 30*time.Second, 200)
+			if err == nil {
+				var leader struct {
+					HAEnabled bool `json:"ha_enabled"`
+					IsSelf    bool `json:"is_self"`
+				}
+				if jsonErr := json.Unmarshal([]byte(body), &leader); jsonErr == nil {
+					if !leader.HAEnabled {
+						return errors.New("sys/leader reports ha_enabled=false — the storage stanza did not enable the lock table, so the server never labels itself active and the -active Service selects nothing")
+					}
+					if leader.IsSelf {
+						fmt.Printf("  [verify] POSTGRESQL STORAGE: sys/leader on %s reports ha_enabled=true, is_self=true — the lock table is live and this server holds the lock\n", pod)
+						return nil
+					}
+					last = "ha_enabled=true, is_self=false (the lock not yet held)"
+				} else {
+					last = "unparseable sys/leader body"
+				}
+			} else {
+				last = err.Error()
+			}
+			time.Sleep(5 * time.Second)
+		}
+		return errors.Errorf("%s never reported itself active through sys/leader (last: %s)", pod, last)
+	})
+}
+
+// waitForActiveEndpoint waits until the `-active` Service has an address
+// — the pod the server labeled active after taking the HA lock.
+func (v *OpenBaoVerifier) waitForActiveEndpoint(ctx context.Context, kubeconfig string, budget time.Duration) error {
+	deadline := time.Now().Add(budget)
+	for time.Now().Before(deadline) {
+		addrs, _ := kubectlGetJSONPath(ctx, kubeconfig, "endpoints", v.Name+"-active", v.Namespace,
+			"{.subsets[*].addresses[*].ip}")
+		if strings.TrimSpace(addrs) != "" {
+			return nil
+		}
+		time.Sleep(5 * time.Second)
+	}
+	return errors.Errorf("the %s-active Service never gained an endpoint — no server labeled itself active (sealed, or the HA lock never taken)", v.Name)
+}
+
+// shapeLabel names the declared shape for the verifier's log lines.
+func (v *OpenBaoVerifier) shapeLabel() string {
+	if v.Dev {
+		return "dev"
+	}
+	return "storage " + v.Storage
 }
 
 // ------------------------------ plumbing --------------------------------
@@ -492,28 +658,85 @@ func (v *OpenBaoVerifier) withPortForward(ctx context.Context, kubeconfig, targe
 	return fn("http://127.0.0.1:" + localPort)
 }
 
+// The storage engines a KubernetesOpenBao server declares. An unset
+// engine is Raft (the spec's default); dev is not an engine but the lab
+// posture, carried separately.
+const (
+	storageRaft       = "raft"
+	storagePostgresql = "postgresql"
+)
+
+// openBaoShape is what the verifier reads out of a scenario manifest.
+type openBaoShape struct {
+	Dev      bool
+	Storage  string
+	Replicas int
+	// PgCluster is the CloudNativePG cluster serving the PostgreSQL arm's
+	// host; PgDatabase is the database the vault stores in. Both empty
+	// unless the engine is PostgreSQL.
+	PgCluster  string
+	PgDatabase string
+}
+
+// rwServiceSuffix is CloudNativePG's read-write Service name suffix: a
+// cluster named `pg` is written to through `pg-rw`, and the
+// KubernetesPostgres kind exports exactly that short name as its
+// `rw_service` output.
+const rwServiceSuffix = "-rw"
+
 // openBaoScenarioShape pulls the verifier's inputs out of a
-// KubernetesOpenBao scenario manifest: which server mode the oneof
-// declares (absent = standalone, the chart default) and the replica
-// count (only HA runs more than one). Manifests may spell fields in
+// KubernetesOpenBao scenario manifest: dev or the storage engine (absent
+// = Raft, the spec's default), the replica count (default 1), and on
+// PostgreSQL the cluster and database the psql witness opens.
+//
+// The harness resolves references BEFORE the verifier reads the manifest
+// (a `host.valueFrom` onto a KubernetesPostgres arrives here as the
+// literal `<cluster>-rw` its `rw_service` output holds), so the cluster
+// is derived from the host in whichever form it has: the reference's own
+// name when the manifest is read as authored, otherwise the first DNS
+// label with the `-rw` suffix stripped. A host that is not a CloudNativePG
+// read-write Service yields no cluster. Manifests may spell fields in
 // either protojson case; the keys read here are case-neutral.
-func openBaoScenarioShape(spec map[string]interface{}) (mode string, replicas int) {
-	mode, replicas = "standalone", 1
+func openBaoScenarioShape(spec map[string]interface{}) openBaoShape {
+	shape := openBaoShape{Storage: storageRaft, Replicas: 1}
 	server := specNestedMap(spec, "server")
 	if server == nil {
-		return
+		return shape
 	}
 	if _, ok := server["dev"]; ok {
-		return "dev", 1
+		shape.Dev = true
+		return shape
 	}
-	if ha, ok := server["ha"].(map[string]interface{}); ok {
-		replicas = 3
-		if n, ok := specInt(ha["replicas"]); ok {
-			replicas = n
+	if n, ok := specInt(server["replicas"]); ok {
+		shape.Replicas = n
+	}
+	if pg := specNestedMap(server, "postgresql"); pg != nil {
+		shape.Storage = storagePostgresql
+		shape.PgDatabase, _ = pg["database"].(string)
+		if host := specNestedMap(pg, "host"); host != nil {
+			if valueFrom := specNestedMap(host, "valueFrom", "value_from"); valueFrom != nil {
+				shape.PgCluster, _ = valueFrom["name"].(string)
+			} else if literal, _ := host["value"].(string); literal != "" {
+				shape.PgCluster = cnpgClusterFromRwHost(literal)
+			}
 		}
-		return "ha", replicas
 	}
-	return
+	return shape
+}
+
+// cnpgClusterFromRwHost names the CloudNativePG cluster behind a host
+// that is its read-write Service — `pg-rw`, `pg-rw.ns`, or the full
+// `pg-rw.ns.svc.cluster.local` — and returns "" for any other host (a
+// managed endpoint, a bare hostname): there is no cluster to open there.
+func cnpgClusterFromRwHost(host string) string {
+	label := host
+	if i := strings.IndexByte(host, '.'); i >= 0 {
+		label = host[:i]
+	}
+	if !strings.HasSuffix(label, rwServiceSuffix) || label == rwServiceSuffix {
+		return ""
+	}
+	return strings.TrimSuffix(label, rwServiceSuffix)
 }
 
 // openBaoAutoUnseal reports whether the manifest declares an auto_unseal

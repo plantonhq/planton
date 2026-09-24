@@ -1,0 +1,31 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAppleApp
+metadata:
+  name: mobile-ios
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+  displayName: Mobile (iOS)
+  bundleId: com.example.mobile
+  appStoreId: "1234567890"
+  teamId: ABCDE12345
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: firebase-ios-key
+      fieldPath: status.outputs.uid
+  appCheck:
+    appAttest:
+      enabled: true
+      tokenTtl: 3600s
+    deviceCheck:
+      keyId: ABC123DEFG
+      privateKey: $secret/firebase-devicecheck-private-key
+      tokenTtl: 3600s
+    debugTokens:
+      - displayName: simulator
+        token: $secret/firebase-app-check-simulator-token
+  deletionPolicy: PREVENT

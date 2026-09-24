@@ -221,9 +221,6 @@ resources:
   - resource: google_apihub_runtime_project_attachment
     disposition: deferred
     reason: "API Hub governance attachments are a specialty; deferred pending demand"
-  - resource: google_apikeys_key
-    disposition: deferred
-    reason: "judged to deserve a GcpApiKey kind (Maps/Firebase restricted API keys); deferred pending demand"
   - resource: google_app_engine_application
     disposition: excluded-deprecated
     reason: "App Engine is a legacy PaaS surface superseded by Cloud Run (containers) and Firebase App Hosting (web apps)"
@@ -976,10 +973,10 @@ resources:
     reason: "judged to deserve a GcpDataflowJob kind (long-running streaming pipelines); deferred pending demand"
   - resource: google_dataform_folder
     disposition: deferred
-    reason: "folds into the Dataform repository kind judged alongside the beta-only core resource (see the beta admission list); deferred until that admission"
+    reason: "folds into a Dataform repository kind whose core resource is beta-only at the pin and would enter through the google-beta admission list; deferred pending demand"
   - resource: google_dataform_team_folder
     disposition: deferred
-    reason: "folds into the Dataform repository kind judged alongside the beta-only core resource (see the beta admission list); deferred until that admission"
+    reason: "folds into a Dataform repository kind whose core resource is beta-only at the pin and would enter through the google-beta admission list; deferred pending demand"
   - resource: google_dataplex_aspect_type
     disposition: deferred
     reason: "Dataplex data governance judged as a ~6 kind family (lake, zone, asset, datascan, catalog entries, glossary); deferred pending demand"
@@ -1256,30 +1253,6 @@ resources:
   - resource: google_filestore_snapshot
     disposition: deferred
     reason: "judged to fold into the existing GcpFilestoreInstance kind's spec (backups and snapshots); the composition is not built"
-  - resource: google_firebase_app_check_app_attest_config
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
-  - resource: google_firebase_app_check_debug_token
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
-  - resource: google_firebase_app_check_device_check_config
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
-  - resource: google_firebase_app_check_play_integrity_config
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
-  - resource: google_firebase_app_check_recaptcha_enterprise_config
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
-  - resource: google_firebase_app_check_recaptcha_v3_config
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
-  - resource: google_firebase_app_check_resource_policy
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
-  - resource: google_firebase_app_check_service_config
-    disposition: deferred
-    reason: "App Check folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
   - resource: google_firebase_app_hosting_backend
     disposition: deferred
     reason: "Firebase App Hosting judged as a backend kind (builds, traffic, and domains composed); deferred pending demand"
@@ -1300,7 +1273,7 @@ resources:
     reason: "Firebase Data Connect is new; deferred"
   - resource: google_firebase_remote_config_remote_config
     disposition: deferred
-    reason: "Remote Config folds into the Firebase kinds that enter through the beta admission list (the Firebase family is the standing seed); deferred until that admission"
+    reason: "console-authored application content (feature-flag values with conditions, rollouts, and A/B tests operated from the Firebase console), the same class as firestore_document -- the catalog models infrastructure state, and declaring flag values would turn every console rollout into drift; deferred"
   - resource: google_firebaserules_release
     disposition: deferred
     reason: "judged to fold into the Firestore database and Firebase storage kinds (security rules); the composition is not built"

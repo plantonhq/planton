@@ -1,0 +1,90 @@
+# =============================================================================
+# Operator E2E -- the vault restore lanes (Kind)
+# =============================================================================
+# The bundled vault's whole disaster story, proven on a real cluster: two
+# platform lifecycles in operator/test/e2e behind the vault-restore label --
+# a team on the built-in seal with a keys Secret they own, and a team on a
+# transit seal against an in-cluster key holder -- each installed, archived
+# to an in-cluster object store, destroyed, and declared again from the
+# archive, with the secrets written before the disaster read back through the
+# control plane's own token and a signature verified on the restored OIDC
+# signing key (`make test-e2e-vault-restore`).
+#
+# Its own workflow, not a third job in e2e-operator.yaml, for two reasons that
+# file's shape makes load-bearing:
+#
+#   - Two whole platforms take the better part of an hour. e2e-operator.yaml
+#     cancels its in-progress run on every new push to main, which is right
+#     for a thirty-minute PR gate and wrong for a post-merge proof; this
+#     workflow queues instead.
+#   - The lanes' backup plugin mints its TLS through cert-manager, so the
+#     suite must install it; e2e-operator.yaml skips that install because the
+#     manager itself serves no webhooks.
+#
+# Never on a pull request: the lanes are the post-merge proof that an
+# operator change kept the promise, not a gate on proposing one. Pushes to
+# main touching the operator or the two charts it installs, the weekly
+# schedule as the drift net, and manual dispatch.
+#
+# Runs directly on the runner host, not in the CI toolchain container, for
+# the reason e2e-operator.yaml states: Kind publishes the API server on the
+# Docker host's loopback.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# PAUSED (founder direction 2026-09-17, GitHub Actions budget). This workflow
+# runs on manual dispatch only: its push, pull_request, and schedule triggers
+# are retired below, verbatim, so re-enabling is a restore and not a guess.
+# In the first 17 days of September 2026 the automatic E2E runs on this
+# repository cost about $25 in larger-runner minutes for proofs nobody was
+# waiting on. Restore the block under `on:` when the budget allows.
+#
+# Retired triggers:
+#    push:
+#      branches:
+#        - main
+#      paths:
+#        - 'operator/**'
+#        - 'helm/planton-operator/**'
+#        - 'helm/planton/**'
+#        - '.github/workflows/e2e-operator-vault-restore.yaml'
+#    schedule:
+#      - cron: '0 5 * * 0'
+# -----------------------------------------------------------------------------
+
+name: e2e-operator-vault-restore
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-operator-vault-restore
+  cancel-in-progress: false
+
+env:
+  KIND_VERSION: v0.27.0
+
+jobs:
+  vault-restore:
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
+    # Both lanes ran in 22 minutes on a 16-core laptop that emulates the
+    # control plane's amd64 image; the runner runs it natively.
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: operator/go.mod
+          cache-dependency-path: operator/go.sum
+      - name: Install kind
+        run: |
+          go install "sigs.k8s.io/kind@${KIND_VERSION}"
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      - name: Run the vault restore lanes
+        run: make -C operator test-e2e-vault-restore

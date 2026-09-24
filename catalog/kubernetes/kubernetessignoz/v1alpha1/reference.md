@@ -175,7 +175,7 @@ spec:
 | `spec.clickhouse.verify` | `bool` |  |  |  |
 | `spec.server` | `KubernetesSignozServer` |  |  |  |
 | `spec.server.diskSize` | `string` |  | `1Gi` |  |
-| `spec.server.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`metadata.name`) |
+| `spec.server.storageClass` | `string \| valueFrom` |  |  | KubernetesStorageClass (`status.outputs.storage_class_name`) |
 | `spec.server.resources` | `ContainerResources` |  |  |  |
 | `spec.server.resources.limits` | `CpuMemory` |  |  |  |
 | `spec.server.resources.limits.cpu` | `string` |  |  |  |
@@ -408,8 +408,8 @@ data lives in ClickHouse, not here.
 Storage class for the state volume. Empty = the cluster's default
 class.
 
-- references: KubernetesStorageClass (`metadata.name`)
-- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: metadata.name}} -- a bare string does not parse
+- references: KubernetesStorageClass (`status.outputs.storage_class_name`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesStorageClass, name: <that resource's name>, fieldPath: status.outputs.storage_class_name}} -- a bare string does not parse
 
 ### spec.server.resources
 
@@ -805,7 +805,7 @@ Fields that can point at another resource's outputs:
 | `spec.clickhouse.host` | KubernetesClickHouse | `status.outputs.service_name` |
 | `spec.clickhouse.clusterName` | KubernetesClickHouse | `status.outputs.cluster_name` |
 | `spec.clickhouse.passwordSecret.secretName` | KubernetesClickHouse | `status.outputs.auth_secret_name` |
-| `spec.server.storageClass` | KubernetesStorageClass | `metadata.name` |
+| `spec.server.storageClass` | KubernetesStorageClass | `status.outputs.storage_class_name` |
 
 ## See Also
 

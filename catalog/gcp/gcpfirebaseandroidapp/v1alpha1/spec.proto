@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// GcpFirebaseAndroidAppSpec registers an Android app in a Firebase-enabled
+// Google Cloud project and composes the app's anti-abuse attestation (App
+// Check with Play Integrity, plus debug tokens for development builds).
+// The registration is what lets the Android build receive Firebase Cloud
+// Messaging and use every other Firebase product: its google-services.json
+// configuration file is produced as an output for the build to consume.
+//
+// The app lives INSIDE a GcpFirebaseProject (the project's Firebase
+// enablement); declare that first and reference it from project_id.
+//
+// Two facts to know before acting. The package name is the app's permanent
+// identity in Firebase: it cannot change, and a project accepts each
+// package name exactly once. And destroying this resource with
+// deletion_policy DELETE removes the app IMMEDIATELY and PERMANENTLY --
+// Firebase's 30-day recoverable window is skipped -- so a shipped app's
+// registration should carry PREVENT.
+message GcpFirebaseAndroidAppSpec {
+  // Message-level: the Play Integrity attestation provider only works for
+  // an app whose SHA-256 signing certificate fingerprint Firebase knows.
+  // This is taught here rather than enforced: the App Check API accepts the
+  // configuration without a fingerprint and attestation simply fails at
+  // runtime, so a rule here would refuse a shape Google accepts.
+
+  // The GCP project the app is registered in -- the Firebase-enabled
+  // project. Its VALUE is the GCP project id (the same string every GCP
+  // kind's project_id carries), so a literal works; the default REFERENCE
+  // is a GcpFirebaseProject resource, because an app registration exists
+  // only inside a project's Firebase enablement: referencing the enablement
+  // orders this app after it in a chart and places it inside the Firebase
+  // project on diagrams. If omitted, the provider's default project is
+  // used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpFirebaseProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The user-assigned display name of the app, as the Firebase console
+  // shows it. Updatable.
+  string display_name = 2 [(buf.validate.field).required = true];
+
+  // The canonical package name of the Android app, as it appears in the
+  // Play Console (e.g. com.example.app). This is the app's IDENTITY in
+  // Firebase and in google-services.json: it is immutable (a change
+  // replaces the registration -- a new app id, a new config file), and a
+  // project accepts each package name exactly once. Must be a valid Java
+  // package name: two or more dot-separated segments, each starting with a
+  // letter and made of letters, digits, and underscores.
+  string package_name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "valid_package_name"
+      message: "package_name must be a valid Java package name -- two or more dot-separated segments, each starting with a letter and made of letters, digits, and underscores (e.g. com.example.app)"
+      expression: "this.matches('^[a-zA-Z][a-zA-Z0-9_]*(\\\\.[a-zA-Z][a-zA-Z0-9_]*)+$')"
+    }
+  ];
+
+  // SHA-1 fingerprints of the app's signing certificates (debug, release,
+  // Play App Signing), 40 hex digits, with or without colon separators.
+  // Cloud Messaging needs NONE of these; they are required by Google
+  // Sign-In, Dynamic Links, and Phone Authentication. Updatable.
+  repeated string sha1_hashes = 4 [
+    (buf.validate.field).repeated.unique = true,
+    (buf.validate.field).repeated.items.cel = {
+      id: "valid_sha1_hash"
+      message: "each sha1_hashes entry must be a SHA-1 fingerprint: 40 hex digits, optionally colon-separated in pairs"
+      expression: "this.matches('^([0-9A-Fa-f]{40}|([0-9A-Fa-f]{2}:){19}[0-9A-Fa-f]{2})$')"
+    }
+  ];
+
+  // SHA-256 fingerprints of the app's signing certificates, 64 hex digits,
+  // with or without colon separators. Cloud Messaging needs none; App Check
+  // with Play Integrity REQUIRES the fingerprint of the certificate the
+  // shipped APK is signed with (Play App Signing's certificate for a Play
+  // release) -- without it attestation fails at runtime. Updatable.
+  repeated string sha256_hashes = 5 [
+    (buf.validate.field).repeated.unique = true,
+    (buf.validate.field).repeated.items.cel = {
+      id: "valid_sha256_hash"
+      message: "each sha256_hashes entry must be a SHA-256 fingerprint: 64 hex digits, optionally colon-separated in pairs"
+      expression: "this.matches('^([0-9A-Fa-f]{64}|([0-9A-Fa-f]{2}:){31}[0-9A-Fa-f]{2})$')"
+    }
+  ];
+
+  // The API key the app presents to Firebase, by the key's Google-assigned
+  // UID: a literal, or a reference to a GcpApiKey resource (its uid
+  // output). The key is a CLIENT IDENTIFIER that ships inside the APK in
+  // google-services.json -- not a secret -- and it must be valid for this
+  // app: unrestricted, or restricted to this package name and certificate
+  // with API restrictions that include the Firebase APIs the app uses
+  // (Firebase Installations and FCM Registration for push). Google's
+  // recommended practice is one restricted key per app. When omitted,
+  // Firebase associates an existing valid key or provisions a new,
+  // unrestricted one; the api_key_id output reports which. Updatable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef api_key_id = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpApiKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.uid"
+  ];
+
+  // Firebase App Check for this app: the attestation provider that proves
+  // requests come from the genuine app on a genuine device (Play
+  // Integrity), and debug tokens that let development builds and CI pass
+  // App Check without a real device. Whether the project's backends
+  // ENFORCE App Check is configured on the GcpFirebaseProject.
+  GcpFirebaseAndroidAppAppCheck app_check = 7;
+
+  // What destroying this resource does to the app registration (and to
+  // the composed debug tokens):
+  //   ""        -- same as "DELETE" (provider default)
+  //   "DELETE"  -- the app is removed IMMEDIATELY and PERMANENTLY: Firebase
+  //                normally keeps a removed app recoverable for 30 days;
+  //                this path skips that window. The package name becomes
+  //                registrable again at once.
+  //   "PREVENT" -- destroy FAILS; use for a shipped app whose users hold
+  //                its google-services.json
+  //   "ABANDON" -- the app is left registered and removed from management
+  // The Play Integrity configuration is a per-app singleton Google never
+  // deletes: it is removed from management on destroy and disappears only
+  // with the app itself.
+  string deletion_policy = 8 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+  }];
+}
+
+// Per-app App Check configuration for an Android app.
+message GcpFirebaseAndroidAppAppCheck {
+  option (buf.validate.message).cel = {
+    id: "unique_debug_token_names"
+    message: "app_check.debug_tokens must use each display_name at most once"
+    expression: "this.debug_tokens.map(t, t.display_name).unique()"
+  };
+
+  // Attest with the Play Integrity API -- Google's attestation provider for
+  // Android apps distributed through Google Play. Requires the app's
+  // SHA-256 signing fingerprint in sha256_hashes. Omit the block to leave
+  // the provider unconfigured.
+  GcpFirebaseAndroidAppAppCheckPlayIntegrity play_integrity = 1;
+
+  // Debug tokens: pre-shared secrets a development build or a CI emulator
+  // presents in place of a device attestation. Each token is a SECRET --
+  // anyone holding it passes App Check as this app -- so it is a managed
+  // secret reference on the platform, never plaintext. Revoke by removing
+  // the entry.
+  repeated GcpFirebaseAndroidAppAppCheckDebugToken debug_tokens = 2;
+}
+
+// Play Integrity attestation for the app.
+message GcpFirebaseAndroidAppAppCheckPlayIntegrity {
+  // Whether Play Integrity attestation is configured for the app. Defaults
+  // to true when the block is present, so `playIntegrity: {}` means
+  // "configured, with Google's default token lifetime"; set false to
+  // declare the block and leave the provider unconfigured. The wire has no
+  // switch of its own -- the configuration's existence is the switch -- so
+  // this field is how the manifest states the intent explicitly.
+  optional bool enabled = 1 [(dev.planton.shared.options.default) = "true"];
+
+  // How long an App Check token exchanged from a Play Integrity verdict
+  // stays valid, as a duration in seconds with an "s" suffix (e.g. "3600s",
+  // "1800s", "604800s"). Google accepts 30 minutes to 7 days inclusive and
+  // assumes 1 hour when unset. Shorter lifetimes re-attest more often;
+  // longer ones spare the device.
+  string token_ttl = 2 [(buf.validate.field).cel = {
+    id: "valid_token_ttl"
+    message: "token_ttl must be a duration in seconds ending in 's' (e.g. 3600s), between 1800s and 604800s"
+    expression: "this == '' || this.matches('^[0-9]+(\\\\.[0-9]{1,9})?s$')"
+  }];
+}
+
+// A debug token that bypasses device attestation for development builds.
+message GcpFirebaseAndroidAppAppCheckDebugToken {
+  // A name for the token as the Firebase console shows it -- the
+  // developer's machine or the CI lane it is for. Unique within the app;
+  // updatable.
+  string display_name = 1 [(buf.validate.field).required = true];
+
+  // The token value itself: a UUID (version 4), case-insensitive, that the
+  // development build registers with the App Check debug provider. Google
+  // never returns it after creation, and it cannot be changed -- a new
+  // value is a new token. It is a SECRET: the value must be a managed
+  // secret reference on the platform.
+  string token = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
+}

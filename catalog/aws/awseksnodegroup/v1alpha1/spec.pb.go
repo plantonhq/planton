@@ -125,7 +125,11 @@ type AwsEksNodeGroupSpec struct {
 	// subnets. One subnet is a legitimate zonal topology (e.g. a stateful
 	// pool pinned to its EBS volumes' zone); use two-plus zones for fleets
 	// that should survive a zone impairment. Reference AwsSubnet subnet_id
-	// outputs or pass literal subnet IDs. Create-only in AWS.
+	// outputs or pass literal subnet IDs. Create-only in AWS. A node group
+	// is a member of its cluster and lives there on a diagram; the subnets
+	// are where its nodes attach, so the reference is access, not
+	// placement -- otherwise a group on subnets its cluster does not name
+	// would be drawn outside the cluster it belongs to.
 	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,4,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Launch the nodes from an AwsLaunchTemplate instead of the inline
 	// knobs: custom AMI + bootstrap user data, IMDSv2 enforcement, encrypted
@@ -953,13 +957,13 @@ var File_catalog_aws_awseksnodegroup_v1alpha1_spec_proto protoreflect.FileDescri
 
 const file_catalog_aws_awseksnodegroup_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"/catalog/aws/awseksnodegroup/v1alpha1/spec.proto\x12(dev.planton.aws.awseksnodegroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xde\x19\n" +
+	"/catalog/aws/awseksnodegroup/v1alpha1/spec.proto\x12(dev.planton.aws.awseksnodegroup.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe2\x19\n" +
 	"\x13AwsEksNodeGroupSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12\x8a\x01\n" +
 	"\fcluster_name\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB3\xbaH\x03\xc8\x01\x01\xb2\xa6\x1d\rjoins cluster\x88\xd4a\xef\a\x92\xd4a\x13status.outputs.nameR\vclusterName\x12\x93\x01\n" +
-	"\rnode_role_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB;\xbaH\x03\xc8\x01\x01\xb2\xa6\x1d\x11assumes node role\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\vnodeRoleArn\x12\x90\x01\n" +
+	"\rnode_role_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB;\xbaH\x03\xc8\x01\x01\xb2\xa6\x1d\x11assumes node role\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\vnodeRoleArn\x12\x94\x01\n" +
 	"\n" +
-	"subnet_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB=\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\xb2\xa6\x1d\rspans subnets\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12p\n" +
+	"subnet_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBA\xbaH\b\xc8\x01\x01\x92\x01\x02\b\x01\xb2\xa6\x1d\rspans subnets\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_id\x98\xd4a\x01R\tsubnetIds\x12p\n" +
 	"\x0flaunch_template\x18\x05 \x01(\v2G.dev.planton.aws.awseksnodegroup.v1alpha1.AwsEksNodeGroupLaunchTemplateR\x0elaunchTemplate\x12%\n" +
 	"\x0einstance_types\x18\x06 \x03(\tR\rinstanceTypes\x12\x19\n" +
 	"\bami_type\x18\a \x01(\tR\aamiType\x12y\n" +

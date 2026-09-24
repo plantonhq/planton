@@ -14,6 +14,14 @@ import (
 // OwnedRealmSettings. The realm import (internal/resources) derives from the
 // same shared constants, so the import and this owned set cannot drift apart
 // (pinned by TestIdentityRealmImportAgreesWithOwnedSet).
+//
+// Federation state a bound PlantonIdentityProvider declares is owned by NAME
+// under the same contract, enumerated where it is converged: the LDAP
+// component IdentityLDAPComponentName and its mappers, the broker instance
+// IdentityBrokerAlias and its importers (federation.go), and the one
+// authenticator config IdentityPrimaryBrokerConfigAlias on the browser
+// flow's redirector (primary_broker.go). Every other component, broker,
+// flow, execution, and config on the realm is an admin's.
 
 // OwnedRealmInput carries the live inputs the owned set is derived from --
 // the same values the realm import renders from.

@@ -103,6 +103,10 @@ func Preflight(docs []Doc, flags Flags, probes Probes) *Plan {
 			refCheck.Entries = append(refCheck.Entries, e)
 		case manifestgraph.FindingExternalRelationship:
 			refCheck.Entries = append(refCheck.Entries, entryFromFinding(f, SeverityAssumption))
+		case manifestgraph.FindingDerivedEdgeDropped:
+			// An inference yielded to the author's own order; the set still
+			// deploys, and the report says why that edge is not in the order.
+			refCheck.Entries = append(refCheck.Entries, entryFromFinding(f, SeverityAssumption))
 		default:
 			// Resolution-time classes cannot occur at graph build; anything
 			// new fails loud rather than passing silent.

@@ -267,6 +267,12 @@ is a legal target), or pass a literal name. The target must exist
 before the queue; forwarding to a session-aware target is rejected by
 Azure.
 
+Containment-exempt: the queue LIVES in its namespace and forwards
+TO the target. A topic is a container (its subscriptions live in
+it), so a queue forwarding to a topic by reference would otherwise
+be drawn inside the topic it feeds; on a diagram the queue stays a
+sibling of the topic with a line to it.
+
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.forwardDeadLetteredMessagesTo
@@ -277,7 +283,7 @@ Auto-forward dead-lettered messages to another queue or topic in the
 same namespace, by entity name -- centralize poison-message handling
 instead of draining every queue's dead-letter sub-queue separately.
 Reference the target's queue_name or topic_name output, or pass a
-literal name.
+literal name. Access, not placement, like `forward_to`.
 
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

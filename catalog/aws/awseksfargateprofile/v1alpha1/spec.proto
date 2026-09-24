@@ -57,11 +57,16 @@ message AwsEksFargateProfileSpec {
   // only -- AWS rejects subnets whose route table carries an internet
   // gateway route; give the pods outbound internet through a NAT
   // gateway. Reference AwsSubnet subnet_id outputs or pass literal
-  // subnet IDs. Create-only in AWS.
+  // subnet IDs. Create-only in AWS. A Fargate profile is a member of
+  // its cluster and lives there on a diagram; the subnets are where its
+  // pods land, so the reference is access, not placement -- otherwise a
+  // profile on subnets its cluster does not name would be drawn outside
+  // the cluster it belongs to.
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef subnet_ids = 4 [
     (buf.validate.field).required = true,
     (buf.validate.field).repeated.min_items = 1,
     (dev.planton.shared.foreignkey.v1.default_kind) = AwsSubnet,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.subnet_id"
   ];
 

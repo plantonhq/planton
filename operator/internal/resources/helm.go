@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 
 	"helm.sh/helm/v3/pkg/action"
@@ -119,4 +120,32 @@ func IsNamespacedKind(kind string) bool {
 	default:
 		return true
 	}
+}
+
+// helmResourceValues turns a typed ResourceRequirements into the values shape
+// every chart the operator renders reads under its `resources` key
+// ({requests: {cpu, memory}, limits: {cpu, memory}}). Unset quantities are
+// omitted, never rendered as empty strings, so "no CPU limit" stays exactly
+// that -- the house pattern is requests for both, a memory limit, and no CPU
+// limit. One conversion, so a component's sizing is declared once as typed
+// Kubernetes quantities whether it renders a Deployment or a chart.
+func helmResourceValues(r corev1.ResourceRequirements) map[string]any {
+	toValues := func(list corev1.ResourceList) map[string]any {
+		out := map[string]any{}
+		if q, ok := list[corev1.ResourceCPU]; ok && !q.IsZero() {
+			out["cpu"] = q.String()
+		}
+		if q, ok := list[corev1.ResourceMemory]; ok && !q.IsZero() {
+			out["memory"] = q.String()
+		}
+		return out
+	}
+	values := map[string]any{}
+	if requests := toValues(r.Requests); len(requests) > 0 {
+		values["requests"] = requests
+	}
+	if limits := toValues(r.Limits); len(limits) > 0 {
+		values["limits"] = limits
+	}
+	return values
 }

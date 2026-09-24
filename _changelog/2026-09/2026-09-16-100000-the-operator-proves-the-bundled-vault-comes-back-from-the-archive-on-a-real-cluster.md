@@ -1,0 +1,35 @@
+# The operator proves the bundled vault comes back from the archive on a real cluster
+
+**Date**: September 16, 2026
+**Type**: Testing
+**Components**: The Planton operator's Kind suite (`operator/test/e2e`), the lab fixtures the Kind suites share (`operator/test/fixtures`), the operator's Makefile and README, the platform kind's kind scenario and the platform verifier
+
+## Summary
+
+The bundled vault's disaster story -- it stores in the platform's PostgreSQL, its seal lives in a cloud key or in a Secret the adopter owns, the operator signs in as itself and mints the control plane a token -- was proven in pieces: fake vaults in unit tests, real OpenBao and PostgreSQL in Docker. The operator's Kind suite now carries two lanes that run the whole chain on a real cluster, authored here and run by the verification lane: a platform is installed, its vault initialized and signed into through the cluster's own token review, the real control plane starts against the minted token and creates the platform's OIDC signing key in the vault, a secret is written before a base backup and one after it, the platform is deleted, declared again from the archive, and both secrets come back and a signature made before the disaster verifies on the restored signing key. Once for a team with no cloud key -- the built-in seal, a Secret they own for the vault's keys, and the bad-day runbook of recreating that Secret from a kept copy rehearsed inside the lane, including the refusal the operator gives when they forget -- and once for a team with a key service -- a transit seal against an in-cluster key holder, where the restored vault opens itself and the operator never unseals. `make test-e2e` keeps today's shape and cost; `make test-e2e-vault-restore` runs the lanes alone.
+
+## What Changed
+
+### The lanes
+
+`operator/test/e2e/vault_restore_test.go` (new): one Ordered container labeled `vault-restore`, two contexts. The built-in-seal lane: the API refuses a backup declared over a vault whose keys would die with the platform, in the definition's own sentence; the platform installs with a pre-created empty keys Secret (the GitOps shape) and the operator fills it in place with five unseal keys and the root token, stamps the seal, and owns nothing; the vault's auth-delegator binding stands with the vault's ServiceAccount as subject and the platform's UID as label, and the operator's log shows the sign-in accepted with no repair; the control plane's token is orphan, periodic at seven days, carries exactly its policy, writes the platform's engine and is refused at the vault's administration, and the control-plane Deployment reads it and carries its accessor; the real control plane creates `planton-oidc-signing` in `transit/`, and the lane signs a payload with it; marker A, a base backup, marker B, the WAL switched out; the platform deleted, the team's Secret standing and the operator's token Secret gone; the platform declared again with `recoverFrom` and the Secret missing, refused with the archive, the Secret, its keys, and the runbook's next step named; the Secret recreated from the kept copy, the vault unsealed, both markers read back with a new token, the signature verified on identical public material, the status naming the source archive; a deleted token Secret minted again and the Deployment rolled on the new accessor. The transit lane: a wrong seal token crash-loops the vault and the status names the start-time check and `Error configuring seal`; the corrected token, the vault initialized under a recovery quorum and opened by the seal (the Secret holds recovery keys, the fingerprint names the key, the log never says unsealed); a changed key name refused before anything renders; the signing key, the markers, the backup; the platform deleted and declared again, the restored vault opening itself with every secret and the signature back; the keys Secret deleted from a working platform and the Ready sentence naming the archive, the seal, the Secret, and the break-glass that is gone, then healthy again once it is back.
+
+`operator/test/e2e/vault_restore_helpers_test.go` (new): the lanes' seams -- the platform declared as the operator's own `v1.PlantonPlatform` type and marshaled, so every field is the compiler's; the vault spoken to through `kubectl exec` into its own pod with the token the operator minted (the pod already carries `BAO_ADDR`); the component slots and `status.backup` read by jsonpath; the base backup through CloudNativePG's `Backup` and the plugin; the OIDC key's public material, sign, and verify through the control plane's own policy. `E2E_CONSOLE_IMAGE_TAG` pins the console image when its published line lags the version the lanes declare.
+
+`operator/test/e2e/e2e_helpers_test.go` (new): the manager's deploy, undeploy, pod lookup, log, and failure dump, lifted out of the `Manager` container so every container in the suite stands on its own under a label filter. `e2e_test.go` calls them.
+
+### The fixtures
+
+`operator/test/fixtures/` (new): the lab infrastructure the Kind suites stand a platform beside -- an S3-compatible store (MinIO, one replica, the bucket created by a Job) and a key holder (a dev-mode OpenBao on the chart's image line) -- as pinned manifests embedded the way the operator embeds its charts, with the names a lane needs exported and a test that decodes both and holds the image pins inside `make test`.
+
+### The targets
+
+`operator/Makefile`: `E2E_LABEL_FILTER` (default `!vault-restore`) on `test-e2e`, so the default run and the CI job that runs it keep today's cost; `test-e2e-vault-restore` runs the lanes alone with a 150-minute budget on the same cluster; `vet-e2e` compile-checks both Kind suites under the tag. `README.md`: the three targets and the fixtures package. `.github/workflows/e2e-operator.yaml`: the header names the lanes and the default exclusion.
+
+### The kind scenario
+
+`catalog/kubernetes/kubernetesplantonplatform/e2e/scenarios/with-vault-keys.yaml` (new): the minimal platform plus `vault.init_secret_name`, at the oldest release the operator runs. `catalog/kubernetes/aa_e2e/verify/plantonplatform.go`: the platform verifier reads the named Secret off the manifest and, on a Ready platform, proves it holds the root token and the seal's keys and carries no owner reference.
+
+## Why
+
+A promise about the bad day is only as good as the drill that runs it. The Docker proofs showed each piece against a real server; these lanes show the chain: the cluster's real token review, the real control plane consuming the minted token, the archive carrying the vault's tables through a base backup and the WAL after it, the Secret surviving where the contract says it survives, the refusal a person meets when they skip the runbook's first step, and the same signing key on the other side of the restore. They gate on the vault's own facts and on per-component phases rather than the platform's overall phase, because the console's published image line can lag the version the manager requires and the vault's promise does not depend on it.

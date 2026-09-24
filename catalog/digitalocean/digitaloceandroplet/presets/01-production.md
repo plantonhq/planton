@@ -22,4 +22,4 @@ This preset creates a production-ready DigitalOcean Droplet with SSH key access,
 
 - `metadata.name` / `dropletName` -- your Droplet's name.
 - `vpc.valueFrom.name` -- the name of your `DigitalOceanVpc` resource (or replace the block with `value: <vpc-uuid>` for an existing VPC).
-- `sshKeys` -- the ID or fingerprint of an SSH key registered on your DigitalOcean account (`doctl compute ssh-key list`).
+- `sshKeys` -- each entry is a reference to a `DigitalOceanSshKey` you manage with Planton (`valueFrom` its `ssh_key_id` output) or, under `value:`, the ID or fingerprint of a key already registered on your account (`doctl compute ssh-key list`).

@@ -4,7 +4,7 @@ Judgment that saves real time when running compute clusters. The field reference
 
 ## Scale to zero unless you have a latency argument
 
-`minNodeCount: 0` is the default posture worth defending: the cluster costs nothing between jobs, and most training workloads tolerate the few minutes of node spin-up. Keep a non-zero minimum only where a team genuinely iterates interactively against the cluster all day -- and remember every warm node bills around the clock at the VM's full rate. Live-proven: a scale-to-zero dedicated cluster (STANDARD_DS2_V2, min 0 / max 1, system identity) creates as an ARM compute object in about one to two minutes and holds zero nodes for its whole life -- the object is what you pay time for, not a VM.
+`minNodeCount: 0` is the default posture worth defending: the cluster costs nothing between jobs, and most training workloads tolerate the few minutes of node spin-up. Keep a non-zero minimum only where a team genuinely iterates interactively against the cluster all day -- and remember every warm node bills around the clock at the VM's full rate. Live-proven: a scale-to-zero dedicated cluster (Standard_DS2_v2, min 0 / max 1, system identity) creates as an ARM compute object in about one to two minutes and holds zero nodes for its whole life -- the object is what you pay time for, not a VM.
 
 ## The idle duration is your real cost knob
 

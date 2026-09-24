@@ -1,0 +1,39 @@
+# Least-privilege permissions the IaC runner's Auth0 credential needs to
+# provision, update, and destroy this component with the official modules.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.0 per iac/tf/provider.tf) and the
+# pulumi-auth0 SDK exchange its client id and secret for a token through
+# the client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
+#
+# One requirement is not a scope at all and is easy to miss: Auth0 creates
+# a user "as" the calling application, so the target connection must be
+# ENABLED for this machine-to-machine client (its client id among the
+# connection's enabled clients). Without that the create is refused with
+# "Connection must be enabled for this client to perform single user
+# creation and signup operations" whatever scopes the token carries.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: auth0user
+spec:
+  auth0:
+    groups:
+      - purpose: ManageUser
+        scopes:
+          - create:users
+          - read:users
+          - update:users
+          - delete:users
+        provenance: derived
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/user.go) manage the user and, when declared, the authoritative auth0_user_roles and auth0_user_permissions — all on the same user object. Create via POST /api/v2/users (create:users, post-users); read back via GET /api/v2/users/{id} and list roles and permissions via GET /api/v2/users/{id}/roles and /permissions (read:users, get-users-by-id); change profile, flags, metadata, or password via PATCH /api/v2/users/{id} and manage the role and permission sets via POST and DELETE on /api/v2/users/{id}/roles and /permissions (update:users, patch-users-by-id, post-user-roles, post-permissions); destroy via DELETE /api/v2/users/{id} (delete:users, delete-users-by-id). Endpoint docs at auth0.com/docs/api/management/v2/users/, read 2026-09-22. The modules never create roles, resource servers, or connections, never read a connection's options, and never touch another user.
+      - purpose: LookUpUserRoles
+        scopes:
+          - read:roles
+        provenance: derived
+        condition:
+          spec_field_set: roles
+        notes: The documented scope inventory for GET /api/v2/users/{id}/roles names read:roles beside read:users, and the roles listing returns the role names and descriptions the provider reads back (get-user-roles, read 2026-09-22).

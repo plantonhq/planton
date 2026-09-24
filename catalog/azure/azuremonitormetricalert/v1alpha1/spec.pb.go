@@ -313,6 +313,12 @@ type AzureMonitorMetricAlertSpec struct {
 	// resource's `*_id` output explicitly with valueFrom (kind + fieldPath),
 	// or pass a literal ARM ID. Multiple scopes (or a group/subscription
 	// scope) require target_resource_type and target_resource_location.
+	//
+	// Containment-exempt: an alert EVALUATES its scopes' metrics; it is
+	// never deployed into one of them, and a rule over several scopes
+	// could not live in all of them anyway. Without the exemption an
+	// alert scoped to a storage account or a cluster by reference would
+	// be drawn inside what it watches.
 	Scopes []*v1.StringValueOrRef `protobuf:"bytes,3,rep,name=scopes,proto3" json:"scopes,omitempty"`
 	// A human-readable description delivered with every notification --
 	// the place for runbook links and on-call context.
@@ -958,13 +964,13 @@ var File_catalog_azure_azuremonitormetricalert_v1alpha1_spec_proto protoreflect.
 
 const file_catalog_azure_azuremonitormetricalert_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"9catalog/azure/azuremonitormetricalert/v1alpha1/spec.proto\x122dev.planton.azure.azuremonitormetricalert.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdb\x0e\n" +
+	"9catalog/azure/azuremonitormetricalert/v1alpha1/spec.proto\x122dev.planton.azure.azuremonitormetricalert.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdf\x0e\n" +
 	"\x1bAzureMonitorMetricAlertSpec\x12\x8c\x01\n" +
 	"\x0eresource_group\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x0f\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12,\n" +
 	"\n" +
 	"alert_name\x18\x02 \x01(\tB\r\xbaH\n" +
-	"\xc8\x01\x01r\x05\x10\x01\x18\x84\x02R\talertName\x12T\n" +
-	"\x06scopes\x18\x03 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\b\xbaH\x05\x92\x01\x02\b\x01R\x06scopes\x12 \n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\x84\x02R\talertName\x12X\n" +
+	"\x06scopes\x18\x03 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\f\xbaH\x05\x92\x01\x02\b\x01\x98\xd4a\x01R\x06scopes\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12'\n" +
 	"\aenabled\x18\x05 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x122\n" +
 	"\rauto_mitigate\x18\x06 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x01R\fautoMitigate\x88\x01\x01\x12/\n" +

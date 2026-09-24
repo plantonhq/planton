@@ -86,7 +86,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesplantonrunnerv1alpha1.
 		Namespace: pulumi.String(locals.Namespace),
 		// OCI chart reference — joined string, no RepositoryOpts (see the
 		// module comment).
-		Chart:   pulumi.String(vars.HelmOciRepo + "/" + vars.HelmChartName),
+		Chart:   pulumi.String(locals.ChartRepository + "/" + vars.HelmChartName),
 		Version: pulumi.String(locals.ChartVersion),
 		Values:  pulumi.ToMap(mergedValues),
 		// The module owns namespace creation (create_namespace flag).

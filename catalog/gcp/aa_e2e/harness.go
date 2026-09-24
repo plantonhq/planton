@@ -28,6 +28,7 @@ import (
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/alloydb/v1"
+	apikeys "google.golang.org/api/apikeys/v2"
 	artifactregistry "google.golang.org/api/artifactregistry/v1"
 	"google.golang.org/api/bigquery/v2"
 	bigtableadmin "google.golang.org/api/bigtableadmin/v2"
@@ -43,6 +44,7 @@ import (
 	dataproc "google.golang.org/api/dataproc/v1"
 	"google.golang.org/api/dns/v1"
 	eventarc "google.golang.org/api/eventarc/v1"
+	firebase "google.golang.org/api/firebase/v1beta1"
 	firestore "google.golang.org/api/firestore/v1"
 	"google.golang.org/api/iam/v1"
 	iamv2 "google.golang.org/api/iam/v2"
@@ -51,6 +53,7 @@ import (
 	monitoringv1 "google.golang.org/api/monitoring/v1"
 	monitoring "google.golang.org/api/monitoring/v3"
 	"google.golang.org/api/networkconnectivity/v1"
+	"google.golang.org/api/option"
 	pubsub "google.golang.org/api/pubsub/v1"
 	"google.golang.org/api/redis/v1"
 	run "google.golang.org/api/run/v2"
@@ -58,6 +61,7 @@ import (
 	"google.golang.org/api/spanner/v1"
 	"google.golang.org/api/sqladmin/v1"
 	"google.golang.org/api/storage/v1"
+	htransport "google.golang.org/api/transport/http"
 	"google.golang.org/api/vpcaccess/v1"
 	workflows "google.golang.org/api/workflows/v1"
 	"sigs.k8s.io/yaml"
@@ -102,19 +106,37 @@ func (h *Harness) Setup(ctx context.Context) error {
 		return errors.Wrap(err, "failed to export GOOGLE_PROJECT")
 	}
 
-	crmService, err := cloudresourcemanager.NewService(ctx)
+	// Every verifier probe names the test project as its quota project --
+	// the same posture the IaC modules take with user_project_override on
+	// every provider call. Some Google APIs (API Keys, Identity Toolkit, App
+	// Check, the Firebase Management API on some methods) refuse a
+	// user-credential call that carries no quota project with 403 "requires
+	// a quota project, which is not set by default". The Go client libraries
+	// fall back to the ADC file's own quota_project_id, but a fresh
+	// `gcloud auth application-default login` leaves that field EMPTY when
+	// the account cannot bill quota to gcloud's configured project, so a
+	// harness that relied on it worked or failed by accident of the
+	// developer's machine. Naming the project here makes the attribution
+	// explicit under every credential mode, including workload identity in
+	// CI, and it is what the modules already do for the resources they
+	// create. Every API a verifier probes is enabled on the test project by
+	// the module under test (or is a project-level API every project has),
+	// so the header can never fail a probe that would otherwise pass.
+	clientOpts := []option.ClientOption{option.WithQuotaProject(project)}
+
+	crmService, err := cloudresourcemanager.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create cloudresourcemanager client")
 	}
-	iamService, err := iam.NewService(ctx)
+	iamService, err := iam.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create iam client")
 	}
-	computeService, err := compute.NewService(ctx)
+	computeService, err := compute.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create compute client")
 	}
-	storageService, err := storage.NewService(ctx)
+	storageService, err := storage.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create storage client")
 	}
@@ -135,129 +157,140 @@ func (h *Harness) Setup(ctx context.Context) error {
 	if err := os.Setenv("PLANTON_E2E_GCS_AGENT_EMAIL", gcsAgent.EmailAddress); err != nil {
 		return errors.Wrap(err, "failed to export PLANTON_E2E_GCS_AGENT_EMAIL")
 	}
-	sqlAdminService, err := sqladmin.NewService(ctx)
+	sqlAdminService, err := sqladmin.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create sqladmin client")
 	}
-	redisService, err := redis.NewService(ctx)
+	redisService, err := redis.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create redis client")
 	}
-	containerService, err := container.NewService(ctx)
+	containerService, err := container.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create container client")
 	}
-	runService, err := run.NewService(ctx)
+	runService, err := run.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create run client")
 	}
-	alloyDBService, err := alloydb.NewService(ctx)
+	alloyDBService, err := alloydb.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create alloydb client")
 	}
-	dnsService, err := dns.NewService(ctx)
+	dnsService, err := dns.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create dns client")
 	}
-	spannerService, err := spanner.NewService(ctx)
+	spannerService, err := spanner.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create spanner client")
 	}
-	bigQueryService, err := bigquery.NewService(ctx)
+	bigQueryService, err := bigquery.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create bigquery client")
 	}
-	vpcAccessService, err := vpcaccess.NewService(ctx)
+	vpcAccessService, err := vpcaccess.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create vpcaccess client")
 	}
-	cloudFunctionsService, err := cloudfunctions.NewService(ctx)
+	cloudFunctionsService, err := cloudfunctions.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create cloudfunctions client")
 	}
-	networkConnectivityService, err := networkconnectivity.NewService(ctx)
+	networkConnectivityService, err := networkconnectivity.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create networkconnectivity client")
 	}
-	bigtableAdminService, err := bigtableadmin.NewService(ctx)
+	bigtableAdminService, err := bigtableadmin.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create bigtableadmin client")
 	}
-	firestoreService, err := firestore.NewService(ctx)
+	firestoreService, err := firestore.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create firestore admin client")
 	}
-	dataprocService, err := dataproc.NewService(ctx)
+	dataprocService, err := dataproc.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create dataproc client")
 	}
-	composerService, err := composer.NewService(ctx)
+	composerService, err := composer.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create composer client")
 	}
-	pubsubService, err := pubsub.NewService(ctx)
+	pubsubService, err := pubsub.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create pubsub client")
 	}
-	cloudKmsService, err := cloudkms.NewService(ctx)
+	cloudKmsService, err := cloudkms.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create cloudkms client")
 	}
-	cloudTasksService, err := cloudtasks.NewService(ctx)
+	cloudTasksService, err := cloudtasks.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create cloudtasks client")
 	}
-	cloudSchedulerService, err := cloudscheduler.NewService(ctx)
+	cloudSchedulerService, err := cloudscheduler.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create cloudscheduler client")
 	}
-	artifactRegistryService, err := artifactregistry.NewService(ctx)
+	artifactRegistryService, err := artifactregistry.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create artifactregistry client")
 	}
-	certificateManagerService, err := certificatemanager.NewService(ctx)
+	certificateManagerService, err := certificatemanager.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create certificatemanager client")
 	}
-	monitoringService, err := monitoring.NewService(ctx)
+	monitoringService, err := monitoring.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create monitoring client")
 	}
 	// Dashboards are served by the Monitoring API's v1 surface — a
 	// DIFFERENT API version from the v3 client above, with its own typed
 	// client on the same pinned google.golang.org/api line.
-	monitoringDashboardsService, err := monitoringv1.NewService(ctx)
+	monitoringDashboardsService, err := monitoringv1.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create monitoring dashboards (v1) client")
 	}
-	secretManagerService, err := secretmanager.NewService(ctx)
+	secretManagerService, err := secretmanager.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create secretmanager client")
 	}
-	loggingService, err := logging.NewService(ctx)
+	loggingService, err := logging.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create logging client")
 	}
-	identityToolkitService, err := identitytoolkit.NewService(ctx)
+	identityToolkitService, err := identitytoolkit.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create identitytoolkit client")
 	}
-	iamV2Service, err := iamv2.NewService(ctx)
+	iamV2Service, err := iamv2.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create iam v2 client")
 	}
-	workflowsService, err := workflows.NewService(ctx)
+	workflowsService, err := workflows.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create workflows client")
 	}
-	eventarcService, err := eventarc.NewService(ctx)
+	eventarcService, err := eventarc.NewService(ctx, clientOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create eventarc client")
 	}
+	firebaseService, err := firebase.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create firebase management client")
+	}
+	apiKeysService, err := apikeys.NewService(ctx, clientOpts...)
+	if err != nil {
+		return errors.Wrap(err, "failed to create api keys client")
+	}
 	// ADC-authenticated plain HTTP client for services whose typed Go
 	// client is not in the pinned google.golang.org/api line (Memorystore
-	// for Valkey) — verifiers use it for REST GET probes only.
-	restClient, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+	// for Valkey) — verifiers use it for REST GET probes only. Built through
+	// the same transport the typed clients use so it carries the same quota
+	// project header.
+	restClient, _, err := htransport.NewClient(ctx,
+		append([]option.ClientOption{option.WithScopes(cloudresourcemanager.CloudPlatformScope)}, clientOpts...)...)
 	if err != nil {
 		return errors.Wrap(err, "failed to create ADC-authenticated REST client")
 	}
@@ -305,6 +338,8 @@ func (h *Harness) Setup(ctx context.Context) error {
 		IamV2:                iamV2Service,
 		Workflows:            workflowsService,
 		Eventarc:             eventarcService,
+		Firebase:             firebaseService,
+		ApiKeys:              apiKeysService,
 		RestClient:           restClient,
 	}
 	return nil

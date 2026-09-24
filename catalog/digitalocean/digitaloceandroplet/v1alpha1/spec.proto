@@ -114,16 +114,30 @@ message DigitalOceanDropletSpec {
   // changed after creation.
   bool monitoring = 14;
 
+  // Retired field. ssh_keys was a list of raw IDs or fingerprints with no
+  // way to reference a DigitalOceanSshKey resource. Its number must never
+  // be reused with a different meaning; the field returns below as a list
+  // of references that also accepts literal IDs or fingerprints.
+  reserved 15;
+
   // (Optional) SSH keys to inject at creation — the standard access path to
-  // a droplet. Each entry is the ID or fingerprint of an SSH key already
-  // registered on the DigitalOcean account. Applied at creation ONLY; later
-  // edits are ignored (both provisioners skip changes to the list, because
-  // the only alternative the provider offers is recreating the droplet), and
-  // the API never reports the injected keys back. Rotate access inside the
-  // OS (authorized_keys) or replace the droplet deliberately.
-  repeated string ssh_keys = 15 [
-    (buf.validate.field).repeated.unique = true,
-    (buf.validate.field).repeated.items.string.min_len = 1
+  // a droplet. Each entry is a reference to a DigitalOceanSshKey resource
+  // (the default wiring resolves its numeric ssh_key_id; the fingerprint
+  // output works too -- droplets accept either) or a literal ID or
+  // fingerprint of a key already registered on the account. Applied at
+  // creation ONLY; later edits are ignored (both provisioners skip changes
+  // to the list, because the only alternative the provider offers is
+  // recreating the droplet), and the API never reports the injected keys
+  // back. Rotate access inside the OS (authorized_keys) or replace the
+  // droplet deliberately.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef ssh_keys = 22 [
+    (buf.validate.field).cel = {
+      id: "ssh_keys_unique"
+      message: "each SSH key may be listed once -- DigitalOcean rejects a duplicate key on create"
+      expression: "this.filter(k, has(k.value)).map(k, k.value).unique()"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanSshKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.ssh_key_id"
   ];
 
   // (Optional) When and how often automated backups run. Requires

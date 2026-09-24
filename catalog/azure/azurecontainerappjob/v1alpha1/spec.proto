@@ -738,11 +738,20 @@ message AzureContainerAppJobSecret {
 // 1. Username/password: Set `username` and `password_secret_name` (references a secret).
 // 2. Managed identity: Set `identity` (system-assigned or user-assigned identity ID).
 message AzureContainerAppJobRegistry {
-  // Registry server hostname.
-  // Examples: "myregistry.azurecr.io", "ghcr.io", "docker.io"
-  string server = 1 [
+  // Retired field. server was a plain string with no way to reference an
+  // AzureContainerRegistry resource. Its number must never be reused with
+  // a different meaning; the field returns below as a typed reference that
+  // also accepts a literal hostname.
+  reserved 1;
+
+  // Registry server hostname. Reference an AzureContainerRegistry's
+  // login_server output (the default wiring -- the same shape the
+  // Container Instance's registry credential carries) or pass a literal
+  // such as "ghcr.io" or "docker.io".
+  dev.planton.shared.foreignkey.v1.StringValueOrRef server = 5 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.min_len = 1
+    (dev.planton.shared.foreignkey.v1.default_kind) = AzureContainerRegistry,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.login_server"
   ];
 
   // Registry username. Required with password_secret_name.

@@ -4,6 +4,7 @@ package dev.planton.digitalocean.digitaloceanfunction.v1alpha1;
 
 import "buf/validate/validate.proto";
 import "catalog/digitalocean/app_spec.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
 
 // DigitalOceanFunctionSpec deploys serverless functions as an App Platform
 // app with a single functions component. The provider has no standalone
@@ -52,11 +53,21 @@ message DigitalOceanFunctionSpec {
   repeated DigitalOceanAppComponentAlert alerts = 9;
   repeated DigitalOceanAppLogDestination log_destinations = 10;
 
-  // DigitalOcean project UUID to put the app in. Literal UUID (the FK
-  // upgrade to DigitalOceanProject is recorded backlog). Create-only: the
-  // provider marks project_id ForceNew, so changing it destroys and
-  // recreates the app. Unset puts the app in the account's default project.
-  string project_id = 11;
+  // Retired field. project_id was a literal project UUID written before the
+  // Project kind existed. Its number must never be reused with a different
+  // meaning; the field returns below as a typed reference that also accepts
+  // a literal UUID.
+  reserved 11;
+
+  // (Optional) The project the functions app is created in. Reference a
+  // DigitalOceanProject resource (the default wiring resolves its
+  // project_id output) or pass a literal project UUID. When unset, the app
+  // lands in the account's default project. Create-only: the provider marks
+  // project_id ForceNew, so changing it destroys and recreates the app.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 12 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = DigitalOceanProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
 
   // Name of the App Platform app that hosts the functions component. This is
   // spec.name on digitalocean_app: 2-32 chars, ^[a-z][a-z0-9-]{0,30}[a-z0-9]$,
@@ -67,7 +78,7 @@ message DigitalOceanFunctionSpec {
   // org/env. Renaming updates the app in place; the default
   // <name>-<hash>.ondigitalocean.app hostname carries the name, so the URL
   // changes with it.
-  string app_name = 12 [
+  string app_name = 13 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.min_len = 2,
     (buf.validate.field).string.max_len = 32,

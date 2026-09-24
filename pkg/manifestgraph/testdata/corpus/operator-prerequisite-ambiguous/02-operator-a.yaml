@@ -1,0 +1,12 @@
+# Two instances of the prerequisite kind: the set does not say which one
+# reconciles the operand, so the graph draws no edge and the authored order
+# stands (silence, never a guess).
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCloudNativePgOperator
+metadata:
+  name: cnpg-a
+  env: dev
+spec:
+  namespace:
+    value: cnpg-a
+  create_namespace: true

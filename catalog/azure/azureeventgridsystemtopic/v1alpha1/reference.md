@@ -132,6 +132,12 @@ storage_account_id) or pass a literal ID.
 The source and the topic_type must agree -- the type names the
 service the source belongs to.
 
+Containment-exempt: the topic SURFACES its source's events; it is
+its own resource in its resource group, not a tenant of the storage
+account or vault it listens to. Without the exemption a topic wired
+to a container source by reference would be drawn inside the
+resource whose events it publishes.
+
 **ForceNew**: changing this destroys and recreates the topic.
 
 - rule: {"required":true}

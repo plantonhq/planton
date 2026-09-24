@@ -1,0 +1,29 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseAndroidApp
+metadata:
+  name: mobile-android
+spec:
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+  displayName: Mobile (Android)
+  packageName: com.example.mobile
+  sha1Hashes:
+    - DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09
+  sha256Hashes:
+    - E3:B0:C4:42:98:FC:1C:14:9A:FB:F4:C8:99:6F:B9:24:27:AE:41:E4:64:9B:93:4C:A4:95:99:1B:78:52:B8:55
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: firebase-android-key
+      fieldPath: status.outputs.uid
+  appCheck:
+    playIntegrity:
+      enabled: true
+      tokenTtl: 3600s
+    debugTokens:
+      - displayName: ci-emulator
+        token: $secret/firebase-app-check-ci-emulator-token
+  deletionPolicy: PREVENT

@@ -56,6 +56,12 @@ type AwsEventBridgePipeSpec struct {
 	// broker. FIXED FOR LIFE - changing the source replaces the whole
 	// pipe. References here carry no default kind: state the kind
 	// explicitly in valueFrom.
+	//
+	// Containment-exempt: a pipe is a managed integration that READS its
+	// source, transforms, and WRITES its target; none of the three ends is
+	// where the pipe lives. Whichever of them is a container (an ECS
+	// cluster, a Redshift cluster, an event bus), the pipe stands between
+	// its ends on a diagram, never inside one of them.
 	Source *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=source,proto3" json:"source,omitempty"`
 	// Source-family tuning (batching, positions, credentials) plus the
 	// event filter. The family block must match the source's service;
@@ -65,6 +71,7 @@ type AwsEventBridgePipeSpec struct {
 	// express state machine, or API destination that transforms each
 	// batch before delivery. Unset skips enrichment. References here
 	// carry no default kind: state the kind explicitly in valueFrom.
+	// Access, not placement, like `source`.
 	Enrichment *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=enrichment,proto3" json:"enrichment,omitempty"`
 	// HTTP shaping (for API-destination enrichment) and the input
 	// template applied before the enrichment call.
@@ -74,7 +81,7 @@ type AwsEventBridgePipeSpec struct {
 	// Redshift cluster, SageMaker pipeline, CloudWatch log group,
 	// EventBridge bus, or API destination. Swaps in place. References
 	// here carry no default kind: state the kind explicitly in
-	// valueFrom.
+	// valueFrom. Access, not placement, like `source`.
 	Target *v1.StringValueOrRef `protobuf:"bytes,7,opt,name=target,proto3" json:"target,omitempty"`
 	// Target-family invocation shaping plus the input template applied
 	// before delivery. The family block must match the target's service.
@@ -3529,18 +3536,19 @@ var File_catalog_aws_awseventbridgepipe_v1alpha1_spec_proto protoreflect.FileDes
 
 const file_catalog_aws_awseventbridgepipe_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"2catalog/aws/awseventbridgepipe/v1alpha1/spec.proto\x12+dev.planton.aws.awseventbridgepipe.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf3\n" +
-	"\n" +
+	"2catalog/aws/awseventbridgepipe/v1alpha1/spec.proto\x12+dev.planton.aws.awseventbridgepipe.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x81\v\n" +
 	"\x16AwsEventBridgePipeSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12-\n" +
-	"\vdescription\x18\x02 \x01(\tB\v\xbaH\b\xd8\x01\x01r\x03\x18\x80\x04R\vdescription\x12R\n" +
-	"\x06source\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x06source\x12|\n" +
-	"\x11source_parameters\x18\x04 \x01(\v2O.dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeSourceParametersR\x10sourceParameters\x12R\n" +
+	"\vdescription\x18\x02 \x01(\tB\v\xbaH\b\xd8\x01\x01r\x03\x18\x80\x04R\vdescription\x12V\n" +
+	"\x06source\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x06source\x12|\n" +
+	"\x11source_parameters\x18\x04 \x01(\v2O.dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeSourceParametersR\x10sourceParameters\x12X\n" +
 	"\n" +
-	"enrichment\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\n" +
+	"enrichment\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x04\x98\xd4a\x01R\n" +
 	"enrichment\x12\x88\x01\n" +
-	"\x15enrichment_parameters\x18\x06 \x01(\v2S.dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeEnrichmentParametersR\x14enrichmentParameters\x12R\n" +
-	"\x06target\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x06target\x12|\n" +
+	"\x15enrichment_parameters\x18\x06 \x01(\v2S.dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeEnrichmentParametersR\x14enrichmentParameters\x12V\n" +
+	"\x06target\x18\a \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x06target\x12|\n" +
 	"\x11target_parameters\x18\b \x01(\v2O.dev.planton.aws.awseventbridgepipe.v1alpha1.AwsEventBridgePipeTargetParametersR\x10targetParameters\x12u\n" +
 	"\brole_arn\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12?\n" +
 	"\rdesired_state\x18\n" +

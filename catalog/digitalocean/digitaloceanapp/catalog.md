@@ -126,6 +126,7 @@ These are the most important decisions when configuring an App Platform applicat
 | **DigitalOceanVpc** (optional) | `vpc` | `status.outputs.vpc_id` |
 | **DigitalOceanDnsZone** (optional) | `domains[].zone` | `status.outputs.zone_name` |
 | **DigitalOceanDatabaseCluster** (optional) | `databases[].clusterName` | `spec.cluster_name` |
+| **DigitalOceanProject** (optional) | `projectId` | `status.outputs.project_id` |
 
 VPC placement is wired by both provisioners.
 

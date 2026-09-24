@@ -18,16 +18,17 @@ authentication. The most common shape for caching and session storage.
   and recovers the dataset; without both, restarts start empty
 - **`maxMemory: 256mb` with `allkeys-lru`** -- the cache posture: bounded
   memory with automatic eviction instead of write failures or OOM kills
-- **ACL auth declared** -- the chart ships with auth OFF; declaring the
-  `default` user is what actually requires credentials. The password lands
-  in the `<name>-auth` Secret, never in rendered chart values
+- **ACL auth declared, password minted** -- the chart ships with auth OFF;
+  declaring the `default` user is what actually requires credentials. No
+  password is declared: the module generates one, lands it in the
+  `<name>-auth` Secret (never in rendered chart values), and the
+  `password_secret` output names where clients read it
 
 ## Placeholders to Replace
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<your-namespace>` | Target namespace | Your namespace management or `KubernetesNamespace` resource |
-| `<your-password>` | Password for the `default` ACL user | Generate one; rotate by updating the spec |
 
 ## Related Presets
 

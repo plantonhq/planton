@@ -25,6 +25,13 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		"version": spec.GetVersion(),
 	}
 
+	// ---- image registry --------------------------------------------------------
+	// Renders only when set, so a manifest that never names a registry keeps
+	// rendering a CR an older operator definition accepts.
+	if spec.GetImageRegistry() != "" {
+		out["imageRegistry"] = spec.GetImageRegistry()
+	}
+
 	// ---- license ---------------------------------------------------------------
 	if l := spec.GetLicense(); l != nil {
 		license := map[string]interface{}{}
@@ -273,6 +280,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		if r.GetCloudCredentialsSecretName() != "" {
 			runner["cloudCredentialsSecretName"] = r.GetCloudCredentialsSecretName()
 		}
+		if img := imageMap(r.GetImage()); img != nil {
+			runner["image"] = img
+		}
 		if len(runner) > 0 {
 			out["runner"] = runner
 		}
@@ -434,6 +444,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		}
 		if len(cp.GetServiceAccountAnnotations()) > 0 {
 			controlPlane["serviceAccountAnnotations"] = stringMapToInterface(cp.GetServiceAccountAnnotations())
+		}
+		if cp.GetIacModulesVersion() != "" {
+			controlPlane["iacModulesVersion"] = cp.GetIacModulesVersion()
 		}
 		if len(controlPlane) > 0 {
 			out["controlPlane"] = controlPlane

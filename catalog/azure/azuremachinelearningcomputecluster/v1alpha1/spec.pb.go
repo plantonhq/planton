@@ -173,8 +173,8 @@ type AzureMachineLearningComputeClusterSpec struct {
 	// ARM still reports the cluster envelope at the workspace's region.
 	// Fixed at creation.
 	Region string `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`
-	// The VM size of each node, e.g. "STANDARD_DS2_V2" or
-	// "STANDARD_NC6S_V3" (GPU). Regional VM-family quota gates what
+	// The VM size of each node, e.g. "Standard_DS2_v2" or
+	// "Standard_NC6s_v3" (GPU). Regional VM-family quota gates what
 	// actually provisions. Fixed at creation.
 	VmSize string `protobuf:"bytes,4,opt,name=vm_size,json=vmSize,proto3" json:"vm_size,omitempty"`
 	// Whether nodes are regular dedicated VMs or evictable low-priority

@@ -14,22 +14,32 @@
 #   - Manual dispatch
 # =============================================================================
 
+# -----------------------------------------------------------------------------
+# PAUSED (founder direction 2026-09-17, GitHub Actions budget). This workflow
+# runs on manual dispatch only: its push, pull_request, and schedule triggers
+# are retired below, verbatim, so re-enabling is a restore and not a guess.
+# In the first 17 days of September 2026 the automatic E2E runs on this
+# repository cost about $25 in larger-runner minutes for proofs nobody was
+# waiting on. Restore the block under `on:` when the budget allows.
+#
+# Retired triggers:
+#    schedule:
+#      - cron: '0 4 * * 0' # Weekly Sunday 4am UTC (1 hour after Kubernetes)
+#    pull_request:
+#      paths:
+#        - 'catalog/auth0/**'
+#        - 'e2e/auth0/**'
+#        - 'e2e/framework/**'
+#        - 'pkg/iac/**'
+#        - 'go.mod'
+#        - 'go.sum'
+#        - '.github/workflows/e2e-auth0.yaml'
+# -----------------------------------------------------------------------------
+
 name: e2e-auth0
 
 on:
-  schedule:
-    - cron: '0 4 * * 0' # Weekly Sunday 4am UTC (1 hour after Kubernetes)
   workflow_dispatch:
-  pull_request:
-    paths:
-      - 'catalog/auth0/**'
-      - 'e2e/auth0/**'
-      - 'e2e/framework/**'
-      - 'pkg/iac/**'
-      - 'go.mod'
-      - 'go.sum'
-      - '.github/workflows/e2e-auth0.yaml'
-
 concurrency:
   group: e2e-auth0-${{ github.ref }}
   cancel-in-progress: true
@@ -70,6 +80,11 @@ jobs:
       AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
       AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
       AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+      # The same client id, exposed under the manifest-readable prefix: a
+      # scenario that creates users must enable the calling M2M client on
+      # its connection fixture (Auth0 refuses user creation otherwise), and
+      # ${E2E_ENV:...} tokens read only PLANTON_E2E_-prefixed variables.
+      PLANTON_E2E_AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v4
 

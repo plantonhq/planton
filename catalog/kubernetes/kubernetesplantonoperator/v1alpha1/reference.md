@@ -134,6 +134,7 @@ spec:
 | `spec.crds` | `KubernetesPlantonOperatorCrds` |  |  |  |
 | `spec.crds.install` | `bool` |  | `true` |  |
 | `spec.crds.keepOnUninstall` | `bool` |  | `true` |  |
+| `spec.chartRepository` | `string` |  | `oci://ghcr.io/plantonhq/charts` |  |
 
 ## Field Details
 
@@ -166,7 +167,7 @@ The planton-operator chart version to install (e.g. "0.15.0"). The chart
 and the operator image share one version line: chart 0.15.0 runs
 operator v0.15.0. Defaults to the version this catalog release was
 validated against; pin a different version only for change control.
-Versions must exist as published charts at oci://ghcr.io/plantonhq/charts.
+Versions must exist as published charts at spec.chart_repository.
 Charts older than 0.8.0 do not own their definitions and are refused
 at plan time: the `crds` dials would have nothing to act on.
 
@@ -399,6 +400,19 @@ cluster, a destructive act that must be an explicit false. A later
 install under the same release adopts kept definitions.
 
 - default: `true`
+
+### spec.chartRepository
+
+`string` · optional (explicit presence)
+
+The OCI registry path the planton-operator chart is pulled from. Defaults
+to oci://ghcr.io/plantonhq/charts. Every chart release is also
+published, byte for byte, to Google Artifact Registry at
+oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+from Google, or name a mirror of your own holding the same charts.
+
+- default: `oci://ghcr.io/plantonhq/charts`
+- rule: chart repository must be an OCI path such as "oci://asia-south1-docker.pkg.dev/plantonhq/charts": oci:// scheme, no trailing slash
 
 ## Outputs
 

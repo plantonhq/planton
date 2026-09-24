@@ -7,7 +7,7 @@ spec:
     value: "<your-machine-learning-workspace-id>"
   name: spot-batch
   region: eastus
-  vmSize: STANDARD_DS3_V2
+  vmSize: Standard_DS3_v2
   # Evictable spot-class nodes at a deep discount -- ONLY for
   # checkpointed, fault-tolerant workloads: Azure may take nodes (and
   # the work on them) at any time.

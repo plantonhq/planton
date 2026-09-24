@@ -10,7 +10,7 @@ provider: gcp
 services:
   - prefix: aiplatform
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - agentAnomalyDetectionScopes.create
       - agentAnomalyDetectionScopes.delete
@@ -265,6 +265,11 @@ services:
       - indexes.get
       - indexes.list
       - indexes.update
+      - interactions.cancel
+      - interactions.create
+      - interactions.delete
+      - interactions.get
+      - interactions.list
       - locations.evaluateInstances
       - locations.get
       - locations.list
@@ -341,6 +346,7 @@ services:
       - notebookRuntimeTemplates.get
       - notebookRuntimeTemplates.getIamPolicy
       - notebookRuntimeTemplates.list
+      - notebookRuntimeTemplates.setDefault
       - notebookRuntimeTemplates.setIamPolicy
       - notebookRuntimeTemplates.update
       - notebookRuntimes.assign
@@ -486,7 +492,7 @@ services:
       - tuningJobs.vertexTune
   - prefix: alloydb
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - backups.create
       - backups.createTagBinding
@@ -540,9 +546,21 @@ services:
       - users.list
       - users.login
       - users.update
+  - prefix: apikeys
+    source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
+    retrieved_on: "2026-09-17"
+    actions:
+      - keys.create
+      - keys.delete
+      - keys.get
+      - keys.getKeyString
+      - keys.list
+      - keys.lookup
+      - keys.undelete
+      - keys.update
   - prefix: artifactregistry
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - aptartifacts.create
       - attachments.create
@@ -608,7 +626,7 @@ services:
       - yumartifacts.create
   - prefix: bigquery
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - bireservations.get
       - bireservations.update
@@ -745,7 +763,7 @@ services:
       - transfers.update
   - prefix: bigtable
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - appProfiles.create
       - appProfiles.delete
@@ -839,7 +857,7 @@ services:
       - tables.update
   - prefix: billing
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - accounts.close
       - accounts.create
@@ -898,7 +916,7 @@ services:
       - subscriptions.update
   - prefix: certificatemanager
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - certissuanceconfigs.create
       - certissuanceconfigs.createTagBinding
@@ -969,7 +987,7 @@ services:
       - trustconfigs.use
   - prefix: cloudfunctions
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-22"
+    retrieved_on: "2026-09-17"
     actions:
       - functions.call
       - functions.create
@@ -989,7 +1007,7 @@ services:
       - operations.list
   - prefix: cloudkms
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - autokeyConfigs.get
       - autokeyConfigs.update
@@ -1079,7 +1097,7 @@ services:
       - singleTenantHsmInstances.use
   - prefix: cloudscheduler
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - jobs.create
       - jobs.delete
@@ -1094,7 +1112,7 @@ services:
       - locations.list
   - prefix: cloudsql
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - backupRuns.create
       - backupRuns.delete
@@ -1170,7 +1188,7 @@ services:
       - users.update
   - prefix: cloudtasks
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - cmekConfig.get
       - cmekConfig.update
@@ -1195,7 +1213,7 @@ services:
       - tasks.run
   - prefix: composer
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - dags.execute
       - dags.get
@@ -1227,7 +1245,7 @@ services:
       - userworkloadssecrets.update
   - prefix: compute
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-22"
+    retrieved_on: "2026-09-17"
     actions:
       - acceleratorTypes.get
       - acceleratorTypes.list
@@ -1566,6 +1584,7 @@ services:
       - instances.startWithEncryptionKey
       - instances.stop
       - instances.suspend
+      - instances.troubleshoot
       - instances.update
       - instances.updateAccessConfig
       - instances.updateDisplayDevice
@@ -1663,6 +1682,8 @@ services:
       - machineImages.useReadOnly
       - machineTypes.get
       - machineTypes.list
+      - managedRulesets.get
+      - managedRulesets.list
       - multiMig.create
       - multiMig.delete
       - multiMig.get
@@ -1981,6 +2002,8 @@ services:
       - regionUrlMaps.validate
       - regions.get
       - regions.list
+      - reliabilityRisks.get
+      - reliabilityRisks.list
       - reservationBlocks.get
       - reservationBlocks.list
       - reservationBlocks.performMaintenance
@@ -2290,7 +2313,7 @@ services:
       - zones.list
   - prefix: container
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - apiServices.create
       - apiServices.delete
@@ -2707,7 +2730,7 @@ services:
       - volumeSnapshots.updateStatus
   - prefix: dataproc
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - agents.create
       - agents.delete
@@ -2785,7 +2808,7 @@ services:
       - workflowTemplates.update
   - prefix: datastore
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - backupSchedules.create
       - backupSchedules.delete
@@ -2846,7 +2869,7 @@ services:
       - userCreds.update
   - prefix: dns
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - changes.create
       - changes.get
@@ -2896,7 +2919,7 @@ services:
       - responsePolicyRules.update
   - prefix: eventarc
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - channelConnections.create
       - channelConnections.createTagBinding
@@ -2986,7 +3009,7 @@ services:
       - triggers.update
   - prefix: file
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - backups.create
       - backups.createTagBinding
@@ -3025,9 +3048,62 @@ services:
       - snapshots.listEffectiveTags
       - snapshots.listTagBindings
       - snapshots.update
+  - prefix: firebase
+    source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
+    retrieved_on: "2026-09-17"
+    actions:
+      - billingPlans.get
+      - billingPlans.update
+      - clients.create
+      - clients.delete
+      - clients.get
+      - clients.list
+      - clients.undelete
+      - clients.update
+      - links.create
+      - links.delete
+      - links.list
+      - links.update
+      - playLinks.get
+      - playLinks.list
+      - playLinks.update
+      - projects.delete
+      - projects.get
+      - projects.update
+  - prefix: firebaseappcheck
+    source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
+    retrieved_on: "2026-09-17"
+    actions:
+      - appAttestConfig.get
+      - appAttestConfig.update
+      - appCheckTokens.verify
+      - automations.create
+      - automations.delete
+      - automations.get
+      - automations.list
+      - automations.resume
+      - automations.suspend
+      - automations.update
+      - debugTokens.get
+      - debugTokens.update
+      - deviceCheckConfig.get
+      - deviceCheckConfig.update
+      - playIntegrityConfig.get
+      - playIntegrityConfig.update
+      - recaptchaEnterpriseConfig.get
+      - recaptchaEnterpriseConfig.update
+      - recaptchaV3Config.get
+      - recaptchaV3Config.update
+      - resourcePolicies.get
+      - resourcePolicies.update
+      - safetyNetConfig.get
+      - safetyNetConfig.update
+      - services.get
+      - services.update
+      - tokens.mint
   - prefix: firebaseauth
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-22"
+    retrieved_on: "2026-09-17"
     actions:
       - configs.create
       - configs.get
@@ -3040,9 +3116,20 @@ services:
       - users.get
       - users.sendEmail
       - users.update
+  - prefix: firebasestorage
+    source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
+    retrieved_on: "2026-09-17"
+    actions:
+      - buckets.addFirebase
+      - buckets.get
+      - buckets.list
+      - buckets.removeFirebase
+      - defaultBucket.create
+      - defaultBucket.delete
+      - defaultBucket.get
   - prefix: iam
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - accesspolicies.bind
       - accesspolicies.create
@@ -3295,7 +3382,7 @@ services:
       - workspacePools.updatePolicyBinding
   - prefix: identitytoolkit
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-22"
+    retrieved_on: "2026-09-17"
     actions:
       - tenants.create
       - tenants.delete
@@ -3306,7 +3393,7 @@ services:
       - tenants.update
   - prefix: logging
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - buckets.copyLogEntries
       - buckets.create
@@ -3395,7 +3482,7 @@ services:
       - views.update
   - prefix: memorystore
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - backupCollections.get
       - backupCollections.list
@@ -3420,7 +3507,7 @@ services:
       - operations.list
   - prefix: monitoring
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - alertPolicies.create
       - alertPolicies.createTagBinding
@@ -3487,7 +3574,7 @@ services:
       - uptimeCheckConfigs.update
   - prefix: networkconnectivity
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - gatewayAdvertisedRoutes.create
       - gatewayAdvertisedRoutes.delete
@@ -3555,6 +3642,10 @@ services:
       - policyBasedRoutes.getIamPolicy
       - policyBasedRoutes.list
       - policyBasedRoutes.setIamPolicy
+      - pscAuthorizationPolicies.create
+      - pscAuthorizationPolicies.delete
+      - pscAuthorizationPolicies.get
+      - pscAuthorizationPolicies.list
       - regionalEndpoints.create
       - regionalEndpoints.delete
       - regionalEndpoints.get
@@ -3595,7 +3686,7 @@ services:
       - transports.update
   - prefix: networksecurity
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - addressGroups.create
       - addressGroups.delete
@@ -3773,7 +3864,7 @@ services:
       - urlLists.use
   - prefix: notebooks
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - environments.create
       - environments.delete
@@ -3789,12 +3880,16 @@ services:
       - executions.setIamPolicy
       - instances.checkUpgradability
       - instances.create
+      - instances.createTagBinding
       - instances.delete
+      - instances.deleteTagBinding
       - instances.diagnose
       - instances.get
       - instances.getHealth
       - instances.getIamPolicy
       - instances.list
+      - instances.listEffectiveTags
+      - instances.listTagBindings
       - instances.reset
       - instances.setAccelerator
       - instances.setIamPolicy
@@ -3834,7 +3929,7 @@ services:
       - schedules.setIamPolicy
   - prefix: pubsub
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - messageTransforms.validate
       - schemas.attach
@@ -3889,7 +3984,7 @@ services:
       - topics.updateTag
   - prefix: redis
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - aclPolicies.create
       - aclPolicies.delete
@@ -3908,9 +4003,13 @@ services:
       - clusters.backup
       - clusters.connect
       - clusters.create
+      - clusters.createTagBinding
       - clusters.delete
+      - clusters.deleteTagBinding
       - clusters.get
       - clusters.list
+      - clusters.listEffectiveTags
+      - clusters.listTagBindings
       - clusters.rescheduleMaintenance
       - clusters.update
       - instances.create
@@ -3937,10 +4036,23 @@ services:
       - operations.list
   - prefix: resourcemanager
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
+      - boundaries.associateToCapabilityConfig
+      - boundaries.create
+      - boundaries.delete
+      - boundaries.get
+      - boundaries.list
+      - boundaries.update
+      - boundaryConfigs.get
+      - boundaryConfigs.update
       - capabilities.get
       - capabilities.update
+      - capabilityConfigs.create
+      - capabilityConfigs.delete
+      - capabilityConfigs.get
+      - capabilityConfigs.list
+      - capabilityConfigs.update
       - folders.create
       - folders.createPolicyBinding
       - folders.delete
@@ -3967,6 +4079,7 @@ services:
       - organizations.searchPolicyBindings
       - organizations.setIamPolicy
       - organizations.updatePolicyBinding
+      - projects.associateToCapabilityConfig
       - projects.create
       - projects.createBillingAssignment
       - projects.createPolicyBinding
@@ -4008,7 +4121,7 @@ services:
       - tagValues.update
   - prefix: run
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-22"
+    retrieved_on: "2026-09-17"
     actions:
       - configurations.get
       - configurations.list
@@ -4081,7 +4194,7 @@ services:
       - workerpools.update
   - prefix: secretmanager
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - locations.get
       - locations.list
@@ -4107,7 +4220,7 @@ services:
       - versions.list
   - prefix: servicenetworking
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - operations.cancel
       - operations.delete
@@ -4133,7 +4246,7 @@ services:
       - services.use
   - prefix: serviceusage
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - apiKeys.create
       - apiKeys.delete
@@ -4167,7 +4280,7 @@ services:
       - values.test
   - prefix: spanner
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - backupOperations.cancel
       - backupOperations.get
@@ -4255,7 +4368,7 @@ services:
       - sessions.list
   - prefix: storage
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - anywhereCaches.create
       - anywhereCaches.disable
@@ -4286,6 +4399,7 @@ services:
       - buckets.setIpFilter
       - buckets.update
       - buckets.viewIntelligenceDetails
+      - buckets.viewSecurityIntelligenceDetails
       - featureConfigs.create
       - featureConfigs.delete
       - featureConfigs.get
@@ -4309,6 +4423,7 @@ services:
       - managedFolders.getIamPolicy
       - managedFolders.list
       - managedFolders.setIamPolicy
+      - managedFolders.update
       - managementHubs.get
       - managementHubs.update
       - multipartUploads.abort
@@ -4331,7 +4446,7 @@ services:
       - objects.updateContext
   - prefix: vpcaccess
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - connectors.create
       - connectors.delete
@@ -4343,7 +4458,7 @@ services:
       - operations.list
   - prefix: workflows
     source_url: https://iam.googleapis.com/v1/permissions:queryTestablePermissions
-    retrieved_on: "2026-08-18"
+    retrieved_on: "2026-09-17"
     actions:
       - callbacks.list
       - callbacks.send

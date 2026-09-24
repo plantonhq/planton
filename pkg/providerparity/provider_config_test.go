@@ -323,7 +323,7 @@ func TestEnrolledProvidersAtTotalProviderConfigAccounting(t *testing.T) {
 			continue
 		}
 		withManifest++
-		acc, err := BuildAccounting(root, e.Provider, schemas, e.GASchema, "")
+		acc, err := BuildAccounting(root, e.Provider, schemas, e.GASchema, "", "")
 		if err != nil {
 			t.Fatalf("%s: %v", e.Provider, err)
 		}

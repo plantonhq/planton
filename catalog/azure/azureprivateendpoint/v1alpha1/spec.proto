@@ -118,7 +118,15 @@ message AzurePrivateEndpointServiceConnection {
   // default_kind; reference the service's own output id in composed
   // environments. Set this OR connection_alias, never both. Fixed at
   // creation.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef private_connection_resource_id = 1;
+  //
+  // Containment-exempt: the endpoint LIVES in its subnet (the subnet
+  // reference above places it) and REACHES the service named here.
+  // Private endpoints are how Azure PaaS joins a network, and most of
+  // what they reach is itself a container (a storage account, a Key
+  // Vault, a Cosmos account, a SQL server); without the exemption an
+  // endpoint would be drawn inside the service it merely connects to,
+  // torn out of the subnet that is its real home.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef private_connection_resource_id = 1 [(dev.planton.shared.foreignkey.v1.containment_exempt) = true];
 
   // The Private Link Service ALIAS to connect to, when the target is
   // exposed through an alias rather than a resource ID (typically a

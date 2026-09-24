@@ -1,72 +1,46 @@
 # Least-privilege permissions the IaC runner's Auth0 credential needs to
 # provision, update, and destroy this component with the official modules.
-# Schema: iac/componentpermissions/v1.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.0 per iac/tf/provider.tf) and the
+# Pulumi module exchange its client id and secret for a token through the
+# client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
 #
-# Auth0 authenticates with a tenant-scoped Management API token, not
-# IAM-statement policies, so none of the schema's provider sections
-# (aws/gcp/azure/kubernetes) applies -- their absence is the schema's own
-# claim that the modules touch no such API. The credential model: a
-# machine-to-machine (M2M) application in the target tenant, authorized for
-# the Auth0 Management API audience (https://{tenant-domain}/api/v2/) and
-# granted the scopes below; the auth0/auth0 Terraform provider (~> 1.0 per
-# iac/tf/provider.tf) and the Pulumi module exchange its client id/secret
-# for a token via the client-credentials flow.
-#
-# The modules manage three surfaces: auth0_client (the application
-# registration), auth0_client_grant (one per api_grants entry, authorizing
-# the client against an API), and a read-back data source that fetches the
-# computed-only client_secret and token_endpoint_auth_method. Should the
-# schema grow an auth0 section, this inventory converts mechanically:
-#
-#   Client lifecycle (purpose: create/read/update/delete the registration):
-#     create:clients        -- POST /api/v2/clients (proven: the endpoint
-#                              doc's insufficient-scope contract names it;
-#                              auth0.com/docs/api/management/v2/clients/
-#                              post-clients, retrieved 2026-08-22).
-#     read:clients          -- GET /api/v2/clients/{id} on refresh (proven:
-#                              listed in the endpoint's accepted scopes;
-#                              auth0.com/docs/api/management/v2/clients/
-#                              get-clients-by-id, retrieved 2026-08-22).
-#     update:clients        -- PATCH /api/v2/clients/{id} on config change.
-#                              Derived: follows Auth0's documented create:/
-#                              read:/update:/delete: scope naming per
-#                              endpoint; the patch-clients page was not
-#                              fetched this session.
-#     delete:clients        -- DELETE /api/v2/clients/{id} on destroy.
-#                              Derived, same basis as update:clients.
-#
-#   Secret read-back (purpose: the data.auth0_client read that surfaces
-#   client_secret as an output -- the module's own comment in iac/tf/main.tf
-#   names this requirement):
-#     read:client_keys      -- GET /api/v2/clients/{id} returns secret
-#                              material only to tokens holding it (proven:
-#                              listed in the endpoint's accepted scopes;
-#                              get-clients-by-id doc, retrieved 2026-08-22).
-#
-#   API grants (purpose: authorize the client against APIs; one resource
-#   per api_grants entry, skipped when the list is empty):
-#     create:client_grants  -- POST /api/v2/client-grants (proven:
-#                              auth0.com/docs/api/management/v2/
-#                              client-grants/post-client-grants, retrieved
-#                              2026-08-22).
-#     read:client_grants    -- GET /api/v2/client-grants on refresh.
-#                              Derived, same naming-family basis.
-#     update:client_grants  -- PATCH /api/v2/client-grants/{id} on scope
-#                              change. Derived.
-#     delete:client_grants  -- DELETE /api/v2/client-grants/{id} on destroy
-#                              or grant removal. Derived.
-#
-# Net least-privilege scope set: create:clients, read:clients,
-# update:clients, delete:clients, read:client_keys, create:client_grants,
-# read:client_grants, update:client_grants, delete:client_grants. Auth0
-# scopes are per-resource-family, not per-object: a token holding them can
-# manage EVERY client and grant in the tenant, and read:client_keys reads
-# every client's secret -- narrowing to one client is not expressible, so
-# the trust boundary is the tenant (use a dedicated tenant or dedicated M2M
-# app per boundary). The derived entries above are honest unknowns until a
-# live capture upgrades them to proven.
+# Auth0 scopes are per resource family, not per object: a credential
+# holding them manages EVERY client and grant in the tenant, and
+# read:client_keys reads every client's secret. Narrowing to one client is
+# not expressible, so the trust boundary is the tenant (a dedicated tenant,
+# or a dedicated machine-to-machine application per boundary).
 apiVersion: iac.planton.dev/v1
 kind: ComponentPermissions
 metadata:
   name: auth0client
-spec: {}
+spec:
+  auth0:
+    groups:
+      - purpose: ManageClient
+        scopes:
+          - create:clients
+          - read:clients
+          - update:clients
+          - delete:clients
+        provenance: derived
+        notes: Covers auth0_client, the application registration — create via POST /api/v2/clients (create:clients, named by the endpoint doc's insufficient-scope contract, auth0.com/docs/api/management/v2/clients/post-clients, read 2026-08-22), read back on refresh via GET /api/v2/clients/{id} (read:clients, listed in get-clients-by-id's accepted scopes, read 2026-08-22), change in place via PATCH /api/v2/clients/{id} (update:clients), and destroy via DELETE /api/v2/clients/{id} (delete:clients). The update and delete names follow Auth0's per-endpoint-family naming; the patch-clients page was not fetched.
+      - purpose: ReadClientSecret
+        scopes:
+          - read:client_keys
+        provenance: derived
+        notes: The data.auth0_client read-back that surfaces client_secret and token_endpoint_auth_method as outputs (iac/tf/main.tf names the requirement). GET /api/v2/clients/{id} returns secret material only to tokens holding this scope (get-clients-by-id's accepted scopes, read 2026-08-22). It fails silently when missing — the client installs green and its client_secret output is empty — so a credential for any deployment that reads the secret needs it.
+      - purpose: ManageApiGrants
+        scopes:
+          - create:client_grants
+          - read:client_grants
+          - update:client_grants
+          - delete:client_grants
+        provenance: derived
+        condition:
+          spec_field_set: api_grants
+        notes: One auth0_client_grant per api_grants entry authorizes the client against an API. Create via POST /api/v2/client-grants (create:client_grants, auth0.com/docs/api/management/v2/client-grants/post-client-grants, read 2026-08-22), read back via GET /api/v2/client-grants (read:client_grants), change scopes via PATCH /api/v2/client-grants/{id} (update:client_grants), and remove on destroy or grant removal via DELETE /api/v2/client-grants/{id} (delete:client_grants); the last three follow the same family naming.

@@ -645,6 +645,12 @@ The resource the endpoint connects to, by ARM ID -- a storage
 account, a SQL server, or a Private Link Service. Pass a literal
 ID or wire a reference to the target kind's own ID output.
 
+Containment-exempt: a managed private endpoint is the factory's
+own door to a data store it reads or writes; the factory is not
+deployed into that store. Most such targets are containers, and a
+factory wired to one by reference would otherwise be drawn inside
+the store it merely reaches.
+
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

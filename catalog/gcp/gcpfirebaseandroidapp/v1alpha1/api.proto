@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpfirebaseandroidapp/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpfirebaseandroidapp/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-firebase-android-app
+message GcpFirebaseAndroidApp {
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+  string kind = 2 [(buf.validate.field).string.const = 'GcpFirebaseAndroidApp'];
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  GcpFirebaseAndroidAppSpec spec = 4 [(buf.validate.field).required = true];
+  GcpFirebaseAndroidAppStatus status = 5;
+}
+
+message GcpFirebaseAndroidAppStatus {
+  GcpFirebaseAndroidAppStackOutputs outputs = 1;
+}

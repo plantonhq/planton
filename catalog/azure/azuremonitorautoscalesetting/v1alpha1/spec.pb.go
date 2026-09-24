@@ -70,6 +70,11 @@ type AzureMonitorAutoscaleSettingSpec struct {
 	// (kind + fieldPath), or pass a literal ARM ID. Azure allows ONE
 	// autoscale setting per target.
 	//
+	// Containment-exempt: the setting DRIVES its target's capacity from
+	// outside; it is an extension resource that hangs on the scale set or
+	// plan, never a tenant of it. Without the exemption a setting wired
+	// to a container target by reference would be drawn inside it.
+	//
 	// **ForceNew**: changing this destroys and recreates the setting.
 	TargetResourceId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=target_resource_id,json=targetResourceId,proto3" json:"target_resource_id,omitempty"`
 	// Whether autoscale actively evaluates and acts. Unspecified applies
@@ -484,7 +489,8 @@ type AzureMonitorAutoscaleSettingMetricTrigger struct {
 	// scale a worker scale set on a Service Bus queue's depth). No
 	// default kind for the same reason as target_resource_id: reference
 	// the resource's `*_id` output explicitly with valueFrom, or pass a
-	// literal ARM ID.
+	// literal ARM ID. Access, not placement, like target_resource_id --
+	// the setting reads this resource's metric, nothing more.
 	MetricResourceId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=metric_resource_id,json=metricResourceId,proto3" json:"metric_resource_id,omitempty"`
 	// The granularity the metric is sampled at, as an ISO 8601 duration
 	// (commonly "PT1M"). Must be one of the granularities the metric
@@ -1097,14 +1103,15 @@ var File_catalog_azure_azuremonitorautoscalesetting_v1alpha1_spec_proto protoref
 
 const file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	">catalog/azure/azuremonitorautoscalesetting/v1alpha1/spec.proto\x127dev.planton.azure.azuremonitorautoscalesetting.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xd6\a\n" +
+	">catalog/azure/azuremonitorautoscalesetting/v1alpha1/spec.proto\x127dev.planton.azure.azuremonitorautoscalesetting.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xda\a\n" +
 	" AzureMonitorAutoscaleSettingSpec\x12\x8c\x01\n" +
 	"\x0eresource_group\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x0f\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12\x1e\n" +
 	"\x04name\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x04name\x12\"\n" +
 	"\x06region\x18\x03 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12h\n" +
-	"\x12target_resource_id\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x10targetResourceId\x12'\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12l\n" +
+	"\x12target_resource_id\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x10targetResourceId\x12'\n" +
 	"\aenabled\x18\x05 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12\x7f\n" +
 	"\n" +
 	"predictive\x18\x06 \x01(\v2_.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingPredictiveR\n" +
@@ -1150,12 +1157,13 @@ const file_catalog_azure_azuremonitorautoscalesetting_v1alpha1_spec_proto_rawDes
 	"\b_default\"\xc4\x02\n" +
 	" AzureMonitorAutoscaleSettingRule\x12\x91\x01\n" +
 	"\x0emetric_trigger\x18\x01 \x01(\v2b.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingMetricTriggerB\x06\xbaH\x03\xc8\x01\x01R\rmetricTrigger\x12\x8b\x01\n" +
-	"\fscale_action\x18\x02 \x01(\v2`.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingScaleActionB\x06\xbaH\x03\xc8\x01\x01R\vscaleAction\"\xa4\t\n" +
+	"\fscale_action\x18\x02 \x01(\v2`.dev.planton.azure.azuremonitorautoscalesetting.v1alpha1.AzureMonitorAutoscaleSettingScaleActionB\x06\xbaH\x03\xc8\x01\x01R\vscaleAction\"\xa8\t\n" +
 	")AzureMonitorAutoscaleSettingMetricTrigger\x12+\n" +
 	"\vmetric_name\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\n" +
-	"metricName\x12h\n" +
-	"\x12metric_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x10metricResourceId\x12\xde\x01\n" +
+	"metricName\x12l\n" +
+	"\x12metric_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x10metricResourceId\x12\xde\x01\n" +
 	"\n" +
 	"time_grain\x18\x03 \x01(\tB\xbe\x01\xbaH\xba\x01\xba\x01\xb3\x01\n" +
 	"\x1cautoscale_time_grain_iso8601\x122time_grain must be an ISO 8601 duration, e.g. PT1M\x1a_this == '' || this.matches('^P((\\\\d+Y)?(\\\\d+M)?(\\\\d+W)?(\\\\d+D)?)(T(\\\\d+H)?(\\\\d+M)?(\\\\d+S)?)?$')\xc8\x01\x01R\ttimeGrain\x12>\n" +

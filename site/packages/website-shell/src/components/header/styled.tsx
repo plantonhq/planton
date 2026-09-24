@@ -11,6 +11,7 @@ import {
   type SvgIconProps,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { scopedTokens as tokens } from '../../theme/tokens';
 
 export const SvgIconSizeResponsive = styled(SvgIcon)<SvgIconProps>(({ theme }) => ({
   fontSize: 16,
@@ -24,7 +25,7 @@ export const ShellDrawer = styled(Drawer)(({ theme }) => ({
     padding: theme.spacing(2.5, 3.5),
     width: '90vw',
     maxWidth: 350,
-    backgroundColor: '#111111',
+    backgroundColor: tokens.surface.panel,
   },
 }));
 
@@ -58,10 +59,10 @@ export const ShellAccordionSummary = styled((props: AccordionSummaryProps) => (
   '& .MuiAccordionSummary-content .shell-accordion-title': {
     fontSize: theme.spacing(2),
     fontWeight: 600,
-    color: '#999999',
+    color: tokens.text.secondary,
   },
   '&.Mui-expanded .shell-accordion-title': {
-    color: 'white',
+    color: tokens.text.primary,
   },
 }));
 

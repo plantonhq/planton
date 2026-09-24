@@ -22,6 +22,7 @@ variable "spec" {
     runner_version         = optional(string)
     image_repository       = optional(string)
     chart_version          = optional(string, "")
+    chart_repository       = optional(string, "")
     resources = optional(object({
       limits = optional(object({
         cpu    = optional(string, "")

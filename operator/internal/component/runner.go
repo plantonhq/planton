@@ -271,6 +271,7 @@ func runnerConfig(planton *v1.PlantonPlatform, ownerRef *metav1.OwnerReference) 
 	cfg.StorageSize = resource.MustParse(
 		effectiveStorageSize(planton, componentSize, resources.RunnerDefaultStorageSize))
 	cfg.StorageClassName = effectiveStorageClass(planton, componentClass)
+	cfg.ImageRepository = resources.ImageRepository(cfg.ImageRepository, planton.Spec.ImageRegistry, resources.RunnerImageSlug)
 	return cfg
 }
 

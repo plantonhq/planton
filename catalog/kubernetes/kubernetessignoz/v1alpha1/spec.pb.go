@@ -1053,10 +1053,10 @@ const file_catalog_kubernetes_kubernetessignoz_v1alpha1_spec_proto_rawDesc = "" 
 	"\vsecret_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB.\xbaH\x03\xc8\x01\x01\x88\xd4a\x97 \x92\xd4a\x1fstatus.outputs.auth_secret_nameR\n" +
 	"secretName\x12n\n" +
 	"\n" +
-	"secret_key\x18\x02 \x01(\tBO\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dEKey NAME within an existing Secret (a reference), not secret materialR\tsecretKey\"\xde\x04\n" +
+	"secret_key\x18\x02 \x01(\tBO\xbaH\x03\xc8\x01\x01\xaa\xa6\x1dEKey NAME within an existing Secret (a reference), not secret materialR\tsecretKey\"\xf3\x04\n" +
 	"\x16KubernetesSignozServer\x12_\n" +
-	"\tdisk_size\x18\x01 \x01(\tB=\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x031GiH\x00R\bdiskSize\x88\x01\x01\x12o\n" +
-	"\rstorage_class\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClass\x12H\n" +
+	"\tdisk_size\x18\x01 \x01(\tB=\xbaH3r12/^\\d+(\\.\\d+)?\\s?(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)$\x8a\xa6\x1d\x031GiH\x00R\bdiskSize\x88\x01\x01\x12\x83\x01\n" +
+	"\rstorage_class\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClass\x12H\n" +
 	"\tresources\x18\x03 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\tresources\x12!\n" +
 	"\fexternal_url\x18\x04 \x01(\tR\vexternalUrl\x12Z\n" +
 	"\x04smtp\x18\x05 \x01(\v2F.dev.planton.kubernetes.kubernetessignoz.v1alpha1.KubernetesSignozSmtpR\x04smtp\x12c\n" +

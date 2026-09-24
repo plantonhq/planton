@@ -95,6 +95,26 @@ func TestRunnerConfig_GlobalStorage(t *testing.T) {
 	}
 }
 
+// The platform's registry root moves the runner and the control plane together;
+// the runner's own image override still wins over it.
+func TestImageRegistry_MovesEveryPlantonImage(t *testing.T) {
+	const mirror = "asia-south1-docker.pkg.dev/plantonhq/planton"
+	p := ingressPlatform(false)
+	p.Spec.ImageRegistry = mirror
+
+	if got := runnerConfig(p, nil).ImageRepository; got != mirror+"/runner" {
+		t.Errorf("runner image = %s, want the mirror root", got)
+	}
+	if got := (&ControlPlane{}).buildConfig(p, nil).ImageRepository; got != mirror+"/control-plane" {
+		t.Errorf("control-plane image = %s, want the mirror root", got)
+	}
+
+	p.Spec.Runner = &v1.RunnerSpec{Image: &v1.ImageSpec{Repository: "example.com/runner"}}
+	if got := runnerConfig(p, nil).ImageRepository; got != "example.com/runner" {
+		t.Errorf("runner image = %s, want the declared override over the root", got)
+	}
+}
+
 func TestRunnerConfig_SpecWins(t *testing.T) {
 	p := ingressPlatform(false)
 	p.Spec.Bootstrap = &v1.BootstrapSpec{

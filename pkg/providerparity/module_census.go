@@ -67,6 +67,19 @@ type ModuleCensus struct {
 	// silent-omission class the provider-config accounting exists to
 	// eliminate. Empty blocks (the catalog's canonical shape) yield no entry.
 	ProviderBlockArgs map[string][]string
+	// ProviderAttachments maps a resource type to the provider local name
+	// its blocks attach through the `provider = <name>` meta-argument
+	// (e.g. "google_firebase_project" -> "google-beta"). Only explicit
+	// attachments are recorded: a resource with no meta-argument uses the
+	// provider its type prefix implies, and the map has no entry for it.
+	// This is the census fact the beta-admission accounting reads -- a
+	// secondary-channel resource enters a module only through an explicit
+	// attachment, so an attachment with no admission (or an admission with
+	// no attachment) is visible here rather than inferred. Parsed with real
+	// HCL alongside the provider blocks. A resource type attached through
+	// two different providers in one module is an error: the module's
+	// intent is ambiguous and the accounting cannot pick.
+	ProviderAttachments map[string]string
 }
 
 // ModuleCensusForProvider scans the Terraform module of every registered kind
@@ -115,6 +128,7 @@ func ScanModule(moduleDir string) (ModuleCensus, error) {
 	seen := map[string]bool{}
 	census := ModuleCensus{Pins: map[string]string{}}
 	providerArgs := map[string]map[string]bool{}
+	attachments := map[string]string{}
 	for _, entry := range entries {
 		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".tf") {
 			continue
@@ -136,6 +150,12 @@ func ScanModule(moduleDir string) (ModuleCensus, error) {
 		if err := collectProviderBlockArgs(path, content, providerArgs); err != nil {
 			return ModuleCensus{}, err
 		}
+		if err := collectProviderAttachments(path, content, attachments); err != nil {
+			return ModuleCensus{}, err
+		}
+	}
+	if len(attachments) > 0 {
+		census.ProviderAttachments = attachments
 	}
 	for name, args := range providerArgs {
 		if len(args) == 0 {
@@ -178,6 +198,49 @@ func collectProviderBlockArgs(path string, content []byte, out map[string]map[st
 			out[name] = map[string]bool{}
 		}
 		collectBodyArgPaths(block.Body, "", out[name])
+	}
+	return nil
+}
+
+// collectProviderAttachments HCL-parses one .tf file and records, for every
+// top-level `resource "<type>" "<name>" {}` block that sets the `provider`
+// meta-argument, the provider local name it attaches through. The
+// meta-argument's value is a bare traversal (`google-beta`, or
+// `google-beta.alias` for an aliased configuration); the root name is the
+// provider local name the required_providers block pins, which is the
+// identity the admission accounting and the pin guard both key on.
+//
+// Two blocks of one resource type attaching through different providers is
+// a hard error rather than a last-wins pick: the census reports per
+// resource TYPE, and a type split across providers has no single truth to
+// account against.
+func collectProviderAttachments(path string, content []byte, out map[string]string) error {
+	file, diags := hclparse.NewParser().ParseHCL(content, path)
+	if diags.HasErrors() {
+		return errors.Errorf("parsing %s: %s", path, diags.Error())
+	}
+	body, ok := file.Body.(*hclsyntax.Body)
+	if !ok {
+		return errors.Errorf("parsing %s: unexpected body type %T", path, file.Body)
+	}
+	for _, block := range body.Blocks {
+		if block.Type != "resource" || len(block.Labels) != 2 {
+			continue
+		}
+		attr, set := block.Body.Attributes["provider"]
+		if !set {
+			continue
+		}
+		traversal, ok := attr.Expr.(*hclsyntax.ScopeTraversalExpr)
+		if !ok || len(traversal.Traversal) == 0 {
+			return errors.Errorf("parsing %s: resource %q %q sets provider to a non-traversal expression -- the meta-argument must be a bare provider reference", path, block.Labels[0], block.Labels[1])
+		}
+		providerName := traversal.Traversal.RootName()
+		resourceType := block.Labels[0]
+		if prev, exists := out[resourceType]; exists && prev != providerName {
+			return errors.Errorf("parsing %s: resource type %s attaches through both %q and %q -- one provider per resource type per module", path, resourceType, prev, providerName)
+		}
+		out[resourceType] = providerName
 	}
 	return nil
 }

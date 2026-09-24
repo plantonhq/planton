@@ -18,7 +18,7 @@ const (
 	// RunnerDefaultImageRepo is the official runner image. It bundles the
 	// planton-runner binary plus the IaC toolchain (OpenTofu, Pulumi, cloud
 	// auth exec plugins), so the pod needs no init or sidecar containers.
-	RunnerDefaultImageRepo = "ghcr.io/plantonhq/planton/runner"
+	RunnerDefaultImageRepo = DefaultImageRegistry + "/" + RunnerImageSlug
 
 	// RunnerBadgeAudience is the audience the runner's projected
 	// ServiceAccount token is minted for, and the audience the control
@@ -48,6 +48,16 @@ const (
 	// are kilobytes each; 2Gi leaves headroom for hundreds of resources plus
 	// provider lock metadata.
 	RunnerDefaultStorageSize = "2Gi"
+
+	// The runner's sizing, chosen here so a default install schedules
+	// honestly and is never OOM-killed by omission. Read live on a one-node
+	// install: ~780Mi resident while working its queues (a Go binary that
+	// forks OpenTofu and Pulumi engines, whose own memory counts against the
+	// pod). The limit is the headroom for an engine run; no CPU limit, so a
+	// plan or apply is never throttled (requests-only, the house pattern).
+	runnerCPURequest    = "100m"
+	runnerMemoryRequest = "512Mi"
+	runnerMemoryLimit   = "2Gi"
 
 	// runnerGrpcPort hosts the runner's gRPC server: the CloudOps surface the
 	// control plane direct-dials for live cloud operations, plus the health
@@ -202,14 +212,6 @@ func RunnerChannelIdentifier(crName, orgSlug string) string {
 	return fmt.Sprintf("org.%s.runner.%s", orgSlug, RunnerSlug(crName))
 }
 
-// RunnerTaskQueue returns the Temporal task queue the runner polls and the
-// control plane dispatches to: "iac-operation." + channel identifier. The
-// prefix mirrors the runner binary's temporal.TaskQueuePrefix and infra-hub's
-// producer-side convention -- deterministic on both sides, no shared state.
-func RunnerTaskQueue(crName, orgSlug string) string {
-	return "iac-operation." + RunnerChannelIdentifier(crName, orgSlug)
-}
-
 // GenerateRunnerCloudOpsToken mints the CloudOps direct-dial bearer:
 // "pcot_" + Base64URL(32 random bytes).
 func GenerateRunnerCloudOpsToken() (string, error) {
@@ -335,17 +337,20 @@ func RunnerBuildRole(cfg RunnerConfig) *rbacv1.Role {
 			Labels:    runnerLabels(cfg.CRName),
 		},
 		Rules: []rbacv1.PolicyRule{
-			// Creating a build's PipelineRun, watching the run inventory the
-			// reconcile safety net lists, and the labeled cleanup sweep.
+			// Creating a build's PipelineRun, listing the run inventory the
+			// reconcile safety net reads, watching the namespace's runs so the
+			// run watcher signals each change to the owning build as it
+			// happens (the event transport that needs no cluster-wide Tekton
+			// sink), and the labeled cleanup sweep.
 			{
 				APIGroups: []string{"tekton.dev"},
 				Resources: []string{"pipelineruns"},
-				Verbs:     []string{"create", "list", "deletecollection"},
+				Verbs:     []string{"create", "list", "watch", "deletecollection"},
 			},
 			{
 				APIGroups: []string{"tekton.dev"},
 				Resources: []string{"taskruns"},
-				Verbs:     []string{"list"},
+				Verbs:     []string{"list", "watch"},
 			},
 			// Per-build workspace objects the create activity provisions and
 			// the cleanup activity sweeps.
@@ -354,10 +359,14 @@ func RunnerBuildRole(cfg RunnerConfig) *rbacv1.Role {
 				Resources: []string{"secrets", "serviceaccounts"},
 				Verbs:     []string{"create", "get", "deletecollection"},
 			},
+			// A build's export ConfigMaps: the runner creates each one empty
+			// (and empties it on a rerun), grants the build get/update/patch on
+			// exactly those names, reads the result, and sweeps it. Kubernetes
+			// refuses a grant of any permission the granter does not hold.
 			{
 				APIGroups: []string{""},
 				Resources: []string{"configmaps"},
-				Verbs:     []string{"get", "deletecollection"},
+				Verbs:     []string{"get", "create", "update", "patch", "deletecollection"},
 			},
 			{
 				APIGroups: []string{"rbac.authorization.k8s.io"},
@@ -595,10 +604,11 @@ func RunnerDeployment(cfg RunnerConfig) *appsv1.Deployment {
 						// The runner's name and identity come from the env
 						// below (credentials + projected badge), so start
 						// takes no further arguments here.
-						Args:    []string{"start"},
-						Env:     env,
-						EnvFrom: envFrom,
-						Ports:   ports,
+						Args:      []string{"start"},
+						Env:       env,
+						Resources: runnerResources(),
+						EnvFrom:   envFrom,
+						Ports:     ports,
 						VolumeMounts: []corev1.VolumeMount{
 							{Name: "badge-token", MountPath: runnerBadgeTokenDir, ReadOnly: true},
 							{Name: "iac-state", MountPath: runnerIacStateDir},
@@ -685,5 +695,19 @@ func runnerLabels(crName string) map[string]string {
 		"app.kubernetes.io/instance":   crName,
 		"app.kubernetes.io/managed-by": ManagedByLabel,
 		"app.kubernetes.io/component":  "application",
+	}
+}
+
+// runnerResources is the container sizing every install gets (the constants
+// above carry the reasoning).
+func runnerResources() corev1.ResourceRequirements {
+	return corev1.ResourceRequirements{
+		Requests: corev1.ResourceList{
+			corev1.ResourceCPU:    resource.MustParse(runnerCPURequest),
+			corev1.ResourceMemory: resource.MustParse(runnerMemoryRequest),
+		},
+		Limits: corev1.ResourceList{
+			corev1.ResourceMemory: resource.MustParse(runnerMemoryLimit),
+		},
 	}
 }

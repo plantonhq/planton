@@ -1,0 +1,216 @@
+.page {
+  min-height: 100vh;
+  background: var(--demo-canvas, transparent);
+  color: inherit;
+  padding: 110px max(24px, 6vw) 80px;
+}
+.layout {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  align-items: start;
+}
+.eyebrow {
+  font:
+    10px/1.6 ui-monospace,
+    monospace;
+  letter-spacing: 0.14em;
+  margin: 0 0 34px;
+  opacity: 0.7;
+}
+.copy h1 {
+  font-size: clamp(38px, 4.4vw, 66px);
+  line-height: 1.1;
+  letter-spacing: -0.055em;
+  font-weight: 400;
+  white-space: pre-line;
+  margin: 0 0 28px;
+}
+.copy h1:focus {
+  outline: none;
+}
+.intro {
+  font-size: 15px;
+  line-height: 1.9;
+  opacity: 0.75;
+  max-width: 440px;
+}
+.agenda {
+  margin-top: 48px;
+  border-top: 1px solid currentColor;
+  border-color: color-mix(in srgb, currentColor 18%, transparent);
+  padding-top: 28px;
+}
+.agenda h2 {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 24px;
+}
+.agenda ol {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+  font-size: 13px;
+}
+.agenda li {
+  display: flex;
+  gap: 17px;
+  line-height: 1.7;
+}
+.agenda li span {
+  font:
+    10px/2 ui-monospace,
+    monospace;
+  opacity: 0.65;
+}
+.agenda p {
+  font-size: 12px;
+  line-height: 1.8;
+  opacity: 0.7;
+  max-width: 340px;
+  margin-top: 30px;
+}
+.progress {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  font-size: 11px;
+}
+.progress li {
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.progress li[aria-current='step'] {
+  opacity: 1;
+}
+.progress span {
+  font-family: ui-monospace, monospace;
+}
+.confirmation {
+  margin-top: 25px;
+  padding: 20px;
+  border: 1px solid currentColor;
+}
+.confirmation h2 {
+  font-size: 17px;
+}
+.confirmation p {
+  font-size: 13px;
+  line-height: 1.8;
+}
+@media (max-width: 760px) {
+  .page {
+    padding-top: 85px;
+  }
+  .layout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .copy {
+    display: contents;
+  }
+  .eyebrow {
+    order: 0;
+    margin-bottom: 0;
+  }
+  .copy h1 {
+    order: 1;
+    margin: 0;
+    font-size: 43px;
+    white-space: pre-line;
+  }
+  .intro {
+    order: 2;
+    margin: 0;
+    max-width: 550px;
+  }
+  .formColumn {
+    order: 3;
+    width: 100%;
+    margin-top: 12px;
+  }
+  .agenda {
+    order: 4;
+    margin-top: 0;
+    width: 100%;
+  }
+  .agenda ol {
+    gap: 12px;
+  }
+  .agenda p {
+    margin-top: 20px;
+  }
+}
+@media (max-width: 380px) {
+  .copy h1 {
+    font-size: 38px;
+  }
+}
+
+/* Booking inherits the same quiet, readable surfaces as the homepage. */
+.page {
+  padding-top: 70px;
+}
+.intro {
+  font-size: 17px;
+}
+.eyebrow {
+  font-size: 12px;
+}
+.agenda h2 {
+  font-size: 16px;
+}
+.agenda ol {
+  font-size: 16px;
+}
+.agenda p {
+  font-size: 14px;
+}
+.progress {
+  font-size: 14px;
+}
+.formColumn {
+  padding: 28px;
+  border: 1px solid var(--website-edge-default);
+  border-radius: 14px;
+  background: var(--website-surface-panel);
+}
+.formColumn input,
+.formColumn select {
+  font-size: 16px;
+  min-height: 48px;
+}
+.formColumn label {
+  font-size: 14px;
+}
+.confirmation {
+  border-radius: 10px;
+}
+.confirmation p {
+  font-size: 15px;
+}
+.formColumn p[role='alert'] {
+  font-size: 15px;
+}
+@media (max-width: 760px) {
+  .page {
+    padding-top: 45px;
+  }
+  .formColumn {
+    padding: 20px;
+  }
+  .intro {
+    font-size: 16px;
+  }
+  .agenda ol {
+    font-size: 15px;
+  }
+}

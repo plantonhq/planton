@@ -1,0 +1,16 @@
+# The author makes the operator depend on the database (a valueFrom into its
+# outputs), while the kind metadata makes the database depend on the operator.
+# The author's words win: the inferred operator-prerequisite edge is dropped
+# and reported, the order stands, and nothing refuses.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesCloudNativePgOperator
+metadata:
+  name: cnpg
+  env: dev
+spec:
+  namespace:
+    valueFrom:
+      kind: KubernetesPostgres
+      name: app-db
+      fieldPath: status.outputs.namespace
+  create_namespace: false

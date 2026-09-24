@@ -169,7 +169,11 @@ The subnets nodes launch into -- typically the cluster VPC's private
 subnets. One subnet is a legitimate zonal topology (e.g. a stateful
 pool pinned to its EBS volumes' zone); use two-plus zones for fleets
 that should survive a zone impairment. Reference AwsSubnet subnet_id
-outputs or pass literal subnet IDs. Create-only in AWS.
+outputs or pass literal subnet IDs. Create-only in AWS. A node group
+is a member of its cluster and lives there on a diagram; the subnets
+are where its nodes attach, so the reference is access, not
+placement -- otherwise a group on subnets its cluster does not name
+would be drawn outside the cluster it belongs to.
 
 - references: AwsSubnet (`status.outputs.subnet_id`)
 - rule: {"required":true,"repeated":{"minItems":"1"}}

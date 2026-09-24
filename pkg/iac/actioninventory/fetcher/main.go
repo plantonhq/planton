@@ -2,8 +2,9 @@
 // each provider's own published inventory: AWS
 // (pkg/iac/actioninventory/aws.yaml) from the machine-readable service
 // reference, Azure (azure.yaml) from ARM's provider-operations metadata
-// (see azure.go for its arm and credential contract), and GCP (gcp.yaml)
-// from IAM's testable-permissions inventory (see gcp.go). It reads the
+// (see azure.go for its arm and credential contract), GCP (gcp.yaml) from
+// IAM's testable-permissions inventory (see gcp.go), and Cloudflare,
+// DigitalOcean, and Auth0 from their own arms' files. It reads the
 // committed runner permissions manifests to learn which service prefixes
 // / namespaces / services the catalog actually uses, fetches exactly
 // those inventories, and rewrites each snapshot in its canonical form.
@@ -11,6 +12,12 @@
 // is a hard error (a genuinely wrong prefix, not a refresh problem), and a
 // service with an empty action list refuses rather than committing an
 // inventory that would fail every action.
+//
+// With no arguments every arm refreshes, in the order below. Naming arms
+// (`go run ./pkg/iac/actioninventory/fetcher auth0`) refreshes only those:
+// several arms need their own provider credential, and refreshing one
+// provider must neither require the others' credentials nor rewrite their
+// snapshots with a new retrieval date and nothing else changed.
 package main
 
 import (
@@ -31,24 +38,67 @@ import (
 // document URL and modification stamp.
 const indexURL = "https://servicereference.us-east-1.amazonaws.com/"
 
+// arms are the inventory arms by the catalog provider directory name each
+// snapshot serves, in the order a full refresh runs them.
+var arms = []struct {
+	provider string
+	refresh  func(repoRoot string) error
+}{
+	{"aws", refreshAws},
+	{"azure", refreshAzure},
+	{"gcp", refreshGcp},
+	{"cloudflare", refreshCloudflare},
+	{"digitalocean", refreshDigitalOcean},
+	{"auth0", refreshAuth0},
+}
+
 func main() {
 	repoRoot, err := os.Getwd()
 	if err != nil {
 		fatal(err)
 	}
 
+	selected := map[string]bool{}
+	known := make([]string, 0, len(arms))
+	for _, arm := range arms {
+		known = append(known, arm.provider)
+	}
+	for _, name := range os.Args[1:] {
+		found := false
+		for _, arm := range arms {
+			found = found || arm.provider == name
+		}
+		if !found {
+			fatal(fmt.Errorf("no inventory arm named %q -- the arms are %s", name, strings.Join(known, ", ")))
+		}
+		selected[name] = true
+	}
+
+	for _, arm := range arms {
+		if len(selected) > 0 && !selected[arm.provider] {
+			continue
+		}
+		if err := arm.refresh(repoRoot); err != nil {
+			fatal(fmt.Errorf("%s: %w", arm.provider, err))
+		}
+	}
+}
+
+// refreshAws rewrites the committed AWS snapshot from the service
+// reference, scoped to the service prefixes the manifests reference.
+func refreshAws(repoRoot string) error {
 	prefixes, err := referencedAwsPrefixes(repoRoot)
 	if err != nil {
-		fatal(err)
+		return err
 	}
 	if len(prefixes) == 0 {
-		fatal(fmt.Errorf("no AWS actions found in any permissions manifest -- nothing to inventory"))
+		return fmt.Errorf("no AWS actions found in any permissions manifest -- nothing to inventory")
 	}
 
 	client := &http.Client{Timeout: 60 * time.Second}
 	index, err := fetchIndex(client)
 	if err != nil {
-		fatal(err)
+		return err
 	}
 
 	today := time.Now().UTC().Format("2006-01-02")
@@ -56,14 +106,14 @@ func main() {
 	for _, prefix := range prefixes {
 		entry, ok := index[prefix]
 		if !ok {
-			fatal(fmt.Errorf("service prefix %q (used by a permissions manifest) does not exist in the AWS service reference -- the prefix itself is wrong", prefix))
+			return fmt.Errorf("service prefix %q (used by a permissions manifest) does not exist in the AWS service reference -- the prefix itself is wrong", prefix)
 		}
 		actions, nonScopable, err := fetchServiceActions(client, entry.URL)
 		if err != nil {
-			fatal(fmt.Errorf("service %q: %w", prefix, err))
+			return fmt.Errorf("service %q: %w", prefix, err)
 		}
 		if len(actions) == 0 {
-			fatal(fmt.Errorf("service %q: the reference lists no actions -- refusing to commit an empty inventory", prefix))
+			return fmt.Errorf("service %q: the reference lists no actions -- refusing to commit an empty inventory", prefix)
 		}
 		inv.Services = append(inv.Services, actioninventory.Service{
 			Prefix:             prefix,
@@ -77,22 +127,10 @@ func main() {
 
 	out := filepath.Join(repoRoot, "pkg", "iac", "actioninventory", actioninventory.AwsFileName)
 	if err := os.WriteFile(out, []byte(actioninventory.Render(inv)), 0o644); err != nil {
-		fatal(err)
+		return err
 	}
 	fmt.Printf("wrote %d service action list(s) to %s\n", len(inv.Services), out)
-
-	if err := refreshAzure(repoRoot); err != nil {
-		fatal(err)
-	}
-	if err := refreshGcp(repoRoot); err != nil {
-		fatal(err)
-	}
-	if err := refreshCloudflare(repoRoot); err != nil {
-		fatal(err)
-	}
-	if err := refreshDigitalOcean(repoRoot); err != nil {
-		fatal(err)
-	}
+	return nil
 }
 
 // referencedAwsPrefixes collects the distinct AWS service prefixes named by

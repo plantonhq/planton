@@ -986,6 +986,12 @@ type AzureDataFactoryManagedPrivateEndpoint struct {
 	// The resource the endpoint connects to, by ARM ID -- a storage
 	// account, a SQL server, or a Private Link Service. Pass a literal
 	// ID or wire a reference to the target kind's own ID output.
+	//
+	// Containment-exempt: a managed private endpoint is the factory's
+	// own door to a data store it reads or writes; the factory is not
+	// deployed into that store. Most such targets are containers, and a
+	// factory wired to one by reference would otherwise be drawn inside
+	// the store it merely reaches.
 	TargetResourceId *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=target_resource_id,json=targetResourceId,proto3" json:"target_resource_id,omitempty"`
 	// For regular ARM targets: which sub-resource the endpoint binds,
 	// e.g. "blob" for a storage account or "sqlServer" for a SQL
@@ -1160,11 +1166,12 @@ const file_catalog_azure_azuredatafactory_v1alpha1_spec_proto_rawDesc = "" +
 	"\vsecret_name\x18\x02 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\n" +
 	"secretName\x12%\n" +
-	"\x0esecret_version\x18\x03 \x01(\tR\rsecretVersion\"\xa5\b\n" +
+	"\x0esecret_version\x18\x03 \x01(\tR\rsecretVersion\"\xa9\b\n" +
 	"&AzureDataFactoryManagedPrivateEndpoint\x12\xc1\x02\n" +
 	"\x04name\x18\x01 \x01(\tB\xac\x02\xbaH\xa8\x02\xba\x01\xa1\x02\n" +
-	"1data_factory_managed_private_endpoint_name_format\x12\xac\x01Endpoint names must be 2-80 characters of letters, numbers, dots, hyphens, and underscores, starting with a letter or number and ending with a letter, number, or underscore\x1a=this.matches('^[a-zA-Z0-9][-._a-zA-Z0-9]{0,78}[_a-zA-Z0-9]$')\xc8\x01\x01R\x04name\x12h\n" +
-	"\x12target_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x10targetResourceId\x12\xc6\x02\n" +
+	"1data_factory_managed_private_endpoint_name_format\x12\xac\x01Endpoint names must be 2-80 characters of letters, numbers, dots, hyphens, and underscores, starting with a letter or number and ending with a letter, number, or underscore\x1a=this.matches('^[a-zA-Z0-9][-._a-zA-Z0-9]{0,78}[_a-zA-Z0-9]$')\xc8\x01\x01R\x04name\x12l\n" +
+	"\x12target_resource_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x10targetResourceId\x12\xc6\x02\n" +
 	"\x10subresource_name\x18\x03 \x01(\tB\x9a\x02\xbaH\x96\x02\xba\x01\x92\x02\n" +
 	"8data_factory_managed_private_endpoint_subresource_format\x12\x89\x01subresource_name must be 3-63 characters of letters, numbers, dots, hyphens, and underscores, starting and ending with a letter or number\x1aJthis == '' || this.matches('^[a-zA-Z0-9][-._a-zA-Z0-9]{1,61}[a-zA-Z0-9]$')R\x0fsubresourceName\x12\"\n" +
 	"\x05fqdns\x18\x04 \x03(\tB\f\xbaH\t\x92\x01\x06\"\x04r\x02\x10\x01R\x05fqdns:\xdf\x01\xbaH\xdb\x01\x1a\xd8\x01\n" +

@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseProject
+metadata:
+  name: app-firebase
+spec:
+  appCheck:
+    serviceConfigs:
+      - serviceId: firestore.googleapis.com
+        enforcementMode: ENFORCED
+      - serviceId: firebasestorage.googleapis.com
+        enforcementMode: ENFORCED
+      - serviceId: firebasedatabase.googleapis.com
+        enforcementMode: ENFORCED
+      - serviceId: identitytoolkit.googleapis.com
+        enforcementMode: UNENFORCED
+  deletionPolicy: PREVENT

@@ -56,7 +56,7 @@ func droplet(
 	if len(spec.SshKeys) > 0 {
 		var sshKeys pulumi.StringArray
 		for _, key := range spec.SshKeys {
-			sshKeys = append(sshKeys, pulumi.String(key))
+			sshKeys = append(sshKeys, pulumi.String(key.GetValue()))
 		}
 		dropletArgs.SshKeys = sshKeys
 	}

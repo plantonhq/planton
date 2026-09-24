@@ -1,0 +1,16 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpApiKey
+metadata:
+  name: web-app-key
+spec:
+  keyId: web-app-key
+  displayName: Web app browser key
+  restrictions:
+    browserKeyRestrictions:
+      allowedReferrers:
+        - https://app.example.com/*
+        - https://*.example.com/*
+    apiTargets:
+      - service: firebaseinstallations.googleapis.com
+      - service: fcmregistrations.googleapis.com
+      - service: identitytoolkit.googleapis.com

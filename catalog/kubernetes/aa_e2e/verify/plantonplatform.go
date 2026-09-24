@@ -210,13 +210,24 @@ type PlantonPlatformVerifier struct {
 	// first act that pins the install, on an upgrade act it is what makes the
 	// upgrade an upgrade.
 	Version string
+	// VaultKeysSecret is the Secret the manifest names in
+	// `spec.vault.initSecretName` for the vault's keys, or "" when the
+	// operator keeps its own. When named, a Ready platform must have filled
+	// it and must not own it -- the contract a team relies on to bring the
+	// vault back after the platform is gone.
+	VaultKeysSecret string
 }
 
-// newPlantonPlatformVerifier reads the declared version off the scenario
-// manifest (or the upgrade manifest, on the second act).
+// newPlantonPlatformVerifier reads the declared version and the vault's keys
+// Secret off the scenario manifest (or the upgrade manifest, on the second
+// act).
 func newPlantonPlatformVerifier(namespace, name, manifestPath string) *PlantonPlatformVerifier {
 	version, _ := manifestSpecString(manifestPath, "version")
-	return &PlantonPlatformVerifier{Namespace: namespace, Name: name, Version: version}
+	keysSecret := manifestNestedSpecString(manifestPath, "vault", "initSecretName")
+	if keysSecret == "" {
+		keysSecret = manifestNestedSpecString(manifestPath, "vault", "init_secret_name")
+	}
+	return &PlantonPlatformVerifier{Namespace: namespace, Name: name, Version: version, VaultKeysSecret: keysSecret}
 }
 
 // versionedDeployments are the components whose images carry the platform's
@@ -281,6 +292,46 @@ func (v *PlantonPlatformVerifier) VerifyExists(ctx context.Context, kubeconfig s
 		return errors.Wrap(err, "the first-run setup-code Secret is missing on a Ready platform")
 	}
 	fmt.Printf("  [verify] platform Ready — gateway Service and setup-code Secret present\n")
+
+	if v.VaultKeysSecret != "" {
+		if err := v.verifyVaultKeysSecret(ctx, kubeconfig); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// verifyVaultKeysSecret proves the keys Secret an adopter named is theirs
+// the way the contract says: filled by the operator (a root token and the
+// unseal keys of the built-in seal, or the recovery keys of a cloud seal),
+// and carrying no owner reference, so deleting the platform leaves it
+// standing for the restore that needs it.
+func (v *PlantonPlatformVerifier) verifyVaultKeysSecret(ctx context.Context, kubeconfig string) error {
+	if err := KubectlResourceExists(ctx, kubeconfig, "secret", v.VaultKeysSecret, v.Namespace); err != nil {
+		return errors.Wrapf(err, "the vault keys Secret %s the manifest named is missing on a Ready platform", v.VaultKeysSecret)
+	}
+	keys, err := kubectlGetJSONPath(ctx, kubeconfig, "secret", v.VaultKeysSecret, v.Namespace, `{range $k, $v := .data}{$k}{" "}{end}`)
+	if err != nil {
+		return errors.Wrapf(err, "reading the vault keys Secret %s", v.VaultKeysSecret)
+	}
+	held := strings.Fields(keys)
+	hasRoot, hasShares := false, false
+	for _, key := range held {
+		switch key {
+		case "root-token":
+			hasRoot = true
+		case "unseal-keys", "recovery-keys":
+			hasShares = true
+		}
+	}
+	if !hasRoot || !hasShares {
+		return errors.Errorf("the vault keys Secret %s must hold root-token and unseal-keys (or recovery-keys under a cloud seal); it holds %v -- the operator did not write the vault's keys into the Secret the manifest named", v.VaultKeysSecret, held)
+	}
+	owners, _ := kubectlGetJSONPath(ctx, kubeconfig, "secret", v.VaultKeysSecret, v.Namespace, `{.metadata.ownerReferences}`)
+	if strings.TrimSpace(owners) != "" {
+		return errors.Errorf("the vault keys Secret %s carries an owner reference (%s) -- an adopter-owned Secret must outlive the platform, so the operator must never own it", v.VaultKeysSecret, strings.TrimSpace(owners))
+	}
+	fmt.Printf("  [verify] VAULT KEYS: Secret %s holds %v and is owned by nobody\n", v.VaultKeysSecret, held)
 	return nil
 }
 

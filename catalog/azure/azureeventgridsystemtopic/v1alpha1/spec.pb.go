@@ -136,6 +136,12 @@ type AzureEventgridSystemTopicSpec struct {
 	// The source and the topic_type must agree -- the type names the
 	// service the source belongs to.
 	//
+	// Containment-exempt: the topic SURFACES its source's events; it is
+	// its own resource in its resource group, not a tenant of the storage
+	// account or vault it listens to. Without the exemption a topic wired
+	// to a container source by reference would be drawn inside the
+	// resource whose events it publishes.
+	//
 	// **ForceNew**: changing this destroys and recreates the topic.
 	SourceResourceId *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=source_resource_id,json=sourceResourceId,proto3" json:"source_resource_id,omitempty"`
 	// Which Azure service's event stream the source emits, e.g.
@@ -309,14 +315,15 @@ var File_catalog_azure_azureeventgridsystemtopic_v1alpha1_spec_proto protoreflec
 
 const file_catalog_azure_azureeventgridsystemtopic_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	";catalog/azure/azureeventgridsystemtopic/v1alpha1/spec.proto\x124dev.planton.azure.azureeventgridsystemtopic.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xba\x06\n" +
+	";catalog/azure/azureeventgridsystemtopic/v1alpha1/spec.proto\x124dev.planton.azure.azureeventgridsystemtopic.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xbe\x06\n" +
 	"\x1dAzureEventgridSystemTopicSpec\x12\x8c\x01\n" +
 	"\x0eresource_group\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x0f\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12\xaf\x01\n" +
 	"\x04name\x18\x02 \x01(\tB\x9a\x01\xbaH\x96\x01\xba\x01\x8f\x01\n" +
 	"\x18system_topic_name_format\x12LSystem topic names must be 3-128 characters of letters, numbers, and hyphens\x1a%this.matches('^[-a-zA-Z0-9]{3,128}$')\xc8\x01\x01R\x04name\x12\"\n" +
 	"\x06region\x18\x03 \x01(\tB\n" +
-	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12h\n" +
-	"\x12source_resource_id\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x10sourceResourceId\x12)\n" +
+	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12l\n" +
+	"\x12source_resource_id\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
+	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x10sourceResourceId\x12)\n" +
 	"\n" +
 	"topic_type\x18\x05 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\ttopicType\x12s\n" +

@@ -134,6 +134,12 @@ network_interface_id) or pass a literal ID. Retargeting updates
 the flow log in place. NSG targets are rejected -- Azure stopped
 accepting new NSG flow logs on 2025-06-30.
 
+Containment-exempt: a flow log RECORDS its target's traffic from
+the Network Watcher; it is not deployed into the network or subnet
+it watches. Two of its three legal targets are containers, and the
+common VNet flow log would otherwise be drawn inside the network it
+observes.
+
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 

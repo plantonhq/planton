@@ -17,12 +17,13 @@ variable "spec" {
     namespace        = string
     create_namespace = optional(bool, false)
     chart_version    = optional(string, "")
+    chart_repository = optional(string, "")
     crds = optional(object({
       install           = optional(bool)
       keep_on_uninstall = optional(bool)
     }))
-    replicas         = optional(number)
-    leader_election  = optional(bool)
+    replicas        = optional(number)
+    leader_election = optional(bool)
     resources = optional(object({
       limits = optional(object({
         cpu    = optional(string, "")

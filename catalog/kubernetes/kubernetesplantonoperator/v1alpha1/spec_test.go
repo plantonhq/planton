@@ -54,6 +54,13 @@ var _ = ginkgo.Describe("KubernetesPlantonOperatorSpec Validation Tests", func()
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept a mirrored chart repository", func() {
+			input := minimalValidOperator()
+			input.Spec.ChartRepository = stringPtr("oci://asia-south1-docker.pkg.dev/plantonhq/charts")
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept sizing, scheduling, and image overrides", func() {
 			input := minimalValidOperator()
 			replicas := int32(2)
@@ -123,6 +130,14 @@ var _ = ginkgo.Describe("KubernetesPlantonOperatorSpec Validation Tests", func()
 			input.Kind = "PlantonOperator"
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("should fail on a chart repository that is not an oci:// path", func() {
+			for _, repo := range []string{"ghcr.io/plantonhq/charts", "oci://ghcr.io/plantonhq/charts/"} {
+				input := minimalValidOperator()
+				input.Spec.ChartRepository = stringPtr(repo)
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), repo)
+			}
 		})
 
 		ginkgo.It("should fail on a chart version range (not reproducible)", func() {

@@ -1,0 +1,6 @@
+order:
+    - KubernetesGateway/public-gateway@dev
+    - KubernetesHttpRoute/shop-web@dev
+derived:
+    - KubernetesNamespace/shop@dev
+    - KubernetesNamespace/istio-ingress@dev

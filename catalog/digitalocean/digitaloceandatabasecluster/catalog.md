@@ -99,6 +99,7 @@ These are the most important decisions when configuring a database cluster. Expl
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanVpc** (optional) | `vpc` | `status.outputs.vpc_id` |
+| **DigitalOceanProject** (optional) | `projectId` | `status.outputs.project_id` |
 
 ### What This Component Provides
 

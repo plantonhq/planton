@@ -1928,22 +1928,22 @@ const file_catalog_kubernetes_kuberneteskafka_v1alpha1_spec_proto_rawDesc = "" +
 	"\vtolerations\x18\a \x03(\v2*.dev.planton.kubernetes.WorkloadTolerationR\vtolerations\x1a?\n" +
 	"\x11NodeSelectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xbe\b\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xd3\b\n" +
 	"\x16KubernetesKafkaStorage\x12\xca\x01\n" +
 	"\x04type\x18\x01 \x01(\tB\xb0\x01\xbaH\x98\x01\xba\x01\x94\x01\n" +
 	"\x16spec.storage.type_enum\x129storage type must be persistent-claim, ephemeral, or jbod\x1a?this == '' || this in ['persistent-claim', 'ephemeral', 'jbod']\x8a\xa6\x1d\x10persistent-claimH\x00R\x04type\x88\x01\x01\x12\x12\n" +
-	"\x04size\x18\x02 \x01(\tR\x04size\x12o\n" +
-	"\rstorage_class\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClass\x12!\n" +
+	"\x04size\x18\x02 \x01(\tR\x04size\x12\x83\x01\n" +
+	"\rstorage_class\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClass\x12!\n" +
 	"\fdelete_claim\x18\x04 \x01(\bR\vdeleteClaim\x12g\n" +
 	"\avolumes\x18\x05 \x03(\v2M.dev.planton.kubernetes.kuberneteskafka.v1alpha1.KubernetesKafkaStorageVolumeR\avolumes:\xbc\x04\xbaH\xb8\x04\x1a\xbd\x01\n" +
 	"%spec.storage.persistent_requires_size\x127persistent-claim storage requires a size (e.g. \"100Gi\")\x1a[!(!has(this.type) || this.type == '' || this.type == 'persistent-claim') || this.size != ''\x1a\x9e\x01\n" +
 	"\"spec.storage.jbod_requires_volumes\x123jbod storage requires at least one entry in volumes\x1aC!(has(this.type) && this.type == 'jbod') || this.volumes.size() > 0\x1a\xd4\x01\n" +
 	"\"spec.storage.volumes_only_for_jbod\x12ivolumes are only used with the jbod storage type — for a single volume, set size/storage_class directly\x1aCthis.volumes.size() == 0 || (has(this.type) && this.type == 'jbod')B\a\n" +
-	"\x05_type\"\x8e\x02\n" +
+	"\x05_type\"\xa3\x02\n" +
 	"\x1cKubernetesKafkaStorageVolume\x12\x17\n" +
 	"\x02id\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02(\x00R\x02id\x12\x1a\n" +
-	"\x04size\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04size\x12o\n" +
-	"\rstorage_class\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x16\x88\xd4a\xb0\x1f\x92\xd4a\rmetadata.nameR\fstorageClass\x12!\n" +
+	"\x04size\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04size\x12\x83\x01\n" +
+	"\rstorage_class\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\x88\xd4a\xb0\x1f\x92\xd4a!status.outputs.storage_class_nameR\fstorageClass\x12!\n" +
 	"\fdelete_claim\x18\x04 \x01(\bR\vdeleteClaim\x12%\n" +
 	"\x0ekraft_metadata\x18\x05 \x01(\bR\rkraftMetadata\"\xd6\f\n" +
 	"\x17KubernetesKafkaListener\x12\x9b\x01\n" +

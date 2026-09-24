@@ -119,6 +119,24 @@ kind mixing schema-served and external resources keeps the reverse walk;
 its external-fed spec fields carry `specExclusions` naming the external
 resource.
 
+**Secondary-channel admissions.** Some providers publish capability in a
+second channel beside the canonical one -- Google's `google-beta` carries
+pre-GA resources, whole product families for years (Firebase's core
+resources). The baseline stays the yardstick: a resource the GA schema
+serves is accounted against GA, always. A resource only the channel serves
+is accounted against the channel's schema exactly when the admission list
+admits it for the consuming kind (`admissions/<channel>.yaml`: resource,
+kind, reason, and the path where its promotion to GA is watched) AND the
+module attaches it through the channel's provider (`provider = google-beta`
+on the resource block, which the module census records). Every other
+combination is a finding: an unadmitted channel resource, an admitted
+resource the module does not attach, a channel attachment on a resource GA
+serves. Admissions ratchet like external judgments: the day the GA schema
+serves the resource, the entry is a stale admission and the module moves
+back to the baseline provider. An admitted channel's own `provider` block
+is judged under the same provider-block accounting as the baseline's --
+the channel never bypasses a rule the baseline is held to.
+
 **The provider block (per provider).** The same total-accounting rule covers
 the provider's OWN configuration block — credentials, the role-assumption
 chain, default tags, per-service endpoint overrides, retry tuning. The
@@ -155,7 +173,9 @@ can never be an invisible leak. Findings ride the shared baseline under the
 `provider:<cloud>` key class.
 
 **Breadth (per GA resource).** Every GA resource carries exactly one
-disposition. Two classes are computed — `modeled` (the module census proves
+disposition (secondary-channel resources are outside breadth: their record
+is the admission list, and a channel resource no kind admits is simply not
+offered). Two classes are computed — `modeled` (the module census proves
 consumption) and `iam-covered` (the `*_iam_member/binding/policy` pattern,
 covered by the owning kinds' additive `iam_members` fields) — plus
 schema-flagged deprecations. The rest is recorded judgment in the
@@ -216,6 +236,7 @@ makes the coverage claim verifiable instead of trusted:
 go test ./pkg/providerparity/          # gates + hermetic fixtures + live measurement
 make generate-provider-schemas        # refresh schemas/ after a pin change
 make generate-provider-parity-report  # regenerate the committed parity page(s)
+bash hack/guards/ensure_beta_admissions.sh  # static half of the admission gate (no Go)
 
 # The developer CLI (from the repo root; registered in the standalone
 # binary beside e2e -- never in the embedded engine set, because it reads

@@ -41,7 +41,8 @@ type Node struct {
 	Msg    proto.Message
 	Source string
 
-	refUses []RefUse
+	refUses     []RefUse
+	literalUses []LiteralUse
 }
 
 // Metadata returns the node's extracted metadata (nil-safe).
@@ -53,6 +54,12 @@ func (n *Node) Metadata() *shared.CloudResourceMetadata {
 // construction — the one traversal).
 func (n *Node) RefUses() []RefUse {
 	return n.refUses
+}
+
+// LiteralUses returns the node's collected literal StringValueOrRef arms
+// (cached from the same traversal as RefUses).
+func (n *Node) LiteralUses() []LiteralUse {
+	return n.literalUses
 }
 
 // Set is a collection of manifests treated as one deployment set.
@@ -90,13 +97,15 @@ func NewSet(items []Item) (*Set, []Finding) {
 			})
 			continue
 		}
+		refUses, literalUses := collectUses(item.Msg)
 		set.index[identity] = len(set.Nodes)
 		set.Nodes = append(set.Nodes, Node{
-			Identity: identity,
-			Name:     meta.GetName(),
-			Msg:      item.Msg,
-			Source:   item.Source,
-			refUses:  CollectRefUses(item.Msg),
+			Identity:    identity,
+			Name:        meta.GetName(),
+			Msg:         item.Msg,
+			Source:      item.Source,
+			refUses:     refUses,
+			literalUses: literalUses,
 		})
 	}
 	return set, findings

@@ -366,6 +366,58 @@ func (c *AdminClient) DeleteIdentityProvider(ctx context.Context, realm, alias s
 	return nil
 }
 
+// ListFlowExecutions returns the executions of an authentication flow by its
+// alias, in flow order. Each carries providerId (the authenticator), its
+// requirement, and -- when one is attached -- authenticationConfig (the
+// config's id). Read-only: the flow itself is never written by the operator.
+func (c *AdminClient) ListFlowExecutions(ctx context.Context, realm, flowAlias string) ([]Representation, error) {
+	var reps []Representation
+	path := c.adminPath(realm, "/authentication/flows/"+url.PathEscape(flowAlias)+"/executions")
+	if err := c.do(ctx, http.MethodGet, path, nil, http.StatusOK, &reps); err != nil {
+		return nil, fmt.Errorf("listing executions of flow %s: %w", flowAlias, err)
+	}
+	return reps, nil
+}
+
+// CreateExecutionConfig attaches an authenticator config to one execution.
+func (c *AdminClient) CreateExecutionConfig(ctx context.Context, realm, executionID string, rep Representation) error {
+	alias, _ := rep["alias"].(string)
+	path := c.adminPath(realm, "/authentication/executions/"+url.PathEscape(executionID)+"/config")
+	if err := c.do(ctx, http.MethodPost, path, rep, http.StatusCreated, nil); err != nil {
+		return fmt.Errorf("creating authenticator config %s: %w", alias, err)
+	}
+	return nil
+}
+
+// GetAuthenticatorConfig reads an authenticator config by id (alias + config map).
+func (c *AdminClient) GetAuthenticatorConfig(ctx context.Context, realm, configID string) (Representation, error) {
+	var rep Representation
+	path := c.adminPath(realm, "/authentication/config/"+url.PathEscape(configID))
+	if err := c.do(ctx, http.MethodGet, path, nil, http.StatusOK, &rep); err != nil {
+		return nil, fmt.Errorf("reading authenticator config %s: %w", configID, err)
+	}
+	return rep, nil
+}
+
+// UpdateAuthenticatorConfig PUTs an authenticator config back by id.
+func (c *AdminClient) UpdateAuthenticatorConfig(ctx context.Context, realm, configID string, rep Representation) error {
+	path := c.adminPath(realm, "/authentication/config/"+url.PathEscape(configID))
+	if err := c.do(ctx, http.MethodPut, path, rep, http.StatusNoContent, nil); err != nil {
+		return fmt.Errorf("updating authenticator config %s: %w", configID, err)
+	}
+	return nil
+}
+
+// DeleteAuthenticatorConfig removes an authenticator config by id. Used only
+// on the operator's own config (matched by alias), never on an admin's.
+func (c *AdminClient) DeleteAuthenticatorConfig(ctx context.Context, realm, configID string) error {
+	path := c.adminPath(realm, "/authentication/config/"+url.PathEscape(configID))
+	if err := c.do(ctx, http.MethodDelete, path, nil, http.StatusNoContent, nil); err != nil {
+		return fmt.Errorf("deleting authenticator config %s: %w", configID, err)
+	}
+	return nil
+}
+
 // ListIdentityProviderMappers returns a broker instance's mappers.
 func (c *AdminClient) ListIdentityProviderMappers(ctx context.Context, realm, alias string) ([]Representation, error) {
 	var reps []Representation

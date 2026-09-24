@@ -488,9 +488,17 @@ message AwsAppRunnerServiceVpcIngressConnection {
   }];
 
   // The VPC to publish the service into.
+  //
+  // Containment-exempt: the connection lets clients INSIDE this VPC
+  // reach the service over PrivateLink; the service itself runs on
+  // App Runner's managed infrastructure and is never deployed into the
+  // VPC (a VPC connector, not an ingress connection, is what places a
+  // service's egress in a VPC). On a diagram the service stands outside
+  // the VPC with a line to the network it is published into.
   dev.planton.shared.foreignkey.v1.StringValueOrRef vpc_id = 2 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = AwsVpc,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
     (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.vpc_id"
   ];
 

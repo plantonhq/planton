@@ -1,0 +1,55 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpFirebaseWebApp
+metadata:
+  name: my-web-app
+spec:
+  # The Firebase-enabled project the app is registered in. The value is the
+  # GCP project id; the natural reference is the GcpFirebaseProject that
+  # enabled Firebase on it -- referencing it orders this app after the
+  # enablement and places it inside the Firebase project on diagrams. Omit
+  # to use the provider's default project. Immutable.
+  projectId:
+    valueFrom:
+      kind: GcpFirebaseProject
+      name: app-firebase
+      fieldPath: status.outputs.project_id
+
+  # As the Firebase console shows the app -- the only identity a web app
+  # has, so name it for the client it serves. Updatable.
+  displayName: My Web App
+
+  # The referrer-restricted API key the app presents, by the key's UID -- a
+  # reference to a GcpApiKey (its uid output). A client identifier that
+  # ships in the page as firebaseConfig.apiKey, not a secret. Omit to let
+  # Firebase associate or provision an unrestricted key.
+  apiKeyId:
+    valueFrom:
+      kind: GcpApiKey
+      name: browser-key
+      fieldPath: status.outputs.uid
+
+  # App Check: prove requests come from your genuine site. Whether backends
+  # ENFORCE it is configured on the GcpFirebaseProject. A client initialises
+  # with ONE provider; both may be configured during a v3-to-Enterprise
+  # migration.
+  appCheck:
+    # reCAPTCHA v3: Google verifies the client's token with the site SECRET
+    # -- a managed secret reference on the platform.
+    recaptchaV3:
+      siteSecret: $secret/recaptcha-v3-site-secret
+      tokenTtl: 3600s
+    # reCAPTCHA Enterprise: Google verifies against the PUBLIC site key --
+    # the same value the page embeds.
+    recaptchaEnterprise:
+      siteKey: 6LcExampleSiteKey_ReplaceWithYours
+      tokenTtl: 3600s
+    # Debug tokens let local development pass App Check. Each token is a
+    # SECRET -- a managed secret reference on the platform.
+    debugTokens:
+      - displayName: localhost
+        token: $secret/firebase-app-check-localhost-token
+
+  # What destroy does to the app and its debug tokens. DELETE (default) is
+  # IMMEDIATE and PERMANENT -- Firebase's 30-day recoverable window is
+  # skipped. A shipped site should carry PREVENT.
+  deletionPolicy: PREVENT

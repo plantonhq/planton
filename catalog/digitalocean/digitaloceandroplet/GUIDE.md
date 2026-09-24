@@ -4,7 +4,7 @@ Judgment calls that matter when you run DigitalOcean droplets.
 
 ## Inject SSH keys at create, or live with a password email
 
-`sshKeys` is the standard access path to a droplet, and it is create-only: DigitalOcean injects the keys into the image on first boot and never reports them back. A droplet created without keys gets a root password by email — fine for a throwaway, wrong for anything real. Keys must already exist on the account (`doctl compute ssh-key list` shows IDs and fingerprints; either works). Editing the list later does nothing: both provisioners deliberately ignore changes to `sshKeys` (see "Create-only fields are ignored after creation" below). Rotating access is an in-OS operation (edit `authorized_keys` via cloud-init or configuration management), not an API one.
+`sshKeys` is the standard access path to a droplet, and it is create-only: DigitalOcean injects the keys into the image on first boot and never reports them back. A droplet created without keys gets a root password by email — fine for a throwaway, wrong for anything real. Keys must already exist on the account: reference a `DigitalOceanSshKey` Planton manages (the wiring resolves its numeric id), or pass a literal id or fingerprint (`doctl compute ssh-key list` shows both; either works). Editing the list later does nothing: both provisioners deliberately ignore changes to `sshKeys` (see "Create-only fields are ignored after creation" below). Rotating access is an in-OS operation (edit `authorized_keys` via cloud-init or configuration management), not an API one.
 
 ## Create-only fields are ignored after creation, by design
 

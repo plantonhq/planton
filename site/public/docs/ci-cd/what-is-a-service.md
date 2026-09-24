@@ -136,8 +136,11 @@ After creation, the service details page provides three tabs:
 # Register a service interactively from a project directory
 planton service register
 
-# Deploy a service using the _kustomize directory
-planton service deploy --project .
+# Deploy an image you built into one environment, from the service's configuration
+planton service deploy my-service --env dev --image ghcr.io/acme/my-service:1.4.2
+
+# The same, but from the _kustomize overlay in the folder you are standing in
+planton service deploy my-service --env dev --image ghcr.io/acme/my-service:1.4.2 --from-tree
 
 # Everything that ran for a service, newest first
 planton service runs my-service

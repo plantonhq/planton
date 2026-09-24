@@ -43,7 +43,7 @@ spec:
       name: ml-prod
   name: cpu-cluster
   region: eastus
-  vmSize: STANDARD_DS3_V2
+  vmSize: Standard_DS3_v2
   vmPriority: DEDICATED
   scaleSettings:
     minNodeCount: 0

@@ -1,0 +1,21 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# Rates from https://firebase.google.com/pricing and
+# https://cloud.google.com/storage/pricing (read 2026-09-17).
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpfirebaseproject
+spec:
+  billing_model: usage_based
+  cost_drivers:
+    - field_path: default_storage_location
+      sku_meter: Cloud Storage for Firebase default bucket
+      pricing_unit: GiB-month, operations, egress
+      impact: Setting a location creates the project's default Cloud Storage for Firebase bucket, which bills as a standard Cloud Storage bucket in that location -- storage per GiB-month (multi-region US about $0.026, regional us-central1 about $0.020), Class A/B operations per 10,000, and network egress per GiB -- and REQUIRES the pay-as-you-go (Blaze) plan, i.e. a linked Cloud Billing account. An empty bucket costs nothing; the meter follows what the app's users upload.
+  estimate_exclusions:
+    - Cloud Storage for Firebase default-bucket storage, operations, and egress follow real app usage (rates above; the no-cost Spark plan's 5 GB / 1 GB-per-day allowances do not apply once the project is on Blaze, which the bucket requires)
+    - Firebase Cloud Messaging is free at any volume -- enabling fcm.googleapis.com adds no meter
+    - App Check is free for Play Integrity, App Attest, DeviceCheck, and reCAPTCHA v3 attestation; reCAPTCHA Enterprise (configured on the web app kind) bills per assessment beyond 10,000 a month on its own service
+  notes: "Enabling Firebase on a project has no meter of its own: firebase.googleapis.com and fcm.googleapis.com are free to enable and free to use for the surfaces this kind declares (project enablement, App Check enforcement, push delivery). The one spend this kind can start is the default storage bucket, and only when default_storage_location is set -- and that also moves the project onto the pay-as-you-go plan, after which every Firebase product on the project (Firestore, Realtime Database, Authentication beyond its free tier, Hosting) bills at its own published rates on the components that create them, never on this one."

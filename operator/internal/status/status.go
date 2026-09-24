@@ -51,33 +51,33 @@ func Initialize(planton *v1.PlantonPlatform) bool {
 		changed = true
 	}
 
-	// The unconditional slots are allocated once, together: every platform
-	// runs the data services, the identity server (sign-in through the
-	// gateway's port-forward front door or the ingress hostname -- an
-	// unauthenticated platform is unrepresentable), the policy engine (every
-	// request the control plane serves is authorized by OpenFGA -- a platform
-	// without it is unrepresentable), the control plane, and the console.
-	// Slots that follow a dial are synced below, in both directions.
-	if planton.Status.Components.PostgreSQL == nil {
-		statuses := v1.ComponentStatuses{
-			PostgreSQL:   &v1.ComponentStatus{Phase: v1.ComponentPhasePending},
-			Redis:        &v1.ComponentStatus{Phase: v1.ComponentPhasePending},
-			OpenFGA:      &v1.ComponentStatus{Phase: v1.ComponentPhasePending},
-			Temporal:     &v1.ComponentStatus{Phase: v1.ComponentPhasePending},
-			Identity:     &v1.ComponentStatus{Phase: v1.ComponentPhasePending},
-			ControlPlane: &v1.ComponentStatus{Phase: v1.ComponentPhasePending},
-			Console:      &v1.ComponentStatus{Phase: v1.ComponentPhasePending},
+	// The unconditional slots: every platform runs the data services, the
+	// identity server (sign-in through the gateway's port-forward front door
+	// or the ingress hostname -- an unauthenticated platform is
+	// unrepresentable), the policy engine (every request the control plane
+	// serves is authorized by OpenFGA -- a platform without it is
+	// unrepresentable), the control plane, and the console. Each slot is
+	// allocated on its own when it is missing, never all-or-nothing on the
+	// first one: a platform whose status an OLDER operator wrote has the
+	// slots that operator knew and none of the ones added since, and the
+	// controller skips a component whose slot is nil -- so the newer
+	// operator's components never ran on an upgraded platform and the
+	// control plane waited on "openfga" forever (proven live 2026-09-17 on
+	// the 0.7.0 -> 0.18.0 upgrade path). Slots that follow a dial are
+	// synced below, in both directions.
+	for _, slot := range []**v1.ComponentStatus{
+		&planton.Status.Components.PostgreSQL,
+		&planton.Status.Components.Redis,
+		&planton.Status.Components.OpenFGA,
+		&planton.Status.Components.Temporal,
+		&planton.Status.Components.Identity,
+		&planton.Status.Components.ControlPlane,
+		&planton.Status.Components.Console,
+	} {
+		if *slot == nil {
+			*slot = &v1.ComponentStatus{Phase: v1.ComponentPhasePending}
+			changed = true
 		}
-
-		if isOpenBAOEnabled(planton) {
-			statuses.OpenBAO = &v1.ComponentStatus{Phase: v1.ComponentPhasePending}
-		}
-		if isNeo4jEnabled(planton) {
-			statuses.Neo4j = &v1.ComponentStatus{Phase: v1.ComponentPhasePending}
-		}
-
-		planton.Status.Components = statuses
-		changed = true
 	}
 
 	// Exactly one front door: the ingress and gateway slots follow the

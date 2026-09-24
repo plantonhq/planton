@@ -75,8 +75,17 @@ message AzureEventgridSystemTopicSpec {
   // The source and the topic_type must agree -- the type names the
   // service the source belongs to.
   //
+  // Containment-exempt: the topic SURFACES its source's events; it is
+  // its own resource in its resource group, not a tenant of the storage
+  // account or vault it listens to. Without the exemption a topic wired
+  // to a container source by reference would be drawn inside the
+  // resource whose events it publishes.
+  //
   // **ForceNew**: changing this destroys and recreates the topic.
-  dev.planton.shared.foreignkey.v1.StringValueOrRef source_resource_id = 4 [(buf.validate.field).required = true];
+  dev.planton.shared.foreignkey.v1.StringValueOrRef source_resource_id = 4 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true
+  ];
 
   // Which Azure service's event stream the source emits, e.g.
   // "Microsoft.Storage.StorageAccounts" (blob/queue events),

@@ -300,6 +300,9 @@ spec:
 | `spec.runner.storageClassName` | `string` |  |  |  |
 | `spec.runner.serviceAccountAnnotations` | `map<string, string>` |  |  |  |
 | `spec.runner.cloudCredentialsSecretName` | `string` |  |  |  |
+| `spec.runner.image` | `KubernetesPlantonPlatformImage` |  |  |  |
+| `spec.runner.image.repository` | `string` |  |  |  |
+| `spec.runner.image.tag` | `string` |  |  |  |
 | `spec.build` | `KubernetesPlantonPlatformBuild` |  |  |  |
 | `spec.build.enabled` | `bool` |  | `true` |  |
 | `spec.vault` | `KubernetesPlantonPlatformVault` |  |  |  |
@@ -345,6 +348,7 @@ spec:
 | `spec.controlPlane.replicas` | `int32` |  | `1` |  |
 | `spec.controlPlane.externalConfigSecretName` | `string` |  |  |  |
 | `spec.controlPlane.serviceAccountAnnotations` | `map<string, string>` |  |  |  |
+| `spec.controlPlane.iacModulesVersion` | `string` |  |  |  |
 | `spec.console` | `KubernetesPlantonPlatformConsole` |  |  |  |
 | `spec.console.image` | `KubernetesPlantonPlatformImage` |  |  |  |
 | `spec.console.image.repository` | `string` |  |  |  |
@@ -378,6 +382,7 @@ spec:
 | `spec.email.resend.apiKeySecretRef` | `KubernetesPlantonPlatformSecretKeyRef` | yes |  |  |
 | `spec.email.resend.apiKeySecretRef.name` | `string` | yes |  |  |
 | `spec.email.resend.apiKeySecretRef.key` | `string` | yes |  |  |
+| `spec.imageRegistry` | `string` |  |  |  |
 
 ## Field Details
 
@@ -1514,6 +1519,26 @@ keys are injected into the runner as environment variables — the
 static-credentials way the runner reaches your cloud. The platform
 stores nothing: rotate by updating YOUR Secret.
 
+### spec.runner.image
+
+`KubernetesPlantonPlatformImage`
+
+Runner image override (registry mirrors, custom builds). Empty = the
+image under spec.image_registry at spec.version.
+
+### spec.runner.image.repository
+
+`string`
+
+Full image repository (e.g.
+"my-mirror.example.com/planton/control-plane").
+
+### spec.runner.image.tag
+
+`string`
+
+Image tag. Empty = spec.version.
+
 ### spec.build
 
 `KubernetesPlantonPlatformBuild`
@@ -1955,6 +1980,20 @@ Workload-identity annotations on the control plane's ServiceAccount
 Distinct from runner.service_account_annotations, which is the
 DEPLOY-TIME identity.
 
+### spec.controlPlane.iacModulesVersion
+
+`string`
+
+Override of the release the platform downloads official IaC module
+artifacts from (vX.Y.Z; both engines ride one tag). Leave it unset:
+the platform resolves modules at its own catalog release — the same
+pin its schemas and chart bundle come from — so a kind it accepts
+always has its module published. Set it only to route around a
+retracted artifact set; it selects among published releases and
+controls nothing else (not the platform version, not the charts).
+
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^v\\d+\\.\\d+\\.\\d+$"}}
+
 ### spec.console
 
 `KubernetesPlantonPlatformConsole`
@@ -2267,6 +2306,24 @@ Secret name (in the platform's namespace).
 Key within the Secret holding the value.
 
 - rule: {"string":{"minLen":"1"}}
+
+### spec.imageRegistry
+
+`string`
+
+The registry root the control plane, console, and runner images are
+pulled from, as <image_registry>/<image> (control-plane,
+client-apps/web, runner). Empty = the operator's default,
+ghcr.io/plantonhq/planton. Every release is also published, byte for
+byte, to Google Artifact Registry at
+asia-south1-docker.pkg.dev/plantonhq/planton; set that to pull from
+Google, or name a mirror of your own. A component's image.repository,
+when set, wins over this root. Requires a planton-operator chart that
+knows this field (0.22.0 or newer); an older definition refuses the
+declaration.
+
+- rule: image_registry is a registry root such as "asia-south1-docker.pkg.dev/plantonhq/planton": no scheme and no trailing slash
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
 
 ## Validation Rules
 

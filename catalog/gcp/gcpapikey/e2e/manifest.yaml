@@ -1,0 +1,59 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpApiKey
+metadata:
+  name: my-sample-api-key
+spec:
+  # GCP project the key belongs to. Omit to use the provider's default
+  # project. Immutable: a key cannot move between projects.
+  projectId:
+    value: my-gcp-project-123
+
+  # The key's resource id (projects/{project}/locations/global/keys/{keyId}):
+  # lowercase letters, digits, hyphens; starts with a letter; 1-63
+  # characters. Immutable -- changing it recreates the key and rotates the
+  # key string. A deleted key's id stays reserved for 30 days.
+  keyId: firebase-android-key
+
+  # Console label. Freely updatable.
+  displayName: Firebase Android key (production signing)
+
+  # Optional: bind the key to a service account, making requests that carry
+  # it authenticate AS that account (for APIs that accept API-key auth in
+  # place of OAuth). Immutable. Leave out for a client-identifying key --
+  # the Firebase case.
+  # serviceAccountEmail:
+  #   value: sender@my-gcp-project-123.iam.gserviceaccount.com
+
+  # What may present the key and what it may call. At most ONE client arm
+  # (android / ios / browser / server); api_targets any number. Omitting
+  # the whole block makes an unrestricted key -- accepted, discouraged.
+  restrictions:
+    # Android: package name AND signing-certificate SHA-1, together. List the
+    # package once per certificate it ships under (debug, release, Play App
+    # Signing).
+    androidKeyRestrictions:
+      allowedApplications:
+        - packageName: ai.planton.mobile
+          sha1Fingerprint: DA:39:A3:EE:5E:6B:4B:0D:32:55:BF:EF:95:60:18:90:AF:D8:07:09
+    # The other client arms, each exclusive with the one above:
+    # iosKeyRestrictions:
+    #   allowedBundleIds: [ai.planton.mobile]
+    # browserKeyRestrictions:
+    #   allowedReferrers: ["https://app.example.com/*"]
+    # serverKeyRestrictions:
+    #   allowedIps: ["203.0.113.7", "2001:db8::/32"]
+
+    # The Google APIs the key may call (empty = every API enabled on the
+    # project). For a Firebase Cloud Messaging client: installations and
+    # FCM registrations, plus whatever else the app's SDKs call.
+    apiTargets:
+      - service: firebaseinstallations.googleapis.com
+      - service: fcmregistrations.googleapis.com
+      - service: translate.googleapis.com
+        methods:
+          - google.cloud.translate.v2.*
+
+  # What destroy does to the key: DELETE (default; soft-deleted, recoverable
+  # 30 days), PREVENT (destroy fails -- for a key baked into a shipped
+  # binary), ABANDON (unmanaged, stays live).
+  deletionPolicy: DELETE
