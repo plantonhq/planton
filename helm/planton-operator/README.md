@@ -39,6 +39,17 @@ same release tag (override the image with `--set image.tag=<tag>`). A checkout o
 directory is a development build whose version and image tag are placeholders; install
 it with `--set image.tag=<published tag>` or an image you built yourself.
 
+Every release is also copied, byte for byte, to Google Artifact Registry at the same path after the host. To pull the chart and the operator from there:
+
+```bash
+helm install planton-operator oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-operator \
+  --namespace planton \
+  --create-namespace \
+  --set image.repository=asia-south1-docker.pkg.dev/plantonhq/planton/operator
+```
+
+The platform's own images follow one field on the resource, `spec.imageRegistry` (for example `asia-south1-docker.pkg.dev/plantonhq/planton`): the control plane, console, and runner are pulled from `<imageRegistry>/<image>`, and a component's own `image.repository` still wins.
+
 After the operator is running, create a `PlantonPlatform` resource to deploy the platform:
 
 ```yaml

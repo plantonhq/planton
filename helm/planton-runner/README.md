@@ -33,6 +33,8 @@ The runner registers itself as `prod-a` (the release name) and appears in your
 organization's Runners list the moment it joins. Set `enrollment.runnerName` to use a
 name different from the release name.
 
+Every release is also copied, byte for byte, to Google Artifact Registry at the same path after the host: the chart at `oci://asia-south1-docker.pkg.dev/plantonhq/charts/planton-runner`, the runner image at `asia-south1-docker.pkg.dev/plantonhq/planton/runner` (`--set image.repository=...`).
+
 ## Installation
 
 ### Via `planton runner deploy` (recommended)
