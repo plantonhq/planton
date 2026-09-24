@@ -12,7 +12,7 @@ metadata:
 spec:
   presets:
     - preset: 01-web-api
-      region_assumption: nyc3
+      region_assumption: nyc
       currency: USD
       hours_per_month: 730
       total_list_cost: "0.00"
