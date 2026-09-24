@@ -106,6 +106,10 @@ jobs:
     concurrency:
       group: release-helm-${{ inputs.chart || github.ref_name }}
       cancel-in-progress: false
+    outputs:
+      chart: ${{ steps.resolve.outputs.chart }}
+      version: ${{ steps.resolve.outputs.version }}
+      push: ${{ steps.resolve.outputs.push }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -212,3 +216,16 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # The published chart, copied to the Google Artifact Registry mirror by digest
+  # (release.mirror-images.yaml). A rehearsal publishes nothing, so it mirrors
+  # nothing; an already-published version is copied again, which is a no-op.
+  mirror:
+    needs: publish
+    if: needs.publish.outputs.push == 'true'
+    uses: ./.github/workflows/release.mirror-images.yaml
+    permissions:
+      contents: read
+      id-token: write # the keyless exchange with Google
+    with:
+      refs: charts/${{ needs.publish.outputs.chart }}:${{ needs.publish.outputs.version }}
