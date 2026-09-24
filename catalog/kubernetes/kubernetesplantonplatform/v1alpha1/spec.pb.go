@@ -180,10 +180,11 @@ type KubernetesPlantonPlatformSpec struct {
 	// Runners outside this cluster — a developer's laptop deploying with the
 	// cloud sign-in already on it, an appliance in another network — pulling
 	// this platform's deploy work. OFF by default. Rides the front door:
-	// the deploy queue is routed through the platform hostname beside the
-	// native gRPC API, so it needs a Gateway API front door (ingress with a
-	// gateway_ref); on any other door the capability stays closed and the
-	// platform's status says why. The in-cluster runner is unaffected.
+	// such a runner reaches its work through the control plane on the
+	// platform hostname's native gRPC address, so it needs a Gateway API front
+	// door (ingress with a gateway_ref); on any other door the capability
+	// stays closed and the platform's status says why. The in-cluster runner
+	// is unaffected.
 	RemoteRunners *KubernetesPlantonPlatformRemoteRunners `protobuf:"bytes,18,opt,name=remote_runners,json=remoteRunners,proto3" json:"remote_runners,omitempty"`
 	// *
 	// The one mail provider every sender on the install uses: the control
@@ -804,14 +805,16 @@ func (x *KubernetesPlantonPlatformEmailResend) GetApiKeySecretRef() *KubernetesP
 type KubernetesPlantonPlatformRemoteRunners struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Open the deploy queue to runners outside the cluster and advertise the
-	// front door's address to them. Platform default: false — an install that
-	// has not chosen this keeps its queue in-cluster, and a runner asking to
-	// enroll from outside is refused with the reason, never handed an address
-	// it cannot reach. What opens: the queue's workflow service, over TLS,
-	// without authentication of its own (the posture the hosted platform
-	// carries for its remote runners); the queue's administrative service
-	// never leaves the cluster.
+	// Admit runners outside the cluster and advertise the front door's address
+	// to them. Platform default: false — an install that has not chosen this
+	// admits only its in-cluster runner, and a runner asking to enroll from
+	// outside is refused with the reason, never handed an address it cannot
+	// reach. What is exposed: nothing of the deploy queue itself, which never
+	// leaves the cluster. The control plane answers a remote runner's work
+	// calls on the queue's behalf, authenticating the runner's own key on
+	// every call and admitting it only to its own two queues, the work
+	// dispatched to it, and the tasks it polled; any other caller, and any
+	// other queue method, is refused with one sentence saying why.
 	Enabled       *bool `protobuf:"varint,1,opt,name=enabled,proto3,oneof" json:"enabled,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

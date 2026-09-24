@@ -374,9 +374,9 @@ type BuildSpec struct {
 // What is exposed: nothing of the deploy queue itself, which never leaves the
 // cluster. The control plane answers a remote runner's work calls on the
 // queue's behalf, authenticating the runner's own key on every call and
-// admitting it only to its own organization's queues, the work dispatched to
-// it, and the tasks it polled; any other caller, and any other queue method,
-// is refused.
+// admitting it only to its own two queues, the work dispatched to it, and the
+// tasks it polled; any other caller, and any other queue method, is refused
+// with one sentence saying why.
 type RemoteRunnersSpec struct {
 	// enabled admits runners outside this cluster and advertises the front
 	// door's address to them. Default false: an install that has not chosen
