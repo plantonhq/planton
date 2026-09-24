@@ -320,6 +320,7 @@ func (cp *ControlPlane) buildConfig(planton *v1.PlantonPlatform, ownerRef *metav
 		}
 	}
 
+	cfg.ImageRepository = resources.ImageRepository(cfg.ImageRepository, planton.Spec.ImageRegistry, resources.ControlPlaneImageSlug)
 	return cfg
 }
 

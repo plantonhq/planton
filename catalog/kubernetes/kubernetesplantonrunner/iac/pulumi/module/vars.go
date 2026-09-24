@@ -1,11 +1,12 @@
 package module
 
 var vars = struct {
-	// HelmOciRepo is the OCI registry path holding the planton-runner
-	// chart. Pulumi's helm.v3.Release does not resolve oci:// through
-	// RepositoryOpts the way the Terraform provider does — the chart
+	// DefaultChartRepository is the OCI registry path holding the
+	// planton-runner chart when spec.chart_repository is unset; mirrors the
+	// proto field's default. Pulumi's helm.v3.Release does not resolve
+	// oci:// through RepositoryOpts the way the Terraform provider does — the chart
 	// reference must be the JOINED "<repo>/<chart>" string (see main.go).
-	HelmOciRepo string
+	DefaultChartRepository string
 
 	// HelmChartName is the official runner chart.
 	HelmChartName string
@@ -34,10 +35,10 @@ var vars = struct {
 	// own default so the values only need the Secret NAME.
 	TokenSecretKey string
 }{
-	HelmOciRepo:         "oci://ghcr.io/plantonhq/charts",
-	HelmChartName:       "planton-runner",
-	DefaultChartVersion: "0.5.0",
-	MinChartVersion:     "0.4.0",
-	TokenSecretSuffix:   "-token",
-	TokenSecretKey:      "token",
+	DefaultChartRepository: "oci://ghcr.io/plantonhq/charts",
+	HelmChartName:          "planton-runner",
+	DefaultChartVersion:    "0.5.0",
+	MinChartVersion:        "0.4.0",
+	TokenSecretSuffix:      "-token",
+	TokenSecretKey:         "token",
 }

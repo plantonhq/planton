@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	ControlPlaneDefaultImageRepo = "ghcr.io/plantonhq/planton/control-plane"
+	ControlPlaneDefaultImageRepo = DefaultImageRegistry + "/" + ControlPlaneImageSlug
 	controlPlaneContainerPort    = 8080
 	controlPlaneServicePort      = 80
 	// gRPC-Web listener for browser clients (the console). Serving it is opt-in
@@ -644,7 +644,7 @@ func ControlPlaneDeployment(cfg ControlPlaneConfig) *appsv1.Deployment {
 				Spec: corev1.PodSpec{
 					TerminationGracePeriodSeconds: int64Ptr(controlPlaneTerminationGracePeriodSeconds),
 					ServiceAccountName:            ControlPlaneServiceAccountName(cfg.CRName),
-					Volumes:            volumes,
+					Volumes:                       volumes,
 					Containers: []corev1.Container{{
 						Name:  "control-plane",
 						Image: fmt.Sprintf("%s:%s", imageRepo, imageTag),

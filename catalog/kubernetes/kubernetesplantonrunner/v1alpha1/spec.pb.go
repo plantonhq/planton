@@ -132,9 +132,16 @@ type KubernetesPlantonRunnerSpec struct {
 	// secret material: the enrollment token is carried by the
 	// module-created Secret, and the enrollment block is re-pinned after
 	// the merge so an override can never move it into rendered values.
-	HelmValues    string `protobuf:"bytes,11,opt,name=helm_values,json=helmValues,proto3" json:"helm_values,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	HelmValues string `protobuf:"bytes,11,opt,name=helm_values,json=helmValues,proto3" json:"helm_values,omitempty"`
+	// *
+	// The OCI registry path the planton-runner chart is pulled from. Defaults
+	// to oci://ghcr.io/plantonhq/charts. Every chart release is also
+	// published, byte for byte, to Google Artifact Registry at
+	// oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+	// from Google, or name a mirror of your own holding the same charts.
+	ChartRepository *string `protobuf:"bytes,12,opt,name=chart_repository,json=chartRepository,proto3,oneof" json:"chart_repository,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *KubernetesPlantonRunnerSpec) Reset() {
@@ -244,6 +251,13 @@ func (x *KubernetesPlantonRunnerSpec) GetHelmValues() string {
 	return ""
 }
 
+func (x *KubernetesPlantonRunnerSpec) GetChartRepository() string {
+	if x != nil && x.ChartRepository != nil {
+		return *x.ChartRepository
+	}
+	return ""
+}
+
 // *
 // **KubernetesPlantonRunnerBuild** turns on the runner's Tekton build
 // worker.
@@ -309,8 +323,7 @@ var File_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto protoref
 
 const file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	">catalog/kubernetes/kubernetesplantonrunner/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x99\n" +
-	"\n" +
+	">catalog/kubernetes/kubernetesplantonrunner/v1alpha1/spec.proto\x127dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdc\f\n" +
 	"\x1bKubernetesPlantonRunnerSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x12 \n" +
@@ -330,9 +343,12 @@ const file_catalog_kubernetes_kubernetesplantonrunner_v1alpha1_spec_proto_rawDes
 	"\x05build\x18\n" +
 	" \x01(\v2U.dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1.KubernetesPlantonRunnerBuildR\x05build\x12\x1f\n" +
 	"\vhelm_values\x18\v \x01(\tR\n" +
-	"helmValuesB\x11\n" +
+	"helmValues\x12\xab\x02\n" +
+	"\x10chart_repository\x18\f \x01(\tB\xfa\x01\xbaH\xd4\x01\xba\x01\xd0\x01\n" +
+	"\x17chart_repository_format\x12\x82\x01chart repository must be an OCI path such as \"oci://asia-south1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash\x1a0this.startsWith('oci://') && !this.endsWith('/')\x8a\xa6\x1d\x1eoci://ghcr.io/plantonhq/chartsH\x02R\x0fchartRepository\x88\x01\x01B\x11\n" +
 	"\x0f_runner_versionB\x13\n" +
-	"\x11_image_repository\"\xbc\x02\n" +
+	"\x11_image_repositoryB\x13\n" +
+	"\x11_chart_repository\"\xbc\x02\n" +
 	"\x1cKubernetesPlantonRunnerBuild\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x81\x02\n" +
 	"\x10tekton_namespace\x18\x02 \x01(\tB\xd5\x01\xbaH\xd1\x01\xba\x01\xca\x01\n" +

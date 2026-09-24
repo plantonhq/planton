@@ -71,6 +71,16 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept a registry root and a runner image override", func() {
+			input := minimalValidPlatform()
+			input.Spec.ImageRegistry = "asia-south1-docker.pkg.dev/plantonhq/planton"
+			input.Spec.Runner = &KubernetesPlantonPlatformRunner{
+				Image: &KubernetesPlantonPlatformImage{Repository: "mirror.example.com/planton/runner"},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
 		ginkgo.It("should accept platform-wide storage settings", func() {
 			input := minimalValidPlatform()
 			input.Spec.Storage = &KubernetesPlantonPlatformStorage{
@@ -571,6 +581,14 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
+
+		ginkgo.It("should fail on a registry root with a scheme or a trailing slash", func() {
+			for _, root := range []string{"https://ghcr.io/plantonhq/planton", "ghcr.io/plantonhq/planton/"} {
+				input := minimalValidPlatform()
+				input.Spec.ImageRegistry = root
+				gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil(), root)
+			}
+		})
 
 		ginkgo.It("should fail when version is missing", func() {
 			input := minimalValidPlatform()

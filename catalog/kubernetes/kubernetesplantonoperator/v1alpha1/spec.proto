@@ -74,7 +74,7 @@ message KubernetesPlantonOperatorSpec {
    * and the operator image share one version line: chart 0.15.0 runs
    * operator v0.15.0. Defaults to the version this catalog release was
    * validated against; pin a different version only for change control.
-   * Versions must exist as published charts at oci://ghcr.io/plantonhq/charts.
+   * Versions must exist as published charts at spec.chart_repository.
    * Charts older than 0.8.0 do not own their definitions and are refused
    * at plan time: the `crds` dials would have nothing to act on.
    */
@@ -180,6 +180,22 @@ message KubernetesPlantonOperatorSpec {
    * these dials map onto the chart's `crds.enabled` and `crds.keep` values.
    */
   KubernetesPlantonOperatorCrds crds = 16;
+
+  /**
+   * The OCI registry path the planton-operator chart is pulled from. Defaults
+   * to oci://ghcr.io/plantonhq/charts. Every chart release is also
+   * published, byte for byte, to Google Artifact Registry at
+   * oci://asia-south1-docker.pkg.dev/plantonhq/charts; set that to pull
+   * from Google, or name a mirror of your own holding the same charts.
+   */
+  optional string chart_repository = 17 [
+    (dev.planton.shared.options.default) = "oci://ghcr.io/plantonhq/charts",
+    (buf.validate.field).cel = {
+      id: "chart_repository_format"
+      message: "chart repository must be an OCI path such as \"oci://asia-south1-docker.pkg.dev/plantonhq/charts\": oci:// scheme, no trailing slash"
+      expression: "this.startsWith('oci://') && !this.endsWith('/')"
+    }
+  ];
 }
 
 /**

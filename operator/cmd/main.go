@@ -44,7 +44,6 @@ import (
 	"github.com/plantonhq/planton/operator/internal/janitor"
 	"github.com/plantonhq/planton/operator/internal/ociregistry"
 	"github.com/plantonhq/planton/operator/internal/platformversion"
-	"github.com/plantonhq/planton/operator/internal/resources"
 	"github.com/plantonhq/planton/operator/internal/singleton"
 	// +kubebuilder:scaffold:imports
 )
@@ -257,8 +256,7 @@ func main() {
 		// published control-plane image; a development build never judges it
 		// (the reader is still wired so a stamped build does).
 		RequirementReader: &platformversion.RegistryRequirementReader{
-			ImageRepository: resources.ControlPlaneDefaultImageRepo,
-			Client:          ociregistry.NewClient(),
+			Client: ociregistry.NewClient(),
 		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "PlantonPlatform")

@@ -28,6 +28,10 @@ type Locals struct {
 	// engines install the same chart whether or not the platform's
 	// defaulting middleware ran.
 	ChartVersion string
+
+	// Chart repository resolved to the pinned default when unset, for the
+	// same reason.
+	ChartRepository string
 }
 
 // initializeLocals extracts and transforms spec fields into module-local
@@ -56,10 +60,16 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetesplantonoperatorv1
 		chartVersion = vars.DefaultChartVersion
 	}
 
+	chartRepository := spec.GetChartRepository()
+	if chartRepository == "" {
+		chartRepository = vars.DefaultChartRepository
+	}
+
 	return &Locals{
-		Spec:         spec,
-		Labels:       labels,
-		Namespace:    spec.Namespace.GetValue(),
-		ChartVersion: chartVersion,
+		Spec:            spec,
+		Labels:          labels,
+		Namespace:       spec.Namespace.GetValue(),
+		ChartVersion:    chartVersion,
+		ChartRepository: chartRepository,
 	}
 }

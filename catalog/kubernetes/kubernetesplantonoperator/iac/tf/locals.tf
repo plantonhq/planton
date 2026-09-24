@@ -21,8 +21,11 @@ locals {
   # manifest. The chart is OCI-published; the Terraform helm provider takes
   # the repo as `repository` plus the bare chart name (unlike Pulumi's
   # joined string).
-  helm_oci_repo   = "oci://ghcr.io/plantonhq/charts"
-  helm_chart_name = "planton-operator"
+  # default_chart_repository mirrors the proto field's default and the Pulumi
+  # module's DefaultChartRepository.
+  default_chart_repository = "oci://ghcr.io/plantonhq/charts"
+  chart_repository         = try(var.spec.chart_repository, "") != "" ? var.spec.chart_repository : local.default_chart_repository
+  helm_chart_name          = "planton-operator"
 
   # default_chart_version is the chart this catalog release was validated
   # against (mirror of the proto field's default and the Pulumi module's

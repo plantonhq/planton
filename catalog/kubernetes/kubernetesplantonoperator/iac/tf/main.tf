@@ -41,7 +41,7 @@ resource "kubernetes_namespace_v1" "planton_operator" {
 # The operator release.
 resource "helm_release" "planton_operator" {
   name       = local.release_name
-  repository = local.helm_oci_repo
+  repository = local.chart_repository
   chart      = local.helm_chart_name
   version    = local.chart_version
   namespace  = local.namespace

@@ -405,6 +405,18 @@ type PlantonPlatformSpec struct {
 	// +kubebuilder:validation:XValidation:rule="self.matches('^v[0-9]+\\\\.[0-9]+\\\\.[0-9]+(-[0-9A-Za-z.-]+)?(\\\\+[0-9A-Za-z.-]+)?$')",message="spec.version must name a Planton release as vMAJOR.MINOR.PATCH (a pre-release suffix is allowed); to run a custom build, keep version at a release and set image.tag on the component"
 	Version string `json:"version"`
 
+	// imageRegistry is the registry root the control plane, console, and
+	// runner images are pulled from, as <imageRegistry>/<image> (the images are
+	// control-plane, client-apps/web, and runner). Defaults to
+	// ghcr.io/plantonhq/planton. Every release is also published, byte for
+	// byte, to Google Artifact Registry at
+	// asia-south1-docker.pkg.dev/plantonhq/planton; set that here to pull from
+	// Google, or name a mirror of your own. A component's image.repository, when
+	// set, wins over this root.
+	// +kubebuilder:validation:XValidation:rule="!self.endsWith('/') && !self.contains('://')",message="spec.imageRegistry is a registry root such as asia-south1-docker.pkg.dev/plantonhq/planton: no scheme and no trailing slash"
+	// +optional
+	ImageRegistry string `json:"imageRegistry,omitempty"`
+
 	// license delivers the deployment's license key -- inline or by Secret
 	// reference (at most one). Without it, Planton runs in Community mode.
 	// +optional

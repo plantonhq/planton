@@ -1226,6 +1226,21 @@ spec:
                       console's OIDC client.
                     type: string
                 type: object
+              imageRegistry:
+                description: |-
+                  imageRegistry is the registry root the control plane, console, and
+                  runner images are pulled from, as <imageRegistry>/<image> (the images are
+                  control-plane, client-apps/web, and runner). Defaults to
+                  ghcr.io/plantonhq/planton. Every release is also published, byte for
+                  byte, to Google Artifact Registry at
+                  asia-south1-docker.pkg.dev/plantonhq/planton; set that here to pull from
+                  Google, or name a mirror of your own. A component's image.repository, when
+                  set, wins over this root.
+                type: string
+                x-kubernetes-validations:
+                - message: 'spec.imageRegistry is a registry root such as asia-south1-docker.pkg.dev/plantonhq/planton:
+                    no scheme and no trailing slash'
+                  rule: '!self.endsWith(''/'') && !self.contains(''://'')'
               ingress:
                 description: |-
                   ingress configures external access to the Planton web console and API.

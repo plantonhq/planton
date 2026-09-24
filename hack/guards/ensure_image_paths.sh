@@ -59,4 +59,49 @@ if [[ $status -ne 0 ]]; then
   exit 1
 fi
 
-echo "OK: no retired image address is referenced outside dated records."
+# Rule two: code names a registry root only in its home. Every release is
+# published to ghcr.io and mirrored, byte for byte, to Google Artifact
+# Registry (asia-south1-docker.pkg.dev/plantonhq), and an install chooses
+# between them with one setting (spec.imageRegistry, a module's
+# chart_repository). A root written into any other code file is a default that
+# setting cannot move. The operator's home is one package; each catalog module
+# is self-contained (ensure_modules_are_self_contained.sh), so its vars.go and
+# locals.tf are its own home, mirroring the proto field's default. Comments,
+# tests (they pin the defaults' values), generated stubs, protos (the
+# catalog's defaults live there), docs and the site are not code defaults.
+homes=(
+  operator/internal/plantonregistry/plantonregistry.go
+  catalog/kubernetes/kubernetesplantonoperator/iac/pulumi/module/vars.go
+  catalog/kubernetes/kubernetesplantonoperator/iac/tf/locals.tf
+  catalog/kubernetes/kubernetesplantonrunner/iac/pulumi/module/vars.go
+  catalog/kubernetes/kubernetesplantonrunner/iac/tf/locals.tf
+)
+home_excludes=()
+for home in "${homes[@]}"; do
+  home_excludes+=(":(exclude)${home}")
+done
+
+set +e
+root_hits="$(git grep --untracked -n -E 'ghcr\.io/plantonhq|docker\.pkg\.dev/plantonhq' -- \
+  '*.go' '*.ts' '*.tsx' '*.js' '*.mjs' '*.cjs' '*.py' '*.tf' '*.java' '*.rs' \
+  ':(exclude)_changelog' ':(exclude)site' ':(exclude)*_test.go' ':(exclude)*.test.*' \
+  ':(exclude)*.pb.go' ':(exclude)**/node_modules/**' "${home_excludes[@]}")"
+rc=$?
+set -e
+if [[ $rc -gt 1 ]]; then
+  echo "ERROR: git grep failed (exit $rc) while checking registry roots in code" >&2
+  exit "$rc"
+fi
+root_hits="$(printf '%s\n' "$root_hits" | awk '
+  NF == 0 { next }
+  { text = $0; sub(/^[^:]*:[0-9]+:/, "", text); sub(/^[ \t]+/, "", text) }
+  text ~ /^(\/\/|#|\*|\/\*)/ { next }
+  { print }')"
+if [[ -n "$root_hits" ]]; then
+  echo "ERROR: a registry root is written into code outside its home:" >&2
+  echo "$root_hits" | sed 's/^/  /' >&2
+  echo "  Derive it from operator/internal/plantonregistry (the operator) or the module's own vars.go / locals.tf (a catalog module)." >&2
+  exit 1
+fi
+
+echo "OK: no retired image address is referenced outside dated records, and code names a registry root only in its home."
