@@ -7,6 +7,7 @@
 package kubernetestektonoperatorv1alpha1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -99,8 +100,27 @@ type KubernetesTektonOperatorSpec struct {
 	// Names of image-pull secrets (in the tekton-operator namespace)
 	// for pulling the operator images from a private mirror.
 	ImagePullSecrets []string `protobuf:"bytes,7,rep,name=image_pull_secrets,json=imagePullSecrets,proto3" json:"image_pull_secrets,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// *
+	// Registry that replaces the registry part of every image Tekton
+	// publishes (all on ghcr.io) — the air-gap/private-mirror path. That
+	// is the operator and its webhook, and every component the operator
+	// installs: Pipelines, Triggers, Dashboard, Chains, Results and the
+	// pruner, including the images every build pod starts with
+	// (entrypoint, nop, workingdirinit, sidecarlogresults). Each image
+	// keeps its path, tag and digest, so "mirror.example.com/ghcr" pulls
+	// ghcr.io/tektoncd/pipeline/nop-...@sha256:... as
+	// mirror.example.com/ghcr/tektoncd/pipeline/nop-...@sha256:...; a
+	// mirror or pull-through cache of ghcr.io serves them all, and the
+	// digest pins mean it can serve only the bytes the release names.
+	// The images move with the kind's pinned Tekton release, so a catalog
+	// upgrade never freezes one. Images Tekton does not publish keep
+	// their registry: the shell images script steps start with
+	// (cgr.dev, mcr.microsoft.com) and Results' bundled Postgres (Docker
+	// Hub). `operator_image` and `webhook_image`, when set, win over this
+	// for those two images. Empty = ghcr.io.
+	ImageRegistry string `protobuf:"bytes,8,opt,name=image_registry,json=imageRegistry,proto3" json:"image_registry,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *KubernetesTektonOperatorSpec) Reset() {
@@ -182,11 +202,18 @@ func (x *KubernetesTektonOperatorSpec) GetImagePullSecrets() []string {
 	return nil
 }
 
+func (x *KubernetesTektonOperatorSpec) GetImageRegistry() string {
+	if x != nil {
+		return x.ImageRegistry
+	}
+	return ""
+}
+
 var File_catalog_kubernetes_kubernetestektonoperator_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/kubernetes/kubernetestektonoperator/v1alpha1/spec.proto\x128dev.planton.kubernetes.kubernetestektonoperator.v1alpha1\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a\x1cshared/options/options.proto\"\x87\x06\n" +
+	"?catalog/kubernetes/kubernetestektonoperator/v1alpha1/spec.proto\x128dev.planton.kubernetes.kubernetestektonoperator.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a\x1cshared/options/options.proto\"\xe8\a\n" +
 	"\x1cKubernetesTektonOperatorSpec\x12M\n" +
 	"\x0eoperator_image\x18\x01 \x01(\v2&.dev.planton.kubernetes.ContainerImageR\roperatorImage\x12K\n" +
 	"\rwebhook_image\x18\x02 \x01(\v2&.dev.planton.kubernetes.ContainerImageR\fwebhookImage\x12Y\n" +
@@ -194,7 +221,9 @@ const file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_spec_proto_rawDe
 	"\x11webhook_resources\x18\x04 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesR\x10webhookResources\x12\x8d\x01\n" +
 	"\rnode_selector\x18\x05 \x03(\v2h.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1.KubernetesTektonOperatorSpec.NodeSelectorEntryR\fnodeSelector\x12L\n" +
 	"\vtolerations\x18\x06 \x03(\v2*.dev.planton.kubernetes.WorkloadTolerationR\vtolerations\x12x\n" +
-	"\x12image_pull_secrets\x18\a \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets\x1a?\n" +
+	"\x12image_pull_secrets\x18\a \x03(\tBJ\xaa\xa6\x1dFNames of existing Kubernetes Secrets (references), not secret materialR\x10imagePullSecrets\x12\xde\x01\n" +
+	"\x0eimage_registry\x18\b \x01(\tB\xb6\x01\xbaH\xb2\x01\xba\x01\xab\x01\n" +
+	"\x15image_registry_format\x12dimage_registry is a registry root such as \"mirror.example.com/ghcr\": no scheme and no trailing slash\x1a,!this.endsWith('/') && !this.contains('://')\xd8\x01\x01R\rimageRegistry\x1a?\n" +
 	"\x11NodeSelectorEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xc2\x03\n" +

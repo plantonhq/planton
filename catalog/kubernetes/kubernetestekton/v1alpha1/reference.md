@@ -36,6 +36,10 @@ for that teardown to complete on destroy. Never destroy the
 KubernetesTektonOperator resource before this one — without a
 running operator the finalizers strand and deletion hangs.
 
+IMAGES: every component image comes from where the operator is told
+to pull it — set KubernetesTektonOperator's `image_registry` to pull
+them all from a mirror; this declaration names no images.
+
 EXPOSURE: when the dashboard is installed (profile `all`) its
 Service stays ClusterIP; expose it via first-class kinds
 (KubernetesIngress, Gateway API kinds) over the exported service

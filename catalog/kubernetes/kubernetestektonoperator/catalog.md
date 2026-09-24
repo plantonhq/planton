@@ -23,7 +23,7 @@ When you deploy this Cloud Resource, the IaC module applies the release manifest
 ### Kubernetes Cluster
 
 - **No existing install** — exactly ONE operator install per cluster is the upstream contract: its webhooks and CRDs are cluster-scoped singletons with fixed names, and a second install cannot coexist.
-- **Registry reachability** — the operator images pull from GitHub Container Registry (`ghcr.io`). Air-gapped clusters set the image overrides and pull secrets (see Key Configuration).
+- **Registry reachability** — every Tekton image pulls from GitHub Container Registry (`ghcr.io`) unless `imageRegistry` names a mirror of it; air-gapped clusters set `imageRegistry` and, for a private mirror, pull secrets (see Key Configuration).
 
 ## Deploy
 
@@ -61,7 +61,9 @@ These are the most important decisions when configuring the Tekton Operator. Exp
 
 **The CRDs delete with this resource** — the 14 `operator.tekton.dev` CRDs are documents of the applied manifest, so destroying the operator removes them, which CASCADE-DELETES any TektonConfig on the cluster. Always destroy the KubernetesTekton resource FIRST: its teardown blocks until the operator finishes removing the components, and the `TektonInstallerSet` finalizers are processed only by a RUNNING operator — removing the operator first strands them.
 
-**Image overrides are the air-gap seam** — `operatorImage` overrides the image for BOTH containers of the operator Deployment, `webhookImage` the admission webhook's; empty means the release manifest's digest-pinned `ghcr.io/tektoncd/operator/*` images at the pinned release. `imagePullSecrets` names existing `kubernetes.io/dockerconfigjson` Secrets in the fixed `tekton-operator` namespace — references, never credentials.
+**`imageRegistry` is the mirror seam** — one registry root replaces `ghcr.io` for every image Tekton publishes: the operator and its webhook, and every component the operator installs (Pipelines, Triggers, Dashboard, Chains, Results, the pruner), including the images every build pod starts with. Each image keeps its path, tag and digest, so a mirror or pull-through cache of `ghcr.io` serves them all and can serve only the bytes the release names; the images move with the pinned release, so a catalog upgrade never freezes one. Images Tekton does not publish keep their registry: the shell images script steps start with (`cgr.dev`, `mcr.microsoft.com`) and Results' bundled Postgres (Docker Hub). Confirm the mirror is in use by reading what the cluster runs: `kubectl -n tekton-pipelines get deploy tekton-pipelines-controller -o jsonpath='{.spec.template.spec.containers[0].image} {.spec.template.spec.containers[0].args}'` names the mirror for the controller and the `-entrypoint-image`, `-nop-image`, `-workingdirinit-image` and `-sidecarlogresults-image` it hands every build.
+
+**Image overrides pin one exact image** — `operatorImage` overrides the image for BOTH containers of the operator Deployment, `webhookImage` the admission webhook's, and each wins over `imageRegistry` for its image. An override freezes that image while the next catalog upgrade moves the rest of the release, so prefer `imageRegistry` and reach for an override only for a rebuilt operator image. `imagePullSecrets` names existing `kubernetes.io/dockerconfigjson` Secrets in the fixed `tekton-operator` namespace — references, never credentials.
 
 **Sizing and placement** — the manifest sets NO resource requests or limits (the operator runs unbounded); set `operatorResources` / `webhookResources` on production clusters with quotas. `nodeSelector` and `tolerations` steer the operator and webhook pods — scheduling for the Tekton COMPONENT pods lives on the KubernetesTekton resource's placement instead.
 
@@ -85,7 +87,7 @@ The operator exports no component handles of its own: the Tekton namespace, prof
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Operator** — the complete install with an empty spec, which is deliberately tiny: the operator is a lifecycle manager, not the product. Set the image overrides on air-gapped clusters and resource requests on quota-governed ones. Start from the **Tekton Operator preset**.
+**Operator** — the complete install with an empty spec, which is deliberately tiny: the operator is a lifecycle manager, not the product. Set `imageRegistry` on clusters that pull Tekton from a mirror of `ghcr.io` and resource requests on quota-governed ones. Start from the **Tekton Operator preset**.
 
 ## Works With
 

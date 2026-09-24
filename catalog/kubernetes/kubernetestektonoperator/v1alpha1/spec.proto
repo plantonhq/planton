@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetestektonoperator.v1alpha1;
 
+import "buf/validate/validate.proto";
 import "catalog/kubernetes/kubernetes.proto";
 import "catalog/kubernetes/workload_pod.proto";
 import "shared/options/options.proto";
@@ -95,4 +96,32 @@ message KubernetesTektonOperatorSpec {
    * for pulling the operator images from a private mirror.
    */
   repeated string image_pull_secrets = 7 [(dev.planton.shared.options.sensitive_exempt_reason) = "Names of existing Kubernetes Secrets (references), not secret material"];
+
+  /**
+   * Registry that replaces the registry part of every image Tekton
+   * publishes (all on ghcr.io) — the air-gap/private-mirror path. That
+   * is the operator and its webhook, and every component the operator
+   * installs: Pipelines, Triggers, Dashboard, Chains, Results and the
+   * pruner, including the images every build pod starts with
+   * (entrypoint, nop, workingdirinit, sidecarlogresults). Each image
+   * keeps its path, tag and digest, so "mirror.example.com/ghcr" pulls
+   * ghcr.io/tektoncd/pipeline/nop-...@sha256:... as
+   * mirror.example.com/ghcr/tektoncd/pipeline/nop-...@sha256:...; a
+   * mirror or pull-through cache of ghcr.io serves them all, and the
+   * digest pins mean it can serve only the bytes the release names.
+   * The images move with the kind's pinned Tekton release, so a catalog
+   * upgrade never freezes one. Images Tekton does not publish keep
+   * their registry: the shell images script steps start with
+   * (cgr.dev, mcr.microsoft.com) and Results' bundled Postgres (Docker
+   * Hub). `operator_image` and `webhook_image`, when set, win over this
+   * for those two images. Empty = ghcr.io.
+   */
+  string image_registry = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).cel = {
+      id: "image_registry_format"
+      message: "image_registry is a registry root such as \"mirror.example.com/ghcr\": no scheme and no trailing slash"
+      expression: "!this.endsWith('/') && !this.contains('://')"
+    }
+  ];
 }

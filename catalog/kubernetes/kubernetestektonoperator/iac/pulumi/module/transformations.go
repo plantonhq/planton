@@ -1,6 +1,8 @@
 package module
 
 import (
+	"strings"
+
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	kubernetestektonoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetestektonoperator/v1alpha1"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -74,8 +76,15 @@ func autoInstallTransformation() func(state map[string]interface{}, opts ...pulu
 //     operator_resources,
 //   - the webhook Deployment's container: webhook_image,
 //     webhook_resources,
-//   - both pods: nodeSelector / tolerations / imagePullSecrets.
-func deploymentTransformation(spec *kubernetestektonoperatorv1alpha1.KubernetesTektonOperatorSpec) func(state map[string]interface{}, opts ...pulumi.ResourceOption) {
+//   - both pods: nodeSelector / tolerations / imagePullSecrets,
+//   - image_registry: both Deployments' manifest images move to the
+//     registry (an explicit operator_image / webhook_image still wins), and
+//     the lifecycle container, the one that reconciles components, gets its
+//     ghcr.io IMAGE_* values moved and every images table entry appended,
+//     moved, so each component the operator installs pulls from it too.
+//
+// images is nil when image_registry is empty.
+func deploymentTransformation(spec *kubernetestektonoperatorv1alpha1.KubernetesTektonOperatorSpec, images *tektonImages) func(state map[string]interface{}, opts ...pulumi.ResourceOption) {
 	return func(state map[string]interface{}, _ ...pulumi.ResourceOption) {
 		if state["kind"] != "Deployment" {
 			return
@@ -87,16 +96,19 @@ func deploymentTransformation(spec *kubernetestektonoperatorv1alpha1.KubernetesT
 
 		var image string
 		var resources map[string]interface{}
+		isOperator := false
 		switch metadata["name"] {
 		case vars.OperatorDeploymentName:
 			image = joinImage(spec.GetOperatorImage())
 			resources = resourcesMap(spec.GetOperatorResources())
+			isOperator = true
 		case vars.WebhookDeploymentName:
 			image = joinImage(spec.GetWebhookImage())
 			resources = resourcesMap(spec.GetWebhookResources())
 		default:
 			return
 		}
+		registry := spec.GetImageRegistry()
 
 		deploymentSpec, _ := state["spec"].(map[string]interface{})
 		template, _ := deploymentSpec["template"].(map[string]interface{})
@@ -113,9 +125,14 @@ func deploymentTransformation(spec *kubernetestektonoperatorv1alpha1.KubernetesT
 			}
 			if image != "" {
 				container["image"] = image
+			} else if manifestImage, ok := container["image"].(string); ok {
+				container["image"] = mirroredImage(manifestImage, registry)
 			}
 			if resources != nil {
 				container["resources"] = resources
+			}
+			if isOperator && images != nil && container["name"] == vars.LifecycleContainerName {
+				container["env"] = mirroredImageEnv(container["env"], images, registry)
 			}
 		}
 
@@ -137,6 +154,43 @@ func deploymentTransformation(spec *kubernetestektonoperatorv1alpha1.KubernetesT
 			podSpec["imagePullSecrets"] = pullSecrets
 		}
 	}
+}
+
+// mirroredImageEnv moves the lifecycle container's IMAGE_* values to the
+// registry and appends every table entry the manifest does not already set,
+// in table order, so both engines render one env list.
+func mirroredImageEnv(env interface{}, images *tektonImages, registry string) []interface{} {
+	entries, _ := env.([]interface{})
+	out := make([]interface{}, 0, len(entries)+len(images.Images))
+	present := map[string]bool{}
+	for _, raw := range entries {
+		entry, _ := raw.(map[string]interface{})
+		if entry == nil {
+			out = append(out, raw)
+			continue
+		}
+		name, _ := entry["name"].(string)
+		present[name] = true
+		if value, ok := entry["value"].(string); ok && strings.HasPrefix(name, "IMAGE_") {
+			moved := map[string]interface{}{}
+			for key, field := range entry {
+				moved[key] = field
+			}
+			moved["value"] = mirroredImage(value, registry)
+			entry = moved
+		}
+		out = append(out, entry)
+	}
+	for _, image := range images.Images {
+		if present[image.Name] {
+			continue
+		}
+		out = append(out, map[string]interface{}{
+			"name":  image.Name,
+			"value": mirroredImage(image.Image, registry),
+		})
+	}
+	return out
 }
 
 // joinImage folds repo:tag; empty keeps the release manifest's

@@ -43,7 +43,10 @@ Installed from the official single-file release manifest at the pinned
 tag (the in-repo Helm chart is unpublished). The namespace is the
 manifest's fixed `tekton-operator`; the spec deliberately has no
 version field — the `TektonConfig` surface `KubernetesTekton` models is
-designed against the pinned release.
+designed against the pinned release. `image_registry` points every image
+Tekton publishes at a mirror of ghcr.io; the modules read the images the
+pinned release installs from a table built for that release, and refuse a
+table built for another.
 
 ---
 
