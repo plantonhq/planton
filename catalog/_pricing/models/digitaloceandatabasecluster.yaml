@@ -43,7 +43,7 @@ spec:
       exclusions:
         - "growing storage later bills 0.215 USD/GiB/mo above the size's included base"
       notes: "A single-node cluster has no failover -- the committed spend is one node-month."
-    - preset: 03-redis
+    - preset: 03-valkey
       region_assumption: nyc3
       currency: USD
       hours_per_month: 730
@@ -51,7 +51,7 @@ spec:
         - sku_meter: database nodes
           price: do-managed-db-caching-db-s-1vcpu-1gb-node-monthly
           pricing_quantity: "1"
-          quantity_basis: "nodeCount 1 -- a single db-s-1vcpu-1gb caching node; DigitalOcean's pricing page lists the caching engine under Valkey and treats redis and valkey as the same rate table (the spec documents the engines as interchangeable)"
+          quantity_basis: "nodeCount 1 -- a single db-s-1vcpu-1gb Valkey node; DigitalOcean's pricing page lists the caching engine under Valkey, and an adopted pre-existing redis cluster bills from the same rate table"
       exclusions:
         - "caching clusters are ephemeral -- no backup meter exists and none is excluded"
       notes: "Priced from the Managed Caching (Valkey) table at 15.00 USD/mo -- 15 cents below the PostgreSQL/MySQL rate for the same shape."
