@@ -25,6 +25,11 @@ resource graph, not deploy tooling.
 - **Secrets by reference** -- container `secrets` are Secrets Manager /
   SSM Parameter Store ARNs the ECS agent resolves at task start via the
   execution role; secret material never enters the task definition.
+- **Secrets the module stores** -- container `secret_environment` values
+  are kept in one Secrets Manager secret each
+  (`<family>/<container>/<name>`), readable only by the execution role
+  through the secret's resource policy, and injected by ARN pinned to the
+  stored version, so a changed value registers a new revision.
 - **Zero-configuration logging** -- one CloudWatch log group per family
   (`/ecs/<family>`, 30-day retention) with per-container stream
   prefixes; reference an existing `AwsCloudwatchLogGroup` or disable the

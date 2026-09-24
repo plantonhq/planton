@@ -32,6 +32,10 @@ spec:
       sku_meter: task vCPU hours
       pricing_unit: vCPU-hours
       impact: GPU containers require GPU-bearing capacity -- on EC2 launch type the instance rate, and on Fargate the GPU task rates.
+    - field_path: containers.secret_environment
+      sku_meter: Secrets Manager secrets
+      pricing_unit: secrets per month
+      impact: Each secret_environment entry keeps one Secrets Manager secret for as long as the task definition exists -- $0.40 per secret per month, prorated by the hour, plus $0.05 per 10,000 API calls, one GetSecretValue per task start (aws.amazon.com/secrets-manager/pricing, read 2026-09-24). New versions of a changed value are not charged; the secret is deleted with no recovery window when the task definition is destroyed, so its charge stops then.
     - field_path: logging.retention_days
       sku_meter: log storage
       pricing_unit: GB-months

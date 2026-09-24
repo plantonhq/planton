@@ -63,6 +63,27 @@ $secret/@<env>/<slug>/<key>       # one key of an environment-scoped key-value s
 
 References live in service manifests, infrastructure resource definitions, and connection fields; the value never does. At deployment time the [Runner](/docs/runner) resolves references just-in-time inside your infrastructure — "latest" being the [backend's latest](/docs/secrets/versions) — uses the value, and discards it. Planton's own database never stores a secret value for provider-backed secrets.
 
+### Where a Secret Reference Goes
+
+The Runner hands the resolved value to the resource being deployed, and the resource writes it wherever your manifest put it. So the field decides whether the secret stays secret. Each workload keeps configuration and secrets in separate fields:
+
+| Workload | Configuration (anyone who can view the resource reads it) | Secrets (kept in a secret store the workload reads by reference) |
+|---|---|---|
+| Kubernetes workloads | `env.variables` | `env.secrets` — a Kubernetes Secret the workload owns |
+| Cloud Run services and jobs | an env entry's `value` | the entry's `secretValue` — a Secret Manager secret the service owns |
+| ECS task definitions | `environment` | `secretEnvironment` — a Secrets Manager secret only the task's execution role reads |
+
+```yaml
+# Cloud Run container
+env:
+  - name: LOG_LEVEL
+    value: info
+  - name: STRIPE_KEY
+    secretValue: $secret/@production/stripe-key
+```
+
+A `$secret/` reference in a configuration field is refused before anything deploys, and the message names the field to move it to. The secret field keeps its copy in your cloud's own store, readable only by the workload's runtime identity, and removed with the workload. The workload is pinned to the version it was deployed with, so a changed secret reaches it on the next deployment. Every component's reference page marks these fields: `(sensitive)` for a field that holds secret material, and `(no secrets: use <field>)` for a configuration field that names where a secret belongs.
+
 For local development the CLI mirrors the same resolution:
 
 ```bash

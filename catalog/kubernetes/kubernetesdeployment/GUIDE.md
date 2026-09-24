@@ -41,6 +41,19 @@ state — safe only when it is the sole tenant. Any shared namespace wants a
 dedicated KubernetesNamespace component instead; the failure story and the
 `valueFrom` wiring: [namespace-ownership pattern](../../_patterns/namespace-ownership.md).
 
+## Variables vs secrets is a storage decision
+
+`env.variables` values are written into the Deployment's pod template,
+readable by anyone who can read the workload. `env.secrets` values are
+collected into one Kubernetes Secret this component owns
+(`<name>-env-secrets`) and read through `secretKeyRef`. So a credential goes
+in `env.secrets` -- on Planton as `value: $secret/<slug>`, which the
+platform resolves just before the module runs. The same reference in
+`env.variables` is refused before anything deploys: resolved there, it
+would land in the pod template as the secret itself. Reach for
+`env.secrets[].secretRef` instead when the Secret already exists and has
+its own owner (an external secrets operator, another team's rotation).
+
 ## Pipeline-attached services
 
 When this resource is a Service Hub deploy target, the pipeline owns

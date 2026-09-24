@@ -36,3 +36,35 @@ spec:
           - iam.serviceAccounts.actAs
         provenance: derived
         notes: Cloud Run's deployment-permissions contract requires iam.serviceAccounts.actAs on the service identity for every create or update of google_cloud_run_v2_service -- on the referenced spec.service_account when one is named, or on the project's Compute Engine default service account when it is not. There is no shape of this component that escapes the requirement.
+      - purpose: ManageEnvSecrets
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+          - secretmanager.secrets.create
+          - secretmanager.secrets.get
+          - secretmanager.secrets.update
+          - secretmanager.secrets.delete
+          - secretmanager.secrets.getIamPolicy
+          - secretmanager.secrets.setIamPolicy
+          - secretmanager.versions.add
+          - secretmanager.versions.get
+          - secretmanager.versions.access
+          - secretmanager.versions.enable
+          - secretmanager.versions.disable
+          - secretmanager.versions.destroy
+        provenance: derived
+        condition:
+          spec_field_set: containers.env.secret_value
+        notes: Covers the secret the modules keep per env[].secret_value -- google_project_service enabling secretmanager.googleapis.com (disable_on_destroy false), google_secret_manager_secret (user-managed replication in the service's region(s), attribution labels), google_secret_manager_secret_version holding the value (a new value creates the new version before destroying the old; versions.access is the provider's read of the payload on refresh), and google_secret_manager_secret_iam_member granting roles/secretmanager.secretAccessor on that one secret to the runtime identity (IAM member resources read the policy before modifying it). Teardown deletes the secret, which destroys its versions.
+      - purpose: ResolveDefaultRuntimeIdentity
+        permissions:
+          - resourcemanager.projects.get
+        provenance: derived
+        condition:
+          spec_field_set: containers.env.secret_value
+        notes: The data source the modules use to name the Compute Engine default service account (<project-number>-compute@developer.gserviceaccount.com) in the secretAccessor grant when spec.service_account is unset -- google_project reads the project to learn its number. Not exercised when spec.service_account names the runtime identity (the condition cannot express "unset", so the entry rides the secret_value condition).
+      - purpose: ReadDeployedImage
+        permissions:
+          - artifactregistry.repositories.downloadArtifacts
+        provenance: derived
+        notes: Google's Cloud Run deploy guide requires the deploying identity to hold Artifact Registry Reader (roles/artifactregistry.reader) on the repository of the deployed image, separate from the Cloud Run service agent that pulls it when a revision starts; downloadArtifacts is the permission behind that role that the deploy exercises. Needed whenever the image lives in Artifact Registry (the manifest cannot express that as a field condition); scope it to the image's repository in a hardened deployment. Images from other registries do not exercise it.

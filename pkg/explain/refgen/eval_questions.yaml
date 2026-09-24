@@ -581,3 +581,63 @@ questions:
       - kind: KubernetesNeo4j
         file: reference.md
         pattern: 'CREDENTIALS ARE MINTED, NEVER REQUIRED'
+
+  - id: q24
+    class: field-semantics
+    question: >
+      A developer's Cloud Run service needs STRIPE_KEY from the Planton
+      secret stripe-key, and their ECS task needs the same. Which field
+      does each reference go in, and what happens if it goes in the plain
+      value field instead?
+    answer: >
+      GcpCloudRun: the env entry's `secretValue: $secret/stripe-key` (the
+      component keeps it in a Secret Manager secret the service owns and
+      pins the variable to that version). AwsEcsTaskDefinition: the
+      container's `secretEnvironment: {STRIPE_KEY: $secret/stripe-key}`
+      (a Secrets Manager secret readable only by the execution role). The
+      plain fields (`env[].value`, `environment`) are marked "no secrets":
+      they are written where every viewer reads them, so a secret reference
+      there is refused before anything deploys -- the platform resolves the
+      reference to its plain value before the module runs.
+    checks:
+      - kind: GcpCloudRun
+        file: reference.md
+        pattern: '\| `spec\.containers\[\]\.env\[\]\.value` \| `string` \(no secrets: use `secretValue`\) \|'
+      - kind: GcpCloudRun
+        file: reference.md
+        pattern: '\| `spec\.containers\[\]\.env\[\]\.secretValue` \| `string` \(sensitive\) \|'
+      - kind: AwsEcsTaskDefinition
+        file: reference.md
+        pattern: '\(no secrets: use `secretEnvironment`\)'
+      - catalog: _docs/reference-commons.md
+        pattern: '## Where a secret may go'
+
+  - id: q25
+    class: wisdom
+    question: >
+      On an ECS task definition, when does a secret belong in
+      secretEnvironment and when in secrets, and why is putting it in
+      environment worse than a normal misconfiguration?
+    answer: >
+      secretEnvironment for a value Planton or the author holds (the
+      component stores and scopes it, a changed value registers a new
+      revision); secrets for a Secrets Manager secret or SSM parameter
+      someone else owns or several services share. environment is
+      written into the task definition, and revisions are immutable and
+      never deleted -- a secret there stays readable to anyone who can
+      describe the task definition, permanently.
+    checks:
+      - kind: AwsEcsTaskDefinition
+        file: GUIDE.md
+        pattern: '## Three places a variable can live -- one keeps a Planton secret secret'
+      - kind: AwsEcsTaskDefinition
+        file: GUIDE.md
+        pattern: 'every\s+value\s+ever\s+written\s+there\s+stays\s+readable'
+      - kind: GcpCloudRun
+        file: GUIDE.md
+        pattern: '## Three ways a variable gets its value -- only two keep a secret'
+      - kind: AwsEcsTaskDefinition
+        file: GUIDE.md
+        pattern: 'changing\s+the\s+Planton\s+secret\s+redeploys\s+nothing\s+by\s+itself'
+      - catalog: _docs/reference-commons.md
+        pattern: 'neither\s+falls\s+back\s+to\s+the\s+other'

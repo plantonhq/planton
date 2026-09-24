@@ -13,7 +13,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: Everything the service stores -- the deployed container image copy, revision configuration, and secret references -- is encrypted at rest with Google-managed keys without configuration, per Google Cloud's default encryption at rest. The instances themselves are stateless; durable data lives on the components the code writes to.
+        reference: Everything the service stores -- the deployed container image copy, revision configuration, and secret references (including the Secret Manager secrets the module creates for secret_value variables) -- is encrypted at rest with Google-managed keys without configuration, per Google Cloud's default encryption at rest. The instances themselves are stateless; durable data lives on the components the code writes to.
     - control_id: enc-at-rest-cmk
       status: configurable
       field_path: encryption_key

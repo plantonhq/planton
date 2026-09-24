@@ -5,6 +5,7 @@ package dev.planton.kubernetes;
 import "buf/validate/validate.proto";
 import "catalog/kubernetes/kubernetes_secret.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
 
 /**
  * **EnvVar** represents a single environment variable for a container.
@@ -150,8 +151,11 @@ message EnvFromSource {
  * field supports bulk import of all keys from ConfigMaps or Secrets.
  */
 message ContainerEnv {
-  // Individual environment variables (non-sensitive).
-  repeated EnvVar variables = 1;
+  // Individual environment variables (non-sensitive). Their values are
+  // written into the pod spec, where anyone who can read the workload sees
+  // them; a secret belongs in `secrets`, which the module keeps in a
+  // Kubernetes Secret the container reads by reference.
+  repeated EnvVar variables = 1 [(dev.planton.shared.options.secret_home) = "secrets"];
 
   // Individual secret environment variables (sensitive).
   repeated SecretEnvVar secrets = 2;

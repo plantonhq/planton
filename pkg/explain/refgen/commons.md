@@ -70,6 +70,43 @@ non-empty `value` or a `valueFrom`. Each reference page's "References" table
 lists the kind and field path a foreign-key field targets by default, and
 its "Referenced By" table lists which other kinds can point at it.
 
+## Where a secret may go
+
+A platform that manages secrets (Planton's `$secret/<slug>` for an
+organization secret, `$secret/@<env>/<slug>` for an environment's own --
+neither falls back to the other) resolves each reference to its plain value
+just before the module runs, and the module writes that value
+wherever the manifest put it. So the field, not the reference, decides
+whether a secret stays secret. Two marks on a page say which fields are
+which:
+
+- **`(sensitive)`** -- the field holds secret material. On Planton it
+  accepts only a `$secret/...` reference, never plaintext, and the module
+  keeps the value out of anything a viewer reads.
+- **`(no secrets: use <field>)`** -- the field's value is written where
+  anyone who can view the resource reads it (a Cloud Run revision, an ECS
+  task definition, a Kubernetes pod spec, kept forever in ECS's immutable
+  revisions). A secret reference anywhere inside it is refused before
+  anything deploys; the named sibling is the kind's secret home, which keeps
+  the value in a secret store (a Kubernetes Secret, a Secret Manager
+  secret, a Secrets Manager secret) that the workload reads by reference.
+
+For example, on a Cloud Run container a credential goes in `secretValue`,
+not `value`:
+
+```yaml
+env:
+  - name: LOG_LEVEL
+    value: info                       # configuration: fine in the open
+  - name: STRIPE_KEY
+    secretValue: $secret/stripe-key   # kept in Secret Manager for this service
+```
+
+A field with neither mark takes a reference like any string, and the value
+lands wherever that field lands -- read the field's docs before putting a
+secret in one. Every deploy resolves a reference again, so a changed secret
+reaches the resource on its next deploy, never by itself.
+
 ## fieldPath spelling
 
 The canonical spelling of every `fieldPath` segment is the proto field name

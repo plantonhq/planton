@@ -30,7 +30,7 @@ that has progressed.
 | Provider schema (parity baseline) | `aws@6.58.0` |
 | Kinds in the catalog | 205 |
 | Distinct provider resources consumed | 524 |
-| Spec fields authored across all kinds | 7469 |
+| Spec fields authored across all kinds | 7470 |
 | Module pins on `aws` | `~> 6.58` × 205 |
 | Module pins on `time` | `~> 0.13` × 1 |
 
@@ -769,10 +769,10 @@ rather than trusted.
 | `aws_sagemaker_user_profile` | consumed by AwsSagemakerDomain |
 | `aws_scheduler_schedule` | consumed by AwsEventBridgeScheduler |
 | `aws_scheduler_schedule_group` | consumed by AwsEventBridgeScheduler |
-| `aws_secretsmanager_secret` | consumed by AwsPlantonRunner, AwsSecretsManagerSecret |
+| `aws_secretsmanager_secret` | consumed by AwsEcsTaskDefinition, AwsPlantonRunner, AwsSecretsManagerSecret |
 | `aws_secretsmanager_secret_policy` | consumed by AwsSecretsManagerSecret |
 | `aws_secretsmanager_secret_rotation` | consumed by AwsSecretsManagerSecret |
-| `aws_secretsmanager_secret_version` | consumed by AwsPlantonRunner, AwsSecretsManagerSecret |
+| `aws_secretsmanager_secret_version` | consumed by AwsEcsTaskDefinition, AwsPlantonRunner, AwsSecretsManagerSecret |
 | `aws_security_group` | consumed by AwsPlantonRunner, AwsSecurityGroup |
 | `aws_service_discovery_http_namespace` | consumed by AwsCloudMapNamespace |
 | `aws_service_discovery_instance` | consumed by AwsCloudMapNamespace |

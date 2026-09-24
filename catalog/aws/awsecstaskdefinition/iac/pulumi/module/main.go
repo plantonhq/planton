@@ -82,14 +82,19 @@ func Resources(ctx *pulumi.Context, stackInput *awsecstaskdefinitionv1alpha1.Aws
 		}
 	}
 
-	containerDefs, err := buildContainerDefinitions(spec, logGroupName)
+	storedSecrets, err := storeSecretEnvironment(ctx, family, spec, locals.AwsTags, provider)
+	if err != nil {
+		return errors.Wrap(err, "failed to store the secret_environment values")
+	}
+
+	containerDefs, err := containerDefinitionsInput(spec, logGroupName, storedSecrets)
 	if err != nil {
 		return errors.Wrap(err, "failed to build container definitions JSON")
 	}
 
 	args := &ecs.TaskDefinitionArgs{
 		Family:               pulumi.String(family),
-		ContainerDefinitions: pulumi.String(containerDefs),
+		ContainerDefinitions: containerDefs,
 		Tags:                 pulumi.ToStringMap(locals.AwsTags),
 	}
 
@@ -296,11 +301,50 @@ func Resources(ctx *pulumi.Context, stackInput *awsecstaskdefinitionv1alpha1.Aws
 	return nil
 }
 
+// containerDefinitionsInput is the container-definitions document as the
+// task definition's input. Without stored secrets it is a plain string (see
+// the logging comment in Resources: the document is one opaque JSON value to
+// AWS). With them, each stored secret's valueFrom is an output of the secret
+// it names, so the document is rendered inside one Apply over those outputs --
+// the only way to weave them in, paid only by tasks that carry them.
+func containerDefinitionsInput(
+	spec *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefinitionSpec,
+	logGroupName string,
+	storedSecrets []storedSecretEnv,
+) (pulumi.StringInput, error) {
+	if len(storedSecrets) == 0 {
+		document, err := buildContainerDefinitions(spec, logGroupName, nil)
+		if err != nil {
+			return nil, err
+		}
+		return pulumi.String(document), nil
+	}
+	valueFroms := make([]interface{}, 0, len(storedSecrets))
+	for _, secret := range storedSecrets {
+		valueFroms = append(valueFroms, secret.valueFrom)
+	}
+	return pulumi.All(valueFroms...).ApplyT(func(resolved []interface{}) (string, error) {
+		byContainer := map[string]map[string]string{}
+		for i, secret := range storedSecrets {
+			if byContainer[secret.container] == nil {
+				byContainer[secret.container] = map[string]string{}
+			}
+			byContainer[secret.container][secret.name] = resolved[i].(string)
+		}
+		return buildContainerDefinitions(spec, logGroupName, byContainer)
+	}).(pulumi.StringOutput), nil
+}
+
 // buildContainerDefinitions renders the spec's structured containers into
 // the container-definitions JSON document the ECS API takes. Maps are
 // emitted in sorted key order so the document -- and therefore the
-// registered revision -- is deterministic across applies.
-func buildContainerDefinitions(spec *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefinitionSpec, logGroupName string) (string, error) {
+// registered revision -- is deterministic across applies. storedSecrets
+// carries, per container, the valueFrom of each secret_environment entry.
+func buildContainerDefinitions(
+	spec *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefinitionSpec,
+	logGroupName string,
+	storedSecrets map[string]map[string]string,
+) (string, error) {
 	definitions := make([]map[string]interface{}, 0, len(spec.Containers))
 
 	for _, container := range spec.Containers {
@@ -353,11 +397,19 @@ func buildContainerDefinitions(spec *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefi
 		if len(container.Environment) > 0 {
 			definition["environment"] = sortedNameValueList(container.Environment, "value")
 		}
-		// Secrets are name -> ARN pairs; the agent resolves them at task
-		// start via the execution role, so no secret material passes
-		// through here.
-		if len(container.Secrets) > 0 {
-			definition["secrets"] = sortedNameValueList(container.Secrets, "valueFrom")
+		// Secrets are name -> ARN pairs -- the author's own, plus the pinned
+		// ARNs of the secret_environment values this module stored; the agent
+		// resolves them at task start via the execution role, so no secret
+		// material passes through here.
+		secrets := map[string]string{}
+		for name, valueFrom := range container.Secrets {
+			secrets[name] = valueFrom
+		}
+		for name, valueFrom := range storedSecrets[container.Name] {
+			secrets[name] = valueFrom
+		}
+		if len(secrets) > 0 {
+			definition["secrets"] = sortedNameValueList(secrets, "valueFrom")
 		}
 		if len(container.EnvironmentFiles) > 0 {
 			environmentFiles := make([]map[string]string, 0, len(container.EnvironmentFiles))

@@ -92,10 +92,12 @@ Dynamic references are useful for:
 
 Services reference variables by name. During the deployment pipeline, Planton resolves the references and injects the values into the service's runtime environment.
 
-The reference syntax uses the group and variable name:
+The reference syntax names the variable, or the group and the entry inside it:
 
 ```
-$variables-group/<group-name>/<variable-name>
+$var/<slug>                  # an organization variable
+$var/<group>/<entry>         # an entry in an organization variable group
+$var/@<env>/<slug>           # an environment's own variable
 ```
 
 ### Viewing Resolved Configuration

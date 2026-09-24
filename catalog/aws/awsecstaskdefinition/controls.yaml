@@ -42,7 +42,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: module_default
-        reference: Containers receive short-lived credentials from the referenced task_role via the ECS agent, and image pulls plus log writes use the execution_role -- no static keys enter the container environment, and the secrets map injects Secrets Manager/SSM values by ARN at start rather than baking material into the definition.
+        reference: Containers receive short-lived credentials from the referenced task_role via the ECS agent, and image pulls plus log writes use the execution_role -- no static keys enter the container environment, and the secrets map injects Secrets Manager/SSM values by ARN at start rather than baking material into the definition; secret_environment values are stored by the module in Secrets Manager secrets whose resource policy admits only the execution role, and reach the container by ARN the same way.
     - control_id: no-legacy-auth
       status: not_applicable
       notes: ECS has a single authentication path -- SigV4 IAM; no legacy protocol exists to disable.

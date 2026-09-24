@@ -6,6 +6,8 @@
 
 **apiVersion**: `aws.planton.dev/v1alpha1`
 
+**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.
+
 AwsEcsTaskDefinitionSpec defines an ECS task definition: the immutable,
 versioned blueprint that describes the containers a task runs -- images,
 ports, environment, secrets, health checks, sizing, volumes, and the IAM
@@ -52,6 +54,10 @@ spec:
           appProtocol: http
       environment:
         APP_ENV: demo
+      # A Planton secret: the component keeps it in a Secrets Manager secret
+      # only the execution role reads, and injects it by ARN.
+      secretEnvironment:
+        API_TOKEN: $secret/demo-api-token
       mountPoints:
         - sourceVolume: data
           containerPath: /var/data
@@ -83,8 +89,9 @@ spec:
 | `spec.containers[].entryPoint` | `[]string` |  |  |  |
 | `spec.containers[].command` | `[]string` |  |  |  |
 | `spec.containers[].workingDirectory` | `string` |  |  |  |
-| `spec.containers[].environment` | `map<string, string>` |  |  |  |
+| `spec.containers[].environment` | `map<string, string>` (no secrets: use `secretEnvironment`) |  |  |  |
 | `spec.containers[].secrets` | `map<string, string>` |  |  |  |
+| `spec.containers[].secretEnvironment` | `map<string, string>` (sensitive) |  |  |  |
 | `spec.containers[].environmentFiles` | `[]string` |  |  |  |
 | `spec.containers[].healthCheck` | `AwsEcsTaskDefinitionHealthCheck` |  |  |  |
 | `spec.containers[].healthCheck.command` | `[]string` | yes |  |  |
@@ -193,6 +200,7 @@ authored images are untouched.
 
 - rule: {"repeated":{"minItems":"1"}}
 - rule: memory_reservation (the soft reservation) must not exceed memory (the hard limit)
+- rule: a variable in secret_environment is also named in environment or secrets -- give each variable its value from exactly one of them
 
 ### spec.containers[].name
 
@@ -317,21 +325,39 @@ Working directory override for the command.
 
 ### spec.containers[].environment
 
-`map<string, string>`
+`map<string, string>` · no secrets
 
-Plain-text environment variables (name -> value). For anything
-sensitive use secrets instead -- environment values are visible in the
-task definition to anyone who can describe it.
+Plain-text environment variables (name -> value), written into the task
+definition where anyone who can describe it reads them -- and kept in
+every revision for good, since revisions are immutable. Configuration
+only; a credential goes in secret_environment (or secrets).
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretEnvironment`, which keeps it in a secret store the workload reads by reference
 ### spec.containers[].secrets
 
 `map<string, string>`
 
-Secret environment variables (name -> the ARN of an AWS Secrets
-Manager secret or SSM Parameter Store parameter). The ECS agent
-resolves each reference at task start using execution_role, so the
-value never appears in the task definition. Append ":<json-key>::" to
-a Secrets Manager ARN to inject one key of a JSON secret.
+Secret environment variables backed by secrets YOU already own (name ->
+the ARN of an AWS Secrets Manager secret or SSM Parameter Store
+parameter). The ECS agent resolves each reference at task start using
+execution_role, so the value never appears in the task definition.
+Append ":<json-key>::" to a Secrets Manager ARN to inject one key of a
+JSON secret.
+
+### spec.containers[].secretEnvironment
+
+`map<string, string>` · sensitive
+
+Secret environment variables whose VALUES this component keeps in AWS
+Secrets Manager for you (name -> value). Per entry it creates one secret
+named "<family>/<container>/<name>", stores the value, and attaches a
+resource policy that lets only execution_role read it; the container's
+secrets list then carries that secret's ARN pinned to the stored
+version, so the task definition holds a reference, never the value. A
+changed value registers a new revision (a deploy is the rotation), and
+destroying the task definition deletes the secrets with no recovery
+window -- the value's source of truth is whoever supplied it here.
+Requires execution_role.
 
 ### spec.containers[].environmentFiles
 
@@ -1043,6 +1069,7 @@ A cluster query language expression, e.g.
 - `pid_mode_valid`: pid_mode must be 'host' or 'task' when set
 - `fargate_forbids_ipc_mode`: ipc_mode is EC2-only -- Fargate task definitions may not set it
 - `fargate_pid_mode_task_only`: on Fargate pid_mode may only be 'task' -- 'host' requires an EC2-only task definition
+- `secret_environment_requires_execution_role`: a container sets secret_environment, which the ECS agent reads as the task's execution_role -- set execution_role (an AwsIamRole's role_arn)
 - `fargate_forbids_placement_constraints`: placement_constraints are EC2-only -- Fargate task definitions may not declare them
 
 ## Outputs

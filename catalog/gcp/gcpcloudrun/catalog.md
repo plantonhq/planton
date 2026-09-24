@@ -29,7 +29,7 @@ Custom domains are deliberately not part of this resource -- the production-grad
 - **Artifact Registry or container registry** with the container image pushed and accessible to the Cloud Run service agent.
 - **Cloud Run Admin API** enabled in the target project.
 - **VPC network and subnetwork** (if using Direct VPC Egress) -- the subnetwork must be in the service's region with free address space for the instance fleet.
-- **Secret Manager secrets** (if referenced by env vars or volumes) -- the runtime service account needs `roles/secretmanager.secretAccessor` on each.
+- **Secret Manager secrets** (if referenced by env vars or volumes through `valueFromSecret`) -- the runtime service account needs `roles/secretmanager.secretAccessor` on each. A variable's `secretValue` needs neither: the component creates its secret and grants that access itself.
 
 ## Deploy
 

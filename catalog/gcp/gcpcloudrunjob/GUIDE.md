@@ -8,6 +8,24 @@ treating the definition like a run ("apply it again to run it again")
 or a run like a definition (encoding one batch's parameters into the
 template).
 
+## Where a task's secrets live
+
+Each `env` entry takes exactly one of `value`, `valueFromSecret`, or
+`secretValue`. `value` is written into the task template, readable by
+anyone who can view the job -- configuration only, and on Planton a
+`$secret/...` reference there is refused before anything deploys (the
+platform resolves references to plain values before the module runs, so it
+would land in the template as the secret itself). `valueFromSecret` reads a
+Secret Manager secret you already own; `secretValue` (on Planton, only a
+`$secret/...` reference) has the component keep the value in a secret of
+its own, replicated in the job's region, readable
+only by the task identity, and pinned to the version stored -- so a new
+value is a new template, and the next execution is the first to see it.
+Use `secretValue` for anything referenced as `$secret/...`, and give the
+job its own `template.serviceAccount`: without one the grant lands on the
+project's Compute Engine default account, shared by every default-identity
+workload in the project.
+
 ## Idempotence is the task's job, not the platform's
 
 Cloud Run retries each task up to `maxRetries` times (default 3), and a

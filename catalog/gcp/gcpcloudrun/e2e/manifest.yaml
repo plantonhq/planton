@@ -35,6 +35,10 @@ spec:
           valueFromSecret:
             secret: hack-db-password
             version: latest
+        # A Planton secret: the component keeps it in a Secret Manager
+        # secret of its own, readable only by the runtime identity.
+        - name: API_TOKEN
+          secretValue: $secret/hack-api-token
       ports:
         containerPort: 8080
       resources:

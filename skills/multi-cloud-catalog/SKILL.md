@@ -47,6 +47,7 @@ fallbacks when no pack is reachable at all. Everything below writes
 | What components exist for this provider / this need? | The provider's `reference-index.md` table; full-text search for capability words when the name is unknown |
 | What does component K require? | K's `reference.md`: read `## Example` first (a validated manifest), then the `## Spec Fields` table's Required column and `## Validation Rules` |
 | What does one field mean and accept? | The field's own `### spec.<path>` block in `## Field Details` -- docs, rules, allowed enum values |
+| Where does a secret go on K (a password, API key, token)? | The marks on K's `## Spec Fields` rows: `(sensitive)` holds secret material (on Planton only as a `$secret/...` reference); `(no secrets: use <field>)` is read by every viewer and refuses a secret reference -- the named sibling is where it goes, and its field detail says why. `_docs/reference-commons.md` ("Where a secret may go") explains the rule once; K's `GUIDE.md` weighs the secret-bearing fields against each other |
 | What does K export after deployment? | K's `## Outputs` table |
 | How do components wire together? | K's `## References` (outbound) and `## Referenced By` (inbound) tables; `_docs/reference-graph.yaml` for catalog-wide edges |
 | What is the judgment call before choosing K? | `GUIDE.md` beside K's page -- the page head links it when one exists -- and `_patterns/` for multi-component recipes |

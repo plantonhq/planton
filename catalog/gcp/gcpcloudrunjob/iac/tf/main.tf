@@ -153,18 +153,26 @@ resource "google_cloud_run_v2_job" "main" {
           working_dir = containers.value.working_dir != "" ? containers.value.working_dir : null
           depends_on  = length(containers.value.depends_on) > 0 ? containers.value.depends_on : null
 
+          # A literal, a Secret Manager secret the author owns, or a secret
+          # value secrets.tf stored (one of the three -- proto-enforced).
           dynamic "env" {
             for_each = containers.value.env
             content {
               name  = env.value.name
-              value = env.value.value_from_secret == null ? env.value.value : null
+              value = env.value.value_from_secret == null && env.value.secret_value == "" ? env.value.value : null
 
               dynamic "value_source" {
-                for_each = env.value.value_from_secret != null ? [env.value.value_from_secret] : []
+                for_each = env.value.secret_value != "" ? [{
+                  secret  = google_secret_manager_secret.env["${containers.key}/${env.value.name}"].secret_id
+                  version = google_secret_manager_secret_version.env["${containers.key}/${env.value.name}"].version
+                  }] : env.value.value_from_secret != null ? [{
+                  secret  = env.value.value_from_secret.secret
+                  version = env.value.value_from_secret.version != "" ? env.value.value_from_secret.version : null
+                }] : []
                 content {
                   secret_key_ref {
                     secret  = value_source.value.secret
-                    version = value_source.value.version != "" ? value_source.value.version : null
+                    version = value_source.value.version
                   }
                 }
               }
@@ -248,5 +256,7 @@ resource "google_cloud_run_v2_job" "main" {
     }
   }
 
-  depends_on = [google_project_service.run_api]
+  # The runtime identity must already read every secret the task template
+  # references, so the grants land first.
+  depends_on = [google_project_service.run_api, google_secret_manager_secret_iam_member.env]
 }

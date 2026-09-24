@@ -25,8 +25,13 @@ spec:
           appProtocol: http
       environment:
         APP_ENV: production
+      # A secret another owner manages, by ARN.
       secrets:
         DATABASE_URL: arn:aws:secretsmanager:<aws-region>:<account-id>:secret:<secret-name>
+      # A secret held in Planton: the component stores it in Secrets Manager,
+      # readable only by the execution role -- never in `environment`.
+      secretEnvironment:
+        PAYMENTS_API_KEY: $secret/<payments-api-key-slug>
       healthCheck:
         command: ["CMD-SHELL", "curl -f http://localhost:8080/healthz || exit 1"]
         startPeriodSeconds: 30

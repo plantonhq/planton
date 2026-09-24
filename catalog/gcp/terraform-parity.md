@@ -31,7 +31,7 @@ that has progressed.
 | Supporting schema (pinned by this catalog's modules) | `google-beta@7.43.0` |
 | Kinds in the catalog | 104 |
 | Distinct provider resources consumed | 167 |
-| Spec fields authored across all kinds | 3748 |
+| Spec fields authored across all kinds | 3750 |
 | Module pins on `google` | `~> 7.43` × 104 |
 | Module pins on `google-beta` | `~> 7.43` × 4 |
 
@@ -100,9 +100,9 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpCloudComposerUserWorkloadsConfigMap | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudComposerUserWorkloadsSecret | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudFunction | 65 | 43 | 15 | 7 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudRun | 129 | 27 | 89 | 13 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudRun | 137 | 27 | 90 | 20 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudRunDomainMapping | 10 | 1 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
-| GcpCloudRunJob | 74 | 10 | 61 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| GcpCloudRunJob | 82 | 10 | 62 | 10 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudSchedulerJob | 32 | 29 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudSql | 147 | 40 | 97 | 10 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudSqlDatabase | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -345,9 +345,9 @@ rather than trusted.
 | `google_secret_manager_regional_secret` | consumed by GcpSecretManagerSecret |
 | `google_secret_manager_regional_secret_iam_member` | consumed by GcpSecretManagerSecret |
 | `google_secret_manager_regional_secret_version` | consumed by GcpSecretManagerSecret |
-| `google_secret_manager_secret` | consumed by GcpPlantonRunner, GcpSecretManagerSecret |
-| `google_secret_manager_secret_iam_member` | consumed by GcpPlantonRunner, GcpSecretManagerSecret |
-| `google_secret_manager_secret_version` | consumed by GcpPlantonRunner, GcpSecretManagerSecret |
+| `google_secret_manager_secret` | consumed by GcpCloudRun, GcpCloudRunJob, GcpPlantonRunner, GcpSecretManagerSecret |
+| `google_secret_manager_secret_iam_member` | consumed by GcpCloudRun, GcpCloudRunJob, GcpPlantonRunner, GcpSecretManagerSecret |
+| `google_secret_manager_secret_version` | consumed by GcpCloudRun, GcpCloudRunJob, GcpPlantonRunner, GcpSecretManagerSecret |
 | `google_service_account` | consumed by GcpPlantonRunner, GcpServiceAccount |
 | `google_service_account_iam_member` | consumed by GcpGkeWorkloadIdentityBinding, GcpServiceAccountIamMember |
 | `google_service_account_key` | consumed by GcpServiceAccount |

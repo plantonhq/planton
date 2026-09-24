@@ -33,6 +33,7 @@ variable "spec" {
             secret  = string
             version = optional(string, "")
           }), null)
+          secret_value = optional(string, "")
         })), [])
         resources = optional(object({
           cpu    = optional(string, "")

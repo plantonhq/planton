@@ -33,6 +33,7 @@ variable "spec" {
       working_directory = optional(string, "")
       environment = optional(map(string), {})
       secrets = optional(map(string), {})
+      secret_environment = optional(map(string), {})
       environment_files = optional(list(string), [])
       health_check = optional(object({
         command = list(string)
