@@ -1829,14 +1829,22 @@ const (
 	// A BigQuery reservation group: reservations that share idle slots with
 	// each other first. Reservations reference it.
 	CloudResourceKind_GcpBigQueryReservationGroup CloudResourceKind = 3055
-	CloudResourceKind_GcpPubSubTopic              CloudResourceKind = 3060
-	CloudResourceKind_GcpPubSubSubscription       CloudResourceKind = 3061
-	CloudResourceKind_GcpCloudTasksQueue          CloudResourceKind = 3062
-	CloudResourceKind_GcpCloudSchedulerJob        CloudResourceKind = 3063
-	CloudResourceKind_GcpPubSubSchema             CloudResourceKind = 3064
-	CloudResourceKind_GcpVertexAiNotebook         CloudResourceKind = 3070
-	CloudResourceKind_GcpVertexAiEndpoint         CloudResourceKind = 3071
-	CloudResourceKind_GcpVertexAiIndex            CloudResourceKind = 3072
+	// A Datastream connection profile: where one source database or
+	// destination is and how Datastream signs in. Streams reference a source
+	// and a destination profile; one profile serves many streams.
+	CloudResourceKind_GcpDatastreamConnectionProfile CloudResourceKind = 3056
+	// A Datastream private connection: the VPC peering or Private Service
+	// Connect interface through which Datastream reaches private databases,
+	// shared by every profile that reaches that network.
+	CloudResourceKind_GcpDatastreamPrivateConnection CloudResourceKind = 3057
+	CloudResourceKind_GcpPubSubTopic                 CloudResourceKind = 3060
+	CloudResourceKind_GcpPubSubSubscription          CloudResourceKind = 3061
+	CloudResourceKind_GcpCloudTasksQueue             CloudResourceKind = 3062
+	CloudResourceKind_GcpCloudSchedulerJob           CloudResourceKind = 3063
+	CloudResourceKind_GcpPubSubSchema                CloudResourceKind = 3064
+	CloudResourceKind_GcpVertexAiNotebook            CloudResourceKind = 3070
+	CloudResourceKind_GcpVertexAiEndpoint            CloudResourceKind = 3071
+	CloudResourceKind_GcpVertexAiIndex               CloudResourceKind = 3072
 	// Vector Search IndexEndpoint — distinct from the online-prediction
 	// GcpVertexAiEndpoint (671); different GCP resources, different kinds.
 	CloudResourceKind_GcpVertexAiIndexEndpoint               CloudResourceKind = 3073
@@ -2003,6 +2011,10 @@ const (
 	// A BigQuery slot reservation with the assignments that route projects,
 	// folders, or an organization onto it.
 	CloudResourceKind_GcpBigQueryReservation CloudResourceKind = 3195
+	// A Datastream stream: continuous change data capture from one source
+	// database into BigQuery or Cloud Storage, through a source and a
+	// destination connection profile.
+	CloudResourceKind_GcpDatastreamStream CloudResourceKind = 3196
 	// The Private Service Connect connections a consumer builds by hand
 	// (forwarding rules in other VPCs or projects) registered on a Redis
 	// Cluster, as one set: Google's resource replaces the cluster's whole
@@ -3106,6 +3118,8 @@ var (
 		3053: "GcpBigQueryTable",
 		3054: "GcpBigQueryCapacityCommitment",
 		3055: "GcpBigQueryReservationGroup",
+		3056: "GcpDatastreamConnectionProfile",
+		3057: "GcpDatastreamPrivateConnection",
 		3060: "GcpPubSubTopic",
 		3061: "GcpPubSubSubscription",
 		3062: "GcpCloudTasksQueue",
@@ -3181,6 +3195,7 @@ var (
 		3193: "GcpManagedKafkaConnectCluster",
 		3194: "GcpBigQueryConnection",
 		3195: "GcpBigQueryReservation",
+		3196: "GcpDatastreamStream",
 		3197: "GcpRedisClusterEndpointSet",
 		3198: "GcpManagedKafkaAcl",
 		3199: "GcpManagedKafkaConnector",
@@ -3887,6 +3902,8 @@ var (
 		"GcpBigQueryTable":                               3053,
 		"GcpBigQueryCapacityCommitment":                  3054,
 		"GcpBigQueryReservationGroup":                    3055,
+		"GcpDatastreamConnectionProfile":                 3056,
+		"GcpDatastreamPrivateConnection":                 3057,
 		"GcpPubSubTopic":                                 3060,
 		"GcpPubSubSubscription":                          3061,
 		"GcpCloudTasksQueue":                             3062,
@@ -3962,6 +3979,7 @@ var (
 		"GcpManagedKafkaConnectCluster":                  3193,
 		"GcpBigQueryConnection":                          3194,
 		"GcpBigQueryReservation":                         3195,
+		"GcpDatastreamStream":                            3196,
 		"GcpRedisClusterEndpointSet":                     3197,
 		"GcpManagedKafkaAcl":                             3198,
 		"GcpManagedKafkaConnector":                       3199,
@@ -4646,7 +4664,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xcc\xf6\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\x93\xf8\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5142,7 +5160,9 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cGcpDataprocAutoscalingPolicy\x10\xec\x17\x1a\x1d\xa2\xf7\x04\x19\b\x12\x12\bv1alpha1\"\bgcpdpaspP\xb1\x02\x128\n" +
 	"\x10GcpBigQueryTable\x10\xed\x17\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpbqtbl:\x02\xea\x17P\xb1\x02\x12@\n" +
 	"\x1dGcpBigQueryCapacityCommitment\x10\xee\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqccP\xb1\x02\x12>\n" +
-	"\x1bGcpBigQueryReservationGroup\x10\xef\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrgP\xb1\x02\x124\n" +
+	"\x1bGcpBigQueryReservationGroup\x10\xef\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrgP\xb1\x02\x12A\n" +
+	"\x1eGcpDatastreamConnectionProfile\x10\xf0\x17\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpdscpP\xb1\x02\x12E\n" +
+	"\x1eGcpDatastreamPrivateConnection\x10\xf1\x17\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpdspc:\x02\xc2\x17P\xb1\x02\x124\n" +
 	"\x0eGcpPubSubTopic\x10\xf4\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcppst:\x02\xf8\x17P\xb1\x02\x12;\n" +
 	"\x15GcpPubSubSubscription\x10\xf5\x17\x1a\x1f\xa2\xf7\x04\x1b\b\x12\x12\bv1alpha1\"\x06gcppss:\x02\xf4\x17P\xb1\x02\x127\n" +
 	"\x12GcpCloudTasksQueue\x10\xf6\x17\x1a\x1e\xa2\xf7\x04\x1a\b\x12\x12\bv1alpha1\"\x05gcptq:\x02\xc6\x17P\xb7\x02\x12<\n" +
@@ -5218,7 +5238,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x14GcpManagedKafkaTopic\x10\xf8\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpktpc:\x02\xf7\x18P\xb1\x02\x12F\n" +
 	"\x1dGcpManagedKafkaConnectCluster\x10\xf9\x18\x1a\"\xa2\xf7\x04\x1e\b\x12\x12\bv1alpha1\"\agcpkcon0\x01:\x02\xf7\x18P\xb1\x02\x128\n" +
 	"\x15GcpBigQueryConnection\x10\xfa\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqcnP\xb1\x02\x129\n" +
-	"\x16GcpBigQueryReservation\x10\xfb\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrsP\xb1\x02\x12B\n" +
+	"\x16GcpBigQueryReservation\x10\xfb\x18\x1a\x1c\xa2\xf7\x04\x18\b\x12\x12\bv1alpha1\"\agcpbqrsP\xb1\x02\x12;\n" +
+	"\x13GcpDatastreamStream\x10\xfc\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcpdstrm:\x02\xf0\x17P\xb1\x02\x12B\n" +
 	"\x1aGcpRedisClusterEndpointSet\x10\xfd\x18\x1a!\xa2\xf7\x04\x1d\b\x12\x12\bv1alpha1\"\bgcprclep:\x02\xf6\x18P\xaf\x02\x129\n" +
 	"\x12GcpManagedKafkaAcl\x10\xfe\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkacl:\x02\xf7\x18P\xb1\x02\x12?\n" +
 	"\x18GcpManagedKafkaConnector\x10\xff\x18\x1a \xa2\xf7\x04\x1c\b\x12\x12\bv1alpha1\"\agcpkcnr:\x02\xf9\x18P\xb1\x02\x12:\n" +

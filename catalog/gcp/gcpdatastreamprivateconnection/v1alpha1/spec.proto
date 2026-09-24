@@ -1,0 +1,121 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamprivateconnection.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpDatastreamPrivateConnectionVpcPeeringConfig peers Datastream's
+// Google-managed network with one of your VPCs (`vpc_peering_config`).
+// Datastream then reaches anything that VPC routes to directly -- a
+// database VM, an on-premises range over VPN or Interconnect. VPC peering
+// is not transitive: a Cloud SQL or AlloyDB private IP lives in a network
+// Google peers with your VPC, so Datastream reaches it only through a proxy
+// VM in your VPC (Google's documented pattern) or a PSC interface.
+message GcpDatastreamPrivateConnectionVpcPeeringConfig {
+  // The VPC Datastream peers with, as projects/{project}/global/networks/{name}
+  // -- a GcpVpcNetwork reference (its network_id output) or a literal in
+  // that form. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef vpc = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpVpcNetwork,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.network_id"
+  ];
+
+  // A free /29 range in the VPC's address space for Datastream's side of
+  // the peering, e.g. "10.200.0.0/29" -- it must overlap no subnet, no
+  // other peering, and no range routed into the VPC. Immutable.
+  string subnet = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "subnet_is_slash_29"
+      expression: "this.isIpPrefix(4, true) && this.endsWith('/29')"
+      message: "subnet must be a free IPv4 CIDR of /29, e.g. 10.200.0.0/29"
+    }
+  ];
+}
+
+// GcpDatastreamPrivateConnectionPscInterfaceConfig connects Datastream into
+// your VPC through a Private Service Connect interface on a network
+// attachment you own (`psc_interface_config`) -- no peering, no reserved
+// range, and it reaches what the attachment's subnet routes to.
+message GcpDatastreamPrivateConnectionPscInterfaceConfig {
+  // The network attachment, as
+  // projects/{project}/regions/{region}/networkAttachments/{name}, in the
+  // private connection's region. It must accept connections from
+  // Datastream's service project. Immutable.
+  string network_attachment = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^projects/[^/]+/regions/[^/]+/networkAttachments/[^/]+$"
+  ];
+}
+
+// GcpDatastreamPrivateConnectionSpec defines a Datastream private
+// connection (`google_datastream_private_connection`) -- the network link
+// that lets Datastream reach databases with no public address. Connection
+// profiles in the same project and location use it through their
+// private_connection reference, so one link serves every source in a VPC.
+//
+// Set exactly ONE of vpc_peering_config or psc_interface_config.
+//
+// Everything is immutable except labels and deletion_policy: a change
+// replaces the connection, and every profile using it must be re-pointed.
+message GcpDatastreamPrivateConnectionSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_connectivity"
+    expression: "[has(this.vpc_peering_config), has(this.psc_interface_config)].filter(x, x).size() == 1"
+    message: "set exactly one of vpc_peering_config or psc_interface_config"
+  };
+
+  // The GCP project the private connection lives in: a literal project ID
+  // or a GcpProject reference. If omitted, the provider's default project
+  // is used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Datastream region, e.g. "us-central1". Profiles and streams that
+  // use this connection live in the same region. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The private connection's ID. Defaults to metadata.name. Immutable.
+  string private_connection_id = 3;
+
+  // The name shown in the console. Defaults to metadata.name. Immutable.
+  string display_name = 4;
+
+  // Peer Datastream's network with a VPC.
+  GcpDatastreamPrivateConnectionVpcPeeringConfig vpc_peering_config = 5;
+
+  // Reach a VPC through a Private Service Connect interface.
+  GcpDatastreamPrivateConnectionPscInterfaceConfig psc_interface_config = 6;
+
+  // Skip Google's checks at create (for example, that the /29 is free).
+  // Useful when the network is still being built; a real conflict then
+  // surfaces when a profile first connects. Immutable.
+  bool create_without_validation = 7;
+
+  // Labels on the private connection. The platform attribution labels are
+  // added on top and win on a key conflict.
+  map<string, string> labels = 8;
+
+  // What happens to the private connection when this resource is
+  // destroyed:
+  //   "" / "FORCE" -- deleted together with the routes Datastream created
+  //                   on it (the provider's default)
+  //   "DELETE"     -- deleted without force; fails while routes remain
+  //   "PREVENT"    -- destroy fails
+  //   "ABANDON"    -- it leaves management and stays in GCP
+  // Delete the profiles that use it first; Google refuses to delete a
+  // connection a profile still references.
+  string deletion_policy = 9 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON', 'FORCE']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON, FORCE"
+  }];
+}

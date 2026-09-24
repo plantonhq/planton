@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamstream.v1alpha1;
+
+// GcpDatastreamStreamStackOutputs captures the stream's identity.
+message GcpDatastreamStreamStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/streams/{stream_id}.
+  string name = 1;
+
+  // The stream's ID.
+  string stream_id = 2;
+}

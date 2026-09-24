@@ -1372,6 +1372,30 @@ func TestGcpBigQueryConnection_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpbigqueryconnection", "terraform")
 }
 
+func TestGcpDatastreamPrivateConnection_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdatastreamprivateconnection", "pulumi")
+}
+
+func TestGcpDatastreamPrivateConnection_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdatastreamprivateconnection", "terraform")
+}
+
+func TestGcpDatastreamConnectionProfile_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdatastreamconnectionprofile", "pulumi")
+}
+
+func TestGcpDatastreamConnectionProfile_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdatastreamconnectionprofile", "terraform")
+}
+
+func TestGcpDatastreamStream_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdatastreamstream", "pulumi")
+}
+
+func TestGcpDatastreamStream_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpdatastreamstream", "terraform")
+}
+
 func TestGcpBigQueryReservation_Pulumi(t *testing.T) {
 	runAllScenariosForComponent(t, "gcpbigqueryreservation", "pulumi")
 }

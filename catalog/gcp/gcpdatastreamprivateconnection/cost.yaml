@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpdatastreamprivateconnection
+spec:
+  billing_model: free
+  free_tier: "A private connection is network configuration. Google's Datastream pricing (cloud.google.com/datastream/pricing, read 2026-09-24) bills the GiB streams process, not the connections they use."
+  notes: "Streams that read through the connection bill per GiB processed; traffic crossing regions or leaving Google bills as networking."

@@ -4391,6 +4391,38 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "reservation_group_name", "location"},
 		},
 		{
+			// GcpDatastreamPrivateConnection: the full name (what a
+			// connection profile's private_connection takes) and the id.
+			name: "GcpDatastreamPrivateConnection",
+			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamPrivateConnection,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/p/locations/us-central1/privateConnections/data-vpc",
+				"private_connection_id": "data-vpc",
+			},
+			mustPopulate: []string{"name", "private_connection_id"},
+		},
+		{
+			// GcpDatastreamConnectionProfile: the full name (what a stream's
+			// source and destination profiles take) and the id.
+			name: "GcpDatastreamConnectionProfile",
+			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamConnectionProfile,
+			rawOutputs: map[string]interface{}{
+				"name":                  "projects/p/locations/us-central1/connectionProfiles/orders-postgres",
+				"connection_profile_id": "orders-postgres",
+			},
+			mustPopulate: []string{"name", "connection_profile_id"},
+		},
+		{
+			// GcpDatastreamStream: the stream's full name and id.
+			name: "GcpDatastreamStream",
+			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamStream,
+			rawOutputs: map[string]interface{}{
+				"name":      "projects/p/locations/us-central1/streams/orders-cdc",
+				"stream_id": "orders-cdc",
+			},
+			mustPopulate: []string{"name", "stream_id"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

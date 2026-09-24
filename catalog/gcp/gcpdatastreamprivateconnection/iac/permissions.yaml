@@ -1,0 +1,35 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpdatastreamprivateconnection
+spec:
+  gcp:
+    groups:
+      - purpose: EnableApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling datastream.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManagePrivateConnection
+        permissions:
+          - datastream.privateConnections.create
+          - datastream.privateConnections.get
+          - datastream.privateConnections.delete
+          - datastream.operations.get
+        provenance: derived
+        notes: Covers google_datastream_private_connection (Pulumi datastream.PrivateConnection) -- created, read on every refresh, deleted (with force), and its long-running operations polled. Names grounded in Google's Datastream roles page, which lists no update permission for private connections; the proof lane's capture confirms what a label change needs. roles/datastream.admin contains all four.
+      - purpose: PeerWithVpc
+        permissions:
+          - compute.networks.get
+          - compute.networks.addPeering
+          - compute.networks.removePeering
+        provenance: derived
+        condition:
+          spec_field_set: vpc_peering_config
+        notes: Datastream creates and removes the peering on the named VPC on the caller's behalf, so the caller needs network rights there (roles/compute.networkAdmin contains all three). Not needed for the PSC interface arm.

@@ -1,0 +1,34 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpdatastreamconnectionprofile
+spec:
+  gcp:
+    groups:
+      - purpose: EnableApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling datastream.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageConnectionProfile
+        permissions:
+          - datastream.connectionProfiles.create
+          - datastream.connectionProfiles.get
+          - datastream.connectionProfiles.update
+          - datastream.connectionProfiles.delete
+          - datastream.operations.get
+        provenance: derived
+        notes: Covers google_datastream_connection_profile (Pulumi datastream.ConnectionProfile) -- created (with Google's connectivity test unless create_without_validation), patched, read on every refresh, deleted, and its long-running operations polled. Names grounded in Google's Datastream roles page; roles/datastream.admin contains all five.
+      - purpose: UsePrivateConnection
+        permissions:
+          - datastream.privateConnections.get
+        provenance: derived
+        condition:
+          spec_field_set: private_connection
+        notes: Google reads the named private connection when a profile uses it. Datastream's service agent -- not the runner -- reads Secret Manager versions, writes buckets, and writes BigQuery datasets; those grants live on the accessed resources.

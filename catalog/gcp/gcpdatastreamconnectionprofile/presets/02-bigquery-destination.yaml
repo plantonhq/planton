@@ -1,0 +1,9 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: bigquery
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  bigqueryProfile: true

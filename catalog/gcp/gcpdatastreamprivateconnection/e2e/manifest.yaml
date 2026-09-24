@@ -1,0 +1,17 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamPrivateConnection
+metadata:
+  name: data-vpc
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Data VPC
+  vpcPeeringConfig:
+    vpc:
+      value: projects/my-gcp-project/global/networks/data
+    # A free /29 no subnet, peering, or route in the VPC uses.
+    subnet: 10.200.0.0/29
+  labels:
+    team: data
+  deletionPolicy: FORCE

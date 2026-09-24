@@ -42,6 +42,7 @@ go_library(
         "compute_mig.go",
         "dataproc_autoscaling_policy.go",
         "dataproc_cluster.go",
+        "datastream.go",
         "dialogflow.go",
         "dialogflow_cx_agent.go",
         "dialogflow_cx_security_settings.go",

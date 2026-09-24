@@ -1,0 +1,34 @@
+# An extra GcpDatastreamConnectionProfile instance for the gcpdstrm chain:
+# the PostgreSQL source profile, created without validation (no database is
+# needed while the stream stays NOT_STARTED). Its password comes from the
+# consumer-scoped Secret Manager secret by version name; the scenario's
+# annotation deploys that secret first.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: planton-oss-e2e-gcpdstrm-source
+  id: planton-oss-e2e-gcpdstrm-source
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdatastreamconnectionprofile
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionProfileId: e2e-gcpdstrm-pg-${E2E_RUN_ID}
+  createWithoutValidation: true
+  postgresqlProfile:
+    hostname:
+      value: 203.0.113.10
+    username: datastream
+    secretManagerStoredPassword:
+      valueFrom:
+        kind: GcpSecretManagerSecret
+        name: planton-oss-e2e-gcpdstrm-password
+        fieldPath: status.outputs.latest_version_name
+    database: orders
+  deletionPolicy: DELETE

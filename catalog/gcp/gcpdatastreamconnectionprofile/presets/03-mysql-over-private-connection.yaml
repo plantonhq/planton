@@ -1,0 +1,20 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: shop-mysql
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  mysqlProfile:
+    hostname:
+      value: 10.10.0.20
+    username: datastream
+    secretManagerStoredPassword:
+      value: projects/my-gcp-project/secrets/shop-datastream-password/versions/1
+    sslConfig: {}
+  privateConnection:
+    valueFrom:
+      kind: GcpDatastreamPrivateConnection
+      name: data-vpc
+      fieldPath: status.outputs.name

@@ -1,0 +1,52 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamStream
+metadata:
+  name: orders-history
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  sourceConfig:
+    sourceConnectionProfile:
+      valueFrom:
+        kind: GcpDatastreamConnectionProfile
+        name: orders-postgres
+        fieldPath: status.outputs.name
+    postgresqlSourceConfig:
+      replicationSlot: datastream_history_slot
+      publication: datastream_pub
+      includeObjects:
+        postgresqlSchemas:
+          - schema: public
+            postgresqlTables:
+              - table: orders
+  destinationConfig:
+    destinationConnectionProfile:
+      valueFrom:
+        kind: GcpDatastreamConnectionProfile
+        name: bigquery
+        fieldPath: status.outputs.name
+    bigqueryDestinationConfig:
+      singleTargetDataset:
+        datasetId:
+          valueFrom:
+            kind: GcpBigQueryDataset
+            name: orders-history
+            fieldPath: status.outputs.self_link
+      writeMode: APPEND_ONLY
+  backfillNone: true
+  ruleSets:
+    - objectFilter:
+        sourceObjectIdentifier:
+          postgresqlIdentifier:
+            schema: public
+            table: orders
+      customizationRules:
+        - bigqueryPartitioning:
+            ingestionTimePartition:
+              partitioningTimeGranularity: PARTITIONING_TIME_GRANULARITY_DAY
+            requirePartitionFilter: true
+        - bigqueryClustering:
+            columns:
+              - customer_id
+  desiredState: NOT_STARTED

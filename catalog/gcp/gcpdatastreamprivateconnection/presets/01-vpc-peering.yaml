@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamPrivateConnection
+metadata:
+  name: data-vpc
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  vpcPeeringConfig:
+    vpc:
+      valueFrom:
+        kind: GcpVpcNetwork
+        name: data-vpc
+        fieldPath: status.outputs.network_id
+    subnet: 10.200.0.0/29

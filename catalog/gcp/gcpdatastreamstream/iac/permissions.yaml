@@ -1,0 +1,31 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpdatastreamstream
+spec:
+  gcp:
+    groups:
+      - purpose: ManageStream
+        permissions:
+          - datastream.streams.create
+          - datastream.streams.get
+          - datastream.streams.update
+          - datastream.streams.delete
+          - datastream.operations.get
+          - datastream.connectionProfiles.get
+        provenance: derived
+        notes: Covers google_datastream_stream (Pulumi datastream.Stream) -- created (validated against both profiles unless create_without_validation), patched, read on every refresh, deleted, and its long-running operations polled; Google reads the source and destination profiles the stream names. Names grounded in Google's Datastream roles page; roles/datastream.admin contains all six.
+      - purpose: ControlStreamState
+        permissions:
+          - datastream.streams.start
+          - datastream.streams.pause
+          - datastream.streams.resume
+        provenance: derived
+        condition:
+          spec_field_set: desired_state
+        notes: The provider moves the stream between NOT_STARTED, RUNNING, and PAUSED by updating its state; Google's roles page lists start, pause, and resume beside update. The proof lane's capture confirms which of them a state change checks.

@@ -1,0 +1,32 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamStream
+metadata:
+  name: shop-to-lake
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  sourceConfig:
+    sourceConnectionProfile:
+      valueFrom:
+        kind: GcpDatastreamConnectionProfile
+        name: shop-mysql
+        fieldPath: status.outputs.name
+    mysqlSourceConfig:
+      cdcMethod: GTID
+      includeObjects:
+        mysqlDatabases:
+          - database: shop
+  destinationConfig:
+    destinationConnectionProfile:
+      valueFrom:
+        kind: GcpDatastreamConnectionProfile
+        name: raw-lake
+        fieldPath: status.outputs.name
+    gcsDestinationConfig:
+      path: /shop
+      fileRotationInterval: 60s
+      fileRotationMb: 100
+      avroFileFormat: true
+  backfillAll: {}
+  desiredState: NOT_STARTED

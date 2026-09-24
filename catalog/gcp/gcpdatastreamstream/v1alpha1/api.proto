@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamstream.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpdatastreamstream/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpdatastreamstream/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//gcp-datastream-stream
+message GcpDatastreamStream {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpDatastreamStream'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpDatastreamStreamSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpDatastreamStreamStatus status = 5;
+}
+
+//gcp-datastream-stream status
+message GcpDatastreamStreamStatus {
+  //stack-outputs
+  GcpDatastreamStreamStackOutputs outputs = 1;
+}

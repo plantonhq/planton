@@ -1,0 +1,4 @@
+name: gcpdatastreamstream-pulumi-project
+runtime:
+  name: go
+description: Planton GcpDatastreamStream Pulumi module

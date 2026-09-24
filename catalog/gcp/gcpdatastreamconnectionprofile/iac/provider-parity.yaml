@@ -1,0 +1,38 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_datastream_connection_profile:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      # The private-connectivity block's one leaf lifted: the spec names the
+      # private connection directly (a GcpDatastreamPrivateConnection
+      # reference).
+      - spec: spec.private_connection
+        arg: private_connectivity.private_connection
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables the owning API so a
+      fresh project works on the first deploy; not a knob of the kind.
+
+specExclusions:
+  - field: spec.bigquery_profile
+    reason: >-
+      the provider expresses the BigQuery destination as an EMPTY marker
+      block (bigquery_profile {}) with no settings of its own, exclusive
+      with the other profile types; the spec carries it as a presence bool
+      and the modules emit the marker block from it (the established
+      marker-block judgment)
+  - field: spec.mongodb_profile.srv_connection_format
+    reason: >-
+      the provider expresses the SRV connection format as an EMPTY marker
+      block (srv_connection_format {}), exclusive with
+      standard_connection_format; the spec carries it as a presence bool and
+      the modules emit the marker block from it (the established
+      marker-block judgment)

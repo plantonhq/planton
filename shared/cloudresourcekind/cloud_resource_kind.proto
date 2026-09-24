@@ -4971,6 +4971,25 @@ enum CloudResourceKind {
     id_prefix: "gcpbqrg"
     service_group: gcp_data_analytics
   }];
+  // A Datastream connection profile: where one source database or
+  // destination is and how Datastream signs in. Streams reference a source
+  // and a destination profile; one profile serves many streams.
+  GcpDatastreamConnectionProfile = 3056 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdscp"
+    service_group: gcp_data_analytics
+  }];
+  // A Datastream private connection: the VPC peering or Private Service
+  // Connect interface through which Datastream reaches private databases,
+  // shared by every profile that reaches that network.
+  GcpDatastreamPrivateConnection = 3057 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdspc"
+    prerequisites: [GcpVpcNetwork]
+    service_group: gcp_data_analytics
+  }];
   GcpPubSubTopic = 3060 [(kind_meta) = {
     provider: gcp
     version: "v1alpha1"
@@ -5626,6 +5645,16 @@ enum CloudResourceKind {
     provider: gcp
     version: "v1alpha1"
     id_prefix: "gcpbqrs"
+    service_group: gcp_data_analytics
+  }];
+  // A Datastream stream: continuous change data capture from one source
+  // database into BigQuery or Cloud Storage, through a source and a
+  // destination connection profile.
+  GcpDatastreamStream = 3196 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcpdstrm"
+    prerequisites: [GcpDatastreamConnectionProfile]
     service_group: gcp_data_analytics
   }];
   // The Private Service Connect connections a consumer builds by hand

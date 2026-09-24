@@ -1,0 +1,36 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamStream
+metadata:
+  name: orders-cdc
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  displayName: Orders CDC to BigQuery
+  sourceConfig:
+    sourceConnectionProfile:
+      value: projects/my-gcp-project/locations/us-central1/connectionProfiles/orders-postgres
+    postgresqlSourceConfig:
+      replicationSlot: datastream_slot
+      publication: datastream_pub
+      includeObjects:
+        postgresqlSchemas:
+          - schema: public
+            postgresqlTables:
+              - table: orders
+              - table: order_items
+  destinationConfig:
+    destinationConnectionProfile:
+      value: projects/my-gcp-project/locations/us-central1/connectionProfiles/bigquery
+    bigqueryDestinationConfig:
+      sourceHierarchyDatasets:
+        datasetTemplate:
+          location: US
+          datasetIdPrefix: orders
+      dataFreshness: 900s
+      writeMode: MERGE
+  backfillAll: {}
+  desiredState: RUNNING
+  labels:
+    team: data
+  deletionPolicy: DELETE

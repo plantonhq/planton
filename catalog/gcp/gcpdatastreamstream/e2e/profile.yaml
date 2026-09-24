@@ -1,0 +1,29 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpdatastreamstream
+spec:
+  # Awaiting the live proof lane. The not-started scenario proves in the
+  # harness project with roles/datastream.admin and
+  # roles/secretmanager.admin for the secret fixture: the registry
+  # prerequisite (a BigQuery destination profile) deploys first, then the
+  # PostgreSQL source profile and its secret, then the stream, created
+  # without validation and left NOT_STARTED -- no database, no data moved,
+  # nothing billed. Offline bar met: both modules build and validate,
+  # offline plans for the reference manifest, the scenario, every fixture,
+  # every preset, and throwaway arms for every source (MySQL with GTID,
+  # Oracle with streamed LOBs, SQL Server change tables, MongoDB, Salesforce,
+  # Spanner), Cloud Storage Avro and JSON, a single dataset from a
+  # GcpBigQueryDataset self link, BigLake managed tables through a
+  # BigQuery-connection full name, rule sets, and a full backfill with
+  # exclusions are clean on the pinned provider, and the accounting is
+  # total. Live facts the proof lane confirms: (1) Google accepts a
+  # NOT_STARTED stream over an unvalidated profile; (2) the stream RE-PLANS
+  # CLEAN on both engines -- desired_state sent explicitly, merge sent as its
+  # empty block, the object lists level for level; (3) the platform
+  # attribution labels land; (4) destroy deletes the stream before its
+  # profiles and the verifier reads 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 45

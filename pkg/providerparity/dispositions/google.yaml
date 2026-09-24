@@ -953,15 +953,6 @@ resources:
   - resource: google_dataproc_workflow_template
     disposition: deferred
     reason: "judged to fold into the existing Dataproc kinds' specs (workflow and session templates); the composition is not built"
-  - resource: google_datastream_connection_profile
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDatastreamStream kind (source and destination connection profiles)"
-  - resource: google_datastream_private_connection
-    disposition: model-planned
-    reason: "planned composition into the planned GcpDatastreamStream kind (private connectivity)"
-  - resource: google_datastream_stream
-    disposition: model-planned
-    reason: "planned GcpDatastreamStream kind (Datastream streams)"
   - resource: google_deployment_manager_deployment
     disposition: excluded-deprecated
     reason: "Deployment Manager is legacy and sunsetting; competing IaC deployment engines are out of scope by design"

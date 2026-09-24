@@ -1,0 +1,1077 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpdatastreamstream.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+import "shared/options/options.proto";
+
+// ---------------------------------------------------------------------------
+// Object lists. Each source family has ONE message naming its databases,
+// schemas, tables, and columns (Google's API types MysqlRdbms,
+// PostgresqlRdbms, OracleRdbms, SqlServerRdbms, MongodbCluster,
+// SalesforceOrg, SpannerDatabase), reused for what a stream includes, what
+// it excludes, and what a full backfill skips. A level left empty means
+// "everything below": a database with no tables selects every table in it,
+// a table with no columns every column. Objects both included and excluded
+// are an error.
+// ---------------------------------------------------------------------------
+
+// GcpDatastreamStreamMysqlColumn narrows a MySQL table to one column. Only
+// `column` selects; the other attributes describe the column and are
+// optional.
+message GcpDatastreamStreamMysqlColumn {
+  // The column's name.
+  string column = 1;
+
+  // The column's collation, e.g. "utf8mb4_general_ci".
+  string collation = 2;
+
+  // The column's MySQL data type, e.g. "VARCHAR".
+  string data_type = 3;
+
+  // Whether the column is nullable.
+  bool nullable = 4;
+
+  // The column's position in the table.
+  int32 ordinal_position = 5;
+
+  // Whether the column is part of the primary key.
+  bool primary_key = 6;
+}
+
+// GcpDatastreamStreamMysqlTable is one MySQL table.
+message GcpDatastreamStreamMysqlTable {
+  // The table's name.
+  string table = 1 [(buf.validate.field).required = true];
+
+  // The columns to narrow to; empty selects every column.
+  repeated GcpDatastreamStreamMysqlColumn mysql_columns = 2;
+}
+
+// GcpDatastreamStreamMysqlDatabase is one MySQL database.
+message GcpDatastreamStreamMysqlDatabase {
+  // The database's name.
+  string database = 1 [(buf.validate.field).required = true];
+
+  // The tables to narrow to; empty selects every table.
+  repeated GcpDatastreamStreamMysqlTable mysql_tables = 2;
+}
+
+// GcpDatastreamStreamMysqlRdbms is a set of MySQL objects.
+message GcpDatastreamStreamMysqlRdbms {
+  // The databases in the set -- at least one.
+  repeated GcpDatastreamStreamMysqlDatabase mysql_databases = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDatastreamStreamPostgresqlColumn narrows a PostgreSQL table to one
+// column. Only `column` selects; the other attributes describe it.
+message GcpDatastreamStreamPostgresqlColumn {
+  // The column's name.
+  string column = 1;
+
+  // The column's PostgreSQL data type, e.g. "TEXT".
+  string data_type = 2;
+
+  // Whether the column is nullable.
+  bool nullable = 3;
+
+  // The column's position in the table.
+  int32 ordinal_position = 4;
+
+  // Whether the column is part of the primary key.
+  bool primary_key = 5;
+}
+
+// GcpDatastreamStreamPostgresqlTable is one PostgreSQL table.
+message GcpDatastreamStreamPostgresqlTable {
+  // The table's name.
+  string table = 1 [(buf.validate.field).required = true];
+
+  // The columns to narrow to; empty selects every column.
+  repeated GcpDatastreamStreamPostgresqlColumn postgresql_columns = 2;
+}
+
+// GcpDatastreamStreamPostgresqlSchema is one PostgreSQL schema.
+message GcpDatastreamStreamPostgresqlSchema {
+  // The schema's name, e.g. "public".
+  string schema = 1 [(buf.validate.field).required = true];
+
+  // The tables to narrow to; empty selects every table.
+  repeated GcpDatastreamStreamPostgresqlTable postgresql_tables = 2;
+}
+
+// GcpDatastreamStreamPostgresqlRdbms is a set of PostgreSQL objects.
+message GcpDatastreamStreamPostgresqlRdbms {
+  // The schemas in the set -- at least one.
+  repeated GcpDatastreamStreamPostgresqlSchema postgresql_schemas = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDatastreamStreamOracleColumn narrows an Oracle table to one column.
+message GcpDatastreamStreamOracleColumn {
+  // The column's name.
+  string column = 1;
+
+  // The column's Oracle data type, e.g. "VARCHAR2".
+  string data_type = 2;
+}
+
+// GcpDatastreamStreamOracleTable is one Oracle table.
+message GcpDatastreamStreamOracleTable {
+  // The table's name.
+  string table = 1 [(buf.validate.field).required = true];
+
+  // The columns to narrow to; empty selects every column.
+  repeated GcpDatastreamStreamOracleColumn oracle_columns = 2;
+}
+
+// GcpDatastreamStreamOracleSchema is one Oracle schema.
+message GcpDatastreamStreamOracleSchema {
+  // The schema's name.
+  string schema = 1 [(buf.validate.field).required = true];
+
+  // The tables to narrow to; empty selects every table.
+  repeated GcpDatastreamStreamOracleTable oracle_tables = 2;
+}
+
+// GcpDatastreamStreamOracleRdbms is a set of Oracle objects.
+message GcpDatastreamStreamOracleRdbms {
+  // The schemas in the set -- at least one.
+  repeated GcpDatastreamStreamOracleSchema oracle_schemas = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDatastreamStreamSqlServerColumn narrows a SQL Server table to one
+// column.
+message GcpDatastreamStreamSqlServerColumn {
+  // The column's name.
+  string column = 1;
+
+  // The column's SQL Server data type, e.g. "NVARCHAR".
+  string data_type = 2;
+}
+
+// GcpDatastreamStreamSqlServerTable is one SQL Server table.
+message GcpDatastreamStreamSqlServerTable {
+  // The table's name.
+  string table = 1 [(buf.validate.field).required = true];
+
+  // The columns to narrow to; empty selects every column.
+  repeated GcpDatastreamStreamSqlServerColumn columns = 2;
+}
+
+// GcpDatastreamStreamSqlServerSchema is one SQL Server schema.
+message GcpDatastreamStreamSqlServerSchema {
+  // The schema's name, e.g. "dbo".
+  string schema = 1 [(buf.validate.field).required = true];
+
+  // The tables to narrow to; empty selects every table.
+  repeated GcpDatastreamStreamSqlServerTable tables = 2;
+}
+
+// GcpDatastreamStreamSqlServerRdbms is a set of SQL Server objects.
+message GcpDatastreamStreamSqlServerRdbms {
+  // The schemas in the set -- at least one.
+  repeated GcpDatastreamStreamSqlServerSchema schemas = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDatastreamStreamMongodbField narrows a MongoDB collection to one
+// field.
+message GcpDatastreamStreamMongodbField {
+  // The field's name.
+  string field = 1;
+}
+
+// GcpDatastreamStreamMongodbCollection is one MongoDB collection.
+message GcpDatastreamStreamMongodbCollection {
+  // The collection's name (required inside a backfill exclusion).
+  string collection = 1;
+
+  // The fields to narrow to; empty selects every field.
+  repeated GcpDatastreamStreamMongodbField fields = 2;
+}
+
+// GcpDatastreamStreamMongodbDatabase is one MongoDB database.
+message GcpDatastreamStreamMongodbDatabase {
+  // The database's name (required inside a backfill exclusion).
+  string database = 1;
+
+  // The collections to narrow to; empty selects every collection.
+  repeated GcpDatastreamStreamMongodbCollection collections = 2;
+}
+
+// GcpDatastreamStreamMongodbCluster is a set of MongoDB objects.
+message GcpDatastreamStreamMongodbCluster {
+  // The databases in the set (at least one inside a backfill exclusion).
+  repeated GcpDatastreamStreamMongodbDatabase databases = 1;
+}
+
+// GcpDatastreamStreamSalesforceField narrows a Salesforce object to one
+// field.
+message GcpDatastreamStreamSalesforceField {
+  // The field's API name, e.g. "AnnualRevenue".
+  string name = 1;
+}
+
+// GcpDatastreamStreamSalesforceObject is one Salesforce object.
+message GcpDatastreamStreamSalesforceObject {
+  // The object's API name, e.g. "Account".
+  string object_name = 1;
+
+  // The fields to narrow to; empty selects every field.
+  repeated GcpDatastreamStreamSalesforceField fields = 2;
+}
+
+// GcpDatastreamStreamSalesforceOrg is a set of Salesforce objects.
+message GcpDatastreamStreamSalesforceOrg {
+  // The objects in the set -- at least one.
+  repeated GcpDatastreamStreamSalesforceObject objects = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDatastreamStreamSpannerColumn narrows a Spanner table to one column.
+message GcpDatastreamStreamSpannerColumn {
+  // The column's name (required inside a backfill exclusion).
+  string column = 1;
+}
+
+// GcpDatastreamStreamSpannerTable is one Spanner table.
+message GcpDatastreamStreamSpannerTable {
+  // The table's name.
+  string table = 1 [(buf.validate.field).required = true];
+
+  // The columns to narrow to; empty selects every column.
+  repeated GcpDatastreamStreamSpannerColumn columns = 2;
+}
+
+// GcpDatastreamStreamSpannerSchema is one Spanner schema.
+message GcpDatastreamStreamSpannerSchema {
+  // The schema's name.
+  string schema = 1 [(buf.validate.field).required = true];
+
+  // The tables to narrow to; empty selects every table.
+  repeated GcpDatastreamStreamSpannerTable tables = 2;
+}
+
+// GcpDatastreamStreamSpannerDatabase is a set of Spanner objects.
+message GcpDatastreamStreamSpannerDatabase {
+  // The schemas in the set -- at least one.
+  repeated GcpDatastreamStreamSpannerSchema schemas = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// ---------------------------------------------------------------------------
+// Sources. Exactly one arm matches the source connection profile's type.
+// ---------------------------------------------------------------------------
+
+// GcpDatastreamStreamMysqlSourceConfig reads a MySQL source
+// (`mysql_source_config`).
+message GcpDatastreamStreamMysqlSourceConfig {
+  // What to replicate; omitted means every database the user can read.
+  GcpDatastreamStreamMysqlRdbms include_objects = 1;
+
+  // What to skip.
+  GcpDatastreamStreamMysqlRdbms exclude_objects = 2;
+
+  // How many tables backfill at once. Empty (or 0) uses Google's default.
+  int32 max_concurrent_backfill_tasks = 3 [(buf.validate.field).int32.gte = 0];
+
+  // How many change-capture tasks run at once. Empty (or 0) uses Google's
+  // default.
+  int32 max_concurrent_cdc_tasks = 4 [(buf.validate.field).int32.gte = 0];
+
+  // How changes are read (Google's cdc_method union):
+  //   "GTID"                -- global transaction IDs; survives a failover
+  //                            to a replica (needs gtid_mode=ON)
+  //   "BINARY_LOG_POSITION" -- binary log file and position
+  // Empty leaves Google's choice (binary log position).
+  string cdc_method = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "GTID",
+        "BINARY_LOG_POSITION"
+      ]
+    }
+  ];
+}
+
+// GcpDatastreamStreamPostgresqlSourceConfig reads a PostgreSQL source
+// through logical replication (`postgresql_source_config`).
+message GcpDatastreamStreamPostgresqlSourceConfig {
+  // What to replicate; omitted means every table in the publication.
+  GcpDatastreamStreamPostgresqlRdbms include_objects = 1;
+
+  // What to skip.
+  GcpDatastreamStreamPostgresqlRdbms exclude_objects = 2;
+
+  // The logical replication slot Datastream consumes, created beforehand
+  // with the pgoutput plugin. One slot per stream; an idle slot makes the
+  // server retain WAL, so delete a stream's slot with the stream.
+  string replication_slot = 3 [(buf.validate.field).required = true];
+
+  // The publication naming the tables the stream may read, created
+  // beforehand (CREATE PUBLICATION ... FOR ALL TABLES or FOR TABLE ...).
+  string publication = 4 [(buf.validate.field).required = true];
+
+  // How many tables backfill at once. Empty (or 0) uses Google's default.
+  int32 max_concurrent_backfill_tasks = 5 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpDatastreamStreamOracleSourceConfig reads an Oracle source through
+// LogMiner (`oracle_source_config`).
+message GcpDatastreamStreamOracleSourceConfig {
+  // What to replicate; omitted means every schema the user can read.
+  GcpDatastreamStreamOracleRdbms include_objects = 1;
+
+  // What to skip.
+  GcpDatastreamStreamOracleRdbms exclude_objects = 2;
+
+  // How many tables backfill at once. Empty (or 0) uses Google's default.
+  int32 max_concurrent_backfill_tasks = 3 [(buf.validate.field).int32.gte = 0];
+
+  // How many change-capture tasks run at once. Empty (or 0) uses Google's
+  // default.
+  int32 max_concurrent_cdc_tasks = 4 [(buf.validate.field).int32.gte = 0];
+
+  // What happens to LOB values -- CLOB, BLOB, NCLOB (Google's
+  // large_objects_handling union):
+  //   "DROP"   -- the values are dropped; rows replicate without them
+  //   "STREAM" -- the values are streamed with the row
+  // Empty leaves Google's default.
+  string large_objects_handling = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "DROP",
+        "STREAM"
+      ]
+    }
+  ];
+}
+
+// GcpDatastreamStreamSqlServerSourceConfig reads a SQL Server source
+// (`sql_server_source_config`).
+message GcpDatastreamStreamSqlServerSourceConfig {
+  // What to replicate; omitted means every schema the user can read.
+  GcpDatastreamStreamSqlServerRdbms include_objects = 1;
+
+  // What to skip.
+  GcpDatastreamStreamSqlServerRdbms exclude_objects = 2;
+
+  // How many tables backfill at once. Empty (or 0) uses Google's default.
+  int32 max_concurrent_backfill_tasks = 3 [(buf.validate.field).int32.gte = 0];
+
+  // How many change-capture tasks run at once. Empty (or 0) uses Google's
+  // default.
+  int32 max_concurrent_cdc_tasks = 4 [(buf.validate.field).int32.gte = 0];
+
+  // How changes are read (Google's cdc_method union):
+  //   "CHANGE_TABLES"    -- SQL Server's CDC change tables (CDC enabled on
+  //                         the database and each table)
+  //   "TRANSACTION_LOGS" -- the transaction log directly; lighter on the
+  //                         source, needs log access and retention
+  // Empty leaves Google's default.
+  string cdc_method = 5 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "CHANGE_TABLES",
+        "TRANSACTION_LOGS"
+      ]
+    }
+  ];
+}
+
+// GcpDatastreamStreamMongodbSourceConfig reads a MongoDB source through
+// change streams (`mongodb_source_config`).
+message GcpDatastreamStreamMongodbSourceConfig {
+  // What to replicate; omitted means every database the user can read.
+  GcpDatastreamStreamMongodbCluster include_objects = 1;
+
+  // What to skip.
+  GcpDatastreamStreamMongodbCluster exclude_objects = 2;
+
+  // How many collections backfill at once, 0-50. Empty (or 0) uses
+  // Google's default.
+  int32 max_concurrent_backfill_tasks = 3 [(buf.validate.field).int32 = {
+    gte: 0
+    lte: 50
+  }];
+}
+
+// GcpDatastreamStreamSalesforceSourceConfig reads a Salesforce org by
+// polling (`salesforce_source_config`).
+message GcpDatastreamStreamSalesforceSourceConfig {
+  // What to replicate; omitted means every object the integration user can
+  // read.
+  GcpDatastreamStreamSalesforceOrg include_objects = 1;
+
+  // What to skip.
+  GcpDatastreamStreamSalesforceOrg exclude_objects = 2;
+
+  // How often each object is polled for changes, as a duration in seconds
+  // -- Google allows 5 minutes to 24 hours ("300s" to "86400s"). Shorter
+  // means fresher data and more Salesforce API calls against the org's
+  // daily limit.
+  string polling_interval = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+}
+
+// GcpDatastreamStreamSpannerSourceConfig reads a Spanner database through a
+// change stream (`spanner_source_config`).
+message GcpDatastreamStreamSpannerSourceConfig {
+  // What to replicate; omitted means every table the change stream
+  // watches.
+  GcpDatastreamStreamSpannerDatabase include_objects = 1;
+
+  // What to skip.
+  GcpDatastreamStreamSpannerDatabase exclude_objects = 2;
+
+  // The Spanner change stream Datastream reads, created beforehand (CREATE
+  // CHANGE STREAM ... FOR ALL). Google requires it. Immutable.
+  string change_stream_name = 3 [(buf.validate.field).required = true];
+
+  // Run the backfill's reads on Spanner Data Boost -- independent compute
+  // that leaves the instance's serving capacity untouched (billed by
+  // Spanner). Off by default.
+  bool backfill_data_boost_enabled = 4;
+
+  // A fine-grained access control role the reads run as. Empty reads with
+  // the service agent's database-level permissions.
+  string fgac_role = 5;
+
+  // How many tables backfill at once. Empty (or 0) uses Google's default.
+  int32 max_concurrent_backfill_tasks = 6 [(buf.validate.field).int32.gte = 0];
+
+  // How many change-capture tasks run at once. Empty (or 0) uses Google's
+  // default.
+  int32 max_concurrent_cdc_tasks = 7 [(buf.validate.field).int32.gte = 0];
+
+  // The priority of Datastream's Spanner reads: "LOW", "MEDIUM", or
+  // "HIGH". Lower yields to the application's traffic. Empty leaves
+  // Google's default.
+  string spanner_rpc_priority = 8 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    }
+  ];
+}
+
+// GcpDatastreamStreamSourceConfig names the source and how it is read
+// (`source_config`). Set exactly one arm, matching the source profile's
+// type.
+message GcpDatastreamStreamSourceConfig {
+  option (buf.validate.message).cel = {
+    id: "source.exactly_one_arm"
+    expression: "[has(this.mysql_source_config), has(this.postgresql_source_config), has(this.oracle_source_config), has(this.sql_server_source_config), has(this.mongodb_source_config), has(this.salesforce_source_config), has(this.spanner_source_config)].filter(x, x).size() == 1"
+    message: "set exactly one of mysql_source_config, postgresql_source_config, oracle_source_config, sql_server_source_config, mongodb_source_config, salesforce_source_config, spanner_source_config"
+  };
+
+  // The source profile -- a GcpDatastreamConnectionProfile reference (its
+  // name output) or a literal
+  // projects/{project}/locations/{location}/connectionProfiles/{id} in the
+  // stream's location. Salesforce and Spanner profiles are made outside
+  // the catalog and named literally. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef source_connection_profile = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDatastreamConnectionProfile,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // A MySQL source.
+  GcpDatastreamStreamMysqlSourceConfig mysql_source_config = 2;
+
+  // A PostgreSQL source.
+  GcpDatastreamStreamPostgresqlSourceConfig postgresql_source_config = 3;
+
+  // An Oracle source.
+  GcpDatastreamStreamOracleSourceConfig oracle_source_config = 4;
+
+  // A SQL Server source.
+  GcpDatastreamStreamSqlServerSourceConfig sql_server_source_config = 5;
+
+  // A MongoDB source.
+  GcpDatastreamStreamMongodbSourceConfig mongodb_source_config = 6;
+
+  // A Salesforce source.
+  GcpDatastreamStreamSalesforceSourceConfig salesforce_source_config = 7;
+
+  // A Spanner source.
+  GcpDatastreamStreamSpannerSourceConfig spanner_source_config = 8;
+}
+
+// ---------------------------------------------------------------------------
+// Destinations.
+// ---------------------------------------------------------------------------
+
+// GcpDatastreamStreamSingleTargetDataset writes every source table into one
+// dataset (`single_target_dataset`).
+message GcpDatastreamStreamSingleTargetDataset {
+  // The dataset -- a GcpBigQueryDataset reference (its self_link output,
+  // which the modules trim to Google's projects/{project}/datasets/{dataset}
+  // form) or a literal in that form or {project}:{dataset}. Tables are
+  // named {schema}_{table}.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef dataset_id = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBigQueryDataset,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+  ];
+}
+
+// GcpDatastreamStreamDatasetTemplate describes the datasets Datastream
+// creates, one per source schema or database (`dataset_template`).
+message GcpDatastreamStreamDatasetTemplate {
+  // Where the datasets live, e.g. "US" or "us-central1".
+  string location = 1 [(buf.validate.field).required = true];
+
+  // A prefix for every created dataset's name, joined with an underscore:
+  // prefix "crm" and schema "public" make "crm_public".
+  string dataset_id_prefix = 2;
+
+  // A Cloud KMS key the created datasets use by default (CMEK) -- a
+  // GcpKmsKey reference or a literal key path, in the datasets' location.
+  // Datastream's service agent needs cryptoKeyEncrypterDecrypter on it.
+  // Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef kms_key_name = 3 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id"
+  ];
+}
+
+// GcpDatastreamStreamSourceHierarchyDatasets creates one dataset per source
+// schema or database (`source_hierarchy_datasets`).
+message GcpDatastreamStreamSourceHierarchyDatasets {
+  // The template for the created datasets.
+  GcpDatastreamStreamDatasetTemplate dataset_template = 1 [(buf.validate.field).required = true];
+
+  // The project the datasets are created in -- a literal project ID or a
+  // GcpProject reference. Empty uses the stream's project.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 2 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+}
+
+// GcpDatastreamStreamBlmtConfig writes BigLake managed tables -- Apache
+// Iceberg data in your Cloud Storage bucket, queried through BigQuery
+// (`blmt_config`).
+message GcpDatastreamStreamBlmtConfig {
+  // The bucket holding the table data -- a GcpGcsBucket reference (its
+  // bucket_name output) or a literal.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef bucket = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpGcsBucket,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.bucket_name"
+  ];
+
+  // The folder inside the bucket.
+  string root_path = 2;
+
+  // The BigQuery connection whose service account writes the bucket -- a
+  // GcpBigQueryConnection reference (its name output, which the modules
+  // convert to Google's {project}.{location}.{connection_id} form) or a
+  // literal in the dotted form. Use a cloud_resource connection and grant
+  // its service account storage access on the bucket.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef connection_name = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpBigQueryConnection,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The data file format. Google offers "PARQUET".
+  string file_format = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["PARQUET"]
+    }
+  ];
+
+  // The table format. Google offers "ICEBERG".
+  string table_format = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["ICEBERG"]
+    }
+  ];
+}
+
+// GcpDatastreamStreamBigqueryDestinationConfig writes into BigQuery
+// (`bigquery_destination_config`). Set exactly one of single_target_dataset
+// or source_hierarchy_datasets.
+message GcpDatastreamStreamBigqueryDestinationConfig {
+  option (buf.validate.message).cel = {
+    id: "bigquery.exactly_one_dataset_config"
+    expression: "[has(this.single_target_dataset), has(this.source_hierarchy_datasets)].filter(x, x).size() == 1"
+    message: "set exactly one of single_target_dataset or source_hierarchy_datasets"
+  };
+
+  // Every table into one dataset.
+  GcpDatastreamStreamSingleTargetDataset single_target_dataset = 1;
+
+  // One dataset per source schema or database, created by Datastream.
+  GcpDatastreamStreamSourceHierarchyDatasets source_hierarchy_datasets = 2;
+
+  // How stale a query may read (merge mode), as a duration, e.g. "900s".
+  // Lower is fresher and costs more BigQuery compute. Changing it affects
+  // only tables created afterwards. Empty leaves Google's default.
+  string data_freshness = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]+)?s$"
+  ];
+
+  // How changes land (Google's write_mode union):
+  //   "MERGE"       -- tables mirror the source's current state; changes
+  //                    are merged by primary key (tables need one)
+  //   "APPEND_ONLY" -- every change is appended as a row with its change
+  //                    type; the full history, no merging
+  // Empty leaves Google's default (merge). Immutable.
+  string write_mode = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "MERGE",
+        "APPEND_ONLY"
+      ]
+    }
+  ];
+
+  // Write BigLake managed (Iceberg) tables instead of native tables.
+  GcpDatastreamStreamBlmtConfig blmt_config = 5;
+}
+
+// GcpDatastreamStreamGcsJsonFileFormat writes JSON files
+// (`json_file_format`).
+message GcpDatastreamStreamGcsJsonFileFormat {
+  // "NO_COMPRESSION" or "GZIP". Empty leaves Google's default.
+  string compression = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NO_COMPRESSION",
+        "GZIP"
+      ]
+    }
+  ];
+
+  // Whether an Avro schema file is written beside the data files:
+  // "NO_SCHEMA_FILE" or "AVRO_SCHEMA_FILE". Empty leaves Google's default.
+  string schema_file_format = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NO_SCHEMA_FILE",
+        "AVRO_SCHEMA_FILE"
+      ]
+    }
+  ];
+}
+
+// GcpDatastreamStreamGcsDestinationConfig writes files into Cloud Storage
+// (`gcs_destination_config`). Set exactly one file format.
+message GcpDatastreamStreamGcsDestinationConfig {
+  option (buf.validate.message).cel = {
+    id: "gcs.exactly_one_file_format"
+    expression: "[this.avro_file_format, has(this.json_file_format)].filter(x, x).size() == 1"
+    message: "set exactly one of avro_file_format or json_file_format"
+  };
+
+  // The folder under the profile's root path, e.g. "/orders".
+  string path = 1;
+
+  // The longest a file stays open before a new one starts -- Google allows
+  // "15s" to "60s". Empty leaves Google's default.
+  string file_rotation_interval = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.pattern = "^(1[5-9]|[2-5][0-9]|60)s$"
+  ];
+
+  // The largest a file grows, in MB, before a new one starts. Empty (or 0)
+  // leaves Google's default.
+  int32 file_rotation_mb = 3 [(buf.validate.field).int32.gte = 0];
+
+  // Write Avro files. Google's Avro block has no settings: true declares
+  // it.
+  bool avro_file_format = 4;
+
+  // Write JSON files.
+  GcpDatastreamStreamGcsJsonFileFormat json_file_format = 5;
+}
+
+// GcpDatastreamStreamDestinationConfig names the destination and how data
+// lands (`destination_config`). Set exactly one arm, matching the
+// destination profile's type.
+message GcpDatastreamStreamDestinationConfig {
+  option (buf.validate.message).cel = {
+    id: "destination.exactly_one_arm"
+    expression: "[has(this.bigquery_destination_config), has(this.gcs_destination_config)].filter(x, x).size() == 1"
+    message: "set exactly one of bigquery_destination_config or gcs_destination_config"
+  };
+
+  // The destination profile -- a GcpDatastreamConnectionProfile reference
+  // (its name output) or a literal full profile name in the stream's
+  // location. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef destination_connection_profile = 1 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpDatastreamConnectionProfile,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // Write into BigQuery (needs a bigquery_profile).
+  GcpDatastreamStreamBigqueryDestinationConfig bigquery_destination_config = 2;
+
+  // Write files into Cloud Storage (needs a gcs_profile).
+  GcpDatastreamStreamGcsDestinationConfig gcs_destination_config = 3;
+}
+
+// ---------------------------------------------------------------------------
+// Backfill and rule sets.
+// ---------------------------------------------------------------------------
+
+// GcpDatastreamStreamBackfillAll backfills every included object when the
+// stream starts, except what is listed here (`backfill_all`). Set at most
+// the arm matching the source.
+message GcpDatastreamStreamBackfillAll {
+  // MySQL objects to skip.
+  GcpDatastreamStreamMysqlRdbms mysql_excluded_objects = 1;
+
+  // PostgreSQL objects to skip.
+  GcpDatastreamStreamPostgresqlRdbms postgresql_excluded_objects = 2;
+
+  // Oracle objects to skip.
+  GcpDatastreamStreamOracleRdbms oracle_excluded_objects = 3;
+
+  // SQL Server objects to skip.
+  GcpDatastreamStreamSqlServerRdbms sql_server_excluded_objects = 4;
+
+  // MongoDB objects to skip. Here every database and collection needs its
+  // name, and at least one database is listed.
+  GcpDatastreamStreamMongodbCluster mongodb_excluded_objects = 5 [(buf.validate.field).cel = {
+    id: "mongodb_excluded_objects.named"
+    expression: "this.databases.size() > 0 && this.databases.all(d, d.database != '' && d.collections.all(c, c.collection != ''))"
+    message: "mongodb_excluded_objects needs at least one database, and every database and collection named"
+  }];
+
+  // Salesforce objects to skip.
+  GcpDatastreamStreamSalesforceOrg salesforce_excluded_objects = 6;
+
+  // Spanner objects to skip. Here every column needs its name.
+  GcpDatastreamStreamSpannerDatabase spanner_excluded_objects = 7 [(buf.validate.field).cel = {
+    id: "spanner_excluded_objects.named"
+    expression: "this.schemas.all(s, s.tables.all(t, t.columns.all(c, c.column != '')))"
+    message: "spanner_excluded_objects needs every column named"
+  }];
+}
+
+// GcpDatastreamStreamIngestionTimePartition partitions by the time rows
+// arrive (`ingestion_time_partition`).
+message GcpDatastreamStreamIngestionTimePartition {
+  // "PARTITIONING_TIME_GRANULARITY_HOUR", "..._DAY", "..._MONTH", or
+  // "..._YEAR". Empty leaves Google's default.
+  string partitioning_time_granularity = 1 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "PARTITIONING_TIME_GRANULARITY_HOUR",
+        "PARTITIONING_TIME_GRANULARITY_DAY",
+        "PARTITIONING_TIME_GRANULARITY_MONTH",
+        "PARTITIONING_TIME_GRANULARITY_YEAR"
+      ]
+    }
+  ];
+}
+
+// GcpDatastreamStreamTimeUnitPartition partitions by a date or timestamp
+// column (`time_unit_partition`).
+message GcpDatastreamStreamTimeUnitPartition {
+  // The partitioning column.
+  string column = 1 [(buf.validate.field).required = true];
+
+  // "PARTITIONING_TIME_GRANULARITY_HOUR", "..._DAY", "..._MONTH", or
+  // "..._YEAR". Empty leaves Google's default.
+  string partitioning_time_granularity = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "PARTITIONING_TIME_GRANULARITY_HOUR",
+        "PARTITIONING_TIME_GRANULARITY_DAY",
+        "PARTITIONING_TIME_GRANULARITY_MONTH",
+        "PARTITIONING_TIME_GRANULARITY_YEAR"
+      ]
+    }
+  ];
+}
+
+// GcpDatastreamStreamIntegerRangePartition partitions by ranges of an
+// integer column (`integer_range_partition`).
+message GcpDatastreamStreamIntegerRangePartition {
+  // The partitioning column.
+  string column = 1 [(buf.validate.field).required = true];
+
+  // The first range's start (inclusive).
+  int64 start = 2;
+
+  // The last range's end (exclusive).
+  int64 end = 3;
+
+  // Each range's width.
+  int64 interval = 4 [(buf.validate.field).int64.gt = 0];
+}
+
+// GcpDatastreamStreamBigqueryPartitioning partitions the tables the rule
+// matches (`bigquery_partitioning`). Set exactly one partitioning kind.
+message GcpDatastreamStreamBigqueryPartitioning {
+  option (buf.validate.message).cel = {
+    id: "partitioning.exactly_one_kind"
+    expression: "[has(this.ingestion_time_partition), has(this.time_unit_partition), has(this.integer_range_partition)].filter(x, x).size() == 1"
+    message: "set exactly one of ingestion_time_partition, time_unit_partition, integer_range_partition"
+  };
+
+  // Partition by arrival time.
+  GcpDatastreamStreamIngestionTimePartition ingestion_time_partition = 1;
+
+  // Partition by a date or timestamp column.
+  GcpDatastreamStreamTimeUnitPartition time_unit_partition = 2;
+
+  // Partition by integer ranges.
+  GcpDatastreamStreamIntegerRangePartition integer_range_partition = 3;
+
+  // Refuse queries over the tables that do not filter on the partition --
+  // protects against full-table scans.
+  bool require_partition_filter = 4;
+}
+
+// GcpDatastreamStreamBigqueryClustering clusters the tables the rule
+// matches (`bigquery_clustering`).
+message GcpDatastreamStreamBigqueryClustering {
+  // The clustering columns, most selective first (up to four in
+  // BigQuery).
+  repeated string columns = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDatastreamStreamCustomizationRule shapes the BigQuery tables a rule
+// set matches (`customization_rules`). Set exactly one of
+// bigquery_partitioning or bigquery_clustering.
+message GcpDatastreamStreamCustomizationRule {
+  option (buf.validate.message).cel = {
+    id: "customization_rule.exactly_one"
+    expression: "[has(this.bigquery_partitioning), has(this.bigquery_clustering)].filter(x, x).size() == 1"
+    message: "set exactly one of bigquery_partitioning or bigquery_clustering"
+  };
+
+  // Partitioning for the matched tables.
+  GcpDatastreamStreamBigqueryPartitioning bigquery_partitioning = 1;
+
+  // Clustering for the matched tables.
+  GcpDatastreamStreamBigqueryClustering bigquery_clustering = 2;
+}
+
+// GcpDatastreamStreamMysqlIdentifier names one MySQL table.
+message GcpDatastreamStreamMysqlIdentifier {
+  // The database.
+  string database = 1 [(buf.validate.field).required = true];
+
+  // The table.
+  string table = 2 [(buf.validate.field).required = true];
+}
+
+// GcpDatastreamStreamSchemaTableIdentifier names one table in a schema
+// (PostgreSQL, Oracle, SQL Server).
+message GcpDatastreamStreamSchemaTableIdentifier {
+  // The schema.
+  string schema = 1 [(buf.validate.field).required = true];
+
+  // The table.
+  string table = 2 [(buf.validate.field).required = true];
+}
+
+// GcpDatastreamStreamMongodbIdentifier names one MongoDB collection.
+message GcpDatastreamStreamMongodbIdentifier {
+  // The database.
+  string database = 1 [(buf.validate.field).required = true];
+
+  // The collection.
+  string collection = 2 [(buf.validate.field).required = true];
+}
+
+// GcpDatastreamStreamSalesforceIdentifier names one Salesforce object.
+message GcpDatastreamStreamSalesforceIdentifier {
+  // The object's API name.
+  string object_name = 1 [(buf.validate.field).required = true];
+}
+
+// GcpDatastreamStreamSpannerIdentifier names one Spanner table.
+message GcpDatastreamStreamSpannerIdentifier {
+  // The schema; empty is the database's default schema.
+  string schema = 1;
+
+  // The table.
+  string table = 2 [(buf.validate.field).required = true];
+}
+
+// GcpDatastreamStreamSourceObjectIdentifier names the one source object a
+// rule set applies to (`source_object_identifier`). Set exactly one
+// identifier, matching the source.
+message GcpDatastreamStreamSourceObjectIdentifier {
+  option (buf.validate.message).cel = {
+    id: "identifier.exactly_one"
+    expression: "[has(this.mysql_identifier), has(this.postgresql_identifier), has(this.oracle_identifier), has(this.sql_server_identifier), has(this.mongodb_identifier), has(this.salesforce_identifier), has(this.spanner_identifier)].filter(x, x).size() == 1"
+    message: "set exactly one source object identifier"
+  };
+
+  // A MySQL table.
+  GcpDatastreamStreamMysqlIdentifier mysql_identifier = 1;
+
+  // A PostgreSQL table.
+  GcpDatastreamStreamSchemaTableIdentifier postgresql_identifier = 2;
+
+  // An Oracle table.
+  GcpDatastreamStreamSchemaTableIdentifier oracle_identifier = 3;
+
+  // A SQL Server table.
+  GcpDatastreamStreamSchemaTableIdentifier sql_server_identifier = 4;
+
+  // A MongoDB collection.
+  GcpDatastreamStreamMongodbIdentifier mongodb_identifier = 5;
+
+  // A Salesforce object.
+  GcpDatastreamStreamSalesforceIdentifier salesforce_identifier = 6;
+
+  // A Spanner table.
+  GcpDatastreamStreamSpannerIdentifier spanner_identifier = 7;
+}
+
+// GcpDatastreamStreamObjectFilter picks the source object a rule set
+// applies to (`object_filter`).
+message GcpDatastreamStreamObjectFilter {
+  // The object.
+  GcpDatastreamStreamSourceObjectIdentifier source_object_identifier = 1;
+}
+
+// GcpDatastreamStreamRuleSet customizes the BigQuery table one source object
+// lands in (`rule_sets`) -- partitioning and clustering that Datastream
+// applies when it creates the table.
+message GcpDatastreamStreamRuleSet {
+  // The source object the rules apply to.
+  GcpDatastreamStreamObjectFilter object_filter = 1 [(buf.validate.field).required = true];
+
+  // The rules -- at least one.
+  repeated GcpDatastreamStreamCustomizationRule customization_rules = 2 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// GcpDatastreamStreamSpec defines a Datastream stream
+// (`google_datastream_stream`) -- continuous change data capture from one
+// source database into BigQuery or Cloud Storage. A stream reads through a
+// source connection profile and writes through a destination profile, both
+// in its project and location.
+//
+// A stream first BACKFILLS (copies what exists) and then streams every
+// change. Choose exactly one of backfill_all (optionally skipping objects)
+// or backfill_none (changes only). Datastream bills the GiB it processes,
+// backfill and changes at different rates.
+//
+// desired_state controls whether it runs: create it NOT_STARTED (the
+// default) to review before any data moves, then set RUNNING; PAUSED stops
+// it without losing its position.
+//
+// Immutable: project_id, location, stream_id, both profiles,
+// customer_managed_encryption_key, create_without_validation, the BigQuery
+// write_mode, the dataset template's key. Object lists, backfill, rule
+// sets, freshness, and file settings update in place.
+message GcpDatastreamStreamSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_backfill"
+    expression: "[has(this.backfill_all), this.backfill_none].filter(x, x).size() == 1"
+    message: "set exactly one of backfill_all or backfill_none"
+  };
+
+  // The GCP project the stream lives in: a literal project ID or a
+  // GcpProject reference. If omitted, the provider's default project is
+  // used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The Datastream region, e.g. "us-central1" -- the profiles' region.
+  // Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The stream's ID. Defaults to metadata.name. Immutable.
+  string stream_id = 3;
+
+  // The name shown in the console. Defaults to metadata.name.
+  string display_name = 4;
+
+  // Labels on the stream. The platform attribution labels are added on top
+  // and win on a key conflict.
+  map<string, string> labels = 5;
+
+  // The source and how it is read.
+  GcpDatastreamStreamSourceConfig source_config = 6 [(buf.validate.field).required = true];
+
+  // The destination and how data lands.
+  GcpDatastreamStreamDestinationConfig destination_config = 7 [(buf.validate.field).required = true];
+
+  // Backfill every included object, except what is listed.
+  GcpDatastreamStreamBackfillAll backfill_all = 8;
+
+  // Backfill nothing: only changes from the stream's start replicate.
+  // Google's block has no settings: true declares it.
+  bool backfill_none = 9;
+
+  // Per-object BigQuery table customizations.
+  repeated GcpDatastreamStreamRuleSet rule_sets = 10;
+
+  // A Cloud KMS key encrypting the data Datastream holds in flight (CMEK)
+  // -- a GcpKmsKey reference or a literal key path in the stream's region.
+  // Datastream's service agent needs cryptoKeyEncrypterDecrypter on it.
+  // Empty uses a Google-managed key. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef customer_managed_encryption_key = 11 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpKmsKey,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.key_id",
+    (dev.planton.shared.options.sensitive_exempt_reason) = "KMS crypto key resource ID/reference only -- never key material"
+  ];
+
+  // Whether the stream runs:
+  //   "" / "NOT_STARTED" -- created but not started; nothing moves or bills
+  //   "RUNNING"          -- backfill (if chosen) and change capture run
+  //   "PAUSED"           -- stopped, keeping its position; RUNNING resumes
+  // Google accepts NOT_STARTED or RUNNING at create, then RUNNING or PAUSED;
+  // a started stream never returns to NOT_STARTED.
+  string desired_state = 12 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string = {
+      in: [
+        "NOT_STARTED",
+        "RUNNING",
+        "PAUSED"
+      ]
+    }
+  ];
+
+  // Create the stream without Google's validation (source reachable,
+  // objects exist, destination writable). Problems then surface when it
+  // starts. Immutable.
+  bool create_without_validation = 13;
+
+  // What happens to the stream when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (data already written stays in the
+  //                    destination)
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- it leaves management and keeps running in GCP
+  string deletion_policy = 14 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

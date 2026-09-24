@@ -1,0 +1,39 @@
+# GcpDatastreamConnectionProfile scenario: a PostgreSQL source profile
+# created without Google's connectivity test, so no database is needed. The
+# hostname is in a documentation range (TEST-NET-3); the password comes
+# from the consumer-scoped Secret Manager secret by its version name -- the
+# latest_version_name reference proven live.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpDatastreamConnectionProfile
+metadata:
+  name: planton-oss-e2e-gcpdscp-postgresql
+  id: planton-oss-e2e-gcpdscp-postgresql
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpdatastreamconnectionprofile
+  annotations:
+    planton.dev/e2e: "true"
+    planton.dev/e2e-prerequisites: "GcpSecretManagerSecret"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  connectionProfileId: e2e-gcpdscp-pg-${E2E_RUN_ID}
+  displayName: E2E PostgreSQL source (unvalidated)
+  createWithoutValidation: true
+  postgresqlProfile:
+    hostname:
+      value: 203.0.113.10
+    port: 5432
+    username: datastream
+    secretManagerStoredPassword:
+      valueFrom:
+        kind: GcpSecretManagerSecret
+        name: planton-oss-e2e-gcpdscp-password
+        fieldPath: status.outputs.latest_version_name
+    database: orders
+  labels:
+    e2e-arm: postgresql-unvalidated
+  deletionPolicy: DELETE
