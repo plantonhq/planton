@@ -9,7 +9,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **Read-Only Replica** -- a full single-node managed database of the configured size, continuously following the primary
 - **VPC Network Attachment** -- configured only when `vpc` is provided; places the replica's private endpoint in the named VPC (the REPLICA region's VPC for cross-region replicas)
 - **Custom Storage** -- configured only when `storageSizeMib` is provided; must stay at or above the primary's storage
-- **DigitalOcean Tags** -- your `tags` plus resource metadata tags applied automatically -- note replica tags are create-only upstream (a retag replaces the replica)
+- **DigitalOcean Tags** -- your `tags` plus resource metadata tags applied automatically -- note replica tags are create-only upstream (a retag replaces the replica), and DigitalOcean caps the combined tags (joined by commas) at 255 characters with the metadata tags counting toward it; both provisioners fail fast with the arithmetic before anything is created
 
 ## Before You Deploy
 

@@ -30,7 +30,7 @@ that has progressed.
 | Provider schema (parity baseline) | `digitalocean@2.99.1` |
 | Kinds in the catalog | 31 |
 | Distinct provider resources consumed | 37 |
-| Spec fields authored across all kinds | 675 |
+| Spec fields authored across all kinds | 677 |
 | Module pins on `digitalocean` | `~> 2.99` × 31 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -64,41 +64,41 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**31 of 31 kinds are at total accounting; 0 proven live.**
+**31 of 31 kinds are at total accounting; 30 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
-| DigitalOceanApp | 292 | 0 | 282 | 10 | 0 | ✅ | — |
-| DigitalOceanBucket | 28 | 6 | 19 | 3 | 0 | ✅ | — |
-| DigitalOceanCdn | 4 | 2 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanCertificate | 6 | 0 | 5 | 1 | 0 | ✅ | — |
-| DigitalOceanContainerRegistry | 6 | 2 | 3 | 1 | 0 | ✅ | — |
-| DigitalOceanDatabaseCluster | 19 | 14 | 5 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseConnectionPool | 6 | 4 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseDb | 2 | 0 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseFirewall | 3 | 0 | 2 | 1 | 0 | ✅ | — |
-| DigitalOceanDatabaseKafkaSchema | 4 | 3 | 1 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseKafkaTopic | 27 | 25 | 2 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseReplica | 7 | 4 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanDatabaseUser | 7 | 1 | 6 | 0 | 0 | ✅ | — |
-| DigitalOceanDnsRecord | 10 | 9 | 1 | 0 | 0 | ✅ | — |
-| DigitalOceanDnsZone | 12 | 8 | 3 | 1 | 0 | ✅ | — |
-| DigitalOceanDroplet | 21 | 16 | 4 | 1 | 0 | ✅ | — |
-| DigitalOceanDropletAutoscalePool | 18 | 9 | 8 | 1 | 0 | ✅ | — |
-| DigitalOceanFirewall | 17 | 2 | 15 | 0 | 0 | ✅ | — |
-| DigitalOceanFunction | 292 | 0 | 36 | 256 | 0 | ✅ | — |
-| DigitalOceanKubernetesCluster | 47 | 31 | 15 | 1 | 0 | ✅ | — |
-| DigitalOceanKubernetesNodePool | 13 | 8 | 5 | 0 | 0 | ✅ | — |
-| DigitalOceanLoadBalancer | 46 | 31 | 15 | 0 | 0 | ✅ | — |
-| DigitalOceanMonitorAlert | 11 | 8 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanProject | 6 | 5 | 1 | 0 | 0 | ✅ | — |
-| DigitalOceanReservedIp | 8 | 1 | 3 | 4 | 0 | ✅ | — |
-| DigitalOceanSpacesKey | 3 | 0 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanSshKey | 2 | 1 | 1 | 0 | 0 | ✅ | — |
-| DigitalOceanUptimeCheck | 14 | 10 | 3 | 1 | 0 | ✅ | — |
-| DigitalOceanVolume | 8 | 5 | 3 | 0 | 0 | ✅ | — |
-| DigitalOceanVpc | 4 | 2 | 1 | 1 | 0 | ✅ | — |
-| DigitalOceanVpcPeering | 2 | 0 | 2 | 0 | 0 | ✅ | — |
+| DigitalOceanApp | 292 | 0 | 282 | 10 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanBucket | 28 | 6 | 19 | 3 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanCdn | 4 | 2 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanCertificate | 6 | 0 | 5 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanContainerRegistry | 6 | 2 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseCluster | 19 | 14 | 5 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseConnectionPool | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseDb | 2 | 0 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseFirewall | 3 | 0 | 2 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseKafkaSchema | 4 | 3 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseKafkaTopic | 27 | 25 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseReplica | 7 | 4 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDatabaseUser | 7 | 1 | 6 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDnsRecord | 10 | 9 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDnsZone | 12 | 8 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDroplet | 21 | 16 | 4 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanDropletAutoscalePool | 18 | 10 | 8 | 0 | 0 | ✅ | — |
+| DigitalOceanFirewall | 17 | 2 | 15 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanFunction | 292 | 0 | 37 | 255 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanKubernetesCluster | 47 | 31 | 15 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanKubernetesNodePool | 13 | 8 | 5 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanLoadBalancer | 46 | 31 | 15 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanMonitorAlert | 11 | 8 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanProject | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanReservedIp | 8 | 1 | 3 | 4 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanSpacesKey | 3 | 0 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanSshKey | 2 | 1 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanUptimeCheck | 14 | 10 | 3 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanVolume | 8 | 5 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanVpc | 4 | 2 | 1 | 1 | 0 | ✅ | ✅ pulumi, terraform |
+| DigitalOceanVpcPeering | 2 | 0 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 
 ## Breadth: every GA resource, one disposition
 
@@ -212,7 +212,7 @@ rather than trusted.
 | `digitalocean_gradientai_openai_api_key` | credential row for a deferred family -- the GradientAI family is deferred wholesale on documented provider immaturity |
 | `digitalocean_nfs_snapshot` | point-in-time capture, action-style -- same reasoning as droplet and volume snapshots; gated on an action/snapshot-policy surface |
 | `digitalocean_spaces_bucket_object` | uploading object content is data-plane work, not infrastructure; a declarative kind for file contents is marginal and invites abuse as a deployment mechanism |
-| `digitalocean_tag` | DigitalOcean creates tags implicitly when any resource declares them; a standalone name-reservation kind is marginal -- revisit if tag-targeted references (firewalls, load balancers, monitor alerts) prove to need a first-class handle |
+| `digitalocean_tag` | Droplets and volumes create tags implicitly when they declare them, so a tagged fleet needs no standalone kind; tag CONSUMERS differ per API (all three live-verified) -- a firewall naming a tag no Droplet carries yet is rejected (422 'tag does not exist'), while a monitor alert policy and a load balancer both accept it as a selector and create nothing (the balancer's member list stays empty until a Droplet wears the tag). So only the firewall-before-its-first-Droplet ordering has no handle today and must target a tag some Droplet already carries. Revisit as a re-tier if that ordering constraint proves too costly for charts |
 | `digitalocean_volume_snapshot` | point-in-time capture, action-style -- gated with droplet_snapshot on an action/snapshot-policy surface |
 | `digitalocean_vpc_nat_gateway` | the provider docs mark it currently in Private Preview -- gated on GA; product value is high, promote to P1 the moment the gate lifts |
 

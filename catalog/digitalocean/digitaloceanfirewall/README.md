@@ -12,7 +12,7 @@ The spec maps one-to-one onto DigitalOcean's `digitalocean_firewall`:
 | `inboundRules` | Traffic allowed *to* the protected Droplets; anything unmatched is dropped |
 | `outboundRules` | Traffic allowed *from* the protected Droplets |
 | `dropletIds` | Droplets to protect, as literal numeric IDs or references to `DigitalOceanDroplet` resources (API max 10) |
-| `tags` | Droplet tags to protect: membership follows the tag automatically (API max 5; tags are created implicitly) |
+| `tags` | Droplet tags to protect: membership follows the tag automatically (API max 5; every tag must already exist — Droplets create tags, firewalls never do) |
 
 Each rule carries a `protocol` (`tcp`, `udp`, `icmp`), a `portRange` (`"443"`, `"8000-9000"`, or `"all"`; omitted for icmp), and any mix of sources/destinations: CIDR `addresses` (IPv4 and IPv6), Droplet `tags`, `dropletIds`, `kubernetesIds`, and `loadBalancerUids` — the last three as references or literals.
 

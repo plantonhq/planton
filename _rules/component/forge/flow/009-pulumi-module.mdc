@@ -138,6 +138,20 @@ HANDLING OPTIONAL FIELDS WITH DEFAULTS
   engine plans a destructive replacement or fights the service, while the other engine
   silently no-ops — an audit-only divergence no offline gate catches. Document the
   "false means leave it to the provider" contract on the spec field.
+- **PROVIDER BUDGETS ON MODULE-DERIVED VALUES: check them in the module, in BOTH engines,
+  with one constant and one message.** When a service caps something the module itself
+  assembles -- a name it derives from `metadata.name`, a tag set it composes from the
+  spec plus the Planton labels -- the manifest author cannot see the final value and a
+  spec rule cannot compute it, so the module owns the check: a package-level constant
+  naming the measured budget (with the date and the API's own error text in its comment),
+  a computation on the FINAL value actually sent (after dedup, after label rendering), and
+  an `errors.Errorf` before the resource is created that states the budget, the offending
+  total, and the levers the author has (a shorter name or id, fewer entries). Mirror the
+  exact same constant and message in the Terraform module as a `lifecycle { precondition }`
+  on the resource -- the two are twins and say so in their comments. A budget guessed from
+  documentation is not a budget: measure the boundary live (pass at N, fail at N+1) before
+  writing the number. Exemplars: the Superset chart's name budget; the DigitalOcean
+  database cluster's 255-character combined-tags budget.
 - **ENUM WIRE MAPS: map the UNSPECIFIED row to the default wire value whenever
   unspecified is legal.** A Go `map[Enum]string` lookup on a missing key silently
   returns `""`, and `pulumi.String("")` SENDS the empty string — the provider rejects it

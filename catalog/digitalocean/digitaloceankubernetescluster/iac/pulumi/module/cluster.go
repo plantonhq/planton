@@ -16,47 +16,6 @@ func cluster(
 ) (*digitalocean.KubernetesCluster, error) {
 	spec := locals.DigitalOceanKubernetesCluster.Spec
 
-	// Pulumi SDK v4.49.0 gaps: these spec fields are modeled and the
-	// Terraform module wires them, but the SDK has no matching inputs on
-	// KubernetesCluster. Fail loudly on a meaningful set (proto zero values
-	// pass) rather than silently dropping configuration.
-	if spec.WorkerSubnetUuid != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.worker_subnet_uuid is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no worker_subnet_uuid field on KubernetesCluster. Re-evaluate when the SDK exposes worker_subnet_uuid.")
-	}
-	if spec.IsolatedWorkers {
-		return nil, errors.New("PARITY-EXCEPTION: spec.isolated_workers is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no isolated_workers field on KubernetesCluster. Re-evaluate when the SDK exposes isolated_workers.")
-	}
-	if spec.Sso != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.sso is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no sso block on KubernetesCluster. Re-evaluate when the SDK exposes sso.")
-	}
-	if spec.P2POciRegistryPlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.p2p_oci_registry_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no p2p_oci_registry_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes p2p_oci_registry_plugin.")
-	}
-	if spec.AmdGpuDevicePlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.amd_gpu_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no amd_gpu_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes amd_gpu_device_plugin.")
-	}
-	if spec.AmdGpuDraDriver != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.amd_gpu_dra_driver is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no amd_gpu_dra_driver block on KubernetesCluster. Re-evaluate when the SDK exposes amd_gpu_dra_driver.")
-	}
-	if spec.AmdGpuDeviceMetricsExporterPlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.amd_gpu_device_metrics_exporter_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no amd_gpu_device_metrics_exporter_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes amd_gpu_device_metrics_exporter_plugin.")
-	}
-	if spec.NvidiaGpuDevicePlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.nvidia_gpu_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no nvidia_gpu_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes nvidia_gpu_device_plugin.")
-	}
-	if spec.NvidiaGpuDraDriver != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.nvidia_gpu_dra_driver is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no nvidia_gpu_dra_driver block on KubernetesCluster. Re-evaluate when the SDK exposes nvidia_gpu_dra_driver.")
-	}
-	if spec.RdmaSharedDevicePlugin != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.rdma_shared_device_plugin is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no rdma_shared_device_plugin block on KubernetesCluster. Re-evaluate when the SDK exposes rdma_shared_device_plugin.")
-	}
-	if spec.CorednsAutoscaler != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.coredns_autoscaler is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no coredns_autoscaler block on KubernetesCluster. Re-evaluate when the SDK exposes coredns_autoscaler.")
-	}
-	if spec.DefaultNodePool.GpuPartitionMode != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.default_node_pool.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no gpu_partition_mode field on the cluster's node pool. Re-evaluate when the SDK exposes gpu_partition_mode.")
-	}
-
 	// User tags plus the standard Planton labels rendered as "key:value"
 	// tags — the exact set the Terraform module applies.
 	tagSet := map[string]bool{}
@@ -91,15 +50,21 @@ func cluster(
 	poolArgs := &digitalocean.KubernetesClusterNodePoolArgs{
 		Name:      pulumi.String("default"),
 		Size:      pulumi.String(spec.DefaultNodePool.Size),
-		NodeCount: pulumi.IntPtr(int(spec.DefaultNodePool.NodeCount)),
 		AutoScale: pulumi.BoolPtr(spec.DefaultNodePool.AutoScale),
 		Labels:    poolLabels,
 	}
-	// Autoscaler bounds only travel with autoscaling on -- matching the
-	// Terraform module, which nulls them otherwise.
+	// Exactly one sizing mode owns the count -- matching the Terraform
+	// module. A fixed pool sends node_count; an autoscaled pool sends only
+	// the bounds and NO count, because the provider writes the live count
+	// back into node_count on every read and re-applies a stated one on
+	// every update, so a stated count and the autoscaler would fight forever
+	// (measured: a pool that autoscaled to two nodes planned `2 -> 1`).
+	// Without a count the API starts the pool at min_nodes.
 	if spec.DefaultNodePool.AutoScale {
 		poolArgs.MinNodes = pulumi.IntPtr(int(spec.DefaultNodePool.MinNodes))
 		poolArgs.MaxNodes = pulumi.IntPtr(int(spec.DefaultNodePool.MaxNodes))
+	} else {
+		poolArgs.NodeCount = pulumi.IntPtr(int(spec.DefaultNodePool.NodeCount))
 	}
 	if len(spec.DefaultNodePool.Tags) > 0 {
 		var poolTags pulumi.StringArray
@@ -118,6 +83,11 @@ func cluster(
 			})
 		}
 		poolArgs.Taints = taints
+	}
+	// GPU partitioning is create-only on the pool and only meaningful on GPU
+	// sizes; unset must arrive as null, never "" (the provider rejects it).
+	if spec.DefaultNodePool.GpuPartitionMode != "" {
+		poolArgs.GpuPartitionMode = pulumi.StringPtr(spec.DefaultNodePool.GpuPartitionMode)
 	}
 
 	// Enum value names are exactly the DigitalOcean region slugs.
@@ -170,6 +140,31 @@ func cluster(
 	if spec.ServiceSubnet != "" {
 		clusterArgs.ServiceSubnet = pulumi.StringPtr(spec.ServiceSubnet)
 	}
+	// Worker placement: an explicit VPC subnet for the nodes (create-only;
+	// the provider rejects ""), and isolated workers (no public IPs on the
+	// nodes) sent as the spec's bool exactly as the Terraform module does.
+	if spec.WorkerSubnetUuid != "" {
+		clusterArgs.WorkerSubnetUuid = pulumi.StringPtr(spec.WorkerSubnetUuid)
+	}
+	clusterArgs.IsolatedWorkers = pulumi.BoolPtr(spec.IsolatedWorkers)
+
+	// Single sign-on. The SDK models the block as an array (the provider
+	// reads only the first element), so the spec's single message is wrapped
+	// here -- the cluster-autoscaler-configuration shape. Empty issuer/client
+	// strings arrive as null, matching the Terraform module's coalescing.
+	if spec.Sso != nil {
+		ssoArgs := digitalocean.KubernetesClusterSsoArgs{
+			Enabled:  pulumi.Bool(spec.Sso.GetEnabled()),
+			Required: pulumi.BoolPtr(spec.Sso.Required),
+		}
+		if spec.Sso.IssuerUrl != "" {
+			ssoArgs.IssuerUrl = pulumi.StringPtr(spec.Sso.IssuerUrl)
+		}
+		if spec.Sso.ClientId != "" {
+			ssoArgs.ClientId = pulumi.StringPtr(spec.Sso.ClientId)
+		}
+		clusterArgs.Ssos = digitalocean.KubernetesClusterSsoArray{ssoArgs}
+	}
 
 	if spec.DestroyAllAssociatedResources {
 		clusterArgs.DestroyAllAssociatedResources = pulumi.BoolPtr(true)
@@ -202,11 +197,60 @@ func cluster(
 		clusterArgs.ClusterAutoscalerConfigurations = digitalocean.KubernetesClusterClusterAutoscalerConfigurationArray{caArgs}
 	}
 
-	// routing_agent is the only addon block the SDK carries; the other eight
-	// fail loudly above.
+	// Managed addon toggles. An unset spec message sends no block, deferring
+	// to DigitalOcean's own default for that addon; a set message asserts the
+	// desired state, on or off -- the same contract as the Terraform module's
+	// dynamic blocks. All nine addon blocks are wired; the GPU-family blocks
+	// (AMD/NVIDIA device plugins and DRA drivers, RDMA) are accepted by the
+	// API only on clusters with GPU node pools, and the P2P OCI registry
+	// plugin only on Kubernetes 1.36.0-do.2 or later -- an older version
+	// fails the whole create with a validation 422 that creates nothing.
+	// The module sends what the manifest states and lets DigitalOcean's own
+	// validation speak, because the version floor moves with DigitalOcean's
+	// release train and a module-side check would go stale.
 	if spec.RoutingAgent != nil {
 		clusterArgs.RoutingAgent = &digitalocean.KubernetesClusterRoutingAgentArgs{
 			Enabled: pulumi.Bool(spec.RoutingAgent.GetEnabled()),
+		}
+	}
+	if spec.P2POciRegistryPlugin != nil {
+		clusterArgs.P2pOciRegistryPlugin = &digitalocean.KubernetesClusterP2pOciRegistryPluginArgs{
+			Enabled: pulumi.Bool(spec.P2POciRegistryPlugin.GetEnabled()),
+		}
+	}
+	if spec.AmdGpuDevicePlugin != nil {
+		clusterArgs.AmdGpuDevicePlugin = &digitalocean.KubernetesClusterAmdGpuDevicePluginArgs{
+			Enabled: pulumi.Bool(spec.AmdGpuDevicePlugin.GetEnabled()),
+		}
+	}
+	if spec.AmdGpuDraDriver != nil {
+		clusterArgs.AmdGpuDraDriver = &digitalocean.KubernetesClusterAmdGpuDraDriverArgs{
+			Enabled: pulumi.Bool(spec.AmdGpuDraDriver.GetEnabled()),
+		}
+	}
+	if spec.AmdGpuDeviceMetricsExporterPlugin != nil {
+		clusterArgs.AmdGpuDeviceMetricsExporterPlugin = &digitalocean.KubernetesClusterAmdGpuDeviceMetricsExporterPluginArgs{
+			Enabled: pulumi.Bool(spec.AmdGpuDeviceMetricsExporterPlugin.GetEnabled()),
+		}
+	}
+	if spec.NvidiaGpuDevicePlugin != nil {
+		clusterArgs.NvidiaGpuDevicePlugin = &digitalocean.KubernetesClusterNvidiaGpuDevicePluginArgs{
+			Enabled: pulumi.Bool(spec.NvidiaGpuDevicePlugin.GetEnabled()),
+		}
+	}
+	if spec.NvidiaGpuDraDriver != nil {
+		clusterArgs.NvidiaGpuDraDriver = &digitalocean.KubernetesClusterNvidiaGpuDraDriverArgs{
+			Enabled: pulumi.Bool(spec.NvidiaGpuDraDriver.GetEnabled()),
+		}
+	}
+	if spec.RdmaSharedDevicePlugin != nil {
+		clusterArgs.RdmaSharedDevicePlugin = &digitalocean.KubernetesClusterRdmaSharedDevicePluginArgs{
+			Enabled: pulumi.Bool(spec.RdmaSharedDevicePlugin.GetEnabled()),
+		}
+	}
+	if spec.CorednsAutoscaler != nil {
+		clusterArgs.CorednsAutoscaler = &digitalocean.KubernetesClusterCorednsAutoscalerArgs{
+			Enabled: pulumi.Bool(spec.CorednsAutoscaler.GetEnabled()),
 		}
 	}
 

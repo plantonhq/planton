@@ -1,6 +1,6 @@
 # DigitalOcean Container Registry -- Pulumi Module
 
-Deploys a `digitalocean:index/containerRegistry:ContainerRegistry` from a `DigitalOceanContainerRegistry` stack input, plus a `digitalocean:index/containerRegistryDockerCredentials:ContainerRegistryDockerCredentials` when (and only when) the spec's `docker_credentials` block is set. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`, which carries the complete provider argument surface for both resources -- no PARITY-EXCEPTION guards. (The SDK does NOT flag the credential token as secret, so the module wraps the export in `pulumi.ToSecret`.)
+Deploys a `digitalocean:index/containerRegistry:ContainerRegistry` from a `DigitalOceanContainerRegistry` stack input, plus a `digitalocean:index/containerRegistryDockerCredentials:ContainerRegistryDockerCredentials` when (and only when) the spec's `docker_credentials` block is set. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for both resources -- no PARITY-EXCEPTION guards. (The SDK does NOT flag the credential token as secret, so the module wraps the export in `pulumi.ToSecret`.)
 
 ## Module structure
 

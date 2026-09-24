@@ -21,6 +21,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### DigitalOcean Account
 
 - **Droplet quota and budget** -- the pool needs quota for its maximum size, and every member is a real droplet billing its size's hourly rate from the moment the pool provisions it.
+- **Destroy needs a second pass at the current provider** -- the first destroy reports `unexpected state 'deleting'` after DigitalOcean has already accepted the deletion; the pool and its members are removed within seconds. Terraform: destroy again. Pulumi: refresh, then destroy. The GUIDE explains the upstream defect, tracked as [digitalocean/terraform-provider-digitalocean#1605](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1605).
 
 ## Deploy
 
@@ -98,7 +99,9 @@ These are the most important decisions when configuring a droplet autoscale pool
 
 **Target the fleet with tags, never droplet ids** -- Member droplet ids churn with every scale event; any firewall rule or load-balancer target list naming them goes stale immediately. The template's `tags` follow the membership automatically -- tag-targeted firewall rules and load-balancer tag targets are the only reliable way to address the fleet.
 
-**Template changes roll the fleet** -- Editing the template (size, image, `userData`) applies in place on the pool, and DigitalOcean replaces members to converge on the new shape. Plan template edits like deployments: capacity dips while members roll. One read-back quirk: DigitalOcean reports the image as a numeric id even when you configured a slug; the modules keep your configured value, but a freshly imported pool shows an image diff on its first plan.
+**Private members** -- `dropletTemplate.publicNetworking: false` creates members with no public interface, reachable only inside the VPC -- the right shape for a fleet behind a load balancer. Unset means DigitalOcean's default (public on).
+
+**Template changes roll the fleet** -- Editing the template (size, image, `userData`, `publicNetworking`) applies in place on the pool, and DigitalOcean replaces members to converge on the new shape. Plan template edits like deployments: capacity dips while members roll. One read-back quirk: DigitalOcean reports the image as a numeric id even when you configured a slug; the modules keep your configured value, but a freshly imported pool shows an image diff on its first plan.
 
 **Members are cattle -- keep state off them** -- The pool creates and destroys members on its own schedule. Anything on a member's local disk is one scale-in from gone. Point members at managed databases, Spaces, or volumes owned elsewhere, and use `userData` (cloud-init) to bootstrap every member identically.
 
@@ -116,7 +119,7 @@ These are the most important decisions when configuring a droplet autoscale pool
 
 ### What This Component Provides
 
-After provisioning, `status.outputs` carries `pool_id` (the pool's UUID -- its API identity and import id) and `status` (DigitalOcean's health reading at apply time, `active` once the pool and every member are provisioned). Neither is a wiring surface for downstream Cloud Resources: member droplet ids churn by design, so firewalls and load balancers address the fleet through the template's `tags`, which follow the membership as it scales -- not through these outputs.
+After provisioning, `status.outputs` carries `pool_id` (the pool's UUID -- its API identity and import id). The pool's health is deliberately not an output: a status captured at apply time goes stale the moment DigitalOcean changes it (a member fails, the pool scales), so live health is read from the API (`GET /v2/droplets/autoscale/{pool_id}`), never from stored outputs. `pool_id` is not a wiring surface for downstream Cloud Resources either: member droplet ids churn by design, so firewalls and load balancers address the fleet through the template's `tags`, which follow the membership as it scales.
 
 ## Common Patterns
 

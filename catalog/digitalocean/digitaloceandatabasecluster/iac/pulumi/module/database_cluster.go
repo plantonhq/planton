@@ -2,11 +2,24 @@ package module
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/pulumi/pulumi-digitalocean/sdk/v4/go/digitalocean"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
+
+// tagsCombinedBudget is DigitalOcean's cap on a database cluster's COMBINED
+// tags -- the tag names joined by commas -- measured 2026-09-17 against
+// `POST /v2/databases`: 255 characters pass, 256 fail with
+// `422 combined tags cannot exceed 255 characters`; colons count as one
+// character and the tag count matters only through the separators. The six
+// Planton label tags carry metadata.name and metadata.id, so a long
+// resource name spends the budget before any spec.tags entry does. Checked
+// before anything renders, with the same number and the same message as
+// the Terraform module's precondition (its twin).
+const tagsCombinedBudget = 255
 
 // cluster provisions the managed database cluster and exports its outputs.
 func cluster(
@@ -20,26 +33,43 @@ func cluster(
 		return nil, errors.Errorf("database engine is required")
 	}
 
-	if spec.StorageAutoscale != nil {
-		return nil, errors.New("PARITY-EXCEPTION: spec.storage_autoscale is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no storage_autoscale field on DatabaseCluster. Re-evaluate when the SDK exposes storage_autoscale.")
-	}
-
 	// User tags plus the standard Planton labels rendered as "key:value"
-	// tags — the exact set the Terraform module applies.
+	// tags — the exact set the Terraform module applies. Labels are added
+	// in key order so the rendered list is deterministic on every apply.
 	tagSet := map[string]bool{}
-	var tagInputs pulumi.StringArray
+	var tags []string
 	for _, t := range spec.Tags {
 		if !tagSet[t] {
 			tagSet[t] = true
-			tagInputs = append(tagInputs, pulumi.String(t))
+			tags = append(tags, t)
 		}
 	}
-	for k, v := range locals.DigitalOceanLabels {
-		t := k + ":" + v
+	labelKeys := make([]string, 0, len(locals.DigitalOceanLabels))
+	for k := range locals.DigitalOceanLabels {
+		labelKeys = append(labelKeys, k)
+	}
+	sort.Strings(labelKeys)
+	var labelTags []string
+	for _, k := range labelKeys {
+		t := k + ":" + locals.DigitalOceanLabels[k]
+		labelTags = append(labelTags, t)
 		if !tagSet[t] {
 			tagSet[t] = true
-			tagInputs = append(tagInputs, pulumi.String(t))
+			tags = append(tags, t)
 		}
+	}
+
+	// Fail loud on DigitalOcean's combined-tags budget before anything
+	// renders (see tagsCombinedBudget; twin of the Terraform precondition).
+	if combined := strings.Join(tags, ","); len(combined) > tagsCombinedBudget {
+		return nil, errors.Errorf(
+			"DigitalOcean caps a database cluster's combined tags (joined by commas) at %d characters; this cluster's %d tags join to %d characters. Shorten metadata.name or metadata.id, or remove entries from spec.tags -- the Planton label tags alone use %d characters here.",
+			tagsCombinedBudget, len(tags), len(combined), len(strings.Join(labelTags, ",")))
+	}
+
+	tagInputs := make(pulumi.StringArray, 0, len(tags))
+	for _, t := range tags {
+		tagInputs = append(tagInputs, pulumi.String(t))
 	}
 
 	// Enum value names are exactly the DigitalOcean API slugs.
@@ -89,6 +119,22 @@ func cluster(
 			backupRestoreArgs.BackupCreatedAt = pulumi.StringPtr(spec.BackupRestore.BackupCreatedAt)
 		}
 		clusterArgs.BackupRestore = backupRestoreArgs
+	}
+
+	// Automatic storage growth. Zero threshold/increment mean "DigitalOcean's
+	// default" and are left null, never sent as 0 -- the Terraform module's
+	// coalescing.
+	if spec.StorageAutoscale != nil {
+		autoscaleArgs := &digitalocean.DatabaseClusterStorageAutoscaleArgs{
+			Enabled: pulumi.Bool(spec.StorageAutoscale.Enabled),
+		}
+		if spec.StorageAutoscale.ThresholdPercent > 0 {
+			autoscaleArgs.ThresholdPercent = pulumi.IntPtr(int(spec.StorageAutoscale.ThresholdPercent))
+		}
+		if spec.StorageAutoscale.IncrementGib > 0 {
+			autoscaleArgs.IncrementGib = pulumi.IntPtr(int(spec.StorageAutoscale.IncrementGib))
+		}
+		clusterArgs.StorageAutoscale = autoscaleArgs
 	}
 
 	// Engine-conditional tuning: spec CEL rules enforce the engine pairing,

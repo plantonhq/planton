@@ -24,7 +24,7 @@ variable "spec" {
       type = string
       threshold = optional(number)
       comparison = optional(string, "")
-      period = optional(string, "")
+      period = string
       notifications = object({
         emails = optional(list(string), [])
         slack = optional(list(object({

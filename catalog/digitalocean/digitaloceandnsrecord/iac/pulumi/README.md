@@ -1,6 +1,6 @@
 # DigitalOcean DNS Record -- Pulumi Module
 
-Deploys a `digitalocean:index/dnsRecord:DnsRecord` from a `DigitalOceanDnsRecord` stack input: every record type the API accepts (A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA) with the per-type fields carried on presence semantics. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.49.0`, which carries the complete provider argument surface for this resource — no PARITY-EXCEPTION guards. (The SDK's named RecordType enum omits SOA; the module passes types as raw strings, so SOA works regardless.)
+Deploys a `digitalocean:index/dnsRecord:DnsRecord` from a `DigitalOceanDnsRecord` stack input: every record type the API accepts (A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA) with the per-type fields carried on presence semantics. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for this resource — no PARITY-EXCEPTION guards. (The SDK's named RecordType enum omits SOA; the module passes types as raw strings, so SOA works regardless.)
 
 ## Module structure
 

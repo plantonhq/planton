@@ -1,11 +1,11 @@
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
-  name: my-redis-cache
+  name: my-valkey-cache
 spec:
-  clusterName: my-redis-cache
-  engine: redis
-  engineVersion: "7"
+  clusterName: my-valkey-cache
+  engine: valkey
+  engineVersion: "8"
   region: nyc3
   sizeSlug: db-s-1vcpu-1gb
   nodeCount: 1

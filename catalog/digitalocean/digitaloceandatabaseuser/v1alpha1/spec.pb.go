@@ -48,10 +48,14 @@ type DigitalOceanDatabaseUserSpec struct {
 	// in place through a password-preserving auth reset.
 	MysqlAuthPlugin string `protobuf:"bytes,3,opt,name=mysql_auth_plugin,json=mysqlAuthPlugin,proto3" json:"mysql_auth_plugin,omitempty"`
 	// (Optional) Engine-specific access control for this user (Kafka topic
-	// ACLs and OpenSearch index ACLs). DigitalOcean returns these only in the
-	// create response -- reads never include them -- so what is configured here
-	// is the source of truth; the live ACL state is not observable afterward.
-	// ACL changes apply in place.
+	// ACLs and OpenSearch index ACLs). Both provisioners record these only
+	// from the create response and never refresh them from the API, so what
+	// is configured here is the source of truth; the live ACL state is not
+	// observable through Planton afterward. ACL changes apply in place.
+	// Leaving this unset is stable: DigitalOcean answers every user create
+	// with a settings object (a PostgreSQL user carries
+	// `pg_allow_replication: false`), and both provisioners send an empty
+	// settings block to match it, so an unset field never plans a change.
 	Settings      *DigitalOceanDatabaseUserSettings `protobuf:"bytes,4,opt,name=settings,proto3" json:"settings,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

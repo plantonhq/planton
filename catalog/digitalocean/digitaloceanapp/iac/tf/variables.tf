@@ -420,9 +420,9 @@ variable "spec" {
     })), [])
     domains = optional(list(object({
       name = string
-      type = optional(string, "")
       wildcard = optional(bool, false)
       zone = optional(string, "")
+      type = optional(string, "")
     })), [])
     envs = optional(list(object({
       key = string

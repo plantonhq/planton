@@ -44,11 +44,17 @@ type DigitalOceanKubernetesClusterSpec struct {
 	// The DigitalOcean region where the cluster's control plane and nodes are
 	// provisioned. Cannot be changed after creation.
 	Region digitalocean.DigitalOceanRegion `protobuf:"varint,2,opt,name=region,proto3,enum=dev.planton.digitalocean.DigitalOceanRegion" json:"region,omitempty"`
-	// The Kubernetes version slug to create the cluster at, e.g. "1.33.1-do.3"
-	// or a prefix like "1.33". This is the creation pin: patch upgrades ride
-	// auto_upgrade, and both provisioners ignore later drift on this field
-	// because DigitalOcean recreates the whole cluster when the configured
-	// version is lower than the live one.
+	// The Kubernetes version to create the cluster at, as DigitalOcean offers
+	// it TODAY: either a minor prefix ("1.35" -- DigitalOcean resolves it to the
+	// current patch) or a full slug ("1.35.7-do.5"). Prefer the prefix: patch
+	// slugs are retired every few weeks and a create naming a retired slug
+	// fails with 422, while a minor stays creatable for its whole support
+	// window. The live offer list is GET /v2/kubernetes/options (or `doctl
+	// kubernetes options versions`); on 2026-09-16 it was 1.34, 1.35, 1.36.
+	// This is the creation pin only: patch upgrades ride auto_upgrade, and
+	// both provisioners ignore later drift on this field because DigitalOcean
+	// recreates the whole cluster when the configured version is lower than
+	// the live one.
 	KubernetesVersion string `protobuf:"bytes,3,opt,name=kubernetes_version,json=kubernetesVersion,proto3" json:"kubernetes_version,omitempty"`
 	// Reference to the DigitalOcean VPC where the cluster will reside. The
 	// cluster consumes the VPC's ID (a DigitalOcean UUID), so a reference
@@ -120,6 +126,10 @@ type DigitalOceanKubernetesClusterSpec struct {
 	RoutingAgent *DigitalOceanKubernetesClusterFeatureToggle `protobuf:"bytes,24,opt,name=routing_agent,json=routingAgent,proto3" json:"routing_agent,omitempty"`
 	// (Optional) Peer-to-peer OCI registry mirror addon for faster image pulls
 	// across nodes. Unset leaves the addon at DigitalOcean's default.
+	// Requires kubernetes_version 1.36.0-do.2 or later: on an older version
+	// DigitalOcean rejects the whole cluster create with a validation 422
+	// ("p2p-oci-registry is only supported on DOKS v1.36.0-do.2 or later")
+	// and creates nothing.
 	P2POciRegistryPlugin *DigitalOceanKubernetesClusterFeatureToggle `protobuf:"bytes,25,opt,name=p2p_oci_registry_plugin,json=p2pOciRegistryPlugin,proto3" json:"p2p_oci_registry_plugin,omitempty"`
 	// (Optional) AMD GPU device plugin addon (mutually exclusive with the AMD
 	// DRA driver). Unset leaves the addon at DigitalOcean's default.
@@ -143,7 +153,9 @@ type DigitalOceanKubernetesClusterSpec struct {
 	// DigitalOcean's default.
 	RdmaSharedDevicePlugin *DigitalOceanKubernetesClusterFeatureToggle `protobuf:"bytes,31,opt,name=rdma_shared_device_plugin,json=rdmaSharedDevicePlugin,proto3" json:"rdma_shared_device_plugin,omitempty"`
 	// (Optional) CoreDNS horizontal autoscaler addon. Unset leaves the addon
-	// at DigitalOcean's default.
+	// at DigitalOcean's default, which depends on the Kubernetes version: off
+	// through 1.35, on from 1.36. Set it explicitly when the cluster's
+	// behavior must not change across a version upgrade.
 	CorednsAutoscaler *DigitalOceanKubernetesClusterFeatureToggle `protobuf:"bytes,32,opt,name=coredns_autoscaler,json=corednsAutoscaler,proto3" json:"coredns_autoscaler,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
@@ -392,9 +404,12 @@ type DigitalOceanKubernetesClusterDefaultNodePool struct {
 	// The slug identifier for the Droplet size of each node (e.g.
 	// "s-2vcpu-4gb"). Changing it replaces the whole cluster.
 	Size string `protobuf:"bytes,1,opt,name=size,proto3" json:"size,omitempty"`
-	// The number of nodes in the pool. With auto_scale enabled this is the
-	// initial count; the live count then drifts freely between min_nodes and
-	// max_nodes without producing configuration diffs.
+	// The fixed number of nodes in the pool. Required when auto_scale is off;
+	// must be left unset when auto_scale is on -- the pool then starts at
+	// min_nodes and DigitalOcean's autoscaler owns the count from there, and
+	// both provisioners send no count at all (a stated count would be written
+	// back from the live pool on every read and re-applied on every update,
+	// fighting the autoscaler).
 	NodeCount uint32 `protobuf:"varint,2,opt,name=node_count,json=nodeCount,proto3" json:"node_count,omitempty"`
 	// Whether DigitalOcean's cluster-autoscaler manages this pool's node count
 	// between min_nodes and max_nodes.
@@ -930,12 +945,11 @@ const file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_spec_prot
 	"\x16amd_gpu_plugin_xor_dra\x12Camd_gpu_device_plugin and amd_gpu_dra_driver are mutually exclusive\x1aA!has(this.amd_gpu_device_plugin) || !has(this.amd_gpu_dra_driver)\x1a\xaf\x01\n" +
 	"\x19nvidia_gpu_plugin_xor_dra\x12Invidia_gpu_device_plugin and nvidia_gpu_dra_driver are mutually exclusive\x1aG!has(this.nvidia_gpu_device_plugin) || !has(this.nvidia_gpu_dra_driver)B\x10\n" +
 	"\x0e_surge_upgradeJ\x04\b\a\x10\bJ\x04\b\b\x10\tJ\x04\b\n" +
-	"\x10\vR\x15disable_surge_upgradeR\x12maintenance_windowR\"control_plane_firewall_allowed_ips\"\xfa\x06\n" +
+	"\x10\vR\x15disable_surge_upgradeR\x12maintenance_windowR\"control_plane_firewall_allowed_ips\"\xe4\b\n" +
 	",DigitalOceanKubernetesClusterDefaultNodePool\x12\x1a\n" +
-	"\x04size\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04size\x12)\n" +
+	"\x04size\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04size\x12\x1d\n" +
 	"\n" +
-	"node_count\x18\x02 \x01(\rB\n" +
-	"\xbaH\a\xc8\x01\x01*\x02 \x00R\tnodeCount\x12\x1d\n" +
+	"node_count\x18\x02 \x01(\rR\tnodeCount\x12\x1d\n" +
 	"\n" +
 	"auto_scale\x18\x03 \x01(\bR\tautoScale\x12\x1b\n" +
 	"\tmin_nodes\x18\x04 \x01(\rR\bminNodes\x12\x1b\n" +
@@ -946,8 +960,9 @@ const file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_spec_prot
 	"\x12gpu_partition_mode\x18\t \x01(\tBB\xbaH?\xd8\x01\x01r:R\x1bAMD_PARTITION_MODE_SPX_NPS1R\x1bAMD_PARTITION_MODE_DPX_NPS2R\x10gpuPartitionMode\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xa8\x01\xbaH\xa4\x01\x1a\xa1\x01\n" +
-	"\x10autoscale_bounds\x12=auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes\x1aN!this.auto_scale || (this.min_nodes >= 1u && this.max_nodes >= this.min_nodes)\"\xa7\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x9e\x03\xbaH\x9a\x03\x1a\xa1\x01\n" +
+	"\x10autoscale_bounds\x12=auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes\x1aN!this.auto_scale || (this.min_nodes >= 1u && this.max_nodes >= this.min_nodes)\x1a\xf3\x01\n" +
+	"\x12node_count_by_mode\x12\x9b\x01node_count is required when auto_scale is off and must be left unset when auto_scale is on (the pool starts at min_nodes and the autoscaler owns the count)\x1a?this.auto_scale ? this.node_count == 0u : this.node_count >= 1u\"\xa7\x01\n" +
 	"*DigitalOceanKubernetesClusterNodePoolTaint\x12\x18\n" +
 	"\x03key\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value\x12I\n" +

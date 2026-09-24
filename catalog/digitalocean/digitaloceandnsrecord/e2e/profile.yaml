@@ -3,20 +3,36 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceandnsrecord
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. THREE scenarios, all riding the DigitalOceanDnsZone
-  # registry prerequisite (installed from that kind's minimal scenario):
-  # `minimal` is an A record proving lifecycle + the domain reference;
-  # `full` is an SRV record proving the priority/weight/port presence trio
-  # and the trailing-dot value normalization the import tolerates; `caa`
-  # proves the flags/tag class including the explicit-zero flags quirk.
-  # Records are free API objects that create in seconds. Watch on first
-  # live run: the blind import round-trip needs the TWO-part id
-  # ("{domain},{record_id}" -- both stack outputs), and the record verifier
-  # is the OutputsVerifier shape reading record_id + domain together.
+  # Live-proven on BOTH engines, all three scenarios, full lifecycle under
+  # the idempotency gate, plus the blind import round-trip (Terraform lane),
+  # every scenario riding the DigitalOceanDnsZone registry prerequisite
+  # (installed from that kind's minimal scenario, its domain name carrying
+  # the run token): `minimal` (an A record -- lifecycle + the domain
+  # reference resolution + the record_id/domain outputs the verifier
+  # addresses the record with), `full` (an SRV record with the
+  # priority/weight/port presence trio and a custom TTL), and `caa`
+  # (flags/tag with the explicit-zero flags quirk -- the provider drops the
+  # 0 on create, the API defaults it to 0, and the round-trip agreed). The
+  # two-part {domain},{record_id} import derived both halves from stack
+  # outputs and planned no change on all three. Records are free API objects
+  # that create in seconds.
+  #
+  # What the first live run taught: CNAME/MX/NS/SRV/CAA values must be
+  # written fully qualified WITH the trailing dot (or zone-relative) -- the
+  # provider appends the dot on read-back and forgives only those two
+  # spellings, so a bare "letsencrypt.org" is a perpetual in-place update.
+  # The scenarios, spec comments, and docs carry the dotted form.
+  #
+  # Known hazard outside a single record's control: DigitalOcean's API
+  # deadlocks on CONCURRENT record writes to one domain (422 "Deadlock
+  # found"). One standalone record is never affected; many applied at once
+  # against the same zone can be -- the GUIDE points such sets at the zone
+  # kind's serialized inline records.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: zone fixture 9 s, DEPLOY 8 s, IDEMPOTENCY PASS,
+  # DESTROY 11 s -- every phase first run; the bridge bump changed nothing
+  # this kind's lane can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

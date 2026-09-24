@@ -45,7 +45,8 @@ spec:
   cluster:
     value: fb7d9b81-fe06-4ee5-87f1-b9efc5af46fd
   size: gpu-mi300x1-192gb
-  nodeCount: 1
+  # No nodeCount: with autoScale on, the pool starts at minNodes and the
+  # autoscaler owns the count (a stated count would fight it).
   autoScale: true
   minNodes: 1
   maxNodes: 3
@@ -68,7 +69,7 @@ spec:
 | `spec.nodePoolName` | `string` | yes |  |  |
 | `spec.cluster` | `string \| valueFrom` | yes |  | DigitalOceanKubernetesCluster (`status.outputs.cluster_id`) |
 | `spec.size` | `string` | yes |  |  |
-| `spec.nodeCount` | `uint32` | yes |  |  |
+| `spec.nodeCount` | `uint32` |  |  |  |
 | `spec.autoScale` | `bool` |  |  |  |
 | `spec.minNodes` | `uint32` |  |  |  |
 | `spec.maxNodes` | `uint32` |  |  |  |
@@ -113,13 +114,14 @@ The slug identifier for the Droplet size of each node (e.g.
 
 ### spec.nodeCount
 
-`uint32` · required
+`uint32`
 
-The number of nodes in the pool. With auto_scale enabled this is the
-initial count; the live count then drifts freely between min_nodes and
-max_nodes without producing configuration diffs.
-
-- rule: {"required":true,"uint32":{"gt":0}}
+The fixed number of nodes in the pool. Required when auto_scale is off;
+must be left unset when auto_scale is on -- the pool then starts at
+min_nodes and DigitalOcean's autoscaler owns the count from there, and
+both provisioners send no count at all (a stated count would be written
+back from the live pool on every read and re-applied on every update,
+fighting the autoscaler).
 
 ### spec.autoScale
 
@@ -188,7 +190,13 @@ Taint effect. One of NoSchedule, PreferNoSchedule, NoExecute
 (Optional) DigitalOcean tags applied to the pool's Droplets, in addition
 to the standard Planton tags both provisioners always apply. Tags drive
 DigitalOcean-side grouping and billing attribution; they are unrelated
-to Kubernetes labels.
+to Kubernetes labels. Tags are also the wiring surface for
+Droplet-scoped resources: a DigitalOceanFirewall or load balancer that
+targets a pool tag covers every current AND future node, because DOKS
+applies the pool's tags to each node it creates -- the pool's node and
+Droplet ids are never exported for that reason (they churn by design).
+Never author tags with the `k8s:` or `terraform:` prefixes; DOKS owns
+those and the provider filters them out of state.
 
 - rule: {"repeated":{"items":{"string":{"pattern":"^[a-zA-Z0-9:\\-_]{1,255}$"}}}}
 
@@ -204,6 +212,7 @@ replaces the pool.
 ## Validation Rules
 
 - `autoscale_bounds`: auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes
+- `node_count_by_mode`: node_count is required when auto_scale is off and must be left unset when auto_scale is on (the pool starts at min_nodes and the autoscaler owns the count)
 
 ## Outputs
 
@@ -212,9 +221,7 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanKube
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.node_pool_id` | `string` | The unique identifier (UUID) of the created node pool. |
-| `status.outputs.node_ids` | `[]string` | The DOKS node object UUIDs of the pool's current members (the node ids the Kubernetes API reports, not the backing Droplet ids). |
 | `status.outputs.cluster_id` | `string` | The UUID of the cluster that owns this pool. The API addresses the pool as /v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}, so consumers need both ids to reach it. |
-| `status.outputs.droplet_ids` | `[]string` | The integer ids (as strings) of the Droplets backing the pool's nodes, for wiring Droplet-scoped resources (e.g. firewalls) to the pool's machines. |
 
 ## References
 

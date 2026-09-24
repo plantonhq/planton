@@ -38,7 +38,9 @@ type DigitalOceanDatabaseKafkaTopicSpec struct {
 	// The Kafka database cluster to create the topic in. Use a literal
 	// cluster UUID or a reference to a DigitalOceanDatabaseCluster resource
 	// (the cluster must run the kafka engine -- DigitalOcean rejects topic
-	// calls on other engines). Changing it replaces the topic.
+	// calls on other engines). Any Kafka plan works, Basic included (unlike
+	// the schema registry, which needs a General Purpose plan). Changing it
+	// replaces the topic.
 	Cluster *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=cluster,proto3" json:"cluster,omitempty"`
 	// Name of the Kafka topic. Unique within the cluster; the name IS the
 	// topic's API identity. Changing it replaces the topic and drops the old
@@ -185,9 +187,11 @@ type DigitalOceanDatabaseKafkaTopicConfig struct {
 	MinCompactionLagMs *uint64 `protobuf:"varint,15,opt,name=min_compaction_lag_ms,json=minCompactionLagMs,proto3,oneof" json:"min_compaction_lag_ms,omitempty"`
 	// (Optional) Minimum number of in-sync replicas that must acknowledge a
 	// write when the producer uses acks=all. This is the config block's only
-	// leaf the provider defaults locally (to 1) instead of reading the server
-	// value back -- leaving it unset always writes 1, even if the server was
-	// tuned differently out-of-band.
+	// leaf the provider defaults on the WRITE side (to 1): whenever this
+	// config message is present and the leaf is unset, 1 is sent, even if
+	// the server was tuned differently out-of-band. The value IS read back
+	// from the server afterwards (measured 2026-09-17: a topic created with
+	// 2 read 2 back on every plan), so a set value never drifts.
 	MinInsyncReplicas *int32 `protobuf:"varint,16,opt,name=min_insync_replicas,json=minInsyncReplicas,proto3,oneof" json:"min_insync_replicas,omitempty"`
 	// (Optional) Preallocate a file on disk when creating a new log segment.
 	// Unset defers to the Kafka server default.

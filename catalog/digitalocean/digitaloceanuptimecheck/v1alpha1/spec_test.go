@@ -28,6 +28,7 @@ var _ = ginkgo.Describe("DigitalOceanUptimeCheckSpec validations", func() {
 		return &DigitalOceanUptimeCheckAlert{
 			AlertName: "homepage-down",
 			Type:      "down",
+			Period:    "2m",
 			Notifications: &DigitalOceanUptimeCheckNotifications{
 				Emails: []string{"ops@example.com"},
 			},
@@ -98,20 +99,65 @@ var _ = ginkgo.Describe("DigitalOceanUptimeCheckSpec validations", func() {
 	})
 
 	ginkgo.Context("Alert rules", func() {
-		ginkgo.It("accepts a down alert with no threshold", func() {
+		ginkgo.It("accepts a down alert with no threshold or comparison (the API fixes both)", func() {
 			spec := makeValidSpec()
 			spec.Alerts = []*DigitalOceanUptimeCheckAlert{makeValidAlert()}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
-		ginkgo.It("accepts a latency alert with a threshold", func() {
+		ginkgo.It("accepts a down_global alert with no threshold or comparison", func() {
+			spec := makeValidSpec()
+			alert := makeValidAlert()
+			alert.Type = "down_global"
+			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a down alert that sets threshold (the API would overwrite it with 1)", func() {
+			spec := makeValidSpec()
+			alert := makeValidAlert()
+			alert.Threshold = proto.Int32(3)
+			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a down_global alert that sets comparison (the API would overwrite it with less_than)", func() {
+			spec := makeValidSpec()
+			alert := makeValidAlert()
+			alert.Type = "down_global"
+			alert.Comparison = "greater_than"
+			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects any alert without a period (the API requires it for every type)", func() {
+			for _, typ := range []string{"down", "latency", "ssl_expiry"} {
+				spec := makeValidSpec()
+				alert := makeValidAlert()
+				alert.Type = typ
+				alert.Period = ""
+				if typ != "down" {
+					alert.Threshold = proto.Int32(300)
+				}
+				if typ == "latency" {
+					alert.Comparison = "greater_than"
+				}
+				spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
+				err := protovalidate.Validate(spec)
+				gomega.Expect(err).NotTo(gomega.BeNil(), "type %q without period should be rejected", typ)
+			}
+		})
+
+		ginkgo.It("accepts a latency alert with a threshold and a comparison", func() {
 			spec := makeValidSpec()
 			alert := makeValidAlert()
 			alert.Type = "latency"
 			alert.Threshold = proto.Int32(300)
 			alert.Comparison = "greater_than"
-			alert.Period = "2m"
 			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).To(gomega.BeNil())
@@ -121,12 +167,42 @@ var _ = ginkgo.Describe("DigitalOceanUptimeCheckSpec validations", func() {
 			spec := makeValidSpec()
 			alert := makeValidAlert()
 			alert.Type = "latency"
+			alert.Comparison = "greater_than"
 			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
 
-		ginkgo.It("accepts an ssl_expiry alert with a day threshold", func() {
+		ginkgo.It("rejects a latency alert without a comparison (DigitalOcean would pick a direction silently)", func() {
+			spec := makeValidSpec()
+			alert := makeValidAlert()
+			alert.Type = "latency"
+			alert.Threshold = proto.Int32(300)
+			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts an ssl_expiry alert with a day threshold and no comparison", func() {
+			spec := makeValidSpec()
+			alert := makeValidAlert()
+			alert.Type = "ssl_expiry"
+			alert.Threshold = proto.Int32(14)
+			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an ssl_expiry alert without a threshold (0 days is a post-mortem)", func() {
+			spec := makeValidSpec()
+			alert := makeValidAlert()
+			alert.Type = "ssl_expiry"
+			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an ssl_expiry alert that sets comparison (the API always evaluates less_than)", func() {
 			spec := makeValidSpec()
 			alert := makeValidAlert()
 			alert.Type = "ssl_expiry"
@@ -134,7 +210,7 @@ var _ = ginkgo.Describe("DigitalOceanUptimeCheckSpec validations", func() {
 			alert.Comparison = "less_than"
 			spec.Alerts = []*DigitalOceanUptimeCheckAlert{alert}
 			err := protovalidate.Validate(spec)
-			gomega.Expect(err).To(gomega.BeNil())
+			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
 
 		ginkgo.It("rejects an unknown alert type", func() {

@@ -251,3 +251,48 @@ PROACTIVE CREATE-TIME-REQUIRED IDENTIFICATION (MANDATORY STEP)
   explainable from the spec alone.
 - The goal: a manifest that AWS would reject at deploy time must already fail
   `validate-manifest` in seconds, with a message naming the missing field.
+- The same blindness runs the other way: plain `Optional` (not Computed)
+  fields the API REQUIRES, and fields the API silently OVERWRITES with a fixed
+  value for some variants of the resource (an uptime alert of type `down`
+  reads back `threshold: 1, comparison: less_than` whatever was sent). The
+  provider's acceptance tests usually exercise one happy shape, so neither
+  class shows in its source. When a resource has typed variants, look for
+  per-variant required and forced fields in the API's own reference (or a
+  live probe if one is available) and model them as the manifest grammar
+  already can: required-per-variant CELs for what the API demands, and
+  FORBIDDEN-per-variant CELs for what it overwrites -- with the module
+  sending the API's fixed value for that variant. A forced value accepted as
+  input reads back different from what was written and re-plans forever;
+  making it unrepresentable is the only shape a manifest and the cloud agree
+  on at every apply.
+- Version-like string fields (an engine version, a runtime version, an API
+  version) are checked by the cloud against a LIVE offer list that moves on
+  the vendor's schedule, not against a format. Never enumerate the currently
+  valid versions in the field comment as if they were the rule -- they go
+  stale silently and a copied example then fails at create (a managed
+  MySQL "8" that became "8.4"-only). Point the author at the vendor's
+  options endpoint or catalog call, give one or two examples marked with
+  the date they were checked, and make the presets name the version they
+  were verified against and when.
+- A provider resource that carries its own validated, account-unique name
+  gets that name as a SPEC FIELD, never derived from `metadata.name` -- even
+  when the kind is a thin composition and the name feels like the resource's
+  Planton identity. Planton metadata names are routinely longer than a
+  cloud's cap (App Platform: 32 characters) and are unique only within an
+  org and environment, so a module that names the cloud object from
+  `metadata.name` passes every offline gate and fails at plan for most real
+  names. Model the name with the cloud's own rule (length, pattern,
+  uniqueness scope) in the field's validation and comment.
+- A cloud's region, location, or zone vocabulary is not always ONE enum per
+  provider. Some services place resources in datacenter GROUPS with their
+  own slugs (App Platform's `nyc` covers nyc1 and nyc3) and silently
+  normalize a member datacenter's slug to the group's, so a spec typed with
+  the general region enum passes every offline gate and re-plans on every
+  apply. Read the service's own region endpoint before reusing a shared
+  enum; when the vocabularies differ, the service gets its own enum with the
+  normalization rule stated in its comment.
+- A `PARITY-EXCEPTION` guard ("the other engine's SDK cannot express this")
+  is a claim about a SPECIFIC SDK version. Name that version in the guard's
+  message and the field comment, and re-verify every guard on disk whenever
+  the pin moves -- a gap that closed a pin ago leaves one engine refusing a
+  setting the other has wired all along.

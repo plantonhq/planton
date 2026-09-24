@@ -4,21 +4,27 @@ package dev.planton.digitalocean.digitaloceankubernetesnodepool.v1alpha1;
 
 // DigitalOceanKubernetesNodePoolStackOutputs captures the outputs after
 // provisioning a DigitalOcean Kubernetes node pool.
+//
+// The pool's member nodes are deliberately NOT outputs: DOKS replaces them
+// by design -- the autoscaler adds and removes nodes, cluster upgrades and
+// auto-repair recycle them -- so a node or Droplet id captured at apply
+// time is wrong the next time the pool changes shape, and a firewall wired
+// to such a list silently misses every node added later. Droplet-scoped
+// resources address the pool's machines through the pool's `tags`, which
+// DigitalOcean applies to every current and future node; the live node set
+// is read from the API by whoever needs it (the E2E verifier asserts node
+// health that way).
 message DigitalOceanKubernetesNodePoolStackOutputs {
+  // Retired: `node_ids` and `droplet_ids` (apply-time member snapshots).
+  // Never reuse the numbers or the names.
+  reserved 2, 4;
+  reserved "node_ids", "droplet_ids";
+
   // The unique identifier (UUID) of the created node pool.
   string node_pool_id = 1;
-
-  // The DOKS node object UUIDs of the pool's current members (the node ids
-  // the Kubernetes API reports, not the backing Droplet ids).
-  repeated string node_ids = 2;
 
   // The UUID of the cluster that owns this pool. The API addresses the pool
   // as /v2/kubernetes/clusters/{cluster_id}/node_pools/{node_pool_id}, so
   // consumers need both ids to reach it.
   string cluster_id = 3;
-
-  // The integer ids (as strings) of the Droplets backing the pool's nodes,
-  // for wiring Droplet-scoped resources (e.g. firewalls) to the pool's
-  // machines.
-  repeated string droplet_ids = 4;
 }

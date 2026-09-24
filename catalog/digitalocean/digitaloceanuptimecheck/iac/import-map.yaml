@@ -6,8 +6,11 @@ spec:
   # The module manages two resource types: the check (imports by UUID,
   # exported as check_id) and the composed alert rows (each imports as
   # "{check_id},{alert_id}"). The check part derives from the same output;
-  # the alert UUIDs are per-row and not exported (a check manages many), so
-  # they must be looked up.
+  # the alert UUIDs derive per instance from the alert_ids map output, keyed
+  # by the module's for_each key, so a blind round-trip needs zero user
+  # input when state is present. Lossless: the modules send exactly the
+  # threshold/comparison values DigitalOcean stores for every alert type,
+  # so nothing normalizes on read-back.
   values:
     - name: check_id
       derivations:
@@ -16,6 +19,9 @@ spec:
         `doctl monitoring uptime list` (the ID column), or the check's page
         URL in the control panel's Monitoring -> Uptime section.
     - name: alert_id
+      derivations:
+        - from_stack_output_keyed_by_address: alert_ids
       where_to_find: >-
-        The UUID of each alert row: `doctl monitoring uptime alert list
+        The UUID of each alert row: the `alert_ids` output keyed by
+        "<row index>-<alert name>", or `doctl monitoring uptime alert list
         <check-id>` (the ID column). One import per managed alert row.

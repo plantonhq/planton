@@ -3,20 +3,29 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanvpcpeering
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. ONE scenario: `minimal` IS the kind's total create
-  # surface (name + exactly two VPCs). It is the catalog's FIRST
-  # dual-fixture scenario of one kind: vpc_1 rides the registry
-  # prerequisite's install fixture, vpc_2 rides a scenario-declared extra
-  # VPC instance -- watch the fixture resolution order on first live run.
-  # The peering object is free; create/delete each wait up to 2 minutes
-  # (provider-enforced timeouts), and the provider retries deletes on the
-  # 403 DigitalOcean returns while a peering is still settling.
-  # Watch item for the proof lane: renaming is the kind's only in-place
-  # update and the six-phase runner has no update phase.
+  # green: proven live on BOTH engines (2026-09-17), the one scenario
+  # (`minimal` IS the kind's total create surface: name + exactly two
+  # VPCs), every phase including the idempotency gate and the blind import
+  # round-trip (LOSSLESS by the bare UUID, zero tolerated updates). The
+  # catalog's first dual-fixture-of-one-kind scenario worked as designed:
+  # the runner deployed the registry prerequisite's install VPC first, then
+  # the scenario-declared second VPC (DEPENDENCIES-UP ~16 s), and resolved
+  # vpc_1/vpc_2 by name. Measured: DEPLOY 12-18 s (the provider waits for
+  # ACTIVE), DESTROY 13-22 s (it waits through DELETING), the peering 404s
+  # within a second of the wait ending, both VPCs tore down in ~18 s.
+  # The peering name carries the run id: names are unique per team and a
+  # delete passes through DELETING before the name is free.
+  # The lifecycle status is not an output (an apply-time snapshot could only
+  # ever read ACTIVE); the verifier asserts existence live.
+  # Deferred arms (no runner update phase): rename, the kind's only in-place
+  # update upstream.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `minimal`: both VPC fixtures 18 s, DEPLOY 13 s, IDEMPOTENCY
+  # PASS, DESTROY 16 s -- every phase first run; the bridge bump changed
+  # nothing this kind's lane can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
   timeout_minutes: 15

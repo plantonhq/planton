@@ -57,8 +57,9 @@ spec:
 
 ## Behavior worth knowing
 
-- **Hostname values read back with a trailing dot** — CNAME/MX/NS/SRV/CAA targets are stored fully qualified (`mail.example.com.`); author the dot to avoid a permanent diff.
+- **Hostname values read back with a trailing dot** — CNAME/MX/NS/SRV/CAA targets are stored fully qualified (`mail.example.com.`, `letsencrypt.org.`); author the dot, or a zone-relative name (`mail`). A bare `letsencrypt.org` is re-applied on every run.
 - **Explicit zeros are dropped** — the provider omits a `priority`/`weight`/`port`/`flags` of exactly 0 from the create request and the API's default applies; use positive values when exactness matters (CAA `flags: 0` is safe — the API default IS 0).
+- **Concurrent writes to one zone can deadlock** — DigitalOcean fails one of several simultaneous record writes to the same domain with a `422 ... Deadlock found` error; sequence many standalone records, or use the zone kind's inline `records`, which are written one at a time.
 - **TTLs harmonize server-side** — DigitalOcean forces one TTL across records sharing a fully-qualified name (RFC 2181), so the live TTL can drift when a sibling record changes it.
 - **Records import with a two-part ID** — `{domain},{record_id}`; both are stack outputs of this component.
 

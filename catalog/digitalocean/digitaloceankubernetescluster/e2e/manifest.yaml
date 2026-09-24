@@ -14,7 +14,7 @@ metadata:
 spec:
   clusterName: example-doks-minimal
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   defaultNodePool:
@@ -28,7 +28,7 @@ metadata:
 spec:
   clusterName: example-doks-full
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   highlyAvailable: true
@@ -65,7 +65,8 @@ spec:
     - env:example
   defaultNodePool:
     size: s-2vcpu-4gb
-    nodeCount: 3
+    # No nodeCount: with autoScale on, the pool starts at minNodes and the
+    # autoscaler owns the count (a stated count would fight it).
     autoScale: true
     minNodes: 2
     maxNodes: 5

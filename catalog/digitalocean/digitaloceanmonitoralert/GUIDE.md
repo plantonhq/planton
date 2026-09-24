@@ -6,6 +6,12 @@ What experience with this component teaches that the field reference cannot.
 
 An id-targeted policy watches exactly the droplets listed -- replacements and autoscaled additions are NOT covered until the manifest changes. A tag-targeted policy tracks membership automatically: every droplet carrying the tag is watched the moment it exists. Use id references for singular pets, tags for fleets.
 
+The tag does not have to exist when the policy is created. DigitalOcean stores it as a selector and neither checks nor creates it -- a policy naming a tag no droplet carries is accepted and simply watches nothing until one does, so you can declare the alert before the fleet. That is the opposite of firewalls, which reject a tag no resource carries; do not carry the firewall rule over.
+
+## Alert email goes only to verified team members
+
+DigitalOcean delivers alert email only to addresses that belong to verified members of the team that owns the policy, and rejects any other address at create time (`email is not verified`). A shared inbox, a pager bridge, or an external on-call address must be invited to the team and verified before it can appear in `alerts.emails`. The same rule applies to uptime alerts. Slack rows have no such restriction.
+
 ## The metric name IS the contract -- copy it exactly
 
 Metric names are DigitalOcean's raw API paths with their inconsistencies intact: droplet CPU is `v1/insights/droplet/cpu` (no `_utilization_percent` suffix, unlike memory and disk), and database metrics live under `v1/dbaas/alerts/` with `_alerts` suffixes. Validation carries the exact 28-value list, so a typo fails at validation -- but read the error's list rather than guessing the spelling.
@@ -20,7 +26,7 @@ Policies accept many targets; a CPU policy covering the whole web fleet beats te
 
 ## Slack webhooks are credentials
 
-The webhook URL lets anyone post to your channel. The spec marks it sensitive and both provisioners keep it out of plain-text state rendering -- treat it with the same care in your manifest storage (prefer secret references over literals in committed manifests).
+The webhook URL lets anyone post to your channel. The spec marks it sensitive, so the platform accepts only a managed-secret reference (`$secret/<name>`) for it, never a literal URL, and the Pulumi module additionally encrypts it in stack state. Terraform state stores every value in plain text -- on that engine the protection is your state backend's own encryption, so treat state as you would the credential itself.
 
 ## Disabling beats deleting
 

@@ -8,10 +8,14 @@ import (
 // loadDigitalOceanEnvVars loads DigitalOcean provider config and returns environment variables.
 //
 // Unlike Cloudflare (whose tofu modules ship an empty provider block read from CLOUDFLARE_* env
-// vars), the DigitalOcean tofu modules declare the credentials as REQUIRED Terraform variables
+// vars), the DigitalOcean tofu modules declare the credentials as Terraform variables
 // (`token = var.digitalocean_token`, plus `var.spaces_access_id`/`var.spaces_secret_key` on the
-// Spaces-backed kinds), so the bridge emits TF_VAR_* forms. Terraform/OpenTofu silently ignores a
-// TF_VAR_* env var the module does not declare, so the Spaces pair is safe to emit for every kind.
+// Spaces-backed kinds), so the bridge emits TF_VAR_* forms. Every one of those variables defaults
+// to null, and a null token/key makes the provider fall back to its own environment defaults
+// (DIGITALOCEAN_TOKEN, SPACES_ACCESS_KEY_ID, SPACES_SECRET_ACCESS_KEY) -- so a stack input without
+// a provider config (a developer shell, the E2E harness) authenticates from the ambient
+// environment exactly as the Pulumi module does. Terraform/OpenTofu silently ignores a TF_VAR_*
+// env var the module does not declare, so the Spaces pair is safe to emit for every kind.
 //
 // default_region is intentionally not emitted: region is a resource property carried in each
 // module's spec, not a provider-level input on the tofu path.

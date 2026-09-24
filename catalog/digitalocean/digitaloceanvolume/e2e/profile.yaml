@@ -3,19 +3,32 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanvolume
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` (region + size only, unformatted)
-  # and `full` (ext4 formatting + filesystem label + description + tags --
-  # the cross-engine tag-union arm). DEFERRED ARM: snapshot_id needs a
-  # pre-existing volume snapshot in the account (the snapshot resource's own
-  # kind is a recorded deferred disposition); unblock condition: a snapshot
-  # fixture. Volumes bill ~$0.10/GiB/mo prorated -- these 10 GiB lanes cost
-  # pennies. Watch on first live run: the create-only trio (snapshot_id,
-  # initial_filesystem_type, initial_filesystem_label) stays empty on the
-  # blind import round-trip (config-only tolerances).
+  # Live-proven on BOTH engines, both scenarios, full lifecycle plus the blind
+  # import round-trip (Terraform lane): `minimal` (region + size, unformatted)
+  # and `full` (ext4 + filesystem label + description + the cross-engine
+  # tag-union arm). The `full` round-trip is the live proof of the modules'
+  # ignore_changes on the create-only trio (snapshot_id,
+  # initial_filesystem_type, initial_filesystem_label): the blind import
+  # leaves them empty, the config re-supplies them, and the plan is still
+  # clean -- without the ignore the provider's ForceNew would plan a
+  # destroy-and-recreate of a data volume, which is exactly the adoption
+  # footgun the modules exist to remove. Volumes bill ~$0.10/GiB/mo prorated;
+  # these 10 GiB lanes cost pennies. Volume names are unique per region, so
+  # scenario names carry ${E2E_RUN_ID}.
+  #
+  # Read-after-delete is eventually consistent: the first Terraform lane saw
+  # the volume still answering 200 one second after a successful destroy and
+  # 404 seconds later; the harness polls absence (typed StillExistsError,
+  # 60s budget) for exactly this class.
+  #
+  # DEFERRED ARM: snapshot_id needs a pre-existing volume snapshot in the
+  # account (the snapshot resource's own kind is a recorded deferred
+  # disposition). Unblock condition: a snapshot fixture.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: DEPLOY 12 s, IDEMPOTENCY PASS, DESTROY 12 s -- every
+  # phase first run; the bridge bump changed nothing this kind's lane can
+  # observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

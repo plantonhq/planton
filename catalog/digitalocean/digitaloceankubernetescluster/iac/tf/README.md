@@ -24,7 +24,7 @@ module "kubernetes_cluster" {
   spec = {
     cluster_name       = "app-cluster"
     region             = "nyc3"
-    kubernetes_version = "1.33.1-do.3"
+    kubernetes_version = "1.35"
     vpc                = "b5648f9e-a28a-4760-bb87-b2fad07ae295"
     highly_available   = true
     auto_upgrade       = true
@@ -64,7 +64,7 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 | `kubeconfig` | Raw kubeconfig YAML (sensitive; not base64) |
 | `api_server_endpoint` | Kubernetes API server URL |
 | `urn` | `do:kubernetes:<cluster_id>` |
-| `ipv4_address` | Control plane public IPv4 (empty on HA clusters) |
+| `ipv4_address` | Control plane public IPv4 when DigitalOcean reports one -- empty on clusters created today, single-replica included; use `api_server_endpoint` |
 | `default_node_pool_id` | The inline default pool's UUID |
 | `cluster_subnet` / `service_subnet` | Pod and service CIDR blocks in effect |
 
@@ -74,4 +74,4 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 - `surge_upgrade` passes through null when unset so the provider's default (true) applies -- it is never coalesced to false.
 - Changing the default pool's `size` or `gpu_partition_mode` replaces the entire cluster (provider ForceNew inside the `node_pool` block).
 - The provider itself appends the `terraform:default-node-pool` marker tag to the inline pool; the module never sets it.
-- Addon blocks (`routing_agent`, GPU plugins/DRA drivers, `rdma_shared_device_plugin`, `coredns_autoscaler`, `p2p_oci_registry_plugin`) are emitted only when the spec sets them, so unset defers to DigitalOcean's own default per addon. See the kind [GUIDE](../../GUIDE.md).
+- Addon blocks (`routing_agent`, GPU plugins/DRA drivers, `rdma_shared_device_plugin`, `coredns_autoscaler`, `p2p_oci_registry_plugin`) are emitted only when the spec sets them, so unset defers to DigitalOcean's own default per addon. The module sends what the manifest states and lets DigitalOcean's own validation enforce the prerequisites (GPU node sizes for the GPU family; Kubernetes 1.36.0-do.2 or later for `p2p_oci_registry_plugin`, which otherwise fails the create with a 422). See the kind [GUIDE](../../GUIDE.md).

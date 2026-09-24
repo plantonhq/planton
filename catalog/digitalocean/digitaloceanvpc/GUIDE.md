@@ -10,9 +10,11 @@ Judgment calls that matter when you run private networks on DigitalOcean.
 
 DigitalOcean accepts prefixes from /16 (65,536 addresses) down to /24 (256). A /24 sounds roomy for a dozen Droplets, but managed resources quietly consume addresses too — every DOKS node, load balancer, and database cluster member takes one. Kubernetes clusters are the heavy consumer: autoscaling to twenty nodes eats twenty addresses. A /20 (4,096) is a comfortable default for an environment; reserve /24s for genuinely small, fixed-size networks.
 
-## You cannot make a VPC the region's default — and should not want to
+## The region's default VPC: never yours by choice, sometimes yours by accident
 
-Each region has a default VPC that DigitalOcean manages; resources created without an explicit network land there. That flag is computed, not settable — no manifest, Terraform config, or API write flips it. Treat the default VPC as the untyped landing zone and this kind's VPCs as the deliberate ones: always wire the `vpc` reference on Droplets, clusters, load balancers, and databases explicitly, and membership never depends on which VPC happens to be the regional default.
+Each region has a default VPC; resources created without an explicit network land there. The flag is not settable through this kind or either provisioner. Treat the default VPC as the untyped landing zone and this kind's VPCs as the deliberate ones: always wire the `vpc` reference on Droplets, clusters, load balancers, and databases explicitly, and membership never depends on which VPC happens to be the regional default.
+
+The trap is a region that has no VPC yet — a fresh account, or a region you have never used. DigitalOcean does not pre-create defaults; it makes the FIRST VPC created in that region the default, and default VPCs cannot be deleted (the API answers `403 Can not delete default VPCs`). If that first VPC was declared through this kind, its destroy fails and the VPC stays behind, still the default. Recovery is an account-level action outside infrastructure-as-code: create a plain replacement in that region (`default-<region>` is the name DigitalOcean itself would have used), promote it with the API (`PATCH /v2/vpcs/{id}` with `"default": true` — the one write the flag does accept), then delete the stranded one. Better: before the first deliberate VPC in a new region, let DigitalOcean create its default by creating any resource there without a `vpc`, or seed `default-<region>` yourself the same way.
 
 ## One region, no bridges — plan for it
 
@@ -21,3 +23,7 @@ A VPC exists in exactly one region, and members can only join from that region. 
 ## Destroy members first; the VPC goes last
 
 DigitalOcean refuses to delete a VPC that still contains resources, and the module's delete retries only paper over short races (a Droplet mid-destroy), not real membership. Tear environments down in dependency order — workloads, then load balancers and databases, then the VPC. The same applies in reverse for creation, which is why other kinds' E2E lanes install this VPC as their first fixture.
+
+One member class outlives its resource: a load balancer that never left `new` and was then deleted can stay listed in `GET /v2/vpcs/{id}/members` (URN present, name empty) for a while after the balancer itself answers 404, and the VPC delete keeps failing `409 Can not delete VPC with members` until DigitalOcean clears it (observed: about 45 minutes; a database cluster whose create FAILED left one for more than a day). Nothing on the account can be deleted to speed it up. If the VPC's name is needed sooner, rename the stranded VPC (`PATCH /v2/vpcs/{id}` with a new `name`) and delete it once its member list is empty; if its address range is needed sooner, the next network has to use a different range -- a ghost holds the CIDR too (`422 This range/size overlaps`).
+
+A shorter, healthy version of the same thing happens after every Kubernetes cluster delete: the cluster answers 404 within seconds while its worker Droplets are still being torn down, and they stay members for about two minutes. A VPC delete in that window fails the same `409`; a retry a minute or two later succeeds. Nothing is stranded -- it is a lag, not a ghost.

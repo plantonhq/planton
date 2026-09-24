@@ -1,0 +1,29 @@
+# Private DigitalOceanDroplet: the minimal shape plus publicNetworking: false
+# -- a droplet with NO public network interface, reachable only inside its
+# VPC (the region's default VPC, since vpc is unset). Proves the create-only
+# private-networking arm on both engines: the ipv4_address output is empty
+# by contract and the verifier asserts the live droplet has no public IPv4
+# and that ipv4_address_private matches the live private address. The
+# region is pinned so the droplet lands in a region whose default VPC the
+# account already holds (an unset region can create a new default VPC as
+# residue -- see profile.yaml).
+apiVersion: digital-ocean.planton.dev/v1alpha1
+kind: DigitalOceanDroplet
+metadata:
+  name: planton-oss-e2e-digitaloceandroplet-priv
+  id: planton-oss-e2e-digitaloceandroplet-priv
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: digitaloceandroplet
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  dropletName: pltn-e2e-dodrop-priv
+  size: s-1vcpu-1gb
+  image: ubuntu-24-04-x64
+  region: nyc3
+  publicNetworking: false

@@ -96,7 +96,7 @@ These are the most important decisions when configuring a VPC peering. Explore t
 
 ### What This Component Provides
 
-`status.outputs` carries two values: `peering_id`, the connection's UUID (its API identity and import id), and `status`, the lifecycle state DigitalOcean reported at apply time -- the module waits for ACTIVE before exporting, so a successful apply always reads ACTIVE. No downstream Cloud Resource consumes a peering by reference, so there is no ValueFromRef story to teach.
+`status.outputs` carries one value: `peering_id`, the connection's UUID (its API identity and import id). The lifecycle status is deliberately not an output -- both provisioners wait for ACTIVE before the apply succeeds, so a stored status could only ever read ACTIVE and would go stale the moment DigitalOcean moved the peering; anyone who needs it reads it live (`GET /v2/vpcs/peerings/{id}`), which is also how the E2E verifier asserts the peering. No downstream Cloud Resource consumes a peering by reference, so there is no ValueFromRef story to teach.
 
 ## Common Patterns
 

@@ -1,11 +1,15 @@
 # Full-surface DigitalOceanDroplet: composes the VPC fixture (the spec's
 # vpc is OPTIONAL, so the fixture rides the e2e-prerequisites annotation,
-# never a registry edge) and proves weekly backups with a policy window,
-# the monitoring and web-console agents, IPv6, tags, cloud-init user data,
-# graceful shutdown, and an explicit resize_disk=false (the reversible
-# CPU/RAM-only resize mode). ssh_keys, volume_ids, gpu_partition_mode, and
-# public_networking=false are deliberately absent (deferred arms -- see
-# profile.yaml).
+# never a registry edge) and proves the monitoring and web-console agents,
+# IPv6, tags, cloud-init user data, graceful shutdown, and an explicit
+# resize_disk=false (the reversible CPU/RAM-only resize mode). ssh_keys,
+# volume_ids, gpu_partition_mode, and public_networking=false are
+# deliberately absent (deferred arms -- see profile.yaml), and so are
+# enableBackups + backupPolicy: the provider at the pin reads backups from
+# the droplet's `features` list, which DigitalOcean's current backup system
+# no longer populates, so a backups-on droplet re-plans on every apply and
+# can never pass the idempotency gate (upstream
+# digitalocean/terraform-provider-digitalocean#1525; see profile.yaml).
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDroplet
 metadata:
@@ -32,11 +36,6 @@ spec:
       name: planton-oss-e2e-digitaloceanvpc-prereq
       fieldPath: status.outputs.vpc_id
   enableIpv6: true
-  enableBackups: true
-  backupPolicy:
-    plan: weekly
-    weekday: SUN
-    hour: 4
   monitoring: true
   dropletAgent: true
   gracefulShutdown: true

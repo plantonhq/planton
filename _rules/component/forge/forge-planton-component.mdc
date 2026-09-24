@@ -378,7 +378,22 @@ platform's guided import can derive identifiers instead of asking the user
    fails to read back ONE nested block (found only by running the round-trip),
    declare it as a dotted `write_normalized_attributes` sub-path
    (e.g. `"spec.update_strategy"`) -- never tolerate a whole structural
-   attribute like `spec`, which would blind the proof.
+   attribute like `spec`, which would blind the proof. Two limits of the
+   tolerance vocabulary, both measured live: (a) a tolerance covers
+   in-place UPDATES only -- a config-only attribute the provider marks
+   `ForceNew` (create-only initialization arguments the API never returns,
+   such as a volume's initial filesystem) plans a REPLACE after a blind
+   import, which the oracle refuses no matter what is declared; the modules
+   `ignore_changes` such arguments in both engines when they have no
+   post-create meaning (this is also what keeps an adopted resource from
+   being destroyed on its first apply), and a scenario carrying write-only
+   ForceNew SECRETS opts out with the reason-carrying
+   `planton.dev/e2e-import-roundtrip-skip` annotation instead (rotation is
+   supposed to replace); (b) a resource type whose upstream importer is
+   missing OR defective is excluded from the round-trip ONLY by
+   `not_importable_upstream_reason` in place of `id_format` -- a `notes`
+   sentence saying "excluded" is not machine-honored, and the runner will
+   attempt the import.
 2. **Component map** (the component-root `iac/import-map.yaml`): the value source per
    `{placeholder}` -- prefer derivable sources (metadata.name, spec field,
    stack output, ARN part, address key); `where_to_find` is mandatory when

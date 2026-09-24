@@ -8,9 +8,15 @@ resource "digitalocean_kubernetes_node_pool" "node_pool" {
   # Changing the size replaces the pool (provider ForceNew).
   size = var.spec.size
 
-  # With auto_scale enabled this is the initial count; the provider then
-  # suppresses diffs while the live count drifts between the bounds.
-  node_count = var.spec.node_count
+  # Exactly one sizing mode owns the count -- matching the Pulumi module. A
+  # fixed pool sends node_count; an autoscaled pool sends only the bounds
+  # and NO count, because the provider writes the live count back into
+  # node_count on every read and re-applies a stated one on every update,
+  # so a stated count and the autoscaler would fight forever (measured on
+  # the cluster kind's inline pool, which shares this schema: a pool that
+  # autoscaled to two nodes planned `2 -> 1`). Without a count the API
+  # starts the pool at min_nodes.
+  node_count = var.spec.auto_scale ? null : var.spec.node_count
 
   auto_scale = var.spec.auto_scale
   min_nodes  = var.spec.auto_scale ? var.spec.min_nodes : null

@@ -57,7 +57,7 @@ func (v *databaseUserVerifier) VerifyAbsentFromOutputs(ctx context.Context, clie
 		return pkgerrors.Wrap(err, "digitaloceandatabaseuser verify-absent failed")
 	}
 	if user != nil {
-		return pkgerrors.Errorf("digitaloceandatabaseuser %q still exists after destroy", user.Name)
+		return &StillExistsError{Component: "digitaloceandatabaseuser", ID: user.Name}
 	}
 	return nil
 }

@@ -2,6 +2,10 @@
 # image. No GitHub connection, no private registry, no custom domain.
 # Proves the image-source service path, region placement, and the
 # app_id / default_hostname / live_url outputs.
+#
+# appName carries ${E2E_RUN_ID}: App Platform app names are unique across
+# the account and capped at 32 characters, so a fixed name would collide
+# with a stalled or concurrent lane. 19 + 10 (run id + engine suffix) = 29.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanApp
 metadata:
@@ -17,8 +21,8 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  appName: pltn-e2e-doapp-min
-  region: nyc3
+  appName: pltn-e2e-doapp-min-${E2E_RUN_ID}
+  region: nyc
   services:
     - name: web
       image:

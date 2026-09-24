@@ -43,10 +43,15 @@ type DigitalOceanFirewallSpec struct {
 	OutboundRules []*DigitalOceanFirewallOutboundRule `protobuf:"bytes,3,rep,name=outbound_rules,json=outboundRules,proto3" json:"outbound_rules,omitempty"`
 	// (Optional) Droplet tag names this firewall applies to: any Droplet
 	// carrying one of these tags is protected, and membership follows the tag
-	// automatically as Droplets come and go. DigitalOcean creates tags
-	// implicitly when first referenced. The API documents a maximum of 5 tags
-	// per firewall (enforced server-side, not by the provider). Tag values are
-	// case-insensitive for set membership.
+	// automatically as Droplets come and go. Every tag named here MUST
+	// already exist on the account — the API rejects the firewall with
+	// "422 tag <name> does not exist" otherwise. Droplets (and volumes) create
+	// tags implicitly when they declare them, so tag the Droplets first (or
+	// reference a tag a Droplet already carries, such as the Planton label
+	// tags every Planton-managed Droplet gets); firewalls never create tags.
+	// The API documents a maximum of 5 tags per firewall (enforced
+	// server-side, not by the provider). Tag values are case-insensitive for
+	// set membership.
 	Tags []string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty"`
 	// (Optional) Droplets this firewall applies to, as literal numeric Droplet
 	// IDs or references to DigitalOceanDroplet resources. The API documents a
@@ -139,7 +144,9 @@ type DigitalOceanFirewallInboundRule struct {
 	// (e.g. "192.0.2.0/24", "0.0.0.0/0", "::/0").
 	SourceAddresses []string `protobuf:"bytes,3,rep,name=source_addresses,json=sourceAddresses,proto3" json:"source_addresses,omitempty"`
 	// Droplet tag names; traffic from any Droplet carrying one of these tags
-	// is allowed. Tag values are case-insensitive for set membership.
+	// is allowed. Each tag must already exist on the account (a Droplet
+	// declaring it creates it; the API rejects a firewall naming an unknown
+	// tag). Tag values are case-insensitive for set membership.
 	SourceTags []string `protobuf:"bytes,5,rep,name=source_tags,json=sourceTags,proto3" json:"source_tags,omitempty"`
 	// Droplets traffic is allowed from, as literal numeric Droplet IDs or
 	// references to DigitalOceanDroplet resources.
@@ -252,7 +259,9 @@ type DigitalOceanFirewallOutboundRule struct {
 	// (e.g. "0.0.0.0/0", "::/0").
 	DestinationAddresses []string `protobuf:"bytes,3,rep,name=destination_addresses,json=destinationAddresses,proto3" json:"destination_addresses,omitempty"`
 	// Droplet tag names; traffic to any Droplet carrying one of these tags is
-	// allowed. Tag values are case-insensitive for set membership.
+	// allowed. Each tag must already exist on the account (a Droplet
+	// declaring it creates it; the API rejects a firewall naming an unknown
+	// tag). Tag values are case-insensitive for set membership.
 	DestinationTags []string `protobuf:"bytes,5,rep,name=destination_tags,json=destinationTags,proto3" json:"destination_tags,omitempty"`
 	// Droplets traffic is allowed to, as literal numeric Droplet IDs or
 	// references to DigitalOceanDroplet resources.

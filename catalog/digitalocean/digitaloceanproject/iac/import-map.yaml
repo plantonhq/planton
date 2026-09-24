@@ -3,10 +3,14 @@ kind: ComponentImportMap
 metadata:
   name: digitaloceanproject
 spec:
-  # The project imports by its bare UUID -- lossless: every argument is
-  # read back (purpose is read back with the API's "Other: " prefix already
-  # stripped, and environment comes back capitalized, which the provider
-  # normalizes).
+  # The project imports by its bare UUID. Every argument is read back;
+  # two normalize on the way (recorded in aa_import/catalog.yaml): purpose
+  # comes back with the API's "Other: " prefix stripped by the provider,
+  # and environment comes back capitalized ("Production") -- the provider
+  # only diff-suppresses that, so state holds the capitalized form against
+  # the lowercase config. Never adopt the account's DEFAULT project: it
+  # reads back is_default=true against a manifest that leaves the flag
+  # unset, and the first apply would try to un-default it.
   values:
     - name: project_id
       derivations:

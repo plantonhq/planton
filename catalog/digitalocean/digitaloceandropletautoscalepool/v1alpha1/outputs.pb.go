@@ -23,15 +23,19 @@ const (
 
 // DigitalOceanDropletAutoscalePoolStackOutputs captures the key outputs
 // after provisioning a droplet autoscale pool.
+//
+// The pool's health is deliberately NOT an output: a status captured at
+// apply time goes stale the moment DigitalOcean changes it (a member fails,
+// the pool scales), and a stale "active" in stored outputs is worse than no
+// value. Live health is read from the API by whoever needs it -- the E2E
+// verifier asserts it that way. Member droplet ids are likewise not outputs:
+// they churn by design, so firewalls and load balancers address the fleet
+// through the template's tags, never through this contract.
 type DigitalOceanDropletAutoscalePoolStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// UUID of the autoscale pool (the resource's API identity and its import
 	// id).
-	PoolId string `protobuf:"bytes,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	// Health status of the pool as reported by DigitalOcean at apply time
-	// ("active" once the pool and every member droplet are provisioned; an
-	// error state means the pool needs user intervention).
-	Status        string `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	PoolId        string `protobuf:"bytes,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -73,21 +77,13 @@ func (x *DigitalOceanDropletAutoscalePoolStackOutputs) GetPoolId() string {
 	return ""
 }
 
-func (x *DigitalOceanDropletAutoscalePoolStackOutputs) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
 var File_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_digitalocean_digitaloceandropletautoscalepool_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Lcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/outputs.proto\x12Bdev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1\"_\n" +
+	"Lcatalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1/outputs.proto\x12Bdev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1\"U\n" +
 	",DigitalOceanDropletAutoscalePoolStackOutputs\x12\x17\n" +
-	"\apool_id\x18\x01 \x01(\tR\x06poolId\x12\x16\n" +
-	"\x06status\x18\x02 \x01(\tR\x06statusB\x8a\x04\n" +
+	"\apool_id\x18\x01 \x01(\tR\x06poolIdJ\x04\b\x02\x10\x03R\x06statusB\x8a\x04\n" +
 	"Fcom.dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1B\fOutputsProtoP\x01Z\x84\x01github.com/plantonhq/planton/catalog/digitalocean/digitaloceandropletautoscalepool/v1alpha1;digitaloceandropletautoscalepoolv1alpha1\xa2\x02\x04DPDD\xaa\x02BDev.Planton.Digitalocean.Digitaloceandropletautoscalepool.V1alpha1\xca\x02BDev\\Planton\\Digitalocean\\Digitaloceandropletautoscalepool\\V1alpha1\xe2\x02NDev\\Planton\\Digitalocean\\Digitaloceandropletautoscalepool\\V1alpha1\\GPBMetadata\xea\x02FDev::Planton::Digitalocean::Digitaloceandropletautoscalepool::V1alpha1b\x06proto3"
 
 var (

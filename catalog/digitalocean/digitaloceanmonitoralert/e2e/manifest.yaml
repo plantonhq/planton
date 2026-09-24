@@ -38,4 +38,4 @@ spec:
       - ops@example.com
     slack:
       - channel: "#alerts"
-        url: https://hooks.slack.com/services/EXAMPLE/EXAMPLE/EXAMPLE
+        url: $secret/slack-alerts-webhook

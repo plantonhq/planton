@@ -46,11 +46,13 @@ type DigitalOceanProjectSpec struct {
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// (Optional) The purpose of the project. DigitalOcean recognizes a set of
 	// standard purposes (for example "Web Application", "Website or blog",
-	// "Service or API") and stores anything else prefixed as "Other: <text>",
-	// which it strips again on read -- so any free text round-trips cleanly.
-	// A value that itself starts with "Other:" is rejected here: the API
-	// would double-prefix it and the read-back would never match, leaving a
-	// permanent diff no provisioner can converge.
+	// "Service or API") and stores anything else prefixed as "Other: <text>";
+	// the provider strips that prefix on read, so any free text round-trips
+	// cleanly. A value that itself starts with "Other:" is rejected here:
+	// DigitalOcean keeps exactly one prefix and re-capitalizes the rest
+	// ("Other: probe" is stored as "Other: Probe"), the provider then strips
+	// the prefix, and the read-back ("Probe") can never equal what was
+	// written -- a permanent diff no provisioner can converge.
 	Purpose string `protobuf:"bytes,3,opt,name=purpose,proto3" json:"purpose,omitempty"`
 	// (Optional) The environment of the project's resources. DigitalOcean
 	// accepts these three values case-insensitively and reports the value back

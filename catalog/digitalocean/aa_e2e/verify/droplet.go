@@ -11,11 +11,14 @@ import (
 // dropletVerifier verifies a DigitalOceanDroplet via GET /v2/droplets/{id}.
 // Droplet ids are integers in the API; the stack output carries the decimal
 // string form. Beyond existence, it asserts the live droplet is active and
-// checks the public IPv4 address the module CLAIMS in its stack outputs
-// against the live droplet -- outputs are contractually identical across
-// both engines, so one assertion protects both, and an absent output simply
-// means "not claimed" and is skipped. Status is always read live, never
-// from an output: an apply-time snapshot goes stale immediately.
+// checks the IPv4 addresses the module CLAIMS in its stack outputs against
+// the live droplet -- outputs are contractually identical across both
+// engines, so one assertion protects both. An EMPTY public-address output
+// is itself a claim: the droplet was created without public networking, so
+// the live droplet must have no public IPv4 (otherwise the module failed
+// to export a real address). The private address is compared when claimed.
+// Status is always read live, never from an output: an apply-time snapshot
+// goes stale immediately.
 type dropletVerifier struct{}
 
 func (*dropletVerifier) IDOutputKey() string { return "droplet_id" }
@@ -37,7 +40,7 @@ func (*dropletVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, i
 		}
 		return pkgerrors.Wrapf(err, "digitaloceandroplet verify-absent failed for %q", id)
 	}
-	return pkgerrors.Errorf("digitaloceandroplet %q still exists after destroy", id)
+	return &StillExistsError{Component: "digitaloceandroplet", ID: id}
 }
 
 func (v *dropletVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {
@@ -55,14 +58,28 @@ func (v *dropletVerifier) VerifyExistsFromOutputs(ctx context.Context, client *g
 		return pkgerrors.Errorf("digitaloceandroplet %q status is %q, want active", id, droplet.Status)
 	}
 
+	livePublicIPv4, err := droplet.PublicIPv4()
+	if err != nil {
+		return pkgerrors.Wrapf(err, "digitaloceandroplet %q public ipv4 read failed", id)
+	}
 	if ipv4 := StringOutput(outputs, "ipv4_address"); ipv4 != "" {
-		livePublicIPv4, err := droplet.PublicIPv4()
-		if err != nil {
-			return pkgerrors.Wrapf(err, "digitaloceandroplet %q public ipv4 read failed", id)
-		}
 		if livePublicIPv4 != ipv4 {
 			return pkgerrors.Errorf("digitaloceandroplet %q ipv4 mismatch: output %q, live %q",
 				id, ipv4, livePublicIPv4)
+		}
+	} else if livePublicIPv4 != "" {
+		return pkgerrors.Errorf("digitaloceandroplet %q claims no public ipv4 but the live droplet has %q",
+			id, livePublicIPv4)
+	}
+
+	if privateIPv4 := StringOutput(outputs, "ipv4_address_private"); privateIPv4 != "" {
+		livePrivateIPv4, err := droplet.PrivateIPv4()
+		if err != nil {
+			return pkgerrors.Wrapf(err, "digitaloceandroplet %q private ipv4 read failed", id)
+		}
+		if livePrivateIPv4 != privateIPv4 {
+			return pkgerrors.Errorf("digitaloceandroplet %q private ipv4 mismatch: output %q, live %q",
+				id, privateIPv4, livePrivateIPv4)
 		}
 	}
 

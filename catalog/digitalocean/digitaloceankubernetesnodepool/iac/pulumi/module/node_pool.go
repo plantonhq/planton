@@ -15,16 +15,6 @@ func nodePool(
 ) (*digitalocean.KubernetesNodePool, error) {
 	spec := locals.DigitalOceanKubernetesNodePool.Spec
 
-	// PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform
-	// wires it; the Pulumi DigitalOcean SDK v4.49.0 has no
-	// gpu_partition_mode field on KubernetesNodePool. Fail loudly on a
-	// meaningful set (the proto zero value passes) rather than silently
-	// dropping configuration. Re-evaluate when the SDK exposes
-	// gpu_partition_mode.
-	if spec.GpuPartitionMode != "" {
-		return nil, errors.New("PARITY-EXCEPTION: spec.gpu_partition_mode is modeled and Terraform wires it; the Pulumi DigitalOcean SDK v4.49.0 has no gpu_partition_mode field on KubernetesNodePool. Re-evaluate when the SDK exposes gpu_partition_mode.")
-	}
-
 	// Kubernetes node labels: user labels over the standard Planton labels
 	// (identical map in both provisioners).
 	labels := pulumi.StringMap{}
@@ -69,15 +59,30 @@ func nodePool(
 		ClusterId: pulumi.String(spec.Cluster.GetValue()),
 		Name:      pulumi.String(spec.NodePoolName),
 		Size:      pulumi.String(spec.Size),
-		// With auto_scale enabled this is the initial count; the provider
-		// then suppresses diffs while the live count drifts.
-		NodeCount: pulumi.IntPtr(int(spec.NodeCount)),
 		Labels:    labels,
 		Tags:      tags,
 	}
 
+	// Exactly one sizing mode owns the count -- matching the Terraform
+	// module. A fixed pool sends node_count; an autoscaled pool sends only
+	// the bounds and NO count, because the provider writes the live count
+	// back into node_count on every read and re-applies a stated one on
+	// every update, so a stated count and the autoscaler would fight forever
+	// (measured on the cluster kind's inline pool, which shares this schema:
+	// a pool that autoscaled to two nodes planned `2 -> 1`). Without a count
+	// the API starts the pool at min_nodes.
+	if !spec.AutoScale {
+		nodePoolArgs.NodeCount = pulumi.IntPtr(int(spec.NodeCount))
+	}
+
 	if len(taints) > 0 {
 		nodePoolArgs.Taints = taints
+	}
+
+	// GPU partitioning is create-only and only meaningful on GPU sizes; unset
+	// must arrive as null, never "" (the provider rejects it).
+	if spec.GpuPartitionMode != "" {
+		nodePoolArgs.GpuPartitionMode = pulumi.StringPtr(spec.GpuPartitionMode)
 	}
 
 	if spec.AutoScale {
@@ -99,36 +104,11 @@ func nodePool(
 	ctx.Export(OpNodePoolId, createdNodePool.ID())
 	ctx.Export(OpClusterId, createdNodePool.ClusterId)
 
-	// node_ids: the DOKS node object UUIDs (the same nodes[*].id slice the
-	// Terraform module exports).
-	nodeIds := createdNodePool.Nodes.ApplyT(
-		func(nodes []digitalocean.KubernetesNodePoolNode) []string {
-			ids := make([]string, 0, len(nodes))
-			for _, node := range nodes {
-				if node.Id != nil {
-					ids = append(ids, *node.Id)
-				}
-			}
-			return ids
-		},
-	).(pulumi.StringArrayOutput)
-	ctx.Export(OpNodeIds, nodeIds)
-
-	// droplet_ids: the integer ids of the Droplets backing the nodes, for
-	// wiring Droplet-scoped resources (e.g. firewalls) to the pool's
-	// machines.
-	dropletIds := createdNodePool.Nodes.ApplyT(
-		func(nodes []digitalocean.KubernetesNodePoolNode) []string {
-			ids := make([]string, 0, len(nodes))
-			for _, node := range nodes {
-				if node.DropletId != nil {
-					ids = append(ids, *node.DropletId)
-				}
-			}
-			return ids
-		},
-	).(pulumi.StringArrayOutput)
-	ctx.Export(OpDropletIds, dropletIds)
+	// The pool's nodes (Nodes[*].Id, Nodes[*].DropletId) are deliberately
+	// not exported: DOKS replaces them by design (autoscaling, upgrades,
+	// auto-repair), so an apply-time list is stale the next time the pool
+	// changes shape. Droplet-scoped resources target the pool's tags instead
+	// -- the same contract the Terraform module exports.
 
 	return createdNodePool, nil
 }

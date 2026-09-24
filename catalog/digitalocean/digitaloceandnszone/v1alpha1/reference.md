@@ -138,8 +138,13 @@ row of the same name and type (e.g. two A values make two A records).
 - TXT: the text data
 - CAA: the certificate authority domain
 Each value can be a literal or a reference to another resource's output.
-Read-back normalization: for CNAME, MX, NS, SRV, and CAA (except
-tag=iodef), the provider appends a trailing dot to the stored value.
+Hostname values (CNAME, MX, NS, SRV, and CAA except tag=iodef) must be
+written either fully qualified WITH a trailing dot
+("mail.example.com.", "letsencrypt.org.") or relative to this zone
+("mail"). DigitalOcean reports every such value back fully qualified
+with a trailing dot, and the provider forgives only those two spellings
+— a bare fully-qualified name without the dot ("letsencrypt.org") is
+re-applied on every run, forever.
 
 - rule: {"required":true,"repeated":{"minItems":"1"}}
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
@@ -150,7 +155,11 @@ tag=iodef), the provider appends a trailing dot to the stored value.
 
 Time to live for the record, in seconds. When unset (0), the DigitalOcean
 API applies its default (1800 seconds). DigitalOcean harmonizes TTLs
-across records sharing a fully-qualified name (RFC 2181 §5.2).
+across records sharing a fully-qualified name (RFC 2181 §5.2) and
+rewrites the stragglers server-side, so give every record on one name
+the same ttl_seconds (or leave them all unset) — a lone custom TTL on a
+shared name is overwritten and shows up as a change on every run. The
+apex A record seeded by `ip_address` counts as one of those records.
 
 ### spec.records[].type
 
@@ -234,11 +243,15 @@ Tag for CAA records — the property being authorized: "issue",
 `string`
 
 (Optional) An IPv4 address that seeds an initial A record at the zone
-apex when the zone is created. Create-only convenience: the DigitalOcean
-API never returns it, and the A record it creates is NOT tracked — later
-edits to `records` will not see or manage it. Prefer declaring an apex A
-record in `records`, which is tracked and updatable; use this only when
-migrating a configuration that already relies on it.
+apex when the zone is created. Applied at creation ONLY; later edits are
+ignored (both provisioners skip changes to it, because the only
+alternative the provider offers is recreating the whole zone). The
+DigitalOcean API never returns it, and the A record it creates is NOT
+tracked — later edits to `records` will not see or manage it, yet it
+shares the apex A record set (and therefore the TTL) with any apex A
+records you declare. Prefer declaring an apex A record in `records`,
+which is tracked and updatable; use this only when migrating a
+configuration that already relies on it.
 
 ## Outputs
 
@@ -250,6 +263,7 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDnsZ
 | `status.outputs.zone_id` | `string` | The zone's resource identifier. DigitalOcean addresses domains by NAME — this is the domain name itself, not a UUID. |
 | `status.outputs.name_servers` | `[]string` | DigitalOcean's authoritative name servers for every hosted zone (ns1/ns2/ns3.digitalocean.com — a fixed platform-wide set the API does not return per zone). Set these at the domain's registrar to delegate. |
 | `status.outputs.urn` | `string` | The uniform resource name of the domain (e.g. "do:domain:example.com"). |
+| `status.outputs.record_ids` | `map<string, string>` | Numeric ids of the inline `records`, one entry per record value, keyed by "<record name>-<record index>-<value index>" (the index positions in the manifest's `records` list and that entry's `values` list, both from 0 — e.g. "@-0-0", "www-1-0"). DigitalOcean addresses a record as /v2/domains/{domain}/records/{id}, and state import takes "{domain},{record_id}"; this map is where the second half comes from. Empty for a zone with no inline records. |
 
 ## Referenced By
 

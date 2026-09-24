@@ -3108,6 +3108,892 @@ buckets so Dataproc recreates them fresh under the current identity, then
 rerun. (The `roles/dataproc.worker` role already carries the full
 `storage.buckets.get` + `storage.objects.*` set a custom VM identity needs.)
 
+## DigitalOcean E2E
+
+DigitalOcean tests live under `e2e/digitalocean/` and use the
+`catalog/digitalocean/aa_e2e` harness with real REST-API verification
+(godo). Credentials are the provider's own environment names, read by the
+harness and BOTH engines alike: `DIGITALOCEAN_TOKEN` (a full-access API
+token), plus `SPACES_ACCESS_KEY_ID` / `SPACES_SECRET_ACCESS_KEY` for the
+Spaces bucket lanes only. No region variable — region is a property of each
+manifest's spec.
+
+```bash
+go test -tags=e2e -timeout=30m -v -count=1 -run 'TestDigitalOceanVpc_Pulumi$' ./e2e/digitalocean
+PLANTON_E2E_IMPORT_ROUNDTRIP=1 go test -tags=e2e -timeout=30m -v -count=1 -run 'TestDigitalOceanVpc_Terraform$' ./e2e/digitalocean
+```
+
+Anchor the `-run` pattern with `$`: `TestDigitalOceanVpc` is a prefix of
+`TestDigitalOceanVpcPeering`, and the same holds for every kind whose name
+prefixes another's.
+
+**Seed every lane region's default VPC before the first lane — a fresh
+account has none, and the first VPC created in a region becomes the
+undeletable default.** DigitalOcean does not pre-create default VPCs; the
+first VPC created in a region with none becomes that region's default, and
+`DELETE /v2/vpcs/{id}` on a default answers `403 Can not delete default
+VPCs`. Measured on the very first live lane of a new account: the Vpc
+kind's `full` scenario deployed, verified, and then its destroy failed and
+stranded the VPC as nyc3's default (the `minimal` scenario, created
+second, destroyed cleanly). Preparation is a one-time account step: for
+every region the lanes use (`rg -o 'region: \w+' catalog/digitalocean/*/e2e`),
+`POST /v2/vpcs` a plain `default-<region>` (DigitalOcean's own naming; let
+it assign the range) and `PATCH /v2/vpcs/{id}` with `{"default": true}` —
+the flag is computed for IaC but the API does accept that one write.
+Recovery from a stranded default is the same sequence followed by deleting
+the stranded VPC. The harness `Setup` deliberately stays read-only, so this
+lives in the account-setup runbook, not in code.
+
+**Read-after-delete is eventually consistent — the harness polls absence,
+verifiers stay single-probe.** A GET a second after a successful volume
+DELETE still answered 200; it read 404 a few seconds later. The DigitalOcean
+harness handles the class once, in `VerifyDestroyed`: a verifier returns the
+typed `verify.StillExistsError` when the API still answers, and only that
+error is re-probed (2s apart, 60s budget); credentials, rate limits, and
+broken lookups still fail the phase on the first probe. New verifiers
+return `&StillExistsError{Component, ID}` for "not gone yet" and wrap
+everything else as a genuine error — never a bare `Errorf` for the lingering
+case, or the poll cannot see it.
+
+**A Terraform credential variable with no default breaks every
+environment-authenticated run.** The DigitalOcean tofu modules take the
+token as `var.digitalocean_token`; declared required, the first Terraform
+lane failed at apply with "No value for required variable" because the
+E2E stack input carries no provider config (both engines are meant to read
+the ambient environment). The contract is now `default = null`: a null
+token makes the provider fall back to its own `DIGITALOCEAN_TOKEN` /
+`DIGITALOCEAN_ACCESS_TOKEN` defaults, exactly as the Pulumi bridge does, so
+the platform's `TF_VAR_digitalocean_token` path and a developer shell both
+work. The Spaces pair already followed this shape; a new token-taking
+provider module should start there.
+
+**The pin floats within its minor: record the resolved provider version
+per session.** The modules pin `~> 2.99`; the first live session resolved
+`digitalocean/digitalocean v2.100.0` at `tofu init` while the design floor
+and every schema reading are v2.99.1. Nothing diverged, but "proven at the
+pin" means proven at whatever the constraint resolved to on that day — the
+session record names it.
+
+**Import round-trip classes met on the first kinds.** (1) Create-only
+initialization arguments that are `ForceNew` and never read back
+(`digitalocean_volume`'s `initial_filesystem_type` / `_label` /
+`snapshot_id`) can NOT be made round-trip-clean by a `config_only_attributes`
+tolerance — the oracle refuses the replace the provider plans. The volume
+modules `ignore_changes` the trio in both engines instead (post-create they
+mean nothing, and ignoring them is what keeps an adopted data volume from
+being destroyed on its first apply); the round-trip then passes on the
+formatted scenario as live proof. (2) Write-only secret material that is
+`ForceNew` (`digitalocean_certificate`'s PEM trio) keeps the reason-carrying
+`planton.dev/e2e-import-roundtrip-skip` annotation — rotating it is
+supposed to replace. (3) A resource type whose upstream importer is
+defective (`digitalocean_container_registry_docker_credentials`) is excluded
+ONLY by `not_importable_upstream_reason` in the provider import catalog;
+a prose "excluded" beside an `id_format` is not machine-honored and the
+runner will try the import. The round-trip then skips it and tolerates its
+re-create through the reconcile-apply (the credential is re-minted).
+
+**Names that are unique per account or per region carry `${E2E_RUN_ID}`.**
+VPC names (account), volume names (region), certificate names (account),
+and registry names (globally) all do now; the runner appends an
+engine-scoped suffix (`-p` / `-t`) so the two engines' lanes never
+collide either. `planton validate-manifest` on a raw scenario file fails
+for exactly these fields (the token is not a valid name until expanded) —
+the runner's VALIDATE phase is the gate that matters.
+
+**Environmental gates use `planton.dev/e2e-required-env` — and the
+provider test file must enforce it.** The certificate kind's Let's Encrypt
+arm needs a domain delegated to the account's DNS, declared as
+`PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN` and referenced through
+`${E2E_ENV:...}`; unset, both lanes report the skip with the variable
+named. The check that makes the annotation real is the
+`runner.ScenarioMissingRequiredEnv` block in `e2e/digitalocean/digitalocean_test.go`
+(the same block GCP and Cloudflare carry) — without it the scenario runs
+live and fails at the API.
+
+**One container registry per account.** `GET /v2/registry` must answer 404
+before a registry lane starts; the two scenarios and the two engines run
+strictly one at a time.
+
+**The idempotency gate is armed, and the provider test file is what makes
+it real.** `catalog/digitalocean/aa_e2e/profile.yaml` sets
+`assert_apply_idempotency: true` from the second live session on, and every
+lane since carries an IDEMPOTENCY phase (a second plan or preview right
+after DEPLOY must propose nothing). The switch is inert unless the provider
+test file reads it — `e2e/digitalocean/digitalocean_test.go` loads the
+provider profile in `TestMain` and copies the flag into every
+`ComponentTestContext`, exactly as the GCP, AWS, Azure, and Cloudflare test
+files do. The first armed run proved why: without the wiring the profile
+claimed a gate that never ran, and with it the very first lane caught the
+backups perma-diff below. A new provider test file must copy both blocks
+(required-env skip and idempotency flag), not one.
+
+**Droplet backups re-plan forever — a provider read defect, not a module
+one.** `digitalocean_droplet` decides `backups` from the droplet's
+`features` list, and DigitalOcean's current backup system no longer lists
+`"backups"` there (three live probes: `POST /v2/droplets` with `backups:
+true`, with and without a `backup_policy`, never showed the feature within
+four minutes of `active`, while `GET /v2/droplets/{id}/backups/policy`
+answered `backup_enabled: true` with the applied window and an
+`enable_backups` action had completed). So the first preview after apply
+proposes `backups: false → true` on every run. Upstream:
+digitalocean/terraform-provider-digitalocean#1525. The droplet `full`
+scenario therefore does not exercise `enableBackups` (a recorded deferral on
+its profile, unblocked by a provider release that reads the policy
+endpoint), and the kind's docs tell customers the noise is harmless and
+where the truth lives.
+
+**Firewalls never create tags.** `POST /v2/firewalls` naming a tag no
+resource carries fails `422 tag <name> does not exist` — Droplets (and
+volumes) create tags implicitly when they declare them, firewalls do not.
+The firewall `full` scenario targets the fixture Droplet's own Planton
+identity tag (`planton-ai_name:<fixture name>`), the one tag guaranteed to
+exist once the fixture is up; a scenario that wants a tag of its own must
+put it on a Droplet first.
+
+**DigitalOcean's DNS API deadlocks on concurrent record writes to one
+domain.** Parallel `POST /v2/domains/{d}/records` calls fail one of the
+batch with `422 Error 1213 (40001): Deadlock found when trying to get
+lock; try restarting transaction` — measured 1 in 8 on a fresh domain and
+again after a 15-second settle, so it is concurrency, not zone
+initialization, and the provider does not retry 422s. The zone modules
+serialize their inline records: Pulumi through an explicit dependency
+chain, Terraform through the provider's `requests_per_second = 1` static
+limit (a `for_each` resource has no other serialization lever). Standalone
+`DigitalOceanDnsRecord` instances applied concurrently against one domain
+from separate stacks can still collide — the record kind's GUIDE says so
+and points at inline records for zones with many records.
+
+**Hostname record values must be written with the trailing dot (or
+zone-relative).** The provider appends `.` to every CNAME/MX/NS/SRV/CAA
+(non-`iodef`) value it reads back and its DiffSuppress forgives only the
+dotted FQDN or the zone-relative spelling; a bare `letsencrypt.org` is a
+perpetual in-place update. Both DNS kinds' spec comments, GUIDEs, and
+scenarios now carry the dotted form; the idempotency gate is the proof.
+
+**One TTL per hostname.** DigitalOcean harmonizes TTLs across records
+sharing a fully-qualified name and rewrites stragglers server-side (the
+provider only warns), and the zone's create-only `ip_address` seed record
+joins the apex A set. The zone `full` scenario puts its custom-TTL arm on a
+uniquely named record for that reason.
+
+**Two more create-only ForceNew never-read-back sets, handled like the
+volume trio.** `digitalocean_droplet`'s `ssh_keys` / `user_data` /
+`droplet_agent` and `digitalocean_domain`'s `ip_address` are ForceNew and
+never read back, so a blind import followed by an apply planned a
+destroy-and-recreate of a running droplet and of a whole DNS zone. Both
+modules `ignore_changes` them in both engines (they mean nothing after
+creation), the spec comments say so, and the round-trips are the live
+proof. When a kind's import map lists a `config_only_attributes` tolerance,
+check the provider schema for `ForceNew` on the same argument — that
+combination can never round-trip and needs the module-level fix.
+
+**Inline child resources import blind through a keyed map output.** The
+zone's inline records import as `{domain},{record_id}`; the record ids are
+not derivable from spec or metadata, so the zone exports `record_ids`
+keyed by the same key both engines use for each record
+(`<name>-<recIdx>-<valIdx>`), and the import map derives `record_id` with
+`from_stack_output_keyed_by_address` — the `awsvpc` / `awskmskey` pattern.
+Nine resources round-tripped blind on the first run.
+
+**Tags outlive the resources that created them, and unset-region Droplets
+seed default VPCs.** Two residue classes the sweep must know: (1) every
+implicitly created tag (`planton-ai_*` labels, `planton-e2e`, `env:e2e`)
+stays on the account after its resources are gone — free, but not ours to
+leave; the session-end sweep lists `GET /v2/tags` and deletes the ones the
+lanes created. (2) A Droplet created with no region lands wherever
+DigitalOcean has capacity, and if that region had no default VPC yet,
+DigitalOcean creates one on the fly (`default-tor1`, `default-blr1`,
+`default-lon1`, and `default-sfo2` appeared this way across one session's
+droplet lanes; `default-nyc2`, `default-sgp1`, and `default-sfo3` across the
+next's) — undeletable, free, and DigitalOcean's own naming, so the
+seeded-defaults list simply grows; record the new regions rather than
+fighting them.
+
+**Alert email goes only to verified team members — the recipient is an
+environment variable, never a committed address.** Both alerting APIs
+(`POST /v2/monitoring/alerts` and `POST /v2/uptime/checks/{id}/alerts`)
+reject any email that is not a verified member of the team owning the
+account — `email is not verified` / `invalid email` — so a scenario cannot
+carry a made-up address, and it must not carry a person's real one either.
+The alert scenarios read `${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL}`
+behind `planton.dev/e2e-required-env` (the certificate's delegated-domain
+shape): each operator exports their own verified address next to the
+token, and the lanes skip honestly on a machine that has not. The
+provider's own acceptance test dodges the same rule by reading the account
+data source's email.
+
+**Alert policies and load balancers store tags as selectors; firewalls
+demand them.** A `digitalocean_monitor_alert` or a `digitalocean_loadbalancer`
+naming a tag no resource carries is accepted (HTTP 200 / 201) and creates
+nothing in `/v2/tags` — the policy watches nothing and the balancer's
+`droplet_ids` stays empty until a Droplet wears the tag — while a firewall
+naming the same tag fails `422 tag ... does not exist`. Three DigitalOcean
+APIs, two rules; the kind docs on each side say which. The alert's
+tag-only scenario therefore runs fixture-free with a run-scoped tag on
+purpose. The load balancer's tag scenario goes the other way on purpose:
+an accepted-but-memberless tag would deploy green and prove nothing, so
+its `full` scenario deploys a scenario-local droplet fixture
+(`e2e/fixtures/droplet-nyc3.yaml` — region-pinned to the balancer's region,
+joined to the same VPC fixture, carrying the tag) and the lane's live
+`GET` shows the fixture's id in `droplet_ids`. Load-balancer and
+database-cluster names are unique per account (`422 There is already a
+load balancer with that name` / `422 cluster name is not available`), so
+both kinds' scenarios carry `${E2E_RUN_ID}`.
+
+**A load balancer can sit in `new` past the provider's 10-minute waiter,
+and deleting it then leaves a ghost VPC member.** Measured once in three
+`full`-scenario creates on one day (the identical request went `active`
+in under two minutes the other two times, and the status page showed no
+incident): the Terraform apply failed `timeout while waiting for state to
+become 'active' (last state: 'new')`, the harness destroyed the balancer
+(204, then 404 on GET), and the fixture VPC's teardown then failed six
+times with `409 Can not delete VPC with members` — `GET
+/v2/vpcs/{id}/members` still listed `do:loadbalancer:<the deleted id>`
+with an empty name. The ghost cleared on DigitalOcean's side roughly 45
+minutes later and the VPC deleted normally. Two consequences for the
+harness: (1) a stranded fixture VPC holds the fixture's NAME, and VPC
+names are unique per account, so every later lane that installs the
+fixture fails at DEPENDENCIES-UP until it is gone — `PATCH /v2/vpcs/{id}`
+with a new name frees the fixture name immediately, and the renamed VPC
+is deleted in the session sweep once its member list is empty; (2) the
+dependency teardown's six one-minute retries (~17 minutes with the
+Pulumi timeouts) can exhaust a `go test -timeout` sized for the happy
+path and kill the NEXT scenario mid-create, leaving a real orphan — size
+the timeout for the failure path (45 minutes for a two-scenario kind), and
+after any timed-out run list the account before re-running.
+
+**Managed-database engine versions are a live offer list, the database
+API caps a cluster's combined tags at 255 characters, and its `422
+cluster name is not available` has meant three different failures.** `GET /v2/databases/options` names the versions DigitalOcean
+will create per engine today (2026-09-16: `pg` 15–18, `mysql` `8.4` only,
+`valkey` `8`, `kafka` `3.9`/`4.2`, `opensearch` `2.19`/`3.3`/`3.6`,
+`mongodb` `7.0`/`8.0`; `redis` is gone — `engine: redis` fails
+`422 region 'nyc3' is not valid`, DigitalOcean's way of saying "offered
+nowhere"). A version off the list fails `422 invalid cluster engine
+version` at create, so read the options endpoint before a lane and keep
+fixtures on a currently offered version. Cluster names are unique per
+account and the default quota is 10 clusters (`412 maximum clusters
+reached`); a deleted cluster 404s within a second. The 422 "name is not
+available" is honest for a real duplicate, but the same text comes back
+for a brand-new name in two more cases, both measured with curl against
+the exact body godo sends: (1) a request whose COMBINED TAGS are too long
+— on 2026-09-16 this came back as the misreported "name is not
+available"; by 2026-09-17 the API named it (`422 combined tags cannot
+exceed 255 characters`), and eight probes pinned the rule exactly: the tag
+names joined by commas may be at most 255 characters (six tags summing to
+250 pass and 251 fail; three tags summing to 253 pass and 254 fail; colons
+count as one character; the tag count matters only through the commas).
+The six Planton label tags carry `metadata.name` twice (`planton-ai_name:`
+and `planton-ai_id:`), so the `planton-oss-e2e-<kind>-<scenario>` names
+of a long kind blow the budget by themselves (the database cluster's
+`minimal` joined to 257) — database scenarios use the kind's id prefix
+instead (`planton-oss-e2e-dodb-min`, the shape the AWS catalog already
+uses for long kinds), and both database-cluster modules check the budget
+before creating anything. An honest validation 422 of this class creates
+nothing and poisons nothing (an untagged control created immediately
+after one); (2) any create in the minutes after a create that FAILED
+part-way, tagged or not — such a failure poisoned the account for a few
+minutes and left a ghost cluster (404 on GET, absent from the list, still
+listed in `GET /v2/vpcs/{id}/members` as a `do:dbaas:` URN with an empty
+name, which blocks the VPC's deletion and holds its CIDR — `422 This
+range/size overlaps with another VPC network` on the next fixture install
+even after the VPC is renamed; one such ghost was still listed 58 hours
+later). A cluster that is created and deleted cleanly leaves its VPC at
+once (the fixture VPC tore down in 10–16 s on both VPC-attached lanes).
+Probe the database API patiently: one create at a time, never a second
+attempt inside a failing window, delete a probe only after it reads
+`online`, and after any 422 list `/v2/databases` and `/v2/tags` to tell a
+validation refusal (nothing created) from a partial create; never
+probe-create databases while a database lane is running. Managed
+clusters reached `online` in 33–81 s as bare API probes and the provider's
+create wait ran 3m53s–5m21s inside the lanes. One more database residue
+class for the sweep:
+DigitalOcean auto-creates THREE alert policies for every cluster that
+reaches `online` (`v1/dbaas/alerts/cpu_alerts`, `memory_utilization_alerts`,
+`disk_utilization_alerts`, `compare: GreaterThan 90 over 5m`, emailing a
+team member) and they outlive the cluster's deletion, still pointing at
+the deleted UUID — `GET /v2/monitoring/alerts` listed 51 after one
+session's probes; `DELETE /v2/monitoring/alerts/{uuid}` clears them.
+
+**Probe required-ness and forced values against the API before the lane —
+the provider's schema is not the contract.** `digitalocean_uptime_alert`
+marks `period`, `threshold`, and `comparison` Optional; the API requires
+`period` on every type (`missing required field 'period'`), FORCES
+`threshold: 1, comparison: less_than` on `down` / `down_global` whatever
+was sent (an explicit `3 / greater_than` reads back `1 / less_than`), and
+forces `less_than` on `ssl_expiry`. None of that is visible offline: plans
+render, validate passes, presets ship — and the first apply either fails
+or re-plans forever. The fix landed at the spec (required `period`; the
+forced fields forbidden on the types that force them) and in both modules
+(send the API's own values), so the round trip is lossless with zero
+tolerances. Five API calls before the lane found all of it; make them.
+Two more of the class, both found by one probe cluster before a scenario
+gained the arm: the database `storage_autoscale` create refuses an
+`increment_gib` above the size slug's maximum plan storage (`422 storage
+autoscale increment 50 must not be greater than maximum plan size 30` on
+`db-s-1vcpu-1gb`), and the cluster body's `storage_autoscale` is ALWAYS
+null -- the settings live at `GET /v2/databases/{id}/autoscale` (the
+provider's Read falls back to it), reading back exactly as sent. And give
+every probe `curl` a `--max-time`: a probe loop without one hung a session
+for an hour on a stalled connection while the probe cluster kept billing.
+
+**The Uptime API's "gone" is 403, not 404.** `GET /v2/uptime/checks/{id}`
+(and its alerts) answer `403 you are not authorized to access this
+resource` for any check the account does not own — deleted seconds ago or
+never created — while every other DigitalOcean API in the catalog 404s.
+The uptime verifier reads 403 as absence, scoped to that API only, and it
+is safe because the lane created the very id it probes (a bad token would
+have failed DEPLOY). The provider handles only 404, so a check deleted out
+of band errors every subsequent plan until removed from state by hand —
+recorded in the kind's GUIDE as the customer-facing consequence, and
+reported upstream as digitalocean/terraform-provider-digitalocean#1609 after a
+first-hand `tofu plan` reproduction at v2.101.1.
+
+**SSH key material is the account-level identity — a fixture and a
+scenario must not share a key body.** `POST /v2/account/keys` deduplicates
+on the public key (`SSH Key is already in use on your account`), and
+`${E2E_RUN_ID}` cannot rescue it because material is not a name. The
+SshKey kind ships `e2e/prerequisite.yaml` with a distinct throwaway pair
+for its consumers (the autoscale pool), separate from `scenarios/minimal.yaml`;
+a new key-bearing fixture generates its own material, never copies.
+
+**A kind's headline promise belongs in its verifier, read from outputs.**
+Where a scenario's whole point is a behavior — "destroy relocates members,
+never destroys them", "one alert object per row" — the outputs carry the
+claim (`resource_urns`, the keyed `alert_ids` map) and an `OutputsVerifier`
+asserts it against the API at deploy AND at destroy (dependency fixtures
+are torn down only after VERIFY-CLN, so relocated members are still there
+to be found). `StringSliceOutput` / `StringMapOutput` beside `StringOutput`
+coerce the list and map output shapes with the same numeric care.
+
+**App Platform regions are datacenter GROUPS, not droplet slugs.** The
+App API places an app in `nyc`, `ams`, `fra`, `sfo`, `sgp`, `blr`, `tor`,
+`lon`, `syd`, `atl`, `ric`, or `mkc` (`GET /v2/apps/regions`; `nyc` covers
+nyc1 and nyc3). It ACCEPTS a droplet slug such as `nyc3` and silently
+stores `nyc`, so a spec typed with the droplet-region enum passes every
+offline gate and then re-plans on every apply on both engines (first
+contact, 2026-09-16: all three App scenarios failed the idempotency gate
+on `~spec` for exactly this). The App and Function specs now carry their
+own `DigitalOceanAppRegion` enum; any future kind that composes
+`digitalocean_app` must use it, never `DigitalOceanRegion`.
+
+**App Platform names: one API rule for apps AND components, and apps are
+account-unique.** `POST /v2/apps/propose` is a validate-only endpoint
+(creates nothing, prices the spec, and reports `app_name_available`) — use
+it as the free first probe for any App Platform question. Measured: app
+names AND every component name must match `^[a-z][a-z0-9-]{0,30}[a-z0-9]$`
+(2–32, letter-first; `9abc`, `Hello_World`, and `web.1` are all rejected
+with the field named), and a 43-character name is rejected at 32. Both
+kinds validate every name with that pattern, and every App Platform
+scenario's `appName` carries `${E2E_RUN_ID}` (the longest is 30 of 32
+characters with the engine suffix). A kind that composes a provider
+resource carrying its own validated, account-unique name exposes that name
+on its spec — the Function kind used to derive it from `metadata.name`,
+which no e2e metadata name could satisfy.
+
+**A functions component reads `project.yml` from `source_dir`, and the
+sample's is at the repo root.** DigitalOcean's
+`sample-functions-nodejs-helloworld` keeps `project.yml` at the root with
+the code under `packages/`; its own deploy template uses `source_dir: /`.
+Every shipped example pointed at `packages/`, which would have failed the
+build minutes into the deploy (the API validates nothing about the
+directory). Leave the field unset for a root `project.yml`; both modules
+omit it rather than send an empty string. A git-source build reached
+ACTIVE in ~80 seconds on both engines; image deploys in 25–50 seconds.
+
+**Alert destinations on `digitalocean_app` are write-only at v2.99.1 — a
+provider defect (unchanged through v2.101.1; tracked as
+digitalocean/terraform-provider-digitalocean#1606), recorded, never tolerated.** The provider applies email /
+Slack destinations through `UpdateAlertDestinations` after the spec is
+saved, but `flattenAppAlerts` never reads them back, so a refreshed plan
+proposes `+ destinations` on every alert forever, and because any `spec`
+diff is an `Apps.Update`, every apply redeploys the app. Measured live on
+the Terraform lane (with refresh); Pulumi's no-refresh preview stayed
+quiet, which is exactly the asymmetry the idempotency notes above warn
+about. Handled as the droplet-backups class: the arm stays modeled and
+wired on both engines, the scenarios do not set it, the profile records
+the deferral with its unblock condition, and the kind docs tell customers
+to set destinations on Pulumi stacks or manage them in the control panel.
+Never `ignore_changes` on destinations — they are genuinely mutable. The
+same read-back class hits `envs[].secret` (the API returns secrets
+encrypted; upstream #869), documented on both kinds.
+
+**A PARITY-EXCEPTION guard is a claim about a specific SDK version — re-verify
+every guard on every pin bump.** The App module guarded six arms as Pulumi
+SDK gaps at v4.49.0; four of them (`maintenance`, `vpc` as a one-element
+`vpcs` list, ingress `authority`, alert `destinations` on app-level and all
+component alerts) had closed at the v4.53.0 pin the tree carried for a
+month, so Pulumi customers got a hard error for settings Terraform
+customers had all along. At the next bump (v4.53.0 → v4.79.1) every one of
+the 21 guards then in the tree had closed -- ten on the DOKS cluster, three
+on the App, two each on the droplet and load balancer, one each on the node
+pool and database cluster -- and two of them still named a pin two bumps
+old. Check the SDK's `pulumiTypes.go` and the resource's `*Args` struct on
+disk for each guarded field before a lane, wire what closed, and name the
+verified version in the guards that remain. And a bridge bump UN-PROVES
+every Pulumi lane until it re-runs: the bridge and the provider it embeds
+are exactly what changed under every Pulumi module, while the Terraform
+lanes prove provider logic the bump never touched. After the bump, re-run
+at least one flagship scenario per proven kind on Pulumi, and the full
+dual-engine lane (round-trip included) for every scenario that gained a
+newly wired arm -- the re-proof of 20 kinds at v4.79.1 ran green first
+time on 19 and caught a real class on the 20th (the project below).
+
+**A provider's declared timeout is a knob the module sizes from measured
+behavior, never a constant to trust.** `digitalocean_project`'s Delete
+relocates members to the default project and then retries the DELETE
+through `412 cannot delete a project with resources` -- but only for the
+resource's delete timeout, whose provider default is three minutes.
+DigitalOcean applies the relocation asynchronously with a lag that varies:
+four destroys in one session read the project empty in ~6 s, ~14 s, ~30 s,
+and once NOT within 180 s, so that destroy failed with the member already
+moved and an empty, free project left behind (a second destroy deletes it
+in seconds). The provider's code is identical from v2.67.0 through
+v2.101.1; the lag is the API's (reported upstream as
+digitalocean/terraform-provider-digitalocean#1608 -- the default is tight and
+the resource docs never mention the `timeouts` block). Both modules now carry a ten-minute delete
+timeout (Terraform `timeouts { delete = "10m" }`, Pulumi
+`CustomTimeouts{Delete: "10m"}` -- the bridge honors it for SDKv2
+resources that declare `Timeouts`), and the Terraform round-trip stayed
+lossless because a timeouts block is not an imported attribute. When a
+lane fails inside a provider's retry loop, read the resource's
+`Timeouts` before blaming the module or the API: if the timeout is
+declared, sizing it is the module's job.
+
+**An attribute a controller owns after creation must not be in the
+configuration, and a fresh resource cannot prove that.** DOKS's
+`node_count` on an autoscaled pool is the class: the provider writes the
+LIVE count back into `node_count` on every read (whenever the attribute is
+in config), its `DiffSuppressFunc` hides the difference only while the
+stated count equals the live one, and Update re-sends the stated count --
+so a manifest that states `nodeCount: 1` with `autoScale: true` fights the
+autoscaler on every apply. Both DOKS kinds were live-proven idempotent with
+exactly that shape, because on every earlier lane the autoscaler had not
+acted before the gate ran; the first cluster whose addons overflowed one
+node scaled to two within minutes and both engines planned `node_count
+2 -> 1`. The contract is now the provider's own: an autoscaled pool sends
+no count (the spec rejects both together; the pool starts at `min_nodes`).
+The harness lesson: when a provider's Read copies a live value into a
+configurable attribute, the idempotency gate on a freshly created resource
+is blind until the controller moves the value -- read the resource's Read
+and `DiffSuppressFunc` for live-value write-backs at pre-flight, and treat
+"passed on a fresh resource" as no proof for controller-owned attributes.
+
+**A version-gated addon fails the WHOLE create, honestly.** DigitalOcean
+refuses a DOKS cluster create that enables the P2P OCI registry plugin on
+a version below 1.36.0-do.2 with a validation 422 naming the floor; nothing
+is created and the fixture tears down clean. Probe `GET
+/v2/kubernetes/options` for the offered lines and read the API's
+per-feature floors before pinning a scenario's version; a scenario that
+asserts an addon toggle pins a version where the asserted value DIFFERS
+from that version's default (the CoreDNS autoscaler defaults off through
+1.35 and on from 1.36), or a module that silently dropped the block would
+still read back the default and pass.
+
+**The default project's membership list can name resources that no longer
+exist.** `GET /v2/projects/{default}/resources` listed two
+`do:loadbalancer:<id>` URNs whose balancers answered 404 -- ghosts of
+balancers deleted days earlier. Nothing bills and nothing can be deleted;
+the sweep counts real resources from their own endpoints and treats a
+membership URN as a claim to verify, never as an orphan.
+
+**Dry-run a pin bump before landing it, and know that the bump is never
+one provider's alone.** Copy `go.mod`/`go.sum` aside, `GOWORK=off go get
+-modfile=<copy> <sdk>@<version>`, `GOWORK=off go mod tidy -modfile=<copy>`,
+then build every package that imports the SDK with `GOWORK=off go build
+-modfile=<copy> -o /dev/null <pkg>` -- the live tree's sources against the
+new dependency list, nothing in the repo touched. `GOWORK=off` is required:
+the repository runs in Go workspace mode and `-modfile` is refused there
+(a fallback to a plain `go build` would silently "pass" against the OLD
+pin). Skip the tidy and every build fails `missing go.sum entry` for
+modules the new core SDK drags in. Discover the build set by grep
+(`rg -l "<sdk-import-path>" --type go`), never by counting kinds -- the
+shared provider builder under `pkg/iac/pulumi/pulumimodule/provider/`
+imports the SDK too. And read the bridge's own `sdk/go.mod` at the target
+tag: a provider SDK bump routinely raises the core `pulumi/pulumi/sdk/v3`
+shared by every provider's Pulumi module in the repo (v4.79.1 required
+v3.259.0 over the tree's v3.256.0, dragging five new indirect modules), so
+the real bump runs `make bazel-mod-tidy` and its blast radius is the whole
+Pulumi surface, not one catalog directory.
+
+**Never cap a lane's output pipeline.** `go test ... | tee log | rg ... |
+head -N` stalls the whole lane when `head` exits: the broken pipe blocks
+`go test` on its next write, mid-phase, with the resource still alive (one
+App sat ACTIVE for six minutes inside a hung `tofu import` until the lane
+was interrupted and the app deleted by hand). Redirect the lane to a file
+and grep the file afterwards.
+
+**A write-once secret is proven by USING it, never by reading it back.**
+DigitalOcean returns a Spaces key's `secret_key` only in the create
+response; no later GET carries it, so an engine that lost it at create has
+shipped an unusable key and no existence check could tell. The Spaces key
+verifier signs one S3 `ListBuckets` with the captured pair: the S3 plane's
+error code classifies the SECRET, not the grant (`InvalidAccessKeyId` /
+`SignatureDoesNotMatch` mean the pair is wrong; `AccessDenied` means the
+signature was accepted and only the grant scope refused, which still proves
+the secret). Measured: a freshly minted pair is accepted within two seconds
+of the create response, so the probe is one call, not a poll. Pulumi outputs
+reach the verifier decrypted because the runner reads them with
+`--show-secrets`. The same key has NO importer upstream, and the
+`not_importable_upstream_reason` form was deliberately not used: its
+reconcile-apply re-CREATES the resource, which for a key mints a SECOND
+access key and orphans the first. The scenario-level
+`planton.dev/e2e-import-roundtrip-skip` is the honest form for any
+provider-minted credential whose re-create would leak.
+
+**Nested import tolerances are written `block.leaf`, never `block.0.leaf`.**
+The round-trip runner prunes declared sub-paths element-wise through the
+block LIST (`droplet_template.image` matches `droplet_template[i].image`); a
+`.0.` index segment is compared against map keys and never matches, so the
+tolerance silently does not fire and the lane fails on the very diff it was
+meant to tolerate. And a tolerance that lives only in a catalog row's
+`notes:` is prose -- the runner honors `config_only_attributes` and
+`write_normalized_attributes` alone. Because the reconcile-apply really
+applies tolerated updates, measure what the API does with the re-sent value
+before tolerating it (the autoscale pool's image slug re-send was measured
+a no-op on DigitalOcean's side -- no member roll, no history event).
+
+**`digitalocean_droplet_autoscale` destroy fails on an upstream waiter
+defect (provider v2.100.1 through v2.101.1 and upstream `main`; bridges
+v4.53.0 through v4.80.1; tracked as
+digitalocean/terraform-provider-digitalocean#1605) -- the kind is NOT
+provable at any current pin.** After the dangerous DELETE (godo sets `X-Dangerous: true`; a
+bare curl without it is a 400) the API reports the pool `deleting` for
+several seconds while it terminates the members, the provider's refresh
+returns that status verbatim, and its delete waiter accepts only
+`OK` -> `Not Found`, so `unexpected state 'deleting'` fails every destroy
+5-7 seconds in (5 of 5 lanes, both engines, both scenarios; the fifth
+re-measured on Terraform at v2.101.1 on 2026-09-19 with every earlier
+phase green). DigitalOcean completes the deletion anyway: pool and member
+droplet both answer a real HTTP 404 (the body reads "autoscale group with
+id ... not found") -- within ~10 seconds on four lanes, ~70 seconds on the
+fifth, so the deletion's own duration is variable and can approach the
+waiter's one-minute timeout. Check a new provider release against the
+waiter's source (`Pending`/`Target` in the delete `StateChangeConf` of
+`digitalocean/dropletautoscale/resource_droplet_autoscale.go`), never
+against its release notes: v2.101.0 and v2.101.1 each shipped an unrelated
+change and left the waiter byte-identical, and a bridge bump that embeds
+such a release un-proves every Pulumi lane while buying this kind nothing.
+Everything before destroy is green on both engines. The lane
+consequence: a failed DESTROY skips VERIFY-CLN, the dependency teardown
+then deletes the fixture SSH key while the deleting pool's template still
+references it, and the NEXT scenario's fixture create of the SAME key
+material answers `422 SSH Key is already in use` (an immediate re-create
+after a clean delete is accepted in under a second -- the collision is the
+deleting pool, not a lag). Run the pool's scenarios one at a time with a
+minute between them until the upstream fix lands. Sweep pools, then
+droplets, then tags after any pool lane.
+
+**Autoscale pool read-back, measured.** `POST /v2/droplets/autoscale` (the
+path is `/autoscale`, not `/autoscale_pools`) with `vpc_uuid` unset stores
+the region's DEFAULT VPC and reads it back; `project_id` unset reads back
+empty; `image` reads back as the numeric id; `ssh_keys` read back as the
+ids sent; a static config reads back only `target_number_instances` (no
+cooldown default). The provider's template `vpc_uuid` is Optional but NOT
+Computed (the droplet's is Optional+Computed, which is why the Droplet kind
+never met this), so both modules resolve the region's default VPC (`data
+"digitalocean_vpc" { region }` / `LookupVpc{Region}`) and send it explicitly
+-- the manifest stays simple and the refreshed plan is clean. The API
+reports the pool `active` at +1s and the first member `active` at ~+33s, so
+a pool verifier must assert the members, not the pool status. Member
+droplets carry nothing that links them to their pool (name
+`<pool-name>-<uuid>-NNN`, the template's tags), so the verifier remembers
+the member ids it saw at deploy and probes each at destroy -- the harness's
+one stateful verifier, with its promotion trigger in the file comment.
+
+**Spaces bucket listing lags a deleted bucket by a few seconds.** A
+`ListBuckets` right after `DeleteBucket` can still show the name; a
+`DeleteBucket` retry then answers `NoSuchBucket`. Sweep buckets last and
+re-list before calling one orphaned.
+
+**DOKS version slugs rotate; scenarios pin a MINOR prefix.**
+`GET /v2/kubernetes/options` lists three creatable minors with ONE patch
+slug each, and the patch slugs are retired every few weeks -- a scenario
+written with a full slug fails `422` a month later without anyone touching
+it (the Kubernetes cluster kind's scenarios shipped `1.33.1-do.3`; by
+first contact the offer was `1.34.10-do.5` / `1.35.7-do.5` / `1.36.3-do.5`).
+Both engines accept the minor prefix (`"1.35"`), DigitalOcean resolves it
+to the current patch, the read-back is the full slug, and both modules
+`ignore_changes` the version (the provider ForceNews a config version
+lower than live), so the prefix never diffs: idempotency and the blind
+import round-trip were both clean with it. Same rule as the database
+engine versions: point at the live offer list, date the examples, and never
+write a patch slug into a scenario, preset, or doc example.
+
+**A DOKS cluster is gone in seconds; its VPC membership clears in ~2
+minutes.** DESTROY finished in 2-10 s on both engines and the cluster
+answered 404 at once, but its worker droplets stayed listed in
+`GET /v2/vpcs/{id}/members` while DigitalOcean tore them down, so the
+fixture VPC's teardown attempt 1/6 failed `409 Can not delete VPC with
+members` on every lane and attempt 2 (one minute later) succeeded. Expect
+`DEPENDENCIES-DOWN` to take 2-3 minutes after a cluster lane and read the
+first 409 as this lag, not as the hours-long ghost class a failed database
+create leaves. Size `go test -timeout` for two cluster lifecycles plus the
+retry loop (75 minutes per scenario is comfortable); run the cluster
+scenarios one at a time.
+
+**When a ghost member holds the fixture VPC's range, MOVE the range.** A
+stranded VPC keeps its CIDR as long as DigitalOcean lists the ghost (a
+failed database create's `do:dbaas:` member was still listed 29 hours
+later), and the next fixture install on the same range fails `422 This
+range/size overlaps`. Rename the stranded VPC so the fixture's NAME is free
+(done at the time), then move the Vpc install fixture
+(`catalog/digitalocean/digitaloceanvpc/e2e/prerequisite.yaml`) to the next
+unused /24 in the 10.6x block -- every other e2e VPC in the catalog pins its
+own /24, so check them before choosing -- and delete the stranded VPC in a
+later sweep once its member list is empty. Never block a lane waiting for
+the ghost to clear; the fixture header records the rule.
+
+**DOKS clusters report no control-plane IPv4.** `ipv4_address` read back
+empty on both engines on a single-replica 1.35 cluster (not only on HA
+clusters, as the field's history suggested); the API server is reachable
+only through the endpoint hostname. An empty `ipv4_address` output is the
+normal shape, so a verifier must not treat it as unpopulated -- the cluster
+verifier asserts it only when claimed, alongside the endpoint, URN, default
+pool id, and both subnets.
+
+**A node-pool lane is three lifecycles deep; budget ~12 minutes and run one
+scenario at a time.** Every `digitaloceankubernetesnodepool` scenario
+deploys the Vpc fixture, then the cluster fixture (the cluster kind's
+`minimal` profile, 5-5.5 minutes), then the pool. Measured on all four
+lanes: `DEPENDENCIES-UP` 5-5.5 min, pool `DEPLOY` 1.5-2 min (the provider's
+create waiter returns only once every node is `running`), pool `DESTROY`
+70-80 s (the nodes drain and terminate before the API reports the pool
+gone), `DEPENDENCIES-DOWN` ~3.5 min including the fixture VPC's one expected
+`409` retry while the cluster's droplets leave the VPC. `-timeout 75m` per
+scenario is comfortable; two scenarios in one `go test` would share that
+budget and one bad teardown loop would kill the other lane.
+
+**A node pool's members are never outputs -- verify health live instead.**
+DOKS replaces pool nodes by design (autoscaling, upgrades, auto-repair), so
+the kind exports only `node_pool_id` and `cluster_id`; the direct
+`GET /v2/kubernetes/clusters/{cluster_id}/node_pools/{id}` proves both
+outputs in one call and the same response carries every node's status,
+which the verifier asserts is `running` for every node with at least one
+present. Never assert the node COUNT against a configured number -- an
+autoscaled pool drifts between its bounds on purpose, and `node_count` is
+diff-suppressed against `actual_node_count` on read (measured: the
+autoscaling `full` pool round-tripped blind with no plan at all).
+
+**Pool tags read back exactly as sent; only DOKS's own machinery tags are
+filtered.** The `full` lane's eight tags (two user tags including a
+colon-form `env:e2e`, six Planton identity tags) all read back on both
+engines, and the provider's `FilterTags` strips only `k8s:*` and
+`terraform:*`. Sweep those four DOKS-created tags (`k8s`, `k8s:<cluster id>`,
+`k8s:worker`, `terraform:default-node-pool`) at session end as the cluster
+lanes already do; the pool adds none of its own.
+
+**Spaces: a bucket addressed through the WRONG regional endpoint answers
+404, not a redirect -- so the verifier proves the region at deploy.**
+Measured with the Spaces pair: `HEAD https://ams3.digitaloceanspaces.com/<nyc3
+bucket>` is `404`, exactly what a deleted bucket answers. A module that
+exported a wrong `region` would therefore pass VERIFY-CLN for a bucket that
+still exists. The bucket verifier closes that hole by asserting the `region`
+output against `GetBucketLocation` (Spaces returns the region slug as the
+LocationConstraint, measured `nyc3`) at VERIFY-RES; only then is the
+destroy-side 404 trustworthy. It also asserts `urn` (`do:space:<name>`),
+`endpoint`, and `bucket_domain_name` against DigitalOcean's fixed shapes.
+The provider's `endpoint` attribute is the bare region HOST
+(`nyc3.digitaloceanspaces.com`) -- no scheme, no bucket name -- and the
+kind's contract says so; the first verifier draft assumed an `https://`
+prefix and failed both Pulumi lanes on that assumption alone, which is what
+a wiring assertion is for.
+
+**Bucket satellites round-trip on the bucket's own composite, and exactly
+the declared tolerances fire.** The `full` lane re-imported three resources
+(`digitalocean_spaces_bucket`, `_cors_configuration`, `_policy`) all as
+`{region},{bucket_name}`; the post-import plan proposed one in-place update
+on the bucket carrying `force_destroy false -> true` (the importer hardcodes
+it) and the write-only `acl`, both declared config-only in
+`aa_import/catalog.yaml`, and nothing on CORS, versioning, or lifecycle. The
+declared `policy` write-normalization never fired -- the configured JSON
+already matched the provider's normalized read-back. A bucket with no
+region exported `region: nyc3` (the provider's default) and imported on it.
+Buckets create in 6-14 s and answer 404 within a second of a `DESTROY`
+that took 3-10 s.
+
+**Database satellite lanes: every scenario pays for its own cluster.** The
+runner deploys prerequisites per scenario, so a satellite kind with two
+scenarios on two engines is FOUR cluster creates (4m30s-5m45s each,
+~$0.02/hour), and a scenario that adds a manifest-path cluster fixture
+(the user kind's `mysql-auth`) deploys its two clusters one after the other
+(~9m30s-10m of `DEPENDENCIES-UP`). The satellite operations themselves are
+2-10 s. Budget `-timeout 60m` per ordinary lane, run ONE scenario per
+`go test`, and keep the lane in the FOREGROUND of a shell the tool owns: a
+lane started as a backgrounded subshell (`( go test ... ) &`) was reaped
+with its parent mid-`DEPENDENCIES-UP`, leaving the fixture cluster alive
+with no owner (deleted by hand) -- the same silent-kill class as a capped
+output pipeline, from the other side.
+
+**DigitalOcean's auto-created `v1/dbaas/alerts/*` policies appear MINUTES
+after a cluster is online, so a sweep right after a lane can find none and
+the next find six.** Sweep between lanes for hygiene, but the session-end
+sweep is the one that counts; a read replica mints its own three as well.
+
+**The replica endpoint enforces the same combined-tags cap as the cluster
+create, honestly.** `POST /v2/databases/{id}/replicas` with six tags
+joining to 256 characters answers `422 combined tags cannot exceed 255
+characters` and creates nothing (the replica list stays empty, no tag is
+minted); 255 passes. The replica kind carries the cluster's twin guard
+from that measurement, and both replica scenarios moved to the id-prefix
+name shape (`planton-oss-e2e-dodbrep-*`) -- the full kind name joined to
+257 exactly like the cluster's did, because the two kind names are the
+same length. Measured on the same probe: a `db-s-1vcpu-2gb` replica of a
+10 GiB primary with `storage_size_mib: 30720` is accepted and reads back
+as sent; the replica reads `forking` at create and `online` in 6-7 min
+with no 412 on a six-minute-old primary; it 404s within 4 s of its
+delete; its tags outlive it (sweep class).
+
+**A read replica is its own cluster to DigitalOcean, with its own EMPTY
+firewall.** The replica's UUID answers `GET /v2/databases/{replica_id}`
+directly, does not appear in `GET /v2/databases`, and carries its own
+trusted-sources list: a primary with one `ip_addr` rule had a fresh
+replica reading `rules: []`, and a rule PUT on the replica's UUID landed
+on the replica alone. The firewall and replica kinds both teach a second
+`DigitalOceanDatabaseFirewall` per replica with `cluster` pointing at the
+replica's `replica_id` (an explicit `valueFrom.kind` overrides the
+field's default kind). That composition is measured by API, not yet by a
+lane.
+
+**The database firewall accepts IPv4 only.** An IPv6 address and an IPv6
+prefix both answer `422 invalid rule with type IP_ADDR because: invalid ip
+format`; a bare IPv4 and its `/32` both pass and read back exactly as
+written. The firewall `minimal` scenario shipped an IPv6 rule and failed
+at DEPLOY on the first lane; the spec's `ipRules` rule is now
+`isIp(4) || isIpPrefix(4)` so the class fails at validation. The kind's
+destroy contract held live: after `DESTROY` the live rule list is EMPTY
+(the verifier asserts that, never a 404), and the bare `{cluster_id}`
+import round-trips lossless on both scenarios.
+
+**A database user's `settings` read-back is ENGINE-specific, and the
+manifest must say which engine it is on.** The provider stores `settings`
+only from the create response and never refreshes it. A PostgreSQL user's
+create answers with `settings: {pg_allow_replication: false}`, stored as
+one empty settings block, so a PostgreSQL manifest WITHOUT `settings`
+failed the idempotency gate on both engines (`-settings`); a MySQL user's
+create answers with no settings object at all, so an always-sent empty
+block failed the MySQL lane the same way in reverse (`+settings`) -- and
+`PUT /v2/databases/{id}/users/{name}` with `settings: {}` on a MySQL
+cluster is REFUSED (`422 operation is not supported for this cluster
+type`), which would have made every post-import apply error. The modules
+cannot infer the engine from a cluster UUID, so the manifest carries the
+knowledge: PostgreSQL users declare `settings: {}`, MySQL users leave it
+out, Kafka/OpenSearch users declare their ACLs. With that shape both
+scenarios pass the gate on both engines; the PostgreSQL round-trip
+tolerates exactly the declared config-only `settings` (the re-assert is a
+201 no-op on PostgreSQL), the MySQL round-trip is lossless. The API's GET
+does return `settings` for PostgreSQL users -- it is the provider's Read
+that ignores it, so this is an upstream read-back defect with an
+engine-dependent shape, not something a module can hide (reported as
+digitalocean/terraform-provider-digitalocean#1610).
+
+**Idempotency-gate diffs on the satellites were all first-contact
+read-back classes, none of them module wiring.** Db, connection pool, and
+firewall passed the gate on the first green DEPLOY on both engines; their
+round-trips were lossless; the pool's omitted `user` reads back stable and
+its empty `password` output on the inbound-user shape is the documented
+contract.
+
+**Kafka fixtures: read the eligible sizes from the Kafka layouts, not the
+generic size list, and remember the schema registry is a plan feature.**
+`GET /v2/databases/options` publishes per-engine `layouts` -- Kafka's 3-node
+layout starts at `db-s-2vcpu-4gb` (the smallest generic database size,
+`db-s-2vcpu-2gb`, is not Kafka-eligible; measured 2026-09-17), and the
+version list was `3.9`/`4.2`. A Basic-plan Kafka cluster serves topics but
+has NO schema registry: every `/schema-registry` call answers `412 schema
+registry is disabled for this cluster`, and asking it to enable the toggle
+(`PATCH /v2/databases/{id}/config {"config":{"schema_registry":true}}`)
+answers `422 schema registry not supported for current plan`. A General
+Purpose cluster (`gd-2vcpu-8gb` x 3 is the smallest) comes with the registry
+ENABLED and its config endpoint answering 200. So the topic kind rides a
+Basic fixture and the schema kind rides its own General Purpose fixture --
+two differently named clusters, which also ends the serialization the two
+kinds needed while they shared one name. Each Kafka lane is two cluster
+creates (the PostgreSQL registry prerequisite ~5 min plus the Kafka fixture
+9.5-12 min) for ~12.5 min of lane; a Basic Kafka fixture is ~$0.22/hour, a
+General Purpose one ~$0.30/hour.
+
+**A create that answers `accepted` with no body is a panic in an older
+provider -- check which upstream the Pulumi bridge embeds before blaming a
+module.** DigitalOcean creates Kafka topics asynchronously and answers
+`{"id":"accepted","message":"topic is still provisioning"}` with no topic
+object; the topic is readable a moment later (the provider's Create at
+v2.99.1+ derives the id from the request and waits until GET succeeds).
+Older provider code dereferenced the response's topic and panics
+(`resource_database_kafka_topic.go:318`, a nil pointer inside the bridged
+provider -- `Bridged provider panic ... method=Create`). The Pulumi bridge
+pins its own upstream: pulumi-digitalocean v4.53.0 embeds provider v2.67.0,
+so the topic's Pulumi lane could not pass at that pin while the Terraform
+lane (floating to v2.101.0) passed clean; the first bridge carrying the fix
+is v4.78.1 (= v2.99.1) and v4.79.1 embeds v2.100.1. The definitive map from
+a bridge tag to an upstream version is the bridge's `upstream` git
+submodule commit at that tag (`gh api
+"repos/pulumi/pulumi-digitalocean/contents/upstream?ref=<tag>"`), compared
+against the provider's tags -- release notes are a readable second source.
+Record such a lane as blocked at the pin -- never as a module defect, never
+as a waiver -- and unblock it with the pin bump, not a workaround.
+
+**The Kafka schema registry canonicalizes JSON schemas; the provider stores
+that text verbatim; the modules must canonicalize too.** A registered Avro
+or JSON Schema reads back with object keys sorted and no whitespace
+(`{"fields":[...],"name":"E2eProbe","type":"record"}` for a schema sent as
+`{"type":"record","name":...}`), and the provider's Read writes that
+canonical text into state, so a manifest in any other key order re-plans a
+REPLACE on every refreshed Terraform plan (every argument is create-only).
+Both modules render JSON-typed schemas through their JSON encoders
+(`jsonencode(jsondecode(...))` / `encoding/json`), which produce the same
+sorted-key compact form -- the scenario's schema is deliberately written in
+human key order and Terraform's refreshed idempotency plan read "No
+changes". Protobuf schemas are text: the registry reformats them (a blank
+line after the `syntax` line) and nothing module-side can absorb that -- a
+recorded provider caveat. Registering a subject whose definition the
+registry already holds answers 201 with the SAME schema id and version, so
+the `not_importable_upstream_reason` form (skip the import, let the
+reconcile-apply re-register) is safe for this type where it was not for
+the Spaces key.
+
+**The v6 reservation's read-after-create can 404 for a moment, and the
+provider treats that as "gone" -- the harness's eventual-consistency retry
+then creates ANOTHER one.** Terraform reports `Provider produced
+inconsistent result after apply: root object was present, but now absent`
+on `digitalocean_reserved_ipv6`; the reservation exists but is not in
+state, and each retried apply reserves a fresh address (one lane: three
+consecutive failures ~7 s apart, then success, three orphaned IPv6
+addresses swept by hand). Not reproducible by API alone (four creates, six
+immediate GETs each, all 200) -- an intermittent index lag. After any lane
+that logged that error, list `GET /v2/reserved_ipv6` before calling the
+sweep clean; the runner's retry is what passes the lane, and it is also what
+leaks. The v4 reservation has the same Create shape and never failed here.
+Tracked upstream as digitalocean/terraform-provider-digitalocean#1607; upstream PR
+#1600 adds the readability wait to the v4 resource only, so watch both.
+The v6 assignment DOES round-trip blind (`{ip},{droplet_id}` -- the importer
+parses the pair and mints its own id), so an assignment's synthetic
+timestamped id is not, by itself, a reason to exclude a type from the
+round-trip.
+
+**Apply-time status outputs came off two more kinds at proof time.** The
+topic's `state` and the peering's `status` were retired via `reserved`
+before their first lane (the autoscale pool's `status` precedent): a status
+captured at apply time can only ever read "active"/"ACTIVE" and goes stale
+the moment the cloud moves the resource, and both verifiers already read
+live status. A queued kind that still exports one is a pre-flight fix, not a
+lane finding.
+
+**Peering names are unique per team and a delete passes through DELETING
+before the name is free** -- the peering scenario's name carries
+`${E2E_RUN_ID}` for the same reason cluster and balancer names do. A
+dual-fixture-of-one-kind scenario (the registry prerequisite's VPC plus a
+scenario-declared second VPC) deploys in the expected order and resolves
+both references by name; nothing in the runner needed to change.
+
+**The same lane command can be launched twice by the tooling -- read the log
+for TWO `=== RUN` headers before trusting a PASS.** A duplicated launch of
+the peering lane interleaved two runs in one log: the second run's fixture
+VPC collided with the first's (`422 a VPC with the same name already
+exists`) and failed at DEPENDENCIES-UP while the first passed every phase.
+When a log shows interleaved runs, re-run the lane alone into a fresh log;
+never cite the interleaved one.
+
 ## Build Tag Isolation
 
 All E2E test files use `//go:build e2e`. This means:

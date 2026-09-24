@@ -2,7 +2,13 @@
 # bounds, Kubernetes node labels, a PreferNoSchedule taint (isolating
 # without blocking the fixture cluster's own workloads), and pool-level
 # Droplet tags. gpu_partition_mode is deliberately absent (deferred arm --
-# see profile.yaml: GPU cost class plus a Pulumi SDK v4.49.0 gap).
+# see profile.yaml: the GPU cost class).
+# An autoscaled pool states NO nodeCount: the provider writes the live
+# count back into node_count on every read and re-applies a stated one on
+# every update, so a stated count and the autoscaler fight forever
+# (measured on the cluster kind's inline pool, which shares the schema: a
+# pool that autoscaled to two nodes planned `node_count 2 -> 1`). The pool
+# starts at minNodes.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanKubernetesNodePool
 metadata:
@@ -25,7 +31,9 @@ spec:
       name: planton-oss-e2e-digitaloceankubernetescluster-min
       fieldPath: status.outputs.cluster_id
   size: s-1vcpu-2gb
-  nodeCount: 1
+  # No nodeCount: with autoScale on, the pool starts at minNodes and the
+  # autoscaler owns the count (a stated count would fight it -- see the
+  # header).
   autoScale: true
   minNodes: 1
   maxNodes: 2

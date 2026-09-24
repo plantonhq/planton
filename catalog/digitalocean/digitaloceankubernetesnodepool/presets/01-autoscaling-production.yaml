@@ -10,7 +10,8 @@ spec:
       name: my-doks-cluster
       fieldPath: status.outputs.cluster_id
   size: s-4vcpu-8gb
-  nodeCount: 3
+  # No nodeCount: with autoScale on, the pool starts at minNodes and the
+  # autoscaler owns the count (a stated count would fight it).
   autoScale: true
   minNodes: 2
   maxNodes: 6

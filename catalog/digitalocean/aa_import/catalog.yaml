@@ -51,10 +51,13 @@ spec:
     - terraform_type: digitalocean_reserved_ip
       pulumi_type: digitalocean:index/reservedIp:ReservedIp
       id_format: "{reserved_ip_address}"
-      # droplet_id is only read back when it is already in state (an
+      # droplet_id is only read back by Read when it is already in state (an
       # out-of-band assignment is invisible to drift detection), and in
       # that branch region is taken from the DROPLET's region rather than
-      # the reservation's.
+      # the reservation's. The IMPORTER, however, does restore an attached
+      # droplet, so a blind round-trip of an assigned address is lossless
+      # and this tolerance never fired live (2026-09-17, both v4 scenarios);
+      # it stays declared for the Read-side branch it describes.
       config_only_attributes: [droplet_id]
     - terraform_type: digitalocean_reserved_ip_assignment
       pulumi_type: digitalocean:index/reservedIpAssignment:ReservedIpAssignment
@@ -79,11 +82,15 @@ spec:
       pulumi_type: digitalocean:index/reservedIpv6Assignment:ReservedIpv6Assignment
       id_format: "{reserved_ip_address},{droplet_id}"
       notes: >-
-        Never imported in practice: same synthetic timestamped id as the
-        v4 assignment. Unlike v4, the v6 arm of the DigitalOceanReservedIp
-        kind DOES create this resource (v6 cannot assign inline), but a
-        blind round-trip of the assignment alone is impossible by design;
-        the reservation's round-trip is the meaningful proof.
+        The v6 arm of the DigitalOceanReservedIp kind DOES create this
+        resource (v6 cannot assign inline), and it round-trips blind: the
+        importer parses "{ip},{droplet_id}", verifies the address is
+        attached to that droplet, and mints a fresh synthetic id of its own
+        -- the timestamp in the id is no obstacle because the id is never
+        compared, only the attributes (live-proven 2026-09-17: the
+        reservation and the assignment both re-imported with a clean plan).
+        The kind's import map derives droplet_id from the spec's resolved
+        droplet reference.
     - terraform_type: digitalocean_vpc_peering
       pulumi_type: digitalocean:index/vpcPeering:VpcPeering
       id_format: "{peering_id}"
@@ -94,7 +101,10 @@ spec:
       id_format: "{domain_name}"
       # ip_address is a create-only convenience (it seeds an initial A
       # record); the provider's Read never returns it, so import cannot
-      # carry it.
+      # carry it. It is also ForceNew, so this tolerance alone could never
+      # pass a round-trip (the oracle refuses replaces): the DigitalOceanDnsZone
+      # modules ignore changes to it after creation, and this declaration
+      # serves the raw-resource adopter.
       config_only_attributes: [ip_address]
     - terraform_type: digitalocean_record
       pulumi_type: digitalocean:index/dnsRecord:DnsRecord
@@ -117,7 +127,11 @@ spec:
         never re-reads image (slugs drift to newer image ids upstream).
       # ssh_keys and user_data are write-only at create (user_data is stored
       # hashed). droplet_agent, graceful_shutdown, and backup_policy have no
-      # readable API counterpart -- Read never sets them.
+      # readable API counterpart -- Read never sets them. ssh_keys, user_data,
+      # and droplet_agent are also ForceNew, so a config-only tolerance alone
+      # could never pass a round-trip (the oracle refuses replaces); the
+      # DigitalOceanDroplet modules ignore changes to those three after
+      # creation, and this declaration serves the raw-resource adopter.
       config_only_attributes:
         - ssh_keys
         - user_data
@@ -129,11 +143,20 @@ spec:
       # true. Semantically "grow the disk on resize", textually different.
       write_normalized_attributes:
         - resize_disk
+      # public_networking needs NO tolerance although it is ForceNew: Read
+      # sets it from the live droplet (true when a public IPv4 exists), so a
+      # droplet created with public_networking=false imports blind with
+      # `false` in state and a clean plan -- measured lossless live.
     - terraform_type: digitalocean_volume
       pulumi_type: digitalocean:index/volume:Volume
       id_format: "{volume_id}"
       # Create-only initialization arguments; the API surfaces the resulting
-      # filesystem through separate computed attributes.
+      # filesystem through separate computed attributes. They are ForceNew at
+      # the provider, so a tolerance alone could never make a blind import
+      # plan clean (the oracle refuses replaces); the kind's modules
+      # ignore_changes them in both engines, which is what makes an adopted
+      # volume's first apply a no-op. Declared here for the raw-resource
+      # adopter and as the record of why the modules ignore them.
       config_only_attributes:
         - snapshot_id
         - initial_filesystem_type
@@ -146,13 +169,23 @@ spec:
         back as a NUMERIC image id even when a slug was configured -- the
         provider's Read persists the configured value to hide the drift,
         but a fresh import has no configured value to keep, so the first
-        post-import plan diffs the image when the config uses a slug.
-      # public_networking is schema-declared but never copied into any
-      # create/update request at the pin (dead on write); Read still
-      # populates it from the API, so it round-trips as whatever the
-      # platform defaulted, never as configured intent.
+        post-import plan updates the image from the numeric id back to the
+        configured slug. Measured live: re-sending the identical slug
+        template is a no-op on DigitalOcean's side (no member roll, no
+        history event, updated_at unchanged), so the adopter's first apply
+        is safe. Nested paths are written block.leaf -- the round-trip
+        runner prunes them element-wise through the block list, so a `.0.`
+        index segment would never match.
+      # public_networking is propagated on create from provider v2.100.0
+      # and Read populates it from the API, so a manifest that states it
+      # round-trips losslessly; a manifest that leaves it unset imports the
+      # API's default (true) as a config-only difference. Kept until the
+      # kind's lanes can run (blocked upstream on the delete waiter) and
+      # measure whether the tolerance ever fires.
       config_only_attributes:
-        - droplet_template.0.public_networking
+        - droplet_template.public_networking
+      write_normalized_attributes:
+        - droplet_template.image
 
     # --- Kubernetes ----------------------------------------------------------
     - terraform_type: digitalocean_kubernetes_cluster
@@ -162,7 +195,17 @@ spec:
         Importing MUTATES the remote cluster when the default node pool is
         untagged: the provider adds the terraform:default-node-pool tag to a
         single-pool cluster automatically and refuses multi-pool clusters
-        until one pool is tagged manually.
+        until one pool is tagged manually. A cluster the module created
+        already carries the tag, so its blind round-trip is lossless
+        (measured, both scenarios): the provider strips its own marker from
+        the pool tags on read; a fixed pool's node_count -- which a fresh
+        import never populates -- is diff-suppressed whenever it equals the
+        live actual_node_count, and an autoscaled pool states no node_count
+        at all (the module sends none, so there is nothing to re-import),
+        so no tolerance is needed for it either way. The addon blocks
+        (routing agent, P2P OCI registry plugin, CoreDNS autoscaler) are
+        set unconditionally from the live cluster on read, so an asserted
+        `enabled` -- true or false -- round-trips losslessly.
       # destroy_all_associated_resources and kubeconfig_expire_seconds are
       # provider behavior flags with no API counterpart; registry_integration
       # is an account-level association the provider's Read never fetches
@@ -177,7 +220,13 @@ spec:
       notes: >-
         The plain pool UUID, NOT a cluster,pool composite: the provider
         recovers cluster_id by scanning the account's clusters. It refuses to
-        import a default node pool (import the cluster instead).
+        import a default node pool (import the cluster instead). The blind
+        round-trip is lossless with no tolerance: tags read back exactly as
+        sent (the provider filters only its own k8s:/terraform: machinery
+        tags on read), labels and taints read back verbatim, and node_count
+        is either a fixed pool's stated count (diff-suppressed against
+        actual_node_count) or absent on an autoscaled pool (the module
+        sends none, so a drifted live count has nothing to disagree with).
 
     # --- Databases -----------------------------------------------------------
     - terraform_type: digitalocean_database_cluster
@@ -191,7 +240,14 @@ spec:
       # populates them even though they exist server-side; the first
       # post-import plan re-asserts the configured values as a server-side
       # no-op. storage_size_mib, private_network_uuid, project_id, and tags
-      # read back unconditionally and need no tolerance.
+      # read back unconditionally and need no tolerance. Live-proven
+      # 2026-09-17 on three blind round-trips: a cluster with none of these
+      # configured re-imported lossless; eviction_policy fired alone on the
+      # Valkey lane; maintenance_window and sql_mode fired together on the
+      # MySQL lane -- and nothing outside this list ever appeared in a
+      # post-import plan (the Optional+Computed private_network_uuid and
+      # project_id populate from the region's default VPC and the default
+      # project when unset, without a diff).
       write_normalized_attributes:
         - maintenance_window
         - eviction_policy
@@ -200,9 +256,18 @@ spec:
     - terraform_type: digitalocean_database_user
       pulumi_type: digitalocean:index/databaseUser:DatabaseUser
       id_format: "{cluster_id},{user_name}"
-      # The API returns ACL settings only in the CREATE response -- GetUser
-      # never includes them (the provider sets them create-only by design),
-      # so import can never carry them.
+      # The provider stores `settings` only from the CREATE response and
+      # its Read never refreshes it (the API's GET does return a settings
+      # object for PostgreSQL users, but the provider ignores it by design),
+      # so a blind import leaves the attribute empty and the first plan
+      # re-asserts whatever the manifest declares. Manifests declare it BY
+      # ENGINE: PostgreSQL users carry `settings: {}` (DigitalOcean stores a
+      # settings object for every PostgreSQL user; the re-assert after
+      # import is a server-side no-op -- PUT with `settings: {}` answers 201
+      # and changes nothing), MySQL users carry none (the API refuses a
+      # settings update on MySQL with `422 operation is not supported for
+      # this cluster type`, so a MySQL import is lossless only because
+      # nothing is re-asserted).
       config_only_attributes: [settings]
       notes: >-
         MongoDB user passwords exist only in the create response, so an
@@ -210,9 +275,14 @@ spec:
     - terraform_type: digitalocean_database_db
       pulumi_type: digitalocean:index/databaseDb:DatabaseDb
       id_format: "{cluster_id},{database_name}"
+      # Live-proven lossless (2026-09-17): two create-only arguments and a
+      # bare existence-check Read -- nothing to tolerate.
     - terraform_type: digitalocean_database_connection_pool
       pulumi_type: digitalocean:index/databaseConnectionPool:DatabaseConnectionPool
       id_format: "{cluster_id},{pool_name}"
+      # Live-proven lossless on both scenarios (2026-09-17): every argument
+      # is create-only upstream and reads back as sent; an omitted `user`
+      # reads back empty and stable, so no tolerance is ever needed here.
     - terraform_type: digitalocean_database_firewall
       pulumi_type: digitalocean:index/databaseFirewall:DatabaseFirewall
       id_format: "{cluster_id}"
@@ -220,8 +290,13 @@ spec:
         The rule set is a property of its cluster: import takes the BARE
         cluster UUID, and the importer then mints a fresh random state id
         ("{cluster_id}-<uniqueid>") -- the state id is deliberately
-        non-deterministic and never compared. Rules read back in full.
-        Destroy is a PUT of an empty rule list, never a deletion.
+        non-deterministic and never compared. Rules read back in full
+        (live-proven lossless on both scenarios, 2026-09-17: the set
+        semantics absorb the server-side uuid/created_at noise, and a bare
+        IPv4 reads back exactly as written -- never as its /32). Destroy is
+        a PUT of an empty rule list, never a deletion. A read replica has
+        its own rule set under its own UUID; the primary's import carries
+        nothing about it.
     - terraform_type: digitalocean_database_replica
       pulumi_type: digitalocean:index/databaseReplica:DatabaseReplica
       id_format: "{cluster_id},{replica_name}"
@@ -229,22 +304,36 @@ spec:
       pulumi_type: digitalocean:index/databaseKafkaTopic:DatabaseKafkaTopic
       id_format: "{cluster_id},{topic_name}"
       # partition_count is deliberately never read back (partition changes
-      # apply asynchronously and the API would report a stale count), so an
-      # import lands at the schema default; min_insync_replicas is locally
-      # defaulted by the provider rather than read from the server.
+      # apply asynchronously and the API would report a stale count): the
+      # provider's Read echoes the value already in state, which after an
+      # import is empty, so the post-import plan proposes `0 -> <configured>`
+      # and the reconcile-apply's equal-count update is an API no-op
+      # (live-proven 2026-09-17 on both scenarios; the ONLY tolerated diff).
+      # Everything else -- replication_factor and the whole config block,
+      # min_insync_replicas included -- reads back from the server exactly
+      # as sent (min_insync_replicas is defaulted by the provider on the
+      # WRITE side only), so no other tolerance exists.
       config_only_attributes: [partition_count]
-      write_normalized_attributes: [config.min_insync_replicas]
     - terraform_type: digitalocean_database_kafka_schema_registry
       pulumi_type: digitalocean:index/databaseKafkaSchemaRegistry:DatabaseKafkaSchemaRegistry
-      id_format: "{cluster_id},{subject_name}"
-      notes: >-
-        Import is DEFECTIVE at the provider pin: the importer restores only
-        cluster_id, sets the resource id to the bare cluster id (not the
-        canonical "{cluster_id}/schema-registry/{subject}" form Create
-        produces), and never restores subject_name -- the post-import Read
-        addresses an empty subject and cannot round-trip. The owning kind's
-        import map records the exclusion; re-evaluate on any provider pin
-        bump.
+      # The importer is DEFECTIVE at the provider pin: it restores only
+      # cluster_id, sets the resource id to the bare cluster id (not the
+      # canonical "{cluster_id}/schema-registry/{subject}" form Create
+      # produces), and never restores subject_name, so the post-import Read
+      # addresses an empty subject and cannot round-trip. Declared not
+      # importable so the round-trip runner skips the import and lets the
+      # reconcile-apply re-CREATE the subject -- which is safe here:
+      # registering a subject whose definition the registry already holds
+      # answers 201 with the SAME schema id and version (measured
+      # 2026-09-17), so the re-create is a registry-side no-op and drops
+      # nothing (contrast the Spaces key, whose re-create would mint a second
+      # credential). A fixed importer would take "{cluster_id},{subject_name}"
+      # -- re-evaluate on any provider pin bump.
+      not_importable_upstream_reason: >-
+        The provider's importer restores only cluster_id and never the
+        subject name at the pinned version, so an imported subject reads
+        back empty; the reconcile-apply re-registers it, which the registry
+        treats as a no-op when the definition matches.
 
     # --- Spaces (S3-compatible object storage) --------------------------------
     - terraform_type: digitalocean_spaces_bucket
@@ -252,7 +341,13 @@ spec:
       id_format: "{region},{bucket_name}"
       # force_destroy is engine behavior (empty-before-delete) hardcoded to
       # false by the importer; acl is write-only -- Read never calls
-      # GetBucketAcl, so the canned ACL stays at its config value.
+      # GetBucketAcl, so the canned ACL stays at its config value. Measured
+      # live: these two are exactly the updates a blind round-trip plans
+      # (force_destroy false -> true when configured true; acl re-asserted),
+      # and both are server-side no-ops when the reconcile-apply re-sends
+      # them. Region is never a tolerance: the importer takes it from the
+      # composite and the bucket's live location must agree (the E2E
+      # verifier asserts GetBucketLocation against the region output).
       config_only_attributes: [force_destroy, acl]
     - terraform_type: digitalocean_spaces_bucket_cors_configuration
       pulumi_type: digitalocean:index/spacesBucketCorsConfiguration:SpacesBucketCorsConfiguration
@@ -316,23 +411,35 @@ spec:
       id_format: "{registry_name}"
     - terraform_type: digitalocean_container_registry_docker_credentials
       pulumi_type: digitalocean:index/containerRegistryDockerCredentials:ContainerRegistryDockerCredentials
-      id_format: "{registry_name}"
-      notes: >-
-        Import is DEFECTIVE at the provider pin: the resource declares a
-        passthrough importer, but its Read requires registry_name from state
-        (which passthrough never sets) before it can even look the registry
-        up, and the provider docs carry no Import section for it. The kind
-        that wires this resource must prove or exclude it in its own import
-        map when its depth wave runs the live round-trip.
-      # Pure config inputs; docker_credentials itself is re-minted by the
-      # provider whenever the stored token is missing or expired.
-      config_only_attributes: [write, expiry_seconds]
+      # A prose "excluded" is not machine-honored: the round-trip runner skips
+      # a type ONLY when it declares not_importable_upstream_reason (mutually
+      # exclusive with id_format). The importer is DEFECTIVE at the provider
+      # pin: the resource declares a passthrough importer, but its Read
+      # requires registry_name from state (which passthrough never sets)
+      # before it can even look the registry up, and the provider docs carry
+      # no Import section for it. Even a fixed importer could not recover
+      # write/expiry_seconds (the API never returns them). The create path is
+      # upsert-convergent -- it mints a fresh credential from configuration --
+      # so an adopter's first apply re-puts it, which is the honest reconcile.
+      not_importable_upstream_reason: >-
+        Passthrough importer whose Read requires registry_name from prior
+        state at v2.99.1 -- import always fails; the resource re-mints from
+        configuration on the adopter's first apply.
 
     # --- App Platform ----------------------------------------------------------
     - terraform_type: digitalocean_app
       pulumi_type: digitalocean:index/app:App
       id_format: "{app_id}"
-      # A provider-local pagination knob, never sent to the API.
+      # A provider-local pagination knob, never sent to the API. Live-proven
+      # 2026-09-16 on the App kind (three scenarios) and the Function kind:
+      # the provider's Read flattens the whole spec, so this is the only
+      # tolerance a blind import needs. NOT listed here on purpose: alert
+      # `destinations` are never read back by the provider at v2.99.1 (tracked
+      # as digitalocean/terraform-provider-digitalocean#1606), so an
+      # import of an app that has them plans an update -- but that is a
+      # perpetual diff on every refreshed plan, not an import-only artifact,
+      # and tolerating it would hide a defect that redeploys the app on every
+      # apply. The kinds record it as a provider-defect deferral instead.
       config_only_attributes: [deployment_per_page]
 
     # --- Projects & account ------------------------------------------------------
@@ -341,7 +448,10 @@ spec:
       id_format: "{project_id}"
       # The API returns the environment capitalized ("Production"); authored
       # manifests declare it lowercase and the provider only diff-suppresses,
-      # so a blind import reads back the capitalized form.
+      # so a blind import reads back the capitalized form. Not a tolerance
+      # but a warning: the account's DEFAULT project reads back
+      # is_default=true against a manifest that leaves the flag unset, so
+      # adopting it plans to un-default it -- never import that project.
       write_normalized_attributes: [environment]
     - terraform_type: digitalocean_project_resources
       pulumi_type: digitalocean:index/projectResources:ProjectResources
@@ -372,7 +482,10 @@ spec:
     - terraform_type: digitalocean_uptime_alert
       pulumi_type: digitalocean:index/uptimeAlert:UptimeAlert
       id_format: "{check_id},{alert_id}"
-      # down/down_global alerts carry no threshold in config, but create
-      # sends the zero and the read writes it back -- an authored null
-      # imports as 0.
-      write_normalized_attributes: [threshold]
+      # Lossless. DigitalOcean fixes threshold/comparison at 1/less_than for
+      # down and down_global and comparison at less_than for ssl_expiry no
+      # matter what is sent; the DigitalOceanUptimeCheck modules send exactly
+      # those values (the spec forbids authoring them), so read-back equals
+      # config and no tolerance is needed. Sending nothing, as the provider's
+      # own schema permits, would read back 1/less_than against a null and
+      # re-plan forever.

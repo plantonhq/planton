@@ -42,7 +42,7 @@ func (v *databaseDbVerifier) VerifyAbsentFromOutputs(ctx context.Context, client
 		return pkgerrors.Wrap(err, "digitaloceandatabasedb verify-absent failed")
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceandatabasedb %q still exists after destroy", StringOutput(outputs, "database_name"))
+		return &StillExistsError{Component: "digitaloceandatabasedb", ID: StringOutput(outputs, "database_name")}
 	}
 	return nil
 }

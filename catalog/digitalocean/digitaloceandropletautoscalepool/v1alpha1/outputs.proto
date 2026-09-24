@@ -4,13 +4,21 @@ package dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1;
 
 // DigitalOceanDropletAutoscalePoolStackOutputs captures the key outputs
 // after provisioning a droplet autoscale pool.
+//
+// The pool's health is deliberately NOT an output: a status captured at
+// apply time goes stale the moment DigitalOcean changes it (a member fails,
+// the pool scales), and a stale "active" in stored outputs is worse than no
+// value. Live health is read from the API by whoever needs it -- the E2E
+// verifier asserts it that way. Member droplet ids are likewise not outputs:
+// they churn by design, so firewalls and load balancers address the fleet
+// through the template's tags, never through this contract.
 message DigitalOceanDropletAutoscalePoolStackOutputs {
+  // Retired: `status` (an apply-time health snapshot). Never reuse the
+  // number or the name.
+  reserved 2;
+  reserved "status";
+
   // UUID of the autoscale pool (the resource's API identity and its import
   // id).
   string pool_id = 1;
-
-  // Health status of the pool as reported by DigitalOcean at apply time
-  // ("active" once the pool and every member droplet are provisioned; an
-  // error state means the pool needs user intervention).
-  string status = 2;
 }

@@ -3,21 +3,35 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanspaceskey
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. Two scenarios: `full-access` (fixture-free, token-only --
-  # the empty-bucket grant grammar) and `per-bucket` (readwrite grant on
-  # the Bucket install fixture BY REFERENCE; the bucket lane needs the
-  # Spaces key pair SPACES_ACCESS_KEY_ID / SPACES_SECRET_ACCESS_KEY
-  # alongside DIGITALOCEAN_TOKEN). Keys are free objects; both lanes run
-  # in seconds.
-  # Watch items for the proof lane: the secret_key output exists ONLY in
-  # the create response (both engines must capture it at create -- there
-  # is no re-read to fall back on); import is EXCLUDED (the resource has
-  # no upstream importer); grant-list and rename updates are in-place
-  # arms the six-phase runner cannot exercise (recorded deferrals).
+  # green: proven live on BOTH engines (2026-09-16), both scenarios, every
+  # phase including the idempotency gate. `full-access` is fixture-free and
+  # token-only (the empty-bucket fullaccess grant grammar); `per-bucket`
+  # rides the Bucket install fixture BY REFERENCE and therefore needs the
+  # Spaces key pair SPACES_ACCESS_KEY_ID / SPACES_SECRET_ACCESS_KEY beside
+  # DIGITALOCEAN_TOKEN (the bucket module's data plane). Keys are free;
+  # each lane runs in seconds.
+  # What the lanes proved beyond existence: the verifier signs one S3
+  # request with the captured pair, so the write-once secret_key (returned
+  # by DigitalOcean only in the create response) is proven REAL on both
+  # engines -- a fullaccess key lists buckets; a bucket-scoped key is proven
+  # by the S3 plane accepting the signature. A fresh pair is accepted by the
+  # S3 plane within two seconds of the create response. A fullaccess grant
+  # reads back with no bucket field. A deleted key answers 404 immediately.
+  # Import round-trip: skipped by scenario annotation on both scenarios --
+  # the resource ships no importer at the provider pin and the secret could
+  # never be restored; a reconcile would mint a SECOND key (recorded on the
+  # import catalog row and the kind's GUIDE).
+  # Deferred arms (the six-phase runner has no update phase): rename and
+  # grant-list replacement, both in-place upstream. Unblock: a runner update
+  # phase.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `per-bucket`: bucket fixture 21 s, DEPLOY 11 s, IDEMPOTENCY
+  # PASS, the signed S3 call proving the secret in 1.4 s, DESTROY 16 s --
+  # every phase first run; the bridge bump changed nothing this kind's lane
+  # can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
   timeout_minutes: 15

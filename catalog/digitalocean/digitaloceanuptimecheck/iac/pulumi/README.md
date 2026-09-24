@@ -15,4 +15,6 @@ Provisions an uptime probe on an external endpoint plus its alert rules -- the c
 - Alert rows parent the check (`pulumi.Parent`) and take its id as `CheckId` -- the upstream mutable-parent corruption class is unrepresentable here.
 - The SDK keeps the provider's unbounded notifications list, but the provider reads only the first element -- exactly one is sent per row.
 - The Slack webhook URL is not secret-flagged by the SDK, so the module wraps it in `pulumi.ToSecret`.
-- Resource names carry the row index (`alert-<idx>-<name>`) so two rows may share a display name without colliding.
+- `period` is always sent (spec-required): DigitalOcean rejects any alert without one, whatever the SDK's schema says.
+- `threshold`/`comparison` are sent as DigitalOcean will store them: authored for latency; the authored threshold plus `less_than` for ssl_expiry; the API's fixed `1` / `less_than` for down and down_global. The spec forbids authoring the fixed values, and sending them is the only shape that reads back unchanged.
+- Each alert row's resource name is `<idx>-<alert_name>` -- the same key the Terraform module uses as its `for_each` key and both engines use for the `alert_ids` output, so a blind import can find every row's id from state alone. The index lets two rows share a display name without colliding.

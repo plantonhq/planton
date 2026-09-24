@@ -3,11 +3,25 @@
 # cluster alongside the kind's PostgreSQL registry prerequisite. Deployed
 # as a manifest-path prerequisite (an EXTRA DigitalOceanDatabaseCluster
 # instance) by the scenario's e2e-prerequisites annotation.
+#
+# The metadata name uses the owning kind's id prefix (`dodbu`), the
+# catalog's shape for long kind names: DigitalOcean caps a database
+# cluster's combined tags (joined by commas) at 255 characters, and the six
+# Planton label tags carry this name twice (`planton-ai_name:` and
+# `planton-ai_id:`) -- the full kind name here joined to 271 and the
+# cluster module's own guard refused it before any API call. This name
+# joins to 233.
+#
+# The cluster name carries the run id: cluster names are unique per account
+# (the API answers 422 "cluster name is not available"), and a delete
+# returns before the cluster is gone, so a re-run must never reuse the
+# previous name. The engine version is one DigitalOcean offers today
+# (`GET /v2/databases/options`: MySQL 8.4 only -- a bare "8" is rejected).
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseCluster
 metadata:
-  name: planton-oss-e2e-digitaloceandatabaseuser-mysql-fixture
-  id: planton-oss-e2e-digitaloceandatabaseuser-mysql-fixture
+  name: planton-oss-e2e-dodbu-mysql-fixture
+  id: planton-oss-e2e-dodbu-mysql-fixture
   org: planton-oss
   env: e2e
   labels:
@@ -18,9 +32,9 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  clusterName: pltn-e2e-dodbu-mysql-fx
+  clusterName: pltn-e2e-dodbu-mysql-fx-${E2E_RUN_ID}
   engine: mysql
-  engineVersion: "8"
+  engineVersion: "8.4"
   region: nyc3
   sizeSlug: db-s-1vcpu-1gb
   nodeCount: 1

@@ -12,10 +12,13 @@ DigitalOceanAppSpec is the full App Platform application: any mix of
 services, workers, jobs, static sites, functions, and in-app databases,
 plus domains, ingress, alerts, and VPC placement.
 
-The app name is spec.app_name (2-32 characters, the provider's limit).
-Component instance sizes are free-form slugs such as basic-xxs or
-professional-s - the provider does not publish a closed list, so new
-sizes work without a catalog change.
+The app name is spec.app_name (2-32 characters, the API's limit). Every
+component name shares the API's naming rule, ^[a-z][a-z0-9-]{0,30}[a-z0-9]$,
+and the API rejects the whole app spec when any one of them breaks it, so
+the rule is enforced at validation on each name field below. Component
+instance sizes are free-form slugs such as basic-xxs or professional-s -
+the provider does not publish a closed list, so new sizes work without a
+catalog change.
 
 ## Example
 
@@ -36,7 +39,7 @@ metadata:
   name: demo-app
 spec:
   appName: demo-app
-  region: nyc3
+  region: nyc
   services:
     - name: web
       image:
@@ -62,7 +65,7 @@ metadata:
   name: sample-nodejs
 spec:
   appName: sample-nodejs
-  region: nyc3
+  region: nyc
   services:
     - name: web
       git:
@@ -465,35 +468,43 @@ spec:
 
 `string` · required
 
-App name, unique in the DigitalOcean account. DNS-friendly, 2-32
-characters. This is spec.name in the Terraform resource.
+App name, unique across every app in the DigitalOcean account. 2-32
+characters matching ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ -- starts with a
+letter, ends with a letter or digit (the API's own rule; it answers
+"name in body should match ..." otherwise, and reports a taken name as
+app_name_available: false on its validate-only POST /v2/apps/propose).
+This is spec.name in the Terraform resource. Renaming updates the app in
+place; the default <name>-<hash>.ondigitalocean.app hostname carries the
+name, so the app's URL changes with it.
 
-- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$"}}
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ### spec.region
 
 `enum` · required
 
-Region slug, for example nyc3. Required to place the app.
+App Platform region group, for example nyc (never a droplet slug such
+as nyc3 -- the API would store nyc and the plan would never settle).
+Required: the API defaults to blr when omitted, which is rarely what a
+manifest author means.
 
 - rule: {"required":true}
 
 Allowed values (use exactly as shown):
 
-- `digital_ocean_region_unspecified` -- 0: default / unspecified region
-- `nyc3` -- new york 3
-- `sfo3` -- san francisco 3
-- `fra1` -- frankfurt 1
-- `sgp1` -- singapore 1
-- `lon1` -- london 1
-- `tor1` -- toronto 1
-- `blr1` -- bangalore 1
-- `ams3` -- amsterdam 3
-- `nyc1` -- new york 1
-- `nyc2` -- new york 2
-- `sfo2` -- san francisco 2
-- `syd1` -- sydney 1
-- `atl1` -- atlanta 1
+- `digital_ocean_app_region_unspecified`
+- `ams` -- Amsterdam (ams3)
+- `nyc` -- New York (nyc1, nyc3)
+- `fra` -- Frankfurt (fra1)
+- `sfo` -- San Francisco (sfo3)
+- `sgp` -- Singapore (sgp1)
+- `blr` -- Bangalore (blr1)
+- `tor` -- Toronto (tor1)
+- `lon` -- London (lon1)
+- `syd` -- Sydney (syd1)
+- `atl` -- Atlanta (atl1)
+- `ric` -- Richmond (ric1)
+- `mkc` -- Kansas City (mkc1)
 
 ### spec.services
 
@@ -506,7 +517,10 @@ Allowed values (use exactly as shown):
 
 `string` · required
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+chars, starts with a letter) and a violation rejects the whole app spec.
+
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ### spec.services[].sourceDir
 
@@ -764,7 +778,8 @@ HTTP path, for example /healthz. When omitted the probe is TCP.
 
 `DigitalOceanAppHealthCheck`
 
-Liveness probe. Terraform wires this; Pulumi at v4.49.0 fails loudly if set.
+Liveness probe: a failing check restarts the container, where the
+readiness health_check only gates traffic. Both provisioners deploy it.
 
 ### spec.services[].livenessHealthCheck.port
 
@@ -1071,7 +1086,10 @@ The provider requires this block even when user and password are empty
 
 `string` · required
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+chars, starts with a letter) and a violation rejects the whole app spec.
+
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ### spec.workers[].sourceDir
 
@@ -1269,7 +1287,8 @@ honored for docr and ghcr.
 
 `DigitalOceanAppHealthCheck`
 
-Liveness probe. Terraform wires this; Pulumi at v4.49.0 fails loudly if set.
+Liveness probe: a failing check restarts the container. Both provisioners
+deploy it.
 
 ### spec.workers[].livenessHealthCheck.port
 
@@ -1575,7 +1594,10 @@ The provider requires this block even when user and password are empty
 
 `string` · required
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+chars, starts with a letter) and a violation rejects the whole app spec.
+
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ### spec.jobs[].sourceDir
 
@@ -2015,7 +2037,10 @@ The provider requires this block even when user and password are empty
 
 `string` · required
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+chars, starts with a letter) and a violation rejects the whole app spec.
+
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ### spec.staticSites[].sourceDir
 
@@ -2189,7 +2214,10 @@ Allowed values (use exactly as shown):
 
 `string` · required
 
-- rule: {"required":true,"string":{"minLen":"1"}}
+Component name: the API's rule is ^[a-z][a-z0-9-]{0,30}[a-z0-9]$ (2-32
+chars, starts with a letter) and a violation rejects the whole app spec.
+
+- rule: {"required":true,"string":{"minLen":"2","maxLen":"32","pattern":"^[a-z][a-z0-9-]{0,30}[a-z0-9]$"}}
 
 ### spec.functions[].sourceDir
 
@@ -2691,8 +2719,7 @@ Path prefix, for example /api
 
 `string`
 
-Exact Host header to match. The Pulumi SDK at v4.49.0 cannot set this;
-Terraform wires it and Pulumi fails loudly if it is set.
+Exact Host header to match. Both provisioners deploy it.
 
 ### spec.ingress.rules[].component
 
@@ -2789,8 +2816,8 @@ Duration string, for example 5h30m
 
 `DigitalOceanAppSecureHeader`
 
-The provider schema caps this at one header. The Pulumi SDK at v4.49.0
-cannot set it; Terraform wires it and Pulumi fails loudly if it is set.
+One response header added to every route of this ingress. The provider
+schema caps this at one header. Both provisioners deploy it.
 
 ### spec.ingress.secureHeader.key
 
@@ -2836,8 +2863,7 @@ When true, the app is archived (and enabled is implied by the API).
 
 `string | valueFrom`
 
-VPC the app's egress is placed in. Optional. The Pulumi SDK at v4.49.0
-cannot set this; Terraform wires it and Pulumi fails loudly if it is set.
+VPC the app's egress is placed in. Optional; both provisioners deploy it.
 
 - references: DigitalOceanVpc (`status.outputs.vpc_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanVpc, name: <that resource's name>, fieldPath: status.outputs.vpc_id}} -- a bare string does not parse
@@ -2867,7 +2893,9 @@ Feature flags App Platform accepts as free-form strings.
 (Optional) The project the app is created in. Reference a
 DigitalOceanProject resource (the default wiring resolves its
 project_id output) or pass a literal project UUID. When unset, the app
-lands in the account's default project.
+lands in the account's default project. Create-only: the provider marks
+project_id ForceNew, so changing it destroys and recreates the app (new
+UUID, new default hostname).
 
 - references: DigitalOceanProject (`status.outputs.project_id`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: DigitalOceanProject, name: <that resource's name>, fieldPath: status.outputs.project_id}} -- a bare string does not parse

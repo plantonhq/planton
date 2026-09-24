@@ -5,7 +5,7 @@ metadata:
 spec:
   clusterName: my-kafka
   engine: kafka
-  engineVersion: "3.5"
+  engineVersion: "4.2"
   region: nyc3
   sizeSlug: db-s-2vcpu-2gb
   nodeCount: 3

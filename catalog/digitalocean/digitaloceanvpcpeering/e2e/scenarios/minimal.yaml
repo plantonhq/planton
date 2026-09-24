@@ -3,6 +3,9 @@
 # kind's registry-prerequisite VPC (the shared install fixture); vpc_2
 # references the scenario-declared EXTRA VPC instance (the annotation
 # below) -- the catalog's first dual-fixture scenario of the same kind.
+# The peering name carries the run id: DigitalOcean requires peering names
+# to be unique per team, and a delete passes through DELETING before the
+# name is free, so back-to-back lanes need distinct names.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanVpcPeering
 metadata:
@@ -19,7 +22,7 @@ metadata:
   tags:
     - planton-e2e
 spec:
-  peeringName: pltn-e2e-dovpcp-min
+  peeringName: pltn-e2e-dovpcp-min-${E2E_RUN_ID}
   vpc_1:
     valueFrom:
       kind: DigitalOceanVpc

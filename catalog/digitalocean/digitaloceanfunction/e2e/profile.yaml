@@ -3,19 +3,43 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanfunction
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests,
-  # both engine builds, tofu validate green, checker-green parity
-  # manifest, import map, presets, README/catalog/GUIDE). Live
-  # dual-engine proof has not yet run. ONE scenario: `hello-world`
-  # clones DigitalOcean's public sample-functions-nodejs-helloworld
-  # repo over plain git (no GitHub connection, no deploy_on_push).
-  # Runtime, memory, timeout, and schedules live in the repo's
-  # project.yml -- they are not on the spec and must not be. Import
-  # round-trips the digitalocean_app UUID via function_id (there is
-  # no standalone Functions resource). Git-source App Platform
-  # deploys run a real build; budget ~10 minutes per engine.
-  # basic-xxs-equivalent functions billing is cents for a short lane.
+  # Live-proven on BOTH engines, full lifecycle under the idempotency gate,
+  # plus the blind import round-trip of the digitalocean_app UUID via
+  # function_id (Terraform lane; the only tolerated update is the
+  # provider-local `deployment_per_page`). ONE scenario, `hello-world`:
+  # DigitalOcean's public sample-functions-nodejs-helloworld cloned over
+  # plain git (no GitHub connection), sourceDirectory unset because that
+  # repo keeps project.yml at its root. The verifier asserts the live app
+  # has an ACTIVE deployment and that https_endpoint / default_hostname
+  # match the live app. The git-source build reached ACTIVE in ~80 seconds
+  # on both engines; the functions component sits in the free tier.
+  #
+  # What the first live runs taught (and the fresh read before them): the
+  # App Platform app must be named from spec.app_name -- the API caps app
+  # names at 32 characters and requires them unique per account, which the
+  # 43-character e2e metadata name could never satisfy (the earlier design
+  # named the app from metadata.name). App Platform regions are datacenter
+  # groups (nyc, not nyc3). The sample repo's project.yml is at the root,
+  # not under packages/ as every earlier example claimed -- a wrong
+  # sourceDirectory fails the build minutes into the deploy.
+  #
+  # Deliberately NOT in the live lanes, each with its unblock condition:
+  # GitHub / GitLab / Bitbucket sources with deploy_on_push -- need a linked
+  #   VCS account on the DigitalOcean team.
+  # alert destinations -- a PROVIDER DEFECT at v2.99.1 shared with the App
+  #   kind: wired on both engines, applied by the API, never read back, so
+  #   Terraform re-plans and redeploys on every apply. Unblocks when the
+  #   provider's Read flattens destinations.
+  # component alert rules on the functions component -- offline-planned
+  #   only; the App kind's `alerted` lane proved the alert-rule read-back
+  #   on a service component, and the API applies the same rule schema to
+  #   every component family. A live functions-alert arm would be a second
+  #   git build for a rule shape already read back cleanly.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `hello-world`: DEPLOY 1m10s including the real git build,
+  # IDEMPOTENCY PASS, DESTROY 12 s -- every phase first run; the bridge bump
+  # changed nothing this kind's lane can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 25

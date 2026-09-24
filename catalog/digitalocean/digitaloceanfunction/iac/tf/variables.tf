@@ -35,7 +35,7 @@ variable "spec" {
       branch = string
       deploy_on_push = optional(bool, false)
     }))
-    source_directory = string
+    source_directory = optional(string, "")
     envs = optional(list(object({
       key = string
       plaintext = optional(string, "")
@@ -79,5 +79,6 @@ variable "spec" {
       }))
     })), [])
     project_id = optional(string, "")
+    app_name = string
   })
 }

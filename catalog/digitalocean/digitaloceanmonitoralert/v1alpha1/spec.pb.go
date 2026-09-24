@@ -85,7 +85,11 @@ type DigitalOceanMonitorAlertSpec struct {
 	// (Optional) Droplet tags the policy watches: every Droplet carrying a
 	// listed tag is covered, and membership tracks the tag automatically --
 	// prefer tags over droplet_ids for dynamic fleets. Valid only with
-	// droplet metrics.
+	// droplet metrics. The tag does not have to exist yet: the policy stores
+	// it as a selector and neither requires nor creates the tag (a policy
+	// naming a tag no Droplet carries is accepted and simply watches
+	// nothing until one does) -- unlike firewalls, which reject a tag no
+	// resource carries.
 	Tags []string `protobuf:"bytes,10,rep,name=tags,proto3" json:"tags,omitempty"`
 	// Where alert notifications are delivered. At least one channel is
 	// required -- DigitalOcean rejects a policy that notifies nobody.
@@ -204,9 +208,11 @@ func (x *DigitalOceanMonitorAlertSpec) GetAlerts() *DigitalOceanMonitorAlertNoti
 // Notification channels for a monitor alert policy.
 type DigitalOceanMonitorAlertNotifications struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// (Optional) Email addresses notifications are sent to. DigitalOcean may
-	// require addresses to belong to verified account members -- it rejects
-	// unknown addresses at request time.
+	// (Optional) Email addresses notifications are sent to. Every address
+	// MUST belong to a verified member of the DigitalOcean team that owns the
+	// policy: the API rejects any other address at create time ("email is
+	// not verified"), so a shared inbox or an external on-call address has
+	// to be invited to the team first. Uptime alerts enforce the same rule.
 	Emails []string `protobuf:"bytes,1,rep,name=emails,proto3" json:"emails,omitempty"`
 	// (Optional) Slack channels notifications are posted to.
 	Slack         []*DigitalOceanMonitorAlertSlack `protobuf:"bytes,2,rep,name=slack,proto3" json:"slack,omitempty"`
@@ -264,8 +270,11 @@ type DigitalOceanMonitorAlertSlack struct {
 	// The Slack channel to post to (for example "#alerts").
 	Channel string `protobuf:"bytes,1,opt,name=channel,proto3" json:"channel,omitempty"`
 	// The Slack incoming-webhook URL. A credential: DigitalOcean's API does
-	// not mark it sensitive, so it is marked sensitive here and both
-	// provisioners keep it out of plain-text state rendering.
+	// not mark it sensitive, so it is marked sensitive here -- the platform
+	// accepts only a managed-secret reference ($secret/<name>) for it, never
+	// a literal URL, and the Pulumi module additionally encrypts it in stack
+	// state. Terraform state stores every value in plain text, so on that
+	// engine the protection is the state backend's own encryption.
 	Url           string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

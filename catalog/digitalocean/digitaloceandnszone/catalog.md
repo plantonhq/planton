@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### DigitalOcean Account
 
 - **A domain you control** -- adding a zone does not require owning the domain (DigitalOcean hosts it immediately), but public resolution starts only after your registrar delegates to DigitalOcean's nameservers. Note domain names are unique across ALL DigitalOcean accounts.
-- **IP addresses or hostnames for records** -- A records take IPv4 addresses, AAAA take IPv6, CNAME/MX/NS/SRV take target hostnames (author them fully qualified with a trailing dot -- that is how DigitalOcean stores them).
+- **IP addresses or hostnames for records** -- A records take IPv4 addresses, AAAA take IPv6, CNAME/MX/NS/SRV/CAA take target hostnames (author them fully qualified WITH a trailing dot, `mail.example.com.` / `letsencrypt.org.`, or relative to the zone -- a bare `letsencrypt.org` is re-applied on every run because DigitalOcean reports it back with the dot).
 
 ## Deploy
 
@@ -62,11 +62,11 @@ These are the most important decisions when configuring a DNS zone. Explore the 
 
 **Record types** -- Each record in the `records` list specifies a `type` (DigitalOcean accepts A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA; ALIAS and PTR are rejected at validation time), a `name` (use `@` for the apex), one or more `values` (each value becomes its own record -- two A values make round-robin), and an optional `ttlSeconds`. MX records require `priority`, SRV records require `priority`/`weight`/`port`, and CAA records require `flags`/`tag` -- all enforced before any provisioner runs.
 
-**TTL** -- The `ttlSeconds` field controls how long resolvers cache the record; omit it to take DigitalOcean's default (1800 seconds). Use shorter TTLs (300) during migrations, longer (3600-86400) for stable records.
+**TTL** -- The `ttlSeconds` field controls how long resolvers cache the record; omit it to take DigitalOcean's default (1800 seconds). Use shorter TTLs (300) during migrations, longer (3600-86400) for stable records. Records that share a name share one TTL on DigitalOcean: give them the same value or leave them all unset, or the lone custom TTL is rewritten server-side on every run.
 
 **ValueFromRef in record values** -- Record `values` accept ValueFromRef references, so records can point at outputs of other Cloud Resources (a Droplet's `ipv4_address`, a load balancer's IP) instead of hardcoded values.
 
-**`ipAddress`** -- a create-only convenience that seeds an apex A record the platform never tracks afterwards. Prefer declaring the apex record in `records`; use `ipAddress` only when migrating a configuration that already relies on it.
+**`ipAddress`** -- a create-only convenience that seeds an apex A record the platform never tracks afterwards. Prefer declaring the apex record in `records`; use `ipAddress` only when migrating a configuration that already relies on it. Applied at creation only: later edits are ignored rather than recreating the zone, so adopting an existing zone whose manifest carries it is safe.
 
 **Destroy blast radius** -- destroying the zone deletes every record in it, including records created by the standalone DNS record kind and records added by hand in the control panel. Deleting a zone also releases the domain name for any DigitalOcean account to claim. Enumerate what lives in a shared zone before destroying it.
 
@@ -86,6 +86,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `zone_id` | The zone's resource identifier -- the domain name itself, not a UUID | API operations, imports |
 | `name_servers` | DigitalOcean's fixed authoritative nameserver set | Domain registrar NS delegation |
 | `urn` | The domain's uniform resource name (`do:domain:example.com`) | DigitalOcean project assignment, audit |
+| `record_ids` | Numeric ids of the inline records, keyed `<record name>-<record index>-<value index>` | API operations on a single record, state import (`{domain},{record_id}`) |
 
 ## Common Patterns
 

@@ -62,12 +62,13 @@ spec:
           - ops@example.com
     - alertName: api-down
       type: down_global
+      period: 2m
       notifications:
         emails:
           - ops@example.com
         slack:
           - channel: "#alerts"
-            url: https://hooks.slack.com/services/EXAMPLE/EXAMPLE/EXAMPLE
+            url: $secret/slack-alerts-webhook
 ```
 
 ## Spec Fields
@@ -84,7 +85,7 @@ spec:
 | `spec.alerts[].type` | `string` | yes |  |  |
 | `spec.alerts[].threshold` | `int32` |  |  |  |
 | `spec.alerts[].comparison` | `string` |  |  |  |
-| `spec.alerts[].period` | `string` |  |  |  |
+| `spec.alerts[].period` | `string` | yes |  |  |
 | `spec.alerts[].notifications` | `DigitalOceanUptimeCheckNotifications` | yes |  |  |
 | `spec.alerts[].notifications.emails` | `[]string` |  |  |  |
 | `spec.alerts[].notifications.slack` | `[]DigitalOceanUptimeCheckSlack` |  |  |  |
@@ -150,7 +151,10 @@ default, which is enabled.
 (Optional) Alert rules on this check. Each row becomes its own alert
 object on the check, addressable for notifications independently.
 
-- rule: a latency alert requires threshold (the response-time bar in milliseconds)
+- rule: a latency alert requires threshold (the response-time bar in milliseconds) and comparison (greater_than or less_than)
+- rule: an ssl_expiry alert requires threshold (days before the certificate expires; DigitalOcean accepts 0, which fires only on the day it expires)
+- rule: an ssl_expiry alert must not set comparison -- DigitalOcean always evaluates it as less_than
+- rule: down and down_global alerts must not set threshold or comparison -- DigitalOcean fixes them at 1 / less_than
 
 ### spec.alerts[].alertName
 
@@ -176,9 +180,10 @@ DAYS of expiring.
 
 `int32` · optional (explicit presence)
 
-(Optional) The threshold the alert compares against: milliseconds for
-latency, days before expiry for ssl_expiry. down and down_global carry
-no threshold.
+The threshold the alert compares against: milliseconds for latency
+(required), days before expiry for ssl_expiry (required). Must be left
+unset for down and down_global -- DigitalOcean fixes theirs at 1 and
+the modules send that value.
 
 - rule: {"int32":{"gte":0}}
 
@@ -186,20 +191,26 @@ no threshold.
 
 `string`
 
-(Optional) How the measured value is compared against the threshold.
-snake_case is this API's spelling; monitor alerts spell the same
-concept CamelCase (GreaterThan) -- the two are different DigitalOcean
-APIs and are deliberately not unified.
+How the measured value is compared against the threshold. Required for
+latency (the only type where DigitalOcean honors it); must be left
+unset for ssl_expiry, down, and down_global, where DigitalOcean always
+evaluates less_than and the modules send that value. snake_case is
+this API's spelling; monitor alerts spell the same concept CamelCase
+(GreaterThan) -- the two are different DigitalOcean APIs and are
+deliberately not unified.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["greater_than","less_than"]}}
 
 ### spec.alerts[].period
 
-`string`
+`string` · required
 
-(Optional) How long the condition must hold before the alert fires.
+How long the condition must hold before the alert fires. Required for
+every alert type: the provider's schema calls it optional, but
+DigitalOcean's API rejects any alert without it ("missing required
+field 'period'"), so the omission is rejected here rather than at apply.
 
-- rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"in":["2m","3m","5m","10m","15m","30m","1h"]}}
+- rule: {"required":true,"string":{"in":["2m","3m","5m","10m","15m","30m","1h"]}}
 
 ### spec.alerts[].notifications
 
@@ -215,9 +226,11 @@ is required -- DigitalOcean rejects an alert that notifies nobody.
 
 `[]string`
 
-(Optional) Email addresses notifications are sent to. DigitalOcean may
-require addresses to belong to verified account members -- it rejects
-unknown addresses at request time.
+(Optional) Email addresses notifications are sent to. Every address
+MUST belong to a verified member of the DigitalOcean team that owns the
+check: the API rejects any other address at create time ("invalid
+email"), so a shared inbox or an external on-call address has to be
+invited to the team first. Monitor alerts enforce the same rule.
 
 - rule: {"repeated":{"items":{"string":{"minLen":"1"}}}}
 
@@ -240,8 +253,11 @@ The Slack channel to post to (for example "#alerts").
 `string` · required · sensitive
 
 The Slack incoming-webhook URL. A credential: DigitalOcean's API does
-not mark it sensitive, so it is marked sensitive here and both
-provisioners keep it out of plain-text state rendering.
+not mark it sensitive, so it is marked sensitive here -- the platform
+accepts only a managed-secret reference ($secret/<name>) for it, never
+a literal URL, and the Pulumi module additionally encrypts it in stack
+state. Terraform state stores every value in plain text, so on that
+engine the protection is the state backend's own encryption.
 
 - rule: {"required":true,"string":{"minLen":"1"}}
 
@@ -251,7 +267,8 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanUpti
 
 | Output | Type | Description |
 |---|---|---|
-| `status.outputs.check_id` | `string` | UUID of the uptime check (the API identity, and the import id). The composed alert rows import as "{check_id},{alert_id}"; alert ids are found via the API or the console, they are not stack outputs. |
+| `status.outputs.check_id` | `string` | UUID of the uptime check (the API identity, and the import id). |
+| `status.outputs.alert_ids` | `map<string, string>` | UUIDs of the composed alert rows, keyed by "<row index>-<alert name>" -- the same key both provisioners address each alert resource by. Each row imports as "{check_id},{alert_id}", and this map is where the second half comes from, so a blind import needs no lookup. |
 
 ## See Also
 

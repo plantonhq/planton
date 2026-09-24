@@ -14,6 +14,96 @@ spec:
   # again the provider's own env names -- because Spaces buckets are only
   # reachable over the S3-compatible API, not the DigitalOcean REST API.
   # Lanes for every other kind run on the API token alone.
+  #
+  # ACCOUNT PRECONDITION (one-time, per region the lanes use): a default VPC
+  # must already exist in every such region. A fresh account has none, the
+  # first VPC created in a region becomes its default, and default VPCs
+  # cannot be deleted -- the very first live lane stranded a Vpc scenario
+  # that way. Setup stays read-only by design, so seeding lives in the
+  # account runbook (see e2e/README.md, "DigitalOcean E2E"). A Droplet
+  # created with NO region (the droplet kind's minimal scenario) lands
+  # wherever DigitalOcean has capacity and, if that region had no default
+  # VPC yet, DigitalOcean creates one on the fly -- so the seeded list grows
+  # by itself (default-tor1, -blr1, -lon1, -sfo2 appeared this way in one
+  # session; -nyc2, -sgp1, -sfo3 in the next); record, do not fight. Tags are the other residue class: every tag a lane's droplet or
+  # volume declares outlives it, and DOKS adds its own (`k8s`, `k8s:<cluster
+  # id>`, `k8s:worker`, `terraform:default-node-pool`) per cluster, so the
+  # session-end sweep deletes them all.
+  # Ghost VPC members are the third: a load balancer that never left `new`
+  # or a database whose create failed can stay in `GET /v2/vpcs/{id}/members`
+  # (URN, empty name) after the resource itself 404s, so the fixture VPC's
+  # teardown fails `409 Can not delete VPC with members` and its CIDR stays
+  # taken until DigitalOcean clears the ghost (45 minutes to more than a
+  # day). Rename the stranded VPC to free the fixture name, move the Vpc
+  # install fixture to the next unused /24 so the lanes keep running, and
+  # delete the stranded VPC in a later sweep. The healthy cousin of this
+  # class: after every DOKS cluster delete the worker droplets stay members
+  # for ~2 minutes while the cluster itself already 404s -- the fixture
+  # teardown's first attempt fails 409 and its retry succeeds; a lag, not a
+  # ghost.
+  # Database clusters leave a fourth residue: DigitalOcean auto-creates three
+  # alert policies per cluster (`v1/dbaas/alerts/{cpu,memory,disk}_*`,
+  # emailing a team member) that OUTLIVE the cluster -- the sweep lists
+  # `GET /v2/monitoring/alerts` and deletes every `v1/dbaas/` policy whose
+  # entity no longer exists (51 found after one session of database probes).
+  #
+  # DATABASE LANES: the account quota is 10 clusters (`412 maximum clusters
+  # reached`); a cluster's COMBINED tags (joined by commas) may be at most
+  # 255 characters (`422 combined tags cannot exceed 255 characters` -- an
+  # honest validation refusal that creates nothing and poisons nothing, so
+  # database scenario names use the kind's id prefix, e.g.
+  # `planton-oss-e2e-dodb-min`, because the six Planton label tags carry
+  # metadata.name twice); and a `POST /v2/databases` that fails PART-WAY
+  # poisons the account for a few minutes -- every create then answers
+  # `422 cluster name is not available` whatever the name -- and can leave
+  # the ghost VPC member above. Never probe-create databases while a
+  # database lane runs, and never retry a failed create inside that window.
+  # The replica endpoint (`POST /v2/databases/{id}/replicas`) enforces the
+  # same 255-character combined-tags cap, equally honestly. A read replica
+  # is its own cluster under its own UUID -- with its own, initially EMPTY
+  # firewall and its own three auto-created `v1/dbaas/alerts/*` policies,
+  # which appear MINUTES after `online` (a sweep right after a lane can find
+  # none; the session-end sweep is the one that counts). Every satellite
+  # scenario deploys its own cluster fixture (~5 min), so a satellite kind
+  # with two scenarios on two engines is four cluster creates.
+  #
+  # KAFKA LANES: a Kafka lane is TWO cluster creates (the PostgreSQL registry
+  # prerequisite plus the Kafka fixture, 9.5-12 min at 3 nodes) for ~12.5
+  # min of lane. Kafka's eligible sizes are its own layout list in
+  # `GET /v2/databases/options` (the smallest is `db-s-2vcpu-4gb`, one step
+  # above the smallest generic database size); the schema registry exists
+  # only on General Purpose plans, so the schema kind rides its own
+  # `gd-2vcpu-8gb` fixture (~$0.30/hour) while the topic kind rides a Basic
+  # one (~$0.22/hour). Each Kafka cluster leaves the same three
+  # `v1/dbaas/alerts/*` policies as any database -- 30 were swept after six
+  # Kafka lanes.
+  #
+  # RESERVED IPv6 LANES: a Terraform apply of `digitalocean_reserved_ipv6`
+  # can fail "Provider produced inconsistent result after apply" when
+  # DigitalOcean's index lags the create; the reservation exists anyway,
+  # and the harness's eventual-consistency retry reserves ANOTHER one. After
+  # any reserved-IP lane whose log shows that error, list
+  # `GET /v2/reserved_ipv6` (the sweep's v4 listing does not see them) and
+  # delete the orphans -- they are free but hold addresses.
+  #
+  # PROJECT LANES: destroying a project relocates its members to the default
+  # project asynchronously, and DigitalOcean's lag varies from seconds to
+  # more than the provider's 3-minute default delete timeout (measured once
+  # in four destroys). The modules size that timeout to ten minutes; a
+  # destroy that still fails on `412 cannot delete a project with resources`
+  # has moved the members and left an EMPTY, free project -- delete it by
+  # API (`DELETE /v2/projects/{id}` needs a JSON content type or answers
+  # 415). The default project's membership list may also name
+  # `do:loadbalancer:` URNs of balancers deleted days earlier; each 404s,
+  # nothing bills, and the sweep counts resources from their own endpoints.
+  #
+  # OPERATOR PRECONDITION (per machine): the alert lanes (monitor alerts,
+  # uptime alert rows) read their email recipient from
+  # PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL, because DigitalOcean delivers alert
+  # email only to VERIFIED members of the team and rejects any other address
+  # at create time. Each operator exports their own verified address beside
+  # the token; the lanes skip honestly (planton.dev/e2e-required-env) when
+  # it is unset rather than committing anyone's address to a scenario.
   credential_approach: api_token
   test_substrate: real_cloud
   default_cost_class: paid_ephemeral
@@ -26,7 +116,13 @@ spec:
   # droplet/volume quotas on a fresh account are modest; four concurrent
   # tests keeps lanes inside default limits.
   max_concurrent_tests: 4
-  # assert_apply_idempotency stays unarmed until the first live proof
-  # sessions establish a green baseline: arming it on a never-run harness
-  # would conflate provider perma-diff classes with harness defects. Arm it
-  # once the cheap kinds (vpc, firewall, dns) are proven.
+  # assert_apply_idempotency re-plans every deployed scenario and fails on
+  # any pending change -- the perpetual-diff class a customer would meet on
+  # every re-apply (a hostname value DigitalOcean reports back with a
+  # trailing dot the manifest omitted; a TTL DigitalOcean harmonized across
+  # same-name records; a create-only argument the provider never reads
+  # back). It stayed unarmed until the harness itself had a green baseline
+  # (the first live session, on vpc/volume/certificate/registry), so a
+  # harness defect could never be mistaken for a provider quirk; armed from
+  # the second live session on. Prerequisite fixtures are outside its scope.
+  assert_apply_idempotency: true

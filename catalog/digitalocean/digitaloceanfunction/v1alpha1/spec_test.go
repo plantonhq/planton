@@ -14,52 +14,101 @@ func TestDigitalOceanFunctionSpec(t *testing.T) {
 	ginkgo.RunSpecs(t, "DigitalOceanFunctionSpec Validation Suite")
 }
 
+// validGitFunction mirrors the hello-world scenario: project.yml sits at the
+// repository root, so source_directory is deliberately unset.
 func validGitFunction() *DigitalOceanFunctionSpec {
 	return &DigitalOceanFunctionSpec{
+		AppName:      "hello-fn",
 		FunctionName: "hello",
-		Region:       digitalocean.DigitalOceanRegion_nyc3,
+		Region:       digitalocean.DigitalOceanAppRegion_nyc,
 		Git: &digitalocean.DigitalOceanAppGitSource{
 			RepoCloneUrl: "https://github.com/digitalocean/sample-functions-nodejs-helloworld.git",
 			Branch:       "master",
 		},
-		SourceDirectory: "packages",
 	}
 }
 
 var _ = ginkgo.Describe("DigitalOceanFunctionSpec", func() {
-	ginkgo.It("accepts a public git source", func() {
+	ginkgo.It("accepts a public git source with project.yml at the repo root", func() {
 		gomega.Expect(protovalidate.Validate(validGitFunction())).To(gomega.BeNil())
 	})
 
-	ginkgo.It("accepts a linked github source", func() {
+	ginkgo.It("accepts a linked github source with a source_directory", func() {
 		spec := &DigitalOceanFunctionSpec{
-			FunctionName: "hello",
-			Region:       digitalocean.DigitalOceanRegion_nyc3,
+			AppName:      "my-functions",
+			FunctionName: "api",
+			Region:       digitalocean.DigitalOceanAppRegion_nyc,
 			Github: &digitalocean.DigitalOceanAppGithubSource{
 				Repo:   "myorg/my-functions",
 				Branch: "main",
 			},
-			SourceDirectory: "packages",
+			SourceDirectory: "functions/api",
 		}
 		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 	})
 
-	ginkgo.It("rejects an empty function_name", func() {
-		spec := validGitFunction()
-		spec.FunctionName = ""
-		gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+	ginkgo.Describe("app_name (the App Platform app name: 2-32, letter-first, account-unique)", func() {
+		ginkgo.It("rejects a missing app_name", func() {
+			spec := validGitFunction()
+			spec.AppName = ""
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an app_name longer than 32 characters (the API's limit)", func() {
+			spec := validGitFunction()
+			spec.AppName = "planton-oss-e2e-digitaloceanfunction-hello"
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an app_name that starts with a digit", func() {
+			spec := validGitFunction()
+			spec.AppName = "9abc"
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects an app_name with uppercase or underscores", func() {
+			spec := validGitFunction()
+			spec.AppName = "Hello_World"
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts the shortest legal app_name", func() {
+			spec := validGitFunction()
+			spec.AppName = "ab"
+			gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
+		})
+	})
+
+	ginkgo.Describe("function_name (the component name: the same API rule)", func() {
+		ginkgo.It("rejects an empty function_name", func() {
+			spec := validGitFunction()
+			spec.FunctionName = ""
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a function_name with a dot", func() {
+			spec := validGitFunction()
+			spec.FunctionName = "web.1"
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("rejects a function_name ending with a hyphen", func() {
+			spec := validGitFunction()
+			spec.FunctionName = "hello-"
+			gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		})
 	})
 
 	ginkgo.It("rejects a missing region", func() {
 		spec := validGitFunction()
-		spec.Region = digitalocean.DigitalOceanRegion_digital_ocean_region_unspecified
+		spec.Region = digitalocean.DigitalOceanAppRegion_digital_ocean_app_region_unspecified
 		gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
 	})
 
-	ginkgo.It("rejects a missing source_directory", func() {
+	ginkgo.It("accepts an unset source_directory (project.yml at the repository root)", func() {
 		spec := validGitFunction()
 		spec.SourceDirectory = ""
-		gomega.Expect(protovalidate.Validate(spec)).NotTo(gomega.BeNil())
+		gomega.Expect(protovalidate.Validate(spec)).To(gomega.BeNil())
 	})
 
 	ginkgo.It("rejects two sources", func() {

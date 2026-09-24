@@ -28,12 +28,23 @@ func databaseUser(
 		userArgs.MysqlAuthPlugin = pulumi.StringPtr(spec.MysqlAuthPlugin)
 	}
 
-	// Engine-specific ACLs. DigitalOcean returns these only in the CREATE
-	// response -- reads never include them -- so this configuration is the
-	// source of truth. The SDK models settings as a list; a user has one
-	// settings object, so the spec's single message wraps into a
-	// one-element array (mirroring the Terraform module's single dynamic
-	// block).
+	// Engine-specific ACLs. The provider records `settings` only from the
+	// CREATE response and never refreshes it from the API, so this
+	// configuration is the source of truth. The SDK models settings as a
+	// list; a user has one settings object, so the spec's single message
+	// wraps into a one-element array (mirroring the Terraform module's
+	// single dynamic block).
+	//
+	// The element is sent exactly when the spec sets `settings` -- an EMPTY
+	// message counts -- because what DigitalOcean stores is engine-specific
+	// (measured 2026-09-17): every PostgreSQL user comes back with a
+	// settings object (`pg_allow_replication: false`), which the provider
+	// keeps as one empty element, so a PostgreSQL manifest declares
+	// `settings: {}` to match it; a MySQL user never carries one and the API
+	// REFUSES a settings update (`422 operation is not supported for this
+	// cluster type`), so a MySQL manifest leaves it out. The module cannot
+	// know the engine from a cluster UUID, so the manifest carries that
+	// knowledge. Same shape as the Terraform module.
 	if spec.Settings != nil {
 		settingArgs := digitalocean.DatabaseUserSettingArgs{}
 

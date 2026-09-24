@@ -4,6 +4,14 @@
 # custom TTL, and the create-only ip_address that seeds an untracked apex A
 # record. The domain name carries the run token because DigitalOcean domain
 # names are unique across ALL accounts.
+#
+# Two shapes are deliberate. The custom TTL sits on a record with its own
+# name (`api`), never on the apex: DigitalOcean gives every record sharing a
+# name one TTL and rewrites stragglers server-side, and the ip_address seed
+# record joins the apex A set at the default TTL. Hostname values (CNAME,
+# MX, SRV, CAA) are fully qualified WITH the trailing dot, the one spelling
+# DigitalOcean reports back unchanged -- a bare "letsencrypt.org" would
+# re-apply on every run.
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDnsZone
 metadata:
@@ -27,6 +35,10 @@ spec:
       values:
         - value: 192.0.2.1
         - value: 192.0.2.2
+    - name: api
+      type: A
+      values:
+        - value: 192.0.2.3
       ttlSeconds: 300
     - name: www
       type: CNAME
@@ -51,6 +63,6 @@ spec:
     - name: "@"
       type: CAA
       values:
-        - value: letsencrypt.org
+        - value: letsencrypt.org.
       flags: 0
       tag: issue

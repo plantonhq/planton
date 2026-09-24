@@ -34,4 +34,14 @@ resource "digitalocean_database_replica" "replica" {
   # User tags plus the standard Planton labels (identical set in both
   # provisioners). CREATE-ONLY upstream: a tag edit replaces the replica.
   tags = local.tags
+
+  # Fail loud on DigitalOcean's combined-tags budget before anything
+  # renders (see local.tags_combined_budget; twin of the Pulumi module's
+  # error).
+  lifecycle {
+    precondition {
+      condition     = length(local.tags_combined) <= local.tags_combined_budget
+      error_message = "DigitalOcean caps a database replica's combined tags (joined by commas) at ${local.tags_combined_budget} characters; this replica's ${length(local.tags)} tags join to ${length(local.tags_combined)} characters. Shorten metadata.name or metadata.id, or remove entries from spec.tags -- the Planton label tags alone use ${local.planton_tags_length} characters here."
+    }
+  }
 }

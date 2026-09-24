@@ -38,7 +38,8 @@ Deploy with either provisioner; both produce identical resources and outputs.
 |---|---|
 | `cluster_id` | UUID of the Kafka cluster the topic lives in |
 | `topic_name` | The topic's name (its API identity within the cluster) |
-| `state` | Provisioning state at apply time (creation is asynchronous) |
+
+The topic's provisioning state is not an output: creation is asynchronous and a state captured at apply time goes stale, so read it live from DigitalOcean (the control panel's Topics tab, `doctl databases topics get`, or `GET /v2/databases/{cluster_id}/topics/{name}`).
 
 ## Behavior worth knowing
 

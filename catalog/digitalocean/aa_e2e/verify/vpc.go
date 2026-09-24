@@ -30,7 +30,7 @@ func (*vpcVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, id st
 		return pkgerrors.Wrapf(err, "digitaloceanvpc verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceanvpc %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceanvpc", ID: id}
 	}
 	return nil
 }

@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/google/uuid"
@@ -30,6 +31,12 @@ var (
 	repoRoot         string
 	runID            string
 	pulumiBackendURL string
+	// assertApplyIdempotency mirrors the provider profile's
+	// assert_apply_idempotency switch into every scenario's test context. The
+	// profile is the single place the gate is armed; a test file that does
+	// not read it leaves the switch inert, and every lane silently skips the
+	// IDEMPOTENCY phase while the profile claims it runs.
+	assertApplyIdempotency bool
 )
 
 func TestMain(m *testing.M) {
@@ -54,6 +61,13 @@ func TestMain(m *testing.M) {
 		fmt.Fprintf(os.Stderr, "failed to login to pulumi backend: %v\n", err)
 		os.Exit(1)
 	}
+
+	providerProfile, err := profilepkg.LoadProviderProfile(repoRoot, "digitalocean")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to load DigitalOcean provider E2E profile: %v\n", err)
+		os.Exit(1)
+	}
+	assertApplyIdempotency = providerProfile.GetSpec().GetAssertApplyIdempotency()
 
 	testHarness = digitaloceane2e.NewHarness()
 	ctx := context.Background()
@@ -404,6 +418,20 @@ func runAllScenariosForComponent(t *testing.T, component, engine string) {
 func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
 	t.Helper()
 
+	// Scenarios needing owner-arranged external context (the
+	// e2e-required-env annotation -- for DigitalOcean, typically a domain
+	// delegated to the account's DNS, injected as
+	// ${E2E_ENV:PLANTON_E2E_DIGITALOCEAN_DELEGATED_DOMAIN} for the Let's
+	// Encrypt certificate arm) skip honestly where the environment does not
+	// carry the arrangement -- unset tokens would otherwise fail expansion
+	// loudly, turning a recorded deferral into a false failure.
+	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
+		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
+	} else if len(missing) > 0 {
+		t.Skipf("scenario %s/%s needs owner-arranged environment variables that are unset: %s (per %s)",
+			component, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
+	}
+
 	tc := &provider.ComponentTestContext{
 		Component: component,
 		// The provider is ALWAYS the catalog directory slug. Deriving it from
@@ -421,7 +449,8 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 		// Leaving it empty makes the dependency stacks fall back to the
 		// machine's ambient `pulumi login` backend, coupling the run to
 		// stale developer state.
-		BackendURL: pulumiBackendURL,
+		BackendURL:             pulumiBackendURL,
+		AssertApplyIdempotency: assertApplyIdempotency,
 	}
 
 	if engine == "pulumi" {

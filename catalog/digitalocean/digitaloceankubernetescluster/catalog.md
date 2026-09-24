@@ -25,7 +25,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### DigitalOcean Account
 
 - **A VPC network** in the target region (required). Provide the VPC UUID directly or reference a DigitalOceanVpc Cloud Resource via ValueFromRef.
-- **A supported Kubernetes version** -- check available version slugs via `doctl kubernetes options versions`. A full slug (`"1.33.1-do.3"`) pins the exact starting point; a prefix (`"1.33"`) lets DigitalOcean pick the patch.
+- **A Kubernetes version DigitalOcean offers today** -- check with `doctl kubernetes options versions` (or `GET /v2/kubernetes/options`). Prefer a minor prefix (`"1.35"`): DigitalOcean resolves it to the current patch, and it stays creatable for the minor's whole support window. A full slug (`"1.35.7-do.5"`) pins the exact starting point but is retired within weeks, after which a create naming it fails with 422. Measured 2026-09-16: 1.34, 1.35, 1.36 offered.
 
 ## Deploy
 
@@ -47,7 +47,7 @@ metadata:
 spec:
   clusterName: app-cluster
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   defaultNodePool:
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a DOKS cluster. Explore 
 
 **Control-plane firewall** -- Provide `controlPlaneFirewall` with `enabled: true` and the IPs/CIDRs allowed to reach the Kubernetes API server. When omitted, the API server is publicly accessible. Restrict to VPN or office CIDRs for production -- and make sure the list includes wherever the provisioner runs.
 
-**Terraform-only surfaces** -- `sso`, `isolatedWorkers`, `workerSubnetUuid`, `gpuPartitionMode`, and the addon toggles beyond `routingAgent` have no Pulumi bridge counterpart yet (v4.49.0); the Pulumi provisioner rejects them loudly rather than dropping them.
+**Addons and advanced placement** -- all nine addon toggles (`routingAgent`, `p2pOciRegistryPlugin`, `corednsAutoscaler`, the AMD and NVIDIA device plugins and DRA drivers, `amdGpuDeviceMetricsExporterPlugin`, `rdmaSharedDevicePlugin`), `sso`, `isolatedWorkers`, `workerSubnetUuid`, and `gpuPartitionMode` deploy on both provisioners. DigitalOcean enforces the prerequisites: a NAT gateway on the VPC for `isolatedWorkers`, a subnet in that VPC for `workerSubnetUuid`, GPU node sizes for the GPU addons and partitioning, and Kubernetes 1.36.0-do.2 or later for `p2pOciRegistryPlugin` (an older version fails the create with a validation 422). `corednsAutoscaler` defaults off through 1.35 and on from 1.36.
 
 ## Outputs and Dependencies
 
@@ -108,7 +108,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `kubeconfig` | Raw kubeconfig YAML for cluster access (sensitive) | Kubernetes Provider Connections, CI/CD pipeline configuration |
 | `api_server_endpoint` | Kubernetes API server endpoint URL | kubectl configuration, application health checks |
 | `urn` | `do:kubernetes:<cluster_id>` | DigitalOcean project attachment |
-| `ipv4_address` | Control plane public IPv4 (empty on HA clusters) | Network allowlists |
+| `ipv4_address` | Control plane public IPv4 when DigitalOcean reports one; clusters created today report none (single-replica included), so allowlist by `api_server_endpoint` | Network allowlists (legacy clusters only) |
 | `default_node_pool_id` | The inline default pool's UUID | DigitalOcean API operations on the pool |
 | `cluster_subnet` / `service_subnet` | Pod and service CIDR blocks in effect | VPC peering and routing plans |
 

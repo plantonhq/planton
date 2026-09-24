@@ -39,7 +39,7 @@ metadata:
 spec:
   clusterName: example-doks-minimal
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   defaultNodePool:
@@ -53,7 +53,7 @@ metadata:
 spec:
   clusterName: example-doks-full
   region: nyc3
-  kubernetesVersion: "1.33.1-do.3"
+  kubernetesVersion: "1.35"
   vpc:
     value: b5648f9e-a28a-4760-bb87-b2fad07ae295
   highlyAvailable: true
@@ -90,7 +90,8 @@ spec:
     - env:example
   defaultNodePool:
     size: s-2vcpu-4gb
-    nodeCount: 3
+    # No nodeCount: with autoScale on, the pool starts at minNodes and the
+    # autoscaler owns the count (a stated count would fight it).
     autoScale: true
     minNodes: 2
     maxNodes: 5
@@ -118,7 +119,7 @@ spec:
 | `spec.tags` | `[]string` |  |  |  |
 | `spec.defaultNodePool` | `DigitalOceanKubernetesClusterDefaultNodePool` | yes |  |  |
 | `spec.defaultNodePool.size` | `string` | yes |  |  |
-| `spec.defaultNodePool.nodeCount` | `uint32` | yes |  |  |
+| `spec.defaultNodePool.nodeCount` | `uint32` |  |  |  |
 | `spec.defaultNodePool.autoScale` | `bool` |  |  |  |
 | `spec.defaultNodePool.minNodes` | `uint32` |  |  |  |
 | `spec.defaultNodePool.maxNodes` | `uint32` |  |  |  |
@@ -211,11 +212,17 @@ Allowed values (use exactly as shown):
 
 `string` · required
 
-The Kubernetes version slug to create the cluster at, e.g. "1.33.1-do.3"
-or a prefix like "1.33". This is the creation pin: patch upgrades ride
-auto_upgrade, and both provisioners ignore later drift on this field
-because DigitalOcean recreates the whole cluster when the configured
-version is lower than the live one.
+The Kubernetes version to create the cluster at, as DigitalOcean offers
+it TODAY: either a minor prefix ("1.35" -- DigitalOcean resolves it to the
+current patch) or a full slug ("1.35.7-do.5"). Prefer the prefix: patch
+slugs are retired every few weeks and a create naming a retired slug
+fails with 422, while a minor stays creatable for its whole support
+window. The live offer list is GET /v2/kubernetes/options (or `doctl
+kubernetes options versions`); on 2026-09-16 it was 1.34, 1.35, 1.36.
+This is the creation pin only: patch upgrades ride auto_upgrade, and
+both provisioners ignore later drift on this field because DigitalOcean
+recreates the whole cluster when the configured version is lower than
+the live one.
 
 - rule: {"required":true}
 
@@ -281,6 +288,7 @@ resources.
 
 - rule: {"required":true}
 - rule: auto_scale requires min_nodes >= 1 and max_nodes >= min_nodes
+- rule: node_count is required when auto_scale is off and must be left unset when auto_scale is on (the pool starts at min_nodes and the autoscaler owns the count)
 
 ### spec.defaultNodePool.size
 
@@ -293,13 +301,14 @@ The slug identifier for the Droplet size of each node (e.g.
 
 ### spec.defaultNodePool.nodeCount
 
-`uint32` · required
+`uint32`
 
-The number of nodes in the pool. With auto_scale enabled this is the
-initial count; the live count then drifts freely between min_nodes and
-max_nodes without producing configuration diffs.
-
-- rule: {"required":true,"uint32":{"gt":0}}
+The fixed number of nodes in the pool. Required when auto_scale is off;
+must be left unset when auto_scale is on -- the pool then starts at
+min_nodes and DigitalOcean's autoscaler owns the count from there, and
+both provisioners send no count at all (a stated count would be written
+back from the live pool on every read and re-applied on every update,
+fighting the autoscaler).
 
 ### spec.defaultNodePool.autoScale
 
@@ -574,6 +583,10 @@ explicit false (assert OFF) is valid, not just true.
 
 (Optional) Peer-to-peer OCI registry mirror addon for faster image pulls
 across nodes. Unset leaves the addon at DigitalOcean's default.
+Requires kubernetes_version 1.36.0-do.2 or later: on an older version
+DigitalOcean rejects the whole cluster create with a validation 422
+("p2p-oci-registry is only supported on DOKS v1.36.0-do.2 or later")
+and creates nothing.
 
 ### spec.p2pOciRegistryPlugin.enabled
 
@@ -688,7 +701,9 @@ explicit false (assert OFF) is valid, not just true.
 `DigitalOceanKubernetesClusterFeatureToggle`
 
 (Optional) CoreDNS horizontal autoscaler addon. Unset leaves the addon
-at DigitalOcean's default.
+at DigitalOcean's default, which depends on the Kubernetes version: off
+through 1.35, on from 1.36. Set it explicitly when the cluster's
+behavior must not change across a version upgrade.
 
 ### spec.corednsAutoscaler.enabled
 
@@ -714,7 +729,7 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanKube
 | `status.outputs.kubeconfig` | `string` | The raw kubeconfig YAML for accessing the cluster (not base64-encoded); write it to a file and point KUBECONFIG at it. Contains admin credentials -- treat as a secret. |
 | `status.outputs.api_server_endpoint` | `string` | The endpoint URL of the Kubernetes API server for the cluster. |
 | `status.outputs.urn` | `string` | The uniform resource name of the cluster ("do:kubernetes:<cluster_id>"), used when attaching the cluster to a DigitalOcean project. |
-| `status.outputs.ipv4_address` | `string` | The public IPv4 address of the cluster's control plane. Empty on highly-available clusters, which have no single control-plane IP. |
+| `status.outputs.ipv4_address` | `string` | The public IPv4 address of the cluster's control plane, when DigitalOcean reports one. Clusters created today report NONE: the API server sits behind DigitalOcean's own front end and is reachable only by the api_server_endpoint hostname (measured on a single-replica 1.35 cluster, not just on HA clusters). Both provisioners export the value verbatim, so expect an empty string; anything that needs the control plane's address -- allowlists, health probes -- should use api_server_endpoint. |
 | `status.outputs.default_node_pool_id` | `string` | The unique identifier (UUID) of the cluster's inline default node pool. |
 | `status.outputs.cluster_subnet` | `string` | The CIDR block from which pod IPs are assigned. |
 | `status.outputs.service_subnet` | `string` | The CIDR block from which service ClusterIPs are assigned. |

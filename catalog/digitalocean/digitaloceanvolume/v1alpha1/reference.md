@@ -123,9 +123,12 @@ DigitalOcean caps volume size at 16 TiB (larger requests fail at the API).
 `enum`
 
 (Optional) The initial filesystem to format the volume with at creation time.
-Create-only: DigitalOcean formats the volume once and never reports this argument back
-(the resulting filesystem is observable through the separate computed attributes).
-Leave unset (unformatted) to format the volume yourself from the Droplet.
+Applied at creation ONLY: DigitalOcean formats the volume once and never reports this
+argument back (the resulting filesystem is observable through the separate computed
+attributes), and both IaC modules ignore later edits -- changing it on an existing volume
+neither reformats nor replaces the volume, which is what keeps an adopted (imported) volume's
+data safe when the manifest still describes how it was formatted. To reformat, create a new
+volume. Leave unset (unformatted) to format the volume yourself from the Droplet.
 
 Allowed values (use exactly as shown):
 
@@ -138,15 +141,16 @@ Allowed values (use exactly as shown):
 `string`
 
 (Optional) The filesystem label applied when the volume is formatted at creation time
-(e.g. "data"). Only meaningful together with `filesystem_type`. Create-only, and never
-reported back by the API.
+(e.g. "data"). Only meaningful together with `filesystem_type`. Applied at creation ONLY
+and never reported back by the API; later edits are ignored, exactly like `filesystem_type`.
 
 ### spec.snapshotId
 
 `string`
 
 (Optional) A volume snapshot ID to create this volume from. The new volume inherits the
-snapshot's region and minimum size. Create-only, and never reported back by the API.
+snapshot's region and minimum size. Applied at creation ONLY and never reported back by the
+API; later edits are ignored (a different snapshot means a different volume -- create one).
 
 ### spec.tags
 

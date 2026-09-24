@@ -12,7 +12,11 @@ DigitalOcean generates passwords; there is no "set password" surface here. To ro
 
 ## ACLs: declare everything, trust the manifest
 
-DigitalOcean returns Kafka/OpenSearch ACLs only at create time -- the console and API reads never show them again. Treat the manifest as the single source of truth and review permission changes in code review, not in the console. ACL edits apply in place (no replacement).
+Both provisioners record Kafka/OpenSearch ACLs only from the create response and never refresh them from the API afterward, so Planton cannot show you the live ACL state. Treat the manifest as the single source of truth and review permission changes in code review, not in the console. ACL edits apply in place (no replacement).
+
+## Set `settings` by engine -- `{}` on PostgreSQL, absent on MySQL
+
+What DigitalOcean stores for `settings` depends on the cluster's engine, and the provisioners cannot tell the engine from a cluster UUID -- so the manifest carries that knowledge (measured 2026-09-17 under the idempotency gate). Every PostgreSQL user comes back from the create with a settings object (`pg_allow_replication: false`), which the provisioners store as one empty settings block and never refresh; a PostgreSQL manifest without `settings` therefore proposes removing that block on its first re-plan -- a one-time server-side no-op, but a change your review has to explain away. Declare `settings: {}` on PostgreSQL users and the configuration mirrors what is stored from the first apply. A MySQL user never carries a settings object, and the API refuses a settings update on a MySQL cluster (`422 operation is not supported for this cluster type`), so a MySQL manifest that declared even `settings: {}` would fail every apply after the first: leave it out. Kafka and OpenSearch users declare their ACLs, which is the block's real purpose. The phantom diff and the never-refreshed read-back are reported upstream as [digitalocean/terraform-provider-digitalocean#1610](https://github.com/digitalocean/terraform-provider-digitalocean/issues/1610).
 
 ## MySQL auth plugin: leave it unset
 

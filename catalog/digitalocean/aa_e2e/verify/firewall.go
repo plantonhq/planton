@@ -34,7 +34,7 @@ func (*firewallVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, 
 		return pkgerrors.Wrapf(err, "digitaloceanfirewall verify-absent failed for %q", id)
 	}
 	if exists {
-		return pkgerrors.Errorf("digitaloceanfirewall %q still exists after destroy", id)
+		return &StillExistsError{Component: "digitaloceanfirewall", ID: id}
 	}
 	return nil
 }

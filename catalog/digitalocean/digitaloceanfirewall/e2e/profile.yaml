@@ -3,25 +3,36 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanfirewall
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is rules-rich with no targeting
-  # (both directions, icmp without port_range, the "all" shorthand, a port
-  # range, IPv4+IPv6 CIDRs); `full` proves droplet targeting through the
-  # droplet_ids REFERENCE (the Droplet fixture rides the e2e-prerequisites
-  # annotation and installs from that kind's minimal scenario, ~1 minute
-  # and ~$0.009/hour) plus tag targeting and a rule-level tag source.
-  # Deliberately not in the live lanes: rule-level source/destination
-  # droplet ids (same reference class the top-level droplet_ids arm
-  # proves), kubernetes ids (needs a DOKS fixture -- ~10-minute creates,
-  # the slow class), and load balancer uids (needs an LB fixture; identical
-  # SVOR wiring). Watch on first live run: firewall tags are expected to be
-  # created implicitly (the dispositions ledger's recorded judgment) -- if
-  # the API instead rejects an unknown tag, re-target the tag arms through
-  # a pre-created tag and record the lesson. Firewalls are free API objects
-  # that create in seconds; the fixture droplet costs pennies.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip (Terraform lane):
+  # `minimal` (rules-rich, no targeting: both directions, icmp without
+  # port_range, the "all" shorthand, a port range, IPv4+IPv6 CIDRs -- every
+  # rule read back byte-identical, so the declared port_range
+  # write-normalization never fired) and `full` (droplet targeting through
+  # the droplet_ids REFERENCE to the Droplet fixture, which rides the
+  # e2e-prerequisites annotation and installs from that kind's minimal
+  # scenario, plus tag targeting and a rule-level source tag). Firewalls are
+  # free API objects creating in seconds; the fixture droplet costs pennies.
+  #
+  # What the first live run taught: firewalls NEVER create tags. The API
+  # rejects a firewall naming a tag no resource carries ("422 tag <name>
+  # does not exist"); Droplets and volumes create tags implicitly when they
+  # declare them. The `full` scenario therefore targets the fixture
+  # Droplet's own Planton identity tag (planton-ai_name:<fixture name>), the
+  # one tag guaranteed to exist once the fixture is up -- the kind's spec
+  # comments and GUIDE teach the tag-first ordering, and the dispositions
+  # ledger's digitalocean_tag reason records the constraint.
+  #
+  # Deliberately NOT in the live lanes: rule-level source/destination
+  # droplet ids (the same reference class the top-level droplet_ids arm
+  # proves), kubernetes ids (needs a DOKS fixture -- ~10-minute creates, the
+  # slow class; identical SVOR wiring), and load balancer uids (needs an LB
+  # fixture; identical SVOR wiring).
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: droplet fixture 32 s, DEPLOY 8 s, IDEMPOTENCY PASS,
+  # DESTROY 11 s -- every phase first run; the bridge bump changed nothing
+  # this kind's lane can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

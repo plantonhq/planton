@@ -35,6 +35,9 @@ spec:
   cluster:
     value: aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
   userName: orders-service
+  # PostgreSQL users declare an empty settings block (DigitalOcean stores a
+  # settings object for every PostgreSQL user); MySQL users leave it out.
+  settings: {}
 ---
 apiVersion: digital-ocean.planton.dev/v1alpha1
 kind: DigitalOceanDatabaseUser
@@ -107,10 +110,23 @@ in place through a password-preserving auth reset.
 `DigitalOceanDatabaseUserSettings`
 
 (Optional) Engine-specific access control for this user (Kafka topic
-ACLs and OpenSearch index ACLs). DigitalOcean returns these only in the
-create response -- reads never include them -- so what is configured here
-is the source of truth; the live ACL state is not observable afterward.
-ACL changes apply in place.
+ACLs and OpenSearch index ACLs). Both provisioners record these only
+from the create response and never refresh them from the API, so what
+is configured here is the source of truth; the live ACL state is not
+observable through Planton afterward. ACL changes apply in place.
+
+SET IT BY ENGINE (measured 2026-09-17). PostgreSQL: declare
+`settings: {}` even with no ACLs -- every PostgreSQL user comes back
+with a settings object (`pg_allow_replication: false`) that the
+provisioners store at create, and a manifest without the block plans
+its removal on the first re-plan (a one-time server-side no-op, but a
+change). MySQL: leave it unset -- a MySQL user never carries a settings
+object and the API refuses a settings update on a MySQL cluster
+(`422 operation is not supported for this cluster type`), so even
+`settings: {}` would fail every apply after the first. Kafka and
+OpenSearch: declare the ACLs. The provisioners send the block exactly
+when this field is present; they cannot infer the engine from a cluster
+UUID, so the manifest carries that knowledge.
 
 ### spec.settings.kafkaAcls
 

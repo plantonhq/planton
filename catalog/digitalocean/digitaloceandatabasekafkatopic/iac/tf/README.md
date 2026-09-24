@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDatabaseKafkaTopicSpec` proto:
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseKafkaTopicStackOutputs` contract: `cluster_id`, `topic_name`, `state`.
+Exactly the `DigitalOceanDatabaseKafkaTopicStackOutputs` contract: `cluster_id`, `topic_name`. The provider's `state` attribute is deliberately not exported (an apply-time snapshot of an asynchronous create goes stale; live state belongs to whoever reads the API).
 
 ## Behavior notes
 

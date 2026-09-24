@@ -7,7 +7,7 @@ Deploys an availability and latency probe on any external endpoint -- a site, an
 When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Uptime check** -- the probe itself: target, protocol (`ping`, `http`, or `https`), and vantage regions, as one `digitalocean_uptime_check` resource
-- **Uptime alerts** -- created only when `alerts` rows are set: one `digitalocean_uptime_alert` per row (`down`, `down_global`, `latency`, `ssl_expiry`), each carrying its own notification channels, with Slack webhook URLs wrapped as secrets so the credential never renders in plain-text state
+- **Uptime alerts** -- created only when `alerts` rows are set: one `digitalocean_uptime_alert` per row (`down`, `down_global`, `latency`, `ssl_expiry`), each carrying its own notification channels, with Slack webhook URLs accepted only as managed-secret references and encrypted in Pulumi stack state
 
 ## Before You Deploy
 
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 - **Nothing for the probe itself** -- the probed target is external to the account.
 - **Slack incoming webhook** (only for Slack delivery) -- the webhook URL is a credential; store it as a managed secret and reference it as `$secret/<name>` in the manifest.
-- **Verified alert recipients** -- DigitalOcean may require email addresses to belong to the team's verified members; it rejects unknown addresses at request time.
+- **Verified alert recipients** -- every email address in `notifications.emails` must belong to a verified member of the DigitalOcean team; the API rejects any other address at create time (`invalid email`). Invite and verify shared inboxes or pager bridges before naming them.
 
 ## Deploy
 
@@ -49,6 +49,7 @@ spec:
   alerts:
     - alertName: homepage-down
       type: down_global
+      period: 2m
       notifications:
         emails:
           - ops@acme-corp.com
@@ -58,7 +59,7 @@ spec:
 planton apply -f do-uptime-check.yaml
 ```
 
-This probes the site over https from all four vantage regions and mails ops only when every region agrees it is down. Probing starts immediately, and results appear in the control panel's Monitoring -> Uptime section. A Stack Job tracks the provisioning in real time.
+This probes the site over https from all four vantage regions and mails ops (a verified member of the DigitalOcean team) only when every region agrees it is down. Probing starts immediately, and results appear in the control panel's Monitoring -> Uptime section. A Stack Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -68,15 +69,15 @@ These are the most important decisions when configuring an uptime check. Explore
 
 **Regions are always declared** -- `regions` is required here even though DigitalOcean can default it: the provider never reconciles a defaulted region set, so an omitted value would leave every subsequent plan trying to remove what the API chose. Pick the regions your users actually connect from (`us_east`, `us_west`, `eu_west`, `se_asia`); more vantage points make `down_global` sharper and per-region history richer.
 
-**latency needs a threshold; ssl_expiry wants a generous one** -- a latency rule without a `threshold` would be sent upstream as a silent zero, an always-firing alert, so validation requires it (in milliseconds). `ssl_expiry`'s threshold is DAYS before certificate expiry: give it at least your renewal pipeline's worst-case turnaround (14+ days), because an alert at zero days is a post-mortem, not a warning.
+**Each alert type owns a different slice of threshold / comparison / period** -- `period` is required on every row (the API rejects an alert without it). `latency` honors and requires both `threshold` (milliseconds) and `comparison`. `ssl_expiry` honors and requires `threshold` (DAYS before expiry -- give it your renewal pipeline's worst-case turnaround, 14+ days, because DigitalOcean accepts 0 and an alert at zero days is a post-mortem) and always evaluates `less_than`, so `comparison` is rejected there. `down` and `down_global` are fixed by DigitalOcean at `threshold: 1, comparison: less_than` whatever is sent, so both fields are rejected on those rows and the modules send the API's own pair. A value DigitalOcean would overwrite is never accepted as input: it would read back different from what you wrote and re-plan forever.
 
 **Target and protocol pair up** -- a URL for `http`/`https` probes (`https://www.example.com`), a hostname or IP for `ping`; DigitalOcean enforces the pairing at request time. Only `https` probes can carry `ssl_expiry` rules -- the certificate-renewal safety net is a reason on its own to probe over https.
 
-**Alert rules live and die with the check** -- deleting the check deletes every alert rule under it: nothing to clean up, and nothing survives to alert on a target you stopped probing. Renaming an alert row REPLACES that row (new id, fresh alert history on DigitalOcean's side); the check itself renames in place.
+**Alert rules live and die with the check** -- deleting the check deletes every alert rule under it: nothing to clean up, and nothing survives to alert on a target you stopped probing. Renaming an alert row replaces that row on both provisioners (new id, fresh alert history) because the row's address is keyed by its name -- DigitalOcean itself would rename in place, the replacement is the module's doing. The check renames in place.
 
 **Comparison spelling** -- this API spells `comparison` snake_case (`greater_than`, `less_than`); monitor alerts spell the same concept CamelCase. The two are different DigitalOcean APIs and are deliberately not unified -- copy each kind's own spelling.
 
-**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, and both provisioners keep it out of plain-text state rendering. In manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL.
+**Slack webhooks are credentials** -- the `url` field is marked sensitive in the spec, so in manifests it must be a managed-secret reference (`$secret/<name>`), never a literal URL; the Pulumi module additionally encrypts it in stack state. Terraform state stores every value in plain text -- on that engine the protection is the state backend's own encryption.
 
 **Pausing without deleting** -- `enabled: false` keeps the check defined but stops probing (and with it, alerting); unset defaults to enabled.
 
@@ -88,7 +89,7 @@ This component has no foreign key dependencies -- the probed target is an extern
 
 ### What This Component Provides
 
-`status.outputs` carries a single value: `check_id`, the check's UUID -- its API identity and its import id (the composed alert rows import as `{check_id},{alert_id}`; alert ids come from the API or the console, not from stack outputs). No downstream Cloud Resource consumes an uptime check by reference, so there is no ValueFromRef story to teach.
+`status.outputs` carries `check_id`, the check's UUID -- its API identity and its import id -- and `alert_ids`, the composed rows' UUIDs keyed by `<row index>-<alert name>` (each row imports as `{check_id},{alert_id}`, and the map supplies the second half so adopting a whole check needs no lookup). No downstream Cloud Resource consumes an uptime check by reference, so there is no ValueFromRef story to teach.
 
 ## Common Patterns
 

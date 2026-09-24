@@ -3,21 +3,52 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanuptimecheck
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is an https probe on a stable
-  # public target (EXTERNAL -- no fixture at all, the cheapest lanes in
-  # the wave); `alerted` proves the composed alert-rows fan-out (down +
-  # latency, email delivery) and the alerts' destroy-with-the-check
-  # semantics, including the two-part {check_id},{alert_id} blind import
-  # of the alert rows. Deliberately not in the live lanes: slack delivery
-  # (needs a real webhook URL -- an environmental gate), ssl_expiry
-  # (proves the same row wiring; its threshold semantics are day-based
-  # renewal policy, not lifecycle). Watch item: alert emails may need to
-  # be verified account members. Checks and alerts are free API objects,
-  # seconds-fast.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trips (Terraform lane):
+  # `minimal` (an https probe on a stable public target from two regions --
+  # no fixture at all) and `alerted` (a down row and a latency row on one
+  # check, email delivery). The `alerted` lane proves the one-alert-per-row
+  # fan-out by API read-back (the verifier GETs every row from the alert_ids
+  # output), the rows' destroy-with-the-check semantics (every row probed
+  # gone after destroy), and the blind {check_id},{alert_id} import of the
+  # rows through the alert_ids keyed map -- 3 resources re-imported with a
+  # clean plan and zero tolerances.
+  #
+  # What the live API taught that the provider's schema hides (all now
+  # encoded in the spec; see the GUIDE): `period` is required on EVERY alert
+  # type; down / down_global rows are FORCED to threshold 1 / comparison
+  # less_than whatever is sent, and ssl_expiry is forced to less_than -- the
+  # spec forbids authoring those fields on those types and both modules send
+  # the API's own values, which is why the idempotency gate and the round
+  # trip are clean without a single tolerance. The Uptime API answers 403,
+  # not 404, for a check the account does not own (deleted or never
+  # created); the verifier reads that as absence. The provider does not
+  # (its Read clears state on 404 only), reported upstream as
+  # digitalocean/terraform-provider-digitalocean#1609.
+  #
+  # Alert email goes only to VERIFIED team members (the API rejects any
+  # other address), so the `alerted` scenario reads its recipient from
+  # PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL and skips honestly when it is unset.
+  #
+  # Checks bill $1.00/month prorated hourly (one free check per account per
+  # month); two checks for a few minutes is a fraction of a cent. Alerts are
+  # free.
+  #
+  # Deliberately NOT in the live lanes:
+  # - slack delivery: needs a real incoming-webhook URL (environmental gate;
+  #   unblock = a throwaway Slack workspace webhook exported as a
+  #   PLANTON_E2E_ variable).
+  # - ssl_expiry rows: the same row wiring the down/latency rows prove; the
+  #   threshold semantics are day-based renewal policy, not lifecycle. The
+  #   API's forced less_than and required period were probed live and are
+  #   encoded in the spec.
+  # - in-place edits (rename, threshold/period changes): the runner has no
+  #   update phase.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `alerted`: DEPLOY 15 s, IDEMPOTENCY PASS, both alert rows
+  # asserted, DESTROY 14 s -- every phase first run; the bridge bump changed
+  # nothing this kind's lane can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 15

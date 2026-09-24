@@ -58,4 +58,5 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 - `region` is omitted when unset — DigitalOcean chooses a region with available capacity. The unspecified enum name is never sent as a slug, and there is no silent fallback region.
 - `resize_disk`, `droplet_agent`, and `public_networking` pass through as null when unset, so a provider default is never silently flipped (`resize_disk` defaults ON provider-side).
 - `ssh_keys` and `volume_ids` are sent as null when empty so computed sets never diff.
+- `ssh_keys`, `user_data`, and `droplet_agent` are under `lifecycle.ignore_changes`: all three are ForceNew and never read back by the API, so without the guard a manifest edit — or adopting an existing droplet whose manifest carries them — would plan a destroy-and-recreate of a running machine. They mean nothing after first boot; the Pulumi module ignores the same trio.
 - Tags are `spec.tags` plus the standard Planton labels rendered as `key:value` — the exact set the Pulumi module applies. See the kind [GUIDE](../../GUIDE.md).

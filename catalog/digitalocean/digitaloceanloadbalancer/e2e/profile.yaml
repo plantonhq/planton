@@ -3,25 +3,41 @@ kind: ComponentE2EProfile
 metadata:
   name: digitaloceanloadbalancer
 spec:
-  # pending_proof: authored to the full offline bar (spec/CEL tests, both
-  # engine builds, tofu validate green, checker-green parity manifest,
-  # import map, presets, README/catalog/GUIDE). Live dual-engine proof has
-  # not yet run. TWO scenarios: `minimal` is a regional HTTP balancer with
-  # no VPC (proves the region-default-VPC path) and no Droplets (a
-  # memberless balancer is valid); `full` composes the VPC fixture via the
-  # e2e-prerequisites annotation (the spec's vpc is OPTIONAL, so the
-  # fixture is never a registry edge), tag-based targeting, a firewall,
-  # cookie sticky sessions, full health-check thresholds, PROXY protocol,
-  # backend keepalive, idle-timeout, and size_unit. Deliberately not in
-  # the live lanes: GLOBAL / domains / glb_settings (needs a delegated
-  # domain), HTTPS / redirect_http_to_https / tls_passthrough (need a
-  # certificate -- Let's Encrypt needs a delegated domain), BYOIP `ip`
-  # (needs a BYOIP prefix on the account), and the Pulumi SDK v4.49.0 gap
-  # arms (`subnet_uuid`, `ip` -- Terraform wires them; Pulumi fails
-  # loudly if set). Balancers create in under a minute (the provider
-  # waiter is 10 minutes) and bill ~$12/month prorated hourly, so a full
-  # two-scenario dual-engine sweep costs pennies.
+  # Live-proven on BOTH engines, both scenarios, full lifecycle under the
+  # idempotency gate, plus the blind import round-trip (Terraform lane, zero
+  # tolerated updates): `minimal` (a regional HTTP balancer with no VPC --
+  # the region-default-VPC path -- and no members) and `full` (the VPC
+  # fixture via the e2e-prerequisites annotation, tag targeting against a
+  # scenario-local droplet fixture that carries the tag, an LB-level
+  # firewall, cookie sticky sessions, full health-check thresholds, PROXY
+  # protocol, backend keepalive, idle-timeout, and size_unit). Balancers
+  # reach `active` in one to two minutes and bill ~$12/month prorated, so
+  # the sweep costs pennies.
+  #
+  # What the first live runs taught: the load-balancer API ACCEPTS a
+  # droplet_tag no resource carries (stored as a selector, no tag created,
+  # empty member list) -- the alert-policy behavior, not the firewall's --
+  # so the `full` scenario deploys a region-pinned, VPC-joined droplet
+  # fixture carrying the tag (e2e/fixtures/droplet-nyc3.yaml) and the live
+  # GET shows it in droplet_ids; a memberless tag would prove nothing.
+  # Load-balancer names are unique per account, so both scenarios carry
+  # ${E2E_RUN_ID}. Once in three identical creates a balancer never left
+  # `new` inside the provider's 10-minute waiter and its deletion left a
+  # ghost VPC member for ~45 minutes (the kind's GUIDE and the harness
+  # README record the class); the re-run passed unchanged.
+  #
+  # Deliberately NOT in the live lanes: GLOBAL / domains / glb_settings
+  # (needs a delegated domain), HTTPS / redirect_http_to_https /
+  # tls_passthrough (need a certificate -- Let's Encrypt needs a delegated
+  # domain), BYOIP `ip` (needs a BYOIP prefix on the account), and
+  # `subnet_uuid` (needs a VPC subnet, which the catalog has no kind for yet
+  # -- prove when one exists). Both engines wire both.
+  # Pulumi re-proven 2026-09-18 at bridge v4.79.1 (embedding provider
+  # v2.100.1) on `full`: VPC and droplet fixtures 50 s, DEPLOY 1m40s with the
+  # balancer active on the first wait, IDEMPOTENCY PASS, DESTROY 12 s, no
+  # ghost VPC member on teardown -- every phase first run; the bridge bump
+  # changed nothing this kind's lane can observe.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners: [pulumi, terraform]
   timeout_minutes: 20
