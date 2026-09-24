@@ -1681,12 +1681,16 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpBigQueryConnection | `spec.cloudSql.instanceId` | `status.outputs.connection_name` |
 | GcpCloudRun | `spec.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
 | GcpCloudRunJob | `spec.template.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
 | GcpCloudRunWorkerPool | `spec.volumes[].cloudSqlInstance.instances` | `status.outputs.connection_name` |
 | GcpCloudSql | `spec.masterInstanceName` | `status.outputs.instance_name` |
 | GcpCloudSqlDatabase | `spec.instance` | `status.outputs.instance_name` |
 | GcpCloudSqlUser | `spec.instance` | `status.outputs.instance_name` |
+| GcpDatastreamConnectionProfile | `spec.mysqlProfile.hostname` | `status.outputs.public_ip` |
+| GcpDatastreamConnectionProfile | `spec.postgresqlProfile.hostname` | `status.outputs.public_ip` |
+| GcpDatastreamConnectionProfile | `spec.sqlServerProfile.hostname` | `status.outputs.public_ip` |
 
 ## See Also
 

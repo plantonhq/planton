@@ -1,9 +1,9 @@
-// Package cloudrunenv keeps the secret values a Cloud Run service's or job's
-// environment variables carry (their secret_value arm) in Secret Manager, so
-// the revision or task template holds a reference to a secret the resource
-// owns and never the value itself. It is shared by the GcpCloudRun and
-// GcpCloudRunJob modules because the two kinds carry the same env shape and
-// the same hazard: a platform that resolves secret references before the
+// Package cloudrunenv keeps the secret values a Cloud Run service's, job's, or
+// worker pool's environment variables carry (their secret_value arm) in
+// Secret Manager, so the revision or task template holds a reference to a
+// secret the resource owns and never the value itself. It is shared by the
+// GcpCloudRun, GcpCloudRunJob, and GcpCloudRunWorkerPool modules because the
+// three kinds carry the same env shape and the same hazard: a platform that resolves secret references before the
 // module runs hands it a plain value, and whatever field that value lands in
 // is what every viewer of the resource reads.
 //
@@ -30,10 +30,12 @@ import (
 const secretIDMaxLen = 255
 
 // Kinds name the Cloud Run resource a secret belongs to, and lead its id so a
-// service and a job with the same name in the same region never collide.
+// service, a job, and a worker pool with the same name in the same region
+// never collide.
 const (
-	KindService = "run"
-	KindJob     = "runjob"
+	KindService    = "run"
+	KindJob        = "runjob"
+	KindWorkerPool = "runpool"
 )
 
 // Variable is one environment variable whose value the module stores.
@@ -59,9 +61,9 @@ type Key struct {
 
 // Placement is where the secrets live and whose they are.
 type Placement struct {
-	// Kind is KindService or KindJob.
+	// Kind is KindService, KindJob, or KindWorkerPool.
 	Kind string
-	// Resource is the Cloud Run service or job name.
+	// Resource is the Cloud Run service, job, or worker pool name.
 	Resource string
 	// Region is the resource's region ("global" for a multi-region service).
 	Region string

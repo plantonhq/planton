@@ -23,7 +23,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### Optional Dependencies
 
 - **`GcpKmsKey`** -- a key in the cluster's region for CMEK (`kmsKey`); the Managed Kafka service agent needs `roles/cloudkms.cryptoKeyEncrypterDecrypter` on it.
-- **Certificate Authority Service CA pools** -- for mTLS (`tlsConfig.caPools`), named by their full resource names.
+- **Certificate Authority Service CA pools** ([GcpPrivateCaPool](/docs/catalog/gcp/gcpprivatecapool)) -- for mTLS (`tlsConfig.caPools`), each a reference or a full resource name.
 
 ## Deploy
 
@@ -78,7 +78,7 @@ planton apply -f managed-kafka-cluster.yaml
 ### Validation Rules
 
 - `capacityConfig.vcpuCount` is at least 3, and `memoryBytes` is between 1 GiB and 8 GiB per vCPU.
-- `networkConfigs` holds 1-10 entries; `tlsConfig.caPools` at most 10, each a full CA pool name.
+- `networkConfigs` holds 1-10 entries; `tlsConfig.caPools` at most 10, each a `GcpPrivateCaPool` reference or a full CA pool name.
 - `brokerDiskSizeGib`, when set, is at least 100; `rebalanceMode` takes only Google's two modes.
 - `clusterId` follows RFC 1035.
 
@@ -118,6 +118,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpManagedKafkaConnectCluster** -- Kafka Connect workers attached to this cluster
 - **GcpSubnetwork** -- the subnets the cluster is reachable from
 - **GcpKmsKey** -- the CMEK key
+- **GcpPrivateCaPool** -- the CA pools mTLS clients present certificates from
 
 ---
 

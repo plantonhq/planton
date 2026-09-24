@@ -1,0 +1,32 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateAuthority
+metadata:
+  name: issuing-ca
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: internal-servers
+  type: SUBORDINATE
+  subordinateConfig:
+    certificateAuthority:
+      valueFrom:
+        kind: GcpPrivateCaCertificateAuthority
+        name: root-ca
+  config:
+    subjectConfig:
+      subject:
+        commonName: Example Issuing CA
+        organization: Example
+    x509Config:
+      caOptions:
+        isCa: true
+        maxIssuerPathLength: 0
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true
+  keySpec:
+    algorithm: EC_P256_SHA256
+  lifetime: 157680000s

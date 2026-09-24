@@ -59,7 +59,7 @@ var _ = ginkgo.Describe("GcpManagedKafkaClusterSpec", func() {
 		msg.Spec.RebalanceMode = "AUTO_REBALANCE_ON_SCALE_UP"
 		msg.Spec.TlsConfig = &GcpManagedKafkaClusterTlsConfig{
 			SslPrincipalMappingRules: "RULE:^CN=(.*?),.*$/$1/,DEFAULT",
-			CaPools:                  []string{"projects/pki/locations/us-central1/caPools/clients"},
+			CaPools:                  []*foreignkeyv1.StringValueOrRef{litRef("projects/pki/locations/us-central1/caPools/clients")},
 		}
 		msg.Spec.Labels = map[string]string{"team": "data"}
 		msg.Spec.DeletionPolicy = "PREVENT"
@@ -109,8 +109,12 @@ var _ = ginkgo.Describe("GcpManagedKafkaClusterSpec", func() {
 		}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 		msg = minimal()
-		msg.Spec.TlsConfig = &GcpManagedKafkaClusterTlsConfig{CaPools: []string{"clients"}}
+		msg.Spec.TlsConfig = &GcpManagedKafkaClusterTlsConfig{CaPools: []*foreignkeyv1.StringValueOrRef{litRef("clients")}}
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
+		msg.Spec.TlsConfig.CaPools = []*foreignkeyv1.StringValueOrRef{{
+			LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Name: "clients"}},
+		}}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a GcpPrivateCaPool reference")
 	})
 
 	ginkgo.It("should reject a malformed cluster ID, an unknown rebalance mode, and an unknown deletion policy", func() {

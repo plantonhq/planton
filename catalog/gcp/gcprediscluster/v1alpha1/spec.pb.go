@@ -874,9 +874,10 @@ type GcpRedisClusterSpec struct {
 	// Meaningful only with TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION.
 	ServerCaMode string `protobuf:"bytes,11,opt,name=server_ca_mode,json=serverCaMode,proto3" json:"server_ca_mode,omitempty"`
 	// The Certificate Authority Service pool that signs the server
-	// certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA, as
+	// certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA -- a
+	// GcpPrivateCaPool reference (its full name) or a literal
 	// projects/{project}/locations/{region}/caPools/{pool}.
-	ServerCaPool string `protobuf:"bytes,12,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
+	ServerCaPool *v1.StringValueOrRef `protobuf:"bytes,12,opt,name=server_ca_pool,json=serverCaPool,proto3" json:"server_ca_pool,omitempty"`
 	// Customer-managed encryption key (CMEK) for data at rest: a full
 	// crypto key ID (projects/*/locations/*/keyRings/*/cryptoKeys/*) or a
 	// GcpKmsKey reference. The key must be in the cluster's region and the
@@ -1047,11 +1048,11 @@ func (x *GcpRedisClusterSpec) GetServerCaMode() string {
 	return ""
 }
 
-func (x *GcpRedisClusterSpec) GetServerCaPool() string {
+func (x *GcpRedisClusterSpec) GetServerCaPool() *v1.StringValueOrRef {
 	if x != nil {
 		return x.ServerCaPool
 	}
-	return ""
+	return nil
 }
 
 func (x *GcpRedisClusterSpec) GetKmsKey() *v1.StringValueOrRef {
@@ -1199,7 +1200,7 @@ const file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04uris\x18\x01 \x03(\tBr\xbaHo\x92\x01l\b\x01\"h\xba\x01e\n" +
 	"\x0egcs_uri_format\x129each URI must be a Cloud Storage path starting with gs://\x1a\x18this.startsWith('gs://')R\x04uris\"D\n" +
 	"\"GcpRedisClusterManagedBackupSource\x12\x1e\n" +
-	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\x88%\n" +
+	"\x06backup\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06backup\"\xdd%\n" +
 	"\x13GcpRedisClusterSpec\x12u\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\xc1\x17\x92\xd4a\x19status.outputs.project_idR\tprojectId\x12K\n" +
@@ -1220,9 +1221,9 @@ const file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_rawDesc = "" +
 	" \x01(\tB\x8d\x02\xbaH\x89\x02\xba\x01\x85\x02\n" +
 	"#transit_encryption_mode_valid_value\x12qtransit_encryption_mode must be TRANSIT_ENCRYPTION_MODE_DISABLED or TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION\x1akthis == '' || this in ['TRANSIT_ENCRYPTION_MODE_DISABLED', 'TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION']R\x15transitEncryptionMode\x12\x85\x03\n" +
 	"\x0eserver_ca_mode\x18\v \x01(\tB\xde\x02\xbaH\xda\x02\xba\x01\xd6\x02\n" +
-	"\x1aserver_ca_mode_valid_value\x12\x98\x01server_ca_mode must be SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA, SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA, or SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA\x1a\x9c\x01this == '' || this in ['SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA', 'SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA', 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12\xf6\x01\n" +
-	"\x0eserver_ca_pool\x18\f \x01(\tB\xcf\x01\xbaH\xcb\x01\xba\x01\xc7\x01\n" +
-	"\x15server_ca_pool_format\x12`server_ca_pool must be empty or of the form projects/{project}/locations/{region}/caPools/{pool}\x1aLthis == '' || this.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')R\fserverCaPool\x12k\n" +
+	"\x1aserver_ca_mode_valid_value\x12\x98\x01server_ca_mode must be SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA, SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA, or SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA\x1a\x9c\x01this == '' || this in ['SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA', 'SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA', 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA']R\fserverCaMode\x12\xcb\x02\n" +
+	"\x0eserver_ca_pool\x18\f \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xf0\x01\xbaH\xcc\x01\xba\x01\xc8\x01\n" +
+	"\x15server_ca_pool_format\x12Ua literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}\x1aX!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\fserverCaPool\x12k\n" +
 	"\akms_key\x18\r \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\x93\x18\x92\xd4a\x15status.outputs.key_idR\x06kmsKey\x12y\n" +
 	"\x12persistence_config\x18\x0e \x01(\v2J.dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterPersistenceConfigR\x11persistenceConfig\x12\x89\x01\n" +
 	"\x18zone_distribution_config\x18\x0f \x01(\v2O.dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterZoneDistributionConfigR\x16zoneDistributionConfig\x12y\n" +
@@ -1247,7 +1248,7 @@ const file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xfe\x04\xbaH\xfa\x04\x1a\xac\x01\n" +
 	"\x17at_most_one_seed_source\x12Ugcs_source and managed_backup_source are mutually exclusive -- choose one seed source\x1a:!(has(this.gcs_source) && has(this.managed_backup_source))\x1a\xdb\x01\n" +
-	",server_ca_pool_requires_customer_managed_cas\x12Mserver_ca_pool requires server_ca_mode SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA\x1a\\this.server_ca_pool == '' || this.server_ca_mode == 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA'\x1a\xea\x01\n" +
+	",server_ca_pool_requires_customer_managed_cas\x12Mserver_ca_pool requires server_ca_mode SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA\x1a\\!has(this.server_ca_pool) || this.server_ca_mode == 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA'\x1a\xea\x01\n" +
 	"\x1bserver_ca_mode_requires_tls\x12]server_ca_mode requires transit_encryption_mode TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION\x1althis.server_ca_mode == '' || this.transit_encryption_mode == 'TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION'B\x1e\n" +
 	"\x1c_deletion_protection_enabledB\xd9\x02\n" +
 	",com.dev.planton.gcp.gcprediscluster.v1alpha1B\tSpecProtoP\x01ZYgithub.com/plantonhq/planton/catalog/gcp/gcprediscluster/v1alpha1;gcpredisclusterv1alpha1\xa2\x02\x04DPGG\xaa\x02(Dev.Planton.Gcp.Gcprediscluster.V1alpha1\xca\x02(Dev\\Planton\\Gcp\\Gcprediscluster\\V1alpha1\xe2\x024Dev\\Planton\\Gcp\\Gcprediscluster\\V1alpha1\\GPBMetadata\xea\x02,Dev::Planton::Gcp::Gcprediscluster::V1alpha1b\x06proto3"
@@ -1296,20 +1297,21 @@ var file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_depIdxs = []int32{
 	16, // 8: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	14, // 9: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.redis_configs:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.RedisConfigsEntry
 	0,  // 10: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.psc_configs:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterPscConfig
-	16, // 11: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 12: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.persistence_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterPersistenceConfig
-	4,  // 13: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.zone_distribution_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterZoneDistributionConfig
-	6,  // 14: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.maintenance_policy:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterMaintenancePolicy
-	7,  // 15: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.automated_backup_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterAutomatedBackupConfig
-	10, // 16: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.cross_cluster_replication_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterCrossClusterReplicationConfig
-	11, // 17: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.gcs_source:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterGcsSource
-	12, // 18: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.managed_backup_source:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterManagedBackupSource
-	15, // 19: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.labels:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.LabelsEntry
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	16, // 11: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.server_ca_pool:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 12: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3,  // 13: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.persistence_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterPersistenceConfig
+	4,  // 14: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.zone_distribution_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterZoneDistributionConfig
+	6,  // 15: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.maintenance_policy:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterMaintenancePolicy
+	7,  // 16: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.automated_backup_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterAutomatedBackupConfig
+	10, // 17: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.cross_cluster_replication_config:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterCrossClusterReplicationConfig
+	11, // 18: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.gcs_source:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterGcsSource
+	12, // 19: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.managed_backup_source:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterManagedBackupSource
+	15, // 20: dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.labels:type_name -> dev.planton.gcp.gcprediscluster.v1alpha1.GcpRedisClusterSpec.LabelsEntry
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcprediscluster_v1alpha1_spec_proto_init() }

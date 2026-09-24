@@ -1,0 +1,28 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpprivatecacertificateauthority
+spec:
+  billing_model: always_on
+  baseline_charges:
+    - service_name: Certificate Authority Service
+      sku_meter: monthly CA fee
+      pricing_unit: CA-months
+      description: Every certificate authority bills a flat monthly fee from creation at its pool's tier, the Enterprise fee ten times the DevOps fee (cloud.google.com/certificate-authority-service/pricing, "Pricing table", read 2026-09-24). The page does not state proration for part of a month.
+  cost_drivers:
+    - field_path: pool
+      sku_meter: monthly CA fee
+      pricing_unit: CA-months
+      impact: The pool's tier sets the monthly fee; an authority in an Enterprise pool costs ten times one in a DevOps pool.
+    - field_path: desired_state
+      sku_meter: monthly CA fee
+      pricing_unit: CA-months
+      impact: A staged or disabled authority still exists and is still an authority on the bill; only deletion ends the fee.
+  estimate_exclusions:
+    - certificates the authority signs bill per issue under GcpPrivateCaCertificate or whatever calls the API, in volume tiers shared across the billing account
+    - a customer-managed key version bills under Cloud KMS
+    - Cloud Storage for the published certificate and CRLs bills under Cloud Storage when a bucket of your own is named
+  notes: "An authority costs money every month it exists, issuing or not; retire rotated authorities promptly. Whether a deleted authority in its 30-day soft delete still bills is not stated on the pricing page -- skip_grace_period ends it for certain."

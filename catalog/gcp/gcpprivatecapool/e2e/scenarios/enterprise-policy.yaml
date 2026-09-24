@@ -1,0 +1,54 @@
+# GcpPrivateCaPool scenario: an Enterprise pool with a full issuance
+# policy -- both key-type arms, CSR-only issuance, a CEL identity rule,
+# baseline values with is_ca false (sent with non_ca) and a policy OID, and
+# published CA certificates. No authority is created, so nothing bills.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaPool
+metadata:
+  name: planton-oss-e2e-gcppca-enterprise
+  id: planton-oss-e2e-gcppca-enterprise
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecapool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  caPoolId: e2e-gcppca-ent-${E2E_RUN_ID}
+  tier: ENTERPRISE
+  publishingOptions:
+    publishCaCert: true
+    publishCrl: false
+  issuancePolicy:
+    maximumLifetime: 2592000s
+    backdateDuration: 600s
+    allowedKeyTypes:
+      - ellipticCurveSignatureAlgorithm: ECDSA_P384
+      - rsa:
+          minModulusSize: 2048
+    allowedIssuanceModes:
+      allowCsrBasedIssuance: true
+      allowConfigBasedIssuance: false
+    identityConstraints:
+      allowSubjectPassthrough: false
+      allowSubjectAltNamesPassthrough: true
+      celExpression:
+        title: E2E names
+        expression: subject_alt_names.all(san, san.type == DNS && san.value.endsWith(".e2e.example.com"))
+    baselineValues:
+      caOptions:
+        isCa: false
+      keyUsage:
+        baseKeyUsage:
+          digitalSignature: true
+        extendedKeyUsage:
+          clientAuth: true
+      policyIds:
+        - objectIdPath: [2, 23, 140, 1, 2, 1]
+  labels:
+    e2e-arm: enterprise-policy
+  deletionPolicy: DELETE

@@ -608,6 +608,10 @@ import (
 	gcporgpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicy/v1alpha1"
 	gcporgpolicycustomconstraintv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcporgpolicycustomconstraint/v1alpha1"
 	gcpplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpplantonrunner/v1alpha1"
+	gcpprivatecacertificatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificate/v1alpha1"
+	gcpprivatecacertificateauthorityv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificateauthority/v1alpha1"
+	gcpprivatecacertificatetemplatev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecacertificatetemplate/v1alpha1"
+	gcpprivatecapoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprivatecapool/v1alpha1"
 	gcpprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpproject/v1alpha1"
 	gcpprojectiammemberv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpprojectiammember/v1alpha1"
 	gcppscserviceattachmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcppscserviceattachment/v1alpha1"
@@ -1422,6 +1426,10 @@ var ProviderGcpMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_GcpOrgPolicy:                           &gcporgpolicyv1alpha1.GcpOrgPolicy{},
 	cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint:           &gcporgpolicycustomconstraintv1alpha1.GcpOrgPolicyCustomConstraint{},
 	cloudresourcekind.CloudResourceKind_GcpPlantonRunner:                       &gcpplantonrunnerv1alpha1.GcpPlantonRunner{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificate:                &gcpprivatecacertificatev1alpha1.GcpPrivateCaCertificate{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateAuthority:       &gcpprivatecacertificateauthorityv1alpha1.GcpPrivateCaCertificateAuthority{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateTemplate:        &gcpprivatecacertificatetemplatev1alpha1.GcpPrivateCaCertificateTemplate{},
+	cloudresourcekind.CloudResourceKind_GcpPrivateCaPool:                       &gcpprivatecapoolv1alpha1.GcpPrivateCaPool{},
 	cloudresourcekind.CloudResourceKind_GcpProject:                             &gcpprojectv1alpha1.GcpProject{},
 	cloudresourcekind.CloudResourceKind_GcpProjectIamMember:                    &gcpprojectiammemberv1alpha1.GcpProjectIamMember{},
 	cloudresourcekind.CloudResourceKind_GcpPscServiceAttachment:                &gcppscserviceattachmentv1alpha1.GcpPscServiceAttachment{},

@@ -17,4 +17,4 @@ spec:
     # Kafka ACLs name.
     sslPrincipalMappingRules: RULE:^CN=([^,]+),.*$/$1/,DEFAULT
     caPools:
-      - projects/pki-project/locations/europe-west1/caPools/kafka-clients
+      - value: projects/pki-project/locations/europe-west1/caPools/kafka-clients

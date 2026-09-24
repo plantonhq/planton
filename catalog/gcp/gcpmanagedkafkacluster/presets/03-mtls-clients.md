@@ -18,5 +18,5 @@ Clients that authenticate with certificates instead of Google IAM tokens -- part
 
 | Field | Default | Why Change |
 |-------|---------|------------|
-| `tlsConfig.caPools` | `kafka-clients` | Up to ten pools, any project or location. |
+| `tlsConfig.caPools` | `kafka-clients` | Up to ten pools, any project or location -- a `GcpPrivateCaPool` reference (`valueFrom`) or its full name. |
 | `tlsConfig.sslPrincipalMappingRules` | CN only | Kafka's `ssl.principal.mapping.rules` syntax; changing it restarts brokers one by one. |

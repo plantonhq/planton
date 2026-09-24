@@ -1,0 +1,78 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: gcpprivatecacertificatetemplate
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: "A template stores no key or certificate material; its pool encrypts issued certificates."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: "No data at rest; the pool's kms_key_name covers stored certificates."
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "The CA Service API is served over TLS only."
+    - control_id: no-public-access
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Issuing with the template requires privateca.certificateTemplates.use on it."
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: "The template is an API resource with no network listener."
+    - control_id: edge-protection
+      status: not_applicable
+      notes: "No edge is served."
+    - control_id: rbac
+      status: configurable
+      field_path: identity_constraints
+      evidence:
+        type: spec_default
+        reference: "Who may use the template is IAM on it (privateca.templateUser); what they may request is its identity constraints, passthrough extensions, and predefined values."
+    - control_id: workload-identity
+      status: not_applicable
+      notes: "The template holds no credential."
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "No authentication happens at the template."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: "No end-user sign-in exists."
+    - control_id: audit-logging
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Template administration and every issuance that uses it are recorded in Cloud Audit Logs."
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: "The template emits no metrics of its own; issuance metrics report under the pool."
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: "The template is redeclared from the spec."
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: "No backups exist."
+    - control_id: multi-zone-ha
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "CA Service is a regional service; a template has no zonal dependency."
+    - control_id: deletion-protection
+      status: configurable
+      field_path: deletion_policy
+      evidence:
+        type: spec_default
+        reference: "PREVENT makes destroy fail; ABANDON leaves the template in GCP."
+    - control_id: managed-patching
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "CA Service is fully Google-operated."

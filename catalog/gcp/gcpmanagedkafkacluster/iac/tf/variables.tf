@@ -86,9 +86,11 @@ variable "spec" {
       ssl_principal_mapping_rules = optional(string, "")
 
       # Certificate Authority Service CA pools whose certificates the brokers
-      # trust for client authentication, each
-      # projects/{project}/locations/{location}/caPools/{pool} -- in any
-      # project or location. At most 10. Setting at least one enables mTLS.
+      # trust for client authentication -- GcpPrivateCaPool references (their
+      # full names) or literals projects/{project}/locations/{location}/caPools/{pool},
+      # in any project or location. At most 10. Setting at least one enables
+      # mTLS.
+      # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
       ca_pools = optional(list(string), [])
     }))
 

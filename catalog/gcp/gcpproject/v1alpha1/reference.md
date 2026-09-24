@@ -213,7 +213,12 @@ Fields on other kinds that can point at this resource:
 | GcpArtifactRegistryRepo | `spec.projectId` | `status.outputs.project_id` |
 | GcpBackendBucket | `spec.projectId` | `status.outputs.project_id` |
 | GcpBackendService | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryCapacityCommitment | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryConnection | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigQueryDataset | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryReservation | `spec.projectId` | `status.outputs.project_id` |
+| GcpBigQueryReservation | `spec.assignments[].assignee.projectId` | `status.outputs.project_id` |
+| GcpBigQueryReservationGroup | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigQueryTable | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpBigtableTable | `spec.projectId` | `status.outputs.project_id` |
@@ -244,6 +249,10 @@ Fields on other kinds that can point at this resource:
 | GcpComputeMig | `spec.projectId` | `status.outputs.project_id` |
 | GcpDataprocAutoscalingPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpDataprocCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamConnectionProfile | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamPrivateConnection | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamStream | `spec.projectId` | `status.outputs.project_id` |
+| GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.sourceHierarchyDatasets.projectId` | `status.outputs.project_id` |
 | GcpDialogflowCxAgent | `spec.projectId` | `status.outputs.project_id` |
 | GcpDialogflowCxSecuritySettings | `spec.projectId` | `status.outputs.project_id` |
 | GcpDnsRecord | `spec.projectId` | `status.outputs.project_id` |
@@ -280,6 +289,11 @@ Fields on other kinds that can point at this resource:
 | GcpLogBucket | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpLogMetric | `spec.projectId` | `status.outputs.project_id` |
 | GcpLoggingSink | `spec.scope.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaAcl | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaConnectCluster | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaConnector | `spec.projectId` | `status.outputs.project_id` |
+| GcpManagedKafkaTopic | `spec.projectId` | `status.outputs.project_id` |
 | GcpManagedSslCertificate | `spec.projectId` | `status.outputs.project_id` |
 | GcpMemorystoreInstance | `spec.projectId` | `status.outputs.project_id` |
 | GcpMemorystoreInstance | `spec.pscAutoConnections[].projectId` | `status.outputs.project_id` |
@@ -294,6 +308,10 @@ Fields on other kinds that can point at this resource:
 | GcpNetworkFirewallPolicy | `spec.projectId` | `status.outputs.project_id` |
 | GcpOrgPolicy | `spec.scope.projectId` | `status.outputs.project_id` |
 | GcpPlantonRunner | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaCertificate | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaCertificateAuthority | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaCertificateTemplate | `spec.projectId` | `status.outputs.project_id` |
+| GcpPrivateCaPool | `spec.projectId` | `status.outputs.project_id` |
 | GcpProjectIamMember | `spec.projectId` | `status.outputs.project_id` |
 | GcpPscServiceAttachment | `spec.projectId` | `status.outputs.project_id` |
 | GcpPscServiceAttachment | `spec.consumerAcceptLists[].projectId` | `status.outputs.project_id` |

@@ -5895,6 +5895,46 @@ enum CloudResourceKind {
     service_group: gcp_ai_ml
   }];
 
+  // 3230–3239: GCP security (Certificate Authority Service, Cloud KMS
+  // Autokey handles, Security Command Center, Binary Authorization)
+  // A Certificate Authority Service CA pool: the trust anchor and issuance
+  // policy its certificate authorities and certificates live inside.
+  GcpPrivateCaPool = 3230 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppca"
+    container_kind: true
+    service_group: gcp_security
+  }];
+  // A certificate authority in a CA pool: a self-signed root, or a
+  // subordinate signed by another authority or an outside CA. Its own kind
+  // because a pool rotates through several and a subordinate references
+  // its parent.
+  GcpPrivateCaCertificateAuthority = 3237 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppcaa"
+    prerequisites: [GcpPrivateCaPool]
+    service_group: gcp_security
+  }];
+  // A certificate template: a reusable certificate shape in a project and
+  // location that certificates in any pool there reference.
+  GcpPrivateCaCertificateTemplate = 3238 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppcat"
+    service_group: gcp_security
+  }];
+  // A certificate issued from a CA pool for a key its owner holds; destroy
+  // revokes it.
+  GcpPrivateCaCertificate = 3239 [(kind_meta) = {
+    provider: gcp
+    version: "v1alpha1"
+    id_prefix: "gcppcac"
+    prerequisites: [GcpPrivateCaCertificateAuthority]
+    service_group: gcp_security
+  }];
+
   // 3250–3259: GCP Firebase (project enablement, app registrations, and
   // the Firebase-adjacent products that follow)
   // GcpFirebaseProject is the container the app registrations live in:

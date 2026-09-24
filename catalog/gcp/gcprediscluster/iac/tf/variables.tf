@@ -106,8 +106,10 @@ variable "spec" {
     server_ca_mode = optional(string, "")
 
     # The Certificate Authority Service pool that signs the server
-    # certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA, as
+    # certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA -- a
+    # GcpPrivateCaPool reference (its full name) or a literal
     # projects/{project}/locations/{region}/caPools/{pool}.
+    # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
     server_ca_pool = optional(string, "")
 
     # Customer-managed encryption key (CMEK) for data at rest: a full

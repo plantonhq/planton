@@ -1,0 +1,24 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaPool
+metadata:
+  name: workload-tls
+spec:
+  location: us-central1
+  tier: DEVOPS
+  issuancePolicy:
+    maximumLifetime: 604800s
+    backdateDuration: 3600s
+    allowedKeyTypes:
+      - ellipticCurveSignatureAlgorithm: ECDSA_P256
+    identityConstraints:
+      allowSubjectPassthrough: false
+      allowSubjectAltNamesPassthrough: true
+    baselineValues:
+      caOptions:
+        isCa: false
+      keyUsage:
+        baseKeyUsage:
+          digitalSignature: true
+        extendedKeyUsage:
+          serverAuth: true
+          clientAuth: true

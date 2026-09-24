@@ -1,0 +1,27 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpprivatecacertificatetemplate
+spec:
+  gcp:
+    groups:
+      - purpose: EnableApi
+        permissions:
+          - serviceusage.services.enable
+          - serviceusage.services.get
+        provenance: derived
+        notes: Covers google_project_service enabling privateca.googleapis.com on the target project. disable_on_destroy is false in the module, so the disable permission is never needed.
+      - purpose: ManageCertificateTemplate
+        permissions:
+          - privateca.certificateTemplates.create
+          - privateca.certificateTemplates.get
+          - privateca.certificateTemplates.update
+          - privateca.certificateTemplates.delete
+          - privateca.operations.get
+        provenance: derived
+        notes: Covers google_privateca_certificate_template (Pulumi certificateauthority.CertificateTemplate) -- created, read on every refresh, updated in place (every field but the location and ID), deleted, and its long-running operations polled. Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.templateAdmin contains all five.

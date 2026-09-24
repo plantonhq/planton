@@ -1681,3 +1681,35 @@ func zipDirectory(dir string) ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
+
+func TestGcpPrivateCaPool_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecapool", "pulumi")
+}
+
+func TestGcpPrivateCaPool_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecapool", "terraform")
+}
+
+func TestGcpPrivateCaCertificateAuthority_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecacertificateauthority", "pulumi")
+}
+
+func TestGcpPrivateCaCertificateAuthority_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecacertificateauthority", "terraform")
+}
+
+func TestGcpPrivateCaCertificateTemplate_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecacertificatetemplate", "pulumi")
+}
+
+func TestGcpPrivateCaCertificateTemplate_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecacertificatetemplate", "terraform")
+}
+
+func TestGcpPrivateCaCertificate_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecacertificate", "pulumi")
+}
+
+func TestGcpPrivateCaCertificate_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "gcpprivatecacertificate", "terraform")
+}

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecacertificateauthority.v1alpha1;
+
+// GcpPrivateCaCertificateAuthorityStackOutputs captures the authority's identity and its CA
+// certificate -- what subordinates and certificates reference, and what
+// relying parties install as a trust anchor.
+message GcpPrivateCaCertificateAuthorityStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/caPools/{pool}/certificateAuthorities/{id}.
+  string name = 1;
+
+  // The authority's ID (the last segment of name).
+  string certificate_authority_id = 2;
+
+  // The authority's state: ENABLED, DISABLED, STAGED, or
+  // AWAITING_USER_ACTIVATION.
+  string state = 3;
+
+  // The authority's own CA certificate, PEM -- the trust anchor for a
+  // root.
+  string pem_ca_certificate = 4;
+
+  // The authority's certificate chain, PEM, its own certificate first and
+  // the root last.
+  repeated string pem_ca_certificates = 5;
+
+  // Where Google publishes the CA certificate.
+  string ca_certificate_access_url = 6;
+
+  // Where Google publishes the authority's CRLs.
+  repeated string crl_access_urls = 7;
+}

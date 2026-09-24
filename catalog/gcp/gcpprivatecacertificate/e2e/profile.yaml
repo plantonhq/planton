@@ -1,0 +1,25 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpprivatecacertificate
+spec:
+  # Awaiting the live proof lane. The config-issued scenario proves in the
+  # harness project with roles/privateca.admin: a consumer-scoped Enterprise
+  # pool and a self-signed root in it (deletion protection off,
+  # skip_grace_period, ignore_active_certificates_on_deletion) deploy first,
+  # then a one-day server certificate is issued for a fixed public key. The
+  # pool must be Enterprise -- Google cannot describe DevOps certificates --
+  # so the root bills the Enterprise monthly fee; the proof lane asks before
+  # it runs (see the proof queue's cost line). Offline bar met: both modules
+  # build and validate, offline plans for the reference manifest, the
+  # scenario, its fixtures, the presets, and throwaway arms are clean on the
+  # pinned provider, and the accounting is total. Live facts the proof lane
+  # confirms: (1) the certificate is issued, reads back with the platform
+  # attribution labels and a PEM certificate and chain, and RE-PLANS CLEAN
+  # on both engines; (2) the issuer is the fixture root; (3) destroy revokes
+  # it (the verifier reads revocation details), then the root and pool
+  # delete.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 30

@@ -1,0 +1,381 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecacertificate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "shared/foreignkey/v1/foreign_key.proto";
+
+// GcpPrivateCaCertificateSubjectConfig names the issued certificate: the distinguished name and the subject
+// alternative names.
+message GcpPrivateCaCertificateSubjectConfig {
+  // The distinguished name. common_name is required.
+  GcpPrivateCaCertificateSubject subject = 1 [(buf.validate.field).required = true];
+
+  // Subject alternative names -- what TLS clients actually check against
+  // the host they dialed. At least one entry when set.
+  GcpPrivateCaCertificateSubjectAltName subject_alt_name = 2;
+}
+
+// GcpPrivateCaCertificateSubject is the X.509 distinguished name.
+message GcpPrivateCaCertificateSubject {
+  // The common name (CN), e.g. "Example Root CA" or a host name.
+  string common_name = 1 [(buf.validate.field).string.min_len = 1];
+
+  // Two-letter country code (C), e.g. "US".
+  string country_code = 2;
+
+  // Organization (O).
+  string organization = 3;
+
+  // Organizational unit (OU).
+  string organizational_unit = 4;
+
+  // Locality or city (L).
+  string locality = 5;
+
+  // Province, territory, or state (ST).
+  string province = 6;
+
+  // Street address.
+  string street_address = 7;
+
+  // Postal code.
+  string postal_code = 8;
+}
+
+// GcpPrivateCaCertificateSubjectAltName lists the subject alternative names. Set at least one
+// list (the provider's rule).
+message GcpPrivateCaCertificateSubjectAltName {
+  option (buf.validate.message).cel = {
+    id: "subject_alt_name.at_least_one"
+    expression: "size(this.dns_names) + size(this.uris) + size(this.email_addresses) + size(this.ip_addresses) > 0"
+    message: "subject_alt_name needs at least one of dns_names, uris, email_addresses, or ip_addresses"
+  };
+
+  // DNS names, e.g. "api.internal.example.com".
+  repeated string dns_names = 1;
+
+  // URIs, e.g. a SPIFFE ID "spiffe://example.org/ns/prod/sa/api".
+  repeated string uris = 2;
+
+  // Email addresses.
+  repeated string email_addresses = 3;
+
+  // IPv4 or IPv6 addresses.
+  repeated string ip_addresses = 4;
+}
+
+// GcpPrivateCaCertificateX509Parameters describes the X.509 fields the issued certificate carries: what the key may
+// be used for, the CA basic constraints, certificate policies, OCSP
+// responders, name constraints, and custom extensions (Google's
+// X509Parameters message).
+message GcpPrivateCaCertificateX509Parameters {
+  // What the certificate's key may be used for (the key usage and extended
+  // key usage extensions). Omit for no key-usage statement; both usage
+  // groups are optional and an empty group states nothing.
+  GcpPrivateCaCertificateKeyUsage key_usage = 1;
+
+  // The basic constraints extension: whether the certificate is a CA and
+  // how many CA levels may sit below it. Omit to leave the extension to
+  // Google's default (for a leaf certificate, is_ca false).
+  GcpPrivateCaCertificateCaOptions ca_options = 2;
+
+  // Certificate policy object identifiers (RFC 5280 section 4.2.1.4), each
+  // an OID path such as [2, 23, 140, 1, 2, 1] (CA/Browser Forum
+  // domain-validated).
+  repeated GcpPrivateCaCertificateObjectId policy_ids = 3;
+
+  // OCSP responder URLs placed in the Authority Information Access
+  // extension, e.g. "http://ocsp.example.com". Google runs no OCSP
+  // responder; list your own.
+  repeated string aia_ocsp_servers = 4;
+
+  // Custom X.509 extensions, each an OID, a base64 DER value, and whether
+  // a relying party that does not understand it must reject the
+  // certificate (critical).
+  repeated GcpPrivateCaCertificateX509Extension additional_extensions = 5;
+
+  // The name constraints extension (RFC 5280 section 4.2.1.10): the names
+  // certificates below a CA may and may not carry. Meaningful on CA
+  // certificates.
+  GcpPrivateCaCertificateNameConstraints name_constraints = 6;
+}
+
+// GcpPrivateCaCertificateKeyUsage states what the certificate's key may do.
+message GcpPrivateCaCertificateKeyUsage {
+  // The key usage extension's bits.
+  GcpPrivateCaCertificateBaseKeyUsage base_key_usage = 1;
+
+  // The extended key usage extension's well-known purposes.
+  GcpPrivateCaCertificateExtendedKeyUsage extended_key_usage = 2;
+
+  // Extended key usages with no named field here, each an OID path.
+  repeated GcpPrivateCaCertificateObjectId unknown_extended_key_usages = 3;
+}
+
+// GcpPrivateCaCertificateBaseKeyUsage is the key usage extension (RFC 5280 section 4.2.1.3).
+// A CA certificate sets cert_sign and crl_sign; a TLS leaf typically sets
+// digital_signature and key_encipherment.
+message GcpPrivateCaCertificateBaseKeyUsage {
+  // The key may make digital signatures other than certificate and CRL
+  // signatures (TLS handshakes, signed tokens).
+  bool digital_signature = 1;
+
+  // The key may protect content against the signer later denying it
+  // (non-repudiation).
+  bool content_commitment = 2;
+
+  // The key may encipher other keys (RSA key transport in TLS).
+  bool key_encipherment = 3;
+
+  // The key may encipher raw data directly.
+  bool data_encipherment = 4;
+
+  // The key may be used in key agreement (ECDH).
+  bool key_agreement = 5;
+
+  // The key may sign certificates -- set on every CA certificate.
+  bool cert_sign = 6;
+
+  // The key may sign certificate revocation lists -- set on every CA
+  // certificate that publishes CRLs.
+  bool crl_sign = 7;
+
+  // With key_agreement, the key may only encipher.
+  bool encipher_only = 8;
+
+  // With key_agreement, the key may only decipher.
+  bool decipher_only = 9;
+}
+
+// GcpPrivateCaCertificateExtendedKeyUsage is the extended key usage extension's well-known
+// purposes (RFC 5280 section 4.2.1.12).
+message GcpPrivateCaCertificateExtendedKeyUsage {
+  // TLS server authentication -- what an HTTPS or gRPC server certificate
+  // needs.
+  bool server_auth = 1;
+
+  // TLS client authentication -- what an mTLS client certificate needs.
+  bool client_auth = 2;
+
+  // Code signing.
+  bool code_signing = 3;
+
+  // S/MIME email protection.
+  bool email_protection = 4;
+
+  // Trusted timestamping.
+  bool time_stamping = 5;
+
+  // Signing OCSP responses.
+  bool ocsp_signing = 6;
+}
+
+// GcpPrivateCaCertificateCaOptions is the basic constraints extension (RFC 5280 section
+// 4.2.1.9). Both fields are presence-based: an unset field is left out of
+// the certificate, which is different from setting it to false or 0.
+message GcpPrivateCaCertificateCaOptions {
+  // true makes a CA certificate (CA:TRUE), false states CA:FALSE; unset
+  // leaves the CA flag out of the extension.
+  optional bool is_ca = 1;
+
+  // The path length constraint: how many CA levels may sit below this
+  // certificate. 0 means it may sign only leaf certificates -- a
+  // subordinate that issues workload certificates; unset means no limit
+  // is stated.
+  optional int32 max_issuer_path_length = 2 [(buf.validate.field).int32.gte = 0];
+}
+
+// GcpPrivateCaCertificateObjectId is an ASN.1 object identifier as its numeric arcs, most
+// significant first, e.g. [1, 3, 6, 1, 5, 5, 7, 3, 1].
+message GcpPrivateCaCertificateObjectId {
+  // The OID's arcs, most significant first.
+  repeated int32 object_id_path = 1 [
+    (buf.validate.field).repeated.min_items = 1,
+    (buf.validate.field).repeated.items.int32.gte = 0
+  ];
+}
+
+// GcpPrivateCaCertificateX509Extension is one custom X.509 extension.
+message GcpPrivateCaCertificateX509Extension {
+  // The extension's OID.
+  GcpPrivateCaCertificateObjectId object_id = 1 [(buf.validate.field).required = true];
+
+  // A relying party that does not understand a critical extension must
+  // reject the certificate. Mark an extension critical only when every
+  // consumer knows it.
+  bool critical = 2;
+
+  // The extension's DER value, base64-encoded.
+  string value = 3 [(buf.validate.field).string.min_len = 1];
+}
+
+// GcpPrivateCaCertificateNameConstraints is the name constraints extension. A name matches a
+// DNS constraint when adding labels to its left gives the name
+// ("example.com" admits "www.example.com", not "example1.com"); an email
+// constraint is an address, a host, or ".domain" for every host in it; a
+// URI constraint matches the URI's host the same way; IP ranges are CIDR.
+message GcpPrivateCaCertificateNameConstraints {
+  // Whether the constraints are marked critical. RFC 5280 requires true on
+  // a CA certificate that carries them.
+  bool critical = 1;
+
+  // DNS names certificates below this CA may carry.
+  repeated string permitted_dns_names = 2;
+
+  // DNS names certificates below this CA must not carry.
+  repeated string excluded_dns_names = 3;
+
+  // IP ranges (CIDR) certificates below this CA may carry.
+  repeated string permitted_ip_ranges = 4;
+
+  // IP ranges (CIDR) certificates below this CA must not carry.
+  repeated string excluded_ip_ranges = 5;
+
+  // Email addresses, hosts, or ".domain" suffixes that may appear.
+  repeated string permitted_email_addresses = 6;
+
+  // Email addresses, hosts, or ".domain" suffixes that must not appear.
+  repeated string excluded_email_addresses = 7;
+
+  // URI hosts or ".domain" suffixes that may appear.
+  repeated string permitted_uris = 8;
+
+  // URI hosts or ".domain" suffixes that must not appear.
+  repeated string excluded_uris = 9;
+}
+
+// GcpPrivateCaCertificatePublicKey is the public key the certificate binds. The private key
+// never reaches Google or this manifest.
+message GcpPrivateCaCertificatePublicKey {
+  // The PEM public key (a SubjectPublicKeyInfo block), base64-encoded as a
+  // whole -- Terraform's filebase64("key.pub.pem").
+  string key = 1 [(buf.validate.field).string.min_len = 1];
+
+  // The key's format. PEM is the only value Google accepts; empty sends
+  // PEM.
+  string format = 2 [(buf.validate.field).cel = {
+    id: "format_valid"
+    expression: "this == '' || this == 'PEM'"
+    message: "format must be PEM"
+  }];
+}
+
+// GcpPrivateCaCertificateConfig describes the certificate as structured fields instead of a
+// CSR. Immutable.
+message GcpPrivateCaCertificateConfig {
+  // The certificate's subject.
+  GcpPrivateCaCertificateSubjectConfig subject_config = 1 [(buf.validate.field).required = true];
+
+  // A custom Subject Key Identifier, lowercase hex. Omit to let Google
+  // derive it.
+  string subject_key_id = 2;
+
+  // The certificate's X.509 fields. A TLS server leaf sets
+  // key_usage.base_key_usage.digital_signature and key_encipherment and
+  // key_usage.extended_key_usage.server_auth.
+  GcpPrivateCaCertificateX509Parameters x509_config = 3 [(buf.validate.field).required = true];
+
+  // The public key to certify.
+  GcpPrivateCaCertificatePublicKey public_key = 4 [(buf.validate.field).required = true];
+}
+
+// GcpPrivateCaCertificateSpec defines a certificate issued from a CA pool
+// (`google_privateca_certificate`) -- one signed X.509 certificate for a
+// key someone else holds, described by a CSR or by structured config.
+// Everything but labels is immutable: a change issues a new certificate.
+// Destroy REVOKES the certificate (Google keeps the revoked record); its
+// ID cannot be reused in the pool.
+//
+// The pool must be ENTERPRISE: Google cannot describe or revoke
+// certificates in a DEVOPS pool, so neither engine could track or destroy
+// one. Workloads that mint many short-lived certificates call the API
+// directly instead.
+message GcpPrivateCaCertificateSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.exactly_one_request"
+    expression: "(this.pem_csr != '') != has(this.config)"
+    message: "set exactly one of pem_csr or config"
+  };
+
+  // The GCP project the certificate is issued in (its pool's project): a literal project ID or a GcpProject reference.
+  // If omitted, the provider's default project is used. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef project_id = 1 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpProject,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.project_id"
+  ];
+
+  // The CA Service region, e.g. "us-central1" -- its pool's region. Immutable.
+  string location = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.pattern = "^[a-z]+-[a-z]+[0-9]+$"
+  ];
+
+  // The CA pool that issues the certificate. A GcpPrivateCaPool reference resolves to its full
+  // resource path (name output); a literal takes the full path
+  // projects/{project}/locations/{location}/caPools/{id} or the bare pool
+  // ID. The modules derive the bare ID Google's resource expects; the pool
+  // must be in this resource's project and location. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef pool = 3 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The certificate's ID, unique in its parent: letters, digits, "-" and "_",
+  // at most 63 characters. Defaults to metadata.name. Immutable.
+  string certificate_id = 4 [(buf.validate.field).cel = {
+    id: "certificate_id_format"
+    expression: "this == '' || this.matches('^[a-zA-Z0-9_-]{1,63}$')"
+    message: "certificate_id must be 1-63 letters, digits, '-' or '_'"
+  }];
+
+  // The authority in the pool that signs the certificate -- a
+  // GcpPrivateCaCertificateAuthority reference (its full name) or a
+  // literal full name or bare ID; the modules derive the ID. Empty lets
+  // the pool choose an enabled authority. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef certificate_authority = 5 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaCertificateAuthority,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // The template to issue with -- a GcpPrivateCaCertificateTemplate
+  // reference (its full name) or a literal
+  // projects/*/locations/*/certificateTemplates/*, in the certificate's
+  // location. The caller needs privateca.templateUser on it. Immutable.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef certificate_template = 6 [
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaCertificateTemplate,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
+
+  // How long the certificate is valid. Defaults to 315360000s (10 years);
+  // cut short by the pool's or template's maximum and by the issuing
+  // authority's own expiry. Immutable.
+  string lifetime = 7 [(buf.validate.field).cel = {
+    id: "lifetime_duration"
+    expression: "this == '' || (this.matches('^[0-9]+(\\\\.[0-9]{1,9})?s$'))"
+    message: "lifetime must be a duration in seconds with an 's' suffix, e.g. 86400s"
+  }];
+
+  // A PEM certificate signing request. Exactly one of pem_csr or config.
+  // Immutable.
+  string pem_csr = 8;
+
+  // The certificate as structured fields. Exactly one of pem_csr or
+  // config. Immutable.
+  GcpPrivateCaCertificateConfig config = 9;
+
+  // Labels on the certificate. The platform attribution labels are added on
+  // top and win on a key conflict.
+  map<string, string> labels = 10;
+
+  // What happens to the certificate when this resource is destroyed:
+  //   "" / "DELETE" -- deleted (the provider's default) -- which revokes it
+  //   "PREVENT"     -- destroy fails
+  //   "ABANDON"     -- it leaves management and stays in GCP
+  string deletion_policy = 11 [(buf.validate.field).cel = {
+    id: "valid_deletion_policy"
+    expression: "this == '' || this in ['DELETE', 'PREVENT', 'ABANDON']"
+    message: "deletion_policy must be one of: DELETE, PREVENT, ABANDON"
+  }];
+}

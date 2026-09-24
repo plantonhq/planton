@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecacertificate.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/gcp/gcpprivatecacertificate/v1alpha1/outputs.proto";
+import "catalog/gcp/gcpprivatecacertificate/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+//GcpPrivateCaCertificate
+message GcpPrivateCaCertificate {
+  //api-version
+  string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
+
+  //resource-kind
+  string kind = 2 [(buf.validate.field).string.const = 'GcpPrivateCaCertificate'];
+
+  //metadata
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  //spec
+  GcpPrivateCaCertificateSpec spec = 4 [(buf.validate.field).required = true];
+
+  //status
+  GcpPrivateCaCertificateStatus status = 5;
+}
+
+//GcpPrivateCaCertificate status
+message GcpPrivateCaCertificateStatus {
+  //stack-outputs
+  GcpPrivateCaCertificateStackOutputs outputs = 1;
+}

@@ -528,6 +528,8 @@ Fields on other kinds that can point at this resource:
 | GcpGkeNodePool | `spec.networkConfig.additionalNodeNetworks[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpGkeNodePool | `spec.networkConfig.additionalPodNetworks[].subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpGlobalForwardingRule | `spec.subnetwork` | `status.outputs.subnetwork_self_link` |
+| GcpManagedKafkaCluster | `spec.networkConfigs[].subnet` | `status.outputs.subnetwork_self_link` |
+| GcpManagedKafkaConnectCluster | `spec.networkConfigs[].primarySubnet` | `status.outputs.subnetwork_self_link` |
 | GcpNetworkEndpointGroup | `spec.subnetwork` | `status.outputs.subnetwork_self_link` |
 | GcpPlantonRunner | `spec.vpcAccess.subnetwork` | `status.outputs.subnetwork_name` |
 | GcpPscServiceAttachment | `spec.natSubnets` | `status.outputs.subnetwork_self_link` |

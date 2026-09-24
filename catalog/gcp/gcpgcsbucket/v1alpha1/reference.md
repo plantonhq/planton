@@ -1066,9 +1066,12 @@ Fields on other kinds that can point at this resource:
 | GcpDataprocCluster | `spec.clusterConfig.stagingBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.clusterConfig.tempBucket` | `status.outputs.bucket_id` |
 | GcpDataprocCluster | `spec.virtualClusterConfig.stagingBucket` | `status.outputs.bucket_id` |
+| GcpDatastreamConnectionProfile | `spec.gcsProfile.bucket` | `status.outputs.bucket_name` |
+| GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.blmtConfig.bucket` | `status.outputs.bucket_name` |
 | GcpDialogflowCxSecuritySettings | `spec.audioExportSettings.gcsBucket` | `status.outputs.bucket_name` |
 | GcpGcsBucket | `spec.logging.logBucket` | `status.outputs.bucket_id` |
 | GcpLoggingSink | `spec.destination.gcsBucket` | `status.outputs.bucket_id` |
+| GcpPrivateCaCertificateAuthority | `spec.gcsBucket` | `status.outputs.bucket_name` |
 | GcpPubSubSubscription | `spec.cloudStorageConfig.bucket` | `status.outputs.bucket_id` |
 | GcpPubSubTopic | `spec.ingestionDataSourceSettings.cloudStorage.bucket` | `status.outputs.bucket_id` |
 | KubernetesOpenBao | `spec.backup.objectStore.gcs.bucket` | `status.outputs.bucket_name` |

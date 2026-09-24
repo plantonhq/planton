@@ -1,0 +1,20 @@
+# An extra GcpPrivateCaPool instance for the gcppcaa two-tier chain: the
+# pool the root authority lives in, separate from the subordinate's pool.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaPool
+metadata:
+  name: planton-oss-e2e-gcppcaa-root-pool
+  id: planton-oss-e2e-gcppcaa-root-pool
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecapool
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  caPoolId: e2e-gcppcaa-root-${E2E_RUN_ID}
+  tier: DEVOPS

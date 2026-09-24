@@ -223,6 +223,19 @@ var _ = ginkgo.Describe("GcpCloudRunWorkerPoolSpec", func() {
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a name starting with a digit")
 	})
 
+	ginkgo.It("should take exactly one of a value, a secret reference, or a secret value", func() {
+		msg := minimal()
+		msg.Spec.Containers[0].Env = []*GcpCloudRunWorkerPoolEnvVar{{Name: "TOKEN", SecretValue: "s3cr3t"}}
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a secret value alone")
+		msg.Spec.Containers[0].Env = []*GcpCloudRunWorkerPoolEnvVar{{Name: "TOKEN", Value: "literal", SecretValue: "s3cr3t"}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a value beside a secret value")
+		msg.Spec.Containers[0].Env = []*GcpCloudRunWorkerPoolEnvVar{{
+			Name: "TOKEN", SecretValue: "s3cr3t",
+			ValueFromSecret: &GcpCloudRunWorkerPoolSecretEnvSource{Secret: "s"},
+		}}
+		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a secret reference beside a secret value")
+	})
+
 	ginkgo.It("should enforce the probe timing rules", func() {
 		msg := minimal()
 		msg.Spec.Containers[0].StartupProbe = &GcpCloudRunWorkerPoolStartupProbe{

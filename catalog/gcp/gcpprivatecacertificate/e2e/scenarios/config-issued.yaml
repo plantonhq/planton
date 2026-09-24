@@ -1,0 +1,54 @@
+# GcpPrivateCaCertificate scenario: a one-day server certificate issued
+# from structured config for a fixed P-256 public key (the private key was
+# discarded when the fixture was written). The registry prerequisite chain
+# deploys the Enterprise pool and its root first; destroy revokes the
+# certificate.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificate
+metadata:
+  name: planton-oss-e2e-gcppcac-server
+  id: planton-oss-e2e-gcppcac-server
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecacertificate
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: planton-oss-e2e-gcppcac-pool
+      fieldPath: status.outputs.name
+  certificateId: e2e-gcppcac-server-${E2E_RUN_ID}
+  certificateAuthority:
+    valueFrom:
+      kind: GcpPrivateCaCertificateAuthority
+      name: planton-oss-e2e-gcppcac-root
+      fieldPath: status.outputs.name
+  lifetime: 86400s
+  config:
+    subjectConfig:
+      subject:
+        commonName: server.e2e.example.com
+      subjectAltName:
+        dnsNames:
+          - server.e2e.example.com
+    x509Config:
+      caOptions:
+        isCa: false
+      keyUsage:
+        baseKeyUsage:
+          digitalSignature: true
+          keyEncipherment: true
+        extendedKeyUsage:
+          serverAuth: true
+    publicKey:
+      key: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFcy9jMjdMT3BJdmJWU0RzalMvTWp6VDM3bk5IeQp1dUtmNVZ0eVE2SmNUTUltOEQyRzl4MmNRVXZteFdjZzFFVzQrbXpwZ0RKOXdWR1dDeitQclUrejNBPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+  labels:
+    e2e-arm: config-issued
+  deletionPolicy: DELETE

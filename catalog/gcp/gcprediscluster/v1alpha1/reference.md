@@ -112,7 +112,7 @@ spec:
 | `spec.authorizationMode` | `string` |  |  |  |
 | `spec.transitEncryptionMode` | `string` |  |  |  |
 | `spec.serverCaMode` | `string` |  |  |  |
-| `spec.serverCaPool` | `string` |  |  |  |
+| `spec.serverCaPool` | `string \| valueFrom` |  |  | GcpPrivateCaPool (`status.outputs.name`) |
 | `spec.kmsKey` | `string \| valueFrom` |  |  | GcpKmsKey (`status.outputs.key_id`) |
 | `spec.persistenceConfig` | `GcpRedisClusterPersistenceConfig` |  |  |  |
 | `spec.persistenceConfig.mode` | `string` |  |  |  |
@@ -301,13 +301,16 @@ Meaningful only with TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION.
 
 ### spec.serverCaPool
 
-`string`
+`string | valueFrom`
 
 The Certificate Authority Service pool that signs the server
-certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA, as
+certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA -- a
+GcpPrivateCaPool reference (its full name) or a literal
 projects/{project}/locations/{region}/caPools/{pool}.
 
-- rule: server_ca_pool must be empty or of the form projects/{project}/locations/{region}/caPools/{pool}
+- references: GcpPrivateCaPool (`status.outputs.name`)
+- rule: a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}
+- rule: write as {value: <literal>} or {valueFrom: {kind: GcpPrivateCaPool, name: <that resource's name>, fieldPath: status.outputs.name}} -- a bare string does not parse
 
 ### spec.kmsKey
 
@@ -649,6 +652,7 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.projectId` | GcpProject | `status.outputs.project_id` |
 | `spec.pscConfigs[].network` | GcpVpcNetwork | `status.outputs.network_id` |
+| `spec.serverCaPool` | GcpPrivateCaPool | `status.outputs.name` |
 | `spec.kmsKey` | GcpKmsKey | `status.outputs.key_id` |
 | `spec.crossClusterReplicationConfig.primaryCluster.cluster` | GcpRedisCluster | `status.outputs.name` |
 | `spec.crossClusterReplicationConfig.secondaryClusters[].cluster` | GcpRedisCluster | `status.outputs.name` |

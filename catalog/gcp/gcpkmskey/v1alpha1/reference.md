@@ -301,6 +301,7 @@ Fields on other kinds that can point at this resource:
 | GcpAlloydbCluster | `spec.continuousBackupConfig.encryptionKmsKeyName` | `status.outputs.key_id` |
 | GcpAlloydbCluster | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpArtifactRegistryRepo | `spec.kmsKeyName` | `status.outputs.key_id` |
+| GcpBigQueryConnection | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigQueryDataset | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigQueryTable | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpBigtableInstance | `spec.clusters[].kmsKeyName` | `status.outputs.key_id` |
@@ -326,6 +327,8 @@ Fields on other kinds that can point at this resource:
 | GcpComputeMig | `spec.template.disks[].sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
 | GcpDataprocCluster | `spec.clusterConfig.encryptionKmsKeyName` | `status.outputs.key_id` |
 | GcpDataprocCluster | `spec.clusterConfig.securityConfig.kerberosConfig.kmsKeyUri` | `status.outputs.key_id` |
+| GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.sourceHierarchyDatasets.datasetTemplate.kmsKeyName` | `status.outputs.key_id` |
+| GcpDatastreamStream | `spec.customerManagedEncryptionKey` | `status.outputs.key_id` |
 | GcpDocumentAiProcessor | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.cryptoKey` | `status.outputs.key_id` |
 | GcpEventarcMessageBus | `spec.googleApiSources[].cryptoKey` | `status.outputs.key_id` |
@@ -343,7 +346,10 @@ Fields on other kinds that can point at this resource:
 | GcpKmsKeyIamMember | `spec.cryptoKeyId` | `status.outputs.key_id` |
 | GcpLogBucket | `spec.cmekKmsKey` | `status.outputs.key_id` |
 | GcpLogBucket | `spec.scopeSettings.kmsKey` | `status.outputs.key_id` |
+| GcpManagedKafkaCluster | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpMemorystoreInstance | `spec.kmsKey` | `status.outputs.key_id` |
+| GcpPrivateCaCertificateAuthority | `spec.keySpec.cloudKmsKeyVersion` | `status.outputs.primary_version_name` |
+| GcpPrivateCaPool | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpPubSubTopic | `spec.kmsKeyName` | `status.outputs.key_id` |
 | GcpRedisCluster | `spec.kmsKey` | `status.outputs.key_id` |
 | GcpRedisInstance | `spec.customerManagedKey` | `status.outputs.key_id` |

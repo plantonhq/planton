@@ -430,13 +430,19 @@ message GcpRedisClusterSpec {
   }];
 
   // The Certificate Authority Service pool that signs the server
-  // certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA, as
+  // certificate under SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA -- a
+  // GcpPrivateCaPool reference (its full name) or a literal
   // projects/{project}/locations/{region}/caPools/{pool}.
-  string server_ca_pool = 12 [(buf.validate.field).cel = {
-    id: "server_ca_pool_format"
-    expression: "this == '' || this.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
-    message: "server_ca_pool must be empty or of the form projects/{project}/locations/{region}/caPools/{pool}"
-  }];
+  dev.planton.shared.foreignkey.v1.StringValueOrRef server_ca_pool = 12 [
+    (buf.validate.field).cel = {
+      id: "server_ca_pool_format"
+      expression: "!has(this.value) || this.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$')"
+      message: "a literal server_ca_pool must be projects/{project}/locations/{region}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
+  ];
 
   // Customer-managed encryption key (CMEK) for data at rest: a full
   // crypto key ID (projects/*/locations/*/keyRings/*/cryptoKeys/*) or a
@@ -532,7 +538,7 @@ message GcpRedisClusterSpec {
   // configuration mistake.
   option (buf.validate.message).cel = {
     id: "server_ca_pool_requires_customer_managed_cas"
-    expression: "this.server_ca_pool == '' || this.server_ca_mode == 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA'"
+    expression: "!has(this.server_ca_pool) || this.server_ca_mode == 'SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA'"
     message: "server_ca_pool requires server_ca_mode SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA"
   };
 

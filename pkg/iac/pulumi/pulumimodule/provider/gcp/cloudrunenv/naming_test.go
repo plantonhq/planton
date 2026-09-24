@@ -1,6 +1,6 @@
 // Tests for the secret naming law: the id each stored variable gets, and the
-// two shapes it refuses before any resource exists. What they pin: a service
-// and a job never share a secret, an unnamed container still gets a distinct
+// two shapes it refuses before any resource exists. What they pin: a service,
+// a job, and a worker pool never share a secret, an unnamed container still gets a distinct
 // id, a name Secret Manager would refuse is made legal, and a collision or an
 // overlong id fails with a sentence naming the variables and the fix.
 package cloudrunenv
@@ -35,12 +35,17 @@ func TestSecretIDMakesADottedVariableNameLegal(t *testing.T) {
 	}
 }
 
-func TestAServiceAndAJobWithOneNameNeverShareASecret(t *testing.T) {
+func TestAServiceAJobAndAWorkerPoolWithOneNameNeverShareASecret(t *testing.T) {
 	variable := Variable{Container: "app", Name: "TOKEN"}
-	job := servicePlacement()
-	job.Kind = KindJob
-	if SecretID(servicePlacement(), variable) == SecretID(job, variable) {
-		t.Fatal("a service and a job with the same name and region got the same secret id")
+	seen := map[string]string{}
+	for _, kind := range []string{KindService, KindJob, KindWorkerPool} {
+		placement := servicePlacement()
+		placement.Kind = kind
+		id := SecretID(placement, variable)
+		if other, taken := seen[id]; taken {
+			t.Fatalf("kinds %q and %q with the same name and region got the same secret id %q", other, kind, id)
+		}
+		seen[id] = kind
 	}
 }
 

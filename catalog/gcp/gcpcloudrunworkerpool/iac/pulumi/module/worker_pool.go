@@ -3,6 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	gcpcloudrunworkerpoolv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudrunworkerpool/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/cloudrunv2"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/projects"
@@ -38,6 +39,13 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 		return errors.Wrap(err, "failed to enable run.googleapis.com api")
 	}
 
+	// Secret values the env carries are stored in Secret Manager before the
+	// pool exists, and each instance reads them by reference.
+	storedSecrets, err := cloudrunenv.Store(ctx, secretPlacement(locals), secretVariables(spec), gcpProvider)
+	if err != nil {
+		return errors.Wrap(err, "failed to store the environment's secret values")
+	}
+
 	// Deletion guard, honest by default: an unset spec field means true, so
 	// a destroy fails until the manifest explicitly opts out (identical to
 	// the Terraform module).
@@ -49,7 +57,7 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 	args := &cloudrunv2.WorkerPoolArgs{
 		Name:               pulumi.String(locals.WorkerPoolName),
 		Location:           pulumi.String(spec.Region),
-		Template:           buildTemplate(spec),
+		Template:           buildTemplate(spec, storedSecrets.Refs),
 		Labels:             pulumi.ToStringMap(locals.GcpLabels),
 		DeletionProtection: pulumi.Bool(deletionProtection),
 	}
@@ -136,7 +144,9 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 		locals.GcpCloudRunWorkerPool.Metadata.Name,
 		args,
 		pulumi.Provider(gcpProvider),
-		pulumi.DependsOn([]pulumi.Resource{createdProjectService}),
+		// The runtime identity must already read every secret the revision
+		// references, so the grants land first.
+		pulumi.DependsOn(append([]pulumi.Resource{createdProjectService}, storedSecrets.Grants...)),
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to create Cloud Run v2 worker pool")
@@ -157,9 +167,12 @@ func workerPool(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 
 // buildTemplate maps the spec's revision-level surface onto the v2 worker
 // pool template: containers, volumes, networking, hardware, encryption.
-func buildTemplate(spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSpec) *cloudrunv2.WorkerPoolTemplateArgs {
+func buildTemplate(
+	spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSpec,
+	secretRefs map[cloudrunenv.Key]cloudrunenv.Ref,
+) *cloudrunv2.WorkerPoolTemplateArgs {
 	template := &cloudrunv2.WorkerPoolTemplateArgs{
-		Containers: buildContainers(spec),
+		Containers: buildContainers(spec, secretRefs),
 	}
 
 	// Explicit revision naming makes declarative rollouts by revision
@@ -315,10 +328,13 @@ func buildTemplate(spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSpec
 
 // buildContainers maps the spec's containers -- the worker plus any
 // sidecars sharing localhost and volumes, ordered by depends_on.
-func buildContainers(spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSpec) cloudrunv2.WorkerPoolTemplateContainerArray {
+func buildContainers(
+	spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSpec,
+	secretRefs map[cloudrunenv.Key]cloudrunenv.Ref,
+) cloudrunv2.WorkerPoolTemplateContainerArray {
 	containers := cloudrunv2.WorkerPoolTemplateContainerArray{}
 
-	for _, container := range spec.Containers {
+	for containerIndex, container := range spec.Containers {
 		containerArgs := &cloudrunv2.WorkerPoolTemplateContainerArgs{
 			Image: pulumi.String(container.Image),
 		}
@@ -339,15 +355,22 @@ func buildContainers(spec *gcpcloudrunworkerpoolv1alpha1.GcpCloudRunWorkerPoolSp
 			containerArgs.DependsOns = pulumi.ToStringArray(container.DependsOn)
 		}
 
-		// Environment: a literal value or a Secret Manager reference
-		// resolved at instance start (never both -- proto-enforced).
 		if len(container.Env) > 0 {
 			envs := cloudrunv2.WorkerPoolTemplateContainerEnvArray{}
 			for _, envVar := range container.Env {
 				envArgs := &cloudrunv2.WorkerPoolTemplateContainerEnvArgs{
 					Name: pulumi.String(envVar.Name),
 				}
-				if envVar.ValueFromSecret != nil {
+				// A literal, a Secret Manager secret the author owns, or a
+				// secret value this module stored (one of the three).
+				if ref, stored := secretRefs[cloudrunenv.Key{ContainerIndex: containerIndex, Name: envVar.Name}]; stored {
+					envArgs.ValueSource = &cloudrunv2.WorkerPoolTemplateContainerEnvValueSourceArgs{
+						SecretKeyRef: &cloudrunv2.WorkerPoolTemplateContainerEnvValueSourceSecretKeyRefArgs{
+							Secret:  ref.Secret,
+							Version: ref.Version,
+						},
+					}
+				} else if envVar.ValueFromSecret != nil {
 					secretKeyRef := &cloudrunv2.WorkerPoolTemplateContainerEnvValueSourceSecretKeyRefArgs{
 						Secret: pulumi.String(envVar.ValueFromSecret.Secret),
 					}

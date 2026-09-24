@@ -39,6 +39,25 @@ example a queue-depth metric wired through Cloud Monitoring. Because
 CPU is always allocated on a worker pool, an idle instance bills like a
 busy one: size the count for the work, and park what is not needed.
 
+## Where a worker's secrets live
+
+Each `env` entry takes exactly one of `value`, `valueFromSecret`, or
+`secretValue`. `value` is written into the revision template, readable by
+anyone who can view the pool and kept by every past revision --
+configuration only, and on Planton a `$secret/...` reference there is
+refused before anything deploys (the platform resolves references to plain
+values before the module runs, so it would land in the revision as the
+secret itself). `valueFromSecret` reads a Secret Manager secret you already
+own; rotation is Secret Manager's, and with version `latest` new instances
+pick up a new version while running ones keep the old. `secretValue` (on
+Planton, only a `$secret/...` reference) has the component keep the value in
+a secret of its own, replicated in the pool's region, readable only by the
+pool's identity, and pinned to the version stored -- so a new value is a new
+revision, visible in the revision history. Use `secretValue` for anything
+referenced as `$secret/...`, and give the pool its own `serviceAccount`:
+without one the grant lands on the project's Compute Engine default
+account, shared by every default-identity workload in the project.
+
 ## Revisions and instance splits
 
 Every template change -- a new image, an env var, a resource limit --

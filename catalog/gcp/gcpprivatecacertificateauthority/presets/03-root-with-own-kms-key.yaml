@@ -1,0 +1,29 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateAuthority
+metadata:
+  name: root-ca
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: root-pool
+  config:
+    subjectConfig:
+      subject:
+        commonName: Example Root CA
+        organization: Example
+    x509Config:
+      caOptions:
+        isCa: true
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true
+  keySpec:
+    cloudKmsKeyVersion:
+      valueFrom:
+        kind: GcpKmsKey
+        name: root-ca-signing
+        fieldPath: status.outputs.primary_version_name
+  lifetime: 630720000s

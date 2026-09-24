@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("GcpRedisClusterSpec", func() {
 		msg.Spec.AuthorizationMode = "AUTH_MODE_IAM_AUTH"
 		msg.Spec.TransitEncryptionMode = "TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION"
 		msg.Spec.ServerCaMode = "SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA"
-		msg.Spec.ServerCaPool = "projects/p/locations/us-central1/caPools/redis-ca"
+		msg.Spec.ServerCaPool = litRef("projects/p/locations/us-central1/caPools/redis-ca")
 		msg.Spec.KmsKey = nameRef("cache-key")
 		msg.Spec.PersistenceConfig = &GcpRedisClusterPersistenceConfig{
 			Mode:      "AOF",
@@ -156,7 +156,7 @@ var _ = ginkgo.Describe("GcpRedisClusterSpec", func() {
 
 	ginkgo.It("should tie server_ca_pool to the customer-managed CA mode and TLS", func() {
 		msg := minimal()
-		msg.Spec.ServerCaPool = "projects/p/locations/us-central1/caPools/redis-ca"
+		msg.Spec.ServerCaPool = litRef("projects/p/locations/us-central1/caPools/redis-ca")
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed())
 
 		msg = minimal()
@@ -166,8 +166,12 @@ var _ = ginkgo.Describe("GcpRedisClusterSpec", func() {
 		msg.Spec.TransitEncryptionMode = "TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION"
 		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed())
 
-		msg.Spec.ServerCaPool = "not-a-pool"
+		msg.Spec.ServerCaPool = litRef("not-a-pool")
 		gomega.Expect(validator.Validate(msg)).ToNot(gomega.Succeed(), "a malformed pool name")
+
+		msg.Spec.ServerCaMode = "SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA"
+		msg.Spec.ServerCaPool = nameRef("redis-ca")
+		gomega.Expect(validator.Validate(msg)).To(gomega.Succeed(), "a GcpPrivateCaPool reference")
 	})
 
 	ginkgo.It("should tie rdb_config and aof_config to their modes", func() {

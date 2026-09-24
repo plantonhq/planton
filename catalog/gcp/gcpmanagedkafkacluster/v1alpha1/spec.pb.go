@@ -152,10 +152,11 @@ type GcpManagedKafkaClusterTlsConfig struct {
 	// it triggers a rolling restart of the brokers.
 	SslPrincipalMappingRules string `protobuf:"bytes,1,opt,name=ssl_principal_mapping_rules,json=sslPrincipalMappingRules,proto3" json:"ssl_principal_mapping_rules,omitempty"`
 	// Certificate Authority Service CA pools whose certificates the brokers
-	// trust for client authentication, each
-	// projects/{project}/locations/{location}/caPools/{pool} -- in any
-	// project or location. At most 10. Setting at least one enables mTLS.
-	CaPools       []string `protobuf:"bytes,2,rep,name=ca_pools,json=caPools,proto3" json:"ca_pools,omitempty"`
+	// trust for client authentication -- GcpPrivateCaPool references (their
+	// full names) or literals projects/{project}/locations/{location}/caPools/{pool},
+	// in any project or location. At most 10. Setting at least one enables
+	// mTLS.
+	CaPools       []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=ca_pools,json=caPools,proto3" json:"ca_pools,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -197,7 +198,7 @@ func (x *GcpManagedKafkaClusterTlsConfig) GetSslPrincipalMappingRules() string {
 	return ""
 }
 
-func (x *GcpManagedKafkaClusterTlsConfig) GetCaPools() []string {
+func (x *GcpManagedKafkaClusterTlsConfig) GetCaPools() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.CaPools
 	}
@@ -397,11 +398,12 @@ const file_catalog_gcp_gcpmanagedkafkacluster_v1alpha1_spec_proto_rawDesc = "" +
 	"\fmemory_bytes\x18\x02 \x01(\x03B\v\xbaH\b\"\x06(\x80\x80\x80\x80\x04R\vmemoryBytes:\x8e\x02\xbaH\x8a\x02\x1a\x87\x02\n" +
 	"\x18capacity.memory_per_vcpu\x12jmemory_bytes must be between 1 GiB and 8 GiB per vCPU (vcpu_count x 1073741824 to vcpu_count x 8589934592)\x1a\x7fthis.vcpu_count < 3 || (this.memory_bytes >= this.vcpu_count * 1073741824 && this.memory_bytes <= this.vcpu_count * 8589934592)\"\xa5\x01\n" +
 	"#GcpManagedKafkaClusterNetworkConfig\x12~\n" +
-	"\x06subnet\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\x06subnet\"\xb9\x01\n" +
+	"\x06subnet\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB2\xbaH\x03\xc8\x01\x01\x88\xd4a\xc3\x17\x92\xd4a#status.outputs.subnetwork_self_linkR\x06subnet\"\xb5\x03\n" +
 	"\x1fGcpManagedKafkaClusterTlsConfig\x12=\n" +
-	"\x1bssl_principal_mapping_rules\x18\x01 \x01(\tR\x18sslPrincipalMappingRules\x12W\n" +
-	"\bca_pools\x18\x02 \x03(\tB<\xbaH9\x92\x016\x10\n" +
-	"\"2r02.^projects/[^/]+/locations/[^/]+/caPools/[^/]+$R\acaPools\"\x8d\n" +
+	"\x1bssl_principal_mapping_rules\x18\x01 \x01(\tR\x18sslPrincipalMappingRules\x12\xd2\x02\n" +
+	"\bca_pools\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x82\x02\xbaH\xde\x01\xba\x01\xd5\x01\n" +
+	"\x17ca_pools_literal_format\x12Pa literal CA pool must be projects/{project}/locations/{location}/caPools/{pool}\x1ahthis.all(pool, !has(pool.value) || pool.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$'))\x92\x01\x02\x10\n" +
+	"\x88\xd4a\x9e\x19\x92\xd4a\x13status.outputs.name\x98\xd4a\x01R\acaPools\"\x8d\n" +
 	"\n" +
 	"\x1aGcpManagedKafkaClusterSpec\x12u\n" +
 	"\n" +
@@ -451,17 +453,18 @@ var file_catalog_gcp_gcpmanagedkafkacluster_v1alpha1_spec_proto_goTypes = []any{
 }
 var file_catalog_gcp_gcpmanagedkafkacluster_v1alpha1_spec_proto_depIdxs = []int32{
 	5, // 0: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterNetworkConfig.subnet:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	5, // 1: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	0, // 2: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.capacity_config:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterCapacity
-	1, // 3: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.network_configs:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterNetworkConfig
-	5, // 4: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2, // 5: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.tls_config:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterTlsConfig
-	4, // 6: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.labels:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.LabelsEntry
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	5, // 1: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterTlsConfig.ca_pools:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	5, // 2: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.project_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	0, // 3: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.capacity_config:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterCapacity
+	1, // 4: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.network_configs:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterNetworkConfig
+	5, // 5: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.kms_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2, // 6: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.tls_config:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterTlsConfig
+	4, // 7: dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.labels:type_name -> dev.planton.gcp.gcpmanagedkafkacluster.v1alpha1.GcpManagedKafkaClusterSpec.LabelsEntry
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_catalog_gcp_gcpmanagedkafkacluster_v1alpha1_spec_proto_init() }

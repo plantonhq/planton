@@ -18,6 +18,7 @@ Cloud Run Admin API enabled.
 | `variables.tf` | `metadata` and `spec` variable definitions (generated from the spec; the tfvars converter flattens refs to plain strings) |
 | `locals.tf` | Ambient project fallback, pool name (spec or metadata.name fallback), null-when-empty levers, the platform labels, the VPC access guards |
 | `main.tf` | `google_project_service`, `google_cloud_run_v2_worker_pool` |
+| `secrets.tf` | Per `env[].secret_value`: the Secret Manager API, one secret replicated in the pool's region, its version, and the runtime identity's `secretAccessor` grant on that secret alone; the Compute Engine default identity lookup when `service_account` is unset |
 | `outputs.tf` | `name`, `worker_pool_name`, `uid`, `location`, `project_id`, `latest_created_revision`, `latest_ready_revision`, `observed_generation`, `etag` |
 
 ## Send Posture
@@ -40,6 +41,14 @@ Cloud Run Admin API enabled.
   worker-pool container type lacks it (re-evaluated at pulumi-gcp v10 GA).
 - **`deletion_policy`** -- DELETE (default), PREVENT, or ABANDON; sent only
   when set.
+- **`env[]`** -- exactly one of `value`, `value_source` from
+  `value_from_secret`, or `value_source` pointing at the module's own secret
+  for `secret_value`, pinned to the stored version. Secret ids are
+  `runpool_<region>_<pool>_<container>_<variable>` (an unnamed container is
+  `c<index>`, a `.` in a name becomes `-`), the same law the Pulumi module's
+  shared helper applies, so both engines name the same secrets. The pool
+  waits for every grant, because Cloud Run checks the runtime identity's
+  access when it creates a revision.
 
 ## Usage
 

@@ -556,6 +556,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | GcpBigQueryTable | `spec.datasetId` | `status.outputs.dataset_id` |
+| GcpDatastreamStream | `spec.destinationConfig.bigqueryDestinationConfig.singleTargetDataset.datasetId` | `status.outputs.self_link` |
 | GcpGkeCluster | `spec.resourceUsageExport.bigqueryDatasetId` | `status.outputs.dataset_id` |
 | GcpLoggingSink | `spec.destination.bigqueryDataset` | `status.outputs.self_link` |
 

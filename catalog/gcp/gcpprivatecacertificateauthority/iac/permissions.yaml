@@ -1,0 +1,38 @@
+# Least-privilege permissions the IaC runner's GCP principal needs to
+# provision, update, and destroy this component with the official modules.
+# Every entry is `derived` (static analysis of the module sources, cited in
+# notes) until the live capture lane upgrades it to `proven`. Schema:
+# iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: gcpprivatecacertificateauthority
+spec:
+  gcp:
+    groups:
+      - purpose: ManageCertificateAuthority
+        permissions:
+          - privateca.certificateAuthorities.create
+          - privateca.certificateAuthorities.get
+          - privateca.certificateAuthorities.update
+          - privateca.certificateAuthorities.delete
+          - privateca.caPools.get
+          - privateca.operations.get
+        provenance: derived
+        notes: Covers google_privateca_certificate_authority (Pulumi certificateauthority.Authority) -- created in the pool, read on every refresh, enabled or disabled and updated in place (desired state, subordinate config, access URLs, labels), disabled and deleted on destroy, and its long-running operations polled; the pool is read when the authority is created in it. Names grounded in Google's CA Service permissions-and-roles page; roles/privateca.caManager contains all six.
+      - purpose: ActivateSubordinateByReference
+        permissions:
+          - privateca.certificates.create
+          - privateca.caPools.use
+        provenance: derived
+        condition:
+          spec_field_set: subordinate_config.certificate_authority
+        notes: A subordinate named by reference is activated by having the parent's pool sign its CSR -- the provider creates a certificate in the parent's pool through the named authority -- so the caller needs certificate creation there (roles/privateca.certificateManager on the parent's pool). Not exercised by roots or outside-CA activation.
+      - purpose: UseCustomerKey
+        permissions:
+          - cloudkms.cryptoKeyVersions.get
+          - cloudkms.cryptoKeyVersions.viewPublicKey
+        provenance: derived
+        condition:
+          spec_field_set: key_spec.cloud_kms_key_version
+        notes: CA Service's service agent signs with the named key version (roles/cloudkms.signerVerifier and roles/viewer on the key, granted to the agent, not the caller); the caller's create reads the version it names. The capture lane confirms the caller-side need.

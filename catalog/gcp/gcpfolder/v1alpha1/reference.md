@@ -208,6 +208,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpBigQueryReservation | `spec.assignments[].assignee.folderId` | `status.outputs.folder_id` |
 | GcpBillingBudget | `spec.budgetFilter.resourceAncestors` | `status.outputs.name` |
 | GcpFolder | `spec.parent.folderId` | `status.outputs.folder_id` |
 | GcpHierarchicalFirewallPolicy | `spec.parent.folderId` | `status.outputs.folder_id` |

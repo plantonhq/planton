@@ -1,0 +1,23 @@
+# GcpPrivateCaCertificateTemplate scenario: the smallest template -- a
+# description and nothing else. A template bills nothing.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateTemplate
+metadata:
+  name: planton-oss-e2e-gcppcat-minimal
+  id: planton-oss-e2e-gcppcat-minimal
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecacertificatetemplate
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  templateId: e2e-gcppcat-min-${E2E_RUN_ID}
+  description: Planton E2E minimal template
+  labels:
+    e2e-arm: minimal
+  deletionPolicy: DELETE

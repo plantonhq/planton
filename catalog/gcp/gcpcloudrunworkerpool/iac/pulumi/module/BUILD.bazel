@@ -3,6 +3,7 @@ load("@rules_go//go:def.bzl", "go_library")
 go_library(
     name = "module",
     srcs = [
+        "env_secrets.go",
         "locals.go",
         "main.go",
         "outputs.go",
@@ -13,6 +14,7 @@ go_library(
     deps = [
         "//catalog/gcp",
         "//catalog/gcp/gcpcloudrunworkerpool/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/gcp/cloudrunenv",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
         "//shared/cloudresourcekind",

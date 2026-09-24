@@ -3,11 +3,13 @@ kind: ComponentE2EProfile
 metadata:
   name: gcpcloudrunworkerpool
 spec:
-  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # Awaiting the live proof lane. Every scenario proves in the harness
   # project with roles/run.admin and iam.serviceAccounts.actAs on the
   # Compute default service account: a one-instance MANUAL pool on Google's
-  # public worker-pool sample image, and an AUTOMATIC pool between bounds
-  # with direct VPC egress into the registry's prerequisite subnet. Offline
+  # public worker-pool sample image, an AUTOMATIC pool between bounds with
+  # direct VPC egress into the registry's prerequisite subnet, and the
+  # minimal pool with a secret_value variable (the Secret Manager admin
+  # permissions join the list for that one). Offline
   # bar met: both modules build and validate, offline plans for the
   # reference manifest and every scenario are clean on the pinned provider,
   # and the accounting is total. Live facts the proof lane confirms: (1)
@@ -17,7 +19,10 @@ spec:
   # gate; (3) instance_splits left empty shows no diff against Google's
   # all-on-latest default; (4) direct VPC egress places instances in the
   # subnet; (5) the REST-read verifier (the pinned client library predates
-  # worker pools) sees the same latest_ready_revision both engines export.
+  # worker pools) sees the same latest_ready_revision both engines export;
+  # (6) a secret_value variable reaches the revision as a secret key
+  # reference to the module's own secret, whose ids match across engines,
+  # and the destroy removes that secret.
   tier: 1
   status: pending_proof
   validated_provisioners: []

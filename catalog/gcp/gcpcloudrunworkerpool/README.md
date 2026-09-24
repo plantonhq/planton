@@ -85,14 +85,14 @@ planton apply -f worker-pool.yaml
 | `deletionProtection` | `bool` | `true` | Destroy fails until set to `false`. Always sent explicitly. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT`, or `ABANDON`. |
 
-Per container: `name`, `image`, `command`, `args`, `env` (literal or `valueFromSecret`), `resources` (`cpu`, `memory`), `volumeMounts`, `workingDir`, `startupProbe` (HTTP / TCP / gRPC), `livenessProbe` (HTTP / gRPC), `dependsOn`.
+Per container: `name`, `image`, `command`, `args`, `env` (literal, `valueFromSecret`, or `secretValue`), `resources` (`cpu`, `memory`), `volumeMounts`, `workingDir`, `startupProbe` (HTTP / TCP / gRPC), `livenessProbe` (HTTP / gRPC), `dependsOn`.
 
 ### Validation Rules
 
 - **`manualInstanceCount`** only under `MANUAL` (or unset); **`minInstanceCount` / `maxInstanceCount`** only under `AUTOMATIC`, and min ≤ max.
 - **`REVISION`** splits name a `revision`; **`LATEST`** splits do not.
 - **`encryptionKeyRevocationAction`** requires `encryptionKey`; **`encryptionKeyShutdownDuration`** requires `SHUTDOWN`.
-- An env var takes a `value` or a `valueFromSecret`, not both; a volume has exactly one source; `vpcAccess` uses a connector or network interfaces, not both.
+- An env var takes exactly one of `value`, `valueFromSecret`, or `secretValue`; a volume has exactly one source; `vpcAccess` uses a connector or network interfaces, not both.
 - Probe `timeoutSeconds` ≤ `periodSeconds`; a startup window (`failureThreshold` × `periodSeconds`) ≤ 240 s; **at most one probe `httpHeaders` entry** (see Important Notes).
 
 ## Stack Outputs
@@ -134,7 +134,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpServiceAccount** -- the runtime identity
 - **GcpVpcNetwork** / **GcpSubnetwork** -- direct VPC egress; **GcpServerlessVpcConnector** -- the connector alternative
 - **GcpRedisCluster**, **GcpCloudSql**, **GcpPubSubSubscription** -- what a worker typically talks to
-- **GcpSecretManagerSecret** -- secret env vars and volumes; **GcpKmsKey** -- CMEK
+- **GcpSecretManagerSecret** -- secrets you already own, for env vars (`valueFromSecret`) and volumes; a variable's `secretValue` needs none -- the module creates its secret, replicated in the pool's region and readable only by the pool's identity; **GcpKmsKey** -- CMEK
 
 ---
 

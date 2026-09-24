@@ -93,7 +93,7 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 			casConfigs := managedkafka.ClusterTlsConfigTrustConfigCasConfigArray{}
 			for _, caPool := range tls.CaPools {
 				casConfigs = append(casConfigs, &managedkafka.ClusterTlsConfigTrustConfigCasConfigArgs{
-					CaPool: pulumi.String(caPool),
+					CaPool: pulumi.String(caPool.GetValue()),
 				})
 			}
 			tlsArgs.TrustConfig = &managedkafka.ClusterTlsConfigTrustConfigArgs{CasConfigs: casConfigs}

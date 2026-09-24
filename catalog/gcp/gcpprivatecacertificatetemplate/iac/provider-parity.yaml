@@ -1,0 +1,32 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# google provider (checked by `planton provider-parity --check` and the
+# lint.provider-parity CI lane; format documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+
+resources:
+  google_privateca_certificate_template:
+    mappings:
+      - spec: spec.project_id
+        arg: project
+      - spec: spec.template_id
+        arg: name
+    exclusions:
+      # The provider's two helper flags for Google's presence-based basic
+      # constraints; the spec's optional is_ca and max_issuer_path_length
+      # carry presence directly and the modules derive the flags from them.
+      - arg: predefined_values.ca_options.null_ca
+        reason: >-
+          derived from the presence-based spec ca_options.is_ca -- both modules
+          send it true exactly when the spec leaves is_ca unset, because this resource otherwise sends is_ca false and unset must mean the flag is omitted
+      - arg: predefined_values.ca_options.zero_max_issuer_path_length
+        reason: >-
+          derived from the presence-based spec ca_options.max_issuer_path_length
+          -- both modules send it true exactly when the spec sets 0, because
+          the provider reads a plain 0 as unset
+  google_project_service:
+    internal: >-
+      API enablement plumbing -- the module enables privateca.googleapis.com
+      so a fresh project works on the first deploy; not a knob of the kind.

@@ -18,6 +18,10 @@ spec:
           valueFromSecret:
             secret: orders-db-password
             version: latest
+        # A Planton secret: the component keeps it in a Secret Manager
+        # secret of its own, readable only by the pool's identity.
+        - name: API_TOKEN
+          secretValue: $secret/orders-api-token
       resources:
         cpu: "1"
         memory: 512Mi

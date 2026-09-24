@@ -11,6 +11,7 @@ Run Admin API enabled.
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `worker_pool` |
 | `module/locals.go` | Pool name (spec or metadata.name fallback), the platform labels |
 | `module/worker_pool.go` | Enables `run.googleapis.com`; maps spec to `gcp.cloudrunv2.WorkerPool` (template, containers, volumes, scaling, splits); exports the outputs |
+| `module/env_secrets.go` | Lists the `env[].secret_value` variables and places their secrets (the pool's project, region, and runtime identity) for the shared `cloudrunenv` helper |
 | `module/outputs.go` | Output key constants |
 
 ## Send Posture (parity with Terraform)
@@ -27,6 +28,10 @@ Run Admin API enabled.
   no such field (provider 8.1 added it); held out of the spec until the
   SDK carries it (re-evaluated at pulumi-gcp v10 GA).
 - **`DeletionPolicy`** -- sent only when set.
+- **`Envs`** -- a literal, a `ValueSource` from `value_from_secret`, or a
+  `ValueSource` pointing at the secret `cloudrunenv.Store` created for
+  `secret_value`, pinned to the stored version; the pool depends on every
+  grant. Secret ids match the Terraform module's `secrets.tf`.
 - **`name`** -- the resource ID (the full resource name), the shape the
   Terraform module's `id` exports; `worker_pool_name` is the bare name.
 

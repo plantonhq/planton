@@ -1,0 +1,23 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: gcpprivatecapool
+spec:
+  # Awaiting the live proof lane. Both scenarios prove in the harness
+  # project with roles/privateca.caManager: a DevOps pool with no policy,
+  # and an Enterprise pool carrying a full issuance policy (key types, both
+  # issuance modes, a CEL identity rule, baseline values with presence-based
+  # CA options). The module enables privateca.googleapis.com itself. A pool
+  # holding no authority bills nothing. Offline bar met: both modules build
+  # and validate, offline plans for the reference manifest, both scenarios,
+  # the presets, and throwaway arms are clean on the pinned provider, and the
+  # accounting is total. Live facts the proof lane confirms: (1) each pool
+  # reads back with the platform attribution labels and RE-PLANS CLEAN on
+  # both engines -- the empty ca_options and key_usage blocks the modules
+  # send for omitted baseline values, and is_ca false sent with non_ca, must
+  # not diff; (2) the tier and policy match the manifest; (3) destroy leaves
+  # the verifier reading 404.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

@@ -58,12 +58,20 @@ message GcpManagedKafkaClusterTlsConfig {
   string ssl_principal_mapping_rules = 1;
 
   // Certificate Authority Service CA pools whose certificates the brokers
-  // trust for client authentication, each
-  // projects/{project}/locations/{location}/caPools/{pool} -- in any
-  // project or location. At most 10. Setting at least one enables mTLS.
-  repeated string ca_pools = 2 [
+  // trust for client authentication -- GcpPrivateCaPool references (their
+  // full names) or literals projects/{project}/locations/{location}/caPools/{pool},
+  // in any project or location. At most 10. Setting at least one enables
+  // mTLS.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef ca_pools = 2 [
     (buf.validate.field).repeated.max_items = 10,
-    (buf.validate.field).repeated.items.string.pattern = "^projects/[^/]+/locations/[^/]+/caPools/[^/]+$"
+    (buf.validate.field).cel = {
+      id: "ca_pools_literal_format"
+      expression: "this.all(pool, !has(pool.value) || pool.value.matches('^projects/[^/]+/locations/[^/]+/caPools/[^/]+$'))"
+      message: "a literal CA pool must be projects/{project}/locations/{location}/caPools/{pool}"
+    },
+    (dev.planton.shared.foreignkey.v1.default_kind) = GcpPrivateCaPool,
+    (dev.planton.shared.foreignkey.v1.containment_exempt) = true,
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.name"
   ];
 }
 

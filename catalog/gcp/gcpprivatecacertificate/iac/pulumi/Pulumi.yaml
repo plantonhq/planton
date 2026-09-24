@@ -1,0 +1,4 @@
+name: gcpprivatecacertificate-pulumi-project
+runtime:
+  name: go
+description: Planton GcpPrivateCaCertificate Pulumi module

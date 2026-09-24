@@ -51,6 +51,10 @@ spec:
           valueFromSecret:
             secret: orders-db-password
             version: latest
+        # A Planton secret: the component keeps it in a Secret Manager
+        # secret of its own, readable only by the pool's identity.
+        - name: API_TOKEN
+          secretValue: $secret/orders-api-token
       resources:
         cpu: "1"
         memory: 512Mi
@@ -104,10 +108,11 @@ spec:
 | `spec.containers[].args` | `[]string` |  |  |  |
 | `spec.containers[].env` | `[]GcpCloudRunWorkerPoolEnvVar` |  |  |  |
 | `spec.containers[].env[].name` | `string` | yes |  |  |
-| `spec.containers[].env[].value` | `string` |  |  |  |
+| `spec.containers[].env[].value` | `string` (no secrets: use `secretValue`) |  |  |  |
 | `spec.containers[].env[].valueFromSecret` | `GcpCloudRunWorkerPoolSecretEnvSource` |  |  |  |
 | `spec.containers[].env[].valueFromSecret.secret` | `string` | yes |  |  |
 | `spec.containers[].env[].valueFromSecret.version` | `string` |  | `latest` |  |
+| `spec.containers[].env[].secretValue` | `string` (sensitive) |  |  |  |
 | `spec.containers[].resources` | `GcpCloudRunWorkerPoolContainerResources` |  |  |  |
 | `spec.containers[].resources.cpu` | `string` |  |  |  |
 | `spec.containers[].resources.memory` | `string` |  |  |  |
@@ -314,10 +319,11 @@ Arguments to the entrypoint -- overrides the image's CMD.
 
 `[]GcpCloudRunWorkerPoolEnvVar`
 
-Environment variables. Each entry carries a literal value or a Secret
-Manager reference resolved at instance start.
+Environment variables. Each entry carries a literal value, a Secret
+Manager secret you already own, or a secret value this component keeps
+in Secret Manager for you.
 
-- rule: an environment variable takes a literal value or a Secret Manager reference, not both
+- rule: an environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value
 
 ### spec.containers[].env[].name
 
@@ -329,16 +335,21 @@ Variable name, e.g. "QUEUE_SUBSCRIPTION". Must not start with a digit.
 
 ### spec.containers[].env[].value
 
-`string`
+`string` · no secrets
 
-Literal value. Fine for configuration; never place credentials here --
-use value_from_secret so the material stays in Secret Manager.
+Literal value, written into the worker pool's revision template where
+anyone who can view the pool reads it, and every past revision keeps it.
+Fine for configuration; never a credential -- a credential goes in
+secret_value (or value_from_secret).
 
+- secrets: this value is stored where anyone who can view the resource reads it, so a secret reference (`$secret/...`) here is refused -- put a secret in `secretValue`, which keeps it in a secret store the workload reads by reference
 ### spec.containers[].env[].valueFromSecret
 
 `GcpCloudRunWorkerPoolSecretEnvSource`
 
-Secret Manager reference resolved into the variable at instance start.
+A Secret Manager secret you already own, resolved into the variable at
+instance start. Rotation is Secret Manager's: with version "latest", new
+instances pick up a new version without a deploy.
 
 ### spec.containers[].env[].valueFromSecret.secret
 
@@ -359,6 +370,18 @@ an explicit version for env vars -- "latest" is the common choice, at
 the cost of new instances silently picking up rotations.
 
 - default: `latest`
+
+### spec.containers[].env[].secretValue
+
+`string` · sensitive
+
+A secret value this component keeps in Secret Manager for you. It
+creates one secret for this variable, replicated only in the pool's
+region, stores the value as a version, grants the pool's runtime
+identity secretAccessor on that secret alone, and points the variable at
+that exact version -- the revision carries a reference, never the value.
+A changed value adds a version and stamps a new revision, so rotation is
+a deploy; destroying the worker pool removes the secret.
 
 ### spec.containers[].resources
 

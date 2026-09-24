@@ -262,6 +262,7 @@ Fields on other kinds that can point at this resource:
 | GcpComputeInstance | `spec.networkInterfaces[].network` | `status.outputs.network_self_link` |
 | GcpComputeMig | `spec.template.networkInterfaces[].network` | `status.outputs.network_self_link` |
 | GcpDataprocCluster | `spec.clusterConfig.gceConfig.network` | `status.outputs.network_self_link` |
+| GcpDatastreamPrivateConnection | `spec.vpcPeeringConfig.vpc` | `status.outputs.network_id` |
 | GcpDnsRecord | `spec.routingPolicy.wrr[].healthCheckedTargets.internalLoadBalancers[].networkUrl` | `status.outputs.network_self_link` |
 | GcpDnsRecord | `spec.routingPolicy.geo[].healthCheckedTargets.internalLoadBalancers[].networkUrl` | `status.outputs.network_self_link` |
 | GcpDnsRecord | `spec.routingPolicy.primaryBackup.primary.internalLoadBalancers[].networkUrl` | `status.outputs.network_self_link` |

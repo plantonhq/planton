@@ -74,7 +74,7 @@ planton apply -f redis-cluster.yaml
 | `authorizationMode` | `string` | `AUTH_MODE_DISABLED` | Or `AUTH_MODE_IAM_AUTH`. Immutable; always sent explicitly. |
 | `transitEncryptionMode` | `string` | `TRANSIT_ENCRYPTION_MODE_DISABLED` | Or `TRANSIT_ENCRYPTION_MODE_SERVER_AUTHENTICATION`. Immutable; always sent explicitly. |
 | `serverCaMode` | `string` | Google's default | Which CA signs the server certificate under TLS: `SERVER_CA_MODE_GOOGLE_MANAGED_PER_INSTANCE_CA`, `SERVER_CA_MODE_GOOGLE_MANAGED_SHARED_CA`, `SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA`. |
-| `serverCaPool` | `string` | — | CA pool for `SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA`. |
+| `serverCaPool` | `StringValueOrRef` | — | CA pool for `SERVER_CA_MODE_CUSTOMER_MANAGED_CAS_CA`: a `GcpPrivateCaPool` reference or its full name. |
 | `kmsKey` | `StringValueOrRef` | Google-managed | CMEK for data at rest (`GcpKmsKey` reference). |
 | `persistenceConfig` | `object` | in-memory only | `mode` `DISABLED`/`RDB`/`AOF` with `rdbConfig` or `aofConfig`. |
 | `zoneDistributionConfig` | `object` | `MULTI_ZONE` | `SINGLE_ZONE` with a `zone`. Immutable. |
@@ -136,6 +136,7 @@ For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e
 - **GcpRedisClusterEndpointSet** -- registers consumer-built PSC connections on a cluster without `pscConfigs`
 - **GcpVpcNetwork** -- the consumer network the endpoints land in
 - **GcpKmsKey** -- customer-managed encryption at rest
+- **GcpPrivateCaPool** -- your own CA for the server certificate (`serverCaPool`)
 - **GcpMemorystoreInstance** -- the Valkey-engine sibling; **GcpRedisInstance** -- the legacy single-node Redis
 
 ---

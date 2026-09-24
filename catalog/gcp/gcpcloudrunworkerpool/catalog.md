@@ -83,7 +83,7 @@ These are the most important decisions when configuring a worker pool. Explore t
 
 **How many instances** -- `scaling.scalingMode: MANUAL` (Google's default) runs exactly `manualInstanceCount` instances (`0` parks the pool); `AUTOMATIC` lets Cloud Run move between `minInstanceCount` and `maxInstanceCount` on a signal you drive, such as a queue-depth metric.
 
-**The container** -- `containers[].image`, `env` (literal or Secret Manager), `resources.cpu` / `memory`, probes on the port a health listener binds, sidecars ordered by `dependsOn`.
+**The container** -- `containers[].image`, `env` (a literal, a Secret Manager secret you own, or a `secretValue` the component keeps in Secret Manager for you), `resources.cpu` / `memory`, probes on the port a health listener binds, sidecars ordered by `dependsOn`.
 
 **Private networking** -- `vpcAccess.networkInterfaces` for direct VPC egress (recommended) or a `connector`; `egress: ALL_TRAFFIC` routes public egress through the VPC too.
 

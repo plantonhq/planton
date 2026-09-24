@@ -1,0 +1,36 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateAuthority
+metadata:
+  name: root-ca
+spec:
+  projectId:
+    value: my-gcp-project
+  location: us-central1
+  pool:
+    value: projects/my-gcp-project/locations/us-central1/caPools/root-pool
+  certificateAuthorityId: root-ca-2026
+  type: SELF_SIGNED
+  config:
+    subjectConfig:
+      subject:
+        commonName: Example Root CA
+        organization: Example
+        countryCode: US
+    x509Config:
+      caOptions:
+        isCa: true
+        maxIssuerPathLength: 1
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true
+      nameConstraints:
+        critical: true
+        permittedDnsNames:
+          - internal.example.com
+  keySpec:
+    algorithm: EC_P384_SHA384
+  lifetime: 630720000s
+  labels:
+    tier: root
+  deletionPolicy: DELETE

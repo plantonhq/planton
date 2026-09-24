@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: gcpprivatecacertificatetemplate
+spec:
+  billing_model: free
+  free_tier: "A certificate template is configuration. Google's Certificate Authority Service pricing (cloud.google.com/certificate-authority-service/pricing, read 2026-09-24) bills authorities and issued certificates, not templates."
+  notes: "Certificates issued with the template bill per issue at their pool's tier."

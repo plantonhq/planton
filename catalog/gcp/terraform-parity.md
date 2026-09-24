@@ -29,10 +29,10 @@ that has progressed.
 |---|---|
 | Provider schema (parity baseline) | `google@8.3.0` |
 | Supporting schema (pinned by this catalog's modules) | `google-beta@8.3.0` |
-| Kinds in the catalog | 158 |
-| Distinct provider resources consumed | 266 |
-| Spec fields authored across all kinds | 5503 |
-| Module pins on `google` | `~> 8.3` × 158 |
+| Kinds in the catalog | 162 |
+| Distinct provider resources consumed | 270 |
+| Spec fields authored across all kinds | 5728 |
+| Module pins on `google` | `~> 8.3` × 162 |
 | Module pins on `google-beta` | `~> 8.3` × 6 |
 
 The GA provider is the parity baseline. Capability that exists only in a
@@ -78,7 +78,7 @@ excluded with a recorded reason -- and every spec field must reach provider
 surface. **Accounted** means both directions hold with zero unexplained
 gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 
-**158 of 158 kinds are at total accounting; 84 proven live.**
+**162 of 162 kinds are at total accounting; 84 proven live.**
 
 | Kind | Provider args | Matched | Mapped | Excluded | Open gaps | Accounted | Proven |
 |---|---|---|---|---|---|---|---|
@@ -111,7 +111,7 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpCloudRun | 147 | 27 | 102 | 18 | 0 | ✅ | — |
 | GcpCloudRunDomainMapping | 10 | 1 | 9 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudRunJob | 82 | 10 | 63 | 9 | 0 | ✅ | — |
-| GcpCloudRunWorkerPool | 89 | 16 | 67 | 6 | 0 | ✅ | — |
+| GcpCloudRunWorkerPool | 97 | 16 | 68 | 13 | 0 | ✅ | — |
 | GcpCloudSchedulerJob | 32 | 29 | 3 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpCloudSql | 148 | 43 | 99 | 6 | 0 | ✅ | — |
 | GcpCloudSqlDatabase | 6 | 4 | 2 | 0 | 0 | ✅ | ✅ pulumi, terraform |
@@ -185,6 +185,10 @@ gaps. **Proven** means live end-to-end runs passed on both IaC engines.
 | GcpOrgPolicy | 27 | 1 | 26 | 0 | 0 | ✅ | — |
 | GcpOrgPolicyCustomConstraint | 9 | 7 | 2 | 0 | 0 | ✅ | — |
 | GcpPlantonRunner | 0 | 0 | 0 | 0 | 0 | ✅ | — |
+| GcpPrivateCaCertificate | 59 | 54 | 3 | 2 | 0 | ✅ | — |
+| GcpPrivateCaCertificateAuthority | 67 | 62 | 3 | 2 | 0 | ✅ | — |
+| GcpPrivateCaCertificateTemplate | 49 | 45 | 2 | 2 | 0 | ✅ | — |
+| GcpPrivateCaPool | 57 | 51 | 4 | 2 | 0 | ✅ | — |
 | GcpProject | 14 | 5 | 5 | 4 | 0 | ✅ | — |
 | GcpProjectIamMember | 6 | 5 | 1 | 0 | 0 | ✅ | ✅ pulumi, terraform |
 | GcpPscServiceAttachment | 19 | 14 | 4 | 1 | 0 | ✅ | — |
@@ -247,10 +251,10 @@ All resources of `google@8.3.0` land in exactly one class:
 
 | Disposition | Resources | Meaning |
 |---|---|---|
-| Modeled | 259 | consumed by a kind's Terraform module today |
+| Modeled | 263 | consumed by a kind's Terraform module today |
 | IAM-covered | 416 | per-resource IAM member/binding/policy triplets, covered by the owning kinds' additive `iam_members` fields |
 | Composed | 6 | capability covered through an existing kind's surface rather than a kind of its own |
-| Planned | 36 | judged to be covered by a planned kind or planned composition, not built yet |
+| Planned | 32 | judged to be covered by a planned kind or planned composition, not built yet |
 | Deferred | 579 | deliberately not offered, each with the recorded reason |
 | Excluded as deprecated | 68 | deprecated or superseded provider surface |
 | **Total** | **1364** | |
@@ -260,7 +264,7 @@ All resources of `google@8.3.0` land in exactly one class:
 The full per-resource record, so the accounting above is verifiable
 rather than trusted.
 
-### Modeled (259)
+### Modeled (263)
 
 | Resource | Consuming kinds |
 |---|---|
@@ -467,10 +471,14 @@ rather than trusted.
 | `google_org_policy_custom_constraint` | consumed by GcpOrgPolicyCustomConstraint |
 | `google_org_policy_policy` | consumed by GcpOrgPolicy |
 | `google_organization_iam_member` | consumed by GcpServiceAccount |
+| `google_privateca_ca_pool` | consumed by GcpPrivateCaPool |
+| `google_privateca_certificate` | consumed by GcpPrivateCaCertificate |
+| `google_privateca_certificate_authority` | consumed by GcpPrivateCaCertificateAuthority |
+| `google_privateca_certificate_template` | consumed by GcpPrivateCaCertificateTemplate |
 | `google_project` | consumed by GcpProject |
 | `google_project_iam_custom_role` | consumed by GcpIamCustomRole |
 | `google_project_iam_member` | consumed by GcpProjectIamMember, GcpServiceAccount |
-| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryCapacityCommitment, GcpBigQueryConnection, GcpBigQueryDataset, GcpBigQueryReservation, GcpBigQueryReservationGroup, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpColabRuntime, GcpColabRuntimeTemplate, GcpColabSchedule, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDatastreamConnectionProfile, GcpDatastreamPrivateConnection, GcpDialogflowCxAgent, GcpDialogflowCxSecuritySettings, GcpDnsRecord, GcpDnsZone, GcpDocumentAiProcessor, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedKafkaCluster, GcpManagedKafkaConnectCluster, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpModelArmorFloorSetting, GcpModelArmorTemplate, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpTpuQueuedResource, GcpTpuVm, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
+| `google_project_service` | consumed by GcpAddress, GcpAlloydbCluster, GcpAlloydbInstance, GcpAlloydbUser, GcpApiKey, GcpArtifactRegistryRepo, GcpBackendBucket, GcpBackendService, GcpBigQueryCapacityCommitment, GcpBigQueryConnection, GcpBigQueryDataset, GcpBigQueryReservation, GcpBigQueryReservationGroup, GcpBigQueryTable, GcpBigtableInstance, GcpBigtableTable, GcpCertManagerCert, GcpCertManagerDnsAuthorization, GcpCertificateMap, GcpCloudArmorPolicy, GcpCloudComposerEnvironment, GcpCloudFunction, GcpCloudRun, GcpCloudRunDomainMapping, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpCloudSchedulerJob, GcpCloudSql, GcpCloudTasksQueue, GcpColabRuntime, GcpColabRuntimeTemplate, GcpColabSchedule, GcpComputeDisk, GcpComputeInstance, GcpComputeMig, GcpDataprocAutoscalingPolicy, GcpDataprocCluster, GcpDatastreamConnectionProfile, GcpDatastreamPrivateConnection, GcpDialogflowCxAgent, GcpDialogflowCxSecuritySettings, GcpDnsRecord, GcpDnsZone, GcpDocumentAiProcessor, GcpEventarcMessageBus, GcpEventarcTrigger, GcpFilestoreInstance, GcpFirebaseAndroidApp, GcpFirebaseAppleApp, GcpFirebaseProject, GcpFirebaseWebApp, GcpFirestoreBackupSchedule, GcpFirestoreDatabase, GcpFirestoreIndex, GcpGcsBucket, GcpGkeCluster, GcpGkeNodePool, GcpGlobalAddress, GcpGlobalForwardingRule, GcpHaVpnGateway, GcpHealthCheck, GcpIamOauthClient, GcpIdentityPlatformConfig, GcpIdentityPlatformTenant, GcpKmsKey, GcpKmsKeyRing, GcpLogBucket, GcpLogMetric, GcpLoggingSink, GcpManagedKafkaCluster, GcpManagedKafkaConnectCluster, GcpManagedSslCertificate, GcpMemorystoreInstance, GcpModelArmorFloorSetting, GcpModelArmorTemplate, GcpMonitoringAlertPolicy, GcpMonitoringDashboard, GcpMonitoringNotificationChannel, GcpMonitoringSlo, GcpMonitoringUptimeCheck, GcpNetworkFirewallPolicy, GcpPlantonRunner, GcpPrivateCaCertificateTemplate, GcpPrivateCaPool, GcpProject, GcpPubSubSchema, GcpPubSubSubscription, GcpPubSubTopic, GcpRedisCluster, GcpRedisInstance, GcpRegionNetworkEndpointGroup, GcpRouterNat, GcpSecretManagerSecret, GcpServerlessVpcConnector, GcpServiceConnectionPolicy, GcpServiceNetworkingConnection, GcpSpannerBackupSchedule, GcpSpannerDatabase, GcpSpannerInstance, GcpSslCertificate, GcpSslPolicy, GcpSubnetwork, GcpTargetHttpProxy, GcpTargetHttpsProxy, GcpTpuQueuedResource, GcpTpuVm, GcpUrlMap, GcpVectorSearchCollection, GcpVertexAiAgentEngine, GcpVertexAiDataset, GcpVertexAiEndpoint, GcpVertexAiFeatureGroup, GcpVertexAiFeatureOnlineStore, GcpVertexAiIndex, GcpVertexAiIndexEndpoint, GcpVertexAiModelGardenDeployment, GcpVertexAiNotebook, GcpVertexAiPersistentResource, GcpVertexAiRagEngineConfig, GcpVertexAiSearchDataConnector, GcpVertexAiSearchDataStore, GcpVertexAiSearchEngine, GcpVertexAiTensorboard, GcpVpcNetwork, GcpWorkflow |
 | `google_pubsub_schema` | consumed by GcpPubSubSchema |
 | `google_pubsub_subscription` | consumed by GcpPubSubSubscription |
 | `google_pubsub_topic` | consumed by GcpPubSubTopic |
@@ -480,9 +488,9 @@ rather than trusted.
 | `google_secret_manager_regional_secret` | consumed by GcpSecretManagerSecret |
 | `google_secret_manager_regional_secret_iam_member` | consumed by GcpSecretManagerSecret |
 | `google_secret_manager_regional_secret_version` | consumed by GcpSecretManagerSecret |
-| `google_secret_manager_secret` | consumed by GcpCloudRun, GcpCloudRunJob, GcpPlantonRunner, GcpSecretManagerSecret |
-| `google_secret_manager_secret_iam_member` | consumed by GcpCloudRun, GcpCloudRunJob, GcpPlantonRunner, GcpSecretManagerSecret |
-| `google_secret_manager_secret_version` | consumed by GcpCloudRun, GcpCloudRunJob, GcpPlantonRunner, GcpSecretManagerSecret |
+| `google_secret_manager_secret` | consumed by GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret |
+| `google_secret_manager_secret_iam_member` | consumed by GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret |
+| `google_secret_manager_secret_version` | consumed by GcpCloudRun, GcpCloudRunJob, GcpCloudRunWorkerPool, GcpPlantonRunner, GcpSecretManagerSecret |
 | `google_service_account` | consumed by GcpPlantonRunner, GcpServiceAccount |
 | `google_service_account_iam_member` | consumed by GcpGkeWorkloadIdentityBinding, GcpServiceAccountIamMember |
 | `google_service_account_key` | consumed by GcpServiceAccount |
@@ -956,7 +964,7 @@ rather than trusted.
 | `google_logging_project_exclusion` | GcpLoggingSink models sink exclusions inline (spec.exclusions); this standalone resource manages the same surface on the scope's console-managed _Default sink |
 | `google_project_iam_member_remove` | declarative member removal is inherent to the additive iam_members reconciliation on the IAM member kinds (GcpProjectIamMember); a dedicated removal escape hatch is redundant |
 
-### Planned (36)
+### Planned (32)
 
 | Resource | Recorded reason |
 |---|---|
@@ -983,10 +991,6 @@ rather than trusted.
 | `google_gke_hub_scope_rbac_role_binding` | planned composition into the planned GcpGkeFleetScope kind (RBAC role bindings) |
 | `google_kms_autokey_config` | planned GcpKmsAutokeyConfig kind (KMS Autokey configuration) |
 | `google_kms_key_handle` | planned GcpKmsKeyHandle kind (KMS Autokey key handles) |
-| `google_privateca_ca_pool` | planned GcpPrivateCaPool kind (Certificate Authority Service CA pools) |
-| `google_privateca_certificate` | planned composition into the planned GcpPrivateCaPool kind (issued certificates) |
-| `google_privateca_certificate_authority` | planned composition into the planned GcpPrivateCaPool kind (certificate authorities) |
-| `google_privateca_certificate_template` | planned composition into the planned GcpPrivateCaPool kind (certificate templates) |
 | `google_scc_v2_folder_mute_config` | planned GcpSccMuteConfig kind (Security Command Center mute configs at project, folder, or organization scope) |
 | `google_scc_v2_folder_notification_config` | planned GcpSccNotificationConfig kind (Security Command Center notification configs at project, folder, or organization scope) |
 | `google_scc_v2_folder_scc_big_query_export` | planned GcpSccBigQueryExport kind (Security Command Center BigQuery exports at project, folder, or organization scope) |

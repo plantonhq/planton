@@ -4423,6 +4423,60 @@ func TestStackOutputsConformance(t *testing.T) {
 			mustPopulate: []string{"name", "stream_id"},
 		},
 		{
+			// GcpPrivateCaPool: the full name (what authorities, certificates,
+			// and TLS consumers reference), the id, and the region.
+			name: "GcpPrivateCaPool",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaPool,
+			rawOutputs: map[string]interface{}{
+				"name":       "projects/p/locations/us-central1/caPools/internal-tls",
+				"ca_pool_id": "internal-tls",
+				"location":   "us-central1",
+			},
+			mustPopulate: []string{"name", "ca_pool_id", "location"},
+		},
+		{
+			// GcpPrivateCaCertificateAuthority: the full name (what
+			// subordinates and certificates reference), the id, the state, the
+			// CA certificate and its chain, and the published URLs.
+			name: "GcpPrivateCaCertificateAuthority",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateAuthority,
+			rawOutputs: map[string]interface{}{
+				"name":                      "projects/p/locations/us-central1/caPools/root-pool/certificateAuthorities/root-ca",
+				"certificate_authority_id":  "root-ca",
+				"state":                     "ENABLED",
+				"pem_ca_certificate":        "-----BEGIN CERTIFICATE-----\nroot\n-----END CERTIFICATE-----",
+				"pem_ca_certificates":       []interface{}{"-----BEGIN CERTIFICATE-----\nroot\n-----END CERTIFICATE-----"},
+				"ca_certificate_access_url": "https://storage.googleapis.com/privateca-content/ca.crt",
+				"crl_access_urls":           []interface{}{"https://storage.googleapis.com/privateca-content/crl.crl"},
+			},
+			mustPopulate: []string{"name", "certificate_authority_id", "state", "pem_ca_certificate", "pem_ca_certificates", "ca_certificate_access_url", "crl_access_urls"},
+		},
+		{
+			// GcpPrivateCaCertificateTemplate: the full name (what
+			// certificates reference) and the id.
+			name: "GcpPrivateCaCertificateTemplate",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateTemplate,
+			rawOutputs: map[string]interface{}{
+				"name":        "projects/p/locations/us-central1/certificateTemplates/tls-server",
+				"template_id": "tls-server",
+			},
+			mustPopulate: []string{"name", "template_id"},
+		},
+		{
+			// GcpPrivateCaCertificate: the full name, the id, the signed
+			// certificate and its chain, and the signing authority.
+			name: "GcpPrivateCaCertificate",
+			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificate,
+			rawOutputs: map[string]interface{}{
+				"name":                         "projects/p/locations/us-central1/caPools/internal-tls/certificates/api-server",
+				"certificate_id":               "api-server",
+				"pem_certificate":              "-----BEGIN CERTIFICATE-----\nleaf\n-----END CERTIFICATE-----",
+				"pem_certificate_chain":        []interface{}{"-----BEGIN CERTIFICATE-----\nroot\n-----END CERTIFICATE-----"},
+				"issuer_certificate_authority": "projects/p/locations/us-central1/caPools/internal-tls/certificateAuthorities/root-ca",
+			},
+			mustPopulate: []string{"name", "certificate_id", "pem_certificate", "pem_certificate_chain", "issuer_certificate_authority"},
+		},
+		{
 			// GcpVertexAiModelGardenDeployment: the endpoint path and numeric
 			// name in GcpVertexAiEndpoint's shape (the verifier keys on
 			// endpoint_id), the deployed model's id and display name, and the

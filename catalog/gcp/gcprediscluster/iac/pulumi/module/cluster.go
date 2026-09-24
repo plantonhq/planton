@@ -129,8 +129,8 @@ func cluster(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) err
 	if spec.ServerCaMode != "" {
 		args.ServerCaMode = pulumi.StringPtr(spec.ServerCaMode)
 	}
-	if spec.ServerCaPool != "" {
-		args.ServerCaPool = pulumi.StringPtr(spec.ServerCaPool)
+	if spec.ServerCaPool.GetValue() != "" {
+		args.ServerCaPool = pulumi.StringPtr(spec.ServerCaPool.GetValue())
 	}
 
 	if spec.KmsKey.GetValue() != "" {

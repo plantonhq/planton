@@ -1,0 +1,43 @@
+# Consumer-scoped GcpPrivateCaCertificateAuthority install profile for the
+# gcppcac chain: a self-signed root in the Enterprise pool that signs the
+# scenario's certificate. Deletion protection off, skip_grace_period, and
+# ignore_active_certificates_on_deletion let teardown delete it at once.
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificateAuthority
+metadata:
+  name: planton-oss-e2e-gcppcac-root
+  id: planton-oss-e2e-gcppcac-root
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: gcpprivatecacertificateauthority
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: planton-oss-e2e-gcppcac-pool
+      fieldPath: status.outputs.name
+  certificateAuthorityId: e2e-gcppcac-root-${E2E_RUN_ID}
+  config:
+    subjectConfig:
+      subject:
+        commonName: Planton E2E Certificate Root
+    x509Config:
+      caOptions:
+        isCa: true
+      keyUsage:
+        baseKeyUsage:
+          certSign: true
+          crlSign: true
+  keySpec:
+    algorithm: EC_P256_SHA256
+  lifetime: 2592000s
+  deletionProtection: false
+  skipGracePeriod: true
+  ignoreActiveCertificatesOnDeletion: true

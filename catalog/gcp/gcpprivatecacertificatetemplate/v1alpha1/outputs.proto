@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1;
+
+// GcpPrivateCaCertificateTemplateStackOutputs captures the template's identity -- what certificates
+// reference.
+message GcpPrivateCaCertificateTemplateStackOutputs {
+  // Full resource name --
+  // projects/{project}/locations/{location}/certificateTemplates/{template_id}.
+  string name = 1;
+
+  // The template's ID (the last segment of name).
+  string template_id = 2;
+}

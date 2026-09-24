@@ -529,8 +529,9 @@ type GcpCloudRunWorkerPoolContainer struct {
 	Command []string `protobuf:"bytes,3,rep,name=command,proto3" json:"command,omitempty"`
 	// Arguments to the entrypoint -- overrides the image's CMD.
 	Args []string `protobuf:"bytes,4,rep,name=args,proto3" json:"args,omitempty"`
-	// Environment variables. Each entry carries a literal value or a Secret
-	// Manager reference resolved at instance start.
+	// Environment variables. Each entry carries a literal value, a Secret
+	// Manager secret you already own, or a secret value this component keeps
+	// in Secret Manager for you.
 	Env []*GcpCloudRunWorkerPoolEnvVar `protobuf:"bytes,5,rep,name=env,proto3" json:"env,omitempty"`
 	// CPU and memory for this container. If omitted, Cloud Run defaults
 	// apply (1 CPU, 512Mi). CPU is always allocated on a worker pool.
@@ -666,19 +667,32 @@ func (x *GcpCloudRunWorkerPoolContainer) GetDependsOn() []string {
 	return nil
 }
 
-// GcpCloudRunWorkerPoolEnvVar is one environment variable: a literal value
-// or a Secret Manager reference, never both.
+// GcpCloudRunWorkerPoolEnvVar is one environment variable, given its value
+// one of three ways: a literal, a Secret Manager secret you already own, or a
+// secret value this component stores in Secret Manager for you. Only one.
 type GcpCloudRunWorkerPoolEnvVar struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Variable name, e.g. "QUEUE_SUBSCRIPTION". Must not start with a digit.
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// Literal value. Fine for configuration; never place credentials here --
-	// use value_from_secret so the material stays in Secret Manager.
+	// Literal value, written into the worker pool's revision template where
+	// anyone who can view the pool reads it, and every past revision keeps it.
+	// Fine for configuration; never a credential -- a credential goes in
+	// secret_value (or value_from_secret).
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
-	// Secret Manager reference resolved into the variable at instance start.
+	// A Secret Manager secret you already own, resolved into the variable at
+	// instance start. Rotation is Secret Manager's: with version "latest", new
+	// instances pick up a new version without a deploy.
 	ValueFromSecret *GcpCloudRunWorkerPoolSecretEnvSource `protobuf:"bytes,3,opt,name=value_from_secret,json=valueFromSecret,proto3" json:"value_from_secret,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	// A secret value this component keeps in Secret Manager for you. It
+	// creates one secret for this variable, replicated only in the pool's
+	// region, stores the value as a version, grants the pool's runtime
+	// identity secretAccessor on that secret alone, and points the variable at
+	// that exact version -- the revision carries a reference, never the value.
+	// A changed value adds a version and stamps a new revision, so rotation is
+	// a deploy; destroying the worker pool removes the secret.
+	SecretValue   string `protobuf:"bytes,4,opt,name=secret_value,json=secretValue,proto3" json:"secret_value,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GcpCloudRunWorkerPoolEnvVar) Reset() {
@@ -730,6 +744,13 @@ func (x *GcpCloudRunWorkerPoolEnvVar) GetValueFromSecret() *GcpCloudRunWorkerPoo
 		return x.ValueFromSecret
 	}
 	return nil
+}
+
+func (x *GcpCloudRunWorkerPoolEnvVar) GetSecretValue() string {
+	if x != nil {
+		return x.SecretValue
+	}
+	return ""
 }
 
 // GcpCloudRunWorkerPoolSecretEnvSource points an environment variable at a
@@ -2290,12 +2311,13 @@ const file_catalog_gcp_gcpcloudrunworkerpool_v1alpha1_spec_proto_rawDesc = "" +
 	"\x0eliveness_probe\x18\n" +
 	" \x01(\v2R.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolLivenessProbeR\rlivenessProbe\x120\n" +
 	"\n" +
-	"depends_on\x18\v \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\tdependsOn\"\x9b\x03\n" +
+	"depends_on\x18\v \x03(\tB\x11\xbaH\x0e\xd8\x01\x01\x92\x01\b\x18\x01\"\x04r\x02\x10\x01R\tdependsOn\"\xa5\x04\n" +
 	"\x1bGcpCloudRunWorkerPoolEnvVar\x128\n" +
-	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value\x12\x80\x01\n" +
-	"\x11value_from_secret\x18\x03 \x01(\v2T.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSecretEnvSourceR\x0fvalueFromSecret:\xa8\x01\xbaH\xa4\x01\x1a\xa1\x01\n" +
-	"\x14env.value_xor_secret\x12Uan environment variable takes a literal value or a Secret Manager reference, not both\x1a2!(this.value != '' && has(this.value_from_secret))\"\xd7\x01\n" +
+	"\x04name\x18\x01 \x01(\tB$\xbaH!\xc8\x01\x01r\x1c2\x1a^[A-Za-z_][A-Za-z0-9_.-]*$R\x04name\x12&\n" +
+	"\x05value\x18\x02 \x01(\tB\x10Ҧ\x1d\fsecret_valueR\x05value\x12\x80\x01\n" +
+	"\x11value_from_secret\x18\x03 \x01(\v2T.dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1.GcpCloudRunWorkerPoolSecretEnvSourceR\x0fvalueFromSecret\x12'\n" +
+	"\fsecret_value\x18\x04 \x01(\tB\x04\xa0\xa6\x1d\x01R\vsecretValue:\xf7\x01\xbaH\xf3\x01\x1a\xf0\x01\n" +
+	"\x14env.value_xor_secret\x12kan environment variable takes exactly one of a literal value, a Secret Manager reference, or a secret value\x1ak(this.value != '' ? 1 : 0) + (has(this.value_from_secret) ? 1 : 0) + (this.secret_value != '' ? 1 : 0) <= 1\"\xd7\x01\n" +
 	"$GcpCloudRunWorkerPoolSecretEnvSource\x12\x88\x01\n" +
 	"\x06secret\x18\x01 \x01(\tBp\xbaH\a\xc8\x01\x01r\x02\x10\x01\xaa\xa6\x1dbSecret Manager secret NAME/identifier only -- the secret material itself never appears in the specR\x06secret\x12$\n" +
 	"\aversion\x18\x02 \x01(\tB\n" +

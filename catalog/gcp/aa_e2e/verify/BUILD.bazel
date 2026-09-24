@@ -96,6 +96,7 @@ go_library(
         "org_policy.go",
         "org_policy_custom_constraint.go",
         "planton_runner.go",
+        "privateca.go",
         "project.go",
         "project_iam_member.go",
         "psc_service_attachment.go",

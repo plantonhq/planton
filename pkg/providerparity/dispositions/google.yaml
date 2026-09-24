@@ -1742,18 +1742,6 @@ resources:
   - resource: google_parameter_manager_regional_parameter_version
     disposition: deferred
     reason: "Parameter Manager judged as one parameter kind with versions composed and regional variants as a location flag (the Secret Manager pattern); deferred pending demand"
-  - resource: google_privateca_ca_pool
-    disposition: model-planned
-    reason: "planned GcpPrivateCaPool kind (Certificate Authority Service CA pools)"
-  - resource: google_privateca_certificate
-    disposition: model-planned
-    reason: "planned composition into the planned GcpPrivateCaPool kind (issued certificates)"
-  - resource: google_privateca_certificate_authority
-    disposition: model-planned
-    reason: "planned composition into the planned GcpPrivateCaPool kind (certificate authorities)"
-  - resource: google_privateca_certificate_template
-    disposition: model-planned
-    reason: "planned composition into the planned GcpPrivateCaPool kind (certificate templates)"
   - resource: google_privileged_access_manager_entitlement
     disposition: deferred
     reason: "judged to deserve a just-in-time privileged-access entitlement kind; deferred pending demand"

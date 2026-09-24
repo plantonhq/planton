@@ -23,7 +23,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 ### Optional Dependencies
 
 - **`GcpKmsKey`** -- a key in the cluster's region for CMEK (`kmsKey`); the Managed Kafka service agent needs `roles/cloudkms.cryptoKeyEncrypterDecrypter` on it.
-- **Certificate Authority Service CA pools** -- for mTLS (`tlsConfig.caPools`), named by their full resource names.
+- **Certificate Authority Service CA pools** (`GcpPrivateCaPool`) -- for mTLS (`tlsConfig.caPools`), each a reference or a full resource name.
 
 ## Deploy
 

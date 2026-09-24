@@ -1,0 +1,15 @@
+apiVersion: gcp.planton.dev/v1alpha1
+kind: GcpPrivateCaCertificate
+metadata:
+  name: partner-client
+spec:
+  location: us-central1
+  pool:
+    valueFrom:
+      kind: GcpPrivateCaPool
+      name: internal-servers
+  lifetime: 31536000s
+  pemCsr: |
+    -----BEGIN CERTIFICATE REQUEST-----
+    MIIBVDCB+wIBADAZMRcwFQYDVQQDDA5wYXJ0bmVyLWNsaWVudDBZMBMGByqGSM49
+    -----END CERTIFICATE REQUEST-----

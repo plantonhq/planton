@@ -578,6 +578,12 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| GcpDatastreamConnectionProfile | `spec.mysqlProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.postgresqlProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.oracleProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.sqlServerProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.mongodbProfile.secretManagerStoredPassword` | `status.outputs.latest_version_name` |
+| GcpDatastreamConnectionProfile | `spec.mongodbProfile.sslConfig.secretManagerStoredClientKey` | `status.outputs.latest_version_name` |
 | GcpVertexAiAgentEngine | `spec.spec.deploymentSpec.secretEnv[].secretRef.secret` | `status.outputs.secret_id` |
 
 ## See Also
