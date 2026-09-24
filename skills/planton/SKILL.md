@@ -235,8 +235,7 @@ the person's register as the work grows (`references/craft.personalization.md`).
    and `values.org` are always available -- users never define them.
 5. Wire dependencies with `valueFrom` references -- never paste literal
    IDs, never expose a param for a value another resource produces.
-   References cross chart boundaries
-   (`references/infra.dependencies.md`).
+   References cross chart boundaries (`references/infra.dependencies.md`).
 6. **Chart contains any `Kubernetes*` kind?** Read
    `references/infra.kubernetes-on-cluster.md` BEFORE writing those
    manifests -- the one decision is whether the cluster is IN this chart.
@@ -429,6 +428,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.dependencies.md` | Wiring resources together, in-chart and ACROSS charts; the references-before-params check; valueFrom or relationships |
 | `references/infra.config-references.md` | A field needs a credential or operator-managed config value; the `$var`/`$secret` grammar; which field a secret reference may go in (sensitive fields, and the secret home a viewer-readable field names) and why; looking up or creating secrets and variables |
 | `references/infra.kubernetes-on-cluster.md` | The chart has Kubernetes-kind resources; wiring workloads to a cluster |
+| `references/infra.diagrams.md` | How the platform draws what you author (account rooms, placement, lines, `metadata.group` trays); choosing a reference, `runs_on`, or a dedicated component with the picture in mind; predicting the picture |
 | `references/infra.environments.md` | The user mentions environments; how many clusters; cross-env connection authorization |
 | `references/infra.build-contract.md` | Parsing build output; exit codes; CI usage; endpoint pinning; the wire channel |
 | `references/infra.issue-catalog.md` | A build failed and you need the fix pattern for an error |

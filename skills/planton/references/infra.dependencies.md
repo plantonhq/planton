@@ -210,18 +210,22 @@ expression on both sides). Choosing between the two mechanisms:
 A relationship never substitutes for `valueFrom` when a spec field needs the
 actual value.
 
-## metadata.group — layout hint
+## metadata.group — the author's concern, drawn as a tray
 
-`metadata.group` (e.g. `network`, `compute`, `kubernetes`) groups resources
-in the UI and in build reports. It does not affect deploy order. The fleet
-uses consistent group names per concern — follow the same convention in new
-charts.
+`metadata.group` is a slash path naming a concern (`infrastructure/networking`,
+`platform/certificates`). It draws as a tray inside the room its members live
+in and never affects deploy order. The platform already draws accounts,
+networks, and clusters, so a group never restates them; a tray of one is not
+drawn. When to use it and how it composes: `diagrams.md`.
+
+Relationship types change the picture too: only `runs_on` can place a resource
+inside its target; the others draw a line (`diagrams.md`).
 
 ## Common wiring mistakes
 
 | Mistake | Fix |
 |---------|-----|
-| Hardcoded AWS account ID or VPC ID | valueFrom to the creating resource |
+| Hardcoded VPC ID, or any ID a resource in the boundary creates | valueFrom to the creating resource. An ID nothing in the boundary creates -- the AWS account, Google Cloud project, or Azure subscription a connection opens -- stays a literal or a param |
 | A param collecting another resource's output (`vpc_id`, `gateway_host`) | The references-before-params check above — wire it, in-chart or cross-chart |
 | Mismatched name between producer and consumer | Same template expression on both sides |
 | Wrong output leaf (`vpc_id` vs `vpcId`) | Schema report (fleet grep only when a fleet is in your boundary) |

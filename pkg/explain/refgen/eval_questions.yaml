@@ -641,3 +641,23 @@ questions:
         pattern: 'changing\s+the\s+Planton\s+secret\s+redeploys\s+nothing\s+by\s+itself'
       - catalog: _docs/reference-commons.md
         pattern: 'neither\s+falls\s+back\s+to\s+the\s+other'
+
+  - id: q26
+    class: grammar
+    question: >
+      A chart spans an AWS account, a Google Cloud project, and an Azure
+      subscription. Should the author set metadata.group to the cloud
+      each resource lives in, so the diagram groups them by account?
+    answer: >
+      No. The platform draws each resource inside the account of the
+      connection it deploys through, with nothing authored. metadata.group
+      is the author's concern as a slash path (infrastructure/networking,
+      platform/certificates), drawn as a tray inside the room its members
+      live in; it never affects deploy order, and a tray of one is not
+      drawn. Name the connection with the planton.dev/connection
+      annotation when a resource must land in a specific account.
+    checks:
+      - catalog: _docs/reference-commons.md
+        pattern: 'drawn as a tray inside the room its members live in'
+      - catalog: _docs/reference-commons.md
+        pattern: 'planton\.dev/connection'
