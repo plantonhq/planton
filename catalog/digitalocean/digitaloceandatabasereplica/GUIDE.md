@@ -36,4 +36,4 @@ Not automatic failover -- DigitalOcean offers manual console promotion, not mana
 
 ## What is deliberately NOT here
 
-Promote-to-primary (exists in DigitalOcean's API but is not bridged by the provider -- a recorded absence to re-evaluate), replica-level users/databases (the primary owns them), and replica-level firewall rules (trusted sources are governed at the cluster family level; whether the primary's rule set covers replica endpoints is a live-verification item).
+Promote-to-primary (exists in DigitalOcean's API but is not bridged by the provider -- a recorded absence to re-evaluate), replica-level users/databases (the primary owns them), and inline trusted-source rules (the replica's own rule set, which starts empty, is declared as a separate `DigitalOceanDatabaseFirewall` whose `cluster` references this replica -- see "The replica has its own firewall" above).

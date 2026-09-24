@@ -28,10 +28,10 @@ spec:
       evidence:
         type: spec_default
         reference: Setting vpc places the replica's private endpoint in the named VPC (private_host/private_uri); unset uses the target region's default VPC.
-      notes: A public endpoint always exists on DigitalOcean managed databases; restrict who can reach it with the cluster family's trusted-sources rules (see restricted-ingress). VPC placement is create-only.
+      notes: A public endpoint always exists on DigitalOcean managed databases; restrict who can reach it with the replica's own trusted-sources rules (see restricted-ingress). VPC placement is create-only.
     - control_id: restricted-ingress
       status: not_applicable
-      notes: The replica exposes no ingress-rule surface of its own; trusted sources are governed at the cluster family level (DigitalOceanDatabaseFirewall on the primary). Whether the primary's rule set covers replica endpoints is a recorded proof-lane verification item.
+      notes: Inbound restriction is the replica's OWN trusted-sources rule set, which DigitalOcean models as a separate resource -- a DigitalOceanDatabaseFirewall whose cluster references this replica (its replica_id output) targets it from outside this spec. The set starts empty and the primary's rules never reach it (measured live), so a replica with no firewall of its own stays reachable from anywhere with the primary's credentials.
     - control_id: edge-protection
       status: not_applicable
       notes: No HTTP edge; there is no request-filtering surface.
