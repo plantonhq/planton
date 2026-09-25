@@ -8,7 +8,7 @@ export is an unretouched image with a bounded camera transform.
 
 ```sh
 yarn export:overview --output=/tmp/planton-overview-review
-node scripts/check-overview-export.mjs /tmp/planton-overview-review
+node scripts/check-overview-export.mjs /tmp/planton-overview-review --silent
 ```
 
 Use `--stills` for an early composition review. The exporter writes 1080p and
@@ -30,3 +30,23 @@ The player uses native controls and no preload/autoplay. The HTML transcript and
 direct MP4 links remain usable without JavaScript. Analytics count the first
 play and first completion once per page view, including replays in that view;
 only the public video ID and version are recorded.
+
+## Narrated preview
+
+Eric is the selected ElevenLabs voice. The narration script lives in
+`src/data/homepage-video-story.json`; the same text drives the HTML transcript,
+voice generation, and English captions. Its windows fit the scene boundaries.
+
+```sh
+python3 scripts/create-overview-audio.py --key-file /path/to/private-key \
+  --output /tmp/planton-eric-review --picture-dir /tmp/planton-overview-review
+```
+
+The key is read into memory and sent only to ElevenLabs. Generated chapters are
+cached by voice, script, and settings, avoiding duplicate charges on reruns.
+Overlong chapters stop the process for editorial correction rather than being
+sped up or truncated. The original ambient score ducks under speech. The final
+mix is loudness-normalized and added to both picture masters without re-encoding
+their video streams. Copy the generated WebVTT file to `public/_site/videos/homepage-overview-en.vtt`.
+Run `check-overview-export.mjs` without `--silent` on the narrated deliverables. Review narration
+and pronunciation before publishing a new immutable CDN version.

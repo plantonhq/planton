@@ -1,27 +1,36 @@
-"""Local audio proof: macOS speech plus an original, low-level ambient score.
+"""ElevenLabs narration with an original, low-level ambient score.
 
-No service credentials or third-party music. This is deliberately an audio
-preview; review the synthetic voice before promoting a new CDN video version.
-The existing silent MP4 remains the authoritative picture master.
+Keep credentials and generated media outside Git. Cache each completed request
+so a timing correction never regenerates or bills unchanged chapters. The silent
+MP4 remains the picture master; this script does not publish anything.
 """
 import argparse
 import array
 import json
 import math
+import hashlib
 import os
 from pathlib import Path
 import subprocess
 import sys
 import wave
+import urllib.request
+import urllib.error
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--output', required=True)
-parser.add_argument('--voice', default='Samantha')
+parser.add_argument('--key-file', required=True)
+parser.add_argument('--voice-id', default='cjVigY5qzO86Huf0OWal', help='Eric, the selected narration voice')
+parser.add_argument('--picture-dir', help='Optional directory containing the silent 1080p and 720p masters')
 args = parser.parse_args()
 site = Path(__file__).resolve().parent.parent
 output = Path(args.output).resolve()
 output.mkdir(parents=True, exist_ok=True)
-chapters = json.loads((site / 'video/overview-narration.json').read_text())
+story = json.loads((site / 'src/data/homepage-video-story.json').read_text())
+chapters = [dict(start=c['voiceStart'], end=c['voiceEnd'], text=c['transcript']) for c in story]
+key = Path(args.key_file).expanduser().read_text().strip()
+if key.startswith('ELEVENLABS_API_KEY='):
+    key = key.split('=', 1)[1].strip().strip('\"\'')
 ffmpeg = next((site / 'node_modules/@remotion').glob('compositor-darwin-*/ffmpeg'))
 env = {**os.environ, 'DYLD_LIBRARY_PATH': str(ffmpeg.parent)}
 
@@ -40,18 +49,28 @@ for i, chapter in enumerate(chapters):
     script.write_text(chapter['text'])
     decoded = output / f'voice-{i+1}.wav'
     available = chapter['end'] - chapter['start']
-    # Adjust speaking rate, never cut a sentence or stretch the recorded voice.
-    speaking_rate = 156
-    for attempt in range(4):
-        run('/usr/bin/say', '--file-format=WAVE', '--data-format=LEI16@44100', '-v', args.voice, '-r', speaking_rate, '-f', script, '-o', decoded)
-        with wave.open(str(decoded)) as wav:
-            pcm = array.array('h', wav.readframes(wav.getnframes()))
-        duration = len(pcm) / rate
-        if duration <= available:
-            break
-        speaking_rate = math.ceil(speaking_rate * duration / available) + 2
+    request = {
+        'text': chapter['text'], 'model_id': 'eleven_multilingual_v2',
+        'voice_settings': {'stability': 0.5, 'similarity_boost': 0.75, 'style': 0.15, 'use_speaker_boost': True},
+        'seed': 42,
+    }
+    fingerprint = hashlib.sha256(json.dumps([args.voice_id, request], sort_keys=True).encode()).hexdigest()[:16]
+    encoded = output / f'voice-{i+1}-{fingerprint}.mp3'
+    if not encoded.exists():
+        url = f'https://api.elevenlabs.io/v1/text-to-speech/{args.voice_id}?output_format=mp3_44100_128'
+        req = urllib.request.Request(url, data=json.dumps(request).encode(), headers={'xi-api-key': key, 'Content-Type': 'application/json'}, method='POST')
+        try:
+            with urllib.request.urlopen(req, timeout=90) as response:
+                audio = response.read()
+            encoded.write_bytes(audio)
+        except urllib.error.HTTPError as error:
+            raise RuntimeError(f'ElevenLabs HTTP {error.code}: {error.read().decode().replace(key, "[redacted]")}') from None
+    run(ffmpeg, '-y', '-v', 'error', '-i', encoded, '-ar', rate, '-ac', 1, '-c:a', 'pcm_s16le', decoded)
+    with wave.open(str(decoded)) as wav:
+        pcm = array.array('h', wav.readframes(wav.getnframes()))
+    duration = len(pcm) / rate
     if duration > available:
-        raise RuntimeError(f'Chapter {i+1} overruns its scene')
+        raise RuntimeError(f'Chapter {i+1}: {duration:.2f}s exceeds {available:.2f}s. Revise the script; do not rush or truncate the voice.')
     peak = max(abs(n) for n in pcm) or 1
     gain = 0.63 / peak
     start = round(chapter['start'] * rate)
@@ -59,7 +78,7 @@ for i, chapter in enumerate(chapters):
         voice[start+j] = sample * gain
     end = chapter['start'] + duration
     subtitle.extend([str(i+1), f"{timestamp(chapter['start'])} --> {timestamp(end)}", chapter['text'], ''])
-    print(f'Chapter {i+1}: {duration:.2f}s / {available:.2f}s; {speaking_rate} words/minute', flush=True)
+    print(f'Chapter {i+1}: {duration:.2f}s / {available:.2f}s; Eric', flush=True)
 
 (output / 'overview-narration.vtt').write_text('\n'.join(subtitle))
 
@@ -104,3 +123,16 @@ for name, samples in [('overview-mix.wav',stereo),('overview-music.wav',music_on
         wav.setframerate(rate)
         wav.writeframes(samples.tobytes())
 print(f'Mix peak: {20*math.log10(peak):.1f} dBFS; 60 seconds, stereo. Original music with speech ducking.')
+
+if args.picture_dir:
+    # Normalize once so both sizes have identical narration and music. Copy the
+    # picture stream unchanged; audio revisions do not require a Remotion render.
+    mastered = output / 'overview-master.wav'
+    run(ffmpeg, '-y', '-v', 'error', '-i', output / 'overview-mix.wav',
+        '-af', 'loudnorm=I=-16:TP=-1.5:LRA=7', '-ar', rate, mastered)
+    for size in ('1080p', '720p'):
+        name = f'homepage-overview-{size}.mp4'
+        run(ffmpeg, '-y', '-v', 'error', '-i', Path(args.picture_dir) / name,
+            '-i', mastered, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy',
+            '-c:a', 'aac', '-b:a', '192k', '-t', 60, '-movflags', '+faststart', output / name)
+        print(f'Exported {name}', flush=True)

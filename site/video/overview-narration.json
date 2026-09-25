@@ -1,8 +1,0 @@
-[
-  {"start":0.5,"end":5.7,"text":"From repository to running service. Your infrastructure and delivery, together in your cloud."},
-  {"start":6.6,"end":16.5,"text":"Create the foundation once. Planton provisions the network, runtime, and database in dependency order. Your team gets an environment it can reuse."},
-  {"start":17.6,"end":28.5,"text":"Start with your application code, prepared by a developer or coding agent. A matching GitHub change triggers the pipeline. Planton builds an artifact and deploys to development."},
-  {"start":29.6,"end":39.5,"text":"Keep production under your control. The protected stage waits for human approval. Then, promote the same artifact with production configuration, and keep a deployment record."},
-  {"start":40.6,"end":52.4,"text":"Dogfooding, in practice. This is our real, self-hosted Planton instance on G K E, which we use to manage Planton SaaS. See the foundation and Kubernetes workloads in one architecture view."},
-  {"start":53.5,"end":59.5,"text":"Your team ships. Your cloud stays yours. See it with your stack. Book a demo."}
-]
