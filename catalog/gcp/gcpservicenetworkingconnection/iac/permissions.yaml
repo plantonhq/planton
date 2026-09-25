@@ -14,6 +14,7 @@ spec:
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
+          - serviceusage.services.list
         provenance: derived
         notes: Covers the module's two google_project_service resources enabling servicenetworking.googleapis.com (the producer-side control plane) and compute.googleapis.com (where the network and reserved ranges live). disable_on_destroy is false on both, so the disable permission is never needed.
       - purpose: ManageConnection

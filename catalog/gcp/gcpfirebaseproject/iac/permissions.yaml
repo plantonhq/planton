@@ -14,6 +14,7 @@ spec:
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
+          - serviceusage.services.list
         provenance: derived
         notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling firebase.googleapis.com and fcm.googleapis.com unconditionally, and firebasestorage.googleapis.com / firebaseappcheck.googleapis.com when the spec composes the default bucket / App Check. Both modules pin disable_on_destroy=false, so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted.
       - purpose: EnableFirebaseOnProject

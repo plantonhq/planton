@@ -34,6 +34,7 @@ spec:
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
+          - serviceusage.services.list
         provenance: derived
         notes: Covers google_project_service for every enabled_apis entry, plus the provider's own enablement of compute.googleapis.com when auto_create_network is false (the module default) -- the provider documents that it enables the Compute API on the new project to delete the default network. disable_on_destroy is false in the module, so the disable permission is never needed.
       - purpose: DeleteDefaultNetwork

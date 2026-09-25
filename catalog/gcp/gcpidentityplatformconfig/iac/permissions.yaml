@@ -14,6 +14,7 @@ spec:
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
+          - serviceusage.services.list
         provenance: derived
         notes: Covers google_project_service (Terraform) / projects.Service (Pulumi) enabling identitytoolkit.googleapis.com on the target project. The Terraform module pins disable_on_destroy=false and the Pulumi module leaves the field unset -- the provider's own reference states false OR UNSET leaves the service enabled on destroy (pinned 7.x line), so neither engine ever calls the disable path and serviceusage.services.disable is deliberately not granted.
       - purpose: ManageIdentityPlatformConfig

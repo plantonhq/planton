@@ -14,6 +14,7 @@ spec:
         permissions:
           - serviceusage.services.enable
           - serviceusage.services.get
+          - serviceusage.services.list
         provenance: derived
         notes: Covers google_project_service enabling logging.googleapis.com -- rendered only on the project-scope path (folder/org/billing sinks are not project resources, so the module creates no enablement there). disable_on_destroy is false, so the disable permission is never needed.
       - purpose: ManageSink

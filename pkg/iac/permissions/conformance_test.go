@@ -514,3 +514,42 @@ func specFieldExists(message protoreflect.MessageDescriptor, path string) error 
 	}
 	return nil
 }
+
+const (
+	serviceUsageEnable = "serviceusage.services.enable"
+	serviceUsageList   = "serviceusage.services.list"
+)
+
+// Google's provider enables an API (google_project_service) by first listing the services the
+// project already has enabled, and reads one back the same way on every refresh -- so a group that
+// grants the enable without the list is refused at the first deploy, before anything is created
+// ("Permission denied to list services for consumer container"). The structural gate above cannot
+// see an absent grant, so the pairing is pinned here for every GCP manifest.
+func TestApiEnablingGroupsDeclareServiceList(t *testing.T) {
+	root := repoRoot(t)
+	if _, err := os.Stat(filepath.Join(root, "catalog")); err != nil {
+		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
+	}
+	discovered, err := Discover(root)
+	if err != nil {
+		t.Fatalf("discovering permissions manifests: %v", err)
+	}
+	for _, component := range discovered["gcp"] {
+		manifest, err := Load(root, "gcp", component)
+		if err != nil {
+			t.Fatalf("%s permissions manifest: %v", component, err)
+		}
+		for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
+			enables, lists := false, false
+			for _, permission := range group.GetPermissions() {
+				enables = enables || permission == serviceUsageEnable
+				lists = lists || permission == serviceUsageList
+			}
+			if enables && !lists {
+				t.Errorf("%s group %q grants %s but no %s -- Google's provider lists the project's enabled services "+
+					"before it enables one, so a customer who grants exactly this manifest is refused at the first deploy",
+					component, group.GetPurpose(), serviceUsageEnable, serviceUsageList)
+			}
+		}
+	}
+}
