@@ -103,10 +103,13 @@ practice: it lands on the project's version history where the whole team
 reads it.
 
 What one invocation does, in order: builds the folder server-side (refusing
-on errors), updates the project (new version), starts the deployment
-pipeline, prints its id, and **follows the run to completion** — the exit
-code is non-zero when the followed pipeline fails. That single command is
-your save AND your monitor.
+on errors, before anything is saved), prints where each param's value came
+from, updates the project (new version), starts the deployment pipeline,
+prints its id, and **follows the run to completion** — the exit code is
+non-zero when the followed pipeline fails. That single command is your save
+AND your monitor. To show the user exactly what a save would apply first,
+run the same command with `--dry-run`: it prints every param and the
+rendered documents and creates nothing.
 
 When holding one long-running command open is unsuitable, split it:
 

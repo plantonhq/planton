@@ -177,7 +177,7 @@ planton explain --list
 # Build a chart from a local directory (renders and validates, reports issues)
 planton chart build ./my-chart
 
-# Build and print the combined rendered template to stdout
+# Build and print the rendered documents (the params applied) to stdout
 planton chart build ./my-chart --show
 
 # Machine-readable report for CI pipelines and agents (exit code 0 = valid,
@@ -188,17 +188,40 @@ planton chart build ./my-chart --output-format json
 # build (repeatable; the value is parsed as YAML, like values.yaml)
 planton chart build ./my-chart --set dns_enabled=true --set region=eu-west-1
 
+# Compile an environment's values file before installing it
+planton chart build ./my-chart -f values-prod.yaml --show
+
 # Publish a chart to the organization's chart registry
 planton chart publish ./my-chart
 
 # List all charts available for the organization
 planton chart list
 
+# See exactly what an install would apply, and create nothing
+planton chart install my-project ./my-chart -f values-prod.yaml --dry-run
+
 # Create an Infra Project from a chart (deploys immediately)
-planton chart install my-project ./my-chart -f values.yaml
+planton chart install my-project ./my-chart -f values-prod.yaml
 ```
 
 The `chart install` command is the primary entry point for deploying a chart. It creates an Infra Project with the provided parameter values and automatically triggers an Infra Pipeline.
+
+### How parameter values resolve
+
+A parameter's value in the chart's `values.yaml` is its default. An install or build changes parameters by name, in this order: the chart's `values.yaml`, then each `-f` file in the order given, then `--set-file name=path`, then `--set name=value`. Later sources win.
+
+A values file has the `values.yaml` shape and lists only the parameters it changes; every parameter it does not name keeps the chart's value:
+
+```yaml
+# values-prod.yaml
+params:
+  - name: env_name
+    value: prod
+  - name: replicas
+    value: 3
+```
+
+A name the chart does not declare is refused with the list of the chart's parameters, whether it comes from a file, `--set` or `--set-file`. Both commands print where each parameter's value came from and warn about any parameter that renders empty. `--dry-run` goes one step further: it prints every parameter and the rendered documents (to stdout, so `> render.yaml` captures them) and creates nothing. With `--output-format json`, it prints the machine report, including `params` (each value and its source) and `renderedYaml`.
 
 ## Related Documentation
 

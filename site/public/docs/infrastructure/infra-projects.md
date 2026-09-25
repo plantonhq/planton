@@ -75,6 +75,8 @@ Create a project from a chart with the CLI:
 planton chart install my-project ./my-chart -f values.yaml --org <org> --env <env> -m "why"
 ```
 
+A values file lists only the parameters it changes; every other parameter keeps the chart's value (see [how parameter values resolve](/docs/infrastructure/infra-charts)). Add `--dry-run` to see every parameter and the rendered documents first, without creating anything.
+
 Or from the web console's chart catalog by selecting a chart, picking the environment, filling in parameters, and deploying. The message becomes the run's own name, so a person reading the run later knows why it happened.
 
 ### Redeploy
