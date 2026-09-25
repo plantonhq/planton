@@ -1,11 +1,14 @@
 package tofumodule
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/pkg/errors"
+	"github.com/plantonhq/planton/pkg/failure"
 	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 	"github.com/plantonhq/planton/shared/iac/terraform"
@@ -65,13 +68,17 @@ func Init(
 	cmd.Env = append(cmd.Env, providerConfigEnvVars...)
 
 	cmd.Stdin = os.Stdin
-	cmd.Stderr = os.Stderr
+	var diagnostics bytes.Buffer
+	cmd.Stderr = io.MultiWriter(os.Stderr, &diagnostics)
 
 	// If a channel is provided, stream stdout line-by-line (see
 	// streamCommandJSONOutput for the read-before-Wait ordering that avoids a
-	// "file already closed" race).
+	// "file already closed" race). An init that fails before its JSON stream
+	// starts (a module it cannot parse, a provider it cannot fetch) says why
+	// only on stderr, so a failed init carries that text.
 	if jsonLogEventsChan != nil {
-		return streamCommandJSONOutput(binaryName, cmd, jsonLogEventsChan)
+		err := streamCommandJSONOutput(binaryName, cmd, jsonLogEventsChan)
+		return failure.Annotate(withStderr(err, diagnostics.String()), diagnostics.String())
 	}
 
 	// Otherwise stream stdout directly to the console.

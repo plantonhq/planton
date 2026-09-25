@@ -15,9 +15,9 @@ resource "kubernetes_deployment_v1" "this" {
     labels    = local.final_labels
   }
 
-  # Probe timing fields and replica counts echo back from the API server with
-  # defaulted values; without waiting disabled the provider would flag them as
-  # perpetual diffs when HPA takes over scaling.
+  # The apply waits for the rollout it starts, and fails when the new pods
+  # never become ready. An apply that changes nothing starts no rollout and
+  # does not wait, so it cannot notice a rollout an earlier apply left failing.
   wait_for_rollout = true
 
   spec {
