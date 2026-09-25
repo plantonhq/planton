@@ -2,6 +2,12 @@
 
 import type { DoorId } from '@/data/doors';
 import { sendGAEvent } from '@next/third-parties/google';
+import { OVERVIEW_VIDEO } from '@/data/homepage-video';
+
+/** Public content identity only; no playback URLs, timestamps, or visitor data. */
+export function trackOverviewVideo(event: 'overview_video_start' | 'overview_video_complete') {
+  sendGAEvent('event', event, { video_id: OVERVIEW_VIDEO.id, video_version: OVERVIEW_VIDEO.version });
+}
 
 export type DemoEvent =
   | 'demo_cta_click'

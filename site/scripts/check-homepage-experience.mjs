@@ -192,6 +192,9 @@ try {
   await page.$eval('[data-hero-phase] button[aria-label^="Pause"]', (e) => e.click());
   await page.screenshot({ path: path.join(output, 'hero-animated-1366.png') });
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+  // matchMedia change delivery is asynchronous; wait for the observable state
+  // rather than racing the React update immediately after CDP emulation.
+  await page.waitForFunction(() => Number(document.querySelector('[data-hero-time]').dataset.heroTime) === 20, { polling: 100 });
   check(
     'runtime reduced motion completes hero',
     await page.$eval('[data-hero-time]', (e) => Number(e.dataset.heroTime) === 20)

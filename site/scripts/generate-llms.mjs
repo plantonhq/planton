@@ -27,6 +27,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import matter from 'gray-matter';
 import { WORKFLOWS, WORKFLOW_COPY } from '../src/data/workflow-explainers.ts';
 import { HERO, PRODUCT_PROOF, CONTROL_COPY } from '../src/data/homepage-experience.ts';
+import { OVERVIEW_VIDEO, OVERVIEW_CHAPTERS } from '../src/data/homepage-video.ts';
 import { ARCHITECTURES } from '../src/data/architecture-stories.ts';
 
 const GENERATOR = 'llms generator';
@@ -145,6 +146,8 @@ function pageMarkdown(
     const h = homepage.HOMEPAGE;
     lines.push(`## ${h.headline.join(' ')}`, '', h.intro, '', h.caption, '');
     lines.push(HERO.description, '');
+    lines.push(`## ${OVERVIEW_VIDEO.label}`, '', OVERVIEW_VIDEO.description, '');
+    for (const chapter of OVERVIEW_CHAPTERS) lines.push(`### ${chapter.title}`, '', chapter.transcript, '');
     for (const q of h.proof.quotes)
       lines.push(`> ${q.quote}`, '', `${q.name}, ${q.role}, ${q.company}`, '');
     for (const key of ['overview', 'infrastructure', 'delivery', 'agents']) {
