@@ -26,10 +26,12 @@ const (
 )
 
 // verifyTofu runs the OpenTofu/Terraform contract checks: the input surface
-// (variables.tf against the kind's schema), the outputs contract, and — when
-// the toolchain is available — the engine's own validation.
+// (variables.tf against the kind's schema), every secret home the schema
+// declares being read, the outputs contract, and — when the toolchain is
+// available — the engine's own validation.
 func verifyTofu(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, in Input, result *Result) {
 	checkTofuVariables(kind, kindName, moduleDir, result)
+	checkSecretHomesTofu(declaredSecretHomes(kind), moduleDir, result)
 
 	overrideKind := checkOutputsOverride(kind, moduleDir, in.SampleOutputs, result)
 	if overrideKind == noOverride {

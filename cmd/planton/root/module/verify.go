@@ -30,6 +30,10 @@ What is checked:
   - Pulumi: the project file's go runtime, the entrypoint's typed
     stack-input contract, the Go module context, and — when go is on PATH —
     a real compile.
+  - Both engines: every secret home the kind declares (the field a secret
+    goes in instead of one every viewer reads, such as a Cloud Run env
+    entry's secret_value) is read by the module, so a secret an author puts
+    where the platform asks is never silently left out of the deployment.
 
 Every finding is reported with its deployment impact: errors fail
 deployments and fail this command; warnings are worth a look but do not.`,

@@ -21,12 +21,14 @@ const (
 )
 
 // verifyPulumi runs the Pulumi contract checks: the project file's declared
-// runtime, the entrypoint's shape, the Go module context, and — when the
-// toolchain is available — a real compile.
+// runtime, the entrypoint's shape, the Go module context, every secret home
+// the schema declares being read, and — when the toolchain is available — a
+// real compile.
 func verifyPulumi(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, in Input, result *Result) {
 	checkPulumiProjectFile(moduleDir, result)
 	checkPulumiEntrypoint(kindName, moduleDir, result)
 	checkEnclosingGoMod(moduleDir, result)
+	checkSecretHomesPulumi(declaredSecretHomes(kind), moduleDir, result)
 
 	// The outputs override machinery is engine-neutral: a pulumi module can
 	// carry the same output_transform.yaml / transform-outputs override.

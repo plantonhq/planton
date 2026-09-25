@@ -115,8 +115,10 @@ field required (see the generators package doc for the full contract).
   matching attribute (in the `optional()` style) so partial tfvars still apply. Diffing
   against `generate-variables` output is a quick way to spot a missing field.
 - `planton module verify --kind <Kind> --module-dir <dir>` checks any module's declared
-  input surface against the kind's schema, with severities tied to what actually breaks
-  a deployment.
+  input surface against the kind's schema, and that every secret home the kind declares
+  (`secret_home` on a field every viewer reads) is read by the module in both engines,
+  with severities tied to what actually breaks a deployment. Its fleet test proves every
+  official module reads its kind's secret homes.
 
 ## Worked example
 

@@ -156,6 +156,40 @@ func TestPermissionsConformance(t *testing.T) {
 	}
 }
 
+// imageDeployingGcpComponents deploy a container image their deploying identity must be able to
+// read: Google's Cloud Run deploy checks the deployer's own Artifact Registry access to the
+// image, separately from the service agent that pulls it when a revision starts.
+var imageDeployingGcpComponents = []string{"gcpcloudrun", "gcpcloudrunjob"}
+
+const artifactRegistryDownload = "artifactregistry.repositories.downloadArtifacts"
+
+// A customer who grants exactly what a manifest declares must be able to deploy with it. The
+// structural gate above cannot see an absent grant, so the one Google's deploy contract requires
+// of every image-deploying component is pinned here by name.
+func TestImageDeployingComponentsDeclareRegistryRead(t *testing.T) {
+	root := repoRoot(t)
+	if _, err := os.Stat(filepath.Join(root, "catalog")); err != nil {
+		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
+	}
+	for _, component := range imageDeployingGcpComponents {
+		manifest, err := Load(root, "gcp", component)
+		if err != nil {
+			t.Fatalf("%s permissions manifest: %v", component, err)
+		}
+		declared := false
+		for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
+			for _, permission := range group.GetPermissions() {
+				declared = declared || permission == artifactRegistryDownload
+			}
+		}
+		if !declared {
+			t.Errorf("%s deploys a container image but its manifest grants no %s -- a customer who grants "+
+				"exactly this manifest is refused at deploy when the image lives in Artifact Registry",
+				component, artifactRegistryDownload)
+		}
+	}
+}
+
 func checkProvenance(t *testing.T, where string, provenance permissionsv1.Provenance, notes string) {
 	t.Helper()
 	switch provenance {
@@ -372,9 +406,14 @@ func checkAuth0(t *testing.T, auth0 *permissionsv1.Auth0Permissions) {
 	}
 }
 
-// repoRoot walks up from this test file to the directory containing go.mod.
+// repoRoot walks up from this test file to the directory containing go.mod. Under Bazel the
+// catalog tree is not part of the test's inputs, so the repo-reading gates skip there (the same
+// posture as the sibling repo-reading gates) and run under go test and the catalog-data lane.
 func repoRoot(t *testing.T) string {
 	t.Helper()
+	if os.Getenv("TEST_WORKSPACE") != "" {
+		t.Skip("repo-reading test; skipped under Bazel")
+	}
 	_, thisFile, _, ok := runtime.Caller(0)
 	if !ok {
 		t.Fatal("runtime.Caller failed")

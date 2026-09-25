@@ -6,6 +6,7 @@ go_library(
         "moduleverify.go",
         "outputs.go",
         "pulumi.go",
+        "secrethome.go",
         "tofu.go",
         "toolchain.go",
     ],
@@ -18,18 +19,25 @@ go_library(
         "//pkg/iac/tofu/generators",
         "//pkg/outputs",
         "//shared/cloudresourcekind",
+        "//shared/options",
         "@com_github_hashicorp_hcl_v2//:hcl",
         "@com_github_hashicorp_hcl_v2//ext/typeexpr",
         "@com_github_hashicorp_hcl_v2//hclparse",
+        "@com_github_hashicorp_hcl_v2//hclsyntax",
         "@com_github_pkg_errors//:errors",
         "@com_github_zclconf_go_cty//cty",
         "@in_gopkg_yaml_v3//:yaml_v3",
+        "@org_golang_google_protobuf//proto",
+        "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )
 
 go_test(
     name = "moduleverify_test",
-    srcs = ["moduleverify_test.go"],
+    srcs = [
+        "moduleverify_test.go",
+        "secrethome_test.go",
+    ],
     embed = [":moduleverify"],
     deps = [
         "//pkg/crkreflect",

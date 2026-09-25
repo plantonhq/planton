@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "module",
@@ -21,4 +21,11 @@ go_library(
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/secretsmanager",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
     ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["secret_environment_test.go"],
+    embed = [":module"],
+    deps = ["//catalog/aws/awsecstaskdefinition/v1alpha1"],
 )
