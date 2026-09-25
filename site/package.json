@@ -21,7 +21,9 @@
     "generate:llms": "node --experimental-strip-types scripts/generate-llms.mjs",
     "capture": "node scripts/capture-pages.mjs",
     "check:workflows": "node --experimental-strip-types scripts/check-workflow-timeline.mjs && node scripts/check-workflows.mjs",
-    "export:workflow": "node scripts/export-workflow.mjs"
+    "export:workflow": "node scripts/export-workflow.mjs",
+    "export:overview": "node scripts/export-overview.mjs",
+    "check:overview-video": "node scripts/check-overview-video.mjs"
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",

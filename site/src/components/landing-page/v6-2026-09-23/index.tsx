@@ -2,6 +2,7 @@ import { HOMEPAGE as H } from '@/data/homepage';
 import { PRODUCT_PROOF as P, CONTROL_COPY as C } from '@/data/homepage-experience';
 import { HomepageAppearance } from '@/components/marketing/HomepageAppearance';
 import { HeroExperience } from '@/components/marketing/HeroExperience';
+import { OverviewVideo } from '@/components/marketing/OverviewVideo';
 import { ProductProof } from '@/components/marketing/ProductProof';
 import { ControlOwnership } from '@/components/marketing/ControlOwnership';
 import { DemoLink } from '@/components/marketing/DemoLink';
@@ -40,6 +41,7 @@ export function Homepage() {
             </div>
             <HeroExperience />
           </section>
+          <OverviewVideo />
           <section className={styles.proof} aria-labelledby="proof-title">
             <p className={styles.eyebrow}>{H.proof.eyebrow}</p>
             <h2 className={styles.heading} id="proof-title">
