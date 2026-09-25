@@ -173,6 +173,15 @@ func extractTargetSpecRegion(stackInputMap map[string]interface{}) string {
 	return region
 }
 
+// putIfSet adds key to env only when value is non-empty. An empty variable is not an unset one:
+// the runner appends these after its own environment and the last duplicate wins, so an empty
+// value would erase what the runner's machine holds (its ambient identity, in runner mode).
+func putIfSet(env map[string]string, key, value string) {
+	if value != "" {
+		env[key] = value
+	}
+}
+
 // loadProviderEnvVars loads the provider config YAML and returns environment variables based on the provider type.
 // AWS is intentionally absent here -- it is handled in GetEnvVarsWithOptions (region injection + STS exchange).
 func loadProviderEnvVars(providerConfigYaml []byte, provider cloudresourcekind.CloudResourceProvider, opts Options) (map[string]string, error) {

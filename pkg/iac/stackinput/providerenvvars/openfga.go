@@ -12,9 +12,8 @@ func loadOpenFgaEnvVars(providerConfigYaml []byte) (map[string]string, error) {
 		return nil, errors.Wrap(err, "failed to load OpenFGA provider config")
 	}
 
-	envVars := map[string]string{
-		"FGA_API_URL": config.ApiUrl,
-	}
+	envVars := map[string]string{}
+	putIfSet(envVars, "FGA_API_URL", config.ApiUrl)
 
 	// Optional fields - only set if they have values
 	if config.ApiToken != "" {
