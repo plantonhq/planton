@@ -39,6 +39,7 @@ export function OverviewVideoPlayer() {
       }}
       onError={() => setFailed(true)}
     >
+      <track kind="captions" src="/_site/videos/homepage-overview-en.vtt" srcLang="en" label="English" />
       <a href={source}>Watch the Planton overview video</a>
     </video>
     {failed && <p className={styles.error} role="alert">The video could not load. <a href={source}>Open the video directly</a>, or read the transcript below.</p>}

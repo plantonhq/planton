@@ -148,8 +148,6 @@ function pageMarkdown(
     lines.push(HERO.description, '');
     lines.push(`## ${OVERVIEW_VIDEO.label}`, '', OVERVIEW_VIDEO.description, '');
     for (const chapter of OVERVIEW_CHAPTERS) lines.push(`### ${chapter.title}`, '', chapter.transcript, '');
-    for (const q of h.proof.quotes)
-      lines.push(`> ${q.quote}`, '', `${q.name}, ${q.role}, ${q.company}`, '');
     for (const key of ['overview', 'infrastructure', 'delivery', 'agents']) {
       if (key === 'delivery') {
         lines.push(
@@ -198,6 +196,9 @@ function pageMarkdown(
     for (const step of CONTROL_COPY.steps) lines.push(`- **${step.title}.** ${step.text}`);
     for (const choice of CONTROL_COPY.choices) lines.push(`- **${choice.title}.** ${choice.text}`);
     lines.push('', CONTROL_COPY.note, '', CONTROL_COPY.adoption, '');
+    lines.push(`## ${h.proof.title}`, '');
+    for (const q of h.proof.quotes)
+      lines.push(`> ${q.quote}`, '', `${q.name}, ${q.role}, ${q.company}`, '');
     lines.push(`## ${h.faq.title}`, '');
     for (const q of h.faq.questions) lines.push(`### ${q.question}`, '', q.answer, '');
     lines.push(

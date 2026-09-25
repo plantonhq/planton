@@ -39,12 +39,19 @@ function Caption({ children, small }: { children: string; small?: string }) {
 }
 
 function Intro({ t }: { t: number }) {
-  return <><Connections kind="intro" t={t} windows={[[0.5, 3], [2, 5]]} />
-    <Card box={layout.intro[0]} title="Your Repository" detail="Application Source" icon="github" status="Your Code" fill={1} />
-    <Card box={layout.intro[1]} title="Planton" detail="Infrastructure + Delivery" icon="planton" status="Deploying" fill={progress(t, 0.7, 2)} active={t < 3} />
-    <Card box={layout.intro[2]} title="Running Service" detail="In Your Cloud" icon="KubernetesDeployment" status={t >= 4 ? 'Ready' : 'Preparing'} fill={progress(t, 2.5, 1.5)} active={t >= 2.5 && t < 4} />
-    <Caption small="One illustrative service, from its foundation to production.">A repeatable path for the whole team.</Caption>
+  return <><Connections kind="intro" t={t} windows={[[0.5, 3], [99, 100]]} />
+    <RoleContext left="DEVELOPER / CODE READY" right="PLATFORM TEAM / SETUP REQUESTS" />
+    <Card box={layout.intro[0]} title="Your Change" detail="Developer + Coding Agent" icon="github" status="Prepared" fill={1} />
+    <Card box={layout.intro[1]} title="Environment Request" detail="Setup + Access + Delivery" status="Waiting" active={t > 2} />
+    <Card box={layout.intro[2]} title="Running Service" detail="Needs Its Foundation" icon="KubernetesDeployment" status="Not Yet" />
+    <Caption small="Infrastructure expertise should become a path the whole team can use.">The change is ready. Its path to production is not.</Caption>
   </>;
+}
+
+/** Roles remain visible during technical steps, so the film explains ownership
+ * as well as execution. They are context labels, not deployment dependencies. */
+function RoleContext({ left, right }: { left: string; right: string }) {
+  return <g><text x={120} y={370} fill={blue} fontSize={25}>{left}</text><text x={1800} y={370} textAnchor="end" fill={muted} fontSize={25}>{right}</text></g>;
 }
 
 function Foundation({ t }: { t: number }) {
@@ -52,9 +59,10 @@ function Foundation({ t }: { t: number }) {
     <Card box={layout.foundation[0]} title="Private Network" detail="Cloud Foundation" icon="GcpVpcNetwork" status={t >= 2 ? 'Ready' : 'Creating'} fill={progress(t, 0, 2)} active={t < 2} />
     <Card box={layout.foundation[1]} title="Service Runtime" detail="Kubernetes Cluster" icon="GcpGkeCluster" status={t >= 6 ? 'Ready' : 'Preparing'} fill={progress(t, 2, 4)} active={t >= 2 && t < 6} />
     <Card box={layout.foundation[2]} title="Database" detail="Managed PostgreSQL" icon="GcpCloudSql" status={t >= 7 ? 'Ready' : 'Preparing'} fill={progress(t, 2, 5)} active={t >= 2 && t < 7} />
-    <text x={1310} y={478} fill={blue} fontSize={25} letterSpacing={2}>DEFINED BY YOUR TEAM</text>
+    <text x={1310} y={430} fill={blue} fontSize={28}>YOUR PLATFORM TEAM</text>
+    <text x={1310} y={478} fill={muted} fontSize={26}>Defines the reusable path.</text>
     <text x={1310} y={546} fill={text} fontSize={45}>Reusable</text><text x={1310} y={599} fill={text} fontSize={45}>Environments</text>
-    <text x={1310} y={665} fill={muted} fontSize={29}>Create resources in order.</text><text x={1310} y={711} fill={muted} fontSize={29}>Reuse the pattern.</text>
+    <text x={1310} y={665} fill={muted} fontSize={29}>Access + Delivery Workflows</text><text x={1310} y={711} fill={muted} fontSize={29}>Planton executes the setup.</text>
     <text x={120} y={939} fill={muted} fontSize={26}>Blue handoffs = deployment prerequisites · Illustrative architecture</text>
   </>;
 }
@@ -67,6 +75,7 @@ function Delivery({ t }: { t: number }) {
     { title: 'Development', detail: 'Development Config', icon: 'KubernetesDeployment', status: 'Deployed', start: 6.5, end: 9.5 },
   ];
   return <><Connections kind="delivery" t={t} windows={[[1, 3.5], [3, 6.5], [6, 9.5]]} />
+    <RoleContext left="DEVELOPERS / USE THE FOUNDATION" right="PLATFORM TEAM / OWNS THE DELIVERY PATH" />
     {specs.map((s, i) => <Card key={s.title} box={layout.delivery[i]} title={s.title} detail={s.detail} icon={s.icon} status={t >= s.end ? s.status : t >= s.start ? 'In Progress' : 'Waiting'} fill={progress(t, s.start, s.end - s.start)} active={t >= s.start && t < s.end} />)}
     <Caption small="Planton builds the artifact and deploys it with development configuration.">{t >= 6.5 ? 'One versioned artifact. Ready for the next stage.' : 'From a source change to a running development service.'}</Caption>
   </>;
@@ -75,6 +84,7 @@ function Delivery({ t }: { t: number }) {
 function Production({ t }: { t: number }) {
   const approved = t >= 4;
   return <><Connections kind="production" t={t} windows={[[0.5, 3], [4, 8]]} />
+    <RoleContext left="PLANTON / EXECUTES AND RECORDS" right="YOUR TEAM / OWNS REQUIRED APPROVALS" />
     <Card box={layout.production[0]} title="Development" detail="Artifact: Release 42" icon="KubernetesDeployment" status="Deployed" fill={1} />
     <Card box={layout.production[1]} title="Human Approval" detail="Protected Production Stage" status={approved ? 'Approved' : 'Waiting'} fill={approved ? 1 : 0} active={!approved} />
     <Card box={layout.production[2]} title="Production" detail="Same Artifact: Release 42" icon="KubernetesDeployment" status={t >= 8 ? 'Deployed' : approved ? 'Deploying' : 'Waiting'} fill={progress(t, 4, 4)} active={approved && t < 8} />
@@ -109,7 +119,8 @@ function Closing() {
   return <>
     <Icon name="planton" x={901} y={335} size={118} />
     {['aws', 'gcp', 'azure', 'cloudflare', 'digitalocean'].map((name, i) => <Icon key={name} name={name} x={635 + i * 140} y={518} size={90} />)}
-    <text x={960} y={735} textAnchor="middle" fill={text} fontSize={44}>See it with your stack.</text>
+    <text x={960} y={695} textAnchor="middle" fill={text} fontSize={38}>One team. One service. One reusable environment.</text>
+    <text x={960} y={750} textAnchor="middle" fill={muted} fontSize={30}>See it with your stack.</text>
     <rect x={712} y={791} width={496} height={92} rx={16} fill={blue} />
     <text x={960} y={851} textAnchor="middle" fill="#101722" fontSize={37} fontWeight={600}>Book a Demo →</text>
     <text x={960} y={946} textAnchor="middle" fill={muted} fontSize={31}>planton.ai</text>
@@ -131,7 +142,7 @@ export function HomepageOverview() {
       <text x={1830} y={80} textAnchor="end" fill={muted} fontSize={25}>{String(index + 1).padStart(2, '0')} / 06</text>
       <line x1={90} y1={119} x2={1830} y2={119} stroke="#30343b" />
       <g opacity={opacity}>
-        <text x={90} y={222} fill={text} fontSize={index === 2 ? 70 : 76} fontWeight={500} letterSpacing={-2}>{chapter.title}</text>
+        <text x={90} y={222} fill={text} fontSize={64} fontWeight={500} letterSpacing={-1.5}>{chapter.title}</text>
         <text x={90} y={286} fill={index === 4 || index === 5 ? blue : muted} fontSize={34}>{chapter.subtitle}</text>
         <FlowArrowMarkers id="overview" />
         {index === 0 && <Intro t={t} />}

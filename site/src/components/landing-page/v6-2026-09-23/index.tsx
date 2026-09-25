@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { HOMEPAGE as H } from '@/data/homepage';
 import { PRODUCT_PROOF as P, CONTROL_COPY as C } from '@/data/homepage-experience';
 import { HomepageAppearance } from '@/components/marketing/HomepageAppearance';
@@ -42,25 +43,6 @@ export function Homepage() {
             <HeroExperience />
           </section>
           <OverviewVideo />
-          <section className={styles.proof} aria-labelledby="proof-title">
-            <p className={styles.eyebrow}>{H.proof.eyebrow}</p>
-            <h2 className={styles.heading} id="proof-title">
-              {H.proof.title}
-            </h2>
-            <div className={styles.quotes}>
-              {H.proof.quotes.map((q) => (
-                <blockquote key={q.name}>
-                  <p>{q.quote}</p>
-                  <footer>
-                    <strong>{q.name}</strong>
-                    <span>
-                      {q.role} · {q.company}
-                    </span>
-                  </footer>
-                </blockquote>
-              ))}
-            </div>
-          </section>
           <section id="how-it-works" className={styles.overview} aria-labelledby="overview-title">
             <p className={styles.eyebrow}>{H.overview.eyebrow}</p>
             <div className={styles.overviewHeader}>
@@ -154,6 +136,28 @@ export function Homepage() {
             <div className={styles.actions}>
               <DemoLink location="controls" />
               <ExperienceLink door="hosted" location="controls" />
+            </div>
+          </section>
+          <section className={styles.proof} aria-labelledby="proof-title">
+            <p className={styles.eyebrow}>{H.proof.eyebrow}</p>
+            <h2 className={styles.heading} id="proof-title">
+              {H.proof.title}
+            </h2>
+            <div className={styles.quotes}>
+              {H.proof.quotes.map((q) => (
+                <blockquote key={q.name}>
+                  <p>{q.quote}</p>
+                  <footer>
+                    {q.avatar && <Image className={styles.quotePortrait} src={q.avatar} alt="" width={64} height={64} />}
+                    <div className={styles.quoteAttribution}>
+                      <strong>{q.name}</strong>
+                      <span>
+                        {q.role} · {q.company}
+                      </span>
+                    </div>
+                  </footer>
+                </blockquote>
+              ))}
             </div>
           </section>
           <section className={styles.faq} aria-labelledby="faq-title">

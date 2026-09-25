@@ -1,0 +1,62 @@
+[
+  {
+    "start": 0,
+    "end": 7,
+    "voiceStart": 0.6,
+    "voiceEnd": 6.7,
+    "label": "The Bottleneck",
+    "title": "Code moves faster. Delivery still takes coordination.",
+    "subtitle": "An environment. Access. A repeatable way to deploy.",
+    "transcript": "Your team can write code faster. Getting it into production still takes coordination."
+  },
+  {
+    "start": 7,
+    "end": 18,
+    "voiceStart": 7.5,
+    "voiceEnd": 17.7,
+    "label": "The Platform Team",
+    "title": "Your platform team creates the foundation once.",
+    "subtitle": "Reusable infrastructure, access, and delivery workflows.",
+    "transcript": "Your platform team defines reusable environments, access, and delivery workflows. Planton provisions the foundation in dependency order, ready for your developers to use."
+  },
+  {
+    "start": 18,
+    "end": 31,
+    "voiceStart": 18.5,
+    "voiceEnd": 30.7,
+    "label": "The Developer",
+    "title": "Developers use the foundation to ship.",
+    "subtitle": "Your code and coding agent. Your team’s configured delivery path.",
+    "transcript": "Developers and their coding agents use that foundation. A change in GitHub triggers the configured pipeline. Planton builds your code and deploys it to development in your cloud."
+  },
+  {
+    "start": 31,
+    "end": 41,
+    "voiceStart": 31.2,
+    "voiceEnd": 40.8,
+    "label": "Your Team’s Controls",
+    "title": "Routine work flows. Your team keeps control.",
+    "subtitle": "Required approvals stay with your team. Every deployment has a record.",
+    "transcript": "Routine work becomes repeatable. Where production requires approval, your team decides. Then Planton deploys the same artifact and records the result."
+  },
+  {
+    "start": 41,
+    "end": 53,
+    "voiceStart": 41.4,
+    "voiceEnd": 52.7,
+    "label": "The Real Product",
+    "title": "See what was created. Understand how it fits.",
+    "subtitle": "Dogfooding, in practice.",
+    "transcript": "Everyone can see the resources and how they fit together. This is our own self-hosted Planton on G K E, managing Planton SaaS. Dogfooding, in practice."
+  },
+  {
+    "start": 53,
+    "end": 60,
+    "voiceStart": 53.1,
+    "voiceEnd": 59.95,
+    "label": "Start With One Service",
+    "title": "A repeatable path to production.",
+    "subtitle": "In your cloud.",
+    "transcript": "Start with one team, one service, one reusable environment. See Planton with your stack. Book a demo."
+  }
+]

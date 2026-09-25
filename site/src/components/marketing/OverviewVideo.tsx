@@ -11,7 +11,7 @@ export function OverviewVideo() {
     </div>
     <OverviewVideoPlayer />
     <div className={styles.meta}>
-      <span>60 seconds · No sound needed</span>
+      <span>60 seconds · Narrated · English captions</span>
       <a href={`${video.base}/${video.id}-1080p.mp4`}>Open Full-HD Video <span aria-hidden="true">↗</span></a>
     </div>
     <details className={styles.transcript}>

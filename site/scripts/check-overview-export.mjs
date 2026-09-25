@@ -13,8 +13,15 @@ for (const [name, width, height] of [['1080p', 1920, 1080], ['720p', 1280, 720]]
   const result = spawnSync(ffprobe, ['-v', 'error', '-show_format', '-show_streams', '-of', 'json', filename], { cwd: path.dirname(ffprobe), encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
   const info = JSON.parse(result.stdout);
-  assert.equal(info.streams.length, 1, 'Silent video, with no audio track');
-  const stream = info.streams[0];
+  const silent = process.argv.includes('--silent');
+  assert.equal(info.streams.length, silent ? 1 : 2);
+  const stream = info.streams.find(s => s.codec_type === 'video');
+  if (!silent) {
+    const audio = info.streams.find(s => s.codec_type === 'audio');
+    assert.equal(audio.codec_name, 'aac');
+    assert.equal(audio.channels, 2);
+    assert.ok(Math.abs(Number(audio.duration) - video.duration) < 0.05);
+  }
   assert.equal(stream.codec_name, 'h264');
   assert.equal(stream.pix_fmt, 'yuv420p');
   assert.equal(stream.width, width);
@@ -30,5 +37,5 @@ for (const [name, width, height] of [['1080p', 1920, 1080], ['720p', 1280, 720]]
     offset += size;
   }
   assert.ok(atoms.indexOf('moov') >= 0 && atoms.indexOf('moov') < atoms.indexOf('mdat'), 'Fast-start metadata precedes media');
-  console.log(`PASS ${name}: ${width}×${height}, 30fps, 60s, silent H.264, fast-start, ${(bytes.length / 1048576).toFixed(2)} MiB`);
+  console.log(`PASS ${name}: ${width}×${height}, 30fps, 60s, H.264 ${silent ? 'picture master' : '+ stereo AAC'}, fast-start, ${(bytes.length / 1048576).toFixed(2)} MiB`);
 }

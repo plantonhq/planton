@@ -19,7 +19,7 @@ try {
   const browserExecutable = process.env.PUPPETEER_EXECUTABLE_PATH ?? puppeteer.executablePath();
   const common = { serveUrl, browserExecutable, chromeMode: 'chrome-for-testing' };
   const composition = await selectComposition({ ...common, id: video.id });
-  const samples = [3, 8, 12, 16, 20, 24, 28, 31, 35, 39, 41, 47, 52, 57];
+  const samples = [3, 8, 12, 16, 20, 24, 28, 32, 35, 39, 42, 47, 52, 57];
   for (const second of samples) {
     await renderStill({ ...common, composition, frame: second * video.fps, output: path.join(destination, `frame-${second}.png`) });
   }

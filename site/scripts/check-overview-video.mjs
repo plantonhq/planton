@@ -74,9 +74,9 @@ try {
     check(`${width}: native controls with no eager media`, state.preload === 'none' && state.controls && state.paused && !state.auto && !state.loop && state.ready === 0 && mediaRequests === 0);
     await page.screenshot({ path: path.join(captures, `overview-${width}.png`) });
   }
-  check('video is between hero and unchanged testimonials', await page.evaluate(() => {
+  check('video connects hero to product explanation', await page.evaluate(() => {
     const section = document.querySelector('#homepage-overview-video').closest('section');
-    return Boolean(section.previousElementSibling.querySelector('#homepage-title') && section.nextElementSibling.querySelector('#proof-title'));
+    return Boolean(section.previousElementSibling.querySelector('#homepage-title') && section.nextElementSibling.querySelector('#overview-title'));
   }));
   await page.click('section[aria-labelledby="overview-video-title"] summary');
   check('six transcript chapters are readable', await page.$$eval('section[aria-labelledby="overview-video-title"] details li', nodes => nodes.length === 6 && nodes.every(n => n.getBoundingClientRect().height > 0)));
@@ -85,6 +85,9 @@ try {
   check('reduced motion does not start the video', await page.$eval(selector, v => v.paused));
   await playByKeyboard();
   check('keyboard play fetches and decodes media', mediaRequests > 0 && await page.$eval(selector, v => v.videoWidth > 0));
+  await page.$eval(selector, v => { v.textTracks[0].mode = 'showing'; });
+  await page.waitForFunction(() => document.querySelector('#homepage-overview-video').textTracks[0].cues?.length === 6);
+  check('English captions are available', await page.$eval(selector, v => v.textTracks[0].language === 'en' && v.textTracks[0].cues[0].text.includes('coordination')));
   await page.keyboard.press('Space');
   check('keyboard pause works', await page.$eval(selector, v => v.paused));
   await page.$eval(selector, v => { v.currentTime = 42; });
