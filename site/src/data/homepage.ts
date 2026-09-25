@@ -126,8 +126,8 @@ export const HOMEPAGE = {
   },
   proof: {
     eyebrow: 'IN THEIR OWN WORDS',
-    title: 'Built for the people who ship.',
-    quotes: [testimonial('Sai Saketh'), testimonial('Rohit Reddy Gopu')],
+    title: 'One customer. Both sides of the workflow.',
+    quotes: [testimonial('Rakesh Kandhi'), testimonial('Balaji Borra')],
     chapter: 'proof-it-works' as ChapterId,
   },
   adoption: {
