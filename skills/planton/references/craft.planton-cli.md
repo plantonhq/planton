@@ -152,6 +152,19 @@ planton infra pipeline stream-status <id>   # status lines until terminal
 Streams block until the pipeline finishes — in a session, prefer polling
 `status` between other work over holding a stream open.
 
+## Reading a value in a script
+
+A lookup that finds nothing is an answer with its own exit code, and its
+sentence goes to stderr, so stdout carries only a value that exists:
+
+```
+v=$(planton variable get db-host -o plain)   # exit 0 found, 3 not found, 1 could not ask
+planton secret get db-password -o plain      # same contract; so do env get and planton get <Kind> <id>
+```
+
+Branch on 3 for "not declared" (create it, or fall back) and treat 1 as a
+failure to reach or ask the instance -- never parse the banner's words.
+
 ## On a self-hosted instance
 
 `planton instance show` reads `deployment_kind: self_hosted`; the same CLI

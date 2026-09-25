@@ -50,6 +50,8 @@ planton secret describe db-password    # includes the remote identity
 planton secret get db-password -o plain
 ```
 
+In a script, `planton secret get <slug> -o plain` prints the value and exits 0, or prints nothing on stdout and exits 3 when no such secret exists (the reason goes to stderr). Exit 1 means the instance could not be asked.
+
 ## Referencing Secrets
 
 Anything on the platform that consumes configuration accepts the `$secret/` reference grammar:

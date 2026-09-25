@@ -28,7 +28,7 @@ planton secret snippet db-password --target eso -o plain > external-secret.yaml
 
 - **Planton manifest reference** — the `$secret/...` reference for service and infrastructure manifests, resolved just-in-time on the Runner at deployment.
 - **Connection field reference** — the typed reference for connection credential fields (organization-scoped secrets).
-- **CLI one-liner** — `planton secret get <slug> -o plain` for scripts and local shells.
+- **CLI one-liner** — `planton secret get <slug> -o plain` for scripts and local shells. It exits 3 with an empty stdout when the secret does not exist, and 1 when the instance could not be asked.
 
 ## Straight From Your Store
 
