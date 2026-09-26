@@ -259,9 +259,12 @@ func (*KubernetesSecretSpec_ServiceAccountToken) isKubernetesSecretSpec_SecretDa
 type KubernetesSecretOpaqueData struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Key-value pairs of secret data.
-	// Values are plain strings (Kubernetes stringData semantics); Kubernetes stores them
-	// base64-encoded at rest. Use `binary_data` for values that are not valid UTF-8.
+	// Key-value pairs of secret data. Each value is a secret field: on Planton it takes only a
+	// reference to a managed secret (`$secret/<slug>`, or `$secret/<slug>/<key>` for one key of a
+	// key-value secret), which the runner resolves at deploy, so the secret itself is never stored
+	// with the resource; a deploy without the platform takes the literal. The resolved values are
+	// plain strings (Kubernetes stringData semantics), which Kubernetes stores base64-encoded at
+	// rest. Use `binary_data` for values that are not valid UTF-8.
 	Data map[string]string `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// *
 	// Binary secret entries with base64-encoded values — the exact wire form the Kubernetes
@@ -269,13 +272,11 @@ type KubernetesSecretOpaqueData struct {
 	// (keystores, certificates in binary form, serialized blobs). Keys must not overlap with
 	// `data` keys: both maps merge into the same underlying Secret data.
 	//
-	// A value may also be a downstream platform's secret or variable reference token
-	// (`$secret/...`, `$var/...`) in place of the literal: the platform resolves the token to
-	// the stored value before the module runs, and the stored value is then the base64 the
-	// module writes. Without this arm a private key or a CA bundle held in the platform's
-	// secret store could never reach this field, because a reference is the only form a
-	// secret is ever allowed to take in a manifest. The literal arm keeps refusing malformed
-	// base64 before any apply.
+	// Each value is a secret field: on Planton it takes only a reference to a managed secret
+	// (`$secret/...`) in place of the literal, which the runner resolves to the stored value
+	// before the module runs, and the stored value is then the base64 the module writes. A deploy
+	// without the platform takes the literal, and the literal arm keeps refusing malformed base64
+	// before any apply.
 	BinaryData    map[string]string `protobuf:"bytes,2,rep,name=binary_data,json=binaryData,proto3" json:"binary_data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -336,8 +337,9 @@ type KubernetesSecretTlsData struct {
 	// Stored as the "tls.crt" key in the Kubernetes Secret.
 	TlsCrt string `protobuf:"bytes,1,opt,name=tls_crt,json=tlsCrt,proto3" json:"tls_crt,omitempty"`
 	// *
-	// PEM-encoded TLS private key.
-	// Stored as the "tls.key" key in the Kubernetes Secret.
+	// PEM-encoded TLS private key, and a secret field: on Planton only a `$secret/<slug>`
+	// reference to the managed secret that holds it (a deploy without the platform takes the
+	// literal). Stored as the "tls.key" key in the Kubernetes Secret.
 	TlsKey        string `protobuf:"bytes,2,opt,name=tls_key,json=tlsKey,proto3" json:"tls_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -481,8 +483,9 @@ type KubernetesSecretBasicAuthData struct {
 	// Stored as the "username" key in the Kubernetes Secret.
 	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
 	// *
-	// Password for basic authentication.
-	// Stored as the "password" key in the Kubernetes Secret.
+	// Password for basic authentication, and a secret field: on Planton only a `$secret/<slug>`
+	// reference to the managed secret that holds it (a deploy without the platform takes the
+	// literal). Stored as the "password" key in the Kubernetes Secret.
 	Password      string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -538,8 +541,9 @@ func (x *KubernetesSecretBasicAuthData) GetPassword() string {
 type KubernetesSecretSshAuthData struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// PEM-encoded SSH private key.
-	// Stored as the "ssh-privatekey" key in the Kubernetes Secret.
+	// PEM-encoded SSH private key, and a secret field: on Planton only a `$secret/<slug>`
+	// reference to the managed secret that holds it (a deploy without the platform takes the
+	// literal). Stored as the "ssh-privatekey" key in the Kubernetes Secret.
 	SshPrivateKey string `protobuf:"bytes,1,opt,name=ssh_private_key,json=sshPrivateKey,proto3" json:"ssh_private_key,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -666,10 +670,10 @@ const file_catalog_kubernetes_kubernetessecret_v1alpha1_spec_proto_rawDesc = "" 
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\xb3\x02\xbaH\xaf\x02\x1a\xac\x02\n" +
 	"\x14secret_data_required\x12\x7fExactly one secret data type must be provided (opaque, tls, docker_config_json, basic_auth, ssh_auth, or service_account_token)\x1a\x92\x01has(this.opaque) || has(this.tls) || has(this.docker_config_json) || has(this.basic_auth) || has(this.ssh_auth) || has(this.service_account_token)B\r\n" +
-	"\vsecret_data\"\x84\x06\n" +
-	"\x1aKubernetesSecretOpaqueData\x12j\n" +
-	"\x04data\x18\x01 \x03(\v2V.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.DataEntryR\x04data\x12\xfd\x01\n" +
-	"\vbinary_data\x18\x02 \x03(\v2\\.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.BinaryDataEntryB~\xbaH{\x9a\x01x\"\x18r\x16\x18\xfd\x012\x11^[-._a-zA-Z0-9]+$*\\rZ2X^(?:\\$(?:secret|var)/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$R\n" +
+	"\vsecret_data\"\x86\x06\n" +
+	"\x1aKubernetesSecretOpaqueData\x12p\n" +
+	"\x04data\x18\x01 \x03(\v2V.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.DataEntryB\x04\xa0\xa6\x1d\x01R\x04data\x12\xf9\x01\n" +
+	"\vbinary_data\x18\x02 \x03(\v2\\.dev.planton.kubernetes.kubernetessecret.v1alpha1.KubernetesSecretOpaqueData.BinaryDataEntryBz\xbaHs\x9a\x01p\"\x18r\x16\x18\xfd\x012\x11^[-._a-zA-Z0-9]+$*TrR2P^(?:\\$secret/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$\xa0\xa6\x1d\x01R\n" +
 	"binaryData\x1a7\n" +
 	"\tDataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -678,20 +682,20 @@ const file_catalog_kubernetes_kubernetessecret_v1alpha1_spec_proto_rawDesc = "" 
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01:\x81\x02\xbaH\xfd\x01\x1a\x82\x01\n" +
 	"\x14opaque_data_required\x125at least one entry is required in data or binary_data\x1a3this.data.size() > 0 || this.binary_data.size() > 0\x1av\n" +
-	"\x14data_keys_no_overlap\x122data and binary_data must not contain the same key\x1a*this.data.all(k, !(k in this.binary_data))\"]\n" +
+	"\x14data_keys_no_overlap\x122data and binary_data must not contain the same key\x1a*this.data.all(k, !(k in this.binary_data))\"a\n" +
 	"\x17KubernetesSecretTlsData\x12 \n" +
-	"\atls_crt\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06tlsCrt\x12 \n" +
-	"\atls_key\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06tlsKey\"\xbc\x01\n" +
+	"\atls_crt\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06tlsCrt\x12$\n" +
+	"\atls_key\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\x06tlsKey\"\xbc\x01\n" +
 	"$KubernetesSecretDockerConfigJsonData\x120\n" +
 	"\x0fregistry_server\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x0eregistryServer\x12#\n" +
 	"\busername\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12'\n" +
 	"\bpassword\x18\x03 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\bpassword\x12\x14\n" +
-	"\x05email\x18\x04 \x01(\tR\x05email\"i\n" +
+	"\x05email\x18\x04 \x01(\tR\x05email\"m\n" +
 	"\x1dKubernetesSecretBasicAuthData\x12#\n" +
-	"\busername\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12#\n" +
-	"\bpassword\x18\x02 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\bpassword\"N\n" +
-	"\x1bKubernetesSecretSshAuthData\x12/\n" +
-	"\x0fssh_private_key\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\rsshPrivateKey\"\xa9\x01\n" +
+	"\busername\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\busername\x12'\n" +
+	"\bpassword\x18\x02 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\bpassword\"R\n" +
+	"\x1bKubernetesSecretSshAuthData\x123\n" +
+	"\x0fssh_private_key\x18\x01 \x01(\tB\v\xbaH\x04r\x02\x10\x01\xa0\xa6\x1d\x01R\rsshPrivateKey\"\xa9\x01\n" +
 	"'KubernetesSecretServiceAccountTokenData\x12~\n" +
 	"\x14service_account_name\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xab\x1f\x92\xd4a\tspec.nameR\x12serviceAccountNameB\x8a\x03\n" +
 	"4com.dev.planton.kubernetes.kubernetessecret.v1alpha1B\tSpecProtoP\x01Zbgithub.com/plantonhq/planton/catalog/kubernetes/kubernetessecret/v1alpha1;kubernetessecretv1alpha1\xa2\x02\x04DPKK\xaa\x020Dev.Planton.Kubernetes.Kubernetessecret.V1alpha1\xca\x020Dev\\Planton\\Kubernetes\\Kubernetessecret\\V1alpha1\xe2\x02<Dev\\Planton\\Kubernetes\\Kubernetessecret\\V1alpha1\\GPBMetadata\xea\x024Dev::Planton::Kubernetes::Kubernetessecret::V1alpha1b\x06proto3"

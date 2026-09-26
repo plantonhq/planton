@@ -105,11 +105,14 @@ message KubernetesSecretSpec {
  */
 message KubernetesSecretOpaqueData {
   /**
-   * Key-value pairs of secret data.
-   * Values are plain strings (Kubernetes stringData semantics); Kubernetes stores them
-   * base64-encoded at rest. Use `binary_data` for values that are not valid UTF-8.
+   * Key-value pairs of secret data. Each value is a secret field: on Planton it takes only a
+   * reference to a managed secret (`$secret/<slug>`, or `$secret/<slug>/<key>` for one key of a
+   * key-value secret), which the runner resolves at deploy, so the secret itself is never stored
+   * with the resource; a deploy without the platform takes the literal. The resolved values are
+   * plain strings (Kubernetes stringData semantics), which Kubernetes stores base64-encoded at
+   * rest. Use `binary_data` for values that are not valid UTF-8.
    */
-  map<string, string> data = 1;
+  map<string, string> data = 1 [(dev.planton.shared.options.sensitive) = true];
 
   /**
    * Binary secret entries with base64-encoded values — the exact wire form the Kubernetes
@@ -117,18 +120,17 @@ message KubernetesSecretOpaqueData {
    * (keystores, certificates in binary form, serialized blobs). Keys must not overlap with
    * `data` keys: both maps merge into the same underlying Secret data.
    *
-   * A value may also be a downstream platform's secret or variable reference token
-   * (`$secret/...`, `$var/...`) in place of the literal: the platform resolves the token to
-   * the stored value before the module runs, and the stored value is then the base64 the
-   * module writes. Without this arm a private key or a CA bundle held in the platform's
-   * secret store could never reach this field, because a reference is the only form a
-   * secret is ever allowed to take in a manifest. The literal arm keeps refusing malformed
-   * base64 before any apply.
+   * Each value is a secret field: on Planton it takes only a reference to a managed secret
+   * (`$secret/...`) in place of the literal, which the runner resolves to the stored value
+   * before the module runs, and the stored value is then the base64 the module writes. A deploy
+   * without the platform takes the literal, and the literal arm keeps refusing malformed base64
+   * before any apply.
    */
   map<string, string> binary_data = 2 [
     (buf.validate.field).map.keys.string.max_len = 253,
     (buf.validate.field).map.keys.string.pattern = "^[-._a-zA-Z0-9]+$",
-    (buf.validate.field).map.values.string.pattern = "^(?:\\$(?:secret|var)/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$"
+    (buf.validate.field).map.values.string.pattern = "^(?:\\$secret/.+|(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)$",
+    (dev.planton.shared.options.sensitive) = true
   ];
 
   // An Opaque secret with no entries at all stores nothing.
@@ -159,10 +161,14 @@ message KubernetesSecretTlsData {
   string tls_crt = 1 [(buf.validate.field).string.min_len = 1];
 
   /**
-   * PEM-encoded TLS private key.
-   * Stored as the "tls.key" key in the Kubernetes Secret.
+   * PEM-encoded TLS private key, and a secret field: on Planton only a `$secret/<slug>`
+   * reference to the managed secret that holds it (a deploy without the platform takes the
+   * literal). Stored as the "tls.key" key in the Kubernetes Secret.
    */
-  string tls_key = 2 [(buf.validate.field).string.min_len = 1];
+  string tls_key = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive) = true
+  ];
 }
 
 /**
@@ -211,10 +217,14 @@ message KubernetesSecretBasicAuthData {
   string username = 1 [(buf.validate.field).string.min_len = 1];
 
   /**
-   * Password for basic authentication.
-   * Stored as the "password" key in the Kubernetes Secret.
+   * Password for basic authentication, and a secret field: on Planton only a `$secret/<slug>`
+   * reference to the managed secret that holds it (a deploy without the platform takes the
+   * literal). Stored as the "password" key in the Kubernetes Secret.
    */
-  string password = 2 [(buf.validate.field).string.min_len = 1];
+  string password = 2 [
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive) = true
+  ];
 }
 
 /**
@@ -223,10 +233,14 @@ message KubernetesSecretBasicAuthData {
  */
 message KubernetesSecretSshAuthData {
   /**
-   * PEM-encoded SSH private key.
-   * Stored as the "ssh-privatekey" key in the Kubernetes Secret.
+   * PEM-encoded SSH private key, and a secret field: on Planton only a `$secret/<slug>`
+   * reference to the managed secret that holds it (a deploy without the platform takes the
+   * literal). Stored as the "ssh-privatekey" key in the Kubernetes Secret.
    */
-  string ssh_private_key = 1 [(buf.validate.field).string.min_len = 1];
+  string ssh_private_key = 1 [
+    (buf.validate.field).string.min_len = 1,
+    (dev.planton.shared.options.sensitive) = true
+  ];
 }
 
 /**

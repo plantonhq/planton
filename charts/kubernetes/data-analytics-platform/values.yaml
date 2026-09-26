@@ -95,11 +95,14 @@ params:
     description: >
       Password for the cache's "default" ACL user — authentication is ON
       by default because an open cache is readable and writable by
-      anything that reaches its Service. MUST BE CHANGED — the default
-      exists only so a fresh render validates. The platform materializes
-      it into the cache's auth Secret; Superset reads it from there by
+      anything that reaches its Service. The platform materializes it
+      into the cache's auth Secret; Superset reads it from there by
       reference.
-    value: change-me
+      On Planton the value is a reference to a managed secret, resolved at deploy
+      so the password is never stored with the project: create it with
+      `planton secret set data-analytics-platform-valkey-password --string` (or name an environment's own as
+      `$secret/@<env>/<slug>`). A deploy without the platform takes the literal.
+    value: $secret/data-analytics-platform-valkey-password
 
   - name: valkey_max_memory
     description: >

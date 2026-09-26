@@ -8,6 +8,7 @@ package auth0actionv1alpha1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -105,7 +106,7 @@ type Auth0ActionSpec struct {
 	//
 	//	secrets:
 	//	  - name: SLACK_WEBHOOK_URL
-	//	    value: "https://hooks.slack.com/services/T00/B00/xxx"
+	//	    value: $secret/slack-webhook-url
 	//
 	// https://auth0.com/docs/customize/actions/write-your-first-action#add-a-secret
 	Secrets []*Auth0ActionSecret `protobuf:"bytes,6,rep,name=secrets,proto3" json:"secrets,omitempty"`
@@ -353,8 +354,11 @@ type Auth0ActionSecret struct {
 	// Must be unique within the action. Convention: UPPER_SNAKE_CASE.
 	// Example: "SLACK_WEBHOOK_URL", "API_KEY"
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// value is the secret content. Encrypted at rest, never returned by the API.
-	// Example: "sk-abc123...", "https://hooks.slack.com/services/T00/B00/xxx"
+	// value is the secret content, and a secret field: on Planton it takes only a reference to a
+	// managed secret (`$secret/<slug>`), which the runner resolves at deploy, so the secret is
+	// never stored with the resource; a deploy without the platform takes the literal. Auth0
+	// encrypts it at rest and never returns it from its API.
+	// Example: "$secret/slack-webhook-url"
 	Value         string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -458,7 +462,7 @@ var File_catalog_auth0_auth0action_v1alpha1_spec_proto protoreflect.FileDescript
 
 const file_catalog_auth0_auth0action_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/auth0/auth0action/v1alpha1/spec.proto\x12&dev.planton.auth0.auth0action.v1alpha1\x1a\x1bbuf/validate/validate.proto\"\xee\x05\n" +
+	"-catalog/auth0/auth0action/v1alpha1/spec.proto\x12&dev.planton.auth0.auth0action.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cshared/options/options.proto\"\xee\x05\n" +
 	"\x0fAuth0ActionSpec\x12x\n" +
 	"\x11supported_trigger\x18\x01 \x01(\v2C.dev.planton.auth0.auth0action.v1alpha1.Auth0ActionSupportedTriggerB\x06\xbaH\x03\xc8\x01\x01R\x10supportedTrigger\x12\x1e\n" +
 	"\x04code\x18\x02 \x01(\tB\n" +
@@ -478,12 +482,13 @@ const file_catalog_auth0_auth0action_v1alpha1_spec_proto_rawDesc = "" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12 \n" +
 	"\aversion\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\aversion:\xa2\x02\xbaH\x9e\x02\x1a\x8b\x01\n" +
 	"\x18dependency_name_required\x12^Each dependency needs a package name. Specify the npm package name, e.g., 'lodash' or 'axios'.\x1a\x0fthis.name != ''\x1a\x8d\x01\n" +
-	"\x1bdependency_version_required\x12ZEach dependency needs a version. Use a semver range like '4.17.21', '^1.0.0', or 'latest'.\x1a\x12this.version != ''\"\xe5\x02\n" +
+	"\x1bdependency_version_required\x12ZEach dependency needs a version. Use a semver range like '4.17.21', '^1.0.0', or 'latest'.\x1a\x12this.version != ''\"\xa5\x03\n" +
 	"\x11Auth0ActionSecret\x12\x1a\n" +
-	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\x1c\n" +
-	"\x05value\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05value:\x95\x02\xbaH\x91\x02\x1a\x8d\x01\n" +
-	"\x14secret_name_required\x12dEach secret needs a name. This becomes the key you reference in action code as event.secrets.<name>.\x1a\x0fthis.name != ''\x1a\x7f\n" +
-	"\x15secret_value_required\x12TEach secret needs a value. Provide the actual secret content (API key, token, etc.).\x1a\x10this.value != ''\">\n" +
+	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12 \n" +
+	"\x05value\x18\x02 \x01(\tB\n" +
+	"\xbaH\x03\xc8\x01\x01\xa0\xa6\x1d\x01R\x05value:\xd1\x02\xbaH\xcd\x02\x1a\x8d\x01\n" +
+	"\x14secret_name_required\x12dEach secret needs a name. This becomes the key you reference in action code as event.secrets.<name>.\x1a\x0fthis.name != ''\x1a\xba\x01\n" +
+	"\x15secret_value_required\x12\x8e\x01Each secret needs a value: a $secret/<slug> reference to the managed secret that holds it (the literal only on a deploy without the platform).\x1a\x10this.value != ''\">\n" +
 	"\x19Auth0ActionTriggerBinding\x12!\n" +
 	"\fdisplay_name\x18\x01 \x01(\tR\vdisplayNameB\xc9\x02\n" +
 	"*com.dev.planton.auth0.auth0action.v1alpha1B\tSpecProtoP\x01ZSgithub.com/plantonhq/planton/catalog/auth0/auth0action/v1alpha1;auth0actionv1alpha1\xa2\x02\x04DPAA\xaa\x02&Dev.Planton.Auth0.Auth0action.V1alpha1\xca\x02&Dev\\Planton\\Auth0\\Auth0action\\V1alpha1\xe2\x022Dev\\Planton\\Auth0\\Auth0action\\V1alpha1\\GPBMetadata\xea\x02*Dev::Planton::Auth0::Auth0action::V1alpha1b\x06proto3"

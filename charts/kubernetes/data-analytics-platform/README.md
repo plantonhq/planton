@@ -77,7 +77,7 @@ credentials exist before their consumers start.
 | `postgres_disk_size` | Disk per database instance | `20Gi` | Warehouse tables outgrow it (grows apply in place) |
 | `lake_buckets` | S3 buckets created in the lake | `[lake]` | One entry per dataset domain |
 | `lake_disk_size` | Disk for the lake's object data | `30Gi` | Datasets outgrow it (grows apply in place) |
-| `valkey_password` | The cache's `default` ACL user password | `change-me` | **ALWAYS — before the first deploy** |
+| `valkey_password` | The cache's `default` ACL user password: a `$secret/` reference on Planton, the literal on a deploy without it | `$secret/data-analytics-platform-valkey-password` | Create that secret first (`planton secret set data-analytics-platform-valkey-password --string`), or point at your own, such as `$secret/@<env>/<slug>` |
 | `valkey_max_memory` | Cache eviction ceiling | `256mb` | Dashboard fleet grows |
 | `valkey_disk_size` | Cache snapshot volume | `2Gi` | Keep near `valkey_max_memory` |
 | `dags_git_repo` | Git repository holding DAGs (git-sync) | `""` (DAGs baked in image) | You want push-to-deploy pipelines |
@@ -133,9 +133,9 @@ kubectl port-forward svc/<env>-airflow-api-server -n analytics 8080:8080
 
 - **Safe in place:** `postgres_instances`, disk sizes (grows only),
   `trino_workers`, `valkey_max_memory`, bucket additions, DAG repo/ref.
-- **The Valkey password is a parameter** — rotating it means updating the
-  value and redeploying; Superset re-reads it by reference. Never leave
-  `change-me` running.
+- **The Valkey password lives in a managed secret** — rotating it means
+  writing a new version of that secret and redeploying; Superset re-reads it
+  by reference.
 - **Celery Airflow:** moving `executor` to `CeleryExecutor` requires
   declaring a broker on the deployed Airflow resource (its `valkey` arm
   can compose this chart's cache — mind the Redis database numbers

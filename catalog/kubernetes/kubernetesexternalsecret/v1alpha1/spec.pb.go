@@ -832,13 +832,13 @@ const file_catalog_kubernetes_kubernetesexternalsecret_v1alpha1_spec_proto_rawDe
 	"\timmutable\x18\x04 \x01(\bR\timmutable\x12v\n" +
 	"\btemplate\x18\x05 \x01(\v2Z.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplateR\btemplateB\x12\n" +
 	"\x10_creation_policyB\x12\n" +
-	"\x10_deletion_policy\"\xcf\x05\n" +
+	"\x10_deletion_policy\"\x93\a\n" +
 	" KubernetesExternalSecretTemplate\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12H\n" +
 	"\fmerge_policy\x18\x02 \x01(\tB \xbaH\x12r\x10R\aReplaceR\x05Merge\x8a\xa6\x1d\aReplaceH\x00R\vmergePolicy\x88\x01\x01\x12~\n" +
 	"\x06labels\x18\x03 \x03(\v2f.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.LabelsEntryR\x06labels\x12\x8d\x01\n" +
-	"\vannotations\x18\x04 \x03(\v2k.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.AnnotationsEntryR\vannotations\x12x\n" +
-	"\x04data\x18\x05 \x03(\v2d.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.DataEntryR\x04data\x1a9\n" +
+	"\vannotations\x18\x04 \x03(\v2k.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.AnnotationsEntryR\vannotations\x12\xbb\x02\n" +
+	"\x04data\x18\x05 \x03(\v2d.dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1.KubernetesExternalSecretTemplate.DataEntryB\xc0\x01\xaa\xa6\x1d\xbb\x01Go templates over the keys the operator syncs from the store: a template names secret values ({{ .password }}), it does not hold them, and a managed secret reference could not express oneR\x04data\x1a9\n" +
 	"\vLabelsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\x1a>\n" +

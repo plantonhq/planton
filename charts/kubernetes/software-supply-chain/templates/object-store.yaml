@@ -15,7 +15,9 @@
 # S3 gateway consumes) and the flat admin credential keys, mirroring the
 # generated `-s3-secret` shape so the store's exported
 # s3_credentials_secret_name output keeps its documented key contract
-# for any future consumer.
+# for any future consumer. Every value here is a secret, so on Planton each
+# is a reference to one key of the install's credentials secret, resolved at
+# deploy; the identities JSON is its own key because it carries the pair.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesSecret
 metadata:
@@ -34,7 +36,7 @@ spec:
     data:
       admin_access_key_id: "{{ values.s3_access_key }}"
       admin_secret_access_key: "{{ values.s3_secret_key }}"
-      seaweedfs_s3_config: '{"identities":[{"name":"harbor","credentials":[{"accessKey":"{{ values.s3_access_key }}","secretKey":"{{ values.s3_secret_key }}"}],"actions":["Admin","Read","List","Tagging","Write"]}]}'
+      seaweedfs_s3_config: "{{ values.s3_identities_config }}"
 ---
 # SeaweedFS with its S3 gateway on, identities user-owned via the Secret
 # above, and the registry bucket created before Harbor's first push.

@@ -89,15 +89,15 @@ var _ = ginkgo.Describe("KubernetesSecretSpec validations", func() {
 
 		// A base64 payload held in the platform's secret store reaches this field only as a
 		// reference token; the literal arm must not refuse the token's characters ($, @, -).
-		ginkgo.It("accepts a binary_data value that is a secret or variable reference token", func() {
+		ginkgo.It("accepts a binary_data value that is a secret reference token", func() {
 			spec := &KubernetesSecretSpec{
 				Name: "referenced-binary-secret",
 				SecretData: &KubernetesSecretSpec_Opaque{
 					Opaque: &KubernetesSecretOpaqueData{
 						BinaryData: map[string]string{
-							"tls.crt": "$secret/@dev/runner-ca-cert",
-							"tls.key": "$secret/runner-ca-key",
-							"seed":    "$var/pki/seed-blob",
+							"tls.crt":  "$secret/@dev/runner-ca-cert",
+							"tls.key":  "$secret/runner-ca-key",
+							"keystore": "$secret/pki/keystore",
 						},
 					},
 				},
@@ -362,6 +362,21 @@ var _ = ginkgo.Describe("KubernetesSecretSpec validations", func() {
 			}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).ToNot(gomega.BeNil())
+		})
+
+		// A variable names a plain value, never a secret, so it is not a reference this
+		// secret field can take; only the base64 literal and a secret reference pass.
+		ginkgo.It("rejects a binary_data value that is a variable reference token", func() {
+			spec := &KubernetesSecretSpec{
+				Name: "variable-binary-secret",
+				SecretData: &KubernetesSecretSpec_Opaque{
+					Opaque: &KubernetesSecretOpaqueData{
+						BinaryData: map[string]string{"seed": "$var/pki/seed-blob"},
+					},
+				},
+			}
+			err := protovalidate.Validate(spec)
+			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
 
 		ginkgo.It("rejects spec without any secret data", func() {

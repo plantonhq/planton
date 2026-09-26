@@ -57,7 +57,8 @@ type Finding struct {
 	Violations   []string // gate failures intrinsic to the annotation (contradiction / pointless exemption)
 }
 
-// classify is the pure decision for one field. Separated from the descriptor walk so
+// classify is the pure decision for one field; looks is the heuristic's verdict on it
+// (LooksSensitive). Separated from the descriptor walk so
 // the full truth table -- including the annotation-level violations -- is unit
 // tested without needing fixture protos in every contradictory shape.
 //
@@ -71,8 +72,7 @@ type Finding struct {
 //
 // Note: an empty exemption reason is indistinguishable from "unset" (proto3 singular
 // string), so "empty reason" is not a reachable state and is intentionally not a rule.
-func classify(fieldName string, isSensitive bool, exemptReason string, valueRule string) (Classification, []string) {
-	looks := LooksSensitiveByName(fieldName)
+func classify(looks bool, isSensitive bool, exemptReason string, valueRule string) (Classification, []string) {
 	var violations []string
 	if isSensitive && valueRule != "" {
 		violations = append(violations, fmt.Sprintf("sensitive field carries a value-content validation rule (%s) -- a stored managed-secret reference can never satisfy it; teach the shape in the field comment instead", valueRule))
@@ -186,7 +186,8 @@ func isStringLeaf(fd protoreflect.FieldDescriptor) bool {
 
 func addLeaf(fd protoreflect.FieldDescriptor, path, kindName, provider string, out *[]Finding) {
 	sensitive, exemptReason := leafOptions(fd)
-	class, violations := classify(string(fd.Name()), sensitive, exemptReason, valueContentRule(fd))
+	looks := LooksSensitive(string(fd.ContainingMessage().Name()), string(fd.Name()))
+	class, violations := classify(looks, sensitive, exemptReason, valueContentRule(fd))
 	if class == NotSensitive {
 		return
 	}

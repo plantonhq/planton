@@ -12,6 +12,7 @@ go_library(
         "run_command.go",
         "run_operation.go",
         "run_options.go",
+        "stderr_tail.go",
         "stream_output.go",
         "tofu_init.go",
     ],
@@ -49,8 +50,13 @@ go_test(
         "capture_outputs_test.go",
         "module_directory_test.go",
         "reapable_command_test.go",
+        "stderr_tail_test.go",
         "stream_output_test.go",
     ],
     embed = [":tofumodule"],
-    deps = ["@com_github_stretchr_testify//assert"],
+    deps = [
+        "//shared/iac/terraform",
+        "@com_github_stretchr_testify//assert",
+        "@org_golang_google_protobuf//types/known/structpb",
+    ],
 )

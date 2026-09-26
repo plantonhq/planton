@@ -73,6 +73,29 @@ gateway mounts it); Harbor waits for all three stores through its
 references. The Tekton config waits for the Tekton operator, and the
 runner fleet for its controller — each pair inside its own toggle.
 
+## Before you install
+
+Every credential this chart deploys lives in one key-value secret, and each
+secret parameter references one of its keys (`$secret/<slug>/<key>`), so the
+platform resolves them at deploy and never stores them with the project.
+Create it once per install, generating the S3 pair and the identities
+document from the same values (letters only: config parsers mangle digits
+first, `#`, `$` and braces):
+
+```bash
+ACCESS=$(LC_ALL=C tr -dc 'a-z' </dev/urandom | head -c 24)
+SECRET=$(LC_ALL=C tr -dc 'a-zA-Z' </dev/urandom | head -c 48)
+planton secret set software-supply-chain-credentials \
+  valkey-password="$(LC_ALL=C tr -dc 'a-zA-Z' </dev/urandom | head -c 32)" \
+  s3-access-key="$ACCESS" \
+  s3-secret-key="$SECRET" \
+  s3-identities="{\"identities\":[{\"name\":\"harbor\",\"credentials\":[{\"accessKey\":\"$ACCESS\",\"secretKey\":\"$SECRET\"}],\"actions\":[\"Admin\",\"Read\",\"List\",\"Tagging\",\"Write\"]}]}"
+```
+
+For a second environment, create its own (`--env <env>`) and point the four
+parameters at `$secret/@<env>/software-supply-chain-credentials/<key>`. A
+deploy without the platform takes the literals instead.
+
 ## Parameters
 
 | Param | Meaning | Default | Change when |
@@ -83,10 +106,10 @@ runner fleet for its controller — each pair inside its own toggle.
 | `harbor_external_url` | The URL OCI clients dial (token-service address) | placeholder | **MUST change** — pushes and pulls fail auth against the wrong URL |
 | `postgres_instances` | Metadata database instances | `2` | `3` production convention; `1` evaluation |
 | `postgres_disk_size` | Volume per database instance | `10Gi` | Rarely — blobs never land here |
-| `valkey_password` | The cache's `default`-user password (both sides) | `change-me` | **MUST change** |
+| `valkey_password` | The cache's `default`-user password (both sides) | `$secret/software-supply-chain-credentials/valkey-password` | Your credentials secret has another name |
 | `valkey_max_memory` / `valkey_disk_size` | Cache ceiling / warm-restart volume | `256mb` / `2Gi` | Larger installs |
 | `objects_disk_size` | Blob store volume | `30Gi` | Image retention appetite |
-| `s3_access_key` / `s3_secret_key` | The registry↔store identity (both sides) | placeholders | **MUST change — letters only**, length is the entropy |
+| `s3_access_key` / `s3_secret_key` / `s3_identities_config` | The registry↔store identity (both sides) and the store's identities document built from it | keys `s3-access-key`, `s3-secret-key`, `s3-identities` of `$secret/software-supply-chain-credentials` | Your credentials secret has another name — letters only, length is the entropy |
 | `tekton_enabled` | The Tekton arm (operator + config together) | `true` | **Set false** when the cluster already runs Tekton |
 | `gha_runners_enabled` | The GitHub Actions runner fleet | `false` | On, once the URL and credential Secret exist |
 | `gha_github_config_url` | Repo/org/enterprise the runners register against | placeholder | **MUST change** with the toggle |

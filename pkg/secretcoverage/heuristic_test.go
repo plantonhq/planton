@@ -51,3 +51,27 @@ func TestLooksSensitiveByName(t *testing.T) {
 		}
 	}
 }
+
+func TestLooksSensitive(t *testing.T) {
+	cases := []struct {
+		message, field string
+		want           bool
+		why            string
+	}{
+		{"SecretEnvVar", "value", true, "a secret entry's payload is the secret"},
+		{"Auth0ActionSecret", "value", true, "Secret as the last word of the message"},
+		{"KubernetesSecretOpaqueData", "data", true, "Secret inside the message name"},
+		{"KubernetesSecretOpaqueData", "binary_data", true, "the binary payload of a secret entry"},
+		{"KubernetesSecretTlsData", "tls_key", true, "a TLS private key, by the tlskey compound"},
+		{"KubernetesSecretTlsData", "tls_crt", false, "a certificate is public"},
+		{"EnvVar", "value", false, "a plain variable's value is not a secret"},
+		{"ExternalSecretsStoreFakeEntry", "value", false, "\"Secrets\" names a store, not a secret"},
+		{"SecretEnvVar", "name", false, "the entry's name is not its payload"},
+		{"Auth0ActionSecret", "client_secret", true, "a secret-bearing name counts in any message"},
+	}
+	for _, tc := range cases {
+		if got := LooksSensitive(tc.message, tc.field); got != tc.want {
+			t.Errorf("LooksSensitive(%q, %q) = %v, want %v (%s)", tc.message, tc.field, got, tc.want, tc.why)
+		}
+	}
+}

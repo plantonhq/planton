@@ -45,12 +45,13 @@ planton secret set cloudflare r2.access-key-id=... r2.secret-access-key=...
 planton secret set db-password 'the-value' --env production
 
 # List, inspect, read
-planton secret list
-planton secret describe db-password    # includes the remote identity
-planton secret get db-password -o plain
+planton secret list                          # includes each secret's backend
+planton secret describe db-password          # includes the remote identity
+planton secret get db-password -o yaml       # the record; never the value
+planton secret get db-password --reveal -o plain
 ```
 
-In a script, `planton secret get <slug> -o plain` prints the value and exits 0, or prints nothing on stdout and exits 3 when no such secret exists (the reason goes to stderr). Exit 1 means the instance could not be asked.
+`planton secret get` shows a secret's record (scope, backend, format, description) without reading its value, so asking which backend holds a secret never prints the secret. The value prints only with `--reveal`, and every revealed read is recorded in the [read-audit trail](#the-read-story); `-o plain` without `--reveal` is refused with the command to run. In a script, `planton secret get <slug> --reveal -o plain` prints the value and exits 0, or prints nothing on stdout and exits 3 when no such secret exists (the reason goes to stderr). Exit 1 means the instance could not be asked.
 
 ## Referencing Secrets
 

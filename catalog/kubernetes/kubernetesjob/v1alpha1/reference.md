@@ -262,7 +262,7 @@ spec:
 | `spec.container.app.env.variables[].resourceFieldRef.divisor` | `string` |  |  |  |
 | `spec.container.app.env.secrets` | `[]SecretEnvVar` |  |  |  |
 | `spec.container.app.env.secrets[].name` | `string` | yes |  |  |
-| `spec.container.app.env.secrets[].value` | `string` |  |  |  |
+| `spec.container.app.env.secrets[].value` | `string` (sensitive) |  |  |  |
 | `spec.container.app.env.secrets[].secretRef` | `KubernetesSecretKeyRef` |  |  |  |
 | `spec.container.app.env.secrets[].secretRef.namespace` | `string` |  |  |  |
 | `spec.container.app.env.secrets[].secretRef.name` | `string` | yes |  |  |
@@ -476,7 +476,7 @@ spec:
 | `spec.container.sidecars[].env.variables[].resourceFieldRef.divisor` | `string` |  |  |  |
 | `spec.container.sidecars[].env.secrets` | `[]SecretEnvVar` |  |  |  |
 | `spec.container.sidecars[].env.secrets[].name` | `string` | yes |  |  |
-| `spec.container.sidecars[].env.secrets[].value` | `string` |  |  |  |
+| `spec.container.sidecars[].env.secrets[].value` | `string` (sensitive) |  |  |  |
 | `spec.container.sidecars[].env.secrets[].secretRef` | `KubernetesSecretKeyRef` |  |  |  |
 | `spec.container.sidecars[].env.secrets[].secretRef.namespace` | `string` |  |  |  |
 | `spec.container.sidecars[].env.secrets[].secretRef.name` | `string` | yes |  |  |
@@ -699,7 +699,7 @@ spec:
 | `spec.pod.initContainers[].env.variables[].resourceFieldRef.divisor` | `string` |  |  |  |
 | `spec.pod.initContainers[].env.secrets` | `[]SecretEnvVar` |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].name` | `string` | yes |  |  |
-| `spec.pod.initContainers[].env.secrets[].value` | `string` |  |  |  |
+| `spec.pod.initContainers[].env.secrets[].value` | `string` (sensitive) |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].secretRef` | `KubernetesSecretKeyRef` |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].secretRef.namespace` | `string` |  |  |  |
 | `spec.pod.initContainers[].env.secrets[].secretRef.name` | `string` | yes |  |  |
@@ -2044,11 +2044,11 @@ The environment variable name.
 
 ### spec.container.app.env.secrets[].value
 
-`string`
+`string` · sensitive
 
-Literal string value.
-A Kubernetes Secret is automatically created and the environment variable
-references that secret.
+The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+and the environment variable references that Secret.
 
 ### spec.container.app.env.secrets[].secretRef
 
@@ -5018,11 +5018,11 @@ The environment variable name.
 
 ### spec.container.sidecars[].env.secrets[].value
 
-`string`
+`string` · sensitive
 
-Literal string value.
-A Kubernetes Secret is automatically created and the environment variable
-references that secret.
+The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+and the environment variable references that Secret.
 
 ### spec.container.sidecars[].env.secrets[].secretRef
 
@@ -8108,11 +8108,11 @@ The environment variable name.
 
 ### spec.pod.initContainers[].env.secrets[].value
 
-`string`
+`string` · sensitive
 
-Literal string value.
-A Kubernetes Secret is automatically created and the environment variable
-references that secret.
+The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+and the environment variable references that Secret.
 
 ### spec.pod.initContainers[].env.secrets[].secretRef
 

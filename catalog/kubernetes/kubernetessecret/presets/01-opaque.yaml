@@ -7,7 +7,9 @@ spec:
   namespace:
     value: "<your-namespace>"
   opaque:
+    # Each value is a reference to an organization secret, never a literal: the runner
+    # resolves it inside your infrastructure at deploy time.
     data:
-      username: "<your-username>"
-      password: "<your-password>"
-      api-key: "<your-api-key>"
+      username: $secret/replace-with-your-username-secret
+      password: $secret/replace-with-your-password-secret
+      api-key: $secret/replace-with-your-api-key-secret

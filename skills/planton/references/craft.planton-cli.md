@@ -159,7 +159,7 @@ sentence goes to stderr, so stdout carries only a value that exists:
 
 ```
 v=$(planton variable get db-host -o plain)   # exit 0 found, 3 not found, 1 could not ask
-planton secret get db-password -o plain      # same contract; so do env get and planton get <Kind> <id>
+planton secret get db-password --reveal -o plain   # same contract; so do env get and planton get <Kind> <id>
 ```
 
 Branch on 3 for "not declared" (create it, or fall back) and treat 1 as a

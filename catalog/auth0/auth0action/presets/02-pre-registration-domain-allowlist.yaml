@@ -20,6 +20,8 @@ spec:
   runtime: node22
   deploy: true
   secrets:
+    # Each value is a reference to an organization secret, never a literal: the runner
+    # resolves it inside your infrastructure at deploy time.
     - name: ALLOWED_DOMAINS
-      value: "example.com,mycompany.com"
+      value: $secret/replace-with-your-allowed-domains-secret
   trigger_binding: {}

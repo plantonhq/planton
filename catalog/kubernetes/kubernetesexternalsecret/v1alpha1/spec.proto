@@ -230,7 +230,7 @@ message KubernetesExternalSecretTemplate {
    * e.g. reshape a username/password pair into a connection string:
    * `postgres://{{ .username }}:{{ .password }}@db:5432/app`.
    */
-  map<string, string> data = 5;
+  map<string, string> data = 5 [(dev.planton.shared.options.sensitive_exempt_reason) = "Go templates over the keys the operator syncs from the store: a template names secret values ({{ .password }}), it does not hold them, and a managed secret reference could not express one"];
 }
 
 /**

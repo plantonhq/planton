@@ -18,9 +18,11 @@ This preset creates an opaque Kubernetes Secret with arbitrary key-value data. T
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<your-namespace>` | Target namespace for the secret | Your namespace management |
-| `<your-username>` | Application username | Your credential management system |
-| `<your-password>` | Application password | Your credential management system |
-| `<your-api-key>` | API key or token | Your service provider dashboard |
+| `$secret/replace-with-your-username-secret` | The organization secret holding the application username | `planton secret set <slug> --string` |
+| `$secret/replace-with-your-password-secret` | The organization secret holding the application password | `planton secret set <slug> --string` |
+| `$secret/replace-with-your-api-key-secret` | The organization secret holding the API key or token | `planton secret set <slug> --string` |
+
+Every value in `data` is a reference to a managed secret on Planton, never the value itself; a deploy without the platform takes the literal. For several keys that belong together, one key-value secret serves them all: `$secret/<slug>/<key>`.
 
 ## Related Presets
 

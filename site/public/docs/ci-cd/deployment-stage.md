@@ -127,9 +127,11 @@ spec:
           memory: 2Gi
       env:
         variables:
-          LOG_LEVEL: warn
+          - name: LOG_LEVEL
+            value: warn
         secrets:
-          DATABASE_PASSWORD: $secret/@production/database/password
+          - name: DATABASE_PASSWORD
+            value: $secret/@production/database/password
   availability:
     minReplicas: 3
     horizontalPodAutoscaling:

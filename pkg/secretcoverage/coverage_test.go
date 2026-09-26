@@ -61,7 +61,7 @@ func TestClassify(t *testing.T) {
 		{"sensitive + exempt + value rule stacks both violations", "password", true, "because", "string.pattern", Covered, 2},
 	}
 	for _, tc := range cases {
-		gotClass, gotViol := classify(tc.fieldName, tc.isSensitive, tc.exemptReason, tc.valueRule)
+		gotClass, gotViol := classify(LooksSensitiveByName(tc.fieldName), tc.isSensitive, tc.exemptReason, tc.valueRule)
 		if gotClass != tc.wantClass {
 			t.Errorf("%s: class = %q, want %q", tc.name, gotClass, tc.wantClass)
 		}

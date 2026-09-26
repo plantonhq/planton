@@ -3,6 +3,7 @@ syntax = "proto3";
 package dev.planton.auth0.auth0action.v1alpha1;
 
 import "buf/validate/validate.proto";
+import "shared/options/options.proto";
 
 // Auth0ActionSpec defines the configuration for an Auth0 Action.
 // Actions are secure, tenant-specific, versioned functions written in Node.js
@@ -105,7 +106,7 @@ message Auth0ActionSpec {
   // Example:
   //   secrets:
   //     - name: SLACK_WEBHOOK_URL
-  //       value: "https://hooks.slack.com/services/T00/B00/xxx"
+  //       value: $secret/slack-webhook-url
   //
   // https://auth0.com/docs/customize/actions/write-your-first-action#add-a-secret
   repeated Auth0ActionSecret secrets = 6;
@@ -215,7 +216,7 @@ message Auth0ActionSecret {
   };
   option (buf.validate.message).cel = {
     id: "secret_value_required"
-    message: "Each secret needs a value. Provide the actual secret content (API key, token, etc.)."
+    message: "Each secret needs a value: a $secret/<slug> reference to the managed secret that holds it (the literal only on a deploy without the platform)."
     expression: "this.value != ''"
   };
 
@@ -224,9 +225,15 @@ message Auth0ActionSecret {
   // Example: "SLACK_WEBHOOK_URL", "API_KEY"
   string name = 1 [(buf.validate.field).required = true];
 
-  // value is the secret content. Encrypted at rest, never returned by the API.
-  // Example: "sk-abc123...", "https://hooks.slack.com/services/T00/B00/xxx"
-  string value = 2 [(buf.validate.field).required = true];
+  // value is the secret content, and a secret field: on Planton it takes only a reference to a
+  // managed secret (`$secret/<slug>`), which the runner resolves at deploy, so the secret is
+  // never stored with the resource; a deploy without the platform takes the literal. Auth0
+  // encrypts it at rest and never returns it from its API.
+  // Example: "$secret/slack-webhook-url"
+  string value = 2 [
+    (buf.validate.field).required = true,
+    (dev.planton.shared.options.sensitive) = true
+  ];
 }
 
 // Auth0ActionTriggerBinding configures automatic binding of this action to its trigger.

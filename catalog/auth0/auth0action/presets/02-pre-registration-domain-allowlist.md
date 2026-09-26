@@ -18,7 +18,7 @@ Restrict user registration to specific email domains. Users with disallowed doma
 
 ## Customization
 
-- Update the `ALLOWED_DOMAINS` secret value to include your organization's email domains.
+- Store your organization's email domains, comma-separated, in an organization secret (`planton secret set allowed-domains --string`), and point `ALLOWED_DOMAINS` at it as `$secret/allowed-domains`.
 - Add subdomains as separate entries (e.g., `eng.example.com,sales.example.com`).
 - For more complex logic, replace the domain check with a regex or external API call.
 - Combine with `api.user.setUserMetadata()` to tag approved users during registration.

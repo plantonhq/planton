@@ -52,10 +52,19 @@ type DigitalOceanDatabaseUserSpec struct {
 	// from the create response and never refresh them from the API, so what
 	// is configured here is the source of truth; the live ACL state is not
 	// observable through Planton afterward. ACL changes apply in place.
-	// Leaving this unset is stable: DigitalOcean answers every user create
-	// with a settings object (a PostgreSQL user carries
-	// `pg_allow_replication: false`), and both provisioners send an empty
-	// settings block to match it, so an unset field never plans a change.
+	//
+	// SET IT BY ENGINE (measured 2026-09-17). PostgreSQL: declare
+	// `settings: {}` even with no ACLs -- every PostgreSQL user comes back
+	// with a settings object (`pg_allow_replication: false`) that the
+	// provisioners store at create, and a manifest without the block plans
+	// its removal on the first re-plan (a one-time server-side no-op, but a
+	// change). MySQL: leave it unset -- a MySQL user never carries a settings
+	// object and the API refuses a settings update on a MySQL cluster
+	// (`422 operation is not supported for this cluster type`), so even
+	// `settings: {}` would fail every apply after the first. Kafka and
+	// OpenSearch: declare the ACLs. The provisioners send the block exactly
+	// when this field is present; they cannot infer the engine from a cluster
+	// UUID, so the manifest carries that knowledge.
 	Settings      *DigitalOceanDatabaseUserSettings `protobuf:"bytes,4,opt,name=settings,proto3" json:"settings,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

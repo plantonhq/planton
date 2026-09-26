@@ -69,7 +69,7 @@ spec:
 | `spec.dependencies[].version` | `string` | yes |  |  |
 | `spec.secrets` | `[]Auth0ActionSecret` |  |  |  |
 | `spec.secrets[].name` | `string` | yes |  |  |
-| `spec.secrets[].value` | `string` | yes |  |  |
+| `spec.secrets[].value` | `string` (sensitive) | yes |  |  |
 | `spec.triggerBinding` | `Auth0ActionTriggerBinding` |  |  |  |
 | `spec.triggerBinding.displayName` | `string` |  |  |  |
 
@@ -237,12 +237,12 @@ will cause it to be deleted.
 Example:
   secrets:
     - name: SLACK_WEBHOOK_URL
-      value: "https://hooks.slack.com/services/T00/B00/xxx"
+      value: $secret/slack-webhook-url
 
 https://auth0.com/docs/customize/actions/write-your-first-action#add-a-secret
 
 - rule: Each secret needs a name. This becomes the key you reference in action code as event.secrets.<name>.
-- rule: Each secret needs a value. Provide the actual secret content (API key, token, etc.).
+- rule: Each secret needs a value: a $secret/<slug> reference to the managed secret that holds it (the literal only on a deploy without the platform).
 
 ### spec.secrets[].name
 
@@ -256,10 +256,13 @@ Example: "SLACK_WEBHOOK_URL", "API_KEY"
 
 ### spec.secrets[].value
 
-`string` · required
+`string` · required · sensitive
 
-value is the secret content. Encrypted at rest, never returned by the API.
-Example: "sk-abc123...", "https://hooks.slack.com/services/T00/B00/xxx"
+value is the secret content, and a secret field: on Planton it takes only a reference to a
+managed secret (`$secret/<slug>`), which the runner resolves at deploy, so the secret is
+never stored with the resource; a deploy without the platform takes the literal. Auth0
+encrypts it at rest and never returns it from its API.
+Example: "$secret/slack-webhook-url"
 
 - rule: {"required":true}
 

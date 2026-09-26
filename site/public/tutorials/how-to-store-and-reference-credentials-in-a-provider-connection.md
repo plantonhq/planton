@@ -62,7 +62,7 @@ planton secret get aws-access-key-id
 planton secret get aws-secret-access-key
 ```
 
-The output shows the secret metadata (slug, version, creation time) but not the value itself. This is by design -- secret values are only decrypted at execution time by the platform.
+The output shows the secret's record (slug, scope, backend, creation time) but not the value itself: reading a record never decrypts the secret. Secret values are decrypted only at execution time by the platform, or when you ask for one with `--reveal`.
 
 ## Step 2: Create a Shared Variable
 

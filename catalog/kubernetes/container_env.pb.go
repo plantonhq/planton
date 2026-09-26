@@ -202,15 +202,20 @@ func (*EnvVar_ResourceFieldRef) isEnvVar_Source() {}
 // *
 // **SecretEnvVar** represents a single secret environment variable for a container.
 //
-// The value is either provided as a literal (which triggers automatic creation of a
-// Kubernetes Secret), referenced from an existing Kubernetes Secret, or resolved
-// from another Planton resource's output.
+// The value is either given directly (the module writes it into a Kubernetes Secret the
+// container reads), referenced from an existing Kubernetes Secret, or resolved from another
+// Planton resource's output.
+//
+// `value` is a secret field: on Planton it takes only a reference to a managed secret
+// (`$secret/<slug>`, or `$secret/@<env>/<slug>` for an environment's own), which the runner
+// resolves at deploy, so the secret itself is never stored with the resource. A deploy without
+// the platform takes the literal.
 //
 // Example (YAML):
 // ```yaml
 // secrets:
 //   - name: DATABASE_PASSWORD
-//     value: "my-password"
+//     value: $secret/@prod/database-password
 //   - name: API_KEY
 //     secretRef:
 //     name: my-secrets
@@ -312,9 +317,9 @@ type isSecretEnvVar_Source interface {
 }
 
 type SecretEnvVar_Value struct {
-	// Literal string value.
-	// A Kubernetes Secret is automatically created and the environment variable
-	// references that secret.
+	// The secret's value: on Planton a `$secret/<slug>` reference, resolved at deploy; on a
+	// deploy without the platform, the literal. The module writes it into a Kubernetes Secret
+	// and the environment variable references that Secret.
 	Value string `protobuf:"bytes,2,opt,name=value,proto3,oneof"`
 }
 
@@ -445,8 +450,9 @@ func (*EnvFromSource_SecretRef) isEnvFromSource_Source() {}
 // *
 // **ContainerEnv** groups all environment configuration for a container.
 //
-// Environment variables are separated into non-sensitive `variables` and sensitive `secrets`
-// to enable appropriate handling (e.g., masking in logs, encryption at rest). The `env_from`
+// Environment variables are separated into non-sensitive `variables`, written into the pod
+// spec, and sensitive `secrets`, which the module keeps in a Kubernetes Secret the container
+// reads by reference and which on Planton hold only managed secret references. The `env_from`
 // field supports bulk import of all keys from ConfigMaps or Secrets.
 type ContainerEnv struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -839,11 +845,11 @@ const file_catalog_kubernetes_container_env_proto_rawDesc = "" +
 	"\x12config_map_key_ref\x18\x04 \x01(\v2'.dev.planton.kubernetes.ConfigMapKeyRefH\x00R\x0fconfigMapKeyRef\x12E\n" +
 	"\tfield_ref\x18\x05 \x01(\v2&.dev.planton.kubernetes.ObjectFieldRefH\x00R\bfieldRef\x12X\n" +
 	"\x12resource_field_ref\x18\x06 \x01(\v2(.dev.planton.kubernetes.ResourceFieldRefH\x00R\x10resourceFieldRefB\b\n" +
-	"\x06source\"\x9f\x03\n" +
+	"\x06source\"\xa5\x03\n" +
 	"\fSecretEnvVar\x12\xca\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xb5\x01\xbaH\xb1\x01\xba\x01\xaa\x01\n" +
-	"\x16env.secret.name.format\x12fMust be a valid C_IDENTIFIER (start with letter/underscore, contain only letters, digits, underscores)\x1a(this.matches('^[A-Za-z_][A-Za-z0-9_]*$')\xc8\x01\x01R\x04name\x12\x16\n" +
-	"\x05value\x18\x02 \x01(\tH\x00R\x05value\x12O\n" +
+	"\x16env.secret.name.format\x12fMust be a valid C_IDENTIFIER (start with letter/underscore, contain only letters, digits, underscores)\x1a(this.matches('^[A-Za-z_][A-Za-z0-9_]*$')\xc8\x01\x01R\x04name\x12\x1c\n" +
+	"\x05value\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01H\x00R\x05value\x12O\n" +
 	"\n" +
 	"secret_ref\x18\x03 \x01(\v2..dev.planton.kubernetes.KubernetesSecretKeyRefH\x00R\tsecretRef\x12O\n" +
 	"\n" +

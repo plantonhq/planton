@@ -21,4 +21,4 @@ spec:
     - command: first
     - command: second
   replicas: 2
-  sensitiveString: not-a-real-secret
+  sensitiveString: $secret/not-a-real-secret

@@ -18,7 +18,7 @@ This preset creates a Kubernetes TLS secret containing a certificate and private
 |---|---|---|
 | `<your-namespace>` | Target namespace for the secret | Your namespace management |
 | `<your-tls-certificate-pem>` | PEM-encoded TLS certificate (including intermediate chain) | Your certificate authority or cert management tool |
-| `<your-tls-private-key-pem>` | PEM-encoded TLS private key | Generated alongside the certificate |
+| `$secret/replace-with-your-tls-private-key-secret` | The organization secret holding the PEM-encoded TLS private key | `planton secret set <slug> --string` with the key's contents |
 
 ## Related Presets
 

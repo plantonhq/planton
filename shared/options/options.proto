@@ -16,8 +16,11 @@ extend google.protobuf.FieldOptions {
   // Marks a field as holding a secret value (a credential, token, password, key,
   // etc.). Downstream platforms (e.g. Planton) use this to force the value to be
   // a reference to a managed secret rather than plaintext, and to resolve that
-  // reference just-in-time at deploy. Applies to string fields and to the literal
-  // value of StringValueOrRef fields.
+  // reference just-in-time at deploy. Applies to each string slot the field holds:
+  // a string, each element of a repeated string, each value of a map, and the
+  // literal value of a StringValueOrRef (a StringValueOrRef's cross-resource
+  // value_from is not a secret literal and is left to reference resolution). A
+  // message-typed field is not itself a slot; mark the secret fields inside it.
   bool sensitive = 60004;
 
   // Justification that a field whose NAME matches the secret-coverage heuristic

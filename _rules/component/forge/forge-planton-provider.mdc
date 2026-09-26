@@ -113,6 +113,8 @@ Follow the pattern from existing providers. The proto file MUST include:
   - For **flat** providers: all fields at the top level (see `catalog/auth0/provider.proto`)
   - For **multi-method** providers: a `oneof credentials` block with sub-messages per method, plus common fields outside the oneof
 
+**Credential fields carry no `sensitive` annotation.** The option marks a secret inside a kind's spec, the manifest a person writes and the platform stores, so the platform can insist on a managed secret reference there. A provider config is never such a manifest: on Planton a connection stores its credentials as typed secret references and the runner builds the provider config in memory at deploy, and offline the config is the user's own file. So no reader would act on the annotation and no stored copy exists for it to protect, which is why the secret-coverage gate walks kind specs only. Document each credential field's secrecy in its comment instead ("highly sensitive; treat as a secret").
+
 **Pattern reference (flat):** `catalog/auth0/provider.proto`
 
 **Step 1.2 -- MODIFY `shared/cloudresourcekind/cloud_resource_provider.proto`**

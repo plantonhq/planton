@@ -94,11 +94,14 @@ params:
       The pre-shared API key every OpenFGA client presents (Authorization:
       Bearer) — authentication is ON by default because an open OpenFGA
       lets anything with network reach read and rewrite every authorization
-      decision in the platform. MUST BE CHANGED — the default is a
-      placeholder, not a credential. The module materializes it into the
+      decision in the platform. The module materializes it into the
       server's authn-keys Secret; only the Secret name renders into chart
-      values. Rotate by updating the value on the deployed resource.
-    value: change-me
+      values. Rotate by writing a new version of the secret and redeploying.
+      On Planton the value is a reference to a managed secret, resolved at deploy
+      so the password is never stored with the project: create it with
+      `planton secret set identity-and-access-platform-openfga-key --string` (or name an environment's own as
+      `$secret/@<env>/<slug>`). A deploy without the platform takes the literal.
+    value: $secret/identity-and-access-platform-openfga-key
 
   # ── OpenBao ──────────────────────────────────────────────────────────────
   - name: openbao_storage
