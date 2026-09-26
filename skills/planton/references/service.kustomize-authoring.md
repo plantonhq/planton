@@ -11,7 +11,7 @@ Every service's per-environment configuration lives in ONE place: the record's `
 
 - **`planton service kustomize eject <service>`** — hand authorship to the repository. Writes the record's declared configuration into a tree (one overlay per environment, one file per resource, the merge schema included), PROVES the tree renders back identical to the record, then — after an explicit confirmation — declares the tree as the writer. Run it from the repository's project root; commit and push the tree it writes.
 - **`planton service kustomize checkout <service>`** — the record as files, authorship unchanged. Use it to inspect configuration, seed a repository before ejecting, or rebuild a tree from what the record currently carries.
-- **`planton service kustomize init --env <slug> [--env <slug>...]`** — a fresh skeleton for hand-authoring: empty overlays plus the schema. Touches no record.
+- **`planton service kustomize init --envs <slug>[,<slug>...]`** — a fresh skeleton for hand-authoring: one empty overlay per named environment plus the schema (at least one environment is required). Touches no record.
 - **`planton service kustomize patch-schema --dir <tree>`** — regenerate `planton-schema.json` in an existing tree. Idempotent; run after platform schema upgrades.
 
 ## Why ejecting is safe to recommend

@@ -206,7 +206,7 @@ A workload alone — a Deployment, an ECS service, a Cloud Function without a UR
 
 ```bash
 # Start a fresh _kustomize tree by hand: one empty overlay per environment, plus the merge schema
-planton service kustomize init --env dev --env prod
+planton service kustomize init --envs dev,prod
 
 # Hand authorship of an existing service's configuration to the repository (writes the tree, proves it renders back identical, then declares it the writer)
 planton service kustomize eject <service>

@@ -99,11 +99,8 @@ After creation, build configuration is editable in the service's **Settings** ta
 Build method is part of the Service configuration, set during `planton service register` (interactive) or via the Service YAML.
 
 ```bash
-# Initialize a kustomize directory with a service manifest
-planton service kustomize init
-
-# Build the kustomize output to inspect the resolved manifest
-planton service kustomize build
+# Scaffold a _kustomize tree: one empty overlay per environment, plus the merge schema
+planton service kustomize init --envs dev,prod
 ```
 
 ## Self-Managed Pipelines

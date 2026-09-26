@@ -161,14 +161,11 @@ Deployment targets are configured as part of the Service spec, either through `p
 For Git-based deployments, manage the `_kustomize` directory structure:
 
 ```bash
-# Initialize a kustomize directory for a new service
-planton service kustomize init --new
+# Scaffold a _kustomize tree for a new service: one empty overlay per environment, plus the merge schema
+planton service kustomize init --envs dev,prod
 
-# Initialize from an existing cloud resource
-planton service kustomize init KubernetesDeployment k8sdpl-my-service
-
-# Build and inspect the resolved manifests
-planton service kustomize build
+# Hand an existing service's configuration to the repository as a kustomize tree
+planton service kustomize eject <service>
 ```
 
 ## Related Documentation
