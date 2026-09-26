@@ -232,7 +232,7 @@ Before using the CLI, authenticate with your Planton account:
 planton auth login
 ```
 
-This opens your browser to sign in through the Planton console. The CLI gets a sign-in of its own, checks it with the platform before it reports success, and stores it locally; it renews itself, and when it no longer can, every command tells you to run `planton auth login` again.
+This opens your browser to sign in through the Planton console. The CLI gets a sign-in of its own, checks it with the platform before it reports success, and stores it locally; it renews itself, and when it no longer can, every command that needs a sign-in tells you to run `planton auth login` again (commands that need none, like browsing the public catalog, keep working).
 
 ### Step 2: Set your organization context
 

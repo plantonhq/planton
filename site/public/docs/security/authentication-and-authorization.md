@@ -31,7 +31,11 @@ planton auth login you@example.com
 planton auth whoami
 ```
 
-A login is checked before it reports success: if the platform does not accept the new sign-in, the login fails and saves nothing. A sign-in renews itself while its renewal is good. When it can no longer be renewed, every command says whose sign-in expired, on which instance and why, and gives the exact `planton auth login <email>` to run.
+A login is checked before it reports success.
+- **If the platform does not accept the new sign-in,** the login fails, exits non-zero, and leaves your saved sign-ins as they were.
+- **A sign-in renews itself** while its renewal is good.
+- **When it can no longer be renewed,** every command that needs a sign-in says whose sign-in expired, on which instance and why, and gives the exact `planton auth login <email>` to run.
+- **When the sign-in service cannot be reached,** the CLI says the sign-in could not be checked, not that it expired.
 
 You can hold several accounts per instance, and several instances:
 
