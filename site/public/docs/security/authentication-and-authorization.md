@@ -21,24 +21,29 @@ Access control in Planton answers two questions: **who are you** (authentication
 
 ### Interactive Login
 
-Users authenticate through an OAuth identity provider. The web console handles this automatically when you visit the platform. The CLI uses a browser-based PKCE flow — no client secrets are stored locally:
+Users authenticate through an OAuth identity provider. The web console handles this automatically when you visit the platform. The CLI signs in through the console in your browser: it opens the console's sign-in page, and the CLI receives a sign-in of its own. If the browser is already signed in as the account you asked for, no password is typed. No client secrets are stored locally.
 
 ```bash
-# Open a browser to authenticate
-planton auth login
+# Sign in (opens the browser); name the account to skip the picker
+planton auth login you@example.com
 
-# Check your current identity
-planton auth who
+# Check your current identity and whether the sign-in renews automatically
+planton auth whoami
 ```
 
-After successful authentication, your session credentials are stored in the CLI's local configuration. You can manage multiple authentication contexts and switch between them:
+A login is checked before it reports success: if the platform does not accept the new sign-in, the login fails and saves nothing. A sign-in renews itself while its renewal is good. When it can no longer be renewed, every command says whose sign-in expired, on which instance and why, and gives the exact `planton auth login <email>` to run.
+
+You can hold several accounts per instance, and several instances:
 
 ```bash
-# List authentication sessions
+# List every saved account, each with its own status
 planton auth list
 
-# Switch to a different session
-planton auth use
+# Switch the active account on the current instance (checked, and renewed if needed)
+planton auth switch other@example.com
+
+# Switch to a different instance
+planton auth use <instance>
 ```
 
 ### API Keys
