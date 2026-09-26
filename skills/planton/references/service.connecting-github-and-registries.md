@@ -22,7 +22,7 @@ Which family an instance offers is a fact about the deployment, read from the me
 ### Connecting GitHub on a machine
 
 - **Desktop**: Connections → **GitHub** shows the detected card — *GitHub Account priya-dev · github.com · Signed in with gh* — and **Use This Account** writes the connection and proves it through the control plane (**Confirmed — GitHub attributes this sign-in to priya-dev**).
-- **CLI**: `planton connect github detect` (add `--account <login>` when the machine holds several; `--yes` to skip the prompt; `--output json` to inspect). It writes `github.account.<login>` (slug `github-account-<login>`) and reads **GitHub Connection Ready** or the exact sentence to act on.
+- **CLI**: `planton connect github detect` (add `--github-account <login>` when the machine holds several; `--yes` to skip the prompt; `-o json` to inspect). It writes `github.account.<login>` (slug `github-account-<login>`) and reads **GitHub Connection Ready** or the exact sentence to act on.
 - **Not signed in yet?** Say the two ways: `gh auth login` (takes effect at once), or export `GH_TOKEN` in the shell profile and restart Planton (a shell token is read when Planton starts).
 - **Proving it later**: **Verify Sign-In** on the connection's page answers a verdict — **Confirmed** with the account, or **Sign-In Not Working Yet** with the `gh auth login` to run. Prefer it to guessing: it is one live call.
 
