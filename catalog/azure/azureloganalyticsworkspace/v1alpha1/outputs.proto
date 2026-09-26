@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azureloganalyticsworkspace.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureLogAnalyticsWorkspaceStackOutputs** captures the outputs of provisioning
 // an Azure Log Analytics Workspace.
 //
@@ -33,12 +35,12 @@ message AzureLogAnalyticsWorkspaceStackOutputs {
   // Azure Monitor agents and direct ingestion APIs to authenticate when
   // sending data. Unusable as a credential when
   // local_authentication_enabled is false (keyless posture).
-  string primary_shared_key = 5;
+  string primary_shared_key = 5 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary shared key for agent authentication. Secret-bearing: a
   // backup key that allows rotation without downtime -- point agents at the
   // secondary, regenerate the primary, then swap back.
-  string secondary_shared_key = 6;
+  string secondary_shared_key = 6 [(dev.planton.shared.options.sensitive) = true];
 
   // The principal ID of the workspace's system-assigned managed identity.
   // Empty unless the identity block enables SYSTEM_ASSIGNED. Grant this

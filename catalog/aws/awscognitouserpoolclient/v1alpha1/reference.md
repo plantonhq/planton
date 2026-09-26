@@ -751,12 +751,12 @@ Up to 200 entries.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AwsCognitoUserPoolClient, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AwsCognitoUserPoolClient, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.client_id` | `string` | The app client ID (e.g. "1a2b3c4d5e6f7g8h9i0j"). The public identifier applications present at sign-in and token endpoints -- and the "aud" claim JWT authorizers validate. |
-| `status.outputs.client_secret` | `string` | The app client secret. Only populated when `generate_secret` is true. Sensitive -- treat as a credential and handle securely; confidential clients present it at the token endpoint. |
+| `status.outputs.client_secret` | `string` (sensitive) | The app client secret. Only populated when `generate_secret` is true. Sensitive -- treat as a credential and handle securely; confidential clients present it at the token endpoint. |
 | `status.outputs.user_pool_id` | `string` | The user pool this client belongs to, resolved from the spec reference. Application configs typically need the (pool id, client id) pair together, and a consumer holding only this resource gets both from its outputs. |
 
 ## References

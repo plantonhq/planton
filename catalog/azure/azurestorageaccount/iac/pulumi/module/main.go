@@ -584,12 +584,12 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageaccountv1alpha1.Azur
 	ctx.Export(OpSecondaryFileEndpoint, createdAccount.SecondaryFileEndpoint)
 	ctx.Export(OpSecondaryDfsEndpoint, createdAccount.SecondaryDfsEndpoint)
 	ctx.Export(OpSecondaryWebEndpoint, createdAccount.SecondaryWebEndpoint)
-	ctx.Export(OpPrimaryAccessKey, createdAccount.PrimaryAccessKey)
-	ctx.Export(OpSecondaryAccessKey, createdAccount.SecondaryAccessKey)
-	ctx.Export(OpPrimaryConnectionString, createdAccount.PrimaryConnectionString)
-	ctx.Export(OpSecondaryConnectionString, createdAccount.SecondaryConnectionString)
-	ctx.Export(OpPrimaryBlobConnectionString, createdAccount.PrimaryBlobConnectionString)
-	ctx.Export(OpSecondaryBlobConnectionString, createdAccount.SecondaryBlobConnectionString)
+	ctx.Export(OpPrimaryAccessKey, pulumi.ToSecret(createdAccount.PrimaryAccessKey))
+	ctx.Export(OpSecondaryAccessKey, pulumi.ToSecret(createdAccount.SecondaryAccessKey))
+	ctx.Export(OpPrimaryConnectionString, pulumi.ToSecret(createdAccount.PrimaryConnectionString))
+	ctx.Export(OpSecondaryConnectionString, pulumi.ToSecret(createdAccount.SecondaryConnectionString))
+	ctx.Export(OpPrimaryBlobConnectionString, pulumi.ToSecret(createdAccount.PrimaryBlobConnectionString))
+	ctx.Export(OpSecondaryBlobConnectionString, pulumi.ToSecret(createdAccount.SecondaryBlobConnectionString))
 	ctx.Export(OpIdentityPrincipalId, createdAccount.Identity.ApplyT(func(identity *storage.AccountIdentity) string {
 		if identity == nil || identity.PrincipalId == nil {
 			return ""

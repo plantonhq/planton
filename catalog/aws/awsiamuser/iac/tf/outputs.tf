@@ -16,7 +16,6 @@ output "user_id" {
 output "access_key_id" {
   description = "Access key ID (if created)."
   value       = try(aws_iam_access_key.this[0].id, "")
-  sensitive   = true
 }
 
 output "secret_access_key" {

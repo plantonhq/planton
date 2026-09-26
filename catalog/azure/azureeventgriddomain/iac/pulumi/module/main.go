@@ -173,8 +173,8 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventgriddomainv1alpha1.Azu
 	ctx.Export(OpDomainId, createdDomain.ID())
 	ctx.Export(OpDomainName, createdDomain.Name)
 	ctx.Export(OpEndpoint, createdDomain.Endpoint)
-	ctx.Export(OpPrimaryAccessKey, createdDomain.PrimaryAccessKey)
-	ctx.Export(OpSecondaryAccessKey, createdDomain.SecondaryAccessKey)
+	ctx.Export(OpPrimaryAccessKey, pulumi.ToSecret(createdDomain.PrimaryAccessKey))
+	ctx.Export(OpSecondaryAccessKey, pulumi.ToSecret(createdDomain.SecondaryAccessKey))
 	// Empty unless SYSTEM_ASSIGNED is enabled -- mirrors the TF module's
 	// try(identity[0].principal_id, "").
 	ctx.Export(OpIdentityPrincipalId, createdDomain.Identity.PrincipalId().ApplyT(func(principalId *string) string {

@@ -109,14 +109,14 @@ func oauthClient(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider)
 			return errors.Wrapf(err, "failed to create oauth client credential %s", credential.CredentialId)
 		}
 		if !firstSecretExported {
-			ctx.Export(OpClientSecret, createdCredential.ClientSecret)
+			ctx.Export(OpClientSecret, pulumi.ToSecret(createdCredential.ClientSecret))
 			firstSecretExported = true
 		}
 	}
 	if !firstSecretExported {
 		// The output key must exist either way so the outputs transformer
 		// maps a stable shape; empty means "no credentials configured".
-		ctx.Export(OpClientSecret, pulumi.String(""))
+		ctx.Export(OpClientSecret, pulumi.ToSecret(pulumi.String("")))
 	}
 
 	return nil

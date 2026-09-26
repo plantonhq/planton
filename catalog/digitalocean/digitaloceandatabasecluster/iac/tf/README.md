@@ -57,7 +57,7 @@ Exactly the kind's stack-output contract, identical to the Pulumi module:
 | `cluster_id` | The cluster UUID (import id for `digitalocean_database_cluster`) |
 | `connection_uri` | Full public connection URI (sensitive) |
 | `host` / `port` | Public connection endpoint |
-| `database_user` / `database_password` | Default user credentials (sensitive) |
+| `database_user` / `database_password` | Default user credentials (the password is sensitive) |
 | `private_host` / `private_uri` | Private-network endpoint (URI sensitive) |
 | `database_name` | Default database name |
 | `ui_host` / `ui_port` / `ui_uri` / `ui_database` / `ui_user` / `ui_password` | OpenSearch Dashboards details (OpenSearch only; URI/password sensitive) |

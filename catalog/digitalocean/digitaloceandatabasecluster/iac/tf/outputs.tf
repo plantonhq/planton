@@ -25,7 +25,6 @@ output "port" {
 output "database_user" {
   description = "The username for the cluster's default database user"
   value       = digitalocean_database_cluster.cluster.user
-  sensitive   = true
 }
 
 output "database_password" {

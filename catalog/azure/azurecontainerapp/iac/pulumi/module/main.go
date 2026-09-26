@@ -122,7 +122,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappv1alpha1.AzureC
 	ctx.Export(OpLatestRevisionName, createdApp.LatestRevisionName)
 	ctx.Export(OpLatestRevisionFqdn, createdApp.LatestRevisionFqdn)
 	ctx.Export(OpOutboundIpAddresses, createdApp.OutboundIpAddresses)
-	ctx.Export(OpCustomDomainVerificationId, createdApp.CustomDomainVerificationId)
+	ctx.Export(OpCustomDomainVerificationId, pulumi.Unsecret(createdApp.CustomDomainVerificationId))
 
 	// The app FQDN only exists when ingress is configured; exported empty
 	// otherwise so the output shape stays constant across configurations.

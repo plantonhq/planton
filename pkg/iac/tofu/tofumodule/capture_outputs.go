@@ -13,15 +13,16 @@ import (
 )
 
 // tofuOutputEnvelope is one entry of `tofu output -json` / `terraform output -json`:
-// every output rides in an envelope carrying its value, type, and sensitivity.
+// every output rides in an envelope carrying its value and type. Its
+// `sensitive` flag is not read: which outputs are secrets comes from the
+// kind's schema, which `planton module verify` holds the module to.
 type tofuOutputEnvelope struct {
-	Value     json.RawMessage `json:"value"`
-	Sensitive bool            `json:"sensitive"`
+	Value json.RawMessage `json:"value"`
 }
 
 // captureOutputs reads the just-applied stack's outputs back with
 // `<binary> output -json`, unwraps the envelopes, and fills sink with the raw
-// map, the flattened map, per-output sensitivity, and the kind's typed
+// map, the flattened map, the kind's secret outputs, and its typed
 // StackOutputs proto (honoring module-shipped transform overrides via the
 // module directory).
 //
@@ -48,19 +49,21 @@ func captureOutputs(
 		return errors.Wrapf(err, "failed to read stack outputs with `%s output -json`", binaryName)
 	}
 
-	raw, sensitive, err := unwrapTofuOutputs(stdout.Bytes())
+	raw, err := unwrapTofuOutputs(stdout.Bytes())
 	if err != nil {
 		return errors.Wrapf(err, "failed to decode `%s output -json`", binaryName)
 	}
 
 	sink.Raw = raw
-	sink.Sensitive = sensitive
 	sink.Flat = outputs.Flatten(raw)
 
 	kind := crkreflect.KindFromString(kindName)
 	if kind == cloudresourcekind.CloudResourceKind_unspecified {
 		return errors.Errorf("cannot resolve cloud resource kind from %q for output transformation", kindName)
 	}
+	// A kind whose schema cannot be read leaves Secrets empty, and every
+	// output then renders masked.
+	sink.Secrets, _ = outputs.SecretOutputs(kind)
 
 	typed, flat, err := outputs.TransformRaw(kind, raw, &outputs.TransformOptions{ModuleDir: modulePath})
 	if err != nil {
@@ -75,27 +78,25 @@ func captureOutputs(
 }
 
 // unwrapTofuOutputs decodes the `output -json` document into the plain
-// name->value map plus the per-output sensitivity the envelopes declare.
-// An empty document (a module with no outputs prints `{}`) is not an error.
-func unwrapTofuOutputs(outputJson []byte) (map[string]interface{}, map[string]bool, error) {
+// name->value map. An empty document (a module with no outputs prints `{}`)
+// is not an error.
+func unwrapTofuOutputs(outputJson []byte) (map[string]interface{}, error) {
 	envelopes := map[string]tofuOutputEnvelope{}
 	if len(bytes.TrimSpace(outputJson)) > 0 {
 		if err := json.Unmarshal(outputJson, &envelopes); err != nil {
-			return nil, nil, errors.Wrap(err, "output document is not the expected {name: {value, sensitive}} shape")
+			return nil, errors.Wrap(err, "output document is not the expected {name: {value, sensitive}} shape")
 		}
 	}
 
 	values := make(map[string]interface{}, len(envelopes))
-	sensitive := make(map[string]bool, len(envelopes))
 	for name, envelope := range envelopes {
 		var value interface{}
 		if len(envelope.Value) > 0 {
 			if err := json.Unmarshal(envelope.Value, &value); err != nil {
-				return nil, nil, errors.Wrapf(err, "output %q carries an undecodable value", name)
+				return nil, errors.Wrapf(err, "output %q carries an undecodable value", name)
 			}
 		}
 		values[name] = value
-		sensitive[name] = envelope.Sensitive
 	}
-	return values, sensitive, nil
+	return values, nil
 }

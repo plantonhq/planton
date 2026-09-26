@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0user.v1alpha1;
 
+import "shared/options/options.proto";
+
 // Auth0UserStackOutputs contains the outputs from an Auth0 User deployment.
 // These outputs identify the user to every system that must recognize it: the
 // subject other declarations grant standing to, the profile fields as Auth0
@@ -45,5 +47,5 @@ message Auth0UserStackOutputs {
   // into the credential store that owns it; every later rotation happens in
   // Auth0, and this output keeps the value the modules minted, not the current
   // one.
-  string password = 8;
+  string password = 8 [(dev.planton.shared.options.sensitive) = true];
 }

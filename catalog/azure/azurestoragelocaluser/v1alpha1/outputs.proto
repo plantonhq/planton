@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestoragelocaluser.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureStorageLocalUserStackOutputs** captures the outputs of
-// provisioning a storage local user. The sid and password outputs carry
-// SECRET-BEARING material (the password is the user's login secret; the
-// SID identifies the principal in Azure Files ACLs) -- treat any surface
-// that renders stack outputs accordingly, and hand the password to the
-// partner over a secure channel.
+// provisioning a storage local user. The password is the user's login
+// secret: Planton keeps it in the organization's secret store, and the output
+// holds a reference -- hand the password to the partner over a secure channel.
 message AzureStorageLocalUserStackOutputs {
   // The local user's Azure Resource Manager ID.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account}/localUsers/{name}
@@ -23,15 +23,16 @@ message AzureStorageLocalUserStackOutputs {
   string sftp_username = 3;
 
   // The user's unique Security Identifier (SID) -- Azure generates it at
-  // creation; Azure Files NTFS-style ACLs reference principals by SID.
-  // Secret-bearing by Azure's own classification.
+  // creation; Azure Files NTFS-style ACLs reference principals by SID. An
+  // identifier, not a credential: it authenticates nothing on its own, so it is
+  // a public output even though the provider marks the attribute sensitive.
   string sid = 4;
 
   // The Azure-generated SSH password -- returned EXACTLY ONCE, at the
   // creation that enabled ssh_password_enabled (empty when password
   // auth is off). Azure never returns it again: losing it means
   // regenerating it (flip ssh_password_enabled off and on). SECRET.
-  string password = 5;
+  string password = 5 [(dev.planton.shared.options.sensitive) = true];
 
   // The name of the storage account the user lives on, parsed from the
   // resolved account ID -- saves consumers a second reference when they

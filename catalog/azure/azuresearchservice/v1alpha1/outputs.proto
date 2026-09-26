@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azuresearchservice.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureSearchServiceStackOutputs** captures the outputs of
 // provisioning an Azure AI Search service.
 message AzureSearchServiceStackOutputs {
@@ -23,19 +25,19 @@ message AzureSearchServiceStackOutputs {
   // service's data plane. Sensitive: treat as a credential (the
   // service mints it; there is no vault indirection). Empty when
   // local authentication is disabled.
-  string primary_key = 4;
+  string primary_key = 4 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary admin API key -- the rotation partner of
   // primary_key. Sensitive: treat as a credential. Empty when local
   // authentication is disabled.
-  string secondary_key = 5;
+  string secondary_key = 5 [(dev.planton.shared.options.sensitive) = true];
 
   // The service's built-in query API key -- read-only data-plane
   // access for client applications (the service creates exactly one
   // unnamed query key at provisioning; create more at the data
   // plane). Sensitive: treat as a credential. Empty when local
   // authentication is disabled.
-  string default_query_key = 6;
+  string default_query_key = 6 [(dev.planton.shared.options.sensitive) = true];
 
   // Whether the service's objects comply with the customer-managed-
   // key enforcement posture ("Compliant" / "NonCompliant") -- ARM's

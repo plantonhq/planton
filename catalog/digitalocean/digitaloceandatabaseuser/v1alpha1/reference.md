@@ -177,16 +177,16 @@ Permission on the index.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseUser, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseUser, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.cluster_id` | `string` | UUID of the database cluster the user belongs to. |
 | `status.outputs.user_name` | `string` | Name of the database user (its API identity within the cluster). |
 | `status.outputs.role` | `string` | Role DigitalOcean assigned to the user (normally "normal"; the cluster's built-in default user is "primary"). |
-| `status.outputs.password` | `string` | Server-generated password for the user. Secret. MongoDB clusters return it only at creation time. |
-| `status.outputs.access_cert` | `string` | Kafka clusters only: PEM access certificate for mutual-TLS authentication. Secret. Empty on other engines. |
-| `status.outputs.access_key` | `string` | Kafka clusters only: PEM access key paired with access_cert. Secret. Empty on other engines. |
+| `status.outputs.password` | `string` (sensitive) | Server-generated password for the user. Secret. MongoDB clusters return it only at creation time. |
+| `status.outputs.access_cert` | `string` | Kafka clusters only: PEM access certificate for mutual-TLS authentication -- the public half; the private key is access_key. Empty on other engines. |
+| `status.outputs.access_key` | `string` (sensitive) | Kafka clusters only: PEM access key paired with access_cert. Secret. Empty on other engines. |
 
 ## References
 

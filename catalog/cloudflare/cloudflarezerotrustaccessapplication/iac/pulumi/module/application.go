@@ -301,7 +301,7 @@ func application(
 	ctx.Export(OpAud, created.Aud)
 	ctx.Export(OpDomain, created.Domain)
 	ctx.Export(OpSaasClientId, created.SaasApp.ClientId())
-	ctx.Export(OpSaasClientSecret, created.SaasApp.ClientSecret())
+	ctx.Export(OpSaasClientSecret, pulumi.ToSecret(created.SaasApp.ClientSecret()))
 	ctx.Export(OpSaasPublicKey, created.SaasApp.PublicKey())
 	ctx.Export(OpSaasSsoEndpoint, created.SaasApp.SsoEndpoint())
 	ctx.Export(OpSaasIdpEntityId, created.SaasApp.IdpEntityId())

@@ -175,7 +175,7 @@ Additional flags for `create-stack-job`, `resume`, and `rerun`:
 - `--tail` / `-t` — Follow the job's progress events after creation
 - `--show-stack-summary` — Display the resource summary at completion (default: on)
 - `--show-stack-diff` — Display detailed diffs for changed resources
-- `--show-stack-outputs` — Display the stack outputs at completion (default: on)
+- `--show-stack-outputs` — Display the stack outputs at completion (default: on). A secret the resource generates shows as its `$secret/` reference; the value itself is kept in your secret store (see [Where Secrets Live](/docs/secrets/where-secrets-live#secrets-a-resource-generates))
 - `--version-message` / `-m` — A description for the job, similar to a commit message
 
 The `stack-job` command can also be invoked as `sj` for brevity.

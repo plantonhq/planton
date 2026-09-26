@@ -127,12 +127,12 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusauthorizationrule
 	// geo-DR pairing.
 	ctx.Export(OpAuthorizationRuleId, ruleId)
 	ctx.Export(OpRuleName, ruleName)
-	ctx.Export(OpPrimaryKey, primaryKey)
-	ctx.Export(OpSecondaryKey, secondaryKey)
-	ctx.Export(OpPrimaryConnectionString, primaryConnectionString)
-	ctx.Export(OpSecondaryConnectionString, secondaryConnectionString)
-	ctx.Export(OpPrimaryConnectionStringAlias, primaryConnectionStringAlias)
-	ctx.Export(OpSecondaryConnectionStringAlias, secondaryConnectionStringAlias)
+	ctx.Export(OpPrimaryKey, pulumi.ToSecret(primaryKey))
+	ctx.Export(OpSecondaryKey, pulumi.ToSecret(secondaryKey))
+	ctx.Export(OpPrimaryConnectionString, pulumi.ToSecret(primaryConnectionString))
+	ctx.Export(OpSecondaryConnectionString, pulumi.ToSecret(secondaryConnectionString))
+	ctx.Export(OpPrimaryConnectionStringAlias, pulumi.ToSecret(primaryConnectionStringAlias))
+	ctx.Export(OpSecondaryConnectionStringAlias, pulumi.ToSecret(secondaryConnectionStringAlias))
 
 	return nil
 }

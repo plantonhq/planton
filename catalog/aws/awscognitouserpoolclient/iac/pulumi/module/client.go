@@ -173,7 +173,7 @@ func client(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*cogni
 	// ---------------------------------------------------------------------------
 
 	ctx.Export(OpClientId, created.ID())
-	ctx.Export(OpClientSecret, created.ClientSecret)
+	ctx.Export(OpClientSecret, pulumi.ToSecret(created.ClientSecret))
 	// Echo the resolved pool id: AWS keys clients by (pool id, client id), and
 	// application configs typically need the pair together.
 	ctx.Export(OpUserPoolId, created.UserPoolId)

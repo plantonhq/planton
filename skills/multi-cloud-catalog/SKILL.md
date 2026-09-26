@@ -48,7 +48,7 @@ fallbacks when no pack is reachable at all. Everything below writes
 | What does component K require? | K's `reference.md`: read `## Example` first (a validated manifest), then the `## Spec Fields` table's Required column and `## Validation Rules` |
 | What does one field mean and accept? | The field's own `### spec.<path>` block in `## Field Details` -- docs, rules, allowed enum values |
 | Where does a secret go on K (a password, API key, token)? | The marks on K's `## Spec Fields` rows: `(sensitive)` holds secret material (on Planton only as a `$secret/...` reference); `(no secrets: use <field>)` is read by every viewer and refuses a secret reference -- the named sibling is where it goes, and its field detail says why. `_docs/reference-commons.md` ("Where a secret may go") explains the rule once; K's `GUIDE.md` weighs the secret-bearing fields against each other |
-| What does K export after deployment? | K's `## Outputs` table |
+| What does K export after deployment? | K's `## Outputs` table; a `(sensitive)` row is a secret K generates -- on Planton the output holds a `$secret/` reference, so it feeds only a sensitive field |
 | How do components wire together? | K's `## References` (outbound) and `## Referenced By` (inbound) tables; `_docs/reference-graph.yaml` for catalog-wide edges |
 | What is the judgment call before choosing K? | `GUIDE.md` beside K's page -- the page head links it when one exists -- and `_patterns/` for multi-component recipes |
 | What does K cost per month? | K's `cost.yaml` (billing model, always-on baseline charges, the spec fields that move the bill, exclusions) + the per-preset dollar estimates at `_pricing/estimates/<kinddir>.yaml`, where `<kinddir>` is the kind lowercased (e.g. `awsalb.yaml`) |

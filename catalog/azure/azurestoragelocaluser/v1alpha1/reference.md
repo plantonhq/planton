@@ -246,15 +246,15 @@ Whether the user may CREATE new objects and directories.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureStorageLocalUser, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureStorageLocalUser, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.local_user_id` | `string` | The local user's Azure Resource Manager ID. Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Storage/storageAccounts/{account}/localUsers/{name} |
 | `status.outputs.user_name` | `string` | The user's name within the account -- the second half of the SFTP login. |
 | `status.outputs.sftp_username` | `string` | The full SFTP login: {account-name}.{user-name} -- what a client passes as the username when connecting to {account-name}.blob.core.windows.net on port 22. |
-| `status.outputs.sid` | `string` | The user's unique Security Identifier (SID) -- Azure generates it at creation; Azure Files NTFS-style ACLs reference principals by SID. Secret-bearing by Azure's own classification. |
-| `status.outputs.password` | `string` | The Azure-generated SSH password -- returned EXACTLY ONCE, at the creation that enabled ssh_password_enabled (empty when password auth is off). Azure never returns it again: losing it means regenerating it (flip ssh_password_enabled off and on). SECRET. |
+| `status.outputs.sid` | `string` | The user's unique Security Identifier (SID) -- Azure generates it at creation; Azure Files NTFS-style ACLs reference principals by SID. An identifier, not a credential: it authenticates nothing on its own, so it is a public output even though the provider marks the attribute sensitive. |
+| `status.outputs.password` | `string` (sensitive) | The Azure-generated SSH password -- returned EXACTLY ONCE, at the creation that enabled ssh_password_enabled (empty when password auth is off). Azure never returns it again: losing it means regenerating it (flip ssh_password_enabled off and on). SECRET. |
 | `status.outputs.storage_account_name` | `string` | The name of the storage account the user lives on, parsed from the resolved account ID -- saves consumers a second reference when they need the account/user pair. |
 
 ## References

@@ -3101,7 +3101,7 @@ groups by them. Updatable in place.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureAksCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureAksCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -3113,7 +3113,7 @@ Reference an output from another manifest as `valueFrom: {kind: AzureAksCluster,
 | `status.outputs.oidc_issuer_url` | `string` | The cluster's OIDC issuer URL, populated when oidc_issuer_enabled is true (the default). An AzureFederatedIdentityCredential's `issuer` field consumes this value directly -- the trust anchor for workload identity federation. |
 | `status.outputs.node_resource_group` | `string` | The name of the Azure-managed NODE resource group holding the cluster's infrastructure (VM scale sets, managed load balancer, managed public IPs). |
 | `status.outputs.node_resource_group_id` | `string` | The Azure Resource Manager ID of the node resource group -- handy as a scope for role assignments over the cluster's infrastructure. |
-| `status.outputs.cluster_kubeconfig` | `string` | Base64-encoded kubeconfig for the cluster (the user credential; with Entra ID integration it triggers the AAD login flow). Treat as a secret. |
+| `status.outputs.cluster_kubeconfig` | `string` (sensitive) | Base64-encoded kubeconfig for the cluster (the user credential; with Entra ID integration it triggers the AAD login flow). Treat as a secret. |
 | `status.outputs.cluster_identity_principal_id` | `string` | The principal (object) ID of the cluster's managed identity -- grant this identity Azure roles (e.g. Network Contributor on a BYO subnet, Private DNS Zone Contributor on a BYO private zone) via AzureRoleAssignment. |
 | `status.outputs.kubelet_identity_object_id` | `string` | The object ID of the kubelet identity -- grant it AcrPull on container registries so nodes can pull images. |
 | `status.outputs.kubelet_identity_client_id` | `string` | The client ID of the kubelet identity -- what pods see as the node's identity when using legacy IMDS-based access. |

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabaseconnectionpool.v1alpha1;
 
+import "shared/options/options.proto";
+
 // DigitalOceanDatabaseConnectionPoolStackOutputs captures the key outputs
 // after provisioning a connection pool on a DigitalOcean PostgreSQL
 // cluster. The cluster id and pool name are echoed so consumers (and
@@ -31,13 +33,13 @@ message DigitalOceanDatabaseConnectionPoolStackOutputs {
 
   // Full public connection URI for the pool, including credentials.
   // Secret.
-  string uri = 6;
+  string uri = 6 [(dev.planton.shared.options.sensitive) = true];
 
   // Full private-network connection URI for the pool, including
   // credentials. Secret.
-  string private_uri = 7;
+  string private_uri = 7 [(dev.planton.shared.options.sensitive) = true];
 
   // Password of the pool's user. Secret. Empty for inbound-user pools
   // (no dedicated user; clients bring their own credentials).
-  string password = 8;
+  string password = 8 [(dev.planton.shared.options.sensitive) = true];
 }

@@ -7,11 +7,10 @@
 // as a gated leaf, descend non-sensitive submessages, map/repeated handled. A reader
 // who knows one walk knows both.
 //
-// Scope is the `spec` subtree only. The `sensitive` option is actionable solely on
-// the INPUT surface -- it forces a value to be a managed-secret reference and resolves
-// it JIT at deploy. `status.outputs.*` are provider-computed results (a generated
-// password, a connection string) that the user never supplies and cannot make a
-// reference, so they are not part of the annotation sweep and would only be noise here.
+// Scope is the `spec` subtree only. On an output the `sensitive` mark means a secret
+// the resource generates, and a name cannot tell one apart (an `access_key` is a key id
+// in one kind and a private key in another), so outputs are held to the engines' own
+// declarations by `planton module verify` instead, and outputs.go pins their shape.
 
 //go:build !codegen
 // +build !codegen

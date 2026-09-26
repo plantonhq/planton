@@ -12,6 +12,7 @@ go_library(
         "preprocess.go",
         "resolve.go",
         "scalar.go",
+        "secret.go",
         "transform.go",
         "transform_raw.go",
         "validate.go",
@@ -21,6 +22,7 @@ go_library(
     deps = [
         "//pkg/crkreflect",
         "//shared/cloudresourcekind",
+        "//shared/options",
         "@com_github_pkg_errors//:errors",
         "@com_github_sirupsen_logrus//:logrus",
         "@in_gopkg_yaml_v3//:yaml_v3",
@@ -42,6 +44,7 @@ go_test(
         "preprocess_test.go",
         "resolve_test.go",
         "scalar_test.go",
+        "secret_test.go",
         "transform_raw_test.go",
         "transform_test.go",
         "validate_test.go",
@@ -57,6 +60,8 @@ go_test(
         "//catalog/kubernetes/kubernetespostgres/v1alpha1",
         "//pkg/crkreflect",
         "//shared/cloudresourcekind",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//require",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )

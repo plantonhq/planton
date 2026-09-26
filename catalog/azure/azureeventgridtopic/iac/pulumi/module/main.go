@@ -154,8 +154,8 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventgridtopicv1alpha1.Azur
 	ctx.Export(OpTopicId, createdTopic.ID())
 	ctx.Export(OpTopicName, createdTopic.Name)
 	ctx.Export(OpEndpoint, createdTopic.Endpoint)
-	ctx.Export(OpPrimaryAccessKey, createdTopic.PrimaryAccessKey)
-	ctx.Export(OpSecondaryAccessKey, createdTopic.SecondaryAccessKey)
+	ctx.Export(OpPrimaryAccessKey, pulumi.ToSecret(createdTopic.PrimaryAccessKey))
+	ctx.Export(OpSecondaryAccessKey, pulumi.ToSecret(createdTopic.SecondaryAccessKey))
 	// Empty unless SYSTEM_ASSIGNED is enabled -- mirrors the TF module's
 	// try(identity[0].principal_id, "").
 	ctx.Export(OpIdentityPrincipalId, createdTopic.Identity.PrincipalId().ApplyT(func(principalId *string) string {

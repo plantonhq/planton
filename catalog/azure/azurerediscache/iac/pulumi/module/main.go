@@ -264,10 +264,10 @@ func Resources(ctx *pulumi.Context, stackInput *azurerediscachev1alpha1.AzureRed
 	ctx.Export(OpHostname, createdCache.Hostname)
 	ctx.Export(OpPort, createdCache.Port)
 	ctx.Export(OpSslPort, createdCache.SslPort)
-	ctx.Export(OpPrimaryAccessKey, createdCache.PrimaryAccessKey)
-	ctx.Export(OpSecondaryAccessKey, createdCache.SecondaryAccessKey)
-	ctx.Export(OpPrimaryConnectionString, createdCache.PrimaryConnectionString)
-	ctx.Export(OpSecondaryConnectionString, createdCache.SecondaryConnectionString)
+	ctx.Export(OpPrimaryAccessKey, pulumi.ToSecret(createdCache.PrimaryAccessKey))
+	ctx.Export(OpSecondaryAccessKey, pulumi.ToSecret(createdCache.SecondaryAccessKey))
+	ctx.Export(OpPrimaryConnectionString, pulumi.ToSecret(createdCache.PrimaryConnectionString))
+	ctx.Export(OpSecondaryConnectionString, pulumi.ToSecret(createdCache.SecondaryConnectionString))
 	ctx.Export(OpIdentityPrincipalId, identityPrincipalId)
 
 	return nil

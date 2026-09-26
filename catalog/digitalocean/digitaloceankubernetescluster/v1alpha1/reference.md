@@ -721,12 +721,12 @@ explicit false (assert OFF) is valid, not just true.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanKubernetesCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanKubernetesCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.cluster_id` | `string` | The unique identifier (UUID) of the created Kubernetes cluster. |
-| `status.outputs.kubeconfig` | `string` | The raw kubeconfig YAML for accessing the cluster (not base64-encoded); write it to a file and point KUBECONFIG at it. Contains admin credentials -- treat as a secret. |
+| `status.outputs.kubeconfig` | `string` (sensitive) | The raw kubeconfig YAML for accessing the cluster (not base64-encoded); write it to a file and point KUBECONFIG at it. Contains admin credentials -- treat as a secret. |
 | `status.outputs.api_server_endpoint` | `string` | The endpoint URL of the Kubernetes API server for the cluster. |
 | `status.outputs.urn` | `string` | The uniform resource name of the cluster ("do:kubernetes:<cluster_id>"), used when attaching the cluster to a DigitalOcean project. |
 | `status.outputs.ipv4_address` | `string` | The public IPv4 address of the cluster's control plane, when DigitalOcean reports one. Clusters created today report NONE: the API server sits behind DigitalOcean's own front end and is reachable only by the api_server_endpoint hostname (measured on a single-replica 1.35 cluster, not just on HA clusters). Both provisioners export the value verbatim, so expect an empty string; anything that needs the control plane's address -- allowlists, health probes -- should use api_server_endpoint. |

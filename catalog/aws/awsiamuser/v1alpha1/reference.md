@@ -171,13 +171,13 @@ meaningful when the access key exists (disable_access_keys is false).
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AwsIamUser, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AwsIamUser, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.user_arn` | `string` | user_arn is the ARN of the created IAM user. |
 | `status.outputs.access_key_id` | `string` | access_key_id is the access key ID for the user (present if an access key was created). |
-| `status.outputs.secret_access_key` | `string` | secret_access_key is the base64-encoded secret key associated with the access key. This value is sensitive and should be handled securely. |
+| `status.outputs.secret_access_key` | `string` (sensitive) | secret_access_key is the base64-encoded secret key associated with the access key. This value is sensitive and should be handled securely. |
 | `status.outputs.console_url` | `string` | console_url is the AWS console sign-in URL for this user. |
 | `status.outputs.user_name` | `string` | user_name is the friendly name of the IAM user. |
 | `status.outputs.user_id` | `string` | user_id is the stable unique ID of the IAM user. |

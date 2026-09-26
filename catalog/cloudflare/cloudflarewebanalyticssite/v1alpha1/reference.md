@@ -177,8 +177,8 @@ Reference an output from another manifest as `valueFrom: {kind: CloudflareWebAna
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.site_tag` | `string` | The Cloudflare-assigned site tag (the site's identity in every RUM API path). |
-| `status.outputs.site_token` | `string` | The site's measurement token, embedded by the JavaScript beacon. Sensitive both here (machine-readable) and in the modules' output registration -- hygiene, not a control: the token ships inside public pages once deployed. |
-| `status.outputs.snippet` | `string` | The ready-to-embed JavaScript snippet (carries the site token). Sensitive for the same reason as site_token. |
+| `status.outputs.site_token` | `string` | The site's measurement token, embedded by the JavaScript beacon. The token ships inside public pages once deployed. |
+| `status.outputs.snippet` | `string` | The ready-to-embed JavaScript snippet (carries the site token). |
 | `status.outputs.ruleset_id` | `string` | The site's ruleset ID -- the parent object Cloudflare stores the include/exclude rules under. |
 
 ## References

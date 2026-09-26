@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecosmosdbaccount.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureCosmosdbAccountStackOutputs** captures the outputs of provisioning
 // an Azure Cosmos DB account.
 //
@@ -41,47 +43,47 @@ message AzureCosmosdbAccountStackOutputs {
   repeated string write_endpoints = 5;
 
   // The primary read-write account key (secret-bearing).
-  string primary_key = 6;
+  string primary_key = 6 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary read-write account key (secret-bearing) -- the
   // rotation partner: applications move to the secondary, the primary
   // is regenerated, and back.
-  string secondary_key = 7;
+  string secondary_key = 7 [(dev.planton.shared.options.sensitive) = true];
 
   // The primary read-only account key (secret-bearing) -- for consumers
   // that must never write.
-  string primary_readonly_key = 8;
+  string primary_readonly_key = 8 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary read-only account key (secret-bearing).
-  string secondary_readonly_key = 9;
+  string secondary_readonly_key = 9 [(dev.planton.shared.options.sensitive) = true];
 
   // Ready-made SQL-API connection strings (secret-bearing), populated
   // for every account kind. Format:
   // AccountEndpoint={endpoint};AccountKey={key};
-  string primary_sql_connection_string = 10;
+  string primary_sql_connection_string = 10 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary SQL-API connection string (secret-bearing).
-  string secondary_sql_connection_string = 11;
+  string secondary_sql_connection_string = 11 [(dev.planton.shared.options.sensitive) = true];
 
   // The read-only primary SQL-API connection string (secret-bearing).
-  string primary_readonly_sql_connection_string = 12;
+  string primary_readonly_sql_connection_string = 12 [(dev.planton.shared.options.sensitive) = true];
 
   // The read-only secondary SQL-API connection string (secret-bearing).
-  string secondary_readonly_sql_connection_string = 13;
+  string secondary_readonly_sql_connection_string = 13 [(dev.planton.shared.options.sensitive) = true];
 
   // Ready-made MongoDB connection strings (secret-bearing), meaningful
   // on MONGO_DB accounts. Format:
   // mongodb://{name}:{key}@{name}.mongo.cosmos.azure.com:10255/?ssl=true...
-  string primary_mongodb_connection_string = 14;
+  string primary_mongodb_connection_string = 14 [(dev.planton.shared.options.sensitive) = true];
 
   // The secondary MongoDB connection string (secret-bearing).
-  string secondary_mongodb_connection_string = 15;
+  string secondary_mongodb_connection_string = 15 [(dev.planton.shared.options.sensitive) = true];
 
   // The read-only primary MongoDB connection string (secret-bearing).
-  string primary_readonly_mongodb_connection_string = 16;
+  string primary_readonly_mongodb_connection_string = 16 [(dev.planton.shared.options.sensitive) = true];
 
   // The read-only secondary MongoDB connection string (secret-bearing).
-  string secondary_readonly_mongodb_connection_string = 17;
+  string secondary_readonly_mongodb_connection_string = 17 [(dev.planton.shared.options.sensitive) = true];
 
   // The principal ID of the account's system-assigned identity, when
   // `identity` requests one -- the subject for role assignments the

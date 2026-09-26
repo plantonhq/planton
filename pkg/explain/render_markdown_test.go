@@ -233,3 +233,31 @@ func TestRenderMarkdownDeterminism(t *testing.T) {
 		t.Fatal("render is not deterministic for identical input")
 	}
 }
+
+// A generated secret is marked in the Outputs table, and the page says where it lives on Planton,
+// so a reader wiring a valueFrom knows to feed it only to a sensitive field.
+func TestRenderMarkdownMarksSensitiveOutputs(t *testing.T) {
+	text := renderKindMarkdown(t, "CloudflareZeroTrustAccessServiceToken", MarkdownOptions{})
+
+	var secretRow, publicRow string
+	for _, line := range strings.Split(text, "\n") {
+		if strings.HasPrefix(line, "| `status.outputs.client_secret` |") {
+			secretRow = line
+		}
+		if strings.HasPrefix(line, "| `status.outputs.client_id` |") {
+			publicRow = line
+		}
+	}
+	if !strings.Contains(secretRow, "(sensitive)") {
+		t.Errorf("the client_secret output row must be marked sensitive: %q", secretRow)
+	}
+	if strings.Contains(publicRow, "(sensitive)") {
+		t.Errorf("the client_id output row is public: %q", publicRow)
+	}
+	if !strings.Contains(text, "feed it only to a sensitive field") {
+		t.Errorf("a page with a sensitive output must say where it lives on Planton\n---\n%s", text)
+	}
+	if strings.Contains(renderKindMarkdown(t, "AwsVpc", MarkdownOptions{}), "feed it only to a sensitive field") {
+		t.Error("a page with no sensitive output must not carry the sentence")
+	}
+}

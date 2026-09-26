@@ -150,7 +150,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerregistryv1alpha1.A
 	ctx.Export(OpContainerRegistryName, createdRegistry.Name)
 	ctx.Export(OpLoginServer, createdRegistry.LoginServer)
 	ctx.Export(OpAdminUsername, createdRegistry.AdminUsername)
-	ctx.Export(OpAdminPassword, createdRegistry.AdminPassword)
+	ctx.Export(OpAdminPassword, pulumi.ToSecret(createdRegistry.AdminPassword))
 	ctx.Export(OpSystemAssignedIdentityPrincipalId, createdRegistry.Identity.ApplyT(func(identity *containerservice.RegistryIdentity) string {
 		if identity == nil || identity.PrincipalId == nil {
 			return ""

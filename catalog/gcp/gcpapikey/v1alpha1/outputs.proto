@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpapikey.v1alpha1;
 
+import "shared/options/options.proto";
+
 // GcpApiKeyStackOutputs captures the key's identity after provisioning.
 message GcpApiKeyStackOutputs {
   // The key's full resource name:
@@ -19,8 +21,8 @@ message GcpApiKeyStackOutputs {
   // credential Google bills and rate-limits against the project, so both
   // engines mark it sensitive in their state and outputs; it reaches the
   // client build through the platform's secret handling, never a log or a
-  // plan. (It ships inside the client binary by design; the restrictions on
-  // the key, not the secrecy of the string, are what bound its blast
-  // radius.)
-  string key_string = 3;
+  // plan. (A browser or mobile key ships inside the client binary by design,
+  // and its restrictions bound its blast radius; a key bound to a service
+  // account authenticates as that account. Either way it is kept as a secret.)
+  string key_string = 3 [(dev.planton.shared.options.sensitive) = true];
 }

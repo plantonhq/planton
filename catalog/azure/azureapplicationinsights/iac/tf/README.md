@@ -21,5 +21,6 @@ component.
 ## Outputs
 
 `application_insights_id`, `application_insights_name`,
-`instrumentation_key` (sensitive), `connection_string` (sensitive -- the
-seam app kinds reference), `app_id`.
+`instrumentation_key`, `connection_string` (the seam app kinds
+reference), `app_id`. Microsoft documents both as non-secret; the
+provider marks them sensitive, so the outputs unwrap them.

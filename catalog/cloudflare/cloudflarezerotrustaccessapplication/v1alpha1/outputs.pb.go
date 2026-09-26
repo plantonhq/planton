@@ -7,6 +7,7 @@
 package cloudflarezerotrustaccessapplicationv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -137,13 +138,13 @@ var File_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_output
 
 const file_catalog_cloudflare_cloudflarezerotrustaccessapplication_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Ncatalog/cloudflare/cloudflarezerotrustaccessapplication/v1alpha1/outputs.proto\x12Ddev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1\"\xd8\x02\n" +
+	"Ncatalog/cloudflare/cloudflarezerotrustaccessapplication/v1alpha1/outputs.proto\x12Ddev.planton.cloudflare.cloudflarezerotrustaccessapplication.v1alpha1\x1a\x1cshared/options/options.proto\"\xde\x02\n" +
 	"0CloudflareZeroTrustAccessApplicationStackOutputs\x12%\n" +
 	"\x0eapplication_id\x18\x01 \x01(\tR\rapplicationId\x12\x10\n" +
 	"\x03aud\x18\x02 \x01(\tR\x03aud\x12\x16\n" +
 	"\x06domain\x18\x03 \x01(\tR\x06domain\x12$\n" +
-	"\x0esaas_client_id\x18\x04 \x01(\tR\fsaasClientId\x12,\n" +
-	"\x12saas_client_secret\x18\x05 \x01(\tR\x10saasClientSecret\x12&\n" +
+	"\x0esaas_client_id\x18\x04 \x01(\tR\fsaasClientId\x122\n" +
+	"\x12saas_client_secret\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\x10saasClientSecret\x12&\n" +
 	"\x0fsaas_public_key\x18\x06 \x01(\tR\rsaasPublicKey\x12*\n" +
 	"\x11saas_sso_endpoint\x18\a \x01(\tR\x0fsaasSsoEndpoint\x12+\n" +
 	"\x12saas_idp_entity_id\x18\b \x01(\tR\x0fsaasIdpEntityIdB\x9a\x04\n" +

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.azure.azureakscluster.v1alpha1;
 
+import "shared/options/options.proto";
+
 // **AzureAksClusterStackOutputs** captures the outputs of provisioning an
 // AKS managed cluster.
 //
@@ -48,7 +50,7 @@ message AzureAksClusterStackOutputs {
   // Base64-encoded kubeconfig for the cluster (the user credential; with
   // Entra ID integration it triggers the AAD login flow). Treat as a
   // secret.
-  string cluster_kubeconfig = 9;
+  string cluster_kubeconfig = 9 [(dev.planton.shared.options.sensitive) = true];
 
   // The principal (object) ID of the cluster's managed identity -- grant
   // this identity Azure roles (e.g. Network Contributor on a BYO subnet,

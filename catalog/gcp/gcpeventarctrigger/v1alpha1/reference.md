@@ -450,12 +450,12 @@ manages):
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: GcpEventarcTrigger, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: GcpEventarcTrigger, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.trigger_name` | `string` | The trigger name as it exists in GCP. |
-| `status.outputs.partner_channel_activation_token` | `string` | Partner-channel triggers only: the one-time activation token the SaaS partner needs to complete the channel handshake (hand it to the partner's console/API; the channel stays PENDING until then). Empty for non-partner triggers. Sensitive — treat like a credential. |
+| `status.outputs.partner_channel_activation_token` | `string` (sensitive) | Partner-channel triggers only: the one-time activation token the SaaS partner needs to complete the channel handshake (hand it to the partner's console/API; the channel stays PENDING until then). Empty for non-partner triggers. Sensitive — treat like a credential. |
 | `status.outputs.trigger_id` | `string` | The full trigger resource name (projects/{project}/locations/{location}/triggers/{name}) — the trigger's canonical API handle. |
 
 ## References

@@ -350,25 +350,25 @@ creating anything and fail with the exact arithmetic.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.cluster_id` | `string` | The unique identifier (UUID) of the created database cluster. |
-| `status.outputs.connection_uri` | `string` | The full public connection URI for the database cluster (including credentials and database name). |
+| `status.outputs.connection_uri` | `string` (sensitive) | The full public connection URI for the database cluster (including credentials and database name). |
 | `status.outputs.host` | `string` | The public hostname at which the database cluster is accessible. |
 | `status.outputs.port` | `uint32` | The network port that the database cluster is listening on. |
 | `status.outputs.database_user` | `string` | The username for the cluster's default database user. |
-| `status.outputs.database_password` | `string` | The password for the cluster's default database user. |
+| `status.outputs.database_password` | `string` (sensitive) | The password for the cluster's default database user. |
 | `status.outputs.private_host` | `string` | The private-network hostname, reachable from resources in the same VPC. |
-| `status.outputs.private_uri` | `string` | The full private-network connection URI (including credentials and database name), reachable from resources in the same VPC. |
+| `status.outputs.private_uri` | `string` (sensitive) | The full private-network connection URI (including credentials and database name), reachable from resources in the same VPC. |
 | `status.outputs.database_name` | `string` | The name of the cluster's default database. |
 | `status.outputs.ui_host` | `string` | OpenSearch only: hostname of the OpenSearch Dashboards endpoint. |
 | `status.outputs.ui_port` | `uint32` | OpenSearch only: port of the OpenSearch Dashboards endpoint. |
-| `status.outputs.ui_uri` | `string` | OpenSearch only: full connection URI for OpenSearch Dashboards (including credentials). |
+| `status.outputs.ui_uri` | `string` (sensitive) | OpenSearch only: full connection URI for OpenSearch Dashboards (including credentials). |
 | `status.outputs.ui_database` | `string` | OpenSearch only: default database of the OpenSearch Dashboards connection. |
 | `status.outputs.ui_user` | `string` | OpenSearch only: username for OpenSearch Dashboards. |
-| `status.outputs.ui_password` | `string` | OpenSearch only: password for OpenSearch Dashboards. |
+| `status.outputs.ui_password` | `string` (sensitive) | OpenSearch only: password for OpenSearch Dashboards. |
 
 ## References
 

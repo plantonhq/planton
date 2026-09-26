@@ -145,12 +145,12 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1alpha1.A
 	// only populated when a geo-DR pairing exists.
 	ctx.Export(OpNamespaceId, createdNamespace.ID())
 	ctx.Export(OpNamespaceName, createdNamespace.Name)
-	ctx.Export(OpDefaultPrimaryConnectionString, createdNamespace.DefaultPrimaryConnectionString)
-	ctx.Export(OpDefaultSecondaryConnectionString, createdNamespace.DefaultSecondaryConnectionString)
-	ctx.Export(OpDefaultPrimaryKey, createdNamespace.DefaultPrimaryKey)
-	ctx.Export(OpDefaultSecondaryKey, createdNamespace.DefaultSecondaryKey)
-	ctx.Export(OpDefaultPrimaryConnectionStringAlias, createdNamespace.DefaultPrimaryConnectionStringAlias)
-	ctx.Export(OpDefaultSecondaryConnectionStringAlias, createdNamespace.DefaultSecondaryConnectionStringAlias)
+	ctx.Export(OpDefaultPrimaryConnectionString, pulumi.ToSecret(createdNamespace.DefaultPrimaryConnectionString))
+	ctx.Export(OpDefaultSecondaryConnectionString, pulumi.ToSecret(createdNamespace.DefaultSecondaryConnectionString))
+	ctx.Export(OpDefaultPrimaryKey, pulumi.ToSecret(createdNamespace.DefaultPrimaryKey))
+	ctx.Export(OpDefaultSecondaryKey, pulumi.ToSecret(createdNamespace.DefaultSecondaryKey))
+	ctx.Export(OpDefaultPrimaryConnectionStringAlias, pulumi.ToSecret(createdNamespace.DefaultPrimaryConnectionStringAlias))
+	ctx.Export(OpDefaultSecondaryConnectionStringAlias, pulumi.ToSecret(createdNamespace.DefaultSecondaryConnectionStringAlias))
 	// Empty unless SYSTEM_ASSIGNED is enabled -- mirrors the TF module's
 	// try(identity[0].principal_id, "").
 	ctx.Export(OpIdentityPrincipalId, createdNamespace.Identity.PrincipalId().ApplyT(func(principalId *string) string {

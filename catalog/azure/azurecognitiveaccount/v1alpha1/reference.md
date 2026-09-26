@@ -711,15 +711,15 @@ Free-form tags on the policy object.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureCognitiveAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureCognitiveAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.cognitive_account_id` | `string` | The Azure Resource Manager ID of the account -- what model deployments and projects reference as their cognitive_account_id. Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.CognitiveServices/accounts/{name} |
 | `status.outputs.cognitive_account_name` | `string` | The name of the account. ARM addresses deployments, projects and responsible-AI children as children of this name. |
 | `status.outputs.endpoint` | `string` | The account's endpoint URL -- what applications call (with a key or an Entra ID token). With a custom_subdomain_name this is "https://{subdomain}.cognitiveservices.azure.com/"; without one, the regional shared endpoint. |
-| `status.outputs.primary_access_key` | `string` | The account's primary access key. Marked sensitive in both engines. Empty when local_auth_enabled is false (token auth only). |
-| `status.outputs.secondary_access_key` | `string` | The account's secondary access key (for zero-downtime rotation). Marked sensitive in both engines. Empty when local_auth_enabled is false. |
+| `status.outputs.primary_access_key` | `string` (sensitive) | The account's primary access key. Marked sensitive in both engines. Empty when local_auth_enabled is false (token auth only). |
+| `status.outputs.secondary_access_key` | `string` (sensitive) | The account's secondary access key (for zero-downtime rotation). Marked sensitive in both engines. Empty when local_auth_enabled is false. |
 | `status.outputs.system_assigned_identity_principal_id` | `string` | The principal (object) ID of the account's system-assigned identity, when one is enabled -- what Key Vault and storage grants bind to. |
 | `status.outputs.rai_blocklist_ids` | `map<string, string>` | The ARM ID of each responsible-AI blocklist on the account, keyed by the blocklist's name from the spec. Example valueFrom fieldPath: status.outputs.rai_blocklist_ids.competitor-names |
 | `status.outputs.rai_policy_ids` | `map<string, string>` | The ARM ID of each responsible-AI policy on the account, keyed by the policy's name from the spec. Example valueFrom fieldPath: status.outputs.rai_policy_ids.strict-chat |

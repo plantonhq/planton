@@ -228,12 +228,12 @@ func identityPlatformConfig(ctx *pulumi.Context, locals *Locals, gcpProvider *gc
 	ctx.Export(OpConfigName, createdConfig.Name)
 	// The client block is computed by GCP whether or not permissions were
 	// configured; normalize absent values to "" for a stable output shape.
-	ctx.Export(OpApiKey, createdConfig.Client.ApiKey().ApplyT(func(v *string) string {
+	ctx.Export(OpApiKey, pulumi.Unsecret(createdConfig.Client.ApiKey().ApplyT(func(v *string) string {
 		if v == nil {
 			return ""
 		}
 		return *v
-	}))
+	})))
 	ctx.Export(OpFirebaseSubdomain, createdConfig.Client.FirebaseSubdomain().ApplyT(func(v *string) string {
 		if v == nil {
 			return ""

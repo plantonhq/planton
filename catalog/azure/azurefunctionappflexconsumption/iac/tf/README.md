@@ -21,9 +21,9 @@ The generated `variables.tf` mirrors the proto contract:
 - `default_hostname` -- the app's FQDN ({name}.azurewebsites.net)
 - `outbound_ip_addresses` / `possible_outbound_ip_addresses` -- the active and superset outbound IP lists (use the superset for durable firewall allowlists)
 - `identity_principal_id` / `identity_tenant_id` -- the system-assigned identity (empty unless enabled)
-- `custom_domain_verification_id` -- the DNS TXT value for custom-domain binding (sensitive)
+- `custom_domain_verification_id` -- the DNS TXT value for custom-domain binding
 - `kind` -- Azure's kind string ("functionapp,linux")
-- `site_credential_name` / `site_credential_password` -- the Kudu/SCM publishing credential (sensitive; live only while basic-auth publishing is enabled)
+- `site_credential_name` / `site_credential_password` -- the Kudu/SCM publishing credential (the password is sensitive; live only while basic-auth publishing is enabled)
 
 ## Behavior Notes
 

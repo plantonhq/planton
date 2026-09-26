@@ -490,14 +490,14 @@ metadata tags (user values win on key conflicts).
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureMongoCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureMongoCluster, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.mongo_cluster_id` | `string` | The cluster's Azure Resource Manager ID -- the target an AzureMongoClusterUser's mongo_cluster_id (and a replica's source_server_id) references. |
 | `status.outputs.mongo_cluster_name` | `string` | The cluster's name (also the first label of its hostname, {name}.mongocluster.cosmos.azure.com). |
-| `status.outputs.connection_string` | `string` | The cluster's primary MongoDB connection string, with the administrator credentials substituted in (Azure returns a <user>:<password> placeholder; the engines fill it from the spec). Empty when the cluster has no native administrator. |
-| `status.outputs.connection_strings` | `map<string, string>` | Every connection string Azure publishes for the cluster, keyed by Azure's name for it (the primary plus per-replica and per-mode variants), credentials substituted as above. |
+| `status.outputs.connection_string` | `string` (sensitive) | The cluster's primary MongoDB connection string, with the administrator credentials substituted in (Azure returns a <user>:<password> placeholder; the engines fill it from the spec). Empty when the cluster has no native administrator. |
+| `status.outputs.connection_strings` | `map<string, string>` (sensitive) | Every connection string Azure publishes for the cluster, keyed by Azure's name for it (the primary plus per-replica and per-mode variants), credentials substituted as above. |
 
 ## References
 

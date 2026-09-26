@@ -14,7 +14,7 @@ func exportOutputs(ctx *pulumi.Context, resourceServer *auth0.ResourceServer, lo
 
 	// Export token settings
 	ctx.Export("signing_alg", resourceServer.SigningAlg)
-	ctx.Export("signing_secret", resourceServer.SigningSecret)
+	ctx.Export("signing_secret", pulumi.ToSecret(resourceServer.SigningSecret))
 	ctx.Export("token_lifetime", resourceServer.TokenLifetime)
 	ctx.Export("token_lifetime_for_web", resourceServer.TokenLifetimeForWeb)
 

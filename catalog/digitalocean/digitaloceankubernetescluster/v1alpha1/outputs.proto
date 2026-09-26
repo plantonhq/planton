@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1;
 
+import "shared/options/options.proto";
+
 // DigitalOceanKubernetesClusterStackOutputs captures the key outputs after
 // provisioning a DigitalOcean Kubernetes cluster. Outputs are durable
 // identifiers and connection details; live state (status, timestamps) is
@@ -14,7 +16,7 @@ message DigitalOceanKubernetesClusterStackOutputs {
   // The raw kubeconfig YAML for accessing the cluster (not base64-encoded);
   // write it to a file and point KUBECONFIG at it. Contains admin
   // credentials -- treat as a secret.
-  string kubeconfig = 2;
+  string kubeconfig = 2 [(dev.planton.shared.options.sensitive) = true];
 
   // The endpoint URL of the Kubernetes API server for the cluster.
   string api_server_endpoint = 3;

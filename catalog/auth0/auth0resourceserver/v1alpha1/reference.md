@@ -237,7 +237,7 @@ Example: "Read access to user profiles"
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: Auth0ResourceServer, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: Auth0ResourceServer, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -245,7 +245,7 @@ Reference an output from another manifest as `valueFrom: {kind: Auth0ResourceSer
 | `status.outputs.identifier` | `string` | identifier is the API identifier (audience) for this resource server. This is the value used in authorization requests as the "audience" parameter. Same as the identifier specified in the spec. |
 | `status.outputs.name` | `string` | name is the friendly display name of the resource server. Derived from spec.name or metadata.name. |
 | `status.outputs.signing_alg` | `string` | signing_alg is the algorithm used to sign tokens for this API. One of: RS256, HS256, PS256 |
-| `status.outputs.signing_secret` | `string` | signing_secret is the secret used for signing tokens (HS256 only). This is only populated when signing_alg is HS256. IMPORTANT: Keep this secret secure and never expose in client-side code. |
+| `status.outputs.signing_secret` | `string` (sensitive) | signing_secret is the secret used for signing tokens (HS256 only). This is only populated when signing_alg is HS256. IMPORTANT: Keep this secret secure and never expose in client-side code. |
 | `status.outputs.token_lifetime` | `string` | token_lifetime is the configured token validity duration in seconds. |
 | `status.outputs.token_lifetime_for_web` | `string` | token_lifetime_for_web is the token validity for implicit/hybrid flows. |
 | `status.outputs.allow_offline_access` | `string` | allow_offline_access indicates if refresh tokens can be issued. |

@@ -27,7 +27,8 @@ const (
 
 // verifyTofu runs the OpenTofu/Terraform contract checks: the input surface
 // (variables.tf against the kind's schema), every secret home the schema
-// declares being read, the outputs contract, and — when the toolchain is
+// declares being read, the outputs contract (names, and exactly the secret
+// outputs declared sensitive), and — when the toolchain is
 // available — the engine's own validation.
 func verifyTofu(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, in Input, result *Result) {
 	checkTofuVariables(kind, kindName, moduleDir, result)
@@ -36,6 +37,7 @@ func verifyTofu(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir st
 	overrideKind := checkOutputsOverride(kind, moduleDir, in.SampleOutputs, result)
 	if overrideKind == noOverride {
 		checkTofuOutputNames(kind, kindName, moduleDir, result)
+		checkSecretOutputsTofu(kind, kindName, moduleDir, result)
 	}
 
 	if in.SkipToolchainChecks {
@@ -289,26 +291,15 @@ func parseOutputNames(filename string, src []byte) ([]string, error) {
 	return names, nil
 }
 
-// stackOutputsFieldNames resolves the kind's stack-outputs message and
-// returns its top-level field names.
+// stackOutputsFieldNames returns the kind's top-level stack-outputs field names.
 func stackOutputsFieldNames(kind cloudresourcekind.CloudResourceKind) (map[string]struct{}, error) {
-	instance, err := crkreflect.NewInstance(kind)
+	fields, err := stackOutputFields(kind)
 	if err != nil {
 		return nil, err
 	}
-	statusField := instance.ProtoReflect().Descriptor().Fields().ByName("status")
-	if statusField == nil || statusField.Message() == nil {
-		return nil, errors.Errorf("%s has no status message", kind)
-	}
-	outputsField := statusField.Message().Fields().ByName("outputs")
-	if outputsField == nil || outputsField.Message() == nil {
-		return nil, errors.Errorf("%s has no stack-outputs message", kind)
-	}
-
-	fields := outputsField.Message().Fields()
-	names := make(map[string]struct{}, fields.Len())
-	for i := 0; i < fields.Len(); i++ {
-		names[string(fields.Get(i).Name())] = struct{}{}
+	names := make(map[string]struct{}, len(fields))
+	for name := range fields {
+		names[name] = struct{}{}
 	}
 	return names, nil
 }

@@ -271,7 +271,7 @@ func cluster(
 
 	ctx.Export(OpClusterId, createdCluster.ID())
 	// The raw kubeconfig YAML (registered as a secret output by the SDK).
-	ctx.Export(OpKubeconfig, createdCluster.KubeConfigs.Index(pulumi.Int(0)).RawConfig())
+	ctx.Export(OpKubeconfig, pulumi.ToSecret(createdCluster.KubeConfigs.Index(pulumi.Int(0)).RawConfig()))
 	ctx.Export(OpApiServerEndpoint, createdCluster.Endpoint)
 	ctx.Export(OpUrn, createdCluster.ClusterUrn)
 	ctx.Export(OpIpv4Address, createdCluster.Ipv4Address)

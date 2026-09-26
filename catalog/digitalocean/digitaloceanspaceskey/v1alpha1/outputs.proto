@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1;
 
+import "shared/options/options.proto";
+
 // DigitalOceanSpacesKeyStackOutputs captures the key outputs after
 // provisioning a Spaces access key.
 message DigitalOceanSpacesKeyStackOutputs {
@@ -13,5 +15,5 @@ message DigitalOceanSpacesKeyStackOutputs {
   // create response; it can never be read again from the API, so this
   // output is the only place it ever exists. Both provisioners mark it
   // sensitive in their state.
-  string secret_key = 2;
+  string secret_key = 2 [(dev.planton.shared.options.sensitive) = true];
 }

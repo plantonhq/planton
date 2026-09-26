@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
-	"reflect"
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/crkreflect"
@@ -14,16 +13,11 @@ import (
 )
 
 // captureOutputs reads the just-updated stack's outputs and fills sink with
-// the raw map, the flattened map, per-output sensitivity, and the kind's
-// typed StackOutputs proto (honoring module-shipped transform overrides via
-// the module directory).
-//
-// Pulumi's plain `stack output --json` carries no per-output sensitivity
-// flag — it MASKS secret values instead. So capture reads the stack twice:
-// the masked pass tells us WHICH outputs are secret (any output whose value
-// differs between the passes), the --show-secrets pass supplies the real
-// values downstream reference resolution needs. Both passes are cheap state
-// reads against the same backend the update just used.
+// the raw map, the flattened map, the kind's secret outputs, and its typed
+// StackOutputs proto (honoring module-shipped transform overrides via the
+// module directory). The read shows secrets, because downstream reference
+// resolution needs the real values; which outputs are secrets comes from the
+// kind's schema, never from what the engine happened to mask.
 func captureOutputs(
 	stackFqdn string,
 	moduleRepoPath string,
@@ -31,24 +25,21 @@ func captureOutputs(
 	extraEnv []string,
 	sink *outputs.CaptureResult,
 ) error {
-	masked, err := readStackOutputs(stackFqdn, moduleRepoPath, extraEnv, false)
-	if err != nil {
-		return errors.Wrap(err, "failed to read masked stack outputs")
-	}
-
-	shown, err := readStackOutputs(stackFqdn, moduleRepoPath, extraEnv, true)
+	shown, err := readStackOutputs(stackFqdn, moduleRepoPath, extraEnv)
 	if err != nil {
 		return errors.Wrap(err, "failed to read stack outputs with --show-secrets")
 	}
 
 	sink.Raw = shown
-	sink.Sensitive = detectSecretOutputs(masked, shown)
 	sink.Flat = outputs.Flatten(shown)
 
 	kind := crkreflect.KindFromString(kindName)
 	if kind == cloudresourcekind.CloudResourceKind_unspecified {
 		return errors.Errorf("cannot resolve cloud resource kind from %q for output transformation", kindName)
 	}
+	// A kind whose schema cannot be read leaves Secrets empty, and every
+	// output then renders masked.
+	sink.Secrets, _ = outputs.SecretOutputs(kind)
 
 	typed, flat, err := outputs.TransformRaw(kind, shown, &outputs.TransformOptions{ModuleDir: moduleRepoPath})
 	if err != nil {
@@ -62,13 +53,10 @@ func captureOutputs(
 	return nil
 }
 
-// readStackOutputs runs `pulumi stack output --json` (optionally with
-// --show-secrets) and decodes the plain name->value map.
-func readStackOutputs(stackFqdn, moduleRepoPath string, extraEnv []string, showSecrets bool) (map[string]interface{}, error) {
-	args := []string{"stack", "output", "--stack", stackFqdn, "--json", "--non-interactive"}
-	if showSecrets {
-		args = append(args, "--show-secrets")
-	}
+// readStackOutputs runs `pulumi stack output --json --show-secrets` and
+// decodes the plain name->value map.
+func readStackOutputs(stackFqdn, moduleRepoPath string, extraEnv []string) (map[string]interface{}, error) {
+	args := []string{"stack", "output", "--stack", stackFqdn, "--json", "--non-interactive", "--show-secrets"}
 
 	cmd := exec.Command("pulumi", args...)
 	cmd.Dir = moduleRepoPath
@@ -89,17 +77,4 @@ func readStackOutputs(stackFqdn, moduleRepoPath string, extraEnv []string, showS
 		}
 	}
 	return values, nil
-}
-
-// detectSecretOutputs marks every output whose value differs between the
-// masked and --show-secrets reads. Pulumi replaces secret values with a
-// placeholder in the masked form, so a difference IS the sensitivity signal;
-// an output missing from the masked form entirely is treated as secret too.
-func detectSecretOutputs(masked, shown map[string]interface{}) map[string]bool {
-	sensitive := make(map[string]bool, len(shown))
-	for name, shownValue := range shown {
-		maskedValue, present := masked[name]
-		sensitive[name] = !present || !reflect.DeepEqual(maskedValue, shownValue)
-	}
-	return sensitive
 }

@@ -7,6 +7,7 @@
 package digitaloceancontainerregistryv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -119,14 +120,14 @@ var File_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_pro
 
 const file_catalog_digitalocean_digitaloceancontainerregistry_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1\"\x90\x02\n" +
+	"Icatalog/digitalocean/digitaloceancontainerregistry/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1\x1a\x1cshared/options/options.proto\"\x96\x02\n" +
 	")DigitalOceanContainerRegistryStackOutputs\x12#\n" +
 	"\rregistry_name\x18\x01 \x01(\tR\fregistryName\x12\x1d\n" +
 	"\n" +
 	"server_url\x18\x02 \x01(\tR\tserverUrl\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12\x16\n" +
-	"\x06region\x18\x04 \x01(\tR\x06region\x12-\n" +
-	"\x12docker_credentials\x18\x05 \x01(\tR\x11dockerCredentials\x12<\n" +
+	"\x06region\x18\x04 \x01(\tR\x06region\x123\n" +
+	"\x12docker_credentials\x18\x05 \x01(\tB\x04\xa0\xa6\x1d\x01R\x11dockerCredentials\x12<\n" +
 	"\x1acredential_expiration_time\x18\x06 \x01(\tR\x18credentialExpirationTimeB\xf4\x03\n" +
 	"Ccom.dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1B\fOutputsProtoP\x01Z~github.com/plantonhq/planton/catalog/digitalocean/digitaloceancontainerregistry/v1alpha1;digitaloceancontainerregistryv1alpha1\xa2\x02\x04DPDD\xaa\x02?Dev.Planton.Digitalocean.Digitaloceancontainerregistry.V1alpha1\xca\x02?Dev\\Planton\\Digitalocean\\Digitaloceancontainerregistry\\V1alpha1\xe2\x02KDev\\Planton\\Digitalocean\\Digitaloceancontainerregistry\\V1alpha1\\GPBMetadata\xea\x02CDev::Planton::Digitalocean::Digitaloceancontainerregistry::V1alpha1b\x06proto3"
 

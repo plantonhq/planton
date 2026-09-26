@@ -1736,7 +1736,7 @@ groups by them.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureStorageAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureStorageAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -1757,12 +1757,12 @@ Reference an output from another manifest as `valueFrom: {kind: AzureStorageAcco
 | `status.outputs.secondary_file_endpoint` | `string` | The secondary file endpoint (RA_GRS / RA_GZRS only). |
 | `status.outputs.secondary_dfs_endpoint` | `string` | The secondary dfs endpoint (RA_GRS / RA_GZRS only). |
 | `status.outputs.secondary_web_endpoint` | `string` | The secondary static-website endpoint (RA_GRS / RA_GZRS only). |
-| `status.outputs.primary_access_key` | `string` | The account's FIRST shared access key. Static credential material that authorizes EVERY data-plane operation on the account -- treat it like a root password: prefer Entra-based authorization (role assignments against storage_account_id) and reference this key only where a consumer genuinely requires key auth (e.g. a Function App's storage binding). |
-| `status.outputs.secondary_access_key` | `string` | The account's SECOND shared access key -- exists so consumers can roll from one key to the other without downtime. The same handling guidance as primary_access_key applies. |
-| `status.outputs.primary_connection_string` | `string` | A ready-to-use connection string carrying the account name and the PRIMARY access key. Same secret-handling guidance as the keys. |
-| `status.outputs.secondary_connection_string` | `string` | The connection string carrying the SECONDARY access key. |
-| `status.outputs.primary_blob_connection_string` | `string` | A blob-service-only connection string (primary key + blob endpoint) -- what some SDKs and app settings expect. |
-| `status.outputs.secondary_blob_connection_string` | `string` | The blob-service-only connection string on the secondary key. |
+| `status.outputs.primary_access_key` | `string` (sensitive) | The account's FIRST shared access key. Static credential material that authorizes EVERY data-plane operation on the account -- treat it like a root password: prefer Entra-based authorization (role assignments against storage_account_id) and reference this key only where a consumer genuinely requires key auth (e.g. a Function App's storage binding). |
+| `status.outputs.secondary_access_key` | `string` (sensitive) | The account's SECOND shared access key -- exists so consumers can roll from one key to the other without downtime. The same handling guidance as primary_access_key applies. |
+| `status.outputs.primary_connection_string` | `string` (sensitive) | A ready-to-use connection string carrying the account name and the PRIMARY access key. Same secret-handling guidance as the keys. |
+| `status.outputs.secondary_connection_string` | `string` (sensitive) | The connection string carrying the SECONDARY access key. |
+| `status.outputs.primary_blob_connection_string` | `string` (sensitive) | A blob-service-only connection string (primary key + blob endpoint) -- what some SDKs and app settings expect. |
+| `status.outputs.secondary_blob_connection_string` | `string` (sensitive) | The blob-service-only connection string on the secondary key. |
 | `status.outputs.identity_principal_id` | `string` | The principal (object) ID of the account's system-assigned identity, populated only when the identity type includes SYSTEM_ASSIGNED. Grant this principal roles to let the account act on other resources (e.g. reading a Key Vault key). |
 | `status.outputs.blob_service_id` | `string` | The ARM ID of the account's BLOB service ({storage_account_id}/blobServices/default) -- the diagnostic- settings scope for blob DATA-ACCESS telemetry (StorageRead / StorageWrite / StorageDelete logs). The account-level ID only exposes account metrics; per-operation audit logs live on the service sub-resources, so an AzureMonitorDiagnosticSetting's target_resource_id references this output. Constructed identically on both engines (ARM materializes the service implicitly -- there is nothing to read back). |
 | `status.outputs.file_service_id` | `string` | The ARM ID of the account's FILE service ({storage_account_id}/fileServices/default) -- the diagnostic- settings scope for Azure Files data-access telemetry. |

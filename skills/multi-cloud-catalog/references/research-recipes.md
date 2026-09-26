@@ -72,7 +72,10 @@ rg "^## Outputs" -A 20 <page>
 
 Output paths are spelled snake_case (`status.outputs.vpc_id`) -- that is the
 canonical `fieldPath` spelling, while spec YAML keys are camelCase; the
-asymmetry is explained once in `reference-commons.md`.
+asymmetry is explained once in `reference-commons.md`. An output row marked
+`(sensitive)` is a secret the component generates (a client secret, an
+access key): on Planton the output holds a `$secret/` reference, so a
+`valueFrom` of it belongs only in a `(sensitive)` field of the reader.
 
 ## Wiring: both directions
 

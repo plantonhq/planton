@@ -94,12 +94,25 @@ func RenderMarkdown(report *Report, opts MarkdownOptions) string {
 	if len(outputRows) > 0 {
 		b.WriteString("## Outputs\n\n")
 		b.WriteString("Reference an output from another manifest as `valueFrom: {kind: " + report.Kind +
-			", name: <resource-name>, fieldPath: status.outputs.<output>}`.\n\n")
+			", name: <resource-name>, fieldPath: status.outputs.<output>}`.")
+		sensitiveOutputs := false
+		for _, row := range outputRows {
+			sensitiveOutputs = sensitiveOutputs || row.Field.Sensitive
+		}
+		if sensitiveOutputs {
+			b.WriteString(" A sensitive output is a secret the resource generates: on Planton it is kept in the " +
+				"organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.")
+		}
+		b.WriteString("\n\n")
 		b.WriteString("| Output | Type | Description |\n")
 		b.WriteString("|---|---|---|\n")
 		for _, row := range outputRows {
+			typeCell := "`" + row.Field.Type + "`"
+			if row.Field.Sensitive {
+				typeCell += " (sensitive)"
+			}
 			fmt.Fprintf(&b, "| `%s` | %s | %s |\n",
-				row.Path, tableCell("`"+row.Field.Type+"`"), tableCell(row.Field.Doc))
+				row.Path, tableCell(typeCell), tableCell(row.Field.Doc))
 		}
 		b.WriteString("\n")
 	}

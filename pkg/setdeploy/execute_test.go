@@ -160,8 +160,8 @@ func TestExecute_SensitiveResolutionWarns(t *testing.T) {
 	deployer := &fakeDeployer{
 		outputs: map[string]*outputs.CaptureResult{
 			"TestCloudResourceGeneric/producer@dev": {
-				Flat:      map[string]string{"id": "super-secret-value"},
-				Sensitive: map[string]bool{"id": true},
+				Flat:    map[string]string{"id": "super-secret-value"},
+				Secrets: map[string]bool{"id": true},
 			},
 		},
 	}

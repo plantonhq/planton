@@ -86,9 +86,9 @@ func databaseUser(
 	ctx.Export(OpClusterId, createdUser.ClusterId)
 	ctx.Export(OpUserName, createdUser.Name)
 	ctx.Export(OpRole, createdUser.Role)
-	ctx.Export(OpPassword, createdUser.Password)
-	ctx.Export(OpAccessCert, createdUser.AccessCert)
-	ctx.Export(OpAccessKey, createdUser.AccessKey)
+	ctx.Export(OpPassword, pulumi.ToSecret(createdUser.Password))
+	ctx.Export(OpAccessCert, pulumi.Unsecret(createdUser.AccessCert))
+	ctx.Export(OpAccessKey, pulumi.ToSecret(createdUser.AccessKey))
 
 	return createdUser, nil
 }

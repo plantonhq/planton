@@ -7,6 +7,7 @@
 package auth0clientv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -250,11 +251,11 @@ var File_catalog_auth0_auth0client_v1alpha1_outputs_proto protoreflect.FileDescr
 
 const file_catalog_auth0_auth0client_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"0catalog/auth0/auth0client/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0client.v1alpha1\"\xb8\x03\n" +
+	"0catalog/auth0/auth0client/v1alpha1/outputs.proto\x12&dev.planton.auth0.auth0client.v1alpha1\x1a\x1cshared/options/options.proto\"\xbe\x03\n" +
 	"\x17Auth0ClientStackOutputs\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
-	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12#\n" +
-	"\rclient_secret\x18\x03 \x01(\tR\fclientSecret\x12\x12\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12)\n" +
+	"\rclient_secret\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\fclientSecret\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12)\n" +
 	"\x10application_type\x18\x05 \x01(\tR\x0fapplicationType\x12Z\n" +
 	"\fsigning_keys\x18\x06 \x03(\v27.dev.planton.auth0.auth0client.v1alpha1.Auth0SigningKeyR\vsigningKeys\x122\n" +

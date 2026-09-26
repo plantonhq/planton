@@ -135,18 +135,18 @@ Default: false
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureEventHubAuthorizationRule, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureEventHubAuthorizationRule, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.authorization_rule_id` | `string` | The Azure Resource Manager ID of the authorization rule. Namespace scope: .../namespaces/{ns}/authorizationRules/{name} Hub scope: .../namespaces/{ns}/eventhubs/{hub}/authorizationRules/{name} |
 | `status.outputs.rule_name` | `string` | The rule's name (the SharedAccessKeyName clients present). |
-| `status.outputs.primary_key` | `string` | The primary key. |
-| `status.outputs.secondary_key` | `string` | The secondary key -- the rotation partner: move clients here, regenerate the primary, move back. |
-| `status.outputs.primary_connection_string` | `string` | The ready-to-use primary connection string. Format: Endpoint=sb://{ns}.servicebus.windows.net/;SharedAccessKeyName={rule};SharedAccessKey={key} (hub-scoped rules append ;EntityPath={hub}) |
-| `status.outputs.secondary_connection_string` | `string` | The secondary connection string (rotation partner). |
-| `status.outputs.primary_connection_string_alias` | `string` | The primary connection string addressing the geo-DR alias hostname. Only populated when the namespace carries an AzureEventHubDisasterRecoveryConfig pairing; empty otherwise. |
-| `status.outputs.secondary_connection_string_alias` | `string` | The secondary alias connection string (rotation partner). |
+| `status.outputs.primary_key` | `string` (sensitive) | The primary key. |
+| `status.outputs.secondary_key` | `string` (sensitive) | The secondary key -- the rotation partner: move clients here, regenerate the primary, move back. |
+| `status.outputs.primary_connection_string` | `string` (sensitive) | The ready-to-use primary connection string. Format: Endpoint=sb://{ns}.servicebus.windows.net/;SharedAccessKeyName={rule};SharedAccessKey={key} (hub-scoped rules append ;EntityPath={hub}) |
+| `status.outputs.secondary_connection_string` | `string` (sensitive) | The secondary connection string (rotation partner). |
+| `status.outputs.primary_connection_string_alias` | `string` (sensitive) | The primary connection string addressing the geo-DR alias hostname. Only populated when the namespace carries an AzureEventHubDisasterRecoveryConfig pairing; empty otherwise. |
+| `status.outputs.secondary_connection_string_alias` | `string` (sensitive) | The secondary alias connection string (rotation partner). |
 
 ## References
 

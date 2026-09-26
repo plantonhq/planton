@@ -45,7 +45,7 @@ module "storage_local_user" {
 }
 ```
 
-The `sid` and `password` outputs are marked sensitive (the password is
-returned by Azure exactly once, at the creation that enabled password
-auth). Local users carry no Azure tags; the platform's identity tags
+The `password` output is marked sensitive (it is returned by Azure
+exactly once, at the creation that enabled password auth); `sid` is an
+identifier and is unwrapped from the provider's sensitive mark. Local users carry no Azure tags; the platform's identity tags
 live on the parent account.

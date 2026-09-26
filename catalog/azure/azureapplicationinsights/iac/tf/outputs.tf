@@ -10,14 +10,12 @@ output "application_insights_name" {
 
 output "instrumentation_key" {
   description = "The instrumentation key for classic SDK configuration (prefer the connection string)"
-  value       = azurerm_application_insights.main.instrumentation_key
-  sensitive   = true
+  value       = nonsensitive(azurerm_application_insights.main.instrumentation_key)
 }
 
 output "connection_string" {
   description = "The connection string SDKs are configured with -- the composition seam app kinds reference"
-  value       = azurerm_application_insights.main.connection_string
-  sensitive   = true
+  value       = nonsensitive(azurerm_application_insights.main.connection_string)
 }
 
 output "app_id" {

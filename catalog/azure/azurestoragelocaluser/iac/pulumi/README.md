@@ -22,10 +22,10 @@ storage.LocalUser (single resource)
 - **The permission block is a pass-through** -- the spec models the
   same five grant booleans the provider exposes; the API's `rwdlc` wire
   string stays provider-internal on both engines.
-- **`sid` and `password` are secret-bearing outputs** -- the provider
-  marks both sensitive; the password is returned by Azure exactly once
-  (at the creation that enabled password auth) and REGENERATES when the
-  flag flips off and back on.
+- **`password` is a secret output** -- it is returned by Azure exactly
+  once (at the creation that enabled password auth) and REGENERATES when
+  the flag flips off and back on. The provider also marks `sid`
+  sensitive; it is an identifier, so the module unwraps it.
 - **No Azure tags**: ARM does not support tags on localUsers; the
   platform's identity tags live on the parent account.
 

@@ -157,20 +157,20 @@ func cluster(
 	}
 
 	ctx.Export(OpClusterId, createdCluster.ID())
-	ctx.Export(OpConnectionUri, createdCluster.Uri)
+	ctx.Export(OpConnectionUri, pulumi.ToSecret(createdCluster.Uri))
 	ctx.Export(OpHost, createdCluster.Host)
 	ctx.Export(OpPort, createdCluster.Port)
 	ctx.Export(OpDatabaseUser, createdCluster.User)
-	ctx.Export(OpDatabasePassword, createdCluster.Password)
+	ctx.Export(OpDatabasePassword, pulumi.ToSecret(createdCluster.Password))
 	ctx.Export(OpPrivateHost, createdCluster.PrivateHost)
-	ctx.Export(OpPrivateUri, createdCluster.PrivateUri)
+	ctx.Export(OpPrivateUri, pulumi.ToSecret(createdCluster.PrivateUri))
 	ctx.Export(OpDatabaseName, createdCluster.Database)
 	ctx.Export(OpUiHost, createdCluster.UiHost)
 	ctx.Export(OpUiPort, createdCluster.UiPort)
-	ctx.Export(OpUiUri, createdCluster.UiUri)
+	ctx.Export(OpUiUri, pulumi.ToSecret(createdCluster.UiUri))
 	ctx.Export(OpUiDatabase, createdCluster.UiDatabase)
 	ctx.Export(OpUiUser, createdCluster.UiUser)
-	ctx.Export(OpUiPassword, createdCluster.UiPassword)
+	ctx.Export(OpUiPassword, pulumi.ToSecret(createdCluster.UiPassword))
 
 	return createdCluster, nil
 }

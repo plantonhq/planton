@@ -29,7 +29,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsiamuserv1alpha1.AwsIamUserSta
 	ctx.Export(OpUserId, results.UserId)
 	ctx.Export(OpConsoleUrl, results.ConsoleUrl)
 	ctx.Export(OpAccessKeyId, results.AccessKeyId)
-	ctx.Export(OpSecretAccessKey, results.SecretAccessKey)
+	ctx.Export(OpSecretAccessKey, pulumi.ToSecret(results.SecretAccessKey))
 	ctx.Export(OpAccessKeyStatus, results.AccessKeyStatus)
 
 	return nil

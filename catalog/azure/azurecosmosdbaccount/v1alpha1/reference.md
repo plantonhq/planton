@@ -988,7 +988,7 @@ values win) on the account.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureCosmosdbAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureCosmosdbAccount, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -997,18 +997,18 @@ Reference an output from another manifest as `valueFrom: {kind: AzureCosmosdbAcc
 | `status.outputs.endpoint` | `string` | The document endpoint SDKs connect to. Format: https://{name}.documents.azure.com:443/ |
 | `status.outputs.read_endpoints` | `[]string` | Per-region read endpoints, ordered by the account's failover priorities -- what latency-sensitive readers pin to. |
 | `status.outputs.write_endpoints` | `[]string` | Per-region write endpoints. One entry for single-write accounts; one per region when multiple_write_locations_enabled is true. |
-| `status.outputs.primary_key` | `string` | The primary read-write account key (secret-bearing). |
-| `status.outputs.secondary_key` | `string` | The secondary read-write account key (secret-bearing) -- the rotation partner: applications move to the secondary, the primary is regenerated, and back. |
-| `status.outputs.primary_readonly_key` | `string` | The primary read-only account key (secret-bearing) -- for consumers that must never write. |
-| `status.outputs.secondary_readonly_key` | `string` | The secondary read-only account key (secret-bearing). |
-| `status.outputs.primary_sql_connection_string` | `string` | Ready-made SQL-API connection strings (secret-bearing), populated for every account kind. Format: AccountEndpoint={endpoint};AccountKey={key}; |
-| `status.outputs.secondary_sql_connection_string` | `string` | The secondary SQL-API connection string (secret-bearing). |
-| `status.outputs.primary_readonly_sql_connection_string` | `string` | The read-only primary SQL-API connection string (secret-bearing). |
-| `status.outputs.secondary_readonly_sql_connection_string` | `string` | The read-only secondary SQL-API connection string (secret-bearing). |
-| `status.outputs.primary_mongodb_connection_string` | `string` | Ready-made MongoDB connection strings (secret-bearing), meaningful on MONGO_DB accounts. Format: mongodb://{name}:{key}@{name}.mongo.cosmos.azure.com:10255/?ssl=true... |
-| `status.outputs.secondary_mongodb_connection_string` | `string` | The secondary MongoDB connection string (secret-bearing). |
-| `status.outputs.primary_readonly_mongodb_connection_string` | `string` | The read-only primary MongoDB connection string (secret-bearing). |
-| `status.outputs.secondary_readonly_mongodb_connection_string` | `string` | The read-only secondary MongoDB connection string (secret-bearing). |
+| `status.outputs.primary_key` | `string` (sensitive) | The primary read-write account key (secret-bearing). |
+| `status.outputs.secondary_key` | `string` (sensitive) | The secondary read-write account key (secret-bearing) -- the rotation partner: applications move to the secondary, the primary is regenerated, and back. |
+| `status.outputs.primary_readonly_key` | `string` (sensitive) | The primary read-only account key (secret-bearing) -- for consumers that must never write. |
+| `status.outputs.secondary_readonly_key` | `string` (sensitive) | The secondary read-only account key (secret-bearing). |
+| `status.outputs.primary_sql_connection_string` | `string` (sensitive) | Ready-made SQL-API connection strings (secret-bearing), populated for every account kind. Format: AccountEndpoint={endpoint};AccountKey={key}; |
+| `status.outputs.secondary_sql_connection_string` | `string` (sensitive) | The secondary SQL-API connection string (secret-bearing). |
+| `status.outputs.primary_readonly_sql_connection_string` | `string` (sensitive) | The read-only primary SQL-API connection string (secret-bearing). |
+| `status.outputs.secondary_readonly_sql_connection_string` | `string` (sensitive) | The read-only secondary SQL-API connection string (secret-bearing). |
+| `status.outputs.primary_mongodb_connection_string` | `string` (sensitive) | Ready-made MongoDB connection strings (secret-bearing), meaningful on MONGO_DB accounts. Format: mongodb://{name}:{key}@{name}.mongo.cosmos.azure.com:10255/?ssl=true... |
+| `status.outputs.secondary_mongodb_connection_string` | `string` (sensitive) | The secondary MongoDB connection string (secret-bearing). |
+| `status.outputs.primary_readonly_mongodb_connection_string` | `string` (sensitive) | The read-only primary MongoDB connection string (secret-bearing). |
+| `status.outputs.secondary_readonly_mongodb_connection_string` | `string` (sensitive) | The read-only secondary MongoDB connection string (secret-bearing). |
 | `status.outputs.identity_principal_id` | `string` | The principal ID of the account's system-assigned identity, when `identity` requests one -- the subject for role assignments the account needs against other services. |
 
 ## References

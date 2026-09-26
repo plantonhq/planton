@@ -28,12 +28,11 @@ output "ingress_fqdn" {
   value       = try(azurerm_container_app.main.ingress[0].fqdn, "")
 }
 
-# The provider marks this attribute Sensitive; without the flag OpenTofu
-# rejects the configuration at plan time.
+# The verification ID is published in a DNS TXT record. The provider marks
+# the attribute sensitive; nonsensitive() unwraps it.
 output "custom_domain_verification_id" {
   description = "The TXT-record value proving domain ownership when binding a custom domain"
-  value       = azurerm_container_app.main.custom_domain_verification_id
-  sensitive   = true
+  value       = nonsensitive(azurerm_container_app.main.custom_domain_verification_id)
 }
 
 output "identity_principal_id" {

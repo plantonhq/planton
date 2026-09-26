@@ -109,12 +109,12 @@ value to an EMPTY permission, creating a grant that authorizes nothing.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanSpacesKey, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanSpacesKey, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.access_key` | `string` | The access key ID (also the resource's API identity). Pairs with secret_key as S3-style credentials against the Spaces endpoint. |
-| `status.outputs.secret_key` | `string` | The secret access key -- a SECRET. DigitalOcean returns it ONLY in the create response; it can never be read again from the API, so this output is the only place it ever exists. Both provisioners mark it sensitive in their state. |
+| `status.outputs.secret_key` | `string` (sensitive) | The secret access key -- a SECRET. DigitalOcean returns it ONLY in the create response; it can never be read again from the API, so this output is the only place it ever exists. Both provisioners mark it sensitive in their state. |
 
 ## References
 

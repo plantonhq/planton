@@ -27,10 +27,11 @@ output "application_type" {
   value       = auth0_client.this.app_type
 }
 
+# Signing keys carry public certificates for token verification. The
+# provider marks the attribute sensitive; nonsensitive() unwraps it.
 output "signing_keys" {
   description = "Signing keys for this client (for RS256 token verification)"
-  value       = auth0_client.this.signing_keys
-  sensitive   = true
+  value       = nonsensitive(auth0_client.this.signing_keys)
 }
 
 output "allowed_clients" {

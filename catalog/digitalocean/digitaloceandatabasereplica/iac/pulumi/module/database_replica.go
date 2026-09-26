@@ -123,9 +123,9 @@ func databaseReplica(
 	ctx.Export(OpPort, createdReplica.Port)
 	ctx.Export(OpDatabase, createdReplica.Database)
 	ctx.Export(OpUser, createdReplica.User)
-	ctx.Export(OpPassword, createdReplica.Password)
-	ctx.Export(OpUri, createdReplica.Uri)
-	ctx.Export(OpPrivateUri, createdReplica.PrivateUri)
+	ctx.Export(OpPassword, pulumi.ToSecret(createdReplica.Password))
+	ctx.Export(OpUri, pulumi.ToSecret(createdReplica.Uri))
+	ctx.Export(OpPrivateUri, pulumi.ToSecret(createdReplica.PrivateUri))
 
 	return createdReplica, nil
 }

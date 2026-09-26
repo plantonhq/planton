@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1;
 
+import "shared/options/options.proto";
+
 // DigitalOceanDatabaseUserStackOutputs captures the key outputs after
 // provisioning a DigitalOcean database user. The cluster id and user name
 // are echoed here so consumers (and verification tooling) can address the
@@ -20,13 +22,14 @@ message DigitalOceanDatabaseUserStackOutputs {
 
   // Server-generated password for the user. Secret. MongoDB clusters
   // return it only at creation time.
-  string password = 4;
+  string password = 4 [(dev.planton.shared.options.sensitive) = true];
 
   // Kafka clusters only: PEM access certificate for mutual-TLS
-  // authentication. Secret. Empty on other engines.
+  // authentication -- the public half; the private key is access_key.
+  // Empty on other engines.
   string access_cert = 5;
 
   // Kafka clusters only: PEM access key paired with access_cert. Secret.
   // Empty on other engines.
-  string access_key = 6;
+  string access_key = 6 [(dev.planton.shared.options.sensitive) = true];
 }

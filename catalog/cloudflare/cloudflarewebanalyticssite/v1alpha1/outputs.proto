@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarewebanalyticssite.v1alpha1;
 
-import "shared/options/options.proto";
-
 // CloudflareWebAnalyticsSiteStackOutputs captures the observable outputs
 // after creating the Web Analytics site.
 message CloudflareWebAnalyticsSiteStackOutputs {
@@ -11,15 +9,12 @@ message CloudflareWebAnalyticsSiteStackOutputs {
   // path).
   string site_tag = 1;
 
-  // The site's measurement token, embedded by the JavaScript beacon.
-  // Sensitive both here (machine-readable) and in the modules' output
-  // registration -- hygiene, not a control: the token ships inside public
-  // pages once deployed.
-  string site_token = 2 [(dev.planton.shared.options.sensitive) = true];
+  // The site's measurement token, embedded by the JavaScript beacon. The
+  // token ships inside public pages once deployed.
+  string site_token = 2;
 
   // The ready-to-embed JavaScript snippet (carries the site token).
-  // Sensitive for the same reason as site_token.
-  string snippet = 3 [(dev.planton.shared.options.sensitive) = true];
+  string snippet = 3;
 
   // The site's ruleset ID -- the parent object Cloudflare stores the
   // include/exclude rules under.

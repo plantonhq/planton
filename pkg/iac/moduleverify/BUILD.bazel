@@ -7,6 +7,7 @@ go_library(
         "outputs.go",
         "pulumi.go",
         "secrethome.go",
+        "secretoutputs.go",
         "tofu.go",
         "toolchain.go",
     ],
@@ -37,6 +38,7 @@ go_test(
     srcs = [
         "moduleverify_test.go",
         "secrethome_test.go",
+        "secretoutputs_test.go",
     ],
     embed = [":moduleverify"],
     deps = [

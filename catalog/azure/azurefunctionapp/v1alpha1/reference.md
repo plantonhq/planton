@@ -2428,7 +2428,7 @@ Updatable in place.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureFunctionApp, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureFunctionApp, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -2442,7 +2442,7 @@ Reference an output from another manifest as `valueFrom: {kind: AzureFunctionApp
 | `status.outputs.possible_outbound_ip_addresses` | `[]string` | Every outbound IP address the platform could EVER route this app's traffic through (a superset of outbound_ip_addresses, which lists only the currently active set). Use THIS list for downstream firewall allowlists that must survive scale events and platform moves. |
 | `status.outputs.hosting_environment_id` | `string` | The ARM ID of the App Service Environment hosting the app -- set only when the app's plan runs on Isolated SKUs inside an ASE. |
 | `status.outputs.site_credential_name` | `string` | The site-level publishing credential's username (the Kudu/SCM basic-auth user). Paired with site_credential_password; only usable while the basic-auth publishing toggles are enabled. |
-| `status.outputs.site_credential_password` | `string` | The site-level publishing credential's password. SECRET-BEARING: anyone holding it can deploy code to the app over Web Deploy/SCM while basic-auth publishing is enabled -- treat it like an admin password (disable the basic-auth toggles to revoke the surface entirely). |
+| `status.outputs.site_credential_password` | `string` (sensitive) | The site-level publishing credential's password. SECRET-BEARING: anyone holding it can deploy code to the app over Web Deploy/SCM while basic-auth publishing is enabled -- treat it like an admin password (disable the basic-auth toggles to revoke the surface entirely). |
 
 ## References
 

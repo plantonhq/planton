@@ -46,6 +46,25 @@ Rules:
 Fields typed `string | valueFrom` in the schema report accept either a plain
 string or the `valueFrom` block above.
 
+### A secret output (a credential the producer generates)
+
+Some outputs are secrets the producer creates: an Auth0 client's
+`client_secret`, an AWS IAM user's `secret_access_key`, a registry's
+`admin_password`. The component's reference page marks them `(sensitive)`
+in its Outputs table. On Planton such an output never holds the value: the
+deploy stores it in the organization's secret store and the output holds a
+reference (`$secret/@<env>/<kind>-<name>-outputs/<output>`), which the
+runner resolves wherever another resource reads it. So:
+
+- Wire it with `valueFrom` like any output, but only into a SENSITIVE field
+  (a workload's `env.secrets[]`, a `(sensitive)` spec field). A `valueFrom`
+  of a secret output in a plain field (`env.variables`) is refused before
+  anything is created, naming the field.
+- Never ask the user to copy the value into a `$secret` by hand; the
+  platform already keeps it there.
+- Deleting the producer is refused while a resource still reads its secret,
+  naming the reader; destroy or re-point the reader first.
+
 ### Nested valueFrom
 
 Some fields nest the reference one level deeper (e.g. route targets):

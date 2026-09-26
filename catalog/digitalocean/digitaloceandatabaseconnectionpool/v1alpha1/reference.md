@@ -132,7 +132,7 @@ empty value back, so omission is stable.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseConnectionPool, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseConnectionPool, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -141,9 +141,9 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanData
 | `status.outputs.host` | `string` | Public hostname of the pool endpoint. |
 | `status.outputs.private_host` | `string` | Private-network hostname of the pool endpoint, reachable from resources in the same VPC. |
 | `status.outputs.port` | `uint32` | Port the pool listens on (distinct from the cluster's own port). |
-| `status.outputs.uri` | `string` | Full public connection URI for the pool, including credentials. Secret. |
-| `status.outputs.private_uri` | `string` | Full private-network connection URI for the pool, including credentials. Secret. |
-| `status.outputs.password` | `string` | Password of the pool's user. Secret. Empty for inbound-user pools (no dedicated user; clients bring their own credentials). |
+| `status.outputs.uri` | `string` (sensitive) | Full public connection URI for the pool, including credentials. Secret. |
+| `status.outputs.private_uri` | `string` (sensitive) | Full private-network connection URI for the pool, including credentials. Secret. |
+| `status.outputs.password` | `string` (sensitive) | Password of the pool's user. Secret. Empty for inbound-user pools (no dedicated user; clients bring their own credentials). |
 
 ## References
 

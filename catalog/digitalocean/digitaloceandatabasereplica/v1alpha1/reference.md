@@ -193,7 +193,7 @@ a tag the API would have refused.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseReplica, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDatabaseReplica, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -205,9 +205,9 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanData
 | `status.outputs.port` | `uint32` | Port the replica listens on. |
 | `status.outputs.database` | `string` | Name of the default database served by the replica. |
 | `status.outputs.user` | `string` | Username of the replica's default user. |
-| `status.outputs.password` | `string` | Password of the replica's default user. Secret. |
-| `status.outputs.uri` | `string` | Full public connection URI for the replica, including credentials. Secret. |
-| `status.outputs.private_uri` | `string` | Full private-network connection URI for the replica, including credentials. Secret. |
+| `status.outputs.password` | `string` (sensitive) | Password of the replica's default user. Secret. |
+| `status.outputs.uri` | `string` (sensitive) | Full public connection URI for the replica, including credentials. Secret. |
+| `status.outputs.private_uri` | `string` (sensitive) | Full private-network connection URI for the replica, including credentials. Secret. |
 
 ## References
 

@@ -7,6 +7,7 @@
 package azureexpressroutecircuitv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -119,14 +120,14 @@ var File_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto protorefl
 
 const file_catalog_azure_azureexpressroutecircuit_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"=catalog/azure/azureexpressroutecircuit/v1alpha1/outputs.proto\x123dev.planton.azure.azureexpressroutecircuit.v1alpha1\"\xf4\x03\n" +
+	"=catalog/azure/azureexpressroutecircuit/v1alpha1/outputs.proto\x123dev.planton.azure.azureexpressroutecircuit.v1alpha1\x1a\x1cshared/options/options.proto\"\x80\x04\n" +
 	"$AzureExpressRouteCircuitStackOutputs\x127\n" +
 	"\x18express_route_circuit_id\x18\x01 \x01(\tR\x15expressRouteCircuitId\x12;\n" +
-	"\x1aexpress_route_circuit_name\x18\x02 \x01(\tR\x17expressRouteCircuitName\x12\x1f\n" +
-	"\vservice_key\x18\x03 \x01(\tR\n" +
+	"\x1aexpress_route_circuit_name\x18\x02 \x01(\tR\x17expressRouteCircuitName\x12%\n" +
+	"\vservice_key\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"serviceKey\x12M\n" +
-	"#service_provider_provisioning_state\x18\x04 \x01(\tR serviceProviderProvisioningState\x12\x9f\x01\n" +
-	"\x12authorization_keys\x18\x05 \x03(\v2p.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs.AuthorizationKeysEntryR\x11authorizationKeys\x1aD\n" +
+	"#service_provider_provisioning_state\x18\x04 \x01(\tR serviceProviderProvisioningState\x12\xa5\x01\n" +
+	"\x12authorization_keys\x18\x05 \x03(\v2p.dev.planton.azure.azureexpressroutecircuit.v1alpha1.AzureExpressRouteCircuitStackOutputs.AuthorizationKeysEntryB\x04\xa0\xa6\x1d\x01R\x11authorizationKeys\x1aD\n" +
 	"\x16AuthorizationKeysEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa7\x03\n" +

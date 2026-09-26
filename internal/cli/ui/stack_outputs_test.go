@@ -20,9 +20,11 @@ func TestFormatStackOutputLines_SensitiveValuesNeverRender(t *testing.T) {
 			"conn.port":    "6379",
 			"cluster_name": "cache-prod",
 		},
-		Sensitive: map[string]bool{
-			"password": true,
-			"conn":     true,
+		Secrets: map[string]bool{
+			"host":         false,
+			"password":     true,
+			"conn":         true,
+			"cluster_name": false,
 		},
 	}
 
@@ -48,11 +50,14 @@ func TestFormatStackOutputLines_EmptyAndNilRenderNothing(t *testing.T) {
 	assert.Empty(t, FormatStackOutputLines(&outputs.CaptureResult{}))
 }
 
-func TestCaptureResultIsSensitive_RootAndDottedKeys(t *testing.T) {
-	result := &outputs.CaptureResult{Sensitive: map[string]bool{"password": true}}
-
-	assert.True(t, result.IsSensitive("password"))
-	assert.True(t, result.IsSensitive("password.0"))
-	assert.False(t, result.IsSensitive("host"))
-	assert.False(t, result.IsSensitive("passwordless"))
+func TestFormatStackOutputLines_AnUndeclaredOutputNeverRenders(t *testing.T) {
+	// A customized module's extra output is not in the kind's schema, so
+	// nothing says it is safe to print.
+	result := &outputs.CaptureResult{
+		Flat:    map[string]string{"host": "10.0.0.5", "extra_token": "sup3r-s3cr3t"},
+		Secrets: map[string]bool{"host": false},
+	}
+	rendered := strings.Join(FormatStackOutputLines(result), "\n")
+	assert.NotContains(t, rendered, "sup3r-s3cr3t")
+	assert.Contains(t, rendered, "10.0.0.5")
 }

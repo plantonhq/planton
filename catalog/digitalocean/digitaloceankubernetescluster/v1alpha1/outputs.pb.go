@@ -7,6 +7,7 @@
 package digitaloceankubernetesclusterv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -147,12 +148,12 @@ var File_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_pro
 
 const file_catalog_digitalocean_digitaloceankubernetescluster_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Icatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\"\xce\x02\n" +
+	"Icatalog/digitalocean/digitaloceankubernetescluster/v1alpha1/outputs.proto\x12?dev.planton.digitalocean.digitaloceankubernetescluster.v1alpha1\x1a\x1cshared/options/options.proto\"\xd4\x02\n" +
 	")DigitalOceanKubernetesClusterStackOutputs\x12\x1d\n" +
 	"\n" +
-	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12\x1e\n" +
+	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12$\n" +
 	"\n" +
-	"kubeconfig\x18\x02 \x01(\tR\n" +
+	"kubeconfig\x18\x02 \x01(\tB\x04\xa0\xa6\x1d\x01R\n" +
 	"kubeconfig\x12.\n" +
 	"\x13api_server_endpoint\x18\x03 \x01(\tR\x11apiServerEndpoint\x12\x10\n" +
 	"\x03urn\x18\x04 \x01(\tR\x03urn\x12!\n" +

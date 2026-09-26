@@ -7,6 +7,7 @@
 package gcpapikeyv1alpha1
 
 import (
+	_ "github.com/plantonhq/planton/shared/options"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -37,9 +38,9 @@ type GcpApiKeyStackOutputs struct {
 	// credential Google bills and rate-limits against the project, so both
 	// engines mark it sensitive in their state and outputs; it reaches the
 	// client build through the platform's secret handling, never a log or a
-	// plan. (It ships inside the client binary by design; the restrictions on
-	// the key, not the secrecy of the string, are what bound its blast
-	// radius.)
+	// plan. (A browser or mobile key ships inside the client binary by design,
+	// and its restrictions bound its blast radius; a key bound to a service
+	// account authenticates as that account. Either way it is kept as a secret.)
 	KeyString     string `protobuf:"bytes,3,opt,name=key_string,json=keyString,proto3" json:"key_string,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -100,12 +101,12 @@ var File_catalog_gcp_gcpapikey_v1alpha1_outputs_proto protoreflect.FileDescripto
 
 const file_catalog_gcp_gcpapikey_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	",catalog/gcp/gcpapikey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpapikey.v1alpha1\"\\\n" +
+	",catalog/gcp/gcpapikey/v1alpha1/outputs.proto\x12\"dev.planton.gcp.gcpapikey.v1alpha1\x1a\x1cshared/options/options.proto\"b\n" +
 	"\x15GcpApiKeyStackOutputs\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x10\n" +
-	"\x03uid\x18\x02 \x01(\tR\x03uid\x12\x1d\n" +
+	"\x03uid\x18\x02 \x01(\tR\x03uid\x12#\n" +
 	"\n" +
-	"key_string\x18\x03 \x01(\tR\tkeyStringB\xb2\x02\n" +
+	"key_string\x18\x03 \x01(\tB\x04\xa0\xa6\x1d\x01R\tkeyStringB\xb2\x02\n" +
 	"&com.dev.planton.gcp.gcpapikey.v1alpha1B\fOutputsProtoP\x01ZMgithub.com/plantonhq/planton/catalog/gcp/gcpapikey/v1alpha1;gcpapikeyv1alpha1\xa2\x02\x04DPGG\xaa\x02\"Dev.Planton.Gcp.Gcpapikey.V1alpha1\xca\x02\"Dev\\Planton\\Gcp\\Gcpapikey\\V1alpha1\xe2\x02.Dev\\Planton\\Gcp\\Gcpapikey\\V1alpha1\\GPBMetadata\xea\x02&Dev::Planton::Gcp::Gcpapikey::V1alpha1b\x06proto3"
 
 var (

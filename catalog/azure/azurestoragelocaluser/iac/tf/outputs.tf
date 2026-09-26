@@ -16,12 +16,11 @@ output "sftp_username" {
 }
 
 # Azure generates the SID at creation; Azure Files NTFS-style ACLs
-# reference principals by SID. Secret-bearing by Azure's own
-# classification (the provider marks it sensitive).
+# reference principals by SID. An identifier, not a credential: the
+# provider marks it sensitive, and nonsensitive() unwraps it.
 output "sid" {
   description = "The user's unique Security Identifier"
-  value       = azurerm_storage_account_local_user.main.sid
-  sensitive   = true
+  value       = nonsensitive(azurerm_storage_account_local_user.main.sid)
 }
 
 # Returned by Azure exactly once, at the creation that enabled

@@ -662,7 +662,7 @@ your org's ownership/cost-center conventions here. Updatable in place.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureRedisCache, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureRedisCache, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -673,10 +673,10 @@ Reference an output from another manifest as `valueFrom: {kind: AzureRedisCache,
 | `status.outputs.hostname` | `string` | The cache's DNS hostname: {cache_name}.redis.cache.windows.net. Keyless (Entra) clients need only this -- tokens replace keys. |
 | `status.outputs.port` | `int32` | The plaintext non-SSL port (6379). Only open when non_ssl_port_enabled is true. |
 | `status.outputs.ssl_port` | `int32` | The TLS port (6380) -- the port every production client should use. |
-| `status.outputs.primary_access_key` | `string` | The primary access key (a SECRET). Used as the password in Redis connection strings. Empty when access-keys authentication is disabled. |
-| `status.outputs.secondary_access_key` | `string` | The secondary access key (a SECRET). Kept live so clients can be rotated to it while the primary is regenerated, and vice versa -- zero-downtime key rotation. |
-| `status.outputs.primary_connection_string` | `string` | Ready-to-use primary connection string (a SECRET -- embeds the primary key): {hostname}:{ssl_port},password={key},ssl=True,abortConnect=False |
-| `status.outputs.secondary_connection_string` | `string` | Ready-to-use secondary connection string (a SECRET -- embeds the secondary key), for the rotation window. |
+| `status.outputs.primary_access_key` | `string` (sensitive) | The primary access key (a SECRET). Used as the password in Redis connection strings. Empty when access-keys authentication is disabled. |
+| `status.outputs.secondary_access_key` | `string` (sensitive) | The secondary access key (a SECRET). Kept live so clients can be rotated to it while the primary is regenerated, and vice versa -- zero-downtime key rotation. |
+| `status.outputs.primary_connection_string` | `string` (sensitive) | Ready-to-use primary connection string (a SECRET -- embeds the primary key): {hostname}:{ssl_port},password={key},ssl=True,abortConnect=False |
+| `status.outputs.secondary_connection_string` | `string` (sensitive) | Ready-to-use secondary connection string (a SECRET -- embeds the secondary key), for the rotation window. |
 | `status.outputs.identity_principal_id` | `string` | The system-assigned identity's principal (object) ID -- what RBAC grants target when the identity block requests SYSTEM_ASSIGNED. Empty otherwise. |
 
 ## References

@@ -277,15 +277,15 @@ id); a user tag with the same key wins.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: AzureExpressRouteCircuit, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: AzureExpressRouteCircuit, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.express_route_circuit_id` | `string` | The Azure Resource Manager ID of the circuit. Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/expressRouteCircuits/{name} |
 | `status.outputs.express_route_circuit_name` | `string` | The name of the circuit -- what peerings (AzureExpressRouteCircuitPeering) reference as express_route_circuit_name. |
-| `status.outputs.service_key` | `string` | The SERVICE KEY -- the circuit's provisioning credential, handed to the connectivity provider to complete the physical cross-connect. Marked sensitive in both engines; treat it like a password. |
+| `status.outputs.service_key` | `string` (sensitive) | The SERVICE KEY -- the circuit's provisioning credential, handed to the connectivity provider to complete the physical cross-connect. Marked sensitive in both engines; treat it like a password. |
 | `status.outputs.service_provider_provisioning_state` | `string` | The provider side's provisioning state: "NotProvisioned" (fresh circuit, waiting on the provider), "Provisioning", "Provisioned" (peerings can be configured), or "Deprovisioning". |
-| `status.outputs.authorization_keys` | `map<string, string>` | The generated key of each authorization ISSUED by this circuit, keyed by the authorization's name from the spec. A virtual network gateway in another subscription redeems one to connect. Marked sensitive in both engines. Example valueFrom fieldPath: status.outputs.authorization_keys.partner-team |
+| `status.outputs.authorization_keys` | `map<string, string>` (sensitive) | The generated key of each authorization ISSUED by this circuit, keyed by the authorization's name from the spec. A virtual network gateway in another subscription redeems one to connect. Marked sensitive in both engines. Example valueFrom fieldPath: status.outputs.authorization_keys.partner-team |
 
 ## References
 

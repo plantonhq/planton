@@ -61,10 +61,10 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusdisasterrecoveryc
 	// client reconfiguration.
 	ctx.Export(OpDisasterRecoveryConfigId, createdPairing.ID())
 	ctx.Export(OpAliasName, createdPairing.Name)
-	ctx.Export(OpPrimaryConnectionStringAlias, createdPairing.PrimaryConnectionStringAlias)
-	ctx.Export(OpSecondaryConnectionStringAlias, createdPairing.SecondaryConnectionStringAlias)
-	ctx.Export(OpDefaultPrimaryKey, createdPairing.DefaultPrimaryKey)
-	ctx.Export(OpDefaultSecondaryKey, createdPairing.DefaultSecondaryKey)
+	ctx.Export(OpPrimaryConnectionStringAlias, pulumi.ToSecret(createdPairing.PrimaryConnectionStringAlias))
+	ctx.Export(OpSecondaryConnectionStringAlias, pulumi.ToSecret(createdPairing.SecondaryConnectionStringAlias))
+	ctx.Export(OpDefaultPrimaryKey, pulumi.ToSecret(createdPairing.DefaultPrimaryKey))
+	ctx.Export(OpDefaultSecondaryKey, pulumi.ToSecret(createdPairing.DefaultSecondaryKey))
 
 	return nil
 }

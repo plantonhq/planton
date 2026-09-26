@@ -1243,7 +1243,7 @@ Apply the mapping on delete.
 
 ## Outputs
 
-Reference an output from another manifest as `valueFrom: {kind: CloudflareZeroTrustAccessApplication, name: <resource-name>, fieldPath: status.outputs.<output>}`.
+Reference an output from another manifest as `valueFrom: {kind: CloudflareZeroTrustAccessApplication, name: <resource-name>, fieldPath: status.outputs.<output>}`. A sensitive output is a secret the resource generates: on Planton it is kept in the organization's secret store and the output holds a `$secret/` reference, so feed it only to a sensitive field.
 
 | Output | Type | Description |
 |---|---|---|
@@ -1251,7 +1251,7 @@ Reference an output from another manifest as `valueFrom: {kind: CloudflareZeroTr
 | `status.outputs.aud` | `string` | The application's audience (AUD) tag. Downstream services and Workers use this to validate the Cloudflare Access JWT for requests to this application. |
 | `status.outputs.domain` | `string` | The primary domain protected by this application (echoes the input domain when set, otherwise the provider-resolved value). |
 | `status.outputs.saas_client_id` | `string` | For SaaS (OIDC) applications: the issued OAuth client ID. |
-| `status.outputs.saas_client_secret` | `string` | For SaaS (OIDC) applications: the issued OAuth client secret. |
+| `status.outputs.saas_client_secret` | `string` (sensitive) | For SaaS (OIDC) applications: the issued OAuth client secret. |
 | `status.outputs.saas_public_key` | `string` | For SaaS (SAML) applications: the IdP-facing public key (certificate). |
 | `status.outputs.saas_sso_endpoint` | `string` | For SaaS (SAML) applications: the single sign-on (SSO) endpoint URL. |
 | `status.outputs.saas_idp_entity_id` | `string` | For SaaS (SAML) applications: the IdP entity ID. |
