@@ -54,6 +54,11 @@ both branches. A reference whose target another variant defines but the current 
 does not is an error (a toggle broke the composition); a reference no variant defines
 is a warning (the resource must already exist in the target environment).
 
+The reserved org and env template variables render as "acme" and "dev" unless set:
+--set org=<slug> --set env=<slug> works everywhere, and a host CLI whose global --org and
+--env flags name the organization and environment (the Planton Platform CLI) binds them
+when they are typed; --set wins over both.
+
 This requires no backend and no network: everything validates against the schemas
 compiled into this binary. The control plane performs the same pipeline authoritatively
 when a chart is published.`,
@@ -68,7 +73,10 @@ when a chart is published.`,
 	planton chart validate --all charts/
 
 	# Exercise a specific parameter combination beyond the automatic toggle flips
-	planton chart validate charts/gcp/static-website-cdn --set dnsEnabled=false`,
+	planton chart validate charts/gcp/static-website-cdn --set dnsEnabled=false
+
+	# Render for a specific environment (catches names that break on a hyphenated slug)
+	planton chart validate charts/gcp/cloud-run-service --set env=production-eu`,
 		RunE: chartValidateHandler,
 		// The handler prints the full per-chart report itself; the returned error is a
 		// one-line summary for the host root's error path, so neither cobra's usage
@@ -79,17 +87,26 @@ when a chart is published.`,
 	cmd.Flags().Bool("all", false, "treat the given directories as roots and validate every chart found under them")
 	cmd.Flags().Bool("verbose", false, "also list charts and variants that validated cleanly, and print warnings for passing charts")
 	cmd.Flags().StringArray("set", nil, "override a param value (key=value, repeatable); org and env may also be overridden")
-	cmd.Flags().String("org", "acme", "value bound to the reserved org template variable")
-	cmd.Flags().String("env", "dev", "value bound to the reserved env template variable")
 	return cmd
+}
+
+// hostScope reads the host root's global --org or --env when the person typed
+// it. The command declares neither: a host CLI already owns both names as its
+// global flags, and a local copy would hide them (the person types one, the
+// handler reads the other). An untyped flag stays empty, so a host's saved
+// context never leaks into the synthetic render and Validate's defaults apply.
+func hostScope(cmd *cobra.Command, name string) string {
+	if f := cmd.Flag(name); f != nil && f.Changed {
+		return f.Value.String()
+	}
+	return ""
 }
 
 func chartValidateHandler(cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	verbose, _ := cmd.Flags().GetBool("verbose")
 	setFlags, _ := cmd.Flags().GetStringArray("set")
-	org, _ := cmd.Flags().GetString("org")
-	env, _ := cmd.Flags().GetString("env")
+	org, env := hostScope(cmd, "org"), hostScope(cmd, "env")
 
 	if len(args) == 0 {
 		return errors.New("provide at least one chart directory (or a root directory with --all)")

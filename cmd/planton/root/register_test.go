@@ -1,10 +1,14 @@
 package root
 
 import (
+	"os"
+	"os/exec"
+	"strings"
 	"testing"
 
 	"github.com/plantonhq/planton/internal/cli/version"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 // The engine set is the embedding contract: every user-facing engine command
@@ -138,4 +142,80 @@ func TestEngineGroups_RegisterKubeContext(t *testing.T) {
 			}
 		}
 	}
+}
+
+// A host that embeds the engine owns global flags of its own, declared
+// persistently on its root: the Planton Platform CLI's --org, --env/-e,
+// --output-format/-o, --instance and --account. An engine command that
+// declares a flag with one of those long names hides the host's (the person
+// types one, the handler reads the other), and one reusing a shorthand panics
+// when cobra merges the flag sets -- `planton kustomize schema -o` did exactly
+// that. The engine's own persistent flags are held to the same rule. So no
+// engine command, including the chart validate command hosts mount, may
+// declare a flag, long name or shorthand, that an ancestor declares
+// persistently.
+//
+// The engine's commands are package-level instances, and cobra merges a
+// parent's persistent flags into a command's own set for good; a test that
+// ran under another host earlier leaves that host's flags behind. So the walk
+// runs in a fresh run of this binary, where this host is the only one.
+func TestEngineCommands_ShadowNoPersistentFlag(t *testing.T) {
+	if os.Getenv(shadowWalkEnv) == "1" {
+		walkEngineUnderHost(t)
+		return
+	}
+	child := exec.Command(os.Args[0], "-test.run=^TestEngineCommands_ShadowNoPersistentFlag$", "-test.count=1", "-test.v")
+	child.Env = append(os.Environ(), shadowWalkEnv+"=1")
+	out, err := child.CombinedOutput()
+	if err != nil || !strings.Contains(string(out), "walked the engine under a host") {
+		t.Fatalf("the walk under a fresh host failed (%v):\n%s", err, out)
+	}
+}
+
+const shadowWalkEnv = "ENGINE_SHADOW_WALK"
+
+func walkEngineUnderHost(t *testing.T) {
+	host := &cobra.Command{Use: "host"}
+	host.PersistentFlags().String("org", "", "")
+	host.PersistentFlags().StringP("env", "e", "", "")
+	host.PersistentFlags().StringP("output-format", "o", "table", "")
+	host.PersistentFlags().String("instance", "", "")
+	host.PersistentFlags().String("account", "", "")
+	RegisterCommands(host, Options{})
+	chart := &cobra.Command{Use: "chart"}
+	chart.AddCommand(NewChartValidateCommand())
+	host.AddCommand(chart)
+
+	var walk func(cmd *cobra.Command, inherited []*pflag.Flag)
+	walk = func(cmd *cobra.Command, inherited []*pflag.Flag) {
+		for _, sub := range cmd.Commands() {
+			for _, declared := range []*pflag.FlagSet{sub.Flags(), sub.PersistentFlags()} {
+				declared.VisitAll(func(f *pflag.Flag) {
+					for _, p := range inherited {
+						switch {
+						case f == p:
+						case f.Name == p.Name:
+							t.Errorf("%s declares its own --%s, shadowing the persistent flag", sub.CommandPath(), f.Name)
+						case f.Shorthand != "" && f.Shorthand == p.Shorthand:
+							t.Errorf("%s declares -%s for --%s, which is the persistent --%s's shorthand", sub.CommandPath(), f.Shorthand, f.Name, p.Name)
+						}
+					}
+				})
+			}
+			// Cobra merges the inherited flags into the command's own set on every
+			// run and every help, and panics on a clash; with nothing reported
+			// above, do that merge so any clash the checks miss fails here too.
+			if !t.Failed() {
+				_ = sub.LocalFlags()
+				_ = sub.InheritedFlags()
+			}
+			var own []*pflag.Flag
+			sub.PersistentFlags().VisitAll(func(f *pflag.Flag) { own = append(own, f) })
+			walk(sub, append(append([]*pflag.Flag{}, inherited...), own...))
+		}
+	}
+	var hostPersistent []*pflag.Flag
+	host.PersistentFlags().VisitAll(func(f *pflag.Flag) { hostPersistent = append(hostPersistent, f) })
+	walk(host, hostPersistent)
+	t.Log("walked the engine under a host")
 }
