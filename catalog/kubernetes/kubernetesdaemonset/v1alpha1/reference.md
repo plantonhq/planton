@@ -1907,6 +1907,7 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
+- `Auth0TenantSettings`
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
@@ -2800,6 +2801,7 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
+- `Auth0TenantSettings`
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
@@ -4878,6 +4880,7 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
+- `Auth0TenantSettings`
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
@@ -5771,6 +5774,7 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
+- `Auth0TenantSettings`
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
@@ -7970,6 +7974,7 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
+- `Auth0TenantSettings`
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
@@ -8863,6 +8868,7 @@ Allowed values (use exactly as shown):
 - `Auth0Action`
 - `Auth0Role`
 - `Auth0User`
+- `Auth0TenantSettings`
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources Note: OpenFGA is Terraform-only - there is no Pulumi provider available. Pulumi modules for OpenFGA resources are pass-through placeholders.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
