@@ -52,7 +52,7 @@ AWS is the most fully featured cloud provider integration. It supports all three
 ### Connecting via the Web Console
 
 1. Navigate to **Connections** and click the **AWS** card under Infrastructure.
-2. **Name your connection** — choose a descriptive name like "aws-production" or "aws-dev-sandbox". The slug is auto-generated.
+2. **Name your connection** — choose a descriptive name like "AWS Production" or "aws-dev-sandbox". The slug is derived from the name ("AWS Production" becomes `aws-production`), because a slug is lowercase letters and digits joined by single hyphens, like my-app-2.
 3. **Choose your authentication method**:
    - **Inline API Keys** — Enter your Access Key ID and Secret Access Key directly.
    - **Cross-Account Trust** — Planton generates a CloudFormation Quick Create link. Click it to open the AWS Console, review the stack, and create the IAM role. The role ARN is captured automatically.

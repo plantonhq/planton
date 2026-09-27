@@ -201,7 +201,8 @@ version (rotation), never a duplicate.
 
 ## In chart templates
 
-Slugs are DNS-compatible (`[a-z0-9-]`) and can never contain `@`, so the env
+A slug is lowercase letters and digits joined by single hyphens, like my-app-2
+(DNS-label safe, no dots or underscores) and can never contain `@`, so the env
 sigil composes cleanly with Jinja — the canonical pattern for a chart that
 deploys per-environment:
 

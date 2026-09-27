@@ -45,7 +45,7 @@ As a new user without an organization, the dashboard prompts you to create one.
 
 1. Click **Create Organization**
 2. Enter the organization name (human-readable, e.g., "Acme Corp")
-3. Enter the organization slug (lowercase with hyphens, e.g., "acme-corp") — this must be unique across the platform
+3. Enter the organization slug, e.g., "acme-corp" — this must be unique across the platform. A slug is lowercase letters and digits joined by single hyphens, like my-app-2; an organization's slug also starts with a letter and is 2 to 15 characters
 4. Click **Create**
 
 <!-- SCREENSHOT: Create Organization wizard

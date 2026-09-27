@@ -26,8 +26,17 @@ import (
 // -backend nodes keep their .terraform provider dir warm between runs.
 
 // nodeWorkspaceDir returns (creating parents as needed) the node's stable
-// workspace path.
+// workspace path. The slug and env are joined into a filesystem path, so an
+// unlawful one (a dot, a slash, "..") is refused rather than joined: a
+// lawful slug is lowercase letters and digits joined by single hyphens and
+// can never climb out of the workspace root.
 func nodeWorkspaceDir(id manifestgraph.Identity) (string, error) {
+	if !manifestgraph.IsLawfulSlug(id.Slug) {
+		return "", errors.Errorf("%s slug %q is not a lawful slug: %s", id.Kind, id.Slug, manifestgraph.SlugRule)
+	}
+	if id.Env != "" && !manifestgraph.IsLawfulSlug(id.Env) {
+		return "", errors.Errorf("%s %q env %q is not a lawful slug: %s", id.Kind, id.Slug, id.Env, manifestgraph.SlugRule)
+	}
 	root, err := workspace.GetWorkspaceDir()
 	if err != nil {
 		return "", err

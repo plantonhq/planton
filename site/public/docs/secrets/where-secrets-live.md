@@ -68,10 +68,10 @@ The moment a secret is created, its record captures the **remote identity**: the
 Some resources create a credential when they deploy: an Auth0 application's client secret, an AWS IAM user's secret access key, a container registry's admin password, a database's connection string. Planton stores each one in your organization's secret store the moment the deploy finishes, before the value leaves your runner, and the resource's outputs carry a reference instead of the value:
 
 ```
-$secret/@prod/auth0-client-checkout-outputs/client_secret
+$secret/@prod/auth0-client-outputs-checkout/client_secret
 ```
 
-- **One key-value secret per resource**, named `<kind>-<resource>-outputs`, in the resource's environment, with one key per secret output. It is labeled as managed by Planton for that resource, and its page links back to it.
+- **One key-value secret per resource**, named `<kind>-outputs-<resource>`, in the resource's environment, with one key per secret output. It is labeled as managed by Planton for that resource, and its page links back to it.
 - **A re-deploy adds a version only when a value changed**, so the secret's history shows real rotations, not every deploy.
 - **Another resource reads it with `valueFrom`**, exactly as it reads any output. The reference travels, and the runner resolves it at deploy, so the value reaches the workload and nowhere else. Because the value is a secret, a `valueFrom` of a secret output belongs in a sensitive field (a workload's `env.secrets`, for example); written into a plain field it is refused, naming the field.
 - **Deleting the resource deletes its secret.** While another resource still reads it, the delete is refused with the reader named; destroy or re-point the reader first, or delete with the force flag.

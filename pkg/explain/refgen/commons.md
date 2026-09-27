@@ -26,7 +26,7 @@ leaves are what other manifests reference (each page's "Outputs" section).
 | Field | Meaning |
 |---|---|
 | `metadata.name` | The resource's name |
-| `metadata.slug`, `metadata.id` | Platform identifiers |
+| `metadata.slug`, `metadata.id` | Platform identifiers. A slug is lowercase letters and digits joined by single hyphens, like my-app-2; left empty, it is derived from `metadata.name` (`example.com` becomes `example-com`) |
 | `metadata.org`, `metadata.env` | The organization and environment the resource belongs to |
 | `metadata.labels` | Key/value pairs the IaC modules derive into cloud-provider tags on the real resources |
 | `metadata.annotations` | Platform-behavior signals (see below) |

@@ -53,7 +53,7 @@ Some outputs are secrets the producer creates: an Auth0 client's
 `admin_password`. The component's reference page marks them `(sensitive)`
 in its Outputs table. On Planton such an output never holds the value: the
 deploy stores it in the organization's secret store and the output holds a
-reference (`$secret/@<env>/<kind>-<name>-outputs/<output>`), which the
+reference (`$secret/@<env>/<kind>-outputs-<name>/<output>`), which the
 runner resolves wherever another resource reads it. So:
 
 - Wire it with `valueFrom` like any output, but only into a SENSITIVE field
@@ -142,8 +142,10 @@ name that infrastructure produces, run this check in order:
   both sides renders identically — the shared chart's
   `"{{ values.env }}-cluster"` is exactly what the app chart's reference
   renders to. Reference names are slug-normalized the same way resource
-  names are (a zone named `example.com` is matched as `example-com`), so
-  reference the name as authored and let the platform normalize.
+  names are: every run of characters that is not a lowercase letter or digit
+  becomes one hyphen, dots and underscores included (a zone named
+  `example.com` is matched as `example-com`, a name `db_main` as `db-main`),
+  so reference the name as authored and let the platform normalize.
 - **`env` reaches across environments.** A reference resolves in the
   deploying environment by default; set `env` explicitly to consume a
   producer that lives in another environment (a shared cluster in `shared`

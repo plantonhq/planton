@@ -7,6 +7,7 @@
 package shared
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	v1 "github.com/plantonhq/planton/shared/relationship/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
@@ -27,7 +28,14 @@ type CloudResourceMetadata struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// name of the cloud-resource
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// slug for the cloud-resource
+	// slug for the cloud-resource: its handle in references (valueFrom, $secret/<slug>), the CLI
+	// and the names Planton creates from it. lowercase letters and digits joined by single hyphens
+	// (my-app-2) -- the one alphabet every system a slug is written into accepts: DNS labels,
+	// secret store names (GCP joins segments with '_', Azure allows only letters, digits and '-'),
+	// cloud labels and tags, and the dot-delimited identities built from it (the Pulumi stack
+	// <env>.<Kind>.<slug>). a name is free text (a DNS zone named example.com has slug
+	// example-com); the platform derives the slug from the name when none is given, so an empty
+	// slug is legal. the rule is the platform's ApiResourceMetadata.slug rule, pinned equal by test.
 	Slug string `protobuf:"bytes,2,opt,name=slug,proto3" json:"slug,omitempty"`
 	// id of the resource
 	Id string `protobuf:"bytes,3,opt,name=id,proto3" json:"id,omitempty"`
@@ -153,10 +161,11 @@ var File_shared_metadata_proto protoreflect.FileDescriptor
 
 const file_shared_metadata_proto_rawDesc = "" +
 	"\n" +
-	"\x15shared/metadata.proto\x12\x12dev.planton.shared\x1a)shared/relationship/v1/relationship.proto\"\xaa\x04\n" +
+	"\x15shared/metadata.proto\x12\x12dev.planton.shared\x1a\x1bbuf/validate/validate.proto\x1a)shared/relationship/v1/relationship.proto\"\xce\x05\n" +
 	"\x15CloudResourceMetadata\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
-	"\x04slug\x18\x02 \x01(\tR\x04slug\x12\x0e\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\xb5\x01\n" +
+	"\x04slug\x18\x02 \x01(\tB\xa0\x01\xbaH\x9c\x01\xba\x01\x98\x01\n" +
+	"\rmetadata.slug\x12OA slug is lowercase letters and digits joined by single hyphens, like my-app-2.\x1a6this == '' || this.matches('^[a-z0-9]+(-[a-z0-9]+)*$')R\x04slug\x12\x0e\n" +
 	"\x02id\x18\x03 \x01(\tR\x02id\x12\x10\n" +
 	"\x03org\x18\x04 \x01(\tR\x03org\x12\x10\n" +
 	"\x03env\x18\x05 \x01(\tR\x03env\x12M\n" +

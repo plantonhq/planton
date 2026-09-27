@@ -2,14 +2,26 @@ syntax = "proto3";
 
 package dev.planton.shared;
 
+import "buf/validate/validate.proto";
 import "shared/relationship/v1/relationship.proto";
 
 //metadata of a cloud-resource
 message CloudResourceMetadata {
   // name of the cloud-resource
   string name = 1;
-  // slug for the cloud-resource
-  string slug = 2;
+  // slug for the cloud-resource: its handle in references (valueFrom, $secret/<slug>), the CLI
+  // and the names Planton creates from it. lowercase letters and digits joined by single hyphens
+  // (my-app-2) -- the one alphabet every system a slug is written into accepts: DNS labels,
+  // secret store names (GCP joins segments with '_', Azure allows only letters, digits and '-'),
+  // cloud labels and tags, and the dot-delimited identities built from it (the Pulumi stack
+  // <env>.<Kind>.<slug>). a name is free text (a DNS zone named example.com has slug
+  // example-com); the platform derives the slug from the name when none is given, so an empty
+  // slug is legal. the rule is the platform's ApiResourceMetadata.slug rule, pinned equal by test.
+  string slug = 2 [(buf.validate.field).cel = {
+    id: "metadata.slug"
+    message: "A slug is lowercase letters and digits joined by single hyphens, like my-app-2."
+    expression: "this == '' || this.matches('^[a-z0-9]+(-[a-z0-9]+)*$')"
+  }];
   // id of the resource
   string id = 3;
   // slug of the organization to which the api-resource belongs to
