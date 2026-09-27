@@ -52,6 +52,8 @@ Cloud Resources support five primary operations:
 
 The distinction between destroy and purge matters for compliance and auditing. Destroy leaves a record of what existed and when it was torn down. Purge removes all traces.
 
+A destroy reads only what it destroys. A `$secret/` or `$var/` reference the resource was deployed with that has since been deleted does not stop the destroy: the job names the references it could not read and tears the resource down. And a destroy that empties the stack removes the state it left behind -- the state object in your bucket, or a Pulumi stack with its backups -- and the job says so (`state removed: <key>`); a Terraform Cloud workspace or a Pulumi Cloud stack is kept, holding its history, and a backend that refuses the delete keeps the state, with its reason.
+
 <!-- SCREENSHOT: Cloud Resource detail page
   Page: /[org]/cloud-resource/[env]/[resourceKind]/[resourceName]
   Action: Show a deployed Cloud Resource with status and spec visible

@@ -4,6 +4,7 @@
 package root
 
 import (
+	"github.com/plantonhq/planton/pkg/infrachart"
 	"github.com/plantonhq/planton/pkg/infrachart/validatecmd"
 	"github.com/spf13/cobra"
 )
@@ -30,6 +31,8 @@ func init() {
 // that leaf package so the CI chart-validator binary can link the identical
 // command without this package's full CLI world (pulumi/cloud SDKs) entering
 // its build graph; see the validatecmd package comment for the three mounts.
-func NewChartValidateCommand() *cobra.Command {
-	return validatecmd.NewChartValidateCommand()
+// A host passes its own document checks (the Planton Platform CLI passes where
+// secrets may go); this CLI passes none.
+func NewChartValidateCommand(checks ...infrachart.DocumentCheck) *cobra.Command {
+	return validatecmd.NewChartValidateCommand(checks...)
 }

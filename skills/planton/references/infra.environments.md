@@ -39,6 +39,22 @@ environment, service, pull request number, expiry — and it is server-managed
 Everything else about them (authoring the previews tree, the verified URL,
 the one-call read) lives in `references/service.preview-environments.md`.
 
+## Deleting a durable environment
+
+Deleting an environment removes Planton's records, secrets, variables, grants
+and the Planton-managed state of its resources -- it never touches the cloud.
+So `planton env delete <env>` is REFUSED while anything in the environment is
+still deployed; the refusal names each resource and the command that destroys
+it (`planton infra project undeploy <project>` for a project's resources,
+`planton purge <Kind> <slug>` for anything else). Relay the refusal; destroy
+first when the user wants the infrastructure gone. When they want it kept
+running outside Planton, `--retain-cloud-resources` deletes the environment
+and leaves the infrastructure alone -- refused while a running resource keeps
+its state in Planton-managed storage, until
+`planton state-backend move-off-planton` has moved that state to a backend
+they own. Never pass the flag on your own judgment: it is the user's choice to
+stop Planton managing live infrastructure.
+
 ## One cluster serves multiple environments (the default recommendation)
 
 A developer asking for "dev and prod environments" on Kubernetes does NOT

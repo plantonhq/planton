@@ -127,9 +127,13 @@ Two gates, one offline and one server-side:
 # Offline (this repo's CLI): renders every template with its default values —
 # flipping each bool toggle once so conditional manifests are exercised in
 # both branches — and validates each rendered manifest against the compiled-in
-# protos: the kind must exist, every field must exist on the spec, the spec
-# must pass its validation rules, and every valueFrom reference must resolve.
-# No control plane needed.
+# protos, rendered the way the control plane renders them (a template's final
+# newline is kept): the kind must exist, every field must exist on the spec,
+# the whole document (metadata as well as spec) must pass its validation
+# rules, and every valueFrom reference must resolve. No control plane needed.
+# The Planton Platform CLI's `chart validate` also checks where secrets go: a
+# secret field takes only a $secret/ reference, and a generated secret feeds
+# only a secret field.
 planton chart validate charts/<provider>/<chart>
 
 # Exercise a specific parameter combination beyond the automatic toggle flips:

@@ -164,6 +164,17 @@ func scanBannedConstructs(templateSource string) []string {
 	return findings
 }
 
+// chartConfig is gonja's configuration with one change: the platform's engine
+// (Jinjava) keeps a template's final newline, and gonja drops it by default
+// (Jinja2's keep_trailing_newline=False). Dropped, a YAML block scalar at the
+// end of a file ended differently offline than on the server, so a manifest
+// could validate here and be refused by install.
+func chartConfig() *config.Config {
+	c := config.New()
+	c.KeepTrailingNewline = true
+	return c
+}
+
 // renderTemplate renders one template file with the given context.
 func renderTemplate(name, source string, ctx map[string]any) (string, error) {
 	baseLoader, err := loaders.NewFileSystemLoader("")
@@ -174,7 +185,7 @@ func renderTemplate(name, source string, ctx map[string]any) (string, error) {
 	if err != nil {
 		return "", errors.Wrap(err, "failed to construct template loader")
 	}
-	tpl, err := exec.NewTemplate(name, config.New(), shifted, chartEnvironment)
+	tpl, err := exec.NewTemplate(name, chartConfig(), shifted, chartEnvironment)
 	if err != nil {
 		return "", err
 	}

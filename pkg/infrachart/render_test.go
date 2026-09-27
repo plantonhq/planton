@@ -80,6 +80,11 @@ func TestRenderTemplateConformance(t *testing.T) {
 		{"lstrip", `[{{ "  a.com ".lstrip() }}]`, `[a.com ]`},
 		{"rstrip", `[{{ "  a.com ".rstrip() }}]`, `[  a.com]`},
 		{"split strip loop", `{% for s in "*.ubuntu.com, *.debian.org".split(',') %}[{{ s.strip() }}]{% endfor %}`, `[*.ubuntu.com][*.debian.org]`},
+		// The platform's engine keeps a template's final newline; dropping it
+		// here changed what a YAML block scalar at the end of a file holds, so
+		// a manifest validated offline that the server then refused.
+		{"final newline kept", "v: {{ values.name }}\n", "v: demo\n"},
+		{"final newline after a block kept", "{% if values.enabled | bool %}v: yes{% endif %}\n", "v: yes\n"},
 	}
 
 	for _, tc := range cases {

@@ -38,21 +38,27 @@ import (
 //
 // The command is fully offline -- it dials nothing and needs no configuration
 // -- so hosts that guard backend-requiring commands must exempt it.
-func NewChartValidateCommand() *cobra.Command {
+//
+// checks are the host's own rules over each rendered document
+// (infrachart.Options.DocumentChecks): the open-source CLI passes none, and the
+// Planton Platform CLI passes the platform's rule for where secrets may go.
+func NewChartValidateCommand(checks ...infrachart.DocumentCheck) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validate [chart-dir ...]",
 		Short: "render and validate infra-charts against the compiled-in kind registry",
 		Long: `Render each chart's templates with the defaults declared in values.yaml and validate
 every produced manifest offline: the kind must exist, every field must exist on the
-kind's spec (unknown or renamed fields fail), the spec must pass its validation rules,
-every valueFrom reference must resolve to a real field on the referenced kind (and
+kind's spec (unknown or renamed fields fail), the whole document (metadata as well as
+spec) must pass its validation rules, every valueFrom reference must resolve to a real field on the referenced kind (and
 references to a field's default kind must use the annotated composition key), and the
 chart's internal references must form a dependency graph without cycles.
 
 Each bool param is additionally flipped once so conditional manifests are exercised in
 both branches. A reference whose target another variant defines but the current one
-does not is an error (a toggle broke the composition); a reference no variant defines
-is a warning (the resource must already exist in the target environment).
+does not is a warning that says what to verify (either a toggle broke the composition,
+or the parameter points that arm at a resource owned outside the chart); a reference no
+variant defines is a warning too (the resource must already exist in the target
+environment).
 
 The reserved org and env template variables render as "acme" and "dev" unless set:
 --set org=<slug> --set env=<slug> works everywhere, and a host CLI whose global --org and
@@ -60,8 +66,11 @@ The reserved org and env template variables render as "acme" and "dev" unless se
 when they are typed; --set wins over both.
 
 This requires no backend and no network: everything validates against the schemas
-compiled into this binary. The control plane performs the same pipeline authoritatively
-when a chart is published.`,
+compiled into this binary, rendered the way the control plane renders them. The control
+plane validates each document again when a chart is published or installed; a host CLI
+may add its own document checks (the Planton Platform CLI adds where secrets may go:
+a secret field takes only a $secret/ reference, and a generated secret feeds only a
+secret field).`,
 		Example: `
 	# Validate one chart
 	planton chart validate charts/gcp/cloud-run-service
@@ -77,7 +86,9 @@ when a chart is published.`,
 
 	# Render for a specific environment (catches names that break on a hyphenated slug)
 	planton chart validate charts/gcp/cloud-run-service --set env=production-eu`,
-		RunE: chartValidateHandler,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return chartValidateHandler(cmd, args, checks)
+		},
 		// The handler prints the full per-chart report itself; the returned error is a
 		// one-line summary for the host root's error path, so neither cobra's usage
 		// dump nor its error echo should repeat it.
@@ -102,7 +113,7 @@ func hostScope(cmd *cobra.Command, name string) string {
 	return ""
 }
 
-func chartValidateHandler(cmd *cobra.Command, args []string) error {
+func chartValidateHandler(cmd *cobra.Command, args []string, checks []infrachart.DocumentCheck) error {
 	all, _ := cmd.Flags().GetBool("all")
 	verbose, _ := cmd.Flags().GetBool("verbose")
 	setFlags, _ := cmd.Flags().GetStringArray("set")
@@ -145,7 +156,7 @@ func chartValidateHandler(cmd *cobra.Command, args []string) error {
 			defer wg.Done()
 			semaphore <- struct{}{}
 			defer func() { <-semaphore }()
-			report, err := infrachart.Validate(dir, infrachart.Options{Org: org, Env: env, Set: setOverrides})
+			report, err := infrachart.Validate(dir, infrachart.Options{Org: org, Env: env, Set: setOverrides, DocumentChecks: checks})
 			outcomes[i] = outcome{report: report, err: err}
 		}()
 	}

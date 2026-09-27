@@ -70,6 +70,8 @@ type VariantResult struct {
 	Docs []Doc
 	// Issues are the variant's failures and warnings.
 	Issues []Issue
+
+	checks []DocumentCheck
 }
 
 // Report is the outcome of validating one chart across all its render
@@ -107,7 +109,20 @@ type Options struct {
 	// the gate exercise specific parameter combinations beyond the automatic
 	// per-toggle flips.
 	Set map[string]string
+
+	// DocumentChecks are a host's own rules over each rendered document, run
+	// only once the document's schema passed -- the order the platform applies
+	// its own checks in. Each finding is an error on that document. The
+	// open-source CLI has none; the Planton Platform CLI adds where secrets
+	// may go, a rule the backendless deploy (which takes literals, never
+	// $secret/ references) must not apply.
+	DocumentChecks []DocumentCheck
 }
+
+// DocumentCheck is one host rule over a rendered, schema-valid document; it
+// returns its findings as plain-language sentences, none when the document
+// passes.
+type DocumentCheck func(doc proto.Message) []string
 
 // Validate loads the chart at dir and validates it offline across render
 // variants: the defaults variant (declared values plus any Set overrides),
@@ -138,7 +153,7 @@ func Validate(dir string, opts Options) (*Report, error) {
 		if err != nil {
 			return nil, err
 		}
-		result := VariantResult{Name: variant.name}
+		result := VariantResult{Name: variant.name, checks: opts.DocumentChecks}
 		for _, tpl := range chart.Templates {
 			result.validateTemplate(tpl, ctx, placeholders)
 		}
@@ -224,7 +239,7 @@ func (r *VariantResult) validateTemplate(tpl TemplateFile, ctx map[string]any, p
 }
 
 // validateDoc validates one rendered document: strict schema load, presence
-// of metadata.name, the spec's full protovalidate/CEL rule set, and collects
+// of metadata.name, the whole document's protovalidate/CEL rule set, and collects
 // its valueFrom references for the cross-document pass.
 func (r *VariantResult) validateDoc(file string, docYaml []byte) {
 	msg, err := loadRenderedDoc(docYaml)
@@ -263,10 +278,10 @@ func (r *VariantResult) validateDoc(file string, docYaml []byte) {
 		addIssue(SeverityError, "%s", mismatch)
 	}
 
-	spec, err := manifest.ExtractSpec(msg)
-	if err != nil {
-		addIssue(SeverityError, "manifest has no spec: %v", err)
-	} else if validationErr := protovalidate.GlobalValidator.Validate(spec); validationErr != nil {
+	// The whole document, stamped the way the platform stamps it on write, is
+	// what the install validates -- metadata rules (the slug alphabet) as well
+	// as the spec's -- so the offline gate validates the same document.
+	if validationErr := protovalidate.GlobalValidator.Validate(manifest.StampEnvelope(msg)); validationErr != nil {
 		// One shared validator for the whole run, not a fresh instance per
 		// document. The per-doc `New(WithDisableLazy(), WithMessages(spec))`
 		// this replaces looked principled -- eager compile-error surfacing --
@@ -282,7 +297,13 @@ func (r *VariantResult) validateDoc(file string, docYaml []byte) {
 		if errors.As(validationErr, &compileErr) {
 			addIssue(SeverityError, "failed to initialize validator: %v", validationErr)
 		} else {
-			addIssue(SeverityError, "spec validation failed: %s", compactError(validationErr))
+			addIssue(SeverityError, "schema validation failed: %s", compactError(validationErr))
+		}
+	} else {
+		for _, check := range r.checks {
+			for _, finding := range check(msg) {
+				addIssue(SeverityError, "%s", finding)
+			}
 		}
 	}
 
