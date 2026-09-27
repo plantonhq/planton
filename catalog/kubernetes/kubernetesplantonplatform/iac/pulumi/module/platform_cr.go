@@ -1,6 +1,7 @@
 package module
 
 import (
+	"github.com/plantonhq/planton/catalog/kubernetes"
 	kubernetesplantonplatformv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonplatform/v1alpha1"
 )
 
@@ -104,6 +105,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 				}
 				postgresql["recoverFrom"] = recoverFrom
 			}
+			if res := resourcesMap(pg.GetResources()); res != nil {
+				postgresql["resources"] = res
+			}
 			if len(postgresql) > 0 {
 				database["postgresql"] = postgresql
 			}
@@ -115,6 +119,12 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 			}
 			if r.GetStorageClassName() != "" {
 				redis["storageClassName"] = r.GetStorageClassName()
+			}
+			if r.GetMaxMemory() != "" {
+				redis["maxMemory"] = r.GetMaxMemory()
+			}
+			if res := resourcesMap(r.GetResources()); res != nil {
+				redis["resources"] = res
 			}
 			if len(redis) > 0 {
 				database["redis"] = redis
@@ -188,9 +198,16 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 	}
 
 	// ---- gateway ---------------------------------------------------------------
-	if g := spec.GetGateway(); g != nil && g.LocalPort != nil {
-		out["gateway"] = map[string]interface{}{
-			"localPort": int(g.GetLocalPort()),
+	if g := spec.GetGateway(); g != nil {
+		gateway := map[string]interface{}{}
+		if g.LocalPort != nil {
+			gateway["localPort"] = int(g.GetLocalPort())
+		}
+		if res := resourcesMap(g.GetResources()); res != nil {
+			gateway["resources"] = res
+		}
+		if len(gateway) > 0 {
+			out["gateway"] = gateway
 		}
 	}
 
@@ -202,6 +219,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		}
 		if id.GetAdminEmail() != "" {
 			identity["adminEmail"] = id.GetAdminEmail()
+		}
+		if res := resourcesMap(id.GetResources()); res != nil {
+			identity["resources"] = res
 		}
 		if len(identity) > 0 {
 			out["identity"] = identity
@@ -282,6 +302,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		}
 		if img := imageMap(r.GetImage()); img != nil {
 			runner["image"] = img
+		}
+		if res := resourcesMap(r.GetResources()); res != nil {
+			runner["resources"] = res
 		}
 		if len(runner) > 0 {
 			out["runner"] = runner
@@ -385,6 +408,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		if annotations := vaultServiceAccountAnnotations(v); annotations != nil {
 			vault["serviceAccountAnnotations"] = stringMapToInterface(annotations)
 		}
+		if res := resourcesMap(v.GetResources()); res != nil {
+			vault["resources"] = res
+		}
 		if len(vault) > 0 {
 			out["vault"] = vault
 		}
@@ -403,6 +429,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 			}
 			if g.GetStorageClassName() != "" {
 				graph["storageClassName"] = g.GetStorageClassName()
+			}
+			if res := resourcesMap(g.GetResources()); res != nil {
+				graph["resources"] = res
 			}
 			if len(graph) > 0 {
 				components["graph"] = graph
@@ -448,6 +477,9 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		if cp.GetIacModulesVersion() != "" {
 			controlPlane["iacModulesVersion"] = cp.GetIacModulesVersion()
 		}
+		if res := resourcesMap(cp.GetResources()); res != nil {
+			controlPlane["resources"] = res
+		}
 		if len(controlPlane) > 0 {
 			out["controlPlane"] = controlPlane
 		}
@@ -463,11 +495,62 @@ func platformSpecBody(locals *Locals) map[string]interface{} {
 		if co.GetExternalConfigSecretName() != "" {
 			console["externalConfigSecretName"] = co.GetExternalConfigSecretName()
 		}
+		if res := resourcesMap(co.GetResources()); res != nil {
+			console["resources"] = res
+		}
 		if len(console) > 0 {
 			out["console"] = console
 		}
 	}
 
+	// ---- temporal / openfga ------------------------------------------------------
+	if t := spec.GetTemporal(); t != nil {
+		temporal := map[string]interface{}{}
+		for name, svc := range map[string]*kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformTemporalService{
+			"frontend": t.GetFrontend(), "history": t.GetHistory(), "matching": t.GetMatching(), "worker": t.GetWorker(),
+		} {
+			if res := resourcesMap(svc.GetResources()); res != nil {
+				temporal[name] = map[string]interface{}{"resources": res}
+			}
+		}
+		if len(temporal) > 0 {
+			out["temporal"] = temporal
+		}
+	}
+	if f := spec.GetOpenfga(); f != nil {
+		if res := resourcesMap(f.GetResources()); res != nil {
+			out["openfga"] = map[string]interface{}{"resources": res}
+		}
+	}
+
+	return out
+}
+
+// resourcesMap renders a component's sizing, only the quantities that are
+// set: the operator merges each declared quantity over its own measured
+// default, so an unset one must stay absent rather than arrive empty. Nil
+// when nothing is set, so the key is left out entirely.
+func resourcesMap(r *kubernetes.ContainerResources) map[string]interface{} {
+	half := func(cm *kubernetes.CpuMemory) map[string]interface{} {
+		out := map[string]interface{}{}
+		if cm.GetCpu() != "" {
+			out["cpu"] = cm.GetCpu()
+		}
+		if cm.GetMemory() != "" {
+			out["memory"] = cm.GetMemory()
+		}
+		return out
+	}
+	out := map[string]interface{}{}
+	if requests := half(r.GetRequests()); len(requests) > 0 {
+		out["requests"] = requests
+	}
+	if limits := half(r.GetLimits()); len(limits) > 0 {
+		out["limits"] = limits
+	}
+	if len(out) == 0 {
+		return nil
+	}
 	return out
 }
 

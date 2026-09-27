@@ -71,7 +71,8 @@ resource's outputs.
 | `vault.init_secret_name` | no | operator-owned Secret | A Secret you own for the vault's unseal (or recovery) keys and root token; the operator writes it at first boot without an owner reference and never deletes it, reads it on a restore, and it is the vault's break-glass under any seal — keep a copy outside the cluster |
 | `vault.service_account_annotations` | no | — | Workload-identity annotations on the vault's ServiceAccount (`<platform>-openbao`) — the keyless seal identity (IRSA, GKE Workload Identity, AKS Workload Identity) |
 | `components` | no | off | Opt-in: graph (Neo4j) |
-| `control_plane`, `console` | no | — | Sizing, image mirrors, extra env via Secret, the platform's own cloud identity |
+| `control_plane`, `console` | no | — | Replicas, image mirrors, extra env via Secret, the platform's own cloud identity |
+| `<component>.resources` | no | the operator's measured size | CPU and memory for any component — `control_plane`, `console`, `runner`, `gateway`, `identity`, `database.postgresql`, `database.redis` (with `max_memory`, its dataset ceiling), `vault`, `components.graph`, `openfga`, and `temporal.{frontend,history,matching,worker}`; each quantity set wins and the rest keep the operator's default (planton-operator chart 0.23.0+) |
 
 ## Example
 

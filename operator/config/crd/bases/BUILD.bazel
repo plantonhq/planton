@@ -1,0 +1,4 @@
+# Exports the operator's generated CRDs for tests outside the operator module
+# (the catalog kind's sizing gate reads the platform definition). The operator
+# itself is not built by this workspace (gazelle:exclude operator).
+exports_files(["planton.ai_plantonplatforms.yaml"])

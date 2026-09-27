@@ -198,6 +198,49 @@ locals {
     } : k => v if v != null
   }
 
+  # ---- sizing ------------------------------------------------------------------
+  # Each component's resources, only the quantities the manifest set: the
+  # operator merges every declared quantity over its own measured default, so
+  # an unset one must stay absent rather than arrive empty. Twin of the Pulumi
+  # module's resourcesMap.
+  sizing_declared = {
+    control_plane     = try(var.spec.control_plane.resources, null)
+    console           = try(var.spec.console.resources, null)
+    runner            = try(var.spec.runner.resources, null)
+    gateway           = try(var.spec.gateway.resources, null)
+    identity          = try(var.spec.identity.resources, null)
+    postgresql        = try(var.spec.database.postgresql.resources, null)
+    redis             = try(var.spec.database.redis.resources, null)
+    vault             = try(var.spec.vault.resources, null)
+    graph             = try(var.spec.components.graph.resources, null)
+    openfga           = try(var.spec.openfga.resources, null)
+    temporal_frontend = try(var.spec.temporal.frontend.resources, null)
+    temporal_history  = try(var.spec.temporal.history.resources, null)
+    temporal_matching = try(var.spec.temporal.matching.resources, null)
+    temporal_worker   = try(var.spec.temporal.worker.resources, null)
+  }
+  sizing_halves = {
+    for name, r in local.sizing_declared : name => {
+      for half, cm in { requests = try(r.requests, null), limits = try(r.limits, null) } : half => {
+        for q, val in { cpu = try(cm.cpu, ""), memory = try(cm.memory, "") } : q => val if val != ""
+      }
+    }
+  }
+  sizing = {
+    for name, halves in local.sizing_halves : name => {
+      for half, quantities in halves : half => quantities if length(quantities) > 0
+    }
+  }
+  temporal_body = {
+    for k, v in {
+      frontend = length(local.sizing.temporal_frontend) > 0 ? { resources = local.sizing.temporal_frontend } : null
+      history  = length(local.sizing.temporal_history) > 0 ? { resources = local.sizing.temporal_history } : null
+      matching = length(local.sizing.temporal_matching) > 0 ? { resources = local.sizing.temporal_matching } : null
+      worker   = length(local.sizing.temporal_worker) > 0 ? { resources = local.sizing.temporal_worker } : null
+    } : k => v if v != null
+  }
+  openfga_body = length(local.sizing.openfga) > 0 ? { resources = local.sizing.openfga } : {}
+
   # ---- database --------------------------------------------------------------
   postgresql_body = {
     for k, v in {
@@ -206,12 +249,15 @@ locals {
       storageClassName = try(var.spec.database.postgresql.storage_class_name, "") != "" ? var.spec.database.postgresql.storage_class_name : null
       backup           = local.postgresql_backup_body
       recoverFrom      = local.postgresql_recover_from_body
+      resources        = length(local.sizing.postgresql) > 0 ? local.sizing.postgresql : null
     } : k => v if v != null
   }
   redis_body = {
     for k, v in {
       storageSize      = try(var.spec.database.redis.storage_size, "") != "" ? var.spec.database.redis.storage_size : null
       storageClassName = try(var.spec.database.redis.storage_class_name, "") != "" ? var.spec.database.redis.storage_class_name : null
+      maxMemory        = try(var.spec.database.redis.max_memory, "") != "" ? var.spec.database.redis.max_memory : null
+      resources        = length(local.sizing.redis) > 0 ? local.sizing.redis : null
     } : k => v if v != null
   }
   database_body = {
@@ -262,12 +308,14 @@ locals {
   gateway_body = {
     for k, v in {
       localPort = try(var.spec.gateway.local_port, null)
+      resources = length(local.sizing.gateway) > 0 ? local.sizing.gateway : null
     } : k => v if v != null
   }
   identity_body = {
     for k, v in {
       realm      = try(var.spec.identity.realm, "") != "" ? var.spec.identity.realm : null
       adminEmail = try(var.spec.identity.admin_email, "") != "" ? var.spec.identity.admin_email : null
+      resources  = length(local.sizing.identity) > 0 ? local.sizing.identity : null
     } : k => v if v != null
   }
 
@@ -318,6 +366,7 @@ locals {
       serviceAccountAnnotations  = length(try(var.spec.runner.service_account_annotations, {})) > 0 ? var.spec.runner.service_account_annotations : null
       cloudCredentialsSecretName = try(var.spec.runner.cloud_credentials_secret_name, "") != "" ? var.spec.runner.cloud_credentials_secret_name : null
       image                      = length(local.runner_image) > 0 ? local.runner_image : null
+      resources                  = length(local.sizing.runner) > 0 ? local.sizing.runner : null
     } : k => v if v != null
   }
   build_body = {
@@ -471,6 +520,7 @@ locals {
       autoUnseal                = local.vault_auto_unseal_body
       initSecretName            = try(var.spec.vault.init_secret_name, "") != "" ? var.spec.vault.init_secret_name : null
       serviceAccountAnnotations = length(local.vault_sa_annotations) > 0 ? local.vault_sa_annotations : null
+      resources                 = length(local.sizing.vault) > 0 ? local.sizing.vault : null
     } : k => v if v != null
   }
 
@@ -480,6 +530,7 @@ locals {
       enabled          = try(var.spec.components.graph.enabled, false) ? true : null
       storageSize      = try(var.spec.components.graph.storage_size, "") != "" ? var.spec.components.graph.storage_size : null
       storageClassName = try(var.spec.components.graph.storage_class_name, "") != "" ? var.spec.components.graph.storage_class_name : null
+      resources        = length(local.sizing.graph) > 0 ? local.sizing.graph : null
     } : k => v if v != null
   }
   components_body = {
@@ -511,6 +562,7 @@ locals {
       externalConfigSecretName  = try(var.spec.control_plane.external_config_secret_name, "") != "" ? var.spec.control_plane.external_config_secret_name : null
       serviceAccountAnnotations = length(try(var.spec.control_plane.service_account_annotations, {})) > 0 ? var.spec.control_plane.service_account_annotations : null
       iacModulesVersion         = try(var.spec.control_plane.iac_modules_version, "") != "" ? var.spec.control_plane.iac_modules_version : null
+      resources                 = length(local.sizing.control_plane) > 0 ? local.sizing.control_plane : null
     } : k => v if v != null
   }
   console_image = {
@@ -524,6 +576,7 @@ locals {
       image                    = length(local.console_image) > 0 ? local.console_image : null
       replicas                 = try(var.spec.console.replicas, null)
       externalConfigSecretName = try(var.spec.console.external_config_secret_name, "") != "" ? var.spec.console.external_config_secret_name : null
+      resources                = length(local.sizing.console) > 0 ? local.sizing.console : null
     } : k => v if v != null
   }
 
@@ -549,6 +602,8 @@ locals {
       prerequisites = length(local.prerequisites_body) > 0 ? local.prerequisites_body : null
       controlPlane  = length(local.control_plane_body) > 0 ? local.control_plane_body : null
       console       = length(local.console_body) > 0 ? local.console_body : null
+      temporal      = length(local.temporal_body) > 0 ? local.temporal_body : null
+      openfga       = length(local.openfga_body) > 0 ? local.openfga_body : null
     } : k => v if v != null
   }
 }

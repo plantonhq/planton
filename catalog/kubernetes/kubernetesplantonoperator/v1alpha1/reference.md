@@ -103,7 +103,7 @@ spec:
 |---|---|---|---|---|
 | `spec.namespace` | `string \| valueFrom` | yes |  | KubernetesNamespace (`spec.name`) |
 | `spec.createNamespace` | `bool` |  |  |  |
-| `spec.chartVersion` | `string` |  | `0.15.0` |  |
+| `spec.chartVersion` | `string` |  | `0.23.0` |  |
 | `spec.replicas` | `int32` |  | `1` |  |
 | `spec.leaderElection` | `bool` |  | `true` |  |
 | `spec.resources` | `ContainerResources` |  |  |  |
@@ -171,7 +171,7 @@ Versions must exist as published charts at spec.chart_repository.
 Charts older than 0.8.0 do not own their definitions and are refused
 at plan time: the `crds` dials would have nothing to act on.
 
-- default: `0.15.0`
+- default: `0.23.0`
 - rule: chart version must be an exact semver like "0.15.0" — ranges are not reproducible
 
 ### spec.replicas

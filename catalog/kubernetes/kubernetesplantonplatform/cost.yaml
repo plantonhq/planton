@@ -20,6 +20,9 @@ spec:
     - field_path: control_plane.replicas
       sku_meter: cluster CPU and memory reservations
       impact: Control-plane copies. The single-replica default fits most installs; replicas add availability, not required capacity.
+    - field_path: control_plane.resources
+      sku_meter: cluster CPU and memory reservations
+      impact: Every component's resources (this one and its siblings — console, runner, database, store, vault, graph, OpenFGA, Temporal's services) set what it reserves on a node; requests decide schedulable capacity, limits only the most it may burst to. Unset, each runs the operator's measured default.
     - field_path: runner.enabled
       sku_meter: cluster CPU, memory, and volume capacity
       impact: The in-cluster runner (on by default) — a standing worker pod plus its state volume; disabling it removes the platform's ability to deploy infrastructure.

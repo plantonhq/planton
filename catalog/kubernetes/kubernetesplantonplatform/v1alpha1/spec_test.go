@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
@@ -76,6 +77,27 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 			input.Spec.ImageRegistry = "asia-south1-docker.pkg.dev/plantonhq/planton"
 			input.Spec.Runner = &KubernetesPlantonPlatformRunner{
 				Image: &KubernetesPlantonPlatformImage{Repository: "mirror.example.com/planton/runner"},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should accept sizing on every component, the store's ceiling in Valkey's units", func() {
+			input := minimalValidPlatform()
+			input.Spec.ControlPlane = &KubernetesPlantonPlatformControlPlane{
+				Resources: &kubernetes.ContainerResources{Limits: &kubernetes.CpuMemory{Memory: "6Gi"}},
+			}
+			input.Spec.Database = &KubernetesPlantonPlatformDatabase{Redis: &KubernetesPlantonPlatformRedis{
+				MaxMemory: "2gb",
+				Resources: &kubernetes.ContainerResources{Limits: &kubernetes.CpuMemory{Memory: "3Gi"}},
+			}}
+			input.Spec.Temporal = &KubernetesPlantonPlatformTemporal{
+				History: &KubernetesPlantonPlatformTemporalService{
+					Resources: &kubernetes.ContainerResources{Requests: &kubernetes.CpuMemory{Cpu: "250m"}},
+				},
+			}
+			input.Spec.Openfga = &KubernetesPlantonPlatformOpenFga{
+				Resources: &kubernetes.ContainerResources{Limits: &kubernetes.CpuMemory{Memory: "512Mi"}},
 			}
 			err := protovalidate.Validate(input)
 			gomega.Expect(err).To(gomega.BeNil())
@@ -581,6 +603,13 @@ var _ = ginkgo.Describe("KubernetesPlantonPlatformSpec Validation Tests", func()
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
+		ginkgo.It("should reject a store ceiling Valkey cannot read", func() {
+			input := minimalValidPlatform()
+			input.Spec.Database = &KubernetesPlantonPlatformDatabase{Redis: &KubernetesPlantonPlatformRedis{MaxMemory: "2 GB"}}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).NotTo(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("max_memory is a Valkey size"))
+		})
 
 		ginkgo.It("should fail on a registry root with a scheme or a trailing slash", func() {
 			for _, root := range []string{"https://ghcr.io/plantonhq/planton", "ghcr.io/plantonhq/planton/"} {

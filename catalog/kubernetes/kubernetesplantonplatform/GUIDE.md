@@ -103,6 +103,42 @@ provision and, when a volume sticks, the CR's per-component status names
 the exact problem and fix — read `kubectl get plantonplatforms` status
 before reading pod logs.
 
+## Size a component, and only what you mean to change
+
+Every component runs the operator's measured default until you set its
+`resources` — the control plane, console, runner, gateway, identity
+server, PostgreSQL, the redis-protocol store, the vault, the graph
+database, OpenFGA, and Temporal's four server services. Set one quantity
+and only that quantity changes: a `limits.memory` alone keeps the default
+requests beside it. `kubectl get plantonplatform <name> -o yaml` shows
+every component's size in effect under `status.components.<component>.sizing`;
+a field set against an operator older than chart 0.23.0 is dropped by the
+cluster without a word, and that list is where it shows (as the default).
+
+- **The control plane is the one parallel deploys grow.** Its heap is 60%
+  of its memory limit, so raising `control_plane.resources.limits.memory`
+  raises the heap with it. An out-of-memory kill is named in its status
+  with this exact field.
+- **Keep the store's ceiling below its limit.** `database.redis.max_memory`
+  (Valkey units: `768mb`, `2gb`) needs headroom under
+  `database.redis.resources.limits.memory` for its rewrite and client
+  buffers; a ceiling at or above the limit is refused.
+- **Neo4j has a floor.** Its chart runs nothing under 500m CPU or 2Gi of
+  memory requested; the operator refuses less, naming the field.
+- **A size the platform cannot run is refused whole** — a request above
+  its limit, under a floor, a ceiling above its container — before
+  anything changes: the `ResourcesValid` condition names each field and
+  its fix, and a running platform keeps running as it was.
+- **Every change rolls that component's pods.** A single-instance
+  PostgreSQL restarts the only database (about a minute of unavailability;
+  with `replicas: 2` CloudNativePG switches over). The vault comes back
+  sealed and the operator unseals it again.
+- **CPU limits are yours to add.** The operator never sets one (a limit
+  throttles cold starts into failing their probes), but a cluster policy
+  that requires one is satisfied by `limits.cpu`.
+- The catalog carries CPU and memory; ephemeral storage and any other
+  resource stay reachable on the `PlantonPlatform` resource itself.
+
 ## Back up the platform's own database, and bring it back
 
 Without `database.postgresql.backup`, everything a platform knows —

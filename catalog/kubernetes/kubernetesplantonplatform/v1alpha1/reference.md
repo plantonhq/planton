@@ -106,8 +106,17 @@ spec:
                 value: replace-with-the-token-secret
         retention_policy: 30d
         schedule: "0 0 2 * * *"
+      # A limit raised alone keeps the operator's default requests.
+      resources:
+        limits:
+          memory: 4Gi
     redis:
       storage_size: 2Gi
+      # The dataset ceiling stays under the store's raised limit.
+      max_memory: 1536mb
+      resources:
+        limits:
+          memory: 2Gi
   ingress:
     enabled: true
     hostname: planton.example.com
@@ -179,9 +188,18 @@ spec:
     tekton_pipelines: auto
     postgres_backup_plugin: auto
   control_plane:
+    resources:
+      limits:
+        memory: 6Gi
     replicas: 1
   console:
     replicas: 1
+  temporal:
+    history:
+      resources:
+        requests:
+          cpu: 250m
+          memory: 512Mi
 ```
 
 ## Spec Fields
@@ -257,9 +275,24 @@ spec:
 | `spec.database.postgresql.recoverFrom.objectStore.r2.credentials.secretAccessKey` | `string \| valueFrom` (sensitive) | yes |  | CloudflareAccountApiToken (`status.outputs.r2_secret_access_key`) |
 | `spec.database.postgresql.recoverFrom.serverName` | `string` | yes |  |  |
 | `spec.database.postgresql.recoverFrom.targetTime` | `string` |  |  |  |
+| `spec.database.postgresql.resources` | `ContainerResources` |  |  |  |
+| `spec.database.postgresql.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.database.postgresql.resources.limits.cpu` | `string` |  |  |  |
+| `spec.database.postgresql.resources.limits.memory` | `string` |  |  |  |
+| `spec.database.postgresql.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.database.postgresql.resources.requests.cpu` | `string` |  |  |  |
+| `spec.database.postgresql.resources.requests.memory` | `string` |  |  |  |
 | `spec.database.redis` | `KubernetesPlantonPlatformRedis` |  |  |  |
 | `spec.database.redis.storageSize` | `string` |  |  |  |
 | `spec.database.redis.storageClassName` | `string` |  |  |  |
+| `spec.database.redis.resources` | `ContainerResources` |  |  |  |
+| `spec.database.redis.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.database.redis.resources.limits.cpu` | `string` |  |  |  |
+| `spec.database.redis.resources.limits.memory` | `string` |  |  |  |
+| `spec.database.redis.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.database.redis.resources.requests.cpu` | `string` |  |  |  |
+| `spec.database.redis.resources.requests.memory` | `string` |  |  |  |
+| `spec.database.redis.maxMemory` | `string` |  |  |  |
 | `spec.ingress` | `KubernetesPlantonPlatformIngress` |  |  |  |
 | `spec.ingress.enabled` | `bool` |  |  |  |
 | `spec.ingress.hostname` | `string` |  |  |  |
@@ -277,9 +310,23 @@ spec:
 | `spec.ingress.reachability` | `string` |  | `auto` |  |
 | `spec.gateway` | `KubernetesPlantonPlatformGateway` |  |  |  |
 | `spec.gateway.localPort` | `int32` |  | `8080` |  |
+| `spec.gateway.resources` | `ContainerResources` |  |  |  |
+| `spec.gateway.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.gateway.resources.limits.cpu` | `string` |  |  |  |
+| `spec.gateway.resources.limits.memory` | `string` |  |  |  |
+| `spec.gateway.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.gateway.resources.requests.cpu` | `string` |  |  |  |
+| `spec.gateway.resources.requests.memory` | `string` |  |  |  |
 | `spec.identity` | `KubernetesPlantonPlatformIdentity` |  |  |  |
 | `spec.identity.realm` | `string` |  | `planton` |  |
 | `spec.identity.adminEmail` | `string` |  |  |  |
+| `spec.identity.resources` | `ContainerResources` |  |  |  |
+| `spec.identity.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.identity.resources.limits.cpu` | `string` |  |  |  |
+| `spec.identity.resources.limits.memory` | `string` |  |  |  |
+| `spec.identity.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.identity.resources.requests.cpu` | `string` |  |  |  |
+| `spec.identity.resources.requests.memory` | `string` |  |  |  |
 | `spec.bootstrap` | `KubernetesPlantonPlatformBootstrap` |  |  |  |
 | `spec.bootstrap.organization` | `KubernetesPlantonPlatformBootstrapOrg` |  |  |  |
 | `spec.bootstrap.organization.slug` | `string` |  | `default` |  |
@@ -303,6 +350,13 @@ spec:
 | `spec.runner.image` | `KubernetesPlantonPlatformImage` |  |  |  |
 | `spec.runner.image.repository` | `string` |  |  |  |
 | `spec.runner.image.tag` | `string` |  |  |  |
+| `spec.runner.resources` | `ContainerResources` |  |  |  |
+| `spec.runner.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.runner.resources.limits.cpu` | `string` |  |  |  |
+| `spec.runner.resources.limits.memory` | `string` |  |  |  |
+| `spec.runner.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.runner.resources.requests.cpu` | `string` |  |  |  |
+| `spec.runner.resources.requests.memory` | `string` |  |  |  |
 | `spec.build` | `KubernetesPlantonPlatformBuild` |  |  |  |
 | `spec.build.enabled` | `bool` |  | `true` |  |
 | `spec.vault` | `KubernetesPlantonPlatformVault` |  |  |  |
@@ -332,11 +386,25 @@ spec:
 | `spec.vault.autoUnseal.transit.token` | `string` (sensitive) |  |  |  |
 | `spec.vault.initSecretName` | `string` |  |  |  |
 | `spec.vault.serviceAccountAnnotations` | `map<string, string>` |  |  |  |
+| `spec.vault.resources` | `ContainerResources` |  |  |  |
+| `spec.vault.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.vault.resources.limits.cpu` | `string` |  |  |  |
+| `spec.vault.resources.limits.memory` | `string` |  |  |  |
+| `spec.vault.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.vault.resources.requests.cpu` | `string` |  |  |  |
+| `spec.vault.resources.requests.memory` | `string` |  |  |  |
 | `spec.components` | `KubernetesPlantonPlatformComponents` |  |  |  |
 | `spec.components.graph` | `KubernetesPlantonPlatformGraph` |  |  |  |
 | `spec.components.graph.enabled` | `bool` |  |  |  |
 | `spec.components.graph.storageSize` | `string` |  |  |  |
 | `spec.components.graph.storageClassName` | `string` |  |  |  |
+| `spec.components.graph.resources` | `ContainerResources` |  |  |  |
+| `spec.components.graph.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.components.graph.resources.limits.cpu` | `string` |  |  |  |
+| `spec.components.graph.resources.limits.memory` | `string` |  |  |  |
+| `spec.components.graph.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.components.graph.resources.requests.cpu` | `string` |  |  |  |
+| `spec.components.graph.resources.requests.memory` | `string` |  |  |  |
 | `spec.prerequisites` | `KubernetesPlantonPlatformPrerequisites` |  |  |  |
 | `spec.prerequisites.postgresOperator` | `string` |  | `auto` |  |
 | `spec.prerequisites.tektonPipelines` | `string` |  | `auto` |  |
@@ -349,12 +417,26 @@ spec:
 | `spec.controlPlane.externalConfigSecretName` | `string` |  |  |  |
 | `spec.controlPlane.serviceAccountAnnotations` | `map<string, string>` |  |  |  |
 | `spec.controlPlane.iacModulesVersion` | `string` |  |  |  |
+| `spec.controlPlane.resources` | `ContainerResources` |  |  |  |
+| `spec.controlPlane.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.controlPlane.resources.limits.cpu` | `string` |  |  |  |
+| `spec.controlPlane.resources.limits.memory` | `string` |  |  |  |
+| `spec.controlPlane.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.controlPlane.resources.requests.cpu` | `string` |  |  |  |
+| `spec.controlPlane.resources.requests.memory` | `string` |  |  |  |
 | `spec.console` | `KubernetesPlantonPlatformConsole` |  |  |  |
 | `spec.console.image` | `KubernetesPlantonPlatformImage` |  |  |  |
 | `spec.console.image.repository` | `string` |  |  |  |
 | `spec.console.image.tag` | `string` |  |  |  |
 | `spec.console.replicas` | `int32` |  | `1` |  |
 | `spec.console.externalConfigSecretName` | `string` |  |  |  |
+| `spec.console.resources` | `ContainerResources` |  |  |  |
+| `spec.console.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.console.resources.limits.cpu` | `string` |  |  |  |
+| `spec.console.resources.limits.memory` | `string` |  |  |  |
+| `spec.console.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.console.resources.requests.cpu` | `string` |  |  |  |
+| `spec.console.resources.requests.memory` | `string` |  |  |  |
 | `spec.remoteRunners` | `KubernetesPlantonPlatformRemoteRunners` |  |  |  |
 | `spec.remoteRunners.enabled` | `bool` |  | `false` |  |
 | `spec.email` | `KubernetesPlantonPlatformEmail` |  |  |  |
@@ -383,6 +465,47 @@ spec:
 | `spec.email.resend.apiKeySecretRef.name` | `string` | yes |  |  |
 | `spec.email.resend.apiKeySecretRef.key` | `string` | yes |  |  |
 | `spec.imageRegistry` | `string` |  |  |  |
+| `spec.temporal` | `KubernetesPlantonPlatformTemporal` |  |  |  |
+| `spec.temporal.frontend` | `KubernetesPlantonPlatformTemporalService` |  |  |  |
+| `spec.temporal.frontend.resources` | `ContainerResources` |  |  |  |
+| `spec.temporal.frontend.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.temporal.frontend.resources.limits.cpu` | `string` |  |  |  |
+| `spec.temporal.frontend.resources.limits.memory` | `string` |  |  |  |
+| `spec.temporal.frontend.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.temporal.frontend.resources.requests.cpu` | `string` |  |  |  |
+| `spec.temporal.frontend.resources.requests.memory` | `string` |  |  |  |
+| `spec.temporal.history` | `KubernetesPlantonPlatformTemporalService` |  |  |  |
+| `spec.temporal.history.resources` | `ContainerResources` |  |  |  |
+| `spec.temporal.history.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.temporal.history.resources.limits.cpu` | `string` |  |  |  |
+| `spec.temporal.history.resources.limits.memory` | `string` |  |  |  |
+| `spec.temporal.history.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.temporal.history.resources.requests.cpu` | `string` |  |  |  |
+| `spec.temporal.history.resources.requests.memory` | `string` |  |  |  |
+| `spec.temporal.matching` | `KubernetesPlantonPlatformTemporalService` |  |  |  |
+| `spec.temporal.matching.resources` | `ContainerResources` |  |  |  |
+| `spec.temporal.matching.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.temporal.matching.resources.limits.cpu` | `string` |  |  |  |
+| `spec.temporal.matching.resources.limits.memory` | `string` |  |  |  |
+| `spec.temporal.matching.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.temporal.matching.resources.requests.cpu` | `string` |  |  |  |
+| `spec.temporal.matching.resources.requests.memory` | `string` |  |  |  |
+| `spec.temporal.worker` | `KubernetesPlantonPlatformTemporalService` |  |  |  |
+| `spec.temporal.worker.resources` | `ContainerResources` |  |  |  |
+| `spec.temporal.worker.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.temporal.worker.resources.limits.cpu` | `string` |  |  |  |
+| `spec.temporal.worker.resources.limits.memory` | `string` |  |  |  |
+| `spec.temporal.worker.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.temporal.worker.resources.requests.cpu` | `string` |  |  |  |
+| `spec.temporal.worker.resources.requests.memory` | `string` |  |  |  |
+| `spec.openfga` | `KubernetesPlantonPlatformOpenFga` |  |  |  |
+| `spec.openfga.resources` | `ContainerResources` |  |  |  |
+| `spec.openfga.resources.limits` | `CpuMemory` |  |  |  |
+| `spec.openfga.resources.limits.cpu` | `string` |  |  |  |
+| `spec.openfga.resources.limits.memory` | `string` |  |  |  |
+| `spec.openfga.resources.requests` | `CpuMemory` |  |  |  |
+| `spec.openfga.resources.requests.cpu` | `string` |  |  |  |
+| `spec.openfga.resources.requests.memory` | `string` |  |  |  |
 
 ## Field Details
 
@@ -1127,6 +1250,56 @@ every WAL segment the source shipped.
 
 - rule: target_time is an RFC 3339 timestamp — e.g. '2026-09-13T20:30:00Z' or '2026-09-13T20:30:00+05:30'
 
+### spec.database.postgresql.resources
+
+`ContainerResources`
+
+The platform database (each instance)'s CPU and memory. Unset, it runs the operator's measured
+default: 250m CPU and 512Mi memory requested, a 2Gi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+With one instance, a change restarts the only database: the platform is
+unavailable for about a minute. With replicas, CloudNativePG switches
+over.
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.database.postgresql.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.database.postgresql.resources.limits.cpu
+
+`string`
+
+### spec.database.postgresql.resources.limits.memory
+
+`string`
+
+### spec.database.postgresql.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.database.postgresql.resources.requests.cpu
+
+`string`
+
+### spec.database.postgresql.resources.requests.memory
+
+`string`
+
 ### spec.database.redis
 
 `KubernetesPlantonPlatformRedis`
@@ -1148,6 +1321,68 @@ platform default.
 `string`
 
 StorageClass override for the cache volume.
+
+### spec.database.redis.resources
+
+`ContainerResources`
+
+The redis-protocol store (Valkey)'s CPU and memory. Unset, it runs the operator's measured
+default: 100m CPU and 256Mi memory requested, a 1Gi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+Its memory limit must stay above max_memory, the dataset ceiling:
+Valkey needs headroom for its append-only rewrite and client buffers.
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.database.redis.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.database.redis.resources.limits.cpu
+
+`string`
+
+### spec.database.redis.resources.limits.memory
+
+`string`
+
+### spec.database.redis.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.database.redis.resources.requests.cpu
+
+`string`
+
+### spec.database.redis.resources.requests.memory
+
+`string`
+
+### spec.database.redis.maxMemory
+
+`string`
+
+The store's dataset ceiling, in Valkey's own units ("768mb", "2gb";
+k, m and g are powers of 1000, kb, mb and gb powers of 1024). Unset, the
+operator uses 768mb under the default 1Gi limit. Raise it together with
+resources.limits.memory: a ceiling at or above the limit is refused
+before anything changes. Requires a planton-operator chart >= 0.23.0.
+
+- rule: max_memory is a Valkey size like "768mb" or "2gb"
+- rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
 
 ### spec.ingress
 
@@ -1330,6 +1565,53 @@ need distinct ports.
 - default: `8080`
 - rule: {"int32":{"lte":65535,"gte":1}}
 
+### spec.gateway.resources
+
+`ContainerResources`
+
+The front-door gateway's CPU and memory. Unset, it runs the operator's measured
+default: 50m CPU and 64Mi memory requested, a 256Mi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.gateway.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.gateway.resources.limits.cpu
+
+`string`
+
+### spec.gateway.resources.limits.memory
+
+`string`
+
+### spec.gateway.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.gateway.resources.requests.cpu
+
+`string`
+
+### spec.gateway.resources.requests.memory
+
+`string`
+
 ### spec.identity
 
 `KubernetesPlantonPlatformIdentity`
@@ -1358,6 +1640,55 @@ the setup-code flow — the first console visitor becomes the admin.
 
 - rule: admin_email must be an email address like "admin@example.com"
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
+
+### spec.identity.resources
+
+`ContainerResources`
+
+The identity server's CPU and memory. Unset, it runs the operator's measured
+default: 250m CPU and 512Mi memory requested, a 1536Mi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+A JVM whose first boot imports the realm; its recovery job takes the
+same size.
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.identity.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.identity.resources.limits.cpu
+
+`string`
+
+### spec.identity.resources.limits.memory
+
+`string`
+
+### spec.identity.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.identity.resources.requests.cpu
+
+`string`
+
+### spec.identity.resources.requests.memory
+
+`string`
 
 ### spec.bootstrap
 
@@ -1538,6 +1869,54 @@ Full image repository (e.g.
 `string`
 
 Image tag. Empty = spec.version.
+
+### spec.runner.resources
+
+`ContainerResources`
+
+The in-cluster runner's CPU and memory. Unset, it runs the operator's measured
+default: 100m CPU and 512Mi memory requested, a 2Gi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+The OpenTofu and Pulumi engines it runs count against its memory.
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.runner.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.runner.resources.limits.cpu
+
+`string`
+
+### spec.runner.resources.limits.memory
+
+`string`
+
+### spec.runner.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.runner.resources.requests.cpu
+
+`string`
+
+### spec.runner.resources.requests.memory
+
+`string`
 
 ### spec.build
 
@@ -1845,6 +2224,55 @@ for you by reference; an explicit entry here wins on conflict.
 Distinct from the runner's, the control plane's, and the database
 backup's identities: this one only reaches the seal key.
 
+### spec.vault.resources
+
+`ContainerResources`
+
+The vault (OpenBAO)'s CPU and memory. Unset, it runs the operator's measured
+default: 50m CPU and 128Mi memory requested, a 512Mi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+A restart seals it; the operator unseals it again, so a change is a
+brief gap for secret reads.
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.vault.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.vault.resources.limits.cpu
+
+`string`
+
+### spec.vault.resources.limits.memory
+
+`string`
+
+### spec.vault.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.vault.resources.requests.cpu
+
+`string`
+
+### spec.vault.resources.requests.memory
+
+`string`
+
 ### spec.components
 
 `KubernetesPlantonPlatformComponents`
@@ -1879,6 +2307,55 @@ platform default.
 `string`
 
 StorageClass override for the graph volume.
+
+### spec.components.graph.resources
+
+`ContainerResources`
+
+The graph database (Neo4j)'s CPU and memory. Unset, it runs the operator's measured
+default: 1000m CPU and 2Gi memory requested, a 2Gi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+Its chart refuses requests under 500m CPU or 2Gi memory; the operator
+refuses them first, naming the field.
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.components.graph.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.components.graph.resources.limits.cpu
+
+`string`
+
+### spec.components.graph.resources.limits.memory
+
+`string`
+
+### spec.components.graph.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.components.graph.resources.requests.cpu
+
+`string`
+
+### spec.components.graph.resources.requests.memory
+
+`string`
 
 ### spec.prerequisites
 
@@ -1994,6 +2471,55 @@ controls nothing else (not the platform version, not the charts).
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"pattern":"^v\\d+\\.\\d+\\.\\d+$"}}
 
+### spec.controlPlane.resources
+
+`ContainerResources`
+
+The control plane's CPU and memory. Unset, it runs the operator's measured
+default: 250m CPU and 1Gi memory requested, a 4Gi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+The control plane is a JVM whose heap is 60% of this memory limit, so
+raising the limit raises the heap; parallel deploys are what grow it.
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.controlPlane.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.controlPlane.resources.limits.cpu
+
+`string`
+
+### spec.controlPlane.resources.limits.memory
+
+`string`
+
+### spec.controlPlane.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.controlPlane.resources.requests.cpu
+
+`string`
+
+### spec.controlPlane.resources.requests.memory
+
+`string`
+
 ### spec.console
 
 `KubernetesPlantonPlatformConsole`
@@ -2035,6 +2561,53 @@ Console replicas.
 
 Name of a Secret (in the platform's namespace) whose keys are all
 injected into the console as environment variables.
+
+### spec.console.resources
+
+`ContainerResources`
+
+The web console's CPU and memory. Unset, it runs the operator's measured
+default: 250m CPU and 512Mi memory requested, a 2Gi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.console.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.console.resources.limits.cpu
+
+`string`
+
+### spec.console.resources.limits.memory
+
+`string`
+
+### spec.console.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.console.resources.requests.cpu
+
+`string`
+
+### spec.console.resources.requests.memory
+
+`string`
 
 ### spec.remoteRunners
 
@@ -2327,6 +2900,256 @@ declaration.
 
 - rule: image_registry is a registry root such as "asia-south1-docker.pkg.dev/plantonhq/planton": no scheme and no trailing slash
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE"}
+
+### spec.temporal
+
+`KubernetesPlantonPlatformTemporal`
+
+Sizes Temporal, the platform's job engine, one server service at a time.
+History holds workflow state and is the one that grows. Requires a
+planton-operator chart >= 0.23.0.
+
+### spec.temporal.frontend
+
+`KubernetesPlantonPlatformTemporalService`
+
+The gateway clients and workers connect to.
+
+### spec.temporal.frontend.resources
+
+`ContainerResources`
+
+The service's CPU and memory; its default is on the service's field in
+KubernetesPlantonPlatformTemporal. Every quantity is merged on its own
+with that default: a quantity set here wins, one left unset keeps the
+default. A request above its limit is refused before anything changes.
+Changing it rolls the service's pods. Requires a planton-operator chart
+>= 0.23.0.
+
+### spec.temporal.frontend.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.temporal.frontend.resources.limits.cpu
+
+`string`
+
+### spec.temporal.frontend.resources.limits.memory
+
+`string`
+
+### spec.temporal.frontend.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.temporal.frontend.resources.requests.cpu
+
+`string`
+
+### spec.temporal.frontend.resources.requests.memory
+
+`string`
+
+### spec.temporal.history
+
+`KubernetesPlantonPlatformTemporalService`
+
+Owns workflow state and its caches: the service that grows.
+
+### spec.temporal.history.resources
+
+`ContainerResources`
+
+The service's CPU and memory; its default is on the service's field in
+KubernetesPlantonPlatformTemporal. Every quantity is merged on its own
+with that default: a quantity set here wins, one left unset keeps the
+default. A request above its limit is refused before anything changes.
+Changing it rolls the service's pods. Requires a planton-operator chart
+>= 0.23.0.
+
+### spec.temporal.history.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.temporal.history.resources.limits.cpu
+
+`string`
+
+### spec.temporal.history.resources.limits.memory
+
+`string`
+
+### spec.temporal.history.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.temporal.history.resources.requests.cpu
+
+`string`
+
+### spec.temporal.history.resources.requests.memory
+
+`string`
+
+### spec.temporal.matching
+
+`KubernetesPlantonPlatformTemporalService`
+
+Manages task queues and dispatches work.
+
+### spec.temporal.matching.resources
+
+`ContainerResources`
+
+The service's CPU and memory; its default is on the service's field in
+KubernetesPlantonPlatformTemporal. Every quantity is merged on its own
+with that default: a quantity set here wins, one left unset keeps the
+default. A request above its limit is refused before anything changes.
+Changing it rolls the service's pods. Requires a planton-operator chart
+>= 0.23.0.
+
+### spec.temporal.matching.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.temporal.matching.resources.limits.cpu
+
+`string`
+
+### spec.temporal.matching.resources.limits.memory
+
+`string`
+
+### spec.temporal.matching.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.temporal.matching.resources.requests.cpu
+
+`string`
+
+### spec.temporal.matching.resources.requests.memory
+
+`string`
+
+### spec.temporal.worker
+
+`KubernetesPlantonPlatformTemporalService`
+
+Runs Temporal's own system workflows.
+
+### spec.temporal.worker.resources
+
+`ContainerResources`
+
+The service's CPU and memory; its default is on the service's field in
+KubernetesPlantonPlatformTemporal. Every quantity is merged on its own
+with that default: a quantity set here wins, one left unset keeps the
+default. A request above its limit is refused before anything changes.
+Changing it rolls the service's pods. Requires a planton-operator chart
+>= 0.23.0.
+
+### spec.temporal.worker.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.temporal.worker.resources.limits.cpu
+
+`string`
+
+### spec.temporal.worker.resources.limits.memory
+
+`string`
+
+### spec.temporal.worker.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.temporal.worker.resources.requests.cpu
+
+`string`
+
+### spec.temporal.worker.resources.requests.memory
+
+`string`
+
+### spec.openfga
+
+`KubernetesPlantonPlatformOpenFga`
+
+Sizes OpenFGA, the platform's authorization engine. Requires a
+planton-operator chart >= 0.23.0.
+
+### spec.openfga.resources
+
+`ContainerResources`
+
+The authorization engine (OpenFGA)'s CPU and memory. Unset, it runs the operator's measured
+default: 50m CPU and 64Mi memory requested, a 256Mi memory limit, no
+CPU limit (a limit throttles cold starts, so the operator never sets one;
+set one if your cluster's policy requires it).
+Every quantity is merged on its own with the operator's default: a
+quantity set here wins, one left unset keeps the default, so raising one
+limit never means restating the numbers beside it. A request above its
+limit is refused before anything changes, naming the field. The sizes in
+effect are reported in the platform's status.components.<component>.sizing.
+Changing it rolls the component's pods. Requires a planton-operator chart
+>= 0.23.0: an older operator's definition drops the field without a word,
+which the status's sizing then shows as the default.
+
+### spec.openfga.resources.limits
+
+`CpuMemory`
+
+The resource limits for the container.
+Specify the maximum amount of CPU and memory that the container can use.
+
+### spec.openfga.resources.limits.cpu
+
+`string`
+
+### spec.openfga.resources.limits.memory
+
+`string`
+
+### spec.openfga.resources.requests
+
+`CpuMemory`
+
+The resource requests for the container.
+Specify the minimum amount of CPU and memory that the container is guaranteed.
+
+### spec.openfga.resources.requests.cpu
+
+`string`
+
+### spec.openfga.resources.requests.memory
+
+`string`
 
 ## Validation Rules
 

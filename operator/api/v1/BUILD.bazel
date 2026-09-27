@@ -1,0 +1,5 @@
+# The operator is its own Go module and is not built by this workspace
+# (gazelle:exclude operator at the root). This package only exports the
+# operator's published sizing registry, so the catalog kind that installs a
+# platform can hold its stated defaults to the operator's in a Bazel test.
+exports_files(["component_sizing.json"])

@@ -15,6 +15,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonplatform/iac/pulumi/module",
     visibility = ["//visibility:public"],
     deps = [
+        "//catalog/kubernetes",
         "//catalog/kubernetes/kubernetesplantonplatform/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
@@ -29,9 +30,13 @@ go_library(
 
 go_test(
     name = "module_test",
-    srcs = ["platform_cr_test.go"],
+    srcs = [
+        "platform_cr_test.go",
+        "sizing_test.go",
+    ],
     embed = [":module"],
     deps = [
+        "//catalog/kubernetes",
         "//catalog/kubernetes/kubernetesplantonplatform/v1alpha1",
         "//shared",
         "//shared/foreignkey/v1:foreignkey",
