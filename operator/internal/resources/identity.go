@@ -39,16 +39,10 @@ const (
 	// provisioning interstitial among them).
 	IdentityPathPrefix = "/idp"
 
-	// The identity server's sizing (the data-layer OOM lesson): a JVM plus a
-	// first-boot realm import dies confusingly under default limits. The
-	// recovery Job runs the same image and takes the same sizing. No CPU
-	// limit so the import is never throttled (requests-only, the house
-	// pattern). The ensure-database init container is a psql client that
-	// runs for a second; a small floor so it schedules, a small limit so a
-	// stuck one cannot grow.
-	identityCPURequest        = "250m"
-	identityMemoryRequest     = "512Mi"
-	identityMemoryLimit       = "1536Mi"
+	// The ensure-database init container's size, fixed rather than
+	// registered (sizing.go): a psql client that runs for a second, with a
+	// small request so it schedules and a small limit so a stuck one cannot
+	// grow. The server's own size is SizingIdentity in the registry.
 	identityInitCPURequest    = "10m"
 	identityInitMemoryRequest = "32Mi"
 	identityInitMemoryLimit   = "128Mi"
@@ -372,6 +366,11 @@ type IdentityConfig struct {
 
 	ImageRepository string
 	ImageTag        string
+
+	// Resources is the server's effective sizing (SizingIdentity in the
+	// registry, merged with the spec's override by the component), shared
+	// by the Deployment and the recovery Job, which runs the same image.
+	Resources corev1.ResourceRequirements
 
 	// Realm is the Keycloak realm holding Planton's users and client.
 	Realm string
@@ -1135,7 +1134,7 @@ func IdentityDeployment(cfg IdentityConfig) *appsv1.Deployment {
 						},
 						Env:          envVars,
 						VolumeMounts: volumeMounts,
-						Resources:    identityResources(),
+						Resources:    mustBeSized(SizingIdentity, cfg.Resources),
 						// First boot runs schema migrations + the realm import;
 						// allow a generous window (10s x 60 = 10m) before the
 						// kubelet gives up, mirroring the control plane.
@@ -1266,7 +1265,7 @@ func IdentityRecoveryAdminJob(cfg IdentityConfig) *batchv1.Job {
 							"--password:env", "KC_BOOTSTRAP_ADMIN_PASSWORD"},
 						Env: append(identityDatabaseEnv(cfg),
 							secretEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", name, IdentityBootstrapAdminPasswordKey)),
-						Resources: identityResources(),
+						Resources: mustBeSized(SizingIdentity, cfg.Resources),
 					}},
 				},
 			},
@@ -1313,20 +1312,6 @@ func IdentityService(crName, namespace string, ownerRef *metav1.OwnerReference) 
 	}
 
 	return svc
-}
-
-// identityResources is the identity server's container sizing, shared by the
-// Deployment and the recovery Job (the constants above carry the reasoning).
-func identityResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(identityCPURequest),
-			corev1.ResourceMemory: resource.MustParse(identityMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(identityMemoryLimit),
-		},
-	}
 }
 
 // identityInitResources is the ensure-database init container's sizing.

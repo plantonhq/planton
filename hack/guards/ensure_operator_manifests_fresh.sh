@@ -31,6 +31,7 @@ generated_paths=(
   operator/config/crd/bases
   operator/config/rbac/role.yaml
   ':(glob)operator/api/**/zz_generated.*'
+  operator/api/v1/component_sizing.json
   helm/planton-operator/templates/crds
   helm/planton-operator/rbac
 )
@@ -55,4 +56,4 @@ if [[ -n "$untracked" ]]; then
   exit 1
 fi
 
-echo "OK: operator CRDs, RBAC, and deepcopy code are fresh in config/ and in helm/planton-operator."
+echo "OK: operator CRDs, RBAC, deepcopy code, and the sizing registry are fresh in config/, api/v1/, and helm/planton-operator."

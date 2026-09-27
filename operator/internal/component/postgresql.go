@@ -115,6 +115,7 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 
 	cluster := resources.NewPostgreSQLCluster(resources.PostgreSQLClusterOptions{
 		CRName:                    planton.Name,
+		Resources:                 resources.EffectiveFor(resources.SizingPostgreSQL, &planton.Spec),
 		Namespace:                 planton.Namespace,
 		Instances:                 instances,
 		StorageSize:               storageSize,
@@ -172,7 +173,7 @@ func (p *PostgreSQL) Reconcile(ctx context.Context, c client.Client, scheme *run
 	if !ready {
 		// The Cluster's own readiness sentence is the generic answer; the
 		// instance pods (labelled cnpg.io/cluster) supply anything sharper.
-		return p.NotReady(ctx, c, planton.Namespace, PostgresClusterRef(clusterName), statusMsg), nil
+		return p.NotReady(ctx, c, planton.Namespace, PostgresClusterRef(clusterName).Sized(resources.SizingPostgreSQL), statusMsg), nil
 	}
 
 	credentialsReady, err := p.superuserSecretExists(ctx, c, planton)

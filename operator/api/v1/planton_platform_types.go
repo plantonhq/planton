@@ -149,6 +149,14 @@ const (
 	// supports and how to move (the version, or an operator built for it).
 	ConditionVersionSupported = "VersionSupported"
 
+	// ConditionResourcesValid is True when every component's effective sizing
+	// -- the operator's defaults merged with each resources field -- is one
+	// the platform can run. False stops reconciliation before any object is
+	// created or changed: the message names each field that cannot be run
+	// (a request above its limit, a request under a chart's floor, a Valkey
+	// maxMemory not below its memory limit) and the edit that fixes it.
+	ConditionResourcesValid = "ResourcesValid"
+
 	// ConditionBackupHealthy is True when the platform database's WAL
 	// archiving is continuous and a base backup exists, False when a
 	// declared backup is failing or cannot be set up, Unknown while nothing
@@ -216,6 +224,46 @@ type ImageSpec struct {
 	Tag string `json:"tag,omitempty"`
 }
 
+// ComponentResources sizes one of the platform's workloads: what its container
+// requests from a node and the most it may use. Every quantity is merged on
+// its own with the operator's measured default -- a quantity set here wins, a
+// quantity left unset keeps the default -- so raising one memory limit never
+// means restating the numbers beside it, and an operator release that
+// re-measures a default still reaches every quantity nobody chose. The values
+// in effect are reported in status.components.<component>.sizing.
+//
+// Deliberately not corev1.ResourceRequirements: that type also carries claims
+// (dynamic resource allocation), which the operator would accept and then
+// ignore -- a field that does nothing is worse than no field -- and the two
+// lists alone keep a block the definition repeats for every component small.
+//
+// A size the platform cannot run (a request above its limit, a request under
+// the floor a chart enforces) is refused before anything changes, with the
+// field and the fix in the ResourcesValid condition.
+type ComponentResources struct {
+	// requests is what the scheduler reserves on a node for the container.
+	// A quantity left unset keeps the operator's default.
+	// +optional
+	Requests corev1.ResourceList `json:"requests,omitempty"`
+
+	// limits is the most the container may use; memory above it is an
+	// out-of-memory kill. A quantity left unset keeps the operator's default.
+	// +optional
+	Limits corev1.ResourceList `json:"limits,omitempty"`
+}
+
+// Requirements returns the declared quantities in Kubernetes' own form, as
+// copies the caller may keep. A nil block declares nothing.
+func (r *ComponentResources) Requirements() corev1.ResourceRequirements {
+	if r == nil {
+		return corev1.ResourceRequirements{}
+	}
+	return corev1.ResourceRequirements{
+		Requests: r.Requests.DeepCopy(),
+		Limits:   r.Limits.DeepCopy(),
+	}
+}
+
 // ControlPlaneSpec configures the Planton control plane monolith deployment.
 // The control plane is a Java/Spring Boot application that consolidates all
 // backend services (IAM, resource manager, billing, etc.) into a single
@@ -266,6 +314,18 @@ type ControlPlaneSpec struct {
 	// its cloud identity; this grants the platform itself one.
 	// +optional
 	ServiceAccountAnnotations map[string]string `json:"serviceAccountAnnotations,omitempty"`
+
+	// resources sizes the control plane's container. Defaults to requests of
+	// 250m CPU and 1Gi memory with a 4Gi memory limit (~3.3Gi resident live
+	// under pipeline fan-out). The JVM's heap is 60% of the memory limit (the
+	// image runs -XX:MaxRAMPercentage=60), so the limit is the heap: raise it
+	// when this component reports OutOfMemory. A quantity you set wins; one
+	// you leave unset keeps the default. A CPU limit is allowed, and the
+	// operator sets none: a throttled cold start fails its own probes.
+	// Changing it rolls the control plane, a new pod ready before the old
+	// one stops.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // ConsoleSpec configures the Planton web console deployment.
@@ -286,6 +346,16 @@ type ConsoleSpec struct {
 	// All keys in the Secret are injected as environment variables via envFrom.
 	// +optional
 	ExternalConfigSecretName string `json:"externalConfigSecretName,omitempty"`
+
+	// resources sizes the console's container. Defaults to requests of 250m
+	// CPU and 512Mi memory with a 2Gi memory limit: without a request a busy
+	// node starves the console into failing its own probes. A quantity you
+	// set wins; one you leave unset keeps the default. A CPU limit is
+	// allowed, and the operator sets none: page renders are bursty, and
+	// throttling them recreates the slowness the probes punish. Changing it
+	// rolls the console, a new pod ready before the old one stops.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // RunnerSpec configures the in-cluster Planton runner: the worker pod that
@@ -339,6 +409,17 @@ type RunnerSpec struct {
 	// serviceAccountAnnotations where the cluster supports it.
 	// +optional
 	CloudCredentialsSecretName string `json:"cloudCredentialsSecretName,omitempty"`
+
+	// resources sizes the runner's container. Defaults to requests of 100m
+	// CPU and 512Mi memory with a 2Gi memory limit (~780Mi resident live
+	// working its queues); the OpenTofu and Pulumi engines it forks count
+	// against the same limit, so the limit is the headroom for an engine run.
+	// A quantity you set wins; one you leave unset keeps the default. A CPU
+	// limit is allowed, and the operator sets none: a plan or apply is never
+	// throttled. Changing it restarts the runner (its state volume admits
+	// one pod at a time), interrupting a deploy running at that moment.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // BuildSpec configures the pipeline-build capability -- the machinery that
@@ -520,6 +601,19 @@ type PlantonPlatformSpec struct {
 	// opens the restored vault is declared here (autoUnseal, initSecretName).
 	// +optional
 	Vault *OpenBAOSpec `json:"vault,omitempty"`
+
+	// temporal sizes the bundled workflow engine (Temporal) the control plane
+	// runs its long work on: the frontend, history, matching, and worker
+	// services, each on its own. Every platform runs it; every field is
+	// optional.
+	// +optional
+	Temporal *TemporalSpec `json:"temporal,omitempty"`
+
+	// openfga sizes the bundled policy engine (OpenFGA) that answers every
+	// authorization check the control plane makes. Every platform runs it;
+	// every field is optional.
+	// +optional
+	OpenFGA *OpenFGASpec `json:"openfga,omitempty"`
 
 	// components toggles the optional platform capabilities that are disabled by
 	// default to keep the minimal deployment footprint small. The policy engine
@@ -841,6 +935,18 @@ type PostgreSQLSpec struct {
 	// Honored only when the database is first created.
 	// +optional
 	RecoverFrom *PostgreSQLRecoverFromSpec `json:"recoverFrom,omitempty"`
+
+	// resources sizes each PostgreSQL instance's container. Defaults to
+	// requests of 250m CPU and 512Mi memory with a 2Gi memory limit: one
+	// instance serves every platform database (~520Mi resident live with the
+	// control plane's pools open). A quantity you set wins; one you leave
+	// unset keeps the default. A CPU limit is allowed, and the operator sets
+	// none: a checkpoint or a vacuum is never throttled. Changing it restarts
+	// the database. With one instance that is the only database, and the
+	// platform is unavailable for about a minute; with replicas,
+	// CloudNativePG restarts the standbys first and then switches over.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // RedisSpec sizes the redis-protocol store (served by Valkey). One store
@@ -887,11 +993,16 @@ type RedisSpec struct {
 	MaxMemoryPolicy string `json:"maxMemoryPolicy,omitempty"`
 
 	// resources sizes the store's container. Defaults to requests of 100m CPU
-	// and 256Mi memory with a 1Gi memory limit and no CPU limit. Size the
-	// memory limit above maxMemory: Valkey needs headroom for its
-	// append-only-file rewrite and client buffers.
+	// and 256Mi memory with a 1Gi memory limit. maxMemory must stay below the
+	// memory limit, and a pair that breaks that is refused: Valkey needs
+	// headroom above its dataset for the append-only-file rewrite and client
+	// buffers, and a dataset that reaches the limit is killed instead of
+	// evicted. A quantity you set wins; one you leave unset keeps the
+	// default. A CPU limit is allowed, and the operator sets none. Changing
+	// it restarts the store: with persistence on it replays its dataset,
+	// with persistence off it starts empty.
 	// +optional
-	Resources *corev1.ResourceRequirements `json:"resources,omitempty"`
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // IngressSpec configures external access to Planton through the cluster's
@@ -1049,6 +1160,16 @@ type GatewaySpec struct {
 	// image overrides the default nginx container image the gateway runs.
 	// +optional
 	Image *ImageSpec `json:"image,omitempty"`
+
+	// resources sizes the gateway's nginx container. Defaults to requests of
+	// 50m CPU and 64Mi memory with a 256Mi memory limit: proxying one
+	// platform's traffic is small and steady. A quantity you set wins; one
+	// you leave unset keeps the default. A CPU limit is allowed, and the
+	// operator sets none: a burst of console traffic is never throttled.
+	// Changing it replaces the gateway's pod, which ends a running
+	// port-forward; run the command again.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // CertManagerIssuerRef identifies a cert-manager issuer.
@@ -1092,6 +1213,18 @@ type IdentitySpec struct {
 	// the created account rather than to an email string.
 	// +optional
 	AdminEmail string `json:"adminEmail,omitempty"`
+
+	// resources sizes the identity server's container and the one-time
+	// recovery Job that runs the same image. Defaults to requests of 250m CPU
+	// and 512Mi memory with a 1536Mi memory limit: a JVM plus the first-boot
+	// realm import dies confusingly under less. A quantity you set wins; one
+	// you leave unset keeps the default. A CPU limit is allowed, and the
+	// operator sets none: the import is never throttled. Changing it
+	// restarts the identity server -- one pod at a time, because two servers
+	// importing one realm conflict -- so sign-in is unavailable until it is
+	// back.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // BootstrapSpec configures the config-driven first-boot seeds. The seeded
@@ -1270,6 +1403,17 @@ type OpenBAOSpec struct {
 	// and the database backup's identities are their own.
 	// +optional
 	ServiceAccountAnnotations map[string]string `json:"serviceAccountAnnotations,omitempty"`
+
+	// resources sizes the vault's container. Defaults to requests of 50m CPU
+	// and 128Mi memory with a 512Mi memory limit: a single-tenant vault
+	// serving one control plane is small and steady (~35Mi resident live). A
+	// quantity you set wins; one you leave unset keeps the default. A CPU
+	// limit is allowed, and the operator sets none. Changing it restarts the
+	// vault, which comes back sealed; the operator unseals it again (from
+	// the init Secret's shares, or the seal opens it), and secrets are
+	// unavailable for the moments in between.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // OpenBAOAutoUnsealSpec is the vault's seal: exactly one arm. Credentials
@@ -1416,6 +1560,69 @@ type Neo4jSpec struct {
 	// Defaults to spec.storage.storageClassName, then the cluster default.
 	// +optional
 	StorageClassName string `json:"storageClassName,omitempty"`
+
+	// resources sizes Neo4j's container. Defaults to requests of 1000m CPU
+	// and 2Gi memory with a 2Gi memory limit, the chart's own size. Neo4j's
+	// chart refuses requests under 500m CPU or 2Gi memory, and the operator
+	// refuses them first, in its own words. A quantity you set wins; one you
+	// leave unset keeps the default. A CPU limit is allowed, and the
+	// operator sets none. Changing it restarts Neo4j, and graph queries fail
+	// until it is back.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
+}
+
+// TemporalSpec sizes Temporal's four server services, each its own Deployment
+// with its own load: history holds every running workflow's state and its
+// caches, matching dispatches tasks, the frontend answers the control plane
+// and the runner, and the worker runs Temporal's own system workflows. The
+// web UI, the admin tools, and the one-shot schema Jobs keep one small fixed
+// size: none of them carries the platform's load.
+type TemporalSpec struct {
+	// frontend defaults to requests of 50m CPU and 128Mi memory with a 512Mi
+	// memory limit (~90Mi resident live).
+	// +optional
+	Frontend *TemporalServiceSpec `json:"frontend,omitempty"`
+
+	// history defaults to requests of 100m CPU and 256Mi memory with a 1Gi
+	// memory limit (~375Mi resident live): it holds the mutable state of
+	// every running workflow, and its caches grow with them.
+	// +optional
+	History *TemporalServiceSpec `json:"history,omitempty"`
+
+	// matching defaults to requests of 50m CPU and 128Mi memory with a 512Mi
+	// memory limit (~145Mi resident live).
+	// +optional
+	Matching *TemporalServiceSpec `json:"matching,omitempty"`
+
+	// worker defaults to requests of 50m CPU and 128Mi memory with a 512Mi
+	// memory limit (~60Mi resident live).
+	// +optional
+	Worker *TemporalServiceSpec `json:"worker,omitempty"`
+}
+
+// TemporalServiceSpec sizes one Temporal service.
+type TemporalServiceSpec struct {
+	// resources sizes the service's container; its default is named on the
+	// service. A quantity you set wins; one you leave unset keeps the
+	// default. A CPU limit is allowed, and the operator sets none: a
+	// workflow burst is never throttled. Changing it rolls that service's
+	// pods; workflows pause while it restarts and resume where they were.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
+}
+
+// OpenFGASpec sizes the policy engine.
+type OpenFGASpec struct {
+	// resources sizes the OpenFGA server's container. Defaults to requests
+	// of 50m CPU and 64Mi memory with a 256Mi memory limit: a Go server
+	// answering one control plane's checks is small and steady (~30Mi
+	// resident live). A quantity you set wins; one you leave unset keeps the
+	// default. A CPU limit is allowed, and the operator sets none: a burst
+	// of checks is never throttled. Changing it rolls the server, a new pod
+	// ready before the old one stops.
+	// +optional
+	Resources *ComponentResources `json:"resources,omitempty"`
 }
 
 // PlantonPlatformStatus defines the observed state of a PlantonPlatform deployment.
@@ -1488,8 +1695,9 @@ type PlantonPlatformStatus struct {
 	Components ComponentStatuses `json:"components,omitempty"`
 
 	// conditions represent the latest available observations of the deployment's state.
-	// Condition types: Ready (all enabled components healthy) and VersionSupported
-	// (spec.version names a release this operator runs).
+	// Condition types: Ready (all enabled components healthy), VersionSupported
+	// (spec.version names a release this operator runs), ResourcesValid (every
+	// component's sizing can be run), and BackupHealthy.
 	// +listType=map
 	// +listMapKey=type
 	// +optional
@@ -1557,6 +1765,28 @@ type ComponentStatus struct {
 	// It does not move while the same condition persists.
 	// +optional
 	LastTransitionTime metav1.Time `json:"lastTransitionTime,omitempty"`
+
+	// sizing is what each of this component's sized workloads runs with: the
+	// operator's defaults merged with the resources field, one entry per
+	// field. A field an older definition does not know is dropped at apply
+	// without a word and never shows here, so this is where a size that did
+	// not take is seen.
+	// +optional
+	Sizing []ComponentSizingStatus `json:"sizing,omitempty"`
+}
+
+// ComponentSizingStatus is the effective sizing of one workload.
+type ComponentSizingStatus struct {
+	// path is the spec field that sizes the workload.
+	Path string `json:"path"`
+
+	// requests in effect.
+	// +optional
+	Requests corev1.ResourceList `json:"requests,omitempty"`
+
+	// limits in effect.
+	// +optional
+	Limits corev1.ResourceList `json:"limits,omitempty"`
 }
 
 // ComponentObjectReference names one Kubernetes object in the platform's own

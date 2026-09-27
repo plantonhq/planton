@@ -41,7 +41,7 @@ func (n *Neo4j) Reconcile(ctx context.Context, c client.Client, _ *runtime.Schem
 	storageClass := effectiveStorageClass(planton, componentClass)
 
 	chartData := resources.LoadNeo4jChart()
-	values := resources.Neo4jHelmValues(planton.Name, storageSize, storageClass)
+	values := resources.Neo4jHelmValues(planton.Name, storageSize, storageClass, resources.EffectiveFor(resources.SizingNeo4j, &planton.Spec))
 
 	rendered, err := resources.RenderHelmChart(
 		chartData,
@@ -64,7 +64,7 @@ func (n *Neo4j) Reconcile(ctx context.Context, c client.Client, _ *runtime.Schem
 	}
 	if !ready {
 		log.Info("Neo4j not ready")
-		return n.NotReady(ctx, c, planton.Namespace, StatefulSetRef(stsName), "Waiting for Neo4j"), nil
+		return n.NotReady(ctx, c, planton.Namespace, StatefulSetRef(stsName).Sized(resources.SizingNeo4j), "Waiting for Neo4j"), nil
 	}
 
 	log.Info("Neo4j ready")

@@ -47,7 +47,8 @@ help: ## Display this help.
 # The Helm chart that packages this operator ships controller-gen's output
 # verbatim: the CRDs as templates under templates/crds/ (wrapped by
 # hack/chartcrds so the chart owns their lifecycle) and the manager ClusterRole
-# rules read by templates/clusterrole.yaml from rbac/. One target writes
+# rules read by templates/clusterrole.yaml from rbac/ -- plus the sizing registry
+# as data (api/v1/component_sizing.json) for readers outside this module. One target writes
 # both homes so a type or RBAC marker change and its chart change are always
 # the same commit; CI regenerates and diffs, so a stale chart fails the build.
 CHART_DIR := ../helm/planton-operator
@@ -58,6 +59,7 @@ CHART_RBAC_DIR := $(CHART_DIR)/rbac
 manifests: controller-gen ## Generate ClusterRole and CustomResourceDefinition objects into config/ and the Helm chart.
 	"$(CONTROLLER_GEN)" rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
 	@go run ./hack/chartcrds --in config/crd/bases --out $(CHART_CRD_TEMPLATES_DIR)
+	@go run ./hack/componentsizing --out api/v1/component_sizing.json
 	@mkdir -p $(CHART_RBAC_DIR)
 	@cp config/rbac/role.yaml $(CHART_RBAC_DIR)/manager-role.yaml
 

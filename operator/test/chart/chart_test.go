@@ -198,6 +198,32 @@ func TestRenderedCRDsAreControllerGenOutputVerbatim(t *testing.T) {
 	}
 }
 
+// Every definition stays well under the size client-side `kubectl apply`
+// can carry. That apply stores the whole object in its last-applied
+// annotation, which the API server caps at 256 KiB, so a definition that
+// outgrows it cannot be applied the most common way at all. The platform's
+// definition repeats its sizing block for every component and its status
+// block for every component status, so it is the one that grows; the guard
+// sits below the cap so the definition's next field is a decision, not a
+// surprise at an adopter's apply.
+func TestEveryCRDStaysUnderTheClientSideApplyCeiling(t *testing.T) {
+	const ceiling = 230 << 10
+	files, err := filepath.Glob(filepath.Join(crdBaseDir, "*.yaml"))
+	if err != nil || len(files) == 0 {
+		t.Fatalf("no controller-gen CRDs under %s: %v", crdBaseDir, err)
+	}
+	for _, file := range files {
+		info, err := os.Stat(file)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if info.Size() > ceiling {
+			t.Errorf("%s is %d KiB, above the %d KiB guard under client-side apply's 256 KiB: shrink a repeated block (a slimmer type, a shared status shape) before adding to it",
+				filepath.Base(file), info.Size()>>10, ceiling>>10)
+		}
+	}
+}
+
 func keys(m map[string]document) []string {
 	out := make([]string, 0, len(m))
 	for k := range m {

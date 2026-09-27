@@ -100,7 +100,7 @@ func (r *Runner) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sche
 		log.Info("Runner not ready")
 		// Readiness is the worker-poll probe: "not ready" after boot means
 		// the worker is not polling its Temporal queue yet.
-		return r.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.RunnerDeploymentName(planton.Name)),
+		return r.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.RunnerDeploymentName(planton.Name)).Sized(resources.SizingRunner),
 			"Waiting for the runner worker to start polling for deploys"), nil
 	}
 
@@ -247,6 +247,7 @@ func runnerReadyMessage(ctx context.Context, c client.Client, planton *v1.Planto
 func runnerConfig(planton *v1.PlantonPlatform, ownerRef *metav1.OwnerReference) resources.RunnerConfig {
 	cfg := resources.RunnerConfig{
 		CRName:    planton.Name,
+		Resources: resources.EffectiveFor(resources.SizingRunner, &planton.Spec),
 		Namespace: planton.Namespace,
 		Version:   planton.Spec.Version,
 		OwnerRef:  ownerRef,

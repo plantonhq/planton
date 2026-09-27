@@ -21,10 +21,10 @@ func TestEveryShippedChartRendersOnlyOwnableObjects(t *testing.T) {
 		values map[string]any
 	}{
 		{"valkey", LoadValkeyChart(), ValkeyHelmValues(valkeyTestOptions(crName, "1Gi", ""))},
-		{"temporal", LoadTemporalChart(), TemporalHelmValues(crName, namespace)},
-		{"openbao", LoadOpenBAOChart(), OpenBAOHelmValues(OpenBAOHelmOptions{CRName: crName, Namespace: namespace, StoragePasswordSecretName: PostgreSQLVaultRoleSecretName(crName)})},
-		{"neo4j", LoadNeo4jChart(), Neo4jHelmValues(crName, "10Gi", "")},
-		{"openfga", LoadOpenFGAChart(), OpenFGAHelmValues(crName, namespace)},
+		{"temporal", LoadTemporalChart(), TemporalHelmValues(defaultTemporalOptions(crName, namespace))},
+		{"openbao", LoadOpenBAOChart(), OpenBAOHelmValues(OpenBAOHelmOptions{CRName: crName, Namespace: namespace, StoragePasswordSecretName: PostgreSQLVaultRoleSecretName(crName), Resources: Effective(SizingOpenBAO, nil)})},
+		{"neo4j", LoadNeo4jChart(), Neo4jHelmValues(crName, "10Gi", "", Effective(SizingNeo4j, nil))},
+		{"openfga", LoadOpenFGAChart(), OpenFGAHelmValues(defaultOpenFGAOptions(crName, namespace))},
 	}
 	for _, chart := range charts {
 		t.Run(chart.name, func(t *testing.T) {

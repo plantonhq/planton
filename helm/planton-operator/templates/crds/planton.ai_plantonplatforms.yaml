@@ -236,6 +236,39 @@ spec:
                         default: false
                         description: enabled controls whether Neo4j is deployed.
                         type: boolean
+                      resources:
+                        description: |-
+                          resources sizes Neo4j's container. Defaults to requests of 1000m CPU
+                          and 2Gi memory with a 2Gi memory limit, the chart's own size. Neo4j's
+                          chart refuses requests under 500m CPU or 2Gi memory, and the operator
+                          refuses them first, in its own words. A quantity you set wins; one you
+                          leave unset keeps the default. A CPU limit is allowed, and the
+                          operator sets none. Changing it restarts Neo4j, and graph queries fail
+                          until it is back.
+                        properties:
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              limits is the most the container may use; memory above it is an
+                              out-of-memory kill. A quantity left unset keeps the operator's default.
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              requests is what the scheduler reserves on a node for the container.
+                              A quantity left unset keeps the operator's default.
+                            type: object
+                        type: object
                       storageClassName:
                         description: |-
                           storageClassName pins the Neo4j data volume to a StorageClass.
@@ -284,6 +317,39 @@ spec:
                     format: int32
                     minimum: 1
                     type: integer
+                  resources:
+                    description: |-
+                      resources sizes the console's container. Defaults to requests of 250m
+                      CPU and 512Mi memory with a 2Gi memory limit: without a request a busy
+                      node starves the console into failing its own probes. A quantity you
+                      set wins; one you leave unset keeps the default. A CPU limit is
+                      allowed, and the operator sets none: page renders are bursty, and
+                      throttling them recreates the slowness the probes punish. Changing it
+                      rolls the console, a new pod ready before the old one stops.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          limits is the most the container may use; memory above it is an
+                          out-of-memory kill. A quantity left unset keeps the operator's default.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          requests is what the scheduler reserves on a node for the container.
+                          A quantity left unset keeps the operator's default.
+                        type: object
+                    type: object
                 type: object
               controlPlane:
                 description: |-
@@ -335,6 +401,41 @@ spec:
                     format: int32
                     minimum: 1
                     type: integer
+                  resources:
+                    description: |-
+                      resources sizes the control plane's container. Defaults to requests of
+                      250m CPU and 1Gi memory with a 4Gi memory limit (~3.3Gi resident live
+                      under pipeline fan-out). The JVM's heap is 60% of the memory limit (the
+                      image runs -XX:MaxRAMPercentage=60), so the limit is the heap: raise it
+                      when this component reports OutOfMemory. A quantity you set wins; one
+                      you leave unset keeps the default. A CPU limit is allowed, and the
+                      operator sets none: a throttled cold start fails its own probes.
+                      Changing it rolls the control plane, a new pod ready before the old
+                      one stops.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          limits is the most the container may use; memory above it is an
+                          out-of-memory kill. A quantity left unset keeps the operator's default.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          requests is what the scheduler reserves on a node for the container.
+                          A quantity left unset keeps the operator's default.
+                        type: object
+                    type: object
                   serviceAccountAnnotations:
                     additionalProperties:
                       type: string
@@ -700,6 +801,41 @@ spec:
                         format: int32
                         minimum: 1
                         type: integer
+                      resources:
+                        description: |-
+                          resources sizes each PostgreSQL instance's container. Defaults to
+                          requests of 250m CPU and 512Mi memory with a 2Gi memory limit: one
+                          instance serves every platform database (~520Mi resident live with the
+                          control plane's pools open). A quantity you set wins; one you leave
+                          unset keeps the default. A CPU limit is allowed, and the operator sets
+                          none: a checkpoint or a vacuum is never throttled. Changing it restarts
+                          the database. With one instance that is the only database, and the
+                          platform is unavailable for about a minute; with replicas,
+                          CloudNativePG restarts the standbys first and then switches over.
+                        properties:
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              limits is the most the container may use; memory above it is an
+                              out-of-memory kill. A quantity left unset keeps the operator's default.
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              requests is what the scheduler reserves on a node for the container.
+                              A quantity left unset keeps the operator's default.
+                            type: object
+                        type: object
                       storageClassName:
                         description: |-
                           storageClassName pins the PostgreSQL volumes to a StorageClass.
@@ -760,41 +896,15 @@ spec:
                       resources:
                         description: |-
                           resources sizes the store's container. Defaults to requests of 100m CPU
-                          and 256Mi memory with a 1Gi memory limit and no CPU limit. Size the
-                          memory limit above maxMemory: Valkey needs headroom for its
-                          append-only-file rewrite and client buffers.
+                          and 256Mi memory with a 1Gi memory limit. maxMemory must stay below the
+                          memory limit, and a pair that breaks that is refused: Valkey needs
+                          headroom above its dataset for the append-only-file rewrite and client
+                          buffers, and a dataset that reaches the limit is killed instead of
+                          evicted. A quantity you set wins; one you leave unset keeps the
+                          default. A CPU limit is allowed, and the operator sets none. Changing
+                          it restarts the store: with persistence on it replays its dataset,
+                          with persistence off it starts empty.
                         properties:
-                          claims:
-                            description: |-
-                              Claims lists the names of resources, defined in spec.resourceClaims,
-                              that are used by this container.
-
-                              This field depends on the
-                              DynamicResourceAllocation feature gate.
-
-                              This field is immutable. It can only be set for containers.
-                            items:
-                              description: ResourceClaim references one entry in PodSpec.ResourceClaims.
-                              properties:
-                                name:
-                                  description: |-
-                                    Name must match the name of one entry in pod.spec.resourceClaims of
-                                    the Pod where this field is used. It makes that resource available
-                                    inside a container.
-                                  type: string
-                                request:
-                                  description: |-
-                                    Request is the name chosen for a request in the referenced claim.
-                                    If empty, everything from the claim is made available, otherwise
-                                    only the result of this request.
-                                  type: string
-                              required:
-                              - name
-                              type: object
-                            type: array
-                            x-kubernetes-list-map-keys:
-                            - name
-                            x-kubernetes-list-type: map
                           limits:
                             additionalProperties:
                               anyOf:
@@ -803,8 +913,8 @@ spec:
                               pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                               x-kubernetes-int-or-string: true
                             description: |-
-                              Limits describes the maximum amount of compute resources allowed.
-                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                              limits is the most the container may use; memory above it is an
+                              out-of-memory kill. A quantity left unset keeps the operator's default.
                             type: object
                           requests:
                             additionalProperties:
@@ -814,10 +924,8 @@ spec:
                               pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                               x-kubernetes-int-or-string: true
                             description: |-
-                              Requests describes the minimum amount of compute resources required.
-                              If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-                              otherwise to an implementation-defined value. Requests cannot exceed Limits.
-                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                              requests is what the scheduler reserves on a node for the container.
+                              A quantity left unset keeps the operator's default.
                             type: object
                         type: object
                       storageClassName:
@@ -1065,6 +1173,39 @@ spec:
                     maximum: 65535
                     minimum: 1
                     type: integer
+                  resources:
+                    description: |-
+                      resources sizes the gateway's nginx container. Defaults to requests of
+                      50m CPU and 64Mi memory with a 256Mi memory limit: proxying one
+                      platform's traffic is small and steady. A quantity you set wins; one
+                      you leave unset keeps the default. A CPU limit is allowed, and the
+                      operator sets none: a burst of console traffic is never throttled.
+                      Changing it replaces the gateway's pod, which ends a running
+                      port-forward; run the command again.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          limits is the most the container may use; memory above it is an
+                          out-of-memory kill. A quantity left unset keeps the operator's default.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          requests is what the scheduler reserves on a node for the container.
+                          A quantity left unset keeps the operator's default.
+                        type: object
+                    type: object
                 type: object
               github:
                 description: |-
@@ -1225,6 +1366,41 @@ spec:
                       realm is the Keycloak realm name that holds Planton's users and the
                       console's OIDC client.
                     type: string
+                  resources:
+                    description: |-
+                      resources sizes the identity server's container and the one-time
+                      recovery Job that runs the same image. Defaults to requests of 250m CPU
+                      and 512Mi memory with a 1536Mi memory limit: a JVM plus the first-boot
+                      realm import dies confusingly under less. A quantity you set wins; one
+                      you leave unset keeps the default. A CPU limit is allowed, and the
+                      operator sets none: the import is never throttled. Changing it
+                      restarts the identity server -- one pod at a time, because two servers
+                      importing one realm conflict -- so sign-in is unavailable until it is
+                      back.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          limits is the most the container may use; memory above it is an
+                          out-of-memory kill. A quantity left unset keeps the operator's default.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          requests is what the scheduler reserves on a node for the container.
+                          A quantity left unset keeps the operator's default.
+                        type: object
+                    type: object
                 type: object
               imageRegistry:
                 description: |-
@@ -1420,6 +1596,46 @@ spec:
                 x-kubernetes-validations:
                 - message: set at most one of key or secretKeyRef
                   rule: '!has(self.key) || !has(self.secretKeyRef)'
+              openfga:
+                description: |-
+                  openfga sizes the bundled policy engine (OpenFGA) that answers every
+                  authorization check the control plane makes. Every platform runs it;
+                  every field is optional.
+                properties:
+                  resources:
+                    description: |-
+                      resources sizes the OpenFGA server's container. Defaults to requests
+                      of 50m CPU and 64Mi memory with a 256Mi memory limit: a Go server
+                      answering one control plane's checks is small and steady (~30Mi
+                      resident live). A quantity you set wins; one you leave unset keeps the
+                      default. A CPU limit is allowed, and the operator sets none: a burst
+                      of checks is never throttled. Changing it rolls the server, a new pod
+                      ready before the old one stops.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          limits is the most the container may use; memory above it is an
+                          out-of-memory kill. A quantity left unset keeps the operator's default.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          requests is what the scheduler reserves on a node for the container.
+                          A quantity left unset keeps the operator's default.
+                        type: object
+                    type: object
+                type: object
               prerequisites:
                 description: |-
                   prerequisites controls how the operator deploys its own dependencies
@@ -1523,6 +1739,40 @@ spec:
                           when empty.
                         type: string
                     type: object
+                  resources:
+                    description: |-
+                      resources sizes the runner's container. Defaults to requests of 100m
+                      CPU and 512Mi memory with a 2Gi memory limit (~780Mi resident live
+                      working its queues); the OpenTofu and Pulumi engines it forks count
+                      against the same limit, so the limit is the headroom for an engine run.
+                      A quantity you set wins; one you leave unset keeps the default. A CPU
+                      limit is allowed, and the operator sets none: a plan or apply is never
+                      throttled. Changing it restarts the runner (its state volume admits
+                      one pod at a time), interrupting a deploy running at that moment.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          limits is the most the container may use; memory above it is an
+                          out-of-memory kill. A quantity left unset keeps the operator's default.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          requests is what the scheduler reserves on a node for the container.
+                          A quantity left unset keeps the operator's default.
+                        type: object
+                    type: object
                   serviceAccountAnnotations:
                     additionalProperties:
                       type: string
@@ -1576,6 +1826,163 @@ spec:
                       provisioned from unless a component names its own. When empty, volumes
                       use the cluster's default StorageClass.
                     type: string
+                type: object
+              temporal:
+                description: |-
+                  temporal sizes the bundled workflow engine (Temporal) the control plane
+                  runs its long work on: the frontend, history, matching, and worker
+                  services, each on its own. Every platform runs it; every field is
+                  optional.
+                properties:
+                  frontend:
+                    description: |-
+                      frontend defaults to requests of 50m CPU and 128Mi memory with a 512Mi
+                      memory limit (~90Mi resident live).
+                    properties:
+                      resources:
+                        description: |-
+                          resources sizes the service's container; its default is named on the
+                          service. A quantity you set wins; one you leave unset keeps the
+                          default. A CPU limit is allowed, and the operator sets none: a
+                          workflow burst is never throttled. Changing it rolls that service's
+                          pods; workflows pause while it restarts and resume where they were.
+                        properties:
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              limits is the most the container may use; memory above it is an
+                              out-of-memory kill. A quantity left unset keeps the operator's default.
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              requests is what the scheduler reserves on a node for the container.
+                              A quantity left unset keeps the operator's default.
+                            type: object
+                        type: object
+                    type: object
+                  history:
+                    description: |-
+                      history defaults to requests of 100m CPU and 256Mi memory with a 1Gi
+                      memory limit (~375Mi resident live): it holds the mutable state of
+                      every running workflow, and its caches grow with them.
+                    properties:
+                      resources:
+                        description: |-
+                          resources sizes the service's container; its default is named on the
+                          service. A quantity you set wins; one you leave unset keeps the
+                          default. A CPU limit is allowed, and the operator sets none: a
+                          workflow burst is never throttled. Changing it rolls that service's
+                          pods; workflows pause while it restarts and resume where they were.
+                        properties:
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              limits is the most the container may use; memory above it is an
+                              out-of-memory kill. A quantity left unset keeps the operator's default.
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              requests is what the scheduler reserves on a node for the container.
+                              A quantity left unset keeps the operator's default.
+                            type: object
+                        type: object
+                    type: object
+                  matching:
+                    description: |-
+                      matching defaults to requests of 50m CPU and 128Mi memory with a 512Mi
+                      memory limit (~145Mi resident live).
+                    properties:
+                      resources:
+                        description: |-
+                          resources sizes the service's container; its default is named on the
+                          service. A quantity you set wins; one you leave unset keeps the
+                          default. A CPU limit is allowed, and the operator sets none: a
+                          workflow burst is never throttled. Changing it rolls that service's
+                          pods; workflows pause while it restarts and resume where they were.
+                        properties:
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              limits is the most the container may use; memory above it is an
+                              out-of-memory kill. A quantity left unset keeps the operator's default.
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              requests is what the scheduler reserves on a node for the container.
+                              A quantity left unset keeps the operator's default.
+                            type: object
+                        type: object
+                    type: object
+                  worker:
+                    description: |-
+                      worker defaults to requests of 50m CPU and 128Mi memory with a 512Mi
+                      memory limit (~60Mi resident live).
+                    properties:
+                      resources:
+                        description: |-
+                          resources sizes the service's container; its default is named on the
+                          service. A quantity you set wins; one you leave unset keeps the
+                          default. A CPU limit is allowed, and the operator sets none: a
+                          workflow burst is never throttled. Changing it rolls that service's
+                          pods; workflows pause while it restarts and resume where they were.
+                        properties:
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              limits is the most the container may use; memory above it is an
+                              out-of-memory kill. A quantity left unset keeps the operator's default.
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: |-
+                              requests is what the scheduler reserves on a node for the container.
+                              A quantity left unset keeps the operator's default.
+                            type: object
+                        type: object
+                    type: object
                 type: object
               vault:
                 description: |-
@@ -1771,6 +2178,40 @@ spec:
                       cluster. Empty means the operator keeps the keys in a Secret it owns
                       ({platform}-openbao-init), deleted with the platform.
                     type: string
+                  resources:
+                    description: |-
+                      resources sizes the vault's container. Defaults to requests of 50m CPU
+                      and 128Mi memory with a 512Mi memory limit: a single-tenant vault
+                      serving one control plane is small and steady (~35Mi resident live). A
+                      quantity you set wins; one you leave unset keeps the default. A CPU
+                      limit is allowed, and the operator sets none. Changing it restarts the
+                      vault, which comes back sealed; the operator unseals it again (from
+                      the init Secret's shares, or the seal opens it), and secrets are
+                      unavailable for the moments in between.
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          limits is the most the container may use; memory above it is an
+                          out-of-memory kill. A quantity left unset keeps the operator's default.
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: |-
+                          requests is what the scheduler reserves on a node for the container.
+                          A quantity left unset keeps the operator's default.
+                        type: object
+                    type: object
                   serviceAccountAnnotations:
                     additionalProperties:
                       type: string
@@ -1981,6 +2422,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2040,6 +2517,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2099,6 +2612,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2158,6 +2707,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2217,6 +2802,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2276,6 +2897,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2335,6 +2992,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2394,6 +3087,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2453,6 +3182,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2512,6 +3277,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2571,6 +3372,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2630,6 +3467,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2689,6 +3562,42 @@ spec:
                           example ImagePullFailed, CrashLooping, VolumeUnprovisionable, Healthy).
                           Each reason has a row in the troubleshooting reference.
                         type: string
+                      sizing:
+                        description: |-
+                          sizing is what each of this component's sized workloads runs with: the
+                          operator's defaults merged with the resources field, one entry per
+                          field. A field an older definition does not know is dropped at apply
+                          without a word and never shows here, so this is where a size that did
+                          not take is seen.
+                        items:
+                          description: ComponentSizingStatus is the effective sizing
+                            of one workload.
+                          properties:
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: limits in effect.
+                              type: object
+                            path:
+                              description: path is the spec field that sizes the workload.
+                              type: string
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                - type: integer
+                                - type: string
+                                pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                                x-kubernetes-int-or-string: true
+                              description: requests in effect.
+                              type: object
+                          required:
+                          - path
+                          type: object
+                        type: array
                     required:
                     - phase
                     type: object
@@ -2696,8 +3605,9 @@ spec:
               conditions:
                 description: |-
                   conditions represent the latest available observations of the deployment's state.
-                  Condition types: Ready (all enabled components healthy) and VersionSupported
-                  (spec.version names a release this operator runs).
+                  Condition types: Ready (all enabled components healthy), VersionSupported
+                  (spec.version names a release this operator runs), ResourcesValid (every
+                  component's sizing can be run), and BackupHealthy.
                 items:
                   description: Condition contains details for one aspect of the current
                     state of this API Resource.

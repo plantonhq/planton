@@ -7,7 +7,7 @@ import (
 )
 
 func TestTemporalHelmValues_DatabaseWiring(t *testing.T) {
-	values := resources.TemporalHelmValues("myplanton", "planton-ns")
+	values := resources.TemporalHelmValues(defaultTemporal("myplanton", "planton-ns"))
 
 	sql := extractTemporalDefaultSQL(t, values)
 
@@ -57,7 +57,7 @@ func extractTemporalDefaultSQL(t *testing.T, values map[string]any) map[string]a
 }
 
 func TestTemporalHelmValues_DisablesEmbeddedDatastores(t *testing.T) {
-	values := resources.TemporalHelmValues("myplanton", "ns")
+	values := resources.TemporalHelmValues(defaultTemporal("myplanton", "ns"))
 
 	for _, store := range []string{"cassandra", "mysql", "postgresql"} {
 		m, ok := values[store].(map[string]any)

@@ -169,7 +169,7 @@ func (cp *ControlPlane) Reconcile(ctx context.Context, c client.Client, _ *runti
 	}
 	if !ready {
 		log.Info("ControlPlane not ready")
-		return cp.NotReady(ctx, c, planton.Namespace, DeploymentRef(deployName), "Waiting for ControlPlane Deployment"), nil
+		return cp.NotReady(ctx, c, planton.Namespace, DeploymentRef(deployName).Sized(resources.SizingControlPlane), "Waiting for ControlPlane Deployment"), nil
 	}
 
 	// A healthy pod under a declaration that could not be honored is not
@@ -190,6 +190,7 @@ func (cp *ControlPlane) Reconcile(ctx context.Context, c client.Client, _ *runti
 func (cp *ControlPlane) buildConfig(planton *v1.PlantonPlatform, ownerRef *metav1.OwnerReference) resources.ControlPlaneConfig {
 	cfg := resources.ControlPlaneConfig{
 		CRName:     planton.Name,
+		Resources:  resources.EffectiveFor(resources.SizingControlPlane, &planton.Spec),
 		Namespace:  planton.Namespace,
 		Version:    planton.Spec.Version,
 		OwnerRef:   ownerRef,

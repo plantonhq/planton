@@ -5,7 +5,7 @@ import (
 )
 
 func TestNeo4jHelmValues_Name(t *testing.T) {
-	vals := Neo4jHelmValues("my-planton", "10Gi", "")
+	vals := Neo4jHelmValues("my-planton", "10Gi", "", Effective(SizingNeo4j, nil))
 	neo4j, ok := vals["neo4j"].(map[string]any)
 	if !ok {
 		t.Fatal("expected neo4j to be a map")
@@ -16,7 +16,7 @@ func TestNeo4jHelmValues_Name(t *testing.T) {
 }
 
 func TestNeo4jHelmValues_LicenseAgreement(t *testing.T) {
-	vals := Neo4jHelmValues("my-planton", "10Gi", "")
+	vals := Neo4jHelmValues("my-planton", "10Gi", "", Effective(SizingNeo4j, nil))
 	neo4j := vals["neo4j"].(map[string]any)
 	if neo4j["acceptLicenseAgreement"] != "yes" {
 		t.Errorf("expected acceptLicenseAgreement yes, got %v", neo4j["acceptLicenseAgreement"])
@@ -24,17 +24,24 @@ func TestNeo4jHelmValues_LicenseAgreement(t *testing.T) {
 }
 
 func TestNeo4jHelmValues_Resources(t *testing.T) {
-	vals := Neo4jHelmValues("my-planton", "10Gi", "")
+	vals := Neo4jHelmValues("my-planton", "10Gi", "", Effective(SizingNeo4j, nil))
 	neo4j := vals["neo4j"].(map[string]any)
 	resources, ok := neo4j["resources"].(map[string]any)
 	if !ok {
 		t.Fatal("expected resources to be a map")
 	}
-	if resources["cpu"] != "1000m" {
-		t.Errorf("expected cpu 1000m, got %v", resources["cpu"])
+	// The requests/limits form, which the chart takes whenever either key is
+	// present: the house pattern keeps the memory limit and drops the CPU one.
+	requests, _ := resources["requests"].(map[string]any)
+	limits, _ := resources["limits"].(map[string]any)
+	if requests["cpu"] != "1" || requests["memory"] != "2Gi" {
+		t.Errorf("expected requests cpu 1 and memory 2Gi, got %v", requests)
 	}
-	if resources["memory"] != "2Gi" {
-		t.Errorf("expected memory 2Gi, got %v", resources["memory"])
+	if limits["memory"] != "2Gi" {
+		t.Errorf("expected a 2Gi memory limit, got %v", limits)
+	}
+	if _, cpuLimited := limits["cpu"]; cpuLimited {
+		t.Error("no CPU limit by design (requests-only, the house pattern)")
 	}
 }
 
@@ -42,7 +49,7 @@ func TestNeo4jHelmValues_Resources(t *testing.T) {
 // volumes.data.<mode>.requests.storage (a bare "size" key is silently
 // ignored -- the defect that made spec.components.graph.storageSize inert).
 func TestNeo4jHelmValues_Storage(t *testing.T) {
-	vals := Neo4jHelmValues("my-planton", "20Gi", "")
+	vals := Neo4jHelmValues("my-planton", "20Gi", "", Effective(SizingNeo4j, nil))
 	data := vals["volumes"].(map[string]any)["data"].(map[string]any)
 	if data["mode"] != "defaultStorageClass" {
 		t.Errorf("expected mode defaultStorageClass, got %v", data["mode"])
@@ -59,7 +66,7 @@ func TestNeo4jHelmValues_Storage(t *testing.T) {
 // A pinned StorageClass must switch the volume to "dynamic" mode: the chart
 // REJECTS a storageClassName under "defaultStorageClass" mode.
 func TestNeo4jHelmValues_StorageClassSwitchesToDynamicMode(t *testing.T) {
-	vals := Neo4jHelmValues("my-planton", "20Gi", "fast-ssd")
+	vals := Neo4jHelmValues("my-planton", "20Gi", "fast-ssd", Effective(SizingNeo4j, nil))
 	data := vals["volumes"].(map[string]any)["data"].(map[string]any)
 	if data["mode"] != "dynamic" {
 		t.Errorf("expected mode dynamic when a class is pinned, got %v", data["mode"])
@@ -105,7 +112,7 @@ func TestNeo4jHelmValues_ChartRendering(t *testing.T) {
 		t.Fatal("Neo4j chart data is empty")
 	}
 
-	values := Neo4jHelmValues("test", "10Gi", "")
+	values := Neo4jHelmValues("test", "10Gi", "", Effective(SizingNeo4j, nil))
 	objs, err := RenderHelmChart(chartData, "test-neo4j", "default", values)
 	if err != nil {
 		t.Fatalf("failed to render Neo4j chart: %v", err)

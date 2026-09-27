@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 const (
@@ -13,17 +12,17 @@ const (
 	OpenFGAGRPCPort         = 8081
 	OpenFGADatastoreEngine  = "postgres"
 	OpenFGAStoreName        = "planton"
-
-	// The authorization engine's sizing, chosen here rather than left to the
-	// chart (which ships none). A Go server answering one control plane's
-	// checks is small and steady: ~30Mi resident live. A request so it
-	// schedules honestly, a memory limit so a leak cannot take the node, no
-	// CPU limit so a burst of checks is never throttled (requests-only, the
-	// house pattern).
-	openFGACPURequest    = "50m"
-	openFGAMemoryRequest = "64Mi"
-	openFGAMemoryLimit   = "256Mi"
 )
+
+// OpenFGAHelmOptions is everything the chart's values are rendered from.
+type OpenFGAHelmOptions struct {
+	CRName    string
+	Namespace string
+
+	// Resources is the server container's effective sizing (SizingOpenFGA in
+	// the registry, merged with the spec's override by the component).
+	Resources corev1.ResourceRequirements
+}
 
 // OpenFGAHelmValues builds the Helm values map for rendering the OpenFGA
 // chart. The PostgreSQL connection details come from the shared connection
@@ -31,8 +30,9 @@ const (
 // the Cluster builder's postInitSQL): OpenFGA's migrate job applies schema
 // but cannot create its database, so enabling authorization at any later
 // point must find the database waiting.
-func OpenFGAHelmValues(crName, namespace string) map[string]any {
-	conn := PostgreSQLConnection(crName, namespace)
+func OpenFGAHelmValues(opts OpenFGAHelmOptions) map[string]any {
+	crName := opts.CRName
+	conn := PostgreSQLConnection(crName, opts.Namespace)
 
 	datastoreURI := fmt.Sprintf(
 		"postgres://%s:$(%s)@%s:%d/%s?sslmode=disable",
@@ -46,7 +46,7 @@ func OpenFGAHelmValues(crName, namespace string) map[string]any {
 	return map[string]any{
 		"fullnameOverride": fmt.Sprintf("%s-openfga", crName),
 		"replicaCount":     1,
-		"resources":        helmResourceValues(openFGAResources()),
+		"resources":        helmResourceValues(mustBeSized(SizingOpenFGA, opts.Resources)),
 		"datastore": map[string]any{
 			"engine":          OpenFGADatastoreEngine,
 			"uri":             datastoreURI,
@@ -82,18 +82,4 @@ func OpenFGAServiceFQDN(crName, namespace string) string {
 // any pod in the cluster.
 func OpenFGAHTTPURL(crName, namespace string) string {
 	return fmt.Sprintf("http://%s:%d", OpenFGAServiceFQDN(crName, namespace), OpenFGAHTTPPort)
-}
-
-// openFGAResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func openFGAResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(openFGACPURequest),
-			corev1.ResourceMemory: resource.MustParse(openFGAMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(openFGAMemoryLimit),
-		},
-	}
 }

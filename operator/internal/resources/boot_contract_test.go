@@ -185,6 +185,7 @@ func fullConsoleConfig() ConsoleConfig {
 	return ConsoleConfig{
 		CRName: "planton", Namespace: "default", Version: "v1.0.0",
 		Replicas:                 1,
+		Resources:                Effective(SizingConsole, nil),
 		ExternalConfigSecretName: "planton-console-extra-config",
 		PublicURL:                "http://planton.example.com",
 		GRPCEndpoint:             "planton.example.com:80",

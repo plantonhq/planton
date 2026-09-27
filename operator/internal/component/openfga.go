@@ -45,7 +45,11 @@ func (o *OpenFGA) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	log := logf.FromContext(ctx).WithValues("component", o.Name())
 
 	chartData := resources.LoadOpenFGAChart()
-	values := resources.OpenFGAHelmValues(planton.Name, planton.Namespace)
+	values := resources.OpenFGAHelmValues(resources.OpenFGAHelmOptions{
+		CRName:    planton.Name,
+		Namespace: planton.Namespace,
+		Resources: resources.EffectiveFor(resources.SizingOpenFGA, &planton.Spec),
+	})
 
 	rendered, err := resources.RenderHelmChart(
 		chartData,
@@ -68,7 +72,7 @@ func (o *OpenFGA) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	}
 	if !ready {
 		log.Info("OpenFGA not ready")
-		return o.NotReady(ctx, c, planton.Namespace, DeploymentRef(deployName), "Waiting for OpenFGA server"), nil
+		return o.NotReady(ctx, c, planton.Namespace, DeploymentRef(deployName).Sized(resources.SizingOpenFGA), "Waiting for OpenFGA server"), nil
 	}
 
 	bootstrapped, err := o.ensureFGABootstrap(ctx, c, planton)

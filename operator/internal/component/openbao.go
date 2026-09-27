@@ -111,6 +111,7 @@ func (o *OpenBAO) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	chartData := resources.LoadOpenBAOChart()
 	values := resources.OpenBAOHelmValues(resources.OpenBAOHelmOptions{
 		CRName:                    planton.Name,
+		Resources:                 resources.EffectiveFor(resources.SizingOpenBAO, &planton.Spec),
 		Namespace:                 planton.Namespace,
 		StoragePasswordSecretName: resources.PostgreSQLVaultRoleSecretName(planton.Name),
 		Seal:                      seal,
@@ -187,7 +188,7 @@ func (o *OpenBAO) preflightSeal(ctx context.Context, c client.Client, planton *v
 // the one clause the classifier cannot know: the server configures the seal
 // before anything else and exits when the wrapper's first call fails.
 func (o *OpenBAO) notReadyWithSealHint(ctx context.Context, c client.Client, planton *v1.PlantonPlatform, seal *resources.OpenBAOSealOptions, releaseName, waiting string) Result {
-	res := o.NotReady(ctx, c, planton.Namespace, StatefulSetRef(releaseName), waiting)
+	res := o.NotReady(ctx, c, planton.Namespace, StatefulSetRef(releaseName).Sized(resources.SizingOpenBAO), waiting)
 	if res.Reason == v1.ComponentReasonCrashLooping && seal != nil {
 		res.Message += " " + sealStartHint(seal)
 	}

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 // The platform's cache-server role is named "redis" (the wire protocol every
@@ -35,20 +34,14 @@ const (
 	// auth.existingSecretPasswordKey.
 	RedisSecretKey = "redis-password"
 
-	// The store's sizing, chosen here rather than left to the chart. The
-	// chart's own default is its "nano" preset (a 192Mi limit its header
-	// calls "for basic testing"), no maxmemory, and noeviction -- so a
-	// dataset that outgrew the preset was OOM-killed and then reloaded more
-	// persisted data than it may hold on every restart, a crash loop behind a
-	// front door still answering 200 (met live 2026-09-18, 37 hours after a
-	// fresh install). The numbers are the hosted product's for the same store
-	// role: a ceiling inside the limit with eviction, so what is persisted
-	// always reloads. No CPU limit (requests-only, the house pattern).
+	// The store's dataset ceiling and what happens at it, chosen here rather
+	// than left to the chart, whose own posture is no maxmemory and
+	// noeviction: a ceiling inside the container's memory limit
+	// (SizingRedis in the registry carries the limit and its history) with
+	// eviction, so what is persisted always reloads. The hosted product's
+	// numbers for the same store role.
 	ValkeyDefaultMaxMemory       = "768mb"
 	ValkeyDefaultMaxMemoryPolicy = "allkeys-lru"
-	valkeyDefaultCPURequest      = "100m"
-	valkeyDefaultMemoryRequest   = "256Mi"
-	valkeyDefaultMemoryLimit     = "1Gi"
 
 	// The chart's resourcesPreset silently wins over nothing; naming "none"
 	// beside explicit resources makes the override unambiguous.
@@ -80,22 +73,9 @@ type ValkeyHelmOptions struct {
 	MaxMemory       string
 	MaxMemoryPolicy string
 
-	// Resources is the container's sizing.
+	// Resources is the container's effective sizing (SizingRedis in the
+	// registry, merged with the spec's override).
 	Resources corev1.ResourceRequirements
-}
-
-// ValkeyDefaultResources is the container sizing every install gets unless
-// spec.database.redis.resources says otherwise.
-func ValkeyDefaultResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(valkeyDefaultCPURequest),
-			corev1.ResourceMemory: resource.MustParse(valkeyDefaultMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(valkeyDefaultMemoryLimit),
-		},
-	}
 }
 
 // ValkeyHelmValues builds the Helm values map for rendering the Bitnami Valkey
@@ -138,7 +118,7 @@ func ValkeyHelmValues(opts ValkeyHelmOptions) map[string]any {
 		"commonConfiguration": valkeyServerConfiguration(opts),
 		"primary": map[string]any{
 			"resourcesPreset": valkeyResourcesPresetNone,
-			"resources":       helmResourceValues(opts.Resources),
+			"resources":       helmResourceValues(mustBeSized(SizingRedis, opts.Resources)),
 			"persistence":     persistence,
 		},
 	}

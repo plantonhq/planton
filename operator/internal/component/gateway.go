@@ -50,6 +50,7 @@ func (g *Gateway) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 
 	cfg := resources.GatewayConfig{
 		CRName:     planton.Name,
+		Resources:  resources.EffectiveFor(resources.SizingGateway, &planton.Spec),
 		Namespace:  planton.Namespace,
 		OwnerRef:   ownerRef,
 		ConfigHash: hex.EncodeToString(configHash[:]),
@@ -79,7 +80,7 @@ func (g *Gateway) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	}
 	if !ready {
 		log.Info("Gateway not ready")
-		return g.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.GatewayDeploymentName(planton.Name)),
+		return g.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.GatewayDeploymentName(planton.Name)).Sized(resources.SizingGateway),
 			"Waiting for the front-door gateway Deployment"), nil
 	}
 

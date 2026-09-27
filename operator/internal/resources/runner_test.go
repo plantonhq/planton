@@ -23,6 +23,7 @@ const (
 func testRunnerConfig() RunnerConfig {
 	return RunnerConfig{
 		CRName:       "planton",
+		Resources:    Effective(SizingRunner, nil),
 		Namespace:    "default",
 		Version:      "v1.0.0",
 		OrgSlug:      "default",

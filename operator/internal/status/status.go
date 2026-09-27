@@ -244,6 +244,27 @@ func RefuseVersion(planton *v1.PlantonPlatform, reason, message string) bool {
 	return changed
 }
 
+// ReasonPlatformSizingNotRunnable is the Ready condition's reason when a
+// declared size is refused; ResourcesValid carries the same message.
+const ReasonPlatformSizingNotRunnable = "PlatformSizingNotRunnable"
+
+// RefuseSizing records that a declared size is one its workload cannot run
+// with: phase Error, ResourcesValid False with the given reason, and Ready
+// False with the same message. Like RefuseVersion it leaves the component
+// statuses as they are, so a running platform whose spec was edited into an
+// impossible size keeps reporting what is still running. Reports whether
+// anything changed.
+func RefuseSizing(planton *v1.PlantonPlatform, reason, message string) bool {
+	changed := false
+	if planton.Status.Phase != v1.PhaseError {
+		planton.Status.Phase = v1.PhaseError
+		changed = true
+	}
+	changed = setConditionIfDifferent(planton, v1.ConditionResourcesValid, metav1.ConditionFalse, reason, message) || changed
+	changed = setConditionIfDifferent(planton, v1.ConditionReady, metav1.ConditionFalse, ReasonPlatformSizingNotRunnable, message) || changed
+	return changed
+}
+
 // setConditionIfDifferent is SetCondition that also reports whether the
 // condition's status, reason, or message moved.
 func setConditionIfDifferent(planton *v1.PlantonPlatform, condType string, condStatus metav1.ConditionStatus, reason, message string) bool {

@@ -175,6 +175,7 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 
 	cfg := resources.IdentityConfig{
 		CRName:          planton.Name,
+		Resources:       resources.EffectiveFor(resources.SizingIdentity, &planton.Spec),
 		Namespace:       planton.Namespace,
 		OwnerRef:        ownerRef,
 		Realm:           identityRealm(planton),
@@ -232,7 +233,7 @@ func (id *Identity) Reconcile(ctx context.Context, c client.Client, _ *runtime.S
 	}
 	if !ready {
 		log.Info("Identity server not ready")
-		return id.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.IdentityDeploymentName(planton.Name)),
+		return id.NotReady(ctx, c, planton.Namespace, DeploymentRef(resources.IdentityDeploymentName(planton.Name)).Sized(resources.SizingIdentity),
 			"Waiting for the identity server (first boot imports the sign-in realm)"), nil
 	}
 

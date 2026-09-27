@@ -36,7 +36,8 @@ func recoveryFakeClient(t *testing.T, objs ...client.Object) client.Client {
 
 func recoveryConfig() resources.IdentityConfig {
 	return resources.IdentityConfig{CRName: "planton", Namespace: "planton", Realm: "planton",
-		PublicURL: "https://planton.example.com", PostgreSQL: resources.PostgreSQLConnection("planton", "planton")}
+		PublicURL: "https://planton.example.com", PostgreSQL: resources.PostgreSQLConnection("planton", "planton"),
+		Resources: resources.Effective(resources.SizingIdentity, nil)}
 }
 
 func recoveryJob(status batchv1.JobStatus) *batchv1.Job {

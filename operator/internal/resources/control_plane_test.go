@@ -17,6 +17,7 @@ func testControlPlaneConfig() ControlPlaneConfig {
 	// state the component can produce.
 	return ControlPlaneConfig{
 		CRName:     "planton",
+		Resources:  Effective(SizingControlPlane, nil),
 		Namespace:  "default",
 		Version:    "v1.0.0",
 		Replicas:   1,

@@ -34,6 +34,7 @@ import (
 	plantonaiv1 "github.com/plantonhq/planton/operator/api/v1"
 	"github.com/plantonhq/planton/operator/internal/component"
 	"github.com/plantonhq/planton/operator/internal/janitor"
+	"github.com/plantonhq/planton/operator/internal/platformsizing"
 	"github.com/plantonhq/planton/operator/internal/platformversion"
 	"github.com/plantonhq/planton/operator/internal/resources"
 	"github.com/plantonhq/planton/operator/internal/status"
@@ -139,6 +140,22 @@ func (r *PlantonPlatformReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	status.SetCondition(&planton, plantonaiv1.ConditionVersionSupported, metav1.ConditionTrue,
 		platformversion.ReasonSupported, "spec.version names a platform release this operator runs")
 
+	// The declared sizes are judged the same way, before any component runs:
+	// a size no workload can run with (a request above its limit, a chart's
+	// floor, the store's ceiling above its container) is refused whole, the
+	// running platform left as it is, and every field named with its fix.
+	sizing := platformsizing.Check(&planton.Spec)
+	if !sizing.Runnable {
+		log.Info("Refusing to reconcile: declared sizing is not runnable", "reason", sizing.Message)
+		if status.RefuseSizing(&planton, sizing.Reason, sizing.Message) {
+			if err := r.Status().Update(ctx, &planton); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+		return ctrl.Result{}, nil
+	}
+	status.SetCondition(&planton, plantonaiv1.ConditionResourcesValid, metav1.ConditionTrue, sizing.Reason, sizing.Message)
+
 	components := component.All()
 
 	for _, comp := range components {
@@ -150,6 +167,7 @@ func (r *PlantonPlatformReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		if cs == nil {
 			continue
 		}
+		cs.Sizing = resources.SizingStatusFor(comp.Name(), &planton.Spec)
 
 		ready, unreadyDep := component.DependenciesReady(&planton.Status.Components, comp.Dependencies(&planton))
 		if !ready {

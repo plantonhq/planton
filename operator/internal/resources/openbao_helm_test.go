@@ -15,6 +15,7 @@ func testOpenBAOOptions() OpenBAOHelmOptions {
 		CRName:                    "my-planton",
 		Namespace:                 "planton",
 		StoragePasswordSecretName: PostgreSQLVaultRoleSecretName("my-planton"),
+		Resources:                 Effective(SizingOpenBAO, nil),
 	}
 }
 
@@ -329,7 +330,7 @@ func TestOpenBAOHelmValues_ChartRendering(t *testing.T) {
 	if len(LoadOpenBAOChart()) == 0 {
 		t.Fatal("OpenBAO chart data is empty")
 	}
-	opts := OpenBAOHelmOptions{CRName: "test", Namespace: "default", StoragePasswordSecretName: PostgreSQLVaultRoleSecretName("test")}
+	opts := OpenBAOHelmOptions{CRName: "test", Namespace: "default", StoragePasswordSecretName: PostgreSQLVaultRoleSecretName("test"), Resources: Effective(SizingOpenBAO, nil)}
 	c, _, config, objs := renderOpenBAO(t, opts)
 
 	kinds := make(map[string]bool)

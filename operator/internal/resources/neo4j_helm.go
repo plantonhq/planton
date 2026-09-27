@@ -1,6 +1,10 @@
 package resources
 
-import "fmt"
+import (
+	"fmt"
+
+	corev1 "k8s.io/api/core/v1"
+)
 
 const (
 	Neo4jHelmChartVersion = "2026.1.4"
@@ -29,7 +33,13 @@ const (
 // key is silently ignored), and a StorageClass may only be named in "dynamic"
 // mode -- the chart REJECTS a storageClassName under "defaultStorageClass"
 // mode. So the mode switches on whether a class is pinned.
-func Neo4jHelmValues(crName, storageSize, storageClass string) map[string]any {
+//
+// res is the server's effective sizing (SizingNeo4j in the registry, merged
+// with the spec's override by the component). The chart takes a requests and
+// limits pair whenever either key is present, and otherwise copies a bare
+// cpu/memory pair into both; the requests/limits form is what lets the house
+// pattern drop the CPU limit.
+func Neo4jHelmValues(crName, storageSize, storageClass string, res corev1.ResourceRequirements) map[string]any {
 	data := map[string]any{}
 	if storageClass != "" {
 		data["mode"] = "dynamic"
@@ -49,10 +59,7 @@ func Neo4jHelmValues(crName, storageSize, storageClass string) map[string]any {
 		"neo4j": map[string]any{
 			"name":                   crName,
 			"acceptLicenseAgreement": "yes",
-			"resources": map[string]any{
-				"cpu":    "1000m",
-				"memory": "2Gi",
-			},
+			"resources":              helmResourceValues(mustBeSized(SizingNeo4j, res)),
 		},
 		"volumes": map[string]any{
 			"data": data,

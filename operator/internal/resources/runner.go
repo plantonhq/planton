@@ -49,16 +49,6 @@ const (
 	// provider lock metadata.
 	RunnerDefaultStorageSize = "2Gi"
 
-	// The runner's sizing, chosen here so a default install schedules
-	// honestly and is never OOM-killed by omission. Read live on a one-node
-	// install: ~780Mi resident while working its queues (a Go binary that
-	// forks OpenTofu and Pulumi engines, whose own memory counts against the
-	// pod). The limit is the headroom for an engine run; no CPU limit, so a
-	// plan or apply is never throttled (requests-only, the house pattern).
-	runnerCPURequest    = "100m"
-	runnerMemoryRequest = "512Mi"
-	runnerMemoryLimit   = "2Gi"
-
 	// runnerGrpcPort hosts the runner's gRPC server: the CloudOps surface the
 	// control plane direct-dials for live cloud operations, plus the health
 	// keys the pod's probes dial (worker-poll readiness rides the same
@@ -131,6 +121,10 @@ type RunnerConfig struct {
 	OrgSlug string
 
 	StorageSize resource.Quantity
+
+	// Resources is the container's effective sizing (SizingRunner in the
+	// registry, merged with the spec's override by the component).
+	Resources corev1.ResourceRequirements
 
 	// StorageClassName pins the IaC-state PVC to a StorageClass. Empty
 	// leaves the field nil so the cluster default provisions. Applied at
@@ -606,7 +600,7 @@ func RunnerDeployment(cfg RunnerConfig) *appsv1.Deployment {
 						// takes no further arguments here.
 						Args:      []string{"start"},
 						Env:       env,
-						Resources: runnerResources(),
+						Resources: mustBeSized(SizingRunner, cfg.Resources),
 						EnvFrom:   envFrom,
 						Ports:     ports,
 						VolumeMounts: []corev1.VolumeMount{
@@ -695,19 +689,5 @@ func runnerLabels(crName string) map[string]string {
 		"app.kubernetes.io/instance":   crName,
 		"app.kubernetes.io/managed-by": ManagedByLabel,
 		"app.kubernetes.io/component":  "application",
-	}
-}
-
-// runnerResources is the container sizing every install gets (the constants
-// above carry the reasoning).
-func runnerResources() corev1.ResourceRequirements {
-	return corev1.ResourceRequirements{
-		Requests: corev1.ResourceList{
-			corev1.ResourceCPU:    resource.MustParse(runnerCPURequest),
-			corev1.ResourceMemory: resource.MustParse(runnerMemoryRequest),
-		},
-		Limits: corev1.ResourceList{
-			corev1.ResourceMemory: resource.MustParse(runnerMemoryLimit),
-		},
 	}
 }

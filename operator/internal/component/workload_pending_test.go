@@ -60,7 +60,7 @@ func mustContain(t *testing.T, msg string, wants ...string) {
 
 func TestClassifyUnreadyWorkload_ImagePull(t *testing.T) {
 	pod := waitingPod("planton-console-7d9f-x1", "ImagePullBackOff", "Back-off pulling image \"ghcr.io/plantonhq/console:v0.0.61\": manifest unknown")
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonImagePullFailed {
 		t.Fatalf("expected ImagePullFailed, got %+v", expl)
 	}
@@ -72,7 +72,7 @@ func TestClassifyUnreadyWorkload_ImagePull(t *testing.T) {
 
 func TestClassifyUnreadyWorkload_ContainerConfig(t *testing.T) {
 	pod := waitingPod("planton-control-plane-abc", "CreateContainerConfigError", "secret \"planton-email-relay\" not found")
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonContainerConfigInvalid {
 		t.Fatalf("expected ContainerConfigInvalid, got %+v", expl)
 	}
@@ -85,18 +85,21 @@ func TestClassifyUnreadyWorkload_OutOfMemory(t *testing.T) {
 		Limits: corev1.ResourceList{corev1.ResourceMemory: resource.MustParse("32Mi")}}}}
 	pod.Status.ContainerStatuses[0].LastTerminationState = corev1.ContainerState{
 		Terminated: &corev1.ContainerStateTerminated{Reason: "OOMKilled", ExitCode: 137}}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	// The remedy names the exact field that sizes the workload, the one a
+	// person edits; before the platform sized its components, it could only
+	// point at "the component's resources", a field most components lacked.
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "spec.gateway.resources")
 	if expl == nil || expl.Reason != v1.ComponentReasonOutOfMemory {
 		t.Fatalf("expected OutOfMemory, got %+v", expl)
 	}
-	mustContain(t, expl.Message, "memory limit of 32Mi", "3 restarts", "raise the component's memory limit")
+	mustContain(t, expl.Message, "memory limit of 32Mi", "3 restarts", "raise spec.gateway.resources.limits.memory", "keep their defaults")
 }
 
 func TestClassifyUnreadyWorkload_OutOfMemoryWithoutLimitBlamesTheNode(t *testing.T) {
 	pod := runningPod("planton-gateway-1", 2*time.Minute, 1)
 	pod.Status.ContainerStatuses[0].LastTerminationState = corev1.ContainerState{
 		Terminated: &corev1.ContainerStateTerminated{Reason: "OOMKilled", ExitCode: 137}}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "")
 	mustContain(t, expl.Message, "no limit set: the node itself ran out of memory")
 }
 
@@ -105,7 +108,7 @@ func TestClassifyUnreadyWorkload_CrashLooping(t *testing.T) {
 	pod.Status.ContainerStatuses[0].RestartCount = 4
 	pod.Status.ContainerStatuses[0].LastTerminationState = corev1.ContainerState{
 		Terminated: &corev1.ContainerStateTerminated{Reason: "Error", ExitCode: 1}}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonCrashLooping {
 		t.Fatalf("expected CrashLooping, got %+v", expl)
 	}
@@ -123,7 +126,7 @@ func TestClassifyUnreadyWorkload_RestartedRunningContainerIsCrashLooping(t *test
 	pod := runningPod("planton-runner-1", 20*time.Second, 2)
 	pod.Status.ContainerStatuses[0].LastTerminationState = corev1.ContainerState{
 		Terminated: &corev1.ContainerStateTerminated{Reason: "Error", ExitCode: 2, Message: "panic: config missing"}}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonCrashLooping {
 		t.Fatalf("expected CrashLooping, got %+v", expl)
 	}
@@ -137,7 +140,7 @@ func TestClassifyUnreadyWorkload_Unschedulable(t *testing.T) {
 			Type: corev1.PodScheduled, Status: corev1.ConditionFalse, Reason: corev1.PodReasonUnschedulable,
 			Message: "0/3 nodes are available: 3 Insufficient memory."}}},
 	}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonUnschedulable {
 		t.Fatalf("expected Unschedulable, got %+v", expl)
 	}
@@ -155,7 +158,7 @@ func TestClassifyUnreadyWorkload_VolumeMount(t *testing.T) {
 		Message:        "MountVolume.MountDevice failed for volume \"pvc-1\": rpc error: volume is attached to node-2",
 		LastTimestamp:  metav1.NewTime(now),
 	}}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, events, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, events, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonVolumeMountFailed {
 		t.Fatalf("expected VolumeMountFailed, got %+v", expl)
 	}
@@ -166,7 +169,7 @@ func TestClassifyUnreadyWorkload_CreateRefused(t *testing.T) {
 	conditions := []appsv1.DeploymentCondition{{
 		Type: appsv1.DeploymentReplicaFailure, Status: corev1.ConditionTrue, Reason: "FailedCreate",
 		Message: "pods \"planton-console-7d9f-\" is forbidden: exceeded quota: compute, requested: pods=1, used: pods=10, limited: pods=10"}}
-	expl := classifyUnreadyWorkload(nil, conditions, nil, now)
+	expl := classifyUnreadyWorkload(nil, conditions, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonCreateRefused {
 		t.Fatalf("expected CreateRefused, got %+v", expl)
 	}
@@ -180,7 +183,7 @@ func TestClassifyUnreadyWorkload_RolloutStalled(t *testing.T) {
 	conditions := []appsv1.DeploymentCondition{{
 		Type: appsv1.DeploymentProgressing, Status: corev1.ConditionFalse, Reason: "ProgressDeadlineExceeded",
 		Message: "ReplicaSet \"planton-console-7d9f\" has timed out progressing."}}
-	expl := classifyUnreadyWorkload(nil, conditions, nil, now)
+	expl := classifyUnreadyWorkload(nil, conditions, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonRolloutStalled {
 		t.Fatalf("expected RolloutStalled, got %+v", expl)
 	}
@@ -198,7 +201,7 @@ func TestClassifyUnreadyWorkload_StartingUp(t *testing.T) {
 		Message:        "Readiness probe failed: Get \"http://10.0.0.5:8080/actuator/health\": dial tcp: connection refused",
 		LastTimestamp:  metav1.NewTime(now),
 	}}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, events, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, events, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonStartingUp {
 		t.Fatalf("expected StartingUp, got %+v", expl)
 	}
@@ -210,18 +213,18 @@ func TestClassifyUnreadyWorkload_StartingUp(t *testing.T) {
 		t.Error("within patience, the sentence does not send the person to the log")
 	}
 
-	late := classifyUnreadyWorkload([]corev1.Pod{runningPod("planton-control-plane-abc", 12*time.Minute, 0)}, nil, nil, now)
+	late := classifyUnreadyWorkload([]corev1.Pod{runningPod("planton-control-plane-abc", 12*time.Minute, 0)}, nil, nil, now, "")
 	mustContain(t, late.Message, "longer than expected", "kubectl logs -n planton planton-control-plane-abc")
 }
 
 // Nothing to say: no pods yet (the Deployment was just applied), or a pod that
 // is Pending with no verdict on it. The component's own sentence stands.
 func TestClassifyUnreadyWorkload_NothingSpecific(t *testing.T) {
-	if expl := classifyUnreadyWorkload(nil, nil, nil, now); expl != nil {
+	if expl := classifyUnreadyWorkload(nil, nil, nil, now, ""); expl != nil {
 		t.Errorf("no pods, no conditions: nothing to explain, got %+v", expl)
 	}
 	pending := corev1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "p"}, Status: corev1.PodStatus{Phase: corev1.PodPending}}
-	if expl := classifyUnreadyWorkload([]corev1.Pod{pending}, nil, nil, now); expl != nil {
+	if expl := classifyUnreadyWorkload([]corev1.Pod{pending}, nil, nil, now, ""); expl != nil {
 		t.Errorf("a Pending pod with no verdict is not explained, got %+v", expl)
 	}
 }
@@ -232,7 +235,7 @@ func TestClassifyUnreadyWorkload_NewestPodWins(t *testing.T) {
 	old := runningPod("planton-console-old", 3*time.Hour, 0)
 	old.Status.Conditions = []corev1.PodCondition{{Type: corev1.PodReady, Status: corev1.ConditionTrue}}
 	fresh := waitingPod("planton-console-new", "ErrImagePull", "not found")
-	expl := classifyUnreadyWorkload([]corev1.Pod{old, fresh}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{old, fresh}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonImagePullFailed || expl.Object.Name != "planton-console-new" {
 		t.Fatalf("the new pod's pull failure is the explanation, got %+v", expl)
 	}
@@ -245,7 +248,7 @@ func TestClassifyUnreadyWorkload_FailureOutranksStartingUp(t *testing.T) {
 	crashing.CreationTimestamp = metav1.NewTime(now.Add(-time.Hour)) // older, still wins
 	crashing.Status.ContainerStatuses[0].RestartCount = 6
 	crashing.Status.ContainerStatuses[0].LastTerminationState = corev1.ContainerState{Terminated: &corev1.ContainerStateTerminated{ExitCode: 1}}
-	expl := classifyUnreadyWorkload([]corev1.Pod{starting, crashing}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{starting, crashing}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonCrashLooping {
 		t.Fatalf("the crash outranks the boot, got %+v", expl)
 	}
@@ -264,7 +267,7 @@ func TestClassifyUnreadyWorkload_InitContainerFirst(t *testing.T) {
 				State: corev1.ContainerState{Waiting: &corev1.ContainerStateWaiting{Reason: "PodInitializing"}}}},
 		},
 	}
-	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now)
+	expl := classifyUnreadyWorkload([]corev1.Pod{pod}, nil, nil, now, "")
 	if expl == nil || expl.Reason != v1.ComponentReasonImagePullFailed {
 		t.Fatalf("expected ImagePullFailed on the init container, got %+v", expl)
 	}
@@ -388,9 +391,9 @@ func TestClassifier_YieldsOnlyDocumentedReasons(t *testing.T) {
 		documented[r] = true
 	}
 	yielded := []*Explanation{
-		classifyUnreadyWorkload([]corev1.Pod{waitingPod("a", "ImagePullBackOff", "")}, nil, nil, now),
-		classifyUnreadyWorkload([]corev1.Pod{waitingPod("a", "CreateContainerConfigError", "")}, nil, nil, now),
-		classifyUnreadyWorkload([]corev1.Pod{runningPod("a", time.Minute, 0)}, nil, nil, now),
+		classifyUnreadyWorkload([]corev1.Pod{waitingPod("a", "ImagePullBackOff", "")}, nil, nil, now, ""),
+		classifyUnreadyWorkload([]corev1.Pod{waitingPod("a", "CreateContainerConfigError", "")}, nil, nil, now, ""),
+		classifyUnreadyWorkload([]corev1.Pod{runningPod("a", time.Minute, 0)}, nil, nil, now, ""),
 		classifyJobs([]batchv1.Job{{Status: batchv1.JobStatus{Active: 1}}}, "x"),
 	}
 	for _, e := range yielded {

@@ -86,7 +86,7 @@ func (r *Redis) Reconcile(ctx context.Context, c client.Client, _ *runtime.Schem
 	}
 	if !ready {
 		log.Info("Redis not ready")
-		return r.NotReady(ctx, c, planton.Namespace, StatefulSetRef(stsName), "Waiting for Redis"), nil
+		return r.NotReady(ctx, c, planton.Namespace, StatefulSetRef(stsName).Sized(resources.SizingRedis), "Waiting for Redis"), nil
 	}
 
 	log.Info("Redis ready")
@@ -115,10 +115,6 @@ func redisHelmOptions(planton *v1.PlantonPlatform) resources.ValkeyHelmOptions {
 	if spec.MaxMemoryPolicy != "" {
 		maxMemoryPolicy = spec.MaxMemoryPolicy
 	}
-	containerResources := resources.ValkeyDefaultResources()
-	if spec.Resources != nil {
-		containerResources = *spec.Resources
-	}
 
 	return resources.ValkeyHelmOptions{
 		CRName:          planton.Name,
@@ -127,7 +123,7 @@ func redisHelmOptions(planton *v1.PlantonPlatform) resources.ValkeyHelmOptions {
 		StorageClass:    effectiveStorageClass(planton, spec.StorageClassName),
 		MaxMemory:       maxMemory,
 		MaxMemoryPolicy: maxMemoryPolicy,
-		Resources:       containerResources,
+		Resources:       resources.EffectiveFor(resources.SizingRedis, &planton.Spec),
 	}
 }
 
