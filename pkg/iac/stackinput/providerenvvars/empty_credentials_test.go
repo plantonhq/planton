@@ -33,7 +33,7 @@ func TestEveryProviderBuilder_EmptyConfig_EmitsNoEmptyVariable(t *testing.T) {
 	for _, name := range names {
 		provider := cloudresourcekind.CloudResourceProvider(cloudresourcekind.CloudResourceProvider_value[name])
 		t.Run(name, func(t *testing.T) {
-			env, err := loadProviderEnvVars([]byte("{}"), provider, Options{FileCacheLoc: t.TempDir()})
+			env, err := loadProviderEnvVars([]byte("{}"), provider, Options{FileCacheLoc: t.TempDir()}, cloudResolvers)
 			if err != nil {
 				// A builder that refuses an empty config emits nothing at all, which keeps the rule.
 				return
@@ -51,7 +51,7 @@ func TestLoadAzureEnvVars_ServicePrincipal_Emitted(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	env, err := loadAzureEnvVars(cfg)
+	env, err := loadAzureEnvVars(cfg, Options{})
 	require.NoError(t, err)
 
 	assert.Equal(t, map[string]string{
@@ -64,7 +64,7 @@ func TestLoadAzureEnvVars_RunnerMode_OnlyTheCoordinates(t *testing.T) {
 	cfg, err := protojson.Marshal(&azureprovider.AzureProviderConfig{TenantId: "tenant", SubscriptionId: "subscription"})
 	require.NoError(t, err)
 
-	env, err := loadAzureEnvVars(cfg)
+	env, err := loadAzureEnvVars(cfg, Options{})
 	require.NoError(t, err)
 
 	assert.Equal(t, map[string]string{"ARM_TENANT_ID": "tenant", "ARM_SUBSCRIPTION_ID": "subscription"}, env)

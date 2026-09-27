@@ -79,7 +79,7 @@ func BuildTerraformInput(manifestPath, workDir string,
 	// kubeconfig) is written to a file the engine reads by path, so the file
 	// lives in the lane's own working directory: absolute for the providers,
 	// and gone with the directory when the lane ends.
-	providerEnvVarMap, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{FileCacheLoc: workDir})
+	providerEnvVarMap, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{FileCacheLoc: workDir, Engine: providerenvvars.EngineReadsEnvironment})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to extract provider environment variables")
 	}

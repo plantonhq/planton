@@ -19,6 +19,6 @@ provider "google" {
   # variables (GOOGLE_PROJECT + GOOGLE_CREDENTIALS or the ambient chain),
   # resolved from the stack input's provider_config. For keyless (oidc)
   # connections the runtime performs the web-identity exchange and injects
-  # the resulting short-lived credentials. Keep this block empty -- do not
+  # the impersonated account's access token (GOOGLE_OAUTH_ACCESS_TOKEN). Keep this block empty -- do not
   # wire project or static keys here.
 }
