@@ -81,6 +81,13 @@ spec:
       type: string
       description: "A stable reference for the build cache, e.g. registry/repo:buildcache -- supplied by the platform; empty keeps the default"
       default: ""
+    # An optional fact the runner supplies only because this pipeline
+    # declares it: when the registry sign-in it minted for this build expires
+    # (Unix seconds), so a push refused after that moment says so.
+    - name: registry-sign-in-expires-at
+      type: string
+      description: "When the registry sign-in this build pushes with expires, as Unix seconds -- supplied by the runner; empty when it outlives any build"
+      default: ""
 
   workspaces:
     - name: source
@@ -128,6 +135,8 @@ spec:
           value: "true"
         - name: cacheImage
           value: "$(params.cache-image)"
+        - name: registrySignInExpiresAt
+          value: "$(params.registry-sign-in-expires-at)"
         - name: dockerfile-config-map-namespace
           value: "$(context.pipelineRun.namespace)"
         - name: dockerfile-config-map-name

@@ -31,6 +31,13 @@ spec:
         inline in the pushed image, which a build tagged per commit never
         finds again.
       default: ""
+    - name: registrySignInExpiresAt  # Unix seconds, or empty
+      type: string
+      description: >-
+        When the registry sign-in this build pushes with stops being
+        accepted, as Unix seconds; empty when it outlives any build. A push
+        the registry refuses after that moment says so, with both times.
+      default: ""
     - name: push                   # "true" ➜ push to registry
       type: string
       default: "true"
@@ -64,10 +71,7 @@ spec:
       description: Source code
     - name: dockerconfig           # optional registry creds
       optional: true
-      description: >-
-        Holds .docker/config.json, and beside it sign-in-expires-at (Unix
-        seconds) when the sign-in in it expires -- so a push refused after
-        that moment says so.
+      description: Holds .docker/config.json
 
   # ------------------------------ results --------------------------------
   results:
@@ -191,9 +195,8 @@ spec:
           set +x
           # A push refused after the sign-in Planton made for this build
           # expired: say both moments, and the way out.
-          expires_file="$(workspaces.dockerconfig.path)/sign-in-expires-at"
-          if [ -f "$expires_file" ] && grep -qiE '401 unauthorized|unauthorized:|authentication required' "$log"; then
-            expires="$(cat "$expires_file")"
+          expires="$(params.registrySignInExpiresAt)"
+          if [ -n "$expires" ] && grep -qiE '401 unauthorized|unauthorized:|authentication required' "$log"; then
             if [ "$(date -u +%s)" -ge "$expires" ]; then
               echo "The registry sign-in Planton made when this build started expired at $(date -u -d "@$expires" '+%H:%M UTC'), before the push at $(date -u '+%H:%M UTC'). Give the registry connection its own key (a service-account key or an access token), which outlives any build, or shorten the build so it pushes within the hour the sign-in lasts." >&2
             fi

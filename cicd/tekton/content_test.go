@@ -105,7 +105,8 @@ func TestContent_everyBuildNamesItsImageByDigestAndReusesOneCache(t *testing.T) 
 		}
 	}
 	buildkit := string(tasks["buildkit"])
-	for _, want := range []string{"--metadata-file", "type=registry,ref=$(params.cacheImage)", "ignore-error=true", "image-manifest=true"} {
+	for _, want := range []string{"--metadata-file", "type=registry,ref=$(params.cacheImage)", "ignore-error=true", "image-manifest=true",
+		"$(params.registrySignInExpiresAt)", "The registry sign-in Planton made when this build started expired at"} {
 		if !strings.Contains(buildkit, want) {
 			t.Errorf("the BuildKit task lacks %q", want)
 		}
@@ -115,6 +116,11 @@ func TestContent_everyBuildNamesItsImageByDigestAndReusesOneCache(t *testing.T) 
 		if !strings.Contains(string(yaml), "- name: cache-image") || !strings.Contains(string(yaml), "$(params.cache-image)") {
 			t.Errorf("track %s does not declare the cache-image fact and hand it to its build task", track)
 		}
+	}
+	// The BuildKit track hands its step the sign-in's expiry, the fact the
+	// runner supplies to a pipeline that declares it.
+	if dockerfile, _ := Track("dockerfile"); !strings.Contains(string(dockerfile), "$(params.registry-sign-in-expires-at)") {
+		t.Error("the dockerfile track does not hand the registry sign-in's expiry to its build task")
 	}
 }
 
