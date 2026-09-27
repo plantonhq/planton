@@ -112,10 +112,10 @@ gcloud iam service-accounts keys create sa-key.json \
 
 #### Step 2: Store the Service Account Key as a Planton Secret
 
-Use the `--from-file` flag to store the JSON key file content as an organization-level secret:
+Store the JSON key file as one single-value, organization-level secret, read from standard input with `--string`:
 
 ```bash
-planton secret set gcr-sa-key --from-file value=./sa-key.json
+planton secret set gcr-sa-key --string < ./sa-key.json
 ```
 
 After storing the secret, delete the local key file:
@@ -195,8 +195,8 @@ Note the **Access Key ID** and **Secret Access Key** from the user creation.
 #### Step 2: Store Credentials as Planton Secrets
 
 ```bash
-planton secret set ecr-access-key value=<access-key-id>
-planton secret set ecr-secret-key value=<secret-access-key>
+planton secret set ecr-access-key '<access-key-id>'
+planton secret set ecr-secret-key '<secret-access-key>'
 ```
 
 #### Step 3: Create the Container Registry Connection
@@ -253,7 +253,7 @@ Note the token value. You will not be able to see it again after creation.
 #### Step 2: Store the Token as a Planton Secret
 
 ```bash
-planton secret set ghcr-pat value=<personal-access-token>
+planton secret set ghcr-pat '<personal-access-token>'
 ```
 
 #### Step 3: Create the Container Registry Connection

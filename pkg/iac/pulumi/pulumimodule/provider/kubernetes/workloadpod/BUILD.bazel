@@ -22,7 +22,13 @@ go_library(
 
 go_test(
     name = "workloadpod_test",
-    srcs = ["image_registries_test.go"],
+    srcs = [
+        "container_test.go",
+        "image_registries_test.go",
+    ],
     embed = [":workloadpod"],
-    deps = ["//catalog/kubernetes"],
+    deps = [
+        "//catalog/kubernetes",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
 )

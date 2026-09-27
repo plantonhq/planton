@@ -60,7 +60,9 @@ deploy stage `skipped` with `No runner picked up the build`. Nothing but a runne
 | `kustomize-build` fails on a missing overlay or a bad path | developer | the `_kustomize/overlays/<env>` tree (`references/service.kustomize-authoring.md`) |
 | Tekton reason `TaskRunImagePullFailed` / `PullImageFailed`, no step output | administrator (the build cluster) | egress from the cluster to the registries the task images live on, or mirror the pinned image set (`references/service.managed-pipelines.md` — the images a build cluster pulls); `verify_tekton_connection` names the unreachable host and lists the images |
 | Tekton reason `TaskRunTimeout` / `PipelineRunTimeout` | developer (a hang) or administrator (a starved cluster) | the step that hung (last lines of its log), or the cluster |
-| `importing cache manifest ... not found` in a BuildKit log | nobody | a cold-cache miss — NEVER report it as the cause; keep reading |
+| *The registry sign-in Planton made when this build started expired at …, before the push at …* | administrator | the registry connection's credential: a key that outlives any build (a service-account key or an access token) rather than a short-lived sign-in; or a shorter build |
+| *BuildKit pushed … but reported no image digest* / *The lifecycle pushed … but reported no image digest* | nobody (report it) | the builder did not say what it pushed, so nothing deploys it; report it to the platform's operators with the run id |
+| `importing cache manifest ... not found` in a BuildKit log | nobody | a cold-cache miss (the first build of an image, or a registry that keeps no `:buildcache` reference) — NEVER report it as the cause; keep reading |
 
 After a code fix: a NEW commit (the push starts the run). After a credential or egress fix: `rerun` is right — the stamped pipeline and the same params, re-minted secrets.
 

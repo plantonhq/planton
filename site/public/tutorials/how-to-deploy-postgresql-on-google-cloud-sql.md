@@ -134,17 +134,17 @@ After the deployment completes, retrieve the Cloud Resource to see its status an
 planton get GcpCloudSql app-database -o yaml
 ```
 
-The `status.outputs` section contains the values you need to connect your applications to the database:
+The `status.outputs` section contains the values you need to connect your applications to the database (`planton get` prints camelCase keys, like every manifest):
 
 | Output | Description | Example |
 |---|---|---|
-| `instance_name` | The GCP Cloud SQL instance name | `app-database` |
-| `connection_name` | Full connection identifier in `project:region:instance` format | `your-project:us-central1:app-database` |
-| `private_ip` | Private IP address (when private IP is enabled) | `10.0.0.5` |
-| `public_ip` | Public IP address (when public IP is enabled) | `34.123.45.67` |
-| `self_link` | GCP resource self-link URL | `https://sqladmin.googleapis.com/...` |
+| `instanceName` | The GCP Cloud SQL instance name | `app-database` |
+| `connectionName` | Full connection identifier in `project:region:instance` format | `your-project:us-central1:app-database` |
+| `privateIp` | Private IP address (when private IP is enabled) | `10.0.0.5` |
+| `publicIp` | Public IP address (when public IP is enabled) | `34.123.45.67` |
+| `selfLink` | GCP resource self-link URL | `https://sqladmin.googleapis.com/...` |
 
-The `connection_name` is the most important output. It is the identifier you use with the Cloud SQL Proxy, with Cloud SQL language connectors, and in connection strings for applications running on GCP services like Cloud Run, GKE, or Compute Engine.
+The `connectionName` is the most important output. It is the identifier you use with the Cloud SQL Proxy, with Cloud SQL language connectors, and in connection strings for applications running on GCP services like Cloud Run, GKE, or Compute Engine.
 
 To list all deployment jobs for this resource:
 
@@ -218,6 +218,6 @@ The two largest cost drivers for a Cloud SQL instance are the **machine tier** a
 
 Your PostgreSQL database is now running on Google Cloud SQL. From here:
 
-- **Connect your application** using the `connection_name` output. For applications running on GCP, the [Cloud SQL Auth Proxy](https://cloud.google.com/sql/docs/postgres/sql-proxy) provides secure, IAM-authenticated connections without managing SSL certificates or authorized networks. For applications outside GCP, connect directly using the public or private IP with the appropriate credentials.
+- **Connect your application** using the `connectionName` output. For applications running on GCP, the [Cloud SQL Auth Proxy](https://cloud.google.com/sql/docs/postgres/sql-proxy) provides secure, IAM-authenticated connections without managing SSL certificates or authorized networks. For applications outside GCP, connect directly using the public or private IP with the appropriate credentials.
 - **Set the root password** for the `postgres` user. Cloud SQL creates the user without a password by default. Use `gcloud sql users set-password postgres --instance=app-database --password=your-secure-password` or set it through the GCP Console.
 - **Explore other GCP resources** in the Cloud Catalog. The same `planton apply` workflow you used here works for GKE clusters, GCS buckets, Cloud Run services, VPCs, and dozens of other GCP resource types.

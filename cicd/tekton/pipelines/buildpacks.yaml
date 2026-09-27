@@ -64,6 +64,15 @@ spec:
       description: "The platform(s) the image must be built for, e.g. linux/amd64 -- the deploy target's, supplied by the platform; empty builds for the build machine's own"
       default: ""
 
+    # An optional fact the platform supplies only because this pipeline
+    # declares it: one stable reference the build cache lives at (the image's
+    # repository, tag buildcache), so a build tagged per commit still reads
+    # the last build's layers. Empty keeps the task's own default.
+    - name: cache-image
+      type: string
+      description: "A stable reference for the build cache, e.g. registry/repo:buildcache -- supplied by the platform; empty keeps the default"
+      default: ""
+
   workspaces:
     - name: source
       description: "Workspace where source code is cloned"
@@ -103,6 +112,8 @@ spec:
           value: ""
         - name: TARGET_PLATFORM
           value: "$(params.target-platform)"
+        - name: CACHE_IMAGE
+          value: "$(params.cache-image)"
       workspaces:
         - name: source
           workspace: source

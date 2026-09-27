@@ -44,16 +44,16 @@ Use `planton secret set` to store each credential. The slug you choose becomes t
 Store the access key ID:
 
 ```bash
-planton secret set aws-access-key-id value=AKIAIOSFODNN7EXAMPLE
+planton secret set aws-access-key-id 'AKIAIOSFODNN7EXAMPLE'
 ```
 
 Store the secret access key:
 
 ```bash
-planton secret set aws-secret-access-key value=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+planton secret set aws-secret-access-key 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
 ```
 
-Each command creates a versioned, encrypted secret in your organization's secrets manager. The slug (`aws-access-key-id`, `aws-secret-access-key`) is what you will reference in manifests -- the actual values are never exposed outside the secrets manager.
+Each command creates a versioned, encrypted single-value secret in your organization's secrets manager. The value is its own argument; a value containing `=` (base64, a JWT) goes after `--string`, as in `planton secret set <slug> --string '<value>'`. A new secret given one pair such as `value=...` is refused, because it would make a key-value secret whose format can never change. The slug (`aws-access-key-id`, `aws-secret-access-key`) is what you will reference in manifests -- the actual values are never exposed outside the secrets manager.
 
 Verify the secrets were created:
 
@@ -131,7 +131,7 @@ In the output, `access_key_id` and `secret_access_key` show only the secret slug
 When credentials are compromised or need periodic rotation, update the secret:
 
 ```bash
-planton secret set aws-access-key-id value=AKIAI_NEW_KEY_EXAMPLE
+planton secret set aws-access-key-id 'AKIAI_NEW_KEY_EXAMPLE'
 ```
 
 This creates a new immutable version of the secret. The previous version is preserved in the version history. Every resource that references `aws-access-key-id` -- including the connection you created -- will use the new value on its next execution.

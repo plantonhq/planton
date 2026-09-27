@@ -150,13 +150,16 @@ exists before writing one, exactly as you ground field names with
 `planton explain`:
 
 ```
-planton secret list -o json      # every secret; each record's "env" field
-planton variable list -o json    #   distinguishes org- from env-scoped
+planton secret list -o json               # every secret; each record's "env" field
+planton variable list -o json             #   distinguishes org- from env-scoped
+planton secret list --env <env> -o json   # what <env> can read: its own + the org's
 ```
 
 Use `-o json`: the JSON records carry each entry's `env` (empty = org
-scope), which the human-readable table does not show — and the scope decides
-which reference form you write. On the platform-tools arm (no CLI), check
+scope), and the scope decides which reference form you write. A list is
+never cut off (every record, every page), and only a typed `--env` narrows
+it — the saved context's environment never does. `--env` answers "can this
+environment's resources reference it?" in one call. On the platform-tools arm (no CLI), check
 your roster for a config-manager search/list tool; when none exists, you
 cannot verify existence — treat every secret you reference as
 possibly-missing and follow the missing-secret protocol below. Never fake a
@@ -177,8 +180,8 @@ in the explain-after:
    point at the console's Secrets page as the click path:
 
 ```
-planton secret set db-password value=<the-value> --env staging   # env-scoped
-planton secret set api-key value=<the-value>                     # org-scoped
+planton secret set db-password --string '<the-value>' --env staging   # env-scoped
+planton secret set api-key --string '<the-value>'                     # org-scoped
 ```
 
 A composed chart with declared-but-uncreated secrets is honest and
@@ -188,16 +191,23 @@ failure.
 ## Creating variables and secrets (mutations — confirm first)
 
 ```
-planton secret set <slug> value=<value> [--env <env>]     # key=value pairs
-planton secret set <slug> --from-file value=./key.json    # file-backed value
-planton variable set <slug> <value> [--env <env>]         # value is POSITIONAL
+planton secret set <slug> --string '<value>' [--env <env>]   # single value, taken verbatim
+planton secret set <slug> user=<u> pass=<p> [--env <env>]    # key-value pairs
+planton secret set <slug> --key-value token=<value>          # key-value, ONE key named like a value
+cat ./key.pem | planton secret set <slug> --string           # single value from stdin
+planton variable set <slug> <value> [--env <env>]            # value is POSITIONAL
 ```
 
-Note the asymmetry: `secret set` takes `key=value` pairs (a secret can be a
-key-value map); `variable set` takes the value as a positional argument.
-`--env` makes the record environment-scoped; without it the record is
-org-scoped. Re-running `secret set` on an existing secret writes a new
-version (rotation), never a duplicate.
+A secret's format — a single value (`$secret/<slug>`) or key-value pairs
+(`$secret/<slug>/<key>`) — is fixed when it is created, so write the one the
+reference needs. `--string` takes the value verbatim (required when it
+contains `=`: base64, JWTs, PEM). A NEW secret given one pair whose key is
+`value`, `password`, `token` or `secret` is refused rather than guessed; the
+refusal offers `--string '<value>'` or `--key-value KEY=VALUE`. `--string`
+with `--key-value` is refused. `--env` makes the record environment-scoped;
+without it the record is org-scoped. Re-running `secret set` on an existing
+secret writes a new version (rotation), never a duplicate; the card reads
+"Secret Created" or "Secret Updated" accordingly.
 
 ## In chart templates
 

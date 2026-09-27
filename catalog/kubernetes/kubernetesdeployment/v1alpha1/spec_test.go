@@ -225,11 +225,32 @@ var _ = ginkgo.Describe("KubernetesDeploymentSpec validations", func() {
 			gomega.Expect(err).ToNot(gomega.BeNil())
 		})
 
-		ginkgo.It("rejects an image without a tag", func() {
+		ginkgo.It("rejects an image with neither a tag nor a digest", func() {
 			spec := validSpec()
 			spec.Container.App.Image = &kubernetes.WorkloadContainerImage{Repo: "ghcr.io/acme/api"}
 			err := protovalidate.Validate(spec)
 			gomega.Expect(err).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts an image pinned by digest, with or without its tag", func() {
+			const digest = "sha256:b5e2a1c0d9f8e7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2"
+			for _, image := range []*kubernetes.WorkloadContainerImage{
+				{Repo: "ghcr.io/acme/api", Tag: "a743940", Digest: digest},
+				{Repo: "ghcr.io/acme/api", Digest: digest},
+			} {
+				spec := validSpec()
+				spec.Container.App.Image = image
+				gomega.Expect(protovalidate.Validate(spec)).To(gomega.Succeed())
+			}
+		})
+
+		ginkgo.It("rejects a digest that is not sha256 and 64 lowercase hex characters", func() {
+			for _, digest := range []string{"sha256:abc", "b5e2a1c0d9f8e7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2",
+				"sha256:B5E2A1C0D9F8E7A6B5C4D3E2F1A0B9C8D7E6F5A4B3C2D1E0F9A8B7C6D5E4F3A2"} {
+				spec := validSpec()
+				spec.Container.App.Image = &kubernetes.WorkloadContainerImage{Repo: "ghcr.io/acme/api", Tag: "a743940", Digest: digest}
+				gomega.Expect(protovalidate.Validate(spec)).ToNot(gomega.Succeed(), digest)
+			}
 		})
 
 		ginkgo.It("rejects a version with uppercase characters", func() {

@@ -73,6 +73,11 @@ spec:
       default: ""
 
   results:
+    - name: image-digest
+      description: >-
+        The content digest (sha256:…) of the image this build pushed, as the
+        lifecycle reported it -- what a deployment pins, so re-pushing the tag
+        never changes what runs.
     - name: APP_IMAGE_DIGEST
       description: The digest of the built `APP_IMAGE`.
     - name: APP_IMAGE_URL
@@ -202,7 +207,15 @@ spec:
       script: |
         #!/usr/bin/env bash
         set -e
-        grep "digest" /layers/report.toml | cut -d'"' -f2 | cut -d'"' -f2 | tr -d '\n' | tee "$(results.APP_IMAGE_DIGEST.path)"
+        digest="$(grep "digest" /layers/report.toml | cut -d'"' -f2 | tr -d '\n')"
+        # A build that pushed and cannot name its image fails here, where the
+        # fact is born, rather than deploy by a tag anyone can re-push.
+        if [ -z "$digest" ]; then
+          echo "The lifecycle pushed $(params.APP_IMAGE) but reported no image digest, so this build cannot name the image it produced; nothing deploys an image it cannot name." >&2
+          exit 1
+        fi
+        printf '%s' "$digest" | tee "$(results.APP_IMAGE_DIGEST.path)"
+        printf '%s' "$digest" > "$(results.image-digest.path)"
         echo -n "$(params.APP_IMAGE)" | tee "$(results.APP_IMAGE_URL.path)"
       volumeMounts:
         - name: layers-dir

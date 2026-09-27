@@ -87,6 +87,8 @@ planton connection default set --provider aws --connection my-aws-account
 planton connection default set --provider aws --connection aws-prod --env production
 ```
 
+A default only selects a connection; it doesn't authorize one. When the connection isn't [authorized](/docs/connections/environment-mappings) everywhere the new default reaches (that environment, or every environment for an organization default), `default set` saves the default and warns, printing the `planton connection auth create` (or `delete` then `create`) command that closes the gap. A job that falls back to an unauthorized default is refused before anything runs.
+
 ### View current defaults
 
 ```bash
@@ -189,13 +191,22 @@ A deployment failed because no default credential was found.
 2. Check if it's authorized for the environment: `planton connection auth list --provider <provider>`
 3. Set a default if none exists: `planton connection default set --provider <provider> --connection <slug>`
 
-### "Connection not authorized for environment"
+### "Nothing ran: environment … may not use the … connection …"
 
-A default is set, but the underlying credential isn't authorized for the target environment.
+A default is set, but the underlying credential isn't authorized for the target environment. The job is refused before any resource runs, and the refusal names both and the fix:
+
+```
+Nothing ran: environment staging may not use the aws connection aws-prod. Authorize it
+(planton connection auth create --provider aws --connection aws-prod --scope environment
+--environments staging), or make it the organization's (--scope organization), then run the job again.
+```
+
+Following an infra pipeline, the CLI adds: `Refused before any resource ran: no stack job started, so nothing in the cloud changed.`
 
 **Fix**:
-1. Authorize the connection: `planton connection auth create --provider <provider> --connection <slug> --scope environment --environments <env>`
+1. Authorize the connection: `planton connection auth create --provider <provider> --connection <slug> --scope environment --environments <env>` (or `--scope organization`). If the connection already has an environment-scoped authorization, `planton connection auth delete --provider <provider> --connection <slug>` first, then create it again with every environment it should reach.
 2. Or change the default to a connection that is already authorized.
+3. Run the job again.
 
 ### Resolution returns unexpected credential
 

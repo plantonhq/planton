@@ -251,6 +251,7 @@ spec:
 | `spec.jobTemplate.container.app.image` | `WorkloadContainerImage` | yes |  |  |
 | `spec.jobTemplate.container.app.image.repo` | `string` |  |  |  |
 | `spec.jobTemplate.container.app.image.tag` | `string` |  |  |  |
+| `spec.jobTemplate.container.app.image.digest` | `string` |  |  |  |
 | `spec.jobTemplate.container.app.imagePullPolicy` | `string` |  |  |  |
 | `spec.jobTemplate.container.app.command` | `[]string` |  |  |  |
 | `spec.jobTemplate.container.app.args` | `[]string` |  |  |  |
@@ -465,6 +466,7 @@ spec:
 | `spec.jobTemplate.container.sidecars[].image` | `WorkloadContainerImage` | yes |  |  |
 | `spec.jobTemplate.container.sidecars[].image.repo` | `string` |  |  |  |
 | `spec.jobTemplate.container.sidecars[].image.tag` | `string` |  |  |  |
+| `spec.jobTemplate.container.sidecars[].image.digest` | `string` |  |  |  |
 | `spec.jobTemplate.container.sidecars[].imagePullPolicy` | `string` |  |  |  |
 | `spec.jobTemplate.container.sidecars[].command` | `[]string` |  |  |  |
 | `spec.jobTemplate.container.sidecars[].args` | `[]string` |  |  |  |
@@ -688,6 +690,7 @@ spec:
 | `spec.jobTemplate.pod.initContainers[].image` | `WorkloadContainerImage` | yes |  |  |
 | `spec.jobTemplate.pod.initContainers[].image.repo` | `string` |  |  |  |
 | `spec.jobTemplate.pod.initContainers[].image.tag` | `string` |  |  |  |
+| `spec.jobTemplate.pod.initContainers[].image.digest` | `string` |  |  |  |
 | `spec.jobTemplate.pod.initContainers[].imagePullPolicy` | `string` |  |  |  |
 | `spec.jobTemplate.pod.initContainers[].command` | `[]string` |  |  |  |
 | `spec.jobTemplate.pod.initContainers[].args` | `[]string` |  |  |  |
@@ -1153,7 +1156,7 @@ pod-wide — on `pod.image_registries` (the login itself) or `pod.image_pull_sec
 (a Secret declared beside the workload), or on the ServiceAccount the pod runs as.
 
 - rule: Image repo is required — the repository half of the image reference (e.g. "nginx" or "ghcr.io/acme/api")
-- rule: Image tag is required — pin a version (e.g. "1.27.1"); avoid "latest" for anything you intend to roll back
+- rule: Image tag or digest is required — pin a version (e.g. "1.27.1") or an exact build ("sha256:…"); avoid "latest" for anything you intend to roll back
 - rule: {"required":true}
 
 ### spec.jobTemplate.container.app.image.repo
@@ -1167,6 +1170,17 @@ The repository of the image (e.g. "nginx" or "ghcr.io/acme/checkout").
 `string`
 
 The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
+
+### spec.jobTemplate.container.app.image.digest
+
+`string`
+
+The image's content digest ("sha256:" and 64 lowercase hex characters), when
+the container runs one exact build. Kubernetes pulls by the digest and ignores
+the tag; to run a different tag, clear the digest. A build Planton runs
+stamps it, so a deployment runs the image the build produced.
+
+- rule: Image digest must be "sha256:" followed by 64 lowercase hex characters
 
 ### spec.jobTemplate.container.app.imagePullPolicy
 
@@ -4131,7 +4145,7 @@ pod-wide — on `pod.image_registries` (the login itself) or `pod.image_pull_sec
 (a Secret declared beside the workload), or on the ServiceAccount the pod runs as.
 
 - rule: Image repo is required — the repository half of the image reference (e.g. "nginx" or "ghcr.io/acme/api")
-- rule: Image tag is required — pin a version (e.g. "1.27.1"); avoid "latest" for anything you intend to roll back
+- rule: Image tag or digest is required — pin a version (e.g. "1.27.1") or an exact build ("sha256:…"); avoid "latest" for anything you intend to roll back
 - rule: {"required":true}
 
 ### spec.jobTemplate.container.sidecars[].image.repo
@@ -4145,6 +4159,17 @@ The repository of the image (e.g. "nginx" or "ghcr.io/acme/checkout").
 `string`
 
 The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
+
+### spec.jobTemplate.container.sidecars[].image.digest
+
+`string`
+
+The image's content digest ("sha256:" and 64 lowercase hex characters), when
+the container runs one exact build. Kubernetes pulls by the digest and ignores
+the tag; to run a different tag, clear the digest. A build Planton runs
+stamps it, so a deployment runs the image the build produced.
+
+- rule: Image digest must be "sha256:" followed by 64 lowercase hex characters
 
 ### spec.jobTemplate.container.sidecars[].imagePullPolicy
 
@@ -7223,7 +7248,7 @@ pod-wide — on `pod.image_registries` (the login itself) or `pod.image_pull_sec
 (a Secret declared beside the workload), or on the ServiceAccount the pod runs as.
 
 - rule: Image repo is required — the repository half of the image reference (e.g. "nginx" or "ghcr.io/acme/api")
-- rule: Image tag is required — pin a version (e.g. "1.27.1"); avoid "latest" for anything you intend to roll back
+- rule: Image tag or digest is required — pin a version (e.g. "1.27.1") or an exact build ("sha256:…"); avoid "latest" for anything you intend to roll back
 - rule: {"required":true}
 
 ### spec.jobTemplate.pod.initContainers[].image.repo
@@ -7237,6 +7262,17 @@ The repository of the image (e.g. "nginx" or "ghcr.io/acme/checkout").
 `string`
 
 The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
+
+### spec.jobTemplate.pod.initContainers[].image.digest
+
+`string`
+
+The image's content digest ("sha256:" and 64 lowercase hex characters), when
+the container runs one exact build. Kubernetes pulls by the digest and ignores
+the tag; to run a different tag, clear the digest. A build Planton runs
+stamps it, so a deployment runs the image the build produced.
+
+- rule: Image digest must be "sha256:" followed by 64 lowercase hex characters
 
 ### spec.jobTemplate.pod.initContainers[].imagePullPolicy
 

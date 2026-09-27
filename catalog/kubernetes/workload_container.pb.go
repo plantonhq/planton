@@ -24,7 +24,12 @@ const (
 
 // *
 // **WorkloadContainerImage** is a workload container's image reference, split into
-// repository and tag. It deliberately has no per-container pull-secret leaf: in
+// repository, tag, and digest. A tag names a build; a digest is the build itself:
+// when both are set, Kubernetes pulls exactly the digest and the tag stays as the
+// readable name of what was built (`repo:tag@sha256:…`), so re-pushing the tag
+// never changes what a running workload pulls. (The DigitalOcean app image keeps
+// the two mutually exclusive because App Platform demands it; Kubernetes does
+// not.) It deliberately has no per-container pull-secret leaf: in
 // Kubernetes, pull secrets belong to the pod (`imagePullSecrets` on the PodSpec) and
 // apply to every container in it, so a private registry's login lives on
 // `WorkloadPod` — `image_registries` or `image_pull_secrets` — never on one container.
@@ -35,7 +40,12 @@ type WorkloadContainerImage struct {
 	// The repository of the image (e.g. "nginx" or "ghcr.io/acme/checkout").
 	Repo string `protobuf:"bytes,1,opt,name=repo,proto3" json:"repo,omitempty"`
 	// The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
-	Tag           string `protobuf:"bytes,2,opt,name=tag,proto3" json:"tag,omitempty"`
+	Tag string `protobuf:"bytes,2,opt,name=tag,proto3" json:"tag,omitempty"`
+	// The image's content digest ("sha256:" and 64 lowercase hex characters), when
+	// the container runs one exact build. Kubernetes pulls by the digest and ignores
+	// the tag; to run a different tag, clear the digest. A build Planton runs
+	// stamps it, so a deployment runs the image the build produced.
+	Digest        string `protobuf:"bytes,3,opt,name=digest,proto3" json:"digest,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -80,6 +90,13 @@ func (x *WorkloadContainerImage) GetRepo() string {
 func (x *WorkloadContainerImage) GetTag() string {
 	if x != nil {
 		return x.Tag
+	}
+	return ""
+}
+
+func (x *WorkloadContainerImage) GetDigest() string {
+	if x != nil {
+		return x.Digest
 	}
 	return ""
 }
@@ -942,16 +959,18 @@ var File_catalog_kubernetes_workload_container_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_workload_container_proto_rawDesc = "" +
 	"\n" +
-	"+catalog/kubernetes/workload_container.proto\x12\x16dev.planton.kubernetes\x1a\x1bbuf/validate/validate.proto\x1a&catalog/kubernetes/container_env.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a\x1ecatalog/kubernetes/probe.proto\x1a%catalog/kubernetes/volume_mount.proto\">\n" +
+	"+catalog/kubernetes/workload_container.proto\x12\x16dev.planton.kubernetes\x1a\x1bbuf/validate/validate.proto\x1a&catalog/kubernetes/container_env.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a\x1ecatalog/kubernetes/probe.proto\x1a%catalog/kubernetes/volume_mount.proto\"\xf7\x01\n" +
 	"\x16WorkloadContainerImage\x12\x12\n" +
 	"\x04repo\x18\x01 \x01(\tR\x04repo\x12\x10\n" +
-	"\x03tag\x18\x02 \x01(\tR\x03tag\"\xf0\f\n" +
+	"\x03tag\x18\x02 \x01(\tR\x03tag\x12\xb6\x01\n" +
+	"\x06digest\x18\x03 \x01(\tB\x9d\x01\xbaH\x99\x01\xba\x01\x95\x01\n" +
+	"\x16container.image.digest\x12FImage digest must be \"sha256:\" followed by 64 lowercase hex characters\x1a3this == '' || this.matches('^sha256:[a-f0-9]{64}$')R\x06digest\"\xc9\r\n" +
 	"\x11WorkloadContainer\x12\xf8\x01\n" +
 	"\x04name\x18\x01 \x01(\tB\xe3\x01\xbaH\xdf\x01\xba\x01\xdb\x01\n" +
-	"\x18container.name.dns_label\x12{Container name must be a lowercase DNS label (alphanumeric and hyphens, starting and ending with an alphanumeric character)\x1aBthis == '' || this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')R\x04name\x12\x9f\x03\n" +
-	"\x05image\x18\x02 \x01(\v2..dev.planton.kubernetes.WorkloadContainerImageB\xd8\x02\xbaH\xd4\x02\xba\x01\xa5\x01\n" +
-	"\x14container.image.repo\x12jImage repo is required — the repository half of the image reference (e.g. \"nginx\" or \"ghcr.io/acme/api\")\x1a!has(this.repo) && this.repo != ''\xba\x01\xa4\x01\n" +
-	"\x13container.image.tag\x12lImage tag is required — pin a version (e.g. \"1.27.1\"); avoid \"latest\" for anything you intend to roll back\x1a\x1fhas(this.tag) && this.tag != ''\xc8\x01\x01R\x05image\x12\xd4\x01\n" +
+	"\x18container.name.dns_label\x12{Container name must be a lowercase DNS label (alphanumeric and hyphens, starting and ending with an alphanumeric character)\x1aBthis == '' || this.matches('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$')R\x04name\x12\xf8\x03\n" +
+	"\x05image\x18\x02 \x01(\v2..dev.planton.kubernetes.WorkloadContainerImageB\xb1\x03\xbaH\xad\x03\xba\x01\xa5\x01\n" +
+	"\x14container.image.repo\x12jImage repo is required — the repository half of the image reference (e.g. \"nginx\" or \"ghcr.io/acme/api\")\x1a!has(this.repo) && this.repo != ''\xba\x01\xfd\x01\n" +
+	"\x13container.image.tag\x12\x97\x01Image tag or digest is required — pin a version (e.g. \"1.27.1\") or an exact build (\"sha256:…\"); avoid \"latest\" for anything you intend to roll back\x1aL(has(this.tag) && this.tag != '') || (has(this.digest) && this.digest != '')\xc8\x01\x01R\x05image\x12\xd4\x01\n" +
 	"\x11image_pull_policy\x18\x03 \x01(\tB\xa7\x01\xbaH\xa3\x01\xba\x01\x9f\x01\n" +
 	"\x1bcontainer.image_pull_policy\x12EImage pull policy must be one of \"Always\", \"IfNotPresent\", or \"Never\"\x1a9this == '' || this in ['Always', 'IfNotPresent', 'Never']R\x0fimagePullPolicy\x12\x18\n" +
 	"\acommand\x18\x04 \x03(\tR\acommand\x12\x12\n" +

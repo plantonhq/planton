@@ -43,15 +43,19 @@ planton search connections                # provider connections (which clouds/c
 planton connection authorization list     # which connections which envs may use
 planton secret list -o json               # managed secrets ("env" field = scope)
 planton variable list -o json             # managed variables ("env" field = scope)
+planton secret list --env <env> -o json   # what <env> can read: its own + the org's
+planton infra state-backend list -o json  # state backends (get <slug> for one; exit 3 = none)
 planton catalog search --server           # the catalog MINUS what the org's catalog
                                           # policy disables (offline default shows all;
                                           # see catalog-availability.md)
 ```
 
 The secret/variable lists ground `$var`/`$secret` references before you write
-them (`config-references.md`); `-o json` matters because only the JSON
-records carry each entry's `env`, which decides the reference form. Creating
-one (`planton secret set` / `planton variable set`) is a mutation — one
+them (`config-references.md`); `-o json` matters because the JSON records
+carry each entry's `env`, which decides the reference form. A list is every
+record (never cut off); only a typed `--env` narrows it, to that
+environment's records plus the organization's. Creating one
+(`planton secret set` / `planton variable set`) is a mutation — one
 confirmation, same as any other.
 
 `planton env list` includes pull-request PREVIEW environments
@@ -112,7 +116,12 @@ planton get stack-job <sj_id> -o json
 planton infra stack-job stream-progress-events <sj_id>   # tail the engine output directly
 ```
 
-Typical reading of `status` output: a node with result `failed` and a
+Typical reading of `status` output: a `REASON` starting "Nothing ran:
+environment <env> may not use the <provider> connection <slug>" is a missing
+connection authorization — no stack job started and nothing in the cloud
+changed (the follow says "Refused before any resource ran"); the sentence
+carries the `planton connection auth create …` fix, a mutation to confirm.
+A node with result `failed` and a
 `REASON` mentioning "No provider connection available" or
 "kubernetes-provider-connection … not found" is the wiring class — fix per
 `kubernetes-on-cluster.md` / `issue-catalog.md`. A failure naming cloud
@@ -141,6 +150,33 @@ every part. `.scratch/` is a hidden path, so it stays out of the user's
 canvas and file tree; it lives inside your folder, so it is inside your
 filesystem boundary. Clean it up when the diagnosis ends if the user asked
 for tidy folders; otherwise it is harmless working memory.
+
+## Reading back and comparing a manifest
+
+```
+planton get <Kind> <name> -o yaml            # a cloud resource AS ITS MANIFEST: kind, metadata
+                                             # (id included), spec, status.outputs; camelCase keys
+planton get <Kind> <name> -o yaml --envelope # the stored CloudResource wrapper instead
+planton service get <slug> [-o json]         # the service's stored record (the service.yaml shape)
+planton diff -f <manifest>                   # the local file vs what is stored for it
+planton validate -f <manifest>               # offline check; every document in the file
+```
+
+`get -o yaml` uses the manifest dialect (camelCase: `status.outputs.vpcId`);
+`-o json` uses proto field names (`status.outputs.vpc_id`). Read a key by
+the name the chosen format prints. A secret output reads as its `$secret/`
+reference, never the value.
+
+`diff -f` takes one manifest per file, leaves status and platform stamps out,
+and answers by exit code: 0 applying would change nothing, 1 they differ (a
+unified diff; `-o json` gives `differs` and `changes[]`), 3 "Nothing Stored
+Yet". It is read-only — the check before proposing an apply.
+
+Two refusal banners, two owners: **Manifest Isn't Valid** is the CLI's own
+offline check (`apply`, `service register`, `validate`) refusing a file
+before sending it — fix the field it names (`validate` on a multi-document
+file names the document: "document 2 of 2 (name): …"); **Request Refused** is the server
+refusing a request as invalid, nothing changed — relay its reason.
 
 ## Watching a running deploy (humans; agents prefer snapshots)
 

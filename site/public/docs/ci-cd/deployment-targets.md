@@ -156,7 +156,7 @@ Targets appear as cards that can be edited or removed. After creation, targets a
 
 ### CLI
 
-Deployment targets are configured as part of the Service spec, either through `planton service register` (interactive) or by editing the Service YAML directly.
+Deployment targets are configured as part of the Service spec: edit the service's `service.yaml` and register it with `planton service register -f service.yaml`, which validates the whole manifest before sending it.
 
 For Git-based deployments, manage the `_kustomize` directory structure:
 

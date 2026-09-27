@@ -27,14 +27,14 @@ Every push outcome lands on the service record's `status.manifestSync` (visible 
 
 When walking a failure, dispatch on the error text:
 
-- **A named unknown field** (e.g. `spec.buidl`) — a typo against the schema; fix the field. The pre-push guard is `planton service validate -f service.yaml` — the same validation, before the push.
+- **A named unknown field** (e.g. `spec.buidl`) — a typo against the schema; fix the field. The pre-push guard is `planton validate -f service.yaml` — the same validation, before the push.
 - **"declares repository X but was pushed to Y"** — the manifest names another repository; a pushed manifest may only declare its own. To register a service for another repository, commit the manifest there.
 - **"declares organization X but this repository's connection belongs to Y"** — the org field contradicts the connection; omit it or fix it.
 - **"belongs to repository X but this manifest was pushed to Y"** — the manifest's name collides with an EXISTING service owned by another repository; rename this manifest's service. (A name colliding with an existing service that declares NO repository is not an error — the push adopts it, which is the console-stub-then-manifest onboarding path.)
 
 ## What has no record to show
 
-A malformed manifest for a service that does not exist yet has no record to stamp — the failure is in the platform's logs only today. If a user says "I pushed a service.yaml and nothing happened", check in order: is the push on the default branch; is the apiVersion/kind Planton's; does `planton get service <slug>` find the service (it may have landed under a slug derived from the name); and only then suspect a malformed first manifest — have them run `planton service validate -f service.yaml` locally, which reproduces the same refusal with the field named.
+A malformed manifest for a service that does not exist yet has no record to stamp — the failure is in the platform's logs only today. If a user says "I pushed a service.yaml and nothing happened", check in order: is the push on the default branch; is the apiVersion/kind Planton's; does `planton get service <slug>` find the service (it may have landed under a slug derived from the name); and only then suspect a malformed first manifest — have them run `planton validate -f service.yaml` locally, which reproduces the same refusal with the field named.
 
 ## The register-and-first-build moment
 

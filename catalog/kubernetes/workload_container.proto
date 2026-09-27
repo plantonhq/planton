@@ -31,7 +31,12 @@ import "catalog/kubernetes/volume_mount.proto";
 
 /**
  * **WorkloadContainerImage** is a workload container's image reference, split into
- * repository and tag. It deliberately has no per-container pull-secret leaf: in
+ * repository, tag, and digest. A tag names a build; a digest is the build itself:
+ * when both are set, Kubernetes pulls exactly the digest and the tag stays as the
+ * readable name of what was built (`repo:tag@sha256:…`), so re-pushing the tag
+ * never changes what a running workload pulls. (The DigitalOcean app image keeps
+ * the two mutually exclusive because App Platform demands it; Kubernetes does
+ * not.) It deliberately has no per-container pull-secret leaf: in
  * Kubernetes, pull secrets belong to the pod (`imagePullSecrets` on the PodSpec) and
  * apply to every container in it, so a private registry's login lives on
  * `WorkloadPod` — `image_registries` or `image_pull_secrets` — never on one container.
@@ -44,6 +49,16 @@ message WorkloadContainerImage {
 
   // The tag of the image (e.g. "1.27.1"). Pin a version; "latest" cannot be rolled back.
   string tag = 2;
+
+  // The image's content digest ("sha256:" and 64 lowercase hex characters), when
+  // the container runs one exact build. Kubernetes pulls by the digest and ignores
+  // the tag; to run a different tag, clear the digest. A build Planton runs
+  // stamps it, so a deployment runs the image the build produced.
+  string digest = 3 [(buf.validate.field).cel = {
+    id: "container.image.digest"
+    message: "Image digest must be \"sha256:\" followed by 64 lowercase hex characters"
+    expression: "this == '' || this.matches('^sha256:[a-f0-9]{64}$')"
+  }];
 }
 
 /**
@@ -106,8 +121,8 @@ message WorkloadContainer {
     },
     (buf.validate.field).cel = {
       id: "container.image.tag"
-      message: "Image tag is required — pin a version (e.g. \"1.27.1\"); avoid \"latest\" for anything you intend to roll back"
-      expression: "has(this.tag) && this.tag != ''"
+      message: "Image tag or digest is required — pin a version (e.g. \"1.27.1\") or an exact build (\"sha256:…\"); avoid \"latest\" for anything you intend to roll back"
+      expression: "(has(this.tag) && this.tag != '') || (has(this.digest) && this.digest != '')"
     }
   ];
 

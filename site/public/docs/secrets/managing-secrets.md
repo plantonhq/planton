@@ -38,18 +38,29 @@ The success screen shows the secret's **real remote name** with a copy button, a
 # Create or update a text secret's value
 planton secret set stripe-api-key 'sk_live_...'
 
+# A value that contains '=' (base64, a JWT, a PEM block) is taken verbatim with --string
+planton secret set jwt-signing-key --string 'eyJhbGciOi...=='
+
 # Key-value secrets take KEY=VALUE pairs
 planton secret set cloudflare r2.access-key-id=... r2.secret-access-key=...
+
+# A key-value secret whose one key is named value, password, token or secret says so
+planton secret set webhook --key-value token=abc123
 
 # Environment-scoped secrets take the environment flag
 planton secret set db-password 'the-value' --env production
 
 # List, inspect, read
-planton secret list                          # includes each secret's backend
+planton secret list                          # every secret in the organization, with scope and backend
+planton secret list --env production         # what production can read: its own and the organization's
 planton secret describe db-password          # includes the remote identity
 planton secret get db-password -o yaml       # the record; never the value
 planton secret get db-password --reveal -o plain
 ```
+
+A secret's format (a single value, or key-value pairs) is fixed when it is created, so `secret set` never guesses it for a new secret. One pair whose key reads like a single value's name (`secret set db-password password=...`) is refused and the CLI names both commands: `--string '<value>'` for a single value, or `--key-value password=<value>` for a key-value secret with that one key. `--string` and `--key-value` together are refused. The confirmation reads **Secret Created** for a new secret and **Secret Updated** for a new version of an existing one.
+
+`planton secret list` reads every page, so the list is never cut off. Without `--env` it shows the whole organization; the saved context's environment never narrows it.
 
 `planton secret get` shows a secret's record (scope, backend, format, description) without reading its value, so asking which backend holds a secret never prints the secret. The value prints only with `--reveal`, and every revealed read is recorded in the [read-audit trail](#the-read-story); `-o plain` without `--reveal` is refused with the command to run. In a script, `planton secret get <slug> --reveal -o plain` prints the value and exits 0, or prints nothing on stdout and exits 3 when no such secret exists (the reason goes to stderr). Exit 1 means the instance could not be asked.
 

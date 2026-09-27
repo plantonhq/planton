@@ -30,8 +30,10 @@ There is no platform track for Cloudflare Worker scripts; a Worker service build
 A repository pipeline references a catalog task with a plain `taskRef`; the compiler inlines the definition at compile time. Names are the tasks' Tekton `metadata.name`, not their file names:
 
 - `git-clone` — clones the repository at the built commit into the `source` workspace; takes `url`, `revision`, and the pinned `gitInitImage` the platform tracks pass.
-- `buildkit-daemonless` — builds and pushes an OCI image with BuildKit (daemonless, privileged); reads the Dockerfile the pipeline exported to a ConfigMap.
-- `buildpacks` — builds and pushes an image with a Buildpacks builder image (`BUILDER_IMAGE`, `APP_IMAGE`, `RUN_IMAGE`, cache settings).
+- `buildkit-daemonless` — builds and pushes an OCI image with BuildKit (daemonless, privileged); reads the Dockerfile the pipeline exported to a ConfigMap; `cacheImage` names one stable cache reference (the tracks pass `<repository>:buildcache`).
+- `buildpacks` — builds and pushes an image with a Buildpacks builder image (`BUILDER_IMAGE`, `APP_IMAGE`, `RUN_IMAGE`, `CACHE_IMAGE`).
+
+Both build tasks write the `image-digest` result — the `sha256:…` of what they pushed — and fail their own step, in words, when they pushed and cannot name it. The deploy stage pins what that result names (`repo:tag@sha256:…`), so re-pushing a tag never changes what runs; a repository pipeline that declares no `image-digest` result deploys by its tag, as before it existed. Both tracks declare the optional `cache-image` fact, which the platform supplies only to a pipeline that declares it.
 - `kustomize-build` — renders the service's kustomize overlays under `kustomize-base-directory` and stores them in the ConfigMap the deploy stage reads (`config-map-name`, `config-map-namespace`, the owner-identifier label pair).
 
 A `taskRef` with a `resolver:` (git, hub, bundles) is refused at compile time as `resolver_ref_unsupported`: compiled pipelines are self-contained by definition. A name that is neither a catalog task nor an organization-published `TektonTask` is `unresolved_task_ref`, naming the pipeline task and the ref. Read the task YAML in `cicd/tekton/tasks/` for the exact params and results before wiring one — never guess a param name.

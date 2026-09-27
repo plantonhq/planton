@@ -33,7 +33,7 @@ That is the whole list. There is no Planton account to create and no YAML to wri
 
 ## The first push, beat by beat
 
-**1. Register the service.** The service wizard reads the repository through your connection, proposes the build method it found, and asks where the service deploys; you confirm. Or register from a `service.yaml` with `planton service register`. From this moment your laptop watches the repository's trigger branches; `planton service watch <service>` shows when GitHub was last checked and what it saw.
+**1. Register the service.** The service wizard reads the repository through your connection, proposes the build method it found, and asks where the service deploys; you confirm. Or register from a `service.yaml` with `planton service register`. From this moment your laptop watches the repository's trigger branches; `planton service watch <service>` shows when GitHub was last checked and what it saw, and `planton service watch <service> --history` shows every stretch in which nothing checked, every push it handed on, and every pause.
 
 <!-- SCREENSHOT: the repository watch card
   Page: Planton Desktop → a service → Overview, the "last checked" line under the service name
@@ -88,6 +88,7 @@ planton local build-cluster stop          # stop it now (refused while a build r
 planton local build-cluster keep-warm on  # hold it up between builds (off to return to scale-to-zero)
 planton local build-cluster remove        # remove it and its files; the next "yes" sets it up again
 planton service watch <service>           # when GitHub was last checked and what it saw
+planton service watch <service> --history # what the watch recorded: gaps and why, pushes seen, pauses
 planton daemon status                     # every component of the local instance, the build cluster included
 ```
 
@@ -109,6 +110,8 @@ Every failure on this road says what the platform observed, what it most likely 
 | *No address to show — none of this environment's resources carries one.* | The deploy succeeded but nothing reported a URL. | Declare a serving domain on the environment, or include a resource that carries an address (the sentence names the kinds). |
 
 Two things a laptop does honestly rather than silently: a run that fails to hand its build to the deploy stage ends **failed** with that step's own words within about a minute — never a stage that reads "queued" forever; and a laptop that was asleep through several pushes catches up on its next check — one run per branch that moved, carrying the whole range of commits since the last head it saw, never one run per missed push.
+
+**The watch runs only while Planton runs.** It lives inside your laptop's control plane, so quitting Planton Desktop (or shutting the Mac down) stops every check until you open it again; a push made meanwhile waits. The first check afterwards catches up, and it says the wait out loud: the watch card's **Not Checked** row and the desktop's Repository Watch row say how long nothing checked and why -- *Not checked for 2 days 13 hours (Planton wasn't running)* -- and the history keeps it. A watch that stops checking while Planton is running reads **Behind** — a fault worth reporting, with the next step. To keep checking across restarts, turn on **Start at Login** on the desktop's Local Instance page (macOS 13 and later): Planton opens in the menu bar when you sign in and starts your local instance. macOS keeps the setting in System Settings → General → Login Items and may ask you to approve it there.
 
 ## Details
 

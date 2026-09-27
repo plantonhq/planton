@@ -108,6 +108,15 @@ planton create -f manifest.yaml
 # Get a Cloud Resource by ID
 planton get cloud-resource <cloud-resource-id>
 
+# Read one back as its manifest (kind, metadata, spec, status with outputs)
+planton get AwsVpc production-vpc -o yaml
+
+# The same resource inside the platform's CloudResource wrapper
+planton get AwsVpc production-vpc -o yaml --envelope
+
+# Compare a local manifest with what is stored, before applying it
+planton diff -f vpc.yaml
+
 # List Cloud Resources
 planton list cloud-resource
 
@@ -134,6 +143,10 @@ planton pulumi import <cloud-resource> --type <type> --name <name> --id <provide
 planton terraform import <cloud-resource> --address <address> --id <provider-id>
 planton tofu import <cloud-resource> --address <address> --id <provider-id>
 ```
+
+`planton get <Kind> <name> -o yaml` prints the resource as you write it, in the same YAML as every manifest: camelCase keys, with its outputs under `status.outputs` (for example `status.outputs.vpcId`). You can edit that output and apply it again. `-o json` prints proto field names (`status.outputs.vpc_id`).
+
+`planton diff -f <manifest>` compares one local manifest with the record it would apply to, leaving status and the platform's own stamps out. It prints a unified diff and exits 1 when they differ, and exits 0 when applying would change nothing; `-o json` gives the list of changed fields. When nothing is stored under the manifest's name it prints **Nothing Stored Yet** and exits 3. It takes one manifest per file.
 
 ## Related Documentation
 

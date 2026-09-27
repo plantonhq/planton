@@ -47,21 +47,23 @@ Navigate to **Variables** in the sidebar. Click **Create Variable** and provide:
 ### Using the CLI
 
 ```bash
-# List all variables in the organization
-planton service variables
+# List every variable in the organization, with its scope
+planton variable list
 
-# Filter variables by text
-planton service variables --filter "endpoint"
+# What one environment can read: its own variables and the organization's
+planton variable list --env production
 
-# Get the value of a specific variable
-planton service variables get-value --group my-config --name DATABASE_HOST
+# Create or update a variable (the value is positional)
+planton variable set database-host db.internal.example.com --env production
 
-# Create or update a variable (opens interactive YAML editor)
-planton service variables upsert
+# Read one value in a script (exit 0 found, 3 not found)
+planton variable get database-host --env production -o plain
 
 # Delete a variable
-planton service variables delete --group my-config --name DATABASE_HOST
+planton variable delete database-host --env production
 ```
+
+`planton variable list` reads every page, so the list is never cut off. Without `--env` it shows the whole organization; the saved context's environment never narrows it.
 
 ## Dynamic References
 

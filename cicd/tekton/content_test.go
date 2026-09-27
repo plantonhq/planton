@@ -82,6 +82,42 @@ func TestContent_everyTrackBuildsForTheTargetPlatformAndReportsItsMachine(t *tes
 	}
 }
 
+// Every build task names what it pushed by its digest -- the image-digest
+// result a deployment pins, so re-pushing the tag never changes what runs --
+// and fails its own step when it pushed and cannot name it. Every track
+// declares the optional cache-image fact and hands it to its build task, so a
+// build tagged per commit still reads the last build's layers.
+func TestContent_everyBuildNamesItsImageByDigestAndReusesOneCache(t *testing.T) {
+	tasks, err := TaskFiles()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, stem := range []string{"buildkit", "buildpacks"} {
+		task := string(tasks[stem])
+		if !strings.Contains(task, "- name: image-digest") {
+			t.Errorf("build task %s does not declare the image-digest result", stem)
+		}
+		if !strings.Contains(task, "$(results.image-digest.path)") {
+			t.Errorf("build task %s declares image-digest but never writes it", stem)
+		}
+		if !strings.Contains(task, "cannot name the image it produced") {
+			t.Errorf("build task %s does not fail, in words, a push it cannot name", stem)
+		}
+	}
+	buildkit := string(tasks["buildkit"])
+	for _, want := range []string{"--metadata-file", "type=registry,ref=$(params.cacheImage)", "ignore-error=true", "image-manifest=true"} {
+		if !strings.Contains(buildkit, want) {
+			t.Errorf("the BuildKit task lacks %q", want)
+		}
+	}
+	for _, track := range Tracks() {
+		yaml, _ := Track(track)
+		if !strings.Contains(string(yaml), "- name: cache-image") || !strings.Contains(string(yaml), "$(params.cache-image)") {
+			t.Errorf("track %s does not declare the cache-image fact and hand it to its build task", track)
+		}
+	}
+}
+
 // Every image the content can run is digest-pinned: the tag documents
 // intent, the digest is what the cluster pulls, so a build is reproducible
 // and immune to upstream tag mutation -- and the derived allowlist an

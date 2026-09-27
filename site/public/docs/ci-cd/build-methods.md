@@ -65,6 +65,10 @@ For container image services, the pipeline tags images to ensure traceability:
 - **Branch builds**: Tagged with the full Git commit SHA (e.g., `a1b2c3d4e5f6`), ensuring every image is traceable to exactly one commit.
 - **Tag builds**: Tagged with the Git tag name (e.g., `v1.0.0`), providing human-readable version references for release workflows.
 
+A tag names a build; the digest is the build itself. Every build reports the digest of the image it pushed, and every deployment Planton makes from it runs `repo:tag@sha256:…` — Kubernetes pulls exactly that image and keeps the tag as its readable name. So a rebuild of the same commit, or a second builder pushing the same tag, never changes what an existing deployment runs; the next deployment pins the next build. A build that pushed but could not name its image fails, saying so, rather than deploy by a tag anyone can re-push.
+
+The build cache lives at one stable reference beside the image, `<repository>:buildcache`, so a build tagged per commit still reuses the last build's layers. A registry that refuses that reference never fails a build; the build just runs without the cache.
+
 The final image is pushed to the container registry configured on the Service. The registry host and authentication come from the container registry credential referenced by the Service (see [Container Registries](/docs/connections/container-registries)).
 
 <!-- SCREENSHOT: Build configuration in service details
@@ -96,7 +100,7 @@ After creation, build configuration is editable in the service's **Settings** ta
 
 ### CLI
 
-Build method is part of the Service configuration, set during `planton service register` (interactive) or via the Service YAML.
+Build method is part of the Service configuration: set it in the service's `service.yaml` and register it with `planton service register -f service.yaml`, which validates the whole manifest before sending it.
 
 ```bash
 # Scaffold a _kustomize tree: one empty overlay per environment, plus the merge schema
