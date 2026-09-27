@@ -75,6 +75,7 @@ spec:
 |---|---|---|---|---|
 | `spec.applicationType` | `string` | yes |  |  |
 | `spec.description` | `string` |  |  |  |
+| `spec.name` | `string` |  |  |  |
 | `spec.logoUri` | `string` |  |  |  |
 | `spec.callbacks` | `[]string` |  |  |  |
 | `spec.allowedLogoutUrls` | `[]string` |  |  |  |
@@ -160,6 +161,19 @@ Useful for documenting the purpose, owner, or other metadata.
 Maximum 140 characters.
 
 - rule: {"string":{"maxLen":"140"}}
+
+### spec.name
+
+`string`
+
+name is the application's name as people see it: on the Universal Login
+page ("Log in to <tenant> to continue to <name>"), on consent screens, and
+in the tenant's dashboard. When omitted, the application is named after
+the resource (metadata.name), as before.
+
+metadata.name stays the resource's identity: every reference to this
+client (valueFrom, state) reads it, so it remains a stable slug, while this
+name is presentation and changes in place without replacing the client.
 
 ### spec.logoUri
 

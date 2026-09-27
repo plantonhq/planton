@@ -59,6 +59,15 @@ type Auth0ClientSpec struct {
 	// Useful for documenting the purpose, owner, or other metadata.
 	// Maximum 140 characters.
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	// name is the application's name as people see it: on the Universal Login
+	// page ("Log in to <tenant> to continue to <name>"), on consent screens, and
+	// in the tenant's dashboard. When omitted, the application is named after
+	// the resource (metadata.name), as before.
+	//
+	// metadata.name stays the resource's identity: every reference to this
+	// client (valueFrom, state) reads it, so it remains a stable slug, while this
+	// name is presentation and changes in place without replacing the client.
+	Name string `protobuf:"bytes,30,opt,name=name,proto3" json:"name,omitempty"`
 	// logo_uri is the URL of the application's logo.
 	// This is displayed on the consent page and login page.
 	// Must be a valid HTTPS URL to an image file.
@@ -240,6 +249,13 @@ func (x *Auth0ClientSpec) GetApplicationType() string {
 func (x *Auth0ClientSpec) GetDescription() string {
 	if x != nil {
 		return x.Description
+	}
+	return ""
+}
+
+func (x *Auth0ClientSpec) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
@@ -1061,10 +1077,11 @@ var File_catalog_auth0_auth0client_v1alpha1_spec_proto protoreflect.FileDescript
 
 const file_catalog_auth0_auth0client_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"-catalog/auth0/auth0client/v1alpha1/spec.proto\x12&dev.planton.auth0.auth0client.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xe1\x0f\n" +
+	"-catalog/auth0/auth0client/v1alpha1/spec.proto\x12&dev.planton.auth0.auth0client.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf5\x0f\n" +
 	"\x0fAuth0ClientSpec\x12^\n" +
 	"\x10application_type\x18\x01 \x01(\tB3\xbaH0\xc8\x01\x01r+R\x06nativeR\x03spaR\vregular_webR\x0fnon_interactiveR\x0fapplicationType\x12*\n" +
-	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x8c\x01R\vdescription\x12\x19\n" +
+	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x8c\x01R\vdescription\x12\x12\n" +
+	"\x04name\x18\x1e \x01(\tR\x04name\x12\x19\n" +
 	"\blogo_uri\x18\x03 \x01(\tR\alogoUri\x12\x1c\n" +
 	"\tcallbacks\x18\x04 \x03(\tR\tcallbacks\x12.\n" +
 	"\x13allowed_logout_urls\x18\x05 \x03(\tR\x11allowedLogoutUrls\x12\x1f\n" +

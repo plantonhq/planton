@@ -22,6 +22,12 @@ func createCluster(ctx *pulumi.Context, locals *Locals,
 	clusterSpec := postgresqlv1.ClusterSpecArgs{
 		Instances: pulumi.Int(int(spec.GetInstances())),
 		Storage:   buildStorage(spec.GetStorage()),
+		// The operator stamps these on every object it creates (the
+		// instance pods, their volumes, the Services), so the database's
+		// pods name their organization and environment.
+		InheritedMetadata: postgresqlv1.ClusterSpecInheritedMetadataArgs{
+			Labels: pulumi.ToStringMap(locals.Labels),
+		},
 	}
 
 	if spec.GetImageName() != "" {

@@ -12,7 +12,7 @@ import (
 func createClient(ctx *pulumi.Context, locals *Locals, provider *auth0.Provider) (*auth0.Client, error) {
 	// Build client arguments
 	clientArgs := &auth0.ClientArgs{
-		Name:        pulumi.String(locals.ClientName),
+		Name:        pulumi.String(locals.DisplayName),
 		AppType:     pulumi.String(locals.ApplicationType),
 		Description: pulumi.String(locals.Description),
 	}

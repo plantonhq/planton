@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0tenantsettings.v1alpha1;
+
+// Auth0TenantSettingsStackOutputs contains the tenant settings as applied: the
+// values the tenant carries after the deployment, managed or not.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/tenant#attributes-reference
+// https://www.pulumi.com/registry/packages/auth0/api-docs/tenant/#outputs
+message Auth0TenantSettingsStackOutputs {
+  // friendly_name is the tenant's name as people see it.
+  string friendly_name = 1;
+
+  // picture_url is the URL of the tenant's logo.
+  string picture_url = 2;
+
+  // support_email is the support address the tenant's pages offer.
+  string support_email = 3;
+
+  // support_url is the support page the tenant's pages link to.
+  string support_url = 4;
+}

@@ -43,7 +43,9 @@ go_test(
     data = glob(["testdata/**"]),
     embed = [":infrachart"],
     deps = [
+        "//pkg/reflection/metadatareflect",
         "@com_github_nikolalohinski_gonja_v2//logging",
         "@com_github_sirupsen_logrus//:logrus",
+        "@org_golang_google_protobuf//proto",
     ],
 )

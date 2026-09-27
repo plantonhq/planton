@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0tenantsettings.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// Auth0TenantSettingsSpec manages how an existing Auth0 tenant presents itself
+// to the people who sign in through it: the name Universal Login shows ("Log in
+// to <friendly_name> to continue to <application>"), the logo beside it, and the
+// support contacts the login and error pages offer.
+//
+// The tenant is the one the provider connection's credential belongs to. Auth0's
+// Management API cannot create or delete a tenant, so this kind never does either:
+// it manages the settings of the tenant that already exists.
+//
+// Each field maps to one tenant setting (PATCH /api/v2/tenants/settings). A field
+// left unset is NOT MANAGED: the module never sends it, and whatever value the
+// tenant already carries stays untouched. Setting a field manages that setting;
+// clearing it back to unset stops managing it but does NOT revert the live value.
+// Auth0 has no delete for tenant settings, so destroy abandons the last-applied
+// values. To return a setting to a specific value, set that value explicitly
+// before removing the field.
+//
+// The credential needs read:tenant_settings and update:tenant_settings on the
+// tenant's Management API (iac/permissions.yaml).
+//
+// https://auth0.com/docs/get-started/tenant-settings
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/tenant
+// https://www.pulumi.com/registry/packages/auth0/api-docs/tenant/
+message Auth0TenantSettingsSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.at_least_one_setting"
+    message: "configure at least one tenant setting -- an Auth0TenantSettings resource that manages nothing would deploy nothing"
+    expression: "this.friendly_name != '' || this.picture_url != '' || this.support_email != '' || this.support_url != ''"
+  };
+
+  // friendly_name is the tenant's name as people see it: Universal Login's
+  // "Log in to <friendly_name> to continue to <application>", and the name in
+  // the emails Auth0 sends for the tenant. Unset, Auth0 shows the tenant's
+  // identifier (for example "acme-prod").
+  string friendly_name = 1;
+
+  // picture_url is the URL of the logo shown for the tenant on its login
+  // and consent pages (Auth0 recommends 150 x 150 pixels). Unset, Auth0's own
+  // logo is shown.
+  string picture_url = 2 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+
+  // support_email is the address the tenant's login and error pages offer to a
+  // person who needs help signing in.
+  string support_email = 3 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.email = true
+  ];
+
+  // support_url is the page the tenant's login and error pages link to for
+  // help.
+  string support_url = 4 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.uri = true
+  ];
+}

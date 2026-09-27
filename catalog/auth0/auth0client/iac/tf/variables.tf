@@ -25,6 +25,10 @@ variable "spec" {
     # description is an optional free-text description of the application.
     description = optional(string)
 
+    # name is the application's name as people see it (the login page,
+    # consent screens, the dashboard). When omitted, metadata.name.
+    name = optional(string)
+
     # logo_uri is the URL of the application's logo.
     logo_uri = optional(string)
 

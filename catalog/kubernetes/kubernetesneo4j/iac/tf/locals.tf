@@ -40,9 +40,12 @@ locals {
 
   namespace = var.spec.namespace
 
-  # Resource-identity labels stamped on the module-created satellites
-  # (namespace, the auth Secret — never injected into the chart's own
-  # resources; Helm owns those).
+  # Resource-identity labels: stamped on the module-created satellites
+  # (namespace, the auth Secret) and, through the chart's own neo4j.labels,
+  # on the server pod and the chart's objects -- so a log line, a metric or
+  # an alert from Neo4j names its organization and environment. The
+  # StatefulSet's selector is the chart's own fixed labels; these never
+  # reach it.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -172,6 +175,8 @@ locals {
           passwordFromSecret = local.auth_secret_name
 
           resources = local.neo4j_resources
+
+          labels = local.labels
         } : nk => nv if nv != null
       }
 

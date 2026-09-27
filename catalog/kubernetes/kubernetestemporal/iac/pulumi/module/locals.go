@@ -16,9 +16,12 @@ import (
 type Locals struct {
 	Spec *kubernetestemporalv1alpha1.KubernetesTemporalSpec
 
-	// Resource-identity labels stamped on the module-created satellites
-	// (the namespace — never injected into the chart's own resources;
-	// Helm owns those).
+	// Resource-identity labels: stamped on the module-created satellites
+	// (the namespace) and on every pod the chart runs, through the chart's
+	// own pod-label values (server.podLabels, web.podLabels,
+	// admintools.podLabels, schema.podLabels) -- so a log line, a metric or
+	// an alert from any Temporal pod names its organization and environment.
+	// The chart's selectors are its own fixed labels; these never reach them.
 	Labels map[string]string
 
 	// Namespace Temporal installs into (resolved literal from the

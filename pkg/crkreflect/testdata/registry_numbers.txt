@@ -736,6 +736,7 @@ Auth0ResourceServer=8003
 Auth0Action=8004
 Auth0Role=8005
 Auth0User=8006
+Auth0TenantSettings=8007
 OpenFgaStore=9000
 OpenFgaAuthorizationModel=9001
 OpenFgaRelationshipTuple=9002

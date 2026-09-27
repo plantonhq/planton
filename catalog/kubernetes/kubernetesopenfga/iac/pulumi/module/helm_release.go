@@ -169,6 +169,10 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	// cannot reach it anyway.
 	values["playground"] = map[string]interface{}{"enabled": false}
 
+	// Every OpenFGA pod carries the resource's identity labels (the
+	// migration runs as an init container in the same pod).
+	values["podExtraLabels"] = stringMapToInterface(locals.Labels)
+
 	// ---- authn --------------------------------------------------------------------
 	// Unset renders NOTHING (server default: no authentication). Keys
 	// reach the server through a Kubernetes Secret in both preshared

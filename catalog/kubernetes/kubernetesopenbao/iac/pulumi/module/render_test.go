@@ -360,3 +360,28 @@ func TestRender_WriteFixturesForCrossEngineDiff(t *testing.T) {
 		}
 	}
 }
+
+func TestRender_EveryServerPodNamesItsOrganizationAndEnvironment(t *testing.T) {
+	spec := fixtures()["raft-1"]
+	spec.Namespace = literal("openbao")
+	locals := initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoStackInput{
+		Target: &kubernetesopenbaov1alpha1.KubernetesOpenBao{
+			Metadata: &shared.CloudResourceMetadata{Name: "vault", Org: "acme", Env: "dev"},
+			Spec:     spec,
+		},
+	})
+	labels, ok := serverValues(t, locals)["extraLabels"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("server.extraLabels not rendered")
+	}
+	// The two keys both engines spell alike: what an operator filters a
+	// log line or a metric by.
+	for k, want := range map[string]string{
+		"planton.ai/organization": "acme",
+		"planton.ai/environment":  "dev",
+	} {
+		if labels[k] != want {
+			t.Errorf("server pod label %s = %v, want %q", k, labels[k], want)
+		}
+	}
+}

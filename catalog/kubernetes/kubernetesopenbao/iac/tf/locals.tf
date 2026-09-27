@@ -20,9 +20,12 @@ locals {
   data_mount_path = "/openbao/data"
   tls_mount_path  = "/openbao/tls"
 
-  # Planton governance labels for module-created satellites (namespace,
-  # seal-credentials Secret) — never injected into the chart's own
-  # resources; Helm owns those.
+  # Planton governance labels: stamped on the module-created satellites
+  # (namespace, seal-credentials Secret) and on every server pod through
+  # the chart's own server.extraLabels -- so a log line, a metric or an
+  # alert from the vault names its organization and environment. The
+  # StatefulSet's selector is the chart's own fixed labels; these never
+  # reach it.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -268,7 +271,8 @@ locals {
   # engine shape, never a two-arm conditional with different object
   # shapes (the HCL type-unification class).
   server_block_raw = {
-    dev = local.dev ? { enabled = true } : null
+    extraLabels = local.labels
+    dev         = local.dev ? { enabled = true } : null
     ha = local.dev ? null : { for k, v in {
       enabled  = true
       replicas = local.replicas
@@ -396,8 +400,9 @@ locals {
   # null unless the injector is on, and the prune drops it.
   injector_enabled = try(var.spec.injector.enabled, false)
   injector_block = { for k, v in {
-    enabled  = local.injector_enabled
-    replicas = local.injector_enabled && try(var.spec.injector.replicas, null) != null ? var.spec.injector.replicas : null
+    enabled     = local.injector_enabled
+    extraLabels = local.injector_enabled ? local.labels : null # the injector's pods name their organization and environment too
+    replicas    = local.injector_enabled && try(var.spec.injector.replicas, null) != null ? var.spec.injector.replicas : null
     webhook = local.injector_enabled && try(coalesce(var.spec.injector.failure_policy), "") != "" ? {
       failurePolicy = var.spec.injector.failure_policy
     } : null

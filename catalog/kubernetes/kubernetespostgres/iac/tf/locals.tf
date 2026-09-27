@@ -39,7 +39,11 @@ locals {
   # Resource-identity labels stamped on every module-created object
   # (namespace, Cluster, ObjectStores, ScheduledBackups, credential
   # Secrets). CloudNativePG derives ITS objects' identity from the Cluster
-  # name; these labels tie the whole family back to the Planton resource.
+  # name; these labels tie the whole family back to the Planton resource,
+  # and the Cluster's inheritedMetadata hands them to every object the
+  # operator creates -- the instance pods above all, so a log line, a
+  # metric or an alert from the database names its organization and
+  # environment.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -579,6 +583,10 @@ locals {
         # generator-produced and carries no default for the optional field.
         instances = coalesce(try(var.spec.instances, null), 1)
         imageName = try(var.spec.image_name, "") != "" ? var.spec.image_name : null
+
+        # The operator stamps these on every object it creates (the
+        # instance pods, their volumes, the Services).
+        inheritedMetadata = { labels = local.labels }
 
         storage    = local.storage_body
         walStorage = local.wal_storage_body

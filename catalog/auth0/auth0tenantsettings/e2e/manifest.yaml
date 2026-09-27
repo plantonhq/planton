@@ -1,0 +1,34 @@
+# Auth0 Tenant Settings Test Manifest
+# This file is used for testing the Auth0TenantSettings component.
+#
+# Applying it REWRITES the settings of the tenant the credential belongs to:
+# run it only against a test tenant nobody signs in to.
+#
+# Prerequisites:
+# 1. Set the following environment variables:
+#    - AUTH0_DOMAIN: the test tenant's domain (e.g., your-test-tenant.auth0.com)
+#    - AUTH0_CLIENT_ID: M2M application client ID
+#    - AUTH0_CLIENT_SECRET: M2M application client secret
+#
+# 2. The M2M application must have these scopes:
+#    - read:tenant_settings
+#    - update:tenant_settings
+
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: test-tenant-settings
+  org: test-org
+  env: development
+  labels:
+    purpose: testing
+spec:
+  # The name Universal Login shows: "Log in to <friendlyName> to continue to <application>"
+  friendlyName: Acme
+
+  # The logo shown on the login and consent pages
+  pictureUrl: https://assets.example.com/logo.png
+
+  # The support contacts the login and error pages offer
+  supportEmail: support@example.com
+  supportUrl: https://example.com/support

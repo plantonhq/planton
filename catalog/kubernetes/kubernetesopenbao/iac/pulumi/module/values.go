@@ -14,7 +14,8 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	spec := locals.Spec
 
 	// ------------------------------ server --------------------------------
-	server := map[string]interface{}{}
+	// Every server pod carries the resource's identity labels.
+	server := map[string]interface{}{"extraLabels": stringMapToInterface(locals.Labels)}
 
 	// THE CHART IS TOLD A MODE, NEVER AN ENGINE. It offers `dev`,
 	// `standalone`, and `ha`, plus a raw configuration string per mode;
@@ -278,7 +279,8 @@ func injectorBlock(locals *Locals) map[string]interface{} {
 	if inj == nil || !inj.GetEnabled() {
 		return map[string]interface{}{"enabled": false}
 	}
-	block := map[string]interface{}{"enabled": true}
+	// The injector's pods name their organization and environment too.
+	block := map[string]interface{}{"enabled": true, "extraLabels": stringMapToInterface(locals.Labels)}
 	if inj.Replicas != nil {
 		block["replicas"] = int(inj.GetReplicas())
 	}

@@ -3,7 +3,7 @@
 
 # Auth0 Client Resource
 resource "auth0_client" "this" {
-  name        = local.client_name
+  name        = local.display_name
   app_type    = local.application_type
   description = local.description
 

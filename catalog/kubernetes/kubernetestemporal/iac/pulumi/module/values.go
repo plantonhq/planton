@@ -210,6 +210,9 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	if img := imageBlock(spec.GetImages().GetServer()); img != nil {
 		server["image"] = img
 	}
+	// Every server service's pods (frontend, history, matching, worker)
+	// carry the resource's identity labels.
+	server["podLabels"] = stringMapToInterface(locals.Labels)
 
 	values["server"] = server
 
@@ -230,6 +233,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 			web["image"] = img
 		}
 		mergeInto(web, scheduling)
+		web["podLabels"] = stringMapToInterface(locals.Labels)
 	}
 	values["web"] = web
 
@@ -243,6 +247,8 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	admintools := map[string]interface{}{}
 	if !adminToolsEnabled {
 		admintools["enabled"] = false
+	} else {
+		admintools["podLabels"] = stringMapToInterface(locals.Labels)
 	}
 	if img := imageBlock(spec.GetImages().GetAdminTools()); img != nil {
 		admintools["image"] = img
@@ -251,6 +257,11 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	if len(admintools) > 0 {
 		values["admintools"] = admintools
 	}
+
+	// ---- the schema-setup and namespace Jobs' pods ----------------------------
+	// The chart reads only podLabels from this block here; the Jobs
+	// themselves are enabled by the datastores' manageSchema.
+	values["schema"] = map[string]interface{}{"podLabels": stringMapToInterface(locals.Labels)}
 
 	// ---- 1.29-image compatibility shims: OFF at this pin --------------------
 	// The chart defaults both shims ON for Temporal 1.29 images; our pin

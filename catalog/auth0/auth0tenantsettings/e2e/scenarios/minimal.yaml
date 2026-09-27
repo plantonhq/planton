@@ -1,0 +1,9 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: e2e-tenant-settings
+  org: e2e-org
+  env: testing
+spec:
+  friendlyName: Planton E2E
+  supportEmail: support@example.com

@@ -39,9 +39,11 @@ locals {
 
   namespace = var.spec.namespace
 
-  # Resource-identity labels stamped on the module-created satellites
-  # (namespace, the auth Secret — never injected into the chart's own
-  # resources; Helm owns those).
+  # Resource-identity labels: stamped on the module-created satellites
+  # (namespace, the auth Secret) and on every Valkey pod through the
+  # chart's own podLabels -- so a log line, a metric or an alert from it
+  # names its organization and environment. The chart's selector is its
+  # own fixed labels (valkey.selectorLabels); these never reach it.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -147,6 +149,9 @@ locals {
       # `<name>-headless`, and the replication read Service as
       # `<name>-read`, which is exactly what the stack outputs promise.
       fullnameOverride = local.release_name
+
+      # Every pod names its organization and environment (the labels local).
+      podLabels = local.labels
 
       # Chart defaults: docker.io / valkey/valkey at the chart's app
       # version.

@@ -28,9 +28,12 @@ locals {
   # fixed ports (this module never moves them).
   service_name = var.metadata.name
 
-  # Planton governance labels for the module-created satellites (the
-  # namespace and the authn-keys Secret — never injected into the
-  # chart's own resources; Helm owns those).
+  # Planton governance labels: stamped on the module-created satellites
+  # (the namespace and the authn-keys Secret) and on every OpenFGA pod
+  # through the chart's own podExtraLabels (the migration runs as an init
+  # container in the same pod) -- so a log line, a metric or an alert from
+  # it names its organization and environment. The chart's selector is its
+  # own fixed labels; these never reach it.
   labels = merge(
     {
       "planton.ai/resource"      = "true"
@@ -289,6 +292,8 @@ locals {
       autoscaling  = local.autoscaling_block
       nodeSelector = length(try(var.spec.scheduling.node_selector, {})) > 0 ? var.spec.scheduling.node_selector : null
       tolerations  = length(local.scheduling_tolerations) > 0 ? local.scheduling_tolerations : null
+
+      podExtraLabels = local.labels
 
       serviceAccount = length(try(var.spec.service_account_annotations, {})) > 0 ? {
         annotations = var.spec.service_account_annotations

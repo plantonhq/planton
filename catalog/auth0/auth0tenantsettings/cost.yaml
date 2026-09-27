@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0tenantsettings
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for tenant settings: the tenant's friendly name, logo and support contacts are editable on every plan, the Free plan included (the preprod tenant this component was first applied to is on the Free plan). What is gated is page customization beyond them -- Universal Login page templates answer 402 Payment Required on the Free plan -- and this component does not touch it."
+  notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). These settings change what the login page shows, never what a sign-in costs."

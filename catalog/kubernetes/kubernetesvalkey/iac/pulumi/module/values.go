@@ -36,6 +36,9 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	// Valkey instances coexist in one cluster.
 	values["fullnameOverride"] = locals.ReleaseName
 
+	// Every pod names its organization and environment (locals.Labels).
+	values["podLabels"] = stringMapToInterface(locals.Labels)
+
 	// ---- image -----------------------------------------------------------
 	// Chart defaults: docker.io / valkey/valkey at the chart's app version.
 	if img := spec.GetImage(); img != nil {
