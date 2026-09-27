@@ -66,6 +66,12 @@ Push to GitHub and your own laptop builds the commit in a pod and deploys it to 
 
 [Learn about CI/CD on Your Laptop](/docs/ci-cd/on-your-laptop)
 
+### Trusted Workflows
+
+Let a GitHub repository's Actions workflows register and deploy its service with no stored key. Trust exactly one repository in the console, copy the workflow it fills in, and see every run the trust admitted or refused, and why.
+
+[Learn about Trusted Workflows](/docs/ci-cd/trusted-workflows)
+
 ### Secrets and Variables
 
 Runtime configuration management through organization-scoped and environment-scoped secrets and variables. Secrets live provider-native in your own secret backend and resolve just-in-time in the Runner. Variables support literal values or dynamic references to infrastructure outputs.

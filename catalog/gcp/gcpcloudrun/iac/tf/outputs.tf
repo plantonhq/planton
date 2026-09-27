@@ -27,3 +27,8 @@ output "urls" {
   description = "Every URL serving this service"
   value       = google_cloud_run_v2_service.main.urls
 }
+
+output "project_id" {
+  description = "GCP project the service runs in -- with service_name and location, the coordinate the platform finds it by"
+  value       = google_cloud_run_v2_service.main.project
+}

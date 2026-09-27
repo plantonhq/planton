@@ -64,7 +64,7 @@ jobs:
 
 ## Switching to a Planton backend later
 
-The same action serves the whole journey. When you want pipelines, approval gates, deployment history, and rollout verification, add `org`, `audience`, and `service` to the same step and drop the state env — the backend holds state, and `image` stays exactly as it is. The [action's README](https://github.com/plantonhq/planton/tree/main/actions/deploy) carries the full input table, the keyless trust setup for connected mode, and the switch table in both directions.
+The same action serves the whole journey. When you want pipelines, approval gates, deployment history, and rollout verification, add `org`, `audience`, and `service` to the same step and drop the state env — the backend holds state, and `image` stays exactly as it is. Connected mode needs one trust, made once: [Trusted Workflows](/docs/ci-cd/trusted-workflows) walks it in the console and hands back the whole workflow, filled in. The [action's README](https://github.com/plantonhq/planton/tree/main/actions/deploy) carries the full input table, the keyless trust setup for connected mode, and the switch table in both directions.
 
 ## Details worth knowing
 

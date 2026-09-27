@@ -157,7 +157,9 @@ func checkPulumiOutputs(kind cloudresourcekind.CloudResourceKind, kindName, modu
 	var unknown []string
 	exported := map[string]bool{}
 	for _, export := range exports {
-		field := strings.ReplaceAll(export.Name, "-", "_")
+		// A nested field is exported by its path ("password_secret.name"), which the transformer
+		// flattens back onto the top-level field it names, so the field is the path's first step.
+		field, _, _ := strings.Cut(strings.ReplaceAll(export.Name, "-", "_"), ".")
 		marked, known := schema[field]
 		if !known {
 			unknown = append(unknown, export.Name)

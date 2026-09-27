@@ -196,6 +196,7 @@ GitHub Actions can also be the deploy platform itself: the published Deploy Acti
 
 - [What is a Service?](/docs/ci-cd/what-is-a-service) — Service configuration including pipeline settings
 - [Deploy from GitHub Actions](/docs/ci-cd/deploy-from-github-actions) — The published Deploy Action, offline and connected
+- [Trusted Workflows](/docs/ci-cd/trusted-workflows) — Let a repository's workflows register and deploy with no stored key
 - [Build Methods](/docs/ci-cd/build-methods) — How artifacts are built during the build stage
 - [Self-Managed Pipelines](/docs/ci-cd/self-managed-pipelines) — Custom Tekton pipeline definitions
 - [Deployment Targets](/docs/ci-cd/deployment-targets) — Where the deploy stage provisions resources

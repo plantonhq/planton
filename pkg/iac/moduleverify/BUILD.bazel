@@ -37,6 +37,7 @@ go_test(
     name = "moduleverify_test",
     srcs = [
         "moduleverify_test.go",
+        "outputs_parity_test.go",
         "secrethome_test.go",
         "secretoutputs_test.go",
     ],
