@@ -59,6 +59,13 @@ The bar for every component:
   concept. Every provider is being rebuilt to this same bar concurrently, so a sibling
   *provider*'s component is an outdated, incomplete reference that only drags quality down.
   (Structure is the sole cross-provider constant — see the STRUCTURE-not-DEPTH bullet above.)
+- **A provider object with no identity or lifecycle of its own belongs to the kind it
+  serves.** When an object is keyed by its parent, created and destroyed with it, and
+  referenced by nothing else (an API's default grants for third-party applications,
+  one per subject type), the parent's kind models it as a field and its module declares
+  it. A kind of its own would claim the same provider resource type that other kinds
+  already declare for their own purposes (a client's per-API grants), and the two
+  would fight over it.
 - **Docs are part of the experience, not polish.** Dense intent-explaining field comments,
   empathetic CEL messages, richly-commented Terraform and Pulumi module code (explaining
   *why*/trade-offs/provider quirks/non-obvious ordering, not narration -- the module-comment
@@ -393,7 +400,8 @@ platform's guided import can derive identifiers instead of asking the user
    that exist only in IaC configuration -- `force_destroy`-class delete
    behavior, and the kubernetes provider's `wait_for_*` lifecycle knobs
    (`wait_for_rollout`, `wait_for_load_balancer`,
-   `wait_for_service_account_token`) -- import can never carry them; declare
+   `wait_for_service_account_token`), and write-only credentials the API never
+   returns (an email provider's `credentials`) -- import can never carry them; declare
    them when the resource type first enters the catalog, or every consumer's
    round-trip lane fails on the same knob later). When a provider's importer
    fails to read back ONE nested block (found only by running the round-trip),
@@ -410,7 +418,13 @@ platform's guided import can derive identifiers instead of asking the user
    being destroyed on its first apply), and a scenario carrying write-only
    ForceNew SECRETS opts out with the reason-carrying
    `planton.dev/e2e-import-roundtrip-skip` annotation instead (rotation is
-   supposed to replace); (b) a resource type whose upstream importer is
+   supposed to replace); (b) a scenario whose spec leaves unset an argument the
+   provider has no computed value for, on an object that already holds a value
+   (a tenant-wide object earlier lanes set, a setting a registration document
+   seeds), plans that value's removal after a blind import. That is the
+   adoption rule measured, not a recipe defect: the scenario opts out with the
+   skip annotation naming the argument, and a sibling scenario that declares
+   the value proves the recipe; (c) a resource type whose upstream importer is
    missing OR defective is excluded from the round-trip ONLY by
    `not_importable_upstream_reason` in place of `id_format` -- a `notes`
    sentence saying "excluded" is not machine-honored, and the runner will
@@ -1061,7 +1075,10 @@ account (a tenant's settings, branding, prompt or email provider; an account's
 settings), confirm which tenant the ambient credentials reach: the lane applies
 and destroys that tenant's one object, so a shell that happens to carry a
 shared tenant's credentials would rewrite what its users see. Such lanes run
-only against a dedicated test tenant.
+only against a dedicated test tenant, and a local lane never inherits the
+shell's provider credentials: it unsets them (`env -u AUTH0_DOMAIN -u
+AUTH0_CLIENT_ID -u AUTH0_CLIENT_SECRET`) and sets the test tenant's for that one
+command, read from the vault.
 
 ```bash
 # Confirm which provider secrets exist (names only) and match the harness env vars:

@@ -115,9 +115,13 @@ func PrepareWorkDir(sourceModuleDir string) (string, func(), error) {
 	}
 
 	// Never copied: engine-local state (a shared checkout may carry a
-	// developer's .terraform plugin tree and state files).
+	// developer's .terraform plugin tree, its dependency lock and state
+	// files). The lock is git-ignored, so no release zip carries it: a
+	// stale one pinned below the module's provider constraint fails init
+	// on a lane that a release would pass.
 	skip := map[string]bool{
-		".terraform": true,
+		".terraform":          true,
+		".terraform.lock.hcl": true,
 	}
 
 	var copyTree func(src, dst string) error

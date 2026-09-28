@@ -32,7 +32,7 @@ variable "spec" {
     consent_policy                              = optional(string)
     token_lifetime_for_anonymous_access_tokens  = optional(number)
     verification_location                       = optional(string)
-    signing_secret                              = string
+    signing_secret                              = optional(string)
     access_token = optional(object({
       claims_mapping = optional(object({
         custom_claims = optional(list(object({

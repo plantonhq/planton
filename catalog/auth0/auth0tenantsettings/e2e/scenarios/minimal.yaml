@@ -4,6 +4,13 @@ metadata:
   name: e2e-tenant-settings
   org: e2e-org
   env: testing
+  annotations:
+    planton.dev/e2e-import-roundtrip-skip: >-
+      The test tenant keeps what earlier lanes set (Auth0 has no delete for
+      tenant settings), and default_redirection_uri has no computed value, so
+      a blind import of this spec, which leaves it unset, plans its removal:
+      the adoption rule the spec's comments state, measured here. The rich
+      scenario declares it and proves the recipe.
 spec:
   friendlyName: Planton E2E
   supportEmail: support@example.com

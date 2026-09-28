@@ -119,7 +119,7 @@ func dnsZone(
 	ctx.Export(OpZoneId, createdDomain.ID())
 	// DigitalOcean's authoritative name servers are a fixed platform-wide set
 	// the API does not return per zone.
-	ctx.Export(OpNameServers, pulumi.StringArray{
+	ctx.Export(OpNameservers, pulumi.StringArray{
 		pulumi.String("ns1.digitalocean.com"),
 		pulumi.String("ns2.digitalocean.com"),
 		pulumi.String("ns3.digitalocean.com"),

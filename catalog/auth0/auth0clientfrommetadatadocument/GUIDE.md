@@ -63,7 +63,7 @@ The provider cannot leave some settings alone once Auth0 holds a value for them.
 
 - `allowedOrigins`, `webOrigins`, `clientMetadata`, `organizationDiscoveryMethods`, `skipNonVerifiableCallbackUriConfirmationPrompt` -- reset when unset
 - `defaultOrganization`, `tokenQuota` -- removed when unset
-- `description`, `requireProofOfPossession` -- proposed for clearing on every plan while Auth0 holds a value; `description` is seeded from the document, so declare it on a fresh registration too
+- `description`, `requireProofOfPossession` -- proposed for clearing on every plan once Auth0's value is in state, which an import puts there. A fresh registration keeps the document's description while it is unset; an imported one plans to clear it (both measured live)
 
 ### The Same URL Is the Same Application
 

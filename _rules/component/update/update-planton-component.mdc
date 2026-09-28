@@ -40,6 +40,15 @@ despite the schema marking it optional). A surface modeled from the schema alone
 every offline gate and be categorically undeployable live. When the doc page and schema
 disagree, the doc page plus a live probe is the truth to model.
 
+**Extending a kind that manages live objects keeps unset unmanaged.** Every field the
+update adds has presence, and both modules send it only when the spec sets it, so an
+object deployed before the update previews no change. That holds only for provider
+arguments with a computed value: an optional argument the provider does not compute is
+planned for removal whenever the spec leaves it unset and the object holds a value.
+Find each one in the provider schema, measure it with the blind-import round-trip
+(`PLANTON_E2E_IMPORT_ROUNDTRIP=1`), and name it in the field comment and the GUIDE's
+adoption section: an adopted object declares its live value.
+
 ## Improve this workflow as you use it (NON-NEGOTIABLE)
 
 If updating a component required knowledge this rule or its flow rules did not give you — an undocumented mechanism you had to reverse-engineer, a wrong or misleading implication, a missing step, or a stale path — amend this rule, the relevant flow rule, or `architecture/component.md` in the same session, as timeless guidance (never naming a project or a task), so the next agent never has to re-learn it. The workflow is expected to get sharper with every use.

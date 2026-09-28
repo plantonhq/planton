@@ -13,7 +13,7 @@ output "resource_group_name" {
   value       = azurerm_dns_zone.main.resource_group_name
 }
 
-output "name_servers" {
+output "nameservers" {
   description = "The four name servers Azure assigned to this zone. The zone only answers the internet once these are configured at the domain's registrar (or as parent-zone NS records for subdomain delegation)."
   value       = azurerm_dns_zone.main.name_servers
 }

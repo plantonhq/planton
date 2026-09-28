@@ -35,6 +35,10 @@ type brandingVerifier struct{}
 
 func (*brandingVerifier) IDOutput() string { return "theme_id" }
 
+// IDOutputOptional is true: a branding without a theme reports an empty
+// theme_id, and the tenant's branding is still the object to verify.
+func (*brandingVerifier) IDOutputOptional() bool { return true }
+
 func (*brandingVerifier) VerifyExists(checker ResourceChecker, themeID string) error {
 	if err := requireAnswers(checker, "auth0branding", "branding", "after deploy"); err != nil {
 		return err

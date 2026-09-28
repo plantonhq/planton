@@ -8,7 +8,7 @@ output "zone_id" {
   value       = digitalocean_domain.dns_zone.id
 }
 
-output "name_servers" {
+output "nameservers" {
   description = "DigitalOcean's authoritative name servers (a fixed platform-wide set the API does not return per zone); set these at the registrar to delegate"
   value = [
     "ns1.digitalocean.com",

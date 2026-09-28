@@ -10,7 +10,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **SOA Record customization** (optional) -- when the spec carries an `soaRecord` block, the zone's Start of Authority record carries your contact email and timers instead of Azure's defaults; unlike a private zone's SOA, every field updates in place
 - **Azure Tags** -- your governance tags merged over the Planton-derived resource tags (organization, environment, resource id); a user tag with the same key wins
 
-Creating the zone does NOT make it authoritative on the internet: the domain resolves through this zone only once the name servers from `status.outputs.name_servers` are configured at the domain's registrar (or as NS records in the parent zone, for a subdomain delegation).
+Creating the zone does NOT make it authoritative on the internet: the domain resolves through this zone only once the name servers from `status.outputs.nameservers` are configured at the domain's registrar (or as NS records in the parent zone, for a subdomain delegation).
 
 ## Before You Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f dns-zone.yaml
 ```
 
-This creates an empty public zone for `example.com` with Azure's standard SOA record. A Stack Job tracks the provisioning in real time. Capture `status.outputs.name_servers` after the first deployment and configure those four servers at the registrar to make the zone live; then declare records as AzureDnsRecord resources.
+This creates an empty public zone for `example.com` with Azure's standard SOA record. A Stack Job tracks the provisioning in real time. Capture `status.outputs.nameservers` after the first deployment and configure those four servers at the registrar to make the zone live; then declare records as AzureDnsRecord resources.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
-| `name_servers` | The four Azure-assigned name servers | Registrar NS delegation -- the handoff that makes the zone authoritative |
+| `nameservers` | The four Azure-assigned name servers | Registrar NS delegation -- the handoff that makes the zone authoritative |
 | `zone_name` | The DNS zone name (e.g., `example.com`) | AzureDnsRecord `zoneName` field via ValueFromRef -- the record join seam |
 | `resource_group_name` | The resource group the zone lives in | AzureDnsRecord `resourceGroup` field -- the other half of the record join seam |
 | `zone_id` | Azure Resource Manager ID of the DNS zone | Kinds that manage the zone as a whole — alias records targeting the zone, diagnostic settings, Azure Policy assignments |

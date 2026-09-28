@@ -133,7 +133,7 @@ Every other composed name tolerates ordinary env names comfortably.
    get-credentials -g <env>-aks-rg -n <env>-aks`) and watch the platform
    settle: `kubectl get pods -A`.
 2. **Delegate DNS.** The zones in `dns_zone_names` must be delegated at
-   your registrar (their `name_servers` outputs list the four hosts).
+   your registrar (their `nameservers` outputs list the four hosts).
    external-dns then publishes records for every exposed Service.
 3. **Issue the first certificate against staging.** Create a Certificate
    naming `<env>-letsencrypt-staging`; when it reaches Ready, flip the

@@ -20,7 +20,16 @@ go_library(
 
 go_test(
     name = "module_test",
-    srcs = ["outputs_test.go"],
+    srcs = [
+        "main_test.go",
+        "outputs_test.go",
+    ],
     embed = [":module"],
-    deps = ["@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0"],
+    deps = [
+        "//catalog/auth0/auth0customdomain/v1alpha1",
+        "//shared",
+        "@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0",
+        "@com_github_pulumi_pulumi_sdk_v3//go/common/resource",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
 )

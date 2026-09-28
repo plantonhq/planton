@@ -58,7 +58,7 @@ This creates a DNS zone for `example.com` with a single A record pointing the ap
 
 These are the most important decisions when configuring a DNS zone. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Domain name** -- The `domainName` field must be a valid fully-qualified domain name (e.g., `example.com`). After provisioning, update the domain's nameservers at your registrar to DigitalOcean's set (the `name_servers` output). DNS propagation can take up to 48 hours.
+**Domain name** -- The `domainName` field must be a valid fully-qualified domain name (e.g., `example.com`). After provisioning, update the domain's nameservers at your registrar to DigitalOcean's set (the `nameservers` output). DNS propagation can take up to 48 hours.
 
 **Record types** -- Each record in the `records` list specifies a `type` (DigitalOcean accepts A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA; ALIAS and PTR are rejected at validation time), a `name` (use `@` for the apex), one or more `values` (each value becomes its own record -- two A values make round-robin), and an optional `ttlSeconds`. MX records require `priority`, SRV records require `priority`/`weight`/`port`, and CAA records require `flags`/`tag` -- all enforced before any provisioner runs.
 
@@ -84,7 +84,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 |--------|-------------|----------------------|
 | `zone_name` | Domain name of the DNS zone | DNS record `domain` references, App Platform custom domains |
 | `zone_id` | The zone's resource identifier -- the domain name itself, not a UUID | API operations, imports |
-| `name_servers` | DigitalOcean's fixed authoritative nameserver set | Domain registrar NS delegation |
+| `nameservers` | DigitalOcean's fixed authoritative nameserver set | Domain registrar NS delegation |
 | `urn` | The domain's uniform resource name (`do:domain:example.com`) | DigitalOcean project assignment, audit |
 | `record_ids` | Numeric ids of the inline records, keyed `<record name>-<record index>-<value index>` | API operations on a single record, state import (`{domain},{record_id}`) |
 

@@ -1,6 +1,6 @@
 # Simple Website Zone
 
-This preset creates a DNS zone with the two records a basic website needs: the apex pointing at the web server's IPv4 address and `www` following the apex. The zone starts serving on DigitalOcean's name servers immediately; the domain resolves publicly once the registrar delegates to `ns1`/`ns2`/`ns3.digitalocean.com` (the zone's `name_servers` output).
+This preset creates a DNS zone with the two records a basic website needs: the apex pointing at the web server's IPv4 address and `www` following the apex. The zone starts serving on DigitalOcean's name servers immediately; the domain resolves publicly once the registrar delegates to `ns1`/`ns2`/`ns3.digitalocean.com` (the zone's `nameservers` output).
 
 ## When to Use
 

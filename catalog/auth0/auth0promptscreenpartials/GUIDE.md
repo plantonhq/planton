@@ -44,7 +44,7 @@ Auth0 asks that sensitive or regulated data be collected through partials only a
 
 ### The Chain a Partial Needs
 
-Partials render only inside a page template, and a page template needs a custom domain. Apply in this order: the Auth0 Custom Domain and its verification, Auth0 Prompt with `universalLoginExperience: new`, Auth0 Branding with `universalLoginTemplate`, then this component. Without the template, the partials are stored and never shown.
+Auth0 accepts partials only on a tenant with a custom domain: without one, it refuses them with 403 "This feature requires at least one custom domain to be configured for the tenant" (measured live). They render only inside a page template. Apply in this order: the Auth0 Custom Domain and its verification, Auth0 Prompt with `universalLoginExperience: new`, Auth0 Branding with `universalLoginTemplate`, then this component. With a custom domain but no template, the partials are stored and never shown.
 
 ### Pick the Prompts Your Flow Uses
 

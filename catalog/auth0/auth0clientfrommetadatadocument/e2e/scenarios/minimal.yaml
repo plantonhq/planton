@@ -15,5 +15,10 @@ metadata:
   env: testing
   annotations:
     planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CIMD_URL
+    planton.dev/e2e-import-roundtrip-skip: >-
+      The document sets a description and this spec declares none; the
+      provider has no computed value for it, so a blind import plans to clear
+      it (the adoption rule the spec's description comment states, measured
+      here). The full-settings scenario declares it and proves the recipe.
 spec:
   externalClientId: ${E2E_ENV:PLANTON_E2E_AUTH0_CIMD_URL}

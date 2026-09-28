@@ -6,8 +6,8 @@ const (
 	// OpZoneId is the zone's resource identifier — DigitalOcean addresses
 	// domains by name, so this is the domain name itself.
 	OpZoneId = "zone_id"
-	// OpNameServers is DigitalOcean's fixed authoritative name server set.
-	OpNameServers = "name_servers"
+	// OpNameservers is DigitalOcean's fixed authoritative name server set.
+	OpNameservers = "nameservers"
 	// OpUrn is the uniform resource name of the domain.
 	OpUrn = "urn"
 	// OpRecordIds is the map of inline record ids keyed identically to the

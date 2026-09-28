@@ -77,7 +77,8 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	id := ""
 	if idOutput := v.IDOutput(); idOutput != "" {
 		id = extractResourceID(outputs, idOutput)
-		if id == "" {
+		optional, _ := v.(verify.OptionalIDVerifier)
+		if id == "" && (optional == nil || !optional.IDOutputOptional()) {
 			return errors.Errorf("no resource ID found in outputs for %s (output %q)", component, idOutput)
 		}
 	}
@@ -100,10 +101,13 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 
 	h.mu.Lock()
 	key := componentKey(ctx, component)
-	id := h.deployedIDs[key]
+	id, stored := h.deployedIDs[key]
 	h.mu.Unlock()
 
-	if id == "" && v.IDOutput() != "" {
+	// An empty id is stored for a kind with no id output, and for one whose
+	// id output is optional and was empty; only a missing entry means
+	// VerifyDeployed never ran.
+	if !stored && v.IDOutput() != "" {
 		return errors.Errorf("no stored resource ID for %s -- VerifyDeployed may not have run", component)
 	}
 

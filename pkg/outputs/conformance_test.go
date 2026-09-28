@@ -7640,7 +7640,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureDnsZone: zone_name (with resource_group_name) is the join
 			// key AzureDnsRecord addresses record sets through; zone_id is
 			// the ARM seam for kinds watching the zone (Front Door custom
-			// domains, AKS web-app routing); name_servers is the registrar
+			// domains, AKS web-app routing); nameservers is the registrar
 			// delegation handoff.
 			name: "AzureDnsZone",
 			kind: cloudresourcekind.CloudResourceKind_AzureDnsZone,
@@ -7648,12 +7648,12 @@ func TestStackOutputsConformance(t *testing.T) {
 				"zone_id":                   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dns-rg/providers/Microsoft.Network/dnsZones/example.com",
 				"zone_name":                 "example.com",
 				"resource_group_name":       "dns-rg",
-				"name_servers":              []interface{}{"ns1-05.azure-dns.com.", "ns2-05.azure-dns.net.", "ns3-05.azure-dns.org.", "ns4-05.azure-dns.info."},
+				"nameservers":               []interface{}{"ns1-05.azure-dns.com.", "ns2-05.azure-dns.net.", "ns3-05.azure-dns.org.", "ns4-05.azure-dns.info."},
 				"max_number_of_record_sets": 10000,
 			},
 			mustPopulate: []string{
 				"zone_id", "zone_name", "resource_group_name",
-				"name_servers", "max_number_of_record_sets",
+				"nameservers", "max_number_of_record_sets",
 			},
 		},
 		{

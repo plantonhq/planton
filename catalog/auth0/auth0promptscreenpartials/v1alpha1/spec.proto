@@ -15,9 +15,11 @@ import "buf/validate/validate.proto";
 // of the prompt. Form fields a partial adds are submitted with the form and
 // reach Actions as custom prompt fields.
 //
-// Partials render only inside a page template (Auth0Branding's
-// universal_login_template), which needs a custom domain on the tenant, and only
-// with the Universal Login experience "new".
+// Auth0 accepts partials only on a tenant with a custom domain: without one
+// it refuses them (403 "requires at least one custom domain"), so deploy an
+// Auth0CustomDomain first. They render only inside a page template
+// (Auth0Branding's universal_login_template) and only with the Universal Login
+// experience "new".
 //
 // The credential needs read:prompts and update:prompts on the tenant's
 // Management API (iac/permissions.yaml).

@@ -265,7 +265,7 @@ Reference an output from another manifest as `valueFrom: {kind: DigitalOceanDnsZ
 |---|---|---|
 | `status.outputs.zone_name` | `string` | The domain name of the DNS zone (e.g. "example.com"). |
 | `status.outputs.zone_id` | `string` | The zone's resource identifier. DigitalOcean addresses domains by NAME — this is the domain name itself, not a UUID. |
-| `status.outputs.name_servers` | `[]string` | DigitalOcean's authoritative name servers for every hosted zone (ns1/ns2/ns3.digitalocean.com — a fixed platform-wide set the API does not return per zone). Set these at the domain's registrar to delegate. |
+| `status.outputs.nameservers` | `[]string` | DigitalOcean's authoritative name servers for every hosted zone (ns1/ns2/ns3.digitalocean.com — a fixed platform-wide set the API does not return per zone). Set these at the domain's registrar to delegate. |
 | `status.outputs.urn` | `string` | The uniform resource name of the domain (e.g. "do:domain:example.com"). |
 | `status.outputs.record_ids` | `map<string, string>` | Numeric ids of the inline `records`, one entry per record value, keyed by "<record name>-<record index>-<value index>" (the index positions in the manifest's `records` list and that entry's `values` list, both from 0 — e.g. "@-0-0", "www-1-0"). DigitalOcean addresses a record as /v2/domains/{domain}/records/{id}, and state import takes "{domain},{record_id}"; this map is where the second half comes from. Empty for a zone with no inline records. |
 

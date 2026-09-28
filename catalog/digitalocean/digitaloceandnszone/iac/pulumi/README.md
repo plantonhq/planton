@@ -18,4 +18,4 @@ Deploys a `digitalocean:index/domain:Domain` plus one `digitalocean:index/dnsRec
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `zone_name`, `zone_id`, `name_servers`, `urn`, and `record_ids` (the inline records' numeric ids keyed by the resource name `name-index-valueIndex` — the second half of each record's `{domain},{record_id}` import id).
+Exactly the kind's stack-output contract, identical to the Terraform module: `zone_name`, `zone_id`, `nameservers`, `urn`, and `record_ids` (the inline records' numeric ids keyed by the resource name `name-index-valueIndex` — the second half of each record's `{domain},{record_id}` import id).

@@ -4,7 +4,7 @@ Judgment calls that matter when you run DNS zones on DigitalOcean.
 
 ## The zone works before the delegation does
 
-Adding a domain to DigitalOcean hosts it instantly on ns1/ns2/ns3.digitalocean.com — queries against those servers answer immediately, which is what the E2E lanes verify. The public internet, though, resolves through whatever nameservers the registrar advertises, so nothing changes for real users until the registrar's NS delegation is updated to DigitalOcean's set (the `name_servers` output) and the old delegation's TTL expires. Plan cutovers in that order: create the zone, populate the records, verify against DigitalOcean's nameservers directly (`dig @ns1.digitalocean.com`), then flip the registrar.
+Adding a domain to DigitalOcean hosts it instantly on ns1/ns2/ns3.digitalocean.com — queries against those servers answer immediately, which is what the E2E lanes verify. The public internet, though, resolves through whatever nameservers the registrar advertises, so nothing changes for real users until the registrar's NS delegation is updated to DigitalOcean's set (the `nameservers` output) and the old delegation's TTL expires. Plan cutovers in that order: create the zone, populate the records, verify against DigitalOcean's nameservers directly (`dig @ns1.digitalocean.com`), then flip the registrar.
 
 ## One zone name per all of DigitalOcean
 

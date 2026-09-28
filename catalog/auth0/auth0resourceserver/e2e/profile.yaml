@@ -13,6 +13,8 @@ spec:
   # credential holds the resource_servers and client_grants scopes of
   # iac/permissions.yaml.
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
   timeout_minutes: 5

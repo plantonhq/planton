@@ -51,4 +51,4 @@ module "dns_zone" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module: `zone_name`, `zone_id`, `name_servers`, `urn`, and `record_ids` (the inline records' numeric ids keyed by the `for_each` key `name-index-valueIndex` — the second half of each record's `{domain},{record_id}` import id).
+Exactly the kind's stack-output contract, identical to the Pulumi module: `zone_name`, `zone_id`, `nameservers`, `urn`, and `record_ids` (the inline records' numeric ids keyed by the `for_each` key `name-index-valueIndex` — the second half of each record's `{domain},{record_id}` import id).

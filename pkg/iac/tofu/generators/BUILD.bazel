@@ -46,6 +46,7 @@ go_test(
     embed = [":generators"],
     deps = [
         "//catalog/_test/testcloudresourcekubernetes/v1alpha1",
+        "//catalog/auth0/auth0resourceserver/v1alpha1",
         "//catalog/aws/awsecrrepo/v1alpha1",
         "//catalog/aws/awsiamrole/v1alpha1",
         "//catalog/aws/awsroute53zone/v1alpha1",

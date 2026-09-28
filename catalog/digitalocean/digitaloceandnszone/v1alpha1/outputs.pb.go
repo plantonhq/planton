@@ -33,7 +33,7 @@ type DigitalOceanDnsZoneStackOutputs struct {
 	// DigitalOcean's authoritative name servers for every hosted zone
 	// (ns1/ns2/ns3.digitalocean.com — a fixed platform-wide set the API does
 	// not return per zone). Set these at the domain's registrar to delegate.
-	NameServers []string `protobuf:"bytes,3,rep,name=name_servers,json=nameServers,proto3" json:"name_servers,omitempty"`
+	Nameservers []string `protobuf:"bytes,3,rep,name=nameservers,proto3" json:"nameservers,omitempty"`
 	// The uniform resource name of the domain (e.g. "do:domain:example.com").
 	Urn string `protobuf:"bytes,4,opt,name=urn,proto3" json:"urn,omitempty"`
 	// Numeric ids of the inline `records`, one entry per record value, keyed
@@ -92,9 +92,9 @@ func (x *DigitalOceanDnsZoneStackOutputs) GetZoneId() string {
 	return ""
 }
 
-func (x *DigitalOceanDnsZoneStackOutputs) GetNameServers() []string {
+func (x *DigitalOceanDnsZoneStackOutputs) GetNameservers() []string {
 	if x != nil {
-		return x.NameServers
+		return x.Nameservers
 	}
 	return nil
 }
@@ -117,11 +117,11 @@ var File_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto protore
 
 const file_catalog_digitalocean_digitaloceandnszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"?catalog/digitalocean/digitaloceandnszone/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\"\xd1\x02\n" +
+	"?catalog/digitalocean/digitaloceandnszone/v1alpha1/outputs.proto\x125dev.planton.digitalocean.digitaloceandnszone.v1alpha1\"\xd0\x02\n" +
 	"\x1fDigitalOceanDnsZoneStackOutputs\x12\x1b\n" +
 	"\tzone_name\x18\x01 \x01(\tR\bzoneName\x12\x17\n" +
-	"\azone_id\x18\x02 \x01(\tR\x06zoneId\x12!\n" +
-	"\fname_servers\x18\x03 \x03(\tR\vnameServers\x12\x10\n" +
+	"\azone_id\x18\x02 \x01(\tR\x06zoneId\x12 \n" +
+	"\vnameservers\x18\x03 \x03(\tR\vnameservers\x12\x10\n" +
 	"\x03urn\x18\x04 \x01(\tR\x03urn\x12\x84\x01\n" +
 	"\n" +
 	"record_ids\x18\x05 \x03(\v2e.dev.planton.digitalocean.digitaloceandnszone.v1alpha1.DigitalOceanDnsZoneStackOutputs.RecordIdsEntryR\trecordIds\x1a<\n" +

@@ -10,15 +10,21 @@ locals {
   name          = coalesce(var.spec.name, var.metadata.name)
 
   # Token settings
-  signing_alg            = var.spec.signing_alg
-  allow_offline_access   = var.spec.allow_offline_access
-  token_lifetime         = var.spec.token_lifetime
-  token_lifetime_for_web = var.spec.token_lifetime_for_web
+  # An empty string is the spec's unset for these two (proto3, no presence):
+  # sent as null so Auth0 keeps its own value, as the Pulumi module sends each
+  # only when it is non-empty. The provider refuses an empty token_dialect.
+  signing_alg          = var.spec.signing_alg != "" ? var.spec.signing_alg : null
+  allow_offline_access = var.spec.allow_offline_access
+  # A zero lifetime is the spec's unset (proto3 has no presence on these two):
+  # sent as null, so Auth0 keeps its own value, the way the Pulumi module
+  # sends a lifetime only when it is above zero.
+  token_lifetime         = coalesce(var.spec.token_lifetime, 0) > 0 ? var.spec.token_lifetime : null
+  token_lifetime_for_web = coalesce(var.spec.token_lifetime_for_web, 0) > 0 ? var.spec.token_lifetime_for_web : null
 
   # Access control settings
   skip_consent_for_verifiable_first_party_clients = var.spec.skip_consent_for_verifiable_first_party_clients
   enforce_policies                                = var.spec.enforce_policies
-  token_dialect                                   = var.spec.token_dialect
+  token_dialect                                   = var.spec.token_dialect != "" ? var.spec.token_dialect : null
 
   # Scopes
   scopes = coalesce(var.spec.scopes, [])

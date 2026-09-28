@@ -16,7 +16,7 @@ AzureDnsRecord resources referencing this zone's zone_name output, one
 resource per record set, added and removed without touching the zone.
 
 Creating a zone does NOT make it authoritative on the internet: Azure
-assigns four name servers (the name_servers output), and the domain only
+assigns four name servers (the nameservers output), and the domain only
 resolves through this zone once those name servers are configured at the
 domain's registrar (or as NS records in the parent zone, for subdomain
 delegation). The same zone name can exist in many subscriptions at once --
@@ -208,7 +208,7 @@ Reference an output from another manifest as `valueFrom: {kind: AzureDnsZone, na
 | `status.outputs.zone_id` | `string` | The Azure Resource Manager ID of the DNS zone. Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsZones/{name} |
 | `status.outputs.zone_name` | `string` | The DNS zone name (e.g. "example.com"). Echoed from the spec -- AzureDnsRecord resources reference it to address record sets. |
 | `status.outputs.resource_group_name` | `string` | The resource group the zone lives in. Echoed for downstream tooling that addresses records by zone name + resource group rather than parsing the ARM ID. |
-| `status.outputs.name_servers` | `[]string` | The four name servers Azure assigned to this zone (e.g. "ns1-05.azure-dns.com."). The zone only answers the internet once these are configured at the domain's registrar, or as NS records in the parent zone for subdomain delegation. |
+| `status.outputs.nameservers` | `[]string` | The four name servers Azure assigned to this zone (e.g. "ns1-05.azure-dns.com."). The zone only answers the internet once these are configured at the domain's registrar, or as NS records in the parent zone for subdomain delegation. |
 | `status.outputs.max_number_of_record_sets` | `int64` | The maximum number of record sets this zone can hold -- Azure's per-zone capacity limit (10000 by default; higher by support request). A capacity fact for planning, not a live count. |
 
 ## References

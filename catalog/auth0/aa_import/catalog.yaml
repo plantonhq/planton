@@ -66,10 +66,13 @@ spec:
 
     # --- Email ---------------------------------------------------------------------
     # The tenant's one email provider is read without its id; a template imports
-    # by its name.
+    # by its name. Auth0 never returns a provider's credentials, so a fresh
+    # import holds none and the first plan sends the declared ones again
+    # (measured by the blind-import round-trip).
     - terraform_type: auth0_email_provider
       pulumi_type: auth0:index/emailProvider:EmailProvider
       id_format: "{email_provider_import_id}"
+      config_only_attributes: [credentials]
     - terraform_type: auth0_email_template
       pulumi_type: auth0:index/emailTemplate:EmailTemplate
       id_format: "{template}"

@@ -228,10 +228,11 @@ document the way app_type does.
 `string` · optional (explicit presence)
 
 description is a free-text description of the application, at most 140
-characters, seeded from the document's description. The provider does not
-read an unset description as "keep": when the document or an adopted
-application carries one, declare it here (the document's words or your
-own), or every plan proposes to clear it.
+characters, seeded from the document's description. A fresh registration
+keeps the document's description while this is unset, but the provider
+does not read an unset description as "keep" on an adopted application:
+once Auth0's value is in state (after an import), every plan proposes to
+clear it. Declare it when adopting (the document's words or your own).
 
 - rule: {"string":{"maxLen":"140"}}
 

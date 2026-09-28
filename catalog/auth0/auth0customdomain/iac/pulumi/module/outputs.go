@@ -64,17 +64,22 @@ func stringOf(method map[string]interface{}, key string) string {
 // exportOutputs exports the custom domain as Auth0 created it, and the DNS record
 // that proves control of it.
 func exportOutputs(ctx *pulumi.Context, customDomain *auth0.CustomDomain) error {
-	record := pulumi.All(customDomain.Verifications, customDomain.Domain).ApplyT(func(args []interface{}) dnsRecord {
-		return verificationRecord(args[0].([]auth0.CustomDomainVerificationType), args[1].(string))
-	})
+	// Each record output is derived straight from the provider's values: the
+	// output of pulumi.All is untyped, so chaining a typed applier onto it
+	// panics at run time.
+	recordField := func(pick func(dnsRecord) string) pulumi.StringOutput {
+		return pulumi.All(customDomain.Verifications, customDomain.Domain).ApplyT(func(args []interface{}) string {
+			return pick(verificationRecord(args[0].([]auth0.CustomDomainVerificationType), args[1].(string)))
+		}).(pulumi.StringOutput)
+	}
 
 	ctx.Export("id", customDomain.ID())
 	ctx.Export("domain", customDomain.Domain)
 	ctx.Export("status", customDomain.Status)
 	ctx.Export("origin_domain_name", customDomain.OriginDomainName)
-	ctx.Export("dns_record_name", record.ApplyT(func(r dnsRecord) string { return r.Name }))
-	ctx.Export("dns_record_type", record.ApplyT(func(r dnsRecord) string { return r.Type }))
-	ctx.Export("dns_record_value", record.ApplyT(func(r dnsRecord) string { return r.Value }))
+	ctx.Export("dns_record_name", recordField(func(r dnsRecord) string { return r.Name }))
+	ctx.Export("dns_record_type", recordField(func(r dnsRecord) string { return r.Type }))
+	ctx.Export("dns_record_value", recordField(func(r dnsRecord) string { return r.Value }))
 
 	return nil
 }

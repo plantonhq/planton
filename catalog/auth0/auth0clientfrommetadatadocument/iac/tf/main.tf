@@ -14,8 +14,9 @@
 # - The provider then PATCHes the client with the settings the configuration
 #   declares -- only those. Everything the spec leaves unset renders as null
 #   or no block (locals.tf), so Auth0 keeps what the document or the tenant
-#   set, and an adopted application plans no change for a setting it never
-#   declared.
+#   set. An adopted application still plans to change the settings the
+#   provider has no computed value for (description among them); the GUIDE's
+#   adoption section lists them, and the manifest declares their live values.
 # - A change of external_client_id_version makes the provider register again
 #   (Auth0 fetches the document anew) before the PATCH, so declared settings
 #   win over the refreshed document every time.

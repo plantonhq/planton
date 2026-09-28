@@ -80,6 +80,17 @@ EXPORTING OUTPUTS -- APPLYT TYPING IS A DEPLOY-TIME TRAP
   ("applier's first input parameter must be assignable from string, got *string") --
   no offline gate catches it. `go doc` the SDK type to confirm Output vs PtrOutput
   before writing the applier.
+- `pulumi.All(a, b).ApplyT(func(args []interface{}) T {...})` returns an UNTYPED
+  `AnyOutput` whatever `T` is, so a second applier chained onto it must take
+  `interface{}`; a `func(T)` applier there panics at deploy ("applier's first input
+  parameter must be assignable from interface {}"). Derive each exported value from
+  the `All` directly, with an applier that returns a primitive the SDK types (`string`
+  gives `StringOutput`), and assert that type.
+- Run the program under Pulumi's mocks in a module test (`pulumi.RunErr` with
+  `pulumi.WithMocks`, answering the resource's computed attributes; the
+  `catalog/auth0/auth0customdomain/iac/pulumi/module/main_test.go` pattern). Applier
+  typing is checked when the program registers its exports, so this is the one offline
+  check that catches every trap in this section.
 - Values nested in computed LIST/POINTER attributes (e.g. a connection endpoint the
   SDK models as `XEndpointArrayOutput`) do not need an ApplyT either: `Index(...)`
   returns the zero value when out of range and `Elem()` dereferences a Ptr output to

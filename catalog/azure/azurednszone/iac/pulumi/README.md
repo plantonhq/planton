@@ -8,4 +8,4 @@ Key behaviors, documented inline in `module/main.go`:
 
 - Renaming the zone replaces it, every record in it, and the assigned name-server set (breaking registrar delegation until updated).
 - The SOA block is only sent when the spec customizes it; unset timers fall back to Azure's defaults, and the SOA host name is never sent (Azure owns it).
-- Outputs export the delegation handoff (`name_servers`) and the record-addressing join key (`zone_name` + `resource_group_name`).
+- Outputs export the delegation handoff (`nameservers`) and the record-addressing join key (`zone_name` + `resource_group_name`).

@@ -28,6 +28,15 @@ type Verifier interface {
 	IDOutput() string
 }
 
+// OptionalIDVerifier is implemented by a verifier whose id output may be
+// empty on a successful deploy: the object is the tenant's own (its
+// branding), and the output names an optional companion the spec may or may
+// not create (the branding's theme). The verifier then receives an empty id
+// and checks the tenant's object alone.
+type OptionalIDVerifier interface {
+	IDOutputOptional() bool
+}
+
 // defaultIDOutput is the output name every kind reports its identifier
 // under unless its verifier says otherwise.
 const defaultIDOutput = "id"

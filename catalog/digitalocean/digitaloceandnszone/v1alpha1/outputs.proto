@@ -15,7 +15,7 @@ message DigitalOceanDnsZoneStackOutputs {
   // DigitalOcean's authoritative name servers for every hosted zone
   // (ns1/ns2/ns3.digitalocean.com — a fixed platform-wide set the API does
   // not return per zone). Set these at the domain's registrar to delegate.
-  repeated string name_servers = 3;
+  repeated string nameservers = 3;
 
   // The uniform resource name of the domain (e.g. "do:domain:example.com").
   string urn = 4;

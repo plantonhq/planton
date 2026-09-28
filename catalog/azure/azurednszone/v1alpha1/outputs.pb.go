@@ -29,7 +29,7 @@ const (
 // addresses records by zone name and resource group, not by ARM id.
 // `zone_id` is the ARM-id seam consumed by kinds that watch or manage the
 // zone as a whole (Front Door custom-domain validation, AKS web-app
-// routing). `name_servers` is the delegation handoff: the four hosts to
+// routing). `nameservers` is the delegation handoff: the four hosts to
 // configure at the domain registrar.
 type AzureDnsZoneStackOutputs struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -47,7 +47,7 @@ type AzureDnsZoneStackOutputs struct {
 	// "ns1-05.azure-dns.com."). The zone only answers the internet once
 	// these are configured at the domain's registrar, or as NS records in
 	// the parent zone for subdomain delegation.
-	NameServers []string `protobuf:"bytes,4,rep,name=name_servers,json=nameServers,proto3" json:"name_servers,omitempty"`
+	Nameservers []string `protobuf:"bytes,4,rep,name=nameservers,proto3" json:"nameservers,omitempty"`
 	// The maximum number of record sets this zone can hold -- Azure's
 	// per-zone capacity limit (10000 by default; higher by support
 	// request). A capacity fact for planning, not a live count.
@@ -107,9 +107,9 @@ func (x *AzureDnsZoneStackOutputs) GetResourceGroupName() string {
 	return ""
 }
 
-func (x *AzureDnsZoneStackOutputs) GetNameServers() []string {
+func (x *AzureDnsZoneStackOutputs) GetNameservers() []string {
 	if x != nil {
-		return x.NameServers
+		return x.Nameservers
 	}
 	return nil
 }
@@ -125,12 +125,12 @@ var File_catalog_azure_azurednszone_v1alpha1_outputs_proto protoreflect.FileDesc
 
 const file_catalog_azure_azurednszone_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"1catalog/azure/azurednszone/v1alpha1/outputs.proto\x12'dev.planton.azure.azurednszone.v1alpha1\"\xdd\x01\n" +
+	"1catalog/azure/azurednszone/v1alpha1/outputs.proto\x12'dev.planton.azure.azurednszone.v1alpha1\"\xdc\x01\n" +
 	"\x18AzureDnsZoneStackOutputs\x12\x17\n" +
 	"\azone_id\x18\x01 \x01(\tR\x06zoneId\x12\x1b\n" +
 	"\tzone_name\x18\x02 \x01(\tR\bzoneName\x12.\n" +
-	"\x13resource_group_name\x18\x03 \x01(\tR\x11resourceGroupName\x12!\n" +
-	"\fname_servers\x18\x04 \x03(\tR\vnameServers\x128\n" +
+	"\x13resource_group_name\x18\x03 \x01(\tR\x11resourceGroupName\x12 \n" +
+	"\vnameservers\x18\x04 \x03(\tR\vnameservers\x128\n" +
 	"\x19max_number_of_record_sets\x18\x05 \x01(\x03R\x15maxNumberOfRecordSetsB\xd3\x02\n" +
 	"+com.dev.planton.azure.azurednszone.v1alpha1B\fOutputsProtoP\x01ZUgithub.com/plantonhq/planton/catalog/azure/azurednszone/v1alpha1;azurednszonev1alpha1\xa2\x02\x04DPAA\xaa\x02'Dev.Planton.Azure.Azurednszone.V1alpha1\xca\x02'Dev\\Planton\\Azure\\Azurednszone\\V1alpha1\xe2\x023Dev\\Planton\\Azure\\Azurednszone\\V1alpha1\\GPBMetadata\xea\x02+Dev::Planton::Azure::Azurednszone::V1alpha1b\x06proto3"
 

@@ -29,7 +29,7 @@ Third-party applications need a grant under every policy, and `deny_all` denies 
 
 Import the API (and its scopes and default grants) with the ids the import map names, then declare the spec. Unset means unmanaged: a field or block the spec leaves out is never sent, and the live value stays -- with these exceptions to check against the live API before the first apply:
 
-- **Always sent**: `allowOfflineAccess`, `skipConsentForVerifiableFirstPartyClients` and `enforcePolicies` are sent on every apply. Declare their live values, or the first apply changes them.
+- **Kept when unset**: `allowOfflineAccess`, `skipConsentForVerifiableFirstPartyClients` and `enforcePolicies` are sent only when declared, and Auth0 computes them otherwise, so an adopted API that leaves them out keeps its live values. The same holds for `tokenLifetime` and `tokenLifetimeForWeb`, whose zero means unset.
 - **No value of their own in the provider**: `verificationLocation`, `tokenLifetimeForAnonymousAccessTokens`, `accessToken`, and `proofOfPossession.requiredFor` once its block is declared. Leaving one unset on an API that has it resets it on the first apply.
 - **Authoritative lists**: declared `scopes` replace the API's scope list, and a declared `accessToken.claimsMapping` replaces its claims.
 - **Access policies are safe to leave out.** Each policy block is sent only with its policy, and a policy never declared keeps its live value -- but a policy you do declare overwrites the live one, so read it first (`GET /api/v2/resource-servers/{id}`, `subject_type_authorization`).

@@ -51,7 +51,7 @@ spec:
 
 ## Behavior worth knowing
 
-- **Delegation is the registrar's half** — the zone works inside DigitalOcean immediately, but public resolution starts when the registrar points at `ns1`/`ns2`/`ns3.digitalocean.com` (the `name_servers` output).
+- **Delegation is the registrar's half** — the zone works inside DigitalOcean immediately, but public resolution starts when the registrar points at `ns1`/`ns2`/`ns3.digitalocean.com` (the `nameservers` output).
 - **Domain names are globally unique across DigitalOcean** — adding a domain another account already holds fails at create.
 - **Multi-value fan-out** — an entry with two `values` creates two records of the same name and type (e.g. round-robin A records).
 - **Hostname values read back with a trailing dot** — author CNAME/MX/NS/SRV/CAA targets fully qualified WITH the dot (`mail.example.com.`, `letsencrypt.org.`) or relative to the zone (`mail`); a bare `letsencrypt.org` re-applies on every run.
@@ -66,7 +66,7 @@ spec:
 |---|---|
 | `zone_name` | The domain name — what DNS records reference (`status.outputs.zone_name`) |
 | `zone_id` | The zone's resource identifier — the domain name itself, not a UUID |
-| `name_servers` | DigitalOcean's fixed authoritative set — what the registrar must delegate to |
+| `nameservers` | DigitalOcean's fixed authoritative set — what the registrar must delegate to |
 | `urn` | The uniform resource name (`do:domain:example.com`) |
 | `record_ids` | Numeric ids of the inline records, keyed `<record name>-<record index>-<value index>` — the second half of a record's `{domain},{record_id}` import id |
 

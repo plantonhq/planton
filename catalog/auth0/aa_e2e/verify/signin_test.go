@@ -39,6 +39,9 @@ func TestBrandingVerifierChecksTheThemeItApplied(t *testing.T) {
 	if v.IDOutput() != "theme_id" {
 		t.Fatalf("IDOutput = %q, want theme_id", v.IDOutput())
 	}
+	if optional, ok := v.(OptionalIDVerifier); !ok || !optional.IDOutputOptional() {
+		t.Fatal("a branding without a theme reports an empty theme_id, so the id output must be optional")
+	}
 	deployed := &pathChecker{objects: map[string]map[string]interface{}{
 		"branding":                {"logo_url": "https://assets.example.com/logo.png"},
 		"branding/themes/thm_abc": {"themeId": "thm_abc"},

@@ -350,9 +350,12 @@ func containsFreeForm(t TFType) bool {
 // rendered tfvars, and therefore must stay a bare (non-optional) attribute. The
 // source of truth is buf.validate: a field is required if it is explicitly
 // (buf.validate.field).required, or if it carries a presence-implying constraint
-// (string min_len >= 1, repeated min_items >= 1). Everything else is optional,
-// because the renderer prunes unset/zero fields and a bare attribute would then
-// fail object validation.
+// (string min_len >= 1, repeated min_items >= 1) on a field without explicit
+// presence. A field with explicit presence (proto3 `optional`, a oneof member)
+// is validated only when set, so its constraints describe a value, never
+// presence: it is optional unless explicitly required. Everything else is
+// optional, because the renderer prunes unset/zero fields and a bare attribute
+// would then fail object validation.
 func isRequiredField(fd protoreflect.FieldDescriptor) bool {
 	opts := fd.Options()
 	if opts == nil {
@@ -367,6 +370,9 @@ func isRequiredField(fd protoreflect.FieldDescriptor) bool {
 	}
 	if rules.GetRequired() {
 		return true
+	}
+	if fd.HasPresence() {
+		return false
 	}
 	if s := rules.GetString(); s != nil && s.GetMinLen() >= 1 {
 		return true

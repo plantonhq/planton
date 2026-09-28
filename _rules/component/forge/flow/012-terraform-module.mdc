@@ -137,6 +137,17 @@ NOTES
   are required") but come from code you never wrote. A RELATIVE `--module-dir`
   also fails (the generated tfvars path resolves against the wrong root). Both
   paths absolute, always.
+- **A field with explicit presence is `optional(...)` in variables.tf, whatever its
+  value constraints.** A proto3 `optional` field (or a oneof member) is validated only
+  when it is set, so a `min_len` on it describes the value, never presence; a bare
+  attribute makes every spec that leaves it unset fail with "attribute X is required".
+  The generator (`isRequiredField`) follows this; a hand-written variables.tf must too.
+- **Send exactly what the Pulumi module sends.** Where the Pulumi module omits an
+  argument whose spec value is the proto3 zero value (an empty string, a zero
+  number), the Terraform module sends `null` for it (`var.spec.x != "" ? var.spec.x :
+  null`), so both engines leave the provider's own value in place. Forwarding the zero
+  value sends it: a provider refuses an empty string for a set of allowed values
+  ("expected X to be one of [...], got "), or applies it.
 - **Variable validations on nullable optional objects must guard with `try()`:**
   HCL's `||` evaluates BOTH operands (it does not short-circuit), so a validation
   shaped `var.spec.block == null || length(var.spec.block.field) > 0` fails at
