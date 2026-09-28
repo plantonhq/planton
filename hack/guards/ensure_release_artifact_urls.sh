@@ -85,6 +85,7 @@ for entry in "${probe_components[@]}"; do
   probe "${base_url}/${tag}/modules/terraform/${component}/module.zip"
   probe "${base_url}/${tag}/modules/pulumi/${component}/darwin_arm64.gz"
   probe "${base_url}/${tag}/modules/pulumi/${component}/linux_amd64.gz"
+  probe "${base_url}/${tag}/modules/pulumi/${component}/linux_arm64.gz"
   probe "${base_url}/${tag}/modules/pulumi/${component}/windows_amd64.exe.gz"
   # A 404 here at an old tag is expected: source.zip ships only with releases
   # cut after the pulumi source lane joined the workflow. Probe a newer tag.

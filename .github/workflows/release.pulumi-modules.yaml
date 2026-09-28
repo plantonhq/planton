@@ -7,7 +7,9 @@
 # Features:
 #   - Dynamic component discovery from directory structure
 #   - Matrix-based parallelization: provider × platform
-#   - Multi-platform builds: linux_amd64, darwin_arm64, darwin_amd64, windows_amd64
+#   - Multi-platform builds: linux_amd64, linux_arm64, darwin_arm64, darwin_amd64, windows_amd64
+#     (linux_arm64 is every ARM runner the platform ships: Graviton, and kind
+#     on an Apple Silicon Mac, whose containers are Linux ARM)
 #   - Clear progress logging with component counts
 #   - No hardcoded component paths - auto-discovers from filesystem
 #
@@ -18,7 +20,7 @@
 # Each component also publishes its module SOURCE alongside the binaries:
 #   releases/{tag}/modules/pulumi/{component}/source.zip
 # Source is platform-independent, so the zip uploads from exactly one matrix
-# leg (linux_amd64) instead of four redundant writes. Consumers: the CLI's
+# leg (linux_amd64) instead of five redundant writes. Consumers: the CLI's
 # module-eject flow and source-rendering surfaces.
 #
 # Path pattern: catalog/{provider}/{component}/iac/pulumi (one live module set
@@ -88,6 +90,8 @@ jobs:
         platform:
           - goos: linux
             goarch: amd64
+          - goos: linux
+            goarch: arm64
           - goos: darwin
             goarch: arm64
           - goos: darwin

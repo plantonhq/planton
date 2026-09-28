@@ -37,7 +37,7 @@ const (
 )
 
 // GetPlatformSuffix returns the platform suffix for binary names based on the current OS and architecture.
-// Examples: "linux_amd64", "darwin_arm64", "darwin_amd64", "windows_amd64"
+// Examples: "linux_amd64", "linux_arm64", "darwin_arm64", "darwin_amd64", "windows_amd64"
 func GetPlatformSuffix() string {
 	return fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH)
 }

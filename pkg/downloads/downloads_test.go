@@ -62,6 +62,15 @@ func TestBuildPulumiDownloadURL(t *testing.T) {
 			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awss3bucket/linux_amd64.gz",
 		},
 		{
+			// Every ARM runner the platform ships (Graviton, kind on an Apple
+			// Silicon Mac) asks for this shape.
+			name:      "linux arm64",
+			component: "KubernetesDeployment",
+			release:   "v0.3.50",
+			platform:  "linux_arm64",
+			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/kubernetesdeployment/linux_arm64.gz",
+		},
+		{
 			// The release lane gzips "{component}.exe" on windows, so the
 			// remote artifact carries ".exe.gz" — pin it so the windows fast
 			// path cannot regress to the extensionless shape.
