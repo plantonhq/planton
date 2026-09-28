@@ -101,7 +101,12 @@ const ScenarioPrerequisiteInstallManifestAnnotation = "planton.dev/e2e-prerequis
 // its own edges with it, unless another prerequisite reaches them). The
 // value is a comma-separated list of kind names.
 //
-// A resident is a property of a real cluster, never of a harness-owned one:
+// A resident is also any account-level object a scenario's fixtures name by a
+// literal id because it must be real (a publicly delegated DNS zone a
+// verification record has to live in): the kind's install profile would make
+// a throwaway one the fixture never reads.
+//
+// On Kubernetes, a resident is a property of a real cluster, never of a harness-owned one:
 // the batch EKS cluster carried its own load-balancer controller, the GKE
 // management cluster carries cert-manager and CloudNativePG from the Planton
 // operator. Deploying a second copy beside a resident is exactly the

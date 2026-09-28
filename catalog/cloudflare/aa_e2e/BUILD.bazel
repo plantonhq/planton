@@ -1,4 +1,4 @@
-load("@rules_go//go:def.bzl", "go_library")
+load("@rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
     name = "aa_e2e",
@@ -13,4 +13,10 @@ go_library(
         "//e2e/framework/provider",
         "@com_github_pkg_errors//:errors",
     ],
+)
+
+go_test(
+    name = "aa_e2e_test",
+    srcs = ["client_test.go"],
+    embed = [":aa_e2e"],
 )

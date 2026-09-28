@@ -3,20 +3,15 @@ kind: ComponentE2EProfile
 metadata:
   name: auth0tenantsettings
 spec:
-  # A tenant has ONE set of settings, and applying this component rewrites
-  # the tenant's name, logo and support contacts: a live lane needs a
-  # dedicated test tenant whose settings nobody reads. None exists yet, so
-  # the lanes are not run; the first live proof is an operator's own tenant,
-  # read back on its login page. Unblock: a throwaway Auth0 tenant for the
-  # E2E harness (AUTH0_DOMAIN / AUTH0_CLIENT_ID / AUTH0_CLIENT_SECRET, the
-  # credential holding read:tenant_settings and update:tenant_settings),
-  # then run both engines' minimal and rich scenarios. The rich scenario
-  # sets no setting Auth0's documentation gates on a plan or on Early
-  # Access. The default-domain scenario
-  # also composes a verified custom domain, so it needs the
-  # auth0customdomainverification lane's arrangement too (its parent domain,
-  # Cloudflare zone and credentials, and the custom_domains scopes).
+  # A tenant has ONE set of settings, and applying this component changes
+  # them for everyone signing in through it: the lanes run only on a dedicated
+  # test tenant (AUTH0_DOMAIN / AUTH0_CLIENT_ID / AUTH0_CLIENT_SECRET, the
+  # tenant_settings scopes of iac/permissions.yaml), one lane at a time. The
+  # default-domain scenario composes a verified custom domain (see the
+  # verification's profile for what that needs).
   tier: 1
-  status: pending_proof
-  validated_provisioners: []
+  status: green
+  validated_provisioners:
+    - pulumi
+    - terraform
   timeout_minutes: 5

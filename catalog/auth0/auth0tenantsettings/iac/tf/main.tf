@@ -17,6 +17,8 @@
 # place: Auth0 has no delete for tenant settings. The Pulumi module's
 # applyTenantSettings (iac/pulumi/module/tenant.go) is its twin.
 resource "auth0_tenant" "this" {
+  count = local.manages_tenant_settings ? 1 : 0
+
   # Identity.
   friendly_name   = local.friendly_name
   picture_url     = local.picture_url
@@ -171,6 +173,19 @@ resource "auth0_tenant" "this" {
       use_scope_descriptions_for_consent     = flags.value.use_scope_descriptions_for_consent
     }
   }
+}
+
+# A tenant installed before the resource was counted keeps its state: the same
+# object, now at index 0.
+moved {
+  from = auth0_tenant.this
+  to   = auth0_tenant.this[0]
+}
+
+# The tenant's settings, read without writing, when the spec declares none of
+# them (the default domain alone, or nothing).
+data "auth0_tenant" "current" {
+  count = local.manages_tenant_settings ? 0 : 1
 }
 
 # The tenant's default domain -- the one its email links and Management API

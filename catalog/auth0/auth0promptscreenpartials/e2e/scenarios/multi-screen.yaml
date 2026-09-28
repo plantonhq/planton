@@ -10,6 +10,12 @@ metadata:
   name: e2e-passwordless-partials
   org: e2e-org
   env: testing
+  annotations:
+    # Auth0 accepts partials only on a tenant with a custom domain and a page
+    # template (a 403 for each otherwise), so the lane brings both: the domain
+    # (it need not be verified), then a branding that sets the template.
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT
+    planton.dev/e2e-prerequisites: Auth0CustomDomain,catalog/auth0/auth0promptscreenpartials/e2e/fixtures/page-template-branding.yaml
 spec:
   promptType: login-passwordless
   screenPartials:

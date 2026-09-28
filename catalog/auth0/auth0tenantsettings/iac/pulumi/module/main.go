@@ -36,9 +36,18 @@ func Resources(ctx *pulumi.Context, stackInput *auth0tenantsettingsv1alpha1.Auth
 		}
 	}
 
-	tenant, err := applyTenantSettings(ctx, locals, provider)
-	if err != nil {
-		return errors.Wrap(err, "failed to apply Auth0 tenant settings")
+	// A spec that sets only the default domain manages no tenant setting: the
+	// tenant resource is then not declared (the provider would send Auth0 an
+	// empty update, which it refuses), and its settings are read, not written.
+	var tenant tenantOutputs
+	if managesTenantSettings(locals.Spec) {
+		managed, err := applyTenantSettings(ctx, locals, provider)
+		if err != nil {
+			return errors.Wrap(err, "failed to apply Auth0 tenant settings")
+		}
+		tenant = managedTenantOutputs(managed)
+	} else {
+		tenant = lookedUpTenantOutputs(auth0.LookupTenantOutput(ctx, pulumi.Provider(provider)))
 	}
 
 	defaultDomain, err := applyDefaultCustomDomain(ctx, locals, provider)

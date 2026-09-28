@@ -19,10 +19,11 @@ leaves out renders nothing, and destroying the resource removes every partial
 of the prompt. Form fields a partial adds are submitted with the form and
 reach Actions as custom prompt fields.
 
-Auth0 accepts partials only on a tenant with a custom domain: without one
-it refuses them (403 "requires at least one custom domain"), so deploy an
-Auth0CustomDomain first. They render only inside a page template
-(Auth0Branding's universal_login_template) and only with the Universal Login
+Auth0 accepts partials only on a tenant with a custom domain and a page
+template: without either it refuses them (403 "requires at least one custom
+domain", then 403 "requires a page template"). Deploy an Auth0CustomDomain
+first (it need not be verified), then an Auth0Branding that sets
+universal_login_template. They render only with the Universal Login
 experience "new".
 
 The credential needs read:prompts and update:prompts on the tenant's

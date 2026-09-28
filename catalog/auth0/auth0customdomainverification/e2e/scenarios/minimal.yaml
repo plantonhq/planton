@@ -14,6 +14,10 @@ metadata:
   annotations:
     planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT,PLANTON_E2E_AUTH0_DNS_ZONE_ID
     planton.dev/e2e-prerequisites: catalog/auth0/auth0customdomainverification/e2e/fixtures/verification-record.yaml
+    # The verification record lives in a real, delegated zone the fixture names
+    # by id (PLANTON_E2E_AUTH0_DNS_ZONE_ID): it already exists, so the DNS
+    # record's own zone prerequisite is neither created nor destroyed.
+    planton.dev/e2e-resident-prerequisites: CloudflareDnsZone
   relationships:
     - kind: CloudflareDnsRecord
       name: e2e-sign-in-domain-cname

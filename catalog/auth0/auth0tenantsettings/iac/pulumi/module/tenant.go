@@ -7,6 +7,7 @@ import (
 	auth0tenantsettingsv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0tenantsettings/v1alpha1"
 	"github.com/pulumi/pulumi-auth0/sdk/v3/go/auth0"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+	"google.golang.org/protobuf/proto"
 )
 
 // applyTenantSettings manages the settings of the EXISTING tenant the provider's
@@ -20,6 +21,16 @@ func applyTenantSettings(ctx *pulumi.Context, locals *Locals, provider *auth0.Pr
 		return nil, errors.Wrapf(err, "failed to apply the settings of the Auth0 tenant for %s", locals.ResourceName)
 	}
 	return tenant, nil
+}
+
+// managesTenantSettings reports whether the spec declares any tenant setting
+// beyond the default domain, which has a resource of its own. Every tenant
+// setting has presence, so a set field (a false toggle included) is a
+// declared one.
+func managesTenantSettings(spec *auth0tenantsettingsv1alpha1.Auth0TenantSettingsSpec) bool {
+	settings := proto.Clone(spec).(*auth0tenantsettingsv1alpha1.Auth0TenantSettingsSpec)
+	settings.DefaultCustomDomain = nil
+	return proto.Size(settings) > 0
 }
 
 // tenantArgs maps the spec onto the tenant's arguments, setting each argument

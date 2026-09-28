@@ -91,12 +91,15 @@ EXPORTING OUTPUTS -- APPLYT TYPING IS A DEPLOY-TIME TRAP
   `catalog/auth0/auth0customdomain/iac/pulumi/module/main_test.go` pattern). Applier
   typing is checked when the program registers its exports, so this is the one offline
   check that catches every trap in this section.
-- Values nested in computed LIST/POINTER attributes (e.g. a connection endpoint the
-  SDK models as `XEndpointArrayOutput`) do not need an ApplyT either: `Index(...)`
-  returns the zero value when out of range and `Elem()` dereferences a Ptr output to
-  its zero value when nil, so a chain like
-  `created.Endpoints.Index(pulumi.Int(0)).Address().Elem()` is a stable, panic-free
-  export shape.
+- Values nested in computed LIST/POINTER attributes need care. `Elem()` dereferences
+  a Ptr output to its zero value when nil, and the Pulumi SDK's own built-in arrays
+  (`pulumi.StringArrayOutput`) return the zero value from an out-of-range `Index(...)`.
+  A PROVIDER-GENERATED array output (`XEndpointArrayOutput`, `GetTenantFlagArrayOutput`)
+  indexes without a bounds check and PANICS on an empty list at deploy ("index out of
+  range [0] with length 0"; live-caught on a data source whose block list was empty).
+  Read an element of a provider-generated list that can be empty with one applier on
+  the parent output that checks the length and returns a Ptr (`func(r X) *string`),
+  never with `Index`.
 - NESTED-BLOCK ARGS: assign the VALUE `XArgs{...}` struct to an `XPtrInput` field
   directly -- the codegen'd value type implements the Ptr interface. Do NOT wrap it
   in the SDK's `XPtr(&XArgs{...})` helper for resource inputs: the wrapper's element

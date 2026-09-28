@@ -257,11 +257,31 @@ func (c *Client) VerifyConnectivity(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "account lookup request failed")
 	}
-	if resp.StatusCode != http.StatusOK {
-		return errors.Errorf("account %s lookup returned %d (is the token scoped to this account?): %s",
-			c.accountID, resp.StatusCode, body)
+	if resp.StatusCode == http.StatusOK {
+		return nil
 	}
-	return nil
+	// A token scoped to zones (DNS edit on one zone, the least a lane that
+	// only writes records needs) cannot read the account itself, but lists
+	// the zones it reaches. Seeing one of this account's zones is what a
+	// zone-scoped lane requires; an account-level kind still fails at its own
+	// first call, with the provider's own refusal.
+	zresp, zbody, zerr := c.get(ctx, "zones?per_page=1&account.id="+c.accountID)
+	if zerr != nil {
+		return errors.Wrap(zerr, "zone lookup request failed")
+	}
+	if zresp.StatusCode == http.StatusOK && zoneListHasResult(zbody) {
+		return nil
+	}
+	return errors.Errorf("account %s lookup returned %d and the token reaches none of its zones (is the token scoped to this account?): %s",
+		c.accountID, resp.StatusCode, body)
+}
+
+// zoneListHasResult reports whether a zones-list response names at least one zone.
+func zoneListHasResult(body []byte) bool {
+	var parsed struct {
+		Result []json.RawMessage `json:"result"`
+	}
+	return json.Unmarshal(body, &parsed) == nil && len(parsed.Result) > 0
 }
 
 // get performs one authenticated GET with 429-aware retries and returns the

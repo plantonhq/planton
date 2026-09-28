@@ -35,4 +35,21 @@ locals {
   # default-domain resource is then not declared). A reference arrives resolved
   # to its value.
   default_custom_domain = var.spec.default_custom_domain != "" ? var.spec.default_custom_domain : null
+
+  # Whether the spec declares any tenant setting beyond the default domain,
+  # which has a resource of its own. Auth0 refuses a tenant update that
+  # carries no setting ("Too few properties defined (0)"), so a spec that
+  # declares none does not declare auth0_tenant at all, and its settings are
+  # read through the provider's data source instead. A declared setting is a
+  # non-null value that is not an empty string or an empty list (every
+  # optional scalar and block arrives as null when unset; a false toggle is
+  # declared). The Pulumi module's managesTenantSettings is its twin.
+  manages_tenant_settings = length([
+    for name, value in var.spec : name
+    if name != "default_custom_domain" && value != null && try(length(value) > 0, true)
+  ]) > 0
+
+  # The tenant as it carries its settings after the apply, from whichever of
+  # the resource and the data source this spec declares.
+  tenant = local.manages_tenant_settings ? auth0_tenant.this[0] : data.auth0_tenant.current[0]
 }
