@@ -1,10 +1,10 @@
 # Auth0TenantSettings — Terraform Module
 
-Terraform/OpenTofu module that manages the presentation settings of an existing Auth0 tenant.
+Terraform/OpenTofu module that manages the settings of an existing Auth0 tenant.
 
 ## What It Creates
 
-- `auth0_tenant` — the settings of the tenant the provider's credential belongs to. It creates no tenant: the Management API cannot. Only `friendly_name`, `picture_url`, `support_email` and `support_url` are set, each only when the spec sets it; every other tenant setting is left as it is. Destroy is the provider's no-op, so the last-applied values stay in place.
+- `auth0_tenant` — the settings of the tenant the provider's credential belongs to. It creates no tenant: the Management API cannot. Every argument is null and every block (`flags`, `session_cookie`, `sessions`, `oidc_logout`, `mtls`, `error_page`, `default_token_quota`, `country_codes`) absent unless the spec sets it, so the tenant keeps every setting the spec leaves out -- except the six the provider resets on the first deploy (see the spec). Destroy is the provider's no-op, so the last-applied values stay in place.
 - `auth0_custom_domain_default` — the tenant's default domain, declared only when the spec sets `default_custom_domain` (`count`). Its delete only forgets the default (Auth0 has no way to unset one).
 
 ## Prerequisites
@@ -17,14 +17,8 @@ Terraform/OpenTofu module that manages the presentation settings of an existing 
 | Name | Description |
 |---|---|
 | `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
-| `spec` | `friendly_name`, `picture_url`, `support_email`, `support_url`, `default_custom_domain` -- each optional, at least one set |
+| `spec` | The tenant settings (`variables.tf`, generated from the spec) -- each optional, at least one set |
 
 ## Outputs
 
-| Name | Description |
-|---|---|
-| `friendly_name` | The tenant's name as people see it |
-| `picture_url` | The URL of the tenant's logo |
-| `support_email` | The support address the tenant's pages offer |
-| `support_url` | The support page the tenant's pages link to |
-| `default_custom_domain` | The tenant's default domain as set by this resource; empty when unmanaged |
+`friendly_name`, `picture_url`, `support_email`, `support_url`, `default_custom_domain` (empty when unmanaged), `default_audience`, `default_directory`, `client_id_metadata_document_supported`, `resource_parameter_profile`, `enable_dynamic_client_registration`, `dynamic_client_registration_security_mode`, `session_lifetime`, `idle_session_lifetime`, `session_cookie_mode` and `enabled_locales` -- the settings as the tenant carries them after the apply, managed or not.

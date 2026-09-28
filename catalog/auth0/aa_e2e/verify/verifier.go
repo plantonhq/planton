@@ -88,6 +88,14 @@ var verifiers = map[string]Verifier{
 	"auth0user":           &apiPathVerifier{component: "auth0user", pathFormat: "users/%s", idOutput: "user_id"},
 	"auth0customdomain":   &apiPathVerifier{component: "auth0customdomain", pathFormat: "custom-domains/%s"},
 
+	// An application registered from its Client ID Metadata Document is an
+	// ordinary client of the tenant once registered, read by its client id.
+	"auth0clientfrommetadatadocument": &apiPathVerifier{
+		component:  "auth0clientfrommetadatadocument",
+		pathFormat: "clients/%s",
+		idOutput:   "client_id",
+	},
+
 	"auth0customdomainverification": &customDomainVerificationVerifier{},
 	"auth0tenantsettings":           &tenantSettingsVerifier{},
 	"auth0branding":                 &brandingVerifier{},

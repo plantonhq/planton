@@ -36,6 +36,7 @@ func TestFormatPathEscapesReservedCharacters(t *testing.T) {
 		{"auth0role", "rol_abc123", "roles/rol_abc123"},
 		{"auth0client", "AbCdEf123", "clients/AbCdEf123"},
 		{"auth0customdomain", "cd_0123456789abcdef", "custom-domains/cd_0123456789abcdef"},
+		{"auth0clientfrommetadatadocument", "tpc_AbCdEf123", "clients/tpc_AbCdEf123"},
 	}
 	for _, tc := range cases {
 		v, err := GetVerifier(tc.component)
@@ -56,10 +57,11 @@ func TestFormatPathEscapesReservedCharacters(t *testing.T) {
 // the user kind reads its identifier from user_id, the API's own name for it.
 func TestIDOutputDefaultsAndOverrides(t *testing.T) {
 	for component, want := range map[string]string{
-		"auth0client":      "id",
-		"auth0role":        "id",
-		"auth0eventstream": "id",
-		"auth0user":        "user_id",
+		"auth0client":                     "id",
+		"auth0role":                       "id",
+		"auth0eventstream":                "id",
+		"auth0user":                       "user_id",
+		"auth0clientfrommetadatadocument": "client_id",
 	} {
 		v, err := GetVerifier(component)
 		if err != nil {

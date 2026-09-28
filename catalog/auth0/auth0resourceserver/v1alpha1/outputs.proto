@@ -59,4 +59,11 @@ message Auth0ResourceServerStackOutputs {
   // client_id is the associated client ID if one has been linked.
   // Some resource servers may have an associated client for certain features.
   string client_id = 13;
+
+  // third_party_client_default_grant_ids are the identifiers Auth0 assigned
+  // the default grants for third-party applications (cgr_...), keyed by
+  // subject type ("user", "client") -- one entry per
+  // spec.third_party_client_default_grants entry. Each grant imports by its
+  // id.
+  map<string, string> third_party_client_default_grant_ids = 14;
 }

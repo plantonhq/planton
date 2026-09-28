@@ -23,9 +23,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0TenantSettings is a component that manages how an existing Auth0 tenant
-// presents itself to the people who sign in through it: its name on Universal
-// Login, its logo, and its support contacts.
+// Auth0TenantSettings is a component that manages the settings of an existing
+// Auth0 tenant: how it presents itself to the people who sign in through it
+// (its name on Universal Login, its logo, languages and support contacts), how
+// long their sessions last, what its OAuth and OpenID Connect endpoints accept,
+// the defaults every application inherits, its error page and its behavior
+// flags.
 //
 // A tenant has one set of settings, so one Auth0TenantSettings resource per
 // tenant. It never creates or deletes the tenant (Auth0's Management API cannot),
@@ -35,6 +38,8 @@ const (
 // - Show your product's name on the login page instead of the tenant's identifier
 // - Put your logo on the login and consent pages instead of Auth0's
 // - Point people who cannot sign in at your support address and help page
+// - End sessions left unused, and choose whether a session outlives the browser
+// - Let MCP clients register themselves and ask for tokens for your API
 //
 // Example manifest:
 // ```yaml
@@ -51,6 +56,7 @@ const (
 //	pictureUrl: https://assets.acme.com/logo.png
 //	supportEmail: support@acme.com
 //	supportUrl: https://acme.com/support
+//	idleSessionLifetime: 8
 //
 // ```
 type Auth0TenantSettings struct {

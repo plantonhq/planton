@@ -32,7 +32,6 @@ violations:
   - catalog/auth0/auth0client:missing-presets
   - catalog/auth0/auth0connection:missing-presets
   - catalog/auth0/auth0eventstream:missing-presets
-  - catalog/auth0/auth0resourceserver:missing-presets
   - catalog/aws/awsautoscalinggroup/iac/pulumi:missing-iac-readme
   - catalog/aws/awsautoscalinggroup/iac/tf:missing-iac-readme
   - catalog/aws/awsbatchcomputeenvironment/iac/pulumi:missing-iac-readme

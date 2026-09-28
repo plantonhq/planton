@@ -1,8 +1,17 @@
 # =============================================================================
 # Auth0 E2E Tests
 # =============================================================================
-# Runs E2E tests for Auth0 components against a free-tier Auth0 tenant.
-# No Docker, kind, or kubectl needed -- Auth0 resources are SaaS API objects.
+# Runs E2E tests for Auth0 components against a test tenant of their own,
+# never one that serves people: a run applies and destroys what it declares,
+# and several kinds are one per tenant (settings, branding, prompt, email
+# provider), so a run rewrites that tenant's sign-in page and emails while it
+# lasts. Two tenants, chosen at dispatch: `planton-e2e` (the AUTH0_* secrets)
+# and `planton-e2e-free` (the AUTH0_FREE_* secrets), the tenant that proves a
+# kind's plan boundary on the Free plan. Runs on one tenant never overlap:
+# the e2e job's concurrency group is per tenant.
+# No Docker, kind, or kubectl needed -- Auth0 resources are SaaS API objects;
+# the custom-domain lanes publish their DNS record in a Cloudflare zone
+# through a token scoped to that zone (AUTH0_E2E_CLOUDFLARE_DNS_API_TOKEN).
 #
 # Architecture:
 #   1. build-check: compile E2E code + go vet (fast gate, every trigger)
@@ -40,6 +49,14 @@ name: e2e-auth0
 
 on:
   workflow_dispatch:
+    inputs:
+      tenant:
+        description: The test tenant to run against
+        type: choice
+        options:
+          - planton-e2e
+          - planton-e2e-free
+        default: planton-e2e
 concurrency:
   group: e2e-auth0-${{ github.ref }}
   cancel-in-progress: true
@@ -75,16 +92,30 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     container: ghcr.io/plantonhq/planton/ci-toolchain:latest
-    timeout-minutes: 20
+    timeout-minutes: 60
+    # One run per tenant at a time: the one-per-tenant kinds would overwrite
+    # each other's settings mid-run.
+    concurrency:
+      group: e2e-auth0-tenant-${{ inputs.tenant || 'planton-e2e' }}
+      cancel-in-progress: false
     env:
-      AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-      AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-      AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+      AUTH0_DOMAIN: ${{ inputs.tenant == 'planton-e2e-free' && secrets.AUTH0_FREE_DOMAIN || secrets.AUTH0_DOMAIN }}
+      AUTH0_CLIENT_ID: ${{ inputs.tenant == 'planton-e2e-free' && secrets.AUTH0_FREE_CLIENT_ID || secrets.AUTH0_CLIENT_ID }}
+      AUTH0_CLIENT_SECRET: ${{ inputs.tenant == 'planton-e2e-free' && secrets.AUTH0_FREE_CLIENT_SECRET || secrets.AUTH0_CLIENT_SECRET }}
       # The same client id, exposed under the manifest-readable prefix: a
       # scenario that creates users must enable the calling M2M client on
       # its connection fixture (Auth0 refuses user creation otherwise), and
       # ${E2E_ENV:...} tokens read only PLANTON_E2E_-prefixed variables.
-      PLANTON_E2E_AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+      PLANTON_E2E_AUTH0_CLIENT_ID: ${{ inputs.tenant == 'planton-e2e-free' && secrets.AUTH0_FREE_CLIENT_ID || secrets.AUTH0_CLIENT_ID }}
+      # The custom-domain lanes: one hostname per run under the parent domain,
+      # its verification record written in that parent's Cloudflare zone.
+      PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT: ${{ secrets.PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT }}
+      PLANTON_E2E_AUTH0_DNS_ZONE_ID: ${{ secrets.PLANTON_E2E_AUTH0_DNS_ZONE_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.AUTH0_E2E_CLOUDFLARE_DNS_API_TOKEN }}
+      PLANTON_E2E_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.AUTH0_E2E_CLOUDFLARE_ACCOUNT_ID }}
+      # The document an application registers itself from (the Client ID
+      # Metadata Document lanes): a committed fixture served over HTTPS.
+      PLANTON_E2E_AUTH0_CIMD_URL: ${{ secrets.PLANTON_E2E_AUTH0_CIMD_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -95,7 +126,7 @@ jobs:
             --junitfile=results-auth0.xml \
             -- \
             -tags=e2e \
-            -timeout=15m \
+            -timeout=55m \
             -v \
             -count=1 \
             ./e2e/auth0/...
@@ -104,7 +135,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-results-auth0
+          name: e2e-results-auth0-${{ inputs.tenant || 'planton-e2e' }}
           path: results-auth0.xml
           retention-days: 30
 

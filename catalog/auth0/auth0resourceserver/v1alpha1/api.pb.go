@@ -28,10 +28,17 @@ const (
 // They are essential for implementing OAuth 2.0 API authorization with Auth0.
 //
 // This component supports:
-// - Defining API identifiers (audiences) for authorization flows
-// - Configuring token settings (lifetime, signing algorithm, dialect)
-// - Setting up scopes (permissions) for fine-grained access control
-// - Enabling RBAC for role-based API access
+//   - Defining API identifiers (audiences) for authorization flows
+//   - Configuring token settings (lifetime, signing algorithm, dialect)
+//   - Setting up scopes (permissions) for fine-grained access control
+//   - Enabling RBAC for role-based API access
+//   - Deciding which applications can get a token for the API at all, for
+//     people and for machines (the API's access policy)
+//   - Granting every third-party application -- including the ones registered
+//     through Dynamic Client Registration or a Client ID Metadata Document, such
+//     as MCP clients -- a default set of scopes
+//   - Sender-constrained (DPoP, mTLS) and encrypted tokens, rich authorization
+//     request types, Online Refresh Tokens and anonymous-session claims
 //
 // Example manifest for a simple API:
 // ```yaml
@@ -54,6 +61,38 @@ const (
 //	    description: Read access to data
 //	  - name: write:data
 //	    description: Write access to data
+//
+// ```
+//
+// Example manifest for an API an MCP server exposes to third-party clients:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0ResourceServer
+// metadata:
+//
+//	name: mcp-server-api
+//	org: my-organization
+//
+// spec:
+//
+//	identifier: https://mcp.example.com/mcp
+//	name: Example MCP Server
+//	signingAlg: RS256
+//	scopes:
+//	  - name: tools:read
+//	    description: List and read the server's tools
+//	  - name: tools:call
+//	    description: Call the server's tools
+//	subjectTypeAuthorization:
+//	  user:
+//	    policy: require_client_grant
+//	  client:
+//	    policy: deny_all
+//	thirdPartyClientDefaultGrants:
+//	  - subjectType: user
+//	    scopes:
+//	      - tools:read
+//	      - tools:call
 //
 // ```
 //

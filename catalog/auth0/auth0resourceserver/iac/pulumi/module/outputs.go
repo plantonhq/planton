@@ -6,7 +6,7 @@ import (
 )
 
 // exportOutputs exports stack outputs for the Auth0 Resource Server
-func exportOutputs(ctx *pulumi.Context, resourceServer *auth0.ResourceServer, locals *Locals) error {
+func exportOutputs(ctx *pulumi.Context, resourceServer *auth0.ResourceServer, defaultGrantIds pulumi.StringMap) error {
 	// Export core identifiers
 	ctx.Export("id", resourceServer.ID())
 	ctx.Export("identifier", resourceServer.Identifier)
@@ -27,6 +27,10 @@ func exportOutputs(ctx *pulumi.Context, resourceServer *auth0.ResourceServer, lo
 	// Export system flags
 	ctx.Export("is_system", resourceServer.IsSystem)
 	ctx.Export("client_id", resourceServer.ClientId)
+
+	// The default grants' ids (cgr_...), keyed by subject type -- the key each
+	// grant imports under
+	ctx.Export("third_party_client_default_grant_ids", defaultGrantIds)
 
 	return nil
 }

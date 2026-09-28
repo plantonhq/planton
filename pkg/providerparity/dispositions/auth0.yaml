@@ -32,9 +32,6 @@ resources:
   - resource: auth0_client_credentials
     disposition: model-planned
     reason: "judged as a planned composition into Auth0Client (the token endpoint authentication method: client secret, private_key_jwt and tls_client_auth credentials)"
-  - resource: auth0_client_cimd
-    disposition: model-planned
-    reason: "judged as a planned Auth0ClientFromMetadataDocument kind (an application registered from a Client ID Metadata Document URL, the MCP-agent onboarding path)"
   - resource: auth0_connection_client
     disposition: composed
     reason: "covered by Auth0Connection.enabled_clients, which the module applies through the authoritative auth0_connection_clients; the one-client variant would fight it on the same connection"

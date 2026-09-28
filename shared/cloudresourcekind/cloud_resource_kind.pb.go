@@ -2460,12 +2460,13 @@ const (
 	// 8010–8015: how the tenant's Universal Login looks, reads and mails --
 	// branding and theme, the login flow, each prompt's words and screen
 	// partials, the email service and each email.
-	CloudResourceKind_Auth0Branding             CloudResourceKind = 8010
-	CloudResourceKind_Auth0Prompt               CloudResourceKind = 8011
-	CloudResourceKind_Auth0PromptCustomText     CloudResourceKind = 8012
-	CloudResourceKind_Auth0PromptScreenPartials CloudResourceKind = 8013
-	CloudResourceKind_Auth0EmailProvider        CloudResourceKind = 8014
-	CloudResourceKind_Auth0EmailTemplate        CloudResourceKind = 8015
+	CloudResourceKind_Auth0Branding                   CloudResourceKind = 8010
+	CloudResourceKind_Auth0Prompt                     CloudResourceKind = 8011
+	CloudResourceKind_Auth0PromptCustomText           CloudResourceKind = 8012
+	CloudResourceKind_Auth0PromptScreenPartials       CloudResourceKind = 8013
+	CloudResourceKind_Auth0EmailProvider              CloudResourceKind = 8014
+	CloudResourceKind_Auth0EmailTemplate              CloudResourceKind = 8015
+	CloudResourceKind_Auth0ClientFromMetadataDocument CloudResourceKind = 8016
 	// 9000–9999: OpenFGA resources
 	// Note: OpenFGA is Terraform-only - there is no Pulumi provider available.
 	// Pulumi modules for OpenFGA resources are pass-through placeholders.
@@ -3211,6 +3212,7 @@ var (
 		8013: "Auth0PromptScreenPartials",
 		8014: "Auth0EmailProvider",
 		8015: "Auth0EmailTemplate",
+		8016: "Auth0ClientFromMetadataDocument",
 		9000: "OpenFgaStore",
 		9001: "OpenFgaAuthorizationModel",
 		9002: "OpenFgaRelationshipTuple",
@@ -3950,6 +3952,7 @@ var (
 		"Auth0PromptScreenPartials":                      8013,
 		"Auth0EmailProvider":                             8014,
 		"Auth0EmailTemplate":                             8015,
+		"Auth0ClientFromMetadataDocument":                8016,
 		"OpenFgaStore":                                   9000,
 		"OpenFgaAuthorizationModel":                      9001,
 		"OpenFgaRelationshipTuple":                       9002,
@@ -4377,7 +4380,7 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x1cKubernetesManifestProjection\x12\x1f\n" +
 	"\vapi_version\x18\x01 \x01(\tR\n" +
 	"apiVersion\x12\x12\n" +
-	"\x04kind\x18\x02 \x01(\tR\x04kind*\xb8\xe2\x02\n" +
+	"\x04kind\x18\x02 \x01(\tR\x04kind*\xfc\xe2\x02\n" +
 	"\x11CloudResourceKind\x12\x0f\n" +
 	"\vunspecified\x10\x00\x12b\n" +
 	"\x18TestCloudResourceGeneric\x10\x01\x1aD\xa2\xf7\x04@\b\x01\x12\bv1alpha2\"\x04tcrgJ,\n" +
@@ -5186,7 +5189,8 @@ const file_shared_cloudresourcekind_cloud_resource_kind_proto_rawDesc = "" +
 	"\x15Auth0PromptCustomText\x10\xcc>\x1a\x19\xa2\xf7\x04\x15\b\x15\x12\bv1alpha1\"\aa0pctxt\x12:\n" +
 	"\x19Auth0PromptScreenPartials\x10\xcd>\x1a\x1a\xa2\xf7\x04\x16\b\x15\x12\bv1alpha1\"\ba0pspart\x121\n" +
 	"\x12Auth0EmailProvider\x10\xce>\x1a\x18\xa2\xf7\x04\x14\b\x15\x12\bv1alpha1\"\x06a0emlp\x125\n" +
-	"\x12Auth0EmailTemplate\x10\xcf>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0emlt:\x02\xce>\x12/\n" +
+	"\x12Auth0EmailTemplate\x10\xcf>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0emlt:\x02\xce>\x12B\n" +
+	"\x1fAuth0ClientFromMetadataDocument\x10\xd0>\x1a\x1c\xa2\xf7\x04\x18\b\x15\x12\bv1alpha1\"\x06a0cimd:\x02\xc7>\x12/\n" +
 	"\fOpenFgaStore\x10\xa8F\x1a\x1c\xa2\xf7\x04\x18\b\x16\x12\bv1alpha1\"\bfgastore0\x01\x12:\n" +
 	"\x19OpenFgaAuthorizationModel\x10\xa9F\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgamodel\x129\n" +
 	"\x18OpenFgaRelationshipTuple\x10\xaaF\x1a\x1a\xa2\xf7\x04\x16\b\x16\x12\bv1alpha1\"\bfgatuple:|\n" +

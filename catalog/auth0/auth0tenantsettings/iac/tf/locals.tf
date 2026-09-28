@@ -1,13 +1,35 @@
-# Local values for the Auth0TenantSettings module.
+# Local values for the Auth0TenantSettings module. The Pulumi module's
+# locals.go and tenantArgs (iac/pulumi/module/tenant.go) are its twins -- keep
+# them in lockstep.
 #
-# A field left unset is NOT MANAGED: it renders as null, so the provider never
-# sends it and the tenant keeps whatever value it already carries. Empty strings
-# are the proto's zero value for "unset", so every field maps "" to null here.
+# A setting left unset is NOT MANAGED: it renders as null, so the provider never
+# sends it and the tenant keeps whatever value it already carries.
+# - The four presentation strings and the two references arrive as "" when
+#   unset (the proto's zero value), so each maps "" to null here.
+# - Lists arrive as [] when unset, so each maps an empty list to null (an empty
+#   list would be sent, clearing the tenant's).
+# - Every other scalar is optional in the proto and arrives as null when unset;
+#   main.tf passes those through as they are.
 locals {
   friendly_name = var.spec.friendly_name != "" ? var.spec.friendly_name : null
   picture_url   = var.spec.picture_url != "" ? var.spec.picture_url : null
   support_email = var.spec.support_email != "" ? var.spec.support_email : null
   support_url   = var.spec.support_url != "" ? var.spec.support_url : null
+
+  # References arrive resolved to their values.
+  default_audience  = var.spec.default_audience != "" ? var.spec.default_audience : null
+  default_directory = var.spec.default_directory != "" ? var.spec.default_directory : null
+
+  enabled_locales      = length(var.spec.enabled_locales) > 0 ? var.spec.enabled_locales : null
+  acr_values_supported = length(var.spec.acr_values_supported) > 0 ? var.spec.acr_values_supported : null
+  allowed_logout_urls  = length(var.spec.allowed_logout_urls) > 0 ? var.spec.allowed_logout_urls : null
+
+  # The provider takes this one as the string "true" or "false" (its third
+  # value, "null", is what leaving it unset sends).
+  skip_non_verifiable_callback_uri_confirmation_prompt = (
+    var.spec.skip_non_verifiable_callback_uri_confirmation_prompt == null ? null :
+    tostring(var.spec.skip_non_verifiable_callback_uri_confirmation_prompt)
+  )
 
   # The tenant's default domain, or null when the spec leaves it unmanaged (the
   # default-domain resource is then not declared). A reference arrives resolved

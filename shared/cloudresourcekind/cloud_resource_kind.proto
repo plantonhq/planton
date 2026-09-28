@@ -7400,6 +7400,14 @@ enum CloudResourceKind {
     // refuses templates on a tenant that has none.
     prerequisites: [Auth0EmailProvider]
   }];
+  Auth0ClientFromMetadataDocument = 8016 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0cimd"
+    // Auth0 accepts a registration from a Client ID Metadata Document only
+    // while the tenant allows it (client_id_metadata_document_supported).
+    prerequisites: [Auth0TenantSettings]
+  }];
 
   // 9000–9999: OpenFGA resources
   // Note: OpenFGA is Terraform-only - there is no Pulumi provider available.

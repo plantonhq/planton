@@ -1,0 +1,10 @@
+{
+  "client_id": "https://raw.githubusercontent.com/plantonhq/planton/main/e2e/auth0/fixtures/cimd-client.json",
+  "client_name": "Planton catalog e2e MCP client",
+  "description": "A test application the Auth0ClientFromMetadataDocument end-to-end lanes register from this document",
+  "application_type": "web",
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"],
+  "redirect_uris": ["https://mcp-client.example.com/callback"],
+  "token_endpoint_auth_method": "none"
+}

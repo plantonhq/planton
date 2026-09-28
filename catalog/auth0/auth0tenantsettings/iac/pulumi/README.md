@@ -1,10 +1,10 @@
 # Auth0TenantSettings — Pulumi Module
 
-Pulumi Go module that manages the presentation settings of an existing Auth0 tenant.
+Pulumi Go module that manages the settings of an existing Auth0 tenant.
 
 ## What It Creates
 
-- `auth0.Tenant` — the settings of the tenant the provider's credential belongs to. It creates no tenant: the Management API cannot. Only `friendlyName`, `pictureUrl`, `supportEmail` and `supportUrl` are set, each only when the spec sets it; every other tenant setting is left as it is. The resource's delete is the provider's no-op, so the last-applied values stay in place.
+- `auth0.Tenant` — the settings of the tenant the provider's credential belongs to. It creates no tenant: the Management API cannot. `tenantArgs` sets each argument and block only when the spec sets it, so the tenant keeps every setting the spec leaves out -- except the six the provider resets on the first deploy (see the spec). The resource's delete is the provider's no-op, so the last-applied values stay in place.
 - `auth0.CustomDomainDefault` — the tenant's default domain, declared only when the spec sets `default_custom_domain`. Its delete only forgets the default (Auth0 has no way to unset one).
 
 ## Prerequisites
@@ -25,5 +25,5 @@ When `provider_config` is not set in the stack input, the module falls back to e
 
 ## Structure
 
-- `module/locals.go` maps each unset field to nil (never sent), the twin of `iac/tf/locals.tf`.
-- `module/tenant.go` applies the settings, `module/custom_domain_default.go` sets the default domain, and `module/outputs.go` exports them.
+- `module/locals.go` maps each unset presentation string and reference to nil (never sent), the twin of `iac/tf/locals.tf`.
+- `module/tenant.go` builds the tenant's arguments (`tenantArgs`, a pure function over the spec, tested in `tenant_test.go` to send nothing the spec leaves unset) and applies them; `module/custom_domain_default.go` sets the default domain, and `module/outputs.go` exports the settings.

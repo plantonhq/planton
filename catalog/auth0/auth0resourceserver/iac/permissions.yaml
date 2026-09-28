@@ -22,4 +22,14 @@ spec:
           - update:resource_servers
           - delete:resource_servers
         provenance: derived
-        notes: The modules (iac/tf/main.tf and iac/pulumi/module/resourceserver.go) manage auth0_resource_server and, when spec.scopes is non-empty, auth0_resource_server_scopes — create the API definition via POST /api/v2/resource-servers, read it back via GET /api/v2/resource-servers/{id}, change token settings and RBAC flags via PATCH /api/v2/resource-servers/{id}, destroy via DELETE /api/v2/resource-servers/{id}. The scopes resource writes the scopes list OF the same resource server object, so it rides update:resource_servers and needs no further family. Scope names verbatim from the post-resource-servers doc's scope inventory (auth0.com/docs/api/management/v2/resource-servers/post-resource-servers, read 2026-08-22; the POST refuses tokens without create:resource_servers).
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/resourceserver.go) manage auth0_resource_server and, when spec.scopes is non-empty, auth0_resource_server_scopes -- create the API definition via POST /api/v2/resource-servers, read it back via GET /api/v2/resource-servers/{id}, change its token settings, access policy, proof of possession, token encryption, authorization details and claims mapping via PATCH /api/v2/resource-servers/{id}, destroy via DELETE /api/v2/resource-servers/{id}. The scopes resource writes the scopes list OF the same resource server object, so it rides update:resource_servers and needs no further family. Scope names verbatim from the post-resource-servers doc's scope inventory (auth0.com/docs/api/management/v2/resource-servers/post-resource-servers, read 2026-08-22; the POST refuses tokens without create:resource_servers).
+      - purpose: ManageThirdPartyClientDefaultGrants
+        scopes:
+          - create:client_grants
+          - read:client_grants
+          - update:client_grants
+          - delete:client_grants
+        provenance: derived
+        condition:
+          spec_field_set: third_party_client_default_grants
+        notes: One auth0_client_grant per third_party_client_default_grants entry (iac/tf/main.tf and iac/pulumi/module/default_grants.go), each with default_for third_party_clients and no client_id. Create via POST /api/v2/client-grants (create:client_grants, auth0.com/docs/api/management/v2/client-grants/post-client-grants), read back via GET /api/v2/client-grants/{id} (read:client_grants), change its scopes, authorization details types and organization settings via PATCH /api/v2/client-grants/{id} (update:client_grants), and remove on destroy or entry removal via DELETE /api/v2/client-grants/{id} (delete:client_grants) -- the client-grants family Auth0Client's api_grants uses, applied here without naming an application.

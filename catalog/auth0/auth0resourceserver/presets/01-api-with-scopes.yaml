@@ -1,0 +1,20 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0ResourceServer
+metadata:
+  name: backend-api
+  org: example-org
+  env: production
+spec:
+  # The audience applications ask for tokens to -- permanent once created.
+  identifier: https://api.example.com/
+  name: Example Backend API
+  signingAlg: RS256
+  tokenLifetime: 86400
+  skipConsentForVerifiableFirstPartyClients: true
+  scopes:
+    - name: read:orders
+      description: Read orders
+    - name: write:orders
+      description: Create and update orders
+    - name: delete:orders
+      description: Delete orders

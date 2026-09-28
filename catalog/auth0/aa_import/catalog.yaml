@@ -15,6 +15,31 @@ spec:
   # a component with an import map declares are listed; a component gains its
   # map, and its types their entries here, together.
   resource_types:
+    # --- Tenant, APIs and applications ------------------------------------------
+    # The tenant's settings are one per tenant, read from the tenant the
+    # credential belongs to; its default custom domain likewise.
+    - terraform_type: auth0_tenant
+      pulumi_type: auth0:index/tenant:Tenant
+      id_format: "{tenant_id}"
+    - terraform_type: auth0_custom_domain_default
+      pulumi_type: auth0:index/customDomainDefault:CustomDomainDefault
+      id_format: "{custom_domain_default_id}"
+    - terraform_type: auth0_resource_server
+      pulumi_type: auth0:index/resourceServer:ResourceServer
+      id_format: "{resource_server_id}"
+    - terraform_type: auth0_resource_server_scopes
+      pulumi_type: auth0:index/resourceServerScopes:ResourceServerScopes
+      id_format: "{resource_server_identifier}"
+    - terraform_type: auth0_client_grant
+      pulumi_type: auth0:index/clientGrant:ClientGrant
+      id_format: "{client_grant_id}"
+    # The provider's read carries the document version over from prior state,
+    # so a fresh import holds it unset.
+    - terraform_type: auth0_client_cimd
+      pulumi_type: auth0:index/clientCimd:ClientCimd
+      id_format: "{client_id}"
+      config_only_attributes: [external_client_id_version]
+
     # --- Custom domains -------------------------------------------------------
     - terraform_type: auth0_custom_domain
       pulumi_type: auth0:index/customDomain:CustomDomain

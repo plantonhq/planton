@@ -23,4 +23,43 @@ message Auth0TenantSettingsStackOutputs {
   // default_custom_domain is the tenant's default domain as set by this
   // resource; empty when the spec leaves the default unmanaged.
   string default_custom_domain = 5;
+
+  // default_audience is the API identifier every access token defaults to;
+  // empty when the tenant has none.
+  string default_audience = 6;
+
+  // default_directory is the connection the password grant signs people in
+  // through by default; empty when the tenant has none.
+  string default_directory = 7;
+
+  // client_id_metadata_document_supported is whether the tenant registers
+  // applications from a Client ID Metadata Document.
+  bool client_id_metadata_document_supported = 8;
+
+  // resource_parameter_profile is how a client names the API it wants a
+  // token for: "audience" or "compatibility".
+  string resource_parameter_profile = 9;
+
+  // enable_dynamic_client_registration is whether any client can register a
+  // third-party application through the tenant's /oidc/register endpoint.
+  bool enable_dynamic_client_registration = 10;
+
+  // dynamic_client_registration_security_mode is the security mode of the
+  // applications Dynamic Client Registration creates; empty when the tenant
+  // reports none.
+  string dynamic_client_registration_security_mode = 11;
+
+  // session_lifetime is the hours a login session lasts however active the
+  // person is.
+  double session_lifetime = 12;
+
+  // idle_session_lifetime is the hours a login session survives unused.
+  double idle_session_lifetime = 13;
+
+  // session_cookie_mode is whether the session outlives the browser:
+  // "persistent" or "non-persistent".
+  string session_cookie_mode = 14;
+
+  // enabled_locales are the tenant's languages, its default first.
+  repeated string enabled_locales = 15;
 }

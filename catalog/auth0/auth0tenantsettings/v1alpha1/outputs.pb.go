@@ -39,8 +39,37 @@ type Auth0TenantSettingsStackOutputs struct {
 	// default_custom_domain is the tenant's default domain as set by this
 	// resource; empty when the spec leaves the default unmanaged.
 	DefaultCustomDomain string `protobuf:"bytes,5,opt,name=default_custom_domain,json=defaultCustomDomain,proto3" json:"default_custom_domain,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// default_audience is the API identifier every access token defaults to;
+	// empty when the tenant has none.
+	DefaultAudience string `protobuf:"bytes,6,opt,name=default_audience,json=defaultAudience,proto3" json:"default_audience,omitempty"`
+	// default_directory is the connection the password grant signs people in
+	// through by default; empty when the tenant has none.
+	DefaultDirectory string `protobuf:"bytes,7,opt,name=default_directory,json=defaultDirectory,proto3" json:"default_directory,omitempty"`
+	// client_id_metadata_document_supported is whether the tenant registers
+	// applications from a Client ID Metadata Document.
+	ClientIdMetadataDocumentSupported bool `protobuf:"varint,8,opt,name=client_id_metadata_document_supported,json=clientIdMetadataDocumentSupported,proto3" json:"client_id_metadata_document_supported,omitempty"`
+	// resource_parameter_profile is how a client names the API it wants a
+	// token for: "audience" or "compatibility".
+	ResourceParameterProfile string `protobuf:"bytes,9,opt,name=resource_parameter_profile,json=resourceParameterProfile,proto3" json:"resource_parameter_profile,omitempty"`
+	// enable_dynamic_client_registration is whether any client can register a
+	// third-party application through the tenant's /oidc/register endpoint.
+	EnableDynamicClientRegistration bool `protobuf:"varint,10,opt,name=enable_dynamic_client_registration,json=enableDynamicClientRegistration,proto3" json:"enable_dynamic_client_registration,omitempty"`
+	// dynamic_client_registration_security_mode is the security mode of the
+	// applications Dynamic Client Registration creates; empty when the tenant
+	// reports none.
+	DynamicClientRegistrationSecurityMode string `protobuf:"bytes,11,opt,name=dynamic_client_registration_security_mode,json=dynamicClientRegistrationSecurityMode,proto3" json:"dynamic_client_registration_security_mode,omitempty"`
+	// session_lifetime is the hours a login session lasts however active the
+	// person is.
+	SessionLifetime float64 `protobuf:"fixed64,12,opt,name=session_lifetime,json=sessionLifetime,proto3" json:"session_lifetime,omitempty"`
+	// idle_session_lifetime is the hours a login session survives unused.
+	IdleSessionLifetime float64 `protobuf:"fixed64,13,opt,name=idle_session_lifetime,json=idleSessionLifetime,proto3" json:"idle_session_lifetime,omitempty"`
+	// session_cookie_mode is whether the session outlives the browser:
+	// "persistent" or "non-persistent".
+	SessionCookieMode string `protobuf:"bytes,14,opt,name=session_cookie_mode,json=sessionCookieMode,proto3" json:"session_cookie_mode,omitempty"`
+	// enabled_locales are the tenant's languages, its default first.
+	EnabledLocales []string `protobuf:"bytes,15,rep,name=enabled_locales,json=enabledLocales,proto3" json:"enabled_locales,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *Auth0TenantSettingsStackOutputs) Reset() {
@@ -108,11 +137,81 @@ func (x *Auth0TenantSettingsStackOutputs) GetDefaultCustomDomain() string {
 	return ""
 }
 
+func (x *Auth0TenantSettingsStackOutputs) GetDefaultAudience() string {
+	if x != nil {
+		return x.DefaultAudience
+	}
+	return ""
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetDefaultDirectory() string {
+	if x != nil {
+		return x.DefaultDirectory
+	}
+	return ""
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetClientIdMetadataDocumentSupported() bool {
+	if x != nil {
+		return x.ClientIdMetadataDocumentSupported
+	}
+	return false
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetResourceParameterProfile() string {
+	if x != nil {
+		return x.ResourceParameterProfile
+	}
+	return ""
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetEnableDynamicClientRegistration() bool {
+	if x != nil {
+		return x.EnableDynamicClientRegistration
+	}
+	return false
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetDynamicClientRegistrationSecurityMode() string {
+	if x != nil {
+		return x.DynamicClientRegistrationSecurityMode
+	}
+	return ""
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetSessionLifetime() float64 {
+	if x != nil {
+		return x.SessionLifetime
+	}
+	return 0
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetIdleSessionLifetime() float64 {
+	if x != nil {
+		return x.IdleSessionLifetime
+	}
+	return 0
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetSessionCookieMode() string {
+	if x != nil {
+		return x.SessionCookieMode
+	}
+	return ""
+}
+
+func (x *Auth0TenantSettingsStackOutputs) GetEnabledLocales() []string {
+	if x != nil {
+		return x.EnabledLocales
+	}
+	return nil
+}
+
 var File_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/auth0/auth0tenantsettings/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\"\xe1\x01\n" +
+	"8catalog/auth0/auth0tenantsettings/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\"\xa8\x06\n" +
 	"\x1fAuth0TenantSettingsStackOutputs\x12#\n" +
 	"\rfriendly_name\x18\x01 \x01(\tR\ffriendlyName\x12\x1f\n" +
 	"\vpicture_url\x18\x02 \x01(\tR\n" +
@@ -120,7 +219,18 @@ const file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_rawDesc = ""
 	"\rsupport_email\x18\x03 \x01(\tR\fsupportEmail\x12\x1f\n" +
 	"\vsupport_url\x18\x04 \x01(\tR\n" +
 	"supportUrl\x122\n" +
-	"\x15default_custom_domain\x18\x05 \x01(\tR\x13defaultCustomDomainB\x84\x03\n" +
+	"\x15default_custom_domain\x18\x05 \x01(\tR\x13defaultCustomDomain\x12)\n" +
+	"\x10default_audience\x18\x06 \x01(\tR\x0fdefaultAudience\x12+\n" +
+	"\x11default_directory\x18\a \x01(\tR\x10defaultDirectory\x12P\n" +
+	"%client_id_metadata_document_supported\x18\b \x01(\bR!clientIdMetadataDocumentSupported\x12<\n" +
+	"\x1aresource_parameter_profile\x18\t \x01(\tR\x18resourceParameterProfile\x12K\n" +
+	"\"enable_dynamic_client_registration\x18\n" +
+	" \x01(\bR\x1fenableDynamicClientRegistration\x12X\n" +
+	")dynamic_client_registration_security_mode\x18\v \x01(\tR%dynamicClientRegistrationSecurityMode\x12)\n" +
+	"\x10session_lifetime\x18\f \x01(\x01R\x0fsessionLifetime\x122\n" +
+	"\x15idle_session_lifetime\x18\r \x01(\x01R\x13idleSessionLifetime\x12.\n" +
+	"\x13session_cookie_mode\x18\x0e \x01(\tR\x11sessionCookieMode\x12'\n" +
+	"\x0fenabled_locales\x18\x0f \x03(\tR\x0eenabledLocalesB\x84\x03\n" +
 	"2com.dev.planton.auth0.auth0tenantsettings.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/auth0/auth0tenantsettings/v1alpha1;auth0tenantsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Auth0.Auth0tenantsettings.V1alpha1\xca\x02.Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\xe2\x02:Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Auth0::Auth0tenantsettings::V1alpha1b\x06proto3"
 
 var (

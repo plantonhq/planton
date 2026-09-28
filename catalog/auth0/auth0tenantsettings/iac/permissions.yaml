@@ -20,7 +20,7 @@ spec:
           - read:tenant_settings
           - update:tenant_settings
         provenance: derived
-        notes: The modules (iac/tf/main.tf and iac/pulumi/module/tenant.go) manage auth0_tenant, the settings of the tenant the credential belongs to -- read via GET /api/v2/tenants/settings (read:tenant_settings) and written via PATCH /api/v2/tenants/settings (update:tenant_settings), the two scopes the Management API's tenant-settings endpoints name. There is no create and no delete -- the resource's create is a PATCH of the existing tenant and its destroy is the provider's no-op (terraform-provider-auth0 internal/auth0/tenant/resource.go, deleteTenant returns nil; read 2026-09-28) -- so no other scope is needed.
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/tenant.go) manage auth0_tenant, the settings of the tenant the credential belongs to -- read via GET /api/v2/tenants/settings (read:tenant_settings) and written via PATCH /api/v2/tenants/settings (update:tenant_settings), the two scopes the Management API's tenant-settings endpoints name. Every setting the spec carries -- the presentation settings, session lifetimes, OAuth and OpenID Connect settings, flags, error page, token quotas and country codes -- travels through that one endpoint (the provider follows its PATCH with a second one to the same endpoint, carrying null for the settings it clears). There is no create and no delete -- the resource's create is a PATCH of the existing tenant and its destroy is the provider's no-op (terraform-provider-auth0 internal/auth0/tenant/resource.go, deleteTenant returns nil; read 2026-09-28) -- so no other scope is needed.
       - purpose: ManageDefaultCustomDomain
         scopes:
           - read:custom_domains

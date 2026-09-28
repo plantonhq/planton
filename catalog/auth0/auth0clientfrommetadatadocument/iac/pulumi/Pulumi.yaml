@@ -1,0 +1,6 @@
+# Auth0ClientFromMetadataDocument Pulumi Module
+# This module registers an Auth0 application from its Client ID Metadata Document.
+name: auth0-client-from-metadata-document
+runtime:
+  name: go
+description: Pulumi module for Auth0ClientFromMetadataDocument component

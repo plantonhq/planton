@@ -76,9 +76,7 @@ message Auth0EmailTemplateSpec {
   optional string syntax = 5 [
     (dev.planton.shared.options.default) = "liquid",
     (buf.validate.field).string = {
-      in: [
-        "liquid"
-      ]
+      in: ["liquid"]
     }
   ];
 

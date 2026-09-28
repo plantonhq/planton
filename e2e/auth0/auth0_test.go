@@ -207,6 +207,15 @@ func TestAuth0EmailTemplate_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "auth0emailtemplate", "terraform")
 }
 
+// --- Auth0 Client From Metadata Document ---
+
+func TestAuth0ClientFromMetadataDocument_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0clientfrommetadatadocument", "pulumi")
+}
+func TestAuth0ClientFromMetadataDocument_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0clientfrommetadatadocument", "terraform")
+}
+
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an Auth0 component.
 func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	t.Helper()

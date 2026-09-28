@@ -58,6 +58,27 @@ planton apply -f auth0-custom-domain-verification.yaml
 
 When the Stack Job succeeds, the domain is ready and people can sign in on it.
 
+### InfraChart
+
+When the custom domain, its DNS record and this verification deploy together, wire the verification to the domain with ValueFromRef and have it wait for the record, so Auth0 checks the name only once it resolves:
+
+```yaml
+metadata:
+  name: sign-in-domain-verification
+  relationships:
+    - kind: CloudflareDnsRecord
+      name: sign-in-domain-cname
+      type: depends_on
+spec:
+  customDomainId:
+    valueFrom:
+      kind: Auth0CustomDomain
+      name: sign-in-domain
+      fieldPath: status.outputs.id
+```
+
+The InfraPipeline deploys the domain first, then the DNS record whose content reads the domain's `dns_record_value`, then this verification.
+
 ## Key Configuration
 
 These are the decisions that matter. Explore the full field reference in the [API Explorer](#api-explorer) tab.

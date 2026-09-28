@@ -1,0 +1,30 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# auth0 provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# auth0_resource_server matches the spec by exact name throughout, so it
+# carries no entry. Its scopes are applied through the authoritative
+# auth0_resource_server_scopes, whose scopes block matches spec.scopes by
+# name. The default grants for third-party applications are auth0_client_grant
+# resources, one per spec.third_party_client_default_grants entry; the
+# per-application use of the same resource is composed on Auth0Client
+# (api_grants), not here.
+
+resources:
+  auth0_resource_server_scopes:
+    exclusions:
+      - arg: resource_server_identifier
+        reason: wired by the module to the identifier of the API this kind creates -- the scopes have no independent target
+  auth0_client_grant:
+    specRoot: spec.third_party_client_default_grants
+    exclusions:
+      - arg: audience
+        reason: wired by the module to the identifier of the API this kind creates -- a default grant is always for this API
+      - arg: default_for
+        reason: fixed by the module to third_party_clients, the only value Auth0 accepts -- it is what makes the grant a default grant
+      - arg: client_id
+        reason: fixed empty -- a default grant names no application (Auth0 makes client_id and default_for mutually exclusive); a grant for one application is Auth0Client.api_grants

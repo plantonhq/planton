@@ -10,29 +10,45 @@ type Locals struct {
 	// ResourceName is the resource's identity (the Pulumi resource name).
 	ResourceName string
 
-	// The four managed settings. A nil pointer is NOT MANAGED: the provider
-	// never sends it, and the tenant keeps whatever value it already carries.
-	// Empty strings are the proto's zero value for "unset", so they map to nil.
+	// Spec is the tenant settings as declared. Every setting it leaves unset is
+	// NOT MANAGED: tenantArgs never sends it, and the tenant keeps whatever value
+	// it already carries.
+	Spec *auth0tenantsettingsv1alpha1.Auth0TenantSettingsSpec
+
+	// The four presentation settings. A nil pointer is not managed. Empty
+	// strings are the proto's zero value for "unset", so they map to nil.
 	FriendlyName *string
 	PictureUrl   *string
 	SupportEmail *string
 	SupportUrl   *string
 
+	// DefaultAudience and DefaultDirectory are the resolved values of their
+	// references (a reference is resolved to its value before the module runs),
+	// or nil when the spec leaves them unmanaged.
+	DefaultAudience  *string
+	DefaultDirectory *string
+
 	// DefaultCustomDomain is the tenant's default domain, or nil when the spec
-	// leaves it unmanaged (the default-domain resource is then not declared). A
-	// reference is resolved to its value before the module runs.
+	// leaves it unmanaged (the default-domain resource is then not declared).
 	DefaultCustomDomain *string
 }
 
 func initializeLocals(stackInput *auth0tenantsettingsv1alpha1.Auth0TenantSettingsStackInput) *Locals {
 	target := stackInput.Target
 	spec := target.Spec
+	if spec == nil {
+		spec = &auth0tenantsettingsv1alpha1.Auth0TenantSettingsSpec{}
+	}
 	return &Locals{
 		ResourceName: target.Metadata.Name,
+		Spec:         spec,
 		FriendlyName: managed(spec.FriendlyName),
 		PictureUrl:   managed(spec.PictureUrl),
 		SupportEmail: managed(spec.SupportEmail),
 		SupportUrl:   managed(spec.SupportUrl),
+
+		DefaultAudience:  managed(spec.DefaultAudience.GetValue()),
+		DefaultDirectory: managed(spec.DefaultDirectory.GetValue()),
 
 		DefaultCustomDomain: managed(spec.DefaultCustomDomain.GetValue()),
 	}

@@ -9,7 +9,7 @@ import (
 
 // Resources creates an Auth0 Resource Server (API) with all configured parameters
 func Resources(ctx *pulumi.Context, stackInput *auth0resourceserverv1alpha1.Auth0ResourceServerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(stackInput)
 
 	// Setup Auth0 provider with credentials from provider config
 	var provider *auth0.Provider
@@ -42,13 +42,20 @@ func Resources(ctx *pulumi.Context, stackInput *auth0resourceserverv1alpha1.Auth
 	}
 
 	// Create scopes if defined
+	var scopes *auth0.ResourceServerScopes
 	if len(locals.Scopes) > 0 {
-		_, err = createResourceServerScopes(ctx, locals, provider, resourceServer)
+		scopes, err = createResourceServerScopes(ctx, locals, provider, resourceServer)
 		if err != nil {
 			return errors.Wrap(err, "failed to create Auth0 resource server scopes")
 		}
 	}
 
+	// Default grants for third-party applications, one per subject type
+	defaultGrantIds, err := createDefaultGrants(ctx, locals, provider, resourceServer, scopes)
+	if err != nil {
+		return errors.Wrap(err, "failed to create the default grants for third-party applications")
+	}
+
 	// Export stack outputs
-	return exportOutputs(ctx, resourceServer, locals)
+	return exportOutputs(ctx, resourceServer, defaultGrantIds)
 }

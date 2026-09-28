@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0clientfrommetadatadocument
+spec:
+  billing_model: free
+  free_tier: "An application registered from a metadata document is a configuration object inside an Auth0 tenant, and Auth0 meters no per-application charge; registration from a metadata document is available on every plan. A document declaring private_key_jwt (a confidential client) needs the Enterprise plan; a public client does not."
+  notes: "The real spend lives in the Auth0 tenant subscription the application is registered into -- plan tier and monthly active users, billed at the tenant level, outside this component (auth0.com/pricing). The people who sign in through the application move the tenant's active-user meter, so an MCP client used by many people drives tenant cost indirectly without itself being billed. require_proof_of_possession over mutual TLS needs the Enterprise plan with the Highly Regulated Identity add-on; fine-grained token quotas (token_quota) are an Early Access feature Auth0 enables on request."

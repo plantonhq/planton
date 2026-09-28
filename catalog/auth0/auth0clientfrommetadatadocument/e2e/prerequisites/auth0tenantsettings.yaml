@@ -1,0 +1,16 @@
+# The tenant settings an application registered from a metadata document
+# needs, installed by the harness from the registry's prerequisites edge:
+# Auth0 accepts a registration from a Client ID Metadata Document only while
+# the tenant's Client ID Metadata Document Registration setting is on. This
+# consumer-scoped install profile turns on that one setting and declares
+# nothing else, so the tenant's name, logo and support contacts stay as they
+# are; the Auth0TenantSettings kind's own minimal scenario sets those, which
+# is right for that kind's proof and beside the point here.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: e2e-tenant-settings
+  org: e2e-org
+  env: testing
+spec:
+  clientIdMetadataDocumentSupported: true

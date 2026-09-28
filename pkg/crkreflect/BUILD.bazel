@@ -34,6 +34,7 @@ go_library(
         "//catalog/auth0/auth0action/v1alpha1",
         "//catalog/auth0/auth0branding/v1alpha1",
         "//catalog/auth0/auth0client/v1alpha1",
+        "//catalog/auth0/auth0clientfrommetadatadocument/v1alpha1",
         "//catalog/auth0/auth0connection/v1alpha1",
         "//catalog/auth0/auth0customdomain/v1alpha1",
         "//catalog/auth0/auth0customdomainverification/v1alpha1",

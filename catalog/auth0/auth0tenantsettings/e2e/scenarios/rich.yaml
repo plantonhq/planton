@@ -1,0 +1,40 @@
+# Settings Auth0's documentation gates on no plan and no Early Access,
+# beyond the presentation ones:
+# languages, session lifetimes and cookie, logout confirmation and discovery,
+# the resource parameter profile, a login route, logout URLs, an error page
+# and a set of flags. The verifier reads GET /api/v2/tenants/settings back and
+# compares each against the stack outputs and this spec. Destroy leaves them
+# in place (Auth0 has no delete for tenant settings); the next run rewrites
+# them.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: e2e-tenant-settings-rich
+  org: e2e-org
+  env: testing
+spec:
+  friendlyName: Planton E2E
+  supportEmail: support@example.com
+  enabledLocales:
+    - en
+    - fr-CA
+  sessionLifetime: 24
+  idleSessionLifetime: 1
+  sessionCookie:
+    mode: persistent
+  sessions:
+    oidcLogoutPromptEnabled: true
+  oidcLogout:
+    rpLogoutEndSessionEndpointDiscovery: true
+  resourceParameterProfile: compatibility
+  defaultRedirectionUri: https://example.com/login
+  allowedLogoutUrls:
+    - https://example.com/signed-out
+  skipNonVerifiableCallbackUriConfirmationPrompt: false
+  errorPage:
+    url: https://example.com/error
+    showLogLink: false
+  flags:
+    enableClientConnections: false
+    enablePublicSignupUserExistsError: false
+    useScopeDescriptionsForConsent: true

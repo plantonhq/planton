@@ -23,42 +23,79 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Auth0ResourceServerSpec defines the configuration for an Auth0 Resource Server (API).
-// In Auth0, Resource Servers represent APIs that your applications can request access to.
-// They define the audience parameter used in authorization requests and the scopes (permissions)
-// that can be granted to applications.
+// Auth0ResourceServerSpec defines an API in the Auth0 tenant the provider
+// connection's credential belongs to (Auth0 calls it a resource server): the
+// audience applications ask for tokens to, the scopes (permissions) those tokens
+// can carry, how the tokens are signed, shaped and protected, which applications
+// may get one at all, and the scopes every third-party application gets by
+// default.
 //
-// This spec covers the 80/20 use case for configuring Auth0 APIs:
-// - Custom backend APIs with JWT-based access control
-// - APIs requiring role-based access control (RBAC)
-// - APIs with defined scopes/permissions for fine-grained authorization
+// Who can get a token for this API is decided in two places:
+//   - subject_type_authorization is the API's access policy, one per kind of
+//     subject: user-delegated access (an application acting for a signed-in
+//     person) and client access (an application acting for itself, through the
+//     client-credentials flow).
+//   - Client grants are the per-application ceilings the policies consult. A
+//     grant for one application lives on that application (Auth0Client's
+//     api_grants); the grants every third-party application gets without one of
+//     its own are declared here, in third_party_client_default_grants.
+//
+// Unset means unmanaged: a field or block the spec leaves out is never sent, and the API keeps whatever
+// Auth0 holds -- Auth0's default on a new API, the live value on an API adopted
+// into this kind. A few settings have no value of their own in the provider
+// (verification_location, token_lifetime_for_anonymous_access_tokens,
+// access_token, and proof_of_possession.required_for once its block is
+// declared): on an adopted API, declare their live values, because leaving
+// them unset resets them. The comment on each says so.
+//
+// Plans: defining APIs, scopes, access policies and default grants is on every
+// plan. Token encryption, mTLS proof of possession and transactional
+// authorization need the Enterprise plan with the Highly Regulated Identity
+// add-on; anonymous-session settings are an Enterprise Early Access feature;
+// Online Refresh Tokens are in Beta. Each field says which.
+//
+// The credential needs create:resource_servers, read:resource_servers,
+// update:resource_servers and delete:resource_servers, and -- when default
+// grants are declared -- create:client_grants, read:client_grants,
+// update:client_grants and delete:client_grants on the tenant's Management API
+// (iac/permissions.yaml).
 //
 // https://auth0.com/docs/get-started/apis
+// https://auth0.com/docs/get-started/apis/api-access-policies-for-applications
+// https://auth0.com/docs/get-started/applications/application-access-to-apis-client-grants
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/resource_server
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/client_grant
 type Auth0ResourceServerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// identifier is the unique identifier for the resource server.
 	// This value is used as the "audience" parameter for authorization calls.
 	// Typically a URI representing your API (e.g., "https://api.example.com/").
-	// Cannot be changed once set.
+	// Cannot be changed once set: changing it replaces the API.
 	//
 	// Example: "https://api.mycompany.com/", "api.planton.live"
 	Identifier string `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
 	// name is a friendly display name for the resource server.
 	// This is shown in the Auth0 dashboard and consent screens.
-	// Cannot include `<` or `>` characters.
+	// Cannot include `<` or `>` characters. Unset, the module uses metadata.name.
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// signing_alg is the algorithm used to sign access tokens for this API.
 	// Options:
-	// - "RS256": RSA using SHA-256 (asymmetric, recommended)
-	// - "HS256": HMAC using SHA-256 (symmetric, requires client secret)
-	// - "PS256": RSA-PSS using SHA-256
-	// Default: RS256
+	//   - "RS256": RSA using SHA-256 (asymmetric, recommended): Auth0 holds the
+	//     private key, and the API verifies tokens against the tenant's public
+	//     keys (JWKS)
+	//   - "HS256": HMAC using SHA-256 (symmetric): the API verifies tokens with a
+	//     shared secret (signing_secret) that can also mint them
+	//   - "PS256": RSA-PSS using SHA-256, which Auth0 offers through an add-on
+	//
+	// Set it explicitly: the Management API reference names HS256 as the default
+	// for an API created without one, while the dashboard preselects RS256.
 	SigningAlg string `protobuf:"bytes,3,opt,name=signing_alg,json=signingAlg,proto3" json:"signing_alg,omitempty"`
 	// allow_offline_access indicates whether refresh tokens can be issued for this API.
 	// When true, applications can request refresh tokens using the "offline_access" scope.
 	// This allows applications to obtain new access tokens without user interaction.
-	// Default: false
-	AllowOfflineAccess bool `protobuf:"varint,4,opt,name=allow_offline_access,json=allowOfflineAccess,proto3" json:"allow_offline_access,omitempty"`
+	// Unset: unmanaged -- Auth0's default (false) on a new API, the live value
+	// on an adopted one.
+	AllowOfflineAccess *bool `protobuf:"varint,4,opt,name=allow_offline_access,json=allowOfflineAccess,proto3,oneof" json:"allow_offline_access,omitempty"`
 	// token_lifetime is the duration (in seconds) that access tokens remain valid
 	// when issued from the token endpoint.
 	// Range: 0 to 2592000 (30 days)
@@ -74,16 +111,19 @@ type Auth0ResourceServerSpec struct {
 	// skip_consent_for_verifiable_first_party_clients indicates whether to skip
 	// the consent prompt for applications flagged as first-party.
 	// When true, first-party applications don't show the consent screen to users.
-	// Default: true
-	SkipConsentForVerifiableFirstPartyClients bool `protobuf:"varint,7,opt,name=skip_consent_for_verifiable_first_party_clients,json=skipConsentForVerifiableFirstPartyClients,proto3" json:"skip_consent_for_verifiable_first_party_clients,omitempty"`
+	// Third-party applications always show it.
+	// Unset: unmanaged -- Auth0's default (true) on a new API, the live value
+	// on an adopted one.
+	SkipConsentForVerifiableFirstPartyClients *bool `protobuf:"varint,7,opt,name=skip_consent_for_verifiable_first_party_clients,json=skipConsentForVerifiableFirstPartyClients,proto3,oneof" json:"skip_consent_for_verifiable_first_party_clients,omitempty"`
 	// enforce_policies enables RBAC authorization policies for this API.
 	// When true, role and permission assignments are evaluated during login.
 	// This allows you to use Auth0's built-in RBAC to control API access.
 	// Requires token_dialect to be set to a value that includes permissions.
-	// Default: false
+	// Unset: unmanaged -- Auth0's default (false) on a new API, the live value
+	// on an adopted one.
 	//
 	// https://auth0.com/docs/manage-users/access-control/rbac
-	EnforcePolicies bool `protobuf:"varint,8,opt,name=enforce_policies,json=enforcePolicies,proto3" json:"enforce_policies,omitempty"`
+	EnforcePolicies *bool `protobuf:"varint,8,opt,name=enforce_policies,json=enforcePolicies,proto3,oneof" json:"enforce_policies,omitempty"`
 	// token_dialect determines the format of access tokens issued for this API.
 	// Options:
 	// - "access_token": Standard Auth0 JWT with claims
@@ -101,15 +141,137 @@ type Auth0ResourceServerSpec struct {
 	// Applications request scopes during authorization, and granted scopes
 	// appear in the access token's "scope" claim.
 	//
+	// The list is authoritative once it has entries: each apply makes it the
+	// API's complete scope list, and a scope removed here is removed from the API
+	// (along with its place in every role and grant).
+	//
 	// Example scopes:
 	// - read:users (permission to read user data)
 	// - write:orders (permission to create/update orders)
 	// - delete:products (permission to delete products)
 	//
 	// https://auth0.com/docs/get-started/apis/api-settings#scopes
-	Scopes        []*Auth0ResourceServerScope `protobuf:"bytes,10,rep,name=scopes,proto3" json:"scopes,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Scopes []*Auth0ResourceServerScope `protobuf:"bytes,10,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	// allow_online_access lets applications ask for Online Refresh Tokens for
+	// this API (the "online_access" scope): refresh tokens bound to the person's
+	// Auth0 session, which stop working when the session ends and extend it each
+	// time they are used. They suit single-page applications whose browsers block
+	// the cookies silent authentication relies on; public clients must use DPoP
+	// with them. Unset, the API keeps what Auth0 holds (off on a new API).
+	// Online Refresh Tokens are in Beta: Auth0 enables them on request.
+	//
+	// https://auth0.com/docs/secure/tokens/refresh-tokens/online-refresh-tokens
+	AllowOnlineAccess *bool `protobuf:"varint,11,opt,name=allow_online_access,json=allowOnlineAccess,proto3,oneof" json:"allow_online_access,omitempty"`
+	// allow_online_access_with_ephemeral_sessions lets Online Refresh Tokens be
+	// issued even when the tenant's sessions are ephemeral (they end when the
+	// browser closes). Unset, the API keeps what Auth0 holds. Part of the Online
+	// Refresh Tokens Beta.
+	AllowOnlineAccessWithEphemeralSessions *bool `protobuf:"varint,12,opt,name=allow_online_access_with_ephemeral_sessions,json=allowOnlineAccessWithEphemeralSessions,proto3,oneof" json:"allow_online_access_with_ephemeral_sessions,omitempty"`
+	// consent_policy is how Auth0 handles consent for rich authorization requests
+	// to this API:
+	//   - "transactional-authorization-with-mfa": transactional authorization --
+	//     Auth0 shows no consent prompt of its own when a push notification is
+	//     sent; your own interface shows the authorization_details, and a
+	//     post-login Action receives the request's linking id to step the person
+	//     up with MFA. Not supported with Client-Initiated Backchannel
+	//     Authentication. Needs the Enterprise plan with the Highly Regulated
+	//     Identity add-on.
+	//   - "null": Auth0's standard consent behavior (a customized consent prompt,
+	//     or the Guardian app showing the authorization_details).
+	//
+	// Unset, the API keeps what Auth0 holds (standard on a new API).
+	//
+	// https://auth0.com/docs/get-started/apis/configure-rich-authorization-requests
+	ConsentPolicy *string `protobuf:"bytes,13,opt,name=consent_policy,json=consentPolicy,proto3,oneof" json:"consent_policy,omitempty"`
+	// token_lifetime_for_anonymous_access_tokens is how long, in seconds, an
+	// access token this API issues in an anonymous session stays valid (a
+	// session Auth0 opens before anyone signs in): 86400 (one day) to 2592000
+	// (30 days). It has no value of its own in the provider: declare the live
+	// value when adopting an existing API; leaving it unset on an adopted API
+	// resets it. Anonymous sessions are an Enterprise Early Access feature.
+	//
+	// https://auth0.com/docs/manage-users/sessions/anonymous-sessions/configure-anonymous-sessions
+	TokenLifetimeForAnonymousAccessTokens *int32 `protobuf:"varint,14,opt,name=token_lifetime_for_anonymous_access_tokens,json=tokenLifetimeForAnonymousAccessTokens,proto3,oneof" json:"token_lifetime_for_anonymous_access_tokens,omitempty"`
+	// verification_location is the URL Auth0 retrieves this API's public keys
+	// (a JWKS) from, to verify JWTs the API sends to Auth0 for token
+	// introspection. Most APIs leave it unset. It has no value of its own in the
+	// provider: declare the live value when adopting an existing API; leaving it
+	// unset on an adopted API resets it.
+	VerificationLocation *string `protobuf:"bytes,15,opt,name=verification_location,json=verificationLocation,proto3,oneof" json:"verification_location,omitempty"`
+	// signing_secret is the shared secret an HS256 API's tokens are signed with,
+	// at least 16 characters. Whoever holds it can both verify and mint tokens
+	// for this API, so store it like any credential. Unset, Auth0 generates one
+	// for an HS256 API (reported in the signing_secret output) and keeps it
+	// across applies; set it to rotate to a secret of your own. RS256 and PS256
+	// APIs do not use it.
+	SigningSecret *string `protobuf:"bytes,16,opt,name=signing_secret,json=signingSecret,proto3,oneof" json:"signing_secret,omitempty"`
+	// access_token configures what Auth0 puts into the access tokens this API
+	// issues. It has no value of its own in the provider: declare the live
+	// configuration when adopting an existing API; leaving it unset on an adopted
+	// API clears it.
+	AccessToken *Auth0ResourceServerAccessToken `protobuf:"bytes,17,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	// authorization_details are the Rich Authorization Request types this API
+	// accepts (for example "payment", "money_transfer"): structured requests a
+	// client sends in an authorization_details parameter, which the person
+	// approves and which land in the access token. A client grant's
+	// authorization_details_types names which of them an application may
+	// request. Clients send them through Pushed Authorization Requests (which
+	// need the Enterprise plan with the Highly Regulated Identity add-on) or
+	// Client-Initiated Backchannel Authentication (which needs the Enterprise
+	// plan or an add-on). Empty is unmanaged: the API keeps the types it has. A
+	// single {disable: true} entry removes every type.
+	//
+	// https://auth0.com/docs/get-started/apis/configure-rich-authorization-requests
+	AuthorizationDetails []*Auth0ResourceServerAuthorizationDetail `protobuf:"bytes,18,rep,name=authorization_details,json=authorizationDetails,proto3" json:"authorization_details,omitempty"`
+	// authorization_policy attaches an authorization policy to this API by its
+	// identifier. Auth0 offers authorization policies to Early Access tenants.
+	// Unset, the API keeps the policy it has; removing it after it was applied
+	// detaches the policy.
+	AuthorizationPolicy *Auth0ResourceServerAuthorizationPolicy `protobuf:"bytes,19,opt,name=authorization_policy,json=authorizationPolicy,proto3" json:"authorization_policy,omitempty"`
+	// proof_of_possession sender-constrains this API's access tokens: a token is
+	// bound to the application that obtained it (by its mTLS certificate or its
+	// DPoP key), so a stolen token is useless to anyone else. Applications that
+	// require it must use it with an API that accepts it. Unset, the API keeps
+	// what Auth0 holds (none on a new API).
+	//
+	// https://auth0.com/docs/secure/sender-constraining/configure-sender-constraining
+	ProofOfPossession *Auth0ResourceServerProofOfPossession `protobuf:"bytes,20,opt,name=proof_of_possession,json=proofOfPossession,proto3" json:"proof_of_possession,omitempty"`
+	// subject_type_authorization is the API's access policy: which applications
+	// can get an access token for it, decided separately for tokens that act for
+	// a person (user) and tokens an application gets for itself (client).
+	// Third-party applications always need a client grant, whatever the policy
+	// (third_party_client_default_grants gives every one of them the same
+	// grant). Unset, and for each policy left unset, the API keeps what Auth0
+	// holds: on a new API, every application may get a user-delegated token and
+	// a client token needs a grant.
+	//
+	// https://auth0.com/docs/get-started/apis/api-access-policies-for-applications
+	SubjectTypeAuthorization *Auth0ResourceServerSubjectTypeAuthorization `protobuf:"bytes,21,opt,name=subject_type_authorization,json=subjectTypeAuthorization,proto3" json:"subject_type_authorization,omitempty"`
+	// token_encryption encrypts this API's access tokens (a signed JWT nested in
+	// a JWE) with the API's public key, so only the API -- holding the private
+	// key -- can read what they carry; applications and anything in between see
+	// an opaque token. Needs the Enterprise plan with the Highly Regulated
+	// Identity add-on. Unset, the API keeps what Auth0 holds (unencrypted on a
+	// new API).
+	//
+	// https://auth0.com/docs/get-started/apis/configure-json-web-encryption
+	TokenEncryption *Auth0ResourceServerTokenEncryption `protobuf:"bytes,22,opt,name=token_encryption,json=tokenEncryption,proto3" json:"token_encryption,omitempty"`
+	// third_party_client_default_grants are the grants every third-party
+	// application in the tenant gets on this API without a grant of its own --
+	// the applications external developers, partners and AI agents register,
+	// including every application registered through Dynamic Client Registration
+	// or from a Client ID Metadata Document, which no one can grant access one by
+	// one. One entry per subject type: "user" for tokens an application gets on a
+	// person's behalf, "client" for tokens it gets for itself. A grant made for
+	// one application (Auth0Client's api_grants) takes precedence over the
+	// default. Empty is unmanaged: default grants made elsewhere are left alone.
+	// System APIs (the Management API, My Account API) do not accept default
+	// grants.
+	//
+	// https://auth0.com/docs/get-started/applications/application-access-to-apis-client-grants#default-permissions-for-third-party-applications
+	ThirdPartyClientDefaultGrants []*Auth0ResourceServerThirdPartyClientDefaultGrant `protobuf:"bytes,23,rep,name=third_party_client_default_grants,json=thirdPartyClientDefaultGrants,proto3" json:"third_party_client_default_grants,omitempty"`
+	unknownFields                 protoimpl.UnknownFields
+	sizeCache                     protoimpl.SizeCache
 }
 
 func (x *Auth0ResourceServerSpec) Reset() {
@@ -164,8 +326,8 @@ func (x *Auth0ResourceServerSpec) GetSigningAlg() string {
 }
 
 func (x *Auth0ResourceServerSpec) GetAllowOfflineAccess() bool {
-	if x != nil {
-		return x.AllowOfflineAccess
+	if x != nil && x.AllowOfflineAccess != nil {
+		return *x.AllowOfflineAccess
 	}
 	return false
 }
@@ -185,15 +347,15 @@ func (x *Auth0ResourceServerSpec) GetTokenLifetimeForWeb() int32 {
 }
 
 func (x *Auth0ResourceServerSpec) GetSkipConsentForVerifiableFirstPartyClients() bool {
-	if x != nil {
-		return x.SkipConsentForVerifiableFirstPartyClients
+	if x != nil && x.SkipConsentForVerifiableFirstPartyClients != nil {
+		return *x.SkipConsentForVerifiableFirstPartyClients
 	}
 	return false
 }
 
 func (x *Auth0ResourceServerSpec) GetEnforcePolicies() bool {
-	if x != nil {
-		return x.EnforcePolicies
+	if x != nil && x.EnforcePolicies != nil {
+		return *x.EnforcePolicies
 	}
 	return false
 }
@@ -208,6 +370,97 @@ func (x *Auth0ResourceServerSpec) GetTokenDialect() string {
 func (x *Auth0ResourceServerSpec) GetScopes() []*Auth0ResourceServerScope {
 	if x != nil {
 		return x.Scopes
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSpec) GetAllowOnlineAccess() bool {
+	if x != nil && x.AllowOnlineAccess != nil {
+		return *x.AllowOnlineAccess
+	}
+	return false
+}
+
+func (x *Auth0ResourceServerSpec) GetAllowOnlineAccessWithEphemeralSessions() bool {
+	if x != nil && x.AllowOnlineAccessWithEphemeralSessions != nil {
+		return *x.AllowOnlineAccessWithEphemeralSessions
+	}
+	return false
+}
+
+func (x *Auth0ResourceServerSpec) GetConsentPolicy() string {
+	if x != nil && x.ConsentPolicy != nil {
+		return *x.ConsentPolicy
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerSpec) GetTokenLifetimeForAnonymousAccessTokens() int32 {
+	if x != nil && x.TokenLifetimeForAnonymousAccessTokens != nil {
+		return *x.TokenLifetimeForAnonymousAccessTokens
+	}
+	return 0
+}
+
+func (x *Auth0ResourceServerSpec) GetVerificationLocation() string {
+	if x != nil && x.VerificationLocation != nil {
+		return *x.VerificationLocation
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerSpec) GetSigningSecret() string {
+	if x != nil && x.SigningSecret != nil {
+		return *x.SigningSecret
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerSpec) GetAccessToken() *Auth0ResourceServerAccessToken {
+	if x != nil {
+		return x.AccessToken
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSpec) GetAuthorizationDetails() []*Auth0ResourceServerAuthorizationDetail {
+	if x != nil {
+		return x.AuthorizationDetails
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSpec) GetAuthorizationPolicy() *Auth0ResourceServerAuthorizationPolicy {
+	if x != nil {
+		return x.AuthorizationPolicy
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSpec) GetProofOfPossession() *Auth0ResourceServerProofOfPossession {
+	if x != nil {
+		return x.ProofOfPossession
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSpec) GetSubjectTypeAuthorization() *Auth0ResourceServerSubjectTypeAuthorization {
+	if x != nil {
+		return x.SubjectTypeAuthorization
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSpec) GetTokenEncryption() *Auth0ResourceServerTokenEncryption {
+	if x != nil {
+		return x.TokenEncryption
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSpec) GetThirdPartyClientDefaultGrants() []*Auth0ResourceServerThirdPartyClientDefaultGrant {
+	if x != nil {
+		return x.ThirdPartyClientDefaultGrants
 	}
 	return nil
 }
@@ -273,29 +526,980 @@ func (x *Auth0ResourceServerScope) GetDescription() string {
 	return ""
 }
 
+// Auth0ResourceServerAccessToken configures the content of the access tokens
+// the API issues.
+type Auth0ResourceServerAccessToken struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// claims_mapping maps values of an anonymous session onto claims of the
+	// access tokens issued in it. Anonymous sessions are an Enterprise Early
+	// Access feature.
+	//
+	// https://auth0.com/docs/manage-users/sessions/anonymous-sessions/configure-custom-claims-for-anonymous-sessions
+	ClaimsMapping *Auth0ResourceServerClaimsMapping `protobuf:"bytes,1,opt,name=claims_mapping,json=claimsMapping,proto3" json:"claims_mapping,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerAccessToken) Reset() {
+	*x = Auth0ResourceServerAccessToken{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerAccessToken) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerAccessToken) ProtoMessage() {}
+
+func (x *Auth0ResourceServerAccessToken) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerAccessToken.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerAccessToken) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Auth0ResourceServerAccessToken) GetClaimsMapping() *Auth0ResourceServerClaimsMapping {
+	if x != nil {
+		return x.ClaimsMapping
+	}
+	return nil
+}
+
+// Auth0ResourceServerClaimsMapping is the set of custom claims mapped into
+// anonymous-session access tokens.
+type Auth0ResourceServerClaimsMapping struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// custom_claims are the claims to add, at most 20. The list is sent whole:
+	// it replaces every claim the API had, and declaring claims_mapping with no
+	// claims clears them.
+	CustomClaims  []*Auth0ResourceServerCustomClaim `protobuf:"bytes,1,rep,name=custom_claims,json=customClaims,proto3" json:"custom_claims,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerClaimsMapping) Reset() {
+	*x = Auth0ResourceServerClaimsMapping{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerClaimsMapping) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerClaimsMapping) ProtoMessage() {}
+
+func (x *Auth0ResourceServerClaimsMapping) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerClaimsMapping.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerClaimsMapping) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Auth0ResourceServerClaimsMapping) GetCustomClaims() []*Auth0ResourceServerCustomClaim {
+	if x != nil {
+		return x.CustomClaims
+	}
+	return nil
+}
+
+// Auth0ResourceServerCustomClaim maps one value of an anonymous session onto a
+// claim of its access tokens.
+type Auth0ResourceServerCustomClaim struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// name is the claim to emit in the access token (for example "country"),
+	// stored with the casing given. Reserved OIDC and JWT claim names (sub, aud,
+	// exp, ...) are refused by Auth0.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// expression is the dot path the claim's value is read from in the
+	// anonymous session (for example "anonymous_session.metadata.country").
+	Expression    string `protobuf:"bytes,2,opt,name=expression,proto3" json:"expression,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerCustomClaim) Reset() {
+	*x = Auth0ResourceServerCustomClaim{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerCustomClaim) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerCustomClaim) ProtoMessage() {}
+
+func (x *Auth0ResourceServerCustomClaim) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerCustomClaim.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerCustomClaim) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Auth0ResourceServerCustomClaim) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerCustomClaim) GetExpression() string {
+	if x != nil {
+		return x.Expression
+	}
+	return ""
+}
+
+// Auth0ResourceServerAuthorizationDetail is one Rich Authorization Request type
+// the API accepts, or the entry that removes them all.
+type Auth0ResourceServerAuthorizationDetail struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// type is the authorization_details type (for example "payment"), the value
+	// of the "type" field of each object a client sends.
+	Type *string `protobuf:"bytes,1,opt,name=type,proto3,oneof" json:"type,omitempty"`
+	// disable, true, removes every authorization_details type from the API. It
+	// is the only entry of the list when set.
+	Disable       *bool `protobuf:"varint,2,opt,name=disable,proto3,oneof" json:"disable,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerAuthorizationDetail) Reset() {
+	*x = Auth0ResourceServerAuthorizationDetail{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerAuthorizationDetail) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerAuthorizationDetail) ProtoMessage() {}
+
+func (x *Auth0ResourceServerAuthorizationDetail) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerAuthorizationDetail.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerAuthorizationDetail) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Auth0ResourceServerAuthorizationDetail) GetType() string {
+	if x != nil && x.Type != nil {
+		return *x.Type
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerAuthorizationDetail) GetDisable() bool {
+	if x != nil && x.Disable != nil {
+		return *x.Disable
+	}
+	return false
+}
+
+// Auth0ResourceServerAuthorizationPolicy attaches an authorization policy to
+// the API.
+type Auth0ResourceServerAuthorizationPolicy struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// policy_id is the identifier of the authorization policy to apply. Unset,
+	// the policy Auth0 holds is kept.
+	PolicyId      *string `protobuf:"bytes,1,opt,name=policy_id,json=policyId,proto3,oneof" json:"policy_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerAuthorizationPolicy) Reset() {
+	*x = Auth0ResourceServerAuthorizationPolicy{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerAuthorizationPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerAuthorizationPolicy) ProtoMessage() {}
+
+func (x *Auth0ResourceServerAuthorizationPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerAuthorizationPolicy.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerAuthorizationPolicy) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Auth0ResourceServerAuthorizationPolicy) GetPolicyId() string {
+	if x != nil && x.PolicyId != nil {
+		return *x.PolicyId
+	}
+	return ""
+}
+
+// Auth0ResourceServerProofOfPossession sender-constrains the API's access
+// tokens.
+type Auth0ResourceServerProofOfPossession struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// disable, true, removes the API's proof-of-possession configuration: its
+	// tokens are plain bearer tokens again.
+	Disable *bool `protobuf:"varint,1,opt,name=disable,proto3,oneof" json:"disable,omitempty"`
+	// mechanism is how tokens are bound to the application:
+	//   - "dpop": Demonstrating Proof-of-Possession -- the application signs a
+	//     proof with a key pair of its own on every request; works for public
+	//     applications (single-page and native) as well as confidential ones.
+	//   - "mtls": the application's mutual-TLS client certificate -- confidential
+	//     applications only. Needs the Enterprise plan with the Highly Regulated
+	//     Identity add-on.
+	Mechanism *string `protobuf:"bytes,2,opt,name=mechanism,proto3,oneof" json:"mechanism,omitempty"`
+	// required, true, refuses to issue this API an access token that is not
+	// sender-constrained (for the applications required_for names). False
+	// accepts sender-constrained tokens without demanding them.
+	Required *bool `protobuf:"varint,3,opt,name=required,proto3,oneof" json:"required,omitempty"`
+	// required_for is which applications must sender-constrain their tokens
+	// when required is true: "all_clients", or "public_clients" (single-page and
+	// native applications; DPoP only). It has no value of its own in the
+	// provider: once proof_of_possession is declared, declare the live value
+	// when adopting an existing API; leaving it unset on an adopted API resets
+	// it.
+	RequiredFor   *string `protobuf:"bytes,4,opt,name=required_for,json=requiredFor,proto3,oneof" json:"required_for,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerProofOfPossession) Reset() {
+	*x = Auth0ResourceServerProofOfPossession{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerProofOfPossession) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerProofOfPossession) ProtoMessage() {}
+
+func (x *Auth0ResourceServerProofOfPossession) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerProofOfPossession.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerProofOfPossession) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *Auth0ResourceServerProofOfPossession) GetDisable() bool {
+	if x != nil && x.Disable != nil {
+		return *x.Disable
+	}
+	return false
+}
+
+func (x *Auth0ResourceServerProofOfPossession) GetMechanism() string {
+	if x != nil && x.Mechanism != nil {
+		return *x.Mechanism
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerProofOfPossession) GetRequired() bool {
+	if x != nil && x.Required != nil {
+		return *x.Required
+	}
+	return false
+}
+
+func (x *Auth0ResourceServerProofOfPossession) GetRequiredFor() string {
+	if x != nil && x.RequiredFor != nil {
+		return *x.RequiredFor
+	}
+	return ""
+}
+
+// Auth0ResourceServerSubjectTypeAuthorization is the API's access policy, one
+// policy per kind of subject a token is issued for.
+type Auth0ResourceServerSubjectTypeAuthorization struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// user is the policy for user-delegated access: tokens an application gets
+	// to call the API on a signed-in person's behalf (every flow but client
+	// credentials).
+	User *Auth0ResourceServerUserAuthorization `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	// client is the policy for client access: tokens an application gets for
+	// itself through the client-credentials flow (machine to machine).
+	Client *Auth0ResourceServerClientAuthorization `protobuf:"bytes,2,opt,name=client,proto3" json:"client,omitempty"`
+	// anonymous_user is the policy for tokens issued in an anonymous session,
+	// before anyone signs in. Anonymous sessions are an Enterprise Early Access
+	// feature.
+	AnonymousUser *Auth0ResourceServerAnonymousUserAuthorization `protobuf:"bytes,3,opt,name=anonymous_user,json=anonymousUser,proto3" json:"anonymous_user,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerSubjectTypeAuthorization) Reset() {
+	*x = Auth0ResourceServerSubjectTypeAuthorization{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerSubjectTypeAuthorization) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerSubjectTypeAuthorization) ProtoMessage() {}
+
+func (x *Auth0ResourceServerSubjectTypeAuthorization) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerSubjectTypeAuthorization.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerSubjectTypeAuthorization) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *Auth0ResourceServerSubjectTypeAuthorization) GetUser() *Auth0ResourceServerUserAuthorization {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSubjectTypeAuthorization) GetClient() *Auth0ResourceServerClientAuthorization {
+	if x != nil {
+		return x.Client
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerSubjectTypeAuthorization) GetAnonymousUser() *Auth0ResourceServerAnonymousUserAuthorization {
+	if x != nil {
+		return x.AnonymousUser
+	}
+	return nil
+}
+
+// Auth0ResourceServerUserAuthorization is the API's policy for user-delegated
+// access.
+type Auth0ResourceServerUserAuthorization struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// policy is who can get a token to call this API on a person's behalf:
+	//   - "allow_all": every first-party application in the tenant, with no grant
+	//     of its own ("All apps allowed"). Third-party applications still need a
+	//     grant -- theirs, or a default grant (third_party_client_default_grants
+	//     with subject_type user).
+	//   - "require_client_grant": only applications holding a user grant for this
+	//     API, first-party ones included; the grant caps the scopes they can
+	//     request ("Per-app authorization", the least-privilege choice Auth0
+	//     recommends). Applications must then name the scopes they want in each
+	//     token request.
+	//   - "deny_all": no application, whatever its grants ("No apps allowed").
+	//
+	// Unset, the API keeps the policy Auth0 holds (allow_all on a new API): the
+	// block is sent only with its policy.
+	Policy        *string `protobuf:"bytes,1,opt,name=policy,proto3,oneof" json:"policy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerUserAuthorization) Reset() {
+	*x = Auth0ResourceServerUserAuthorization{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerUserAuthorization) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerUserAuthorization) ProtoMessage() {}
+
+func (x *Auth0ResourceServerUserAuthorization) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerUserAuthorization.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerUserAuthorization) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *Auth0ResourceServerUserAuthorization) GetPolicy() string {
+	if x != nil && x.Policy != nil {
+		return *x.Policy
+	}
+	return ""
+}
+
+// Auth0ResourceServerClientAuthorization is the API's policy for client
+// access.
+type Auth0ResourceServerClientAuthorization struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// policy is which applications can get a token for themselves, through the
+	// client-credentials flow, to call this API:
+	//   - "require_client_grant": only applications holding a client grant for
+	//     this API; the grant names the scopes they receive ("Per-app
+	//     authorization").
+	//   - "deny_all": none, whatever their grants ("No apps allowed") -- for an
+	//     API only people use, through applications acting on their behalf.
+	//
+	// Unset, the API keeps the policy Auth0 holds (require_client_grant on a new
+	// API): the block is sent only with its policy.
+	Policy        *string `protobuf:"bytes,1,opt,name=policy,proto3,oneof" json:"policy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerClientAuthorization) Reset() {
+	*x = Auth0ResourceServerClientAuthorization{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerClientAuthorization) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerClientAuthorization) ProtoMessage() {}
+
+func (x *Auth0ResourceServerClientAuthorization) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerClientAuthorization.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerClientAuthorization) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *Auth0ResourceServerClientAuthorization) GetPolicy() string {
+	if x != nil && x.Policy != nil {
+		return *x.Policy
+	}
+	return ""
+}
+
+// Auth0ResourceServerAnonymousUserAuthorization is the API's policy for tokens
+// issued in anonymous sessions.
+type Auth0ResourceServerAnonymousUserAuthorization struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// policy is which applications can get a token for this API in an anonymous
+	// session: "require_client_grant" (applications holding a grant with subject
+	// type anonymous_user) or "deny_all" (none). Unset, the API keeps the policy
+	// Auth0 holds (deny_all on a new API): the block is sent only with its
+	// policy.
+	Policy        *string `protobuf:"bytes,1,opt,name=policy,proto3,oneof" json:"policy,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerAnonymousUserAuthorization) Reset() {
+	*x = Auth0ResourceServerAnonymousUserAuthorization{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerAnonymousUserAuthorization) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerAnonymousUserAuthorization) ProtoMessage() {}
+
+func (x *Auth0ResourceServerAnonymousUserAuthorization) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerAnonymousUserAuthorization.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerAnonymousUserAuthorization) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *Auth0ResourceServerAnonymousUserAuthorization) GetPolicy() string {
+	if x != nil && x.Policy != nil {
+		return *x.Policy
+	}
+	return ""
+}
+
+// Auth0ResourceServerTokenEncryption encrypts the API's access tokens.
+type Auth0ResourceServerTokenEncryption struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// disable, true, removes the API's token encryption: its tokens are signed
+	// JWTs anyone holding them can read again.
+	Disable *bool `protobuf:"varint,1,opt,name=disable,proto3,oneof" json:"disable,omitempty"`
+	// format is the encrypted token's format. "compact-nested-jwe" (a signed JWT
+	// inside a compact JWE) is the only one Auth0 offers.
+	Format *string `protobuf:"bytes,2,opt,name=format,proto3,oneof" json:"format,omitempty"`
+	// encryption_key is the API's public key, which Auth0 encrypts tokens to.
+	EncryptionKey *Auth0ResourceServerTokenEncryptionKey `protobuf:"bytes,3,opt,name=encryption_key,json=encryptionKey,proto3" json:"encryption_key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerTokenEncryption) Reset() {
+	*x = Auth0ResourceServerTokenEncryption{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerTokenEncryption) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerTokenEncryption) ProtoMessage() {}
+
+func (x *Auth0ResourceServerTokenEncryption) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerTokenEncryption.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerTokenEncryption) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *Auth0ResourceServerTokenEncryption) GetDisable() bool {
+	if x != nil && x.Disable != nil {
+		return *x.Disable
+	}
+	return false
+}
+
+func (x *Auth0ResourceServerTokenEncryption) GetFormat() string {
+	if x != nil && x.Format != nil {
+		return *x.Format
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerTokenEncryption) GetEncryptionKey() *Auth0ResourceServerTokenEncryptionKey {
+	if x != nil {
+		return x.EncryptionKey
+	}
+	return nil
+}
+
+// Auth0ResourceServerTokenEncryptionKey is the public half of the API's RSA key
+// pair. The private half never leaves the API, which decrypts every token with
+// it.
+type Auth0ResourceServerTokenEncryptionKey struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// algorithm is the key-management algorithm tokens are encrypted with:
+	// "RSA-OAEP-256", "RSA-OAEP-384" or "RSA-OAEP-512".
+	Algorithm string `protobuf:"bytes,1,opt,name=algorithm,proto3" json:"algorithm,omitempty"`
+	// pem is the API's RSA public key in PEM format ("-----BEGIN PUBLIC
+	// KEY-----..."), at most 4096 characters. It is public by design: only the
+	// private key, which stays with the API, can decrypt.
+	Pem string `protobuf:"bytes,2,opt,name=pem,proto3" json:"pem,omitempty"`
+	// kid is the key's identifier, carried in each token's header so the API
+	// picks the right private key (useful while rotating). Unset, Auth0 assigns
+	// one.
+	Kid *string `protobuf:"bytes,3,opt,name=kid,proto3,oneof" json:"kid,omitempty"`
+	// name is the key's name in the Auth0 dashboard. Unset, Auth0 names it.
+	Name          *string `protobuf:"bytes,4,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerTokenEncryptionKey) Reset() {
+	*x = Auth0ResourceServerTokenEncryptionKey{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerTokenEncryptionKey) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerTokenEncryptionKey) ProtoMessage() {}
+
+func (x *Auth0ResourceServerTokenEncryptionKey) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerTokenEncryptionKey.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerTokenEncryptionKey) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *Auth0ResourceServerTokenEncryptionKey) GetAlgorithm() string {
+	if x != nil {
+		return x.Algorithm
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerTokenEncryptionKey) GetPem() string {
+	if x != nil {
+		return x.Pem
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerTokenEncryptionKey) GetKid() string {
+	if x != nil && x.Kid != nil {
+		return *x.Kid
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerTokenEncryptionKey) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+// Auth0ResourceServerThirdPartyClientDefaultGrant is the grant every
+// third-party application gets on this API for one subject type. It names no
+// application: it applies to all of them, and a grant made for one application
+// takes precedence over it. Auth0 identifies it by an id of its own
+// (cgr_...), reported in the third_party_client_default_grant_ids output.
+type Auth0ResourceServerThirdPartyClientDefaultGrant struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// subject_type is which tokens the grant is for:
+	//   - "user": tokens a third-party application gets to call the API on a
+	//     signed-in person's behalf. The token carries the scopes the application
+	//     asked for, this grant allows, the person's roles permit (with
+	//     enforce_policies) and the person consented to.
+	//   - "client": tokens a third-party application gets for itself through the
+	//     client-credentials flow, carrying the scopes this grant names.
+	//
+	// It is the grant's identity: changing it replaces the grant.
+	SubjectType string `protobuf:"bytes,1,opt,name=subject_type,json=subjectType,proto3" json:"subject_type,omitempty"`
+	// scopes are the API's scopes (from spec.scopes) the grant allows. Required
+	// unless allow_all_scopes is true.
+	Scopes []string `protobuf:"bytes,2,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	// authorization_details_types are the API's authorization_details types a
+	// third-party application may request on a person's behalf. User grants
+	// only.
+	AuthorizationDetailsTypes []string `protobuf:"bytes,3,rep,name=authorization_details_types,json=authorizationDetailsTypes,proto3" json:"authorization_details_types,omitempty"`
+	// allow_all_scopes, true, grants every scope the API defines, including
+	// scopes added later, in place of a scopes list.
+	AllowAllScopes *bool `protobuf:"varint,4,opt,name=allow_all_scopes,json=allowAllScopes,proto3,oneof" json:"allow_all_scopes,omitempty"`
+	// organization_usage is how a third-party application may use Organizations
+	// when it gets a token for itself (subject_type client): "deny" (never; the
+	// default), "allow" (with or without an organization) or "require" (always
+	// for an organization). Each organization still needs its own organization
+	// client grant for third-party applications.
+	OrganizationUsage *string `protobuf:"bytes,5,opt,name=organization_usage,json=organizationUsage,proto3,oneof" json:"organization_usage,omitempty"`
+	// allow_any_organization would let the grant be used with any organization
+	// without an organization client grant. Auth0 does not offer it to
+	// third-party applications, so on a default grant it can only be false.
+	AllowAnyOrganization *bool `protobuf:"varint,6,opt,name=allow_any_organization,json=allowAnyOrganization,proto3,oneof" json:"allow_any_organization,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) Reset() {
+	*x = Auth0ResourceServerThirdPartyClientDefaultGrant{}
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Auth0ResourceServerThirdPartyClientDefaultGrant) ProtoMessage() {}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Auth0ResourceServerThirdPartyClientDefaultGrant.ProtoReflect.Descriptor instead.
+func (*Auth0ResourceServerThirdPartyClientDefaultGrant) Descriptor() ([]byte, []int) {
+	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) GetSubjectType() string {
+	if x != nil {
+		return x.SubjectType
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) GetScopes() []string {
+	if x != nil {
+		return x.Scopes
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) GetAuthorizationDetailsTypes() []string {
+	if x != nil {
+		return x.AuthorizationDetailsTypes
+	}
+	return nil
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) GetAllowAllScopes() bool {
+	if x != nil && x.AllowAllScopes != nil {
+		return *x.AllowAllScopes
+	}
+	return false
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) GetOrganizationUsage() string {
+	if x != nil && x.OrganizationUsage != nil {
+		return *x.OrganizationUsage
+	}
+	return ""
+}
+
+func (x *Auth0ResourceServerThirdPartyClientDefaultGrant) GetAllowAnyOrganization() bool {
+	if x != nil && x.AllowAnyOrganization != nil {
+		return *x.AllowAnyOrganization
+	}
+	return false
+}
+
 var File_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/auth0/auth0resourceserver/v1alpha1/spec.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cshared/options/options.proto\"\xf5\x05\n" +
+	"5catalog/auth0/auth0resourceserver/v1alpha1/spec.proto\x12.dev.planton.auth0.auth0resourceserver.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a\x1cshared/options/options.proto\"\xc4\x18\n" +
 	"\x17Auth0ResourceServerSpec\x12&\n" +
 	"\n" +
 	"identifier\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\n" +
 	"identifier\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12=\n" +
 	"\vsigning_alg\x18\x03 \x01(\tB\x1c\xbaH\x19r\x17R\x00R\x05RS256R\x05HS256R\x05PS256R\n" +
-	"signingAlg\x120\n" +
-	"\x14allow_offline_access\x18\x04 \x01(\bR\x12allowOfflineAccess\x123\n" +
+	"signingAlg\x125\n" +
+	"\x14allow_offline_access\x18\x04 \x01(\bH\x00R\x12allowOfflineAccess\x88\x01\x01\x123\n" +
 	"\x0etoken_lifetime\x18\x05 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x9a\x9e\x01(\x00R\rtokenLifetime\x12A\n" +
-	"\x16token_lifetime_for_web\x18\x06 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x9a\x9e\x01(\x00R\x13tokenLifetimeForWeb\x12b\n" +
-	"/skip_consent_for_verifiable_first_party_clients\x18\a \x01(\bR)skipConsentForVerifiableFirstPartyClients\x12)\n" +
-	"\x10enforce_policies\x18\b \x01(\bR\x0fenforcePolicies\x12\xc3\x01\n" +
+	"\x16token_lifetime_for_web\x18\x06 \x01(\x05B\f\xbaH\t\x1a\a\x18\x80\x9a\x9e\x01(\x00R\x13tokenLifetimeForWeb\x12g\n" +
+	"/skip_consent_for_verifiable_first_party_clients\x18\a \x01(\bH\x01R)skipConsentForVerifiableFirstPartyClients\x88\x01\x01\x12.\n" +
+	"\x10enforce_policies\x18\b \x01(\bH\x02R\x0fenforcePolicies\x88\x01\x01\x12\xc3\x01\n" +
 	"\rtoken_dialect\x18\t \x01(\tB\x9d\x01\xbaHNrLR\x00R\faccess_tokenR\x12access_token_authzR\x0frfc9068_profileR\x15rfc9068_profile_authz\xaa\xa6\x1dHAccess-token format selector (e.g. rfc9068_profile), not a secret value.R\ftokenDialect\x12`\n" +
 	"\x06scopes\x18\n" +
-	" \x03(\v2H.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerScopeR\x06scopes\"X\n" +
+	" \x03(\v2H.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerScopeR\x06scopes\x123\n" +
+	"\x13allow_online_access\x18\v \x01(\bH\x03R\x11allowOnlineAccess\x88\x01\x01\x12`\n" +
+	"+allow_online_access_with_ephemeral_sessions\x18\f \x01(\bH\x04R&allowOnlineAccessWithEphemeralSessions\x88\x01\x01\x12]\n" +
+	"\x0econsent_policy\x18\r \x01(\tB1\xbaH.r,R$transactional-authorization-with-mfaR\x04nullH\x05R\rconsentPolicy\x88\x01\x01\x12n\n" +
+	"*token_lifetime_for_anonymous_access_tokens\x18\x0e \x01(\x05B\x0e\xbaH\v\x1a\t\x18\x80\x9a\x9e\x01(\x80\xa3\x05H\x06R%tokenLifetimeForAnonymousAccessTokens\x88\x01\x01\x128\n" +
+	"\x15verification_location\x18\x0f \x01(\tH\aR\x14verificationLocation\x88\x01\x01\x127\n" +
+	"\x0esigning_secret\x18\x10 \x01(\tB\v\xbaH\x04r\x02\x10\x10\xa0\xa6\x1d\x01H\bR\rsigningSecret\x88\x01\x01\x12q\n" +
+	"\faccess_token\x18\x11 \x01(\v2N.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAccessTokenR\vaccessToken\x12\x8b\x01\n" +
+	"\x15authorization_details\x18\x12 \x03(\v2V.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAuthorizationDetailR\x14authorizationDetails\x12\x89\x01\n" +
+	"\x14authorization_policy\x18\x13 \x01(\v2V.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAuthorizationPolicyR\x13authorizationPolicy\x12\x84\x01\n" +
+	"\x13proof_of_possession\x18\x14 \x01(\v2T.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerProofOfPossessionR\x11proofOfPossession\x12\x99\x01\n" +
+	"\x1asubject_type_authorization\x18\x15 \x01(\v2[.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSubjectTypeAuthorizationR\x18subjectTypeAuthorization\x12}\n" +
+	"\x10token_encryption\x18\x16 \x01(\v2R.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerTokenEncryptionR\x0ftokenEncryption\x12\xa9\x01\n" +
+	"!third_party_client_default_grants\x18\x17 \x03(\v2_.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerThirdPartyClientDefaultGrantR\x1dthirdPartyClientDefaultGrants:\xf0\x04\xbaH\xec\x04\x1a\xae\x02\n" +
+	";spec.third_party_client_default_grants.one_per_subject_type\x12\xa6\x01third_party_client_default_grants holds at most one grant per subject_type (one for user, one for client): Auth0 keeps a single default grant per API and subject type\x1aFthis.third_party_client_default_grants.map(g, g.subject_type).unique()\x1a\xb8\x02\n" +
+	"(spec.authorization_details.disable_alone\x12\xa6\x01authorization_details clears every registered type with a single {disable: true} entry, so it cannot also list types -- keep the types, or keep only the disable entry\x1ac!this.authorization_details.exists(d, d.disable) || this.authorization_details.all(d, !has(d.type))B\x17\n" +
+	"\x15_allow_offline_accessB2\n" +
+	"0_skip_consent_for_verifiable_first_party_clientsB\x13\n" +
+	"\x11_enforce_policiesB\x16\n" +
+	"\x14_allow_online_accessB.\n" +
+	",_allow_online_access_with_ephemeral_sessionsB\x11\n" +
+	"\x0f_consent_policyB-\n" +
+	"+_token_lifetime_for_anonymous_access_tokensB\x18\n" +
+	"\x16_verification_locationB\x11\n" +
+	"\x0f_signing_secret\"X\n" +
 	"\x18Auth0ResourceServerScope\x12\x1a\n" +
 	"\x04name\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescriptionB\x81\x03\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\"\x99\x01\n" +
+	"\x1eAuth0ResourceServerAccessToken\x12w\n" +
+	"\x0eclaims_mapping\x18\x01 \x01(\v2P.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerClaimsMappingR\rclaimsMapping\"\xa1\x01\n" +
+	" Auth0ResourceServerClaimsMapping\x12}\n" +
+	"\rcustom_claims\x18\x01 \x03(\v2N.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerCustomClaimB\b\xbaH\x05\x92\x01\x02\x10\x14R\fcustomClaims\"\xb8\x03\n" +
+	"\x1eAuth0ResourceServerCustomClaim\x12\x1f\n" +
+	"\x04name\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x18\xff\x01R\x04name\x12\xf4\x02\n" +
+	"\n" +
+	"expression\x18\x02 \x01(\tB\xd3\x02\xbaH\xcf\x02\xba\x01\xc3\x02\n" +
+	"Bspec.access_token.claims_mapping.custom_claims.expression.dot_path\x12\x94\x01expression is a dot path of at least two names, such as anonymous_session.metadata.country (letters, digits, underscores, and hyphens inside a name)\x1afthis.matches('^[A-Za-z_][A-Za-z0-9_]*(-[A-Za-z0-9_]+)*([.][A-Za-z_][A-Za-z0-9_]*(-[A-Za-z0-9_]+)*)+$')\xc8\x01\x01r\x03\x18\xff\x01R\n" +
+	"expression\"\xe6\x02\n" +
+	"&Auth0ResourceServerAuthorizationDetail\x12\x17\n" +
+	"\x04type\x18\x01 \x01(\tH\x00R\x04type\x88\x01\x01\x12\x1d\n" +
+	"\adisable\x18\x02 \x01(\bH\x01R\adisable\x88\x01\x01:\xee\x01\xbaH\xea\x01\x1a\xe7\x01\n" +
+	"*spec.authorization_details.type_or_disable\x12\x83\x01each authorization_details entry names a type (for example payment), or is the single {disable: true} entry that removes every type\x1a3(has(this.type) && this.type != '') || this.disableB\a\n" +
+	"\x05_typeB\n" +
+	"\n" +
+	"\b_disable\"b\n" +
+	"&Auth0ResourceServerAuthorizationPolicy\x12*\n" +
+	"\tpolicy_id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\x18\x80\bH\x00R\bpolicyId\x88\x01\x01B\f\n" +
+	"\n" +
+	"_policy_id\"\xdb\b\n" +
+	"$Auth0ResourceServerProofOfPossession\x12\x1d\n" +
+	"\adisable\x18\x01 \x01(\bH\x00R\adisable\x88\x01\x01\x124\n" +
+	"\tmechanism\x18\x02 \x01(\tB\x11\xbaH\x0er\fR\x04mtlsR\x04dpopH\x01R\tmechanism\x88\x01\x01\x12\x1f\n" +
+	"\brequired\x18\x03 \x01(\bH\x02R\brequired\x88\x01\x01\x12J\n" +
+	"\frequired_for\x18\x04 \x01(\tB\"\xbaH\x1fr\x1dR\vall_clientsR\x0epublic_clientsH\x03R\vrequiredFor\x88\x01\x01:\xb8\x06\xbaH\xb4\x06\x1a\xdb\x01\n" +
+	"&spec.proof_of_possession.disable_alone\x12vproof_of_possession.disable turns sender constraining off, so it cannot be combined with a mechanism or required: true\x1a9!(this.disable && (has(this.mechanism) || this.required))\x1a\xfe\x01\n" +
+	"/spec.proof_of_possession.mechanism_and_required\x12\x8d\x01proof_of_possession names its mechanism (mtls or dpop) and whether it is required -- Auth0 needs both -- or sets disable: true to turn it off\x1a;this.disable || (has(this.mechanism) && has(this.required))\x1a\xd2\x02\n" +
+	")spec.proof_of_possession.mtls_all_clients\x12\xad\x01mTLS sender constraining applies to every application (public applications cannot present a client certificate), so required_for cannot be public_clients with mechanism mtls\x1au!(has(this.mechanism) && this.mechanism == 'mtls' && has(this.required_for) && this.required_for == 'public_clients')B\n" +
+	"\n" +
+	"\b_disableB\f\n" +
+	"\n" +
+	"_mechanismB\v\n" +
+	"\t_requiredB\x0f\n" +
+	"\r_required_for\"\x8e\x03\n" +
+	"+Auth0ResourceServerSubjectTypeAuthorization\x12h\n" +
+	"\x04user\x18\x01 \x01(\v2T.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerUserAuthorizationR\x04user\x12n\n" +
+	"\x06client\x18\x02 \x01(\v2V.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerClientAuthorizationR\x06client\x12\x84\x01\n" +
+	"\x0eanonymous_user\x18\x03 \x01(\v2].dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAnonymousUserAuthorizationR\ranonymousUser\"\x80\x01\n" +
+	"$Auth0ResourceServerUserAuthorization\x12M\n" +
+	"\x06policy\x18\x01 \x01(\tB0\xbaH-r+R\tallow_allR\bdeny_allR\x14require_client_grantH\x00R\x06policy\x88\x01\x01B\t\n" +
+	"\a_policy\"w\n" +
+	"&Auth0ResourceServerClientAuthorization\x12B\n" +
+	"\x06policy\x18\x01 \x01(\tB%\xbaH\"r R\bdeny_allR\x14require_client_grantH\x00R\x06policy\x88\x01\x01B\t\n" +
+	"\a_policy\"~\n" +
+	"-Auth0ResourceServerAnonymousUserAuthorization\x12B\n" +
+	"\x06policy\x18\x01 \x01(\tB%\xbaH\"r R\bdeny_allR\x14require_client_grantH\x00R\x06policy\x88\x01\x01B\t\n" +
+	"\a_policy\"\xef\x05\n" +
+	"\"Auth0ResourceServerTokenEncryption\x12\x1d\n" +
+	"\adisable\x18\x01 \x01(\bH\x00R\adisable\x88\x01\x01\x126\n" +
+	"\x06format\x18\x02 \x01(\tB\x19\xbaH\x16r\x14R\x12compact-nested-jweH\x01R\x06format\x88\x01\x01\x12|\n" +
+	"\x0eencryption_key\x18\x03 \x01(\v2U.dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerTokenEncryptionKeyR\rencryptionKey:\xdc\x03\xbaH\xd8\x03\x1a\xd4\x01\n" +
+	"#spec.token_encryption.disable_alone\x12jtoken_encryption.disable turns encryption off, so it cannot be combined with a format or an encryption_key\x1aA!(this.disable && (has(this.format) || has(this.encryption_key)))\x1a\xfe\x01\n" +
+	"%spec.token_encryption.format_with_key\x12\x94\x01token_encryption names both its format (compact-nested-jwe) and the API's encryption_key -- Auth0 needs both -- or sets disable: true to turn it off\x1a>this.disable || (has(this.format) && has(this.encryption_key))B\n" +
+	"\n" +
+	"\b_disableB\t\n" +
+	"\a_format\"\xed\x01\n" +
+	"%Auth0ResourceServerTokenEncryptionKey\x12P\n" +
+	"\talgorithm\x18\x01 \x01(\tB2\xbaH/\xc8\x01\x01r*R\fRSA-OAEP-256R\fRSA-OAEP-384R\fRSA-OAEP-512R\talgorithm\x12\x1d\n" +
+	"\x03pem\x18\x02 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x18\x80 R\x03pem\x12\x1f\n" +
+	"\x03kid\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x01H\x00R\x03kid\x88\x01\x01\x12!\n" +
+	"\x04name\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x01H\x01R\x04name\x88\x01\x01B\x06\n" +
+	"\x04_kidB\a\n" +
+	"\x05_name\"\x9b\n" +
+	"\n" +
+	"/Auth0ResourceServerThirdPartyClientDefaultGrant\x129\n" +
+	"\fsubject_type\x18\x01 \x01(\tB\x16\xbaH\x13\xc8\x01\x01r\x0eR\x04userR\x06clientR\vsubjectType\x12'\n" +
+	"\x06scopes\x18\x02 \x03(\tB\x0f\xbaH\f\x92\x01\t\"\ar\x05\x10\x01\x18\x98\x02R\x06scopes\x12O\n" +
+	"\x1bauthorization_details_types\x18\x03 \x03(\tB\x0f\xbaH\f\x92\x01\t\"\ar\x05\x10\x01\x18\xff\x01R\x19authorizationDetailsTypes\x12-\n" +
+	"\x10allow_all_scopes\x18\x04 \x01(\bH\x00R\x0eallowAllScopes\x88\x01\x01\x12O\n" +
+	"\x12organization_usage\x18\x05 \x01(\tB\x1b\xbaH\x18r\x16R\x04denyR\x05allowR\arequireH\x01R\x11organizationUsage\x88\x01\x01\x129\n" +
+	"\x16allow_any_organization\x18\x06 \x01(\bH\x02R\x14allowAnyOrganization\x88\x01\x01:\xb0\x06\xbaH\xac\x06\x1a\xb4\x02\n" +
+	"4spec.third_party_client_default_grants.scopes_or_all\x12\x93\x01a default grant names its scopes, or sets allow_all_scopes: true to grant every scope the API defines (now and later) -- one or the other, not both\x1af(this.allow_all_scopes && size(this.scopes) == 0) || (!this.allow_all_scopes && size(this.scopes) > 0)\x1a\x8b\x02\n" +
+	"Lspec.third_party_client_default_grants.authorization_details_types_user_only\x12oauthorization_details_types applies only to user-delegated access -- set it on the grant with subject_type user\x1aJsize(this.authorization_details_types) == 0 || this.subject_type == 'user'\x1a\xe4\x01\n" +
+	"@spec.third_party_client_default_grants.no_allow_any_organization\x12\x81\x01third-party applications cannot use allow_any_organization: Auth0 requires an organization client grant per organization for them\x1a\x1c!this.allow_any_organizationB\x13\n" +
+	"\x11_allow_all_scopesB\x15\n" +
+	"\x13_organization_usageB\x19\n" +
+	"\x17_allow_any_organizationB\x81\x03\n" +
 	"2com.dev.planton.auth0.auth0resourceserver.v1alpha1B\tSpecProtoP\x01Zcgithub.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1;auth0resourceserverv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Auth0.Auth0resourceserver.V1alpha1\xca\x02.Dev\\Planton\\Auth0\\Auth0resourceserver\\V1alpha1\xe2\x02:Dev\\Planton\\Auth0\\Auth0resourceserver\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Auth0::Auth0resourceserver::V1alpha1b\x06proto3"
 
 var (
@@ -310,18 +1514,44 @@ func file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescGZIP() []
 	return file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDescData
 }
 
-var file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_goTypes = []any{
-	(*Auth0ResourceServerSpec)(nil),  // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec
-	(*Auth0ResourceServerScope)(nil), // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerScope
+	(*Auth0ResourceServerSpec)(nil),                         // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec
+	(*Auth0ResourceServerScope)(nil),                        // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerScope
+	(*Auth0ResourceServerAccessToken)(nil),                  // 2: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAccessToken
+	(*Auth0ResourceServerClaimsMapping)(nil),                // 3: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerClaimsMapping
+	(*Auth0ResourceServerCustomClaim)(nil),                  // 4: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerCustomClaim
+	(*Auth0ResourceServerAuthorizationDetail)(nil),          // 5: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAuthorizationDetail
+	(*Auth0ResourceServerAuthorizationPolicy)(nil),          // 6: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAuthorizationPolicy
+	(*Auth0ResourceServerProofOfPossession)(nil),            // 7: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerProofOfPossession
+	(*Auth0ResourceServerSubjectTypeAuthorization)(nil),     // 8: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSubjectTypeAuthorization
+	(*Auth0ResourceServerUserAuthorization)(nil),            // 9: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerUserAuthorization
+	(*Auth0ResourceServerClientAuthorization)(nil),          // 10: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerClientAuthorization
+	(*Auth0ResourceServerAnonymousUserAuthorization)(nil),   // 11: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAnonymousUserAuthorization
+	(*Auth0ResourceServerTokenEncryption)(nil),              // 12: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerTokenEncryption
+	(*Auth0ResourceServerTokenEncryptionKey)(nil),           // 13: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerTokenEncryptionKey
+	(*Auth0ResourceServerThirdPartyClientDefaultGrant)(nil), // 14: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerThirdPartyClientDefaultGrant
 }
 var file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_depIdxs = []int32{
-	1, // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.scopes:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerScope
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	1,  // 0: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.scopes:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerScope
+	2,  // 1: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.access_token:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAccessToken
+	5,  // 2: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.authorization_details:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAuthorizationDetail
+	6,  // 3: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.authorization_policy:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAuthorizationPolicy
+	7,  // 4: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.proof_of_possession:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerProofOfPossession
+	8,  // 5: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.subject_type_authorization:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSubjectTypeAuthorization
+	12, // 6: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.token_encryption:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerTokenEncryption
+	14, // 7: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSpec.third_party_client_default_grants:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerThirdPartyClientDefaultGrant
+	3,  // 8: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAccessToken.claims_mapping:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerClaimsMapping
+	4,  // 9: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerClaimsMapping.custom_claims:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerCustomClaim
+	9,  // 10: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSubjectTypeAuthorization.user:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerUserAuthorization
+	10, // 11: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSubjectTypeAuthorization.client:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerClientAuthorization
+	11, // 12: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerSubjectTypeAuthorization.anonymous_user:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerAnonymousUserAuthorization
+	13, // 13: dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerTokenEncryption.encryption_key:type_name -> dev.planton.auth0.auth0resourceserver.v1alpha1.Auth0ResourceServerTokenEncryptionKey
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_init() }
@@ -329,13 +1559,23 @@ func file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_init() {
 	if File_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto != nil {
 		return
 	}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[0].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[5].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[6].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[7].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[9].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[10].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[11].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[12].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[13].OneofWrappers = []any{}
+	file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_msgTypes[14].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDesc), len(file_catalog_auth0_auth0resourceserver_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -745,6 +745,7 @@ Auth0PromptCustomText=8012
 Auth0PromptScreenPartials=8013
 Auth0EmailProvider=8014
 Auth0EmailTemplate=8015
+Auth0ClientFromMetadataDocument=8016
 OpenFgaStore=9000
 OpenFgaAuthorizationModel=9001
 OpenFgaRelationshipTuple=9002

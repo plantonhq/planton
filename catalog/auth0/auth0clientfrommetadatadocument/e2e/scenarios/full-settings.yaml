@@ -1,0 +1,47 @@
+# The same document with every setting the tenant can set over it declared:
+# a refetch version, the application type and grants, a description,
+# origins, the redirect policy and callback prompt, metadata, the token
+# signing and lifetime, and rotating, expiring refresh tokens. The lane
+# proves each lands on the client (read back through GET
+# /api/v2/clients/{client_id}) on both engines, that a second plan shows no
+# change, and the delete. token_quota, default_organization and
+# organization_discovery_methods stay out: the first two concern a
+# client_credentials flow these applications cannot hold, and the third needs
+# an organization behavior this resource does not set.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0ClientFromMetadataDocument
+metadata:
+  name: e2e-mcp-client
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CIMD_URL
+spec:
+  externalClientId: ${E2E_ENV:PLANTON_E2E_AUTH0_CIMD_URL}
+  externalClientIdVersion: 1
+  appType: native
+  grantTypes:
+    - authorization_code
+    - refresh_token
+  description: Planton E2E MCP client
+  allowedOrigins:
+    - https://mcp-client.example.com
+  webOrigins:
+    - https://mcp-client.example.com
+  oidcConformant: true
+  requireProofOfPossession: false
+  skipNonVerifiableCallbackUriConfirmationPrompt: false
+  redirectionPolicy: open_redirect_protection
+  clientMetadata:
+    owner: planton-e2e
+  jwtConfiguration:
+    alg: RS256
+    lifetimeInSeconds: 3600
+  refreshToken:
+    rotationType: rotating
+    expirationType: expiring
+    tokenLifetime: 2592000
+    infiniteTokenLifetime: false
+    idleTokenLifetime: 1296000
+    infiniteIdleTokenLifetime: false
+    leeway: 3

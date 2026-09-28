@@ -26,3 +26,5 @@ This preset makes the tenant introduce itself as your product. Universal Login r
 ## Related Presets
 
 - **02-your-domain-in-emails** -- email links on your own verified domain
+- **03-mcp-ready-tenant** -- the settings MCP clients rely on to register and ask for tokens
+- **04-short-idle-sessions** -- sessions that end when left unused
