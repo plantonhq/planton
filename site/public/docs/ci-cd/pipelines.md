@@ -59,7 +59,7 @@ This sequential model exists for a reason: each environment can depend on the pr
 
 By default, pushes to the service's default branch trigger a pipeline. You can configure additional branches in the pipeline settings — only pushes to configured branches will trigger builds.
 
-A service that should never walk every environment from a branch push sets `build.triggers.disableTriggerBranches: true` (**No Trigger Branch** on the Branches row of **Build Triggers**). No branch starts its promotion walk, and an empty branch list no longer falls back to the default branch. Tag pushes still release, and every branch mapped to an environment in `deploy.branchDeployments` still builds and deploys into its one environment; a push to any other branch is skipped, with the reason on the record. This is the shape for a service released by tags, or by merging between mapped branches. The setting cannot sit beside a list of trigger branches, which it contradicts.
+A service that should never walk every environment from a branch push sets `build.triggers.disableTriggerBranches: true` (**Tags and Mapped Branches Only** on the Branches row of **Build Triggers**). No branch starts its promotion walk, and an empty branch list no longer falls back to the default branch. Tag pushes still release, and every branch mapped to an environment in `deploy.branchDeployments` still builds and deploys into its one environment; a push to any other branch is skipped, with the reason on the record. This is the shape for a service released by tags, or by merging between mapped branches. The setting cannot sit beside a list of trigger branches, which it contradicts.
 
 ### Pull Requests
 
@@ -114,7 +114,7 @@ service 'my-service' has no trigger branch to build by default, so name what to 
 
 A branch, tag or commit the repository does not have is refused naming it and the repository.
 
-In the web console, the **Run** button on the service's **Runs** tab opens the same choice: the trigger branch's head by default, a different branch, or — when the service's tag triggers are on — **Release a Tag**, with the service's tag patterns beside the field. For a service with no trigger branch there is no head to build by default, so the dialog opens on the tag (or, with tags off, the branch) and waits for one to be named.
+In the web console, the **Run** button on the service's **Runs** tab opens the same choice: the trigger branch's head by default, another branch, or — when the service's tag triggers are on — **Release a Tag**, picked from the repository's tags that the service's patterns accept, newest first (type to narrow, or name a tag the list doesn't show). For a service with no trigger branch there is no head to build by default, so the dialog opens on the tag (or, with tags off, the branch) and waits for one to be named.
 
 ## Controlling Pipeline Behavior
 
