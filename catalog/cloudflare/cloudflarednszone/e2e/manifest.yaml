@@ -21,7 +21,8 @@ spec:
   records:
     - name: www
       type: A
-      content: "192.0.2.1"
+      content:
+        value: "192.0.2.1"
       proxied: true
       ttl: 1
       settings:
@@ -30,7 +31,8 @@ spec:
         - team:web
     - name: "@"
       type: MX
-      content: mail.planton-example.com
+      content:
+        value: mail.planton-example.com
       ttl: 1
       priority: 10
     - name: _sip._tcp

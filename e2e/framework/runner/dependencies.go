@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
@@ -440,7 +441,14 @@ func prerequisiteManifestPath(repoRoot, componentProvider, consumer, slug string
 	if _, err := crkreflect.ComponentVersionDir(slug); err != nil {
 		return "", err
 	}
-	base := filepath.Join(repoRoot, "catalog", componentProvider, slug, "e2e")
+	// The published profiles live under the DEPENDENCY's provider, which may
+	// not be the consumer's: an Auth0 verification's DNS record is a
+	// Cloudflare kind.
+	depProvider, err := kindProviderDir(slug)
+	if err != nil {
+		return "", err
+	}
+	base := filepath.Join(repoRoot, "catalog", depProvider, slug, "e2e")
 	prereq := filepath.Join(base, "prerequisite.yaml")
 	if pathExists(prereq) {
 		return prereq, nil
@@ -528,13 +536,18 @@ func DeployDependencies(ctx context.Context, repoRoot, componentProvider, compon
 // deployDependency builds the stack input, runs `pulumi up`, and verifies the
 // dependency is present. The dependency's own pulumi module is always used
 // (dependencies deploy via Pulumi even when the component under test uses
-// Terraform). docIndex disambiguates the stack name when an install profile
-// deploys several instances of the same kind.
+// Terraform), from its own provider's catalog, and its own provider's harness
+// verifies it (see dependencyHarness). docIndex disambiguates the stack name
+// when an install profile deploys several instances of the same kind.
 func deployDependency(ctx context.Context, repoRoot, componentProvider string, dep Dependency, backendURL, runID string, harness provider.Harness, docIndex int) (DependencyState, error) {
 	if _, err := crkreflect.ComponentVersionDir(dep.KindSlug); err != nil {
 		return DependencyState{}, err
 	}
-	moduleDir := filepath.Join(repoRoot, "catalog", componentProvider, dep.KindSlug, "iac", "pulumi")
+	depHarness, depProvider, err := dependencyHarness(componentProvider, dep.KindSlug, harness)
+	if err != nil {
+		return DependencyState{}, err
+	}
+	moduleDir := filepath.Join(repoRoot, "catalog", depProvider, dep.KindSlug, "iac", "pulumi")
 	if !pathExists(moduleDir) {
 		return DependencyState{}, errors.Errorf("dependency %q pulumi module not found at %s", dep.KindSlug, moduleDir)
 	}
@@ -603,7 +616,7 @@ func deployDependency(ctx context.Context, repoRoot, componentProvider string, d
 	state.Outputs = depStackOutputs
 
 	verifyCtx := context.WithValue(ctx, provider.ManifestPathKey{}, dep.ManifestPath)
-	if err := harness.VerifyDeployed(verifyCtx, dep.KindSlug, state.Outputs); err != nil {
+	if err := depHarness.VerifyDeployed(verifyCtx, dep.KindSlug, state.Outputs); err != nil {
 		return state, errors.Wrapf(err, "dependency %q deployed but verification failed", dep.KindSlug)
 	}
 
@@ -1049,4 +1062,104 @@ func manifestMetadataName(manifestPath string) (string, error) {
 		return "", errors.Errorf("manifest %s has an empty metadata.name", manifestPath)
 	}
 	return name, nil
+}
+
+// kindProviderDir is the catalog directory of the provider a kind belongs to
+// (catalog/<provider>/<kind>), read from the kind's registry metadata rather
+// than assumed from the component under test.
+func kindProviderDir(slug string) (string, error) {
+	kind := crkreflect.KindFromString(slug)
+	if kind == cloudresourcekind.CloudResourceKind_unspecified {
+		return "", errors.Errorf("cannot resolve %q to a cloud-resource kind, so its provider's catalog directory cannot be located", slug)
+	}
+	meta, err := crkreflect.KindMeta(kind)
+	if err != nil {
+		return "", errors.Wrapf(err, "no kind metadata for %s", kind)
+	}
+	return crkreflect.ProviderDirName(meta.Provider), nil
+}
+
+// registeredHarness is another provider's harness a suite lends the runner for
+// its prerequisites, set up on first use.
+type registeredHarness struct {
+	harness  provider.Harness
+	once     sync.Once
+	setupErr error
+	// setUp records a successful Setup, so teardown touches only harnesses a
+	// scenario actually used.
+	setUp bool
+}
+
+var (
+	dependencyHarnessesMu sync.Mutex
+	// dependencyHarnesses holds, by provider directory name, the harnesses of
+	// providers OTHER than a suite's own that its scenarios deploy prerequisites
+	// from.
+	dependencyHarnesses = map[string]*registeredHarness{}
+)
+
+// RegisterDependencyHarness lends the runner another provider's harness, for
+// scenarios whose prerequisites include that provider's kinds -- an Auth0
+// custom domain's verification waits for a Cloudflare DNS record, so the Auth0
+// suite registers the Cloudflare harness. Such a prerequisite deploys from its
+// own provider's module with that provider's ambient credentials, and the
+// registered harness verifies it. The harness is set up on first use, so a
+// suite whose cross-provider scenarios are skipped (their required environment
+// unset) never needs that provider's credentials. Call it from the suite's
+// TestMain, and TeardownDependencyHarnesses after the tests.
+func RegisterDependencyHarness(providerDir string, harness provider.Harness) {
+	dependencyHarnessesMu.Lock()
+	defer dependencyHarnessesMu.Unlock()
+	dependencyHarnesses[providerDir] = &registeredHarness{harness: harness}
+}
+
+// TeardownDependencyHarnesses tears down every registered harness that was set
+// up, returning the aggregated failures.
+func TeardownDependencyHarnesses(ctx context.Context) error {
+	dependencyHarnessesMu.Lock()
+	defer dependencyHarnessesMu.Unlock()
+	var failures []error
+	for providerDir, registered := range dependencyHarnesses {
+		if !registered.setUp {
+			continue
+		}
+		if err := registered.harness.Teardown(ctx); err != nil {
+			failures = append(failures, errors.Wrapf(err, "tearing down the %s dependency harness", providerDir))
+		}
+	}
+	return stderrors.Join(failures...)
+}
+
+// dependencyHarness returns the harness that verifies a prerequisite and the
+// provider directory its module lives under: the component's own harness for a
+// kind of the component's provider, the registered harness (set up once, on
+// first use) for another provider's kind.
+func dependencyHarness(componentProvider, slug string, componentHarness provider.Harness) (provider.Harness, string, error) {
+	depProvider, err := kindProviderDir(slug)
+	if err != nil {
+		return nil, "", err
+	}
+	if depProvider == componentProvider {
+		return componentHarness, depProvider, nil
+	}
+
+	dependencyHarnessesMu.Lock()
+	registered, ok := dependencyHarnesses[depProvider]
+	dependencyHarnessesMu.Unlock()
+	if !ok {
+		return nil, "", errors.Errorf(
+			"prerequisite %q is a %s kind, and the %s suite registered no %s harness to deploy and verify it with -- "+
+				"call runner.RegisterDependencyHarness(%q, <the %s harness>) in the suite's TestMain",
+			slug, depProvider, componentProvider, depProvider, depProvider, depProvider)
+	}
+	registered.once.Do(func() {
+		registered.setupErr = registered.harness.Setup(context.Background())
+		registered.setUp = registered.setupErr == nil
+	})
+	if registered.setupErr != nil {
+		return nil, "", errors.Wrapf(registered.setupErr,
+			"the %s harness could not be set up to deploy prerequisite %q (its credentials are read from the environment, as the %s suite reads them)",
+			depProvider, slug, depProvider)
+	}
+	return registered.harness, depProvider, nil
 }

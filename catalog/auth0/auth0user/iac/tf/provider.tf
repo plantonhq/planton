@@ -4,7 +4,7 @@ terraform {
   required_providers {
     auth0 = {
       source  = "auth0/auth0"
-      version = "~> 1.0"
+      version = "~> 1.58"
     }
     # random mints the initial password when the spec declares none on a
     # database connection (the credential a module can mint is never asked

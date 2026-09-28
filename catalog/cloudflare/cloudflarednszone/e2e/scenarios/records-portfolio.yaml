@@ -48,12 +48,14 @@ spec:
   records:
     - name: www
       type: A
-      content: "192.0.2.10"
+      content:
+        value: "192.0.2.10"
       ttl: 300
       comment: planton e2e portfolio scenario
     - name: "@"
       type: MX
-      content: mail.planton-e2e.example.com
+      content:
+        value: mail.planton-e2e.example.com
       ttl: 300
       priority: 10
     - name: _e2e._tcp
@@ -70,4 +72,5 @@ spec:
         value: letsencrypt.org
     - name: "@"
       type: TXT
-      content: "planton-e2e-verification=portfolio"
+      content:
+        value: "planton-e2e-verification=portfolio"

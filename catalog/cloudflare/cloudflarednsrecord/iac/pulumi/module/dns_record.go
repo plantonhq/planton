@@ -40,9 +40,10 @@ func dnsRecord(
 		Ttl:     pulumi.Float64(ttl),
 	}
 
-	// Simple record types carry their value in content; structured types use data.
-	if spec.Content != "" {
-		recordArgs.Content = pulumi.String(spec.Content)
+	// Simple record types carry their value in content -- a literal, or a
+	// reference already resolved to its value -- and structured types use data.
+	if content := spec.Content.GetValue(); content != "" {
+		recordArgs.Content = pulumi.String(content)
 	}
 	if data := buildDnsRecordData(spec); data != nil {
 		recordArgs.Data = data

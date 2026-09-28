@@ -61,6 +61,39 @@ func NewManagementClient(domain, clientID, clientSecret string) (*ManagementClie
 	}, nil
 }
 
+// ReadResource reads the resource at the given Management API path (relative to
+// /api/v2/) and returns its JSON body. Returns the body and true if 200, nil and
+// false if 404, error for anything else.
+func (c *ManagementClient) ReadResource(path string) (map[string]interface{}, bool, error) {
+	url := fmt.Sprintf("https://%s/api/v2/%s", c.domain, path)
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, false, errors.Wrap(err, "failed to build request")
+	}
+	req.Header.Set("Authorization", "Bearer "+c.accessToken)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, false, errors.Wrapf(err, "GET %s failed", path)
+	}
+	defer resp.Body.Close()
+
+	switch resp.StatusCode {
+	case http.StatusOK:
+		var body map[string]interface{}
+		if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+			return nil, true, errors.Wrapf(err, "GET %s returned a body that is not a JSON object", path)
+		}
+		return body, true, nil
+	case http.StatusNotFound:
+		return nil, false, nil
+	default:
+		body, _ := io.ReadAll(resp.Body)
+		return nil, false, errors.Errorf("GET %s returned %d: %s", path, resp.StatusCode, body)
+	}
+}
+
 // ResourceExists checks whether a resource at the given Management API path exists.
 // path is relative to /api/v2/ (e.g., "clients/abc123").
 // Returns true if 200, false if 404, error for anything else.

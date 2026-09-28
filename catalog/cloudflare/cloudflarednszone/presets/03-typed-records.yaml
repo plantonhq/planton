@@ -8,15 +8,18 @@ spec:
   records:
     - name: www
       type: A
-      content: <web-server-ipv4>
+      content:
+        value: <web-server-ipv4>
       proxied: true
     - name: "@"
       type: MX
-      content: <mail-host.your-domain.com>
+      content:
+        value: <mail-host.your-domain.com>
       priority: 10
     - name: "@"
       type: TXT
-      content: "v=spf1 include:_spf.<mail-provider.com> ~all"
+      content:
+        value: "v=spf1 include:_spf.<mail-provider.com> ~all"
     - name: _sip._tcp
       type: SRV
       srv:

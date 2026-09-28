@@ -8614,6 +8614,42 @@ func TestStackOutputsConformance(t *testing.T) {
 				"connection_name", "password",
 			},
 		},
+		{
+			// Auth0CustomDomain: the domain's identity and state, and the DNS
+			// record that proves control of it -- the three dns_record_* fields a
+			// DNS record kind composes, picked by one rule in both engines.
+			name: "Auth0CustomDomain",
+			kind: cloudresourcekind.CloudResourceKind_Auth0CustomDomain,
+			rawOutputs: map[string]interface{}{
+				"id":                 "cd_0123456789abcdef",
+				"domain":             "id.example.com",
+				"status":             "pending_verification",
+				"origin_domain_name": "example-cd-abc123.edge.tenants.eu.auth0.com",
+				"dns_record_name":    "id.example.com",
+				"dns_record_type":    "CNAME",
+				"dns_record_value":   "example-cd-abc123.edge.tenants.eu.auth0.com",
+			},
+			mustPopulate: []string{
+				"id", "domain", "status", "origin_domain_name",
+				"dns_record_name", "dns_record_type", "dns_record_value",
+			},
+		},
+		{
+			// Auth0CustomDomainVerification: the verified domain, read back by
+			// id, and the self-managed proxy's key (empty, and still mapped, for
+			// an Auth0-managed domain).
+			name: "Auth0CustomDomainVerification",
+			kind: cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification,
+			rawOutputs: map[string]interface{}{
+				"custom_domain_id":   "cd_0123456789abcdef",
+				"domain":             "id.example.com",
+				"origin_domain_name": "example-cd-abc123.edge.tenants.eu.auth0.com",
+				"cname_api_key":      "c2VsZi1tYW5hZ2VkLXByb3h5LWtleQ",
+			},
+			mustPopulate: []string{
+				"custom_domain_id", "domain", "origin_domain_name", "cname_api_key",
+			},
+		},
 	}
 
 	for _, tc := range cases {

@@ -365,7 +365,8 @@ generate-provider-schemas:
 		--provider 'azurerm=hashicorp/azurerm@5.0.0' \
 		--provider 'aws=hashicorp/aws@~> 6.58' \
 		--provider 'cloudflare=cloudflare/cloudflare@5.23.0' \
-		--provider 'digitalocean=digitalocean/digitalocean@~> 2.99'
+		--provider 'digitalocean=digitalocean/digitalocean@~> 2.99' \
+		--provider 'auth0=auth0/auth0@~> 1.58'
 
 # Regenerate every committed public parity page (catalog/<provider>/terraform-parity.md)
 # from the accounting. Each page embeds its own generation parameters, so this

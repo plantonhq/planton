@@ -2,7 +2,7 @@
 # provision, update, and destroy this component with the official modules.
 # Auth0 authenticates with a machine-to-machine application authorized for
 # the tenant's Management API (https://{tenant-domain}/api/v2/); the
-# auth0/auth0 Terraform provider (~> 1.0 per iac/tf/provider.tf) and the
+# auth0/auth0 Terraform provider (~> 1.58 per iac/tf/provider.tf) and the
 # pulumi-auth0 SDK exchange its client id and secret for a token through
 # the client-credentials flow, and the grant's scopes are the policy. Every
 # group is `derived` (static analysis of the module sources against Auth0's

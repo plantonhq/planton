@@ -8,6 +8,7 @@ package auth0tenantsettingsv1alpha1
 
 import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
+	v1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -39,10 +40,15 @@ const (
 // values. To return a setting to a specific value, set that value explicitly
 // before removing the field.
 //
+// The tenant's default custom domain (default_custom_domain) is managed the same
+// way: unset, Auth0 keeps whatever default the tenant has.
+//
 // The credential needs read:tenant_settings and update:tenant_settings on the
-// tenant's Management API (iac/permissions.yaml).
+// tenant's Management API, and read:custom_domains and update:custom_domains when
+// default_custom_domain is set (iac/permissions.yaml).
 //
 // https://auth0.com/docs/get-started/tenant-settings
+// https://auth0.com/docs/customize/custom-domains/multiple-custom-domains/default-domain
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/tenant
 // https://www.pulumi.com/registry/packages/auth0/api-docs/tenant/
 type Auth0TenantSettingsSpec struct {
@@ -61,9 +67,24 @@ type Auth0TenantSettingsSpec struct {
 	SupportEmail string `protobuf:"bytes,3,opt,name=support_email,json=supportEmail,proto3" json:"support_email,omitempty"`
 	// support_url is the page the tenant's login and error pages link to for
 	// help.
-	SupportUrl    string `protobuf:"bytes,4,opt,name=support_url,json=supportUrl,proto3" json:"support_url,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	SupportUrl string `protobuf:"bytes,4,opt,name=support_url,json=supportUrl,proto3" json:"support_url,omitempty"`
+	// default_custom_domain is the domain that speaks for the tenant when a
+	// request does not say which of its domains it came through: the links in the
+	// emails Auth0 sends (verification, password reset, invitations) and the
+	// notifications the Management API triggers. Set it to the tenant's custom
+	// domain so a person who signs in at id.example.com also receives links to
+	// id.example.com, never to the tenant's canonical auth0.com domain.
+	//
+	// Only a verified domain can be the default, so reference the
+	// Auth0CustomDomainVerification (its status.outputs.domain): the default is
+	// then set only after Auth0 has verified the domain. A literal is also
+	// accepted, including the tenant's canonical domain (e.g.
+	// "example.eu.auth0.com") to make it the default again. Unset, the tenant's
+	// default is not managed; clearing the field stops managing it and leaves the
+	// last-applied default in place (Auth0 has no way to unset a default).
+	DefaultCustomDomain *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=default_custom_domain,json=defaultCustomDomain,proto3" json:"default_custom_domain,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *Auth0TenantSettingsSpec) Reset() {
@@ -124,11 +145,18 @@ func (x *Auth0TenantSettingsSpec) GetSupportUrl() string {
 	return ""
 }
 
+func (x *Auth0TenantSettingsSpec) GetDefaultCustomDomain() *v1.StringValueOrRef {
+	if x != nil {
+		return x.DefaultCustomDomain
+	}
+	return nil
+}
+
 var File_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto protoreflect.FileDescriptor
 
 const file_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"5catalog/auth0/auth0tenantsettings/v1alpha1/spec.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\x1a\x1bbuf/validate/validate.proto\"\xce\x03\n" +
+	"5catalog/auth0/auth0tenantsettings/v1alpha1/spec.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xfb\x04\n" +
 	"\x17Auth0TenantSettingsSpec\x12#\n" +
 	"\rfriendly_name\x18\x01 \x01(\tR\ffriendlyName\x12,\n" +
 	"\vpicture_url\x18\x02 \x01(\tB\v\xbaH\b\xd8\x01\x01r\x03\x88\x01\x01R\n" +
@@ -136,8 +164,9 @@ const file_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto_rawDesc = "" +
 	"\rsupport_email\x18\x03 \x01(\tB\n" +
 	"\xbaH\a\xd8\x01\x01r\x02`\x01R\fsupportEmail\x12,\n" +
 	"\vsupport_url\x18\x04 \x01(\tB\v\xbaH\b\xd8\x01\x01r\x03\x88\x01\x01R\n" +
-	"supportUrl:\x80\x02\xbaH\xfc\x01\x1a\xf9\x01\n" +
-	"\x19spec.at_least_one_setting\x12rconfigure at least one tenant setting -- an Auth0TenantSettings resource that manages nothing would deploy nothing\x1ahthis.friendly_name != '' || this.picture_url != '' || this.support_email != '' || this.support_url != ''B\x81\x03\n" +
+	"supportUrl\x12\x86\x01\n" +
+	"\x15default_custom_domain\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x1e\x88\xd4a\xc9>\x92\xd4a\x15status.outputs.domainR\x13defaultCustomDomain:\xa4\x02\xbaH\xa0\x02\x1a\x9d\x02\n" +
+	"\x19spec.at_least_one_setting\x12rconfigure at least one tenant setting -- an Auth0TenantSettings resource that manages nothing would deploy nothing\x1a\x8b\x01this.friendly_name != '' || this.picture_url != '' || this.support_email != '' || this.support_url != '' || has(this.default_custom_domain)B\x81\x03\n" +
 	"2com.dev.planton.auth0.auth0tenantsettings.v1alpha1B\tSpecProtoP\x01Zcgithub.com/plantonhq/planton/catalog/auth0/auth0tenantsettings/v1alpha1;auth0tenantsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Auth0.Auth0tenantsettings.V1alpha1\xca\x02.Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\xe2\x02:Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Auth0::Auth0tenantsettings::V1alpha1b\x06proto3"
 
 var (
@@ -155,13 +184,15 @@ func file_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto_rawDescGZIP() []
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto_goTypes = []any{
 	(*Auth0TenantSettingsSpec)(nil), // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsSpec
+	(*v1.StringValueOrRef)(nil),     // 1: dev.planton.shared.foreignkey.v1.StringValueOrRef
 }
 var file_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dev.planton.auth0.auth0tenantsettings.v1alpha1.Auth0TenantSettingsSpec.default_custom_domain:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_catalog_auth0_auth0tenantsettings_v1alpha1_spec_proto_init() }

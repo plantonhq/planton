@@ -7350,6 +7350,20 @@ enum CloudResourceKind {
     version: "v1alpha1"
     id_prefix: "a0tset"
   }];
+  Auth0CustomDomain = 8008 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0cd"
+  }];
+  Auth0CustomDomainVerification = 8009 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0cdv"
+    // Verification checks a custom domain that already exists; the DNS
+    // record it waits for is published by whichever DNS kind serves the
+    // domain, so only the domain is a prerequisite.
+    prerequisites: [Auth0CustomDomain]
+  }];
 
   // 9000–9999: OpenFGA resources
   // Note: OpenFGA is Terraform-only - there is no Pulumi provider available.

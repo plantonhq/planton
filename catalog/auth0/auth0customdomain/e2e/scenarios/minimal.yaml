@@ -1,0 +1,20 @@
+# An Auth0-managed custom domain, created and deleted. Auth0 answers a new
+# domain with its verification record, so the lane proves the create, the
+# dns_record_* outputs on both engines, and the real delete; verification is
+# the Auth0CustomDomainVerification lane's.
+#
+# The domain is a run-scoped name under a parent domain the operator controls
+# (PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT), because a tenant allows one custom
+# domain per name and the Free plan one domain in all: the lanes run one after
+# another, each destroying its domain.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomain
+metadata:
+  name: e2e-sign-in-domain
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT
+spec:
+  domain: id-${E2E_RUN_ID}.${E2E_ENV:PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT}
+  type: auth0_managed_certs

@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0customdomain
+spec:
+  billing_model: free
+  free_tier: "Every Auth0 plan, the Free plan included, has one custom domain with Auth0-managed certificates at no charge; Auth0 asks for a credit card on file before it allows one, and does not charge it (auth0.com/docs/customize/custom-domains). Self-managed certificates (type self_managed_certs) and more than one custom domain per tenant need the Enterprise plan."
+  notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). A custom domain changes the name people sign in on, never what a sign-in costs. A self-managed domain adds the cost of the reverse proxy and certificate you run in front of it, outside this component."

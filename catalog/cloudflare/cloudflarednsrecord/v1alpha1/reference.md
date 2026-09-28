@@ -29,7 +29,8 @@ spec:
     value: "0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"
   name: "www"
   type: A
-  content: "192.0.2.1"
+  content:
+    value: "192.0.2.1"
   proxied: true
   ttl: 1
   comment: "Test DNS record for local development"
@@ -42,7 +43,7 @@ spec:
 | `spec.zoneId` | `string \| valueFrom` | yes |  | CloudflareDnsZone (`status.outputs.zone_id`) |
 | `spec.name` | `string` | yes |  |  |
 | `spec.type` | `enum` | yes |  |  |
-| `spec.content` | `string` |  |  |  |
+| `spec.content` | `string \| valueFrom` |  |  |  |
 | `spec.proxied` | `bool` |  |  |  |
 | `spec.ttl` | `int32` |  |  |  |
 | `spec.priority` | `int32` |  |  |  |
@@ -184,13 +185,23 @@ Allowed values (use exactly as shown):
 
 ### spec.content
 
-`string`
+`string | valueFrom`
 
 Presentation-format value for simple record types. Set this for A/AAAA/
-CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave empty for structured types (use `data`).
-For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g. "2001:db8::1").
-For CNAME/MX/NS/PTR: a hostname. For TXT: the text value. For OPENPGPKEY:
-the base64-encoded key.
+CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave it unset for structured types (use
+`data`). For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g.
+"2001:db8::1"). For CNAME/MX/NS/PTR: a hostname. For TXT: the text value.
+For OPENPGPKEY: the base64-encoded key.
+
+A literal or a reference to another resource's output, so a record can
+publish a value that only exists once that resource does: one of a zone's
+name servers for a subdomain delegation (a CloudflareDnsZone's, an
+AwsRoute53Zone's or a GcpDnsZone's status.outputs.nameservers.0, .1, ...),
+or a validation target (an Auth0CustomDomain's status.outputs.dns_record_value,
+a GcpCertManagerDnsAuthorization's status.outputs.dns_record_data). A
+referenced record is created after the resource it reads.
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.proxied
 

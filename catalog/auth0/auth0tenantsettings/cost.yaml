@@ -7,5 +7,5 @@ metadata:
   name: auth0tenantsettings
 spec:
   billing_model: free
-  free_tier: "Auth0 publishes no price for tenant settings: the tenant's friendly name, logo and support contacts are editable on every plan, the Free plan included (the preprod tenant this component was first applied to is on the Free plan). What is gated is page customization beyond them -- Universal Login page templates answer 402 Payment Required on the Free plan -- and this component does not touch it."
+  free_tier: "Auth0 publishes no price for tenant settings: the tenant's friendly name, logo and support contacts are editable on every plan, the Free plan included (the preprod tenant this component was first applied to is on the Free plan). Page customization beyond them is gated on a custom domain, not a plan -- Universal Login page templates require one, and the Free plan includes one custom domain (auth0.com/docs/customize/login-pages/universal-login/customize-templates) -- and this component does not touch it. The default custom domain it can set is free too."
   notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). These settings change what the login page shows, never what a sign-in costs."

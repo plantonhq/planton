@@ -19,4 +19,8 @@ message Auth0TenantSettingsStackOutputs {
 
   // support_url is the support page the tenant's pages link to.
   string support_url = 4;
+
+  // default_custom_domain is the tenant's default domain as set by this
+  // resource; empty when the spec leaves the default unmanaged.
+  string default_custom_domain = 5;
 }

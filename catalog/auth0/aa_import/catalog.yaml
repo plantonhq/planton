@@ -1,0 +1,21 @@
+apiVersion: iac.planton.dev/v1
+kind: ProviderImportCatalog
+metadata:
+  name: auth0
+spec:
+  # Import-ID formats per Auth0 resource type, as documented by the upstream
+  # terraform-provider-auth0 (v1 line). The FORMAT lives here (provider
+  # knowledge, shared by every component); which concrete value fills each
+  # {placeholder} lives in the owning component's import-map.yaml.
+  # Correctness is machine-proven by the E2E import round-trip (deploy a
+  # fixture, set state aside, re-import blind, plan must show zero diff) --
+  # never by review alone.
+  #
+  # Auth0 resources import by their Management API identifier. Only the types
+  # a component with an import map declares are listed; a component gains its
+  # map, and its types their entries here, together.
+  resource_types:
+    # --- Custom domains -------------------------------------------------------
+    - terraform_type: auth0_custom_domain
+      pulumi_type: auth0:index/customDomain:CustomDomain
+      id_format: "{custom_domain_id}"

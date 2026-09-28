@@ -1,0 +1,16 @@
+apiVersion: cloudflare.planton.dev/v1alpha1
+kind: CloudflareDnsRecord
+metadata:
+  name: my-subdomain-delegation-1
+spec:
+  zoneId:
+    value: <cloudflare-zone-id>
+  name: <subdomain-label>
+  type: NS
+  content:
+    valueFrom:
+      kind: AwsRoute53Zone
+      name: <child-zone-resource-name>
+      fieldPath: status.outputs.nameservers.0
+  proxied: false
+  ttl: 3600

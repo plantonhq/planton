@@ -10,7 +10,8 @@ import (
 // the provider's credential belongs to; the Management API cannot create or
 // delete a tenant. Only the four settings are set, each only when the spec sets
 // it, so the tenant's other settings (session lifetimes, flags, error pages) are
-// never touched. The resource's delete is the provider's no-op: destroy leaves
+// never touched; a spec that manages only the default domain sends none of
+// them. The resource's delete is the provider's no-op: destroy leaves
 // the last-applied values in place, as Auth0 has no delete for tenant settings.
 func applyTenantSettings(ctx *pulumi.Context, locals *Locals, provider *auth0.Provider) (*auth0.Tenant, error) {
 	tenant, err := auth0.NewTenant(ctx, locals.ResourceName, &auth0.TenantArgs{

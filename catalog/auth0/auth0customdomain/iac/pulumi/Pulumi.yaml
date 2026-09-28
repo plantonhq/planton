@@ -1,0 +1,6 @@
+# Auth0CustomDomain Pulumi Module
+# This module creates a custom domain for an Auth0 tenant.
+name: auth0-custom-domain
+runtime:
+  name: go
+description: Pulumi module for Auth0CustomDomain component

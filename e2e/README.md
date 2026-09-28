@@ -354,6 +354,22 @@ teardown runs in reverse across the merged chain. Every kind that appears in
 the annotation needs a verifier and an install profile, exactly like a
 registry prerequisite.
 
+**A prerequisite may belong to another provider.** The runner reads each
+prerequisite's provider from its kind's registry metadata: its install
+profile and its Pulumi module come from THAT provider's catalog
+(`catalog/<its provider>/<kind>/`), and THAT provider's harness verifies it.
+A suite whose scenarios compose another provider's kinds lends the runner
+that harness in its `TestMain` -- `runner.RegisterDependencyHarness("cloudflare",
+cloudflaree2e.NewHarness())` in the Auth0 suite, whose custom-domain
+verification waits for a Cloudflare DNS record -- and calls
+`runner.TeardownDependencyHarnesses` after the tests. The lent harness is set
+up only when a scenario first deploys that provider's kind, so a suite whose
+cross-provider scenarios skip (their `e2e-required-env` unset) never needs the
+other provider's credentials; a prerequisite of an unregistered provider is
+refused naming the call to add. The prerequisite deploys with its provider's
+ambient credentials, so the scenario's required environment names what the
+lane needs of that provider too.
+
 **A path-declared fixture manifest's own annotation is NEVER read.** "Its
 own transitive prerequisites" above means the path entry's KIND-level
 registry edges only -- the resolver does not open a path-declared manifest

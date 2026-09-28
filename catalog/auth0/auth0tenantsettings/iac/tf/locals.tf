@@ -8,4 +8,9 @@ locals {
   picture_url   = var.spec.picture_url != "" ? var.spec.picture_url : null
   support_email = var.spec.support_email != "" ? var.spec.support_email : null
   support_url   = var.spec.support_url != "" ? var.spec.support_url : null
+
+  # The tenant's default domain, or null when the spec leaves it unmanaged (the
+  # default-domain resource is then not declared). A reference arrives resolved
+  # to its value.
+  default_custom_domain = var.spec.default_custom_domain != "" ? var.spec.default_custom_domain : null
 }

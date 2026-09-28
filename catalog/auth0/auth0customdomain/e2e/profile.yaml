@@ -1,0 +1,18 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0customdomain
+spec:
+  # A tenant allows one custom domain per name, and the Free plan one domain
+  # in all, so the lane needs a dedicated test tenant (a card on file) whose
+  # custom domain nobody signs in through, and a parent domain the operator
+  # controls (PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT). Neither exists yet, so
+  # the lanes are not run. Unblock: the throwaway Auth0 tenant for the E2E
+  # harness (AUTH0_DOMAIN / AUTH0_CLIENT_ID / AUTH0_CLIENT_SECRET, the
+  # credential holding the custom_domains scopes of iac/permissions.yaml) and
+  # the parent domain, then run both engines' minimal scenario one after the
+  # other.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 10

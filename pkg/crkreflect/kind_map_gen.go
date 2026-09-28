@@ -14,6 +14,8 @@ import (
 	auth0actionv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0action/v1alpha1"
 	auth0clientv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0client/v1alpha1"
 	auth0connectionv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0connection/v1alpha1"
+	auth0customdomainv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0customdomain/v1alpha1"
+	auth0customdomainverificationv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0customdomainverification/v1alpha1"
 	auth0eventstreamv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0eventstream/v1alpha1"
 	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	auth0rolev1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0role/v1alpha1"
@@ -757,14 +759,16 @@ var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 }
 
 var ProviderAuth0Map = map[cloudresourcekind.CloudResourceKind]proto.Message{
-	cloudresourcekind.CloudResourceKind_Auth0Action:         &auth0actionv1alpha1.Auth0Action{},
-	cloudresourcekind.CloudResourceKind_Auth0Client:         &auth0clientv1alpha1.Auth0Client{},
-	cloudresourcekind.CloudResourceKind_Auth0Connection:     &auth0connectionv1alpha1.Auth0Connection{},
-	cloudresourcekind.CloudResourceKind_Auth0EventStream:    &auth0eventstreamv1alpha1.Auth0EventStream{},
-	cloudresourcekind.CloudResourceKind_Auth0ResourceServer: &auth0resourceserverv1alpha1.Auth0ResourceServer{},
-	cloudresourcekind.CloudResourceKind_Auth0Role:           &auth0rolev1alpha1.Auth0Role{},
-	cloudresourcekind.CloudResourceKind_Auth0TenantSettings: &auth0tenantsettingsv1alpha1.Auth0TenantSettings{},
-	cloudresourcekind.CloudResourceKind_Auth0User:           &auth0userv1alpha1.Auth0User{},
+	cloudresourcekind.CloudResourceKind_Auth0Action:                   &auth0actionv1alpha1.Auth0Action{},
+	cloudresourcekind.CloudResourceKind_Auth0Client:                   &auth0clientv1alpha1.Auth0Client{},
+	cloudresourcekind.CloudResourceKind_Auth0Connection:               &auth0connectionv1alpha1.Auth0Connection{},
+	cloudresourcekind.CloudResourceKind_Auth0CustomDomain:             &auth0customdomainv1alpha1.Auth0CustomDomain{},
+	cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification: &auth0customdomainverificationv1alpha1.Auth0CustomDomainVerification{},
+	cloudresourcekind.CloudResourceKind_Auth0EventStream:              &auth0eventstreamv1alpha1.Auth0EventStream{},
+	cloudresourcekind.CloudResourceKind_Auth0ResourceServer:           &auth0resourceserverv1alpha1.Auth0ResourceServer{},
+	cloudresourcekind.CloudResourceKind_Auth0Role:                     &auth0rolev1alpha1.Auth0Role{},
+	cloudresourcekind.CloudResourceKind_Auth0TenantSettings:           &auth0tenantsettingsv1alpha1.Auth0TenantSettings{},
+	cloudresourcekind.CloudResourceKind_Auth0User:                     &auth0userv1alpha1.Auth0User{},
 }
 
 var ProviderAwsMap = map[cloudresourcekind.CloudResourceKind]proto.Message{

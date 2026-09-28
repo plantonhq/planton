@@ -1,0 +1,26 @@
+# The three-node chain, proven end to end: the Auth0CustomDomain (the kind's
+# registry prerequisite), the Cloudflare CNAME that publishes its verification
+# record (a prerequisite of ANOTHER provider, deployed with the Cloudflare
+# harness the Auth0 suite registers), then this verification, which waits
+# until Auth0 reports the domain ready. The verifier reads the domain back and
+# requires "ready"; after destroy it requires the domain STILL ready (the
+# verification's destroy is a no-op).
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomainVerification
+metadata:
+  name: e2e-sign-in-domain-verification
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT,PLANTON_E2E_AUTH0_DNS_ZONE_ID
+    planton.dev/e2e-prerequisites: catalog/auth0/auth0customdomainverification/e2e/fixtures/verification-record.yaml
+  relationships:
+    - kind: CloudflareDnsRecord
+      name: e2e-sign-in-domain-cname
+      type: depends_on
+spec:
+  customDomainId:
+    valueFrom:
+      kind: Auth0CustomDomain
+      name: e2e-sign-in-domain
+      fieldPath: status.outputs.id

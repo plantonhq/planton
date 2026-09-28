@@ -1,6 +1,6 @@
 # Cloudflare DNS Record
 
-Deploys a single DNS record within a Cloudflare zone, covering both simple types (A, AAAA, CNAME, MX, TXT, NS, PTR, OPENPGPKEY) whose value is one `content` string and structured types (SRV, CAA, HTTPS, SVCB, TLSA, DS, DNSKEY, CERT, LOC, NAPTR, SMIMEA, SSHFP, URI) whose fields travel in a typed `data` block. Proxy status, TTL, MX priority, comments, tags, and per-record serving settings are all configurable, and the manifest is validated so the value representation always matches the record type.
+Deploys a single DNS record within a Cloudflare zone, covering both simple types (A, AAAA, CNAME, MX, TXT, NS, PTR, OPENPGPKEY) whose value is one `content` string, written as a literal or read from another resource's output and structured types (SRV, CAA, HTTPS, SVCB, TLSA, DS, DNSKEY, CERT, LOC, NAPTR, SMIMEA, SSHFP, URI) whose fields travel in a typed `data` block. Proxy status, TTL, MX priority, comments, tags, and per-record serving settings are all configurable, and the manifest is validated so the value representation always matches the record type.
 
 ## What Gets Created
 
@@ -42,7 +42,8 @@ spec:
     value: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
   name: www
   type: A
-  content: "203.0.113.50"
+  content:
+    value: "203.0.113.50"
   proxied: true
   ttl: 1
 ```
@@ -66,7 +67,8 @@ spec:
       fieldPath: status.outputs.zone_id
   name: www
   type: A
-  content: "203.0.113.50"
+  content:
+    value: "203.0.113.50"
   proxied: true
 ```
 
@@ -76,7 +78,7 @@ The InfraPipeline resolves the dependency graph, deploys the DNS zone first, the
 
 These are the most important decisions when configuring a DNS record. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**`content` vs. `data` -- exactly one, matching the type** -- simple types (A, AAAA, CNAME, MX, TXT, NS, PTR, OPENPGPKEY) take a single presentation-format string in `content`; structured types (SRV, CAA, HTTPS, and the rest) take their matching `data` block (`data.srv`, `data.caa`, ...). Setting both, neither, or a mismatched block fails validation before anything reaches Cloudflare. An SRV record's priority, weight, port, and target all live inside `data.srv` -- the top-level `priority` field is for MX only.
+**`content` vs. `data` -- exactly one, matching the type** -- simple types (A, AAAA, CNAME, MX, TXT, NS, PTR, OPENPGPKEY) take a single presentation-format string in `content`, either `value:` or a `valueFrom:` reference; structured types (SRV, CAA, HTTPS, and the rest) take their matching `data` block (`data.srv`, `data.caa`, ...). Setting both, neither, or a mismatched block fails validation before anything reaches Cloudflare. An SRV record's priority, weight, port, and target all live inside `data.srv` -- the top-level `priority` field is for MX only.
 
 **Proxy vs. DNS-only (`proxied`)** -- `true` (orange cloud) routes traffic through Cloudflare's CDN, WAF, and DDoS protection while hiding the origin IP; `false` (grey cloud) resolves directly and exposes the origin. Only A, AAAA, and CNAME records can be proxied -- the spec rejects `proxied: true` on anything else.
 

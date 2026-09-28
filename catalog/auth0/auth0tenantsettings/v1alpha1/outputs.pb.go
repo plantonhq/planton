@@ -35,9 +35,12 @@ type Auth0TenantSettingsStackOutputs struct {
 	// support_email is the support address the tenant's pages offer.
 	SupportEmail string `protobuf:"bytes,3,opt,name=support_email,json=supportEmail,proto3" json:"support_email,omitempty"`
 	// support_url is the support page the tenant's pages link to.
-	SupportUrl    string `protobuf:"bytes,4,opt,name=support_url,json=supportUrl,proto3" json:"support_url,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	SupportUrl string `protobuf:"bytes,4,opt,name=support_url,json=supportUrl,proto3" json:"support_url,omitempty"`
+	// default_custom_domain is the tenant's default domain as set by this
+	// resource; empty when the spec leaves the default unmanaged.
+	DefaultCustomDomain string `protobuf:"bytes,5,opt,name=default_custom_domain,json=defaultCustomDomain,proto3" json:"default_custom_domain,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *Auth0TenantSettingsStackOutputs) Reset() {
@@ -98,18 +101,26 @@ func (x *Auth0TenantSettingsStackOutputs) GetSupportUrl() string {
 	return ""
 }
 
+func (x *Auth0TenantSettingsStackOutputs) GetDefaultCustomDomain() string {
+	if x != nil {
+		return x.DefaultCustomDomain
+	}
+	return ""
+}
+
 var File_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_auth0_auth0tenantsettings_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/auth0/auth0tenantsettings/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\"\xad\x01\n" +
+	"8catalog/auth0/auth0tenantsettings/v1alpha1/outputs.proto\x12.dev.planton.auth0.auth0tenantsettings.v1alpha1\"\xe1\x01\n" +
 	"\x1fAuth0TenantSettingsStackOutputs\x12#\n" +
 	"\rfriendly_name\x18\x01 \x01(\tR\ffriendlyName\x12\x1f\n" +
 	"\vpicture_url\x18\x02 \x01(\tR\n" +
 	"pictureUrl\x12#\n" +
 	"\rsupport_email\x18\x03 \x01(\tR\fsupportEmail\x12\x1f\n" +
 	"\vsupport_url\x18\x04 \x01(\tR\n" +
-	"supportUrlB\x84\x03\n" +
+	"supportUrl\x122\n" +
+	"\x15default_custom_domain\x18\x05 \x01(\tR\x13defaultCustomDomainB\x84\x03\n" +
 	"2com.dev.planton.auth0.auth0tenantsettings.v1alpha1B\fOutputsProtoP\x01Zcgithub.com/plantonhq/planton/catalog/auth0/auth0tenantsettings/v1alpha1;auth0tenantsettingsv1alpha1\xa2\x02\x04DPAA\xaa\x02.Dev.Planton.Auth0.Auth0tenantsettings.V1alpha1\xca\x02.Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\xe2\x02:Dev\\Planton\\Auth0\\Auth0tenantsettings\\V1alpha1\\GPBMetadata\xea\x022Dev::Planton::Auth0::Auth0tenantsettings::V1alpha1b\x06proto3"
 
 var (

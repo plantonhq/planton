@@ -174,11 +174,19 @@ type CloudflareDnsRecordSpec struct {
 	// or from the matching `data` block.
 	Type CloudflareDnsRecordSpec_RecordType `protobuf:"varint,3,opt,name=type,proto3,enum=dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec_RecordType" json:"type,omitempty"`
 	// Presentation-format value for simple record types. Set this for A/AAAA/
-	// CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave empty for structured types (use `data`).
-	// For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g. "2001:db8::1").
-	// For CNAME/MX/NS/PTR: a hostname. For TXT: the text value. For OPENPGPKEY:
-	// the base64-encoded key.
-	Content string `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	// CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave it unset for structured types (use
+	// `data`). For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g.
+	// "2001:db8::1"). For CNAME/MX/NS/PTR: a hostname. For TXT: the text value.
+	// For OPENPGPKEY: the base64-encoded key.
+	//
+	// A literal or a reference to another resource's output, so a record can
+	// publish a value that only exists once that resource does: one of a zone's
+	// name servers for a subdomain delegation (a CloudflareDnsZone's, an
+	// AwsRoute53Zone's or a GcpDnsZone's status.outputs.nameservers.0, .1, ...),
+	// or a validation target (an Auth0CustomDomain's status.outputs.dns_record_value,
+	// a GcpCertManagerDnsAuthorization's status.outputs.dns_record_data). A
+	// referenced record is created after the resource it reads.
+	Content *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
 	// Whether the record is proxied through Cloudflare (orange cloud). When true,
 	// traffic flows through Cloudflare's CDN/WAF and the origin IP is hidden; when
 	// false, the record is DNS-only (grey cloud). Only valid for A, AAAA, CNAME.
@@ -280,11 +288,11 @@ func (x *CloudflareDnsRecordSpec) GetType() CloudflareDnsRecordSpec_RecordType {
 	return CloudflareDnsRecordSpec_record_type_unspecified
 }
 
-func (x *CloudflareDnsRecordSpec) GetContent() string {
+func (x *CloudflareDnsRecordSpec) GetContent() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Content
 	}
-	return ""
+	return nil
 }
 
 func (x *CloudflareDnsRecordSpec) GetProxied() bool {
@@ -1624,13 +1632,13 @@ var File_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto protoreflect
 
 const file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	":catalog/cloudflare/cloudflarednsrecord/v1alpha1/spec.proto\x123dev.planton.cloudflare.cloudflarednsrecord.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\x9e\x1f\n" +
+	":catalog/cloudflare/cloudflarednsrecord/v1alpha1/spec.proto\x123dev.planton.cloudflare.cloudflarednsrecord.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xcf\x1f\n" +
 	"\x17CloudflareDnsRecordSpec\x12r\n" +
 	"\azone_id\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xd86\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12\x1a\n" +
 	"\x04name\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04name\x12\xd8\x01\n" +
 	"\x04type\x18\x03 \x01(\x0e2W.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.RecordTypeBk\xbaHh\xba\x01]\n" +
-	"\x14type.not_unspecified\x12:type must be specified (cannot be record_type_unspecified)\x1a\tthis != 0\xc8\x01\x01\x82\x01\x02\x10\x01R\x04type\x12\x18\n" +
-	"\acontent\x18\x04 \x01(\tR\acontent\x12\x18\n" +
+	"\x14type.not_unspecified\x12:type must be specified (cannot be record_type_unspecified)\x1a\tthis != 0\xc8\x01\x01\x82\x01\x02\x10\x01R\x04type\x12L\n" +
+	"\acontent\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\acontent\x12\x18\n" +
 	"\aproxied\x18\x05 \x01(\bR\aproxied\x12\xa5\x01\n" +
 	"\x03ttl\x18\x06 \x01(\x05B\x92\x01\xbaH\x8e\x01\xba\x01\x8a\x01\n" +
 	"\x0fttl.valid_range\x12>ttl must be 0 or 1 (automatic) or between 30 and 86400 seconds\x1a7this == 0 || this == 1 || (this >= 30 && this <= 86400)R\x03ttl\x12z\n" +
@@ -1681,10 +1689,10 @@ const file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_rawDesc = 
 	"\x05SSHFP\x10\x12\x12\b\n" +
 	"\x04SVCB\x10\x13\x12\b\n" +
 	"\x04TLSA\x10\x14\x12\a\n" +
-	"\x03URI\x10\x15:\xa1\r\xbaH\x9d\r\x1a\xa4\x01\n" +
+	"\x03URI\x10\x15:\x9e\r\xbaH\x9a\r\x1a\xa4\x01\n" +
 	"%spec.proxied_only_for_supported_types\x126proxied can only be true for A, AAAA, or CNAME records\x1aC!this.proxied || this.type == 1 || this.type == 2 || this.type == 3\x1ai\n" +
-	"\x1dspec.priority_required_for_mx\x12#priority is required for MX records\x1a#this.type != 4 || this.priority > 0\x1a\xed\x02\n" +
-	"\x15spec.content_xor_data\x12Pset exactly one of content (simple records) or a data block (structured records)\x1a\x81\x02(this.content != '') != (has(this.caa) || has(this.cert) || has(this.dnskey) || has(this.ds) || has(this.https) || has(this.loc) || has(this.naptr) || has(this.smimea) || has(this.srv) || has(this.sshfp) || has(this.svcb) || has(this.tlsa) || has(this.uri))\x1a\xb9\x03\n" +
+	"\x1dspec.priority_required_for_mx\x12#priority is required for MX records\x1a#this.type != 4 || this.priority > 0\x1a\xea\x02\n" +
+	"\x15spec.content_xor_data\x12Pset exactly one of content (simple records) or a data block (structured records)\x1a\xfe\x01has(this.content) != (has(this.caa) || has(this.cert) || has(this.dnskey) || has(this.ds) || has(this.https) || has(this.loc) || has(this.naptr) || has(this.smimea) || has(this.srv) || has(this.sshfp) || has(this.svcb) || has(this.tlsa) || has(this.uri))\x1a\xb9\x03\n" +
 	"\"spec.structured_types_require_data\x12athis record type requires its structured data block (e.g. SRV needs data.srv, CAA needs data.caa)\x1a\xaf\x02!(this.type in [6, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]) || (has(this.caa) || has(this.cert) || has(this.dnskey) || has(this.ds) || has(this.https) || has(this.loc) || has(this.naptr) || has(this.smimea) || has(this.srv) || has(this.sshfp) || has(this.svcb) || has(this.tlsa) || has(this.uri))\x1a\xdc\x04\n" +
 	"\x1cspec.data_block_matches_type\x126the supplied data block does not match the record type\x1a\x83\x04(!has(this.caa) || this.type == 8) && (!has(this.cert) || this.type == 11) && (!has(this.dnskey) || this.type == 12) && (!has(this.ds) || this.type == 13) && (!has(this.https) || this.type == 14) && (!has(this.loc) || this.type == 15) && (!has(this.naptr) || this.type == 16) && (!has(this.smimea) || this.type == 17) && (!has(this.srv) || this.type == 6) && (!has(this.sshfp) || this.type == 18) && (!has(this.svcb) || this.type == 19) && (!has(this.tlsa) || this.type == 20) && (!has(this.uri) || this.type == 21)B\x06\n" +
 	"\x04data\"|\n" +
@@ -1810,25 +1818,26 @@ var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_goTypes = []
 var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_depIdxs = []int32{
 	16, // 0: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.zone_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	0,  // 1: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.type:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.RecordType
-	3,  // 2: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.caa:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CaaData
-	4,  // 3: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.cert:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CertData
-	5,  // 4: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.dnskey:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.DnskeyData
-	6,  // 5: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.ds:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.DsData
-	7,  // 6: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.https:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.HttpsData
-	8,  // 7: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.loc:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.LocData
-	9,  // 8: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.naptr:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.NaptrData
-	10, // 9: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.smimea:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SmimeaData
-	11, // 10: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.srv:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SrvData
-	12, // 11: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.sshfp:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SshfpData
-	13, // 12: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.svcb:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SvcbData
-	14, // 13: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.tlsa:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.TlsaData
-	15, // 14: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.uri:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.UriData
-	2,  // 15: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.settings:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSettings
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	16, // 2: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.content:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3,  // 3: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.caa:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CaaData
+	4,  // 4: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.cert:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CertData
+	5,  // 5: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.dnskey:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.DnskeyData
+	6,  // 6: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.ds:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.DsData
+	7,  // 7: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.https:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.HttpsData
+	8,  // 8: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.loc:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.LocData
+	9,  // 9: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.naptr:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.NaptrData
+	10, // 10: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.smimea:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SmimeaData
+	11, // 11: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.srv:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SrvData
+	12, // 12: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.sshfp:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SshfpData
+	13, // 13: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.svcb:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SvcbData
+	14, // 14: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.tlsa:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.TlsaData
+	15, // 15: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.uri:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.UriData
+	2,  // 16: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.settings:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSettings
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_init() }

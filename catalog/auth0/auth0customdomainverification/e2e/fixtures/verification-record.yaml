@@ -1,0 +1,26 @@
+# The DNS record that proves control of the lane's custom domain: a CNAME at
+# the domain's name, whose target is the Auth0CustomDomain's dns_record_value
+# (resolved from the prerequisite's outputs before this record deploys). It
+# lives in a REAL, publicly delegated Cloudflare zone
+# (PLANTON_E2E_AUTH0_DNS_ZONE_ID, the zone of
+# PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT): Auth0 verifies over public DNS, so
+# the run-scoped fixture zones, which are never delegated, cannot serve it. It
+# stays DNS-only, as Auth0 requires.
+apiVersion: cloudflare.planton.dev/v1alpha1
+kind: CloudflareDnsRecord
+metadata:
+  name: e2e-sign-in-domain-cname
+  org: e2e-org
+  env: testing
+spec:
+  zoneId:
+    value: ${E2E_ENV:PLANTON_E2E_AUTH0_DNS_ZONE_ID}
+  name: id-${E2E_RUN_ID}.${E2E_ENV:PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT}
+  type: CNAME
+  content:
+    valueFrom:
+      kind: Auth0CustomDomain
+      name: e2e-sign-in-domain
+      fieldPath: status.outputs.dns_record_value
+  proxied: false
+  ttl: 60

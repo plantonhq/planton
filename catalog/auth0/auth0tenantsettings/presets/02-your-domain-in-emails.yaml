@@ -1,0 +1,13 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0TenantSettings
+metadata:
+  name: tenant-settings
+  org: example-org
+  env: production
+spec:
+  friendlyName: Example
+  defaultCustomDomain:
+    valueFrom:
+      kind: Auth0CustomDomainVerification
+      name: sign-in-domain-verification
+      fieldPath: status.outputs.domain

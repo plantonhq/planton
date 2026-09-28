@@ -38,9 +38,10 @@ func records(
 			Ttl:    pulumi.Float64(ttl),
 		}
 
-		// Simple record types carry their value in content; structured types use data.
-		if record.Content != "" {
-			recordArgs.Content = pulumi.String(record.Content)
+		// Simple record types carry their value in content -- a literal, or a
+		// reference already resolved to its value -- and structured types use data.
+		if content := record.Content.GetValue(); content != "" {
+			recordArgs.Content = pulumi.String(content)
 		}
 		if data := buildRecordData(record); data != nil {
 			recordArgs.Data = data

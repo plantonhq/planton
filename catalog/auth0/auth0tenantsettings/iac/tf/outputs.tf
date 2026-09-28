@@ -21,3 +21,8 @@ output "support_url" {
   description = "The support page the tenant's pages link to"
   value       = auth0_tenant.this.support_url
 }
+
+output "default_custom_domain" {
+  description = "The tenant's default domain as set by this resource; empty when unmanaged"
+  value       = try(auth0_custom_domain_default.this[0].domain, "")
+}

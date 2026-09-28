@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0customdomain.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/auth0/auth0customdomain/v1alpha1/outputs.proto";
+import "catalog/auth0/auth0customdomain/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// Auth0CustomDomain is a component that serves an Auth0 tenant's sign-in on a
+// domain you own -- id.example.com instead of example.eu.auth0.com -- so Universal
+// Login, the emails' links and the tokens' issuer all carry your name.
+//
+// Creating the domain is the first of three steps. Auth0 answers with the DNS
+// record that proves you control the name (status.outputs.dns_record_name,
+// dns_record_type, dns_record_value); a DNS record kind publishes it, and an
+// Auth0CustomDomainVerification then waits until Auth0 confirms the record and
+// issues the domain's certificate. The three compose in one install: the record
+// reads the domain's outputs, and the verification depends on the record.
+//
+// Use cases:
+// - Sign people in on your own domain, with Auth0 managing the certificate
+// - Front the domain with your own proxy and certificate (Enterprise plan)
+// - Give passkeys a relying-party identifier of your choosing
+//
+// Example manifest:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0CustomDomain
+// metadata:
+//   name: sign-in-domain
+//   org: my-organization
+// spec:
+//   domain: id.example.com
+//   type: auth0_managed_certs
+// ```
+message Auth0CustomDomain {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0CustomDomain" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0CustomDomain'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the custom domain resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the custom domain's configuration.
+  Auth0CustomDomainSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the domain as Auth0 created it, populated after deployment.
+  Auth0CustomDomainStatus status = 5;
+}
+
+// Auth0CustomDomainStatus represents the current state of an Auth0CustomDomain
+// resource. Populated by the deployment system.
+message Auth0CustomDomainStatus {
+  // outputs contains the stack outputs: the domain's identity, its state and the
+  // DNS record that proves control of it.
+  Auth0CustomDomainStackOutputs outputs = 1;
+}

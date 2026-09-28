@@ -41,5 +41,10 @@ func Resources(ctx *pulumi.Context, stackInput *auth0tenantsettingsv1alpha1.Auth
 		return errors.Wrap(err, "failed to apply Auth0 tenant settings")
 	}
 
-	return exportOutputs(ctx, tenant)
+	defaultDomain, err := applyDefaultCustomDomain(ctx, locals, provider)
+	if err != nil {
+		return errors.Wrap(err, "failed to set the Auth0 tenant's default custom domain")
+	}
+
+	return exportOutputs(ctx, tenant, defaultDomain)
 }

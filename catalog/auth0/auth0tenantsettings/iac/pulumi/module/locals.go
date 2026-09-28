@@ -17,6 +17,11 @@ type Locals struct {
 	PictureUrl   *string
 	SupportEmail *string
 	SupportUrl   *string
+
+	// DefaultCustomDomain is the tenant's default domain, or nil when the spec
+	// leaves it unmanaged (the default-domain resource is then not declared). A
+	// reference is resolved to its value before the module runs.
+	DefaultCustomDomain *string
 }
 
 func initializeLocals(stackInput *auth0tenantsettingsv1alpha1.Auth0TenantSettingsStackInput) *Locals {
@@ -28,6 +33,8 @@ func initializeLocals(stackInput *auth0tenantsettingsv1alpha1.Auth0TenantSetting
 		PictureUrl:   managed(spec.PictureUrl),
 		SupportEmail: managed(spec.SupportEmail),
 		SupportUrl:   managed(spec.SupportUrl),
+
+		DefaultCustomDomain: managed(spec.DefaultCustomDomain.GetValue()),
 	}
 }
 

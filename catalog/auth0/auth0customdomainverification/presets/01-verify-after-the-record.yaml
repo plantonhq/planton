@@ -1,0 +1,16 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0CustomDomainVerification
+metadata:
+  name: sign-in-domain-verification
+  org: example-org
+  env: production
+  relationships:
+    - kind: CloudflareDnsRecord
+      name: sign-in-domain-cname
+      type: depends_on
+spec:
+  customDomainId:
+    valueFrom:
+      kind: Auth0CustomDomain
+      name: sign-in-domain
+      fieldPath: status.outputs.id

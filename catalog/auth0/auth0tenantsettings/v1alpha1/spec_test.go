@@ -7,6 +7,8 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
 func TestAuth0TenantSettings(t *testing.T) {
@@ -36,6 +38,28 @@ var _ = ginkgo.Describe("Auth0TenantSettings Validation Tests", func() {
 			gomega.Expect(err).To(gomega.BeNil())
 		})
 
+		ginkgo.It("accepts the default domain alone, read from a verified custom domain", func() {
+			err := protovalidate.Validate(settings(&Auth0TenantSettingsSpec{
+				DefaultCustomDomain: &foreignkeyv1.StringValueOrRef{
+					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{
+						Kind:      cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification,
+						Name:      "sign-in-domain-verification",
+						FieldPath: "status.outputs.domain",
+					}},
+				},
+			}))
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
+		ginkgo.It("accepts the canonical domain as the default", func() {
+			err := protovalidate.Validate(settings(&Auth0TenantSettingsSpec{
+				DefaultCustomDomain: &foreignkeyv1.StringValueOrRef{
+					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "acme.eu.auth0.com"},
+				},
+			}))
+			gomega.Expect(err).To(gomega.BeNil())
+		})
+
 		ginkgo.It("accepts one setting, leaving the others unmanaged", func() {
 			err := protovalidate.Validate(settings(&Auth0TenantSettingsSpec{FriendlyName: "Acme"}))
 			gomega.Expect(err).To(gomega.BeNil())
@@ -61,6 +85,15 @@ var _ = ginkgo.Describe("Auth0TenantSettings Validation Tests", func() {
 
 		ginkgo.It("refuses a support page that is not a URL", func() {
 			err := protovalidate.Validate(settings(&Auth0TenantSettingsSpec{SupportUrl: "acme support"}))
+			gomega.Expect(err).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("refuses an empty default domain", func() {
+			err := protovalidate.Validate(settings(&Auth0TenantSettingsSpec{
+				DefaultCustomDomain: &foreignkeyv1.StringValueOrRef{
+					LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: ""},
+				},
+			}))
 			gomega.Expect(err).NotTo(gomega.BeNil())
 		})
 	})

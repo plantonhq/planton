@@ -2,7 +2,7 @@
 # provision, update, and destroy this component with the official modules.
 # Auth0 authenticates with a machine-to-machine application authorized for
 # the tenant's Management API (https://{tenant-domain}/api/v2/); the
-# auth0/auth0 Terraform provider (~> 1.0 per iac/tf/provider.tf) and the
+# auth0/auth0 Terraform provider (~> 1.58 per iac/tf/provider.tf) and the
 # pulumi-auth0 SDK exchange its client id and secret for a token through
 # the client-credentials flow, and the grant's scopes are the policy. Every
 # group is `derived` (static analysis of the module sources against Auth0's
@@ -21,3 +21,9 @@ spec:
           - update:tenant_settings
         provenance: derived
         notes: The modules (iac/tf/main.tf and iac/pulumi/module/tenant.go) manage auth0_tenant, the settings of the tenant the credential belongs to -- read via GET /api/v2/tenants/settings (read:tenant_settings) and written via PATCH /api/v2/tenants/settings (update:tenant_settings), the two scopes the Management API's tenant-settings endpoints name. There is no create and no delete -- the resource's create is a PATCH of the existing tenant and its destroy is the provider's no-op (terraform-provider-auth0 internal/auth0/tenant/resource.go, deleteTenant returns nil; read 2026-09-28) -- so no other scope is needed.
+      - purpose: ManageDefaultCustomDomain
+        scopes:
+          - read:custom_domains
+          - update:custom_domains
+        provenance: derived
+        notes: Only when the spec sets default_custom_domain do the modules (iac/tf/main.tf and iac/pulumi/module/custom_domain_default.go) declare auth0_custom_domain_default -- read via GET /api/v2/custom-domains/default (read:custom_domains) and set via PATCH /api/v2/custom-domains/default (update:custom_domains), the scopes the Management API's OpenAPI document names (read 2026-09-28). Its delete only forgets the default, as there is no endpoint to unset one, so no delete scope is needed.

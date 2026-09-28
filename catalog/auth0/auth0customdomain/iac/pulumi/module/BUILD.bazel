@@ -1,0 +1,26 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "module",
+    srcs = [
+        "custom_domain.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/auth0/auth0customdomain/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/auth0/auth0customdomain/v1alpha1",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["outputs_test.go"],
+    embed = [":module"],
+    deps = ["@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0"],
+)

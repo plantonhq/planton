@@ -1,0 +1,15 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0customdomain
+spec:
+  # A custom domain imports by the identifier Auth0 assigned it (cd_...),
+  # which a prior deploy reports as its id output.
+  values:
+    - name: custom_domain_id
+      derivations:
+        - from_stack_output: id
+      where_to_find: >-
+        Auth0 dashboard -> Branding -> Custom Domains (the domain's id is in
+        its details), or `GET /api/v2/custom-domains` on the Management API
+        (the custom_domain_id field of the domain's entry).

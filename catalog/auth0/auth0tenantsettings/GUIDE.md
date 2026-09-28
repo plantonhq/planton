@@ -45,6 +45,8 @@ Auth0 tenant settings require the following Management API scopes. They must be 
 |-----------|-------|-------------|
 | Read | `read:tenant_settings` | Read the tenant's current settings |
 | Update | `update:tenant_settings` | Change the tenant's settings |
+| Read default domain | `read:custom_domains` | Read the tenant's default domain (only when `defaultCustomDomain` is set) |
+| Set default domain | `update:custom_domains` | Set the tenant's default domain (only when `defaultCustomDomain` is set) |
 
 There is no create or delete scope to grant: a tenant can't be created or deleted through the Management API, and its settings have no delete.
 
@@ -58,7 +60,7 @@ The tenant's face (its name, logo, and support contacts) is version-controlled w
 ## Cost
 ## Pricing Model
 
-Auth0 pricing is based on the plan tier and monthly active users, not on settings. The friendly name, logo, and support contacts are editable on every plan, the Free plan included. What is gated is customization beyond them: Universal Login page templates need a paid subscription, and this component doesn't touch them.
+Auth0 pricing is based on the plan tier and monthly active users, not on settings. The friendly name, logo, and support contacts are editable on every plan, the Free plan included. Customization beyond them is gated on a custom domain rather than a plan: Universal Login page templates need one (Auth0's Free plan includes one custom domain), and this component doesn't touch them.
 
 ## Cost Impact
 

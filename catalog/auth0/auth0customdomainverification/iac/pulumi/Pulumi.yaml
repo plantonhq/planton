@@ -1,0 +1,6 @@
+# Auth0CustomDomainVerification Pulumi Module
+# This module verifies an Auth0 custom domain and waits until it is ready.
+name: auth0-custom-domain-verification
+runtime:
+  name: go
+description: Pulumi module for Auth0CustomDomainVerification component

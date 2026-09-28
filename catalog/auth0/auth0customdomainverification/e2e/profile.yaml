@@ -1,0 +1,20 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0customdomainverification
+spec:
+  # The lane composes three nodes across two providers: the custom domain,
+  # the Cloudflare CNAME that proves control of it (in a REAL delegated zone,
+  # since Auth0 verifies over public DNS), and the verification. It needs the
+  # throwaway Auth0 tenant of the auth0customdomain lane, the parent domain
+  # (PLANTON_E2E_AUTH0_CUSTOM_DOMAIN_PARENT) and its Cloudflare zone
+  # (PLANTON_E2E_AUTH0_DNS_ZONE_ID), and Cloudflare credentials in the
+  # environment (CLOUDFLARE_API_TOKEN with DNS edit on that zone, plus the
+  # Cloudflare lane's account for the record's fixture zone). None is
+  # arranged yet, so the lanes are not run. The provider's verification waits
+  # up to five minutes for Auth0 to issue the certificate; the first live run
+  # records how long it takes.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 20

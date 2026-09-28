@@ -14,9 +14,10 @@ variable "metadata" {
 variable "spec" {
   description = "Auth0TenantSettings specification"
   type = object({
-    friendly_name = optional(string, "")
-    picture_url   = optional(string, "")
-    support_email = optional(string, "")
-    support_url   = optional(string, "")
+    friendly_name         = optional(string, "")
+    picture_url           = optional(string, "")
+    support_email         = optional(string, "")
+    support_url           = optional(string, "")
+    default_custom_domain = optional(string, "")
   })
 }

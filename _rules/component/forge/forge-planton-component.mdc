@@ -443,6 +443,16 @@ retrofitting it later means re-deriving every naming decision:
    planned or deferred, the accounting now flags those entries stale --
    remove them.
 
+A provider can carry a committed schema before it is enrolled (no
+`catalog/<provider>/terraform-parity.md` yet): enrollment waits until every
+EXISTING kind of the provider is at total accounting, because the shared
+baseline never grows and enrolling a provider whose older kinds are in debt
+would add them to it. Its new kinds are held to the same bar regardless --
+`--kind` needs no enrollment -- so run step 1 and ship the kind at total
+accounting; steps 3 and 4 begin when the provider enrolls. The manifest
+records only divergences: a kind whose every argument matches its spec field
+by exact name is at total accounting with no `provider-parity.yaml` at all.
+
 For a provider without schema artifacts, skip silently -- the gate reports
 NOT INSTRUMENTED there.
 
@@ -644,7 +654,20 @@ exact document as an EXTRA INSTANCE of whatever kind it declares (how a
 scenario gets a SECOND instance of a kind, e.g. a peering's remote network),
 after the kind-driven chain, each preceded by its own not-yet-deployed
 transitive prerequisites — a path entry never substitutes for the kind's
-install profile. Unknown kinds and self-references fail loudly. Singular AND
+install profile. Path entries deploy in the order listed, and a reference is
+not a prerequisite: when a path entry reads a kind the chain would otherwise
+deploy after it, name that kind in the annotation first (the tenant settings'
+default-domain scenario lists `Auth0CustomDomain`, then the CNAME fixture that
+reads it, then the verification fixture that waits for the CNAME). A
+prerequisite may belong to ANOTHER provider (an Auth0 domain's verification
+waits for a Cloudflare DNS record): the runner reads each prerequisite's
+provider from its kind, installs it from that provider's catalog and module,
+and verifies it with that provider's harness -- which the suite lends in its
+`TestMain` with `runner.RegisterDependencyHarness("<provider>", <harness>)`,
+set up only when a scenario first needs it, and torn down with
+`runner.TeardownDependencyHarnesses`. The prerequisite deploys with that
+provider's ambient credentials, so the scenario's `e2e-required-env` names the
+arrangement it needs. Unknown kinds and self-references fail loudly. Singular AND
 repeated `StringValueOrRef` fields both resolve, refs nested inside (repeated)
 spec messages resolve too, and a repeated list can mix literals with
 references. Audit the annotation against EVERY `valueFrom` kind the scenario
@@ -1000,6 +1023,11 @@ referenced instance's captured STACK OUTPUTS — a `field_path` under
 composed scenario. Design rule, not just a test rule: point every
 `default_kind_field_path` at a stack output. If a kind's natural join key is
 its name, export a `name` output and reference that — never `metadata.name`.
+A list of plain values is addressed one element at a time — a zone's name
+servers as `status.outputs.nameservers.0`, `.1`, ... — and the index ends the
+path; a reference to the whole list is refused offline (`pkg/refcheck`),
+because a reference feeds one string and the flattened outputs hold only the
+elements.
 
 ### Tier 1 — Local run (preferred: fast on-machine loop)
 
@@ -1007,7 +1035,12 @@ Local credentials live in a gitignored `.env.e2e` at the repo root (ignored via
 `.gitignore`; NEVER commit it). The harness reads credentials from environment
 variables — discover the exact names by reading the harness `Setup`
 (`aa_e2e/harness.go`); e.g. Auth0 uses `AUTH0_DOMAIN`, `AUTH0_CLIENT_ID`,
-`AUTH0_CLIENT_SECRET`.
+`AUTH0_CLIENT_SECRET`. Before a live lane of a kind that is ONE per tenant or
+account (a tenant's settings, branding, prompt or email provider; an account's
+settings), confirm which tenant the ambient credentials reach: the lane applies
+and destroys that tenant's one object, so a shell that happens to carry a
+shared tenant's credentials would rewrite what its users see. Such lanes run
+only against a dedicated test tenant.
 
 ```bash
 # Confirm which provider secrets exist (names only) and match the harness env vars:

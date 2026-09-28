@@ -9,6 +9,7 @@ Nothing new: a tenant can't be created or deleted through Auth0's Management API
 - **Friendly name** -- the name in "Log in to *friendly name* to continue to *application*", and in the emails Auth0 sends for the tenant
 - **Logo** -- shown on the login and consent pages instead of Auth0's
 - **Support email and page** -- offered to people who can't sign in
+- **Default domain** -- the domain the tenant's emails link to, when you set one
 
 ## Before You Deploy
 
@@ -60,13 +61,19 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 **The other half of the sentence** -- Universal Login names the application after the Auth0 client. Give each client a people-facing name with the Auth0 Client kind's `name`, so the page reads "Log in to Acme to continue to Acme Console".
 
+**Email links on your domain** -- Set `defaultCustomDomain` to a verified custom domain (reference the Auth0 Custom Domain Verification's `domain` output), so verification and password-reset emails link to your domain. The credential then also needs `read:custom_domains` and `update:custom_domains`.
+
 **Destroy leaves the settings in place** -- Auth0 has no delete for tenant settings, so destroying this Cloud Resource stops managing them and keeps their last-applied values. To return a setting to a specific value, set that value before removing the field or the resource.
 
 ## Outputs and Dependencies
 
 ### What This Component Consumes
 
-This component has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
+| Field | Foreign Key | Required |
+|-------|-------------|----------|
+| `defaultCustomDomain` | Auth0 Custom Domain Verification (`status.outputs.domain`) | No |
+
+The tenant is the one the Auth0 connection's credential belongs to.
 
 ### What This Component Provides
 
@@ -78,6 +85,7 @@ After provisioning, `status.outputs` contains the settings as the tenant carries
 | `picture_url` | The URL of the tenant's logo | Audits |
 | `support_email` | The support address the tenant's pages offer | Support runbooks |
 | `support_url` | The support page the tenant's pages link to | Support runbooks |
+| `default_custom_domain` | The tenant's default domain, when set here | Audits |
 
 ## Common Patterns
 
@@ -89,3 +97,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 - [**Auth0 Client (Application)**](/cloud-catalog/auth0-client) -- names the application in the login page's sentence.
 - [**Auth0 Connection**](/cloud-catalog/auth0-connection) -- the sign-in methods the branded page offers.
+- [**Auth0 Custom Domain Verification**](/cloud-catalog/auth0-custom-domain-verification) -- the verified domain the tenant's emails link to.

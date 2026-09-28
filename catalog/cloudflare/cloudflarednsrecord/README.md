@@ -6,7 +6,7 @@ Provision and manage individual DNS records in Cloudflare zones using Planton's 
 
 Cloudflare DNS provides authoritative DNS served from a global anycast network, with built-in DDoS protection, zero per-query charges, and optional integrated CDN/WAF/proxy capabilities. This component manages a single DNS record within a Cloudflare-managed zone and covers the full Cloudflare record surface — every record type, structured record data, tags, and record-level settings.
 
-A record is either **simple** (its value is a presentation-format string in `content`) or **structured** (its components are supplied through a typed `data` block). The component validates which representation a given type requires.
+A record is either **simple** (its value is a presentation-format string in `content`, written as a literal or read from another resource's output) or **structured** (its components are supplied through a typed `data` block). The component validates which representation a given type requires.
 
 ## Key Features
 
@@ -37,7 +37,8 @@ spec:
   zone_id: "your-zone-id-here"
   name: "www"
   type: A
-  content: "192.0.2.1"
+  content:
+    value: "192.0.2.1"
   proxied: true
 ```
 
@@ -52,7 +53,8 @@ spec:
   zone_id: "your-zone-id-here"
   name: "@"
   type: MX
-  content: "mail.example.com"
+  content:
+    value: "mail.example.com"
   priority: 10
 ```
 
@@ -109,7 +111,7 @@ Exactly one of `content` or a typed data block is required, and it must match th
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `content` | string | Presentation-format value for **simple** types (A, AAAA, CNAME, MX, NS, PTR, TXT, OPENPGPKEY) |
+| `content` | StringValueOrRef | Presentation-format value for **simple** types (A, AAAA, CNAME, MX, NS, PTR, TXT, OPENPGPKEY): `value:` for a literal, or `valueFrom:` to read another resource's output, such as a zone's `status.outputs.nameservers.0` or a validation target |
 | `caa` ... `uri` | oneof | Typed block for **structured** types, written at the spec top level and named after the type (caa, cert, dnskey, ds, https, loc, naptr, smimea, srv, sshfp, svcb, tlsa, uri) — never under a `data:` wrapper key |
 
 ### Optional Fields

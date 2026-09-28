@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0customdomain.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// Auth0CustomDomainSpec creates a custom domain for the Auth0 tenant the provider
+// connection's credential belongs to: a name you own (id.example.com) that serves
+// the tenant's Universal Login, its Authentication API and the links in its
+// emails, in place of the tenant's canonical domain (example.eu.auth0.com).
+//
+// Creating the domain does not make it live. Auth0 answers with a DNS record that
+// proves you control the name (outputs dns_record_name, dns_record_type,
+// dns_record_value). Publish it with a DNS record kind, then apply an
+// Auth0CustomDomainVerification, which waits until Auth0 has confirmed the record
+// and -- for an Auth0-managed domain -- issued the certificate. Until then the
+// domain answers nothing and the canonical domain keeps serving.
+//
+// Once live, the domain and the canonical domain both work. A token carries the
+// issuer ("iss") of the domain that served the request, so an application that
+// signs people in through the custom domain must trust
+// "https://<domain>/" as the issuer. Which domain Auth0 uses for email links is
+// the tenant's default domain (Auth0TenantSettings.default_custom_domain).
+//
+// Plans: the Free plan includes one custom domain with Auth0-managed
+// certificates (Auth0 asks for a card on file, which is not charged). Self-managed
+// certificates, and more than one custom domain per tenant, need the Enterprise
+// plan.
+//
+// The credential needs create:custom_domains, read:custom_domains,
+// update:custom_domains and delete:custom_domains on the tenant's Management API
+// (iac/permissions.yaml).
+//
+// https://auth0.com/docs/customize/custom-domains
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/custom_domain
+// https://www.pulumi.com/registry/packages/auth0/api-docs/customdomain/
+message Auth0CustomDomainSpec {
+  option (buf.validate.message).cel = {
+    id: "spec.tls_policy_only_for_auth0_managed_certs"
+    message: "tls_policy applies only to an Auth0-managed domain (type auth0_managed_certs): with self_managed_certs your own proxy terminates TLS and sets its policy"
+    expression: "this.tls_policy == '' || this.type == 'auth0_managed_certs'"
+  };
+
+  // domain is the name to serve the tenant on, a host name you control in DNS
+  // (e.g. "id.example.com" or "login.example.com"). Changing it replaces the
+  // custom domain, and the new name must be verified again.
+  string domain = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.hostname = true
+  ];
+
+  // type chooses who holds the domain's TLS certificate. Changing it replaces
+  // the custom domain.
+  // - "auth0_managed_certs": Auth0 issues and renews the certificate. You publish
+  //   one CNAME record pointing the domain at the tenant's edge, and keep it:
+  //   renewals (every three months) re-check it. The record must stay DNS-only --
+  //   no CDN proxying and no CNAME flattening in front of it.
+  // - "self_managed_certs": your own reverse proxy terminates TLS with your
+  //   certificate and forwards to the tenant's origin (output
+  //   origin_domain_name), sending the header Auth0 gives it at verification
+  //   (Auth0CustomDomainVerification's cname_api_key). Needs the Enterprise
+  //   plan; control is proven with a TXT record.
+  string type = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "auth0_managed_certs",
+        "self_managed_certs"
+      ]
+    }
+  ];
+
+  // custom_client_ip_header names the request header Auth0 reads the end
+  // user's IP address from, for a proxy of yours in front of the domain (IP
+  // allow lists, rate limits and anomaly detection then see the person, not the
+  // proxy). Unset, Auth0 reads x-forwarded-for.
+  // - "x-forwarded-for": the common proxy header, and Auth0's default
+  // - "cf-connecting-ip": Cloudflare's
+  // - "x-azure-clientip": Azure Front Door's
+  // - "true-client-ip": the header some CDNs set instead
+  string custom_client_ip_header = 3 [(buf.validate.field).string = {
+    in: [
+      "",
+      "cf-connecting-ip",
+      "x-forwarded-for",
+      "true-client-ip",
+      "x-azure-clientip"
+    ]
+  }];
+
+  // tls_policy is the TLS policy Auth0 applies to an Auth0-managed domain.
+  // "recommended" (TLS 1.2 and 1.3 with modern ciphers) is the only policy
+  // Auth0 accepts; the older "compatible" policy is retired. Unset, Auth0
+  // applies "recommended".
+  string tls_policy = 4 [(buf.validate.field).string = {
+    in: [
+      "",
+      "recommended"
+    ]
+  }];
+
+  // domain_metadata is up to ten key-value pairs stored with the domain,
+  // available to Universal Login templates as custom_domain.domain_metadata.<key>
+  // -- for example a brand name, when several domains of one tenant sign in for
+  // different brands. Values are at most 255 characters. Auth0 offers it to
+  // early-access tenants.
+  map<string, string> domain_metadata = 5 [
+    (buf.validate.field).map.max_pairs = 10,
+    (buf.validate.field).map.values.string.max_len = 255
+  ];
+
+  // relying_party_identifier is the relying-party ID passkeys are bound to on
+  // this domain. A passkey is usable only on its relying party and the
+  // relying party's subdomains, so setting it to a parent domain (e.g.
+  // "example.com" for "id.example.com") lets one passkey sign in across your
+  // domains; Auth0 recommends the parent domain for exactly this. Unset,
+  // passkeys bind to the custom domain itself.
+  string relying_party_identifier = 6 [
+    (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,
+    (buf.validate.field).string.hostname = true
+  ];
+}

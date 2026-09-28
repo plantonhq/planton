@@ -18,6 +18,13 @@ A record can be created in a zone that is still `pending` (not yet delegated at 
 
 A record's value comes from exactly one place, and it must match `type`: `content` for A, AAAA, CNAME, MX, NS, PTR, TXT, OPENPGPKEY; a typed block named after the record type for the 13 structured types (SRV, CAA, CERT, DNSKEY, DS, HTTPS, LOC, NAPTR, SMIMEA, SSHFP, SVCB, TLSA, URI). The schema groups the typed blocks in a oneof named `data`, but a manifest never writes a `data:` key -- the active case sits at the spec top level (e.g. `srv: {priority, weight, port, target}`).
 
+## Content that comes from another resource
+
+`content` is a literal (`value:`) or a reference (`valueFrom:`) to another resource's output, resolved before the record is written and ordering the record after that resource. Two compositions use it:
+
+- **Delegating a subdomain.** Publish a child zone's name servers as NS records, one record per name server: `status.outputs.nameservers.0`, `.1`, and so on, from an AwsRoute53Zone, GcpDnsZone or CloudflareDnsZone. The delegation then follows the zone through a recreate, where copied values would silently keep naming the old name servers. A list output is always addressed one element at a time; a reference to the whole list is refused.
+- **Proving control of a domain.** Publish a validation target as a CNAME: an Auth0CustomDomain's `status.outputs.dns_record_value`, or a GcpCertManagerDnsAuthorization's `status.outputs.dns_record_data`. Keep such records DNS-only (`proxied: false`): a verifier that resolves the name must see the target itself, not Cloudflare's proxy.
+
 ## TTL and the proxy
 
 `ttl: 1` (or leaving it unset) means "automatic", which is what proxied records should use. Explicit TTLs (30-86400s) matter only for gray-cloud records. `proxied` applies to A/AAAA/CNAME only; the module silently ignores it elsewhere.

@@ -118,7 +118,7 @@ message CloudflareDnsZoneRecord {
     id: "record.content_xor_data"
     message: "set exactly one of content (simple records) or a data block (structured records)"
     expression:
-      "(this.content != '') != (has(this.caa) || has(this.cert) || has(this.dnskey) || has(this.ds) || "
+      "has(this.content) != (has(this.caa) || has(this.cert) || has(this.dnskey) || has(this.ds) || "
       "has(this.https) || has(this.loc) || has(this.naptr) || has(this.smimea) || has(this.srv) || "
       "has(this.sshfp) || has(this.svcb) || has(this.tlsa) || has(this.uri))"
   };
@@ -215,11 +215,19 @@ message CloudflareDnsZoneRecord {
   ];
 
   // Presentation-format value for simple record types. Set this for A/AAAA/
-  // CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave empty for structured types (use `data`).
-  // For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g. "2001:db8::1").
-  // For CNAME/MX/NS/PTR: a hostname. For TXT: the text value. For OPENPGPKEY:
-  // the base64-encoded key.
-  string content = 3;
+  // CNAME/MX/NS/PTR/TXT/OPENPGPKEY; leave it unset for structured types (use
+  // `data`). For A: IPv4 (e.g. "192.0.2.1"). For AAAA: IPv6 (e.g.
+  // "2001:db8::1"). For CNAME/MX/NS/PTR: a hostname. For TXT: the text value.
+  // For OPENPGPKEY: the base64-encoded key.
+  //
+  // A literal or a reference to another resource's output, so a record can
+  // publish a value that only exists once that resource does: one of a zone's
+  // name servers for a subdomain delegation (a CloudflareDnsZone's, an
+  // AwsRoute53Zone's or a GcpDnsZone's status.outputs.nameservers.0, .1, ...),
+  // or a validation target (an Auth0CustomDomain's status.outputs.dns_record_value,
+  // a GcpCertManagerDnsAuthorization's status.outputs.dns_record_data). A
+  // referenced record is created after the resource it reads.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef content = 3;
 
   // Whether the record is proxied through Cloudflare (orange cloud). Only valid
   // for A, AAAA, and CNAME records.

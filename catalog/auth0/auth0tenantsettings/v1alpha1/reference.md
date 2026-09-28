@@ -25,10 +25,15 @@ Auth0 has no delete for tenant settings, so destroy abandons the last-applied
 values. To return a setting to a specific value, set that value explicitly
 before removing the field.
 
+The tenant's default custom domain (default_custom_domain) is managed the same
+way: unset, Auth0 keeps whatever default the tenant has.
+
 The credential needs read:tenant_settings and update:tenant_settings on the
-tenant's Management API (iac/permissions.yaml).
+tenant's Management API, and read:custom_domains and update:custom_domains when
+default_custom_domain is set (iac/permissions.yaml).
 
 https://auth0.com/docs/get-started/tenant-settings
+https://auth0.com/docs/customize/custom-domains/multiple-custom-domains/default-domain
 https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/tenant
 https://www.pulumi.com/registry/packages/auth0/api-docs/tenant/
 
@@ -79,6 +84,7 @@ spec:
 | `spec.pictureUrl` | `string` |  |  |  |
 | `spec.supportEmail` | `string` |  |  |  |
 | `spec.supportUrl` | `string` |  |  |  |
+| `spec.defaultCustomDomain` | `string \| valueFrom` |  |  | Auth0CustomDomainVerification (`status.outputs.domain`) |
 
 ## Field Details
 
@@ -119,6 +125,28 @@ help.
 
 - rule: {"ignore":"IGNORE_IF_ZERO_VALUE","string":{"uri":true}}
 
+### spec.defaultCustomDomain
+
+`string | valueFrom`
+
+default_custom_domain is the domain that speaks for the tenant when a
+request does not say which of its domains it came through: the links in the
+emails Auth0 sends (verification, password reset, invitations) and the
+notifications the Management API triggers. Set it to the tenant's custom
+domain so a person who signs in at id.example.com also receives links to
+id.example.com, never to the tenant's canonical auth0.com domain.
+
+Only a verified domain can be the default, so reference the
+Auth0CustomDomainVerification (its status.outputs.domain): the default is
+then set only after Auth0 has verified the domain. A literal is also
+accepted, including the tenant's canonical domain (e.g.
+"example.eu.auth0.com") to make it the default again. Unset, the tenant's
+default is not managed; clearing the field stops managing it and leaves the
+last-applied default in place (Auth0 has no way to unset a default).
+
+- references: Auth0CustomDomainVerification (`status.outputs.domain`)
+- rule: write as {value: <literal>} or {valueFrom: {kind: Auth0CustomDomainVerification, name: <that resource's name>, fieldPath: status.outputs.domain}} -- a bare string does not parse
+
 ## Validation Rules
 
 - `spec.at_least_one_setting`: configure at least one tenant setting -- an Auth0TenantSettings resource that manages nothing would deploy nothing
@@ -133,6 +161,15 @@ Reference an output from another manifest as `valueFrom: {kind: Auth0TenantSetti
 | `status.outputs.picture_url` | `string` | picture_url is the URL of the tenant's logo. |
 | `status.outputs.support_email` | `string` | support_email is the support address the tenant's pages offer. |
 | `status.outputs.support_url` | `string` | support_url is the support page the tenant's pages link to. |
+| `status.outputs.default_custom_domain` | `string` | default_custom_domain is the tenant's default domain as set by this resource; empty when the spec leaves the default unmanaged. |
+
+## References
+
+Fields that can point at another resource's outputs:
+
+| Field | Kind | Output |
+|---|---|---|
+| `spec.defaultCustomDomain` | Auth0CustomDomainVerification | `status.outputs.domain` |
 
 ## See Also
 
