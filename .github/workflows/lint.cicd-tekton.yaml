@@ -5,8 +5,9 @@
 # from its own discipline, documented in cicd/tekton/README.md:
 #
 #   - One content state, one pin: any change to the embedded YAML must bump
-#     the content Version and re-record the digest, so two content states can
-#     never share the pin stamped on run records.
+#     the content Version and record the pair in the append-only ledger, so
+#     two content states can never share the pin stamped on run records, and
+#     a bump with no content change never gives one state two pins.
 #   - Every container image the content can run is digest-pinned, so builds
 #     are reproducible and the derived air-gap mirror list is immutable.
 #   - The derived image set matches the recorded set, so an image can never

@@ -107,3 +107,67 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: The readiness gate's server-side DRY RUN of a TektonConfig (kubectl create --dry-run=server), which asks whether the operator's webhook admits and defaults one; a dry run is authorized as the verb it simulates and writes nothing, so no TektonConfig ever exists from this module (the KubernetesTekton declaration stays its single owner).
+      - api_groups:
+          - apiextensions.k8s.io
+        resources:
+          - customresourcedefinitions
+        verbs:
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the CustomResourceDefinition applied by the yaml ConfigGroup in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - operator.tekton.dev
+        resources:
+          - tektonconfigs
+        verbs:
+          - get
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- get, list, and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the tektonconfigs objects applied by the yaml ConfigGroup in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - rolebindings
+          - roles
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Role applied by the yaml ConfigGroup in main.go and the RoleBinding applied by the yaml ConfigGroup in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterrolebindings
+          - clusterroles
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the ClusterRole applied by the yaml ConfigGroup in main.go and the ClusterRoleBinding applied by the yaml ConfigGroup in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+          - secrets
+          - serviceaccounts
+          - services
+        verbs:
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the ConfigMap applied by the yaml ConfigGroup in main.go, the ConfigMap in readiness_gate.go, the Secret applied by the yaml ConfigGroup in main.go, the Service applied by the yaml ConfigGroup in main.go, and the ServiceAccount applied by the yaml ConfigGroup in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing. Listing or watching Secrets returns their data, not only their names, so this grants read of every Secret in the namespace. Pulumi's delete wait cannot watch a deleted Secret without it.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace applied by the yaml ConfigGroup in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

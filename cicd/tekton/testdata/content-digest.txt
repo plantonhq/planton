@@ -1,1 +1,15 @@
-edbafddc965a05a343ba736924d633949932861b0ead3d4417d11f395392d646
+# Every content state this catalog has named, one per line: <Version> <sha256
+# of the embedded tree>. Append-only -- a line is added by
+# UPDATE_CONTENT_DIGEST=1 go test ./cicd/tekton/ and never edited or removed,
+# because the test refuses a Version already bound to other content and
+# content already bound to another Version.
+#
+# v7 named two content states before this ledger existed: a5070d57... at
+# 4d8f9bec84, then the line below at 520db89dfc. The later one is recorded.
+v3 a4c48a698cfbefe3ae509a8885f918dcdbc3fb141bdaccf7ef19f15fe6bbc3be
+v4 1e77e9bfd8b375fe1192efec9ee765c8f6cb69deb12dfdaf2a8420894479e78e
+v5 5e175757dcfe53f2267365d7bdff725182bfc41146b147437cd1f5538cf085eb
+v6 5bfbc81dc8380efea1a4e2fdc3e592c09181bae7289dc76b902a184e97e698fa
+v7 fd738ac9d4f81d74692cd7a5705ecea18db28c6915161dda372857eb0baccf56
+v8 edbafddc965a05a343ba736924d633949932861b0ead3d4417d11f395392d646
+v9 674e42c1d0dbf3b624459631467f09ee6efdb7f19e34147c4ab41a213affb7b4

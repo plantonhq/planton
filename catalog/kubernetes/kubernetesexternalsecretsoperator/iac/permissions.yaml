@@ -135,3 +135,13 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Rendered only when spec.prometheus.service_monitor is true -- requires the Prometheus operator CRDs on the cluster (the release fails to install without them).
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

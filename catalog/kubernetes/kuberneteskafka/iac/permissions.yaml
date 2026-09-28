@@ -50,3 +50,34 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubectl_manifest.kafka and kubectl_manifest.node_pools -- the Kafka CR and one KafkaNodePool CR per spec.node_pools entry (kafka.strimzi.io/v1), applied via server-side apply. The broker/controller pods, Services, certificates, Secrets, PVCs, and entity operator are created by the Strimzi cluster operator reconciling these CRs, under the operator's own RBAC -- the runner touches only the CRs.
+      - api_groups:
+          - kafka.strimzi.io
+        resources:
+          - kafkanodepools
+          - kafkas
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Kafka in kafka.go and the KafkaNodePool in nodepools.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the ConfigMap in metrics.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

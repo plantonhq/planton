@@ -49,3 +49,33 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubectl_manifest.mirrormaker2 -- the kafka.strimzi.io/v1 KafkaMirrorMaker2 custom resource applied via server-side apply, created unconditionally in the engine's namespace.
+      - api_groups:
+          - kafka.strimzi.io
+        resources:
+          - kafkamirrormaker2s
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the KafkaMirrorMaker2 in mirrormaker2.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - configmaps
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the ConfigMap in mirrormaker2.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

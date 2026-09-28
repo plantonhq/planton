@@ -147,3 +147,46 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers the istiod PodDisruptionBudget -- istiod.pod_disruption_budget defaults to true, so the chart renders it unless explicitly disabled. The helm_values overlays (spec.helm_values.*, merged last) can extend each chart's object surface beyond these rules generally; grants for such extensions ride the operator's review of the overlay, not this manifest.
+      - api_groups:
+          - apiextensions.k8s.io
+        resources:
+          - customresourcedefinitions
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the CustomResourceDefinition applied by the yaml ConfigFile in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - apps
+        resources:
+          - replicasets
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. The readiness wait on the Deployment applied by the yaml ConfigFile in main.go reads replicasets at deployment.go:174-175 before it starts its timeout. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - ""
+        resources:
+          - endpoints
+          - events
+          - persistentvolumeclaims
+          - pods
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. The readiness wait on the DaemonSet applied by the yaml ConfigFile in main.go, the Deployment applied by the yaml ConfigFile in main.go, and the Service applied by the yaml ConfigFile in main.go reads endpoints at service.go:147-148, persistentvolumeclaims at deployment.go:194-195, and pods at deployment.go:184-185 and daemonset.go:152-153 before it starts its timeout. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing. Events are read differently. While it waits on the DaemonSet applied by the yaml ConfigFile in main.go, the Deployment applied by the yaml ConfigFile in main.go, and the Service applied by the yaml ConfigFile in main.go, the provider also watches the object's events, at await.go:352 and watchers.go:202-241, for the Warning events a person watching the deploy sees, such as FailedScheduling or an image pull back-off. That informer runs beside the wait, so without events the warnings go silent rather than the deploy hanging.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace applied by the yaml ConfigFile in main.go and the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

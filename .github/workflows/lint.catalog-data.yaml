@@ -48,6 +48,11 @@ on:
       - 'pkg/iac/actioninventory/**'
       - 'pkg/specpath/**'
       - 'pkg/yamlemit/**'
+      # The Pulumi wait gate (pkg/iac/permissions) reads the provider SDK's
+      # pin, the generated CRD SDKs, and the shared module helpers.
+      - 'go.mod'
+      - 'pkg/kubernetes/kubernetestypes/**'
+      - 'pkg/iac/pulumi/pulumimodule/**'
       - '.github/workflows/lint.catalog-data.yaml'
   push:
     branches:
@@ -60,6 +65,11 @@ on:
       - 'pkg/iac/actioninventory/**'
       - 'pkg/specpath/**'
       - 'pkg/yamlemit/**'
+      # The Pulumi wait gate (pkg/iac/permissions) reads the provider SDK's
+      # pin, the generated CRD SDKs, and the shared module helpers.
+      - 'go.mod'
+      - 'pkg/kubernetes/kubernetestypes/**'
+      - 'pkg/iac/pulumi/pulumimodule/**'
       - '.github/workflows/lint.catalog-data.yaml'
 
 permissions:

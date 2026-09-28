@@ -23,3 +23,13 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers the kubectl_manifest.certificate resource -- the module's only resource, applying one namespaced Certificate (cert-manager.io/v1) via server-side apply. The output TLS Secret is created by the cert-manager controller, not by the runner.
+      - api_groups:
+          - cert-manager.io
+        resources:
+          - certificates
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Certificate in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

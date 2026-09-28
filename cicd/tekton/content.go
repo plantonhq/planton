@@ -13,8 +13,12 @@
 // dispatch -- those live with the compiler and the engine.
 //
 // Version discipline: Version names exactly one content state, and the
-// digest test holds the pair together -- editing any embedded YAML without
-// bumping Version (and re-recording the digest) fails the gate. The pin
+// digest test holds the pair together through a ledger of every
+// (Version, content digest) pair ever recorded -- editing any embedded YAML
+// without bumping Version fails the gate, and so does bumping Version with
+// no content change, even after re-recording, because the ledger refuses a
+// Version already bound to other content and content already bound to
+// another Version. The pin
 // stamped on every run record derives from Version, so a silent content
 // edit would otherwise corrupt the byte-identical-rerun law. The pin is
 // deliberately NOT this module's release version: a release that touches no
@@ -31,7 +35,7 @@ import (
 // Version names the embedded content state. Bump it with ANY change to the
 // embedded YAML, however small: the pin on every run record derives from
 // it, and two different content states must never share a pin.
-const Version = "v8"
+const Version = "v9"
 
 // Pin is the platform-release source pin stamped on run records compiled
 // from this content.

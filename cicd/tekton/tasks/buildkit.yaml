@@ -149,6 +149,18 @@ spec:
       env:
         - name: DOCKER_CONFIG
           value: "$(workspaces.dockerconfig.path)"
+        # buildctl-daemonless.sh starts the BuildKit daemon in this step and
+        # then polls its socket, sleeping (100 + 20*try) ms after each failed
+        # try and giving up once try exceeds this maximum. Its default of 10
+        # is about 2.2 seconds in all, which a busy node, a spot node or a
+        # cold image outlasts -- the build then fails with "could not
+        # connect to ... buildkitd.sock after 10 trials" and passes on
+        # rerun. 70 tries is (70+1)*(100+10*70) ms, about 57 seconds. The
+        # script moves on the moment the daemon answers, so a healthy build
+        # waits no longer than it does today; only a daemon that never
+        # starts costs the full minute before its log is printed.
+        - name: BUILDCTL_CONNECT_RETRIES_MAX
+          value: "70"
       script: |
         #!/usr/bin/env sh
         set -eux

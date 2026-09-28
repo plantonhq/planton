@@ -23,3 +23,13 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: Covers kubernetes_storage_class_v1.storage_class -- the single cluster-scoped StorageClass the module manages. delete is also exercised on changes to provisioner, parameters, reclaim_policy, or volume_binding_mode, which force replacement (delete-then-create).
+      - api_groups:
+          - storage.k8s.io
+        resources:
+          - storageclasses
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- get on the claim's StorageClass, which pulumi-kubernetes v4.33.0 reads while it awaits  to learn the class's binding mode, at provider/pkg/await/awaiters.go:288-349. Without it the provider cannot tell that a claim under a WaitForFirstConsumer class is correctly Pending until a pod uses it, awaits Bound instead, and fails the deploy after five minutes. OpenTofu's provider never reads the class. StorageClasses are cluster-scoped.

@@ -97,3 +97,12 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: Covers kubectl_manifest.helm_crds (Terraform, the generated helm_crds.tf) and the Pulumi twin (keptcrds) -- the MODULE-OWNED CRDs (SolrCloud, SolrBackup, SolrPrometheusExporter on solr.apache.org, plus ZookeeperCluster for the bundled dependency), derived from the pinned chart at apply time and applied via server-side apply OUTSIDE the Helm release (SSA is load-bearing -- the SolrCloud schema exceeds the client-side annotation size limit), re-applied in place on chart bumps. The get and list verbs also serve the by-name read every apply makes first (get in Pulumi, a field-selected list in Terraform) behind the ownership check (a CRD without this module's stamp is refused, its owner named) and the never-downgrade check; the Pulumi twin additionally asks a SelfSubjectAccessReview whether this identity may write CRDs before registering anything, an API open to every authenticated identity. Delete is exercised only when spec.crds.keep_on_uninstall is false; the default keep posture makes destroy a no-op so an operator uninstall never cascade-deletes SolrCloud resources. Skipped entirely when spec.crds.install is false.
+      - api_groups:
+          - apiextensions.k8s.io
+        resources:
+          - customresourcedefinitions
+        verbs:
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the CustomResourceDefinition applied by the keptcrds.Apply in main.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

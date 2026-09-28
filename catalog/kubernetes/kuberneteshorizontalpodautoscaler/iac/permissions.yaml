@@ -23,3 +23,13 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers kubernetes_horizontal_pod_autoscaler_v2.horizontal_pod_autoscaler -- the module's only resource, managing one HorizontalPodAutoscaler (autoscaling/v2) in the spec's namespace.
+      - api_groups:
+          - autoscaling
+        resources:
+          - horizontalpodautoscalers
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the HorizontalPodAutoscaler in horizontalpodautoscaler.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

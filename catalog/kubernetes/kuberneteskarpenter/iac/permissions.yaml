@@ -131,3 +131,13 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: Covers the ServiceMonitor rendered only when spec.prometheus.service_monitor is true (the release FAILS without the Prometheus operator CRDs on the cluster). The helm_values overlay (spec.helm_values, merged last) can extend the chart's object surface beyond these rules generally; grants for such extensions ride the operator's review of the overlay, not this manifest.
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

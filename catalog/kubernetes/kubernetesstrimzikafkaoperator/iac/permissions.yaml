@@ -89,3 +89,13 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: "The Strimzi CRDs (Kafka, KafkaNodePool, KafkaTopic, KafkaUser, ...) ship in the chart's Helm-native crds/ directory: installed on FIRST install only, never upgraded or deleted by Helm -- hence no update/patch/delete. CRD schema updates across chart upgrades are a deliberate manual apply outside this module, per the pinned release's notes."
+      - api_groups:
+          - ""
+        resources:
+          - namespaces
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Namespace in namespace.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.

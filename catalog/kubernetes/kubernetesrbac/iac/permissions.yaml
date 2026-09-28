@@ -38,3 +38,25 @@ spec:
         cluster_scoped: true
         provenance: derived
         notes: Covers kubernetes_cluster_role_v1.cluster_role and kubernetes_cluster_role_binding_v1.cluster_binding -- created when cluster_scope is chosen (the role only with create_role, the binding only when subjects are present). Beyond these verbs, Kubernetes' RBAC escalation check requires the runner to already hold (or be allowed to escalate to) every permission a created role grants and every role it binds -- a grant can never exceed the runner's own authority.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - rolebindings
+          - roles
+        verbs:
+          - list
+          - watch
+        cluster_scoped: false
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the Role in role.go and the RoleBinding in binding.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
+      - api_groups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterrolebindings
+          - clusterroles
+        verbs:
+          - list
+          - watch
+        cluster_scoped: true
+        provenance: derived
+        notes: Pulumi only -- list and watch, which pulumi-kubernetes v4.33.0 reads while it waits and OpenTofu, polling the one object with get, never needs. Destroying the ClusterRole in role.go and the ClusterRoleBinding in binding.go waits on an informer of the deleted object's kind until it is gone, at provider/pkg/await/await.go:984-1006 and condition/deleted.go:69-96. An informer whose list is forbidden never syncs, so the deploy or destroy hangs with no error instead of failing.
