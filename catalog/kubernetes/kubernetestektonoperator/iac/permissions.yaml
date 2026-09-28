@@ -54,7 +54,7 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Manifest documents applied by kubectl_manifest.tekton_operator -- 1 ServiceAccount, 6 ConfigMaps (tekton-config-defaults applied PATCHED with AUTOINSTALL_COMPONENTS=false so the KubernetesTekton declaration stays the single owner of the cluster's TektonConfig), the webhook certificate Secret (populated and rotated by the webhook itself at runtime), and 2 ClusterIP Services (per the v0.80.0 document census).
+        notes: Manifest documents applied by kubectl_manifest.tekton_operator -- 1 ServiceAccount, 6 ConfigMaps (plus the module's own tekton-operator-readiness ConfigMap, kubectl_manifest.readiness_gate, the stand-in whose creation waits for the operator to serve) (tekton-config-defaults applied PATCHED with AUTOINSTALL_COMPONENTS=false so the KubernetesTekton declaration stays the single owner of the cluster's TektonConfig), the webhook certificate Secret (populated and rotated by the webhook itself at runtime), and 2 ClusterIP Services (per the v0.80.0 document census).
       - api_groups:
           - apps
         resources:
@@ -62,13 +62,14 @@ spec:
         verbs:
           - get
           - list
+          - watch
           - create
           - update
           - patch
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: The manifest's two Deployments -- the operator (both containers patched with spec.operator_image/operator_resources) and the webhook (patched with spec.webhook_image/webhook_resources); node_selector, tolerations, and image_pull_secrets patch both pod specs.
+        notes: The manifest's two Deployments -- the operator (both containers patched with spec.operator_image/operator_resources) and the webhook (patched with spec.webhook_image/webhook_resources); node_selector, tolerations, and image_pull_secrets patch both pod specs. watch is the readiness gate's `kubectl rollout status` on both.
       - api_groups:
           - rbac.authorization.k8s.io
         resources:
@@ -97,3 +98,12 @@ spec:
         cluster_scoped: false
         provenance: derived
         notes: The manifest's single namespaced Role/RoleBinding pair in the tekton-operator namespace (v0.80.0 document census). The webhook's admission registrations are NOT manifest documents -- the knative-style webhook creates and maintains them at RUNTIME under the operator's own identity, so the runner needs no admissionregistration permissions.
+      - api_groups:
+          - operator.tekton.dev
+        resources:
+          - tektonconfigs
+        verbs:
+          - create
+        cluster_scoped: true
+        provenance: derived
+        notes: The readiness gate's server-side DRY RUN of a TektonConfig (kubectl create --dry-run=server), which asks whether the operator's webhook admits and defaults one; a dry run is authorized as the verb it simulates and writes nothing, so no TektonConfig ever exists from this module (the KubernetesTekton declaration stays its single owner).

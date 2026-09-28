@@ -39,6 +39,10 @@ var vars = struct {
 	// against — deleted with this resource (cascade warning on the
 	// spec).
 	TektonConfigCrdName string
+	// ReadinessGateConfigMapName is the module's own stand-in whose
+	// creation waits for the operator to serve (readiness_gate.go); the
+	// Terraform twin's readiness_gate_config_map_name.
+	ReadinessGateConfigMapName string
 }{
 	OperatorRelease:             "v0.80.0",
 	Namespace:                   "tekton-operator",
@@ -47,6 +51,7 @@ var vars = struct {
 	LifecycleContainerName:      "tekton-operator-lifecycle",
 	ConfigDefaultsConfigMapName: "tekton-config-defaults",
 	TektonConfigCrdName:         "tektonconfigs.operator.tekton.dev",
+	ReadinessGateConfigMapName:  "tekton-operator-readiness",
 }
 
 // ManifestURL is the released single-file manifest for the pinned tag —

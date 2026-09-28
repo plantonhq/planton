@@ -22,8 +22,10 @@ const tektonConfigCrd = "tektonconfigs.operator.tekton.dev"
 
 // TektonOperatorVerifier checks a Tekton Operator install to the point a
 // KubernetesTekton declaration could be applied against it: the operator
-// and webhook Deployments rolled out, the operator.tekton.dev CRDs
-// established — and THE DESIGN INVARIANT proven on every lane: NO
+// serving the moment its deploy reports done (asked FIRST and without any
+// wait, so this verifier never supplies the readiness the module owes),
+// the operator and webhook Deployments rolled out, the operator.tekton.dev
+// CRDs established — and THE DESIGN INVARIANT proven on every lane: NO
 // TektonConfig exists after install. The module patches the release's
 // AUTOINSTALL_COMPONENTS to "false" so the KubernetesTekton declaration
 // is the single owner of the cluster's Tekton configuration; an
@@ -35,6 +37,11 @@ type TektonOperatorVerifier struct {
 
 func (v *TektonOperatorVerifier) VerifyExists(ctx context.Context, kubeconfig string) error {
 	fmt.Printf("  [verify] tekton-operator %q in namespace %q\n", v.Name, tektonOperatorNamespace)
+
+	if err := tektonOperatorServes(ctx, kubeconfig); err != nil {
+		return err
+	}
+	fmt.Printf("  [verify] READY MEANS SERVING: a TektonConfig came back defaulted the moment the deploy reported done\n")
 
 	if err := kubectlRolloutStatus(ctx, kubeconfig, "deployment/tekton-operator", tektonOperatorNamespace, 5*time.Minute); err != nil {
 		return errors.Wrap(err, "the operator deployment never rolled out")
@@ -60,6 +67,41 @@ func (v *TektonOperatorVerifier) VerifyExists(ctx context.Context, kubeconfig st
 		return errors.Errorf("a TektonConfig exists after installing the operator alone — the AUTOINSTALL_COMPONENTS=false patch regressed (found: %s)", strings.TrimSpace(string(out)))
 	}
 	fmt.Printf("  [verify] INVARIANT: no TektonConfig after install — auto-install is disabled, the declaration kind owns the configuration\n")
+	return nil
+}
+
+// tektonReadinessProbe is a TektonConfig declaring only its target
+// namespace: the operator's defaulting webhook fills in spec.profile, and
+// nothing else would.
+const tektonReadinessProbe = `apiVersion: operator.tekton.dev/v1alpha1
+kind: TektonConfig
+metadata:
+  name: config
+spec:
+  targetNamespace: tekton-pipelines
+`
+
+// tektonOperatorServes asks, once and with no wait, whether the API server
+// admits a TektonConfig with the operator's defaults filled in -- a
+// server-side dry run, so nothing is written and the no-TektonConfig
+// invariant below still holds. The module's readiness gate owes exactly
+// this before the deploy reports done; a deploy that returned while the
+// operator was still starting fails here, where the verifier's own
+// rollout waits would otherwise have carried it (the cold-node-pool
+// scenario holds the pods off a node to make that window real).
+func tektonOperatorServes(ctx context.Context, kubeconfig string) error {
+	cmd := exec.CommandContext(ctx, "kubectl", "--kubeconfig", kubeconfig,
+		"create", "--dry-run=server", "-o", "jsonpath={.spec.profile}", "-f", "-")
+	cmd.Stdin = strings.NewReader(tektonReadinessProbe)
+	var stderr strings.Builder
+	cmd.Stderr = &stderr
+	out, err := cmd.Output()
+	if err != nil {
+		return errors.Errorf("the deploy reported done but the operator cannot serve yet: a TektonConfig applied now would be refused (the readiness gate did not hold): %s", firstLines(stderr.String(), 3))
+	}
+	if strings.TrimSpace(string(out)) == "" {
+		return errors.New("the deploy reported done but the operator's webhook is not filling in TektonConfig defaults yet: a KubernetesTekton applied now would be refused (the readiness gate did not hold)")
+	}
 	return nil
 }
 

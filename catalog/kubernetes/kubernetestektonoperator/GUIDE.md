@@ -27,6 +27,17 @@ exists — its teardown finalizers need a running operator, or deletion
 hangs. The destroy-order rule is stated from the config side too; honor it
 in any teardown proposal.
 
+## Done means serving; nothing to wait for downstream
+
+A succeeded KubernetesTektonOperator is an operator that admits a
+TektonConfig with its defaults filled in, so a KubernetesTekton can be
+applied straight after it with no retry, wait or sleep in between —
+even on a new cluster whose first node is still joining. Don't propose
+a wait step or a second apply for that race; if the operator never
+comes up, this resource fails naming what it waited for (pods not
+scheduled, or the webhook not defaulting). Running the module outside
+Planton needs `kubectl` on PATH.
+
 ## Pulling from a mirror: `image_registry`, not the image overrides
 
 When ghcr.io is slow or unreachable from a cluster, set `image_registry`

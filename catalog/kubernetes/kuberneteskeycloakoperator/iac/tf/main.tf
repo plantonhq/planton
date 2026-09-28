@@ -81,8 +81,10 @@ resource "kubectl_manifest" "namespace" {
 # patched on). Rollout waiting is deliberately OFF — the group applies
 # BEFORE the CRDs (see the ordering rationale in locals.tf), and the
 # JOSDK operator crash-loops until its CRDs exist; blocking here would
-# deadlock the create ordering. The E2E verifier (and any health check)
-# owns rollout readiness.
+# deadlock the create ordering. No readiness gate is needed after the
+# CRDs either: the operator registers no admission webhook, so a
+# Keycloak resource applied before it runs is stored as written and
+# reconciled once it starts.
 resource "kubectl_manifest" "keycloak_operator" {
   for_each = local.workload_documents
 

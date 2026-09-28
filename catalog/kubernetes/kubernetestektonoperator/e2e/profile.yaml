@@ -16,7 +16,11 @@ spec:
   # process the runtime InstallerSets' finalizers, then the workloads,
   # then the fixed namespace — awaited to fully gone (a flat one-pass
   # delete wedged the tektoninstallersets CRD in Terminating, verified
-  # live on both engines).
+  # live on both engines). Done means serving: every lane's verifier
+  # first asks, with no wait, for a TektonConfig admitted with its
+  # defaults, and the cold-node-pool scenario holds the pods off a node
+  # for 60s — red on a module without the readiness gate, green with it,
+  # on both engines.
   status: green
   validated_provisioners:
     - pulumi

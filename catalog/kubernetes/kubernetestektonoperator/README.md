@@ -28,6 +28,20 @@ and the cluster's Tekton shape would depend on install order. Here the
 `KubernetesTekton` resource is the single owner of the configuration —
 this operator only reconciles it.
 
+## Done means serving
+
+The deploy completes only once the operator can serve a `TektonConfig`:
+both of its Deployments have rolled out and the API server admits a
+`TektonConfig` with the operator's defaults filled in (a server-side dry
+run; nothing is written). The operator's webhook registers its own
+admission configuration at runtime, so until it runs a `TektonConfig`
+is refused — on a cluster whose node pool starts empty, for as long as
+the first node takes to join. A `KubernetesTekton` applied right after
+this resource therefore never meets a half-started operator. The wait
+runs `kubectl` where the deploy runs (the Planton runner carries it); it
+is bounded at 10 minutes for the pods and 5 for the webhook, and says
+what it waited for when it gives up.
+
 ## The destroy contract
 
 The operator's CRDs delete with it, which cascade-deletes any

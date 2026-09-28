@@ -15,6 +15,12 @@
 # Tekton configuration. Installing the operator alone deploys no Tekton
 # components.
 #
+# READY MEANS SERVING: the resource completes only once both Deployments
+# rolled out and the API server returns a TektonConfig with the
+# operator's defaults filled in (readiness_gate.tf), so a KubernetesTekton
+# applied next is never refused on a cluster whose first node is still
+# joining.
+#
 # DESTROY SEMANTICS: every document deletes with the resource, INCLUDING
 # the CRDs — which cascade-deletes any TektonConfig on the cluster.
 # Always destroy the KubernetesTekton resource FIRST while the operator
@@ -60,8 +66,8 @@ resource "kubectl_manifest" "namespace" {
 # the webhook Secret. Rollout waiting is deliberately OFF — the group
 # applies BEFORE the CRDs (see the ordering rationale in locals.tf),
 # and the operator only becomes ready once its CRDs exist; blocking
-# here would deadlock the create ordering. The E2E verifier (and any
-# health check) owns rollout readiness.
+# here would deadlock the create ordering. Readiness is waited for
+# after the CRDs instead, by the readiness gate (readiness_gate.tf).
 resource "kubectl_manifest" "tekton_operator" {
   for_each = local.workload_documents
 

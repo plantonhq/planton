@@ -295,7 +295,7 @@ locals {
   # namespace→workloads→crds and destroy crds→workloads→namespace —
   # both hazards resolved structurally. The operator tolerates starting
   # before its CRDs exist (knative-style controllers crash-retry until
-  # informers sync; the verifier owns rollout readiness).
+  # informers sync); readiness_gate.tf waits for that after the CRDs.
   namespace_documents = {
     for k, v in local.applied_documents : k => v
     if try(v.kind, "") == "Namespace"

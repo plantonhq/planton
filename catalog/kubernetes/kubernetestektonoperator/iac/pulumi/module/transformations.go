@@ -18,8 +18,8 @@ import (
 // awaiting the webhook Deployment deadlocks the chain, and awaiting the
 // webhook Service deadlocks one layer later on its empty endpoints
 // (also verified live). Everything converges once the CRDs land
-// (kubelet backoff restarts the pods); the component's E2E verifier
-// owns rollout readiness. The Terraform twin sets
+// (kubelet backoff restarts the pods), and the readiness gate after the
+// CRDs waits for that (readiness_gate.go). The Terraform twin sets
 // wait_for_rollout = false on the same group for the same reason.
 func skipAwaitTransformation() func(state map[string]interface{}, opts ...pulumi.ResourceOption) {
 	return func(state map[string]interface{}, _ ...pulumi.ResourceOption) {

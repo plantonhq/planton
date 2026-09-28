@@ -901,7 +901,36 @@ Based on scenario:
   CRDs at startup (a webhook that fatals until its CRD is served blocks
   its Deployment await, and skipping only Deployments moves the
   deadlock to the webhook Service's endpoints await; verified live).
-  The E2E verifier owns rollout readiness in both engines.
+- **Done means serving: an operator kind reports success only when the
+  operator can serve the resources it defines — the E2E verifier
+  CONFIRMS that, it never supplies it.** The workloads group cannot
+  await its rollout (above), so when the operator's custom resources are
+  admitted by a webhook the operator registers at RUNTIME (not a
+  document of the bundle), the module ends with a READINESS GATE after
+  the CRD group: a stand-in ConfigMap, the same on both engines, whose
+  creation waits until the operator Deployments rolled out AND a
+  server-side dry run of one of its resources comes back admitted with
+  the webhook's defaults filled in. Rollout alone is not enough —
+  measured on the Tekton operator, defaulting went live 5–10s after both
+  Deployments reported available. Terraform runs the gate as the
+  stand-in's create-time `local-exec` provisioner (`force_new`, so a
+  failure or a release move gates again); Pulumi as a `BeforeCreate`
+  resource hook with `ReplaceOnChanges(*)` + `DeleteBeforeReplace` (a
+  BEFORE hook: a failing after-hook still records the resource on newer
+  engines, so the next run would skip the gate). The script is one text
+  under the cross-engine script parity guard, carried through the
+  environment so the deploy log shows one line, and needs `kubectl` on
+  PATH (the Planton runner image carries it). The stand-in depends on
+  the CRD group, so a destroy deletes it first and the teardown order is
+  untouched. The verifier asks the same question FIRST and with no
+  wait, and the kind carries a scenario that holds the operator's pods
+  off a node until 60s into the deploy (a node pool that starts empty),
+  so a module that reports done early fails its own lane. An operator
+  that registers no admission webhook needs no gate — its resources are
+  stored as written and reconciled once it starts — and its module says
+  so where the gate would be. Reference: KubernetesTektonOperator
+  (`iac/tf/readiness_gate.tf`, `iac/pulumi/module/readiness_gate.go`,
+  `e2e/scenarios/cold-node-pool.yaml`).
 - **CONFIG-ONLY attributes (delete-waits, cascade modes, lifecycle
   knobs) DEGRADE to defaults in any freshly-imported state — never let
   correctness ride an attribute the importer cannot read back without a

@@ -8,6 +8,7 @@ go_library(
         "main.go",
         "manifest_documents.go",
         "outputs.go",
+        "readiness_gate.go",
         "transformations.go",
         "vars.go",
     ],
@@ -20,6 +21,8 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "//shared/cloudresourcekind",
         "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
+        "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/yaml",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
         "@in_gopkg_yaml_v3//:yaml_v3",
@@ -28,7 +31,10 @@ go_library(
 
 go_test(
     name = "module_test",
-    srcs = ["transformations_test.go"],
+    srcs = [
+        "readiness_gate_test.go",
+        "transformations_test.go",
+    ],
     embed = [":module"],
     deps = [
         "//catalog/kubernetes",
