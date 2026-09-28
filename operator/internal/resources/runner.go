@@ -335,11 +335,13 @@ func RunnerBuildRole(cfg RunnerConfig) *rbacv1.Role {
 			// reconcile safety net reads, watching the namespace's runs so the
 			// run watcher signals each change to the owning build as it
 			// happens (the event transport that needs no cluster-wide Tekton
-			// sink), and the labeled cleanup sweep.
+			// sink), cancelling a run a person cancelled (a patch of
+			// spec.status, which stops its pods and keeps them for their
+			// logs), and the labeled cleanup sweep.
 			{
 				APIGroups: []string{"tekton.dev"},
 				Resources: []string{"pipelineruns"},
-				Verbs:     []string{"create", "list", "watch", "deletecollection"},
+				Verbs:     []string{"create", "list", "watch", "patch", "deletecollection"},
 			},
 			{
 				APIGroups: []string{"tekton.dev"},

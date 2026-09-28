@@ -103,7 +103,7 @@ spec:
 spec:
   build:
     triggers:
-      branches: []        # no branch walks the whole order
+      disableTriggerBranches: true   # no branch walks the whole order
   deploy:
     branchDeployments:
       - branch: dev
@@ -118,6 +118,9 @@ With this setup:
 - Push to `dev` → deploys only to dev
 - Push to `staging` → deploys only to staging
 - Push to `release` → deploys only to production
+- Push to any other branch, `main` included → builds nothing
+
+`disableTriggerBranches` is what keeps the default branch out of it. An empty `branches` list is not the same thing: it means the repository's default branch, so `main` would still build and walk every environment. With no trigger branch the mapped branches still build into their one environment, and tag releases still work if the service turns them on.
 
 For a git-maintained service a mapping is also the **sync authority** for its environment: the mapped branch's push writes that environment's entry from its own tree, so an overlay that exists only on that branch lands on the record marked for its environment.
 

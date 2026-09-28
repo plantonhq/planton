@@ -38,6 +38,15 @@ spec:
         accepted, as Unix seconds; empty when it outlives any build. A push
         the registry refuses after that moment says so, with both times.
       default: ""
+    - name: releaseTag             # v1.4.0, or empty
+      type: string
+      description: >-
+        The release's tag when this build is a tag release (v1.4.0); empty
+        otherwise. A tag that is also a valid image tag names the pushed image
+        too, on the same digest, so the registry answers "which image is
+        v1.4.0". A tag an image cannot carry (release/1.4) is said and left
+        off: the image keeps its commit's name only.
+      default: ""
     - name: push                   # "true" ➜ push to registry
       type: string
       default: "true"
@@ -85,6 +94,11 @@ spec:
         The architecture of the machine this build ran on (amd64, arm64), as
         the pod itself saw it. Read beside the platforms the image was built
         for, it says whether the build ran native or emulated.
+    - name: release-tag
+      description: >-
+        The release tag this build also pushed the image under, on the same
+        digest; empty when it pushed none (not a tag release, a tag no image
+        can carry, or no push).
 
   # ------------------------------ steps ---------------------------------
   steps:
@@ -163,6 +177,21 @@ spec:
             --import-cache type=registry,ref=$(params.image)"
         fi
 
+        # A tag release also names the image by its release, on the same
+        # digest -- one push, two names. Docker's tag grammar is narrower
+        # than git's, so a tag an image cannot carry is said, never mangled.
+        names="$(params.image)"
+        release_tag=""
+        if [ -n "$(params.releaseTag)" ]; then
+          if printf '%s' "$(params.releaseTag)" | grep -qE '^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$'; then
+            repository="$(printf '%s' "$(params.image)" | sed 's|:[^:/]*$||')"
+            names="$names,$repository:$(params.releaseTag)"
+            release_tag="$(params.releaseTag)"
+          else
+            echo "The release tag $(params.releaseTag) isn't a valid image tag (letters, digits, '_', '.' and '-', up to 128), so the image is pushed under its commit only." >&2
+          fi
+        fi
+
         printf '%s\n' "$(params.buildArgs)" | while IFS= read -r arg; do
           [ -z "$arg" ] || extra_opts="$extra_opts --opt build-arg:$arg"
         done
@@ -184,7 +213,7 @@ spec:
           --local context=$(workspaces.source.path)/$(params.contextDir) \
           --local dockerfile=$(workspaces.source.path)/$(params.contextDir) \
           $extra_opts \
-          --output type=image,name=$(params.image),push=$(params.push) \
+          --output "type=image,\"name=$names\",push=$(params.push)" \
           --metadata-file /tmp/build-metadata.json \
           --progress=plain > /tmp/build.fifo 2>&1
         status=$?
@@ -215,8 +244,10 @@ spec:
             exit 1
           fi
           printf '%s' "$digest" > "$(results.image-digest.path)"
+          printf '%s' "$release_tag" > "$(results.release-tag.path)"
         else
           printf '' > "$(results.image-digest.path)"
+          printf '' > "$(results.release-tag.path)"
         fi
 
   volumes:

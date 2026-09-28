@@ -21,10 +21,12 @@ rules:
   # watch: the run watcher follows this namespace's PipelineRuns and TaskRuns
   # and signals each change to the owning build -- the event transport that
   # needs no cluster-wide Tekton sink, so any number of control planes share
-  # one Tekton, each hearing only about its own namespace.
+  # one Tekton, each hearing only about its own namespace. Patch: a person's
+  # cancel stops the run's pods (spec.status Cancelled), keeping them for
+  # their logs.
   - apiGroups: ["tekton.dev"]
     resources: ["pipelineruns"]
-    verbs: ["create", "list", "watch", "deletecollection"]
+    verbs: ["create", "list", "watch", "patch", "deletecollection"]
   # Reconcile reads TaskRuns before PipelineRuns (load-bearing ordering); the
   # watcher follows them for per-task progress.
   - apiGroups: ["tekton.dev"]

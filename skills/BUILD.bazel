@@ -1,0 +1,27 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+# The embedded set is a glob, kept from Gazelle's rewrite: a reference added
+# to a skill must reach every host that checks the skill's text without
+# anyone regenerating this file, and a file list that went stale would drop
+# it silently.
+_SKILL_TEXT = glob([
+    "planton/SKILL.md",
+    "planton/references/*.md",
+    "multi-cloud-catalog/SKILL.md",
+    "multi-cloud-catalog/references/*.md",
+])
+
+go_library(
+    name = "skills",
+    srcs = ["embed.go"],
+    embedsrcs = _SKILL_TEXT,  # keep
+    importpath = "github.com/plantonhq/planton/skills",
+    visibility = ["//visibility:public"],
+)
+
+go_test(
+    name = "skills_test",
+    srcs = ["embed_test.go"],
+    data = _SKILL_TEXT,  # keep
+    embed = [":skills"],
+)

@@ -208,7 +208,7 @@ func TestRunnerBuildRole_ExactVerbs(t *testing.T) {
 		}
 	}
 	want := []rule{
-		{"tekton.dev", "pipelineruns", "create,list,watch,deletecollection"},
+		{"tekton.dev", "pipelineruns", "create,list,watch,patch,deletecollection"},
 		{"tekton.dev", "taskruns", "list,watch"},
 		{"", "secrets", "create,get,deletecollection"},
 		{"", "serviceaccounts", "create,get,deletecollection"},

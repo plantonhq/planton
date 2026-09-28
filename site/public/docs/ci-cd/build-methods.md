@@ -63,7 +63,7 @@ Buildpacks is the same shape with `buildpacks: {}` in place of the `dockerfile` 
 For container image services, the pipeline tags images to ensure traceability:
 
 - **Branch builds**: Tagged with the full Git commit SHA (e.g., `a1b2c3d4e5f6`), ensuring every image is traceable to exactly one commit.
-- **Tag builds**: Tagged with the Git tag name (e.g., `v1.0.0`), providing human-readable version references for release workflows.
+- **Tag builds**: Tagged with the commit SHA like every build, and also with the Git tag name (e.g., `v1.0.0`) on the same digest, so a release has a human-readable name in the registry. The run records the release tag beside the image. A Git tag that cannot be an image tag (image tags allow letters, digits, `_`, `.` and `-`, up to 128 characters, so `release/1.4` is not one) is pushed under its commit only, and the build log says so. This holds for the Dockerfile and Buildpacks builders; a custom pipeline tags its image however it chooses, with the tag name available to it as the `git-tag` fact.
 
 A tag names a build; the digest is the build itself. Every build reports the digest of the image it pushed, and every deployment Planton makes from it runs `repo:tag@sha256:…` — Kubernetes pulls exactly that image and keeps the tag as its readable name. So a rebuild of the same commit, or a second builder pushing the same tag, never changes what an existing deployment runs; the next deployment pins the next build. A build that pushed but could not name its image fails, saying so, rather than deploy by a tag anyone can re-push.
 

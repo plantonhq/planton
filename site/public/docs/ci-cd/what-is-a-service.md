@@ -154,6 +154,9 @@ planton service runs my-service
 # Start a build by hand
 planton service run my-service --branch main
 
+# Release a tag by hand, exactly as if it had just been pushed
+planton service run my-service --tag v1.4.0
+
 # View deployment history
 planton service deployments my-service
 

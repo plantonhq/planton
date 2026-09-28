@@ -72,6 +72,20 @@ spec:
       type: string
       description: "A stable reference for the build cache, e.g. registry/repo:buildcache -- supplied by the platform; empty keeps the default"
       default: ""
+    # An optional fact the runner supplies only because this pipeline
+    # declares it: when the registry sign-in it minted for this build expires
+    # (Unix seconds), so a push refused after that moment says so.
+    - name: registry-sign-in-expires-at
+      type: string
+      description: "When the registry sign-in this build pushes with expires, as Unix seconds -- supplied by the runner; empty when it outlives any build"
+      default: ""
+    # An optional fact the platform supplies only because this pipeline
+    # declares it: the release's tag when this build is a tag release
+    # (v1.4.0), empty otherwise. The build task also names the image by it.
+    - name: git-tag
+      type: string
+      description: "The release's tag for a tag release, e.g. v1.4.0 -- supplied by the platform; empty for every other build"
+      default: ""
 
   workspaces:
     - name: source
@@ -114,6 +128,10 @@ spec:
           value: "$(params.target-platform)"
         - name: CACHE_IMAGE
           value: "$(params.cache-image)"
+        - name: RELEASE_TAG
+          value: "$(params.git-tag)"
+        - name: REGISTRY_SIGN_IN_EXPIRES_AT
+          value: "$(params.registry-sign-in-expires-at)"
       workspaces:
         - name: source
           workspace: source

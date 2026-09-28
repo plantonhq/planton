@@ -346,8 +346,8 @@ shared state and needs the user's explicit go-ahead:
   (`references/infra.config-references.md`).
 - **Cluster-scoped, shared-by-design components live in the shared chart**
   -- operators, CRDs, controllers (Istio, cert-manager, external-dns)
-  belong there exactly once, never in a per-environment app chart
-  (`references/cloud.kubernetes-architecture.md`).
+  belong there exactly once; a Planton service's own workload and route
+  live on the service (`references/cloud.kubernetes-architecture.md`).
 - **Platform constructs are building blocks, never curriculum.** Names
   like InfraChart belong in manifests, not your prose, unless asked.
 - **Connection wiring follows one rule: annotate when the cluster is in
@@ -439,7 +439,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.workspace-postures.md` | The folder-identity check's full choreography: workspaces, checkouts, loose manifests and SETS, the canvas rules, and the application-repository posture a coding agent works in |
 | `references/infra.worked-example.md` | The full shape of a small chart in one place; checking your layout against a known-good one |
 | `references/cloud.aws-architecture.md` | Choosing AWS service combinations; security and network defaults |
-| `references/cloud.kubernetes-architecture.md` | What runs on the cluster: the Istio/external-dns paved road; the shared-infra vs environment-chart split |
+| `references/cloud.kubernetes-architecture.md` | What runs on the cluster: the Istio/external-dns paved road; the shared-infra vs environment-chart split; why a Planton service's own workload and route sit on the service, never in a chart |
 | `references/cloud.exploration.md` | Running aws/kubectl/planton commands against real clouds; the read-only and mutation rules |
 
 ### Service delivery (`service.*`)
@@ -468,7 +468,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/service.serving-domains-targets.md` | Per-target carrier truths (worker, ingress, HTTPRoute, Cloud Run domain mapping, ECS/ALB) and the remediation ladder for a failed `domain_serving` check |
 | `references/service.serving-domains-custom.md` | Anything outside `{label}.{env-domain}`: apex, arbitrary FQDNs, multi-host, CDN fronting -- composed-infrastructure recipes with `valueFrom` bridges |
 | `references/service.local-env-vars.md` | Running a service locally with real config (`planton service env run\|pull\|check`), dev flavors, `.env.local` layering |
-| `references/service.configuring-deployments.md` | Reading and changing what a service is DECLARED to deploy: the two writers, the surgical get-then-apply loop, target environments, the deployments switch |
+| `references/service.configuring-deployments.md` | Reading and changing what a service is DECLARED to deploy: the two writers, the surgical get-then-apply loop, which resources sit on the service and which on an infra project ("if this service were deleted, should it go too?" -- its route, workload, and own ConfigMaps yes; the shared gateway, zone, and namespace no), the three-step move of a route out of an infra project, target environments, the deployments switch |
 | `references/service.kustomize-authoring.md` | Moving a service's configuration into its repository (eject/init/checkout), the `_kustomize` tree conventions |
 | `references/service.preview-environments.md` | Per-pull-request preview environments: the opt-in, the previews tree, the one-call preview read, teardown |
 | `references/service.delete-cascade.md` | Retiring a service: the destroy-then-delete cascade, the retain-resources arm, the protected-environment refusal |
@@ -497,4 +497,4 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/craft.cost-transparency.md` | The monthly cost picture from the catalog's verified estimates; honesty rules for money; saving levers |
 | `references/craft.filing-platform-gaps.md` | Planton fell short of a need; filing the gap as a GitHub issue |
 | `references/catalog.availability.md` | Which kinds an organization's catalog policy disables; the check-design-disclose law |
-| `references/catalog.component-grounding.md` | Discovering kinds and reading component schemas; explain vs the catalog pack |
+| `references/catalog.component-grounding.md` | Discovering kinds and reading component schemas; explain vs the catalog pack; what a field DOES -- the modules at `catalog/<provider>/<component>/iac/` (tf and pulumi) are the last rung of truth, and when they disagree with the contract the module is what runs |

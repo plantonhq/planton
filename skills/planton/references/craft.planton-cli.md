@@ -226,5 +226,6 @@ front doors and `login --local` (`self-hosted.front-doors-and-the-cli.md`,
 
 Any resource, any kind: `planton get <kind> <id> -o json` (e.g.
 `get infra-pipeline`, `get cloud-resource`, `get stack-job`) and
-`planton search by-resource-kind <kind>` for kinds without a noun-scoped
-list. The noun-scoped verbs above are the preferred, discoverable path.
+`planton search [text] --kind <kind>` (a platform kind: `service`,
+`variable`, `cloud_resource`, …) for kinds without a noun-scoped list. The
+noun-scoped verbs above are the preferred, discoverable path.

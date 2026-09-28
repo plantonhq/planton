@@ -117,10 +117,53 @@ func TestContent_everyBuildNamesItsImageByDigestAndReusesOneCache(t *testing.T) 
 			t.Errorf("track %s does not declare the cache-image fact and hand it to its build task", track)
 		}
 	}
-	// The BuildKit track hands its step the sign-in's expiry, the fact the
-	// runner supplies to a pipeline that declares it.
-	if dockerfile, _ := Track("dockerfile"); !strings.Contains(string(dockerfile), "$(params.registry-sign-in-expires-at)") {
-		t.Error("the dockerfile track does not hand the registry sign-in's expiry to its build task")
+	// Every track hands its build the sign-in's expiry, the fact the runner
+	// supplies to a pipeline that declares it, and every build task says it
+	// when a push was refused after that moment.
+	for _, track := range Tracks() {
+		yaml, _ := Track(track)
+		if !strings.Contains(string(yaml), "$(params.registry-sign-in-expires-at)") {
+			t.Errorf("track %s does not hand the registry sign-in's expiry to its build task", track)
+		}
+	}
+	for _, stem := range []string{"buildkit", "buildpacks"} {
+		if !strings.Contains(string(tasks[stem]), "The registry sign-in Planton made when this build started expired at") {
+			t.Errorf("build task %s does not say when a push was refused after its sign-in expired", stem)
+		}
+	}
+}
+
+// A tag release names its image by the release too, on the same digest, so
+// the registry answers "which image is v1.4.0" without the run history: every
+// track declares the optional git-tag fact and hands it to its build task,
+// and every build task pushes the second name only for a tag an image can
+// carry, says so when it cannot, and reports the tag it pushed as the
+// release-tag result the run records exactly or not at all.
+func TestContent_aTagReleaseAlsoNamesItsImageByItsTag(t *testing.T) {
+	for _, track := range Tracks() {
+		yaml, _ := Track(track)
+		if !strings.Contains(string(yaml), "- name: git-tag") || !strings.Contains(string(yaml), "$(params.git-tag)") {
+			t.Errorf("track %s does not declare the git-tag fact and hand it to its build task", track)
+		}
+	}
+	tasks, err := TaskFiles()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, stem := range []string{"buildkit", "buildpacks"} {
+		task := string(tasks[stem])
+		for _, want := range []string{"- name: release-tag", "$(results.release-tag.path)",
+			"^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$", "isn't a valid image tag"} {
+			if !strings.Contains(task, want) {
+				t.Errorf("build task %s lacks %q", stem, want)
+			}
+		}
+	}
+	if !strings.Contains(string(tasks["buildkit"]), `"type=image,\"name=$names\",push=$(params.push)"`) {
+		t.Error("the BuildKit task does not push every name the build carries in one output")
+	}
+	if !strings.Contains(string(tasks["buildpacks"]), `"-tag=$repository:$(params.RELEASE_TAG)"`) {
+		t.Error("the Buildpacks task does not hand the lifecycle the release's name")
 	}
 }
 
