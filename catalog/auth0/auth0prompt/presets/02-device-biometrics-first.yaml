@@ -1,0 +1,10 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Prompt
+metadata:
+  name: prompt
+  org: example-org
+  env: production
+spec:
+  universalLoginExperience: new
+  identifierFirst: true
+  webauthnPlatformFirstFactor: true

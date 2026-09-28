@@ -27,8 +27,10 @@ spec:
   ttlSeconds: 300
   mx:
     - preference: 10
-      exchange: mail1.planton-e2e-fixture.example.com
+      exchange:
+        value: mail1.planton-e2e-fixture.example.com
     - preference: 20
-      exchange: mail2.planton-e2e-fixture.example.com
+      exchange:
+        value: mail2.planton-e2e-fixture.example.com
   tags:
     e2e-suite: web-domain

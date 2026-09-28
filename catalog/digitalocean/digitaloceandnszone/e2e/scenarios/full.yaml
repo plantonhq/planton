@@ -28,7 +28,8 @@ metadata:
     - planton-e2e
 spec:
   domainName: pltn-e2e-full-${E2E_RUN_ID}.com
-  ipAddress: 192.0.2.10
+  ipAddress:
+    value: 192.0.2.10
   records:
     - name: "@"
       type: A

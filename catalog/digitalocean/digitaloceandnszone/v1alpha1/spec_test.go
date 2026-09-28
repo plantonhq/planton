@@ -122,7 +122,7 @@ var _ = ginkgo.Describe("DigitalOceanDnsZoneSpec Custom Validation Tests", func(
 
 		ginkgo.It("accepts an ip_address seeding an initial apex A record", func() {
 			input := zone()
-			input.Spec.IpAddress = "192.0.2.10"
+			input.Spec.IpAddress = strVal("192.0.2.10")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 

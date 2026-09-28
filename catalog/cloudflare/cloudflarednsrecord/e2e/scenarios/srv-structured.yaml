@@ -32,4 +32,5 @@ spec:
     priority: 10
     weight: 5
     port: 8443
-    target: e2e-minimal.planton-e2e.example.com
+    target:
+      value: e2e-minimal.planton-e2e.example.com

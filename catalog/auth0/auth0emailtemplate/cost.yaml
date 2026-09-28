@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0emailtemplate
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for email templates: every tenant, the Free plan included, can customize them once it sends through its own email provider (auth0.com/docs/customize/email/email-templates -- templates are not available with Auth0's built-in provider). One field is plan-gated: result_url cannot be customized on non-enterprise tenants created on or after May 5, 2026, which Auth0 refuses with 403 (auth0.com/docs/customize/email/email-templates, URL Lifetime and Redirect To); tenants created before that date are exempt."
+  notes: "The real spend lives in the tenant subscription (Auth0 bills by plan tier plus monthly active users, auth0.com/pricing) and in the sending service of the tenant's email provider, which bills its own volume. A template changes what an email says, never how many are sent."

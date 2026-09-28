@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0branding.v1alpha1;
+
+// Auth0BrandingStackOutputs contains the branding as applied.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/branding_theme#attributes-reference
+message Auth0BrandingStackOutputs {
+  // theme_id is the id of the theme the branding applied; empty when the spec
+  // declares no theme.
+  string theme_id = 1;
+
+  // logo_url is the logo the tenant's pages show after the deployment; empty
+  // when the spec declares only a theme (no branding setting is managed).
+  string logo_url = 2;
+}

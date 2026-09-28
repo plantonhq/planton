@@ -1,0 +1,15 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailProvider
+metadata:
+  name: email-provider
+  org: example-org
+  env: production
+spec:
+  defaultFromAddress: Planton <no-reply@planton.ai>
+  smtp:
+    host: smtp.resend.com
+    port: 587
+    user: resend
+    # A Resend API key with sending access, by reference to an organization
+    # secret -- never a literal.
+    password: $secret/resend-api-key

@@ -19,3 +19,32 @@ spec:
     - terraform_type: auth0_custom_domain
       pulumi_type: auth0:index/customDomain:CustomDomain
       id_format: "{custom_domain_id}"
+
+    # --- Branding and the sign-in experience ------------------------------------
+    # The tenant's branding and prompt settings are one per tenant: the provider
+    # imports them by any string and reads the tenant the credential belongs to.
+    - terraform_type: auth0_branding
+      pulumi_type: auth0:index/branding:Branding
+      id_format: "{branding_id}"
+    - terraform_type: auth0_branding_theme
+      pulumi_type: auth0:index/brandingTheme:BrandingTheme
+      id_format: "{theme_id}"
+    - terraform_type: auth0_prompt
+      pulumi_type: auth0:index/prompt:Prompt
+      id_format: "{prompt_id}"
+    - terraform_type: auth0_prompt_custom_text
+      pulumi_type: auth0:index/promptCustomText:PromptCustomText
+      id_format: "{prompt}::{language}"
+    - terraform_type: auth0_prompt_screen_partials
+      pulumi_type: auth0:index/promptScreenPartials:PromptScreenPartials
+      id_format: "{prompt_type}"
+
+    # --- Email ---------------------------------------------------------------------
+    # The tenant's one email provider is read without its id; a template imports
+    # by its name.
+    - terraform_type: auth0_email_provider
+      pulumi_type: auth0:index/emailProvider:EmailProvider
+      id_format: "{email_provider_import_id}"
+    - terraform_type: auth0_email_template
+      pulumi_type: auth0:index/emailTemplate:EmailTemplate
+      id_format: "{template}"

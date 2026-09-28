@@ -58,24 +58,9 @@ resources:
     reason: "judged as a planned Auth0ConnectionProfile kind (a tenant-level configuration template that connections are created from)"
 
   # ---- Custom domains, branding and the sign-in experience --------------------
-  - resource: auth0_branding
-    disposition: model-planned
-    reason: "judged as a planned Auth0Branding kind (the tenant's logo, colors, favicon, font and Universal Login page template)"
-  - resource: auth0_branding_theme
-    disposition: model-planned
-    reason: "judged as a planned composition into Auth0Branding (the tenant's one Universal Login theme: borders, colors, fonts, page background, widget)"
-  - resource: auth0_prompt
-    disposition: model-planned
-    reason: "judged as a planned Auth0Prompt kind (the tenant's Universal Login experience, identifier-first and passkey-first settings)"
-  - resource: auth0_prompt_custom_text
-    disposition: model-planned
-    reason: "judged as a planned Auth0PromptCustomText kind (one per prompt and language, the unit Auth0 replaces in one call)"
-  - resource: auth0_prompt_screen_partials
-    disposition: model-planned
-    reason: "judged as a planned Auth0PromptScreenPartials kind (one per prompt, owning every screen's insertion points)"
   - resource: auth0_prompt_screen_partial
-    disposition: model-planned
-    reason: "judged as a planned composition into Auth0PromptScreenPartials, which owns the whole set for a prompt; Auth0 warns against mixing the one-screen variant with the set on one prompt"
+    disposition: composed
+    reason: "composed into Auth0PromptScreenPartials, which owns the whole set for a prompt and expresses every argument of the one-screen variant; Auth0 warns against mixing the two on one prompt"
   - resource: auth0_prompt_screen_renderer
     disposition: model-planned
     reason: "judged as a planned Auth0PromptScreenRenderer kind (Advanced Customizations: the rendering mode, head tags and filters of one prompt screen)"
@@ -90,12 +75,6 @@ resources:
     reason: "judged as a planned composition into Auth0SelfServiceProfile (its per-language text)"
 
   # ---- Email and phone -------------------------------------------------------------
-  - resource: auth0_email_provider
-    disposition: model-planned
-    reason: "judged as a planned Auth0EmailProvider kind (the tenant's one email delivery provider and its credentials)"
-  - resource: auth0_email_template
-    disposition: model-planned
-    reason: "judged as a planned Auth0EmailTemplate kind (one per template: verification, password reset, welcome, invitation and the rest)"
   - resource: auth0_phone_provider
     disposition: model-planned
     reason: "judged as a planned Auth0PhoneProvider kind (the tenant's one SMS and voice provider)"

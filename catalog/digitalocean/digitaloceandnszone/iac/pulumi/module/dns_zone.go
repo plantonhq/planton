@@ -22,8 +22,8 @@ func dnsZone(
 	}
 	// ip_address is a create-only convenience that seeds an initial apex A
 	// record DigitalOcean never tracks afterwards — prefer declaring records.
-	if spec.IpAddress != "" {
-		domainArgs.IpAddress = pulumi.StringPtr(spec.IpAddress)
+	if ipAddress := spec.GetIpAddress().GetValue(); ipAddress != "" {
+		domainArgs.IpAddress = pulumi.StringPtr(ipAddress)
 	}
 
 	createdDomain, err := digitalocean.NewDomain(

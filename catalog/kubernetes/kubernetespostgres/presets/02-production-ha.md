@@ -49,7 +49,7 @@ on the cluster, in the operator's namespace
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<pg-backups-bucket>` | S3 bucket for backups (path suffix `prod-db` keeps one path per cluster) | S3 console or `AwsS3Bucket` outputs |
+| `<pg-backups-bucket>` | S3 bucket for backups (the path suffix `prod-db` groups this database's backup series) | S3 console or `AwsS3Bucket` outputs |
 | `<aws-region>` | Region of the bucket | Your AWS account |
 | `arn:aws:iam::123456789012:role/prod-db-backups` | IRSA role ARN — replace account id and name | IAM console or `AwsIamRole` outputs |
 

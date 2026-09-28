@@ -1,0 +1,20 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0emailtemplate
+spec:
+  # A template needs the tenant's email provider, and applying it replaces
+  # the email the tenant sends for that template: a live lane needs a
+  # dedicated test tenant whose emails nobody relies on, sending through a
+  # real service. None exists yet, so the lanes are not run. Unblock: a
+  # throwaway Auth0 tenant for the E2E harness (AUTH0_DOMAIN /
+  # AUTH0_CLIENT_ID / AUTH0_CLIENT_SECRET, the credential holding the
+  # email_templates scopes of iac/permissions.yaml and the email_provider
+  # scopes its prerequisite needs), a sending domain verified with Resend
+  # (PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN) and a Resend API key with sending
+  # access (PLANTON_E2E_AUTH0_RESEND_API_KEY), then run both engines'
+  # minimal scenario one after the other.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 5

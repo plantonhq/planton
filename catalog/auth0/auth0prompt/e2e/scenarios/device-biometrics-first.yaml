@@ -1,0 +1,14 @@
+# Identifier-first login with the device's own authenticator offered as the
+# first factor. Auth0 accepts the first factor only when WebAuthn with device
+# biometrics is enabled as a multi-factor method on the tenant, so the lane's
+# tenant carries that factor before this scenario runs. The experience is not
+# managed here, so the tenant keeps the one it runs.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Prompt
+metadata:
+  name: e2e-prompt-device-biometrics
+  org: e2e-org
+  env: testing
+spec:
+  identifierFirst: true
+  webauthnPlatformFirstFactor: true

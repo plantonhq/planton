@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	azureprivatednsrecordv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureprivatednsrecord/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/pulumiazureprovider"
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/pulumi/pulumi-azure/sdk/v6/go/azure/privatedns"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -52,7 +53,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1alpha1.Az
 			ZoneName:          pulumi.String(locals.ZoneName),
 			ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			Ttl:               pulumi.Int(ttl),
-			Records:           pulumi.ToStringArray(spec.A),
+			Records:           pulumi.ToStringArray(stringValues(spec.A)),
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		}, pulumi.Provider(azureProvider))
 		if err != nil {
@@ -67,7 +68,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1alpha1.Az
 			ZoneName:          pulumi.String(locals.ZoneName),
 			ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			Ttl:               pulumi.Int(ttl),
-			Records:           pulumi.ToStringArray(spec.Aaaa),
+			Records:           pulumi.ToStringArray(stringValues(spec.Aaaa)),
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		}, pulumi.Provider(azureProvider))
 		if err != nil {
@@ -101,7 +102,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1alpha1.Az
 		for _, entry := range spec.Mx {
 			mxRecords = append(mxRecords, &privatedns.MxRecordRecordArgs{
 				Preference: pulumi.Int(int(entry.GetPreference())),
-				Exchange:   pulumi.String(entry.Exchange),
+				Exchange:   pulumi.String(entry.Exchange.GetValue()),
 			})
 		}
 		created, err := privatedns.NewMxRecord(ctx, "main", &privatedns.MxRecordArgs{
@@ -124,7 +125,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1alpha1.Az
 			ZoneName:          pulumi.String(locals.ZoneName),
 			ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			Ttl:               pulumi.Int(ttl),
-			Records:           pulumi.ToStringArray(spec.Ptr),
+			Records:           pulumi.ToStringArray(stringValues(spec.Ptr)),
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		}, pulumi.Provider(azureProvider))
 		if err != nil {
@@ -140,7 +141,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1alpha1.Az
 				Priority: pulumi.Int(int(entry.GetPriority())),
 				Weight:   pulumi.Int(int(entry.GetWeight())),
 				Port:     pulumi.Int(int(entry.GetPort())),
-				Target:   pulumi.String(entry.Target),
+				Target:   pulumi.String(entry.Target.GetValue()),
 			})
 		}
 		created, err := privatedns.NewSRVRecord(ctx, "main", &privatedns.SRVRecordArgs{
@@ -191,4 +192,14 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1alpha1.Az
 	ctx.Export(OpFqdn, fqdn)
 
 	return nil
+}
+
+// stringValues resolves each value-or-reference entry to the string the
+// provider receives (references are resolved to values before the module runs).
+func stringValues(entries []*foreignkeyv1.StringValueOrRef) []string {
+	values := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		values = append(values, entry.GetValue())
+	}
+	return values
 }

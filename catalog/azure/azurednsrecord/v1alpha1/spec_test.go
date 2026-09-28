@@ -47,7 +47,7 @@ func validResource() *AzureDnsRecord {
 			ZoneName:      ref("my-zone"),
 			Name:          "www",
 			A: &AzureDnsARecord{
-				Addresses: []string{"203.0.113.10"},
+				Addresses: []*foreignkeyv1.StringValueOrRef{literal("203.0.113.10")},
 			},
 		},
 	}
@@ -63,9 +63,24 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				gomega.Expect(err).To(gomega.BeNil())
 			})
 
+			ginkgo.It("should accept an A record whose address is another resource's output", func() {
+				input := validResource()
+				input.Spec.A.Addresses = []*foreignkeyv1.StringValueOrRef{ref("web-public-ip")}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
+			ginkgo.It("should accept an NS delegation whose name servers are another zone's outputs", func() {
+				input := validResource()
+				input.Spec.A = nil
+				input.Spec.Ns = []*foreignkeyv1.StringValueOrRef{ref("team-zone"), literal("ns2-01.azure-dns.net")}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.BeNil())
+			})
+
 			ginkgo.It("should accept a multi-address A record with a TTL and tags", func() {
 				input := validResource()
-				input.Spec.A.Addresses = []string{"203.0.113.10", "203.0.113.11"}
+				input.Spec.A.Addresses = []*foreignkeyv1.StringValueOrRef{literal("203.0.113.10"), literal("203.0.113.11")}
 				ttl := int32(60)
 				input.Spec.TtlSeconds = &ttl
 				input.Spec.Tags = map[string]string{"team": "web"}
@@ -87,7 +102,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input := validResource()
 				input.Spec.A = nil
 				input.Spec.Aaaa = &AzureDnsAaaaRecord{
-					Addresses: []string{"2001:db8::1"},
+					Addresses: []*foreignkeyv1.StringValueOrRef{literal("2001:db8::1")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -124,8 +139,8 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input.Spec.A = nil
 				input.Spec.Name = "@"
 				input.Spec.Mx = []*AzureDnsMxEntry{
-					{Preference: int32Ptr(10), Exchange: "mail1.example.com"},
-					{Preference: int32Ptr(20), Exchange: "mail2.example.com"},
+					{Preference: int32Ptr(10), Exchange: literal("mail1.example.com")},
+					{Preference: int32Ptr(20), Exchange: literal("mail2.example.com")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -136,7 +151,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input.Spec.A = nil
 				input.Spec.Name = "@"
 				input.Spec.Mx = []*AzureDnsMxEntry{
-					{Preference: int32Ptr(0), Exchange: "."},
+					{Preference: int32Ptr(0), Exchange: literal(".")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -147,7 +162,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input.Spec.A = nil
 				input.Spec.Name = "_sip._tcp"
 				input.Spec.Srv = []*AzureDnsSrvEntry{
-					{Priority: int32Ptr(0), Weight: int32Ptr(5), Port: int32Ptr(5060), Target: "sip.example.com"},
+					{Priority: int32Ptr(0), Weight: int32Ptr(5), Port: int32Ptr(5060), Target: literal("sip.example.com")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -197,7 +212,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input := validResource()
 				input.Spec.A = nil
 				input.Spec.Name = "team"
-				input.Spec.Ns = []string{"ns1-01.azure-dns.com.", "ns2-01.azure-dns.net."}
+				input.Spec.Ns = []*foreignkeyv1.StringValueOrRef{literal("ns1-01.azure-dns.com."), literal("ns2-01.azure-dns.net.")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -206,7 +221,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input := validResource()
 				input.Spec.A = nil
 				input.Spec.Name = "10"
-				input.Spec.Ptr = []string{"host.example.com"}
+				input.Spec.Ptr = []*foreignkeyv1.StringValueOrRef{literal("host.example.com")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -222,6 +237,21 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 
 	ginkgo.Describe("When invalid input is passed", func() {
 		ginkgo.Context("azure_dns_record", func() {
+
+			ginkgo.It("should return a validation error for a literal A address that is not IPv4", func() {
+				input := validResource()
+				input.Spec.A.Addresses = []*foreignkeyv1.StringValueOrRef{literal("2001:db8::1")}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.MatchError(gomega.ContainSubstring("each literal address is an IPv4 address")))
+			})
+
+			ginkgo.It("should return a validation error for a literal AAAA address that is not IPv6", func() {
+				input := validResource()
+				input.Spec.A = nil
+				input.Spec.Aaaa = &AzureDnsAaaaRecord{Addresses: []*foreignkeyv1.StringValueOrRef{literal("203.0.113.10")}}
+				err := protovalidate.Validate(input)
+				gomega.Expect(err).To(gomega.MatchError(gomega.ContainSubstring("each literal address is an IPv6 address")))
+			})
 
 			ginkgo.It("should return a validation error when no payload is set", func() {
 				input := validResource()
@@ -247,7 +277,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for an A record with both addresses and alias", func() {
 				input := validResource()
 				input.Spec.A = &AzureDnsARecord{
-					Addresses:        []string{"203.0.113.10"},
+					Addresses:        []*foreignkeyv1.StringValueOrRef{literal("203.0.113.10")},
 					TargetResourceId: ref("frontend-public-ip"),
 				}
 				err := protovalidate.Validate(input)
@@ -256,7 +286,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 
 			ginkgo.It("should return a validation error for an A record with an invalid IPv4 address", func() {
 				input := validResource()
-				input.Spec.A.Addresses = []string{"999.0.113.10"}
+				input.Spec.A.Addresses = []*foreignkeyv1.StringValueOrRef{literal("999.0.113.10")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -264,7 +294,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for an AAAA record with an IPv4 address", func() {
 				input := validResource()
 				input.Spec.A = nil
-				input.Spec.Aaaa = &AzureDnsAaaaRecord{Addresses: []string{"203.0.113.10"}}
+				input.Spec.Aaaa = &AzureDnsAaaaRecord{Addresses: []*foreignkeyv1.StringValueOrRef{literal("203.0.113.10")}}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -291,7 +321,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for an MX entry without a preference", func() {
 				input := validResource()
 				input.Spec.A = nil
-				input.Spec.Mx = []*AzureDnsMxEntry{{Exchange: "mail.example.com"}}
+				input.Spec.Mx = []*AzureDnsMxEntry{{Exchange: literal("mail.example.com")}}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -307,7 +337,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for an out-of-range MX preference", func() {
 				input := validResource()
 				input.Spec.A = nil
-				input.Spec.Mx = []*AzureDnsMxEntry{{Preference: int32Ptr(70000), Exchange: "mail.example.com"}}
+				input.Spec.Mx = []*AzureDnsMxEntry{{Preference: int32Ptr(70000), Exchange: literal("mail.example.com")}}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -317,7 +347,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input.Spec.A = nil
 				input.Spec.Name = "_sip._tcp"
 				input.Spec.Srv = []*AzureDnsSrvEntry{
-					{Priority: int32Ptr(0), Weight: int32Ptr(5), Target: "sip.example.com"},
+					{Priority: int32Ptr(0), Weight: int32Ptr(5), Target: literal("sip.example.com")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())
@@ -328,7 +358,7 @@ var _ = ginkgo.Describe("AzureDnsRecordSpec Validation Tests", func() {
 				input.Spec.A = nil
 				input.Spec.Name = "_sip._tcp"
 				input.Spec.Srv = []*AzureDnsSrvEntry{
-					{Priority: int32Ptr(0), Weight: int32Ptr(5), Port: int32Ptr(70000), Target: "sip.example.com"},
+					{Priority: int32Ptr(0), Weight: int32Ptr(5), Port: int32Ptr(70000), Target: literal("sip.example.com")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

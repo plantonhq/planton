@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0emailprovider.v1alpha1;
+
+import "catalog/auth0/auth0emailprovider/v1alpha1/api.proto";
+import "catalog/auth0/provider.proto";
+
+// Auth0EmailProviderStackInput is the input to the Auth0EmailProvider IaC module.
+// It contains the target resource and the Auth0 provider configuration.
+message Auth0EmailProviderStackInput {
+  // target is the Auth0EmailProvider resource to be deployed.
+  Auth0EmailProvider target = 1;
+
+  // provider_config contains the Auth0 credentials for authentication: the
+  // tenant's domain and a Machine-to-Machine application's client id and secret.
+  // The application needs read:email_provider, create:email_provider, update:email_provider and
+  // delete:email_provider on the tenant's Management API.
+  dev.planton.auth0.Auth0ProviderConfig provider_config = 2;
+}

@@ -199,6 +199,7 @@ variable "spec" {
         suspend   = optional(bool, false)
         target    = optional(string)
       })), [])
+      server_name = optional(string, "")
     }))
     workload_identity = optional(object({
       gke = optional(object({

@@ -1,0 +1,28 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Branding
+metadata:
+  name: branding
+  org: example-org
+  env: production
+spec:
+  logoUrl: https://assets.example.com/logo.png
+  # The login box's own look. Every field left out is sent at Auth0's default.
+  theme:
+    displayName: Example
+    borders:
+      buttonsStyle: pill
+      inputsStyle: rounded
+      widgetCornerRadius: 12
+    colors:
+      primaryButton: "#0059d6"
+      linksFocusedComponents: "#0059d6"
+      baseFocusColor: "#0059d6"
+    fonts:
+      title:
+        bold: true
+        size: 125
+    pageBackground:
+      backgroundColor: "#0b1120"
+    widget:
+      logoPosition: left
+      headerTextAlignment: left

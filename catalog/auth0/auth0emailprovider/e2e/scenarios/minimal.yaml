@@ -1,0 +1,22 @@
+# The tenant's email provider set to Resend over SMTP, read back, and
+# deleted. Resend is sent through its SMTP interface because the pinned
+# provider does not accept it by name. The sender is on a domain verified
+# with Resend, and the password (a Resend API key) enters by env reference
+# -- never a literal in the manifest. A tenant has one provider, so the
+# lanes run one after another, each destroying it; the tenant then falls
+# back to Auth0's built-in test provider.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailProvider
+metadata:
+  name: e2e-email-provider
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN,PLANTON_E2E_AUTH0_RESEND_API_KEY
+spec:
+  defaultFromAddress: Planton E2E <e2e@${E2E_ENV:PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN}>
+  smtp:
+    host: smtp.resend.com
+    port: 587
+    user: resend
+    password: ${E2E_ENV:PLANTON_E2E_AUTH0_RESEND_API_KEY}

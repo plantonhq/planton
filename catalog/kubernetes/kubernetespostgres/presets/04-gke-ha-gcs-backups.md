@@ -33,8 +33,10 @@ archive and referencing this cluster's `-app` Secret.
   identity's email flows in by reference from the `GcpServiceAccount`
 - **Two bucket roles** — `objectAdmin` alone fails every archive with
   "does not have storage.buckets.get access"; add `legacyBucketReader`
-- **One destination path per cluster** — a recovered cluster archives to a
-  new path; Barman refuses to write into another cluster's archive
+- **One backup series per install** — Barman refuses to write into another
+  cluster's history, so each install archives into its own series beneath
+  the path (`backup_server_name`); a recovery target names the source's
+  series and keeps its own beside it
 - **What to back up alongside the data** — this cluster's `prod-db-app`
   Secret: the recovered roles keep these passwords, and the recovery target
   references the Secret (`bootstrap.recovery.owner_secret_name`)

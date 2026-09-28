@@ -11,7 +11,13 @@ var vars = struct {
 	// Any stable label works (the entry only exists to carry the recovery
 	// ObjectStore reference); "origin" follows upstream's own examples.
 	RecoverySourceExternalClusterName string
+
+	// BackupSeriesAnnotationKey carries the backup series on the Backup
+	// every series starts from: a changed series changes the Backup, which
+	// replaces it and so takes the new series' first base backup.
+	BackupSeriesAnnotationKey string
 }{
 	BarmanCloudPluginName:             "barman-cloud.cloudnative-pg.io",
 	RecoverySourceExternalClusterName: "origin",
+	BackupSeriesAnnotationKey:         "planton.ai/backup-series",
 }

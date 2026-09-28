@@ -1,0 +1,23 @@
+# One prompt with two screens, listed out of screen-name order: the
+# passwordless prompt's SMS and email-code screens, each with fragments at
+# two insertion points. Both render into one set Auth0 replaces whole, the
+# modules declare the screens in the order the provider reads them back
+# (email code, then SMS), so a second plan shows no change, and destroy
+# removes every partial of the prompt.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptScreenPartials
+metadata:
+  name: e2e-passwordless-partials
+  org: e2e-org
+  env: testing
+spec:
+  promptType: login-passwordless
+  screenPartials:
+    - screenName: login-passwordless-sms-otp
+      insertionPoints:
+        formContentStart: <div class="e2e-notice">Enter the code we texted you.</div>
+        formFooterEnd: <div class="e2e-help">No code? Write to support@example.com.</div>
+    - screenName: login-passwordless-email-code
+      insertionPoints:
+        formContentStart: <div class="e2e-notice">Enter the code we emailed you.</div>
+        formFooterEnd: <div class="e2e-help">No code? Write to support@example.com.</div>

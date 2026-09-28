@@ -1,0 +1,31 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "module",
+    srcs = [
+        "branding.go",
+        "branding_theme.go",
+        "locals.go",
+        "main.go",
+        "outputs.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/auth0/auth0branding/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/auth0/auth0branding/v1alpha1",
+        "@com_github_pkg_errors//:errors",
+        "@com_github_pulumi_pulumi_auth0_sdk_v3//go/auth0",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)
+
+go_test(
+    name = "module_test",
+    srcs = ["locals_test.go"],
+    embed = [":module"],
+    deps = [
+        "//catalog/auth0/auth0branding/v1alpha1",
+        "//shared",
+        "@org_golang_google_protobuf//proto",
+    ],
+)

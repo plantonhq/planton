@@ -81,16 +81,27 @@ message AzurePrivateDnsRecordSpec {
 
   // IPv4 addresses this name answers with; multiple addresses
   // round-robin. Azure caps an A record set at 20 addresses. Set
-  // exactly one payload field on this spec.
-  repeated string a = 5 [
+  // exactly one payload field on this spec. Each entry can be a literal or
+  // a reference to another resource's address output (a private endpoint,
+  // an internal load balancer's frontend).
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef a = 5 [
     (buf.validate.field).repeated.max_items = 20,
-    (buf.validate.field).repeated.items.string.ipv4 = true
+    (buf.validate.field).cel = {
+      id: "azure_private_dns_a_ipv4"
+      message: "each literal address is an IPv4 address"
+      expression: "this.all(v, !has(v.value) || v.value.isIp(4))"
+    }
   ];
 
   // IPv6 addresses this name answers with (e.g. "2001:db8::1" -- Azure
   // normalizes the compressed form); multiple addresses round-robin.
-  // Set exactly one payload field on this spec.
-  repeated string aaaa = 6 [(buf.validate.field).repeated.items.string.ipv6 = true];
+  // Set exactly one payload field on this spec. Each entry can be a literal
+  // or a reference to another resource's address output.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef aaaa = 6 [(buf.validate.field).cel = {
+    id: "azure_private_dns_aaaa_ipv6"
+    message: "each literal address is an IPv6 address"
+    expression: "this.all(v, !has(v.value) || v.value.isIp(6))"
+  }];
 
   // Canonical-name record: the hostname this name is an alias for (e.g.
   // "db.internal.contoso.com"). A reference or a literal: reference
@@ -109,10 +120,12 @@ message AzurePrivateDnsRecordSpec {
 
   // Pointer hostnames for reverse DNS (IP-to-name, in private
   // in-addr.arpa / ip6.arpa zones). Set exactly one payload field on
-  // this spec.
-  repeated string ptr = 9 [(buf.validate.field).repeated.items.string = {
-    min_len: 1
-    max_len: 253
+  // this spec. Each entry can be a literal or a reference to another
+  // resource's hostname output.
+  repeated dev.planton.shared.foreignkey.v1.StringValueOrRef ptr = 9 [(buf.validate.field).cel = {
+    id: "azure_private_dns_ptr_max_len"
+    message: "each literal hostname is at most 253 characters"
+    expression: "this.all(v, !has(v.value) || v.value.size() <= 253)"
   }];
 
   // Service-locator entries (SIP, LDAP, Kerberos, ...). The record NAME
@@ -153,10 +166,15 @@ message AzurePrivateDnsMxEntry {
     }
   ];
 
-  // The mail server hostname (e.g. "mail.internal.contoso.com").
-  string exchange = 2 [
+  // The mail server hostname (e.g. "mail.internal.contoso.com"), a literal
+  // or a reference to another resource's hostname output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef exchange = 2 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.max_len = 253
+    (buf.validate.field).cel = {
+      id: "azure_private_dns_mx_exchange_max_len"
+      message: "a literal hostname is at most 253 characters"
+      expression: "!has(this.value) || this.value.size() <= 253"
+    }
   ];
 }
 
@@ -193,9 +211,14 @@ message AzurePrivateDnsSrvEntry {
   ];
 
   // The hostname providing the service (e.g. "sip.internal.contoso.com").
-  // Must be a hostname with its own A/AAAA record, never an IP address.
-  string target = 4 [
+  // Must be a hostname with its own A/AAAA record, never an IP address. A
+  // literal or a reference to another resource's hostname output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 4 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string.max_len = 253
+    (buf.validate.field).cel = {
+      id: "azure_private_dns_srv_target_max_len"
+      message: "a literal hostname is at most 253 characters"
+      expression: "!has(this.value) || this.value.size() <= 253"
+    }
   ];
 }

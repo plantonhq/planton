@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0promptcustomtext.v1alpha1;
+
+import "buf/validate/validate.proto";
+
+// Auth0PromptCustomTextSpec manages the words one Universal Login prompt shows in
+// one language, on the tenant the provider connection's credential belongs to.
+//
+// A prompt is one step of the login flow (login, signup, reset-password, the
+// multi-factor challenges, ...), and each prompt has one or more screens. Auth0
+// stores one custom text per prompt and language, and this resource owns all of
+// it: every screen and key the spec leaves out shows Auth0's default words, and
+// a key Auth0 later adds shows its default until you declare it. The screens and
+// keys each prompt offers are listed in Auth0's customization reference; a key
+// may use Universal Login's variables (for example ${clientName} or
+// ${companyName}).
+//
+// Destroying the resource returns the prompt to Auth0's default words in that
+// language. Custom text needs the Universal Login experience "new"
+// (Auth0Prompt).
+//
+// The credential needs read:prompts and update:prompts on the tenant's
+// Management API (iac/permissions.yaml).
+//
+// https://auth0.com/docs/customize/login-pages/universal-login/customize-text-elements
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt_custom_text
+message Auth0PromptCustomTextSpec {
+  // prompt is the step of the login flow the words belong to. With language it
+  // is the custom text's identity in Auth0: treat both as fixed, and declare a
+  // second resource for another prompt or language (a change in place would
+  // write the new pair and leave the old pair's words as they were).
+  string prompt = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: [
+        "login",
+        "login-id",
+        "login-password",
+        "login-passwordless",
+        "login-email-verification",
+        "signup",
+        "signup-id",
+        "signup-password",
+        "phone-identifier-enrollment",
+        "phone-identifier-challenge",
+        "email-identifier-challenge",
+        "reset-password",
+        "custom-form",
+        "consent",
+        "customized-consent",
+        "logout",
+        "mfa-push",
+        "mfa-otp",
+        "mfa-voice",
+        "mfa-phone",
+        "mfa-webauthn",
+        "mfa-sms",
+        "mfa-email",
+        "mfa-recovery-code",
+        "mfa",
+        "status",
+        "device-flow",
+        "email-verification",
+        "email-otp-challenge",
+        "organizations",
+        "invitation",
+        "common",
+        "passkeys",
+        "captcha",
+        "brute-force-protection",
+        "confirmation"
+      ]
+    }
+  ];
+
+  // language is the language the words are shown in, as Auth0 names it (for
+  // example "en", "fr-CA", "pt-BR", "zh-TW"). The tenant must list the
+  // language among its enabled languages for Universal Login to show it, and
+  // Auth0 checks the code against its current language list when the resource
+  // is applied. Fixed, like prompt.
+  string language = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).cel = {
+      id: "spec.language.format"
+      message: "language is a language code as Auth0 names it, such as en, fr-CA, es-419 or zh-TW"
+      expression: "this.matches('^[a-z]{2,3}(-([A-Z]{2}|[0-9]{3}|[A-Za-z]{4}))?$')"
+    }
+  ];
+
+  // screens maps each screen of the prompt (for example "login" or
+  // "login-id") to the words it shows. The screens a prompt has are named in
+  // Auth0's customization reference.
+  map<string, Auth0PromptScreenText> screens = 3 [(buf.validate.field).map.min_pairs = 1];
+}
+
+// Auth0PromptScreenText is the words one screen shows.
+message Auth0PromptScreenText {
+  // texts maps each text key of the screen (for example "title",
+  // "description", "buttonText", "wrong-credentials") to the words it shows.
+  map<string, string> texts = 1 [(buf.validate.field).map.min_pairs = 1];
+}

@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	awsroute53dnsrecordv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsroute53dnsrecord/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider"
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/pulumi/pulumi-aws/sdk/v7/go/aws/route53"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -65,7 +66,7 @@ func Resources(ctx *pulumi.Context, stackInput *awsroute53dnsrecordv1alpha1.AwsR
 		// The CEL contract guarantees standard records carry a TTL; an
 		// explicit 0 ("never cache") passes through faithfully.
 		recordArgs.Ttl = pulumi.IntPtr(int(spec.GetTtl()))
-		recordArgs.Records = pulumi.ToStringArray(spec.Values)
+		recordArgs.Records = pulumi.ToStringArray(stringValues(spec.Values))
 	}
 
 	if spec.RoutingPolicy != nil {
@@ -166,4 +167,14 @@ func applyRoutingPolicy(
 		// message so the oneof stays uniform.
 		recordArgs.MultivalueAnswerRoutingPolicy = pulumi.Bool(true)
 	}
+}
+
+// stringValues resolves each value-or-reference entry to the string the
+// provider receives (references are resolved to values before the module runs).
+func stringValues(entries []*foreignkeyv1.StringValueOrRef) []string {
+	values := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		values = append(values, entry.GetValue())
+	}
+	return values
 }

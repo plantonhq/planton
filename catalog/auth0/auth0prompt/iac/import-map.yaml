@@ -1,0 +1,15 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0prompt
+spec:
+  # A tenant has one set of prompt settings, and the provider imports it by
+  # any string (its importer passes the id through and reads the settings of
+  # the credential's tenant), so the id is a fixed word.
+  values:
+    - name: prompt_id
+      derivations:
+        - literal: prompt
+      where_to_find: >-
+        Nothing to look up -- any string imports the tenant's one set of
+        prompt settings.

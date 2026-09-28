@@ -1,0 +1,16 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailProvider
+metadata:
+  name: email-provider
+  org: example-org
+  env: production
+spec:
+  defaultFromAddress: Planton <no-reply@planton.ai>
+  ses:
+    # The access key of an IAM user allowed ses:SendRawEmail, by reference to
+    # organization secrets -- never literals.
+    accessKeyId: $secret/ses-access-key-id
+    secretAccessKey: $secret/ses-secret-access-key
+    region: us-east-1
+    # Publishes delivery, bounce and complaint events for Auth0's emails.
+    configurationSetName: auth0-transactional

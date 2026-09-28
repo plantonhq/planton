@@ -1,0 +1,17 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptScreenPartials
+metadata:
+  name: login-id-partials
+  org: example-org
+  env: production
+spec:
+  promptType: login-id
+  screenPartials:
+    - screenName: login-id
+      insertionPoints:
+        # A notice at the start of the form, above the email field.
+        formContentStart: |-
+          <div class="planton-notice" role="status">
+            Planton sign-in is under scheduled maintenance on Sunday, 02:00-03:00 UTC.
+            Questions? Write to <a href="mailto:support@planton.ai">support@planton.ai</a>.
+          </div>

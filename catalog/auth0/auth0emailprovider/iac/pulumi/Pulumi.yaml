@@ -1,0 +1,6 @@
+# Auth0EmailProvider Pulumi Module
+# This module manages the email provider of an Auth0 tenant.
+name: auth0-email-provider
+runtime:
+  name: go
+description: Pulumi module for Auth0EmailProvider component

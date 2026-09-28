@@ -375,14 +375,16 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesPostgres: the CloudNativePG naming contract — the
-			// three traffic services, the rw endpoint, and the credential
+			// three traffic services, the rw endpoint, the credential
 			// Secret handles (nested objects that flatten to
-			// password_secret.name etc.).
+			// password_secret.name etc.), and the backup series a recovery
+			// names as its source.
 			name: "KubernetesPostgres",
 			kind: cloudresourcekind.CloudResourceKind_KubernetesPostgres,
 			rawOutputs: map[string]interface{}{
 				"namespace":             "team-alpha",
 				"cluster_name":          "orders-db",
+				"backup_server_name":    "orders-db-7f3a9c21",
 				"rw_service":            "orders-db-rw",
 				"ro_service":            "orders-db-ro",
 				"r_service":             "orders-db-r",
@@ -402,6 +404,7 @@ func TestStackOutputsConformance(t *testing.T) {
 				"namespace", "cluster_name", "rw_service", "ro_service",
 				"r_service", "kube_endpoint", "port_forward_command",
 				"superuser_secret_name", "password_secret", "username_secret",
+				"backup_server_name",
 			},
 		},
 		{

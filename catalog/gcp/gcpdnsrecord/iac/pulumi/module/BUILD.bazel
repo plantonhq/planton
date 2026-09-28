@@ -13,6 +13,7 @@ go_library(
     deps = [
         "//catalog/gcp/gcpdnsrecord/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/gcp/pulumigoogleprovider",
+        "//shared/foreignkey/v1:foreignkey",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp",
         "@com_github_pulumi_pulumi_gcp_sdk_v9//go/gcp/dns",

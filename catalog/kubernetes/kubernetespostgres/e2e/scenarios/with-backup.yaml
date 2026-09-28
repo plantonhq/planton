@@ -1,19 +1,25 @@
-# The backup proof: WAL archiving plus an immediate base backup into the
-# in-cluster MinIO fixture, through the Barman Cloud plugin — the full
-# plugin-era backup chain (ObjectStore + Cluster plugin wiring +
+# The backup proof: WAL archiving plus base backups into the in-cluster
+# S3-compatible fixture (SeaweedFS), through the Barman Cloud plugin — the
+# full # plugin-era backup chain (ObjectStore + Cluster plugin wiring +
 # ScheduledBackup) proven live with no cloud account. The plugin is
 # declared here as a kind prerequisite (its own chain brings cert-manager
 # and the operator; a backup block without the plugin parks the Cluster in
 # the operator's unknown-plugin phase). The verifier (switched on by this
-# scenario's name) waits for the immediate schedule's Backup to reach
-# Completed. Declared credentials (owner password, a managed role, the
-# superuser, MinIO keys) exercise every secret-materialization path.
+# scenario's name) proves the cluster archives into a backup series of its
+# own install (the ObjectStore's name plus the first 8 characters of its
+# UID), that ContinuousArchiving turns True, and that a base backup reaches
+# Completed. The scenario then REINSTALLS into the same bucket path: the
+# second install must archive into a fresh series, because Barman refuses a
+# series holding another cluster's history ("Expected empty archive").
+# Declared credentials (owner password, a managed role, the superuser, the
+# store's keys) exercise every secret-materialization path.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesPostgres
 metadata:
   name: e2e-pg-backup
   annotations:
-    planton.dev/e2e-prerequisites: "KubernetesCnpgBarmanCloudPlugin, catalog/kubernetes/kubernetespostgres/e2e/fixture-minio.yaml"
+    planton.dev/e2e-prerequisites: "KubernetesCnpgBarmanCloudPlugin, catalog/kubernetes/kubernetespostgres/e2e/fixture-s3.yaml"
+    planton.dev/e2e-reinstall: "true"
 spec:
   namespace:
     value: e2e-pg-backup
@@ -40,11 +46,11 @@ spec:
     object_store:
       destination_path: s3://pg-backups/e2e-pg-backup
       s3:
-        region: minio
-        endpoint_url: http://minio.e2e-postgres-minio.svc.cluster.local:9000
+        region: us-east-1
+        endpoint_url: http://s3.e2e-postgres-s3.svc.cluster.local:9000
         access_keys:
-          access_key_id: minioadmin
-          secret_access_key: minioadmin
+          access_key_id: e2e-access-key
+          secret_access_key: e2e-secret-key
       wal:
         compression: gzip
       data:

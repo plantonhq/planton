@@ -60,7 +60,8 @@ spec:
         priority: 10
         weight: 5
         port: 5060
-        target: sip.planton-example.com
+        target:
+          value: sip.planton-example.com
     - name: "@"
       type: CAA
       caa:
@@ -70,7 +71,8 @@ spec:
       type: HTTPS
       https:
         priority: 1
-        target: "."
+        target:
+          value: "."
         value: alpn="h2"
   dnsSettings:
     flattenAllCnames: true
@@ -124,7 +126,7 @@ spec:
 | `spec.records[].ds.digest` | `string` | yes |  |  |
 | `spec.records[].https` | `HttpsData` |  |  |  |
 | `spec.records[].https.priority` | `uint32` |  |  |  |
-| `spec.records[].https.target` | `string` | yes |  |  |
+| `spec.records[].https.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].https.value` | `string` |  |  |  |
 | `spec.records[].loc` | `LocData` |  |  |  |
 | `spec.records[].loc.latDirection` | `string` |  |  |  |
@@ -155,14 +157,14 @@ spec:
 | `spec.records[].srv.priority` | `uint32` |  |  |  |
 | `spec.records[].srv.weight` | `uint32` |  |  |  |
 | `spec.records[].srv.port` | `uint32` |  |  |  |
-| `spec.records[].srv.target` | `string` | yes |  |  |
+| `spec.records[].srv.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].sshfp` | `SshfpData` |  |  |  |
 | `spec.records[].sshfp.algorithm` | `uint32` |  |  |  |
 | `spec.records[].sshfp.type` | `uint32` |  |  |  |
 | `spec.records[].sshfp.fingerprint` | `string` | yes |  |  |
 | `spec.records[].svcb` | `SvcbData` |  |  |  |
 | `spec.records[].svcb.priority` | `uint32` |  |  |  |
-| `spec.records[].svcb.target` | `string` | yes |  |  |
+| `spec.records[].svcb.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].svcb.value` | `string` |  |  |  |
 | `spec.records[].tlsa` | `TlsaData` |  |  |  |
 | `spec.records[].tlsa.usage` | `uint32` |  |  |  |
@@ -172,7 +174,7 @@ spec:
 | `spec.records[].uri` | `UriData` |  |  |  |
 | `spec.records[].uri.priority` | `uint32` |  |  |  |
 | `spec.records[].uri.weight` | `uint32` |  |  |  |
-| `spec.records[].uri.target` | `string` | yes |  |  |
+| `spec.records[].uri.target` | `string \| valueFrom` | yes |  |  |
 | `spec.records[].tags` | `[]string` |  |  |  |
 | `spec.records[].settings` | `CloudflareDnsZoneRecordSettings` |  |  |  |
 | `spec.records[].settings.ipv4Only` | `bool` |  |  |  |
@@ -515,11 +517,13 @@ records evaluated in ascending priority order.
 
 ### spec.records[].https.target
 
-`string` · required
+`string | valueFrom` · required
 
 Target hostname (".": the owner name; or a specific endpoint).
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].https.value
 
@@ -745,11 +749,13 @@ TCP/UDP port of the service (0-65535).
 
 ### spec.records[].srv.target
 
-`string` · required
+`string | valueFrom` · required
 
 Hostname of the machine providing the service.
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].sshfp
 
@@ -797,11 +803,13 @@ Priority (0-65535). 0 selects AliasMode; higher values are ServiceMode.
 
 ### spec.records[].svcb.target
 
-`string` · required
+`string | valueFrom` · required
 
 Target hostname (".": the owner name; or a specific endpoint).
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].svcb.value
 
@@ -871,11 +879,13 @@ Relative weight among URIs with the same priority (0-65535).
 
 ### spec.records[].uri.target
 
-`string` · required
+`string | valueFrom` · required
 
 The target URI (e.g. "https://example.com/path").
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.records[].tags
 

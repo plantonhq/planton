@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0emailprovider.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/auth0/auth0emailprovider/v1alpha1/outputs.proto";
+import "catalog/auth0/auth0emailprovider/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// Auth0EmailProvider is a component that manages the service an Auth0 tenant
+// sends its emails through: verification, password reset, invitations and
+// multi-factor codes leave from your own sending domain instead of Auth0's
+// built-in test provider, which is meant only for trying Auth0 out.
+//
+// A tenant has one email provider, so one Auth0EmailProvider resource per
+// tenant. Destroying it deletes the provider, and the tenant falls back to
+// Auth0's built-in one.
+//
+// Use cases:
+// - Send the tenant's emails from no-reply@acme.com through SMTP, SES,
+//   SendGrid, Mailgun, SparkPost, Mandrill, Azure Communication Services or
+//   Microsoft 365
+// - Route Auth0's emails through the same sending domain as the product's own
+//
+// Example manifest:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0EmailProvider
+// metadata:
+//   name: email-provider
+//   org: my-organization
+// spec:
+//   defaultFromAddress: Acme <no-reply@acme.com>
+//   smtp:
+//     host: smtp.example.com
+//     port: 587
+//     user: auth0
+//     password: $secret/smtp-password
+// ```
+message Auth0EmailProvider {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0EmailProvider" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0EmailProvider'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the sender, the service, and its credentials.
+  Auth0EmailProviderSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the resource as applied, populated after deployment.
+  Auth0EmailProviderStatus status = 5;
+}
+
+// Auth0EmailProviderStatus represents the current state of a Auth0EmailProvider resource.
+// Populated by the deployment system.
+message Auth0EmailProviderStatus {
+  // outputs contains the stack outputs: the provider as applied.
+  Auth0EmailProviderStackOutputs outputs = 1;
+}

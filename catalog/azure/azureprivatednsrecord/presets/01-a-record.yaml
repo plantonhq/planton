@@ -8,5 +8,5 @@ spec:
       name: <your-azure-private-dns-zone-resource-name> # references the AzurePrivateDnsZone component's zone_id output; use `value: <zone-arm-id>` instead for a zone managed outside Planton
   name: db
   a:
-    - "10.0.4.5"
+    - value: "10.0.4.5"
   ttlSeconds: 300

@@ -27,10 +27,10 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 func int32Ptr(v int32) *int32 { return &v }
 
 // hostAddresses returns n distinct syntactically valid IPv4 addresses.
-func hostAddresses(n int) []string {
-	addresses := make([]string, 0, n)
+func hostAddresses(n int) []*foreignkeyv1.StringValueOrRef {
+	addresses := make([]*foreignkeyv1.StringValueOrRef, 0, n)
 	for i := 1; i <= n; i++ {
-		addresses = append(addresses, "10.0.0."+strconv.Itoa(i))
+		addresses = append(addresses, literal("10.0.0."+strconv.Itoa(i)))
 	}
 	return addresses
 }
@@ -49,7 +49,7 @@ func validResource() *AzurePrivateDnsRecord {
 		Spec: &AzurePrivateDnsRecordSpec{
 			PrivateDnsZoneId: literal(testZoneId),
 			Name:             "db",
-			A:                []string{"10.0.0.5"},
+			A:                []*foreignkeyv1.StringValueOrRef{literal("10.0.0.5")},
 		},
 	}
 }
@@ -76,7 +76,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should accept an AAAA record with compressed IPv6 addresses", func() {
 				input := validResource()
 				input.Spec.A = nil
-				input.Spec.Aaaa = []string{"2001:db8::1", "2001:db8::2"}
+				input.Spec.Aaaa = []*foreignkeyv1.StringValueOrRef{literal("2001:db8::1"), literal("2001:db8::2")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -94,8 +94,8 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 				input.Spec.A = nil
 				input.Spec.Name = "@"
 				input.Spec.Mx = []*AzurePrivateDnsMxEntry{
-					{Preference: int32Ptr(10), Exchange: "mail1.internal.contoso.com"},
-					{Preference: int32Ptr(20), Exchange: "mail2.internal.contoso.com"},
+					{Preference: int32Ptr(10), Exchange: literal("mail1.internal.contoso.com")},
+					{Preference: int32Ptr(20), Exchange: literal("mail2.internal.contoso.com")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -105,7 +105,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 				input := validResource()
 				input.Spec.A = nil
 				input.Spec.Name = "5"
-				input.Spec.Ptr = []string{"db.internal.contoso.com"}
+				input.Spec.Ptr = []*foreignkeyv1.StringValueOrRef{literal("db.internal.contoso.com")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -115,7 +115,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 				input.Spec.A = nil
 				input.Spec.Name = "_sip._tcp"
 				input.Spec.Srv = []*AzurePrivateDnsSrvEntry{
-					{Priority: int32Ptr(0), Weight: int32Ptr(5), Port: int32Ptr(5060), Target: "sip.internal.contoso.com"},
+					{Priority: int32Ptr(0), Weight: int32Ptr(5), Port: int32Ptr(5060), Target: literal("sip.internal.contoso.com")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).To(gomega.BeNil())
@@ -171,7 +171,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 
 			ginkgo.It("should return a validation error for a malformed IPv4 address", func() {
 				input := validResource()
-				input.Spec.A = []string{"10.0.0.999"}
+				input.Spec.A = []*foreignkeyv1.StringValueOrRef{literal("10.0.0.999")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())
 			})
@@ -179,7 +179,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for a malformed IPv6 address", func() {
 				input := validResource()
 				input.Spec.A = nil
-				input.Spec.Aaaa = []string{"not-an-ip"}
+				input.Spec.Aaaa = []*foreignkeyv1.StringValueOrRef{literal("not-an-ip")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())
 			})
@@ -210,7 +210,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for an MX preference beyond the 16-bit range", func() {
 				input := validResource()
 				input.Spec.A = nil
-				input.Spec.Mx = []*AzurePrivateDnsMxEntry{{Preference: int32Ptr(65536), Exchange: "mail.internal.contoso.com"}}
+				input.Spec.Mx = []*AzurePrivateDnsMxEntry{{Preference: int32Ptr(65536), Exchange: literal("mail.internal.contoso.com")}}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())
 			})
@@ -219,7 +219,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 				input := validResource()
 				input.Spec.A = nil
 				input.Spec.Srv = []*AzurePrivateDnsSrvEntry{
-					{Priority: int32Ptr(0), Weight: int32Ptr(0), Port: int32Ptr(0), Target: "sip.internal.contoso.com"},
+					{Priority: int32Ptr(0), Weight: int32Ptr(0), Port: int32Ptr(0), Target: literal("sip.internal.contoso.com")},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())
@@ -238,7 +238,7 @@ var _ = ginkgo.Describe("AzurePrivateDnsRecordSpec Validation Tests", func() {
 			ginkgo.It("should return a validation error for an empty PTR hostname", func() {
 				input := validResource()
 				input.Spec.A = nil
-				input.Spec.Ptr = []string{""}
+				input.Spec.Ptr = []*foreignkeyv1.StringValueOrRef{literal("")}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).NotTo(gomega.BeNil())
 			})

@@ -33,8 +33,9 @@ message DigitalOceanDnsZoneSpec {
   // shares the apex A record set (and therefore the TTL) with any apex A
   // records you declare. Prefer declaring an apex A record in `records`,
   // which is tracked and updatable; use this only when migrating a
-  // configuration that already relies on it.
-  string ip_address = 3;
+  // configuration that already relies on it. A literal or a reference to
+  // another resource's address output (a load balancer's IP).
+  dev.planton.shared.foreignkey.v1.StringValueOrRef ip_address = 3;
 }
 
 // A DNS record entry managed inside the zone. The same type-conditional

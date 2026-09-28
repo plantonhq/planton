@@ -153,7 +153,7 @@ func buildDnsRecordData(spec *cloudflarednsrecordv1alpha1.CloudflareDnsRecordSpe
 		d := spec.GetHttps()
 		return cloudflare.DnsRecordDataArgs{
 			Priority: f64(d.Priority),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 			Value:    pulumi.String(d.Value),
 		}
 	case spec.GetLoc() != nil:
@@ -196,7 +196,7 @@ func buildDnsRecordData(spec *cloudflarednsrecordv1alpha1.CloudflareDnsRecordSpe
 			Priority: f64(d.Priority),
 			Weight:   f64(d.Weight),
 			Port:     f64(d.Port),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 		}
 	case spec.GetSshfp() != nil:
 		d := spec.GetSshfp()
@@ -209,7 +209,7 @@ func buildDnsRecordData(spec *cloudflarednsrecordv1alpha1.CloudflareDnsRecordSpe
 		d := spec.GetSvcb()
 		return cloudflare.DnsRecordDataArgs{
 			Priority: f64(d.Priority),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 			Value:    pulumi.String(d.Value),
 		}
 	case spec.GetTlsa() != nil:
@@ -225,7 +225,7 @@ func buildDnsRecordData(spec *cloudflarednsrecordv1alpha1.CloudflareDnsRecordSpe
 		return cloudflare.DnsRecordDataArgs{
 			Priority: f64(d.Priority),
 			Weight:   f64(d.Weight),
-			Target:   pulumi.String(d.Target),
+			Target:   pulumi.String(d.Target.GetValue()),
 		}
 	}
 	return nil

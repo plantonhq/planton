@@ -1,0 +1,62 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: auth0emailtemplate
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: A sender, a subject, a Liquid-templated HTML body and a redirect URL inside Auth0's SaaS control plane, none of them secret; their storage is Auth0's provider-managed posture, with no encryption seam in this spec.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest at this component's level to key (see enc-at-rest); Auth0 exposes no customer-managed-key surface on email templates.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The template terminates no connections. The emails it shapes travel through the tenant's email provider (the auth0emailprovider kind, where Auth0 requires TLS 1.2+ of an SMTP server), and the Management API calls that write it travel to Auth0's HTTPS-only API.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: A template is a configuration object with no endpoint of its own; the emails it renders go to the people they are addressed to.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network surface exists to filter (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The template receives no HTTP requests. The links it carries lead to Auth0's own endpoints, behind Auth0's provider-managed edge.
+    - control_id: rbac
+      status: not_applicable
+      notes: WHO may change the tenant's emails is governed at the Auth0 tenant level -- Management API tokens scoped with the email_templates scopes (iac/permissions.yaml) and dashboard admin roles -- with no per-template access-control surface in this spec.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The template holds no credentials and authenticates to nothing; the credential the IaC runner presents is the provider connection's concern (iac/permissions.yaml).
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: A template carries no credential path of its own. The legacy change_password and password_reset templates are older reset emails, not a weaker authentication path.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The template shapes the verification, reset and multi-factor emails but never how a person proves who they are; the link's lifetime (url_lifetime_in_seconds) bounds how long an emailed link acts for the person, and credential strength lives on the tenant's connections (the auth0connection kind).
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Changes to a template are Management API operations captured in Auth0's tenant logs, and each email sent is logged there too.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the modules expose a metrics surface; delivery metrics are the email provider's sending service's.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The template is declaratively re-creatable from the manifest, so the manifest is the recovery point.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure; availability of Auth0's email flows is Auth0's SaaS platform posture.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: Destroying this resource deletes nothing -- Auth0 has no delete for a template, and the provider's destroy disables it, so the tenant sends Auth0's default email again and the template's last content stays stored in Auth0.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software of its own to patch; Auth0's Liquid renderer is Auth0's SaaS, patched by Auth0.

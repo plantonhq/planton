@@ -22,7 +22,8 @@ spec:
       data_checksums: true
   backup:
     object_store:
-      # s3:// scheme also for S3-compatible stores — one path per cluster.
+      # s3:// scheme also for S3-compatible stores; each install archives
+      # into a backup series of its own beneath the path.
       destination_path: s3://pg-backups/app-db
       s3:
         # S3-compatible stores use the store's expected region value —

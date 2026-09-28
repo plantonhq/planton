@@ -317,6 +317,7 @@ spec:
 | `spec.backup.schedules[].immediate` | `bool` |  |  |  |
 | `spec.backup.schedules[].suspend` | `bool` |  |  |  |
 | `spec.backup.schedules[].target` | `string` |  | `prefer-standby` |  |
+| `spec.backup.serverName` | `string` |  |  |  |
 | `spec.workloadIdentity` | `KubernetesWorkloadIdentity` |  |  |  |
 | `spec.workloadIdentity.gke` | `KubernetesWorkloadIdentityGke` |  |  |  |
 | `spec.workloadIdentity.gke.serviceAccountEmail` | `string \| valueFrom` | yes |  | GcpServiceAccount (`status.outputs.email`) |
@@ -758,9 +759,9 @@ and replays WAL to the requested target.
 The object store holding the source cluster's backups. Rendered as a
 SECOND Barman Cloud ObjectStore resource (`<name>-recovery-source`)
 — recovery reads from here while the backup block (if any) writes
-the new cluster's own backups elsewhere. Never point both at the
-same destination path: the new cluster would overwrite the archive
-it restored from.
+the new cluster's own backups into a series of its own. Both may
+name the same destination path: series are folders beneath it, and
+the new cluster's series is never the one it restored from.
 
 - rule: {"required":true}
 - rule: the s3 backend stores at an s3:// destination path (also for S3-compatible stores like MinIO and R2)
@@ -776,14 +777,11 @@ Where in the store the data lives — the backend's native URI form:
 `s3://bucket/path` for S3, Cloudflare R2, and every S3-compatible
 store, `gs://bucket/path` for GCS, and
 `https://<account>.blob.core.windows.net/<container>/<path>` for
-Azure Blob. WAL and base backups are stored under separate folders
-beneath it. One path per PostgreSQL cluster, FOREVER: Barman refuses
-to archive into a path already holding another cluster's WAL (a
-cluster recreated under the same path after a failed attempt, or a
-recovered cluster backing up to the path it restored from), and the
-failure is quiet — the cluster reports healthy while the
-ContinuousArchiving condition stays false and no backup ever lands
-(live-caught). A recovered cluster's own backups go to a NEW path.
+Azure Blob. Each backup series is a folder beneath it (see
+`backup.server_name`), holding its base backups and WAL; a path may
+therefore be shared by several clusters and by every install of one
+cluster, since each install archives into a series of its own. For
+a recovery source, the path the source cluster archived under.
 
 - rule: {"required":true}
 
@@ -1069,9 +1067,13 @@ the checkpoint I/O (faster backup start, heavier I/O spike).
 
 `string` · required
 
-Name the SOURCE cluster's data is stored under in the object store
-(its Cluster name, unless its backups declared a server_name
-override).
+The backup series the SOURCE cluster archived into — the folder
+beneath its destination path that holds its base backups and WAL.
+Copy it from the source's `backup_server_name` output: the source's
+`backup.server_name` when it declared one, otherwise
+`<source-name>-<8 characters>` unique to that install. A series the
+store does not hold surfaces as a cluster that never leaves the
+bootstrap phase.
 
 - rule: {"required":true}
 
@@ -1372,14 +1374,11 @@ Where in the store the data lives — the backend's native URI form:
 `s3://bucket/path` for S3, Cloudflare R2, and every S3-compatible
 store, `gs://bucket/path` for GCS, and
 `https://<account>.blob.core.windows.net/<container>/<path>` for
-Azure Blob. WAL and base backups are stored under separate folders
-beneath it. One path per PostgreSQL cluster, FOREVER: Barman refuses
-to archive into a path already holding another cluster's WAL (a
-cluster recreated under the same path after a failed attempt, or a
-recovered cluster backing up to the path it restored from), and the
-failure is quiet — the cluster reports healthy while the
-ContinuousArchiving condition stays false and no backup ever lands
-(live-caught). A recovered cluster's own backups go to a NEW path.
+Azure Blob. Each backup series is a folder beneath it (see
+`backup.server_name`), holding its base backups and WAL; a path may
+therefore be shared by several clusters and by every install of one
+cluster, since each install archives into a series of its own. For
+a recovery source, the path the source cluster archived under.
 
 - rule: {"required":true}
 
@@ -1675,9 +1674,10 @@ Empty = keep forever. Enforced by the plugin after each backup.
 `[]KubernetesPostgresBackupSchedule`
 
 Scheduled base backups (each rendered as a ScheduledBackup
-resource). At least one schedule is what makes point-in-time
-recovery real — WAL alone cannot be replayed without a base backup
-to start from.
+resource). Every series also starts with one on-demand base backup
+of its own (see `server_name`), so a new series is restorable from
+its first minute; schedules keep it restorable to a recent point
+and bound how much WAL a recovery replays.
 
 - rule: each backup schedule needs a distinct name
 
@@ -1729,6 +1729,34 @@ instance).
 
 - default: `prefer-standby`
 - rule: target must be 'prefer-standby' or 'primary'
+
+### spec.backup.serverName
+
+`string`
+
+The backup SERIES: the folder beneath `destination_path` this
+cluster's base backups and WAL are filed under (Barman's server
+name). Barman refuses to archive into a series that already holds
+another PostgreSQL system's history, and the refusal is quiet: the
+cluster reports healthy while its ContinuousArchiving condition
+stays false, WAL piles up on the data volume, and the volume
+eventually fills and stops the database.
+
+Empty (the default) = a series unique to this install:
+`<name>-<first 8 characters of the backup ObjectStore's UID>`.
+Destroying and recreating the cluster from the same declaration
+therefore archives into a fresh series, while the previous series
+stays in the store, restorable. Importing a live cluster keeps its
+ObjectStore and so its series. Deleting only the Cluster resource by
+hand and re-applying reuses the series; declare a new name then.
+
+Name a series only to continue a specific one, for example when
+adopting a cluster that already archives under its plain name.
+Every series starts with an on-demand base backup
+(`<name>-series-start`), taken when the series is born. The
+effective series is the `backup_server_name` output.
+
+- rule: server_name is a lowercase DNS label of at most 63 characters (letters, numbers, hyphens) — it names a folder in the object store
 
 ### spec.workloadIdentity
 
@@ -2011,6 +2039,10 @@ development clusters where node drains should never block.
 Names of image-pull secrets (in the cluster's namespace) for pulling
 the PostgreSQL image from a private registry.
 
+## Validation Rules
+
+- `spec.backup.server_name_not_recovery_source`: backup.server_name names the series this cluster restores from (bootstrap.recovery.source_server_name) under the same destination_path — Barman refuses to archive into a series holding another cluster's history; leave backup.server_name empty so this cluster archives into a series of its own, or name a different one
+
 ## Outputs
 
 Reference an output from another manifest as `valueFrom: {kind: KubernetesPostgres, name: <resource-name>, fieldPath: status.outputs.<output>}`.
@@ -2031,6 +2063,7 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesPostgr
 | `status.outputs.password_secret.name` | `string` | The name of the Kubernetes Secret. |
 | `status.outputs.password_secret.key` | `string` | The key within the Kubernetes Secret. |
 | `status.outputs.superuser_secret_name` | `string` | Name of the superuser credential Secret (`<name>-superuser`) — populated only when superuser access is enabled, empty otherwise. |
+| `status.outputs.backup_server_name` | `string` | The backup series this cluster archives into — the folder beneath the backup destination path holding its base backups and WAL (`backup.server_name`, or `<name>-<8 characters>` unique to this install). A recovery names it as `source_server_name`. Empty when no backup is declared. |
 
 ## References
 

@@ -101,8 +101,10 @@ type AwsRoute53DnsRecordSpec struct {
 	//
 	// Each value is at most 4,000 characters (AWS's per-value limit).
 	// Mutually exclusive with alias_target — a record is standard or alias,
-	// never both.
-	Values []string `protobuf:"bytes,6,rep,name=values,proto3" json:"values,omitempty"`
+	// never both. Each entry can be a literal or a reference to another
+	// resource's output — a load balancer's address, a zone's name server for
+	// a delegation, a domain-verification record's value.
+	Values []*v1.StringValueOrRef `protobuf:"bytes,6,rep,name=values,proto3" json:"values,omitempty"`
 	// Alias target for A/AAAA alias records: point this name at an AWS
 	// resource (ALB, NLB, CloudFront, S3 website, API Gateway, another record
 	// in the zone) instead of literal addresses. Works at the zone apex,
@@ -197,7 +199,7 @@ func (x *AwsRoute53DnsRecordSpec) GetTtl() int32 {
 	return 0
 }
 
-func (x *AwsRoute53DnsRecordSpec) GetValues() []string {
+func (x *AwsRoute53DnsRecordSpec) GetValues() []*v1.StringValueOrRef {
 	if x != nil {
 		return x.Values
 	}
@@ -963,16 +965,16 @@ var File_catalog_aws_awsroute53dnsrecord_v1alpha1_spec_proto protoreflect.FileDe
 
 const file_catalog_aws_awsroute53dnsrecord_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"3catalog/aws/awsroute53dnsrecord/v1alpha1/spec.proto\x12,dev.planton.aws.awsroute53dnsrecord.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xf9\x11\n" +
+	"3catalog/aws/awsroute53dnsrecord/v1alpha1/spec.proto\x12,dev.planton.aws.awsroute53dnsrecord.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\"\xb7\x13\n" +
 	"\x17AwsRoute53DnsRecordSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12r\n" +
 	"\azone_id\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB%\xbaH\x03\xc8\x01\x01\x88\xd4a\xf4\a\x92\xd4a\x16status.outputs.zone_idR\x06zoneId\x12k\n" +
 	"\x04name\x18\x03 \x01(\tBW\xbaHT\xc8\x01\x01rO2M^(?:\\*\\.[A-Za-z0-9_\\-\\.]+|[A-Za-z0-9_\\-\\.]+\\.[A-Za-z]{2,}|[A-Za-z0-9_\\-\\.]+)$R\x04name\x12w\n" +
 	"\x04type\x18\x04 \x01(\tBc\xbaH`\xc8\x01\x01r[R\x01AR\x04AAAAR\x03CAAR\x05CNAMER\x02DSR\x05HTTPSR\x02MXR\x05NAPTRR\x02NSR\x03PTRR\x03SOAR\x03SPFR\x03SRVR\x05SSHFPR\x04SVCBR\x04TLSAR\x03TXTR\x04type\x12\xa2\x01\n" +
 	"\x03ttl\x18\x05 \x01(\x05B\x8a\x01\xbaH\x86\x01\xba\x01\x82\x01\n" +
-	"\x0fttl.valid_range\x12Nttl must be between 0 and 2147483647 seconds (AWS's contract; 0 = never cache)\x1a\x1fthis >= 0 && this <= 2147483647H\x00R\x03ttl\x88\x01\x01\x12%\n" +
-	"\x06values\x18\x06 \x03(\tB\r\xbaH\n" +
-	"\x92\x01\a\"\x05r\x03\x18\xa0\x1fR\x06values\x12f\n" +
+	"\x0fttl.valid_range\x12Nttl must be between 0 and 2147483647 seconds (AWS's contract; 0 = never cache)\x1a\x1fthis >= 0 && this <= 2147483647H\x00R\x03ttl\x88\x01\x01\x12\xe2\x01\n" +
+	"\x06values\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x95\x01\xbaH\x91\x01\xba\x01\x8d\x01\n" +
+	"\x0evalues.max_len\x12Eeach literal value is at most 4000 characters (AWS's per-value limit)\x1a4this.all(v, !has(v.value) || v.value.size() <= 4000)R\x06values\x12f\n" +
 	"\falias_target\x18\a \x01(\v2C.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53AliasTargetR\valiasTarget\x12l\n" +
 	"\x0erouting_policy\x18\b \x01(\v2E.dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicyR\rroutingPolicy\x12\x83\x01\n" +
 	"\x0fhealth_check_id\x18\t \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB'\x88\xd4a\x98\t\x92\xd4a\x1estatus.outputs.health_check_idR\rhealthCheckId\x12/\n" +
@@ -1057,24 +1059,25 @@ var file_catalog_aws_awsroute53dnsrecord_v1alpha1_spec_proto_goTypes = []any{
 }
 var file_catalog_aws_awsroute53dnsrecord_v1alpha1_spec_proto_depIdxs = []int32{
 	11, // 0: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.zone_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.alias_target:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53AliasTarget
-	2,  // 2: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.routing_policy:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy
-	11, // 3: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.health_check_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	11, // 4: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53AliasTarget.dns_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	11, // 5: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53AliasTarget.zone_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	3,  // 6: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.weighted:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53WeightedPolicy
-	4,  // 7: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.latency:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53LatencyPolicy
-	5,  // 8: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.failover:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53FailoverPolicy
-	6,  // 9: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.geolocation:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53GeolocationPolicy
-	7,  // 10: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.geoproximity:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53GeoproximityPolicy
-	9,  // 11: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.cidr:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53CidrPolicy
-	10, // 12: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.multivalue_answer:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53MultivalueAnswerPolicy
-	8,  // 13: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53GeoproximityPolicy.coordinates:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53Coordinates
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	11, // 1: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.values:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 2: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.alias_target:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53AliasTarget
+	2,  // 3: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.routing_policy:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy
+	11, // 4: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53DnsRecordSpec.health_check_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 5: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53AliasTarget.dns_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	11, // 6: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53AliasTarget.zone_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	3,  // 7: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.weighted:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53WeightedPolicy
+	4,  // 8: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.latency:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53LatencyPolicy
+	5,  // 9: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.failover:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53FailoverPolicy
+	6,  // 10: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.geolocation:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53GeolocationPolicy
+	7,  // 11: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.geoproximity:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53GeoproximityPolicy
+	9,  // 12: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.cidr:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53CidrPolicy
+	10, // 13: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53RoutingPolicy.multivalue_answer:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53MultivalueAnswerPolicy
+	8,  // 14: dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53GeoproximityPolicy.coordinates:type_name -> dev.planton.aws.awsroute53dnsrecord.v1alpha1.AwsRoute53Coordinates
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsroute53dnsrecord_v1alpha1_spec_proto_init() }

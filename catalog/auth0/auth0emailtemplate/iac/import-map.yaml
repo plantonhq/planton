@@ -1,0 +1,15 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0emailtemplate
+spec:
+  # A template imports by its name (verify_email, reset_email, ...), which is
+  # the spec's template field.
+  values:
+    - name: template
+      derivations:
+        - from_spec_field: template
+      where_to_find: >-
+        Auth0 dashboard -> Branding -> Email Templates (the Template dropdown),
+        or `GET /api/v2/email-templates/{templateName}` on the Management API
+        (the template field).

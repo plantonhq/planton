@@ -1,0 +1,23 @@
+apiVersion: iac.planton.dev/v1
+kind: ComponentImportMap
+metadata:
+  name: auth0branding
+spec:
+  # A tenant has one branding: the provider gives the resource a random id at
+  # create and reads the tenant's branding whatever the id, so any id imports
+  # it; the import uses the constant "branding".
+  values:
+    - name: branding_id
+      derivations:
+        - literal: branding
+      where_to_find: >-
+        Any value -- the tenant has one branding, and the provider reads it
+        whatever the id; "branding" is the conventional one.
+    # A tenant has one theme, importing by the identifier Auth0 assigned it,
+    # which a prior deploy reports as its theme_id output.
+    - name: theme_id
+      derivations:
+        - from_stack_output: theme_id
+      where_to_find: >-
+        `GET /api/v2/branding/themes/default` on the Management API (the
+        themeId field of the response).

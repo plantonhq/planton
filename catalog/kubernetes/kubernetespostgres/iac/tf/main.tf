@@ -294,6 +294,24 @@ resource "kubectl_manifest" "cluster" {
   ]
 }
 
+# ---- the Backup the series starts from --------------------------------------------
+# force_new: a changed series (a recreate, an upgrade onto per-install series,
+# a changed server_name) replaces the Backup, and the replacement takes the
+# new series' first base backup.
+resource "kubectl_manifest" "series_start_backup" {
+  count = local.backup != null ? 1 : 0
+
+  yaml_body = yamlencode(local.series_start_backup_manifest)
+
+  server_side_apply = true
+  force_new         = true
+
+  depends_on = [
+    kubernetes_namespace_v1.namespace,
+    kubectl_manifest.cluster,
+  ]
+}
+
 # ---- ScheduledBackups -----------------------------------------------------------
 # One per declared schedule (`<cluster>-<schedule>`). The operator tolerates
 # ScheduledBackups arriving with the Cluster, but ordering them after keeps

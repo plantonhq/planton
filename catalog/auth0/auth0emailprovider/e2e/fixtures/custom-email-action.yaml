@@ -1,0 +1,21 @@
+# The Action the custom-action scenario's provider sends through, deployed
+# and bound to the tenant's custom-email-provider trigger BEFORE the
+# provider is set. It delivers nothing: the lane proves the provider's
+# custom arm, never delivery. A tenant allows one Action on this trigger.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Action
+metadata:
+  name: e2e-custom-email-provider
+  org: e2e-org
+  env: testing
+spec:
+  supported_trigger:
+    id: custom-email-provider
+    version: v1
+  code: |
+    exports.onExecuteCustomEmailProvider = async (event, api) => {
+      console.log('e2e: ' + event.notification.message_type + ' not delivered');
+    };
+  runtime: node22
+  deploy: true
+  trigger_binding: {}

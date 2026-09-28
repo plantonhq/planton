@@ -52,9 +52,11 @@ spec:
   ttlSeconds: 3600
   mx:
     - preference: 10
-      exchange: mail1.internal.contoso.com
+      exchange:
+        value: mail1.internal.contoso.com
     - preference: 20
-      exchange: mail2.internal.contoso.com
+      exchange:
+        value: mail2.internal.contoso.com
   tags:
     cost-center: platform
 ```
@@ -67,18 +69,18 @@ spec:
 | `spec.name` | `string` | yes |  |  |
 | `spec.ttlSeconds` | `int32` |  | `300` |  |
 | `spec.tags` | `map<string, string>` |  |  |  |
-| `spec.a` | `[]string` |  |  |  |
-| `spec.aaaa` | `[]string` |  |  |  |
+| `spec.a` | `[]string \| valueFrom` |  |  |  |
+| `spec.aaaa` | `[]string \| valueFrom` |  |  |  |
 | `spec.cname` | `string \| valueFrom` |  |  |  |
 | `spec.mx` | `[]AzurePrivateDnsMxEntry` |  |  |  |
 | `spec.mx[].preference` | `int32` | yes |  |  |
-| `spec.mx[].exchange` | `string` | yes |  |  |
-| `spec.ptr` | `[]string` |  |  |  |
+| `spec.mx[].exchange` | `string \| valueFrom` | yes |  |  |
+| `spec.ptr` | `[]string \| valueFrom` |  |  |  |
 | `spec.srv` | `[]AzurePrivateDnsSrvEntry` |  |  |  |
 | `spec.srv[].priority` | `int32` | yes |  |  |
 | `spec.srv[].weight` | `int32` | yes |  |  |
 | `spec.srv[].port` | `int32` | yes |  |  |
-| `spec.srv[].target` | `string` | yes |  |  |
+| `spec.srv[].target` | `string \| valueFrom` | yes |  |  |
 | `spec.txt` | `[]string \| valueFrom` |  |  |  |
 
 ## Field Details
@@ -137,23 +139,29 @@ Updatable in place.
 
 ### spec.a
 
-`[]string`
+`[]string | valueFrom`
 
 IPv4 addresses this name answers with; multiple addresses
 round-robin. Azure caps an A record set at 20 addresses. Set
-exactly one payload field on this spec.
+exactly one payload field on this spec. Each entry can be a literal or
+a reference to another resource's address output (a private endpoint,
+an internal load balancer's frontend).
 
-- rule: {"repeated":{"maxItems":"20","items":{"string":{"ipv4":true}}}}
+- rule: each literal address is an IPv4 address
+- rule: {"repeated":{"maxItems":"20"}}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.aaaa
 
-`[]string`
+`[]string | valueFrom`
 
 IPv6 addresses this name answers with (e.g. "2001:db8::1" -- Azure
 normalizes the compressed form); multiple addresses round-robin.
-Set exactly one payload field on this spec.
+Set exactly one payload field on this spec. Each entry can be a literal
+or a reference to another resource's address output.
 
-- rule: {"repeated":{"items":{"string":{"ipv6":true}}}}
+- rule: each literal address is an IPv6 address
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.cname
 
@@ -191,21 +199,26 @@ no-mail convention).
 
 ### spec.mx[].exchange
 
-`string` · required
+`string | valueFrom` · required
 
-The mail server hostname (e.g. "mail.internal.contoso.com").
+The mail server hostname (e.g. "mail.internal.contoso.com"), a literal
+or a reference to another resource's hostname output.
 
-- rule: {"required":true,"string":{"maxLen":"253"}}
+- rule: a literal hostname is at most 253 characters
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.ptr
 
-`[]string`
+`[]string | valueFrom`
 
 Pointer hostnames for reverse DNS (IP-to-name, in private
 in-addr.arpa / ip6.arpa zones). Set exactly one payload field on
-this spec.
+this spec. Each entry can be a literal or a reference to another
+resource's hostname output.
 
-- rule: {"repeated":{"items":{"string":{"minLen":"1","maxLen":"253"}}}}
+- rule: each literal hostname is at most 253 characters
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.srv
 
@@ -244,12 +257,15 @@ The TCP/UDP port the service listens on (e.g. 5060 for SIP).
 
 ### spec.srv[].target
 
-`string` · required
+`string | valueFrom` · required
 
 The hostname providing the service (e.g. "sip.internal.contoso.com").
-Must be a hostname with its own A/AAAA record, never an IP address.
+Must be a hostname with its own A/AAAA record, never an IP address. A
+literal or a reference to another resource's hostname output.
 
-- rule: {"required":true,"string":{"maxLen":"253"}}
+- rule: a literal hostname is at most 253 characters
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.txt
 

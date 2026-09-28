@@ -17,9 +17,9 @@ spec:
       # with no traffic.
       - weight: 95
         values:
-          - <stable-ipv4-address>
+          - value: <stable-ipv4-address>
       - weight: 5
         values:
-          - <canary-ipv4-address>
+          - value: <canary-ipv4-address>
   # Low TTL so weight changes take effect quickly during the rollout.
   ttlSeconds: 60

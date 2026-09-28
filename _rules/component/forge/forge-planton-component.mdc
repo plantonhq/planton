@@ -83,6 +83,27 @@ The bar for every component:
   workflow rule is NOT captured. (The update rule's "Knowledge lands where its READER
   lives" section carries the full reader-to-surface table.)
 
+- **A value another resource produces takes a reference.** Any spec field whose value is a
+  hostname, an address, a name server, a target or an identifier that another catalog kind
+  can output is a `StringValueOrRef` (a `repeated StringValueOrRef` for a list), never a bare
+  string: a DNS record's values, addresses, name servers, mail exchanges, SRV / HTTPS / SVCB /
+  URI targets and pointers; a zone's seeded apex address. Checks that apply to a literal
+  (an IPv4 or IPv6 address, a length) move to CEL on the literal
+  (`this.all(v, !has(v.value) || v.value.isIp(4))`). Material no resource outputs (a CAA
+  tag and value, an SSHFP fingerprint, a TLSA certificate, a DS digest) stays a plain
+  string. Terraform receives a reference as the plain string it resolves to, so only the
+  Pulumi module changes (`.GetValue()`).
+- **A per-install identity comes from the install itself.** When a kind keys something
+  durable outside the cluster or account by a name (a backup series in an object store, an
+  archive prefix, a registration), a destroy and recreate from the same declaration must not
+  reuse its predecessor's key: the store may refuse, quietly, to write one install's history
+  over another's. Derive the key from an object the stack creates earlier in the same run
+  and that lives and dies with the install (its UID), the way `KubernetesPostgres` names its
+  backup series after its ObjectStore's UID; expose the effective key as an output; and
+  offer an optional explicit override for continuing a known key. A random value held only
+  in IaC state is the wrong tool: an import mints a new one. A number a person must remember
+  to bump is the wrong tool too.
+
 This philosophy governs every flow rule below; the per-rule steps are how it is executed, not
 a substitute for it.
 

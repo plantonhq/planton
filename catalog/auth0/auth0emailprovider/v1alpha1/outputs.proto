@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0emailprovider.v1alpha1;
+
+// Auth0EmailProviderStackOutputs contains the email provider as applied.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_provider#attributes-reference
+message Auth0EmailProviderStackOutputs {
+  // name is the service the tenant sends through, as Auth0 names it (for
+  // example "smtp", "ses", "sendgrid").
+  string name = 1;
+
+  // default_from_address is the sender of the tenant's emails.
+  string default_from_address = 2;
+}

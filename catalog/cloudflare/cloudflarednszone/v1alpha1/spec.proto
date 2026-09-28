@@ -583,7 +583,8 @@ message HttpsData {
   uint32 priority = 1 [(buf.validate.field).uint32.lte = 65535];
 
   // Target hostname (".": the owner name; or a specific endpoint).
-  string target = 2 [(buf.validate.field).required = true];
+  // A literal or a reference to another resource's output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 2 [(buf.validate.field).required = true];
 
   // SvcParams string (e.g. "alpn=\"h2,h3\" port=8443").
   string value = 3;
@@ -704,7 +705,8 @@ message SrvData {
   uint32 port = 3 [(buf.validate.field).uint32.lte = 65535];
 
   // Hostname of the machine providing the service.
-  string target = 4 [(buf.validate.field).required = true];
+  // A literal or a reference to another resource's output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 4 [(buf.validate.field).required = true];
 }
 
 // SshfpData is the data for an SSHFP (SSH public-key fingerprint) record.
@@ -725,7 +727,8 @@ message SvcbData {
   uint32 priority = 1 [(buf.validate.field).uint32.lte = 65535];
 
   // Target hostname (".": the owner name; or a specific endpoint).
-  string target = 2 [(buf.validate.field).required = true];
+  // A literal or a reference to another resource's output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 2 [(buf.validate.field).required = true];
 
   // SvcParams string (e.g. "alpn=\"h2\" ipv4hint=\"192.0.2.1\"").
   string value = 3;
@@ -755,5 +758,6 @@ message UriData {
   uint32 weight = 2 [(buf.validate.field).uint32.lte = 65535];
 
   // The target URI (e.g. "https://example.com/path").
-  string target = 3 [(buf.validate.field).required = true];
+  // A literal or a reference to another resource's output.
+  dev.planton.shared.foreignkey.v1.StringValueOrRef target = 3 [(buf.validate.field).required = true];
 }

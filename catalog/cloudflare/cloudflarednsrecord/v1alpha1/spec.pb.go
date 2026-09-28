@@ -923,7 +923,8 @@ type HttpsData struct {
 	// records evaluated in ascending priority order.
 	Priority uint32 `protobuf:"varint,1,opt,name=priority,proto3" json:"priority,omitempty"`
 	// Target hostname (".": the owner name; or a specific endpoint).
-	Target string `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
+	// A literal or a reference to another resource's output.
+	Target *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
 	// SvcParams string (e.g. "alpn=\"h2,h3\" port=8443").
 	Value         string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -967,11 +968,11 @@ func (x *HttpsData) GetPriority() uint32 {
 	return 0
 }
 
-func (x *HttpsData) GetTarget() string {
+func (x *HttpsData) GetTarget() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Target
 	}
-	return ""
+	return nil
 }
 
 func (x *HttpsData) GetValue() string {
@@ -1300,7 +1301,8 @@ type SrvData struct {
 	// TCP/UDP port of the service (0-65535).
 	Port uint32 `protobuf:"varint,3,opt,name=port,proto3" json:"port,omitempty"`
 	// Hostname of the machine providing the service.
-	Target        string `protobuf:"bytes,4,opt,name=target,proto3" json:"target,omitempty"`
+	// A literal or a reference to another resource's output.
+	Target        *v1.StringValueOrRef `protobuf:"bytes,4,opt,name=target,proto3" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1356,11 +1358,11 @@ func (x *SrvData) GetPort() uint32 {
 	return 0
 }
 
-func (x *SrvData) GetTarget() string {
+func (x *SrvData) GetTarget() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Target
 	}
-	return ""
+	return nil
 }
 
 // SshfpData is the data for an SSHFP (SSH public-key fingerprint) record.
@@ -1433,7 +1435,8 @@ type SvcbData struct {
 	// Priority (0-65535). 0 selects AliasMode; higher values are ServiceMode.
 	Priority uint32 `protobuf:"varint,1,opt,name=priority,proto3" json:"priority,omitempty"`
 	// Target hostname (".": the owner name; or a specific endpoint).
-	Target string `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
+	// A literal or a reference to another resource's output.
+	Target *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=target,proto3" json:"target,omitempty"`
 	// SvcParams string (e.g. "alpn=\"h2\" ipv4hint=\"192.0.2.1\"").
 	Value         string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1477,11 +1480,11 @@ func (x *SvcbData) GetPriority() uint32 {
 	return 0
 }
 
-func (x *SvcbData) GetTarget() string {
+func (x *SvcbData) GetTarget() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Target
 	}
-	return ""
+	return nil
 }
 
 func (x *SvcbData) GetValue() string {
@@ -1572,7 +1575,8 @@ type UriData struct {
 	// Relative weight among URIs with the same priority (0-65535).
 	Weight uint32 `protobuf:"varint,2,opt,name=weight,proto3" json:"weight,omitempty"`
 	// The target URI (e.g. "https://example.com/path").
-	Target        string `protobuf:"bytes,3,opt,name=target,proto3" json:"target,omitempty"`
+	// A literal or a reference to another resource's output.
+	Target        *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=target,proto3" json:"target,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1621,11 +1625,11 @@ func (x *UriData) GetWeight() uint32 {
 	return 0
 }
 
-func (x *UriData) GetTarget() string {
+func (x *UriData) GetTarget() *v1.StringValueOrRef {
 	if x != nil {
 		return x.Target
 	}
-	return ""
+	return nil
 }
 
 var File_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto protoreflect.FileDescriptor
@@ -1721,10 +1725,10 @@ const file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_rawDesc = 
 	"\talgorithm\x18\x02 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\talgorithm\x12)\n" +
 	"\vdigest_type\x18\x03 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\n" +
 	"digestType\x12\x1e\n" +
-	"\x06digest\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06digest\"h\n" +
+	"\x06digest\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06digest\"\x9c\x01\n" +
 	"\tHttpsData\x12%\n" +
-	"\bpriority\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\bpriority\x12\x1e\n" +
-	"\x06target\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06target\x12\x14\n" +
+	"\bpriority\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\bpriority\x12R\n" +
+	"\x06target\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x06target\x12\x14\n" +
 	"\x05value\x18\x03 \x01(\tR\x05value\"\xf4\x04\n" +
 	"\aLocData\x120\n" +
 	"\rlat_direction\x18\x01 \x01(\tB\v\xbaH\br\x06R\x01NR\x01SR\flatDirection\x12(\n" +
@@ -1757,29 +1761,29 @@ const file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_rawDesc = 
 	"\x05usage\x18\x01 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\x05usage\x12$\n" +
 	"\bselector\x18\x02 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\bselector\x12-\n" +
 	"\rmatching_type\x18\x03 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\fmatchingType\x12(\n" +
-	"\vcertificate\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vcertificate\"\x92\x01\n" +
+	"\vcertificate\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vcertificate\"\xc6\x01\n" +
 	"\aSrvData\x12%\n" +
 	"\bpriority\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\bpriority\x12!\n" +
 	"\x06weight\x18\x02 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\x06weight\x12\x1d\n" +
-	"\x04port\x18\x03 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\x04port\x12\x1e\n" +
-	"\x06target\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06target\"{\n" +
+	"\x04port\x18\x03 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\x04port\x12R\n" +
+	"\x06target\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x06target\"{\n" +
 	"\tSshfpData\x12&\n" +
 	"\talgorithm\x18\x01 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\talgorithm\x12\x1c\n" +
 	"\x04type\x18\x02 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\x04type\x12(\n" +
-	"\vfingerprint\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vfingerprint\"g\n" +
+	"\vfingerprint\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vfingerprint\"\x9b\x01\n" +
 	"\bSvcbData\x12%\n" +
-	"\bpriority\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\bpriority\x12\x1e\n" +
-	"\x06target\x18\x02 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06target\x12\x14\n" +
+	"\bpriority\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\bpriority\x12R\n" +
+	"\x06target\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x06target\x12\x14\n" +
 	"\x05value\x18\x03 \x01(\tR\x05value\"\xa9\x01\n" +
 	"\bTlsaData\x12\x1e\n" +
 	"\x05usage\x18\x01 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\x05usage\x12$\n" +
 	"\bselector\x18\x02 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\bselector\x12-\n" +
 	"\rmatching_type\x18\x03 \x01(\rB\b\xbaH\x05*\x03\x18\xff\x01R\fmatchingType\x12(\n" +
-	"\vcertificate\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vcertificate\"s\n" +
+	"\vcertificate\x18\x04 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\vcertificate\"\xa7\x01\n" +
 	"\aUriData\x12%\n" +
 	"\bpriority\x18\x01 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\bpriority\x12!\n" +
-	"\x06weight\x18\x02 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\x06weight\x12\x1e\n" +
-	"\x06target\x18\x03 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x06targetB\x9f\x03\n" +
+	"\x06weight\x18\x02 \x01(\rB\t\xbaH\x06*\x04\x18\xff\xff\x03R\x06weight\x12R\n" +
+	"\x06target\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\x06targetB\x9f\x03\n" +
 	"7com.dev.planton.cloudflare.cloudflarednsrecord.v1alpha1B\tSpecProtoP\x01Zhgithub.com/plantonhq/planton/catalog/cloudflare/cloudflarednsrecord/v1alpha1;cloudflarednsrecordv1alpha1\xa2\x02\x04DPCC\xaa\x023Dev.Planton.Cloudflare.Cloudflarednsrecord.V1alpha1\xca\x023Dev\\Planton\\Cloudflare\\Cloudflarednsrecord\\V1alpha1\xe2\x02?Dev\\Planton\\Cloudflare\\Cloudflarednsrecord\\V1alpha1\\GPBMetadata\xea\x027Dev::Planton::Cloudflare::Cloudflarednsrecord::V1alpha1b\x06proto3"
 
 var (
@@ -1833,11 +1837,15 @@ var file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_depIdxs = []
 	14, // 14: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.tlsa:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.TlsaData
 	15, // 15: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.uri:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.UriData
 	2,  // 16: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSpec.settings:type_name -> dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.CloudflareDnsRecordSettings
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	16, // 17: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.HttpsData.target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 18: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SrvData.target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 19: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.SvcbData.target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // 20: dev.planton.cloudflare.cloudflarednsrecord.v1alpha1.UriData.target:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_catalog_cloudflare_cloudflarednsrecord_v1alpha1_spec_proto_init() }

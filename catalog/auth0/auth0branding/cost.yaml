@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: auth0branding
+spec:
+  billing_model: free
+  free_tier: "Auth0 publishes no price for branding: the logo, favicon, colors, font and the no-code theme are available on every plan, the Free plan included (auth0.com/docs/customize/login-pages/universal-login/customize-themes). The page template (universal_login_template) is gated on a custom domain, not a plan -- Auth0 refuses a template on the canonical domain (auth0.com/docs/customize/login-pages/universal-login/customize-templates) -- and the Free plan includes one custom domain (the Auth0CustomDomain kind)."
+  notes: "The real spend lives in the tenant subscription: Auth0 bills by plan tier plus monthly active users (auth0.com/pricing). Branding changes what the login page looks like, never what a sign-in costs. The logo, favicon, font and background image are fetched from wherever they are hosted, outside this component."

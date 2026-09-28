@@ -1,0 +1,6 @@
+# Auth0EmailTemplate Pulumi Module
+# This module customizes one of the emails an Auth0 tenant sends.
+name: auth0-email-template
+runtime:
+  name: go
+description: Pulumi module for Auth0EmailTemplate component

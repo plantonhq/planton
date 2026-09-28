@@ -151,7 +151,7 @@ var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func(
 			ginkgo.It("accepts an SRV record via data.srv", func() {
 				err := protovalidate.Validate(record("srv", &CloudflareDnsRecordSpec{
 					ZoneId: zoneRef(), Name: "_sip._tcp", Type: CloudflareDnsRecordSpec_SRV,
-					Data: &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: "sip.example.com"}},
+					Data: &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: literal("sip.example.com")}},
 				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -175,7 +175,7 @@ var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func(
 			ginkgo.It("accepts an HTTPS record via data.https", func() {
 				err := protovalidate.Validate(record("https", &CloudflareDnsRecordSpec{
 					ZoneId: zoneRef(), Name: "@", Type: CloudflareDnsRecordSpec_HTTPS,
-					Data: &CloudflareDnsRecordSpec_Https{Https: &HttpsData{Priority: 1, Target: ".", Value: "alpn=\"h2,h3\""}},
+					Data: &CloudflareDnsRecordSpec_Https{Https: &HttpsData{Priority: 1, Target: literal("."), Value: "alpn=\"h2,h3\""}},
 				}))
 				gomega.Expect(err).To(gomega.BeNil())
 			})
@@ -227,7 +227,7 @@ var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func(
 				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
 					ZoneId: zoneRef(), Name: "_sip._tcp", Type: CloudflareDnsRecordSpec_SRV,
 					Content: outputRef(cloudresourcekind.CloudResourceKind_CloudflareDnsZone, "example-com", "status.outputs.nameservers.0"),
-					Data:    &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: "sip.example.com"}},
+					Data:    &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: literal("sip.example.com")}},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})
@@ -242,7 +242,7 @@ var _ = ginkgo.Describe("CloudflareDnsRecordSpec Custom Validation Tests", func(
 			ginkgo.It("rejects setting both content and a data block", func() {
 				err := protovalidate.Validate(record("r", &CloudflareDnsRecordSpec{
 					ZoneId: zoneRef(), Name: "_sip._tcp", Type: CloudflareDnsRecordSpec_SRV, Content: literal("10 5 5060 sip.example.com"),
-					Data: &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: "sip.example.com"}},
+					Data: &CloudflareDnsRecordSpec_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: literal("sip.example.com")}},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())
 			})

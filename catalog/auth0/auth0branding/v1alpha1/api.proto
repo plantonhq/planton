@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0branding.v1alpha1;
+
+import "buf/validate/validate.proto";
+import "catalog/auth0/auth0branding/v1alpha1/outputs.proto";
+import "catalog/auth0/auth0branding/v1alpha1/spec.proto";
+import "shared/metadata.proto";
+
+// Auth0Branding is a component that manages how an Auth0 tenant's Universal Login
+// looks: the logo, favicon, colors and font every login page shares, the full
+// page template the pages render inside, and optionally the no-code theme
+// (borders, colors, fonts, the page background and the login box).
+//
+// A tenant has one branding, so one Auth0Branding resource per tenant.
+//
+// Use cases:
+// - Put your logo, colors and font on every login, signup and reset page
+// - Render the login box inside your own page, with your header and footer
+// - Style the login box itself (buttons, inputs, spacing) without writing CSS
+//
+// Example manifest:
+// ```yaml
+// apiVersion: auth0.planton.dev/v1alpha1
+// kind: Auth0Branding
+// metadata:
+//   name: branding
+//   org: my-organization
+// spec:
+//   logoUrl: https://assets.acme.com/logo.png
+//   faviconUrl: https://assets.acme.com/favicon.png
+//   colors:
+//     primary: "#0059d6"
+//     pageBackground: "#000000"
+// ```
+message Auth0Branding {
+  // api_version is the version of the Auth0 API resource.
+  // Must be "auth0.planton.dev/v1alpha1" for this version.
+  string api_version = 1 [(buf.validate.field).string.const = 'auth0.planton.dev/v1alpha1'];
+
+  // kind is the Kubernetes Resource Model (KRM) kind.
+  // Must be "Auth0Branding" for this resource type.
+  string kind = 2 [(buf.validate.field).string.const = 'Auth0Branding'];
+
+  // metadata contains standard cloud resource metadata.
+  // - name: Unique identifier for the resource within Planton
+  // - org: Organization that owns it
+  // - env: Environment it is deployed from
+  // - labels: Key-value pairs for filtering and organization
+  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+
+  // spec contains the branding to apply to the tenant.
+  Auth0BrandingSpec spec = 4 [(buf.validate.field).required = true];
+
+  // status contains the resource as applied, populated after deployment.
+  Auth0BrandingStatus status = 5;
+}
+
+// Auth0BrandingStatus represents the current state of a Auth0Branding resource.
+// Populated by the deployment system.
+message Auth0BrandingStatus {
+  // outputs contains the stack outputs: the theme the branding applied.
+  Auth0BrandingStackOutputs outputs = 1;
+}

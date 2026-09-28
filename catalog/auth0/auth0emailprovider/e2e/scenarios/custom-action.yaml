@@ -1,0 +1,18 @@
+# The custom arm: the tenant's emails are sent by an Action bound to its
+# custom-email-provider trigger, and the provider carries only the sender
+# and the empty credentials block the provider requires -- the one arm
+# whose credentials render as nothing. The Action deploys first, as a
+# fixture, so the provider is set only once something can send; destroy
+# deletes the provider, then the Action.
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0EmailProvider
+metadata:
+  name: e2e-email-provider-custom
+  org: e2e-org
+  env: testing
+  annotations:
+    planton.dev/e2e-required-env: PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN
+    planton.dev/e2e-prerequisites: catalog/auth0/auth0emailprovider/e2e/fixtures/custom-email-action.yaml
+spec:
+  defaultFromAddress: Planton E2E <e2e@${E2E_ENV:PLANTON_E2E_AUTH0_EMAIL_FROM_DOMAIN}>
+  custom: {}

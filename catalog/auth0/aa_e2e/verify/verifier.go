@@ -90,6 +90,12 @@ var verifiers = map[string]Verifier{
 
 	"auth0customdomainverification": &customDomainVerificationVerifier{},
 	"auth0tenantsettings":           &tenantSettingsVerifier{},
+	"auth0branding":                 &brandingVerifier{},
+	"auth0prompt":                   &promptVerifier{},
+	"auth0promptcustomtext":         &promptCustomTextVerifier{},
+	"auth0promptscreenpartials":     &promptScreenPartialsVerifier{},
+	"auth0emailprovider":            &emailProviderVerifier{},
+	"auth0emailtemplate":            &emailTemplateVerifier{},
 }
 
 // GetVerifier returns the verifier for a component, or an error if unknown.

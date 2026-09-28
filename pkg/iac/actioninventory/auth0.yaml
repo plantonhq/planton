@@ -10,15 +10,22 @@ provider: auth0
 services:
   - prefix: actions
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
       - read
       - update
+  - prefix: branding
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-28"
+    actions:
+      - delete
+      - read
+      - update
   - prefix: client_grants
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
@@ -26,7 +33,7 @@ services:
       - update
   - prefix: client_keys
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
@@ -34,7 +41,7 @@ services:
       - update
   - prefix: clients
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
@@ -42,7 +49,7 @@ services:
       - update
   - prefix: connections
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
@@ -50,29 +57,50 @@ services:
       - update
   - prefix: connections_options
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - read
       - update
   - prefix: custom_domains
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
+      - read
+      - update
+  - prefix: email_provider
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-28"
+    actions:
+      - create
+      - delete
+      - read
+      - update
+  - prefix: email_templates
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-28"
+    actions:
+      - create
       - read
       - update
   - prefix: event_streams
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
       - read
       - update
+  - prefix: prompts
+    source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
+    retrieved_on: "2026-09-28"
+    actions:
+      - read
+      - update
   - prefix: resource_servers
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
@@ -80,7 +108,7 @@ services:
       - update
   - prefix: roles
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete
@@ -88,13 +116,13 @@ services:
       - update
   - prefix: tenant_settings
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - read
       - update
   - prefix: users
     source_url: https://{tenant}/api/v2/resource-servers/{management-api-audience}
-    retrieved_on: "2026-09-27"
+    retrieved_on: "2026-09-28"
     actions:
       - create
       - delete

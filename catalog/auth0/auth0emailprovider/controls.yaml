@@ -1,0 +1,67 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: auth0emailprovider
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "The sending service's credentials (smtp.password, ses.access_key_id and secret_access_key, the api_key of sendgrid, sparkpost, mailgun and mandrill, azure_cs.connection_string, and the ms365 app registration -- all marked sensitive in spec.proto) are stored inside Auth0's managed cloud, which the provider documents as always encrypted in Auth0's database (terraform-provider-auth0 internal/auth0/email/resource.go, the api_key and secret_access_key descriptions) and which Auth0 states encrypts all data at rest with AES-256. Auth0 never returns a credential through the Management API. No customer toggle exists."
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: No spec field selects an encryption key. Auth0 offers tenant-level bring-your-own-key only through its Enterprise Highly Regulated Identity add-on -- tenant posture configured outside this component, not a per-provider seam.
+    - control_id: enc-in-transit
+      status: enforced_by_default
+      evidence:
+        type: provider_default
+        reference: "Auth0 requires the SMTP server of the smtp arm to support TLS 1.2 or higher and to present a certificate signed by a public certificate authority (auth0.com/docs/customize/email/smtp-email-providers/smtp-server), and the API-based arms (ses, sendgrid, sparkpost, mailgun, mandrill, azure_cs, ms365) reach each service's HTTPS API. The Management API calls that write the provider travel to Auth0's HTTPS-only API."
+      notes: For the smtp arm, prefer port 587 (STARTTLS) or 465 (implicit TLS); port 25 is often blocked and carries nothing the other two do not.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The email provider is a configuration object with no endpoint of its own; Auth0 connects out to the sending service.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network surface exists to filter. The reverse direction lives at the sending service -- an SMTP server or relay may allow only Auth0's published outbound IP addresses (auth0.com/docs/secure/security-guidance/data-security/allowlist), configured there, outside this spec.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The provider receives no HTTP requests; Auth0's own edge is Auth0's provider-managed posture.
+    - control_id: rbac
+      status: not_applicable
+      notes: WHO may change the tenant's email provider is governed at the Auth0 tenant level -- Management API tokens scoped with the email_provider scopes (iac/permissions.yaml) and dashboard admin roles -- with no access-control surface in this spec. What the credential may do at the sending service is the service's own scoping (a Resend or SendGrid key with sending access only, an IAM user allowed only ses:SendRawEmail).
+    - control_id: workload-identity
+      status: not_applicable
+      notes: No seam exists for platform-issued identities. Auth0 authenticates to every sending service with a static credential the spec carries (an API key, an access key pair, an SMTP password, a connection string, or an app registration's client secret); the custom arm moves the credential into the Action that sends. Declare each as a secret reference and rotate it at the service.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: "The only legacy path is SMTP basic authentication, and Auth0 supports SMTP AUTH with the LOGIN protocol only; Microsoft is retiring basic authentication on Exchange Online's SMTP endpoints, so use the ms365 arm (an app registration) for Microsoft 365 rather than smtp against smtp.office365.com (auth0.com/docs/customize/email/smtp-email-providers/smtp-server)."
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The provider carries the emails that verify addresses and reset passwords, never how a person proves who they are; credential strength lives on the tenant's connections (the auth0connection kind).
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Changes to the email provider are Management API operations captured in Auth0's tenant logs, and failed sends appear there too; the sending service keeps its own delivery log.
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the modules expose a metrics surface. Delivery, bounce and complaint events are the sending service's (an SES configuration set, Resend's Emails page).
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The provider is declaratively re-creatable from the manifest, its credentials re-read from the organization secrets it references; there is no data to back up.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure; the sending service's availability is the service's own posture.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: No deletion-protection flag exists in the provider or the Management API. Destroying this resource deletes the provider, and the tenant falls back to Auth0's built-in test provider (10 emails per minute, no custom templates) -- verification and password-reset emails keep flowing, from no-reply@auth0user.net, so review a destroy on a tenant real people sign in through.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software of its own to patch; Auth0 and the sending service are SaaS, patched by their operators.

@@ -10,4 +10,4 @@ spec:
   type: A
   ttl: 300  # 5 minutes; a sensible default for most records (0 = never cache; AWS accepts up to 2147483647)
   values:
-    - 192.0.2.10  # replace with your endpoint's IPv4 address
+    - value: 192.0.2.10  # replace with your endpoint's IPv4 address

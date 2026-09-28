@@ -60,7 +60,7 @@ spec:
   name: www
   a:
     addresses:
-      - 203.0.113.10
+      - value: 203.0.113.10
 ```
 
 ---

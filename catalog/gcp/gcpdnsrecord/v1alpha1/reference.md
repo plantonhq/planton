@@ -54,7 +54,7 @@ spec:
 | `spec.routingPolicy` | `GcpDnsRecordRoutingPolicy` |  |  |  |
 | `spec.routingPolicy.wrr` | `[]GcpDnsRecordWrrPolicyItem` |  |  |  |
 | `spec.routingPolicy.wrr[].weight` | `double` | yes |  |  |
-| `spec.routingPolicy.wrr[].values` | `[]string` |  |  |  |
+| `spec.routingPolicy.wrr[].values` | `[]string \| valueFrom` |  |  |  |
 | `spec.routingPolicy.wrr[].healthCheckedTargets` | `GcpDnsRecordHealthCheckedTargets` |  |  |  |
 | `spec.routingPolicy.wrr[].healthCheckedTargets.internalLoadBalancers` | `[]GcpDnsRecordInternalLoadBalancerTarget` |  |  |  |
 | `spec.routingPolicy.wrr[].healthCheckedTargets.internalLoadBalancers[].ipAddress` | `string \| valueFrom` | yes |  | GcpAddress (`status.outputs.address`) |
@@ -67,7 +67,7 @@ spec:
 | `spec.routingPolicy.wrr[].healthCheckedTargets.externalEndpoints` | `[]string` |  |  |  |
 | `spec.routingPolicy.geo` | `[]GcpDnsRecordGeoPolicyItem` |  |  |  |
 | `spec.routingPolicy.geo[].location` | `string` | yes |  |  |
-| `spec.routingPolicy.geo[].values` | `[]string` |  |  |  |
+| `spec.routingPolicy.geo[].values` | `[]string \| valueFrom` |  |  |  |
 | `spec.routingPolicy.geo[].healthCheckedTargets` | `GcpDnsRecordHealthCheckedTargets` |  |  |  |
 | `spec.routingPolicy.geo[].healthCheckedTargets.internalLoadBalancers` | `[]GcpDnsRecordInternalLoadBalancerTarget` |  |  |  |
 | `spec.routingPolicy.geo[].healthCheckedTargets.internalLoadBalancers[].ipAddress` | `string \| valueFrom` | yes |  | GcpAddress (`status.outputs.address`) |
@@ -92,7 +92,7 @@ spec:
 | `spec.routingPolicy.primaryBackup.primary.externalEndpoints` | `[]string` |  |  |  |
 | `spec.routingPolicy.primaryBackup.backupGeo` | `[]GcpDnsRecordGeoPolicyItem` | yes |  |  |
 | `spec.routingPolicy.primaryBackup.backupGeo[].location` | `string` | yes |  |  |
-| `spec.routingPolicy.primaryBackup.backupGeo[].values` | `[]string` |  |  |  |
+| `spec.routingPolicy.primaryBackup.backupGeo[].values` | `[]string \| valueFrom` |  |  |  |
 | `spec.routingPolicy.primaryBackup.backupGeo[].healthCheckedTargets` | `GcpDnsRecordHealthCheckedTargets` |  |  |  |
 | `spec.routingPolicy.primaryBackup.backupGeo[].healthCheckedTargets.internalLoadBalancers` | `[]GcpDnsRecordInternalLoadBalancerTarget` |  |  |  |
 | `spec.routingPolicy.primaryBackup.backupGeo[].healthCheckedTargets.internalLoadBalancers[].ipAddress` | `string \| valueFrom` | yes |  | GcpAddress (`status.outputs.address`) |
@@ -223,11 +223,15 @@ explicit 0 is expressible while the field itself stays required.
 
 ### spec.routingPolicy.wrr[].values
 
-`[]string`
+`[]string | valueFrom`
 
 Static values (RRDATA) answered for this entry.
 If the zone has DNSSEC enabled, an entry may set only one of values or
 health_checked_targets; otherwise both may be combined.
+Each entry can be a literal or a reference to another resource's
+output, as the record's own values can.
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.routingPolicy.wrr[].healthCheckedTargets
 
@@ -340,9 +344,13 @@ The Google Cloud location name this entry serves (e.g. "us-east1",
 
 ### spec.routingPolicy.geo[].values
 
-`[]string`
+`[]string | valueFrom`
 
 Static values (RRDATA) answered for this location.
+Each entry can be a literal or a reference to another resource's
+output, as the record's own values can.
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.routingPolicy.geo[].healthCheckedTargets
 
@@ -565,9 +573,13 @@ The Google Cloud location name this entry serves (e.g. "us-east1",
 
 ### spec.routingPolicy.primaryBackup.backupGeo[].values
 
-`[]string`
+`[]string | valueFrom`
 
 Static values (RRDATA) answered for this location.
+Each entry can be a literal or a reference to another resource's
+output, as the record's own values can.
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.routingPolicy.primaryBackup.backupGeo[].healthCheckedTargets
 

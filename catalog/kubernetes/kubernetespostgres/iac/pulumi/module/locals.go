@@ -51,6 +51,10 @@ type Locals struct {
 	RecoveryCredsSecretName string
 	BackupEndpointCaName    string
 	RecoveryEndpointCaName  string
+	// SeriesStartBackupName is the on-demand Backup every backup series
+	// starts from. The series itself is not a local: by default it carries
+	// the backup ObjectStore's UID, known only once the store exists.
+	SeriesStartBackupName   string
 	ProvidedAppSecretName   string
 	ProvidedSuperuserSecret string
 	OperatorSuperuserSecret string
@@ -113,6 +117,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *kubernetespostgresv1alpha1.
 		RecoveryCredsSecretName: clusterName + "-recovery-creds",
 		BackupEndpointCaName:    clusterName + "-backup-endpoint-ca",
 		RecoveryEndpointCaName:  clusterName + "-recovery-endpoint-ca",
+		SeriesStartBackupName:   clusterName + "-series-start",
 		ProvidedAppSecretName:   providedAppSecretName,
 		ProvidedSuperuserSecret: clusterName + "-superuser-provided",
 		OperatorSuperuserSecret: clusterName + "-superuser",

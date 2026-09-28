@@ -1,0 +1,12 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptScreenPartials
+metadata:
+  name: e2e-signup-partials
+  org: e2e-org
+  env: testing
+spec:
+  promptType: signup
+  screenPartials:
+    - screenName: signup
+      insertionPoints:
+        formContentEnd: <div class="e2e-terms">By signing up you accept the terms.</div>

@@ -41,7 +41,8 @@ spec:
         priority: 10
         weight: 5
         port: 5060
-        target: sip.planton-example.com
+        target:
+          value: sip.planton-example.com
     - name: "@"
       type: CAA
       caa:
@@ -51,7 +52,8 @@ spec:
       type: HTTPS
       https:
         priority: 1
-        target: "."
+        target:
+          value: "."
         value: alpn="h2"
   dnsSettings:
     flattenAllCnames: true

@@ -73,7 +73,7 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 					ZoneName: "example.com", AccountId: "test-account-123",
 					Records: []*CloudflareDnsZoneRecord{
 						{Name: "_sip._tcp", Type: CloudflareDnsZoneRecord_SRV,
-							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: "sip.example.com"}}},
+							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Priority: 10, Weight: 5, Port: 5060, Target: literal("sip.example.com")}}},
 						{Name: "@", Type: CloudflareDnsZoneRecord_CAA,
 							Data: &CloudflareDnsZoneRecord_Caa{Caa: &CaaData{Tag: "issue", Value: "letsencrypt.org"}}},
 					},
@@ -221,7 +221,7 @@ var _ = ginkgo.Describe("CloudflareDnsZoneSpec Custom Validation Tests", func() 
 					ZoneName: "example.com", AccountId: "a",
 					Records: []*CloudflareDnsZoneRecord{
 						{Name: "_sip._tcp", Type: CloudflareDnsZoneRecord_SRV, Content: literal("bogus"),
-							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Target: "sip.example.com"}}},
+							Data: &CloudflareDnsZoneRecord_Srv{Srv: &SrvData{Target: literal("sip.example.com")}}},
 					},
 				}))
 				gomega.Expect(err).ToNot(gomega.BeNil())

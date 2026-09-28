@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0prompt.v1alpha1;
+
+// Auth0PromptStackOutputs contains the login-flow settings as applied: the values
+// the tenant carries after the deployment, managed or not.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt#attributes-reference
+message Auth0PromptStackOutputs {
+  // universal_login_experience is the login experience the tenant runs.
+  string universal_login_experience = 1;
+
+  // identifier_first is whether the login flow asks for the identifier first.
+  bool identifier_first = 2;
+
+  // webauthn_platform_first_factor is whether the device's authenticator is
+  // offered as the first factor.
+  bool webauthn_platform_first_factor = 3;
+}

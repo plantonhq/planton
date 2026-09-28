@@ -1,0 +1,12 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0Branding
+metadata:
+  name: branding
+  org: example-org
+  env: production
+spec:
+  # Planton's own look -- replace the logo and colors with yours.
+  logoUrl: https://assets.planton.ai/brand-kit/logo/p-mark-email.png
+  colors:
+    primary: "#000000"
+    pageBackground: "#000000"

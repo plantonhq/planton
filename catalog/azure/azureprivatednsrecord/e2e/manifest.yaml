@@ -17,8 +17,10 @@ spec:
   ttlSeconds: 3600
   mx:
     - preference: 10
-      exchange: mail1.internal.contoso.com
+      exchange:
+        value: mail1.internal.contoso.com
     - preference: 20
-      exchange: mail2.internal.contoso.com
+      exchange:
+        value: mail2.internal.contoso.com
   tags:
     cost-center: platform

@@ -56,7 +56,7 @@ spec:
   type: A
   name: www.example.com.
   values:
-    - 192.0.2.1
+    - value: 192.0.2.1
 ```
 
 `projectId` may be omitted — the record is then created in the provider's

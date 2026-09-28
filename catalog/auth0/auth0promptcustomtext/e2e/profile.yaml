@@ -1,0 +1,18 @@
+apiVersion: qa.planton.dev/v1
+kind: ComponentE2EProfile
+metadata:
+  name: auth0promptcustomtext
+spec:
+  # A prompt has ONE custom text per language, and applying this component
+  # replaces the words everyone signing in through the tenant reads: a live
+  # lane needs a dedicated test tenant whose login pages nobody uses. None
+  # exists yet, so the lanes are not run; the first live proof is an
+  # operator's own tenant, read back on its login page. Unblock: a throwaway
+  # Auth0 tenant for the E2E harness (AUTH0_DOMAIN / AUTH0_CLIENT_ID /
+  # AUTH0_CLIENT_SECRET, the credential holding read:prompts and
+  # update:prompts) running the Universal Login experience "new", then run
+  # both engines' minimal scenario, and the multi-screen scenario.
+  tier: 1
+  status: pending_proof
+  validated_provisioners: []
+  timeout_minutes: 5

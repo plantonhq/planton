@@ -66,29 +66,29 @@ spec:
 | `spec.ttlSeconds` | `int32` |  | `300` |  |
 | `spec.tags` | `map<string, string>` |  |  |  |
 | `spec.a` | `AzureDnsARecord` |  |  |  |
-| `spec.a.addresses` | `[]string` |  |  |  |
+| `spec.a.addresses` | `[]string \| valueFrom` |  |  |  |
 | `spec.a.targetResourceId` | `string \| valueFrom` |  |  |  |
 | `spec.aaaa` | `AzureDnsAaaaRecord` |  |  |  |
-| `spec.aaaa.addresses` | `[]string` |  |  |  |
+| `spec.aaaa.addresses` | `[]string \| valueFrom` |  |  |  |
 | `spec.aaaa.targetResourceId` | `string \| valueFrom` |  |  |  |
 | `spec.cname` | `AzureDnsCnameRecord` |  |  |  |
 | `spec.cname.value` | `string \| valueFrom` |  |  |  |
 | `spec.cname.targetResourceId` | `string \| valueFrom` |  |  |  |
 | `spec.mx` | `[]AzureDnsMxEntry` |  |  |  |
 | `spec.mx[].preference` | `int32` | yes |  |  |
-| `spec.mx[].exchange` | `string` | yes |  |  |
+| `spec.mx[].exchange` | `string \| valueFrom` | yes |  |  |
 | `spec.srv` | `[]AzureDnsSrvEntry` |  |  |  |
 | `spec.srv[].priority` | `int32` | yes |  |  |
 | `spec.srv[].weight` | `int32` | yes |  |  |
 | `spec.srv[].port` | `int32` | yes |  |  |
-| `spec.srv[].target` | `string` | yes |  |  |
+| `spec.srv[].target` | `string \| valueFrom` | yes |  |  |
 | `spec.caa` | `[]AzureDnsCaaEntry` |  |  |  |
 | `spec.caa[].flags` | `int32` | yes |  |  |
 | `spec.caa[].tag` | `enum` | yes |  |  |
 | `spec.caa[].value` | `string` | yes |  |  |
 | `spec.txt` | `[]string \| valueFrom` |  |  |  |
-| `spec.ns` | `[]string` |  |  |  |
-| `spec.ptr` | `[]string` |  |  |  |
+| `spec.ns` | `[]string \| valueFrom` |  |  |  |
+| `spec.ptr` | `[]string \| valueFrom` |  |  |  |
 
 ## Field Details
 
@@ -163,12 +163,15 @@ IPv4 address record. Set exactly one payload field on this spec.
 
 ### spec.a.addresses
 
-`[]string`
+`[]string | valueFrom`
 
 The IPv4 addresses this name answers with. Multiple addresses
-round-robin. Mutually exclusive with target_resource_id.
+round-robin. Mutually exclusive with target_resource_id. Each entry can
+be a literal or a reference to another resource's address output (a
+public IP, a load balancer's frontend).
 
-- rule: {"repeated":{"items":{"string":{"ipv4":true}}}}
+- rule: each literal address is an IPv4 address
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.a.targetResourceId
 
@@ -193,13 +196,15 @@ IPv6 address record. Set exactly one payload field on this spec.
 
 ### spec.aaaa.addresses
 
-`[]string`
+`[]string | valueFrom`
 
 The IPv6 addresses this name answers with (e.g. "2001:db8::1" --
 Azure normalizes the compressed form). Multiple addresses
-round-robin. Mutually exclusive with target_resource_id.
+round-robin. Mutually exclusive with target_resource_id. Each entry can
+be a literal or a reference to another resource's address output.
 
-- rule: {"repeated":{"items":{"string":{"ipv6":true}}}}
+- rule: each literal address is an IPv6 address
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.aaaa.targetResourceId
 
@@ -268,12 +273,15 @@ secondary. 0 is legal (and used by the "null MX" no-mail convention).
 
 ### spec.mx[].exchange
 
-`string` · required
+`string | valueFrom` · required
 
 The mail server hostname (e.g. "mail.example.com" or
-"aspmx.l.google.com").
+"aspmx.l.google.com"), a literal or a reference to another resource's
+hostname output.
 
-- rule: {"required":true,"string":{"maxLen":"253"}}
+- rule: a literal hostname is at most 253 characters
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.srv
 
@@ -312,12 +320,15 @@ The TCP/UDP port the service listens on (e.g. 5060 for SIP).
 
 ### spec.srv[].target
 
-`string` · required
+`string | valueFrom` · required
 
 The hostname providing the service (e.g. "sip.example.com"). Must be
-a hostname with its own A/AAAA record, never an IP address.
+a hostname with its own A/AAAA record, never an IP address. A literal or
+a reference to another resource's hostname output.
 
-- rule: {"required":true,"string":{"maxLen":"253"}}
+- rule: a literal hostname is at most 253 characters
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.caa
 
@@ -382,24 +393,27 @@ one payload field on this spec.
 
 ### spec.ns
 
-`[]string`
+`[]string | valueFrom`
 
 Name-server hostnames, for delegating a CHILD subdomain to another
 zone's name servers (e.g. "team" NS records pointing at the
 team.example.com zone's assigned servers). The zone's own apex NS
 records are Azure-managed -- do not declare them. Set exactly one
-payload field on this spec.
+payload field on this spec. Each entry can be a literal or a reference
+to the child zone's name-server output, so the delegation follows the
+zone through a recreate.
 
-- rule: {"repeated":{"items":{"string":{"minLen":"1"}}}}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.ptr
 
-`[]string`
+`[]string | valueFrom`
 
 Pointer hostnames for reverse DNS (IP-to-name, in in-addr.arpa /
-ip6.arpa zones). Set exactly one payload field on this spec.
+ip6.arpa zones). Set exactly one payload field on this spec. Each entry
+can be a literal or a reference to another resource's hostname output.
 
-- rule: {"repeated":{"items":{"string":{"minLen":"1"}}}}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ## Validation Rules
 

@@ -3,6 +3,7 @@ package module
 import (
 	"github.com/pkg/errors"
 	gcpdnsrecordv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnsrecord/v1alpha1"
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp"
 	"github.com/pulumi/pulumi-gcp/sdk/v9/go/gcp/dns"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
@@ -83,7 +84,7 @@ func buildRoutingPolicy(policy *gcpdnsrecordv1alpha1.GcpDnsRecordRoutingPolicy) 
 		for _, item := range policy.Wrr {
 			wrrArgs := dns.RecordSetRoutingPolicyWrrArgs{
 				Weight:  pulumi.Float64(item.GetWeight()),
-				Rrdatas: pulumi.ToStringArray(item.Values),
+				Rrdatas: pulumi.ToStringArray(stringValues(item.Values)),
 			}
 			if item.HealthCheckedTargets != nil {
 				wrrArgs.HealthCheckedTargets = &dns.RecordSetRoutingPolicyWrrHealthCheckedTargetsArgs{
@@ -101,7 +102,7 @@ func buildRoutingPolicy(policy *gcpdnsrecordv1alpha1.GcpDnsRecordRoutingPolicy) 
 		for _, item := range policy.Geo {
 			geoArgs := dns.RecordSetRoutingPolicyGeoArgs{
 				Location: pulumi.String(item.Location),
-				Rrdatas:  pulumi.ToStringArray(item.Values),
+				Rrdatas:  pulumi.ToStringArray(stringValues(item.Values)),
 			}
 			if item.HealthCheckedTargets != nil {
 				geoArgs.HealthCheckedTargets = &dns.RecordSetRoutingPolicyGeoHealthCheckedTargetsArgs{
@@ -126,7 +127,7 @@ func buildRoutingPolicy(policy *gcpdnsrecordv1alpha1.GcpDnsRecordRoutingPolicy) 
 		for _, item := range pb.BackupGeo {
 			backupGeoArgs := dns.RecordSetRoutingPolicyPrimaryBackupBackupGeoArgs{
 				Location: pulumi.String(item.Location),
-				Rrdatas:  pulumi.ToStringArray(item.Values),
+				Rrdatas:  pulumi.ToStringArray(stringValues(item.Values)),
 			}
 			if item.HealthCheckedTargets != nil {
 				backupGeoArgs.HealthCheckedTargets = &dns.RecordSetRoutingPolicyPrimaryBackupBackupGeoHealthCheckedTargetsArgs{
@@ -235,4 +236,14 @@ func buildBackupGeoInternalLoadBalancers(targets []*gcpdnsrecordv1alpha1.GcpDnsR
 		result = append(result, item)
 	}
 	return result
+}
+
+// stringValues resolves each value-or-reference entry to the string the
+// provider receives (references are resolved to values before the module runs).
+func stringValues(entries []*foreignkeyv1.StringValueOrRef) []string {
+	values := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		values = append(values, entry.GetValue())
+	}
+	return values
 }

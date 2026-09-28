@@ -3,9 +3,10 @@ kind: ComponentImportMap
 metadata:
   name: kubernetespostgres
 spec:
-  # The module renders up to THREE kubectl_manifest resource types with
-  # different GVKs — the Cluster, the Barman Cloud ObjectStore(s), and the
-  # ScheduledBackups — so the composed-ID placeholders {api_version}/{kind}/
+  # The module renders up to FOUR kubectl_manifest resource types with
+  # different GVKs — the Cluster, the Barman Cloud ObjectStore(s), the
+  # Backup a backup series starts from, and the ScheduledBackups — so the
+  # composed-ID placeholders {api_version}/{kind}/
   # {name} are declared PER Terraform logical resource via
   # tofu_resource_name scoping. The declared-credential Secrets and the
   # optional anchor namespace ride their own rows. Every satellite name is
@@ -67,6 +68,26 @@ spec:
       where_to_find: >-
         Present only for recovery bootstraps; always
         "<resource-name>-recovery-source".
+    # ── the Backup the backup series starts from ────────────────────────
+    - name: api_version
+      tofu_resource_name: series_start_backup
+      derivations:
+        - literal: postgresql.cnpg.io/v1
+      where_to_find: Always "postgresql.cnpg.io/v1" — the Backup CR's group/version.
+    - name: kind
+      tofu_resource_name: series_start_backup
+      derivations:
+        - literal: Backup
+      where_to_find: Always "Backup" — the CR kind this module applies.
+    - name: name
+      tofu_resource_name: series_start_backup
+      derivations:
+        - from_metadata_name_suffix: "-series-start"
+      where_to_find: >-
+        Present only when backup is declared; always
+        "<resource-name>-series-start". A cluster this module did not
+        create has none: the first apply after import takes it, which is
+        the adopted series' own first base backup.
     # ── the ScheduledBackup CRs (for_each keyed by the CR name) ─────────
     - name: api_version
       tofu_resource_name: scheduled_backup

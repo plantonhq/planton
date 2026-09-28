@@ -137,14 +137,16 @@ gen-solr-operator:
 #untyped CRs and no generated package exists to regenerate. The pin above
 #records which CRD schemas the specs were designed against.
 
-# Clusters + ScheduledBackups from the operator; the ObjectStore CRD from the
-# Barman Cloud plugin (backups are plugin-based — the operator's in-tree
-# object-store support is deprecated upstream). One goPath: the three types
-# are consumed together by the KubernetesPostgres Pulumi module.
+# Clusters, ScheduledBackups and Backups from the operator; the ObjectStore
+# CRD from the Barman Cloud plugin (backups are plugin-based — the operator's
+# in-tree object-store support is deprecated upstream). One goPath: the four
+# types are consumed together by the KubernetesPostgres Pulumi module (the
+# on-demand Backup is the base backup every archive series starts from).
 .PHONY: gen-cloudnative-pg
 gen-cloudnative-pg:
 	crd2pulumi --force --goPath=cloudnativepg https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/${cloudnative_pg_release}/config/crd/bases/postgresql.cnpg.io_clusters.yaml \
 		https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/${cloudnative_pg_release}/config/crd/bases/postgresql.cnpg.io_scheduledbackups.yaml \
+		https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/${cloudnative_pg_release}/config/crd/bases/postgresql.cnpg.io_backups.yaml \
 		https://raw.githubusercontent.com/cloudnative-pg/plugin-barman-cloud/${barman_cloud_plugin_release}/config/crd/bases/barmancloud.cnpg.io_objectstores.yaml
 
 .PHONY: gen-external-secrets

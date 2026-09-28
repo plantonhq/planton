@@ -42,7 +42,8 @@ metadata:
   name: example-dodns-full
 spec:
   domainName: example.org
-  ipAddress: 203.0.113.10
+  ipAddress:
+    value: 203.0.113.10
   records:
     - name: "@"
       type: A
@@ -93,7 +94,7 @@ spec:
 | `spec.records[].port` | `uint32` |  |  |  |
 | `spec.records[].flags` | `uint32` |  |  |  |
 | `spec.records[].tag` | `string` |  |  |  |
-| `spec.ipAddress` | `string` |  |  |  |
+| `spec.ipAddress` | `string \| valueFrom` |  |  |  |
 
 ## Field Details
 
@@ -240,7 +241,7 @@ Tag for CAA records — the property being authorized: "issue",
 
 ### spec.ipAddress
 
-`string`
+`string | valueFrom`
 
 (Optional) An IPv4 address that seeds an initial A record at the zone
 apex when the zone is created. Applied at creation ONLY; later edits are
@@ -251,7 +252,10 @@ tracked — later edits to `records` will not see or manage it, yet it
 shares the apex A record set (and therefore the TTL) with any apex A
 records you declare. Prefer declaring an apex A record in `records`,
 which is tracked and updatable; use this only when migrating a
-configuration that already relies on it.
+configuration that already relies on it. A literal or a reference to
+another resource's address output (a load balancer's IP).
+
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ## Outputs
 

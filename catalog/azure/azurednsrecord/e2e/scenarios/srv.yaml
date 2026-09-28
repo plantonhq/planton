@@ -29,8 +29,10 @@ spec:
     - priority: 0
       weight: 5
       port: 5060
-      target: sip1.planton-e2e-fixture.example.com
+      target:
+        value: sip1.planton-e2e-fixture.example.com
     - priority: 10
       weight: 10
       port: 5061
-      target: sip2.planton-e2e-fixture.example.com
+      target:
+        value: sip2.planton-e2e-fixture.example.com

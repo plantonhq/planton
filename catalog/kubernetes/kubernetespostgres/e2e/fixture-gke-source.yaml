@@ -8,9 +8,10 @@
 # identity). The seed script writes markers and takes a backup here; the
 # recovery scenario restores from this cluster's archive and references this
 # cluster's `-app` Secret for credential continuity. The archive path carries
-# the run id: Barman refuses to archive into a path already holding another
-# cluster's WAL (a previous lane's system ID), so a shared path would leave
-# the cluster healthy but ContinuousArchiving forever false — live-caught.
+# the run id: Barman refuses to archive into a series already holding another
+# cluster's history (a previous lane's system ID), and this fixture names its
+# series, so a shared path would leave the cluster healthy but
+# ContinuousArchiving forever false — live-caught.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesPostgres
 metadata:
@@ -47,6 +48,10 @@ spec:
       gcs:
         keyless: true
     retention_policy: 7d
+    # A named series, so the recovery scenario can name it in
+    # source_server_name before this cluster exists; the path carries the
+    # run id, so the series is still this run's alone.
+    server_name: e2e-pg-gke-src
     schedules:
       - name: initial
         schedule: "0 0 3 * * *"

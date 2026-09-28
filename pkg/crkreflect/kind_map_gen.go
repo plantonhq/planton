@@ -12,11 +12,17 @@ import (
 	testcloudresourcegenericv1alpha2 "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha2"
 	testcloudresourcekubernetesv1alpha1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1"
 	auth0actionv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0action/v1alpha1"
+	auth0brandingv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0branding/v1alpha1"
 	auth0clientv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0client/v1alpha1"
 	auth0connectionv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0connection/v1alpha1"
 	auth0customdomainv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0customdomain/v1alpha1"
 	auth0customdomainverificationv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0customdomainverification/v1alpha1"
+	auth0emailproviderv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0emailprovider/v1alpha1"
+	auth0emailtemplatev1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0emailtemplate/v1alpha1"
 	auth0eventstreamv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0eventstream/v1alpha1"
+	auth0promptv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0prompt/v1alpha1"
+	auth0promptcustomtextv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0promptcustomtext/v1alpha1"
+	auth0promptscreenpartialsv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0promptscreenpartials/v1alpha1"
 	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	auth0rolev1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0role/v1alpha1"
 	auth0tenantsettingsv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0tenantsettings/v1alpha1"
@@ -760,11 +766,17 @@ var ProviderTestMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 
 var ProviderAuth0Map = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_Auth0Action:                   &auth0actionv1alpha1.Auth0Action{},
+	cloudresourcekind.CloudResourceKind_Auth0Branding:                 &auth0brandingv1alpha1.Auth0Branding{},
 	cloudresourcekind.CloudResourceKind_Auth0Client:                   &auth0clientv1alpha1.Auth0Client{},
 	cloudresourcekind.CloudResourceKind_Auth0Connection:               &auth0connectionv1alpha1.Auth0Connection{},
 	cloudresourcekind.CloudResourceKind_Auth0CustomDomain:             &auth0customdomainv1alpha1.Auth0CustomDomain{},
 	cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification: &auth0customdomainverificationv1alpha1.Auth0CustomDomainVerification{},
+	cloudresourcekind.CloudResourceKind_Auth0EmailProvider:            &auth0emailproviderv1alpha1.Auth0EmailProvider{},
+	cloudresourcekind.CloudResourceKind_Auth0EmailTemplate:            &auth0emailtemplatev1alpha1.Auth0EmailTemplate{},
 	cloudresourcekind.CloudResourceKind_Auth0EventStream:              &auth0eventstreamv1alpha1.Auth0EventStream{},
+	cloudresourcekind.CloudResourceKind_Auth0Prompt:                   &auth0promptv1alpha1.Auth0Prompt{},
+	cloudresourcekind.CloudResourceKind_Auth0PromptCustomText:         &auth0promptcustomtextv1alpha1.Auth0PromptCustomText{},
+	cloudresourcekind.CloudResourceKind_Auth0PromptScreenPartials:     &auth0promptscreenpartialsv1alpha1.Auth0PromptScreenPartials{},
 	cloudresourcekind.CloudResourceKind_Auth0ResourceServer:           &auth0resourceserverv1alpha1.Auth0ResourceServer{},
 	cloudresourcekind.CloudResourceKind_Auth0Role:                     &auth0rolev1alpha1.Auth0Role{},
 	cloudresourcekind.CloudResourceKind_Auth0TenantSettings:           &auth0tenantsettingsv1alpha1.Auth0TenantSettings{},

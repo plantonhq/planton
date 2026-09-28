@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton.auth0.auth0promptcustomtext.v1alpha1;
+
+// Auth0PromptCustomTextStackOutputs names the custom text managed.
+//
+// https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt_custom_text#attributes-reference
+message Auth0PromptCustomTextStackOutputs {
+  // prompt is the prompt the words belong to.
+  string prompt = 1;
+
+  // language is the language the words are shown in.
+  string language = 2;
+
+  // id is the custom text's identifier, "<prompt>::<language>" (for example
+  // "login::en"), which is also its import id.
+  string id = 3;
+}

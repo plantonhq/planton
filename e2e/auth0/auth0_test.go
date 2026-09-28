@@ -153,6 +153,60 @@ func TestAuth0CustomDomainVerification_Terraform(t *testing.T) {
 	runAllScenariosForComponent(t, "auth0customdomainverification", "terraform")
 }
 
+// --- Auth0 Branding ---
+
+func TestAuth0Branding_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0branding", "pulumi")
+}
+func TestAuth0Branding_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0branding", "terraform")
+}
+
+// --- Auth0 Prompt ---
+
+func TestAuth0Prompt_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0prompt", "pulumi")
+}
+func TestAuth0Prompt_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0prompt", "terraform")
+}
+
+// --- Auth0 Prompt Custom Text ---
+
+func TestAuth0PromptCustomText_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptcustomtext", "pulumi")
+}
+func TestAuth0PromptCustomText_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptcustomtext", "terraform")
+}
+
+// --- Auth0 Prompt Screen Partials ---
+
+func TestAuth0PromptScreenPartials_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptscreenpartials", "pulumi")
+}
+func TestAuth0PromptScreenPartials_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0promptscreenpartials", "terraform")
+}
+
+// --- Auth0 Email Provider ---
+
+func TestAuth0EmailProvider_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailprovider", "pulumi")
+}
+func TestAuth0EmailProvider_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailprovider", "terraform")
+}
+
+// --- Auth0 Email Template ---
+
+func TestAuth0EmailTemplate_Pulumi(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailtemplate", "pulumi")
+}
+func TestAuth0EmailTemplate_Terraform(t *testing.T) {
+	runAllScenariosForComponent(t, "auth0emailtemplate", "terraform")
+}
+
 // runAllScenariosForComponent discovers and runs all E2E scenarios for an Auth0 component.
 func runAllScenariosForComponent(t *testing.T, component, engine string) {
 	t.Helper()

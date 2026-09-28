@@ -69,7 +69,7 @@ spec:
 | `spec.ds.digest` | `string` | yes |  |  |
 | `spec.https` | `HttpsData` |  |  |  |
 | `spec.https.priority` | `uint32` |  |  |  |
-| `spec.https.target` | `string` | yes |  |  |
+| `spec.https.target` | `string \| valueFrom` | yes |  |  |
 | `spec.https.value` | `string` |  |  |  |
 | `spec.loc` | `LocData` |  |  |  |
 | `spec.loc.latDirection` | `string` |  |  |  |
@@ -100,14 +100,14 @@ spec:
 | `spec.srv.priority` | `uint32` |  |  |  |
 | `spec.srv.weight` | `uint32` |  |  |  |
 | `spec.srv.port` | `uint32` |  |  |  |
-| `spec.srv.target` | `string` | yes |  |  |
+| `spec.srv.target` | `string \| valueFrom` | yes |  |  |
 | `spec.sshfp` | `SshfpData` |  |  |  |
 | `spec.sshfp.algorithm` | `uint32` |  |  |  |
 | `spec.sshfp.type` | `uint32` |  |  |  |
 | `spec.sshfp.fingerprint` | `string` | yes |  |  |
 | `spec.svcb` | `SvcbData` |  |  |  |
 | `spec.svcb.priority` | `uint32` |  |  |  |
-| `spec.svcb.target` | `string` | yes |  |  |
+| `spec.svcb.target` | `string \| valueFrom` | yes |  |  |
 | `spec.svcb.value` | `string` |  |  |  |
 | `spec.tlsa` | `TlsaData` |  |  |  |
 | `spec.tlsa.usage` | `uint32` |  |  |  |
@@ -117,7 +117,7 @@ spec:
 | `spec.uri` | `UriData` |  |  |  |
 | `spec.uri.priority` | `uint32` |  |  |  |
 | `spec.uri.weight` | `uint32` |  |  |  |
-| `spec.uri.target` | `string` | yes |  |  |
+| `spec.uri.target` | `string \| valueFrom` | yes |  |  |
 | `spec.tags` | `[]string` |  |  |  |
 | `spec.settings` | `CloudflareDnsRecordSettings` |  |  |  |
 | `spec.settings.ipv4Only` | `bool` |  |  |  |
@@ -403,11 +403,13 @@ records evaluated in ascending priority order.
 
 ### spec.https.target
 
-`string` · required
+`string | valueFrom` · required
 
 Target hostname (".": the owner name; or a specific endpoint).
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.https.value
 
@@ -633,11 +635,13 @@ TCP/UDP port of the service (0-65535).
 
 ### spec.srv.target
 
-`string` · required
+`string | valueFrom` · required
 
 Hostname of the machine providing the service.
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.sshfp
 
@@ -685,11 +689,13 @@ Priority (0-65535). 0 selects AliasMode; higher values are ServiceMode.
 
 ### spec.svcb.target
 
-`string` · required
+`string | valueFrom` · required
 
 Target hostname (".": the owner name; or a specific endpoint).
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.svcb.value
 
@@ -759,11 +765,13 @@ Relative weight among URIs with the same priority (0-65535).
 
 ### spec.uri.target
 
-`string` · required
+`string | valueFrom` · required
 
 The target URI (e.g. "https://example.com/path").
+A literal or a reference to another resource's output.
 
 - rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.tags
 

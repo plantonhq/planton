@@ -82,7 +82,8 @@ spec:
         priority: 10
         weight: 5
         port: 5060
-        target: sip.example.com
+        target:
+          value: sip.example.com
     - name: "@"
       type: CAA
       caa:

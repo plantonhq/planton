@@ -1,6 +1,7 @@
 package module
 
 import (
+	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"strconv"
 
 	"github.com/pkg/errors"
@@ -71,7 +72,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 		// unused argument stays nil so the provider never sees an
 		// empty-but-present value.
 		if len(spec.A.Addresses) > 0 {
-			args.Records = pulumi.ToStringArray(spec.A.Addresses)
+			args.Records = pulumi.ToStringArray(stringValues(spec.A.Addresses))
 		}
 		if spec.A.TargetResourceId != nil && spec.A.TargetResourceId.GetValue() != "" {
 			args.TargetResourceId = pulumi.String(spec.A.TargetResourceId.GetValue())
@@ -92,7 +93,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		}
 		if len(spec.Aaaa.Addresses) > 0 {
-			args.Records = pulumi.ToStringArray(spec.Aaaa.Addresses)
+			args.Records = pulumi.ToStringArray(stringValues(spec.Aaaa.Addresses))
 		}
 		if spec.Aaaa.TargetResourceId != nil && spec.Aaaa.TargetResourceId.GetValue() != "" {
 			args.TargetResourceId = pulumi.String(spec.Aaaa.TargetResourceId.GetValue())
@@ -137,7 +138,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 		for _, entry := range spec.Mx {
 			mxRecords = append(mxRecords, &dns.MxRecordRecordArgs{
 				Preference: pulumi.String(strconv.Itoa(int(entry.GetPreference()))),
-				Exchange:   pulumi.String(entry.Exchange),
+				Exchange:   pulumi.String(entry.Exchange.GetValue()),
 			})
 		}
 		created, err := dns.NewMxRecord(ctx, "main", &dns.MxRecordArgs{
@@ -161,7 +162,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 				Priority: pulumi.Int(int(entry.GetPriority())),
 				Weight:   pulumi.Int(int(entry.GetWeight())),
 				Port:     pulumi.Int(int(entry.GetPort())),
-				Target:   pulumi.String(entry.Target),
+				Target:   pulumi.String(entry.Target.GetValue()),
 			})
 		}
 		created, err := dns.NewSrvRecord(ctx, "main", &dns.SrvRecordArgs{
@@ -236,7 +237,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 			ZoneName:          pulumi.String(locals.ZoneName),
 			ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			Ttl:               pulumi.Int(ttl),
-			Records:           pulumi.ToStringArray(spec.Ns),
+			Records:           pulumi.ToStringArray(stringValues(spec.Ns)),
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		}, pulumi.Provider(azureProvider))
 		if err != nil {
@@ -251,7 +252,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 			ZoneName:          pulumi.String(locals.ZoneName),
 			ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 			Ttl:               pulumi.Int(ttl),
-			Records:           pulumi.ToStringArray(spec.Ptr),
+			Records:           pulumi.ToStringArray(stringValues(spec.Ptr)),
 			Tags:              pulumi.ToStringMap(locals.AzureTags),
 		}, pulumi.Provider(azureProvider))
 		if err != nil {
@@ -269,4 +270,14 @@ func Resources(ctx *pulumi.Context, stackInput *azurednsrecordv1alpha1.AzureDnsR
 	ctx.Export(OpFqdn, fqdn)
 
 	return nil
+}
+
+// stringValues resolves each value-or-reference entry to the string the
+// provider receives (references are resolved to values before the module runs).
+func stringValues(entries []*foreignkeyv1.StringValueOrRef) []string {
+	values := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		values = append(values, entry.GetValue())
+	}
+	return values
 }

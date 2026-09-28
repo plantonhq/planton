@@ -7364,6 +7364,42 @@ enum CloudResourceKind {
     // domain, so only the domain is a prerequisite.
     prerequisites: [Auth0CustomDomain]
   }];
+  // 8010–8015: how the tenant's Universal Login looks, reads and mails --
+  // branding and theme, the login flow, each prompt's words and screen
+  // partials, the email service and each email.
+  Auth0Branding = 8010 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0brand"
+  }];
+  Auth0Prompt = 8011 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0prmpt"
+  }];
+  Auth0PromptCustomText = 8012 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0pctxt"
+  }];
+  Auth0PromptScreenPartials = 8013 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0pspart"
+  }];
+  Auth0EmailProvider = 8014 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0emlp"
+  }];
+  Auth0EmailTemplate = 8015 [(kind_meta) = {
+    provider: auth0
+    version: "v1alpha1"
+    id_prefix: "a0emlt"
+    // A custom template sends through the tenant's email provider; Auth0
+    // refuses templates on a tenant that has none.
+    prerequisites: [Auth0EmailProvider]
+  }];
 
   // 9000–9999: OpenFGA resources
   // Note: OpenFGA is Terraform-only - there is no Pulumi provider available.

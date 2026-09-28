@@ -1,0 +1,19 @@
+apiVersion: auth0.planton.dev/v1alpha1
+kind: Auth0PromptScreenPartials
+metadata:
+  name: signup-partials
+  org: example-org
+  env: production
+spec:
+  promptType: signup
+  screenPartials:
+    - screenName: signup
+      insertionPoints:
+        # A required checkbox below the fields and above the submit button.
+        # The ulp- prefix submits the field to Actions (pre-user-registration
+        # reads event.request.body["ulp-terms-of-service"]).
+        formContentEnd: |-
+          <div class="ulp-field">
+            <input type="checkbox" name="ulp-terms-of-service" id="terms-of-service" required>
+            <label for="terms-of-service">I agree to the <a href="https://planton.ai/terms" target="_blank">Planton Terms of Service</a>.</label>
+          </div>

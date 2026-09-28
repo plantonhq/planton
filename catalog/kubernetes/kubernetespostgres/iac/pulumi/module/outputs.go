@@ -13,4 +13,5 @@ const (
 	OpPasswordSecretName  = "password_secret.name"
 	OpPasswordSecretKey   = "password_secret.key"
 	OpSuperuserSecretName = "superuser_secret_name"
+	OpBackupServerName    = "backup_server_name"
 )

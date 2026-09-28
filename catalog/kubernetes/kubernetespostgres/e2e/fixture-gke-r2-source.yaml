@@ -55,6 +55,10 @@ spec:
           secret_access_key:
             value: ${E2E_ENV:PLANTON_E2E_GKE_R2_SECRET_ACCESS_KEY}
     retention_policy: 7d
+    # A named series, so the recovery scenario can name it in
+    # source_server_name before this cluster exists; the path carries the
+    # run id, so the series is still this run's alone.
+    server_name: e2e-pg-gke-src
     schedules:
       - name: initial
         schedule: "0 0 3 * * *"

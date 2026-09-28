@@ -1,0 +1,25 @@
+# Least-privilege permissions the IaC runner's Auth0 credential needs to
+# provision, update, and destroy this component with the official modules.
+# Auth0 authenticates with a machine-to-machine application authorized for
+# the tenant's Management API (https://{tenant-domain}/api/v2/); the
+# auth0/auth0 Terraform provider (~> 1.58 per iac/tf/provider.tf) and the
+# pulumi-auth0 SDK exchange its client id and secret for a token through
+# the client-credentials flow, and the grant's scopes are the policy. Every
+# group is `derived` (static analysis of the module sources against Auth0's
+# endpoint docs, cited in notes) until a live capture upgrades it to
+# `proven`. Schema: iac/componentpermissions/v1.
+apiVersion: iac.planton.dev/v1
+kind: ComponentPermissions
+metadata:
+  name: auth0emailprovider
+spec:
+  auth0:
+    groups:
+      - purpose: ManageEmailProvider
+        scopes:
+          - read:email_provider
+          - create:email_provider
+          - update:email_provider
+          - delete:email_provider
+        provenance: derived
+        notes: The modules (iac/tf/main.tf and iac/pulumi/module/email_provider.go) manage auth0_email_provider, the one email provider of the tenant the credential belongs to. The provider's create first reads GET /api/v2/emails/provider (read:email_provider) and then either creates the provider via POST /api/v2/emails/provider (create:email_provider) or, when one is already configured, takes it over via PATCH /api/v2/emails/provider (update:email_provider); updates use the same PATCH, and destroy is DELETE /api/v2/emails/provider (delete:email_provider) -- terraform-provider-auth0 internal/auth0/email/resource.go (createEmailProvider, emailProviderIsConfigured, deleteEmailProvider), and the scopes the Management API's OpenAPI document names for each operation.

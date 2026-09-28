@@ -56,6 +56,11 @@ output "password_secret" {
   }
 }
 
+output "backup_server_name" {
+  description = "The backup series this install archives into (the folder beneath the backup destination path holding its base backups and WAL) — a recovery names it as source_server_name; empty when no backup is declared"
+  value       = local.backup_server_name
+}
+
 output "superuser_secret_name" {
   description = "Name of the superuser credential Secret — populated only when superuser access is enabled (the provided secret when a password was declared, the operator's `<name>-superuser` otherwise), empty when disabled"
   value       = local.superuser_secret_name_output

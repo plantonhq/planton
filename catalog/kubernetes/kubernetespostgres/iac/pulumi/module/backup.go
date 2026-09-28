@@ -23,20 +23,25 @@ import (
 // (`<name>-backup-creds` / `<name>-recovery-creds`, plus `-endpoint-ca`
 // for self-signed S3-compatible endpoints); keyless arms render the
 // backend's ambient-identity flag instead and need no Secret at all.
+//
+// The backup store is also returned on its own: its UID names the backup
+// series of this install (see backupServerName).
 func createObjectStores(ctx *pulumi.Context, locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 	dependencies []pulumi.ResourceOption,
-) ([]pulumi.Resource, error) {
+) ([]pulumi.Resource, *barmancloudv1.ObjectStore, error) {
 	var created []pulumi.Resource
+	var backupStore *barmancloudv1.ObjectStore
 
 	if backup := locals.Spec.GetBackup(); backup != nil {
 		store, err := createObjectStore(ctx, locals, kubernetesProvider, dependencies,
 			locals.BackupObjectStoreName, backup.GetObjectStore(), backup.GetRetentionPolicy(),
 			locals.BackupCredsSecretName, locals.BackupEndpointCaName)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to create backup object store")
+			return nil, nil, errors.Wrap(err, "failed to create backup object store")
 		}
 		created = append(created, store)
+		backupStore = store
 	}
 
 	if recovery := locals.Spec.GetBootstrap().GetRecovery(); recovery != nil {
@@ -46,12 +51,40 @@ func createObjectStores(ctx *pulumi.Context, locals *Locals,
 			locals.RecoveryObjectStoreName, recovery.GetObjectStore(), "",
 			locals.RecoveryCredsSecretName, locals.RecoveryEndpointCaName)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed to create recovery-source object store")
+			return nil, nil, errors.Wrap(err, "failed to create recovery-source object store")
 		}
 		created = append(created, store)
 	}
 
-	return created, nil
+	return created, backupStore, nil
+}
+
+// backupServerName resolves the backup SERIES: the folder beneath the
+// destination path that this install's base backups and WAL are filed
+// under (Barman's server name). A declared backup.server_name is used as
+// is. Otherwise the series is `<cluster>-<first 8 characters of the backup
+// ObjectStore's UID>`: the ObjectStore is created with the install, before
+// the Cluster, so a destroy and recreate from the same declaration
+// archives into a fresh series, and an imported cluster keeps its
+// ObjectStore and so its series. Barman refuses to archive into a series
+// that holds another PostgreSQL system's history, and the refusal is
+// quiet (archiving stops, the instances stay healthy, WAL fills the
+// volume), which is why the series is never simply the cluster's name.
+// The Terraform twin is local.backup_server_name.
+func backupServerName(locals *Locals, backupStore *barmancloudv1.ObjectStore) pulumi.StringOutput {
+	if declared := locals.Spec.GetBackup().GetServerName(); declared != "" {
+		return pulumi.String(declared).ToStringOutput()
+	}
+	return backupStore.Metadata.Uid().ApplyT(func(uid *string) string {
+		short := ""
+		if uid != nil {
+			short = *uid
+		}
+		if len(short) > 8 {
+			short = short[:8]
+		}
+		return locals.ClusterName + "-" + short
+	}).(pulumi.StringOutput)
 }
 
 // createObjectStore renders one ObjectStore resource plus its credential
@@ -66,7 +99,7 @@ func createObjectStore(ctx *pulumi.Context, locals *Locals,
 	retentionPolicy string,
 	credsSecretName string,
 	endpointCaSecretName string,
-) (pulumi.Resource, error) {
+) (*barmancloudv1.ObjectStore, error) {
 	configuration := barmancloudv1.ObjectStoreSpecConfigurationArgs{
 		DestinationPath: pulumi.String(objectStore.GetDestinationPath()),
 	}
@@ -319,6 +352,57 @@ func createObjectStore(ctx *pulumi.Context, locals *Locals,
 			},
 			Spec: storeSpec,
 		}, opts...)
+}
+
+// createSeriesStartBackup renders the on-demand Backup every backup series
+// starts from (`<cluster>-series-start`). WAL without a base backup cannot
+// be replayed, so a series is restorable only from its first base backup
+// on; taking one when the series is born makes it restorable from its
+// first minute, whatever the schedules say. The series rides the Backup as
+// an annotation, and any change replaces the Backup, so a new series (a
+// recreate, an upgrade onto per-install series, a changed server_name)
+// takes a new base backup, while an unchanged one never re-runs. Deleting
+// a Backup resource leaves its stored objects in the bucket; the
+// retention policy prunes them.
+func createSeriesStartBackup(ctx *pulumi.Context, locals *Locals,
+	kubernetesProvider pulumi.ProviderResource,
+	dependencies []pulumi.ResourceOption,
+	backupSeries pulumi.StringOutput,
+) error {
+	if locals.Spec.GetBackup() == nil {
+		return nil
+	}
+
+	opts := append([]pulumi.ResourceOption{
+		pulumi.Provider(kubernetesProvider),
+		pulumi.ReplaceOnChanges([]string{"*"}),
+		pulumi.DeleteBeforeReplace(true),
+	}, dependencies...)
+
+	if _, err := postgresqlv1.NewBackup(ctx, locals.SeriesStartBackupName,
+		&postgresqlv1.BackupArgs{
+			Metadata: kubernetesmeta.ObjectMetaArgs{
+				Name:        pulumi.String(locals.SeriesStartBackupName),
+				Namespace:   pulumi.String(locals.Namespace),
+				Labels:      pulumi.ToStringMap(locals.Labels),
+				Annotations: pulumi.StringMap{vars.BackupSeriesAnnotationKey: backupSeries},
+			},
+			Spec: postgresqlv1.BackupSpecArgs{
+				Cluster: postgresqlv1.BackupSpecClusterArgs{
+					Name: pulumi.String(locals.ClusterName),
+				},
+				Method: pulumi.String("plugin"),
+				PluginConfiguration: postgresqlv1.BackupSpecPluginConfigurationArgs{
+					Name: pulumi.String(vars.BarmanCloudPluginName),
+					Parameters: pulumi.StringMap{
+						"barmanObjectName": pulumi.String(locals.BackupObjectStoreName),
+					},
+				},
+			},
+		}, opts...); err != nil {
+		return errors.Wrap(err, "failed to create the series-start backup")
+	}
+	return nil
 }
 
 // createScheduledBackups renders one ScheduledBackup per declared schedule,

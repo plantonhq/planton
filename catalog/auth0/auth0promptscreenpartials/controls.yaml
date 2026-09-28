@@ -1,0 +1,62 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: auth0promptscreenpartials
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The HTML fragments of one prompt inside Auth0's SaaS control plane, served publicly on the login pages and none of them secret; their storage is Auth0's provider-managed posture, with no encryption seam in this spec. The data a partial's form fields collect is submitted to Auth0 with the form and handled by the Actions that read it, outside this spec.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest at this component's level to key (see enc-at-rest); Auth0 exposes no customer-managed-key surface on partials.
+    - control_id: enc-in-transit
+      status: not_applicable
+      notes: The partials terminate no connections; the Management API calls that write them travel to Auth0's HTTPS-only API, and the login pages that render them are served over HTTPS on the tenant's custom domain. A fragment that loads a script or image from elsewhere fetches it from wherever it is hosted, outside this spec.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The fragments are served publicly by design, on the tenant's login pages; they expose no endpoint of their own.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: No inbound network surface exists to filter (see no-public-access).
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The object receives no HTTP requests; Auth0's own login and API edge is Auth0's provider-managed posture.
+    - control_id: rbac
+      status: not_applicable
+      notes: WHO may change the login pages' fragments is governed at the Auth0 tenant level -- Management API tokens scoped with read:prompts and update:prompts (iac/permissions.yaml) and dashboard admin roles -- with no per-prompt access-control surface in this spec.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The partials hold no credentials and authenticate to nothing; the credential the IaC runner presents is the provider connection's concern (iac/permissions.yaml).
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: Fragments carry no credential path of their own.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The partials add content and fields to a login screen, never a way to prove who a person is; credential strength lives on the tenant's connections and multi-factor policy.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Changes to partials are Management API operations captured in Auth0's tenant logs (exported, where wanted, by the auth0eventstream kind).
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the modules expose a metrics surface for partials.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The prompt's whole set of partials is declared in the manifest and re-created from it, so the manifest is the recovery point.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure; availability of the login page is Auth0's SaaS platform posture.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: Destroying this resource removes every partial of the prompt -- the screens render without them, and a field an Action relies on stops being submitted. The set is re-applied from the manifest; there is no deletion-protection surface on partials.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software of its own to patch; Universal Login is Auth0's SaaS, patched by Auth0.

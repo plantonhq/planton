@@ -1,6 +1,7 @@
 package kubernetespostgresv1alpha1
 
 import (
+	"strings"
 	"testing"
 
 	"buf.build/go/protovalidate"
@@ -663,6 +664,47 @@ var _ = ginkgo.Describe("KubernetesPostgres Validation Tests", func() {
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
+		ginkgo.It("backup without a server_name should be valid (the series is unique to the install)", func() {
+			input.Spec.Backup = &KubernetesPostgresBackup{ObjectStore: s3KeylessStore("s3://pg-backups/orders")}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("backup continuing a named series should be valid", func() {
+			input.Spec.Backup = &KubernetesPostgresBackup{
+				ObjectStore: s3KeylessStore("s3://pg-backups/orders"),
+				ServerName:  "orders-db",
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a recovered cluster archiving beside its source should be valid (its own series, same path)", func() {
+			input.Spec.Bootstrap = &KubernetesPostgresBootstrap{
+				Method: &KubernetesPostgresBootstrap_Recovery{
+					Recovery: &KubernetesPostgresBootstrapRecovery{
+						ObjectStore:      s3KeylessStore("s3://pg-backups/orders"),
+						SourceServerName: "orders-db-7f3a9c21",
+					},
+				},
+			}
+			input.Spec.Backup = &KubernetesPostgresBackup{ObjectStore: s3KeylessStore("s3://pg-backups/orders")}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("a recovered cluster naming its source's series under another path should be valid", func() {
+			input.Spec.Bootstrap = &KubernetesPostgresBootstrap{
+				Method: &KubernetesPostgresBootstrap_Recovery{
+					Recovery: &KubernetesPostgresBootstrapRecovery{
+						ObjectStore:      s3KeylessStore("s3://pg-backups/orders"),
+						SourceServerName: "orders-db",
+					},
+				},
+			}
+			input.Spec.Backup = &KubernetesPostgresBackup{
+				ObjectStore: s3KeylessStore("s3://pg-backups/orders-restored"),
+				ServerName:  "orders-db",
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
 	})
 
 	ginkgo.Describe("When invalid input is passed", func() {
@@ -1260,6 +1302,38 @@ var _ = ginkgo.Describe("KubernetesPostgres Validation Tests", func() {
 				PrimaryUpdateMethod: stringPtr("recreate"),
 			}
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
+		})
+
+		ginkgo.It("a server_name that is not a DNS label should fail (server_name_format)", func() {
+			input.Spec.Backup = &KubernetesPostgresBackup{
+				ObjectStore: s3KeylessStore("s3://pg-backups/orders"),
+				ServerName:  "Orders_DB",
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.MatchError(gomega.ContainSubstring("server_name is a lowercase DNS label")))
+		})
+
+		ginkgo.It("a server_name longer than 63 characters should fail (server_name_format)", func() {
+			input.Spec.Backup = &KubernetesPostgresBackup{
+				ObjectStore: s3KeylessStore("s3://pg-backups/orders"),
+				ServerName:  "orders-" + strings.Repeat("a", 57),
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.MatchError(gomega.ContainSubstring("server_name is a lowercase DNS label")))
+		})
+
+		ginkgo.It("archiving into the very series the cluster restores from should fail (server_name_not_recovery_source)", func() {
+			input.Spec.Bootstrap = &KubernetesPostgresBootstrap{
+				Method: &KubernetesPostgresBootstrap_Recovery{
+					Recovery: &KubernetesPostgresBootstrapRecovery{
+						ObjectStore:      s3KeylessStore("s3://pg-backups/orders"),
+						SourceServerName: "orders-db",
+					},
+				},
+			}
+			input.Spec.Backup = &KubernetesPostgresBackup{
+				ObjectStore: s3KeylessStore("s3://pg-backups/orders"),
+				ServerName:  "orders-db",
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.MatchError(gomega.ContainSubstring("names the series this cluster restores from")))
 		})
 	})
 })

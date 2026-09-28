@@ -21,6 +21,12 @@ func (m *module) Version() semver.Version {
 
 func (m *module) Construct(ctx *pulumi.Context, name, typ, urn string) (r pulumi.Resource, err error) {
 	switch typ {
+	case "kubernetes:postgresql.cnpg.io/v1:Backup":
+		r = &Backup{}
+	case "kubernetes:postgresql.cnpg.io/v1:BackupList":
+		r = &BackupList{}
+	case "kubernetes:postgresql.cnpg.io/v1:BackupPatch":
+		r = &BackupPatch{}
 	case "kubernetes:postgresql.cnpg.io/v1:Cluster":
 		r = &Cluster{}
 	case "kubernetes:postgresql.cnpg.io/v1:ClusterList":
