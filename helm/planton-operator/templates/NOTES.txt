@@ -21,4 +21,9 @@ names it too.
 Prefer the platform as a Helm release with proven defaults and per-cloud
 values files? The `planton` chart declares it:
 
-  helm install planton oci://ghcr.io/plantonhq/charts/planton -n {{ .Release.Namespace }}
+  helm install planton oci://ghcr.io/plantonhq/charts/planton -n {{ .Release.Namespace }} \
+    --set platform.spec.version=<release>
+
+The release is the one value it needs; the published releases are the
+control-plane image's tags:
+https://github.com/orgs/plantonhq/packages/container/package/planton%2Fcontrol-plane

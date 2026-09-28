@@ -79,8 +79,12 @@ kubectl get plantonplatform -n planton -w
 Or declare it as a Helm release with proven defaults:
 
 ```bash
-helm install planton oci://ghcr.io/plantonhq/charts/planton --namespace planton
+helm install planton oci://ghcr.io/plantonhq/charts/planton --namespace planton \
+  --set platform.spec.version=<release>
 ```
+
+The one required value is the platform release: the chart pins none, and the
+operator refuses a release below its floor.
 
 ### Publishing Planton at a URL
 

@@ -5,7 +5,9 @@
 # development placeholder its Chart.yaml carries in git. Publishing is a
 # separate act: a `helm/<chart>/vX.Y.Z` tag (or, for planton-operator, the
 # operator's own tag) runs release.helm.yaml, which stamps the version at
-# package time. This lane never pushes.
+# package time. This lane never pushes. On main it also holds every published
+# chart to its source (hack/guards/ensure_helm_charts_are_released.sh): a shape
+# change is owed a release, and the lane stays red until it is cut.
 #
 # The operator chart's deeper contract (it owns its CRDs; what it renders is
 # controller-gen's output byte for byte) is held by the render test inside
@@ -25,6 +27,7 @@ on:
     paths:
       - 'helm/**'
       - '.github/workflows/lint.helm.yaml'
+      - 'hack/guards/ensure_helm_charts_are_released.sh'
   workflow_dispatch: {}
 
 permissions:
@@ -40,6 +43,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The release guard compares each chart with its newest release tag.
+          fetch-depth: 0
+          fetch-tags: true
       - uses: azure/setup-helm@v4
         with:
           version: v3.16.0
@@ -63,3 +70,9 @@ jobs:
               exit 1
             fi
           done
+      # Main only: a pull request that changes a chart cannot carry its release
+      # tag yet (tags are cut after the merge), so this reads published against
+      # source where both exist. See hack/guards/ensure_helm_charts_are_released.sh.
+      - name: Every published chart equals its source
+        if: github.event_name != 'pull_request'
+        run: bash ./hack/guards/ensure_helm_charts_are_released.sh

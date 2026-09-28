@@ -34,13 +34,20 @@ helm install planton-operator oci://ghcr.io/plantonhq/charts/planton-operator \
   --create-namespace
 
 helm install planton oci://ghcr.io/plantonhq/charts/planton \
-  --namespace planton
+  --namespace planton \
+  --set platform.spec.version=<release>
 ```
 
-No values are required on any cluster. The install output tells you what to
-do next: watch the platform reach `Ready`, run the printed port-forward
-command, and open the console — the first visitor becomes the administrator.
-The Planton CLI's self-hosted install runs both charts for you.
+One value is required on every cluster: `platform.spec.version`, the platform
+release to install. The chart pins none of its own, so a chart release never
+moves a running platform. The published releases are the
+[control-plane image's tags](https://github.com/orgs/plantonhq/packages/container/package/planton%2Fcontrol-plane),
+and the operator refuses a release below its floor, naming the floor. The
+install output tells you what to do next: watch the platform reach `Ready`,
+run the printed port-forward command, and open the console — the first
+visitor becomes the administrator. The Planton desktop's guided install does
+the same two steps for you: the operator chart, then the platform declared
+directly, at the release the desktop shipped with.
 
 ### Per-cloud values files
 
@@ -51,6 +58,7 @@ straight from a raw GitHub URL:
 ```bash
 helm install planton oci://ghcr.io/plantonhq/charts/planton \
   --namespace planton \
+  --set platform.spec.version=<release> \
   --values https://raw.githubusercontent.com/plantonhq/planton/main/helm/planton/values.rke2.yaml
 ```
 
