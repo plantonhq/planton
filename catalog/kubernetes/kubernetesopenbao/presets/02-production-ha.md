@@ -4,10 +4,17 @@ Three OpenBao servers with integrated Raft storage: each replica
 persists to its own 10Gi PVC, the module synthesizes the `retry_join`
 stanzas for every peer (the chart alone ships none — without them a
 multi-replica install never forms a cluster), and the cluster elects a
-leader. Losing any single node loses neither data nor availability. A
-dedicated audit volume is mounted at `/openbao/audit`; enable auditing
-after initialization with
-`bao audit enable file file_path=/openbao/audit/audit.log`.
+leader. Losing any single node loses neither data nor availability.
+
+Auditing is on from the first start: `server.audit` declares the audit
+device in the server's configuration (OpenBao 2.4 and later refuse
+`bao audit enable` over the API), writing every request to the
+server's standard output, where the cluster's log pipeline already
+collects the pod's logs. The dedicated audit volume at `/openbao/audit`
+is there for the `file` sink (`server.audit.sink: file`), which writes
+`/openbao/audit/audit.log` — nothing rotates that file, and OpenBao
+refuses every request once it cannot write it, so keep `stdout` unless
+you rotate it yourself; drop `auditStorage` if you keep `stdout`.
 
 THE BOOTSTRAP IS YOURS, by design: fresh pods run but report NotReady
 (the readiness probe is `bao status`, which fails for sealed servers).

@@ -21,6 +21,6 @@ This preset creates a Premium registry that stays publicly addressable but denie
 | --- | --- | --- |
 | `<azure-region>` | The registry's region | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<youruniquename>` | Globally unique registry name (5-50 lowercase alphanumerics) | Becomes `{name}.azurecr.io` |
+| `yourregistry123` (`registryName`) | Globally unique registry name (5-50 lowercase alphanumerics) | Becomes `{name}.azurecr.io` |
 | `<office-egress-cidr>` | Your office/VPN egress range, e.g. `203.0.113.0/24` | Network team |
 | `<ci-runner-cidr>` | Your CI runners' egress range | CI provider docs or NAT gateway outputs |

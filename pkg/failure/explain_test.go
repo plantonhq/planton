@@ -244,6 +244,76 @@ func TestExplainRecognizesNothingInOrdinaryOutput(t *testing.T) {
 	}
 }
 
+// Auth0's refusal of a client grant on a tenant whose plan lacks machine-to-
+// machine access to Organizations. The runner line is recorded from a
+// Free-plan tenant; the OpenTofu diagnostic is that same Auth0 text in the
+// engine's standard frame (summary, then the failing resource's address),
+// wrapped at terminal width.
+const runnerAuth0OrganizationsEntitlement = `Auth0Client/user-lifecycle failed (16s): 403 Forbidden: Please upgrade your subscription to use Machine to Machine access to Organizations.`
+
+const tofuAuth0OrganizationsEntitlement = `
+╷
+│ Error: 403 Forbidden: Please upgrade your subscription to use Machine to
+│ Machine access to Organizations.
+│ 
+│   with auth0_client_grant.api_grants["0"],
+│   on main.tf line 126, in resource "auth0_client_grant" "api_grants":
+│  126: resource "auth0_client_grant" "api_grants" {
+│ 
+╵
+`
+
+func TestExplainAuth0OrganizationsEntitlement(t *testing.T) {
+	cases := []struct {
+		name, raw, observedHas string
+	}{
+		{"runner line", runnerAuth0OrganizationsEntitlement, "Auth0 refused a client grant"},
+		{"tofu diagnostic", tofuAuth0OrganizationsEntitlement, `Auth0 refused the client grant auth0_client_grant.api_grants["0"]`},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			failures := Explain(c.raw)
+			if len(failures) != 1 {
+				t.Fatalf("expected one explanation, got %d: %v", len(failures), failures)
+			}
+			f := failures[0]
+			requireParts(t, f)
+			for _, want := range []string{c.observedHas, "does not include machine-to-machine access to Organizations", "Please upgrade your subscription"} {
+				if !strings.Contains(f.Observed, want) {
+					t.Errorf("observation lacks %q: %s", want, f.Observed)
+				}
+			}
+			for _, want := range []string{"allowAnyOrganization", "organizationUsage"} {
+				if !strings.Contains(f.Meaning, want) {
+					t.Errorf("meaning must name the field that asks for organization access (%q): %s", want, f.Meaning)
+				}
+				if !strings.Contains(f.NextStep, want) {
+					t.Errorf("next step must name the field to remove (%q): %s", want, f.NextStep)
+				}
+			}
+			if !strings.Contains(f.NextStep, "upgrade the Auth0 tenant's plan") {
+				t.Errorf("next step must offer the plan upgrade: %s", f.NextStep)
+			}
+		})
+	}
+}
+
+func TestExplainAuth0StaysSilent(t *testing.T) {
+	spoken := Auth0OrganizationsEntitlement("", "403 Forbidden: Please upgrade your subscription to use Machine to Machine access to Organizations.").Error() +
+		"\n" + runnerAuth0OrganizationsEntitlement
+	cases := map[string]string{
+		"the module spoke first": spoken,
+		"an unrelated 403":       `Auth0Client/cli failed (3s): 403 Forbidden: Insufficient scope, expected any of: create:client_grants`,
+	}
+	for name, output := range cases {
+		t.Run(name, func(t *testing.T) {
+			if failures := Explain(output); len(failures) != 0 {
+				t.Fatalf("expected no explanation, got %v", failures)
+			}
+		})
+	}
+}
+
 func TestAnnotateCarriesCauseAndExplanation(t *testing.T) {
 	cause := errors.New("failed to execute tofu command tofu apply")
 	err := Annotate(cause, tofuForbiddenCRDs)

@@ -7,7 +7,6 @@ Terraform IaC module for a zone's snippet routing table -- the ordered list of e
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareSnippetRulesSpec
-locals.tf     — Resource naming and labels
 main.tf       — cloudflare_snippet_rules
 outputs.tf    — zone_id
 ```

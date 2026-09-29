@@ -22,7 +22,7 @@ This preset creates a 2-shard MemoryDB cluster with 2 replicas per shard (6 tota
 
 | Placeholder | Description | Example |
 |-------------|-------------|---------|
-| `<acl-name>` | MemoryDB ACL with configured users | `my-prod-acl` |
+| `<acl-resource-name>` | Name of the AwsMemorydbAcl resource with configured users (its `status.outputs.acl_name` is read) | `my-prod-acl` |
 | `<private-subnet-id-az1>` | Private subnet in first AZ | `subnet-0a1b2c3d4e5f6g7h8` |
 | `<private-subnet-id-az2>` | Private subnet in second AZ | `subnet-1a2b3c4d5e6f7g8h9` |
 | `<security-group-id>` | SG allowing port 6379 from app instances | `sg-0123456789abcdef0` |

@@ -7,7 +7,8 @@ import (
 
 // Explain reads raw engine output and returns the three-part explanation of
 // every failure it recognizes: Helm's chart-location errors, the Kubernetes
-// API server's authorization refusals. It exists for the failures a module
+// API server's authorization refusals, Auth0's plan-entitlement refusal of a
+// client grant. It exists for the failures a module
 // cannot rephrase itself. An HCL module can only speak in a precondition or
 // postcondition, which run on a data source's RESULT; when the read itself
 // fails (a repository host that does not resolve, an API server that answers
@@ -104,6 +105,7 @@ var explainers = []explainer{
 	{signature: signatureHelmRepositoryUnreachable, explain: explainHelmRepositoryUnreachable},
 	{signature: signatureKubernetesForbidden, explain: explainKubernetesForbidden},
 	{signature: signatureKubernetesFieldNotInDefinition, explain: explainKubernetesFieldNotInDefinition},
+	{signature: signatureAuth0OrganizationsEntitlement, explain: explainAuth0OrganizationsEntitlement},
 }
 
 // collapse removes the engines' presentation from a diagnostic: OpenTofu and

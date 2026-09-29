@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	azurepostgresqlflexibleserverv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurepostgresqlflexibleserver/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -56,21 +57,21 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurepostgresqlflexiblese
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	locals.AzureTags = map[string]string{
-		"resource":      "true",
-		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePostgresqlFlexibleServer.String()),
+		azuretagkeys.Resource:     "true",
+		azuretagkeys.ResourceName: target.Metadata.Name,
+		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePostgresqlFlexibleServer.String()),
 	}
 
 	if target.Metadata.Id != "" {
-		locals.AzureTags["resource_id"] = target.Metadata.Id
+		locals.AzureTags[azuretagkeys.ResourceId] = target.Metadata.Id
 	}
 
 	if target.Metadata.Org != "" {
-		locals.AzureTags["organization"] = target.Metadata.Org
+		locals.AzureTags[azuretagkeys.Organization] = target.Metadata.Org
 	}
 
 	if target.Metadata.Env != "" {
-		locals.AzureTags["environment"] = target.Metadata.Env
+		locals.AzureTags[azuretagkeys.Environment] = target.Metadata.Env
 	}
 
 	// The user's spec tags merge over the metadata-derived tags -- user

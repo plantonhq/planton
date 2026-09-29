@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	azureeventhubnamespacev1alpha1 "github.com/plantonhq/planton/catalog/azure/azureeventhubnamespace/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -55,29 +56,23 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1a
 	// Identity tags derived from metadata; user tags merge OVER these (the
 	// governance surface belongs to the user).
 	locals.AzureTags = map[string]string{
-		"resource":      "true",
-		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AzureEventHubNamespace.String()),
+		azuretagkeys.Resource:     "true",
+		azuretagkeys.ResourceName: target.Metadata.Name,
+		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureEventHubNamespace.String()),
 	}
 
 	if target.Metadata.Id != "" {
-		locals.AzureTags["resource_id"] = target.Metadata.Id
+		locals.AzureTags[azuretagkeys.ResourceId] = target.Metadata.Id
 	}
 
 	if target.Metadata.Org != "" {
-		locals.AzureTags["organization"] = target.Metadata.Org
+		locals.AzureTags[azuretagkeys.Organization] = target.Metadata.Org
 	}
 
 	if target.Metadata.Env != "" {
-		locals.AzureTags["environment"] = target.Metadata.Env
+		locals.AzureTags[azuretagkeys.Environment] = target.Metadata.Env
 	}
 
-	// PARITY-EXCEPTION: the Terraform module's base tags use the snake_case
-	// literal "azure_event_hub_namespace" for resource_kind and fall back
-	// to metadata.name for resource_id, while this module emits the lowered
-	// enum string and omits resource_id when metadata.id is unset -- the
-	// family-wide tag-shape divergence documented across the Azure catalog.
-	// Output-neutral: stack outputs never carry tags.
 	for key, value := range target.Spec.Tags {
 		locals.AzureTags[key] = value
 	}

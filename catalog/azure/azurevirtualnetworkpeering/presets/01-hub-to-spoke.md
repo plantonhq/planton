@@ -38,7 +38,7 @@ network has no gateway of its own.
 | --- | --- | --- |
 | `<hub-vnet-resource-name>` | Planton metadata name of the hub `AzureVirtualNetwork` | Your hub network stack |
 | `<spoke-vnet-resource-name>` | Planton metadata name of the spoke `AzureVirtualNetwork` | Your spoke network stack |
-| `<peering-name>` | Peering name within the hub (e.g. `hub-to-spoke1`) | Your naming convention |
+| `hub-to-spoke1` (`name`) | Peering name within the hub (name it after the far side) | Your naming convention |
 
 ## Pair With
 

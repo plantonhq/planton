@@ -7,7 +7,6 @@ Terraform IaC module for device posture rules.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustDevicePostureRuleSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_device_posture_rule
 outputs.tf    — rule_id
 ```

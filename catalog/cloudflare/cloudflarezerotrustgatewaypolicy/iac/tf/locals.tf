@@ -1,12 +1,4 @@
 locals {
-  # Resource naming
-  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-zt-gateway-policy")
-
-  # Labels
-  labels = merge({
-    "name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
   # Cloudflare models the filter as a list that can only contain a single value
   # (the constraint is API-enforced, not schema-enforced); the spec's singular
   # string keeps the escape hatch closed.

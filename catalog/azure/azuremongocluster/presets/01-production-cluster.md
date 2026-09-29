@@ -20,7 +20,7 @@ This preset creates a Default-mode production cluster: dedicated M30 compute, zo
 | --- | --- | --- |
 | `<your-resource-group>` | The Planton name of your `AzureResourceGroup` resource | Planton console (or replace `valueFrom` with `value:` and a literal group name) |
 | `<your-password-secret>` | The Planton name of the `AzureKeyVaultSecret` holding the admin password | Planton console |
-| `<office-egress-start>` / `<office-egress-end>` | Your office/VPN egress IPv4 range | Your network team |
+| `203.0.113.0` / `203.0.113.255` | Your office/VPN egress IPv4 range (`firewallRules[].startIpAddress` / `endIpAddress`) | Your network team |
 | `my-org-orders-db` | The cluster's global hostname label | Your naming convention -- org-prefixed |
 
 ## Related Presets

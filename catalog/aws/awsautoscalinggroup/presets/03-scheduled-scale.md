@@ -32,7 +32,7 @@ near-zero cost while stopped.
 | --- | --- | --- |
 | `<fleet-name>` | Name for the group | Your workload's name |
 | `<aws-region>` | AWS region code (e.g., `us-east-1`) | Your deployment region |
-| `<private-subnet-a/b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
 | `<launch-template-resource-name>` | Name of the AwsLaunchTemplate resource | Your template manifest's `metadata.name` |
 | `<iana-time-zone>` | IANA zone for the schedule (e.g., `America/New_York`) | Your business locale |
 

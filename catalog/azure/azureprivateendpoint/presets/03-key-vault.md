@@ -25,7 +25,7 @@ This preset creates a Private Endpoint for Azure Key Vault, enabling private net
 | `kv-private-endpoint` | Name for the private endpoint (e.g., "pe-kv-prod") | Choose a descriptive name |
 | `<subnet-resource-id>` | ARM resource ID of the subnet | `AzureSubnet` status outputs |
 | `<key-vault-resource-id>` | ARM resource ID of the Key Vault | `AzureKeyVault` status outputs |
-| `<private-dns-zone-id>` | ARM resource ID of the `privatelink.vaultcore.azure.net` DNS zone | `AzurePrivateDnsZone` status outputs |
+| `<privatelink-vaultcore-azure-net-zone-id>` | ARM resource ID of the `privatelink.vaultcore.azure.net` DNS zone | `AzurePrivateDnsZone` status outputs |
 
 ## Related Presets
 

@@ -19,8 +19,7 @@ This preset serves a private S3 bucket through CloudFront using an Origin Access
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<bucket-name>` | The S3 bucket holding the site content | `AwsS3Bucket` outputs or the S3 console |
-| `<bucket-region>` | The bucket's region (the REGIONAL endpoint avoids redirect latency) | The bucket's configuration |
+| `replace-me-bucket.s3.us-east-1.amazonaws.com` | The S3 bucket holding the site content, as its REGIONAL endpoint (bucket name and region; the regional endpoint avoids redirect latency) | `AwsS3Bucket` outputs or the S3 console |
 
 ## Related Presets
 

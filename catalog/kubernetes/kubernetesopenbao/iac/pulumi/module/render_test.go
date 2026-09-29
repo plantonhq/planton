@@ -29,6 +29,10 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 }
 
 func int32Ptr(i int32) *int32 { return &i }
+
+func auditSink(s kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_Sink) *kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_Sink {
+	return &s
+}
 func strPtr(s string) *string { return &s }
 
 // localsFor builds the module's locals the way Resources does, from a stack
@@ -36,7 +40,7 @@ func strPtr(s string) *string { return &s }
 // resolved to values, so the fixtures use literals throughout. The manifest
 // loader fills a present block's declared scalar defaults before either
 // engine sees the spec (server.replicas 1, log_level info, log_format
-// standard), so the fixtures are completed the same way — the rendered
+// standard, audit.sink stdout), so the fixtures are completed the same way — the rendered
 // documents must match what the Terraform module renders from the loaded
 // manifest, byte for byte.
 func localsFor(spec *kubernetesopenbaov1alpha1.KubernetesOpenBaoSpec) *Locals {
@@ -51,6 +55,10 @@ func localsFor(spec *kubernetesopenbaov1alpha1.KubernetesOpenBaoSpec) *Locals {
 		}
 		if s.LogFormat == nil {
 			s.LogFormat = strPtr("standard")
+		}
+		if s.Audit != nil && s.Audit.Sink == nil {
+			stdout := kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_stdout
+			s.Audit.Sink = &stdout
 		}
 	}
 	return initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoStackInput{
@@ -73,7 +81,7 @@ func postgresqlStorage() *kubernetesopenbaov1alpha1.KubernetesOpenBaoServer_Post
 	}
 }
 
-// fixtures are the seven shapes the cross-engine proof renders; the YAML
+// fixtures are the ten shapes the cross-engine proof renders; the YAML
 // manifests the Terraform side loads mirror these field for field.
 func fixtures() map[string]*kubernetesopenbaov1alpha1.KubernetesOpenBaoSpec {
 	pgFull := postgresqlStorage()
@@ -112,6 +120,18 @@ func fixtures() map[string]*kubernetesopenbaov1alpha1.KubernetesOpenBaoSpec {
 				},
 			},
 		},
+		"raft-1-audit-stdout": {Server: &kubernetesopenbaov1alpha1.KubernetesOpenBaoServer{
+			Audit: &kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit{Enabled: true},
+		}},
+		"postgresql-1-audit-file": {Server: &kubernetesopenbaov1alpha1.KubernetesOpenBaoServer{
+			Storage:      postgresqlStorage(),
+			AuditStorage: &kubernetesopenbaov1alpha1.KubernetesOpenBaoVolume{Size: strPtr("5Gi")},
+			Audit:        &kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit{Enabled: true, Sink: auditSink(kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_file)},
+		}},
+		"raft-1-audit-disabled": {Server: &kubernetesopenbaov1alpha1.KubernetesOpenBaoServer{
+			AuditStorage: &kubernetesopenbaov1alpha1.KubernetesOpenBaoVolume{Size: strPtr("10Gi")},
+			Audit:        &kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit{Enabled: false, Sink: auditSink(kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_file)},
+		}},
 		"raft-3-aws-seal": {
 			Server: &kubernetesopenbaov1alpha1.KubernetesOpenBaoServer{Replicas: int32Ptr(3)},
 			AutoUnseal: &kubernetesopenbaov1alpha1.KubernetesOpenBaoAutoUnseal{
@@ -249,6 +269,39 @@ func TestRender_PostgresqlAtThreeAllowsAllButOneToBeDisrupted(t *testing.T) {
 	// The audit volume is the server's on either engine.
 	if !reflect.DeepEqual(server["auditStorage"], map[string]interface{}{"enabled": true, "size": "5Gi"}) {
 		t.Fatalf("auditStorage: %#v", server["auditStorage"])
+	}
+}
+
+// The audit device renders between the seal and telemetry stanzas, as one
+// `file` audit device named after its sink; a disabled block renders none,
+// even beside an audit volume.
+func TestRender_AuditDeviceIsDeclaredInTheConfiguration(t *testing.T) {
+	raftStorage := "storage \"raft\" {\n  path = \"/openbao/data\"\n  retry_join {\n    leader_api_addr = \"http://vault-0.vault-internal:8200\"\n  }\n}\n\n" +
+		"service_registration \"kubernetes\" {}\n"
+	cases := map[string]string{
+		"raft-1-audit-stdout": listenerBlock + raftStorage + "\n" +
+			"audit \"file\" \"stdout\" {\n  description = \"Audit records to the server's standard output\"\n  options {\n    file_path = \"stdout\"\n  }\n}\n",
+		"postgresql-1-audit-file": listenerBlock +
+			"storage \"postgresql\" {\n  ha_enabled = \"true\"\n}\n\nservice_registration \"kubernetes\" {}\n\n" +
+			"audit \"file\" \"file\" {\n  description = \"Audit records to the audit volume\"\n  options {\n    file_path = \"/openbao/audit/audit.log\"\n  }\n}\n",
+		"raft-1-audit-disabled": listenerBlock + raftStorage,
+	}
+	for name, want := range cases {
+		t.Run(name, func(t *testing.T) {
+			if got := localsFor(fixtures()[name]).BaoConfigHcl; got != want {
+				t.Fatalf("config:\n%s\nwant:\n%s", got, want)
+			}
+		})
+	}
+
+	// The audit device sits after the seal and before telemetry.
+	spec := fixtures()["raft-3-aws-seal"]
+	spec.Server.Audit = &kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit{Enabled: true}
+	spec.Metrics = &kubernetesopenbaov1alpha1.KubernetesOpenBaoMetrics{Enabled: true}
+	config := localsFor(spec).BaoConfigHcl
+	seal, audit, telemetry := strings.Index(config, "seal \"awskms\""), strings.Index(config, "audit \"file\""), strings.Index(config, "\ntelemetry {")
+	if seal < 0 || audit < seal || telemetry < audit {
+		t.Fatalf("expected seal, then audit, then telemetry:\n%s", config)
 	}
 }
 

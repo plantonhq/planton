@@ -20,8 +20,9 @@ containerapp.EnvironmentManagedCertificate (one Azure-managed certificate)
 - **The issued certificate attaches to the matching custom-domain
   binding asynchronously** -- the binding module tolerates that drift by
   design; this module only owns issuance.
-- **PARITY-EXCEPTION on tag shape** versus the Terraform module
-  (documented in both engines) -- output-neutral.
+- **Identity tags match the Terraform module** key for key and value
+  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	azureprivatednszonevirtualnetworklinkv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureprivatednszonevirtualnetworklink/v1alpha1"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
@@ -58,21 +59,21 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednszonevirtua
 	// (cost center, owner) can override the derived values where they
 	// collide.
 	locals.AzureTags = map[string]string{
-		"resource":      "true",
-		"resource_name": target.Metadata.Name,
-		"resource_kind": strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePrivateDnsZoneVirtualNetworkLink.String()),
+		azuretagkeys.Resource:     "true",
+		azuretagkeys.ResourceName: target.Metadata.Name,
+		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePrivateDnsZoneVirtualNetworkLink.String()),
 	}
 
 	if target.Metadata.Id != "" {
-		locals.AzureTags["resource_id"] = target.Metadata.Id
+		locals.AzureTags[azuretagkeys.ResourceId] = target.Metadata.Id
 	}
 
 	if target.Metadata.Org != "" {
-		locals.AzureTags["organization"] = target.Metadata.Org
+		locals.AzureTags[azuretagkeys.Organization] = target.Metadata.Org
 	}
 
 	if target.Metadata.Env != "" {
-		locals.AzureTags["environment"] = target.Metadata.Env
+		locals.AzureTags[azuretagkeys.Environment] = target.Metadata.Env
 	}
 
 	for k, v := range target.Spec.Tags {

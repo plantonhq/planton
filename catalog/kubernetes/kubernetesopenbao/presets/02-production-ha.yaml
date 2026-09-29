@@ -20,6 +20,8 @@ spec:
         memory: 1Gi
     auditStorage:
       size: 10Gi
+    audit:
+      enabled: true
   uiEnabled: true
   metrics:
     enabled: true

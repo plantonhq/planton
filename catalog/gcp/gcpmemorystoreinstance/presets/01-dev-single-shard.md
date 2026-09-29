@@ -22,10 +22,10 @@ This preset provisions a minimal Memorystore instance in standalone (CLUSTER_DIS
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID where the instance will be created | GCP Console or `GcpProject` outputs |
-| `<instance-name>` | Name for this Memorystore instance (4-63 chars, lowercase, hyphens) | Choose a descriptive name (e.g., `dev-cache`) |
-| `<gcp-region>` | GCP region for the instance (e.g., `us-central1`) | [GCP regions](https://cloud.google.com/about/locations) |
-| `<vpc-network-path>` | Full path of the VPC network (e.g., `projects/my-project/global/networks/dev-vpc`) | `GcpVpcNetwork` status outputs or GCP Console |
+| `my-gcp-project-123` | Consumer project ID where the PSC endpoint is created (`pscAutoConnections[].projectId`) | GCP Console or `GcpProject` outputs |
+| `my-dev-memorystore` (`instanceName`) | Name for this Memorystore instance (4-63 chars, lowercase, hyphens) | Choose a descriptive name |
+| `us-central1` (`location`) | GCP region for the instance | [GCP regions](https://cloud.google.com/about/locations) |
+| `dev-vpc` | Name of the GcpVpcNetwork resource the PSC connection attaches to (its `network_id` is read) | Your network manifest's `metadata.name` |
 
 ## Related Presets
 

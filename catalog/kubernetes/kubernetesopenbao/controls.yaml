@@ -57,10 +57,10 @@ spec:
       notes: Which auth methods OpenBao accepts -- and every strength dial on them (userpass password policies, login MFA enforcement) -- is runtime configuration inside OpenBao, outside this spec (see no-legacy-auth).
     - control_id: audit-logging
       status: configurable
-      field_path: server.audit_storage
+      field_path: server.audit
       evidence:
         type: spec_default
-        reference: Unset provisions no audit volume. Setting it provisions a dedicated PVC per replica mounted for audit device output -- note that ENABLING the audit device itself (`bao audit enable file`) is a runtime operation after initialization; the volume is the durable substrate this spec can guarantee.
+        reference: Unset declares no audit device. server.audit.enabled renders a file audit device into the server configuration -- the only way to enable one on OpenBao 2.4 and later, which refuse `bao audit enable` over the API -- writing to the pod's standard output (sink stdout, the default, collected with the pod's logs) or to /openbao/audit/audit.log on the dedicated audit volume (sink file, which requires server.audit_storage). With a device enabled OpenBao answers no request it cannot record.
     - control_id: monitoring-integration
       status: configurable
       field_path: metrics

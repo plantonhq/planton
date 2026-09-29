@@ -23,4 +23,4 @@ This preset creates a disk by cloning an existing snapshot (or another managed d
 | `<azure-region>` | Azure region (must match the attaching VM's region) | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
 | `<snapshot-or-disk-arm-id>` | The snapshot or disk to clone | `az snapshot list -o table` or the portal |
-| `<zone>` | The availability zone matching the VM | Your zone layout |
+| `"1"` (`zone`) | The availability zone matching the VM | Your zone layout |

@@ -38,7 +38,7 @@ deployable.
 | --- | --- | --- |
 | `<runner-name>` | Name for the runner appliance | Any name you choose |
 | `<aws-region>` | AWS region code | The region hosting the private targets |
-| `<private-subnet-a/b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
 
 The `runner-token` secret slug is yours to choose -- on Planton the
 platform writes the token there automatically; elsewhere, create a token

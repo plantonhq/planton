@@ -22,7 +22,7 @@ This preset creates a minimal Azure Container App Environment using the default 
 | --- | --- | --- |
 | `<azure-region>` | Azure region (e.g., `eastus`, `westeurope`) | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<environment-name>` | Name for the Container App Environment (lowercase, hyphens, 2-60 chars) | Choose a descriptive name (e.g., `dev-env`, `staging-env`) |
+| `my-container-env` (`environmentName`) | Name for the Container App Environment (lowercase, hyphens, 2-60 chars) | Choose a descriptive name (e.g., `dev-env`, `staging-env`) |
 | `<log-analytics-workspace-id>` | ARM resource ID of the Log Analytics workspace | Azure portal or `AzureLogAnalyticsWorkspace` status outputs |
 
 ## Related Presets

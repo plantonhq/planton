@@ -29,7 +29,7 @@ locals {
     {
       "resource"      = "true"
       "resource_name" = var.metadata.name
-      "resource_kind" = lower("AzurePlantonRunner")
+      "resource_kind" = "azureplantonrunner"
     },
     try(var.metadata.id, "") != "" ? { "resource_id" = var.metadata.id } : {},
     try(var.metadata.org, "") != "" ? { "organization" = var.metadata.org } : {},

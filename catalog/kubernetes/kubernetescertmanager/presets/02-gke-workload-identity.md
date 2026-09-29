@@ -16,7 +16,7 @@ This preset installs cert-manager with GKE Workload Identity configured on the c
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<your-gsa-email@your-project.iam.gserviceaccount.com>` | GCP service account with dns.admin role | GCP Console > IAM & Admin > Service Accounts |
+| `<gsa-name>` / `<project-id>` | The GCP service account with the dns.admin role, as `<gsa-name>@<project-id>.iam.gserviceaccount.com` | GCP Console > IAM & Admin > Service Accounts |
 
 ## Related Presets
 

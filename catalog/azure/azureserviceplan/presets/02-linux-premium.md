@@ -22,7 +22,7 @@ This preset creates an Azure App Service Plan on the Premium v3 P1v3 tier with 3
 | --- | --- | --- |
 | `<azure-region>` | Azure region (e.g., `eastus`, `westeurope`) | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<plan-name>` | Name for the App Service Plan (alphanumeric, hyphens, underscores, 1-60 chars) | Choose a descriptive name (e.g., `my-app-plan-p1v3`) |
+| `my-premium-plan` (`servicePlanName`) | Name for the App Service Plan (alphanumeric, hyphens, underscores, 1-60 chars) | Choose a descriptive name (e.g., `my-app-plan-p1v3`) |
 
 ## Related Presets
 

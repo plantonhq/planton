@@ -35,7 +35,7 @@ from developer machines and CI/CD.
 | --- | --- | --- |
 | `<cluster-name>` | Name for the cluster | Your environment naming convention |
 | `<aws-region>` | AWS region code (e.g., `us-west-2`) | Your deployment region |
-| `<private-subnet-a/b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
 | `<cluster-role-resource-name>` | Name of the AwsIamRole with `AmazonEKSClusterPolicy` | Your role manifest's `metadata.name` |
 
 ## Common Additions

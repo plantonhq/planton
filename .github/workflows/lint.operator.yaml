@@ -16,6 +16,12 @@
 #                    chart's render assertions (operator/test/chart renders the
 #                    chart through the Helm SDK and holds its CRD contract and
 #                    its stamped-at-release version placeholder).
+#   platform-floor-published (PR + push, BLOCKING, only when the floor, the
+#                    operator's image defaults, a platform kind scenario, or the
+#                    guard changed) -- the floor's control plane, runner and console
+#                    images are published, with their architectures printed, and
+#                    no platform kind scenario sits below the floor. Reads GHCR
+#                    anonymously. See hack/guards/ensure_platform_floor_is_published.sh.
 #
 # helm lint/template/package of every chart is lint.helm.yaml; the Kind e2e lane
 # is e2e-operator.yaml; the release (image + chart from one tag) is
@@ -30,6 +36,9 @@ on:
       - 'operator/**'
       - 'helm/planton-operator/**'
       - 'hack/guards/ensure_operator_manifests_fresh.sh'
+      - 'hack/guards/ensure_platform_floor_is_published.sh'
+      - 'hack/guards/ensure_platform_floor_is_published_test.sh'
+      - 'catalog/kubernetes/kubernetesplantonplatform/e2e/scenarios/**'
       - '.github/workflows/lint.operator.yaml'
   push:
     branches:
@@ -38,6 +47,9 @@ on:
       - 'operator/**'
       - 'helm/planton-operator/**'
       - 'hack/guards/ensure_operator_manifests_fresh.sh'
+      - 'hack/guards/ensure_platform_floor_is_published.sh'
+      - 'hack/guards/ensure_platform_floor_is_published_test.sh'
+      - 'catalog/kubernetes/kubernetesplantonplatform/e2e/scenarios/**'
       - '.github/workflows/lint.operator.yaml'
   workflow_dispatch: {}
 
@@ -85,3 +97,54 @@ jobs:
         run: go vet ./...
       - name: Unit and envtest suites
         run: make test
+
+  platform-floor-published:
+    # ubuntu-latest, not a larger runner: this is a public repository, so standard
+    # hosted runners are free while larger runners bill from the first minute
+    # (founder direction 2026-09-17). Slower is fine; paid is not.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # The registry read is scoped to the changes that can move its answer, so
+      # an unrelated operator change never waits on GHCR. A manual run always
+      # checks, and so does a push whose base cannot be diffed.
+      - name: Did the floor, the image defaults, a scenario, or the guard change?
+        id: changed
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          watched=(
+            operator/internal/platformversion/platformversion.go
+            operator/internal/resources/images.go
+            operator/internal/plantonregistry/plantonregistry.go
+            catalog/kubernetes/kubernetesplantonplatform/e2e/scenarios
+            hack/guards/ensure_platform_floor_is_published.sh
+            hack/guards/ensure_platform_floor_is_published_test.sh
+            .github/workflows/lint.operator.yaml
+          )
+          case "$EVENT" in
+            pull_request) range="origin/${BASE_REF}...HEAD" ;;
+            push) range="${BEFORE}..HEAD" ;;
+            *) echo "run=true" >> "$GITHUB_OUTPUT"; exit 0 ;;
+          esac
+          if ! changed="$(git diff --name-only "$range" -- "${watched[@]}" 2>/dev/null)"; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ -n "$changed" ]; then
+            echo "$changed"
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "nothing the floor check reads changed"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Test the guard against a fake registry
+        if: steps.changed.outputs.run == 'true'
+        run: bash ./hack/guards/ensure_platform_floor_is_published_test.sh
+      - name: Verify the floor's images are published and no scenario sits below it
+        if: steps.changed.outputs.run == 'true'
+        run: bash ./hack/guards/ensure_platform_floor_is_published.sh

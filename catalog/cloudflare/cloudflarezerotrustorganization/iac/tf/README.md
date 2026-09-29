@@ -7,7 +7,6 @@ Terraform IaC module for the Zero Trust organization (Access login experience + 
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustOrganizationSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_organization + the folded
                 cloudflare_zero_trust_access_key_configuration (count-gated)
 outputs.tf    — auth_domain, account_id

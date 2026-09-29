@@ -52,6 +52,10 @@ variable "spec" {
         size          = optional(string)
         storage_class = optional(string, "")
       }))
+      audit = optional(object({
+        enabled = optional(bool, false)
+        sink    = optional(string)
+      }))
       log_level  = optional(string)
       log_format = optional(string)
       scheduling = optional(object({

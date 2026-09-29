@@ -17,9 +17,8 @@ This preset creates a ClusterIssuer that uses Google Cloud DNS for ACME DNS-01 c
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<your-domain.com>` | DNS domain managed by Google Cloud DNS | GCP Console > Cloud DNS |
-| `<your-acme-email@example.com>` | Email for Let's Encrypt registration | Your organization's ops email |
-| `<your-gcp-project-id>` | GCP project containing the DNS zone | GCP Console > Project Settings |
+| `<your-email@example.com>` | Email for Let's Encrypt registration and expiry notifications | Your organization's ops email |
+| `<gcp-project-id>` | GCP project containing the DNS zone | GCP Console > Project Settings |
 
 ## Related Presets
 
