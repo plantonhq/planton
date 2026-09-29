@@ -327,9 +327,11 @@ performance. Installed on every profile.
 
 URL that receives CloudEvents for every TaskRun/PipelineRun
 lifecycle change (e.g.
-"http://receiver.ci.svc.cluster.local/events"). KNOW THIS: Tekton
-supports exactly ONE cluster-global sink — every pipeline in
-every namespace reports here. Multi-tenant clusters that need
+"http://receiver.ci.svc.cluster.local/events"), written as the
+`sink` of Tekton's `config-events` ConfigMap (format `tektonv1`)
+through the TektonConfig's pipeline.options.configMaps. KNOW
+THIS: Tekton supports exactly ONE cluster-global sink — every
+pipeline in every namespace reports here. Multi-tenant clusters that need
 per-team routing put a fan-out service at this URL and route
 downstream (the event carries its source namespace).
 

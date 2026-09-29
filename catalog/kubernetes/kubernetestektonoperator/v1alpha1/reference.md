@@ -346,6 +346,11 @@ Reference an output from another manifest as `valueFrom: {kind: KubernetesTekton
 | Output | Type | Description |
 |---|---|---|
 | `status.outputs.namespace` | `string` | Namespace the operator runs in — always `tekton-operator` (fixed by the release manifest). |
+| `status.outputs.image_registry` | `string` | The registry every Tekton component image is pulled from: the spec's image_registry when set, else ghcr.io. A cluster that cannot reach it pulls none of Tekton's images. |
+| `status.outputs.entrypoint_image` | `string` | The entrypoint image as the cluster pulls it, digest included. Tekton copies it into every TaskRun pod to run the steps in order, so a cluster that cannot pull it fails every build: mirror it and allow it in any image admission policy. |
+| `status.outputs.nop_image` | `string` | The nop image as the cluster pulls it, digest included. Tekton runs it in every TaskRun pod to stop sidecars once the steps finish; a cluster that cannot pull it leaves every build's pod unfinished. |
+| `status.outputs.workingdirinit_image` | `string` | The workingdirinit image as the cluster pulls it, digest included. Tekton runs it first in a TaskRun pod whose steps declare a working directory, so a cluster that cannot pull it fails those builds. |
+| `status.outputs.sidecarlogresults_image` | `string` | The sidecarlogresults image as the cluster pulls it, digest included. Tekton adds it to a TaskRun pod when results are carried through sidecar logs, so a cluster that cannot pull it fails those builds. |
 
 ## See Also
 

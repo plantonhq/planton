@@ -60,7 +60,10 @@ version field — the `TektonConfig` surface `KubernetesTekton` models is
 designed against the pinned release. `image_registry` points every image
 Tekton publishes at a mirror of ghcr.io; the modules read the images the
 pinned release installs from a table built for that release, and refuse a
-table built for another.
+table built for another. The stack outputs name the registry and the four
+images Tekton injects into build pods (entrypoint, nop, workingdirinit,
+sidecarlogresults) exactly as the cluster pulls them, digests included --
+the list to mirror and allow-list before the first build.
 
 ---
 

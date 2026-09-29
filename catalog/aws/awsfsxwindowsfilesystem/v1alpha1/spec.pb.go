@@ -414,7 +414,9 @@ type AwsFsxWindowsFileSystemSelfManagedActiveDirectory struct {
 	// credentials for domain join. Mutually exclusive with `username`/`password`.
 	//
 	// The secret must contain a JSON object with "username" and "password" keys.
-	// This is the recommended approach for production deployments.
+	// This is the recommended approach for production deployments. A valueFrom
+	// defaults to an AwsSecretsManagerSecret and reads its
+	// status.outputs.secret_arn.
 	DomainJoinServiceAccountSecretArn *v1.StringValueOrRef `protobuf:"bytes,5,opt,name=domain_join_service_account_secret_arn,json=domainJoinServiceAccountSecretArn,proto3" json:"domain_join_service_account_secret_arn,omitempty"`
 	// Name of the AD group whose members are granted administrative privileges
 	// on the file system. Members can administer the file system from a remote
@@ -719,7 +721,7 @@ const file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_spec_proto_rawDesc = "" 
 	"\x15_storage_capacity_gibB\x0f\n" +
 	"\r_storage_typeB\"\n" +
 	" _automatic_backup_retention_daysB\x14\n" +
-	"\x12_skip_final_backup\"\xda\n" +
+	"\x12_skip_final_backup\"\xfe\n" +
 	"\n" +
 	"1AwsFsxWindowsFileSystemSelfManagedActiveDirectory\x12(\n" +
 	"\vdomain_name\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\n" +
@@ -727,8 +729,8 @@ const file_catalog_aws_awsfsxwindowsfilesystem_v1alpha1_spec_proto_rawDesc = "" 
 	"\adns_ips\x18\x02 \x03(\tB\x10\xbaH\r\x92\x01\n" +
 	"\b\x01\x10\x02\"\x04r\x02p\x01R\x06dnsIps\x12$\n" +
 	"\busername\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\busername\x12(\n" +
-	"\bpassword\x18\x04 \x01(\tB\f\xbaH\x05r\x03\x18\x80\x02\xa0\xa6\x1d\x01R\bpassword\x12\x85\x01\n" +
-	"&domain_join_service_account_secret_arn\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR!domainJoinServiceAccountSecretArn\x12_\n" +
+	"\bpassword\x18\x04 \x01(\tB\f\xbaH\x05r\x03\x18\x80\x02\xa0\xa6\x1d\x01R\bpassword\x12\xa9\x01\n" +
+	"&domain_join_service_account_secret_arn\x18\x05 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\"\x88\xd4a\x9c\t\x92\xd4a\x19status.outputs.secret_arnR!domainJoinServiceAccountSecretArn\x12_\n" +
 	" file_system_administrators_group\x18\x06 \x01(\tB\x11\x8a\xa6\x1d\rDomain AdminsH\x00R\x1dfileSystemAdministratorsGroup\x88\x01\x01\x12]\n" +
 	"&organizational_unit_distinguished_name\x18\a \x01(\tB\b\xbaH\x05r\x03\x18\xd0\x0fR#organizationalUnitDistinguishedName:\x92\x06\xbaH\x8e\x06\x1a\xbe\x02\n" +
 	"\x1ccredentials_mutual_exclusion\x12Tspecify either username/password or domain_join_service_account_secret_arn, not both\x1a\xc7\x01(this.username == '' && this.password == '' && has(this.domain_join_service_account_secret_arn)) || ((this.username != '' || this.password != '') && !has(this.domain_join_service_account_secret_arn))\x1a\xc7\x01\n" +

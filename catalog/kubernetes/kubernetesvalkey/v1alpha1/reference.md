@@ -617,7 +617,10 @@ KubernetesCertificate resource (the cert-manager seam).
 
 `bool`
 
-Require clients to present a certificate (mutual TLS).
+Require clients to present a certificate (mutual TLS). The pods are
+then probed with a TCP connect to the Valkey port: the chart's
+`valkey-cli ping` probe presents no client certificate, so it would
+fail every handshake and restart the pod in a loop.
 
 ### spec.service
 

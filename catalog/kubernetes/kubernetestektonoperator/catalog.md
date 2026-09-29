@@ -80,6 +80,13 @@ After provisioning, `status.outputs` contains:
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `namespace` | Namespace the operator runs in (always `tekton-operator` — fixed by the release manifest) | Composition, debugging |
+| `image_registry` | Registry every Tekton component image is pulled from — `imageRegistry` when set, else `ghcr.io` | Firewall and egress allow-lists |
+| `entrypoint_image` | Entrypoint image as the cluster pulls it, with its digest — copied into every TaskRun pod | Mirroring, image admission policies |
+| `nop_image` | Nop image as the cluster pulls it, with its digest — stops sidecars in every TaskRun pod | Mirroring, image admission policies |
+| `workingdirinit_image` | Workingdirinit image as the cluster pulls it, with its digest — prepares a TaskRun's working directories | Mirroring, image admission policies |
+| `sidecarlogresults_image` | Sidecarlogresults image as the cluster pulls it, with its digest — carries results through sidecar logs | Mirroring, image admission policies |
+
+The four per-build images run inside the builds' own pods, not in the operator's namespace: entrypoint and nop join every TaskRun pod, workingdirinit and sidecarlogresults the ones that need them, and a build whose pod cannot pull one fails. Mirror them and allow them in any admission policy before the first build runs.
 
 The operator exports no component handles of its own: the Tekton namespace, profile, and dashboard endpoints are the KubernetesTekton resource's outputs — this installation is only the manager that reconciles it.
 

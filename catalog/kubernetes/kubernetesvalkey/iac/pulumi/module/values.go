@@ -173,6 +173,24 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 		}
 	}
 
+	// ---- probes ----------------------------------------------------------------
+	// The chart ships readinessProbe disabled, so a pod that is starting or
+	// still loading its dataset would join the Service at once; it is always
+	// on here. Every probe the chart renders execs `valkey-cli ping`, which
+	// presents no client certificate: under mutual TLS (tls-auth-clients
+	// yes) each probe fails the handshake and the kubelet restarts the pod
+	// in a loop. There all three probes are a TCP connect to the container
+	// port the chart names `tcp`. The chart takes customProbe as the whole
+	// probe, dropping its timing values, so the probes run on Kubernetes'
+	// defaults, which are the chart's.
+	readinessProbe := map[string]interface{}{"enabled": true}
+	if tls := spec.GetTls(); tls.GetEnabled() && tls.GetRequireClientCertificate() {
+		values["startupProbe"] = map[string]interface{}{"customProbe": tcpSocketProbe()}
+		values["livenessProbe"] = map[string]interface{}{"customProbe": tcpSocketProbe()}
+		readinessProbe["customProbe"] = tcpSocketProbe()
+	}
+	values["readinessProbe"] = readinessProbe
+
 	// ---- write service ---------------------------------------------------------
 	if svc := spec.GetService(); svc != nil {
 		serviceType := svc.GetType()
@@ -295,4 +313,14 @@ func aclUsersMap(auth *kubernetesvalkeyv1alpha1.KubernetesValkeyAuth) map[string
 		users[user.GetName()] = map[string]interface{}{"permissions": permissions}
 	}
 	return users
+}
+
+// tcpSocketProbe is the probe the chart renders from customProbe under
+// mutual TLS: a TCP connect to the container port named `tcp`, which needs
+// no client certificate. A fresh map per probe, so a helm_values merge into
+// one probe never reaches the others.
+func tcpSocketProbe() map[string]interface{} {
+	return map[string]interface{}{
+		"tcpSocket": map[string]interface{}{"port": "tcp"},
+	}
 }

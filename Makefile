@@ -467,7 +467,15 @@ build: protos generate-cloud-resource-kind-map generate-proto-docs bazel-mod-tid
 ${build_dir}/${name}: build-go
 
 .PHONY: test
+# Every package in the module under the race detector: CI's run. On a laptop
+# it builds the whole module's test binaries and can fill the disk, so it
+# refuses there unless asked for by name.
 test:
+	@if [ -z "$$CI" ] && [ "$$PLANTON_ALLOW_REPO_WIDE" != "1" ]; then \
+		echo "make test runs every package in the repository under the race detector, which can fill this machine's disk."; \
+		echo "Test the packages you changed (go test ./catalog/<provider>/<kind>/...), or run it on purpose: PLANTON_ALLOW_REPO_WIDE=1 make test"; \
+		exit 1; \
+	fi
 	go test -race -v -count=1 -p $(PARALLEL) ./...
 
 .PHONY: run

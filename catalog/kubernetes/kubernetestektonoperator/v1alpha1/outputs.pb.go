@@ -28,9 +28,36 @@ type KubernetesTektonOperatorStackOutputs struct {
 	// *
 	// Namespace the operator runs in — always `tekton-operator` (fixed
 	// by the release manifest).
-	Namespace     string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	// *
+	// The registry every Tekton component image is pulled from: the
+	// spec's image_registry when set, else ghcr.io. A cluster that cannot
+	// reach it pulls none of Tekton's images.
+	ImageRegistry string `protobuf:"bytes,2,opt,name=image_registry,json=imageRegistry,proto3" json:"image_registry,omitempty"`
+	// *
+	// The entrypoint image as the cluster pulls it, digest included.
+	// Tekton copies it into every TaskRun pod to run the steps in order,
+	// so a cluster that cannot pull it fails every build: mirror it and
+	// allow it in any image admission policy.
+	EntrypointImage string `protobuf:"bytes,3,opt,name=entrypoint_image,json=entrypointImage,proto3" json:"entrypoint_image,omitempty"`
+	// *
+	// The nop image as the cluster pulls it, digest included. Tekton runs
+	// it in every TaskRun pod to stop sidecars once the steps finish; a
+	// cluster that cannot pull it leaves every build's pod unfinished.
+	NopImage string `protobuf:"bytes,4,opt,name=nop_image,json=nopImage,proto3" json:"nop_image,omitempty"`
+	// *
+	// The workingdirinit image as the cluster pulls it, digest included.
+	// Tekton runs it first in a TaskRun pod whose steps declare a working
+	// directory, so a cluster that cannot pull it fails those builds.
+	WorkingdirinitImage string `protobuf:"bytes,5,opt,name=workingdirinit_image,json=workingdirinitImage,proto3" json:"workingdirinit_image,omitempty"`
+	// *
+	// The sidecarlogresults image as the cluster pulls it, digest
+	// included. Tekton adds it to a TaskRun pod when results are carried
+	// through sidecar logs, so a cluster that cannot pull it fails those
+	// builds.
+	SidecarlogresultsImage string `protobuf:"bytes,6,opt,name=sidecarlogresults_image,json=sidecarlogresultsImage,proto3" json:"sidecarlogresults_image,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *KubernetesTektonOperatorStackOutputs) Reset() {
@@ -70,13 +97,53 @@ func (x *KubernetesTektonOperatorStackOutputs) GetNamespace() string {
 	return ""
 }
 
+func (x *KubernetesTektonOperatorStackOutputs) GetImageRegistry() string {
+	if x != nil {
+		return x.ImageRegistry
+	}
+	return ""
+}
+
+func (x *KubernetesTektonOperatorStackOutputs) GetEntrypointImage() string {
+	if x != nil {
+		return x.EntrypointImage
+	}
+	return ""
+}
+
+func (x *KubernetesTektonOperatorStackOutputs) GetNopImage() string {
+	if x != nil {
+		return x.NopImage
+	}
+	return ""
+}
+
+func (x *KubernetesTektonOperatorStackOutputs) GetWorkingdirinitImage() string {
+	if x != nil {
+		return x.WorkingdirinitImage
+	}
+	return ""
+}
+
+func (x *KubernetesTektonOperatorStackOutputs) GetSidecarlogresultsImage() string {
+	if x != nil {
+		return x.SidecarlogresultsImage
+	}
+	return ""
+}
+
 var File_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto protoreflect.FileDescriptor
 
 const file_catalog_kubernetes_kubernetestektonoperator_v1alpha1_outputs_proto_rawDesc = "" +
 	"\n" +
-	"Bcatalog/kubernetes/kubernetestektonoperator/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetestektonoperator.v1alpha1\"D\n" +
+	"Bcatalog/kubernetes/kubernetestektonoperator/v1alpha1/outputs.proto\x128dev.planton.kubernetes.kubernetestektonoperator.v1alpha1\"\x9f\x02\n" +
 	"$KubernetesTektonOperatorStackOutputs\x12\x1c\n" +
-	"\tnamespace\x18\x01 \x01(\tR\tnamespaceB\xc5\x03\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12%\n" +
+	"\x0eimage_registry\x18\x02 \x01(\tR\rimageRegistry\x12)\n" +
+	"\x10entrypoint_image\x18\x03 \x01(\tR\x0fentrypointImage\x12\x1b\n" +
+	"\tnop_image\x18\x04 \x01(\tR\bnopImage\x121\n" +
+	"\x14workingdirinit_image\x18\x05 \x01(\tR\x13workingdirinitImage\x127\n" +
+	"\x17sidecarlogresults_image\x18\x06 \x01(\tR\x16sidecarlogresultsImageB\xc5\x03\n" +
 	"<com.dev.planton.kubernetes.kubernetestektonoperator.v1alpha1B\fOutputsProtoP\x01Zrgithub.com/plantonhq/planton/catalog/kubernetes/kubernetestektonoperator/v1alpha1;kubernetestektonoperatorv1alpha1\xa2\x02\x04DPKK\xaa\x028Dev.Planton.Kubernetes.Kubernetestektonoperator.V1alpha1\xca\x028Dev\\Planton\\Kubernetes\\Kubernetestektonoperator\\V1alpha1\xe2\x02DDev\\Planton\\Kubernetes\\Kubernetestektonoperator\\V1alpha1\\GPBMetadata\xea\x02<Dev::Planton::Kubernetes::Kubernetestektonoperator::V1alpha1b\x06proto3"
 
 var (

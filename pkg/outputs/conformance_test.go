@@ -1636,13 +1636,22 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesTektonOperator: the release manifest's fixed
-			// namespace — the one handle the manifest-bundle install exports.
+			// namespace, the registry Tekton's images are pulled from, and
+			// the per-build images every TaskRun pod pulls.
 			name: "KubernetesTektonOperator",
 			kind: cloudresourcekind.CloudResourceKind_KubernetesTektonOperator,
 			rawOutputs: map[string]interface{}{
-				"namespace": "tekton-operator",
+				"namespace":               "tekton-operator",
+				"image_registry":          "ghcr.io",
+				"entrypoint_image":        "ghcr.io/tektoncd/pipeline/entrypoint-bff0a22da108bc2f16c818c97641a296:v1.12.0@sha256:3ec960b07abd85604242e146092e72f11be8787452c2a20d12a37fdee4a666e2",
+				"nop_image":               "ghcr.io/tektoncd/pipeline/nop-8eac7c133edad5df719dc37b36b62482:v1.12.0@sha256:f89fb760b05fdef6895290e524d992b66ede72546622d5028b0406a9bea36d2f",
+				"workingdirinit_image":    "ghcr.io/tektoncd/pipeline/workingdirinit-0c558922ec6a1b739e550e349f2d5fc1:v1.12.0@sha256:11031cbed2b8ddbb5af0947a5e0c997ba7cd3da5f309ddfa76e58f5418868d71",
+				"sidecarlogresults_image": "ghcr.io/tektoncd/pipeline/sidecarlogresults-7501c6a20d741631510a448b48ab098f:v1.12.0@sha256:8b61bdcad62a99e7b15f9dc92690ea39f49be2c5a1c9f428a0aac712f349543d",
 			},
-			mustPopulate: []string{"namespace"},
+			mustPopulate: []string{
+				"namespace", "image_registry", "entrypoint_image", "nop_image",
+				"workingdirinit_image", "sidecarlogresults_image",
+			},
 		},
 		{
 			// KubernetesTekton: the resolved installation handles — target

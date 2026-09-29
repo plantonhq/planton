@@ -107,17 +107,32 @@ func placementBody(placement *kubernetestektonv1alpha1.KubernetesTektonPlacement
 }
 
 // pipelineBody renders spec.pipeline — the feature flags, defaults,
-// CloudEvents sink, metrics shape, resolver toggles and performance
-// block. Tri-state booleans (optional in the proto) render only when
-// set, keeping Tekton's own defaults authoritative.
+// CloudEvents sink (as the config-events ConfigMap's data), metrics shape,
+// resolver toggles and performance block. Tri-state booleans (optional in
+// the proto) render only when set, keeping Tekton's own defaults
+// authoritative.
 func pipelineBody(pipeline *kubernetestektonv1alpha1.KubernetesTektonPipeline) map[string]interface{} {
 	if pipeline == nil {
 		return nil
 	}
 	out := map[string]interface{}{}
 
+	// The sink lives in the config-events ConfigMap, whose `sink`
+	// supersedes config-defaults' deprecated default-cloud-events-sink.
+	// The TektonConfig reaches that ConfigMap only through
+	// options.configMaps, which the operator merges into the one it
+	// installs; tektonv1 is the one event format Tekton emits.
 	if pipeline.GetCloudEventsSinkUrl() != "" {
-		out["default-cloud-events-sink"] = pipeline.GetCloudEventsSinkUrl()
+		out["options"] = map[string]interface{}{
+			"configMaps": map[string]interface{}{
+				"config-events": map[string]interface{}{
+					"data": map[string]interface{}{
+						"sink":    pipeline.GetCloudEventsSinkUrl(),
+						"formats": "tektonv1",
+					},
+				},
+			},
+		}
 	}
 	if pipeline.GetEnableApiFields() != "" {
 		out["enable-api-fields"] = pipeline.GetEnableApiFields()

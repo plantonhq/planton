@@ -34,7 +34,7 @@ const (
 // resource per record set, added and removed without touching the zone.
 //
 // Creating a zone does NOT make it authoritative on the internet: Azure
-// assigns four name servers (the name_servers output), and the domain only
+// assigns four name servers (the nameservers output), and the domain only
 // resolves through this zone once those name servers are configured at the
 // domain's registrar (or as NS records in the parent zone, for subdomain
 // delegation). The same zone name can exist in many subscriptions at once --

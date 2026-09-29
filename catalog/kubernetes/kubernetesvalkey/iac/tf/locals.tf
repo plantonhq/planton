@@ -140,6 +140,19 @@ locals {
     } : k => v if v != null && length(v) > 0
   }
 
+  # ---- probes ---------------------------------------------------------------
+  # The chart ships readinessProbe disabled, so a pod that is starting or
+  # still loading its dataset would join the Service at once; it is always on
+  # here. Every probe the chart renders execs `valkey-cli ping`, which
+  # presents no client certificate: under mutual TLS (tls-auth-clients yes)
+  # each probe fails the handshake and the kubelet restarts the pod in a
+  # loop. There all three probes are a TCP connect to the container port the
+  # chart names `tcp`. The chart takes customProbe as the whole probe,
+  # dropping its timing values, so the probes run on Kubernetes' defaults,
+  # which are the chart's. Twin of the Pulumi module's probe block.
+  mutual_tls       = try(var.spec.tls.enabled, false) && try(var.spec.tls.require_client_certificate, false)
+  tcp_socket_probe = { tcpSocket = { port = "tcp" } }
+
   # ---- typed chart values (twin of the Pulumi module's buildHelmValues) --
   helm_values = {
     for k, v in {
@@ -231,6 +244,15 @@ locals {
         serverKey                = "tls.key"
         caPublicKey              = "ca.crt"
       } : null
+
+      startupProbe  = local.mutual_tls ? { customProbe = local.tcp_socket_probe } : null
+      livenessProbe = local.mutual_tls ? { customProbe = local.tcp_socket_probe } : null
+      readinessProbe = {
+        for rk, rv in {
+          enabled     = true
+          customProbe = local.mutual_tls ? local.tcp_socket_probe : null
+        } : rk => rv if rv != null
+      }
 
       service = try(var.spec.service, null) == null ? null : {
         for sk, sv in {

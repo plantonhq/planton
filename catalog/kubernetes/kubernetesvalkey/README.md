@@ -120,6 +120,9 @@ renders no headless Service).
 - **`spec.tls`**: `enabled` + `certificate_secret` (a
   KubernetesCertificate reference or a literal kubernetes.io/tls
   Secret name), optional `require_client_certificate` for mutual TLS
+  (the pods are then probed with a TCP connect: the chart's
+  `valkey-cli ping` probe presents no client certificate and would fail
+  every handshake)
 - **`spec.service`**: the write Service — type (ClusterIP default),
   port (6379 default), per-cloud LoadBalancer annotations
 - **`spec.resources`**: CPU/memory for the Valkey container — size

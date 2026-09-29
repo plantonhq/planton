@@ -11,4 +11,41 @@ message KubernetesTektonOperatorStackOutputs {
    * by the release manifest).
    */
   string namespace = 1;
+
+  /**
+   * The registry every Tekton component image is pulled from: the
+   * spec's image_registry when set, else ghcr.io. A cluster that cannot
+   * reach it pulls none of Tekton's images.
+   */
+  string image_registry = 2;
+
+  /**
+   * The entrypoint image as the cluster pulls it, digest included.
+   * Tekton copies it into every TaskRun pod to run the steps in order,
+   * so a cluster that cannot pull it fails every build: mirror it and
+   * allow it in any image admission policy.
+   */
+  string entrypoint_image = 3;
+
+  /**
+   * The nop image as the cluster pulls it, digest included. Tekton runs
+   * it in every TaskRun pod to stop sidecars once the steps finish; a
+   * cluster that cannot pull it leaves every build's pod unfinished.
+   */
+  string nop_image = 4;
+
+  /**
+   * The workingdirinit image as the cluster pulls it, digest included.
+   * Tekton runs it first in a TaskRun pod whose steps declare a working
+   * directory, so a cluster that cannot pull it fails those builds.
+   */
+  string workingdirinit_image = 5;
+
+  /**
+   * The sidecarlogresults image as the cluster pulls it, digest
+   * included. Tekton adds it to a TaskRun pod when results are carried
+   * through sidecar logs, so a cluster that cannot pull it fails those
+   * builds.
+   */
+  string sidecarlogresults_image = 6;
 }

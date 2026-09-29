@@ -7,7 +7,9 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
+	"google.golang.org/protobuf/proto"
 )
 
 func TestAwsFsxWindowsFileSystemSpec(t *testing.T) {
@@ -889,6 +891,21 @@ var _ = ginkgo.Describe("AwsFsxWindowsFileSystemSpec validations", func() {
 	// -------------------------------------------------------------------------
 	// Miscellaneous valid configurations
 	// -------------------------------------------------------------------------
+
+	// A valueFrom that names only a resource (no kind, no field path)
+	// resolves through the field's default_kind annotation; without it the
+	// manifest graph refuses the reference as kindless.
+	ginkgo.Context("foreign-key defaults", func() {
+		ginkgo.It("resolves the domain-join secret reference to a Secrets Manager secret's ARN", func() {
+			fd := (&AwsFsxWindowsFileSystemSelfManagedActiveDirectory{}).ProtoReflect().Descriptor().
+				Fields().ByName("domain_join_service_account_secret_arn")
+			gomega.Expect(fd).ToNot(gomega.BeNil())
+			kind, _ := proto.GetExtension(fd.Options(), foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
+			gomega.Expect(kind).To(gomega.Equal(cloudresourcekind.CloudResourceKind_AwsSecretsManagerSecret))
+			path, _ := proto.GetExtension(fd.Options(), foreignkeyv1.E_DefaultKindFieldPath).(string)
+			gomega.Expect(path).To(gomega.Equal("status.outputs.secret_arn"))
+		})
+	})
 
 	ginkgo.Context("miscellaneous", func() {
 		ginkgo.It("accepts security_group_ids", func() {

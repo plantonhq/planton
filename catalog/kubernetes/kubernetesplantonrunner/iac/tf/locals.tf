@@ -6,17 +6,21 @@ locals {
   # Pinned OCI registry path and chart name (spec.chart_repository wins over
   # the path, mirroring the proto default); chart_version resolves to the
   # pinned default when unset — the version this catalog release was
-  # validated against (0.5.0: the pod is probed over gRPC on the runner's
-  # port, the contract every execution mode serves; 0.4.0 probed the tunnel
-  # agent's HTTP port and restarted a runner enrolled with a tunnel-less
-  # instance every liveness window). min_chart_version is the
+  # validated against (0.8.0: the build Role grants watch on PipelineRuns
+  # and TaskRuns, patch on PipelineRuns, and create/update/patch on
+  # ConfigMaps -- Kubernetes refuses the runner a grant to a build of any
+  # verb it does not hold itself, so without them every in-cluster build
+  # fails at provisioning; since 0.5.0 the pod is probed over gRPC on the
+  # runner's port, the contract every execution mode serves, where 0.4.0
+  # probed the tunnel agent's HTTP port and restarted a runner enrolled with
+  # a tunnel-less instance every liveness window). min_chart_version is the
   # enrollment-contract floor: charts below 0.4.0 predate token enrollment
   # and silently IGNORE the enrollment values (main.tf's precondition refuses
   # them loudly).
   default_chart_repository = "oci://ghcr.io/plantonhq/charts"
   chart_repository         = try(var.spec.chart_repository, "") != "" ? var.spec.chart_repository : local.default_chart_repository
   helm_chart_name          = "planton-runner"
-  default_chart_version    = "0.5.0"
+  default_chart_version    = "0.8.0"
   min_chart_version        = "0.4.0"
   chart_version            = try(var.spec.chart_version, "") != "" ? var.spec.chart_version : local.default_chart_version
 

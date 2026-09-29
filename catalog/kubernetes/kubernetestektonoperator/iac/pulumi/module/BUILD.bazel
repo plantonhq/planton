@@ -32,6 +32,7 @@ go_library(
 go_test(
     name = "module_test",
     srcs = [
+        "outputs_test.go",
         "readiness_gate_test.go",
         "transformations_test.go",
     ],

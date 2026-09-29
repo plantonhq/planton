@@ -912,7 +912,10 @@ type KubernetesValkeyTls struct {
 	// KubernetesCertificate resource (the cert-manager seam).
 	CertificateSecret *v1.StringValueOrRef `protobuf:"bytes,2,opt,name=certificate_secret,json=certificateSecret,proto3" json:"certificate_secret,omitempty"`
 	// *
-	// Require clients to present a certificate (mutual TLS).
+	// Require clients to present a certificate (mutual TLS). The pods are
+	// then probed with a TCP connect to the Valkey port: the chart's
+	// `valkey-cli ping` probe presents no client certificate, so it would
+	// fail every handshake and restart the pod in a loop.
 	RequireClientCertificate bool `protobuf:"varint,3,opt,name=require_client_certificate,json=requireClientCertificate,proto3" json:"require_client_certificate,omitempty"`
 	unknownFields            protoimpl.UnknownFields
 	sizeCache                protoimpl.SizeCache

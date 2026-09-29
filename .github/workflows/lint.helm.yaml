@@ -7,7 +7,9 @@
 # operator's own tag) runs release.helm.yaml, which stamps the version at
 # package time. This lane never pushes. On main it also holds every published
 # chart to its source (hack/guards/ensure_helm_charts_are_released.sh): a shape
-# change is owed a release, and the lane stays red until it is cut.
+# change is owed a release, and the lane stays red until it is cut. On every
+# run it also holds the catalog kinds that install a Planton chart to that
+# chart's newest release (hack/guards/ensure_catalog_charts_are_current.sh).
 #
 # The operator chart's deeper contract (it owns its CRDs; what it renders is
 # controller-gen's output byte for byte) is held by the render test inside
@@ -20,14 +22,20 @@ on:
   pull_request:
     paths:
       - 'helm/**'
+      - 'catalog/kubernetes/kubernetesplantonrunner/**'
+      - 'catalog/kubernetes/kubernetesplantonoperator/**'
       - '.github/workflows/lint.helm.yaml'
+      - 'hack/guards/ensure_catalog_charts_are_current.sh'
   push:
     branches:
       - main
     paths:
       - 'helm/**'
+      - 'catalog/kubernetes/kubernetesplantonrunner/**'
+      - 'catalog/kubernetes/kubernetesplantonoperator/**'
       - '.github/workflows/lint.helm.yaml'
       - 'hack/guards/ensure_helm_charts_are_released.sh'
+      - 'hack/guards/ensure_catalog_charts_are_current.sh'
   workflow_dispatch: {}
 
 permissions:
@@ -44,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # The release guard compares each chart with its newest release tag.
+          # Both guards read the charts' release tags.
           fetch-depth: 0
           fetch-tags: true
       - uses: azure/setup-helm@v4
@@ -76,3 +84,8 @@ jobs:
       - name: Every published chart equals its source
         if: github.event_name != 'pull_request'
         run: bash ./hack/guards/ensure_helm_charts_are_released.sh
+      # Every event: a catalog kind that installs a Planton chart pins the
+      # chart's newest release tag in both engines (and its schema default).
+      # See hack/guards/ensure_catalog_charts_are_current.sh.
+      - name: Every catalog kind installs its chart's newest release
+        run: bash ./hack/guards/ensure_catalog_charts_are_current.sh
