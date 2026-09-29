@@ -248,16 +248,18 @@ func TestControlPlaneDeployment_OpenFGAAlwaysWired(t *testing.T) {
 	}
 	// The model is the control plane's, established at its own boot from the
 	// rulebook of its own version; the operator hands over no model id, only
-	// the instruction to manage it. The hyphen-stripped name is load-bearing
-	// (relaxed binding of planton.bootstrap.authorization-model.manage).
+	// the instruction to manage it (relaxed binding of
+	// planton.bootstrap.authorization-model.manage, each hyphen an underscore).
 	if _, set := envMap["FGA_MODEL_ID"]; set {
 		t.Error("FGA_MODEL_ID must not be set: the control plane establishes its own model")
 	}
-	if envMap["PLANTON_BOOTSTRAP_AUTHORIZATIONMODEL_MANAGE"] != "true" {
-		t.Errorf("PLANTON_BOOTSTRAP_AUTHORIZATIONMODEL_MANAGE = %q, want true", envMap["PLANTON_BOOTSTRAP_AUTHORIZATIONMODEL_MANAGE"])
+	if envMap["PLANTON_BOOTSTRAP_AUTHORIZATION_MODEL_MANAGE"] != "true" {
+		t.Errorf("PLANTON_BOOTSTRAP_AUTHORIZATION_MODEL_MANAGE = %q, want true", envMap["PLANTON_BOOTSTRAP_AUTHORIZATION_MODEL_MANAGE"])
 	}
-	if _, set := envMap["PLANTON_BOOTSTRAP_AUTHORIZATION_MODEL_MANAGE"]; set {
-		t.Error("PLANTON_BOOTSTRAP_AUTHORIZATION_MODEL_MANAGE must not be set (does not bind to planton.bootstrap.authorization-model.manage)")
+	// One spelling only: the glued one binds the same property, and two
+	// spellings would leave which value wins to Spring's lookup order.
+	if _, set := envMap["PLANTON_BOOTSTRAP_AUTHORIZATIONMODEL_MANAGE"]; set {
+		t.Error("PLANTON_BOOTSTRAP_AUTHORIZATIONMODEL_MANAGE must not be set: the operator renders the underscored spelling alone")
 	}
 }
 
@@ -766,8 +768,7 @@ func TestControlPlaneDeployment_NoRunnerBinding(t *testing.T) {
 // (the shipped default) the control plane seeds this cluster's build-cluster
 // connection and the platform default pointing at it. RUNNER presence is the
 // Java seeders' activation gate; the env names are the relaxed-binding forms
-// with hyphens STRIPPED (an underscored TEKTON_CONNECTION would satisfy the
-// gate but bind nothing).
+// with each hyphen an underscore.
 func TestControlPlaneDeployment_BuildRoutingSeed(t *testing.T) {
 	cfg := testControlPlaneConfig()
 	cfg.Runner = &RunnerBinding{
@@ -779,13 +780,13 @@ func TestControlPlaneDeployment_BuildRoutingSeed(t *testing.T) {
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
-	if envMap["PLANTON_BOOTSTRAP_TEKTONCONNECTION_RUNNER"] != RunnerSlug(cfg.CRName) {
-		t.Errorf("PLANTON_BOOTSTRAP_TEKTONCONNECTION_RUNNER = %q, want %s",
-			envMap["PLANTON_BOOTSTRAP_TEKTONCONNECTION_RUNNER"], RunnerSlug(cfg.CRName))
+	if envMap["PLANTON_BOOTSTRAP_TEKTON_CONNECTION_RUNNER"] != RunnerSlug(cfg.CRName) {
+		t.Errorf("PLANTON_BOOTSTRAP_TEKTON_CONNECTION_RUNNER = %q, want %s",
+			envMap["PLANTON_BOOTSTRAP_TEKTON_CONNECTION_RUNNER"], RunnerSlug(cfg.CRName))
 	}
-	if envMap["PLANTON_BOOTSTRAP_TEKTONCONNECTION_ORG"] != "default" {
-		t.Errorf("PLANTON_BOOTSTRAP_TEKTONCONNECTION_ORG = %q, want the bootstrap org",
-			envMap["PLANTON_BOOTSTRAP_TEKTONCONNECTION_ORG"])
+	if envMap["PLANTON_BOOTSTRAP_TEKTON_CONNECTION_ORG"] != "default" {
+		t.Errorf("PLANTON_BOOTSTRAP_TEKTON_CONNECTION_ORG = %q, want the bootstrap org",
+			envMap["PLANTON_BOOTSTRAP_TEKTON_CONNECTION_ORG"])
 	}
 	// The namespace variable stays unset by design: empty means "the
 	// runner's own placement", which keeps the seeded connection inside the
@@ -813,8 +814,8 @@ func TestControlPlaneDeployment_BuildRoutingSeedAbsentWhenBuildsOff(t *testing.T
 	} {
 		envMap := envVarMap(ControlPlaneDeployment(cfg).Spec.Template.Spec.Containers[0].Env)
 		for _, envName := range []string{
-			"PLANTON_BOOTSTRAP_TEKTONCONNECTION_RUNNER",
-			"PLANTON_BOOTSTRAP_TEKTONCONNECTION_ORG",
+			"PLANTON_BOOTSTRAP_TEKTON_CONNECTION_RUNNER",
+			"PLANTON_BOOTSTRAP_TEKTON_CONNECTION_ORG",
 			"PLANTON_BOOTSTRAP_TEKTONCONNECTION_NAMESPACE",
 		} {
 			if _, ok := envMap[envName]; ok {
@@ -882,15 +883,16 @@ func TestControlPlaneDeployment_SetsNoRunnerTaskQueue(t *testing.T) {
 // second truth beside the platform's (and once was -- a compiled-in pin three
 // weeks behind the catalog, so a kind the platform accepted 404'd at module
 // download). The CR's spec.controlPlane.iacModulesVersion is the per-install
-// override for a retracted artifact set, rendered by presence under Spring's
-// hyphen-stripped name; the platform's own version never leaks into it.
+// override for a retracted artifact set, rendered by presence under its
+// underscored relaxed-binding name alone; the platform's own version never
+// leaks into it.
 func TestControlPlaneDeployment_IacModulesVersionRenderedOnlyAsOverride(t *testing.T) {
 	cfg := testControlPlaneConfig()
 	cfg.Version = "v99.0.0"
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
-	for _, name := range []string{controlPlaneIacModulesVersionEnv, "PLANTON_VERSION", "PLANTON_INFRA_HUB_IAC_MODULES_VERSION"} {
+	for _, name := range []string{controlPlaneIacModulesVersionEnv, "PLANTON_VERSION", "PLANTON_INFRAHUB_IACMODULES_VERSION"} {
 		if v, ok := envMap[name]; ok {
 			t.Errorf("%s = %q rendered for a plain install; the control plane resolves modules at its own catalog release", name, v)
 		}
@@ -904,13 +906,20 @@ func TestControlPlaneDeployment_IacModulesVersionRenderedOnlyAsOverride(t *testi
 	if _, ok := overridden["PLANTON_VERSION"]; ok {
 		t.Error("PLANTON_VERSION must not be rendered under any shape: the platform's version is not the module release")
 	}
-	// The chart bundle's location is the control plane's to derive from its own
-	// catalog pin; the operator only switches the seed on. The hyphen-stripped
-	// name is load-bearing: the underscored variant does not bind.
-	if envMap["PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED"] != "true" {
-		t.Errorf("PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED = %q, want true", envMap["PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED"])
+	if _, ok := overridden["PLANTON_INFRAHUB_IACMODULES_VERSION"]; ok {
+		t.Error("PLANTON_INFRAHUB_IACMODULES_VERSION must not be rendered beside the underscored name: two spellings of one property leave which value wins to Spring's lookup order")
 	}
-	for _, stale := range []string{"PLANTON_BOOTSTRAP_INFRACHARTS_SOURCEURL", "PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED"} {
+	// The chart bundle's location is the control plane's to derive from its own
+	// catalog pin; the operator only switches the seed on, under one spelling
+	// (the glued one binds the same property, and two would leave which value
+	// wins to Spring's lookup order).
+	if envMap["PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED"] != "true" {
+		t.Errorf("PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED = %q, want true", envMap["PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED"])
+	}
+	for _, stale := range []string{
+		"PLANTON_BOOTSTRAP_INFRACHARTS_SOURCEURL", "PLANTON_BOOTSTRAP_INFRA_CHARTS_SOURCE_URL",
+		"PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED",
+	} {
 		if _, ok := envMap[stale]; ok {
 			t.Errorf("%s must not be set", stale)
 		}
@@ -1004,14 +1013,14 @@ func TestControlPlaneDeployment_SecretBackendBinding(t *testing.T) {
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
-	if envMap["PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE"] != "aws-secrets-manager" {
-		t.Errorf("PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE = %q, want aws-secrets-manager",
-			envMap["PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE"])
+	if envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE"] != "aws-secrets-manager" {
+		t.Errorf("PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE = %q, want aws-secrets-manager",
+			envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE"])
 	}
-	if envMap["PLANTON_BOOTSTRAP_SECRETBACKEND_AWSSECRETSMANAGER_REGION"] != "ap-south-1" {
+	if envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_AWS_SECRETS_MANAGER_REGION"] != "ap-south-1" {
 		t.Error("aws region must ride the seed env")
 	}
-	if envMap["PLANTON_BOOTSTRAP_SECRETBACKEND_AWSSECRETSMANAGER_REGION"] == "" {
+	if envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_AWS_SECRETS_MANAGER_REGION"] == "" {
 		t.Error("kms key arn must ride the seed env")
 	}
 }
@@ -1020,7 +1029,7 @@ func TestControlPlaneDeployment_NoSecretBackendBinding(t *testing.T) {
 	deploy := ControlPlaneDeployment(testControlPlaneConfig())
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
-	if _, ok := envMap["PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE"]; ok {
+	if _, ok := envMap["PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE"]; ok {
 		t.Error("secret-backend seed envs must be absent when nothing is seeded (presence is the activation gate)")
 	}
 }
@@ -1158,12 +1167,12 @@ func TestControlPlaneDeployment_PostureFollowsTheFrontDoor(t *testing.T) {
 			console: &ConsoleBinding{URL: "https://planton.example.com"},
 			want: map[string]string{
 				"OIDC_ISSUER_URL": "https://planton.example.com",
-				"PLANTON_CONNECT_METHODAVAILABILITY_OIDC_AVAILABILITY": "available",
-				"GITHUB_WEBHOOKS_REACHABLE":                            "true",
-				"GITHUB_WEBHOOKS_RECEIVER_URL":                         "https://planton.example.com/webhooks/github",
-				"PLANTON_CONSOLE_URL":                                  "https://planton.example.com",
+				"PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_AVAILABILITY": "available",
+				"GITHUB_WEBHOOKS_REACHABLE":                             "true",
+				"GITHUB_WEBHOOKS_RECEIVER_URL":                          "https://planton.example.com/webhooks/github",
+				"PLANTON_CONSOLE_URL":                                   "https://planton.example.com",
 			},
-			absent: []string{"PLANTON_CONNECT_METHODAVAILABILITY_OIDC_REASON"},
+			absent: []string{"PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_REASON"},
 		},
 		{
 			name:    "door declared private",
@@ -1172,10 +1181,10 @@ func TestControlPlaneDeployment_PostureFollowsTheFrontDoor(t *testing.T) {
 			console: &ConsoleBinding{URL: "https://planton.example.com"},
 			want: map[string]string{
 				"OIDC_ISSUER_URL": "https://planton.example.com",
-				"PLANTON_CONNECT_METHODAVAILABILITY_OIDC_AVAILABILITY": "unavailable",
-				"PLANTON_CONNECT_METHODAVAILABILITY_OIDC_REASON":       privateReason,
-				"GITHUB_WEBHOOKS_REACHABLE":                            "false",
-				"GITHUB_WEBHOOKS_RECEIVER_URL":                         "https://planton.example.com/webhooks/github",
+				"PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_AVAILABILITY": "unavailable",
+				"PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_REASON":       privateReason,
+				"GITHUB_WEBHOOKS_REACHABLE":                             "false",
+				"GITHUB_WEBHOOKS_RECEIVER_URL":                          "https://planton.example.com/webhooks/github",
 				// A private door is still the console the person's own browser reaches.
 				"PLANTON_CONSOLE_URL": "https://planton.example.com",
 			},
@@ -1187,10 +1196,10 @@ func TestControlPlaneDeployment_PostureFollowsTheFrontDoor(t *testing.T) {
 			console: &ConsoleBinding{URL: "http://localhost:8080"},
 			want: map[string]string{
 				"OIDC_ISSUER_URL": "http://localhost:8080",
-				"PLANTON_CONNECT_METHODAVAILABILITY_OIDC_AVAILABILITY": "unavailable",
-				"PLANTON_CONNECT_METHODAVAILABILITY_OIDC_REASON":       "port-forward sentence",
-				"GITHUB_WEBHOOKS_REACHABLE":                            "false",
-				"GITHUB_WEBHOOKS_RECEIVER_URL":                         "http://localhost:8080/webhooks/github",
+				"PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_AVAILABILITY": "unavailable",
+				"PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_REASON":       "port-forward sentence",
+				"GITHUB_WEBHOOKS_REACHABLE":                             "false",
+				"GITHUB_WEBHOOKS_RECEIVER_URL":                          "http://localhost:8080/webhooks/github",
 				// The loopback console the browser reaches over the port-forward: true, never a placeholder.
 				"PLANTON_CONSOLE_URL": "http://localhost:8080",
 			},
@@ -1198,8 +1207,8 @@ func TestControlPlaneDeployment_PostureFollowsTheFrontDoor(t *testing.T) {
 	}
 	// Every arm declares the app-less doors closed the same way.
 	everyArm := map[string]string{
-		"PLANTON_CONNECT_METHODAVAILABILITY_PLATFORMAPP_AVAILABILITY": "unavailable",
-		"PLANTON_CONNECT_METHODAVAILABILITY_PLATFORMAPP_REASON":       PlatformAppUnavailableReason,
+		"PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_AVAILABILITY": "unavailable",
+		"PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_REASON":       PlatformAppUnavailableReason,
 		"GCP_OAUTH_ENABLED":          "false",
 		"AZURE_OAUTH_ENABLED":        "false",
 		"AWS_CLOUDFORMATION_ENABLED": "false",

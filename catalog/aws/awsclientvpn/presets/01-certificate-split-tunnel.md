@@ -35,7 +35,7 @@ the client.
 | `<server-certificate-arn>` | ACM ARN of the server certificate | ACM console, or an AwsCertManagerCert output |
 | `<vpc-id>` | The VPC whose security groups apply | Your AwsVpc output |
 | `<private-subnet-id>` | Subnet to associate (bills hourly; add a second AZ for resilience) | Your AwsSubnet output |
-| `<vpc-cidr-block>` | The VPC CIDR clients may reach (e.g. `10.0.0.0/16`) | Your VPC design |
+| `10.0.0.0/16` | The VPC CIDR clients may reach (`authorizationRules[].targetNetworkCidr`) | Your VPC design |
 | `<vpn-log-group-name>` | CloudWatch log group for connection events | Your AwsCloudwatchLogGroup output |
 
 ## Common Additions

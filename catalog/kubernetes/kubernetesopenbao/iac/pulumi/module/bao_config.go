@@ -3,13 +3,15 @@ package module
 import (
 	"fmt"
 	"strings"
+
+	kubernetesopenbaov1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesopenbao/v1alpha1"
 )
 
 // renderBaoConfigHcl synthesizes the OpenBao server configuration from
 // the typed spec. This module OWNS config rendering — the chart takes
 // config as a raw HCL string it writes into a ConfigMap, so every typed
 // field (TLS listener material, storage backend, Raft peers, seal
-// stanzas, telemetry) converges here. The Terraform twin builds the
+// stanzas, the audit device, telemetry) converges here. The Terraform twin builds the
 // byte-identical document in locals.tf; keep them in lockstep.
 //
 // SENSITIVE-MATERIAL RULE: this document lands in a ConfigMap. Seal
@@ -156,6 +158,32 @@ func renderBaoConfigHcl(locals *Locals) string {
 			fmt.Fprintf(&b, "  mount_path = \"%s\"\n", mountPath)
 			b.WriteString("}\n\n")
 		}
+	}
+
+	// ------------------------------ audit ----------------------------------
+	// OpenBao 2.4+ enables audit devices only from this file (the API
+	// refuses `bao audit enable`), reading it at start and on SIGHUP; a
+	// device the file stops declaring is disabled the same way. One
+	// `file` device, named after its sink so switching sinks replaces
+	// the device instead of re-pointing it. `stdout` is the file audit
+	// device's own keyword for the process's standard output; the file
+	// sink writes onto the audit volume the chart mounts at
+	// vars.AuditMountPath (the spec refuses `file` without that volume).
+	if audit := locals.Spec.GetServer().GetAudit(); audit.GetEnabled() {
+		name := "stdout"
+		description := "Audit records to the server's standard output"
+		filePath := "stdout"
+		if audit.GetSink() == kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_file {
+			name = "file"
+			description = "Audit records to the audit volume"
+			filePath = vars.AuditMountPath + "/audit.log"
+		}
+		fmt.Fprintf(&b, "audit \"file\" \"%s\" {\n", name)
+		fmt.Fprintf(&b, "  description = \"%s\"\n", description)
+		b.WriteString("  options {\n")
+		fmt.Fprintf(&b, "    file_path = \"%s\"\n", filePath)
+		b.WriteString("  }\n")
+		b.WriteString("}\n\n")
 	}
 
 	// ------------------------------ telemetry ------------------------------

@@ -21,5 +21,5 @@ This preset creates a Premium registry with a zone-redundant home replica, one g
 | --- | --- | --- |
 | `<azure-region>` | The home replica's region | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<youruniquename>` | Globally unique registry name (5-50 lowercase alphanumerics) | Becomes `{name}.azurecr.io` |
+| `yourregistry123` (`registryName`) | Globally unique registry name (5-50 lowercase alphanumerics) | Becomes `{name}.azurecr.io` |
 | `<secondary-azure-region>` | The region to replicate into (differs from home) | Your regional deployment strategy |

@@ -34,7 +34,7 @@ tasks, with AZ rebalancing keeping the fleet spread after interruptions.
 | `<aws-region>` | AWS region code | Your deployment region |
 | `<cluster-resource-name>` | Name of the AwsEcsCluster resource (must attach FARGATE + FARGATE_SPOT) | Your cluster manifest's `metadata.name` |
 | `<task-definition-resource-name>` | Name of the AwsEcsTaskDefinition resource | Your task-definition manifest's `metadata.name` |
-| `<private-subnet-a/b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
 
 ## Common Additions
 

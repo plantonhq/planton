@@ -21,7 +21,7 @@ This preset creates an EC2 instance accessible via AWS Systems Manager Session M
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<aws-region>` | AWS region where the instance will be created (e.g., `us-west-2`) | AWS region list |
-| `<ami-id>` | Amazon Machine Image ID matching the instance type's architecture | AWS EC2 AMI catalog or `aws ec2 describe-images` |
+| `ami-0123456789abcdef0` | Amazon Machine Image ID matching the instance type's architecture | AWS EC2 AMI catalog or `aws ec2 describe-images` |
 | `<private-subnet-id>` | Private subnet ID where the instance will launch | `AwsSubnet` status outputs |
 | `<security-group-id>` | Security group ID controlling instance traffic | `AwsSecurityGroup` status outputs |
 | `<instance-profile-name>` | NAME of the IAM instance profile with SSM permissions | `AwsIamInstanceProfile` status outputs |

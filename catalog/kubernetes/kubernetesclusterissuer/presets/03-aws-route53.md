@@ -17,9 +17,8 @@ This preset creates a ClusterIssuer that uses AWS Route53 for ACME DNS-01 certif
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<your-domain.com>` | DNS domain managed by AWS Route53 | AWS Console > Route53 > Hosted Zones |
-| `<your-acme-email@example.com>` | Email for Let's Encrypt registration | Your organization's ops email |
-| `<your-aws-region>` | AWS region where Route53 is configured (e.g., `us-east-1`) | AWS Console > Route53 |
+| `<your-email@example.com>` | Email for Let's Encrypt registration and expiry notifications | Your organization's ops email |
+| `<aws-region>` | AWS region where Route53 is configured (e.g., `us-east-1`) | AWS Console > Route53 |
 
 ## Related Presets
 

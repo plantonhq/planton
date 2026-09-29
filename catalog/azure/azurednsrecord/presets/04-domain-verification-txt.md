@@ -21,7 +21,7 @@ The ownership-proof TXT record that custom-domain flows require before they bind
 | `<your-resource-group>` | The zone's resource group | `AzureResourceGroup.status.outputs.resource_group_name` |
 | `example.com` | Replace with the zone name | `AzureDnsZone.status.outputs.zone_name` |
 | `asuid.app` | Replace `app` with the hostname being verified, relative to the zone | The custom-domain binding you are creating |
-| `<verification-token-from-app-output>` | The service-issued token | `AzureContainerApp.status.outputs.custom_domain_verification_id`, `AzureFrontDoorCustomDomain.status.outputs.validation_token`, or the service's setup screen |
+| `<your-custom-domain-resource-name>` | The AzureFrontDoorCustomDomain whose `validation_token` output the TXT record carries (for another service, replace the reference with its token: `AzureContainerApp.status.outputs.custom_domain_verification_id`, or a literal `value` from the service's setup screen) | Your Front Door composition |
 
 ## Related Presets
 

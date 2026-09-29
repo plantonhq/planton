@@ -21,8 +21,8 @@ This preset creates a production serverless workgroup whose spend, reachability,
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<namespace-name>` | The namespace (data plane) this workgroup serves | `AwsRedshiftServerlessNamespace` status outputs |
-| `<private-subnet-id-az1..3>` | Three subnets in three distinct AZs for the workgroup | AWS VPC console or `AwsSubnet` status outputs |
-| `<consumer-subnet-id-az1..3>` | Subnets in the CONSUMING VPC for the endpoint | AWS VPC console or `AwsSubnet` status outputs |
+| `<private-subnet-id-az1>` / `<private-subnet-id-az2>` / `<private-subnet-id-az3>` | Three subnets in three distinct AZs for the workgroup | AWS VPC console or `AwsSubnet` status outputs |
+| `<consumer-subnet-id-az1>` / `<consumer-subnet-id-az2>` / `<consumer-subnet-id-az3>` | Subnets in the CONSUMING VPC for the endpoint | AWS VPC console or `AwsSubnet` status outputs |
 | `<acm-certificate-arn>` | ACM certificate covering warehouse.example.com in the workgroup's region | AWS ACM console or `AwsCertManagerCert` status outputs |
 
 ## Related Presets

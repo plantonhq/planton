@@ -520,10 +520,14 @@ Based on scenario:
   override them) and commonly diverge -- e.g. a Terraform `locals.tf` that
   merges only `{ Name }` with labels while the Pulumi module applies the
   `awstagkeys` identity set WITHOUT `Name`, so the same manifest tags the
-  resource differently per engine. No offline gate flags this (tags are not
-  stack outputs). When touching an older kind, diff the two engines' tag
-  maps against the current convention and converge both in the same
-  session.
+  resource differently per engine. Tags are not stack outputs, so only the
+  tag guards catch this: `hack/guards/ensure_cross_engine_tag_keys.sh`
+  (AWS key sets) and `hack/guards/ensure_cross_engine_azure_tag_values.sh`
+  (Azure keys and values -- `resource_kind` is the lowercased
+  CloudResourceKind enum name as a literal in `locals.tf`, and `resource_id`
+  is written only when `metadata.id` is set, never the name). When touching
+  an older kind, diff the two engines' tag maps against the current
+  convention and converge both in the same change.
 - **Never read a proto oneof through an interface assertion in module code**:
   asserting `x.Source.(interface{ GetValue() string })` compiles and silently
   matches NOTHING — generated oneof wrapper structs carry plain fields, not
@@ -1642,8 +1646,10 @@ conventions). A rename keeps the enum **number** — only the name changes every
 5. **Both IaC modules — watch the identity-tag asymmetry.** The Pulumi module derives
    the `resource-kind` identity tag from the enum (`CloudResourceKind_<Kind>.String()`),
    so it renames itself; the Terraform module hardcodes the kind string in `locals.tf`
-   (`"planton.dev/resource-kind" = "<Kind>"`) and MUST be updated by hand or the two
-   engines silently diverge on tag parity. Also update module comments and Go type
+   (`"planton.dev/resource-kind" = "<Kind>"`; on Azure, `"resource_kind" = "<kind>"`,
+   the enum name lowercased) and MUST be updated by hand or the two engines diverge on
+   tag parity (for Azure, `hack/guards/ensure_cross_engine_azure_tag_values.sh` refuses
+   the stale literal). Also update module comments and Go type
    references (the generated stubs rename with the protos).
 6. **Docs**: component `README.md` H1 (the kind name), `catalog.md` H1 (the display
    name — this drives the public catalog slug and sidebar label), `GUIDE.md`,

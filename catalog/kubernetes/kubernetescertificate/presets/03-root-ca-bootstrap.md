@@ -32,9 +32,9 @@ This preset is **Step 2** of the four-step CA bootstrap chain:
 | Placeholder | Description | Where to Find |
 |---|---|---|
 | `<your-namespace>` | Namespace for the CA certificate (typically `cert-manager`) | Where your cert-manager infrastructure lives |
-| `<your-root-ca-name>` | Conventional SAN for the CA certificate | A descriptive name like `my-org-root-ca` |
-| `<your-root-ca-secret>` | Secret name for the CA cert + key | Referenced by the CA Issuer's `caSecretName` |
-| `<your-selfsigned-issuer>` | Name of the SelfSigned Issuer | KubernetesIssuer's `issuer_name` output |
+| `root-ca` (`commonName`) | Common name for the CA certificate | A descriptive name like `my-org-root-ca` |
+| `root-ca-tls` (`secretName`) | Secret name for the CA cert + key | Referenced by the CA Issuer's `caSecretName` |
+| `<selfsigned-issuer-name>` | Name of the SelfSigned Issuer | KubernetesIssuer's `issuer_name` output |
 
 ## Related Presets
 

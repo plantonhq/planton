@@ -7,7 +7,6 @@ Terraform IaC module for the account's default WARP device profile.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustDeviceDefaultProfileSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_device_default_profile
                 + conditional cloudflare_zero_trust_device_default_profile_local_domain_fallback
                 + conditional cloudflare_zero_trust_device_default_profile_certificates

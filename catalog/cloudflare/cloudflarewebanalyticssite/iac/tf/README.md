@@ -7,7 +7,6 @@ Terraform IaC module for Web Analytics (RUM) sites.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareWebAnalyticsSiteSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_web_analytics_site + one cloudflare_web_analytics_rule per rules[] row
 outputs.tf    — site_tag, site_token, snippet, ruleset_id
 ```

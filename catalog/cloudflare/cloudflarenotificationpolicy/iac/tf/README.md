@@ -7,7 +7,6 @@ Terraform IaC module for notification policies.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareNotificationPolicySpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_notification_policy
 outputs.tf    — policy_id
 ```

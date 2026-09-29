@@ -84,6 +84,21 @@ listener cert/key files, the certificate Secret mount, and every
 derived URL and probe switch together. A `KubernetesCertificate` is
 the natural issuer for `cert_secret_name`.
 
+## Auditing
+
+OpenBao 2.4 and later refuse `bao audit enable` over the API: an audit
+device exists only when the server's configuration file declares it.
+`server.audit` is that declaration — `enabled: true` renders one `file`
+audit device into the configuration this module writes, to the pod's
+standard output by default (`sink: stdout`, collected with the pod's
+logs, no disk to fill) or to `/openbao/audit/audit.log` on the audit
+volume (`sink: file`, which requires `server.auditStorage`). Once a
+device is on, OpenBao answers no request it cannot record, so a full,
+unrotated audit file stops the vault; stdout has no such failure. The
+server reads the declaration at start: with the chart's OnDelete
+update strategy a change reaches a running server when its pod is
+recreated. Dev mode reads no configuration and refuses the block.
+
 ## Injector, metrics, backups
 
 The Agent Injector is OFF by default — a deliberate divergence from

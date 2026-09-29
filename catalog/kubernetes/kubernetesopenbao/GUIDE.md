@@ -217,6 +217,15 @@ the first to run them.
   clone's own in the same apply that removes `restore`. The bad-day
   restore has no such step: the source is gone, and the target inherits
   its prefix on purpose.
+- **Auditing is declared, then the pods are recreated.** `server.audit`
+  is the only way to turn auditing on (OpenBao 2.4 and later refuse
+  `bao audit enable` over the API), and the server reads it at start —
+  so after the apply that adds or changes it, delete the server pods one
+  at a time, standbys first, unsealing each unless a seal arm is
+  declared. `bao audit list` on the active server then shows the device
+  (`stdout/` or `file/`). Keep the default `stdout` sink unless something
+  rotates the file: with the `file` sink, a full audit volume makes
+  OpenBao refuse every request until space is freed.
 - **"Restore again" is a changed declaration, never a deleted Job.** The
   restore Job is named by a hash of the declaration; naming a different
   `snapshotKey` (or switching to `latest`) is a new Job and a new restore.

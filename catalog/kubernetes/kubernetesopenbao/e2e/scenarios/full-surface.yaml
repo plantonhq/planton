@@ -1,7 +1,10 @@
 # The kind-honest full surface for a shared-nothing lab cluster: a
 # single Raft server (the chart's required hostname anti-affinity makes
-# one replica the honest count on one node) with a dedicated audit
-# volume, metrics telemetry rendered into the server config (no
+# one replica the honest count on one node) with a file audit device
+# declared in the server config and writing to its dedicated audit
+# volume (OpenBao answers no request it cannot record, so the KV proof
+# below also proves the device writes), metrics telemetry rendered into
+# the server config (no
 # ServiceMonitor — the kind cluster runs no Prometheus Operator CRDs),
 # the agent injector deployed with its fail-open webhook, tuned logging
 # and the auth-delegator binding. TLS, auto-unseal, and the multi-replica
@@ -30,6 +33,9 @@ spec:
         memory: 512Mi
     auditStorage:
       size: 1Gi
+    audit:
+      enabled: true
+      sink: file
     logLevel: debug
     logFormat: json
   injector:

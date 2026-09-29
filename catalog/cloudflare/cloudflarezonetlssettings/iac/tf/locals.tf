@@ -1,12 +1,4 @@
 locals {
-  # Resource naming
-  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-zone-tls-settings")
-
-  # Labels
-  labels = merge({
-    "name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
   zone_id = var.spec.zone_id
 
   # Per-hostname overrides, split per setting_id: each set attribute of each

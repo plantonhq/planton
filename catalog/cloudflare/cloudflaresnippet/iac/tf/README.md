@@ -7,7 +7,6 @@ Terraform IaC module for a small JavaScript snippet at the zone's edge, invoked 
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareSnippetSpec
-locals.tf     — Resource naming and labels
 main.tf       — cloudflare_snippet
 outputs.tf    — snippet_name, zone_id
 ```

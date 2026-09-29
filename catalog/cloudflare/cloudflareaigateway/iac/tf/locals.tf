@@ -1,12 +1,4 @@
 locals {
-  # Resource naming
-  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-ai-gateway")
-
-  # Labels
-  labels = merge({
-    "name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
   # Empty strings mean "not set" for plain proto3 string fields -- drop them
   # so Cloudflare applies its own defaults.
   rate_limiting_technique = var.spec.rate_limiting_technique != "" ? var.spec.rate_limiting_technique : null

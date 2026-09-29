@@ -7,7 +7,6 @@ Terraform IaC module for MCP portals (curated, Access-protected MCP server colle
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustMcpPortalSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_access_ai_controls_mcp_portal
 outputs.tf    — portal_id, hostname
 ```

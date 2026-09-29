@@ -22,7 +22,7 @@ This preset creates an Azure Container Registry with Standard SKU and admin user
 | --- | --- | --- |
 | `<azure-region>` | Azure region (e.g., "eastus", "westeurope") | Your regional deployment strategy |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<youruniquename>` | Globally unique registry name (5-50 chars, lowercase letters and numbers only, no hyphens) | Choose a name; becomes `{name}.azurecr.io` |
+| `yourregistry123` (`registryName`) | Globally unique registry name (5-50 chars, lowercase letters and numbers only, no hyphens) | Choose a name; becomes `{name}.azurecr.io` |
 
 ## Related Presets
 

@@ -19,7 +19,7 @@ This preset creates the zero-cost development sandbox: Azure's Free compute tier
 | --- | --- | --- |
 | `<your-resource-group>` | The Planton name of your `AzureResourceGroup` resource | Planton console (or replace `valueFrom` with `value:` and a literal group name) |
 | `<choose-a-password>` | A throwaway admin password (literal is acceptable for a sandbox) | Your choice |
-| `<your-ip>` | Your development machine's public IPv4 | `curl ifconfig.me` |
+| `198.51.100.7` | Your development machine's public IPv4 (`firewallRules[].startIpAddress` and `endIpAddress`) | `curl ifconfig.me` |
 
 ## Related Presets
 

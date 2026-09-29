@@ -34,5 +34,5 @@ resolution working through the forwarder.
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<resource-group-name>` | The resource group to create the network in | The resource group's `status.outputs.resource_group_name` |
-| `<dns-server-ip-1/2>` | Your DNS forwarder or resolver IPs inside (or reachable from) the network | Your DNS architecture |
+| `<dns-server-ip-1>` / `<dns-server-ip-2>` | Your DNS forwarder or resolver IPs inside (or reachable from) the network | Your DNS architecture |
 | `<cost-center>` | Your org's cost-attribution tag value | Your tagging convention |

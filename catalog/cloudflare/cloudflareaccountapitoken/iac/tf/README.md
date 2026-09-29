@@ -7,7 +7,6 @@ Terraform IaC module for account-owned API tokens.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareAccountApiTokenSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_account_token (policies serializer + condition mapping)
 outputs.tf    — token_id, value, r2_access_key_id, r2_secret_access_key
 ```

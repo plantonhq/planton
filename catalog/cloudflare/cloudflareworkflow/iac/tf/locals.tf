@@ -1,12 +1,4 @@
 locals {
-  # Resource naming
-  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-workflow")
-
-  # Labels
-  labels = merge({
-    "name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
   # Retention values are dynamic at the API (integer milliseconds or a
   # duration expression like "5 minutes"); the spec carries both forms as
   # strings and they pass through verbatim. Empty strings mean "not set" --

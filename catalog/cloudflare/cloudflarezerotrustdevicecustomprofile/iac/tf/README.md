@@ -7,7 +7,6 @@ Terraform IaC module for targeted WARP device profiles.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustDeviceCustomProfileSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_device_custom_profile
                 + conditional cloudflare_zero_trust_device_custom_profile_local_domain_fallback
 outputs.tf    — policy_id, gateway_unique_id
