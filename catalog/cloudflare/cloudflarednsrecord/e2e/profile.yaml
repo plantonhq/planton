@@ -11,7 +11,9 @@ spec:
   # zones/{zone_id}/dns_records/{record_id} verify -> destroy ->
   # verify-destroyed on both provisioners. The minimal scenario proves the
   # simple-content path (an A record); the srv scenario proves the typed
-  # `data` union (the kind's structured-record surface) plus a comment.
+  # `data` union (the kind's structured-record surface) plus a comment; the
+  # ns-absolute-name scenario proves a name-valued content spelled with the
+  # root dot settles (Cloudflare stores it without the dot).
   # Deliberately not in the live scenarios: proxied records (delivery
   # semantics need an ACTIVE zone -- the proxied flag's send path is proven
   # by spec/CEL tests and the offline plan), record tags (paid-plan
@@ -23,7 +25,12 @@ spec:
   # the full lifecycle (deploy -> REST-API verify -> destroy -> verify-absent)
   # with the apply-idempotency re-plan green, plus the blind import round-trip
   # on the Terraform lane. Records confirmed to land on a PENDING (undelegated)
-  # fixture zone.
+  # fixture zone. 2026-09-29: ns-absolute-name joined on both engines, red on
+  # Terraform before the module dropped the root dot (the re-plan read
+  # `"ns-cloud-a1.googledomains.com" -> "ns-cloud-a1.googledomains.com."`),
+  # green after; Pulumi's provider reconciles the dot itself. The lane needs
+  # PLANTON_E2E_CLOUDFLARE_ZONE_ID set even here, because the token expander
+  # reads the zone prerequisite's comments too.
   status: green
   validated_provisioners: [pulumi, terraform]
   timeout_minutes: 10
