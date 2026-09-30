@@ -165,6 +165,15 @@ func TestResourceFloor_TemporalChart(t *testing.T) {
 	if !seenHistory {
 		t.Errorf("expected the history service among the rendered workloads, got %v", keys(containers))
 	}
+	// Each named server service is a Deployment the chart really renders
+	// under the name the operator reads it by, so a chart bump that renames
+	// one fails here instead of silently hiding that service's pods.
+	for _, svc := range TemporalServerServices {
+		name := TemporalServiceDeploymentName("test", svc.Name)
+		if _, ok := containers[floorKindDeployment+"/"+name+"/temporal-"+svc.Name]; !ok {
+			t.Errorf("service %s: expected Deployment %s among the rendered workloads, got %v", svc.Name, name, keys(containers))
+		}
+	}
 }
 
 // A service's override reaches that service's container and no other: the

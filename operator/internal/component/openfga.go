@@ -70,9 +70,10 @@ func (o *OpenFGA) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	if err != nil {
 		return Result{}, fmt.Errorf("checking OpenFGA readiness: %w", err)
 	}
+	workload := DeploymentRef(deployName).Sized(resources.SizingOpenFGA)
 	if !ready {
 		log.Info("OpenFGA not ready")
-		return o.NotReady(ctx, c, planton.Namespace, DeploymentRef(deployName).Sized(resources.SizingOpenFGA), "Waiting for OpenFGA server"), nil
+		return o.NotReady(ctx, c, planton.Namespace, workload, "Waiting for OpenFGA server"), nil
 	}
 
 	bootstrapped, err := o.ensureFGABootstrap(ctx, c, planton)
@@ -85,7 +86,7 @@ func (o *OpenFGA) Reconcile(ctx context.Context, c client.Client, _ *runtime.Sch
 	}
 
 	log.Info("OpenFGA ready")
-	return Result{Ready: true, Message: "OpenFGA healthy, store bootstrapped"}, nil
+	return o.Ready(ctx, c, planton.Namespace, "OpenFGA healthy, store bootstrapped", workload), nil
 }
 
 func (o *OpenFGA) ensureFGABootstrap(ctx context.Context, c client.Client, planton *v1.PlantonPlatform) (bool, error) {

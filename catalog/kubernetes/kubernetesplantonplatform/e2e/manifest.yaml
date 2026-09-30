@@ -130,7 +130,7 @@ spec:
   control_plane:
     resources:
       limits:
-        memory: 6Gi
+        memory: 8Gi
     replicas: 1
   console:
     replicas: 1

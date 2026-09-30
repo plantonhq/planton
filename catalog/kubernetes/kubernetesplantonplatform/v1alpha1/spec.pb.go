@@ -4105,9 +4105,10 @@ type KubernetesPlantonPlatformControlPlane struct {
 	IacModulesVersion string `protobuf:"bytes,5,opt,name=iac_modules_version,json=iacModulesVersion,proto3" json:"iac_modules_version,omitempty"`
 	// *
 	// The control plane's CPU and memory. Unset, it runs the operator's measured
-	// default: 250m CPU and 1Gi memory requested, a 4Gi memory limit, no
-	// CPU limit (a limit throttles cold starts, so the operator never sets one;
-	// set one if your cluster's policy requires it).
+	// default: 250m CPU and 1Gi memory requested, a 6Gi memory limit (the
+	// heaviest parallel-deploy wave measured, 4.52Gi, plus 25%), no CPU limit (a
+	// limit throttles cold starts, so the operator never sets one; set one if
+	// your cluster's policy requires it).
 	// The control plane is a JVM whose heap is 60% of this memory limit, so
 	// raising the limit raises the heap; parallel deploys are what grow it.
 	// Every quantity is merged on its own with the operator's default: a
@@ -4861,7 +4862,7 @@ const file_catalog_kubernetes_kubernetesplantonplatform_v1alpha1_spec_proto_rawD
 	"\x1bservice_account_annotations\x18\x04 \x03(\v2\x7f.dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformControlPlane.ServiceAccountAnnotationsEntryR\x19serviceAccountAnnotations\x12J\n" +
 	"\x13iac_modules_version\x18\x05 \x01(\tB\x1a\xbaH\x17\xd8\x01\x01r\x122\x10^v\\d+\\.\\d+\\.\\d+$R\x11iacModulesVersion\x12c\n" +
 	"\tresources\x18\x06 \x01(\v2*.dev.planton.kubernetes.ContainerResourcesB\x19\xba\xfb\xa4\x02\x14\n" +
-	"\x05\x12\x034Gi\x12\v\n" +
+	"\x05\x12\x036Gi\x12\v\n" +
 	"\x04250m\x12\x031GiR\tresources\x1aL\n" +
 	"\x1eServiceAccountAnnotationsEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +

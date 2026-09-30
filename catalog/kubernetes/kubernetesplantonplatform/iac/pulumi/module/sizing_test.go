@@ -28,10 +28,10 @@ func TestPlatformSpecBody_NoSizingRendersNoResources(t *testing.T) {
 func TestPlatformSpecBody_OneQuantityRendersAlone(t *testing.T) {
 	body := platformSpecBody(localsFor(&kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformSpec{
 		ControlPlane: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformControlPlane{
-			Resources: &kubernetes.ContainerResources{Limits: &kubernetes.CpuMemory{Memory: "6Gi"}},
+			Resources: &kubernetes.ContainerResources{Limits: &kubernetes.CpuMemory{Memory: "8Gi"}},
 		},
 	}))
-	want := map[string]interface{}{"resources": map[string]interface{}{"limits": map[string]interface{}{"memory": "6Gi"}}}
+	want := map[string]interface{}{"resources": map[string]interface{}{"limits": map[string]interface{}{"memory": "8Gi"}}}
 	if got := body["controlPlane"]; !reflect.DeepEqual(got, want) {
 		t.Errorf("controlPlane rendered\n got: %#v\nwant: %#v", got, want)
 	}

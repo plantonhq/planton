@@ -117,13 +117,8 @@ func (b *Base) explainWorkload(ctx context.Context, c client.Client, namespace s
 	if workload.Namespace != "" {
 		namespace = workload.Namespace
 	}
-	selector, conditions, found := workloadSelector(ctx, c, namespace, workload)
+	pods, selector, conditions, found := workloadPods(ctx, c, namespace, workload)
 	if !found {
-		return nil
-	}
-
-	var pods corev1.PodList
-	if err := c.List(ctx, &pods, client.InNamespace(namespace), client.MatchingLabels(selector)); err != nil {
 		return nil
 	}
 
@@ -132,10 +127,26 @@ func (b *Base) explainWorkload(ctx context.Context, c client.Client, namespace s
 	var events corev1.EventList
 	_ = c.List(ctx, &events, client.InNamespace(namespace))
 
-	if expl := explainPendingClaims(pods.Items, selector, claims.Items, storageFactsReader(ctx, c), events.Items); expl != nil {
+	if expl := explainPendingClaims(pods, selector, claims.Items, storageFactsReader(ctx, c), events.Items); expl != nil {
 		return expl
 	}
-	return classifyUnreadyWorkload(pods.Items, conditions, events.Items, time.Now(), workload.SizedBy)
+	return classifyUnreadyWorkload(pods, conditions, events.Items, time.Now(), workload.SizedBy)
+}
+
+// workloadPods reads the workload's pods, its label selector, and its own
+// conditions -- the facts both the not-ready and the Ready answer start from.
+// found is false when the workload or its pods cannot be read; a caller then
+// has nothing more specific to say.
+func workloadPods(ctx context.Context, c client.Client, namespace string, workload WorkloadRef) ([]corev1.Pod, map[string]string, []appsv1.DeploymentCondition, bool) {
+	selector, conditions, found := workloadSelector(ctx, c, namespace, workload)
+	if !found {
+		return nil, nil, nil, false
+	}
+	var pods corev1.PodList
+	if err := c.List(ctx, &pods, client.InNamespace(namespace), client.MatchingLabels(selector)); err != nil {
+		return nil, nil, nil, false
+	}
+	return pods.Items, selector, conditions, true
 }
 
 // workloadSelector returns the label selector the workload's pods carry and
@@ -267,13 +278,7 @@ func explainContainers(pod *corev1.Pod, sizedBy string) *Explanation {
 			continue
 		}
 		if last.Reason == "OOMKilled" {
-			return &Explanation{
-				Reason: v1.ComponentReasonOutOfMemory,
-				Object: object,
-				Message: fmt.Sprintf(
-					"container %q of pod %s was killed for exceeding its memory limit%s (%d restarts) -- %s",
-					cs.Name, pod.Name, memoryLimitClause(pod, cs.Name), cs.RestartCount, memoryRemedy(sizedBy)),
-			}
+			return outOfMemory(pod, cs, "", sizedBy)
 		}
 		crashLooping := cs.State.Waiting != nil && cs.State.Waiting.Reason == "CrashLoopBackOff"
 		if crashLooping || cs.RestartCount > 0 && last.ExitCode != 0 {
@@ -528,6 +533,20 @@ func podReady(pod *corev1.Pod) bool {
 		}
 	}
 	return false
+}
+
+// outOfMemory is the one sentence for a container killed for exceeding its
+// memory limit, whichever state its component is in now; after says what has
+// happened since, when that is known (the Ready answer's "at <time> and is
+// serving again").
+func outOfMemory(pod *corev1.Pod, cs corev1.ContainerStatus, after, sizedBy string) *Explanation {
+	return &Explanation{
+		Reason: v1.ComponentReasonOutOfMemory,
+		Object: podObject(pod),
+		Message: fmt.Sprintf(
+			"container %q of pod %s was killed for exceeding its memory limit%s%s (%d restarts) -- %s",
+			cs.Name, pod.Name, memoryLimitClause(pod, cs.Name), after, cs.RestartCount, memoryRemedy(sizedBy)),
+	}
 }
 
 // memoryRemedy is the fix for an out-of-memory kill: the exact field when the

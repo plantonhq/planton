@@ -100,7 +100,9 @@ go_library(
     importpath = "github.com/plantonhq/planton/catalog/kubernetes/aa_e2e/verify",
     visibility = ["//visibility:public"],
     deps = [
+        "//catalog/kubernetes/kubernetesplantonoperator/v1alpha1",
         "//pkg/cloudflare/r2",
+        "//shared/options",
         "@com_github_aws_aws_sdk_go_v2//aws",
         "@com_github_aws_aws_sdk_go_v2_credentials//:credentials",
         "@com_github_aws_aws_sdk_go_v2_service_s3//:s3",
@@ -119,6 +121,7 @@ go_library(
         "@io_temporal_go_sdk//client",
         "@io_temporal_go_sdk//worker",
         "@io_temporal_go_sdk//workflow",
+        "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//types/known/durationpb",
     ],
 )

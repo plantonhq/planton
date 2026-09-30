@@ -10,6 +10,10 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"google.golang.org/protobuf/proto"
+
+	kubernetesplantonoperatorv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesplantonoperator/v1alpha1"
+	"github.com/plantonhq/planton/shared/options"
 )
 
 // plantonPlatformCrd is the CRD the KubernetesPlantonPlatform declaration
@@ -46,10 +50,16 @@ type PlantonOperatorInstallVerifier struct {
 	helmCRDLifecycle
 }
 
-// plantonOperatorDefaultChartVersion mirrors the module's default pin; the
-// refusal check names the version a scenario pinned, so only a scenario
-// that leaves it unset relies on this.
-const plantonOperatorDefaultChartVersion = "0.8.1"
+// plantonOperatorDefaultChartVersion is the chart the modules install when a
+// scenario pins none: the kind's own default option, read from its
+// definition, so the verifier can never name a version the modules no longer
+// install. The refusal check names the version a scenario pinned; only a
+// scenario that leaves it unset relies on this.
+func plantonOperatorDefaultChartVersion() string {
+	field := (&kubernetesplantonoperatorv1alpha1.KubernetesPlantonOperatorSpec{}).ProtoReflect().Descriptor().Fields().ByName("chart_version")
+	version, _ := proto.GetExtension(field.Options(), options.E_Default).(string)
+	return version
+}
 
 // newPlantonOperatorInstallVerifier reads the scenario manifest's chart
 // version and crds dials, defaulting to the chart's own defaults when a dial
@@ -57,7 +67,7 @@ const plantonOperatorDefaultChartVersion = "0.8.1"
 func newPlantonOperatorInstallVerifier(namespace, manifestPath string) *PlantonOperatorInstallVerifier {
 	return &PlantonOperatorInstallVerifier{
 		Namespace: namespace,
-		helmCRDLifecycle: readHelmCRDLifecycle(manifestPath, plantonOperatorDefaultChartVersion, "planton-operator",
+		helmCRDLifecycle: readHelmCRDLifecycle(manifestPath, plantonOperatorDefaultChartVersion(), "planton-operator",
 			[]string{plantonPlatformCrd, plantonIdentityProviderCrd}),
 	}
 }
@@ -216,6 +226,13 @@ type PlantonPlatformVerifier struct {
 	// it and must not own it -- the contract a team relies on to bring the
 	// vault back after the platform is gone.
 	VaultKeysSecret string
+	// ControlPlaneSizing is every quantity the manifest declares in
+	// `spec.control_plane.resources`, keyed "limits.memory", "requests.cpu"
+	// and so on, or nil when it declares none. When set, a Ready platform's
+	// control-plane container must run exactly those quantities and the
+	// platform's status must report them -- the path a size takes from the
+	// kind, through its module and the operator's merge, to the pod.
+	ControlPlaneSizing map[string]string
 }
 
 // newPlantonPlatformVerifier reads the declared version and the vault's keys
@@ -227,7 +244,70 @@ func newPlantonPlatformVerifier(namespace, name, manifestPath string) *PlantonPl
 	if keysSecret == "" {
 		keysSecret = manifestNestedSpecString(manifestPath, "vault", "init_secret_name")
 	}
-	return &PlantonPlatformVerifier{Namespace: namespace, Name: name, Version: version, VaultKeysSecret: keysSecret}
+	return &PlantonPlatformVerifier{
+		Namespace: namespace, Name: name, Version: version, VaultKeysSecret: keysSecret,
+		ControlPlaneSizing: declaredSizing(specField(specFieldMap(manifestSpecMap(manifestPath), "controlPlane"), "resources")),
+	}
+}
+
+// specFieldMap reads one nested object from a spec map in either key case.
+func specFieldMap(m map[string]interface{}, camel string) map[string]interface{} {
+	nested, _ := specField(m, camel).(map[string]interface{})
+	return nested
+}
+
+// declaredSizing flattens a manifest's resources block into
+// "<half>.<quantity>" keys; nil when nothing is declared.
+func declaredSizing(block interface{}) map[string]string {
+	resources, ok := block.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+	declared := map[string]string{}
+	for _, half := range []string{"requests", "limits"} {
+		quantities, _ := resources[half].(map[string]interface{})
+		for name, quantity := range quantities {
+			declared[half+"."+name] = fmt.Sprint(quantity)
+		}
+	}
+	if len(declared) == 0 {
+		return nil
+	}
+	return declared
+}
+
+// sizingMismatches compares the declared quantities with a resources object
+// read from the cluster ({"requests": {...}, "limits": {...}}, a container's
+// or a status sizing entry's), one sentence per quantity that differs. Only
+// what the manifest declares is compared: every other quantity is the
+// operator's default by design. Quantities are compared as written, so a
+// scenario declares them in the canonical form the API server keeps ("7Gi",
+// "500m").
+func sizingMismatches(declared map[string]string, raw, where string) []string {
+	var read struct {
+		Requests map[string]string `json:"requests"`
+		Limits   map[string]string `json:"limits"`
+	}
+	if err := json.Unmarshal([]byte(strings.TrimSpace(raw)), &read); err != nil {
+		return []string{fmt.Sprintf("%s: could not read its resources (%v) from %q", where, err, raw)}
+	}
+	keys := make([]string, 0, len(declared))
+	for key := range declared {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	var mismatches []string
+	for _, key := range keys {
+		half, name, _ := strings.Cut(key, ".")
+		got := read.Limits[name]
+		if half == "requests" {
+			got = read.Requests[name]
+		}
+		if got != declared[key] {
+			mismatches = append(mismatches, fmt.Sprintf("%s runs %s %q where the manifest declares %q", where, key, got, declared[key]))
+		}
+	}
+	return mismatches
 }
 
 // versionedDeployments are the components whose images carry the platform's
@@ -298,6 +378,39 @@ func (v *PlantonPlatformVerifier) VerifyExists(ctx context.Context, kubeconfig s
 			return err
 		}
 	}
+	if v.ControlPlaneSizing != nil {
+		if err := v.verifyControlPlaneSizing(ctx, kubeconfig); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// verifyControlPlaneSizing proves a size declared through the kind reaches
+// the pod and the platform's own readback: the control-plane container runs
+// every declared quantity, and status.components.controlPlane.sizing reports
+// it. A field the module failed to render, or an operator whose definition
+// dropped it, reads here as the operator's default beside the declared value.
+func (v *PlantonPlatformVerifier) verifyControlPlaneSizing(ctx context.Context, kubeconfig string) error {
+	container, err := kubectlGetJSONPath(ctx, kubeconfig, "deployment", v.Name+"-control-plane", v.Namespace,
+		`{.spec.template.spec.containers[?(@.name=="control-plane")].resources}`)
+	if err != nil {
+		return errors.Wrap(err, "reading the control-plane container's resources")
+	}
+	readback, err := kubectlGetJSONPath(ctx, kubeconfig, plantonPlatformCrd, v.Name, v.Namespace,
+		`{.status.components.controlPlane.sizing[?(@.path=="spec.controlPlane.resources")]}`)
+	if err != nil {
+		return errors.Wrap(err, "reading the platform's sizing readback")
+	}
+	mismatches := append(
+		sizingMismatches(v.ControlPlaneSizing, container, "the control-plane container"),
+		sizingMismatches(v.ControlPlaneSizing, readback, "status.components.controlPlane.sizing")...)
+	if len(mismatches) > 0 {
+		return errors.Errorf("the size declared in spec.control_plane.resources did not reach the platform: %s -- "+
+			"check that both modules render the field and that the installed operator's definition carries spec.controlPlane.resources",
+			strings.Join(mismatches, "; "))
+	}
+	fmt.Printf("  [verify] SIZING: the control plane runs %v, and its status reports it\n", v.ControlPlaneSizing)
 	return nil
 }
 

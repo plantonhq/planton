@@ -61,7 +61,9 @@ type Component interface {
 // A not-ready Result built through Base.NotReady always carries the most
 // specific reason the cluster can support; a bare {Ready: false, Message}
 // is the generic "still deploying" answer and the controller records it as
-// such.
+// such. A sized component's Ready Result is built through Base.Ready, which
+// carries a memory kill its pods recovered from; a bare {Ready: true,
+// Message} is Healthy.
 type Result struct {
 	Ready   bool
 	Reason  v1.ComponentReason

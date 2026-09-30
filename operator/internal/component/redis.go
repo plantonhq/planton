@@ -84,13 +84,14 @@ func (r *Redis) Reconcile(ctx context.Context, c client.Client, _ *runtime.Schem
 	if err != nil {
 		return Result{}, fmt.Errorf("checking Redis readiness: %w", err)
 	}
+	workload := StatefulSetRef(stsName).Sized(resources.SizingRedis)
 	if !ready {
 		log.Info("Redis not ready")
-		return r.NotReady(ctx, c, planton.Namespace, StatefulSetRef(stsName).Sized(resources.SizingRedis), "Waiting for Redis"), nil
+		return r.NotReady(ctx, c, planton.Namespace, workload, "Waiting for Redis"), nil
 	}
 
 	log.Info("Redis ready")
-	return Result{Ready: true, Message: "Redis healthy"}, nil
+	return r.Ready(ctx, c, planton.Namespace, "Redis healthy", workload), nil
 }
 
 // redisHelmOptions resolves every sizing knob the store's render needs: the

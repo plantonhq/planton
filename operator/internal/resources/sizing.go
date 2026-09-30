@@ -80,21 +80,30 @@ type Sizing struct {
 
 // ComponentSizing is the registry of every sized workload.
 var ComponentSizing = map[string]Sizing{
-	// The control plane: read live on a one-node install before choosing,
-	// ~3.3Gi resident under pipeline fan-out. The JVM's heap is sized by the
-	// image's own -XX:MaxRAMPercentage=60 from the container limit, so the
-	// limit IS the heap rule (a limit alone never changes the heap silently).
-	// The same request/limit pair the hosted product declares for the
-	// service; the request stays at 1Gi so a node is not reserved for a
-	// burst.
+	// The control plane. The JVM's heap is sized by the image's own
+	// -XX:MaxRAMPercentage=60 from the container limit, so the limit IS the
+	// heap rule (a limit alone never changes the heap silently): at 6Gi the
+	// heap may take 3.6Gi and 2.4Gi is left for everything outside it.
 	//
-	// Measured parallel-deploy peak: NOT YET RECORDED. This limit is raised
-	// to that peak plus 25% once a four-worker parallel deploy wave has been
-	// read on a live cluster; the run and its peak are written here when it
-	// is.
+	// The limit is the heaviest measured parallel-deploy peak plus 25%,
+	// rounded up. Each peak is the container's cgroup memory.peak across a
+	// whole wave of the product's own promises on four workers, read at an 8Gi
+	// limit -- so each bounds the need from above, since a smaller limit
+	// shrinks the heap and collects sooner:
+	//   - 3.04Gi: five stored-key connect-and-deploy cells
+	//     (run 20260928-185127-self-hosted);
+	//   - 4.52Gi: ten build, registry and deploy checks of the service path
+	//     (run 20260928-074059-self-hosted), the heaviest.
+	// A 4Gi limit was killed by three parallel deploys: with the heap capped
+	// at 2.4Gi, more than 1.6Gi lived outside it. A change that grows the
+	// peak is re-measured the same way before this number moves.
+	//
+	// The request stays at 1Gi so a node is not reserved for a burst. The
+	// hosted product sizes its own service separately (with a CPU limit of
+	// its own); nothing couples the two numbers.
 	SizingControlPlane: {
 		Component: "controlplane",
-		Default:   houseSizing("250m", "1Gi", "4Gi"),
+		Default:   houseSizing("250m", "1Gi", "6Gi"),
 		Declared: func(s *v1.PlantonPlatformSpec) *v1.ComponentResources {
 			if s.ControlPlane == nil {
 				return nil

@@ -167,9 +167,10 @@ func (cp *ControlPlane) Reconcile(ctx context.Context, c client.Client, _ *runti
 	if err != nil {
 		return Result{}, fmt.Errorf("checking ControlPlane readiness: %w", err)
 	}
+	workload := DeploymentRef(deployName).Sized(resources.SizingControlPlane)
 	if !ready {
 		log.Info("ControlPlane not ready")
-		return cp.NotReady(ctx, c, planton.Namespace, DeploymentRef(deployName).Sized(resources.SizingControlPlane), "Waiting for ControlPlane Deployment"), nil
+		return cp.NotReady(ctx, c, planton.Namespace, workload, "Waiting for ControlPlane Deployment"), nil
 	}
 
 	// A healthy pod under a declaration that could not be honored is not
@@ -184,7 +185,7 @@ func (cp *ControlPlane) Reconcile(ctx context.Context, c client.Client, _ *runti
 	}
 
 	log.Info("ControlPlane ready")
-	return Result{Ready: true, Message: "ControlPlane healthy"}, nil
+	return cp.Ready(ctx, c, planton.Namespace, "ControlPlane healthy", workload), nil
 }
 
 func (cp *ControlPlane) buildConfig(planton *v1.PlantonPlatform, ownerRef *metav1.OwnerReference) resources.ControlPlaneConfig {
