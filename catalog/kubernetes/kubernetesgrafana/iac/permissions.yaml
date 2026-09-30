@@ -29,7 +29,6 @@ spec:
           - services
           - serviceaccounts
           - configmaps
-          - secrets
           - persistentvolumeclaims
         verbs:
           - get
@@ -40,7 +39,22 @@ spec:
           - delete
         cluster_scoped: false
         provenance: derived
-        notes: Chart-rendered objects applied by helm_release.grafana -- the Service (ClusterIP), ServiceAccount, configuration and provisioning ConfigMaps, the chart-generated admin Secret, and the state PVC when spec.storage is declared. Secrets also covers kubernetes_secret_v1.sso, the module-owned `<name>-sso` sign-in Secret created when auth.google or auth.generic_oauth is declared.
+        notes: Chart-rendered objects applied by helm_release.grafana -- the Service (ClusterIP), ServiceAccount, configuration and provisioning ConfigMaps, and the state PVC when spec.storage is declared.
+      - api_groups:
+          - ""
+        resources:
+          - secrets
+        verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        cluster_scoped: false
+        provenance: derived
+        notes: The chart-generated admin Secret and the Helm release's own state Secrets (helm_release.grafana), and kubernetes_secret_v1.sso, the module-owned `<name>-sso` sign-in Secret created when auth.google or auth.generic_oauth is declared; watch is what pulumi-kubernetes' informer needs while it waits on that Secret's deletion.
       - api_groups:
           - apps
         resources:
