@@ -65,7 +65,6 @@ go_library(
         "//pkg/iac/stackinput/stackinputproviderconfig",
         "//pkg/iac/tofu/tfbackend",
         "//pkg/iac/tofu/tofumodule",
-        "//pkg/infrachart",
         "//pkg/infrachart/validatecmd",
         "//pkg/kubernetes/execcredential",
         "//pkg/kubernetes/kubecontext",
