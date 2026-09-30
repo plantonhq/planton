@@ -32,7 +32,7 @@ that has progressed.
 | Kinds in the catalog | 66 |
 | Distinct provider resources consumed | 113 |
 | Spec fields authored across all kinds | 2092 |
-| Module pins on `aws` | `~> 5.0` × 1 |
+| Module pins on `aws` | `~> 6.58` × 1 |
 | Module pins on `cloudflare` | `~> 5.23` × 66 |
 | Module pins on `tls` | `~> 4.0` × 1 |
 

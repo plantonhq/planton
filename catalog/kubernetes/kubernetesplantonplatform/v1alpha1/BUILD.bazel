@@ -23,10 +23,7 @@ go_library(
 
 go_test(
     name = "v1alpha1_test",
-    srcs = [
-        "sizing_gate_test.go",
-        "spec_test.go",
-    ],
+    srcs = ["spec_test.go"],
     data = [
         "//operator/api/v1:component_sizing.json",
         "//operator/config/crd/bases:planton.ai_plantonplatforms.yaml",
