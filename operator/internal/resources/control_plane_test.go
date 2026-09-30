@@ -577,14 +577,14 @@ func TestControlPlaneDeployment_RunnerBinding(t *testing.T) {
 		t.Errorf("KUBERNETES_WORKLOAD_AUTH_TRUSTED_NAMESPACES = %q, want exactly the CR namespace",
 			envMap["KUBERNETES_WORKLOAD_AUTH_TRUSTED_NAMESPACES"])
 	}
-	// The deploy-queue advertisement is NOT the in-cluster runner's: every
-	// platform reader of it is a remote-runner gate or minter, and an
-	// in-cluster address would admit a laptop and then hand it a name only
-	// pods resolve. With remote runners closed (this binding) it stays unset,
-	// which is what makes the control plane refuse a remote enrollment
-	// honestly.
-	for _, absent := range []string{"CONNECT_RUNNER_TEMPORAL_ENDPOINT", "CONNECT_RUNNER_TEMPORAL_NAMESPACE",
-		"CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"} {
+	// The remote-runners switch is NOT the in-cluster runner's: every
+	// platform reader of it is a remote-runner gate or minter, and turning it
+	// on here would admit a laptop and then hand it the in-cluster API
+	// address, a name only pods resolve. With remote runners closed (this
+	// binding) it stays unset, which is what makes the control plane refuse
+	// a remote enrollment honestly.
+	for _, absent := range []string{"CONNECT_RUNNER_REMOTE_RUNNERS_ENABLED", "CONNECT_RUNNER_TEMPORAL_NAMESPACE",
+		"CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS", "CONNECT_RUNNER_TEMPORAL_ENDPOINT"} {
 		if v, ok := envMap[absent]; ok {
 			t.Errorf("%s = %q; the queue must not be advertised to remote runners while the capability is closed", absent, v)
 		}
@@ -631,10 +631,11 @@ func TestControlPlaneDeployment_RunnerBinding(t *testing.T) {
 	}
 }
 
-// With remote runners open, the address stamped into enrolling runners'
-// identity documents is the FRONT DOOR's -- what a laptop dials -- and it is
-// ONE address for the API and for work alike, because the control plane
-// serves a remote runner's work calls itself. Platform-scoped credentials
+// With remote runners open, the switch is on and the address stamped into
+// enrolling runners' identity documents is the FRONT DOOR's -- what a laptop
+// dials. It is ONE address for the API and for work alike, because the
+// control plane serves a remote runner's work calls itself, so no separate
+// work address is ever written. Platform-scoped credentials
 // keep the in-cluster Service. The in-cluster runner is untouched either way:
 // its document is rendered by the operator (see RunnerIdentityDocumentJSON),
 // never minted.
@@ -644,8 +645,12 @@ func TestControlPlaneDeployment_RemoteRunnersAdvertiseTheFrontDoor(t *testing.T)
 	deploy := ControlPlaneDeployment(cfg)
 	envMap := envVarMap(deploy.Spec.Template.Spec.Containers[0].Env)
 
-	if envMap["CONNECT_RUNNER_TEMPORAL_ENDPOINT"] != "planton.example.com:443" {
-		t.Errorf("CONNECT_RUNNER_TEMPORAL_ENDPOINT = %q, want the front door", envMap["CONNECT_RUNNER_TEMPORAL_ENDPOINT"])
+	if envMap["CONNECT_RUNNER_REMOTE_RUNNERS_ENABLED"] != "true" {
+		t.Errorf("CONNECT_RUNNER_REMOTE_RUNNERS_ENABLED = %q, want true while the front door carries remote runners",
+			envMap["CONNECT_RUNNER_REMOTE_RUNNERS_ENABLED"])
+	}
+	if v, ok := envMap["CONNECT_RUNNER_TEMPORAL_ENDPOINT"]; ok {
+		t.Errorf("CONNECT_RUNNER_TEMPORAL_ENDPOINT = %q; the work address is the API address, so no second address is written", v)
 	}
 	if envMap["CONNECT_RUNNER_TEMPORAL_NAMESPACE"] != "platform.pipelines" {
 		t.Errorf("CONNECT_RUNNER_TEMPORAL_NAMESPACE = %q, want platform.pipelines", envMap["CONNECT_RUNNER_TEMPORAL_NAMESPACE"])
@@ -656,10 +661,6 @@ func TestControlPlaneDeployment_RemoteRunnersAdvertiseTheFrontDoor(t *testing.T)
 	inCluster := ControlPlaneServiceFQDN(cfg.CRName, cfg.Namespace) + ":80"
 	if envMap["CONNECT_RUNNER_PLATFORM_PLANTON_API_ENDPOINT"] != inCluster {
 		t.Errorf("CONNECT_RUNNER_PLATFORM_PLANTON_API_ENDPOINT = %q, want the in-cluster Service %s", envMap["CONNECT_RUNNER_PLATFORM_PLANTON_API_ENDPOINT"], inCluster)
-	}
-	// Never the in-cluster queue name on the remote advertisement.
-	if v := envMap["CONNECT_RUNNER_TEMPORAL_ENDPOINT"]; strings.Contains(v, "svc.cluster.local") {
-		t.Errorf("the remote advertisement must never be an in-cluster name, got %s", v)
 	}
 	if envMap["CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS"] != "1" {
 		t.Errorf("CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS = %q, want 1 for an install that declares no replicas",
@@ -748,7 +749,7 @@ func TestControlPlaneDeployment_NoRunnerBinding(t *testing.T) {
 		"KUBERNETES_WORKLOAD_AUTH_ENABLED",
 		"KUBERNETES_WORKLOAD_AUTH_AUDIENCE",
 		"KUBERNETES_WORKLOAD_AUTH_TRUSTED_NAMESPACES",
-		"CONNECT_RUNNER_TEMPORAL_ENDPOINT",
+		"CONNECT_RUNNER_REMOTE_RUNNERS_ENABLED",
 		"CONNECT_RUNNER_TEMPORAL_NAMESPACE",
 		"RUNNER_DIRECT_HOST",
 		"RUNNER_DIRECT_AUTH_TOKEN",

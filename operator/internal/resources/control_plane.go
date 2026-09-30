@@ -346,7 +346,7 @@ type RunnerBinding struct {
 // from OUTSIDE the cluster (developer laptops, appliances in other networks):
 // the address stamped into their identity documents. Present exactly when the
 // remote-runners capability is on AND the front door carries it; nil
-// otherwise, which leaves the work advertisement UNSET so the control plane
+// otherwise, which leaves the remote-runners switch UNSET so the control plane
 // refuses remote enrollment with the reason instead of minting an address only
 // this cluster's pods resolve. The in-cluster runner never reads it: the
 // operator renders its identity document itself, with the in-cluster
@@ -356,8 +356,8 @@ type RemoteRunnersBinding struct {
 	// runner outside the cluster dials it (host:port; :443 means TLS) -- the
 	// front door's gRPC endpoint. It is the runner's one address, for its API
 	// calls and its work alike: the control plane serves Temporal's worker
-	// methods itself, so the API endpoint and the work endpoint the control
-	// plane advertises are this one string and can never disagree.
+	// methods itself, so it advertises this one string as both and no
+	// separate work address exists to disagree with it.
 	PlantonAPIEndpoint string
 }
 
@@ -942,7 +942,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// platform) is the front door's gRPC endpoint when remote runners are
 		// open -- the address a laptop dials -- and the in-cluster Service
 		// otherwise (the variable is boot-required, and no remote runner is
-		// admitted without the queue advertisement below anyway). The
+		// admitted without the remote-runners switch below anyway). The
 		// platform-scoped address is always the in-cluster Service.
 		{Name: "CONNECT_RUNNER_PLANTON_API_ENDPOINT", Value: remoteRunnerAPIEndpoint(cfg)},
 		{Name: "CONNECT_RUNNER_PLATFORM_PLANTON_API_ENDPOINT", Value: fmt.Sprintf("%s:%d",
@@ -1002,18 +1002,19 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	envs = append(envs, emailEnvVars(cfg.Email)...)
 	envs = append(envs, emailSetupHintEnvVars(cfg.CRName, cfg.Namespace)...)
 
-	// Remote-runners capability: the work advertisement
-	// (CONNECT_RUNNER_TEMPORAL_*) that minted identity documents, the control
-	// plane's work door, and the materializer's capability gate all read. Its
-	// address is the control plane's own front-door endpoint, because the
-	// control plane serves a remote runner's work calls itself. Set ONLY when
-	// the install opened remote runners and the front door carries native
-	// gRPC -- every reader of this variable on the platform is a remote-runner
-	// gate or minter (the in-cluster runner gets its queue address from its
-	// own Deployment, never from here), so leaving it unset is what makes the
-	// control plane refuse a laptop honestly ("this instance doesn't support
-	// deploying from your own machine yet") instead of handing it an address
-	// only this cluster's pods resolve.
+	// Remote-runners capability: the one switch that minted identity
+	// documents, the control plane's work door, and the materializer's
+	// capability gate all read. A remote runner's work address is its API
+	// address (CONNECT_RUNNER_PLANTON_API_ENDPOINT, the front door's gRPC
+	// endpoint while this is on), because the control plane serves a remote
+	// runner's work calls itself, so no second address exists to disagree.
+	// Set ONLY when the install opened remote runners and the front door
+	// carries native gRPC -- every reader of the switch on the platform is a
+	// remote-runner gate or minter (the in-cluster runner gets its queue
+	// address from its own Deployment, never from here), so leaving it unset
+	// is what makes the control plane refuse a laptop honestly ("this
+	// instance doesn't support deploying from your own machine yet") instead
+	// of handing it an address only this cluster's pods resolve.
 	//
 	// The replica count rides with it: the door's limit on polls it holds is
 	// one install-wide total, and each control-plane replica holds its share,
@@ -1021,7 +1022,7 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 	// take from the job queue the platform's own work shares.
 	if cfg.RemoteRunners != nil {
 		envs = append(envs,
-			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_ENDPOINT", Value: cfg.RemoteRunners.PlantonAPIEndpoint},
+			corev1.EnvVar{Name: "CONNECT_RUNNER_REMOTE_RUNNERS_ENABLED", Value: "true"},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_TEMPORAL_NAMESPACE", Value: runnerTemporalNamespace},
 			corev1.EnvVar{Name: "CONNECT_RUNNER_WORK_QUEUE_CONTROL_PLANE_REPLICAS", Value: fmt.Sprint(controlPlaneReplicas(cfg))},
 		)
@@ -1120,7 +1121,7 @@ func iacModulesVersionEnvVars(override string) []corev1.EnvVar {
 // the in-cluster Service otherwise. The variable is boot-required, so the
 // closed posture still needs a value; it is truthful for the only runners that
 // can enroll then (this cluster's), and no runner from outside is admitted
-// without the deploy-queue advertisement that the capability alone sets.
+// without the remote-runners switch that the capability alone sets.
 func remoteRunnerAPIEndpoint(cfg ControlPlaneConfig) string {
 	if cfg.RemoteRunners != nil && cfg.RemoteRunners.PlantonAPIEndpoint != "" {
 		return cfg.RemoteRunners.PlantonAPIEndpoint
