@@ -29,11 +29,11 @@ This preset provisions a fully-featured Memorystore instance in CLUSTER mode wit
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID where the instance will be created | GCP Console or `GcpProject` outputs |
-| `<instance-name>` | Name for this Memorystore instance (4-63 chars, lowercase, hyphens) | Choose a descriptive name (e.g., `enterprise-cache`) |
-| `<gcp-region>` | GCP region for the instance (e.g., `us-central1`) | [GCP regions](https://cloud.google.com/about/locations) |
-| `<vpc-network-path>` | Full path of the VPC network (e.g., `projects/my-project/global/networks/prod-vpc`) | `GcpVpcNetwork` status outputs or GCP Console |
-| `<kms-key-resource-name>` | Full KMS key resource name (e.g., `projects/my-project/locations/us-central1/keyRings/cache-keys/cryptoKeys/cache-cmek`) or reference via `valueFrom` | `GcpKmsKey` status outputs or GCP Console |
+| `my-gcp-project-123` | Consumer project ID where the PSC endpoint is created (`pscAutoConnections[].projectId`) | GCP Console or `GcpProject` outputs |
+| `my-enterprise-memorystore` (`instanceName`) | Name for this Memorystore instance (4-63 chars, lowercase, hyphens) | Choose a descriptive name |
+| `us-central1` (`location`) | GCP region for the instance | [GCP regions](https://cloud.google.com/about/locations) |
+| `prod-vpc` | Name of the GcpVpcNetwork resource the PSC connection attaches to (its `network_id` is read) | Your network manifest's `metadata.name` |
+| `memorystore-cmek` | Name of the GcpKmsKey resource that encrypts the instance (its `key_id` is read) | Your KMS key manifest's `metadata.name` |
 
 ## Related Presets
 

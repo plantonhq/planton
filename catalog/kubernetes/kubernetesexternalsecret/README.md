@@ -28,7 +28,7 @@ The materialized Secret appears when the operator reaches the backend — not as
 ### Required
 
 - **`spec.namespace`**: where the ExternalSecret and its materialized Secret live
-- **`spec.store_ref`**: the store to sync from — `name` (FK to a KubernetesSecretStore's or KubernetesClusterSecretStore's `store_name` output) plus `kind` (`SecretStore` default / `ClusterSecretStore`)
+- **`spec.store_ref`**: the store to sync from — `secret_store.name` (a namespaced store: FK to a KubernetesSecretStore's `store_name` output) or `cluster_secret_store.name` (a cluster-scoped store: FK to a KubernetesClusterSecretStore's `store_name` output)
 - At least one `data` entry or one `data_from` pull
 
 ### Common

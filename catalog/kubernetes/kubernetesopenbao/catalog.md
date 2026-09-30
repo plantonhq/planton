@@ -12,9 +12,9 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **Helm Release** -- the `openbao` chart, creating:
   - StatefulSet for the server (`server.replicas` servers, default 1; on Raft each with its own data PVC at `/openbao/data`; on PostgreSQL storage with NO data PVC -- the database holds the data; dev runs in-memory with NO PVC)
   - The client Service (round-robins ALL server pods including sealed ones -- by design), the headless `-internal` Service for peer discovery and cluster addresses, an `-active` Service pointing at the active node (every server on a storage engine; absent in dev), and a `-ui` Service when the UI is on
-  - ConfigMap carrying the rendered HCL server configuration -- listener, storage backend, synthesized `retry_join` stanzas, and the optional seal and telemetry stanzas
+  - ConfigMap carrying the rendered HCL server configuration -- listener, storage backend, synthesized `retry_join` stanzas, and the optional seal, audit device, and telemetry stanzas
   - ServiceAccount with your workload-identity annotations and, unless disabled, the `system:auth-delegator` ClusterRoleBinding OpenBao's Kubernetes auth method needs for TokenReview
-- **Optional audit volume** -- a second PVC at `/openbao/audit` when `server.auditStorage` is declared; auditing itself is enabled at runtime (`bao audit enable file ...`) after initialization
+- **Optional audit device and volume** -- `server.audit` declares a file audit device in the server configuration (to the pod's standard output by default, or to `/openbao/audit/audit.log`); `server.auditStorage` adds the second PVC at `/openbao/audit` the file sink writes to
 - **Seal credentials Secret** -- created only when an auto-unseal arm declares static credentials; delivered as environment variables, never written into the config ConfigMap
 - **Agent Injector** -- created only when `injector.enabled` is `true` (OFF by default here -- a deliberate divergence from the chart's cluster-wide-webhook default); a mutating webhook that injects agent sidecars into annotated pods
 - **Backup CronJob** -- created only when `backup` is declared; takes a Raft snapshot through OpenBao's API and ships it to S3, Google Cloud Storage, Azure Blob, or Cloudflare R2 on a schedule, with its own ServiceAccount, a scripts ConfigMap, and a credentials Secret for declared keys
@@ -72,6 +72,8 @@ spec:
         memory: 1Gi
     auditStorage:
       size: 10Gi
+    audit:
+      enabled: true
   metrics:
     enabled: true
 ```
@@ -80,7 +82,7 @@ spec:
 planton apply -f openbao.yaml
 ```
 
-This deploys a three-node Raft cluster where each replica persists to its own 10Gi PVC and an audit volume waits at `/openbao/audit`. The bootstrap is yours by design: initialize once through pod 0 (`bao operator init` -- custody of the unseal key shares and root token is the whole point of a secrets manager), then unseal every pod; peers join automatically through the synthesized `retry_join`. A Stack Job tracks the provisioning in real time.
+This deploys a three-node Raft cluster where each replica persists to its own 10Gi PVC, auditing every request to the servers' standard output from the first start, with an audit volume at `/openbao/audit` for the file sink. The bootstrap is yours by design: initialize once through pod 0 (`bao operator init` -- custody of the unseal key shares and root token is the whole point of a secrets manager), then unseal every pod; peers join automatically through the synthesized `retry_join`. A Stack Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -131,7 +133,9 @@ These are the most important decisions when configuring OpenBao. Explore the ful
 
 **TLS is a composite this module owns end to end** -- `tls.enabled` with `tls.certSecretName` switches the listener's certificate files, the Secret mount, every derived URL, and the probe scheme TOGETHER. (The chart's lone `global.tlsDisable` flag alone produces a plaintext server addressed as https -- an instant outage; the module renders all the pieces coherently.) A KubernetesCertificate reference is the natural issuer.
 
-**Volumes** -- `server.raft.dataStorage` (default 10Gi; one PVC per replica) holds the Raft data and lives inside the Raft arm because no other engine has a volume: a PostgreSQL-stored vault keeps its data in the database and dev is in-memory. `server.auditStorage` optionally mounts a second volume at `/openbao/audit` -- creating the volume does NOT enable auditing; run `bao audit enable file file_path=/openbao/audit/audit.log` after initialization.
+**Volumes** -- `server.raft.dataStorage` (default 10Gi; one PVC per replica) holds the Raft data and lives inside the Raft arm because no other engine has a volume: a PostgreSQL-stored vault keeps its data in the database and dev is in-memory. `server.auditStorage` optionally mounts a second volume at `/openbao/audit` for the audit file.
+
+**Auditing is declared** -- OpenBao 2.4 and later refuse `bao audit enable` over the API, so `server.audit` is the only switch: `enabled: true` renders one file audit device into the server configuration, writing to the pod's standard output (`sink: stdout`, the default -- collected with the pod's logs, no disk to fill) or to `/openbao/audit/audit.log` (`sink: file`, refused without `server.auditStorage`). Once a device is on, OpenBao answers no request it cannot record: nothing rotates the file, and a full audit volume stops the vault. The server reads the declaration at start, so a change reaches running servers when their pods are recreated (the chart's OnDelete update strategy); dev mode reads no configuration and refuses the block.
 
 **Agent Injector** -- OFF by default here, a deliberate divergence from the chart (whose default installs the MutatingWebhookConfiguration for every pod create/update cluster-wide). When on, `injector.failurePolicy` chooses `Ignore` (fail open -- injector downtime skips injection; the default) or `Fail`; above 1 replica, leader election creates the hard-coded `openbao-injector-certs` Secret -- one multi-replica injector per namespace.
 
@@ -189,7 +193,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Dev mode** -- Zero ceremony: auto-initialized, auto-unsealed, root token `root`, all data in memory. Evaluation and API integration work only -- never real secrets. Start from the **Dev-mode preset**.
 
-**Production HA (Raft)** -- Three servers with integrated Raft storage, per-replica data PVCs, an audit volume, and metrics on. Initialization and unsealing are yours; after every pod restart the affected server waits sealed. Start from the **Production HA (integrated Raft) preset**.
+**Production HA (Raft)** -- Three servers with integrated Raft storage, per-replica data PVCs, auditing to standard output, an audit volume, and metrics on. Initialization and unsealing are yours; after every pod restart the affected server waits sealed. Start from the **Production HA (integrated Raft) preset**.
 
 **Production HA + GCP auto-unseal** -- The HA shape with the restart toil removed: the master key wrapped by a Cloud KMS crypto key via GKE Workload Identity -- no static credential anywhere. Start from the **Production HA + GCP Cloud KMS auto-unseal preset**.
 

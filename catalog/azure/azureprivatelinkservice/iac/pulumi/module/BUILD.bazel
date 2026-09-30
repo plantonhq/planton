@@ -11,6 +11,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//catalog/azure/azureprivatelinkservice/v1alpha1",
+        "//pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/azure/pulumiazureprovider",
         "//shared/cloudresourcekind",
         "@com_github_pkg_errors//:errors",

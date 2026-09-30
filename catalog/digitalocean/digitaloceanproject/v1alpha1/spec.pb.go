@@ -72,7 +72,9 @@ type DigitalOceanProjectSpec struct {
 	// Use a literal URN, or reference the producing resource's urn stack
 	// output with an explicit valueFrom.kind -- the list is polymorphic
 	// across kinds (droplets, load balancers, buckets, domains, ...), so no
-	// single default kind applies and each reference names its own.
+	// single default kind applies and each reference names its own. The
+	// catalog kinds that publish a urn are declared as candidates below; any
+	// other member (a domain, an unmanaged resource) enters as a literal URN.
 	// A resource can belong to exactly one project: listing it here moves it
 	// from wherever it was, and removing it from the list moves it back to
 	// the account's default project (nothing is ever destroyed by membership
@@ -159,7 +161,7 @@ var File_catalog_digitalocean_digitaloceanproject_v1alpha1_spec_proto protorefle
 
 const file_catalog_digitalocean_digitaloceanproject_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"<catalog/digitalocean/digitaloceanproject/v1alpha1/spec.proto\x125dev.planton.digitalocean.digitaloceanproject.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x89\x04\n" +
+	"<catalog/digitalocean/digitaloceanproject/v1alpha1/spec.proto\x125dev.planton.digitalocean.digitaloceanproject.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xe5\x05\n" +
 	"\x17DigitalOceanProjectSpec\x120\n" +
 	"\fproject_name\x18\x01 \x01(\tB\r\xbaH\n" +
 	"\xc8\x01\x01r\x05\x10\x01\x18\xaf\x01R\vprojectName\x12*\n" +
@@ -169,8 +171,8 @@ const file_catalog_digitalocean_digitaloceanproject_v1alpha1_spec_proto_rawDesc 
 	"\venvironment\x18\x04 \x01(\tB*\xbaH'\xd8\x01\x01r\"R\vdevelopmentR\astagingR\n" +
 	"productionR\venvironment\x12\x1d\n" +
 	"\n" +
-	"is_default\x18\x05 \x01(\bR\tisDefault\x12P\n" +
-	"\tresources\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\tresourcesB\xab\x03\n" +
+	"is_default\x18\x05 \x01(\bR\tisDefault\x12\xab\x02\n" +
+	"\tresources\x18\x06 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xd8\x01\xa2\xd4a\x17\b\x8d'\x12\x12status.outputs.urn\xa2\xd4a\x17\b\x92'\x12\x12status.outputs.urn\xa2\xd4a\x17\b\x90'\x12\x12status.outputs.urn\xa2\xd4a\x17\b\x93'\x12\x12status.outputs.urn\xa2\xd4a\x17\b\x89'\x12\x12status.outputs.urn\xa2\xd4a\x17\b\x8c'\x12\x12status.outputs.urn\xa2\xd4a\x17\b\x94'\x12\x12status.outputs.urn\xa2\xd4a\x17\b\xba'\x12\x12status.outputs.urnR\tresourcesB\xab\x03\n" +
 	"9com.dev.planton.digitalocean.digitaloceanproject.v1alpha1B\tSpecProtoP\x01Zjgithub.com/plantonhq/planton/catalog/digitalocean/digitaloceanproject/v1alpha1;digitaloceanprojectv1alpha1\xa2\x02\x04DPDD\xaa\x025Dev.Planton.Digitalocean.Digitaloceanproject.V1alpha1\xca\x025Dev\\Planton\\Digitalocean\\Digitaloceanproject\\V1alpha1\xe2\x02ADev\\Planton\\Digitalocean\\Digitaloceanproject\\V1alpha1\\GPBMetadata\xea\x029Dev::Planton::Digitalocean::Digitaloceanproject::V1alpha1b\x06proto3"
 
 var (

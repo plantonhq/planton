@@ -109,9 +109,11 @@ spec:
 | `spec.apiService.caBundle` | `string` |  |  |  |
 | `spec.tls` | `KubernetesMetricsServerTls` |  |  |  |
 | `spec.tls.type` | `enum` |  | `self_signed` |  |
-| `spec.tls.certManagerIssuer` | `KubernetesMetricsServerTlsCertManagerIssuer` |  |  |  |
-| `spec.tls.certManagerIssuer.kind` | `enum` |  | `issuer` |  |
-| `spec.tls.certManagerIssuer.name` | `string \| valueFrom` | yes |  | KubernetesIssuer (`status.outputs.issuer_name`) |
+| `spec.tls.certManagerIssuer` | `CertManagerIssuerRef` |  |  |  |
+| `spec.tls.certManagerIssuer.issuer` | `CertManagerNamespacedIssuerRef` |  |  |  |
+| `spec.tls.certManagerIssuer.issuer.name` | `string \| valueFrom` | yes |  | KubernetesIssuer (`status.outputs.issuer_name`) |
+| `spec.tls.certManagerIssuer.clusterIssuer` | `CertManagerClusterIssuerRef` |  |  |  |
+| `spec.tls.certManagerIssuer.clusterIssuer.name` | `string \| valueFrom` | yes |  | KubernetesClusterIssuer (`status.outputs.cluster_issuer_name`) |
 | `spec.tls.existingSecretName` | `string \| valueFrom` |  |  | KubernetesSecret (`metadata.name`) |
 | `spec.resources` | `ContainerResources` |  |  |  |
 | `spec.resources.limits` | `CpuMemory` |  |  |  |
@@ -300,36 +302,50 @@ Allowed values (use exactly as shown):
 
 ### spec.tls.certManagerIssuer
 
-`KubernetesMetricsServerTlsCertManagerIssuer`
+`CertManagerIssuerRef`
 
 cert-manager issuer that signs the serving certificate (type
 cert_manager). Empty = the chart creates its own self-signed
 Issuer + root Certificate chain in the installation namespace.
 
-### spec.tls.certManagerIssuer.kind
+The grain is the arm: `issuer` (a namespaced Issuer in the installation
+namespace) or `cluster_issuer` (a cluster-scoped ClusterIssuer).
 
-`enum` · optional (explicit presence)
+- rule: An issuer is required -- choose 'issuer' (a namespaced Issuer in the installation namespace) or 'cluster_issuer' (a cluster-scoped ClusterIssuer)
 
-Issuer grain: a namespaced Issuer (must live in the installation
-namespace) or a cluster-scoped ClusterIssuer.
+### spec.tls.certManagerIssuer.issuer
 
-- default: `issuer`
+`CertManagerNamespacedIssuerRef`
 
-Allowed values (use exactly as shown):
+A namespaced Issuer in the installation namespace, by name.
 
-- `issuer` -- Namespaced Issuer in the installation namespace.
-- `cluster_issuer` -- Cluster-scoped ClusterIssuer.
-
-### spec.tls.certManagerIssuer.name
+### spec.tls.certManagerIssuer.issuer.name
 
 `string | valueFrom` · required
 
-Name of the Issuer / ClusterIssuer that signs the serving
-certificate. References the matching Planton kind's output by default.
+Issuer name. Accepts a literal name or a reference to a KubernetesIssuer
+resource.
 
 - references: KubernetesIssuer (`status.outputs.issuer_name`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesIssuer, name: <that resource's name>, fieldPath: status.outputs.issuer_name}} -- a bare string does not parse
+
+### spec.tls.certManagerIssuer.clusterIssuer
+
+`CertManagerClusterIssuerRef`
+
+A cluster-scoped ClusterIssuer, by name.
+
+### spec.tls.certManagerIssuer.clusterIssuer.name
+
+`string | valueFrom` · required
+
+ClusterIssuer name. Accepts a literal name or a reference to a
+KubernetesClusterIssuer resource.
+
+- references: KubernetesClusterIssuer (`status.outputs.cluster_issuer_name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesClusterIssuer, name: <that resource's name>, fieldPath: status.outputs.cluster_issuer_name}} -- a bare string does not parse
 
 ### spec.tls.existingSecretName
 
@@ -536,7 +552,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.tls.certManagerIssuer.name` | KubernetesIssuer | `status.outputs.issuer_name` |
+| `spec.tls.certManagerIssuer.issuer.name` | KubernetesIssuer | `status.outputs.issuer_name` |
+| `spec.tls.certManagerIssuer.clusterIssuer.name` | KubernetesClusterIssuer | `status.outputs.cluster_issuer_name` |
 | `spec.tls.existingSecretName` | KubernetesSecret | `metadata.name` |
 
 ## See Also

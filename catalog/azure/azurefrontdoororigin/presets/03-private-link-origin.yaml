@@ -22,6 +22,7 @@ spec:
     # The TARGET's region -- private-link connections are regional even
     # though Front Door is global.
     location: eastus
-    privateLinkTargetId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Web/sites/my-app
+    privateLinkTargetId:
+      value: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.Web/sites/my-app
     targetType: SITES
     requestMessage: Front Door origin connection

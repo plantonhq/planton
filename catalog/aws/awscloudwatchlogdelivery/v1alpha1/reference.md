@@ -100,7 +100,7 @@ spec:
 | `spec.vended.source.resourceArn` | `string \| valueFrom` | yes |  |  |
 | `spec.vended.destinations` | `[]AwsVendedLogDestination` |  |  |  |
 | `spec.vended.destinations[].name` | `string` | yes |  |  |
-| `spec.vended.destinations[].destinationResourceArn` | `string \| valueFrom` |  |  |  |
+| `spec.vended.destinations[].destinationResourceArn` | `string \| valueFrom` |  |  | AwsS3Bucket (`status.outputs.bucket_arn`), AwsCloudwatchLogGroup (`status.outputs.log_group_arn`), AwsKinesisFirehose (`status.outputs.delivery_stream_arn`) |
 | `spec.vended.destinations[].deliveryDestinationType` | `string` |  |  |  |
 | `spec.vended.destinations[].outputFormat` | `string` |  |  |  |
 | `spec.vended.destinations[].policy` | `object` |  |  |  |
@@ -208,6 +208,7 @@ ARN of the receiving resource: an S3 bucket, a CloudWatch log
 group, or a Firehose delivery stream. AWS infers the destination
 type from the ARN's service. Forbidden for XRAY destinations.
 
+- references: AwsS3Bucket (`status.outputs.bucket_arn`), AwsCloudwatchLogGroup (`status.outputs.log_group_arn`), AwsKinesisFirehose (`status.outputs.delivery_stream_arn`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: <Kind>, name: <that resource's name>, fieldPath: status.outputs.<output>}} -- a bare string does not parse
 
 ### spec.vended.destinations[].deliveryDestinationType
@@ -411,6 +412,9 @@ Fields that can point at another resource's outputs:
 
 | Field | Kind | Output |
 |---|---|---|
+| `spec.vended.destinations[].destinationResourceArn` | AwsS3Bucket | `status.outputs.bucket_arn` |
+| `spec.vended.destinations[].destinationResourceArn` | AwsCloudwatchLogGroup | `status.outputs.log_group_arn` |
+| `spec.vended.destinations[].destinationResourceArn` | AwsKinesisFirehose | `status.outputs.delivery_stream_arn` |
 | `spec.crossAccountDestination.roleArn` | AwsIamRole | `status.outputs.role_arn` |
 | `spec.crossAccountDestination.targetArn` | AwsKinesisStream | `status.outputs.stream_arn` |
 

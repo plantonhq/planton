@@ -64,8 +64,8 @@ func neptuneCluster(ctx *pulumi.Context, locals *Locals, provider *aws.Provider,
 	// create-only -- letting AWS choose is almost always right).
 	if createdSubnetGroup != nil {
 		args.NeptuneSubnetGroupName = createdSubnetGroup.Name
-	} else if spec.NeptuneSubnetGroupName.GetValue() != "" {
-		args.NeptuneSubnetGroupName = pulumi.String(spec.NeptuneSubnetGroupName.GetValue())
+	} else if spec.NeptuneSubnetGroupName != "" {
+		args.NeptuneSubnetGroupName = pulumi.String(spec.NeptuneSubnetGroupName)
 	}
 	if len(spec.SecurityGroupIds) > 0 {
 		securityGroupIds := pulumi.StringArray{}

@@ -20,10 +20,10 @@ This preset reserves a regional internal IP address with the `GCE_ENDPOINT` purp
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID | GCP Console or `GcpProject` outputs |
-| `<your-address-name>` | Name for this address resource | Choose a descriptive name (e.g., `vm-static-internal-ip`) |
-| `<your-region>` | GCP region | Must match the subnetwork's region |
-| `<subnetwork-self-link-or-name>` | Subnetwork for the reservation | `GcpSubnetwork` outputs (`subnetwork_self_link`) or GCP Console |
+| `my-gcp-project-123` | GCP project ID | GCP Console or `GcpProject` outputs |
+| `vm-static-internal-ip` (`addressName`) | Name for this address resource | Choose a descriptive name |
+| `us-central1` (`region`) | GCP region | Must match the subnetwork's region |
+| `app-subnet` (`subnetwork`) | Subnetwork for the reservation (a name or self-link) | `GcpSubnetwork` outputs (`subnetwork_self_link`) or GCP Console |
 
 ## Related Presets
 

@@ -21,10 +21,9 @@ This preset creates an Enterprise-edition Firestore Native database with custome
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID | GCP Console or `GcpProject` outputs |
-| `<location-id>` | Database location (e.g., `nam5`, `eur3`, `us-east1`) | [Firestore locations](https://cloud.google.com/firestore/docs/locations) |
-| `<database-name>` | Database name (4-63 chars, lowercase, hyphens) | Choose a descriptive name (e.g., `secure-db`) |
-| `<kms-key-fully-qualified-name>` | Fully qualified KMS key path | `GcpKmsKey` outputs (`key_id`) or `projects/{p}/locations/{l}/keyRings/{r}/cryptoKeys/{k}` |
+| `nam5` (`locationId`) | Database location (e.g., `nam5`, `eur3`, `us-east1`) | [Firestore locations](https://cloud.google.com/firestore/docs/locations) |
+| `regulated` (`databaseName`) | Database name (4-63 chars, lowercase, hyphens) | Choose a descriptive name |
+| `firestore-cmek` | Name of the GcpKmsKey resource that encrypts the database (its `key_id` is read) | Your KMS key manifest's `metadata.name` |
 
 ## Important Notes
 

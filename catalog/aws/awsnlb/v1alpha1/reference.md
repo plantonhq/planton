@@ -365,6 +365,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| AwsLbListener | `spec.loadBalancerArn` | `status.outputs.load_balancer_arn` |
 | AwsRestApiVpcLink | `spec.targetArn` | `status.outputs.load_balancer_arn` |
 
 ## See Also

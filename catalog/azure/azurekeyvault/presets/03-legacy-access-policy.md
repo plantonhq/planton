@@ -40,7 +40,7 @@ first-class `AzureRoleAssignment` resources.
 | --- | --- | --- |
 | `<resource-group-name>` | The resource group to create the vault in | The resource group's `status.outputs.resource_group_name` |
 | `myorg-legacy-vault` | 3-24 chars, globally unique | Your naming convention |
-| `<identity-name>` | The AzureUserAssignedIdentity being granted access | The identity resource's metadata name |
+| `<principal-object-id>` | Object (principal) ID of the identity being granted access, e.g. an AzureUserAssignedIdentity | The identity resource's `status.outputs.principal_id` |
 | `<cost-center>` | Your org's cost-attribution tag value | Your tagging convention |
 
 ## Migration Path

@@ -53,11 +53,28 @@ const (
 	// compiled in here would be a second truth beside the platform's, and
 	// it was (three weeks behind the catalog, so a kind the platform
 	// accepted 404'd at module download). The name is Spring's relaxed
-	// binding of planton.infra-hub.iac-modules.version with hyphens
-	// STRIPPED, the same shape as PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED;
-	// the underscored variant does not bind.
-	controlPlaneIacModulesVersionEnv = "PLANTON_INFRAHUB_IACMODULES_VERSION"
+	// binding of planton.infra-hub.iac-modules.version with each hyphen an
+	// underscore (see "Relaxed-binding spelling" below for why that
+	// spelling, and why a platform built before the rename still reads it).
+	controlPlaneIacModulesVersionEnv = "PLANTON_INFRA_HUB_IAC_MODULES_VERSION"
 )
+
+// Relaxed-binding spelling. Several variables below reach the control plane
+// straight from the environment rather than through a placeholder in its
+// yaml (planton.bootstrap.*, planton.connect.method-availability.*,
+// planton.infra-hub.iac-modules.*). Spring's relaxed binding accepts two
+// spellings of such a property: the canonical one, which strips each hyphen
+// (secret-backend -> SECRETBACKEND), and the legacy one, which turns each
+// hyphen into an underscore (SECRET_BACKEND). The operator renders the
+// underscored spelling, the one every other variable here follows, so a
+// person reading the Deployment never has to guess which a new name takes.
+// Every platform release the floor admits binds both spellings (the
+// platform's own properties tests prove it name by name), so this operator
+// and an older platform, or an older operator and a newer platform, agree on
+// every name: nothing depends on which of the two ships first. A platform
+// that later declares these properties in its yaml under the underscored
+// names stops reading the glued spelling, which is why the operator moves
+// first.
 
 // ControlPlaneConfig bundles all inputs needed to build the ControlPlane
 // Deployment. Using a config struct avoids a massive function signature and
@@ -879,8 +896,8 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// together with the floor.
 		{Name: "GITHUB_APP_CLIENT_ID", Value: "local"},
 		{Name: "GITHUB_APP_PRIVATE_KEY_BASE64", Value: "ZHVtbXk="},
-		{Name: "PLANTON_CONNECT_METHODAVAILABILITY_PLATFORMAPP_AVAILABILITY", Value: "unavailable"},
-		{Name: "PLANTON_CONNECT_METHODAVAILABILITY_PLATFORMAPP_REASON", Value: PlatformAppUnavailableReason},
+		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_AVAILABILITY", Value: "unavailable"},
+		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_PLATFORM_APP_REASON", Value: PlatformAppUnavailableReason},
 		{Name: "GITHUB_BUILD_STAGE_CHECK_NAME", Value: "build"},
 		{Name: "GITHUB_WEBHOOKS_SECRET_TOKEN", Value: "local"},
 
@@ -961,11 +978,10 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// OWN catalog release: the charts are validated against its protos at
 		// apply, so only the release those protos came from can ever be right,
 		// and the control plane carries that pin itself. The operator only
-		// switches the seed on. Canonical Spring relaxed-binding form of
-		// planton.bootstrap.infra-charts.enabled: hyphens are STRIPPED, not
-		// underscored (same as PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE); an
-		// underscored INFRA_CHARTS_ENABLED would not bind.
-		{Name: "PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED", Value: "true"},
+		// switches the seed on. Relaxed-binding form of
+		// planton.bootstrap.infra-charts.enabled, each hyphen an underscore
+		// (see "Relaxed-binding spelling" above ControlPlaneConfig).
+		{Name: "PLANTON_BOOTSTRAP_INFRA_CHARTS_ENABLED", Value: "true"},
 		{Name: "PULUMI_ORG", Value: "local"},
 		{Name: "STACK_EXECUTION_LOGS_GCS_BUCKET", Value: "local"},
 		{Name: "STIGMER_API_KEY", Value: "local"},
@@ -1049,9 +1065,9 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// organization's default is the whole routing chain below a service's
 		// own override. Presence of the RUNNER value is the seeders' activation gate;
 		// builds off means NO variables, not empty ones. The env names are
-		// the canonical relaxed-binding forms of
-		// planton.bootstrap.tekton-connection.* -- hyphens STRIPPED, not
-		// underscored (see PLANTON_BOOTSTRAP_INFRACHARTS_ENABLED below).
+		// the relaxed-binding forms of planton.bootstrap.tekton-connection.*,
+		// each hyphen an underscore (see "Relaxed-binding spelling" above
+		// ControlPlaneConfig).
 		// The connection's namespace variable is deliberately not set: empty
 		// means "the runner's own placement" (TEKTON_NAMESPACE on the runner
 		// Deployment), which keeps the seeded connection inside the log
@@ -1060,8 +1076,8 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// each gates a DIFFERENT seeder.
 		if cfg.Runner.BuildEnabled {
 			envs = append(envs,
-				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTONCONNECTION_RUNNER", Value: RunnerSlug(cfg.CRName)},
-				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTONCONNECTION_ORG", Value: cfg.Identity.Bootstrap.OrgSlug},
+				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTON_CONNECTION_RUNNER", Value: RunnerSlug(cfg.CRName)},
+				corev1.EnvVar{Name: "PLANTON_BOOTSTRAP_TEKTON_CONNECTION_ORG", Value: cfg.Identity.Bootstrap.OrgSlug},
 			)
 		}
 	} else {
@@ -1124,9 +1140,10 @@ func fgaEnvVars(fga OpenFGAConnectionInfo) []corev1.EnvVar {
 	return []corev1.EnvVar{
 		{Name: "FGA_API_ENDPOINT", Value: fga.HTTPURL},
 		configMapEnv("FGA_STORE_ID", fga.BootstrapConfigMapName, "store_id"),
-		// Relaxed-binding form of planton.bootstrap.authorization-model.manage
-		// (hyphens stripped).
-		{Name: "PLANTON_BOOTSTRAP_AUTHORIZATIONMODEL_MANAGE", Value: "true"},
+		// Relaxed-binding form of planton.bootstrap.authorization-model.manage,
+		// each hyphen an underscore (see "Relaxed-binding spelling" above
+		// ControlPlaneConfig).
+		{Name: "PLANTON_BOOTSTRAP_AUTHORIZATION_MODEL_MANAGE", Value: "true"},
 		{Name: "FGA_READ_TIMEOUT_SECONDS", Value: "30"},
 		{Name: "FGA_CONNECT_TIMEOUT_SECONDS", Value: "10"},
 		{Name: "FGA_WRITE_TIMEOUT_SECONDS", Value: "30"},
@@ -1178,11 +1195,11 @@ func webIdentityEnvVars(binding *WebIdentityBinding) []corev1.EnvVar {
 		{Name: "OIDC_ISSUER_URL", Value: binding.IssuerURL},
 	}
 	if binding.Offered {
-		return append(envs, corev1.EnvVar{Name: "PLANTON_CONNECT_METHODAVAILABILITY_OIDC_AVAILABILITY", Value: "available"})
+		return append(envs, corev1.EnvVar{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_AVAILABILITY", Value: "available"})
 	}
 	return append(envs,
-		corev1.EnvVar{Name: "PLANTON_CONNECT_METHODAVAILABILITY_OIDC_AVAILABILITY", Value: "unavailable"},
-		corev1.EnvVar{Name: "PLANTON_CONNECT_METHODAVAILABILITY_OIDC_REASON", Value: binding.ClosedReason},
+		corev1.EnvVar{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_AVAILABILITY", Value: "unavailable"},
+		corev1.EnvVar{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_OIDC_REASON", Value: binding.ClosedReason},
 	)
 }
 
@@ -1215,7 +1232,7 @@ func githubLegacyEnvVars(github *GithubBinding) []corev1.EnvVar {
 		return nil
 	}
 	return []corev1.EnvVar{
-		{Name: "PLANTON_CONNECT_METHODAVAILABILITY_HOSTLOGIN_AVAILABILITY", Value: "available"},
+		{Name: "PLANTON_CONNECT_METHOD_AVAILABILITY_HOST_LOGIN_AVAILABILITY", Value: "available"},
 	}
 }
 
@@ -1276,11 +1293,11 @@ func secretBackendEnvVars(binding *SecretBackendBinding) []corev1.EnvVar {
 	}
 	envs := []corev1.EnvVar{
 		// ── default secret backend seed ──
-		{Name: "PLANTON_BOOTSTRAP_SECRETBACKEND_TYPE", Value: binding.Type},
+		{Name: "PLANTON_BOOTSTRAP_SECRET_BACKEND_TYPE", Value: binding.Type},
 	}
 	if binding.AwsRegion != "" {
 		envs = append(envs, corev1.EnvVar{
-			Name: "PLANTON_BOOTSTRAP_SECRETBACKEND_AWSSECRETSMANAGER_REGION", Value: binding.AwsRegion,
+			Name: "PLANTON_BOOTSTRAP_SECRET_BACKEND_AWS_SECRETS_MANAGER_REGION", Value: binding.AwsRegion,
 		})
 	}
 	return envs

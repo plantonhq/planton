@@ -755,6 +755,7 @@ exempt    dev.planton.azure.azureeventhubdisasterrecoveryconfig.v1alpha1.AzureEv
 exempt    dev.planton.azure.azureeventhubnamespace.v1alpha1.AzureEventHubNamespaceVirtualNetworkRule.subnet_id -> AzureSubnet
 exempt    dev.planton.azure.azurefederatedidentitycredential.v1alpha1.AzureFederatedIdentityCredentialSpec.issuer -> AzureAksCluster
 exempt    dev.planton.azure.azurefrontdoorcustomdomain.v1alpha1.AzureFrontDoorCustomDomainSpec.dns_zone_id -> AzureDnsZone
+exempt    dev.planton.azure.azurefrontdoororigin.v1alpha1.AzureFrontDoorOriginPrivateLink.private_link_target_id -> *
 exempt    dev.planton.azure.azurefrontdoorroute.v1alpha1.AzureFrontDoorRouteSpec.origin_group_id -> AzureFrontDoorOriginGroup
 exempt    dev.planton.azure.azurefrontdoorruleset.v1alpha1.AzureFrontDoorRuleRouteConfigurationOverrideAction.origin_group_id -> AzureFrontDoorOriginGroup
 exempt    dev.planton.azure.azurefrontdoorsecuritypolicy.v1alpha1.AzureFrontDoorSecurityPolicySpec.domain_ids -> AzureFrontDoorEndpoint
@@ -883,6 +884,8 @@ exempt    dev.planton.kubernetes.kuberneteskafkaui.v1alpha1.KubernetesKafkaUiClu
 exempt    dev.planton.kubernetes.kuberneteskafkaui.v1alpha1.KubernetesKafkaUiConnectCluster.address -> KubernetesKafkaConnect
 exempt    dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceKafka.bootstrap_servers -> KubernetesKafka
 exempt    dev.planton.kubernetes.kuberneteskarapace.v1alpha1.KubernetesKarapaceKafkaTls.ca_secret_name -> KubernetesKafka
+exempt    dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlock.cidr -> *
+exempt    dev.planton.kubernetes.kubernetesnetworkpolicy.v1alpha1.KubernetesNetworkPolicyIpBlock.except -> *
 exempt    dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.key_ring -> GcpKmsKeyRing
 exempt    dev.planton.kubernetes.kubernetesopenbao.v1alpha1.KubernetesOpenBaoGcpKmsSeal.project -> GcpProject
 exempt    dev.planton.kubernetes.kubernetesplantonplatform.v1alpha1.KubernetesPlantonPlatformVaultGcpKmsSeal.key_ring -> GcpKmsKeyRing

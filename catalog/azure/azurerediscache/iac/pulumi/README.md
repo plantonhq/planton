@@ -37,11 +37,9 @@ redis.Cache (the cache)
 - **Keys and connection strings are exported as secret-bearing outputs**
   -- both primary AND secondary faces, so clients can rotate with zero
   downtime; keyless (Entra-only) caches leave them empty.
-- **PARITY-EXCEPTION (tag shape)**: `resource_kind` here is the lowered
-  CloudResourceKind enum string and `resource_id` is omitted when
-  metadata.id is empty, while the Terraform module emits the family-wide
-  snake-case literal and falls back to metadata.name. Output-neutral;
-  aligning the shapes is a family-wide convention change.
+- **Identity tags match the Terraform module** key for key and value
+  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 

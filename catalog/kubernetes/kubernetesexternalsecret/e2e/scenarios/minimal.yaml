@@ -15,9 +15,10 @@ spec:
   namespace:
     value: default
   storeRef:
-    name:
-      valueFrom:
-        name: e2e-sst-fixture
+    secretStore:
+      name:
+        valueFrom:
+          name: e2e-sst-fixture
   refreshInterval: 30s
   data:
     - secretKey: db-password

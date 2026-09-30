@@ -139,6 +139,14 @@ Fields that can point at another resource's outputs:
 |---|---|---|
 | `spec.droplet` | DigitalOceanDroplet | `status.outputs.droplet_id` |
 
+## Referenced By
+
+Fields on other kinds that can point at this resource:
+
+| Kind | Field | Reads |
+|---|---|---|
+| DigitalOceanProject | `spec.resources` | `status.outputs.urn` |
+
 ## See Also
 
 - [Overview](../README.md)

@@ -3,9 +3,6 @@ package yamldiag
 import (
 	"strings"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -81,19 +78,4 @@ func minInt(nums ...int) int {
 		}
 	}
 	return m
-}
-
-// foreignKeyTarget extracts the declared default reference target from a
-// foreign-key field's options.
-func foreignKeyTarget(opts proto.Message) (refKind, refFieldPath string) {
-	if proto.HasExtension(opts, foreignkeyv1.E_DefaultKind) {
-		if kind, ok := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind); ok &&
-			kind != cloudresourcekind.CloudResourceKind_unspecified {
-			refKind = kind.String()
-		}
-	}
-	if proto.HasExtension(opts, foreignkeyv1.E_DefaultKindFieldPath) {
-		refFieldPath = proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
-	}
-	return refKind, refFieldPath
 }

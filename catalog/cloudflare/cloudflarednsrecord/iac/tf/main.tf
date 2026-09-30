@@ -8,8 +8,9 @@ resource "cloudflare_dns_record" "main" {
   proxied = local.proxied
   ttl     = var.spec.ttl
 
-  # Simple record types carry their value in content; structured types use data.
-  content = var.spec.content != "" ? var.spec.content : null
+  # Simple record types carry their value in content (as Cloudflare stores it,
+  # see locals.tf); structured types use data.
+  content = local.content
   data    = local.record_data
 
   # Top-level priority mirrors the API contract for MX/SRV/URI (see locals.tf).

@@ -36,7 +36,7 @@ reach the runner.
 | --- | --- | --- |
 | `<runner-name>` | Name for the runner appliance | Any name you choose |
 | `<aws-region>` | AWS region code | The region hosting the targets |
-| `<public-subnet-a/b-resource-name>` | Names of the public AwsSubnet resources | Your subnet manifests' `metadata.name` |
+| `<public-subnet-a-resource-name>` / `<public-subnet-b-resource-name>` | Names of the public AwsSubnet resources | Your subnet manifests' `metadata.name` |
 
 ## Related Presets
 

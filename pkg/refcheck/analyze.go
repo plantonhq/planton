@@ -1,5 +1,6 @@
 // Package refcheck validates foreign-key reference integrity across the cloud-resource
-// registry: every field annotated with (foreignkey.v1.default_kind_field_path) must point
+// registry: every composition key a field declares -- its (default_kind,
+// default_kind_field_path) pair and each (foreignkey.v1.candidate) entry -- must point
 // at a real field on the referenced kind's resolved target -- its status.outputs message
 // for "status.outputs.*" paths, or its spec for "spec.*" paths. A dangling path is a
 // composition that silently fails to resolve at deploy time (the orchestrator reads the
@@ -21,15 +22,17 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
-	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 // StringValueOrRef is a reference leaf, not a message to recurse into: the FK annotation
 // lives on the outer field, never inside the oneof.
-const stringValueOrRefFullName = "dev.planton.shared.foreignkey.v1.StringValueOrRef"
+const (
+	stringValueOrRefFullName = "dev.planton.shared.foreignkey.v1.StringValueOrRef"
+	valueFromRefFullName     = "dev.planton.shared.foreignkey.v1.ValueFromRef"
+)
 
 // Finding is one foreign-key annotation whose default_kind_field_path does not resolve
 // against the referenced kind. Each is a hard gate failure.
@@ -88,9 +91,7 @@ func walk(md protoreflect.MessageDescriptor, prefix string, declaringKind cloudr
 			path = prefix + "." + path
 		}
 
-		if f, ok := checkField(fd, path, declaringKind, provider); ok {
-			*out = append(*out, f)
-		}
+		*out = append(*out, checkField(fd, path, declaringKind, provider)...)
 
 		// Recurse to find nested FK annotations, but never into the StringValueOrRef leaf.
 		switch {
@@ -106,44 +107,80 @@ func walk(md protoreflect.MessageDescriptor, prefix string, declaringKind cloudr
 	}
 }
 
-// checkField validates the FK annotation on a single field, if present. It returns a
-// Finding only when the annotation is present and does not resolve.
-func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind cloudresourcekind.CloudResourceKind, provider string) (Finding, bool) {
-	opts := fd.Options()
-	if opts == nil {
-		return Finding{}, false
+// checkField validates the FK annotations on a single field. It returns one Finding per
+// declared composition key that does not resolve, plus the authoring defects the
+// annotations can carry on their own:
+//   - a default_kind_field_path with no default_kind;
+//   - candidates declared beside a default kind that is not among them (default_kind is
+//     the kind a bare literal is read as, so it must be one of the field's candidates, on
+//     the same path);
+//   - annotations on a field that is not a reference (never read there).
+//
+// A field with no annotations, or an intentional kind-less reference (a route target
+// that can point at any kind), has nothing to validate.
+func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind cloudresourcekind.CloudResourceKind, provider string) []Finding {
+	annotations := refannotations.Of(fd)
+	if !annotations.IsReference() && annotations.DefaultKindFieldPath == "" {
+		return nil
 	}
-	refPath, _ := proto.GetExtension(opts, foreignkeyv1.E_DefaultKindFieldPath).(string)
-	if refPath == "" {
-		// Either an ordinary field, or an intentional FK with no default path (e.g. a
-		// route target that can point at many kinds). Nothing to validate.
-		return Finding{}, false
-	}
-	targetKind, _ := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind).(cloudresourcekind.CloudResourceKind)
 
-	mk := func(reason string) (Finding, bool) {
-		return Finding{
+	var findings []Finding
+	mk := func(targetKind cloudresourcekind.CloudResourceKind, refPath, reason string) {
+		findings = append(findings, Finding{
 			Kind:       declaringKind.String(),
 			Provider:   provider,
 			FieldPath:  fieldPath,
 			TargetKind: targetKind.String(),
 			RefPath:    refPath,
 			Reason:     reason,
-		}, true
+		})
 	}
 
-	if targetKind == cloudresourcekind.CloudResourceKind_unspecified {
-		return mk("default_kind_field_path is set but default_kind is unspecified")
+	if !isReferenceField(fd) {
+		mk(annotations.DefaultKind, annotations.DefaultKindFieldPath,
+			"reference annotations sit on a field that is not a StringValueOrRef or ValueFromRef -- no reader sees them there")
+		return findings
+	}
+	if annotations.DefaultKind == cloudresourcekind.CloudResourceKind_unspecified && annotations.DefaultKindFieldPath != "" {
+		mk(annotations.DefaultKind, annotations.DefaultKindFieldPath, "default_kind_field_path is set but default_kind is unspecified")
+		return findings
+	}
+	if len(annotations.Candidates) > 0 && annotations.DefaultKind != cloudresourcekind.CloudResourceKind_unspecified {
+		defaultKey := refannotations.Key{Kind: annotations.DefaultKind, FieldPath: annotations.DefaultKindFieldPath}
+		listed := false
+		for _, c := range annotations.Candidates {
+			listed = listed || c == defaultKey
+		}
+		if !listed {
+			mk(annotations.DefaultKind, annotations.DefaultKindFieldPath,
+				"the field declares candidates, and its default kind (on its default path) is not one of them -- list it as a candidate")
+		}
 	}
 
-	rootMd, rest, reason := targetRoot(targetKind, refPath)
-	if reason != "" {
-		return mk(reason)
+	for _, key := range annotations.Keys() {
+		rootMd, rest, reason := targetRoot(key.Kind, key.FieldPath)
+		if reason == "" {
+			reason = resolvePath(rootMd, rest)
+		}
+		if reason != "" {
+			mk(key.Kind, key.FieldPath, reason)
+		}
 	}
-	if reason := resolvePath(rootMd, rest); reason != "" {
-		return mk(reason)
+	return findings
+}
+
+// isReferenceField reports whether the field carries a reference: a StringValueOrRef or a
+// ValueFromRef, singular, repeated or as a map value.
+func isReferenceField(fd protoreflect.FieldDescriptor) bool {
+	md := fd.Message()
+	if fd.IsMap() {
+		md = fd.MapValue().Message()
 	}
-	return Finding{}, false
+	if md == nil {
+		return false
+	}
+	name := string(md.FullName())
+	return name == stringValueOrRefFullName || name == valueFromRefFullName
 }
 
 // targetRoot resolves the message descriptor the path is rooted at, dispatching on the
@@ -156,7 +193,7 @@ func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind
 func targetRoot(kind cloudresourcekind.CloudResourceKind, refPath string) (protoreflect.MessageDescriptor, string, string) {
 	inst, err := crkreflect.NewInstance(kind)
 	if err != nil {
-		return nil, "", "default_kind " + kind.String() + " is not a registered/implemented kind"
+		return nil, "", "referenced kind " + kind.String() + " is not a registered/implemented kind"
 	}
 	top := inst.ProtoReflect().Descriptor()
 

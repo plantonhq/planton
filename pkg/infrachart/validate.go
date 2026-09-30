@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/manifest"
 	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/deferrules"
 	"github.com/plantonhq/planton/pkg/manifestgraph"
 	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
@@ -71,7 +72,8 @@ type VariantResult struct {
 	// Issues are the variant's failures and warnings.
 	Issues []Issue
 
-	checks []DocumentCheck
+	checks        []DocumentCheck
+	deferredToken func(string) bool
 }
 
 // Report is the outcome of validating one chart across all its render
@@ -117,6 +119,16 @@ type Options struct {
 	// may go, a rule the backendless deploy (which takes literals, never
 	// $secret/ references) must not apply.
 	DocumentChecks []DocumentCheck
+
+	// IsDeferredToken names the values a host resolves before anything
+	// deploys -- the Planton Platform CLI passes its `$secret/` and `$var/`
+	// reference grammar. A schema rule located on such a spec value (a base64
+	// pattern, a CIDR format) is set aside rather than failed, because the
+	// value it is written about exists only once the token resolves; the host
+	// applies it to the resolved value there. The open-source CLI, whose
+	// deploy takes literals, passes none, so every rule judges what is
+	// written.
+	IsDeferredToken func(value string) bool
 }
 
 // DocumentCheck is one host rule over a rendered, schema-valid document; it
@@ -153,7 +165,7 @@ func Validate(dir string, opts Options) (*Report, error) {
 		if err != nil {
 			return nil, err
 		}
-		result := VariantResult{Name: variant.name, checks: opts.DocumentChecks}
+		result := VariantResult{Name: variant.name, checks: opts.DocumentChecks, deferredToken: opts.IsDeferredToken}
 		for _, tpl := range chart.Templates {
 			result.validateTemplate(tpl, ctx, placeholders)
 		}
@@ -281,7 +293,11 @@ func (r *VariantResult) validateDoc(file string, docYaml []byte) {
 	// The whole document, stamped the way the platform stamps it on write, is
 	// what the install validates -- metadata rules (the slug alphabet) as well
 	// as the spec's -- so the offline gate validates the same document.
-	if validationErr := protovalidate.GlobalValidator.Validate(manifest.StampEnvelope(msg)); validationErr != nil {
+	validationErr := protovalidate.GlobalValidator.Validate(manifest.StampEnvelope(msg))
+	// A rule about a value the host resolves later is the host's to apply to
+	// the resolved value (see Options.IsDeferredToken).
+	validationErr, _ = deferrules.Split(validationErr, r.deferredToken)
+	if validationErr != nil {
 		// One shared validator for the whole run, not a fresh instance per
 		// document. The per-doc `New(WithDisableLazy(), WithMessages(spec))`
 		// this replaces looked principled -- eager compile-error surfacing --

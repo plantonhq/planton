@@ -68,7 +68,19 @@ const (
 	// its declared kind or fails that kind's validation rules -- the exact
 	// rejection the user who copies the preset would hit.
 	RuleInvalidPreset = "invalid-preset"
+
+	// RulePhantomPlaceholder fires when the preset's guide (its .md
+	// sidecar) lists, in its placeholder table, an angle-bracket
+	// placeholder the preset YAML does not contain. It accepts no
+	// baseline entries: a guide is fixed in the same change that
+	// renames or drops its manifest's placeholder.
+	RulePhantomPlaceholder = "phantom-placeholder"
 )
+
+// unexemptableRules are the rules the baseline may never accept: Gate fails
+// their violations whether or not baseline.yaml lists them, and
+// WriteBaseline never writes them.
+var unexemptableRules = map[string]bool{RulePhantomPlaceholder: true}
 
 // CheckPreset validates one preset's bytes as a manifest of its own kind.
 // path is the repo-root-relative preset path used in violation IDs.
@@ -130,7 +142,8 @@ func checkPresetWith(v protovalidate.Validator, path string, content []byte) []V
 }
 
 // Check walks every preset YAML at repoRoot and returns every violation,
-// sorted by ID. It never consults the baseline -- Gate does the comparison.
+// sorted by ID: each preset's validity against its kind, and its guide's
+// placeholder table against the preset's own placeholders. It never consults the baseline -- Gate does the comparison.
 // Preset PRESENCE (and the .md sidecar) is pkg/anatomy's rule, so only
 // existing presets are checked; the _test provider's fixtures are not
 // product presets.
@@ -166,6 +179,13 @@ func Check(repoRoot string) ([]Violation, error) {
 			return nil, err
 		}
 		vs = append(vs, checkPresetWith(v, filepath.ToSlash(rel), content)...)
+		// The guide's presence is pkg/anatomy's rule; a missing sidecar
+		// has no table to check here.
+		if guide, err := os.ReadFile(strings.TrimSuffix(preset, ".yaml") + ".md"); err == nil {
+			vs = append(vs, checkPlaceholderTable(filepath.ToSlash(rel), guide, content)...)
+		} else if !os.IsNotExist(err) {
+			return nil, err
+		}
 	}
 	sort.Slice(vs, func(i, j int) bool { return vs[i].ID() < vs[j].ID() })
 	return vs, nil

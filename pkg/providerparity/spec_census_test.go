@@ -34,6 +34,7 @@ func TestCollectSpecPaths_HermeticFixture(t *testing.T) {
 	want := []string{
 		"spec.annotated_ref",
 		"spec.bool_field",
+		"spec.candidate_ref",
 		"spec.display_name",
 		"spec.double_field",
 		"spec.float_field",

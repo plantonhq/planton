@@ -84,8 +84,8 @@ message KubernetesOpenBaoSpec {
 
   /**
    * The OpenBao server: the storage engine (or `dev`), the replica
-   * count, sizing, the audit volume, and logging. UNSET = one Raft
-   * server.
+   * count, sizing, the audit device and its volume, and logging.
+   * UNSET = one Raft server.
    */
   KubernetesOpenBaoServer server = 4;
 
@@ -281,7 +281,7 @@ message KubernetesOpenBaoSpec {
 
 /**
  * The OpenBao server: the storage engine (or `dev`), the replica count,
- * sizing, the audit volume, and logging.
+ * sizing, the audit device and its volume, and logging.
  *
  * STORAGE ENGINE AND REPLICA COUNT ARE TWO FACTS. `raft` or `postgresql`
  * says where the data lives; `replicas` says how many servers serve it.
@@ -393,13 +393,37 @@ message KubernetesOpenBaoServer {
   }];
 
   /**
-   * Optional dedicated volume for file audit logs, mounted at
+   * Optional dedicated volume for the audit log, mounted at
    * /openbao/audit — available on either storage engine (the chart
-   * claims it for any non-dev server). Creating the volume does NOT
-   * enable auditing — after initialization run
-   * `bao audit enable file file_path=/openbao/audit/audit.log`.
+   * claims it for any non-dev server). The volume alone enables
+   * nothing: `audit` below declares the audit device, and its `file`
+   * sink is the one that writes here (/openbao/audit/audit.log).
+   * OpenBao 2.4 and later refuse `bao audit enable` over the API, so
+   * the declaration in this spec is the only way to turn auditing on.
    */
   KubernetesOpenBaoVolume audit_storage = 6;
+
+  /**
+   * The audit device, declared in the server's configuration file.
+   * OpenBao 2.4 and later accept audit devices ONLY from that file
+   * (`bao audit enable` over the API is refused: "cannot enable audit
+   * device via API; use declarative, config-based audit device
+   * management instead"), so this block is the whole switch. UNSET or
+   * `enabled: false` = no audit device.
+   *
+   * THE SERVER READS IT AT START: the chart's StatefulSet updates
+   * OnDelete, so a change here reaches a running server when its pod
+   * is recreated (delete the pods one at a time, standbys first; each
+   * returns sealed unless `auto_unseal` is declared), like every other
+   * configuration change on this kind.
+   *
+   * WHAT AN AUDIT DEVICE COSTS: once one is enabled, OpenBao answers
+   * NO request it cannot record — if every audit device fails to
+   * write, every request fails. The `stdout` sink has no disk to
+   * fill; the `file` sink does (see `sink`). Refused with `dev`
+   * (dev mode reads no configuration file).
+   */
+  KubernetesOpenBaoAudit audit = 13;
 
   /**
    * Server log verbosity: trace, debug, info (default), warn, error.
@@ -435,6 +459,16 @@ message KubernetesOpenBaoServer {
    */
   KubernetesOpenBaoScheduling scheduling = 9;
 
+  option (buf.validate.message).cel = {
+    id: "spec.server.audit_file_requires_audit_storage"
+    message: "server.audit.sink is file, but no volume holds the file — declare server.auditStorage (the log lands at /openbao/audit/audit.log), or set server.audit.sink to stdout."
+    expression: "!(has(this.audit) && this.audit.enabled && this.audit.sink == 2) || has(this.audit_storage)"
+  };
+  option (buf.validate.message).cel = {
+    id: "spec.server.dev_excludes_audit"
+    message: "Dev mode reads no configuration file, so the declared audit device would never be enabled — remove server.audit (or set enabled to false), or remove dev to run a storage engine."
+    expression: "!has(this.dev) || !has(this.audit) || !this.audit.enabled"
+  };
   option (buf.validate.message).cel = {
     id: "spec.server.dev_excludes_storage"
     message: "Dev mode is in-memory and takes no storage engine — remove raft/postgresql, or remove dev to run a storage engine."
@@ -586,6 +620,55 @@ message KubernetesOpenBaoPostgresqlPasswordSecret {
     (dev.planton.shared.options.default) = "password",
     (dev.planton.shared.options.sensitive_exempt_reason) = "Key NAME within an existing Secret (a reference), not secret material"
   ];
+}
+
+/**
+ * The server's audit device: one `file` audit device in the server's
+ * configuration file, writing to the pod's standard output or to the
+ * audit volume. Both engines render it as
+ *
+ *   audit "file" "stdout" {
+ *     description = "..."
+ *     options {
+ *       file_path = "stdout"
+ *     }
+ *   }
+ *
+ * (or `"file"` / `/openbao/audit/audit.log` for the file sink).
+ */
+message KubernetesOpenBaoAudit {
+  /**
+   * Where audit records go.
+   */
+  enum Sink {
+    // Unset. The loader fills `stdout`.
+    sink_unspecified = 0;
+
+    // The server's standard output, where the cluster's log pipeline
+    // already collects the pod's logs. No disk to fill, so the audit
+    // device cannot stop the vault by running out of space. The records
+    // share the stream with the server's own log lines; each audit
+    // record is one JSON object per line.
+    stdout = 1;
+
+    // /openbao/audit/audit.log on the audit volume (requires
+    // `server.auditStorage`). NOTHING ROTATES THE FILE: when the volume
+    // fills, the write fails, and with no other audit device OpenBao
+    // then refuses every request. Size the volume for the retention you
+    // keep and rotate the file yourself (move it aside, then send the
+    // server SIGHUP to reopen it).
+    file = 2;
+  }
+
+  /**
+   * Turns the audit device on. `false` (the default) declares none.
+   */
+  bool enabled = 1;
+
+  /**
+   * Where the records go: `stdout` (default) or `file`.
+   */
+  optional Sink sink = 2 [(dev.planton.shared.options.default) = "stdout"];
 }
 
 /** A persistent volume request (the Raft data volume, the audit volume). */

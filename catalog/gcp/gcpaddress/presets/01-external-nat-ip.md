@@ -21,9 +21,9 @@ This preset reserves a regional external IPv4 address for use with Cloud NAT, re
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<gcp-project-id>` | GCP project ID where the address will be reserved | GCP Console or `GcpProject` outputs |
-| `<your-address-name>` | Name for this address resource (1-63 chars, lowercase, hyphens) | Choose a descriptive name (e.g., `nat-external-ip`) |
-| `<your-region>` | GCP region for the reservation | Match the region of the NAT gateway, LB, or VM |
+| `my-gcp-project-123` | GCP project ID where the address will be reserved | GCP Console or `GcpProject` outputs |
+| `nat-external-ip` (`addressName`) | Name for this address resource (1-63 chars, lowercase, hyphens) | Choose a descriptive name |
+| `us-central1` (`region`) | GCP region for the reservation | Match the region of the NAT gateway, LB, or VM |
 
 ## Related Presets
 

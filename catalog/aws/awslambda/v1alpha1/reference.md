@@ -1239,6 +1239,7 @@ Fields on other kinds that can point at this resource:
 | AwsCognitoUserPool | `spec.lambdaConfig.customEmailSender.lambdaArn` | `status.outputs.function_arn` |
 | AwsCognitoUserPool | `spec.lambdaConfig.customSmsSender.lambdaArn` | `status.outputs.function_arn` |
 | AwsConfigRule | `spec.customLambda.functionArn` | `status.outputs.function_arn` |
+| AwsEventBridgeScheduler | `spec.target.arn` | `status.outputs.function_arn` |
 | AwsHttpApiGateway | `spec.routes[].integration.integrationUri` | `status.outputs.function_arn` |
 | AwsHttpApiGateway | `spec.authorizers[].authorizerUri` | `status.outputs.function_arn` |
 | AwsKinesisFirehose | `spec.extendedS3.processing.processors[].lambda.lambdaArn` | `status.outputs.function_arn` |

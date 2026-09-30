@@ -7,7 +7,6 @@ Terraform IaC module for a zone's Bot Management configuration -- the singleton 
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareBotManagementSpec
-locals.tf     — Resource naming and labels
 main.tf       — cloudflare_bot_management
 outputs.tf    — zone_id
 ```

@@ -12,8 +12,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
-	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -105,12 +105,7 @@ func namespaceForeignKeyJSONName(specMsg protoreflect.MessageDescriptor) (string
 	fields := specMsg.Fields()
 	for i := 0; i < fields.Len(); i++ {
 		fd := fields.Get(i)
-		opts := fd.Options()
-		if opts == nil {
-			continue
-		}
-		ext := proto.GetExtension(opts, foreignkeyv1.E_DefaultKind)
-		if k, ok := ext.(cloudresourcekind.CloudResourceKind); ok && k == cloudresourcekind.CloudResourceKind_KubernetesNamespace {
+		if refannotations.Of(fd).DefaultKind == cloudresourcekind.CloudResourceKind_KubernetesNamespace {
 			return fd.JSONName(), true
 		}
 	}

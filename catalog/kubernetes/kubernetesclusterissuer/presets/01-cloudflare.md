@@ -18,9 +18,8 @@ This preset creates a ClusterIssuer that uses Cloudflare DNS for ACME DNS-01 cer
 
 | Placeholder | Description | Where to Find |
 |---|---|---|
-| `<your-domain.com>` | DNS domain to issue certificates for | Cloudflare dashboard > Websites |
-| `<your-acme-email@example.com>` | Email for Let's Encrypt registration and expiry notifications | Your organization's ops email |
-| `<your-cloudflare-api-token>` | Cloudflare API token with Zone:Zone:Read and Zone:DNS:Edit | Cloudflare dashboard > API Tokens |
+| `<your-email@example.com>` | Email for Let's Encrypt registration and expiry notifications | Your organization's ops email |
+| `<cloudflare-api-token>` | Cloudflare API token with Zone:Zone:Read and Zone:DNS:Edit | Cloudflare dashboard > API Tokens |
 
 ## Related Presets
 

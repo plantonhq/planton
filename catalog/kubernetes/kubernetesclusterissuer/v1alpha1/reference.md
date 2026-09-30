@@ -1062,7 +1062,9 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | KubernetesCertificate | `spec.issuerRef.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
+| KubernetesKeda | `spec.certificates.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 | KubernetesKyverno | `spec.certificates.certManager.issuerName` | `metadata.name` |
+| KubernetesMetricsServer | `spec.tls.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 | KubernetesMongodb | `spec.tls.issuer` | `metadata.name` |
 | KubernetesMysql | `spec.tls.issuer` | `metadata.name` |
 

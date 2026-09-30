@@ -54,7 +54,6 @@ spec:
 |---|---|---|
 | `spec.domain` | The domain to sign in on (sample: `id.example.com`) | A subdomain of a zone you control |
 | `metadata.org` | Your Planton organization | The Planton console's organization switcher |
-| `<cloudflare-zone-id>` | The zone that serves the domain | A CloudflareDnsZone's `status.outputs.zone_id`, or the zone's Overview page in Cloudflare |
 
 ## Related Presets
 

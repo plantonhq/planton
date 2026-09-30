@@ -30,7 +30,8 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/pkg/explain"
-	"google.golang.org/protobuf/proto"
+	"github.com/plantonhq/planton/pkg/refannotations"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"gopkg.in/yaml.v3"
 )
@@ -318,14 +319,18 @@ func (w *walker) checkEnum(node *yaml.Node, fd protoreflect.FieldDescriptor, pat
 		nearest(node.Value, names))
 }
 
-// refTarget reads the foreign-key field's declared default reference target
-// so the taught contract is concrete, not placeholder-shaped.
+// refTarget reads the foreign-key field's declared reference target -- its
+// default, else its first candidate -- so the taught contract is concrete,
+// not placeholder-shaped.
 func refTarget(fd protoreflect.FieldDescriptor) (refKind, refFieldPath string) {
-	opts, ok := fd.Options().(proto.Message)
-	if !ok || opts == nil {
-		return "", ""
+	annotations := refannotations.Of(fd)
+	if keys := annotations.Keys(); len(keys) > 0 {
+		return keys[0].Kind.String(), keys[0].FieldPath
 	}
-	return foreignKeyTarget(opts)
+	if annotations.DefaultKind != cloudresourcekind.CloudResourceKind_unspecified {
+		return annotations.DefaultKind.String(), ""
+	}
+	return "", ""
 }
 
 func fieldByEitherName(md protoreflect.MessageDescriptor, name string) protoreflect.FieldDescriptor {

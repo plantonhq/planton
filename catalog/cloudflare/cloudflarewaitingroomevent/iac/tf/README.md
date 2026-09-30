@@ -7,7 +7,6 @@ Terraform IaC module for a scheduled waiting-room event -- a time window whose o
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareWaitingRoomEventSpec
-locals.tf     — Resource naming and labels
 main.tf       — cloudflare_waiting_room_event
 outputs.tf    — event_id, waiting_room_id, zone_id
 ```

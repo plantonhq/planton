@@ -52,12 +52,20 @@ message AzureBackupProtectedFileShareSpec {
   // registered) so the registration deploys before this protection --
   // the reference carries both the value and the dependency edge. For
   // accounts registered outside the catalog, pass the account's ARM
-  // ID as a literal (or reference AzureStorageAccount explicitly with
-  // valueFrom kind + fieldPath). Fixed at creation.
+  // ID as a literal (or a valueFrom naming AzureStorageAccount, a declared
+  // candidate whose storage_account_id output fills in). Fixed at creation.
   dev.planton.shared.foreignkey.v1.StringValueOrRef source_storage_account_id = 3 [
     (buf.validate.field).required = true,
     (dev.planton.shared.foreignkey.v1.default_kind) = AzureBackupContainerStorageAccount,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.storage_account_id"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.storage_account_id",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureBackupContainerStorageAccount
+      field_path: "status.outputs.storage_account_id"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: AzureStorageAccount
+      field_path: "status.outputs.storage_account_id"
+    }
   ];
 
   // The file share to protect, by NAME (3-63 lowercase letters,

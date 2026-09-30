@@ -324,7 +324,8 @@ type AwsEventBridgeScheduleTarget struct {
 	// SageMaker pipeline, API destination, or any of the universal-
 	// target API ARNs. No single kind dominates, so references here
 	// carry NO default kind - in manifests, a valueFrom on this field
-	// must state its kind explicitly.
+	// must state its kind explicitly. The catalog kinds a target usually is
+	// are declared as candidates, each with its ARN output.
 	//
 	// Containment-exempt: the target is what the schedule INVOKES, never
 	// where the schedule lives -- a schedule belongs to its schedule group.
@@ -1241,10 +1242,10 @@ const file_catalog_aws_awseventbridgescheduler_v1alpha1_spec_proto_rawDesc = "" 
 	"\x19maximum_window_in_minutes\x18\x02 \x01(\x05B\n" +
 	"\xbaH\a\x1a\x05\x18\xa0\v(\x01H\x00R\x16maximumWindowInMinutes\x88\x01\x01:\xba\x01\xbaH\xb6\x01\x1a\xb3\x01\n" +
 	"(flexible_time_window.mode_matches_window\x12Emode FLEXIBLE requires maximum_window_in_minutes; mode OFF forbids it\x1a@(this.mode == 'FLEXIBLE') == has(this.maximum_window_in_minutes)B\x1c\n" +
-	"\x1a_maximum_window_in_minutes\"\xc5\f\n" +
-	"\x1cAwsEventBridgeScheduleTarget\x12P\n" +
-	"\x03arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\n" +
-	"\xbaH\x03\xc8\x01\x01\x98\xd4a\x01R\x03arn\x12u\n" +
+	"\x1a_maximum_window_in_minutes\"\x89\x0f\n" +
+	"\x1cAwsEventBridgeScheduleTarget\x12\x93\x03\n" +
+	"\x03arn\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\xcc\x02\xbaH\x03\xc8\x01\x01\x98\xd4a\x01\xa2\xd4a \b\xf1\a\x12\x1bstatus.outputs.function_arn\xa2\xd4a\x1d\b\x81\b\x12\x18status.outputs.queue_arn\xa2\xd4a\x1f\b\xed\a\x12\x1astatus.outputs.cluster_arn\xa2\xd4a\x1e\b\xa4\b\x12\x19status.outputs.stream_arn\xa2\xd4a%\b\x91\b\x12 status.outputs.state_machine_arn\xa2\xd4a\x1b\b\x83\b\x12\x16status.outputs.bus_arn\xa2\xd4a \b\xc9\t\x12\x1bstatus.outputs.pipeline_arn\xa2\xd4a'\b\xa0\n" +
+	"\x12\"status.outputs.api_destination_arn\xa2\xd4a\x1d\b\x82\b\x12\x18status.outputs.topic_arnR\x03arn\x12u\n" +
 	"\brole_arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB&\xbaH\x03\xc8\x01\x01\x88\xd4a\xf0\a\x92\xd4a\x17status.outputs.role_arnR\aroleArn\x12\x1c\n" +
 	"\x05input\x18\x03 \x01(\tB\x06\xbaH\x03\xd8\x01\x01R\x05input\x12\x88\x01\n" +
 	"\x15dead_letter_queue_arn\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\x81\b\x92\xd4a\x18status.outputs.queue_arnR\x12deadLetterQueueArn\x12v\n" +

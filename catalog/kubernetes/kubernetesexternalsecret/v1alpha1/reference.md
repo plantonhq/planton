@@ -40,9 +40,9 @@ spec:
   namespace:
     value: team-a
   storeRef:
-    name:
-      value: platform-aws
-    kind: ClusterSecretStore
+    clusterSecretStore:
+      name:
+        value: platform-aws
   refreshInterval: 15m
   refreshPolicy: Periodic
   target:
@@ -89,8 +89,10 @@ spec:
 |---|---|---|---|---|
 | `spec.namespace` | `string \| valueFrom` | yes |  | KubernetesNamespace (`spec.name`) |
 | `spec.storeRef` | `KubernetesExternalSecretStoreRef` | yes |  |  |
-| `spec.storeRef.name` | `string \| valueFrom` | yes |  | KubernetesSecretStore (`status.outputs.store_name`) |
-| `spec.storeRef.kind` | `string` |  | `SecretStore` |  |
+| `spec.storeRef.secretStore` | `KubernetesExternalSecretSecretStoreRef` |  |  |  |
+| `spec.storeRef.secretStore.name` | `string \| valueFrom` | yes |  | KubernetesSecretStore (`status.outputs.store_name`) |
+| `spec.storeRef.clusterSecretStore` | `KubernetesExternalSecretClusterSecretStoreRef` |  |  |  |
+| `spec.storeRef.clusterSecretStore.name` | `string \| valueFrom` | yes |  | KubernetesClusterSecretStore (`status.outputs.store_name`) |
 | `spec.refreshInterval` | `string` |  | `1h` |  |
 | `spec.refreshPolicy` | `string` |  |  |  |
 | `spec.target` | `KubernetesExternalSecretTarget` |  |  |  |
@@ -146,28 +148,41 @@ resource.
 The store this secret syncs from.
 
 - rule: {"required":true}
+- rule: A store is required -- choose 'secret_store' (a namespaced SecretStore in this secret's namespace) or 'cluster_secret_store' (a cluster-scoped ClusterSecretStore any namespace can read)
 
-### spec.storeRef.name
+### spec.storeRef.secretStore
+
+`KubernetesExternalSecretSecretStoreRef`
+
+A namespaced SecretStore in this secret's namespace, by name.
+
+### spec.storeRef.secretStore.name
 
 `string | valueFrom` · required
 
-Store name. Accepts a literal name or a reference to a
-KubernetesSecretStore (default) / KubernetesClusterSecretStore
-resource's output — set `kind` to match.
+SecretStore name. Accepts a literal name or a reference to a
+KubernetesSecretStore resource.
 
 - references: KubernetesSecretStore (`status.outputs.store_name`)
 - rule: {"required":true}
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesSecretStore, name: <that resource's name>, fieldPath: status.outputs.store_name}} -- a bare string does not parse
 
-### spec.storeRef.kind
+### spec.storeRef.clusterSecretStore
 
-`string` · optional (explicit presence)
+`KubernetesExternalSecretClusterSecretStoreRef`
 
-Store kind: "SecretStore" (namespaced, upstream default) or
-"ClusterSecretStore" (cluster-scoped).
+A cluster-scoped ClusterSecretStore, by name.
 
-- default: `SecretStore`
-- rule: {"string":{"in":["SecretStore","ClusterSecretStore"]}}
+### spec.storeRef.clusterSecretStore.name
+
+`string | valueFrom` · required
+
+ClusterSecretStore name. Accepts a literal name or a reference to a
+KubernetesClusterSecretStore resource.
+
+- references: KubernetesClusterSecretStore (`status.outputs.store_name`)
+- rule: {"required":true}
+- rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesClusterSecretStore, name: <that resource's name>, fieldPath: status.outputs.store_name}} -- a bare string does not parse
 
 ### spec.refreshInterval
 
@@ -480,7 +495,8 @@ Fields that can point at another resource's outputs:
 | Field | Kind | Output |
 |---|---|---|
 | `spec.namespace` | KubernetesNamespace | `spec.name` |
-| `spec.storeRef.name` | KubernetesSecretStore | `status.outputs.store_name` |
+| `spec.storeRef.secretStore.name` | KubernetesSecretStore | `status.outputs.store_name` |
+| `spec.storeRef.clusterSecretStore.name` | KubernetesClusterSecretStore | `status.outputs.store_name` |
 
 ## See Also
 

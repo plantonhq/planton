@@ -18,7 +18,7 @@ This preset stages a CloudFront configuration change on real production traffic 
 
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
-| `<bucket-name>` / `<bucket-region>` | The S3 bucket holding the content | `AwsS3Bucket` outputs |
+| `replace-me-bucket.s3.us-east-1.amazonaws.com` | The S3 bucket holding the content (replace the bucket and region segments) | `AwsS3Bucket` outputs |
 | `<staging-distribution-resource-name>` | The staging `AwsCloudFront` resource (deployed with `staging: true`) | Your staging distribution manifest |
 
 ## Related Presets

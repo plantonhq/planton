@@ -1,0 +1,35 @@
+# Absolute-name CloudflareDnsRecord scenario: an NS delegation whose content
+# ends in the root dot, the way Cloud DNS and most DNS tooling spell a
+# nameserver (`ns-cloud-a1.googledomains.com.`). Cloudflare stores a
+# name-valued record's content without that dot, so a module that sends it
+# verbatim asks for a value Cloudflare never keeps, and the lane's
+# apply-idempotency re-plan (or the apply itself) catches the mismatch. This
+# is the path a delegation takes when its content references another
+# provider's zone output. NS records are never proxied; the owner name is
+# relative to the run-scoped fixture zone, and the nameserver is Google's
+# public one, which the pending fixture zone never serves.
+apiVersion: cloudflare.planton.dev/v1alpha1
+kind: CloudflareDnsRecord
+metadata:
+  name: planton-oss-e2e-cloudflarednsrecord-ns-absolute
+  id: planton-oss-e2e-cloudflarednsrecord-ns-absolute
+  org: planton-oss
+  env: e2e
+  labels:
+    managed-by: planton-e2e
+    e2e-component: cloudflarednsrecord
+  annotations:
+    planton.dev/e2e: "true"
+  tags:
+    - planton-e2e
+spec:
+  zoneId:
+    valueFrom:
+      kind: CloudflareDnsZone
+      name: planton-oss-e2e-cloudflarednszone-prereq
+      fieldPath: status.outputs.zone_id
+  name: e2e-delegated
+  type: NS
+  ttl: 300
+  content:
+    value: ns-cloud-a1.googledomains.com.

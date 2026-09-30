@@ -626,10 +626,10 @@ const file_catalog_aws_awscloudwatchlogdelivery_v1alpha1_spec_proto_rawDesc = ""
 	"\x04name\x18\x01 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18<R\x04name\x12%\n" +
 	"\blog_type\x18\x02 \x01(\tB\n" +
 	"\xbaH\ar\x05\x10\x01\x18\xff\x01R\alogType\x12]\n" +
-	"\fresource_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\vresourceArn\"\x80\x05\n" +
+	"\fresource_arn\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x06\xbaH\x03\xc8\x01\x01R\vresourceArn\"\xf5\x05\n" +
 	"\x17AwsVendedLogDestination\x12\x1d\n" +
-	"\x04name\x18\x01 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18<R\x04name\x12l\n" +
-	"\x18destination_resource_arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x16destinationResourceArn\x12W\n" +
+	"\x04name\x18\x01 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18<R\x04name\x12\xe0\x01\n" +
+	"\x18destination_resource_arn\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefBr\xa2\xd4a\x1e\b\xf5\a\x12\x19status.outputs.bucket_arn\xa2\xd4a!\b\xd6\b\x12\x1cstatus.outputs.log_group_arn\xa2\xd4a'\b\xa5\b\x12\"status.outputs.delivery_stream_arnR\x16destinationResourceArn\x12W\n" +
 	"\x19delivery_destination_type\x18\x03 \x01(\tB\x1b\xbaH\x18\xd8\x01\x01r\x13R\x02S3R\x03CWLR\x02FHR\x04XRAYR\x17deliveryDestinationType\x12M\n" +
 	"\routput_format\x18\x04 \x01(\tB(\xbaH%\xd8\x01\x01r R\x04jsonR\x05plainR\x03w3cR\x03rawR\aparquetR\foutputFormat\x12/\n" +
 	"\x06policy\x18\x05 \x01(\v2\x17.google.protobuf.StructR\x06policy:\xfe\x01\xbaH\xfa\x01\x1a\xf7\x01\n" +

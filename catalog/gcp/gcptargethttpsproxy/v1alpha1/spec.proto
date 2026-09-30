@@ -67,7 +67,8 @@ message GcpTargetHttpsProxySpec {
 
   // Compute Engine SSL certificates presented to clients (1-15). Reference
   // GcpManagedSslCertificate resources (the default kind), self-managed
-  // GcpSslCertificate resources via an explicit valueFrom.kind, or provide
+  // GcpSslCertificate resources via an explicit valueFrom.kind (both are
+  // declared candidates, so the self_link output fills in), or provide
   // SSL certificate self-links directly — both certificate kinds share one
   // API collection and attach identically. The load balancer picks the
   // certificate matching the client's SNI hostname.
@@ -80,7 +81,15 @@ message GcpTargetHttpsProxySpec {
   repeated dev.planton.shared.foreignkey.v1.StringValueOrRef ssl_certificates = 5 [
     (buf.validate.field).repeated.max_items = 15,
     (dev.planton.shared.foreignkey.v1.default_kind) = GcpManagedSslCertificate,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link"
+    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.self_link",
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpManagedSslCertificate
+      field_path: "status.outputs.self_link"
+    },
+    (dev.planton.shared.foreignkey.v1.candidate) = {
+      kind: GcpSslCertificate
+      field_path: "status.outputs.self_link"
+    }
   ];
 
   // Certificate Manager certificates presented to clients — only honored by

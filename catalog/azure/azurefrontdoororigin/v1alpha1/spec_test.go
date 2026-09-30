@@ -8,6 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
+	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -56,7 +57,7 @@ func minimalSpec() *AzureFrontDoorOrigin {
 func validPrivateLink() *AzureFrontDoorOriginPrivateLink {
 	return &AzureFrontDoorOriginPrivateLink{
 		Location:            "eastus",
-		PrivateLinkTargetId: appServiceId,
+		PrivateLinkTargetId: literal(appServiceId),
 		TargetType:          AzureFrontDoorOriginPrivateLinkTargetType_SITES,
 	}
 }
@@ -96,7 +97,7 @@ var _ = ginkgo.Describe("AzureFrontDoorOriginSpec Validation Tests", func() {
 			input := minimalSpec()
 			input.Spec.PrivateLink = &AzureFrontDoorOriginPrivateLink{
 				Location:            "eastus",
-				PrivateLinkTargetId: plsId,
+				PrivateLinkTargetId: literal(plsId),
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -222,10 +223,32 @@ var _ = ginkgo.Describe("AzureFrontDoorOriginSpec Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
 
+		ginkgo.It("should accept a Private Link Service reference without a target type", func() {
+			input := minimalSpec()
+			input.Spec.PrivateLink = &AzureFrontDoorOriginPrivateLink{
+				Location: "eastus",
+				PrivateLinkTargetId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+					ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_AzurePrivateLinkService, Name: "internal-api-pls"},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("should reject a web app reference without a target type", func() {
+			input := minimalSpec()
+			input.Spec.PrivateLink = &AzureFrontDoorOriginPrivateLink{
+				Location: "eastus",
+				PrivateLinkTargetId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
+					ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_AzureLinuxWebApp, Name: "api"},
+				}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
 		ginkgo.It("should reject a private-link target that is not an ARM id", func() {
 			input := minimalSpec()
 			privateLink := validPrivateLink()
-			privateLink.PrivateLinkTargetId = "my-app"
+			privateLink.PrivateLinkTargetId = literal("my-app")
 			input.Spec.PrivateLink = privateLink
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})
@@ -234,7 +257,7 @@ var _ = ginkgo.Describe("AzureFrontDoorOriginSpec Validation Tests", func() {
 			input := minimalSpec()
 			input.Spec.PrivateLink = &AzureFrontDoorOriginPrivateLink{
 				Location:            "eastus",
-				PrivateLinkTargetId: appServiceId,
+				PrivateLinkTargetId: literal(appServiceId),
 			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
 		})

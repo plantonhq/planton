@@ -37,7 +37,7 @@ vCPU only when they register -- declaring the networks costs nothing.
 | --- | --- | --- |
 | `<cluster-name>` | Name for the cluster | Your environment naming convention |
 | `<aws-region>` | AWS region code (e.g., `us-west-2`) | Your deployment region |
-| `<private-subnet-a/b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of two AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
 | `<cluster-role-resource-name>` | Name of the AwsIamRole with `AmazonEKSClusterPolicy` | Your role manifest's `metadata.name` |
 | `10.80.0.0/16` (example) | Private CIDR your on-prem machines' addresses live in — a real CIDR shape; the field's pattern rejects placeholders | Your network team / site subnet plan |
 | `10.85.0.0/16` (example) | Private CIDR the on-prem CNI assigns pods from — same real-CIDR requirement | Your CNI configuration |

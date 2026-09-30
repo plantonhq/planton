@@ -7,7 +7,7 @@ Terraform IaC module for managing a Cloudflare zone's caching and performance po
 ```
 provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareCacheSettingsSpec
-locals.tf     — Resource naming + the cache-variants value (managed extensions only)
+locals.tf     — The cache-variants value (managed extensions only)
 main.tf       — One count-gated resource per managed setting
 outputs.tf    — Stack outputs (zone_id)
 ```

@@ -2470,6 +2470,7 @@ Fields on other kinds that can point at this resource:
 
 | Kind | Field | Reads |
 |---|---|---|
+| AzureFrontDoorOrigin | `spec.privateLink.privateLinkTargetId` | `status.outputs.function_app_id` |
 | AzureMonitorActionGroup | `spec.azureFunctionReceivers[].functionAppResourceId` | `status.outputs.function_app_id` |
 
 ## See Also

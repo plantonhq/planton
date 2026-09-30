@@ -7,7 +7,6 @@ Terraform IaC module for the Secure Web Gateway configuration, logging controls,
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustGatewaySettingsSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_gateway_settings (count-gated) +
                 cloudflare_zero_trust_gateway_logging (count-gated) +
                 cloudflare_zero_trust_gateway_pacfile (for_each by name)

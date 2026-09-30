@@ -25,8 +25,8 @@ This preset creates an HTTP API Gateway with JWT authorization using Amazon Cogn
 | `<public-handler-lambda-arn>` | ARN of Lambda for public endpoint | `AwsLambda` status outputs |
 | `<profile-handler-lambda-arn>` | ARN of Lambda for profile endpoint | `AwsLambda` status outputs |
 | `<orders-handler-lambda-arn>` | ARN of Lambda for orders endpoint | `AwsLambda` status outputs |
-| `<cognito-issuer-url>` | Cognito User Pool issuer URL | Format: `https://cognito-idp.{region}.amazonaws.com/{userPoolId}` |
-| `<cognito-app-client-id>` | Cognito App Client ID | AWS Console → Cognito → User Pools → Your Pool → App Integration → App Clients |
+| `<user-pool-resource-name>` | Name of the AwsCognitoUserPool whose issuer URL the JWT authorizer trusts (read from its `status.outputs.issuer`) | Your user pool manifest's `metadata.name` |
+| `<app-client-resource-name>` | Name of the AwsCognitoUserPoolClient whose client ID is the accepted audience | Your app client manifest's `metadata.name` |
 
 ## Finding Cognito Values
 

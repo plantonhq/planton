@@ -65,12 +65,10 @@ spec:
   certificates:
     type: cert_manager
     certManagerIssuer:
-      kind: cluster_issuer
-      name:
-        valueFrom:
-          kind: KubernetesIssuer
-          name: internal-ca
-          fieldPath: status.outputs.issuer_name
+      clusterIssuer:
+        name:
+          valueFrom:
+            name: internal-ca
 ```
 
 The InfraPipeline deploys the issuer first, then installs KEDA with certificates signed and renewed by it.
@@ -98,7 +96,8 @@ These are the most important decisions when configuring KEDA. Explore the full f
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
-| **KubernetesIssuer** | `certificates.certManagerIssuer.name` | `status.outputs.issuer_name` |
+| **KubernetesIssuer** | `certificates.certManagerIssuer.issuer.name` | `status.outputs.issuer_name` |
+| **KubernetesClusterIssuer** | `certificates.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 
 ### What This Component Provides
 

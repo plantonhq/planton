@@ -41,7 +41,7 @@ taking traffic.
 | --- | --- | --- |
 | `<fleet-name>` | Name for the auto-scaling group | Your fleet's name (e.g., `api-reserved`) |
 | `<aws-region>` | AWS region code (e.g., `us-east-1`) | Your deployment region |
-| `<subnet-a/b-resource-name>` | Names of the AwsSubnet resources | Your subnet manifests' `metadata.name` |
+| `<subnet-a-resource-name>` / `<subnet-b-resource-name>` | Names of the AwsSubnet resources | Your subnet manifests' `metadata.name` |
 | `<launch-template-resource-name>` | Name of the AwsLaunchTemplate resource | Your template manifest's `metadata.name` |
 | `cr-<your-reservation-id>` | The Capacity Reservation to fill first | EC2 console, Capacity Reservations |
 

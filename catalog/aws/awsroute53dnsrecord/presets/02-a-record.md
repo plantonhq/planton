@@ -19,8 +19,8 @@ This preset creates a standard A record that maps a domain name to one or more I
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<route53-hosted-zone-id>` | ID of your Route53 hosted zone | AWS Route53 console or `AwsRoute53Zone` status outputs |
-| `<your-subdomain.your-domain.com>` | Fully qualified domain name (e.g., `api.example.com`) | Your domain naming convention |
-| `<ipv4-address>` | Target IPv4 address (e.g., `203.0.113.50`); add more entries for round-robin | Your server or infrastructure provider |
+| `app.example.com` | Fully qualified domain name (e.g., `api.example.com`) | Your domain naming convention |
+| `192.0.2.10` | Target IPv4 address (e.g., `203.0.113.50`); add more entries for round-robin | Your server or infrastructure provider |
 
 ## Related Presets
 

@@ -2,8 +2,10 @@
 # boots from exactly this, reachable over port-forward with the first
 # console visitor becoming the admin. This shape is valid against EVERY
 # PlantonPlatform schema era, so it is the lane proven against the
-# published chart line. The version pins the newest image line whose four
-# app images are all anonymously pullable.
+# published chart line. The version is the operator's floor, the oldest
+# release it runs, and minimal.to.yaml's is the next published release; both
+# have every image the operator deploys published
+# (hack/guards/ensure_platform_floor_is_published.sh checks it).
 #
 # The full platform boot (databases, identity, control plane, console,
 # vault, runner) takes ~10-15 minutes on an emulated-amd64 kind cluster —
@@ -25,4 +27,4 @@ spec:
   namespace:
     value: planton
   create_namespace: true
-  version: v0.0.45
+  version: v0.0.75

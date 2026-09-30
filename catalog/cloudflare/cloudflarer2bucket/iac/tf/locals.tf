@@ -1,12 +1,4 @@
 locals {
-  # Resource naming
-  resource_name = coalesce(try(var.metadata.name, null), "cloudflare-r2-bucket")
-
-  # Labels/tags
-  labels = merge({
-    "name" = local.resource_name
-  }, try(var.metadata.labels, {}))
-
   # Core bucket configuration
   bucket_name = var.spec.bucket_name
   account_id  = var.spec.account_id

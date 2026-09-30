@@ -3,6 +3,7 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskeda.v1alpha1;
 
 import "buf/validate/validate.proto";
+import "catalog/kubernetes/cert_manager_issuer.proto";
 import "catalog/kubernetes/kubernetes.proto";
 import "catalog/kubernetes/workload_pod.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
@@ -385,45 +386,20 @@ message KubernetesKedaCertificates {
   /**
    * cert-manager issuer that signs KEDA's certificates (type cert_manager).
    * Empty = the chart generates its own self-signed CA + Issuer chain.
+   *
+   * The grain is the arm: `issuer` (a namespaced Issuer in the installation
+   * namespace) or `cluster_issuer` (a cluster-scoped ClusterIssuer).
    */
-  KubernetesKedaCertManagerIssuer cert_manager_issuer = 2;
+  dev.planton.kubernetes.CertManagerIssuerRef cert_manager_issuer = 3;
+
+  // The issuer reference's earlier shape (a grain selector beside one name).
+  reserved 2;
 
   option (buf.validate.message).cel = {
     id: "spec.certificates.issuer_requires_cert_manager_type"
     message: "cert_manager_issuer is only used with certificates type cert_manager — set type accordingly or remove the issuer"
     expression: "!has(this.cert_manager_issuer) || this.type == 'cert_manager'"
   };
-}
-
-/**
- * cert-manager issuer reference kind vocabulary.
- */
-enum KubernetesKedaIssuerKind {
-  // Namespaced Issuer in the installation namespace.
-  issuer = 0;
-  // Cluster-scoped ClusterIssuer.
-  cluster_issuer = 1;
-}
-
-/**
- * Existing cert-manager issuer reference.
- */
-message KubernetesKedaCertManagerIssuer {
-  /**
-   * Issuer grain: a namespaced Issuer (must live in the installation
-   * namespace) or a cluster-scoped ClusterIssuer.
-   */
-  optional KubernetesKedaIssuerKind kind = 1 [(dev.planton.shared.options.default) = "issuer"];
-
-  /**
-   * Name of the Issuer / ClusterIssuer that signs KEDA's certificates.
-   * References the matching Planton kind's output by default.
-   */
-  dev.planton.shared.foreignkey.v1.StringValueOrRef name = 2 [
-    (buf.validate.field).required = true,
-    (dev.planton.shared.foreignkey.v1.default_kind) = KubernetesIssuer,
-    (dev.planton.shared.foreignkey.v1.default_kind_field_path) = "status.outputs.issuer_name"
-  ];
 }
 
 /**

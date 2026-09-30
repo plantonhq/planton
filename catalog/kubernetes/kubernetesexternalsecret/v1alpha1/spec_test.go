@@ -34,7 +34,9 @@ var _ = ginkgo.Describe("KubernetesExternalSecret Validation Tests", func() {
 			Spec: &KubernetesExternalSecretSpec{
 				Namespace: literal("team-a"),
 				StoreRef: &KubernetesExternalSecretStoreRef{
-					Name: literal("team-a-gcp"),
+					StoreType: &KubernetesExternalSecretStoreRef_SecretStore{
+						SecretStore: &KubernetesExternalSecretSecretStoreRef{Name: literal("team-a-gcp")},
+					},
 				},
 				Data: []*KubernetesExternalSecretData{
 					{
@@ -52,8 +54,9 @@ var _ = ginkgo.Describe("KubernetesExternalSecret Validation Tests", func() {
 		})
 
 		ginkgo.It("accepts a cluster store reference", func() {
-			kind := "ClusterSecretStore"
-			input.Spec.StoreRef.Kind = &kind
+			input.Spec.StoreRef.StoreType = &KubernetesExternalSecretStoreRef_ClusterSecretStore{
+				ClusterSecretStore: &KubernetesExternalSecretClusterSecretStoreRef{Name: literal("platform-gcp")},
+			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.Succeed())
 		})
 
@@ -126,9 +129,17 @@ var _ = ginkgo.Describe("KubernetesExternalSecret Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.Succeed())
 		})
 
-		ginkgo.It("rejects an unknown store kind", func() {
-			kind := "NamespaceSecretStore"
-			input.Spec.StoreRef.Kind = &kind
+		ginkgo.It("rejects a store reference that names no store", func() {
+			input.Spec.StoreRef = &KubernetesExternalSecretStoreRef{}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("A store is required"))
+		})
+
+		ginkgo.It("rejects a store arm without its name", func() {
+			input.Spec.StoreRef.StoreType = &KubernetesExternalSecretStoreRef_ClusterSecretStore{
+				ClusterSecretStore: &KubernetesExternalSecretClusterSecretStoreRef{},
+			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.Succeed())
 		})
 

@@ -7,7 +7,6 @@ Terraform IaC module for Logpush jobs.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareLogpushJobSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_logpush_job + conditional cloudflare_logpush_ownership_challenge
 outputs.tf    — job_id, scope ids, ownership-challenge trio
 ```

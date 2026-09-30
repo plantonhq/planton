@@ -91,11 +91,11 @@ spec:
 func TestObjectWhereListExpected(t *testing.T) {
 	manifest := `kind: AwsVpc
 spec:
-  secondaryIpv4CidrBlocks:
-    block: 10.1.0.0/16
+  secondaryIpv4Cidrs:
+    cidrBlock: 10.1.0.0/16
 `
 	m := one(t, Diagnose([]byte(manifest), kindDescriptor(t, "AwsVpc")))
-	if m.Path != "spec.secondaryIpv4CidrBlocks" {
+	if m.Path != "spec.secondaryIpv4Cidrs" {
 		t.Errorf("path = %q", m.Path)
 	}
 	if !strings.Contains(m.Problem, "expects a list") || !strings.Contains(m.Problem, "got an object") {
@@ -124,15 +124,16 @@ spec:
 }
 
 func TestUnknownEnumValue(t *testing.T) {
-	manifest := `kind: GcpGcsBucket
+	manifest := `kind: KubernetesMetricsServer
 spec:
-  storageClass: STANDRD
+  tls:
+    type: cert_manger
 `
-	m := one(t, Diagnose([]byte(manifest), kindDescriptor(t, "gcp-gcs-bucket")))
-	if !strings.Contains(m.Problem, `"STANDRD" is not a value`) {
+	m := one(t, Diagnose([]byte(manifest), kindDescriptor(t, "KubernetesMetricsServer")))
+	if !strings.Contains(m.Problem, `"cert_manger" is not a value`) {
 		t.Errorf("problem = %q", m.Problem)
 	}
-	if m.Suggestion != "STANDARD" {
+	if m.Suggestion != "cert_manager" {
 		t.Errorf("suggestion = %q", m.Suggestion)
 	}
 }
@@ -166,7 +167,7 @@ func TestAllMismatchesInOnePass(t *testing.T) {
 spec:
   region: 1.29
   cidrBlok: 10.0.0.0/16
-  secondaryIpv4CidrBlocks:
+  secondaryIpv4Cidrs:
     nested: wrong
 `
 	got := Diagnose([]byte(manifest), kindDescriptor(t, "AwsVpc"))
@@ -186,8 +187,8 @@ spec:
   region: us-east-1
   cidrBlock: 10.0.0.0/16
   enableDnsSupport: true
-  secondaryIpv4CidrBlocks:
-    - 10.1.0.0/16
+  secondaryIpv4Cidrs:
+    - cidrBlock: 10.1.0.0/16
 `
 	if got := Diagnose([]byte(manifest), kindDescriptor(t, "AwsVpc")); len(got) != 0 {
 		t.Errorf("valid manifest diagnosed: %+v", got)

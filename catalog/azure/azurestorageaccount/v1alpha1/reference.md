@@ -1789,6 +1789,7 @@ Fields on other kinds that can point at this resource:
 |---|---|---|
 | AzureAiFoundry | `spec.storageAccountId` | `status.outputs.storage_account_id` |
 | AzureBackupContainerStorageAccount | `spec.storageAccountId` | `status.outputs.storage_account_id` |
+| AzureBackupProtectedFileShare | `spec.sourceStorageAccountId` | `status.outputs.storage_account_id` |
 | AzureCognitiveAccount | `spec.storage[].storageAccountId` | `status.outputs.storage_account_id` |
 | AzureComputeGalleryImage | `spec.versions[].storageAccountId` | `status.outputs.storage_account_id` |
 | AzureContainerAppEnvironmentStorage | `spec.accountName` | `status.outputs.storage_account_name` |
@@ -1806,6 +1807,7 @@ Fields on other kinds that can point at this resource:
 | AzureEventHub | `spec.captureDescription.destination.storageAccountId` | `status.outputs.storage_account_id` |
 | AzureEventgridEventSubscription | `spec.destination.storageQueue.storageAccountId` | `status.outputs.storage_account_id` |
 | AzureEventgridEventSubscription | `spec.deadLetter.storageAccountId` | `status.outputs.storage_account_id` |
+| AzureFrontDoorOrigin | `spec.privateLink.privateLinkTargetId` | `status.outputs.storage_account_id` |
 | AzureFunctionApp | `spec.storageAccountName` | `status.outputs.storage_account_name` |
 | AzureFunctionApp | `spec.storageAccountAccessKey` | `status.outputs.primary_access_key` |
 | AzureFunctionApp | `spec.storageMounts[].accessKey` | `status.outputs.primary_access_key` |

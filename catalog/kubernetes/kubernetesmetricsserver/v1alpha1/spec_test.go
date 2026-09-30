@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
@@ -62,8 +63,10 @@ var _ = ginkgo.Describe("KubernetesMetricsServer Validation Tests", func() {
 		ginkgo.It("accepts a cert-manager issued serving certificate", func() {
 			input.Spec.Tls = &KubernetesMetricsServerTls{
 				Type: tlsp(KubernetesMetricsServerTlsType_cert_manager),
-				CertManagerIssuer: &KubernetesMetricsServerTlsCertManagerIssuer{
-					Name: literal("metrics-server-issuer"),
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{
+					IssuerType: &kubernetes.CertManagerIssuerRef_Issuer{
+						Issuer: &kubernetes.CertManagerNamespacedIssuerRef{Name: literal("metrics-server-issuer")},
+					},
 				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.Succeed())
@@ -118,8 +121,10 @@ var _ = ginkgo.Describe("KubernetesMetricsServer Validation Tests", func() {
 		ginkgo.It("rejects a cert-manager issuer on a non-cert-manager tls type", func() {
 			input.Spec.Tls = &KubernetesMetricsServerTls{
 				Type: tlsp(KubernetesMetricsServerTlsType_helm),
-				CertManagerIssuer: &KubernetesMetricsServerTlsCertManagerIssuer{
-					Name: literal("some-issuer"),
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{
+					IssuerType: &kubernetes.CertManagerIssuerRef_ClusterIssuer{
+						ClusterIssuer: &kubernetes.CertManagerClusterIssuerRef{Name: literal("some-issuer")},
+					},
 				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.Succeed())
@@ -133,10 +138,22 @@ var _ = ginkgo.Describe("KubernetesMetricsServer Validation Tests", func() {
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.Succeed())
 		})
 
-		ginkgo.It("rejects a cert-manager issuer without a name", func() {
+		ginkgo.It("rejects a cert-manager issuer that names no grain", func() {
 			input.Spec.Tls = &KubernetesMetricsServerTls{
 				Type:              tlsp(KubernetesMetricsServerTlsType_cert_manager),
-				CertManagerIssuer: &KubernetesMetricsServerTlsCertManagerIssuer{},
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).To(gomega.HaveOccurred())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("An issuer is required"))
+		})
+
+		ginkgo.It("rejects a cert-manager issuer arm without a name", func() {
+			input.Spec.Tls = &KubernetesMetricsServerTls{
+				Type: tlsp(KubernetesMetricsServerTlsType_cert_manager),
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{
+					IssuerType: &kubernetes.CertManagerIssuerRef_ClusterIssuer{ClusterIssuer: &kubernetes.CertManagerClusterIssuerRef{}},
+				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.Succeed())
 		})

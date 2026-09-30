@@ -38,8 +38,8 @@ nodes itself.
 | `<aws-region>` | AWS region code | Your deployment region |
 | `<cluster-resource-name>` | Name of the AwsEcsCluster resource | Your cluster manifest's `metadata.name` |
 | `<task-definition-resource-name>` | Name of the AwsEcsTaskDefinition resource | Your task-definition manifest's `metadata.name` |
-| `<private-subnet-a/b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
-| `<blue/green-target-group-resource-name>` | Names of the two AwsLbTargetGroup resources | Your target-group manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of the private AwsSubnet resources | Your subnet manifests' `metadata.name` |
+| `<blue-target-group-resource-name>` / `<green-target-group-resource-name>` | Names of the two AwsLbTargetGroup resources | Your target-group manifests' `metadata.name` |
 | `<production-rule-resource-name>` | Name of the AwsLbListenerRule ECS swaps | Your listener-rule manifest's `metadata.name` |
 | `<blue-green-role-resource-name>` | Name of the AwsIamRole ECS assumes for the swap | Your role manifest's `metadata.name` |
 

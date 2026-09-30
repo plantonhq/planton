@@ -16,8 +16,12 @@ variable "spec" {
   type = object({
     namespace = string
     store_ref = object({
-      name = string
-      kind = optional(string)
+      secret_store = optional(object({
+        name = string
+      }))
+      cluster_secret_store = optional(object({
+        name = string
+      }))
     })
     refresh_interval = optional(string)
     refresh_policy   = optional(string)

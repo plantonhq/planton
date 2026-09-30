@@ -7,7 +7,6 @@ Terraform IaC module for Zero Trust infrastructure targets.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareZeroTrustAccessInfrastructureTargetSpec (generated)
-locals.tf     — Naming/labels
 main.tf       — cloudflare_zero_trust_access_infrastructure_target
 outputs.tf    — target_id
 ```

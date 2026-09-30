@@ -100,6 +100,31 @@ The bar for every component:
   tag and value, an SSHFP fingerprint, a TLSA certificate, a DS digest) stays a plain
   string. Terraform receives a reference as the plain string it resolves to, so only the
   Pulumi module changes (`.GetValue()`).
+- **A reference names its kinds, or it is plain text.** A `StringValueOrRef` declares what it
+  can point at: one `default_kind` with its `default_kind_field_path`, or, when the value
+  legitimately comes from several kinds, one `(dev.planton.shared.foreignkey.v1.candidate)`
+  entry per kind and output (a kind may appear twice when two of its outputs fit -- a
+  subnetwork's primary and secondary ranges). When both are declared, the default kind is one
+  of the candidates, on the same path. A field no catalog kind can produce (an operator's own
+  pre-existing group name) is a plain `string`, never a reference that names no kind. A
+  field that can point at ANY kind (an Azure resource ID for a diagnostic setting) declares
+  neither and says so in its comment. Kind knowledge never lives in prose ("reference X via
+  an explicit valueFrom.kind") or in a console list: declare it, so every picker, graph and
+  agent reads the same set. `refcheck`'s registry gate resolves every declared key.
+- **A reference's grain is its type, never a sibling selector.** When a reference can mean a
+  namespaced or a cluster-scoped object (an Issuer or a ClusterIssuer, a SecretStore or a
+  ClusterSecretStore), model it as a `oneof` of typed arms, each with its own `default_kind`
+  and a one-arm CEL rule -- the `KubernetesCertificate` issuer reference, and the shared
+  `CertManagerIssuerRef` -- never one reference beside a `kind` string or enum: the
+  platform's readers see the annotation, not the data, so a sibling selector resolves the
+  wrong kind.
+- **A rule on a value that may be a reference is written about the literal.** A shape rule
+  (a pattern, a CIDR or IP format, a length) on a `StringValueOrRef` reads the literal arm
+  only (`!has(this.value) || this.value.isIpPrefix()`), and a rule on a plain string is
+  written about the literal and nothing else -- never an arm that spells a platform's token
+  grammar (`^\$secret/...`). A platform that resolves `$secret/` and `$var/` tokens sets the
+  rule aside for the token and applies it to the value the token resolves to, before the
+  module runs.
 - **A per-install identity comes from the install itself.** When a kind keys something
   durable outside the cluster or account by a name (a backup series in an object store, an
   archive prefix, a registration), a destroy and recreate from the same declaration must not

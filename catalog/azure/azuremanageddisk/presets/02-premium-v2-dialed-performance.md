@@ -22,5 +22,5 @@ This preset creates a Premium SSD v2 data disk whose capacity, IOPS, and through
 | --- | --- | --- |
 | `<azure-region>` | Azure region (must support Premium SSD v2) | Azure regional availability docs |
 | `<your-resource-group-name>` | Name of the resource group | Azure portal or `AzureResourceGroup` status outputs |
-| `<workload>-data` | A name describing the DATA, not the VM | Your naming convention |
-| `<zone>` | The availability zone matching the VM | Your zone layout |
+| `workload-data` (`name`) | A name describing the DATA, not the VM | Your naming convention |
+| `"1"` (`zone`) | The availability zone matching the VM | Your zone layout |

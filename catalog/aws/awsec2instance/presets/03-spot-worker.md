@@ -20,7 +20,7 @@ This preset runs a standalone instance on Spot capacity -- typically 60-90% chea
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<aws-region>` | AWS region where the instance will be created | AWS region list |
-| `<ami-id>` | Amazon Machine Image ID matching the instance type's architecture | AWS EC2 AMI catalog |
+| `ami-0123456789abcdef0` | Amazon Machine Image ID matching the instance type's architecture | AWS EC2 AMI catalog |
 | `<private-subnet-id>` | Private subnet ID where the instance will launch | `AwsSubnet` status outputs |
 | `<security-group-id>` | Security group ID controlling instance traffic | `AwsSecurityGroup` status outputs |
 | `<instance-profile-name>` | NAME of the IAM instance profile the worker assumes | `AwsIamInstanceProfile` status outputs |

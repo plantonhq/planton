@@ -22,8 +22,9 @@ compute.DiskEncryptionSet (one CMK encryption anchor)
   protection.
 - **Principal/tenant outputs resolve via `ApplyT` after create** and
   export empty for user-assigned-only identity sets.
-- **PARITY-EXCEPTION on tag shape** versus the Terraform module
-  (documented in both engines) -- output-neutral.
+- **Identity tags match the Terraform module** key for key and value
+  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 

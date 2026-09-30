@@ -7,7 +7,6 @@ Terraform IaC module for the account-level Secrets Store.
 ```
 provider.tf   — Cloudflare provider configuration (~> 5.23)
 variables.tf  — Input variables mirroring CloudflareSecretsStoreSpec (generated)
-locals.tf     — Naming/labels only (the spec is two create-only fields)
 main.tf       — cloudflare_secrets_store
 outputs.tf    — store_id
 ```

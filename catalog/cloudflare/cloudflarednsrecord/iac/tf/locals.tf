@@ -36,6 +36,16 @@ locals {
   supports_proxy = contains(["A", "AAAA", "CNAME"], local.record_type)
   proxied        = local.supports_proxy ? var.spec.proxied : false
 
+  # Cloudflare stores a name-valued record's content without the root dot
+  # (`ns-cloud-a1.googledomains.com.` is kept as `ns-cloud-a1.googledomains.com`),
+  # and this provider compares the stored value to the configured one verbatim,
+  # so a content that ends in a dot would plan an update on every run. Cloud DNS
+  # and most DNS tooling spell names absolutely, and a delegation's content is
+  # often another zone's nameserver output, so the dot is dropped here rather
+  # than asked of every author. The Pulumi provider reconciles the dot itself.
+  name_valued = contains(["CNAME", "NS", "MX", "PTR"], local.record_type)
+  content     = var.spec.content == "" ? null : (local.name_valued ? trimsuffix(var.spec.content, ".") : var.spec.content)
+
   # The provider schema marks top-level priority "Required for MX, SRV and URI
   # records". MX carries it in spec.priority; SRV/URI carry it inside their
   # structured data, and Cloudflare mirrors that value into the top-level field

@@ -6,6 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
+	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
@@ -108,9 +109,12 @@ var _ = ginkgo.Describe("KubernetesKeda Validation Tests", func() {
 		ginkgo.It("cert-manager certificates with an issuer reference should be valid", func() {
 			input.Spec.Certificates = &KubernetesKedaCertificates{
 				Type: stringPtr("cert_manager"),
-				CertManagerIssuer: &KubernetesKedaCertManagerIssuer{
-					Kind: KubernetesKedaIssuerKind_cluster_issuer.Enum(),
-					Name: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesClusterIssuer, "platform-ca", "status.outputs.issuer_name"),
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{
+					IssuerType: &kubernetes.CertManagerIssuerRef_ClusterIssuer{
+						ClusterIssuer: &kubernetes.CertManagerClusterIssuerRef{
+							Name: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesClusterIssuer, "platform-ca", "status.outputs.cluster_issuer_name"),
+						},
+					},
 				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -204,17 +208,31 @@ var _ = ginkgo.Describe("KubernetesKeda Validation Tests", func() {
 		ginkgo.It("issuer reference with operator certificates type should fail", func() {
 			input.Spec.Certificates = &KubernetesKedaCertificates{
 				Type: stringPtr("operator"),
-				CertManagerIssuer: &KubernetesKedaCertManagerIssuer{
-					Name: literal("platform-ca"),
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{
+					IssuerType: &kubernetes.CertManagerIssuerRef_Issuer{
+						Issuer: &kubernetes.CertManagerNamespacedIssuerRef{Name: literal("platform-ca")},
+					},
 				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})
 
-		ginkgo.It("cert-manager issuer without a name should fail", func() {
+		ginkgo.It("cert-manager issuer that names no grain should fail", func() {
 			input.Spec.Certificates = &KubernetesKedaCertificates{
 				Type:              stringPtr("cert_manager"),
-				CertManagerIssuer: &KubernetesKedaCertManagerIssuer{},
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{},
+			}
+			err := protovalidate.Validate(input)
+			gomega.Expect(err).ToNot(gomega.BeNil())
+			gomega.Expect(err.Error()).To(gomega.ContainSubstring("An issuer is required"))
+		})
+
+		ginkgo.It("cert-manager issuer arm without a name should fail", func() {
+			input.Spec.Certificates = &KubernetesKedaCertificates{
+				Type: stringPtr("cert_manager"),
+				CertManagerIssuer: &kubernetes.CertManagerIssuerRef{
+					IssuerType: &kubernetes.CertManagerIssuerRef_Issuer{Issuer: &kubernetes.CertManagerNamespacedIssuerRef{}},
+				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).ToNot(gomega.BeNil())
 		})

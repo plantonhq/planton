@@ -297,7 +297,8 @@ type AzureMonitorScheduledQueryAlertSpec struct {
 	AlertName string `protobuf:"bytes,3,opt,name=alert_name,json=alertName,proto3" json:"alert_name,omitempty"`
 	// The resource the query runs against -- a Log Analytics Workspace (the
 	// common case, and the default reference) or an Application Insights
-	// resource (override with an explicit valueFrom kind + fieldPath).
+	// resource (a valueFrom naming that kind; both are declared candidates,
+	// so each one's resource ID output fills in).
 	// Azure allows exactly one scope per rule.
 	//
 	// **ForceNew**: Changing this destroys and recreates the rule.
@@ -911,15 +912,15 @@ var File_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_spec_proto proto
 
 const file_catalog_azure_azuremonitorscheduledqueryalert_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"Acatalog/azure/azuremonitorscheduledqueryalert/v1alpha1/spec.proto\x12:dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf5\x15\n" +
+	"Acatalog/azure/azuremonitorscheduledqueryalert/v1alpha1/spec.proto\x12:dev.planton.azure.azuremonitorscheduledqueryalert.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xc9\x16\n" +
 	"#AzureMonitorScheduledQueryAlertSpec\x12\"\n" +
 	"\x06region\x18\x01 \x01(\tB\n" +
 	"\xbaH\a\xc8\x01\x01r\x02\x10\x01R\x06region\x12\x8c\x01\n" +
 	"\x0eresource_group\x18\x02 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB1\xbaH\x03\xc8\x01\x01\x88\xd4a\xd0\x0f\x92\xd4a\"status.outputs.resource_group_nameR\rresourceGroup\x12,\n" +
 	"\n" +
 	"alert_name\x18\x03 \x01(\tB\r\xbaH\n" +
-	"\xc8\x01\x01r\x05\x10\x01\x18\x84\x02R\talertName\x12t\n" +
-	"\x05scope\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB*\xbaH\x03\xc8\x01\x01\x88\xd4a\x82\x10\x92\xd4a\x1bstatus.outputs.workspace_idR\x05scope\x12!\n" +
+	"\xc8\x01\x01r\x05\x10\x01\x18\x84\x02R\talertName\x12\xc7\x01\n" +
+	"\x05scope\x18\x04 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB}\xbaH\x03\xc8\x01\x01\x88\xd4a\x82\x10\x92\xd4a\x1bstatus.outputs.workspace_id\xa2\xd4a \b\x82\x10\x12\x1bstatus.outputs.workspace_id\xa2\xd4a+\b\x83\x10\x12&status.outputs.application_insights_idR\x05scope\x12!\n" +
 	"\fdisplay_name\x18\x05 \x01(\tR\vdisplayName\x12 \n" +
 	"\vdescription\x18\x06 \x01(\tR\vdescription\x12'\n" +
 	"\aenabled\x18\a \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12/\n" +

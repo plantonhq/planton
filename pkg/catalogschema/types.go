@@ -59,6 +59,17 @@ type ProtoFieldSemantic struct {
 	IsRequired     bool    `json:"isRequired"`
 	DefaultValue   *string `json:"defaultValue"`
 	ForeignKeyKind *string `json:"foreignKeyKind"`
+	// ForeignKeyCandidates lists every kind and output a reference field
+	// composes from (its default first, then each declared candidate), set
+	// only when the field declares candidates.
+	ForeignKeyCandidates []ForeignKeyCandidate `json:"foreignKeyCandidates,omitempty"`
+}
+
+// ForeignKeyCandidate is one kind a reference field can point at and the
+// output path it composes from.
+type ForeignKeyCandidate struct {
+	Kind      string `json:"kind"`
+	FieldPath string `json:"fieldPath"`
 }
 
 // ProtoEnum represents an enum block.

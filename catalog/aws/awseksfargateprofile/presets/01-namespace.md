@@ -33,7 +33,7 @@ subnets attached by reference.
 | `<aws-region>` | AWS region code (e.g., `us-west-2`) | Your deployment region |
 | `<cluster-resource-name>` | Name of the AwsEksCluster resource | Your cluster manifest's `metadata.name` |
 | `<pod-execution-role-resource-name>` | Name of the AwsIamRole for Fargate pod execution | Your role manifest's `metadata.name` |
-| `<private-subnet-a/b-resource-name>` | Names of two private AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
+| `<private-subnet-a-resource-name>` / `<private-subnet-b-resource-name>` | Names of two private AwsSubnet resources in different AZs | Your subnet manifests' `metadata.name` |
 | `<namespace>` | The Kubernetes namespace to run serverless | Your cluster's namespace layout |
 
 ## Common Additions

@@ -52,7 +52,7 @@ type AwsRdsInstanceSpec struct {
 	SubnetIds []*v1.StringValueOrRef `protobuf:"bytes,2,rep,name=subnet_ids,json=subnetIds,proto3" json:"subnet_ids,omitempty"`
 	// Name of an existing DB subnet group to place the instance in,
 	// instead of providing subnet_ids.
-	DbSubnetGroupName *v1.StringValueOrRef `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
+	DbSubnetGroupName string `protobuf:"bytes,3,opt,name=db_subnet_group_name,json=dbSubnetGroupName,proto3" json:"db_subnet_group_name,omitempty"`
 	// Security groups attached to the instance. Empty uses the VPC's
 	// default security group (the AWS default). Reference AwsSecurityGroup
 	// security_group_id outputs or pass literal SG IDs.
@@ -368,11 +368,11 @@ func (x *AwsRdsInstanceSpec) GetSubnetIds() []*v1.StringValueOrRef {
 	return nil
 }
 
-func (x *AwsRdsInstanceSpec) GetDbSubnetGroupName() *v1.StringValueOrRef {
+func (x *AwsRdsInstanceSpec) GetDbSubnetGroupName() string {
 	if x != nil {
 		return x.DbSubnetGroupName
 	}
-	return nil
+	return ""
 }
 
 func (x *AwsRdsInstanceSpec) GetSecurityGroupIds() []*v1.StringValueOrRef {
@@ -1356,12 +1356,12 @@ var File_catalog_aws_awsrdsinstance_v1alpha1_spec_proto protoreflect.FileDescrip
 
 const file_catalog_aws_awsrdsinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	".catalog/aws/awsrdsinstance/v1alpha1/spec.proto\x12'dev.planton.aws.awsrdsinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\x8fY\n" +
+	".catalog/aws/awsrdsinstance/v1alpha1/spec.proto\x12'dev.planton.aws.awsrdsinstance.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xdcX\n" +
 	"\x12AwsRdsInstanceSpec\x12\x1f\n" +
 	"\x06region\x18\x01 \x01(\tB\a\xbaH\x04r\x02\x10\x01R\x06region\x12t\n" +
 	"\n" +
-	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12c\n" +
-	"\x14db_subnet_group_name\x18\x03 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefR\x11dbSubnetGroupName\x12\x8b\x01\n" +
+	"subnet_ids\x18\x02 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB!\x88\xd4a\xbc\b\x92\xd4a\x18status.outputs.subnet_idR\tsubnetIds\x12/\n" +
+	"\x14db_subnet_group_name\x18\x03 \x01(\tR\x11dbSubnetGroupName\x12\x8b\x01\n" +
 	"\x12security_group_ids\x18\x04 \x03(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB)\x88\xd4a\xf7\a\x92\xd4a status.outputs.security_group_idR\x10securityGroupIds\x12\x16\n" +
 	"\x06engine\x18\x05 \x01(\tR\x06engine\x12%\n" +
 	"\x0eengine_version\x18\x06 \x01(\tR\rengineVersion\x125\n" +
@@ -1427,8 +1427,8 @@ const file_catalog_aws_awsrdsinstance_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
 	"parameters\x18> \x03(\v2@.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceParameterR\n" +
 	"parameters\x12W\n" +
-	"\aoptions\x18? \x03(\v2=.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOptionR\aoptions:\xc05\xbaH\xbc5\x1a\xa7\x01\n" +
-	"\x10subnets_or_group\x12Rprovide at least two subnet_ids (distinct AZs) or an existing db_subnet_group_name\x1a?(this.subnet_ids.size() >= 2) || has(this.db_subnet_group_name)\x1a\xa7\x02\n" +
+	"\aoptions\x18? \x03(\v2=.dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOptionR\aoptions:\xc15\xbaH\xbd5\x1a\xa8\x01\n" +
+	"\x10subnets_or_group\x12Rprovide at least two subnet_ids (distinct AZs) or an existing db_subnet_group_name\x1a@(this.subnet_ids.size() >= 2) || this.db_subnet_group_name != ''\x1a\xa7\x02\n" +
 	"\x1eengine_required_unless_derived\x12\x87\x01engine is required unless the instance derives it from a source (replicate_source_db, snapshot_identifier, or restore_to_point_in_time)\x1a{this.engine != '' || this.replicate_source_db != '' || this.snapshot_identifier != '' || has(this.restore_to_point_in_time)\x1a\xc0\x02\n" +
 	"\x1fstorage_required_unless_derived\x12\x92\x01allocated_storage_gb is required unless storage is inherited from a source (replicate_source_db, snapshot_identifier, or restore_to_point_in_time)\x1a\x87\x01this.allocated_storage_gb > 0 || this.replicate_source_db != '' || this.snapshot_identifier != '' || has(this.restore_to_point_in_time)\x1a\xb4\x01\n" +
 	"\x14password_xor_managed\x12]password cannot be set when manage_master_user_password is true -- pick one password strategy\x1a=this.manage_master_user_password ? this.password == '' : true\x1a\xc9\x02\n" +
@@ -1531,27 +1531,26 @@ var file_catalog_aws_awsrdsinstance_v1alpha1_spec_proto_goTypes = []any{
 }
 var file_catalog_aws_awsrdsinstance_v1alpha1_spec_proto_depIdxs = []int32{
 	8,  // 0: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.subnet_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	8,  // 1: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.db_subnet_group_name:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	8,  // 2: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	8,  // 3: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	8,  // 4: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.master_user_secret_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	2,  // 5: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.restore_to_point_in_time:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceRestoreToPointInTime
-	8,  // 6: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	8,  // 7: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.monitoring_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	1,  // 8: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.active_directory:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceActiveDirectory
-	3,  // 9: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.s3_import:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceS3Import
-	4,  // 10: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.iam_roles:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceIamRole
-	5,  // 11: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.parameters:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceParameter
-	6,  // 12: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.options:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOption
-	8,  // 13: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceS3Import.ingestion_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	8,  // 14: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceIamRole.role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	7,  // 15: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOption.option_settings:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOptionSetting
-	8,  // 16: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOption.vpc_security_group_memberships:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	8,  // 1: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.security_group_ids:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8,  // 2: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8,  // 3: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.master_user_secret_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	2,  // 4: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.restore_to_point_in_time:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceRestoreToPointInTime
+	8,  // 5: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.performance_insights_kms_key_id:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8,  // 6: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.monitoring_role_arn:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	1,  // 7: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.active_directory:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceActiveDirectory
+	3,  // 8: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.s3_import:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceS3Import
+	4,  // 9: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.iam_roles:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceIamRole
+	5,  // 10: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.parameters:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceParameter
+	6,  // 11: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceSpec.options:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOption
+	8,  // 12: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceS3Import.ingestion_role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	8,  // 13: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceIamRole.role:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	7,  // 14: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOption.option_settings:type_name -> dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOptionSetting
+	8,  // 15: dev.planton.aws.awsrdsinstance.v1alpha1.AwsRdsInstanceOption.vpc_security_group_memberships:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	16, // [16:16] is the sub-list for method output_type
+	16, // [16:16] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_catalog_aws_awsrdsinstance_v1alpha1_spec_proto_init() }

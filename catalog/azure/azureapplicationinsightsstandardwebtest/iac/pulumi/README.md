@@ -20,11 +20,9 @@ appinsights.StandardWebTest (one synthetic availability test)
   Application Insights component.
 - **Validation rules are built only when the spec carries them**,
   including the nested content-match block.
-- **PARITY-EXCEPTION on tag shape** (documented in both engines): the
-  Terraform module writes the snake-case `resource_kind` literal and
-  falls back to `metadata.name` for `resource_id`, while this module
-  lowers the kind enum string and omits an empty id -- output-neutral,
-  tags only.
+- **Identity tags match the Terraform module** key for key and value
+  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 

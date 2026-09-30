@@ -178,6 +178,7 @@ Fields on other kinds that can point at this resource:
 | Kind | Field | Reads |
 |---|---|---|
 | DigitalOceanDroplet | `spec.volumeIds` | `status.outputs.volume_id` |
+| DigitalOceanProject | `spec.resources` | `status.outputs.urn` |
 
 ## See Also
 
