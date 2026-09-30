@@ -1,10 +1,9 @@
 package providerenvvars
 
 import (
-	"strings"
-
 	"github.com/pkg/errors"
 	stripeprovider "github.com/plantonhq/planton/catalog/stripe"
+	"github.com/plantonhq/planton/pkg/iac/provider/stripe/stripekey"
 )
 
 // loadStripeEnvVars loads the Stripe provider config and returns environment variables, refusing a
@@ -35,10 +34,9 @@ func loadStripeEnvVars(providerConfigYaml []byte) (map[string]string, error) {
 }
 
 // checkStripeKeyMode holds a key to the declared mode. Stripe keys carry their mode in the prefix
-// (sk_test_, rk_test_, sk_live_, rk_live_; sandbox keys are test keys). The refusal names the prefix
-// and never the key.
+// (stripekey.ModeOf); the refusal names the prefix and never the key.
 func checkStripeKeyMode(apiKey string, declared stripeprovider.StripeMode) error {
-	keyMode, prefix, ok := stripeKeyMode(apiKey)
+	keyMode, prefix, ok := stripekey.ModeOf(apiKey)
 	if !ok {
 		return errors.New("the Stripe provider config's api_key is not a Stripe secret or restricted key: " +
 			"use a key that starts with rk_test_, rk_live_, sk_test_ or sk_live_ (a publishable pk_ key cannot manage objects)")
@@ -54,17 +52,4 @@ func checkStripeKeyMode(apiKey string, declared stripeprovider.StripeMode) error
 			"use a %s-mode or sandbox key, or set mode: %s if this config is meant for %s mode",
 			declared, keyMode, prefix, declared, keyMode, keyMode)
 	}
-}
-
-// stripeKeyMode reads the mode from a secret (sk_) or restricted (rk_) key's prefix.
-func stripeKeyMode(apiKey string) (stripeprovider.StripeMode, string, bool) {
-	for _, kind := range []string{"sk_", "rk_"} {
-		switch {
-		case strings.HasPrefix(apiKey, kind+"test_"):
-			return stripeprovider.StripeMode_test, kind + "test_", true
-		case strings.HasPrefix(apiKey, kind+"live_"):
-			return stripeprovider.StripeMode_live, kind + "live_", true
-		}
-	}
-	return stripeprovider.StripeMode_stripe_mode_unspecified, "", false
 }

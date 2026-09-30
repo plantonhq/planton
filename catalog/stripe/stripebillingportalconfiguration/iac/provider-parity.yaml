@@ -1,0 +1,67 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The provider (Terraform Plugin Framework) nests exclusively via nested
+# attributes, which distill to single flat args -- so features,
+# business_profile and login_page are each ONE provider argument. The spec
+# models those trees as typed messages with enums for every closed set;
+# fan-in mappings record every spec leaf each argument realizes. name,
+# default_return_url, active and metadata match by exact name.
+resources:
+  stripe_billing_portal_configuration:
+    mappings:
+      - spec: spec.features.customer_update.enabled
+        arg: features
+      - spec: spec.features.customer_update.allowed_updates
+        arg: features
+      - spec: spec.features.invoice_history.enabled
+        arg: features
+      - spec: spec.features.payment_method_update.enabled
+        arg: features
+      - spec: spec.features.payment_method_update.payment_method_configuration
+        arg: features
+      - spec: spec.features.subscription_cancel.enabled
+        arg: features
+      - spec: spec.features.subscription_cancel.mode
+        arg: features
+      - spec: spec.features.subscription_cancel.proration_behavior
+        arg: features
+      - spec: spec.features.subscription_cancel.cancellation_reason.enabled
+        arg: features
+      - spec: spec.features.subscription_cancel.cancellation_reason.options
+        arg: features
+      - spec: spec.features.subscription_update.enabled
+        arg: features
+      - spec: spec.features.subscription_update.default_allowed_updates
+        arg: features
+      - spec: spec.features.subscription_update.proration_behavior
+        arg: features
+      - spec: spec.features.subscription_update.billing_cycle_anchor
+        arg: features
+      - spec: spec.features.subscription_update.trial_update_behavior
+        arg: features
+      - spec: spec.features.subscription_update.products.product
+        arg: features
+      - spec: spec.features.subscription_update.products.prices
+        arg: features
+      - spec: spec.features.subscription_update.products.adjustable_quantity.enabled
+        arg: features
+      - spec: spec.features.subscription_update.products.adjustable_quantity.minimum
+        arg: features
+      - spec: spec.features.subscription_update.products.adjustable_quantity.maximum
+        arg: features
+      - spec: spec.features.subscription_update.schedule_at_period_end.conditions.type
+        arg: features
+      - spec: spec.business_profile.headline
+        arg: business_profile
+      - spec: spec.business_profile.privacy_policy_url
+        arg: business_profile
+      - spec: spec.business_profile.terms_of_service_url
+        arg: business_profile
+      - spec: spec.login_page.enabled
+        arg: login_page

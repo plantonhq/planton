@@ -32,18 +32,9 @@
 provider: stripe
 resources:
   # ---- Account and delivery -------------------------------------------------
-  - resource: stripe_webhook_endpoint
-    disposition: model-planned
-    reason: "judged as a planned StripeWebhookEndpoint kind (where an account's events are delivered; its signing secret is returned only at creation, so an imported endpoint carries none)"
   - resource: stripe_v2_core_event_destination
     disposition: model-planned
     reason: "judged as a planned StripeEventDestination kind (the v2 event destination: a webhook endpoint, Amazon EventBridge or Azure Event Grid target, each with its own signing secret)"
-  - resource: stripe_billing_portal_configuration
-    disposition: model-planned
-    reason: "judged as a planned StripeBillingPortalConfiguration kind (what the customer portal lets a customer do: cancel, switch plans, update payment methods and details); destroy deactivates it and Stripe keeps it"
-  - resource: stripe_payment_method_configuration
-    disposition: model-planned
-    reason: "judged as a planned StripePaymentMethodConfiguration kind (which payment methods checkout offers, one typed block per method); destroy deactivates it and Stripe keeps it"
   - resource: stripe_payment_method_domain
     disposition: model-planned
     reason: "judged as a planned StripePaymentMethodDomain kind (a web domain registered for Apple Pay, Google Pay, Link and other wallet methods in embedded payment forms); destroy only removes it from state"

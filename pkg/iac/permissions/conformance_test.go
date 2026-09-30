@@ -80,7 +80,9 @@ var (
 	//
 	// Cloudflare, DigitalOcean, and Auth0 left this map when their arms
 	// landed: their manifests declare token permission groups / scopes as
-	// first-class sections, held to the providers' own inventories.
+	// first-class sections, held to the providers' own inventories. Stripe
+	// never joined it: a restricted key has a per-resource vocabulary, so
+	// its manifests declare a stripe section too.
 	tokenScopedProviders = map[string]bool{
 		"openfga": true,
 	}
@@ -151,6 +153,7 @@ func TestPermissionsConformance(t *testing.T) {
 				checkCloudflare(t, spec.GetCloudflare())
 				checkDigitalOcean(t, spec.GetDigitalOcean())
 				checkAuth0(t, spec.GetAuth0())
+				checkStripe(t, spec.GetStripe())
 				checkConditions(t, component, spec)
 			})
 		}
@@ -757,6 +760,54 @@ func checkAuth0(t *testing.T, auth0 *permissionsv1.Auth0Permissions) {
 			}
 		}
 		checkProvenance(t, "auth0 "+purpose, group.GetProvenance(), group.GetNotes())
+	}
+}
+
+// stripeResourcePattern is a restricted-key form label: a capitalized first
+// word, then words in either case ("Webhook Endpoints", "Customer portal"),
+// never a snake_case identifier or an endpoint path.
+var stripeResourcePattern = regexp.MustCompile(`^[A-Z][A-Za-z]*( [A-Za-z]+)*$`)
+
+// checkStripe holds a Stripe section to its structure. Stripe publishes no
+// inventory of restricted-key resources, so there is nothing to check the
+// names against beyond their spelling; a live run under a key built from the
+// entries proves them (see StripePermissions).
+func checkStripe(t *testing.T, stripe *permissionsv1.StripePermissions) {
+	t.Helper()
+	if stripe == nil {
+		return
+	}
+	if len(stripe.GetGroups()) == 0 {
+		t.Error("stripe section is present but declares no groups")
+	}
+	purposes := map[string]bool{}
+	for _, group := range stripe.GetGroups() {
+		purpose := group.GetPurpose()
+		if strings.TrimSpace(purpose) == "" {
+			t.Error("stripe group with empty purpose")
+		}
+		if purposes[purpose] {
+			t.Errorf("stripe: duplicate purpose %q -- a reader tells groups apart by purpose, so one purpose is one group", purpose)
+		}
+		purposes[purpose] = true
+		if len(group.GetPermissions()) == 0 {
+			t.Errorf("stripe %s: no permissions", purpose)
+		}
+		resources := map[string]bool{}
+		for _, permission := range group.GetPermissions() {
+			resource := permission.GetResource()
+			if !stripeResourcePattern.MatchString(resource) {
+				t.Errorf("stripe %s: resource %q is not a restricted-key form label (e.g. \"Webhook Endpoints\")", purpose, resource)
+			}
+			if resources[resource] {
+				t.Errorf("stripe %s: resource %q listed twice -- the form has one row per resource", purpose, resource)
+			}
+			resources[resource] = true
+			if access := permission.GetAccess(); access != "read" && access != "write" {
+				t.Errorf("stripe %s: %s access %q is not \"read\" or \"write\" (leave a resource out for none)", purpose, resource, access)
+			}
+		}
+		checkProvenance(t, "stripe "+purpose, group.GetProvenance(), group.GetNotes())
 	}
 }
 

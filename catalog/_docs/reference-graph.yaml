@@ -10579,3 +10579,7 @@ edges:
     field: "spec.authorizationModelId"
     to: "OpenFgaAuthorizationModel"
     target: "status.outputs.id"
+  - from: "StripeBillingPortalConfiguration"
+    field: "spec.features.paymentMethodUpdate.paymentMethodConfiguration"
+    to: "StripePaymentMethodConfiguration"
+    target: "status.outputs.id"

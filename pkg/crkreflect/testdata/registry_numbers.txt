@@ -749,3 +749,6 @@ Auth0ClientFromMetadataDocument=8016
 OpenFgaStore=9000
 OpenFgaAuthorizationModel=9001
 OpenFgaRelationshipTuple=9002
+StripeWebhookEndpoint=10000
+StripeBillingPortalConfiguration=10002
+StripePaymentMethodConfiguration=10003

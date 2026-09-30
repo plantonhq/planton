@@ -616,6 +616,15 @@ e2e-test-auth0-pulumi:  ## Run Auth0 Pulumi E2E tests only
 e2e-test-auth0-terraform:  ## Run Auth0 Terraform E2E tests only
 	go test -tags=e2e -timeout=20m -v -count=1 -run ".*_Terraform" ./e2e/auth0/...
 
+# ── Stripe E2E targets ───────────────────────────────────────────────────────
+# Stripe kinds run on OpenTofu only, so there is one lane. It runs only against
+# the dedicated test sandbox: the harness refuses any key that is not a
+# test-mode key (sk_test_/rk_test_) before a lane starts.
+
+.PHONY: e2e-test-stripe
+e2e-test-stripe:  ## Run Stripe E2E tests (requires STRIPE_API_KEY of the test sandbox; live keys are refused)
+	go test -tags=e2e -timeout=20m -v -count=1 -run ".*_Tofu" ./e2e/stripe/...
+
 # ── Cloudflare E2E targets ───────────────────────────────────────────────────
 
 .PHONY: e2e-test-cloudflare
@@ -671,7 +680,8 @@ $(if $(findstring Aws,$(component)),./e2e/aws/...,\
 $(if $(findstring Gcp,$(component)),./e2e/gcp/...,\
 $(if $(findstring Azure,$(component)),./e2e/azure/...,\
 $(if $(findstring Auth0,$(component)),./e2e/auth0/...,\
-$(if $(findstring Cloudflare,$(component)),./e2e/cloudflare/...,./e2e/...)))))))
+$(if $(findstring Cloudflare,$(component)),./e2e/cloudflare/...,\
+$(if $(findstring Stripe,$(component)),./e2e/stripe/...,./e2e/...))))))))
 
 .PHONY: e2e-test-component
 e2e-test-component:  ## Single component E2E test (usage: make e2e-test-component component=KubernetesNamespace)

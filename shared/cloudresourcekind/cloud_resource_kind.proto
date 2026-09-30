@@ -7458,4 +7458,29 @@ enum CloudResourceKind {
       "terraform"
     ]
   }];
+
+  // 10000–10999: Stripe resources
+  // Stripe publishes a Terraform provider and no Pulumi provider, and its
+  // kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL
+  // module, and every other engine refused before anything runs.
+  // Family sub-bands: 10000 account and delivery, 10100 catalog and pricing,
+  // 10200 Terminal, 10300 Issuing.
+  StripeWebhookEndpoint = 10000 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpwh"
+    provisioners: ["tofu"]
+  }];
+  StripeBillingPortalConfiguration = 10002 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stpbpc"
+    provisioners: ["tofu"]
+  }];
+  StripePaymentMethodConfiguration = 10003 [(kind_meta) = {
+    provider: stripe
+    version: "v1alpha1"
+    id_prefix: "stppmc"
+    provisioners: ["tofu"]
+  }];
 }

@@ -49,6 +49,8 @@ ID PREFIX PATTERNS
 - Kubernetes: descriptive + "k8s" suffix (e.g., "k8sms", "pgk8s", "cmk8s")
 - DigitalOcean: "do" prefix + abbreviation (e.g., "doapp", "dodns", "docert")
 - Cloudflare: "cf" prefix + abbreviation (e.g., "cfdns", "cfkvn", "cfr2b")
+- Auth0: "a0" prefix + abbreviation (e.g., "a0cli", "a0conn", "a0es")
+- Stripe: "stp" prefix + abbreviation of the Stripe object (e.g., "stpwh" webhook endpoint, "stpbpc" billing portal configuration, "stppmc" payment method configuration)
 
 SEQUENTIAL STEPS
 1) Identify: Determine the provider and kind name from the resource being forged

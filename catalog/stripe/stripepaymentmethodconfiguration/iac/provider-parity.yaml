@@ -1,0 +1,135 @@
+# Provider-parity manifest: this kind's recorded judgment against the pinned
+# stripe provider (checked by `planton provider-parity --check`; format
+# documented in pkg/providerparity).
+#
+# Only divergences are recorded -- an argument absent from this file must
+# match its spec field by exact name. Every exclusion carries its reason:
+# omission is a decision, never an accident.
+#
+# The provider (Terraform Plugin Framework) nests exclusively via nested
+# attributes, which distill to single flat args -- so each of the 59 payment
+# methods is ONE provider argument whose only settable member is
+# display_preference.preference. The spec models each as a typed
+# StripePaymentMethodPreference; fan-in mappings record the one spec leaf each
+# argument realizes. name, active and parent match by exact name.
+resources:
+  stripe_payment_method_configuration:
+    mappings:
+      - spec: spec.acss_debit.preference
+        arg: acss_debit
+      - spec: spec.affirm.preference
+        arg: affirm
+      - spec: spec.afterpay_clearpay.preference
+        arg: afterpay_clearpay
+      - spec: spec.alipay.preference
+        arg: alipay
+      - spec: spec.alma.preference
+        arg: alma
+      - spec: spec.amazon_pay.preference
+        arg: amazon_pay
+      - spec: spec.apple_pay.preference
+        arg: apple_pay
+      - spec: spec.apple_pay_later.preference
+        arg: apple_pay_later
+      - spec: spec.au_becs_debit.preference
+        arg: au_becs_debit
+      - spec: spec.bacs_debit.preference
+        arg: bacs_debit
+      - spec: spec.bancontact.preference
+        arg: bancontact
+      - spec: spec.billie.preference
+        arg: billie
+      - spec: spec.bizum.preference
+        arg: bizum
+      - spec: spec.blik.preference
+        arg: blik
+      - spec: spec.boleto.preference
+        arg: boleto
+      - spec: spec.card.preference
+        arg: card
+      - spec: spec.cartes_bancaires.preference
+        arg: cartes_bancaires
+      - spec: spec.cashapp.preference
+        arg: cashapp
+      - spec: spec.crypto.preference
+        arg: crypto
+      - spec: spec.customer_balance.preference
+        arg: customer_balance
+      - spec: spec.eps.preference
+        arg: eps
+      - spec: spec.fpx.preference
+        arg: fpx
+      - spec: spec.giropay.preference
+        arg: giropay
+      - spec: spec.google_pay.preference
+        arg: google_pay
+      - spec: spec.grabpay.preference
+        arg: grabpay
+      - spec: spec.ideal.preference
+        arg: ideal
+      - spec: spec.jcb.preference
+        arg: jcb
+      - spec: spec.kakao_pay.preference
+        arg: kakao_pay
+      - spec: spec.klarna.preference
+        arg: klarna
+      - spec: spec.konbini.preference
+        arg: konbini
+      - spec: spec.kr_card.preference
+        arg: kr_card
+      - spec: spec.link.preference
+        arg: link
+      - spec: spec.mb_way.preference
+        arg: mb_way
+      - spec: spec.mobilepay.preference
+        arg: mobilepay
+      - spec: spec.multibanco.preference
+        arg: multibanco
+      - spec: spec.naver_pay.preference
+        arg: naver_pay
+      - spec: spec.nz_bank_account.preference
+        arg: nz_bank_account
+      - spec: spec.oxxo.preference
+        arg: oxxo
+      - spec: spec.p24.preference
+        arg: p24
+      - spec: spec.pay_by_bank.preference
+        arg: pay_by_bank
+      - spec: spec.payco.preference
+        arg: payco
+      - spec: spec.paynow.preference
+        arg: paynow
+      - spec: spec.paypal.preference
+        arg: paypal
+      - spec: spec.payto.preference
+        arg: payto
+      - spec: spec.pix.preference
+        arg: pix
+      - spec: spec.promptpay.preference
+        arg: promptpay
+      - spec: spec.revolut_pay.preference
+        arg: revolut_pay
+      - spec: spec.samsung_pay.preference
+        arg: samsung_pay
+      - spec: spec.satispay.preference
+        arg: satispay
+      - spec: spec.scalapay.preference
+        arg: scalapay
+      - spec: spec.sepa_debit.preference
+        arg: sepa_debit
+      - spec: spec.sofort.preference
+        arg: sofort
+      - spec: spec.sunbit.preference
+        arg: sunbit
+      - spec: spec.swish.preference
+        arg: swish
+      - spec: spec.twint.preference
+        arg: twint
+      - spec: spec.upi.preference
+        arg: upi
+      - spec: spec.us_bank_account.preference
+        arg: us_bank_account
+      - spec: spec.wechat_pay.preference
+        arg: wechat_pay
+      - spec: spec.zip.preference
+        arg: zip

@@ -181,8 +181,12 @@ pair to compare. Never write a placeholder Pulumi module that succeeds while cre
 nothing: the anatomy gate fails a declared kind that carries `iac/pulumi/`, and the CLI
 (`pkg/iac/provisioner`) and the platform refuse the undeclared engine before anything runs,
 in one sentence naming the engines the kind runs on. The kind's E2E profile lists only its
-declared engines in `validated_provisioners`, and its provider writes only `_Terraform`
-test entrypoints.
+declared engines in `validated_provisioners`, and each test entrypoint is named for one of
+them: the matrix builder schedules `Test<Kind>_<Provisioner>` with the provisioner name
+capitalized, so an OpenTofu-only kind's entrypoint is `Test<Kind>_Tofu` (it still passes the
+framework's `"terraform"` engine, which runs the `tofu` binary; the runner refuses any binary
+the kind does not declare). No `_Pulumi` entrypoint exists for such a kind. `e2e/stripe/` is
+the worked example.
 
 **Deviation is allowed ONLY with a strong, documented technical reason.** If the two
 engines genuinely cannot match (a provider feature exists in one SDK but not the other, an

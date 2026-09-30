@@ -1,0 +1,22 @@
+# The canonical example: a portal with invoices, payment methods and
+# cancellation at period end. The lanes run against the dedicated test
+# sandbox only.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeBillingPortalConfiguration
+metadata:
+  name: customer-portal
+  org: e2e-org
+  env: testing
+spec:
+  name: Planton catalog example portal
+  features:
+    invoiceHistory:
+      enabled: true
+    paymentMethodUpdate:
+      enabled: true
+    subscriptionCancel:
+      enabled: true
+      mode: at_period_end
+  businessProfile:
+    privacyPolicyUrl: https://example.com/privacy
+    termsOfServiceUrl: https://example.com/terms

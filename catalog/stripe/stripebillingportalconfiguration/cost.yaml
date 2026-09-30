@@ -1,0 +1,11 @@
+# Cost profile: what drives this component's bill. Field paths are
+# spec-relative proto field names, held to the served contract by the
+# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+apiVersion: finops.planton.dev/v1
+kind: ComponentCostProfile
+metadata:
+  name: stripebillingportalconfiguration
+spec:
+  billing_model: free
+  free_tier: "Stripe publishes no price for portal configurations; the customer portal is part of Stripe Billing (docs.stripe.com/customer-management)."
+  notes: "The spend lives in Stripe Billing itself (a percentage of billing volume, stripe.com/billing/pricing) and in the payments the portal's customers make. A configuration changes what a customer may do, never what anything costs."

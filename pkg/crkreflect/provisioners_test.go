@@ -52,6 +52,28 @@ func TestOpenFgaKindsRunOnOpenTofuAndTerraformOnly(t *testing.T) {
 	}
 }
 
+// Stripe publishes no Pulumi provider and its kinds are proven on OpenTofu alone: every Stripe
+// kind runs on OpenTofu and on nothing else, not even the Terraform binary.
+func TestStripeKindsRunOnOpenTofuOnly(t *testing.T) {
+	stripeKinds := 0
+	for _, kind := range KindsList() {
+		if GetProvider(kind) != cloudresourcekind.CloudResourceProvider_stripe {
+			continue
+		}
+		stripeKinds++
+		declared, err := Provisioners(kind)
+		if err != nil {
+			t.Fatalf("%s: %v", kind, err)
+		}
+		if len(declared) != 1 || declared[0] != shared.IacProvisioner_tofu {
+			t.Errorf("%s declares %v, want exactly [tofu]", kind, declared)
+		}
+	}
+	if stripeKinds == 0 {
+		t.Fatal("no Stripe kinds registered")
+	}
+}
+
 // A kind that declares nothing runs on every engine: the default must never narrow.
 func TestUndeclaredKindRunsOnEveryEngine(t *testing.T) {
 	for _, provisioner := range []shared.IacProvisioner{shared.IacProvisioner_tofu, shared.IacProvisioner_terraform, shared.IacProvisioner_pulumi} {

@@ -746,6 +746,9 @@ import (
 	openfgaauthorizationmodelv1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgaauthorizationmodel/v1alpha1"
 	openfgarelationshiptuplev1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgarelationshiptuple/v1alpha1"
 	openfgastorev1alpha1 "github.com/plantonhq/planton/catalog/openfga/openfgastore/v1alpha1"
+	stripebillingportalconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripebillingportalconfiguration/v1alpha1"
+	stripepaymentmethodconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripepaymentmethodconfiguration/v1alpha1"
+	stripewebhookendpointv1alpha1 "github.com/plantonhq/planton/catalog/stripe/stripewebhookendpoint/v1alpha1"
 	"github.com/plantonhq/planton/shared/cloudresourcekind"
 	"google.golang.org/protobuf/proto"
 )
@@ -1524,6 +1527,12 @@ var ProviderOpenfgaMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
 	cloudresourcekind.CloudResourceKind_OpenFgaStore:              &openfgastorev1alpha1.OpenFgaStore{},
 }
 
+var ProviderStripeMap = map[cloudresourcekind.CloudResourceKind]proto.Message{
+	cloudresourcekind.CloudResourceKind_StripeBillingPortalConfiguration: &stripebillingportalconfigurationv1alpha1.StripeBillingPortalConfiguration{},
+	cloudresourcekind.CloudResourceKind_StripePaymentMethodConfiguration: &stripepaymentmethodconfigurationv1alpha1.StripePaymentMethodConfiguration{},
+	cloudresourcekind.CloudResourceKind_StripeWebhookEndpoint:            &stripewebhookendpointv1alpha1.StripeWebhookEndpoint{},
+}
+
 var ToMessageMap = merge(
 	ProviderTestMap,
 	ProviderAuth0Map,
@@ -1534,4 +1543,5 @@ var ToMessageMap = merge(
 	ProviderGcpMap,
 	ProviderKubernetesMap,
 	ProviderOpenfgaMap,
+	ProviderStripeMap,
 )

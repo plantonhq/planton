@@ -1,0 +1,66 @@
+# Control profile: this component's posture against every control in the
+# central catalog (catalog/_compliance/controls-catalog.yaml). Every control
+# is examined; not_applicable states why. Evidence is verifiable against the
+# spec contract and the official modules. Schema:
+# compliance/componentcontrolprofile/v1.
+apiVersion: compliance.planton.dev/v1
+kind: ComponentControlProfile
+metadata:
+  name: stripewebhookendpoint
+spec:
+  controls:
+    - control_id: enc-at-rest
+      status: not_applicable
+      notes: The component is an endpoint record (a URL and a list of event types) inside Stripe's SaaS; its storage is Stripe's provider-managed posture, with no encryption seam in this spec.
+    - control_id: enc-at-rest-cmk
+      status: not_applicable
+      notes: There is no data at rest at this component's level to key (see enc-at-rest); Stripe exposes no customer-managed-key surface on this object.
+    - control_id: enc-in-transit
+      status: configurable
+      field_path: url
+      evidence:
+        type: spec_validation
+        reference: "The spec's url rule (spec.url.scheme) admits https:// and http:// only; an https:// URL carries every delivery over TLS, and Stripe's live mode refuses anything else. http:// exists for a sandbox reached through a local tunnel. Each delivery is signed either way (the Stripe-Signature header, verified with status.outputs.secret)."
+      notes: Choose an https:// URL for every environment that is not a local sandbox; the receiving service must also verify the signature, which is its code, not this spec.
+    - control_id: no-public-access
+      status: not_applicable
+      notes: The endpoint is where Stripe sends events, so the URL it names must be reachable by Stripe; whether the receiving service accepts only Stripe's deliveries is that service's check of the signature (status.outputs.secret), not a setting of this object.
+    - control_id: restricted-ingress
+      status: not_applicable
+      notes: The object is not a network surface; the receiving service may filter by Stripe's published webhook IP addresses (docs.stripe.com/ips), outside this spec.
+    - control_id: edge-protection
+      status: not_applicable
+      notes: The object receives no requests; the receiving service's own edge protects the URL it names.
+    - control_id: rbac
+      status: not_applicable
+      notes: WHO may change the account's configuration is governed at the Stripe account level -- restricted-key permissions (iac/permissions.yaml) and Dashboard team roles -- with no per-object access-control surface in this spec.
+    - control_id: workload-identity
+      status: not_applicable
+      notes: The object authenticates to nothing; the key the IaC runner presents is the provider connection's concern (iac/permissions.yaml), and its mode is checked against the connection's declared mode on every deploy.
+    - control_id: no-legacy-auth
+      status: not_applicable
+      notes: The object carries no credential path of its own.
+    - control_id: strong-user-auth
+      status: not_applicable
+      notes: The object never decides how a person proves who they are; Dashboard sign-in and two-step verification are the Stripe account's settings.
+    - control_id: audit-logging
+      status: not_applicable
+      notes: The spec exposes no audit toggle. Every change is an API request recorded in the account's request logs and events in the Dashboard (Developers -> Logs and Events).
+    - control_id: monitoring-integration
+      status: not_applicable
+      notes: Neither the spec nor the module exposes a metrics surface; Stripe's Dashboard reports on the object's use.
+    - control_id: backup-recovery
+      status: not_applicable
+      notes: The object is declaratively re-creatable from the manifest, so the manifest is the recovery point.
+    - control_id: backup-retention-policy
+      status: not_applicable
+      notes: No backups exist at this component's level to retain (see backup-recovery).
+    - control_id: multi-zone-ha
+      status: not_applicable
+      notes: The object has no placement to configure; its availability is Stripe's SaaS platform posture.
+    - control_id: deletion-protection
+      status: not_applicable
+      notes: Destroy deletes the endpoint and its signing secret, and the provider offers no protection flag. A recreated endpoint gets a new secret, which the receiving service must take in the same deployment.
+    - control_id: managed-patching
+      status: not_applicable
+      notes: A pure configuration object with no software of its own to patch; Stripe runs and patches everything behind it.

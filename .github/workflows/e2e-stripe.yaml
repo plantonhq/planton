@@ -1,0 +1,58 @@
+# =============================================================================
+# Stripe E2E Tests
+# =============================================================================
+# Compile gate for the Stripe E2E test package. No Docker, kind, or kubectl
+# needed -- Stripe objects are SaaS API objects behind api.stripe.com, and
+# Stripe kinds run on OpenTofu only.
+#
+# Architecture:
+#   1. build-check: compile E2E code + go vet (fast gate, every trigger)
+#
+# The live E2E job is added when the dedicated Stripe test sandbox's key
+# (STRIPE_API_KEY) is provisioned as a repository secret; the harness refuses
+# any key that is not a test-mode key, so a live key can never run a lane.
+# Until then this workflow guards the package against compile drift from
+# framework changes.
+#
+# Triggers:
+#   - Pull requests (path-filtered)
+#   - Manual dispatch
+# =============================================================================
+
+name: e2e-stripe
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'catalog/stripe/**'
+      - 'e2e/stripe/**'
+      - 'e2e/framework/**'
+      - 'pkg/iac/**'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/e2e-stripe.yaml'
+
+concurrency:
+  group: e2e-stripe-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ============================================================================
+  # Build Check -- fast compile + vet gate (every trigger)
+  # ============================================================================
+  build-check:
+    runs-on: ubuntu-latest
+    container: ghcr.io/plantonhq/planton/ci-toolchain:latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile Stripe E2E tests
+        run: go test -tags=e2e -c -o /dev/null ./e2e/stripe/...
+
+      - name: Vet Stripe E2E packages
+        run: go vet -tags=e2e ./e2e/stripe/...

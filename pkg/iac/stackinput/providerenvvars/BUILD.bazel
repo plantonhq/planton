@@ -31,6 +31,7 @@ go_library(
         "//pkg/crkreflect",
         "//pkg/iac/provider/aws/awswebidentity",
         "//pkg/iac/provider/gcp/gcpwebidentity",
+        "//pkg/iac/provider/stripe/stripekey",
         "//pkg/kubernetes/kubeconfig",
         "//pkg/protobufyaml",
         "//shared/cloudresourcekind",

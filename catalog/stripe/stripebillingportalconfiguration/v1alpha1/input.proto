@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package dev.planton.stripe.stripebillingportalconfiguration.v1alpha1;
+
+import "catalog/stripe/provider.proto";
+import "catalog/stripe/stripebillingportalconfiguration/v1alpha1/api.proto";
+
+// StripeBillingPortalConfigurationStackInput is the input to the StripeBillingPortalConfiguration
+// IaC module. It contains the target resource and the Stripe provider configuration.
+message StripeBillingPortalConfigurationStackInput {
+  // target is the StripeBillingPortalConfiguration resource to be deployed.
+  StripeBillingPortalConfiguration target = 1;
+
+  // provider_config contains the Stripe key, its mode, and optionally the Connect account to act
+  // on. The key needs "Customer portal" write.
+  dev.planton.stripe.StripeProviderConfig provider_config = 2;
+}

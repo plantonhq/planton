@@ -1,0 +1,13 @@
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripeWebhookEndpoint
+metadata:
+  name: billing-events
+  org: example-org
+  env: production
+spec:
+  url: https://app.example.com/stripe
+  description: Billing events for the application's webhook route
+  enabledEvents:
+    - checkout.session.completed
+    - invoice.paid
+    - charge.refunded

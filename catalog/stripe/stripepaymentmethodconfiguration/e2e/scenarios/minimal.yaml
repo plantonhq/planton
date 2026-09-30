@@ -1,0 +1,18 @@
+# A configuration created with a few methods set, read back, and deactivated
+# on destroy. Stripe keeps it forever, so the name carries the run.
+apiVersion: stripe.planton.dev/v1alpha1
+kind: StripePaymentMethodConfiguration
+metadata:
+  name: e2e-pmc-minimal
+  org: e2e-org
+  env: testing
+spec:
+  name: e2e-${E2E_RUN_ID}-${E2E_SCENARIO}
+  card:
+    preference: "on"
+  link:
+    preference: "off"
+  applePay:
+    preference: "on"
+  applePayLater:
+    preference: "off"

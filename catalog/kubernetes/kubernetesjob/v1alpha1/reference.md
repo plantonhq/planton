@@ -1959,6 +1959,9 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
 
 ### spec.container.app.env.variables[].valueFrom.env
 
@@ -2862,6 +2865,9 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
 
 ### spec.container.app.env.secrets[].valueFrom.env
 
@@ -4964,6 +4970,9 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
 
 ### spec.container.sidecars[].env.variables[].valueFrom.env
 
@@ -5867,6 +5876,9 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
 
 ### spec.container.sidecars[].env.secrets[].valueFrom.env
 
@@ -8085,6 +8097,9 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
 
 ### spec.pod.initContainers[].env.variables[].valueFrom.env
 
@@ -8988,6 +9003,9 @@ Allowed values (use exactly as shown):
 - `OpenFgaStore` -- 9000–9999: OpenFGA resources OpenFGA publishes a Terraform provider and no Pulumi provider, so its kinds ship one HCL module and declare the engines that run it; the CLI and the platform refuse Pulumi for them before anything runs.
 - `OpenFgaAuthorizationModel`
 - `OpenFgaRelationshipTuple`
+- `StripeWebhookEndpoint` -- 10000–10999: Stripe resources Stripe publishes a Terraform provider and no Pulumi provider, and its kinds are proven on OpenTofu alone, so each declares ["tofu"]: one HCL module, and every other engine refused before anything runs. Family sub-bands: 10000 account and delivery, 10100 catalog and pricing, 10200 Terminal, 10300 Issuing.
+- `StripeBillingPortalConfiguration`
+- `StripePaymentMethodConfiguration`
 
 ### spec.pod.initContainers[].env.secrets[].valueFrom.env
 
