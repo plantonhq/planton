@@ -201,6 +201,9 @@ moment; `--area` takes `infrastructure`, `services_pipelines`,
 read a failed service run's logs or a stack job from there, and a
 configuration change's diff with `history <version-id>`. Lead a summary with
 the `--attention` cards, then the rest by area, naming people and resources.
+If `planton activity` is an unknown command, the CLI is older than this
+feature: tell the person to update it (`brew upgrade planton`) and stop,
+rather than piecing the answer together from other commands.
 
 ## Watching a running deploy (humans; agents prefer snapshots)
 
